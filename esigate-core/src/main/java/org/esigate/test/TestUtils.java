@@ -61,12 +61,12 @@ public final class TestUtils {
 
     public static DriverRequest createDriverRequest(String uri, Driver driver) throws HttpErrorPage {
         IncomingRequest request = createIncomingRequest(uri).build();
-        return new DriverRequest(request, driver, false);
+        return new DriverRequest(request, driver, "/");
     }
 
     public static DriverRequest createDriverRequest(Driver driver) throws HttpErrorPage {
         IncomingRequest request = createIncomingRequest().build();
-        return new DriverRequest(request, driver, false);
+        return new DriverRequest(request, driver, "/");
     }
 
 }

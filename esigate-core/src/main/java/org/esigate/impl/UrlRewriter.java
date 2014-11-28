@@ -43,14 +43,19 @@ import org.slf4j.LoggerFactory;
 public class UrlRewriter {
     private static final Logger LOG = LoggerFactory.getLogger(UrlRewriter.class);
 
+    /**
+     * Rewrite URLs including protocol, host and port. Ex: "http://locahost/test".
+     */
     public static final int ABSOLUTE = 0;
+    /**
+     * Rewrite URLs relative to the server root. Ex: "/test".
+     */
     public static final int RELATIVE = 1;
 
     private static final Pattern URL_PATTERN = Pattern
             .compile("<([^\\!:>]+)(src|href|action|background)\\s*=\\s*('[^<']*'|\"[^<\"]*\")([^>]*)>",
                     Pattern.CASE_INSENSITIVE);
 
-    private final URI visibleBaseUrlParameter;
     private final int mode;
 
     /**
@@ -78,19 +83,10 @@ public class UrlRewriter {
         } else {
             mode = RELATIVE;
         }
-        String visibleBaseUrl = Parameters.VISIBLE_URL_BASE.getValue(properties);
-        if (visibleBaseUrl == null) {
-            visibleBaseUrlParameter = null;
-        } else {
-            if (!visibleBaseUrl.endsWith("/")) {
-                visibleBaseUrl = visibleBaseUrl + "/";
-            }
-            visibleBaseUrlParameter = UriUtils.createURI(visibleBaseUrl);
-        }
     }
 
     /**
-     * Fix an url according to the chosen mode.
+     * Fixes an url according to the chosen mode.
      * 
      * @param url
      *            the url to fix (can be anything found in an html page, relative, absolute, empty...)
@@ -98,15 +94,32 @@ public class UrlRewriter {
      *            The relative incoming request URL (relative to visible base url).
      * @param baseUrl
      *            The base URL selected for this request.
+     * @param visibleBaseUrl
+     *            The base URL viewed by the browser.
      * 
      * @return the fixed url.
      */
-    public String rewriteUrl(String url, String requestUrl, String baseUrl) {
+    public String rewriteUrl(String url, String requestUrl, String baseUrl, String visibleBaseUrl) {
         if (url.isEmpty()) {
             LOG.debug("skip empty url");
             return url;
         }
+        return rewriteUrl(url, requestUrl, baseUrl, visibleBaseUrl, mode == ABSOLUTE);
+    }
 
+    /**
+     * Fixes an url according to the chosen mode.
+     * 
+     * @param url
+     *            the url to fix (can be anything found in an html page, relative, absolute, empty...)
+     * @param requestUrl
+     *            The incoming request URL (could be absolute or relative to visible base url).
+     * @param baseUrl
+     *            The base URL selected for this request.
+     * 
+     * @return the fixed url.
+     */
+    private String rewriteUrl(String url, String requestUrl, String baseUrl, String visibleBaseUrl, boolean absolute) {
         // Base url should end with /
         if (!baseUrl.endsWith("/")) {
             baseUrl = baseUrl + "/";
@@ -114,15 +127,18 @@ public class UrlRewriter {
         URI baseUri = UriUtils.createURI(baseUrl);
 
         // If no visible url base is defined, use base url as visible base url
-        URI visibleBaseUri;
-        if (visibleBaseUrlParameter == null) {
-            visibleBaseUri = baseUri;
-        } else {
-            visibleBaseUri = visibleBaseUrlParameter;
+        if (!visibleBaseUrl.endsWith("/")) {
+            visibleBaseUrl = visibleBaseUrl + "/";
         }
+        URI visibleBaseUri = UriUtils.createURI(visibleBaseUrl);
 
         // Build the absolute Uri of the request sent to the backend
-        URI requestUri = UriUtils.concatPath(baseUri, requestUrl);
+        URI requestUri;
+        if (requestUrl.startsWith(visibleBaseUrl)) {
+            requestUri = UriUtils.createURI(requestUrl);
+        } else {
+            requestUri = UriUtils.concatPath(baseUri, requestUrl);
+        }
 
         // Interpret the url relatively to the request url (may be relative)
         URI uri = UriUtils.resolve(url, requestUri);
@@ -140,11 +156,29 @@ public class UrlRewriter {
         URI result = visibleBaseUri.resolve(relativeUri);
         // If mode relative, remove all the scheme://host:port to keep only a url relative to server root (starts with
         // "/")
-        if (mode == RELATIVE) {
+        if (!absolute) {
             result = UriUtils.removeServer(result);
         }
         LOG.debug("url fixed: [{}] -> [{}]", url, result);
         return result.toString();
+    }
+
+    /**
+     * Fixes an url according to an absolute url.
+     * 
+     * @param url
+     *            the url to fix (can be anything found in an html page, relative, absolute, empty...)
+     * @param requestUrl
+     *            The relative incoming request URL (relative to visible base url).
+     * @param baseUrl
+     *            The base URL selected for this request.
+     * @param visibleBaseUrl
+     *            The base URL viewed by the browser.
+     * 
+     * @return the fixed url.
+     */
+    public String rewriteUrlAbsolute(String url, String requestUrl, String baseUrl, String visibleBaseUrl) {
+        return rewriteUrl(url, requestUrl, baseUrl, visibleBaseUrl, true);
     }
 
     /**
@@ -155,19 +189,20 @@ public class UrlRewriter {
      * 
      * @param requestUrl
      *            The request URL.
-     * 
      * @param baseUrlParam
      *            The base URL selected for this request.
+     * @param visibleBaseUrl
+     *            The base URL viewed by the browser.
      * 
      * @return the result of this renderer.
      */
-    public CharSequence rewriteHtml(CharSequence input, String requestUrl, String baseUrlParam) {
+    public CharSequence rewriteHtml(CharSequence input, String requestUrl, String baseUrlParam, String visibleBaseUrl) {
         StringBuffer result = new StringBuffer(input.length());
         Matcher m = URL_PATTERN.matcher(input);
         while (m.find()) {
             LOG.trace("found match: {}", m);
             String url = input.subSequence(m.start(3) + 1, m.end(3) - 1).toString();
-            url = rewriteUrl(url, requestUrl, baseUrlParam);
+            url = rewriteUrl(url, requestUrl, baseUrlParam, visibleBaseUrl);
             url = url.replaceAll("\\$", "\\\\\\$"); // replace '$' -> '\$' as it
                                                     // denotes group
             StringBuffer tagReplacement = new StringBuffer("<$1$2=\"").append(url).append("\"");

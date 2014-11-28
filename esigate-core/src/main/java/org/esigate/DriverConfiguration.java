@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.commons.lang3.StringUtils;
 import org.esigate.api.BaseUrlRetrieveStrategy;
 import org.esigate.impl.UriMapping;
 import org.esigate.url.IpHashBaseUrlRetrieveStrategy;
@@ -42,7 +41,6 @@ public class DriverConfiguration {
     private final Properties properties;
     private final boolean preserveHost;
     private final BaseUrlRetrieveStrategy baseUrlRetrieveStrategy;
-    private final boolean isVisibleBaseURLEmpty;
     private final List<UriMapping> uriMappings;
     private boolean stripMappingPath;
 
@@ -52,7 +50,6 @@ public class DriverConfiguration {
         this.uriEncoding = Parameters.URI_ENCODING.getValue(props);
         this.preserveHost = Parameters.PRESERVE_HOST.getValue(props);
         this.visibleBaseURL = Parameters.VISIBLE_URL_BASE.getValue(props);
-        this.isVisibleBaseURLEmpty = StringUtils.isEmpty(visibleBaseURL);
         this.stripMappingPath = Parameters.STRIP_MAPPING_PATH.getValue(props);
         this.uriMappings = parseMappings(props);
         properties = props;
@@ -98,12 +95,8 @@ public class DriverConfiguration {
         return urlStrategy;
     }
 
-    public String getVisibleBaseURL(String currentBaseUrl) {
-        String returnedVisibleBaseUrl = visibleBaseURL;
-        if (isVisibleBaseURLEmpty) {
-            returnedVisibleBaseUrl = currentBaseUrl;
-        }
-        return returnedVisibleBaseUrl;
+    public String getVisibleBaseURL() {
+        return visibleBaseURL;
     }
 
     public boolean isPreserveHost() {

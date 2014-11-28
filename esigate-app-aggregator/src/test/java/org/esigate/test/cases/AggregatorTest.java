@@ -39,9 +39,9 @@ public class AggregatorTest extends TestCase {
 
         String[] setcookies = resp.getHeaderFields("Set-Cookie");
         boolean containsHttpOnlyCookie = false;
-        for (int i = 0; i < setcookies.length; i++) {
-            if (setcookies[i].toString().contains("test0")) {
-                assertTrue(setcookies[i].contains("HttpOnly"));
+        for (String setcookie : setcookies) {
+            if (setcookie.toString().contains("test0")) {
+                assertTrue(setcookie.contains("HttpOnly"));
                 containsHttpOnlyCookie = true;
             }
         }
@@ -57,7 +57,7 @@ public class AggregatorTest extends TestCase {
     private void doSimpleTest(String page, String resultResource) throws Exception {
         WebRequest req = new GetMethodWebRequest(APPLICATION_PATH + page);
         WebResponse resp = webConversation.getResponse(req);
-        assertEquals("Status should be 200", HttpServletResponse.SC_OK, resp.getResponseCode());
+        assertEquals("Status should be 200\n" + resp.getText(), HttpServletResponse.SC_OK, resp.getResponseCode());
         assertEquals(getResource(resultResource).replaceAll("\r", "").replaceAll("\n", ""),
                 resp.getText().replaceAll("\r", "").replaceAll("\n", ""));
     }
@@ -92,12 +92,12 @@ public class AggregatorTest extends TestCase {
         doSimpleTest("block.html");
     }
 
-    public void testBlocks2Drivers() throws Exception {
-        doSimpleTest("blocks.html", "blocks.html");
-    }
-
     public void testBlockGzip() throws Exception {
         doSimpleTest("block-gzip.html", "block.html");
+    }
+
+    public void testBlocks2Drivers() throws Exception {
+        doSimpleTest("blocks.html", "blocks.html");
     }
 
     public void testBlockWithRedirect() throws Exception {

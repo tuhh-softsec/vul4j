@@ -43,7 +43,6 @@ import org.esigate.http.RedirectStrategy;
 import org.esigate.http.ResourceUtils;
 import org.esigate.impl.DriverRequest;
 import org.esigate.impl.UrlRewriter;
-import org.esigate.util.UriUtils;
 import org.esigate.vars.VariablesResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,10 +96,12 @@ public final class Driver {
             driver.contentTypeHelper = new ContentTypeHelper(properties);
             // Load extensions.
             ExtensionFactory.getExtensions(properties, Parameters.EXTENSIONS, driver);
+            UrlRewriter urlRewriter = new UrlRewriter(properties);
             driver.requestExecutor =
                     requestExecutorBuilder.setDriver(driver).setEventManager(driver.eventManager)
-                            .setProperties(properties).setContentTypeHelper(driver.contentTypeHelper).build();
-            driver.urlRewriter = new UrlRewriter(properties);
+                            .setProperties(properties).setContentTypeHelper(driver.contentTypeHelper)
+                            .setUrlRewriter(urlRewriter).build();
+            driver.urlRewriter = urlRewriter;
             return driver;
         }
 
@@ -154,8 +155,7 @@ public final class Driver {
      */
     public CloseableHttpResponse render(String pageUrl, IncomingRequest incomingRequest, Renderer... renderers)
             throws IOException, HttpErrorPage {
-        boolean external = UriUtils.isAbsolute(pageUrl);
-        DriverRequest driverRequest = new DriverRequest(incomingRequest, this, external);
+        DriverRequest driverRequest = new DriverRequest(incomingRequest, this, pageUrl);
 
         // Replace ESI variables in URL
         // TODO: should be performed in the ESI extension
@@ -242,8 +242,7 @@ public final class Driver {
      */
     public CloseableHttpResponse proxy(String relUrl, IncomingRequest request, Renderer... renderers)
             throws IOException, HttpErrorPage {
-        boolean external = UriUtils.isAbsolute(relUrl);
-        DriverRequest driverRequest = new DriverRequest(request, this, external);
+        DriverRequest driverRequest = new DriverRequest(request, this, relUrl);
         driverRequest.setCharacterEncoding(this.config.getUriEncoding());
 
         // This is used to ensure EVENT_PROXY_POST is called once and only once.
