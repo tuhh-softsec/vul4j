@@ -110,7 +110,7 @@ public class UrlRewriter {
     /**
      * Fixes a referer url in a request.
      * 
-     * @param url
+     * @param referer
      *            the url to fix (can be anything found in an html page, relative, absolute, empty...)
      * @param baseUrl
      *            The base URL selected for this request.
