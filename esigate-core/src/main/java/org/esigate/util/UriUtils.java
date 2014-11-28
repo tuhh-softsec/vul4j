@@ -284,4 +284,22 @@ public final class UriUtils {
         }
     }
 
+    /**
+     * Removes the query and fragment at the end of a URI.
+     * 
+     * @param uriString
+     *            the original URI as a String
+     * 
+     * @return the URI without querystring nor fragment
+     */
+    public static String removeQuerystring(String uriString) {
+        URI uri = createURI(uriString);
+        try {
+            return new URI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), uri.getPath(), null, null)
+                    .toASCIIString();
+        } catch (URISyntaxException e) {
+            throw new InvalidUriException(e);
+        }
+    }
+
 }

@@ -296,4 +296,16 @@ public class UrlRewriterTest extends TestCase {
         assertRewrites("./test", "http://visibleservername/test");
     }
 
+    public void testRewriteReferer() {
+        baseUrl = "http://backend/context/";
+        visibleUrlBase = "http://visibleservername/test/";
+        fixMode = "relative";
+
+        createUrlRewriter();
+
+        String referer = "http://visibleservername/test/page.html";
+
+        assertEquals("http://backend/context/page.html", urlRewriter.rewriteReferer(referer, baseUrl, visibleUrlBase));
+    }
+
 }

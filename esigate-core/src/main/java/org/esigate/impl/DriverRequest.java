@@ -67,6 +67,7 @@ public class DriverRequest implements HttpEntityEnclosingRequest {
         String visibleBase = driver.getConfiguration().getVisibleBaseURL();
         if (visibleBase == null) {
             String requestUri = request.getRequestLine().getUri();
+            requestUri = UriUtils.removeQuerystring(requestUri);
             if (!this.external && requestUri.endsWith(relUrl)) {
                 visibleBase = requestUri.substring(0, requestUri.length() - relUrl.length());
             } else {

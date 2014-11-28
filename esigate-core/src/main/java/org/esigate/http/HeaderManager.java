@@ -103,13 +103,13 @@ public class HeaderManager {
      *            destination request
      */
     public void copyHeaders(DriverRequest originalRequest, OutgoingRequest httpRequest) {
-        String originalUri = originalRequest.getRequestLine().getUri();
-        String uri = httpRequest.getRequestLine().getUri();
+        String baseUrl = httpRequest.getBaseUrl().toString();
+        String visibleBaseUrl = httpRequest.getOriginalRequest().getVisibleBaseUrl();
         for (Header header : originalRequest.getAllHeaders()) {
             // Special headers
             if (HttpHeaders.REFERER.equalsIgnoreCase(header.getName()) && isForwardedRequestHeader(HttpHeaders.REFERER)) {
                 String value = header.getValue();
-                value = UriUtils.translateUrl(value, originalUri, uri);
+                value = urlRewriter.rewriteReferer(value, baseUrl, visibleBaseUrl);
                 httpRequest.addHeader(header.getName(), value);
                 // All other headers are copied if allowed
             } else if (isForwardedRequestHeader(header.getName())) {

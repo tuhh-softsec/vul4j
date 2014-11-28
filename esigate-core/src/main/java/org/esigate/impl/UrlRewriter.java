@@ -108,6 +108,46 @@ public class UrlRewriter {
     }
 
     /**
+     * Fixes a referer url in a request.
+     * 
+     * @param url
+     *            the url to fix (can be anything found in an html page, relative, absolute, empty...)
+     * @param baseUrl
+     *            The base URL selected for this request.
+     * @param visibleBaseUrl
+     *            The base URL viewed by the browser.
+     * 
+     * @return the fixed url.
+     */
+    public String rewriteReferer(String referer, String baseUrl, String visibleBaseUrl) {
+        URI uri = UriUtils.createURI(referer);
+
+        // Base url should end with /
+        if (!baseUrl.endsWith("/")) {
+            baseUrl = baseUrl + "/";
+        }
+        URI baseUri = UriUtils.createURI(baseUrl);
+
+        // If no visible url base is defined, use base url as visible base url
+        if (!visibleBaseUrl.endsWith("/")) {
+            visibleBaseUrl = visibleBaseUrl + "/";
+        }
+        URI visibleBaseUri = UriUtils.createURI(visibleBaseUrl);
+
+        // Relativize url to visible base url
+        URI relativeUri = visibleBaseUri.relativize(uri);
+        // If the url is unchanged do nothing
+        if (relativeUri.equals(uri)) {
+            LOG.debug("url kept unchanged: [{}]", referer);
+            return referer;
+        }
+        // Else rewrite replacing baseUrl by visibleBaseUrl
+        URI result = baseUri.resolve(relativeUri);
+        LOG.debug("referer fixed: [{}] -> [{}]", referer, result);
+        return result.toString();
+    }
+
+    /**
      * Fixes an url according to the chosen mode.
      * 
      * @param url
