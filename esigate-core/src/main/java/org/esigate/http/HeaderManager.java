@@ -18,9 +18,9 @@ package org.esigate.http;
 import org.apache.http.Header;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpHeaders;
-import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.esigate.impl.DriverRequest;
+import org.esigate.impl.UrlRewriter;
 import org.esigate.util.FilterList;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
@@ -40,7 +40,18 @@ public class HeaderManager {
     private final FilterList requestHeadersFilterList = new FilterList();
     private final FilterList responseHeadersFilterList = new FilterList();
 
-    public HeaderManager() {
+    private final UrlRewriter urlRewriter;
+
+    /**
+     * Builds a Header manager.
+     * 
+     * @param urlRewriter
+     *            The {@link UrlRewriter} to be used to rewrite headers like "Location"
+     */
+    public HeaderManager(UrlRewriter urlRewriter) {
+
+        this.urlRewriter = urlRewriter;
+
         // Populate headers filter lists
 
         // By default all request headers are forwarded
@@ -134,28 +145,32 @@ public class HeaderManager {
      * Copies end-to-end headers from a resource to an output.
      * 
      * @param httpRequest
+     *            the request sent
      * @param originalRequest
+     *            the original request received from the client
      * @param httpClientResponse
+     *            the response received from the provider application
      * @param output
+     *            the response to be sent to the client
      */
-    public void copyHeaders(HttpRequest httpRequest, HttpEntityEnclosingRequest originalRequest,
+    public void copyHeaders(OutgoingRequest httpRequest, HttpEntityEnclosingRequest originalRequest,
             HttpResponse httpClientResponse, HttpResponse output) {
         String originalUri = originalRequest.getRequestLine().getUri();
-        String uri = httpRequest.getRequestLine().getUri();
+        String baseUrl = httpRequest.getBaseUrl().toString();
+        String visibleBaseUrl = httpRequest.getOriginalRequest().getVisibleBaseUrl();
         for (Header header : httpClientResponse.getAllHeaders()) {
             String name = header.getName();
             String value = header.getValue();
             try {
                 // Ignore Content-Encoding and Content-Type as these headers are
-                // set
-                // in HttpEntity
+                // set in HttpEntity
                 if (!HttpHeaders.CONTENT_ENCODING.equalsIgnoreCase(name)) {
                     if (isForwardedResponseHeader(name)) {
                         // Some headers containing an URI have to be rewritten
                         if (HttpHeaders.LOCATION.equalsIgnoreCase(name)
                                 || HttpHeaders.CONTENT_LOCATION.equalsIgnoreCase(name)) {
                             // Header contains only an url
-                            value = UriUtils.translateUrl(value, uri, originalUri);
+                            value = urlRewriter.rewriteUrlAbsolute(value, originalUri, baseUrl, visibleBaseUrl);
                             value = HttpResponseUtils.removeSessionId(value, httpClientResponse);
                             output.addHeader(name, value);
                         } else if ("Link".equalsIgnoreCase(name)) {
@@ -165,7 +180,8 @@ public class HeaderManager {
                             if (value.startsWith("<") && value.contains(">")) {
                                 String urlValue = value.substring(1, value.indexOf(">"));
 
-                                String targetUrlValue = UriUtils.translateUrl(urlValue, uri, originalUri);
+                                String targetUrlValue =
+                                        urlRewriter.rewriteUrlAbsolute(urlValue, originalUri, baseUrl, visibleBaseUrl);
                                 targetUrlValue = HttpResponseUtils.removeSessionId(targetUrlValue, httpClientResponse);
 
                                 value = value.replace("<" + urlValue + ">", "<" + targetUrlValue + ">");
@@ -181,7 +197,8 @@ public class HeaderManager {
                             if (urlPosition >= 0) {
                                 String urlValue = value.substring(urlPosition + "url=".length());
 
-                                String targetUrlValue = UriUtils.translateUrl(urlValue, uri, originalUri);
+                                String targetUrlValue =
+                                        urlRewriter.rewriteUrlAbsolute(urlValue, originalUri, baseUrl, visibleBaseUrl);
                                 targetUrlValue = HttpResponseUtils.removeSessionId(targetUrlValue, httpClientResponse);
 
                                 value = value.substring(0, urlPosition) + "url=" + targetUrlValue;
@@ -206,5 +223,4 @@ public class HeaderManager {
             }
         }
     }
-
 }

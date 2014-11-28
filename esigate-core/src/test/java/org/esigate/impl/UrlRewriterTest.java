@@ -47,13 +47,12 @@ public class UrlRewriterTest extends TestCase {
 
     private void createUrlRewriter() {
         Properties properties = new Properties();
-        properties.put(Parameters.VISIBLE_URL_BASE, visibleUrlBase);
         properties.put(Parameters.FIX_MODE, fixMode);
         urlRewriter = new UrlRewriter(properties);
     }
 
     private String rewriteUrl(String url) {
-        return urlRewriter.rewriteUrl(url, requestUrl, baseUrl);
+        return urlRewriter.rewriteUrl(url, requestUrl, baseUrl, visibleUrlBase);
     }
 
     private void assertRewrites(String sourceUrl, String rewrittenUrl) {
@@ -74,7 +73,7 @@ public class UrlRewriterTest extends TestCase {
         String input = pattern.replace("{}", "test");
         String expectedOutput = pattern.replace("{}", "/context/path/test");
         createUrlRewriter();
-        String result = urlRewriter.rewriteHtml(input, requestUrl, baseUrl).toString();
+        String result = urlRewriter.rewriteHtml(input, requestUrl, baseUrl, visibleUrlBase).toString();
         assertEquals(expectedOutput, result);
     }
 
@@ -85,7 +84,7 @@ public class UrlRewriterTest extends TestCase {
         fixMode = "relative";
         String input = pattern.replace("{}", "test");
         createUrlRewriter();
-        String result = urlRewriter.rewriteHtml(input, requestUrl, baseUrl).toString();
+        String result = urlRewriter.rewriteHtml(input, requestUrl, baseUrl, visibleUrlBase).toString();
         assertEquals(input, result);
     }
 

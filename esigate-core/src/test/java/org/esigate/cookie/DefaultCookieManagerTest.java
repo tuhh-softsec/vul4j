@@ -112,7 +112,7 @@ public class DefaultCookieManagerTest extends TestCase {
                         .addCookie(new BasicClientCookie("b", "value b"))
                         .addCookie(new BasicClientCookie("c", "value c"))
                         .addCookie(new BasicClientCookie("e", "value e")).build();
-        request = new DriverRequest(incomingRequest, driver, false);
+        request = new DriverRequest(incomingRequest, driver, "/");
         List<org.apache.http.cookie.Cookie> cookies = cookieManager.getCookies(request);
         assertNotNull(cookies);
         assertFalse(cookies.isEmpty());

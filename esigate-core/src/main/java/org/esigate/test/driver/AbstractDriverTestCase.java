@@ -14,11 +14,13 @@ import org.esigate.HttpErrorPage;
 import org.esigate.Renderer;
 import org.esigate.http.HttpClientRequestExecutor;
 import org.esigate.http.IncomingRequest;
+import org.esigate.impl.UrlRewriter;
 import org.esigate.test.TestUtils;
 import org.esigate.test.conn.IResponseHandler;
 import org.esigate.test.conn.MockConnectionManager;
 import org.esigate.test.http.HttpResponseBuilder;
 import org.esigate.util.UriUtils;
+import org.mockito.Mockito;
 
 /**
  * Base class for end-to-end testing of Esigate.
@@ -79,12 +81,14 @@ public abstract class AbstractDriverTestCase extends TestCase {
      */
     protected static Driver createMockDriver(Properties properties, HttpClientConnectionManager connectionManager,
             String name) {
+        UrlRewriter urlRewriter = Mockito.mock(UrlRewriter.class);
         Driver driver =
                 Driver.builder()
                         .setName(name)
                         .setProperties(properties)
                         .setRequestExecutorBuilder(
-                                HttpClientRequestExecutor.builder().setConnectionManager(connectionManager)).build();
+                                HttpClientRequestExecutor.builder().setConnectionManager(connectionManager)
+                                        .setUrlRewriter(urlRewriter)).build();
         DriverFactory.put(name, driver);
         return driver;
     }

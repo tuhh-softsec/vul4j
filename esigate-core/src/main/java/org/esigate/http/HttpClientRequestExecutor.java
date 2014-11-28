@@ -55,6 +55,7 @@ import org.esigate.events.impl.FragmentEvent;
 import org.esigate.extension.ExtensionFactory;
 import org.esigate.http.cookie.CustomBrowserCompatSpecFactory;
 import org.esigate.impl.DriverRequest;
+import org.esigate.impl.UrlRewriter;
 import org.esigate.util.HttpRequestHelper;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
@@ -83,12 +84,19 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
     private int socketTimeout;
     private HttpHost firstBaseUrlHost;
 
+    /**
+     * Builder class used to produce an immutable instance.
+     * 
+     * @author Francois-Xavier Bonnet
+     * 
+     */
     public static final class HttpClientHelperBuilder implements RequestExecutorBuilder {
         private EventManager eventManager;
         private Properties properties;
         private Driver driver;
         private HttpClientConnectionManager connectionManager;
         private CookieManager cookieManager;
+        private UrlRewriter urlRewriter;
 
         @Override
         public HttpClientHelperBuilder setDriver(Driver pDriver) {
@@ -113,10 +121,13 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             if (properties == null) {
                 throw new ConfigurationException("properties is mandatory");
             }
+            if (urlRewriter == null) {
+                throw new ConfigurationException("urlRewriter is mandatory");
+            }
             HttpClientRequestExecutor httpClientHelper = new HttpClientRequestExecutor();
             httpClientHelper.eventManager = eventManager;
             httpClientHelper.preserveHost = Parameters.PRESERVE_HOST.getValue(properties);
-            httpClientHelper.headerManager = new HeaderManager();
+            httpClientHelper.headerManager = new HeaderManager(urlRewriter);
             if (cookieManager == null) {
                 cookieManager = ExtensionFactory.getExtension(properties, Parameters.COOKIE_MANAGER, driver);
             }
@@ -147,6 +158,11 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
 
         public HttpClientHelperBuilder setCookieManager(CookieManager pCookieManager) {
             this.cookieManager = pCookieManager;
+            return this;
+        }
+
+        public HttpClientHelperBuilder setUrlRewriter(UrlRewriter urlRewriter) {
+            this.urlRewriter = urlRewriter;
             return this;
         }
     }

@@ -277,8 +277,7 @@ public class IncludeElementTest extends AbstractElementTest {
 
         Properties defaultProps = new Properties();
         defaultProps.setProperty(Parameters.REMOTE_URL_BASE.getName(), defaultBaseUrl);
-        defaultProps.setProperty("visibleUrlBase", visibleBaseURL);
-        defaultProps.setProperty("fixResources", "true");
+        defaultProps.setProperty(Parameters.VISIBLE_URL_BASE.getName(), visibleBaseURL);
 
         setProvider(MockRequestExecutor.createDriver("mock", defaultProps));
         addResource("http://www.foo.com/test-rewriteUrl",

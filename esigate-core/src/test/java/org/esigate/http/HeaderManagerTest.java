@@ -16,11 +16,15 @@ package org.esigate.http;
 
 import junit.framework.TestCase;
 
+import org.esigate.impl.UrlRewriter;
+import org.mockito.Mockito;
+
 public class HeaderManagerTest extends TestCase {
     private HeaderManager headerManager;
 
     public void testIsBlackListed() {
-        headerManager = new HeaderManager();
+        UrlRewriter urlRewriter = Mockito.mock(UrlRewriter.class);
+        headerManager = new HeaderManager(urlRewriter);
 
         assertRequestHeaderIsBlacklisted("Content-Length", true);
         assertRequestHeaderIsBlacklisted("Content-Length".toUpperCase(), true);
@@ -38,12 +42,24 @@ public class HeaderManagerTest extends TestCase {
     }
 
     private void assertRequestHeaderIsBlacklisted(String header, boolean blacklisted) {
-        assertEquals("'" + header + "' header should " + (blacklisted ? "" : "not ") + "be blacklisted",
+        String not = "not ";
+        if (blacklisted) {
+            not = "";
+        } else {
+            not = "not ";
+        }
+        assertEquals("'" + header + "' header should " + not + "be blacklisted",
                 !headerManager.isForwardedRequestHeader(header), blacklisted);
     }
 
     private void assertResponseHeaderIsBlacklisted(String header, boolean blacklisted) {
-        assertEquals("'" + header + "' header should " + (blacklisted ? "" : "not ") + "be blacklisted",
+        String not = "not ";
+        if (blacklisted) {
+            not = "";
+        } else {
+            not = "not ";
+        }
+        assertEquals("'" + header + "' header should " + not + "be blacklisted",
                 !headerManager.isForwardedResponseHeader(header), blacklisted);
     }
 
