@@ -6,7 +6,7 @@ Note: Master is in JIRA at http://jira.codehaus.org/browse/PLXCOMP
 Since archiver depends on a given version of IO this list is cumulative,
 any version includes *all* changes below.
 
-Release Notes - Plexus Components - Version plexus-archiver-2.9
+Plexus Components - Version plexus-archiver-2.9
 -----
 ** Bug
 
@@ -15,61 +15,61 @@ Release Notes - Plexus Components - Version plexus-archiver-2.9
 ** Improvement
 
     * [PLXCOMP-276] - Reduce number of ways to create a PlexusIoResource
-Release Notes - Plexus Components - Version plexus-io-2.4
+Plexus Components - Version plexus-io-2.4
 -----
 ** Improvement
 
     * [PLXCOMP-274] - Simplify use of proxies
     * [PLXCOMP-275] - Avoid leaky abstractions
     * [PLXCOMP-276] - Reduce number of ways to create a PlexusIoResource
-Release Notes - Plexus Components - Version plexus-archiver-2.8.4
+Plexus Components - Version plexus-archiver-2.8.4
 -----
 ** Bug
 
     * [PLXCOMP-273] - Normalize file separators for duplicate check
-Release Notes - Plexus Components - Version plexus-archiver-2.8.3
+Plexus Components - Version plexus-archiver-2.8.3
 -----
 ** Bug
 
     * [PLXCOMP-271] - Implicit created directories do not obey proper dirMode
     * [PLXCOMP-272] - overriding dirmode/filemode breaks symlinks
-Release Notes - Plexus Components - Version plexus-io-2.3.5
+Plexus Components - Version plexus-io-2.3.5
 -----
 ** Bug
 
     * [PLXCOMP-278] - Symlink attribute was not preserved through merged/overridden attributes
-Release Notes - Plexus Components - Version plexus-archiver-2.8.2
+Plexus Components - Version plexus-archiver-2.8.2
 -----
 ** Bug
 
     * [PLXCOMP-266] - In-place filtering of streams give incorrect content length for tar files
-Release Notes - Plexus Components - Version plexus-io-2.3.4
+Plexus Components - Version plexus-io-2.3.4
 -----
 ** Bug
 
     * [PLXCOMP-270] - Escaping algoritghm leaks through to system classloader
     * [PLXCOMP-272] - overriding dirmode/filemode breaks symlinks
-Release Notes - Plexus Components - Version plexus-io-2.3.3
+Plexus Components - Version plexus-io-2.3.3
 -----
 ** Bug
 
     * [PLXCOMP-267] - StreamTransformers are consistently applied to all collections
-Release Notes - Plexus Components - Version plexus-archiver-2.8.1
+Plexus Components - Version plexus-archiver-2.8.1
 -----
 ** Improvement
 
     * [PLXCOMP-268] - Add diagnostic archivers
-Release Notes - Plexus Components - Version plexus-io-2.3.2
+Plexus Components - Version plexus-io-2.3.2
 -----
 ** Bug
 
     * [PLXCOMP-265] - Locale in shell influences "ls" parsing for screenscraper
-Release Notes - Plexus Components - Version plexus-io-2.3.1
+Plexus Components - Version plexus-io-2.3.1
 -----
 ** Bug
 
     * [PLXCOMP-264] - Thread safety issue in streamconsumer
-Release Notes - Plexus Components - Version plexus-archiver-2.8
+Plexus Components - Version plexus-archiver-2.8
 -----
 ** Bug
 
@@ -82,7 +82,7 @@ Release Notes - Plexus Components - Version plexus-archiver-2.8
 ** New Feature
 
     * [PLXCOMP-263] - Support on-the fly stream filtering
-Release Notes - Plexus Components - Version plexus-io-2.3
+Plexus Components - Version plexus-io-2.3
 -----
 ** Improvement
 
@@ -90,7 +90,7 @@ Release Notes - Plexus Components - Version plexus-io-2.3
 ** New Feature
 
     * [PLXCOMP-261] - Make plexus io collections support on-the-fly filtering
-Release Notes - Plexus Components - Version plexus-archiver-2.7.1
+Plexus Components - Version plexus-archiver-2.7.1
 -----
 ** Bug
 
@@ -99,13 +99,13 @@ Release Notes - Plexus Components - Version plexus-archiver-2.7.1
 ** Improvement
 
     * [PLXCOMP-257] - Inconsistent buffering
-Release Notes - Plexus Components - Version plexus-io-2.2
+Plexus Components - Version plexus-io-2.2
 -----
 ** Bug
 
    * [PLXCOMP-251] - Date parsing in "ls" screenscraping has locale dependencies
    * [PLXCOMP-254] - Fix File.separatorChar normalization when prefixes are used
-Release Notes - Plexus Components - Version plexus-archiver-2.7
+Plexus Components - Version plexus-archiver-2.7
 -----
 ** Bug
 
@@ -115,14 +115,14 @@ Release Notes - Plexus Components - Version plexus-archiver-2.7
 ** Improvement
 
     * [PLXCOMP-253] - Switch default encoding to UTF-8
-Release Notes - Plexus Components - Version plexus-archiver-2.6.4
+Plexus Components - Version plexus-archiver-2.6.4
 -----
 ** Bug
 
     * [PLXCOMP-45] - ignoreWebXML flag use is opposite of what the name implies.
     * [PLXCOMP-107] - Fail to unzip archive, which contains file with name  'How_can_I_annotate_a_part_in_the_AAM%3F.Help' .
     * [PLXCOMP-234] - plexus archiver TarOptions setDirMode and setMode do not do anything unless TarArchiver.setOptions is called
-Release Notes - Plexus Components - Version plexus-io-2.1.4
+Plexus Components - Version plexus-io-2.1.4
 -----
 ** Bug
 
@@ -131,41 +131,41 @@ Release Notes - Plexus Components - Version plexus-io-2.1.4
 ** Improvement
 
     * [PLXCOMP-250] - Upgrade maven-enforcer-plugin to 1.3.1
-Release Notes - Plexus Components - Version plexus-archiver-2.6.3
+Plexus Components - Version plexus-archiver-2.6.3
 -----
 ** Bug
 
     * [PLXCOMP-233] - plexus archiver can create tarfiles with empty uid and gid bytes
     * [PLXCOMP-247] - Bug with windows AND java5
-Release Notes - Plexus Components - Version plexus-io-2.1.3
+Plexus Components - Version plexus-io-2.1.3
 -----
 ** Bug
 
     * [PLXCOMP-247] - Bug with windows AND java5
-Release Notes - Plexus Components - Version plexus-archiver-2.6.2
+Plexus Components - Version plexus-archiver-2.6.2
 -----
 ** Bug
 
     * [PLXCOMP-238] - CRC Failure if compress=false and file size <= 4 bytes
     * [PLXCOMP-245] - Archives created on windows get zero permissions, creates malformed permissions on linux
-Release Notes - Plexus Components - Version plexus-io-2.1.2
+Plexus Components - Version plexus-io-2.1.2
 -----
 ** Bug
 
     * [PLXCOMP-244] - Don't try to set attributes of symbolic links
     * [PLXCOMP-245] - Archives created on windows get zero permissions, creates malformed permissions on linux
-Release Notes - Plexus Components - Version plexus-archiver-2.6.1
+Plexus Components - Version plexus-archiver-2.6.1
 -----
 ** Bug
 
     * [PLXCOMP-243] - Restore JDK1.5 compatibility
 
-Release Notes - Plexus Components - Version plexus-io-2.1.1
+Plexus Components - Version plexus-io-2.1.1
 -----
 ** Bug
 
     * [PLXCOMP-243] - Restore JDK1.5 compatibility
-Release Notes - Plexus Components - Version plexus-archiver-2.6
+Plexus Components - Version plexus-archiver-2.6
 -----
 ** Bug
 
@@ -174,7 +174,7 @@ Release Notes - Plexus Components - Version plexus-archiver-2.6
 
     * [PLXCOMP-64] - add symlink support to tar unarchiver
     * [PLXCOMP-117] - add symbolic links managment
-Release Notes - Plexus Components - Version plexus-io-2.1
+Plexus Components - Version plexus-io-2.1
 -----
 ** Bug
 
