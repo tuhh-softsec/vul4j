@@ -174,25 +174,16 @@ public class ArchiveEntry
             throw new ArchiverException( "Not a file: " + file );
         }
         
-        PlexusIoResourceAttributes attrs;
-        try
-        {
-            attrs = PlexusIoResourceAttributeUtils.getFileAttributes( file );
-        }
-        catch ( IOException e )
-        {
-            throw new ArchiverException( "Failed to read filesystem attributes for: " + file, e );
-        }
+        final PlexusIoResource res =  ResourceFactory.createResource( file );
 
         final int type;
-        if (attrs.isSymbolicLink()){
+        if (res.isSymbolicLink()){
             type = SYMLINK;
             permissions =  permissions & ~(UnixStat.FILE_FLAG); // remove file flag again .doh.
         } else {
             type = FILE; // File flag was there already. This is a bit of a mess !
         }
 
-        final PlexusIoFileResource res =  PlexusIoFileResource.justAFile( file, attrs );
         return new ArchiveEntry( target, res, type, permissions, null, defaultDirectoryPermissions );
     }
 
@@ -223,7 +214,7 @@ public class ArchiveEntry
             throw new ArchiverException( "Not a directory: " + file );
         }
 
-        final PlexusIoResource res = createResource( file, file.getName() );
+        final PlexusIoResource res = createResource( file);
         return new ArchiveEntry( target, res, DIRECTORY, permissions, null, defaultDirMode1 );
     }
 

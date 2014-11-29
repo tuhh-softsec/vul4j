@@ -350,7 +350,7 @@ public abstract class AbstractArchiver
     public void addSymlink( String symlinkName, int permissions, String symlinkDestination )
         throws ArchiverException
     {
-        resources.add( ArchiveEntry.createSymlinkEntry( symlinkName, permissions, symlinkDestination,
+        doAddResource( ArchiveEntry.createSymlinkEntry( symlinkName, permissions, symlinkDestination,
                                                         getDirectoryMode() ) );
     }
 
@@ -397,7 +397,7 @@ public abstract class AbstractArchiver
     public void addResource( final PlexusIoResource resource, final String destFileName, final int permissions )
         throws ArchiverException
     {
-        resources.add( asArchiveEntry( resource, destFileName, permissions, null ) );
+        doAddResource( asArchiveEntry( resource, destFileName, permissions, null ) );
     }
 
     public void addFile( @Nonnull final File inputFile, @Nonnull String destFileName, int permissions )
@@ -429,14 +429,14 @@ public abstract class AbstractArchiver
 
                 if ( include( in, destFileName ) )
                 {
-                    resources.add( ArchiveEntry.createFileEntry( destFileName, inputFile, permissions,
-                                                                 getDirectoryMode() ) );
+                    doAddResource(
+                        ArchiveEntry.createFileEntry( destFileName, inputFile, permissions, getDirectoryMode() ) );
                 }
             }
             else
             {
-                resources.add( ArchiveEntry.createFileEntry( destFileName, inputFile, permissions,
-                                                             getDirectoryMode() ) );
+                doAddResource(
+                    ArchiveEntry.createFileEntry( destFileName, inputFile, permissions, getDirectoryMode() ) );
             }
         }
         catch ( final IOException e )
@@ -721,7 +721,11 @@ public abstract class AbstractArchiver
     public void addResources( final PlexusIoResourceCollection collection )
         throws ArchiverException
     {
-        resources.add( collection );
+        doAddResource( collection );
+    }
+
+    private void doAddResource(Object item){
+        resources.add( item);
     }
 
     public void addArchivedFileSet( final ArchivedFileSet fileSet )
