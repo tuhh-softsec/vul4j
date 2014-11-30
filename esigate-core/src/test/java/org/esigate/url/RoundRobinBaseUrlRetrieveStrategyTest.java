@@ -31,7 +31,7 @@ public class RoundRobinBaseUrlRetrieveStrategyTest extends TestCase {
 
     public void testGetBaseURL() {
         String[] baseUrls =
-                new String[] { "http://example.com/test/", "http://example1.com/test/", "http://example2.com/test/" };
+                new String[] {"http://example.com/test/", "http://example1.com/test/", "http://example2.com/test/"};
         BaseUrlRetrieveStrategy strategy = new RoundRobinBaseUrlRetrieveStrategy(baseUrls);
         IncomingRequest request = TestUtils.createIncomingRequest().build();
         int times = 5;

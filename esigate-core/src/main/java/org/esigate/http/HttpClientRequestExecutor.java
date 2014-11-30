@@ -220,7 +220,7 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
 
         Registry<CookieSpecProvider> r =
                 RegistryBuilder
-                        .<CookieSpecProvider> create()
+                        .<CookieSpecProvider>create()
                         .register(CookieSpecs.BEST_MATCH, new BestMatchSpecFactory())
                         .register(CookieSpecs.BROWSER_COMPATIBILITY, new BrowserCompatSpecFactory())
                         .register(CustomBrowserCompatSpecFactory.CUSTOM_BROWSER_COMPATIBILITY,

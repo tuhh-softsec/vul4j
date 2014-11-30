@@ -32,8 +32,8 @@ import org.xml.sax.SAXException;
  * 
  */
 public class XhtmlSerializer extends HtmlSerializer {
-    private static final String[] VOID_ELEMENTS = { "area", "base", "basefont", "bgsound", "br", "col", "command",
-            "embed", "frame", "hr", "img", "input", "keygen", "link", "meta", "param", "source", "track", "wbr" };
+    private static final String[] VOID_ELEMENTS = {"area", "base", "basefont", "bgsound", "br", "col", "command",
+            "embed", "frame", "hr", "img", "input", "keygen", "link", "meta", "param", "source", "track", "wbr"};
     private final TagClosingWriter tagClosingWriter;
 
     private static class TagClosingWriter extends FilterWriter {

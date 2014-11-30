@@ -31,7 +31,7 @@ import org.esigate.Parameters;
  * Utility class to manipulate {@link URI} represented as a {@link String} or as a {@link URI}.
  * 
  * @author Francois-Xavier Bonnet
- *
+ * 
  */
 public final class UriUtils {
 
@@ -288,7 +288,10 @@ public final class UriUtils {
     public static URI concatPath(URI base, String relPath) {
         String resultPath = base.getPath() + StringUtils.stripStart(relPath, "/");
         try {
-            return new URI(base.getScheme(), base.getUserInfo(), base.getHost(), base.getPort(), resultPath, null, null);
+            URI result =
+                    new URI(base.getScheme(), base.getUserInfo(), base.getHost(), base.getPort(), resultPath, null,
+                            null);
+            return result;
         } catch (URISyntaxException e) {
             throw new InvalidUriException(e);
         }

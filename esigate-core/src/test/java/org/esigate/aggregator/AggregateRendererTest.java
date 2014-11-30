@@ -84,9 +84,8 @@ public class AggregateRendererTest extends TestCase {
 
     public void testIncludeTemplateNested() throws IOException, HttpErrorPage {
         String page =
-                "content "
-                        + "<!--$includetemplate$mock$/testNestedTemplate$myblock$--> some text <!--$endincludetemplate$-->"
-                        + " end";
+                "content " + "<!--$includetemplate$mock$/testNestedTemplate$myblock$--> some text "
+                        + "<!--$endincludetemplate$-->" + " end";
         StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         assertEquals("content  nested Test include /nested  end", out.toString());

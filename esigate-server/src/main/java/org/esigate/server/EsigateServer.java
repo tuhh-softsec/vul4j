@@ -256,7 +256,7 @@ public final class EsigateServer {
             controlConnector.setPort(EsigateServer.controlPort);
             controlConnector.setName("control");
 
-            srv.setConnectors(new Connector[] { connector, controlConnector });
+            srv.setConnectors(new Connector[] {connector, controlConnector});
             // War
             ProtectionDomain protectionDomain = EsigateServer.class.getProtectionDomain();
             String warFile = protectionDomain.getCodeSource().getLocation().toExternalForm();
