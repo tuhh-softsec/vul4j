@@ -20,7 +20,6 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.esigate.Parameters;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,24 +42,12 @@ import org.slf4j.LoggerFactory;
 public class UrlRewriter {
     private static final Logger LOG = LoggerFactory.getLogger(UrlRewriter.class);
 
-    /**
-     * Rewrite URLs including protocol, host and port. Ex: "http://locahost/test".
-     */
-    public static final int ABSOLUTE = 0;
-    /**
-     * Rewrite URLs relative to the server root. Ex: "/test".
-     */
-    public static final int RELATIVE = 1;
-
     private static final Pattern URL_PATTERN = Pattern
             .compile("<([^\\!:>]+)(src|href|action|background)\\s*=\\s*('[^<']*'|\"[^<\"]*\")([^>]*)>",
                     Pattern.CASE_INSENSITIVE);
 
-    private final int mode;
-
     /**
-     * Creates a renderer which fixes urls. The domain name and the url path are computed from the full url made of
-     * baseUrl + pageFullPath.
+     * Rewrites urls from the response for the client or from the request to the target server.
      * 
      * If mode is ABSOLUTE, all relative urls will be replaced by the full urls :
      * <ul>
@@ -78,33 +65,6 @@ public class UrlRewriter {
      * 
      */
     public UrlRewriter(Properties properties) {
-        if ("absolute".equalsIgnoreCase(Parameters.FIX_MODE.getValue(properties))) {
-            mode = ABSOLUTE;
-        } else {
-            mode = RELATIVE;
-        }
-    }
-
-    /**
-     * Fixes an url according to the chosen mode.
-     * 
-     * @param url
-     *            the url to fix (can be anything found in an html page, relative, absolute, empty...)
-     * @param requestUrl
-     *            The relative incoming request URL (relative to visible base url).
-     * @param baseUrl
-     *            The base URL selected for this request.
-     * @param visibleBaseUrl
-     *            The base URL viewed by the browser.
-     * 
-     * @return the fixed url.
-     */
-    public String rewriteUrl(String url, String requestUrl, String baseUrl, String visibleBaseUrl) {
-        if (url.isEmpty()) {
-            LOG.debug("skip empty url");
-            return url;
-        }
-        return rewriteUrl(url, requestUrl, baseUrl, visibleBaseUrl, mode == ABSOLUTE);
     }
 
     /**
@@ -156,10 +116,14 @@ public class UrlRewriter {
      *            The incoming request URL (could be absolute or relative to visible base url).
      * @param baseUrl
      *            The base URL selected for this request.
+     * @param visibleBaseUrl
+     *            The base URL viewed by the browser.
+     * @param absolute
+     *            Should the rewritten urls contain the scheme host and port
      * 
      * @return the fixed url.
      */
-    private String rewriteUrl(String url, String requestUrl, String baseUrl, String visibleBaseUrl, boolean absolute) {
+    public String rewriteUrl(String url, String requestUrl, String baseUrl, String visibleBaseUrl, boolean absolute) {
         // Base url should end with /
         if (!baseUrl.endsWith("/")) {
             baseUrl = baseUrl + "/";
@@ -204,24 +168,6 @@ public class UrlRewriter {
     }
 
     /**
-     * Fixes an url according to an absolute url.
-     * 
-     * @param url
-     *            the url to fix (can be anything found in an html page, relative, absolute, empty...)
-     * @param requestUrl
-     *            The relative incoming request URL (relative to visible base url).
-     * @param baseUrl
-     *            The base URL selected for this request.
-     * @param visibleBaseUrl
-     *            The base URL viewed by the browser.
-     * 
-     * @return the fixed url.
-     */
-    public String rewriteUrlAbsolute(String url, String requestUrl, String baseUrl, String visibleBaseUrl) {
-        return rewriteUrl(url, requestUrl, baseUrl, visibleBaseUrl, true);
-    }
-
-    /**
      * Fix all resources urls and return the result.
      * 
      * @param input
@@ -233,16 +179,21 @@ public class UrlRewriter {
      *            The base URL selected for this request.
      * @param visibleBaseUrl
      *            The base URL viewed by the browser.
+     * @param absolute
+     *            Should the rewritten urls contain the scheme host and port
      * 
      * @return the result of this renderer.
      */
-    public CharSequence rewriteHtml(CharSequence input, String requestUrl, String baseUrlParam, String visibleBaseUrl) {
+    public CharSequence rewriteHtml(CharSequence input, String requestUrl, String baseUrlParam, String visibleBaseUrl,
+            boolean absolute) {
         StringBuffer result = new StringBuffer(input.length());
         Matcher m = URL_PATTERN.matcher(input);
         while (m.find()) {
             LOG.trace("found match: {}", m);
             String url = input.subSequence(m.start(3) + 1, m.end(3) - 1).toString();
-            url = rewriteUrl(url, requestUrl, baseUrlParam, visibleBaseUrl);
+            if (!url.isEmpty()) {
+                url = rewriteUrl(url, requestUrl, baseUrlParam, visibleBaseUrl, absolute);
+            }
             url = url.replaceAll("\\$", "\\\\\\$"); // replace '$' -> '\$' as it
                                                     // denotes group
             StringBuffer tagReplacement = new StringBuffer("<$1$2=\"").append(url).append("\"");

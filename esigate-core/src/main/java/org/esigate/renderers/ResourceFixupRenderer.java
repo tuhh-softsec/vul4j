@@ -44,6 +44,7 @@ public class ResourceFixupRenderer implements Renderer {
     private final String requestUrl;
     private final UrlRewriter urlRewriter;
     private final String visibleBaseUrl;
+    private final boolean absolute;
 
     /**
      * Creates a renderer which fixes urls. The domain name and the url path are computed from the full url made of
@@ -68,17 +69,21 @@ public class ResourceFixupRenderer implements Renderer {
      *            The url rewriter for this provider
      * @param visibleBaseUrl
      *            The base url as seen from the client
+     * @param absolute
+     *            Should the rewritten urls contain the scheme host and port
      */
-    public ResourceFixupRenderer(String baseUrl, String requestUrl, UrlRewriter urlRewriter, String visibleBaseUrl) {
+    public ResourceFixupRenderer(String baseUrl, String requestUrl, UrlRewriter urlRewriter, String visibleBaseUrl,
+            boolean absolute) {
         this.baseUrl = stripEnd(baseUrl, "/");
         this.requestUrl = requestUrl;
         this.urlRewriter = urlRewriter;
         this.visibleBaseUrl = visibleBaseUrl;
+        this.absolute = absolute;
     }
 
     @Override
     public void render(DriverRequest httpRequest, String src, Writer out) throws IOException {
-        out.write(urlRewriter.rewriteHtml(src, requestUrl, baseUrl, visibleBaseUrl).toString());
+        out.write(urlRewriter.rewriteHtml(src, requestUrl, baseUrl, visibleBaseUrl, absolute).toString());
     }
 
 }

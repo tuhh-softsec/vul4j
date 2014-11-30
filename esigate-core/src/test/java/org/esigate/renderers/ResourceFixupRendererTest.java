@@ -39,14 +39,15 @@ public class ResourceFixupRendererTest extends TestCase {
         final String input = "some html";
 
         UrlRewriter urlRewriter = Mockito.mock(UrlRewriter.class);
-        Mockito.when(urlRewriter.rewriteHtml(input, requestUrl, baseUrl, visibleBaseUrl)).thenReturn(
+        Mockito.when(urlRewriter.rewriteHtml(input, requestUrl, baseUrl, visibleBaseUrl, false)).thenReturn(
                 "url rewritten html");
 
         Writer out = new StringBuilderWriter();
-        ResourceFixupRenderer tested = new ResourceFixupRenderer(baseUrl, requestUrl, urlRewriter, visibleBaseUrl);
+        ResourceFixupRenderer tested =
+                new ResourceFixupRenderer(baseUrl, requestUrl, urlRewriter, visibleBaseUrl, false);
         tested.render(null, input, out);
 
-        Mockito.verify(urlRewriter, Mockito.times(1)).rewriteHtml(input, requestUrl, baseUrl, visibleBaseUrl);
+        Mockito.verify(urlRewriter, Mockito.times(1)).rewriteHtml(input, requestUrl, baseUrl, visibleBaseUrl, false);
         assertEquals("url rewritten html", out.toString());
     }
 }
