@@ -187,5 +187,40 @@ Plexus Components - Version plexus-io-2.1
     * [PLXCOMP-64] - add symlink support to tar unarchiver
     * [PLXCOMP-117] - add symbolic links managment
 
+
+
+Plexus Components - Version plexus-archiver-2.5 (plexus-io 2.0.12)
+-----
+** Bug
+
+    * [PLXCOMP-13] - Plexus Archiver fails on certain Jars
+    * [PLXCOMP-205] - Tar unarchiver does not respect includes/excludes flags
+    * [PLXCOMP-216] - Unarchiver extracts files into wrong directory
+    * [PLXCOMP-232] - Failures to unpack .tar.gz files
+    * [PLXCOMP-236] - ZipUnArchiver fails to extract large (>4GB) ZIP files
+
+** Improvement
+
+    * [PLXCOMP-153] - TarUnArchiver does not support includes/excludes
+    * [PLXCOMP-240] - Convert everything to commons-compress
+
+
+Plexus Components - Version plexus-io-2.0.12
+-----
+
+** Bug
+
+    * [PLXCOMP-249] - Add support for java7 chmod
+
+Plexus Components - Version plexus-archiver-2.4.4 (plexus-io 2.0.10)
+-----
+
+** Bug
+    * [PLXCOMP-178] - last modification time is not preserved
+    * [PLXCOMP-222] - ZipOutputStream does not set Language encoding flag (EFS) when using UTF-8 encoding
+    * [PLXCOMP-226] - Bug in org.codehaus.plexus.archiver.zip.ZipOutputStream.closeEntry(ZipOutputStream.java:352)
+
+
+
 Older history in JIRA at http://jira.codehaus.org/browse/PLXCOMP
 -----
