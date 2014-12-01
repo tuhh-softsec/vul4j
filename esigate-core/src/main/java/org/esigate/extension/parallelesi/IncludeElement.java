@@ -42,8 +42,6 @@ import org.esigate.parser.future.FutureElement;
 import org.esigate.parser.future.FutureElementType;
 import org.esigate.parser.future.FutureParserContext;
 import org.esigate.parser.future.StringBuilderFutureAppendable;
-import org.esigate.regexp.ReplaceRenderer;
-import org.esigate.util.UriUtils;
 import org.esigate.xml.XpathRenderer;
 import org.esigate.xml.XsltRenderer;
 import org.slf4j.Logger;
@@ -88,7 +86,7 @@ class IncludeElement extends BaseElement {
             Exception currentException = null;
             // Handle src
             try {
-                processPage(this.src, includeTag, this.ctx, sw);
+                processPage(this.src, includeTag, sw);
             } catch (IOException | HttpErrorPage e) {
                 currentException = e;
             }
@@ -98,7 +96,7 @@ class IncludeElement extends BaseElement {
                 // Reset exception
                 currentException = null;
                 try {
-                    processPage(alt, includeTag, ctx, sw);
+                    processPage(alt, includeTag, sw);
                 } catch (IOException | HttpErrorPage e) {
                     currentException = e;
                 }
@@ -130,73 +128,46 @@ class IncludeElement extends BaseElement {
             return result;
         }
 
-        private void processPage(String src, Tag tag, FutureParserContext ctx, Appendable out) throws IOException,
-                HttpErrorPage {
+        private void processPage(String srcOrAlt, Tag tag, Appendable out) throws IOException, HttpErrorPage {
             String fragment = tag.getAttribute("fragment");
             String xpath = tag.getAttribute("xpath");
             String xslt = tag.getAttribute("stylesheet");
-            boolean rewriteAbsoluteUrl = "true".equalsIgnoreCase(tag.getAttribute("rewriteabsoluteurl"));
 
             DriverRequest httpRequest = ctx.getHttpRequest();
             List<Renderer> rendererList = new ArrayList<Renderer>();
             Driver driver;
             String page;
 
-            int idx = src.indexOf(PROVIDER_PATTERN);
-            int idxLegacyPattern = src.indexOf(LEGACY_PROVIDER_PATTERN);
+            int idx = srcOrAlt.indexOf(PROVIDER_PATTERN);
+            int idxLegacyPattern = srcOrAlt.indexOf(LEGACY_PROVIDER_PATTERN);
             if (idx < 0 && idxLegacyPattern < 0) {
-                page = src;
+                page = srcOrAlt;
                 driver = httpRequest.getDriver();
             } else if (idx >= 0) {
                 int startIdx = idx + PROVIDER_PATTERN.length();
-                int endIndex = src.indexOf("})", startIdx);
-                String provider = src.substring(startIdx, endIndex);
-                page = src.substring(endIndex + "})".length());
+                int endIndex = srcOrAlt.indexOf("})", startIdx);
+                String provider = srcOrAlt.substring(startIdx, endIndex);
+                page = srcOrAlt.substring(endIndex + "})".length());
                 driver = DriverFactory.getInstance(provider);
                 if (LOG.isWarnEnabled() && idx > 0) {
                     LOG.warn("Invalid src attribute : [{}], src should start with [{}{}})]."
-                            + " First characters [{}] have been ignored", src, PROVIDER_PATTERN, provider,
-                            src.substring(0, idx));
+                            + " First characters [{}] have been ignored", srcOrAlt, PROVIDER_PATTERN, provider,
+                            srcOrAlt.substring(0, idx));
                 }
             } else {
                 int startIdx = idxLegacyPattern + PROVIDER_PATTERN.length();
-                int endIndex = src.indexOf("})", startIdx);
-                String provider = src.substring(startIdx, endIndex);
-                page = src.substring(endIndex + "})".length());
+                int endIndex = srcOrAlt.indexOf("})", startIdx);
+                String provider = srcOrAlt.substring(startIdx, endIndex);
+                page = srcOrAlt.substring(endIndex + "})".length());
                 driver = DriverFactory.getInstance(provider);
                 if (LOG.isWarnEnabled() && idxLegacyPattern > 0) {
                     LOG.warn("Invalid src attribute : [{}], src should start with [{}{}})]."
-                            + " First characters [{}] have been ignored", src, PROVIDER_PATTERN, provider,
-                            src.substring(0, idxLegacyPattern));
+                            + " First characters [{}] have been ignored", srcOrAlt, PROVIDER_PATTERN, provider,
+                            srcOrAlt.substring(0, idxLegacyPattern));
                 }
             }
 
-            if (rewriteAbsoluteUrl) {
-                Map<String, String> replaceRules = new HashMap<String, String>();
-                String baseUrl = httpRequest.getBaseUrl().toString();
-                String visibleBaseUrl = driver.getConfiguration().getVisibleBaseURL();
-
-                String contextBaseUrl;
-                String contextVisibleBaseUrl;
-                contextBaseUrl = UriUtils.getPath(baseUrl);
-                if (visibleBaseUrl != null && !visibleBaseUrl.equals("") && !baseUrl.equals(visibleBaseUrl)) {
-                    contextVisibleBaseUrl = UriUtils.getPath(visibleBaseUrl);
-                    replaceRules.put("href=(\"|')" + visibleBaseUrl + "(.*)(\"|')", "href=$1" + contextVisibleBaseUrl
-                            + "$2$3");
-                    replaceRules.put("src=(\"|')" + visibleBaseUrl + "(.*)(\"|')", "src=$1" + contextVisibleBaseUrl
-                            + "$2$3");
-                    replaceRules.put("href=(\"|')" + baseUrl + "(.*)(\"|')", "href=$1" + contextBaseUrl + "$2$3");
-                    replaceRules.put("src=(\"|')" + baseUrl + "(.*)(\"|')", "src=$1" + contextBaseUrl + "$2$3");
-                } else {
-                    contextBaseUrl = UriUtils.getPath(baseUrl);
-                    replaceRules.put("href=(\"|')" + baseUrl + "(.*)(\"|')", "href=$1" + contextBaseUrl + "$2$3");
-                    replaceRules.put("src=(\"|')" + baseUrl + "(.*)(\"|')", "src=$1" + contextBaseUrl + "$2$3");
-                }
-
-                rendererList.add(new ReplaceRenderer(replaceRules));
-            }
-
-            InlineCache ic = InlineCache.getFragment(src);
+            InlineCache ic = InlineCache.getFragment(srcOrAlt);
             if (ic != null && !ic.isExpired()) {
                 String cache = ic.getFragment();
                 out.append(cache);

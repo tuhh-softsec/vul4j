@@ -16,15 +16,14 @@ package org.esigate.esi;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.Properties;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.HttpErrorPage;
-import org.esigate.MockRequestExecutor;
-import org.esigate.Parameters;
 
 public class IncludeElementTest extends AbstractElementTest {
+    private static final long TEN_SECONDS = 10L * 1000L;
+
     @Override
     protected void setUp() {
         super.setUp();
@@ -99,12 +98,12 @@ public class IncludeElementTest extends AbstractElementTest {
         String result = render(page);
         assertEquals("before ---inline cache item--- after", result);
 
-        InlineCache.storeFragment("$(PROVIDER{mock})/inline-cache", new Date(System.currentTimeMillis() + 10L * 1000L),
+        InlineCache.storeFragment("$(PROVIDER{mock})/inline-cache", new Date(System.currentTimeMillis() + TEN_SECONDS),
                 false, null, "---updated inline cache item---");
         result = render(page);
         assertEquals("before ---updated inline cache item--- after", result);
 
-        InlineCache.storeFragment("$(PROVIDER{mock})/inline-cache", new Date(System.currentTimeMillis() - 10L * 1000L),
+        InlineCache.storeFragment("$(PROVIDER{mock})/inline-cache", new Date(System.currentTimeMillis() - TEN_SECONDS),
                 false, null, "---expired inline cache item---");
         addResource("/inline-cache", "---fetched inline cache item---");
         result = render(page);
@@ -266,26 +265,6 @@ public class IncludeElementTest extends AbstractElementTest {
         assertEquals("before  after", result);
     }
 
-    public void testIncludeReplaceAbsolute() throws IOException, HttpErrorPage {
-        String page =
-                "before <esi:include src=\"http://www.foo.com/test-rewriteUrl\" "
-                        + "rewriteabsoluteurl=\"true\"  /> after";
-        String defaultBaseUrl = "http://www.foo.com/context/";
-        String visibleBaseURL = "http://www.foo.com/contextExt/";
-
-        Properties defaultProps = new Properties();
-        defaultProps.setProperty(Parameters.REMOTE_URL_BASE.getName(), defaultBaseUrl);
-        defaultProps.setProperty(Parameters.VISIBLE_URL_BASE.getName(), visibleBaseURL);
-
-        setProvider(MockRequestExecutor.createDriver("mock", defaultProps));
-        addResource("http://www.foo.com/test-rewriteUrl",
-                "<IMG src=\"http://www.foo.com/context/~miko/counter.gif?name=idocsguide\">"
-                        + "<a href=\"http://www.foo.com/test\">" + "<a href=\"http://www.foo.com/context/test\">");
-        String result = render(page);
-        assertEquals("before <IMG src=\"/contextExt/~miko/counter.gif?name=idocsguide\">"
-                + "<a href=\"http://www.foo.com/test\"><a href=\"/contextExt/test\"> after", result);
-    }
-
     /**
      * JQuery selector interpreted like a ESIgate variable during an esi:include
      * https://github.com/esigate/esigate/issues/35
@@ -301,24 +280,6 @@ public class IncludeElementTest extends AbstractElementTest {
         addResource("/test", "<esi:fragment name=\"fragment\">---fragment content---</esi:fragment>");
         String result = render(page);
         assertEquals("<script type=\"text/javascript\">$(document).ready(function () {...});</script>", result);
-    }
-
-    public void testIncludeReplaceAbsoluteBaseUrl() throws IOException, HttpErrorPage {
-        String page =
-                "before <esi:include src=\"http://www.foo.com/test-rewriteUrl\" "
-                        + "rewriteabsoluteurl=\"true\"  /> after";
-        String defaultBaseUrl = "http://www.foo.com/context";
-
-        Properties defaultProps = new Properties();
-        defaultProps.setProperty(Parameters.REMOTE_URL_BASE.getName(), defaultBaseUrl);
-
-        setProvider(MockRequestExecutor.createDriver("mock", defaultProps));
-        addResource("http://www.foo.com/test-rewriteUrl",
-                "<IMG src=\"http://www.foo.com/context/~miko/counter.gif?name=idocsguide\">"
-                        + "<a href=\"http://www.foo.com/test\">" + "<a href=\"http://www.foo.com/context/test\">");
-        String result = render(page);
-        assertEquals("before <IMG src=\"/context/~miko/counter.gif?name=idocsguide\">"
-                + "<a href=\"http://www.foo.com/test\"><a href=\"/context/test\"> after", result);
     }
 
     public void testIncludeTagContentShouldBeRemoved() throws IOException, HttpErrorPage {

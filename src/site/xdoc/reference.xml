@@ -724,18 +724,6 @@ someUrl=/cms/article123
 			</tr>
 			<tr>
 			<td></td>
-			<td>rewriteabsoluteurl</td>
-			<td>Parse the included ressource for URLs and rewrite
-			them with the current URL of the page</td>
-			<td>&lt;esi:include src="URI" rewriteabsoluteurl="true"
-			/&gt;</td>
-			<td>&nbsp;</td>
-			<td>Yes</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			</tr>
-			<tr>
-			<td></td>
 			<td>stylesheet</td>
 			<td>xsl stylesheet to apply to the ressource (works
 			with xml and html, stylesheet should be searched first as a local
