@@ -87,7 +87,9 @@ public class ChooseElementTest extends AbstractElementTest {
         String page =
                 "begin <esi:choose>"
                         + "<esi:when test=\"'$(HTTP_COOKIE{group})'=='Beginner'\">inside when</esi:when>"
-                        + "<esi:otherwise><esi:vars>inside otherwise with '$(HTTP_COOKIE{group})' cookie</esi:vars></esi:otherwise>"
+                        + "<esi:otherwise>"
+                        + "<esi:vars>inside otherwise with '$(HTTP_COOKIE{group})' cookie</esi:vars>"
+                        + "</esi:otherwise>"
                         + "</esi:choose> end";
         getRequestBuilder().addCookie(new BasicClientCookie("group", "Advanced"));
         String result = render(page);

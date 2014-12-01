@@ -102,11 +102,12 @@ public class EsiRenderer implements Renderer, Appendable {
     }
 
     @Override
-    public void render(DriverRequest originalRequest, String content, Writer out) throws IOException, HttpErrorPage {
+    public void render(DriverRequest originalRequest, String content, Writer outWriter) throws IOException,
+            HttpErrorPage {
         if (name != null) {
             LOG.debug("Rendering fragment {} in page {}", name, page);
         }
-        this.out = out;
+        this.out = outWriter;
         if (content == null) {
             return;
         }

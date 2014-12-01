@@ -60,7 +60,8 @@ public class DriverEsiWhenTest extends AbstractDriverTestCase {
                         .addHeader("Referer", "http://www.esigate.org")
                         .addHeader(
                                 "User-Agent",
-                                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_4) AppleWebKit/536.30.1 (KHTML, like Gecko) "
+                                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_4) "
+                                + "AppleWebKit/536.30.1 (KHTML, like Gecko) "
                                         + "Version/6.0.5 Safari/536.30.1")
                         .addHeader("Accept-Language", "da, en-gb;q=0.8, en;q=0.7")
                         .addCookie(new BasicClientCookie("test-cookie", "test-cookie-value"))

@@ -78,8 +78,8 @@ class IncludeTemplateElement implements Element {
         out.append(HttpResponseUtils.toString(response));
     }
 
-    public void addParam(String name, String value) {
-        params.put(name, value);
+    public void addParam(String paramName, String value) {
+        params.put(paramName, value);
     }
 
     @Override

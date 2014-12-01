@@ -55,8 +55,8 @@ public class AggregateRenderer implements Renderer, Appendable {
 
     /** {@inheritDoc} */
     @Override
-    public void render(DriverRequest httpRequest, String content, Writer out) throws IOException, HttpErrorPage {
-        this.out = out;
+    public void render(DriverRequest httpRequest, String content, Writer outWriter) throws IOException, HttpErrorPage {
+        this.out = outWriter;
         if (content == null) {
             return;
         }
