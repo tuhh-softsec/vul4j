@@ -16,15 +16,14 @@ package org.esigate.extension.parallelesi;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.Properties;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.HttpErrorPage;
-import org.esigate.MockRequestExecutor;
-import org.esigate.Parameters;
 
 public class IncludeElementTest extends AbstractElementTest {
+
+    private static final long TEN_SECONDS = 10L * 1000L;
 
     @Override
     protected void setUp() {
@@ -100,12 +99,12 @@ public class IncludeElementTest extends AbstractElementTest {
         String result = render(page);
         assertEquals("before ---inline cache item--- after", result);
 
-        InlineCache.storeFragment("$(PROVIDER{mock})/inline-cache", new Date(System.currentTimeMillis() + 10L * 1000L),
+        InlineCache.storeFragment("$(PROVIDER{mock})/inline-cache", new Date(System.currentTimeMillis() + TEN_SECONDS),
                 false, null, "---updated inline cache item---");
         result = render(page);
         assertEquals("before ---updated inline cache item--- after", result);
 
-        InlineCache.storeFragment("$(PROVIDER{mock})/inline-cache", new Date(System.currentTimeMillis() - 10L * 1000L),
+        InlineCache.storeFragment("$(PROVIDER{mock})/inline-cache", new Date(System.currentTimeMillis() - TEN_SECONDS),
                 false, null, "---expired inline cache item---");
         addResource("/inline-cache", "---fetched inline cache item---");
         result = render(page);
@@ -131,8 +130,8 @@ public class IncludeElementTest extends AbstractElementTest {
     public void testIncludeReplaceElementFragment() throws IOException, HttpErrorPage {
         String page =
                 "before <esi:include src='$(PROVIDER{mock})/include-replace' >"
-                        + "<esi:replace fragment='replaceable-fragment'><esi:vars>$(HTTP_COOKIE{cookieName})</esi:vars></esi:replace>"
-                        + "</esi:include> after";
+                        + "<esi:replace fragment='replaceable-fragment'>"
+                        + "<esi:vars>$(HTTP_COOKIE{cookieName})</esi:vars>" + "</esi:replace>" + "</esi:include> after";
         String includedPage =
                 "-incl-page-start" + " <esi:fragment name='replaceable-fragment'>replaced content</esi:fragment>"
                         + " <esi:fragment name='untouched-fragment' />" + " incl-page-end-";
@@ -145,8 +144,8 @@ public class IncludeElementTest extends AbstractElementTest {
     public void testIncludeReplaceElementRegexp() throws IOException, HttpErrorPage {
         String page =
                 "before <esi:include src='$(PROVIDER{mock})/include-replace' >"
-                        + "<esi:replace regexp='replaceable-regexp'><esi:vars>$(HTTP_COOKIE{cookieName})</esi:vars></esi:replace>"
-                        + "</esi:include> after";
+                        + "<esi:replace regexp='replaceable-regexp'>"
+                        + "<esi:vars>$(HTTP_COOKIE{cookieName})</esi:vars>" + "</esi:replace>" + "</esi:include> after";
         String includedPage =
                 "-incl-page-start" + " <esi:fragment name='untouched-fragment'>zzz</esi:fragment>"
                         + " replaceable-regexp" + " incl-page-end-";
@@ -159,8 +158,8 @@ public class IncludeElementTest extends AbstractElementTest {
     public void testIncludeReplaceElementExpression() throws IOException, HttpErrorPage {
         String page =
                 "before <esi:include src='$(PROVIDER{mock})/include-replace' >"
-                        + "<esi:replace expression='replaceable-regexp'><esi:vars>$(HTTP_COOKIE{cookieName})</esi:vars></esi:replace>"
-                        + "</esi:include> after";
+                        + "<esi:replace expression='replaceable-regexp'>"
+                        + "<esi:vars>$(HTTP_COOKIE{cookieName})</esi:vars>" + "</esi:replace>" + "</esi:include> after";
         String includedPage =
                 "-incl-page-start" + " <esi:fragment name='untouched-fragment'>zzz</esi:fragment>"
                         + " replaceable-regexp" + " incl-page-end-";
@@ -182,9 +181,8 @@ public class IncludeElementTest extends AbstractElementTest {
 
     public void testIncludeXpathSeveralMatchingNodes() throws IOException, HttpErrorPage {
         String page =
-                "before "
-                        + "<esi:include src='$(PROVIDER{mock})/inline-xpath' xpath='//html:body/html:ul/html:li/text()' />"
-                        + " after";
+                "before " + "<esi:include src='$(PROVIDER{mock})/inline-xpath' "
+                        + "xpath='//html:body/html:ul/html:li/text()' />" + " after";
         addResource("/inline-xpath", "<html><title>The header</title><body>-the body-<br>"
                 + "<ul><li>list item 1</li><li>list item 2</li></ul></body></html>");
         String result = render(page);
@@ -193,9 +191,8 @@ public class IncludeElementTest extends AbstractElementTest {
 
     public void testIncludeXSLT() throws IOException, HttpErrorPage {
         String page =
-                "before "
-                        + "<esi:include src='$(PROVIDER{mock})/inline-xslt' stylesheet=\"http://www.foo.com/test.xsl\" />"
-                        + " after";
+                "before " + "<esi:include src='$(PROVIDER{mock})/inline-xslt' "
+                        + "stylesheet=\"http://www.foo.com/test.xsl\" />" + " after";
         addResource("/inline-xslt", "<html><body>The body<br></body></html>");
         addResource("http://www.foo.com/test.xsl", "<?xml version=\"1.0\"?>"
                 + "<xsl:stylesheet version=\"1.0\" xmlns=\"http://www.w3.org/1999/xhtml\" "
@@ -272,44 +269,6 @@ public class IncludeElementTest extends AbstractElementTest {
         String page = "before <esi:include src=\"http://www.foo.com/test-onerror\" onerror=\"continue\"/> after";
         String result = render(page);
         assertEquals("before  after", result);
-    }
-
-    public void testIncludeReplaceAbsolute() throws IOException, HttpErrorPage {
-        String page =
-                "before <esi:include src=\"http://www.foo.com/test-rewriteUrl\" "
-                        + "rewriteabsoluteurl=\"true\"  /> after";
-        String defaultBaseUrl = "http://www.foo.com/context/";
-        String visibleBaseURL = "http://www.foo.com/contextExt/";
-
-        Properties defaultProps = new Properties();
-        defaultProps.setProperty(Parameters.REMOTE_URL_BASE.getName(), defaultBaseUrl);
-        defaultProps.setProperty(Parameters.VISIBLE_URL_BASE.getName(), visibleBaseURL);
-
-        setProvider(MockRequestExecutor.createDriver("mock", defaultProps));
-        addResource("http://www.foo.com/test-rewriteUrl",
-                "<IMG src=\"http://www.foo.com/context/~miko/counter.gif?name=idocsguide\">"
-                        + "<a href=\"http://www.foo.com/test\">" + "<a href=\"http://www.foo.com/context/test\">");
-        String result = render(page);
-        assertEquals("before <IMG src=\"/contextExt/~miko/counter.gif?name=idocsguide\">"
-                + "<a href=\"http://www.foo.com/test\"><a href=\"/contextExt/test\"> after", result);
-    }
-
-    public void testIncludeReplaceAbsoluteBaseUrl() throws IOException, HttpErrorPage {
-        String page =
-                "before <esi:include src=\"http://www.foo.com/test-rewriteUrl\" "
-                        + "rewriteabsoluteurl=\"true\"  /> after";
-        String defaultBaseUrl = "http://www.foo.com/context";
-
-        Properties defaultProps = new Properties();
-        defaultProps.setProperty(Parameters.REMOTE_URL_BASE.getName(), defaultBaseUrl);
-
-        setProvider(MockRequestExecutor.createDriver("mock", defaultProps));
-        addResource("http://www.foo.com/test-rewriteUrl",
-                "<IMG src=\"http://www.foo.com/context/~miko/counter.gif?name=idocsguide\">"
-                        + "<a href=\"http://www.foo.com/test\">" + "<a href=\"http://www.foo.com/context/test\">");
-        String result = render(page);
-        assertEquals("before <IMG src=\"/context/~miko/counter.gif?name=idocsguide\">"
-                + "<a href=\"http://www.foo.com/test\"><a href=\"/context/test\"> after", result);
     }
 
     public void testIncludeTagContentShouldBeRemoved() throws IOException, HttpErrorPage {

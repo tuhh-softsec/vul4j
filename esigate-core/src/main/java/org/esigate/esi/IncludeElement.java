@@ -34,8 +34,6 @@ import org.esigate.impl.DriverRequest;
 import org.esigate.parser.Adapter;
 import org.esigate.parser.ElementType;
 import org.esigate.parser.ParserContext;
-import org.esigate.regexp.ReplaceRenderer;
-import org.esigate.util.UriUtils;
 import org.esigate.xml.XpathRenderer;
 import org.esigate.xml.XsltRenderer;
 import org.slf4j.Logger;
@@ -134,7 +132,6 @@ class IncludeElement extends BaseElement {
         String fragment = tag.getAttribute("fragment");
         String xpath = tag.getAttribute("xpath");
         String xslt = tag.getAttribute("stylesheet");
-        boolean rewriteAbsoluteUrl = "true".equalsIgnoreCase(tag.getAttribute("rewriteabsoluteurl"));
 
         DriverRequest httpRequest = ctx.getHttpRequest();
         List<Renderer> rendererList = new ArrayList<Renderer>();
@@ -170,31 +167,6 @@ class IncludeElement extends BaseElement {
                         + " First characters [{}] have been ignored", src, PROVIDER_PATTERN, provider,
                         src.substring(0, idxLegacyPattern));
             }
-        }
-
-        if (rewriteAbsoluteUrl) {
-            Map<String, String> replaceRules = new HashMap<String, String>();
-            String baseUrl = httpRequest.getBaseUrl().toString();
-            String visibleBaseUrl = driver.getConfiguration().getVisibleBaseURL();
-
-            String contextBaseUrl;
-            String contextVisibleBaseUrl;
-            contextBaseUrl = UriUtils.getPath(baseUrl);
-            if (visibleBaseUrl != null && !visibleBaseUrl.equals("") && !baseUrl.equals(visibleBaseUrl)) {
-                contextVisibleBaseUrl = UriUtils.getPath(visibleBaseUrl);
-                replaceRules.put("href=(\"|')" + visibleBaseUrl + "(.*)(\"|')", "href=$1" + contextVisibleBaseUrl
-                        + "$2$3");
-                replaceRules.put("src=(\"|')" + visibleBaseUrl + "(.*)(\"|')", "src=$1" + contextVisibleBaseUrl
-                        + "$2$3");
-                replaceRules.put("href=(\"|')" + baseUrl + "(.*)(\"|')", "href=$1" + contextBaseUrl + "$2$3");
-                replaceRules.put("src=(\"|')" + baseUrl + "(.*)(\"|')", "src=$1" + contextBaseUrl + "$2$3");
-            } else {
-                contextBaseUrl = UriUtils.getPath(baseUrl);
-                replaceRules.put("href=(\"|')" + baseUrl + "(.*)(\"|')", "href=$1" + contextBaseUrl + "$2$3");
-                replaceRules.put("src=(\"|')" + baseUrl + "(.*)(\"|')", "src=$1" + contextBaseUrl + "$2$3");
-            }
-
-            rendererList.add(new ReplaceRenderer(replaceRules));
         }
 
         InlineCache ic = InlineCache.getFragment(src);
