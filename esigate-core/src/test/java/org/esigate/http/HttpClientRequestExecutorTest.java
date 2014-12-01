@@ -51,6 +51,10 @@ import org.esigate.test.conn.MockConnectionManager;
  */
 public class HttpClientRequestExecutorTest extends TestCase {
 
+    private static final int ONE_SECOND = 1000;
+    private static final int ONE_HOUR = 3600 * ONE_SECOND;
+    private static final int ONE_DAY = 24 * ONE_HOUR;
+    private static final int ONE_HUNDRED_MS = 100;
     private HttpClientRequestExecutor httpClientRequestExecutor;
     private MockConnectionManager mockConnectionManager;
     private Properties properties;
@@ -185,7 +189,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         mockConnectionManager.setResponse(response1);
         result = executeRequest();
         assertTrue("Response content should be unchanged as cache should be used on error.", compare(response, result));
-        Thread.sleep(100);
+        Thread.sleep(ONE_HUNDRED_MS);
         // Third request no more error but stale-while-refresh should trigger a
         // background revalidation and serve the old version.
         HttpResponse response2 = createMockResponse(HttpStatus.SC_OK, "2");
@@ -193,7 +197,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         result = executeRequest();
         assertTrue("Response should not have been refreshed yet.", compare(response, result));
         // Wait until revalidation is complete
-        Thread.sleep(100);
+        Thread.sleep(ONE_HUNDRED_MS);
         // Fourth request after cache has been updated at last
         result = executeRequest();
         assertTrue("Response should have been refreshed.", compare(response2, result));
@@ -216,7 +220,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         result = executeRequest();
         assertTrue("Response content should be unchanged as cache should be used.", compare(response, result));
         // Third request after cache has expired
-        Thread.sleep(1000);
+        Thread.sleep(ONE_SECOND);
         result = executeRequest();
         assertTrue("Response should have been refreshed.", compare(response1, result));
     }
@@ -257,7 +261,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         assertTrue("Response content should be unchanged as cache should be used.", result.getFirstHeader("X-cache")
                 .getValue().startsWith("HIT"));
         // Third request after cache has expired
-        Thread.sleep(1000);
+        Thread.sleep(ONE_SECOND);
         try {
             result = executeRequest();
         } catch (HttpErrorPage errorPage) {
@@ -653,7 +657,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         assertEquals("public, max-age=1", (result.getFirstHeader("Cache-control").getValue()));
 
         // Wait for a revalidation to occur
-        Thread.sleep(1000);
+        Thread.sleep(ONE_SECOND);
 
         result = httpClientRequestExecutor.execute(request);
         // Check that the revalidation occurred
@@ -749,8 +753,8 @@ public class HttpClientRequestExecutorTest extends TestCase {
         createHttpClientRequestExecutor();
         // First request
         String now = DateUtils.formatDate(new Date());
-        String yesterday = DateUtils.formatDate(new Date(System.currentTimeMillis() - 86400 * 1000));
-        String inOneHour = DateUtils.formatDate(new Date(System.currentTimeMillis() + 3600 * 1000));
+        String yesterday = DateUtils.formatDate(new Date(System.currentTimeMillis() - ONE_DAY));
+        String inOneHour = DateUtils.formatDate(new Date(System.currentTimeMillis() + ONE_HOUR));
         HttpResponse response = createMockResponse(HttpStatus.SC_NOT_MODIFIED, null);
         response.setHeader("Date", now);
         response.setHeader("Expires", inOneHour);

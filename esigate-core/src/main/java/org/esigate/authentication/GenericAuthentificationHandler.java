@@ -56,7 +56,7 @@ import org.esigate.http.OutgoingRequest;
  */
 public abstract class GenericAuthentificationHandler implements IEventListener, Extension {
 
-    protected Driver driver;
+    private Driver driver;
 
     /**
      * Method called before proxying a request
@@ -65,6 +65,7 @@ public abstract class GenericAuthentificationHandler implements IEventListener, 
      * page. If so the method must return false in order to stop further processing.
      * 
      * @param httpRequest
+     *            the incoming request
      * @return true if the processing must continue, false if the response has already been sent to the client.
      */
     public abstract boolean beforeProxy(HttpRequest httpRequest);
@@ -99,7 +100,7 @@ public abstract class GenericAuthentificationHandler implements IEventListener, 
      * @see org.esigate.extension.Extension#init(org.esigate.Driver, java.util.Properties)
      */
     @Override
-    public void init(Driver d, Properties properties) {
+    public final void init(Driver d, Properties properties) {
         this.driver = d;
         this.driver.getEventManager().register(EventManager.EVENT_PROXY_PRE, this);
         this.driver.getEventManager().register(EventManager.EVENT_FRAGMENT_PRE, this);
@@ -129,5 +130,9 @@ public abstract class GenericAuthentificationHandler implements IEventListener, 
         }
 
         return true;
+    }
+
+    public Driver getDriver() {
+        return driver;
     }
 }

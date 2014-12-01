@@ -21,7 +21,11 @@ import org.apache.http.impl.cookie.BasicClientCookie;
 /**
  * @author Alexis Thaveau on 20/10/14.
  */
-public class CookieUtil {
+public final class CookieUtil {
+
+    private CookieUtil() {
+        // Do not instantiate
+    }
 
     public static final String HTTP_ONLY_ATTR = "httponly";
 

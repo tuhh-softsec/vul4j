@@ -32,8 +32,9 @@ import junit.framework.TestCase;
 
 public class CookieUtilTest extends TestCase {
 
+    private static final int ONE_DAY = 86400000;
     private SimpleDateFormat format;
-    CookieSpec cookieSpec;
+    private CookieSpec cookieSpec;
 
     @Override
     protected void setUp() throws Exception {
@@ -46,7 +47,7 @@ public class CookieUtilTest extends TestCase {
 
     public void testHttpOnlyCookie() throws Exception {
 
-        String expires = format.format(new Date(System.currentTimeMillis() + 86400000));
+        String expires = format.format(new Date(System.currentTimeMillis() + ONE_DAY));
         Header header =
                 new BasicHeader("Set-Cookie", "K_lm_66638=121203111217326896; Domain=.foo.com; Expires=" + expires
                         + "; HttpOnly;Secure;Path=/");
@@ -59,7 +60,7 @@ public class CookieUtilTest extends TestCase {
     }
 
     public void testRewriteCookieExpires() throws Exception {
-        String expires = format.format(new Date(System.currentTimeMillis() + 86400000));
+        String expires = format.format(new Date(System.currentTimeMillis() + ONE_DAY));
         Header header =
                 new BasicHeader("Set-Cookie", "K_lm_66638=121203111217326896; Domain=.foo.com; Expires=" + expires
                         + "; Path=/");

@@ -38,7 +38,8 @@ public class XsltRendererTest extends TestCase {
         String template = "<?xml version=\"1.0\"?>";
         template +=
                 "<xsl:stylesheet version=\"1.0\" xmlns=\"http://www.w3.org/1999/xhtml\" "
-                        + "xmlns:html=\"http://www.w3.org/1999/xhtml\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">";
+                        + "xmlns:html=\"http://www.w3.org/1999/xhtml\" "
+                        + "xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">";
         template += "<xsl:output method=\"xml\" omit-xml-declaration=\"yes\"/> indent=\"no\"";
         template += "<xsl:template match=\"//html:body\">";
         template += "<xsl:copy-of select=\".\"/>";

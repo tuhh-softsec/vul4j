@@ -12,6 +12,7 @@
  * limitations under the License.
  *
  */
+
 package org.esigate.esi;
 
 import java.util.Collections;
@@ -72,8 +73,8 @@ final class Tag {
         return name;
     }
 
-    public String getAttribute(String name) {
-        return attributes.get(name);
+    public String getAttribute(String attributeName) {
+        return attributes.get(attributeName);
     }
 
     public boolean isClosing() {

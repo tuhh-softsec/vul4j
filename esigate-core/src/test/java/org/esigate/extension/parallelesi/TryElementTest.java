@@ -141,7 +141,8 @@ public class TryElementTest extends AbstractElementTest {
         String page =
                 "begin <esi:try>"
                         + "<esi:attempt> "
-                        + "<esi:attempt>abc<esi:include src='http://www.foo.com/testFragment' fragment='fragmentFound'/>"
+                        + "<esi:attempt>abc"
+                        + "<esi:include src='http://www.foo.com/testFragment' fragment='fragmentFound'/>"
                         + " cba" + "</esi:attempt>" + "</esi:attempt>" + "</esi:try>end";
         String result = render(page);
         assertEquals("begin  abcFRAGMENT FOUND cbaend", result);
@@ -151,7 +152,8 @@ public class TryElementTest extends AbstractElementTest {
         String page =
                 "begin <esi:try>"
                         + "<esi:attempt> "
-                        + "<esi:attempt>abc<esi:include src='http://www.foo.com/testWithoutFragment' fragment='fragmentFound'/>"
+                        + "<esi:attempt>abc"
+                        + "<esi:include src='http://www.foo.com/testWithoutFragment' fragment='fragmentFound'/>"
                         + " cba</esi:attempt>" + "</esi:attempt>" + "</esi:try>end";
         String result = render(page);
         assertEquals("begin end", result);
@@ -161,7 +163,8 @@ public class TryElementTest extends AbstractElementTest {
         String page =
                 "begin <esi:try>"
                         + "<esi:attempt> "
-                        + "<esi:attempt>abc<esi:include src='http://www.foo.com/testWithoutFragment' fragment='fragmentFound'/>"
+                        + "<esi:attempt>abc"
+                        + "<esi:include src='http://www.foo.com/testWithoutFragment' fragment='fragmentFound'/>"
                         + " cba" + "</esi:attempt>" + "</esi:attempt>" + "<esi:except>NOT FOUND</esi:except>"
                         + "</esi:try>end";
         String result = render(page);

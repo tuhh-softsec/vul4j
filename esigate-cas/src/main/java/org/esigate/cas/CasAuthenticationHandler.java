@@ -1,4 +1,4 @@
-/* 
+/*
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -91,6 +91,18 @@ public class CasAuthenticationHandler extends GenericAuthentificationHandler {
         return true;
     }
 
+    /**
+     * Prefix attribute to be driver specific
+     *
+     * @param driver
+     * @param name
+     * @return
+     */
+    protected String driverSpecificName(Driver driver, String name) {
+        return new StringBuilder().append(driver.getConfiguration().getInstanceName()).append("-").append(name)
+                .toString();
+    }
+
     @Override
     public void init(Properties properties) {
 
@@ -101,7 +113,7 @@ public class CasAuthenticationHandler extends GenericAuthentificationHandler {
 
         CASRedirectStrategy strategy = new CASRedirectStrategy();
         strategy.setLoginURL(loginUrl);
-        driver.setRedirectStrategy(strategy);
+        getDriver().setRedirectStrategy(strategy);
 
         String springSecurityString = properties.getProperty(SPRING_SECURITY_PROPERTY);
         if (springSecurityString != null) {
@@ -153,17 +165,5 @@ public class CasAuthenticationHandler extends GenericAuthentificationHandler {
             addCasAuthentication(outgoingRequest, incomingRequest);
         }
         incomingRequest.setAttribute(secondRequestAttribute, true);
-    }
-
-    /**
-     * Prefix attribute to be driver specific
-     * 
-     * @param driver
-     * @param name
-     * @return
-     */
-    protected String driverSpecificName(Driver driver, String name) {
-        return new StringBuilder().append(driver.getConfiguration().getInstanceName()).append("-").append(name)
-                .toString();
     }
 }
