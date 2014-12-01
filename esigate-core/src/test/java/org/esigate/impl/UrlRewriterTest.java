@@ -19,8 +19,6 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 
-import org.esigate.Parameters;
-
 /**
  * Tests on UrlRewriter.
  * 
@@ -31,7 +29,7 @@ public class UrlRewriterTest extends TestCase {
 
     private UrlRewriter urlRewriter;
     private String visibleUrlBase;
-    private String fixMode;
+    private boolean absolute;
     private String requestUrl;
     private String baseUrl;
 
@@ -40,19 +38,22 @@ public class UrlRewriterTest extends TestCase {
         super.setUp();
         urlRewriter = null;
         visibleUrlBase = null;
-        fixMode = null;
+        absolute = false;
         requestUrl = null;
         baseUrl = null;
     }
 
     private void createUrlRewriter() {
         Properties properties = new Properties();
-        properties.put(Parameters.FIX_MODE, fixMode);
         urlRewriter = new UrlRewriter(properties);
     }
 
     private String rewriteUrl(String url) {
-        return urlRewriter.rewriteUrl(url, requestUrl, baseUrl, visibleUrlBase);
+        return urlRewriter.rewriteUrl(url, requestUrl, baseUrl, visibleUrlBase, absolute);
+    }
+
+    private String rewriteHtml(String html) {
+        return urlRewriter.rewriteHtml(html, requestUrl, baseUrl, visibleUrlBase, absolute).toString();
     }
 
     private void assertRewrites(String sourceUrl, String rewrittenUrl) {
@@ -69,11 +70,11 @@ public class UrlRewriterTest extends TestCase {
         baseUrl = "http://backend/context";
         visibleUrlBase = "http://backend/context";
         requestUrl = "path/page.html";
-        fixMode = "relative";
+        absolute = false;
         String input = pattern.replace("{}", "test");
         String expectedOutput = pattern.replace("{}", "/context/path/test");
         createUrlRewriter();
-        String result = urlRewriter.rewriteHtml(input, requestUrl, baseUrl, visibleUrlBase).toString();
+        String result = rewriteHtml(input);
         assertEquals(expectedOutput, result);
     }
 
@@ -81,10 +82,10 @@ public class UrlRewriterTest extends TestCase {
         baseUrl = "http://backend/context";
         visibleUrlBase = "http://backend/context";
         requestUrl = "path/page.html";
-        fixMode = "relative";
+        absolute = false;
         String input = pattern.replace("{}", "test");
         createUrlRewriter();
-        String result = urlRewriter.rewriteHtml(input, requestUrl, baseUrl, visibleUrlBase).toString();
+        String result = rewriteHtml(input);
         assertEquals(input, result);
     }
 
@@ -127,12 +128,12 @@ public class UrlRewriterTest extends TestCase {
         visibleUrlBase = "http://backend/context";
         requestUrl = "path/file.html";
 
-        fixMode = "relative";
+        absolute = false;
         assertRewrites("images/logo.png", "/context/path/images/logo.png");
         assertRewrites("/context/page/page1.htm", "/context/page/page1.htm");
         assertDoesNotRewrite("http://www.google.com/logo.com");
 
-        fixMode = "absolute";
+        absolute = true;
         assertRewrites("images/logo.png", "http://backend/context/path/images/logo.png");
         assertRewrites("/context/page/page1.htm", "http://backend/context/page/page1.htm");
         assertDoesNotRewrite("http://www.google.com/logo.com");
@@ -143,12 +144,12 @@ public class UrlRewriterTest extends TestCase {
         visibleUrlBase = "http://backend/visiblecontext/";
         requestUrl = "path/file.html";
 
-        fixMode = "relative";
+        absolute = false;
         assertRewrites("images/logo.png", "/visiblecontext/path/images/logo.png");
         assertRewrites("/context/page/page1.htm", "/visiblecontext/page/page1.htm");
         assertDoesNotRewrite("http://www.google.com/logo.com");
 
-        fixMode = "absolute";
+        absolute = true;
         assertRewrites("images/logo.png", "http://backend/visiblecontext/path/images/logo.png");
         assertRewrites("/context/page/page1.htm", "http://backend/visiblecontext/page/page1.htm");
         assertDoesNotRewrite("http://www.google.com/logo.com");
@@ -159,7 +160,7 @@ public class UrlRewriterTest extends TestCase {
         visibleUrlBase = "http://visibleservername/";
         requestUrl = "/page/";
 
-        fixMode = "absolute";
+        absolute = true;
         assertRewrites("images/logo$.png", "http://visibleservername/page/images/logo$.png");
         assertRewrites("images/logo 1.png", "http://visibleservername/page/images/logo%201.png");
     }
@@ -174,10 +175,10 @@ public class UrlRewriterTest extends TestCase {
         visibleUrlBase = "http://backend/";
         requestUrl = "/path/page";
 
-        fixMode = "relative";
+        absolute = false;
         assertRewrites("?p=services", "/path/page?p=services");
 
-        fixMode = "absolute";
+        absolute = true;
         assertRewrites("?p=services", "http://backend/path/page?p=services");
     }
 
@@ -192,10 +193,10 @@ public class UrlRewriterTest extends TestCase {
         visibleUrlBase = "http://backend/";
         requestUrl = "/";
 
-        fixMode = "relative";
+        absolute = false;
         assertRewrites("/path/controller", "/controller");
 
-        fixMode = "absolute";
+        absolute = true;
         assertRewrites("/path/controller", "http://backend/controller");
     }
 
@@ -204,7 +205,7 @@ public class UrlRewriterTest extends TestCase {
         visibleUrlBase = "http://backend:888/";
         requestUrl = "/";
 
-        fixMode = "absolute";
+        absolute = true;
         assertRewrites("/path/controller", "http://backend:888/controller");
     }
 
@@ -213,7 +214,7 @@ public class UrlRewriterTest extends TestCase {
         visibleUrlBase = "https://backend/";
         requestUrl = "/";
 
-        fixMode = "absolute";
+        absolute = true;
         assertRewrites("/path/controller", "https://backend/controller");
     }
 
@@ -230,10 +231,10 @@ public class UrlRewriterTest extends TestCase {
         visibleUrlBase = "http://backend/";
         requestUrl = "/";
 
-        fixMode = "relative";
+        absolute = false;
         assertDoesNotRewrite("//domain.com/applicationPath/controller");
 
-        fixMode = "absolute";
+        absolute = true;
         assertDoesNotRewrite("//domain.com/applicationPath/controller");
     }
 
@@ -250,10 +251,10 @@ public class UrlRewriterTest extends TestCase {
         visibleUrlBase = "http://backend";
         requestUrl = "";
 
-        fixMode = "relative";
+        absolute = false;
         assertRewrites("test", "/test");
 
-        fixMode = "absolute";
+        absolute = true;
         assertRewrites("test", "http://backend/test");
     }
 
@@ -262,10 +263,10 @@ public class UrlRewriterTest extends TestCase {
         visibleUrlBase = "http://visibleservername/";
         requestUrl = "/page/";
 
-        fixMode = "relative";
+        absolute = false;
         assertRewrites("../styles/style.css", "/styles/style.css");
 
-        fixMode = "absolute";
+        absolute = true;
         assertRewrites("../styles/style.css", "http://visibleservername/styles/style.css");
     }
 
@@ -274,32 +275,34 @@ public class UrlRewriterTest extends TestCase {
         visibleUrlBase = "http://backend";
         requestUrl = "/test";
 
-        fixMode = "relative";
-        assertRewrites("", "");
+        absolute = false;
 
-        fixMode = "absolute";
-        assertRewrites("", "");
+        createUrlRewriter();
+        assertEquals("<a href=\"\">a</a>", rewriteHtml("<a href=\"\">a</a>"));
+
+        absolute = true;
+        assertEquals("<a href=\"\">a</a>", rewriteHtml("<a href=\"\">a</a>"));
     }
 
     /**
-     * generation of relative links not correct https://github.com/esigate/esigate/issues/59
+     * Generation of relative links is not correct. https://github.com/esigate/esigate/issues/59
      */
     public void testUrlSanitizingWithDot() {
         baseUrl = "http://backend/context/";
         visibleUrlBase = "http://visibleservername/";
         requestUrl = "/page";
 
-        fixMode = "relative";
+        absolute = false;
         assertRewrites("./test", "/test");
 
-        fixMode = "absolute";
+        absolute = true;
         assertRewrites("./test", "http://visibleservername/test");
     }
 
     public void testRewriteReferer() {
         baseUrl = "http://backend/context/";
         visibleUrlBase = "http://visibleservername/test/";
-        fixMode = "relative";
+        absolute = false;
 
         createUrlRewriter();
 

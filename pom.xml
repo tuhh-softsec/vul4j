@@ -736,6 +736,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<dependency.httpclient.version>4.3.5</dependency.httpclient.version>
 		<currentVersion>${project.version}</currentVersion>
-		<esigate-tool-conf.version>1.0</esigate-tool-conf.version>
+		<esigate-tool-conf.version>1.1</esigate-tool-conf.version>
 	</properties>
 </project>

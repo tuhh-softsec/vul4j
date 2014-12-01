@@ -154,9 +154,9 @@ class IncludeElement extends BaseElement {
                 page = src.substring(endIndex + "})".length());
                 driver = DriverFactory.getInstance(provider);
                 if (LOG.isWarnEnabled() && idx > 0) {
-                    LOG.warn(
-                            "Invalid src attribute : [{}], src should start with [{}{}})]. First characters [{}] have been ignored",
-                            src, PROVIDER_PATTERN, provider, src.substring(0, idx));
+                    LOG.warn("Invalid src attribute : [{}], src should start with [{}{}})]."
+                            + " First characters [{}] have been ignored", src, PROVIDER_PATTERN, provider,
+                            src.substring(0, idx));
                 }
             } else {
                 int startIdx = idxLegacyPattern + PROVIDER_PATTERN.length();
@@ -165,9 +165,9 @@ class IncludeElement extends BaseElement {
                 page = src.substring(endIndex + "})".length());
                 driver = DriverFactory.getInstance(provider);
                 if (LOG.isWarnEnabled() && idxLegacyPattern > 0) {
-                    LOG.warn(
-                            "Invalid src attribute : [{}], src should start with [{}{}})]. First characters [{}] have been ignored",
-                            src, PROVIDER_PATTERN, provider, src.substring(0, idxLegacyPattern));
+                    LOG.warn("Invalid src attribute : [{}], src should start with [{}{}})]."
+                            + " First characters [{}] have been ignored", src, PROVIDER_PATTERN, provider,
+                            src.substring(0, idxLegacyPattern));
                 }
             }
 

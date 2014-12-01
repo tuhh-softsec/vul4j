@@ -93,7 +93,7 @@ public class ParameterTest extends TestCase {
 
     public void testGetValueArray() throws Exception {
         Parameter<String[]> parameter1 = new ParameterArray("test1", null);
-        Parameter<String[]> parameter2 = new ParameterArray("test2", new String[] { "v1", "v2" });
+        Parameter<String[]> parameter2 = new ParameterArray("test2", new String[] {"v1", "v2"});
         Properties properties = new Properties();
         assertNull(parameter1.getValue(properties));
         assertEquals(2, parameter2.getValue(properties).length);

@@ -65,8 +65,8 @@ public final class RequestUrl {
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("requestURI: {}, contextPath: {}, servletPath: {}, relativeUrl: {}, ", new Object[] { requestURI,
-                    contextPath, servletPath, relativeUrl });
+            LOG.debug("requestURI: {}, contextPath: {}, servletPath: {}, relativeUrl: {}, ", new Object[] {requestURI,
+                    contextPath, servletPath, relativeUrl});
         }
 
         return relativeUrl;
@@ -91,7 +91,7 @@ public final class RequestUrl {
             relativeUrl = relativeUrl.substring(mappingPath.length());
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug("url: {}, mappingPath: {}, relativeUrl: {}", new Object[] { url, mappingPath, relativeUrl });
+            LOG.debug("url: {}, mappingPath: {}, relativeUrl: {}", new Object[] {url, mappingPath, relativeUrl});
         }
         return relativeUrl;
     }

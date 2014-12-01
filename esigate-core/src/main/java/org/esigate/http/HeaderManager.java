@@ -106,13 +106,14 @@ public class HeaderManager {
         String baseUrl = httpRequest.getBaseUrl().toString();
         String visibleBaseUrl = httpRequest.getOriginalRequest().getVisibleBaseUrl();
         for (Header header : originalRequest.getAllHeaders()) {
+            String name = header.getName();
             // Special headers
-            if (HttpHeaders.REFERER.equalsIgnoreCase(header.getName()) && isForwardedRequestHeader(HttpHeaders.REFERER)) {
+            if (HttpHeaders.REFERER.equalsIgnoreCase(name) && isForwardedRequestHeader(HttpHeaders.REFERER)) {
                 String value = header.getValue();
                 value = urlRewriter.rewriteReferer(value, baseUrl, visibleBaseUrl);
-                httpRequest.addHeader(header.getName(), value);
+                httpRequest.addHeader(name, value);
                 // All other headers are copied if allowed
-            } else if (isForwardedRequestHeader(header.getName())) {
+            } else if (isForwardedRequestHeader(name)) {
                 httpRequest.addHeader(header);
             }
         }
@@ -170,7 +171,7 @@ public class HeaderManager {
                         if (HttpHeaders.LOCATION.equalsIgnoreCase(name)
                                 || HttpHeaders.CONTENT_LOCATION.equalsIgnoreCase(name)) {
                             // Header contains only an url
-                            value = urlRewriter.rewriteUrlAbsolute(value, originalUri, baseUrl, visibleBaseUrl);
+                            value = urlRewriter.rewriteUrl(value, originalUri, baseUrl, visibleBaseUrl, true);
                             value = HttpResponseUtils.removeSessionId(value, httpClientResponse);
                             output.addHeader(name, value);
                         } else if ("Link".equalsIgnoreCase(name)) {
@@ -181,7 +182,7 @@ public class HeaderManager {
                                 String urlValue = value.substring(1, value.indexOf(">"));
 
                                 String targetUrlValue =
-                                        urlRewriter.rewriteUrlAbsolute(urlValue, originalUri, baseUrl, visibleBaseUrl);
+                                        urlRewriter.rewriteUrl(urlValue, originalUri, baseUrl, visibleBaseUrl, true);
                                 targetUrlValue = HttpResponseUtils.removeSessionId(targetUrlValue, httpClientResponse);
 
                                 value = value.replace("<" + urlValue + ">", "<" + targetUrlValue + ">");
@@ -198,7 +199,7 @@ public class HeaderManager {
                                 String urlValue = value.substring(urlPosition + "url=".length());
 
                                 String targetUrlValue =
-                                        urlRewriter.rewriteUrlAbsolute(urlValue, originalUri, baseUrl, visibleBaseUrl);
+                                        urlRewriter.rewriteUrl(urlValue, originalUri, baseUrl, visibleBaseUrl, true);
                                 targetUrlValue = HttpResponseUtils.removeSessionId(targetUrlValue, httpClientResponse);
 
                                 value = value.substring(0, urlPosition) + "url=" + targetUrlValue;

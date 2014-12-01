@@ -125,8 +125,8 @@ public class IncludeElementTest extends AbstractElementTest {
     public void testIncludeReplaceElementFragment() throws IOException, HttpErrorPage {
         String page =
                 "before <esi:include src='$(PROVIDER{mock})/include-replace' >"
-                        + "<esi:replace fragment='replaceable-fragment'><esi:vars>$(HTTP_COOKIE{cookieName})</esi:vars></esi:replace>"
-                        + "</esi:include> after";
+                        + "<esi:replace fragment='replaceable-fragment'>"
+                        + "<esi:vars>$(HTTP_COOKIE{cookieName})</esi:vars>" + "</esi:replace>" + "</esi:include> after";
         String includedPage =
                 "-incl-page-start" + " <esi:fragment name='replaceable-fragment'>replaced content</esi:fragment>"
                         + " <esi:fragment name='untouched-fragment' />" + " incl-page-end-";
@@ -139,8 +139,8 @@ public class IncludeElementTest extends AbstractElementTest {
     public void testIncludeReplaceElementRegexp() throws IOException, HttpErrorPage {
         String page =
                 "before <esi:include src='$(PROVIDER{mock})/include-replace' >"
-                        + "<esi:replace regexp='replaceable-regexp'><esi:vars>$(HTTP_COOKIE{cookieName})</esi:vars></esi:replace>"
-                        + "</esi:include> after";
+                        + "<esi:replace regexp='replaceable-regexp'>"
+                        + "<esi:vars>$(HTTP_COOKIE{cookieName})</esi:vars>" + "</esi:replace>" + "</esi:include> after";
         String includedPage =
                 "-incl-page-start" + " <esi:fragment name='untouched-fragment'>zzz</esi:fragment>"
                         + " replaceable-regexp" + " incl-page-end-";
@@ -153,8 +153,8 @@ public class IncludeElementTest extends AbstractElementTest {
     public void testIncludeReplaceElementExpression() throws IOException, HttpErrorPage {
         String page =
                 "before <esi:include src='$(PROVIDER{mock})/include-replace' >"
-                        + "<esi:replace expression='replaceable-regexp'><esi:vars>$(HTTP_COOKIE{cookieName})</esi:vars></esi:replace>"
-                        + "</esi:include> after";
+                        + "<esi:replace expression='replaceable-regexp'>"
+                        + "<esi:vars>$(HTTP_COOKIE{cookieName})</esi:vars>" + "</esi:replace>" + "</esi:include> after";
         String includedPage =
                 "-incl-page-start" + " <esi:fragment name='untouched-fragment'>zzz</esi:fragment>"
                         + " replaceable-regexp" + " incl-page-end-";
@@ -176,9 +176,8 @@ public class IncludeElementTest extends AbstractElementTest {
 
     public void testIncludeXpathSeveralMatchingNodes() throws IOException, HttpErrorPage {
         String page =
-                "before "
-                        + "<esi:include src='$(PROVIDER{mock})/inline-xpath' xpath='//html:body/html:ul/html:li/text()' />"
-                        + " after";
+                "before <esi:include src='$(PROVIDER{mock})/inline-xpath' "
+                        + "xpath='//html:body/html:ul/html:li/text()' />" + " after";
         addResource("/inline-xpath", "<html><title>The header</title><body>-the body-<br>"
                 + "<ul><li>list item 1</li><li>list item 2</li></ul></body></html>");
         String result = render(page);
@@ -187,9 +186,8 @@ public class IncludeElementTest extends AbstractElementTest {
 
     public void testIncludeXSLT() throws IOException, HttpErrorPage {
         String page =
-                "before "
-                        + "<esi:include src='$(PROVIDER{mock})/inline-xslt' stylesheet=\"http://www.foo.com/test.xsl\" />"
-                        + " after";
+                "before <esi:include src='$(PROVIDER{mock})/inline-xslt' "
+                        + "stylesheet=\"http://www.foo.com/test.xsl\" />" + " after";
         addResource("/inline-xslt", "<html><body>The body<br></body></html>");
         addResource("http://www.foo.com/test.xsl", "<?xml version=\"1.0\"?>"
                 + "<xsl:stylesheet version=\"1.0\" xmlns=\"http://www.w3.org/1999/xhtml\" "
