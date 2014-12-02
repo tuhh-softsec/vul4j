@@ -85,12 +85,10 @@ public class ChooseElementTest extends AbstractElementTest {
 
     public void testOtherwise() throws IOException, HttpErrorPage {
         String page =
-                "begin <esi:choose>"
-                        + "<esi:when test=\"'$(HTTP_COOKIE{group})'=='Beginner'\">inside when</esi:when>"
+                "begin <esi:choose>" + "<esi:when test=\"'$(HTTP_COOKIE{group})'=='Beginner'\">inside when</esi:when>"
                         + "<esi:otherwise>"
                         + "<esi:vars>inside otherwise with '$(HTTP_COOKIE{group})' cookie</esi:vars>"
-                        + "</esi:otherwise>"
-                        + "</esi:choose> end";
+                        + "</esi:otherwise>" + "</esi:choose> end";
         getRequestBuilder().addCookie(new BasicClientCookie("group", "Advanced"));
         String result = render(page);
         assertEquals("begin inside otherwise with 'Advanced' cookie end", result);

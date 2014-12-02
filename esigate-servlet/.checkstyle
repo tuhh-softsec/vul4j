@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<fileset-config file-format-version="1.2.0" simple-config="true" sync-formatter="false">
-  <local-check-config name="esigate_checks.xml" location="/esigate/src/main/resources/esigate_checks.xml" type="project" description="">
+<fileset-config file-format-version="1.2.0" simple-config="false" sync-formatter="false">
+  <local-check-config name="esigate_checks.xml" location="esigate/src/main/resources/esigate_checks.xml" type="project" description="">
     <additional-data name="protect-config-file" value="false"/>
   </local-check-config>
-  <fileset name="all" enabled="true" check-config-name="esigate_checks.xml" local="true">
+  <fileset name="all" enabled="true" check-config-name="EsiGate" local="false">
     <file-match-pattern match-pattern="." include-pattern="true"/>
   </fileset>
 </fileset-config>

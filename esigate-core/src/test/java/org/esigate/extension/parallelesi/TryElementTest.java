@@ -139,20 +139,16 @@ public class TryElementTest extends AbstractElementTest {
 
     public void testTryFragmentNotFound() throws IOException, HttpErrorPage {
         String page =
-                "begin <esi:try>"
-                        + "<esi:attempt> "
-                        + "<esi:attempt>abc"
-                        + "<esi:include src='http://www.foo.com/testFragment' fragment='fragmentFound'/>"
-                        + " cba" + "</esi:attempt>" + "</esi:attempt>" + "</esi:try>end";
+                "begin <esi:try>" + "<esi:attempt> " + "<esi:attempt>abc"
+                        + "<esi:include src='http://www.foo.com/testFragment' fragment='fragmentFound'/>" + " cba"
+                        + "</esi:attempt>" + "</esi:attempt>" + "</esi:try>end";
         String result = render(page);
         assertEquals("begin  abcFRAGMENT FOUND cbaend", result);
     }
 
     public void testTryFragmentNotFound2() throws IOException, HttpErrorPage {
         String page =
-                "begin <esi:try>"
-                        + "<esi:attempt> "
-                        + "<esi:attempt>abc"
+                "begin <esi:try>" + "<esi:attempt> " + "<esi:attempt>abc"
                         + "<esi:include src='http://www.foo.com/testWithoutFragment' fragment='fragmentFound'/>"
                         + " cba</esi:attempt>" + "</esi:attempt>" + "</esi:try>end";
         String result = render(page);
@@ -161,9 +157,7 @@ public class TryElementTest extends AbstractElementTest {
 
     public void testTryCatchFragmentNotFound2() throws IOException, HttpErrorPage {
         String page =
-                "begin <esi:try>"
-                        + "<esi:attempt> "
-                        + "<esi:attempt>abc"
+                "begin <esi:try>" + "<esi:attempt> " + "<esi:attempt>abc"
                         + "<esi:include src='http://www.foo.com/testWithoutFragment' fragment='fragmentFound'/>"
                         + " cba" + "</esi:attempt>" + "</esi:attempt>" + "<esi:except>NOT FOUND</esi:except>"
                         + "</esi:try>end";
