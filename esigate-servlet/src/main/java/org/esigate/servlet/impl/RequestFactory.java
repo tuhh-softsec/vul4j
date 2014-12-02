@@ -77,7 +77,10 @@ public class RequestFactory {
         if (inputStream != null) {
             // Copy entity-related headers
             String contentLengthHeader = request.getHeader(HttpHeaders.CONTENT_LENGTH);
-            long contentLength = (contentLengthHeader != null) ? Long.parseLong(contentLengthHeader) : -1;
+            long contentLength = -1;
+            if (contentLengthHeader != null) {
+                contentLength = Long.parseLong(contentLengthHeader);
+            }
             InputStreamEntity entity = new InputStreamEntity(inputStream, contentLength);
             String contentTypeHeader = request.getContentType();
             if (contentTypeHeader != null) {
@@ -99,17 +102,13 @@ public class RequestFactory {
         builder.setUserPrincipal(request.getUserPrincipal());
 
         // Copy cookies
-        // FIXME : As cookie header contains only name=value, why are we copying all attributes ?
+        // As cookie header contains only name=value so we don't need to copy
+        // all attributes!
         javax.servlet.http.Cookie[] src = request.getCookies();
         if (src != null) {
             for (int i = 0; i < src.length; i++) {
                 javax.servlet.http.Cookie c = src[i];
                 BasicClientCookie dest = new BasicClientCookie(c.getName(), c.getValue());
-                dest.setSecure(c.getSecure());
-                dest.setDomain(c.getDomain());
-                dest.setPath(c.getPath());
-                dest.setComment(c.getComment());
-                dest.setVersion(c.getVersion());
                 builder.addCookie(dest);
             }
         }

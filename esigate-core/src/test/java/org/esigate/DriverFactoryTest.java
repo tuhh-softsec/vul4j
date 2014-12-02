@@ -23,10 +23,14 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Properties;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.esigate.http.IncomingRequest;
 import org.esigate.impl.DriverRequest;
+import org.esigate.impl.UriMapping;
 import org.esigate.test.TestUtils;
+import org.junit.Test;
 
 public class DriverFactoryTest extends TestCase {
 
@@ -100,4 +104,54 @@ public class DriverFactoryTest extends TestCase {
         }
 
     }
+
+    public void testStripMappingPath() throws Exception {
+        UriMapping mapping = UriMapping.create("/url/to/resource");
+        String relUrl = DriverFactory.stripMappingPath("/mapping/path/test", mapping);
+        assertEquals("/mapping/path/test", relUrl);
+
+        mapping = UriMapping.create("/mapping/path/test");
+        relUrl = DriverFactory.stripMappingPath("/mapping/path/test/url/to/resource", mapping);
+        assertEquals("/url/to/resource", relUrl);
+    }
+
+    /**
+     * Test provider selection based on esigate.properties configuration.
+     * 
+     * @throws HttpErrorPage
+     */
+    @Test
+    public void testProviderSelectionEsigate() throws HttpErrorPage {
+
+        // Setup Esigate
+        Properties p = new Properties();
+        p.setProperty("provider1." + Parameters.REMOTE_URL_BASE, "http://test");
+        p.setProperty("provider1." + Parameters.MAPPINGS, "http://sub.domain.com/*");
+        p.setProperty("provider2." + Parameters.REMOTE_URL_BASE, "http://test");
+        p.setProperty("provider2." + Parameters.MAPPINGS, "http://sub2.domain.com/*");
+        p.setProperty("single." + Parameters.REMOTE_URL_BASE, "http://test");
+        p.setProperty("single." + Parameters.MAPPINGS, "*");
+        DriverFactory.configure(p);
+
+        // Do testing
+        IncomingRequest request =
+                IncomingRequest.builder("http://sub2.domain.com/test/servlet/test/servlet/request")
+                        .addHeader("Host", "sub2.domain.com").build();
+        Assert.assertEquals("provider2", DriverFactory.selectProvider(request, "/test").getDriver().getConfiguration()
+                .getInstanceName());
+
+        request =
+                IncomingRequest.builder("http://sub.domain.com/test/servlet/test/servlet/request")
+                        .addHeader("Host", "sub.domain.com").build();
+        Assert.assertEquals("provider1", DriverFactory.selectProvider(request, "/test").getDriver().getConfiguration()
+                .getInstanceName());
+
+        request =
+                IncomingRequest.builder("http://foo.com/test/servlet/test/servlet/request")
+                        .addHeader("Host", "foo.com").build();
+        Assert.assertEquals("single", DriverFactory.selectProvider(request, "/test").getDriver().getConfiguration()
+                .getInstanceName());
+
+    }
+
 }

@@ -15,19 +15,13 @@
 
 package org.esigate;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.http.HttpStatus;
-import org.esigate.Driver.DriverBuilder;
-import org.esigate.impl.IndexedInstances;
-import org.esigate.impl.UriMapping;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -37,7 +31,19 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
-import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.http.Header;
+import org.apache.http.HttpHeaders;
+import org.apache.http.HttpStatus;
+import org.esigate.Driver.DriverBuilder;
+import org.esigate.http.IncomingRequest;
+import org.esigate.impl.IndexedInstances;
+import org.esigate.impl.UriMapping;
+import org.esigate.util.UriUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Factory class used to configure and retrieve {@linkplain Driver} INSTANCIES.
@@ -47,6 +53,23 @@ import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
  * @author Nicolas Richeton
  */
 public final class DriverFactory {
+
+    /**
+     * The provider context, composed of driver and remote relative url.
+     */
+    public static final class ProviderContext {
+        private Driver driver;
+        private String relUrl;
+
+        public String getRelUrl() {
+            return relUrl;
+        }
+
+        public Driver getDriver() {
+            return driver;
+        }
+
+    }
 
     /**
      * System property used to specify of esigate configuration, outside of the classpath.
@@ -236,6 +259,7 @@ public final class DriverFactory {
      *            The requested url
      * @return a pair which contains the Driver to use with this request and the matched UriMapping.
      * @throws HttpErrorPage
+     *             if no instance was found
      */
     public static Pair<Driver, UriMapping> getInstanceFor(String scheme, String host, String url) throws HttpErrorPage {
         for (UriMapping mapping : instances.getUrimappings().keySet()) {
@@ -327,6 +351,80 @@ public final class DriverFactory {
             configUrl = DriverFactory.class.getResource("/net/webassembletool/driver.properties");
         }
         return configUrl;
+    }
+
+    /**
+     * Select the provider for this request.
+     * <p/>
+     * Perform selection based on the incoming request url.
+     * 
+     * @param request
+     *            incoming request
+     * @param stripStart
+     *            a String to remove before mapping at the begining of the path, typically used for the context path in
+     *            a servlet engine
+     * @return provider name or null.
+     * 
+     * @throws HttpErrorPage
+     *             if no instance was found for this request
+     */
+    public static ProviderContext selectProvider(IncomingRequest request, String stripStart) throws HttpErrorPage {
+        URI requestURI = UriUtils.createURI(request.getRequestLine().getUri());
+        String host = requestURI.getHost();
+        Header hostHeader = request.getFirstHeader(HttpHeaders.HOST);
+        if (hostHeader != null) {
+            host = hostHeader.getValue();
+        }
+        String scheme = requestURI.getScheme();
+        String relUrl = requestURI.getPath();
+
+        if (!StringUtils.isEmpty(stripStart) && relUrl.startsWith(stripStart)) {
+            relUrl = relUrl.substring(stripStart.length());
+        }
+
+        Pair<Driver, UriMapping> result = DriverFactory.getInstanceFor(scheme, host, relUrl);
+
+        ProviderContext context = new ProviderContext();
+        Driver driver = result.getLeft();
+        UriMapping uriMapping = result.getRight();
+
+        if (driver.getConfiguration().isStripMappingPath()) {
+            relUrl = stripMappingPath(relUrl, uriMapping);
+        }
+        context.driver = driver;
+        context.relUrl = relUrl;
+        LOG.debug("Selected {} for scheme:{} host:{} relUrl:{}", result, scheme, host, relUrl);
+
+        return context;
+    }
+
+    /**
+     * Get the relative url without the mapping url.
+     * <p/>
+     * Uses the url and remove the mapping path.
+     * 
+     * @param url
+     *            incoming relative url
+     * @return the url, relative to the driver remote url.
+     */
+    static String stripMappingPath(String url, UriMapping mapping) {
+        String relativeUrl = url;
+        // Uri mapping
+        String mappingPath;
+        if (mapping == null) {
+            mappingPath = null;
+        } else {
+            mappingPath = mapping.getPath();
+        }
+
+        // Remove mapping path
+        if (mappingPath != null && url.startsWith(mappingPath)) {
+            relativeUrl = relativeUrl.substring(mappingPath.length());
+        }
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("url: {}, mappingPath: {}, relativeUrl: {}", new Object[] {url, mappingPath, relativeUrl});
+        }
+        return relativeUrl;
     }
 
 }

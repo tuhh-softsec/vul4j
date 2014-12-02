@@ -93,7 +93,7 @@ public class CasAuthenticationHandler extends GenericAuthentificationHandler {
 
     /**
      * Prefix attribute to be driver specific
-     *
+     * 
      * @param driver
      * @param name
      * @return

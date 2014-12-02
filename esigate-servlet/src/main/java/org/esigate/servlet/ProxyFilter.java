@@ -29,13 +29,17 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
 import org.esigate.http.IncomingRequest;
-import org.esigate.servlet.impl.DriverSelector;
 import org.esigate.servlet.impl.RequestFactory;
 import org.esigate.servlet.impl.ResponseSender;
 
+/**
+ * {@link Filter} that can mix local and distant contents using EsiGate.
+ * 
+ * @author Francois-Xavier Bonnet
+ * 
+ */
 public class ProxyFilter implements Filter {
     private RequestFactory requestFactory;
-    private final DriverSelector driverSelector = new DriverSelector();
     private final ResponseSender responseSender = new ResponseSender();
 
     @Override
@@ -53,7 +57,8 @@ public class ProxyFilter implements Filter {
         IncomingRequest incomingRequest = requestFactory.create(httpServletRequest, httpServletResponse, chain);
 
         try {
-            DriverSelector.ProviderContext dm = driverSelector.selectProvider(httpServletRequest, false);
+            DriverFactory.ProviderContext dm =
+                    DriverFactory.selectProvider(incomingRequest, httpServletRequest.getContextPath());
             CloseableHttpResponse driverResponse = dm.getDriver().proxy(dm.getRelUrl(), incomingRequest);
             responseSender.sendResponse(driverResponse, incomingRequest, httpServletResponse);
         } catch (HttpErrorPage e) {

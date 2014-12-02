@@ -16,7 +16,6 @@ package org.esigate.servlet.impl;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.esigate.impl.UriMapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +26,7 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public final class RequestUrl {
-    private static final Logger LOG = LoggerFactory.getLogger(RequestUrl.class);
+    public static final Logger LOG = LoggerFactory.getLogger(RequestUrl.class);
 
     private RequestUrl() {
 
@@ -69,30 +68,6 @@ public final class RequestUrl {
                     contextPath, servletPath, relativeUrl});
         }
 
-        return relativeUrl;
-    }
-
-    /**
-     * Get the relative url without the mapping url.
-     * <p/>
-     * Uses the url and remove the mapping path.
-     * 
-     * @param url
-     *            incoming relative url
-     * @return the url, relative to the driver remote url.
-     */
-    public static String stripMappingPath(String url, UriMapping mapping) {
-        String relativeUrl = url;
-        // Uri mapping
-        String mappingPath = (mapping == null ? null : mapping.getPath());
-
-        // Remove mapping path
-        if (mappingPath != null && url.startsWith(mappingPath)) {
-            relativeUrl = relativeUrl.substring(mappingPath.length());
-        }
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("url: {}, mappingPath: {}, relativeUrl: {}", new Object[] {url, mappingPath, relativeUrl});
-        }
         return relativeUrl;
     }
 }
