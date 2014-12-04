@@ -15,12 +15,12 @@
 
 package org.esigate.http;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 import org.apache.http.HttpHost;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.protocol.HttpContext;
-
-import java.util.LinkedList;
-import java.util.Queue;
 
 public class OutgoingRequestContext extends HttpClientContext {
     private static final String PROXY = "PROXY";
@@ -39,7 +39,7 @@ public class OutgoingRequestContext extends HttpClientContext {
         super(context);
     }
 
-    public OutgoingRequestContext() {
+    OutgoingRequestContext() {
         super();
     }
 
@@ -52,7 +52,7 @@ public class OutgoingRequestContext extends HttpClientContext {
         }
     }
 
-    public void setProxy(boolean proxy) {
+    void setProxy(boolean proxy) {
         setAttribute(PROXY, proxy);
     }
 
@@ -60,7 +60,7 @@ public class OutgoingRequestContext extends HttpClientContext {
         return getAttribute(OUTGOING_REQUEST, OutgoingRequest.class);
     }
 
-    public void setOutgoingRequest(OutgoingRequest outgoingRequest) {
+    void setOutgoingRequest(OutgoingRequest outgoingRequest) {
         setAttribute(OUTGOING_REQUEST, outgoingRequest);
     }
 
@@ -68,7 +68,7 @@ public class OutgoingRequestContext extends HttpClientContext {
      * 
      * @return physical host
      */
-    public HttpHost getPhysicalHost() {
+    HttpHost getPhysicalHost() {
         return getAttribute(PHYSICAL_HOST, HttpHost.class);
     }
 
@@ -77,7 +77,7 @@ public class OutgoingRequestContext extends HttpClientContext {
      * @param httpHost
      *            host
      */
-    public void setPhysicalHost(HttpHost httpHost) {
+    void setPhysicalHost(HttpHost httpHost) {
         setAttribute(PHYSICAL_HOST, httpHost);
     }
 
@@ -94,9 +94,9 @@ public class OutgoingRequestContext extends HttpClientContext {
     public void setAttribute(String id, Object obj, boolean save) {
         if (save) {
             String historyAttribute = id + "history";
-            Queue history = (Queue) getAttribute(historyAttribute);
+            Queue<Object> history = (Queue<Object>) getAttribute(historyAttribute);
             if (history == null) {
-                history = new LinkedList<Long>();
+                history = new LinkedList<Object>();
                 setAttribute(historyAttribute, history);
             }
             if (this.getAttribute(id) != null) {
@@ -119,7 +119,7 @@ public class OutgoingRequestContext extends HttpClientContext {
         Object value = removeAttribute(id);
         if (restore) {
             String historyAttribute = id + "history";
-            Queue history = (Queue) getAttribute(historyAttribute);
+            Queue<Object> history = (Queue<Object>) getAttribute(historyAttribute);
             if (history != null && !history.isEmpty()) {
                 Object previous = history.remove();
                 setAttribute(id, previous);
