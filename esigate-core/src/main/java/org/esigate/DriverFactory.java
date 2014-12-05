@@ -32,11 +32,10 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.esigate.Driver.DriverBuilder;
 import org.esigate.http.IncomingRequest;
 import org.esigate.impl.IndexedInstances;
@@ -57,15 +56,20 @@ public final class DriverFactory {
     /**
      * The provider context, composed of driver and remote relative url.
      */
-    public static final class ProviderContext {
-        private Driver driver;
-        private String relUrl;
+    static final class MatchedRequest {
+        private final Driver driver;
+        private final String relativeUri;
 
-        public String getRelUrl() {
-            return relUrl;
+        private MatchedRequest(Driver driver, String relativeUri) {
+            this.driver = driver;
+            this.relativeUri = relativeUri;
         }
 
-        public Driver getDriver() {
+        String getRelativeUri() {
+            return relativeUri;
+        }
+
+        Driver getDriver() {
             return driver;
         }
 
@@ -91,6 +95,7 @@ public final class DriverFactory {
     }
 
     /**
+     * Returns the collection of all {@link Driver} instances.
      * 
      * @return All configured driver
      */
@@ -218,7 +223,9 @@ public final class DriverFactory {
      * Registers new {@linkplain Driver} under provided name with specified properties.
      * 
      * @param name
+     *            the name of the instance
      * @param props
+     *            the {@link Properties} for the instance
      */
     public static void configure(String name, Properties props) {
         put(name, createDriver(name, props));
@@ -248,29 +255,50 @@ public final class DriverFactory {
     }
 
     /**
-     * Retrieve the Driver instance which should process the request as described in the parameters, based on the
-     * mappings declared in configuration.
+     * Selects the Driver instance for this request based on the mappings declared in the configuration.
      * 
-     * @param scheme
-     *            The scheme of the request : http or https
-     * @param host
-     *            The host of the request, as provided in the Host header of the HTTP protocol
-     * @param url
-     *            The requested url
-     * @return a pair which contains the Driver to use with this request and the matched UriMapping.
+     * @param request
+     *            the incoming request
+     * 
+     * @return a {@link MatchedRequest} containing the {@link Driver} instance and the relative URI
+     * 
      * @throws HttpErrorPage
-     *             if no instance was found
+     *             if no instance was found for this request
      */
-    public static Pair<Driver, UriMapping> getInstanceFor(String scheme, String host, String url) throws HttpErrorPage {
-        for (UriMapping mapping : instances.getUrimappings().keySet()) {
-            if (mapping.matches(scheme, host, url)) {
-                return new ImmutablePair<Driver, UriMapping>(getInstance(instances.getUrimappings().get(mapping)),
-                        mapping);
-            }
+    static MatchedRequest selectProvider(IncomingRequest request) throws HttpErrorPage {
+        URI requestURI = UriUtils.createURI(request.getRequestLine().getUri());
+        String host = UriUtils.extractHost(requestURI).toHostString();
+        Header hostHeader = request.getFirstHeader(HttpHeaders.HOST);
+        if (hostHeader != null) {
+            host = hostHeader.getValue();
+        }
+        String scheme = requestURI.getScheme();
+        String relativeUri = requestURI.getPath();
+        String contextPath = request.getContextPath();
+        if (!StringUtils.isEmpty(contextPath) && relativeUri.startsWith(contextPath)) {
+            relativeUri = relativeUri.substring(contextPath.length());
         }
 
-        // If no match, return default instance.
-        throw new HttpErrorPage(HttpStatus.SC_NOT_FOUND, "Not found", "No mapping defined for this url.");
+        Driver driver = null;
+        UriMapping uriMapping = null;
+        for (UriMapping mapping : instances.getUrimappings().keySet()) {
+            if (mapping.matches(scheme, host, relativeUri)) {
+                driver = getInstance(instances.getUrimappings().get(mapping));
+                uriMapping = mapping;
+                break;
+            }
+        }
+        if (driver == null) {
+            throw new HttpErrorPage(HttpStatus.SC_NOT_FOUND, "Not found", "No mapping defined for this URI.");
+        }
+
+        if (driver.getConfiguration().isStripMappingPath()) {
+            relativeUri = DriverFactory.stripMappingPath(relativeUri, uriMapping);
+        }
+
+        MatchedRequest context = new MatchedRequest(driver, relativeUri);
+        LOG.debug("Selected {} for scheme:{} host:{} relUrl:{}", driver, scheme, host, relativeUri);
+        return context;
     }
 
     /**
@@ -320,6 +348,8 @@ public final class DriverFactory {
     }
 
     /**
+     * Returns the {@link URL} of the configuration file.
+     * 
      * @return The URL of the configuration file.
      */
     public static URL getConfigUrl() {
@@ -354,51 +384,6 @@ public final class DriverFactory {
     }
 
     /**
-     * Select the provider for this request.
-     * <p/>
-     * Perform selection based on the incoming request url.
-     * 
-     * @param request
-     *            incoming request
-     * @param stripStart
-     *            a String to remove before mapping at the begining of the path, typically used for the context path in
-     *            a servlet engine
-     * @return provider name or null.
-     * 
-     * @throws HttpErrorPage
-     *             if no instance was found for this request
-     */
-    public static ProviderContext selectProvider(IncomingRequest request, String stripStart) throws HttpErrorPage {
-        URI requestURI = UriUtils.createURI(request.getRequestLine().getUri());
-        String host = requestURI.getHost();
-        Header hostHeader = request.getFirstHeader(HttpHeaders.HOST);
-        if (hostHeader != null) {
-            host = hostHeader.getValue();
-        }
-        String scheme = requestURI.getScheme();
-        String relUrl = requestURI.getPath();
-
-        if (!StringUtils.isEmpty(stripStart) && relUrl.startsWith(stripStart)) {
-            relUrl = relUrl.substring(stripStart.length());
-        }
-
-        Pair<Driver, UriMapping> result = DriverFactory.getInstanceFor(scheme, host, relUrl);
-
-        ProviderContext context = new ProviderContext();
-        Driver driver = result.getLeft();
-        UriMapping uriMapping = result.getRight();
-
-        if (driver.getConfiguration().isStripMappingPath()) {
-            relUrl = stripMappingPath(relUrl, uriMapping);
-        }
-        context.driver = driver;
-        context.relUrl = relUrl;
-        LOG.debug("Selected {} for scheme:{} host:{} relUrl:{}", result, scheme, host, relUrl);
-
-        return context;
-    }
-
-    /**
      * Get the relative url without the mapping url.
      * <p/>
      * Uses the url and remove the mapping path.
@@ -421,10 +406,26 @@ public final class DriverFactory {
         if (mappingPath != null && url.startsWith(mappingPath)) {
             relativeUrl = relativeUrl.substring(mappingPath.length());
         }
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("url: {}, mappingPath: {}, relativeUrl: {}", new Object[] {url, mappingPath, relativeUrl});
-        }
         return relativeUrl;
+    }
+
+    /**
+     * Selects the Driver instance for this request based on the mappings declared in the configuration and executes it
+     * against the selected {@link Driver} instance.
+     * 
+     * @param incomingRequest
+     *            the incoming request
+     * 
+     * @return a {@link MatchedRequest} containing the {@link Driver} instance and the relative URI
+     * 
+     * @throws HttpErrorPage
+     *             if no instance was found for this request or if an error occurs
+     * @throws IOException
+     *             if an error occurs
+     */
+    public static CloseableHttpResponse proxy(IncomingRequest incomingRequest) throws IOException, HttpErrorPage {
+        MatchedRequest matchedRequest = selectProvider(incomingRequest);
+        return matchedRequest.getDriver().proxy(matchedRequest.getRelativeUri(), incomingRequest);
     }
 
 }
