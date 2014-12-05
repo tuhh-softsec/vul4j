@@ -158,11 +158,22 @@ public final class UriUtils {
      * Extracts the {@link HttpHost} from a URI.
      * 
      * @param uri
-     *            the uri
+     *            the URI
      * @return the {@link HttpHost}
      */
     public static HttpHost extractHost(final String uri) {
         return URIUtils.extractHost(createURI(uri));
+    }
+
+    /**
+     * Extracts the {@link HttpHost} from a URI.
+     * 
+     * @param uri
+     *            the {@link URI}
+     * @return the {@link HttpHost}
+     */
+    public static HttpHost extractHost(final URI uri) {
+        return URIUtils.extractHost(uri);
     }
 
     /**

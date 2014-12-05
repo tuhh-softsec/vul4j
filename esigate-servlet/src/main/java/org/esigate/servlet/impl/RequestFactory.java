@@ -113,6 +113,7 @@ public class RequestFactory {
             }
         }
         builder.setSession(new HttpServletSession(request));
+        builder.setContextPath(request.getContextPath());
         return builder.build();
     }
 }

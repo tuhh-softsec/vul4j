@@ -57,9 +57,7 @@ public class ProxyFilter implements Filter {
         IncomingRequest incomingRequest = requestFactory.create(httpServletRequest, httpServletResponse, chain);
 
         try {
-            DriverFactory.ProviderContext dm =
-                    DriverFactory.selectProvider(incomingRequest, httpServletRequest.getContextPath());
-            CloseableHttpResponse driverResponse = dm.getDriver().proxy(dm.getRelUrl(), incomingRequest);
+            CloseableHttpResponse driverResponse = DriverFactory.proxy(incomingRequest);
             responseSender.sendResponse(driverResponse, incomingRequest, httpServletResponse);
         } catch (HttpErrorPage e) {
             if (!httpServletResponse.isCommitted()) {
