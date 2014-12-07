@@ -21,14 +21,15 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import junit.framework.TestCase;
+
 import org.apache.http.Header;
 import org.apache.http.client.utils.DateUtils;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.cookie.CookieOrigin;
 import org.apache.http.cookie.CookieSpec;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicHeader;
-
-import junit.framework.TestCase;
 
 public class CookieUtilTest extends TestCase {
 
@@ -87,5 +88,36 @@ public class CookieUtilTest extends TestCase {
                 httpcookie.getMaxAge() > 15551995);
         assertTrue("maxAge should be lower than 15552001, actual value " + httpcookie.getMaxAge(),
                 httpcookie.getMaxAge() < 15552001);
+    }
+
+    public void testCookieValueWithSpacesIsQuoted() throws Exception {
+        Cookie cookie = new BasicClientCookie("name", "value with spaces");
+        String result = CookieUtil.encodeCookie(cookie);
+        assertEquals("name=\"value with spaces\"", result);
+    }
+
+    public void testCookieValueWithoutSpacesIsNotQuoted() throws Exception {
+        Cookie cookie = new BasicClientCookie("name", "valuewithoutspaces");
+        String result = CookieUtil.encodeCookie(cookie);
+        assertEquals("name=valuewithoutspaces", result);
+    }
+
+    public void testCookieValueWithSpacesVersion1IsQuoted() throws Exception {
+        String cookieString = "myCookie=\"value with spaces\"; Domain=www.foo.com; Path=/; Version=1";
+        Header header = new BasicHeader("Set-Cookie", cookieString);
+        CookieOrigin origin = new CookieOrigin("www.foo.com", 80, "/", false);
+        Cookie cookie = cookieSpec.parse(header, origin).get(0);
+        cookieSpec.validate(cookie, origin);
+        String result = CookieUtil.encodeCookie(cookie);
+        assertEquals(cookieString, result);
+    }
+
+    public void testCookieValueWithoutQuotesIsNotQuoted() throws Exception {
+        String cookieString = "myCookie=value; Domain=www.foo.com; Path=/";
+        Header header = new BasicHeader("Set-Cookie", cookieString);
+        CookieOrigin origin = new CookieOrigin("www.foo.com", 80, "/", false);
+        Cookie cookie = cookieSpec.parse(header, origin).get(0);
+        String result = CookieUtil.encodeCookie(cookie);
+        assertEquals(cookieString, result);
     }
 }
