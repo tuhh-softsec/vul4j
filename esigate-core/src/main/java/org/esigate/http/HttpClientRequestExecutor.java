@@ -32,7 +32,6 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.config.Registry;
@@ -40,8 +39,6 @@ import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.cookie.CookieSpecProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.cookie.BestMatchSpecFactory;
-import org.apache.http.impl.cookie.BrowserCompatSpecFactory;
 import org.apache.http.message.BasicHttpResponse;
 import org.esigate.ConfigurationException;
 import org.esigate.Driver;
@@ -218,11 +215,9 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             httpClientBuilder.setConnectionManager(connectionManager);
         }
 
-        Registry<CookieSpecProvider> r =
+        Registry<CookieSpecProvider> cookieSpecRegistry =
                 RegistryBuilder
                         .<CookieSpecProvider>create()
-                        .register(CookieSpecs.BEST_MATCH, new BestMatchSpecFactory())
-                        .register(CookieSpecs.BROWSER_COMPATIBILITY, new BrowserCompatSpecFactory())
                         .register(CustomBrowserCompatSpecFactory.CUSTOM_BROWSER_COMPATIBILITY,
                                 new CustomBrowserCompatSpecFactory()).build();
 
@@ -230,7 +225,7 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
                 RequestConfig.custom().setCookieSpec(CustomBrowserCompatSpecFactory.CUSTOM_BROWSER_COMPATIBILITY)
                         .build();
 
-        httpClientBuilder.setDefaultCookieSpecRegistry(r).setDefaultRequestConfig(config);
+        httpClientBuilder.setDefaultCookieSpecRegistry(cookieSpecRegistry).setDefaultRequestConfig(config);
         return httpClientBuilder.build();
     }
 

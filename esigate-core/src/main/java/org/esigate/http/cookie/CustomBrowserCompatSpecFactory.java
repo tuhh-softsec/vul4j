@@ -35,6 +35,11 @@ public class CustomBrowserCompatSpecFactory extends BrowserCompatSpecFactory {
      */
     public static final String CUSTOM_BROWSER_COMPATIBILITY = "custom_browser_compatibility";
 
+    public CustomBrowserCompatSpecFactory() {
+        // Remove path validation
+        super(null, SecurityLevel.SECURITYLEVEL_IE_MEDIUM);
+    }
+
     @Override
     public CookieSpec newInstance(final HttpParams params) {
         AbstractCookieSpec cookieSpec = (AbstractCookieSpec) super.newInstance(params);
