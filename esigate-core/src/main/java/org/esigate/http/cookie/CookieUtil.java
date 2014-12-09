@@ -19,7 +19,6 @@ import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicHeaderElement;
 import org.apache.http.message.BasicHeaderValueFormatter;
-import org.apache.http.util.CharArrayBuffer;
 
 /**
  * Utility class for {@link Cookie}.
@@ -58,42 +57,69 @@ public final class CookieUtil {
             }
         }
 
-        CharArrayBuffer buf =
-                BasicHeaderValueFormatter.INSTANCE.formatHeaderElement(null, new BasicHeaderElement(cookie.getName(),
-                        cookie.getValue()), false);
+        String cookieName = cookie.getName();
+        String cookieValue = cookie.getValue();
 
-        appendAttribute(buf, "Comment", cookie.getComment());
-        appendAttribute(buf, "Domain", cookie.getDomain());
-        appendAttribute(buf, "Max-Age", maxAge);
-        appendAttribute(buf, "Path", cookie.getPath());
+        StringBuilder buffer = new StringBuilder();
+
+        // Copied from org.apache.http.impl.cookie.BrowserCompatSpec.formatCookies(List<Cookie>)
+        if (cookie.getVersion() > 0 && !isQuoteEnclosed(cookieValue)) {
+            buffer.append(BasicHeaderValueFormatter.INSTANCE.formatHeaderElement(null,
+                    new BasicHeaderElement(cookieName, cookieValue), false).toString());
+        } else {
+            // Netscape style cookies do not support quoted values
+            buffer.append(cookieName);
+            buffer.append("=");
+            if (cookieValue != null) {
+                buffer.append(cookieValue);
+            }
+        }
+        // End copy
+
+        appendAttribute(buffer, "Comment", cookie.getComment());
+        appendAttribute(buffer, "Domain", cookie.getDomain());
+        appendAttribute(buffer, "Max-Age", maxAge);
+        appendAttribute(buffer, "Path", cookie.getPath());
         if (cookie.isSecure()) {
-            appendAttribute(buf, "Secure");
+            appendAttribute(buffer, "Secure");
         }
         if (((BasicClientCookie) cookie).containsAttribute(HTTP_ONLY_ATTR)) {
-            appendAttribute(buf, "HttpOnly");
+            appendAttribute(buffer, "HttpOnly");
         }
-        appendAttribute(buf, "Version", cookie.getVersion());
+        appendAttribute(buffer, "Version", cookie.getVersion());
 
-        return (buf.toString());
+        return (buffer.toString());
     }
 
-    private static void appendAttribute(CharArrayBuffer buf, String name, String value) {
+    private static void appendAttribute(StringBuilder buffer, String name, String value) {
         if (value != null) {
-            buf.append("; ");
-            buf.append(name);
-            buf.append("=");
-            buf.append(value);
+            buffer.append("; ");
+            buffer.append(name);
+            buffer.append("=");
+            buffer.append(value);
         }
     }
 
-    private static void appendAttribute(CharArrayBuffer buf, String name, int value) {
+    private static void appendAttribute(StringBuilder buffer, String name, int value) {
         if (value > 0) {
-            appendAttribute(buf, name, Integer.toString(value));
+            appendAttribute(buffer, name, Integer.toString(value));
         }
     }
 
-    private static void appendAttribute(CharArrayBuffer buf, String name) {
-        buf.append("; ");
-        buf.append(name);
+    private static void appendAttribute(StringBuilder buffer, String name) {
+        buffer.append("; ");
+        buffer.append(name);
     }
+
+    /**
+     * Copied from org.apache.http.impl.cookie.BrowserCompatSpec.isQuoteEnclosed(String)
+     * 
+     * @param s
+     *            a String
+     * @return true if the string is enclosed with double quotes
+     */
+    private static boolean isQuoteEnclosed(final String s) {
+        return s != null && s.startsWith("\"") && s.endsWith("\"");
+    }
+
 }
