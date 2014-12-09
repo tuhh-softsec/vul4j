@@ -6,6 +6,18 @@ Note: Master is in JIRA at http://jira.codehaus.org/browse/PLXCOMP
 Since archiver depends on a given version of IO this list is cumulative,
 any version includes *all* changes below.
 
+Plexus Components - Version plexus-archiver-2.9.1
+-----
+
+Wrap-up release with plexus-io-2.4.1
+
+Plexus Components - Version plexus-io-2.4.1
+-----
+** Bug
+
+    * [PLXCOMP-279] - PlexusIoProxyResourceCollection does not provide Closeable iterator
+    * [PLXCOMP-280] - SimpleResourceAttributes has incorrect value for default file mode
+
 Plexus Components - Version plexus-archiver-2.9
 -----
 ** Bug
