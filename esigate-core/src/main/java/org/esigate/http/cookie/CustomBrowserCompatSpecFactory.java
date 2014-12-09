@@ -12,44 +12,34 @@
  * limitations under the License.
  *
  */
+
 package org.esigate.http.cookie;
 
 import org.apache.http.annotation.Immutable;
 import org.apache.http.cookie.CookieSpec;
+import org.apache.http.cookie.CookieSpecProvider;
 import org.apache.http.impl.cookie.AbstractCookieSpec;
-import org.apache.http.impl.cookie.BrowserCompatSpecFactory;
-import org.apache.http.params.HttpParams;
+import org.apache.http.impl.cookie.BrowserCompatSpec;
+import org.apache.http.impl.cookie.BrowserCompatSpecFactory.SecurityLevel;
 import org.apache.http.protocol.HttpContext;
 
 /**
- * A BrowserCompatSpecFactory that register HttpOnly handler
+ * A BrowserCompatSpecFactory that registers HttpOnly handler and disables path validation.
  * 
  * @author Alexis Thaveau on 21/10/14.
  */
 @Immutable
-@SuppressWarnings("deprecation")
-public class CustomBrowserCompatSpecFactory extends BrowserCompatSpecFactory {
+public class CustomBrowserCompatSpecFactory implements CookieSpecProvider {
 
     /**
-     *
+     * Constant for HttpClient configuration.
      */
     public static final String CUSTOM_BROWSER_COMPATIBILITY = "custom_browser_compatibility";
 
-    public CustomBrowserCompatSpecFactory() {
-        // Remove path validation
-        super(null, SecurityLevel.SECURITYLEVEL_IE_MEDIUM);
-    }
-
-    @Override
-    public CookieSpec newInstance(final HttpParams params) {
-        AbstractCookieSpec cookieSpec = (AbstractCookieSpec) super.newInstance(params);
-        cookieSpec.registerAttribHandler(CookieUtil.HTTP_ONLY_ATTR, new HttpOnlyHandler());
-        return cookieSpec;
-    }
-
     @Override
     public CookieSpec create(final HttpContext context) {
-        AbstractCookieSpec cookieSpec = (AbstractCookieSpec) super.create(context);
+        // SecurityLevel.SECURITYLEVEL_IE_MEDIUM disables path validation
+        AbstractCookieSpec cookieSpec = new BrowserCompatSpec(null, SecurityLevel.SECURITYLEVEL_IE_MEDIUM);
         cookieSpec.registerAttribHandler(CookieUtil.HTTP_ONLY_ATTR, new HttpOnlyHandler());
         return cookieSpec;
     }

@@ -42,7 +42,7 @@ public class CookieUtilTest extends TestCase {
 
         format = new SimpleDateFormat(DateUtils.PATTERN_RFC1123, Locale.US);
         format.setTimeZone(TimeZone.getTimeZone("GMT"));
-        cookieSpec = new CustomBrowserCompatSpecFactory().newInstance(null);
+        cookieSpec = new CustomBrowserCompatSpecFactory().create(null);
         super.setUp();
     }
 
@@ -90,12 +90,6 @@ public class CookieUtilTest extends TestCase {
                 httpcookie.getMaxAge() < 15552001);
     }
 
-    public void testCookieValueWithSpacesIsQuoted() throws Exception {
-        Cookie cookie = new BasicClientCookie("name", "value with spaces");
-        String result = CookieUtil.encodeCookie(cookie);
-        assertEquals("name=\"value with spaces\"", result);
-    }
-
     public void testCookieValueWithoutSpacesIsNotQuoted() throws Exception {
         Cookie cookie = new BasicClientCookie("name", "valuewithoutspaces");
         String result = CookieUtil.encodeCookie(cookie);
@@ -114,6 +108,15 @@ public class CookieUtilTest extends TestCase {
 
     public void testCookieValueWithoutQuotesIsNotQuoted() throws Exception {
         String cookieString = "myCookie=value; Domain=www.foo.com; Path=/";
+        Header header = new BasicHeader("Set-Cookie", cookieString);
+        CookieOrigin origin = new CookieOrigin("www.foo.com", 80, "/", false);
+        Cookie cookie = cookieSpec.parse(header, origin).get(0);
+        String result = CookieUtil.encodeCookie(cookie);
+        assertEquals(cookieString, result);
+    }
+
+    public void testCookieValueWithoutDotsAndSlashIsNotQuoted() throws Exception {
+        String cookieString = "myCookie=value./; Domain=www.foo.com; Path=/";
         Header header = new BasicHeader("Set-Cookie", cookieString);
         CookieOrigin origin = new CookieOrigin("www.foo.com", 80, "/", false);
         Cookie cookie = cookieSpec.parse(header, origin).get(0);

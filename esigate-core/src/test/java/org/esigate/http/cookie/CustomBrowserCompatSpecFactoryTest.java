@@ -29,14 +29,11 @@ public class CustomBrowserCompatSpecFactoryTest extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        cookieSpec = new CustomBrowserCompatSpecFactory().newInstance(null);
+        cookieSpec = new CustomBrowserCompatSpecFactory().create(null);
     }
 
     public void testAcceptCookieWithLongerPathThanRequestPath() throws Exception {
-        Header header =
-                new BasicHeader(
-                        "Set-Cookie",
-                        "wordpress_dce2080bc042b2e639e4f5b3b704aa43=admin%7C1243786064%7C4c56aef46b1210d3d43d8b829fdf4d9a; Path=/wp-content/plugins");
+        Header header = new BasicHeader("Set-Cookie", "wordpress_dce20=admin%7Ca; Path=/wp-content/plugins");
         CookieOrigin origin = new CookieOrigin("www.foo.com", 80, "/wp-login.php", false);
         Cookie cookie = cookieSpec.parse(header, origin).get(0);
         cookieSpec.validate(cookie, origin);
