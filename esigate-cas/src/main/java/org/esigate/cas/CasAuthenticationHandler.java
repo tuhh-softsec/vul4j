@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CasAuthenticationHandler extends GenericAuthentificationHandler {
-    public static final String DEFAULT_LOGIN_URL = "/login";
+    private static final String DEFAULT_LOGIN_URL = "/login";
 
     private static final Logger LOG = LoggerFactory.getLogger(GenericAuthentificationHandler.class);
 
@@ -61,8 +61,10 @@ public class CasAuthenticationHandler extends GenericAuthentificationHandler {
                     LOG.debug("params: " + params.substring(1));
                 }
                 if (springSecurityUrl != null && !"".equals(springSecurityUrl)) {
-                    resultLocation =
-                            outgoingRequest.getBaseUrl() + springSecurityUrl + ((params != null) ? params : "");
+                    resultLocation = outgoingRequest.getBaseUrl() + springSecurityUrl;
+                    if (params != null) {
+                        resultLocation = resultLocation + params;
+                    }
                     /*
                      * if (outgoingRequest.getContext().isProxy()) { springRedirectParam = "&spring-security-redirect="
                      * + request.getRequestLine().getUri(); } else { springRedirectParam = "&spring-security-redirect="
@@ -136,10 +138,10 @@ public class CasAuthenticationHandler extends GenericAuthentificationHandler {
         if (secondRequest) {
             // Calculating the URL we may have been redirected to, as
             // automatic redirect following is activated
-            Header LocationHeader = httpResponse.getFirstHeader("Location");
+            Header locationHeader = httpResponse.getFirstHeader("Location");
             String currentLocation = null;
-            if (LocationHeader != null) {
-                currentLocation = LocationHeader.getValue();
+            if (locationHeader != null) {
+                currentLocation = locationHeader.getValue();
             }
             if (currentLocation != null && currentLocation.contains(loginUrl)) {
                 // If the user is authenticated we need a second request with

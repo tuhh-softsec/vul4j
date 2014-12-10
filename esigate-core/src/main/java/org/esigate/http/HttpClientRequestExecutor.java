@@ -158,8 +158,8 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             return this;
         }
 
-        public HttpClientHelperBuilder setUrlRewriter(UrlRewriter urlRewriter) {
-            this.urlRewriter = urlRewriter;
+        public HttpClientHelperBuilder setUrlRewriter(UrlRewriter pUrlRewriter) {
+            this.urlRewriter = pUrlRewriter;
             return this;
         }
     }

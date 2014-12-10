@@ -20,7 +20,6 @@ import org.esigate.test.conn.IResponseHandler;
 import org.esigate.test.conn.MockConnectionManager;
 import org.esigate.test.http.HttpResponseBuilder;
 import org.esigate.util.UriUtils;
-import org.mockito.Mockito;
 
 /**
  * Base class for end-to-end testing of Esigate.
@@ -81,7 +80,7 @@ public abstract class AbstractDriverTestCase extends TestCase {
      */
     protected static Driver createMockDriver(Properties properties, HttpClientConnectionManager connectionManager,
             String name) {
-        UrlRewriter urlRewriter = Mockito.mock(UrlRewriter.class);
+        UrlRewriter urlRewriter = new UrlRewriter(new Properties());
         Driver driver =
                 Driver.builder()
                         .setName(name)
