@@ -2,6 +2,8 @@ package org.esigate.cas;
 
 import java.util.Properties;
 
+import junit.framework.TestCase;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -20,20 +22,26 @@ import org.esigate.test.TestUtils;
 import org.esigate.test.conn.MockConnectionManager;
 import org.jasig.cas.client.authentication.AttributePrincipalImpl;
 
-import junit.framework.TestCase;
-
 /**
  * CasAuthenticationHandlerTest
  * <p/>
  * TODO : test the addCasAuthentication method
  */
 public class CasAuthenticationHandlerTest extends TestCase {
-    CasAuthenticationHandler handler;
-    MockConnectionManager mockConnectionManager;
-    Driver driver1;
-    Driver driver2;
-    HttpClientRequestExecutor httpClientRequestExecutor;
+    private Driver driver1;
+    private Driver driver2;
+    private CasAuthenticationHandler handler;
+    private HttpClientRequestExecutor httpClientRequestExecutor;
+    private MockConnectionManager mockConnectionManager;
 
+    private HttpResponse createMockResponse(String entity) throws Exception {
+        HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "OK");
+        HttpEntity httpEntity = new StringEntity(entity);
+        response.setEntity(httpEntity);
+        return response;
+    }
+
+    @Override
     public void setUp() {
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE, "http://localhost:8080");
@@ -120,12 +128,5 @@ public class CasAuthenticationHandlerTest extends TestCase {
         sr = incomingRequest.getAttribute(handler.driverSpecificName(driver2, CasAuthenticationHandler.SECOND_REQUEST));
         assertNull("SecondRequest should not be set", sr);
 
-    }
-
-    private HttpResponse createMockResponse(String entity) throws Exception {
-        HttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "OK");
-        HttpEntity httpEntity = new StringEntity(entity);
-        response.setEntity(httpEntity);
-        return response;
     }
 }
