@@ -191,9 +191,8 @@ public class IncludeElementTest extends AbstractElementTest {
         addResource("http://www.foo.com/test.xsl", "<?xml version=\"1.0\"?>"
                 + "<xsl:stylesheet version=\"1.0\" xmlns=\"http://www.w3.org/1999/xhtml\" "
                 + "xmlns:html=\"http://www.w3.org/1999/xhtml\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">"
-                + "<xsl:output method=\"xml\" omit-xml-declaration=\"yes\"/> indent=\"no\""
-                + "<xsl:template match=\"//html:body\">" + "<xsl:copy-of select=\".\"/>" + "</xsl:template>"
-                + "</xsl:stylesheet>");
+                + "<xsl:output method=\"xml\" omit-xml-declaration=\"yes\"/>" + "<xsl:template match=\"//html:body\">"
+                + "<xsl:copy-of select=\".\"/>" + "</xsl:template>" + "</xsl:stylesheet>");
         String result = render(page);
         assertEquals("before <body>The body<br /></body> after", result);
     }
