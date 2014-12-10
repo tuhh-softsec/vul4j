@@ -9,7 +9,7 @@ public class ProcessingFailedException extends RuntimeException {
     private static final long serialVersionUID = -2714936241490746932L;
 
     public ProcessingFailedException(String message, Throwable cause) {
-        super(message, cause);
+        super(message + ": " + cause.getMessage(), cause);
     }
 
     public ProcessingFailedException(String message) {
