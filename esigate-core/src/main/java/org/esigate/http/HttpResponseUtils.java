@@ -61,6 +61,7 @@ public final class HttpResponseUtils {
      * Check if httpResponse has an error status.
      * 
      * @param httpResponse
+     *            tge {@link HttpResponse}
      * @return true if status code >= 400
      */
     public static boolean isError(HttpResponse httpResponse) {
@@ -104,7 +105,7 @@ public final class HttpResponseUtils {
         CookieSpec cookieSpec = new BrowserCompatSpec();
         // Dummy origin, used only by CookieSpec for setting the domain for the
         // cookie but we don't need it
-        CookieOrigin cookieOrigin = new CookieOrigin("dummy", 80, "/", false);
+        CookieOrigin cookieOrigin = new CookieOrigin("dummy", Http.DEFAULT_HTTP_PORT, "/", false);
         Header[] responseHeaders = httpResponse.getHeaders("Set-cookie");
         String jsessionid = null;
         for (int i = 0; i < responseHeaders.length; i++) {

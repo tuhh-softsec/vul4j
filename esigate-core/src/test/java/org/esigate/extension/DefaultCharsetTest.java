@@ -17,15 +17,17 @@ package org.esigate.extension;
 
 import java.util.Properties;
 
+import junit.framework.TestCase;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.esigate.Driver;
 import org.esigate.Parameters;
 import org.esigate.http.IncomingRequest;
+import org.esigate.test.TestUtils;
 import org.esigate.test.conn.SequenceResponse;
-import org.esigate.test.driver.AbstractDriverTestCase;
 
-public class DefaultCharsetTest extends AbstractDriverTestCase {
+public class DefaultCharsetTest extends TestCase {
 
     public void testDefaultCharsetExt() throws Exception {
         Properties properties = new Properties();
@@ -34,15 +36,15 @@ public class DefaultCharsetTest extends AbstractDriverTestCase {
         properties.put(Parameters.USE_CACHE.getName(), "true");
 
         Driver driver =
-                createMockDriver(
+                TestUtils.createMockDriver(
                         properties,
-                        new SequenceResponse().response(createHttpResponse().status(HttpStatus.SC_OK).reason("Ok")
-                                .header("Date", "Thu, 13 Dec 2012 08:55:37 GMT").header("Content-Type", "text/html")
-                                .entity("test").build()));
+                        new SequenceResponse().response(TestUtils.createHttpResponse().status(HttpStatus.SC_OK)
+                                .reason("Ok").header("Date", "Thu, 13 Dec 2012 08:55:37 GMT")
+                                .header("Content-Type", "text/html").entity("test").build()));
 
-        IncomingRequest request = createRequest("http://test.mydomain.fr/foobar/").build();
+        IncomingRequest request = TestUtils.createRequest("http://test.mydomain.fr/foobar/").build();
 
-        HttpResponse response = driverProxy(driver, request);
+        HttpResponse response = TestUtils.driverProxy(driver, request);
 
         assertEquals("Encoding should be added", "text/html; charset=ISO-8859-1",
                 response.getFirstHeader("Content-Type").getValue());
@@ -56,15 +58,15 @@ public class DefaultCharsetTest extends AbstractDriverTestCase {
         properties.put("defaultCharset", "utf-8");
 
         Driver driver =
-                createMockDriver(
+                TestUtils.createMockDriver(
                         properties,
-                        new SequenceResponse().response(createHttpResponse().status(HttpStatus.SC_OK).reason("Ok")
-                                .header("Date", "Thu, 13 Dec 2012 08:55:37 GMT").header("Content-Type", "text/html")
-                                .entity("test").build()));
+                        new SequenceResponse().response(TestUtils.createHttpResponse().status(HttpStatus.SC_OK)
+                                .reason("Ok").header("Date", "Thu, 13 Dec 2012 08:55:37 GMT")
+                                .header("Content-Type", "text/html").entity("test").build()));
 
-        IncomingRequest request = createRequest("http://test.mydomain.fr/foobar/").build();
+        IncomingRequest request = TestUtils.createRequest("http://test.mydomain.fr/foobar/").build();
 
-        HttpResponse response = driverProxy(driver, request);
+        HttpResponse response = TestUtils.driverProxy(driver, request);
 
         assertEquals("Encoding should be added", "text/html; charset=utf-8", response.getFirstHeader("Content-Type")
                 .getValue());
@@ -77,15 +79,15 @@ public class DefaultCharsetTest extends AbstractDriverTestCase {
         properties.put(Parameters.USE_CACHE.getName(), "true");
 
         Driver driver =
-                createMockDriver(
+                TestUtils.createMockDriver(
                         properties,
-                        new SequenceResponse().response(createHttpResponse().status(HttpStatus.SC_OK).reason("Ok")
-                                .header("Date", "Thu, 13 Dec 2012 08:55:37 GMT").header("Content-Type", "text/xml")
-                                .entity("test").build()));
+                        new SequenceResponse().response(TestUtils.createHttpResponse().status(HttpStatus.SC_OK)
+                                .reason("Ok").header("Date", "Thu, 13 Dec 2012 08:55:37 GMT")
+                                .header("Content-Type", "text/xml").entity("test").build()));
 
-        IncomingRequest request = createRequest("http://test.mydomain.fr/foobar/").build();
+        IncomingRequest request = TestUtils.createRequest("http://test.mydomain.fr/foobar/").build();
 
-        HttpResponse response = driverProxy(driver, request);
+        HttpResponse response = TestUtils.driverProxy(driver, request);
 
         assertEquals("Encoding should be added", "text/xml", response.getFirstHeader("Content-Type").getValue());
     }

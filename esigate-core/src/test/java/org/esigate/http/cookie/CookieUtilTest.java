@@ -30,6 +30,7 @@ import org.apache.http.cookie.CookieOrigin;
 import org.apache.http.cookie.CookieSpec;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicHeader;
+import org.esigate.http.Http;
 
 public class CookieUtilTest extends TestCase {
 
@@ -52,7 +53,7 @@ public class CookieUtilTest extends TestCase {
         Header header =
                 new BasicHeader("Set-Cookie", "K_lm_66638=121203111217326896; Domain=.foo.com; Expires=" + expires
                         + "; HttpOnly;Secure;Path=/");
-        CookieOrigin origin = new CookieOrigin("www.foo.com", 80, "/", false);
+        CookieOrigin origin = new CookieOrigin("www.foo.com", Http.DEFAULT_HTTP_PORT, "/", false);
         Cookie src = cookieSpec.parse(header, origin).get(0);
         String result = CookieUtil.encodeCookie(src);
         HttpCookie httpcookie = HttpCookie.parse(result).get(0);
@@ -65,7 +66,7 @@ public class CookieUtilTest extends TestCase {
         Header header =
                 new BasicHeader("Set-Cookie", "K_lm_66638=121203111217326896; Domain=.foo.com; Expires=" + expires
                         + "; Path=/");
-        CookieOrigin origin = new CookieOrigin("www.foo.com", 80, "/", false);
+        CookieOrigin origin = new CookieOrigin("www.foo.com", Http.DEFAULT_HTTP_PORT, "/", false);
         Cookie src = cookieSpec.parse(header, origin).get(0);
         String result = CookieUtil.encodeCookie(src);
         HttpCookie httpcookie = HttpCookie.parse(result).get(0);
@@ -80,7 +81,7 @@ public class CookieUtilTest extends TestCase {
         Header header =
                 new BasicHeader("Set-Cookie", "K_66638=121203111217326896; Domain=.foo.com; Expires=" + expires
                         + "; Path=/");
-        CookieOrigin origin = new CookieOrigin("www.foo.com", 80, "/", false);
+        CookieOrigin origin = new CookieOrigin("www.foo.com", Http.DEFAULT_HTTP_PORT, "/", false);
         Cookie src = cookieSpec.parse(header, origin).get(0);
         String result = CookieUtil.encodeCookie(src);
         HttpCookie httpcookie = HttpCookie.parse(result).get(0);
@@ -99,7 +100,7 @@ public class CookieUtilTest extends TestCase {
     public void testCookieValueWithSpacesVersion1IsQuoted() throws Exception {
         String cookieString = "myCookie=\"value with spaces\"; Domain=www.foo.com; Path=/; Version=1";
         Header header = new BasicHeader("Set-Cookie", cookieString);
-        CookieOrigin origin = new CookieOrigin("www.foo.com", 80, "/", false);
+        CookieOrigin origin = new CookieOrigin("www.foo.com", Http.DEFAULT_HTTP_PORT, "/", false);
         Cookie cookie = cookieSpec.parse(header, origin).get(0);
         cookieSpec.validate(cookie, origin);
         String result = CookieUtil.encodeCookie(cookie);
@@ -109,7 +110,7 @@ public class CookieUtilTest extends TestCase {
     public void testCookieValueWithoutQuotesIsNotQuoted() throws Exception {
         String cookieString = "myCookie=value; Domain=www.foo.com; Path=/";
         Header header = new BasicHeader("Set-Cookie", cookieString);
-        CookieOrigin origin = new CookieOrigin("www.foo.com", 80, "/", false);
+        CookieOrigin origin = new CookieOrigin("www.foo.com", Http.DEFAULT_HTTP_PORT, "/", false);
         Cookie cookie = cookieSpec.parse(header, origin).get(0);
         String result = CookieUtil.encodeCookie(cookie);
         assertEquals(cookieString, result);
@@ -118,7 +119,7 @@ public class CookieUtilTest extends TestCase {
     public void testCookieValueWithoutDotsAndSlashIsNotQuoted() throws Exception {
         String cookieString = "myCookie=value./; Domain=www.foo.com; Path=/";
         Header header = new BasicHeader("Set-Cookie", cookieString);
-        CookieOrigin origin = new CookieOrigin("www.foo.com", 80, "/", false);
+        CookieOrigin origin = new CookieOrigin("www.foo.com", Http.DEFAULT_HTTP_PORT, "/", false);
         Cookie cookie = cookieSpec.parse(header, origin).get(0);
         String result = CookieUtil.encodeCookie(cookie);
         assertEquals(cookieString, result);

@@ -17,13 +17,15 @@ package org.esigate.http;
 
 import java.util.Properties;
 
+import junit.framework.TestCase;
+
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.esigate.Driver;
 import org.esigate.Parameters;
+import org.esigate.test.TestUtils;
 import org.esigate.test.conn.IResponseHandler;
-import org.esigate.test.driver.AbstractDriverTestCase;
 
 /**
  * Tests on X-Forwarded-For and X-Forwarded-Proto implementation.
@@ -31,7 +33,7 @@ import org.esigate.test.driver.AbstractDriverTestCase;
  * @author Nicolas Richeton
  * 
  */
-public class XForwardedHeadersTest extends AbstractDriverTestCase {
+public class XForwardedHeadersTest extends TestCase {
 
     /**
      * Ensure existing X-Forwarded headers are correctly altered.
@@ -43,22 +45,22 @@ public class XForwardedHeadersTest extends AbstractDriverTestCase {
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost/");
 
-        Driver driver = createMockDriver(properties, new IResponseHandler() {
+        Driver driver = TestUtils.createMockDriver(properties, new IResponseHandler() {
             @Override
             public HttpResponse execute(HttpRequest request) {
                 assertEquals(1, request.getHeaders("X-Forwarded-For").length);
                 assertEquals("192.168.0.1, 127.0.0.1", request.getFirstHeader("X-Forwarded-For").getValue());
                 assertEquals(1, request.getHeaders("X-Forwarded-Proto").length);
                 assertEquals("https", request.getFirstHeader("X-Forwarded-Proto").getValue());
-                return createHttpResponse().status(HttpStatus.SC_OK).reason("OK").build();
+                return TestUtils.createHttpResponse().status(HttpStatus.SC_OK).reason("OK").build();
             }
         });
 
         IncomingRequest request =
-                createRequest("http://test.mydomain.fr/foobar/").addHeader("X-Forwarded-For", "192.168.0.1")
+                TestUtils.createRequest("http://test.mydomain.fr/foobar/").addHeader("X-Forwarded-For", "192.168.0.1")
                         .addHeader("X-Forwarded-Proto", "https").setRemoteAddr("127.0.0.1").build();
 
-        driverProxy(driver, request);
+        TestUtils.driverProxy(driver, request);
 
     }
 
@@ -74,22 +76,22 @@ public class XForwardedHeadersTest extends AbstractDriverTestCase {
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost/");
 
-        Driver driver = createMockDriver(properties, new IResponseHandler() {
+        Driver driver = TestUtils.createMockDriver(properties, new IResponseHandler() {
             @Override
             public HttpResponse execute(HttpRequest request) {
                 assertEquals(1, request.getHeaders("X-Forwarded-For").length);
                 assertEquals("192.168.0.1, 127.0.0.1", request.getFirstHeader("X-Forwarded-For").getValue());
                 assertEquals(1, request.getHeaders("X-Forwarded-Proto").length);
                 assertEquals("http", request.getFirstHeader("X-Forwarded-Proto").getValue());
-                return createHttpResponse().status(HttpStatus.SC_OK).reason("OK").build();
+                return TestUtils.createHttpResponse().status(HttpStatus.SC_OK).reason("OK").build();
             }
         });
 
         IncomingRequest request =
-                createRequest("http://test.mydomain.fr/foobar/").addHeader("X-Forwarded-For", "192.168.0.1")
+                TestUtils.createRequest("http://test.mydomain.fr/foobar/").addHeader("X-Forwarded-For", "192.168.0.1")
                         .addHeader("X-Forwarded-Proto", "http").setRemoteAddr("127.0.0.1").build();
 
-        driverProxy(driver, request);
+        TestUtils.driverProxy(driver, request);
 
     }
 
@@ -107,20 +109,21 @@ public class XForwardedHeadersTest extends AbstractDriverTestCase {
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost/");
 
-        Driver driver = createMockDriver(properties, new IResponseHandler() {
+        Driver driver = TestUtils.createMockDriver(properties, new IResponseHandler() {
             @Override
             public HttpResponse execute(HttpRequest request) {
                 assertEquals(1, request.getHeaders("X-Forwarded-For").length);
                 assertEquals("127.0.0.1", request.getFirstHeader("X-Forwarded-For").getValue());
                 assertEquals(1, request.getHeaders("X-Forwarded-Proto").length);
                 assertEquals("http", request.getFirstHeader("X-Forwarded-Proto").getValue());
-                return createHttpResponse().status(HttpStatus.SC_OK).reason("OK").build();
+                return TestUtils.createHttpResponse().status(HttpStatus.SC_OK).reason("OK").build();
             }
         });
 
-        IncomingRequest request = createRequest("http://test.mydomain.fr/foobar/").setRemoteAddr("127.0.0.1").build();
+        IncomingRequest request =
+                TestUtils.createRequest("http://test.mydomain.fr/foobar/").setRemoteAddr("127.0.0.1").build();
 
-        driverProxy(driver, request);
+        TestUtils.driverProxy(driver, request);
     }
 
     /**
@@ -137,20 +140,21 @@ public class XForwardedHeadersTest extends AbstractDriverTestCase {
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost/");
 
-        Driver driver = createMockDriver(properties, new IResponseHandler() {
+        Driver driver = TestUtils.createMockDriver(properties, new IResponseHandler() {
             @Override
             public HttpResponse execute(HttpRequest request) {
                 assertEquals(1, request.getHeaders("X-Forwarded-For").length);
                 assertEquals("127.0.0.1", request.getFirstHeader("X-Forwarded-For").getValue());
                 assertEquals(1, request.getHeaders("X-Forwarded-Proto").length);
                 assertEquals("https", request.getFirstHeader("X-Forwarded-Proto").getValue());
-                return createHttpResponse().status(HttpStatus.SC_OK).reason("OK").build();
+                return TestUtils.createHttpResponse().status(HttpStatus.SC_OK).reason("OK").build();
             }
         });
 
-        IncomingRequest request = createRequest("https://test.mydomain.fr/foobar/").setRemoteAddr("127.0.0.1").build();
+        IncomingRequest request =
+                TestUtils.createRequest("https://test.mydomain.fr/foobar/").setRemoteAddr("127.0.0.1").build();
 
-        driverProxy(driver, request);
+        TestUtils.driverProxy(driver, request);
 
     }
 

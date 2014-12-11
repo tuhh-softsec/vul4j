@@ -22,6 +22,7 @@ import org.apache.http.cookie.Cookie;
 import org.apache.http.cookie.CookieOrigin;
 import org.apache.http.cookie.CookieSpec;
 import org.apache.http.message.BasicHeader;
+import org.esigate.http.Http;
 
 public class CustomBrowserCompatSpecFactoryTest extends TestCase {
 
@@ -34,7 +35,7 @@ public class CustomBrowserCompatSpecFactoryTest extends TestCase {
 
     public void testAcceptCookieWithLongerPathThanRequestPath() throws Exception {
         Header header = new BasicHeader("Set-Cookie", "wordpress_dce20=admin%7Ca; Path=/wp-content/plugins");
-        CookieOrigin origin = new CookieOrigin("www.foo.com", 80, "/wp-login.php", false);
+        CookieOrigin origin = new CookieOrigin("www.foo.com", Http.DEFAULT_HTTP_PORT, "/wp-login.php", false);
         Cookie cookie = cookieSpec.parse(header, origin).get(0);
         cookieSpec.validate(cookie, origin);
         // BrowserCompatSpec would throw an exception:
