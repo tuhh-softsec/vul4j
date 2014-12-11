@@ -25,6 +25,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.cookie.ClientCookie;
 import org.esigate.http.IncomingRequest;
+import org.esigate.test.TestUtils;
 import org.esigate.test.conn.IResponseHandler;
 import org.esigate.test.driver.AbstractDriverTestCase;
 
@@ -48,23 +49,23 @@ public class DriverCookieTest extends AbstractDriverTestCase {
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://provider/");
 
         // Setup remote server (provider) response.
-        Driver driver = createMockDriver(properties, new IResponseHandler() {
+        Driver driver = TestUtils.createMockDriver(properties, new IResponseHandler() {
             @Override
             public HttpResponse execute(HttpRequest request) throws IOException {
-                return createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
+                return TestUtils.createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
                         .header("Set-Cookie", "testcookie=testvalue; Secure").entity("test").build();
             }
         });
 
         // Https request : Cookie is forwarded as Secure
-        IncomingRequest request = createRequest("https://test.mydomain.fr/foobar/").build();
+        IncomingRequest request = TestUtils.createRequest("https://test.mydomain.fr/foobar/").build();
 
-        driverProxy(driver, request);
+        TestUtils.driverProxy(driver, request);
         Assert.assertTrue(((ClientCookie) request.getNewCookies()[0]).isSecure());
 
         // Http request : Cookie is forwarded as NOT secure
-        request = createRequest("http://test.mydomain.fr/foobar/").build();
-        driverProxy(driver, request);
+        request = TestUtils.createRequest("http://test.mydomain.fr/foobar/").build();
+        TestUtils.driverProxy(driver, request);
         Assert.assertFalse(((ClientCookie) request.getNewCookies()[0]).isSecure());
     }
 
