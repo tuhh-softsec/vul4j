@@ -63,7 +63,7 @@ public class TarSnappyUnArchiverTest
         snappyArchiver.addFile( getTestFile( "target/output/archive.tar" ), "dontcare" );
         snappyArchiver.createArchive();
 
-        TarSnappyUnArchiver tarSnappyUnArchiver = (TarSnappyUnArchiver) lookup( UnArchiver.ROLE, "snappy" );
+        TarSnappyUnArchiver tarSnappyUnArchiver = (TarSnappyUnArchiver) lookup( UnArchiver.ROLE, "tar.snappy" );
         tarSnappyUnArchiver.setDestDirectory(getTestFile("target/output"));
         tarSnappyUnArchiver.setSourceFile(testSnappyFile);
         tarSnappyUnArchiver.extract();

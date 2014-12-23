@@ -51,7 +51,7 @@ public class SnappyArchiverTest
         zipArchiver.addDirectory( getTestFile( "src" ) );
         zipArchiver.setDestFile( getTestFile( "target/output/archiveForSnappy.zip" ) );
         zipArchiver.createArchive();
-        SnappyArchiver archiver = (SnappyArchiver) lookup( Archiver.ROLE, "Snappy" );
+        SnappyArchiver archiver = (SnappyArchiver) lookup( Archiver.ROLE, "snappy" );
         String[] inputFiles = new String[ 1 ];
         inputFiles[ 0 ] = "archiveForsnappy.zip";
         archiver.addDirectory( getTestFile( "target/output" ), inputFiles, null );
@@ -98,7 +98,7 @@ public class SnappyArchiverTest
      */
     public void testsnappyIsForcedBehaviour() throws Exception
     {
-        SnappyArchiver SnappyArchiver = (SnappyArchiver) createArchiver( "Snappy" );
+        SnappyArchiver SnappyArchiver = (SnappyArchiver) createArchiver( "snappy" );
         
         assertTrue( SnappyArchiver.isSupportingForced() );
         SnappyArchiver.createArchive();
@@ -107,7 +107,7 @@ public class SnappyArchiverTest
         
         waitUntilNewTimestamp( SnappyArchiver.getDestFile(), creationTime );
        
-        SnappyArchiver = (SnappyArchiver) createArchiver( "Snappy" );
+        SnappyArchiver = (SnappyArchiver) createArchiver( "snappy" );
 
         SnappyArchiver.setForced( true );
         SnappyArchiver.createArchive();
@@ -116,7 +116,7 @@ public class SnappyArchiverTest
 
         assertFalse( creationTime==firstRunTime );
         
-        SnappyArchiver = (SnappyArchiver) createArchiver( "Snappy" );
+        SnappyArchiver = (SnappyArchiver) createArchiver( "snappy" );
 
         SnappyArchiver.setForced( false );
         SnappyArchiver.createArchive();
