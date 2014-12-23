@@ -53,7 +53,7 @@ public class SnappyArchiverTest
         zipArchiver.createArchive();
         SnappyArchiver archiver = (SnappyArchiver) lookup( Archiver.ROLE, "snappy" );
         String[] inputFiles = new String[ 1 ];
-        inputFiles[ 0 ] = "archiveForsnappy.zip";
+        inputFiles[ 0 ] = "archiveForSnappy.zip";
         archiver.addDirectory( getTestFile( "target/output" ), inputFiles, null );
         archiver.setDestFile( getTestFile( "target/output/archive.snappy" ) );
         archiver.createArchive();
