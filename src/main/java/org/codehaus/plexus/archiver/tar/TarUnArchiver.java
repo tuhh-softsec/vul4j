@@ -23,6 +23,7 @@ import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.codehaus.plexus.archiver.AbstractUnArchiver;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.util.IOUtil;
+import org.xerial.snappy.SnappyInputStream;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -143,6 +144,10 @@ public class TarUnArchiver
 		{
 			return new BZip2CompressorInputStream( istream );
 		}
+        else if ( compression == UntarCompressionMethod.SNAPPY )
+        {
+            return new SnappyInputStream( istream );
+        }
 		return istream;
 	}
 
@@ -151,7 +156,7 @@ public class TarUnArchiver
      */
     public static enum UntarCompressionMethod
     {
-		NONE("none"), GZIP("gzip"), BZIP2("bzip2");
+		NONE("none"), GZIP("gzip"), BZIP2("bzip2"), SNAPPY("snappy");
 
 		final String value;
 

@@ -31,6 +31,7 @@ import org.codehaus.plexus.components.io.functions.SymlinkDestinationSupplier;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
+import org.xerial.snappy.SnappyOutputStream;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -177,7 +178,7 @@ public class TarArchiver
             while ( iter.hasNext() )
             {
                 ArchiveEntry entry = iter.next();
-                // Check if we don't add tar file in inself
+                // Check if we don't add tar file in itself
                 if ( ResourceUtils.isSame( entry.getResource(), tarFile ) )
                 {
                     throw new ArchiverException( "A tar file cannot include itself." );
@@ -464,7 +465,7 @@ public class TarArchiver
      */
     public static enum TarCompressionMethod
     {
-        none, gzip, bzip2
+        none, gzip, bzip2, snappy
 
     }
 
@@ -478,6 +479,10 @@ public class TarArchiver
         else if ( TarCompressionMethod.bzip2.equals( tarCompressionMethod) )
         {
             return new BZip2CompressorOutputStream( ostream );
+        }
+        else if ( TarCompressionMethod.snappy.equals( tarCompressionMethod ))
+        {
+            return new SnappyOutputStream( ostream );
         }
         return ostream;
     }

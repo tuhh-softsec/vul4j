@@ -35,6 +35,14 @@
       <implementation>org.codehaus.plexus.archiver.jar.JarArchiver</implementation>
       <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
+
+    <component>
+      <role>org.codehaus.plexus.archiver.Archiver</role>
+      <role-hint>snappy</role-hint>
+      <implementation>org.codehaus.plexus.archiver.snappy.SnappyArchiver</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
+    </component>
+
     <component>
       <role>org.codehaus.plexus.archiver.Archiver</role>
       <role-hint>tar</role-hint>
@@ -76,6 +84,12 @@
       <role>org.codehaus.plexus.archiver.UnArchiver</role>
       <role-hint>gzip</role-hint>
       <implementation>org.codehaus.plexus.archiver.gzip.GZipUnArchiver</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
+    </component>
+    <component>
+      <role>org.codehaus.plexus.archiver.UnArchiver</role>
+      <role-hint>snappy</role-hint>
+      <implementation>org.codehaus.plexus.archiver.snappy.SnappyUnArchiver</implementation>
       <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
     <component>
@@ -242,6 +256,12 @@
     </component>
     <component>
       <role>org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection</role>
+      <role-hint>snappy</role-hint>
+      <implementation>org.codehaus.plexus.archiver.snappy.PlexusIoSnappyResourceCollection</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
+    </component>
+    <component>
+      <role>org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection</role>
       <role-hint>tar</role-hint>
       <implementation>org.codehaus.plexus.archiver.tar.PlexusIoTarFileResourceCollection</implementation>
       <instantiation-strategy>per-lookup</instantiation-strategy>
@@ -333,6 +353,12 @@
       <role>org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection</role>
       <role-hint>tar.gz</role-hint>
       <implementation>org.codehaus.plexus.archiver.tar.PlexusIoTarGZipFileResourceCollection</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
+    </component>
+    <component>
+      <role>org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection</role>
+      <role-hint>snappy.gz</role-hint>
+      <implementation>org.codehaus.plexus.archiver.tar.PlexusIoTarSnappyFileResourceCollection</implementation>
       <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
 
