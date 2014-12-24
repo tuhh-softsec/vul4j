@@ -58,9 +58,10 @@ public class TarUnArchiver
      * <p/>
      * Allowable values are
      * <ul>
-     * <li>none - no compression
-     * <li>gzip - Gzip compression
-     * <li>bzip2 - Bzip2 compression
+     * <li>none - no compression</li>
+     * <li>gzip - Gzip compression</li>
+     * <li>bzip2 - Bzip2 compression</li>
+     * <li>snappy - Snappy compression</li>
      * </ul>
      *
      * @param method compression method
