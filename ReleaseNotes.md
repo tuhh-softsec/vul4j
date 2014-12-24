@@ -6,6 +6,12 @@ Note: Master is in JIRA at http://jira.codehaus.org/browse/PLXCOMP
 Since archiver depends on a given version of IO this list is cumulative,
 any version includes *all* changes below.
 
+Plexus Archiver - Version 2.10
+------
+** Improvement
+
+  * [PLXCOMP-282] - Add Snappy compression support
+
 Plexus Components - Version plexus-archiver-2.9.1
 -----
 
