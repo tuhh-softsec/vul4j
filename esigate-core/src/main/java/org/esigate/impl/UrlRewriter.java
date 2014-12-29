@@ -20,6 +20,7 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -135,6 +136,8 @@ public class UrlRewriter {
             visibleBaseUrl = visibleBaseUrl + "/";
         }
         URI visibleBaseUri = UriUtils.createURI(visibleBaseUrl);
+
+        url = StringUtils.trim(url);
 
         // Build the absolute Uri of the request sent to the backend
         URI requestUri;
