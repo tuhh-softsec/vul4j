@@ -311,4 +311,21 @@ public class UrlRewriterTest extends TestCase {
         assertEquals("http://backend/context/page.html", urlRewriter.rewriteReferer(referer, baseUrl, visibleUrlBase));
     }
 
+    /**
+     * Test for Issue 83: UrlRewriter does not trim urls.
+     * 
+     * @see "https://github.com/esigate/esigate/issues/83"
+     */
+    public void testUrlRewriteTrim() {
+        baseUrl = "http://backend";
+        visibleUrlBase = "http://visible/context/";
+        requestUrl = "/";
+
+        absolute = false;
+        assertRewrites(" \t\n/test", "/context/test");
+
+        absolute = true;
+        assertRewrites(" \t\n/test", "http://visible/context/test");
+    }
+
 }
