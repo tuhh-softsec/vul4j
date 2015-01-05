@@ -61,6 +61,11 @@ public class UrlRewriterTest extends TestCase {
         assertEquals(rewrittenUrl, rewriteUrl(sourceUrl));
     }
 
+    private void assertRewritesHtml(String sourceUrl, String rewrittenUrl) {
+        createUrlRewriter();
+        assertEquals(rewrittenUrl, rewriteHtml(sourceUrl));
+    }
+
     private void assertDoesNotRewrite(String sourceUrl) {
         createUrlRewriter();
         assertEquals(sourceUrl, rewriteUrl(sourceUrl));
@@ -276,12 +281,10 @@ public class UrlRewriterTest extends TestCase {
         requestUrl = "/test";
 
         absolute = false;
-
-        createUrlRewriter();
-        assertEquals("<a href=\"\">a</a>", rewriteHtml("<a href=\"\">a</a>"));
+        assertRewritesHtml("<a href=\"\">a</a>", "<a href=\"\">a</a>");
 
         absolute = true;
-        assertEquals("<a href=\"\">a</a>", rewriteHtml("<a href=\"\">a</a>"));
+        assertRewritesHtml("<a href=\"\">a</a>", "<a href=\"\">a</a>");
     }
 
     /**
@@ -322,10 +325,70 @@ public class UrlRewriterTest extends TestCase {
         requestUrl = "/";
 
         absolute = false;
-        assertRewrites(" \t\n/test", "/context/test");
+        assertRewritesHtml("<a href=\" \t\n/test\">a</a>", "<a href=\"/context/test\">a</a>");
 
         absolute = true;
-        assertRewrites(" \t\n/test", "http://visible/context/test");
+        assertRewritesHtml("<a href=\" \t\n/test\">a</a>", "<a href=\"http://visible/context/test\">a</a>");
+    }
+
+    public void testUrlRewriteTrimEmptyUrl() {
+        baseUrl = "http://backend";
+        visibleUrlBase = "http://visible/context/";
+        requestUrl = "/";
+
+        absolute = false;
+        assertRewritesHtml("<a href=\" \t\n\">a</a>", "<a href=\" \t\n\">a</a>");
+
+        absolute = true;
+        assertRewritesHtml("<a href=\" \t\n\">a</a>", "<a href=\" \t\n\">a</a>");
+    }
+
+    public void testUrlRewriteEmptyUrlHashtag() {
+        baseUrl = "http://backend";
+        visibleUrlBase = "http://backend";
+        requestUrl = "/test";
+
+        absolute = false;
+        assertRewritesHtml("<a href=\"#\">a</a>", "<a href=\"#\">a</a>");
+
+        absolute = true;
+        assertRewritesHtml("<a href=\"#\">a</a>", "<a href=\"#\">a</a>");
+    }
+
+    public void testUrlRewriteAbsoluteUrlBaseUrl() {
+        baseUrl = "http://backend";
+        visibleUrlBase = "http://visible/context/";
+        requestUrl = "/";
+
+        absolute = false;
+        assertRewrites("http://backend", "/context/");
+
+        absolute = true;
+        assertRewrites("http://backend", "http://visible/context/");
+    }
+
+    public void testUrlRewriteAbsolutUrlBaseUrlSlash() {
+        baseUrl = "http://backend/";
+        visibleUrlBase = "http://visible/context/";
+        requestUrl = "/";
+
+        absolute = false;
+        assertRewrites("http://backend/", "/context/");
+
+        absolute = true;
+        assertRewrites("http://backend/", "http://visible/context/");
+    }
+
+    public void testUrlRewriteAbsolutUrlBaseUrlSlashTest() {
+        baseUrl = "http://backend/";
+        visibleUrlBase = "http://visible/context/";
+        requestUrl = "/";
+
+        absolute = false;
+        assertRewrites("http://backend/test", "/context/test");
+
+        absolute = true;
+        assertRewrites("http://backend/test", "http://visible/context/test");
     }
 
 }
