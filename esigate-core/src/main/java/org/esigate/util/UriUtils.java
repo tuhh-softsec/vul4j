@@ -177,7 +177,8 @@ public final class UriUtils {
     }
 
     /**
-     * Creates an {@link URI} after escaping some special characters in order to tolerate some incorrect URI types.
+     * Creates an {@link URI} after escaping some special characters in order to tolerate some incorrect URI types. If
+     * the uri contains a server name but no path, the path is set to "/" as a browser would do.
      * 
      * @param uri
      *            the URI as a {@link String}
@@ -185,7 +186,17 @@ public final class UriUtils {
      */
     public static URI createURI(String uri) {
         uri = encodeIllegalCharacters(uri);
-        return URI.create(uri);
+        URI result = URI.create(uri);
+        if (result.getHost() != null && StringUtils.isEmpty(result.getPath())) {
+            try {
+                result =
+                        new URI(result.getScheme(), result.getRawUserInfo(), result.getHost(), result.getPort(), "/",
+                                result.getRawQuery(), result.getRawFragment());
+            } catch (URISyntaxException e) {
+                throw new InvalidUriException(e);
+            }
+        }
+        return result;
     }
 
     /**

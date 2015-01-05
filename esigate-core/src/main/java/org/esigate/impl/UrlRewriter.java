@@ -137,8 +137,6 @@ public class UrlRewriter {
         }
         URI visibleBaseUri = UriUtils.createURI(visibleBaseUrl);
 
-        url = StringUtils.trim(url);
-
         // Build the absolute Uri of the request sent to the backend
         URI requestUri;
         if (requestUrl.startsWith(visibleBaseUrl)) {
@@ -194,8 +192,14 @@ public class UrlRewriter {
         while (m.find()) {
             LOG.trace("found match: {}", m);
             String url = input.subSequence(m.start(3) + 1, m.end(3) - 1).toString();
-            if (!url.isEmpty()) {
-                url = rewriteUrl(url, requestUrl, baseUrlParam, visibleBaseUrl, absolute);
+
+            // Browsers toletate urls with white spaces before or after
+            String trimmedUrl = StringUtils.trim(url);
+
+            // Don't rewrite empty urls or anchors
+            if (!trimmedUrl.isEmpty() && !trimmedUrl.startsWith("#")) {
+                LOG.debug("url kept unchanged: [{}]", url);
+                url = rewriteUrl(trimmedUrl, requestUrl, baseUrlParam, visibleBaseUrl, absolute);
             }
             url = url.replaceAll("\\$", "\\\\\\$"); // replace '$' -> '\$' as it
                                                     // denotes group
