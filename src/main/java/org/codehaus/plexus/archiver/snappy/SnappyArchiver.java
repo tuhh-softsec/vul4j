@@ -21,7 +21,6 @@ import org.codehaus.plexus.archiver.AbstractArchiver;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.ResourceIterator;
-import org.codehaus.plexus.archiver.bzip2.BZip2Compressor;
 
 import java.io.IOException;
 

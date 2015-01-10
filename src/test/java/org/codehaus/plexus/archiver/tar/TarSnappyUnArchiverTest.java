@@ -27,7 +27,6 @@ package org.codehaus.plexus.archiver.tar;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.UnArchiver;
-import org.codehaus.plexus.archiver.gzip.GZipArchiver;
 import org.codehaus.plexus.archiver.snappy.SnappyArchiver;
 
 import java.io.File;

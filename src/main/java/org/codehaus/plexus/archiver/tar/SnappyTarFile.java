@@ -1,13 +1,10 @@
 package org.codehaus.plexus.archiver.tar;
 
-import org.codehaus.plexus.archiver.bzip2.BZip2UnArchiver;
 import org.codehaus.plexus.archiver.snappy.SnappyUnArchiver;
-import org.xerial.snappy.SnappyInputStream;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.zip.GZIPInputStream;
 
 
 /**

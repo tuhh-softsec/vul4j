@@ -12,10 +12,7 @@ import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.bzip2.BZip2Compressor;
 import org.codehaus.plexus.archiver.gzip.GZipCompressor;
-import org.codehaus.plexus.archiver.util.ArchiverAttributeUtils;
 import org.codehaus.plexus.archiver.util.Compressor;
-import org.codehaus.plexus.components.io.resources.PlexusIoFileResource;
-import org.codehaus.plexus.components.io.resources.ResourceFactory;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 

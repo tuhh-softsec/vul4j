@@ -17,13 +17,11 @@ package org.codehaus.plexus.archiver.jar;
  *
  */
 
-import java.io.BufferedInputStream;
 import java.io.InputStream;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
-import org.codehaus.plexus.archiver.util.Streams;
 
 import static org.codehaus.plexus.archiver.util.Streams.bufferedInputStream;
 
