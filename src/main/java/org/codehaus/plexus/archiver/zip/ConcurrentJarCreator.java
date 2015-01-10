@@ -23,6 +23,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 
@@ -52,7 +54,8 @@ public class ConcurrentJarCreator {
 
         directories = createDeferred(defaultSupplier);
         manifest = createDeferred(defaultSupplier);
-        parallelScatterZipCreator = new ParallelScatterZipCreator(nThreads, defaultSupplier);
+
+        parallelScatterZipCreator = new ParallelScatterZipCreator(Executors.newFixedThreadPool(nThreads), defaultSupplier);
     }
 
     /**

@@ -12,13 +12,10 @@ import org.junit.Test;
 import java.io.*;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
-@Ignore("Mostly for manual running")
 public class ConcurrentJarCreatorTest {
     @Test
     public void concurrent()
             throws Exception {
-        File dir = new File("target/output");
-        dir.mkdirs();
         File home = new File(System.getProperty("user.home"));
         File result = new File(home, "multiStream2-parallel.zip");
         ConcurrentJarCreator zipCreator = new ConcurrentJarCreator(Runtime.getRuntime().availableProcessors());
@@ -43,8 +40,6 @@ public class ConcurrentJarCreatorTest {
     @Ignore
     public void classic()
             throws Exception {
-        File dir = new File("target/output");
-        dir.mkdirs();
         long startAt = System.currentTimeMillis();
         File home = new File(System.getProperty("user.home"));
         File result = new File(home, "multiStream2-classic.zip");
@@ -69,7 +64,7 @@ public class ConcurrentJarCreatorTest {
 
         for (String fileName : ds.getIncludedFiles()) {
             final File file = new File(base, fileName);
-            ZipArchiveEntry za = createZipArchiveEntry(file);
+            ZipArchiveEntry za = createZipArchiveEntry(file, fileName);
 
             mos.addArchiveEntry(za, new InputStreamSupplier() {
                 public InputStream get() {
@@ -96,7 +91,7 @@ public class ConcurrentJarCreatorTest {
 
         for (String fileName : ds.getIncludedFiles()) {
             final File file = new File(base, fileName);
-            ZipArchiveEntry za = createZipArchiveEntry(file);
+            ZipArchiveEntry za = createZipArchiveEntry(file, fileName);
 
             mos.putArchiveEntry(za);
             if (file.isFile()) {
@@ -110,8 +105,8 @@ public class ConcurrentJarCreatorTest {
     }
 
     @SuppressWarnings("OctalInteger")
-    private ZipArchiveEntry createZipArchiveEntry(File file) {
-        ZipArchiveEntry za = new ZipArchiveEntry(file, file.getName());
+    private ZipArchiveEntry createZipArchiveEntry(File file, String name) {
+        ZipArchiveEntry za = new ZipArchiveEntry(file, name);
         if (file.isDirectory()) {
             za.setMethod(ZipArchiveEntry.STORED);
             za.setSize(0);
