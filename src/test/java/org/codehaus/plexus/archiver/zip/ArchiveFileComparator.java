@@ -8,10 +8,7 @@ import java.util.Map;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.zip.*;
-import org.apache.commons.compress.archivers.zip.ZipFile;
-import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiveFile;
-import org.codehaus.plexus.archiver.ArchiveFile.Entry;
 import org.codehaus.plexus.util.IOUtil;
 import org.junit.Assert;
 

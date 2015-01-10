@@ -5,8 +5,6 @@ import javax.annotation.CheckForNull;
 import org.codehaus.plexus.components.io.fileselectors.FileSelector;
 import org.codehaus.plexus.components.io.functions.InputStreamTransformer;
 
-import java.util.Arrays;
-
 
 /**
  * A file set is a set of files, which may be added to an

@@ -7,7 +7,6 @@ import org.codehaus.plexus.components.io.fileselectors.IncludeExcludeFileSelecto
 import org.codehaus.plexus.util.FileUtils;
 
 import java.io.File;
-import java.lang.reflect.Method;
 
 /**
  * @author <a href="mailto:viktor@jv-ration.com">Viktor Sadovnikov</a>

@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 
 import junit.framework.TestCase;
-import org.codehaus.plexus.archiver.FileSet;
 
 public class JarArchiverTest
     extends TestCase

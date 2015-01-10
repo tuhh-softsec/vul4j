@@ -17,8 +17,6 @@
  */
 package org.codehaus.plexus.archiver.zip;
 
-import org.apache.commons.compress.archivers.zip.ScatterGatherBackingStore;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;

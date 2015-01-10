@@ -28,8 +28,8 @@ import java.util.zip.ZipEntry;
 
 public class ConcurrentJarCreator {
 
-    ScatterZipOutputStream directories;
-    ScatterZipOutputStream manifest;
+    private final ScatterZipOutputStream directories;
+    private final ScatterZipOutputStream manifest;
 
     private final ParallelScatterZipCreator parallelScatterZipCreator;
     private long zipCloseElapsed;

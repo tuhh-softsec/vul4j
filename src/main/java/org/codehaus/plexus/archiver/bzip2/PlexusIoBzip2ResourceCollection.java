@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
-import org.codehaus.plexus.archiver.util.Streams;
 import org.codehaus.plexus.components.io.attributes.Java7FileAttributes;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.resources.PlexusIoCompressedFileResourceCollection;

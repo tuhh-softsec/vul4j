@@ -19,7 +19,6 @@ package org.codehaus.plexus.archiver.zip;
 
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.zip.CRC32;
 
 import org.apache.commons.compress.archivers.zip.*;

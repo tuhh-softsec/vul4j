@@ -54,13 +54,11 @@ public class SecurityFilterTest
         // Create our test jar with fake security files
         JarArchiver archiver = (JarArchiver) lookup( Archiver.ROLE, "jar" );
         archiver.setArchiveFilters(filters);
-        for ( int i = 0; i < filteredFiles.length; i++ )
-        {
-            archiver.addFile( dummyContent, filteredFiles[i] );
+        for (String filteredFile1 : filteredFiles) {
+            archiver.addFile(dummyContent, filteredFile1);
         }
-        for ( int i = 0; i < unFilteredFiles.length; i++ )
-        {
-            archiver.addFile( dummyContent, unFilteredFiles[i] );
+        for (String unFilteredFile1 : unFilteredFiles) {
+            archiver.addFile(dummyContent, unFilteredFile1);
         }
         archiver.setDestFile( getTestFile( "target/jar-security/test-archive.jar" ) );
         archiver.createArchive();
@@ -68,15 +66,13 @@ public class SecurityFilterTest
         // Verify that the fake files were filtered out of the created jar and that
         // the legitimate files were not
         org.apache.commons.compress.archivers.zip.ZipFile zf = new org.apache.commons.compress.archivers.zip.ZipFile( archiver.getDestFile() );
-        for ( int i = 0; i < filteredFiles.length; i++ )
-        {
-            ZipArchiveEntry entry = zf.getEntry( filteredFiles[i] );
-            assertNull( "Entry was not filtered out: " + filteredFiles[i], entry );
+        for (String filteredFile : filteredFiles) {
+            ZipArchiveEntry entry = zf.getEntry(filteredFile);
+            assertNull("Entry was not filtered out: " + filteredFile, entry);
         }
-        for ( int i = 0; i < unFilteredFiles.length; i++ )
-        {
-            ZipArchiveEntry entry = zf.getEntry( unFilteredFiles[i] );
-            assertNotNull( "Entry was filtered out: " + unFilteredFiles[i], entry );
+        for (String unFilteredFile : unFilteredFiles) {
+            ZipArchiveEntry entry = zf.getEntry(unFilteredFile);
+            assertNotNull("Entry was filtered out: " + unFilteredFile, entry);
         }
     }
 

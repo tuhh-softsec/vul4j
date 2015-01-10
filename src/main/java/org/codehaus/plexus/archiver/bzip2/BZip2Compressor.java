@@ -23,7 +23,6 @@ import org.codehaus.plexus.archiver.util.Compressor;
 import org.codehaus.plexus.util.IOUtil;
 
 import java.io.IOException;
-import java.io.OutputStream;
 
 import static org.codehaus.plexus.archiver.util.Streams.bufferedOutputStream;
 import static org.codehaus.plexus.archiver.util.Streams.fileOutputStream;

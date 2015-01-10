@@ -81,7 +81,7 @@ public class ArchiverManagerTest
             manager.getArchiver( "Unknown" );
             fail();
         }
-        catch ( NoSuchArchiverException e )
+        catch ( NoSuchArchiverException ignore )
         {
         }
     }
@@ -95,7 +95,7 @@ public class ArchiverManagerTest
             manager.getUnArchiver( "Unknown" );
             fail();
         }
-        catch ( NoSuchArchiverException e )
+        catch ( NoSuchArchiverException ignore )
         {
         }
     }
@@ -152,7 +152,7 @@ public class ArchiverManagerTest
             //until we support this type, this must fail
             fail ( "Please remove this test." );
         }
-        catch ( NoSuchArchiverException e )
+        catch ( NoSuchArchiverException ignore )
         {
             
         }
@@ -163,7 +163,7 @@ public class ArchiverManagerTest
             //until we support this type, this must fail
             fail ( "Please remove this test." );
         }
-        catch ( NoSuchArchiverException e )
+        catch ( NoSuchArchiverException ignore )
         {
             
         }
@@ -174,7 +174,7 @@ public class ArchiverManagerTest
             //until we support this type, this must fail
             fail ( "Please remove this test." );
         }
-        catch ( NoSuchArchiverException e )
+        catch ( NoSuchArchiverException ignore )
         {
             
         }     
@@ -185,7 +185,7 @@ public class ArchiverManagerTest
             //until we support this type, this must fail
             fail ( "Please remove this test." );
         }
-        catch ( NoSuchArchiverException e )
+        catch ( NoSuchArchiverException ignore )
         {
             
         }        
