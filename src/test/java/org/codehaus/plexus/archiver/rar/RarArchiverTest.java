@@ -69,7 +69,7 @@ public class RarArchiverTest
         assertTrue( manifestsFile.exists() );
     }
 
-    public void atestUnarchive()
+    public void testUnarchive()
         throws Exception
     {
 

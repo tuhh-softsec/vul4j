@@ -55,19 +55,9 @@ public class FilePermission
         return executable;
     }
 
-    public void setExecutable( boolean executable )
-    {
-        this.executable = executable;
-    }
-
     public boolean isOwnerOnlyExecutable()
     {
         return ownerOnlyExecutable;
-    }
-
-    public void setOwnerOnlyExecutable( boolean ownerOnlyExecutable )
-    {
-        this.ownerOnlyExecutable = ownerOnlyExecutable;
     }
 
     public boolean isOwnerOnlyReadable()
@@ -75,19 +65,9 @@ public class FilePermission
         return ownerOnlyReadable;
     }
 
-    public void setOwnerOnlyReadable( boolean ownerOnlyReadable )
-    {
-        this.ownerOnlyReadable = ownerOnlyReadable;
-    }
-
     public boolean isReadable()
     {
         return readable;
-    }
-
-    public void setReadable( boolean readable )
-    {
-        this.readable = readable;
     }
 
     public boolean isOwnerOnlyWritable()
@@ -95,19 +75,9 @@ public class FilePermission
         return ownerOnlyWritable;
     }
 
-    public void setOwnerOnlyWritable( boolean ownerOnlyWritable )
-    {
-        this.ownerOnlyWritable = ownerOnlyWritable;
-    }
-
     public boolean isWritable()
     {
         return writable;
-    }
-
-    public void setWritable( boolean writable )
-    {
-        this.writable = writable;
     }
 
     public String toString()

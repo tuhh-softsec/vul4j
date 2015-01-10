@@ -19,9 +19,7 @@ package org.codehaus.plexus.archiver;
 
 import java.io.Closeable;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +36,6 @@ import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
-import org.codehaus.plexus.archiver.util.FilterSupport;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.components.io.attributes.Java7Reflector;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
@@ -55,7 +52,6 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
-import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.Os;
 
 import static org.codehaus.plexus.archiver.util.DefaultArchivedFileSet.archivedFileSet;
@@ -66,7 +62,7 @@ import static org.codehaus.plexus.archiver.util.DefaultFileSet.fileSet;
  */
 public abstract class AbstractArchiver
     extends AbstractLogEnabled
-    implements Archiver, Contextualizable, FilterEnabled, FinalizerEnabled
+    implements Archiver, Contextualizable, FinalizerEnabled
 {
 
     private Logger logger;
@@ -94,8 +90,6 @@ public abstract class AbstractArchiver
     private int defaultDirectoryMode = -1;
 
     private boolean forced = true;
-
-    private FilterSupport filterSupport;
 
     private List<ArchiveFinalizer> finalizers;
 
@@ -235,14 +229,6 @@ public abstract class AbstractArchiver
         {
             return defaultDirectoryMode;
         }
-    }
-
-    /**
-     * @deprecated Use {@link Archiver#getDefaultDirectoryMode()}.
-     */
-    public final int getRawDefaultDirectoryMode()
-    {
-        return getDefaultDirectoryMode();
     }
 
     public boolean getIncludeEmptyDirs()
@@ -408,8 +394,6 @@ public abstract class AbstractArchiver
             throw new ArchiverException( inputFile.getAbsolutePath() + " isn't a file." );
         }
 
-        InputStream in = null;
-
         if ( replacePathSlashesToJavaPaths )
         {
             destFileName = destFileName.replace( '\\', '/' );
@@ -423,33 +407,12 @@ public abstract class AbstractArchiver
         try
         {
             // do a null check here, to avoid creating a file stream if there are no filters...
-            if ( filterSupport != null )
-            {
-                in = new FileInputStream( inputFile );
-
-                if ( include( in, destFileName ) )
-                {
-                    doAddResource(
-                        ArchiveEntry.createFileEntry( destFileName, inputFile, permissions, getDirectoryMode() ) );
-                }
-            }
-            else
-            {
                 doAddResource(
                     ArchiveEntry.createFileEntry( destFileName, inputFile, permissions, getDirectoryMode() ) );
-            }
         }
         catch ( final IOException e )
         {
             throw new ArchiverException( "Failed to determine inclusion status for: " + inputFile, e );
-        }
-        catch ( final ArchiveFilterException e )
-        {
-            throw new ArchiverException( "Failed to determine inclusion status for: " + inputFile, e );
-        }
-        finally
-        {
-            IOUtil.close( in );
         }
     }
 
@@ -640,27 +603,6 @@ public abstract class AbstractArchiver
         return logger;
     }
 
-    public Map getDirs()
-    {
-        try
-        {
-            final Map map = new HashMap();
-            for ( final ResourceIterator iter = getResources(); iter.hasNext(); )
-            {
-                final ArchiveEntry entry = iter.next();
-                if ( entry.getType() == ArchiveEntry.DIRECTORY )
-                {
-                    map.put( entry.getName(), entry );
-                }
-            }
-            return map;
-        }
-        catch ( final ArchiverException e )
-        {
-            throw new UndeclaredThrowableException( e );
-        }
-    }
-
     protected PlexusIoResourceCollection asResourceCollection( final ArchivedFileSet fileSet )
         throws ArchiverException
     {
@@ -804,11 +746,6 @@ public abstract class AbstractArchiver
         this.forced = forced;
     }
 
-    public void setArchiveFilters( final List filters )
-    {
-        filterSupport = new FilterSupport( filters, getLogger() );
-    }
-
     public void addArchiveFinalizer( final ArchiveFinalizer finalizer )
     {
         if ( finalizers == null )
@@ -903,11 +840,6 @@ public abstract class AbstractArchiver
         return false;
     }
 
-    protected List getArchiveFinalizers()
-    {
-        return finalizers;
-    }
-
     protected void runArchiveFinalizers()
         throws ArchiverException
     {
@@ -918,12 +850,6 @@ public abstract class AbstractArchiver
                 finalizer.finalizeArchiveCreation( this );
             }
         }
-    }
-
-    private boolean include( final InputStream in, final String path )
-        throws ArchiveFilterException
-    {
-        return ( filterSupport == null ) || filterSupport.include( in, path );
     }
 
     public final void createArchive()

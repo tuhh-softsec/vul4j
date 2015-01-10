@@ -36,12 +36,6 @@ public class PlexusIoVirtualSymlinkResource extends PlexusIoVirtualFileResource
 			this.symnlinkDestination = symnlinkDestination;
 		}
 
-		public PlexusIoVirtualSymlinkResource(File symlinkfile, String name, String symnlinkDestination)
-		{
-			super( symlinkfile, name );
-			this.symnlinkDestination = symnlinkDestination;
-		}
-
 	public String getSymlinkDestination()
 			throws IOException
 	{

@@ -73,94 +73,6 @@ public abstract class Compressor
     }
 
     /**
-     * the file to compress; required.
-     * @deprecated Use {@link #getSource()}.
-     */
-    public void setSourceFile( File srcFile ) throws IOException {
-        setSource( createResource( srcFile) );
-    }
-
-    /**
-     * @deprecated Use {@link #getSource()}.
-     */
-    public File getSourceFile()
-    {
-        final PlexusIoResource res = getSource();
-        if ( res instanceof PlexusIoFileResource )
-        {
-            return ( (PlexusIoFileResource) res ).getFile();
-        }
-        return null;
-    }
-
-    /**
-     * validation routine
-     *
-     * @throws ArchiverException if anything is invalid
-     */
-    private void validate()
-        throws ArchiverException
-    {
-        if ( destFile == null )
-        {
-            throw new ArchiverException( "Destination file attribute is required" );
-        }
-
-        if ( destFile.isDirectory() )
-        {
-            throw new ArchiverException( "Destination file attribute must not represent a directory!" );
-        }
-
-        if ( source == null )
-        {
-            throw new ArchiverException( "Source file attribute is required" );
-        }
-
-        if ( source.isDirectory() )
-        {
-            throw new ArchiverException( "Source file attribute must not represent a directory!" );
-        }
-    }
-
-    /**
-     * validate, then hand off to the subclass
-     *
-     * @throws BuildException
-     */
-    public void execute()
-        throws ArchiverException
-    {
-        validate();
-
-        try
-        {
-            if ( !source.isExisting() )
-            {
-//                getLogger().info( "Nothing to do: " + sourceFile.getAbsolutePath()
-//                    + " doesn't exist." );
-            }
-            else
-            {
-                final long l = source.getLastModified();
-                if ( l == PlexusIoResource.UNKNOWN_MODIFICATION_DATE || destFile.lastModified() == 0
-                    || destFile.lastModified() < l )
-                {
-                    compress();
-                }
-                else
-                {
-//                    getLogger().info( "Nothing to do: " + destFile.getAbsolutePath()
-//                        + " is up to date." );
-                }
-            }
-        }
-        finally
-        {
-            close();
-        }
-    }
-
-    /**
      * compress a stream to an output stream
      *
      * @param in
@@ -178,24 +90,6 @@ public abstract class Compressor
             count = in.read( buffer, 0, buffer.length );
         }
         while ( count != -1 );
-    }
-
-    /**
-     * compress a file to an output stream
-     * @deprecated Use {@link #compress(PlexusIoResource, OutputStream)}.
-     */
-    protected void compressFile( File file, OutputStream zOut )
-        throws IOException
-    {
-        InputStream in = new FileInputStream( file );
-        try
-        {
-            compressFile( in, zOut );
-        }
-        finally
-        {
-            IOUtil.close( in );
-        }
     }
 
     /**

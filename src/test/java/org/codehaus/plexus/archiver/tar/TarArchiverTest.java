@@ -403,17 +403,6 @@ public class TarArchiverTest
             tarArchiver.createArchive();
             return tarFile;
         }
-        File createTarFile(File tarFile)
-            throws Exception
-        {
-            final File srcDir = new File( "src" );
-            TarArchiver tarArchiver = getPosixTarArchiver();
-            tarArchiver.setDestFile( tarFile );
-            tarArchiver.addDirectory( srcDir, null, FileUtils.getDefaultExcludes() );
-            FileUtils.removePath( tarFile.getPath() );
-            tarArchiver.createArchive();
-            return tarFile;
-        }
 
         File createTarfile2( File tarFile )
             throws Exception

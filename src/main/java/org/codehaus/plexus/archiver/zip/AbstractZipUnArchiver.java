@@ -181,17 +181,7 @@ public abstract class AbstractZipUnArchiver
                                         final Integer mode, String symlinkDestination )
         throws IOException, ArchiverException
     {
-        try
-        {
-            if ( include( inputStream, name ) )
-            {
-                extractFile( sourceFile, destDirectory, inputStream, name, time, isDirectory, mode, symlinkDestination );
-            }
-        }
-        catch ( final ArchiveFilterException e )
-        {
-            throw new ArchiverException( "Error verifying \'" + name + "\' for inclusion: " + e.getMessage(), e );
-        }
+          extractFile( sourceFile, destDirectory, inputStream, name, time, isDirectory, mode, symlinkDestination );
     }
 
     protected void execute( final String path, final File outputDirectory )

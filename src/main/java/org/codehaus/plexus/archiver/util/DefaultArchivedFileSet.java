@@ -22,17 +22,6 @@ public class DefaultArchivedFileSet
 	}
 
 
-    public DefaultArchivedFileSet() {
-    }
-
-    /**
-     * Sets the file sets archive.
-     */
-    public void setArchive( File archive )
-    {
-        this.archive = archive;
-    }
-
     public File getArchive()
     {
         return archive;

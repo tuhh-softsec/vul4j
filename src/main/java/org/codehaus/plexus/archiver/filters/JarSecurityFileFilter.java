@@ -16,7 +16,6 @@ public class JarSecurityFileFilter
     public static final String[] SECURITY_FILE_PATTERNS = JarSecurityFileSelector.SECURITY_FILE_PATTERNS;
 
     public boolean include( InputStream dataStream, String entryName )
-        throws ArchiveFilterException
     {
 		for (String pattern : SECURITY_FILE_PATTERNS) {
 			if (SelectorUtils.match(pattern, entryName)) {

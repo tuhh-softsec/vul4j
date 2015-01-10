@@ -63,24 +63,6 @@ public class TarArchiver
     private TarArchiveOutputStream tOut;
 
     /**
-     *
-     */
-    public TarOptions getOptions()
-    {
-        return options;
-    }
-
-    /**
-     * Set all tar options
-     *
-     * @param options options
-     */
-    public void setOptions( TarOptions options )
-    {
-        this.options = options;
-    }
-
-    /**
      * Set how to handle long files, those with a path&gt;100 chars.
      * Optional, default=warn.
      * <p/>
@@ -235,9 +217,9 @@ public class TarArchiver
         try
         {
             TarArchiveEntry te;
-			if (  !longFileMode.isGnuMode() && pathLength >= TarConstants.NAMELEN )
+			if (  !longFileMode.isGnuMode() && pathLength >= org.apache.commons.compress.archivers.tar.TarConstants.NAMELEN )
 			{
-        		int maxPosixPathLen = TarConstants.NAMELEN + TarConstants.POSIX_PREFIXLEN;
+        		int maxPosixPathLen = org.apache.commons.compress.archivers.tar.TarConstants.NAMELEN + org.apache.commons.compress.archivers.tar.TarConstants.PREFIXLEN;
             	if ( longFileMode.isPosixMode() )
             	{
             	}
@@ -261,7 +243,7 @@ public class TarArchiver
                 }
                 else if ( longFileMode.isWarnMode() )
                 {
-                    getLogger().warn( "Entry: " + vPath + " longer than " + TarConstants.NAMELEN + " characters." );
+                    getLogger().warn( "Entry: " + vPath + " longer than " + org.apache.commons.compress.archivers.tar.TarConstants.NAMELEN + " characters." );
                     if ( !longWarningGiven )
                     {
                         getLogger().warn( "Resulting tar file can only be processed "
@@ -271,7 +253,7 @@ public class TarArchiver
                 }
                 else if ( longFileMode.isFailMode() )
                 {
-                    throw new ArchiverException( "Entry: " + vPath + " longer than " + TarConstants.NAMELEN
+                    throw new ArchiverException( "Entry: " + vPath + " longer than " + org.apache.commons.compress.archivers.tar.TarConstants.NAMELEN
                                                  + " characters." );
                 }
                 else

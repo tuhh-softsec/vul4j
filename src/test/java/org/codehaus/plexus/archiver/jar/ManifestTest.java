@@ -117,7 +117,7 @@ public class ManifestTest
             getManifest( "src/test/resources/manifests/manifestWithDualClassPath.mf" );
         final String attribute = manifest.getMainSection().getAttributeValue( "Class-Path" );
         // According to discussions, we drop support for duplicate class-path attribute
-        assertEquals( "baz", attribute );
+        assertEquals("baz", attribute);
     }
 
     public void testAttributeMultiLineValue()
@@ -130,23 +130,10 @@ public class ManifestTest
     public void testAttributeDifferentLineEndings()
         throws Exception
     {
-        checkMultiLineAttribute( "\tA\rB\n\t C\r\n \tD\n\r", "\tA" + Manifest.EOL +
-            " B" + Manifest.EOL +
-            " \t C" + Manifest.EOL +
-            "  \tD" + Manifest.EOL );
-    }
-
-    public void testIterators()
-        throws ManifestException, IOException
-    {
-        PlexusManifest plexusManifest =
-            getPlexusManifest( "src/test/resources/manifests/manifestMerge1.mf" );
-        Enumeration<String> attributeKeys = plexusManifest.getMainSection().getAttributeKeys();
-        assertNotNull( attributeKeys.nextElement() );
-
-        Manifest manifest = getManifest( "src/test/resources/manifests/manifestMerge1.mf" );
-        String key = manifest.getMainSection().iterator().next();
-        assertNotNull( key );
+        checkMultiLineAttribute("\tA\rB\n\t C\r\n \tD\n\r", "\tA" + Manifest.EOL +
+                " B" + Manifest.EOL +
+                " \t C" + Manifest.EOL +
+                "  \tD" + Manifest.EOL);
     }
 
     public void testAddAttributes()
@@ -342,21 +329,6 @@ public class ManifestTest
         try
         {
             return new Manifest( r );
-        }
-        finally
-        {
-            r.close();
-        }
-    }
-
-    private PlexusManifest getPlexusManifest( String filename )
-        throws IOException, ManifestException
-    {
-        FileReader r = new FileReader( getTestFile( filename ) );
-
-        try
-        {
-            return new PlexusManifest( r );
         }
         finally
         {

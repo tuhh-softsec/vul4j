@@ -27,7 +27,6 @@ public class FilterSupport
     }
 
     public boolean include( InputStream dataStream, String entryName )
-        throws ArchiveFilterException
     {
         boolean included = true;
 

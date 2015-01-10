@@ -18,7 +18,6 @@ package org.codehaus.plexus.archiver;
  */
 
 import org.codehaus.plexus.archiver.util.ArchiveEntryUtils;
-import org.codehaus.plexus.archiver.util.FilterSupport;
 import org.codehaus.plexus.components.io.attributes.SymlinkUtils;
 import org.codehaus.plexus.components.io.fileselectors.FileSelector;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
@@ -27,12 +26,7 @@ import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -44,7 +38,7 @@ import java.util.List;
  */
 public abstract class AbstractUnArchiver
     extends AbstractLogEnabled
-    implements UnArchiver, FinalizerEnabled, FilterEnabled
+    implements UnArchiver, FinalizerEnabled
 {
     private File destDirectory;
 
@@ -53,8 +47,6 @@ public abstract class AbstractUnArchiver
     private File sourceFile;
 
     private boolean overwrite = true;
-
-    private FilterSupport filterSupport;
 
     private List finalizers;
 
@@ -137,11 +129,6 @@ public abstract class AbstractUnArchiver
         runArchiveFinalizers();
     }
 
-    public void setArchiveFilters(final List filters)
-    {
-        filterSupport = new FilterSupport( filters, getLogger() );
-    }
-
     public void addArchiveFinalizer( final ArchiveFinalizer finalizer )
     {
         if ( finalizers == null )
@@ -157,7 +144,7 @@ public abstract class AbstractUnArchiver
         finalizers = archiveFinalizers;
     }
 
-    private final void runArchiveFinalizers()
+    private void runArchiveFinalizers()
         throws ArchiverException
     {
         if ( finalizers != null )
@@ -168,12 +155,6 @@ public abstract class AbstractUnArchiver
 				finalizer.finalizeArchiveExtraction(this);
 			}
         }
-    }
-
-    protected boolean include( final InputStream inputStream, final String name )
-        throws ArchiveFilterException
-    {
-        return filterSupport == null || filterSupport.include( inputStream, name );
     }
 
     protected void validate( final String path, final File outputDirectory )

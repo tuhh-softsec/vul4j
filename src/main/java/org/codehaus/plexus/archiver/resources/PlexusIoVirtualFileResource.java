@@ -36,15 +36,7 @@ public class PlexusIoVirtualFileResource
 {
     private final File file;
 
-    /**
-     * Creates a new instance. This constructor is usually used with a directory
-     */
-    protected PlexusIoVirtualFileResource(File file)
-    {
-        this( file, getName( file ));
-    }
-
-	protected PlexusIoVirtualFileResource(File file, String name)
+    protected PlexusIoVirtualFileResource(File file, String name)
     {
 		super( name, file.lastModified(), file.length(), file.isFile(), file.isDirectory(), file.exists() );
 		this.file = file;

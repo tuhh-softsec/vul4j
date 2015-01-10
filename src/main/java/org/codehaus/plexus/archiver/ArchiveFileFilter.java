@@ -7,8 +7,6 @@ import java.io.InputStream;
  */
 public interface ArchiveFileFilter
 {
-    
-    boolean include( InputStream dataStream, String entryName )
-        throws ArchiveFilterException;
+    boolean include( InputStream dataStream, String entryName );
 
 }
