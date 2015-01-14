@@ -39,6 +39,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.zip.GZIPOutputStream;
 
+import static org.apache.commons.compress.archivers.tar.TarConstants.*;
 import static org.codehaus.plexus.archiver.util.Streams.bufferedOutputStream;
 
 /**
@@ -234,9 +235,9 @@ public class TarArchiver
         try
         {
             TarArchiveEntry te;
-			if (  !longFileMode.isGnuMode() && pathLength >= TarConstants.NAMELEN )
+			if (  !longFileMode.isGnuMode() && pathLength >= NAMELEN )
 			{
-        		int maxPosixPathLen = TarConstants.NAMELEN + TarConstants.POSIX_PREFIXLEN;
+        		int maxPosixPathLen = NAMELEN + PREFIXLEN;
             	if ( longFileMode.isPosixMode() )
             	{
             	}
@@ -260,7 +261,7 @@ public class TarArchiver
                 }
                 else if ( longFileMode.isWarnMode() )
                 {
-                    getLogger().warn( "Entry: " + vPath + " longer than " + TarConstants.NAMELEN + " characters." );
+                    getLogger().warn( "Entry: " + vPath + " longer than " + NAMELEN + " characters." );
                     if ( !longWarningGiven )
                     {
                         getLogger().warn( "Resulting tar file can only be processed "
@@ -270,7 +271,7 @@ public class TarArchiver
                 }
                 else if ( longFileMode.isFailMode() )
                 {
-                    throw new ArchiverException( "Entry: " + vPath + " longer than " + TarConstants.NAMELEN
+                    throw new ArchiverException( "Entry: " + vPath + " longer than " + NAMELEN
                                                  + " characters." );
                 }
                 else
