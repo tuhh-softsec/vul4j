@@ -17,12 +17,12 @@ package org.codehaus.plexus.archiver.zip;
  *  limitations under the License.
  */
 
-import java.io.*;
-import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.zip.CRC32;
-
-import org.apache.commons.compress.archivers.zip.*;
+import org.apache.commons.compress.archivers.zip.InputStreamSupplier;
+import org.apache.commons.compress.archivers.zip.ParallelScatterZipCreator;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
+import org.apache.commons.compress.archivers.zip.ZipEncoding;
+import org.apache.commons.compress.archivers.zip.ZipEncodingHelper;
 import org.codehaus.plexus.archiver.AbstractArchiver;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.Archiver;
@@ -36,6 +36,17 @@ import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 
 import javax.annotation.WillClose;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.SequenceInputStream;
+import java.util.Hashtable;
+import java.util.Stack;
+import java.util.concurrent.ExecutionException;
+import java.util.zip.CRC32;
 
 import static org.codehaus.plexus.archiver.util.Streams.bufferedOutputStream;
 import static org.codehaus.plexus.archiver.util.Streams.fileOutputStream;
@@ -325,36 +336,6 @@ public abstract class AbstractZipArchiver
         success = true;
     }
 
-    protected Map<String, Long> getZipEntryNames( File file )
-        throws IOException
-    {
-        if ( !file.exists() || !doUpdate )
-        {
-            //noinspection unchecked
-            return Collections.EMPTY_MAP;
-        }
-        final Map<String, Long> entries = new HashMap<String, Long>();
-        final org.apache.commons.compress.archivers.zip.ZipFile zipFile =
-            new org.apache.commons.compress.archivers.zip.ZipFile( file );
-        for ( Enumeration en = zipFile.getEntries(); en.hasMoreElements(); )
-        {
-            ZipArchiveEntry ze = (ZipArchiveEntry) en.nextElement();
-            entries.put( ze.getName(), ze.getLastModifiedDate().getTime() );
-        }
-        return entries;
-    }
-
-    protected static boolean isFileAdded( ArchiveEntry entry, Map entries )
-    {
-        return !entries.containsKey( entry.getName() );
-    }
-
-    protected static boolean isFileUpdated( ArchiveEntry entry, Map entries )
-    {
-        Long l = (Long) entries.get( entry.getName() );
-        return l != null && ( l == -1 || !ResourceUtils.isUptodate( entry.getResource(), l ) );
-    }
-
     /**
      * Add the given resources.
      *
@@ -365,8 +346,6 @@ public abstract class AbstractZipArchiver
     protected final void addResources( ResourceIterator resources, ParallelScatterZipCreator zOut )
         throws IOException, ArchiverException
     {
-        File base = null;
-
         while ( resources.hasNext() )
         {
             ArchiveEntry entry = resources.next();
@@ -383,7 +362,7 @@ public abstract class AbstractZipArchiver
                 name = name + "/";
             }
 
-            addParentDirs( entry, base, name, zOut, "" );
+            addParentDirs( entry, null, name, zOut, "" );
 
             if ( entry.getResource().isFile() )
             {
@@ -448,52 +427,6 @@ public abstract class AbstractZipArchiver
         }
     }
 
-    private void readWithZipStats( InputStream in, byte[] header, int headerRead, ZipArchiveEntry ze,
-                                   ByteArrayOutputStream bos )
-        throws IOException
-    {
-        byte[] buffer = new byte[8 * 1024];
-
-        CRC32 cal2 = new CRC32();
-
-        long size = 0;
-
-        for ( int i = 0; i < headerRead; i++ )
-        {
-            cal2.update( header[i] );
-            size++;
-        }
-
-        int count = 0;
-        do
-        {
-            size += count;
-            cal2.update( buffer, 0, count );
-            if ( bos != null )
-            {
-                bos.write( buffer, 0, count );
-            }
-            count = in.read( buffer, 0, buffer.length );
-        }
-        while ( count != -1 );
-        ze.setSize( size );
-        ze.setCrc( cal2.getValue() );
-    }
-
-    public static long copy( final InputStream input, final OutputStream output, final int bufferSize )
-        throws IOException
-    {
-        final byte[] buffer = new byte[bufferSize];
-        long size = 0;
-        int n;
-        while ( -1 != ( n = input.read( buffer ) ) )
-        {
-            size += n;
-            output.write( buffer, 0, n );
-        }
-        return size;
-    }
-
     /**
      * Adds a new entry to the archive, takes care of duplicates as well.
      *
@@ -529,13 +462,6 @@ public abstract class AbstractZipArchiver
 
             ze.setMethod( compressThis ? ZipArchiveEntry.DEFLATED : ZipArchiveEntry.STORED );
             ze.setUnixMode( UnixStat.FILE_FLAG | mode );
-            /*
-             * ZipOutputStream.putNextEntry expects the ZipEntry to
-             * know its size and the CRC sum before you start writing
-             * the data when using STORED mode - unless it is seekable.
-             *
-             * This forces us to process the data twice.
-             */
 
             InputStream payload;
             if ( ze.isUnixSymlink() )
@@ -544,28 +470,9 @@ public abstract class AbstractZipArchiver
                 final byte[] bytes = enc.encode( symlinkDestination ).array();
                 payload = new ByteArrayInputStream( bytes );
             }
-            else if ( zipArchiveOutputStream.isSeekable() || compressThis )
-            {
-                payload = maybeSequence( header, read, in );
-            }
             else
             {
-                if ( in.markSupported() )
-                {
-                    in.mark( Integer.MAX_VALUE );
-                    readWithZipStats( in, header, read, ze, null ); // this cant be necessary with c-compress ???
-                    in.reset();
-                    payload = maybeSequence( header, read, in );
-                }
-                else
-                {
-                    // Store data into a byte[]
-                    // todo: explain how on earth this code works with zip streams > 128KB ???
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream( 128 * 1024 );
-                    readWithZipStats( in, header, read, ze, bos );
-                    ByteArrayInputStream bis = new ByteArrayInputStream( bos.toByteArray() );
-                    payload = maybeSequence( header, read, bis );
-                }
+                payload = maybeSequence( header, read, in );
             }
             zOut.addArchiveEntry( ze, createInputStreamSupplier( payload ) );
 
@@ -579,7 +486,7 @@ public abstract class AbstractZipArchiver
 
     private boolean isZipHeader( byte[] header )
     {
-        return header[0] == 0x50 && header[1] == 0x4b && header[2] == 03 && header[3] == 04;
+        return header[0] == 0x50 && header[1] == 0x4b && header[2] == 3 && header[3] == 4;
     }
 
     /**
@@ -800,7 +707,7 @@ public abstract class AbstractZipArchiver
     /**
      * method for subclasses to override
      *
-     * @param zOut
+     * @param zOut The output stream
      */
     protected void initZipOutputStream( ParallelScatterZipCreator zOut )
         throws ArchiverException, IOException
