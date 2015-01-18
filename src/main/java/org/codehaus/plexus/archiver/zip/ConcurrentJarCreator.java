@@ -28,6 +28,8 @@ import java.util.concurrent.Executors;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 
+import static org.apache.commons.compress.archivers.zip.ZipArchiveEntryRequest.createZipArchiveEntryRequest;
+
 public class ConcurrentJarCreator {
 
     private final ScatterZipOutputStream directories;
@@ -72,16 +74,25 @@ public class ConcurrentJarCreator {
         final int method = zipArchiveEntry.getMethod();
         if (method == -1) throw new IllegalArgumentException("Method must be set on the supplied zipArchiveEntry");
         if (zipArchiveEntry.isDirectory() && !zipArchiveEntry.isUnixSymlink()) {
-            ByteArrayInputStream payload = new ByteArrayInputStream(new byte[]{});
-            directories.addArchiveEntry(zipArchiveEntry, payload, ZipEntry.STORED);
+            final ByteArrayInputStream payload = new ByteArrayInputStream(new byte[]{});
+            directories.addArchiveEntry(createZipArchiveEntryRequest(zipArchiveEntry, createInputStreamSupplier(payload)));
             payload.close();
         } else if ("META-INF".equals(zipArchiveEntry.getName()) || "META-INF/MANIFEST.MF".equals(zipArchiveEntry.getName())) {
             InputStream payload = source.get();
-            manifest.addArchiveEntry(zipArchiveEntry, payload, zipArchiveEntry.isDirectory() ? ZipEntry.STORED : method);
+            if (zipArchiveEntry.isDirectory()) zipArchiveEntry.setMethod(ZipEntry.STORED);
+            manifest.addArchiveEntry(createZipArchiveEntryRequest(zipArchiveEntry, createInputStreamSupplier(payload)));
             payload.close();
         } else {
             parallelScatterZipCreator.addArchiveEntry(zipArchiveEntry, source);
         }
+    }
+
+    private InputStreamSupplier createInputStreamSupplier(final InputStream payload) {
+        return new InputStreamSupplier() {
+            public InputStream get() {
+                return payload;
+            }
+        };
     }
 
     public void writeTo(ZipArchiveOutputStream targetStream) throws IOException, ExecutionException, InterruptedException {
