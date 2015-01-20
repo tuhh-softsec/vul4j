@@ -12,6 +12,7 @@ import org.junit.Test;
 import java.io.*;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
+@Ignore
 public class ConcurrentJarCreatorTest {
     @Test
     public void concurrent()
