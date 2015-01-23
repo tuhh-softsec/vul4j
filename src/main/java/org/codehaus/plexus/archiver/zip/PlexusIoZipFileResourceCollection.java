@@ -1,11 +1,13 @@
 package org.codehaus.plexus.archiver.zip;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Iterator;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.codehaus.plexus.components.io.resources.AbstractPlexusIoArchiveResourceCollection;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 
@@ -26,26 +28,45 @@ public class PlexusIoZipFileResourceCollection
         {
             throw new IOException( "The tar archive file has not been set." );
         }
-        final org.apache.commons.compress.archivers.zip.ZipFile zipFile = new org.apache.commons.compress.archivers.zip.ZipFile( f );
-        final Enumeration en = zipFile.getEntries();
-        return new Iterator<PlexusIoResource>()
-        {
-            public boolean hasNext()
-            {
-                return en.hasMoreElements();
-            }
-
-            public PlexusIoResource next()
-            {
-                final ZipArchiveEntry entry = (ZipArchiveEntry) en.nextElement();
-
-                return new ZipResource( zipFile, entry, getStreamTransformer() );
-            }
-
-            public void remove()
-            {
-                throw new UnsupportedOperationException( "Removing isn't implemented." );
-            }
-        };
+        final ZipFile zipFile = new ZipFile( f );
+        return new CloseableIterator( zipFile );
     }
+
+    class CloseableIterator
+        implements Iterator<PlexusIoResource>, Closeable
+    {
+        final Enumeration en;
+
+        private final ZipFile zipFile;
+
+        public CloseableIterator( ZipFile zipFile )
+        {
+            this.en = zipFile.getEntriesInPhysicalOrder();
+            this.zipFile = zipFile;
+        }
+
+        public boolean hasNext ( ) {
+            return en.hasMoreElements();
+        }
+
+        public PlexusIoResource next()
+        {
+            final ZipArchiveEntry entry = (ZipArchiveEntry) en.nextElement();
+
+            return new ZipResource( zipFile, entry, getStreamTransformer() );
+        }
+
+        public void remove()
+        {
+            throw new UnsupportedOperationException( "Removing isn't implemented." );
+        }
+
+        public void close()
+            throws IOException
+        {
+            zipFile.close();
+        }
+    }
+
+    ;
 }
