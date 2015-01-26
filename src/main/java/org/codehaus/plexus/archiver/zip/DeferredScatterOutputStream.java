@@ -17,11 +17,14 @@
  */
 package org.codehaus.plexus.archiver.zip;
 
+import org.apache.commons.compress.parallel.ScatterGatherBackingStore;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class DeferredScatterOutputStream implements org.apache.commons.compress.archivers.zip.ScatterGatherBackingStore {
+public class DeferredScatterOutputStream implements ScatterGatherBackingStore
+{
     OffloadingOutputStream dfos = new OffloadingOutputStream(100000000, "scatterzipfragment", "zip", null);
 
 

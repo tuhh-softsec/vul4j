@@ -18,12 +18,14 @@
 package org.codehaus.plexus.archiver.zip;
 
 import org.apache.commons.compress.archivers.zip.*;
+import org.apache.commons.compress.parallel.InputStreamSupplier;
+import org.apache.commons.compress.parallel.ScatterGatherBackingStore;
+import org.apache.commons.compress.parallel.ScatterGatherBackingStoreSupplier;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
@@ -38,7 +40,8 @@ public class ConcurrentJarCreator {
     private final ParallelScatterZipCreator parallelScatterZipCreator;
     private long zipCloseElapsed;
 
-    static class DeferredSupplier implements ScatterGatherBackingStoreSupplier {
+    static class DeferredSupplier implements ScatterGatherBackingStoreSupplier
+    {
         public ScatterGatherBackingStore get() throws IOException {
             return new DeferredScatterOutputStream();
         }

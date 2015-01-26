@@ -17,12 +17,15 @@ package org.codehaus.plexus.archiver.zip;
  *  limitations under the License.
  */
 
-import org.apache.commons.compress.archivers.zip.InputStreamSupplier;
 import org.apache.commons.compress.archivers.zip.ParallelScatterZipCreator;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.commons.compress.archivers.zip.ZipEncoding;
 import org.apache.commons.compress.archivers.zip.ZipEncodingHelper;
+import java.util.concurrent.ExecutionException;
+import java.util.zip.CRC32;
+
+import org.apache.commons.compress.parallel.InputStreamSupplier;
 import org.codehaus.plexus.archiver.AbstractArchiver;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.Archiver;
@@ -45,8 +48,6 @@ import java.io.OutputStream;
 import java.io.SequenceInputStream;
 import java.util.Hashtable;
 import java.util.Stack;
-import java.util.concurrent.ExecutionException;
-import java.util.zip.CRC32;
 
 import static org.codehaus.plexus.archiver.util.Streams.bufferedOutputStream;
 import static org.codehaus.plexus.archiver.util.Streams.fileOutputStream;

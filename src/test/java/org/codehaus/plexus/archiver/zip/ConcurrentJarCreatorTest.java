@@ -1,9 +1,9 @@
 package org.codehaus.plexus.archiver.zip;
 
-import org.apache.commons.compress.archivers.zip.InputStreamSupplier;
 import org.apache.commons.compress.archivers.zip.UnixStat;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
+import org.apache.commons.compress.parallel.InputStreamSupplier;
 import org.apache.commons.compress.utils.IOUtils;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.junit.Ignore;
