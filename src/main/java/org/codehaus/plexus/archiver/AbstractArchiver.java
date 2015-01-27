@@ -516,6 +516,12 @@ public abstract class AbstractArchiver
                             }
                             else
                             {
+                                // this will leak handles in the IO iterator if the iterator is not fully consumed.
+                                // alternately we'd have to make this method return a Closeable iterator back
+                                // to the client and ditch the whole issue onto the client.
+                                // this does not really make any sense either, might equally well change the
+                                // api into something that is not broken by design.
+                                closeQuietlyIfCloseable( ioResourceIter );
                                 ioResourceIter = null;
                             }
                         }
@@ -586,6 +592,33 @@ public abstract class AbstractArchiver
         };
 
     }
+
+    private static void closeIfCloseable( Object resource )
+        throws IOException
+    {
+        if ( resource == null )
+        {
+            return;
+        }
+        if ( resource instanceof Closeable )
+        {
+            ( (Closeable) resource ).close();
+        }
+
+    }
+
+    private static void closeQuietlyIfCloseable( Object resource )
+    {
+        try
+        {
+            closeIfCloseable( resource );
+        }
+        catch ( IOException e )
+        {
+            throw new RuntimeException( e );
+        }
+    }
+
 
     public Map<String, ArchiveEntry> getFiles()
     {
@@ -1007,13 +1040,12 @@ public abstract class AbstractArchiver
             {
                 resource = ( (PlexusIoProxyResourceCollection) resource ).getSrc();
             }
-            if ( resource instanceof Closeable )
-            {
-                ( (Closeable) resource ).close();
-            }
+
+            closeIfCloseable( resource );
         }
         resources.clear();
     }
+
 
     protected abstract void execute()
         throws ArchiverException, IOException;
