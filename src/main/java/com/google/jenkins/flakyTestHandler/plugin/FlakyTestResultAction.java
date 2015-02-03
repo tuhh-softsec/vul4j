@@ -75,7 +75,7 @@ public class FlakyTestResultAction implements RunAction2 {
    */
   public FlakyTestResultAction(AbstractBuild build, BuildListener listener) {
     this.build = build;
-    AbstractTestResultAction action = build.getTestResultAction();
+    AbstractTestResultAction action = build.getAction(AbstractTestResultAction.class);
     if (action != null) {
       Object latestResult = action.getResult();
       if (latestResult != null && latestResult instanceof TestResult) {

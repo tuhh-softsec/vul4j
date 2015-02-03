@@ -28,6 +28,7 @@ import hudson.model.Descriptor;
 import hudson.tasks.junit.TestDataPublisher;
 import hudson.tasks.junit.TestResult;
 import hudson.tasks.junit.TestResultAction;
+import hudson.tasks.test.AbstractTestResultAction;
 
 /**
  * Publisher for publishing rerun information
@@ -46,7 +47,7 @@ public class JUnitFlakyTestDataPublisher
       BuildListener buildListener, TestResult testResult)
       throws IOException, InterruptedException {
     FlakyTestResult flakyTestResult = new FlakyTestResult(testResult);
-    flakyTestResult.freeze(abstractBuild.getTestResultAction(), abstractBuild);
+    flakyTestResult.freeze(abstractBuild.getAction(AbstractTestResultAction.class), abstractBuild);
     return new JUnitFlakyTestData(flakyTestResult);
   }
 
