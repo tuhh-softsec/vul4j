@@ -47,6 +47,7 @@ public class JUnitFlakyTestDataPublisher
       BuildListener buildListener, TestResult testResult)
       throws IOException, InterruptedException {
     FlakyTestResult flakyTestResult = new FlakyTestResult(testResult);
+    // TODO consider the possibility that there is >1 such action
     flakyTestResult.freeze(abstractBuild.getAction(AbstractTestResultAction.class), abstractBuild);
     return new JUnitFlakyTestData(flakyTestResult);
   }

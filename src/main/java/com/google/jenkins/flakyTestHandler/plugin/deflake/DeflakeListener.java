@@ -50,6 +50,7 @@ public class DeflakeListener extends RunListener<AbstractBuild> {
   // Add deflake action to the build and aggregate test running stats from this build
   @Override
   public void onCompleted(AbstractBuild build, TaskListener listener) {
+    // TODO consider the possibility that there is >1 such action
     TestResultAction testResultAction = build.getAction(TestResultAction.class);
 
     HistoryAggregatedFlakyTestResultAction historyAction = build.getProject()
