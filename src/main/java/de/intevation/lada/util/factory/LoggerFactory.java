@@ -11,7 +11,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 @ApplicationScoped
@@ -19,7 +20,7 @@ public class LoggerFactory {
 
     @Produces
     Logger createLogger(InjectionPoint injectionPoint) {
-        return Logger.getLogger(
+        return LogManager.getLogger(
             injectionPoint.getMember().getDeclaringClass().getName());
     }
 }
