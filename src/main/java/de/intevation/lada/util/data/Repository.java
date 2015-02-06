@@ -5,7 +5,7 @@
  * and comes with ABSOLUTELY NO WARRANTY! Check out
  * the documentation coming with IMIS-Labordaten-Application for details.
  */
-package de.intevation.lada.util;
+package de.intevation.lada.util.data;
 
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
@@ -32,7 +32,7 @@ public interface Repository {
 
     public <T> Response getAll(Class<T> clazz);
 
-    public <T> Response getById(Class<T> clazz, String id);
+    public <T> Response getById(Class<T> clazz, Object id);
 
     public Query queryFromString(String sql); 
 

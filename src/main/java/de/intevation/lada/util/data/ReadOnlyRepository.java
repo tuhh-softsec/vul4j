@@ -5,7 +5,7 @@
  * and comes with ABSOLUTELY NO WARRANTY! Check out
  * the documentation coming with IMIS-Labordaten-Application for details.
  */
-package de.intevation.lada.util;
+package de.intevation.lada.util.data;
 
 import java.util.List;
 
@@ -65,7 +65,7 @@ public class ReadOnlyRepository extends AbstractRepository {
     }
 
     @Override
-    public <T> Response getById(Class<T> clazz, String id) {
+    public <T> Response getById(Class<T> clazz, Object id) {
         T item = emp.entityManager(dataSource).find(clazz, id);
         if (item == null) {
             return new Response(false, 600, null);

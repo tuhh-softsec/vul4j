@@ -5,7 +5,7 @@
  * and comes with ABSOLUTELY NO WARRANTY! Check out
  * the documentation coming with IMIS-Labordaten-Application for details.
  */
-package de.intevation.lada.util;
+package de.intevation.lada.util.data;
 
 import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.Stateless;

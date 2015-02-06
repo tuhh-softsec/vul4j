@@ -13,12 +13,12 @@ import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 
-import de.intevation.lada.util.DefaultRepository;
-import de.intevation.lada.util.EntityManagerProducer;
-import de.intevation.lada.util.ReadOnlyRepository;
-import de.intevation.lada.util.Repository;
-import de.intevation.lada.util.RepositoryType;
 import de.intevation.lada.util.annotation.RepositoryConfig;
+import de.intevation.lada.util.data.DefaultRepository;
+import de.intevation.lada.util.data.EntityManagerProducer;
+import de.intevation.lada.util.data.ReadOnlyRepository;
+import de.intevation.lada.util.data.Repository;
+import de.intevation.lada.util.data.RepositoryType;
 
 
 @ApplicationScoped
