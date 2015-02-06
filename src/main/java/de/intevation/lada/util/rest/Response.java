@@ -7,6 +7,7 @@
  */
 package de.intevation.lada.util.rest;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +18,7 @@ import java.util.Map;
 *
 * @author <a href="mailto:torsten@intevation.de">Torsten Irländer</a>
 */
-public class Response implements java.io.Serializable {
+public class Response implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
