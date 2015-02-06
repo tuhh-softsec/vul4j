@@ -43,4 +43,17 @@ public class LadaTest {
         QueryServiceTest queryServiceTest = new QueryServiceTest();
         queryServiceTest.test(queryService);
     }
+
+    /**
+     * Testing the ProbeService.
+     */
+    @Test
+    @RunAsClient
+    public final void testProbeService(
+        @ArquillianResource URL baseUrl)
+    throws Exception {
+        Assert.assertNotNull(baseUrl);
+        ProbeServiceTest test = new ProbeServiceTest();
+        test.test(baseUrl);
+    }
 }
