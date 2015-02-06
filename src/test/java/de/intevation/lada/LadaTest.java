@@ -29,6 +29,7 @@ public class LadaTest {
         return ShrinkWrap.create(WebArchive.class, "lada-basis-test.war")
             .addPackages(true, Package.getPackage("de.intevation.lada"))
             .addClass(QueryServiceTest.class)
+            .addAsResource("log4j.properties", "log4j.properties")
             .addAsResource("queryconf.json", "queryconf.json")
             .addAsResource("META-INF/test-persistence.xml",
                 "META-INF/persistence.xml");
