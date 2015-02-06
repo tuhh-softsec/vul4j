@@ -8,12 +8,8 @@
 package de.intevation.lada.query;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
-import java.net.URL;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +27,7 @@ import javax.json.JsonReader;
  */
 public class QueryTools
 {
-    private static String FILE = "/META-INF/queryconf.json";
+    private static String FILE = "/queryconf.json";
     /**
      * Read the config file using the system property
      * "de.intevation.lada.sqlconfig".
@@ -40,10 +36,13 @@ public class QueryTools
      */
     public static String readConfigFile() {
         try {
-            URL path = QueryConfig.class.getResource(FILE);
-            byte[] encoded = Files.readAllBytes(Paths.get(path.getPath()));
-            Charset encoding = Charset.defaultCharset();
-            return encoding.decode(ByteBuffer.wrap(encoded)).toString();
+            InputStream inputStream = QueryConfig.class.getResourceAsStream(FILE);
+            int ch;
+            StringBuilder builder = new StringBuilder();
+            while((ch = inputStream.read()) != -1) {
+                builder.append((char)ch);
+            }
+            return builder.toString();
         }
         catch (IOException ioe) {
             ioe.printStackTrace();
