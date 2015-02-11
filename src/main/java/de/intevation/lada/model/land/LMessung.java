@@ -7,6 +7,7 @@
  */
 package de.intevation.lada.model.land;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -21,10 +22,14 @@ import de.intevation.lada.model.Messung;
 public class LMessung extends Messung {
     private static final long serialVersionUID = 1L;
 
+    @Column(name="nebenproben_nr")
+    private String nebenprobenNr;
+
     private Boolean geplant;
 
     public LMessung() {
     }
+
 
     public Boolean getGeplant() {
         return this.geplant;
@@ -32,5 +37,13 @@ public class LMessung extends Messung {
 
     public void setGeplant(Boolean geplant) {
         this.geplant = geplant;
+    }
+
+    public String getNebenprobenNr() {
+        return nebenprobenNr;
+    }
+
+    public void setNebenprobenNr(String nebenprobenNr) {
+        this.nebenprobenNr = nebenprobenNr;
     }
 }

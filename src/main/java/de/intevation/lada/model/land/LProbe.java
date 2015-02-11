@@ -24,6 +24,9 @@ import de.intevation.lada.model.Probe;
 public class LProbe extends Probe {
     private static final long serialVersionUID = 1L;
 
+    @Column(name="hauptproben_nr")
+    private String hauptprobenNr;
+
     @Column(name="erzeuger_id")
     private Integer erzeugerId;
 
@@ -102,5 +105,13 @@ public class LProbe extends Probe {
 
     public void setSolldatumEnde(Timestamp solldatumEnde) {
         this.solldatumEnde = solldatumEnde;
+    }
+
+    public String getHauptprobenNr() {
+        return this.hauptprobenNr;
+    }
+
+    public void setHauptprobenNr(String hauptprobenNr) {
+        this.hauptprobenNr = hauptprobenNr;
     }
 }
