@@ -222,7 +222,7 @@ public class ProbeServiceTest {
             Client client = ClientBuilder.newClient();
             WebTarget target =
                 client.target(baseUrl + "probe/" + this.createdProbeId);
-            /* Delete a probe with th id saved when created a probe*/
+            /* Delete a probe with the id saved when created a probe*/
             Response response = target.request().delete();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
