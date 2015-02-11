@@ -42,20 +42,8 @@ public class ProbeTranslation implements Serializable {
         this.id = id;
     }
 
-    public String getHauptprobenNr() {
-        return this.hauptprobenNr;
     }
 
-    public void setHauptprobenNr(String hauptprobenNr) {
-        this.hauptprobenNr = hauptprobenNr;
-    }
-
-    public Integer getProbeId() {
-        return this.probeId;
-    }
-
-    public void setProbeId(Integer probeId) {
-        this.probeId = probeId;
     }
 
     public String getProbeIdAlt() {

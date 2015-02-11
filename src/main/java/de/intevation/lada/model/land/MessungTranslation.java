@@ -28,9 +28,6 @@ public class MessungTranslation implements Serializable {
     @Column(name="messungs_id_alt")
     private Integer messungsIdAlt;
 
-    @Column(name="nebenproben_nr")
-    private String nebenprobenNr;
-
     @Column(name="probe_id_alt")
     private String probeIdAlt;
 
@@ -59,14 +56,6 @@ public class MessungTranslation implements Serializable {
 
     public void setMessungsIdAlt(Integer messungsIdAlt) {
         this.messungsIdAlt = messungsIdAlt;
-    }
-
-    public String getNebenprobenNr() {
-        return this.nebenprobenNr;
-    }
-
-    public void setNebenprobenNr(String nebenprobenNr) {
-        this.nebenprobenNr = nebenprobenNr;
     }
 
     public String getProbeIdAlt() {
