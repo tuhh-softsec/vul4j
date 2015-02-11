@@ -11,13 +11,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonException;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.ws.rs.core.MultivaluedMap;
 
 
 /**
@@ -132,5 +137,38 @@ public class QueryTools
         catch (JsonException e) {
             return null;
         }
+    }
+
+    public static Query prepareQuery(
+        String sql,
+        List<String> filters,
+        MultivaluedMap<String, String> params,
+        EntityManager manager
+    ) {
+        Query query = manager.createNativeQuery(sql);
+        for (String filter: filters) {
+            List<String> param = params.get(filter);
+            List<String> clean = new ArrayList<String>();
+            for(String p : param) {
+                clean.add(p.replace(",", "|"));
+            }
+            query.setParameter(filter, clean);
+        }
+        return query;
+    }
+
+    public static List<Map<String, Object>> prepareResult(
+        List<Object[]> result,
+        List<String> names
+    ) {
+        List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
+        for (Object[] row: result) {
+            Map<String, Object> set = new HashMap<String, Object>();
+            for (int i = 0; i < row.length; i++) {
+                set.put(names.get(i), row[i]);
+            }
+            ret.add(set);
+        }
+        return ret;
     }
 }

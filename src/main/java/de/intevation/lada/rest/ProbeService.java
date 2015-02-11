@@ -7,10 +7,15 @@
  */
 package de.intevation.lada.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.json.JsonArray;
+import javax.json.JsonException;
+import javax.json.JsonObject;
+import javax.persistence.Query;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -21,11 +26,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.UriInfo;
 
 import org.apache.log4j.Logger;
 
 import de.intevation.lada.model.land.LProbe;
 import de.intevation.lada.model.land.ProbeTranslation;
+import de.intevation.lada.query.QueryTools;
 import de.intevation.lada.util.annotation.AuthenticationConfig;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
@@ -72,15 +80,49 @@ public class ProbeService {
      *
      * @return Response object containing all probe objects.
      */
+    @SuppressWarnings("unchecked")
     @GET
     @Path("/")
     @Produces("application/json")
-    public Response get(@Context HttpHeaders headers) {
+    public Response get(
+        @Context HttpHeaders headers,
+        @Context UriInfo info
+    ) {
         if (!authentication.isAuthenticated(headers)) {
             logger.debug("User is not authenticated!");
             return new Response(false, 699, null);
         }
-        return defaultRepo.getAll(LProbe.class, "land");
+        MultivaluedMap<String, String> params = info.getQueryParameters();
+        if (params.isEmpty() || !params.containsKey("qid")) {
+            return defaultRepo.getAll(LProbe.class, "land");
+        }
+        String qid = params.getFirst("qid");
+        JsonObject jsonQuery = QueryTools.getQueryById(qid);
+        String sql = "";
+        List<String> filters = new ArrayList<String>();
+        List<String> results = new ArrayList<String>();
+        try {
+            sql = jsonQuery.getString("sql");
+            JsonArray jsonFilters = jsonQuery.getJsonArray("filters");
+            JsonArray jsonResults = jsonQuery.getJsonArray("result");
+            for (int i = 0; i < jsonFilters.size(); i++) {
+                filters.add(
+                    jsonFilters.getJsonObject(i).getString("dataIndex"));
+            }
+            for (int i = 0; i < jsonResults.size(); i++) {
+                results.add(
+                    jsonResults.getJsonObject(i).getString("dataIndex"));
+            }
+        }
+        catch (JsonException je) {
+            return new Response(false, 603, new ArrayList<Object>());
+        }
+        Query query = QueryTools.prepareQuery(
+            sql,
+            filters,
+            params,
+            defaultRepo.entityManager("land"));
+        return new Response(true, 200, QueryTools.prepareResult(query.getResultList(), results));
     }
 
     /**
