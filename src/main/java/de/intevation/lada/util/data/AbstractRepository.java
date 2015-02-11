@@ -32,10 +32,10 @@ implements Repository
     protected String jndiPath;
 
     /**
-     * Create or update an object in the database.
+     * Create object in the database.
      * This operation can not be undone.
      *
-     * @param object    The object to create or update
+     * @param object    The object to create
      *
      * @throws EntityExistsException
      * @throws IllegalArgumentException
@@ -52,6 +52,17 @@ implements Repository
         emp.entityManager(dataSource).persist(object);
     }
 
+    /**
+     * Create object in the database.
+     * This operation can not be undone.
+     *
+     * @param object    The object to create
+     *
+     * @throws EntityExistsException
+     * @throws IllegalArgumentException
+     * @throws EJBTransactionRolledbackException
+     * @throws TransactionRequiredException
+     */
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     protected void updateInDatabase(Object object, String dataSource)
     throws EntityExistsException,

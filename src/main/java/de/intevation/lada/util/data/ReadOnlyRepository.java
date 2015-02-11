@@ -20,7 +20,9 @@ import de.intevation.lada.util.rest.Response;
 
 
 /**
- * @author rrenkert
+ * Repository providing read access.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
 @Stateless
 public class ReadOnlyRepository extends AbstractRepository {
@@ -31,21 +33,44 @@ public class ReadOnlyRepository extends AbstractRepository {
     public ReadOnlyRepository() {
     }
 
+    /**
+     * NOT SUPPORTED.
+     *
+     * @return null
+     */
     @Override
     public Response create(Object object, String dataSource) {
         return null;
     }
 
+    /**
+     * NOT SUPPORTED.
+     *
+     * @return null
+     */
     @Override
     public Response update(Object object, String dataSource) {
         return null;
     }
 
+    /**
+     * NOT SUPPORTED.
+     *
+     * @return null
+     */
     @Override
     public Response delete(Object object, String dataSource) {
         return null;
     }
 
+    /**
+     * Get objects from database using the given filter.
+     *
+     * @param filter Filter used to request objects.
+     * @param datasource The datasource.
+     *
+     * @return Response object containing the filtered list of objects.
+     */
     @Override
     public <T> Response filter(CriteriaQuery<T> filter, String dataSource) {
         List<T> result =
@@ -53,6 +78,17 @@ public class ReadOnlyRepository extends AbstractRepository {
         return new Response(true, 200, result);
     }
 
+
+    /**
+     * Get objects from database using the given filter.
+     *
+     * @param filter Filter used to request objects.
+     * @param size The maximum amount of objects.
+     * @param start The start index.
+     * @param datasource The datasource.
+     *
+     * @return Response object containing the filtered list of objects.
+     */
     @Override
     public <T> Response filter(
         CriteriaQuery<T> filter,
@@ -69,7 +105,16 @@ public class ReadOnlyRepository extends AbstractRepository {
         return new Response(true, 200, result);
     }
 
+    /**
+     * Get all objects.
+     *
+     * @param clazz The type of the objects.
+     * @param dataSource The datasource.
+     *
+     * @return Response object containg all requested objects.
+     */
     public <T> Response getAll(Class<T> clazz, String dataSource) {
+        logger.warn("ich bin ein logger");
         EntityManager manager = emp.entityManager(dataSource);
         QueryBuilder<T> builder =
             new QueryBuilder<T>(manager, clazz);
@@ -78,6 +123,15 @@ public class ReadOnlyRepository extends AbstractRepository {
         return new Response(true, 200, result);
     }
 
+    /**
+     * Get an object by its id.
+     *
+     * @param clazz The type of the object.
+     * @param id The id of the object.
+     * @param dataSource The datasource.
+     *
+     * @return Response object containg the requested object.
+     */
     @Override
     public <T> Response getById(Class<T> clazz, Object id, String dataSource) {
         T item = emp.entityManager(dataSource).find(clazz, id);

@@ -1,3 +1,10 @@
+/* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3) 
+ * and comes with ABSOLUTELY NO WARRANTY! Check out 
+ * the documentation coming with IMIS-Labordaten-Application for details. 
+ */
 package de.intevation.lada.test;
 
 import java.io.StringReader;
@@ -16,7 +23,11 @@ import javax.ws.rs.core.Response;
 
 import org.junit.Assert;
 
-
+/**
+ * Class to test the Lada probe REST service.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 public class ProbeServiceTest {
 
     private static final String COMPARE_PROBE =
@@ -46,6 +57,11 @@ public class ProbeServiceTest {
 
     private Integer createdProbeId;
 
+    /**
+     * Main entry point in this class to start the tests.
+     *
+     * @param baseUrl The url pointing to the test deployment.
+     */
     public final void test(URL baseUrl) throws Exception {
         System.out.println("\nStarting test (2) on Probe-Service:");
         probeGetAllService(baseUrl);
@@ -55,38 +71,58 @@ public class ProbeServiceTest {
         probeDelete(baseUrl);
     }
 
+    /**
+     * Test the GET Service by requesting all probe objects.
+     *
+     * @param baseUrl The url pointing to the test deployment.
+     */
     private final void probeGetAllService(URL baseUrl)
     throws Exception {
         System.out.println("Testing get: ");
+        /* Create a client*/
         Client client = ClientBuilder.newClient();
         WebTarget target = client.target(baseUrl + "probe");
+        /* Request all probe objects*/
         Response response = target.request().get();
         String entity = response.readEntity(String.class);
         try{
+            /* Try to parse the response*/
             JsonReader reader = Json.createReader(new StringReader(entity));
             JsonObject content = reader.readObject();
+            /* Verify the response*/
             Assert.assertTrue(content.getBoolean("success"));
             Assert.assertEquals("200", content.getString("message"));
         }
         catch(JsonException je) {
             Assert.fail(je.getMessage());
         }
+        System.out.println("passed");
     }
 
+    /**
+     * Test the GET Service by requesting a single probe object by id.
+     *
+     * @param baseUrl The url pointing to the test deployment.
+     */
     private final void probeGetByIdService(URL baseUrl)
     throws Exception {
         System.out.println("Testing getById: ");
         try {
+            /* Create a json object from static probe string*/
             JsonReader fromStringRreader =
                 Json.createReader(new StringReader(COMPARE_PROBE));
             JsonObject staticProbe = fromStringRreader.readObject();
+            /* Create a client*/
             Client client = ClientBuilder.newClient();
             WebTarget target = client.target(baseUrl + "probe/1");
+            /* Request a probe object by id*/
             Response response = target.request().get();
             String entity = response.readEntity(String.class);
+            /* Try to parse the response*/
             JsonReader fromServiceReader =
                 Json.createReader(new StringReader(entity));
             JsonObject content = fromServiceReader.readObject();
+            /* Verify the response*/
             Assert.assertTrue(content.getBoolean("success"));
             Assert.assertEquals("200", content.getString("message"));
             Assert.assertEquals(staticProbe,
@@ -97,6 +133,12 @@ public class ProbeServiceTest {
         }
         System.out.println("passed");
     }
+
+    /**
+     * Test the CREATE Service.
+     *
+     * @param baseUrl The url pointing to the test deployment.
+     */
     private final void probeCreate(URL baseUrl)
     throws Exception {
         System.out.println("Testing create: ");
@@ -125,6 +167,11 @@ public class ProbeServiceTest {
         System.out.println("passed");
     }
 
+    /**
+     * Test the UPDATE Service.
+     *
+     * @param baseUrl The url pointing to the test deployment.
+     */
     private final void probeUpdate(URL baseUrl)
     throws Exception {
         System.out.println("Testing update: ");
@@ -162,6 +209,11 @@ public class ProbeServiceTest {
         System.out.println("passed");
     }
 
+    /**
+     * Test the DELETE Service.
+     *
+     * @param baseUrl The url pointing to the test deployment.
+     */
     private final void probeDelete(URL baseUrl) {
         System.out.println("Testing delete: ");
         try {

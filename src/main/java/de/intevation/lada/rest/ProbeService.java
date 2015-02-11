@@ -38,25 +38,40 @@ import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.Response;
 
+
+/**
+ * This class produces a RESTful service to interact with probe objects.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 @Path("probe")
 @RequestScoped
 public class ProbeService {
 
+    /* The logger used in this class.*/
     @Inject
     private Logger logger;
 
+    /* The data repository granting read/write access.*/
     @Inject
     @RepositoryConfig(type=RepositoryType.RW)
     private Repository defaultRepo;
 
+    /* The authentication module.*/
     @Inject
     @AuthenticationConfig(type=AuthenticationType.NONE)
     private Authentication authentication;
 
+    /* The authorization module.*/
     @Inject
     @AuthorizationConfig(type=AuthorizationType.NONE)
     private Authorization authorization;
 
+    /**
+     * Get all probe objects.
+     *
+     * @return Response object containing all probe objects.
+     */
     @GET
     @Path("/")
     @Produces("application/json")
@@ -65,10 +80,14 @@ public class ProbeService {
             logger.debug("User is not authenticated!");
             return new Response(false, 699, null);
         }
-        defaultRepo.setDataSource("land");
-        return defaultRepo.getAll(LProbe.class);
+        return defaultRepo.getAll(LProbe.class, "land");
     }
 
+    /**
+     * Get a probe object by id.
+     *
+     * @return Response object containing a single probe.
+     */
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -80,10 +99,14 @@ public class ProbeService {
             logger.debug("User is not authenticated!");
             return new Response(false, 699, null);
         }
-        defaultRepo.setDataSource("land");
-        return defaultRepo.getById(LProbe.class, Integer.valueOf(id));
+        return defaultRepo.getById(LProbe.class, Integer.valueOf(id), "land");
     }
 
+    /**
+     * Create a new probe object.
+     *
+     * @return Response object containing the new probe object.
+     */
     @POST
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)

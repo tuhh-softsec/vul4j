@@ -15,7 +15,7 @@ import de.intevation.lada.util.rest.Response;
 
 /**
  * This generic Container is an interface to request and select Data
- * obejcts from the connected database.
+ * objects from the connected database.
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */

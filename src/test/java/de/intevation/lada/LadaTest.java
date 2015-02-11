@@ -1,3 +1,10 @@
+/* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3) 
+ * and comes with ABSOLUTELY NO WARRANTY! Check out 
+ * the documentation coming with IMIS-Labordaten-Application for details. 
+ */
 package de.intevation.lada;
 
 import java.net.URL;
@@ -15,9 +22,18 @@ import org.junit.runner.RunWith;
 import de.intevation.lada.test.ProbeServiceTest;
 import de.intevation.lada.test.QueryServiceTest;
 
+
+/**
+ * Class to test the Lada server.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 @RunWith(Arquillian.class)
 public class LadaTest {
 
+    /**
+     * Create a deployable WAR archive.
+     * */
     @Deployment
     public static WebArchive createDeployment() throws Exception {
         return ShrinkWrap.create(WebArchive.class, "lada-basis-test.war")
@@ -46,8 +62,7 @@ public class LadaTest {
      */
     @Test
     @RunAsClient
-    public final void testProbeService(
-        @ArquillianResource URL baseUrl)
+    public final void testProbeService(@ArquillianResource URL baseUrl)
     throws Exception {
         Assert.assertNotNull(baseUrl);
         ProbeServiceTest test = new ProbeServiceTest();

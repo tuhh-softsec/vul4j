@@ -19,7 +19,9 @@ import de.intevation.lada.util.rest.Response;
 
 
 /**
- * @author rrenkert
+ * Repository providing read and write access.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
 @Stateless
 public class DefaultRepository extends ReadOnlyRepository {
@@ -68,6 +70,14 @@ public class DefaultRepository extends ReadOnlyRepository {
         return response;
     }
 
+    /**
+     * Update an existing object in the database.
+     *
+     * @param object The object.
+     * @param dataSource The datasource.
+     *
+     * @return Response object containing the upadted object.
+     */
     @Override
     public Response update(Object object, String dataSource) {
         Response response = new Response(true, 200, object);
@@ -89,6 +99,14 @@ public class DefaultRepository extends ReadOnlyRepository {
         return response;
     }
 
+    /**
+     * Delete an object from the database.
+     *
+     * @param object The object.
+     * @param dataSource The datasource.
+     *
+     * @return Response object.
+     */
     @Override
     public Response delete(Object object, String dataSource) {
         Response response = new Response(true, 200, null);
