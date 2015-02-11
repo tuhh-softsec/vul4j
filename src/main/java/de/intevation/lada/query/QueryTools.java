@@ -69,7 +69,7 @@ public class QueryTools
             for (int i = 0; i < queries.size(); i++) {
                 JsonObject query = queries.getJsonObject(i);
                 QueryConfig qConf = new QueryConfig();
-                qConf.setId(query.getInt("id"));
+                qConf.setId(query.getString("id"));
                 qConf.setName(query.getString("name"));
                 qConf.setDescription(query.getString("description"));
                 qConf.setSql(query.getString("sql"));
