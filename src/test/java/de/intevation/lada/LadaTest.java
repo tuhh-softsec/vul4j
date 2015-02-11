@@ -2,8 +2,6 @@ package de.intevation.lada;
 
 import java.net.URL;
 
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -14,15 +12,11 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import de.intevation.lada.rest.QueryService;
 import de.intevation.lada.test.ProbeServiceTest;
 import de.intevation.lada.test.QueryServiceTest;
 
 @RunWith(Arquillian.class)
 public class LadaTest {
-
-    @Inject
-    private QueryService queryService;
 
     @Deployment
     public static WebArchive createDeployment() throws Exception {
@@ -39,9 +33,12 @@ public class LadaTest {
      * Testing the QueryService.
      */
     @Test
-    public final void testQueryService() throws Exception {
+    @RunAsClient
+    public final void testQueryService(@ArquillianResource URL baseUrl)
+    throws Exception {
+        Assert.assertNotNull(baseUrl);
         QueryServiceTest queryServiceTest = new QueryServiceTest();
-        queryServiceTest.test(queryService);
+        queryServiceTest.test(baseUrl);
     }
 
     /**
