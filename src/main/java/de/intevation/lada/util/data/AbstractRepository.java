@@ -11,19 +11,23 @@ import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TransactionRequiredException;
 
-
+/**
+ * Abstract class implementing low level data operations.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 @Stateless
 public abstract class AbstractRepository
-implements Repository 
+implements Repository
 {
+    @Inject
     protected EntityManagerProducer emp;
-
-    protected String dataSource;
 
     protected String jndiPath;
 
@@ -39,7 +43,17 @@ implements Repository
      * @throws TransactionRequiredException
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    protected void persistInDatabase(Object object)
+    protected void persistInDatabase(Object object, String dataSource)
+    throws EntityExistsException,
+        IllegalArgumentException,
+        EJBTransactionRolledbackException,
+        TransactionRequiredException
+    {
+        emp.entityManager(dataSource).persist(object);
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    protected void updateInDatabase(Object object, String dataSource)
     throws EntityExistsException,
         IllegalArgumentException,
         EJBTransactionRolledbackException,
@@ -58,7 +72,7 @@ implements Repository
      * @throws TransactionRequiredException
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    protected void removeFromDatabase(Object object)
+    protected void removeFromDatabase(Object object, String dataSource)
     throws IllegalArgumentException,
         TransactionRequiredException
     {
@@ -68,22 +82,12 @@ implements Repository
                 object : em.merge(object));
     }
 
-    public Query queryFromString(String sql) {
+    public Query queryFromString(String sql, String dataSource) {
         EntityManager em = emp.entityManager(dataSource);
         return em.createNativeQuery(sql);
     }
 
-    @Override
-    public void setDataSource(String dataSource) {
-        this.dataSource = dataSource;
-    }
-
-    @Override
-    public String getDataSource() {
-        return this.dataSource;
-    }
-
-    public void setEntityManagerProducer(EntityManagerProducer emp) {
-        this.emp = emp;
+    public EntityManager entityManager(String dataSource) {
+        return emp.entityManager(dataSource);
     }
 }

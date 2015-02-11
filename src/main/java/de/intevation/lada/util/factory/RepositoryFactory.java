@@ -7,42 +7,39 @@
  */
 package de.intevation.lada.util.factory;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.New;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.Annotated;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Inject;
 
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.DefaultRepository;
-import de.intevation.lada.util.data.EntityManagerProducer;
 import de.intevation.lada.util.data.ReadOnlyRepository;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 
 
-@ApplicationScoped
+@RequestScoped
 public class RepositoryFactory {
 
-    @Inject
-    private EntityManagerProducer emp;
-
     @Produces
-    Repository createRepository(InjectionPoint injectionPoint) {
+    Repository createRepository(InjectionPoint injectionPoint,
+        @New ReadOnlyRepository readOnlyRepo,
+        @New DefaultRepository defaultRepo) {
         Annotated annotated = injectionPoint.getAnnotated();
-        RepositoryConfig config = annotated.getAnnotation(RepositoryConfig.class);
+        RepositoryConfig config =
+            annotated.getAnnotation(RepositoryConfig.class);
         if (config == null) {
-            return new ReadOnlyRepository();
+            return readOnlyRepo;
         }
         Repository repository;
         if (config.type() == RepositoryType.RW) {
-            repository = new DefaultRepository();
+            repository = defaultRepo;
         }
         else {
-            repository = new ReadOnlyRepository();
+            repository = readOnlyRepo;
         }
-        repository.setEntityManagerProducer(emp);
-        repository.setDataSource(config.dataSource());
         return repository;
     }
 }
