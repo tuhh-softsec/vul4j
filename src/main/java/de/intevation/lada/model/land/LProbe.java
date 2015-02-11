@@ -11,7 +11,10 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import de.intevation.lada.model.Probe;
 
@@ -23,6 +26,9 @@ import de.intevation.lada.model.Probe;
 @Table(name="probe")
 public class LProbe extends Probe {
     private static final long serialVersionUID = 1L;
+
+    @OneToOne(mappedBy="probe")
+    private ProbeTranslation probeTranslation;
 
     @Column(name="hauptproben_nr")
     private String hauptprobenNr;
@@ -107,6 +113,15 @@ public class LProbe extends Probe {
         this.solldatumEnde = solldatumEnde;
     }
 
+    @JsonIgnore
+    public ProbeTranslation getProbeTranslation() {
+        return probeTranslation;
+    }
+
+    public void setProbeTranslation(ProbeTranslation probeTranslation) {
+        this.probeTranslation = probeTranslation;
+    }
+
     public String getHauptprobenNr() {
         return this.hauptprobenNr;
     }
@@ -114,4 +129,10 @@ public class LProbe extends Probe {
     public void setHauptprobenNr(String hauptprobenNr) {
         this.hauptprobenNr = hauptprobenNr;
     }
+
+    public String getProbeIdAlt() {
+        return this.probeTranslation.getProbeIdAlt();
+    }
+
+    public void setProbeIdAlt(String probeIdAlt) {}
 }

@@ -8,7 +8,19 @@
 package de.intevation.lada.model.land;
 
 import java.io.Serializable;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 /**
@@ -20,15 +32,15 @@ public class ProbeTranslation implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name="id", unique=true)
     private Integer id;
 
-    @Column(name="hauptproben_nr")
-    private String hauptprobenNr;
+    @OneToOne
+    private LProbe probe;
 
-    @Column(name="probe_id")
-    private Integer probeId;
-
-    @Column(name="probe_id_alt")
+    @Generated(GenerationTime.INSERT)
+    @Column(name="probe_id_alt", insertable=false)
     private String probeIdAlt;
 
     public ProbeTranslation() {
@@ -42,8 +54,13 @@ public class ProbeTranslation implements Serializable {
         this.id = id;
     }
 
+    @JsonIgnore
+    public LProbe getProbeId() {
+        return this.probe;
     }
 
+    public void setProbeId(LProbe probe) {
+        this.probe = probe;
     }
 
     public String getProbeIdAlt() {
