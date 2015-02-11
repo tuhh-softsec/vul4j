@@ -69,6 +69,7 @@ public class ProbeServiceTest {
         probeCreate(baseUrl);
         probeUpdate(baseUrl);
         probeDelete(baseUrl);
+        probeFilter(baseUrl);
     }
 
     /**
@@ -230,6 +231,35 @@ public class ProbeServiceTest {
             /* Verify the response*/
             Assert.assertTrue(respObj.getBoolean("success"));
             Assert.assertEquals("200", respObj.getString("message"));
+        }
+        catch(JsonException je) {
+            Assert.fail(je.getMessage());
+        }
+        System.out.println("passed");
+    }
+
+    /**
+     * Test the GET service using filters.
+     *
+     * @param baseUrl The url poining to the test deployment.
+     */
+    private final void probeFilter(URL baseUrl) {
+        System.out.println("Testing filter: ");
+        try {
+            /* Create a client*/
+            Client client = ClientBuilder.newClient();
+            WebTarget target =
+                client.target(baseUrl + "probe?qid=2&mst_id=11010&umw_id=N24");
+            /* Request the probe objects using the filter*/
+            Response response = target.request().get();
+            String entity = response.readEntity(String.class);
+            /* Try to parse the response*/
+            JsonReader reader = Json.createReader(new StringReader(entity));
+            JsonObject respObj = reader.readObject();
+            /* Verify the response*/
+            Assert.assertTrue(respObj.getBoolean("success"));
+            Assert.assertEquals("200", respObj.getString("message"));
+            Assert.assertNotNull(respObj.getJsonArray("data"));
         }
         catch(JsonException je) {
             Assert.fail(je.getMessage());
