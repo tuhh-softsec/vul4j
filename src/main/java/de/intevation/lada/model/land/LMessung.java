@@ -9,7 +9,10 @@ package de.intevation.lada.model.land;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import de.intevation.lada.model.Messung;
 
@@ -25,11 +28,13 @@ public class LMessung extends Messung {
     @Column(name="nebenproben_nr")
     private String nebenprobenNr;
 
+    @OneToOne(mappedBy="messungs")
+    private MessungTranslation messungTranslation;
+
     private Boolean geplant;
 
     public LMessung() {
     }
-
 
     public Boolean getGeplant() {
         return this.geplant;
@@ -46,4 +51,19 @@ public class LMessung extends Messung {
     public void setNebenprobenNr(String nebenprobenNr) {
         this.nebenprobenNr = nebenprobenNr;
     }
+
+    @JsonIgnore
+    public MessungTranslation getMessungTranslation() {
+        return this.messungTranslation;
+    }
+
+    public void setMessungsTranslation(MessungTranslation messungTranslation) {
+        this.messungTranslation = messungTranslation;
+    }
+
+    public Integer getMessungsIdAlt() {
+        return this.messungTranslation.getMessungsIdAlt();
+    }
+
+    public void setMessungsIdAlt(Integer messungsIdAlt) {}
 }

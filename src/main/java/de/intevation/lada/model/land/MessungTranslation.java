@@ -8,7 +8,13 @@
 package de.intevation.lada.model.land;
 
 import java.io.Serializable;
+
 import javax.persistence.*;
+
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 /**
@@ -20,16 +26,16 @@ public class MessungTranslation implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name="id", unique=true)
     private Integer id;
 
-    @Column(name="messungs_id")
-    private Integer messungsId;
+    @OneToOne
+    private LMessung messungs;
 
-    @Column(name="messungs_id_alt")
+    @Generated(GenerationTime.INSERT)
+    @Column(name="messungs_id_alt", insertable=false)
     private Integer messungsIdAlt;
-
-    @Column(name="probe_id_alt")
-    private String probeIdAlt;
 
     public MessungTranslation() {
     }
@@ -42,12 +48,13 @@ public class MessungTranslation implements Serializable {
         this.id = id;
     }
 
-    public Integer getMessungsId() {
-        return this.messungsId;
+    @JsonIgnore
+    public LMessung getMessungsId() {
+        return this.messungs;
     }
 
-    public void setMessungsId(Integer messungsId) {
-        this.messungsId = messungsId;
+    public void setMessungsId(LMessung messung) {
+        this.messungs = messung;
     }
 
     public Integer getMessungsIdAlt() {
@@ -57,13 +64,4 @@ public class MessungTranslation implements Serializable {
     public void setMessungsIdAlt(Integer messungsIdAlt) {
         this.messungsIdAlt = messungsIdAlt;
     }
-
-    public String getProbeIdAlt() {
-        return this.probeIdAlt;
-    }
-
-    public void setProbeIdAlt(String probeIdAlt) {
-        this.probeIdAlt = probeIdAlt;
-    }
-
 }
