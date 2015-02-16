@@ -9,13 +9,13 @@ package de.intevation.lada.util.data;
 
 import java.util.List;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
 
-import org.apache.log4j.Logger;
-
+import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.rest.Response;
 
 
@@ -24,11 +24,12 @@ import de.intevation.lada.util.rest.Response;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@Stateless
-public class ReadOnlyRepository extends AbstractRepository {
+@RepositoryConfig(type=RepositoryType.RO)
+@ApplicationScoped
+public class ReadOnlyRepository implements Repository {
 
     @Inject
-    private Logger logger;
+    private DataTransaction transaction;
 
     public ReadOnlyRepository() {
     }
@@ -74,7 +75,7 @@ public class ReadOnlyRepository extends AbstractRepository {
     @Override
     public <T> Response filter(CriteriaQuery<T> filter, String dataSource) {
         List<T> result =
-            emp.entityManager(dataSource).createQuery(filter).getResultList();
+            transaction.entityManager(dataSource).createQuery(filter).getResultList();
         return new Response(true, 200, result);
     }
 
@@ -97,7 +98,7 @@ public class ReadOnlyRepository extends AbstractRepository {
         String dataSource
     ) {
         List<T> result =
-            emp.entityManager(dataSource).createQuery(filter).getResultList();
+            transaction.entityManager(dataSource).createQuery(filter).getResultList();
         if (size > 0 && start > -1) {
             List<T> newList = result.subList(start, size + start);
             return new Response(true, 200, newList, result.size());
@@ -114,8 +115,7 @@ public class ReadOnlyRepository extends AbstractRepository {
      * @return Response object containg all requested objects.
      */
     public <T> Response getAll(Class<T> clazz, String dataSource) {
-        logger.warn("ich bin ein logger");
-        EntityManager manager = emp.entityManager(dataSource);
+        EntityManager manager = transaction.entityManager(dataSource);
         QueryBuilder<T> builder =
             new QueryBuilder<T>(manager, clazz);
         List<T> result =
@@ -134,10 +134,21 @@ public class ReadOnlyRepository extends AbstractRepository {
      */
     @Override
     public <T> Response getById(Class<T> clazz, Object id, String dataSource) {
-        T item = emp.entityManager(dataSource).find(clazz, id);
+        T item = transaction.entityManager(dataSource).find(clazz, id);
         if (item == null) {
             return new Response(false, 600, null);
         }
         return new Response(true, 200, item);
+    }
+
+    @Override
+    public Query queryFromString(String sql, String dataSource) {
+        EntityManager em = transaction.entityManager(dataSource);
+        return em.createNativeQuery(sql);
+    }
+
+    @Override
+    public EntityManager entityManager(String dataSource) {
+        return transaction.entityManager(dataSource);
     }
 }

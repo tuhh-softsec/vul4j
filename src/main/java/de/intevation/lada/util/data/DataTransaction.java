@@ -23,8 +23,7 @@ import javax.persistence.TransactionRequiredException;
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
 @Stateless
-public abstract class AbstractRepository
-implements Repository
+public class DataTransaction
 {
     @Inject
     protected EntityManagerProducer emp;
@@ -43,7 +42,7 @@ implements Repository
      * @throws TransactionRequiredException
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    protected void persistInDatabase(Object object, String dataSource)
+    public void persistInDatabase(Object object, String dataSource)
     throws EntityExistsException,
         IllegalArgumentException,
         EJBTransactionRolledbackException,
@@ -64,7 +63,7 @@ implements Repository
      * @throws TransactionRequiredException
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    protected void updateInDatabase(Object object, String dataSource)
+    public void updateInDatabase(Object object, String dataSource)
     throws EntityExistsException,
         IllegalArgumentException,
         EJBTransactionRolledbackException,
@@ -83,7 +82,7 @@ implements Repository
      * @throws TransactionRequiredException
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    protected void removeFromDatabase(Object object, String dataSource)
+    public void removeFromDatabase(Object object, String dataSource)
     throws IllegalArgumentException,
         TransactionRequiredException
     {
