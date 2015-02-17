@@ -9,7 +9,10 @@ package de.intevation.lada.rest;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -106,5 +109,58 @@ public class KommentarPService {
             LKommentarP.class,
             Integer.valueOf(id),
             "land");
+    }
+
+    @POST
+    @Path("/")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response create(
+        @Context HttpHeaders headers,
+        LKommentarP kommentar
+    ) {
+        if (!authentication.isAuthenticated(headers)) {
+            return new Response(false, 699, null);
+        }
+        /* Persist the new object*/
+        return defaultRepo.create(kommentar, "land");
+    }
+
+    /**
+     * Update an existing messung object.
+     *
+     * @return Response object containing the updated probe object.
+     */
+    @PUT
+    @Path("/")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response update(@Context HttpHeaders headers, LKommentarP kommentar) {
+        if (!authentication.isAuthenticated(headers)) {
+            logger.debug("User is not authenticated!");
+            return new Response(false, 699, null);
+        }
+        return defaultRepo.update(kommentar, "land");
+    }
+
+    /**
+     * Delete an existing object by id.
+     *
+     * @return Response object.
+     */
+    @DELETE
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response delete(
+        @Context HttpHeaders headers,
+        @PathParam("id") String id
+    ) {
+        if (!authentication.isAuthenticated(headers)) {
+            logger.debug("User is not authenticated!");
+            return new Response(false, 699, null);
+        }
+        /* Get the object by id*/
+        Response kommentar =
+            defaultRepo.getById(LKommentarP.class, Integer.valueOf(id), "land");
+        LKommentarP kommentarObj = (LKommentarP)kommentar.getData();
+        return defaultRepo.delete(kommentarObj, "land");
     }
 }
