@@ -1,3 +1,10 @@
+/* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.test;
 
 import java.io.StringReader;
@@ -19,6 +26,12 @@ import org.junit.Assert;
 
 import de.intevation.lada.Protocol;
 
+
+/**
+ * Class containing test cases for probe objects.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 public class Probe {
 
     private static final String COMPARE_PROBE =
@@ -54,14 +67,14 @@ public class Probe {
     }
 
     /**
-     * @return the protocol
+     * @return The test protocol
      */
     public List<Protocol> getProtocol() {
         return protocol;
     }
 
     /**
-     * Test the GET Service by requesting all probe objects.
+     * Test the GET Service by requesting all objects.
      *
      * @param baseUrl The url pointing to the test deployment.
      */
@@ -76,7 +89,7 @@ public class Probe {
         /* Create a client*/
         Client client = ClientBuilder.newClient();
         WebTarget target = client.target(baseUrl + "probe");
-        /* Request all probe objects*/
+        /* Request all objects*/
         Response response = target.request().get();
         String entity = response.readEntity(String.class);
         try{
@@ -99,7 +112,7 @@ public class Probe {
     }
 
     /**
-     * Test the GET Service by requesting a single probe object by id.
+     * Test the GET Service by requesting a single object by id.
      *
      * @param baseUrl The url pointing to the test deployment.
      */
@@ -112,7 +125,7 @@ public class Probe {
         prot.setPassed(false);
         protocol.add(prot);
         try {
-            /* Create a json object from static probe string*/
+            /* Create a json object from static string*/
             JsonReader fromStringRreader =
                 Json.createReader(new StringReader(COMPARE_PROBE));
             JsonObject staticProbe = fromStringRreader.readObject();
@@ -120,7 +133,7 @@ public class Probe {
             Client client = ClientBuilder.newClient();
             WebTarget target = client.target(baseUrl + "probe/1");
             prot.addInfo("probeId", 1);
-            /* Request a probe object by id*/
+            /* Request a object by id*/
             Response response = target.request().get();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
@@ -144,7 +157,7 @@ public class Probe {
     }
 
     /**
-     * Test the GET probe service using filters.
+     * Test the GET service using filters.
      *
      * @param baseUrl The url poining to the test deployment.
      */
@@ -161,7 +174,7 @@ public class Probe {
             WebTarget target =
                 client.target(baseUrl + "probe?qid=2&mst_id=11010&umw_id=N24");
             prot.addInfo("filter", "qid=2&mst_id=11010&umw_id=N24");
-            /* Request the probe objects using the filter*/
+            /* Request the objects using the filter*/
             Response response = target.request().get();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
@@ -207,7 +220,7 @@ public class Probe {
             JsonReader fromServiceReader =
                 Json.createReader(new StringReader(entity));
             JsonObject content = fromServiceReader.readObject();
-            /* Save the probeid*/
+            /* Save the id*/
             createdProbeId =
                 content.getJsonObject("data").getJsonNumber("id").intValue();
             prot.addInfo("probeId", createdProbeId);
@@ -243,7 +256,7 @@ public class Probe {
             WebTarget target =
                 client.target(baseUrl + "probe/" + createdProbeId);
             prot.addInfo("probeId", createdProbeId);
-            /* Request a probe with the id saved when created a probe*/
+            /* Request a with the saved id*/
             Response response = target.request().get();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/

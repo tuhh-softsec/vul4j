@@ -1,3 +1,10 @@
+/* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.test;
 
 import java.io.StringReader;
@@ -17,12 +24,18 @@ import org.junit.Assert;
 
 import de.intevation.lada.Protocol;
 
+
+/**
+ * Class containing test cases for query config.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 public class Query {
 
     private List<Protocol> protocol;
 
     /**
-     * @return the protocol
+     * @return The test protocol
      */
     public List<Protocol> getProtocol() {
         return protocol;

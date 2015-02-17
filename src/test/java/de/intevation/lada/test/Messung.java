@@ -1,3 +1,10 @@
+/* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.test;
 
 import java.io.StringReader;
@@ -19,6 +26,11 @@ import org.junit.Assert;
 
 import de.intevation.lada.Protocol;
 
+/**
+ * Class containing test cases for messung objects.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 public class Messung {
 
     private static final String COMPARE_MESSUNG =
@@ -41,14 +53,14 @@ public class Messung {
     }
 
     /**
-     * @return the protocol
+     * @return The test protocol
      */
     public List<Protocol> getProtocol() {
         return protocol;
     }
 
     /**
-     * Test the GET Service by requesting all messung objects.
+     * Test the GET Service by requesting all objects.
      *
      * @param baseUrl The url pointing to the test deployment.
      */
@@ -63,7 +75,7 @@ public class Messung {
         /* Create a client*/
         Client client = ClientBuilder.newClient();
         WebTarget target = client.target(baseUrl + "messung");
-        /* Request all probe objects*/
+        /* Request all objects*/
         Response response = target.request().get();
         String entity = response.readEntity(String.class);
         try{
@@ -86,7 +98,7 @@ public class Messung {
     }
 
     /**
-     * Test the GET Service by requesting a single messung object by id.
+     * Test the GET Service by requesting a single object by id.
      *
      * @param baseUrl The url pointing to the test deployment.
      */
@@ -107,7 +119,7 @@ public class Messung {
             Client client = ClientBuilder.newClient();
             WebTarget target = client.target(baseUrl + "messung/1");
             prot.addInfo("messungId", 1);
-            /* Request a probe object by id*/
+            /* Request a object by id*/
             Response response = target.request().get();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
@@ -131,7 +143,7 @@ public class Messung {
     }
 
     /**
-     * Test the GET messung service using filters.
+     * Test the GET service using filters.
      *
      * @param baseUrl The url poining to the test deployment.
      */
@@ -148,7 +160,7 @@ public class Messung {
             WebTarget target =
                 client.target(baseUrl + "messung?probeId=1");
             prot.addInfo("filter", "probeId=1");
-            /* Request the probe objects using the filter*/
+            /* Request the objects using the filter*/
             Response response = target.request().get();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
@@ -170,7 +182,7 @@ public class Messung {
     }
 
     /**
-     * Test the messung CREATE Service.
+     * Test the CREATE Service.
      *
      * @param baseUrl The url pointing to the test deployment.
      */
@@ -189,7 +201,7 @@ public class Messung {
             /* Create a client*/
             Client client = ClientBuilder.newClient();
             WebTarget target = client.target(baseUrl + "messung");
-            /* Send a post request containing a new probe*/
+            /* Send a post request containing a new object*/
             String mess = CREATE_MESSUNG.replace("PID", probeId.toString());
             Response response = target.request().post(
                     Entity.entity(mess, MediaType.APPLICATION_JSON));
@@ -198,7 +210,7 @@ public class Messung {
             JsonReader fromServiceReader =
                 Json.createReader(new StringReader(entity));
             JsonObject content = fromServiceReader.readObject();
-            /* Save the probeid*/
+            /* Save the id*/
             createdMessungId =
                 content.getJsonObject("data").getJsonNumber("id").intValue();
             prot.addInfo("messungId", createdMessungId);
@@ -216,7 +228,7 @@ public class Messung {
     }
 
     /**
-     * Test the messung UPDATE Service.
+     * Test the UPDATE Service.
      *
      * @param baseUrl The url pointing to the test deployment.
      */
@@ -234,19 +246,19 @@ public class Messung {
             WebTarget target =
                 client.target(baseUrl + "messung/" + createdMessungId);
             prot.addInfo("messungId", createdMessungId);
-            /* Request a probe with the id saved when created a probe*/
+            /* Request a messung with the saved id*/
             Response response = target.request().get();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader reader = Json.createReader(new StringReader(entity));
             JsonObject oldMessung = reader.readObject().getJsonObject("data");
-            /* Change the hauptprobenNr*/
+            /* Change the mmtId*/
             String updatedEntity =
                 oldMessung.toString().replace("A4", "G1");
             prot.addInfo("updated field", "mmtId");
             prot.addInfo("updated value", "A4");
             prot.addInfo("updated to", "G1");
-            /* Send the updated probe via put reauest*/
+            /* Send the updated messung via put request*/
             WebTarget putTarget = client.target(baseUrl + "messung");
             Response updated = putTarget.request().put(
                 Entity.entity(updatedEntity, MediaType.APPLICATION_JSON));
@@ -270,7 +282,7 @@ public class Messung {
     }
 
     /**
-     * Test the messung DELETE Service.
+     * Test the DELETE Service.
      *
      * @param baseUrl The url pointing to the test deployment.
      */
@@ -287,7 +299,7 @@ public class Messung {
             WebTarget target =
                 client.target(baseUrl + "messung/" + createdMessungId);
             prot.addInfo("messungId", createdMessungId);
-            /* Delete a probe with the id saved when created a probe*/
+            /* Delete a messung with the saved id*/
             Response response = target.request().delete();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/

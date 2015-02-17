@@ -1,3 +1,10 @@
+/* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.test;
 
 import java.io.StringReader;
@@ -19,6 +26,12 @@ import org.junit.Assert;
 
 import de.intevation.lada.Protocol;
 
+
+/**
+ * Class containing test cases for probekommentar objects.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 public class KommentarP {
 
     private static final String COMPARE_KOMMENTARP =
@@ -35,21 +48,21 @@ public class KommentarP {
     private static Integer createdKommentarId;
 
     /**
-     * @return the protocol
+     * @return The test protocol
      */
     public List<Protocol> getProtocol() {
         return protocol;
     }
 
     /**
-     * @return the createdKommentarId
+     * @return The created KommentarId
      */
     public Integer getCreatedKommentarId() {
         return createdKommentarId;
     }
 
     /**
-     * Test the GET Service by requesting all KommentarP objects.
+     * Test the GET Service by requesting all objects.
      *
      * @param baseUrl The url pointing to the test deployment.
      */
@@ -64,7 +77,7 @@ public class KommentarP {
         /* Create a client*/
         Client client = ClientBuilder.newClient();
         WebTarget target = client.target(baseUrl + "pkommentar");
-        /* Request all probe objects*/
+        /* Request all objects*/
         Response response = target.request().get();
         String entity = response.readEntity(String.class);
         try{
@@ -87,7 +100,7 @@ public class KommentarP {
     }
 
     /**
-     * Test the GET Service by requesting a single KommentarP object by id.
+     * Test the GET Service by requesting a single object by id.
      *
      * @param baseUrl The url pointing to the test deployment.
      */
@@ -190,7 +203,7 @@ public class KommentarP {
             /* Create a client*/
             Client client = ClientBuilder.newClient();
             WebTarget target = client.target(baseUrl + "pkommentar");
-            /* Send a post request containing a new probe*/
+            /* Send a post request containing a new kommentar*/
             String mess = CREATE_KOMMENTARP.replace("PID", probeId.toString());
             Response response = target.request().post(
                     Entity.entity(mess, MediaType.APPLICATION_JSON));
@@ -247,7 +260,7 @@ public class KommentarP {
             prot.addInfo("updated field", "text");
             prot.addInfo("updated value", "test");
             prot.addInfo("updated to", "neu");
-            /* Send the updated probe via put reauest*/
+            /* Send the updated kommentar via put reauest*/
             WebTarget putTarget = client.target(baseUrl + "pkommentar");
             Response updated = putTarget.request().put(
                 Entity.entity(updatedEntity, MediaType.APPLICATION_JSON));
@@ -288,7 +301,7 @@ public class KommentarP {
             WebTarget target =
                 client.target(baseUrl + "pkommentar/" + createdKommentarId);
             prot.addInfo("kommentarId", createdKommentarId);
-            /* Delete a probe with the id saved when created a probe*/
+            /* Delete a kommentar with the saved id*/
             Response response = target.request().delete();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
