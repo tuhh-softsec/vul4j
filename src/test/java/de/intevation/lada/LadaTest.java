@@ -8,7 +8,10 @@
 package de.intevation.lada;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -37,6 +40,12 @@ import de.intevation.lada.test.UpdateTests;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class LadaTest {
 
+    private static String ARCHIVE_NAME = "lada-basis-test.war";
+
+    private static Logger logger = Logger.getLogger(LadaTest.class);
+
+    private boolean verboseLogging = false;
+
     private GetTests get;
 
     private CreateTests create;
@@ -45,11 +54,14 @@ public class LadaTest {
 
     private DeleteTests delete;
 
+    private List<Protocol> testProtocol;
+
     public LadaTest() {
         get = new GetTests();
         create = new CreateTests();
         update = new UpdateTests();
         delete = new DeleteTests();
+        testProtocol = new ArrayList<Protocol>();
     }
 
     /**
@@ -57,13 +69,15 @@ public class LadaTest {
      */
     @Deployment(testable=true)
     public static WebArchive createDeployment() throws Exception {
-        return ShrinkWrap.create(WebArchive.class, "lada-basis-test.war")
+        logger.info("Create and deploy: " + ARCHIVE_NAME);
+        WebArchive archive = ShrinkWrap.create(WebArchive.class, ARCHIVE_NAME)
             .addPackages(true, Package.getPackage("de.intevation.lada"))
             .addAsResource("log4j.properties", "log4j.properties")
             .addAsResource("queryconf.json", "queryconf.json")
             .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
             .addAsResource("META-INF/test-persistence.xml",
                 "META-INF/persistence.xml");
+        return archive;
     }
 
     /**
@@ -74,6 +88,11 @@ public class LadaTest {
     public final void testA_GetServices(@ArquillianResource URL baseUrl)
     throws Exception {
         this.get.test(baseUrl);
+        logger.info("---------- Testprotocol -----------");
+        testProtocol.addAll(this.get.getProtocol());
+        for (Protocol p : testProtocol) {
+            logger.info(p.toString(verboseLogging));
+        }
     }
 
     /**
@@ -84,6 +103,10 @@ public class LadaTest {
     public final void testB_CreateServices(@ArquillianResource URL baseUrl)
     throws Exception {
         this.create.test(baseUrl);
+        testProtocol.addAll(this.create.getProtocol());
+        for (Protocol p : testProtocol) {
+            logger.info(p.toString(verboseLogging));
+        }
     }
 
     /**
@@ -98,6 +121,10 @@ public class LadaTest {
             baseUrl,
             this.create.getCreatedProbeId(),
             this.create.getCreatedMessungId());
+        testProtocol.addAll(this.update.getProtocol());
+        for (Protocol p : testProtocol) {
+            logger.info(p.toString(verboseLogging));
+        }
     }
 
     /**
@@ -112,5 +139,9 @@ public class LadaTest {
             baseUrl,
             this.create.getCreatedProbeId(),
             this.create.getCreatedMessungId());
+        testProtocol.addAll(this.delete.getProtocol());
+        for (Protocol p : testProtocol) {
+            logger.info(p.toString(verboseLogging));
+        }
     }
 }

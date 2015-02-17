@@ -9,6 +9,8 @@ package de.intevation.lada.test;
 
 import java.io.StringReader;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.json.Json;
 import javax.json.JsonException;
@@ -22,6 +24,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.junit.Assert;
+
+import de.intevation.lada.Protocol;
 
 /**
  * Class to test all CREATE services.
@@ -50,6 +54,8 @@ public class CreateTests {
     private static Integer createdProbeId;
     private static Integer createdMessungId;
 
+    private List<Protocol> protocol;
+
     public Integer getCreatedProbeId() {
         return createdProbeId;
     }
@@ -59,12 +65,19 @@ public class CreateTests {
     }
 
     /**
+     * @return the protocol
+     */
+    public List<Protocol> getProtocol() {
+        return protocol;
+    }
+
+    /**
      * Main entry point in this class to start the tests.
      *
      * @param baseUrl The url pointing to the test deployment.
      */
     public final void test(URL baseUrl) throws Exception {
-        System.out.println("\nStarting test on CREATE Services:");
+        protocol = new ArrayList<Protocol>();
         probeCreateService(baseUrl);
         messungCreateService(baseUrl);
     }
@@ -76,7 +89,12 @@ public class CreateTests {
      */
     private final void probeCreateService(URL baseUrl)
     throws Exception {
-        System.out.println("Testing ProbeService: ");
+        System.out.print(".");
+        Protocol prot = new Protocol();
+        prot.setName("ProbeService");
+        prot.setType("create");
+        prot.setPassed(false);
+        protocol.add(prot);
         try {
             /* Create a client*/
             Client client = ClientBuilder.newClient();
@@ -92,14 +110,18 @@ public class CreateTests {
             /* Save the probeid*/
             createdProbeId =
                 content.getJsonObject("data").getJsonNumber("id").intValue();
+            prot.addInfo("probeId", createdProbeId);
             /* Verify the response*/
             Assert.assertTrue(content.getBoolean("success"));
+            prot.addInfo("success", content.getBoolean("success"));
             Assert.assertEquals("200", content.getString("message"));
+            prot.addInfo("messung", content.getString("message"));
         }
         catch(JsonException je) {
+            prot.addInfo("exception", je.getMessage());
             Assert.fail(je.getMessage());
         }
-        System.out.println("passed");
+        prot.setPassed(true);
     }
 
     /**
@@ -109,7 +131,12 @@ public class CreateTests {
      */
     private final void messungCreateService(URL baseUrl)
     throws Exception {
-        System.out.println("Testing MessungService: ");
+        System.out.print(".");
+        Protocol prot = new Protocol();
+        prot.setName("MessungService");
+        prot.setType("create");
+        prot.setPassed(false);
+        protocol.add(prot);
         try {
             /* Create a client*/
             Client client = ClientBuilder.newClient();
@@ -126,13 +153,17 @@ public class CreateTests {
             /* Save the probeid*/
             createdMessungId =
                 content.getJsonObject("data").getJsonNumber("id").intValue();
+            prot.addInfo("messungId", createdMessungId);
             /* Verify the response*/
             Assert.assertTrue(content.getBoolean("success"));
+            prot.addInfo("success", content.getBoolean("success"));
             Assert.assertEquals("200", content.getString("message"));
+            prot.addInfo("messung", content.getString("message"));
         }
         catch(JsonException je) {
+            prot.addInfo("exception", je.getMessage());
             Assert.fail(je.getMessage());
         }
-        System.out.println("passed");
+        prot.setPassed(true);
     }
 }
