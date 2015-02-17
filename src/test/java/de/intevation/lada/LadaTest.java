@@ -45,7 +45,7 @@ public class LadaTest {
 
     private static Logger logger = Logger.getLogger(LadaTest.class);
 
-    private static boolean verboseLogging = true;
+    private static boolean verboseLogging = false;
 
     private Probe probeTest;
     private Query queryTest;
@@ -67,6 +67,7 @@ public class LadaTest {
      */
     @Deployment(testable=true)
     public static WebArchive createDeployment() throws Exception {
+        logger.info("\n\n---------- Test Protocol ----------");
         logger.info("Create and deploy: " + ARCHIVE_NAME);
         WebArchive archive = ShrinkWrap.create(WebArchive.class, ARCHIVE_NAME)
             .addPackages(true, Package.getPackage("de.intevation.lada"))
@@ -176,6 +177,16 @@ public class LadaTest {
     }
 
     /**
+     * Testing GET Services.
+     */
+    @Test
+    @RunAsClient
+    public final void testA_KommentarPGetFilterServices(@ArquillianResource URL baseUrl)
+    throws Exception {
+        this.kommentarPTest.filterService(baseUrl, testProtocol);
+    }
+
+    /**
      * Testing CREATE services.
      */
     @Test
@@ -185,6 +196,10 @@ public class LadaTest {
         this.probeTest.createService(baseUrl, testProtocol);
         Assert.assertNotNull(this.probeTest.getCreatedProbeId());
         this.messungTest.createService(
+            baseUrl,
+            testProtocol,
+            this.probeTest.getCreatedProbeId());
+        this.kommentarPTest.createService(
             baseUrl,
             testProtocol,
             this.probeTest.getCreatedProbeId());
@@ -213,12 +228,25 @@ public class LadaTest {
     }
 
     /**
+     * Testing UPDATE services.
+     */
+    @Test
+    @RunAsClient
+    public final void testC_kommentarPUpdateService(@ArquillianResource URL baseUrl)
+    throws Exception {
+        Assert.assertNotNull(this.kommentarPTest.getCreatedKommentarId());
+        this.kommentarPTest.updateService(baseUrl, testProtocol);
+    }
+
+    /**
      * Testing DELETE services.
      */
     @Test
     @RunAsClient
     public final void testD_DeleteServices(@ArquillianResource URL baseUrl)
     throws Exception {
+        Assert.assertNotNull(this.kommentarPTest.getCreatedKommentarId());
+        this.kommentarPTest.deleteService(baseUrl, testProtocol);
         Assert.assertNotNull(this.messungTest.getCreatedMessungId());
         this.messungTest.deleteService(baseUrl, testProtocol);
         Assert.assertNotNull(this.probeTest.getCreatedProbeId());
