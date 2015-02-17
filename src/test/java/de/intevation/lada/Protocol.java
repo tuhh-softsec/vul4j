@@ -81,7 +81,7 @@ public class Protocol {
     }
 
     public String toString(boolean verbose) {
-        String ret = "";
+        String ret = "Test: ";
 
         ret += this.name + " (" + this.type + "): ";
         if (this.passed) {
