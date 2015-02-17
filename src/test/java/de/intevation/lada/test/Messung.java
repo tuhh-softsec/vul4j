@@ -206,7 +206,7 @@ public class Messung {
             Assert.assertTrue(content.getBoolean("success"));
             prot.addInfo("success", content.getBoolean("success"));
             Assert.assertEquals("200", content.getString("message"));
-            prot.addInfo("messung", content.getString("message"));
+            prot.addInfo("message", content.getString("message"));
         }
         catch(JsonException je) {
             prot.addInfo("exception", je.getMessage());
@@ -224,7 +224,7 @@ public class Messung {
     throws Exception {
         System.out.print(".");
         Protocol prot = new Protocol();
-        prot.setName("ProbeService");
+        prot.setName("MessungService");
         prot.setType("update");
         prot.setPassed(false);
         protocol.add(prot);
