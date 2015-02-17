@@ -11,6 +11,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -83,5 +84,27 @@ public class KommentarPService {
                 LKommentarP.class);
         builder.and("probeId", probeId);
         return defaultRepo.filter(builder.getQuery(), "land");
+    }
+
+    /**
+     * Get a kommentarP object by id.
+     *
+     * @return Response object containing a single kommentarP.
+     */
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getById(
+        @Context HttpHeaders headers,
+        @PathParam("id") String id
+    ) {
+        if (!authentication.isAuthenticated(headers)) {
+            logger.debug("User is not authenticated!");
+            return new Response(false, 699, null);
+        }
+        return defaultRepo.getById(
+            LKommentarP.class,
+            Integer.valueOf(id),
+            "land");
     }
 }
