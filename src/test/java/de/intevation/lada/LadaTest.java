@@ -19,16 +19,17 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
-import de.intevation.lada.test.CreateTests;
-import de.intevation.lada.test.DeleteTests;
-import de.intevation.lada.test.GetTests;
-import de.intevation.lada.test.UpdateTests;
+import de.intevation.lada.test.KommentarP;
+import de.intevation.lada.test.Messung;
+import de.intevation.lada.test.Probe;
+import de.intevation.lada.test.Query;
 
 
 /**
@@ -44,23 +45,20 @@ public class LadaTest {
 
     private static Logger logger = Logger.getLogger(LadaTest.class);
 
-    private boolean verboseLogging = false;
+    private static boolean verboseLogging = true;
 
-    private GetTests get;
+    private Probe probeTest;
+    private Query queryTest;
+    private Messung messungTest;
+    private KommentarP kommentarPTest;
 
-    private CreateTests create;
-
-    private UpdateTests update;
-
-    private DeleteTests delete;
-
-    private List<Protocol> testProtocol;
+    private static List<Protocol> testProtocol;
 
     public LadaTest() {
-        get = new GetTests();
-        create = new CreateTests();
-        update = new UpdateTests();
-        delete = new DeleteTests();
+        probeTest = new Probe();
+        queryTest = new Query();
+        messungTest = new Messung();
+        kommentarPTest = new KommentarP();
         testProtocol = new ArrayList<Protocol>();
     }
 
@@ -80,19 +78,101 @@ public class LadaTest {
         return archive;
     }
 
+    @After
+    public final void printLogs() {
+        for (Protocol p : testProtocol) {
+            logger.info(p.toString(verboseLogging));
+        }
+    }
+
     /**
      * Testing GET Services.
      */
     @Test
     @RunAsClient
-    public final void testA_GetServices(@ArquillianResource URL baseUrl)
+    public final void testA_ProbeGetAllServices(@ArquillianResource URL baseUrl)
     throws Exception {
-        this.get.test(baseUrl);
-        logger.info("---------- Testprotocol -----------");
-        testProtocol.addAll(this.get.getProtocol());
-        for (Protocol p : testProtocol) {
-            logger.info(p.toString(verboseLogging));
-        }
+        this.probeTest.getAllService(baseUrl, testProtocol);
+    }
+
+    /**
+     * Testing GET Services.
+     */
+    @Test
+    @RunAsClient
+    public final void testA_ProbeGetByIdServices(@ArquillianResource URL baseUrl)
+    throws Exception {
+        this.probeTest.getByIdService(baseUrl, testProtocol);
+    }
+
+    /**
+     * Testing GET Services.
+     */
+    @Test
+    @RunAsClient
+    public final void testA_ProbeGetByFilterServices(@ArquillianResource URL baseUrl)
+    throws Exception {
+        this.probeTest.filterService(baseUrl, testProtocol);
+    }
+
+    /**
+     * Testing GET Services.
+     */
+    @Test
+    @RunAsClient
+    public final void testA_GetQueryServices(@ArquillianResource URL baseUrl)
+    throws Exception {
+        this.queryTest.getAllService(baseUrl, testProtocol);
+    }
+
+    /**
+     * Testing GET Services.
+     */
+    @Test
+    @RunAsClient
+    public final void testA_MessungGetAllServices(@ArquillianResource URL baseUrl)
+    throws Exception {
+        this.messungTest.getAllService(baseUrl, testProtocol);
+    }
+
+    /**
+     * Testing GET Services.
+     */
+    @Test
+    @RunAsClient
+    public final void testA_MessungGetByIdServices(@ArquillianResource URL baseUrl)
+    throws Exception {
+        this.messungTest.getByIdService(baseUrl, testProtocol);
+    }
+
+    /**
+     * Testing GET Services.
+     */
+    @Test
+    @RunAsClient
+    public final void testA_MessungGetFilterServices(@ArquillianResource URL baseUrl)
+    throws Exception {
+        this.messungTest.filterService(baseUrl, testProtocol);
+    }
+
+    /**
+     * Testing GET Services.
+     */
+    @Test
+    @RunAsClient
+    public final void testA_KommentarPGetAllServices(@ArquillianResource URL baseUrl)
+    throws Exception {
+        this.kommentarPTest.getAllService(baseUrl, testProtocol);
+    }
+
+    /**
+     * Testing GET Services.
+     */
+    @Test
+    @RunAsClient
+    public final void testA_KommentarPGetByIdServices(@ArquillianResource URL baseUrl)
+    throws Exception {
+        this.kommentarPTest.getByIdService(baseUrl, testProtocol);
     }
 
     /**
@@ -102,11 +182,12 @@ public class LadaTest {
     @RunAsClient
     public final void testB_CreateServices(@ArquillianResource URL baseUrl)
     throws Exception {
-        this.create.test(baseUrl);
-        testProtocol.addAll(this.create.getProtocol());
-        for (Protocol p : testProtocol) {
-            logger.info(p.toString(verboseLogging));
-        }
+        this.probeTest.createService(baseUrl, testProtocol);
+        Assert.assertNotNull(this.probeTest.getCreatedProbeId());
+        this.messungTest.createService(
+            baseUrl,
+            testProtocol,
+            this.probeTest.getCreatedProbeId());
     }
 
     /**
@@ -114,17 +195,21 @@ public class LadaTest {
      */
     @Test
     @RunAsClient
-    public final void testC_UpdateServices(@ArquillianResource URL baseUrl)
+    public final void testC_probeUpdateService(@ArquillianResource URL baseUrl)
     throws Exception {
-        Assert.assertNotNull(this.create.getCreatedProbeId());
-        this.update.test(
-            baseUrl,
-            this.create.getCreatedProbeId(),
-            this.create.getCreatedMessungId());
-        testProtocol.addAll(this.update.getProtocol());
-        for (Protocol p : testProtocol) {
-            logger.info(p.toString(verboseLogging));
-        }
+        Assert.assertNotNull(this.probeTest.getCreatedProbeId());
+        this.probeTest.updateService(baseUrl, testProtocol);
+    }
+
+    /**
+     * Testing UPDATE services.
+     */
+    @Test
+    @RunAsClient
+    public final void testC_messungUpdateService(@ArquillianResource URL baseUrl)
+    throws Exception {
+        Assert.assertNotNull(this.messungTest.getCreatedMessungId());
+        this.messungTest.updateService(baseUrl, testProtocol);
     }
 
     /**
@@ -134,14 +219,9 @@ public class LadaTest {
     @RunAsClient
     public final void testD_DeleteServices(@ArquillianResource URL baseUrl)
     throws Exception {
-        Assert.assertNotNull(this.create.getCreatedProbeId());
-        this.delete.test(
-            baseUrl,
-            this.create.getCreatedProbeId(),
-            this.create.getCreatedMessungId());
-        testProtocol.addAll(this.delete.getProtocol());
-        for (Protocol p : testProtocol) {
-            logger.info(p.toString(verboseLogging));
-        }
+        Assert.assertNotNull(this.messungTest.getCreatedMessungId());
+        this.messungTest.deleteService(baseUrl, testProtocol);
+        Assert.assertNotNull(this.probeTest.getCreatedProbeId());
+        this.probeTest.deleteService(baseUrl, testProtocol);
     }
 }
