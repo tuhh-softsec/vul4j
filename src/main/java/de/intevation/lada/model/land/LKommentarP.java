@@ -10,7 +10,7 @@ package de.intevation.lada.model.land;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import de.intevation.lada.model.bund.KommentarP;
+import de.intevation.lada.model.KommentarP;
 
 
 /**
