@@ -20,7 +20,6 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.log4j.Logger;
 
-import de.intevation.lada.model.stamm.Datenbasis;
 import de.intevation.lada.model.stamm.MessEinheit;
 import de.intevation.lada.util.annotation.AuthenticationConfig;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
