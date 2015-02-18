@@ -15,9 +15,10 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
+import org.junit.AfterClass;
 
 /**
- * Class to test the Lada server.
+ * Base class for Lada server tests.
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
@@ -51,5 +52,10 @@ public class BaseTest {
         for (Protocol p : testProtocol) {
             logger.info(p.toString(verboseLogging));
         }
+    }
+
+    @AfterClass
+    public static final void afterTests() {
+        System.out.println("");
     }
 }

@@ -33,7 +33,7 @@ import de.intevation.lada.test.land.Zusatzwert;
 
 
 /**
- * Class to test the Lada server.
+ * Class to test the Lada server 'land' services.
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */

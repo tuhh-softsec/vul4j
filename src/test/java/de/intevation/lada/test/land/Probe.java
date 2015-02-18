@@ -326,6 +326,5 @@ public class Probe {
             Assert.fail(je.getMessage());
         }
         prot.setPassed(true);
-        System.out.print("\n");
     }
 }
