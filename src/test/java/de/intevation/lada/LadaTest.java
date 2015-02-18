@@ -34,6 +34,7 @@ import de.intevation.lada.test.Ort;
 import de.intevation.lada.test.Probe;
 import de.intevation.lada.test.Query;
 import de.intevation.lada.test.Status;
+import de.intevation.lada.test.Zusatzwert;
 
 
 /**
@@ -59,6 +60,7 @@ public class LadaTest {
     private Messwert messwertTest;
     private Ort ortTest;
     private Status statusTest;
+    private Zusatzwert zusatzwertTest;
 
     private static List<Protocol> testProtocol;
 
@@ -71,6 +73,7 @@ public class LadaTest {
         messwertTest = new Messwert();
         ortTest = new Ort();
         statusTest = new Status();
+        zusatzwertTest = new Zusatzwert();
         testProtocol = new ArrayList<Protocol>();
     }
 
@@ -319,6 +322,35 @@ public class LadaTest {
     }
 
     /**
+     * Testing GET Services.
+     */
+    @Test
+    @RunAsClient
+    public final void testA_ZusatzwertGetAllServices(@ArquillianResource URL baseUrl)
+    throws Exception {
+        this.zusatzwertTest.getAllService(baseUrl, testProtocol);
+    }
+
+    /**
+     * Testing GET Services.
+     */
+    @Test
+    @RunAsClient
+    public final void testA_ZusatzwertGetByIdServices(@ArquillianResource URL baseUrl)
+    throws Exception {
+        this.zusatzwertTest.getByIdService(baseUrl, testProtocol);
+    }
+
+    /**
+     * Testing GET Services.
+     */
+    @Test
+    @RunAsClient
+    public final void testA_ZusatzwertGetFilterServices(@ArquillianResource URL baseUrl)
+    throws Exception {
+        this.zusatzwertTest.filterService(baseUrl, testProtocol);
+    }
+    /**
      * Testing CREATE services.
      */
     @Test
@@ -336,6 +368,10 @@ public class LadaTest {
             testProtocol,
             this.probeTest.getCreatedProbeId());
         this.ortTest.createService(
+            baseUrl,
+            testProtocol,
+            this.probeTest.getCreatedProbeId());
+        this.zusatzwertTest.createService(
             baseUrl,
             testProtocol,
             this.probeTest.getCreatedProbeId());
@@ -438,6 +474,8 @@ public class LadaTest {
     @RunAsClient
     public final void testD_DeleteServices(@ArquillianResource URL baseUrl)
     throws Exception {
+        Assert.assertNotNull(this.zusatzwertTest.getCreatedId());
+        this.zusatzwertTest.deleteService(baseUrl, testProtocol);
         Assert.assertNotNull(this.statusTest.getCreatedId());
         this.statusTest.deleteService(baseUrl, testProtocol);
         Assert.assertNotNull(this.ortTest.getCreatedId());
