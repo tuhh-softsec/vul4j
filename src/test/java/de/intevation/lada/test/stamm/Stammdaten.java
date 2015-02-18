@@ -31,6 +31,11 @@ public class Stammdaten {
             "{\"id\":207,\"beschreibung\":\"Becquerel pro Stunde\"," +
             "\"einheit\":\"Bq/h\",\"eudfMesseinheitId\":null," +
             "\"umrechnungsFaktorEudf\":null}");
+        compare.put("messgroesse",
+            "{\"id\":56,\"beschreibung\":\"Mangan\",\"defaultFarbe\":" +
+            "\"175175075\",\"eudfNuklidId\":50,\"idfNuklidKey\":\"Mn54\"," +
+            "\"istLeitnuklid\":false,\"kennungBvl\":\"1925054\"," +
+            "\"messgroesse\":\"Mn 54\"}");
     }
 
     /**

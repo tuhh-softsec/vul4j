@@ -70,4 +70,16 @@ public class LadaStammTest extends BaseTest {
     public final void testMesseinheitById(@ArquillianResource URL baseUrl) {
         stammdatenTest.getById(baseUrl, "messeinheit", 207, testProtocol);
     }
+
+    @Test
+    @RunAsClient
+    public final void testMessgroesseAll(@ArquillianResource URL baseUrl) {
+        stammdatenTest.getAll(baseUrl, "messgroesse", testProtocol);
+    }
+
+    @Test
+    @RunAsClient
+    public final void testMessgroesseById(@ArquillianResource URL baseUrl) {
+        stammdatenTest.getById(baseUrl, "messgroesse", 56, testProtocol);
+    }
 }
