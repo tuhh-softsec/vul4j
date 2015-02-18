@@ -267,7 +267,7 @@ public class Probe {
                 oldProbe.toString().replace("1234567890", "2345678901");
             prot.addInfo("updated datafield", "hauptprobenNr");
             prot.addInfo("updated value", "1234567890");
-            prot.addInfo("updated to", "1234567890");
+            prot.addInfo("updated to", "2345678901");
             /* Send the updated probe via put reauest*/
             WebTarget putTarget = client.target(baseUrl + "probe");
             Response updated = putTarget.request().put(
