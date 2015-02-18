@@ -27,6 +27,10 @@ public class Stammdaten {
         compare = new HashMap<String, String>();
         compare.put("datenbasis",
             "{\"id\":9,\"beschreibung\":\"Europa\",\"datenbasis\":\"Europa\"}");
+        compare.put("messeinheit",
+            "{\"id\":207,\"beschreibung\":\"Becquerel pro Stunde\"," +
+            "\"einheit\":\"Bq/h\",\"eudfMesseinheitId\":null," +
+            "\"umrechnungsFaktorEudf\":null}");
     }
 
     /**
