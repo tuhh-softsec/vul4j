@@ -34,7 +34,10 @@ public class LadaStammTest extends BaseTest {
 
     private static Logger logger = Logger.getLogger(LadaStammTest.class);
 
+    private Stammdaten stammdatenTest;
+
     public LadaStammTest () {
+        stammdatenTest = new Stammdaten();
         testProtocol = new ArrayList<Protocol>();
         verboseLogging = true;
     }
@@ -42,5 +45,17 @@ public class LadaStammTest extends BaseTest {
     @BeforeClass
     public static void beforeTests() {
         logger.info("---------- Testing Lada Stamm Services ----------");
+    }
+
+    @Test
+    @RunAsClient
+    public final void testDatenbasisAll(@ArquillianResource URL baseUrl) {
+        stammdatenTest.getAll(baseUrl, "datenbasis", testProtocol);
+    }
+
+    @Test
+    @RunAsClient
+    public final void testDatenbasisById(@ArquillianResource URL baseUrl) {
+        stammdatenTest.getById(baseUrl, "datenbasis", 9, testProtocol);
     }
 }
