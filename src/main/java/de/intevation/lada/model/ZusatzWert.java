@@ -21,18 +21,20 @@ public class ZusatzWert implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name="id", nullable=false, insertable=false)
     private Integer id;
 
     @Column(name="letzte_aenderung")
     private Timestamp letzteAenderung;
 
-    private float messfehler;
+    private Float messfehler;
 
     @Column(name="messwert_pzs")
-    private float messwertPzs;
+    private Float messwertPzs;
 
     @Column(name="nwg_zu_messwert")
-    private float nwgZuMesswert;
+    private Float nwgZuMesswert;
 
     @Column(name="probe_id")
     private Integer probeId;
@@ -59,27 +61,27 @@ public class ZusatzWert implements Serializable {
         this.letzteAenderung = letzteAenderung;
     }
 
-    public float getMessfehler() {
+    public Float getMessfehler() {
         return this.messfehler;
     }
 
-    public void setMessfehler(float messfehler) {
+    public void setMessfehler(Float messfehler) {
         this.messfehler = messfehler;
     }
 
-    public float getMesswertPzs() {
+    public Float getMesswertPzs() {
         return this.messwertPzs;
     }
 
-    public void setMesswertPzs(float messwertPzs) {
+    public void setMesswertPzs(Float messwertPzs) {
         this.messwertPzs = messwertPzs;
     }
 
-    public float getNwgZuMesswert() {
+    public Float getNwgZuMesswert() {
         return this.nwgZuMesswert;
     }
 
-    public void setNwgZuMesswert(float nwgZuMesswert) {
+    public void setNwgZuMesswert(Float nwgZuMesswert) {
         this.nwgZuMesswert = nwgZuMesswert;
     }
 
