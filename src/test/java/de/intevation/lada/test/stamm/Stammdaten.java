@@ -36,6 +36,9 @@ public class Stammdaten {
             "\"175175075\",\"eudfNuklidId\":50,\"idfNuklidKey\":\"Mn54\"," +
             "\"istLeitnuklid\":false,\"kennungBvl\":\"1925054\"," +
             "\"messgroesse\":\"Mn 54\"}");
+        compare.put("messmethode",
+            "{\"id\":\"GI\",\"beschreibung\":null,\"messmethode\":" +
+            "\"Iod, Gamma-Spektrometrie\"}");
     }
 
     /**
@@ -79,7 +82,7 @@ public class Stammdaten {
     public final void getById(
         URL baseUrl,
         String type,
-        Integer id,
+        Object id,
         List<Protocol> protocol
     ) {
         System.out.print(".");
