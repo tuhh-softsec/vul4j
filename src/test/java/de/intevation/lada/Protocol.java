@@ -88,7 +88,7 @@ public class Protocol {
             ret += "success";
         }
         else {
-            ret += "failed";
+            ret += "FAILED";
         }
         if (verbose) {
             ret += "\nInfo: ";
