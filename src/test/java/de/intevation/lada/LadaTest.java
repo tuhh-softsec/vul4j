@@ -33,6 +33,7 @@ import de.intevation.lada.test.Messwert;
 import de.intevation.lada.test.Ort;
 import de.intevation.lada.test.Probe;
 import de.intevation.lada.test.Query;
+import de.intevation.lada.test.Status;
 
 
 /**
@@ -57,6 +58,7 @@ public class LadaTest {
     private KommentarM kommentarMTest;
     private Messwert messwertTest;
     private Ort ortTest;
+    private Status statusTest;
 
     private static List<Protocol> testProtocol;
 
@@ -68,6 +70,7 @@ public class LadaTest {
         kommentarMTest = new KommentarM();
         messwertTest = new Messwert();
         ortTest = new Ort();
+        statusTest = new Status();
         testProtocol = new ArrayList<Protocol>();
     }
 
@@ -284,6 +287,37 @@ public class LadaTest {
     throws Exception {
         this.ortTest.filterService(baseUrl, testProtocol);
     }
+
+    /**
+     * Testing GET Services.
+     */
+    @Test
+    @RunAsClient
+    public final void testA_StatusGetAllServices(@ArquillianResource URL baseUrl)
+    throws Exception {
+        this.statusTest.getAllService(baseUrl, testProtocol);
+    }
+
+    /**
+     * Testing GET Services.
+     */
+    @Test
+    @RunAsClient
+    public final void testA_StatusGetByIdServices(@ArquillianResource URL baseUrl)
+    throws Exception {
+        this.statusTest.getByIdService(baseUrl, testProtocol);
+    }
+
+    /**
+     * Testing GET Services.
+     */
+    @Test
+    @RunAsClient
+    public final void testA_StatusGetFilterServices(@ArquillianResource URL baseUrl)
+    throws Exception {
+        this.statusTest.filterService(baseUrl, testProtocol);
+    }
+
     /**
      * Testing CREATE services.
      */
@@ -311,6 +345,10 @@ public class LadaTest {
             testProtocol,
             this.messungTest.getCreatedMessungId());
         this.messwertTest.createService(
+            baseUrl,
+            testProtocol,
+            this.messungTest.getCreatedMessungId());
+        this.statusTest.createService(
             baseUrl,
             testProtocol,
             this.messungTest.getCreatedMessungId());
@@ -383,12 +421,25 @@ public class LadaTest {
     }
 
     /**
+     * Testing UPDATE services.
+     */
+    @Test
+    @RunAsClient
+    public final void testC_statusUpdateService(@ArquillianResource URL baseUrl)
+    throws Exception {
+        Assert.assertNotNull(this.ortTest.getCreatedId());
+        this.statusTest.updateService(baseUrl, testProtocol);
+    }
+
+    /**
      * Testing DELETE services.
      */
     @Test
     @RunAsClient
     public final void testD_DeleteServices(@ArquillianResource URL baseUrl)
     throws Exception {
+        Assert.assertNotNull(this.statusTest.getCreatedId());
+        this.statusTest.deleteService(baseUrl, testProtocol);
         Assert.assertNotNull(this.ortTest.getCreatedId());
         this.ortTest.deleteService(baseUrl, testProtocol);
         Assert.assertNotNull(this.messwertTest.getCreatedMesswertId());
