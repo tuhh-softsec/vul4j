@@ -5,7 +5,7 @@
  * and comes with ABSOLUTELY NO WARRANTY! Check out
  * the documentation coming with IMIS-Labordaten-Application for details.
  */
-package de.intevation.lada.test;
+package de.intevation.lada.test.land;
 
 import java.io.StringReader;
 import java.net.URL;
@@ -26,36 +26,39 @@ import org.junit.Assert;
 
 import de.intevation.lada.Protocol;
 
+
 /**
- * Class containing test cases for zusatzwert objects.
+ * Class containing test cases for probekommentar objects.
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-public class Zusatzwert {
+public class KommentarP {
 
-    private static final String COMPARE =
-        "{\"id\":1,\"letzteAenderung\":1335177176000,\"messfehler\":48.0," +
-        "\"messwertPzs\":7.5,\"nwgZuMesswert\":null,\"probeId\":84," +
-        "\"pzsId\":\"A76\"}";
+    private static final String COMPARE_KOMMENTARP =
+        "{\"datum\":1321002077000,\"erzeuger\":\"06010\",\"id\":1,\"text\":" +
+        "\"Die Probe wurde in Darmstadt gammaspektrometrisch gemessen und " +
+        "für die Sr-Bestimmung verascht. \",\"probeId\":361}";
 
-    private static final String CREATE =
-        "{\"letzteAenderung\":1335177176000,\"messfehler\":18.0," +
-        "\"messwertPzs\":3.5,\"nwgZuMesswert\":null,\"probeId\":PID," +
-        "\"pzsId\":\"A76\"}";
+    private static final String CREATE_KOMMENTARP =
+        "{\"probeId\":\"PID\",\"erzeuger\":\"11010\",\"text\":" +
+        "\"test\",\"datum\":\"2015-02-09T10:58:36\"}";
 
     private List<Protocol> protocol;
 
-    private static Integer createdId;
-
-    public Integer getCreatedId() {
-        return createdId;
-    }
+    private static Integer createdKommentarId;
 
     /**
      * @return The test protocol
      */
     public List<Protocol> getProtocol() {
         return protocol;
+    }
+
+    /**
+     * @return The created KommentarId
+     */
+    public Integer getCreatedKommentarId() {
+        return createdKommentarId;
     }
 
     /**
@@ -67,13 +70,13 @@ public class Zusatzwert {
     throws Exception {
         System.out.print(".");
         Protocol prot = new Protocol();
-        prot.setName("ZusatzwertService");
+        prot.setName("ProbeKommentarService");
         prot.setType("get all");
         prot.setPassed(false);
         protocol.add(prot);
         /* Create a client*/
         Client client = ClientBuilder.newClient();
-        WebTarget target = client.target(baseUrl + "zusatzwert");
+        WebTarget target = client.target(baseUrl + "pkommentar");
         /* Request all objects*/
         Response response = target.request().get();
         String entity = response.readEntity(String.class);
@@ -105,20 +108,20 @@ public class Zusatzwert {
     throws Exception {
         System.out.print(".");
         Protocol prot = new Protocol();
-        prot.setName("ZusatzwertService");
+        prot.setName("ProbeKommentarService");
         prot.setType("get by Id");
         prot.setPassed(false);
         protocol.add(prot);
         try {
             /* Create a json object from static string*/
             JsonReader fromStringRreader =
-                Json.createReader(new StringReader(COMPARE));
-            JsonObject staticMessung = fromStringRreader.readObject();
+                Json.createReader(new StringReader(COMPARE_KOMMENTARP));
+            JsonObject staticKommentar = fromStringRreader.readObject();
             /* Create a client*/
             Client client = ClientBuilder.newClient();
-            WebTarget target = client.target(baseUrl + "zusatzwert/1");
-            prot.addInfo("zustzwertId", 1);
-            /* Request a object by id*/
+            WebTarget target = client.target(baseUrl + "pkommentar/1");
+            prot.addInfo("kommentarId", 1);
+            /* Request an object by id*/
             Response response = target.request().get();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
@@ -130,7 +133,7 @@ public class Zusatzwert {
             prot.addInfo("success", content.getBoolean("success"));
             Assert.assertEquals("200", content.getString("message"));
             prot.addInfo("message", content.getString("message"));
-            Assert.assertEquals(staticMessung,
+            Assert.assertEquals(staticKommentar,
                 content.getJsonObject("data"));
             prot.addInfo("object", "equals");
         }
@@ -149,7 +152,7 @@ public class Zusatzwert {
     public final void filterService(URL baseUrl, List<Protocol> protocol) {
         System.out.print(".");
         Protocol prot = new Protocol();
-        prot.setName("ZusatzwertService");
+        prot.setName("ProbeKommentarService");
         prot.setType("get by filter");
         prot.setPassed(false);
         protocol.add(prot);
@@ -157,8 +160,8 @@ public class Zusatzwert {
             /* Create a client*/
             Client client = ClientBuilder.newClient();
             WebTarget target =
-                client.target(baseUrl + "zusatzwert?probeIdId=1");
-            prot.addInfo("filter", "probeId=1");
+                client.target(baseUrl + "pkommentar?probeId=400");
+            prot.addInfo("filter", "probeId=400");
             /* Request the objects using the filter*/
             Response response = target.request().get();
             String entity = response.readEntity(String.class);
@@ -192,27 +195,27 @@ public class Zusatzwert {
     throws Exception {
         System.out.print(".");
         Protocol prot = new Protocol();
-        prot.setName("ZusatzwertService");
+        prot.setName("ProbeKommentarService");
         prot.setType("create");
         prot.setPassed(false);
         protocol.add(prot);
         try {
             /* Create a client*/
             Client client = ClientBuilder.newClient();
-            WebTarget target = client.target(baseUrl + "zusatzwert");
-            /* Send a post request containing a new object*/
-            String zus = CREATE.replace("PID", probeId.toString());
+            WebTarget target = client.target(baseUrl + "pkommentar");
+            /* Send a post request containing a new kommentar*/
+            String mess = CREATE_KOMMENTARP.replace("PID", probeId.toString());
             Response response = target.request().post(
-                    Entity.entity(zus, MediaType.APPLICATION_JSON));
+                    Entity.entity(mess, MediaType.APPLICATION_JSON));
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader fromServiceReader =
                 Json.createReader(new StringReader(entity));
             JsonObject content = fromServiceReader.readObject();
             /* Save the id*/
-            createdId =
+            createdKommentarId =
                 content.getJsonObject("data").getJsonNumber("id").intValue();
-            prot.addInfo("zusatzwertId", createdId);
+            prot.addInfo("kommentarId", createdKommentarId);
             /* Verify the response*/
             Assert.assertTrue(content.getBoolean("success"));
             prot.addInfo("success", content.getBoolean("success"));
@@ -235,7 +238,7 @@ public class Zusatzwert {
     throws Exception {
         System.out.print(".");
         Protocol prot = new Protocol();
-        prot.setName("ZusatzwertService");
+        prot.setName("ProbeKommentarService");
         prot.setType("update");
         prot.setPassed(false);
         protocol.add(prot);
@@ -243,35 +246,35 @@ public class Zusatzwert {
             /* Create a client*/
             Client client = ClientBuilder.newClient();
             WebTarget target =
-                client.target(baseUrl + "zusatzwert/" + createdId);
-            prot.addInfo("zusatzwertId", createdId);
-            /* Request an object with the saved id*/
+                client.target(baseUrl + "pkommentar/" + createdKommentarId);
+            prot.addInfo("kommentarId", createdKommentarId);
+            /* Request a kommentar with the id saved when created a kommentar*/
             Response response = target.request().get();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader reader = Json.createReader(new StringReader(entity));
-            JsonObject old = reader.readObject().getJsonObject("data");
-            /* Change the mmtId*/
+            JsonObject oldKommentar = reader.readObject().getJsonObject("data");
+            /* Change the text*/
             String updatedEntity =
-                old.toString().replace("3.5", "14");
-            prot.addInfo("updated field", "messwertPzs");
-            prot.addInfo("updated value", "3.5");
-            prot.addInfo("updated to", "14");
-            /* Send the updated messwert via put request*/
-            WebTarget putTarget = client.target(baseUrl + "zusatzwert");
+                oldKommentar.toString().replace("test", "neu");
+            prot.addInfo("updated field", "text");
+            prot.addInfo("updated value", "test");
+            prot.addInfo("updated to", "neu");
+            /* Send the updated kommentar via put reauest*/
+            WebTarget putTarget = client.target(baseUrl + "pkommentar");
             Response updated = putTarget.request().put(
                 Entity.entity(updatedEntity, MediaType.APPLICATION_JSON));
             /* Try to parse the response*/
             JsonReader updatedReader = Json.createReader(
                 new StringReader(updated.readEntity(String.class)));
-            JsonObject updatedObj = updatedReader.readObject();
+            JsonObject updatedMessung = updatedReader.readObject();
             /* Verify the response*/
-            Assert.assertTrue(updatedObj.getBoolean("success"));
-            prot.addInfo("success", updatedObj.getBoolean("success"));
-            Assert.assertEquals("200", updatedObj.getString("message"));
-            prot.addInfo("message", updatedObj.getString("message"));
-            Assert.assertEquals(14,
-                updatedObj.getJsonObject("data").getJsonNumber("messwertPzs"));
+            Assert.assertTrue(updatedMessung.getBoolean("success"));
+            prot.addInfo("success", updatedMessung.getBoolean("success"));
+            Assert.assertEquals("200", updatedMessung.getString("message"));
+            prot.addInfo("message", updatedMessung.getString("message"));
+            Assert.assertEquals("neu",
+                updatedMessung.getJsonObject("data").getString("text"));
         }
         catch(JsonException je) {
             prot.addInfo("exception", je.getMessage());
@@ -288,7 +291,7 @@ public class Zusatzwert {
     public final void deleteService(URL baseUrl, List<Protocol> protocol) {
         System.out.print(".");
         Protocol prot = new Protocol();
-        prot.setName("ZusatzwertService");
+        prot.setName("ProbeKommentarService");
         prot.setType("delete");
         prot.setPassed(false);
         protocol.add(prot);
@@ -296,9 +299,9 @@ public class Zusatzwert {
             /* Create a client*/
             Client client = ClientBuilder.newClient();
             WebTarget target =
-                client.target(baseUrl + "zusatzwert/" + createdId);
-            prot.addInfo("zusatzwertId", createdId);
-            /* Delete the object with the saved id*/
+                client.target(baseUrl + "pkommentar/" + createdKommentarId);
+            prot.addInfo("kommentarId", createdKommentarId);
+            /* Delete a kommentar with the saved id*/
             Response response = target.request().delete();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/

@@ -5,7 +5,7 @@
  * and comes with ABSOLUTELY NO WARRANTY! Check out
  * the documentation coming with IMIS-Labordaten-Application for details.
  */
-package de.intevation.lada.test;
+package de.intevation.lada.test.land;
 
 import java.io.StringReader;
 import java.net.URL;
@@ -27,26 +27,30 @@ import org.junit.Assert;
 import de.intevation.lada.Protocol;
 
 /**
- * Class containing test cases for status objects.
+ * Class containing test cases for messwert objects.
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-public class Status {
+public class Messwert {
 
-    private static final String COMPARE =
-        "{\"id\":1,\"erzeuger\":\"06010\",\"messungsId\":440,\"status\":3," +
-        "\"sdatum\":1373846400000,\"skommentar\":\"test\"}";
+    private static final String COMPARE_MESSWERT =
+        "{\"id\":1,\"grenzwertueberschreitung\":null,\"letzteAenderung\":" +
+        "1327305368000,\"mehId\":69,\"messfehler\":1.1,\"messgroesseId\":28," +
+        "\"messungsId\":749,\"messwert\":97.0,\"messwertNwg\":null," +
+        "\"nwgZuMesswert\":null}";
 
-    private static final String CREATE =
-        "{\"erzeuger\":\"06010\",\"messungsId\":MID,\"status\":3," +
-        "\"sdatum\":1373846400000,\"skommentar\":\"status3\"}";
+    private static final String CREATE_MESSWERT =
+        "{\"messungsId\":MID,\"messgroesseId\":242,\"messwert\":1," +
+        "\"messwertNwg\":\"\",\"messfehler\":1,\"nwgZuMesswert\":3," +
+        "\"mehId\":207,\"grenzwertueberschreitung\":false," +
+        "\"letzteAenderung\":null}";
 
     private List<Protocol> protocol;
 
-    private static Integer createdId;
+    private static Integer createdMesswertId;
 
-    public Integer getCreatedId() {
-        return createdId;
+    public Integer getCreatedMesswertId() {
+        return createdMesswertId;
     }
 
     /**
@@ -65,13 +69,13 @@ public class Status {
     throws Exception {
         System.out.print(".");
         Protocol prot = new Protocol();
-        prot.setName("StatusService");
+        prot.setName("MesswertService");
         prot.setType("get all");
         prot.setPassed(false);
         protocol.add(prot);
         /* Create a client*/
         Client client = ClientBuilder.newClient();
-        WebTarget target = client.target(baseUrl + "status");
+        WebTarget target = client.target(baseUrl + "messwert");
         /* Request all objects*/
         Response response = target.request().get();
         String entity = response.readEntity(String.class);
@@ -103,19 +107,19 @@ public class Status {
     throws Exception {
         System.out.print(".");
         Protocol prot = new Protocol();
-        prot.setName("StatusService");
+        prot.setName("MesswertService");
         prot.setType("get by Id");
         prot.setPassed(false);
         protocol.add(prot);
         try {
             /* Create a json object from static messwert string*/
             JsonReader fromStringRreader =
-                Json.createReader(new StringReader(COMPARE));
+                Json.createReader(new StringReader(COMPARE_MESSWERT));
             JsonObject staticMessung = fromStringRreader.readObject();
             /* Create a client*/
             Client client = ClientBuilder.newClient();
-            WebTarget target = client.target(baseUrl + "status/1");
-            prot.addInfo("statusId", 1);
+            WebTarget target = client.target(baseUrl + "messwert/1");
+            prot.addInfo("messwertId", 1);
             /* Request a object by id*/
             Response response = target.request().get();
             String entity = response.readEntity(String.class);
@@ -147,7 +151,7 @@ public class Status {
     public final void filterService(URL baseUrl, List<Protocol> protocol) {
         System.out.print(".");
         Protocol prot = new Protocol();
-        prot.setName("StatusService");
+        prot.setName("MesswertService");
         prot.setType("get by filter");
         prot.setPassed(false);
         protocol.add(prot);
@@ -155,7 +159,7 @@ public class Status {
             /* Create a client*/
             Client client = ClientBuilder.newClient();
             WebTarget target =
-                client.target(baseUrl + "status?messungId=1");
+                client.target(baseUrl + "messwert?messungId=1");
             prot.addInfo("filter", "messungId=1");
             /* Request the objects using the filter*/
             Response response = target.request().get();
@@ -190,27 +194,27 @@ public class Status {
     throws Exception {
         System.out.print(".");
         Protocol prot = new Protocol();
-        prot.setName("StatusService");
+        prot.setName("MesswertService");
         prot.setType("create");
         prot.setPassed(false);
         protocol.add(prot);
         try {
             /* Create a client*/
             Client client = ClientBuilder.newClient();
-            WebTarget target = client.target(baseUrl + "status");
+            WebTarget target = client.target(baseUrl + "messwert");
             /* Send a post request containing a new object*/
-            String stat = CREATE.replace("MID", messungId.toString());
+            String mess = CREATE_MESSWERT.replace("MID", messungId.toString());
             Response response = target.request().post(
-                    Entity.entity(stat, MediaType.APPLICATION_JSON));
+                    Entity.entity(mess, MediaType.APPLICATION_JSON));
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader fromServiceReader =
                 Json.createReader(new StringReader(entity));
             JsonObject content = fromServiceReader.readObject();
             /* Save the id*/
-            createdId =
+            createdMesswertId =
                 content.getJsonObject("data").getJsonNumber("id").intValue();
-            prot.addInfo("statusId", createdId);
+            prot.addInfo("messwertId", createdMesswertId);
             /* Verify the response*/
             Assert.assertTrue(content.getBoolean("success"));
             prot.addInfo("success", content.getBoolean("success"));
@@ -233,7 +237,7 @@ public class Status {
     throws Exception {
         System.out.print(".");
         Protocol prot = new Protocol();
-        prot.setName("StatusService");
+        prot.setName("MesswertService");
         prot.setType("update");
         prot.setPassed(false);
         protocol.add(prot);
@@ -241,35 +245,35 @@ public class Status {
             /* Create a client*/
             Client client = ClientBuilder.newClient();
             WebTarget target =
-                client.target(baseUrl + "status/" + createdId);
-            prot.addInfo("statusId", createdId);
-            /* Request an object with the saved id*/
+                client.target(baseUrl + "messwert/" + createdMesswertId);
+            prot.addInfo("messwertId", createdMesswertId);
+            /* Request a messwert with the saved id*/
             Response response = target.request().get();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader reader = Json.createReader(new StringReader(entity));
-            JsonObject old = reader.readObject().getJsonObject("data");
+            JsonObject oldMesswert = reader.readObject().getJsonObject("data");
             /* Change the mmtId*/
             String updatedEntity =
-                old.toString().replace("status3", "status3updated");
-            prot.addInfo("updated field", "skommentar");
-            prot.addInfo("updated value", "status3");
-            prot.addInfo("updated to", "status3updated");
+                oldMesswert.toString().replace("207", "69");
+            prot.addInfo("updated field", "mehId");
+            prot.addInfo("updated value", "207");
+            prot.addInfo("updated to", "69");
             /* Send the updated messwert via put request*/
-            WebTarget putTarget = client.target(baseUrl + "status");
+            WebTarget putTarget = client.target(baseUrl + "messwert");
             Response updated = putTarget.request().put(
                 Entity.entity(updatedEntity, MediaType.APPLICATION_JSON));
             /* Try to parse the response*/
             JsonReader updatedReader = Json.createReader(
                 new StringReader(updated.readEntity(String.class)));
-            JsonObject updatedObj = updatedReader.readObject();
+            JsonObject updatedMessung = updatedReader.readObject();
             /* Verify the response*/
-            Assert.assertTrue(updatedObj.getBoolean("success"));
-            prot.addInfo("success", updatedObj.getBoolean("success"));
-            Assert.assertEquals("200", updatedObj.getString("message"));
-            prot.addInfo("message", updatedObj.getString("message"));
-            Assert.assertEquals("status3updated",
-                updatedObj.getJsonObject("data").getString("skommentar"));
+            Assert.assertTrue(updatedMessung.getBoolean("success"));
+            prot.addInfo("success", updatedMessung.getBoolean("success"));
+            Assert.assertEquals("200", updatedMessung.getString("message"));
+            prot.addInfo("message", updatedMessung.getString("message"));
+            Assert.assertEquals(69,
+                updatedMessung.getJsonObject("data").getInt("mehId"));
         }
         catch(JsonException je) {
             prot.addInfo("exception", je.getMessage());
@@ -286,7 +290,7 @@ public class Status {
     public final void deleteService(URL baseUrl, List<Protocol> protocol) {
         System.out.print(".");
         Protocol prot = new Protocol();
-        prot.setName("StatusService");
+        prot.setName("MesswertService");
         prot.setType("delete");
         prot.setPassed(false);
         protocol.add(prot);
@@ -294,9 +298,9 @@ public class Status {
             /* Create a client*/
             Client client = ClientBuilder.newClient();
             WebTarget target =
-                client.target(baseUrl + "status/" + createdId);
-            prot.addInfo("statusId", createdId);
-            /* Delete the object with the saved id*/
+                client.target(baseUrl + "messwert/" + createdMesswertId);
+            prot.addInfo("messwertId", createdMesswertId);
+            /* Delete a messwert with the saved id*/
             Response response = target.request().delete();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/

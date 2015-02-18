@@ -5,7 +5,7 @@
  * and comes with ABSOLUTELY NO WARRANTY! Check out
  * the documentation coming with IMIS-Labordaten-Application for details.
  */
-package de.intevation.lada.test;
+package de.intevation.lada.test.land;
 
 import java.io.StringReader;
 import java.net.URL;
@@ -26,39 +26,34 @@ import org.junit.Assert;
 
 import de.intevation.lada.Protocol;
 
-
 /**
- * Class containing test cases for probekommentar objects.
+ * Class containing test cases for status objects.
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-public class KommentarP {
+public class Status {
 
-    private static final String COMPARE_KOMMENTARP =
-        "{\"datum\":1321002077000,\"erzeuger\":\"06010\",\"id\":1,\"text\":" +
-        "\"Die Probe wurde in Darmstadt gammaspektrometrisch gemessen und " +
-        "für die Sr-Bestimmung verascht. \",\"probeId\":361}";
+    private static final String COMPARE =
+        "{\"id\":1,\"erzeuger\":\"06010\",\"messungsId\":440,\"status\":3," +
+        "\"sdatum\":1373846400000,\"skommentar\":\"test\"}";
 
-    private static final String CREATE_KOMMENTARP =
-        "{\"probeId\":\"PID\",\"erzeuger\":\"11010\",\"text\":" +
-        "\"test\",\"datum\":\"2015-02-09T10:58:36\"}";
+    private static final String CREATE =
+        "{\"erzeuger\":\"06010\",\"messungsId\":MID,\"status\":3," +
+        "\"sdatum\":1373846400000,\"skommentar\":\"status3\"}";
 
     private List<Protocol> protocol;
 
-    private static Integer createdKommentarId;
+    private static Integer createdId;
+
+    public Integer getCreatedId() {
+        return createdId;
+    }
 
     /**
      * @return The test protocol
      */
     public List<Protocol> getProtocol() {
         return protocol;
-    }
-
-    /**
-     * @return The created KommentarId
-     */
-    public Integer getCreatedKommentarId() {
-        return createdKommentarId;
     }
 
     /**
@@ -70,13 +65,13 @@ public class KommentarP {
     throws Exception {
         System.out.print(".");
         Protocol prot = new Protocol();
-        prot.setName("ProbeKommentarService");
+        prot.setName("StatusService");
         prot.setType("get all");
         prot.setPassed(false);
         protocol.add(prot);
         /* Create a client*/
         Client client = ClientBuilder.newClient();
-        WebTarget target = client.target(baseUrl + "pkommentar");
+        WebTarget target = client.target(baseUrl + "status");
         /* Request all objects*/
         Response response = target.request().get();
         String entity = response.readEntity(String.class);
@@ -108,20 +103,20 @@ public class KommentarP {
     throws Exception {
         System.out.print(".");
         Protocol prot = new Protocol();
-        prot.setName("ProbeKommentarService");
+        prot.setName("StatusService");
         prot.setType("get by Id");
         prot.setPassed(false);
         protocol.add(prot);
         try {
-            /* Create a json object from static string*/
+            /* Create a json object from static messwert string*/
             JsonReader fromStringRreader =
-                Json.createReader(new StringReader(COMPARE_KOMMENTARP));
-            JsonObject staticKommentar = fromStringRreader.readObject();
+                Json.createReader(new StringReader(COMPARE));
+            JsonObject staticMessung = fromStringRreader.readObject();
             /* Create a client*/
             Client client = ClientBuilder.newClient();
-            WebTarget target = client.target(baseUrl + "pkommentar/1");
-            prot.addInfo("kommentarId", 1);
-            /* Request an object by id*/
+            WebTarget target = client.target(baseUrl + "status/1");
+            prot.addInfo("statusId", 1);
+            /* Request a object by id*/
             Response response = target.request().get();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
@@ -133,7 +128,7 @@ public class KommentarP {
             prot.addInfo("success", content.getBoolean("success"));
             Assert.assertEquals("200", content.getString("message"));
             prot.addInfo("message", content.getString("message"));
-            Assert.assertEquals(staticKommentar,
+            Assert.assertEquals(staticMessung,
                 content.getJsonObject("data"));
             prot.addInfo("object", "equals");
         }
@@ -152,7 +147,7 @@ public class KommentarP {
     public final void filterService(URL baseUrl, List<Protocol> protocol) {
         System.out.print(".");
         Protocol prot = new Protocol();
-        prot.setName("ProbeKommentarService");
+        prot.setName("StatusService");
         prot.setType("get by filter");
         prot.setPassed(false);
         protocol.add(prot);
@@ -160,8 +155,8 @@ public class KommentarP {
             /* Create a client*/
             Client client = ClientBuilder.newClient();
             WebTarget target =
-                client.target(baseUrl + "pkommentar?probeId=400");
-            prot.addInfo("filter", "probeId=400");
+                client.target(baseUrl + "status?messungId=1");
+            prot.addInfo("filter", "messungId=1");
             /* Request the objects using the filter*/
             Response response = target.request().get();
             String entity = response.readEntity(String.class);
@@ -191,31 +186,31 @@ public class KommentarP {
     public final void createService(
         URL baseUrl,
         List<Protocol> protocol,
-        Integer probeId)
+        Integer messungId)
     throws Exception {
         System.out.print(".");
         Protocol prot = new Protocol();
-        prot.setName("ProbeKommentarService");
+        prot.setName("StatusService");
         prot.setType("create");
         prot.setPassed(false);
         protocol.add(prot);
         try {
             /* Create a client*/
             Client client = ClientBuilder.newClient();
-            WebTarget target = client.target(baseUrl + "pkommentar");
-            /* Send a post request containing a new kommentar*/
-            String mess = CREATE_KOMMENTARP.replace("PID", probeId.toString());
+            WebTarget target = client.target(baseUrl + "status");
+            /* Send a post request containing a new object*/
+            String stat = CREATE.replace("MID", messungId.toString());
             Response response = target.request().post(
-                    Entity.entity(mess, MediaType.APPLICATION_JSON));
+                    Entity.entity(stat, MediaType.APPLICATION_JSON));
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader fromServiceReader =
                 Json.createReader(new StringReader(entity));
             JsonObject content = fromServiceReader.readObject();
             /* Save the id*/
-            createdKommentarId =
+            createdId =
                 content.getJsonObject("data").getJsonNumber("id").intValue();
-            prot.addInfo("kommentarId", createdKommentarId);
+            prot.addInfo("statusId", createdId);
             /* Verify the response*/
             Assert.assertTrue(content.getBoolean("success"));
             prot.addInfo("success", content.getBoolean("success"));
@@ -238,7 +233,7 @@ public class KommentarP {
     throws Exception {
         System.out.print(".");
         Protocol prot = new Protocol();
-        prot.setName("ProbeKommentarService");
+        prot.setName("StatusService");
         prot.setType("update");
         prot.setPassed(false);
         protocol.add(prot);
@@ -246,35 +241,35 @@ public class KommentarP {
             /* Create a client*/
             Client client = ClientBuilder.newClient();
             WebTarget target =
-                client.target(baseUrl + "pkommentar/" + createdKommentarId);
-            prot.addInfo("kommentarId", createdKommentarId);
-            /* Request a kommentar with the id saved when created a kommentar*/
+                client.target(baseUrl + "status/" + createdId);
+            prot.addInfo("statusId", createdId);
+            /* Request an object with the saved id*/
             Response response = target.request().get();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader reader = Json.createReader(new StringReader(entity));
-            JsonObject oldKommentar = reader.readObject().getJsonObject("data");
-            /* Change the text*/
+            JsonObject old = reader.readObject().getJsonObject("data");
+            /* Change the mmtId*/
             String updatedEntity =
-                oldKommentar.toString().replace("test", "neu");
-            prot.addInfo("updated field", "text");
-            prot.addInfo("updated value", "test");
-            prot.addInfo("updated to", "neu");
-            /* Send the updated kommentar via put reauest*/
-            WebTarget putTarget = client.target(baseUrl + "pkommentar");
+                old.toString().replace("status3", "status3updated");
+            prot.addInfo("updated field", "skommentar");
+            prot.addInfo("updated value", "status3");
+            prot.addInfo("updated to", "status3updated");
+            /* Send the updated messwert via put request*/
+            WebTarget putTarget = client.target(baseUrl + "status");
             Response updated = putTarget.request().put(
                 Entity.entity(updatedEntity, MediaType.APPLICATION_JSON));
             /* Try to parse the response*/
             JsonReader updatedReader = Json.createReader(
                 new StringReader(updated.readEntity(String.class)));
-            JsonObject updatedMessung = updatedReader.readObject();
+            JsonObject updatedObj = updatedReader.readObject();
             /* Verify the response*/
-            Assert.assertTrue(updatedMessung.getBoolean("success"));
-            prot.addInfo("success", updatedMessung.getBoolean("success"));
-            Assert.assertEquals("200", updatedMessung.getString("message"));
-            prot.addInfo("message", updatedMessung.getString("message"));
-            Assert.assertEquals("neu",
-                updatedMessung.getJsonObject("data").getString("text"));
+            Assert.assertTrue(updatedObj.getBoolean("success"));
+            prot.addInfo("success", updatedObj.getBoolean("success"));
+            Assert.assertEquals("200", updatedObj.getString("message"));
+            prot.addInfo("message", updatedObj.getString("message"));
+            Assert.assertEquals("status3updated",
+                updatedObj.getJsonObject("data").getString("skommentar"));
         }
         catch(JsonException je) {
             prot.addInfo("exception", je.getMessage());
@@ -291,7 +286,7 @@ public class KommentarP {
     public final void deleteService(URL baseUrl, List<Protocol> protocol) {
         System.out.print(".");
         Protocol prot = new Protocol();
-        prot.setName("ProbeKommentarService");
+        prot.setName("StatusService");
         prot.setType("delete");
         prot.setPassed(false);
         protocol.add(prot);
@@ -299,9 +294,9 @@ public class KommentarP {
             /* Create a client*/
             Client client = ClientBuilder.newClient();
             WebTarget target =
-                client.target(baseUrl + "pkommentar/" + createdKommentarId);
-            prot.addInfo("kommentarId", createdKommentarId);
-            /* Delete a kommentar with the saved id*/
+                client.target(baseUrl + "status/" + createdId);
+            prot.addInfo("statusId", createdId);
+            /* Delete the object with the saved id*/
             Response response = target.request().delete();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/

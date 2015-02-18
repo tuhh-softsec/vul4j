@@ -5,7 +5,7 @@
  * and comes with ABSOLUTELY NO WARRANTY! Check out
  * the documentation coming with IMIS-Labordaten-Application for details.
  */
-package de.intevation.lada.test;
+package de.intevation.lada.test.land;
 
 import java.io.StringReader;
 import java.net.URL;

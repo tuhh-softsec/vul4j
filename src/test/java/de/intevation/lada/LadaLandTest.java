@@ -9,32 +9,27 @@ package de.intevation.lada;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
-import de.intevation.lada.test.KommentarM;
-import de.intevation.lada.test.KommentarP;
-import de.intevation.lada.test.Messung;
-import de.intevation.lada.test.Messwert;
-import de.intevation.lada.test.Ort;
-import de.intevation.lada.test.Probe;
-import de.intevation.lada.test.Query;
-import de.intevation.lada.test.Status;
-import de.intevation.lada.test.Zusatzwert;
+import de.intevation.lada.test.land.KommentarM;
+import de.intevation.lada.test.land.KommentarP;
+import de.intevation.lada.test.land.Messung;
+import de.intevation.lada.test.land.Messwert;
+import de.intevation.lada.test.land.Ort;
+import de.intevation.lada.test.land.Probe;
+import de.intevation.lada.test.land.Query;
+import de.intevation.lada.test.land.Status;
+import de.intevation.lada.test.land.Zusatzwert;
 
 
 /**
@@ -44,13 +39,9 @@ import de.intevation.lada.test.Zusatzwert;
  */
 @RunWith(Arquillian.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class LadaTest {
+public class LadaLandTest extends BaseTest {
 
-    private static String ARCHIVE_NAME = "lada-basis-test.war";
-
-    private static Logger logger = Logger.getLogger(LadaTest.class);
-
-    private static boolean verboseLogging = true;
+    private static Logger logger = Logger.getLogger(LadaLandTest.class);
 
     private Probe probeTest;
     private Query queryTest;
@@ -62,9 +53,7 @@ public class LadaTest {
     private Status statusTest;
     private Zusatzwert zusatzwertTest;
 
-    private static List<Protocol> testProtocol;
-
-    public LadaTest() {
+    public LadaLandTest() {
         probeTest = new Probe();
         queryTest = new Query();
         messungTest = new Messung();
@@ -75,30 +64,12 @@ public class LadaTest {
         statusTest = new Status();
         zusatzwertTest = new Zusatzwert();
         testProtocol = new ArrayList<Protocol>();
+        verboseLogging = false;
     }
 
-    /**
-     * Create a deployable WAR archive.
-     */
-    @Deployment(testable=true)
-    public static WebArchive createDeployment() throws Exception {
-        logger.info("\n\n---------- Test Protocol ----------");
-        logger.info("Create and deploy: " + ARCHIVE_NAME);
-        WebArchive archive = ShrinkWrap.create(WebArchive.class, ARCHIVE_NAME)
-            .addPackages(true, Package.getPackage("de.intevation.lada"))
-            .addAsResource("log4j.properties", "log4j.properties")
-            .addAsResource("queryconf.json", "queryconf.json")
-            .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
-            .addAsResource("META-INF/test-persistence.xml",
-                "META-INF/persistence.xml");
-        return archive;
-    }
-
-    @After
-    public final void printLogs() {
-        for (Protocol p : testProtocol) {
-            logger.info(p.toString(verboseLogging));
-        }
+    @BeforeClass
+    public static void beforeTests() {
+        logger.info("---------- Testing Lada Land Services ----------");
     }
 
     /**
