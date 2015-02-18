@@ -11,6 +11,8 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
@@ -25,13 +27,15 @@ public class KommentarM implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Column(name="messungs_id")
-    private Integer messung;
+    private Integer messungId;
 
     private Timestamp datum;
 
     private String erzeuger;
 
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name="id", unique=true, nullable=false)
     private Integer id;
 
     private String text;
@@ -71,11 +75,11 @@ public class KommentarM implements Serializable {
         this.text = text;
     }
 
-    public Integer getMessung() {
-        return this.messung;
+    public Integer getMessungId() {
+        return this.messungId;
     }
 
-    public void setMessung(Integer messung) {
-        this.messung = messung;
+    public void setMessungId(Integer messungId) {
+        this.messungId = messungId;
     }
 }
