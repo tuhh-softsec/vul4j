@@ -94,4 +94,16 @@ public class LadaStammTest extends BaseTest {
     public final void testMessmethodeById(@ArquillianResource URL baseUrl) {
         stammdatenTest.getById(baseUrl, "messmethode", "GI", testProtocol);
     }
+
+    @Test
+    @RunAsClient
+    public final void testMessstelleAll(@ArquillianResource URL baseUrl) {
+        stammdatenTest.getAll(baseUrl, "messstelle", testProtocol);
+    }
+
+    @Test
+    @RunAsClient
+    public final void testMessstelleById(@ArquillianResource URL baseUrl) {
+        stammdatenTest.getById(baseUrl, "messstelle", "03151", testProtocol);
+    }
 }

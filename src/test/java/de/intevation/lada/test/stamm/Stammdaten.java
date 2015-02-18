@@ -39,6 +39,11 @@ public class Stammdaten {
         compare.put("messmethode",
             "{\"id\":\"GI\",\"beschreibung\":null,\"messmethode\":" +
             "\"Iod, Gamma-Spektrometrie\"}");
+        compare.put("messstelle",
+            "{\"id\":\"03151\",\"amtskennung\":null,\"beschreibung\":" +
+            "\"E.ON Kernkraftwerk GmbH, Kernkraftwerk Stade, Postfach 1780, " +
+            "21657 Stade\",\"messStelle\":\"KKW - KKS\",\"mstTyp\":\"M\"," +
+            "\"netzbetreiberId\":\"03\"}");
     }
 
     /**
