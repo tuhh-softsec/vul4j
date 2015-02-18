@@ -30,6 +30,7 @@ import de.intevation.lada.test.KommentarM;
 import de.intevation.lada.test.KommentarP;
 import de.intevation.lada.test.Messung;
 import de.intevation.lada.test.Messwert;
+import de.intevation.lada.test.Ort;
 import de.intevation.lada.test.Probe;
 import de.intevation.lada.test.Query;
 
@@ -47,7 +48,7 @@ public class LadaTest {
 
     private static Logger logger = Logger.getLogger(LadaTest.class);
 
-    private static boolean verboseLogging = false;
+    private static boolean verboseLogging = true;
 
     private Probe probeTest;
     private Query queryTest;
@@ -55,6 +56,7 @@ public class LadaTest {
     private KommentarP kommentarPTest;
     private KommentarM kommentarMTest;
     private Messwert messwertTest;
+    private Ort ortTest;
 
     private static List<Protocol> testProtocol;
 
@@ -65,6 +67,7 @@ public class LadaTest {
         kommentarPTest = new KommentarP();
         kommentarMTest = new KommentarM();
         messwertTest = new Messwert();
+        ortTest = new Ort();
         testProtocol = new ArrayList<Protocol>();
     }
 
@@ -253,6 +256,35 @@ public class LadaTest {
     }
 
     /**
+     * Testing GET Services.
+     */
+    @Test
+    @RunAsClient
+    public final void testA_OrtGetAllServices(@ArquillianResource URL baseUrl)
+    throws Exception {
+        this.ortTest.getAllService(baseUrl, testProtocol);
+    }
+
+    /**
+     * Testing GET Services.
+     */
+    @Test
+    @RunAsClient
+    public final void testA_OrtGetByIdServices(@ArquillianResource URL baseUrl)
+    throws Exception {
+        this.ortTest.getByIdService(baseUrl, testProtocol);
+    }
+
+    /**
+     * Testing GET Services.
+     */
+    @Test
+    @RunAsClient
+    public final void testA_OrtGetFilterServices(@ArquillianResource URL baseUrl)
+    throws Exception {
+        this.ortTest.filterService(baseUrl, testProtocol);
+    }
+    /**
      * Testing CREATE services.
      */
     @Test
@@ -266,6 +298,10 @@ public class LadaTest {
             testProtocol,
             this.probeTest.getCreatedProbeId());
         this.kommentarPTest.createService(
+            baseUrl,
+            testProtocol,
+            this.probeTest.getCreatedProbeId());
+        this.ortTest.createService(
             baseUrl,
             testProtocol,
             this.probeTest.getCreatedProbeId());
@@ -336,12 +372,25 @@ public class LadaTest {
     }
 
     /**
+     * Testing UPDATE services.
+     */
+    @Test
+    @RunAsClient
+    public final void testC_ortUpdateService(@ArquillianResource URL baseUrl)
+    throws Exception {
+        Assert.assertNotNull(this.ortTest.getCreatedId());
+        this.ortTest.updateService(baseUrl, testProtocol);
+    }
+
+    /**
      * Testing DELETE services.
      */
     @Test
     @RunAsClient
     public final void testD_DeleteServices(@ArquillianResource URL baseUrl)
     throws Exception {
+        Assert.assertNotNull(this.ortTest.getCreatedId());
+        this.ortTest.deleteService(baseUrl, testProtocol);
         Assert.assertNotNull(this.messwertTest.getCreatedMesswertId());
         this.messwertTest.deleteService(baseUrl, testProtocol);
         Assert.assertNotNull(this.kommentarMTest.getCreatedKommentarId());
