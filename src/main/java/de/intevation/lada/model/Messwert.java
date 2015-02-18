@@ -11,6 +11,8 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
@@ -25,6 +27,8 @@ public class Messwert implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name="id", unique=true, nullable=false)
     private Integer id;
 
     private Boolean grenzwertueberschreitung;
@@ -35,7 +39,7 @@ public class Messwert implements Serializable {
     @Column(name="meh_id")
     private Integer mehId;
 
-    private float messfehler;
+    private Float messfehler;
 
     @Column(name="messgroesse_id")
     private Integer messgroesseId;
@@ -43,13 +47,13 @@ public class Messwert implements Serializable {
     @Column(name="messungs_id")
     private Integer messungsId;
 
-    private float messwert;
+    private Float messwert;
 
     @Column(name="messwert_nwg")
     private String messwertNwg;
 
     @Column(name="nwg_zu_messwert")
-    private float nwgZuMesswert;
+    private Float nwgZuMesswert;
 
     public Messwert() {
     }
@@ -86,11 +90,11 @@ public class Messwert implements Serializable {
         this.mehId = mehId;
     }
 
-    public float getMessfehler() {
+    public Float getMessfehler() {
         return this.messfehler;
     }
 
-    public void setMessfehler(float messfehler) {
+    public void setMessfehler(Float messfehler) {
         this.messfehler = messfehler;
     }
 
@@ -110,11 +114,11 @@ public class Messwert implements Serializable {
         this.messungsId = messungsId;
     }
 
-    public float getMesswert() {
+    public Float getMesswert() {
         return this.messwert;
     }
 
-    public void setMesswert(float messwert) {
+    public void setMesswert(Float messwert) {
         this.messwert = messwert;
     }
 
@@ -126,11 +130,11 @@ public class Messwert implements Serializable {
         this.messwertNwg = messwertNwg;
     }
 
-    public float getNwgZuMesswert() {
+    public Float getNwgZuMesswert() {
         return this.nwgZuMesswert;
     }
 
-    public void setNwgZuMesswert(float nwgZuMesswert) {
+    public void setNwgZuMesswert(Float nwgZuMesswert) {
         this.nwgZuMesswert = nwgZuMesswert;
     }
 
