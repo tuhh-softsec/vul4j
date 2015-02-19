@@ -12,8 +12,6 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 
@@ -31,18 +29,14 @@ public class PflichtMessgroesse implements Serializable {
     @Column(name="messgroesse_id")
     private Integer messgroesseId;
 
-    @ManyToOne
-    @JoinColumn(name="datenbasis_id")
-    private Datenbasis datenbasis;
+    @Column(name="datenbasis_id")
+    private Integer datenbasisId;
 
-    @ManyToOne
-    @JoinColumn(name="mmt_id")
-    private MessMethode messMethode;
+    @Column(name="mmt_id")
+    private String mmtId;
 
-    //bi-directional many-to-one association to Umwelt
-    @ManyToOne
-    @JoinColumn(name="umw_id")
-    private Umwelt umwelt;
+    @Column(name="umw_id")
+    private String umweltId;
 
     public PflichtMessgroesse() {
     }
@@ -63,28 +57,27 @@ public class PflichtMessgroesse implements Serializable {
         this.messgroesseId = messgroesseId;
     }
 
-    public Datenbasis getDatenbasi() {
-        return this.datenbasis;
+    public Integer getDatenbasisId() {
+        return this.datenbasisId;
     }
 
-    public void setDatenbasi(Datenbasis datenbasi) {
-        this.datenbasis = datenbasi;
+    public void setDatenbasisId(Integer datenbasisId) {
+        this.datenbasisId = datenbasisId;
     }
 
-    public MessMethode getMessMethode() {
-        return this.messMethode;
+    public String getMmtId() {
+        return this.mmtId;
     }
 
-    public void setMessMethode(MessMethode messMethode) {
-        this.messMethode = messMethode;
+    public void setMmtId(String mmtId) {
+        this.mmtId = mmtId;
     }
 
-    public Umwelt getUmwelt() {
-        return this.umwelt;
+    public String getUmweltId() {
+        return this.umweltId;
     }
 
-    public void setUmwelt(Umwelt umwelt) {
-        this.umwelt = umwelt;
+    public void setUmweltId(String umweltId) {
+        this.umweltId = umweltId;
     }
-
 }
