@@ -87,7 +87,7 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
      * @author Francois-Xavier Bonnet
      * 
      */
-    public static final class HttpClientHelperBuilder implements RequestExecutorBuilder {
+    public static final class HttpClientRequestExecutorBuilder implements RequestExecutorBuilder {
         private EventManager eventManager;
         private Properties properties;
         private Driver driver;
@@ -96,13 +96,13 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
         private UrlRewriter urlRewriter;
 
         @Override
-        public HttpClientHelperBuilder setDriver(Driver pDriver) {
+        public HttpClientRequestExecutorBuilder setDriver(Driver pDriver) {
             this.driver = pDriver;
             return this;
         }
 
         @Override
-        public HttpClientHelperBuilder setProperties(Properties pProperties) {
+        public HttpClientRequestExecutorBuilder setProperties(Properties pProperties) {
             this.properties = pProperties;
             return this;
         }
@@ -121,116 +121,116 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             if (urlRewriter == null) {
                 throw new ConfigurationException("urlRewriter is mandatory");
             }
-            HttpClientRequestExecutor httpClientHelper = new HttpClientRequestExecutor();
-            httpClientHelper.eventManager = eventManager;
-            httpClientHelper.preserveHost = Parameters.PRESERVE_HOST.getValue(properties);
-            httpClientHelper.headerManager = new HeaderManager(urlRewriter);
+            HttpClientRequestExecutor result = new HttpClientRequestExecutor();
+            result.eventManager = eventManager;
+            result.preserveHost = Parameters.PRESERVE_HOST.getValue(properties);
+            result.headerManager = new HeaderManager(urlRewriter);
             if (cookieManager == null) {
                 cookieManager = ExtensionFactory.getExtension(properties, Parameters.COOKIE_MANAGER, driver);
             }
-            httpClientHelper.cookieManager = cookieManager;
-            httpClientHelper.connectTimeout = Parameters.CONNECT_TIMEOUT.getValue(properties);
-            httpClientHelper.socketTimeout = Parameters.SOCKET_TIMEOUT.getValue(properties);
-            httpClientHelper.httpClient = buildHttpClient(driver, properties, eventManager, connectionManager);
+            result.cookieManager = cookieManager;
+            result.connectTimeout = Parameters.CONNECT_TIMEOUT.getValue(properties);
+            result.socketTimeout = Parameters.SOCKET_TIMEOUT.getValue(properties);
+            result.httpClient = buildHttpClient(driver, properties, eventManager, connectionManager);
             String firstBaseURL = Parameters.REMOTE_URL_BASE.getValue(properties)[0];
-            httpClientHelper.firstBaseUrlHost = UriUtils.extractHost(firstBaseURL);
-            return httpClientHelper;
+            result.firstBaseUrlHost = UriUtils.extractHost(firstBaseURL);
+            return result;
         }
 
         @Override
-        public HttpClientHelperBuilder setContentTypeHelper(ContentTypeHelper contentTypeHelper) {
+        public HttpClientRequestExecutorBuilder setContentTypeHelper(ContentTypeHelper contentTypeHelper) {
             return this;
         }
 
-        public HttpClientHelperBuilder setConnectionManager(HttpClientConnectionManager pConnectionManager) {
+        public HttpClientRequestExecutorBuilder setConnectionManager(HttpClientConnectionManager pConnectionManager) {
             this.connectionManager = pConnectionManager;
             return this;
         }
 
         @Override
-        public HttpClientHelperBuilder setEventManager(EventManager pEventManager) {
+        public HttpClientRequestExecutorBuilder setEventManager(EventManager pEventManager) {
             this.eventManager = pEventManager;
             return this;
         }
 
-        public HttpClientHelperBuilder setCookieManager(CookieManager pCookieManager) {
+        public HttpClientRequestExecutorBuilder setCookieManager(CookieManager pCookieManager) {
             this.cookieManager = pCookieManager;
             return this;
         }
 
-        public HttpClientHelperBuilder setUrlRewriter(UrlRewriter pUrlRewriter) {
+        public HttpClientRequestExecutorBuilder setUrlRewriter(UrlRewriter pUrlRewriter) {
             this.urlRewriter = pUrlRewriter;
             return this;
         }
+
+        private static HttpClient buildHttpClient(Driver driver, Properties properties, EventManager eventManager,
+                HttpClientConnectionManager connectionManager) {
+            HttpHost proxyHost = null;
+            Credentials proxyCredentials = null;
+            // Proxy settings
+            String proxyHostParameter = Parameters.PROXY_HOST.getValue(properties);
+            if (proxyHostParameter != null) {
+                int proxyPort = Parameters.PROXY_PORT.getValue(properties);
+                proxyHost = new HttpHost(proxyHostParameter, proxyPort);
+                String proxyUser = Parameters.PROXY_USER.getValue(properties);
+                if (proxyUser != null) {
+                    String proxyPassword = Parameters.PROXY_PASSWORD.getValue(properties);
+                    proxyCredentials = new UsernamePasswordCredentials(proxyUser, proxyPassword);
+                }
+            }
+
+            ProxyingHttpClientBuilder httpClientBuilder = new ProxyingHttpClientBuilder();
+
+            httpClientBuilder.setProperties(properties);
+
+            httpClientBuilder.setMaxConnPerRoute(Parameters.MAX_CONNECTIONS_PER_HOST.getValue(properties));
+            httpClientBuilder.setMaxConnTotal(Parameters.MAX_CONNECTIONS_PER_HOST.getValue(properties));
+            httpClientBuilder.setRedirectStrategy(driver.getRedirectStrategy());
+
+            // Proxy settings
+            if (proxyHost != null) {
+                httpClientBuilder.setProxy(proxyHost);
+                if (proxyCredentials != null) {
+                    CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+                    credentialsProvider.setCredentials(new AuthScope(proxyHost), proxyCredentials);
+                    httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
+                }
+            }
+
+            // Cache settings
+            boolean useCache = Parameters.USE_CACHE.getValue(properties);
+            httpClientBuilder.setUseCache(Parameters.USE_CACHE.getValue(properties));
+            if (useCache) {
+                httpClientBuilder.setHttpCacheStorage(CacheConfigHelper.createCacheStorage(properties));
+                httpClientBuilder.setCacheConfig(CacheConfigHelper.createCacheConfig(properties));
+            }
+
+            // Event manager
+            httpClientBuilder.setEventManager(eventManager);
+
+            // Used for tests to skip connection manager and return hard coded
+            // responses
+            if (connectionManager != null) {
+                httpClientBuilder.setConnectionManager(connectionManager);
+            }
+
+            Registry<CookieSpecProvider> cookieSpecRegistry =
+                    RegistryBuilder
+                            .<CookieSpecProvider>create()
+                            .register(CustomBrowserCompatSpecFactory.CUSTOM_BROWSER_COMPATIBILITY,
+                                    new CustomBrowserCompatSpecFactory()).build();
+
+            RequestConfig config =
+                    RequestConfig.custom().setCookieSpec(CustomBrowserCompatSpecFactory.CUSTOM_BROWSER_COMPATIBILITY)
+                            .build();
+
+            httpClientBuilder.setDefaultCookieSpecRegistry(cookieSpecRegistry).setDefaultRequestConfig(config);
+            return httpClientBuilder.build();
+        }
     }
 
-    private static HttpClient buildHttpClient(Driver driver, Properties properties, EventManager eventManager,
-            HttpClientConnectionManager connectionManager) {
-        HttpHost proxyHost = null;
-        Credentials proxyCredentials = null;
-        // Proxy settings
-        String proxyHostParameter = Parameters.PROXY_HOST.getValue(properties);
-        if (proxyHostParameter != null) {
-            int proxyPort = Parameters.PROXY_PORT.getValue(properties);
-            proxyHost = new HttpHost(proxyHostParameter, proxyPort);
-            String proxyUser = Parameters.PROXY_USER.getValue(properties);
-            if (proxyUser != null) {
-                String proxyPassword = Parameters.PROXY_PASSWORD.getValue(properties);
-                proxyCredentials = new UsernamePasswordCredentials(proxyUser, proxyPassword);
-            }
-        }
-
-        ProxyingHttpClientBuilder httpClientBuilder = new ProxyingHttpClientBuilder();
-
-        httpClientBuilder.setProperties(properties);
-
-        httpClientBuilder.setMaxConnPerRoute(Parameters.MAX_CONNECTIONS_PER_HOST.getValue(properties));
-        httpClientBuilder.setMaxConnTotal(Parameters.MAX_CONNECTIONS_PER_HOST.getValue(properties));
-        httpClientBuilder.setRedirectStrategy(driver.getRedirectStrategy());
-
-        // Proxy settings
-        if (proxyHost != null) {
-            httpClientBuilder.setProxy(proxyHost);
-            if (proxyCredentials != null) {
-                CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-                credentialsProvider.setCredentials(new AuthScope(proxyHost), proxyCredentials);
-                httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
-            }
-        }
-
-        // Cache settings
-        boolean useCache = Parameters.USE_CACHE.getValue(properties);
-        httpClientBuilder.setUseCache(Parameters.USE_CACHE.getValue(properties));
-        if (useCache) {
-            httpClientBuilder.setHttpCacheStorage(CacheConfigHelper.createCacheStorage(properties));
-            httpClientBuilder.setCacheConfig(CacheConfigHelper.createCacheConfig(properties));
-        }
-
-        // Event manager
-        httpClientBuilder.setEventManager(eventManager);
-
-        // Used for tests to skip connection manager and return hard coded
-        // responses
-        if (connectionManager != null) {
-            httpClientBuilder.setConnectionManager(connectionManager);
-        }
-
-        Registry<CookieSpecProvider> cookieSpecRegistry =
-                RegistryBuilder
-                        .<CookieSpecProvider>create()
-                        .register(CustomBrowserCompatSpecFactory.CUSTOM_BROWSER_COMPATIBILITY,
-                                new CustomBrowserCompatSpecFactory()).build();
-
-        RequestConfig config =
-                RequestConfig.custom().setCookieSpec(CustomBrowserCompatSpecFactory.CUSTOM_BROWSER_COMPATIBILITY)
-                        .build();
-
-        httpClientBuilder.setDefaultCookieSpecRegistry(cookieSpecRegistry).setDefaultRequestConfig(config);
-        return httpClientBuilder.build();
-    }
-
-    public static HttpClientHelperBuilder builder() {
-        return new HttpClientHelperBuilder();
+    public static HttpClientRequestExecutorBuilder builder() {
+        return new HttpClientRequestExecutorBuilder();
     }
 
     private HttpClientRequestExecutor() {
