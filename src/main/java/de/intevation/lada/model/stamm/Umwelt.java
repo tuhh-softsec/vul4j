@@ -12,8 +12,6 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 
@@ -33,9 +31,8 @@ public class Umwelt implements Serializable {
     @Column(name="umwelt_bereich")
     private String umweltBereich;
 
-    @ManyToOne
-    @JoinColumn(name="meh_id")
-    private MessEinheit messEinheit;
+    @Column(name="meh_id")
+    private Integer mehId;
 
     public Umwelt() {
     }
@@ -64,12 +61,12 @@ public class Umwelt implements Serializable {
         this.umweltBereich = umweltBereich;
     }
 
-    public MessEinheit getMessEinheit() {
-        return this.messEinheit;
+    public Integer getMehId() {
+        return this.mehId;
     }
 
-    public void setMessEinheit(MessEinheit messEinheit) {
-        this.messEinheit = messEinheit;
+    public void setMehId(Integer mehId) {
+        this.mehId = mehId;
     }
 
 }
