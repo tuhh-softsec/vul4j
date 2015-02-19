@@ -26,9 +26,9 @@ import org.esigate.impl.UrlRewriter;
 
 public interface RequestExecutor {
 
-    CloseableHttpResponse createAndExecuteRequest(DriverRequest request, String url, boolean b) throws HttpErrorPage;
+    OutgoingRequest createOutgoingRequest(DriverRequest request, String url, boolean b) throws HttpErrorPage;
 
-    CloseableHttpResponse execute(OutgoingRequest httpRequest);
+    CloseableHttpResponse execute(OutgoingRequest outgoingRequest) throws HttpErrorPage;
 
     public interface RequestExecutorBuilder {
 

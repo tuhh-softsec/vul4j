@@ -131,7 +131,7 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             result.cookieManager = cookieManager;
             result.connectTimeout = Parameters.CONNECT_TIMEOUT.getValue(properties);
             result.socketTimeout = Parameters.SOCKET_TIMEOUT.getValue(properties);
-            result.httpClient = buildHttpClient(driver, properties, eventManager, connectionManager);
+            result.httpClient = buildHttpClient();
             String firstBaseURL = Parameters.REMOTE_URL_BASE.getValue(properties)[0];
             result.firstBaseUrlHost = UriUtils.extractHost(firstBaseURL);
             return result;
@@ -163,8 +163,7 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             return this;
         }
 
-        private static HttpClient buildHttpClient(Driver driver, Properties properties, EventManager eventManager,
-                HttpClientConnectionManager connectionManager) {
+        private HttpClient buildHttpClient() {
             HttpHost proxyHost = null;
             Credentials proxyCredentials = null;
             // Proxy settings
@@ -236,7 +235,8 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
     private HttpClientRequestExecutor() {
     }
 
-    public OutgoingRequest createHttpRequest(DriverRequest originalRequest, String uri, boolean proxy) {
+    @Override
+    public OutgoingRequest createOutgoingRequest(DriverRequest originalRequest, String uri, boolean proxy) {
         // Extract the host in the URI. This is the host we have to send the
         // request to physically.
         HttpHost physicalHost = UriUtils.extractHost(uri);
@@ -270,10 +270,10 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
         if (proxy) {
             method = originalRequest.getRequestLine().getMethod().toUpperCase();
         }
-        OutgoingRequest httpRequest =
+        OutgoingRequest outgoingRequest =
                 new OutgoingRequest(method, uri, originalRequest.getProtocolVersion(), originalRequest, config, context);
         if (ENTITY_METHODS.contains(method)) {
-            httpRequest.setEntity(originalRequest.getEntity());
+            outgoingRequest.setEntity(originalRequest.getEntity());
         } else if (!SIMPLE_METHODS.contains(method)) {
             throw new UnsupportedHttpMethodException(method + " " + uri);
         }
@@ -281,26 +281,26 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
         // We use the same user-agent and accept headers that the one sent by
         // the browser as some web sites generate different pages and scripts
         // depending on the browser
-        headerManager.copyHeaders(originalRequest, httpRequest);
+        headerManager.copyHeaders(originalRequest, outgoingRequest);
 
         context.setPhysicalHost(physicalHost);
-        context.setOutgoingRequest(httpRequest);
+        context.setOutgoingRequest(outgoingRequest);
         context.setProxy(proxy);
 
-        return httpRequest;
+        return outgoingRequest;
     }
 
     /**
-     * Execute a HTTP request
-     * <p>
-     * No special handling.
+     * Execute a HTTP request.
      * 
      * @param httpRequest
      *            HTTP request to execute.
      * @return HTTP response.
+     * @throws HttpErrorPage
+     *             if server returned no response or if the response as an error status code.
      */
     @Override
-    public CloseableHttpResponse execute(OutgoingRequest httpRequest) {
+    public CloseableHttpResponse execute(OutgoingRequest httpRequest) throws HttpErrorPage {
         OutgoingRequestContext context = httpRequest.getContext();
         IncomingRequest originalRequest = httpRequest.getOriginalRequest().getOriginalRequest();
 
@@ -337,24 +337,7 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             // EVENT post
             eventManager.fire(EventManager.EVENT_FRAGMENT_POST, event);
         }
-        return event.getHttpResponse();
-    }
-
-    /**
-     * Execute a HTTP request and handle errors as HttpErrorPage exceptions.
-     * 
-     * @param originalRequest
-     *            HTTP original request.
-     * @return HTTP response
-     * @throws HttpErrorPage
-     *             if server returned no response or if the response as an error status code.
-     */
-    @Override
-    public CloseableHttpResponse
-            createAndExecuteRequest(DriverRequest originalRequest, String targetUrl, boolean proxy)
-                    throws HttpErrorPage {
-        OutgoingRequest httpRequest = createHttpRequest(originalRequest, targetUrl, proxy);
-        CloseableHttpResponse httpResponse = execute(httpRequest);
+        CloseableHttpResponse httpResponse = event.getHttpResponse();
         if (httpResponse == null) {
             throw new HttpErrorPage(HttpStatus.SC_INTERNAL_SERVER_ERROR, "Request was cancelled by server",
                     "Request was cancelled by server");

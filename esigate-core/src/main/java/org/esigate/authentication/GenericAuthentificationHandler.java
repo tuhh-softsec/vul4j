@@ -21,6 +21,7 @@ import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.esigate.Driver;
+import org.esigate.HttpErrorPage;
 import org.esigate.events.Event;
 import org.esigate.events.EventDefinition;
 import org.esigate.events.EventManager;
@@ -122,7 +123,11 @@ public abstract class GenericAuthentificationHandler implements IEventListener, 
 
             while (needsNewRequest(e.getHttpResponse(), e.getHttpRequest(), e.getOriginalRequest())) {
                 EntityUtils.consumeQuietly(e.getHttpResponse().getEntity());
-                e.setHttpResponse(this.driver.getRequestExecutor().execute(e.getHttpRequest()));
+                try {
+                    e.setHttpResponse(this.driver.getRequestExecutor().execute(e.getHttpRequest()));
+                } catch (HttpErrorPage e1) {
+                    e.setHttpResponse(e1.getHttpResponse());
+                }
             }
         } else if (EventManager.EVENT_PROXY_PRE.equals(id)) {
             ProxyEvent e = (ProxyEvent) event;

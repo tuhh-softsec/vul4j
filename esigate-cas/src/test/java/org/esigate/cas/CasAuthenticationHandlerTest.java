@@ -88,7 +88,7 @@ public class CasAuthenticationHandlerTest extends TestCase {
         IncomingRequest incomingRequest = TestUtils.createIncomingRequest().build();
         DriverRequest driverRequest = TestUtils.createDriverRequest(driver1);
         OutgoingRequest outgoingRequest =
-                httpClientRequestExecutor.createHttpRequest(driverRequest, "http://localhost:8080", true);
+                httpClientRequestExecutor.createOutgoingRequest(driverRequest, "http://localhost:8080", true);
 
         assertFalse(handler.needsNewRequest(httpResponse, outgoingRequest, incomingRequest));
         incomingRequest.setAttribute(handler.driverSpecificName(driver1, CasAuthenticationHandler.SECOND_REQUEST),
@@ -116,7 +116,7 @@ public class CasAuthenticationHandlerTest extends TestCase {
 
         DriverRequest httpRequest = TestUtils.createDriverRequest(driver1);
         OutgoingRequest outgoingRequest =
-                httpClientRequestExecutor.createHttpRequest(httpRequest, "http://localhost:8080", true);
+                httpClientRequestExecutor.createOutgoingRequest(httpRequest, "http://localhost:8080", true);
 
         handler.preRequest(outgoingRequest, incomingRequest);
         Object sr =

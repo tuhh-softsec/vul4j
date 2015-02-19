@@ -39,6 +39,7 @@ import org.esigate.http.ContentTypeHelper;
 import org.esigate.http.HttpClientRequestExecutor;
 import org.esigate.http.HttpResponseUtils;
 import org.esigate.http.IncomingRequest;
+import org.esigate.http.OutgoingRequest;
 import org.esigate.http.RedirectStrategy;
 import org.esigate.http.ResourceUtils;
 import org.esigate.impl.DriverRequest;
@@ -174,7 +175,8 @@ public final class Driver {
         Pair<String, CloseableHttpResponse> cachedValue = incomingRequest.getAttribute(cacheKey);
         // content and response were not in cache
         if (cachedValue == null) {
-            response = requestExecutor.createAndExecuteRequest(driverRequest, targetUrl, false);
+            OutgoingRequest outgoingRequest = requestExecutor.createOutgoingRequest(driverRequest, targetUrl, false);
+            response = requestExecutor.execute(outgoingRequest);
             currentValue = HttpResponseUtils.toString(response, this.eventManager);
             // Cache
             cachedValue = new ImmutablePair<String, CloseableHttpResponse>(currentValue, response);
@@ -266,7 +268,8 @@ public final class Driver {
             logAction("proxy", relUrl, renderers);
 
             String url = ResourceUtils.getHttpUrlWithQueryString(relUrl, driverRequest, true);
-            e.setResponse(requestExecutor.createAndExecuteRequest(driverRequest, url, true));
+            OutgoingRequest outgoingRequest = requestExecutor.createOutgoingRequest(driverRequest, url, true);
+            e.setResponse(requestExecutor.execute(outgoingRequest));
 
             // Perform rendering
             e.setResponse(performRendering(relUrl, driverRequest, e.getResponse(), renderers));
