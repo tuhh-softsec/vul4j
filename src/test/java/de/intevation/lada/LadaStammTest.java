@@ -185,6 +185,18 @@ public class LadaStammTest extends BaseTest {
 
     @Test
     @RunAsClient
+    public final void testKoordinatenartAll(@ArquillianResource URL baseUrl) {
+        stammdatenTest.getAll(baseUrl, "koordinatenart", testProtocol);
+    }
+
+    @Test
+    @RunAsClient
+    public final void testKoordinatenartById(@ArquillianResource URL baseUrl) {
+        stammdatenTest.getById(baseUrl, "koordinatenart", 2, testProtocol);
+    }
+
+    @Test
+    @RunAsClient
     public final void testLocation1CreateService(@ArquillianResource URL baseUrl)
     throws Exception {
         System.out.print(".");

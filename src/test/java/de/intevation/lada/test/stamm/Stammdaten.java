@@ -65,6 +65,9 @@ public class Stammdaten {
             "\"nutsCode\":\"DE731\",\"unscharf\":\"0\",\"netzbetreiberId\":" +
             "null,\"staatId\":0,\"verwaltungseinheitId\":\"06611000\"," +
             "\"otyp\":\"Z\",\"koordinatenartId\":5}");
+        compare.put("koordinatenart",
+            "{\"id\":2,\"idfGeoKey\":\"D\",\"koordinatenart\":" +
+            "\"geografisch-gradiell (WGS84)\"}");
     }
 
     /**
