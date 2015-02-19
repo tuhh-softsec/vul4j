@@ -52,9 +52,9 @@ public class Verwaltungseinheit implements Serializable {
 
     private String kreis;
 
-    private double latitude;
+    private Double latitude;
 
-    private double longitude;
+    private Double longitude;
 
     private String nuts;
 
@@ -62,10 +62,8 @@ public class Verwaltungseinheit implements Serializable {
 
     private String regbezirk;
 
-    //bi-directional many-to-one association to KoordinatenArt
-    @ManyToOne
-    @JoinColumn(name="kda_id")
-    private KoordinatenArt koordinatenArt;
+    @Column(name="kda_id")
+    private Integer koordinatenartId;
 
     public Verwaltungseinheit() {
     }
@@ -150,19 +148,19 @@ public class Verwaltungseinheit implements Serializable {
         this.kreis = kreis;
     }
 
-    public double getLatitude() {
+    public Double getLatitude() {
         return this.latitude;
     }
 
-    public void setLatitude(double latitude) {
+    public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
 
-    public double getLongitude() {
+    public Double getLongitude() {
         return this.longitude;
     }
 
-    public void setLongitude(double longitude) {
+    public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
 
@@ -190,12 +188,12 @@ public class Verwaltungseinheit implements Serializable {
         this.regbezirk = regbezirk;
     }
 
-    public KoordinatenArt getKoordinatenArt() {
-        return this.koordinatenArt;
+    public Integer getKoordinatenartId() {
+        return this.koordinatenartId;
     }
 
-    public void setKoordinatenArt(KoordinatenArt koordinatenArt) {
-        this.koordinatenArt = koordinatenArt;
+    public void setKoordinatenArt(Integer koordinatenartId) {
+        this.koordinatenartId = koordinatenartId;
     }
 
 }
