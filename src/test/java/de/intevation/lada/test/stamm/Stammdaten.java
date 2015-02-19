@@ -54,6 +54,9 @@ public class Stammdaten {
         compare.put("probenart",
             "{\"id\":1,\"beschreibung\":\"Einzelprobe\",\"probenart\":\"E\"," +
             "\"probenartEudfId\":\"A\"}");
+        compare.put("probenzusatz",
+            "{\"id\":\"A74\",\"beschreibung\":\"Volumenstrom\"," +
+            "\"eudfKeyword\":null,\"zusatzwert\":\"VOLSTR\",\"mehId\":32}");
     }
 
     /**

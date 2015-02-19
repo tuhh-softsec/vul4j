@@ -142,4 +142,16 @@ public class LadaStammTest extends BaseTest {
     public final void testProbenartById(@ArquillianResource URL baseUrl) {
         stammdatenTest.getById(baseUrl, "probenart", 1, testProtocol);
     }
+
+    @Test
+    @RunAsClient
+    public final void testProbenzusatzAll(@ArquillianResource URL baseUrl) {
+        stammdatenTest.getAll(baseUrl, "probenzusatz", testProtocol);
+    }
+
+    @Test
+    @RunAsClient
+    public final void testProbenzusatzById(@ArquillianResource URL baseUrl) {
+        stammdatenTest.getById(baseUrl, "probenzusatz", "A74", testProtocol);
+    }
 }
