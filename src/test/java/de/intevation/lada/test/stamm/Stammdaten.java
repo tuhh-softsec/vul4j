@@ -48,6 +48,9 @@ public class Stammdaten {
             "{\"id\":\"PA\",\"aktiv\":true,\"idfNetzbetreiber\":\"R\"," +
             "\"isBmn\":true,\"mailverteiler\":\"PA\",\"netzbetreiber\":" +
             "\"Park\",\"zustMstId\":null}");
+        compare.put("pflichtmessgroesse",
+            "{\"id\":33,\"messgroesseId\":904,\"datenbasisId\":4,\"mmtId\":" +
+            "\"A3\",\"umweltId\":\"B2\"}");
     }
 
     /**

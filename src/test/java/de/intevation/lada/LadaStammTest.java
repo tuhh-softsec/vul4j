@@ -39,7 +39,7 @@ public class LadaStammTest extends BaseTest {
     public LadaStammTest () {
         stammdatenTest = new Stammdaten();
         testProtocol = new ArrayList<Protocol>();
-        verboseLogging = true;
+        verboseLogging = false;
     }
 
     @BeforeClass
@@ -117,5 +117,17 @@ public class LadaStammTest extends BaseTest {
     @RunAsClient
     public final void testNetzbetreiberById(@ArquillianResource URL baseUrl) {
         stammdatenTest.getById(baseUrl, "netzbetreiber", "PA", testProtocol);
+    }
+
+    @Test
+    @RunAsClient
+    public final void testPflichtmessgroesseAll(@ArquillianResource URL baseUrl) {
+        stammdatenTest.getAll(baseUrl, "pflichtmessgroesse", testProtocol);
+    }
+
+    @Test
+    @RunAsClient
+    public final void testPflichtmessgroesseById(@ArquillianResource URL baseUrl) {
+        stammdatenTest.getById(baseUrl, "pflichtmessgroesse", 33, testProtocol);
     }
 }
