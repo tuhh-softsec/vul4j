@@ -12,9 +12,9 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 
@@ -27,6 +27,8 @@ public class SOrt implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name="id", nullable=false, insertable=false)
     private Integer id;
 
     private String beschreibung;
@@ -34,7 +36,7 @@ public class SOrt implements Serializable {
     private String bezeichnung;
 
     @Column(name="hoehe_land")
-    private float hoeheLand;
+    private Float hoeheLand;
 
     @Column(name="koord_x_extern")
     private String koordXExtern;
@@ -42,12 +44,12 @@ public class SOrt implements Serializable {
     @Column(name="koord_y_extern")
     private String koordYExtern;
 
-    private double latitude;
+    private Double latitude;
 
     @Column(name="letzte_aenderung")
     private Timestamp letzteAenderung;
 
-    private double longitude;
+    private Double longitude;
 
     @Column(name="nuts_code")
     private String nutsCode;
@@ -57,19 +59,17 @@ public class SOrt implements Serializable {
 
     private String unscharf;
 
-    @ManyToOne
-    @JoinColumn(name="kda_id")
-    private KoordinatenArt koordinatenArt;
+    @Column(name="kda_id")
+    private Integer koordinatenartId;
 
-    @ManyToOne
-    private NetzBetreiber netzBetreiber;
+    @Column(name="netzbetreiber_id")
+    private String netzbetreiberId;
 
-    @ManyToOne
-    private Staat staat;
+    @Column(name="staat_id")
+    private Integer staatId;
 
-    @ManyToOne
-    @JoinColumn(name="gem_id")
-    private Verwaltungseinheit verwaltungseinheit;
+    @Column(name="gem_id")
+    private String verwaltungseinheitId;
 
     public SOrt() {
     }
@@ -98,11 +98,11 @@ public class SOrt implements Serializable {
         this.bezeichnung = bezeichnung;
     }
 
-    public float getHoeheLand() {
+    public Float getHoeheLand() {
         return this.hoeheLand;
     }
 
-    public void setHoeheLand(float hoeheLand) {
+    public void setHoeheLand(Float hoeheLand) {
         this.hoeheLand = hoeheLand;
     }
 
@@ -170,36 +170,36 @@ public class SOrt implements Serializable {
         this.unscharf = unscharf;
     }
 
-    public KoordinatenArt getKoordinatenArt() {
-        return this.koordinatenArt;
+    public Integer getKoordinatenartId() {
+        return this.koordinatenartId;
     }
 
-    public void setKoordinatenArt(KoordinatenArt koordinatenArt) {
-        this.koordinatenArt = koordinatenArt;
+    public void setKoordinatenartId(Integer koordinatenartId) {
+        this.koordinatenartId = koordinatenartId;
     }
 
-    public NetzBetreiber getNetzBetreiber() {
-        return this.netzBetreiber;
+    public String getNetzbetreiberId() {
+        return this.netzbetreiberId;
     }
 
-    public void setNetzBetreiber(NetzBetreiber netzBetreiber) {
-        this.netzBetreiber = netzBetreiber;
+    public void setNetzbetreiberId(String netzbetreiberId) {
+        this.netzbetreiberId = netzbetreiberId;
     }
 
-    public Staat getStaat() {
-        return this.staat;
+    public Integer getStaatId() {
+        return this.staatId;
     }
 
-    public void setStaat(Staat staat) {
-        this.staat = staat;
+    public void setStaatId(Integer staatId) {
+        this.staatId = staatId;
     }
 
-    public Verwaltungseinheit getVerwaltungseinheit() {
-        return this.verwaltungseinheit;
+    public String getVerwaltungseinheitId() {
+        return this.verwaltungseinheitId;
     }
 
-    public void setVerwaltungseinheit(Verwaltungseinheit verwaltungseinheit) {
-        this.verwaltungseinheit = verwaltungseinheit;
+    public void setVerwaltungseinheitId(String verwaltungseinheitId) {
+        this.verwaltungseinheitId = verwaltungseinheitId;
     }
 
 }
