@@ -51,6 +51,9 @@ public class Stammdaten {
         compare.put("pflichtmessgroesse",
             "{\"id\":33,\"messgroesseId\":904,\"datenbasisId\":4,\"mmtId\":" +
             "\"A3\",\"umweltId\":\"B2\"}");
+        compare.put("probenart",
+            "{\"id\":1,\"beschreibung\":\"Einzelprobe\",\"probenart\":\"E\"," +
+            "\"probenartEudfId\":\"A\"}");
     }
 
     /**

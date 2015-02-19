@@ -130,4 +130,16 @@ public class LadaStammTest extends BaseTest {
     public final void testPflichtmessgroesseById(@ArquillianResource URL baseUrl) {
         stammdatenTest.getById(baseUrl, "pflichtmessgroesse", 33, testProtocol);
     }
+
+    @Test
+    @RunAsClient
+    public final void testProbenartAll(@ArquillianResource URL baseUrl) {
+        stammdatenTest.getAll(baseUrl, "probenart", testProtocol);
+    }
+
+    @Test
+    @RunAsClient
+    public final void testProbenartById(@ArquillianResource URL baseUrl) {
+        stammdatenTest.getById(baseUrl, "probenart", 1, testProtocol);
+    }
 }
