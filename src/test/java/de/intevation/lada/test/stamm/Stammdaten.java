@@ -57,6 +57,14 @@ public class Stammdaten {
         compare.put("probenzusatz",
             "{\"id\":\"A74\",\"beschreibung\":\"Volumenstrom\"," +
             "\"eudfKeyword\":null,\"zusatzwert\":\"VOLSTR\",\"mehId\":32}");
+        compare.put("location",
+            "{\"id\":19,\"beschreibung\":\"WW  Kassel\",\"bezeichnung\":" +
+            "\"T060014\",\"hoeheLand\":null,\"koordXExtern\":\"32531152\"," +
+            "\"koordYExtern\":\"5684269\",\"latitude\":51.30888," +
+            "\"letzteAenderung\":1376287046332,\"longitude\":9.44693," +
+            "\"nutsCode\":\"DE731\",\"unscharf\":\"0\",\"netzbetreiberId\":" +
+            "null,\"staatId\":0,\"verwaltungseinheitId\":\"06611000\"," +
+            "\"otyp\":\"Z\",\"koordinatenartId\":5}");
     }
 
     /**
