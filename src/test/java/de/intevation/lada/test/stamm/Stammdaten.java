@@ -73,6 +73,9 @@ public class Stammdaten {
             "\"-59,6105\",\"koordYExtern\":\"13,0935\",\"staat\":" +
             "\"Barbados\",\"staatIso\":\"BB\",\"staatKurz\":\"BDS\"," +
             "\"koordinatenartId\":4}");
+        compare.put("umwelt",
+            "{\"id\":\"L6\",\"beschreibung\":null,\"umweltBereich\":" +
+            "\"Spurenmessung Luft\",\"mehId\":62}");
     }
 
     /**
