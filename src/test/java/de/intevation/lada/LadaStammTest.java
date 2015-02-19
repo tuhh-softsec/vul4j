@@ -219,6 +219,20 @@ public class LadaStammTest extends BaseTest {
         stammdatenTest.getById(baseUrl, "umwelt", "L6", testProtocol);
     }
 
+    @Test
+    @RunAsClient
+    public final void testVerwaltungseinheitAll(@ArquillianResource URL baseUrl) {
+        stammdatenTest.getAll(baseUrl, "verwaltungseinheit", testProtocol);
+    }
+
+    @Test
+    @RunAsClient
+    public final void testVerwaltungseinheitById(@ArquillianResource URL baseUrl) {
+        stammdatenTest.getById(baseUrl, "verwaltungseinheit", "09575134", testProtocol);
+    }
+
+    @Test
+    @RunAsClient
     public final void testLocation1CreateService(@ArquillianResource URL baseUrl)
     throws Exception {
         System.out.print(".");

@@ -76,6 +76,14 @@ public class Stammdaten {
         compare.put("umwelt",
             "{\"id\":\"L6\",\"beschreibung\":null,\"umweltBereich\":" +
             "\"Spurenmessung Luft\",\"mehId\":62}");
+        compare.put("verwaltungseinheit",
+            "{\"id\":\"09575134\",\"bezeichnung\":\"Ippesheim\"," +
+            "\"bundesland\":\"09000000\",\"isBundesland\":\"0\"," +
+            "\"isGemeinde\":\"1\",\"isLandkreis\":\"0\",\"isRegbezirk\":" +
+            "\"0\",\"koordXExtern\":\"32588490\",\"koordYExtern\":" +
+            "\"5495240\",\"kreis\":\"09575000\",\"latitude\":49.60325," +
+            "\"longitude\":10.2247,\"nuts\":\"DE25A09575\",\"plz\":null," +
+            "\"regbezirk\":\"09500000\",\"koordinatenartId\":5}");
     }
 
     /**
