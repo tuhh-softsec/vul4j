@@ -44,6 +44,10 @@ public class Stammdaten {
             "\"E.ON Kernkraftwerk GmbH, Kernkraftwerk Stade, Postfach 1780, " +
             "21657 Stade\",\"messStelle\":\"KKW - KKS\",\"mstTyp\":\"M\"," +
             "\"netzbetreiberId\":\"03\"}");
+        compare.put("netzbetreiber",
+            "{\"id\":\"PA\",\"aktiv\":true,\"idfNetzbetreiber\":\"R\"," +
+            "\"isBmn\":true,\"mailverteiler\":\"PA\",\"netzbetreiber\":" +
+            "\"Park\",\"zustMstId\":null}");
     }
 
     /**

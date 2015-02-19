@@ -106,4 +106,16 @@ public class LadaStammTest extends BaseTest {
     public final void testMessstelleById(@ArquillianResource URL baseUrl) {
         stammdatenTest.getById(baseUrl, "messstelle", "03151", testProtocol);
     }
+
+    @Test
+    @RunAsClient
+    public final void testNetzbetreiberAll(@ArquillianResource URL baseUrl) {
+        stammdatenTest.getAll(baseUrl, "netzbetreiber", testProtocol);
+    }
+
+    @Test
+    @RunAsClient
+    public final void testNetzbetreiberById(@ArquillianResource URL baseUrl) {
+        stammdatenTest.getById(baseUrl, "netzbetreiber", "PA", testProtocol);
+    }
 }
