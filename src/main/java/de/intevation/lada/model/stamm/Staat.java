@@ -47,10 +47,8 @@ public class Staat implements Serializable {
     @Column(name="staat_kurz")
     private String staatKurz;
 
-    //bi-directional many-to-one association to KoordinatenArt
-    @ManyToOne
-    @JoinColumn(name="kda_id")
-    private KoordinatenArt koordinatenArt;
+    @Column(name="kda_id")
+    private Integer koordinatenartId;
 
     public Staat() {
     }
@@ -119,12 +117,12 @@ public class Staat implements Serializable {
         this.staatKurz = staatKurz;
     }
 
-    public KoordinatenArt getKoordinatenArt() {
-        return this.koordinatenArt;
+    public Integer getKoordinatenartId() {
+        return this.koordinatenartId;
     }
 
-    public void setKoordinatenArt(KoordinatenArt koordinatenArt) {
-        this.koordinatenArt = koordinatenArt;
+    public void setKoordinatenartId(Integer koordinatenartId) {
+        this.koordinatenartId = koordinatenartId;
     }
 
 }
