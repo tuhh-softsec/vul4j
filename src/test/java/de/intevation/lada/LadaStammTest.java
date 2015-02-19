@@ -197,6 +197,18 @@ public class LadaStammTest extends BaseTest {
 
     @Test
     @RunAsClient
+    public final void testStaatAll(@ArquillianResource URL baseUrl) {
+        stammdatenTest.getAll(baseUrl, "staat", testProtocol);
+    }
+
+    @Test
+    @RunAsClient
+    public final void testStaatById(@ArquillianResource URL baseUrl) {
+        stammdatenTest.getById(baseUrl, "staat", 322, testProtocol);
+    }
+
+    @Test
+    @RunAsClient
     public final void testLocation1CreateService(@ArquillianResource URL baseUrl)
     throws Exception {
         System.out.print(".");

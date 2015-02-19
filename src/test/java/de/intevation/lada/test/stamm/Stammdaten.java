@@ -68,6 +68,11 @@ public class Stammdaten {
         compare.put("koordinatenart",
             "{\"id\":2,\"idfGeoKey\":\"D\",\"koordinatenart\":" +
             "\"geografisch-gradiell (WGS84)\"}");
+        compare.put("staat",
+            "{\"id\":322,\"eu\":\"0\",\"hklId\":322,\"koordXExtern\":" +
+            "\"-59,6105\",\"koordYExtern\":\"13,0935\",\"staat\":" +
+            "\"Barbados\",\"staatIso\":\"BB\",\"staatKurz\":\"BDS\"," +
+            "\"koordinatenartId\":4}");
     }
 
     /**
