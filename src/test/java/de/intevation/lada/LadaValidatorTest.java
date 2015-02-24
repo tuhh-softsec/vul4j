@@ -22,13 +22,75 @@ public class LadaValidatorTest extends BaseTest {
     @Inject
     @ValidationConfig(type="Probe")
     private Validator probeValidator;
+    private Probe probeTest;
 
     public LadaValidatorTest() {
+        probeTest = new Probe();
         testProtocol = new ArrayList<Protocol>();
     }
 
     @BeforeClass
     public static void beforeTests() {
         logger.info("---------- Testing Lada Validator ----------");
+    }
+
+    @Test
+    public final void probeHasHauptprobenNr() {
+        probeTest.setValidator(probeValidator);
+        probeTest.hasHauptprobenNr(testProtocol);
+    }
+
+    @Test
+    public final void probeHasNoHauptprobenNr() {
+        probeTest.setValidator(probeValidator);
+        probeTest.hasNoHauptprobenNr(testProtocol);
+    }
+
+    @Test
+    public final void probeExistingHauptprobenNrNew() {
+        probeTest.setValidator(probeValidator);
+        probeTest.existingHauptprobenNrNew(testProtocol);
+    }
+
+    @Test
+    public final void probeUniqueHauptprobenNrNew() {
+        probeTest.setValidator(probeValidator);
+        probeTest.uniqueHauptprobenNrNew(testProtocol);
+    }
+
+    @Test
+    public final void probeExistingHauptprobenNrUpdate() {
+        probeTest.setValidator(probeValidator);
+        probeTest.existingHauptprobenNrUpdate(testProtocol);
+    }
+
+    @Test
+    public final void probeUniqueHauptprobenNrUpdate() {
+        probeTest.setValidator(probeValidator);
+        probeTest.uniqueHauptprobenNrUpdate(testProtocol);
+    }
+
+    @Test
+    public final void probeHasEntnahmeOrt() {
+        probeTest.setValidator(probeValidator);
+        probeTest.hasEntnahmeOrt(testProtocol);
+    }
+
+    @Test
+    public final void probeHasNoEntnahmeOrt() {
+        probeTest.setValidator(probeValidator);
+        probeTest.hasNoEntnahmeOrt(testProtocol);
+    }
+
+    @Test
+    public final void probeHasProbenahmeBegin() {
+        probeTest.setValidator(probeValidator);
+        probeTest.hasProbeentnahmeBegin(testProtocol);
+    }
+
+    @Test
+    public final void probeHasNoProbenahmeBegin() {
+        probeTest.setValidator(probeValidator);
+        probeTest.hasNoProbeentnahmeBegin(testProtocol);
     }
 }
