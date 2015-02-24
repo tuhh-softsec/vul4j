@@ -176,6 +176,104 @@ public class Probe {
         Assert.assertTrue(violation.getWarnings().get("probeentnahmeBegin").contains(631));
         prot.setPassed(true);
     }
+
+    public final void timeNoEndProbeentnahmeBegin(List<Protocol> protocol) {
+        Protocol prot = new Protocol();
+        prot.setName("ProbeValidator");
+        prot.setType("time no end probeentnahmeBegin");
+        prot.setPassed(false);
+        protocol.add(prot);
+        LProbe probe = new LProbe();
+        probe.setProbeentnahmeBeginn(new Timestamp(1376287046510l));
+        Violation violation = validator.validate(probe);
+        if (violation.hasWarnings()) {
+            Assert.assertFalse(violation.getWarnings().containsKey("probeentnahmeBegin"));
+        }
+        prot.setPassed(true);
+    }
+
+    public final void timeNoBeginProbeentnahmeBegin(List<Protocol> protocol) {
+        Protocol prot = new Protocol();
+        prot.setName("ProbeValidator");
+        prot.setType("time no begin probeentnahmeBegin");
+        prot.setPassed(false);
+        protocol.add(prot);
+        LProbe probe = new LProbe();
+        probe.setProbeentnahmeEnde(new Timestamp(1376287046510l));
+        Violation violation = validator.validate(probe);
+        Assert.assertTrue(violation.getWarnings().get("probeentnahmeBegin").contains(631));
+        Assert.assertTrue(violation.getWarnings().get("probeentnahmeBegin").contains(662));
+        prot.setPassed(true);
+    }
+
+    public final void timeBeginAfterEndProbeentnahmeBegin(List<Protocol> protocol) {
+        Protocol prot = new Protocol();
+        prot.setName("ProbeValidator");
+        prot.setType("time begin after end probeentnahmeBegin");
+        prot.setPassed(false);
+        protocol.add(prot);
+        LProbe probe = new LProbe();
+        probe.setProbeentnahmeBeginn(new Timestamp(1376287046511l));
+        probe.setProbeentnahmeEnde(new Timestamp(1376287046510l));
+        Violation violation = validator.validate(probe);
+        Assert.assertTrue(violation.getWarnings().get("probeentnahmeBegin").contains(662));
+        prot.setPassed(true);
+    }
+
+    public final void timeBeginFutureProbeentnahmeBegin(List<Protocol> protocol) {
+        Protocol prot = new Protocol();
+        prot.setName("ProbeValidator");
+        prot.setType("time begin in future probeentnahmeBegin");
+        prot.setPassed(false);
+        protocol.add(prot);
+        LProbe probe = new LProbe();
+        probe.setProbeentnahmeBeginn(new Timestamp(2376287046511l));
+        Violation violation = validator.validate(probe);
+        Assert.assertTrue(violation.getWarnings().get("probeentnahmeBegin").contains(661));
+        prot.setPassed(true);
+    }
+
+    public final void hasUmwelt(List<Protocol> protocol) {
+        Protocol prot = new Protocol();
+        prot.setName("ProbeValidator");
+        prot.setType("has Umwelt");
+        prot.setPassed(false);
+        protocol.add(prot);
+        LProbe probe = new LProbe();
+        probe.setUmwId("A4");
+        Violation violation = validator.validate(probe);
+        if (violation.hasWarnings()) {
+            Assert.assertFalse(violation.getWarnings().containsKey("uwb"));
+        }
+        prot.setPassed(true);
+    }
+
+    public final void hasNoUmwelt(List<Protocol> protocol) {
+        Protocol prot = new Protocol();
+        prot.setName("ProbeValidator");
+        prot.setType("has no Umwelt");
+        prot.setPassed(false);
+        protocol.add(prot);
+        LProbe probe = new LProbe();
+        Violation violation = validator.validate(probe);
+        Assert.assertTrue(violation.hasWarnings());
+        Assert.assertTrue(violation.getWarnings().containsKey("uwb"));
+        Assert.assertTrue(violation.getWarnings().get("uwb").contains(631));
+        prot.setPassed(true);
+    }
+
+    public final void hasEmptyUmwelt(List<Protocol> protocol) {
+        Protocol prot = new Protocol();
+        prot.setName("ProbeValidator");
+        prot.setType("has empty Umwelt");
+        prot.setPassed(false);
+        protocol.add(prot);
+        LProbe probe = new LProbe();
+        probe.setUmwId("");
+        Violation violation = validator.validate(probe);
+        Assert.assertTrue(violation.hasWarnings());
+        Assert.assertTrue(violation.getWarnings().containsKey("uwb"));
+        Assert.assertTrue(violation.getWarnings().get("uwb").contains(631));
         prot.setPassed(true);
     }
 }

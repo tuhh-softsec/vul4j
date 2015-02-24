@@ -93,4 +93,46 @@ public class LadaValidatorTest extends BaseTest {
         probeTest.setValidator(probeValidator);
         probeTest.hasNoProbeentnahmeBegin(testProtocol);
     }
+
+    @Test
+    public final void probeTimeNoEndProbenahmeBegin() {
+        probeTest.setValidator(probeValidator);
+        probeTest.timeNoEndProbeentnahmeBegin(testProtocol);
+    }
+
+    @Test
+    public final void probeTimeNoBeginProbenahmeBegin() {
+        probeTest.setValidator(probeValidator);
+        probeTest.timeNoBeginProbeentnahmeBegin(testProtocol);
+    }
+
+    @Test
+    public final void probeTimeBeginAfterEndProbenahmeBegin() {
+        probeTest.setValidator(probeValidator);
+        probeTest.timeBeginAfterEndProbeentnahmeBegin(testProtocol);
+    }
+
+    @Test
+    public final void probeTimeBeginFutureProbenahmeBegin() {
+        probeTest.setValidator(probeValidator);
+        probeTest.timeBeginFutureProbeentnahmeBegin(testProtocol);
+    }
+
+    @Test
+    public final void probeHasUmwelt() {
+        probeTest.setValidator(probeValidator);
+        probeTest.hasUmwelt(testProtocol);
+    }
+
+    @Test
+    public final void probeHasNoUmwelt() {
+        probeTest.setValidator(probeValidator);
+        probeTest.hasNoUmwelt(testProtocol);
+    }
+
+    @Test
+    public final void probeHasEmptyUmwelt() {
+        probeTest.setValidator(probeValidator);
+        probeTest.hasEmptyUmwelt(testProtocol);
+    }
 }
