@@ -7,8 +7,8 @@
  */
 package de.intevation.lada.validation;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.MultivaluedMap;
 
 /**
  *
@@ -16,37 +16,41 @@ import java.util.Map;
  */
 public class Violation {
 
-    private Map<String, Integer> warnings;
+    private MultivaluedMap<String, Integer> warnings;
 
-    private Map<String, Integer> errors;
+    private MultivaluedMap<String, Integer> errors;
 
     public Violation() {
-        this.warnings = new HashMap<String, Integer>();
-        this.errors = new HashMap<String, Integer>();
+        this.warnings = new MultivaluedHashMap<String, Integer>();
+        this.errors = new MultivaluedHashMap<String, Integer>();
     }
 
-    public Map<String, Integer> getWarnings() {
+    public MultivaluedMap<String, Integer> getWarnings() {
         return this.warnings;
     }
 
-    public Map<String, Integer> getErrors() {
+    public MultivaluedMap<String, Integer> getErrors() {
         return this.errors;
     }
 
     public void addWarning(String key, Integer value) {
-        this.warnings.put(key, value);
+        this.warnings.add(key, value);
     }
 
     public void addError(String key, Integer value) {
-        this.errors.put(key, value);
+        this.errors.add(key, value);
     }
 
-    public void addWarnings(Map<String, Integer> warnings) {
-        this.warnings.putAll(warnings);
+    public void addWarnings(MultivaluedMap<String, Integer> warnings) {
+        for (String key: warnings.keySet()) {
+            this.warnings.addAll(key, warnings.get(key));
+        }
     }
 
-    public void addErrors(Map<String, Integer> errors) {
-        this.errors.putAll(errors);
+    public void addErrors(MultivaluedMap<String, Integer> errors) {
+        for (String key: errors.keySet()) {
+            this.errors.addAll(key, errors.get(key));
+        }
     }
 
     public boolean hasWarnings() {

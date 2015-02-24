@@ -45,7 +45,7 @@ public class Probe {
         Violation violation = validator.validate(probe);
         Assert.assertTrue(violation.hasErrors());
         Assert.assertTrue(violation.getErrors().containsKey("hauptprobenNr"));
-        Assert.assertTrue(violation.getErrors().get("hauptprobenNr") == 631);
+        Assert.assertTrue(violation.getErrors().get("hauptprobenNr").contains(631));
         prot.setPassed(true);
     }
 
@@ -61,7 +61,7 @@ public class Probe {
         Violation violation = validator.validate(probe);
         Assert.assertTrue(violation.hasErrors());
         Assert.assertTrue(violation.getErrors().containsKey("hauptprobenNr"));
-        Assert.assertTrue(violation.getErrors().get("hauptprobenNr") == 611);
+        Assert.assertTrue(violation.getErrors().get("hauptprobenNr").contains(611));
         prot.setPassed(true);
     }
 
@@ -113,7 +113,7 @@ public class Probe {
         Violation violation = validator.validate(probe);
         Assert.assertTrue(violation.hasErrors());
         Assert.assertTrue(violation.getErrors().containsKey("hauptprobenNr"));
-        Assert.assertTrue(violation.getErrors().get("hauptprobenNr") == 611);
+        Assert.assertTrue(violation.getErrors().get("hauptprobenNr").contains(611));
         prot.setPassed(true);
     }
 
@@ -143,7 +143,7 @@ public class Probe {
         Violation violation = validator.validate(probe);
         Assert.assertTrue(violation.hasWarnings());
         Assert.assertTrue(violation.getWarnings().containsKey("entnahmeOrt"));
-        Assert.assertTrue(violation.getWarnings().get("entnahmeOrt") == 631);
+        Assert.assertTrue(violation.getWarnings().get("entnahmeOrt").contains(631));
         prot.setPassed(true);
     }
 
@@ -155,6 +155,7 @@ public class Probe {
         protocol.add(prot);
         LProbe probe = new LProbe();
         probe.setProbeentnahmeBeginn(new Timestamp(1376287046510l));
+        probe.setProbeentnahmeEnde(new Timestamp(1376287046511l));
         Violation violation = validator.validate(probe);
         if (violation.hasWarnings()) {
             Assert.assertFalse(violation.getWarnings().containsKey("probeentnahmeBegin"));
@@ -172,7 +173,9 @@ public class Probe {
         Violation violation = validator.validate(probe);
         Assert.assertTrue(violation.hasWarnings());
         Assert.assertTrue(violation.getWarnings().containsKey("probeentnahmeBegin"));
-        Assert.assertTrue(violation.getWarnings().get("probeentnahmeBegin") == 631);
+        Assert.assertTrue(violation.getWarnings().get("probeentnahmeBegin").contains(631));
+        prot.setPassed(true);
+    }
         prot.setPassed(true);
     }
 }
