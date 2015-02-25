@@ -139,6 +139,13 @@
             <version>3.0.10.Final</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- OpenID -->
+        <dependency>
+            <groupId>org.openid4java</groupId>
+            <artifactId>openid4java</artifactId>
+            <version>0.9.7</version>
+        </dependency>
     </dependencies>
 
     <profiles>
