@@ -5,18 +5,30 @@
  * and comes with ABSOLUTELY NO WARRANTY! Check out 
  * the documentation coming with IMIS-Labordaten-Application for details. 
  */
+
 package de.intevation.lada.util.auth;
+
+import org.apache.log4j.Logger;
 
 import java.util.Map;
 import java.util.List;
 import java.util.LinkedHashMap;
 import java.net.URLDecoder;
 
-import javax.inject.Inject;
-import javax.ejb.Stateless;
-import javax.ws.rs.core.HttpHeaders;
+import java.io.IOException;
 
-import de.intevation.lada.util.annotation.AuthenticationConfig;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequestWrapper;
+import javax.servlet.http.HttpSession;
 
 import org.openid4java.association.AssociationSessionType;
 import org.openid4java.association.AssociationException;
@@ -32,10 +44,21 @@ import org.openid4java.discovery.DiscoveryException;
 import org.openid4java.message.MessageException;
 import org.openid4java.message.AuthRequest;
 
-import org.apache.log4j.Logger;
+/** ServletFilter used for OpenID authentification. */
+@WebFilter("/*")
+public class OpenIDFilter implements Filter
+{
+    private static Logger logger = Logger.getLogger(OpenIDFilter.class);
 
-public class OpenIDAuthentication implements Authentication {
+    private ConsumerManager manager;
 
+    /* This should be moved into a map <server->discovered>
+     * as we currently only supporting one server this is static. */
+    boolean discoveryDone = false;
+    private DiscoveryInformation discovered;
+    private String authRequestURL;
+
+    /** TODO: get this from config. */
     /** The name of the header field used to transport OpenID parameters.*/
     private static final String OID_HEADER_FIELD= "X-OPENID-PARAMS";
 
@@ -46,17 +69,6 @@ public class OpenIDAuthentication implements Authentication {
     /** This is currently a faked dummy */
     private static final String RETURN_URL =
         "http://localhost:8086/consumer-servlet/consumer?is_return=true";
-
-    private static final Logger logger =
-        Logger.getLogger(OpenIDAuthentication.class);
-
-    private ConsumerManager manager;
-
-    private Map<String,String> idParams;
-
-    boolean discoveryDone = false;
-
-    private DiscoveryInformation discovered;
 
     private boolean discoverServer() {
         /* Perform discovery on the configured IDENTITY_PROVIDER */
@@ -81,7 +93,8 @@ public class OpenIDAuthentication implements Authentication {
         logger.debug("After discovery.");
         try {
             AuthRequest authReq = manager.authenticate(discovered, RETURN_URL);
-            logger.debug("Authenticate with: " + authReq.getDestinationUrl(true));
+            authRequestURL = authReq.getDestinationUrl(true);
+            logger.debug("Authenticate with: " + authRequestURL);
         } catch (MessageException e) {
             logger.debug("Failed to create the Authentication request: " +
                     e.getMessage());
@@ -89,17 +102,7 @@ public class OpenIDAuthentication implements Authentication {
             logger.debug("Error in consumer manager: " +
                     e.getMessage());
         }
-        logger.debug("After authenticate.");
         return true;
-    }
-
-    public OpenIDAuthentication() {
-        manager = new ConsumerManager();
-        /* TODO: Check for alternative configs. */
-        manager.setAssociations(new InMemoryConsumerAssociationStore());
-        manager.setNonceVerifier(new InMemoryNonceVerifier(50000));
-        manager.setMinAssocSessEnc(AssociationSessionType.DH_SHA256);
-        discoveryDone = discoverServer();
     }
 
     /** Split up the OpenID response query provided in the header.
@@ -140,25 +143,24 @@ public class OpenIDAuthentication implements Authentication {
         return new ParameterList(queryMap);
     }
 
-    private boolean checkOpenIDHeader(HttpHeaders headers) {
-        /* First check if there are is anything provided */
-        List<String> oidParamString = headers.getRequestHeader(
-                OID_HEADER_FIELD);
+    private boolean checkOpenIDHeader(ServletRequest req) {
+
+        HttpServletRequest hReq = (HttpServletRequest) req;
+        /* First check if the header is provided at all */
+        String oidParamString = hReq.getHeader(OID_HEADER_FIELD);
+
         if (oidParamString == null) {
             logger.debug("Header " + OID_HEADER_FIELD + " not provided.");
             return false;
         }
-        if (oidParamString.size() != 1) {
-            logger.debug("Found " + oidParamString.size() + " openid headers.");
-            return false;
-        }
 
-        /* Parse the parameters. Do it first to avoid a useless discovery. */
-        ParameterList oidParams = splitParams(oidParamString.get(0));
+        /* Parse the parameters to a map for openid4j */
+        ParameterList oidParams = splitParams(oidParamString);
         if (oidParams == null) {
             return false;
         }
 
+        /* Verify against the discovered server. */
         VerificationResult verification = null;
         try {
             verification = manager.verify(RETURN_URL, oidParams, discovered);
@@ -172,7 +174,6 @@ public class OpenIDAuthentication implements Authentication {
             logger.debug("Verification assoc exception: " + e.getMessage());
             return false;
         }
-
 
         /* See what could be verified */
         Identifier verified = verification.getVerifiedId();
@@ -188,19 +189,34 @@ public class OpenIDAuthentication implements Authentication {
     }
 
     @Override
-    public boolean isAuthenticated(HttpHeaders headers) {
+    public void init(FilterConfig config)
+    throws ServletException
+    {
+        manager = new ConsumerManager();
+        /* TODO: Check for alternative configs. */
+        manager.setAssociations(new InMemoryConsumerAssociationStore());
+        manager.setNonceVerifier(new InMemoryNonceVerifier(50000));
+        manager.setMinAssocSessEnc(AssociationSessionType.DH_SHA256);
+        discoveryDone = discoverServer();
+    }
+
+    @Override
+    public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
+    throws IOException, ServletException
+    {
         if (!discoveryDone) {
             discoveryDone = discoverServer();
         }
-        if (!discoveryDone) {
-            return false;
-        }
-        if (checkOpenIDHeader(headers)) {
+        if (discoveryDone && checkOpenIDHeader(req)) {
             /** Successfully authenticated. */
-            return true;
-        } else {
-
-            return false;
+            chain.doFilter(req, resp);
         }
+        ((HttpServletResponse) resp).sendError(401, "{\"success\":false,\"message\":\"699\",\"data\":" +
+                "\"" + authRequestURL + "\",\"errors\":{},\"warnings\":{}," +
+                "\"readonly\":false,\"totalCount\":0}");
     }
-}
+    @Override
+    public void destroy()
+    {
+    }
+};

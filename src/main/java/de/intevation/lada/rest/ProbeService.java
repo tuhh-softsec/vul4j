@@ -67,7 +67,7 @@ public class ProbeService {
 
     /* The authentication module.*/
     @Inject
-    @AuthenticationConfig(type=AuthenticationType.OPENID)
+    @AuthenticationConfig(type=AuthenticationType.NONE)
     private Authentication authentication;
 
     /* The authorization module.*/

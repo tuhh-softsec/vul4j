@@ -60,7 +60,11 @@
             <groupId>org.jboss.spec.javax.json</groupId>
             <artifactId>jboss-json-api_1.0_spec</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.jboss.spec.javax.servlet</groupId>
+            <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+            <version>1.0.2.Final</version>
+        </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
