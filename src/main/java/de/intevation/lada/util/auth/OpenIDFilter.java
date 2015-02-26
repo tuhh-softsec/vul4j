@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.List;
 import java.util.LinkedHashMap;
 import java.net.URLDecoder;
+import java.util.Date;
 
 import java.io.IOException;
 
@@ -35,7 +36,7 @@ import org.openid4java.association.AssociationException;
 import org.openid4java.consumer.ConsumerManager;
 import org.openid4java.consumer.ConsumerException;
 import org.openid4java.consumer.InMemoryConsumerAssociationStore;
-import org.openid4java.consumer.InMemoryNonceVerifier;
+import org.openid4java.consumer.AbstractNonceVerifier;
 import org.openid4java.message.ParameterList;
 import org.openid4java.consumer.VerificationResult;
 import org.openid4java.discovery.DiscoveryInformation;
@@ -46,9 +47,48 @@ import org.openid4java.message.AuthRequest;
 
 /** ServletFilter used for OpenID authentification. */
 @WebFilter("/*")
-public class OpenIDFilter implements Filter
-{
+public class OpenIDFilter implements Filter {
+
+    /** TODO: get this from config. */
+    /** The name of the header field used to transport OpenID parameters.*/
+    private static final String OID_HEADER_FIELD= "X-OPENID-PARAMS";
+
+    /** The identity provider we accept here. */
+    private static final String IDENTITY_PROVIDER =
+        "https://localhost:9443/openid/";
+
+    /** Where the authentication should return to the lada client.
+     * This could be a placeholder to be filled by the client itself and
+     * not validated by the server.
+     */
+    private static final String RETURN_URL =
+        "http://path_to_lada_client_return_url";
+
+    private static final int SESSION_TIMEOUT = 1 * 60 * 60; /* one hour */
+
     private static Logger logger = Logger.getLogger(OpenIDFilter.class);
+
+    /** We use the openid information as kind of session information and reuse it.
+     *
+     * Usually one would create a session for the user but this would not
+     * be an advantage here as we want to transport the session in a header
+     * anyway.
+     *
+     * A nonce will be valid as long as as the maxAge is not reached.
+     * This is implemented by the basis verifier.
+     * We only implement seed no mark that we accept nonce's multiple
+     * times.
+     */
+    private class SessionNonceVerifier extends AbstractNonceVerifier {
+        public SessionNonceVerifier(int maxAge) {
+            super(maxAge);
+        }
+
+        @Override
+        protected int seen(Date now, String opUrl, String nonce) {
+            return OK;
+        }
+    };
 
     private ConsumerManager manager;
 
@@ -57,19 +97,6 @@ public class OpenIDFilter implements Filter
     boolean discoveryDone = false;
     private DiscoveryInformation discovered;
     private String authRequestURL;
-
-    /** TODO: get this from config. */
-    /** The name of the header field used to transport OpenID parameters.*/
-    private static final String OID_HEADER_FIELD= "X-OPENID-PARAMS";
-
-    /** The identity provider we accept here. */
-    private static final String IDENTITY_PROVIDER =
-        "http://localhost:8087/account";
-
-    /** This is currently a faked dummy */
-    private static final String RETURN_URL =
-        "http://localhost:8086/consumer-servlet/consumer?is_return=true";
-
     private boolean discoverServer() {
         /* Perform discovery on the configured IDENTITY_PROVIDER */
         List discoveries = null;
@@ -90,11 +117,9 @@ public class OpenIDFilter implements Filter
         discovered = manager.associate(discoveries);
 
         /* Validate the parameters. */
-        logger.debug("After discovery.");
         try {
             AuthRequest authReq = manager.authenticate(discovered, RETURN_URL);
             authRequestURL = authReq.getDestinationUrl(true);
-            logger.debug("Authenticate with: " + authRequestURL);
         } catch (MessageException e) {
             logger.debug("Failed to create the Authentication request: " +
                     e.getMessage());
@@ -193,9 +218,10 @@ public class OpenIDFilter implements Filter
     throws ServletException
     {
         manager = new ConsumerManager();
-        /* TODO: Check for alternative configs. */
+        /* We probably want to implement our own association store to keep
+         * associations persistent. */
         manager.setAssociations(new InMemoryConsumerAssociationStore());
-        manager.setNonceVerifier(new InMemoryNonceVerifier(50000));
+        manager.setNonceVerifier(new SessionNonceVerifier(SESSION_TIMEOUT));
         manager.setMinAssocSessEnc(AssociationSessionType.DH_SHA256);
         discoveryDone = discoverServer();
     }
@@ -210,6 +236,7 @@ public class OpenIDFilter implements Filter
         if (discoveryDone && checkOpenIDHeader(req)) {
             /** Successfully authenticated. */
             chain.doFilter(req, resp);
+            return;
         }
         ((HttpServletResponse) resp).sendError(401, "{\"success\":false,\"message\":\"699\",\"data\":" +
                 "\"" + authRequestURL + "\",\"errors\":{},\"warnings\":{}," +
