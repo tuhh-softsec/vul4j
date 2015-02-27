@@ -166,9 +166,7 @@ public class OpenIDFilter implements Filter {
         String oidParamString = hReq.getHeader(oidHeader);
 
         if (oidParamString == null) {
-            logger.debug("Header " + oidHeader + " not provided.");
-        } else {
-            logger.debug("Trying to verify query.");
+            logger.debug("Header " + oidHeader + " not provided. Trying params.");
             oidParamString = hReq.getQueryString();
         }
 
@@ -181,10 +179,15 @@ public class OpenIDFilter implements Filter {
         /* Verify against the discovered server. */
         VerificationResult verification = null;
         /* extract the receiving URL from the HTTP request */
-        StringBuffer receivingURL = hReq.getRequestURL();
-        String queryString = hReq.getQueryString();
-        if (queryString != null && queryString.length() > 0)
-            receivingURL.append("?").append(hReq.getQueryString());
+        String receivingURL = hReq.getRequestURL().toString();
+
+        if (!receivingURL.contains("?is_return=true&")) {
+            receivingURL += "?is_return=true&";
+        }
+        /* XXX this is broken and does not work as that information only
+         * authenticates this Return url and not any other URL. We have
+         * to change this. */
+        receivingURL.replace("localhost", "127.0.0.1");
 
         try {
             verification = manager.verify(receivingURL.toString(), oidParams,
@@ -252,11 +255,15 @@ public class OpenIDFilter implements Filter {
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
     throws IOException, ServletException
     {
+        HttpServletRequest hReq = (HttpServletRequest) req;
+        HttpServletResponse hResp = (HttpServletResponse) resp;
         if (!discoveryDone) {
             discoveryDone = discoverServer();
         }
         if (discoveryDone && checkOpenIDHeader(req)) {
             /** Successfully authenticated. */
+            hResp.addHeader(oidHeader, hReq.getQueryString().replace(
+                        "is_return=true",""));
             chain.doFilter(req, resp);
             return;
         }
@@ -264,7 +271,6 @@ public class OpenIDFilter implements Filter {
         if (discoveryDone) {
             /* Get the authentication url for this server. */
             try {
-                HttpServletRequest hReq = (HttpServletRequest) req;
                 String returnToUrl = hReq.getRequestURL().toString()
                     + "?is_return=true";
                 AuthRequest authReq = manager.authenticate(discovered,
@@ -278,7 +284,7 @@ public class OpenIDFilter implements Filter {
                         e.getMessage());
             }
         }
-        ((HttpServletResponse) resp).sendError(401, "{\"success\":false,\"message\":\"699\",\"data\":" +
+        hResp.sendError(401, "{\"success\":false,\"message\":\"699\",\"data\":" +
                 "\"" + authRequestURL + "\",\"errors\":{},\"warnings\":{}," +
                 "\"readonly\":false,\"totalCount\":0}");
     }
