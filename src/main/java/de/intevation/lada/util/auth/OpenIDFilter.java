@@ -15,7 +15,9 @@ import java.util.List;
 import java.util.LinkedHashMap;
 import java.net.URLDecoder;
 import java.util.Date;
+import java.util.Properties;
 
+import java.io.InputStream;
 import java.io.IOException;
 
 import javax.servlet.Filter;
@@ -49,26 +51,23 @@ import org.openid4java.message.AuthRequest;
 @WebFilter("/*")
 public class OpenIDFilter implements Filter {
 
-    /** TODO: get this from config. */
+    private static final String CONFIG_FILE = "/openid.properties";
+
     /** The name of the header field used to transport OpenID parameters.*/
-    private static final String OID_HEADER_FIELD= "X-OPENID-PARAMS";
+    private static final String OID_HEADER_DEFAULT = "X-OPENID-PARAMS";
+    private String oidHeader;
 
     /** The identity provider we accept here. */
-    private static final String IDENTITY_PROVIDER =
-        "https://localhost:9443/openid/";
+    private static final String IDENTITY_PROVIDER_DEFAULT =
+        "https://localhost/openid/";
+    private String providerUrl;
 
-    /** Where the authentication should return to the lada client.
-     * This could be a placeholder to be filled by the client itself and
-     * not validated by the server.
-     */
-    private static final String RETURN_URL =
-        "http://path_to_lada_client_return_url";
-
-    private static final int SESSION_TIMEOUT = 1 * 60 * 60; /* one hour */
+    private static final int SESSION_TIMEOUT_DEFAULT_MINUTES = 60;
+    private int sessionTimeout;
 
     private static Logger logger = Logger.getLogger(OpenIDFilter.class);
 
-    /** We use the openid information as kind of session information and reuse it.
+    /** Nonce verifier to allow a session based on openid information.
      *
      * Usually one would create a session for the user but this would not
      * be an advantage here as we want to transport the session in a header
@@ -96,12 +95,12 @@ public class OpenIDFilter implements Filter {
      * as we currently only supporting one server this is static. */
     boolean discoveryDone = false;
     private DiscoveryInformation discovered;
-    private String authRequestURL;
+
     private boolean discoverServer() {
-        /* Perform discovery on the configured IDENTITY_PROVIDER */
+        /* Perform discovery on the configured providerUrl */
         List discoveries = null;
         try {
-            discoveries = manager.discover(IDENTITY_PROVIDER);
+            discoveries = manager.discover(providerUrl);
         } catch (DiscoveryException e) {
             logger.debug("Discovery failed: " + e.getMessage());
             return false;
@@ -116,17 +115,6 @@ public class OpenIDFilter implements Filter {
         /* Add association for the discovered information */
         discovered = manager.associate(discoveries);
 
-        /* Validate the parameters. */
-        try {
-            AuthRequest authReq = manager.authenticate(discovered, RETURN_URL);
-            authRequestURL = authReq.getDestinationUrl(true);
-        } catch (MessageException e) {
-            logger.debug("Failed to create the Authentication request: " +
-                    e.getMessage());
-        } catch (ConsumerException e) {
-            logger.debug("Error in consumer manager: " +
-                    e.getMessage());
-        }
         return true;
     }
 
@@ -136,6 +124,9 @@ public class OpenIDFilter implements Filter {
      * @return The query as ParameterList or null on error.
      */
     private ParameterList splitParams(String responseQuery) {
+        if (responseQuery == null) {
+            return null;
+        }
         Map<String, String> queryMap =
             new LinkedHashMap<String, String>();
         final String[] pairs = responseQuery.split("&");
@@ -172,11 +163,13 @@ public class OpenIDFilter implements Filter {
 
         HttpServletRequest hReq = (HttpServletRequest) req;
         /* First check if the header is provided at all */
-        String oidParamString = hReq.getHeader(OID_HEADER_FIELD);
+        String oidParamString = hReq.getHeader(oidHeader);
 
         if (oidParamString == null) {
-            logger.debug("Header " + OID_HEADER_FIELD + " not provided.");
-            return false;
+            logger.debug("Header " + oidHeader + " not provided.");
+        } else {
+            logger.debug("Trying to verify query.");
+            oidParamString = hReq.getQueryString();
         }
 
         /* Parse the parameters to a map for openid4j */
@@ -187,8 +180,15 @@ public class OpenIDFilter implements Filter {
 
         /* Verify against the discovered server. */
         VerificationResult verification = null;
+        /* extract the receiving URL from the HTTP request */
+        StringBuffer receivingURL = hReq.getRequestURL();
+        String queryString = hReq.getQueryString();
+        if (queryString != null && queryString.length() > 0)
+            receivingURL.append("?").append(hReq.getQueryString());
+
         try {
-            verification = manager.verify(RETURN_URL, oidParams, discovered);
+            verification = manager.verify(receivingURL.toString(), oidParams,
+                    discovered);
         } catch (MessageException e) {
             logger.debug("Verification failed: " + e.getMessage());
             return false;
@@ -217,11 +217,33 @@ public class OpenIDFilter implements Filter {
     public void init(FilterConfig config)
     throws ServletException
     {
+        /* Read config and initialize configuration variables */
+        Properties properties = new Properties();
+        InputStream stream = null;
+        try {
+            stream = getClass().getResourceAsStream(CONFIG_FILE);
+            properties.load(stream);
+            stream.close();
+        } catch (java.io.FileNotFoundException e) {
+            logger.error ("Failed to find config file: " + CONFIG_FILE);
+        } catch (java.io.IOException e) {
+            logger.error ("Failed to read config file: " + CONFIG_FILE);
+        }
+        try {
+            sessionTimeout = Integer.parseInt(
+                    properties.getProperty("session_timeout_minutes"));
+        } catch (NumberFormatException e) {
+            sessionTimeout = SESSION_TIMEOUT_DEFAULT_MINUTES;
+        }
+        oidHeader = properties.getProperty("oidHeader", OID_HEADER_DEFAULT);
+        providerUrl = properties.getProperty("identity_provider",
+                IDENTITY_PROVIDER_DEFAULT);
+
         manager = new ConsumerManager();
         /* We probably want to implement our own association store to keep
          * associations persistent. */
         manager.setAssociations(new InMemoryConsumerAssociationStore());
-        manager.setNonceVerifier(new SessionNonceVerifier(SESSION_TIMEOUT));
+        manager.setNonceVerifier(new SessionNonceVerifier(sessionTimeout));
         manager.setMinAssocSessEnc(AssociationSessionType.DH_SHA256);
         discoveryDone = discoverServer();
     }
@@ -237,6 +259,24 @@ public class OpenIDFilter implements Filter {
             /** Successfully authenticated. */
             chain.doFilter(req, resp);
             return;
+        }
+        String authRequestURL = "Error communicating with openid server";
+        if (discoveryDone) {
+            /* Get the authentication url for this server. */
+            try {
+                HttpServletRequest hReq = (HttpServletRequest) req;
+                String returnToUrl = hReq.getRequestURL().toString()
+                    + "?is_return=true";
+                AuthRequest authReq = manager.authenticate(discovered,
+                        returnToUrl);
+                authRequestURL = authReq.getDestinationUrl(true);
+            } catch (MessageException e) {
+                logger.debug("Failed to create the Authentication request: " +
+                        e.getMessage());
+            } catch (ConsumerException e) {
+                logger.debug("Error in consumer manager: " +
+                        e.getMessage());
+            }
         }
         ((HttpServletResponse) resp).sendError(401, "{\"success\":false,\"message\":\"699\",\"data\":" +
                 "\"" + authRequestURL + "\",\"errors\":{},\"warnings\":{}," +
