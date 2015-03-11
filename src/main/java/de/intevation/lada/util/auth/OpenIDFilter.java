@@ -284,9 +284,12 @@ public class OpenIDFilter implements Filter {
                         e.getMessage());
             }
         }
-        hResp.sendError(401, "{\"success\":false,\"message\":\"699\",\"data\":" +
+        hResp.reset();
+        hResp.setStatus(401);
+        hResp.getOutputStream().print("{\"success\":false,\"message\":\"699\",\"data\":" +
                 "\"" + authRequestURL + "\",\"errors\":{},\"warnings\":{}," +
                 "\"readonly\":false,\"totalCount\":0}");
+        hResp.getOutputStream().flush();
     }
     @Override
     public void destroy()
