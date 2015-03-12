@@ -16,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.net.URLDecoder;
 import java.util.Date;
 import java.util.Properties;
+import java.util.Enumeration;
 
 import java.io.InputStream;
 import java.io.IOException;
@@ -141,8 +142,8 @@ public class OpenIDFilter implements Filter {
                         pair.substring(0, idx), "UTF-8");
 
                 if (queryMap.containsKey(key)) {
-                    logger.debug("Invalid query. Duplicate key: " + key);
-                    return null;
+                    logger.debug("Duplicate key: " + key + " ignored.");
+                    continue;
                 }
                 final String value = URLDecoder.decode(
                         pair.substring(idx + 1), "UTF-8");
@@ -162,6 +163,19 @@ public class OpenIDFilter implements Filter {
     private boolean checkOpenIDHeader(ServletRequest req) {
 
         HttpServletRequest hReq = (HttpServletRequest) req;
+
+        /* Debug code to dump headers
+        Enumeration<String> headerNames = hReq.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String headerName = headerNames.nextElement();
+            logger.debug("Header: " + headerName);
+            Enumeration<String> headers = hReq.getHeaders(headerName);
+            while (headers.hasMoreElements()) {
+                String headerValue = headers.nextElement();
+                logger.debug("Value: " + headerValue);
+            }
+        }
+        */
         /* First check if the header is provided at all */
         String oidParamString = hReq.getHeader(oidHeader);
 
@@ -178,19 +192,10 @@ public class OpenIDFilter implements Filter {
 
         /* Verify against the discovered server. */
         VerificationResult verification = null;
-        /* extract the receiving URL from the HTTP request */
-        String receivingURL = hReq.getRequestURL().toString();
-
-        if (!receivingURL.contains("?is_return=true&")) {
-            receivingURL += "?is_return=true&";
-        }
-        /* XXX this is broken and does not work as that information only
-         * authenticates this Return url and not any other URL. We have
-         * to change this. */
-        receivingURL.replace("localhost", "127.0.0.1");
+        String receivingURL = oidParams.getParameterValue("openid.return_to");
 
         try {
-            verification = manager.verify(receivingURL.toString(), oidParams,
+            verification = manager.verify(receivingURL, oidParams,
                     discovered);
         } catch (MessageException e) {
             logger.debug("Verification failed: " + e.getMessage());
@@ -268,14 +273,31 @@ public class OpenIDFilter implements Filter {
             return;
         }
         String authRequestURL = "Error communicating with openid server";
+        int errorCode = 698;
         if (discoveryDone) {
-            /* Get the authentication url for this server. */
+            /* Parse the parameters to a map for openid4j */
+            ParameterList params = splitParams(hReq.getQueryString());
+            String returnToUrl;
+            if (params == null) {
+                logger.debug("Failed to get any parameters from url.");
+                hResp.reset();
+                hResp.setStatus(401);
+                hResp.getOutputStream().print("{\"success\":false,\"message\":\"" + errorCode + "\",\"data\":" +
+                        "\"No return url provided!\",\"errors\":{},\"warnings\":{}," +
+                        "\"readonly\":false,\"totalCount\":0}");
+                hResp.getOutputStream().flush();
+                return;
+            } else {
+                returnToUrl = params.getParameterValue("return_to");
+            }
             try {
+                /*
                 String returnToUrl = hReq.getRequestURL().toString()
-                    + "?is_return=true";
+                    + "?is_return=true";*/
                 AuthRequest authReq = manager.authenticate(discovered,
                         returnToUrl);
                 authRequestURL = authReq.getDestinationUrl(true);
+                errorCode = 699;
             } catch (MessageException e) {
                 logger.debug("Failed to create the Authentication request: " +
                         e.getMessage());
@@ -286,7 +308,7 @@ public class OpenIDFilter implements Filter {
         }
         hResp.reset();
         hResp.setStatus(401);
-        hResp.getOutputStream().print("{\"success\":false,\"message\":\"699\",\"data\":" +
+        hResp.getOutputStream().print("{\"success\":false,\"message\":\"" + errorCode + "\",\"data\":" +
                 "\"" + authRequestURL + "\",\"errors\":{},\"warnings\":{}," +
                 "\"readonly\":false,\"totalCount\":0}");
         hResp.getOutputStream().flush();
