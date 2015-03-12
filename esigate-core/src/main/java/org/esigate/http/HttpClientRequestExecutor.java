@@ -39,7 +39,6 @@ import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.cookie.CookieSpecProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.message.BasicHttpResponse;
 import org.esigate.ConfigurationException;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
@@ -76,7 +75,6 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
     private CookieManager cookieManager;
     private HttpClient httpClient;
     private EventManager eventManager = null;
-    private HeaderManager headerManager;
     private int connectTimeout;
     private int socketTimeout;
     private HttpHost firstBaseUrlHost;
@@ -124,7 +122,6 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             HttpClientRequestExecutor result = new HttpClientRequestExecutor();
             result.eventManager = eventManager;
             result.preserveHost = Parameters.PRESERVE_HOST.getValue(properties);
-            result.headerManager = new HeaderManager(urlRewriter);
             if (cookieManager == null) {
                 cookieManager = ExtensionFactory.getExtension(properties, Parameters.COOKIE_MANAGER, driver);
             }
@@ -278,11 +275,6 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             throw new UnsupportedHttpMethodException(method + " " + uri);
         }
 
-        // We use the same user-agent and accept headers that the one sent by
-        // the browser as some web sites generate different pages and scripts
-        // depending on the browser
-        headerManager.copyHeaders(originalRequest, outgoingRequest);
-
         context.setPhysicalHost(physicalHost);
         context.setOutgoingRequest(outgoingRequest);
         context.setProxy(proxy);
@@ -323,10 +315,7 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
                 } else {
                     try {
                         HttpHost physicalHost = context.getPhysicalHost();
-                        HttpResponse response = httpClient.execute(physicalHost, httpRequest, context);
-                        result = new BasicHttpResponse(response.getStatusLine());
-                        headerManager.copyHeaders(httpRequest, originalRequest, response, result);
-                        result.setEntity(response.getEntity());
+                        result = httpClient.execute(physicalHost, httpRequest, context);
                     } catch (IOException e) {
                         result = HttpErrorPage.generateHttpResponse(e);
                         LOG.warn(httpRequest.getRequestLine() + " -> " + result.getStatusLine().toString());

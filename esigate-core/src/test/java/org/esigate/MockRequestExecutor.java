@@ -113,8 +113,7 @@ public final class MockRequestExecutor implements RequestExecutor {
     }
 
     @Override
-    public OutgoingRequest createOutgoingRequest(DriverRequest originalRequest, String url, boolean b)
-            throws HttpErrorPage {
+    public OutgoingRequest createOutgoingRequest(DriverRequest originalRequest, String url, boolean b) {
         OutgoingRequest outgoingRequest =
                 new OutgoingRequest("GET", url, originalRequest.getProtocolVersion(), originalRequest, null, null);
         return outgoingRequest;

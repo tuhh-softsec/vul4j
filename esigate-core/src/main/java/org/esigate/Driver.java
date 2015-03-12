@@ -36,6 +36,7 @@ import org.esigate.events.impl.RenderEvent;
 import org.esigate.extension.ExtensionFactory;
 import org.esigate.http.BasicCloseableHttpResponse;
 import org.esigate.http.ContentTypeHelper;
+import org.esigate.http.HeaderManager;
 import org.esigate.http.HttpClientRequestExecutor;
 import org.esigate.http.HttpResponseUtils;
 import org.esigate.http.IncomingRequest;
@@ -65,6 +66,7 @@ public final class Driver {
     private RequestExecutor requestExecutor;
     private ContentTypeHelper contentTypeHelper;
     private UrlRewriter urlRewriter;
+    private HeaderManager headerManager;
 
     private RedirectStrategy redirectStrategy = new RedirectStrategy();
 
@@ -103,6 +105,7 @@ public final class Driver {
                             .setProperties(properties).setContentTypeHelper(driver.contentTypeHelper)
                             .setUrlRewriter(urlRewriter).build();
             driver.urlRewriter = urlRewriter;
+            driver.headerManager = new HeaderManager(urlRewriter);
             return driver;
         }
 
@@ -176,7 +179,9 @@ public final class Driver {
         // content and response were not in cache
         if (cachedValue == null) {
             OutgoingRequest outgoingRequest = requestExecutor.createOutgoingRequest(driverRequest, targetUrl, false);
+            headerManager.copyHeaders(driverRequest, outgoingRequest);
             response = requestExecutor.execute(outgoingRequest);
+            response = headerManager.copyHeaders(outgoingRequest, driverRequest, response);
             currentValue = HttpResponseUtils.toString(response, this.eventManager);
             // Cache
             cachedValue = new ImmutablePair<String, CloseableHttpResponse>(currentValue, response);
@@ -257,19 +262,25 @@ public final class Driver {
         // Create Proxy event
         ProxyEvent e = new ProxyEvent(request);
 
+        // Event pre-proxy
+        this.eventManager.fire(EventManager.EVENT_PROXY_PRE, e);
+        // Return immediately if exit is requested by extension
+        if (e.isExit()) {
+            return e.getResponse();
+        }
+
+        logAction("proxy", relUrl, renderers);
+
+        String url = ResourceUtils.getHttpUrlWithQueryString(relUrl, driverRequest, true);
+        OutgoingRequest outgoingRequest = requestExecutor.createOutgoingRequest(driverRequest, url, true);
+        headerManager.copyHeaders(driverRequest, outgoingRequest);
+
         try {
-            // Event pre-proxy
-            this.eventManager.fire(EventManager.EVENT_PROXY_PRE, e);
-            // Return immediately if exit is requested by extension
-            if (e.isExit()) {
-                return e.getResponse();
-            }
+            CloseableHttpResponse response = requestExecutor.execute(outgoingRequest);
 
-            logAction("proxy", relUrl, renderers);
+            response = headerManager.copyHeaders(outgoingRequest, driverRequest, response);
 
-            String url = ResourceUtils.getHttpUrlWithQueryString(relUrl, driverRequest, true);
-            OutgoingRequest outgoingRequest = requestExecutor.createOutgoingRequest(driverRequest, url, true);
-            e.setResponse(requestExecutor.execute(outgoingRequest));
+            e.setResponse(response);
 
             // Perform rendering
             e.setResponse(performRendering(relUrl, driverRequest, e.getResponse(), renderers));
@@ -288,8 +299,9 @@ public final class Driver {
 
             // On error returned by the proxy request, perform rendering on the
             // error page.
-            e.setErrorPage(new HttpErrorPage(performRendering(relUrl, driverRequest,
-                    e.getErrorPage().getHttpResponse(), renderers)));
+            CloseableHttpResponse response = e.getErrorPage().getHttpResponse();
+            response = headerManager.copyHeaders(outgoingRequest, driverRequest, response);
+            e.setErrorPage(new HttpErrorPage(performRendering(relUrl, driverRequest, response, renderers)));
 
             // Event post-proxy
             // This must be done before throwing exception to ensure response

@@ -729,26 +729,6 @@ public class HttpClientRequestExecutorTest extends TestCase {
         assertNotNull(result3.getEntity());
     }
 
-    /**
-     * Test that we set a X-Forwarded-Proto header in backend requests.
-     * 
-     * @throws Exception
-     */
-    public void testXForwardedProtoHeader() throws Exception {
-        properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost:8080");
-        createHttpClientRequestExecutor();
-
-        mockConnectionManager.setResponse(createMockResponse(""));
-        DriverRequest httpRequest = TestUtils.createDriverRequest("https://wwww.foo.com", driver);
-        OutgoingRequest apacheHttpRequest =
-                httpClientRequestExecutor.createOutgoingRequest(httpRequest, "http://localhost:8080", true);
-        httpClientRequestExecutor.execute(apacheHttpRequest);
-        Header[] headers = mockConnectionManager.getSentRequest().getHeaders("X-Forwarded-Proto");
-        assertEquals("We should have 1 X-Forwarded-Proto header", 1, headers.length);
-        assertEquals("Wrong X-Forwarded-Proto header", "https", headers[0].getValue());
-    }
-
     public void test304CachedResponseIsReusedWithIfModifiedSinceRequest() throws Exception {
         properties.put(Parameters.USE_CACHE, "true"); // Default value
         properties.put(Parameters.X_CACHE_HEADER, "true");
@@ -768,6 +748,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         httpRequest.addHeader("If-Modified-Since", yesterday);
         OutgoingRequest apacheHttpRequest =
                 httpClientRequestExecutor.createOutgoingRequest(httpRequest, "http://localhost:8080", true);
+        apacheHttpRequest.addHeader("If-Modified-Since", yesterday);
         HttpResponse result = httpClientRequestExecutor.execute(apacheHttpRequest);
         assertTrue(result.getFirstHeader("X-cache").getValue().startsWith("MISS"));
         assertEquals(HttpStatus.SC_NOT_MODIFIED, result.getStatusLine().getStatusCode());
@@ -777,6 +758,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         httpRequest2.addHeader("If-Modified-Since", yesterday);
         OutgoingRequest apacheHttpRequest2 =
                 httpClientRequestExecutor.createOutgoingRequest(httpRequest2, "http://localhost:8080", true);
+        apacheHttpRequest2.addHeader("If-Modified-Since", yesterday);
         HttpResponse result2 = httpClientRequestExecutor.execute(apacheHttpRequest2);
         assertTrue(result2.getFirstHeader("X-cache").getValue().startsWith("HIT"));
         assertEquals(HttpStatus.SC_NOT_MODIFIED, result2.getStatusLine().getStatusCode());
