@@ -1,0 +1,87 @@
+Seting up an XUbuntu computer
+-----------------------------
+
+1. Install Skype
+2. Uninstall OpenJDK
+   $ sudo apt-get autoremove openjdk-7-jre
+   $ sudo apt-get purge openjdk*
+3. Install Oracle JDK 7 
+   http://docs.oracle.com/javase/7/docs/webnotes/install/linux/linux-jdk.html#install-64
+   $ tar zxvf jdk-7u67-linux-x64.tar.gz
+   in ~/.bashrc add
+      # Exports
+      export JAVA_HOME=/home/bredkins/Java/jdk1.7.0_67/
+      export PATH=$PATH:$JAVA_HOME/bin/
+   restart computer
+   $ java -version
+4. Install maven
+   http://maven.apache.org/download.cgi
+   https://confluence.netboss.com/display/DEV/Maven
+   Extract to a folder
+   in ~/.bashrc add
+      export M2_HOME=/home/bredkins/Apps/Maven/apache-maven-3.2.3/      
+      export MAVEN_OPTS="-Xmx1024m -XX:MaxPermSize=256m"
+      (I further doubled the values)
+      export PATH=$PATH:$M2_HOME/bin/
+5. Install Eclipse
+   https://wiki.eclipse.org/Eclipse/Installation
+   Download and decompress eclipse file into a directory
+   Create a shortcut of the executable file "eclipse" (right click, Send To -> Desktop (Create Link)
+   Configure Eclipse to use the JVM, add this to eclipse.ini (before -vmargs)
+   https://wiki.eclipse.org/Eclipse.ini
+      -vm
+      /home/bredkins/Java/jdk1.7.0_67/bin/java
+   Edit eclipse.ini
+      https://confluence.netboss.com/display/DEV/Eclipse
+      --launcher.XXMaxPermSize
+      512m
+      -XX:MaxPermSize=512m
+      -Xmx1024m
+      (I further doubled the values)
+   Install FindBugs Eclipse Plugin
+
+6. LibreOffice
+--------------
+   Install
+   Download
+   Extract to directory
+   $ cd directory/DEBS/
+   $ sudo dpkg -i *.deb
+   Java runtime setup
+   $ libreoffice4.4
+   Tools -> Options -> LibreOffice -> Advanced -> Add JRE
+
+   Uninstall
+   $ cd directory/DEBS/
+   $ sudo apt-get remove --purge libreoffice*.*
+
+7. Install GNOME System Monitor
+8. Install git
+   $ sudo apt-get install git
+   $ git config --global user.name "John Doe"
+   $ git config --global user.email John.Doe@NetBoss.Com
+9. Install CollabNet GitEye
+   http://www.collab.net/giteyeapp
+   Unzip into a folder
+   Edit the giteye.ini file, add
+      -vm
+      /home/bredkins/Java/jdk1.7.0_67/jre/bin/
+10. Install a printer
+   http://www.olivettiuk.com/support/526/d-color-mf201plus250350
+   http://ubuntuforums.org/showthread.php?t=854277
+   Download Windows 7 64-Bit Print Driver Version PS
+   Extract driver ZIP
+   Look for a file named <filename>.pp_ in the driver directory
+   Unpack <filename>.pp_ file using msexpand (It will end up being named <filename>.pp)
+   $ msexpand KOAZXAA_.PP_ 
+   Rename .pp file to d-Color_MF250.ppd
+
+
+   Settings Manager -> Printers -> Add -> Network Printer -> Generic 35C-4(UK-Printer.DOM.local)
+   Host: UK-Printer
+   Queue: print
+   Choose Driver -> Provide PPD file -> browse to d-Color_MF250.ppd
+
+11. Desktop Sharing
+
+Install Desktop Sharing
