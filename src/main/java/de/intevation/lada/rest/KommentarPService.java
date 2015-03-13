@@ -131,7 +131,7 @@ public class KommentarPService {
      * @return Response object containing the updated probe object.
      */
     @PUT
-    @Path("/")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response update(@Context HttpHeaders headers, LKommentarP kommentar) {
         if (!authentication.isAuthenticated(headers)) {

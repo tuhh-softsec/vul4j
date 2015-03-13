@@ -128,7 +128,7 @@ public class StatusService {
      * @return Response object containing the updated probe object.
      */
     @PUT
-    @Path("/")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response update(@Context HttpHeaders headers, LStatus status) {
         if (!authentication.isAuthenticated(headers)) {

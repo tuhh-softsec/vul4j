@@ -198,7 +198,7 @@ public class ProbeService {
      * @return Response object containing the updated probe object.
      */
     @PUT
-    @Path("/")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response update(@Context HttpHeaders headers, LProbe probe) {
         if (!authentication.isAuthenticated(headers)) {
