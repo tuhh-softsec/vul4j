@@ -2,7 +2,7 @@
 {   "id": "1",
     "name": "Kein Filter",
     "description": "Abfrage der Proben ohne Filter",
-    "sql": "select pt.probe_id_alt, mst_id, umw_id from probe join probe_translation pt on probe.id = pt.probe_id",
+    "sql": "select p.id, pt.probe_id_alt, p.mst_id, p.umw_id from probe p join probe_translation pt on p.id = pt.probe_id",
     "result": [
         {"dataIndex": "probeId", "header": "ProbeId", "width": 100},
         {"dataIndex": "mstId", "header": "MST", "width": 100},
@@ -14,7 +14,7 @@
 {   "id": "2",
     "name": "MST und UMW",
     "description": "Abfrage der Proben gefiltert nach Messtellen ID und ID des Umweltbereichs",
-    "sql": "select pt.probe_id_alt, p.mst_id, p.umw_id from probe p join probe_translation pt on p.id = pt.probe_id where (p.mst_id = :mst_id OR '' = :mst_id) and (p.umw_id = :umw_id OR '' = :umw_id)",
+    "sql": "select p.id, pt.probe_id_alt, p.mst_id, p.umw_id from probe p join probe_translation pt on p.id = pt.probe_id where (p.mst_id = :mst_id OR '' = :mst_id) and (p.umw_id = :umw_id OR '' = :umw_id)",
     "result": [
         {"dataIndex": "probeId", "header": "ProbeId", "width": 100},
         {"dataIndex": "mstId", "header": "MST", "width": 100},

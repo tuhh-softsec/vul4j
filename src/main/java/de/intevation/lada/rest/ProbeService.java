@@ -116,6 +116,7 @@ public class ProbeService {
                 filters.add(
                     jsonFilters.getJsonObject(i).getString("dataIndex"));
             }
+            results.add("id");
             for (int i = 0; i < jsonResults.size(); i++) {
                 results.add(
                     jsonResults.getJsonObject(i).getString("dataIndex"));
