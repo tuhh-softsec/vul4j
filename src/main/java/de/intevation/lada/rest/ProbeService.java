@@ -208,7 +208,7 @@ public class ProbeService {
         }
         Violation violation = validator.validate(probe);
         if (violation.hasErrors()) {
-            Response response = new Response(false, 604, probe);
+            Response response = new Response(false, 604, null);
             response.setErrors(violation.getErrors());
             response.setWarnings(violation.getWarnings());
             return response;
