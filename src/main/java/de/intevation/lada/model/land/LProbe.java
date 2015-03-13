@@ -135,4 +135,12 @@ public class LProbe extends Probe {
     }
 
     public void setProbeIdAlt(String probeIdAlt) {}
+
+    public boolean getIsOwner() {
+        return true; //TODO set a valid value in authorization process.
+    }
+
+    public boolean getReadonly() {
+        return false; //TODO set a valid value in authorization process.
+    }
 }
