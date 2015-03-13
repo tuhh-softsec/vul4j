@@ -22,7 +22,6 @@ import org.esigate.events.EventManager;
 import org.esigate.http.ContentTypeHelper;
 import org.esigate.http.OutgoingRequest;
 import org.esigate.impl.DriverRequest;
-import org.esigate.impl.UrlRewriter;
 
 public interface RequestExecutor {
 
@@ -39,8 +38,6 @@ public interface RequestExecutor {
         RequestExecutorBuilder setProperties(Properties properties);
 
         RequestExecutorBuilder setContentTypeHelper(ContentTypeHelper contentTypeHelper);
-
-        RequestExecutorBuilder setUrlRewriter(UrlRewriter urlRewriter);
 
         RequestExecutor build();
 

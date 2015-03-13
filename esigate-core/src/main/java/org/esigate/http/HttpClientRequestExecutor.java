@@ -51,7 +51,6 @@ import org.esigate.events.impl.FragmentEvent;
 import org.esigate.extension.ExtensionFactory;
 import org.esigate.http.cookie.CustomBrowserCompatSpecFactory;
 import org.esigate.impl.DriverRequest;
-import org.esigate.impl.UrlRewriter;
 import org.esigate.util.HttpRequestHelper;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
@@ -91,7 +90,6 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
         private Driver driver;
         private HttpClientConnectionManager connectionManager;
         private CookieManager cookieManager;
-        private UrlRewriter urlRewriter;
 
         @Override
         public HttpClientRequestExecutorBuilder setDriver(Driver pDriver) {
@@ -115,9 +113,6 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             }
             if (properties == null) {
                 throw new ConfigurationException("properties is mandatory");
-            }
-            if (urlRewriter == null) {
-                throw new ConfigurationException("urlRewriter is mandatory");
             }
             HttpClientRequestExecutor result = new HttpClientRequestExecutor();
             result.eventManager = eventManager;
@@ -152,11 +147,6 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
 
         public HttpClientRequestExecutorBuilder setCookieManager(CookieManager pCookieManager) {
             this.cookieManager = pCookieManager;
-            return this;
-        }
-
-        public HttpClientRequestExecutorBuilder setUrlRewriter(UrlRewriter pUrlRewriter) {
-            this.urlRewriter = pUrlRewriter;
             return this;
         }
 
@@ -241,7 +231,7 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
         if (!originalRequest.isExternal()) {
             if (preserveHost) {
                 // Preserve host if required
-                HttpHost virtualHost = HttpRequestHelper.getHost(originalRequest);
+                HttpHost virtualHost = HttpRequestHelper.getHost(originalRequest.getOriginalRequest());
                 // Rewrite the uri with the virtualHost
                 uri = UriUtils.rewriteURI(uri, virtualHost);
             } else {
@@ -265,12 +255,13 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
 
         String method = "GET";
         if (proxy) {
-            method = originalRequest.getRequestLine().getMethod().toUpperCase();
+            method = originalRequest.getOriginalRequest().getRequestLine().getMethod().toUpperCase();
         }
         OutgoingRequest outgoingRequest =
-                new OutgoingRequest(method, uri, originalRequest.getProtocolVersion(), originalRequest, config, context);
+                new OutgoingRequest(method, uri, originalRequest.getOriginalRequest().getProtocolVersion(),
+                        originalRequest, config, context);
         if (ENTITY_METHODS.contains(method)) {
-            outgoingRequest.setEntity(originalRequest.getEntity());
+            outgoingRequest.setEntity(originalRequest.getOriginalRequest().getEntity());
         } else if (!SIMPLE_METHODS.contains(method)) {
             throw new UnsupportedHttpMethodException(method + " " + uri);
         }

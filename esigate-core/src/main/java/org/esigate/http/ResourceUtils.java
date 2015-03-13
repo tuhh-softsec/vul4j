@@ -36,7 +36,8 @@ public final class ResourceUtils {
     private static String buildQueryString(DriverRequest originalRequest, boolean proxy) {
         StringBuilder queryString = new StringBuilder(Parameters.SMALL_BUFFER_SIZE);
 
-        String originalQuerystring = UriUtils.getRawQuery(originalRequest.getRequestLine().getUri());
+        String originalQuerystring =
+                UriUtils.getRawQuery(originalRequest.getOriginalRequest().getRequestLine().getUri());
         if (proxy && originalQuerystring != null) {
             // Remove jsessionid from request if it is present
             // As we are in a java application, the container might add

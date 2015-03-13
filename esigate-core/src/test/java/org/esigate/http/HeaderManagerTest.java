@@ -85,9 +85,9 @@ public class HeaderManagerTest extends TestCase {
         Driver driver = Driver.builder().setName("test").setProperties(props).build();
         DriverRequest driverRequest = TestUtils.createDriverRequest("https://wwww.foo.com", driver);
         OutgoingRequest outgoingRequest =
-                new OutgoingRequest(driverRequest.getRequestLine().getMethod(),
-                        driverRequest.getRequestLine().getUri(), driverRequest.getRequestLine().getProtocolVersion(),
-                        driverRequest, null, null);
+                new OutgoingRequest(driverRequest.getOriginalRequest().getRequestLine().getMethod(), driverRequest
+                        .getOriginalRequest().getRequestLine().getUri(), driverRequest.getOriginalRequest()
+                        .getRequestLine().getProtocolVersion(), driverRequest, null, null);
         headerManager.copyHeaders(driverRequest, outgoingRequest);
         Header[] headers = outgoingRequest.getHeaders("X-Forwarded-Proto");
         assertEquals("We should have 1 X-Forwarded-Proto header", 1, headers.length);

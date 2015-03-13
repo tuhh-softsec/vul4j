@@ -25,7 +25,6 @@ import org.esigate.events.EventManager;
 import org.esigate.http.ContentTypeHelper;
 import org.esigate.http.OutgoingRequest;
 import org.esigate.impl.DriverRequest;
-import org.esigate.impl.UrlRewriter;
 import org.esigate.test.http.HttpResponseBuilder;
 
 public final class MockRequestExecutor implements RequestExecutor {
@@ -65,11 +64,6 @@ public final class MockRequestExecutor implements RequestExecutor {
 
         @Override
         public RequestExecutorBuilder setContentTypeHelper(ContentTypeHelper contentTypeHelper) {
-            return this;
-        }
-
-        @Override
-        public RequestExecutorBuilder setUrlRewriter(UrlRewriter urlRewriter) {
             return this;
         }
 
@@ -115,7 +109,8 @@ public final class MockRequestExecutor implements RequestExecutor {
     @Override
     public OutgoingRequest createOutgoingRequest(DriverRequest originalRequest, String url, boolean b) {
         OutgoingRequest outgoingRequest =
-                new OutgoingRequest("GET", url, originalRequest.getProtocolVersion(), originalRequest, null, null);
+                new OutgoingRequest("GET", url, originalRequest.getOriginalRequest().getProtocolVersion(),
+                        originalRequest, null, null);
         return outgoingRequest;
     }
 

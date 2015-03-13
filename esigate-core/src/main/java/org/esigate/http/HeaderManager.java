@@ -108,7 +108,7 @@ public class HeaderManager {
     public void copyHeaders(DriverRequest originalRequest, HttpRequest httpRequest) {
         String baseUrl = originalRequest.getBaseUrl().toString();
         String visibleBaseUrl = originalRequest.getVisibleBaseUrl();
-        for (Header header : originalRequest.getAllHeaders()) {
+        for (Header header : originalRequest.getOriginalRequest().getAllHeaders()) {
             String name = header.getName();
             // Special headers
             if (HttpHeaders.REFERER.equalsIgnoreCase(name) && isForwardedRequestHeader(HttpHeaders.REFERER)) {
@@ -141,7 +141,7 @@ public class HeaderManager {
         // Process X-Forwarded-Proto header
         if (!httpRequest.containsHeader("X-Forwarded-Proto")) {
             httpRequest.addHeader("X-Forwarded-Proto",
-                    UriUtils.extractScheme(originalRequest.getRequestLine().getUri()));
+                    UriUtils.extractScheme(originalRequest.getOriginalRequest().getRequestLine().getUri()));
         }
     }
 

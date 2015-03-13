@@ -425,7 +425,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         mockConnectionManager.setResponse(createMockResponse(""));
         DriverRequest httpRequest = TestUtils.createDriverRequest(uri, driver);
         if (virtualHost != null) {
-            httpRequest.setHeader("Host", virtualHost);
+            httpRequest.getOriginalRequest().setHeader("Host", virtualHost);
         }
         // I dn't think it is possible to have a virtualHost that is different
         // from the host in request uri but let's check that Host header is
@@ -544,7 +544,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
         properties.put(Parameters.TTL.getName(), "1000");
         createHttpClientRequestExecutor();
         DriverRequest originalRequest = TestUtils.createDriverRequest(driver);
-        originalRequest.addHeader("If-Modified-Since", "Fri, 15 Jun 2012 21:06:25 GMT");
+        originalRequest.getOriginalRequest().addHeader("If-Modified-Since", "Fri, 15 Jun 2012 21:06:25 GMT");
         OutgoingRequest request =
                 httpClientRequestExecutor.createOutgoingRequest(originalRequest, "http://localhost:8080", false);
         HttpResponse response =
@@ -745,7 +745,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
 
         // First request to load the cache
         DriverRequest httpRequest = TestUtils.createDriverRequest(driver);
-        httpRequest.addHeader("If-Modified-Since", yesterday);
+        httpRequest.getOriginalRequest().addHeader("If-Modified-Since", yesterday);
         OutgoingRequest apacheHttpRequest =
                 httpClientRequestExecutor.createOutgoingRequest(httpRequest, "http://localhost:8080", true);
         apacheHttpRequest.addHeader("If-Modified-Since", yesterday);
@@ -755,7 +755,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
 
         // Second request should use cache
         DriverRequest httpRequest2 = TestUtils.createDriverRequest(driver);
-        httpRequest2.addHeader("If-Modified-Since", yesterday);
+        httpRequest2.getOriginalRequest().addHeader("If-Modified-Since", yesterday);
         OutgoingRequest apacheHttpRequest2 =
                 httpClientRequestExecutor.createOutgoingRequest(httpRequest2, "http://localhost:8080", true);
         apacheHttpRequest2.addHeader("If-Modified-Since", yesterday);
