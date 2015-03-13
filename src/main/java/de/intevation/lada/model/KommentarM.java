@@ -27,7 +27,7 @@ public class KommentarM implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Column(name="messungs_id")
-    private Integer messungId;
+    private Integer messungsId;
 
     private Timestamp datum;
 
@@ -75,11 +75,11 @@ public class KommentarM implements Serializable {
         this.text = text;
     }
 
-    public Integer getMessungId() {
-        return this.messungId;
+    public Integer getMessungsId() {
+        return this.messungsId;
     }
 
-    public void setMessungId(Integer messungId) {
-        this.messungId = messungId;
+    public void setMessungsId(Integer messungsId) {
+        this.messungsId = messungsId;
     }
 }

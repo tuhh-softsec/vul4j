@@ -77,15 +77,15 @@ public class KommentarMService {
             return new Response(false, 699, null);
         }
         MultivaluedMap<String, String> params = info.getQueryParameters();
-        if (params.isEmpty() || !params.containsKey("messungId")) {
+        if (params.isEmpty() || !params.containsKey("messungsId")) {
             return defaultRepo.getAll(LKommentarM.class, "land");
         }
-        String messungId = params.getFirst("messungId");
+        String messungId = params.getFirst("messungsId");
         QueryBuilder<LKommentarM> builder =
             new QueryBuilder<LKommentarM>(
                 defaultRepo.entityManager("land"),
                 LKommentarM.class);
-        builder.and("messungId", messungId);
+        builder.and("messungsId", messungId);
         return defaultRepo.filter(builder.getQuery(), "land");
     }
 

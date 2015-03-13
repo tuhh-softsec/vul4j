@@ -77,10 +77,10 @@ public class StatusService {
             return new Response(false, 699, null);
         }
         MultivaluedMap<String, String> params = info.getQueryParameters();
-        if (params.isEmpty() || !params.containsKey("messungId")) {
+        if (params.isEmpty() || !params.containsKey("messungsId")) {
             return defaultRepo.getAll(LStatus.class, "land");
         }
-        String messungId = params.getFirst("messungId");
+        String messungId = params.getFirst("messungsId");
         QueryBuilder<LStatus> builder =
             new QueryBuilder<LStatus>(
                 defaultRepo.entityManager("land"),

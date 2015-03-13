@@ -77,11 +77,11 @@ public class MesswertService {
             return new Response(false, 699, null);
         }
         MultivaluedMap<String, String> params = info.getQueryParameters();
-        if (params.isEmpty() || !params.containsKey("messungId")) {
+        if (params.isEmpty() || !params.containsKey("messungsId")) {
             logger.debug("get all");
             return defaultRepo.getAll(LMesswert.class, "land");
         }
-        String messungId = params.getFirst("messungId");
+        String messungId = params.getFirst("messungsId");
         QueryBuilder<LMesswert> builder =
             new QueryBuilder<LMesswert>(
                 defaultRepo.entityManager("land"),
