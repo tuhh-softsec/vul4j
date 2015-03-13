@@ -11,6 +11,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.MultivaluedMap;
+
 
 /**
 * Response object storing information about success, warnings, errors and
@@ -25,8 +28,8 @@ public class Response implements Serializable {
     private Boolean success;
     private String message;
     private Object data;
-    private Map<String, String> errors;
-    private Map<String, String> warnings;
+    private MultivaluedMap<String, Integer> errors;
+    private MultivaluedMap<String, Integer> warnings;
     private Boolean readonly;
     private int totalCount;
 
@@ -41,8 +44,8 @@ public class Response implements Serializable {
         this.success = success;
         this.message = Integer.toString(code);
         this.data = data;
-        this.errors = new HashMap<String, String>();
-        this.warnings = new HashMap<String, String>();
+        this.errors = new MultivaluedHashMap<String, Integer>();
+        this.warnings = new MultivaluedHashMap<String, Integer>();
         this.readonly = Boolean.FALSE;
         this.totalCount = 0;
     }
@@ -58,8 +61,8 @@ public class Response implements Serializable {
         this.success = success;
         this.message = Integer.toString(code);
         this.data = data;
-        this.errors = new HashMap<String, String>();
-        this.warnings = new HashMap<String, String>();
+        this.errors = new MultivaluedHashMap<String, Integer>();
+        this.warnings = new MultivaluedHashMap<String, Integer>();
         this.readonly = Boolean.FALSE;
         this.totalCount = totalCount;
     }
@@ -88,20 +91,22 @@ public class Response implements Serializable {
         this.data = data;
     }
 
-    public Map<String, String> getErrors() {
+    public MultivaluedMap<String, Integer> getErrors() {
         return errors;
     }
 
-    public void setErrors(Map<String, Integer> errors) {
-        this.errors = this.convertCodes(errors);
+    public void setErrors(MultivaluedMap<String, Integer> errors) {
+        this.errors.putAll(errors);
+//        this.errors = this.convertCodes(errors);
     }
 
-    public Map<String, String> getWarnings() {
+    public MultivaluedMap<String, Integer> getWarnings() {
         return warnings;
     }
 
-    public void setWarnings(Map<String, Integer> warnings) {
-        this.warnings = this.convertCodes(warnings);
+    public void setWarnings(MultivaluedMap<String, Integer> warnings) {
+        this.warnings.putAll(warnings);
+        //this.warnings = this.convertCodes(warnings);
     }
 
     public Boolean getReadonly() {
@@ -126,6 +131,7 @@ public class Response implements Serializable {
         this.totalCount = totalCount;
     }
 
+    @SuppressWarnings("unused")
     private HashMap<String, String> convertCodes(Map<String, Integer> codes) {
         HashMap<String, String> converted = new HashMap<String, String>();
         if (codes == null || codes.isEmpty()) {

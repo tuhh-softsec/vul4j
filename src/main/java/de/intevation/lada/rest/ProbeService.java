@@ -45,6 +45,9 @@ import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.Response;
+import de.intevation.lada.validation.Validator;
+import de.intevation.lada.validation.Violation;
+import de.intevation.lada.validation.annotation.ValidationConfig;
 
 
 /**
@@ -74,6 +77,10 @@ public class ProbeService {
     @Inject
     @AuthorizationConfig(type=AuthorizationType.NONE)
     private Authorization authorization;
+
+    @Inject
+    @ValidationConfig(type="Probe")
+    private Validator validator;
 
     /**
      * Get all probe objects.
@@ -141,7 +148,13 @@ public class ProbeService {
             logger.debug("User is not authenticated!");
             return new Response(false, 699, null);
         }
-        return defaultRepo.getById(LProbe.class, Integer.valueOf(id), "land");
+        Response response =
+            defaultRepo.getById(LProbe.class, Integer.valueOf(id), "land");
+        Violation violation = validator.validate(response.getData());
+        if (violation.hasWarnings()) {
+            response.setWarnings(violation.getWarnings());
+        }
+        return response;
     }
 
     /**
@@ -156,17 +169,27 @@ public class ProbeService {
         if (!authentication.isAuthenticated(headers)) {
             return new Response(false, 699, null);
         }
+        Violation violation = validator.validate(probe);
+        if (violation.hasErrors()) {
+            Response response = new Response(false, 604, probe);
+            response.setErrors(violation.getErrors());
+            response.setWarnings(violation.getWarnings());
+            return response;
+        }
         /* Persist the new probe object*/
-        Response response = defaultRepo.create(probe, "land");
-        LProbe ret = (LProbe)response.getData();
+        Response newProbe = defaultRepo.create(probe, "land");
+        LProbe ret = (LProbe)newProbe.getData();
         /* Create and persist a new probe translation object*/
         ProbeTranslation trans = new ProbeTranslation();
         trans.setProbeId(ret);
         defaultRepo.create(trans, "land");
         /* Get and return the new probe object*/
-        Response created =
+        Response response =
             defaultRepo.getById(LProbe.class, ret.getId(), "land");
-        return new Response(true, 200, created.getData());
+        if(violation.hasWarnings()) {
+            response.setWarnings(violation.getWarnings());
+        }
+        return response;
     }
 
     /**
@@ -182,10 +205,20 @@ public class ProbeService {
             logger.debug("User is not authenticated!");
             return new Response(false, 699, null);
         }
+        Violation violation = validator.validate(probe);
+        if (violation.hasErrors()) {
+            Response response = new Response(false, 604, probe);
+            response.setErrors(violation.getErrors());
+            response.setWarnings(violation.getWarnings());
+            return response;
+        }
         Response response = defaultRepo.update(probe, "land");
         Response updated = defaultRepo.getById(
             LProbe.class,
             ((LProbe)response.getData()).getId(), "land");
+        if (violation.hasWarnings()) {
+            updated.setWarnings(violation.getWarnings());
+        }
         return updated;
     }
 
