@@ -47,6 +47,10 @@ import org.openid4java.discovery.Identifier;
 import org.openid4java.discovery.DiscoveryException;
 import org.openid4java.message.MessageException;
 import org.openid4java.message.AuthRequest;
+import org.openid4java.message.AuthSuccess;
+import org.openid4java.message.ax.AxMessage;
+import org.openid4java.message.ax.FetchRequest;
+import org.openid4java.message.ax.FetchResponse;
 
 /** ServletFilter used for OpenID authentification. */
 @WebFilter("/*")
@@ -218,6 +222,25 @@ public class OpenIDFilter implements Filter {
             return false;
         }
 
+        AuthSuccess authSuccess =
+                        (AuthSuccess) verification.getAuthResponse();
+        String rolesValue;
+        if (authSuccess.hasExtension(AxMessage.OPENID_NS_AX)) {
+            FetchResponse fetchResp = null;
+            try {
+                fetchResp = (FetchResponse) authSuccess.getExtension(
+                        AxMessage.OPENID_NS_AX);
+            } catch (MessageException e) {
+                logger.debug("Failed to fetch extended result: " +
+                        e.getMessage());
+                return false;
+            }
+            String roles = fetchResp.getAttributeValue("attr1");
+            logger.debug("Roles are: " + roles);
+        } else {
+            logger.debug("No such extension.");
+        }
+
         logger.debug("Verified user: " + verified);
 
         return true;
@@ -302,11 +325,17 @@ public class OpenIDFilter implements Filter {
                 returnToUrl = params.getParameterValue("return_to");
             }
             try {
-                /*
-                String returnToUrl = hReq.getRequestURL().toString()
-                    + "?is_return=true";*/
                 AuthRequest authReq = manager.authenticate(discovered,
                         returnToUrl);
+                // Fetch the role attribute
+                FetchRequest fetch = FetchRequest.createFetchRequest();
+
+                fetch.addAttribute("attr1",
+                        "http://axschema.org/person/role",
+                        true, 0);
+                // attach the extension to the authentication request
+                authReq.addExtension(fetch);
+
                 authRequestURL = authReq.getDestinationUrl(true);
                 errorCode = 699;
             } catch (MessageException e) {
