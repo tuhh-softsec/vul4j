@@ -38,6 +38,7 @@
 				runs as a servlet so later you will be able to run it in production on any servlet container
 				like Tomcat for example.
 			</p>
+			<p><a href="http://sourceforge.net/projects/webassembletool/files/webassembletool/">Download EsiGate</a></p>
 		</section>
 		<section name="Configure ESIGate">
 			<p>
