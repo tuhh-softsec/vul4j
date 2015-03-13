@@ -18,13 +18,7 @@ package org.esigate.impl;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.http.Header;
-import org.apache.http.HeaderIterator;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpStatus;
-import org.apache.http.ProtocolVersion;
-import org.apache.http.RequestLine;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.UserContext;
@@ -38,7 +32,7 @@ import org.esigate.util.UriUtils;
  * @author Francois-Xavier Bonnet
  * 
  */
-public class DriverRequest implements HttpEntityEnclosingRequest {
+public class DriverRequest {
     private final IncomingRequest wrappedRequest;
     private final Driver driver;
     private final UserContext userContext;
@@ -75,113 +69,6 @@ public class DriverRequest implements HttpEntityEnclosingRequest {
             }
         }
         this.visibleBaseUrl = UriUtils.rewriteURI(visibleBase, UriUtils.extractHost(request.getRequestLine().getUri()));
-    }
-
-    @Override
-    public boolean expectContinue() {
-        return wrappedRequest.expectContinue();
-    }
-
-    @Override
-    public void setEntity(HttpEntity entity) {
-        wrappedRequest.setEntity(entity);
-    }
-
-    @Override
-    public RequestLine getRequestLine() {
-        return wrappedRequest.getRequestLine();
-    }
-
-    @Override
-    public HttpEntity getEntity() {
-        return wrappedRequest.getEntity();
-    }
-
-    @Override
-    public ProtocolVersion getProtocolVersion() {
-        return wrappedRequest.getProtocolVersion();
-    }
-
-    @Override
-    public boolean containsHeader(String name) {
-        return wrappedRequest.containsHeader(name);
-    }
-
-    @Override
-    public Header[] getHeaders(String name) {
-        return wrappedRequest.getHeaders(name);
-    }
-
-    @Override
-    public Header getFirstHeader(String name) {
-        return wrappedRequest.getFirstHeader(name);
-    }
-
-    @Override
-    public Header getLastHeader(String name) {
-        return wrappedRequest.getLastHeader(name);
-    }
-
-    @Override
-    public Header[] getAllHeaders() {
-        return wrappedRequest.getAllHeaders();
-    }
-
-    @Override
-    public void addHeader(Header header) {
-        wrappedRequest.addHeader(header);
-    }
-
-    @Override
-    public void addHeader(String name, String value) {
-        wrappedRequest.addHeader(name, value);
-    }
-
-    @Override
-    public void setHeader(Header header) {
-        wrappedRequest.setHeader(header);
-    }
-
-    @Override
-    public void setHeader(String name, String value) {
-        wrappedRequest.setHeader(name, value);
-    }
-
-    @Override
-    public void setHeaders(Header[] headers) {
-        wrappedRequest.setHeaders(headers);
-    }
-
-    @Override
-    public void removeHeader(Header header) {
-        wrappedRequest.removeHeader(header);
-    }
-
-    @Override
-    public void removeHeaders(String name) {
-        wrappedRequest.removeHeaders(name);
-    }
-
-    @Override
-    public HeaderIterator headerIterator() {
-        return wrappedRequest.headerIterator();
-    }
-
-    @Override
-    public HeaderIterator headerIterator(String name) {
-        return wrappedRequest.headerIterator(name);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public org.apache.http.params.HttpParams getParams() {
-        return wrappedRequest.getParams();
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public void setParams(org.apache.http.params.HttpParams params) {
-        wrappedRequest.setParams(params);
     }
 
     /**

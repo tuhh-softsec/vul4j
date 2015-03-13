@@ -27,6 +27,7 @@ import org.apache.http.cookie.Cookie;
 import org.esigate.ConfigurationException;
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
+import org.esigate.http.IncomingRequest;
 import org.esigate.impl.DriverRequest;
 import org.esigate.util.HttpRequestHelper;
 import org.esigate.util.UriUtils;
@@ -188,26 +189,30 @@ public final class VariablesResolver {
     }
 
     private static String processVar(String var, String arg, DriverRequest request) {
+        IncomingRequest incomingRequest = null;
+        if (request != null) {
+            incomingRequest = request.getOriginalRequest();
+        }
         String res = null;
         if (var.indexOf("QUERY_STRING") != -1) {
             if (arg == null) {
-                res = UriUtils.getRawQuery(request.getRequestLine().getUri());
+                res = UriUtils.getRawQuery(incomingRequest.getRequestLine().getUri());
             } else {
                 res = HttpRequestHelper.getParameter(request, arg);
             }
         } else if (var.indexOf("HTTP_ACCEPT_LANGUAGE") != -1) {
-            String langs = HttpRequestHelper.getFirstHeader("Accept-Language", request);
+            String langs = HttpRequestHelper.getFirstHeader("Accept-Language", incomingRequest);
             if (arg == null) {
                 res = langs;
             } else {
                 res = String.valueOf(!(langs == null || langs.indexOf(arg) == -1));
             }
         } else if (var.contains("HTTP_HEADER")) {
-            res = HttpRequestHelper.getFirstHeader(arg, request);
+            res = HttpRequestHelper.getFirstHeader(arg, incomingRequest);
         } else if (var.indexOf("HTTP_HOST") != -1) {
-            res = HttpRequestHelper.getFirstHeader("Host", request);
+            res = HttpRequestHelper.getFirstHeader("Host", incomingRequest);
         } else if (var.indexOf("HTTP_REFERER") != -1) {
-            res = HttpRequestHelper.getFirstHeader("Referer", request);
+            res = HttpRequestHelper.getFirstHeader("Referer", incomingRequest);
         } else if (var.indexOf("HTTP_COOKIE") != -1) {
             if (arg == null) {
                 // Add cookies
@@ -233,10 +238,10 @@ public final class VariablesResolver {
             }
         } else if (var.indexOf("HTTP_USER_AGENT") != -1) {
             if (arg == null) {
-                res = HttpRequestHelper.getFirstHeader("User-agent", request);
+                res = HttpRequestHelper.getFirstHeader("User-agent", incomingRequest);
             } else {
                 String userAgent =
-                        StringUtils.defaultString(HttpRequestHelper.getFirstHeader("User-Agent", request))
+                        StringUtils.defaultString(HttpRequestHelper.getFirstHeader("User-Agent", incomingRequest))
                                 .toLowerCase();
                 if (arg.equals("os")) {
                     if (userAgent.indexOf("unix") != -1) {

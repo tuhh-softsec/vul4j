@@ -528,6 +528,55 @@ someUrl=/cms/article123
 
 		</subsection>
 	</section>
+	<section name="How URLs are mapped and rewritten">
+		<subsection name="Mapping requests">
+			<p>
+				When a request is received, the ProxyFilter first has to find the provider application to which to forward this request. 
+			</p>
+			<ol>
+				<li>remove the context path</li>
+				<li>try to match to one of the different mappings declared in the configuration. If several mappings are matching, the longest will be selected in priority</li>
+				<li>if stripMappingPath="true" removes the path part of the mapping</li>
+			</ol>
+			<p>
+				Ex: if the application is deployed under path "/myapplication" and the mappings for a provider application is "/mypath/*.jsp" then we receive a request "http://server/myapplication/mypath/other/test.jsp" EsiGate will map the request to the provider and transform the URL to a relative URL "/mypath/other/test.jsp"
+			</p>
+		</subsection>
+		<subsection name="Includes">
+			<p>
+				The situation is more simple for includes as the provider is explicitely declared. Ex: &lt;esi:include src="$(PROVIDER{myprovider})/test.jsp"/&gt; will be mapped to "myprovider" and URL transformed to "/test/jsp"
+			</p>
+		</subsection>
+		<subsection name="Routing requests to the provider applications">
+			<p>
+				Now EsiGate has to build the URL to send the request to. First we have to get the base URL of the server and append the relative URL found in the previous step. Ex: if remoteUrlBase=http://localhost:8080/ the previous example's request "http://server/myapplication/mypath/other/test.jsp" transformed to "/mypath/other/test.jsp" will be rewritten to "http://localhost:8080/mypath/other/test.jsp".
+			</p>
+			<p>
+				If preserveHost=true, the request will still be sent to localhost:8080 but the host header will contain "server" and the URL will become "http://server/mypath/other/test.jsp".
+			</p>
+			<p>
+				Note: If load-balancing, the URLs are rewritten according to the target host that is selected according to the balancing algorithm.
+			</p>
+		</subsection>
+		<subsection name="Rewriting URLs in responses">
+			<p>All the URLs contained in the responses are automatically rewritten. This includes:</p>
+			<ul>
+				<li>URLs contained in pages (&lt;a href="... scripts, images, javascripts, links)</li>
+				<li>Redirections (location header)</li>
+				<li>Cookies path and domain</li>
+				<li>Other HTTP headers (Refresh, Content-location, Referer)</li>
+			</ul>
+			<p>
+				The rewriting takes into account the original URL in order to do the rewriting in the other way. Ex: a link &lt;a href="http://localhost:8080/mypath/result.jsp"&gt; will be rewritten back to &lt;a href="http://server/myapplication/mypath/result.jsp"&gt;.
+			</p>
+			<p>
+				Depending on parameter fixMode, all URL are rewritten as absolute URLs ex: "http://server/myapplication/mypath/result.jsp" or relative to the server root ex: "/myapplication/mypath/result.jsp". In both cases, the URL is normalized (expressions containing dots are removed) ex: "../test.jsp" will be replaced by "http://server/myapplication/test.jsp").
+			</p>
+			<p>
+				visibleUrlBase parameter adds a possibility to force the base URL to rewrite with instead of the one from the incoming request
+			</p>
+		</subsection>
+	</section>
 	<section name="ESI syntax">
 		<subsection name="Edge Side Include">
 			<p>

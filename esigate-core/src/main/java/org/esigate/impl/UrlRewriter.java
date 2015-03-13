@@ -198,8 +198,9 @@ public class UrlRewriter {
 
             // Don't rewrite empty urls or anchors
             if (!trimmedUrl.isEmpty() && !trimmedUrl.startsWith("#")) {
-                LOG.debug("url kept unchanged: [{}]", url);
                 url = rewriteUrl(trimmedUrl, requestUrl, baseUrlParam, visibleBaseUrl, absolute);
+            } else {
+                LOG.debug("url kept unchanged: [{}]", url);
             }
             url = url.replaceAll("\\$", "\\\\\\$"); // replace '$' -> '\$' as it
                                                     // denotes group

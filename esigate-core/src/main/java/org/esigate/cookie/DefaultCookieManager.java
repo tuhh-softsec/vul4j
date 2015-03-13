@@ -145,7 +145,7 @@ public class DefaultCookieManager implements CookieManager {
         httpClientCookie.setSecure(false);
         String domain;
         if (request.getDriver().getConfiguration().isPreserveHost()) {
-            domain = UriUtils.extractHostName(request.getRequestLine().getUri());
+            domain = UriUtils.extractHostName(request.getOriginalRequest().getRequestLine().getUri());
         } else {
             domain = request.getBaseUrl().getHost();
         }
@@ -191,18 +191,19 @@ public class DefaultCookieManager implements CookieManager {
         // Rewrite domain
         String domain =
                 rewriteDomain(cookie.getDomain(), request.getBaseUrl().getHost(),
-                        UriUtils.extractHostName(request.getRequestLine().getUri()));
+                        UriUtils.extractHostName(request.getOriginalRequest().getRequestLine().getUri()));
 
         // Rewrite path
         String originalPath = cookie.getPath();
-        String requestPath = UriUtils.getPath(request.getRequestLine().getUri());
+        String requestPath = UriUtils.getPath(request.getOriginalRequest().getRequestLine().getUri());
         String path = originalPath;
         if (requestPath == null || !requestPath.startsWith(originalPath)) {
             path = "/";
         }
 
         // Rewrite secure
-        boolean secure = (cookie.isSecure() && request.getRequestLine().getUri().startsWith("https"));
+        boolean secure =
+                (cookie.isSecure() && request.getOriginalRequest().getRequestLine().getUri().startsWith("https"));
 
         BasicClientCookie cookieToForward = new BasicClientCookie(name, cookie.getValue());
         if (domain != null) {

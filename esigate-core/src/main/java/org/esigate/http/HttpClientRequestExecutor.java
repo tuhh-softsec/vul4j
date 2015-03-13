@@ -39,7 +39,6 @@ import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.cookie.CookieSpecProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.message.BasicHttpResponse;
 import org.esigate.ConfigurationException;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
@@ -52,7 +51,6 @@ import org.esigate.events.impl.FragmentEvent;
 import org.esigate.extension.ExtensionFactory;
 import org.esigate.http.cookie.CustomBrowserCompatSpecFactory;
 import org.esigate.impl.DriverRequest;
-import org.esigate.impl.UrlRewriter;
 import org.esigate.util.HttpRequestHelper;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
@@ -76,7 +74,6 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
     private CookieManager cookieManager;
     private HttpClient httpClient;
     private EventManager eventManager = null;
-    private HeaderManager headerManager;
     private int connectTimeout;
     private int socketTimeout;
     private HttpHost firstBaseUrlHost;
@@ -87,22 +84,21 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
      * @author Francois-Xavier Bonnet
      * 
      */
-    public static final class HttpClientHelperBuilder implements RequestExecutorBuilder {
+    public static final class HttpClientRequestExecutorBuilder implements RequestExecutorBuilder {
         private EventManager eventManager;
         private Properties properties;
         private Driver driver;
         private HttpClientConnectionManager connectionManager;
         private CookieManager cookieManager;
-        private UrlRewriter urlRewriter;
 
         @Override
-        public HttpClientHelperBuilder setDriver(Driver pDriver) {
+        public HttpClientRequestExecutorBuilder setDriver(Driver pDriver) {
             this.driver = pDriver;
             return this;
         }
 
         @Override
-        public HttpClientHelperBuilder setProperties(Properties pProperties) {
+        public HttpClientRequestExecutorBuilder setProperties(Properties pProperties) {
             this.properties = pProperties;
             return this;
         }
@@ -118,125 +114,116 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             if (properties == null) {
                 throw new ConfigurationException("properties is mandatory");
             }
-            if (urlRewriter == null) {
-                throw new ConfigurationException("urlRewriter is mandatory");
-            }
-            HttpClientRequestExecutor httpClientHelper = new HttpClientRequestExecutor();
-            httpClientHelper.eventManager = eventManager;
-            httpClientHelper.preserveHost = Parameters.PRESERVE_HOST.getValue(properties);
-            httpClientHelper.headerManager = new HeaderManager(urlRewriter);
+            HttpClientRequestExecutor result = new HttpClientRequestExecutor();
+            result.eventManager = eventManager;
+            result.preserveHost = Parameters.PRESERVE_HOST.getValue(properties);
             if (cookieManager == null) {
                 cookieManager = ExtensionFactory.getExtension(properties, Parameters.COOKIE_MANAGER, driver);
             }
-            httpClientHelper.cookieManager = cookieManager;
-            httpClientHelper.connectTimeout = Parameters.CONNECT_TIMEOUT.getValue(properties);
-            httpClientHelper.socketTimeout = Parameters.SOCKET_TIMEOUT.getValue(properties);
-            httpClientHelper.httpClient = buildHttpClient(driver, properties, eventManager, connectionManager);
+            result.cookieManager = cookieManager;
+            result.connectTimeout = Parameters.CONNECT_TIMEOUT.getValue(properties);
+            result.socketTimeout = Parameters.SOCKET_TIMEOUT.getValue(properties);
+            result.httpClient = buildHttpClient();
             String firstBaseURL = Parameters.REMOTE_URL_BASE.getValue(properties)[0];
-            httpClientHelper.firstBaseUrlHost = UriUtils.extractHost(firstBaseURL);
-            return httpClientHelper;
+            result.firstBaseUrlHost = UriUtils.extractHost(firstBaseURL);
+            return result;
         }
 
         @Override
-        public HttpClientHelperBuilder setContentTypeHelper(ContentTypeHelper contentTypeHelper) {
+        public HttpClientRequestExecutorBuilder setContentTypeHelper(ContentTypeHelper contentTypeHelper) {
             return this;
         }
 
-        public HttpClientHelperBuilder setConnectionManager(HttpClientConnectionManager pConnectionManager) {
+        public HttpClientRequestExecutorBuilder setConnectionManager(HttpClientConnectionManager pConnectionManager) {
             this.connectionManager = pConnectionManager;
             return this;
         }
 
         @Override
-        public HttpClientHelperBuilder setEventManager(EventManager pEventManager) {
+        public HttpClientRequestExecutorBuilder setEventManager(EventManager pEventManager) {
             this.eventManager = pEventManager;
             return this;
         }
 
-        public HttpClientHelperBuilder setCookieManager(CookieManager pCookieManager) {
+        public HttpClientRequestExecutorBuilder setCookieManager(CookieManager pCookieManager) {
             this.cookieManager = pCookieManager;
             return this;
         }
 
-        public HttpClientHelperBuilder setUrlRewriter(UrlRewriter pUrlRewriter) {
-            this.urlRewriter = pUrlRewriter;
-            return this;
+        private HttpClient buildHttpClient() {
+            HttpHost proxyHost = null;
+            Credentials proxyCredentials = null;
+            // Proxy settings
+            String proxyHostParameter = Parameters.PROXY_HOST.getValue(properties);
+            if (proxyHostParameter != null) {
+                int proxyPort = Parameters.PROXY_PORT.getValue(properties);
+                proxyHost = new HttpHost(proxyHostParameter, proxyPort);
+                String proxyUser = Parameters.PROXY_USER.getValue(properties);
+                if (proxyUser != null) {
+                    String proxyPassword = Parameters.PROXY_PASSWORD.getValue(properties);
+                    proxyCredentials = new UsernamePasswordCredentials(proxyUser, proxyPassword);
+                }
+            }
+
+            ProxyingHttpClientBuilder httpClientBuilder = new ProxyingHttpClientBuilder();
+
+            httpClientBuilder.setProperties(properties);
+
+            httpClientBuilder.setMaxConnPerRoute(Parameters.MAX_CONNECTIONS_PER_HOST.getValue(properties));
+            httpClientBuilder.setMaxConnTotal(Parameters.MAX_CONNECTIONS_PER_HOST.getValue(properties));
+            httpClientBuilder.setRedirectStrategy(driver.getRedirectStrategy());
+
+            // Proxy settings
+            if (proxyHost != null) {
+                httpClientBuilder.setProxy(proxyHost);
+                if (proxyCredentials != null) {
+                    CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+                    credentialsProvider.setCredentials(new AuthScope(proxyHost), proxyCredentials);
+                    httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
+                }
+            }
+
+            // Cache settings
+            boolean useCache = Parameters.USE_CACHE.getValue(properties);
+            httpClientBuilder.setUseCache(Parameters.USE_CACHE.getValue(properties));
+            if (useCache) {
+                httpClientBuilder.setHttpCacheStorage(CacheConfigHelper.createCacheStorage(properties));
+                httpClientBuilder.setCacheConfig(CacheConfigHelper.createCacheConfig(properties));
+            }
+
+            // Event manager
+            httpClientBuilder.setEventManager(eventManager);
+
+            // Used for tests to skip connection manager and return hard coded
+            // responses
+            if (connectionManager != null) {
+                httpClientBuilder.setConnectionManager(connectionManager);
+            }
+
+            Registry<CookieSpecProvider> cookieSpecRegistry =
+                    RegistryBuilder
+                            .<CookieSpecProvider>create()
+                            .register(CustomBrowserCompatSpecFactory.CUSTOM_BROWSER_COMPATIBILITY,
+                                    new CustomBrowserCompatSpecFactory()).build();
+
+            RequestConfig config =
+                    RequestConfig.custom().setCookieSpec(CustomBrowserCompatSpecFactory.CUSTOM_BROWSER_COMPATIBILITY)
+                            .build();
+
+            httpClientBuilder.setDefaultCookieSpecRegistry(cookieSpecRegistry).setDefaultRequestConfig(config);
+            return httpClientBuilder.build();
         }
     }
 
-    private static HttpClient buildHttpClient(Driver driver, Properties properties, EventManager eventManager,
-            HttpClientConnectionManager connectionManager) {
-        HttpHost proxyHost = null;
-        Credentials proxyCredentials = null;
-        // Proxy settings
-        String proxyHostParameter = Parameters.PROXY_HOST.getValue(properties);
-        if (proxyHostParameter != null) {
-            int proxyPort = Parameters.PROXY_PORT.getValue(properties);
-            proxyHost = new HttpHost(proxyHostParameter, proxyPort);
-            String proxyUser = Parameters.PROXY_USER.getValue(properties);
-            if (proxyUser != null) {
-                String proxyPassword = Parameters.PROXY_PASSWORD.getValue(properties);
-                proxyCredentials = new UsernamePasswordCredentials(proxyUser, proxyPassword);
-            }
-        }
-
-        ProxyingHttpClientBuilder httpClientBuilder = new ProxyingHttpClientBuilder();
-
-        httpClientBuilder.setProperties(properties);
-
-        httpClientBuilder.setMaxConnPerRoute(Parameters.MAX_CONNECTIONS_PER_HOST.getValue(properties));
-        httpClientBuilder.setMaxConnTotal(Parameters.MAX_CONNECTIONS_PER_HOST.getValue(properties));
-        httpClientBuilder.setRedirectStrategy(driver.getRedirectStrategy());
-
-        // Proxy settings
-        if (proxyHost != null) {
-            httpClientBuilder.setProxy(proxyHost);
-            if (proxyCredentials != null) {
-                CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-                credentialsProvider.setCredentials(new AuthScope(proxyHost), proxyCredentials);
-                httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
-            }
-        }
-
-        // Cache settings
-        boolean useCache = Parameters.USE_CACHE.getValue(properties);
-        httpClientBuilder.setUseCache(Parameters.USE_CACHE.getValue(properties));
-        if (useCache) {
-            httpClientBuilder.setHttpCacheStorage(CacheConfigHelper.createCacheStorage(properties));
-            httpClientBuilder.setCacheConfig(CacheConfigHelper.createCacheConfig(properties));
-        }
-
-        // Event manager
-        httpClientBuilder.setEventManager(eventManager);
-
-        // Used for tests to skip connection manager and return hard coded
-        // responses
-        if (connectionManager != null) {
-            httpClientBuilder.setConnectionManager(connectionManager);
-        }
-
-        Registry<CookieSpecProvider> cookieSpecRegistry =
-                RegistryBuilder
-                        .<CookieSpecProvider>create()
-                        .register(CustomBrowserCompatSpecFactory.CUSTOM_BROWSER_COMPATIBILITY,
-                                new CustomBrowserCompatSpecFactory()).build();
-
-        RequestConfig config =
-                RequestConfig.custom().setCookieSpec(CustomBrowserCompatSpecFactory.CUSTOM_BROWSER_COMPATIBILITY)
-                        .build();
-
-        httpClientBuilder.setDefaultCookieSpecRegistry(cookieSpecRegistry).setDefaultRequestConfig(config);
-        return httpClientBuilder.build();
-    }
-
-    public static HttpClientHelperBuilder builder() {
-        return new HttpClientHelperBuilder();
+    public static HttpClientRequestExecutorBuilder builder() {
+        return new HttpClientRequestExecutorBuilder();
     }
 
     private HttpClientRequestExecutor() {
     }
 
-    public OutgoingRequest createHttpRequest(DriverRequest originalRequest, String uri, boolean proxy) {
+    @Override
+    public OutgoingRequest createOutgoingRequest(DriverRequest originalRequest, String uri, boolean proxy) {
         // Extract the host in the URI. This is the host we have to send the
         // request to physically.
         HttpHost physicalHost = UriUtils.extractHost(uri);
@@ -244,7 +231,7 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
         if (!originalRequest.isExternal()) {
             if (preserveHost) {
                 // Preserve host if required
-                HttpHost virtualHost = HttpRequestHelper.getHost(originalRequest);
+                HttpHost virtualHost = HttpRequestHelper.getHost(originalRequest.getOriginalRequest());
                 // Rewrite the uri with the virtualHost
                 uri = UriUtils.rewriteURI(uri, virtualHost);
             } else {
@@ -268,39 +255,35 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
 
         String method = "GET";
         if (proxy) {
-            method = originalRequest.getRequestLine().getMethod().toUpperCase();
+            method = originalRequest.getOriginalRequest().getRequestLine().getMethod().toUpperCase();
         }
-        OutgoingRequest httpRequest =
-                new OutgoingRequest(method, uri, originalRequest.getProtocolVersion(), originalRequest, config, context);
+        OutgoingRequest outgoingRequest =
+                new OutgoingRequest(method, uri, originalRequest.getOriginalRequest().getProtocolVersion(),
+                        originalRequest, config, context);
         if (ENTITY_METHODS.contains(method)) {
-            httpRequest.setEntity(originalRequest.getEntity());
+            outgoingRequest.setEntity(originalRequest.getOriginalRequest().getEntity());
         } else if (!SIMPLE_METHODS.contains(method)) {
             throw new UnsupportedHttpMethodException(method + " " + uri);
         }
 
-        // We use the same user-agent and accept headers that the one sent by
-        // the browser as some web sites generate different pages and scripts
-        // depending on the browser
-        headerManager.copyHeaders(originalRequest, httpRequest);
-
         context.setPhysicalHost(physicalHost);
-        context.setOutgoingRequest(httpRequest);
+        context.setOutgoingRequest(outgoingRequest);
         context.setProxy(proxy);
 
-        return httpRequest;
+        return outgoingRequest;
     }
 
     /**
-     * Execute a HTTP request
-     * <p>
-     * No special handling.
+     * Execute a HTTP request.
      * 
      * @param httpRequest
      *            HTTP request to execute.
      * @return HTTP response.
+     * @throws HttpErrorPage
+     *             if server returned no response or if the response as an error status code.
      */
     @Override
-    public CloseableHttpResponse execute(OutgoingRequest httpRequest) {
+    public CloseableHttpResponse execute(OutgoingRequest httpRequest) throws HttpErrorPage {
         OutgoingRequestContext context = httpRequest.getContext();
         IncomingRequest originalRequest = httpRequest.getOriginalRequest().getOriginalRequest();
 
@@ -323,10 +306,7 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
                 } else {
                     try {
                         HttpHost physicalHost = context.getPhysicalHost();
-                        HttpResponse response = httpClient.execute(physicalHost, httpRequest, context);
-                        result = new BasicHttpResponse(response.getStatusLine());
-                        headerManager.copyHeaders(httpRequest, originalRequest, response, result);
-                        result.setEntity(response.getEntity());
+                        result = httpClient.execute(physicalHost, httpRequest, context);
                     } catch (IOException e) {
                         result = HttpErrorPage.generateHttpResponse(e);
                         LOG.warn(httpRequest.getRequestLine() + " -> " + result.getStatusLine().toString());
@@ -337,24 +317,7 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             // EVENT post
             eventManager.fire(EventManager.EVENT_FRAGMENT_POST, event);
         }
-        return event.getHttpResponse();
-    }
-
-    /**
-     * Execute a HTTP request and handle errors as HttpErrorPage exceptions.
-     * 
-     * @param originalRequest
-     *            HTTP original request.
-     * @return HTTP response
-     * @throws HttpErrorPage
-     *             if server returned no response or if the response as an error status code.
-     */
-    @Override
-    public CloseableHttpResponse
-            createAndExecuteRequest(DriverRequest originalRequest, String targetUrl, boolean proxy)
-                    throws HttpErrorPage {
-        OutgoingRequest httpRequest = createHttpRequest(originalRequest, targetUrl, proxy);
-        CloseableHttpResponse httpResponse = execute(httpRequest);
+        CloseableHttpResponse httpResponse = event.getHttpResponse();
         if (httpResponse == null) {
             throw new HttpErrorPage(HttpStatus.SC_INTERNAL_SERVER_ERROR, "Request was cancelled by server",
                     "Request was cancelled by server");

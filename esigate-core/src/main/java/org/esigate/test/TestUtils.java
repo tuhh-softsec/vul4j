@@ -34,7 +34,6 @@ import org.esigate.http.Http;
 import org.esigate.http.HttpClientRequestExecutor;
 import org.esigate.http.IncomingRequest;
 import org.esigate.impl.DriverRequest;
-import org.esigate.impl.UrlRewriter;
 import org.esigate.test.conn.IResponseHandler;
 import org.esigate.test.conn.MockConnectionManager;
 import org.esigate.test.http.HttpResponseBuilder;
@@ -175,14 +174,12 @@ public final class TestUtils {
      */
     public static Driver createMockDriver(Properties properties, HttpClientConnectionManager connectionManager,
             String name) {
-        UrlRewriter urlRewriter = new UrlRewriter(new Properties());
         Driver driver =
                 Driver.builder()
                         .setName(name)
                         .setProperties(properties)
                         .setRequestExecutorBuilder(
-                                HttpClientRequestExecutor.builder().setConnectionManager(connectionManager)
-                                        .setUrlRewriter(urlRewriter)).build();
+                                HttpClientRequestExecutor.builder().setConnectionManager(connectionManager)).build();
         DriverFactory.put(name, driver);
         return driver;
     }

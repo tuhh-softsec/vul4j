@@ -54,7 +54,7 @@ class InlineElement extends BaseElement {
 
     @Override
     public void onTagEnd(String tag, FutureParserContext ctx) throws IOException {
-        String originalUrl = UriUtils.getPath(ctx.getHttpRequest().getRequestLine().getUri());
+        String originalUrl = UriUtils.getPath(ctx.getHttpRequest().getOriginalRequest().getRequestLine().getUri());
         try {
             InlineCache.storeFragment(uri, null, fetchable, originalUrl, buf.get().toString());
         } catch (ExecutionException e) {

@@ -36,9 +36,11 @@ import org.esigate.events.impl.RenderEvent;
 import org.esigate.extension.ExtensionFactory;
 import org.esigate.http.BasicCloseableHttpResponse;
 import org.esigate.http.ContentTypeHelper;
+import org.esigate.http.HeaderManager;
 import org.esigate.http.HttpClientRequestExecutor;
 import org.esigate.http.HttpResponseUtils;
 import org.esigate.http.IncomingRequest;
+import org.esigate.http.OutgoingRequest;
 import org.esigate.http.RedirectStrategy;
 import org.esigate.http.ResourceUtils;
 import org.esigate.impl.DriverRequest;
@@ -64,6 +66,7 @@ public final class Driver {
     private RequestExecutor requestExecutor;
     private ContentTypeHelper contentTypeHelper;
     private UrlRewriter urlRewriter;
+    private HeaderManager headerManager;
 
     private RedirectStrategy redirectStrategy = new RedirectStrategy();
 
@@ -99,9 +102,9 @@ public final class Driver {
             UrlRewriter urlRewriter = new UrlRewriter(properties);
             driver.requestExecutor =
                     requestExecutorBuilder.setDriver(driver).setEventManager(driver.eventManager)
-                            .setProperties(properties).setContentTypeHelper(driver.contentTypeHelper)
-                            .setUrlRewriter(urlRewriter).build();
+                            .setProperties(properties).setContentTypeHelper(driver.contentTypeHelper).build();
             driver.urlRewriter = urlRewriter;
+            driver.headerManager = new HeaderManager(urlRewriter);
             return driver;
         }
 
@@ -174,7 +177,10 @@ public final class Driver {
         Pair<String, CloseableHttpResponse> cachedValue = incomingRequest.getAttribute(cacheKey);
         // content and response were not in cache
         if (cachedValue == null) {
-            response = requestExecutor.createAndExecuteRequest(driverRequest, targetUrl, false);
+            OutgoingRequest outgoingRequest = requestExecutor.createOutgoingRequest(driverRequest, targetUrl, false);
+            headerManager.copyHeaders(driverRequest, outgoingRequest);
+            response = requestExecutor.execute(outgoingRequest);
+            response = headerManager.copyHeaders(outgoingRequest, incomingRequest, response);
             currentValue = HttpResponseUtils.toString(response, this.eventManager);
             // Cache
             cachedValue = new ImmutablePair<String, CloseableHttpResponse>(currentValue, response);
@@ -230,7 +236,7 @@ public final class Driver {
      * 
      * @param relUrl
      *            the relative URL to the resource
-     * @param request
+     * @param incomingRequest
      *            the request
      * @param renderers
      *            the renderers to use to transform the output
@@ -240,9 +246,9 @@ public final class Driver {
      * @throws HttpErrorPage
      *             If the page contains incorrect tags
      */
-    public CloseableHttpResponse proxy(String relUrl, IncomingRequest request, Renderer... renderers)
+    public CloseableHttpResponse proxy(String relUrl, IncomingRequest incomingRequest, Renderer... renderers)
             throws IOException, HttpErrorPage {
-        DriverRequest driverRequest = new DriverRequest(request, this, relUrl);
+        DriverRequest driverRequest = new DriverRequest(incomingRequest, this, relUrl);
         driverRequest.setCharacterEncoding(this.config.getUriEncoding());
 
         // This is used to ensure EVENT_PROXY_POST is called once and only once.
@@ -253,20 +259,27 @@ public final class Driver {
         boolean postProxyPerformed = false;
 
         // Create Proxy event
-        ProxyEvent e = new ProxyEvent(request);
+        ProxyEvent e = new ProxyEvent(incomingRequest);
+
+        // Event pre-proxy
+        this.eventManager.fire(EventManager.EVENT_PROXY_PRE, e);
+        // Return immediately if exit is requested by extension
+        if (e.isExit()) {
+            return e.getResponse();
+        }
+
+        logAction("proxy", relUrl, renderers);
+
+        String url = ResourceUtils.getHttpUrlWithQueryString(relUrl, driverRequest, true);
+        OutgoingRequest outgoingRequest = requestExecutor.createOutgoingRequest(driverRequest, url, true);
+        headerManager.copyHeaders(driverRequest, outgoingRequest);
 
         try {
-            // Event pre-proxy
-            this.eventManager.fire(EventManager.EVENT_PROXY_PRE, e);
-            // Return immediately if exit is requested by extension
-            if (e.isExit()) {
-                return e.getResponse();
-            }
+            CloseableHttpResponse response = requestExecutor.execute(outgoingRequest);
 
-            logAction("proxy", relUrl, renderers);
+            response = headerManager.copyHeaders(outgoingRequest, incomingRequest, response);
 
-            String url = ResourceUtils.getHttpUrlWithQueryString(relUrl, driverRequest, true);
-            e.setResponse(requestExecutor.createAndExecuteRequest(driverRequest, url, true));
+            e.setResponse(response);
 
             // Perform rendering
             e.setResponse(performRendering(relUrl, driverRequest, e.getResponse(), renderers));
@@ -285,8 +298,9 @@ public final class Driver {
 
             // On error returned by the proxy request, perform rendering on the
             // error page.
-            e.setErrorPage(new HttpErrorPage(performRendering(relUrl, driverRequest,
-                    e.getErrorPage().getHttpResponse(), renderers)));
+            CloseableHttpResponse response = e.getErrorPage().getHttpResponse();
+            response = headerManager.copyHeaders(outgoingRequest, incomingRequest, response);
+            e.setErrorPage(new HttpErrorPage(performRendering(relUrl, driverRequest, response, renderers)));
 
             // Event post-proxy
             // This must be done before throwing exception to ensure response

@@ -22,13 +22,12 @@ import org.esigate.events.EventManager;
 import org.esigate.http.ContentTypeHelper;
 import org.esigate.http.OutgoingRequest;
 import org.esigate.impl.DriverRequest;
-import org.esigate.impl.UrlRewriter;
 
 public interface RequestExecutor {
 
-    CloseableHttpResponse createAndExecuteRequest(DriverRequest request, String url, boolean b) throws HttpErrorPage;
+    OutgoingRequest createOutgoingRequest(DriverRequest request, String url, boolean b);
 
-    CloseableHttpResponse execute(OutgoingRequest httpRequest);
+    CloseableHttpResponse execute(OutgoingRequest outgoingRequest) throws HttpErrorPage;
 
     public interface RequestExecutorBuilder {
 
@@ -39,8 +38,6 @@ public interface RequestExecutor {
         RequestExecutorBuilder setProperties(Properties properties);
 
         RequestExecutorBuilder setContentTypeHelper(ContentTypeHelper contentTypeHelper);
-
-        RequestExecutorBuilder setUrlRewriter(UrlRewriter urlRewriter);
 
         RequestExecutor build();
 

@@ -18,7 +18,10 @@ package org.esigate.http;
 import org.apache.http.Header;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpHeaders;
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.message.BasicHttpResponse;
 import org.esigate.impl.DriverRequest;
 import org.esigate.impl.UrlRewriter;
 import org.esigate.util.FilterList;
@@ -102,10 +105,10 @@ public class HeaderManager {
      * @param httpRequest
      *            destination request
      */
-    public void copyHeaders(DriverRequest originalRequest, OutgoingRequest httpRequest) {
-        String baseUrl = httpRequest.getBaseUrl().toString();
-        String visibleBaseUrl = httpRequest.getOriginalRequest().getVisibleBaseUrl();
-        for (Header header : originalRequest.getAllHeaders()) {
+    public void copyHeaders(DriverRequest originalRequest, HttpRequest httpRequest) {
+        String baseUrl = originalRequest.getBaseUrl().toString();
+        String visibleBaseUrl = originalRequest.getVisibleBaseUrl();
+        for (Header header : originalRequest.getOriginalRequest().getAllHeaders()) {
             String name = header.getName();
             // Special headers
             if (HttpHeaders.REFERER.equalsIgnoreCase(name) && isForwardedRequestHeader(HttpHeaders.REFERER)) {
@@ -138,27 +141,28 @@ public class HeaderManager {
         // Process X-Forwarded-Proto header
         if (!httpRequest.containsHeader("X-Forwarded-Proto")) {
             httpRequest.addHeader("X-Forwarded-Proto",
-                    UriUtils.extractScheme(originalRequest.getRequestLine().getUri()));
+                    UriUtils.extractScheme(originalRequest.getOriginalRequest().getRequestLine().getUri()));
         }
     }
 
     /**
-     * Copies end-to-end headers from a resource to an output.
+     * Copies end-to-end headers from a response received from the server to the response to be sent to the client.
      * 
-     * @param httpRequest
+     * @param outgoingRequest
      *            the request sent
-     * @param originalRequest
+     * @param incomingRequest
      *            the original request received from the client
      * @param httpClientResponse
      *            the response received from the provider application
-     * @param output
-     *            the response to be sent to the client
+     * @return the response to be sent to the client
      */
-    public void copyHeaders(OutgoingRequest httpRequest, HttpEntityEnclosingRequest originalRequest,
-            HttpResponse httpClientResponse, HttpResponse output) {
-        String originalUri = originalRequest.getRequestLine().getUri();
-        String baseUrl = httpRequest.getBaseUrl().toString();
-        String visibleBaseUrl = httpRequest.getOriginalRequest().getVisibleBaseUrl();
+    public CloseableHttpResponse copyHeaders(OutgoingRequest outgoingRequest,
+            HttpEntityEnclosingRequest incomingRequest, HttpResponse httpClientResponse) {
+        HttpResponse result = new BasicHttpResponse(httpClientResponse.getStatusLine());
+        result.setEntity(httpClientResponse.getEntity());
+        String originalUri = incomingRequest.getRequestLine().getUri();
+        String baseUrl = outgoingRequest.getBaseUrl().toString();
+        String visibleBaseUrl = outgoingRequest.getOriginalRequest().getVisibleBaseUrl();
         for (Header header : httpClientResponse.getAllHeaders()) {
             String name = header.getName();
             String value = header.getValue();
@@ -173,7 +177,7 @@ public class HeaderManager {
                             // Header contains only an url
                             value = urlRewriter.rewriteUrl(value, originalUri, baseUrl, visibleBaseUrl, true);
                             value = HttpResponseUtils.removeSessionId(value, httpClientResponse);
-                            output.addHeader(name, value);
+                            result.addHeader(name, value);
                         } else if ("Link".equalsIgnoreCase(name)) {
                             // Header has the following format
                             // Link: </feed>; rel="alternate"
@@ -188,7 +192,7 @@ public class HeaderManager {
                                 value = value.replace("<" + urlValue + ">", "<" + targetUrlValue + ">");
                             }
 
-                            output.addHeader(name, value);
+                            result.addHeader(name, value);
 
                         } else if ("Refresh".equalsIgnoreCase(name)) {
                             // Header has the following format
@@ -204,14 +208,14 @@ public class HeaderManager {
 
                                 value = value.substring(0, urlPosition) + "url=" + targetUrlValue;
                             }
-                            output.addHeader(name, value);
+                            result.addHeader(name, value);
                         } else if ("P3p".equalsIgnoreCase(name)) {
                             // Do not translate url yet.
                             // P3P is used with a default fixed url most of the
                             // time.
-                            output.addHeader(name, value);
+                            result.addHeader(name, value);
                         } else {
-                            output.addHeader(header.getName(), header.getValue());
+                            result.addHeader(header.getName(), header.getValue());
                         }
                     }
                 }
@@ -220,8 +224,9 @@ public class HeaderManager {
                 // An application can always send corrupted headers, and we
                 // should not crash
                 LOG.error("Error while copying headers", e1);
-                output.addHeader("X-Esigate-Error", "Error processing header " + name + ": " + value);
+                result.addHeader("X-Esigate-Error", "Error processing header " + name + ": " + value);
             }
         }
+        return BasicCloseableHttpResponse.adapt(result);
     }
 }
