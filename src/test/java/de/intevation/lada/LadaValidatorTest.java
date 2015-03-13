@@ -10,6 +10,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import de.intevation.lada.test.validator.Messung;
 import de.intevation.lada.test.validator.Probe;
 import de.intevation.lada.validation.Validator;
 import de.intevation.lada.validation.annotation.ValidationConfig;
@@ -24,8 +25,14 @@ public class LadaValidatorTest extends BaseTest {
     private Validator probeValidator;
     private Probe probeTest;
 
+    @Inject
+    @ValidationConfig(type="Messung")
+    private Validator messungValidator;
+    private Messung messungTest;
+
     public LadaValidatorTest() {
         probeTest = new Probe();
+        messungTest = new Messung();
         testProtocol = new ArrayList<Protocol>();
     }
 
@@ -134,5 +141,59 @@ public class LadaValidatorTest extends BaseTest {
     public final void probeHasEmptyUmwelt() {
         probeTest.setValidator(probeValidator);
         probeTest.hasEmptyUmwelt(testProtocol);
+    }
+
+    @Test
+    public final void messungHasNebenprobenNr() {
+        messungTest.setValidator(messungValidator);
+        messungTest.hasNebenprobenNr(testProtocol);
+    }
+
+    @Test
+    public final void messungHasNoNebenprobenNr() {
+        messungTest.setValidator(messungValidator);
+        messungTest.hasNoNebenprobenNr(testProtocol);
+    }
+
+    @Test
+    public final void messungHasEmptyNebenprobenNr() {
+        messungTest.setValidator(messungValidator);
+        messungTest.hasEmptyNebenprobenNr(testProtocol);
+    }
+
+    @Test
+    public final void messungUniqueNebenprobenNrNew() {
+        messungTest.setValidator(messungValidator);
+        messungTest.uniqueNebenprobenNrNew(testProtocol);
+    }
+
+    @Test
+    public final void messungUniqueNebenprobenNrUpdate() {
+        messungTest.setValidator(messungValidator);
+        messungTest.uniqueNebenprobenNrUpdate(testProtocol);
+    }
+
+    @Test
+    public final void messungExistingNebenprobenNrNew() {
+        messungTest.setValidator(messungValidator);
+        messungTest.existingNebenprobenNrNew(testProtocol);
+    }
+
+    @Test
+    public final void messungExistingNebenprobenNrUpdate() {
+        messungTest.setValidator(messungValidator);
+        messungTest.existingHauptprobenNrUpdate(testProtocol);
+    }
+
+    @Test
+    public final void messungHasMesswert() {
+        messungTest.setValidator(messungValidator);
+        messungTest.hasMesswert(testProtocol);
+    }
+
+    @Test
+    public final void messungHasNoMesswert() {
+        messungTest.setValidator(messungValidator);
+        messungTest.hasNoMesswert(testProtocol);
     }
 }
