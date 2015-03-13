@@ -255,7 +255,7 @@ public class OpenIDFilter implements Filter {
         /* We probably want to implement our own association store to keep
          * associations persistent. */
         manager.setAssociations(new InMemoryConsumerAssociationStore());
-        manager.setNonceVerifier(new SessionNonceVerifier(sessionTimeout));
+        manager.setNonceVerifier(new SessionNonceVerifier(sessionTimeout * 60));
         manager.setMinAssocSessEnc(AssociationSessionType.DH_SHA256);
         discoveryDone = discoverServer();
     }
