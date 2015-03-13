@@ -19,6 +19,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.log4j.Logger;
@@ -31,6 +32,7 @@ import de.intevation.lada.util.auth.Authentication;
 import de.intevation.lada.util.auth.AuthenticationType;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
+import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.Response;
@@ -74,7 +76,17 @@ public class LocationService {
             logger.debug("User is not authenticated!");
             return new Response(false, 699, null);
         }
-        return defaultRepo.getAll(SOrt.class, "stamm");
+        MultivaluedMap<String, String> params = info.getQueryParameters();
+        if (params.isEmpty() || !params.containsKey("ortId")) {
+            return defaultRepo.getAll(SOrt.class, "stamm");
+        }
+        String probeId = params.getFirst("ortId");
+        QueryBuilder<SOrt> builder =
+            new QueryBuilder<SOrt>(
+                defaultRepo.entityManager("land"),
+                SOrt.class);
+        builder.and("probeId", probeId);
+        return defaultRepo.filter(builder.getQuery(), "stamm");
     }
 
     /**
