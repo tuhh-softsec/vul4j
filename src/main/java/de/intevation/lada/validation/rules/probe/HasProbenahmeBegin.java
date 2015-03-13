@@ -16,7 +16,7 @@ public class HasProbenahmeBegin implements Rule {
         Timestamp begin = probe.getProbeentnahmeBeginn();
         if (begin == null) {
             Violation violation = new Violation();
-            violation.addWarning("probeentnahmeBegin", 631);
+            violation.addWarning("probeentnahmeBeginn", 631);
             return violation;
         }
         return null;

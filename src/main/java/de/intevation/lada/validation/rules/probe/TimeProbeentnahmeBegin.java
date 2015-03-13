@@ -21,12 +21,12 @@ public class TimeProbeentnahmeBegin implements Rule {
         }
         if (begin == null && end != null) {
             Violation violation = new Violation();
-            violation.addWarning("probeentnahmeBegin", 662);
+            violation.addWarning("probeentnahmeBeginn", 662);
             return violation;
         }
         if (begin.after(new Date())) {
             Violation violation = new Violation();
-            violation.addWarning("probeentnahmeBegin", 661);
+            violation.addWarning("probeentnahmeBeginn", 661);
             return violation;
         }
         if (end == null) {
@@ -34,7 +34,7 @@ public class TimeProbeentnahmeBegin implements Rule {
         }
         if (begin.after(end)) {
             Violation violation = new Violation();
-            violation.addWarning("probeentnahmeBegin", 662);
+            violation.addWarning("probeentnahmeBeginn", 662);
             return violation;
         }
         return null;
