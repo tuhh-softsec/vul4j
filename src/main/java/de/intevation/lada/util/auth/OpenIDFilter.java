@@ -66,6 +66,8 @@ public class OpenIDFilter implements Filter {
     private static final int SESSION_TIMEOUT_DEFAULT_MINUTES = 60;
     private int sessionTimeout;
 
+    private boolean enabled;
+
     private static Logger logger = Logger.getLogger(OpenIDFilter.class);
 
     /** Nonce verifier to allow a session based on openid information.
@@ -246,6 +248,8 @@ public class OpenIDFilter implements Filter {
         oidHeader = properties.getProperty("oidHeader", OID_HEADER_DEFAULT);
         providerUrl = properties.getProperty("identity_provider",
                 IDENTITY_PROVIDER_DEFAULT);
+        enabled = !properties.getProperty("enabled",
+                "true").toLowerCase().equals("false");
 
         manager = new ConsumerManager();
         /* We probably want to implement our own association store to keep
@@ -260,6 +264,13 @@ public class OpenIDFilter implements Filter {
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
     throws IOException, ServletException
     {
+        if (!enabled) {
+            /* If we are not enabled we pass everything through */
+            logger.debug("OpenID filter disabled. Passing through.");
+            chain.doFilter(req, resp);
+            return;
+        }
+
         HttpServletRequest hReq = (HttpServletRequest) req;
         HttpServletResponse hResp = (HttpServletResponse) resp;
         if (!discoveryDone) {
