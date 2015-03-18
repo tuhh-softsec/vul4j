@@ -14,7 +14,7 @@ public class HasUmwelt implements Rule {
         if (probe.getUmwId() == null ||
             probe.getUmwId().equals("")) {
             Violation violation = new Violation();
-            violation.addWarning("uwb", 631);
+            violation.addWarning("umwId", 631);
             return violation;
         }
         return null;
