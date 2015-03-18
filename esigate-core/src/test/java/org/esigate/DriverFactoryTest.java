@@ -23,10 +23,14 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Properties;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.esigate.http.IncomingRequest;
 import org.esigate.impl.DriverRequest;
+import org.esigate.impl.UriMapping;
 import org.esigate.test.TestUtils;
+import org.junit.Test;
 
 public class DriverFactoryTest extends TestCase {
 
@@ -100,4 +104,164 @@ public class DriverFactoryTest extends TestCase {
         }
 
     }
+
+    public void testStripMappingPath() throws Exception {
+        UriMapping mapping = UriMapping.create("/url/to/resource");
+        String relUrl = DriverFactory.stripMappingPath("/mapping/path/test", mapping);
+        assertEquals("/mapping/path/test", relUrl);
+
+        mapping = UriMapping.create("/mapping/path/test");
+        relUrl = DriverFactory.stripMappingPath("/mapping/path/test/url/to/resource", mapping);
+        assertEquals("/url/to/resource", relUrl);
+    }
+
+    /**
+     * Test provider selection based on esigate.properties configuration.
+     * 
+     * @throws HttpErrorPage
+     */
+    @Test
+    public void testSelectProvider() throws HttpErrorPage {
+
+        // Setup Esigate
+        Properties p = new Properties();
+        p.setProperty("provider1." + Parameters.REMOTE_URL_BASE, "http://test");
+        p.setProperty("provider1." + Parameters.MAPPINGS, "http://sub.domain.com/*");
+        p.setProperty("provider2." + Parameters.REMOTE_URL_BASE, "http://test");
+        p.setProperty("provider2." + Parameters.MAPPINGS, "http://sub2.domain.com/*");
+        p.setProperty("single." + Parameters.REMOTE_URL_BASE, "http://test");
+        p.setProperty("single." + Parameters.MAPPINGS, "*");
+        DriverFactory.configure(p);
+
+        // Do testing
+        IncomingRequest request =
+                IncomingRequest.builder("http://sub2.domain.com/test/servlet/test/servlet/request")
+                        .addHeader("Host", "sub2.domain.com").setContextPath("/test").build();
+        Assert.assertEquals("provider2", DriverFactory.selectProvider(request).getDriver().getConfiguration()
+                .getInstanceName());
+
+        request =
+                IncomingRequest.builder("http://sub.domain.com/test/servlet/test/servlet/request")
+                        .addHeader("Host", "sub.domain.com").setContextPath("/test").build();
+        Assert.assertEquals("provider1", DriverFactory.selectProvider(request).getDriver().getConfiguration()
+                .getInstanceName());
+
+        request =
+                IncomingRequest.builder("http://foo.com/test/servlet/test/servlet/request")
+                        .addHeader("Host", "foo.com").setContextPath("/test").build();
+        Assert.assertEquals("single", DriverFactory.selectProvider(request).getDriver().getConfiguration()
+                .getInstanceName());
+
+    }
+
+    /**
+     * Test simple mappings /provider1/* and /provider2/* , no host.
+     * 
+     * @throws HttpErrorPage
+     */
+    public void testSelectProviderBasicUrlMapping() throws HttpErrorPage {
+        Properties properties = new Properties();
+
+        // Setup provider1
+        properties.setProperty("provider1." + Parameters.REMOTE_URL_BASE.getName(), "http://example1.com");
+        properties.setProperty("provider1." + Parameters.MAPPINGS.getName(), "/provider1/*");
+
+        // Setup provider1
+        properties.setProperty("provider2." + Parameters.REMOTE_URL_BASE.getName(), "http://example2.com");
+        properties.setProperty("provider2." + Parameters.MAPPINGS.getName(), "/provider2/*");
+
+        // Configure Esigate using the previous configuration
+        DriverFactory.configure(properties);
+
+        // Assert requests go to the right provider
+        IncomingRequest request = IncomingRequest.builder("http://localhost:8080/provider1/test").build();
+        Assert.assertEquals("provider1", DriverFactory.selectProvider(request).getDriver().getConfiguration()
+                .getInstanceName());
+        request = IncomingRequest.builder("http://localhost:8080/provider2/test").build();
+        Assert.assertEquals("provider2", DriverFactory.selectProvider(request).getDriver().getConfiguration()
+                .getInstanceName());
+
+    }
+
+    /**
+     * Ensure virtual-host marching.
+     * 
+     * @throws HttpErrorPage
+     */
+    public void testSelectProviderHostUrlMapping() throws HttpErrorPage {
+        Properties properties = new Properties();
+
+        // Setup provider1
+        properties.setProperty("provider1." + Parameters.REMOTE_URL_BASE.getName(), "http://example1.com");
+        properties.setProperty("provider1." + Parameters.MAPPINGS.getName(), "http://www.remote.com/provider*");
+
+        // Setup provider1
+        properties.setProperty("provider2." + Parameters.REMOTE_URL_BASE.getName(), "http://example2.com");
+        properties.setProperty("provider2." + Parameters.MAPPINGS.getName(), "http://localhost:8080/provider*");
+
+        // Configure Esigate using the previous configuration
+        DriverFactory.configure(properties);
+
+        // Assert requests go to the right provider
+        IncomingRequest request = IncomingRequest.builder("http://www.remote.com/provider2/test").build();
+        Assert.assertEquals("provider1", DriverFactory.selectProvider(request).getDriver().getConfiguration()
+                .getInstanceName());
+        request = IncomingRequest.builder("http://localhost:8080/provider1/test").build();
+        Assert.assertEquals("provider2", DriverFactory.selectProvider(request).getDriver().getConfiguration()
+                .getInstanceName());
+
+    }
+
+    /**
+     * Ensure a default, "catch-all" mapping can be defined with.
+     * 
+     * @throws HttpErrorPage
+     * 
+     */
+    public void testSelectProviderExplicitDefaultMapping() throws HttpErrorPage {
+        Properties properties = new Properties();
+
+        // Setup provider1
+        properties.setProperty("provider1." + Parameters.REMOTE_URL_BASE.getName(), "http://example1.com");
+        properties.setProperty("provider1." + Parameters.MAPPINGS.getName(), "*");
+
+        // Setup provider1
+        properties.setProperty("provider2." + Parameters.REMOTE_URL_BASE.getName(), "http://example2.com");
+        properties.setProperty("provider2." + Parameters.MAPPINGS.getName(), "/provider2/*");
+
+        // Configure Esigate using the previous configuration
+        DriverFactory.configure(properties);
+
+        // Assert requests go to the right provider
+        IncomingRequest request = IncomingRequest.builder("http://www.remote.com/notMatching").build();
+        Assert.assertEquals("provider1", DriverFactory.selectProvider(request).getDriver().getConfiguration()
+                .getInstanceName());
+        request = IncomingRequest.builder("http://localhost:8080/provider2/test").build();
+        Assert.assertEquals("provider2", DriverFactory.selectProvider(request).getDriver().getConfiguration()
+                .getInstanceName());
+
+    }
+
+    public void testSelectProviderNoMapping() {
+        Properties properties = new Properties();
+
+        // Setup provider1
+        properties.setProperty("provider1." + Parameters.REMOTE_URL_BASE.getName(), "http://example1.com");
+        properties.setProperty("provider1." + Parameters.MAPPINGS.getName(), "/provider1/*");
+
+        // Configure Esigate using the previous configuration
+        DriverFactory.configure(properties);
+
+        // Assert requests go to the right provider
+        IncomingRequest request = IncomingRequest.builder("http://localhost:8080/").build();
+        try {
+            DriverFactory.selectProvider(request);
+            fail("Should throw HttpErrorPage");
+        } catch (HttpErrorPage e) {
+
+            // Success
+        }
+
+    }
+
 }

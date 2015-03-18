@@ -1,4 +1,4 @@
-/* 
+/*
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CasAuthenticationHandler extends GenericAuthentificationHandler {
-    public static final String DEFAULT_LOGIN_URL = "/login";
+    private static final String DEFAULT_LOGIN_URL = "/login";
 
     private static final Logger LOG = LoggerFactory.getLogger(GenericAuthentificationHandler.class);
 
@@ -61,8 +61,10 @@ public class CasAuthenticationHandler extends GenericAuthentificationHandler {
                     LOG.debug("params: " + params.substring(1));
                 }
                 if (springSecurityUrl != null && !"".equals(springSecurityUrl)) {
-                    resultLocation =
-                            outgoingRequest.getBaseUrl() + springSecurityUrl + ((params != null) ? params : "");
+                    resultLocation = outgoingRequest.getBaseUrl() + springSecurityUrl;
+                    if (params != null) {
+                        resultLocation = resultLocation + params;
+                    }
                     /*
                      * if (outgoingRequest.getContext().isProxy()) { springRedirectParam = "&spring-security-redirect="
                      * + request.getRequestLine().getUri(); } else { springRedirectParam = "&spring-security-redirect="
@@ -91,6 +93,18 @@ public class CasAuthenticationHandler extends GenericAuthentificationHandler {
         return true;
     }
 
+    /**
+     * Prefix attribute to be driver specific
+     * 
+     * @param driver
+     * @param name
+     * @return
+     */
+    protected String driverSpecificName(Driver driver, String name) {
+        return new StringBuilder().append(driver.getConfiguration().getInstanceName()).append("-").append(name)
+                .toString();
+    }
+
     @Override
     public void init(Properties properties) {
 
@@ -101,7 +115,7 @@ public class CasAuthenticationHandler extends GenericAuthentificationHandler {
 
         CASRedirectStrategy strategy = new CASRedirectStrategy();
         strategy.setLoginURL(loginUrl);
-        driver.setRedirectStrategy(strategy);
+        getDriver().setRedirectStrategy(strategy);
 
         String springSecurityString = properties.getProperty(SPRING_SECURITY_PROPERTY);
         if (springSecurityString != null) {
@@ -124,10 +138,10 @@ public class CasAuthenticationHandler extends GenericAuthentificationHandler {
         if (secondRequest) {
             // Calculating the URL we may have been redirected to, as
             // automatic redirect following is activated
-            Header LocationHeader = httpResponse.getFirstHeader("Location");
+            Header locationHeader = httpResponse.getFirstHeader("Location");
             String currentLocation = null;
-            if (LocationHeader != null) {
-                currentLocation = LocationHeader.getValue();
+            if (locationHeader != null) {
+                currentLocation = locationHeader.getValue();
             }
             if (currentLocation != null && currentLocation.contains(loginUrl)) {
                 // If the user is authenticated we need a second request with
@@ -153,17 +167,5 @@ public class CasAuthenticationHandler extends GenericAuthentificationHandler {
             addCasAuthentication(outgoingRequest, incomingRequest);
         }
         incomingRequest.setAttribute(secondRequestAttribute, true);
-    }
-
-    /**
-     * Prefix attribute to be driver specific
-     * 
-     * @param driver
-     * @param name
-     * @return
-     */
-    protected String driverSpecificName(Driver driver, String name) {
-        return new StringBuilder().append(driver.getConfiguration().getInstanceName()).append("-").append(name)
-                .toString();
     }
 }

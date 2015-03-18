@@ -35,8 +35,9 @@ public class ResponseSender {
 
     public void sendResponse(HttpResponse httpResponse, IncomingRequest httpRequest, HttpServletResponse response)
             throws IOException {
-        if (response.isCommitted())
+        if (response.isCommitted()) {
             return; // Response already sent
+        }
         sendHeaders(httpResponse, httpRequest, response);
         HttpEntity httpEntity = httpResponse.getEntity();
         if (httpEntity != null) {

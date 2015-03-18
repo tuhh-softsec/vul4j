@@ -19,8 +19,6 @@ import java.util.Properties;
 
 import junit.framework.TestCase;
 
-import org.esigate.Parameters;
-
 /**
  * Tests on UrlRewriter.
  * 
@@ -29,176 +27,147 @@ import org.esigate.Parameters;
  */
 public class UrlRewriterTest extends TestCase {
 
-    public static final UrlRewriter createUrlRewriter(String visibleBaseUrl, String mode) {
-        Properties properties = new Properties();
-        properties.put(Parameters.VISIBLE_URL_BASE, visibleBaseUrl);
-        properties.put(Parameters.FIX_MODE, mode);
-        return new UrlRewriter(properties);
+    private UrlRewriter urlRewriter;
+    private String visibleUrlBase;
+    private boolean absolute;
+    private String requestUrl;
+    private String baseUrl;
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        urlRewriter = null;
+        visibleUrlBase = null;
+        absolute = false;
+        requestUrl = null;
+        baseUrl = null;
     }
 
-    public void testRenderBlock1() {
-        String base = "http://myapp/context";
-        String page = "templates/template1.html";
-        final String input =
-                "  <img src=\"images/logo.png\"/> <a href=\"/context/page/page1.htm\">link</a> "
-                        + "<img src=\"http://www.google.com/logo.com\"/>";
-        final String expectedOutputRelative =
-                "  <img src=\"/context/templates/images/logo.png\"/> "
-                        + "<a href=\"/context/page/page1.htm\">link</a> <img src=\"http://www.google.com/logo.com\"/>";
-        final String expectedOutputAbsolute =
-                "  <img src=\"http://myapp/context/templates/images/logo.png\"/> "
-                        + "<a href=\"http://myapp/context/page/page1.htm\">link</a> "
-                        + "<img src=\"http://www.google.com/logo.com\"/>";
+    private void createUrlRewriter() {
+        Properties properties = new Properties();
+        urlRewriter = new UrlRewriter(properties);
+    }
 
-        UrlRewriter tested = createUrlRewriter(base, "absolute");
-        String result = tested.rewriteHtml(input, page, base).toString();
-        assertEquals(expectedOutputAbsolute, result);
+    private String rewriteUrl(String url) {
+        return urlRewriter.rewriteUrl(url, requestUrl, baseUrl, visibleUrlBase, absolute);
+    }
 
-        tested = createUrlRewriter(base, "relative");
-        result = tested.rewriteHtml(input, page, base).toString();
-        assertEquals(expectedOutputRelative, result);
+    private String rewriteHtml(String html) {
+        return urlRewriter.rewriteHtml(html, requestUrl, baseUrl, visibleUrlBase, absolute).toString();
+    }
+
+    private void assertRewrites(String sourceUrl, String rewrittenUrl) {
+        createUrlRewriter();
+        assertEquals(rewrittenUrl, rewriteUrl(sourceUrl));
+    }
+
+    private void assertRewritesHtml(String sourceUrl, String rewrittenUrl) {
+        createUrlRewriter();
+        assertEquals(rewrittenUrl, rewriteHtml(sourceUrl));
+    }
+
+    private void assertDoesNotRewrite(String sourceUrl) {
+        createUrlRewriter();
+        assertEquals(sourceUrl, rewriteUrl(sourceUrl));
+    }
+
+    private void assertPatternMatches(String pattern) {
+        baseUrl = "http://backend/context";
+        visibleUrlBase = "http://backend/context";
+        requestUrl = "path/page.html";
+        absolute = false;
+        String input = pattern.replace("{}", "test");
+        String expectedOutput = pattern.replace("{}", "/context/path/test");
+        createUrlRewriter();
+        String result = rewriteHtml(input);
+        assertEquals(expectedOutput, result);
+    }
+
+    private void assertPatternDoesNotMatch(String pattern) {
+        baseUrl = "http://backend/context";
+        visibleUrlBase = "http://backend/context";
+        requestUrl = "path/page.html";
+        absolute = false;
+        String input = pattern.replace("{}", "test");
+        createUrlRewriter();
+        String result = rewriteHtml(input);
+        assertEquals(input, result);
+    }
+
+    public void testSrcPatternMatches() {
+        assertPatternMatches("<img src=\"{}\"/>");
+    }
+
+    public void testHrefPatternMatches() {
+        assertPatternMatches("<a href=\"{}\"/>link</a>");
+    }
+
+    public void testActionPatternMatches() {
+        assertPatternMatches("<form name=\"test\" action=\"{}\"/> test </a>");
+    }
+
+    public void testBackgroundPatternMatches() {
+        assertPatternMatches("<img background=\"{}\"/>");
+    }
+
+    public void testPatternsAreCaseInsensitive() {
+        assertPatternMatches("<a HREF=\"{}\"/>  </a>");
+        assertPatternMatches("<img SrC=\"{}\"/>");
     }
 
     /**
      * Ensure CDATA does not match replacement rules.
      * 
-     * @see "https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=120"
+     * @see "http://www.esigate.org/mantisbt/view.php?id=120"
      */
-    public void testComments() {
-        String base = "http://myapp/context";
-        String page = "templates/template1.html";
-        final String input = "<![CDATA[   var src=\"test\" ]]>";
-        final String expectedOutputRelative = "<![CDATA[   var src=\"test\" ]]>";
-        final String expectedOutputAbsolute = "<![CDATA[   var src=\"test\" ]]>";
-
-        UrlRewriter tested = createUrlRewriter(base, "absolute");
-        String result = tested.rewriteHtml(input, page, base).toString();
-        assertEquals(expectedOutputAbsolute, result);
-
-        tested = createUrlRewriter(base, "relative");
-        result = tested.rewriteHtml(input, page, base).toString();
-        assertEquals(expectedOutputRelative, result);
+    public void testCdataPatternDoesNotMatch() {
+        assertPatternDoesNotMatch("<![CDATA[   var src=\"test\" ]]>");
     }
 
-    public void testUrlReplaceContext() {
-        String base = "http://myapp/context/";
-        String newBase = "http://myapp/newcontext/";
-        String page = "templates/template1.html";
-        final String input =
-                "  <img src=\"images/logo.png\"/> <a href=\"/context/page/page1.htm\">link</a> "
-                        + "<img src=\"http://www.google.com/logo.com\"/>";
-        final String expectedOutputRelative =
-                "  <img src=\"/newcontext/templates/images/logo.png\"/> "
-                        + "<a href=\"/newcontext/page/page1.htm\">link</a> <img src=\"http://www.google.com/logo.com\"/>";
-        final String expectedOutputAbsolute =
-                "  <img src=\"http://myapp/newcontext/templates/images/logo.png\"/> "
-                        + "<a href=\"http://myapp/newcontext/page/page1.htm\">link</a> "
-                        + "<img src=\"http://www.google.com/logo.com\"/>";
-
-        UrlRewriter tested = createUrlRewriter(newBase, "absolute");
-        String result = tested.rewriteHtml(input, page, base).toString();
-        assertEquals(expectedOutputAbsolute, result);
-
-        tested = createUrlRewriter(newBase, "relative");
-        result = tested.rewriteHtml(input, page, base).toString();
-        assertEquals(expectedOutputRelative, result);
+    public void testEsiIncludePatternDoesNotMatch() {
+        assertPatternDoesNotMatch("<esi:include src=\"$(PROVIDER{provider})/\" />");
     }
 
-    public void testUrlSanitizing() {
-        String base = "http://myapp/context/";
-        String page = "templates/template1.html";
-        final String input =
-                "  <img src=\"images/logo.png\"/> <a href=\"/context/page/page1.htm\">link</a> "
-                        + "<img src=\"http://www.google.com/logo.com\"/>";
-        final String expectedOutputRelative =
-                "  <img src=\"/context/templates/images/logo.png\"/> "
-                        + "<a href=\"/context/page/page1.htm\">link</a> <img src=\"http://www.google.com/logo.com\"/>";
-        final String expectedOutputAbsolute =
-                "  <img src=\"http://myapp/context/templates/images/logo.png\"/> "
-                        + "<a href=\"http://myapp/context/page/page1.htm\">link</a> "
-                        + "<img src=\"http://www.google.com/logo.com\"/>";
+    public void testUrlRewrite() {
+        baseUrl = "http://backend/context";
+        visibleUrlBase = "http://backend/context";
+        requestUrl = "path/file.html";
 
-        UrlRewriter tested = createUrlRewriter(base, "absolute");
-        String result = tested.rewriteHtml(input, page, base).toString();
-        assertEquals(expectedOutputAbsolute, result);
+        absolute = false;
+        assertRewrites("images/logo.png", "/context/path/images/logo.png");
+        assertRewrites("/context/page/page1.htm", "/context/page/page1.htm");
+        assertDoesNotRewrite("http://www.google.com/logo.com");
 
-        tested = createUrlRewriter(base, "relative");
-        result = tested.rewriteHtml(input, page, base).toString();
-        assertEquals(expectedOutputRelative, result);
+        absolute = true;
+        assertRewrites("images/logo.png", "http://backend/context/path/images/logo.png");
+        assertRewrites("/context/page/page1.htm", "http://backend/context/page/page1.htm");
+        assertDoesNotRewrite("http://www.google.com/logo.com");
     }
 
-    public void testUrlSanitizing2() {
-        String base = "http://myapp/context/";
-        String visibleBase = "http://app2/";
-        String page = "/page/";
-        final String input =
-                "  <a href=\"../styles/style.css\"/> <img src=\"images/logo.png\"/> "
-                        + "<a href=\"/context/page/page1.htm\">link</a> <img src=\"http://www.google.com/logo.com\"/>";
-        final String expectedOutputRelative =
-                "  <a href=\"/styles/style.css\"/> " + "<img src=\"/page/images/logo.png\"/>"
-                        + " <a href=\"/page/page1.htm\">link</a> <img src=\"http://www.google.com/logo.com\"/>";
-        final String expectedOutputAbsolute =
-                "  <a href=\"http://app2/styles/style.css\"/> "
-                        + "<img src=\"http://app2/page/images/logo.png\"/> "
-                        + "<a href=\"http://app2/page/page1.htm\">link</a> <img src=\"http://www.google.com/logo.com\"/>";
+    public void testUrlRewriteReplaceContext() {
+        baseUrl = "http://backend/context/";
+        visibleUrlBase = "http://backend/visiblecontext/";
+        requestUrl = "path/file.html";
 
-        UrlRewriter tested = createUrlRewriter(visibleBase, "absolute");
-        String result = tested.rewriteHtml(input, page, base).toString();
-        assertEquals(expectedOutputAbsolute, result);
+        absolute = false;
+        assertRewrites("images/logo.png", "/visiblecontext/path/images/logo.png");
+        assertRewrites("/context/page/page1.htm", "/visiblecontext/page/page1.htm");
+        assertDoesNotRewrite("http://www.google.com/logo.com");
 
-        tested = createUrlRewriter(visibleBase, "relative");
-        result = tested.rewriteHtml(input, page, base).toString();
-        assertEquals(expectedOutputRelative, result);
+        absolute = true;
+        assertRewrites("images/logo.png", "http://backend/visiblecontext/path/images/logo.png");
+        assertRewrites("/context/page/page1.htm", "http://backend/visiblecontext/page/page1.htm");
+        assertDoesNotRewrite("http://www.google.com/logo.com");
     }
 
-    public void testDollarSignReplacement() {
-        String base = "http://myapp/context/";
-        String visibleBase = "http://app2/";
-        String page = "/page/";
-        final String input =
-                "  <a href=\"../styles/style$.css\"/> <img src=\"images/logo$.png\"/></a> "
-                        + "<img src=\"http://www.google.com/logo.com\"/>";
-        final String expectedOutputAbsolute =
-                "  <a href=\"http://app2/styles/style$.css\"/> "
-                        + "<img src=\"http://app2/page/images/logo$.png\"/></a>"
-                        + " <img src=\"http://www.google.com/logo.com\"/>";
+    public void testUrlRewriteSpecialChars() {
+        baseUrl = "http://backend/context/";
+        visibleUrlBase = "http://visibleservername/";
+        requestUrl = "/page/";
 
-        UrlRewriter tested = createUrlRewriter(visibleBase, "absolute");
-        String result = tested.rewriteHtml(input, page, base).toString();
-        assertEquals(expectedOutputAbsolute, result);
-    }
-
-    public void testCaseInsensitiveReplacement() {
-        String base = "http://myapp/context/";
-        String visibleBase = "http://app2/";
-        String page = "/page/";
-        final String input =
-                "  <a HREF=\"../styles/style.css\"/> <img SrC=\"images/logo.png\"/></a> "
-                        + "<img src=\"http://www.google.com/logo.com\"/>";
-        final String expectedOutputAbsolute =
-                "  <a HREF=\"http://app2/styles/style.css\"/> "
-                        + "<img SrC=\"http://app2/page/images/logo.png\"/></a> <img src=\"http://www.google.com/logo.com\"/>";
-
-        UrlRewriter tested = createUrlRewriter(visibleBase, "absolute");
-        String result = tested.rewriteHtml(input, page, base).toString();
-        assertEquals(expectedOutputAbsolute, result);
-    }
-
-    public void testBackgroundReplacement() {
-        String base = "http://myapp/context/";
-        String visibleBase = "http://app2/";
-        String page = "/page/";
-        final String input =
-                "  <a background=\"../styles/style.css\"/> <img background=\"images/logo.png\"/></a> "
-                        + "<img background=\"http://www.google.com/logo.com\"/>";
-        final String expectedOutputAbsolute =
-                "  <a background=\"http://app2/styles/style.css\"/> "
-                        + "<img background=\"http://app2/page/images/logo.png\"/></a> "
-                        + "<img background=\"http://www.google.com/logo.com\"/>";
-
-        UrlRewriter tested = createUrlRewriter(visibleBase, "absolute");
-        String result = tested.rewriteHtml(input, page, base).toString();
-        assertEquals(expectedOutputAbsolute, result);
+        absolute = true;
+        assertRewrites("images/logo$.png", "http://visibleservername/page/images/logo$.png");
+        assertRewrites("images/logo 1.png", "http://visibleservername/page/images/logo%201.png");
     }
 
     /**
@@ -206,69 +175,52 @@ public class UrlRewriterTest extends TestCase {
      * settings.
      * 
      */
-    public void testSimpleUrlWithParamsOnly() {
-        String base = "http://myapp/";
-        String page = "/context/status";
-        final String input = "<a href=\"?p=services\">test</a>";
-        final String expectedOutputRelative = "<a href=\"/context/status?p=services\">test</a>";
-        final String expectedOutputAbsolute = "<a href=\"http://myapp/context/status?p=services\">test</a>";
+    public void testUrlRewriteRawQueryString() {
+        baseUrl = "http://backend/";
+        visibleUrlBase = "http://backend/";
+        requestUrl = "/path/page";
 
-        // Relative test
-        UrlRewriter tested = createUrlRewriter(base, "absolute");
-        String result = tested.rewriteHtml(input, page, base).toString();
-        assertEquals(expectedOutputAbsolute, result);
+        absolute = false;
+        assertRewrites("?p=services", "/path/page?p=services");
 
-        // Absolute test
-        tested = createUrlRewriter(base, "relative");
-        result = tested.rewriteHtml(input, page, base).toString();
-        assertEquals(expectedOutputRelative, result);
-    }
-
-    /**
-     * Ensures links like &lt;a href="../../path">link&lt;a/> are correctly fixed with ABSOLUTE settings.
-     * 
-     */
-    public void testSimpleUrlWithRelativePath() {
-        String base = "http://myapp/";
-        String page = "/context/status/page1";
-        final String input = "<a href=\"../path/to/page\">test</a>";
-        final String expectedOutputRelative = "<a href=\"/context/path/to/page\">test</a>";
-        final String expectedOutputAbsolute = "<a href=\"http://myapp/context/path/to/page\">test</a>";
-
-        // Relative test
-        UrlRewriter tested = createUrlRewriter(base, "absolute");
-        String result = tested.rewriteHtml(input, page, base).toString();
-        assertEquals(expectedOutputAbsolute, result);
-
-        // Absolute test
-        tested = createUrlRewriter(base, "relative");
-        result = tested.rewriteHtml(input, page, base).toString();
-        assertEquals(expectedOutputRelative, result);
+        absolute = true;
+        assertRewrites("?p=services", "http://backend/path/page?p=services");
     }
 
     /**
      * Test for 0000186: ResourceFixup : StringIndexOutOfBoundsException: String index out of range: -1.
      * 
-     * @see "https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=186"
+     * @see "http://www.esigate.org/mantisbt/view.php?id=186"
      * 
      */
-    public void testBug186() {
-        String base = "http://localhost:8084/applicationPath/";
-        String visible = "http://localhost:8084/";
-        String page = "/";
-        final String input = "<script src=\"/applicationPath/controller\"></script>";
-        final String expectedOutputRelative = "<script src=\"/controller\"></script>";
-        final String expectedOutputAbsolute = "<script src=\"http://localhost:8084/controller\"></script>";
+    public void testUrlRewriteSlash() {
+        baseUrl = "http://backend/path/";
+        visibleUrlBase = "http://backend/";
+        requestUrl = "/";
 
-        // Relative test
-        UrlRewriter tested = createUrlRewriter(visible, "absolute");
-        String result = tested.rewriteHtml(input, page, base).toString();
-        assertEquals(expectedOutputAbsolute, result);
+        absolute = false;
+        assertRewrites("/path/controller", "/controller");
 
-        // Absolute test
-        tested = createUrlRewriter(visible, "relative");
-        result = tested.rewriteHtml(input, page, base).toString();
-        assertEquals(expectedOutputRelative, result);
+        absolute = true;
+        assertRewrites("/path/controller", "http://backend/controller");
+    }
+
+    public void testUrlRewritePort() {
+        baseUrl = "http://backend:1234/path/";
+        visibleUrlBase = "http://backend:888/";
+        requestUrl = "/";
+
+        absolute = true;
+        assertRewrites("/path/controller", "http://backend:888/controller");
+    }
+
+    public void testUrlRewriteProtocol() {
+        baseUrl = "http://backend/path/";
+        visibleUrlBase = "https://backend/";
+        requestUrl = "/";
+
+        absolute = true;
+        assertRewrites("/path/controller", "https://backend/controller");
     }
 
     /**
@@ -276,26 +228,19 @@ public class UrlRewriterTest extends TestCase {
      * <p>
      * protocol-relative urls should be considered as absolute urls.
      * 
-     * @see "http://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=238"
+     * @see "http://www.esigate.org/mantisbt/view.php?id=238"
      * 
      */
-    public void testBug238() {
-        String base = "http://localhost:8084/applicationPath/";
-        String visible = "http://localhost:8084/";
-        String page = "/";
-        final String input = "<script src=\"//domain.com/applicationPath/controller\"></script>";
-        final String expectedOutputRelative = "<script src=\"//domain.com/applicationPath/controller\"></script>";
-        final String expectedOutputAbsolute = "<script src=\"//domain.com/applicationPath/controller\"></script>";
+    public void testUrlRewriteProtocolRelativeUrl() {
+        baseUrl = "http://backend/path/";
+        visibleUrlBase = "http://backend/";
+        requestUrl = "/";
 
-        // Relative test
-        UrlRewriter tested = createUrlRewriter(visible, "absolute");
-        String result = tested.rewriteHtml(input, page, base).toString();
-        assertEquals(expectedOutputAbsolute, result);
+        absolute = false;
+        assertDoesNotRewrite("//domain.com/applicationPath/controller");
 
-        // Absolute test
-        tested = createUrlRewriter(visible, "relative");
-        result = tested.rewriteHtml(input, page, base).toString();
-        assertEquals(expectedOutputRelative, result);
+        absolute = true;
+        assertDoesNotRewrite("//domain.com/applicationPath/controller");
     }
 
     /**
@@ -303,60 +248,147 @@ public class UrlRewriterTest extends TestCase {
      * <p>
      * Index out of range if page parameter is empty.
      * 
+     * @see "http://www.esigate.org/mantisbt/view.php?id=286"
+     * 
      */
-    public void testBug286() {
-        String base = "https://myapplication";
-        String page = "";
-        final String input = "<html></html>";
+    public void testUrlRewriteEmptyRequestUrl() {
+        baseUrl = "http://backend";
+        visibleUrlBase = "http://backend";
+        requestUrl = "";
 
-        // Relative test
-        UrlRewriter tested = createUrlRewriter(base, "absolute");
-        String result = tested.rewriteHtml(input, page, base).toString();
-        assertEquals(input, result);
+        absolute = false;
+        assertRewrites("test", "/test");
 
-        // Absolute test
-        tested = createUrlRewriter(base, "relative");
-        result = tested.rewriteHtml(input, page, base).toString();
-        assertEquals(input, result);
+        absolute = true;
+        assertRewrites("test", "http://backend/test");
     }
 
-    public void testCleanUp() {
-        UrlRewriter urlRewriter = createUrlRewriter("", "absolute");
-        assertEquals("path/to/page", urlRewriter.cleanUpPath("path/to/page"));
-        assertEquals("path/page", urlRewriter.cleanUpPath("path/to/../page"));
-        assertEquals("page", urlRewriter.cleanUpPath("path/to/../../page"));
+    public void testUrlSanitizing() {
+        baseUrl = "http://backend/context/";
+        visibleUrlBase = "http://visibleservername/";
+        requestUrl = "/page/";
 
-        assertEquals("http://host/page", urlRewriter.cleanUpPath("http://host/path/to/../../page"));
-        assertEquals("//host/page", urlRewriter.cleanUpPath("//host/path/to/../../page"));
-        assertEquals("http://host/", urlRewriter.cleanUpPath("http://host/path/to/../../page/../"));
-        assertEquals("http://", urlRewriter.cleanUpPath("http://host/path/to/../../../page/../"));
+        absolute = false;
+        assertRewrites("../styles/style.css", "/styles/style.css");
 
-        // Test bad url
-        assertEquals("http://host/path/to/../../../../page/../",
-                urlRewriter.cleanUpPath("http://host/path/to/../../../../page/../"));
+        absolute = true;
+        assertRewrites("../styles/style.css", "http://visibleservername/styles/style.css");
+    }
 
-        assertEquals("page", urlRewriter.cleanUpPath("path/../to/../page"));
+    public void testUrlRewriteEmptyUrl() {
+        baseUrl = "http://backend";
+        visibleUrlBase = "http://backend";
+        requestUrl = "/test";
 
-        // test empty url
-        assertEquals("", urlRewriter.cleanUpPath(""));
+        absolute = false;
+        assertRewritesHtml("<a href=\"\">a</a>", "<a href=\"\">a</a>");
 
-        // Test url that can't be totally cleaned
-        assertEquals("path/../../page", urlRewriter.cleanUpPath("path/../../page"));
+        absolute = true;
+        assertRewritesHtml("<a href=\"\">a</a>", "<a href=\"\">a</a>");
+    }
 
-        // Test url that can't be cleaned
-        assertEquals("../../path/../to/../page", urlRewriter.cleanUpPath("../../path/../to/../page"));
-        assertEquals("../page", urlRewriter.cleanUpPath("../page"));
-        assertEquals("../", urlRewriter.cleanUpPath("../"));
+    /**
+     * Generation of relative links is not correct. https://github.com/esigate/esigate/issues/59
+     */
+    public void testUrlSanitizingWithDot() {
+        baseUrl = "http://backend/context/";
+        visibleUrlBase = "http://visibleservername/";
+        requestUrl = "/page";
 
-        // Test with parameters
-        assertEquals("path/to/page?param1=value1", urlRewriter.cleanUpPath("path/to/page?param1=value1"));
-        assertEquals("path/to/page?param1=value1#test", urlRewriter.cleanUpPath("path/to/page?param1=value1#test"));
-        assertEquals("path/to/page#test", urlRewriter.cleanUpPath("path/to/page#test"));
+        absolute = false;
+        assertRewrites("./test", "/test");
 
-        assertEquals("path/page?param1=../test", urlRewriter.cleanUpPath("path/to/../page?param1=../test"));
-        assertEquals("path/to/page?param1=../test#test", urlRewriter.cleanUpPath("path/to/page?param1=../test#test"));
-        assertEquals("path/to/page#test", urlRewriter.cleanUpPath("path/to/page#test"));
+        absolute = true;
+        assertRewrites("./test", "http://visibleservername/test");
+    }
 
+    public void testRewriteReferer() {
+        baseUrl = "http://backend/context/";
+        visibleUrlBase = "http://visibleservername/test/";
+        absolute = false;
+
+        createUrlRewriter();
+
+        String referer = "http://visibleservername/test/page.html";
+
+        assertEquals("http://backend/context/page.html", urlRewriter.rewriteReferer(referer, baseUrl, visibleUrlBase));
+    }
+
+    /**
+     * Test for Issue 83: UrlRewriter does not trim urls.
+     * 
+     * @see "https://github.com/esigate/esigate/issues/83"
+     */
+    public void testUrlRewriteTrim() {
+        baseUrl = "http://backend";
+        visibleUrlBase = "http://visible/context/";
+        requestUrl = "/";
+
+        absolute = false;
+        assertRewritesHtml("<a href=\" \t\n/test\">a</a>", "<a href=\"/context/test\">a</a>");
+
+        absolute = true;
+        assertRewritesHtml("<a href=\" \t\n/test\">a</a>", "<a href=\"http://visible/context/test\">a</a>");
+    }
+
+    public void testUrlRewriteTrimEmptyUrl() {
+        baseUrl = "http://backend";
+        visibleUrlBase = "http://visible/context/";
+        requestUrl = "/";
+
+        absolute = false;
+        assertRewritesHtml("<a href=\" \t\n\">a</a>", "<a href=\" \t\n\">a</a>");
+
+        absolute = true;
+        assertRewritesHtml("<a href=\" \t\n\">a</a>", "<a href=\" \t\n\">a</a>");
+    }
+
+    public void testUrlRewriteEmptyUrlHashtag() {
+        baseUrl = "http://backend";
+        visibleUrlBase = "http://backend";
+        requestUrl = "/test";
+
+        absolute = false;
+        assertRewritesHtml("<a href=\"#\">a</a>", "<a href=\"#\">a</a>");
+
+        absolute = true;
+        assertRewritesHtml("<a href=\"#\">a</a>", "<a href=\"#\">a</a>");
+    }
+
+    public void testUrlRewriteAbsoluteUrlBaseUrl() {
+        baseUrl = "http://backend";
+        visibleUrlBase = "http://visible/context/";
+        requestUrl = "/";
+
+        absolute = false;
+        assertRewrites("http://backend", "/context/");
+
+        absolute = true;
+        assertRewrites("http://backend", "http://visible/context/");
+    }
+
+    public void testUrlRewriteAbsolutUrlBaseUrlSlash() {
+        baseUrl = "http://backend/";
+        visibleUrlBase = "http://visible/context/";
+        requestUrl = "/";
+
+        absolute = false;
+        assertRewrites("http://backend/", "/context/");
+
+        absolute = true;
+        assertRewrites("http://backend/", "http://visible/context/");
+    }
+
+    public void testUrlRewriteAbsolutUrlBaseUrlSlashTest() {
+        baseUrl = "http://backend/";
+        visibleUrlBase = "http://visible/context/";
+        requestUrl = "/";
+
+        absolute = false;
+        assertRewrites("http://backend/test", "/context/test");
+
+        absolute = true;
+        assertRewrites("http://backend/test", "http://visible/context/test");
     }
 
 }

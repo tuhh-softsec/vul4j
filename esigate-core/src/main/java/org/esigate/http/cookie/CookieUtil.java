@@ -17,18 +17,39 @@ package org.esigate.http.cookie;
 
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.http.message.BasicHeaderElement;
+import org.apache.http.message.BasicHeaderValueFormatter;
 
 /**
+ * Utility class for {@link Cookie}.
+ * 
  * @author Alexis Thaveau on 20/10/14.
  */
-public class CookieUtil {
+public final class CookieUtil {
 
+    private static final int ONE_SECOND = 1000;
+
+    private CookieUtil() {
+        // Do not instantiate
+    }
+
+    /**
+     * Attribute name used to tag a {@link BasicClientCookie} as httpOnly.
+     */
     public static final String HTTP_ONLY_ATTR = "httponly";
 
+    /**
+     * Utility method to transform a Cookie into a Set-Cookie Header.
+     * 
+     * @param cookie
+     *            the {@link Cookie} to format
+     * 
+     * @return the value of the Set-Cookie header
+     */
     public static String encodeCookie(Cookie cookie) {
         int maxAge = -1;
         if (cookie.getExpiryDate() != null) {
-            maxAge = (int) ((cookie.getExpiryDate().getTime() - System.currentTimeMillis()) / 1000);
+            maxAge = (int) ((cookie.getExpiryDate().getTime() - System.currentTimeMillis()) / ONE_SECOND);
             // According to Cookie class specification, a negative value
             // would be considered as no value. That is not what we want!
             if (maxAge < 0) {
@@ -36,48 +57,69 @@ public class CookieUtil {
             }
         }
 
-        StringBuffer buf = new StringBuffer(cookie.getName());
-        buf.append("=");
-        buf.append(cookie.getValue());
+        String cookieName = cookie.getName();
+        String cookieValue = cookie.getValue();
 
-        if (cookie.getComment() != null) {
-            buf.append("; Comment=\"");
-            buf.append(cookie.getComment());
-            buf.append("\"");
+        StringBuilder buffer = new StringBuilder();
+
+        // Copied from org.apache.http.impl.cookie.BrowserCompatSpec.formatCookies(List<Cookie>)
+        if (cookie.getVersion() > 0 && !isQuoteEnclosed(cookieValue)) {
+            buffer.append(BasicHeaderValueFormatter.INSTANCE.formatHeaderElement(null,
+                    new BasicHeaderElement(cookieName, cookieValue), false).toString());
+        } else {
+            // Netscape style cookies do not support quoted values
+            buffer.append(cookieName);
+            buffer.append("=");
+            if (cookieValue != null) {
+                buffer.append(cookieValue);
+            }
         }
+        // End copy
 
-        if (cookie.getDomain() != null) {
-            buf.append("; Domain=\"");
-            buf.append(cookie.getDomain());
-            buf.append("\"");
-        }
-
-        if (maxAge >= 0) {
-            buf.append("; Max-Age=\"");
-            buf.append(maxAge);
-            buf.append("\"");
-        }
-
-        if (cookie.getPath() != null) {
-            buf.append("; Path=\"");
-            buf.append(cookie.getPath());
-            buf.append("\"");
-        }
-
+        appendAttribute(buffer, "Comment", cookie.getComment());
+        appendAttribute(buffer, "Domain", cookie.getDomain());
+        appendAttribute(buffer, "Max-Age", maxAge);
+        appendAttribute(buffer, "Path", cookie.getPath());
         if (cookie.isSecure()) {
-            buf.append("; Secure");
+            appendAttribute(buffer, "Secure");
         }
         if (((BasicClientCookie) cookie).containsAttribute(HTTP_ONLY_ATTR)) {
-            buf.append("; HttpOnly");
+            appendAttribute(buffer, "HttpOnly");
         }
+        appendAttribute(buffer, "Version", cookie.getVersion());
 
-        if (cookie.getVersion() > 0) {
-            buf.append("; Version=\"");
-            buf.append(cookie.getVersion());
-            buf.append("\"");
+        return (buffer.toString());
+    }
+
+    private static void appendAttribute(StringBuilder buffer, String name, String value) {
+        if (value != null) {
+            buffer.append("; ");
+            buffer.append(name);
+            buffer.append("=");
+            buffer.append(value);
         }
+    }
 
-        return (buf.toString());
+    private static void appendAttribute(StringBuilder buffer, String name, int value) {
+        if (value > 0) {
+            appendAttribute(buffer, name, Integer.toString(value));
+        }
+    }
+
+    private static void appendAttribute(StringBuilder buffer, String name) {
+        buffer.append("; ");
+        buffer.append(name);
+    }
+
+    /**
+     * Copied from org.apache.http.impl.cookie.BrowserCompatSpec.isQuoteEnclosed(String)
+     * 
+     * @param s
+     *            a String
+     * @return true if the string is enclosed with double quotes
+     */
+    private static boolean isQuoteEnclosed(final String s) {
+        return s != null && s.startsWith("\"") && s.endsWith("\"");
     }
 
 }

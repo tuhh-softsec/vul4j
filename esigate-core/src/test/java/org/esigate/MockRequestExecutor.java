@@ -93,7 +93,7 @@ public final class MockRequestExecutor implements RequestExecutor {
         }
     }
 
-    protected CloseableHttpResponse getResource(String url) throws HttpErrorPage {
+    private CloseableHttpResponse getResource(String url) throws HttpErrorPage {
         String result = resources.get(url);
 
         if (result == null) {
@@ -107,18 +107,16 @@ public final class MockRequestExecutor implements RequestExecutor {
     }
 
     @Override
-    public CloseableHttpResponse createAndExecuteRequest(DriverRequest request, String url, boolean b)
-            throws HttpErrorPage {
-        return getResource(url);
+    public OutgoingRequest createOutgoingRequest(DriverRequest originalRequest, String url, boolean b) {
+        OutgoingRequest outgoingRequest =
+                new OutgoingRequest("GET", url, originalRequest.getOriginalRequest().getProtocolVersion(),
+                        originalRequest, null, null);
+        return outgoingRequest;
     }
 
     @Override
-    public CloseableHttpResponse execute(OutgoingRequest httpRequest) {
-        try {
-            return getResource(httpRequest.getRequestLine().getUri());
-        } catch (HttpErrorPage e) {
-            return e.getHttpResponse();
-        }
+    public CloseableHttpResponse execute(OutgoingRequest outgoingRequest) throws HttpErrorPage {
+        return getResource(outgoingRequest.getRequestLine().getUri());
     }
 
     public static MockRequestExecutor createMockDriver(String name) {

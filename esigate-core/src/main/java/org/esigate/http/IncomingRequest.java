@@ -47,6 +47,7 @@ public final class IncomingRequest extends BasicHttpEntityEnclosingRequest {
     private List<Cookie> cookies = new ArrayList<Cookie>();
     private List<Cookie> newCookies = new ArrayList<Cookie>();
     private Session session;
+    private String contextPath;
 
     public static final class Builder {
         private final IncomingRequest result;
@@ -101,6 +102,19 @@ public final class IncomingRequest extends BasicHttpEntityEnclosingRequest {
 
         public Builder setEntity(InputStreamEntity entity) {
             result.setEntity(entity);
+            return this;
+        }
+
+        /**
+         * A String to remove before mapping at the begining of the path, typically used for the context path in a
+         * servlet engine.
+         * 
+         * @param contextPath
+         *            the context path
+         * @return the {@link Builder}
+         */
+        public Builder setContextPath(String contextPath) {
+            result.contextPath = contextPath;
             return this;
         }
 
@@ -160,6 +174,10 @@ public final class IncomingRequest extends BasicHttpEntityEnclosingRequest {
 
     public Session getSession() {
         return session;
+    }
+
+    public String getContextPath() {
+        return contextPath;
     }
 
 }

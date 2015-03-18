@@ -12,6 +12,7 @@
  * limitations under the License.
  *
  */
+
 package org.esigate.impl;
 
 import junit.framework.TestCase;

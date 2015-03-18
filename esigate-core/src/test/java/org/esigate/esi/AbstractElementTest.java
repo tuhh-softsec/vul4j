@@ -42,7 +42,7 @@ public abstract class AbstractElementTest extends TestCase {
 
     protected String render(String page) throws HttpErrorPage, IOException {
         IncomingRequest incomingRequest = requestBuilder.build();
-        DriverRequest request = new DriverRequest(incomingRequest, provider, false);
+        DriverRequest request = new DriverRequest(incomingRequest, provider, page);
         StringBuilderWriter out = new StringBuilderWriter();
         tested.render(request, page, out);
         return out.toString();

@@ -25,6 +25,7 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.HttpVersion;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.ConnectionPoolTimeoutException;
@@ -150,6 +151,12 @@ public class HttpErrorPage extends Exception {
             return generateHttpResponse(HttpStatus.SC_GATEWAY_TIMEOUT, "Socket timeout");
         } else if (exception instanceof SocketException) {
             return generateHttpResponse(HttpStatus.SC_BAD_GATEWAY, "Socket Exception");
+        } else if (exception instanceof ClientProtocolException) {
+            String message = exception.getMessage();
+            if (message == null && exception.getCause() != null) {
+                message = exception.getCause().getMessage();
+            }
+            return generateHttpResponse(HttpStatus.SC_BAD_GATEWAY, "Protocol error: " + message);
         } else {
             LOG.error("Error retrieving URL", exception);
             return generateHttpResponse(HttpStatus.SC_BAD_GATEWAY, "Error retrieving URL");

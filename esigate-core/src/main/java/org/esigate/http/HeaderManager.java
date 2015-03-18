@@ -20,7 +20,10 @@ import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.message.BasicHttpResponse;
 import org.esigate.impl.DriverRequest;
+import org.esigate.impl.UrlRewriter;
 import org.esigate.util.FilterList;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
@@ -40,7 +43,18 @@ public class HeaderManager {
     private final FilterList requestHeadersFilterList = new FilterList();
     private final FilterList responseHeadersFilterList = new FilterList();
 
-    public HeaderManager() {
+    private final UrlRewriter urlRewriter;
+
+    /**
+     * Builds a Header manager.
+     * 
+     * @param urlRewriter
+     *            The {@link UrlRewriter} to be used to rewrite headers like "Location"
+     */
+    public HeaderManager(UrlRewriter urlRewriter) {
+
+        this.urlRewriter = urlRewriter;
+
         // Populate headers filter lists
 
         // By default all request headers are forwarded
@@ -91,17 +105,18 @@ public class HeaderManager {
      * @param httpRequest
      *            destination request
      */
-    public void copyHeaders(DriverRequest originalRequest, OutgoingRequest httpRequest) {
-        String originalUri = originalRequest.getRequestLine().getUri();
-        String uri = httpRequest.getRequestLine().getUri();
-        for (Header header : originalRequest.getAllHeaders()) {
+    public void copyHeaders(DriverRequest originalRequest, HttpRequest httpRequest) {
+        String baseUrl = originalRequest.getBaseUrl().toString();
+        String visibleBaseUrl = originalRequest.getVisibleBaseUrl();
+        for (Header header : originalRequest.getOriginalRequest().getAllHeaders()) {
+            String name = header.getName();
             // Special headers
-            if (HttpHeaders.REFERER.equalsIgnoreCase(header.getName()) && isForwardedRequestHeader(HttpHeaders.REFERER)) {
+            if (HttpHeaders.REFERER.equalsIgnoreCase(name) && isForwardedRequestHeader(HttpHeaders.REFERER)) {
                 String value = header.getValue();
-                value = UriUtils.translateUrl(value, originalUri, uri);
-                httpRequest.addHeader(header.getName(), value);
+                value = urlRewriter.rewriteReferer(value, baseUrl, visibleBaseUrl);
+                httpRequest.addHeader(name, value);
                 // All other headers are copied if allowed
-            } else if (isForwardedRequestHeader(header.getName())) {
+            } else if (isForwardedRequestHeader(name)) {
                 httpRequest.addHeader(header);
             }
         }
@@ -126,38 +141,43 @@ public class HeaderManager {
         // Process X-Forwarded-Proto header
         if (!httpRequest.containsHeader("X-Forwarded-Proto")) {
             httpRequest.addHeader("X-Forwarded-Proto",
-                    UriUtils.extractScheme(originalRequest.getRequestLine().getUri()));
+                    UriUtils.extractScheme(originalRequest.getOriginalRequest().getRequestLine().getUri()));
         }
     }
 
     /**
-     * Copies end-to-end headers from a resource to an output.
+     * Copies end-to-end headers from a response received from the server to the response to be sent to the client.
      * 
-     * @param httpRequest
-     * @param originalRequest
+     * @param outgoingRequest
+     *            the request sent
+     * @param incomingRequest
+     *            the original request received from the client
      * @param httpClientResponse
-     * @param output
+     *            the response received from the provider application
+     * @return the response to be sent to the client
      */
-    public void copyHeaders(HttpRequest httpRequest, HttpEntityEnclosingRequest originalRequest,
-            HttpResponse httpClientResponse, HttpResponse output) {
-        String originalUri = originalRequest.getRequestLine().getUri();
-        String uri = httpRequest.getRequestLine().getUri();
+    public CloseableHttpResponse copyHeaders(OutgoingRequest outgoingRequest,
+            HttpEntityEnclosingRequest incomingRequest, HttpResponse httpClientResponse) {
+        HttpResponse result = new BasicHttpResponse(httpClientResponse.getStatusLine());
+        result.setEntity(httpClientResponse.getEntity());
+        String originalUri = incomingRequest.getRequestLine().getUri();
+        String baseUrl = outgoingRequest.getBaseUrl().toString();
+        String visibleBaseUrl = outgoingRequest.getOriginalRequest().getVisibleBaseUrl();
         for (Header header : httpClientResponse.getAllHeaders()) {
             String name = header.getName();
             String value = header.getValue();
             try {
                 // Ignore Content-Encoding and Content-Type as these headers are
-                // set
-                // in HttpEntity
+                // set in HttpEntity
                 if (!HttpHeaders.CONTENT_ENCODING.equalsIgnoreCase(name)) {
                     if (isForwardedResponseHeader(name)) {
                         // Some headers containing an URI have to be rewritten
                         if (HttpHeaders.LOCATION.equalsIgnoreCase(name)
                                 || HttpHeaders.CONTENT_LOCATION.equalsIgnoreCase(name)) {
                             // Header contains only an url
-                            value = UriUtils.translateUrl(value, uri, originalUri);
+                            value = urlRewriter.rewriteUrl(value, originalUri, baseUrl, visibleBaseUrl, true);
                             value = HttpResponseUtils.removeSessionId(value, httpClientResponse);
-                            output.addHeader(name, value);
+                            result.addHeader(name, value);
                         } else if ("Link".equalsIgnoreCase(name)) {
                             // Header has the following format
                             // Link: </feed>; rel="alternate"
@@ -165,13 +185,14 @@ public class HeaderManager {
                             if (value.startsWith("<") && value.contains(">")) {
                                 String urlValue = value.substring(1, value.indexOf(">"));
 
-                                String targetUrlValue = UriUtils.translateUrl(urlValue, uri, originalUri);
+                                String targetUrlValue =
+                                        urlRewriter.rewriteUrl(urlValue, originalUri, baseUrl, visibleBaseUrl, true);
                                 targetUrlValue = HttpResponseUtils.removeSessionId(targetUrlValue, httpClientResponse);
 
                                 value = value.replace("<" + urlValue + ">", "<" + targetUrlValue + ">");
                             }
 
-                            output.addHeader(name, value);
+                            result.addHeader(name, value);
 
                         } else if ("Refresh".equalsIgnoreCase(name)) {
                             // Header has the following format
@@ -181,19 +202,20 @@ public class HeaderManager {
                             if (urlPosition >= 0) {
                                 String urlValue = value.substring(urlPosition + "url=".length());
 
-                                String targetUrlValue = UriUtils.translateUrl(urlValue, uri, originalUri);
+                                String targetUrlValue =
+                                        urlRewriter.rewriteUrl(urlValue, originalUri, baseUrl, visibleBaseUrl, true);
                                 targetUrlValue = HttpResponseUtils.removeSessionId(targetUrlValue, httpClientResponse);
 
                                 value = value.substring(0, urlPosition) + "url=" + targetUrlValue;
                             }
-                            output.addHeader(name, value);
+                            result.addHeader(name, value);
                         } else if ("P3p".equalsIgnoreCase(name)) {
                             // Do not translate url yet.
                             // P3P is used with a default fixed url most of the
                             // time.
-                            output.addHeader(name, value);
+                            result.addHeader(name, value);
                         } else {
-                            output.addHeader(header.getName(), header.getValue());
+                            result.addHeader(header.getName(), header.getValue());
                         }
                     }
                 }
@@ -202,9 +224,9 @@ public class HeaderManager {
                 // An application can always send corrupted headers, and we
                 // should not crash
                 LOG.error("Error while copying headers", e1);
-                output.addHeader("X-Esigate-Error", "Error processing header " + name + ": " + value);
+                result.addHeader("X-Esigate-Error", "Error processing header " + name + ": " + value);
             }
         }
+        return BasicCloseableHttpResponse.adapt(result);
     }
-
 }

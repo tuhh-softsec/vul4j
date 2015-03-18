@@ -67,7 +67,6 @@ public final class Parameters {
     public static final Parameter<Collection<String>> DISCARD_COOKIES = new ParameterCollection("discardCookies");
     public static final Parameter<Collection<String>> STORE_COOKIES_IN_SESSION = new ParameterCollection(
             "storeCookiesInSession");
-    public static final Parameter<String> FIX_MODE = new ParameterString("fixMode", "relative");
     public static final Parameter<String> VISIBLE_URL_BASE = new ParameterString("visibleUrlBase");
     // Possible values for remoteUrlBaseStrategy
     public static final String STICKYSESSION = "stickysession";

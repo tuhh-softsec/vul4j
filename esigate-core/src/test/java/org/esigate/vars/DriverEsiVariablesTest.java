@@ -33,6 +33,7 @@ import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
 import org.esigate.esi.EsiRenderer;
 import org.esigate.http.IncomingRequest;
+import org.esigate.test.TestUtils;
 import org.esigate.test.conn.IResponseHandler;
 import org.esigate.test.driver.AbstractDriverTestCase;
 import org.junit.Test;
@@ -73,7 +74,8 @@ public class DriverEsiVariablesTest extends AbstractDriverTestCase {
 
         // Test case
         IncomingRequest request =
-                createRequest("http://test.mydomain.fr/foobar/?test=esigate&test2=esigate2")
+                TestUtils
+                        .createRequest("http://test.mydomain.fr/foobar/?test=esigate&test2=esigate2")
                         .addHeader("Referer", "http://www.esigate.org")
                         .addHeader(
                                 "User-Agent",
@@ -127,14 +129,15 @@ public class DriverEsiVariablesTest extends AbstractDriverTestCase {
 
                 LOG.info("Backend response:\n" + content.toString());
 
-                return createHttpResponse().entity(new StringEntity(content.toString(), ContentType.TEXT_HTML)).build();
+                return TestUtils.createHttpResponse()
+                        .entity(new StringEntity(content.toString(), ContentType.TEXT_HTML)).build();
             }
         };
 
         // Build driver and request.
-        Driver driver = createMockDriver(properties, mockExecutor);
+        Driver driver = TestUtils.createMockDriver(properties, mockExecutor);
 
-        CloseableHttpResponse response = driverProxy(driver, request, new EsiRenderer());
+        CloseableHttpResponse response = TestUtils.driverProxy(driver, request, new EsiRenderer());
 
         String entityContent = EntityUtils.toString(response.getEntity());
         LOG.info("Esigate response: \n" + entityContent);
@@ -166,8 +169,8 @@ public class DriverEsiVariablesTest extends AbstractDriverTestCase {
 
         // Test case
         IncomingRequest request =
-                createRequest("http://test.mydomain.fr/foobar/").addHeader("User-Agent",
-                        "Mozilla/5.0 (Windows; U; MSIE 9.0; WIndows NT 9.0; en-US)").build();
+                TestUtils.createRequest("http://test.mydomain.fr/foobar/")
+                        .addHeader("User-Agent", "Mozilla/5.0 (Windows; U; MSIE 9.0; WIndows NT 9.0; en-US)").build();
 
         final StringBuilder expected = new StringBuilder();
         addVariable(expected, "HTTP_ACCEPT_LANGUAGE{en}", "false");
@@ -202,14 +205,15 @@ public class DriverEsiVariablesTest extends AbstractDriverTestCase {
                 content.append("</esi:vars>");
                 LOG.info("Backend response:\n" + content.toString());
 
-                return createHttpResponse().entity(new StringEntity(content.toString(), ContentType.TEXT_HTML)).build();
+                return TestUtils.createHttpResponse()
+                        .entity(new StringEntity(content.toString(), ContentType.TEXT_HTML)).build();
             }
         };
 
         // Build driver and request.
-        Driver driver = createMockDriver(properties, mockExecutor);
+        Driver driver = TestUtils.createMockDriver(properties, mockExecutor);
 
-        CloseableHttpResponse response = driverProxy(driver, request, new EsiRenderer());
+        CloseableHttpResponse response = TestUtils.driverProxy(driver, request, new EsiRenderer());
 
         String entityContent = EntityUtils.toString(response.getEntity());
         LOG.info("Esigate response: \n" + entityContent);

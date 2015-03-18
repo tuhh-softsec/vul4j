@@ -15,19 +15,13 @@
 
 package org.esigate;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.http.HttpStatus;
-import org.esigate.Driver.DriverBuilder;
-import org.esigate.impl.IndexedInstances;
-import org.esigate.impl.UriMapping;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -37,7 +31,18 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
-import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Header;
+import org.apache.http.HttpHeaders;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.esigate.Driver.DriverBuilder;
+import org.esigate.http.IncomingRequest;
+import org.esigate.impl.IndexedInstances;
+import org.esigate.impl.UriMapping;
+import org.esigate.util.UriUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Factory class used to configure and retrieve {@linkplain Driver} INSTANCIES.
@@ -47,6 +52,28 @@ import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
  * @author Nicolas Richeton
  */
 public final class DriverFactory {
+
+    /**
+     * The provider context, composed of driver and remote relative url.
+     */
+    static final class MatchedRequest {
+        private final Driver driver;
+        private final String relativeUri;
+
+        private MatchedRequest(Driver driver, String relativeUri) {
+            this.driver = driver;
+            this.relativeUri = relativeUri;
+        }
+
+        String getRelativeUri() {
+            return relativeUri;
+        }
+
+        Driver getDriver() {
+            return driver;
+        }
+
+    }
 
     /**
      * System property used to specify of esigate configuration, outside of the classpath.
@@ -68,6 +95,7 @@ public final class DriverFactory {
     }
 
     /**
+     * Returns the collection of all {@link Driver} instances.
      * 
      * @return All configured driver
      */
@@ -195,7 +223,9 @@ public final class DriverFactory {
      * Registers new {@linkplain Driver} under provided name with specified properties.
      * 
      * @param name
+     *            the name of the instance
      * @param props
+     *            the {@link Properties} for the instance
      */
     public static void configure(String name, Properties props) {
         put(name, createDriver(name, props));
@@ -225,28 +255,50 @@ public final class DriverFactory {
     }
 
     /**
-     * Retrieve the Driver instance which should process the request as described in the parameters, based on the
-     * mappings declared in configuration.
+     * Selects the Driver instance for this request based on the mappings declared in the configuration.
      * 
-     * @param scheme
-     *            The scheme of the request : http or https
-     * @param host
-     *            The host of the request, as provided in the Host header of the HTTP protocol
-     * @param url
-     *            The requested url
-     * @return a pair which contains the Driver to use with this request and the matched UriMapping.
+     * @param request
+     *            the incoming request
+     * 
+     * @return a {@link MatchedRequest} containing the {@link Driver} instance and the relative URI
+     * 
      * @throws HttpErrorPage
+     *             if no instance was found for this request
      */
-    public static Pair<Driver, UriMapping> getInstanceFor(String scheme, String host, String url) throws HttpErrorPage {
-        for (UriMapping mapping : instances.getUrimappings().keySet()) {
-            if (mapping.matches(scheme, host, url)) {
-                return new ImmutablePair<Driver, UriMapping>(getInstance(instances.getUrimappings().get(mapping)),
-                        mapping);
-            }
+    static MatchedRequest selectProvider(IncomingRequest request) throws HttpErrorPage {
+        URI requestURI = UriUtils.createURI(request.getRequestLine().getUri());
+        String host = UriUtils.extractHost(requestURI).toHostString();
+        Header hostHeader = request.getFirstHeader(HttpHeaders.HOST);
+        if (hostHeader != null) {
+            host = hostHeader.getValue();
+        }
+        String scheme = requestURI.getScheme();
+        String relativeUri = requestURI.getPath();
+        String contextPath = request.getContextPath();
+        if (!StringUtils.isEmpty(contextPath) && relativeUri.startsWith(contextPath)) {
+            relativeUri = relativeUri.substring(contextPath.length());
         }
 
-        // If no match, return default instance.
-        throw new HttpErrorPage(HttpStatus.SC_NOT_FOUND, "Not found", "No mapping defined for this url.");
+        Driver driver = null;
+        UriMapping uriMapping = null;
+        for (UriMapping mapping : instances.getUrimappings().keySet()) {
+            if (mapping.matches(scheme, host, relativeUri)) {
+                driver = getInstance(instances.getUrimappings().get(mapping));
+                uriMapping = mapping;
+                break;
+            }
+        }
+        if (driver == null) {
+            throw new HttpErrorPage(HttpStatus.SC_NOT_FOUND, "Not found", "No mapping defined for this URI.");
+        }
+
+        if (driver.getConfiguration().isStripMappingPath()) {
+            relativeUri = DriverFactory.stripMappingPath(relativeUri, uriMapping);
+        }
+
+        MatchedRequest context = new MatchedRequest(driver, relativeUri);
+        LOG.debug("Selected {} for scheme:{} host:{} relUrl:{}", driver, scheme, host, relativeUri);
+        return context;
     }
 
     /**
@@ -296,6 +348,8 @@ public final class DriverFactory {
     }
 
     /**
+     * Returns the {@link URL} of the configuration file.
+     * 
      * @return The URL of the configuration file.
      */
     public static URL getConfigUrl() {
@@ -327,6 +381,51 @@ public final class DriverFactory {
             configUrl = DriverFactory.class.getResource("/net/webassembletool/driver.properties");
         }
         return configUrl;
+    }
+
+    /**
+     * Get the relative url without the mapping url.
+     * <p/>
+     * Uses the url and remove the mapping path.
+     * 
+     * @param url
+     *            incoming relative url
+     * @return the url, relative to the driver remote url.
+     */
+    static String stripMappingPath(String url, UriMapping mapping) {
+        String relativeUrl = url;
+        // Uri mapping
+        String mappingPath;
+        if (mapping == null) {
+            mappingPath = null;
+        } else {
+            mappingPath = mapping.getPath();
+        }
+
+        // Remove mapping path
+        if (mappingPath != null && url.startsWith(mappingPath)) {
+            relativeUrl = relativeUrl.substring(mappingPath.length());
+        }
+        return relativeUrl;
+    }
+
+    /**
+     * Selects the Driver instance for this request based on the mappings declared in the configuration and executes it
+     * against the selected {@link Driver} instance.
+     * 
+     * @param incomingRequest
+     *            the incoming request
+     * 
+     * @return a {@link MatchedRequest} containing the {@link Driver} instance and the relative URI
+     * 
+     * @throws HttpErrorPage
+     *             if no instance was found for this request or if an error occurs
+     * @throws IOException
+     *             if an error occurs
+     */
+    public static CloseableHttpResponse proxy(IncomingRequest incomingRequest) throws IOException, HttpErrorPage {
+        MatchedRequest matchedRequest = selectProvider(incomingRequest);
+        return matchedRequest.getDriver().proxy(matchedRequest.getRelativeUri(), incomingRequest);
     }
 
 }

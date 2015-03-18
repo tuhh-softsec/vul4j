@@ -14,13 +14,28 @@
 
 package org.esigate.http;
 
+import java.util.Properties;
+
 import junit.framework.TestCase;
+
+import org.apache.http.Header;
+import org.esigate.Driver;
+import org.esigate.Parameters;
+import org.esigate.impl.DriverRequest;
+import org.esigate.impl.UrlRewriter;
+import org.esigate.test.TestUtils;
+import org.mockito.Mockito;
 
 public class HeaderManagerTest extends TestCase {
     private HeaderManager headerManager;
 
+    @Override
+    protected void setUp() throws Exception {
+        UrlRewriter urlRewriter = Mockito.mock(UrlRewriter.class);
+        headerManager = new HeaderManager(urlRewriter);
+    }
+
     public void testIsBlackListed() {
-        headerManager = new HeaderManager();
 
         assertRequestHeaderIsBlacklisted("Content-Length", true);
         assertRequestHeaderIsBlacklisted("Content-Length".toUpperCase(), true);
@@ -38,13 +53,45 @@ public class HeaderManagerTest extends TestCase {
     }
 
     private void assertRequestHeaderIsBlacklisted(String header, boolean blacklisted) {
-        assertEquals("'" + header + "' header should " + (blacklisted ? "" : "not ") + "be blacklisted",
+        String not = "not ";
+        if (blacklisted) {
+            not = "";
+        } else {
+            not = "not ";
+        }
+        assertEquals("'" + header + "' header should " + not + "be blacklisted",
                 !headerManager.isForwardedRequestHeader(header), blacklisted);
     }
 
     private void assertResponseHeaderIsBlacklisted(String header, boolean blacklisted) {
-        assertEquals("'" + header + "' header should " + (blacklisted ? "" : "not ") + "be blacklisted",
+        String not = "not ";
+        if (blacklisted) {
+            not = "";
+        } else {
+            not = "not ";
+        }
+        assertEquals("'" + header + "' header should " + not + "be blacklisted",
                 !headerManager.isForwardedResponseHeader(header), blacklisted);
+    }
+
+    /**
+     * Test that we set a X-Forwarded-Proto header in backend requests.
+     * 
+     * @throws Exception
+     */
+    public void testXForwardedProtoHeader() throws Exception {
+        Properties props = new Properties();
+        props.put(Parameters.REMOTE_URL_BASE.getName(), "http://www.foo.com/");
+        Driver driver = Driver.builder().setName("test").setProperties(props).build();
+        DriverRequest driverRequest = TestUtils.createDriverRequest("https://wwww.foo.com", driver);
+        OutgoingRequest outgoingRequest =
+                new OutgoingRequest(driverRequest.getOriginalRequest().getRequestLine().getMethod(), driverRequest
+                        .getOriginalRequest().getRequestLine().getUri(), driverRequest.getOriginalRequest()
+                        .getRequestLine().getProtocolVersion(), driverRequest, null, null);
+        headerManager.copyHeaders(driverRequest, outgoingRequest);
+        Header[] headers = outgoingRequest.getHeaders("X-Forwarded-Proto");
+        assertEquals("We should have 1 X-Forwarded-Proto header", 1, headers.length);
+        assertEquals("Wrong X-Forwarded-Proto header", "https", headers[0].getValue());
     }
 
 }

@@ -12,13 +12,14 @@
  * limitations under the License.
  *
  */
+
 package org.esigate.servlet.impl;
 
-import junit.framework.TestCase;
-import org.esigate.impl.UriMapping;
-import org.mockito.Mockito;
-
 import javax.servlet.http.HttpServletRequest;
+
+import junit.framework.TestCase;
+
+import org.mockito.Mockito;
 
 /**
  * @author Alexis Thaveau.
@@ -31,15 +32,5 @@ public class RequestUrlTest extends TestCase {
         Mockito.when(request.getRequestURI()).thenReturn("/context/servlet/resource");
         assertEquals("/servlet/resource", RequestUrl.getRelativeUrl(request, false));
         assertEquals("/resource", RequestUrl.getRelativeUrl(request, true));
-    }
-
-    public void testStripMappingPath() throws Exception {
-        UriMapping mapping = UriMapping.create("/url/to/resource");
-        String relUrl = RequestUrl.stripMappingPath("/mapping/path/test", mapping);
-        assertEquals("/mapping/path/test", relUrl);
-
-        mapping = UriMapping.create("/mapping/path/test");
-        relUrl = RequestUrl.stripMappingPath("/mapping/path/test/url/to/resource", mapping);
-        assertEquals("/url/to/resource", relUrl);
     }
 }

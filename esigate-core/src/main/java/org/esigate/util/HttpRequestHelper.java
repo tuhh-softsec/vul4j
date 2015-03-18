@@ -44,7 +44,8 @@ public final class HttpRequestHelper {
         if (characterEncoding == null) {
             characterEncoding = "ISO-8859-1";
         }
-        List<NameValuePair> parameters = UriUtils.parse(request.getRequestLine().getUri(), characterEncoding);
+        List<NameValuePair> parameters =
+                UriUtils.parse(request.getOriginalRequest().getRequestLine().getUri(), characterEncoding);
         Iterator<NameValuePair> it = parameters.iterator();
         while (it.hasNext()) {
             NameValuePair nameValuePair = it.next();

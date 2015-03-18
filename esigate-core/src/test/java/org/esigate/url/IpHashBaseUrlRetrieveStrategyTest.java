@@ -26,7 +26,7 @@ public class IpHashBaseUrlRetrieveStrategyTest extends TestCase {
 
     public void testGetBaseURLRandom() {
         String[] baseUrls =
-                new String[] { "http://example.com/test/", "http://example1.com/test/", "http://example2.com/test/" };
+                new String[] {"http://example.com/test/", "http://example1.com/test/", "http://example2.com/test/"};
         BaseUrlRetrieveStrategy strategy = new IpHashBaseUrlRetrieveStrategy(baseUrls);
         IncomingRequest request = TestUtils.createIncomingRequest().build();
         strategy.getBaseURL(request);
@@ -34,7 +34,7 @@ public class IpHashBaseUrlRetrieveStrategyTest extends TestCase {
 
     public void testGetBaseURLInvalidIp() {
         String[] baseUrls =
-                new String[] { "http://example.com/test/", "http://example1.com/test/", "http://example2.com/test/" };
+                new String[] {"http://example.com/test/", "http://example1.com/test/", "http://example2.com/test/"};
         BaseUrlRetrieveStrategy strategy = new IpHashBaseUrlRetrieveStrategy(baseUrls);
         IncomingRequest request = TestUtils.createIncomingRequest().setRemoteAddr("").build();
         strategy.getBaseURL(request);
@@ -48,7 +48,7 @@ public class IpHashBaseUrlRetrieveStrategyTest extends TestCase {
 
     public void testGetBaseURLSameIpSameBaseUrl() {
         String[] baseUrls =
-                new String[] { "http://example.com/test/", "http://example1.com/test/", "http://example2.com/test/" };
+                new String[] {"http://example.com/test/", "http://example1.com/test/", "http://example2.com/test/"};
         BaseUrlRetrieveStrategy strategy = new IpHashBaseUrlRetrieveStrategy(baseUrls);
         int times = 100;
         for (int i = 0; i < times; i++) {

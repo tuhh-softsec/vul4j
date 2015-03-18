@@ -204,10 +204,10 @@ public class ResponseCapturingWrapper extends HttpServletResponseWrapper {
 
     @Override
     public void setContentType(String type) {
-        ContentType contentType = ContentType.parse(type);
-        this.contentType = contentType.getMimeType();
-        if (contentType.getCharset() != null) {
-            this.characterEncoding = contentType.getCharset().name();
+        ContentType parsedContentType = ContentType.parse(type);
+        this.contentType = parsedContentType.getMimeType();
+        if (parsedContentType.getCharset() != null) {
+            this.characterEncoding = parsedContentType.getCharset().name();
         }
         updateContentTypeHeader();
     }
@@ -435,20 +435,20 @@ public class ResponseCapturingWrapper extends HttpServletResponseWrapper {
      * @return the response
      */
     public CloseableHttpResponse getCloseableHttpResponse() {
-        ContentType contentType = null;
+        ContentType resultContentType = null;
         if (this.contentType != null) {
-            contentType = ContentType.create(this.contentType, characterEncoding);
+            resultContentType = ContentType.create(this.contentType, characterEncoding);
         }
         if (internalWriter != null) {
             writer.flush();
-            httpClientResponse.setEntity(new StringEntity(internalWriter.toString(), contentType));
+            httpClientResponse.setEntity(new StringEntity(internalWriter.toString(), resultContentType));
         } else if (internalOutputStream != null) {
             try {
                 outputStream.flush();
             } catch (IOException e) {
                 // Nothing to do;
             }
-            httpClientResponse.setEntity(new ByteArrayEntity(internalOutputStream.toByteArray(), contentType));
+            httpClientResponse.setEntity(new ByteArrayEntity(internalOutputStream.toByteArray(), resultContentType));
         }
         if (!capture) {
             // The result has already been written to the response, let's close

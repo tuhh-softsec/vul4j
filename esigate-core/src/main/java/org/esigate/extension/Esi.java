@@ -29,8 +29,8 @@ import org.esigate.extension.surrogate.Surrogate;
  * @author Nicolas Richeton
  */
 public class Esi implements Extension, IEventListener {
-    private static final String[] CAPABILITIES = new String[] { "ESI/1.0", "ESI-Inline/1.0", "X-ESI-Fragment/1.0",
-            "X-ESI-Replace/1.0", "X-ESI-XSLT/1.0", "ESIGATE/4.0" };
+    private static final String[] CAPABILITIES = new String[] {"ESI/1.0", "ESI-Inline/1.0", "X-ESI-Fragment/1.0",
+            "X-ESI-Replace/1.0", "X-ESI-XSLT/1.0", "ESIGATE/4.0"};
 
     @Override
     public boolean event(EventDefinition id, Event event) {

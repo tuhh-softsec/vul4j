@@ -39,7 +39,7 @@ public class ParameterCollection extends Parameter<Collection<String>> {
 
         Collection<String> defaultValue = getDefaultValue();
         if (defaultValue == null) {
-            defaultValue = Collections.<String> emptyList();
+            defaultValue = Collections.<String>emptyList();
         }
         Collection<String> value = PropertiesUtil.getPropertyValue(properties, getName(), defaultValue);
         return value;

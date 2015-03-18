@@ -52,8 +52,8 @@ public class Esi implements Extension, IEventListener {
     private int maxThreads;
     private int idle;
     private Executor executor;
-    public static final String[] CAPABILITIES = new String[] { "ESI/1.0", "ESI-Inline/1.0", "X-ESI-Fragment/1.0",
-            "X-ESI-Replace/1.0", "X-ESI-XSLT/1.0", "ESIGATE/4.0" };
+    public static final String[] CAPABILITIES = new String[] {"ESI/1.0", "ESI-Inline/1.0", "X-ESI-Fragment/1.0",
+            "X-ESI-Replace/1.0", "X-ESI-XSLT/1.0", "ESIGATE/4.0"};
 
     @Override
     public boolean event(EventDefinition id, Event event) {

@@ -40,6 +40,12 @@ import org.esigate.servlet.impl.ResponseCapturingWrapper;
 import org.esigate.servlet.impl.ResponseSender;
 import org.esigate.util.UriUtils;
 
+/**
+ * Extension to enable local or cross-context includes inside a J2EE web application.
+ * 
+ * @author Francois-Xavier Bonnet
+ * 
+ */
 public class ServletExtension implements Extension, IEventListener {
     private Driver driver;
     private String context;
@@ -47,9 +53,9 @@ public class ServletExtension implements Extension, IEventListener {
     private final ResponseSender responseSender = new ResponseSender();
 
     @Override
-    public void init(Driver driver, Properties properties) {
-        this.driver = driver;
-        driver.getEventManager().register(EventManager.EVENT_FETCH_PRE, this);
+    public void init(Driver driverParam, Properties properties) {
+        this.driver = driverParam;
+        driverParam.getEventManager().register(EventManager.EVENT_FETCH_PRE, this);
         context = properties.getProperty("context");
         maxObjectSize = Parameters.MAX_OBJECT_SIZE.getValue(properties);
     }

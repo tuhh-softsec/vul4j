@@ -26,6 +26,7 @@ import org.esigate.events.EventManager;
 import org.esigate.events.IEventListener;
 import org.esigate.events.impl.RenderEvent;
 import org.esigate.http.IncomingRequest;
+import org.esigate.test.TestUtils;
 import org.esigate.test.conn.SequenceResponse;
 import org.esigate.test.driver.AbstractDriverTestCase;
 import org.junit.Assert;
@@ -52,14 +53,14 @@ public class APITest extends AbstractDriverTestCase {
 
         // Setup remote server (provider) response.
         Driver driver =
-                createMockDriver(
+                TestUtils.createMockDriver(
                         properties,
-                        new SequenceResponse().response(createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
-                                .header("Content-Type", "text/html; charset=utf-8").build()));
+                        new SequenceResponse().response(TestUtils.createHttpResponse().status(HttpStatus.SC_OK)
+                                .reason("OK").header("Content-Type", "text/html; charset=utf-8").build()));
 
-        IncomingRequest request = createRequest("http://test.mydomain.fr/foobar/").build();
+        IncomingRequest request = TestUtils.createRequest("http://test.mydomain.fr/foobar/").build();
 
-        driverProxy(driver, request);
+        TestUtils.driverProxy(driver, request);
 
     }
 
