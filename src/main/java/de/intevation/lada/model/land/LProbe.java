@@ -131,7 +131,12 @@ public class LProbe extends Probe {
     }
 
     public String getProbeIdAlt() {
-        return this.probeTranslation.getProbeIdAlt();
+        if (this.probeTranslation != null) {
+            return this.probeTranslation.getProbeIdAlt();
+        }
+        else {
+            return "";
+        }
     }
 
     public void setProbeIdAlt(String probeIdAlt) {}
