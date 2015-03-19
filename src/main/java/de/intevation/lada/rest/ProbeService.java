@@ -7,14 +7,18 @@
  */
 package de.intevation.lada.rest;
 
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonException;
 import javax.json.JsonObject;
+import javax.json.JsonReader;
 import javax.persistence.Query;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -110,6 +114,14 @@ public class ProbeService {
         List<String> results = new ArrayList<String>();
         try {
             sql = jsonQuery.getString("sql");
+            if (params.containsKey("sort")) {
+                String sort = params.getFirst("sort");
+                JsonReader reader = Json.createReader(new StringReader(sort));
+                JsonObject sortProperties = reader.readObject();
+                sql += " ORDER BY ";
+                sql += sortProperties.getJsonString("property") + " ";
+                sql += sortProperties.getJsonString("direction");
+            }
             JsonArray jsonFilters = jsonQuery.getJsonArray("filters");
             JsonArray jsonResults = jsonQuery.getJsonArray("result");
             for (int i = 0; i < jsonFilters.size(); i++) {
@@ -130,7 +142,15 @@ public class ProbeService {
             filters,
             params,
             defaultRepo.entityManager("land"));
-        return new Response(true, 200, QueryTools.prepareResult(query.getResultList(), results));
+        List<Map<String, Object>> result =
+            QueryTools.prepareResult(query.getResultList(), results);
+        if (params.containsKey("start") && params.containsKey("limit")) {
+            int start = Integer.valueOf(params.getFirst("start"));
+            int limit = Integer.valueOf(params.getFirst("limit"));
+            List<Map<String, Object>> subList = result.subList(start, limit + start);
+            return new Response(true, 200, subList, result.size());
+        }
+        return new Response(true, 200, result, result.size());
     }
 
     /**
