@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2014 Jesse Glick.
+ * Copyright 2015 Jesse Glick.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,33 @@
  * THE SOFTWARE.
  */
 
-package org.jenkinsci.plugins.workflow.steps;
+package org.jenkinsci.plugins.workflow.support.steps.build;
 
-import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
-import org.jenkinsci.plugins.workflow.job.WorkflowJob;
+import org.jenkinsci.plugins.workflow.steps.StepConfigTester;
 import org.junit.Test;
+import static org.junit.Assert.*;
 import org.junit.Rule;
+import org.jvnet.hudson.test.Issue;
 import org.jvnet.hudson.test.JenkinsRule;
 
-public class PwdStepTest {
+public class BuildTriggerStepTest {
 
     @Rule public JenkinsRule r = new JenkinsRule();
 
-    @Test public void basics() throws Exception {
-        WorkflowJob p = r.jenkins.createProject(WorkflowJob.class, "p");
-        p.setDefinition(new CpsFlowDefinition("node {echo \"cwd=${pwd()}\"}", true));
-        r.assertLogContains("cwd=" + r.jenkins.getWorkspaceFor(p), r.assertBuildStatusSuccess(p.scheduleBuild2(0)));
+    @Issue("JENKINS-26692")
+    @Test public void configRoundTrip() throws Exception {
+        BuildTriggerStep s = new BuildTriggerStep("ds");
+        s = new StepConfigTester(r).configRoundTrip(s);
+        assertEquals(null, s.getQuietPeriod());
+        assertTrue(s.isPropagate());
+        s.setPropagate(false);
+        s.setQuietPeriod(5);
+        s = new StepConfigTester(r).configRoundTrip(s);
+        assertEquals(Integer.valueOf(5), s.getQuietPeriod());
+        assertFalse(s.isPropagate());
+        s.setQuietPeriod(0);
+        s = new StepConfigTester(r).configRoundTrip(s);
+        assertEquals(Integer.valueOf(0), s.getQuietPeriod());
     }
 
 }
