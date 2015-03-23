@@ -169,7 +169,6 @@ public class OpenIDFilter implements Filter {
     private boolean checkOpenIDHeader(ServletRequest req) {
 
         HttpServletRequest hReq = (HttpServletRequest) req;
-
         /* Debug code to dump headers
         Enumeration<String> headerNames = hReq.getHeaderNames();
         while (headerNames.hasMoreElements()) {
@@ -224,7 +223,7 @@ public class OpenIDFilter implements Filter {
 
         AuthSuccess authSuccess =
                         (AuthSuccess) verification.getAuthResponse();
-        String rolesValue;
+        String rolesValue = "";
         if (authSuccess.hasExtension(AxMessage.OPENID_NS_AX)) {
             FetchResponse fetchResp = null;
             try {
@@ -235,14 +234,15 @@ public class OpenIDFilter implements Filter {
                         e.getMessage());
                 return false;
             }
-            String roles = fetchResp.getAttributeValue("attr1");
-            logger.debug("Roles are: " + roles);
+            rolesValue = fetchResp.getAttributeValue("attr1");
         } else {
             logger.debug("No such extension.");
         }
 
-        logger.debug("Verified user: " + verified);
-
+        String[] identifier = verified.getIdentifier().split("/");
+        String userName = identifier[identifier.length -1];
+        hReq.setAttribute("lada.user.roles", rolesValue);
+        hReq.setAttribute("lada.user.name", userName);
         return true;
     }
 
