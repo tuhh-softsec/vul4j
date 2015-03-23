@@ -32,6 +32,7 @@ public class Auth implements Serializable {
     @Column(name="mst_id")
     private String messStelle;
 
+    @Column(name="netzbetreiber_id")
     private String netzBetreiber;
 
     public Auth() {
