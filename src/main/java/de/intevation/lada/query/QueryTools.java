@@ -24,6 +24,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.ws.rs.core.MultivaluedMap;
 
+import de.intevation.lada.util.auth.Authorization;
+import de.intevation.lada.util.auth.UserInfo;
+
 
 /**
  * Utility class to handle the SQL query configuration.
@@ -159,13 +162,19 @@ public class QueryTools
 
     public static List<Map<String, Object>> prepareResult(
         List<Object[]> result,
-        List<String> names
+        List<String> names,
+        Authorization authorization,
+        UserInfo userInfo
     ) {
         List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
         for (Object[] row: result) {
             Map<String, Object> set = new HashMap<String, Object>();
             for (int i = 0; i < row.length; i++) {
                 set.put(names.get(i), row[i]);
+                if (names.get(i).toString().equals("id")) {
+                    boolean readOnly = authorization.isReadOnly((Integer)row[i]);
+                    set.put("readonly", readOnly);
+                }
             }
             ret.add(set);
         }

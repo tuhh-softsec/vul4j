@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -24,43 +25,30 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.log4j.Logger;
-
 import de.intevation.lada.model.land.LMessung;
 import de.intevation.lada.model.land.MessungTranslation;
-import de.intevation.lada.util.annotation.AuthenticationConfig;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
-import de.intevation.lada.util.auth.Authentication;
-import de.intevation.lada.util.auth.AuthenticationType;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 
 @Path("messung")
 @RequestScoped
 public class MessungService {
 
-    /* The logger used in this class.*/
-    @Inject
-    private Logger logger;
-
     /* The data repository granting read/write access.*/
     @Inject
     @RepositoryConfig(type=RepositoryType.RW)
     private Repository defaultRepo;
 
-    /* The authentication module.*/
-    @Inject
-    @AuthenticationConfig(type=AuthenticationType.NONE)
-    private Authentication authentication;
-
     /* The authorization module.*/
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.NONE)
+    @AuthorizationConfig(type=AuthorizationType.OPEN_ID)
     private Authorization authorization;
 
     /**
@@ -73,12 +61,9 @@ public class MessungService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response get(
         @Context HttpHeaders headers,
-        @Context UriInfo info
+        @Context UriInfo info,
+        @Context HttpServletRequest request
     ) {
-        if (!authentication.isAuthenticated(headers)) {
-            logger.debug("User is not authenticated!");
-            return new Response(false, 699, null);
-        }
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() || !params.containsKey("probeId")) {
             return defaultRepo.getAll(LMessung.class, "land");
@@ -89,7 +74,10 @@ public class MessungService {
                 defaultRepo.entityManager("land"),
                 LMessung.class);
         builder.and("probeId", probeId);
-        return defaultRepo.filter(builder.getQuery(), "land");
+        return authorization.filter(
+            request,
+            defaultRepo.filter(builder.getQuery(), "land"),
+            LMessung.class);
     }
 
     /**
@@ -102,13 +90,13 @@ public class MessungService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getById(
         @Context HttpHeaders headers,
+        @Context HttpServletRequest request,
         @PathParam("id") String id
     ) {
-        if (!authentication.isAuthenticated(headers)) {
-            logger.debug("User is not authenticated!");
-            return new Response(false, 699, null);
-        }
-        return defaultRepo.getById(LMessung.class, Integer.valueOf(id), "land");
+        return authorization.filter(
+            request,
+            defaultRepo.getById(LMessung.class, Integer.valueOf(id), "land"),
+            LMessung.class);
     }
 
     @POST
@@ -116,11 +104,18 @@ public class MessungService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response create(
         @Context HttpHeaders headers,
+        @Context HttpServletRequest request,
         LMessung messung
     ) {
-        if (!authentication.isAuthenticated(headers)) {
+        if (!authorization.isAuthorized(
+                request,
+                messung,
+                RequestMethod.POST,
+                LMessung.class)
+        ) {
             return new Response(false, 699, null);
         }
+
         /* Persist the new messung object*/
         Response response = defaultRepo.create(messung, "land");
         LMessung ret = (LMessung)response.getData();
@@ -142,9 +137,17 @@ public class MessungService {
     @PUT
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response update(@Context HttpHeaders headers, LMessung messung) {
-        if (!authentication.isAuthenticated(headers)) {
-            logger.debug("User is not authenticated!");
+    public Response update(
+        @Context HttpHeaders headers,
+        @Context HttpServletRequest request,
+        LMessung messung
+    ) {
+        if (!authorization.isAuthorized(
+                request,
+                messung,
+                RequestMethod.PUT,
+                LMessung.class)
+        ) {
             return new Response(false, 699, null);
         }
         Response response = defaultRepo.update(messung, "land");
@@ -164,16 +167,21 @@ public class MessungService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response delete(
         @Context HttpHeaders headers,
+        @Context HttpServletRequest request,
         @PathParam("id") String id
     ) {
-        if (!authentication.isAuthenticated(headers)) {
-            logger.debug("User is not authenticated!");
-            return new Response(false, 699, null);
-        }
         /* Get the messung object by id*/
         Response messung =
             defaultRepo.getById(LMessung.class, Integer.valueOf(id), "land");
         LMessung messungObj = (LMessung)messung.getData();
+        if (!authorization.isAuthorized(
+                request,
+                messung,
+                RequestMethod.DELETE,
+                LMessung.class)
+        ) {
+            return new Response(false, 699, null);
+        }
         /* Create a query and request the messungTranslation object for the
          * messung*/
         QueryBuilder<MessungTranslation> builder =

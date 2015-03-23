@@ -20,6 +20,7 @@ import javax.json.JsonException;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.persistence.Query;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -38,16 +39,14 @@ import org.apache.log4j.Logger;
 import de.intevation.lada.model.land.LProbe;
 import de.intevation.lada.model.land.ProbeTranslation;
 import de.intevation.lada.query.QueryTools;
-import de.intevation.lada.util.annotation.AuthenticationConfig;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
-import de.intevation.lada.util.auth.Authentication;
-import de.intevation.lada.util.auth.AuthenticationType;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 import de.intevation.lada.validation.Validator;
 import de.intevation.lada.validation.Violation;
@@ -72,14 +71,9 @@ public class ProbeService {
     @RepositoryConfig(type=RepositoryType.RW)
     private Repository defaultRepo;
 
-    /* The authentication module.*/
-    @Inject
-    @AuthenticationConfig(type=AuthenticationType.NONE)
-    private Authentication authentication;
-
     /* The authorization module.*/
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.NONE)
+    @AuthorizationConfig(type=AuthorizationType.OPEN_ID)
     private Authorization authorization;
 
     @Inject
@@ -97,12 +91,11 @@ public class ProbeService {
     @Produces("application/json")
     public Response get(
         @Context HttpHeaders headers,
-        @Context UriInfo info
+        @Context UriInfo info,
+        @Context HttpServletRequest request
     ) {
-        if (!authentication.isAuthenticated(headers)) {
-            logger.debug("User is not authenticated!");
-            return new Response(false, 699, null);
-        }
+        logger.debug("user: " + request.getAttribute("lada.user.name"));
+        logger.debug("roles: " + request.getAttribute("lada.user.roles"));
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() || !params.containsKey("qid")) {
             return defaultRepo.getAll(LProbe.class, "land");
@@ -116,11 +109,12 @@ public class ProbeService {
             sql = jsonQuery.getString("sql");
             if (params.containsKey("sort")) {
                 String sort = params.getFirst("sort");
+                logger.debug("Sort parameter: " + sort);
                 JsonReader reader = Json.createReader(new StringReader(sort));
-                JsonObject sortProperties = reader.readObject();
+                JsonObject sortProperties = reader.readArray().getJsonObject(0);
                 sql += " ORDER BY ";
-                sql += sortProperties.getJsonString("property") + " ";
-                sql += sortProperties.getJsonString("direction");
+                sql += sortProperties.getJsonString("property").getString() + " ";
+                sql += sortProperties.getJsonString("direction").getString();
             }
             JsonArray jsonFilters = jsonQuery.getJsonArray("filters");
             JsonArray jsonResults = jsonQuery.getJsonArray("result");
@@ -143,7 +137,7 @@ public class ProbeService {
             params,
             defaultRepo.entityManager("land"));
         List<Map<String, Object>> result =
-            QueryTools.prepareResult(query.getResultList(), results);
+            QueryTools.prepareResult(query.getResultList(), results, authorization, authorization.getInfo(request));
         if (params.containsKey("start") && params.containsKey("limit")) {
             int start = Integer.valueOf(params.getFirst("start"));
             int limit = Integer.valueOf(params.getFirst("limit"));
@@ -163,19 +157,16 @@ public class ProbeService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getById(
         @Context HttpHeaders headers,
-        @PathParam("id") String id
+        @PathParam("id") String id,
+        @Context HttpServletRequest request
     ) {
-        if (!authentication.isAuthenticated(headers)) {
-            logger.debug("User is not authenticated!");
-            return new Response(false, 699, null);
-        }
         Response response =
             defaultRepo.getById(LProbe.class, Integer.valueOf(id), "land");
         Violation violation = validator.validate(response.getData());
         if (violation.hasWarnings()) {
             response.setWarnings(violation.getWarnings());
         }
-        return response;
+        return this.authorization.filter(request, response, LProbe.class);
     }
 
     /**
@@ -186,8 +177,17 @@ public class ProbeService {
     @POST
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response create(@Context HttpHeaders headers, LProbe probe) {
-        if (!authentication.isAuthenticated(headers)) {
+    public Response create(
+        @Context HttpHeaders headers,
+        @Context HttpServletRequest request,
+        LProbe probe
+    ) {
+        if (!authorization.isAuthorized(
+                request,
+                probe,
+                RequestMethod.POST,
+                LProbe.class)
+        ) {
             return new Response(false, 699, null);
         }
         Violation violation = validator.validate(probe);
@@ -221,9 +221,17 @@ public class ProbeService {
     @PUT
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response update(@Context HttpHeaders headers, LProbe probe) {
-        if (!authentication.isAuthenticated(headers)) {
-            logger.debug("User is not authenticated!");
+    public Response update(
+        @Context HttpHeaders headers,
+        @Context HttpServletRequest request,
+        LProbe probe
+    ) {
+        if (!authorization.isAuthorized(
+                request,
+                probe,
+                RequestMethod.PUT,
+                LProbe.class)
+        ) {
             return new Response(false, 699, null);
         }
         Violation violation = validator.validate(probe);
@@ -253,16 +261,21 @@ public class ProbeService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response delete(
         @Context HttpHeaders headers,
+        @Context HttpServletRequest request,
         @PathParam("id") String id
     ) {
-        if (!authentication.isAuthenticated(headers)) {
-            logger.debug("User is not authenticated!");
-            return new Response(false, 699, null);
-        }
         /* Get the probe object by id*/
         Response probe =
             defaultRepo.getById(LProbe.class, Integer.valueOf(id), "land");
         LProbe probeObj = (LProbe)probe.getData();
+        if (!authorization.isAuthorized(
+                request,
+                probeObj,
+                RequestMethod.DELETE,
+                LProbe.class)
+        ) {
+            return new Response(false, 699, null);
+        }
         /* Create a query and request the probetranslation object for the
          * probe*/
         QueryBuilder<ProbeTranslation> builder =
