@@ -22,16 +22,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.log4j.Logger;
-
 import de.intevation.lada.model.stamm.SOrt;
-import de.intevation.lada.util.annotation.AuthenticationConfig;
-import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
-import de.intevation.lada.util.auth.Authentication;
-import de.intevation.lada.util.auth.AuthenticationType;
-import de.intevation.lada.util.auth.Authorization;
-import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
@@ -41,24 +33,10 @@ import de.intevation.lada.util.rest.Response;
 @RequestScoped
 public class LocationService {
 
-    /* The logger used in this class.*/
-    @Inject
-    private Logger logger;
-
     /* The data repository granting read/write access.*/
     @Inject
     @RepositoryConfig(type=RepositoryType.RW)
     private Repository defaultRepo;
-
-    /* The authentication module.*/
-    @Inject
-    @AuthenticationConfig(type=AuthenticationType.NONE)
-    private Authentication authentication;
-
-    /* The authorization module.*/
-    @Inject
-    @AuthorizationConfig(type=AuthorizationType.NONE)
-    private Authorization authorization;
 
     /**
      * Get all objects.
@@ -72,10 +50,6 @@ public class LocationService {
         @Context HttpHeaders headers,
         @Context UriInfo info
     ) {
-        if (!authentication.isAuthenticated(headers)) {
-            logger.debug("User is not authenticated!");
-            return new Response(false, 699, null);
-        }
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() || !params.containsKey("ortId")) {
             return defaultRepo.getAll(SOrt.class, "stamm");
@@ -101,10 +75,6 @@ public class LocationService {
         @Context HttpHeaders headers,
         @PathParam("id") String id
     ) {
-        if (!authentication.isAuthenticated(headers)) {
-            logger.debug("User is not authenticated!");
-            return new Response(false, 699, null);
-        }
         return defaultRepo.getById(
             SOrt.class,
             Integer.valueOf(id),
@@ -118,9 +88,6 @@ public class LocationService {
         @Context HttpHeaders headers,
         SOrt ort
     ) {
-        if (!authentication.isAuthenticated(headers)) {
-            return new Response(false, 699, null);
-        }
         /* Persist the new object*/
         return defaultRepo.create(ort, "stamm");
     }
@@ -134,10 +101,6 @@ public class LocationService {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response update(@Context HttpHeaders headers, SOrt ort) {
-        if (!authentication.isAuthenticated(headers)) {
-            logger.debug("User is not authenticated!");
-            return new Response(false, 699, null);
-        }
         Response response = defaultRepo.update(ort, "stamm");
         Response updated = defaultRepo.getById(
             SOrt.class,
@@ -157,10 +120,6 @@ public class LocationService {
         @Context HttpHeaders headers,
         @PathParam("id") String id
     ) {
-        if (!authentication.isAuthenticated(headers)) {
-            logger.debug("User is not authenticated!");
-            return new Response(false, 699, null);
-        }
         /* Get the object by id*/
         Response object =
             defaultRepo.getById(SOrt.class, Integer.valueOf(id), "stamm");

@@ -18,16 +18,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.log4j.Logger;
-
 import de.intevation.lada.model.stamm.PflichtMessgroesse;
-import de.intevation.lada.util.annotation.AuthenticationConfig;
-import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
-import de.intevation.lada.util.auth.Authentication;
-import de.intevation.lada.util.auth.AuthenticationType;
-import de.intevation.lada.util.auth.Authorization;
-import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.Response;
@@ -36,24 +28,10 @@ import de.intevation.lada.util.rest.Response;
 @RequestScoped
 public class PflichtmessgroesseService {
 
-    /* The logger used in this class.*/
-    @Inject
-    private Logger logger;
-
     /* The data repository granting read/write access.*/
     @Inject
     @RepositoryConfig(type=RepositoryType.RO)
     private Repository defaultRepo;
-
-    /* The authentication module.*/
-    @Inject
-    @AuthenticationConfig(type=AuthenticationType.NONE)
-    private Authentication authentication;
-
-    /* The authorization module.*/
-    @Inject
-    @AuthorizationConfig(type=AuthorizationType.NONE)
-    private Authorization authorization;
 
     /**
      * Get all objects.
@@ -67,10 +45,6 @@ public class PflichtmessgroesseService {
         @Context HttpHeaders headers,
         @Context UriInfo info
     ) {
-        if (!authentication.isAuthenticated(headers)) {
-            logger.debug("User is not authenticated!");
-            return new Response(false, 699, null);
-        }
         return defaultRepo.getAll(PflichtMessgroesse.class, "stamm");
     }
 
@@ -86,10 +60,6 @@ public class PflichtmessgroesseService {
         @Context HttpHeaders headers,
         @PathParam("id") String id
     ) {
-        if (!authentication.isAuthenticated(headers)) {
-            logger.debug("User is not authenticated!");
-            return new Response(false, 699, null);
-        }
         return defaultRepo.getById(
             PflichtMessgroesse.class,
             Integer.valueOf(id),
