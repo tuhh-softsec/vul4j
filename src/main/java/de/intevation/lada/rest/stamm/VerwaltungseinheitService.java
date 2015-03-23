@@ -16,18 +16,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.log4j.Logger;
-
 import de.intevation.lada.model.stamm.Verwaltungseinheit;
-import de.intevation.lada.util.annotation.AuthenticationConfig;
-import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
-import de.intevation.lada.util.auth.Authentication;
-import de.intevation.lada.util.auth.AuthenticationType;
-import de.intevation.lada.util.auth.Authorization;
-import de.intevation.lada.util.auth.AuthorizationType;
+import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.Response;
@@ -36,24 +30,10 @@ import de.intevation.lada.util.rest.Response;
 @RequestScoped
 public class VerwaltungseinheitService {
 
-    /* The logger used in this class.*/
-    @Inject
-    private Logger logger;
-
     /* The data repository granting read/write access.*/
     @Inject
     @RepositoryConfig(type=RepositoryType.RO)
     private Repository defaultRepo;
-
-    /* The authentication module.*/
-    @Inject
-    @AuthenticationConfig(type=AuthenticationType.NONE)
-    private Authentication authentication;
-
-    /* The authorization module.*/
-    @Inject
-    @AuthorizationConfig(type=AuthorizationType.NONE)
-    private Authorization authorization;
 
     /**
      * Get all objects.
@@ -67,11 +47,16 @@ public class VerwaltungseinheitService {
         @Context HttpHeaders headers,
         @Context UriInfo info
     ) {
-        if (!authentication.isAuthenticated(headers)) {
-            logger.debug("User is not authenticated!");
-            return new Response(false, 699, null);
+        MultivaluedMap<String, String> params = info.getQueryParameters();
+        if (params.isEmpty() || !params.containsKey("query")) {
+            return defaultRepo.getAll(Verwaltungseinheit.class, "stamm");
         }
-        return defaultRepo.getAll(Verwaltungseinheit.class, "stamm");
+        String filter = params.getFirst("query");
+        QueryBuilder<Verwaltungseinheit> builder =
+            new QueryBuilder<Verwaltungseinheit>(
+                defaultRepo.entityManager("stamm"), Verwaltungseinheit.class);
+        builder.andLike("bezeichnung", filter + "%");
+        return defaultRepo.filter(builder.getQuery(), "stamm");
     }
 
     /**
@@ -86,10 +71,6 @@ public class VerwaltungseinheitService {
         @Context HttpHeaders headers,
         @PathParam("id") String id
     ) {
-        if (!authentication.isAuthenticated(headers)) {
-            logger.debug("User is not authenticated!");
-            return new Response(false, 699, null);
-        }
         return defaultRepo.getById(
             Verwaltungseinheit.class,
             id,
