@@ -16,6 +16,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 
 /**
@@ -39,6 +40,12 @@ public class KommentarM implements Serializable {
     private Integer id;
 
     private String text;
+
+    @Transient
+    private boolean owner;
+
+    @Transient
+    private boolean readonly;
 
     public KommentarM() {
     }
@@ -73,6 +80,22 @@ public class KommentarM implements Serializable {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public boolean isOwner() {
+        return owner;
+    }
+
+    public void setOwner(boolean owner) {
+        this.owner = owner;
+    }
+
+    public boolean isReadonly() {
+        return readonly;
+    }
+
+    public void setReadonly(boolean readonly) {
+        this.readonly = readonly;
     }
 
     public Integer getMessungsId() {

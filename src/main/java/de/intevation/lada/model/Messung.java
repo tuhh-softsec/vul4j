@@ -16,6 +16,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 
 /**
@@ -45,6 +46,12 @@ public class Messung implements Serializable {
 
     @Column(name="probe_id")
     private Integer probeId;
+
+    @Transient
+    private boolean owner;
+
+    @Transient
+    private boolean readonly;
 
     public Messung() {
     }
@@ -103,5 +110,21 @@ public class Messung implements Serializable {
 
     public void setProbeId(Integer probeId) {
         this.probeId = probeId;
+    }
+
+    public boolean isOwner() {
+        return owner;
+    }
+
+    public void setOwner(boolean owner) {
+        this.owner = owner;
+    }
+
+    public boolean isReadonly() {
+        return readonly;
+    }
+
+    public void setReadonly(boolean readonly) {
+        this.readonly = readonly;
     }
 }

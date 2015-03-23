@@ -13,6 +13,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -53,6 +54,12 @@ public class LProbe extends Probe {
 
     @Column(name="solldatum_ende")
     private Timestamp solldatumEnde;
+
+    @Transient
+    private boolean readonly;
+
+    @Transient
+    private boolean owner;
 
     public LProbe() {
     }
@@ -142,10 +149,18 @@ public class LProbe extends Probe {
     public void setProbeIdAlt(String probeIdAlt) {}
 
     public boolean getIsOwner() {
-        return true; //TODO set a valid value in authorization process.
+        return this.owner; //TODO set a valid value in authorization process.
+    }
+
+    public void setIsOwner(boolean value) {
+        this.owner = value;
     }
 
     public boolean getReadonly() {
-        return false; //TODO set a valid value in authorization process.
+        return this.readonly; //TODO set a valid value in authorization process.
+    }
+
+    public void setReadonly(boolean value) {
+        this.readonly = value;
     }
 }

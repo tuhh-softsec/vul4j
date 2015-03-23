@@ -16,6 +16,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 
 /**
@@ -54,6 +55,12 @@ public class Messwert implements Serializable {
 
     @Column(name="nwg_zu_messwert")
     private Float nwgZuMesswert;
+
+    @Transient
+    private boolean owner;
+
+    @Transient
+    private boolean readonly;
 
     public Messwert() {
     }
@@ -136,6 +143,22 @@ public class Messwert implements Serializable {
 
     public void setNwgZuMesswert(Float nwgZuMesswert) {
         this.nwgZuMesswert = nwgZuMesswert;
+    }
+
+    public boolean isOwner() {
+        return owner;
+    }
+
+    public void setOwner(boolean owner) {
+        this.owner = owner;
+    }
+
+    public boolean isReadonly() {
+        return readonly;
+    }
+
+    public void setReadonly(boolean readonly) {
+        this.readonly = readonly;
     }
 
 }

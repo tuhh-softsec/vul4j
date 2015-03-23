@@ -8,8 +8,15 @@
 package de.intevation.lada.model;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.sql.Timestamp;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
 
 /**
@@ -37,6 +44,12 @@ public class Status implements Serializable {
     private String sKommentar;
 
     private Integer status;
+
+    @Transient
+    private boolean owner;
+
+    @Transient
+    private boolean readonly;
 
     public Status() {
     }
@@ -87,5 +100,21 @@ public class Status implements Serializable {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public boolean isOwner() {
+        return owner;
+    }
+
+    public void setOwner(boolean owner) {
+        this.owner = owner;
+    }
+
+    public boolean isReadonly() {
+        return readonly;
+    }
+
+    public void setReadonly(boolean readonly) {
+        this.readonly = readonly;
     }
 }

@@ -17,6 +17,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 
 /**
@@ -45,6 +46,12 @@ public class Ort implements Serializable {
 
     @Column(name="ort_id")
     private BigInteger ort;
+
+    @Transient
+    private boolean owner;
+
+    @Transient
+    private boolean readonly;
 
     public Ort() {
     }
@@ -95,5 +102,21 @@ public class Ort implements Serializable {
 
     public void setOrt(BigInteger ort) {
         this.ort = ort;
+    }
+
+    public boolean isOwner() {
+        return owner;
+    }
+
+    public void setOwner(boolean owner) {
+        this.owner = owner;
+    }
+
+    public boolean isReadonly() {
+        return readonly;
+    }
+
+    public void setReadonly(boolean readonly) {
+        this.readonly = readonly;
     }
 }
