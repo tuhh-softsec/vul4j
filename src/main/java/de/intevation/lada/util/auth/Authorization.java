@@ -1,9 +1,12 @@
 package de.intevation.lada.util.auth;
 
-import java.util.Map;
-
-import javax.ws.rs.core.HttpHeaders;
+import de.intevation.lada.util.rest.RequestMethod;
+import de.intevation.lada.util.rest.Response;
 
 public interface Authorization {
-    public Map<String, Object> getInfo(HttpHeaders headers);
+    public UserInfo getInfo(Object source);
+    public <T> Response filter(Object source, Response data, Class<T> clazz);
+    public <T> boolean isAuthorized(
+        Object source, Object data, RequestMethod method, Class<T> clazz);
+	boolean isReadOnly(Integer probeId);
 }

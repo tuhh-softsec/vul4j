@@ -1,19 +1,33 @@
 package de.intevation.lada.util.auth;
 
-import java.util.Map;
-
 import javax.ejb.Stateless;
-import javax.ws.rs.core.HttpHeaders;
 
 import de.intevation.lada.util.annotation.AuthorizationConfig;
+import de.intevation.lada.util.rest.RequestMethod;
+import de.intevation.lada.util.rest.Response;
 
 @Stateless
 @AuthorizationConfig(type=AuthorizationType.NONE)
 public class DefaultAuthorization implements Authorization {
 
     @Override
-    public Map<String, Object> getInfo(HttpHeaders headers) {
-        return null;
+    public UserInfo getInfo(Object source) {
+        return new UserInfo();
     }
 
+    @Override
+    public <T> Response filter(Object source, Response data, Class<T> clazz) {
+        return data;
+    }
+
+    @Override
+    public <T> boolean isAuthorized(
+        Object source, Object data, RequestMethod method, Class<T> clazz) {
+        return true;
+    }
+
+    @Override
+    public boolean isReadOnly(Integer probeId) {
+        return false;
+    }
 }
