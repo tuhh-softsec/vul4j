@@ -61,9 +61,14 @@ public class UrlRewriterTest extends TestCase {
         assertEquals(rewrittenUrl, rewriteUrl(sourceUrl));
     }
 
-    private void assertRewritesHtml(String sourceUrl, String rewrittenUrl) {
+    private void assertRewritesHtml(String sourceHtml, String rewrittenHtml) {
         createUrlRewriter();
-        assertEquals(rewrittenUrl, rewriteHtml(sourceUrl));
+        assertEquals(rewrittenHtml, rewriteHtml(sourceHtml));
+    }
+
+    private void assertDoesNotRewriteHtml(String sourceHtml) {
+        createUrlRewriter();
+        assertEquals(sourceHtml, rewriteHtml(sourceHtml));
     }
 
     private void assertDoesNotRewrite(String sourceUrl) {
@@ -389,6 +394,32 @@ public class UrlRewriterTest extends TestCase {
 
         absolute = true;
         assertRewrites("http://backend/test", "http://visible/context/test");
+    }
+
+    public void testRewriteInJavascript() {
+        baseUrl = "http://backend";
+        visibleUrlBase = "http://visible/context/";
+        requestUrl = "/";
+
+        String html = "<script>\n";
+        html = html + "link='<embed src=\"'+this.getAttribute(\"src\")+'\"> ';\n";
+        html = html + "</script>";
+        assertDoesNotRewriteHtml(html);
+
+        html = "<script>\n";
+        html = html + "link='<a href=\"'+d+'\">'+e+\"</a>\";\n";
+        html = html + "</script>";
+        assertDoesNotRewriteHtml(html);
+
+        html = "<script>\n";
+        html = html + "function LoadScript( url )\n";
+        html = html + "{\n";
+        html =
+                html
+                        + "document.write( '<scr' + 'ipt type=\"text/javascript\" src=\"' + url + '\"><\\/scr' + 'ipt>' ) ;\n";
+        html = html + "}\n";
+        html = html + "</script>";
+        assertDoesNotRewriteHtml(html);
     }
 
 }
