@@ -47,6 +47,9 @@ public class UrlRewriter {
             .compile("<([^\\!:>]+)(src|href|action|background)\\s*=\\s*('[^<']*'|\"[^<\"]*\")([^>]*)>",
                     Pattern.CASE_INSENSITIVE);
 
+    private static final Pattern JAVASCRIPT_CONCATENATION_PATTERN = Pattern.compile(
+            "\\+\\s*'|\\+\\s*\"|'\\s*\\+|\"\\s*\\+", Pattern.CASE_INSENSITIVE);
+
     /**
      * Rewrites urls from the response for the client or from the request to the target server.
      * 
@@ -196,8 +199,9 @@ public class UrlRewriter {
             // Browsers toletate urls with white spaces before or after
             String trimmedUrl = StringUtils.trim(url);
 
-            // Don't rewrite empty urls or anchors
-            if (!trimmedUrl.isEmpty() && !trimmedUrl.startsWith("#")) {
+            // Don't rewrite empty urls or anchors or javascript manipulations
+            if (!trimmedUrl.isEmpty() && !trimmedUrl.startsWith("#")
+                    && !JAVASCRIPT_CONCATENATION_PATTERN.matcher(trimmedUrl).find()) {
                 url = rewriteUrl(trimmedUrl, requestUrl, baseUrlParam, visibleBaseUrl, absolute);
             } else {
                 LOG.debug("url kept unchanged: [{}]", url);
@@ -216,5 +220,4 @@ public class UrlRewriter {
 
         return result;
     }
-
 }
