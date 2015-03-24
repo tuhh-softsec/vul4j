@@ -137,11 +137,20 @@ public class ProbeService {
             params,
             defaultRepo.entityManager("land"));
         List<Map<String, Object>> result =
-            QueryTools.prepareResult(query.getResultList(), results, authorization, authorization.getInfo(request));
+            QueryTools.prepareResult(query.getResultList(), results);
         if (params.containsKey("start") && params.containsKey("limit")) {
             int start = Integer.valueOf(params.getFirst("start"));
             int limit = Integer.valueOf(params.getFirst("limit"));
-            List<Map<String, Object>> subList = result.subList(start, limit + start);
+            int end = limit + start;
+            if (start + limit > result.size()) {
+                end = result.size();
+            }
+            List<Map<String, Object>> subList = result.subList(start, end);
+            for (Map<String, Object> entry: subList) {
+                boolean readOnly =
+                    authorization.isReadOnly((Integer)entry.get("id"));
+                entry.put("readonly", readOnly);
+            }
             return new Response(true, 200, subList, result.size());
         }
         return new Response(true, 200, result, result.size());

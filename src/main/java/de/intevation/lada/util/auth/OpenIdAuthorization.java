@@ -323,17 +323,13 @@ public class OpenIdAuthorization implements Authorization {
                 manager,
                 LMessung.class);
         builder.and("probeId", probeId);
+        builder.and("fertig", true);
         Response response = repository.filter(builder.getQuery(), "land");
         @SuppressWarnings("unchecked")
         List<LMessung> messungen = (List<LMessung>) response.getData();
         if (messungen.isEmpty()) {
             return false;
         }
-        for(LMessung messung : messungen) {
-            if (messung.getFertig()) {
-                return true;
-            }
-        }
-        return false;
+        return true;
     }
 }
