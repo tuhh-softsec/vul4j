@@ -422,4 +422,14 @@ public class UrlRewriterTest extends TestCase {
         assertDoesNotRewriteHtml(html);
     }
 
+    public void testRewriteMetaRefresh() {
+        baseUrl = "http://backend";
+        visibleUrlBase = "http://visible/context/";
+        requestUrl = "/";
+        absolute = true;
+
+        String html = "<meta http-equiv=\"refresh\" content=\"5; url=http://backend/test\">";
+        String rewrittenHtml = "<meta http-equiv=\"refresh\" content=\"5; url=http://visible/context/test\">";
+        assertRewritesHtml(html, rewrittenHtml);
+    }
 }

@@ -43,12 +43,15 @@ import org.slf4j.LoggerFactory;
 public class UrlRewriter {
     private static final Logger LOG = LoggerFactory.getLogger(UrlRewriter.class);
 
-    private static final Pattern URL_PATTERN = Pattern
-            .compile("<([^\\!:>]+)(src|href|action|background)\\s*=\\s*('[^<']*'|\"[^<\"]*\")([^>]*)>",
-                    Pattern.CASE_INSENSITIVE);
+    private static final Pattern URL_PATTERN = Pattern.compile(
+            "<([^\\!:>]+)(src|href|action|background|content)\\s*=\\s*('[^<']*'|\"[^<\"]*\")([^>]*)>",
+            Pattern.CASE_INSENSITIVE);
 
     private static final Pattern JAVASCRIPT_CONCATENATION_PATTERN = Pattern.compile(
             "\\+\\s*'|\\+\\s*\"|'\\s*\\+|\"\\s*\\+", Pattern.CASE_INSENSITIVE);
+
+    private static final Pattern META_REFRESH_PATTERN = Pattern.compile(
+            "<\\s*meta([^>]+)http-equiv\\s*=\\s*(\"|')refresh(\"|')", Pattern.CASE_INSENSITIVE);
 
     /**
      * Rewrites urls from the response for the client or from the request to the target server.
@@ -172,10 +175,10 @@ public class UrlRewriter {
     }
 
     /**
-     * Fix all resources urls and return the result.
+     * Fixes all resources urls and returns the result.
      * 
      * @param input
-     *            The original charSequence to be processed.
+     *            The html to be processed.
      * 
      * @param requestUrl
      *            The request URL.
@@ -193,31 +196,71 @@ public class UrlRewriter {
         StringBuffer result = new StringBuffer(input.length());
         Matcher m = URL_PATTERN.matcher(input);
         while (m.find()) {
-            LOG.trace("found match: {}", m);
             String url = input.subSequence(m.start(3) + 1, m.end(3) - 1).toString();
+            String tag = m.group(0);
 
             // Browsers toletate urls with white spaces before or after
             String trimmedUrl = StringUtils.trim(url);
 
-            // Don't rewrite empty urls or anchors or javascript manipulations
-            if (!trimmedUrl.isEmpty() && !trimmedUrl.startsWith("#")
-                    && !JAVASCRIPT_CONCATENATION_PATTERN.matcher(trimmedUrl).find()) {
-                url = rewriteUrl(trimmedUrl, requestUrl, baseUrlParam, visibleBaseUrl, absolute);
+            String rewrittenUrl = url;
+
+            if (trimmedUrl.isEmpty()) {
+                LOG.debug("empty url kept unchanged");
+            } else if (trimmedUrl.startsWith("#")) {
+                LOG.debug("anchor url kept unchanged: [{}]", url);
+            } else if (JAVASCRIPT_CONCATENATION_PATTERN.matcher(trimmedUrl).find()) {
+                LOG.debug("url in javascript kept unchanged: [{}]", url);
+            } else if (m.group(2).equalsIgnoreCase("content")) {
+                if (META_REFRESH_PATTERN.matcher(tag).find()) {
+                    rewrittenUrl = rewriteRefresh(trimmedUrl, requestUrl, baseUrlParam, visibleBaseUrl);
+                    LOG.debug("refresh url [{}] rewritten [{}]", url, rewrittenUrl);
+                } else {
+                    LOG.debug("content attribute kept unchanged: [{}]", url);
+                }
             } else {
-                LOG.debug("url kept unchanged: [{}]", url);
+                rewrittenUrl = rewriteUrl(trimmedUrl, requestUrl, baseUrlParam, visibleBaseUrl, absolute);
             }
-            url = url.replaceAll("\\$", "\\\\\\$"); // replace '$' -> '\$' as it
-                                                    // denotes group
-            StringBuffer tagReplacement = new StringBuffer("<$1$2=\"").append(url).append("\"");
+            rewrittenUrl = rewrittenUrl.replaceAll("\\$", "\\\\\\$"); // replace '$' -> '\$' as it
+            // denotes group
+            StringBuffer tagReplacement = new StringBuffer("<$1$2=\"").append(rewrittenUrl).append("\"");
             if (m.groupCount() > 3) {
                 tagReplacement.append("$4");
             }
             tagReplacement.append('>');
-            LOG.trace("replacement: {}", tagReplacement);
+            LOG.trace("tag {} replaced by {}", tag, tagReplacement);
             m.appendReplacement(result, tagReplacement.toString());
         }
         m.appendTail(result);
 
         return result;
+    }
+
+    /**
+     * Rewrites a "Refresh" HTTP header or a &lt;meta http-equiv="refresh"... tag. The value should have the following
+     * format:
+     * 
+     * Refresh: 5; url=http://www.example.com
+     * 
+     * @param input
+     *            The refresh value to be rewritten.
+     * @param requestUrl
+     *            The request URL.
+     * @param baseUrlParam
+     *            The base URL selected for this request.
+     * @param visibleBaseUrl
+     *            The base URL viewed by the browser.
+     * @return the rewritten refresh value
+     */
+    public String rewriteRefresh(String input, String requestUrl, String baseUrl, String visibleBaseUrl) {
+        // Header has the following format
+        // Refresh: 5; url=http://www.w3.org/pub/WWW/People.html
+        int urlPosition = input.indexOf("url=");
+        if (urlPosition >= 0) {
+            String urlValue = input.substring(urlPosition + "url=".length());
+            String targetUrlValue = rewriteUrl(urlValue, requestUrl, baseUrl, visibleBaseUrl, true);
+            return input.substring(0, urlPosition) + "url=" + targetUrlValue;
+        } else {
+            return input;
+        }
     }
 }
