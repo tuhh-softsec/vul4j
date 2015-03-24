@@ -198,7 +198,7 @@ public final class TestUtils {
      * 
      * @param uri
      *            the request uri
-     * @return the {@link IncomingRequest.Builder}
+     * @return the IncomingRequest.Builder
      */
     public static IncomingRequest.Builder createRequest(String uri) {
         return createIncomingRequest(uri);
