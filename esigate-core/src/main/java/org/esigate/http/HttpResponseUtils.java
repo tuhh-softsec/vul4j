@@ -16,6 +16,8 @@
 package org.esigate.http;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
@@ -33,8 +35,10 @@ import org.apache.http.cookie.CookieOrigin;
 import org.apache.http.cookie.CookieSpec;
 import org.apache.http.cookie.MalformedCookieException;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.cookie.BrowserCompatSpec;
 import org.apache.http.protocol.HTTP;
+import org.apache.http.util.Args;
 import org.apache.http.util.EntityUtils;
 import org.esigate.HttpErrorPage;
 import org.esigate.events.EventManager;
@@ -52,6 +56,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class HttpResponseUtils {
     private static final Logger LOG = LoggerFactory.getLogger(HttpResponseUtils.class);
+    private static final int OUTPUT_BUFFER_SIZE = 4096;
 
     private HttpResponseUtils() {
 
@@ -218,6 +223,48 @@ public final class HttpResponseUtils {
 
     public static String toString(CloseableHttpResponse response) throws HttpErrorPage {
         return toString(response, null);
+    }
+
+    /**
+     * Copied from {@link InputStreamEntity} writeTo method but flushes the buffer after each read in order to allow
+     * streaming and web sockets.
+     * 
+     * @param httpEntity
+     *            The entity to copy to the OutputStream
+     * @param outstream
+     *            The OutputStream
+     * @throws IOException
+     */
+    public static void writeTo(final HttpEntity httpEntity, final OutputStream outstream) throws IOException {
+        Args.notNull(outstream, "Output stream");
+        final InputStream instream = httpEntity.getContent();
+        try {
+            final byte[] buffer = new byte[OUTPUT_BUFFER_SIZE];
+            int l;
+            if (httpEntity.getContentLength() < 0) {
+                // consume until EOF
+                while ((l = instream.read(buffer)) != -1) {
+                    outstream.write(buffer, 0, l);
+                    outstream.flush();
+                    LOG.debug("Flushed {} bytes of data");
+                }
+            } else {
+                // consume no more than length
+                long remaining = httpEntity.getContentLength();
+                while (remaining > 0) {
+                    l = instream.read(buffer, 0, (int) Math.min(OUTPUT_BUFFER_SIZE, remaining));
+                    if (l == -1) {
+                        break;
+                    }
+                    outstream.write(buffer, 0, l);
+                    outstream.flush();
+                    LOG.debug("Flushed {} bytes of data");
+                    remaining -= l;
+                }
+            }
+        } finally {
+            instream.close();
+        }
     }
 
 }

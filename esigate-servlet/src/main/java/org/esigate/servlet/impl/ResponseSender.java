@@ -23,6 +23,7 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.cookie.Cookie;
+import org.esigate.http.HttpResponseUtils;
 import org.esigate.http.IncomingRequest;
 import org.esigate.http.cookie.CookieUtil;
 
@@ -41,7 +42,7 @@ public class ResponseSender {
         sendHeaders(httpResponse, httpRequest, response);
         HttpEntity httpEntity = httpResponse.getEntity();
         if (httpEntity != null) {
-            httpEntity.writeTo(response.getOutputStream());
+            HttpResponseUtils.writeTo(httpEntity, response.getOutputStream());
         } else {
             response.sendError(httpResponse.getStatusLine().getStatusCode(), httpResponse.getStatusLine()
                     .getReasonPhrase());
