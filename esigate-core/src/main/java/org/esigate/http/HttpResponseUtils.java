@@ -35,7 +35,6 @@ import org.apache.http.cookie.CookieOrigin;
 import org.apache.http.cookie.CookieSpec;
 import org.apache.http.cookie.MalformedCookieException;
 import org.apache.http.entity.ContentType;
-import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.cookie.BrowserCompatSpec;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.Args;
@@ -226,14 +225,15 @@ public final class HttpResponseUtils {
     }
 
     /**
-     * Copied from {@link InputStreamEntity} writeTo method but flushes the buffer after each read in order to allow
-     * streaming and web sockets.
+     * Copied from org.apache.http.entity.InputStreamEntity.writeTo(OutputStream) method but flushes the buffer after
+     * each read in order to allow streaming and web sockets.
      * 
      * @param httpEntity
      *            The entity to copy to the OutputStream
      * @param outstream
      *            The OutputStream
      * @throws IOException
+     *             If a problem occurs
      */
     public static void writeTo(final HttpEntity httpEntity, final OutputStream outstream) throws IOException {
         Args.notNull(outstream, "Output stream");
