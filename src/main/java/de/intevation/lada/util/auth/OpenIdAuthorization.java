@@ -142,9 +142,7 @@ public class OpenIdAuthorization implements Authorization {
     }
 
     private boolean getAuthorization(UserInfo userInfo, LProbe probe) {
-        if (userInfo.getMessstellen().contains(probe.getMstId()) &&
-            userInfo.getNetzbetreiber().contains(probe.getNetzbetreiberId())
-        ) {
+        if (userInfo.getMessstellen().contains(probe.getMstId())) {
             return true;
         }
         else {
