@@ -245,7 +245,7 @@ public class UrlRewriter {
      *            The refresh value to be rewritten.
      * @param requestUrl
      *            The request URL.
-     * @param baseUrlParam
+     * @param baseUrl
      *            The base URL selected for this request.
      * @param visibleBaseUrl
      *            The base URL viewed by the browser.
