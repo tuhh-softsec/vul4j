@@ -12,6 +12,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
+
 import de.intevation.lada.model.land.LMessung;
 import de.intevation.lada.model.land.LProbe;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
@@ -25,6 +27,9 @@ import de.intevation.lada.util.rest.Response;
 @Stateful
 @AuthorizationConfig(type=AuthorizationType.OPEN_ID)
 public class OpenIdAuthorization implements Authorization {
+
+    @Inject
+    private Logger logger;
 
     @Inject
     @RepositoryConfig(type=RepositoryType.RO)
@@ -84,7 +89,7 @@ public class OpenIdAuthorization implements Authorization {
             }
             else if (method == RequestMethod.PUT ||
                      method == RequestMethod.DELETE) {
-                return isReadOnly(probe.getId());
+                return !isReadOnly(probe.getId());
             }
             else {
                 return false;
@@ -100,7 +105,7 @@ public class OpenIdAuthorization implements Authorization {
             }
             else if (method == RequestMethod.PUT ||
                      method == RequestMethod.DELETE) {
-                return isReadOnly(probe.getId());
+                return !isReadOnly(probe.getId());
             }
         }
         else {
@@ -112,12 +117,13 @@ public class OpenIdAuthorization implements Authorization {
                         id = (Integer) m.invoke(data);
                     } catch (IllegalAccessException | IllegalArgumentException
                             | InvocationTargetException e) {
+                        logger.warn(e.getCause() + ": " + e.getMessage());
                         return false;
                     }
                     Response response =
                         repository.getById(LProbe.class, id, "land");
                     LProbe probe = (LProbe)response.getData();
-                    return isReadOnly(id) && getAuthorization(userInfo, probe);
+                    return !isReadOnly(id) && getAuthorization(userInfo, probe);
 
                 }
                 if (m.getName().equals("getMessungsId")) {
@@ -126,6 +132,7 @@ public class OpenIdAuthorization implements Authorization {
                         id = (Integer) m.invoke(data);
                     } catch (IllegalAccessException | IllegalArgumentException
                             | InvocationTargetException e) {
+                        logger.warn(e.getCause() + ": " + e.getMessage());
                         return false;
                     }
                     Response mResponse =
@@ -134,7 +141,7 @@ public class OpenIdAuthorization implements Authorization {
                     Response pResponse =
                         repository.getById(LProbe.class, messung.getProbeId(), "land");
                     LProbe probe = (LProbe)pResponse.getData();
-                    return isReadOnly(probe.getId()) && getAuthorization(userInfo, probe);
+                    return !isReadOnly(probe.getId()) && getAuthorization(userInfo, probe);
                 }
             }
         }
