@@ -33,7 +33,7 @@ public class UniqueHauptprobenNr implements Rule {
         if (!((List<LProbe>)response.getData()).isEmpty()) {
             LProbe found = ((List<LProbe>)response.getData()).get(0);
             // The probe found in the db equals the new probe. (Update)
-            if (probe.getId() != null && probe.getId() == found.getId()) {
+            if (probe.getId() != null && probe.getId().equals(found.getId())) {
                 return null;
             }
             Violation violation = new Violation();
