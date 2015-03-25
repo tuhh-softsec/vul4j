@@ -23,6 +23,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
+import de.intevation.lada.lock.LockConfig;
+import de.intevation.lada.lock.LockType;
+import de.intevation.lada.lock.ObjectLocker;
 import de.intevation.lada.model.land.LZusatzWert;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
@@ -42,6 +45,10 @@ public class ZusatzwertService {
     @Inject
     @RepositoryConfig(type=RepositoryType.RW)
     private Repository defaultRepo;
+
+    @Inject
+    @LockConfig(type=LockType.TIMESTAMP)
+    private ObjectLocker lock;
 
     /* The authorization module.*/
     @Inject
@@ -137,6 +144,9 @@ public class ZusatzwertService {
         ) {
             return new Response(false, 699, null);
         }
+        if (lock.isLocked(zusatzwert)) {
+            return new Response(false, 697, null);
+        }
         Response response = defaultRepo.update(zusatzwert, "land");
         Response updated = defaultRepo.getById(
             LZusatzWert.class,
@@ -168,6 +178,9 @@ public class ZusatzwertService {
                 LZusatzWert.class)
         ) {
             return new Response(false, 699, null);
+        }
+        if (lock.isLocked(obj)) {
+            return new Response(false, 697, null);
         }
         /* Delete the object*/
         return defaultRepo.delete(obj, "land");

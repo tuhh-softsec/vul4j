@@ -8,7 +8,9 @@
 package de.intevation.lada.rest;
 
 import java.io.StringReader;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +38,9 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.log4j.Logger;
 
+import de.intevation.lada.lock.LockConfig;
+import de.intevation.lada.lock.LockType;
+import de.intevation.lada.lock.ObjectLocker;
 import de.intevation.lada.model.land.LProbe;
 import de.intevation.lada.model.land.ProbeTranslation;
 import de.intevation.lada.query.QueryTools;
@@ -75,6 +80,10 @@ public class ProbeService {
     @Inject
     @AuthorizationConfig(type=AuthorizationType.OPEN_ID)
     private Authorization authorization;
+
+    @Inject
+    @LockConfig(type=LockType.TIMESTAMP)
+    private ObjectLocker lock;
 
     @Inject
     @ValidationConfig(type="Probe")
@@ -242,6 +251,9 @@ public class ProbeService {
                 LProbe.class)
         ) {
             return new Response(false, 699, null);
+        }
+        if (lock.isLocked(probe)) {
+            return new Response(false, 697, null);
         }
         Violation violation = validator.validate(probe);
         if (violation.hasErrors()) {

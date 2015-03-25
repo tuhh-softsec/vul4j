@@ -25,6 +25,9 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.log4j.Logger;
 
+import de.intevation.lada.lock.LockConfig;
+import de.intevation.lada.lock.LockType;
+import de.intevation.lada.lock.ObjectLocker;
 import de.intevation.lada.model.land.LOrt;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
@@ -48,6 +51,10 @@ public class OrtService {
     @Inject
     @RepositoryConfig(type=RepositoryType.RW)
     private Repository defaultRepo;
+
+    @Inject
+    @LockConfig(type=LockType.TIMESTAMP)
+    private ObjectLocker lock;
 
     /* The authorization module.*/
     @Inject
@@ -142,6 +149,9 @@ public class OrtService {
                 LOrt.class)) {
             return new Response(false, 699, null);
         }
+        if (lock.isLocked(ort)) {
+            return new Response(false, 697, null);
+        }
         Response response = defaultRepo.update(ort, "land");
         Response updated = defaultRepo.getById(
             LOrt.class,
@@ -172,6 +182,9 @@ public class OrtService {
                 RequestMethod.PUT,
                 LOrt.class)) {
             return new Response(false, 699, null);
+        }
+        if (lock.isLocked(ortObj)) {
+            return new Response(false, 697, null);
         }
         /* Delete the messwert object*/
         return defaultRepo.delete(ortObj, "land");

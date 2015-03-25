@@ -7,6 +7,8 @@
  */
 package de.intevation.lada.rest;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
@@ -25,6 +27,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
+import de.intevation.lada.lock.LockConfig;
+import de.intevation.lada.lock.LockType;
+import de.intevation.lada.lock.ObjectLocker;
 import de.intevation.lada.model.land.LMessung;
 import de.intevation.lada.model.land.MessungTranslation;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
@@ -45,6 +50,10 @@ public class MessungService {
     @Inject
     @RepositoryConfig(type=RepositoryType.RW)
     private Repository defaultRepo;
+
+    @Inject
+    @LockConfig(type=LockType.TIMESTAMP)
+    private ObjectLocker lock;
 
     /* The authorization module.*/
     @Inject
@@ -150,6 +159,9 @@ public class MessungService {
         ) {
             return new Response(false, 699, null);
         }
+        if (lock.isLocked(messung)) {
+            return new Response(false, 697, null);
+        }
         Response response = defaultRepo.update(messung, "land");
         Response updated = defaultRepo.getById(
             LMessung.class,
@@ -181,6 +193,9 @@ public class MessungService {
                 LMessung.class)
         ) {
             return new Response(false, 699, null);
+        }
+        if (lock.isLocked(messung)) {
+            return new Response(false, 697, null);
         }
         /* Create a query and request the messungTranslation object for the
          * messung*/
