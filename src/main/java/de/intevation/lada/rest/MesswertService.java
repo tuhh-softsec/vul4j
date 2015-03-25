@@ -7,6 +7,9 @@
  */
 package de.intevation.lada.rest;
 
+import java.sql.Timestamp;
+import java.util.Date;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -154,6 +157,7 @@ public class MesswertService {
         if (lock.isLocked(messwert)) {
             return new Response(false, 697, null);
         }
+        messwert.setLetzteAenderung(new Timestamp(new Date().getTime()));
         Response response = defaultRepo.update(messwert, "land");
         Response updated = defaultRepo.getById(
             LMesswert.class,

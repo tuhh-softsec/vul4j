@@ -7,6 +7,9 @@
  */
 package de.intevation.lada.rest;
 
+import java.sql.Timestamp;
+import java.util.Date;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -147,6 +150,7 @@ public class ZusatzwertService {
         if (lock.isLocked(zusatzwert)) {
             return new Response(false, 697, null);
         }
+        zusatzwert.setLetzteAenderung(new Timestamp(new Date().getTime()));
         Response response = defaultRepo.update(zusatzwert, "land");
         Response updated = defaultRepo.getById(
             LZusatzWert.class,

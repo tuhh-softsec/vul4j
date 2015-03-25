@@ -262,6 +262,7 @@ public class ProbeService {
             response.setWarnings(violation.getWarnings());
             return response;
         }
+        probe.setLetzteAenderung(new Timestamp(new Date().getTime()));
         Response response = defaultRepo.update(probe, "land");
         Response updated = defaultRepo.getById(
             LProbe.class,

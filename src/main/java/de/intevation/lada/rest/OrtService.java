@@ -7,6 +7,9 @@
  */
 package de.intevation.lada.rest;
 
+import java.sql.Timestamp;
+import java.util.Date;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -152,6 +155,7 @@ public class OrtService {
         if (lock.isLocked(ort)) {
             return new Response(false, 697, null);
         }
+        ort.setLetzteAenderung(new Timestamp(new Date().getTime()));
         Response response = defaultRepo.update(ort, "land");
         Response updated = defaultRepo.getById(
             LOrt.class,

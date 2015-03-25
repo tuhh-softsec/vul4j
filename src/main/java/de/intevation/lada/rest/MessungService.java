@@ -162,6 +162,7 @@ public class MessungService {
         if (lock.isLocked(messung)) {
             return new Response(false, 697, null);
         }
+        messung.setLetzteAenderung(new Timestamp(new Date().getTime()));
         Response response = defaultRepo.update(messung, "land");
         Response updated = defaultRepo.getById(
             LMessung.class,
