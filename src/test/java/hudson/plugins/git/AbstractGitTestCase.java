@@ -45,6 +45,7 @@ import hudson.plugins.git.extensions.impl.UserExclusion;
 import hudson.remoting.VirtualChannel;
 import hudson.slaves.EnvironmentVariablesNodeProperty;
 import hudson.util.StreamTaskListener;
+import jenkins.MasterToSlaveFileCallable;
 
 
 /**
@@ -227,7 +228,7 @@ public abstract class AbstractGitTestCase extends HudsonTestCase {
   }
 
   protected String getHeadRevision(AbstractBuild build, final String branch) throws IOException, InterruptedException {
-    return build.getWorkspace().act(new FilePath.FileCallable<String>() {
+    return build.getWorkspace().act(new MasterToSlaveFileCallable<String>() {
       public String invoke(File f, VirtualChannel channel) throws IOException, InterruptedException {
         try {
           ObjectId oid = Git.with(null, null).in(f).getClient().getRepository().resolve("refs/heads/" + branch);

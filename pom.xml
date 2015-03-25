@@ -20,13 +20,13 @@ limitations under the License.
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>1.568</version><!-- which version of Jenkins is this plugin built against? Users must have at least this Jenkins version to use this plugin. -->
+    <version>1.580.1</version>
   </parent>
 
   <artifactId>flaky-test-handler</artifactId>
   <name>Flaky Test Handler plugin</name>
   <description>Display rerun flaky tests</description>
-  <version>1.0.1</version>
+  <version>1.1-SNAPSHOT</version>
   <packaging>hpi</packaging>
   <url>https://wiki.jenkins-ci.org/display/JENKINS/Flaky+Test+Handler+Plugin</url>
 
@@ -76,6 +76,11 @@ limitations under the License.
        <groupId>jfree</groupId>
        <artifactId>jfreechart</artifactId>
        <version>1.0.13</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jenkins-ci.plugins</groupId>
+      <artifactId>junit</artifactId>
+      <version>1.4</version>
     </dependency>
       <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
