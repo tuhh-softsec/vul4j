@@ -55,6 +55,9 @@ public class LProbe extends Probe {
     @Column(name="solldatum_ende")
     private Timestamp solldatumEnde;
 
+    @Column(name="tree_modified")
+    private Timestamp treeModified;
+
     @Transient
     private boolean readonly;
 
@@ -149,15 +152,23 @@ public class LProbe extends Probe {
     public void setProbeIdAlt(String probeIdAlt) {}
 
     public boolean getIsOwner() {
-        return this.owner; //TODO set a valid value in authorization process.
+        return this.owner;
     }
 
     public void setIsOwner(boolean value) {
         this.owner = value;
     }
 
+    public Timestamp getTreeModified() {
+        return this.treeModified;
+    }
+
+    public void setTreeModified(Timestamp treeModified) {
+        this.treeModified = treeModified;
+    }
+
     public boolean getReadonly() {
-        return this.readonly; //TODO set a valid value in authorization process.
+        return this.readonly;
     }
 
     public void setReadonly(boolean value) {

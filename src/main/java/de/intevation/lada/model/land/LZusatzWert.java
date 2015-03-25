@@ -7,6 +7,9 @@
  */
 package de.intevation.lada.model.land;
 
+import java.sql.Timestamp;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -19,4 +22,14 @@ import javax.persistence.Table;
 public class LZusatzWert extends de.intevation.lada.model.ZusatzWert {
     private static final long serialVersionUID = 1L;
 
+    @Column(name="tree_modified")
+    private Timestamp treeModified;
+
+    public Timestamp getTreeModified() {
+        return treeModified;
+    }
+
+    public void setTreeModified(Timestamp treeModified) {
+        this.treeModified = treeModified;
+    }
 }

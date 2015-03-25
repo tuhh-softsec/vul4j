@@ -7,6 +7,8 @@
  */
 package de.intevation.lada.model.land;
 
+import java.sql.Timestamp;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
@@ -33,6 +35,9 @@ public class LMessung extends Messung {
 
     private Boolean geplant;
 
+    @Column(name="tree_modified")
+    private Timestamp treeModified;
+
     public LMessung() {
     }
 
@@ -42,6 +47,14 @@ public class LMessung extends Messung {
 
     public void setGeplant(Boolean geplant) {
         this.geplant = geplant;
+    }
+
+    public Timestamp getTreeModified() {
+        return this.treeModified;
+    }
+
+    public void setTreeModified(Timestamp treeModified) {
+        this.treeModified = treeModified;
     }
 
     public String getNebenprobenNr() {
