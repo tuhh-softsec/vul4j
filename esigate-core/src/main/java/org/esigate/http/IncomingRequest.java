@@ -21,10 +21,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpVersion;
 import org.apache.http.RequestLine;
 import org.apache.http.cookie.Cookie;
-import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.message.BasicHttpEntityEnclosingRequest;
 import org.apache.http.message.BasicRequestLine;
 import org.esigate.api.ContainerRequestContext;
@@ -100,7 +100,7 @@ public final class IncomingRequest extends BasicHttpEntityEnclosingRequest {
             return this;
         }
 
-        public Builder setEntity(InputStreamEntity entity) {
+        public Builder setEntity(HttpEntity entity) {
             result.setEntity(entity);
             return this;
         }

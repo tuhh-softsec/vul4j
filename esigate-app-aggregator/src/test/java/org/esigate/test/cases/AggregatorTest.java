@@ -19,7 +19,7 @@ import com.meterware.httpunit.WebResponse;
 
 /**
  * Tests for aggregator webapp
- * 
+ *
  * @author Francois-Xavier Bonnet
  * @author Nicolas Richeton
  */
@@ -129,7 +129,7 @@ public class AggregatorTest extends TestCase {
 
     /**
      * Ensure esi include tag is processed correclty if enclosed by esi comments.
-     * 
+     *
      * @throws Exception
      */
     public void testESIComments() throws Exception {
@@ -156,6 +156,24 @@ public class AggregatorTest extends TestCase {
         doSimpleTest("local/local-crosscontext.jsp");
     }
 
+    /**
+     * Test for a post on a local page
+     *
+     * @see <a href="https://github.com/esigate/esigate/issues/97">POST requests do not work with local providers
+     *      #97</a>
+     *
+     * @throws Exception
+     */
+    public void testLocalPost() throws Exception {
+        // Post request with a e-acute urlencoded using UTF-8 charset
+        PostMethodWebRequest req =
+                new PostMethodWebRequest(APPLICATION_PATH + "local/post.jsp", new ByteArrayInputStream(
+                        "myField=%C3%A9".getBytes("UTF-8")), "application/x-www-form-urlencoded");
+        WebResponse resp = webConversation.getResponse(req);
+        assertEquals("Status should be 200", HttpServletResponse.SC_OK, resp.getResponseCode());
+        assertEquals(getResource("post.jsp"), resp.getText());
+    }
+
     public void testMixedEncodings() throws Exception {
         doSimpleTest("template-mixed-encodings.jsp");
     }
@@ -163,7 +181,7 @@ public class AggregatorTest extends TestCase {
     /**
      * Test for a nested include : aggregated1 includes a block from aggregated2 and the block from aggregated2 includes
      * a block from aggregated1
-     * 
+     *
      * @throws Exception
      */
     public void testNestedInclude() throws Exception {
