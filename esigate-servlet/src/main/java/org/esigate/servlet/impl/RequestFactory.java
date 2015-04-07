@@ -20,14 +20,11 @@ import java.util.Enumeration;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.http.HttpHeaders;
 import org.apache.http.ProtocolVersion;
-import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicLineParser;
 import org.apache.http.message.BasicRequestLine;
@@ -73,25 +70,8 @@ public class RequestFactory {
             }
         }
         // create entity
-        ServletInputStream inputStream = request.getInputStream();
-        if (inputStream != null) {
-            // Copy entity-related headers
-            String contentLengthHeader = request.getHeader(HttpHeaders.CONTENT_LENGTH);
-            long contentLength = -1;
-            if (contentLengthHeader != null) {
-                contentLength = Long.parseLong(contentLengthHeader);
-            }
-            InputStreamEntity entity = new InputStreamEntity(inputStream, contentLength);
-            String contentTypeHeader = request.getContentType();
-            if (contentTypeHeader != null) {
-                entity.setContentType(contentTypeHeader);
-            }
-            String contentEncodingHeader = request.getCharacterEncoding();
-            if (contentEncodingHeader != null) {
-                entity.setContentEncoding(contentEncodingHeader);
-            }
-            builder.setEntity(entity);
-        }
+        HttpServletRequestEntity entity = new HttpServletRequestEntity(request);
+        builder.setEntity(entity);
 
         builder.setRemoteAddr(request.getRemoteAddr());
         builder.setRemoteUser(request.getRemoteUser());
