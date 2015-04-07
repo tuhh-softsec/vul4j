@@ -3,3 +3,5 @@ jdk:
   - oraclejdk8
   - oraclejdk7
   - openjdk7
+notifications:
+  slack: esigate:UgRe31idARp4sQmoz3huPGJU
