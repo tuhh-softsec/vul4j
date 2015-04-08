@@ -32,4 +32,7 @@ Reference documentation:
 http://www.esigate.org/reference.html
 
 Bugtracker:
-http://sourceforge.net/apps/mantisbt/webassembletool/
+https://github.com/esigate/esigate/issues
+
+Old bugtracker (prior to version 5.0):
+http://www.esigate.org/mantisbt/

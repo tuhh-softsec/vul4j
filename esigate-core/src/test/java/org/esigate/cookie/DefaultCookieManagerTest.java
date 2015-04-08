@@ -140,7 +140,7 @@ public class DefaultCookieManagerTest extends TestCase {
      * 0000232: Cookie management : ESIGate should replace in user's cookie store new cookies received instead of always
      * adding them.
      * 
-     * @see "http://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=232"
+     * @see "http://www.esigate.org/mantisbt/view.php?id=232"
      * 
      */
     public void testReplace() {

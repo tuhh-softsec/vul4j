@@ -47,9 +47,8 @@
 	<description>ESIGate - ESI reverse proxy, CMS integration, Remove
 		templating</description>
 	<issueManagement>
-		<system>MantisBT</system>
-		<url>https://sourceforge.net/apps/mantisbt/webassembletool/view_all_bug_page.php
-		</url>
+		<system>GitHub</system>
+		<url>https://github.com/esigate/esigate/issues</url>
 	</issueManagement>
 	<developers>
 		<developer>

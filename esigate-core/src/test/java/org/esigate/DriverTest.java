@@ -252,7 +252,7 @@ public class DriverTest extends TestCase {
     /**
      * 0000174: Redirect location with default port specified are incorrectly rewritten when preserveHost=true
      * <p>
-     * https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=174
+     * http://www.esigate.org/mantisbt/view.php?id=174
      * 
      * <p>
      * Issue with default ports, which results in invalid url creation.
@@ -318,7 +318,7 @@ public class DriverTest extends TestCase {
      * <p>
      * NPE in Apache HTTP CLient cache
      * <p>
-     * See :https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=142
+     * See :http://www.esigate.org/mantisbt/view.php?id=142
      * 
      * @throws Exception
      */
@@ -364,7 +364,7 @@ public class DriverTest extends TestCase {
      * <p>
      * NPE in Apache HTTP CLient cache
      * <p>
-     * See https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=142
+     * See http://www.esigate.org/mantisbt/view.php?id=142
      * 
      * @throws Exception
      */
@@ -399,7 +399,7 @@ public class DriverTest extends TestCase {
      * <p>
      * When requesting a full response, a full response must be sent even if the cache has cached a 304 response.
      * <p>
-     * See https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=155
+     * See http://www.esigate.org/mantisbt/view.php?id=155
      * 
      * @throws Exception
      */
@@ -456,7 +456,7 @@ public class DriverTest extends TestCase {
      * This test is to ensure behavior with preserve host off (already working as of bug 162).
      * 
      * @throws Exception
-     * @see <a href="http://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=162">0000162</a>
+     * @see <a href="http://www.esigate.org/mantisbt/view.php?id=162">0000162</a>
      */
     public void testBug162PreserveHostOff() throws Exception {
         Properties properties = new Properties();
@@ -491,7 +491,7 @@ public class DriverTest extends TestCase {
      * Warning: HttpClient is not using Host header to validate cookies.
      * 
      * @throws Exception
-     * @see <a href="http://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=162">0000162</a>
+     * @see <a href="http://www.esigate.org/mantisbt/view.php?id=162">0000162</a>
      */
     public void testBug162PreserveHostOn() throws Exception {
         Properties properties = new Properties();
@@ -564,7 +564,7 @@ public class DriverTest extends TestCase {
      * 0000135: Special characters are lost when including a fragment with no charset specified into UTF-8 page.
      * 
      * @throws Exception
-     * @see <a href="http://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=135">0000135</a>
+     * @see <a href="http://www.esigate.org/mantisbt/view.php?id=135">0000135</a>
      */
     public void testSpecialCharacterInIncludeNoCharset() throws Exception {
         String now = DateUtils.formatDate(new Date());
@@ -600,7 +600,7 @@ public class DriverTest extends TestCase {
     /**
      * 0000161: Cookie domain validation too strict with preserveHost.
      * 
-     * @see <a href="https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=161">0000161</a>
+     * @see <a href="http://www.esigate.org/mantisbt/view.php?id=161">0000161</a>
      * 
      * @throws Exception
      */
@@ -627,8 +627,7 @@ public class DriverTest extends TestCase {
     }
 
     /**
-     * 0000154: Warn on staleWhileRevalidate configuration issue.
-     * https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=154
+     * 0000154: Warn on staleWhileRevalidate configuration issue. http://www.esigate.org/mantisbt/view.php?id=154
      */
     public void testConfigStaleWhileRevalidateWith0WorkerThreadsThrowsConfigurationException() {
         Properties properties = new Properties();
@@ -645,7 +644,7 @@ public class DriverTest extends TestCase {
 
     /**
      * 0000141: Socket read timeout causes a stacktrace and may leak connection
-     * https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=141
+     * http://www.esigate.org/mantisbt/view.php?id=141
      * 
      * The warning will not be fixed in HttpClient but the leak is fixed.
      * 
@@ -732,8 +731,8 @@ public class DriverTest extends TestCase {
     /**
      * Cookies from external URLs calls should also be forwarded.
      * 
-     * @see <a href="https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=255">0000255: forwardCookies does
-     *      not work with esi:include if not using a provider variable</a>
+     * @see <a href="http://www.esigate.org/mantisbt/view.php?id=255">0000255: forwardCookies does not work with
+     *      esi:include if not using a provider variable</a>
      * @throws Exception
      */
     public void testForwardCookiesExternalUrl() throws Exception {
@@ -817,7 +816,7 @@ public class DriverTest extends TestCase {
     /**
      * 0000231: ESIgate should be enable to mashup elements for an error/404 page.
      * 
-     * @see "http://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=231"
+     * @see "http://www.esigate.org/mantisbt/view.php?id=231"
      * 
      * @throws Exception
      */
