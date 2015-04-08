@@ -36,3 +36,5 @@ https://github.com/esigate/esigate/issues
 
 Old bugtracker (prior to version 5.0):
 http://www.esigate.org/mantisbt/
+
+Note: the bugtracker has been migrated from mantisbt to GitHub issue tracking system. New issues must be created in GitHub but the tickets opened before version 5.0 will stay in mantisbt.
