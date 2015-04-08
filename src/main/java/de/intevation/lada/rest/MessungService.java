@@ -195,7 +195,7 @@ public class MessungService {
         LMessung messungObj = (LMessung)messung.getData();
         if (!authorization.isAuthorized(
                 request,
-                messung,
+                messungObj,
                 RequestMethod.DELETE,
                 LMessung.class)
         ) {
