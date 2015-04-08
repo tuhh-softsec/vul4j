@@ -510,6 +510,9 @@ crosscontext.mappings=/crosscontext/*
 			<source><![CDATA[
 <Context docBase="esigate" path="" crossContext="true"/>
 			]]></source>
+			<p>
+				Note: local and crosscontext providers do not support background revalidation.
+			</p>
 		</subsection>
 
                 <subsection name="Variables resolver">
