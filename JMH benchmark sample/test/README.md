@@ -9,9 +9,7 @@ Compares running two loops over the array with 67,000 integer elements.
 
 1st loop: changes every element  
 2nd loop: changes every sixteenth element
-
-<br />
-
+  
 **Building the benchmarks**
 
     $ mvn clean install
