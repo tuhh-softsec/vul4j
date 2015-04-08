@@ -59,6 +59,9 @@ public class OpenIdAuthorization implements Authorization {
         if (clazz == LProbe.class) {
             return this.authorizeProbe(userInfo, data);
         }
+        if (clazz == LMessung.class) {
+            return this.authorizeMessung(userInfo, data);
+        }
         Method[] methods = clazz.getMethods();
         for (Method method: methods) {
             if (method.getName().equals("getProbeId")) {
@@ -105,7 +108,13 @@ public class OpenIdAuthorization implements Authorization {
             }
             else if (method == RequestMethod.PUT ||
                      method == RequestMethod.DELETE) {
-                return !isReadOnly(probe.getId());
+                Response messResponse =
+                    repository.getById(LMessung.class, messung.getId(), "land");
+                LMessung messungDb = (LMessung)messResponse.getData();
+                boolean fertigChanged = !messung.getFertig().equals(messungDb.getFertig());
+                logger.warn("changed " + fertigChanged);
+                return (!messung.getFertig() || fertigChanged) &&
+                    getAuthorization(userInfo, probe);
             }
         }
         else {
@@ -141,7 +150,7 @@ public class OpenIdAuthorization implements Authorization {
                     Response pResponse =
                         repository.getById(LProbe.class, messung.getProbeId(), "land");
                     LProbe probe = (LProbe)pResponse.getData();
-                    return !isReadOnly(probe.getId()) && getAuthorization(userInfo, probe);
+                    return !messung.getFertig() && getAuthorization(userInfo, probe);
                 }
             }
         }
@@ -233,7 +242,7 @@ public class OpenIdAuthorization implements Authorization {
                 else {
                     owner = false;
                 }
-                readOnly = this.isReadOnly(probe.getId());
+                readOnly = messung.getFertig();
             }
 
             Method setOwner = clazz.getMethod("setOwner", boolean.class);
@@ -306,20 +315,52 @@ public class OpenIdAuthorization implements Authorization {
 
     private LProbe authorizeSingleProbe(UserInfo userInfo, LProbe probe) {
         if (!userInfo.getNetzbetreiber().contains(probe.getNetzbetreiberId())) {
-            probe.setIsOwner(false);
+            probe.setOwner(false);
             probe.setReadonly(true);
             return probe;
         }
         if (userInfo.getMessstellen().contains(probe.getMstId())) {
-            probe.setIsOwner(true);
+            probe.setOwner(true);
         }
         else {
-            probe.setIsOwner(false);
+            probe.setOwner(false);
         }
         probe.setReadonly(this.isReadOnly(probe.getId()));
         return probe;
     }
 
+    @SuppressWarnings("unchecked")
+    private Response authorizeMessung(UserInfo userInfo, Response data) {
+        if (data.getData() instanceof List<?>) {
+            List<LMessung> messungen = new ArrayList<LMessung>();
+            for (LMessung messung :(List<LMessung>)data.getData()) {
+                messungen.add(authorizeSingleMessung(userInfo, messung));
+            }
+            data.setData(messungen);
+        }
+        else if (data.getData() instanceof LMessung) {
+            LMessung messung = (LMessung)data.getData();
+            data.setData(authorizeSingleMessung(userInfo, messung));
+        }
+        return data;
+    }
+
+    private LMessung authorizeSingleMessung(UserInfo userInfo, LMessung messung) {
+        LProbe probe = (LProbe)repository.getById(LProbe.class, messung.getProbeId(), "land").getData();
+        if (!userInfo.getNetzbetreiber().contains(probe.getNetzbetreiberId())) {
+            messung.setOwner(false);
+            messung.setReadonly(true);
+            return messung;
+        }
+        if (userInfo.getMessstellen().contains(probe.getMstId())) {
+            messung.setOwner(true);
+        }
+        else {
+            messung.setOwner(false);
+        }
+        messung.setReadonly(messung.getFertig());
+        return messung;
+    }
     @Override
     public boolean isReadOnly(Integer probeId) {
         EntityManager manager = repository.entityManager("land");
