@@ -151,11 +151,11 @@ public class LProbe extends Probe {
 
     public void setProbeIdAlt(String probeIdAlt) {}
 
-    public boolean getIsOwner() {
+    public boolean getOwner() {
         return this.owner;
     }
 
-    public void setIsOwner(boolean value) {
+    public void setOwner(boolean value) {
         this.owner = value;
     }
 
