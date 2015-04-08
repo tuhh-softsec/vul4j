@@ -23,6 +23,7 @@ import javax.servlet.ServletException;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.esigate.ConfigurationException;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
@@ -43,6 +44,8 @@ import org.esigate.util.UriUtils;
 /**
  * Extension to enable local or cross-context includes inside a J2EE web application.
  * 
+ * This extension does not support background revalidation as it is not compliant with the Servlet request lifecycle.
+ * 
  * @author Francois-Xavier Bonnet
  * 
  */
@@ -58,6 +61,12 @@ public class ServletExtension implements Extension, IEventListener {
         driverParam.getEventManager().register(EventManager.EVENT_FETCH_PRE, this);
         context = properties.getProperty("context");
         maxObjectSize = Parameters.MAX_OBJECT_SIZE.getValue(properties);
+        if (!Parameters.STALE_WHILE_REVALIDATE.getDefaultValue().equals(
+                Parameters.STALE_WHILE_REVALIDATE.getValue(properties))) {
+            throw new ConfigurationException("ServletExtension does not support background revalidation ("
+                    + driver.getConfiguration().getInstanceName() + ".staleWhileRevalidate="
+                    + Parameters.STALE_WHILE_REVALIDATE.getValue(properties) + ")");
+        }
     }
 
     @Override
