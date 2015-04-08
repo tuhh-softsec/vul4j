@@ -67,12 +67,8 @@ public class TimestampLocker implements ObjectLocker {
                     Response mResponse =
                         repository.getById(LMessung.class, id, "land");
                     LMessung messung = (LMessung)mResponse.getData();
-                    Response pResponse =
-                        repository.getById(LProbe.class, messung.getProbeId(), "land");
-                    LProbe probe = (LProbe)pResponse.getData();
                     boolean newerMessung = isNewer(o, messung.getTreeModified());
-                    boolean newerProbe = isNewer(o, probe.getTreeModified());
-                    return newerMessung || newerProbe;
+                    return newerMessung;
                 }
             }
         }
@@ -82,7 +78,7 @@ public class TimestampLocker implements ObjectLocker {
     private boolean isNewer(Object o, Timestamp t) {
         Method m;
         try {
-            m = o.getClass().getMethod("getTreeModified");
+            m = o.getClass().getMethod("getParentModified");
             Timestamp ot = (Timestamp)m.invoke(o);
             return t.getTime() > ot.getTime();
         } catch (NoSuchMethodException | SecurityException |
