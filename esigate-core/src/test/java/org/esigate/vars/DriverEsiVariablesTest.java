@@ -54,8 +54,7 @@ public class DriverEsiVariablesTest extends AbstractDriverTestCase {
     private static final Logger LOG = LoggerFactory.getLogger(DriverEsiVariablesTest.class);
 
     /**
-     * 0000246: ESI variables are not available / replaced.
-     * https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=246
+     * 0000246: ESI variables are not available / replaced. http://www.esigate.org/mantisbt/view.php?id=246
      * 
      * @throws IOException
      * @throws HttpErrorPage
@@ -154,8 +153,7 @@ public class DriverEsiVariablesTest extends AbstractDriverTestCase {
     }
 
     /**
-     * 0000246: ESI variables are not available / replaced.
-     * https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=246
+     * 0000246: ESI variables are not available / replaced. http://www.esigate.org/mantisbt/view.php?id=246
      * 
      * @throws IOException
      * @throws HttpErrorPage

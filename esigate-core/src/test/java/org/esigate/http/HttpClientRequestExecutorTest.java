@@ -451,7 +451,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
 
     /**
      * 0000121: preserveHost adds port number even if default (ex: localhost:80).
-     * https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=121
+     * http://www.esigate.org/mantisbt/view.php?id=121
      * 
      * @throws Exception
      */
@@ -465,7 +465,7 @@ public class HttpClientRequestExecutorTest extends TestCase {
 
     /**
      * 0000123: Incorrect Host header while making include where master application has preserveHost=true and provider.
-     * preserveHost=false https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=123
+     * preserveHost=false http://www.esigate.org/mantisbt/view.php?id=123
      * 
      * @throws Exception
      */

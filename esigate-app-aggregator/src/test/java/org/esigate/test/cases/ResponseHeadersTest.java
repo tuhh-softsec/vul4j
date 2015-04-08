@@ -219,7 +219,7 @@ public class ResponseHeadersTest extends TestCase {
      * See
      * <ul>
      * <li>
-     * https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=129</li>
+     * http://www.esigate.org/mantisbt/view.php?id=129</li>
      * <li>http://en.wikipedia.org/wiki/List_of_HTTP_header_fields</li>
      * </ul>
      * 
