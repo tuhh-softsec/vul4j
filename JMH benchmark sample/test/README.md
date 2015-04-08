@@ -14,9 +14,9 @@ Compares running two loops over the array with 67,000 integer elements.
 
 **Building the benchmarks**
 
-<code>$ mvn clean install</code>
+    $ mvn clean install
 
 **Running the benchmarks**
 
-<code>$ java -jar target/benchmarks.jar</code>
+    $ java -jar target/benchmarks.jar
 
