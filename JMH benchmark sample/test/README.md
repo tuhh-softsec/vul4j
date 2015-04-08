@@ -9,7 +9,9 @@ Compares running two loops over the array with 67,000 integer elements.
 
 1st loop: changes every element  
 2nd loop: changes every sixteenth element
-  
+
+<br>
+
 **Building the benchmarks**
 
     $ mvn clean install
@@ -17,4 +19,20 @@ Compares running two loops over the array with 67,000 integer elements.
 **Running the benchmarks**
 
     $ java -jar target/benchmarks.jar
+  
+Measurements
+------------
+<br>
 
+Benchmark             | Mode | Cnt  | Score  | Error   | Units
+----------------------|------|------|--------|---------|------
+MyBenchmark.testLoop1 | avgt | 25   | 30.257 | ± 0.457 | ms/op  
+MyBenchmark.testLoop2 | avgt | 25   | 29.946 | ± 0.264 | ms/op
+
+<br>
+
+CPU information |
+----------------|----------------------------------------
+\# of Threads   | 8
+Model name:     | Intel(R) Core(TM) i7-2600 CPU @ 3.40GHz
+L2 cache:       | 8192 KB
