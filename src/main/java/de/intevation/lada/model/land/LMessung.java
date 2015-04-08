@@ -11,8 +11,10 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -35,8 +37,15 @@ public class LMessung extends Messung {
 
     private Boolean geplant;
 
-    @Column(name="tree_modified")
+    @OneToOne
+    @JoinColumn(name="probe_id", insertable=false, updatable=false)
+    private LProbe probe;
+
+    @Column(name="tree_modified", insertable=false, updatable=false)
     private Timestamp treeModified;
+
+    @Transient
+    private Timestamp parentModified;
 
     public LMessung() {
     }
@@ -55,6 +64,17 @@ public class LMessung extends Messung {
 
     public void setTreeModified(Timestamp treeModified) {
         this.treeModified = treeModified;
+    }
+
+    public Timestamp getParentModified() {
+        if (this.parentModified == null && this.probe != null) {
+            return this.probe.getTreeModified();
+        }
+        return this.parentModified;
+    }
+
+    public void setParentModified(Timestamp parentModified) {
+        this.parentModified = parentModified;
     }
 
     public String getNebenprobenNr() {

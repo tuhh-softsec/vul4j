@@ -55,7 +55,7 @@ public class LProbe extends Probe {
     @Column(name="solldatum_ende")
     private Timestamp solldatumEnde;
 
-    @Column(name="tree_modified")
+    @Column(name="tree_modified", insertable=false, updatable=false)
     private Timestamp treeModified;
 
     @Transient
