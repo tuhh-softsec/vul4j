@@ -123,7 +123,10 @@ public class ZusatzwertService {
             return new Response(false, 699, null);
         }
         /* Persist the new object*/
-        return defaultRepo.create(zusatzwert, "land");
+        return authorization.filter(
+            request,
+            defaultRepo.create(zusatzwert, "land"),
+            LZusatzWert.class);
     }
 
     /**
@@ -155,7 +158,10 @@ public class ZusatzwertService {
         Response updated = defaultRepo.getById(
             LZusatzWert.class,
             ((LZusatzWert)response.getData()).getId(), "land");
-        return updated;
+        return authorization.filter(
+            request,
+            updated,
+            LZusatzWert.class);
     }
 
     /**

@@ -103,8 +103,6 @@ public class ProbeService {
         @Context UriInfo info,
         @Context HttpServletRequest request
     ) {
-        logger.debug("user: " + request.getAttribute("lada.user.name"));
-        logger.debug("roles: " + request.getAttribute("lada.user.roles"));
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() || !params.containsKey("qid")) {
             return defaultRepo.getAll(LProbe.class, "land");
@@ -228,7 +226,10 @@ public class ProbeService {
         if(violation.hasWarnings()) {
             response.setWarnings(violation.getWarnings());
         }
-        return response;
+        return authorization.filter(
+            request,
+            response,
+            LProbe.class);
     }
 
     /**
@@ -270,7 +271,10 @@ public class ProbeService {
         if (violation.hasWarnings()) {
             updated.setWarnings(violation.getWarnings());
         }
-        return updated;
+        return authorization.filter(
+            request,
+            updated,
+            LProbe.class);
     }
 
     /**

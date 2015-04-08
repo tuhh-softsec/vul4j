@@ -135,7 +135,10 @@ public class MessungService {
         /* Get and return the new probe object*/
         Response created =
             defaultRepo.getById(LMessung.class, ret.getId(), "land");
-        return new Response(true, 200, created.getData());
+        return authorization.filter(
+            request,
+            new Response(true, 200, created.getData()),
+            LMessung.class);
     }
 
     /**
@@ -167,7 +170,10 @@ public class MessungService {
         Response updated = defaultRepo.getById(
             LMessung.class,
             ((LMessung)response.getData()).getId(), "land");
-        return updated;
+        return authorization.filter(
+            request,
+            updated,
+            LMessung.class);
     }
 
     /**

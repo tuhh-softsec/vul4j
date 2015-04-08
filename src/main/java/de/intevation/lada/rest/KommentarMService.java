@@ -116,7 +116,10 @@ public class KommentarMService {
             return new Response(false, 699, null);
         }
         /* Persist the new object*/
-        return defaultRepo.create(kommentar, "land");
+        return authorization.filter(
+            request,
+            defaultRepo.create(kommentar, "land"),
+            LKommentarM.class);
     }
 
     /**
@@ -140,7 +143,10 @@ public class KommentarMService {
         ) {
             return new Response(false, 699, null);
         }
-        return defaultRepo.update(kommentar, "land");
+        return authorization.filter(
+            request,
+            defaultRepo.update(kommentar, "land"),
+            LKommentarM.class);
     }
 
     /**

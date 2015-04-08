@@ -129,7 +129,10 @@ public class OrtService {
             return new Response(false, 699, null);
         }
         /* Persist the new object*/
-        return defaultRepo.create(ort, "land");
+        return authorization.filter(
+            request,
+            defaultRepo.create(ort, "land"),
+            LOrt.class);
     }
 
     /**
@@ -160,7 +163,10 @@ public class OrtService {
         Response updated = defaultRepo.getById(
             LOrt.class,
             ((LOrt)response.getData()).getId(), "land");
-        return updated;
+        return authorization.filter(
+            request,
+            updated,
+            LOrt.class);
     }
 
     /**

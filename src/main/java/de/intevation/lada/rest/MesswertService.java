@@ -130,7 +130,10 @@ public class MesswertService {
             return new Response(false, 699, null);
         }
         /* Persist the new messung object*/
-        return defaultRepo.create(messwert, "land");
+        return authorization.filter(
+            request,
+            defaultRepo.create(messwert, "land"),
+            LMesswert.class);
     }
 
     /**
@@ -162,7 +165,10 @@ public class MesswertService {
         Response updated = defaultRepo.getById(
             LMesswert.class,
             ((LMesswert)response.getData()).getId(), "land");
-        return updated;
+        return authorization.filter(
+            request,
+            updated,
+            LMesswert.class);
     }
 
     /**

@@ -119,7 +119,10 @@ public class KommentarPService {
             return new Response(false, 699, null);
         }
         /* Persist the new object*/
-        return defaultRepo.create(kommentar, "land");
+        return authorization.filter(
+            request,
+            defaultRepo.create(kommentar, "land"),
+            LKommentarP.class);
     }
 
     /**
@@ -144,7 +147,10 @@ public class KommentarPService {
             logger.debug("User is not authorized!");
             return new Response(false, 699, null);
         }
-        return defaultRepo.update(kommentar, "land");
+        return authorization.filter(
+            request,
+            defaultRepo.update(kommentar, "land"),
+            LKommentarP.class);
     }
 
     /**

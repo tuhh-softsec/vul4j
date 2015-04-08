@@ -120,7 +120,10 @@ public class StatusService {
             return new Response(false, 699, null);
         }
         /* Persist the new object*/
-        return defaultRepo.create(status, "land");
+        return authorization.filter(
+            request,
+            defaultRepo.create(status, "land"),
+            LStatus.class);
     }
 
     /**
@@ -151,7 +154,10 @@ public class StatusService {
         Response updated = defaultRepo.getById(
             LStatus.class,
             ((LStatus)response.getData()).getId(), "land");
-        return updated;
+        return authorization.filter(
+            request,
+            updated,
+            LStatus.class);
     }
 
     /**
