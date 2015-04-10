@@ -110,7 +110,6 @@ public final class DriverFactory {
      */
     public static void configure() {
         InputStream inputStream = null;
-        InputStream extInputStream = null;
 
         try {
             URL configUrl = getConfigUrl();
@@ -122,32 +121,11 @@ public final class DriverFactory {
 
             inputStream = configUrl.openStream();
 
-            // load driver-ext.properties if exists
-            LOG.info("Scanning configuration {}", "/esigate-ext.properties");
-            extInputStream = DriverFactory.class.getClassLoader().getResourceAsStream("/esigate-ext.properties");
-
-            // For backward compatibility
-            if (extInputStream == null) {
-                LOG.info("Scanning configuration {}", "/driver-ext.properties");
-                extInputStream = DriverFactory.class.getResourceAsStream("/driver-ext.properties");
-            }
-            if (extInputStream == null) {
-                LOG.info("Scanning configuration /{}/{}", DriverFactory.class.getPackage().getName().replace(".", "/"),
-                        "driver-ext.properties");
-                extInputStream = DriverFactory.class.getResourceAsStream("driver-ext.properties");
-            }
-
             Properties merged = new Properties();
             if (inputStream != null) {
                 Properties props = new Properties();
                 props.load(inputStream);
                 merged.putAll(props);
-            }
-
-            if (extInputStream != null) {
-                Properties extProps = new Properties();
-                extProps.load(extInputStream);
-                merged.putAll(extProps);
             }
 
             configure(merged);
@@ -159,9 +137,6 @@ public final class DriverFactory {
                     inputStream.close();
                 }
 
-                if (extInputStream != null) {
-                    extInputStream.close();
-                }
             } catch (IOException e) {
                 throw new ConfigurationException("failed to close stream", e);
             }
