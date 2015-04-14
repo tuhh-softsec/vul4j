@@ -43,6 +43,11 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.esigate.esi.EsiRenderer;
+import org.esigate.events.Event;
+import org.esigate.events.EventDefinition;
+import org.esigate.events.EventManager;
+import org.esigate.events.IEventListener;
+import org.esigate.events.impl.FetchEvent;
 import org.esigate.extension.DefaultCharset;
 import org.esigate.http.DateUtils;
 import org.esigate.http.HttpClientRequestExecutor;
@@ -866,6 +871,44 @@ public class DriverTest extends TestCase {
             Assert.assertEquals("OK", EntityUtils.toString(response.getEntity()));
         }
 
+    }
+
+    /**
+     * FetchEvent#getHttpResponse().getStatusLine().getUri() is not the same as
+     * FetchEvent#getHttpRequest().getOriginal().getRequestLine().getUri() #23
+     * 
+     * @see <a href="https://github.com/esigate/esigate/issues/23">https://github.com/esigate/esigate/issues/23</a>
+     * 
+     * @throws Exception
+     */
+    public void testPreserveHostInUriInOutgoingRequest() throws Exception {
+        Properties properties = new Properties();
+        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost");
+        properties.put(Parameters.PRESERVE_HOST, "true");
+
+        HttpResponse response = TestUtils.createHttpResponse().entity("test").build();
+        mockConnectionManager.setResponse(response);
+        Driver driver = createMockDriver(properties, mockConnectionManager);
+
+        IEventListener eventListener = new IEventListener() {
+
+            @Override
+            public boolean event(EventDefinition id, Event event) {
+                FetchEvent fetchEvent = (FetchEvent) event;
+                // uri of the incoming request
+                assertEquals("http://foo.com/test", fetchEvent.getHttpRequest().getOriginal().getRequestLine().getUri());
+                // uri of the outgoing request
+                // FIXME
+                // assertEquals("http://foo.com/test", fetchEvent.getHttpRequest().getRequestLine().getUri());
+                return false;
+            }
+        };
+
+        driver.getEventManager().register(EventManager.EVENT_FETCH_PRE, eventListener);
+        driver.getEventManager().register(EventManager.EVENT_FETCH_POST, eventListener);
+
+        IncomingRequest incomingRequest = TestUtils.createIncomingRequest("http://foo.com/test").build();
+        driver.proxy("/test", incomingRequest);
     }
 
 }
