@@ -17,6 +17,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
@@ -25,6 +28,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name="probe_translation")
+@DynamicInsert
+@DynamicUpdate
 public class ProbeTranslation implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -36,8 +41,7 @@ public class ProbeTranslation implements Serializable {
     @OneToOne
     private LProbe probe;
 
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name="probe_id_alt")
+    @Column(name="probe_id_alt", insertable= true, updatable=true, nullable=true)
     private String probeIdAlt;
 
     public ProbeTranslation() {

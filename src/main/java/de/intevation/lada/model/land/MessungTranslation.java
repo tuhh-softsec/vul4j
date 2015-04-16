@@ -17,6 +17,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
@@ -25,6 +28,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name="messung_translation")
+@DynamicInsert
+@DynamicUpdate
 public class MessungTranslation implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -36,7 +41,6 @@ public class MessungTranslation implements Serializable {
     @OneToOne
     private LMessung messungs;
 
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="messungs_id_alt")
     private Integer messungsIdAlt;
 
