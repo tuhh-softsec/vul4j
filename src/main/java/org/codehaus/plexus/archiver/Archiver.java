@@ -22,6 +22,7 @@ import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -175,6 +176,25 @@ public interface Archiver
      * @since 1.0-alpha-9
      */
     void addArchivedFileSet( ArchivedFileSet fileSet )
+        throws ArchiverException;
+
+
+    /**
+     * Adds the given archive file set to the archive. This method is basically obsoleting
+     * {@link #addArchivedFileSet(File)}, {@link #addArchivedFileSet(File, String[], String[])}, and
+     * {@link #addArchivedFileSet(File, String, String[], String[])}. However, as these methods are in widespread use,
+     * they cannot easily be made deprecated.
+     *
+     * @param charset the encoding to use, particularly useful to specific non-standard filename encodings
+     *                 for some kinds of archives (for instance zip files)
+     *
+     * Stream transformers are supported on this method
+     *
+     * @param fileSet the fileSet to add
+     * @param charset
+     * @since 1.0-alpha-9
+     */
+    void addArchivedFileSet( ArchivedFileSet fileSet, Charset charset )
         throws ArchiverException;
 
     /**

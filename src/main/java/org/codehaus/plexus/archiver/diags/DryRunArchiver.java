@@ -30,6 +30,7 @@ import org.codehaus.plexus.logging.Logger;
 import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 /**
  * A dry run archiver that does nothing. Some methods fall through to the underlying
@@ -194,6 +195,13 @@ public class DryRunArchiver
         throws ArchiverException
     {
 
+        debug( "DRY RUN: Skipping delegated call to: " + getMethodName() );
+    }
+
+    @Override
+    public void addArchivedFileSet( ArchivedFileSet fileSet, Charset charset )
+        throws ArchiverException
+    {
         debug( "DRY RUN: Skipping delegated call to: " + getMethodName() );
     }
 

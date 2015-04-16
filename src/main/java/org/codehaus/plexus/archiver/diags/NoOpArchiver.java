@@ -28,6 +28,7 @@ import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
 import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Map;
 
@@ -125,6 +126,12 @@ public class NoOpArchiver implements Archiver
     }
 
     public void addArchivedFileSet( ArchivedFileSet fileSet )
+        throws ArchiverException
+    {
+
+    }
+
+    public void addArchivedFileSet( ArchivedFileSet fileSet, Charset charset )
         throws ArchiverException
     {
 

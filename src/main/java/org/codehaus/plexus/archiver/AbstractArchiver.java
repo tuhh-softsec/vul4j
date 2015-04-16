@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.UndeclaredThrowableException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,6 +45,7 @@ import org.codehaus.plexus.components.io.attributes.Java7Reflector;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.functions.ResourceAttributeSupplier;
 import org.codehaus.plexus.components.io.resources.AbstractPlexusIoResourceCollection;
+import org.codehaus.plexus.components.io.resources.EncodingSupported;
 import org.codehaus.plexus.components.io.resources.PlexusIoArchivedResourceCollection;
 import org.codehaus.plexus.components.io.resources.PlexusIoFileResourceCollection;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
@@ -694,7 +696,7 @@ public abstract class AbstractArchiver
         }
     }
 
-    protected PlexusIoResourceCollection asResourceCollection( final ArchivedFileSet fileSet )
+    protected PlexusIoResourceCollection asResourceCollection( final ArchivedFileSet fileSet, Charset charset )
         throws ArchiverException
     {
         final File archiveFile = fileSet.getArchive();
@@ -710,6 +712,10 @@ public abstract class AbstractArchiver
                 "Error adding archived file-set. PlexusIoResourceCollection not found for: " + archiveFile, e );
         }
 
+        if (resources instanceof EncodingSupported ) {
+            ((EncodingSupported)resources).setEncoding( charset );
+
+        }
         if ( resources instanceof PlexusIoArchivedResourceCollection )
         {
             ( (PlexusIoArchivedResourceCollection) resources ).setFile( fileSet.getArchive() );
@@ -764,7 +770,14 @@ public abstract class AbstractArchiver
     public void addArchivedFileSet( final ArchivedFileSet fileSet )
         throws ArchiverException
     {
-        final PlexusIoResourceCollection resourceCollection = asResourceCollection( fileSet );
+        final PlexusIoResourceCollection resourceCollection = asResourceCollection( fileSet, null );
+        addResources( resourceCollection );
+    }
+
+    public void addArchivedFileSet( final ArchivedFileSet fileSet, Charset charset )
+        throws ArchiverException
+    {
+        final PlexusIoResourceCollection resourceCollection = asResourceCollection( fileSet, charset );
         addResources( resourceCollection );
     }
 

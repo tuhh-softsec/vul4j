@@ -27,6 +27,7 @@ import org.codehaus.plexus.util.StringUtils;
 import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -133,6 +134,12 @@ public class TrackingArchiver
     }
 
     public void addArchivedFileSet( final ArchivedFileSet fileSet )
+        throws ArchiverException
+    {
+        added.add( new Addition( fileSet, null, null, null, -1 ) );
+    }
+
+    public void addArchivedFileSet( final ArchivedFileSet fileSet, Charset charset )
         throws ArchiverException
     {
         added.add( new Addition( fileSet, null, null, null, -1 ) );
