@@ -378,4 +378,12 @@ public class OpenIdAuthorization implements Authorization {
         }
         return true;
     }
+
+    @Override
+    public boolean isAuthorized(UserInfo userInfo, Object data) {
+        if (data instanceof LProbe) {
+            return getAuthorization(userInfo, (LProbe)data);
+        }
+        return false;
+    }
 }

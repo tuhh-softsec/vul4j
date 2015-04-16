@@ -8,5 +8,6 @@ public interface Authorization {
     public <T> Response filter(Object source, Response data, Class<T> clazz);
     public <T> boolean isAuthorized(
         Object source, Object data, RequestMethod method, Class<T> clazz);
-	boolean isReadOnly(Integer probeId);
+    public boolean isAuthorized(UserInfo userInfo, Object data);
+    boolean isReadOnly(Integer probeId);
 }

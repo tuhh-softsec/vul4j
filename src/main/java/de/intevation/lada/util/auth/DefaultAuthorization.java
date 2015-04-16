@@ -30,4 +30,9 @@ public class DefaultAuthorization implements Authorization {
     public boolean isReadOnly(Integer probeId) {
         return false;
     }
+
+    @Override
+    public boolean isAuthorized(UserInfo userInfo, Object data) {
+        return true;
+    }
 }
