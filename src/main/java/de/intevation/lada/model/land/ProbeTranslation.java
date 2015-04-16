@@ -17,9 +17,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
@@ -39,8 +36,8 @@ public class ProbeTranslation implements Serializable {
     @OneToOne
     private LProbe probe;
 
-    @Generated(GenerationTime.INSERT)
-    @Column(name="probe_id_alt", insertable=false)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name="probe_id_alt")
     private String probeIdAlt;
 
     public ProbeTranslation() {
