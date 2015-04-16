@@ -166,6 +166,17 @@ public class OpenIDFilter implements Filter {
         return new ParameterList(queryMap);
     }
 
+    private boolean checkOpenIDQuery(ServletRequest req) {
+        HttpServletRequest hReq = (HttpServletRequest) req;
+
+        String oidParamString = hReq.getQueryString();
+
+        if (oidParamString == null) {
+            logger.debug("No query string.");
+        }
+        return checkOpenIDString(hReq, oidParamString);
+    }
+
     private boolean checkOpenIDHeader(ServletRequest req) {
 
         HttpServletRequest hReq = (HttpServletRequest) req;
@@ -185,9 +196,13 @@ public class OpenIDFilter implements Filter {
         String oidParamString = hReq.getHeader(oidHeader);
 
         if (oidParamString == null) {
-            logger.debug("Header " + oidHeader + " not provided. Trying params.");
-            oidParamString = hReq.getQueryString();
+            logger.debug("Header " + oidHeader + " not provided.");
         }
+        return checkOpenIDString(hReq, oidParamString);
+    }
+
+    private boolean checkOpenIDString(HttpServletRequest hReq,
+                                      String oidParamString) {
 
         /* Parse the parameters to a map for openid4j */
         ParameterList oidParams = splitParams(oidParamString);
@@ -299,13 +314,21 @@ public class OpenIDFilter implements Filter {
         if (!discoveryDone) {
             discoveryDone = discoverServer();
         }
-        if (discoveryDone && checkOpenIDHeader(req)) {
-            /** Successfully authenticated. */
-            hResp.addHeader(oidHeader, hReq.getQueryString().replace(
-                        "is_return=true",""));
-            chain.doFilter(req, resp);
-            return;
+        if (discoveryDone) {
+            if (checkOpenIDHeader(req))
+            {
+                /* Successfully authenticated. Through Header */
+                chain.doFilter(req, resp);
+                return;
+            } else if (checkOpenIDQuery(req)) {
+                /* Successfully authenticated. Through Query parameters.*/
+                hResp.addHeader(oidHeader, hReq.getQueryString().replace(
+                            "is_return=true",""));
+                chain.doFilter(req, resp);
+                return;
+            }
         }
+        /* Authentication failure */
         String authRequestURL = "Error communicating with openid server";
         int errorCode = 698;
         if (discoveryDone) {
