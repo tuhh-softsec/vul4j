@@ -19,6 +19,7 @@ import de.intevation.lada.model.land.LOrt;
 import de.intevation.lada.model.land.LProbe;
 import de.intevation.lada.model.land.LZusatzWert;
 import de.intevation.lada.model.land.MessungTranslation;
+import de.intevation.lada.model.land.ProbeTranslation;
 import de.intevation.lada.model.stamm.SOrt;
 
 /**
@@ -33,6 +34,7 @@ public class LafProducer
     private Logger logger;
 
     private LProbe probe;
+    private ProbeTranslation probeTranslation;
     private LMessung messung;
     private MessungTranslation messungTranslation;
 
@@ -65,6 +67,7 @@ public class LafProducer
         this.warnings = new HashMap<String, List<ReportItem>>();
         this.errors = new HashMap<String, List<ReportItem>>();
         this.probe = new LProbe();
+        this.probeTranslation = new ProbeTranslation();
         this.pKommentare = new ArrayList<LKommentarP>();
         this.mKommentare = new HashMap<LMessung, List<LKommentarM>>();
         this.messungen = new HashMap<LMessung, MessungTranslation>();
@@ -175,7 +178,8 @@ public class LafProducer
         }
         else if (isValidProbe(lKey, values.toString())) {
             this.probe = mapper.addAttribute(lKey, values, this.probe);
-            if (this.probe == null) {
+            this.probeTranslation = mapper.addAttribute(lKey, values, this.probeTranslation);
+            if (this.probe == null || this.probeTranslation == null) {
                 this.errors.put(values.toString(), mapper.getErrors());
                 throw new LafParserException(values.toString() + " exists");
             }
@@ -247,6 +251,10 @@ public class LafProducer
      */
     public LProbe getProbe() {
         return this.probe;
+    }
+
+    public ProbeTranslation getProbeTranslation() {
+        return this.probeTranslation;
     }
 
     /**
@@ -331,7 +339,6 @@ public class LafProducer
         }
         this.messung = new LMessung();
         this.messungTranslation = new MessungTranslation();
-        this.messung.setProbeId(this.probe.getId());
     }
 
     /**
@@ -367,6 +374,9 @@ public class LafProducer
         if (this.probe == null) {
             return this.warnings;
         }
+        if (mapper.getWarnings() == null || mapper.getWarnings().size() == 0) {
+            return this.warnings;
+        }
         String key = probe.getId() == null ? "probeId" : probe.getId().toString();
         List<ReportItem> warn = this.warnings.get(key);
         if (warn == null) {
@@ -382,11 +392,14 @@ public class LafProducer
      * @return the errors
      */
     public Map<String, List<ReportItem>> getErrors() {
-        if (this.probe == null) {
+        if (this.probe == null || this.probeTranslation == null) {
             return this.errors;
         }
-        String key = probe.getId() == null ?
-            "probeId" : probe.getId().toString();
+        if (mapper.getErrors() == null || mapper.getErrors().size() == 0) {
+            return this.errors;
+        }
+        String key = probeTranslation.getProbeIdAlt() == null ?
+            "probeId" : probeTranslation.getProbeIdAlt();
         List<ReportItem> err = this.errors.get(key);
         if (err == null) {
             this.errors.put(key, mapper.getErrors());

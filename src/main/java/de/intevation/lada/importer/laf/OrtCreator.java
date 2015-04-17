@@ -668,9 +668,8 @@ public class OrtCreator
     public LOrt toLOrt() {
         logger.debug("#### getting lort");
         if (this.ortId == null &&
-            (this.ortCode == null || this.ortCode.length() == 0) ||
-            this.probeId == null) {
-            logger.debug("return null: " + this.probeId + "; " + this.ortCode);
+            (this.ortCode == null || this.ortCode.length() == 0)
+        ) {
             return null;
         }
         if(this.ortCode != null && this.ortCode.length() > 0) {

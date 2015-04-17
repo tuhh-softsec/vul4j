@@ -46,7 +46,7 @@ public class AttributeMapper
     private Logger logger;
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RW)
+    @RepositoryConfig(type=RepositoryType.RO)
     private Repository repository;
 
     private List<ReportItem> warnings;
@@ -89,35 +89,6 @@ public class AttributeMapper
         }
         else if ("datenbasis".equals(key) && probe.getDatenbasisId() != null){
             this.warnings.add(new ReportItem(key, value.toString(), 672));
-        }
-
-        if ("probe_id".equals(key)) {
-            QueryBuilder<ProbeTranslation> builder =
-                new QueryBuilder<ProbeTranslation>(
-                    repository.entityManager("land"), ProbeTranslation.class);
-            builder.and("probeIdAlt", value);
-            Response response =
-                repository.filter(builder.getQuery(), "land");
-            List<ProbeTranslation> info = (List<ProbeTranslation>)response.getData();
-            logger.debug("found " + info.size() + " items");
-            if (info != null && info.size() > 0) {
-                logger.debug("found probe with old id: " + value);
-                errors.add(new ReportItem("probe_id", value.toString(), 671));
-                return null;
-            }
-            probe.setTest(true);
-            probe.setProbenartId(1);
-            repository.create(probe, "land");
-            ProbeTranslation trans = new ProbeTranslation();
-
-            logger.debug("###### probeidalt: " + value);
-            trans.setProbeIdAlt(value.toString());
-            //Query q = repository.queryFromString("select nextval('bund.probe_id_seq')");
-            //BigInteger id = (BigInteger)q.getSingleResult();
-            //probe.setId(id.intValue());
-            //logger.debug("id of the new probe: " + id);
-            trans.setProbeId(probe);
-            repository.create(trans, "land");
         }
 
         if ("hauptprobennummer".equals(key)) {
@@ -226,6 +197,28 @@ public class AttributeMapper
         return probe;
     }
 
+    public ProbeTranslation addAttribute(
+        String key,
+        Object value,
+        ProbeTranslation probeTranslation
+    ) {
+        if ("probe_id".equals(key)) {
+            QueryBuilder<ProbeTranslation> builder =
+                new QueryBuilder<ProbeTranslation>(
+                    repository.entityManager("land"), ProbeTranslation.class);
+            builder.and("probeIdAlt", value);
+            Response response =
+                repository.filter(builder.getQuery(), "land");
+            List<ProbeTranslation> info = (List<ProbeTranslation>)response.getData();
+            if (info != null && info.size() > 0) {
+                errors.add(new ReportItem("probe_id", value.toString(), 671));
+                return null;
+            }
+            probeTranslation.setProbeIdAlt(value.toString());
+        }
+        return probeTranslation;
+    }
+
     /**
      * Add an attribute to the given LKommentarP object.
      *
@@ -242,7 +235,6 @@ public class AttributeMapper
         DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
         String v = value.toString();
         String erzeuger = v.substring(1, 6);
-        logger.debug("erzeuger is " + erzeuger);
         String date = v.substring(8, 21);
         Date d;
         try {
@@ -341,9 +333,7 @@ public class AttributeMapper
         Object value,
         MessungTranslation mt
     ) {
-        logger.debug("###### set messungsidalt");
         if ("messungs_id".equals(key)) {
-            logger.debug("###### set messungsid alt: " + value);
             mt.setMessungsIdAlt(Integer.valueOf(value.toString()));
         }
         return mt;

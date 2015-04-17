@@ -17,6 +17,7 @@ import de.intevation.lada.model.land.LProbe;
 import de.intevation.lada.model.land.MessungTranslation;
 import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.validation.Validator;
+import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationConfig;
 
 /**
@@ -153,43 +154,61 @@ public class LafParser {
      * @param auth  The authentication information.
      */
     private void writeAll(UserInfo userInfo) {
-        String probeId = producer.getProbe().getId() == null ?
-            "probeId" : producer.getProbe().getId().toString();
-        boolean p = writer.writeProbe(userInfo, producer.getProbe());
-        logger.debug("write probe: " + p);
+        String probeId = producer.getProbeTranslation().getProbeIdAlt() == null ?
+            "probeId" : producer.getProbeTranslation().getProbeIdAlt().toString();
+        Violation violation = validateProbe(producer.getProbe());
+        if (violation.hasErrors()) {
+            ReportItem err = new ReportItem("validation", violation.getErrors(), null);
+            List<ReportItem> errs= new ArrayList<ReportItem>();
+            errs.add(err);
+            this.appendErrors(probeId, errs);
+            return;
+        }
+        boolean p = writer.writeProbe(userInfo, producer.getProbe(), producer.getProbeTranslation());
         if (!p) {
             this.errors.put(probeId, writer.getErrors());
             return;
         }
         writer.writeProbenKommentare(userInfo, producer.getProbenKommentare());
-        boolean m = writer.writeMessungen(userInfo, producer.getMessungen());
-        if (!m) {
-            return;
-        }
-        for (LMessung tm : producer.getMessungen().keySet()) {
-            logger.debug("messungsid: " + tm.getId());
+        for (LMessung messung: producer.getMessungen().keySet()) {
+            Violation mViolation = messungValidator.validate(messung);
+            if (mViolation.hasErrors()) {
+                ReportItem mErr = new ReportItem("validation", mViolation.getErrors(), null);
+                List<ReportItem> mErrs = new ArrayList<ReportItem>();
+                mErrs.add(mErr);
+                this.appendErrors(probeId, mErrs);
+                continue;
+            }
+            boolean m = writer.writeMessungen(userInfo, messung, producer.getMessungen().get(messung));
+            if (!m) {
+                return;
+            }
         }
         writer.writeOrte(userInfo, producer.getOrte());
         logger.debug("### i have " + producer.getLOrte().size() + " orte");
         writer.writeLOrte(userInfo, producer.getLOrte());
         writer.writeMessungKommentare(userInfo, producer.getMessungsKommentare());
         writer.writeMesswerte(userInfo, producer.getMesswerte());
-        this.validateProbe(producer.getProbe());
-        this.validateMessungen(producer.getMessungen());
-        this.validateMesswerte(producer.getMesswerte());
-        this.validateLOrte(producer.getLOrte());
+        Violation postViolation = validateProbe(producer.getProbe());
+        if (postViolation.hasWarnings()) {
+            ReportItem warn = new ReportItem("validation", postViolation.getWarnings(), null);
+            List<ReportItem> warns = new ArrayList<ReportItem>();
+            warns.add(warn);
+            this.appendWarnings(probeId, warns);
+        }
+        for (LMessung messung: producer.getMessungen().keySet()) {
+            Violation mViolation = messungValidator.validate(messung);
+            if (mViolation.hasWarnings()) {
+                ReportItem mWarn = new ReportItem("validation", mViolation.getWarnings(), null);
+                List<ReportItem> mWarns = new ArrayList<ReportItem>();
+                mWarns.add(mWarn);
+                this.appendWarnings(probeId, mWarns);
+            }
+        }
     }
 
-    private void validateProbe(LProbe probe) {
-    }
-
-    private void validateMessungen(Map<LMessung, MessungTranslation> messungen) {
-    }
-
-    private void validateMesswerte(Map<LMessung, List<LMesswert>> werte) {
-    }
-
-    private void validateLOrte(List<LOrt> orte) {
+    private Violation validateProbe(LProbe probe) {
+        return probeValidator.validate(probe);
     }
 
     /**
@@ -285,7 +304,10 @@ public class LafParser {
                 continue;
             }
             if ((current == '\n' || current == '\r') && (key || white)) {
-                //TODO error!!!
+                ReportItem item = new ReportItem("parser", "general error", 603);
+                List<ReportItem> items = new ArrayList<ReportItem>();
+                items.add(item);
+                this.appendErrors("parser", items);
                 return;
             }
 

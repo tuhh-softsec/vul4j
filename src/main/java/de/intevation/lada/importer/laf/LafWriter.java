@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.PersistenceException;
+
+import org.apache.log4j.Logger;
 
 import de.intevation.lada.importer.ReportItem;
 import de.intevation.lada.model.land.LKommentarM;
@@ -16,6 +17,7 @@ import de.intevation.lada.model.land.LMesswert;
 import de.intevation.lada.model.land.LOrt;
 import de.intevation.lada.model.land.LProbe;
 import de.intevation.lada.model.land.MessungTranslation;
+import de.intevation.lada.model.land.ProbeTranslation;
 import de.intevation.lada.model.stamm.SOrt;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
@@ -34,6 +36,9 @@ import de.intevation.lada.util.data.RepositoryType;
 public class LafWriter {
 
     @Inject
+    private Logger logger;
+
+    @Inject
     @RepositoryConfig(type=RepositoryType.RW)
     private Repository repository;
 
@@ -43,6 +48,8 @@ public class LafWriter {
 
     private List<ReportItem> errors;
     private List<ReportItem> warnings;
+
+    private Integer currentProbeId;
 
     /**
      * Default constructor.
@@ -60,17 +67,20 @@ public class LafWriter {
      * @param probe     The new {@link LProbe} object.
      * @return success
      */
-    public boolean writeProbe(UserInfo userInfo, LProbe probe) {
+    public boolean writeProbe(UserInfo userInfo, LProbe probe, ProbeTranslation probeTranslation) {
         if (!authorization.isAuthorized(userInfo, probe)) {
             errors.add(new ReportItem("auth", "not authorized", 699));
             return false;
         }
-        if (probe.getId() == null) {
+        if (probeTranslation.getProbeIdAlt() == null) {
             errors.add(new ReportItem("probeId", "missing", 673));
             return false;
         }
         try {
-            repository.update(probe, "land");
+            repository.create(probe, "land");
+            probeTranslation.setProbeId(probe);
+            this.currentProbeId = probe.getId();
+            repository.create(probeTranslation, "land");
         }
         catch (PersistenceException e) {
             errors.add(new ReportItem("probe", "writing", 670));
@@ -89,14 +99,13 @@ public class LafWriter {
      */
     public boolean writeMessungen(
         UserInfo userInfo,
-        Map<LMessung, MessungTranslation> messungen
+        LMessung messung,
+        MessungTranslation messungTranslation
     ) {
-        for(LMessung messung: messungen.keySet()) {
-            repository.create(messung, "land");
-            MessungTranslation mt = messungen.get(messung);
-            mt.setMessungsId(messung);
-            repository.create(mt, "land");
-        }
+        messung.setProbeId(this.currentProbeId);
+        repository.create(messung, "land");
+        messungTranslation.setMessungsId(messung);
+        repository.create(messungTranslation, "land");
         return true;
     }
 
@@ -124,6 +133,7 @@ public class LafWriter {
      */
     public boolean writeLOrte(UserInfo userInfo, List<LOrt> orte) {
         for(LOrt ort: orte) {
+            ort.setProbeId(this.currentProbeId);
             repository.create(ort, "land");
         }
         return true;
@@ -141,6 +151,7 @@ public class LafWriter {
         List<LKommentarP> kommentare
     ) {
         for(LKommentarP kommentar: kommentare) {
+            kommentar.setProbeId(this.currentProbeId);
             repository.create(kommentar, "land");
         }
         return true;
@@ -206,5 +217,6 @@ public class LafWriter {
     public void reset() {
         this.warnings = new ArrayList<ReportItem>();
         this.errors = new ArrayList<ReportItem>();
+        this.currentProbeId = null;
     }
 }
