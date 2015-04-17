@@ -68,9 +68,7 @@ public class LafImporter implements Importer {
         this.warnings.clear();
         this.errors.clear();
         this.parser.reset();
-        logger.debug("doing import");
         boolean success = parser.parse(userInfo, content);
-        logger.debug("import success: " + success);
         if (!success) {
                 List<ReportItem> report = new ArrayList<ReportItem>();
                 report.add(new ReportItem("parser", "no success", 660));

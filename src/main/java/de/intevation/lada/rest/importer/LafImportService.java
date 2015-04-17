@@ -68,7 +68,6 @@ public class LafImportService {
         @Context HttpServletRequest request) {
         UserInfo userInfo = authorization.getInfo(request);
 
-        logger.debug(content);
         importer.doImport(content, userInfo);
         Map<String, Object> respData = new HashMap<String,Object>();
         respData.put("errors", importer.getErrors());

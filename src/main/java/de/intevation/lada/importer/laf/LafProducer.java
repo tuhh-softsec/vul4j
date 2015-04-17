@@ -92,7 +92,6 @@ public class LafProducer
      */
     public void addData(String key, Object values)
     throws LafParserException {
-        logger.debug("adding " + key + ": " + values);
         String lKey = key.toLowerCase();
         if(lKey.equals("probenkommentar")) {
             LKommentarP kommentar = new LKommentarP();
@@ -172,7 +171,6 @@ public class LafProducer
         }
         else if (isValidMessung(lKey, values.toString())) {
             this.messung = mapper.addAttribute(lKey, values, this.messung);
-            logger.debug("####### " + lKey + ": " + values);
             this.messungTranslation =
                 mapper.addAttribute(lKey, values, this.messungTranslation);
         }
@@ -351,20 +349,14 @@ public class LafProducer
             if (o != null) {
                 this.orte.add(o);
             }
-            logger.debug("ort: " + this.ort.getProbeId());
             LOrt lo = this.ort.toLOrt();
-            logger.debug("lo is " + lo != null);
             if (lo != null) {
                 this.lorte.add(lo);
             }
         }
         OrtCreator creator = this.ort;
         creator.reset();
-        logger.debug(this.probe.getId());
-        logger.debug(creator.hashCode());
         creator.setProbeId(this.probe.getId());
-        logger.debug("ort: " + creator.getProbeId());
-        logger.debug(creator.hashCode());
     }
 
     /**

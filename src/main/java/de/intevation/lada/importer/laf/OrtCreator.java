@@ -78,7 +78,6 @@ public class OrtCreator
      * @param ortCode   the ortCode to set
      */
     public void setOrtCode(String ortCode) {
-        logger.debug("ort code is " + ortCode);
         this.ortCode = ortCode;
     }
 
@@ -319,7 +318,6 @@ public class OrtCreator
         String key,
         Object value
     ) {
-        logger.debug("# adding " + key + ": " + value);
         if ("ort_code".equals(key)) {
             this.setOrtCode(value.toString());
         }
@@ -666,7 +664,6 @@ public class OrtCreator
      * @return The new LOrt object.
      */
     public LOrt toLOrt() {
-        logger.debug("#### getting lort");
         if (this.ortId == null &&
             (this.ortCode == null || this.ortCode.length() == 0)
         ) {
@@ -686,12 +683,10 @@ public class OrtCreator
         ort.setProbeId(this.probeId);
         ort.setOrtsTyp(this.ortTyp);
         ort.setOrtszusatztext(this.zusatztext);
-        logger.debug("yeah a new ort");
         return ort;
     }
 
     public void reset() {
-        logger.debug("resetting ortcreator");
         this.beschreibung = null;
         this.bezeichnung = null;
         this.gemName = null;

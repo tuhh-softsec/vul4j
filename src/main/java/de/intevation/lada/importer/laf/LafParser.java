@@ -90,11 +90,9 @@ public class LafParser {
                 single = laf.substring(0, nextPos + 1);
                 laf = laf.substring(nextPos + 1);
                 try {
-                    logger.debug("parsing probe");
                     readAll(single);
                     this.warnings.putAll(producer.getWarnings());
                     this.errors.putAll(producer.getErrors());
-                    logger.debug("writing to database");
                     writeAll(userInfo);
                     this.producer.reset();
                     this.writer.reset();
@@ -117,11 +115,9 @@ public class LafParser {
             }
             else {
                 try {
-                    logger.debug("parsing single probe");
                     readAll(laf);
                     this.warnings.putAll(producer.getWarnings());
                     this.errors.putAll(producer.getErrors());
-                    logger.debug("writing single to database");
                     writeAll(userInfo);
                     this.producer.reset();
                     this.writer.reset();
@@ -185,7 +181,6 @@ public class LafParser {
             }
         }
         writer.writeOrte(userInfo, producer.getOrte());
-        logger.debug("### i have " + producer.getLOrte().size() + " orte");
         writer.writeLOrte(userInfo, producer.getLOrte());
         writer.writeMessungKommentare(userInfo, producer.getMessungsKommentare());
         writer.writeMesswerte(userInfo, producer.getMesswerte());
