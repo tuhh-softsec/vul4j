@@ -432,4 +432,29 @@ public class UrlRewriterTest extends TestCase {
         String rewrittenHtml = "<meta http-equiv=\"refresh\" content=\"5; url=http://visible/context/test\">";
         assertRewritesHtml(html, rewrittenHtml);
     }
+
+    public void testDoesNotRewriteJavascriptUrl() {
+        baseUrl = "http://backend/path/";
+        visibleUrlBase = "http://backend/";
+        requestUrl = "/";
+
+        absolute = false;
+        assertDoesNotRewrite("javascript://alert('test')");
+
+        absolute = true;
+        assertDoesNotRewrite("javascript://alert('test')");
+    }
+
+    public void testDoesNotRewriteMailtoUrl() {
+        baseUrl = "http://backend/path/";
+        visibleUrlBase = "http://backend/";
+        requestUrl = "/";
+
+        absolute = false;
+        assertDoesNotRewrite("mailto:test@test.com");
+
+        absolute = true;
+        assertDoesNotRewrite("mailto:test@test.com");
+    }
+
 }
