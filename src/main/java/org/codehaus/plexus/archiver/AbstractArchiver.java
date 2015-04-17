@@ -108,6 +108,7 @@ public abstract class AbstractArchiver
     // On lunix-like systems, we replace windows backslashes with forward slashes
     private final boolean replacePathSlashesToJavaPaths = File.separatorChar == '/';
 
+    private final List<Closeable> closeables = new ArrayList<Closeable>(  );
     /**
      * since 2.2 is on by default
      *
@@ -523,7 +524,7 @@ public abstract class AbstractArchiver
                                 // to the client and ditch the whole issue onto the client.
                                 // this does not really make any sense either, might equally well change the
                                 // api into something that is not broken by design.
-                                closeQuietlyIfCloseable( ioResourceIter );
+                                addCloseable( ioResourceIter );
                                 ioResourceIter = null;
                             }
                         }
@@ -1041,12 +1042,27 @@ public abstract class AbstractArchiver
 
     protected abstract String getArchiveType();
 
+    private void addCloseable(Object maybeCloseable){
+        if (maybeCloseable instanceof  Closeable)
+            closeables.add( (Closeable) maybeCloseable );
+
+    }
+    private void closeIterators()
+    {
+        for ( Closeable closeable : closeables )
+        {
+            closeQuietlyIfCloseable( closeable );
+        }
+
+    }
     protected abstract void close()
         throws IOException;
 
     protected void cleanUp()
         throws IOException
     {
+        closeIterators();
+
         for ( Object resource : resources )
         {
             if ( resource instanceof PlexusIoProxyResourceCollection )

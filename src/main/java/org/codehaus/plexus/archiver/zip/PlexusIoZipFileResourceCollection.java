@@ -32,7 +32,7 @@ public class PlexusIoZipFileResourceCollection
         {
             throw new IOException( "The tar archive file has not been set." );
         }
-        final ZipFile zipFile = new ZipFile( f, charset.name() );
+        final ZipFile zipFile = new ZipFile( f, charset != null ? charset.name() : "UTF8");
         return new CloseableIterator( zipFile );
     }
 
