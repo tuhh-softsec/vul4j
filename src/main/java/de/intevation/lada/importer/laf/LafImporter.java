@@ -17,7 +17,6 @@ import de.intevation.lada.importer.ReportItem;
 import de.intevation.lada.util.auth.UserInfo;
 
 @ImportConfig(format=ImportFormat.LAF)
-@Stateless
 public class LafImporter implements Importer {
 
     @Inject

@@ -32,7 +32,6 @@ import de.intevation.lada.util.data.RepositoryType;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@Stateless
 public class LafWriter {
 
     @Inject

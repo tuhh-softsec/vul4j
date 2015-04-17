@@ -38,7 +38,6 @@ import de.intevation.lada.util.rest.Response;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@Stateless
 public class AttributeMapper
 {
 
