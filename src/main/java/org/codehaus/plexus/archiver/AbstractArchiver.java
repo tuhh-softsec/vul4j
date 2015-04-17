@@ -714,8 +714,8 @@ public abstract class AbstractArchiver
 
         if (resources instanceof EncodingSupported ) {
             ((EncodingSupported)resources).setEncoding( charset );
-
         }
+
         if ( resources instanceof PlexusIoArchivedResourceCollection )
         {
             ( (PlexusIoArchivedResourceCollection) resources ).setFile( fileSet.getArchive() );
