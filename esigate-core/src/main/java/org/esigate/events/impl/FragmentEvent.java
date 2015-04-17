@@ -89,4 +89,12 @@ public class FragmentEvent extends Event {
     public IncomingRequest getOriginalRequest() {
         return originalRequest;
     }
+
+    @Override
+    public String toString() {
+        String result = httpRequest.toString();
+        if (httpResponse != null)
+            result = result + " -> " + httpResponse;
+        return result;
+    }
 }
