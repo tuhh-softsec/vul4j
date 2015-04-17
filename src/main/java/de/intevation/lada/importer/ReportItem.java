@@ -17,7 +17,7 @@ package de.intevation.lada.importer;
 public class ReportItem
 {
     private String key;
-    private String value;
+    private Object value;
     private Integer code;
 
     /**
@@ -32,7 +32,7 @@ public class ReportItem
      * @param value The value caused the error/warning.
      * @param code  The code specifying the error/warning.
      */
-    public ReportItem(String key, String value, Integer code) {
+    public ReportItem(String key, Object value, Integer code) {
         this.key = key;
         this.value = value;
         this.code = code;
@@ -55,7 +55,7 @@ public class ReportItem
     /**
      * @return the value
      */
-    public String getValue() {
+    public Object getValue() {
         return value;
     }
 
