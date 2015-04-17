@@ -15,6 +15,8 @@
 
 package org.esigate.extension;
 
+import java.util.Properties;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
@@ -28,11 +30,8 @@ import org.esigate.events.EventDefinition;
 import org.esigate.events.EventManager;
 import org.esigate.events.IEventListener;
 import org.esigate.events.impl.FragmentEvent;
-import org.esigate.http.RedirectStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Properties;
 
 /**
  * This extension logs fragments usage.
@@ -91,15 +90,15 @@ public class FragmentLogging implements Extension, IEventListener {
             if (LOG.isInfoEnabled() || statusCode >= HttpStatus.SC_BAD_REQUEST) {
 
                 // Log last result only
-                HttpRequest lastRequest = RedirectStrategy.getLastRequest(e.getHttpRequest(), e.getHttpContext());
+                HttpRequest httpRequest = e.getHttpRequest();
 
                 // Create log message
                 HttpHost targetHost = e.getHttpContext().getTargetHost();
 
-                String requestLine = lastRequest.getRequestLine().toString();
+                String requestLine = httpRequest.getRequestLine().toString();
                 String statusLine = e.getHttpResponse().getStatusLine().toString();
 
-                String reqHeaders = ArrayUtils.toString(lastRequest.getAllHeaders());
+                String reqHeaders = ArrayUtils.toString(httpRequest.getAllHeaders());
                 String respHeaders = ArrayUtils.toString(e.getHttpResponse().getAllHeaders());
 
                 String cache = "";

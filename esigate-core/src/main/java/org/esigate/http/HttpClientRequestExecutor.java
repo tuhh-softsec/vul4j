@@ -171,7 +171,6 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
 
             httpClientBuilder.setMaxConnPerRoute(Parameters.MAX_CONNECTIONS_PER_HOST.getValue(properties));
             httpClientBuilder.setMaxConnTotal(Parameters.MAX_CONNECTIONS_PER_HOST.getValue(properties));
-            httpClientBuilder.setRedirectStrategy(driver.getRedirectStrategy());
 
             // Proxy settings
             if (proxyHost != null) {
@@ -242,13 +241,12 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
         RequestConfig.Builder builder = RequestConfig.custom();
         builder.setConnectTimeout(connectTimeout);
         builder.setSocketTimeout(socketTimeout);
-        builder.setCircularRedirectsAllowed(true);
 
         // Use browser compatibility cookie policy. This policy is the closest
         // to the behavior of a real browser.
         builder.setCookieSpec(CustomBrowserCompatSpecFactory.CUSTOM_BROWSER_COMPATIBILITY);
 
-        builder.setRedirectsEnabled(!proxy);
+        builder.setRedirectsEnabled(false);
         RequestConfig config = builder.build();
 
         OutgoingRequestContext context = new OutgoingRequestContext();

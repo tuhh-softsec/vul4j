@@ -25,9 +25,12 @@ import org.apache.commons.io.output.StringBuilderWriter;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpStatus;
+import org.apache.http.ProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultRedirectStrategy;
 import org.apache.http.message.BasicHttpResponse;
 import org.esigate.RequestExecutor.RequestExecutorBuilder;
 import org.esigate.events.EventManager;
@@ -41,7 +44,6 @@ import org.esigate.http.HttpClientRequestExecutor;
 import org.esigate.http.HttpResponseUtils;
 import org.esigate.http.IncomingRequest;
 import org.esigate.http.OutgoingRequest;
-import org.esigate.http.RedirectStrategy;
 import org.esigate.http.ResourceUtils;
 import org.esigate.impl.DriverRequest;
 import org.esigate.impl.UrlRewriter;
@@ -61,22 +63,14 @@ import org.slf4j.LoggerFactory;
 public final class Driver {
     private static final String CACHE_RESPONSE_PREFIX = "response_";
     private static final Logger LOG = LoggerFactory.getLogger(Driver.class);
+    private static final int MAX_REDIRECTS = 50;
     private DriverConfiguration config;
     private EventManager eventManager;
     private RequestExecutor requestExecutor;
     private ContentTypeHelper contentTypeHelper;
     private UrlRewriter urlRewriter;
     private HeaderManager headerManager;
-
-    private RedirectStrategy redirectStrategy = new RedirectStrategy();
-
-    public void setRedirectStrategy(RedirectStrategy redirectStrategy) {
-        this.redirectStrategy = redirectStrategy;
-    }
-
-    public RedirectStrategy getRedirectStrategy() {
-        return redirectStrategy;
-    }
+    private final DefaultRedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     public static class DriverBuilder {
         private Driver driver = new Driver();
@@ -142,7 +136,7 @@ public final class Driver {
     }
 
     /**
-     * Perform rendering on a single url content, and append result to "writer".
+     * Perform rendering on a single url content, and append result to "writer". Automatically follows redirects
      * 
      * @param pageUrl
      *            Address of the page containing the template
@@ -180,6 +174,23 @@ public final class Driver {
             OutgoingRequest outgoingRequest = requestExecutor.createOutgoingRequest(driverRequest, targetUrl, false);
             headerManager.copyHeaders(driverRequest, outgoingRequest);
             response = requestExecutor.execute(outgoingRequest);
+            int redirects = MAX_REDIRECTS;
+            try {
+                while (redirects > 0
+                        && redirectStrategy.isRedirected(outgoingRequest, response, outgoingRequest.getContext())) {
+                    redirects--;
+                    System.err.println("redirect");
+                    outgoingRequest =
+                            requestExecutor.createOutgoingRequest(
+                                    driverRequest,
+                                    redirectStrategy.getLocationURI(outgoingRequest, response,
+                                            outgoingRequest.getContext()).toString(), false);
+                    headerManager.copyHeaders(driverRequest, outgoingRequest);
+                    response = requestExecutor.execute(outgoingRequest);
+                }
+            } catch (ProtocolException e) {
+                throw new HttpErrorPage(HttpStatus.SC_BAD_GATEWAY, "Invalid response from server", e);
+            }
             response = headerManager.copyHeaders(outgoingRequest, incomingRequest, response);
             currentValue = HttpResponseUtils.toString(response, this.eventManager);
             // Cache
