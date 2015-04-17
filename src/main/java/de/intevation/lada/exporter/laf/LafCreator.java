@@ -331,6 +331,6 @@ implements Creator
         for (int i = key.length(); i < 30; i++) {
             key += " ";
         }
-        return key + value + "\n";
+        return key + value + "\r\n";
     }
 }
