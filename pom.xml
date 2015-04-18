@@ -4,9 +4,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
+    <artifactId>plexus</artifactId>
     <groupId>org.codehaus.plexus</groupId>
-    <artifactId>plexus-components</artifactId>
-    <version>1.3</version>
+    <version>3.2</version>
   </parent>
 
   <artifactId>plexus-archiver</artifactId>
@@ -46,6 +46,7 @@
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-container-default</artifactId>
+      <version>1.0-alpha-9-stable-1</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
