@@ -256,70 +256,70 @@
       <role>org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection</role>
       <role-hint>jar</role-hint>
       <!-- there is no implementation of PlexusIoJarFileResourceCollection, but PlexusIoZipFileResourceCollection will do the job -->
-      <implementation>org.codehaus.plexus.components.io.resources.PlexusIoZipFileResourceCollection</implementation>
+      <implementation>org.codehaus.plexus.archiver.zip.PlexusIoZipFileResourceCollection</implementation>
       <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
     <component>
       <role>org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection</role>
       <role-hint>war</role-hint>
       <!-- there is no implementation of PlexusIoWarFileResourceCollection, but PlexusIoZipFileResourceCollection will do the job -->
-      <implementation>org.codehaus.plexus.components.io.resources.PlexusIoZipFileResourceCollection</implementation>
+      <implementation>org.codehaus.plexus.archiver.zip.PlexusIoZipFileResourceCollection</implementation>
       <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
     <component>
       <role>org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection</role>
       <role-hint>ear</role-hint>
       <!-- there is no implementation of PlexusIoEarResourceCollection, but PlexusIoZipFileResourceCollection will do the job -->
-      <implementation>org.codehaus.plexus.components.io.resources.PlexusIoZipFileResourceCollection</implementation>
+      <implementation>org.codehaus.plexus.archiver.zip.PlexusIoZipFileResourceCollection</implementation>
       <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
      <component>
       <role>org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection</role>
       <role-hint>swc</role-hint>
       <!-- there is no implementation of PlexusIoSWCFileResourceCollection, but PlexusIoZipFileResourceCollection will do the job -->
-      <implementation>org.codehaus.plexus.components.io.resources.PlexusIoZipFileResourceCollection</implementation>
+      <implementation>org.codehaus.plexus.archiver.zip.PlexusIoZipFileResourceCollection</implementation>
       <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
     <component>
       <role>org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection</role>
       <role-hint>nar</role-hint>
       <!-- there is no implementation of PlexusIoNarResourceCollection, but PlexusIoZipFileResourceCollection will do the job -->
-      <implementation>org.codehaus.plexus.components.io.resources.PlexusIoZipFileResourceCollection</implementation>
+      <implementation>org.codehaus.plexus.archiver.zip.PlexusIoZipFileResourceCollection</implementation>
       <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>   
     <component>
       <role>org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection</role>
       <role-hint>esb</role-hint>
       <!-- there is no implementation of PlexusIoESBFileResourceCollection, but PlexusIoZipFileResourceCollection will do the job -->
-      <implementation>org.codehaus.plexus.components.io.resources.PlexusIoZipFileResourceCollection</implementation>
+      <implementation>org.codehaus.plexus.archiver.zip.PlexusIoZipFileResourceCollection</implementation>
       <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
     <component>
       <role>org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection</role>
       <role-hint>sar</role-hint>
       <!-- there is no implementation of PlexusIoSarResourceCollection, but PlexusIoZipFileResourceCollection will do the job -->
-      <implementation>org.codehaus.plexus.components.io.resources.PlexusIoZipFileResourceCollection</implementation>
+      <implementation>org.codehaus.plexus.archiver.zip.PlexusIoZipFileResourceCollection</implementation>
       <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
     <component>
       <role>org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection</role>
       <role-hint>car</role-hint>
       <!-- there is no implementation of PlexusIoCarFileResourceCollection, but PlexusIoZipFileResourceCollection will do the job -->
-      <implementation>org.codehaus.plexus.components.io.resources.PlexusIoZipFileResourceCollection</implementation>
+      <implementation>org.codehaus.plexus.archiver.zip.PlexusIoZipFileResourceCollection</implementation>
       <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
     <component>
       <role>org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection</role>
       <role-hint>Par</role-hint>
       <!-- there is no implementation of PlexusIoParResourceCollection, but PlexusIoZipFileResourceCollection will do the job -->
-      <implementation>org.codehaus.plexus.components.io.resources.PlexusIoZipFileResourceCollection</implementation>
+      <implementation>org.codehaus.plexus.archiver.zip.PlexusIoZipFileResourceCollection</implementation>
       <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
     <component>
       <role>org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection</role>
       <role-hint>rar</role-hint>
       <!-- there is no implementation of PlexusIoRarResourceCollection, but PlexusIoZipFileResourceCollection will do the job -->
-      <implementation>org.codehaus.plexus.components.io.resources.PlexusIoZipFileResourceCollection</implementation>
+      <implementation>org.codehaus.plexus.archiver.zip.PlexusIoZipFileResourceCollection</implementation>
       <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>  
 
@@ -352,7 +352,7 @@
     <component>
       <role>org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection</role>
       <role-hint>zip</role-hint>
-      <implementation>org.codehaus.plexus.archiver.zip.PlexusIoZipFileResourceCollection</implementation>
+      <implementation>org.codehaus.plexus.archiver.zip.PlexusArchiverZipFileResourceCollection</implementation>
       <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
   </components>
