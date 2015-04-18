@@ -15,14 +15,14 @@
   <name>Plexus Archiver Component</name>
 
   <scm>
-    <connection>scm:git:git@github.com:sonatype/plexus-archiver.git</connection>
-    <developerConnection>scm:git:git@github.com:sonatype/plexus-archiver.git</developerConnection>
-    <url>http://github.com/sonatype/plexus-archiver</url>
+    <connection>scm:git:git@github.com:codehaus-plexus/plexus-archiver.git</connection>
+    <developerConnection>scm:git:git@github.com:codehaus-plexus/plexus-archiver.git</developerConnection>
+    <url>http://github.com/codehaus-plexus/plexus-archiver</url>
     <tag>HEAD</tag>
   </scm>
   <issueManagement>
     <system>jira</system>
-    <url>http://jira.codehaus.org/browse/PLXCOMP/component/12540</url>
+    <url>https://github.com/codehaus-plexus/plexus-archiver/issues</url>
   </issueManagement>
 
   <properties>
