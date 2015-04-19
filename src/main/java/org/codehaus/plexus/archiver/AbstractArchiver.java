@@ -17,24 +17,6 @@ package org.codehaus.plexus.archiver;
  *  limitations under the License.
  */
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.UndeclaredThrowableException;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
@@ -59,6 +41,23 @@ import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.Os;
+
+import javax.annotation.Nonnull;
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.UndeclaredThrowableException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 import static org.codehaus.plexus.archiver.util.DefaultArchivedFileSet.archivedFileSet;
 import static org.codehaus.plexus.archiver.util.DefaultFileSet.fileSet;

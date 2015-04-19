@@ -249,7 +249,7 @@
     <component>
       <role>org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection</role>
       <role-hint>zip</role-hint>
-      <implementation>org.codehaus.plexus.components.io.resources.PlexusIoZipFileResourceCollection</implementation>
+      <implementation>org.codehaus.plexus.archiver.zip.PlexusIoZipFileResourceCollection</implementation>
       <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
     --><component>

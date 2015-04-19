@@ -2,8 +2,7 @@ package org.codehaus.plexus.archiver.zip;
 
 import org.apache.commons.io.IOUtils;
 import org.codehaus.plexus.PlexusTestCase;
-import org.codehaus.plexus.components.io.resources.PlexusIoResource;
-import org.codehaus.plexus.components.io.resources.PlexusIoURLResource;
+import org.codehaus.plexus.components.io.resources.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -47,7 +46,8 @@ public class PlexusIoZipFileResourceCollectionTest
         throws Exception
     {
         File testZip = new File( getBasedir(), "src/test/resources/bogusManifest.zip" );
-        PlexusIoZipFileResourceCollection prc = new PlexusIoZipFileResourceCollection();
+       PlexusIoZipFileResourceCollection
+            prc = new PlexusIoZipFileResourceCollection();
         prc.setFile( testZip );
         final Iterator<PlexusIoResource> entries = prc.getEntries();
         while ( entries.hasNext() )
@@ -73,7 +73,8 @@ public class PlexusIoZipFileResourceCollectionTest
         seen.add( "Afile&lt;Yo&gt;.txt" );
         seen.add( "File With Space.txt" );
         seen.add( "FileWith%.txt" );
-        PlexusIoZipFileResourceCollection prc = new PlexusIoZipFileResourceCollection();
+        PlexusIoZipFileResourceCollection
+            prc = new PlexusIoZipFileResourceCollection();
         prc.setFile( testZip );
         final Iterator<PlexusIoResource> entries = prc.getEntries();
         while ( entries.hasNext() )
