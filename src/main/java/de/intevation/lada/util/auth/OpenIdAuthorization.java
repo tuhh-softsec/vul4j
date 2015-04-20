@@ -167,20 +167,21 @@ public class OpenIdAuthorization implements Authorization {
     }
 
     private UserInfo getGroupsFromDB(String roles) {
-        String nativeQuery = "select * from stammdaten.auth where ldap_group in ";
-        roles = roles.replaceAll(",", "', '");
-        nativeQuery += "('" + roles + "')";
-        Query query = repository.entityManager("land").createNativeQuery(nativeQuery);
+        QueryBuilder<Auth> builder = new QueryBuilder<Auth>(
+            repository.entityManager("stamm"),
+            Auth.class);
+        builder.andIn("ldapGroup", Arrays.asList(roles.split(",")));
+        Response response = repository.filter(builder.getQuery(), "stamm");
         @SuppressWarnings("unchecked")
-        List<Object[]> result = query.getResultList();
+        List<Auth> auth = (List<Auth>)response.getData();
         List<String> netzbetreiber = new ArrayList<String>();
         List<String> messstellen = new ArrayList<String>();
-        for (Object[] row: result) {
-            if (row[2] != null) {
-                netzbetreiber.add(row[2].toString());
+        for (Auth a : auth) {
+            if (a.getNetzBetreiber() != null) {
+                netzbetreiber.add(a.getNetzBetreiber());
             }
-            if (row[3] != null) {
-                messstellen.add(row[3].toString());
+            if (a.getMessStelle() != null) {
+                messstellen.add(a.getMessStelle());
             }
         }
         UserInfo userInfo = new UserInfo();
