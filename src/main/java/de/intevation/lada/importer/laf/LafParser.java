@@ -1,3 +1,10 @@
+/* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.importer.laf;
 
 import java.util.ArrayList;
@@ -11,10 +18,7 @@ import org.apache.log4j.Logger;
 
 import de.intevation.lada.importer.ReportItem;
 import de.intevation.lada.model.land.LMessung;
-import de.intevation.lada.model.land.LMesswert;
-import de.intevation.lada.model.land.LOrt;
 import de.intevation.lada.model.land.LProbe;
-import de.intevation.lada.model.land.MessungTranslation;
 import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.validation.Validator;
 import de.intevation.lada.validation.Violation;
@@ -27,23 +31,44 @@ import de.intevation.lada.validation.annotation.ValidationConfig;
  */
 public class LafParser {
 
+    /**
+     * The logger used in this class.
+     */
     @Inject
     private Logger logger;
 
+    /**
+     * The start tag of a dataset.
+     */
     private static final String PROBE_NEXT = "\n%PROBE%";
 
+    /**
+     * Flag used to write data into the database or not.
+     */
     private boolean dryRun;
 
+    /**
+     * The data object producer.
+     */
     @Inject
     private LafProducer producer;
 
+    /**
+     * The writer used to create objects in the database.
+     */
     @Inject
     private LafWriter writer;
 
+    /**
+     * The validator for probe objects.
+     */
     @Inject
     @ValidationConfig(type="Probe")
     private Validator probeValidator;
 
+    /**
+     * The validator for messung objects.
+     */
     @Inject
     @ValidationConfig(type="Messung")
     private Validator messungValidator;
@@ -56,7 +81,14 @@ public class LafParser {
     //@ValidationConfig(type="Ort")
     //private Validator ortValidator;
 
+    /**
+     * The warnings.
+     */
     private Map<String, List<ReportItem>> warnings;
+
+    /**
+     * The errors.
+     */
     private Map<String, List<ReportItem>> errors;
 
     /**
@@ -202,6 +234,11 @@ public class LafParser {
         }
     }
 
+    /**
+     * Validate probe objects.
+     *
+     * @param probe The probe object to validate.
+     */
     private Violation validateProbe(LProbe probe) {
         return probeValidator.validate(probe);
     }

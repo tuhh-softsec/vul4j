@@ -1,3 +1,10 @@
+/* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.importer.laf;
 
 import java.util.ArrayList;
@@ -6,8 +13,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 import javax.persistence.PersistenceException;
-
-import org.apache.log4j.Logger;
 
 import de.intevation.lada.importer.ReportItem;
 import de.intevation.lada.model.land.LKommentarM;
@@ -34,20 +39,33 @@ import de.intevation.lada.util.data.RepositoryType;
  */
 public class LafWriter {
 
-    @Inject
-    private Logger logger;
-
+    /**
+     * The repository to write database objects.
+     */
     @Inject
     @RepositoryConfig(type=RepositoryType.RW)
     private Repository repository;
 
+    /**
+     * The authorization module.
+     */
     @Inject
     @AuthorizationConfig(type=AuthorizationType.OPEN_ID)
     private Authorization authorization;
 
+    /**
+     * The errors.
+     */
     private List<ReportItem> errors;
+
+    /**
+     * The warnings.
+     */
     private List<ReportItem> warnings;
 
+    /**
+     * The current probe id used to create child objects.
+     */
     private Integer currentProbeId;
 
     /**

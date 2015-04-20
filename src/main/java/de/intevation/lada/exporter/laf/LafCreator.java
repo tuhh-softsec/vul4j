@@ -1,3 +1,10 @@
+/* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.exporter.laf;
 
 import java.text.DateFormat;
@@ -7,8 +14,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.Query;
-
-import org.apache.log4j.Logger;
 
 import de.intevation.lada.exporter.Creator;
 import de.intevation.lada.model.land.LKommentarM;
@@ -36,9 +41,9 @@ import de.intevation.lada.util.rest.Response;
 public class LafCreator
 implements Creator
 {
-    @Inject
-    private Logger logger;
-
+    /**
+     * The repository used to read data.
+     */
     @Inject
     @RepositoryConfig(type=RepositoryType.RO)
     private Repository repository;
@@ -76,6 +81,7 @@ implements Creator
      * @param probe The {@link LProbeInfo} object.
      * @return LAF conform string.
      */
+    @SuppressWarnings("unchecked")
     private String writeAttributes(LProbe probe) {
         DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
         QueryBuilder<LKommentarP> kommBuilder =
@@ -155,6 +161,7 @@ implements Creator
      * @param zw    The {@link LZusatzWert}.
      * @return Single LAF line.
      */
+    @SuppressWarnings("unchecked")
     private String writeZusatzwert(LZusatzWert zw) {
         String nativeQuery = "select beschreibung, meh_id from stammdaten.proben_zusatz where pzs_id = '";
         nativeQuery += zw.getPzsId() + "'";
@@ -174,6 +181,7 @@ implements Creator
      * @param probe The {@link LProbeInfo} object.
      * @return LAF conform string
      */
+    @SuppressWarnings("unchecked")
     private String writeOrt(LProbe probe) {
         QueryBuilder<LOrt> builder =
             new QueryBuilder<LOrt>(
@@ -228,6 +236,7 @@ implements Creator
      * @param probe The {@link LProbeInfo} object.
      * @return LAF conform string.
      */
+    @SuppressWarnings("unchecked")
     private String writeMessung(LProbe probe) {
         DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
         // Get all messungen
@@ -292,6 +301,7 @@ implements Creator
      * @param mw    The {@link LMesswert} object.
      * @return Single LAF line.
      */
+    @SuppressWarnings("unchecked")
     private String writeMesswert(LMesswert mw) {
         String nativeQuery = "select messgroesse from stammdaten.messgroesse where id = '";
         nativeQuery += mw.getMessgroesseId() + "'";

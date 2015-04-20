@@ -1,3 +1,10 @@
+/* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.exporter.laf;
 
 import java.io.ByteArrayInputStream;
@@ -6,8 +13,6 @@ import java.io.InputStream;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import org.apache.log4j.Logger;
 
 import de.intevation.lada.exporter.ExportConfig;
 import de.intevation.lada.exporter.ExportFormat;
@@ -24,9 +29,10 @@ import de.intevation.lada.util.auth.UserInfo;
 public class LafExporter
 implements Exporter
 {
-    @Inject
-    private Logger logger;
 
+    /**
+     * The creator used to generate content.
+     */
     @Inject
     private LafCreator creator;
 

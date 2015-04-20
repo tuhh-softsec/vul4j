@@ -1,3 +1,10 @@
+/* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.importer.laf;
 
 import java.util.ArrayList;
@@ -6,8 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
-
-import org.apache.log4j.Logger;
 
 import de.intevation.lada.importer.ReportItem;
 import de.intevation.lada.model.Ort;
@@ -30,32 +35,95 @@ import de.intevation.lada.model.stamm.SOrt;
  */
 public class LafProducer
 {
-    @Inject
-    private Logger logger;
-
+    /**
+     * The probe object created by this producer.
+     */
     private LProbe probe;
+
+    /**
+     * The probe translation object created by this producer.
+     */
     private ProbeTranslation probeTranslation;
+
+    /**
+     * The messung object created by this producer.
+     */
     private LMessung messung;
+
+    /**
+     * The messung translation object created by this producer.
+     */
     private MessungTranslation messungTranslation;
 
+    /**
+     * Creator used to build ort objects.
+     */
     @Inject
     private OrtCreator ort;
 
+    /**
+     * Probekommentare created by this producer.
+     */
     private List<LKommentarP> pKommentare;
+
+    /**
+     * Messungskommentare created by this producer.
+     */
     private Map<LMessung, List<LKommentarM>> mKommentare;
+
+    /**
+     * Messungen created by this producer.
+     */
     private Map<LMessung, MessungTranslation> messungen;
+
+    /**
+     * Orte created by this producer.
+     */
     private List<LOrt> lorte;
+
+    /**
+     * SOrte created by this producer.
+     */
     private List<SOrt> orte;
+
+    /**
+     * Messwerte created by this producer.
+     */
     private Map<LMessung, List<LMesswert>> messwerte;
+
+    /**
+     * Zusatzwerte created by this producer.
+     */
     private List<LZusatzWert> zusatzwerte;
 
+    /**
+     * Format mapping for probe objects.
+     */
     private List<EntryFormat> probenFormat;
+
+    /**
+     * Format mapping for messung objects.
+     */
     private List<EntryFormat> messungFormat;
+
+    /**
+     * Format mapping for ort objects.
+     */
     private List<EntryFormat> ortFormat;
 
+    /**
+     * The warnings.
+     */
     private Map<String, List<ReportItem>> warnings;
+
+    /**
+     * The errors.
+     */
     private Map<String, List<ReportItem>> errors;
 
+    /**
+     * The mapper used to set attributes.
+     */
     @Inject
     private AttributeMapper mapper;
 

@@ -1,6 +1,12 @@
+/* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.importer.laf;
 
-import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -11,11 +17,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.Query;
-
-import org.apache.log4j.Logger;
 
 import de.intevation.lada.importer.ReportItem;
 import de.intevation.lada.model.land.LKommentarM;
@@ -41,14 +44,21 @@ import de.intevation.lada.util.rest.Response;
 public class AttributeMapper
 {
 
-    @Inject
-    private Logger logger;
-
+    /**
+     * The repository used to read data.
+     */
     @Inject
     @RepositoryConfig(type=RepositoryType.RO)
     private Repository repository;
 
+    /**
+     * List of warnings.
+     */
     private List<ReportItem> warnings;
+
+    /**
+     * List of errors.
+     */
     private List<ReportItem> errors;
 
     /**
@@ -67,6 +77,7 @@ public class AttributeMapper
      * @param probe     The entity object.
      * @return The updated entity object.
      */
+    @SuppressWarnings("unchecked")
     public LProbe addAttribute(String key, Object value, LProbe probe) {
         DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
         if ("datenbasis_s".equals(key) && probe.getDatenbasisId() == null) {
@@ -196,6 +207,15 @@ public class AttributeMapper
         return probe;
     }
 
+    /**
+     * Add an attribute to the given ProbeTranslation object.
+     *
+     * @param key       The key mapping to a object member.
+     * @param value     The value to set.
+     * @param probeTranslation  The entity object.
+     * @return The updated entity.
+     */
+    @SuppressWarnings("unchecked")
     public ProbeTranslation addAttribute(
         String key,
         Object value,
@@ -327,6 +347,14 @@ public class AttributeMapper
         return messung;
     }
 
+    /**
+     * Add an attribute to the given MessungTranslation object.
+     *
+     * @param key       The key mapping to a object member.
+     * @param value     The value to set.
+     * @param mt        The entity object.
+     * @return The updated entity.
+     */
     public MessungTranslation addAttribute(
         String key,
         Object value,
@@ -346,6 +374,7 @@ public class AttributeMapper
      * @param messwert  The entity object.
      * @return The updated entity object.
      */
+    @SuppressWarnings("unchecked")
     public LMesswert addAttribute(
         String key,
         Object value,
@@ -463,6 +492,7 @@ public class AttributeMapper
      * @param wert      The entity object.
      * @return The updated entity object.
      */
+    @SuppressWarnings("unchecked")
     public LZusatzWert addAttribute(
         String lKey,
         Object value,
@@ -476,7 +506,6 @@ public class AttributeMapper
         String w = v.substring(0, ndx);
         v = v.substring(ndx + 2);
         ndx = v.indexOf("\"");
-        String einheit = v.substring(0, ndx);
         String fehler = v.substring(ndx + 2);
 
         String nativeQuery = "select id from stammdaten.probenzusatz where zusatzwert = '";
@@ -515,7 +544,6 @@ public class AttributeMapper
         String w = v.substring(0, ndx);
         v = v.substring(ndx + 2);
         ndx = v.indexOf(" ");
-        String einheit = v.substring(0, ndx);
         String fehler = v.substring(ndx + 2);
         wert.setPzsId(groesse);
         wert.setMesswertPzs(Float.valueOf(w));

@@ -1,3 +1,10 @@
+/* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.importer.laf;
 
 import java.util.ArrayList;
@@ -5,10 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import org.apache.log4j.Logger;
 
 import de.intevation.lada.importer.ImportConfig;
 import de.intevation.lada.importer.ImportFormat;
@@ -19,9 +23,9 @@ import de.intevation.lada.util.auth.UserInfo;
 @ImportConfig(format=ImportFormat.LAF)
 public class LafImporter implements Importer {
 
-    @Inject
-    private Logger logger;
-
+    /**
+     * The parser used for this importer.
+     */
     @Inject
     private LafParser parser;
 
@@ -63,6 +67,12 @@ public class LafImporter implements Importer {
         errors = new HashMap<String, List<ReportItem>>();
     }
 
+    /**
+     * Start the import.
+     *
+     * @param content   The laf data as string.
+     * @param userInfo  The user information.
+     */
     @Override
     public void doImport(String content, UserInfo userInfo) {
         this.warnings.clear();

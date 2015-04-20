@@ -1,13 +1,17 @@
+/* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.importer.laf;
 
 import java.math.BigInteger;
 import java.util.List;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.Query;
-
-import org.apache.log4j.Logger;
 
 import de.intevation.lada.model.land.LOrt;
 import de.intevation.lada.model.stamm.SOrt;
@@ -22,9 +26,6 @@ import de.intevation.lada.util.data.RepositoryType;
  */
 public class OrtCreator
 {
-    @Inject
-    private Logger logger;
-
     @Inject
     @RepositoryConfig(type=RepositoryType.RW)
     private Repository repository;
