@@ -12,6 +12,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -198,6 +199,48 @@ public class QueryBuilder<T> {
         }
         else {
             this.filter = this.builder.or(b.filter);
+        }
+        return this;
+    }
+
+    /**
+     * IN operation combined as logical OR.
+     * Test whether result of 'key' is in a list of values.
+     *
+     * @param key   The database column.
+     * @param values    The list of values.
+     *
+     * @return The current Querybuilder.
+     */
+    public QueryBuilder<T> orIn(String key, List<String> values) {
+        Expression<String> exp = this.root.get(key);
+        Predicate p = exp.in(values);
+        if (this.filter == null) {
+            this.filter = this.builder.or(p);
+        }
+        else {
+            this.filter = this.builder.or(this.filter, p);
+        }
+        return this;
+    }
+
+    /**
+     * IN operation combined as logical AND.
+     * Test whether result of 'key' is in a list of values.
+     *
+     * @param key   The database column.
+     * @param values    The list of values.
+     *
+     * @return The current Querybuilder.
+     */
+    public QueryBuilder<T> andIn(String key, List<String> values) {
+        Expression<String> exp = this.root.get(key);
+        Predicate p = exp.in(values);
+        if (this.filter == null) {
+            this.filter = this.builder.and(p);
+        }
+        else {
+            this.filter = this.builder.and(this.filter, p);
         }
         return this;
     }
