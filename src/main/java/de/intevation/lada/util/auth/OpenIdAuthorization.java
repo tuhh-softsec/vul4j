@@ -6,16 +6,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.ejb.Stateful;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
 import de.intevation.lada.model.land.LMessung;
 import de.intevation.lada.model.land.LProbe;
+import de.intevation.lada.model.stamm.Auth;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
@@ -24,17 +23,33 @@ import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 
-@Stateful
+/**
+ * Authorize a user via HttpServletRequest attributes added by OpenIdFilter.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 @AuthorizationConfig(type=AuthorizationType.OPEN_ID)
 public class OpenIdAuthorization implements Authorization {
 
+    /**
+     * The logger used in this class.
+     */
     @Inject
     private Logger logger;
 
+    /**
+     * The Repository used to read from Database.
+     */
     @Inject
     @RepositoryConfig(type=RepositoryType.RO)
     private Repository repository;
 
+    /**
+     * Request user informations using the HttpServletRequest.
+     *
+     * @param source    The HttpServletRequest
+     * @return The UserInfo object containing username and groups.
+     */
     @Override
     public UserInfo getInfo(Object source) {
         if (source instanceof HttpServletRequest) {
@@ -50,6 +65,15 @@ public class OpenIdAuthorization implements Authorization {
         return null;
     }
 
+    /**
+     * Filter a list of data objects using the user informations contained in
+     * the HttpServletRequest.
+     *
+     * @param source    The HttpServletRequest
+     * @param data      The Response object containing the data.
+     * @param clazz     The data object class.
+     * @return The Response object containing the filtered data.
+     */
     @Override
     public <T> Response filter(Object source, Response data, Class<T> clazz) {
         UserInfo userInfo = this.getInfo(source);
@@ -74,6 +98,15 @@ public class OpenIdAuthorization implements Authorization {
         return data;
     }
 
+    /**
+     * Check whether a user is authorized to operate on the given data.
+     *
+     * @param source    The HttpServletRequest containing user information.
+     * @param data      The data to test.
+     * @param method    The Http request type.
+     * @param clazz     The data object class.
+     * @return True if the user is authorized else returns false.
+     */
     @Override
     public <T> boolean isAuthorized(
         Object source,
@@ -111,7 +144,8 @@ public class OpenIdAuthorization implements Authorization {
                 Response messResponse =
                     repository.getById(LMessung.class, messung.getId(), "land");
                 LMessung messungDb = (LMessung)messResponse.getData();
-                boolean fertigChanged = !messung.getFertig().equals(messungDb.getFertig());
+                boolean fertigChanged =
+                    !messung.getFertig().equals(messungDb.getFertig());
                 logger.warn("changed " + fertigChanged);
                 return (!messung.getFertig() || fertigChanged) &&
                     getAuthorization(userInfo, probe);
@@ -148,15 +182,25 @@ public class OpenIdAuthorization implements Authorization {
                         repository.getById(LMessung.class, id, "land");
                     LMessung messung = (LMessung)mResponse.getData();
                     Response pResponse =
-                        repository.getById(LProbe.class, messung.getProbeId(), "land");
+                        repository.getById(
+                            LProbe.class,
+                            messung.getProbeId(),
+                            "land");
                     LProbe probe = (LProbe)pResponse.getData();
-                    return !messung.getFertig() && getAuthorization(userInfo, probe);
+                    return !messung.getFertig() &&
+                        getAuthorization(userInfo, probe);
                 }
             }
         }
         return true;
     }
 
+    /**
+     * Get the authorization of a single probe.
+     *
+     * @param userInfo  The user information.
+     * @param probe     The probe to authorize.
+     */
     private boolean getAuthorization(UserInfo userInfo, LProbe probe) {
         if (userInfo.getMessstellen().contains(probe.getMstId())) {
             return true;
@@ -166,6 +210,12 @@ public class OpenIdAuthorization implements Authorization {
         }
     }
 
+    /**
+     * Request the lada specific groups.
+     *
+     * @param roles     The roles defined in the OpenId server.
+     * @return The UserInfo contianing roles and user name.
+     */
     private UserInfo getGroupsFromDB(String roles) {
         QueryBuilder<Auth> builder = new QueryBuilder<Auth>(
             repository.entityManager("stamm"),
@@ -190,9 +240,20 @@ public class OpenIdAuthorization implements Authorization {
         return userInfo;
     }
 
-
+    /**
+     * Authorize data that has a messungsId Attribute.
+     *
+     * @param userInfo  The user information.
+     * @param data      The Response object containing the data.
+     * @param clazz     The data object class.
+     * @return A Response object containing the data.
+     */
     @SuppressWarnings("unchecked")
-    private <T> Response authorizeWithMessungsId(UserInfo userInfo, Response data, Class<T> clazz) {
+    private <T> Response authorizeWithMessungsId(
+        UserInfo userInfo,
+        Response data,
+        Class<T> clazz
+    ) {
         if (data.getData() instanceof List<?>) {
             List<Object> objects = new ArrayList<Object>();
             for (Object object :(List<Object>)data.getData()) {
@@ -207,12 +268,27 @@ public class OpenIdAuthorization implements Authorization {
         return data;
     }
 
+    /**
+     * Authorize data that has a probeId Attribute.
+     *
+     * @param userInfo  The user information.
+     * @param data      The Response object containing the data.
+     * @param clazz     The data object class.
+     * @return A Response object containing the data.
+     */
     @SuppressWarnings("unchecked")
-    private <T> Response authorizeWithProbeId(UserInfo userInfo, Response data, Class<T> clazz) {
+    private <T> Response authorizeWithProbeId(
+        UserInfo userInfo,
+        Response data,
+        Class<T> clazz
+    ) {
         if (data.getData() instanceof List<?>) {
             List<Object> objects = new ArrayList<Object>();
             for (Object object :(List<Object>)data.getData()) {
-                objects.add(authorizeSingleWithProbeId(userInfo, object, clazz));
+                objects.add(authorizeSingleWithProbeId(
+                    userInfo,
+                    object,
+                    clazz));
             }
             data.setData(objects);
         }
@@ -223,16 +299,33 @@ public class OpenIdAuthorization implements Authorization {
         return data;
     }
 
-    private <T> Object authorizeSingleWithMessungsId(UserInfo userInfo, Object data, Class<T> clazz) {
+    /**
+     * Authorize a single data object that has a messungsId Attribute.
+     *
+     * @param userInfo  The user information.
+     * @param data      The Response object containing the data.
+     * @param clazz     The data object class.
+     * @return A Response object containing the data.
+     */
+    private <T> Object authorizeSingleWithMessungsId(
+        UserInfo userInfo,
+        Object data,
+        Class<T> clazz
+    ) {
         try {
             Method getMessungsId = clazz.getMethod("getMessungsId");
             Integer id = (Integer)getMessungsId.invoke(data);
-            LMessung messung = (LMessung) repository.getById(LMessung.class, id, "land").getData();
-            LProbe probe = (LProbe) repository.getById(LProbe.class, messung.getProbeId(), "land").getData();
+            LMessung messung =
+                (LMessung)repository.getById(
+                    LMessung.class, id, "land").getData();
+            LProbe probe =
+                (LProbe)repository.getById(
+                    LProbe.class, messung.getProbeId(), "land").getData();
 
             boolean readOnly = true;
             boolean owner = false;
-            if (!userInfo.getNetzbetreiber().contains(probe.getNetzbetreiberId())) {
+            if (!userInfo.getNetzbetreiber().contains(
+                    probe.getNetzbetreiberId())) {
                 owner = false;
                 readOnly = true;
             }
@@ -258,7 +351,19 @@ public class OpenIdAuthorization implements Authorization {
         return data;
     }
 
-    private <T> Object authorizeSingleWithProbeId(UserInfo userInfo, Object data, Class<T> clazz) {
+    /**
+     * Authorize a single data object that has a probeId Attribute.
+     *
+     * @param userInfo  The user information.
+     * @param data      The Response object containing the data.
+     * @param clazz     The data object class.
+     * @return A Response object containing the data.
+     */
+    private <T> Object authorizeSingleWithProbeId(
+        UserInfo userInfo,
+        Object data,
+        Class<T> clazz
+    ) {
         try {
             Method getProbeId = clazz.getMethod("getProbeId");
             Integer id = null;
@@ -268,11 +373,13 @@ public class OpenIdAuthorization implements Authorization {
             else {
                 return null;
             }
-            LProbe probe = (LProbe)repository.getById(LProbe.class, id, "land").getData();
+            LProbe probe =
+                (LProbe)repository.getById(LProbe.class, id, "land").getData();
 
             boolean readOnly = true;
             boolean owner = false;
-            if (!userInfo.getNetzbetreiber().contains(probe.getNetzbetreiberId())) {
+            if (!userInfo.getNetzbetreiber().contains(
+                    probe.getNetzbetreiberId())) {
                 owner = false;
                 readOnly = true;
             }
@@ -298,6 +405,13 @@ public class OpenIdAuthorization implements Authorization {
         return data;
     }
 
+    /**
+     * Authorize probe objects.
+     *
+     * @param userInfo  The user information.
+     * @param data      The Response object containing the probe objects.
+     * @return A Response object containing the data.
+     */
     @SuppressWarnings("unchecked")
     private Response authorizeProbe(UserInfo userInfo, Response data) {
         if (data.getData() instanceof List<?>) {
@@ -314,6 +428,13 @@ public class OpenIdAuthorization implements Authorization {
         return data;
     }
 
+    /**
+     * Authorize a sinle probe object.
+     *
+     * @param userInfo  The user information.
+     * @param probe     The probe object.
+     * @return The probe.
+     */
     private LProbe authorizeSingleProbe(UserInfo userInfo, LProbe probe) {
         if (!userInfo.getNetzbetreiber().contains(probe.getNetzbetreiberId())) {
             probe.setOwner(false);
@@ -330,6 +451,13 @@ public class OpenIdAuthorization implements Authorization {
         return probe;
     }
 
+    /**
+     * Authorize messung objects.
+     *
+     * @param userInfo  The user information.
+     * @param data      The Response object containing the messung objects.
+     * @return A Response object containing the data.
+     */
     @SuppressWarnings("unchecked")
     private Response authorizeMessung(UserInfo userInfo, Response data) {
         if (data.getData() instanceof List<?>) {
@@ -346,8 +474,20 @@ public class OpenIdAuthorization implements Authorization {
         return data;
     }
 
-    private LMessung authorizeSingleMessung(UserInfo userInfo, LMessung messung) {
-        LProbe probe = (LProbe)repository.getById(LProbe.class, messung.getProbeId(), "land").getData();
+    /**
+     * Authorize a sinle messung object.
+     *
+     * @param userInfo  The user information.
+     * @param messung     The messung object.
+     * @return The messung.
+     */
+    private LMessung authorizeSingleMessung(
+        UserInfo userInfo,
+        LMessung messung
+    ) {
+        LProbe probe =
+            (LProbe)repository.getById(
+                LProbe.class, messung.getProbeId(), "land").getData();
         if (!userInfo.getNetzbetreiber().contains(probe.getNetzbetreiberId())) {
             messung.setOwner(false);
             messung.setReadonly(true);
@@ -362,6 +502,13 @@ public class OpenIdAuthorization implements Authorization {
         messung.setReadonly(messung.getFertig());
         return messung;
     }
+
+    /**
+     * Test whether a probe is readonly.
+     *
+     * @param probeId   The probe Id.
+     * @return True if the probe is readonly.
+     */
     @Override
     public boolean isReadOnly(Integer probeId) {
         EntityManager manager = repository.entityManager("land");
@@ -380,6 +527,13 @@ public class OpenIdAuthorization implements Authorization {
         return true;
     }
 
+    /**
+     * Check whether a user is authorized to operate on the given probe.
+     *
+     * @param userInfo  The user information.
+     * @param data      The probe data to test.
+     * @return True if the user is authorized else returns false.
+     */
     @Override
     public boolean isAuthorized(UserInfo userInfo, Object data) {
         if (data instanceof LProbe) {
