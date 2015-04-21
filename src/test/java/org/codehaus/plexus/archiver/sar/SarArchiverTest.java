@@ -1,15 +1,8 @@
 package org.codehaus.plexus.archiver.sar;
 
-import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.BasePlexusArchiverTest;
-import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
-import org.codehaus.plexus.archiver.manager.ArchiverManagerTest;
-import org.codehaus.plexus.archiver.manager.DefaultArchiverManager;
 import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
-import org.codehaus.plexus.util.FileUtils;
-
-import java.io.File;
 
 /*
  * Copyright 2007 The Codehaus Foundation.

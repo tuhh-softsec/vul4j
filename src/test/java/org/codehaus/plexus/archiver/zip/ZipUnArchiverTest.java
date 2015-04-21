@@ -1,7 +1,6 @@
 package org.codehaus.plexus.archiver.zip;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
