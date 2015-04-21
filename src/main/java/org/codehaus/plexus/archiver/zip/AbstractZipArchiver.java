@@ -79,16 +79,11 @@ public abstract class AbstractZipArchiver
 
     protected String archiveType = "zip";
 
-    /*
-     * Whether the original compression of entries coming from a ZIP
-     * archive should be kept (for example when updating an archive).
-     */
-    //not used: private boolean keepCompression = false;
     private boolean doFilesonly = false;
 
     protected final Hashtable<String, String> entries = new Hashtable<String, String>();
 
-    protected final Hashtable<String, String> addedDirs = new Hashtable<String, String>();
+	protected final AddedDirs addedDirs = new AddedDirs();
 
     private static final long EMPTY_CRC = new CRC32().getValue();
 
@@ -363,7 +358,7 @@ public abstract class AbstractZipArchiver
                 name = name + "/";
             }
 
-            addParentDirs( entry, null, name, zOut, "" );
+            addParentDirs( entry, null, name, zOut);
 
             if ( entry.getResource().isFile() )
             {
@@ -384,29 +379,12 @@ public abstract class AbstractZipArchiver
      * be impossible and is not really supported.
      */
     @SuppressWarnings( { "JavaDoc" } )
-    private void addParentDirs( ArchiveEntry archiveEntry, File baseDir, String entry, ParallelScatterZipCreator zOut,
-                                String prefix )
+    private void addParentDirs(ArchiveEntry archiveEntry, File baseDir, String entry, ParallelScatterZipCreator zOut)
         throws IOException
     {
         if ( !doFilesonly && getIncludeEmptyDirs() )
         {
-            Stack<String> directories = new Stack<String>();
-
-            // Don't include the last entry itself if it's
-            // a dir; it will be added on its own.
-            int slashPos = entry.length() - ( entry.endsWith( "/" ) ? 1 : 0 );
-
-            while ( ( slashPos = entry.lastIndexOf( '/', slashPos - 1 ) ) != -1 )
-            {
-                String dir = entry.substring( 0, slashPos + 1 );
-
-                if ( addedDirs.contains( prefix + dir ) )
-                {
-                    break;
-                }
-
-                directories.push( dir );
-            }
+			Stack<String> directories = addedDirs.asStringStack(entry);
 
             while ( !directories.isEmpty() )
             {
@@ -423,12 +401,12 @@ public abstract class AbstractZipArchiver
                 // the
                 // At this point we could do something like read the atr
                 final PlexusIoResource res = new AnonymousResource( f );
-                zipDir( res, zOut, prefix + dir, archiveEntry.getDefaultDirMode(), encoding );
+                zipDir( res, zOut, dir, archiveEntry.getDefaultDirMode(), encoding );
             }
         }
     }
 
-    /**
+	/**
      * Adds a new entry to the archive, takes care of duplicates as well.
      *
      * @param in                 the stream to read data for the entry from.
@@ -544,15 +522,12 @@ public abstract class AbstractZipArchiver
                            String encodingToUse )
         throws IOException
     {
-        if ( addedDirs.get( vPath ) != null )
+        if ( addedDirs.update(vPath)  )
         {
-            // don't add directories we've already added.
-            // no warning if we try, it is harmless in and of itself
             return;
         }
 
-        getLogger().debug( "adding directory " + vPath );
-        addedDirs.put( vPath, vPath );
+        getLogger().debug("adding directory " + vPath);
 
         if ( !skipWriting )
         {

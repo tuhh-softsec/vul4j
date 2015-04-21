@@ -391,7 +391,7 @@ public class JarArchiver
 
         // filter out META-INF if it doesn't contain anything other than the index and manifest.
         // this is what sun.misc.JarIndex does, guess we ought to be consistent.
-        Set<String> filteredDirs = new HashSet<String>( addedDirs.keySet() );
+        Set<String> filteredDirs = addedDirs.allAddedDirs();
         // our added dirs always have a trailing slash
         if ( filteredDirs.contains( META_INF_NAME + '/' ) )
         {
