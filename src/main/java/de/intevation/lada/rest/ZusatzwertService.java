@@ -1,9 +1,9 @@
 /* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
  * Software engineering by Intevation GmbH
  *
- * This file is Free Software under the GNU GPL (v>=3) 
- * and comes with ABSOLUTELY NO WARRANTY! Check out 
- * the documentation coming with IMIS-Labordaten-Application for details. 
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
  */
 package de.intevation.lada.rest;
 
@@ -40,28 +40,76 @@ import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 
+/**
+ * REST service for Zusatzwert objects.
+ * <p>
+ * The services produce data in the application/json media type.
+ * All HTTP methods use the authorization module to determine if the user is
+ * allowed to perform the requested action.
+ * A typical response holds information about the action performed and the data.
+ * <pre>
+ * <code>
+ * {
+ *  "success": [boolean];
+ *  "message": [string],
+ *  "data":[{
+ *      "id": [number],
+ *      "letzteAenderung": [timestamp],
+ *      "messfehler": [number],
+ *      "messwertPzs": [number],
+ *      "nwgZuMesswert": [number],
+ *      "probeId": [number],
+ *      "pzsId": [string],
+ *      "owner": [boolean],
+ *      "readonly": [boolean],
+ *      "treeModified": [timestamp],
+ *      "parentModified": [timestamp]
+ *  }],
+ *  "errors": [object],
+ *  "warnings": [object],
+ *  "readonly": [boolean],
+ *  "totalCount": [number]
+ * }
+ * </code>
+ * </pre>
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 @Path("zusatzwert")
 @RequestScoped
 public class ZusatzwertService {
 
-    /* The data repository granting read/write access.*/
+    /**
+     * The data repository granting read/write access.
+     */
     @Inject
     @RepositoryConfig(type=RepositoryType.RW)
     private Repository defaultRepo;
 
+    /**
+     * The object lock mechanism.
+     */
     @Inject
     @LockConfig(type=LockType.TIMESTAMP)
     private ObjectLocker lock;
 
-    /* The authorization module.*/
+    /**
+     * The authorization module.
+     */
     @Inject
     @AuthorizationConfig(type=AuthorizationType.OPEN_ID)
     private Authorization authorization;
 
     /**
-     * Get all objects.
+     * Get all Zusatzwert objects.
+     * <p>
+     * The requested objects can be filtered using a URL parameter named
+     * probeId.
+     * <p>
+     * Example: http://example.com/zusatzwert?probeId=[ID]
      *
-     * @return Response object containing all messung objects.
+     *
+     * @return Response object containing all Zusatzwert objects.
      */
     @GET
     @Path("/")
@@ -88,9 +136,13 @@ public class ZusatzwertService {
     }
 
     /**
-     * Get an object by id.
+     * Get a Zusatzwert object by id.
+     * <p>
+     * The id is appended to the URL as a path parameter.
+     * <p>
+     * Example: http://example.com/zusatzwert/{id}
      *
-     * @return Response object containing a single messung.
+     * @return Response object containing a single Zusatzwert.
      */
     @GET
     @Path("/{id}")
@@ -106,6 +158,29 @@ public class ZusatzwertService {
             LZusatzWert.class);
     }
 
+    /**
+     * Create a Zusatzwert object.
+     * <p>
+     * The new object is embedded in the post data as JSON formatted string.
+     * <p>
+     * <pre>
+     * <code>
+     * {
+     *  "owner": [boolean],
+     *  "probeId": [number],
+     *  "pzsId": [string],
+     *  "nwgZuMesswert": [number],
+     *  "messwertPzs": [number],
+     *  "messfehler": [number],
+     *  "treeModified": null,
+     *  "parentModified": null,
+     *  "letzteAenderung": [date]
+     * }
+     * </code>
+     * </pre>
+     *
+     * @return A response object containing the created Zusatzwert.
+     */
     @POST
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
@@ -130,9 +205,27 @@ public class ZusatzwertService {
     }
 
     /**
-     * Update an existing object.
+     * Update an existing Zusatzwert object.
+     * <p>
+     * The object to update should come as JSON formatted string.
+     * <pre>
+     * <code>
+     * {
+     *  "id": [number],
+     *  "owner": [boolean],
+     *  "probeId": [number],
+     *  "pzsId": [string],
+     *  "nwgZuMesswert": [number],
+     *  "messwertPzs": [number],
+     *  "messfehler": [number],
+     *  "treeModified": [timestamp],
+     *  "parentModified": [timestamp],
+     *  "letzteAenderung": [date]
+     * }
+     * </code>
+     * </pre>
      *
-     * @return Response object containing the updated probe object.
+     * @return Response object containing the updated Zusatzwert object.
      */
     @PUT
     @Path("/{id}")
@@ -165,7 +258,11 @@ public class ZusatzwertService {
     }
 
     /**
-     * Delete an existing object by id.
+     * Delete an existing Zusatzwert object by id.
+     * <p>
+     * The id is appended to the URL as a path parameter.
+     * <p>
+     * Example: http://example.com/zusatzwert/{id}
      *
      * @return Response object.
      */

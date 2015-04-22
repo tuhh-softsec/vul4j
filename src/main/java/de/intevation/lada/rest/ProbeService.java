@@ -1,9 +1,9 @@
 /* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
  * Software engineering by Intevation GmbH
  *
- * This file is Free Software under the GNU GPL (v>=3) 
- * and comes with ABSOLUTELY NO WARRANTY! Check out 
- * the documentation coming with IMIS-Labordaten-Application for details. 
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
  */
 package de.intevation.lada.rest;
 
@@ -57,9 +57,53 @@ import de.intevation.lada.validation.Validator;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationConfig;
 
-
 /**
- * This class produces a RESTful service to interact with probe objects.
+ * REST service for Probe objects.
+ * <p>
+ * The services produce data in the application/json media type.
+ * All HTTP methods use the authorization module to determine if the user is
+ * allowed to perform the requested action.
+ * A typical response holds information about the action performed and the data.
+ * <pre>
+ * <code>
+ * {
+ *  "success": [boolean];
+ *  "message": [string],
+ *  "data":[{
+ *      "id":[number],
+ *      "baId": [string],
+ *      "datenbasisId": [number],
+ *      "letzteAenderung": [timestamp],
+ *      "media": [string],
+ *      "mediaDesk": [string],
+ *      "mittelungsdauer": [number],
+ *      "mstId": [string],
+ *      "netzbetreiberId":[string],
+ *      "probeentnahmeBeginn": [timestamp],
+ *      "probeentnahmeEnde": [timestamp],
+ *      "probenartId": [number],
+ *      "test": [boolean],
+ *      "umwId": [string],
+ *      "hauptprobenNr": [string],
+ *      "erzeugerId": [string],
+ *      "mpKat": [string],
+ *      "mplId": [number],
+ *      "mprId": [number],
+ *      "probeNehmerId": [number],
+ *      "solldatumBeginn": [timestamp],
+ *      "solldatumEnde": [timestamp],
+ *      "treeModified": [timestamp],
+ *      "readonly": [boolean],
+ *      "owner": [boolean],
+ *      "probeIdAlt": [string]
+ *  }],
+ *  "errors": [object],
+ *  "warnings": [object],
+ *  "readonly": [boolean],
+ *  "totalCount": [number]
+ * }
+ * </code>
+ * </pre>
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
@@ -67,32 +111,58 @@ import de.intevation.lada.validation.annotation.ValidationConfig;
 @RequestScoped
 public class ProbeService {
 
-    /* The logger used in this class.*/
+    /**
+     * The logger used in this class.
+     */
     @Inject
     private Logger logger;
 
-    /* The data repository granting read/write access.*/
+    /**
+     * The data repository granting read/write access.
+     */
     @Inject
     @RepositoryConfig(type=RepositoryType.RW)
     private Repository defaultRepo;
 
-    /* The authorization module.*/
+    /**
+     * The authorization module.
+     */
     @Inject
     @AuthorizationConfig(type=AuthorizationType.OPEN_ID)
     private Authorization authorization;
 
+    /**
+     * The object lock mechanism.
+     */
     @Inject
     @LockConfig(type=LockType.TIMESTAMP)
     private ObjectLocker lock;
 
+    /**
+     * The validator used for Rpobe objects.
+     */
     @Inject
     @ValidationConfig(type="Probe")
     private Validator validator;
 
     /**
-     * Get all probe objects.
+     * Get all Probe objects.
+     * <p>
+     * The requested objects can be filtered using the following URL
+     * parameters:<br>
+     *  * qid: The id of the query.<br>
+     *  * page: The page to display in a paginated result grid.<br>
+     *  * start: The first Probe item.<br>
+     *  * limit: The count of Probe items.<br>
+     *  * sort: Sort the result ascending(ASC) or descenting (DESC).<br>
+     *  <br>
+     *  The response data contains a stripped set of Probe objects. The returned fields
+     *  are defined in the query used in the request.
+     * <p>
+     * Example:
+     * http://example.com/probe?qid=[ID]&page=[PAGE]&start=[START]&limit=[LIMIT]&sort=[{"property":"probeId","direction":"ASC"}]
      *
-     * @return Response object containing all probe objects.
+     * @return Response object containing all Probe objects.
      */
     @SuppressWarnings("unchecked")
     @GET
@@ -164,9 +234,13 @@ public class ProbeService {
     }
 
     /**
-     * Get a probe object by id.
+     * Get a single Probe object by id.
+     * <p>
+     * The id is appended to the URL as a path parameter.
+     * <p>
+     * Example: http://example.com/probe/{id}
      *
-     * @return Response object containing a single probe.
+     * @return Response object containing a single Probe.
      */
     @GET
     @Path("/{id}")
@@ -186,7 +260,39 @@ public class ProbeService {
     }
 
     /**
-     * Create a new probe object.
+     * Create a new Probe object.
+     * <p>
+     * The new object is embedded in the post data as JSON formatted string.
+     * <p>
+     * <pre>
+     * <code>
+     * {
+     *  "probeIdAlt": [string],
+     *  "hauptprobenNr": [string],
+     *  "test": [boolean],
+     *  "netzbetreiberId": [string],
+     *  "mstId": [string],
+     *  "datenbasisId": [number],
+     *  "baId": [string],
+     *  "probenartId": [number],
+     *  "mediaDesk": [string],
+     *  "media": [string],
+     *  "umwId": [string],
+     *  "mittelungsdauer": [number],
+     *  "erzeugerId":[string],
+     *  "probeNehmerId": [number],
+     *  "mpKat": [string],
+     *  "mplId": [number],
+     *  "mprId": [number],
+     *  "treeModified":null,
+     *  "probeentnahmeBeginn": [date],
+     *  "probeentnahmeEnde": [date],
+     *  "letzteAenderung": [date],
+     *  "solldatumBeginn": [date],
+     *  "solldatumEnde": [date]
+     * }
+     * </code>
+     * </pre>
      *
      * @return Response object containing the new probe object.
      */
@@ -233,9 +339,41 @@ public class ProbeService {
     }
 
     /**
-     * Update an existing probe object.
+     * Update an existing Probe object.
+     * <p>
+     * The object to update should come as JSON formatted string.
+     * <pre>
+     * <code>
+     * {
+     *  "id": [number],
+     *  "probeIdAlt": [string],
+     *  "hauptprobenNr": [string],
+     *  "test": [boolean],
+     *  "netzbetreiberId": [string],
+     *  "mstId": [string],
+     *  "datenbasisId": [number],
+     *  "baId": [string],
+     *  "probenartId": [number],
+     *  "mediaDesk": [string],
+     *  "media": [string],
+     *  "umwId": [string],
+     *  "mittelungsdauer": [number],
+     *  "erzeugerId": [number],
+     *  "probeNehmerId": [number],
+     *  "mpKat": [string],
+     *  "mplId": [number],
+     *  "mprId": [number],
+     *  "treeModified": [timestamp],
+     *  "probeentnahmeBeginn": [date],
+     *  "probeentnahmeEnde": [date],
+     *  "letzteAenderung": [date],
+     *  "solldatumBeginn": [date],
+     *  "solldatumEnde":[date]
+     * }
+     * </code>
+     * </pre>
      *
-     * @return Response object containing the updated probe object.
+     * @return Response object containing the updated Probe object.
      */
     @PUT
     @Path("/{id}")
@@ -278,7 +416,11 @@ public class ProbeService {
     }
 
     /**
-     * Delete an existing probe object by id.
+     * Delete an existing Probe object by id.
+     * <p>
+     * The id is appended to the URL as a path parameter.
+     * <p>
+     * Example: http://example.com/probe/{id}
      *
      * @return Response object.
      */

@@ -222,7 +222,7 @@ public class MessungService {
     }
 
     /**
-     * Update an existing messung object.
+     * Update an existing Messung object.
      * <p>
      * The object to update should come as JSON formatted string.
      * <pre>
