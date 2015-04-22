@@ -36,28 +36,70 @@ import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 
+/**
+ * REST service to operate on KommentarP objects.
+ * <p>
+ * The services produce data in the application/json media type.
+ * All HTTP methods use the authorization module to determine if the user is
+ * allowed to perform the requested action.
+ * A typical response holds information about the action performed and the data.
+ * <pre>
+ * <code>
+ * {
+ *  "success": [boolean],
+ *  "message": [string],
+ *  "data":[{
+ *      "datum": [timestamp],
+ *      "erzeuger": [string],
+ *      "id": [number],
+ *      "text": [string],
+ *      "probeId": [number],
+ *      "owner": [boolean],
+ *      "readonly": [boolean]
+ *  }],
+ *  "errors": [object],
+ *  "warnings": [object],
+ *  "readonly": [boolean],
+ *  "totalCount": [number]
+ * }
+ * </code>
+ * </pre>
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 @Path("pkommentar")
 @RequestScoped
 public class KommentarPService {
 
-    /* The logger used in this class.*/
+    /**
+     * The logger used in this class.
+     */
     @Inject
     private Logger logger;
 
-    /* The data repository granting read/write access.*/
+    /**
+     * The data repository granting read/write access.
+     */
     @Inject
     @RepositoryConfig(type=RepositoryType.RW)
     private Repository defaultRepo;
 
-    /* The authorization module.*/
+    /**
+     * The authorization module.
+     */
     @Inject
     @AuthorizationConfig(type=AuthorizationType.OPEN_ID)
     private Authorization authorization;
 
     /**
-     * Get all messung objects.
+     * Get all KommentarP objects.
+     * <p>
+     * The requested objects can be filtered using a URL parameter named
+     * probeId.
+     * <p>
+     * Example: http://example.com/pkommentar?probeId=[ID]
      *
-     * @return Response object containing all messung objects.
+     * @return Response object containing all KommentarP objects.
      */
     @GET
     @Path("/")
@@ -84,9 +126,13 @@ public class KommentarPService {
     }
 
     /**
-     * Get a kommentarP object by id.
+     * Get a single KommentarP object by id.
+     * <p>
+     * The id is appended to the URL as a path parameter.
+     * <p>
+     * Example: http://example.com/pkommentar/{id}
      *
-     * @return Response object containing a single kommentarP.
+     * @return Response object containing a single KommentarP.
      */
     @GET
     @Path("/{id}")
@@ -102,6 +148,25 @@ public class KommentarPService {
             LKommentarP.class);
     }
 
+    /**
+     * Create a new KommentarP object.
+     * <p>
+     * The new object is embedded in the post data as JSON formatted string.
+     * <p>
+     * <pre>
+     * <code>
+     * {
+     *  "probeId": [number],
+     *  "erzeuger": [string],
+     *  "text": [string],
+     *  "datum": [date],
+     *  "owner": [boolean]
+     * }
+     * </code>
+     * </pre>
+     *
+     * @return Response object containing the new KommentarP.
+     */
     @POST
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
@@ -126,9 +191,23 @@ public class KommentarPService {
     }
 
     /**
-     * Update an existing messung object.
+     * Update an existing KommentarP object.
+     * <p>
+     * The object to update should come as JSON formatted string.
+     * <pre>
+     * <code>
+     * {
+     *  "id": [number],
+     *  "owner": [boolean],
+     *  "probeId": [number],
+     *  "erzeuger": [string],
+     *  "text": [string],
+     *  "datum": [date]
+     * }
+     * </code>
+     * </pre>
      *
-     * @return Response object containing the updated probe object.
+     * @return Response object containing the updated KommentarP object.
      */
     @PUT
     @Path("/{id}")
@@ -154,7 +233,11 @@ public class KommentarPService {
     }
 
     /**
-     * Delete an existing object by id.
+     * Delete an existing KommentarP by id.
+     * <p>
+     * The id is appended to the URL as a path parameter.
+     * <p>
+     * Example: http://example.com/pkommentar/{id}
      *
      * @return Response object.
      */

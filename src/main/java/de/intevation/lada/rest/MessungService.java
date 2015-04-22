@@ -1,9 +1,9 @@
 /* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
  * Software engineering by Intevation GmbH
  *
- * This file is Free Software under the GNU GPL (v>=3) 
- * and comes with ABSOLUTELY NO WARRANTY! Check out 
- * the documentation coming with IMIS-Labordaten-Application for details. 
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
  */
 package de.intevation.lada.rest;
 
@@ -42,28 +42,78 @@ import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 
+/**
+ * REST service for Messung objects.
+ * <p>
+ * The services produce data in the application/json media type.
+ * All HTTP methods use the authorization module to determine if the user is
+ * allowed to perform the requested action.
+ * A typical response holds information about the action performed and the data.
+ * <pre>
+ * <code>
+ * {
+ *  "success": [boolean];
+ *  "message": [string],
+ *  "data":[{
+ *      "id": [number],
+ *      "fertig": [boolean],
+ *      "letzteAenderung": [timestamp],
+ *      "messdauer": [number],
+ *      "messzeitpunkt": [timestamp],
+ *      "mmtId": [string],
+ *      "probeId": [number],
+ *      "owner": [boolean],
+ *      "readonly": [boolean],
+ *      "nebenprobenNr": [string],
+ *      "geplant": [boolean],
+ *      "treeModified": [timestamp],
+ *      "parentModified": [timestamp],
+ *      "messungsIdAlt": [number]
+ *  }],
+ *  "errors": [object],
+ *  "warnings": [object],
+ *  "readonly": [boolean],
+ *  "totalCount": [number]
+ * }
+ * </code>
+ * </pre>
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 @Path("messung")
 @RequestScoped
 public class MessungService {
 
-    /* The data repository granting read/write access.*/
+    /**
+     * The data repository granting read/write access.
+     */
     @Inject
     @RepositoryConfig(type=RepositoryType.RW)
     private Repository defaultRepo;
 
+    /**
+     * The object lock mechanism.
+     */
     @Inject
     @LockConfig(type=LockType.TIMESTAMP)
     private ObjectLocker lock;
 
-    /* The authorization module.*/
+    /**
+     * The authorization module.
+     */
     @Inject
     @AuthorizationConfig(type=AuthorizationType.OPEN_ID)
     private Authorization authorization;
 
     /**
-     * Get all messung objects.
+     * Get all Messung objects.
+     * <p>
+     * The requested objects can be filtered using a URL parameter named
+     * probeId.
+     * <p>
+     * Example: http://example.com/messung?probeId=[ID]
      *
-     * @return Response object containing all messung objects.
+     * @return Response object containing all Messung objects.
      */
     @GET
     @Path("/")
@@ -90,9 +140,13 @@ public class MessungService {
     }
 
     /**
-     * Get a messung object by id.
+     * Get a Messung object by id.
+     * <p>
+     * The id is appended to the URL as a path parameter.
+     * <p>
+     * Example: http://example.com/messung/{id}
      *
-     * @return Response object containing a single messung.
+     * @return Response object containing a single Messung.
      */
     @GET
     @Path("/{id}")
@@ -108,6 +162,32 @@ public class MessungService {
             LMessung.class);
     }
 
+    /**
+     * Create a Messung object.
+     * <p>
+     * The new object is embedded in the post data as JSON formatted string.
+     * <p>
+     * <pre>
+     * <code>
+     * {
+     *  "owner": [boolean],
+     *  "probeId": [number],
+     *  "mmtId": [string],
+     *  "nebenprobenNr": [string],
+     *  "messdauer": [number],
+     *  "fertig": [boolean],
+     *  "geplant": [boolean],
+     *  "messungsIdAlt": [string],
+     *  "treeModified": null,
+     *  "parentModified": null,
+     *  "messzeitpunkt": [date],
+     *  "letzteAenderung": [date]
+     * }
+     * </code>
+     * </pre>
+     *
+     * @return A response object containing the created Messung.
+     */
     @POST
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
@@ -143,8 +223,29 @@ public class MessungService {
 
     /**
      * Update an existing messung object.
+     * <p>
+     * The object to update should come as JSON formatted string.
+     * <pre>
+     * <code>
+     * {
+     *  "id": [number],
+     *  "owner": [boolean],
+     *  "probeId": [number],
+     *  "mmtId": [string],
+     *  "nebenprobenNr": [string],
+     *  "messdauer": [number],
+     *  "fertig": [boolean],
+     *  "geplant": [boolean],
+     *  "messungsIdAlt": [number],
+     *  "treeModified": [timestamp],
+     *  "parentModified": [timestamp],
+     *  "messzeitpunkt": [date],
+     *  "letzteAenderung": [date]
+     * }
+     * </code>
+     * </pre>
      *
-     * @return Response object containing the updated probe object.
+     * @return Response object containing the updated Messung object.
      */
     @PUT
     @Path("/{id}")
@@ -177,7 +278,11 @@ public class MessungService {
     }
 
     /**
-     * Delete an existing messung object by id.
+     * Delete an existing Messung object by id.
+     * <p>
+     * The id is appended to the URL as a path parameter.
+     * <p>
+     * Example: http://example.com/messung/{id}
      *
      * @return Response object.
      */

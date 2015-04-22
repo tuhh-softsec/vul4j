@@ -1,3 +1,10 @@
+/* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.lock;
 
 import java.lang.reflect.InvocationTargetException;
@@ -15,16 +22,33 @@ import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.Response;
 
+/**
+ * Data object locker using a timestamp to lock data access.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 @LockConfig(type=LockType.TIMESTAMP)
 public class TimestampLocker implements ObjectLocker {
 
+    /**
+     * The logger used in this class.
+     */
     @Inject
     private Logger logger;
 
+    /**
+     * The repository used to read data.
+     */
     @Inject
     @RepositoryConfig(type=RepositoryType.RO)
     Repository repository;
 
+    /**
+     * Test whether a data object is locked or not.
+     *
+     * @param o The object to test.
+     * @return True if the object is locked else false.
+     */
     @Override
     public boolean isLocked(Object o) {
         if (o instanceof LProbe) {
@@ -75,6 +99,13 @@ public class TimestampLocker implements ObjectLocker {
         return false;
     }
 
+    /**
+     * Test whether an object is newer tha the given timestamp.
+     *
+     * @param o     The object to test.
+     * @param t     The timestamp.
+     * @return True if the object is newer.
+     */
     private boolean isNewer(Object o, Timestamp t) {
         Method m;
         try {

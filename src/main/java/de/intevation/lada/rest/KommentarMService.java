@@ -34,24 +34,64 @@ import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 
+/**
+ * REST service for KommentarM objects.
+ * <p>
+ * The services produce data in the application/json media type.
+ * All HTTP methods use the authorization module to determine if the user is
+ * allowed to perform the requested action.
+ * A typical response holds information about the action performed and the data.
+ * <pre>
+ * <code>
+ * {
+ *  "success": [boolean];
+ *  "message": [string],
+ *  "data":[{
+ *      "messungsId": [number],
+ *      "datum": [timestamp],
+ *      "erzeuger": [string],
+ *      "id": [number],
+ *      "text": [string],
+ *      "owner": [boolean],
+ *      "readonly": [boolean]
+ *  }],
+ *  "errors": [object],
+ *  "warnings": [object],
+ *  "readonly": [boolean],
+ *  "totalCount": [number]
+ * }
+ * </code>
+ * </pre>
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 @Path("mkommentar")
 @RequestScoped
 public class KommentarMService {
 
-    /* The data repository granting read/write access.*/
+    /**
+     * The data repository granting read/write access.
+     */
     @Inject
     @RepositoryConfig(type=RepositoryType.RW)
     private Repository defaultRepo;
 
-    /* The authorization module.*/
+    /**
+     * The authorization module.
+     */
     @Inject
     @AuthorizationConfig(type=AuthorizationType.OPEN_ID)
     private Authorization authorization;
 
     /**
-     * Get all messung objects.
+     * Get all KommentarM objects.
+     * <p>
+     * The requested objects can be filtered using a URL parameter named
+     * messungsId.
+     * <p>
+     * Example: http://example.com/mkommentar?messungsId=[ID]
      *
-     * @return Response object containing all messung objects.
+     * @return Response object containing all (filtered) KommentarM objects.
      */
     @GET
     @Path("/")
@@ -78,9 +118,13 @@ public class KommentarMService {
     }
 
     /**
-     * Get an object by id.
+     * Get a single KommentarM object by id.
+     * <p>
+     * The id is appended to the URL as a path parameter.
+     * <p>
+     * Example: http://example.com/mkommentar/{id}
      *
-     * @return Response object containing a single kommentarP.
+     * @return Response object containing a single KommentarM.
      */
     @GET
     @Path("/{id}")
@@ -99,6 +143,24 @@ public class KommentarMService {
             LKommentarM.class);
     }
 
+    /**
+     * Create a KommentarM object.
+     * <p>
+     * The new object is embedded in the post data as JSON formatted string.
+     * <p>
+     * <pre>
+     * <code>
+     * {
+     *  messungsId: [number],
+     *  erzeuger: [string],
+     *  text: [string],
+     *  datum: [date]
+     *  owner: [boolean],
+     * }
+     * </code>
+     * </pre>
+     * @return A response object containing the created KommentarM.
+     */
     @POST
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
@@ -123,9 +185,23 @@ public class KommentarMService {
     }
 
     /**
-     * Update an existing object.
+     * Update an existing KommentarM object.
+     * <p>
+     * The object to update should come as JSON formatted string.
+     * <pre>
+     * <code>
+     * {
+     *  "id": [number],
+     *  "owner": [boolean],
+     *  "messungsId": [number],
+     *  "erzeuger": [string],
+     *  "text": [string],
+     *  "datum": [date]
+     * }
+     * </code>
+     * </pre>
      *
-     * @return Response object containing the updated probe object.
+     * @return Response object containing the updated KommentarM object.
      */
     @PUT
     @Path("/{id}")
@@ -150,7 +226,11 @@ public class KommentarMService {
     }
 
     /**
-     * Delete an existing object by id.
+     * Delete an existing KommentarM object by id.
+     * <p>
+     * The id is appended to the URL as a path parameter.
+     * <p>
+     * Example: http://example.com/mkommentar/{id}
      *
      * @return Response object.
      */

@@ -1,9 +1,9 @@
 /* Copyright (C) 2015 by Bundesamt fuer Strahlenschutz
  * Software engineering by Intevation GmbH
  *
- * This file is Free Software under the GNU GPL (v>=3) 
- * and comes with ABSOLUTELY NO WARRANTY! Check out 
- * the documentation coming with IMIS-Labordaten-Application for details. 
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
  */
 package de.intevation.lada.rest;
 
@@ -23,16 +23,55 @@ import javax.ws.rs.core.UriInfo;
 import de.intevation.lada.util.rest.Response;
 
 /**
- * This class serves as a login check service
+ * REST service to get login data for the Lada application.
+ * <p>
+ * This service produces data in the application/json media type.
+ * A typical response holds information about the action performed and the data.
+ * <pre>
+ * <code>
+ * {
+ *  "success": [boolean],
+ *  "message": [string],
+ *  "data":{
+ *      "username": [string],
+ *      "servertime": [timestamp],
+ *      "roles": [string]
+ *  },
+ *  "errors": [object],
+ *  "warnings": [object],
+ *  "readonly": [boolean],
+ *  "totalCount": [number]
+ * }
+ * </code>
+ * </pre>
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
 @Path("login")
 @RequestScoped
 public class LoginService {
 
     /**
-     * Get all probe objects.
+     * Get login data.
+     * <pre>
+     * <code>
+     * {
+     *  "success": [boolean],
+     *  "message": [string],
+     *  "data": {
+     *      "username": [string],
+     *      "servertime": [timestamp],
+     *      "roles": [string]
+     *  },
+     *  "errors": [object],
+     *  "warnings": [object],
+     *  "readonly": [boolean],
+     *  "totalCount": [number]
+     * }
+     * </code>
+     * </pre>
      *
-     * @return Response object containing all probe objects.
+     * @return Response object containing login data.
      */
     @GET
     @Path("/")
@@ -46,7 +85,6 @@ public class LoginService {
         response.put("username", request.getAttribute("lada.user.name"));
         response.put("roles", request.getAttribute("lada.user.roles"));
         response.put("servertime", new Date().getTime());
-        /* This should probably contain the users name and roles. */
         return new Response(true, 200, response);
     }
 }
