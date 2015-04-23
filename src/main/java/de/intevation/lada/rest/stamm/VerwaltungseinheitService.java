@@ -37,6 +37,22 @@ import de.intevation.lada.util.rest.Response;
  *  "success": [boolean];
  *  "message": [string],
  *  "data":[{
+ *      "id": [string],
+ *      "bezeichnung": [string],
+ *      "bundesland": [string],
+ *      "isBundesland": [string],
+ *      "isGemeinde": [string],
+ *      "isLandkreis": [string],
+ *      "isRegbezirk": [string],
+ *      "koordXExtern": [string],
+ *      "koordYExtern": [string],
+ *      "kreis": [string],
+ *      "latitude": [number],
+ *      "longitude": [number],
+ *      "nuts": [string],
+ *      "plz": [string],
+ *      "regbezirk": [string],
+ *      "koordinatenartId":[number]
  *  }],
  *  "errors": [object],
  *  "warnings": [object],
