@@ -1,3 +1,10 @@
+/* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.rest.exporter;
 
 import java.io.InputStream;
@@ -28,7 +35,17 @@ import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.auth.UserInfo;
 
 /**
- * This class produces a RESTful service to interact with probe objects.
+ * REST service to export probe objects and the child objects associated with
+ * the selected Probe objects.
+ * <p>
+ * To request objects post a JSON formatted string with an array of probe ids.
+ * <pre>
+ * <code>
+ * {
+ *  "proben": [[number], [number], ...]
+ * }
+ * </code>
+ * </pre>
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
@@ -36,26 +53,34 @@ import de.intevation.lada.util.auth.UserInfo;
 @RequestScoped
 public class LafExportService {
 
-    /* The logger used in this class.*/
+    /**
+     * The logger used in this class.
+     */
     @Inject
     private Logger logger;
 
+    /**
+     * The exporter.
+     */
     @Inject
     @ExportConfig(format=ExportFormat.LAF)
     private Exporter exporter;
 
+    /**
+     * The authorization module.
+     */
     @Inject
     @AuthorizationConfig(type=AuthorizationType.OPEN_ID)
-    Authorization authorization;
+    private Authorization authorization;
 
 
     /**
-     * Export LProbe objects.
+     * Export Probe objects.
      *
-     * The service takes form url encoded POST data containing probe ids and
-     * exports the LProbe objects filtered by these ids.
+     * The service takes JSON formatted  POST data containing probe ids and
+     * exports the Probe objects filtered by these ids.
      *
-     * @param proben    Form data (url encoded) string with probe ids.
+     * @param proben    JSON formatted string with an array of probe ids.
      * @param header    The HTTP header containing authorization information.
      * @return The LAF file to export.
      */

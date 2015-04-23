@@ -1,9 +1,9 @@
 /* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
  * Software engineering by Intevation GmbH
  *
- * This file is Free Software under the GNU GPL (v>=3) 
- * and comes with ABSOLUTELY NO WARRANTY! Check out 
- * the documentation coming with IMIS-Labordaten-Application for details. 
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
  */
 package de.intevation.lada.rest.importer;
 
@@ -40,22 +40,30 @@ import de.intevation.lada.util.rest.Response;
 @RequestScoped
 public class LafImportService {
 
-    /* The logger used in this class.*/
+    /**
+     * The logger used in this class.
+     */
     @Inject
     private Logger logger;
 
+    /**
+     * The importer
+     */
     @Inject
     @ImportConfig(format=ImportFormat.LAF)
     private Importer importer;
 
+    /**
+     * The authorization module.
+     */
     @Inject
     @AuthorizationConfig(type=AuthorizationType.OPEN_ID)
     private Authorization authorization;
 
     /**
-     * Import a file in the LAF format.
+     * Import a LAF formatted file.
      *
-     * @param input MulitpartFormDataInput containing the file to upload.
+     * @param input     String containing file content.
      * @param header    The HTTP header containing authorization information.
      * @return Response object.
      */
