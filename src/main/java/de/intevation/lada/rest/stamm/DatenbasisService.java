@@ -28,8 +28,6 @@ import de.intevation.lada.util.rest.Response;
  * REST service for Datenbasis objects.
  * <p>
  * The services produce data in the application/json media type.
- * All HTTP methods use the authorization module to determine if the user is
- * allowed to perform the requested action.
  * A typical response holds information about the action performed and the data.
  * <pre>
  * <code>
@@ -80,7 +78,7 @@ public class DatenbasisService {
     }
 
     /**
-     * Get an single Datenbasis object by id.
+     * Get a single Datenbasis object by id.
      * <p>
      * The id is appended to the URL as a path parameter.
      * <p>

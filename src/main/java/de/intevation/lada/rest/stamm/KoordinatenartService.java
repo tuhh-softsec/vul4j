@@ -24,19 +24,48 @@ import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.Response;
 
+/**
+ * REST service for KoordinatenArt objects.
+ * <p>
+ * The services produce data in the application/json media type.
+ * A typical response holds information about the action performed and the data.
+ * <pre>
+ * <code>
+ * {
+ *  "success": [boolean];
+ *  "message": [string],
+ *  "data":[{
+ *      "id": [number],
+ *      "idfGeoKey": [string],
+ *      "koordinatenArt": [string]
+ *  }],
+ *  "errors": [object],
+ *  "warnings": [object],
+ *  "readonly": [boolean],
+ *  "totalCount": [number]
+ * }
+ * </code>
+ * </pre>
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 @Path("koordinatenart")
 @RequestScoped
 public class KoordinatenartService {
 
-    /* The data repository granting read/write access.*/
+    /**
+     * The data repository granting read access.
+     */
     @Inject
     @RepositoryConfig(type=RepositoryType.RO)
     private Repository defaultRepo;
 
     /**
-     * Get all objects.
+     * Get all KoordinatenArt objects.
+     * <p>
+     * Example: http://example.com/koordinatenart
      *
-     * @return Response object containing all objects.
+     * @return Response object containing all KoordinatenArt objects.
      */
     @GET
     @Path("/")
@@ -49,9 +78,13 @@ public class KoordinatenartService {
     }
 
     /**
-     * Get an object by id.
+     * Get a single KoordinatenArt object by id.
+     * <p>
+     * The id is appended to the URL as a path parameter.
+     * <p>
+     * Example: http://example.com/koordinatenart/{id}
      *
-     * @return Response object containing a single object.
+     * @return Response object containing a single KoordinatenArt.
      */
     @GET
     @Path("/{id}")

@@ -1,9 +1,9 @@
 /* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
  * Software engineering by Intevation GmbH
  *
- * This file is Free Software under the GNU GPL (v>=3) 
- * and comes with ABSOLUTELY NO WARRANTY! Check out 
- * the documentation coming with IMIS-Labordaten-Application for details. 
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
  */
 package de.intevation.lada.rest.stamm;
 
@@ -29,19 +29,64 @@ import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.Response;
 
+/**
+ * REST service for SOrt objects.
+ * <p>
+ * The services produce data in the application/json media type.
+ * A typical response holds information about the action performed and the data.
+ * <pre>
+ * <code>
+ * {
+ *  "success": [boolean];
+ *  "message": [string],
+ *  "data":[{
+ *      "id": [number],
+ *      "beschreibung": [string],
+ *      "bezeichnung": [string],
+ *      "hoeheLand": [number],
+ *      "koordXExtern": [string],
+ *      "koordYExtern": [string],
+ *      "latitude": [number],
+ *      "letzteAenderung": [timestamp],
+ *      "longitude": [number],
+ *      "nutsCode": [string],
+ *      "unscharf": [string],
+ *      "koordinatenartId": [number],
+ *      "netzbetreiberId": [number],
+ *      "staatId": [number],
+ *      "verwaltungseinheitId": [string],
+ *      "otyp": [string]
+ *  }],
+ *  "errors": [object],
+ *  "warnings": [object],
+ *  "readonly": [boolean],
+ *  "totalCount": [number]
+ * }
+ * </code>
+ * </pre>
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 @Path("location")
 @RequestScoped
 public class LocationService {
 
-    /* The data repository granting read/write access.*/
+    /**
+     * The data repository granting read/write access.
+     */
     @Inject
     @RepositoryConfig(type=RepositoryType.RW)
     private Repository defaultRepo;
 
     /**
-     * Get all objects.
+     * Get all SOrt objects.
+     * <p>
+     * The requested objects can be filtered using a URL parameter named
+     * ortId.
+     * <p>
+     * Example: http://example.com/location?ortId=[ID]
      *
-     * @return Response object containing all objects.
+     * @return Response object containing all (filtered) SOrt objects.
      */
     @GET
     @Path("/")
@@ -64,9 +109,13 @@ public class LocationService {
     }
 
     /**
-     * Get an object by id.
+     * Get a single SOrt object by id.
+     * <p>
+     * The id is appended to the URL as a path parameter.
+     * <p>
+     * Example: http://example.com/location/{id}
      *
-     * @return Response object containing a single object.
+     * @return Response object containing a single SOrt.
      */
     @GET
     @Path("/{id}")
@@ -81,6 +130,32 @@ public class LocationService {
             "stamm");
     }
 
+    /**
+     * Create a SOrt object.
+     * <p>
+     * The new object is embedded in the post data as JSON formatted string.
+     * <p>
+     * <pre>
+     * <code>
+     * {
+     *  "bezeichnung": [string],
+     *  "beschreibung": [string],
+     *  "unscharf": [string],
+     *  "nutsCode": [string],
+     *  "koordXExtern": [string],
+     *  "koordYExtern": [string],
+     *  "hoeheLand": [string],
+     *  "longitude": [number],
+     *  "latitude": [number],
+     *  "staatId": [number],
+     *  "verwaltungseinheitId": [string],
+     *  "otyp": [string],
+     *  "letzteAenderung": [date]
+     * }
+     * </code>
+     * </pre>
+     * @return A response object containing the created SOrt.
+     */
     @POST
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
@@ -93,9 +168,31 @@ public class LocationService {
     }
 
     /**
-     * Update an existing object.
+     * Update an existing SOrt object.
+     * <p>
+     * The object to update should come as JSON formatted string.
+     * <pre>
+     * <code>
+     * {
+     *  "id": [number],
+     *  "bezeichnung": [string],
+     *  "beschreibung": [string],
+     *  "unscharf": [string],
+     *  "nutsCode": [string],
+     *  "koordXExtern": [string],
+     *  "koordYExtern": [string],
+     *  "hoeheLand": [number],
+     *  "longitude": [number],
+     *  "latitude": [number],
+     *  "staatId": [number],
+     *  "verwaltungseinheitId": [string],
+     *  "otyp": [string],
+     *  "letzteAenderung": [date]
+     * }
+     * </code>
+     * </pre>
      *
-     * @return Response object containing the updated object.
+     * @return Response object containing the updated SOrt object.
      */
     @PUT
     @Path("/")
@@ -109,7 +206,11 @@ public class LocationService {
     }
 
     /**
-     * Delete an existing object by id.
+     * Delete an existing SOrt object by id.
+     * <p>
+     * The id is appended to the URL as a path parameter.
+     * <p>
+     * Example: http://example.com/location/{id}
      *
      * @return Response object.
      */
