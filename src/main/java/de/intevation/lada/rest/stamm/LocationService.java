@@ -195,7 +195,7 @@ public class LocationService {
      * @return Response object containing the updated SOrt object.
      */
     @PUT
-    @Path("/")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response update(@Context HttpHeaders headers, SOrt ort) {
         Response response = defaultRepo.update(ort, "stamm");
