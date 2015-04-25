@@ -1,8 +1,6 @@
 Plexus Archiver and Plexus-IO combined release notes
 ========================================================================
 
-Note: Master is in JIRA at http://jira.codehaus.org/browse/PLXCOMP
-
 Since archiver depends on a given version of IO this list is cumulative,
 any version includes *all* changes below.
 
