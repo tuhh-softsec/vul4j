@@ -6,6 +6,24 @@ Note: Master is in JIRA at http://jira.codehaus.org/browse/PLXCOMP
 Since archiver depends on a given version of IO this list is cumulative,
 any version includes *all* changes below.
 
+Plexus Components - Version plexus-archiver-2.10
+-----
+
+* Symlink support in DirectoryArchiver
+* Multithreaded ZIP support
+* Fixed resource leak on ZIP files included in ZIP files.
+* Added encoding supporting overload: addArchivedFileSet( final ArchivedFileSet fileSet, Charset charset )
+* Fixed NPE with missing folder in TAR
+* Moved all "zip" support to archiver (from io).
+
+
+Plexus Components - Version plexus-io-2.5
+-----
+* Proper support for closeable on zip archives.
+* Removed zip supporting PlexusIoZipFileResourceCollection; which now exists in plexus-archiver. (Drop in replacement,
+just change/add jar file).
+
+
 Plexus Components - Version plexus-archiver-2.9.1
 -----
 
