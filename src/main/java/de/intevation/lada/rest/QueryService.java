@@ -51,11 +51,22 @@ import de.intevation.lada.util.rest.Response;
 public class QueryService {
 
     /**
-     * Request all configured queries.
+     * Request all configured probe queries.
      */
     @GET
+    @Path("/probe")
     @Produces("application/json")
-    public Response get() {
-        return new Response(true, 200, QueryTools.getConfig());
+    public Response getProbe() {
+        return new Response(true, 200, QueryTools.getProbeConfig());
+    }
+
+    /**
+     * Request all configured messprogramm queries.
+     */
+    @GET
+    @Path("/messprogramm")
+    @Produces("application/json")
+    public Response getMessprogramm() {
+        return new Response(true, 200, QueryTools.getMessprogrammConfig());
     }
 }

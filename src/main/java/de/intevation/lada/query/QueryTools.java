@@ -32,16 +32,17 @@ import javax.ws.rs.core.MultivaluedMap;
  */
 public class QueryTools
 {
-    private static String FILE = "/queryconf.json";
+    private static String PROBE_CONFIG = "/probequery.json";
+    private static String MESSPROGRAMM_CONFIG = "/messprogrammquery.json";
     /**
      * Read the config file using the system property
      * "de.intevation.lada.sqlconfig".
      *
      * @return The file content.
      */
-    public static String readConfigFile() {
+    public static String readConfigFile(String file) {
         try {
-            InputStream inputStream = QueryConfig.class.getResourceAsStream(FILE);
+            InputStream inputStream = QueryConfig.class.getResourceAsStream(file);
             int ch;
             StringBuilder builder = new StringBuilder();
             while((ch = inputStream.read()) != -1) {
@@ -62,8 +63,8 @@ public class QueryTools
      *
      * @return List of {@link QueryConfig} objects.
      */
-    public static List<QueryConfig> getConfig() {
-        String content = readConfigFile();
+    private static List<QueryConfig> getConfig(String file) {
+        String content = readConfigFile(file);
         if (content == null) {
             return null;
         }
@@ -111,6 +112,14 @@ public class QueryTools
         return configs;
     }
 
+    public static List<QueryConfig> getProbeConfig() {
+        return getConfig(PROBE_CONFIG);
+    }
+
+    public static List<QueryConfig> getMessprogrammConfig() {
+        return getConfig(MESSPROGRAMM_CONFIG);
+    }
+
     /**
      * Get a query by id.
      * First reads the config file and returns the {@link QueryConfig}
@@ -121,7 +130,7 @@ public class QueryTools
      */
     public static JsonObject getQueryById(String id) {
         try {
-            String content = readConfigFile();
+            String content = readConfigFile(PROBE_CONFIG);
             if (content != null) {
                 JsonReader reader = Json.createReader(new StringReader(content));
                 JsonArray queries = reader.readArray();
@@ -170,5 +179,25 @@ public class QueryTools
             ret.add(set);
         }
         return ret;
+    }
+
+    public static JsonObject getMpQueryById(String id) {
+        try {
+            String content = readConfigFile(MESSPROGRAMM_CONFIG);
+            if (content != null) {
+                JsonReader reader = Json.createReader(new StringReader(content));
+                JsonArray queries = reader.readArray();
+                for (int i = 0; i < queries.size(); i++) {
+                    JsonObject query = queries.getJsonObject(i);
+                    if (query.getString("id").equals(id)) {
+                        return query;
+                    }
+                }
+            }
+            return null;
+        }
+        catch (JsonException e) {
+            return null;
+        }
     }
 }
