@@ -1,0 +1,45 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+    <f:entry title="Server" field="server">
+        <f:textbox value="${it.getServer()}"/>
+    </f:entry>
+    <f:entry  field="port" title="Port">
+        <f:textbox default="21" value="${it.getPort()}"/>
+    </f:entry>
+    <f:entry field="userID" title="Username">
+        <f:textbox value="${it.getUsername()}"/>
+    </f:entry>
+    <f:entry field="password" title="Password">
+        <f:password value="${it.getPassword()}"/>
+    </f:entry>
+    <f:entry field="project" title="Project">
+        <f:textbox value="${it.getProject()}"/>
+    </f:entry>
+    <f:entry field="alternate" title="Alternate">
+        <f:textbox value="${it.getAlternate()}"/>
+    </f:entry>
+    <f:entry field="group" title="Group">
+        <f:textbox value="${it.getGroup()}"/>
+    </f:entry>
+    <f:entry field="types" title="Types">
+        <f:textbox value="${it.getTypes()}"/>
+    </f:entry>
+    <f:block>
+        <table style="width:100%">
+            <f:optionalBlock inline="true" field="custJobHeader" title="Use custom job header?" checked="${it.getCustJobHeader()}">
+                <f:entry title="Job header">
+                    <f:textarea field="JobHeader" value="${it.getJobHeader()}" default="${descriptor.SCLMJobHeader}"/>
+                </f:entry>
+            </f:optionalBlock>
+        </table>
+    </f:block>
+    <f:block>
+        <table style="width:100%">
+             <f:optionalBlock inline="true" field="custJobStep" title="Custom SCLM job step?" checked="${it.getCustJobStep()}">
+                <f:entry title="Job step">
+                    <f:textarea field="JobStep" value="${it.getJobStep()}" default="${descriptor.SCLMJobStep}"/>
+                </f:entry>
+            </f:optionalBlock>
+        </table>
+    </f:block>
+</j:jelly>
