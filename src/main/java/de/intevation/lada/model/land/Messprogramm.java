@@ -27,23 +27,62 @@ public class Messprogramm implements Serializable {
     @Id
     private Integer id;
 
-    private Timestamp bis;
+    @Column(name="ba_id")
+    private String baId;
+
+    @Column(name="datenbasis_id")
+    private Integer datenbasisId;
+
+    @Column(name="gem_id")
+    private String gemId;
+
+    @Column(name="gueltig_bis")
+    private Integer gueltigBis;
+
+    @Column(name="gueltig_von")
+    private Integer gueltigVon;
+
+    @Column(name="intervall_offset")
+    private Integer intervallOffset;
+
+    @Column(name="letzte_aenderung")
+    private Timestamp letzteAenderung;
 
     @Column(name="media_desk")
     private String mediaDesk;
 
+    @Column(name="mst_id")
+    private String mstId;
+
     private String name;
 
+    @Column(name="netzbetreiber_id")
+    private String netzbetreiberId;
+
     @Column(name="ort_id")
-    private Long ortId;
+    private Integer ortId;
+
+    @Column(name="probe_kommentar")
+    private String probeKommentar;
+
+    @Column(name="probe_nehmer_id")
+    private Integer probeNehmerId;
+
+    @Column(name="probenart_id")
+    private Integer probenartId;
+
+    private String probenintervall;
+
+    @Column(name="teilintervall_bis")
+    private Integer teilintervallBis;
+
+    @Column(name="teilintervall_von")
+    private Integer teilintervallVon;
+
+    private Boolean test;
 
     @Column(name="umw_id")
     private String umwId;
-
-    private Timestamp von;
-
-    @Column(name="intervall_id")
-    private Integer messprogrammIntervall;
 
     public Messprogramm() {
     }
@@ -56,12 +95,60 @@ public class Messprogramm implements Serializable {
         this.id = id;
     }
 
-    public Timestamp getBis() {
-        return this.bis;
+    public String getBaId() {
+        return this.baId;
     }
 
-    public void setBis(Timestamp bis) {
-        this.bis = bis;
+    public void setBaId(String baId) {
+        this.baId = baId;
+    }
+
+    public Integer getDatenbasisId() {
+        return this.datenbasisId;
+    }
+
+    public void setDatenbasisId(Integer datenbasisId) {
+        this.datenbasisId = datenbasisId;
+    }
+
+    public String getGemId() {
+        return this.gemId;
+    }
+
+    public void setGemId(String gemId) {
+        this.gemId = gemId;
+    }
+
+    public Integer getGueltigBis() {
+        return this.gueltigBis;
+    }
+
+    public void setGueltigBis(Integer gueltigBis) {
+        this.gueltigBis = gueltigBis;
+    }
+
+    public Integer getGueltigVon() {
+        return this.gueltigVon;
+    }
+
+    public void setGueltigVon(Integer gueltigVon) {
+        this.gueltigVon = gueltigVon;
+    }
+
+    public Integer getIntervallOffset() {
+        return this.intervallOffset;
+    }
+
+    public void setIntervallOffset(Integer intervallOffset) {
+        this.intervallOffset = intervallOffset;
+    }
+
+    public Timestamp getLetzteAenderung() {
+        return this.letzteAenderung;
+    }
+
+    public void setLetzteAenderung(Timestamp letzteAenderung) {
+        this.letzteAenderung = letzteAenderung;
     }
 
     public String getMediaDesk() {
@@ -72,6 +159,14 @@ public class Messprogramm implements Serializable {
         this.mediaDesk = mediaDesk;
     }
 
+    public String getMstId() {
+        return this.mstId;
+    }
+
+    public void setMstId(String mstId) {
+        this.mstId = mstId;
+    }
+
     public String getName() {
         return this.name;
     }
@@ -80,12 +175,76 @@ public class Messprogramm implements Serializable {
         this.name = name;
     }
 
-    public Long getOrtId() {
+    public String getNetzbetreiberId() {
+        return this.netzbetreiberId;
+    }
+
+    public void setNetzbetreiberId(String netzbetreiberId) {
+        this.netzbetreiberId = netzbetreiberId;
+    }
+
+    public Integer getOrtId() {
         return this.ortId;
     }
 
-    public void setOrtId(Long ortId) {
+    public void setOrtId(Integer ortId) {
         this.ortId = ortId;
+    }
+
+    public String getProbeKommentar() {
+        return this.probeKommentar;
+    }
+
+    public void setProbeKommentar(String probeKommentar) {
+        this.probeKommentar = probeKommentar;
+    }
+
+    public Integer getProbeNehmerId() {
+        return this.probeNehmerId;
+    }
+
+    public void setProbeNehmerId(Integer probeNehmerId) {
+        this.probeNehmerId = probeNehmerId;
+    }
+
+    public Integer getProbenartId() {
+        return this.probenartId;
+    }
+
+    public void setProbenartId(Integer probenartId) {
+        this.probenartId = probenartId;
+    }
+
+    public String getProbenintervall() {
+        return this.probenintervall;
+    }
+
+    public void setProbenintervall(String probenintervall) {
+        this.probenintervall = probenintervall;
+    }
+
+    public Integer getTeilintervallBis() {
+        return this.teilintervallBis;
+    }
+
+    public void setTeilintervallBis(Integer teilintervallBis) {
+        this.teilintervallBis = teilintervallBis;
+    }
+
+    public Integer getTeilintervallVon() {
+        return this.teilintervallVon;
+    }
+
+    public void setTeilintervallVon(Integer teilintervallVon) {
+        this.teilintervallVon = teilintervallVon;
+    }
+
+    public Boolean getTest() {
+        return this.test;
+    }
+
+    public void setTest(Boolean test) {
+        this.test = test;
     }
 
     public String getUmwId() {
@@ -94,21 +253,5 @@ public class Messprogramm implements Serializable {
 
     public void setUmwId(String umwId) {
         this.umwId = umwId;
-    }
-
-    public Timestamp getVon() {
-        return this.von;
-    }
-
-    public void setVon(Timestamp von) {
-        this.von = von;
-    }
-
-    public Integer getMessprogrammIntervall() {
-        return this.messprogrammIntervall;
-    }
-
-    public void setMessprogrammIntervall(Integer messprogrammIntervall) {
-        this.messprogrammIntervall = messprogrammIntervall;
     }
 }
