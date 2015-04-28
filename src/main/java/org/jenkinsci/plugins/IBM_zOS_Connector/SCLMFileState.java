@@ -113,20 +113,20 @@ public class SCLMFileState {
 
     /**
      * This function is later used for removing duplicates.
-     * <br/>The order of comparison:
-     * <br/>1. Project
-     * <br/>2. Alternate
-     * <br/>3. Group
-     * <br/>4. Type
-     * <br/>5. Name
-     * <br/>6. Version
-     * <br/>7. Change Date and time
-     * <br/>8. Change UserID
-     * <br/>9. Change Group
+     * <br>The order of comparison:
+     * <br>1. Project
+     * <br>2. Alternate
+     * <br>3. Group
+     * <br>4. Type
+     * <br>5. Name
+     * <br>6. Version
+     * <br>7. Change Date and time
+     * <br>8. Change UserID
+     * <br>9. Change Group
      *
      * @param e the SCLMAffectedFile object we are comparing to.
      *
-     * @return -1 if <b><code>this</code></b> < <b>e</b>, 1 if <b><code>this</code></b> > <b>e</b> and 0 if the objects are equal.
+     * @return -1:0:1 depending on the compare result.
      */
     public int compareTo(SCLMFileState e) {
         int compareProject = this.project.compareTo(e.project);

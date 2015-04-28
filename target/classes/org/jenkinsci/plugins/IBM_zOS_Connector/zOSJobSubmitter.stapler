@@ -1,0 +1,2 @@
+#Tue Apr 28 16:25:40 MSK 2015
+constructor=server,port,userID,password,wait,waitTime,deleteJobFromSpool,job

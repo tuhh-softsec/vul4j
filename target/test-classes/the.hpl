@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Group-Id: org.jenkins-ci.plugins
+Short-Name: zos-connector
+Long-Name: IBM z/OS Connector
+Url: https://wiki.jenkins-ci.org/display/JENKINS/IBM+zOS+Connector
+Plugin-Version: 1.0.0
+Hudson-Version: 1.608
+Jenkins-Version: 1.608
+Plugin-Developers: Alexander Shcherbakov:CandidusLynx:candiduslynx@gma
+ il.com
+Libraries: C:\Users\shchea\Documents\Diploma\GitHub\target\classes,C:\
+ Users\shchea\.m2\repository\commons-net\commons-net\3.3\commons-net-3
+ .3.jar
+Resource-Path: C:\Users\shchea\Documents\Diploma\GitHub\src\main\webapp
+

@@ -1,0 +1,3431 @@
+Manifest-Version: 1.0
+Jenkins-Version: 1.608
+Implementation-Version: 1.608
+Hudson-Version: 1.395
+Build-Jdk: 1.7.0_21
+Built-By: kohsuke
+Created-By: Apache Maven 3.1.1
+Main-Class: Main
+Archiver-Version: Plexus Archiver
+
+Name: images/48x48/red_anime.gif
+SHA-256-Digest: 2ktTeqkcRPD3cWv0z9xPu6Hf3kMNxoh55qzYKVMdCwk=
+
+Name: images/24x24/document-properties.png
+SHA-256-Digest: armi4hTz9UWsQcoLmu0t4z3OJQtMbW7hjnKnhXLUXKs=
+
+Name: images/24x24/help.gif
+SHA-256-Digest: TVyAfDVOBzvI6cjgGTYv/fcuHU/bSRVAQPHWEAI56qw=
+
+Name: images/16x16/star-gold.gif
+SHA-256-Digest: 2dmSNiYQI1EsEBDbRBp0e/KbEs0GIY+dB0CdtYOSvzM=
+
+Name: help/project-config/disable_tr.html
+SHA-256-Digest: c9JKuvYb9XpvtitkvTbu120R4UngnEcJcOFDqTIy20U=
+
+Name: WEB-INF/plugins/matrix-auth.hpi
+SHA-256-Digest: He/HYkTpoNr3nD0IgzaxGthRQdf1f3U39gGFWgOHRkY=
+
+Name: scripts/yui/logger/assets/logger-core.css
+SHA-256-Digest: KoHPGo8A+7mnOh8SRk5hROeb55CV7Q/uKvYzjspo2Zg=
+
+Name: scripts/yui/container/assets/skins/sam/container.css
+SHA-256-Digest: JQuOm+t2nuUuA4NolqmSknxIxM6tnIY2y2vrltO6szU=
+
+Name: WEB-INF/plugins/cvs.hpi
+SHA-256-Digest: fJF7yCQBmoHVRHLFJeTXJN+0rhC1m/ZOaSovxZ/NM8w=
+
+Name: WEB-INF/lib/upstart-slave-installer-1.1.jar
+SHA-256-Digest: 9BDTDMcrHu82M2aTZHFDrKY+vTLbUNrDpB/f/PxWRpI=
+
+Name: images/24x24/health-40to59.gif
+SHA-256-Digest: E3/xXiUs3dq2N6EC2/8j4A+CHSZaPfQA/Htwa7waksk=
+
+Name: scripts/yui/assets/skins/sam/back-h.png
+SHA-256-Digest: Px3ErEEPvUUHpeNVyfHmqr1/Vpni6LbqcgkMXg/M6/M=
+
+Name: images/16x16/expand.png
+SHA-256-Digest: jc9KiUJgmM/prkRvUJ3NAvnmAVkvx+jKaB26V8wenaw=
+
+Name: scripts/yui/treeview/treeview-min.js
+SHA-256-Digest: 2qTGaxu+UU32fsOcJaYYlq4XHaucGZVkHvhSMmZwmAU=
+
+Name: images/24x24/new-package.gif
+SHA-256-Digest: CW11p3uORd+6Aqj8xT5lnKk4/N0CksvvLKFT5YNA5Xk=
+
+Name: help/parameter/description_de.html
+SHA-256-Digest: MoFatff/MwmANxLLamkzONJ4Y7DRs52fbczPAAa+fvw=
+
+Name: images/16x16/blue.gif
+SHA-256-Digest: DOX1lVex7J5q54x+s/tBjDKFPsLuvUK1xs55O4aQpC4=
+
+Name: scripts/yui/menu/assets/menuitem_submenuindicator_disabled.png
+SHA-256-Digest: WXtC9UWdQHWtBQ3evatgJzhqBlDQKpVnOP1LZcG8AzU=
+
+Name: help/parameter/string-default.html
+SHA-256-Digest: QzAORXruCAhw408m/9i6iMGFG+qbX7dKKT+eHu3uufU=
+
+Name: images/48x48/lock.png
+SHA-256-Digest: cVkuHTE0eiOOjvgZfIs1+Wk1zhgOV/OzlQ/5hELSScY=
+
+Name: WEB-INF/lib/junit-4.11.jar
+SHA-256-Digest: kKjhYD7spI5+h586+8lWBxUyKYXzmidPb2BwtD+dBv4=
+
+Name: scripts/yui/treeview/assets/skins/sam/check1.gif
+SHA-256-Digest: tTRrlyMyv8RS+trBxfknzZ6E7duAAJkCceKFkUUaHI0=
+
+Name: WEB-INF/lib/asm-util-4.0.jar
+SHA-256-Digest: N1nKOSeDqysoxzeJacc2OpA9/RInSeEtm7qrV3R4rv8=
+
+Name: help/parameter/choice-choices_zh_TW.html
+SHA-256-Digest: nmpWnihIfpuTfx5iuBFOyOr49srk4ct55czPu3gFFKg=
+
+Name: scripts/yui/button/assets/skins/sam/split-button-arrow.png
+SHA-256-Digest: fZkMjIKqSApDupQ8c7OJDDHp434mqp3R+NpXha1eDVQ=
+
+Name: WEB-INF/lib/activation-1.1.1-hudson-1.jar
+SHA-256-Digest: qqSWzGZ++z9MXolgOQ7F0/iWSliXCjy36+RiBUaQ4lQ=
+
+Name: images/32x32/grey_anime.gif
+SHA-256-Digest: 8BriHF3FmqvUMCIhyVS8jlAzW1gLsCOp+0Ax+Z+HNTk=
+
+Name: WEB-INF/lib/commons-beanutils-1.8.3.jar
+SHA-256-Digest: 4UB7gdgTj7nB/HMbh7XgBo3cyr+8Zd7lnNs3ipDF6Bo=
+
+Name: images/16x16/go-next.png
+SHA-256-Digest: KyGlEMXkU7EIegSUmxj0B19BevF4v4GrmUUVppW5+Yo=
+
+Name: WEB-INF/remoting.jar
+SHA-256-Digest: ZZUAHSUkBQk6QARXB5J9sk+bUk2tD1F0BdvrFpF9ax0=
+
+Name: images/16x16/grey.gif
+SHA-256-Digest: nYI3zIVD/rh7y21tCR5OuG6GiZewImLLTDeowtT3fHA=
+
+Name: images/16x16/health-20to39.png
+SHA-256-Digest: qxJbXv3c00xjv1gtB5EO789SB8ZdwSrmTSAVikhxlVI=
+
+Name: help/system-config/master-slave/jnlpSecurity_tr.html
+SHA-256-Digest: q//QnNbvZXuQzrgHWHyxSIlsRkkNajdFnMGLzPCc/aw=
+
+Name: WEB-INF/lib/cli-1.608.jar
+SHA-256-Digest: iXVXvfZProSJODGUshUYmAI69jbOKI4W/2athBVvMI0=
+
+Name: images/16x16/health-20to39.gif
+SHA-256-Digest: uzamJe1u/Mnhc8+ri5Baz62lSbf25eiWlj+ArXFD4VM=
+
+Name: WEB-INF/plugins/ssh-slaves.hpi
+SHA-256-Digest: vJkrCaZ7fldUpsBCg09VBtIXHvgrm8U/W57UD3/zYdE=
+
+Name: help/parameter/file_ja.html
+SHA-256-Digest: PLD08mJVvnPgMsmL7HI5E9kMq++wlDLOTvJrr26+gao=
+
+Name: images/24x24/package.png
+SHA-256-Digest: xBm1bCxR7KBBSKzA5NXdaLsSvki1l7TtP9UuJjMU4g4=
+
+Name: scripts/yui/connection/connection-min.js
+SHA-256-Digest: wSh638HGdh3LQiHjQhE5gb/PYGfg9lrb9BdnT16D2k0=
+
+Name: WEB-INF/lib/stapler-groovy-1.236.jar
+SHA-256-Digest: LNT1j7v/OGPbdHSQnB5lgxwJH/ECEOkOjRt2hjULjbk=
+
+Name: help/user/fullName_ja.html
+SHA-256-Digest: 6F7O4tRcrmRJYxJr1MbzrNYtWsoy+KEu/dBCqlobZ4M=
+
+Name: images/48x48/accept.png
+SHA-256-Digest: toJlAdnJDvgwAPPZAtDtXbCfKm2XR5Nzmf64GKzgJ/A=
+
+Name: help/system-config/globalEnvironmentVariables_zh_CN.html
+SHA-256-Digest: rHMMO1D/xWKHK20sU2WT8/BpBiymThjzH8s3Hlq9LHk=
+
+Name: WEB-INF/lib/jffi-1.2.7.jar
+SHA-256-Digest: p2dQEeh7Z3zztY5hIuSYHHXZgVFlZ+qsdIgV8LdvLZ4=
+
+Name: images/48x48/plugin.png
+SHA-256-Digest: aIo7PVJT5pzdNOoJ8jT4UYn7a31bhz1p36nvI6kEiRk=
+
+Name: images/32x32/computer-flash.gif
+SHA-256-Digest: z/4NyIwB3ROD6IifrawOXQBS7hV+wuAKa2gO9717NgI=
+
+Name: scripts/yui/menu/assets/menuitem_submenuindicator_selected.png
+SHA-256-Digest: tZvW5nD3L22JRNKcVMeC4J7ekLIAN4v1/oSryhLg2TM=
+
+Name: images/32x32/yellow.png
+SHA-256-Digest: OmcyTob+WN4jLvGNxQAzWP9aE+NdlzOLQdsCrW6+/L0=
+
+Name: scripts/yui/menu/assets/menu-core.css
+SHA-256-Digest: 2n6eKbTmDxsb/ulyBmJJn5Mi5ebM6npf39itlMybFak=
+
+Name: help/project-config/block-downstream-building_ja.html
+SHA-256-Digest: znil5il5tKRPGYjgXUuDqwfcJsfziDG1S3WO3rhDmhg=
+
+Name: help/user/fullName_ru.html
+SHA-256-Digest: 12XPGMCR3Tp1oaoOZuoOQi68cG2qx0BIZ+DhLErXiRM=
+
+Name: help/project-config/description_ja.html
+SHA-256-Digest: Mc1Pf/6jaRjW56a8xmgPSRoXsOfbIdCrAlYMLgyc5ng=
+
+Name: images/24x24/lock.png
+SHA-256-Digest: HXrmLfGbtFuTKoZElKBeOh0g26wO7vZit07+Zhz52yM=
+
+Name: WEB-INF/security/AbstractPasswordBasedSecurityRealm.groovy
+SHA-256-Digest: EWx7j33x0CX6jkAHPJ2BDRAeK2baiBiuQ6xGIL8QDCY=
+
+Name: WEB-INF/plugins/ant.hpi
+SHA-256-Digest: D1YZjMC6CITNU9KC3jNGaE9MTo/ctXLGB3mVKB3VrIs=
+
+Name: help/user/fullName_nl.html
+SHA-256-Digest: eEDmLjsXa/3NGqbvn5OGEJMpig7S6QSZgYOZO5nVAa4=
+
+Name: help/system-config/patternJobNamingStrategy_ja.html
+SHA-256-Digest: sQRyWbp3av3lLq8BGwzHI3O83qYl5Zjnb98yGMofy88=
+
+Name: help/project-config/parameterized-build_fr.html
+SHA-256-Digest: UdLXfkpYAMiuba5WANvvRRK9sTfJAWnl79oDs+m6nMw=
+
+Name: WEB-INF/lib/commons-codec-1.8.jar
+SHA-256-Digest: WZtAuUtKOcJVCktRBt8HGqAxmbca1UIyB+LnNWqk+Ls=
+
+Name: MainDialog$1.class
+SHA-256-Digest: JeOha6r5ruui8KfdMiORVrdcpP7b3aczpNafFciDFpE=
+
+Name: help/parameter/run-filter.html
+SHA-256-Digest: 7dgCTSSEdAB7J4scaZy7a/B4SIiV95D8Ml44OBIHt2g=
+
+Name: help/LogRecorder/logger_ja.html
+SHA-256-Digest: 8KdpUf3xlFZN3GtVnBfnd7ksrhi8iZnSMTUlscu690U=
+
+Name: images/24x24/new-user.png
+SHA-256-Digest: br6WqtnLbrONpdJA1PSKQdeZHJ3ALdvtrw1HfIROSyQ=
+
+Name: scripts/yui/button/assets/skins/sam/menu-button-arrow-disabled.p
+ ng
+SHA-256-Digest: tEv9KYfjJrCO/NXewIH4kExQdnLf22he0FLoJsVVF48=
+
+Name: images/32x32/computer-x.gif
+SHA-256-Digest: QhVGVnKs8WeNh+RVdpCe98pkN+iY7STHdRXOkhvy8cU=
+
+Name: help/parameter/choice-choices.html
+SHA-256-Digest: 4JuNszSPUzi+/a3MqAUt6EXClVjbnQhflxE+CUBBllI=
+
+Name: help/parameter/file_de.html
+SHA-256-Digest: yIkJ1Ygbfp4Y+SMF/RmQwc6YR6YxE5T4ea+wjsspzPk=
+
+Name: help/system-config/patternJobNamingStrategy_de.html
+SHA-256-Digest: nx4R1wC90qztCHtMOm9pNbolQxyX6YHA9C0pt3iVGSM=
+
+Name: scripts/yui/container/container_core-debug.js
+SHA-256-Digest: +TBSyJWgMqNDJarURgC5heZBKXLLgMo0dn674n2KLck=
+
+Name: WEB-INF/lib/json-lib-2.4-jenkins-2.jar
+SHA-256-Digest: K6KsD05z6PKkhZA6AUNxvC9y4wdNeJcKl/SlyP9kVRs=
+
+Name: images/24x24/document-properties.gif
+SHA-256-Digest: 7CyPNSL4IHoA1gw75zwK5VLQwgcduY8LVsuex1FREVs=
+
+Name: scripts/yui/assets/skins/sam/check2.gif
+SHA-256-Digest: K6yZeCWmwAYLFkDu6SwXxph3na6ppXkSBZAQvoC2n08=
+
+Name: images/24x24/graph.gif
+SHA-256-Digest: QuM0TWX5ExgvGc6PfTfAzv6+ertpbn+eQlA/o3zadAA=
+
+Name: scripts/yui/fonts/fonts-min.css
+SHA-256-Digest: 2DGMpW9QZlTQo4TKBV0+XCKRna7UEbtsuhDBYJnmDRI=
+
+Name: help/parameter/string_zh_TW.html
+SHA-256-Digest: lD5W7hK8HsjfFaf0OMk4GJw6IByxe7Wv0dm0lsg+O9g=
+
+Name: WEB-INF/lib/jenkins-core-1.608.jar
+SHA-256-Digest: M9yBbBe89ChcmIXpajkluas3cKJSWkwPkLhhgROZu2M=
+
+Name: images/24x24/package.gif
+SHA-256-Digest: w502iltSrlSJHsNwBN46+rdVsegqAcvO2icicZlFb5c=
+
+Name: images/16x16/empty.gif
+SHA-256-Digest: PD2/mrwAwFIEvmB7lJ31gQFvUZxdZk+M1l1Eyz0TNlg=
+
+Name: help/system-config/master-slave/numExecutors.html
+SHA-256-Digest: 1SuZvRQUykuQUduJa4TwLAoa+wEixz/7uD69hzGSI9M=
+
+Name: help/system-config/master-slave/demand/inDemandDelay_de.html
+SHA-256-Digest: M1mK8rzVyQNP8SEvR+zmGAu6AdgXURK4CFB1F/jYk1E=
+
+Name: images/48x48/search.gif
+SHA-256-Digest: QyKQ62nHp4n/YsZ6UV4IZzG3K86NTaLrzZXXCSdOpyc=
+
+Name: images/32x32/green_anime.gif
+SHA-256-Digest: +1Dgew6t2kxuxqvgL76hLkBdW5UpaJCQ9yw4hNaIdQk=
+
+Name: images/32x32/nobuilt.png
+SHA-256-Digest: 11JCS/3gOMV/Q8e+DCbr7LEklMthkhasEM4P6ePyN+U=
+
+Name: WEB-INF/plugins/matrix-project.hpi
+SHA-256-Digest: +Va0y0PhuNEN1wOKQYuroro7I6m1kjpxQFHmE8AKJq8=
+
+Name: images/48x48/document.gif
+SHA-256-Digest: 4F47yOK+/Aolsp44BUU2kZPTRuqmsKwOar1v/hroVP0=
+
+Name: images/top-sticker-bottom-edge.png
+SHA-256-Digest: WP6n0cvvHEy7z3Q6y4/O4slURkOjdGcbq+vCXochK+Q=
+
+Name: scripts/yui/menu/assets/skins/sam/menu-skin.css
+SHA-256-Digest: 8pxl/zVy0SHvDciFAShp1dpRE4yk8c91OZmW+0BYKTc=
+
+Name: images/48x48/folder-delete.gif
+SHA-256-Digest: i8lOHhuw6AjzR91OOR2vd26jf9kGDc88kdM7vtizsC4=
+
+Name: help/system-config/systemMessage_pt_BR.html
+SHA-256-Digest: BiRZKhT/rHwuHlwO/ZLtQKTTBww73P6tBV3zSwAKqTo=
+
+Name: help/system-config/master-slave/description_zh_TW.html
+SHA-256-Digest: Rc0KvNLo/BTQ8OR1XSUEM+NWA/IwOSYFbfW+grNII/w=
+
+Name: images/16x16/fingerprint.gif
+SHA-256-Digest: axlF6wq+JAlvrz63FxMj6Tr0D/1Euj/pb2qni2iiYeo=
+
+Name: images/24x24/new-package.png
+SHA-256-Digest: UXzF3/Nk2Zn6RgzEh2lp4q77vdMQN3sWHaXdfYvAZUM=
+
+Name: help/project-config/disable_fr.html
+SHA-256-Digest: EBFXzDv1Um6h1Z3YO70pGi6L/W55YWjQ9UDzU87R4qM=
+
+Name: images/16x16/document_delete.gif
+SHA-256-Digest: l17EVlq0a1ZIEFZmfvu9P+86aqB6Peg+/rhoi5UxJOU=
+
+Name: images/32x32/setting.gif
+SHA-256-Digest: HgrRrV2cXrpreK2GhOaJAaGtArbSlln4HU8hP6SFVB4=
+
+Name: scripts/yui/tabview/assets/border_tabs.css
+SHA-256-Digest: SFqjd7D6qqLSs1yzsPVW4PJScwWEexMaSmaw8Gcnquo=
+
+Name: scripts/yui/assets/skins/sam/layout.css
+SHA-256-Digest: NJqQ929v/hE2HAGETXqxszpBRcqTLwCSErpWJPen42w=
+
+Name: images/32x32/health-40to59.png
+SHA-256-Digest: 0CChC+WOn1XIIZnlfFTlWUoYVdui+YHMS/MVK3BYvM8=
+
+Name: images/32x32/health-40to59.gif
+SHA-256-Digest: bQuJNWiC41AAlqjQfIOkBHLLWKjku963eUMP5lctszM=
+
+Name: help/system-config/master-slave/description_de.html
+SHA-256-Digest: 4nhfa0G4NPY92yIbELH6oNNpKuEcsRTtuFICU74nrGk=
+
+Name: help/system-config/master-slave/jnlpSecurity_pt_BR.html
+SHA-256-Digest: FRpYl1jDUfh9vIDgNRtBR5HpblCAZToJ3aowEJ3iOoY=
+
+Name: help/project-config/log-rotation_tr.html
+SHA-256-Digest: FAFl5dnjqTaEWWIpQ68X2pxCykrm3++JQjGWlHNBGyA=
+
+Name: images/48x48/gear2.gif
+SHA-256-Digest: lSXuGsb+rXdTdqyQUPRdwHdhleKvoATtcV8rbJ3Fo+w=
+
+Name: help/tasks/fingerprint/keepDependencies_fr.html
+SHA-256-Digest: NQbKqy+rqSgSoE+MXetoQsrxuz1XxjRzXoEVl3TDwTw=
+
+Name: images/16x16/clock_anime.gif
+SHA-256-Digest: jn/SFxpIruDILsKFWSWX/nOafrc1FKTO3r4l7X4e6uw=
+
+Name: META-INF/maven/org.jenkins-ci.main/jenkins-war/pom.xml
+SHA-256-Digest: aLd2mAY6oUwT+b3aC7bxZYiRG6nAKtSu/ZYIk0BNRsw=
+
+Name: help/system-config/master-slave/demand/inDemandDelay_ja.html
+SHA-256-Digest: rqc5RxUCMXd4EWBAyxp9h6fvEX3YwBeq8k0WIeqXwv4=
+
+Name: images/48x48/nobuilt.png
+SHA-256-Digest: ArH9rJBP/foFavj4PbDa7yWRFJaHDbffxJiQb424Irk=
+
+Name: images/16x16/blue.png
+SHA-256-Digest: Et2wXa+u2BXX/iytquuHZLDRSVDZZoaU0CV2yiQ8qXc=
+
+Name: help/system-config/quietPeriod_zh_TW.html
+SHA-256-Digest: 5xVh0ZI3ayyTX4z0R2AsPw1Q8XnnNCYhf2KsUXQEpSE=
+
+Name: images/48x48/attribute.png
+SHA-256-Digest: PTmmSm3d758/FYZCq4V+bbcRCEvYfdCNEJLRn0LBd5U=
+
+Name: scripts/yui/menu/assets/menu_up_arrow.png
+SHA-256-Digest: 1MqDewT014ptG3Zot/OLilCpKi9izz6Cnd7zR+1dgK4=
+
+Name: help/tools/tool-location-node-property_zh_CN.html
+SHA-256-Digest: sPS08jPtkR2YQGZvH2fmluuT2HmMjbg866lrD3islhw=
+
+Name: scripts/yui/assets/skins/sam/container.css
+SHA-256-Digest: avDV/ZsJLlbAn5g+pPlvxuy8lObWgf575n9vl1mcK2A=
+
+Name: WEB-INF/plugins/external-monitor-job.hpi
+SHA-256-Digest: +xDlqLuCwEtweqRN8wqXuoKFdh+CRxIkhth84LX7PYs=
+
+Name: help/system-config/homeDirectory_ru.html
+SHA-256-Digest: Lh//Ndu4qq159ZRZ4d5XiG4D/5xB5bq8c8sPwgDHi+Y=
+
+Name: images/32x32/health-80plus.gif
+SHA-256-Digest: p0oGHIZ/obxyHns/AUdM1AfeVAEf6ViEJCd2/7v+FBw=
+
+Name: images/32x32/accept.png
+SHA-256-Digest: ImC6PxlwHGRamieD31VOwdB8UGbm4iTLT2MHmU7BMM4=
+
+Name: WEB-INF/lib/aopalliance-1.0.jar
+SHA-256-Digest: Ct3sZw/tzT8RPFyAkdeDKA0j9146y4QbYanNsHk3agg=
+
+Name: images/24x24/refresh.png
+SHA-256-Digest: t1gMoBX3ih+7SokfRwc4WnKUIHVc6sBPzmCRGiTF700=
+
+Name: help/tools/help-label_zh_CN.html
+SHA-256-Digest: mGLeyW8LQFmlhq3S2NjwlIcyOGS3kK8t3Jbokr65Lz4=
+
+Name: help/system-config/master-slave/jnlp-tunnel_ja.html
+SHA-256-Digest: gEJCidk7rEqMUEokNys3UXf4eB7jlFeqGHI3uwrXncA=
+
+Name: help/view-config/description_de.html
+SHA-256-Digest: N4BwEedB+LD5SwyKDnkYy38mzVnwDb0aeVQIuJMSi10=
+
+Name: images/48x48/empty.png
+SHA-256-Digest: b+fjnCNnBP0P70AAO4yTLfFc2kSp78NvzK3wvyL74w0=
+
+Name: images/16x16/document_edit.png
+SHA-256-Digest: eE3FTAtrG6rPEWM9ouf2DfdMfyRcxS5skPoVfzllov4=
+
+Name: images/16x16/computer-flash.gif
+SHA-256-Digest: y93kngOUoH9HPXhN5wTV4QwuERq/5h2cyTK/gadK1hE=
+
+Name: images/16x16/attribute.png
+SHA-256-Digest: fDlgd2vKAwjw8CgYoNC9OGK3RbKS7bCiLl4ouqeJfXI=
+
+Name: scripts/yui/assets/skins/sam/treeview-sprite.gif
+SHA-256-Digest: z+Q03lqDOKqPmb+JfEh3DH9DVLaQgY4A5nt/w7zb7aE=
+
+Name: WEB-INF/lib/akuma-1.9.jar
+SHA-256-Digest: RIMz/AbnV0apgeKZNi+A203BCFsDFgKYj1n+y1wFpF4=
+
+Name: help/system-config/master-slave/usage_pt_BR.html
+SHA-256-Digest: RUauOoQCng9kjT4MEvhXWvX3698824AOJvanJS+stwQ=
+
+Name: images/48x48/gear2.png
+SHA-256-Digest: iHPmTeZVyDJKGxkpgQ04Q4XjUXvuMHOY5DUap2eFLQM=
+
+Name: images/headshot.png
+SHA-256-Digest: aQ6C+5j/srSyMtm5z5zFLreXLlaoSQL20RULdUVgWMY=
+
+Name: images/32x32/error.png
+SHA-256-Digest: CYoKT5w3uyEoAAQwXNysJH7urt9vK+WAeAUrPWK+vG4=
+
+Name: images/16x16/help.png
+SHA-256-Digest: d9HcA/NlKl0YvWq5wMTYI25qasdbR6boBSsC8/YRCqM=
+
+Name: images/RRZEIconSet.url
+SHA-256-Digest: ++7aqebeQe1jrlQ6pFBeSmu+Zz8zPQZ0ScQioQU+JEg=
+
+Name: images/RRZEIconSet-License.url
+SHA-256-Digest: WnCLg9f/YP/l3az1eABPKRMwyt4j5Q6N8YqERB/RU80=
+
+Name: help/view-config/includeregex_nl.html
+SHA-256-Digest: xy5sEEurDjJnhNxeu8qYp+Xd1H0ZDUXfHSkYQXNvi/w=
+
+Name: scripts/yui/event/event-debug.js
+SHA-256-Digest: 7s1LtaZ6LIMfWaX3ns8yzttXFgSyUem2n65y8rbZMuo=
+
+Name: help/system-config/systemMessage_zh_CN.html
+SHA-256-Digest: AczjsFyCFotF/qWGqp/0I5yVb8th5JPIhEoLaVvQ8Nw=
+
+Name: WEB-INF/lib/spring-beans-2.5.6.SEC03.jar
+SHA-256-Digest: BAebuj2pF0b2nvGRGHHtUCFKfPbjRI7MvaTpgwEpX9o=
+
+Name: help/run-config/displayName.html
+SHA-256-Digest: X09eH7Jhs1hr+91nmyo++HC4IDijxvWkOymlD0XvKgk=
+
+Name: LogFileOutputStream$2.class
+SHA-256-Digest: 95qfsQLzS/0VJg9njBD1wAOP+q6uCi0qJEo+kSze5I0=
+
+Name: scripts/yui/resize/assets/skins/sam/layout_sprite.png
+SHA-256-Digest: UWbMNTnUoAd9I/0QznthmUQyJ15W0UsrV2joDDzGe7M=
+
+Name: help/project-config/log-rotation_fr.html
+SHA-256-Digest: Y9ynYkX2p0wb/uFt5B6tCzmKzQj9+KbBGG4W5f0njBk=
+
+Name: images/32x32/nobuilt.gif
+SHA-256-Digest: ocNtsXRf073unnIXSKwOc8iVF5EfrUvR1uYztPUOgBs=
+
+Name: WEB-INF/lib/bcprov-jdk15on-1.47.jar
+SHA-256-Digest: f7EtCfBBwpTwigpRooCEOAkic7UWKO7K8uDQAwt1VvU=
+
+Name: help/tools/help-label_ja.html
+SHA-256-Digest: hNScuadzl+cKGjjstf55DxS7bdUlKPFGn+VHtMHiZ1k=
+
+Name: images/16x16/folder.gif
+SHA-256-Digest: wpt+7sA39DwrNZB0A5fUPJYswvKSFUatFxwC5VYltqs=
+
+Name: help/tools/help-label_de.html
+SHA-256-Digest: g5oe+BNqRxtrwtJKIaX0XC8RirZNwiu4l4mrBUAzEbQ=
+
+Name: help/project-config/log-rotation_ja.html
+SHA-256-Digest: sE12/gAcrybbtZiVGL4GEwJZ+Uhhro6D6uoWx5Y0t6U=
+
+Name: scripts/yui/assets/skins/sam/profilerviewer.css
+SHA-256-Digest: XKrV15H8qTLak304i/RqQ9S2HMmMwgZrIz/uTfdleOo=
+
+Name: images/24x24/nobuilt.png
+SHA-256-Digest: 3pWKYQF1bggGQXgh2jU7U7z62x42BqDRYLIQMOo3kKs=
+
+Name: images/48x48/empty.gif
+SHA-256-Digest: HTKOkzR+nTDprQLTmeFfh/PgqXPJ9BrYpzD33eTR9Gk=
+
+Name: images/24x24/edit-delete.gif
+SHA-256-Digest: pKHnzmOibPIFfSydYVn6xVtIh9wDDotWe+GMiBu/sA4=
+
+Name: css/color.css
+SHA-256-Digest: L5qTqNbS0XA/0a+aAmUF71mGyPJz4S+gZEB9hZx1aP0=
+
+Name: help/system-config/master-slave/demand/inDemandDelay.html
+SHA-256-Digest: cibssfrCT4pYIxrkvQnD6El539Mvrp3iQNCaT0FY+ME=
+
+Name: help/parameter/string_de.html
+SHA-256-Digest: X4ntVjWQVqBKkPe47WPlzsufe9T2/NPl9CTg5+bk7wg=
+
+Name: scripts/yui/menu/menu-debug.js
+SHA-256-Digest: tT7OY1pXKkzu38PBM3SZx5wSXjwUQxlKySHSv9jPpKE=
+
+Name: WEB-INF/lib/dom4j-1.6.1-jenkins-4.jar
+SHA-256-Digest: JmOJ3GWJb3OVDEx1rULj7p+Dne2ObHZHntERA/sltUc=
+
+Name: scripts/yui/menu/assets/skins/sam/menuitem_checkbox.png
+SHA-256-Digest: jbWuQFGAmXuDvC584YicLVzV8tyL0ARjTRyRiyDMFDU=
+
+Name: scripts/yui/assets/skins/sam/back-v.png
+SHA-256-Digest: K3bXaweu6CZ3I8Rj4gDaQ68HKGaKRObsgF4L3hPp6Nk=
+
+Name: WEB-INF/lib/spring-dao-1.2.9.jar
+SHA-256-Digest: SxQQ1tgabOo1phUuJXJih02HpmY0/h/D3SgaOl6dRt4=
+
+Name: images/32x32/computer.gif
+SHA-256-Digest: nwYJ6PLQL9sT/LHNsmrGQicl5suBBvqk4BLZvGjeKfA=
+
+Name: help/system-config/master-slave/availability_nl.html
+SHA-256-Digest: WTLsntnDkEtCKoE8yGMitK+opYU6SZaxtg1DssnPXmY=
+
+Name: WEB-INF/plugins/credentials.hpi
+SHA-256-Digest: qvajKK3W5icDjY+9m7znrEMCLpsXxYqp+iEgjFRKzGw=
+
+Name: WEB-INF/lib/spring-web-2.5.6.SEC03.jar
+SHA-256-Digest: CM3jOj5BdnYOeDSdLphoSOi2+nERjprtQmalK9CnE50=
+
+Name: images/32x32/orange-square.png
+SHA-256-Digest: LP7edL5w7SYBbCQz+oRUpdIC4F2So0O/qM4QEQVayVI=
+
+Name: help/system-config/systemMessage_ja.html
+SHA-256-Digest: vff/NwvUtIPJRYR+s4+3Lwganf7hN1kwwH3bMJ8vFQ4=
+
+Name: WEB-INF/update-center-rootCAs/jenkins-update-center-root-ca
+SHA-256-Digest: WvG1qWpi4Wxso89mVeFB0EmVxxbIcRNM4B04JNznFIc=
+
+Name: images/48x48/aborted.png
+SHA-256-Digest: ArH9rJBP/foFavj4PbDa7yWRFJaHDbffxJiQb424Irk=
+
+Name: WEB-INF/lib/asm-analysis-4.0.jar
+SHA-256-Digest: 3VOXq69XIxBJrLEBxFHlmKlHpd0YKYMneVNc/cK68U4=
+
+Name: help/user/fullName_fr.html
+SHA-256-Digest: TsRIFmVSlsbo8v4JKVSrELmH+Be6CTybCPSG75vaejU=
+
+Name: help/tools/tool-location-node-property_fr.html
+SHA-256-Digest: oUqL3Tg67jueq2NCpvQK2E+i76t9/mAt5Ehv+mlhoXw=
+
+Name: images/16x16/document_add.png
+SHA-256-Digest: lp1GvjkILWhGOY2NXKcED1jt2Ecw/sGDfr4Ffc3dyak=
+
+Name: scripts/yui/datasource/datasource-debug.js
+SHA-256-Digest: 6E79zjiMXdcfUzql4cFzxXs/UMkPGU3fj/AnCwh+IRQ=
+
+Name: scripts/yui/cookie/cookie-min.js
+SHA-256-Digest: NrGlB1fPjebcYWYRriIHCjTWpse6YDWdTu+K9UH59ms=
+
+Name: help/system-config/globalEnvironmentVariables_fr.html
+SHA-256-Digest: hLKyuYQPNIUMvX3dqhOFY4XdvQbkfXBx6peeVze0UrM=
+
+Name: help/system-config/master-slave/clock_ja.html
+SHA-256-Digest: A61sJOTyASi4wj5Cc4VPeYqKEVa+Wd6/Cdv441BHt78=
+
+Name: help/system-config/homeDirectory_zh_CN.html
+SHA-256-Digest: 0nx0M+zeizyfz0OyPLiiUD2T5ReLSvLWNfY4+cHCVIY=
+
+Name: help/parameter/boolean_de.html
+SHA-256-Digest: 60VqMIliIbc+FEjUCsc/4v9/ucWhOzfnf1bYwviM09o=
+
+Name: help/LogRecorder/logger_fr.html
+SHA-256-Digest: I74mB6s7/zjna2IPhzyHC+/qMxpogoxSnoxf6VBLtrg=
+
+Name: help/system-config/systemMessage_de.html
+SHA-256-Digest: Vu48GJfsXPHvnq5FDx4wXAK/l/00GVmBMjyfGL7x9Ds=
+
+Name: WEB-INF/lib/jnr-posix-3.0.1.jar
+SHA-256-Digest: 58pqh2e9kcm/fYIwaNooy6SKHJTyeMW1JA4fPZO/riI=
+
+Name: WEB-INF/lib/ezmorph-1.0.6.jar
+SHA-256-Digest: K+BqI4D4ZWQmtcYQ22lLvXUxTK8+kZGv/NeUJyE5jtc=
+
+Name: help/project-config/scmCheckoutRetryCount_ja.html
+SHA-256-Digest: IwpFwT7KmPUCSmiFmbocYq1V/+K5/3R8Ze/tTZ3eebo=
+
+Name: images/progress-unknown-red.gif
+SHA-256-Digest: fYcXI8HymoJxessxBzlxJJcwxmbGT5WGC74RYPYC8mA=
+
+Name: scripts/yui/resize/assets/resize-core.css
+SHA-256-Digest: Yj0QCxWDa0MdJV0+IDDtFx1XQpKiCpz/a5z4I+UHP0k=
+
+Name: WEB-INF/lib/version-number-1.1.jar
+SHA-256-Digest: sLiH3/jcplPQfur5rtPlkY+y9LmiUAGEaH3RnYmbH1c=
+
+Name: images/24x24/save.gif
+SHA-256-Digest: 22piOzwMVRYdWfgIEhys/5qjtkgZcftlev07+UWKnc0=
+
+Name: scripts/yui/assets/skins/sam/sprite.png
+SHA-256-Digest: U/T71571pUTrKOqUcsjuINIgk5o/rtJChxVoeCwZhM8=
+
+Name: help/system-config/master-slave/clock_tr.html
+SHA-256-Digest: 2f1RPpJ/osdlG+1EkEoFEquVp6/j0P6rs+mK3VYg/co=
+
+Name: scripts/yui/menu/assets/menubaritem_submenuindicator.png
+SHA-256-Digest: poySW0WAoTvCH1DtBGS6YbQUJEEgiWYJOQx6AaafUrs=
+
+Name: images/16x16/computer-x.gif
+SHA-256-Digest: 4EJqm6TiYuM+4Y6mrosQnzzj7LFo/ZsWpootdaK8uJE=
+
+Name: images/32x32/red.gif
+SHA-256-Digest: CInCXosYWntyKyzUTfGVWEPSdLIrBOmd9rAdQ0/Ao2s=
+
+Name: help/parameter/choice_ja.html
+SHA-256-Digest: 8Dj2+k4qOKvx2Z98VBKv8Bg34S7JqlFnhf8nR/o0GR4=
+
+Name: help/system-config/homeDirectory_pt_BR.html
+SHA-256-Digest: aCCEFFQdb4lPK/S9g+UxFC/ltXpza7iPBagi4Xg2IkI=
+
+Name: scripts/yui/dom/dom-debug.js
+SHA-256-Digest: RjTurCu2tu7RfFI4wocv4ChXfR+QJ9U+CPQHJVthtcw=
+
+Name: scripts/yui/menu/assets/menu_down_arrow.png
+SHA-256-Digest: 3gc2PKgq5iw3TAP9H6hnXDm8ISFuD7xzuMkHPPyX+ZE=
+
+Name: scripts/yui/resize/assets/skins/sam/resize.css
+SHA-256-Digest: Ahf+IQaLAaBZIqJf3OT0JTRxK9KHghD2EkGowi8c3+M=
+
+Name: help/system-config/quietPeriod_ru.html
+SHA-256-Digest: 5QdI1QIdVDKwZIwAU/hIwx67x5ZGzXFIhx3QjJNIbyo=
+
+Name: images/48x48/network.png
+SHA-256-Digest: NcsB4WkHAJo9fGXmMmh+8evNJDsgBITVJlJXM12G078=
+
+Name: images/48x48/network.gif
+SHA-256-Digest: rGuXQ+XXZB4mfdmUDwIK1EhwTlhauvM+/WVJbsZ9s5Y=
+
+Name: images/32x32/empty.png
+SHA-256-Digest: QJqUa+vQF39T+bP96VQnj4Za4BI4pFA3JsItG7oP+YU=
+
+Name: WEB-INF/lib/slave-installer-1.5.jar
+SHA-256-Digest: 13Gj1TJpMcUtC2XGz+iRjIUX1JTS25Gzckc9nromYlI=
+
+Name: WEB-INF/lib/task-reactor-1.4.jar
+SHA-256-Digest: LZ6heV6Wc1t8CyEkwYGsEOcXBffqHigDinJEsM7RWEE=
+
+Name: images/48x48/nobuilt_anime.gif
+SHA-256-Digest: vLB0jUJsnLLHGHGdjGSReDkowUIjpUZt75uGE1dcD6c=
+
+Name: help/system-config/homeDirectory_tr.html
+SHA-256-Digest: 6RzPsVuVBP1ijNzl5vnkllz1M6m7SXb55z+5bdyUsL4=
+
+Name: help/project-config/parameterized-build_de.html
+SHA-256-Digest: FxdHsGY3BIhfz7MItOJVwklwTUzoq2773wt9Ohi7jBM=
+
+Name: images/topbar.png
+SHA-256-Digest: XfPWQIXj9c9zLpnh1Du0HQ+CMa+ZH63Jj7y0v2gVdlQ=
+
+Name: images/24x24/computer-x.png
+SHA-256-Digest: 6JdvVedMgS3UTX07kyLvuXzqKKvsirFgugyjCBClMEc=
+
+Name: WEB-INF/lib/winp-1.22.jar
+SHA-256-Digest: aSk4jECWyb5n8BEqu4HxESOoUF9j34JufRq/5t5VnQA=
+
+Name: WEB-INF/lib/commons-jelly-tags-define-1.0.1-hudson-20071021.jar
+SHA-256-Digest: lDto/o/wVSNLV5lXnm3McP+o6Uo/TI8v0Q93ztmLLA0=
+
+Name: help/system-config/master-slave/jnlpSecurity_fr.html
+SHA-256-Digest: RUvQU/0l4+nlvVmvkfagYp7Ncq3w2PL79bOXh+Hz0Uc=
+
+Name: images/16x16/disabled.png
+SHA-256-Digest: 8fKeAr2BMSc3nemz6uZ0C0xX3WayGOQq162xmT+LuW4=
+
+Name: images/32x32/clock.png
+SHA-256-Digest: PXN6ieUgsNpcMSqiEqyVKP/J+HSK2W7S+RSkSOv9orc=
+
+Name: images/16x16/text.png
+SHA-256-Digest: /gTZ++urkwmFzSiwMjBAZ4JzO5v8o8Shno1E2D3zJzY=
+
+Name: images/24x24/empty.png
+SHA-256-Digest: C1uBKv/RmWa17jbGqrp4K0AK0T1a6e44kILodfkIDIc=
+
+Name: scripts/yui/assets/skins/sam/picker_mask.png
+SHA-256-Digest: 8TEpRP65gm4Ry4sMp0WfB8Bp4SMSIQGnYmSOywAiMVo=
+
+Name: images/24x24/clock.gif
+SHA-256-Digest: m79+VuqrFKQ/p3ydeJzam7NJtOrYdY0oScGml8aggAQ=
+
+Name: images/48x48/green_anime.gif
+SHA-256-Digest: wG3/qECyKpfSUKl/yZ8cqILdLcezsVmX6CTJixhL4FY=
+
+Name: help/system-config/master-slave/jnlpSecurity_ru.html
+SHA-256-Digest: E138YtpH+Joyq8oVdAdh+waagVKvqxbwMB37Vo7iGHQ=
+
+Name: help/run-config/description_zh_TW.html
+SHA-256-Digest: YK9DTPWsnRXkpaV5/MWavR5O+vTyV7N08yNwZXJDerg=
+
+Name: images/16x16/edit-delete.png
+SHA-256-Digest: L7s/OeLYGzd3s7mke7qvHLcCHKlMRrT1xMC5z+DoLl8=
+
+Name: images/32x32/disabled.png
+SHA-256-Digest: 11JCS/3gOMV/Q8e+DCbr7LEklMthkhasEM4P6ePyN+U=
+
+Name: WEB-INF/lib/jsr305-1.3.9.jar
+SHA-256-Digest: kFchoO6pCoFTSrt+5u9OouXmRfod7wpc2IQC3xtGye0=
+
+Name: images/48x48/folder.gif
+SHA-256-Digest: fzvfCSIx+7Ippn+PezfF44i/p/MprXsncmOgewfzqIw=
+
+Name: scripts/yui/cookie/cookie-debug.js
+SHA-256-Digest: duLNiA1V+8WCn+4v2BIPZhaBSuh9D+69jl/R16VyS/4=
+
+Name: scripts/yui/assets/skins/sam/sprite.psd
+SHA-256-Digest: qkEY+z01LgcGF1j6kknWwlc8i6QjRgoIZezc2ljG+5I=
+
+Name: images/16x16/save.png
+SHA-256-Digest: rKVrNtE67itp2a26mWe0GIqfr6evBeAx3cZfIJEkyTM=
+
+Name: help/project-config/batch_tr.html
+SHA-256-Digest: EqDDS4R3zk6BiNip+rOWn7FM52JYEhZdc9VaE6iptig=
+
+Name: scripts/prototype.js
+SHA-256-Digest: Nbrl46j9Txr4nuZS2CFiHAOSFXkp5zDwUueNNi+wYso=
+
+Name: images/rage.png
+SHA-256-Digest: WTptiK41qpYSGkOWSDysdGYfYHAtfgCxdIC+vG8RSd8=
+
+Name: help/system-config/master-slave/usage_de.html
+SHA-256-Digest: dcPskCcmTK9xAAhKcTkZ76SfCPdQq8nUGOO6uJAh26A=
+
+Name: images/48x48/clipboard.png
+SHA-256-Digest: Mkf/IRME0wgLMdkvlEThGq3vphKMz9gSfGgbxvOouiA=
+
+Name: scripts/yui/autocomplete/assets/autocomplete-core.css
+SHA-256-Digest: KoHPGo8A+7mnOh8SRk5hROeb55CV7Q/uKvYzjspo2Zg=
+
+Name: winstone.jar
+SHA-256-Digest: mIUFgctKSxyGsAny9EtarGW67+H/vyte4Z5MVVaSx2s=
+
+Name: images/48x48/setting.png
+SHA-256-Digest: 00Tif88sm2E0XVYmS5G+somiyxI88XB1byAj/SqkS/o=
+
+Name: help/view-config/statusFilter.html
+SHA-256-Digest: Ld7m/1ZPQiKEcfGKNF1PyxEFyLID14o3RmupHZ9WCPk=
+
+Name: help/user/description_tr.html
+SHA-256-Digest: tFgPZTQ/vlkkUNsPJo0cWlDTnAHQVA/hU/6Acomn69c=
+
+Name: help/project-config/triggerRemotely_ru.html
+SHA-256-Digest: M6/fB52KizYD70FLr8gAMgx+tI2Xibgi0/9Ye1Mo+KE=
+
+Name: help/system-config/master-slave/jnlp-tunnel.html
+SHA-256-Digest: /NThTizf+v8ovWDcLkYVEshdWOXaZ0kq9fNDH4Xg5as=
+
+Name: images/24x24/star-gold.gif
+SHA-256-Digest: fwEzELdaZtdLg0J7ws/Xs8ETR9Mkfjukb1WQv4ai5x4=
+
+Name: images/24x24/green.gif
+SHA-256-Digest: EGvHgQEWawiKU8ZfGOaVX6FDUurlfFdEg/YIJo9/6eM=
+
+Name: help/project-config/scmCheckoutRetryCount_zh_TW.html
+SHA-256-Digest: 2LLsB5X5458r5EfJHwE+9q+8P8qXRrfpVIKBxbxx5RE=
+
+Name: help/parameter/run-project.html
+SHA-256-Digest: Xj37Vl/QLnPsBrGuUfAodkrGHt5hRf52cwjObUZIgfo=
+
+Name: help/system-config/master-slave/availability_zh_TW.html
+SHA-256-Digest: 8gPikOSa89M2L7fcUoSGatp7qfJXQdKx3g98Pv+lopk=
+
+Name: scripts/yui/assets/skins/sam/treeview-loading.gif
+SHA-256-Digest: NcjKVWdpcIqou+yAUF2T021OkOXizWvdwL2OWypkgPc=
+
+Name: help/system-config/master-slave/demand/idleDelay_tr.html
+SHA-256-Digest: qpShFCX8pT/7qviHFYr0moYPq8m0983mEueBoUk5uzo=
+
+Name: WEB-INF/lib/spring-context-2.5.6.SEC03.jar
+SHA-256-Digest: gYXxoqOPfn+P0Mj4VwYRx9CK3esj9BEdmyrHVzShNw8=
+
+Name: WEB-INF/security/SecurityFilters.groovy
+SHA-256-Digest: wutk4867i4dBQglc8LP+FA7mWC1++m0nn00oQ2TOWoA=
+
+Name: help/run-config/description.html
+SHA-256-Digest: FEBxQfjk1Txjhlt88/3txLKb0JX2wpO5wM4K3dK+MP4=
+
+Name: images/24x24/next.gif
+SHA-256-Digest: MnhzwnvmPv5upKXzLEYMxxALY2Mxz5e/vwTiMhCdMaE=
+
+Name: images/32x32/plugin.png
+SHA-256-Digest: PG+aOTlfCEecLG9Jj22QYarZIEP7lqzHSb/UMNqcysQ=
+
+Name: images/16x16/error.png
+SHA-256-Digest: 698AmZ/300+b6NXi6Gf/PR0lUdlCPrJku+f60xx1c5c=
+
+Name: WEB-INF/lib/antlr-2.7.6.jar
+SHA-256-Digest: 33TzMNNlJv+ecXcx/YVRUvz/UWGPC1eF0ASQIvidVos=
+
+Name: scripts/yui/button/button-min.js
+SHA-256-Digest: WvPo01+NrI6Hpf2qQvSFRxnW2InS4pK3cXCLvryNXZU=
+
+Name: images/32x32/blue.png
+SHA-256-Digest: HiIb0aj+F6EIRIw1ptxqg93fFFmt9VJCeEepd13+c8I=
+
+Name: scripts/yui/container/assets/alrt16_1.gif
+SHA-256-Digest: X/T2ecIj6/L4f7Ffwa6IV+BJdOfTPMoDFO73KQrocLU=
+
+Name: images/48x48/disabled.png
+SHA-256-Digest: ArH9rJBP/foFavj4PbDa7yWRFJaHDbffxJiQb424Irk=
+
+Name: help/project-config/scmCheckoutRetryCount_de.html
+SHA-256-Digest: 3RKnCtW4ymZBHYiwiCBjSjmNf16kJJMUwlgHOcJUmDw=
+
+Name: images/24x24/folder-delete.png
+SHA-256-Digest: 2IHWOfxUqOQNqMfFo9x5C9Lw0ekGmbZStJPr66RaoBM=
+
+Name: help/system-config/master-slave/numExecutors_fr.html
+SHA-256-Digest: 8NJv0ZWbQZeDeHK3D7nsFGJKueZ5pk4Ce9+LdXl5fQQ=
+
+Name: help/tasks/fingerprint/keepDependencies_tr.html
+SHA-256-Digest: iQvw/cKDwRW+iLpASkBgAoZYTZca34TpvW4n2w9U5V0=
+
+Name: images/48x48/refresh.gif
+SHA-256-Digest: M015Frgy05MINnIhdfDrPCZ/IBzOzdzjhu07HqeMilM=
+
+Name: images/16x16/folder-error.png
+SHA-256-Digest: g8gwafSDiu1LGJW9Cfw9WH0Kqts5cUS/vxIPSujNZOY=
+
+Name: WEB-INF/lib/commons-jexl-1.1-jenkins-20111212.jar
+SHA-256-Digest: PR5cEeUIYhh7E6Jnr68UJXJ2xOMR81MFYws91pDnPro=
+
+Name: help/view-config/filter-executors_de.html
+SHA-256-Digest: IyBKIQrObh6zxDw/shSoV4zmJ3EVDcmi7YJzMriCxzc=
+
+Name: help/project-config/downstream_ja.html
+SHA-256-Digest: lNgDXXwez14jxxSq1RfMDoo24F22zGM1C9XegCECoyM=
+
+Name: scripts/yui/menu/assets/menu_down_arrow_disabled.png
+SHA-256-Digest: 9X2OUa1Np3mm+m6+tkJ2HYj+G4GWe5Chte/uzAFjn2A=
+
+Name: help/system-config/patternJobNamingStrategy_zh_TW.html
+SHA-256-Digest: UAkWO6c/Vc7lmo7U6zaRYPLK8prNsoTHkllOOBh9CrI=
+
+Name: images/16x16/disabled.gif
+SHA-256-Digest: 4wm0OpzRt8fOB09f2qxkWFjuaCx/DXT/6LPJJXP/Q/M=
+
+Name: help/LogRecorder/logger_de.html
+SHA-256-Digest: pfZqPaUxtW6JRw6f+KG6CIXYNO37YTfHMVBpdK3mnAE=
+
+Name: scripts/yui/assets/skins/sam/menubaritem_submenuindicator_disabl
+ ed.png
+SHA-256-Digest: 2fTHu6YfjKMhQPLsS6QTe7w6SZsFbKvd9KDfXS6xUa8=
+
+Name: help/project-config/description_ru.html
+SHA-256-Digest: 8xOmWSoObOH4ktj3O8k3lY0n+YT5gMhiiawLbSMwgNI=
+
+Name: help/system-config/master-slave/numExecutors_ja.html
+SHA-256-Digest: eapsh3MRgDxaQPMrI1eZQyAE2rIg/vKLSFQUzQUz9t4=
+
+Name: images/24x24/yellow.gif
+SHA-256-Digest: 4XjCq/b0ItleHFDWGDIvK5Ekr+92ib8z9Kl24bWbN94=
+
+Name: images/24x24/up.gif
+SHA-256-Digest: GBhcnD0OYp5hYWkvBGKHetoROwZ88q4MPzGyTYtpELQ=
+
+Name: images/24x24/document.png
+SHA-256-Digest: u2bdYPXZn2k5g5K9m9PzJB8L95xThRQ/aWzFrq17uOM=
+
+Name: help/system-config/nodeEnvironmentVariables.html
+SHA-256-Digest: jxMAsY3AWn1XFxxWnFUdXG7Sm9K+gYB5W7UOy0I2E7w=
+
+Name: scripts/yui/assets/skins/sam/carousel.css
+SHA-256-Digest: SP5TlY4bMedgg70esmmmRDG2Kru+3QA8K1Qcm/vt1Pg=
+
+Name: images/32x32/folder.gif
+SHA-256-Digest: 3KcxPCBWqOHNduUsAjfkoFfahLrOpt0M3B2HNNNnXVg=
+
+Name: scripts/yui/assets/skins/sam/loading.gif
+SHA-256-Digest: NcjKVWdpcIqou+yAUF2T021OkOXizWvdwL2OWypkgPc=
+
+Name: WEB-INF/lib/spring-context-support-2.5.6.SEC03.jar
+SHA-256-Digest: rZFatyZpsqTK9LxwY7vCHzy+QbD/FKzLmrdUH8Fgs0g=
+
+Name: images/32x32/blue_anime.gif
+SHA-256-Digest: qPaj0wGYi5qGsW21c0pOZk7SMBXDyVHTaayJ7oAt8bA=
+
+Name: images/16x16/red.gif
+SHA-256-Digest: FhXpdKrtiKzCrr6xSJ/YGh0dDgkPHFNe1hUy9u7xcG0=
+
+Name: help/parameter/choice_fr.html
+SHA-256-Digest: 3ZQikkv8FNWuROULAXSKZO7FgDxiJI9VuC5qXGlZON8=
+
+Name: help/project-config/parameterized-build_tr.html
+SHA-256-Digest: U6KS5jUxL4knMeiuelbfLl7MFc6qSx7qChyJhk3s/VI=
+
+Name: scripts/yui/treeview/assets/skins/sam/treeview-sprite.gif
+SHA-256-Digest: z+Q03lqDOKqPmb+JfEh3DH9DVLaQgY4A5nt/w7zb7aE=
+
+Name: scripts/yui/button/assets/skins/sam/button-skin.css
+SHA-256-Digest: T/ZMpE+Grhk3O9OwFt3ghoaoouPnQAKKrhKzNk7wMYk=
+
+Name: WEB-INF/lib/ssh-cli-auth-1.2.jar
+SHA-256-Digest: w6rGw+2N546y/1Prtvjl3kcxKQGoxJqMaKtpO5eSN2c=
+
+Name: scripts/yui/treeview/assets/treeview-core.css
+SHA-256-Digest: 92LVIScPUGhJCJpCF8OgWgKfEm6n538nXjLCajosDbg=
+
+Name: scripts/yui/assets/skins/sam/editor-sprite-active.gif
+SHA-256-Digest: CxGnyNUzmGtv8XkMcRuhjn/Y9zF0aZkjoAzKLhJxyBw=
+
+Name: WEB-INF/lib/sshd-core-0.8.0.jar
+SHA-256-Digest: tiPtFADir6Bdc0bWD7GziXiOYC8kDFdK5CSUlyrD9xs=
+
+Name: WEB-INF/lib/asm-4.0.jar
+SHA-256-Digest: +y3ekCCke7AkxD2d4KlOc6vveTvwjwE1TMl8stLiqVc=
+
+Name: images/16x16/notepad.png
+SHA-256-Digest: fKnY6qHhIy24ng9EZ8gsVDOncZBBFFobVAW6s25yP4w=
+
+Name: scripts/yui/menu/assets/skins/sam/menubaritem_submenuindicator_d
+ isabled.png
+SHA-256-Digest: 2fTHu6YfjKMhQPLsS6QTe7w6SZsFbKvd9KDfXS6xUa8=
+
+Name: images/16x16/nobuilt.gif
+SHA-256-Digest: 4wm0OpzRt8fOB09f2qxkWFjuaCx/DXT/6LPJJXP/Q/M=
+
+Name: images/24x24/delete-document.gif
+SHA-256-Digest: 7+S93KD+a7XZtGdyX3XXvV5gREuZP8hJW33Cg3Bl7h8=
+
+Name: WEB-INF/classes/META-INF/licenses.html
+SHA-256-Digest: Fuj74lnHER+kfYGeF0Fs6UrEvOpOoXVXaN+VfXWv0RE=
+
+Name: scripts/yui/assets/skins/sam/skin.css
+SHA-256-Digest: /8ufOkyO30SnDyaWaIQObic+nDeFnwMOwPxawvUXWz4=
+
+Name: help/project-config/description_zh_TW.html
+SHA-256-Digest: UD4OF2z8FjuVwVa2iWCSZcoputZGFQaafv/mFM6kqxM=
+
+Name: scripts/yui/tabview/assets/loading.gif
+SHA-256-Digest: DrsnfDJe5xTVBlAP6Dc6+N8DO8Iz/xo8fOT3rdkt490=
+
+Name: help/project-config/block-upstream-building_de.html
+SHA-256-Digest: xyTXxXlOYNltGjKI7UN9jU05xxLZliZSJjN4jvUJ8NY=
+
+Name: LogFileOutputStream$1.class
+SHA-256-Digest: MD3s2Ld87mOg/0CXrGlKSickUw6Z3az6uEkxPrWSA+I=
+
+Name: images/32x32/user.png
+SHA-256-Digest: Z/bWemq1GiqBYit6JfcUAH26G0dMi8uJ2tazUm2qqPE=
+
+Name: scripts/yui/resize/assets/skins/sam/resize-skin.css
+SHA-256-Digest: KOsJHNfBYo8uhMepgFGGLInwh9pb/W5TQXZmJ/rPAag=
+
+Name: help/system-config/master-slave/usage_ja.html
+SHA-256-Digest: trFEkZW8rCLeutIPTM13OcU1iJUzwiF8YkZwGyVdTiE=
+
+Name: images/24x24/terminal.png
+SHA-256-Digest: fXYLCM4TUF1MbjrAm1LEjwm5AAHjmXFoxys8P2s0thQ=
+
+Name: help/project-config/parameterized-build_ja.html
+SHA-256-Digest: v+7D3pI5/3zihu0SNE4e5ordHS+b+fotnR6NAKc+/ZA=
+
+Name: images/24x24/empty.gif
+SHA-256-Digest: 1KVxJaDTX2EaDfgXjObz+sEK8KN1x8Dc15UJ+y53DRA=
+
+Name: images/32x32/green.gif
+SHA-256-Digest: zv2pqapMPG/3CmzzQp6QXMimsxcjjpjE4DDbBJ7uI/M=
+
+Name: scripts/yui/connection/connection_core-debug.js
+SHA-256-Digest: 38H+ADde2GWQsPd/NPAfGQRgB15WciV5E6wFPYjmdWg=
+
+Name: images/24x24/help.png
+SHA-256-Digest: 2d9z02PNPoNR6LXMvXEz4eFr4CBTfsWvTJEhVW6SVso=
+
+Name: WEB-INF/lib/systemd-slave-installer-1.1.jar
+SHA-256-Digest: wQ+mZ8Ateme/NdZkB0q5lKko/uUI/mbLN/gMnt8nGZo=
+
+Name: help/user/description_nl.html
+SHA-256-Digest: r1/VxIWBYvOt3Lcjm0HyERCD3fuuC/Ni1dobk6Za7HE=
+
+Name: images/48x48/yellow.gif
+SHA-256-Digest: PFfGCLz2RCcP7ZC/6XeNud4UE98sp/rWjuDbB6L/kZA=
+
+Name: images/48x48/aborted.gif
+SHA-256-Digest: GHTlj+qXMZ5nSvZQY9b/nWUok696YtRQ/2olZdH8YwI=
+
+Name: images/24x24/aborted.gif
+SHA-256-Digest: rBATVKCweZ7pSUpxiW/zUyQuh1t/IKRHRYZGYU9XPl0=
+
+Name: help/system-config/master-slave/demand/idleDelay_de.html
+SHA-256-Digest: /u2DNPunAreiYw75x3oIh2b/DNNS8uTfG4Y3YQithCg=
+
+Name: images/48x48/graph.png
+SHA-256-Digest: ONsQVnRGRQ1i2ZdZjspeJs24YtxQ+co9mjoLRJ+ZKik=
+
+Name: WEB-INF/lib/stax-api-1.0.1.jar
+SHA-256-Digest: 0ZaENvwhbJAfubgsfoeLUP0dMAkWdtqVsu3TqcDM+S4=
+
+Name: images/48x48/star.gif
+SHA-256-Digest: I+5TzzBdgNJuH1/MftrKLixtvBeZz+lVikZ4luSpA2M=
+
+Name: help/project-config/batch_fr.html
+SHA-256-Digest: hl1vuTb7DON55ngALGPPYqsqmxmwEMV1kjx6z82mHYg=
+
+Name: scripts/yui/base/base-min.css
+SHA-256-Digest: GBD2NT+9lu+zg6/Yv1SjNpcm0u63sMCv4gk75db4HgA=
+
+Name: images/16x16/help.gif
+SHA-256-Digest: OQPkSDkMCqcnOF4He/+T1WMKHB+sJ1BXBKvhS6hJvS4=
+
+Name: css/responsive-grid.css
+SHA-256-Digest: vjR22X5e1cpem0Zy2AgEwJCJIcC+/cqBceXLsA7hb4I=
+
+Name: scripts/yui/autocomplete/assets/skins/sam/autocomplete.css
+SHA-256-Digest: q57zfZhqWMWCFGgtoX9lHRg1/QV1sQAQAl8mkCR5Xw8=
+
+Name: WEB-INF/lib/access-modifier-annotation-1.4.jar
+SHA-256-Digest: uOFKBQPa/F+j2s8xAxLmuZQ5tbujLHTiSmjMQjlLBR4=
+
+Name: ColorFormatter.class
+SHA-256-Digest: R4KS2Nnzv+2opHLCoiZu/OYTdPUO8JGoMSO0k0RxJtI=
+
+Name: WEB-INF/lib/txw2-20110809.jar
+SHA-256-Digest: PFNf2dOM4guMkDEIZxDw5vMXXhpjj6CIs95D5xkyEdc=
+
+Name: help/parameter/string-default_de.html
+SHA-256-Digest: WIuqk4+k8YEwHRWGop5CVuR4xWoswQPomrhuf5BkuEg=
+
+Name: robots.txt
+SHA-256-Digest: dZJTwaKTosUb8qzckjRkyP11vf9U1Tl7kY9Y2ho4ahg=
+
+Name: images/16x16/health-00to19.png
+SHA-256-Digest: McrQjIwNwz+YuicJro0F60Sq8VF7cMkkUMM839P9naA=
+
+Name: help/tasks/fingerprint/keepDependencies_zh_TW.html
+SHA-256-Digest: m81QEDmnjuvhvhnHfmwj+LV70z2gJaqVV1dnPGZbYoo=
+
+Name: scripts/yui/resize/resize-min.js
+SHA-256-Digest: 0G0rheDafVDtSDuk8cvWQItKrpij+i11s+xaj0bgYx4=
+
+Name: help/tasks/fingerprint/keepDependencies_pt_BR.html
+SHA-256-Digest: jIndtoe+mydcM0q4eoyQf7PO4Lo2O+twMT3QNTTnw9I=
+
+Name: images/24x24/red_anime.gif
+SHA-256-Digest: 1rTNnlcJEP8nn8HUc/ReI/gCxOwitVTv4xezfvPgxn0=
+
+Name: help/user/fullName_zh_TW.html
+SHA-256-Digest: tI85lRb2ea7IhOVqEeI6r1VzRIs1JKUSmzgj2/uv8GU=
+
+Name: help/tools/tool-location-node-property_zh_TW.html
+SHA-256-Digest: B2nQMfJmIAKVy9I4N3mOamOPc3gYPuU4c/S9JE2EUQ0=
+
+Name: scripts/yui/logger/assets/skins/sam/logger.css
+SHA-256-Digest: jBE5/0F5hNIAygX0SqANX0Gr/tSyI2AMCdLPyuxu01s=
+
+Name: images/24x24/health-80plus.gif
+SHA-256-Digest: cMUfhVtlwBtcpgXqJpZgf60COGIH44Sy38QB3sfuBwQ=
+
+Name: help/parameter/file.html
+SHA-256-Digest: R0PwHFPDRSqDpEHPfwa+2mmI6BdkDELc1zttOsyCG2U=
+
+Name: images/32x32/folder.png
+SHA-256-Digest: 3efc6dVt0aGCMk3zHJUI6jAwADCPUY2/2i+8wt4jhrs=
+
+Name: help/parameter/run-project_de.html
+SHA-256-Digest: bllDTHzPV73+5t/5xCLNP5geB+1B2329YeMG6iG6c30=
+
+Name: scripts/yui/tabview/assets/tabview-core.css
+SHA-256-Digest: g79yBIIp0a3KVd1DMMk9kwhdOh/RwHH5uwuB2WYyLuo=
+
+Name: help/system-config/master-slave/clock_nl.html
+SHA-256-Digest: J3/bLFKDxQdIQ/wCsoZMSa11Mo6Pq6xFAvzCtvvw3iY=
+
+Name: help/system-config/nodeEnvironmentVariables_fr.html
+SHA-256-Digest: AlUl8EN3pWNXpB2zaI2wB5ftzPC8eSCrWews0laxcAk=
+
+Name: WEB-INF/lib/slf4j-jdk14-1.7.7.jar
+SHA-256-Digest: mQmRXpkSaeXz9NjrUfsKHaf/i8YXSkzyWXDzc6uvz5s=
+
+Name: images/24x24/disabled.gif
+SHA-256-Digest: rBATVKCweZ7pSUpxiW/zUyQuh1t/IKRHRYZGYU9XPl0=
+
+Name: images/48x48/fingerprint.gif
+SHA-256-Digest: M/O7SeNtxkD3YeBTYbYyrxyPsU/fp95T9XsPTN12PR4=
+
+Name: WEB-INF/lib/stapler-adjunct-codemirror-1.3.jar
+SHA-256-Digest: hoBQRf+DLbXdMLzjozA8gATSNzpJVVagamG8EHUY18w=
+
+Name: WEB-INF/plugins/mailer.hpi
+SHA-256-Digest: khe+MAjzI6wFNdT7NBGO0mgdYXDS194vOLmbozHEolY=
+
+Name: WEB-INF/lib/commons-io-2.4.jar
+SHA-256-Digest: zGpB3D6qzJ5ECmvQ0okLINNrTuQI/i1nEi8yi7bgFYE=
+
+Name: META-INF/maven/org.jenkins-ci.main/jenkins-war/pom.properties
+SHA-256-Digest: 1yUGV4UmUMu9vzq4MGGw776k29fVqt8G9t7YBQcWR4k=
+
+Name: help/system-config/master-slave/description.html
+SHA-256-Digest: gborzs1SshNezrbL4kPEf5YAXG3asenVo2/0dgfQIgE=
+
+Name: images/48x48/search.png
+SHA-256-Digest: H3TMiIQJqoywpn2zLW7dOpj7P3Lv6sroQKyUBJ7r/Hg=
+
+Name: help/project-config/parameterized-build_zh_TW.html
+SHA-256-Digest: IFIFbD0fcXk9gTl5SZ8xUpIaKOMCJ5VCpdyWP6G+AHA=
+
+Name: help/parameter/boolean-default.html
+SHA-256-Digest: 7BCB5VagH4Bl8CPfsukRhgFqFGR/VliOrMlFR297mXo=
+
+Name: scripts/behavior.js
+SHA-256-Digest: LbXsr/BSXgdSudgcx6Zx+yHOvXJSQNY2ddiwatAccyg=
+
+Name: WEB-INF/lib/xstream-1.4.7-jenkins-1.jar
+SHA-256-Digest: QF/dTC5ZR1bS55SKy+87HL4T+wJNxEGi/I1JLetIzsM=
+
+Name: images/24x24/clipboard.png
+SHA-256-Digest: viOWmbV9WkK0gUMqzeErI6aoS5jU0JPIzsJJEdAo2ho=
+
+Name: WEB-INF/lib/ant-launcher-1.8.4.jar
+SHA-256-Digest: Q5SVHo2FM3Mr9XRfTnv/pyEijH1UdaLV8UPLNe2cKUE=
+
+Name: images/24x24/attribute.png
+SHA-256-Digest: ha8RmheeceTlTYed4UjlBR7WAFZbTdoDhX4fU6T24AA=
+
+Name: images/48x48/disabled.gif
+SHA-256-Digest: GHTlj+qXMZ5nSvZQY9b/nWUok696YtRQ/2olZdH8YwI=
+
+Name: images/32x32/setting.png
+SHA-256-Digest: +oxbazi0CodcTPDZCgVBCC3GRiU8IWRbvoldrk1PUtU=
+
+Name: WEB-INF/lib/commons-httpclient-3.1.jar
+SHA-256-Digest: 29SVPQE+EOfBzDcBo+bM2MlQyJLwjYBPq/rCFwWTBEM=
+
+Name: images/16x16/aborted.gif
+SHA-256-Digest: 4wm0OpzRt8fOB09f2qxkWFjuaCx/DXT/6LPJJXP/Q/M=
+
+Name: scripts/yui/assets/skins/sam/layout_sprite.png
+SHA-256-Digest: UWbMNTnUoAd9I/0QznthmUQyJ15W0UsrV2joDDzGe7M=
+
+Name: images/16x16/collapse.png
+SHA-256-Digest: 6ddrDW9Jt2/5nZgznAFT9dMEzzEy7jauSkDQvEZM0Nc=
+
+Name: scripts/yui/assets/skins/sam/slider.css
+SHA-256-Digest: k2LJ9MrVURTff+qfvUj8yeB3TKotPwLf6X8Z5bKUmTo=
+
+Name: images/24x24/star-gold.png
+SHA-256-Digest: q8aFSdIsGG3Q3YvO4Z8vbiXKrO8mEnhrrrHD1lsdKX4=
+
+Name: WEB-INF/lib/asm5-5.0.1.jar
+SHA-256-Digest: RCxsBtTfrBr7pN3THuxU09yrx4o31wuqgUVdQbhPuWc=
+
+Name: images/24x24/disabled.png
+SHA-256-Digest: 3pWKYQF1bggGQXgh2jU7U7z62x42BqDRYLIQMOo3kKs=
+
+Name: help/project-config/disable_de.html
+SHA-256-Digest: gcXw0qaW1zw1iLx79K1/oKfj1i9hIRA5buVXrjNemvs=
+
+Name: help/project-config/downstream_tr.html
+SHA-256-Digest: toWa6VcWEDlLa7GBTj4hlEUJOWFwK0tRi+3PmmcXG/I=
+
+Name: images/32x32/grey.png
+SHA-256-Digest: aNwDT0VHK1cWi8wWPcThVEB8cXGmbXXahunhLgJOIQg=
+
+Name: images/24x24/yellow.png
+SHA-256-Digest: w1XcYSb3p7EpFdCk6fXhX5/e77a8WODf7VV0mdy+x1Y=
+
+Name: help/system-config/master-slave/demand/inDemandDelay_fr.html
+SHA-256-Digest: uQ1i+UnrdYIdXxMTBbKjdxmL46xt6p/VnaoqDJvDnBo=
+
+Name: images/48x48/fingerprint.png
+SHA-256-Digest: hi1VB5TYcGrJbdRtEKGLavDKhCWxsT2M1ak9CITqkrQ=
+
+Name: help/system-config/master-slave/clock_ru.html
+SHA-256-Digest: BaSvFz2Art61ySvKFrYeXpNj7TYhuoAhOetUTBmjE9g=
+
+Name: scripts/yui/yahoo/yahoo-debug.js
+SHA-256-Digest: t2GYAxzvlPabakTBFts8gwIeBT/oz+4x7orXxIYGRYY=
+
+Name: help/view-config/filter-queue_de.html
+SHA-256-Digest: os2GwxHhU3FKrfFdPckwGBO+ohUern1iJubIY/9DC7U=
+
+Name: images/24x24/disabled_anime.gif
+SHA-256-Digest: ugYAlgcYjrIUJOAHS/pd8dX5eFo3wEDT0IlHXQe3jyA=
+
+Name: help/system-config/nodeEnvironmentVariables_zh_TW.html
+SHA-256-Digest: i6v6//XRngX8nDlFsPMotLiXAZGbOghbOtI5yKk7ugo=
+
+Name: help/system-config/master-slave/jnlpSecurity_ja.html
+SHA-256-Digest: DE8osGqw4tUz3ue2XXDRVtnx2fUZjgs7tVNDoh8MVPM=
+
+Name: images/48x48/disabled_anime.gif
+SHA-256-Digest: vLB0jUJsnLLHGHGdjGSReDkowUIjpUZt75uGE1dcD6c=
+
+Name: scripts/yui/assets/skins/sam/editor-knob.gif
+SHA-256-Digest: lpJXWtRsWTf9qJPMbMGdSx3qCqocZslIBl6cQXQXXYA=
+
+Name: help/project-config/batch_zh_TW.html
+SHA-256-Digest: PdpQEHM5XVPV85GZL8M/bxp9x6eBbcgLVItT4opVgd4=
+
+Name: images/16x16/lock.gif
+SHA-256-Digest: PTNXtjjebLz3uIoDSkYRhEXbfws38pLXKtooK0UnbrY=
+
+Name: scripts/yui/menu/assets/menuitem_checkbox_selected.png
+SHA-256-Digest: Z1gs2RaGJWDNOve7ajcbvdRkDcR59/sLGAgOE10Dr14=
+
+Name: help/system-config/quietPeriod_tr.html
+SHA-256-Digest: vfKyzfGv2OazmtkWC/sf/0VD4N3SAzwkolw3ZoYLg18=
+
+Name: images/16x16/edit-select-all.gif
+SHA-256-Digest: DdRxJC3VzN5cV8becZYcZBeAnjAmqGiHZkRHavwDQgU=
+
+Name: help/tools/help-label_zh_TW.html
+SHA-256-Digest: mHcUYmdTzcgCoLPb6rP8TdQO/KT4wGJjyBVTO1hK3N0=
+
+Name: help/system-config/homeDirectory_zh_TW.html
+SHA-256-Digest: wqsR1o0iDKtU+SMJxjFbUvIpQz5MLnXZiQFBH+nj41w=
+
+Name: scripts/yui/menu/assets/menuitem_checkbox_disabled.png
+SHA-256-Digest: cIPNi8oSdTDg8alHpCoxaGFZptauS7D1RBbnhKsy18Q=
+
+Name: help/project-config/triggerRemotely_pt_BR.html
+SHA-256-Digest: wrv3qdUv7aOo/CU6lHJz9E8/G79fOo85KsOPhSnx/1A=
+
+Name: images/16x16/disabled_anime.gif
+SHA-256-Digest: osumv4USo+SBksqpmijxqhMkDHEVJBQJjl66X2MTU24=
+
+Name: WEB-INF/lib/bridge-method-annotation-1.13.jar
+SHA-256-Digest: K8DRHgeMbuDA+aeBqhLZ8teIB+HAJpUvg0ynfPqh3QQ=
+
+Name: WEB-INF/lib/asm-tree-4.0.jar
+SHA-256-Digest: 2LAWoiBbLhQdtCbAQdKubQ1ButBQBioqUXWiWdNkF9o=
+
+Name: help/project-config/downstream_fr.html
+SHA-256-Digest: vTHQt486tU9Ve9xXctQeooKkXogCZOdBXdAHZHjYoo0=
+
+Name: help/system-config/master-slave/clock_zh_TW.html
+SHA-256-Digest: QBwVadQLLA0jpM/lhPt79nZMbSLH8h7QoqsmODzlXf8=
+
+Name: WEB-INF/jonas-web.xml
+SHA-256-Digest: oMsR6gdTWh9o50J2l+3Q9AhlVlrH0gGXxicYDoEx+8c=
+
+Name: images/48x48/user.png
+SHA-256-Digest: NKgxo67o1e+AvII4XiLwqUs+i2I1/8JT+LEeEk4Wkp0=
+
+Name: help/parameter/boolean.html
+SHA-256-Digest: CmtO++tXn3kJbPMYqzl7r6WsmZxvJbDi4AphWj/tVGg=
+
+Name: images/24x24/green_anime.gif
+SHA-256-Digest: e5bYnvEuH7IJYrHPHUfA9Oo4AWnSdkH89YlSOkgHDqk=
+
+Name: images/48x48/folder-delete.png
+SHA-256-Digest: KPAratmW4zi0kvKqU5+RsTuyXSf9ien+a2HpwCglFZE=
+
+Name: images/24x24/star.png
+SHA-256-Digest: wZRU9BekvJ9Fz2C+DXbWNJyQtnzCGNwPZkczDG9UHAA=
+
+Name: scripts/yui/assets/skins/sam/split-button-arrow-hover.png
+SHA-256-Digest: HQBo/duL6YcyMDOpbjmyavRqXda0h6t/xT7NxZVys/o=
+
+Name: help/project-config/custom-workspace_ja.html
+SHA-256-Digest: evH+ym/oD+fW8mPkcjAm4sWCFGO3Vy4DqCy4epSUZgQ=
+
+Name: help/LogRecorder/name.html
+SHA-256-Digest: Os7eX0NhhYKws4h3Z7g5qAyQ0u6alzjSiFlJflnOHXc=
+
+Name: help/project-config/log-rotation_pt_BR.html
+SHA-256-Digest: NENLz57TvT6TnowzE74eZqcCUOmk/agkg5xdrJUAljk=
+
+Name: images/48x48/aborted_anime.gif
+SHA-256-Digest: vLB0jUJsnLLHGHGdjGSReDkowUIjpUZt75uGE1dcD6c=
+
+Name: scripts/yui/assets/skins/sam/progressbar.css
+SHA-256-Digest: ErIgQsr6TGN8sPfg1Vierz7EaR3j08OSw7QOP7xcWN8=
+
+Name: images/24x24/setting.png
+SHA-256-Digest: HPxU0foKpFr4qzpUQ+ZzTikhCeL81cMG1rjXtSciulc=
+
+Name: help/view-config/filter-queue_zh_TW.html
+SHA-256-Digest: gEVfLdYU3yh88JQQSMMoMTMU37SEMl8XNvHO0xI2zl0=
+
+Name: images/16x16/star.png
+SHA-256-Digest: 0a47+Qf0u/LhMIOZFsNTmFfr/0o6tcj+KLghhHV8ihc=
+
+Name: help/project-config/scmCheckoutRetryCount_zh_CN.html
+SHA-256-Digest: ruW9G2sl4TGez1exALY4NFrlUx+qSJKxqLFTFP+miME=
+
+Name: scripts/yui/autocomplete/autocomplete-min.js
+SHA-256-Digest: JXQ1aBZexBPZO0ELVI4qAqsDQnVhHG9aoi1a7xNyCAw=
+
+Name: images/48x48/system-log-out.gif
+SHA-256-Digest: /ccidrCuoc7n7JI8WNhXP2znV8j0FrXjrXErdCVYtU0=
+
+Name: WEB-INF/plugins/translation.hpi
+SHA-256-Digest: 2qmmcrj+ayHMVKUh9nobjl4dTk4VxyTUfRToEK6pgvs=
+
+Name: help/view-config/filter-executors.html
+SHA-256-Digest: reVXjr65YuYkEIjzsJB6jl2sXg0khTlbgLw4AY7E5iI=
+
+Name: images/16x16/health-80plus.gif
+SHA-256-Digest: UgYtBaX38gzmkAI9Fben5IGbRT86s2szBnntkZu5+0s=
+
+Name: scripts/yui/editor/editor-debug.js
+SHA-256-Digest: HoiYYrmaXtvNFM0hZYbXGHTDR4IHEBmjzTWwK6R4j9w=
+
+Name: WEB-INF/lib/libpam4j-1.8.jar
+SHA-256-Digest: nqdkeFDaAW3+MfZbhv+6J5KwYxgW97TZZwa7xXoCuI8=
+
+Name: help/project-config/block-downstream-building_zh_TW.html
+SHA-256-Digest: 7fkUIKmOXVaEfF3DApxV209xC15Cia2f/vtJiPEgYfw=
+
+Name: help/parameter/choice_zh_TW.html
+SHA-256-Digest: OmXSQlGc9sWz0kiNsu8PXiB8CKptzro4H4dZJTd/6ZE=
+
+Name: scripts/yui/menu/assets/skins/sam/menuitem_submenuindicator_disa
+ bled.png
+SHA-256-Digest: JwmJ/Nw+XP4iENTx3uMyepFzwGFV75iaI4HPC3oyrPg=
+
+Name: scripts/yui/menu/assets/menubaritem_submenuindicator_disabled.pn
+ g
+SHA-256-Digest: /440k01SiiqgwF4i1X6fHVRiTiGHkQM4ck8bdPudh3o=
+
+Name: scripts/yui/editor/assets/skins/sam/editor-skin.css
+SHA-256-Digest: rvyIdqJQn1pHhqJEA5UKCyGddFD9tMxRqUivC92G2PY=
+
+Name: images/48x48/computer.gif
+SHA-256-Digest: B0fEV/RUWQjr1f5aIP0Udvy1lf4qc34uFovrVuZlD+k=
+
+Name: images/32x32/red_anime.gif
+SHA-256-Digest: Tp1Fob0G+FoT3SZs4s+ROmGDQfvruva6+VZcdNwxKsU=
+
+Name: images/32x32/yellow.gif
+SHA-256-Digest: fl8VDeLnJXxPOOU6LndCFyUV/bChxGGD09g8B0oXaqo=
+
+Name: scripts/yui/storage/storage-min.js
+SHA-256-Digest: NamTxrH5iAkA4IewXsGRu/w4Au0+DLI90yTK5tKXrkk=
+
+Name: help/view-config/filter-executors_zh_TW.html
+SHA-256-Digest: QKGgUuoT1oe6xgHs1urc1WyYSw/WfkSPX5ExJsS0zA0=
+
+Name: help/parameter/description_zh_TW.html
+SHA-256-Digest: PnoWaFUjCYpQUY5OMkhvNS+ZDTuXNBcbdU/GNlUer80=
+
+Name: scripts/yui/editor/assets/skins/sam/simpleeditor.css
+SHA-256-Digest: Sck4Ybr9wQrv0yx2fPFeIm4aTPVsXogdRPfp33zfpXQ=
+
+Name: scripts/yui/assets/skins/sam/menuitem_submenuindicator.png
+SHA-256-Digest: uIzl1wbARJrPfGgVrlOD4ztlNf/p/OLxPfqwughYats=
+
+Name: images/24x24/delete-document.png
+SHA-256-Digest: lij0a1SsgzMAR3VjmmTyOJxfM4C/4bf5HEyVBsd59wI=
+
+Name: help/system-config/master-slave/usage_ru.html
+SHA-256-Digest: VyfBgKBz1npwGSeucL+oTPhimO8z4ztQ8usmVSBLPEM=
+
+Name: scripts/yui/assets/skins/sam/hue_bg.png
+SHA-256-Digest: rdhLDhISdmvx7ivPBIKzYvbCFNzjEopNzQpwsAVcThc=
+
+Name: images/48x48/error.gif
+SHA-256-Digest: jcsuon9H4TiGBJa2gLKXTrGtkjUKXTCruU21C/gjbJo=
+
+Name: help/project-config/disable.html
+SHA-256-Digest: rzDbndkKHDdci+OL6LbhnsBrTqjv5hO5m6wiht6BREg=
+
+Name: Main$FileAndDescription.class
+SHA-256-Digest: HEyZCF7kMajXjGTGPP29aRO207wN7gb+XJJGqIAoQyw=
+
+Name: scripts/yui/assets/skins/sam/split-button-arrow-disabled.png
+SHA-256-Digest: vv2cX9kpHyEnIVj1qS63nGpF0lKazbx83vezpf+Sf+A=
+
+Name: images/24x24/clock_anime.gif
+SHA-256-Digest: mm8W6oJ8+1jtqHQIWwXUgIRvQE4UIc09JO7ImGVYzRM=
+
+Name: images/48x48/refresh.png
+SHA-256-Digest: J8y0V6UJwkNbwOBvB+VKx71EsVP1XkzOeF/Ti5dLs2M=
+
+Name: images/48x48/redo.gif
+SHA-256-Digest: z6T/4De98G7daUUi0hy46b8uV+0f+aiRnIwNnC/3A5M=
+
+Name: help/system-config/master-slave/numExecutors_pt_BR.html
+SHA-256-Digest: OuL0BSCDBdRi6jFARFuIADc6dYOxBccslCXSiRbLk9w=
+
+Name: help/view-config/statusFilter_zh_TW.html
+SHA-256-Digest: dmie7HsUTrPG07yq9HAV/H88MbbCSBupF7N3t5NFSY0=
+
+Name: help/tools/tool-location-node-property.html
+SHA-256-Digest: z5XILUydtKjAlow0+U8zz0WbLe1YxtDeMIBKsdoC4GI=
+
+Name: help/tasks/fingerprint/keepDependencies.html
+SHA-256-Digest: BUn60+vVlVQFCJO/c8xKXn9T6QEfTuqJEzt/l7Q7Qp8=
+
+Name: images/16x16/terminal.png
+SHA-256-Digest: LGakSqH9ncr58PsT5V++ErCdCWSJYaPvGnb1TXxMDXU=
+
+Name: help/project-config/batch_de.html
+SHA-256-Digest: DYoXObNHQq9vaPAoEAzP1H+0mO3Hl1Nl4OmIj1/eizM=
+
+Name: help/view-config/includeregex_ja.html
+SHA-256-Digest: J5U0rMMde8xEHp98kH25cyvimELavCzxcg6ioBawp8g=
+
+Name: images/24x24/new-document.png
+SHA-256-Digest: wG+6unZetb3m1qhM2Mdmv704fLI5IAEZk8UxQBAfdTA=
+
+Name: help/LogRecorder/name_fr.html
+SHA-256-Digest: 8wT64RVmg6RuqNR9Va9YjtHt0Fu4UVwP5BXh47Fs8sY=
+
+Name: images/16x16/user.png
+SHA-256-Digest: LfD5NjxKRfv4BddMOAsuGfCAeuOUoGp9S1P4vOzaT9s=
+
+Name: help/parameter/boolean-default_zh_TW.html
+SHA-256-Digest: s+KqVgkD2W62ZUZct+bzmQItkWO4xAjLrQj5gyDjxf8=
+
+Name: images/32x32/star-gold.png
+SHA-256-Digest: 3Ver+u5IDXZy68GRdZktj/1/HQR36jVn2WGvjB7QUEs=
+
+Name: help/parameter/boolean-default_de.html
+SHA-256-Digest: dv8KmNyO7bVdkAy6J1Ykk2QsOXGSASSlKmdU9Upo8lE=
+
+Name: WEB-INF/lib/spring-aop-2.5.6.SEC03.jar
+SHA-256-Digest: DutmELS8xizrpKzHOGlVIETJE9mV2Nb9sxo8RfxCr1Q=
+
+Name: help/parameter/description_fr.html
+SHA-256-Digest: 48zVPKeEHxwEfehFEHEyJwVTviB+D/4lQLWNlgIfVrk=
+
+Name: help/system-config/globalEnvironmentVariables.html
+SHA-256-Digest: Luqp6v8MWXACetL4gDZ6oNz8u5R/2icM700BoY5GsNY=
+
+Name: WEB-INF/lib/spring-core-2.5.6.SEC03.jar
+SHA-256-Digest: SCsqwJZbhJdTETxhgTNaH4JEltJ47bDoGSgz3ECzxgo=
+
+Name: images/24x24/search.png
+SHA-256-Digest: HbnFJH4Z8zFdxqXka+HXgzLmZJnHTjLs5QQ1iY8LL9w=
+
+Name: help/project-config/defaultView.html
+SHA-256-Digest: +7aHqu2jmOZf0LfQKhF/UBTZZOs7Zy4e7K0OEOTDq/M=
+
+Name: help/user/description_zh_TW.html
+SHA-256-Digest: nwopQjJ4UjESHq6G/BaDmxN6a3mJF0EH83a+3V9MCrM=
+
+Name: help/system-config/master-slave/availability_fr.html
+SHA-256-Digest: s5ISVN62cGK6WLvjuyvpm9k15J6Lem4fqylvrs+2zog=
+
+Name: WEB-INF/slave.jar
+SHA-256-Digest: ZZUAHSUkBQk6QARXB5J9sk+bUk2tD1F0BdvrFpF9ax0=
+
+Name: images/16x16/stop.png
+SHA-256-Digest: TT4Gcz9SBgjRVTfmk1PyRaJFTHf6Tw80l6FXWA/Cnvc=
+
+Name: images/16x16/save.gif
+SHA-256-Digest: 9czEUjRjrWZsNEja8B2sZD1nB07N2+GURO+91IIN67E=
+
+Name: WEB-INF/plugins/ldap.hpi
+SHA-256-Digest: EhCVhKYS/kpKGoKagN9CehGoaj884Tc7u/RkulZZg4A=
+
+Name: images/24x24/health-20to39.gif
+SHA-256-Digest: O5JHOa+7KGUfk2gnemzU0JJd4MJyxjKHySuG194mMLw=
+
+Name: images/16x16/star.gif
+SHA-256-Digest: Et1rYQXhLxkbfx9Od/ZwD2X7U50WibsyvEqY9nOD0bw=
+
+Name: help/tasks/fingerprint/keepDependencies_de.html
+SHA-256-Digest: JnS4mLVxCLNFMkXDOnPFTAfJf7xcjY7NS8z7eOCdtCA=
+
+Name: help/LogRecorder/logger.html
+SHA-256-Digest: GDuWKyAsfmaG752UERFEWqd1L4e+6i1jvvVR4EVb63s=
+
+Name: help/tools/tool-location-node-property_ja.html
+SHA-256-Digest: 7kMGrwSukqDuzM0FgF4Qr4VfuUgYp1hs9x1lhzGzO3U=
+
+Name: help/parameter/choice_de.html
+SHA-256-Digest: HzQ2dWfEFNLynhmdkFGstBG10w5kZUmUpAwTXGcC7qs=
+
+Name: images/24x24/health-00to19.gif
+SHA-256-Digest: zpCLLI0ff1W3mMG1neKd2oSsitB27SStM1wqjqEAOW8=
+
+Name: scripts/yui/storage/storage-debug.js
+SHA-256-Digest: qZO2/X7eTsqTuU1vO44s2lHktgxqlokbuXarAxQYhNY=
+
+Name: scripts/yui/assets/skins/sam/menu-button-arrow.png
+SHA-256-Digest: 6lIw10da8sjHiHWLUbnVNWTU0wkBFo9JvQL+Ixako+U=
+
+Name: images/48x48/secure.png
+SHA-256-Digest: mLbT/8qXvq9PtHqNdnKunMIHxUZQSlujNFhWtOhuNO0=
+
+Name: images/spinner.gif
+SHA-256-Digest: TuL710emLxzC28LzVNMgZNoNLz8MJdqVjZ0ajTmaJ6A=
+
+Name: WEB-INF/hudson
+SHA-256-Digest: KAjQl1CaGti31poPMN27d+aiZeH5bMet/rMSIDqbnGM=
+
+Name: scripts/yui/button/assets/skins/sam/split-button-arrow-disabled.
+ png
+SHA-256-Digest: vv2cX9kpHyEnIVj1qS63nGpF0lKazbx83vezpf+Sf+A=
+
+Name: scripts/yui/assets/skins/sam/resize.css
+SHA-256-Digest: Ahf+IQaLAaBZIqJf3OT0JTRxK9KHghD2EkGowi8c3+M=
+
+Name: scripts/yui/treeview/treeview-debug.js
+SHA-256-Digest: Vx3fPL2lAoYUZ4mB1IWv+DKblImVSyUi2AKLanUFPg4=
+
+Name: images/jenkins-redbg.png
+SHA-256-Digest: l6sZG95EdjleACyyWoHhjqekje2IO37NEF3dj5+YHlc=
+
+Name: images/24x24/aborted.png
+SHA-256-Digest: 3pWKYQF1bggGQXgh2jU7U7z62x42BqDRYLIQMOo3kKs=
+
+Name: scripts/yui/tabview/tabview-min.js
+SHA-256-Digest: 1wrJ00dw5iS5LVeXSBr5yV0BCVBGt1lTOqCvf0JFBXI=
+
+Name: images/16x16/computer.png
+SHA-256-Digest: 90U/cMHNaSz5rDwQZ6HUOrLQkAtJCiN+G9BPjwJQl9k=
+
+Name: scripts/yui/element/element-debug.js
+SHA-256-Digest: NoVH0GBfyK/RMavP17zfSMITEFAEB9tvVM570/tJ0LI=
+
+Name: images/24x24/health-40to59.png
+SHA-256-Digest: 7llslVgxLZWp+p+fUJT7zRC9rsJLuRJnoE5Hje0FSIQ=
+
+Name: images/progress-unknown.gif
+SHA-256-Digest: saO28QfFdtHtLqN4k0Qa42AwtZJzkMnOzapCVsRFyYU=
+
+Name: WEB-INF/plugins/antisamy-markup-formatter.hpi
+SHA-256-Digest: DrjFZ6COOhi3deCOmCtF8ra2RoXxF+q+byoXmvVXFE0=
+
+Name: WEB-INF/lib/stapler-jrebel-1.236.jar
+SHA-256-Digest: 4orIQqjrjP+kJfv8wFcuoTT3gdRkq7gpBr0EkKOVOXc=
+
+Name: images/24x24/gear.png
+SHA-256-Digest: 5bXHOc0uy/jnO1SQjfEAIbLBMFhnscZwrHOL0O0Mfpo=
+
+Name: help/user/description_fr.html
+SHA-256-Digest: M9EjEEFzcxOz027lpbXltKH6lhIpy+vlBd6yMP5v4tU=
+
+Name: help/parameter/name_de.html
+SHA-256-Digest: DfQqxHnNVvp5jh5O21piZlIrD9EYjFoVr4+8Dvk6970=
+
+Name: images/title.png
+SHA-256-Digest: yC7TOJkvDpCDyaIFSkoH4FKb1a2iOquZgLwGpX7d1LI=
+
+Name: images/24x24/grey_anime.gif
+SHA-256-Digest: gbz7CC29vWjRUv82iPYRA9jIFxcHbUJGe1K3CS7UrGk=
+
+Name: JNLPMain.class
+SHA-256-Digest: EVAnTrLFJwOEjUHGlKHF+zMBe806M3gj2kBfUDr20gc=
+
+Name: WEB-INF/lib/jbcrypt-0.3m.jar
+SHA-256-Digest: wHFwefT+GPcvNq0asVoq+mPGVE/uS5rCEohRMwteEDE=
+
+Name: help/system-config/homeDirectory_fr.html
+SHA-256-Digest: 6A/ojz+e6R+G9SrSy7uRwR1Aor+3NuOzCeKYhaF7Nyo=
+
+Name: images/24x24/redo.gif
+SHA-256-Digest: zF6c9JRZljQn5iaNNxltnWn5G0TnY6LiaK+FFs7C/Pg=
+
+Name: MainDialog.class
+SHA-256-Digest: KrZTrvvKkQPutsorPAeV/JsMywpKnU7/r8sDR1ajsXc=
+
+Name: images/48x48/orange-square.gif
+SHA-256-Digest: tRntNOg4c7DNjqmjfLFUkfNbeXVXkmPTr7Jbe3g0tOU=
+
+Name: help/parameter/name_ja.html
+SHA-256-Digest: owqb2El6vnPe6Qf8FlOtWbbDF1R2KP7u/X9WmWsdr08=
+
+Name: scripts/yui/button/assets/skins/sam/menu-button-arrow.png
+SHA-256-Digest: 6lIw10da8sjHiHWLUbnVNWTU0wkBFo9JvQL+Ixako+U=
+
+Name: help/system-config/master-slave/description_fr.html
+SHA-256-Digest: 1ugNGW65LgnfKLN1AN6X47dgiO9SIiCDGmESwKnnOdA=
+
+Name: help/parameter/file-name_de.html
+SHA-256-Digest: zp8O3HyFmevtX/7k39gaqaTBCgbsSMrqs3qrt1YusL0=
+
+Name: images/32x32/blue.gif
+SHA-256-Digest: FJ4M/7uY1lxM0AJLmVxE6G/1w0dAFG0NXpj9aI8sv+w=
+
+Name: scripts/yui/assets/skins/sam/split-button-arrow-active.png
+SHA-256-Digest: J/laPAW0kIcbp39wQ+fwctYgyFKJBzhD/aSgvZhpg+k=
+
+Name: scripts/yui/assets/skins/sam/split-button-arrow.png
+SHA-256-Digest: fZkMjIKqSApDupQ8c7OJDDHp434mqp3R+NpXha1eDVQ=
+
+Name: images/16x16/gear2.png
+SHA-256-Digest: hVgyDYd2SJR9LVTmQ9U3I1DOFML8xFJvcVk3aR6KYzU=
+
+Name: scripts/yui/assets/skins/sam/dt-arrow-dn.png
+SHA-256-Digest: c/NAL8hzuTmx1LslLkRa9ug9iVDgeHDUIjbkBTqPuYQ=
+
+Name: help/system-config/master-slave/numExecutors_de.html
+SHA-256-Digest: xzZ9p/ILR8BQi07wAJ2uO+lSvveSI1JsoTnTuq7JkWs=
+
+Name: help/project-config/downstream_de.html
+SHA-256-Digest: y8CFiIlLfJr/WaZCWOa/DALVngxh7HhjQeiOfTu19k4=
+
+Name: images/48x48/computer.png
+SHA-256-Digest: 1KA8LXojXmrlgHnx1fC5/aSQ6LOgxFYtwoQ0GGXsTOo=
+
+Name: images/16x16/edit-select-all.png
+SHA-256-Digest: 5KMgeMyUzPoS67j0ZNSMkUEt0jAXWEDYNZegZ+vJFMw=
+
+Name: images/16x16/package.png
+SHA-256-Digest: vIacxTVGZCuAh6m0S4ognbxkj87kWW37dZdAlp3tGYc=
+
+Name: help/project-config/triggerRemotely_tr.html
+SHA-256-Digest: QtkG08jHiWh4EI6w2rWiKpeJpikvCXA//jSojurRRDk=
+
+Name: help/system-config/master-slave/usage_zh_TW.html
+SHA-256-Digest: 0fYU1rLrAtRcWt5jA0FhNY0v2CZXEHJoB3YGTQu3WC8=
+
+Name: dc-license.txt
+SHA-256-Digest: xoG+x896obau2fmMTt84GS+eaCRx19WregxF2nlS/xw=
+
+Name: scripts/respond.js
+SHA-256-Digest: g6iAfvZp+nDQ2TdTR/VVKJf3bGro4ub5fvWSWVRi2NE=
+
+Name: help/project-config/scmCheckoutRetryCount.html
+SHA-256-Digest: St6GZYmd/El5HR2IEkfZAGjRhjHd/+jM+wKkiuTXTAI=
+
+Name: help/project-config/defaultView_ja.html
+SHA-256-Digest: wO8+CnTP19s3UzFwayLA1w3JlbecBoIqVj4ax4GDkiM=
+
+Name: images/48x48/setting.gif
+SHA-256-Digest: rLRQmj0PoseZ5WvwhaPKuiBaETmiT7RtzFP/YVBeg+o=
+
+Name: images/16x16/grey_anime.gif
+SHA-256-Digest: fdkGbtq4M/ONSvt/V4OBTsKHD1qWNWvk8he5Enpl0lw=
+
+Name: images/16x16/user.gif
+SHA-256-Digest: LR0k7XrRQ3R/0LnDUWB9bO0Av7sn/+tPIlczmX9pdBc=
+
+Name: WEB-INF/plugins/maven-plugin.hpi
+SHA-256-Digest: 9VBwW4XQDrvidY3gOmfXN6RsBMPkEMMfNpCeTmOXQzQ=
+
+Name: images/16x16/notepad.gif
+SHA-256-Digest: McjVbiV8yqled3WAXFh8uGW4zpB3Qg2TpU1zeMGYRWo=
+
+Name: scripts/yui/tabview/assets/skins/sam/tabview-skin.css
+SHA-256-Digest: zEBXKgYRtybydR2PJfRad+W3IN6TXD94d3mfFLFce3Q=
+
+Name: WEB-INF/lib/trilead-ssh2-build217-jenkins-8.jar
+SHA-256-Digest: HhFlIz8pFPwbBkC10WTpIr4g9J/NaBROgyiL/RVVUdE=
+
+Name: images/32x32/attribute.png
+SHA-256-Digest: l+fr0+wRpVYIHuQbcBZssI+WginLVTxueBeI+uISz6U=
+
+Name: help/project-config/downstream_pt_BR.html
+SHA-256-Digest: 1nutPN9pH+logWhQVIwgoiu3mdzj+L7gw4N7AByzbWk=
+
+Name: images/48x48/system-log-out.png
+SHA-256-Digest: QudbW/MB89qFjKL+02743gOVHNal61FeLCuYfVjKq7o=
+
+Name: images/48x48/plugin.gif
+SHA-256-Digest: i3DvFGqzaEZFIEkW1DcHRCBddR+fQIXqJ1EyTlrpgkU=
+
+Name: scripts/yui/tabview/assets/tabview.css
+SHA-256-Digest: lfYDPtMVwgHBM/Kb6zMU+BzILXZ2CsMsIYymAWteyrw=
+
+Name: images/atom-license.txt
+SHA-256-Digest: CcQmNfvmkbKDUys/a6WsmQs7Hdi2VWI287Bd6FF/mlY=
+
+Name: images/16x16/package.gif
+SHA-256-Digest: G1Gqw0jCjEEzrMN6img2EsaU/RQk851Axv4XV/4746w=
+
+Name: images/32x32/health-20to39.gif
+SHA-256-Digest: v6SXg+5pohUjOEC26BLhCvbJoVCP85cMI66MsApJFkY=
+
+Name: help/view-config/includeregex_ru.html
+SHA-256-Digest: yNF7TVuzhXg4MbJg3OWp8f7y2j50+PqnsCRAqmKaaT8=
+
+Name: scripts/yui/element/element-min.js
+SHA-256-Digest: KRmGmKs8ETxXvf6FG+nwb4nSuvOx2D5FGyrbLyTqihc=
+
+Name: WEB-INF/lib/jnr-x86asm-1.0.2.jar
+SHA-256-Digest: OfNnW5EObpuTgl+ChL7J9K0wRM0gpvfI/54vhpXr8h4=
+
+Name: WEB-INF/lib/asm-commons-4.0.jar
+SHA-256-Digest: tLiIH1GMiksSk83f1xAsU2TW+vh07X3Ca5aG/R6f9mw=
+
+Name: WEB-INF/jenkins-cli.jar
+SHA-256-Digest: gykrvqS+bn15m2j/YNl4eQpF1WdasVZB+Zu8ZHcM63Q=
+
+Name: WEB-INF/lib/slf4j-api-1.7.7.jar
+SHA-256-Digest: aZgMA4yhsTGSZWFZFhfZwl+r/Hspgor5FZfKhXDPNf4=
+
+Name: scripts/yui/treeview/assets/skins/sam/treeview.css
+SHA-256-Digest: zZEKFjuocCt80t3SSr8pddJ1xeD8S1sgRR3NOvoOEzE=
+
+Name: help/parameter/boolean-default_ja.html
+SHA-256-Digest: t7Pt1WyMFa2KoziMLo5U3kNb0/+VL7Onkcnyld2Dscw=
+
+Name: WEB-INF/lib/guava-11.0.1.jar
+SHA-256-Digest: qnzvnSugEQott74PtuZ5zXH2om/Dup2ncV9B0zAN7x0=
+
+Name: images/16x16/document_add.gif
+SHA-256-Digest: sAVUfTqtMpqquYTAGJY1FPYA7RcM4bD8uB18LSkRu+A=
+
+Name: help/run-config/description_de.html
+SHA-256-Digest: dKBiYg+PEayxUEVLam0U67X5WAIFyxCf4E/zxGjp5IU=
+
+Name: images/16x16/aborted_anime.gif
+SHA-256-Digest: osumv4USo+SBksqpmijxqhMkDHEVJBQJjl66X2MTU24=
+
+Name: images/24x24/edit-delete.png
+SHA-256-Digest: 7AjnINdROROb4NPs6TaLFcHkMsNXw4v3yPepaiVYaKo=
+
+Name: scripts/yui/logger/logger-debug.js
+SHA-256-Digest: fvqMCfzRctl4PYNp5wpI4W1xu5cUQkL9VFNekBMsXDM=
+
+Name: help/system-config/systemMessage_tr.html
+SHA-256-Digest: A8jhPYWJJYaNGvWynf9NILcd5j/gF2+oohIOO9fBP/c=
+
+Name: MainDialog$1$1.class
+SHA-256-Digest: TagXz5587FLL/lYSefjmxuG7l2C7FnRVwpM/p9FSWEY=
+
+Name: images/24x24/graph.png
+SHA-256-Digest: lnRaYsl7X28JRmXSvgKoDFot8/0dTLKWrXlPBOhsdsc=
+
+Name: images/48x48/document.png
+SHA-256-Digest: 0C3k6wOME3mMAYzmXrI3GcPaLhgWff2roA9jIxhY8qE=
+
+Name: images/16x16/health-80plus.png
+SHA-256-Digest: JF6GDDD5OfU1Vtfa4DfgSaf3GXyxaoEO9BuDKCyPGZA=
+
+Name: scripts/yui/connection/connection-debug.js
+SHA-256-Digest: 4bnJwjPitY7sJ5Lc5YvfJMZZH0AkpF5VKX2XaOwIKwY=
+
+Name: help/project-config/defaultView_zh_TW.html
+SHA-256-Digest: 7j10BRg1Nm1X/ZxfkdDHrk+6RdcIlR8vCRDB1bxcoU8=
+
+Name: images/16x16/redo.gif
+SHA-256-Digest: OmXdNNnmRschd7TvYn+w4vX9mWVWscwL7tk306nA0b8=
+
+Name: images/16x16/document_delete.png
+SHA-256-Digest: 9OZxkvdCtSog+IivuDeRvmPtcWPNkwZe7N3LyGTlUV0=
+
+Name: help/system-config/master-slave/jnlp-tunnel_zh_TW.html
+SHA-256-Digest: q4GPGGa2M35ana7cBTtzInmSw2bfg48OLHgtuww59qs=
+
+Name: WEB-INF/lib/commons-discovery-0.4.jar
+SHA-256-Digest: l9Jk4vmIIcTNOerP1Ze03HwZ1CMs8fM1/C6rOJstkv0=
+
+Name: WEB-INF/lib/sshd-1.6.jar
+SHA-256-Digest: 4FpO1/Y/MSK91H7SkmuwPWd06J93Ny1rWIl5uGYLIPo=
+
+Name: help/view-config/includeregex_fr.html
+SHA-256-Digest: fYwgz9v9qBDo1yciaiCPt07/ySMoxk4VjpePDz1vcAc=
+
+Name: images/24x24/health-60to79.png
+SHA-256-Digest: uyI9aY+Gb7gZSXN3X8wynKMIv6VT5OvTwyMvV/2nfX8=
+
+Name: images/24x24/orange-square.png
+SHA-256-Digest: eKR1oEYCB46Wcmk3uRtXD7JAiOLX0ImnP2i77A1vWOw=
+
+Name: images/16x16/folder-open.png
+SHA-256-Digest: 2kxcYThPc9dHRfcr2JPcpbSxDmzbjDdLs1K2P/GDhGE=
+
+Name: images/48x48/warning.gif
+SHA-256-Digest: QvMEiUJpGP6lTyiP4PRe45kKVvNEPRkoovBJKtgrLSU=
+
+Name: scripts/yui/container/container_core-min.js
+SHA-256-Digest: RHHHu8UlqyMCIIGWeo6XPK3SQubL9Hhihv4vq8PnJuU=
+
+Name: images/24x24/fingerprint.png
+SHA-256-Digest: mZvvFUbAMii1UEECcIUmz2Mr+BvdRdAjG0sWGkYh/yo=
+
+Name: images/24x24/health-60to79.gif
+SHA-256-Digest: 25fy0UFnCCyJ0eqKPi/tXNynIwUYcqULdG9xmXIQCwA=
+
+Name: help/system-config/defaultJobNamingStrategy_de.html
+SHA-256-Digest: 36ErbDTmOhSQTSUesYfUOG/9pexgFOg9xLiOvSsI3mA=
+
+Name: images/16x16/computer.gif
+SHA-256-Digest: KsjvUhQPoCUbXoto95hX/dUzz6Eatyd89Piq8S3wotg=
+
+Name: scripts/yui/assets/skins/sam/treeview.css
+SHA-256-Digest: zZEKFjuocCt80t3SSr8pddJ1xeD8S1sgRR3NOvoOEzE=
+
+Name: images/48x48/installer.gif
+SHA-256-Digest: i21JuGiADfN/Ccmqct58AtFm6S2SdyhZNaCVqGsa6P8=
+
+Name: help/project-config/description_tr.html
+SHA-256-Digest: L20gfBZ7oqKuPtUBNYieO4YGUuHtcj+7Vd5wiRghrxY=
+
+Name: images/24x24/red.gif
+SHA-256-Digest: RA6rSPYMPSAfMEEYOqiMIzJs1fTNK9zlasm4JxcSsT0=
+
+Name: WEB-INF/ibm-web-bnd.xmi
+SHA-256-Digest: iSgVAYOajsIzNlD8MOq/J7ZrAl4XaQH5CSsldNzsnWM=
+
+Name: WEB-INF/lib/commons-lang-2.6.jar
+SHA-256-Digest: UPEbCfh3wpTVbyRGP0fSj5Kc9QRPZIZhwPDPuumi9Jw=
+
+Name: help/parameter/boolean_ja.html
+SHA-256-Digest: j1r3sZSdPg4suIzPOTfhUcV+fM5XWg5267Oc0Ua1uhQ=
+
+Name: WEB-INF/lib/xpp3-1.1.4c.jar
+SHA-256-Digest: A0E5WkgbuIeAOVcUWmo3h5hT3WJekkTC6iUJ2bt1Mbk=
+
+Name: images/16x16/nobuilt_anime.gif
+SHA-256-Digest: osumv4USo+SBksqpmijxqhMkDHEVJBQJjl66X2MTU24=
+
+Name: WEB-INF/lib/commons-jelly-tags-xml-1.1.jar
+SHA-256-Digest: QWwOuaA8tv4hKYLhM9Ddy/IElG4sAAaFXyX0lPUGRtg=
+
+Name: help/parameter/string-default_fr.html
+SHA-256-Digest: guS2tSBBTFox0Q/tYeD02s0pSC33Y0ewP+08HxgLzMk=
+
+Name: images/24x24/plugin.png
+SHA-256-Digest: +xk/lfckEPoZJt4t1RsU+mADWEBzJsrPkMK9E3jAuQ4=
+
+Name: help/user/fullName_tr.html
+SHA-256-Digest: qnUwElOd5QwxPr+GgZl+or2Kj7jjT+/yhC17lXGXjXA=
+
+Name: images/32x32/disabled_anime.gif
+SHA-256-Digest: gCi0jceG3NQRmUrYo11u/thnhFG6HU7/SrRFVot/6vg=
+
+Name: help/system-config/quietPeriod_fr.html
+SHA-256-Digest: oYB5+68287QQTnSnapdIUfqxWAZK4zIpijc/yKb+dmI=
+
+Name: WEB-INF/lib/j-interop-2.0.6-kohsuke-1.jar
+SHA-256-Digest: mUQBxooVC//mVxjaBE5X0bqY5iZrfwIYspaKFHdPpHc=
+
+Name: help/system-config/master-slave/demand/inDemandDelay_tr.html
+SHA-256-Digest: TCEu9EmnUwS8M+htrZ7dmnbGB973OUUf2KM0sqc7bSg=
+
+Name: scripts/yui/treeview/assets/skins/sam/check0.gif
+SHA-256-Digest: yGJcQM6duNClbG8zPvPWbLCHQPIK8n6JPr9ji1A6l60=
+
+Name: images/16x16/warning.gif
+SHA-256-Digest: NBq4j1nwTlBljeS0S4qaBNB/z8jiDnZK6gvCXqj+07w=
+
+Name: scripts/msie.js
+SHA-256-Digest: q0GDgGJfK5+8CKwlouyXGdfRpfWkNdGa9NeGrp1OiiU=
+
+Name: help/parameter/run_de.html
+SHA-256-Digest: zVCECSLHrFc8abyYLYq+9bOqs0q+nTdM5RKDPnst8Rw=
+
+Name: images/16x16/secure.png
+SHA-256-Digest: rXoR4v1EjFVw8C69zRNCF4qYgpD8seYkaBpUiMtI2bg=
+
+Name: scripts/yui/logger/logger-min.js
+SHA-256-Digest: NLJZNVNZQHGc4OaoodES7OEh6HCHPSlqToBBCdxvVuQ=
+
+Name: scripts/yui/datasource/datasource-min.js
+SHA-256-Digest: DlVooF7Ize8y2TXeoaTHoZMKmYh+sQ1wzCgQ1CtARy0=
+
+Name: WEB-INF/lib/stapler-adjunct-timeline-1.4.jar
+SHA-256-Digest: AMiqxy+uOmUrna4w582Yy8gq5eJXtwzHqPWkRjlGaJ0=
+
+Name: help/system-config/master-slave/demand/inDemandDelay_zh_TW.html
+SHA-256-Digest: MqlCB2Fl6vHuEjCp2Lxcxoo3qpaQHktnyBcX1ppnOPM=
+
+Name: images/48x48/star-gold.png
+SHA-256-Digest: R6N26l2Lt6LzvjmDpmeXRa7wQ72yS3Bmu8/+BNvdUa8=
+
+Name: help/system-config/master-slave/demand/idleDelay_nl.html
+SHA-256-Digest: PBKnanrXmgWTfBHXs9uQBJU8eJ1NO5SFfhHHojmLQdI=
+
+Name: images/48x48/package.png
+SHA-256-Digest: PZeG0c/onSir/WYJ5VSQ9SF5TQOmpQDSvG9O5ai5Oa8=
+
+Name: WEB-INF/plugins/ssh-credentials.hpi
+SHA-256-Digest: QYEeRsSH9MEuLqtJhwVHu2VMULl21eQhJc57Qz6zaFM=
+
+Name: scripts/yui/assets/skins/sam/bg-h.gif
+SHA-256-Digest: JIR0r8ACQ0xQzmiVqYtvahG7qSSuPVVQLV6VHOhZ7GM=
+
+Name: help/system-config/nodeEnvironmentVariables_de.html
+SHA-256-Digest: n9kn7NJ9xtyXKDLOuRnBBttwlZfcUz1PNU7fcdwb6K8=
+
+Name: help/project-config/log-rotation.html
+SHA-256-Digest: 00uVmbvQJmAN9MBvdau0++9t8o8UMYfTueJZJT2479g=
+
+Name: images/24x24/computer.png
+SHA-256-Digest: GmC+hXHbug3h6D9TV5MrK+99Vbwd0D/iFABXV+arwMg=
+
+Name: scripts/yui/container/assets/blck16_1.gif
+SHA-256-Digest: N0N3xe/IQvgCagCH1jWMEAmzHVZzM+81XY98UFJJP/g=
+
+Name: help/project-config/triggerRemotely_ja.html
+SHA-256-Digest: o2BktnR4eR1+zkwV3+a7fCjLhCtKoHnl2fOjU5Y4/q0=
+
+Name: images/48x48/error.png
+SHA-256-Digest: fTQz6kr7mMtZIutgCrTdXGXZbPqvXyP4bj6vLdIe+LQ=
+
+Name: scripts/yui/assets/skins/sam/header_background.png
+SHA-256-Digest: sehpKmlmI3Arq4pKAM8N1Qm2Pbw2COK+m8Vo4o4I4BQ=
+
+Name: images/24x24/previous.png
+SHA-256-Digest: 9buFbX3FzYStwrJTfK15/e1Wm2WjReX4LJ0ncrB7+aY=
+
+Name: help/project-config/description_de.html
+SHA-256-Digest: vWpHBiMM+ZG8CJFyhMoMGFSf8ndrjyJVd1dVROyYaxk=
+
+Name: images/24x24/save.png
+SHA-256-Digest: NQ3lk+U5VZXC/5DrlJlMGCV/rtfJgj8i0hcBzWlGib0=
+
+Name: help/project-config/disable_ja.html
+SHA-256-Digest: 3CzgGQ25MhSQe0mOdS4mjsr3gzB9lCA1cNQVOUaO3KI=
+
+Name: images/16x16/go-next.gif
+SHA-256-Digest: 57Y6Sz5Ap2wBon0wc6i+PTmRtIGVhxuoKDSK9Hc57Bk=
+
+Name: images/48x48/health-20to39.png
+SHA-256-Digest: yq8JMR6o0H+CkXpAqrOcC2zGnHbiLfifMaltOr/mnOc=
+
+Name: images/24x24/nobuilt_anime.gif
+SHA-256-Digest: ugYAlgcYjrIUJOAHS/pd8dX5eFo3wEDT0IlHXQe3jyA=
+
+Name: images/32x32/plugin.gif
+SHA-256-Digest: r2R6msFH5Any6VZYcoDBN0SxnmP09BYbVdymqOFZBqw=
+
+Name: help/system-config/defaultJobNamingStrategy_zh_TW.html
+SHA-256-Digest: LT7qPeKfk2Z5HnSeofN+dxnd2GpUvCpkD64nP8c+UBM=
+
+Name: WEB-INF/lib/windows-package-checker-1.0.jar
+SHA-256-Digest: eOSpNB57oakhUzOd3VUInK23oUSECKkBB86x74d6+jw=
+
+Name: WEB-INF/lib/jansi-1.9.jar
+SHA-256-Digest: y4K0EqRFKEsFacraC4iuJD5HzDj+e+llYlyOPrDT4z8=
+
+Name: images/32x32/health-60to79.gif
+SHA-256-Digest: bqMGgkc+y13zWuW1yIJIb9gsXUdtrhwDBTz8i0+u3H8=
+
+Name: WEB-INF/lib/trilead-putty-extension-1.2.jar
+SHA-256-Digest: vaGE1kuTOm+cNYgQLmbzL2nS5zV130hv+DXDBpXEMsY=
+
+Name: help/project-config/custom-workspace_fr.html
+SHA-256-Digest: AfKoMe0VUJmHh3kR1KU1a3YfsE1uacfGB8M+1vsypIc=
+
+Name: images/16x16/plugin.gif
+SHA-256-Digest: ErK899gViPrgKZcAkr3i5ugZOMenSAJ0XORts0hFln0=
+
+Name: scripts/yui/assets/skins/sam/editor-sprite.gif
+SHA-256-Digest: tBHNbihOOn1JQk19jiHwWMN8J6EOf8fYss2y1/DxFks=
+
+Name: help/system-config/quietPeriod_de.html
+SHA-256-Digest: faQZYLbdM5C+4vdzulmm6r5UMKNSHCZeX/dzN2Z8E10=
+
+Name: WEB-INF/lib/jzlib-1.1.3-kohsuke-1.jar
+SHA-256-Digest: 84Jn77R9FcfTkiasaQfrXlQT+ROa+RR3AUWNvQHTbn4=
+
+Name: images/24x24/clock.png
+SHA-256-Digest: JXa6+J/m0/Sz1oMM61kyI31clmVIRpfGUBl8XybKWx4=
+
+Name: WEB-INF/lib/mina-core-2.0.5.jar
+SHA-256-Digest: sOzdUkj1hWjSf2IxXFGnNuBHf+R4E3czVWYvRpZD0/E=
+
+Name: help/LogRecorder/name_de.html
+SHA-256-Digest: PARMg2WeklooYbTNcBv6giNwwZgapJhbxQLVgBDiiWA=
+
+Name: images/48x48/terminal.gif
+SHA-256-Digest: +vpj+YnWy8BvXuve7FKZ7YW2yzmbKLwoZw6ryzF5Ilo=
+
+Name: images/textarea-handle.gif
+SHA-256-Digest: RaGY3WzJpO/v3BWgfIUEE18U8VT0ZYmnlfI85prdEq4=
+
+Name: help/LogRecorder/logger_zh_TW.html
+SHA-256-Digest: ZPUs2F2YUY9/haWqtoHGjMGSJmvAg1YeCLoGrn/TBuI=
+
+Name: images/24x24/grey.png
+SHA-256-Digest: R7Yq+4zmuscFQi2O6jRKSpP9EwxYH/O7iXKJ8BjHfXk=
+
+Name: help/parameter/file_fr.html
+SHA-256-Digest: rw+/c1oCIjP26iPv5zxcICaHQSZVlm4qUlqQ/VlG6GE=
+
+Name: WEB-INF/lib/spring-jdbc-1.2.9.jar
+SHA-256-Digest: DMxV4WkLwtCXiYRFAHcPnIE1IPg3tXse2079ij9yxCE=
+
+Name: scripts/yui/container/assets/hlp16_1.gif
+SHA-256-Digest: ptjLlarl/SvRKUiQIoIGkergtvEX0IJP0PTYdecw3jQ=
+
+Name: images/headless.png
+SHA-256-Digest: sGzq6y9YNhyc3HDkDwGXXB+MZK/nl+IX2DhbNS8oibA=
+
+Name: help/project-config/log-rotation_de.html
+SHA-256-Digest: spAmq8OpXEEkcCzkzhEE7IoN4OqulL0Tpt6WbvB2CUA=
+
+Name: images/24x24/installer.png
+SHA-256-Digest: Oir+6bRRBsCpLZ5FJcFiQquyZB2Zbqkm8LgXm3MJlCQ=
+
+Name: images/16x16/search.png
+SHA-256-Digest: pvf6yIm2WgfmYoVww9It+3HngbwuaG3e1NGoLDGtAv8=
+
+Name: favicon.ico
+SHA-256-Digest: T+we6C8NxKjk6bsmlUz1TPm/HmoAlRbLbEn/FpJOjKo=
+
+Name: help/system-config/master-slave/availability_de.html
+SHA-256-Digest: Rtn6waHLIW5HYbXgcn5qf9NKfX9J1ecN70OmL7FYngg=
+
+Name: images/24x24/redo.png
+SHA-256-Digest: x8b6FHz2j/I+8feOQ/diwI12RUn9S68QEu6hOSVEJHc=
+
+Name: scripts/yui/button/assets/skins/sam/split-button-arrow-hover.png
+SHA-256-Digest: HQBo/duL6YcyMDOpbjmyavRqXda0h6t/xT7NxZVys/o=
+
+Name: WEB-INF/lib/groovy-all-1.8.9.jar
+SHA-256-Digest: kubS9jQaniJwup83fBwJW0FcUUI+QpN87P9qBii2EGk=
+
+Name: images/32x32/aborted_anime.gif
+SHA-256-Digest: gCi0jceG3NQRmUrYo11u/thnhFG6HU7/SrRFVot/6vg=
+
+Name: images/24x24/refresh.gif
+SHA-256-Digest: Yf+lav630GtQjD/pIJZOkbPoZdDPamrVByP06zzAAiM=
+
+Name: help/project-config/triggerRemotely_de.html
+SHA-256-Digest: 9ntWwJBFvSF1bs+cJ/iHnMZUXu2t+8BbFcJoGEl9a6Q=
+
+Name: scripts/yui/menu/assets/menu_up_arrow_disabled.png
+SHA-256-Digest: 6hKcMMc9qRmS/F52FyqaW40zGjsARXeNqwzYMOcn2uk=
+
+Name: scripts/yui/container/assets/skins/sam/container-skin.css
+SHA-256-Digest: uyv8ypZX8KhbQrxdiJ2JghXrnO1oDHFdOxDj5WblvUs=
+
+Name: help/view-config/filter-executors_ja.html
+SHA-256-Digest: xxra86SBvDNkY8SVsdQKJg6JywUvje821bdPCLNohJs=
+
+Name: help/scm-browsers/list_ja.html
+SHA-256-Digest: Q1xryjuE3FqsqDDqiS9wUqGVjmkVj86KvMcJkcEHLUk=
+
+Name: images/48x48/computer-x.png
+SHA-256-Digest: x7luGIumA7Z7oy8TErPId9yGYGTke8q4cj9+Cc3VSkY=
+
+Name: scripts/yui/dragdrop/dragdrop-debug.js
+SHA-256-Digest: gaHG6MyM46Bym/KlpFtM+zCONmjFVmqk6AZhoIuJW10=
+
+Name: images/24x24/new-user.gif
+SHA-256-Digest: e8CDe85cEZpNf8MM0806rBd3yE+5ZKPjcGWCpq3PyAE=
+
+Name: images/32x32/computer-x.png
+SHA-256-Digest: uTbfJnct+3lv+Bniha8Qdt5vuTMKOSYrWvcxULea/rM=
+
+Name: images/32x32/empty.gif
+SHA-256-Digest: nCzv1JtzhGhCyP2CgSvT4cs0jh3U/TgrhSPUGhpyvSY=
+
+Name: help/parameter/string_fr.html
+SHA-256-Digest: CvtN8+32QYyCKDM2m7JT9DxoRxdVyRJbv1l11VCfwNI=
+
+Name: help/system-config/master-slave/demand/inDemandDelay_nl.html
+SHA-256-Digest: YdKMGLZrAA/ipKvaTJbzNFQtzj7PMtcTSZM9JczmPT0=
+
+Name: WEB-INF/lib/javax.annotation-api-1.2.jar
+SHA-256-Digest: WQmzlso6K+ENDuoyx073jYFuG06tId4deN4fiQ0DPgQ=
+
+Name: help/system-config/quietPeriod_ja.html
+SHA-256-Digest: rQCUORuBSQnkxAbYMYAfEFs7meggmFHD9beRmxcLoIw=
+
+Name: help/project-config/batch_ru.html
+SHA-256-Digest: akVK3CllNa41FFFQygpAB58Xldx7pnoU8bGUtvrFxSA=
+
+Name: images/48x48/nobuilt.gif
+SHA-256-Digest: GHTlj+qXMZ5nSvZQY9b/nWUok696YtRQ/2olZdH8YwI=
+
+Name: images/16x16/grey.png
+SHA-256-Digest: 3J/Bdl8lDi7RiZq7Ut5TwjS9odZsmfm/6UXUed4Yb5U=
+
+Name: WEB-INF/lib/tiger-types-1.3.jar
+SHA-256-Digest: zuGbkNL0hh+L2zUX4puJj3YZwxU5chmbt799UvIejT4=
+
+Name: scripts/yui/editor/assets/skins/sam/blankimage.png
+SHA-256-Digest: 089KOJwiK5IvwX613I94gatSzIzkp61PpHJJoq0iNig=
+
+Name: images/16x16/redo.png
+SHA-256-Digest: wxFzPiWUPy4XEol/AjGpoyPk0UZYHW8JWT6Cw2EEn78=
+
+Name: scripts/yui/container/assets/container.css
+SHA-256-Digest: 3Bq8cpcOWRpuUxSw5PQRZDxjjbYNliQxfIr9q17lYFw=
+
+Name: images/24x24/nobuilt.gif
+SHA-256-Digest: rBATVKCweZ7pSUpxiW/zUyQuh1t/IKRHRYZGYU9XPl0=
+
+Name: images/32x32/health-20to39.png
+SHA-256-Digest: 923q9tqeh3RpijbbextitEHTdDGmIibkXV1r/4NgoIU=
+
+Name: images/48x48/health-00to19.gif
+SHA-256-Digest: GHLXrPSrVFLfqm20togU/7/sKq99a//28MoqBRYd2OI=
+
+Name: WEB-INF/lib/crypto-util-1.1.jar
+SHA-256-Digest: k5J4HxJ0MwbNe7MA0EJjw+cZZIhdtqgkW23Albls0Tk=
+
+Name: help/parameter/boolean_zh_TW.html
+SHA-256-Digest: Dmjuqhs7SYRG62oC75Q7V9C4ZFtdfSQekbhxkD5tCsQ=
+
+Name: images/48x48/blue.png
+SHA-256-Digest: xnpRJbL2x/0YPbo4vjn5UV/C8wKuUIAGUyD87gsBzho=
+
+Name: images/48x48/user.gif
+SHA-256-Digest: 7hUtIwWiXflqsqujyLaqpzTt7rQT0Tjv2J5/Z/xzHKc=
+
+Name: scripts/yui/assets/skins/sam/bar-h.png
+SHA-256-Digest: Dml+Up2AnxZQVjdsPT7pFaFEegE2dO3hkgsv32oEr70=
+
+Name: images/24x24/accept.png
+SHA-256-Digest: +o0sm3g1gfRUqeOcoeVHVLSrQwA5Fa5XsIYZrKQhHpY=
+
+Name: images/32x32/star.gif
+SHA-256-Digest: gURQqmXjzidmNAtxObtkzESkWNlaZ9NX8afJGymGBb4=
+
+Name: scripts/yui/editor/assets/skins/sam/editor-sprite.gif
+SHA-256-Digest: tBHNbihOOn1JQk19jiHwWMN8J6EOf8fYss2y1/DxFks=
+
+Name: help/system-config/master-slave/description_ru.html
+SHA-256-Digest: VwglK5eJHS1V8AOdLEX/EYmJj0ctu6xe+aktJT/R4hI=
+
+Name: images/32x32/error.gif
+SHA-256-Digest: y3c8Y0AOjaftcHm7YWqBRNZuBI7MUq6QPdqG/YpNF90=
+
+Name: images/bottom-sticker-top-edge.png
+SHA-256-Digest: c6i8w/IRnljwNE5Z7BaOuwts8zITz1kGJ8u05/YTNHE=
+
+Name: WEB-INF/lib/bytecode-compatibility-transformer-1.5.jar
+SHA-256-Digest: 1YDYi2tEYs2PJLMKteVno8F5pbJRSP3NffyGu0p2LLk=
+
+Name: images/48x48/installer.png
+SHA-256-Digest: baGnhfHpzIHSke2nimeNmLPWwhwuZaTrCY+XTYscabk=
+
+Name: help/parameter/choice-choices_de.html
+SHA-256-Digest: cFckh8jxa1TrzM3LXZTIf+dqvc/9o1SBDUNDCF0DXSI=
+
+Name: images/32x32/star-gold.gif
+SHA-256-Digest: F9l/OYTIIyyBxwV3Dxe21V1GSCFWqymAh82i5Ec3jTw=
+
+Name: help/system-config/master-slave/description_pt_BR.html
+SHA-256-Digest: eO4nqy3YK4ZQLIqHVascIlNERudtViUUxEUpHeBG98k=
+
+Name: images/24x24/fingerprint.gif
+SHA-256-Digest: 2P4xPruWbePtezeAgJH5hlH2tVRXWE6obVWYYldRWk4=
+
+Name: images/48x48/folder.png
+SHA-256-Digest: ypjkZBSqJ7AYK2PcPvM0nCf7X9zo4onmsu3XBJSVNrg=
+
+Name: scripts/yui/assets/skins/sam/split-button-arrow-focus.png
+SHA-256-Digest: HQBo/duL6YcyMDOpbjmyavRqXda0h6t/xT7NxZVys/o=
+
+Name: images/16x16/error.gif
+SHA-256-Digest: mIVgfIPajbs31O3ZO5N2bJqI9ipf5twSLlsOw3ga5MM=
+
+Name: scripts/yui/treeview/assets/skins/sam/treeview-loading.gif
+SHA-256-Digest: NcjKVWdpcIqou+yAUF2T021OkOXizWvdwL2OWypkgPc=
+
+Name: images/48x48/blue.gif
+SHA-256-Digest: eTnqnFOo6AvZGmZjm5psk4h7enEudOnTKUKphZePBR0=
+
+Name: help/user/fullName.html
+SHA-256-Digest: UN9ipQw+3YdUFyO9dvtGJiAVnjtR8yuZBX2AOp0P3Xc=
+
+Name: help/system-config/master-slave/availability.html
+SHA-256-Digest: zk6o4vSOoVcA4VINaDj2AMyeSvId4g8J6+TqgeL2WgM=
+
+Name: images/24x24/secure.png
+SHA-256-Digest: CQYe/BWGPowxIx0j5fWMFyTv+ZADld9EXDpuRuQkOP0=
+
+Name: help/view-config/description_zh_TW.html
+SHA-256-Digest: abA845onV4BAlScGa9I5e6VA2ZV1e29avZBpcIQnCeI=
+
+Name: images/none.gif
+SHA-256-Digest: 2WZAK2qQ9SKTPW4gYp9Ml/QW95eAGgPsCM0W0ZQo458=
+
+Name: WEB-INF/lib/stapler-adjunct-zeroclipboard-1.3.5-1.jar
+SHA-256-Digest: IRb7Va4FcQ2yqG83nxhhfeMUj1lcRqMdRhgzOXVA0+g=
+
+Name: help/parameter/name_zh_TW.html
+SHA-256-Digest: KZNnJGIRuAZsCGEcGYMxYwhoqomQy39z5zsz8aKhri8=
+
+Name: help/project-config/parameterized-build.html
+SHA-256-Digest: U6KS5jUxL4knMeiuelbfLl7MFc6qSx7qChyJhk3s/VI=
+
+Name: scripts/yui/editor/assets/simpleeditor-core.css
+SHA-256-Digest: E46jV7eazOmwbuSWZSOIghxlHc2mhcV8qdor+vjt9KM=
+
+Name: WEB-INF/lib/log4j-1.2.9.jar
+SHA-256-Digest: 0rnfspe8qnvh/N1wJkKpyXE9eEfcqHBOnBW9gp8Ksb8=
+
+Name: WEB-INF/sun-web.xml
+SHA-256-Digest: YpsfsJ84VSuUcwP535Ixs5+RwlIFNd+Gnzp2OdcTpRU=
+
+Name: help/system-config/master-slave/jnlpSecurity_zh_TW.html
+SHA-256-Digest: zR6nkkO9/1h4oBGUcT9ojgIJ1JPAqQ5zeRhkI/DZJ5g=
+
+Name: scripts/yui/assets/skins/sam/paginator.css
+SHA-256-Digest: ZH5klyjXLS279s1L62+cvy4z1eHdrePpJ6U7toHw8IE=
+
+Name: scripts/yui/assets/skins/sam/wait.gif
+SHA-256-Digest: l4ieGXLesDwk0/T4SmcZIz76l3MLb9fdxxi9bljmxwA=
+
+Name: scripts/yui/logger/assets/logger.css
+SHA-256-Digest: IOVK7/qMMLg8qLqmVoMhEW0ysMNiZxMmkipzB8fUKlk=
+
+Name: scripts/yui/menu/assets/menu.css
+SHA-256-Digest: eUGDRE/tJF+rNBzEH8EhGcxcnhVsUmcR8E5vjIUMGCc=
+
+Name: WEB-INF/lib/j-interopdeps-2.0.6-kohsuke-1.jar
+SHA-256-Digest: sJHESOt+FORNYseGm6ziZyEMINOHxJ9h9oodBoq/Pqk=
+
+Name: scripts/yui/assets/skins/sam/dt-arrow-up.png
+SHA-256-Digest: pyld7vT22HYlabV4hNRxOKHG6Zz0yvaBrlkb3zP6eXI=
+
+Name: help/parameter/run_ja.html
+SHA-256-Digest: DXKD6TUmt4N/ukIgKXdAFSqFf+FPBxl/NT5IsxHz4pM=
+
+Name: images/32x32/clock.gif
+SHA-256-Digest: YWv+7SWU/mDgOCujWgJOhbD2tnRrQmXfu9nDr202GzE=
+
+Name: scripts/yui/menu/assets/skins/sam/menuitem_submenuindicator.png
+SHA-256-Digest: uIzl1wbARJrPfGgVrlOD4ztlNf/p/OLxPfqwughYats=
+
+Name: WEB-INF/lib/jna-posix-1.0.3-jenkins-1.jar
+SHA-256-Digest: oZ9ddBaBJxZas/dFYfZNIghfz+Z0xLBj7foLsRMM0MQ=
+
+Name: help/system-config/master-slave/numExecutors_zh_CN.html
+SHA-256-Digest: x+lJomWD2fk+iOtG9K4ijWc3vPXy5wzK/Z/C9mAHhDQ=
+
+Name: images/16x16/aborted.png
+SHA-256-Digest: 8fKeAr2BMSc3nemz6uZ0C0xX3WayGOQq162xmT+LuW4=
+
+Name: help/tools/help-label.html
+SHA-256-Digest: opsKxuUTyq9zqwwAzBah60pvoT5vv+wNKa2nllM/0N4=
+
+Name: help/parameter/string.html
+SHA-256-Digest: A5mY5rRDpQhaHPe6zEHNdvAzFJ25j1gelpsD4reOuCc=
+
+Name: images/topbar.svg
+SHA-256-Digest: NeU24o1gHqwCVB5IerfpgV/YYVJcm4ElUmVVLyQFqcE=
+
+Name: WEB-INF/lib/ant-1.8.4.jar
+SHA-256-Digest: /8WBjKjN4u0RHZ1sZ2PTAUKa2Yl1gvCWi4DBoTbp26Q=
+
+Name: help/system-config/patternJobNamingStrategy.html
+SHA-256-Digest: ftzHNXh80bG2oVVDsvV13H01fb8vGpqU5Zu1zEmST3s=
+
+Name: scripts/yui/event/event-min.js
+SHA-256-Digest: nK3l5cl8X1rCYFVSJoZFuzHnWalNNWbM48GncuOcm+I=
+
+Name: WEB-INF/lib/spring-webmvc-2.5.6.SEC03.jar
+SHA-256-Digest: ReSDRyzAcFIDnINwrvNncbIaNXLfDznWvUY6QVzIMWw=
+
+Name: images/48x48/health-40to59.gif
+SHA-256-Digest: yaYEySNJYP+9mA1nazkA3stmxKQA+YK8J1vvyVHYpC8=
+
+Name: scripts/yui/editor/assets/editor-core.css
+SHA-256-Digest: E46jV7eazOmwbuSWZSOIghxlHc2mhcV8qdor+vjt9KM=
+
+Name: images/32x32/star.png
+SHA-256-Digest: x8pfRm78sudZEmVHJa9Ar0bb3ZKt1fcdSLDMpJ/PFnw=
+
+Name: scripts/yui/editor/editor-min.js
+SHA-256-Digest: P7HbeZfUv6MlPvFdJKd286SQCnSvHRxRvZLBopoSab4=
+
+Name: help/parameter/string-default_ja.html
+SHA-256-Digest: cDzLotFW8Vf9TvEJtJNwcXVCdVKE7qMMiTMDoEm9sl0=
+
+Name: scripts/yui/menu/assets/skins/sam/menu.css
+SHA-256-Digest: csa5CAqwx+Z+GosCBP/7iT/DrJkfjfj39posnYIn5Ro=
+
+Name: help/parameter/choice.html
+SHA-256-Digest: b2dotaRBIjHOh/NpKAcqnWbPQ2w5WaCDSQLRDG5T1Ps=
+
+Name: help/system-config/master-slave/demand/idleDelay_fr.html
+SHA-256-Digest: 1ien1hJZDGzPvaCyF9REK9g4k/un/o1iK0hFuf04Em4=
+
+Name: scripts/yui/assets/skins/sam/blankimage.png
+SHA-256-Digest: 089KOJwiK5IvwX613I94gatSzIzkp61PpHJJoq0iNig=
+
+Name: scripts/yui/assets/skins/sam/menuitem_checkbox_disabled.png
+SHA-256-Digest: blXyccCiW6o1c635cqkBLloKiQgFQgZV0mgNujFVN3U=
+
+Name: WEB-INF/lib/guice-4.0-beta.jar
+SHA-256-Digest: C0NEwJudY52O5xXvweOE2BJRZF+nSWv3I4GhWFWJUl0=
+
+Name: images/48x48/terminal.png
+SHA-256-Digest: W3IS8zykmPc8XipjTkCUf59DXdiAvrD68gtdTNSMJJk=
+
+Name: help/project-config/batch.html
+SHA-256-Digest: Hz8GIRmahmELZqKXVjTSr+Ck/qYEmYdOrI7RHRy3U7s=
+
+Name: help/project-config/block-downstream-building.html
+SHA-256-Digest: DEVE8oClvmr7B03MnrTfqO+EEnCKYcbaMFUl5EaoWYI=
+
+Name: help/project-config/disable_pt_BR.html
+SHA-256-Digest: FKEJ5PGU0y/0VcbKTjU1aOxmrIe5uBA+qWC5n8HoKpc=
+
+Name: images/24x24/folder.png
+SHA-256-Digest: AGn+SNvok1023+nRS09/iIp4sXskavdLS7fIRuxO1uA=
+
+Name: images/48x48/clipboard.gif
+SHA-256-Digest: gfpATqrOJtICpN0cJ3FAGMSZkJ/bc65ATeTes3To+KA=
+
+Name: images/48x48/red.png
+SHA-256-Digest: gxBRtDmylnh+vf1z/iFiejTC7/VNCu871aVxkCY9tMg=
+
+Name: images/16x16/green.gif
+SHA-256-Digest: 0WieYfH5r+DMnh3RjMDK6+X5D0pe+dYu/vTxupVQ9Dw=
+
+Name: images/16x16/folder.png
+SHA-256-Digest: bj9bWqRholjlAOY08Ic5dmnPpdh7Rhf4EYPxCmOwTiw=
+
+Name: help/parameter/file_zh_TW.html
+SHA-256-Digest: MKcyvmLhq7qwodRuzq676yWMFwcwbLU+05pWLvS62rQ=
+
+Name: WEB-INF/update-center-rootCAs/jenkins-update-center-root-ca.txt
+SHA-256-Digest: Eq+jLdHUHWF7Vq0YuMI1A27M6AbnqFZ3fNHL0HLI6Z0=
+
+Name: scripts/yui/menu/assets/skins/sam/menubaritem_submenuindicator.p
+ ng
+SHA-256-Digest: cfF3Sb1mp6pAB4R91BEnFF4lcnyjqiwf9pHPjte6zS0=
+
+Name: images/24x24/computer-flash.gif
+SHA-256-Digest: 8ZGUZxBaYmclmvnDMEVPvg9RlHmYYrOAuXIE+szCl7w=
+
+Name: scripts/yui/container/assets/tip16_1.gif
+SHA-256-Digest: rU5eeZL+aDvDNqDnjuBO+lvI12Y/WsoipCK123Z4ue0=
+
+Name: WEB-INF/lib/memory-monitor-1.9.jar
+SHA-256-Digest: pX1N+CJ9znYFvhUUujhYWYR7vBctyt4eNDncm16SOZo=
+
+Name: scripts/yui/container/container-min.js
+SHA-256-Digest: 5lEBJs1l9G7ELLpMES2DeTqvEFUdedrm3/ij6LYuuJE=
+
+Name: images/24x24/computer.gif
+SHA-256-Digest: 9NYLetGBgdACQZPzGnYqpuhChu0bhmU2Qiw9qGrUAJo=
+
+Name: help/project-config/disable_zh_TW.html
+SHA-256-Digest: qHStNTFmuWY8bu++m8gMdaLiZUDIKrr5+eL3nwnXajs=
+
+Name: images/48x48/health-80plus.gif
+SHA-256-Digest: yffhX8mllbA7+IzK+e6cLIvw5CjKjEgXMeHNWxASCy0=
+
+Name: images/48x48/computer-x.gif
+SHA-256-Digest: mj2aY93l9wWFgvTQED/qZ5a83HmfnRgyWMH6L7ug76o=
+
+Name: WEB-INF/lib/jcommon-1.0.12.jar
+SHA-256-Digest: NN02etNK4Lql1UMPyaE9sdEtZuKUd8u0U8qS9QhKTns=
+
+Name: scripts/yui/assets/skins/sam/check1.gif
+SHA-256-Digest: tTRrlyMyv8RS+trBxfknzZ6E7duAAJkCceKFkUUaHI0=
+
+Name: WEB-INF/lib/jline-0.9.94.jar
+SHA-256-Digest: 2N8P+xLYfKh2JxzaTVmz/rlBI4gsG+F2O3+vLgoLDLs=
+
+Name: help/view-config/description_pt_BR.html
+SHA-256-Digest: Lc7L2vwaI+YV6Y0JAcsZytlj5LIai5z/knbFIUXTZ14=
+
+Name: help/system-config/master-slave/numExecutors_tr.html
+SHA-256-Digest: u4qUNMEl/FtNVE4oaiWMhWqZFIWYKbHXbO/IEC7p3ks=
+
+Name: images/atom.gif
+SHA-256-Digest: csbT2o2t9th5kc/Iaawooye4lMnKATQnR1bEbCAoiwc=
+
+Name: help/parameter/choice-choices_ja.html
+SHA-256-Digest: 9B8Mggkei/DkahKY2iIKGwg+Djn0/Dl8F53jMPpm71s=
+
+Name: help/system-config/master-slave/clock_pt_BR.html
+SHA-256-Digest: LqCPOMNHncLk2aNLSxRaRv6p20fRmKd3rJ2RKVytg4U=
+
+Name: help/system-config/globalEnvironmentVariables_ja.html
+SHA-256-Digest: 1jwGimmiisZ/2k22KdqegLDAlO9LA/KeJmBtwYEaWu8=
+
+Name: scripts/yui/animation/animation-debug.js
+SHA-256-Digest: jNb1RBv+FOEMsaJFttexP1Yyxj7MBvBbGGK/StDHj5U=
+
+Name: help/parameter/name.html
+SHA-256-Digest: hPd+7k1lD3U5915CGS7IzdlisbMgIfJru3x1mtQPi5U=
+
+Name: help/parameter/boolean-default_fr.html
+SHA-256-Digest: b8xFW5iAHP4etPnvbZLQplihwIN5MHD/1HZc5k78V+A=
+
+Name: help/system-config/systemMessage_fr.html
+SHA-256-Digest: 9PrnCYj2w61sphW26GNMC5UTPnZk0bV9oTPu8ajXmUY=
+
+Name: WEB-INF/lib/jfreechart-1.0.9.jar
+SHA-256-Digest: SioettGIpD4el7t8fSBKW90arsDYIgPPGxFW/2l9f44=
+
+Name: scripts/yui/assets/skins/sam/menubaritem_submenuindicator.png
+SHA-256-Digest: cfF3Sb1mp6pAB4R91BEnFF4lcnyjqiwf9pHPjte6zS0=
+
+Name: scripts/yui/tabview/assets/skins/sam/tabview.css
+SHA-256-Digest: LaEvHZhtglu7XNOCc3Q3xFA7hi2XRgmsTHjciWmLUJU=
+
+Name: images/48x48/computer-flash.gif
+SHA-256-Digest: LumMch5i0zoBRS5BMBQdK+CsSdq5hlQxahpXDbE5RLI=
+
+Name: executable/Executable.class
+SHA-256-Digest: KM0wY7hP0bQnRhOB1+1ffAiOeYFlbFfq/n7dvep7s3g=
+
+Name: WEB-INF/plugins/pam-auth.hpi
+SHA-256-Digest: RbsrVuzmgAQFitrD3hSgCVLO7wKkh3oePSzFPzPbphk=
+
+Name: help/system-config/master-slave/availability_ja.html
+SHA-256-Digest: wPT3y9LY65J5ufJn7jOAV1d/Cos0Vm9c8wzkpfv0OHI=
+
+Name: images/24x24/folder.gif
+SHA-256-Digest: epoOuYDwbLzD74G2PCThjrF0cmi1iMrCGZHvu9sqGbk=
+
+Name: images/24x24/terminal.gif
+SHA-256-Digest: GvzNXnTQbbHLbKYl+mbjrAdhp+LHHYhwwketGeiJV6Q=
+
+Name: WEB-INF/lib/commons-jelly-1.1-jenkins-20120928.jar
+SHA-256-Digest: c9wm/T+1tFAGJmzCqh2M+nhNDkQG3GNYgc8mcOUC6X4=
+
+Name: WEB-INF/lib/remoting-2.50.jar
+SHA-256-Digest: ZZUAHSUkBQk6QARXB5J9sk+bUk2tD1F0BdvrFpF9ax0=
+
+Name: help/system-config/master-slave/jnlp-tunnel_fr.html
+SHA-256-Digest: BlBld7LtrWixd0nfxyTvUATao/znq3Q2eQ6w9kkK2eU=
+
+Name: images/24x24/health-00to19.png
+SHA-256-Digest: zoiqCzmR7MZMtaTa3xAC98iUeEz66FSLxQA9qCRTcQM=
+
+Name: images/16x16/clock.png
+SHA-256-Digest: BHZfPHaGCxGrb1qFOUoQqF7LsKnT6lSM+16JtMNhTA0=
+
+Name: help/parameter/file-name_ja.html
+SHA-256-Digest: uIwzI0uT31cR0e0DF2LDJOCm0NubAAXwSZACis4CNaY=
+
+Name: help/system-config/defaultJobNamingStrategy.html
+SHA-256-Digest: ndSxsUKgIkIsetV40taydU2BM9abvLlWgDX2obLVC90=
+
+Name: images/48x48/health-40to59.png
+SHA-256-Digest: Oj9sOMkiXmspZwLPwq5zEpT95hWO6goF7Ew5i/uaeM0=
+
+Name: images/grip.png
+SHA-256-Digest: c3ueATSDgqDSpZAcbmrElIelkc312CM+79wPG4EJa1k=
+
+Name: help/view-config/description_fr.html
+SHA-256-Digest: GxGzjXgtdPILpTecFaIWwYww33e1BbUL6cokKx9N6vI=
+
+Name: WEB-INF/lib/jnr-ffi-1.0.7.jar
+SHA-256-Digest: /2EwHlZDJqWJhTLcjf0WTsUc0usChJuoFl0RlN6zzhY=
+
+Name: scripts/yui/editor/assets/skins/sam/editor-knob.gif
+SHA-256-Digest: lpJXWtRsWTf9qJPMbMGdSx3qCqocZslIBl6cQXQXXYA=
+
+Name: images/24x24/computer-x.gif
+SHA-256-Digest: XX41lOgagR+v0ytZ6dZWcbhHm4lJnlHm3g5LgTgK3Qw=
+
+Name: images/16x16/star-gold.png
+SHA-256-Digest: tc2mwBNbeG0JuKlFfJXLHGmp0UMNdZ7ptJCBI4pOj5g=
+
+Name: images/24x24/blue.png
+SHA-256-Digest: ASOCJtz1mVZLfe9mkOenF5OkEkQ92OyW8ux51iguKWU=
+
+Name: scripts/yui/assets/skins/sam/bar-v.png
+SHA-256-Digest: 9XBbYTC4+AKNr8SvPy6SAsz0IL4AP9RKRPR9TKWxR0Q=
+
+Name: images/24x24/previous.gif
+SHA-256-Digest: M3foN2G632VO5QwJnHBNz6XCxfZk1f0893H7Wx6QFps=
+
+Name: WEB-INF/lib/javax.inject-1.jar
+SHA-256-Digest: kcdwRKUMSBY2wy2Rb9ickRinIZU5BFLIEGUID5V95/8=
+
+Name: help/system-config/master-slave/numExecutors_zh_TW.html
+SHA-256-Digest: /NmhlpiH2z47VwTkU3qLJ2QHwluXvED9nCXH2HectG4=
+
+Name: scripts/yui/container/assets/warn16_1.gif
+SHA-256-Digest: 6yX8KDiBU9Rw98DkVdilIdSf/XBbhqfyBEc3u8R3KdE=
+
+Name: help/system-config/master-slave/usage_tr.html
+SHA-256-Digest: BsxPc4mNW4V8t3zxX/xA8jUW5cI7M9/n43PA/qYc+oQ=
+
+Name: scripts/yui/button/assets/button-core.css
+SHA-256-Digest: a7k4qF1oQZ478yLz9HKzr95Zuxtubwu1j3RVcz5RNkc=
+
+Name: WEB-INF/lib/embedded_su4j-1.1.jar
+SHA-256-Digest: X/UHWVnv2cVSlsjPxhIso739WM3DUP8S/yZZsmD3gD4=
+
+Name: images/24x24/orange-square.gif
+SHA-256-Digest: 3WggRKxGua7Ols0vn5ACi+bMLxf1lvyTf2UQx1RdtyE=
+
+Name: WEB-INF/lib/commons-fileupload-1.3.1-jenkins-1.jar
+SHA-256-Digest: vQq9DgCvLjEvSXPs4lWGoYpLNW53+W2+Mzri3RZK9vE=
+
+Name: LogFileOutputStream.class
+SHA-256-Digest: 3366GZcPKhp9RroYKALLE2KmAiTrik+51ZCXe8wlNF0=
+
+Name: css/style.css
+SHA-256-Digest: 2ybDy76G93ZLaGDdNKoMkg0O/HoPG2FH1l4/OdAuaEc=
+
+Name: help/project-config/downstream.html
+SHA-256-Digest: lrctZww3DJNrWWfeP0rqfreyW4t5VmywSlsM/wTnG0w=
+
+Name: WEB-INF/lib/jtidy-4aug2000r7-dev-hudson-1.jar
+SHA-256-Digest: 2f3rm+W3tToQpQz3BikojAOfIZu0sM/UBzVOv08WOIQ=
+
+Name: WEB-INF/plugins/windows-slaves.hpi
+SHA-256-Digest: E5tijfQHF36o6Tm0OL+8pZIuK35qDqKAnFyolcZxvzI=
+
+Name: WEB-INF/lib/libzfs-0.5.jar
+SHA-256-Digest: PQekdkiu9Gxt/Vl0BfMpbX54xvwfq68wHOCMIfO/xf4=
+
+Name: WEB-INF/classes/META-INF/licenses.xml
+SHA-256-Digest: izT3JSbiM83TD5z7Nc/Tw9w9fU3JtXb6TbKWhBiYui0=
+
+Name: images/24x24/yellow_anime.gif
+SHA-256-Digest: 35PbXZ7FnSfTB3Gt3tVI0aV+hMDOe9/LbtXTNt+FxkI=
+
+Name: images/16x16/yellow_anime.gif
+SHA-256-Digest: i4MV2AhJGyqv4TtksmS327x23L9agWoQlX+oRx63cuk=
+
+Name: help/system-config/master-slave/jnlpSecurity_de.html
+SHA-256-Digest: w+QZhSofXVSrujyZ21M3Nrr7RcgLnRWfUFw7KoqllGE=
+
+Name: images/16x16/accept.png
+SHA-256-Digest: ggUI8CnL2geoRatBFIz0eNLSSQCbUMgVxcY0r4O/eNs=
+
+Name: images/32x32/gear2.png
+SHA-256-Digest: ZTLONxpzEuKKdWOKLxNL1NNWMAN3Fy+3dbC87Mtle+s=
+
+Name: images/32x32/red.png
+SHA-256-Digest: A5FoPDCnxRwrO7jP71RSd8L0jqLwt4uYd8vjw4w7gIs=
+
+Name: images/32x32/clipboard.png
+SHA-256-Digest: 4v8XeMkxZf9aDHbajqeSufl711ocD+3Ne76X7b1huNY=
+
+Name: images/32x32/user.gif
+SHA-256-Digest: S5+DiViUUZz1YM2Gt3yMSxP6/5mb754JsRqyLJgeoBQ=
+
+Name: help/project-config/block-upstream-building_zh_TW.html
+SHA-256-Digest: vbH0X9/6GGEt3rLgCsu5xB/Ha2ohfujNrhjJCWTE3Gc=
+
+Name: help/system-config/quietPeriod_pt_BR.html
+SHA-256-Digest: ZrbYzmwc8lbLvXRvEvipn+OFKJXOnMtJ656dbPvItpw=
+
+Name: WEB-INF/lib/launchd-slave-installer-1.2.jar
+SHA-256-Digest: DribOuLu3InS0bR/5gtqBfw8Z/InoWNfXChXZk5othY=
+
+Name: help/LogRecorder/name_zh_TW.html
+SHA-256-Digest: Ll7W7KLE+KOK9ZtkLjWznVCY966Q7v1wsj97WssxqnY=
+
+Name: help/project-config/custom-workspace_zh_TW.html
+SHA-256-Digest: /5orJ0CaBARLlf5jA7RPq9cLxKXgMl/dfhi68t+PCaY=
+
+Name: images/24x24/notepad.gif
+SHA-256-Digest: chR+YhgbYHvV6VRd+uThhfU48BWv99HNUJ4y8WkCX0c=
+
+Name: help/scm-browsers/list_zh_TW.html
+SHA-256-Digest: NLZ9DAEValbqA8wofk2JniCYREB+EwUvcH6uZfMM9Lc=
+
+Name: help/project-config/disable_ru.html
+SHA-256-Digest: P8BKYp5mBhLezawritJov23QEgo48cpaU+4hXOxYcGg=
+
+Name: help/system-config/master-slave/description_ja.html
+SHA-256-Digest: Xlp/J0qp0Q2T75M6+fXWSOrglQA7k2Jl2gWLBag4AyI=
+
+Name: images/48x48/warning.png
+SHA-256-Digest: gzOnDTfivIhIUVcBFUCinLMDPPLILEribsEswYe7HUo=
+
+Name: images/32x32/graph.gif
+SHA-256-Digest: jyLd1drXCGeBpmUPgXqiDeXPW2APvnNlq/Be+mlEgnA=
+
+Name: WEB-INF/lib/acegi-security-1.0.7.jar
+SHA-256-Digest: xZ4DY6H50mLaO8asWjfWYTcuFNjLT1r8pzTIFedSmgs=
+
+Name: WEB-INF/lib/sezpoz-1.9.jar
+SHA-256-Digest: PXKueR/Ty6hUFkgC1UalSFlKeKV7Gaqlq5I9I1LiU5w=
+
+Name: scripts/yui/logger/assets/skins/sam/logger-skin.css
+SHA-256-Digest: oY0tCjdnPioYlIHdK1blX+pfRFh3lTobrlbggQCIbMY=
+
+Name: scripts/yui/yahoo/yahoo-min.js
+SHA-256-Digest: nju8U+43eV0yAeqBswX46vlUBnm7oibevVXKN8HQUs4=
+
+Name: images/16x16/nobuilt.png
+SHA-256-Digest: 8fKeAr2BMSc3nemz6uZ0C0xX3WayGOQq162xmT+LuW4=
+
+Name: help/system-config/master-slave/clock.html
+SHA-256-Digest: Z9ChBXv6/Nj4btyId+gh/owlwVmVGo3R6BxavxGTKOU=
+
+Name: images/16x16/health-40to59.gif
+SHA-256-Digest: yAW6mzuFU+wEdkehvEMOi4h0m23tbL+fHPQY3jqXwhA=
+
+Name: scripts/yui/editor/assets/skins/sam/simpleeditor-skin.css
+SHA-256-Digest: rvyIdqJQn1pHhqJEA5UKCyGddFD9tMxRqUivC92G2PY=
+
+Name: WEB-INF/web.xml
+SHA-256-Digest: JwNcpN/cUy1y2/q7eeXiDz7ttUDQVNcXJ910Z/dMKHM=
+
+Name: help/parameter/description.html
+SHA-256-Digest: Gh/Dpxck5eomVILfu7jhXEh+JoXiHszvUPsBnSGOGTU=
+
+Name: WEB-INF/lib/instance-identity-1.4.jar
+SHA-256-Digest: giLkAZg+6Swq99Yu/iEZUOdQwCQvk+E3fLGNGNkiXOg=
+
+Name: help/view-config/includeregex_zh_TW.html
+SHA-256-Digest: kuxbqtUamNmlHkR6VrxC9D0pmujgjOYs74z6sQzuRcM=
+
+Name: images/24x24/search.gif
+SHA-256-Digest: kH0ETc1Z3aSuHxMWP+eX1HepRqSVkRrtPGm5jH2pI4o=
+
+Name: images/32x32/computer.png
+SHA-256-Digest: IuPJUTxILF5jSubAWaKGi6Ykb+E10X4CufDQ3jXF6QI=
+
+Name: help/parameter/run_fr.html
+SHA-256-Digest: ybvSbyJdAfhsyeXpAaKnSVildw93qRRoHPVVtJt2Zfs=
+
+Name: images/16x16/text-error.gif
+SHA-256-Digest: WswSkLMmjV79Jfd4ow5mNdVelxo0iXFL/FROoQDESTA=
+
+Name: help/system-config/globalEnvironmentVariables_zh_TW.html
+SHA-256-Digest: Wwn6EBoZw4Zo56R4aAz/OhMfWeoOSr/yhDrzL60I1vk=
+
+Name: WEB-INF/plugins/junit.hpi
+SHA-256-Digest: EJ/yQuS463Sm4eDHHNXQzkftAzJeygru3UibrC0r5Rc=
+
+Name: WEB-INF/lib/jstl-1.1.0.jar
+SHA-256-Digest: rfyYlCFtdBZdp8gI21lIsT1+jD9UDt3IIX6fK2Po36Q=
+
+Name: scripts/yui/assets/skins/sam/ajax-loader.gif
+SHA-256-Digest: ipRQ3gBxfv0Z2FZDRpX6xeBgW/cku4O5efGBIQEAmw4=
+
+Name: WEB-INF/update-center-rootCAs/hudson-community.txt
+SHA-256-Digest: MIsPT0ErmeEi5i3qSyQhGQR+7BYnX4W3Dkhs+OvP8bs=
+
+Name: images/16x16/text-error.png
+SHA-256-Digest: SkNA87Nq5gTKgR11nlemkFY78+/ieyiV1PUAbqPNL2I=
+
+Name: images/32x32/yellow_anime.gif
+SHA-256-Digest: zS0186SWTw8rZ13MCLoax0LDxuPq2WN1qG7PnvxisXA=
+
+Name: images/16x16/stop.gif
+SHA-256-Digest: gE7jhnNDnHDhT0FKp3JlQj5DRJesi/fE80Wit6Gwf58=
+
+Name: scripts/combobox-readme.txt
+SHA-256-Digest: dRaJADhFhabrjQ1ge5KX9n5JBUNTqKZ17lGpjUcVI2Y=
+
+Name: WEB-INF/lib/jnr-constants-0.8.5.jar
+SHA-256-Digest: BB3P10J4NjAExJex6hJIpT5Db7/y1Q7Mk2AWGK+e+bo=
+
+Name: images/32x32/secure.png
+SHA-256-Digest: aRT8PoSPdftZScMUZUqrC8HWQosG8w4VUYLeWTCEovM=
+
+Name: images/48x48/yellow.png
+SHA-256-Digest: IfdJbjM709nNzAtqr/Tsv6x0MWLEwYtK6twUeKKbxuo=
+
+Name: help/parameter/string-default_zh_TW.html
+SHA-256-Digest: IQLQ6+M7eVbGsm+Wd2yxq/TFy4CrXBgLrDFCzF4+MRc=
+
+Name: images/16x16/health-60to79.gif
+SHA-256-Digest: SfDbDmTcEf6T5ss5lcuHH+vtO/81XxG/40O6+9ebA9Q=
+
+Name: scripts/yui/button/assets/skins/sam/split-button-arrow-active.pn
+ g
+SHA-256-Digest: J/laPAW0kIcbp39wQ+fwctYgyFKJBzhD/aSgvZhpg+k=
+
+Name: WEB-INF/lib/robust-http-client-1.2.jar
+SHA-256-Digest: AV/J6lu/jaaRqr1c4UQpYnc03K752FE4NN2IhfK3nfE=
+
+Name: help/parameter/run-project_zh_TW.html
+SHA-256-Digest: TqxEAp69ka814F7+32W6XgS21pl/M9u1fwZJjVCn2r4=
+
+Name: images/16x16/red.png
+SHA-256-Digest: TodX9UGAodeHR6Ek+qXCO2FX0FHl2VYd5+QQvKlijkI=
+
+Name: help/project-config/custom-workspace.html
+SHA-256-Digest: iOO1brGZLBJpAFx8hzqF0K+GBUfMBe+SZRgtleTRYRw=
+
+Name: help/project-config/defaultView_de.html
+SHA-256-Digest: 49zuFJ45mVjaR/BAdUv4NSJCo4Q7be97U9vRbZm64Pc=
+
+Name: help/parameter/description_ja.html
+SHA-256-Digest: QNSEaj3mQrZEkjW1EBHK8yT6n3OviO/G70Ib/oe3ThE=
+
+Name: scripts/yui/menu/assets/menuitem_submenuindicator.png
+SHA-256-Digest: 303W6e0y0z4tXMU2rkl0EHkD3Zihq1eMS12lXu06lpM=
+
+Name: images/48x48/health-60to79.gif
+SHA-256-Digest: HQcS/l3dAeZOaPMNau0jrkDGQ7fL3np/BwksTtZq2iM=
+
+Name: images/TangoProject-License.url
+SHA-256-Digest: 8JtWIJ8jrItGPC79Ihpn8yMlX+iaq6T6a0wF2nDnquw=
+
+Name: help/project-config/block-upstream-building_ja.html
+SHA-256-Digest: dGFNpsCoKrmilAHZNVumQV1IH5hVHjfpiO2zgdcju8c=
+
+Name: images/16x16/edit-delete.gif
+SHA-256-Digest: lFvKhX9M00qj93Rx5ECQOyZqQbgSvm6Cik1WcJuGfIw=
+
+Name: images/24x24/blue_anime.gif
+SHA-256-Digest: RzyVBMGXb3i0PHEKNKqeiTIWhqhtCuFg2ZFBHXBayt8=
+
+Name: help/user/description.html
+SHA-256-Digest: nFoIUOyWJegnvy0Py/ivbr/V6i9lWcy6ddLgie5moHk=
+
+Name: help/parameter/file-name_zh_TW.html
+SHA-256-Digest: lGq/8bDXQHZMwoPow3ySW9+lrb8BFEQmaG5ENkVKGaU=
+
+Name: help/system-config/master-slave/usage.html
+SHA-256-Digest: 3YemV3Gu/D7UienCpygCihrVfy0G/Wg84KIcJMy//iQ=
+
+Name: help/project-config/custom-workspace_de.html
+SHA-256-Digest: GH2pCddHHDPdaUHDz18evQ8hB3BqoX0Y5168zBSrk4w=
+
+Name: images/16x16/person.gif
+SHA-256-Digest: Ta7wg9tGYC5JZe+CoiylN1kP8meA17kjsvjqK5SEDNw=
+
+Name: images/24x24/notepad.png
+SHA-256-Digest: axEMVtRBYtCRKJ/y0hskeaGEEwYtzBdZY+dxnZh3TfQ=
+
+Name: help/system-config/master-slave/demand/idleDelay_zh_TW.html
+SHA-256-Digest: 5vh/ogVFBBF9WcaK8cYqBbH6E5IO/B7NVYszSDlQC/M=
+
+Name: help/system-config/quietPeriod.html
+SHA-256-Digest: /QVz/9iHMab27Tj7Vc0kxIHoJeptnRwbsJnh0U1IaUg=
+
+Name: help/system-config/master-slave/description_tr.html
+SHA-256-Digest: s+wWg/fFXWJ/y2d3S+xthue/LCgz74CYSbHde2WFIVU=
+
+Name: images/32x32/health-00to19.gif
+SHA-256-Digest: tP5zvriB7tto7zW/6m3MJFGrhTKl2rRTtEgjPKivVnc=
+
+Name: images/24x24/user.gif
+SHA-256-Digest: W9dHE77eS4KTLuddidGocMi/PaeEeF5ODhommPCMCps=
+
+Name: images/16x16/terminal.gif
+SHA-256-Digest: Pvm3amgfO530QlVWyzLIRR5OD8yAGNxX5qPiFeb+DIE=
+
+Name: scripts/yui/treeview/assets/skins/sam/treeview-skin.css
+SHA-256-Digest: HueAATc6Wig5a/SPFxucdPI0vKzUTSxyu6ehvFitNPo=
+
+Name: help/view-config/description_nl.html
+SHA-256-Digest: 2gclRxMnsh2s1V0vcLNQx1yx/Tci5QIw9Zr/6BLTuxw=
+
+Name: WEB-INF/lib/jmdns-3.4.0-jenkins-3.jar
+SHA-256-Digest: of4E5gvb45JxYH75JjdAKOd3nWATSyPssuDHBkrb0xA=
+
+Name: images/32x32/lock.png
+SHA-256-Digest: i/FATHRmf1tN8v6uSDE5eVDYuPRKi7FrDaLLVd0bimk=
+
+Name: images/16x16/clock.gif
+SHA-256-Digest: LFRDt/LXfLl7uSQKL62MQycXduW7m7NZC+eq3z0Emvk=
+
+Name: scripts/yui/assets/skins/sam/desc.gif
+SHA-256-Digest: jNP+YzWkUuyq2RRHTCekyyosqGs+iOFz+uKHq3i3WdY=
+
+Name: help/user/description_ru.html
+SHA-256-Digest: 8WpJrfcTcIQ/lGlJ2PTtLwAa1D9AzTQ6Lln0HdTRWTw=
+
+Name: help/project-config/downstream_zh_TW.html
+SHA-256-Digest: ZKfeGiFIQ5uYR7UAalX3UfQTYYv6aI6gmFIPrfKXQsg=
+
+Name: images/16x16/blue_anime.gif
+SHA-256-Digest: K/TIh9aNCEURDOi6Up2F2QKWjgs2DIJuS1lHk6KRqz4=
+
+Name: images/24x24/user.png
+SHA-256-Digest: 5/rSbYqWrko/2Gywsh9VavD9tKe8OMoiAmPhxV2/y4A=
+
+Name: images/16x16/red_anime.gif
+SHA-256-Digest: FjVWcYYAoj1JCa9jYg+uCp9qQYuuru3t3ED3i4WMcBE=
+
+Name: images/48x48/monitor.png
+SHA-256-Digest: DuW6VhPeOCnBNXsrxt9dkE07m2QjlWHK3uPogG4GV+E=
+
+Name: help/tools/tool-location-node-property_de.html
+SHA-256-Digest: uhV7FfAidoX+Z8uoysNcpqEvR22QAbvTQwe99qFMkmI=
+
+Name: images/24x24/setting.gif
+SHA-256-Digest: St/wxsO/sAolkxzCcLFBoljsi8zO+bB/tSkJjGQXKZ4=
+
+Name: WEB-INF/lib/commons-logging-1.1.3.jar
+SHA-256-Digest: cJA/b8gumQjI2p8gRD9h2Q8IcKMSZCmR/oRioLk5F4Q=
+
+Name: help/system-config/master-slave/clock_de.html
+SHA-256-Digest: 6b9JHUwnvorI9bL//fFho/89AK2s27VsXWJjsvyhNPQ=
+
+Name: help/project-config/triggerRemotely.html
+SHA-256-Digest: nimI6oq107e36/gjQnwhXBLwSAOdJG8DCa71pcVg7vQ=
+
+Name: scripts/yui/menu/assets/menubaritem_submenuindicator_selected.pn
+ g
+SHA-256-Digest: thhbupUPWUMG60bShe7gyMt29znEnc1Cg+oDnyMuQOg=
+
+Name: images/16x16/health-60to79.png
+SHA-256-Digest: ah10sKF/aTeFk7AN+0Uo3ytsp/nMS6qcnQoZ56102vE=
+
+Name: WEB-INF/lib/bcpkix-jdk15on-1.47.jar
+SHA-256-Digest: i92xTpyAMazB7CmfmVwDznCHE/vhPchA0bZALqB9ZOU=
+
+Name: scripts/yui/container/container-debug.js
+SHA-256-Digest: 4q53QvEK8HfisGQ64OUhownny6HM9sApyJcGpGCYbgs=
+
+Name: images/16x16/green_anime.gif
+SHA-256-Digest: Dn4WGwa+wWEhudvEX1wRTK5iaiH0cbPD1mVZG238yfk=
+
+Name: help/project-config/downstream_ru.html
+SHA-256-Digest: 9Lc/w3ljc1xWHZ/BI6Wgbm/qMbnFEWoooQzIdPB3b0Y=
+
+Name: images/48x48/red.gif
+SHA-256-Digest: uU5ciXwNs89LLm8b2hyx47YvzP/p72GT8E0cUMFeZlo=
+
+Name: images/32x32/health-00to19.png
+SHA-256-Digest: WEBi10qoQD4lil6E7UGafvnA+oqgFEcWBAIDA1n7Qas=
+
+Name: scripts/yui/connection/connection_core-min.js
+SHA-256-Digest: hlFSotL2YDsAC7xYsf5+NiFllhKR1BvL5SCIdFSIU4c=
+
+Name: help/tasks/fingerprint/keepDependencies_nl.html
+SHA-256-Digest: i6DOR8HEoy+vrEtw9bgOlk5ay457k6rppA58w5YymnI=
+
+Name: WEB-INF/lib/mail-1.4.4.jar
+SHA-256-Digest: 4Cviad3UdWUSSIiYkvXcrruQWNXTr+8sW13DkfJHFSg=
+
+Name: WEB-INF/lib/commons-jelly-tags-fmt-1.0.jar
+SHA-256-Digest: UJ6HMWTPfFtit6UoU0CsD1nZK72GG3jJEyKifpHyRjg=
+
+Name: images/16x16/setting.png
+SHA-256-Digest: Emx0NRh/NvJtCmdpBlkR00/mfLWhHkT2+3Nk9WhJsfk=
+
+Name: scripts/yui/editor/assets/skins/sam/editor.css
+SHA-256-Digest: oKZba8XCWRFltNo59EuPU7J+0OmYiWfCmfpDznUAw8A=
+
+Name: help/system-config/systemMessage_zh_TW.html
+SHA-256-Digest: V8scg/DdSnpYCVWxVPwlxAfycX9NbeK9cqymGPeMDPA=
+
+Name: help/project-config/description_pt_BR.html
+SHA-256-Digest: lQ7Yr32jMPpwpYZfy7Vdv95LMJ/ACIdZfyHofwzZR3g=
+
+Name: images/48x48/package.gif
+SHA-256-Digest: CjgOCjiZU9J3dYrsQFeX0qVxjvsoshlMqGyHTYcUDm4=
+
+Name: images/32x32/health-60to79.png
+SHA-256-Digest: gUSFIgpFsrTqMt/IHWlW1X0Uf3R78hneVIhyPaVQW8c=
+
+Name: WEB-INF/lib/localizer-1.23.jar
+SHA-256-Digest: /spC9bQN40bBeA3wD+5KWVHzQgDUPQE/kHpRbKjIGDo=
+
+Name: help/project-config/batch_pt_BR.html
+SHA-256-Digest: vHr0t2kUFevi9KmwBY6NLJpKSmzyEooWCPJLookEoQM=
+
+Name: help/system-config/globalEnvironmentVariables_de.html
+SHA-256-Digest: 1FyWrs6xfBuQq5STFdtUyagNgf/FzjDmZkkH+4PkF2o=
+
+Name: help/system-config/master-slave/numExecutors_ru.html
+SHA-256-Digest: qFUhzSLaIVb3FHmt4pTtFwWeHRFY6s2ey8yizDSwgPc=
+
+Name: images/32x32/nobuilt_anime.gif
+SHA-256-Digest: gCi0jceG3NQRmUrYo11u/thnhFG6HU7/SrRFVot/6vg=
+
+Name: help/system-config/defaultJobNamingStrategy_ja.html
+SHA-256-Digest: /M6FIYARjaGmq21sdpDzFXqpJ3s7mYG9XdIzM1Zcerw=
+
+Name: images/48x48/health-80plus.png
+SHA-256-Digest: 6W/6aph1tB27P7M2o0cPmcgKq+IB45E9zF4yB8n9wLI=
+
+Name: help/parameter/name_fr.html
+SHA-256-Digest: CC48eu3+sL2uo+uNkLOQ053LJd5+Tq50PWZ8DVkMQO0=
+
+Name: images/48x48/green.gif
+SHA-256-Digest: QlgMgoIKG9RKbXNdYUlomw81cpiKwF+DKaKeYv6BxeA=
+
+Name: images/48x48/grey.gif
+SHA-256-Digest: 2z7Q9pRK0pM6xKjCXet7qWAw102QxE1UJosviH9X3aI=
+
+Name: scripts/yui/dragdrop/dragdrop-min.js
+SHA-256-Digest: vxCzqjBBrhMrW/FJEdItoV1VWcLYv7qGdwXi7VZg0nk=
+
+Name: help/user/fullName_pt_BR.html
+SHA-256-Digest: 6Afj6ZBR4nc/MgKU6LDyiB/QRbNk8YyROP0V5wWEfxE=
+
+Name: help/user/description_ja.html
+SHA-256-Digest: OO9dJIgCtRLdWxrZlpjxFwYufz6BeYbij6n1aO10MYo=
+
+Name: scripts/yui/menu/assets/skins/sam/menuitem_checkbox_disabled.png
+SHA-256-Digest: blXyccCiW6o1c635cqkBLloKiQgFQgZV0mgNujFVN3U=
+
+Name: WEB-INF/update-center-rootCAs/hudson-community
+SHA-256-Digest: uKgznwzUl8pls74XKg7IwpC4IzqywTAUOAV4ESRm75k=
+
+Name: scripts/yui/assets/skins/sam/editor.css
+SHA-256-Digest: iwBMTTTsGG4u1qzUzdRM2d6dkM7kX0HN6takuCAgmg8=
+
+Name: Main.class
+SHA-256-Digest: zq7vzUECKdYJDVyQKvZXLFcDg+XMOa7/jdsDpPxIsB8=
+
+Name: images/24x24/new-computer.png
+SHA-256-Digest: hzAtHCoOFbSkN8tpAwXChsBgn1Im1tYlDXsFFrVPm+o=
+
+Name: scripts/yui/assets/skins/sam/calendar.css
+SHA-256-Digest: KoLBZU2s0Xxm5/rJhyabmlLaemLsA3wiMQSW7R7AUEc=
+
+Name: images/16x16/folder-error.gif
+SHA-256-Digest: bC0S+WpC1KGdqWmwKEvkEtDL0boEwVOWPPH60zfzUvc=
+
+Name: images/16x16/person.png
+SHA-256-Digest: pCghKGP1faHEYJi4LuMGHccUyuoZer1M9ZWuOjYGo/4=
+
+Name: images/24x24/health-80plus.png
+SHA-256-Digest: LtecBh3tVCPVTC2xkMYmlFzIuEf9W/caMlIxMFMe/yk=
+
+Name: WEB-INF/lib/relaxngDatatype-20020414.jar
+SHA-256-Digest: KiVj78kR9DElAhQiBXD6yOw/Q8PsHkcyjO54Bi+Bshg=
+
+Name: help/view-config/includeregex.html
+SHA-256-Digest: MIC9DZOnGhnnhrsN8acuP0aeKehYIdZOAyqQdUDBBiw=
+
+Name: help/system-config/systemMessage.html
+SHA-256-Digest: J/P+RU94Hwb5PISUvifwwDmbJw1RXN0z9MwNmiBGYXY=
+
+Name: images/24x24/aborted_anime.gif
+SHA-256-Digest: ugYAlgcYjrIUJOAHS/pd8dX5eFo3wEDT0IlHXQe3jyA=
+
+Name: help/project-config/triggerRemotely_zh_TW.html
+SHA-256-Digest: 8iy0UfM7AWP2PTv/Ksmar9U0ZsJpBRggZweCqvbCpu4=
+
+Name: images/24x24/blue.gif
+SHA-256-Digest: k/3fKc7k3oVsXao/O3bUcvHvLX7YDwkCAvFH78U9UNA=
+
+Name: help/view-config/description_tr.html
+SHA-256-Digest: jOw/0FuUHOEYJK8bKk8STBrxhFPywZiJyyn0hf3AGy4=
+
+Name: images/24x24/new-document.gif
+SHA-256-Digest: LV+x+qex4SIf8aGMd/+M77F0Rhak8cnQIS8ZHyt12lw=
+
+Name: WEB-INF/lib/jcifs-1.3.17-kohsuke-1.jar
+SHA-256-Digest: LDfcPr+TCM2GcG7n9eIN1UWHQsZ4Ii6UjxqpPOUsF58=
+
+Name: images/16x16/health-40to59.png
+SHA-256-Digest: fkwVT+srPx98K/VUedQchCrxO5mJ3FdjaLOpagYeJv8=
+
+Name: WEB-INF/lib/jna-4.1.0.jar
+SHA-256-Digest: GqN+nqa6oO4VLYlQn3WPCEfqxm7BeblVyv4JGeVAqS4=
+
+Name: scripts/yui/assets/skins/sam/asc.gif
+SHA-256-Digest: G+jszGQtiD3/0TV/UQLSgNERbbxxlEvNb1ov/zYQsco=
+
+Name: help/run-config/displayName_de.html
+SHA-256-Digest: Z966wKv3W8wZpJaxCeRy/HGQIIgjsWN14yZcO895ZFo=
+
+Name: scripts/yui/menu/menu-min.js
+SHA-256-Digest: mGTg3RS+7OApXN4vRTJbD1EUAOp0DRuMDGKscQsZ4gI=
+
+Name: help/scm-browsers/list.html
+SHA-256-Digest: Am0cCs+IiMkJffNUmeBsa3FJdwxmwe8BdDZJE5WJ+dU=
+
+Name: images/16x16/lock.png
+SHA-256-Digest: RLkxAcB7pEMhbxQyjgGm1b1fMF/V/9oE7IVz91u5/ZI=
+
+Name: WEB-INF/lib/jffi-1.2.7-native.jar
+SHA-256-Digest: p5prkHyZVJkLg4WrYVLH6CoFNVZrWddEM3jvCIwUPDg=
+
+Name: images/48x48/yellow_anime.gif
+SHA-256-Digest: D2dzbhCGVmH2jFeQsm2eUx2xFAL/kk/NaIaIDgPiJFs=
+
+Name: WEB-INF/lib/hamcrest-core-1.3.jar
+SHA-256-Digest: Zv3vkelzk0jfeglqo4SlaF9Oh1WEzOiThqekclHE2Ok=
+
+Name: images/24x24/health-20to39.png
+SHA-256-Digest: qPini1URyxVPYGBcRTjxDot44K2AvwfMnD4xDVJdqnE=
+
+Name: images/32x32/clipboard.gif
+SHA-256-Digest: Rbp4ZfUJ+1rgCx+Ir1Mxgp02mm6zbmXBt4RkTFsyKBA=
+
+Name: scripts/yui/treeview/assets/skins/sam/loading.gif
+SHA-256-Digest: NcjKVWdpcIqou+yAUF2T021OkOXizWvdwL2OWypkgPc=
+
+Name: WEB-INF/lib/stapler-1.236.jar
+SHA-256-Digest: AZvytAliClRLz5nu/p2lw4Otx6iWsqueDyWug5OHyxc=
+
+Name: help/project-config/description.html
+SHA-256-Digest: CNMVq9Ti5xNvIDLkck48bNdPjiYvlTmKZsFjCxOLoVw=
+
+Name: scripts/yui/tabview/tabview-debug.js
+SHA-256-Digest: bgri4hfQQCog+e7BjdwszoH9LvfEcodUKjCub3vvfUc=
+
+Name: help/tasks/fingerprint/keepDependencies_ru.html
+SHA-256-Digest: zJV8zEilUm97sYQEQHMI/D+8G2rq+EooCbm9bmsdva4=
+
+Name: help/system-config/master-slave/clock_fr.html
+SHA-256-Digest: yC2FD/o9KfNLHNA5EAcydpU0IYBWVKsHQVXHpeR240A=
+
+Name: help/parameter/run.html
+SHA-256-Digest: tFxNrZFT5A4ej4EE+pwNz/7xpLB8EqquW3lOge+z4Sk=
+
+Name: scripts/yui/container/assets/close12_1.gif
+SHA-256-Digest: KdwqttmKAq4/iCgSMmdXPPZQJSYSXMeF9DAdQB66qHo=
+
+Name: scripts/yui/container/assets/info16_1.gif
+SHA-256-Digest: Xp6r+4Ykzk68ILocKijdPbK0mKsbkQHVF08AYWIF/Fg=
+
+Name: help/parameter/file-name.html
+SHA-256-Digest: fqvTBQAKyoNB1B4jh696Q3rigO1Kg/fryJMV0+FYr5c=
+
+Name: images/48x48/health-20to39.gif
+SHA-256-Digest: 8NpE18ylfjh/p5VEvN0gMcxMC/4R/00JkgtJu922VqA=
+
+Name: scripts/yui/assets/skins/sam/menuitem_submenuindicator_disabled.
+ png
+SHA-256-Digest: JwmJ/Nw+XP4iENTx3uMyepFzwGFV75iaI4HPC3oyrPg=
+
+Name: images/48x48/blue_anime.gif
+SHA-256-Digest: fRdDS0FgCcil7a0+IWE5+8K+yNAE2Bdw9YkBufeA8zQ=
+
+Name: images/16x16/empty.png
+SHA-256-Digest: XZqrfwQoSr/5DTjoOl4xN6QMx4zHx5ktIqoKexZjbVc=
+
+Name: images/16x16/fingerprint.png
+SHA-256-Digest: pU7ESMRbpg5FSYysZqJ+UAzwUdqjXhIA88MgnZn3fx4=
+
+Name: help/view-config/description_ja.html
+SHA-256-Digest: LzJr5Z9tnx3py9/wgXNZIeTYytGVo8icadxI7dooXIE=
+
+Name: help/system-config/systemMessage_ru.html
+SHA-256-Digest: sTczl0Wr0Gp5Aqb7VkmrSOk/2Hy82aOt3hLkUblCg7U=
+
+Name: help/parameter/run-project_fr.html
+SHA-256-Digest: t9ffdh7YX8r9zovQ8r33fz7xEJHYsCkNRkg1xklOawU=
+
+Name: help/run-config/displayName_zh_TW.html
+SHA-256-Digest: zWDRSAwZRj9WPOfAmb0zXhtEPesdewxiAipmc+LBgWc=
+
+Name: images/24x24/new-computer.gif
+SHA-256-Digest: +Bs9X68xqWnCW9SMWoDKylSXahdEXRA5x8ZY1SDL6uk=
+
+Name: scripts/yui/cutdown.sh
+SHA-256-Digest: bRP30CXmtAXIbLjduQQjXy57XqFCshoz6elVhrtslPU=
+
+Name: images/16x16/search.gif
+SHA-256-Digest: PM7Dlr3hbkTSM/bfXXGj4haAm12j3HJYXICkYeYyTx8=
+
+Name: help/system-config/master-slave/demand/idleDelay.html
+SHA-256-Digest: F6XSXI/fhqyLyL8lo2/HlCEdYwxPNhKkQ6FFhVRQnz0=
+
+Name: images/48x48/monitor.gif
+SHA-256-Digest: YBt9E20hW/ScDPvoWFX5AbCHgxPExiD/4UXLavFjgsI=
+
+Name: images/48x48/help.gif
+SHA-256-Digest: GwtGnG/wNv3czFLohEIJY+uTUDgLK7+9A6T3mio1v2o=
+
+Name: help/view-config/description.html
+SHA-256-Digest: nPVSLmN9f3mrcoZUjvRSc2m2IKD4hpnYg5MsnXANHuM=
+
+Name: images/48x48/health-00to19.png
+SHA-256-Digest: oMXrwqV3uSMVdDxOLfsHJpPuUg78SWddfxPpoRq0d/Y=
+
+Name: scripts/yui/editor/simpleeditor-debug.js
+SHA-256-Digest: 9nWMKPaEa7DMhvI4fOGgMxTSkgMaPWQ6OYEjTpq8u5U=
+
+Name: images/48x48/notepad.png
+SHA-256-Digest: h7lXRTBtVqLslKSQ01jWX2c15E16sMlQnW4qZVIHrJU=
+
+Name: scripts/yui/fonts/fonts.css
+SHA-256-Digest: 2+cWez72V0njhNoJcxm9/ZnRc5pZA/v/PUcP/ngeTNw=
+
+Name: WEB-INF/lib/constant-pool-scanner-1.2.jar
+SHA-256-Digest: N1xMXpXpHvxhIzaWq0gDRUsBgzZl0atvcsLyxkb7FRE=
+
+Name: scripts/yui/dom/dom-min.js
+SHA-256-Digest: P1KprU30mOuge+PnEU8BolDJsE+W+9KQmIt7kxYG1x4=
+
+Name: WEB-INF/lib/jaxen-1.1-beta-11.jar
+SHA-256-Digest: GZ0UTdpgPI+TbfYEIcQ/Jwdna+EWPUMwFj82cxlEowQ=
+
+Name: images/16x16/hourglass.png
+SHA-256-Digest: zuCeGm6UY6GrHOtNw9O5+1QneuSDVAZuURt2IyjjPVs=
+
+Name: scripts/yui/autocomplete/assets/skins/sam/autocomplete-skin.css
+SHA-256-Digest: WnnmllbAtX+BVfMLPNSV5+0bwVxgaYLoUYFDoQ5jyN4=
+
+Name: images/webstart.gif
+SHA-256-Digest: ZdOZCxcj5Irg8cV0SmyC7nHjA8YvEAL6bchBzABISuo=
+
+Name: help/parameter/boolean_fr.html
+SHA-256-Digest: 9ee89FfEDSbpFz1adGe4aGyH0Cne+8hCVUPDwk9m6FY=
+
+Name: help/view-config/includeregex_de.html
+SHA-256-Digest: XdJDTe0L3u+0peSiU7pXEAPS7HrRMdkPp1Sgb5EfpsI=
+
+Name: scripts/yui/button/assets/skins/sam/split-button-arrow-focus.png
+SHA-256-Digest: HQBo/duL6YcyMDOpbjmyavRqXda0h6t/xT7NxZVys/o=
+
+Name: help/parameter/choice-choices_fr.html
+SHA-256-Digest: 5n9lXNpmeP1jHOdlvwUeNWwsbgHsyebIpdryak1h4PI=
+
+Name: scripts/yui/assets/skins/sam/imagecropper.css
+SHA-256-Digest: 39W4wkuIW7MOQ3KVhRYhAjkbfsLi7tuE7mU7j07Z1QM=
+
+Name: images/48x48/graph.gif
+SHA-256-Digest: UDoMZuVFPw1ILU0AFyydBhzK+hOtYh3c9IsLNep6HIA=
+
+Name: help/project-config/log-rotation_ru.html
+SHA-256-Digest: pzlSwIulTf+AkVatmbo+nEjE53jnVCjCCzg8jatgFiw=
+
+Name: images/32x32/package.png
+SHA-256-Digest: 0AzAzW1/P5APRDiaRN3CxfDzsE2/0DX4M0kgzClUMT8=
+
+Name: help/project-config/batch_ja.html
+SHA-256-Digest: Gn3XKk9r0XwVXoEplAmkb3+bmr87MoWRFlkV377OUn4=
+
+Name: images/title.svg
+SHA-256-Digest: N/nl4bxdwrA06dGxseMDs5bv3oGYF9vKbzkb26jHoHE=
+
+Name: help/view-config/statusFilter_ja.html
+SHA-256-Digest: PBiBpF2iBiHZzoIfjUH8vQ99DOwfZC88lppGT/n7F2Y=
+
+Name: images/16x16/yellow.gif
+SHA-256-Digest: iie4K2eaWHXufK6twcpwDLl49H2JRawXgE7tx0L6d20=
+
+Name: images/16x16/yellow.png
+SHA-256-Digest: GSvSLsdtfYECBM2dUNfovn2NuSbKpTuUsEebq9qj/e4=
+
+Name: scripts/yui/resize/resize-debug.js
+SHA-256-Digest: 5zP/gLiktooU8bZF33QLN5J4N6ewobHGM/iOqbAikbY=
+
+Name: WEB-INF/lib/annotation-indexer-1.7.jar
+SHA-256-Digest: AR2nlIJlTTLiJ628GD4COTNSw2xb7Vq6/t9m/rcfXDg=
+
+Name: help/parameter/run-project_ja.html
+SHA-256-Digest: pO/tp5znWrepxuEbP59jaAB7hscpmKI9VJZQVQ+pzws=
+
+Name: scripts/yui/assets/skins/sam/menu.css
+SHA-256-Digest: h8DQwQJoxhbAbwjYrIFZm0jxNw5CcCtQ/lvRCyJCuaY=
+
+Name: help/user/description_de.html
+SHA-256-Digest: ZH6s0JgKv2ueXdMmY5xSIOdqR2nYyvFLsPDyHDIFRPs=
+
+Name: WEB-INF/plugins/script-security.hpi
+SHA-256-Digest: O8kPtlNp1HyJ9n/VXaxV+MXaJ9pP3M9sI0qrOeu9XUw=
+
+Name: WEB-INF/lib/commons-collections-3.2.1.jar
+SHA-256-Digest: hzY6TJTqq+79i5MMsFn2a2TJ99Yyhi8j3jAS2nZgBHs=
+
+Name: images/48x48/star-gold.gif
+SHA-256-Digest: TI0S9ACr9FvGyGm46ujtl/p7VQoFjQQLwACR6s7WeKA=
+
+Name: scripts/yui/assets/skins/sam/yuitest.css
+SHA-256-Digest: WC2c3wE/EqRCItw5+LEA6rptE4CUNgeho43kTZyL6Ps=
+
+Name: images/24x24/gear2.png
+SHA-256-Digest: E8cZqtdxrfTAVv8fQOTU6mDTqFY1zGyPAP+J1TwNRoI=
+
+Name: help/project-config/triggerRemotely_fr.html
+SHA-256-Digest: 0q0SBK6ZUwn7KbPmapI6A+qp9WS+3cBcT+5XLeplLqE=
+
+Name: help/project-config/custom-workspace_tr.html
+SHA-256-Digest: R4QQri9tLpcP1XImyMuS906a1UWse0OTXYjGycM8+Nw=
+
+Name: images/24x24/star.gif
+SHA-256-Digest: KyzaQESxofwjUIBXv2rW5tubl/6mpNQl1ytNRLB8Zh4=
+
+Name: images/32x32/graph.png
+SHA-256-Digest: LYbccIfl1ThTTUVXqMy09kh8Nk121hSPLS8xOh73RKk=
+
+Name: help/parameter/run_zh_TW.html
+SHA-256-Digest: Qhv60K0x7rn3Cu+WrHMeT0kNUzLzyMx8prZlk0NbStc=
+
+Name: WEB-INF/lib/wstx-asl-3.2.9.jar
+SHA-256-Digest: /P4CZWgvSbQKgQc5Wcf8bVfv2oyGzPO8ZwDYhEEbEnE=
+
+Name: help/view-config/filter-queue_ja.html
+SHA-256-Digest: 22OFpXiaOg6MmZRXVDh2Z57uzXcSV6KXet+Sj/ZxIdo=
+
+Name: WEB-INF/lib/oro-2.0.8.jar
+SHA-256-Digest: 4AzNrV3360P97kQjLvZGAr9jgHwtEzp76Dugn9Sa8m4=
+
+Name: images/24x24/clipboard.gif
+SHA-256-Digest: 3oVyVqi3j0l4Z2CPR4G/xEcLj444ufgEuF9BNwn5yb0=
+
+Name: images/32x32/aborted.png
+SHA-256-Digest: 11JCS/3gOMV/Q8e+DCbr7LEklMthkhasEM4P6ePyN+U=
+
+Name: images/48x48/grey.png
+SHA-256-Digest: 5kUn1o1hUy+8A8AKHbz16qJp+Ig8dW3keEIqBe5/cls=
+
+Name: scripts/yui/animation/animation-min.js
+SHA-256-Digest: QXVNlJX29c1nyqWhtsJgog8Qcs7dijJDfJaIPNOKsyE=
+
+Name: scripts/sortable.js
+SHA-256-Digest: cyc+81IQA3/BsSktgFr1GcACYwDhauAxrA+sgG5paJg=
+
+Name: images/24x24/monitor.png
+SHA-256-Digest: LNd+pP4nuNnH3XwUh4l+odmXRH7dorbKxZ/kbHTC0Sc=
+
+Name: scripts/yui/button/assets/skins/sam/button.css
+SHA-256-Digest: NpwlzEiE0MUFG1Wz2zKGRtVFkH+NK6SLzdvbFlDVzaQ=
+
+Name: images/48x48/orange-square.png
+SHA-256-Digest: 0eCCsFJIqZRhHKXJkY1h+1vfase8xWSds5qshKdNg9w=
+
+Name: images/24x24/monitor.gif
+SHA-256-Digest: 6QgYnKvlWpdMxg9TGQIK35RUOp9Nc8jcW+wRYu2mPwc=
+
+Name: images/jenkins.png
+SHA-256-Digest: gH+aFUAIr0DYM6+kKf+Z8PuWNGxdCiCAPpa+rNx29Eg=
+
+Name: images/16x16/computer-x.png
+SHA-256-Digest: NRA5UTkCd5ym6YfJV8Y9issXnOk+CLw05rCz/j/n1S4=
+
+Name: scripts/yui/base/base.css
+SHA-256-Digest: q8KVSA8PL8QtEIM2S5g4iWGEskafazb+wSo5DgEsvpM=
+
+Name: help/scm-browsers/list_de.html
+SHA-256-Digest: RSYaaQ9hcGVx1/I7YrftiJmOcDTi6pM1D7VGJUL4J1Q=
+
+Name: help/system-config/homeDirectory_ja.html
+SHA-256-Digest: WRY8SMkUXPde0A6NsDLpdBrfSz/k8jYPgV96ZvLtCFM=
+
+Name: scripts/yui/assets/skins/sam/logger.css
+SHA-256-Digest: jBE5/0F5hNIAygX0SqANX0Gr/tSyI2AMCdLPyuxu01s=
+
+Name: help/system-config/master-slave/jnlpSecurity.html
+SHA-256-Digest: Uo58wR2HRSIKVjUmVP9WPhQ7Y/9VgY1LLpCK64c9X8Q=
+
+Name: scripts/combobox.js
+SHA-256-Digest: +DjeQZC4uXa50rIwmAqeyABbk3D2Pw8ZDGqilmXQayU=
+
+Name: scripts/yui/editor/assets/skins/sam/editor-sprite-active.gif
+SHA-256-Digest: CxGnyNUzmGtv8XkMcRuhjn/Y9zF0aZkjoAzKLhJxyBw=
+
+Name: WEB-INF/plugins/javadoc.hpi
+SHA-256-Digest: U2YZvNHz33XyGOdUcPLuOBT6whcYUvn/1U639Iy3TlE=
+
+Name: help/tasks/fingerprint/keepDependencies_ja.html
+SHA-256-Digest: EcWUsVIji572ZyVWVjSGm/5YsdHg6LhgKktxGYjRk3g=
+
+Name: scripts/yui/tabview/assets/skin-sam.css
+SHA-256-Digest: EDwEMaQqabj0mREWH8aH61+FTlohULx1pA3qH8ZiVdI=
+
+Name: help/system-config/master-slave/availability_tr.html
+SHA-256-Digest: zk6o4vSOoVcA4VINaDj2AMyeSvId4g8J6+TqgeL2WgM=
+
+Name: help/system-config/homeDirectory.html
+SHA-256-Digest: dnGFOgCfct5mU6WC1HM00iLFvdsVr0iQOIJ7AcsMRAA=
+
+Name: scripts/yui/treeview/assets/skins/sam/check2.gif
+SHA-256-Digest: K6yZeCWmwAYLFkDu6SwXxph3na6ppXkSBZAQvoC2n08=
+
+Name: images/24x24/up.png
+SHA-256-Digest: aDSof6TKjBzXr3QYr6T/F1XQPd02HsOrP3NKFy6zh10=
+
+Name: images/24x24/document.gif
+SHA-256-Digest: caKa3X2UB+WsRCeCR5GKILoaz5huMJ8rARQqql0WE1U=
+
+Name: images/48x48/grey_anime.gif
+SHA-256-Digest: sxfEklr/KBc7YNO1fJlcQGuqlnOzm7gNNabPb3LRuYI=
+
+Name: help/project-config/log-rotation_zh_TW.html
+SHA-256-Digest: UQDWPrn4UMxZvyxkzRLpxogC13p+HVdcxuHgn7Gv4jg=
+
+Name: images/32x32/disabled.gif
+SHA-256-Digest: ocNtsXRf073unnIXSKwOc8iVF5EfrUvR1uYztPUOgBs=
+
+Name: help/system-config/master-slave/demand/idleDelay_ja.html
+SHA-256-Digest: 8O/DhL0DLfRiXzhYU/iKSv1VmTM4d/LD8Kk1VEMdDF0=
+
+Name: images/48x48/notepad.gif
+SHA-256-Digest: LG597q0/phEiG9MHeJBd3iKgh/ijeRHOv/HgmjZYabs=
+
+Name: WEB-INF/lib/args4j-2.0.31.jar
+SHA-256-Digest: LQjhsjLka+j7a2WW+vSNZL5QlEnON5nedY2VO6Y4Dno=
+
+Name: images/16x16/folder-open.gif
+SHA-256-Digest: TbTk327UT1spe7zgN5oXT8296lDf+2AXqTw4UjN37rI=
+
+Name: images/48x48/help.png
+SHA-256-Digest: h4aeu8hkT3if5yAr7yh8Lktc+axtLYLWMy4rognvbdE=
+
+Name: images/24x24/gear2.gif
+SHA-256-Digest: DQoLdnPeM8a8G4ogLrOL4RzMK0S0tOh57tZ4gM5YLwU=
+
+Name: images/title.xcf
+SHA-256-Digest: YN6l05tjHwkqlPpH7BvQ3gA2X9vun5QHfl1o8Qw6Xys=
+
+Name: WEB-INF/lib/windows-slave-installer-1.4.jar
+SHA-256-Digest: dVQaa91iqYnzSMIn523OXFMtoAWRzjrmt+K5kvbqVpY=
+
+Name: help/project-config/description_fr.html
+SHA-256-Digest: r4HIn8ljz6iFYc9gI8vw5H/Q8ou68iteUE5mI0ihv+E=
+
+Name: images/16x16/orange-square.png
+SHA-256-Digest: 73JWYLcV4GCE6vS/ch4XXmHcUhsyZ4RQF8mfJ+AUhZM=
+
+Name: scripts/yui/assets/skins/sam/colorpicker.css
+SHA-256-Digest: /SPzkp5ElBidwL77JXkPa/Uw2xuayOlh5fkvtf1q1oE=
+
+Name: help/system-config/master-slave/jnlp-tunnel_de.html
+SHA-256-Digest: X4NfIez1aEzDCKjZ6kDO7AQOcAmPrqxA5osJBxF2dH8=
+
+Name: images/48x48/star.png
+SHA-256-Digest: vjAKH3Y7/O7kZp7SW9kEl6vIF18C09ACyaZmbkqfTPc=
+
+Name: images/48x48/secure.gif
+SHA-256-Digest: Gg2yEZiTEC2KSsm3IYslV9Bwh47/srAnmnrMHMqHryQ=
+
+Name: help/run-config/displayName_ja.html
+SHA-256-Digest: L2Pfgh29pLqfk+ZwBNTLHpPb324iFZK2fUbO2qy47e4=
+
+Name: help/run-config/description_ja.html
+SHA-256-Digest: zlwUFOtL7rpNcZogl/GGs6/8Z5MmTUY6xE887pDtPks=
+
+Name: images/16x16/health-00to19.gif
+SHA-256-Digest: UidbfQCTlI/QpPdnoCxcTlrtfIjqFD3sE0Jbra25YOA=
+
+Name: scripts/yui/assets/skins/sam/datatable.css
+SHA-256-Digest: I93QZb1UD0PWpJJIzYtnTwzJrjKvwChZvI5IF/Q+EO8=
+
+Name: help/LogRecorder/name_ja.html
+SHA-256-Digest: +5QOKVC6GyJ2kGPH5sOrxFKhfJMdmWtHhpKQJxaMnXs=
+
+Name: help/view-config/filter-queue.html
+SHA-256-Digest: f2/11Jd2FOgFyai4mHDaGOWcMBoATK8K7gPbUsh8cU4=
+
+Name: scripts/yui/assets/skins/sam/autocomplete.css
+SHA-256-Digest: q57zfZhqWMWCFGgtoX9lHRg1/QV1sQAQAl8mkCR5Xw8=
+
+Name: WEB-INF/lib/icon-set-1.0.5.jar
+SHA-256-Digest: VGbiPvMtBQVFxgK1s3ZG/TQls93yDXtK5gEDdZ2KrTU=
+
+Name: help/view-config/description_ru.html
+SHA-256-Digest: XPyM9b1Zc+uLT0BWKoa/WAHT9Bi0H34Tqyr/+VYYgm0=
+
+Name: images/24x24/installer.gif
+SHA-256-Digest: 3Nl6qXi4SIk9yYBCWUbW7emaffCFPru1pdytPtJ7ZAw=
+
+Name: images/24x24/grey.gif
+SHA-256-Digest: yqbztO4wrHC1Fm0+35ip3mdGR6vvBRGI/xK3QDFeY0c=
+
+Name: images/32x32/grey.gif
+SHA-256-Digest: hLC5FA+vVaJtEysse5uH5XsutNSFEdvvR5Z+HIooj9A=
+
+Name: images/16x16/warning.png
+SHA-256-Digest: 2Lmid0CuwvS/AU86vDN9WhoNzHjD9EoEVJCmtFJqbrQ=
+
+Name: WEB-INF/lib/stapler-jelly-1.236.jar
+SHA-256-Digest: EFB4bdLOdX4kVMRPbFo158vuFQj9r3ur1kd0EN+yDrI=
+
+Name: images/24x24/gear.gif
+SHA-256-Digest: GIap0Cue0fL0s6dCisIsZSyVeOanlssMLmJgl5sDNsw=
+
+Name: help/view-config/includeregex_pt_BR.html
+SHA-256-Digest: Lc7L2vwaI+YV6Y0JAcsZytlj5LIai5z/knbFIUXTZ14=
+
+Name: help/system-config/homeDirectory_de.html
+SHA-256-Digest: 2VNovdZBWBzk7ISJAGvtxUv74V/r5TrceDafHaWam+8=
+
+Name: scripts/yui/connection/connection.swf
+SHA-256-Digest: 6FwhBdgkprJvWDi8l4xPLnWaIaLN0UTyzUhfbh0Q5Zs=
+
+Name: WEB-INF/lib/commons-digester-2.1.jar
+SHA-256-Digest: 4LK5gKhPxlM8XOKR8ZF7MsUH9ivK1kGY//RDaMIZaj0=
+
+Name: scripts/yui/assets/skins/sam/simpleeditor.css
+SHA-256-Digest: 6vVHqi/h74lOmFDLKeQ7R4PhZTNGg9aATOtL2pc8OBA=
+
+Name: scripts/yui/assets/skins/sam/menuitem_checkbox.png
+SHA-256-Digest: jbWuQFGAmXuDvC584YicLVzV8tyL0ARjTRyRiyDMFDU=
+
+Name: scripts/yui/assets/skins/sam/check0.gif
+SHA-256-Digest: yGJcQM6duNClbG8zPvPWbLCHQPIK8n6JPr9ji1A6l60=
+
+Name: WEB-INF/lib/stax-api-1.0-2.jar
+SHA-256-Digest: 6McOvXb5gslYKoLvgs9s4Up9WKSk3KXLe3/JiMgAibc=
+
+Name: scripts/yui/assets/skins/sam/bg-v.gif
+SHA-256-Digest: aF6GOu/T96unog1NomH0h37BxoLSTW9Y6uzhQk+eP8A=
+
+Name: scripts/yui/editor/simpleeditor-min.js
+SHA-256-Digest: F3JTPF+dt9Y7crUKSLJP8o8o7SgIHZNKK17nnloXtZA=
+
+Name: help/system-config/nodeEnvironmentVariables_ja.html
+SHA-256-Digest: 5BK4sbs3V6M4YOK3FnvJG1NfpS7yBW3Rv+9TUGF12H4=
+
+Name: scripts/yui/menu/assets/menuitem_checkbox.png
+SHA-256-Digest: sxmSrsqAwnJ+hUlXmygbOy8hH67dKAU1IScYyuwoEnY=
+
+Name: scripts/yui/autocomplete/autocomplete-debug.js
+SHA-256-Digest: TAoExkEe6RibT+dHFT9H6MvtJX97lGlgxjPx+5EFaZQ=
+
+Name: scripts/utilities.js
+SHA-256-Digest: YWIO93/Y7VvbW1fMcfKGLbgnegyZcgDebyXRpjLVO+E=
+
+Name: help/view-config/includeregex_tr.html
+SHA-256-Digest: kcsFQrM6HnF3UV3B9OHZcAmZToqi1p3ZwlBCLdh30ek=
+
+Name: images/48x48/health-60to79.png
+SHA-256-Digest: fDRU9GRYztoI6NB3gDd8bJ4JlK4qRwRLV2/755hZxC8=
+
+Name: scripts/yui/assets/skins/sam/menu-button-arrow-disabled.png
+SHA-256-Digest: tEv9KYfjJrCO/NXewIH4kExQdnLf22he0FLoJsVVF48=
+
+Name: images/16x16/document_edit.gif
+SHA-256-Digest: RCrl5EPW3hLsEwc0LlGG04uFE4h7LcSXLwhiOvGIhLA=
+
+Name: help/project-config/block-upstream-building.html
+SHA-256-Digest: m5rix9iH7H3ZH1uBSiHGx5xm5CRg4yGjiQsW7TU7m5g=
+
+Name: WEB-INF/classes/dependencies.txt
+SHA-256-Digest: dz8HxbVKsdIC/B3ktQ/jEuycED95YP5tYBqA7pamS1E=
+
+Name: images/32x32/health-80plus.png
+SHA-256-Digest: +g8Q29spi/nxVjnPXvoPWzv53YnY4uxuhJ7Mm4Y/J1o=
+
+Name: images/48x48/redo.png
+SHA-256-Digest: DoD7pFGa5jL4fStc1wjktLAhyQvPeEOIkChnUpGb7+s=
+
+Name: images/16x16/gear2.gif
+SHA-256-Digest: L7iE9hVUWC9KTOqipB0WXME3/70u3sPr3v4RV/NOeJE=
+
+Name: images/16x16/plugin.png
+SHA-256-Digest: BucKxXr+iXSuf5HTRXbn35YKbHQnnPs/w92inxIqu98=
+
+Name: help/user/description_pt_BR.html
+SHA-256-Digest: jWDzlaUvZM/5M9fqFjKObInVwvyRN7jtpdmwwfLeOnc=
+
+Name: scripts/yui/assets/skins/sam/tabview.css
+SHA-256-Digest: CjusaBf3twKnBd6OdUxtOFYwYFhunFnXIkHqbQXLT/w=
+
+Name: scripts/yui/container/assets/container-core.css
+SHA-256-Digest: mf2izxg6jsHDr2SsugtV1+TjfmYnV8qCAfrLWC9dbo8=
+
+Name: help/user/fullName_de.html
+SHA-256-Digest: 5vvr7NghZsD+YsEJRI3di2NSF/LrsadOtLHvRgk0BJw=
+
+Name: WEB-INF/plugins/subversion.hpi
+SHA-256-Digest: kMEJy+zfAPvho3d3DXNc8S3K5vdQwAsZtZ6u4iOlSqI=
+
+Name: images/32x32/aborted.gif
+SHA-256-Digest: ocNtsXRf073unnIXSKwOc8iVF5EfrUvR1uYztPUOgBs=
+
+Name: images/16x16/hourglass.gif
+SHA-256-Digest: ibH40HnqHn0JLP1LfuiBGJuAe2+Iw/DB03oEEFxDfD4=
+
+Name: images/24x24/red.png
+SHA-256-Digest: 04T4I1UsPTw7My53wiiV1N09sfY1yLyQEYvGlUI44IU=
+
+Name: scripts/yui/button/button-debug.js
+SHA-256-Digest: kLLdCzU8SNEXKVoEUOlPsAdgeVtCSUAsfAsmdJSyWUc=
+
+Name: images/16x16/text.gif
+SHA-256-Digest: lbCPj2OBgB7VhW7cB2maGV5ZqDTex6+lx1i0Z4qmZ9g=
+
+Name: help/parameter/string_ja.html
+SHA-256-Digest: /SHdm+tTD5huiYGLQg1uFrAvjKujHMsnRFaRsXVYjHQ=
+
+Name: help/parameter/file-name_fr.html
+SHA-256-Digest: /FYJqbQAQrufRBX77gooihbAKttD+2pUifMkAoKPdyg=
+
+Name: help/system-config/master-slave/usage_zh_CN.html
+SHA-256-Digest: 1qF57H8+RYEm0lHIjce24D3pfOPs4jysvfyfhnoYGws=
+
+Name: images/24x24/folder-delete.gif
+SHA-256-Digest: 9nqaNOY1NCAjjjPcYm+OdTXNY9kYt2iw2Rx50XT9N9w=
+
+Name: images/24x24/next.png
+SHA-256-Digest: lOkQnlSaZZP5MPEo1AEUGKaKqTMzqrhbtfpWBg+WgH8=
+
+Name: scripts/hudson-behavior.js
+SHA-256-Digest: /FRE8/ZSc3WwGl53tYTrSKH59J8jhq53iMIMUHcXxck=
+
+Name: help/system-config/master-slave/usage_fr.html
+SHA-256-Digest: vu/6s+W8NyoCxrEmlAb9/Bo9JdBl1nvkvRKgJLtxUV8=
+
+Name: scripts/yui/assets/skins/sam/button.css
+SHA-256-Digest: Yp390BkBCcwkhhCQ4Fqj06dTN5qg/zI1QbaR3Gkl6LY=
+
+Name: images/32x32/clock_anime.gif
+SHA-256-Digest: UZE/omIBct0nQx6VA395GVpTIdGypuL3eiN4UW/uFTM=
+
