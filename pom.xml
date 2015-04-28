@@ -12,7 +12,7 @@
   <groupId>org.jenkins-ci.plugins</groupId>
   <artifactId>zos-connector</artifactId>
   <name>IBM z/OS Connector</name>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>hpi</packaging>
 
   <description>IBM z/OS FTP Connector - bunch of tools for integration with IBM z/OS</description>
@@ -34,7 +34,7 @@
     <connection>scm:git:https://github.com/jenkinsci/zos-connector-plugin.git</connection>
     <developerConnection>scm:git:https://github.com/jenkinsci/${project.artifactId}-plugin.git</developerConnection>
     <url>http://github.com/jenkinsci/${project.artifactId}-plugin</url>
-    <tag>ibm-zos-connector-1.0.0</tag>
+    <tag>zos-connector-1.0.0</tag>
   </scm>
   <repositories>
     <repository>
