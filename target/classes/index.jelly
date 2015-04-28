@@ -1,7 +1,0 @@
-<?jelly escape-by-default='true'?>
-<!--
-  This view is used to render the installed plugins page.
--->
-<div>
-  This plugin provides connectors between Jenkins and IBM zOS including integration of IBM SCLM as SCM.
-</div>
