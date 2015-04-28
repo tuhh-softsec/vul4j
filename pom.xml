@@ -31,8 +31,8 @@
     </developer>
   </developers>
   <scm>
-    <connection>https://github.com/jenkinsci/zos-connector-plugin.git</connection>
-    <developerConnection>https://github.com/jenkinsci/${project.artifactId}-plugin.git</developerConnection>
+    <connection>scm:git:https://github.com/jenkinsci/zos-connector-plugin.git</connection>
+    <developerConnection>scm:git:https://github.com/jenkinsci/${project.artifactId}-plugin.git</developerConnection>
     <url>http://github.com/jenkinsci/${project.artifactId}-plugin</url>
     <tag>zos-connector-1.0.0</tag>
   </scm>
