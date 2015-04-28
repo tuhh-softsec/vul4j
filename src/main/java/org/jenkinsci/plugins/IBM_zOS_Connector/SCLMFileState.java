@@ -182,12 +182,12 @@ public class SCLMFileState {
 
     /**
      * Comparator for changes sorting.
-     * <br/>1. Change Date and Time (descending)
-     * <br/>2. Type
-     * <br/>3. Name
-     * <br/>4. Version (descending)
-     * <br/>5. Change User ID
-     * <br/>6. Change Group
+     * <br>1. Change Date and Time (descending)
+     * <br>2. Type
+     * <br>3. Name
+     * <br>4. Version (descending)
+     * <br>5. Change User ID
+     * <br>6. Change Group
      */
     public static Comparator<SCLMFileState> ChangeComparator = new Comparator<SCLMFileState>()
     {

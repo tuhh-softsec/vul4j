@@ -339,7 +339,7 @@ public class SCLMSCM  extends SCM {
 
     /**
      * Checkout remote changes to the workspace.
-     * <br/>As the build itself is performed via SCLM, the checkout's main task is generation of revision.
+     * <br>As the build itself is performed via SCLM, the checkout's main task is generation of revision.
      *
      * @param build Current build.
      * @param launcher Current launcher.

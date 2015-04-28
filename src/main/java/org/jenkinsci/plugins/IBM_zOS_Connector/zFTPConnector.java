@@ -212,7 +212,7 @@ public class zFTPConnector
      * @param deleteLogFromSpool Whether the job log should be deleted fro spool upon job end.
      *
      * @return Whether the job was successfully submitted and the job log was fetched.
-     * <br/><b><code>jobCC</code></b> holds the response of the operation (including errors).
+     * <br><b><code>jobCC</code></b> holds the response of the operation (including errors).
      *
      * @see zFTPConnector#connect()
      * @see zFTPConnector#logon()

@@ -89,7 +89,7 @@ public class zOSJobSubmitter extends Builder {
      * @param listener Current listener.
      *
      * @return Whether the job completed successfully.
-     * <br/> Always <code>true</code> if <b><code>wait</code></b> is <code>false</code>.
+     * <br> Always <code>true</code> if <b><code>wait</code></b> is <code>false</code>.
      *
      * @see zFTPConnector
      */
