@@ -43,7 +43,7 @@
 {   "id": "4",
     "name": "alle Proben mit Ort",
     "description": "alle Proben mit Entnahmeort",
-    "sql": "select p.id as id, p.netzbetreiber_id as netzbetreiberId, p.mst_id as mstId, p.umw_id as umwId, p.hauptproben_nr as hauptprobenNr, so.gem_id as gemId, v.bezeichnung as bezeichnung from land.probe p left outer join land.ort o on (p.id = o.probe_id) left outer join stammdaten.ort so on (o.ort_id = so.id) left outer join stammdaten.verwaltungseinheit v on (so.gem_id = v.id) where o.orts_typ = 'E' or o.orts_typ is null",
+    "sql": "select p.id as id,  pt.probe_id_alt as probeId, p.netzbetreiber_id as netzbetreiberId, p.mst_id as mstId, p.umw_id as umwId, p.hauptproben_nr as hauptprobenNr, so.gem_id as gemId, v.bezeichnung as bezeichnung from land.probe p join land.probe_translation pt on p.id = pt.probe_id left outer join land.ort o on (p.id = o.probe_id) left outer join stammdaten.ort so on (o.ort_id = so.id) left outer join stammdaten.verwaltungseinheit v on (so.gem_id = v.id) where o.orts_typ = 'E' or o.orts_typ is null",
     "result": [
         {"dataIndex": "probeId", "header": "ProbeId", "width": 100},
         {"dataIndex": "netzbetreiberId", "header": "Land", "width": 50},
