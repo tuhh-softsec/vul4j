@@ -162,7 +162,7 @@ public class KommentarMService {
      * @return A response object containing the created KommentarM.
      */
     @POST
-    @Path("/{id}")
+    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response create(
         @Context HttpHeaders headers,
