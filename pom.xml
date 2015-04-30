@@ -7,7 +7,6 @@
 
     <groupId>de.intevation</groupId>
     <artifactId>lada-server</artifactId>
-    <version>1.0.1</version>
     <packaging>war</packaging>
     <parent>
         <groupId>org.jboss</groupId>
@@ -140,15 +139,8 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-client</artifactId>
-            <version>3.0.10.Final</version>
+            <version>3.0.11.Final</version>
             <scope>test</scope>
-        </dependency>
-
-        <!-- OpenID -->
-        <dependency>
-            <groupId>org.openid4java</groupId>
-            <artifactId>openid4java</artifactId>
-            <version>0.9.7</version>
         </dependency>
     </dependencies>
 
@@ -166,12 +158,101 @@
                              <skip>true</skip>
                          </configuration>
                     </plugin>
+                    <plugin>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<version>3.1</version>
+						<executions>
+							<execution>
+								<id>default-testCompile</id>
+								<phase>test-compile</phase>
+								<goals>
+									<goal>testCompile</goal>
+								</goals>
+								<configuration>
+									<excludes>
+										<exclude>**/auth/TestAuthorization.java</exclude>
+									</excludes>
+								</configuration>
+							</execution>
+							<execution>
+								<id>default-compile</id>
+								<phase>compile</phase>
+								<goals>
+									<goal>compile</goal>
+								</goals>
+								<configuration>
+									<excludes>
+										<exclude>**/auth/TestAuthorization.java</exclude>
+									</excludes>
+								</configuration>
+							</execution>
+						</executions>
+						<configuration>
+							<showDeprecation>true</showDeprecation>
+							<showWarnings>true</showWarnings>
+							<compilerArguments>
+								<source>1.7</source>
+								<target>1.7</target>
+							</compilerArguments>
+						</configuration>
+					</plugin>
                 </plugins>
             </build>
+            <dependencies>
+            	<dependency>
+            		<groupId>org.openid4java</groupId>
+            		<artifactId>openid4java</artifactId>
+            		<version>1.0.0</version>
+        		</dependency>
+        	</dependencies>
         </profile>
 
         <profile>
             <id>remote-test</id>
+            <build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<version>3.1</version>
+						<executions>
+							<execution>
+								<id>default-testCompile</id>
+								<phase>test-compile</phase>
+								<goals>
+									<goal>testCompile</goal>
+								</goals>
+								<configuration>
+									<excludes>
+										<exclude>**/auth/OpenIdAuthorization.java</exclude>
+										<exclude>**/auth/OpenIDFilter.java</exclude>
+									</excludes>
+								</configuration>
+							</execution>
+							<execution>
+								<id>default-compile</id>
+								<phase>compile</phase>
+								<goals>
+									<goal>compile</goal>
+								</goals>
+								<configuration>
+									<excludes>
+										<exclude>**/auth/OpenIdAuthorization.java</exclude>
+										<exclude>**/auth/OpenIDFilter.java</exclude>
+									</excludes>
+								</configuration>
+							</execution>
+						</executions>
+						<configuration>
+							<showDeprecation>true</showDeprecation>
+							<showWarnings>true</showWarnings>
+							<compilerArguments>
+								<source>1.7</source>
+								<target>1.7</target>
+							</compilerArguments>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
             <dependencies>
                 <dependency>
                     <groupId>org.wildfly</groupId>
@@ -232,4 +313,5 @@
             <url>http://www.hibernatespatial.org/repository</url>
         </repository>
     </repositories>
+    <version>2.0-beta1</version>
 </project>
