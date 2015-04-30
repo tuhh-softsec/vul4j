@@ -23,6 +23,7 @@ import org.junit.runners.MethodSorters;
 
 import de.intevation.lada.test.land.KommentarM;
 import de.intevation.lada.test.land.KommentarP;
+import de.intevation.lada.test.land.Messprogramm;
 import de.intevation.lada.test.land.Messung;
 import de.intevation.lada.test.land.Messwert;
 import de.intevation.lada.test.land.Ort;
@@ -52,6 +53,7 @@ public class LadaLandTest extends BaseTest {
     private Ort ortTest;
     private Status statusTest;
     private Zusatzwert zusatzwertTest;
+    private Messprogramm messprogrammTest;
 
     public LadaLandTest() {
         probeTest = new Probe();
@@ -63,6 +65,7 @@ public class LadaLandTest extends BaseTest {
         ortTest = new Ort();
         statusTest = new Status();
         zusatzwertTest = new Zusatzwert();
+        messprogrammTest = new Messprogramm();
         testProtocol = new ArrayList<Protocol>();
         verboseLogging = false;
     }
@@ -321,6 +324,37 @@ public class LadaLandTest extends BaseTest {
     throws Exception {
         this.zusatzwertTest.filterService(baseUrl, testProtocol);
     }
+
+    /**
+     * Testing GET Services.
+     */
+    @Test
+    @RunAsClient
+    public final void testA_MessprogrammGetAllServices(@ArquillianResource URL baseUrl)
+    throws Exception {
+        this.messprogrammTest.getAllService(baseUrl, testProtocol);
+    }
+
+    /**
+     * Testing GET Services.
+     */
+    @Test
+    @RunAsClient
+    public final void testA_MessprogrammGetByIdServices(@ArquillianResource URL baseUrl)
+    throws Exception {
+        this.messprogrammTest.getByIdService(baseUrl, testProtocol);
+    }
+
+    /**
+     * Testing GET Services.
+     */
+    @Test
+    @RunAsClient
+    public final void testA_MessprogrammGetFilterServices(@ArquillianResource URL baseUrl)
+    throws Exception {
+        this.messprogrammTest.filterService(baseUrl, testProtocol);
+    }
+
     /**
      * Testing CREATE services.
      */
@@ -359,6 +393,9 @@ public class LadaLandTest extends BaseTest {
             baseUrl,
             testProtocol,
             this.messungTest.getCreatedMessungId());
+        this.messprogrammTest.createService(
+            baseUrl,
+            testProtocol);
     }
 
     /**
@@ -439,6 +476,17 @@ public class LadaLandTest extends BaseTest {
     }
 
     /**
+     * Testing UPDATE services.
+     */
+    @Test
+    @RunAsClient
+    public final void testC_messprogrammUpdateService(@ArquillianResource URL baseUrl)
+    throws Exception {
+        Assert.assertNotNull(this.ortTest.getCreatedId());
+        this.messprogrammTest.updateService(baseUrl, testProtocol);
+    }
+
+    /**
      * Testing DELETE services.
      */
     @Test
@@ -461,5 +509,6 @@ public class LadaLandTest extends BaseTest {
         this.messungTest.deleteService(baseUrl, testProtocol);
         Assert.assertNotNull(this.probeTest.getCreatedProbeId());
         this.probeTest.deleteService(baseUrl, testProtocol);
+        this.messprogrammTest.deleteService(baseUrl, testProtocol);
     }
 }
