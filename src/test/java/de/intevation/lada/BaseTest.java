@@ -40,7 +40,8 @@ public class BaseTest {
         WebArchive archive = ShrinkWrap.create(WebArchive.class, ARCHIVE_NAME)
             .addPackages(true, Package.getPackage("de.intevation.lada"))
             .addAsResource("log4j.properties", "log4j.properties")
-            .addAsResource("queryconf.json", "queryconf.json")
+            .addAsResource("probequery.json", "probequery.json")
+            .addAsResource("messprogrammquery.json", "messprogrammquery.json")
             .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
             .addAsResource("META-INF/test-persistence.xml",
                 "META-INF/persistence.xml");

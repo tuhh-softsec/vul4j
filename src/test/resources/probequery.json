@@ -1,0 +1,80 @@
+[
+{   "id": "1",
+    "name": "Kein Filter",
+    "description": "Abfrage der Proben ohne Filter",
+    "sql": "select p.id as id, pt.probe_id_alt as probeId, p.mst_id as mstId, p.umw_id as umwId from land.probe p join land.probe_translation pt on p.id = pt.probe_id",
+    "result": [
+        {"dataIndex": "probeId", "header": "ProbeId", "width": 100},
+        {"dataIndex": "mstId", "header": "MST", "width": 100},
+        {"dataIndex": "umwId", "header": "Umweltbereich", "width": 100}
+    ],
+    "filters": [
+    ]
+},
+{   "id": "2",
+    "name": "MST und UMW",
+    "description": "Abfrage der Proben gefiltert nach Messtellen ID und ID des Umweltbereichs",
+    "sql": "select p.id as id, pt.probe_id_alt as probeId, p.mst_id as mstId, p.umw_id as umwId from land.probe p join land.probe_translation pt on p.id = pt.probe_id where (p.mst_id = :mst_id OR '' = :mst_id) and (p.umw_id = :umw_id OR '' = :umw_id)",
+    "result": [
+        {"dataIndex": "probeId", "header": "ProbeId", "width": 100},
+        {"dataIndex": "mstId", "header": "MST", "width": 100},
+        {"dataIndex": "umwId", "header": "Umweltbereich", "width": 100}
+    ],
+    "filters": [
+        {"dataIndex": "mst_id", "type": "listmst", "label": "Messstelle"},
+        {"dataIndex": "umw_id", "type": "listumw", "label": "Umweltbereich"}
+    ]
+},
+{   "id": "3",
+    "name": "Proben pro Land",
+    "description": "Proben gefiltert nach Ländern",
+    "sql": "select p.id as id, pt.probe_id_alt as probeId, p.netzbetreiber_id as netzbetreiberId, p.mst_id as mstId, p.umw_id as umwId, p.hauptproben_nr as hauptprobenNr from land.probe p join land.probe_translation pt on p.id = pt.probe_id where (netzbetreiber_id = :netz OR '' = :netz)",
+    "result": [
+        {"dataIndex": "probeId", "header": "ProbeId", "width": 100},
+        {"dataIndex": "netzbetreiberId", "header": "Land", "width": 100},
+        {"dataIndex": "mstId", "header": "MST", "width": 100},
+        {"dataIndex": "umwId", "header": "Umweltbereich", "width": 100},
+        {"dataIndex": "hauptprobenNr", "header": "Proben-Nr", "width": 100}
+    ],
+    "filters": [
+        {"dataIndex": "netz", "type": "listnetz", "label": "Land"}
+    ]
+},
+{   "id": "4",
+    "name": "alle Proben mit Ort",
+    "description": "alle Proben mit Entnahmeort",
+    "sql": "select p.id as id,  pt.probe_id_alt as probeId, p.netzbetreiber_id as netzbetreiberId, p.mst_id as mstId, p.umw_id as umwId, p.hauptproben_nr as hauptprobenNr, so.gem_id as gemId, v.bezeichnung as bezeichnung from land.probe p join land.probe_translation pt on p.id = pt.probe_id left outer join land.ort o on (p.id = o.probe_id) left outer join stammdaten.ort so on (o.ort_id = so.id) left outer join stammdaten.verwaltungseinheit v on (so.gem_id = v.id) where o.orts_typ = 'E' or o.orts_typ is null",
+    "result": [
+        {"dataIndex": "probeId", "header": "ProbeId", "width": 100},
+        {"dataIndex": "netzbetreiberId", "header": "Land", "width": 50},
+        {"dataIndex": "mstId", "header": "MST", "width": 60},
+        {"dataIndex": "umwId", "header": "Umweltbereich", "width": 100},
+        {"dataIndex": "hauptprobenNr", "header": "Proben-Nr", "width": 100},
+        {"dataIndex": "gemId", "header": "Gem-ID", "width": 100},
+        {"dataIndex": "bezeichnung", "header": "Gemeinde", "flex": 1}
+    ],
+    "filters": [
+    ]
+},
+{   "id": "5",
+    "name": "Proben pro Land und UMW (Multiselect)",
+    "description": "Abfrage aller Proben gefiltert pro Land und Umweltbereich (mit Mehrfachauswahl)",
+    "sql": "select p.id as id, pt.probe_id_alt as probeId, p.netzbetreiber_id as netzbetreiberId, p.mst_id as mstId, to_char(p.probeentnahme_beginn,'YYYY-mm-dd HH24:MI') entnahmeVon, to_char(p.probeentnahme_ende,'YYYY-mm-dd HH24:MI') entnahmeBis, p.umw_id as umwId, p.hauptproben_nr as hauptprobenNr, o.orts_typ as ortsTyp, so.gem_id as gemId, v.bezeichnung as bezeichnung from land.probe p join land.probe_translation pt on p.id = pt.probe_id left outer join land.ort o on (p.id = o.probe_id) left outer join stammdaten.ort so on (o.ort_id = so.id) left outer join stammdaten.verwaltungseinheit v on (so.gem_id = v.id) where (o.orts_typ = 'E' or o.orts_typ is null) and (p.netzbetreiber_id = :netz OR '' =:netz) and (p.umw_id similar to (:umw_id) OR '' = :umw_id)",
+    "result": [
+        {"dataIndex": "probeId", "header": "ProbeId", "width": 100},
+        {"dataIndex": "netzbetreiberId", "header": "Land", "width": 50},
+        {"dataIndex": "mstId", "header": "MST", "width": 50},
+        {"dataIndex": "entnahmeVon", "header": "Entnahme von", "width": 120},
+        {"dataIndex": "entnahmeBis", "header": "Entnahme bis", "width": 120},
+        {"dataIndex": "umwId", "header": "Umweltbereich", "width": 100},
+        {"dataIndex": "hauptprobenNr", "header": "Proben-Nr", "width": 100},
+        {"dataIndex": "ortsTyp", "header": "Ortstyp", "width": 50},
+        {"dataIndex": "genId", "header": "Gemeinde-ID", "width": 100},
+        {"dataIndex": "bezeichnung", "header": "Gemeinde", "flex": 1}
+    ],
+    "filters": [
+        {"dataIndex": "netz", "type": "listnetz", "label": "Land"},
+        {"dataIndex": "umw_id", "type": "listumw", "label": "Umweltbereich", "multiselect":true}
+    ]
+}
+]

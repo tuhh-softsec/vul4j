@@ -1,0 +1,14 @@
+[
+{   "id": "1",
+    "name": "Kein Filter",
+    "description": "Abfrage der Messprogramme ohne Filter",
+    "sql": "select m.id as id, m.name as name, m.mst_id as mstId, m.umw_id as umwId from land.messprogramm m",
+    "result": [
+        {"dataIndex": "name", "header": "Name", "width": 100},
+        {"dataIndex": "mstId", "header": "MST", "width": 100},
+        {"dataIndex": "umwId", "header": "Umweltbereich", "width": 100}
+    ],
+    "filters": [
+    ]
+}
+]
