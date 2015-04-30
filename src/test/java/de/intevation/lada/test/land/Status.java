@@ -35,6 +35,8 @@ public class Status {
 
     private static final String COMPARE =
         "{\"id\":1,\"erzeuger\":\"06010\",\"messungsId\":440,\"status\":3," +
+        "\"owner\":false,\"readonly\":false,\"treeModified\":null," +
+        "\"parentModified\":null," +
         "\"sdatum\":1373846400000,\"skommentar\":\"test\"}";
 
     private static final String CREATE =
@@ -256,7 +258,7 @@ public class Status {
             prot.addInfo("updated value", "status3");
             prot.addInfo("updated to", "status3updated");
             /* Send the updated messwert via put request*/
-            WebTarget putTarget = client.target(baseUrl + "status");
+            WebTarget putTarget = client.target(baseUrl + "status/" + createdId);
             Response updated = putTarget.request().put(
                 Entity.entity(updatedEntity, MediaType.APPLICATION_JSON));
             /* Try to parse the response*/

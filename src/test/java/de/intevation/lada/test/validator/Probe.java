@@ -25,12 +25,10 @@ public class Probe {
         prot.setPassed(false);
         protocol.add(prot);
         LProbe probe = new LProbe();
-        probe.setHauptprobenNr("1234567890");
+        probe.setHauptprobenNr("4554567890");
         Violation violation = validator.validate(probe);
         if (violation.hasErrors()) {
             Assert.assertFalse(violation.getErrors().containsKey("hauptprobenNr"));
-            prot.setPassed(true);
-            return;
         }
         prot.setPassed(true);
     }
@@ -72,12 +70,11 @@ public class Probe {
         prot.setPassed(false);
         protocol.add(prot);
         LProbe probe = new LProbe();
-        probe.setHauptprobenNr("1234567890");
-        prot.addInfo("hauptprobenNr", "1234567890");
+        probe.setHauptprobenNr("4564567890");
+        prot.addInfo("hauptprobenNr", "4564567890");
         Violation violation = validator.validate(probe);
         if (violation.hasErrors()) {
             Assert.assertFalse(violation.getErrors().containsKey("hauptprobenNr"));
-            return;
         }
         prot.setPassed(true);
     }
@@ -90,12 +87,11 @@ public class Probe {
         protocol.add(prot);
         LProbe probe = new LProbe();
         probe.setId(1);
-        probe.setHauptprobenNr("1234567890");
-        prot.addInfo("hauptprobenNr", "1234567890");
+        probe.setHauptprobenNr("4564567890");
+        prot.addInfo("hauptprobenNr", "4564567890");
         Violation violation = validator.validate(probe);
         if (violation.hasErrors()) {
             Assert.assertFalse(violation.getErrors().containsKey("hauptprobenNr"));
-            return;
         }
         prot.setPassed(true);
     }
@@ -158,7 +154,7 @@ public class Probe {
         probe.setProbeentnahmeEnde(new Timestamp(1376287046511l));
         Violation violation = validator.validate(probe);
         if (violation.hasWarnings()) {
-            Assert.assertFalse(violation.getWarnings().containsKey("probeentnahmeBegin"));
+            Assert.assertFalse(violation.getWarnings().containsKey("probeentnahmeBeginn"));
         }
         prot.setPassed(true);
     }
@@ -172,8 +168,8 @@ public class Probe {
         LProbe probe = new LProbe();
         Violation violation = validator.validate(probe);
         Assert.assertTrue(violation.hasWarnings());
-        Assert.assertTrue(violation.getWarnings().containsKey("probeentnahmeBegin"));
-        Assert.assertTrue(violation.getWarnings().get("probeentnahmeBegin").contains(631));
+        Assert.assertTrue(violation.getWarnings().containsKey("probeentnahmeBeginn"));
+        Assert.assertTrue(violation.getWarnings().get("probeentnahmeBeginn").contains(631));
         prot.setPassed(true);
     }
 
@@ -187,7 +183,7 @@ public class Probe {
         probe.setProbeentnahmeBeginn(new Timestamp(1376287046510l));
         Violation violation = validator.validate(probe);
         if (violation.hasWarnings()) {
-            Assert.assertFalse(violation.getWarnings().containsKey("probeentnahmeBegin"));
+            Assert.assertFalse(violation.getWarnings().containsKey("probeentnahmeBeginn"));
         }
         prot.setPassed(true);
     }
@@ -201,8 +197,8 @@ public class Probe {
         LProbe probe = new LProbe();
         probe.setProbeentnahmeEnde(new Timestamp(1376287046510l));
         Violation violation = validator.validate(probe);
-        Assert.assertTrue(violation.getWarnings().get("probeentnahmeBegin").contains(631));
-        Assert.assertTrue(violation.getWarnings().get("probeentnahmeBegin").contains(662));
+        Assert.assertTrue(violation.getWarnings().get("probeentnahmeBeginn").contains(631));
+        Assert.assertTrue(violation.getWarnings().get("probeentnahmeBeginn").contains(662));
         prot.setPassed(true);
     }
 
@@ -216,7 +212,7 @@ public class Probe {
         probe.setProbeentnahmeBeginn(new Timestamp(1376287046511l));
         probe.setProbeentnahmeEnde(new Timestamp(1376287046510l));
         Violation violation = validator.validate(probe);
-        Assert.assertTrue(violation.getWarnings().get("probeentnahmeBegin").contains(662));
+        Assert.assertTrue(violation.getWarnings().get("probeentnahmeBeginn").contains(662));
         prot.setPassed(true);
     }
 
@@ -229,7 +225,7 @@ public class Probe {
         LProbe probe = new LProbe();
         probe.setProbeentnahmeBeginn(new Timestamp(2376287046511l));
         Violation violation = validator.validate(probe);
-        Assert.assertTrue(violation.getWarnings().get("probeentnahmeBegin").contains(661));
+        Assert.assertTrue(violation.getWarnings().get("probeentnahmeBeginn").contains(661));
         prot.setPassed(true);
     }
 
@@ -243,7 +239,7 @@ public class Probe {
         probe.setUmwId("A4");
         Violation violation = validator.validate(probe);
         if (violation.hasWarnings()) {
-            Assert.assertFalse(violation.getWarnings().containsKey("uwb"));
+            Assert.assertFalse(violation.getWarnings().containsKey("umwId"));
         }
         prot.setPassed(true);
     }
@@ -257,8 +253,8 @@ public class Probe {
         LProbe probe = new LProbe();
         Violation violation = validator.validate(probe);
         Assert.assertTrue(violation.hasWarnings());
-        Assert.assertTrue(violation.getWarnings().containsKey("uwb"));
-        Assert.assertTrue(violation.getWarnings().get("uwb").contains(631));
+        Assert.assertTrue(violation.getWarnings().containsKey("umwId"));
+        Assert.assertTrue(violation.getWarnings().get("umwId").contains(631));
         prot.setPassed(true);
     }
 
@@ -272,8 +268,8 @@ public class Probe {
         probe.setUmwId("");
         Violation violation = validator.validate(probe);
         Assert.assertTrue(violation.hasWarnings());
-        Assert.assertTrue(violation.getWarnings().containsKey("uwb"));
-        Assert.assertTrue(violation.getWarnings().get("uwb").contains(631));
+        Assert.assertTrue(violation.getWarnings().containsKey("umwId"));
+        Assert.assertTrue(violation.getWarnings().get("umwId").contains(631));
         prot.setPassed(true);
     }
 }

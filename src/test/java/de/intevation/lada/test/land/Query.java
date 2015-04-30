@@ -56,7 +56,7 @@ public class Query {
         protocol.add(prot);
         /* Create a client*/
         Client client = ClientBuilder.newClient();
-        WebTarget target = client.target(baseUrl + "query");
+        WebTarget target = client.target(baseUrl + "query/probe");
         /* Request all queries*/
         Response response = target.request().get();
         String entity = response.readEntity(String.class);

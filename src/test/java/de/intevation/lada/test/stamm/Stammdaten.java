@@ -40,14 +40,15 @@ public class Stammdaten {
             "{\"id\":\"GI\",\"beschreibung\":null,\"messmethode\":" +
             "\"Iod, Gamma-Spektrometrie\"}");
         compare.put("messstelle",
-            "{\"id\":\"03151\",\"amtskennung\":null,\"beschreibung\":" +
-            "\"E.ON Kernkraftwerk GmbH, Kernkraftwerk Stade, Postfach 1780, " +
-            "21657 Stade\",\"messStelle\":\"KKW - KKS\",\"mstTyp\":\"M\"," +
-            "\"netzbetreiberId\":\"03\"}");
+            "{\"id\":\"06010\",\"amtskennung\":null,\"beschreibung\":" +
+            "\"Hessisches Landesamt für Umwelt und Geologie, Dienststelle " +
+            "Kassel, Ludwig-Mond-Str. 33, 34121 Kassel\",\"messStelle\":" +
+            "\"helm21-HLUG-Kassel\",\"mstTyp\":\"M\",\"netzbetreiberId\":" +
+            "\"06\"}");
         compare.put("netzbetreiber",
-            "{\"id\":\"PA\",\"aktiv\":true,\"idfNetzbetreiber\":\"R\"," +
-            "\"isBmn\":true,\"mailverteiler\":\"PA\",\"netzbetreiber\":" +
-            "\"Park\",\"zustMstId\":null}");
+            "{\"id\":\"06\",\"aktiv\":true,\"idfNetzbetreiber\":\"f\"," +
+            "\"isBmn\":false,\"mailverteiler\":\"06\",\"netzbetreiber\":" +
+            "\"Hessen\",\"zustMstId\":null}");
         compare.put("pflichtmessgroesse",
             "{\"id\":33,\"messgroesseId\":904,\"datenbasisId\":4,\"mmtId\":" +
             "\"A3\",\"umweltId\":\"B2\"}");

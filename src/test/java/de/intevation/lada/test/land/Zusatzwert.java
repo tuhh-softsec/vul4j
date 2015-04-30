@@ -36,7 +36,8 @@ public class Zusatzwert {
     private static final String COMPARE =
         "{\"id\":1,\"letzteAenderung\":1335177176000,\"messfehler\":48.0," +
         "\"messwertPzs\":7.5,\"nwgZuMesswert\":null,\"probeId\":84," +
-        "\"pzsId\":\"A76\"}";
+        "\"pzsId\":\"A76\",\"owner\":false,\"readonly\":false," +
+        "\"treeModified\":null,\"parentModified\":null}";
 
     private static final String CREATE =
         "{\"letzteAenderung\":1335177176000,\"messfehler\":18.0," +

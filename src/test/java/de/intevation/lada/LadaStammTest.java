@@ -119,7 +119,7 @@ public class LadaStammTest extends BaseTest {
     @Test
     @RunAsClient
     public final void testMessstelleById(@ArquillianResource URL baseUrl) {
-        stammdatenTest.getById(baseUrl, "messstelle", "03151", testProtocol);
+        stammdatenTest.getById(baseUrl, "messstelle", "06010", testProtocol);
     }
 
     @Test
@@ -131,7 +131,7 @@ public class LadaStammTest extends BaseTest {
     @Test
     @RunAsClient
     public final void testNetzbetreiberById(@ArquillianResource URL baseUrl) {
-        stammdatenTest.getById(baseUrl, "netzbetreiber", "PA", testProtocol);
+        stammdatenTest.getById(baseUrl, "netzbetreiber", "06", testProtocol);
     }
 
     @Test
@@ -312,7 +312,7 @@ public class LadaStammTest extends BaseTest {
             prot.addInfo("updated value", "Neuer Ort");
             prot.addInfo("updated to", "Neuerer Ort");
             /* Send the updated kommentar via put reauest*/
-            WebTarget putTarget = client.target(baseUrl + "location");
+            WebTarget putTarget = client.target(baseUrl + "location/" + createdOrtId);
             Response updated = putTarget.request().put(
                 Entity.entity(updatedEntity, MediaType.APPLICATION_JSON));
             /* Try to parse the response*/

@@ -37,7 +37,8 @@ public class KommentarP {
     private static final String COMPARE_KOMMENTARP =
         "{\"datum\":1321002077000,\"erzeuger\":\"06010\",\"id\":1,\"text\":" +
         "\"Die Probe wurde in Darmstadt gammaspektrometrisch gemessen und " +
-        "für die Sr-Bestimmung verascht. \",\"probeId\":361}";
+        "für die Sr-Bestimmung verascht. \",\"probeId\":361,\"owner\":false," +
+        "\"readonly\":false}";
 
     private static final String CREATE_KOMMENTARP =
         "{\"probeId\":\"PID\",\"erzeuger\":\"11010\",\"text\":" +
@@ -261,7 +262,7 @@ public class KommentarP {
             prot.addInfo("updated value", "test");
             prot.addInfo("updated to", "neu");
             /* Send the updated kommentar via put reauest*/
-            WebTarget putTarget = client.target(baseUrl + "pkommentar");
+            WebTarget putTarget = client.target(baseUrl + "pkommentar/" + createdKommentarId);
             Response updated = putTarget.request().put(
                 Entity.entity(updatedEntity, MediaType.APPLICATION_JSON));
             /* Try to parse the response*/

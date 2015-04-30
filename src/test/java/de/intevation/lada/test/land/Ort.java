@@ -35,7 +35,8 @@ public class Ort {
 
     private static final String COMPARE =
         "{\"id\":1,\"letzteAenderung\":1376287046510,\"ortsTyp\":\"Z\"," +
-        "\"ortszusatztext\":null,\"probeId\":96,\"ort\":213}";
+        "\"ortszusatztext\":null,\"probeId\":96,\"ort\":213,\"owner\":false," +
+        "\"readonly\":false,\"treeModified\":null,\"parentModified\":null}";
 
     private static final String CREATE =
         "{\"letzteAenderung\":1376287046510,\"ortsTyp\":\"Z\"," +
@@ -256,7 +257,7 @@ public class Ort {
             prot.addInfo("updated value", "text");
             prot.addInfo("updated to", "zusatz");
             /* Send the updated messwert via put request*/
-            WebTarget putTarget = client.target(baseUrl + "ort");
+            WebTarget putTarget = client.target(baseUrl + "ort/" + createdId);
             Response updated = putTarget.request().put(
                 Entity.entity(updatedEntity, MediaType.APPLICATION_JSON));
             /* Try to parse the response*/

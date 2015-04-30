@@ -42,14 +42,15 @@ public class Probe {
         "null,\"mstId\":\"06010\",\"netzbetreiberId\":\"06\"," +
         "\"probeentnahmeBeginn\":1336467600000,\"probeentnahmeEnde\":" +
         "null,\"probenartId\":1,\"test\":false,\"umwId\":\"N72\"," +
-        "\"erzeugerId\":null,\"mpKat\":\"1\",\"mplId\":null,\"mprId\":3749," +
-        "\"probeNehmerId\":726,\"solldatumBeginn\":1336341600000," +
-        "\"solldatumEnde\":1336939199000,\"probeIdAlt\":\"000007581034X\"," +
-        "\"hauptprobenNr\":\"120510002\"}";
+        "\"hauptprobenNr\":\"120510002\",\"erzeugerId\":null,\"mpKat\":\"1\"," +
+        "\"mplId\":null,\"mprId\":3749,\"probeNehmerId\":726," +
+        "\"solldatumBeginn\":1336341600000,\"solldatumEnde\":1336939199000," +
+        "\"treeModified\":null,\"readonly\":false,\"owner\":false," +
+        "\"probeIdAlt\":\"000007581034X\"}";
 
     private static final String CREATE_PROBE =
         "{\"baId\":\"1\",\"datenbasisId\":2,\"erzeugerId\":\"\"," +
-        "\"hauptprobenNr\":\"1234567890\",\"media\":\"\",\"mediaDesk\":" +
+        "\"hauptprobenNr\":\"4554567890\",\"media\":\"\",\"mediaDesk\":" +
         "\"\",\"mittelungsdauer\":\"\",\"mpKat\":\"\",\"mplId\":\"\"," +
         "\"mprId\":\"\",\"mstId\":\"11010\",\"netzbetreiberId\":\"11\"," +
         "\"probeNehmerId\":3,\"probenartId\":1,\"test\":true,\"umwId\":" +
@@ -264,12 +265,12 @@ public class Probe {
             JsonObject oldProbe = reader.readObject().getJsonObject("data");
             /* Change the hauptprobenNr*/
             String updatedEntity =
-                oldProbe.toString().replace("1234567890", "2345678901");
+                oldProbe.toString().replace("4554567890", "2345678901");
             prot.addInfo("updated datafield", "hauptprobenNr");
             prot.addInfo("updated value", "1234567890");
             prot.addInfo("updated to", "2345678901");
             /* Send the updated probe via put reauest*/
-            WebTarget putTarget = client.target(baseUrl + "probe");
+            WebTarget putTarget = client.target(baseUrl + "probe/" + createdProbeId);
             Response updated = putTarget.request().put(
                 Entity.entity(updatedEntity, MediaType.APPLICATION_JSON));
             /* Try to parse the response*/

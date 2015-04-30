@@ -35,12 +35,13 @@ import de.intevation.lada.Protocol;
 public class KommentarM {
 
     private static final String COMPARE_KOMMENTARM =
-        "{\"messungId\":5,\"datum\":1336627500000,\"erzeuger\":\"12010\"," +
-        "\"id\":478,\"text\":\"Hofladen Lenzen geschlossen\"}";
+        "{\"messungsId\":5,\"datum\":1336627500000,\"erzeuger\":\"12010\"," +
+        "\"id\":478,\"text\":\"Hofladen Lenzen geschlossen\",\"owner\":false," +
+        "\"readonly\":false}";
 
     private static final String CREATE_KOMMENTARM =
-        "{\"messungId\":\"MID\",\"erzeuger\":\"11010\",\"text\":" +
-        "\"test\",\"datum\":\"2015-02-09T10:58:36\"}";
+        "{\"messungsId\":\"MID\",\"erzeuger\":\"06010\",\"text\":" +
+        "\"test\",\"datum\":\"2015-02-09T10:58:36\",\"owner\":false}";
 
     private List<Protocol> protocol;
 
@@ -260,7 +261,7 @@ public class KommentarM {
             prot.addInfo("updated value", "test");
             prot.addInfo("updated to", "neu");
             /* Send the updated kommentar via put reauest*/
-            WebTarget putTarget = client.target(baseUrl + "mkommentar");
+            WebTarget putTarget = client.target(baseUrl + "mkommentar/" + createdKommentarId);
             Response updated = putTarget.request().put(
                 Entity.entity(updatedEntity, MediaType.APPLICATION_JSON));
             /* Try to parse the response*/

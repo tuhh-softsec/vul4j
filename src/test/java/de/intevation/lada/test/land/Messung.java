@@ -36,8 +36,9 @@ public class Messung {
     private static final String COMPARE_MESSUNG =
         "{\"id\":1,\"fertig\":true,\"letzteAenderung\":1331536340000," +
         "\"messdauer\":73929,\"messzeitpunkt\":1329139620000,\"mmtId\":" +
-        "\"G1\",\"probeId\":575,\"nebenprobenNr\":\"01G1\",\"geplant\":true," +
-        "\"messungsIdAlt\":1}";
+        "\"G1\",\"probeId\":575,\"owner\":false,\"readonly\":false," +
+        "\"nebenprobenNr\":\"01G1\",\"geplant\":true," +
+        "\"treeModified\":null,\"parentModified\":null,\"messungsIdAlt\":1}";
 
     private static final String CREATE_MESSUNG =
         "{\"probeId\":\"PID\",\"mmtId\":\"A4\",\"nebenprobenNr\":\"10R1\"," +
@@ -245,7 +246,7 @@ public class Messung {
             Client client = ClientBuilder.newClient();
             WebTarget target =
                 client.target(baseUrl + "messung/" + createdMessungId);
-            prot.addInfo("messungId", createdMessungId);
+            prot.addInfo("messungsId", createdMessungId);
             /* Request a messung with the saved id*/
             Response response = target.request().get();
             String entity = response.readEntity(String.class);
@@ -259,7 +260,7 @@ public class Messung {
             prot.addInfo("updated value", "A4");
             prot.addInfo("updated to", "G1");
             /* Send the updated messung via put request*/
-            WebTarget putTarget = client.target(baseUrl + "messung");
+            WebTarget putTarget = client.target(baseUrl + "messung/" + createdMessungId);
             Response updated = putTarget.request().put(
                 Entity.entity(updatedEntity, MediaType.APPLICATION_JSON));
             /* Try to parse the response*/

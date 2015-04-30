@@ -37,7 +37,8 @@ public class Messwert {
         "{\"id\":1,\"grenzwertueberschreitung\":null,\"letzteAenderung\":" +
         "1327305368000,\"mehId\":69,\"messfehler\":1.1,\"messgroesseId\":28," +
         "\"messungsId\":749,\"messwert\":97.0,\"messwertNwg\":null," +
-        "\"nwgZuMesswert\":null}";
+        "\"nwgZuMesswert\":null,\"owner\":false,\"readonly\":false," +
+        "\"treeModified\":null,\"parentModified\":null}";
 
     private static final String CREATE_MESSWERT =
         "{\"messungsId\":MID,\"messgroesseId\":242,\"messwert\":1," +
@@ -260,7 +261,7 @@ public class Messwert {
             prot.addInfo("updated value", "207");
             prot.addInfo("updated to", "69");
             /* Send the updated messwert via put request*/
-            WebTarget putTarget = client.target(baseUrl + "messwert");
+            WebTarget putTarget = client.target(baseUrl + "messwert/" + createdMesswertId);
             Response updated = putTarget.request().put(
                 Entity.entity(updatedEntity, MediaType.APPLICATION_JSON));
             /* Try to parse the response*/
