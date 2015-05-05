@@ -1,4 +1,4 @@
-package de.intevation.lada.validation.rules.Messwert;
+package de.intevation.lada.validation.rules.messwert;
 
 import de.intevation.lada.model.land.LMesswert;
 import de.intevation.lada.validation.Violation;
