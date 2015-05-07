@@ -478,7 +478,7 @@ public class TarArchiver
         throws IOException
     {
         super.cleanUp();
-        tOut.close();
+        IOUtil.close( tOut );
     }
 
     protected void close()

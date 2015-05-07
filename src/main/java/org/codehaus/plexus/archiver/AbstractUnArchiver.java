@@ -217,16 +217,22 @@ public abstract class AbstractUnArchiver
     {
         if ( fileSelectors != null )
         {
-			for (FileSelector fileSelector : fileSelectors) {
-				try {
-					if (!fileSelector.isSelected(fileInfo)) {
-						return false;
-					}
-				} catch (final IOException e) {
-					throw new ArchiverException("Failed to check, whether " + fileInfo.getName() + " is selected: "
-							+ e.getMessage(), e);
-				}
-			}
+            for ( FileSelector fileSelector : fileSelectors )
+            {
+                try
+                {
+
+                    if ( !fileSelector.isSelected( fileInfo ) )
+                    {
+                        return false;
+                    }
+                }
+                catch ( final IOException e )
+                {
+                    throw new ArchiverException(
+                        "Failed to check, whether " + fileInfo.getName() + " is selected: " + e.getMessage(), e );
+                }
+            }
         }
         return true;
     }

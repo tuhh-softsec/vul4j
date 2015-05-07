@@ -28,6 +28,7 @@ import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
 import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Map;
 
 @SuppressWarnings( { "UnusedDeclaration", "deprecation" } )
@@ -132,6 +133,12 @@ public class DelgatingArchiver implements Archiver
         throws ArchiverException
     {
         target.addArchivedFileSet( fileSet );
+    }
+
+    public void addArchivedFileSet( ArchivedFileSet fileSet, Charset charset )
+        throws ArchiverException
+    {
+        target.addArchivedFileSet( fileSet, charset );
     }
 
     public void addResource( PlexusIoResource resource, String destFileName, int permissions )

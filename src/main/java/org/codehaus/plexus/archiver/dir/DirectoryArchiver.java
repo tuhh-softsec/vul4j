@@ -22,6 +22,8 @@ import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.ResourceIterator;
 import org.codehaus.plexus.archiver.util.ArchiveEntryUtils;
 import org.codehaus.plexus.archiver.util.ResourceUtils;
+import org.codehaus.plexus.components.io.attributes.SymlinkUtils;
+import org.codehaus.plexus.components.io.functions.SymlinkDestinationSupplier;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 
 import java.io.File;
@@ -79,7 +81,14 @@ public class DirectoryArchiver
                 String fileName = f.getName();
                 final String destDir = destDirectory.getCanonicalPath();
                 fileName = destDir + File.separator + fileName;
-                copyFile( f, fileName );
+                PlexusIoResource resource = f.getResource();
+                if (resource instanceof SymlinkDestinationSupplier){
+                    String dest = ((SymlinkDestinationSupplier)resource).getSymlinkDestination();
+                    File target = new File(dest);
+                    SymlinkUtils.createSymbolicLink(new File(fileName), target);
+                } else {
+                    copyFile(f, fileName);
+                }
             }
         }
         catch ( final IOException ioe )

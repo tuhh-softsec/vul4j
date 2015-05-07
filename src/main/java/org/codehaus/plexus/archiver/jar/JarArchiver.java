@@ -17,6 +17,7 @@ package org.codehaus.plexus.archiver.jar;
  *  limitations under the License.
  */
 
+import org.apache.commons.compress.archivers.zip.ParallelScatterZipCreator;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.codehaus.plexus.archiver.ArchiverException;
@@ -25,6 +26,7 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.util.IOUtil;
 
+import javax.annotation.WillClose;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -284,7 +286,7 @@ public class JarArchiver
         indexJars.add( indexJar.getAbsolutePath() );
     }
 
-    protected void initZipOutputStream( ZipArchiveOutputStream zOut )
+    protected void initZipOutputStream( ParallelScatterZipCreator zOut )
         throws ArchiverException, IOException
     {
         if ( !skipWriting )
@@ -334,7 +336,7 @@ public class JarArchiver
         return finalManifest;
     }
 
-    private void writeManifest( ZipArchiveOutputStream zOut, Manifest manifest )
+    private void writeManifest( ParallelScatterZipCreator zOut, Manifest manifest )
         throws IOException, ArchiverException
     {
         for ( Enumeration e = manifest.getWarnings(); e.hasMoreElements(); )
@@ -342,7 +344,7 @@ public class JarArchiver
             getLogger().warn( "Manifest warning: " + e.nextElement() );
         }
 
-        zipDir( null, zOut, "META-INF/", DEFAULT_DIR_MODE );
+        zipDir( null, zOut, "META-INF/", DEFAULT_DIR_MODE, getEncoding());
         // time to write the manifest
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         manifest.write( baos );
@@ -352,7 +354,7 @@ public class JarArchiver
         super.initZipOutputStream( zOut );
     }
 
-    protected void finalizeZipOutputStream( ZipArchiveOutputStream zOut )
+    protected void finalizeZipOutputStream( ParallelScatterZipCreator zOut )
         throws IOException, ArchiverException
     {
         if ( index )
@@ -373,7 +375,7 @@ public class JarArchiver
      * @throws org.codehaus.plexus.archiver.ArchiverException
      *                     .
      */
-    private void createIndexList( ZipArchiveOutputStream zOut )
+    private void createIndexList( ParallelScatterZipCreator zOut )
         throws IOException, ArchiverException
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -389,7 +391,7 @@ public class JarArchiver
 
         // filter out META-INF if it doesn't contain anything other than the index and manifest.
         // this is what sun.misc.JarIndex does, guess we ought to be consistent.
-        Set<String> filteredDirs = new HashSet<String>( addedDirs.keySet() );
+        Set<String> filteredDirs = addedDirs.allAddedDirs();
         // our added dirs always have a trailing slash
         if ( filteredDirs.contains( META_INF_NAME + '/' ) )
         {
@@ -455,7 +457,7 @@ public class JarArchiver
     /**
      * Overridden from Zip class to deal with manifests and index lists.
      */
-    protected void zipFile( InputStream is, ZipArchiveOutputStream zOut, String vPath, long lastModified, File fromArchive,
+    protected void zipFile( @WillClose InputStream is, ParallelScatterZipCreator zOut, String vPath, long lastModified, File fromArchive,
                             int mode, String symlinkDestination )
         throws IOException, ArchiverException
     {
@@ -534,23 +536,23 @@ public class JarArchiver
             return true;
         }
 
-        ZipArchiveOutputStream zOut = null;
         try
         {
             getLogger().debug( "Building MANIFEST-only jar: " + getDestFile().getAbsolutePath() );
-            zOut = new ZipArchiveOutputStream( bufferedOutputStream( fileOutputStream( getDestFile(), "jar" ) ));
+            zipArchiveOutputStream = new ZipArchiveOutputStream( bufferedOutputStream( fileOutputStream( getDestFile(), "jar" ) ));
 
-            zOut.setEncoding( getEncoding() );
+            zipArchiveOutputStream.setEncoding(getEncoding());
             if ( isCompress() )
             {
-                zOut.setMethod( ZipArchiveOutputStream.DEFLATED );
+                zipArchiveOutputStream.setMethod(ZipArchiveOutputStream.DEFLATED);
             }
             else
             {
-                zOut.setMethod( ZipArchiveOutputStream.STORED );
+                zipArchiveOutputStream.setMethod(ZipArchiveOutputStream.STORED);
             }
-            initZipOutputStream( zOut );
-            finalizeZipOutputStream( zOut );
+            ParallelScatterZipCreator ps = new ParallelScatterZipCreator();
+            initZipOutputStream( ps );
+            finalizeZipOutputStream( ps );
         }
         catch ( IOException ioe )
         {
@@ -559,7 +561,7 @@ public class JarArchiver
         finally
         {
             // Close the output stream.
-            IOUtil.close( zOut );
+            //IOUtil.close( zOut );
             createEmpty = false;
         }
         return true;

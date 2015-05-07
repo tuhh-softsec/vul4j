@@ -1,6 +1,7 @@
 package org.codehaus.plexus.archiver;
 
 import org.codehaus.plexus.PlexusTestCase;
+import org.codehaus.plexus.archiver.dir.DirectoryArchiver;
 import org.codehaus.plexus.archiver.tar.TarArchiver;
 import org.codehaus.plexus.archiver.tar.TarLongFileMode;
 import org.codehaus.plexus.archiver.tar.TarUnArchiver;
@@ -84,4 +85,21 @@ public class SymlinkTest
         unarchiver.setDestFile(  output );
         unarchiver.extract();
     }
+
+    public void testSymlinkDirArchiver()
+            throws Exception
+    {
+        DirectoryArchiver archiver = (DirectoryArchiver) lookup( Archiver.ROLE, "dir" );
+
+        File dummyContent = getTestFile( "src/test/resources/symlinks/src" );
+        archiver.addDirectory( dummyContent );
+        final File archiveFile = new File( "target/output/dirarchiver-symlink" );
+        archiveFile.mkdirs();
+        archiver.setDestFile( archiveFile );
+        archiver.createArchive();
+
+        assertTrue( Files.isSymbolicLink(new File("target/output/dirarchiver-symlink/symR").toPath()));
+        assertTrue(Files.isSymbolicLink(new File("target/output/dirarchiver-symlink/aDirWithALink/backOutsideToFileX").toPath()));
+    }
+
 }

@@ -3,6 +3,7 @@ package org.codehaus.plexus.archiver.zip;
 import java.io.File;
 import java.lang.reflect.Method;
 import org.codehaus.plexus.PlexusTestCase;
+import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.components.io.fileselectors.FileSelector;
 import org.codehaus.plexus.components.io.fileselectors.IncludeExcludeFileSelector;
@@ -69,6 +70,25 @@ public class ZipUnArchiverTest
         {
         }
     }
+
+    public void testUnarchiveUtf8()
+        throws Exception
+    {
+        File dest = new File("target/output/unzip/utf8");
+        dest.mkdirs();
+
+        final File zipFile = new File( "target/output/unzip/utf8-default.zip" );
+        final ZipArchiver zipArchiver = getZipArchiver( zipFile );
+        zipArchiver.addDirectory( new File( "src/test/resources/miscUtf8" ) );
+        zipArchiver.createArchive();
+        final ZipUnArchiver unarchiver = getZipUnArchiver(zipFile);
+        unarchiver.setDestFile( dest );
+        unarchiver.extract();
+        assertTrue( new File( dest, "aPi\u00F1ata.txt" ).exists() );
+        assertTrue( new File( dest, "an\u00FCmlaut.txt").exists());
+        assertTrue( new File( dest, "\u20acuro.txt").exists());
+    }
+
     private void runUnarchiver( String path, FileSelector[] selectors, boolean[] results )
         throws Exception
     {
@@ -124,4 +144,36 @@ public class ZipUnArchiverTest
         fileSelector.setExcludes( new String[]{ "resources/artifactId/directory/test.properties" } );
         runUnarchiver( "", new FileSelector[]{ fileSelector }, new boolean[]{ true, false, false } );
     }
+
+    private ZipArchiver getZipArchiver()
+    {
+        try
+        {
+            return (ZipArchiver) lookup( Archiver.ROLE, "zip" );
+        }
+        catch ( Exception e )
+        {
+            throw new RuntimeException( e );
+        }
+    }
+
+    private ZipArchiver getZipUnArchiver()
+    {
+        try
+        {
+            return (ZipArchiver) lookup( UnArchiver.ROLE, "zip" );
+        }
+        catch ( Exception e )
+        {
+            throw new RuntimeException( e );
+        }
+    }
+
+    private ZipArchiver getZipArchiver( File destFile )
+    {
+        final ZipArchiver zipArchiver = getZipArchiver();
+        zipArchiver.setDestFile( destFile );
+        return zipArchiver;
+    }
+
 }

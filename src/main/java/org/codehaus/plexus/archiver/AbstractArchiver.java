@@ -17,21 +17,6 @@ package org.codehaus.plexus.archiver;
  *  limitations under the License.
  */
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.UndeclaredThrowableException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
@@ -41,6 +26,7 @@ import org.codehaus.plexus.components.io.attributes.Java7Reflector;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.functions.ResourceAttributeSupplier;
 import org.codehaus.plexus.components.io.resources.AbstractPlexusIoResourceCollection;
+import org.codehaus.plexus.components.io.resources.EncodingSupported;
 import org.codehaus.plexus.components.io.resources.PlexusIoArchivedResourceCollection;
 import org.codehaus.plexus.components.io.resources.PlexusIoFileResourceCollection;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
@@ -53,6 +39,21 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 import org.codehaus.plexus.util.Os;
+
+import javax.annotation.Nonnull;
+import java.io.Closeable;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.UndeclaredThrowableException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 import static org.codehaus.plexus.archiver.util.DefaultArchivedFileSet.archivedFileSet;
 import static org.codehaus.plexus.archiver.util.DefaultFileSet.fileSet;
@@ -100,6 +101,7 @@ public abstract class AbstractArchiver
     // On lunix-like systems, we replace windows backslashes with forward slashes
     private final boolean replacePathSlashesToJavaPaths = File.separatorChar == '/';
 
+    private final List<Closeable> closeables = new ArrayList<Closeable>(  );
     /**
      * since 2.2 is on by default
      *
@@ -479,6 +481,12 @@ public abstract class AbstractArchiver
                             }
                             else
                             {
+                                // this will leak handles in the IO iterator if the iterator is not fully consumed.
+                                // alternately we'd have to make this method return a Closeable iterator back
+                                // to the client and ditch the whole issue onto the client.
+                                // this does not really make any sense either, might equally well change the
+                                // api into something that is not broken by design.
+                                addCloseable( ioResourceIter );
                                 ioResourceIter = null;
                             }
                         }
@@ -550,6 +558,33 @@ public abstract class AbstractArchiver
 
     }
 
+    private static void closeIfCloseable( Object resource )
+        throws IOException
+    {
+        if ( resource == null )
+        {
+            return;
+        }
+        if ( resource instanceof Closeable )
+        {
+            ( (Closeable) resource ).close();
+        }
+
+    }
+
+    private static void closeQuietlyIfCloseable( Object resource )
+    {
+        try
+        {
+            closeIfCloseable( resource );
+        }
+        catch ( IOException e )
+        {
+            throw new RuntimeException( e );
+        }
+    }
+
+
     public Map<String, ArchiveEntry> getFiles()
     {
         try
@@ -603,7 +638,7 @@ public abstract class AbstractArchiver
         return logger;
     }
 
-    protected PlexusIoResourceCollection asResourceCollection( final ArchivedFileSet fileSet )
+    protected PlexusIoResourceCollection asResourceCollection( final ArchivedFileSet fileSet, Charset charset )
         throws ArchiverException
     {
         final File archiveFile = fileSet.getArchive();
@@ -617,6 +652,10 @@ public abstract class AbstractArchiver
         {
             throw new ArchiverException(
                 "Error adding archived file-set. PlexusIoResourceCollection not found for: " + archiveFile, e );
+        }
+
+        if (resources instanceof EncodingSupported ) {
+            ((EncodingSupported)resources).setEncoding( charset );
         }
 
         if ( resources instanceof PlexusIoArchivedResourceCollection )
@@ -673,7 +712,14 @@ public abstract class AbstractArchiver
     public void addArchivedFileSet( final ArchivedFileSet fileSet )
         throws ArchiverException
     {
-        final PlexusIoResourceCollection resourceCollection = asResourceCollection( fileSet );
+        final PlexusIoResourceCollection resourceCollection = asResourceCollection( fileSet, null );
+        addResources( resourceCollection );
+    }
+
+    public void addArchivedFileSet( final ArchivedFileSet fileSet, Charset charset )
+        throws ArchiverException
+    {
+        final PlexusIoResourceCollection resourceCollection = asResourceCollection( fileSet, charset );
         addResources( resourceCollection );
     }
 
@@ -921,25 +967,39 @@ public abstract class AbstractArchiver
 
     protected abstract String getArchiveType();
 
+    private void addCloseable(Object maybeCloseable){
+        if (maybeCloseable instanceof  Closeable)
+            closeables.add( (Closeable) maybeCloseable );
+
+    }
+    private void closeIterators()
+    {
+        for ( Closeable closeable : closeables )
+        {
+            closeQuietlyIfCloseable( closeable );
+        }
+
+    }
     protected abstract void close()
         throws IOException;
 
     protected void cleanUp()
         throws IOException
     {
+        closeIterators();
+
         for ( Object resource : resources )
         {
             if ( resource instanceof PlexusIoProxyResourceCollection )
             {
                 resource = ( (PlexusIoProxyResourceCollection) resource ).getSrc();
             }
-            if ( resource instanceof Closeable )
-            {
-                ( (Closeable) resource ).close();
-            }
+
+            closeIfCloseable( resource );
         }
         resources.clear();
     }
+
 
     protected abstract void execute()
         throws ArchiverException, IOException;
