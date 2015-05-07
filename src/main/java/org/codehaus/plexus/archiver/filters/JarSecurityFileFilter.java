@@ -3,7 +3,6 @@ package org.codehaus.plexus.archiver.filters;
 import java.io.InputStream;
 
 import org.codehaus.plexus.archiver.ArchiveFileFilter;
-import org.codehaus.plexus.archiver.ArchiveFilterException;
 import org.codehaus.plexus.util.SelectorUtils;
 
 

@@ -11,6 +11,8 @@ import org.codehaus.plexus.components.io.functions.ResourceAttributeSupplier;
 import org.codehaus.plexus.components.io.resources.AbstractPlexusIoResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 
+import javax.annotation.Nonnull;
+
 public class TarResource
     extends AbstractPlexusIoResource
     implements ResourceAttributeSupplier
@@ -55,6 +57,7 @@ public class TarResource
         return null;
     }
 
+    @Nonnull
     public InputStream getContents()
         throws IOException
     {

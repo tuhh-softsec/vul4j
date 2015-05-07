@@ -27,6 +27,8 @@ import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.functions.ResourceAttributeSupplier;
 import org.codehaus.plexus.components.io.resources.AbstractPlexusIoResource;
 
+import javax.annotation.Nonnull;
+
 /**
  * A file resource that does not necessarily exist (anywhere).
  */
@@ -55,6 +57,7 @@ public class PlexusIoVirtualFileResource
         return file;
     }
 
+    @Nonnull
     public InputStream getContents()
         throws IOException
     {

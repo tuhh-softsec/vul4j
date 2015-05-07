@@ -15,6 +15,8 @@ import org.codehaus.plexus.components.io.resources.AbstractPlexusIoResource;
 import org.codehaus.plexus.components.io.resources.ClosingInputStream;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 
+import javax.annotation.Nonnull;
+
 public class ZipResource extends AbstractPlexusIoResource
     implements ResourceAttributeSupplier
 {
@@ -72,6 +74,7 @@ public class ZipResource extends AbstractPlexusIoResource
         return null;
     }
 
+    @Nonnull
     public InputStream getContents()
         throws IOException
     {

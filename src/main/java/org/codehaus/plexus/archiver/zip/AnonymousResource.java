@@ -7,6 +7,8 @@ import java.net.URL;
 
 import org.codehaus.plexus.components.io.resources.AbstractPlexusIoResource;
 
+import javax.annotation.Nonnull;
+
 public class AnonymousResource extends AbstractPlexusIoResource {
 
 	private final File file;
@@ -22,6 +24,7 @@ public class AnonymousResource extends AbstractPlexusIoResource {
 		this.file = file;
 	}
 
+	@Nonnull
 	public InputStream getContents()
 			throws IOException
 	{

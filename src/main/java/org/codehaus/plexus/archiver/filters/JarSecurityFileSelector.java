@@ -19,6 +19,8 @@ import org.codehaus.plexus.components.io.fileselectors.FileInfo;
 import org.codehaus.plexus.components.io.fileselectors.FileSelector;
 import org.codehaus.plexus.util.SelectorUtils;
 
+import javax.annotation.Nonnull;
+
 /**
  * @version $Id$
  * @since 1.0-alpha-9
@@ -36,7 +38,7 @@ public class JarSecurityFileSelector
         "META-INF/*.dsa",
         "META-INF/*.sf" };
 
-    public boolean isSelected( FileInfo fileInfo )
+    public boolean isSelected( @Nonnull FileInfo fileInfo )
         throws IOException
     {
         String name = fileInfo.getName();
