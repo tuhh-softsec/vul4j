@@ -110,27 +110,20 @@ public class CcmParser extends AbstractAnnotationParser {
 	private Collection<FileAnnotation> convert(Ccm collection, String moduleName) {
 		ArrayList<FileAnnotation> annotations = new ArrayList<FileAnnotation>();
 		
-		for (Metric warning : collection.getMetrics()) {
-			Priority priority;
-			if (warning.getClassification().contains("high")) {
-				priority = Priority.HIGH;
-			} else if (warning.getClassification().contains("moderate")) {
-				priority = Priority.NORMAL;
-			} else {
-				priority = Priority.LOW;
-			}
-			
-			String complexity = String.format("%s has a complexity of %d", warning.getUnit(), warning.getComplexity());
+		for (Metric metric : collection.getMetrics()) {
+			Priority priority = calculateMetricPriority(metric);
 
-			Bug bug = new Bug(priority, complexity, warning.getClassification(), 
-					"Cyclomatic Complexity", warning.getStartLineNumber(), warning.getEndLineNumber());
+			String complexity = String.format("%s has a complexity of %d", metric.getUnit(), metric.getComplexity());
+
+			Bug bug = new Bug(priority, complexity, metric.getClassification(),
+					"Cyclomatic Complexity", metric.getStartLineNumber(), metric.getEndLineNumber());
 			bug.setPackageName("-");
 			bug.setModuleName(moduleName);
-			bug.setFileName(warning.getFile());
+			bug.setFileName(metric.getFile());
 			bug.setColumnPosition(0, 0);
 
 			try {
-				bug.setContextHashCode(createContextHashCode(warning.getFile() + warning.getUnit() + warning.getClassification(), 0));
+				bug.setContextHashCode(createContextHashCode(metric.getFile() + metric.getUnit() + metric.getClassification(), 0));
 			} catch (IOException exception) {
 				// ignore and continue
 			}
@@ -141,4 +134,43 @@ public class CcmParser extends AbstractAnnotationParser {
 		return annotations;
 	}
 
+	private Priority calculateMetricPriority(Metric metric){
+		Priority priority;
+		if (isMetricHighPriority(metric)) {
+			priority = Priority.HIGH;
+		} else if (isMetricModeratePriority(metric)) {
+			priority = Priority.NORMAL;
+		} else {
+			priority = Priority.LOW;
+		}
+
+		return priority;
+	}
+
+	private boolean isMetricHighPriority(Metric metric){
+		String metricClassification = metric.getClassification();
+		if (metricClassification.contains("high")){
+			return true;
+		}
+		else if (metricClassification.contentEquals("C") || metricClassification.contentEquals("D") ||
+				metricClassification.contentEquals("E") || metricClassification.contentEquals(("F"))){
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	private boolean isMetricModeratePriority(Metric metric){
+		String metricClassification = metric.getClassification();
+		if (metricClassification.contains("moderate")) {
+			return true;
+		}
+		else if (metricClassification.contentEquals("B")) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 }
