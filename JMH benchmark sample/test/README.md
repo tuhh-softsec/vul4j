@@ -19,13 +19,15 @@ Compares running two loops over the array with 67,000 integer elements.
 
 ### Measurements
 
+####Intel® Core™ i7-2600 Processor (8M Cache, up to 3.80 GHz)
 Benchmark             | Mode | Cnt  | Score  | Error   | Units
 ----------------------|------|------|--------|---------|------
 MyBenchmark.testLoop1 | avgt | 25   | 30.257 | ± 0.457 | ms/op  
 MyBenchmark.testLoop2 | avgt | 25   | 29.946 | ± 0.264 | ms/op
 
-CPU information |
-----------------|----------------------------------------
-\# of Threads   | 8
-Model name:     | Intel(R) Core(TM) i7-2600 CPU @ 3.40GHz
-L2 cache:       | 8192 KB
+
+####Intel® Core™ i7-4770S Processor (8M Cache, up to 3.90 GHz)
+Benchmark             | Mode | Cnt  | Score  | Error   | Units
+----------------------|------|------|--------|---------|------
+MyBenchmark.testLoop1 | avgt | 25   | 26.909 | ± 0.278 | ms/op  
+MyBenchmark.testLoop2 | avgt | 25   | 26.021 | ± 0.297 | ms/op
