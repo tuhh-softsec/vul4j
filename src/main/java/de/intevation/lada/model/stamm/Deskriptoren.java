@@ -41,12 +41,13 @@ public class Deskriptoren implements Serializable {
 
     private Integer sn;
 
-    @ManyToOne
-    @JoinColumn(name="vorgaenger")
-    private Deskriptoren deskriptoren;
+    private Integer vorgaenger;
+//    @ManyToOne
+//    @JoinColumn(name="vorgaenger")
+//    private Deskriptoren deskriptoren;
 
-    @OneToMany(mappedBy="deskriptoren")
-    private List<Deskriptoren> deskriptorens;
+//    @OneToMany(mappedBy="deskriptoren")
+//    private List<Deskriptoren> deskriptorens;
 
     public Deskriptoren() {
     }
@@ -99,34 +100,49 @@ public class Deskriptoren implements Serializable {
         this.sn = sn;
     }
 
-    public Deskriptoren getDeskriptoren() {
-        return this.deskriptoren;
+    /*
+     public Deskriptoren getDeskriptoren() {
+     return this.deskriptoren;
+     }
+
+     public void setDeskriptoren(Deskriptoren deskriptoren) {
+     this.deskriptoren = deskriptoren;
+     }
+
+     public List<Deskriptoren> getDeskriptorens() {
+     return this.deskriptorens;
+     }
+
+     public void setDeskriptorens(List<Deskriptoren> deskriptorens) {
+     this.deskriptorens = deskriptorens;
+     }
+
+     public Deskriptoren addDeskriptoren(Deskriptoren deskriptoren) {
+     getDeskriptorens().add(deskriptoren);
+     deskriptoren.setDeskriptoren(this);
+
+     return deskriptoren;
+     }
+
+     public Deskriptoren removeDeskriptoren(Deskriptoren deskriptoren) {
+     getDeskriptorens().remove(deskriptoren);
+     deskriptoren.setDeskriptoren(null);
+
+     return deskriptoren;
+     }
+     */
+
+    /**
+     * @return the vorgaenger
+     */
+    public Integer getVorgaenger() {
+        return vorgaenger;
     }
 
-    public void setDeskriptoren(Deskriptoren deskriptoren) {
-        this.deskriptoren = deskriptoren;
+    /**
+     * @param vorgaenger the vorgaenger to set
+     */
+    public void setVorgaenger(Integer vorgaenger) {
+        this.vorgaenger = vorgaenger;
     }
-
-    public List<Deskriptoren> getDeskriptorens() {
-        return this.deskriptorens;
-    }
-
-    public void setDeskriptorens(List<Deskriptoren> deskriptorens) {
-        this.deskriptorens = deskriptorens;
-    }
-
-    public Deskriptoren addDeskriptoren(Deskriptoren deskriptoren) {
-        getDeskriptorens().add(deskriptoren);
-        deskriptoren.setDeskriptoren(this);
-
-        return deskriptoren;
-    }
-
-    public Deskriptoren removeDeskriptoren(Deskriptoren deskriptoren) {
-        getDeskriptorens().remove(deskriptoren);
-        deskriptoren.setDeskriptoren(null);
-
-        return deskriptoren;
-    }
-
 }
