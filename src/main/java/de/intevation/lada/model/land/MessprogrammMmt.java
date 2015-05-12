@@ -5,10 +5,16 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.hibernate.mapping.Array;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
+
+import de.intevation.lada.util.data.IntegerArrayType;
 
 
 /**
@@ -16,16 +22,20 @@ import org.hibernate.mapping.Array;
  */
 @Entity
 @Table(name="messprogramm_mmt")
+@TypeDefs({@TypeDef(name="IntegerArray", typeClass=IntegerArrayType.class)})
 public class MessprogrammMmt implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name="id", unique=true, nullable=false)
     private Integer id;
 
     @Column(name="letzte_aenderung")
     private Timestamp letzteAenderung;
 
-    private Array messgroessen;
+    @Type(type="IntegerArray")
+    private Integer[] messgroessen;
 
     @Column(name="mmt_id")
     private String mmtId;
@@ -52,11 +62,11 @@ public class MessprogrammMmt implements Serializable {
         this.letzteAenderung = letzteAenderung;
     }
 
-    public Array getMessgroessen() {
+    public Integer[] getMessgroessen() {
         return this.messgroessen;
     }
 
-    public void setMessgroessen(Array messgroessen) {
+    public void setMessgroessen(Integer[] messgroessen) {
         this.messgroessen = messgroessen;
     }
 
