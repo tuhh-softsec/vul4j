@@ -38,6 +38,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.log4j.Logger;
 
+import de.intevation.lada.factory.ProbeFactory;
 import de.intevation.lada.lock.LockConfig;
 import de.intevation.lada.lock.LockType;
 import de.intevation.lada.lock.ObjectLocker;
@@ -139,11 +140,18 @@ public class ProbeService {
     private ObjectLocker lock;
 
     /**
-     * The validator used for Rpobe objects.
+     * The validator used for Probe objects.
      */
     @Inject
     @ValidationConfig(type="Probe")
     private Validator validator;
+
+    /**
+     * The factory to create Probe objects.
+     * Used for messprogramm.
+     */
+    @Inject
+    private ProbeFactory factory;
 
     /**
      * Get all Probe objects.
@@ -336,6 +344,37 @@ public class ProbeService {
             request,
             response,
             LProbe.class);
+    }
+
+    /**
+     * Create new Probe objects from a messprogramm.
+     * <p>
+     * <p>
+     * <pre>
+     * <code>
+     * {
+     * }
+     * </code>
+     * </pre>
+     *
+     * @return Response object containing the new probe object.
+     */
+    @POST
+    @Path("/messprogramm")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createFromMessprogramm(
+        @Context HttpHeaders headers,
+        @Context HttpServletRequest request,
+        JsonObject object
+    ) {
+        String id = object.get("id").toString();
+        long start = object.getJsonNumber("start").longValue();
+        long end = object.getJsonNumber("end").longValue();
+        List<LProbe> proben = factory.create(
+            id,
+            start,
+            end);
+        return new Response(true, 200, proben);
     }
 
     /**
