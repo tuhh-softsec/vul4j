@@ -71,6 +71,9 @@ public class CcmResult extends BuildResult {
 		return CcmResultAction.class;
 	}
 
-	
+	@Override
+	public String getSummary() {
+		return "CCM: " + createDefaultSummary(CcmDescriptor.RESULT_URL, getNumberOfAnnotations(), getNumberOfModules());
+	}
 	
 }

@@ -39,6 +39,8 @@ public class CcmDescriptor extends PluginDescriptor {
     static final String PLUGIN_NAME = "ccm";
     /** Icon to use for the result and project action. */
     static final String ICON_URL = "/plugin/ccm/icons/ccm-24x24.png";
+    /** The URL of the result action. */
+    static final String RESULT_URL = PluginDescriptor.createResultUrlName(PLUGIN_NAME);
 	
 	/**
 	 * @param clazz
