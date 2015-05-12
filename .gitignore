@@ -4,3 +4,7 @@ work/
 .classpath
 target/
 inject-tests/
+
+# IntelliJ IDE files
+.idea
+*.iml
