@@ -10,7 +10,7 @@
             <property name="jboss.entity.manager.jndi.name" value="java:app/entitymanager/bund"/>
             <!-- Properties for Hibernate -->
             <property name="hibernate.show_sql" value="false" />
-            <property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect"/>
+            <property name="hibernate.dialect" value="de.intevation.lada.util.data.LadaPostgreSQLDialect"/>
             <property name="hibernate.hbm2ddl.auto" value="none"/>
             <!-- property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform" /--> 
        </properties>
@@ -21,8 +21,8 @@
        	<exclude-unlisted-classes>false</exclude-unlisted-classes>
     	<properties>
             <property name="jboss.entity.manager.jndi.name" value="java:app/entitymanager/land"/>
-            <property name="hibernate.show_sql" value="false" />
-            <property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect"/>
+            <property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.dialect" value="de.intevation.lada.util.data.LadaPostgreSQLDialect"/>
             <property name="hibernate.hbm2ddl.auto" value="none"/>
        </properties>
     </persistence-unit>
@@ -31,8 +31,8 @@
         <jta-data-source>java:/jboss/lada-stamm</jta-data-source>
         <properties>
             <property name="jboss.entity.manager.jndi.name" value="java:app/entitymanager/stamm"/>
-            <property name="hibernate.show_sql" value="false" />
-            <property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect"/>
+			<property name="hibernate.dialect" value="de.intevation.lada.util.data.LadaPostgreSQLDialect"/>
+            <property name="hibernate.show_sql" value="true" />
             <property name="hibernate.hbm2ddl.auto" value="none"/>
         </properties>
     </persistence-unit>
