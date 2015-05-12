@@ -13,7 +13,7 @@
 
 	<artifactId>ccm</artifactId>
 	<name>CCM Plug-in</name>
-	<version>3.0.2-SNAPSHOT</version>
+	<version>3.0.2</version>
 	<packaging>hpi</packaging>
 	<description>This plug-in generates the trend report for CCM, an
     open source static code analysis program.</description>
@@ -141,7 +141,8 @@
 		<connection>scm:git:git://github.com/jenkinsci/ccm-plugin.git</connection>
 		<developerConnection>scm:git:git@github.com:jenkinsci/ccm-plugin.git</developerConnection>
 		<url>http://github.com/jenkinsci/ccm-plugin</url>
-	</scm>
+	  <tag>ccm-3.0.2</tag>
+  </scm>
 
 	<!-- get every artifact through maven.jenkins-ci.org, which proxies all 
 		the artifacts that we need -->
