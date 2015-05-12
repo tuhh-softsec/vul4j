@@ -99,11 +99,11 @@ public class MessprogrammService {
      *  * limit: The count of Probe items.<br>
      *  * sort: Sort the result ascending(ASC) or descenting (DESC).<br>
      *  <br>
-     *  The response data contains a stripped set of Probe objects. The returned fields
+     *  The response data contains a stripped set of Messprogramm objects. The returned fields
      *  are defined in the query used in the request.
      * <p>
      * Example:
-     * http://example.com/probe?qid=[ID]&page=[PAGE]&start=[START]&limit=[LIMIT]&sort=[{"property":"probeId","direction":"ASC"}]
+     * http://example.com/messprogramm?qid=[ID]&page=[PAGE]&start=[START]&limit=[LIMIT]&sort=[{"property":"messprogrammId","direction":"ASC"}]
      *
      * @return Response object containing all Messprogramm objects.
      */
