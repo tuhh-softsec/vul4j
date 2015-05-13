@@ -28,6 +28,9 @@ public class DeskriptorToUmwelt implements Rule {
     public Violation execute(Object object) {
         LProbe probe = (LProbe)object;
         String[] mediaDesk = probe.getMediaDesk().split(" ");
+        if (mediaDesk.length <= 1) {
+            return null;
+        }
         List<Integer> mediaIds = new ArrayList<Integer>();
         boolean zebs = false;
         Integer parent = null;

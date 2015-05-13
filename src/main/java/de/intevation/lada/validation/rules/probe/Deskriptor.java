@@ -26,6 +26,11 @@ public class Deskriptor implements Rule {
     public Violation execute(Object object) {
         LProbe probe = (LProbe)object;
         String[] mediaDesk = probe.getMediaDesk().split(" ");
+        if (mediaDesk.length <= 1) {
+            Violation violation = new Violation();
+            violation.addWarning("mediaDesk", 631);
+            return violation;
+        }
         boolean zebs = false;
         Integer parent = null;
         Integer hdParent = null;
