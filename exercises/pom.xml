@@ -74,12 +74,13 @@
         </plugins>
     </build>
     <dependencies>
-        <!-- The Derby client JDBC driver, used to connect to a Derby server over a network connection.-->
+        <!-- The Derby client JDBC driver, used to connect to a Derby server over a network connection. -->
         <dependency>
             <groupId>org.apache.derby</groupId>
             <artifactId>derbyclient</artifactId>
             <version>10.11.1.1</version>
         </dependency>
+        <!-- Apache Commons DBCP, provides database connection pooling services. -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-dbcp2</artifactId>
