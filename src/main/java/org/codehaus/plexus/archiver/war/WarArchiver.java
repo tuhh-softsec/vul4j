@@ -17,11 +17,11 @@ package org.codehaus.plexus.archiver.war;
  *
  */
 
-import org.apache.commons.compress.archivers.zip.ParallelScatterZipCreator;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.codehaus.plexus.archiver.util.ResourceUtils;
+import org.codehaus.plexus.archiver.zip.ConcurrentJarCreator;
 
 import java.io.File;
 import java.io.IOException;
@@ -152,9 +152,9 @@ public class WarArchiver
     /**
      * override of  parent; validates configuration
      * before initializing the output stream.
-     * @param zOut
-     */
-    protected void initZipOutputStream( ParallelScatterZipCreator zOut )
+	 * @param zOut
+	 */
+    protected void initZipOutputStream( ConcurrentJarCreator zOut )
         throws ArchiverException, IOException
     {
         // If no webxml file is specified, it's an error.
@@ -168,7 +168,7 @@ public class WarArchiver
     /**
      * Overridden from ZipArchiver class to deal with web.xml
      */
-    protected void zipFile( ArchiveEntry entry, ParallelScatterZipCreator zOut, String vPath )
+    protected void zipFile( ArchiveEntry entry, ConcurrentJarCreator zOut, String vPath )
         throws IOException, ArchiverException
     {
         // If the file being added is WEB-INF/web.xml, we warn if it's
