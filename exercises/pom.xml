@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.mycompany</groupId>
+    <artifactId>exercises</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+    </properties>
+    <build>
+        <plugins>
+            <!-- FindBugs Maven Plugin (static analyser which looks for bugs) -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>3.0.1</version>
+                <configuration>
+                    <onlyAnalyze>com.company.project.*</onlyAnalyze>
+                    <effort>Max</effort>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>test</phase> 
+                        <goals>
+                            <goal>check</goal> 
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Apache Maven PMD Plugin (source code analyser) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.4</version>
+                <executions>
+                    <execution>
+                        <phase>test</phase> 
+                        <goals>
+                            <goal>check</goal>
+                            <!-- Finding duplicate code with PMD's Copy/Paste Detector (CPD) tool. -->
+                            <goal>cpd-check</goal> 
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Apache Maven Checkstyle Plugin (checks Java code adheres to a coding standard) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.15</version>
+                <dependencies>
+                    <!-- Upgrade the version of Checkstyle used at runtime -->
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>6.6</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <configLocation>/src/main/resources/checkstyle.xml</configLocation>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>test</phase> 
+                        <goals>
+                            <goal>check</goal> 
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <!-- The Derby client JDBC driver, used to connect to a Derby server over a network connection.-->
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derbyclient</artifactId>
+            <version>10.11.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-dbcp2</artifactId>
+            <version>2.1</version>
+        </dependency>
+    </dependencies>
+</project>

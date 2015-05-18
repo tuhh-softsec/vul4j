@@ -1,0 +1,189 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+    "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
+    "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
+
+<!--
+
+  Checkstyle configuration that checks the Company coding conventions from:
+
+    - The Java Language Specification, Java SE 8 Edition  at
+      https://docs.oracle.com/javase/specs/jls/se8/html/index.html
+
+    - the Sun Code Conventions at http://www.oracle.com/technetwork/java/codeconvtoc-136057.html
+
+    - the Javadoc guidelines at
+      http://www.oracle.com/technetwork/articles/java/index-137868.html
+
+    - the JDK API specification https://docs.oracle.com/javase/8/docs/api/
+
+    - some best practices
+
+  Checkstyle is very configurable. Be sure to read the documentation at
+  http://checkstyle.sourceforge.net/ (or in your downloaded distribution).
+
+  Most Checks are configurable, be sure to consult the documentation.
+
+  To completely disable a check, just comment it out or delete it from the file.
+
+  Finally, it is worth reading the documentation.
+
+-->
+
+<module name="Checker">
+    <!-- Checks for long source files. -->
+    <module name="FileLength"/>
+    <!-- Checks to see if a file contains a tab character. -->
+    <module name="FileTabCharacter">
+        <property name="eachLine" value="true"/>
+        <property name="fileExtensions" value=".java"/>
+    </module>
+    <!-- Checks the header of the source against a fixed header file. -->
+    <module name="Header">
+        <property name="header"
+              value="/**\n * Copyright (c) 2015 Company.\n * All rights reserved.\n */\n"/>
+        <property name="fileExtensions" value="java"/>
+    </module>
+    <!-- Checks that there is a newline at the end of each file. -->
+    <module name="NewlineAtEndOfFile"/>
+    <!-- Configure a filter to suppress audit events for check on any line with a comment SUPPRESS CHECKSTYLE Check -->
+    <module name="SuppressWithNearbyCommentFilter"/>
+    <!-- Separately transforms each of the Java source files into an abstract syntax tree and then hands the result
+    over to each of its submodules which in turn have a look at certain aspects of the tree. -->
+    <module name="TreeWalker">
+        <module name="AbbreviationAsWordInName">
+            <property name="allowedAbbreviationLength" value="5"/>
+        </module>
+        <module name="AbstractClassName"/>
+        <module name="AnnotationLocation"/>
+        <module name="AnnotationUseStyle"/>
+        <module name="AnonInnerLength"/>
+        <module name="ArrayTrailingComma"/>
+        <module name="ArrayTypeStyle"/>
+        <module name="AtclauseOrder"/>
+        <module name="AvoidEscapedUnicodeCharacters"/>
+        <module name="AvoidNestedBlocks"/>
+        <module name="AvoidStarImport"/>
+        <module name="BooleanExpressionComplexity">
+            <property name="max" value="4"/>
+        </module>
+        <module name="ClassDataAbstractionCoupling">
+            <property name="max" value="22"/>
+        </module>
+        <module name="ClassFanOutComplexity">
+            <property name="max" value="32"/>
+        </module>
+        <module name="LocalVariableName">
+            <property name="format" value="^e[a-zA-Z0-9]*$"/>
+            <property name="tokens" value="PARAMETER_DEF"/>
+            <property name="allowOneCharVarInForLoop" value="true"/>
+        </module>
+        <module name="ConstantName"/>
+        <module name="CovariantEquals"/>
+        <module name="CustomImportOrder"/>
+        <module name="CyclomaticComplexity">
+            <property name="max" value="64"/>
+        </module>
+        <module name="DefaultComesLast"/>
+        <module name="EmptyBlock">
+            <property name="option" value="text"/>
+        </module>
+        <module name="EmptyCatchBlock"/>
+        <module name="EmptyForInitializerPad"/>
+        <module name="EmptyForIteratorPad"/>
+        <module name="EmptyStatement"/>
+        <module name="EqualsAvoidNull"/>
+        <module name="EqualsHashCode"/>
+        <module name="ExecutableStatementCount">
+            <property name="max" value="169"/>
+        </module>
+        <module name="ExplicitInitialization"/>
+        <module name="FallThrough"/>
+        <module name="FileContentsHolder"/>
+        <module name="FinalClass"/>
+        <module name="FinalParameters">
+            <property name="ignorePrimitiveTypes" value="true"/>
+        </module>
+        <module name="GenericWhitespace"/>
+        <module name="HideUtilityClassConstructor"/>
+        <module name="IllegalImport"/>
+        <module name="IllegalThrows"/>
+        <module name="IllegalTokenText"/>
+        <module name="InnerAssignment"/>
+        <module name="InterfaceIsType"/>
+        <module name="InterfaceTypeParameterName"/>
+        <module name="JavaNCSS">
+            <property name="methodMaximum" value="213"/>
+        </module>
+        <module name="LeftCurly"/>
+        <module name="LineLength">
+            <property name="max" value="120"/>
+        </module>
+        <module name="LocalFinalVariableName"/>
+        <module name="LocalVariableName"/>
+        <module name="MagicNumber"/>   
+        <module name="MemberName"/>
+        <module name="MethodCount"/>
+        <module name="MethodLength">
+            <property name="max" value="402"/>
+        </module>
+        <module name="MethodName"/>
+        <module name="MethodParamPad"/>
+        <module name="MethodTypeParameterName"/>
+        <module name="MissingDeprecated"/>
+        <module name="MissingOverride"/>
+        <module name="ModifiedControlVariable"/>
+        <module name="ModifierOrder"/>
+        <module name="MultipleVariableDeclarations"/>
+        <module name="MutableException"/>
+        <module name="NeedBraces"/>
+        <module name="NestedForDepth"/>
+        <module name="NestedIfDepth">
+            <property name="max" value="3"/>
+        </module>
+        <module name="NestedTryDepth">
+            <property name="max" value="3"/>
+        </module>
+        <module name="NoClone"/>
+        <module name="NoFinalizer"/>
+        <module name="NoLineWrap"/>
+        <module name="NoWhitespaceAfter"/>
+        <module name="NoWhitespaceBefore"/>
+        <module name="OneStatementPerLine"/>
+        <module name="OneTopLevelClass"/>
+        <module name="OperatorWrap"/>
+        <module name="OuterTypeFilename"/>
+        <module name="OuterTypeNumber"/>
+        <module name="PackageDeclaration"/>
+        <module name="PackageName"/>
+        <module name="ParameterAssignment"/>
+        <module name="ParameterName"/>
+        <module name="ParameterNumber"/>
+        <module name="ParenPad"/>
+        <module name="RedundantImport"/>
+        <module name="RedundantModifier"/>
+        <module name="ReturnCount">
+            <property name="max" value="4"/>
+        </module>
+        <module name="RightCurly"/>
+        <module name="SimplifyBooleanExpression"/>
+        <module name="SimplifyBooleanReturn"/>
+        <module name="StaticVariableName"/>
+        <module name="StringLiteralEquality"/>
+        <module name="SuperClone"/>
+        <module name="SuperFinalize"/>
+        <module name="ThrowsCount">
+            <property name="max" value="2"/>
+        </module>
+        <module name="TodoComment"/>
+        <module name="TypeName"/>
+        <module name="TypecastParenPad"/>
+        <module name="UnnecessaryParentheses"/>
+        <module name="UnusedImports"/>
+        <module name="UpperEll"/>
+        <module name="VariableDeclarationUsageDistance"/>
+        <module name="VisibilityModifier"/>
+        <module name="WhitespaceAfter"/>
+        <module name="WhitespaceAround"/>
+    </module>
+</module>
