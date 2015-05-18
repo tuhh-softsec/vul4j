@@ -4,6 +4,11 @@ Plexus Archiver and Plexus-IO combined release notes
 Since archiver depends on a given version of IO this list is cumulative,
 any version includes *all* changes below.
 
+Plexus Components - Version plexus-archiver-2.10.1
+-----
+
+MASSEMBLY-768 fix.
+
 Plexus Components - Version plexus-archiver-2.10
 -----
 
