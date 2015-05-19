@@ -130,7 +130,6 @@ public class zOSJobSubmitter extends Builder {
                         ));
                 outputStream.writeTo(savedOutput.write());
                 outputStream.close();
-                build.doArtifact();
             }
             catch (IOException e)
             {
