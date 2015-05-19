@@ -1,5 +1,6 @@
 package org.jenkinsci.plugins.IBM_zOS_Connector;
 
+import hudson.model.TaskListener;
 import hudson.scm.EditType;
 import hudson.scm.SCMRevisionState;
 
@@ -135,10 +136,17 @@ public class SCLMSCMRevisionState extends SCMRevisionState{
             common.removeAll(added);
             LinkedList<SCLMFileState> base = baseline.getFiles();
             for (SCLMFileState f : common) {
-                if(base.get(base.indexOf(f)).compareTo(f) == 0) {
-                    f.editType = null;
-                } else {
+                boolean edit = true;
+                for(SCLMFileState fileInBase : base) {
+                    if(fileInBase.compareTo(f) == 0) {
+                        edit = false;
+                        break;
+                    }
+                }
+                if(edit) {
                     f.editType = EditType.EDIT;
+                } else {
+                    f.editType = null;
                 }
             }
             this.files.addAll(common);

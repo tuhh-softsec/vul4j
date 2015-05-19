@@ -400,7 +400,6 @@ public class SCLMSCM  extends SCM {
                 }
                 writer.println("</changelog>");
                 writer.close();
-	            build.doArtifact();
             } else
             {
                 this.createEmptyChangeLog(changelogFile,listener,"changelog");
