@@ -7,8 +7,6 @@
  */
 package de.intevation.lada.rest.stamm;
 
-import java.util.ArrayList;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -26,8 +24,6 @@ import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
-import de.intevation.lada.util.auth.UserInfo;
-import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.Response;
@@ -93,12 +89,7 @@ public class MessstelleService {
         @Context HttpServletRequest request,
         @Context UriInfo info
     ) {
-        UserInfo userInfo = authorization.getInfo(request);
-        QueryBuilder<MessStelle> builder =
-            new QueryBuilder<MessStelle>(
-                defaultRepo.entityManager("stamm"), MessStelle.class);
-        builder.or("id", userInfo.getMessstellen());
-        return defaultRepo.filter(builder.getQuery(), "stamm");
+        return defaultRepo.getAll(MessStelle.class, "stamm");
     }
 
     /**
@@ -118,10 +109,6 @@ public class MessstelleService {
         @Context HttpServletRequest request,
         @PathParam("id") String id
     ) {
-        UserInfo userInfo = authorization.getInfo(request);
-        if (userInfo.getMessstellen().contains(id)) {
-            return defaultRepo.getById(MessStelle.class, id, "stamm");
-        }
-        return new Response(false, 698, new ArrayList<MessStelle>());
+        return defaultRepo.getById(MessStelle.class, id, "stamm");
     }
 }
