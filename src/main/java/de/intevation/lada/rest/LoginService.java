@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -20,6 +21,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.UriInfo;
 
+import de.intevation.lada.util.annotation.AuthorizationConfig;
+import de.intevation.lada.util.auth.Authorization;
+import de.intevation.lada.util.auth.AuthorizationType;
+import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.rest.Response;
 
 /**
@@ -50,6 +55,10 @@ import de.intevation.lada.util.rest.Response;
 @Path("login")
 @RequestScoped
 public class LoginService {
+
+    @Inject
+    @AuthorizationConfig(type=AuthorizationType.OPEN_ID)
+    private Authorization authorization;
 
     /**
      * Get login data.
@@ -85,6 +94,9 @@ public class LoginService {
         response.put("username", request.getAttribute("lada.user.name"));
         response.put("roles", request.getAttribute("lada.user.roles"));
         response.put("servertime", new Date().getTime());
+        UserInfo userInfo = authorization.getInfo(request);
+        response.put("mst", userInfo.getMessstellen());
+        response.put("netzbetreiber", userInfo.getNetzbetreiber());
         return new Response(true, 200, response);
     }
 }
