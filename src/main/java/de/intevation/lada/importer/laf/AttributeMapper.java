@@ -29,6 +29,12 @@ import de.intevation.lada.model.land.LProbe;
 import de.intevation.lada.model.land.LZusatzWert;
 import de.intevation.lada.model.land.MessungTranslation;
 import de.intevation.lada.model.land.ProbeTranslation;
+import de.intevation.lada.model.stamm.Datenbasis;
+import de.intevation.lada.model.stamm.MessEinheit;
+import de.intevation.lada.model.stamm.Messgroesse;
+import de.intevation.lada.model.stamm.ProbenZusatz;
+import de.intevation.lada.model.stamm.Probenart;
+import de.intevation.lada.model.stamm.Umwelt;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
@@ -89,12 +95,17 @@ public class AttributeMapper
         }
 
         if ("datenbasis".equals(key) && probe.getDatenbasisId() == null) {
-            String nativeQuery = "select id from stammdaten.datenbasis where datenbasis = '";
-            nativeQuery += value.toString() + "'";
-            Query query = repository.entityManager("land").createNativeQuery(nativeQuery);
-            List<Object[]> result = query.getResultList();
+            QueryBuilder<Datenbasis> builder =
+                new QueryBuilder<Datenbasis>(
+                    repository.entityManager("stamm"),
+                    Datenbasis.class);
+            builder.and("datenbasis", value.toString());
+            List<Datenbasis> datenbasis =
+                (List<Datenbasis>)repository.filter(
+                    builder.getQuery(),
+                    "stamm").getData();
 
-            Integer v = Integer.valueOf(result.get(0)[0].toString());
+            Integer v = datenbasis.get(0).getId();
             probe.setDatenbasisId(v);
         }
         else if ("datenbasis".equals(key) && probe.getDatenbasisId() != null){
@@ -169,12 +180,17 @@ public class AttributeMapper
             this.warnings.add(new ReportItem(key, value.toString(), 672));
         }
         if ("umweltbereich_c".equals(key) && probe.getUmwId() == null) {
-            String nativeQuery = "select id from stammdaten.umwelt where umwelt_bereich= '";
+            QueryBuilder<Umwelt> builder =
+                new QueryBuilder<Umwelt>(
+                    repository.entityManager("stamm"),
+                    Umwelt.class);
             int length = value.toString().length() > 80 ? 80 : value.toString().length();
-            nativeQuery += value.toString().substring(0, length) + "'";
-            Query query = repository.entityManager("land").createNativeQuery(nativeQuery);
-            List<Object[]> result = query.getResultList();
-            probe.setUmwId(result.get(0)[0].toString());
+            builder.and("umweltBereich", value.toString().substring(0, length));
+            List<Umwelt> umwelt =
+                (List<Umwelt>)repository.filter(
+                    builder.getQuery(),
+                    "stamm").getData();
+            probe.setUmwId(umwelt.get(0).getId());
         }
         else if ("umweltbereich_c".equals(key) && probe.getUmwId() != null){
             this.warnings.add(new ReportItem(key, value.toString(), 672));
@@ -198,11 +214,16 @@ public class AttributeMapper
         }
 
         if ("probenart".equals(key)) {
-            String nativeQuery = "select id from stammdaten.probenart where probenart = '";
-            nativeQuery += value.toString() + "'";
-            Query query = repository.entityManager("land").createNativeQuery(nativeQuery);
-            List<Object> result = query.getResultList();
-            probe.setProbenartId(Integer.valueOf(result.get(0).toString()));
+            QueryBuilder<Probenart> builder =
+                new QueryBuilder<Probenart>(
+                    repository.entityManager("stamm"),
+                    Probenart.class);
+            builder.and("probenart", value.toString());
+            List<Probenart> probenart =
+                (List<Probenart>)repository.filter(
+                    builder.getQuery(),
+                    "stamm").getData();
+            probe.setProbenartId(probenart.get(0).getId());
         }
         return probe;
     }
@@ -399,30 +420,39 @@ public class AttributeMapper
             float fWert = Float.valueOf(wert);
             messwert.setMesswert(fWert);
 
-            String nativeQuery = "select id from stammdaten.mess_einheit where einheit = '";
-            nativeQuery += einheit + "'";
-            Query query = repository.entityManager("land").createNativeQuery(nativeQuery);
-            List<Object> result = query.getResultList();
-
-            if (result.isEmpty()) {
+            QueryBuilder<MessEinheit> builder =
+                new QueryBuilder<MessEinheit>(
+                    repository.entityManager("stamm"),
+                    MessEinheit.class);
+            builder.and("einheit", einheit);
+            List<MessEinheit> messeinheit =
+                (List<MessEinheit>)repository.filter(
+                    builder.getQuery(),
+                    "stamm").getData();
+            if (messeinheit.isEmpty()) {
                 this.errors.add(new ReportItem("messeinheit", "null", 673));
                 return null;
             }
             else {
-                messwert.setMehId((Integer)result.get(0));
+                messwert.setMehId(messeinheit.get(0).getId());
             }
 
-            String nativeQuery2 = "select id from stammdaten.messgroesse where messgroesse = '";
-            nativeQuery2 += messgroesse + "'";
-            Query query2 = repository.entityManager("land").createNativeQuery(nativeQuery2);
-            List<Object> result2 = query2.getResultList();
+            QueryBuilder<Messgroesse> mgBuilder =
+                new QueryBuilder<Messgroesse>(
+                    repository.entityManager("stamm"),
+                    Messgroesse.class);
+            mgBuilder.and("messgroesse", messgroesse);
+            List<Messgroesse> messgroessen =
+                (List<Messgroesse>)repository.filter(
+                    mgBuilder.getQuery(),
+                    "stamm").getData();
 
-            if (result2.isEmpty()) {
+            if (messgroessen.isEmpty()) {
                 this.errors.add(new ReportItem("messgroesse", "null", 673));
                 return null;
             }
             else {
-                messwert.setMessgroesseId((Integer)result2.get(0));
+                messwert.setMessgroesseId(messgroessen.get(0).getId());
             }
         }
         return messwert;
@@ -508,16 +538,21 @@ public class AttributeMapper
         ndx = v.indexOf("\"");
         String fehler = v.substring(ndx + 2);
 
-        String nativeQuery = "select id from stammdaten.probenzusatz where zusatzwert = '";
-        nativeQuery += groesse + "'";
-        Query query = repository.entityManager("land").createNativeQuery(nativeQuery);
-        List<Object[]> result = query.getResultList();
+        QueryBuilder<ProbenZusatz> builder =
+            new QueryBuilder<ProbenZusatz>(
+                repository.entityManager("stamm"),
+                ProbenZusatz.class);
+        builder.and("zusatzwert", groesse);
+        List<ProbenZusatz> zusatz=
+            (List<ProbenZusatz>)repository.filter(
+                builder.getQuery(),
+                "stamm").getData();
 
-        if (result == null || result.isEmpty()) {
+        if (zusatz == null || zusatz.isEmpty()) {
             this.errors.add(new ReportItem(lKey, "zusatzwert", 673));
             return null;
         }
-        wert.setPzsId(result.get(0)[0].toString());
+        wert.setPzsId(zusatz.get(0).getId());
         wert.setMesswertPzs(Float.valueOf(w));
         wert.setMessfehler(Float.valueOf(fehler));
         return wert;

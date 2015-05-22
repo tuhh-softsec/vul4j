@@ -24,6 +24,11 @@ import de.intevation.lada.model.land.LOrt;
 import de.intevation.lada.model.land.LProbe;
 import de.intevation.lada.model.land.LZusatzWert;
 import de.intevation.lada.model.land.ProbeTranslation;
+import de.intevation.lada.model.stamm.MessEinheit;
+import de.intevation.lada.model.stamm.Messgroesse;
+import de.intevation.lada.model.stamm.ProbenZusatz;
+import de.intevation.lada.model.stamm.Probenart;
+import de.intevation.lada.model.stamm.SOrt;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
@@ -91,11 +96,16 @@ implements Creator
         Response kommentar = repository.filter(kommBuilder.getQuery(), "land");
         List<LKommentarP> kommentare = (List<LKommentarP>)kommentar.getData();
 
-        String nativeQuery = "select probenart from stammdaten.probenart where id= '";
-        nativeQuery += probe.getProbenartId() + "'";
-        Query query = repository.entityManager("land").createNativeQuery(nativeQuery);
-        List<String> result = query.getResultList();
-        String probenart = result.get(0);//[0].toString();
+        QueryBuilder<Probenart> builder =
+            new QueryBuilder<Probenart>(
+                repository.entityManager("stamm"),
+                Probenart.class);
+        builder.and("id", probe.getProbenartId());
+        List<Probenart> probenarten =
+            (List<Probenart>)repository.filter(
+                builder.getQuery(),
+                "stamm").getData();
+        String probenart = probenarten.get(0).getProbenart();
 
         QueryBuilder<LZusatzWert> zusatzBuilder =
             new QueryBuilder<LZusatzWert>(
@@ -163,14 +173,19 @@ implements Creator
      */
     @SuppressWarnings("unchecked")
     private String writeZusatzwert(LZusatzWert zw) {
-        String nativeQuery = "select beschreibung, meh_id from stammdaten.proben_zusatz where pzs_id = '";
-        nativeQuery += zw.getPzsId() + "'";
-        Query query = repository.entityManager("land").createNativeQuery(nativeQuery);
-        List<Object[]> result = query.getResultList();
+        QueryBuilder<ProbenZusatz> builder =
+            new QueryBuilder<ProbenZusatz>(
+                repository.entityManager("stamm"),
+                ProbenZusatz.class);
+        builder.and("id", zw.getPzsId());
+        List<ProbenZusatz> zusatz =
+            (List<ProbenZusatz>)repository.filter(
+                builder.getQuery(),
+                "stamm").getData();
 
-        String value = "\"" + result.get(0)[0].toString() + "\"";
+        String value = "\"" + zusatz.get(0).getBeschreibung() + "\"";
         value += " " + zw.getMesswertPzs();
-        value += " " + result.get(0)[1].toString();
+        value += " " + zusatz.get(0).getMehId();
         value += " " + zw.getMessfehler();
         return lafLine("PZB_S", value);
     }
@@ -194,24 +209,29 @@ implements Creator
         String laf = "";
         for(LOrt o : orte) {
             laf += "%ORT%\n";
-            String nativeQuery = "select bezeichnung, staat_id, longitude, latitude, gem_id from stammdaten.ort where id = '";
-            nativeQuery += o.getOrt() + "'";
-            Query query = repository.entityManager("land").createNativeQuery(nativeQuery);
-            List<Object[]> result = query.getResultList();
+            QueryBuilder<SOrt> oBuilder =
+                new QueryBuilder<SOrt>(
+                    repository.entityManager("stamm"),
+                    SOrt.class);
+            oBuilder.and("id", o.getOrt());
+            List<SOrt> sOrte=
+                (List<SOrt>)repository.filter(
+                    builder.getQuery(),
+                    "stamm").getData();
 
             laf += lafLine("ORT_CODE",
-                "\"" + result.get(0)[0].toString() + "\"");
+                "\"" + sOrte.get(0).getBezeichnung() + "\"");
             laf += lafLine("ORT_TYP", "\"" + o.getOrtsTyp() + "\"");
             laf += o.getOrtszusatztext() == null ? "":
                 lafLine("ORT_ZUSATZTEXT", "\"" + o.getOrtszusatztext() + "\"");
-            laf += lafLine("ORT_LAND_S", String.valueOf(result.get(0)[1].toString()));
+            laf += lafLine("ORT_LAND_S", String.valueOf(sOrte.get(0).getStaatId()));
             String koord = "";
             koord += "05 ";
-            koord += result.get(0)[2].toString() + " ";
-            koord += result.get(0)[3].toString();
+            koord += sOrte.get(0).getLongitude() + " ";
+            koord += sOrte.get(0).getLatitude();
             //TODO: use table koordinatenart and koord*extern!
             laf += lafLine("ORT_KOORDINATEN_S", koord);
-            laf += lafLine("ORT_GEMEINDESCHLUESSEL", result.get(0)[4].toString());
+            laf += lafLine("ORT_GEMEINDESCHLUESSEL", sOrte.get(0).getVerwaltungseinheitId());
         }
         return laf;
     }
@@ -303,17 +323,27 @@ implements Creator
      */
     @SuppressWarnings("unchecked")
     private String writeMesswert(LMesswert mw) {
-        String nativeQuery = "select messgroesse from stammdaten.messgroesse where id = '";
-        nativeQuery += mw.getMessgroesseId() + "'";
-        Query query = repository.entityManager("land").createNativeQuery(nativeQuery);
-        List<Object[]> result = query.getResultList();
+        QueryBuilder<Messgroesse> builder =
+            new QueryBuilder<Messgroesse>(
+                repository.entityManager("stamm"),
+                Messgroesse.class);
+        builder.and("id", mw.getMessgroesseId());
+        List<Messgroesse> groessen =
+            (List<Messgroesse>)repository.filter(
+                builder.getQuery(),
+                "stamm").getData();
 
-        String nativeQuery2 = "select einheit from stammdaten.mess_einheit where id = '";
-        nativeQuery2 += mw.getMehId() + "'";
-        Query query2 = repository.entityManager("land").createNativeQuery(nativeQuery2);
-        List<Object[]> result2 = query2.getResultList();
+        QueryBuilder<MessEinheit> eBuilder =
+            new QueryBuilder<MessEinheit>(
+                repository.entityManager("stamm"),
+                MessEinheit.class);
+        eBuilder.and("id", mw.getMehId());
+        List<MessEinheit> einheiten =
+            (List<MessEinheit>)repository.filter(
+                builder.getQuery(),
+                "stamm").getData();
 
-        String value = "\"" + result.get(0) + "\"";
+        String value = "\"" + groessen.get(0).getMessgroesse() + "\"";
         if (mw.getGrenzwertueberschreitung() != null &&
             !mw.getGrenzwertueberschreitung()) {
             value += " <";
@@ -322,7 +352,7 @@ implements Creator
             value += " ";
         }
         value += mw.getMesswert();
-        value += " \"" + result2.get(0) + "\"";
+        value += " \"" + einheiten.get(0).getEinheit() + "\"";
         value += mw.getMessfehler() == null ? " NULL" : " " + mw.getMessfehler();
         value += mw.getNwgZuMesswert() == null ? " NULL" : " " + mw.getNwgZuMesswert();
         value += mw.getGrenzwertueberschreitung() == null ? " N" :
