@@ -76,6 +76,24 @@ public class QueryBuilder<T> {
     }
 
     /**
+     * Logical AND NOT operation.
+     *
+     * @param id    The database column name.
+     * @param value The filter value
+     * @return The builder itself.
+     */
+    public QueryBuilder<T> andNot(String id, Object value) {
+        Predicate p = this.builder.equal(this.root.get(id), value);
+        if (this.filter != null) {
+            this.filter = this.builder.and(this.filter, p).not();
+        }
+        else {
+            this.filter = this.builder.and(p).not();
+        }
+        return this;
+    }
+
+    /**
      * Logical AND with like operation.
      *
      * @param id    The database column name.
