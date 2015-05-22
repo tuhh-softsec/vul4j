@@ -8,14 +8,20 @@
 package de.intevation.lada.importer.laf;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.persistence.Query;
 
+import org.apache.log4j.Logger;
+
+import de.intevation.lada.importer.ReportItem;
 import de.intevation.lada.model.land.LOrt;
 import de.intevation.lada.model.stamm.SOrt;
+import de.intevation.lada.model.stamm.Staat;
+import de.intevation.lada.model.stamm.Verwaltungseinheit;
 import de.intevation.lada.util.annotation.RepositoryConfig;
+import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 
@@ -27,8 +33,21 @@ import de.intevation.lada.util.data.RepositoryType;
 public class OrtCreator
 {
     @Inject
+    private Logger logger;
+
+    @Inject
     @RepositoryConfig(type=RepositoryType.RW)
     private Repository repository;
+
+    /**
+     * List of warnings.
+     */
+    private List<ReportItem> warnings;
+
+    /**
+     * List of errors.
+     */
+    private List<ReportItem> errors;
 
     private Integer probeId;
     private Integer ortId;
@@ -52,6 +71,22 @@ public class OrtCreator
 
     public OrtCreator() {
         this.ortId = null;
+        this.warnings = new ArrayList<ReportItem>();
+        this.errors = new ArrayList<ReportItem>();
+    }
+
+    /**
+     * @return the warnings
+     */
+    public List<ReportItem> getWarnings() {
+        return warnings;
+    }
+
+    /**
+     * @return the errors
+     */
+    public List<ReportItem> getErrors() {
+        return errors;
     }
 
     /**
@@ -370,16 +405,16 @@ public class OrtCreator
         if (this.ortCode != null && this.ortCode.length() > 0) {
             return null;
         }
+        logger.debug("create a new ort");
         SOrt ort = new SOrt();
-        // TODO USE NATIVE QUERY...
-        //repository.create(ort, "land");
+        repository.create(ort, "stamm");
         this.ortId = ort.getId();
         boolean koord = true;
         if (this.koordinatenS != null && this.koordinatenS.length() > 0) {
             ort = setKoordinatenS(ort);
             koord = false;
             if (this.koordinaten != null && this.koordinaten.length() > 0) {
-                //TODO: add warning.
+                this.warnings.add(new ReportItem("koodinaten", null, 631));
             }
         }
         else if (this.koordinaten != null && this.koordinaten.length() > 0) {
@@ -391,7 +426,7 @@ public class OrtCreator
             ort = setGemeindeS(ort, koord);
             koord = false;
             if(this.gemName != null && this.gemName.length() > 0) {
-                //TODO: add warning.
+                this.warnings.add(new ReportItem("gemName", null, 631));
             }
         }
         else if (this.gemName != null && this.gemName.length() > 0) {
@@ -402,24 +437,24 @@ public class OrtCreator
             ort = setLandS(ort, koord);
             koord = false;
             if (this.landLang != null && this.landLang.length() > 0) {
-                //TODO: add warning.
+                this.warnings.add(new ReportItem("landLang", null, 631));
             }
             if (this.landKurz != null && this.landKurz.length() > 0) {
-                //TODO: add warning.
+                this.warnings.add(new ReportItem("landKurz", null, 631));
             }
         }
         else if (this.landKurz != null && this.landKurz.length() > 0) {
             ort = setLandKurz(ort, koord);
             koord = false;
             if (this.landLang != null && this.landLang.length() > 0) {
-                //TODO: add warning.
+                this.warnings.add(new ReportItem("landLang", null, 631));
             }
         }
         else if (this.landLang != null && this.landLang.length() > 0) {
             ort = setLandLang(ort, koord);
         }
         if (koord) {
-            //TODO: add warning.
+            this.warnings.add(new ReportItem("koordinaten", null, 631));
             return null;
         }
         if (this.nuts != null && this.nuts.length() > 0) {
@@ -428,19 +463,25 @@ public class OrtCreator
         else if (ort.getVerwaltungseinheitId() != null &&
             ort.getVerwaltungseinheitId().length() > 0)
         {
-            String nativeQuery = "select nuts from stammdaten.verwaltungseinheit where gem_id = '";
-            nativeQuery += ort.getVerwaltungseinheitId() + "'";
-            Query query = repository.entityManager("land").createNativeQuery(nativeQuery);
-            List<Object[]> result = query.getResultList();
+            QueryBuilder<Verwaltungseinheit> builder =
+                new QueryBuilder<Verwaltungseinheit>(
+                    repository.entityManager("stamm"),
+                    Verwaltungseinheit.class);
+            builder.and("id", ort.getVerwaltungseinheitId());
+            List<Verwaltungseinheit> einheit =
+                (List<Verwaltungseinheit>)repository.filter(
+                    builder.getQuery(),
+                    "stamm").getData();
 
-            ort.setNutsCode(result.get(0)[0].toString());
+            if (!einheit.isEmpty()) {
+                ort.setNutsCode(einheit.get(0).getNuts());
+            }
         }
         ort.setBeschreibung(beschreibung);
         if (this.hoehe != null) {
             ort.setHoeheLand(Float.valueOf(hoehe));
         }
-        //TODO USE NATIVE QUERY...
-        //repository.update(ort, "land");
+        repository.update(ort, "stamm");
         return ort;
     }
 
@@ -453,19 +494,24 @@ public class OrtCreator
      * @return The Ort object.
      */
     private SOrt setLandLang(SOrt ort, boolean koord) {
-        String nativeQuery = "select id, koord_x_extern, koord_y_extern from stammdaten.staat where staat = '";
-        nativeQuery += this.landLang + "'";
-        Query query = repository.entityManager("land").createNativeQuery(nativeQuery);
-        List<Object[]> result = query.getResultList();
+        QueryBuilder<Staat> builder =
+            new QueryBuilder<Staat>(
+                repository.entityManager("stamm"),
+                Staat.class);
+        builder.and("staat", this.landLang);
+        List<Staat> staat =
+            (List<Staat>)repository.filter(
+                builder.getQuery(),
+                "stamm").getData();
 
-        if (result.isEmpty()) {
-            //TODO: add warning.
+        if (staat.isEmpty()) {
+            this.warnings.add(new ReportItem("landLang", null, 631));
             return ort;
         }
-        ort.setStaatId(Integer.valueOf(result.get(0)[0].toString()));
+        ort.setStaatId(staat.get(0).getId());
         if (koord) {
-            ort.setKoordXExtern(result.get(0)[1].toString());
-            ort.setKoordYExtern(result.get(0)[2].toString());
+            ort.setKoordXExtern(staat.get(0).getKoordXExtern());
+            ort.setKoordYExtern(staat.get(0).getKoordYExtern());
         }
         return ort;
     }
@@ -479,19 +525,24 @@ public class OrtCreator
      * @return The Ort object.
      */
     private SOrt setLandKurz(SOrt ort, boolean koord) {
-        String nativeQuery = "select id, koord_x_extern, koord_y_extern from stammdaten.staat where staat_kurz = '";
-        nativeQuery += this.landKurz + "'";
-        Query query = repository.entityManager("land").createNativeQuery(nativeQuery);
-        List<Object[]> result = query.getResultList();
+        QueryBuilder<Staat> builder =
+            new QueryBuilder<Staat>(
+                repository.entityManager("stamm"),
+                Staat.class);
+        builder.and("staatKurz", this.landKurz);
+        List<Staat> staat =
+            (List<Staat>)repository.filter(
+                builder.getQuery(),
+                "stamm").getData();
 
-        if (result.isEmpty()) {
-            //TODO add warning.
+        if (staat.isEmpty()) {
+            this.warnings.add(new ReportItem("landKurz", null, 631));
             return ort;
         }
-        ort.setStaatId((Integer)result.get(0)[0]);
+        ort.setStaatId(staat.get(0).getId());
         if (koord) {
-            ort.setKoordXExtern(result.get(0)[1].toString());
-            ort.setKoordYExtern(result.get(0)[2].toString());
+            ort.setKoordXExtern(staat.get(0).getKoordXExtern());
+            ort.setKoordYExtern(staat.get(0).getKoordYExtern());
         }
         return ort;
     }
@@ -507,18 +558,24 @@ public class OrtCreator
     private SOrt setLandS(SOrt ort, boolean koord) {
         ort.setStaatId(Integer.valueOf(this.landS));
         if (koord) {
-            String nativeQuery = "select koord_x_extern, koord_y_extern from stammdaten.staat where id = '";
-            nativeQuery += this.landS + "'";
-            Query query = repository.entityManager("land").createNativeQuery(nativeQuery);
-            List<Object[]> result = query.getResultList();
-            if (result.isEmpty()) {
-                //TODO: add warning.
+            QueryBuilder<Staat> builder =
+                new QueryBuilder<Staat>(
+                    repository.entityManager("stamm"),
+                    Staat.class);
+            builder.and("id", this.landS);
+            List<Staat> staat =
+                (List<Staat>)repository.filter(
+                    builder.getQuery(),
+                    "stamm").getData();
+
+            if (staat.isEmpty()) {
+                this.warnings.add(new ReportItem("staat", null, 631));
                 return ort;
             }
-            ort.setKoordXExtern(result.get(0)[0].toString());
-            ort.setLongitude(Double.valueOf(result.get(0)[0].toString()));
-            ort.setKoordYExtern(result.get(0)[1].toString());
-            ort.setLatitude(Double.valueOf(result.get(0)[1].toString()));
+            ort.setKoordXExtern(staat.get(0).getKoordXExtern());
+            ort.setLongitude(Double.valueOf(staat.get(0).getKoordXExtern()));
+            ort.setKoordYExtern(staat.get(0).getKoordYExtern());
+            ort.setLatitude(Double.valueOf(staat.get(0).getKoordYExtern()));
         }
         return ort;
     }
@@ -532,18 +589,23 @@ public class OrtCreator
      * @return The Ort object.
      */
     private SOrt setGemeinde(SOrt ort, boolean koord) {
-        String nativeQuery = "select id, koord_x_extern, koord_y_extern from stammdaten.verwaltungseinheit where bezeichnung = '";
-        nativeQuery += this.gemName + "'";
-        Query query = repository.entityManager("land").createNativeQuery(nativeQuery);
-        List<Object[]> result = query.getResultList();
-        if (result.isEmpty()) {
-            //TODO: add warning.
+        QueryBuilder<Verwaltungseinheit> builder =
+            new QueryBuilder<Verwaltungseinheit>(
+                repository.entityManager("stamm"),
+                Verwaltungseinheit.class);
+        builder.and("bezeichnung", this.gemName);
+        List<Verwaltungseinheit> einheit=
+            (List<Verwaltungseinheit>)repository.filter(
+                builder.getQuery(),
+                "stamm").getData();
+        if (einheit.isEmpty()) {
+            this.warnings.add(new ReportItem("verwaltungseinheit", null, 631));
             return ort;
         }
-        ort.setVerwaltungseinheitId(result.get(0)[0].toString());
+        ort.setVerwaltungseinheitId(einheit.get(0).getId());
         if (koord) {
-            ort.setKoordXExtern(result.get(0)[1].toString());
-            ort.setKoordYExtern(result.get(0)[2].toString());
+            ort.setKoordXExtern(einheit.get(0).getKoordXExtern());
+            ort.setKoordYExtern(einheit.get(0).getKoordYExtern());
         }
         return ort;
     }
@@ -559,16 +621,21 @@ public class OrtCreator
     private SOrt setGemeindeS(SOrt ort, boolean koord) {
         ort.setVerwaltungseinheitId(this.gemSchluessel);
         if (koord) {
-            String nativeQuery = "select koord_x_extern, koord_y_extern from stammdaten.verwaltungseinheit where bezeichnung = '";
-            nativeQuery += this.gemName + "'";
-            Query query = repository.entityManager("land").createNativeQuery(nativeQuery);
-            List<Object[]> result = query.getResultList();
-            if (result.isEmpty()) {
-                // TODO: add warning.
+            QueryBuilder<Verwaltungseinheit> builder =
+                new QueryBuilder<Verwaltungseinheit>(
+                    repository.entityManager("stamm"),
+                    Verwaltungseinheit.class);
+            builder.and("bezeichnung", this.gemName);
+            List<Verwaltungseinheit> einheit=
+                (List<Verwaltungseinheit>)repository.filter(
+                    builder.getQuery(),
+                    "stamm").getData();
+            if (einheit.isEmpty()) {
+                this.warnings.add(new ReportItem("verwaltungseinheit", null, 631));
                 return ort;
             }
-            ort.setKoordXExtern(result.get(0)[0].toString());
-            ort.setKoordYExtern(result.get(0)[1].toString());
+            ort.setKoordXExtern(einheit.get(0).getKoordXExtern());
+            ort.setKoordYExtern(einheit.get(0).getKoordYExtern());
         }
         return ort;
     }
@@ -671,12 +738,17 @@ public class OrtCreator
             return null;
         }
         if(this.ortCode != null && this.ortCode.length() > 0) {
-            String nativeQuery = "select id from stammdaten.ort where bezeichnung = '";
-            nativeQuery += this.ortCode + "'";
-            Query query = repository.entityManager("land").createNativeQuery(nativeQuery);
-            List<Integer> result = query.getResultList();
-            if (result != null && !result.isEmpty()) {
-                this.ortId = result.get(0);
+            QueryBuilder<SOrt> builder =
+                new QueryBuilder<SOrt>(
+                    repository.entityManager("stamm"),
+                    SOrt.class);
+            builder.and("bezeichnung", this.ortCode);
+            List<SOrt> orte=
+                (List<SOrt>)repository.filter(
+                    builder.getQuery(),
+                    "stamm").getData();
+            if (orte != null && !orte.isEmpty()) {
+                this.ortId = orte.get(0).getId();
             }
         }
         LOrt ort = new LOrt();
