@@ -1,7 +1,6 @@
 package de.intevation.lada.validation.rules.messung;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -28,17 +27,15 @@ public class Date implements Rule {
         LMessung messung = (LMessung)object;
         Integer probeId = messung.getProbeId();
         Response response = repository.getById(LProbe.class, probeId, "land");
-        @SuppressWarnings("unchecked")
-        List<LProbe> list = (List<LProbe>) response.getData();
-        if (list.isEmpty()) {
+        LProbe probe = (LProbe) response.getData();
+        if (probe == null) {
             Map<String, Integer> errors = new HashMap<String, Integer>();
             errors.put("lprobe", 604);
         }
-        LProbe probe = list.get(0);
         if (probe.getProbeentnahmeEnde() == null ||
             probe.getProbeentnahmeEnde().after(messung.getMesszeitpunkt())) {
             Violation violation = new Violation();
-            violation.addWarning("messzeitpunkt", 661);
+            violation.addWarning("messzeitpunkt", 632);
             return violation;
         }
         return null;

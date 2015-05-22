@@ -38,8 +38,7 @@ public class HasPflichtmessgroessen implements Rule {
         QueryBuilder<LMesswert> wertBuilder =
             new QueryBuilder<LMesswert>(
                 repository.entityManager("land"), LMesswert.class);
-        wertBuilder.and("messungsId", messung.getId())
-            .and("probeId", messung.getProbeId());
+        wertBuilder.and("messungsId", messung.getId());
         Response wertResponse =
             repository.filter(wertBuilder.getQuery(), "land");
         List<LMesswert> messwerte = (List<LMesswert>)wertResponse.getData();

@@ -38,7 +38,7 @@ public class HasEntnahmeOrt implements Rule {
         @SuppressWarnings("unchecked")
         List<LOrt> orte = (List<LOrt>)response.getData();
         for (LOrt ort: orte) {
-            if (ort.getOrtsTyp().equals("E")) {
+            if ("E".equals(ort.getOrtsTyp())) {
                 return null;
             }
         }
