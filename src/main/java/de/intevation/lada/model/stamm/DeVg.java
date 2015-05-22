@@ -18,6 +18,11 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Type;
+
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.MultiPolygon;
+
 
 /**
  * The persistent class for the de_vg database table.
@@ -41,7 +46,9 @@ public class DeVg implements Serializable {
 
     private String gen;
 
-    //private Object geom;
+    @Column(name="geom", columnDefinition="geometry")
+    @Type(type = "org.hibernate.spatial.GeometryType")
+    private MultiPolygon geom;
 
     private double gf;
 
@@ -117,15 +124,15 @@ public class DeVg implements Serializable {
     public void setGen(String gen) {
         this.gen = gen;
     }
-/*
-    public Object getGeom() {
+
+    public MultiPolygon getGeom() {
         return this.geom;
     }
 
-    public void setGeom(Object geom) {
+    public void setGeom(MultiPolygon geom) {
         this.geom = geom;
     }
-*/
+
     public double getGf() {
         return this.gf;
     }

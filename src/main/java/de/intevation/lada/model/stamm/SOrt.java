@@ -122,7 +122,7 @@ public class SOrt implements Serializable {
         this.koordYExtern = koordYExtern;
     }
 
-    public double getLatitude() {
+    public Double getLatitude() {
         return this.latitude;
     }
 
@@ -138,7 +138,7 @@ public class SOrt implements Serializable {
         this.letzteAenderung = letzteAenderung;
     }
 
-    public double getLongitude() {
+    public Double getLongitude() {
         return this.longitude;
     }
 
