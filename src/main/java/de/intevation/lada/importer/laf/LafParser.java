@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 
 import de.intevation.lada.importer.ReportItem;
 import de.intevation.lada.model.land.LMessung;
+import de.intevation.lada.model.land.LOrt;
 import de.intevation.lada.model.land.LProbe;
 import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.validation.Validator;
@@ -77,9 +78,9 @@ public class LafParser {
     //@ValidationConfig(type="Messwert")
     //private Validator messwertValidator;
 
-    //@Inject
-    //@ValidationConfig(type="Ort")
-    //private Validator ortValidator;
+    @Inject
+    @ValidationConfig(type="Ort")
+    private Validator ortValidator;
 
     /**
      * The warnings.
@@ -199,6 +200,7 @@ public class LafParser {
         }
         writer.writeProbenKommentare(userInfo, producer.getProbenKommentare());
         for (LMessung messung: producer.getMessungen().keySet()) {
+            messung.setProbeId(producer.getProbe().getId());
             Violation mViolation = messungValidator.validate(messung);
             if (mViolation.hasErrors()) {
                 ReportItem mErr = new ReportItem("validation", mViolation.getErrors(), null);
@@ -213,7 +215,17 @@ public class LafParser {
             }
         }
         writer.writeOrte(userInfo, producer.getOrte());
-        writer.writeLOrte(userInfo, producer.getLOrte());
+        for (LOrt ort: producer.getLOrte()) {
+            Violation oViolation = ortValidator.validate(ort);
+            if (oViolation.hasErrors()) {
+                ReportItem oErr = new ReportItem("validation", oViolation.getErrors(), null);
+                List<ReportItem> oErrs = new ArrayList<ReportItem>();
+                oErrs.add(oErr);
+                this.appendErrors(probeId, oErrs);
+                continue;
+            }
+            writer.writeLOrte(userInfo, ort);
+        }
         writer.writeMessungKommentare(userInfo, producer.getMessungsKommentare());
         writer.writeMesswerte(userInfo, producer.getMesswerte());
         Violation postViolation = validateProbe(producer.getProbe());

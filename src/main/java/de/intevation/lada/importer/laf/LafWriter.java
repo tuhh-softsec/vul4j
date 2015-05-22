@@ -148,11 +148,9 @@ public class LafWriter {
      * @param orte  List of {@link LOrt} objects.
      * @return success
      */
-    public boolean writeLOrte(UserInfo userInfo, List<LOrt> orte) {
-        for(LOrt ort: orte) {
-            ort.setProbeId(this.currentProbeId);
-            repository.create(ort, "land");
-        }
+    public boolean writeLOrte(UserInfo userInfo, LOrt ort) {
+        ort.setProbeId(this.currentProbeId);
+        repository.create(ort, "land");
         return true;
     }
 
