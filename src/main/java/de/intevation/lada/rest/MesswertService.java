@@ -41,6 +41,9 @@ import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
+import de.intevation.lada.validation.Validator;
+import de.intevation.lada.validation.Violation;
+import de.intevation.lada.validation.annotation.ValidationConfig;
 
 /**
  * REST service for Messwert objects.
@@ -111,6 +114,10 @@ public class MesswertService {
     @AuthorizationConfig(type=AuthorizationType.OPEN_ID)
     private Authorization authorization;
 
+    @Inject
+    @ValidationConfig(type="Messwert")
+    private Validator validator;
+
     /**
      * Get all Messwert objects.
      * <p>
@@ -163,9 +170,17 @@ public class MesswertService {
         @Context HttpServletRequest request,
         @PathParam("id") String id
     ) {
+        Response response =
+            defaultRepo.getById(LMesswert.class, Integer.valueOf(id), "land");
+        LMesswert messwert = (LMesswert)response.getData();
+        Violation violation = validator.validate(messwert);
+        if (violation.hasErrors() || violation.hasWarnings()) {
+            response.setErrors(violation.getErrors());
+            response.setWarnings(violation.getWarnings());
+        }
         return authorization.filter(
             request,
-            defaultRepo.getById(LMesswert.class, Integer.valueOf(id), "land"),
+            response,
             LMesswert.class);
     }
 
@@ -211,10 +226,22 @@ public class MesswertService {
         ) {
             return new Response(false, 699, null);
         }
+        Violation violation = validator.validate(messwert);
+        if (violation.hasErrors()) {
+            Response response = new Response(false, 604, messwert);
+            response.setErrors(violation.getErrors());
+            response.setWarnings(violation.getWarnings());
+            return response;
+        }
+
         /* Persist the new messung object*/
+        Response response = defaultRepo.create(messwert, "land");
+        if(violation.hasWarnings()) {
+            response.setWarnings(violation.getWarnings());
+        }
         return authorization.filter(
             request,
-            defaultRepo.create(messwert, "land"),
+            response,
             LMesswert.class);
     }
 
@@ -263,11 +290,23 @@ public class MesswertService {
         if (lock.isLocked(messwert)) {
             return new Response(false, 697, null);
         }
+        Violation violation = validator.validate(messwert);
+        if (violation.hasErrors()) {
+            Response response = new Response(false, 604, messwert);
+            response.setErrors(violation.getErrors());
+            response.setWarnings(violation.getWarnings());
+            return response;
+        }
+
         messwert.setLetzteAenderung(new Timestamp(new Date().getTime()));
         Response response = defaultRepo.update(messwert, "land");
         Response updated = defaultRepo.getById(
             LMesswert.class,
             ((LMesswert)response.getData()).getId(), "land");
+        if(violation.hasWarnings()) {
+            updated.setWarnings(violation.getWarnings());
+        }
+
         return authorization.filter(
             request,
             updated,

@@ -41,6 +41,9 @@ import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
+import de.intevation.lada.validation.Validator;
+import de.intevation.lada.validation.Violation;
+import de.intevation.lada.validation.annotation.ValidationConfig;
 
 /**
  * REST service for Messung objects.
@@ -105,6 +108,10 @@ public class MessungService {
     @AuthorizationConfig(type=AuthorizationType.OPEN_ID)
     private Authorization authorization;
 
+    @Inject
+    @ValidationConfig(type="Messung")
+    private Validator validator;
+
     /**
      * Get all Messung objects.
      * <p>
@@ -156,9 +163,17 @@ public class MessungService {
         @Context HttpServletRequest request,
         @PathParam("id") String id
     ) {
+        Response response =
+            defaultRepo.getById(LMessung.class, Integer.valueOf(id), "land");
+        LMessung messung = (LMessung)response.getData();
+        Violation violation = validator.validate(messung);
+        if (violation.hasErrors() || violation.hasWarnings()) {
+            response.setErrors(violation.getErrors());
+            response.setWarnings(violation.getWarnings());
+        }
         return authorization.filter(
             request,
-            defaultRepo.getById(LMessung.class, Integer.valueOf(id), "land"),
+            response,
             LMessung.class);
     }
 
@@ -205,6 +220,14 @@ public class MessungService {
             return new Response(false, 699, null);
         }
 
+        Violation violation = validator.validate(messung);
+        if (violation.hasErrors()) {
+            Response response = new Response(false, 604, messung);
+            response.setErrors(violation.getErrors());
+            response.setWarnings(violation.getWarnings());
+            return response;
+        }
+
         /* Persist the new messung object*/
         Response response = defaultRepo.create(messung, "land");
         LMessung ret = (LMessung)response.getData();
@@ -215,9 +238,13 @@ public class MessungService {
         /* Get and return the new probe object*/
         Response created =
             defaultRepo.getById(LMessung.class, ret.getId(), "land");
+        if(violation.hasWarnings()) {
+            created.setWarnings(violation.getWarnings());
+        }
+
         return authorization.filter(
             request,
-            new Response(true, 200, created.getData()),
+            created,
             LMessung.class);
     }
 
@@ -266,11 +293,21 @@ public class MessungService {
         if (lock.isLocked(messung)) {
             return new Response(false, 697, null);
         }
+        Violation violation = validator.validate(messung);
+        if (violation.hasErrors()) {
+            Response response = new Response(false, 604, messung);
+            response.setErrors(violation.getErrors());
+            response.setWarnings(violation.getWarnings());
+            return response;
+        }
         messung.setLetzteAenderung(new Timestamp(new Date().getTime()));
         Response response = defaultRepo.update(messung, "land");
         Response updated = defaultRepo.getById(
             LMessung.class,
             ((LMessung)response.getData()).getId(), "land");
+        if(violation.hasWarnings()) {
+            updated.setWarnings(violation.getWarnings());
+        }
         return authorization.filter(
             request,
             updated,

@@ -41,6 +41,9 @@ import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
+import de.intevation.lada.validation.Validator;
+import de.intevation.lada.validation.Violation;
+import de.intevation.lada.validation.annotation.ValidationConfig;
 
 /**
  * REST service for Ort objects.
@@ -107,6 +110,10 @@ public class OrtService {
     @AuthorizationConfig(type=AuthorizationType.OPEN_ID)
     private Authorization authorization;
 
+    @Inject
+    @ValidationConfig(type="Ort")
+    private Validator validator;
+
     /**
      * Get all Ort objects.
      * <p>
@@ -160,9 +167,17 @@ public class OrtService {
         @Context HttpServletRequest request,
         @PathParam("id") String id
     ) {
+        Response response =
+            defaultRepo.getById(LOrt.class, Integer.valueOf(id), "land");
+        LOrt ort = (LOrt)response.getData();
+        Violation violation = validator.validate(ort);
+        if (violation.hasErrors() || violation.hasWarnings()) {
+            response.setErrors(violation.getErrors());
+            response.setWarnings(violation.getWarnings());
+        }
         return authorization.filter(
             request,
-            defaultRepo.getById(LOrt.class, Integer.valueOf(id), "land"),
+            response,
             LOrt.class);
     }
 
@@ -203,10 +218,23 @@ public class OrtService {
                 LOrt.class)) {
             return new Response(false, 699, null);
         }
+        Violation violation = validator.validate(ort);
+        if (violation.hasErrors()) {
+            Response response = new Response(false, 604, ort);
+            response.setErrors(violation.getErrors());
+            response.setWarnings(violation.getWarnings());
+            return response;
+        }
+
         /* Persist the new object*/
+        Response response = defaultRepo.create(ort, "land");
+        if(violation.hasWarnings()) {
+            response.setWarnings(violation.getWarnings());
+        }
+
         return authorization.filter(
             request,
-            defaultRepo.create(ort, "land"),
+            response,
             LOrt.class);
     }
 
@@ -250,11 +278,23 @@ public class OrtService {
         if (lock.isLocked(ort)) {
             return new Response(false, 697, null);
         }
+        Violation violation = validator.validate(ort);
+        if (violation.hasErrors()) {
+            Response response = new Response(false, 604, ort);
+            response.setErrors(violation.getErrors());
+            response.setWarnings(violation.getWarnings());
+            return response;
+        }
+
         ort.setLetzteAenderung(new Timestamp(new Date().getTime()));
         Response response = defaultRepo.update(ort, "land");
         Response updated = defaultRepo.getById(
             LOrt.class,
             ((LOrt)response.getData()).getId(), "land");
+        if(violation.hasWarnings()) {
+            updated.setWarnings(violation.getWarnings());
+        }
+
         return authorization.filter(
             request,
             updated,
