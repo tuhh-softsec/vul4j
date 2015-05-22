@@ -44,32 +44,6 @@ import de.intevation.lada.util.rest.Response;
  *  "success": [boolean];
  *  "message": [string],
  *  "data":[{
- *      "id":[number],
- *      "baId": [string],
- *      "datenbasisId": [number],
- *      "letzteAenderung": [timestamp],
- *      "media": [string],
- *      "mediaDesk": [string],
- *      "mittelungsdauer": [number],
- *      "mstId": [string],
- *      "netzbetreiberId":[string],
- *      "probeentnahmeBeginn": [timestamp],
- *      "probeentnahmeEnde": [timestamp],
- *      "probenartId": [number],
- *      "test": [boolean],
- *      "umwId": [string],
- *      "hauptprobenNr": [string],
- *      "erzeugerId": [string],
- *      "mpKat": [string],
- *      "mplId": [number],
- *      "mprId": [number],
- *      "probeNehmerId": [number],
- *      "solldatumBeginn": [timestamp],
- *      "solldatumEnde": [timestamp],
- *      "treeModified": [timestamp],
- *      "readonly": [boolean],
- *      "owner": [boolean],
- *      "probeIdAlt": [string]
  *  }],
  *  "errors": [object],
  *  "warnings": [object],
@@ -122,6 +96,7 @@ public class DeskriptorService {
         QueryBuilder<Deskriptoren> builder = new QueryBuilder<Deskriptoren>(
             repository.entityManager("stamm"),
             Deskriptoren.class);
+        builder.andNot("sn", 0);
         if (params.containsKey("layer") &&
             !params.containsKey("parents")) {
             String layer = params.getFirst("layer");
