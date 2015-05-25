@@ -473,11 +473,11 @@ public class MyDatabase {
 
     private void logSQLException(SQLException ex) {  // SUPPRESS CHECKSTYLE FinalParameters
         while (ex != null) {
-            System.out.println("------ SQLException ------");
-            System.out.println("SQLState: " + ex.getSQLState());
-            System.out.println("Vendor Error code: " + ex.getErrorCode());
-            System.out.println("Message: " + ex.getMessage());
-            System.out.println("Cause: " + ex.getCause().getMessage());
+            System.err.println("------ SQLException ------");
+            System.err.println("SQLState: " + ex.getSQLState());
+            System.err.println("Vendor Error code: " + ex.getErrorCode());
+            System.err.println("Message: " + ex.getMessage());
+            System.err.println("Cause: " + ex.getCause().getMessage());
             logSuppressedExceptions(ex);
             ex = ex.getNextException();  // SUPPRESS CHECKSTYLE ParameterAssignment
         }
@@ -486,17 +486,17 @@ public class MyDatabase {
     private void logSuppressedExceptions(final SQLException ex) {
         Throwable[] suppressed = ex.getSuppressed();
         for (Throwable t : suppressed) {
-            System.out.println("Suppressed exception: " + t);
+            System.err.println("Suppressed exception: " + t);
         }
     }
 
     private void logSQLWarning(SQLWarning warn) {  // SUPPRESS CHECKSTYLE FinalParameters
         while (warn != null) {
-            System.out.println("------ SQLWarning ------");
-            System.out.println("SQLState: " + warn.getSQLState());
-            System.out.println("Vendor Warning code: " + warn.getErrorCode());
-            System.out.println("Message: " + warn.getMessage());
-            System.out.println("Cause: " + warn.getCause().getMessage());
+            System.err.println("------ SQLWarning ------");
+            System.err.println("SQLState: " + warn.getSQLState());
+            System.err.println("Vendor Warning code: " + warn.getErrorCode());
+            System.err.println("Message: " + warn.getMessage());
+            System.err.println("Cause: " + warn.getCause().getMessage());
             warn = warn.getNextWarning();  // SUPPRESS CHECKSTYLE ParameterAssignment
         }
     }
