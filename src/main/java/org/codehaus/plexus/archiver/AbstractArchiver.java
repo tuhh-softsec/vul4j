@@ -86,13 +86,13 @@ public abstract class AbstractArchiver
 
     private boolean includeEmptyDirs = true;
 
-    private int fileMode = -1;
+    private int forcedFileMode = -1; // Will always be used
 
-    private int directoryMode = -1;
+    private int forcedDirectoryMode = -1; // Will always be used
 
-    private int defaultFileMode = -1;
+    private int defaultFileMode = -1; // Optionally used if a value is needed
 
-    private int defaultDirectoryMode = -1;
+    private int defaultDirectoryMode = -1; // Optionally used if a value is needed
 
     private boolean forced = true;
 
@@ -144,11 +144,11 @@ public abstract class AbstractArchiver
     {
         if ( mode >= 0 )
         {
-            fileMode = ( mode & UnixStat.PERM_MASK ) | UnixStat.FILE_FLAG;
+            forcedFileMode = ( mode & UnixStat.PERM_MASK ) | UnixStat.FILE_FLAG;
         }
         else
         {
-            fileMode = -1;
+            forcedFileMode = -1;
         }
     }
 
@@ -159,12 +159,12 @@ public abstract class AbstractArchiver
 
     public final int getOverrideFileMode()
     {
-        return fileMode;
+        return forcedFileMode;
     }
 
     public final int getFileMode()
     {
-        if ( fileMode < 0 )
+        if ( forcedFileMode < 0 )
         {
             if ( defaultFileMode < 0 )
             {
@@ -174,7 +174,7 @@ public abstract class AbstractArchiver
             return defaultFileMode;
         }
 
-        return fileMode;
+        return forcedFileMode;
     }
 
     public final int getDefaultFileMode()
@@ -194,11 +194,11 @@ public abstract class AbstractArchiver
     {
         if ( mode >= 0 )
         {
-            directoryMode = ( mode & UnixStat.PERM_MASK ) | UnixStat.DIR_FLAG;
+            forcedDirectoryMode = ( mode & UnixStat.PERM_MASK ) | UnixStat.DIR_FLAG;
         }
         else
         {
-            directoryMode = -1;
+            forcedDirectoryMode = -1;
         }
     }
 
@@ -209,12 +209,12 @@ public abstract class AbstractArchiver
 
     public final int getOverrideDirectoryMode()
     {
-        return directoryMode;
+        return forcedDirectoryMode;
     }
 
     public final int getDirectoryMode()
     {
-        if ( directoryMode < 0 )
+        if ( forcedDirectoryMode < 0 )
         {
             if ( defaultDirectoryMode < 0 )
             {
@@ -224,7 +224,7 @@ public abstract class AbstractArchiver
             return defaultDirectoryMode;
         }
 
-        return directoryMode;
+        return forcedDirectoryMode;
     }
 
     public final int getDefaultDirectoryMode()
@@ -764,7 +764,7 @@ public abstract class AbstractArchiver
     }
 
     private void doAddResource(Object item){
-        resources.add( item);
+        resources.add( item );
     }
 
     public void addArchivedFileSet( final ArchivedFileSet fileSet )
