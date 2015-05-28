@@ -41,9 +41,14 @@ import org.codehaus.plexus.archiver.util.Streams;
 import org.codehaus.plexus.components.io.attributes.Java7FileAttributes;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributeUtils;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
+import org.codehaus.plexus.components.io.attributes.SimpleResourceAttributes;
+import org.codehaus.plexus.components.io.functions.ContentSupplier;
 import org.codehaus.plexus.components.io.functions.InputStreamTransformer;
+import org.codehaus.plexus.components.io.resources.PlexusIoFileResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoFileResourceCollection;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
+import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
+import org.codehaus.plexus.components.io.resources.ResourceFactory;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.util.FileUtils;
@@ -69,6 +74,7 @@ import java.util.zip.ZipOutputStream;
  * @author Emmanuel Venisse
  * @version $Id$
  */
+@SuppressWarnings( "OctalInteger" )
 public class ZipArchiverTest
     extends BasePlexusArchiverTest
 {
@@ -133,6 +139,7 @@ public class ZipArchiverTest
         ZipArchiveEntry symR = zf.getEntry( "symR" );
         assertTrue( symR.isUnixSymlink() );
     }
+
 
 
     public void testCreateArchiveWithDetectedModes()
@@ -433,6 +440,9 @@ public class ZipArchiverTest
         return archiver;
     }
 
+    private void fileModeAssert(int expected, int actual){
+        assertEquals( Integer.toString( expected, 8 ), Integer.toString( actual, 8 ));
+    }
     private void createArchive( ZipArchiver archiver )
         throws ArchiverException, IOException
     {
@@ -449,26 +459,26 @@ public class ZipArchiverTest
             {
                 if ( ze.getName().startsWith( "worldwritable" ) )
                 {
-                    assertEquals( 0777, UnixStat.PERM_MASK & ze.getUnixMode() );
+                    fileModeAssert( 0777, UnixStat.PERM_MASK & ze.getUnixMode() );
                 }
                 else if ( ze.getName().startsWith( "groupwritable" ) )
                 {
-                    assertEquals( 0070, UnixStat.PERM_MASK & ze.getUnixMode() );
+                    fileModeAssert( 0070, UnixStat.PERM_MASK & ze.getUnixMode() );
                 }
                 else
                 {
-                    assertEquals( 0500, UnixStat.PERM_MASK & ze.getUnixMode() );
+                    fileModeAssert( 0500, UnixStat.PERM_MASK & ze.getUnixMode() );
                 }
             }
             else
             {
                 if ( ze.getName().equals( "one.txt" ) )
                 {
-                    assertEquals( 0640, UnixStat.PERM_MASK & ze.getUnixMode() );
+                    fileModeAssert( 0640, UnixStat.PERM_MASK & ze.getUnixMode() );
                 }
                 else if ( ze.getName().equals( "two.txt" ) )
                 {
-                    assertEquals( 0664, UnixStat.PERM_MASK & ze.getUnixMode() );
+                    fileModeAssert( 0664, UnixStat.PERM_MASK & ze.getUnixMode() );
                 }
                 else if ( ze.isUnixSymlink() )
                 {
@@ -476,7 +486,7 @@ public class ZipArchiverTest
                 }
                 else
                 {
-                    assertEquals( 0400, UnixStat.PERM_MASK & ze.getUnixMode() );
+                    fileModeAssert( 0400, UnixStat.PERM_MASK & ze.getUnixMode() );
                 }
             }
 
@@ -669,5 +679,67 @@ public class ZipArchiverTest
         zipArchiver.setEncoding( "UTF-8" );
         zipArchiver.addDirectory( new File( "src/test/resources/miscUtf8" ) );
         zipArchiver.createArchive();
+    }
+
+    public void testForcedFileModes()
+        throws IOException
+    {
+        File step1file = new File( "target/output/forced-file-mode.zip" );
+        {
+            final ZipArchiver zipArchiver = getZipArchiver( step1file );
+            zipArchiver.setFileMode( 0077 );
+            zipArchiver.setDirectoryMode( 0007 );
+            PlexusIoResourceAttributes attrs = new SimpleResourceAttributes( 123, "fred", 22, "filntstones", 0111 );
+            PlexusIoResource resource =
+                ResourceFactory.createResource( new File( "src/test/resources/folders/File.txt" ), "Test.txt", null,
+                                                attrs );
+            zipArchiver.addResource( resource, "Test2.txt", 0707 );
+            PlexusIoFileResourceCollection files = new PlexusIoFileResourceCollection();
+            files.setBaseDir( new File( "src/test/resources/folders" ) );
+            files.setPrefix( "sixsixsix/" );
+            zipArchiver.addResources( files );
+
+            zipArchiver.createArchive();
+
+            ZipFile zf = new ZipFile( step1file );
+            fileModeAssert( 040007, zf.getEntry( "sixsixsix/a/" ).getUnixMode() );
+            fileModeAssert( 0100077, zf.getEntry( "sixsixsix/b/FileInB.txt" ).getUnixMode() );
+            fileModeAssert( 0100707, zf.getEntry( "Test2.txt" ).getUnixMode() );
+            zf.close();
+        }
+
+        File Step2file = new File( "target/output/forced-file-mode-from-zip.zip" );
+        {
+            final ZipArchiver za2 = getZipArchiver( Step2file );
+            za2.setFileMode( 0666 );
+            za2.setDirectoryMode( 0676 );
+
+            PlexusIoZipFileResourceCollection zipSrc = new PlexusIoZipFileResourceCollection();
+            zipSrc.setFile( step1file );
+            zipSrc.setPrefix( "zz/" );
+            za2.addResources( zipSrc );
+            za2.createArchive();
+            ZipFile zf = new ZipFile( Step2file );
+            fileModeAssert( 040676, zf.getEntry( "zz/sixsixsix/a/" ).getUnixMode() );
+            fileModeAssert( 0100666, zf.getEntry( "zz/Test2.txt" ).getUnixMode() );
+            zf.close();
+        }
+
+        File step3file = new File( "target/output/forced-file-mode-from-zip2.zip" );
+        {
+            final ZipArchiver za2 = getZipArchiver( step3file );
+            za2.setFileMode( 0666 );
+            za2.setDirectoryMode( 0676 );
+
+            PlexusArchiverZipFileResourceCollection zipSrc = new PlexusArchiverZipFileResourceCollection();
+            zipSrc.setFile( step1file );
+            zipSrc.setPrefix( "zz/" );
+            za2.addResources( zipSrc );
+            za2.createArchive();
+            ZipFile zf = new ZipFile( Step2file );
+            fileModeAssert( 040676, zf.getEntry( "zz/sixsixsix/a/" ).getUnixMode() );
+            fileModeAssert( 0100666, zf.getEntry( "zz/Test2.txt" ).getUnixMode() );
+            zf.close();
+        }
     }
 }
