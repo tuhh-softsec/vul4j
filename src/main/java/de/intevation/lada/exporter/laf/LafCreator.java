@@ -216,7 +216,7 @@ implements Creator
             oBuilder.and("id", o.getOrt());
             List<SOrt> sOrte=
                 (List<SOrt>)repository.filter(
-                    builder.getQuery(),
+                    oBuilder.getQuery(),
                     "stamm").getData();
 
             laf += lafLine("ORT_CODE",
@@ -340,7 +340,7 @@ implements Creator
         eBuilder.and("id", mw.getMehId());
         List<MessEinheit> einheiten =
             (List<MessEinheit>)repository.filter(
-                builder.getQuery(),
+                eBuilder.getQuery(),
                 "stamm").getData();
 
         String value = "\"" + groessen.get(0).getMessgroesse() + "\"";
