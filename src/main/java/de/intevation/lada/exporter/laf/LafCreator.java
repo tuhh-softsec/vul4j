@@ -13,7 +13,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.persistence.Query;
 
 import de.intevation.lada.exporter.Creator;
 import de.intevation.lada.model.land.LKommentarM;

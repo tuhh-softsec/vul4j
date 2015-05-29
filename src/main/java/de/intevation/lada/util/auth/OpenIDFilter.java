@@ -8,46 +8,40 @@
 
 package de.intevation.lada.util.auth;
 
-import org.apache.log4j.Logger;
-
-import java.util.Map;
-import java.util.List;
-import java.util.LinkedHashMap;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLDecoder;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
-import java.util.Enumeration;
-
-import java.io.InputStream;
-import java.io.IOException;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletRequestWrapper;
-import javax.servlet.http.HttpSession;
 
-import org.openid4java.association.AssociationSessionType;
+import org.apache.log4j.Logger;
 import org.openid4java.association.AssociationException;
-import org.openid4java.consumer.ConsumerManager;
-import org.openid4java.consumer.ConsumerException;
-import org.openid4java.consumer.InMemoryConsumerAssociationStore;
+import org.openid4java.association.AssociationSessionType;
 import org.openid4java.consumer.AbstractNonceVerifier;
-import org.openid4java.message.ParameterList;
+import org.openid4java.consumer.ConsumerException;
+import org.openid4java.consumer.ConsumerManager;
+import org.openid4java.consumer.InMemoryConsumerAssociationStore;
 import org.openid4java.consumer.VerificationResult;
+import org.openid4java.discovery.DiscoveryException;
 import org.openid4java.discovery.DiscoveryInformation;
 import org.openid4java.discovery.Identifier;
-import org.openid4java.discovery.DiscoveryException;
-import org.openid4java.message.MessageException;
 import org.openid4java.message.AuthRequest;
 import org.openid4java.message.AuthSuccess;
+import org.openid4java.message.MessageException;
+import org.openid4java.message.ParameterList;
 import org.openid4java.message.ax.AxMessage;
 import org.openid4java.message.ax.FetchRequest;
 import org.openid4java.message.ax.FetchResponse;
@@ -105,7 +99,7 @@ public class OpenIDFilter implements Filter {
 
     private boolean discoverServer() {
         /* Perform discovery on the configured providerUrl */
-        List discoveries = null;
+        List<?> discoveries = null;
         try {
             discoveries = manager.discover(providerUrl);
         } catch (DiscoveryException e) {

@@ -18,7 +18,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
-import javax.persistence.Query;
 
 import de.intevation.lada.importer.ReportItem;
 import de.intevation.lada.model.land.LKommentarM;

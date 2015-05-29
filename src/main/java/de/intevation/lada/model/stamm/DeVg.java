@@ -20,7 +20,6 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Type;
 
-import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.MultiPolygon;
 
 
