@@ -5,9 +5,9 @@ Since archiver depends on a given version of IO this list is cumulative,
 any version includes *all* changes below.
 
 Plexus Components - Version plexus-archiver-2.10.2
+-----
 
 MASSEMBLY-769 fix.
------
 
 
 Plexus Components - Version plexus-archiver-2.10.1
