@@ -34,7 +34,8 @@ public class UniqueNebenprobenNr implements Rule {
         if (!((List<LMessung>)response.getData()).isEmpty()) {
             LMessung found = ((List<LMessung>)response.getData()).get(0);
             // The messung found in the db equals the new messung. (Update)
-            if (messung.getId() != null && messung.getId() == found.getId()) {
+            if (messung.getId() != null &&
+                messung.getId().equals(found.getId())) {
                 return null;
             }
             Violation violation = new Violation();

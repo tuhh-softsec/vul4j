@@ -43,17 +43,16 @@ public class HasPflichtmessgroessen implements Rule {
             repository.filter(wertBuilder.getQuery(), "land");
         List<LMesswert> messwerte = (List<LMesswert>)wertResponse.getData();
         Violation violation = new Violation();
-        boolean hit = false;
+        boolean missing = false;
         for (PflichtMessgroesse p : pflicht) {
-            hit = false;
             for (LMesswert wert : messwerte) {
-                if (p.getMessgroesseId().equals(wert.getMessgroesseId())) {
-                    hit = true;
+                if (!p.getMessgroesseId().equals(wert.getMessgroesseId())) {
+                    missing = true;
                 }
             }
-            if (!hit) {
-                violation.addWarning("pflichtmessgroesse", 631);
-            }
+        }
+        if (missing) {
+            violation.addWarning("pflichtmessgroesse", 631);
         }
         return violation.hasWarnings() ? violation : null;
     }
