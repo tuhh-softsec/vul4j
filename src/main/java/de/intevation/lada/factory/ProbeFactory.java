@@ -184,6 +184,9 @@ public class ProbeFactory {
             }
             repository.create(ort, "land");
         }
+        // Reolad the probe to have the old id
+        probe =
+            (LProbe)repository.getById(LProbe.class, probe.getId(), "land").getData();
         return probe;
     }
 
