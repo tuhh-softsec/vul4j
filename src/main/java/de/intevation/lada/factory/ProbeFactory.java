@@ -38,6 +38,7 @@ public class ProbeFactory {
                     Messprogramm.class);
         builder.and("id", id);
         Response response = repository.filter(builder.getQuery(), "land");
+        @SuppressWarnings("unchecked")
         List<Messprogramm> messprogramme =
             (List<Messprogramm>)response.getData();
         if (messprogramme == null || messprogramme.isEmpty()) {
@@ -142,6 +143,7 @@ public class ProbeFactory {
                     MessprogrammMmt.class);
         builder.and("messprogrammId", messprogramm.getId());
         Response response = repository.filter(builder.getQuery(), "land");
+        @SuppressWarnings("unchecked")
         List<MessprogrammMmt> mmts = (List<MessprogrammMmt>)response.getData();
         for (MessprogrammMmt mmt : mmts) {
             LMessung messung = new LMessung();
@@ -173,6 +175,7 @@ public class ProbeFactory {
                 repository.entityManager("stamm"), SOrt.class);
             ortBuilder.and("verwaltungseinheitId", messprogramm.getGemId());
             Response ortResponse = repository.filter(ortBuilder.getQuery(), "stamm");
+            @SuppressWarnings("unchecked")
             List<SOrt> orte = (List<SOrt>) ortResponse.getData();
             if (orte != null && !orte.isEmpty()) {
                 ort.setOrt(BigInteger.valueOf(orte.get(0).getId()));

@@ -60,6 +60,7 @@ public class DeskriptorToUmwelt implements Rule {
             builder.and("sn", mediaDesk[i]);
             builder.and("ebene", i - 1);
             Response response = repository.filter(builder.getQuery(), "stamm");
+            @SuppressWarnings("unchecked")
             List<Deskriptoren> data = (List<Deskriptoren>)response.getData();
             if (data.isEmpty()) {
                 Violation violation = new Violation();
@@ -85,6 +86,7 @@ public class DeskriptorToUmwelt implements Rule {
             builder.and(field, media.get(i));
         }
         Response response = repository.filter(builder.getQuery(), "stamm");
+        @SuppressWarnings("unchecked")
         List<DeskriptorUmwelt> data = (List<DeskriptorUmwelt>)response.getData();
         if (data.isEmpty() || !data.get(0).getUmwId().equals(probe.getUmwId())) {
             Violation violation = new Violation();

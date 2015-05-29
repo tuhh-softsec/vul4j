@@ -38,6 +38,7 @@ public class MessgroesseToMessmethode implements Rule {
                 repository.entityManager("land"), LMesswert.class);
         builder.and("messungsId", messung.getId());
         Response response = repository.filter(builder.getQuery(), "land");
+        @SuppressWarnings("unchecked")
         List<LMesswert> messwerte = (List<LMesswert>)response.getData();
 
         QueryBuilder<MmtMessgroesse> mmtBuilder =
@@ -46,6 +47,7 @@ public class MessgroesseToMessmethode implements Rule {
 
         Response results =
             repository.filter(mmtBuilder.getQuery(), "stamm");
+        @SuppressWarnings("unchecked")
         List<MmtMessgroesse> messgroessen =
             (List<MmtMessgroesse>)results.getData();
         List<MmtMessgroesse> found = new ArrayList<MmtMessgroesse>();

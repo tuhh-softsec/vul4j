@@ -29,6 +29,7 @@ public class CoordinatesInVE implements Rule {
     @RepositoryConfig(type=RepositoryType.RO)
     private Repository repository;
 
+    @SuppressWarnings("unchecked")
     @Override
     public Violation execute(Object object) {
         LOrt ort = (LOrt)object;

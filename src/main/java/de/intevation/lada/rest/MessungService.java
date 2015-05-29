@@ -326,6 +326,7 @@ public class MessungService {
      *
      * @return Response object.
      */
+    @SuppressWarnings("unchecked")
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -384,7 +385,6 @@ public class MessungService {
                 defaultRepo.entityManager("land"), MessungTranslation.class);
         builder.and("messungs", messungObj.getId());
         Response messungTrans = defaultRepo.filter(builder.getQuery(), "land");
-        @SuppressWarnings("unchecked")
         MessungTranslation messungTransObj = ((List<MessungTranslation>)messungTrans.getData()).get(0);
         /* Delete the messung translation object*/
         defaultRepo.delete(messungTransObj, "land");

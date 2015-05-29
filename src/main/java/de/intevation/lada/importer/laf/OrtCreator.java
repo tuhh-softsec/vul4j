@@ -468,6 +468,7 @@ public class OrtCreator
                     repository.entityManager("stamm"),
                     Verwaltungseinheit.class);
             builder.and("id", ort.getVerwaltungseinheitId());
+            @SuppressWarnings("unchecked")
             List<Verwaltungseinheit> einheit =
                 (List<Verwaltungseinheit>)repository.filter(
                     builder.getQuery(),
@@ -499,6 +500,7 @@ public class OrtCreator
                 repository.entityManager("stamm"),
                 Staat.class);
         builder.and("staat", this.landLang);
+        @SuppressWarnings("unchecked")
         List<Staat> staat =
             (List<Staat>)repository.filter(
                 builder.getQuery(),
@@ -530,6 +532,7 @@ public class OrtCreator
                 repository.entityManager("stamm"),
                 Staat.class);
         builder.and("staatKurz", this.landKurz);
+        @SuppressWarnings("unchecked")
         List<Staat> staat =
             (List<Staat>)repository.filter(
                 builder.getQuery(),
@@ -563,6 +566,7 @@ public class OrtCreator
                     repository.entityManager("stamm"),
                     Staat.class);
             builder.and("id", this.landS);
+            @SuppressWarnings("unchecked")
             List<Staat> staat =
                 (List<Staat>)repository.filter(
                     builder.getQuery(),
@@ -594,6 +598,7 @@ public class OrtCreator
                 repository.entityManager("stamm"),
                 Verwaltungseinheit.class);
         builder.and("bezeichnung", this.gemName);
+        @SuppressWarnings("unchecked")
         List<Verwaltungseinheit> einheit=
             (List<Verwaltungseinheit>)repository.filter(
                 builder.getQuery(),
@@ -626,6 +631,7 @@ public class OrtCreator
                     repository.entityManager("stamm"),
                     Verwaltungseinheit.class);
             builder.and("bezeichnung", this.gemName);
+            @SuppressWarnings("unchecked")
             List<Verwaltungseinheit> einheit=
                 (List<Verwaltungseinheit>)repository.filter(
                     builder.getQuery(),
@@ -679,6 +685,7 @@ public class OrtCreator
         }
         ort.setKoordXExtern(x);
         ort.setKoordYExtern(y);
+        ort.setKoordinatenartId(Integer.valueOf(art));
         return ort;
     }
 
@@ -723,6 +730,7 @@ public class OrtCreator
         ort.setLongitude(Double.valueOf(x));
         ort.setKoordYExtern(y);
         ort.setLatitude(Double.valueOf(y));
+        ort.setKoordinatenartId(Integer.valueOf(art));
         return ort;
     }
 
@@ -743,6 +751,7 @@ public class OrtCreator
                     repository.entityManager("stamm"),
                     SOrt.class);
             builder.and("bezeichnung", this.ortCode);
+            @SuppressWarnings("unchecked")
             List<SOrt> orte=
                 (List<SOrt>)repository.filter(
                     builder.getQuery(),

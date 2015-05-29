@@ -32,6 +32,7 @@ public class HasPflichtmessgroessen implements Rule {
                 PflichtMessgroesse.class);
         builder.and("mmtId", messung.getMmtId());
         Response response = repository.filter(builder.getQuery(), "stamm");
+        @SuppressWarnings("unchecked")
         List<PflichtMessgroesse> pflicht =
             (List<PflichtMessgroesse>)response.getData();
 
@@ -41,6 +42,7 @@ public class HasPflichtmessgroessen implements Rule {
         wertBuilder.and("messungsId", messung.getId());
         Response wertResponse =
             repository.filter(wertBuilder.getQuery(), "land");
+        @SuppressWarnings("unchecked")
         List<LMesswert> messwerte = (List<LMesswert>)wertResponse.getData();
         Violation violation = new Violation();
         boolean missing = false;

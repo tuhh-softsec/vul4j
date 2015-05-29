@@ -134,10 +134,6 @@ public class LafWriter {
      * @return success
      */
     public boolean writeOrte(UserInfo userInfo, List<SOrt> orte) {
-        for (SOrt ort :orte) {
-            //TODO create the SOrt!!!
-            //repository.create(ort, "land");
-        }
         return true;
     }
 

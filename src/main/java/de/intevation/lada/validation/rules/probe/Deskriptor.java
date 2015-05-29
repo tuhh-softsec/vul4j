@@ -59,6 +59,7 @@ public class Deskriptor implements Rule {
             builder.and("sn", mediaDesk[i]);
             builder.and("ebene", i - 1);
             Response response = repository.filter(builder.getQuery(), "stamm");
+            @SuppressWarnings("unchecked")
             List<Deskriptoren> data = (List<Deskriptoren>)response.getData();
             if (data.isEmpty()) {
                 Violation violation = new Violation();
