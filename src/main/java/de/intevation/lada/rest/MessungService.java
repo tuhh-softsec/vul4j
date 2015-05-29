@@ -27,10 +27,15 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.log4j.Logger;
+
 import de.intevation.lada.lock.LockConfig;
 import de.intevation.lada.lock.LockType;
 import de.intevation.lada.lock.ObjectLocker;
+import de.intevation.lada.model.land.LKommentarM;
 import de.intevation.lada.model.land.LMessung;
+import de.intevation.lada.model.land.LMesswert;
+import de.intevation.lada.model.land.LStatus;
 import de.intevation.lada.model.land.MessungTranslation;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
@@ -86,6 +91,9 @@ import de.intevation.lada.validation.annotation.ValidationConfig;
 @Path("messung")
 @RequestScoped
 public class MessungService {
+
+    @Inject
+    private Logger logger;
 
     /**
      * The data repository granting read/write access.
@@ -346,6 +354,34 @@ public class MessungService {
         if (lock.isLocked(messung)) {
             return new Response(false, 697, null);
         }
+
+        QueryBuilder<LMesswert> mwBuilder =
+            new QueryBuilder<LMesswert>(
+                defaultRepo.entityManager("land"), LMesswert.class);
+        mwBuilder.and("messungsId", messungObj.getId());
+        QueryBuilder<LKommentarM> mkBuilder =
+            new QueryBuilder<LKommentarM>(
+                defaultRepo.entityManager("land"), LKommentarM.class);
+        mkBuilder.and("messungsId", messungObj.getId());
+        QueryBuilder<LStatus> msBuilder =
+            new QueryBuilder<LStatus>(
+                defaultRepo.entityManager("land"), LStatus.class);
+        msBuilder.and("messungsId", messungObj.getId());
+
+        List<LMesswert> messwerte =
+            (List<LMesswert>)defaultRepo.filter(mwBuilder.getQuery(), "land").getData();
+        List<LKommentarM> kommentare =
+            (List<LKommentarM>)defaultRepo.filter(mkBuilder.getQuery(), "land").getData();
+        List<LStatus> status =
+            (List<LStatus>)defaultRepo.filter(msBuilder.getQuery(), "land").getData();
+
+        if (!messwerte.isEmpty() ||
+            !kommentare.isEmpty() ||
+            !status.isEmpty()
+        ) {
+            return new Response(false, 696, messung);
+        }
+
         /* Create a query and request the messungTranslation object for the
          * messung*/
         QueryBuilder<MessungTranslation> builder =
