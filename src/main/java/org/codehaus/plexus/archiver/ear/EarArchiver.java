@@ -17,7 +17,6 @@ package org.codehaus.plexus.archiver.ear;
  *
  */
 
-import org.apache.commons.compress.archivers.zip.ParallelScatterZipCreator;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.jar.JarArchiver;

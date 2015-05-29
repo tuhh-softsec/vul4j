@@ -77,7 +77,8 @@ public abstract class AbstractArchiver
     /**
      * A list of the following objects:
      * <ul>
-     * <li>Instances of {@link ArchiveEntry}, which are passed back by {@link #getResources()} without modifications.</li>
+     * <li>Instances of {@link ArchiveEntry}, which are passed back by {@link #getResources()} without modifications
+     * .</li>
      * <li>Instances of {@link PlexusIoResourceCollection}, which are converted into an {@link Iterator} over instances
      * of {@link ArchiveEntry} by {@link #getResources()}.
      * </ul>
@@ -107,7 +108,8 @@ public abstract class AbstractArchiver
     // On lunix-like systems, we replace windows backslashes with forward slashes
     private final boolean replacePathSlashesToJavaPaths = File.separatorChar == '/';
 
-    private final List<Closeable> closeables = new ArrayList<Closeable>(  );
+    private final List<Closeable> closeables = new ArrayList<Closeable>();
+
     /**
      * since 2.2 is on by default
      *
@@ -118,30 +120,36 @@ public abstract class AbstractArchiver
     // contextualized.
     private ArchiverManager archiverManager;
 
-    private static class ResourceCollectionWithModes
+    private static class AddedResourceCollection
     {
         private final PlexusIoResourceCollection resources;
+
         private final int forcedFileMode;
+
         private final int forcedDirectoryMode;
 
-        public ResourceCollectionWithModes( PlexusIoResourceCollection resources, int forcedFileMode,
-                                            int forcedDirMode )
+        public AddedResourceCollection( PlexusIoResourceCollection resources, int forcedFileMode, int forcedDirMode )
         {
             this.resources = resources;
             this.forcedFileMode = forcedFileMode;
             this.forcedDirectoryMode = forcedDirMode;
         }
 
-        private int maybeOverridden(int suggestedMode, boolean isDir){
-            if (isDir){
+        private int maybeOverridden( int suggestedMode, boolean isDir )
+        {
+            if ( isDir )
+            {
                 return forcedDirectoryMode >= 0 ? forcedDirectoryMode : suggestedMode;
-            } else {
+            }
+            else
+            {
                 return forcedFileMode >= 0 ? forcedFileMode : suggestedMode;
 
             }
         }
 
     }
+
     /**
      * @since 1.1
      */
@@ -376,8 +384,8 @@ public abstract class AbstractArchiver
     public void addSymlink( String symlinkName, int permissions, String symlinkDestination )
         throws ArchiverException
     {
-        doAddResource( ArchiveEntry.createSymlinkEntry( symlinkName, permissions, symlinkDestination,
-                                                        getDirectoryMode() ) );
+        doAddResource(
+            ArchiveEntry.createSymlinkEntry( symlinkName, permissions, symlinkDestination, getDirectoryMode() ) );
     }
 
     protected ArchiveEntry asArchiveEntry( @Nonnull final PlexusIoResource resource, final String destFileName,
@@ -391,8 +399,7 @@ public abstract class AbstractArchiver
 
         if ( resource.isFile() )
         {
-            return ArchiveEntry.createFileEntry( destFileName, resource, permissions, collection,
-                                                 getDirectoryMode() );
+            return ArchiveEntry.createFileEntry( destFileName, resource, permissions, collection, getDirectoryMode() );
         }
         else
         {
@@ -400,43 +407,26 @@ public abstract class AbstractArchiver
         }
     }
 
-    private int maybeOverridden(int suggestedMode, boolean isDir){
-        if (isDir){
+    private int maybeOverridden( int suggestedMode, boolean isDir )
+    {
+        if ( isDir )
+        {
             return forcedDirectoryMode >= 0 ? forcedDirectoryMode : suggestedMode;
-        } else {
+        }
+        else
+        {
             return forcedFileMode >= 0 ? forcedFileMode : suggestedMode;
 
         }
     }
 
-    protected ArchiveEntry asArchiveEntry( final PlexusIoResourceCollection collection,
-                                           final PlexusIoResource resource )
-        throws ArchiverException
-    {
-        final String destFileName = collection.getName( resource );
-
-        int fromResource = -1;
-        if ( resource instanceof ResourceAttributeSupplier)
-        {
-            final PlexusIoResourceAttributes attrs = ( (ResourceAttributeSupplier) resource ).getAttributes();
-
-            if ( attrs != null )
-            {
-                fromResource = attrs.getOctalMode();
-            }
-        }
-
-        return asArchiveEntry( resource, destFileName, maybeOverridden(fromResource, resource.isDirectory()), collection );
-    }
-
-    protected ArchiveEntry asArchiveEntry( final ResourceCollectionWithModes collection,
-                                           final PlexusIoResource resource )
+    private ArchiveEntry asArchiveEntry( final AddedResourceCollection collection, final PlexusIoResource resource )
         throws ArchiverException
     {
         final String destFileName = collection.resources.getName( resource );
 
         int fromResource = -1;
-        if ( resource instanceof ResourceAttributeSupplier)
+        if ( resource instanceof ResourceAttributeSupplier )
         {
             final PlexusIoResourceAttributes attrs = ( (ResourceAttributeSupplier) resource ).getAttributes();
 
@@ -446,8 +436,9 @@ public abstract class AbstractArchiver
             }
         }
 
-        return asArchiveEntry( resource, destFileName, collection.maybeOverridden( fromResource,
-                                                                                   resource.isDirectory() ), collection.resources );
+        return asArchiveEntry( resource, destFileName,
+                               collection.maybeOverridden( fromResource, resource.isDirectory() ),
+                               collection.resources );
     }
 
 
@@ -518,7 +509,7 @@ public abstract class AbstractArchiver
         {
             private final Iterator addedResourceIter = resources.iterator();
 
-            private ResourceCollectionWithModes currentResourceCollection;
+            private AddedResourceCollection currentResourceCollection;
 
             private Iterator ioResourceIter;
 
@@ -541,9 +532,9 @@ public abstract class AbstractArchiver
                                 {
                                     nextEntry = (ArchiveEntry) o;
                                 }
-                                else if ( o instanceof ResourceCollectionWithModes )
+                                else if ( o instanceof AddedResourceCollection )
                                 {
-                                    currentResourceCollection = (ResourceCollectionWithModes) o;
+                                    currentResourceCollection = (AddedResourceCollection) o;
 
                                     try
                                     {
@@ -584,7 +575,7 @@ public abstract class AbstractArchiver
                         }
                     }
 
-                    if ( nextEntry != null && seenEntries.contains( normalizedForDuplicateCheck(nextEntry) ))
+                    if ( nextEntry != null && seenEntries.contains( normalizedForDuplicateCheck( nextEntry ) ) )
                     {
                         final String path = nextEntry.getName();
 
@@ -632,7 +623,7 @@ public abstract class AbstractArchiver
                 final ArchiveEntry next = nextEntry;
                 nextEntry = null;
 
-                seenEntries.add( normalizedForDuplicateCheck(next) );
+                seenEntries.add( normalizedForDuplicateCheck( next ) );
 
                 return next;
             }
@@ -642,8 +633,9 @@ public abstract class AbstractArchiver
                 throw new UnsupportedOperationException( "Does not support iterator" );
             }
 
-            private String normalizedForDuplicateCheck(ArchiveEntry entry){
-                return entry.getName().replace( '\\', '/'  );
+            private String normalizedForDuplicateCheck( ArchiveEntry entry )
+            {
+                return entry.getName().replace( '\\', '/' );
             }
 
         };
@@ -767,8 +759,9 @@ public abstract class AbstractArchiver
                 "Error adding archived file-set. PlexusIoResourceCollection not found for: " + archiveFile, e );
         }
 
-        if (resources instanceof EncodingSupported ) {
-            ((EncodingSupported)resources).setEncoding( charset );
+        if ( resources instanceof EncodingSupported )
+        {
+            ( (EncodingSupported) resources ).setEncoding( charset );
         }
 
         if ( resources instanceof PlexusIoArchivedResourceCollection )
@@ -815,10 +808,11 @@ public abstract class AbstractArchiver
     public void addResources( final PlexusIoResourceCollection collection )
         throws ArchiverException
     {
-        doAddResource( new ResourceCollectionWithModes( collection, forcedFileMode, forcedDirectoryMode ));
+        doAddResource( new AddedResourceCollection( collection, forcedFileMode, forcedDirectoryMode ) );
     }
 
-    private void doAddResource(Object item){
+    private void doAddResource( Object item )
+    {
         resources.add( item );
     }
 
@@ -956,11 +950,11 @@ public abstract class AbstractArchiver
             {
                 l = ( (ArchiveEntry) o ).getResource().getLastModified();
             }
-            else if ( o instanceof ResourceCollectionWithModes )
+            else if ( o instanceof AddedResourceCollection )
             {
                 try
                 {
-                    l = ( (ResourceCollectionWithModes) o ).resources.getLastModified();
+                    l = ( (AddedResourceCollection) o ).resources.getLastModified();
                 }
                 catch ( final IOException e )
                 {
@@ -1096,11 +1090,15 @@ public abstract class AbstractArchiver
 
     protected abstract String getArchiveType();
 
-    private void addCloseable(Object maybeCloseable){
-        if (maybeCloseable instanceof  Closeable)
+    private void addCloseable( Object maybeCloseable )
+    {
+        if ( maybeCloseable instanceof Closeable )
+        {
             closeables.add( (Closeable) maybeCloseable );
+        }
 
     }
+
     private void closeIterators()
     {
         for ( Closeable closeable : closeables )
@@ -1109,6 +1107,7 @@ public abstract class AbstractArchiver
         }
 
     }
+
     protected abstract void close()
         throws IOException;
 
