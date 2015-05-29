@@ -9,8 +9,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.apache.log4j.Logger;
-
 import de.intevation.lada.model.land.LKommentarP;
 import de.intevation.lada.model.land.LMessung;
 import de.intevation.lada.model.land.LMesswert;
@@ -28,9 +26,6 @@ import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.Response;
 
 public class ProbeFactory {
-
-    @Inject
-    private Logger logger;
 
     @Inject
     @RepositoryConfig(type = RepositoryType.RW)

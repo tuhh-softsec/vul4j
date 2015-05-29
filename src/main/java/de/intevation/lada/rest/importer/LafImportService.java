@@ -20,8 +20,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.log4j.Logger;
-
 import de.intevation.lada.importer.ImportConfig;
 import de.intevation.lada.importer.ImportFormat;
 import de.intevation.lada.importer.Importer;
@@ -39,12 +37,6 @@ import de.intevation.lada.util.rest.Response;
 @Path("import")
 @RequestScoped
 public class LafImportService {
-
-    /**
-     * The logger used in this class.
-     */
-    @Inject
-    private Logger logger;
 
     /**
      * The importer

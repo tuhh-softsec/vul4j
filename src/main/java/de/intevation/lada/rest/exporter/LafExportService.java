@@ -24,8 +24,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
-import org.apache.log4j.Logger;
-
 import de.intevation.lada.exporter.ExportConfig;
 import de.intevation.lada.exporter.ExportFormat;
 import de.intevation.lada.exporter.Exporter;
@@ -52,12 +50,6 @@ import de.intevation.lada.util.auth.UserInfo;
 @Path("export")
 @RequestScoped
 public class LafExportService {
-
-    /**
-     * The logger used in this class.
-     */
-    @Inject
-    private Logger logger;
 
     /**
      * The exporter.

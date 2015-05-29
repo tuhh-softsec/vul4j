@@ -27,8 +27,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.log4j.Logger;
-
 import de.intevation.lada.lock.LockConfig;
 import de.intevation.lada.lock.LockType;
 import de.intevation.lada.lock.ObjectLocker;
@@ -91,9 +89,6 @@ import de.intevation.lada.validation.annotation.ValidationConfig;
 @Path("messung")
 @RequestScoped
 public class MessungService {
-
-    @Inject
-    private Logger logger;
 
     /**
      * The data repository granting read/write access.
