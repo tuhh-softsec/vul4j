@@ -7,13 +7,13 @@ any version includes *all* changes below.
 Plexus Components - Version plexus-archiver-2.10.2
 -----
 
-MASSEMBLY-769 fix.
+https://issues.apache.org/jira/browse/MASSEMBLY-769 fix.
 
 
 Plexus Components - Version plexus-archiver-2.10.1
 -----
 
-MASSEMBLY-768 fix.
+https://issues.apache.org/jira/browse/MASSEMBLY-768 fix.
 
 Plexus Components - Version plexus-archiver-2.10
 -----
