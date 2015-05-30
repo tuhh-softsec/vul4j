@@ -237,6 +237,7 @@ public class MyDateTime {
      * Chapter 21: Date-Time
      * Exercise 3
      * Solution: http://docs.oracle.com/javase/tutorial/datetime/iso/QandE/Superstitious.java
+     *           http://docs.oracle.com/javase/tutorial/datetime/iso/QandE/FridayThirteenQuery.java
      *
      * @param date return true if given date occurs on Friday the thirteenth
      */
