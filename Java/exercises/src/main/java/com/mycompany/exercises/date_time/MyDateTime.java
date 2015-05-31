@@ -12,12 +12,14 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.MonthDay;
+import java.time.Period;
 import java.time.Year;
 import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
 import java.time.zone.ZoneRules;
 import java.util.Arrays;
@@ -251,6 +253,12 @@ public class MyDateTime {
         LocalDate previousThursday = date.with(TemporalAdjusters.previous(DayOfWeek.THURSDAY));
         System.out.println("The previous Thursday is: " + previousThursday);
     }
+    
+    public void findNextWednesday(final LocalDate date) {
+        TemporalAdjuster adj = TemporalAdjusters.next(DayOfWeek.WEDNESDAY);
+        LocalDate nextWed = date.with(adj);
+        System.out.println("The next Wednesday is: " + nextWed);
+    }
 
     public ZonedDateTime convertToZonedDateTime(final Instant inst) {
         // #1
@@ -262,6 +270,49 @@ public class MyDateTime {
 
     public Instant convertToInstant(final ZonedDateTime zdt) {
         return zdt.toInstant();
+    }
+
+    public void getSecondsSinceBeginningOfJavaEpoch() {
+        long secondsFromEpoch = Instant.ofEpochSecond(0L).until(Instant.now(), ChronoUnit.SECONDS);
+        System.out.println("Seconds since the beginning of the Java epoch: " + secondsFromEpoch);
+    }
+
+    public void getNextPayday() {
+        LocalDate date = LocalDate.now();
+        LocalDate nextPayday = date.with(new PaydayAdjuster());
+        System.out.println("Next pay day is on " + nextPayday + ".");
+    }
+
+    public void isImportantDay() {
+        LocalDate date = LocalDate.of(2015, Month.AUGUST, 10);
+        // Invoke the query
+        Boolean isFamilyHolidays = date.query(new FamilyHolidays());
+        System.out.println(date + " is an important date: " + isFamilyHolidays + ".");
+    }
+    
+    public void reportHowOldYouAre(final LocalDate birthday) {
+        LocalDate today = LocalDate.now();
+
+        Period p = Period.between(birthday, today);
+        long p2 = ChronoUnit.DAYS.between(birthday, today);
+        System.out.println("You are " + p.getYears() + " years, " + p.getMonths()
+                + " months, and " + p.getDays()
+                + " days old. (" + p2 + " days total)");
+    }
+    
+    public void calculateHowLongUntilYourNextBirthday(final LocalDate birthday) {
+        LocalDate today = LocalDate.now();
+
+        LocalDate nextBDay = birthday.withYear(today.getYear());
+        // If your birthday has occurred this year already, add 1 to the year.
+        if (nextBDay.isBefore(today) || nextBDay.isEqual(today)) {
+            nextBDay = nextBDay.plusYears(1);
+        }
+        Period p = Period.between(today, nextBDay);
+        long p2 = ChronoUnit.DAYS.between(today, nextBDay);
+        System.out.println("There are " + p.getMonths() + " months, and "
+                + p.getDays() + " days until your next birthday. ("
+                + p2 + " total)");
     }
 
 }

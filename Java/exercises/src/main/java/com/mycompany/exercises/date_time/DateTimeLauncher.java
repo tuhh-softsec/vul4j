@@ -14,7 +14,7 @@ public final class DateTimeLauncher {
 
     public static void main(final String[] args) {
         MyDateTime dt = new MyDateTime();
-
+        
         dt.getCurrentDate();
         dt.getDateFromDateCriteria();
         dt.getYearMonthDate();
@@ -30,6 +30,15 @@ public final class DateTimeLauncher {
         System.out.println("13 November 2015 occurs on Friday the thirteenth: "
                 + dt.doesOccurOnFridayTheThirteenth(LocalDate.of(2015, Month.NOVEMBER, 13)));
         dt.findDateOfPreviousThursday(LocalDate.now());
+        dt.findNextWednesday(LocalDate.now());
+        dt.getSecondsSinceBeginningOfJavaEpoch();
+        dt.getNextPayday();
+        dt.isImportantDay();
+        dt.reportHowOldYouAre(LocalDate.of(1960, Month.JANUARY, 1));
+        dt.calculateHowLongUntilYourNextBirthday(LocalDate.of(1960, Month.JANUARY, 1));
+        
+        Flight flight = new Flight();
+        flight.fligh();
     }
 
 }
