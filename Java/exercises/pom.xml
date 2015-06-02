@@ -92,5 +92,12 @@
             <artifactId>commons-net</artifactId>
             <version>3.3</version>
         </dependency>
+        <!-- Apache Commons Exec, API for dealing with external process execution and environment management. -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-exec</artifactId>
+            <version>1.3</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 </project>
