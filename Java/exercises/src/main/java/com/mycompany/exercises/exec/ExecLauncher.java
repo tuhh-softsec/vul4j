@@ -4,7 +4,7 @@
  */
 package com.mycompany.exercises.exec;
 
-import java.io.File;
+import java.nio.file.Paths;
 
 public final class ExecLauncher {
 
@@ -14,9 +14,13 @@ public final class ExecLauncher {
 
     public static void main(final String[] args) {
         ExternalProcessExecutor executor = new ExternalProcessExecutor();
-        executor.executeScript(new ScriptParameters.Builder(
-                new File("/home/user/scripts/scriptAlfa"))
-                .scriptJobTimeout(60000).executeInBackground(false).commandLineArguments(args).build());
+        ScriptParameters parameters = new ScriptParameters.Builder(
+                Paths.get("/home/user/scripts/scriptAlfa"))
+                .scriptJobTimeout(60000)
+                .executeInBackground(false)
+                .commandLineArguments(args)
+                .build();
+        executor.executeScript(parameters);
         System.out.println("Script execute output: ");
         executor.getExecuteOutput().stream().forEach((line) -> {
             System.out.println(line);

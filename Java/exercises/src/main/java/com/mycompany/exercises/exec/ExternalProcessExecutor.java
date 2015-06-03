@@ -4,8 +4,8 @@
  */
 package com.mycompany.exercises.exec;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +46,7 @@ public final class ExternalProcessExecutor {
     private ScriptResultHandler execute(final ScriptParameters parameters)
             throws ExecuteException, IOException {
         setExecuteOutput(Collections.emptyList());
-        
+
         ExecuteWatchdog watchdog = null;
         ScriptResultHandler resultHandler = null;
 
@@ -79,8 +79,8 @@ public final class ExternalProcessExecutor {
         return resultHandler;
     }
 
-    private CommandLine buildCommandLine(final File file, final String[] commandLineArguments) {
-        CommandLine cmd = new CommandLine(file);
+    private CommandLine buildCommandLine(final Path path, final String[] commandLineArguments) {
+        CommandLine cmd = new CommandLine(path.toFile());
         for (String argument : commandLineArguments) {
             cmd.addArgument(argument);
         }
@@ -95,8 +95,8 @@ public final class ExternalProcessExecutor {
         return this.executeOutput;
     }
 
-    private void logException(final Exception ex, final File file) {
-        System.err.println("Executing of the following script failed: " + file.getAbsolutePath());
+    private void logException(final Exception ex, final Path path) {
+        System.err.println("Executing of the following script failed: " + path.toAbsolutePath());
         System.err.println("Message: " + ex.getMessage());
     }
 

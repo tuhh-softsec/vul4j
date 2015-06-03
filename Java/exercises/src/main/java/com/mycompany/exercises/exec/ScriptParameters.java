@@ -4,11 +4,11 @@
  */
 package com.mycompany.exercises.exec;
 
-import java.io.File;
+import java.nio.file.Path;
 
 public final class ScriptParameters {
 
-    private final File scriptFileLocation;
+    private final Path scriptFileLocation;
     private final String[] commandLineArguments;
     private final long scriptJobTimeout;
     private final boolean executeInBackground;
@@ -16,14 +16,14 @@ public final class ScriptParameters {
     public static class Builder {
 
         // Required parameters
-        private final File scriptFileLocation;
+        private final Path scriptFileLocation;
 
         // Optional parameters - initialized to default values
         private String[] commandLineArguments;
         private long scriptJobTimeout = 60000;
         private boolean executeInBackground = false;  // SUPPRESS CHECKSTYLE ExplicitInitialization
 
-        public Builder(final File scriptFileLocation) {
+        public Builder(final Path scriptFileLocation) {
             this.scriptFileLocation = scriptFileLocation;
         }
 
@@ -54,7 +54,7 @@ public final class ScriptParameters {
         executeInBackground = builder.executeInBackground;
     }
 
-    public File getScriptFileLocation() {
+    public Path getScriptFileLocation() {
         return scriptFileLocation;
     }
 
