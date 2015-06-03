@@ -7,6 +7,7 @@ package com.mycompany.exercises.exec;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
@@ -44,6 +45,8 @@ public final class ExternalProcessExecutor {
 
     private ScriptResultHandler execute(final ScriptParameters parameters)
             throws ExecuteException, IOException {
+        setExecuteOutput(Collections.emptyList());
+        
         ExecuteWatchdog watchdog = null;
         ScriptResultHandler resultHandler = null;
 
