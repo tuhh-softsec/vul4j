@@ -6,22 +6,27 @@ package com.mycompany.exercises.exec;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.Executor;
+import org.apache.commons.exec.LogOutputStream;
+import org.apache.commons.exec.PumpStreamHandler;
 
 public final class ExternalProcessExecutor {
 
-    private ExternalProcessExecutor() {
+    private static final int SUCCESSFUL_EXIT_VALUE = 1;
+    private List<String> executeOutput;
+
+    public ExternalProcessExecutor() {
 
     }
 
-    private static final int SUCCESSFUL_EXIT_VALUE = 1;
-
-    public static boolean executeScript(final ScriptParameters parameters) {
+    public boolean executeScript(final ScriptParameters parameters) {
         boolean scriptExecuted = false;
 
         try {
@@ -37,7 +42,7 @@ public final class ExternalProcessExecutor {
         return scriptExecuted;
     }
 
-    private static ScriptResultHandler execute(final ScriptParameters parameters)
+    private ScriptResultHandler execute(final ScriptParameters parameters)
             throws ExecuteException, IOException {
         ExecuteWatchdog watchdog = null;
         ScriptResultHandler resultHandler = null;
@@ -45,8 +50,11 @@ public final class ExternalProcessExecutor {
         CommandLine commandLine = buildCommandLine(
                 parameters.getScriptFileLocation(), parameters.getCommandLineArguments());
 
+        CollectingLogOutputStream outputStream = new CollectingLogOutputStream();
+        PumpStreamHandler streamHandler = new PumpStreamHandler(outputStream);
         Executor executor = new DefaultExecutor();
         executor.setExitValue(SUCCESSFUL_EXIT_VALUE);
+        executor.setStreamHandler(streamHandler);
 
         if (parameters.getScriptJobTimeout() > 0) {
             watchdog = new ExecuteWatchdog(parameters.getScriptJobTimeout());
@@ -63,10 +71,12 @@ public final class ExternalProcessExecutor {
             resultHandler = new ScriptResultHandler(exitValue);
         }
 
+        setExecuteOutput(outputStream.getLines());
+
         return resultHandler;
     }
 
-    private static CommandLine buildCommandLine(final File file, final String[] commandLineArguments) {
+    private CommandLine buildCommandLine(final File file, final String[] commandLineArguments) {
         CommandLine cmd = new CommandLine(file);
         for (String argument : commandLineArguments) {
             cmd.addArgument(argument);
@@ -74,7 +84,15 @@ public final class ExternalProcessExecutor {
         return cmd;
     }
 
-    private static void logException(final Exception ex, final File file) {
+    private void setExecuteOutput(final List<String> lines) {
+        this.executeOutput = lines;
+    }
+
+    public List<String> getExecuteOutput() {
+        return this.executeOutput;
+    }
+
+    private void logException(final Exception ex, final File file) {
         System.err.println("Executing of the following script failed: " + file.getAbsolutePath());
         System.err.println("Message: " + ex.getMessage());
     }
@@ -106,6 +124,22 @@ public final class ExternalProcessExecutor {
                 System.err.println("Failed to execute the script: " + e.getMessage() + ".");
             }
         }
+
+    }
+
+    private static class CollectingLogOutputStream extends LogOutputStream {
+
+        private final List<String> lines = new ArrayList<>();
+
+        @Override
+        protected void processLine(final String line, int level) {
+            lines.add(line);
+        }
+
+        public List<String> getLines() {
+            return lines;
+        }
+
     }
 
 }

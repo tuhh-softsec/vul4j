@@ -13,8 +13,13 @@ public final class ExecLauncher {
     }
 
     public static void main(final String[] args) {
-        ExternalProcessExecutor.executeScript(new ScriptParameters.Builder(
+        ExternalProcessExecutor executor = new ExternalProcessExecutor();
+        executor.executeScript(new ScriptParameters.Builder(
                 new File("/home/user/scripts/scriptAlfa"))
                 .scriptJobTimeout(60000).executeInBackground(false).commandLineArguments(args).build());
+        System.out.println("Script execute output: ");
+        executor.getExecuteOutput().stream().forEach((line) -> {
+            System.out.println(line);
+        });
     }
 }
