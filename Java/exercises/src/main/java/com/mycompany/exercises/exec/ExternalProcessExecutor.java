@@ -20,7 +20,6 @@ import org.apache.commons.exec.PumpStreamHandler;
 
 public final class ExternalProcessExecutor {
 
-    private static final int SUCCESSFUL_EXIT_VALUE = 1;
     private List<String> executeOutput;
 
     public ExternalProcessExecutor() {
@@ -29,6 +28,10 @@ public final class ExternalProcessExecutor {
 
     public boolean executeScript(final ScriptParameters parameters) {
         boolean scriptExecuted = false;
+
+        if (!FileAccessibilityUtils.ensureFileIsAccessible(parameters.getScriptFileLocation())) {
+            return false;
+        }
 
         try {
             System.out.println("Preparing script job...");
@@ -56,8 +59,12 @@ public final class ExternalProcessExecutor {
         CollectingLogOutputStream outputStream = new CollectingLogOutputStream();
         PumpStreamHandler streamHandler = new PumpStreamHandler(outputStream);
         Executor executor = new DefaultExecutor();
-        executor.setExitValue(SUCCESSFUL_EXIT_VALUE);
+        executor.setExitValue(parameters.getSuccessfulExitValue());
         executor.setStreamHandler(streamHandler);
+
+        if (parameters.getWorkingDirectory() != null) {
+            executor.setWorkingDirectory(parameters.getWorkingDirectory().toFile());
+        }
 
         if (parameters.getScriptJobTimeout() > 0) {
             watchdog = new ExecuteWatchdog(parameters.getScriptJobTimeout());
@@ -80,7 +87,7 @@ public final class ExternalProcessExecutor {
     }
 
     private CommandLine buildCommandLine(final Path path, final String[] commandLineArguments) {
-        CommandLine cmd = new CommandLine(path.toFile());
+        CommandLine cmd = new CommandLine(path.toString());
         for (String argument : commandLineArguments) {
             cmd.addArgument(argument);
         }

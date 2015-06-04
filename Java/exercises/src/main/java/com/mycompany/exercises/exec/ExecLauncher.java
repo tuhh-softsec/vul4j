@@ -15,7 +15,7 @@ public final class ExecLauncher {
     public static void main(final String[] args) {
         ExternalProcessExecutor executor = new ExternalProcessExecutor();
         ScriptParameters parameters = new ScriptParameters.Builder(
-                Paths.get("/home/user/scripts/scriptAlfa"))
+                Paths.get("/home/user/scripts/scriptAlfa"), 1)
                 .scriptJobTimeout(60000)
                 .executeInBackground(false)
                 .commandLineArguments(args)
