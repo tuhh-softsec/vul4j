@@ -67,12 +67,8 @@
         <module name="BooleanExpressionComplexity">
             <property name="max" value="4"/>
         </module>
-        <module name="ClassDataAbstractionCoupling">
-            <property name="max" value="22"/>
-        </module>
-        <module name="ClassFanOutComplexity">
-            <property name="max" value="32"/>
-        </module>
+        <module name="ClassDataAbstractionCoupling"/>
+        <module name="ClassFanOutComplexity"/>
         <module name="LocalVariableName">
             <property name="format" value="^e[a-zA-Z0-9]*$"/>
             <property name="tokens" value="PARAMETER_DEF"/>
@@ -81,9 +77,7 @@
         <module name="ConstantName"/>
         <module name="CovariantEquals"/>
         <module name="CustomImportOrder"/>
-        <module name="CyclomaticComplexity">
-            <property name="max" value="64"/>
-        </module>
+        <module name="CyclomaticComplexity"/>
         <module name="DefaultComesLast"/>
         <module name="EmptyBlock">
             <property name="option" value="text"/>
@@ -94,9 +88,7 @@
         <module name="EmptyStatement"/>
         <module name="EqualsAvoidNull"/>
         <module name="EqualsHashCode"/>
-        <module name="ExecutableStatementCount">
-            <property name="max" value="169"/>
-        </module>
+        <module name="ExecutableStatementCount"/>
         <module name="ExplicitInitialization"/>
         <module name="FallThrough"/>
         <module name="FileContentsHolder"/>
@@ -121,12 +113,10 @@
         </module>
         <module name="LocalFinalVariableName"/>
         <module name="LocalVariableName"/>
-        <module name="MagicNumber"/>   
+        <module name="MagicNumber"/>
         <module name="MemberName"/>
         <module name="MethodCount"/>
-        <module name="MethodLength">
-            <property name="max" value="402"/>
-        </module>
+        <module name="MethodLength"/>
         <module name="MethodName"/>
         <module name="MethodParamPad"/>
         <module name="MethodTypeParameterName"/>
@@ -138,12 +128,8 @@
         <module name="MutableException"/>
         <module name="NeedBraces"/>
         <module name="NestedForDepth"/>
-        <module name="NestedIfDepth">
-            <property name="max" value="3"/>
-        </module>
-        <module name="NestedTryDepth">
-            <property name="max" value="3"/>
-        </module>
+        <module name="NestedIfDepth"/>
+        <module name="NestedTryDepth"/>
         <module name="NoClone"/>
         <module name="NoFinalizer"/>
         <module name="NoLineWrap"/>
@@ -163,7 +149,7 @@
         <module name="RedundantImport"/>
         <module name="RedundantModifier"/>
         <module name="ReturnCount">
-            <property name="max" value="4"/>
+            <property name="max" value="3"/>
         </module>
         <module name="RightCurly"/>
         <module name="SimplifyBooleanExpression"/>
