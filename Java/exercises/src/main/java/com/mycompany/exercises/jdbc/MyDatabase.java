@@ -259,7 +259,7 @@ public class MyDatabase {
             if (rs.isAfterLast()) {
                 currRow = -1;
             }
-            rowCount = moveToLastRowAndGetPosition(rs, currRow);            
+            rowCount = moveToLastRowAndGetPosition(rs, currRow);
         }
         return rowCount;
     }
@@ -272,7 +272,7 @@ public class MyDatabase {
         if (rs.last()) {
             // Get the row count
             rowCount = rs.getRow();
-                // Return the cursor to the position it was in before the method was called.
+            // Return the cursor to the position it was in before the method was called.
             // if the currRow is negative, the cursor position was
             // after the last row, so return the cursor to the last row
             if (currRow == -1) {
