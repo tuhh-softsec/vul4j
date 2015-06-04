@@ -259,25 +259,33 @@ public class MyDatabase {
             if (rs.isAfterLast()) {
                 currRow = -1;
             }
-            // move to the last row and get the position
-            // if this method returns false, there are no results
-            if (rs.last()) {
-                // Get the row count
-                rowCount = rs.getRow();
+            rowCount = moveToLastRowAndGetPosition(rs, currRow);            
+        }
+        return rowCount;
+    }
+
+    // move to the last row and get the position
+    // if rs.last() returns false, there are no results
+    private static int moveToLastRowAndGetPosition(final ResultSet rs, int currRow) throws SQLException {
+        int rowCount = -1;
+
+        if (rs.last()) {
+            // Get the row count
+            rowCount = rs.getRow();
                 // Return the cursor to the position it was in before the method was called.
-                // if the currRow is negative, the cursor position was
-                // after the last row, so return the cursor to the last row
-                if (currRow == -1) {
-                    rs.afterLast();
-                    // else if the cursor is zero, move the cursor to before the first row
-                } else if (currRow == 0) {
-                    rs.beforeFirst();
-                    // else return the cursor to its last position
-                } else {
-                    rs.absolute(currRow);
-                }
+            // if the currRow is negative, the cursor position was
+            // after the last row, so return the cursor to the last row
+            if (currRow == -1) {
+                rs.afterLast();
+                // else if the cursor is zero, move the cursor to before the first row
+            } else if (currRow == 0) {
+                rs.beforeFirst();
+                // else return the cursor to its last position
+            } else {
+                rs.absolute(currRow);
             }
         }
+
         return rowCount;
     }
 
