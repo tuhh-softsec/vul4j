@@ -57,11 +57,11 @@ public class MyFTPClient {
   }
 
   private void listFiles(final FTPClient ftp, final String directory) throws IOException {
-        FTPFile[] ftpFiles = ftp.listFiles(directory);
-        Arrays.asList(ftpFiles)
-                .stream()
-                .forEach(file -> System.out.println(String.valueOf(file)));
-    }
+    FTPFile[] ftpFiles = ftp.listFiles(directory);
+    Arrays.asList(ftpFiles)
+            .stream()
+            .forEach(file -> System.out.println(String.valueOf(file)));
+  }
 
   private boolean connect(final FTPClient ftp, final String hostname) throws IOException {
     boolean isConnected = false;

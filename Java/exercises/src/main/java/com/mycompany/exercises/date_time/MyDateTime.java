@@ -200,14 +200,14 @@ public class MyDateTime {
    * @param year
    */
   public void reportLengthOfEachMonthWithinYear(int year) {
-        System.out.println("Year: " + year);
-        Arrays.stream(Month.values())
-                .forEach(month -> {
-                    YearMonth yearMonth = YearMonth.of(year, month);
-                    int lengthOfMonth = yearMonth.lengthOfMonth();
-                    System.out.println(month + ": " + lengthOfMonth + " days");
-                });
-    }
+    System.out.println("Year: " + year);
+    Arrays.stream(Month.values())
+            .forEach(month -> {
+                YearMonth yearMonth = YearMonth.of(year, month);
+                int lengthOfMonth = yearMonth.lengthOfMonth();
+                System.out.println(month + ": " + lengthOfMonth + " days");
+              });
+  }
 
   /**
    * The Java Tutorial. A Short Course on the Basics. Sixth Edition. Chapter 21: Date-Time Exercise
@@ -216,18 +216,18 @@ public class MyDateTime {
    * @param month
    */
   public void listAllMondaysForGivenMonthThisYear(final Month month) {
-        Year currentYear = Year.now();
-        YearMonth yearMonth = currentYear.atMonth(month);
-        System.out.println("Mondays of " + yearMonth + ":");
-        IntStream.rangeClosed(1, yearMonth.lengthOfMonth())
-                .forEach(i -> {
-                    LocalDate date = LocalDate.of(currentYear.getValue(), month, i);
-                    DayOfWeek dotw = date.getDayOfWeek();
-                    if (dotw == DayOfWeek.MONDAY) {
-                        System.out.println(date.getDayOfMonth());
-                    }
-                });
-    }
+    Year currentYear = Year.now();
+    YearMonth yearMonth = currentYear.atMonth(month);
+    System.out.println("Mondays of " + yearMonth + ":");
+    IntStream.rangeClosed(1, yearMonth.lengthOfMonth())
+            .forEach(i -> {
+                LocalDate date = LocalDate.of(currentYear.getValue(), month, i);
+                DayOfWeek dotw = date.getDayOfWeek();
+                if (dotw == DayOfWeek.MONDAY) {
+                  System.out.println(date.getDayOfMonth());
+                }
+              });
+  }
 
   /**
    * The Java Tutorial. A Short Course on the Basics. Sixth Edition. Chapter 21: Date-Time Exercise
