@@ -101,6 +101,10 @@
         <module name="IllegalImport"/>
         <module name="IllegalThrows"/>
         <module name="IllegalTokenText"/>
+        <module name="Indentation">
+            <property name="basicOffset" value="2"/>
+            <property name="lineWrappingIndentation" value="2"/>      
+        </module>
         <module name="InnerAssignment"/>
         <module name="InterfaceIsType"/>
         <module name="InterfaceTypeParameterName"/>
