@@ -50,26 +50,14 @@ public final class ExternalProcessExecutor {
             throws ExecuteException, IOException {
         setExecuteOutput(Collections.emptyList());
 
-        ExecuteWatchdog watchdog = null;
+        ExecuteWatchdog watchdog = new ExecuteWatchdog(parameters.getScriptJobTimeout());
         ScriptResultHandler resultHandler = null;
+        CollectingLogOutputStream outputStream = new CollectingLogOutputStream();
 
         CommandLine commandLine = buildCommandLine(
                 parameters.getScriptFileLocation(), parameters.getCommandLineArguments());
-
-        CollectingLogOutputStream outputStream = new CollectingLogOutputStream();
-        PumpStreamHandler streamHandler = new PumpStreamHandler(outputStream);
-        Executor executor = new DefaultExecutor();
-        executor.setExitValue(parameters.getSuccessfulExitValue());
-        executor.setStreamHandler(streamHandler);
-
-        if (parameters.getWorkingDirectory() != null) {
-            executor.setWorkingDirectory(parameters.getWorkingDirectory().toFile());
-        }
-
-        if (parameters.getScriptJobTimeout() > 0) {
-            watchdog = new ExecuteWatchdog(parameters.getScriptJobTimeout());
-            executor.setWatchdog(watchdog);
-        }
+                
+        Executor executor = getAndSetExecutor(parameters, outputStream, watchdog);        
 
         if (parameters.getExecuteInBackground()) {
             System.out.println("Executing non-blocking script job...");
@@ -93,6 +81,23 @@ public final class ExternalProcessExecutor {
         }
         return cmd;
     }
+    
+    private Executor getAndSetExecutor(final ScriptParameters parameters,
+            final CollectingLogOutputStream outputStream, final ExecuteWatchdog watchdog) {
+        PumpStreamHandler streamHandler = new PumpStreamHandler(outputStream);
+        Executor executor = new DefaultExecutor();
+        executor.setExitValue(parameters.getSuccessfulExitValue());
+        executor.setStreamHandler(streamHandler);
+
+        if (parameters.getWorkingDirectory() != null) {
+            executor.setWorkingDirectory(parameters.getWorkingDirectory().toFile());
+        }
+
+        if (parameters.getScriptJobTimeout() > 0) {
+            executor.setWatchdog(watchdog);
+        }
+        return executor;
+    }
 
     private void setExecuteOutput(final List<String> lines) {
         this.executeOutput = lines;
@@ -105,7 +110,7 @@ public final class ExternalProcessExecutor {
     private void logException(final Exception ex, final Path path) {
         System.err.println("Executing of the following script failed: " + path.toAbsolutePath());
         System.err.println("Message: " + ex.getMessage());
-    }
+    }    
 
     private static class ScriptResultHandler extends DefaultExecuteResultHandler {
 
