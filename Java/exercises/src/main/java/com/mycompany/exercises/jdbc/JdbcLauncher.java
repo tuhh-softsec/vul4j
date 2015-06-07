@@ -9,24 +9,23 @@ package com.mycompany.exercises.jdbc;
  */
 public final class JdbcLauncher {
 
-    private JdbcLauncher() {
-    }
+  private JdbcLauncher() {}
 
-    public static void main(final String[] args) {
-        MyDatabase db = new MyDatabase();
-        
-        db.submitQueriesAndReadResults();
-        db.constructAndUseStatement();
-        db.getInformationAboutResultSet();
-        db.printReport();
-        db.moveAroundResultSets();
-        db.demonstrateGetRowCount();
-        db.updateResultSet();
-        db.getInformationAboutDatabase();
-        db.usePreparedStatement();
-        db.workWithRowSet();
-        db.demonstrateTransaction();
-        db.demonstrateTransactionUsingSavepoints();
-    }
+  public static void main(final String[] args) {
+    MyDatabase db = new MyDatabase();
+
+    db.submitQueriesAndReadResults();
+    db.constructAndUseStatement();
+    db.getInformationAboutResultSet();
+    db.printReport();
+    db.moveAroundResultSets();
+    db.demonstrateGetRowCount();
+    db.updateResultSet();
+    db.getInformationAboutDatabase();
+    db.usePreparedStatement();
+    db.workWithRowSet();
+    db.demonstrateTransaction();
+    db.demonstrateTransactionUsingSavepoints();
+  }
 
 }

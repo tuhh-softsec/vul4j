@@ -8,11 +8,9 @@ import java.nio.file.Paths;
 
 public final class ExecLauncher {
 
-    private ExecLauncher() {
+  private ExecLauncher() {}
 
-    }
-
-    public static void main(final String[] args) {
+  public static void main(final String[] args) {
         ExternalProcessExecutor executor = new ExternalProcessExecutor();
         ScriptParameters parameters = new ScriptParameters.Builder(
                 Paths.get("/home/user/scripts/scriptAlfa"), 1)

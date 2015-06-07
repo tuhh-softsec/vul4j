@@ -20,141 +20,141 @@ import org.apache.commons.exec.PumpStreamHandler;
 
 public final class ExternalProcessExecutor {
 
-    private List<String> executeOutput;
+  private List<String> executeOutput;
 
-    public ExternalProcessExecutor() {
+  public ExternalProcessExecutor() {
 
+  }
+
+  public boolean executeScript(final ScriptParameters parameters) {
+    boolean scriptExecuted = false;
+
+    if (!FileAccessibilityUtils.ensureFileIsAccessible(parameters.getScriptFileLocation())) {
+      return false;
     }
 
-    public boolean executeScript(final ScriptParameters parameters) {
-        boolean scriptExecuted = false;
-
-        if (!FileAccessibilityUtils.ensureFileIsAccessible(parameters.getScriptFileLocation())) {
-            return false;
-        }
-
-        try {
-            System.out.println("Preparing script job...");
-            ScriptResultHandler scriptResult = execute(parameters);
-            scriptResult.waitFor();
-            System.out.println("The script job has finished.");
-            scriptExecuted = true;
-        } catch (IOException | InterruptedException ex) {
-            logException(ex, parameters.getScriptFileLocation());
-        }
-
-        return scriptExecuted;
+    try {
+      System.out.println("Preparing script job...");
+      ScriptResultHandler scriptResult = execute(parameters);
+      scriptResult.waitFor();
+      System.out.println("The script job has finished.");
+      scriptExecuted = true;
+    } catch (IOException | InterruptedException ex) {
+      logException(ex, parameters.getScriptFileLocation());
     }
 
-    private ScriptResultHandler execute(final ScriptParameters parameters)
-            throws ExecuteException, IOException {
-        setExecuteOutput(Collections.emptyList());
+    return scriptExecuted;
+  }
 
-        ExecuteWatchdog watchdog = new ExecuteWatchdog(parameters.getScriptJobTimeout());
-        ScriptResultHandler resultHandler = null;
-        CollectingLogOutputStream outputStream = new CollectingLogOutputStream();
+  private ScriptResultHandler execute(final ScriptParameters parameters) throws ExecuteException,
+      IOException {
+    setExecuteOutput(Collections.emptyList());
 
-        CommandLine commandLine = buildCommandLine(
-                parameters.getScriptFileLocation(), parameters.getCommandLineArguments());
-                
-        Executor executor = getAndSetExecutor(parameters, outputStream, watchdog);        
+    ExecuteWatchdog watchdog = new ExecuteWatchdog(parameters.getScriptJobTimeout());
+    ScriptResultHandler resultHandler = null;
+    CollectingLogOutputStream outputStream = new CollectingLogOutputStream();
 
-        if (parameters.getExecuteInBackground()) {
-            System.out.println("Executing non-blocking script job...");
-            resultHandler = new ScriptResultHandler(watchdog);
-            executor.execute(commandLine, resultHandler);
-        } else {
-            System.out.println("Executing blocking script job...");
-            int exitValue = executor.execute(commandLine);
-            resultHandler = new ScriptResultHandler(exitValue);
-        }
+    CommandLine commandLine =
+        buildCommandLine(parameters.getScriptFileLocation(), parameters.getCommandLineArguments());
 
-        setExecuteOutput(outputStream.getLines());
+    Executor executor = getAndSetExecutor(parameters, outputStream, watchdog);
 
-        return resultHandler;
+    if (parameters.getExecuteInBackground()) {
+      System.out.println("Executing non-blocking script job...");
+      resultHandler = new ScriptResultHandler(watchdog);
+      executor.execute(commandLine, resultHandler);
+    } else {
+      System.out.println("Executing blocking script job...");
+      int exitValue = executor.execute(commandLine);
+      resultHandler = new ScriptResultHandler(exitValue);
     }
 
-    private CommandLine buildCommandLine(final Path path, final String[] commandLineArguments) {
-        CommandLine cmd = new CommandLine(path.toString());
-        for (String argument : commandLineArguments) {
-            cmd.addArgument(argument);
-        }
-        return cmd;
+    setExecuteOutput(outputStream.getLines());
+
+    return resultHandler;
+  }
+
+  private CommandLine buildCommandLine(final Path path, final String[] commandLineArguments) {
+    CommandLine cmd = new CommandLine(path.toString());
+    for (String argument : commandLineArguments) {
+      cmd.addArgument(argument);
     }
-    
-    private Executor getAndSetExecutor(final ScriptParameters parameters,
-            final CollectingLogOutputStream outputStream, final ExecuteWatchdog watchdog) {
-        PumpStreamHandler streamHandler = new PumpStreamHandler(outputStream);
-        Executor executor = new DefaultExecutor();
-        executor.setExitValue(parameters.getSuccessfulExitValue());
-        executor.setStreamHandler(streamHandler);
+    return cmd;
+  }
 
-        if (parameters.getWorkingDirectory() != null) {
-            executor.setWorkingDirectory(parameters.getWorkingDirectory().toFile());
-        }
+  private Executor getAndSetExecutor(final ScriptParameters parameters,
+      final CollectingLogOutputStream outputStream, final ExecuteWatchdog watchdog) {
+    PumpStreamHandler streamHandler = new PumpStreamHandler(outputStream);
+    Executor executor = new DefaultExecutor();
+    executor.setExitValue(parameters.getSuccessfulExitValue());
+    executor.setStreamHandler(streamHandler);
 
-        if (parameters.getScriptJobTimeout() > 0) {
-            executor.setWatchdog(watchdog);
-        }
-        return executor;
-    }
-
-    private void setExecuteOutput(final List<String> lines) {
-        this.executeOutput = lines;
+    if (parameters.getWorkingDirectory() != null) {
+      executor.setWorkingDirectory(parameters.getWorkingDirectory().toFile());
     }
 
-    public List<String> getExecuteOutput() {
-        return this.executeOutput;
+    if (parameters.getScriptJobTimeout() > 0) {
+      executor.setWatchdog(watchdog);
+    }
+    return executor;
+  }
+
+  private void setExecuteOutput(final List<String> lines) {
+    this.executeOutput = lines;
+  }
+
+  public List<String> getExecuteOutput() {
+    return this.executeOutput;
+  }
+
+  private void logException(final Exception ex, final Path path) {
+    System.err.println("Executing of the following script failed: " + path.toAbsolutePath());
+    System.err.println("Message: " + ex.getMessage());
+  }
+
+  private static class ScriptResultHandler extends DefaultExecuteResultHandler {
+
+    private ExecuteWatchdog watchdog;
+
+    public ScriptResultHandler(final ExecuteWatchdog watchdog) {
+      this.watchdog = watchdog;
     }
 
-    private void logException(final Exception ex, final Path path) {
-        System.err.println("Executing of the following script failed: " + path.toAbsolutePath());
-        System.err.println("Message: " + ex.getMessage());
-    }    
-
-    private static class ScriptResultHandler extends DefaultExecuteResultHandler {
-
-        private ExecuteWatchdog watchdog;
-
-        public ScriptResultHandler(final ExecuteWatchdog watchdog) {
-            this.watchdog = watchdog;
-        }
-
-        public ScriptResultHandler(final int exitValue) {
-            super.onProcessComplete(exitValue);
-        }
-
-        @Override
-        public void onProcessComplete(final int exitValue) {
-            super.onProcessComplete(exitValue);
-            System.out.println("The sript was successfully executed.");
-        }
-
-        @Override
-        public void onProcessFailed(final ExecuteException e) {
-            super.onProcessFailed(e);
-            if (watchdog != null && watchdog.killedProcess()) {
-                System.err.println("The script process timed out.");
-            } else {
-                System.err.println("Failed to execute the script: " + e.getMessage() + ".");
-            }
-        }
-
+    public ScriptResultHandler(final int exitValue) {
+      super.onProcessComplete(exitValue);
     }
 
-    private static class CollectingLogOutputStream extends LogOutputStream {
-
-        private final List<String> lines = new ArrayList<>();
-
-        @Override
-        protected void processLine(final String line, int level) {
-            lines.add(line);
-        }
-
-        public List<String> getLines() {
-            return lines;
-        }
-
+    @Override
+    public void onProcessComplete(final int exitValue) {
+      super.onProcessComplete(exitValue);
+      System.out.println("The sript was successfully executed.");
     }
+
+    @Override
+    public void onProcessFailed(final ExecuteException e) {
+      super.onProcessFailed(e);
+      if (watchdog != null && watchdog.killedProcess()) {
+        System.err.println("The script process timed out.");
+      } else {
+        System.err.println("Failed to execute the script: " + e.getMessage() + ".");
+      }
+    }
+
+  }
+
+  private static class CollectingLogOutputStream extends LogOutputStream {
+
+    private final List<String> lines = new ArrayList<>();
+
+    @Override
+    protected void processLine(final String line, int level) {
+      lines.add(line);
+    }
+
+    public List<String> getLines() {
+      return lines;
+    }
+
+  }
 
 }
