@@ -1,5 +1,6 @@
 /**
- * Copyright (c) 2015 Company. All rights reserved.
+ * Copyright (c) 2015 Company.
+ * All rights reserved.
  */
 package com.mycompany.exercises.net.ftp;
 
