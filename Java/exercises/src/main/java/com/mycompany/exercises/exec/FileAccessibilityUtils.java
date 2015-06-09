@@ -9,33 +9,11 @@ import java.nio.file.Path;
 
 public final class FileAccessibilityUtils {
 
-  private FileAccessibilityUtils() {
-
-  }
+  private FileAccessibilityUtils() {}
 
   public static boolean ensureFileIsAccessible(final Path path) {
-    return ensureFileExists(path) && ensureFileIsRegular(path) && ensureFileIsReadable(path)
+    return Files.exists(path) && Files.isRegularFile(path) && ensureFileIsReadable(path)
         && ensureFileIsExecutable(path);
-  }
-
-  private static boolean ensureFileExists(final Path scriptFileLocation) {
-    if (Files.exists(scriptFileLocation)) {
-      return true;
-    } else {
-      System.err.println("File " + scriptFileLocation + " does not exist.");
-      return false;
-    }
-
-  }
-
-  private static boolean ensureFileIsRegular(final Path scriptFileLocation) {
-    if (Files.isRegularFile(scriptFileLocation)) {
-      return true;
-    } else {
-      System.err.println("File " + scriptFileLocation + " is not a regular file.");
-      return false;
-    }
-
   }
 
   private static boolean ensureFileIsReadable(final Path scriptFileLocation) {
