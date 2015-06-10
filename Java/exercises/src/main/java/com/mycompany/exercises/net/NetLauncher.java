@@ -10,6 +10,10 @@ public final class NetLauncher {
 
   public static void main(final String[] args) {
     System.out.println(NetworkUtils.getAllHostAddresses());
+    System.out
+        .println("google.co.uk is available: " + NetworkUtils.isHostAvailable("google.co.uk"));
+    System.out.println("netboss.com content is available: "
+        + NetworkUtils.isHostContentAvailable("netboss.com"));
   }
 
 }

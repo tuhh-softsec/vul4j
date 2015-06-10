@@ -4,14 +4,22 @@
  */
 package com.mycompany.exercises.net;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.NetworkInterface;
+import java.net.Socket;
 import java.net.SocketException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public final class NetworkUtils {
+
+  private static final int HTTP_STATUS_CODE_OK = 200;
+  private static final int HTTP_STATUS_CODE_BAD_REQUEST = 400;
 
   private NetworkUtils() {}
 
@@ -47,6 +55,43 @@ public final class NetworkUtils {
 
   private static List<InetAddress> getInetAddresses(final NetworkInterface networkInterface) {
     return Collections.list(networkInterface.getInetAddresses());
+  }
+
+  public static boolean isHostAvailable(final String host) {
+    boolean available = false;
+    try (Socket socket = new Socket(host, 80)) {
+      available = true;
+    } catch (IOException ex) {
+      System.err.println("Failed to check if host " + host + " is available.");
+      System.err.println("Message: " + ex.getMessage());
+    }
+    return available;
+  }
+
+  public static boolean isHostContentAvailable(final String host) {
+    boolean available = false;
+    try {
+      URL url = getURL(host);
+      HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+      connection.setRequestMethod("HEAD");
+      int responseCode = connection.getResponseCode();
+      available = isPositiveResponseCode(responseCode);
+      System.out.println("HTTP response message: " + connection.getResponseMessage());
+    } catch (IOException ex) {
+      System.err.println("Failed to check if host " + host + " content is available.");
+      System.err.println("Message: " + ex.getMessage());
+    }
+    return available;
+  }
+
+  private static URL getURL(final String host) throws MalformedURLException {
+    String url = host.replaceFirst("^https", "http");
+    String validURL = url.startsWith("http") ? url : "http://" + host;
+    return new URL(validURL);
+  }
+
+  private static boolean isPositiveResponseCode(int responseCode) {
+    return HTTP_STATUS_CODE_OK <= responseCode && responseCode < HTTP_STATUS_CODE_BAD_REQUEST;
   }
 
 }
