@@ -14,7 +14,9 @@ import java.net.SocketException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public final class NetworkUtils {
 
@@ -23,13 +25,48 @@ public final class NetworkUtils {
 
   private NetworkUtils() {}
 
+  /**
+   * @return host addresses for each network interface for this machine
+   */
+  public static Map<String, List<String>> getInterfaceHostAddresses() {
+    Map<NetworkInterface, List<InetAddress>> interfaceInetAddresses = getInterfaceInetAddresses();
+    return convertToInterfaceHostAddresses(interfaceInetAddresses);
+  }
+
+  /**
+   * @return all host addresses for this machine
+   */
   public static List<String> getAllHostAddresses() {
-    List<String> hostAddresses = new ArrayList<>();
     List<InetAddress> inetAddresses = getAllInetAddresses();
+    return convertToHostAddresses(inetAddresses);
+  }
+
+  private static Map<String, List<String>> convertToInterfaceHostAddresses(
+      final Map<NetworkInterface, List<InetAddress>> interfaceInetAddresses) {
+    Map<String, List<String>> interfaceHostAddresses = new HashMap<>();
+    for (Map.Entry<NetworkInterface, List<InetAddress>> entry : interfaceInetAddresses.entrySet()) {
+      interfaceHostAddresses
+          .put(entry.getKey().getName(), convertToHostAddresses(entry.getValue()));
+    }
+    return interfaceHostAddresses;
+  }
+
+  private static List<String> convertToHostAddresses(final List<InetAddress> inetAddresses) {
+    List<String> hostAddresses = new ArrayList<>();
     for (InetAddress inetAddress : inetAddresses) {
       hostAddresses.add(inetAddress.getHostAddress());
     }
     return hostAddresses;
+  }
+
+  private static Map<NetworkInterface, List<InetAddress>> getInterfaceInetAddresses() {
+    Map<NetworkInterface, List<InetAddress>> interfaceInetAddresses = new HashMap<>();
+    List<NetworkInterface> interfaces = getNetworkInterfaces();
+    for (NetworkInterface networkInterface : interfaces) {
+      List<InetAddress> inetAddresses = getInetAddresses(networkInterface);
+      interfaceInetAddresses.put(networkInterface, inetAddresses);
+    }
+    return interfaceInetAddresses;
   }
 
   private static List<InetAddress> getAllInetAddresses() {
