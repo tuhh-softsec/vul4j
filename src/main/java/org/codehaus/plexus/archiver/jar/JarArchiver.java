@@ -23,10 +23,9 @@ import static org.codehaus.plexus.archiver.util.Streams.fileOutputStream;
 import java.io.*;
 import java.util.*;
 
-import javax.annotation.WillClose;
-
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
+import org.apache.commons.compress.parallel.InputStreamSupplier;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.zip.ConcurrentJarCreator;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
@@ -333,7 +332,8 @@ public class JarArchiver
         manifest.write( baos );
 
         ByteArrayInputStream bais = new ByteArrayInputStream( baos.toByteArray() );
-        super.zipFile( bais, zOut, MANIFEST_NAME, System.currentTimeMillis(), null, DEFAULT_FILE_MODE, null );
+        super.zipFile( createInputStreamSupplier( bais ), zOut, MANIFEST_NAME, System.currentTimeMillis(), null,
+                       DEFAULT_FILE_MODE, null );
         super.initZipOutputStream( zOut );
     }
 
@@ -434,13 +434,15 @@ public class JarArchiver
 
         ByteArrayInputStream bais = new ByteArrayInputStream( baos.toByteArray() );
 
-        super.zipFile( bais, zOut, INDEX_NAME, System.currentTimeMillis(), null, DEFAULT_FILE_MODE, null );
+        super.zipFile( createInputStreamSupplier( bais ), zOut, INDEX_NAME, System.currentTimeMillis(), null,
+                       DEFAULT_FILE_MODE, null );
     }
 
     /**
      * Overridden from Zip class to deal with manifests and index lists.
      */
-    protected void zipFile( @WillClose InputStream is, ConcurrentJarCreator zOut, String vPath, long lastModified, File fromArchive,
+    protected void zipFile( InputStreamSupplier is, ConcurrentJarCreator zOut, String vPath,
+                            long lastModified, File fromArchive,
                             int mode, String symlinkDestination )
         throws IOException, ArchiverException
     {
@@ -448,7 +450,7 @@ public class JarArchiver
         {
             if ( !doubleFilePass || skipWriting )
             {
-                filesetManifest( fromArchive, is );
+                filesetManifest( fromArchive, is.get() );
             }
         }
         else if ( INDEX_NAME.equalsIgnoreCase( vPath ) && index )
@@ -483,7 +485,7 @@ public class JarArchiver
                 manifest = getManifest( file );
             }
         }
-        else if ( ( filesetManifestConfig != null ) && filesetManifestConfig != FilesetManifestConfig.skip)
+        else if ( ( filesetManifestConfig != null ) && filesetManifestConfig != FilesetManifestConfig.skip )
         {
             // we add this to our group of fileset manifests
             getLogger().debug( "Found manifest to merge in file " + file );
@@ -522,16 +524,17 @@ public class JarArchiver
         try
         {
             getLogger().debug( "Building MANIFEST-only jar: " + getDestFile().getAbsolutePath() );
-            zipArchiveOutputStream = new ZipArchiveOutputStream( bufferedOutputStream( fileOutputStream( getDestFile(), "jar" ) ));
+            zipArchiveOutputStream =
+                new ZipArchiveOutputStream( bufferedOutputStream( fileOutputStream( getDestFile(), "jar" ) ) );
 
-            zipArchiveOutputStream.setEncoding(getEncoding());
+            zipArchiveOutputStream.setEncoding( getEncoding() );
             if ( isCompress() )
             {
-                zipArchiveOutputStream.setMethod(ZipArchiveOutputStream.DEFLATED);
+                zipArchiveOutputStream.setMethod( ZipArchiveOutputStream.DEFLATED );
             }
             else
             {
-                zipArchiveOutputStream.setMethod(ZipArchiveOutputStream.STORED);
+                zipArchiveOutputStream.setMethod( ZipArchiveOutputStream.STORED );
             }
 			ConcurrentJarCreator ps = new ConcurrentJarCreator(Runtime.getRuntime().availableProcessors());
             initZipOutputStream( ps );
@@ -589,7 +592,9 @@ public class JarArchiver
 
     public enum FilesetManifestConfig
     {
-		skip, merge, mergewithoutmain
+        skip,
+        merge,
+        mergewithoutmain
     }
 
     /**

@@ -1,13 +1,12 @@
 package org.codehaus.plexus.archiver.jar;
 
+import junit.framework.TestCase;
 import org.codehaus.plexus.archiver.ArchiverException;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Random;
-
-import junit.framework.TestCase;
 
 public class JarArchiverTest
     extends TestCase
@@ -53,12 +52,12 @@ public class JarArchiverTest
         tmpDir.delete();
         tmpDir.mkdirs();
         Random rand = new Random();
-        for ( int i = 0; i < 15000; i++ )
+        for ( int i = 0; i < 45000; i++ )
         {
            File f = new File( tmpDir, "file" + i );
            f.deleteOnExit();
            FileOutputStream out = new FileOutputStream(f);
-           byte[] data = new byte[10240]; // 10kb per file
+            byte[] data = new byte[512]; // 512bytes per file
            rand.nextBytes( data );
            out.write( data );
            out.flush();
