@@ -20,7 +20,7 @@ package org.codehaus.plexus.archiver.snappy;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.util.Compressor;
 import org.codehaus.plexus.util.IOUtil;
-import org.xerial.snappy.SnappyOutputStream;
+import org.iq80.snappy.SnappyOutputStream;
 
 import java.io.IOException;
 

@@ -19,7 +19,7 @@ package org.codehaus.plexus.archiver.snappy;
 
 import org.codehaus.plexus.archiver.AbstractUnArchiver;
 import org.codehaus.plexus.archiver.ArchiverException;
-import org.xerial.snappy.SnappyInputStream;
+import org.iq80.snappy.SnappyInputStream;
 
 import javax.annotation.Nonnull;
 import java.io.File;

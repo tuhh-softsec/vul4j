@@ -23,7 +23,7 @@ import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.codehaus.plexus.archiver.AbstractUnArchiver;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.util.IOUtil;
-import org.xerial.snappy.SnappyInputStream;
+import org.iq80.snappy.SnappyInputStream;
 
 import java.io.BufferedInputStream;
 import java.io.File;

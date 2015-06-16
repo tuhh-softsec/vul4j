@@ -64,9 +64,9 @@
       <version>1.10-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>org.xerial.snappy</groupId>
-      <artifactId>snappy-java</artifactId>
-      <version>1.1.1.6</version>
+      <groupId>org.iq80.snappy</groupId>
+      <artifactId>snappy</artifactId>
+      <version>0.3</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

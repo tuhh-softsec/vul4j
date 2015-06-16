@@ -31,7 +31,7 @@ import org.codehaus.plexus.components.io.functions.SymlinkDestinationSupplier;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
-import org.xerial.snappy.SnappyOutputStream;
+import org.iq80.snappy.SnappyOutputStream;
 
 import java.io.File;
 import java.io.FileOutputStream;
