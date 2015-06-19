@@ -173,7 +173,7 @@ public class zFTPConnector
             }
 
             // Try to set filetype and jesjobname.
-            if (!this.FTPClient.doCommand("site filetype=jes jesjobname=*", "")) {
+            if (!this.FTPClient.doCommand("site filetype=jes jesjobname=* jesjobowner=*", "")) {
                 this.FTPClient.disconnect();
                 System.err.println("Couldn't set FileType and JESJobName");
                 return false;
