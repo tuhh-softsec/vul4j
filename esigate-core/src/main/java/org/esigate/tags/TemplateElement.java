@@ -27,6 +27,11 @@ class TemplateElement implements Element {
             return new TemplateElement();
         }
 
+        @Override
+        public boolean isSelfClosing(String tag) {
+            return false;
+        }
+
     };
 
     @Override
@@ -43,7 +48,7 @@ class TemplateElement implements Element {
     }
 
     @Override
-    public void onTagStart(String tag, ParserContext ctx) {
+    public boolean onTagStart(String tag, ParserContext ctx) {
         String[] parameters = tag.split("\\$");
         if (parameters.length != 4) {
             throw new AggregationSyntaxException("Invalid syntax: " + tag);
@@ -55,6 +60,7 @@ class TemplateElement implements Element {
         if (nameMatches) {
             templateRenderer.setWrite(true);
         }
+        return true;
     }
 
     @Override
@@ -62,11 +68,6 @@ class TemplateElement implements Element {
         if (nameMatches) {
             templateRenderer.append(csq, start, end);
         }
-    }
-
-    @Override
-    public boolean isClosed() {
-        return false;
     }
 
     public boolean isNameMatches() {

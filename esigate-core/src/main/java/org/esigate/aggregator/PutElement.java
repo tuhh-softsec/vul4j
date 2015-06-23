@@ -23,6 +23,11 @@ class PutElement implements Element {
             return new PutElement();
         }
 
+        @Override
+        public boolean isSelfClosing(String tag) {
+            return false;
+        }
+
     };
 
     private IncludeTemplateElement includeTemplateElement;
@@ -40,7 +45,7 @@ class PutElement implements Element {
     }
 
     @Override
-    public void onTagStart(String tag, ParserContext ctx) {
+    public boolean onTagStart(String tag, ParserContext ctx) {
         String[] parameters = tag.split("\\$");
         if (parameters.length != 4) {
             throw new AggregationSyntaxException("Invalid syntax: " + tag);
@@ -50,11 +55,7 @@ class PutElement implements Element {
         if (includeTemplateElement == null) {
             throw new AggregationSyntaxException(tag + " should be nested in an includetemplate tag");
         }
-    }
-
-    @Override
-    public boolean isClosed() {
-        return false;
+        return true;
     }
 
     @Override

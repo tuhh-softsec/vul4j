@@ -34,9 +34,10 @@ class ChooseElement extends BaseElement {
     }
 
     @Override
-    protected void parseTag(Tag tag, FutureParserContext ctx) {
+    protected boolean parseTag(Tag tag, FutureParserContext ctx) {
         condition = false;
         hasConditionSet = false;
+        return true;
     }
 
     public boolean hadConditionSet() {

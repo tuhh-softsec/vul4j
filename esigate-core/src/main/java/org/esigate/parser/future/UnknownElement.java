@@ -14,10 +14,10 @@
  */
 package org.esigate.parser.future;
 
-import org.esigate.HttpErrorPage;
-
 import java.io.IOException;
 import java.util.concurrent.Future;
+
+import org.esigate.HttpErrorPage;
 
 /**
  * Handle unknown tag.
@@ -46,12 +46,18 @@ public class UnknownElement implements FutureElement {
         public FutureElement newInstance() {
             return instance;
         }
+
+        @Override
+        public boolean isSelfClosing(String tag) {
+            return true;
+        }
     };
 
     @Override
-    public void onTagStart(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
+    public boolean onTagStart(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
 
         ctx.characters(new CharSequenceFuture(tag));
+        return true;
     }
 
     @Override
@@ -67,11 +73,6 @@ public class UnknownElement implements FutureElement {
     @Override
     public void characters(Future<CharSequence> csq) throws IOException {
         throw new UnsupportedOperationException("characters are appended in onTagStart method");
-    }
-
-    @Override
-    public boolean isClosed() {
-        return true;
     }
 
     @Override

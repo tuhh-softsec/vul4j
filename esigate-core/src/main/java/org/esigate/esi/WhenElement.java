@@ -40,7 +40,7 @@ class WhenElement extends BaseElement {
     }
 
     @Override
-    protected void parseTag(Tag tag, ParserContext ctx) {
+    protected boolean parseTag(Tag tag, ParserContext ctx) {
         String test = tag.getAttribute("test");
         ChooseElement parent = ctx.findAncestor(ChooseElement.class);
         if (test != null && parent != null) {
@@ -50,6 +50,7 @@ class WhenElement extends BaseElement {
                     ctx.getHttpRequest())));
             active &= parent.isCondition();
         }
+        return active;
     }
 
     @Override

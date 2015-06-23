@@ -40,4 +40,9 @@ public class UnknownElementType implements ElementType {
     public Element newInstance() {
         return UnknownElementType.INSTANCE;
     }
+
+    @Override
+    public boolean isSelfClosing(String tag) {
+        return true;
+    }
 }
