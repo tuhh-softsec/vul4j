@@ -25,6 +25,11 @@ class ParamElement implements Element {
             return new ParamElement();
         }
 
+        @Override
+        public boolean isSelfClosing(String tag) {
+            return false;
+        }
+
     };
 
     private Element parent;
@@ -41,7 +46,7 @@ class ParamElement implements Element {
     }
 
     @Override
-    public void onTagStart(String tag, ParserContext ctx) throws IOException {
+    public boolean onTagStart(String tag, ParserContext ctx) throws IOException {
         this.parent = ctx.getCurrent();
         String[] parameters = tag.split("\\$");
         if (parameters.length != 4) {
@@ -57,11 +62,7 @@ class ParamElement implements Element {
                 valueFound = true;
             }
         }
-    }
-
-    @Override
-    public boolean isClosed() {
-        return false;
+        return true;
     }
 
     @Override

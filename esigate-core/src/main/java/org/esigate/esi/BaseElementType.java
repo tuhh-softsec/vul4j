@@ -35,4 +35,10 @@ abstract class BaseElementType implements ElementType {
         return tag.startsWith(endTag);
     }
 
+    @Override
+    public boolean isSelfClosing(String tag) {
+        Tag tagObj = Tag.create(tag);
+        return tagObj.isOpenClosed();
+    }
+
 }

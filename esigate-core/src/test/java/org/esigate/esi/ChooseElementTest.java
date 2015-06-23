@@ -94,4 +94,43 @@ public class ChooseElementTest extends AbstractElementTest {
         assertEquals("begin inside otherwise with 'Advanced' cookie end", result);
     }
 
+    /**
+     * Checks that includes inside a &lt;when&gt; block are evaluated only if needed.
+     * 
+     * @throws Exception
+     *             if anything goes wrong
+     */
+    public void testWhenWithIncludeOnlyEvaluatedWhenRequired() throws Exception {
+        String page =
+                "<esi:choose>\r\n" + "   <esi:when test=\"'$(HTTP_COOKIE{username})' != ''\">\r\n"
+                        + "       <esi:include src=\"/esi/include/a\" />\r\n" + "   </esi:when>\r\n"
+                        + "   <esi:otherwise>\r\n" + "       <esi:include src=\"/esi/include/b\" />\r\n"
+                        + "   </esi:otherwise>\r\n" + "</esi:choose>";
+        addResource("/esi/include/b", "anonymous");
+        String result = render(page);
+        assertEquals("anonymous", result.trim());
+        getRequestBuilder().addCookie(new BasicClientCookie("username", "someUser"));
+        addResource("/esi/include/a", "logged in");
+        result = render(page);
+        assertEquals("logged in", result.trim());
+    }
+
+    /**
+     * Checks that includes inside a &lt;otherwise&gt; block are evaluated only if needed.
+     * 
+     * @throws Exception
+     *             if anything goes wrong
+     */
+    public void testOtherwiseWithIncludeOnlyEvaluatedWhenRequired() throws Exception {
+        String page =
+                "<esi:choose>\r\n" + "   <esi:when test=\"'$(HTTP_COOKIE{username})' != ''\">\r\n"
+                        + "       <esi:include src=\"/esi/include/a\" />\r\n" + "   </esi:when>\r\n"
+                        + "   <esi:otherwise>\r\n" + "       <esi:include src=\"/esi/include/b\" />\r\n"
+                        + "   </esi:otherwise>\r\n" + "</esi:choose>";
+        addResource("/esi/include/a", "logged in");
+        getRequestBuilder().addCookie(new BasicClientCookie("username", "someUser"));
+        String result = render(page);
+        assertEquals("logged in", result.trim());
+    }
+
 }
