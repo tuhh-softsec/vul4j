@@ -35,6 +35,15 @@ public interface FutureElementType {
     boolean isStartTag(String tag);
 
     /**
+     * Detects if a tag is self closed or does not require a matching end tag. Ex: &lt;br /&gt;
+     * 
+     * @param tag
+     *            The String to check
+     * @return Returns true if the String is a self closing tag
+     */
+    boolean isSelfClosing(String tag);
+
+    /**
      * Detects a closing tag for this element type.
      * 
      * @param tag

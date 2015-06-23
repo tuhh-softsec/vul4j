@@ -75,7 +75,7 @@ class ReplaceElement extends BaseElement {
     }
 
     @Override
-    protected void parseTag(Tag tag, FutureParserContext ctx) throws HttpErrorPage {
+    protected boolean parseTag(Tag tag, FutureParserContext ctx) throws HttpErrorPage {
         buf = new StringBuilderFutureAppendable();
         fragment = tag.getAttribute("fragment");
         regexp = tag.getAttribute("regexp");
@@ -85,6 +85,7 @@ class ReplaceElement extends BaseElement {
         if ((fragment == null && regexp == null) || (fragment != null && regexp != null)) {
             throw new EsiSyntaxError("only one of 'fragment' and 'expression' attributes is allowed");
         }
+        return true;
     }
 
 }

@@ -137,8 +137,9 @@ class FutureParserContextImpl implements FutureParserContext {
         }
 
         @Override
-        public void onTagStart(String tag, FutureParserContext ctx) {
+        public boolean onTagStart(String tag, FutureParserContext ctx) {
             // Nothing to do, this is the root tag
+            return true;
         }
 
         @Override
@@ -154,11 +155,6 @@ class FutureParserContextImpl implements FutureParserContext {
         @Override
         public void characters(Future<CharSequence> csq) throws IOException {
             this.root.enqueueAppend(csq);
-        }
-
-        @Override
-        public boolean isClosed() {
-            return false;
         }
 
         /*

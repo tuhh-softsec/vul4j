@@ -247,11 +247,12 @@ class IncludeElement extends BaseElement {
     }
 
     @Override
-    protected void parseTag(Tag tag, FutureParserContext ctx) {
+    protected boolean parseTag(Tag tag, FutureParserContext ctx) {
         buf = new StringBuilderFutureAppendable();
         fragmentReplacements = new HashMap<String, CharSequence>();
         regexpReplacements = new HashMap<String, CharSequence>();
         includeTag = tag;
+        return true;
     }
 
     void addFragmentReplacement(String fragment, CharSequence replacement) {

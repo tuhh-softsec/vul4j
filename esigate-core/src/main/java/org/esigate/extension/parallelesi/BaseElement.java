@@ -22,7 +22,6 @@ import org.esigate.parser.future.FutureElement;
 import org.esigate.parser.future.FutureParserContext;
 
 abstract class BaseElement implements FutureElement {
-    private boolean closed = false;
     private FutureElement parent = null;
 
     protected BaseElement() {
@@ -35,21 +34,16 @@ abstract class BaseElement implements FutureElement {
      * @throws IOException
      * 
      **/
-    protected void parseTag(Tag tag, FutureParserContext ctx) throws HttpErrorPage, IOException {
+    protected boolean parseTag(Tag tag, FutureParserContext ctx) throws HttpErrorPage, IOException {
         // Default implementation does nothing
+        return true;
     }
 
     @Override
-    public boolean isClosed() {
-        return this.closed;
-    }
-
-    @Override
-    public void onTagStart(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
+    public boolean onTagStart(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
         Tag tagObj = Tag.create(tag);
-        this.closed = tagObj.isOpenClosed();
         this.parent = ctx.getCurrent();
-        parseTag(tagObj, ctx);
+        return parseTag(tagObj, ctx);
     }
 
     @Override
