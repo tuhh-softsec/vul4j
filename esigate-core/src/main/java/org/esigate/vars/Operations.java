@@ -31,6 +31,8 @@ public final class Operations {
 
     }
 
+    private final static Pattern AKAMAI_EXISTS_PATTERN = Pattern.compile("\\$exists\\((.*?)\\)");
+
     private static boolean executeOperation(String op) {
 
         int i;
@@ -187,11 +189,10 @@ public final class Operations {
         ArrayList<String> operands = new ArrayList<String>();
         ArrayList<String> operations = new ArrayList<String>();
 
-        Pattern AKAMAI_EXISTS_PATTERN = Pattern.compile("\\$exists\\((.*?)\\)");
-        Matcher AKAMAI_EXISTS_TEST = AKAMAI_EXISTS_PATTERN.matcher(test);
+        Matcher existsMatcher = AKAMAI_EXISTS_PATTERN.matcher(test);
 
-        while (AKAMAI_EXISTS_TEST.find()) {
-            String group = AKAMAI_EXISTS_TEST.group();
+        while (existsMatcher.find()) {
+            String group = existsMatcher.group();
             String existsValue = group.substring(8, group.length() - 1);
 
             test = test.replace(group, existsValue + " != \"\"");
