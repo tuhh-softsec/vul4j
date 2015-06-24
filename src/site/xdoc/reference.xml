@@ -1099,7 +1099,23 @@ someUrl=/cms/article123
 			<td>PROVIDER</td>
 			<td>dictionary</td>
 			<td>http://provider.com</td>
-			<td>&nbsp;</td>
+			<td>No</td>
+			</tr>
+			</table>
+
+			<p>Functions</p>
+			<table>
+			<tr>
+			<th>Function Name</th>
+			<th>Return type</th>
+			<th>Example</th>
+			<th>ESI 1.0</th>
+			</tr>
+			<tr>
+			<td>exists</td>
+			<td>boolean</td>
+			<td><code>&lt;esi:choose&gt;&lt;esi:when test="$exists($(HTTP_COOKIE{'username'}))"&gt;[Take some action]&lt;/esi:when&gt;&lt;/esi:choose&gt;</code></td>
+			<td>No</td>
 			</tr>
 			</table>
 			<p>
