@@ -15,7 +15,6 @@
 package org.esigate.vars;
 
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
