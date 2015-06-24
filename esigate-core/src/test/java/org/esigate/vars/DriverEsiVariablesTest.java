@@ -101,6 +101,7 @@ public class DriverEsiVariablesTest extends AbstractDriverTestCase {
         addVariable(expected, "HTTP_USER_AGENT{browser}", "MOZILLA");
         addVariable(expected, "HTTP_USER_AGENT{os}", "MAC");
         addVariable(expected, "HTTP_COOKIE{test-cookie}", "test-cookie-value");
+        addVariable(expected, "HTTP_COOKIE{'test-cookie'}", "test-cookie-value");
         addVariable(expected, "HTTP_COOKIE{missing}", "");
         addVariable(expected, "QUERY_STRING{missing}", "");
         addVariable(expected, "HTTP_USER_AGENT{version}", "5.0");
