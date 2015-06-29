@@ -157,4 +157,12 @@ public class UriUtilsTest extends TestCase {
         assertEquals("test", uri.getPath());
     }
 
+    public void testCreateUriAddsSlashIfNoPath() {
+        assertParses("http://foo.com?q=1", "http://foo.com/?q=1");
+    }
+
+    public void testCreateUriNoPathAndUrlEncodedCharacters() {
+        assertParses("http://foo.com?q=%20", "http://foo.com/?q=%20");
+    }
+
 }
