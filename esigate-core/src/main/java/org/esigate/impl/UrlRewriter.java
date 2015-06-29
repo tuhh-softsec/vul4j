@@ -20,6 +20,7 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
@@ -198,11 +199,14 @@ public class UrlRewriter {
         while (m.find()) {
             String url = input.subSequence(m.start(3) + 1, m.end(3) - 1).toString();
             String tag = m.group(0);
+            String quote = input.subSequence(m.end(3) - 1, m.end(3)).toString();
 
-            // Browsers toletate urls with white spaces before or after
+            // Browsers tolerate urls with white spaces before or after
             String trimmedUrl = StringUtils.trim(url);
 
             String rewrittenUrl = url;
+
+            trimmedUrl = unescapeHtml(trimmedUrl);
 
             if (trimmedUrl.isEmpty()) {
                 LOG.debug("empty url kept unchanged");
@@ -213,26 +217,49 @@ public class UrlRewriter {
             } else if (m.group(2).equalsIgnoreCase("content")) {
                 if (META_REFRESH_PATTERN.matcher(tag).find()) {
                     rewrittenUrl = rewriteRefresh(trimmedUrl, requestUrl, baseUrlParam, visibleBaseUrl);
+                    rewrittenUrl = escapeHtml(rewrittenUrl);
                     LOG.debug("refresh url [{}] rewritten [{}]", url, rewrittenUrl);
                 } else {
                     LOG.debug("content attribute kept unchanged: [{}]", url);
                 }
             } else {
                 rewrittenUrl = rewriteUrl(trimmedUrl, requestUrl, baseUrlParam, visibleBaseUrl, absolute);
+                rewrittenUrl = escapeHtml(rewrittenUrl);
+                LOG.debug("url [{}] rewritten [{}]", url, rewrittenUrl);
             }
-            rewrittenUrl = rewrittenUrl.replaceAll("\\$", "\\\\\\$"); // replace '$' -> '\$' as it
-            // denotes group
-            StringBuffer tagReplacement = new StringBuffer("<$1$2=\"").append(rewrittenUrl).append("\"");
+
+            m.appendReplacement(result, ""); // Copy what is between the previous match and the current match
+            result.append("<");
+            result.append(m.group(1));
+            result.append(m.group(2));
+            result.append("=");
+            result.append(quote);
+            result.append(rewrittenUrl);
+            result.append(quote);
             if (m.groupCount() > 3) {
-                tagReplacement.append("$4");
+                result.append(m.group(4));
             }
-            tagReplacement.append('>');
-            LOG.trace("tag {} replaced by {}", tag, tagReplacement);
-            m.appendReplacement(result, tagReplacement.toString());
+            result.append(">");
         }
-        m.appendTail(result);
+
+        m.appendTail(result); // Copy the reminder of the input
 
         return result;
+    }
+
+    private String unescapeHtml(String url) {
+        // Unescape entities, ex: &apos; or &#39;
+        url = StringEscapeUtils.unescapeHtml4(url);
+        return url;
+    }
+
+    private String escapeHtml(String url) {
+        // Escape the previously unescaped characters
+        url = StringEscapeUtils.escapeHtml4(url);
+        // Replace " by &quot; in order not to break the html
+        url = url.replaceAll("'", "&apos;");
+        url = url.replaceAll("\"", "&quot;");
+        return url;
     }
 
     /**

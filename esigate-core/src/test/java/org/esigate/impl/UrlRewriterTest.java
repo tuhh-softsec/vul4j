@@ -457,4 +457,26 @@ public class UrlRewriterTest extends TestCase {
         assertDoesNotRewrite("mailto:test@test.com");
     }
 
+    public void testHtmlUnicodeEntities() {
+        baseUrl = "http://backend";
+        visibleUrlBase = "http://visible/context/";
+        requestUrl = "/";
+        absolute = true;
+
+        String html = "<a href='http://backend?param=I&#39;am&param2=I&#39;am'>";
+        String rewrittenHtml = "<a href='http://visible/context/?param=I&apos;am&amp;param2=I&apos;am'>";
+        assertRewritesHtml(html, rewrittenHtml);
+    }
+
+    public void testHtmlRewriteUrlWithEncodedCharacters() {
+        baseUrl = "http://backend";
+        visibleUrlBase = "http://visible/context/";
+        requestUrl = "/";
+        absolute = true;
+
+        String html = "<a href='http://backend?test=%20'>";
+        String rewrittenHtml = "<a href='http://visible/context/?test=%20'>";
+        assertRewritesHtml(html, rewrittenHtml);
+    }
+
 }

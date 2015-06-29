@@ -188,13 +188,9 @@ public final class UriUtils {
         uri = encodeIllegalCharacters(uri);
         URI result = URI.create(uri);
         if (result.getHost() != null && StringUtils.isEmpty(result.getPath())) {
-            try {
-                result =
-                        new URI(result.getScheme(), result.getRawUserInfo(), result.getHost(), result.getPort(), "/",
-                                result.getRawQuery(), result.getRawFragment());
-            } catch (URISyntaxException e) {
-                throw new InvalidUriException(e);
-            }
+            result =
+                    URI.create(createURI(result.getScheme(), result.getHost(), result.getPort(), "/",
+                            result.getRawQuery(), result.getRawFragment()));
         }
         return result;
     }
