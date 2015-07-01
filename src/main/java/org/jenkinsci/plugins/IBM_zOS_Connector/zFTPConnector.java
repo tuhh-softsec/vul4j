@@ -147,7 +147,7 @@ public class zFTPConnector
 
     /**
      * Try to logon to the <b><code>server</code></b> using the parameters passed to the constructor.
-     * Also, <code>SITE FILETYPE=JES JESJOBNAME=*</code> command is invoked.
+     * Also, <code>site filetype=jes jesjobname=* jesowner=*</code> command is invoked.
      *
      * @return Whether the credentials supplied are valid and the connection was established.
      *
@@ -173,11 +173,7 @@ public class zFTPConnector
             }
 
             // Try to set filetype and jesjobname.
-            if (!this.FTPClient.doCommand("site filetype=jes jesjobname=* jesjobowner=*", "")) {
-                this.FTPClient.disconnect();
-                System.err.println("Couldn't set FileType and JESJobName");
-                return false;
-            }
+            this.FTPClient.site("filetype=jes jesjobname=* jesowner=*");
             // Check reply.
             reply = this.FTPClient.getReplyCode();
             if (!FTPReply.isPositiveCompletion(reply)) {
@@ -340,12 +336,6 @@ public class zFTPConnector
      */
     private boolean fetchJobLog(OutputStream outputStream)
     {
-        // Initialize temp variables.
-        InputStreamReader tempInputStreamReader = null;
-        OutputStreamWriter tempOutputStreamWriter = null;
-        BufferedReader tempReader = null;
-        BufferedWriter tempWriter = null;
-
         // Verify connection.
         if(!this.FTPClient.isConnected())
             if(!this.logon())
@@ -361,116 +351,73 @@ public class zFTPConnector
         {
             // Temp variables.
             int reply;
-            boolean foundRC = false;
-            File tempFile;
-
-            // Create temp file to hold job log. Need this to scan for MaxCC.
-            try
-            {
-                tempFile = File.createTempFile("Jenkins", "tmp");
-                tempFile.deleteOnExit();
-            }
-            catch(Exception e){
-                // if any error occurs
-                e.printStackTrace();
-                this.jobCC = "ERROR_CREATING_TEMP_FILE";
-                return false;
-            }
-            FileOutputStream tempFileOutputStream = new FileOutputStream(tempFile,false);
 
             // Try fetching the log.
-            if(!this.FTPClient.retrieveFile(this.jobID,tempFileOutputStream))
+            if(!this.FTPClient.retrieveFile(this.jobID,outputStream))
             {
                 this.jobCC = "RETR_ERR_JOB_NOT_FINISHED_OR_NOT_FOUND";
                 return false;
             }
 
-            Pattern JobRC = Pattern.compile(".*?\\d{2}\\.\\d{2}\\.\\d{2} "+jobID+"  .{8} RC (.*?) ET .*");
-            reply = this.FTPClient.getReplyCode();
-
-            if (FTPReply.isPositiveCompletion(reply))
-            {
-                // If job hasn't finished we need to exit.
-                for (String s : this.FTPClient.getReplyStrings()) {
-                    Matcher matcher = JobNotFinished.matcher(s);
-                    if (matcher.matches()) {
-                        this.jobCC = "JOB_NOT_FINISHED_OR_NOT_FOUND";
-                        return false;
-                    }
-                }
-
-                // Prepare to scan for MaxCC and copy job log.
-                String tempLine;
-                FileInputStream tempInpStream = new FileInputStream(tempFile);
-                tempInputStreamReader = new InputStreamReader(tempInpStream);
-                tempReader = new BufferedReader(tempInputStreamReader);
-
-                if(outputStream != null)
-                {
-                    tempOutputStreamWriter = new OutputStreamWriter(outputStream);
-                    tempWriter = new BufferedWriter(tempOutputStreamWriter);
-                }
-
-                // Scan
-                while ((tempLine = tempReader.readLine()) != null)
-                {
-                    // Chack line
-                    if(!foundRC)
-                    {
-                        Matcher matcher = JobRC.matcher(tempLine);
-                        if (matcher.matches()) {
-                            jobCC = matcher.group(1);
-                            foundRC = true;
-                        }
-                    }
-
-                    // If need output - copy the line.
-                    if(outputStream != null)
-                    {
-                        tempWriter.write(tempLine);
-                        tempWriter.newLine();
-                    }
-                }
-
-                // Close everything.
-                tempInputStreamReader.close();
-                tempReader.close();
-                if(tempWriter != null)
-                    tempWriter.close();
-                if(tempOutputStreamWriter != null)
-                    tempOutputStreamWriter.close();
-                if(outputStream != null)
-                    outputStream.close();
-
-                // Finish with success.
-                return true;
-            }
-
-            // Close everything and return failure.
-            if(outputStream != null)
-                outputStream.close();
-            this.jobCC = "FETCH_LOG_FETCH_ERROR";
-            return false;
+            return this.obtainJobRC();
         }
         catch (IOException e)
         {
-            try {
-                if(tempInputStreamReader != null)
-                    tempInputStreamReader.close();
-                if(tempReader != null)
-                    tempReader.close();
-                if(tempWriter != null)
-                    tempWriter.close();
-                if(tempOutputStreamWriter != null)
-                    tempOutputStreamWriter.close();
-                if(outputStream != null)
-                    outputStream.close();
-            }
-            catch (IOException ignored)
-            {}
             this.jobCC = "FETCH_LOG_IO_ERROR";
             return false;
         }
+    }
+
+    private boolean obtainJobRC()
+    {
+        this.jobCC =  "COULD_NOT_RETRIEVE_JOB_RC";
+        // Verify connection.
+        if(!this.FTPClient.isConnected())
+            if(!this.logon())
+            {
+                return false;
+            }
+
+        this.FTPClient.enterLocalPassiveMode();
+
+        Pattern CC = Pattern.compile("\\S+\\s+ "+jobID+".* RC=(.*?) .*");
+        Pattern ABEND = Pattern.compile("\\S+\\s+ "+jobID+".* ABEND=(.*?) .*");
+        Pattern JCLERROR = Pattern.compile("\\S+\\s+ "+jobID+".* \\(JCL error\\) .*");
+
+
+        // Delete log.
+        try
+        {
+            this.FTPClient.doCommand("quote dir","");
+            for (FTPFile ftpFile : this.FTPClient.listFiles("*")) {
+                String fileName = ftpFile.toString();
+                Matcher CCMatcher = CC.matcher(fileName);
+                Matcher ABENDMatcher = ABEND.matcher(fileName);
+                Matcher JCLERRORMatcher = JCLERROR.matcher(fileName);
+
+                if (JCLERRORMatcher.matches()) {
+                    this.jobCC = "JCL_ERROR";
+                    return true;
+                } else {
+                    if (ABENDMatcher.matches()) {
+                        this.jobCC = "ABEND_"+ABENDMatcher.group(1);
+                        return true;
+                    } else {
+                        if (CCMatcher.matches()) {
+                            this.jobCC = CCMatcher.group(1);
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        catch (IOException e)
+        {
+            // Do nothing.
+        }
+        return false;
     }
 
     /**
