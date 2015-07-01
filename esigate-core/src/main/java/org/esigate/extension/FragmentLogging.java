@@ -90,7 +90,7 @@ public class FragmentLogging implements Extension, IEventListener {
             if (LOG.isInfoEnabled() || statusCode >= HttpStatus.SC_BAD_REQUEST) {
 
                 // Log last result only
-                HttpRequest httpRequest = e.getHttpRequest();
+                HttpRequest httpRequest = e.getHttpContext().getSentRequest();
 
                 // Create log message
                 HttpHost targetHost = e.getHttpContext().getTargetHost();
