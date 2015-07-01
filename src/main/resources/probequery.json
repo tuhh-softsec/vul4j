@@ -1,24 +1,43 @@
 [
-{   "id": "1",
+{   "id": "0",
     "name": "Kein Filter",
     "description": "Abfrage der Proben ohne Filter",
-    "sql": "select p.id as id, pt.probe_id_alt as probeId, p.mst_id as mstId, p.umw_id as umwId from land.probe p join land.probe_translation pt on p.id = pt.probe_id",
+    "sql": "select p.id as id, pt.probe_id_alt as probeId, p.netzbetreiber_id as netzbetreiberId, p.mst_id as mstId, p.umw_id as umwId, p.hauptproben_nr as hauptprobenNr from land.probe p join land.probe_translation pt on p.id = pt.probe_id",
     "result": [
-        {"dataIndex": "probeId", "header": "ProbeId", "width": 100},
-        {"dataIndex": "mstId", "header": "MST", "width": 100},
-        {"dataIndex": "umwId", "header": "Umweltbereich", "width": 100}
+        {"dataIndex": "probeId", "header": "ProbeId", "width": 120},
+        {"dataIndex": "netzbetreiberId", "header": "Land", "width": 50},
+        {"dataIndex": "mstId", "header": "MST", "width": 60},
+        {"dataIndex": "umwId", "header": "Umw-ID", "width": 60},
+        {"dataIndex": "hauptprobenNr", "header": "Proben-Nr", "width": 120}
     ],
     "filters": [
+    ]
+},
+{   "id": "1",
+    "name": "Probe-ID-Filer",
+    "description": "Abfrage der Proben mit Wildcardfilter fuer die Probe_id",
+    "sql": "select p.id as id, pt.probe_id_alt as probeId, p.netzbetreiber_id as netzbetreiberId, p.mst_id as mstId, p.umw_id as umwId, p.hauptproben_nr as hauptprobenNr from land.probe p join land.probe_translation pt on p.id = pt.probe_id where (pt.probe_id_alt like :probe_id or '' = :probe_id)",
+    "result": [
+        {"dataIndex": "probeId", "header": "ProbeId", "width": 120},
+        {"dataIndex": "netzbetreiberId", "header": "Land", "width": 50},
+        {"dataIndex": "mstId", "header": "MST", "width": 60},
+        {"dataIndex": "umwId", "header": "Umw-ID", "width": 60},
+        {"dataIndex": "hauptprobenNr", "header": "Proben-Nr", "width": 120}
+    ],
+    "filters": [
+        {"dataIndex": "probe_id", "type": "text", "label": "Probe_id-Filter"}
     ]
 },
 {   "id": "2",
     "name": "MST und UMW",
     "description": "Abfrage der Proben gefiltert nach Messtellen ID und ID des Umweltbereichs",
-    "sql": "select p.id as id, pt.probe_id_alt as probeId, p.mst_id as mstId, p.umw_id as umwId from land.probe p join land.probe_translation pt on p.id = pt.probe_id where (p.mst_id = :mst_id OR '' = :mst_id) and (p.umw_id = :umw_id OR '' = :umw_id)",
+    "sql": "select p.id as id, pt.probe_id_alt as probeId, p.netzbetreiber_id as netzbetreiberId, p.mst_id as mstId, p.umw_id as umwId, p.hauptproben_nr as hauptprobenNr from land.probe p join land.probe_translation pt on p.id = pt.probe_id where (p.mst_id = :mst_id OR '' = :mst_id) and (p.umw_id = :umw_id OR '' = :umw_id)",
     "result": [
-        {"dataIndex": "probeId", "header": "ProbeId", "width": 100},
-        {"dataIndex": "mstId", "header": "MST", "width": 100},
-        {"dataIndex": "umwId", "header": "Umweltbereich", "width": 100}
+        {"dataIndex": "probeId", "header": "ProbeId", "width": 120},
+        {"dataIndex": "netzbetreiberId", "header": "Land", "width": 50},
+        {"dataIndex": "mstId", "header": "MST", "width": 60},
+        {"dataIndex": "umwId", "header": "Umw-ID", "width": 60},
+        {"dataIndex": "hauptprobenNr", "header": "Proben-Nr", "width": 120}
     ],
     "filters": [
         {"dataIndex": "mst_id", "type": "listmst", "label": "Messstelle"},
