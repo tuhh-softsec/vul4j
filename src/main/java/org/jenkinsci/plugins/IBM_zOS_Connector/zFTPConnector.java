@@ -1,5 +1,6 @@
 package org.jenkinsci.plugins.IBM_zOS_Connector;
 
+import hudson.model.TaskListener;
 import org.apache.commons.net.PrintCommandListener;
 import org.apache.commons.net.ftp.*;
 import java.io.*;
@@ -67,11 +68,6 @@ public class zFTPConnector
      * Pattern for search of jobName
      */
     private static final Pattern JesJobName = Pattern.compile("250-It is known to JES as (.*)");
-    /**
-     * Pattern for check of job status.
-     */
-    private static final Pattern JobNotFinished = Pattern.compile(".*No spool files available for.*");
-
 
     /**
      * Basic constructor with minimal parameters required.
@@ -349,9 +345,6 @@ public class zFTPConnector
         // Try fetching.
         try
         {
-            // Temp variables.
-            int reply;
-
             // Try fetching the log.
             if(!this.FTPClient.retrieveFile(this.jobID,outputStream))
             {
@@ -370,6 +363,7 @@ public class zFTPConnector
 
     private boolean obtainJobRC()
     {
+
         this.jobCC =  "COULD_NOT_RETRIEVE_JOB_RC";
         // Verify connection.
         if(!this.FTPClient.isConnected())
@@ -380,18 +374,19 @@ public class zFTPConnector
 
         this.FTPClient.enterLocalPassiveMode();
 
-        Pattern CC = Pattern.compile("\\S+\\s+ "+jobID+".* RC=(.*?) .*");
-        Pattern ABEND = Pattern.compile("\\S+\\s+ "+jobID+".* ABEND=(.*?) .*");
-        Pattern JCLERROR = Pattern.compile("\\S+\\s+ "+jobID+".* \\(JCL error\\) .*");
+        Pattern CC = Pattern.compile("\\S+\\s+"+jobID+".* RC=(.*?) .*");
+        Pattern CCUndefined = Pattern.compile("\\S+\\s+"+jobID+".* RC\\s+(\\S+)\\s+.*");
+        Pattern ABEND = Pattern.compile("\\S+\\s+"+jobID+".* ABEND=(.*?)\\s+.*");
+        Pattern JCLERROR = Pattern.compile("\\S+\\s+"+jobID+".* \\(JCL error\\)\\s+.*");
 
-
-        // Delete log.
+        // Check RC.
         try
         {
-            this.FTPClient.doCommand("quote dir","");
             for (FTPFile ftpFile : this.FTPClient.listFiles("*")) {
                 String fileName = ftpFile.toString();
+
                 Matcher CCMatcher = CC.matcher(fileName);
+                Matcher CCUndefinedMatcher = CCUndefined.matcher(fileName);
                 Matcher ABENDMatcher = ABEND.matcher(fileName);
                 Matcher JCLERRORMatcher = JCLERROR.matcher(fileName);
 
@@ -403,15 +398,19 @@ public class zFTPConnector
                         this.jobCC = "ABEND_"+ABENDMatcher.group(1);
                         return true;
                     } else {
-                        if (CCMatcher.matches()) {
-                            this.jobCC = CCMatcher.group(1);
+                        if (CCUndefinedMatcher.matches()) {
+                            this.jobCC = CCUndefinedMatcher.group(1).toUpperCase();
                             return true;
                         } else {
-                            return false;
+                            if (CCMatcher.matches()) {
+                                this.jobCC = CCMatcher.group(1);
+                                return true;
+                            }
                         }
                     }
                 }
             }
+            return false;
         }
         catch (IOException e)
         {
