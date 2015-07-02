@@ -361,6 +361,9 @@ public class zFTPConnector
         }
     }
 
+    /**
+     * @return Whether job RC was correctly obtained or not.
+     */
     private boolean obtainJobRC()
     {
 
