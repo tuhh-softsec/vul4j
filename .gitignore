@@ -1,1 +1,5 @@
 target/
+
+zos-connector-plugin.iml
+.idea
+src/main/java/org/jenkinsci/plugins/IBM_zOS_Connector/Test.java
