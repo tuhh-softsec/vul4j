@@ -94,25 +94,6 @@
 				<b:constructor-arg value="http://${cas.server.host}/esigate-app-cas" />
 			</b:bean>
 		</b:property>
-		<b:property name="statelessTicketCache">
-			<b:bean class="org.springframework.security.cas.authentication.EhCacheBasedTicketCache">
-				<b:property name="cache">
-					<b:bean id="ehcache" class="net.sf.ehcache.Cache"
-					  init-method="initialise"
-					  destroy-method="dispose">
-						<b:constructor-arg value="casTickets"/>
-						<b:constructor-arg value="50"/>
-						<b:constructor-arg value="true"/>
-						<b:constructor-arg value="false"/>
-						<b:constructor-arg value="3600"/>
-						<b:constructor-arg value="900"/>
-						<b:property name="cacheManager">
-							<b:bean class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"/>
-						</b:property>
-					</b:bean>
-				</b:property>
-			</b:bean>
-		</b:property>
 	</b:bean>
 
 	<!-- Configuration for the environment can be overriden by system properties -->
