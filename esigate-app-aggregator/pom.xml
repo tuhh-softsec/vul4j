@@ -131,10 +131,6 @@
 					</execution>
 				</executions>
 				<configuration>
-					<container>
-						<containerId>jetty8x</containerId>
-                        <type>embedded</type>
-					</container>
 					<deployables>
 						<deployable>
 							<groupId>org.esigate</groupId>

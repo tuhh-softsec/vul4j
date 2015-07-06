@@ -179,7 +179,6 @@ public final class Driver {
                 while (redirects > 0
                         && redirectStrategy.isRedirected(outgoingRequest, response, outgoingRequest.getContext())) {
                     redirects--;
-                    System.err.println("redirect");
                     outgoingRequest =
                             requestExecutor.createOutgoingRequest(
                                     driverRequest,

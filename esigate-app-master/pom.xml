@@ -103,10 +103,6 @@
 					</execution>
 				</executions>
 				<configuration>
-                    <container>
-                        <containerId>jetty7x</containerId>
-                        <type>embedded</type>
-                    </container>
                     <deployables>
                         <deployable>
                             <artifactId>esigate-app-provider</artifactId>

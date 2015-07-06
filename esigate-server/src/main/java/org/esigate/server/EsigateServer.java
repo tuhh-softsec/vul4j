@@ -34,6 +34,8 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.esigate.server.metrics.InstrumentedServerConnector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
@@ -52,6 +54,8 @@ import com.codahale.metrics.jetty9.InstrumentedQueuedThreadPool;
  * 
  */
 public final class EsigateServer {
+
+    private static final Logger LOG = LoggerFactory.getLogger(EsigateServer.class);
 
     private static String contextPath;
     private static int controlPort;
@@ -84,7 +88,7 @@ public final class EsigateServer {
         try {
             result = Integer.parseInt(System.getProperty(prefix + name));
         } catch (NumberFormatException e) {
-            System.err.println("Value for " + prefix + name + " must be an integer. Using default " + defaultValue);
+            LOG.warn("Value for " + prefix + name + " must be an integer. Using default " + defaultValue);
         }
         return result;
     }
@@ -113,16 +117,16 @@ public final class EsigateServer {
         Properties serverProperties = new Properties();
         try {
             configFile = System.getProperty(PROPERTY_PREFIX + "config", "server.properties");
-            System.out.println("Loading server configuration from " + configFile);
+            LOG.info("Loading server configuration from " + configFile);
 
             try (InputStream is = new FileInputStream(configFile);) {
                 serverProperties.load(is);
             }
 
         } catch (FileNotFoundException e) {
-            System.out.println(configFile + " not found.");
+            LOG.warn(configFile + " not found.");
         } catch (IOException e) {
-            System.out.println("Unexpected error reading " + configFile);
+            LOG.error("Unexpected error reading " + configFile);
         }
 
         init(serverProperties);
@@ -142,7 +146,7 @@ public final class EsigateServer {
         }
 
         // Read system properties
-        System.out.println("Using configuration provided using '-D' parameter and/or default values");
+        LOG.info("Using configuration provided using '-D' parameter and/or default values");
         EsigateServer.port = getProperty(PROPERTY_PREFIX, "port", PROPERTY_DEFAULT_HTTP_PORT);
         EsigateServer.controlPort = getProperty(PROPERTY_PREFIX, "controlPort", PROPERTY_DEFAULT_CONTROL_PORT);
         EsigateServer.contextPath = getProperty(PROPERTY_PREFIX, "contextPath", "/");
@@ -208,7 +212,7 @@ public final class EsigateServer {
                 // Strange behavior : if this directory exists, it disappears a
                 // few ms later, causing this exception. We can ignore since we
                 // initially wanted to delete it.
-                System.out.println("Info: issue while deleting work directory, it was already deleted. Not a problem.");
+                LOG.info("Info: issue while deleting work directory, it was already deleted. Not a problem.");
             }
         }
 

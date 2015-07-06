@@ -3,8 +3,6 @@ package org.esigate.cas;
 import java.util.Map;
 import java.util.Properties;
 
-import junit.framework.TestCase;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -27,6 +25,8 @@ import org.esigate.impl.DriverRequest;
 import org.esigate.test.TestUtils;
 import org.esigate.test.conn.MockConnectionManager;
 import org.jasig.cas.client.authentication.AttributePrincipal;
+
+import junit.framework.TestCase;
 
 /**
  * CasAuthenticationHandlerTest
@@ -93,9 +93,10 @@ public class CasAuthenticationHandlerTest extends TestCase {
 
     public void testCasAuthenticationOk() throws Exception {
         AttributePrincipal userPrincipal = new AttributePrincipal() {
+            private static final long serialVersionUID = 1L;
 
             @Override
-            public Map getAttributes() {
+            public Map<String, Object> getAttributes() {
                 return null;
             }
 
