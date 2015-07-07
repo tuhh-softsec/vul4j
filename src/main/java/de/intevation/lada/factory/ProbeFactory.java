@@ -1,3 +1,10 @@
+/* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.factory;
 
 import java.math.BigInteger;
@@ -25,12 +32,30 @@ import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.Response;
 
+/**
+ * This factory creates probe objects and its children using a messprogramm
+ * as template.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 public class ProbeFactory {
 
+    /**
+     * The data repository
+     */
     @Inject
     @RepositoryConfig(type = RepositoryType.RW)
     private Repository repository;
 
+    /**
+     * Create a list of probe objects
+     *
+     * @param id    Messprogramm id
+     * @param from  The start date
+     * @param to    The end date
+     *
+     * @return List of probe objects.
+     */
     public List<LProbe> create(String id, Long from, Long to) {
         QueryBuilder<Messprogramm> builder =
             new QueryBuilder<Messprogramm>(
@@ -49,13 +74,9 @@ public class ProbeFactory {
         start.setTime(new Date(from));
         Calendar end = Calendar.getInstance();
         end.setTime(new Date (to));
-        // benutzereingabe + gültigVon/Bis
-        // kann mehrere Intervalle enthalten, wenn nutzereingabe über mehrere
-        // Jahre.
         Date[][] intervals = calculateIntervals(start, end, messprogramm);
         List<LProbe> proben = new ArrayList<LProbe>();
         for (Date[] interval : intervals) {
-            //erzeuge proben für einen intervall(gültigkeitsbereich)
             createProben(interval, messprogramm, proben);
         }
         return proben;

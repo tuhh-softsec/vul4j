@@ -2,34 +2,45 @@
 <persistence version="2.1"
    xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+    <!-- PU for bund datasource. Maps to the schema 'bund' in the Lada database. -->
     <persistence-unit name="bund">
+        <!-- The JTA datasource configured in the Wildfly AS -->
         <jta-data-source>java:/jboss/lada-bund</jta-data-source>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <properties>
+        	<!-- The JNDI name for lookups in the application -->
             <property name="jboss.entity.manager.jndi.name" value="java:app/entitymanager/bund"/>
             <!-- Properties for Hibernate -->
-            <property name="hibernate.show_sql" value="false" />
-            <property name="hibernate.dialect" value="de.intevation.lada.util.data.LadaPostgisDialect"/>
             <property name="hibernate.hbm2ddl.auto" value="none"/>
+            <property name="hibernate.show_sql" value="false" />
+            <!-- Use a special PostGIS dialect implmented for Lada. This dialect implements an additional integer array type -->
+            <property name="hibernate.dialect" value="de.intevation.lada.util.data.LadaPostgisDialect"/>
        </properties>
    	</persistence-unit>
    	<persistence-unit name="land">
+        <!-- The JTA datasource configured in the Wildfly AS -->
    	    <jta-data-source>java:/jboss/lada-land</jta-data-source>
        	<exclude-unlisted-classes>false</exclude-unlisted-classes>
     	<properties>
+        	<!-- The JNDI name for lookups in the application -->
             <property name="jboss.entity.manager.jndi.name" value="java:app/entitymanager/land"/>
-            <property name="hibernate.show_sql" value="true" />
-			<property name="hibernate.dialect" value="de.intevation.lada.util.data.LadaPostgisDialect"/>
+            <!-- Properties for Hibernate -->
             <property name="hibernate.hbm2ddl.auto" value="none"/>
+            <property name="hibernate.show_sql" value="true" />
+            <!-- Use a special PostGIS dialect implmented for Lada. This dialect implements an additional integer array type -->
+			<property name="hibernate.dialect" value="de.intevation.lada.util.data.LadaPostgisDialect"/>
        </properties>
     </persistence-unit>
     <persistence-unit name="stamm">
+        <!-- The JTA datasource configured in the Wildfly AS -->
         <jta-data-source>java:/jboss/lada-stamm</jta-data-source>
         <properties>
+        	<!-- The JNDI name for lookups in the application -->
             <property name="jboss.entity.manager.jndi.name" value="java:app/entitymanager/stamm"/>
-			<property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect"/>
+            <!-- Properties for Hibernate -->
             <property name="hibernate.show_sql" value="true" />
             <property name="hibernate.hbm2ddl.auto" value="none"/>
+			<property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect"/>
         </properties>
     </persistence-unit>
 </persistence>
