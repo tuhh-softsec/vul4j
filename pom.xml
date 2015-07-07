@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
@@ -13,7 +12,7 @@
 	<artifactId>esigate</artifactId>
 	<packaging>pom</packaging>
 	<name>esigate</name>
-	<version>5.1-SNAPSHOT</version>
+	<version>5.1</version>
 	<inceptionYear>2008</inceptionYear>
 	<mailingLists>
 		<mailingList>
@@ -98,7 +97,7 @@
 		<connection>scm:git:https://github.com/esigate/esigate.git</connection>
 		<developerConnection>scm:git:https://github.com/esigate/esigate.git</developerConnection>
 		<url>https://github.com/esigate/esigate</url>
-		<tag>HEAD</tag>
+		<tag>esigate-5.1</tag>
 	</scm>
 	<build>
 		<pluginManagement>
