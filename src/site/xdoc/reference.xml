@@ -2155,6 +2155,53 @@ In this example, proxy-post for aggregated1 driver show 31 successfull request ,
 					(standalone server or library).</p>
 			</subsection>
 		</section>
+		<section name="How to debug HTTP requests/responses?">
+			<subsection name="FragmentLogging and FetchLogging extensions">
+				<p>
+					2 extensions can be used to debug all the requests/responses (with request/response
+					headers, cookies and status code) to the logs:
+				</p>
+				<ul>
+					<li>org.esigate.extension.FragmentLogging</li>
+					<li>org.esigate.extension.FetchLogging</li>
+				</ul>
+				<p>
+					The difference between these
+					2 extension is that FetchLogging logs only the requests actually
+					sent to the target server when FragmentLogging also logs the responses served
+					from the cache and gives some details about the cache status.
+				</p>
+				<p>
+					If you did not set "extensions" parameter in esigate.properties file, these extensions
+					are already active. If you have set "extensions" parameter, you will have to explicitly
+					declare them. Then you just need to set the corresponding category to INFO. For example
+					if you are using log4j:
+				</p>
+				<source>log4j.rootLogger=WARN, A
+
+log4j.appender.A.threshold=TRACE
+log4j.appender.A=org.apache.log4j.ConsoleAppender
+log4j.appender.A.layout=org.apache.log4j.PatternLayout
+log4j.appender.A.layout.ConversionPattern=%d{dd-MM HH:mm:ss} %-8r [%t] %-5p %c %x - %m%n
+
+#log4j.category.org.esigate.extension.FetchLogging=INFO
+log4j.category.org.esigate.extension.FragmentLogging=INFO</source>
+				<p>
+					The logs are compact (every request generates only 1 line in the logs) and the performance
+					overhead is small so these extensions can be used safely in production if needed.
+				</p>
+			</subsection>
+			<subsection name="HttpClient wire logging">
+				<p>
+					If you need even more details, you can use
+					<a href="https://hc.apache.org/httpcomponents-client-ga/logging.html">HttpClient wire logging</a>.
+					This way you can get all the information you need but log files are going to be very verbose
+					so it is not recommended to use it in production. Also because every request generates a lot
+					of lines in the log, it becomes very hard to analyze if the application is used concurrently 
+					by a lot of users.
+				</p>
+			</subsection>			
+		</section>
 		<section name="API documentation">
 			<p>
 				Any functionality used in the taglib, reverse proxy or aggregator can
