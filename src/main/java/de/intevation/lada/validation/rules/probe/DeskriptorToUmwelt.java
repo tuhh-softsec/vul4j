@@ -41,6 +41,7 @@ public class DeskriptorToUmwelt implements Rule {
         }
         for (int i = 1; i < mediaDesk.length; i++) {
             if ("00".equals(mediaDesk[i])) {
+                mediaIds.add(-1);
                 continue;
             }
             if (zebs && i < 5) {
@@ -73,26 +74,146 @@ public class DeskriptorToUmwelt implements Rule {
                 ndParent = data.get(0).getId();
             }
         }
-        Violation violation = validateUmwelt(mediaIds, probe);
+        Violation violation = validateUmwelt(mediaIds, probe.getUmwId(), zebs, 0);
         return violation;
     }
 
-    private Violation validateUmwelt(List<Integer> media, LProbe probe) {
+    private Violation validateUmwelt(List<Integer> media, String umwId, boolean isZebs, int ndx) {
         QueryBuilder<DeskriptorUmwelt> builder =
             new QueryBuilder<DeskriptorUmwelt>(
                 repository.entityManager("stamm"), DeskriptorUmwelt.class);
-        for (int i = media.size() - 1; i > 0; i--) {
+
+        if (media.size() == 0) {
+            Violation violation = new Violation();
+            violation.addWarning("umwId", 632);
+            return violation;
+        }
+
+        int size = 1;
+        if (isZebs) {
+            size = 2;
+        }
+        for (int i = size; i >= 0; i--) {
+            if (media.get(i) == -1) {
+                continue;
+            }
             String field = "s" + (i > 9 ? i : "0" + i);
             builder.and(field, media.get(i));
         }
         Response response = repository.filter(builder.getQuery(), "stamm");
         @SuppressWarnings("unchecked")
         List<DeskriptorUmwelt> data = (List<DeskriptorUmwelt>)response.getData();
-        if (data.isEmpty() || !data.get(0).getUmwId().equals(probe.getUmwId())) {
+        if (data.isEmpty()) {
             Violation violation = new Violation();
             violation.addWarning("umwId", 632);
             return violation;
         }
-        return null;
+
+        boolean unique = isUnique(data);
+        if (unique && umwId.equals(data.get(0).getUmwId())) {
+            return null;
+        }
+        else if (unique && !umwId.equals(data.get(0).getUmwId())) {
+            Violation violation = new Violation();
+            violation.addWarning("umwId", 632);
+            return violation;
+        }
+        else {
+            Violation violation = new Violation();
+            violation.addWarning("umwId", 632);
+            boolean found = false;
+            for (int i = 0; i < data.size(); i++) {
+                if (!data.get(i).getUmwId().equals(umwId)) {
+                    continue;
+                }
+                for (int j = size + 1; j < 13; j++) {
+                    switch(j) {
+                        case 2: if (data.get(i).getS02() == null ||
+                                    data.get(i).getS02().equals(media.get(2)))
+                                    found = true;
+                                else
+                                    found = false;
+                                break;
+                        case 3: if (data.get(i).getS03() == null ||
+                                    data.get(i).getS03().equals(media.get(3)))
+                                    found = true;
+                                else
+                                    found = false;
+                                break;
+                        case 4: if (data.get(i).getS04() == null ||
+                                    data.get(i).getS04().equals(media.get(4)))
+                                    found = true;
+                                else
+                                    found = false;
+                                break;
+                        case 5: if (data.get(i).getS05() == null ||
+                                    data.get(i).getS05().equals(media.get(5)))
+                                    found = true;
+                                else
+                                    found = false;
+                                break;
+                        case 6: if (data.get(i).getS06() == null ||
+                                    data.get(i).getS06().equals(media.get(6)))
+                                    found = true;
+                                else
+                                    found = false;
+                                break;
+                        case 7: if (data.get(i).getS07() == null ||
+                                    data.get(i).getS07().equals(media.get(7)))
+                                    found = true;
+                                else
+                                    found = false;
+                                break;
+                        case 8: if (data.get(i).getS08() == null ||
+                                    data.get(i).getS08().equals(media.get(8)))
+                                    found = true;
+                                else
+                                    found = false;
+                                break;
+                        case 9: if (data.get(i).getS09() == null ||
+                                    data.get(i).getS09().equals(media.get(9)))
+                                    found = true;
+                                else
+                                    found = false;
+                                break;
+                        case 10: if (data.get(i).getS10() == null ||
+                                     data.get(i).getS10().equals(media.get(10)))
+                                    found = true;
+                                else
+                                    found = false;
+                                break;
+                        case 11: if (data.get(i).getS11() == null ||
+                                     data.get(i).getS11().equals(media.get(11)))
+                                    found = true;
+                                else
+                                    found = false;
+                                break;
+                        case 12: if (data.get(i).getS12() == null ||
+                                     data.get(i).getS12().equals(media.get(12)))
+                                    found = true;
+                                else
+                                    found = false;
+                                break;
+                    }
+                    if (found) {
+                        return null;
+                    }
+                }
+            }
+            return violation;
+        }
+    }
+
+    private boolean isUnique(List<DeskriptorUmwelt> list) {
+        if (list.isEmpty()) {
+            return false;
+        }
+        String element = list.get(0).getUmwId();
+        for (int i = 1; i < list.size(); i++) {
+            if (!element.equals(list.get(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 }
