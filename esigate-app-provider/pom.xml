@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>esigate</artifactId>
 		<groupId>org.esigate</groupId>
-		<version>5.1</version>
+		<version>5.2-SNAPSHOT</version>
 	</parent>
 	<build>
 		<finalName>esigate-app-provider</finalName>
