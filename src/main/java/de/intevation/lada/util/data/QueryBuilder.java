@@ -180,6 +180,21 @@ public class QueryBuilder<T> {
     }
 
     /**
+     * Logical OR operation.
+     * All elements in <i>values</i> will be concatenated with OR operator.
+     *
+     * @param id        The database column name.
+     * @param values    List of values.
+     * @return The builder itself.
+     */
+    public QueryBuilder<T> orIntList(String id, List<Integer> values) {
+        for (Integer v: values) {
+            this.or(id, v);
+        }
+        return this;
+    }
+
+    /**
      * Logical AND operation.
      * The actually defined query will be concatenated with the query defined
      * in the builder <i>b</i>.
