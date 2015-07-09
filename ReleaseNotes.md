@@ -5,6 +5,14 @@ Since archiver depends on a given version of IO this list is cumulative,
 any version includes *all* changes below.
 
 
+Plexus Components - Version plexus-io-2.6.1
+-----
+
+** Improvement
+
+Performance improvement affecting mac/linux users with lots of small files in large archives.
+
+
 Plexus Archiver - Version 3.0.1
 ------
 ** Improvement
