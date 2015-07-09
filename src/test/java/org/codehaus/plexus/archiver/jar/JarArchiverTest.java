@@ -1,11 +1,12 @@
 package org.codehaus.plexus.archiver.jar;
 
+import junit.framework.TestCase;
 import org.codehaus.plexus.archiver.ArchiverException;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-
-import junit.framework.TestCase;
+import java.util.Random;
 
 public class JarArchiverTest
     extends TestCase
@@ -42,4 +43,32 @@ public class JarArchiverTest
         archiver.createArchive();
     }
 
+    public void testVeryLargeJar()
+        throws IOException, ManifestException, ArchiverException
+    {
+        // Generate some number of random files that is likely to be
+        // two or three times the number of available file handles
+        File tmpDir = File.createTempFile( "veryLargeJar", null );
+        tmpDir.delete();
+        tmpDir.mkdirs();
+        Random rand = new Random();
+        for ( int i = 0; i < 45000; i++ )
+        {
+           File f = new File( tmpDir, "file" + i );
+           f.deleteOnExit();
+           FileOutputStream out = new FileOutputStream(f);
+            byte[] data = new byte[512]; // 512bytes per file
+           rand.nextBytes( data );
+           out.write( data );
+           out.flush();
+           out.close();
+        }
+
+        File jarFile = new File( "target/output/veryLargeJar.jar" );
+
+        JarArchiver archiver = new JarArchiver();
+        archiver.setDestFile( jarFile );
+        archiver.addDirectory( tmpDir );
+        archiver.createArchive();
+    }
 }

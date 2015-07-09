@@ -4,11 +4,34 @@ Plexus Archiver and Plexus-IO combined release notes
 Since archiver depends on a given version of IO this list is cumulative,
 any version includes *all* changes below.
 
+
+Plexus Archiver - Version 3.0.1
+------
+** Improvement
+
+Switched to pure-java snappy. Fixed issue #3
+
 Plexus Archiver - Version 3.0
 ------
 ** Improvement
 
   * [PLXCOMP-282] - Add Snappy compression support
+
+Plexus Components - Version plexus-archiver-2.10.3
+-----
+
+Issue #6 fix
+
+Plexus Components - Version plexus-archiver-2.10.2
+-----
+
+https://issues.apache.org/jira/browse/MASSEMBLY-769 fix.
+
+
+Plexus Components - Version plexus-archiver-2.10.1
+-----
+
+https://issues.apache.org/jira/browse/MASSEMBLY-768 fix.
 
 Plexus Components - Version plexus-archiver-2.10
 -----
@@ -26,8 +49,6 @@ Plexus Components - Version plexus-io-2.5
 * Proper support for closeable on zip archives.
 * Removed zip supporting PlexusIoZipFileResourceCollection; which now exists in plexus-archiver. (Drop in replacement,
 just change/add jar file).
-
->>>>>>> 2.x
 
 Plexus Components - Version plexus-archiver-2.9.1
 -----

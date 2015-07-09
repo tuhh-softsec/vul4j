@@ -17,14 +17,10 @@ package org.codehaus.plexus.archiver.zip;
  *  limitations under the License.
  */
 
-import org.apache.commons.compress.archivers.zip.ParallelScatterZipCreator;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.commons.compress.archivers.zip.ZipEncoding;
 import org.apache.commons.compress.archivers.zip.ZipEncodingHelper;
-import java.util.concurrent.ExecutionException;
-import java.util.zip.CRC32;
-
 import org.apache.commons.compress.parallel.InputStreamSupplier;
 import org.codehaus.plexus.archiver.AbstractArchiver;
 import org.codehaus.plexus.archiver.ArchiveEntry;
@@ -48,6 +44,8 @@ import java.io.OutputStream;
 import java.io.SequenceInputStream;
 import java.util.Hashtable;
 import java.util.Stack;
+import java.util.concurrent.ExecutionException;
+import java.util.zip.CRC32;
 
 import static org.codehaus.plexus.archiver.util.Streams.bufferedOutputStream;
 import static org.codehaus.plexus.archiver.util.Streams.fileOutputStream;
@@ -83,7 +81,7 @@ public abstract class AbstractZipArchiver
 
     protected final Hashtable<String, String> entries = new Hashtable<String, String>();
 
-	protected final AddedDirs addedDirs = new AddedDirs();
+    protected final AddedDirs addedDirs = new AddedDirs();
 
     private static final long EMPTY_CRC = new CRC32().getValue();
 
@@ -116,7 +114,8 @@ public abstract class AbstractZipArchiver
      * <p/>
      * plexus-archiver chooses to round up.
      * <p/>
-     * Java versions up to java7 round timestamp down, which means we add a heuristic value (which is slightly questionable)
+     * Java versions up to java7 round timestamp down, which means we add a heuristic value (which is slightly
+     * questionable)
      * Java versions from 8 and up round timestamp up.
      * s
      */
@@ -130,7 +129,7 @@ public abstract class AbstractZipArchiver
 
     private boolean success;
 
-    private ParallelScatterZipCreator zOut;
+    private ConcurrentJarCreator zOut;
 
     protected ZipArchiveOutputStream zipArchiveOutputStream;
 
@@ -225,7 +224,7 @@ public abstract class AbstractZipArchiver
         finalizeZipOutputStream( zOut );
     }
 
-    protected void finalizeZipOutputStream( ParallelScatterZipCreator zOut )
+    protected void finalizeZipOutputStream( ConcurrentJarCreator zOut )
         throws IOException, ArchiverException
     {
     }
@@ -313,7 +312,7 @@ public abstract class AbstractZipArchiver
             zipArchiveOutputStream.setMethod(
                 doCompress ? ZipArchiveOutputStream.DEFLATED : ZipArchiveOutputStream.STORED );
 
-            zOut = new ParallelScatterZipCreator();
+            zOut = new ConcurrentJarCreator(Runtime.getRuntime().availableProcessors());
         }
         initZipOutputStream( zOut );
 
@@ -339,7 +338,7 @@ public abstract class AbstractZipArchiver
      * @param zOut      the stream to write to
      */
     @SuppressWarnings( { "JavaDoc" } )
-    protected final void addResources( ResourceIterator resources, ParallelScatterZipCreator zOut )
+    protected final void addResources( ResourceIterator resources, ConcurrentJarCreator zOut )
         throws IOException, ArchiverException
     {
         while ( resources.hasNext() )
@@ -379,7 +378,7 @@ public abstract class AbstractZipArchiver
      * be impossible and is not really supported.
      */
     @SuppressWarnings( { "JavaDoc" } )
-    private void addParentDirs(ArchiveEntry archiveEntry, File baseDir, String entry, ParallelScatterZipCreator zOut)
+    private void addParentDirs(ArchiveEntry archiveEntry, File baseDir, String entry, ConcurrentJarCreator zOut)
         throws IOException
     {
         if ( !doFilesonly && getIncludeEmptyDirs() )
@@ -408,8 +407,7 @@ public abstract class AbstractZipArchiver
 
 	/**
      * Adds a new entry to the archive, takes care of duplicates as well.
-     *
-     * @param in                 the stream to read data for the entry from.
+     *  @param in                 the stream to read data for the entry from.
      * @param zOut               the stream to write to.
      * @param vPath              the name this entry shall have in the archive.
      * @param lastModified       last modification time for the entry.
@@ -417,7 +415,8 @@ public abstract class AbstractZipArchiver
      * @param symlinkDestination
      */
     @SuppressWarnings( { "JavaDoc" } )
-    protected void zipFile( @WillClose InputStream in, ParallelScatterZipCreator zOut, String vPath, long lastModified,
+    protected void zipFile( InputStreamSupplier in, ConcurrentJarCreator zOut, String vPath,
+                            long lastModified,
                             File fromArchive, int mode, String symlinkDestination )
         throws IOException, ArchiverException
     {
@@ -430,16 +429,7 @@ public abstract class AbstractZipArchiver
             ZipArchiveEntry ze = new ZipArchiveEntry( vPath );
             setTime( ze, lastModified );
 
-            byte[] header = new byte[4];
-            int read = in.read( header );
-
-            boolean compressThis = doCompress;
-            if ( !recompressAddedZips && isZipHeader( header ) )
-            {
-                compressThis = false;
-            }
-
-            ze.setMethod( compressThis ? ZipArchiveEntry.DEFLATED : ZipArchiveEntry.STORED );
+            ze.setMethod( doCompress ? ZipArchiveEntry.DEFLATED : ZipArchiveEntry.STORED );
             ze.setUnixMode( UnixStat.FILE_FLAG | mode );
 
             InputStream payload;
@@ -448,13 +438,12 @@ public abstract class AbstractZipArchiver
                 ZipEncoding enc = ZipEncodingHelper.getZipEncoding( getEncoding() );
                 final byte[] bytes = enc.encode( symlinkDestination ).array();
                 payload = new ByteArrayInputStream( bytes );
+                zOut.addArchiveEntry( ze, createInputStreamSupplier( payload ) );
             }
             else
             {
-                payload = maybeSequence( header, read, in );
+                zOut.addArchiveEntry( ze, wrappedRecompressor( ze, in ) );
             }
-            zOut.addArchiveEntry( ze, createInputStreamSupplier( payload ) );
-
         }
     }
 
@@ -472,13 +461,12 @@ public abstract class AbstractZipArchiver
      * Method that gets called when adding from java.io.File instances.
      * <p/>
      * <p>This implementation delegates to the six-arg version.</p>
-     *
-     * @param entry the file to add to the archive
+     *  @param entry the file to add to the archive
      * @param zOut  the stream to write to
-     * @param vPath the name this entry shall have in the archive
-     */
+	 * @param vPath the name this entry shall have in the archive
+	 */
     @SuppressWarnings( { "JavaDoc" } )
-    protected void zipFile( ArchiveEntry entry, ParallelScatterZipCreator zOut, String vPath )
+    protected void zipFile( final ArchiveEntry entry, ConcurrentJarCreator zOut, String vPath )
         throws IOException, ArchiverException
     {
         final PlexusIoResource resource = entry.getResource();
@@ -489,7 +477,21 @@ public abstract class AbstractZipArchiver
 
         final boolean b = entry.getResource() instanceof SymlinkDestinationSupplier;
         String symlinkTarget = b ? ( (SymlinkDestinationSupplier) entry.getResource() ).getSymlinkDestination() : null;
-        InputStream in = entry.getInputStream();
+        InputStreamSupplier in = new InputStreamSupplier()
+        {
+            @Override
+            public InputStream get()
+            {
+                try
+                {
+                    return entry.getInputStream();
+                }
+                catch ( IOException e )
+                {
+                    throw new RuntimeException( e );
+                }
+            }
+        };
         try
         {
             zipFile( in, zOut, vPath, resource.getLastModified(), null, entry.getMode(), symlinkTarget );
@@ -518,7 +520,7 @@ public abstract class AbstractZipArchiver
         */
     }
 
-    protected void zipDir( PlexusIoResource dir, ParallelScatterZipCreator zOut, String vPath, int mode,
+    protected void zipDir( PlexusIoResource dir, ConcurrentJarCreator zOut, String vPath, int mode,
                            String encodingToUse )
         throws IOException
     {
@@ -586,7 +588,39 @@ public abstract class AbstractZipArchiver
         }
     }
 
-    private InputStreamSupplier createInputStreamSupplier( final InputStream inputStream )
+
+    private InputStreamSupplier wrappedRecompressor( final ZipArchiveEntry ze, final InputStreamSupplier other )
+    {
+
+        return new InputStreamSupplier()
+        {
+            public InputStream get()
+            {
+                InputStream is = other.get();
+                byte[] header = new byte[4];
+                try
+                {
+                    int read = is.read( header );
+                    boolean compressThis = doCompress;
+                    if ( !recompressAddedZips && isZipHeader( header ) )
+                    {
+                        compressThis = false;
+                    }
+
+                    ze.setMethod( compressThis ? ZipArchiveEntry.DEFLATED : ZipArchiveEntry.STORED );
+
+                    return maybeSequence( header, read, is );
+                }
+                catch ( IOException e )
+                {
+                    throw new RuntimeException( e );
+                }
+
+            }
+        };
+    }
+
+    protected InputStreamSupplier createInputStreamSupplier( final InputStream inputStream )
     {
         return new InputStreamSupplier()
         {
@@ -683,9 +717,9 @@ public abstract class AbstractZipArchiver
     /**
      * method for subclasses to override
      *
-     * @param zOut The output stream
-     */
-    protected void initZipOutputStream( ParallelScatterZipCreator zOut )
+	 * @param zOut The output stream
+	 */
+    protected void initZipOutputStream( ConcurrentJarCreator zOut )
         throws ArchiverException, IOException
     {
     }

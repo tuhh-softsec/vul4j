@@ -17,39 +17,21 @@ package org.codehaus.plexus.archiver.jar;
  *  limitations under the License.
  */
 
-import org.apache.commons.compress.archivers.zip.ParallelScatterZipCreator;
+import static org.codehaus.plexus.archiver.util.Streams.bufferedOutputStream;
+import static org.codehaus.plexus.archiver.util.Streams.fileOutputStream;
+
+import java.io.*;
+import java.util.*;
+
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
+import org.apache.commons.compress.parallel.InputStreamSupplier;
 import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.archiver.zip.ConcurrentJarCreator;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.util.IOUtil;
-
-import javax.annotation.WillClose;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.StringTokenizer;
-import java.util.TreeMap;
-import java.util.Vector;
-
-import static org.codehaus.plexus.archiver.util.Streams.bufferedOutputStream;
-import static org.codehaus.plexus.archiver.util.Streams.fileOutputStream;
 
 /**
  * Base class for tasks that build archives in JAR file format.
@@ -286,7 +268,7 @@ public class JarArchiver
         indexJars.add( indexJar.getAbsolutePath() );
     }
 
-    protected void initZipOutputStream( ParallelScatterZipCreator zOut )
+    protected void initZipOutputStream( ConcurrentJarCreator zOut )
         throws ArchiverException, IOException
     {
         if ( !skipWriting )
@@ -336,7 +318,7 @@ public class JarArchiver
         return finalManifest;
     }
 
-    private void writeManifest( ParallelScatterZipCreator zOut, Manifest manifest )
+    private void writeManifest( ConcurrentJarCreator zOut, Manifest manifest )
         throws IOException, ArchiverException
     {
         for ( Enumeration e = manifest.getWarnings(); e.hasMoreElements(); )
@@ -350,11 +332,12 @@ public class JarArchiver
         manifest.write( baos );
 
         ByteArrayInputStream bais = new ByteArrayInputStream( baos.toByteArray() );
-        super.zipFile( bais, zOut, MANIFEST_NAME, System.currentTimeMillis(), null, DEFAULT_FILE_MODE, null );
+        super.zipFile( createInputStreamSupplier( bais ), zOut, MANIFEST_NAME, System.currentTimeMillis(), null,
+                       DEFAULT_FILE_MODE, null );
         super.initZipOutputStream( zOut );
     }
 
-    protected void finalizeZipOutputStream( ParallelScatterZipCreator zOut )
+    protected void finalizeZipOutputStream( ConcurrentJarCreator zOut )
         throws IOException, ArchiverException
     {
         if ( index )
@@ -375,7 +358,7 @@ public class JarArchiver
      * @throws org.codehaus.plexus.archiver.ArchiverException
      *                     .
      */
-    private void createIndexList( ParallelScatterZipCreator zOut )
+    private void createIndexList( ConcurrentJarCreator zOut )
         throws IOException, ArchiverException
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -451,13 +434,15 @@ public class JarArchiver
 
         ByteArrayInputStream bais = new ByteArrayInputStream( baos.toByteArray() );
 
-        super.zipFile( bais, zOut, INDEX_NAME, System.currentTimeMillis(), null, DEFAULT_FILE_MODE, null );
+        super.zipFile( createInputStreamSupplier( bais ), zOut, INDEX_NAME, System.currentTimeMillis(), null,
+                       DEFAULT_FILE_MODE, null );
     }
 
     /**
      * Overridden from Zip class to deal with manifests and index lists.
      */
-    protected void zipFile( @WillClose InputStream is, ParallelScatterZipCreator zOut, String vPath, long lastModified, File fromArchive,
+    protected void zipFile( InputStreamSupplier is, ConcurrentJarCreator zOut, String vPath,
+                            long lastModified, File fromArchive,
                             int mode, String symlinkDestination )
         throws IOException, ArchiverException
     {
@@ -465,7 +450,7 @@ public class JarArchiver
         {
             if ( !doubleFilePass || skipWriting )
             {
-                filesetManifest( fromArchive, is );
+                filesetManifest( fromArchive, is.get() );
             }
         }
         else if ( INDEX_NAME.equalsIgnoreCase( vPath ) && index )
@@ -500,7 +485,7 @@ public class JarArchiver
                 manifest = getManifest( file );
             }
         }
-        else if ( ( filesetManifestConfig != null ) && filesetManifestConfig != FilesetManifestConfig.skip)
+        else if ( ( filesetManifestConfig != null ) && filesetManifestConfig != FilesetManifestConfig.skip )
         {
             // we add this to our group of fileset manifests
             getLogger().debug( "Found manifest to merge in file " + file );
@@ -539,18 +524,19 @@ public class JarArchiver
         try
         {
             getLogger().debug( "Building MANIFEST-only jar: " + getDestFile().getAbsolutePath() );
-            zipArchiveOutputStream = new ZipArchiveOutputStream( bufferedOutputStream( fileOutputStream( getDestFile(), "jar" ) ));
+            zipArchiveOutputStream =
+                new ZipArchiveOutputStream( bufferedOutputStream( fileOutputStream( getDestFile(), "jar" ) ) );
 
-            zipArchiveOutputStream.setEncoding(getEncoding());
+            zipArchiveOutputStream.setEncoding( getEncoding() );
             if ( isCompress() )
             {
-                zipArchiveOutputStream.setMethod(ZipArchiveOutputStream.DEFLATED);
+                zipArchiveOutputStream.setMethod( ZipArchiveOutputStream.DEFLATED );
             }
             else
             {
-                zipArchiveOutputStream.setMethod(ZipArchiveOutputStream.STORED);
+                zipArchiveOutputStream.setMethod( ZipArchiveOutputStream.STORED );
             }
-            ParallelScatterZipCreator ps = new ParallelScatterZipCreator();
+			ConcurrentJarCreator ps = new ConcurrentJarCreator(Runtime.getRuntime().availableProcessors());
             initZipOutputStream( ps );
             finalizeZipOutputStream( ps );
         }
@@ -606,7 +592,9 @@ public class JarArchiver
 
     public enum FilesetManifestConfig
     {
-		skip, merge, mergewithoutmain
+        skip,
+        merge,
+        mergewithoutmain
     }
 
     /**

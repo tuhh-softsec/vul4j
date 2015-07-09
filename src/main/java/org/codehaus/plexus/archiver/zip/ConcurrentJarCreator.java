@@ -35,6 +35,7 @@ import static org.apache.commons.compress.archivers.zip.ZipArchiveEntryRequest.c
 public class ConcurrentJarCreator {
 
     private final ScatterZipOutputStream directories;
+    private final ScatterZipOutputStream metaInfDir;
     private final ScatterZipOutputStream manifest;
 
     private final ParallelScatterZipCreator parallelScatterZipCreator;
@@ -59,6 +60,7 @@ public class ConcurrentJarCreator {
 
         directories = createDeferred(defaultSupplier);
         manifest = createDeferred(defaultSupplier);
+        metaInfDir = createDeferred( defaultSupplier );
 
         parallelScatterZipCreator = new ParallelScatterZipCreator(Executors.newFixedThreadPool(nThreads), defaultSupplier);
     }
@@ -80,7 +82,13 @@ public class ConcurrentJarCreator {
             final ByteArrayInputStream payload = new ByteArrayInputStream(new byte[]{});
             directories.addArchiveEntry(createZipArchiveEntryRequest(zipArchiveEntry, createInputStreamSupplier(payload)));
             payload.close();
-        } else if ("META-INF".equals(zipArchiveEntry.getName()) || "META-INF/MANIFEST.MF".equals(zipArchiveEntry.getName())) {
+        } else if ("META-INF".equals(zipArchiveEntry.getName())) {
+            InputStream payload = source.get();
+            if (zipArchiveEntry.isDirectory()) zipArchiveEntry.setMethod(ZipEntry.STORED);
+            metaInfDir.addArchiveEntry(
+                createZipArchiveEntryRequest( zipArchiveEntry, createInputStreamSupplier( payload ) ) );
+            payload.close();
+        } else if ("META-INF/MANIFEST.MF".equals(zipArchiveEntry.getName())) {
             InputStream payload = source.get();
             if (zipArchiveEntry.isDirectory()) zipArchiveEntry.setMethod(ZipEntry.STORED);
             manifest.addArchiveEntry(createZipArchiveEntryRequest(zipArchiveEntry, createInputStreamSupplier(payload)));
@@ -99,6 +107,7 @@ public class ConcurrentJarCreator {
     }
 
     public void writeTo(ZipArchiveOutputStream targetStream) throws IOException, ExecutionException, InterruptedException {
+        metaInfDir.writeTo( targetStream );
         manifest.writeTo(targetStream);
         directories.writeTo(targetStream);
         parallelScatterZipCreator.writeTo( targetStream);
