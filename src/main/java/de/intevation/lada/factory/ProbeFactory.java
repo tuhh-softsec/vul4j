@@ -25,6 +25,8 @@ import de.intevation.lada.model.land.Messprogramm;
 import de.intevation.lada.model.land.MessprogrammMmt;
 import de.intevation.lada.model.land.MessungTranslation;
 import de.intevation.lada.model.land.ProbeTranslation;
+import de.intevation.lada.model.stamm.DeskriptorUmwelt;
+import de.intevation.lada.model.stamm.Deskriptoren;
 import de.intevation.lada.model.stamm.SOrt;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
@@ -284,4 +286,181 @@ public class ProbeFactory {
             return 0;
         }
     }
+
+    public LProbe findUmwelt(LProbe probe) {
+        String[] mediaDesk = probe.getMediaDesk().split(" ");
+        if (mediaDesk.length <= 1) {
+            return null;
+        }
+        List<Integer> mediaIds = new ArrayList<Integer>();
+        boolean zebs = false;
+        Integer parent = null;
+        Integer hdParent = null;
+        Integer ndParent = null;
+        if ("01".equals(mediaDesk[1])) {
+            zebs = true;
+        }
+        for (int i = 1; i < mediaDesk.length; i++) {
+            if ("00".equals(mediaDesk[i])) {
+                mediaIds.add(-1);
+                continue;
+            }
+            if (zebs && i < 5) {
+                parent = hdParent;
+            }
+            else if (!zebs && i < 3) {
+                parent = hdParent;
+            }
+            else {
+                parent = ndParent;
+            }
+            QueryBuilder<Deskriptoren> builder = new QueryBuilder<Deskriptoren>(
+                repository.entityManager("stamm"), Deskriptoren.class);
+            if (parent != null) {
+                builder.and("vorgaenger", parent);
+            }
+            builder.and("sn", mediaDesk[i]);
+            builder.and("ebene", i - 1);
+            Response response = repository.filter(builder.getQuery(), "stamm");
+            @SuppressWarnings("unchecked")
+            List<Deskriptoren> data = (List<Deskriptoren>)response.getData();
+            if (data.isEmpty()) {
+                return probe;
+            }
+            hdParent = data.get(0).getId();
+            mediaIds.add(data.get(0).getId());
+            if (i == 2) {
+                ndParent = data.get(0).getId();
+            }
+        }
+        return getUmwelt(probe, mediaIds, zebs);
+    }
+
+    private LProbe getUmwelt(LProbe probe, List<Integer> media, boolean isZebs) {
+        QueryBuilder<DeskriptorUmwelt> builder =
+            new QueryBuilder<DeskriptorUmwelt>(
+                repository.entityManager("stamm"), DeskriptorUmwelt.class);
+
+        if (media.size() == 0) {
+            return probe;
+        }
+
+        int size = 1;
+        if (isZebs) {
+            size = 2;
+        }
+        for (int i = size; i >= 0; i--) {
+            if (media.get(i) == -1) {
+                continue;
+            }
+            String field = "s" + (i > 9 ? i : "0" + i);
+            builder.and(field, media.get(i));
+        }
+        Response response = repository.filter(builder.getQuery(), "stamm");
+        @SuppressWarnings("unchecked")
+        List<DeskriptorUmwelt> data = (List<DeskriptorUmwelt>)response.getData();
+        if (data.isEmpty()) {
+            return probe;
+        }
+
+        boolean unique = isUnique(data);
+        if (unique) {
+            probe.setUmwId(data.get(0).getUmwId());
+            return probe;
+        }
+        else {
+            boolean found = false;
+            for (int i = 0; i < data.size(); i++) {
+                for (int j = size + 1; j < 13; j++) {
+                    switch(j) {
+                        case 2: if (data.get(i).getS02() == null ||
+                                    data.get(i).getS02().equals(media.get(2)))
+                                    found = true;
+                                else
+                                    found = false;
+                                break;
+                        case 3: if (data.get(i).getS03() == null ||
+                                    data.get(i).getS03().equals(media.get(3)))
+                                    found = true;
+                                else
+                                    found = false;
+                                break;
+                        case 4: if (data.get(i).getS04() == null ||
+                                    data.get(i).getS04().equals(media.get(4)))
+                                    found = true;
+                                else
+                                    found = false;
+                                break;
+                        case 5: if (data.get(i).getS05() == null ||
+                                    data.get(i).getS05().equals(media.get(5)))
+                                    found = true;
+                                else
+                                    found = false;
+                                break;
+                        case 6: if (data.get(i).getS06() == null ||
+                                    data.get(i).getS06().equals(media.get(6)))
+                                    found = true;
+                                else
+                                    found = false;
+                                break;
+                        case 7: if (data.get(i).getS07() == null ||
+                                    data.get(i).getS07().equals(media.get(7)))
+                                    found = true;
+                                else
+                                    found = false;
+                                break;
+                        case 8: if (data.get(i).getS08() == null ||
+                                    data.get(i).getS08().equals(media.get(8)))
+                                    found = true;
+                                else
+                                    found = false;
+                                break;
+                        case 9: if (data.get(i).getS09() == null ||
+                                    data.get(i).getS09().equals(media.get(9)))
+                                    found = true;
+                                else
+                                    found = false;
+                                break;
+                        case 10: if (data.get(i).getS10() == null ||
+                                     data.get(i).getS10().equals(media.get(10)))
+                                    found = true;
+                                else
+                                    found = false;
+                                break;
+                        case 11: if (data.get(i).getS11() == null ||
+                                     data.get(i).getS11().equals(media.get(11)))
+                                    found = true;
+                                else
+                                    found = false;
+                                break;
+                        case 12: if (data.get(i).getS12() == null ||
+                                     data.get(i).getS12().equals(media.get(12)))
+                                    found = true;
+                                else
+                                    found = false;
+                                break;
+                    }
+                    if (found) {
+                        probe.setUmwId(data.get(i).getUmwId());
+                        return probe;
+                    }
+                }
+            }
+            return probe;
+        }
+    }
+
+    private boolean isUnique(List<DeskriptorUmwelt> list) {
+        if (list.isEmpty()) {
+            return false;
+        }
+        String element = list.get(0).getUmwId();
+        for (int i = 1; i < list.size(); i++) {
+            if (!element.equals(list.get(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

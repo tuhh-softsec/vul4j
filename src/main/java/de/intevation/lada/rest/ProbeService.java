@@ -327,6 +327,9 @@ public class ProbeService {
             response.setWarnings(violation.getWarnings());
             return response;
         }
+        if (probe.getUmwId() == null || probe.getUmwId().equals("")) {
+            probe = factory.findUmwelt(probe);
+        }
         /* Persist the new probe object*/
         Response newProbe = defaultRepo.create(probe, "land");
         LProbe ret = (LProbe)newProbe.getData();
