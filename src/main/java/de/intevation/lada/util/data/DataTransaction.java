@@ -14,6 +14,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.persistence.TransactionRequiredException;
 
@@ -84,7 +85,8 @@ public class DataTransaction
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void removeFromDatabase(Object object, String dataSource)
     throws IllegalArgumentException,
-        TransactionRequiredException
+        TransactionRequiredException,
+        EJBTransactionRolledbackException
     {
         EntityManager em = emp.entityManager(dataSource);
         em.remove(

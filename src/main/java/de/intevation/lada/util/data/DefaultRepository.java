@@ -118,7 +118,7 @@ public class DefaultRepository extends ReadOnlyRepository {
      */
     @Override
     public Response delete(Object object, String dataSource) {
-        Response response = new Response(true, 200, null);
+        Response response = new Response(true, 200, "");
         try {
             transaction.removeFromDatabase(object, dataSource);
         }

@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.ejb.EJBTransactionRolledbackException;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.json.Json;
@@ -22,6 +23,7 @@ import javax.json.JsonException;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.persistence.Query;
+import javax.persistence.TransactionRequiredException;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -507,7 +509,14 @@ public class ProbeService {
         /* Delete the probe translation object*/
         defaultRepo.delete(probeTransObj, "land");
         /* Delete the probe object*/
-        Response response = defaultRepo.delete(probeObj, "land");
-        return response;
+        try {
+            Response response = defaultRepo.delete(probeObj, "land");
+            return response;
+        }
+        catch(IllegalArgumentException | EJBTransactionRolledbackException |
+            TransactionRequiredException e) {
+            defaultRepo.update(probeTransObj, "land");
+            return new Response(false, 600, "");
+        }
     }
 }
