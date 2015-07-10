@@ -27,6 +27,9 @@ public class DeskriptorToUmwelt implements Rule {
     @Override
     public Violation execute(Object object) {
         LProbe probe = (LProbe)object;
+        if (probe.getMediaDesk() == null || probe.getMediaDesk().equals("")) {
+            return null;
+        }
         String[] mediaDesk = probe.getMediaDesk().split(" ");
         if (mediaDesk.length <= 1) {
             return null;
