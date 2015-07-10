@@ -189,14 +189,14 @@ public class ProbeFactory {
                 repository.create(wert, "land");
             }
         }
-        if (messprogramm.getGemId() != null &&
-            !messprogramm.getGemId().equals("")) {
+        if (messprogramm.getOrtId() != null &&
+            !messprogramm.getOrtId().equals("")) {
             LOrt ort = new LOrt();
             ort.setOrtsTyp("E");
             ort.setProbeId(probe.getId());
             QueryBuilder<SOrt> ortBuilder = new QueryBuilder<SOrt>(
                 repository.entityManager("stamm"), SOrt.class);
-            ortBuilder.and("verwaltungseinheitId", messprogramm.getGemId());
+            ortBuilder.and("id", messprogramm.getOrtId());
             Response ortResponse = repository.filter(ortBuilder.getQuery(), "stamm");
             @SuppressWarnings("unchecked")
             List<SOrt> orte = (List<SOrt>) ortResponse.getData();
