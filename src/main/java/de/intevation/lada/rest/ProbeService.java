@@ -49,6 +49,7 @@ import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
+import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
@@ -235,6 +236,13 @@ public class ProbeService {
                 boolean readOnly =
                     authorization.isReadOnly((Integer)entry.get("id"));
                 entry.put("readonly", readOnly);
+                UserInfo ui = authorization.getInfo(request);
+                QueryBuilder<LProbe> builder = new QueryBuilder<LProbe>(
+                    defaultRepo.entityManager("land"), LProbe.class);
+                builder.and("id", (Integer)entry.get("id"));
+                Response r = defaultRepo.filter(builder.getQuery(), "land");
+                List<LProbe> probe = (List<LProbe>)r.getData();
+                entry.put("owner", authorization.isAuthorized(ui, probe.get(0)));
             }
             return new Response(true, 200, subList, result.size());
         }
