@@ -46,7 +46,7 @@ import de.intevation.lada.util.rest.Response;
 @RequestScoped
 public class VersionService {
 
-    private static final String VERSION = "2.0-beta2";
+    private static final String VERSION = "2.0.2";
 
     /**
      * Get server Version.
