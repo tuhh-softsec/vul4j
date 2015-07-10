@@ -369,81 +369,54 @@ public class ProbeFactory {
             return probe;
         }
         else {
-            boolean found = false;
+            int found = -1;
             for (int i = 0; i < data.size(); i++) {
-                for (int j = size + 1; j < 13; j++) {
+                int matches = 0;
+                int lastMatch = 0;
+                for (int j = size + 1; j < 12; j++) {
                     switch(j) {
-                        case 2: if (data.get(i).getS02() == null ||
-                                    data.get(i).getS02().equals(media.get(2)))
-                                    found = true;
-                                else
-                                    found = false;
+                        case 2: if (media.get(2).equals(data.get(i).getS02()))
+                                    matches += 1;
                                 break;
-                        case 3: if (data.get(i).getS03() == null ||
-                                    data.get(i).getS03().equals(media.get(3)))
-                                    found = true;
-                                else
-                                    found = false;
+                        case 3: if (media.get(3).equals(data.get(i).getS03()))
+                                    matches += 1;
                                 break;
-                        case 4: if (data.get(i).getS04() == null ||
-                                    data.get(i).getS04().equals(media.get(4)))
-                                    found = true;
-                                else
-                                    found = false;
+                        case 4: if (media.get(4).equals(data.get(i).getS04()))
+                                    matches += 1;
                                 break;
-                        case 5: if (data.get(i).getS05() == null ||
-                                    data.get(i).getS05().equals(media.get(5)))
-                                    found = true;
-                                else
-                                    found = false;
+                        case 5: if (media.get(5).equals(data.get(i).getS05()))
+                                    matches +=1;
                                 break;
-                        case 6: if (data.get(i).getS06() == null ||
-                                    data.get(i).getS06().equals(media.get(6)))
-                                    found = true;
-                                else
-                                    found = false;
+                        case 6: if (media.get(6).equals(data.get(i).getS06()))
+                                    matches += 1;
                                 break;
-                        case 7: if (data.get(i).getS07() == null ||
-                                    data.get(i).getS07().equals(media.get(7)))
-                                    found = true;
-                                else
-                                    found = false;
+                        case 7: if (media.get(7).equals(data.get(i).getS07()))
+                                    matches += 1;
                                 break;
-                        case 8: if (data.get(i).getS08() == null ||
-                                    data.get(i).getS08().equals(media.get(8)))
-                                    found = true;
-                                else
-                                    found = false;
+                        case 8: if (media.get(8).equals(data.get(i).getS08()))
+                                    matches += 1;
                                 break;
-                        case 9: if (data.get(i).getS09() == null ||
-                                    data.get(i).getS09().equals(media.get(9)))
-                                    found = true;
-                                else
-                                    found = false;
+                        case 9: if (media.get(9).equals(data.get(i).getS09()))
+                                    matches += 1;
                                 break;
-                        case 10: if (data.get(i).getS10() == null ||
-                                     data.get(i).getS10().equals(media.get(10)))
-                                    found = true;
-                                else
-                                    found = false;
+                        case 10: if (media.get(10).equals(data.get(i).getS10()))
+                                    matches += 1;
                                 break;
-                        case 11: if (data.get(i).getS11() == null ||
-                                     data.get(i).getS11().equals(media.get(11)))
-                                    found = true;
-                                else
-                                    found = false;
+                        case 11: if (media.get(11).equals(data.get(i).getS11()))
+                                    matches += 1;
                                 break;
-                        case 12: if (data.get(i).getS12() == null ||
-                                     data.get(i).getS12().equals(media.get(12)))
-                                    found = true;
-                                else
-                                    found = false;
+                        case 12: if (media.get(12).equals(data.get(i).getS12()))
+                                    matches += 1;
                                 break;
                     }
-                    if (found) {
-                        probe.setUmwId(data.get(i).getUmwId());
-                        return probe;
+                    if (matches > lastMatch) {
+                        lastMatch = matches;
+                        found = i;
                     }
+                }
+                if (found >= 0) {
+                    probe.setUmwId(data.get(found).getUmwId());
+                    return probe;
                 }
             }
             return probe;
