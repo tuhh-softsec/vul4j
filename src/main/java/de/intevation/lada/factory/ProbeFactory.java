@@ -287,11 +287,25 @@ public class ProbeFactory {
         }
     }
 
-    public LProbe findUmwelt(LProbe probe) {
+    public LProbe findUmweltId(LProbe probe) {
         String[] mediaDesk = probe.getMediaDesk().split(" ");
         if (mediaDesk.length <= 1) {
-            return null;
+            return probe;
         }
+        probe.setUmwId(findUmwelt(mediaDesk));
+        return probe;
+    }
+
+    public Messprogramm findUmweltId(Messprogramm messprogramm) {
+        String[] mediaDesk = messprogramm.getMediaDesk().split(" ");
+        if (mediaDesk.length <= 1) {
+            return messprogramm;
+        }
+        messprogramm.setUmwId(findUmwelt(mediaDesk));
+        return messprogramm;
+    }
+
+    private String findUmwelt(String[] mediaDesk) {
         List<Integer> mediaIds = new ArrayList<Integer>();
         boolean zebs = false;
         Integer parent = null;
@@ -325,7 +339,7 @@ public class ProbeFactory {
             @SuppressWarnings("unchecked")
             List<Deskriptoren> data = (List<Deskriptoren>)response.getData();
             if (data.isEmpty()) {
-                return probe;
+                return "";
             }
             hdParent = data.get(0).getId();
             mediaIds.add(data.get(0).getId());
@@ -333,16 +347,16 @@ public class ProbeFactory {
                 ndParent = data.get(0).getId();
             }
         }
-        return getUmwelt(probe, mediaIds, zebs);
+        return getUmwelt(mediaIds, zebs);
     }
 
-    private LProbe getUmwelt(LProbe probe, List<Integer> media, boolean isZebs) {
+    private String getUmwelt(List<Integer> media, boolean isZebs) {
         QueryBuilder<DeskriptorUmwelt> builder =
             new QueryBuilder<DeskriptorUmwelt>(
                 repository.entityManager("stamm"), DeskriptorUmwelt.class);
 
         if (media.size() == 0) {
-            return probe;
+            return "";
         }
 
         int size = 1;
@@ -360,13 +374,12 @@ public class ProbeFactory {
         @SuppressWarnings("unchecked")
         List<DeskriptorUmwelt> data = (List<DeskriptorUmwelt>)response.getData();
         if (data.isEmpty()) {
-            return probe;
+            return "";
         }
 
         boolean unique = isUnique(data);
         if (unique) {
-            probe.setUmwId(data.get(0).getUmwId());
-            return probe;
+            return data.get(0).getUmwId();
         }
         else {
             int found = -1;
@@ -415,11 +428,10 @@ public class ProbeFactory {
                     }
                 }
                 if (found >= 0) {
-                    probe.setUmwId(data.get(found).getUmwId());
-                    return probe;
+                    return data.get(found).getUmwId();
                 }
             }
-            return probe;
+            return "";
         }
     }
 

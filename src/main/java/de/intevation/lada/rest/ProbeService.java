@@ -328,7 +328,7 @@ public class ProbeService {
             return response;
         }
         if (probe.getUmwId() == null || probe.getUmwId().equals("")) {
-            probe = factory.findUmwelt(probe);
+            probe = factory.findUmweltId(probe);
         }
         /* Persist the new probe object*/
         Response newProbe = defaultRepo.create(probe, "land");
@@ -443,6 +443,7 @@ public class ProbeService {
             response.setWarnings(violation.getWarnings());
             return response;
         }
+        factory.findUmweltId(probe);
         probe.setLetzteAenderung(new Timestamp(new Date().getTime()));
         Response response = defaultRepo.update(probe, "land");
         Response updated = defaultRepo.getById(

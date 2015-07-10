@@ -35,6 +35,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
+import de.intevation.lada.factory.ProbeFactory;
 import de.intevation.lada.model.land.Messprogramm;
 import de.intevation.lada.query.QueryTools;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
@@ -87,6 +88,9 @@ public class MessprogrammService {
     @Inject
     @AuthorizationConfig(type=AuthorizationType.OPEN_ID)
     private Authorization authorization;
+
+    @Inject
+    private ProbeFactory factory;
 
     /**
      * Get all Messprogramm objects.
@@ -221,6 +225,9 @@ public class MessprogrammService {
             return new Response(false, 699, null);
         }
 
+        if (messprogramm.getUmwId() == null || messprogramm.getUmwId().length() == 0) {
+            messprogramm = factory.findUmweltId(messprogramm);
+        }
         /* Persist the new messprogramm object*/
         Response response = defaultRepo.create(messprogramm, "land");
         Messprogramm ret = (Messprogramm)response.getData();
@@ -261,6 +268,7 @@ public class MessprogrammService {
             return new Response(false, 699, null);
         }
         messprogramm.setLetzteAenderung(new Timestamp(new Date().getTime()));
+        messprogramm = factory.findUmweltId(messprogramm);
         Response response = defaultRepo.update(messprogramm, "land");
         Response updated = defaultRepo.getById(
             Messprogramm.class,
