@@ -10,6 +10,10 @@ syntax: glob
 .project
 *~
 
+# intellij support - ignore *.iml, .idea
+.idea
+*.iml
+
 # switch to regexp syntax.
 syntax: regexp
 ^target/
