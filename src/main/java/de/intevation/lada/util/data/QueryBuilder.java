@@ -102,7 +102,7 @@ public class QueryBuilder<T> {
      */
     public QueryBuilder<T> andLike(String id, String value) {
         Path<String> path = this.root.get(id);
-        Predicate p = this.builder.like(this.builder.lower(path), value);
+        Predicate p = this.builder.like(this.builder.lower(path), value.toLowerCase());
         if (this.filter != null) {
             this.filter = this.builder.and(this.filter, p);
         }
@@ -139,7 +139,7 @@ public class QueryBuilder<T> {
      */
     public QueryBuilder<T> orLike(String id, String value) {
         Path<String> path = this.root.get(id);
-        Predicate p = this.builder.like(this.builder.lower(path), value);
+        Predicate p = this.builder.like(this.builder.lower(path), value.toLowerCase());
         if (this.filter != null) {
             this.filter = this.builder.or(this.filter, p);
         }
