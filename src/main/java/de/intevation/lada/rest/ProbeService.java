@@ -340,6 +340,9 @@ public class ProbeService {
         if (probe.getUmwId() == null || probe.getUmwId().equals("")) {
             probe = factory.findUmweltId(probe);
         }
+        if (probe.getMediaDesk() != null || probe.getMediaDesk().length() > 0) {
+        	probe = factory.findMediaDesk(probe);
+        }
         /* Persist the new probe object*/
         Response newProbe = defaultRepo.create(probe, "land");
         LProbe ret = (LProbe)newProbe.getData();

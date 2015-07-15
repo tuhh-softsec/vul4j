@@ -295,6 +295,15 @@ public class ProbeFactory {
         probe.setUmwId(findUmwelt(mediaDesk));
         return probe;
     }
+    
+    public LProbe findMediaDesk(LProbe probe) {
+    	probe.setMedia(repository
+        	.queryFromString("SELECT get_media_from_media_desk( :mediaDesk );", "stamm")
+        	.setParameter("mediaDesk", probe.getMediaDesk())
+        	.getSingleResult()
+        	.toString());
+        return probe;
+    }
 
     public Messprogramm findUmweltId(Messprogramm messprogramm) {
         String[] mediaDesk = messprogramm.getMediaDesk().split(" ");
