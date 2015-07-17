@@ -56,6 +56,11 @@ public class zOSJobSubmitter extends Builder {
     private String job;
 
     /**
+     * MaxCC to decide that job ended OK.
+     */
+    private String MaxCC;
+
+    /**
      * Constructor. Invoked when 'Apply' or 'Save' button is pressed on the project configuration page.
      *
      * @param server LPAR name or IP address.
@@ -68,7 +73,16 @@ public class zOSJobSubmitter extends Builder {
      * @param job JCL of the job to be submitted.
      */
     @DataBoundConstructor
-    public zOSJobSubmitter (String server, int port, String userID, String password, boolean wait, int waitTime, boolean deleteJobFromSpool, String job)
+    public zOSJobSubmitter (
+        String server,
+        int port,
+        String userID,
+        String password,
+        boolean wait,
+        int waitTime,
+        boolean deleteJobFromSpool,
+        String job,
+        String MaxCC)
     {
         // Copy values
         this.server = server.replaceAll("\\s","");
@@ -79,6 +93,14 @@ public class zOSJobSubmitter extends Builder {
         this.waitTime = waitTime;
         this.deleteJobFromSpool = deleteJobFromSpool;
         this.job = job;
+        if (MaxCC == null || MaxCC.isEmpty()) {
+            this.MaxCC = "0000";
+        } else {
+            this.MaxCC = MaxCC;
+            if (this.MaxCC.length() < 4) {
+                this.MaxCC = "000".substring(0,4-this.MaxCC.length()) + this.MaxCC;
+            }
+        }
     }
 
     /**
@@ -114,9 +136,11 @@ public class zOSJobSubmitter extends Builder {
         if(printableCC != null)
             printableCC = printableCC.replaceAll("\\s+","");
 
+        // Print the info about the job
+        listener.getLogger().println("Job [" + zFTPConnector.getJobID() + "] processing finished.");
+
         // If wait was requested try to save the job log.
-        if(this.wait)
-        {
+        if(this.wait) {
             // Save the log.
             try
             {
@@ -139,14 +163,12 @@ public class zOSJobSubmitter extends Builder {
             {
                 i.printStackTrace();
             }
-        }
-        else
-        {
+        } else {
             printableCC = "0000"; //set RC = 0
         }
 
         // Return whether the job succeeded or not.
-        return result && "0000".equals(printableCC);
+        return result && (this.MaxCC.compareTo(printableCC) >= 0);
     }
 
     /**
@@ -219,11 +241,18 @@ public class zOSJobSubmitter extends Builder {
     /**
      * Get Job.
      *
-     * @return <b><code>job</code></b>
+     * @return <b><code>Job</code></b>
      */
     public String getJob()
     {
         return this.job;
+    }
+
+    /**
+     * @return <b><code>MaxCC of the job to be considered OK</code></b>
+     */
+    public String getMaxCC() {
+        return  this.MaxCC;
     }
 
     /**
@@ -333,7 +362,7 @@ public class zOSJobSubmitter extends Builder {
          * @throws ServletException
          */
         public FormValidation doCheckWaitTime(@QueryParameter String value)
-                throws IOException, ServletException {
+            throws IOException, ServletException {
             if (!value.matches("\\d*"))
                 return FormValidation.error("Value must be numeric");
             if(Integer.parseInt(value) < 0)
@@ -341,6 +370,13 @@ public class zOSJobSubmitter extends Builder {
             return FormValidation.ok();
         }
 
+        public FormValidation doCheckMaxCC(@QueryParameter String value)
+            throws IOException, ServletException {
+            if (!value.matches("(\\d{1,4})|(\\s*)"))
+                return FormValidation.error("Value must be 4 decimal digits or empty");
+            return FormValidation.ok();
+
+        }
         /**
          * If this build step can be used with the project.
          *

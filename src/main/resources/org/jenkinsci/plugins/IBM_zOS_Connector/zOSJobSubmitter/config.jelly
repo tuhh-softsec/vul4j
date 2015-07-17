@@ -24,6 +24,9 @@
         <f:entry field="deleteJobFromSpool" title="Delete job log from Spool?">
           <f:checkbox default="false" value="${it.getDeleteJobFromSpool()}"/>
         </f:entry>
+        <f:entry field="MaxCC" title="MaxCC" description='Default or empty = "0000"'>
+          <f:textbox value="${it.getMaxCC()}" default=""/>
+        </f:entry>
       </f:optionalBlock>
     </table>
   </f:block>
