@@ -94,12 +94,7 @@ public class NetzbetreiberService {
         @Context HttpServletRequest request,
         @Context UriInfo info
     ) {
-        UserInfo userInfo = authorization.getInfo(request);
-        QueryBuilder<NetzBetreiber> builder =
-            new QueryBuilder<NetzBetreiber>(
-                defaultRepo.entityManager("stamm"), NetzBetreiber.class);
-        builder.or("id", userInfo.getNetzbetreiber());
-        return defaultRepo.filter(builder.getQuery(), "stamm");
+        return defaultRepo.getAll(NetzBetreiber.class, "stamm");
     }
 
     /**
