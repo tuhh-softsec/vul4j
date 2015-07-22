@@ -43,6 +43,9 @@ public class DeskriptorToUmwelt implements Rule {
         if (probe.getMediaDesk() == null || probe.getMediaDesk().equals("")) {
             return null;
         }
+        if (probe.getUmwId() == null) {
+            return null;
+        }
         String[] mediaDesk = probe.getMediaDesk().split(" ");
         if (mediaDesk.length <= 1) {
             return null;
