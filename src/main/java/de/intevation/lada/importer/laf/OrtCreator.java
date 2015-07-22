@@ -768,6 +768,9 @@ public class OrtCreator
         return ort;
     }
 
+    /**
+     * Reset the current data sets.
+     */
     public void reset() {
         this.beschreibung = null;
         this.bezeichnung = null;

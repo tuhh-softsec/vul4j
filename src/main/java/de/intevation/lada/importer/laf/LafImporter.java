@@ -20,6 +20,13 @@ import de.intevation.lada.importer.Importer;
 import de.intevation.lada.importer.ReportItem;
 import de.intevation.lada.util.auth.UserInfo;
 
+/**
+ * LAF importer implements Importer to read LAF formatted files.
+ * The importer parses the files and extracts probe objects and their children
+ * and persists them in the database.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 @ImportConfig(format=ImportFormat.LAF)
 public class LafImporter implements Importer {
 

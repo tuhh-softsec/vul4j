@@ -341,7 +341,7 @@ public class ProbeService {
             probe = factory.findUmweltId(probe);
         }
         if (probe.getMediaDesk() != null || probe.getMediaDesk().length() > 0) {
-        	probe = factory.findMediaDesk(probe);
+            probe = factory.findMediaDesk(probe);
         }
         /* Persist the new probe object*/
         Response newProbe = defaultRepo.create(probe, "land");
@@ -369,6 +369,9 @@ public class ProbeService {
      * <pre>
      * <code>
      * {
+     *  "id": [number],
+     *  "start": [timestamp],
+     *  "end": [timestamp]
      * }
      * </code>
      * </pre>

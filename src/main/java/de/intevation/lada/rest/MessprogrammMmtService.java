@@ -50,6 +50,11 @@ import de.intevation.lada.util.rest.Response;
  *  "success": [boolean];
  *  "message": [string],
  *  "data":[{
+ *      "id": [number],
+ *      "letzteAenderung": [timestamp],
+ *      "messgroessen": [array],
+ *      "mmtId": [string],
+ *      "messprogrammId": [number]
  *  }],
  *  "errors": [object],
  *  "warnings": [object],
@@ -142,6 +147,10 @@ public class MessprogrammMmtService {
      * <pre>
      * <code>
      * {
+     *  "messprogrammId": [number],
+     *  "mmtId": [string],
+     *  "messgroessen": [array],
+     *  "letzteAenderung": [date]
      * }
      * </code>
      * </pre>
@@ -182,6 +191,11 @@ public class MessprogrammMmtService {
      * <pre>
      * <code>
      * {
+     *  "id": [number],
+     *  "messprogrammId": [number],
+     *  "mmtId": [string],
+     *  "messgroessen": [array],
+     *  "letzteAenderung": [date]
      * }
      * </code>
      * </pre>

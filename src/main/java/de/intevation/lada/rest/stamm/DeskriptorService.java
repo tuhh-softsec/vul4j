@@ -44,6 +44,13 @@ import de.intevation.lada.util.rest.Response;
  *  "success": [boolean];
  *  "message": [string],
  *  "data":[{
+ *      "id": [number],
+ *      "bedeutung": [string],
+ *      "beschreibung": [string],
+ *      "ebene": [number],
+ *      "sn": [number],
+ *      "vorgaenger": [number],
+ *      "sxx": [number]
  *  }],
  *  "errors": [object],
  *  "warnings": [object],
@@ -71,14 +78,15 @@ public class DeskriptorService {
      * <p>
      * The requested objects can be filtered using the following URL
      * parameters:<br>
-     *  <br>
-     *  The response data contains a stripped set of Probe objects. The returned fields
-     *  are defined in the query used in the request.
+     *  * layer: the layer of the reqested deskriptor<br>
+     *  * parents: the parents of the requested deskriptor<br>
+     * <br>
+     * The response data contains a stripped set of deskriptor objects.
      * <p>
      * Example:
      * http://example.com/deskriptor?layer=[LAYER]
      *
-     * @return Response object containing all Deskriptor objects.
+     * @return Response object containing the Deskriptor objects.
      */
     @GET
     @Path("/")

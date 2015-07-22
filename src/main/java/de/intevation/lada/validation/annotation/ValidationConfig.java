@@ -16,6 +16,7 @@ import javax.inject.Qualifier;
 
 
 /**
+ * Annotation to configure validators.
  *
  * @author <a href="mailto:raimund.renkert@intevation.de">Raimund Renkert</a>
  */

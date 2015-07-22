@@ -84,6 +84,15 @@ public class ProbeFactory {
         return proben;
     }
 
+    /**
+     * Create LProbe objects using the interval and messprogramm details.
+     *
+     * @param   interval        The time interval for probe objects.
+     * @param   messprogramm    The messprogramm containing details.
+     * @param   proben          An (empty) list for probe objects filled by this
+     *                          method
+     * @return
+     */
     private void createProben(
         Date[] interval,
         Messprogramm messprogramm,
@@ -111,8 +120,7 @@ public class ProbeFactory {
         int teilEnd = messprogramm.getTeilintervallBis() + startDay;
         int offset = messprogramm.getIntervallOffset() == null ? 0 : messprogramm.getIntervallOffset();
 
-        for (;
-            teilStart >= startDay + offset && teilEnd <= endDay + offset;) {
+        for (;teilStart >= startDay + offset && teilEnd <= endDay + offset;) {
             start.add(Calendar.DATE, teilStart - startDay + offset);
             Date startDate = start.getTime();
             end.add(Calendar.DATE, teilEnd - endDay + offset);
@@ -127,6 +135,15 @@ public class ProbeFactory {
         return;
     }
 
+    /**
+     * Create a single probe object.
+     *
+     * @param   messprogramm    The messprogramm containing probe details
+     * @param   startDate       The date for 'solldatumbeginn'
+     * @param   endDate         The date for 'solldatumende'
+     *
+     * @return The new probe object.
+     */
     private LProbe createObjects(
         Messprogramm messprogramm,
         Date startDate,
@@ -211,6 +228,16 @@ public class ProbeFactory {
         return probe;
     }
 
+    /**
+     * Determine the interval for probe generation using a start date, end date
+     * and the messprogramm.
+     *
+     * @param   start   Calendar object defining the start of the first interval
+     * @param   end     Calendar object defining the end of the last interval.
+     * @param   messprogramm    The messprogramm
+     *
+     * @return An array of start/end pairs.
+     */
     private Date[][] calculateIntervals(
         Calendar start,
         Calendar end,
@@ -257,6 +284,14 @@ public class ProbeFactory {
         return intervals;
     }
 
+    /**
+     * Parse an interval string.
+     * Posible values are: J, H, Q, M, W4, W2, W, T
+     *
+     * @param   interval    the interval string.
+     *
+     * @return the amount of days for the given interval.
+     */
     private int parseInterval(String interval) {
         if ("J".equals(interval)) {
             return 365;
@@ -287,6 +322,13 @@ public class ProbeFactory {
         }
     }
 
+    /**
+     * Search for the umwelt id using the 'deskriptor'.
+     *
+     * @param   probe   The probe object.
+     *
+     * @return The updated probe object.
+     */
     public LProbe findUmweltId(LProbe probe) {
         String[] mediaDesk = probe.getMediaDesk().split(" ");
         if (mediaDesk.length <= 1) {
@@ -295,16 +337,30 @@ public class ProbeFactory {
         probe.setUmwId(findUmwelt(mediaDesk));
         return probe;
     }
-    
+
+    /**
+     * Search for the media description using the 'deskriptor'.
+     *
+     * @param   probe   The probe object
+     *
+     * @return The updated probe object.
+     */
     public LProbe findMediaDesk(LProbe probe) {
-    	probe.setMedia(repository
-        	.queryFromString("SELECT get_media_from_media_desk( :mediaDesk );", "stamm")
-        	.setParameter("mediaDesk", probe.getMediaDesk())
-        	.getSingleResult()
-        	.toString());
+        probe.setMedia(repository
+            .queryFromString("SELECT get_media_from_media_desk( :mediaDesk );", "stamm")
+            .setParameter("mediaDesk", probe.getMediaDesk())
+            .getSingleResult()
+            .toString());
         return probe;
     }
 
+    /**
+     * Search for the umwelt id using the 'deskriptor'.
+     *
+     * @param   messprogramm    The messprogramm
+     *
+     * @return The updated messprogramm.
+     */
     public Messprogramm findUmweltId(Messprogramm messprogramm) {
         String[] mediaDesk = messprogramm.getMediaDesk().split(" ");
         if (mediaDesk.length <= 1) {
@@ -314,6 +370,13 @@ public class ProbeFactory {
         return messprogramm;
     }
 
+    /**
+     * Find the umwelt id for a given deskriptor.
+     *
+     * @param   mediaDesk   The deskriptor string
+     *
+     * @return The umwelt id or an empty string.
+     */
     private String findUmwelt(String[] mediaDesk) {
         List<Integer> mediaIds = new ArrayList<Integer>();
         boolean zebs = false;
@@ -359,6 +422,14 @@ public class ProbeFactory {
         return getUmwelt(mediaIds, zebs);
     }
 
+    /**
+     * Find the umwelt id in the database using media deskriptor ids.
+     *
+     * @param   media   The list of media ids.
+     * @param   isZebs  Flag for type of the deskriptor.
+     *
+     * @return The umwelt id or an empty string.
+     */
     private String getUmwelt(List<Integer> media, boolean isZebs) {
         QueryBuilder<DeskriptorUmwelt> builder =
             new QueryBuilder<DeskriptorUmwelt>(
@@ -444,6 +515,13 @@ public class ProbeFactory {
         }
     }
 
+    /**
+     * Determine if the entries in the list have the same umwelt id.
+     *
+     * @param   list    A list of DescriptorUmwelt objects.
+     *
+     * @return true if the objects have the same umwelt id else false.
+     */
     private boolean isUnique(List<DeskriptorUmwelt> list) {
         if (list.isEmpty()) {
             return false;

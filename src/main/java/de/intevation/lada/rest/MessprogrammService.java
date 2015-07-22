@@ -60,6 +60,27 @@ import de.intevation.lada.util.rest.Response;
  *  "success": [boolean];
  *  "message": [string],
  *  "data":[{
+ *      "id": [number],
+ *      "baId": [string],
+ *      "datenbasisId": [number],
+ *      "gemId": [string],
+ *      "gueltigBis": [date],
+ *      "gueltigVon": [date],
+ *      "intervallOffset": [number],
+ *      "letzteAenderung": [timestamp],
+ *      "mediaDesk": [string],
+ *      "mstId": [string],
+ *      "name": [string],
+ *      "netzbetreiberId": [string],
+ *      "ortId": [string],
+ *      "probeKommentar": [string],
+ *      "probeNehmerId": [number],
+ *      "probenartId": [number],
+ *      "probenintervall": [string],
+ *      "teilintervallBis": [number],
+ *      "teilintervallVon": [number],
+ *      "test": [boolean],
+ *      "umwId": [string]
  *  }],
  *  "errors": [object],
  *  "warnings": [object],
@@ -203,6 +224,24 @@ public class MessprogrammService {
      * <pre>
      * <code>
      * {
+     *  "test": [boolean],
+     *  "netzbetreiberId": [string],
+     *  "mstId": [string],
+     *  "name": [string],
+     *  "datenbasisId": [number],
+     *  "baId": [string],
+     *  "gemId": [string],
+     *  "ortId": [string],
+     *  "mediaDesk": [string],
+     *  "umwId": [string],
+     *  "probenartId": [number],
+     *  "probenintervall": [string],
+     *  "teilintervallVon": [number],
+     *  "teilintervallBis": [number],
+     *  "intervallOffset": [string],
+     *  "probeNehmerId": [number],
+     *  "probeKommentar": [string],
+     *  "letzteAenderung": [date]
      * }
      * </code>
      * </pre>
@@ -246,6 +285,25 @@ public class MessprogrammService {
      * <pre>
      * <code>
      * {
+     *  "id": [number],
+     *  "test": [boolean],
+     *  "netzbetreiberId": [string],
+     *  "mstId": [string],
+     *  "name": [string],
+     *  "datenbasisId": [number],
+     *  "baId": [string],
+     *  "gemId": [string],
+     *  "ortId": [string],
+     *  "mediaDesk": [string],
+     *  "umwId": [string],
+     *  "probenartId": [number],
+     *  "probenintervall": [string],
+     *  "teilintervallVon": [number],
+     *  "teilintervallBis": [number],
+     *  "intervallOffset": [string],
+     *  "probeNehmerId": [number],
+     *  "probeKommentar": [string],
+     *  "letzteAenderung": [date]
      * }
      * </code>
      * </pre>

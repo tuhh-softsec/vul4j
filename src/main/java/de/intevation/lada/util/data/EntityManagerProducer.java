@@ -14,7 +14,11 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.validation.UnexpectedTypeException;
 
-
+/**
+ * Factory class used to get entitymanager for a specific persistence unit.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 @Stateless
 @LocalBean
 public class EntityManagerProducer {

@@ -1,3 +1,10 @@
+/* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.util.data;
 
 import java.io.Serializable;
@@ -11,6 +18,11 @@ import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.usertype.UserType;
 
+/**
+ * Implementation for a new data type in the postgresql/postgis jdbc driver.
+ *
+ * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ */
 public class IntegerArrayType implements UserType {
     protected static final int  SQLTYPE = java.sql.Types.ARRAY;
 

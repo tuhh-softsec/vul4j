@@ -51,7 +51,7 @@ public class VersionService {
     /**
      * Get server Version.
      * <p>
-     * Example: http://example.com/verison
+     * Example: http://example.com/version
      *
      * @return Response object containing all MessStelle objects.
      */

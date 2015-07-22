@@ -9,6 +9,7 @@ package de.intevation.lada.validation;
 
 
 /**
+ * Interface for object validators.
  *
  * @author <a href="mailto:raimund.renkert@intevation.de">Raimund Renkert</a>
  */

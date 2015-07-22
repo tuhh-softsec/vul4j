@@ -100,7 +100,7 @@ public class StatusService {
      * Get all Status objects.
      * <p>
      * The requested objects can be filtered using a URL parameter named
-     * probeId.
+     * messungsId.
      * <p>
      * Example: http://example.com/status?messungsId=[ID]
      *

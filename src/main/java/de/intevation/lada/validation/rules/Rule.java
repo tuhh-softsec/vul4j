@@ -10,6 +10,7 @@ package de.intevation.lada.validation.rules;
 import de.intevation.lada.validation.Violation;
 
 /**
+ * Interface for validation rules.
  *
  * @author <a href="mailto:raimund.renkert@intevation.de">Raimund Renkert</a>
  */

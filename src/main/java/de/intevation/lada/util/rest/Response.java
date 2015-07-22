@@ -19,7 +19,7 @@ import javax.ws.rs.core.MultivaluedMap;
 * Response object storing information about success, warnings, errors and
 * the data object. This class is used as return value in REST services.
 *
-* @author <a href="mailto:torsten@intevation.de">Torsten Irländer</a>
+* @author <a href="mailto:raimund.renkert@intevation.de">Raimund Renkert</a>
 */
 public class Response implements Serializable {
 
