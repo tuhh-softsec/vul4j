@@ -11,7 +11,7 @@ public final class FTPLauncher {
   public static void main(final String[] args) {
     FTPConnectionProperties ftpProperties =
         new FTPConnectionProperties.Builder("ftp.uk.debian.org").directory(
-            "debian/dists/Debian8.0/main/installer-amd64/20150422/images/cdrom").build();
+            "debian-armel/bootstrap/dists/sid/").build();
     MyFTPClient ftpClient = new MyFTPClient();
 
     ftpClient.obtainListOfFileInformationAnonymous(ftpProperties);
