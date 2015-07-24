@@ -14,6 +14,7 @@ public final class FTPLauncher {
             "debian-armel/bootstrap/dists/sid/").build();
     MyFTPClient ftpClient = new MyFTPClient();
 
-    ftpClient.obtainListOfFileInformationAnonymous(ftpProperties);
+    ftpClient.obtainListOfFileInformationAnonymous(ftpProperties).stream()
+            .forEach(file -> System.out.println(String.valueOf(file)));
   }
 }

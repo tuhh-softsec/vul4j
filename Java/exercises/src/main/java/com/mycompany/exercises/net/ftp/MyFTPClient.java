@@ -6,15 +6,19 @@ package com.mycompany.exercises.net.ftp;
 
 import static com.mycompany.exercises.net.ftp.MyFTPClientLogger.*;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 
 public class MyFTPClient {
 
-  public void obtainListOfFileInformationAnonymous(final FTPConnectionProperties ftpProperties) {
-    obtainListOfFileInformation(ftpProperties.getHostname(), ftpProperties.getPort(),
+  public List<FTPFile> obtainListOfFileInformationAnonymous(
+      final FTPConnectionProperties ftpProperties) {
+    return obtainListOfFileInformation(ftpProperties.getHostname(), ftpProperties.getPort(),
         ftpProperties.getDirectory(), ftpProperties.getUsername(), ftpProperties.getPassword(),
         ftpProperties.isPassiveLocalDataConnectionMode());
   }
@@ -29,14 +33,16 @@ public class MyFTPClient {
    * @param password The password to use
    * @param passiveLocalDataConnectionMode Current data connection mode, set the value to true only
    *        for data transfers between the client and server.
+   * @return list of FTP files
    */
-  private void obtainListOfFileInformation(final String hostname, int port, final String directory,
-      final String username, final String password, boolean passiveLocalDataConnectionMode) {
+  private List<FTPFile> obtainListOfFileInformation(final String hostname, int port,
+      final Path directory, final String username, final String password,
+      boolean passiveLocalDataConnectionMode) {
     FTPClient ftp = new FTPClient();
     try {
       if (startNewFTPSessioin(ftp, hostname, port, username, password,
           passiveLocalDataConnectionMode)) {
-        listFiles(ftp, directory);
+        return listFiles(ftp, directory);
       }
     } catch (IOException ex) {
       if (portIsNotDefined(port)) {
@@ -47,6 +53,7 @@ public class MyFTPClient {
     } finally {
       closeConnectionIfConnected(ftp);
     }
+    return Collections.emptyList();
   }
 
   private boolean startNewFTPSessioin(final FTPClient ftp, final String hostname, int port,
@@ -61,11 +68,9 @@ public class MyFTPClient {
     }
   }
 
-  private void listFiles(final FTPClient ftp, final String directory) throws IOException {
-    FTPFile[] ftpFiles = ftp.listFiles(directory);
-    Arrays.asList(ftpFiles)
-            .stream()
-            .forEach(file -> System.out.println(String.valueOf(file)));
+  private List<FTPFile> listFiles(final FTPClient ftp, final Path directory) throws IOException {
+    FTPFile[] ftpFiles = ftp.listFiles(directory.toString());
+    return Arrays.asList(ftpFiles);
   }
 
   private boolean connect(final FTPClient ftp, final String hostname) throws IOException {

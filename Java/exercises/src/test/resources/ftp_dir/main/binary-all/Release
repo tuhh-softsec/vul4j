@@ -1,0 +1,7 @@
+Archive: unstable
+Version: 4.0
+Component: main
+Origin: Aleph One Ltd
+Label: armel
+Architecture: all
+Description: Debian armel repository

@@ -1,0 +1,22 @@
+Origin: Aleph One Ltd
+Label: armel
+Suite: unstable-bootstrap
+Codename: sid
+Version: 4.1
+Date: Fri, 05 Jan 2007 17:52:01 +0000
+Architectures: armel all
+Components: main
+Description: Debian armel bootstrap repository
+MD5Sum:
+ dd926b62d05d74958e52c55cc5ff4659 384045 main/binary-armel/Packages
+ a0f27f971ca25526107d4ca60e422824 101184 main/binary-armel/Packages.gz
+ e3d28d2611456e65d16088fbd605b0c7 139 main/binary-armel/Release
+ 73f59b4582709316b7628c771ef300c9 10806 main/debian-installer/binary-armel/Packages
+ ac2ceaceda09af183d87cd5f3143f1d4 3234 main/debian-installer/binary-armel/Packages.gz
+ 589a68e5f8334a402a9ba7cd25596e1c 67064 main/binary-all/Packages
+ 50ca25d518eacb653e003111ba84b4e6 19996 main/binary-all/Packages.gz
+ 16be4a1c79344cda84c66cfc20ebc906 137 main/binary-all/Release
+ d41d8cd98f00b204e9800998ecf8427e 0 main/debian-installer/binary-all/Packages
+ 7029066c27ac6f5ef18d660d5741979a 20 main/debian-installer/binary-all/Packages.gz
+ a5673b6765450df757e4fd7215a6bbab 18117 main/source/Sources.gz
+ 1b3604789d2a4623009661a67e33f9bb 140 main/source/Release
