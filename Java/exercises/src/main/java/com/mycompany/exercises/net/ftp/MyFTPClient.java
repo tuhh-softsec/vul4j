@@ -173,11 +173,16 @@ public class MyFTPClient {
       numberOfBytesReadOrWritten = Files.copy(in, localDestination);
     }
 
-    return fileDownloadedSuccessfully(numberOfBytesReadOrWritten);
+    if (fileDownloadedSuccessfully(numberOfBytesReadOrWritten)) {
+      logFileDownloadedSuccessfully(remoteFileName, localDestination);
+      return true;
+    } else {
+      logFileDownloadFailed(remoteFileName);
+      return false;
+    }
   }
 
-  private boolean fileDownloadedSuccessfully(long numberOfBytesReadOrWritten) {
+  private boolean fileDownloadedSuccessfully(final long numberOfBytesReadOrWritten) {
     return numberOfBytesReadOrWritten > 0;
   }
-
 }

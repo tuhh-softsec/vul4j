@@ -4,7 +4,9 @@
  */
 package com.mycompany.exercises.net.ftp;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 public final class MyFTPClientLogger {
 
@@ -62,5 +64,22 @@ public final class MyFTPClientLogger {
     System.err.println("Failed to close FTP server connectioin.");
     System.err.println("Message: " + ex.getMessage());
   }
+
+  public static void logFileDownloadedSuccessfully(final String remoteFile, final Path localFile) {
+    System.out.println("Downloaded \"" + remoteFile + "\" from FTP server into \"" + localFile
+        + "\".");
+    System.out.println("Size: " + getFileSizeInKilobytes(localFile.toFile()) + "KB.");
+  }
+
+  public static void logFileDownloadFailed(final String remoreFile) {
+    System.err.println("Failed to download \"" + remoreFile + "\" from FTP server.");
+  }
+
+  // TODO to be moved into a new file project
+  private static long getFileSizeInKilobytes(final File file) {
+    long bytes = file.length();
+    return bytes / 1024;
+  }
+
 
 }
