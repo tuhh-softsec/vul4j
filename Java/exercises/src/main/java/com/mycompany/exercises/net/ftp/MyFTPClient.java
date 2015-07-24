@@ -6,6 +6,8 @@ package com.mycompany.exercises.net.ftp;
 
 import static com.mycompany.exercises.net.ftp.MyFTPClientLogger.*;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
@@ -136,6 +138,46 @@ public class MyFTPClient {
 
   private boolean portIsNotDefined(int port) {
     return port == -1;
+  }
+
+  public boolean downloadFile(final FTPConnectionProperties ftpProperties,
+      final String remoteFileName, final Path localDestination) {
+
+    FTPClient ftp = new FTPClient();
+    try {
+      if (startNewFTPSessioin(ftp, ftpProperties.getHostname(), ftpProperties.getPort(),
+          ftpProperties.getUsername(), ftpProperties.getPassword(),
+          ftpProperties.isPassiveLocalDataConnectionMode())) {
+        return downLoadFile(ftp, ftpProperties.getDirectory(), remoteFileName,
+            localDestination.toAbsolutePath());
+      }
+    } catch (IOException ex) {
+      if (portIsNotDefined(ftpProperties.getPort())) {
+        logConnectionError(ftpProperties.getHostname(), ex);
+      } else {
+        logConnectionError(ftpProperties.getHostname(), ftpProperties.getPort(), ex);
+      }
+    } finally {
+      closeConnectionIfConnected(ftp);
+    }
+
+    return false;
+  }
+
+  private boolean downLoadFile(final FTPClient ftp, final Path directory,
+      final String remoteFileName, final Path localDestination) throws IOException {
+    long numberOfBytesReadOrWritten = 0L;
+
+    ftp.changeWorkingDirectory(directory.toString());
+    try (InputStream in = ftp.retrieveFileStream(remoteFileName)) {
+      numberOfBytesReadOrWritten = Files.copy(in, localDestination);
+    }
+
+    return fileDownloadedSuccessfully(numberOfBytesReadOrWritten);
+  }
+
+  private boolean fileDownloadedSuccessfully(long numberOfBytesReadOrWritten) {
+    return numberOfBytesReadOrWritten > 0;
   }
 
 }

@@ -60,8 +60,7 @@
                     </dependency>
                 </dependencies>
                 <configuration>
-                    <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
-                    <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
                     <configLocation>/src/main/resources/checkstyle.xml</configLocation>
                 </configuration>
                 <executions>
