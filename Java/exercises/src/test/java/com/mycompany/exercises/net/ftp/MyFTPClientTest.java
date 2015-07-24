@@ -8,7 +8,7 @@ import java.io.File;
 import java.util.List;
 import org.apache.commons.net.ftp.FTPFile;
 import org.junit.AfterClass;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -25,8 +25,8 @@ public class MyFTPClientTest {
   private MyFTPClient ftpClient;
   private FTPConnectionProperties ftpProperties;
 
-  @Before
-  public void setup() throws Exception {
+  @BeforeClass
+  public static void setUpClass() {
     serverMock = new FtpServerMock(PORT, USERNAME, PASSWORD, new File(FTP_DIRECTORY));
     serverMock.addDirectoryAndAllFilesRecursively(new File(FTP_DIRECTORY));
     serverMock.startServer();
