@@ -45,11 +45,11 @@ public class Messprogramm {
     private static final String CREATE = "{\"baId\":null," +
         "\"datenbasisId\":2,\"gemId\":\"11000000\",\"gueltigBis\":null," +
         "\"gueltigVon\":null,\"intervallOffset\":null,\"letzteAenderung\":" +
-        "1381413048800,\"mediaDesk\":\"D: 50 90 01 06 02 05 00 00 00 00 00 00\"," +
+        "1381413048800,\"mediaDesk\":\"D: 01 01 01 01 01 01 00 00 00 00 00 00\"," +
         "\"mstId\":\"11010\",\"name\":\"Mess1\",\"netzbetreiberId\":\"11\"," +
         "\"ortId\":null,\"probeKommentar\":null,\"probeNehmerId\":null," +
         "\"probenartId\":3,\"probenintervall\":\"M\",\"teilintervallBis\":30," +
-        "\"teilintervallVon\":1,\"test\":false,\"umwId\":\"N81\"}";
+        "\"teilintervallVon\":1,\"test\":false,\"umwId\":\"N11\"}";
 
 
     private List<Protocol> protocol;

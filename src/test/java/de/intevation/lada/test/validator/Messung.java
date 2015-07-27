@@ -25,6 +25,7 @@ public class Messung {
         protocol.add(prot);
         LMessung messung = new LMessung();
         messung.setNebenprobenNr("10R1");
+        messung.setProbeId(4);
         Violation violation = validator.validate(messung);
         if (violation.hasWarnings()) {
             Assert.assertFalse(violation.getWarnings().containsKey("nebenprobenNr"));
@@ -39,6 +40,7 @@ public class Messung {
         prot.setPassed(false);
         protocol.add(prot);
         LMessung messung = new LMessung();
+        messung.setProbeId(4);
         Violation violation = validator.validate(messung);
         Assert.assertTrue(violation.hasWarnings());
         Assert.assertTrue(violation.getWarnings().containsKey("nebenprobenNr"));
@@ -54,6 +56,7 @@ public class Messung {
         protocol.add(prot);
         LMessung messung = new LMessung();
         messung.setNebenprobenNr("");
+        messung.setProbeId(4);
         Violation violation = validator.validate(messung);
         Assert.assertTrue(violation.hasWarnings());
         Assert.assertTrue(violation.getWarnings().containsKey("nebenprobenNr"));
@@ -136,6 +139,7 @@ public class Messung {
         protocol.add(prot);
         LMessung messung = new LMessung();
         messung.setId(1);
+        messung.setProbeId(4);
         Violation violation = validator.validate(messung);
         if (violation.hasWarnings()) {
             Assert.assertFalse(violation.getWarnings().containsKey("messwert"));
@@ -151,6 +155,7 @@ public class Messung {
         protocol.add(prot);
         LMessung messung = new LMessung();
         messung.setId(990);
+        messung.setProbeId(4);
         Violation violation = validator.validate(messung);
         Assert.assertTrue(violation.hasWarnings());
         Assert.assertTrue(violation.getWarnings().containsKey("messwert"));
