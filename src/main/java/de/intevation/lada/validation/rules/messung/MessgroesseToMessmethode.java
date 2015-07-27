@@ -65,8 +65,8 @@ public class MessgroesseToMessmethode implements Rule {
             (List<MmtMessgroesse>)results.getData();
         List<MmtMessgroesse> found = new ArrayList<MmtMessgroesse>();
         for (MmtMessgroesse mg: messgroessen) {
-            if (mmt.equals(mg.getMmtMessgroessePK().getMmtId())) {
-                logger.debug("found: " + mg.getMmtMessgroessePK().getMmtId() + " for " + mmt);
+            if (mg.getMmtMessgroessePK() != null &&
+                mg.getMmtMessgroessePK().getMmtId().equals(mmt)) {
                 found.add(mg);
             }
         }
