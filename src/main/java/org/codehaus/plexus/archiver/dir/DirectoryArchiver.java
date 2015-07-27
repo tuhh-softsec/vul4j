@@ -168,7 +168,7 @@ public class DirectoryArchiver
 	    {
 		// compute relative path
 		String relative = outFile.getAbsolutePath().replaceFirst(getDestFile().getAbsolutePath(), ".");
-		getLogger().info( "Set chmod " + Integer.toOctalString( 0x0fff & entry.getMode() ) + " for " + relative );
+		getLogger().info( "Set chmod " + Integer.toString( UnixStat.PERM_MASK & entry.getMode() ) + " for " + relative );
 		// call chmod (java or system)		
 		ArchiveEntryUtils.chmod( outFile, entry.getMode(), getLogger(), isUseJvmChmod() );
 	    }
