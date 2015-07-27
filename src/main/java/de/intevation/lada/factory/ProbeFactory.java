@@ -346,11 +346,11 @@ public class ProbeFactory {
      * @return The updated probe object.
      */
     public LProbe findMediaDesk(LProbe probe) {
-        probe.setMedia(repository
-            .queryFromString("SELECT get_media_from_media_desk( :mediaDesk );", "stamm")
+        Object result = repository.queryFromString(
+                "SELECT get_media_from_media_desk( :mediaDesk );", "stamm")
             .setParameter("mediaDesk", probe.getMediaDesk())
-            .getSingleResult()
-            .toString());
+            .getSingleResult();
+        probe.setMedia(result != null ? result.toString() : "");
         return probe;
     }
 
