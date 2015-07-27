@@ -22,10 +22,13 @@ import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.ResourceIterator;
 import org.codehaus.plexus.archiver.util.ArchiveEntryUtils;
 import org.codehaus.plexus.archiver.util.ResourceUtils;
+import org.codehaus.plexus.archiver.UnixStat;
 import org.codehaus.plexus.components.io.attributes.SymlinkUtils;
 import org.codehaus.plexus.components.io.functions.SymlinkDestinationSupplier;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.io.File;
 import java.io.IOException;
 
@@ -141,11 +144,6 @@ public class DirectoryArchiver
                 }
             }
             ResourceUtils.copyFile( entry.getInputStream(), outFile );
-
-            if ( !isIgnorePermissions() )
-            {
-                ArchiveEntryUtils.chmod( outFile, entry.getMode(), getLogger(), isUseJvmChmod() );
-            }
         }
         else
         { // file is a directory
@@ -165,6 +163,15 @@ public class DirectoryArchiver
                 throw new ArchiverException( "Unable to create directory or parent directory of " + outFile );
             }
         }
+
+	    if ( !isIgnorePermissions() )
+	    {
+		// compute relative path
+		String relative = outFile.getAbsolutePath().replaceFirst(getDestFile().getAbsolutePath(), ".");
+		getLogger().info( "Set chmod " + Integer.toOctalString( 0x0fff & entry.getMode() ) + " for " + relative );
+		// call chmod (java or system)		
+		ArchiveEntryUtils.chmod( outFile, entry.getMode(), getLogger(), isUseJvmChmod() );
+	    }
 
         outFile.setLastModified( inLastModified == PlexusIoResource.UNKNOWN_MODIFICATION_DATE ? System.currentTimeMillis()
                         : inLastModified );
