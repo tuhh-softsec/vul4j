@@ -12,6 +12,11 @@ Plexus Components - Version plexus-io-2.6.1
 
 Performance improvement affecting mac/linux users with lots of small files in large archives.
 
+Plexus Archiver - 3.0.2
+------
+
+DirectoryArhiver now respects filemode for directories. Thanks for Olivier Fayau for patch.
+
 
 Plexus Archiver - Version 3.0.1
 ------
