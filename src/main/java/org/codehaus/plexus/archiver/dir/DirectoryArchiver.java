@@ -20,15 +20,13 @@ import org.codehaus.plexus.archiver.AbstractArchiver;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.ResourceIterator;
+import org.codehaus.plexus.archiver.UnixStat;
 import org.codehaus.plexus.archiver.util.ArchiveEntryUtils;
 import org.codehaus.plexus.archiver.util.ResourceUtils;
-import org.codehaus.plexus.archiver.UnixStat;
 import org.codehaus.plexus.components.io.attributes.SymlinkUtils;
 import org.codehaus.plexus.components.io.functions.SymlinkDestinationSupplier;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.io.File;
 import java.io.IOException;
 
@@ -85,12 +83,15 @@ public class DirectoryArchiver
                 final String destDir = destDirectory.getCanonicalPath();
                 fileName = destDir + File.separator + fileName;
                 PlexusIoResource resource = f.getResource();
-                if (resource instanceof SymlinkDestinationSupplier){
-                    String dest = ((SymlinkDestinationSupplier)resource).getSymlinkDestination();
-                    File target = new File(dest);
-                    SymlinkUtils.createSymbolicLink(new File(fileName), target);
-                } else {
-                    copyFile(f, fileName);
+                if ( resource instanceof SymlinkDestinationSupplier )
+                {
+                    String dest = ( (SymlinkDestinationSupplier) resource ).getSymlinkDestination();
+                    File target = new File( dest );
+                    SymlinkUtils.createSymbolicLink( new File( fileName ), target );
+                }
+                else
+                {
+                    copyFile( f, fileName );
                 }
             }
         }
@@ -103,15 +104,12 @@ public class DirectoryArchiver
 
     /**
      * Copies the specified file to the specified path, creating any ancestor directory structure as necessary.
-     * 
-     * @param file
-     *            The file to copy (IOException will be thrown if this does not exist)
-     * @param vPath
-     *            The fully qualified path to copy the file to.
-     * @throws ArchiverException
-     *             If there is a problem creating the directory structure
-     * @throws IOException
-     *             If there is a problem copying the file
+     *
+     * @param entry the entry top copy
+     *              The file to copy (IOException will be thrown if this does not exist)
+     * @param vPath The fully qualified path to copy the file to.
+     * @throws ArchiverException If there is a problem creating the directory structure
+     * @throws IOException       If there is a problem copying the file
      */
     protected void copyFile( final ArchiveEntry entry, final String vPath )
         throws ArchiverException, IOException
@@ -153,8 +151,8 @@ public class DirectoryArchiver
                 {
                     // should we just delete the file and replace it with a directory?
                     // throw an exception, let the user delete the file manually.
-                    throw new ArchiverException( "Expected directory and found file at copy destination of "
-                                    + in.getName() + " to " + outFile );
+                    throw new ArchiverException(
+                        "Expected directory and found file at copy destination of " + in.getName() + " to " + outFile );
                 }
             }
             else if ( !outFile.mkdirs() )
@@ -164,17 +162,14 @@ public class DirectoryArchiver
             }
         }
 
-	    if ( !isIgnorePermissions() )
-	    {
-		// compute relative path
-		String relative = outFile.getAbsolutePath().replaceFirst(getDestFile().getAbsolutePath(), ".");
-		getLogger().info( "Set chmod " + Integer.toString( UnixStat.PERM_MASK & entry.getMode() ) + " for " + relative );
-		// call chmod (java or system)		
-		ArchiveEntryUtils.chmod( outFile, entry.getMode(), getLogger(), isUseJvmChmod() );
-	    }
+        if ( !isIgnorePermissions() )
+        {
+            ArchiveEntryUtils.chmod( outFile, entry.getMode(), getLogger(), isUseJvmChmod() );
+        }
 
-        outFile.setLastModified( inLastModified == PlexusIoResource.UNKNOWN_MODIFICATION_DATE ? System.currentTimeMillis()
-                        : inLastModified );
+        outFile.setLastModified( inLastModified == PlexusIoResource.UNKNOWN_MODIFICATION_DATE
+                                     ? System.currentTimeMillis()
+                                     : inLastModified );
     }
 
     protected void cleanUp()
