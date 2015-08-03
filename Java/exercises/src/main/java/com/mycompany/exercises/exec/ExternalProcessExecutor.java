@@ -34,13 +34,13 @@ public final class ExternalProcessExecutor {
     }
 
     try {
-      System.out.println("Preparing script job...");
+      System.out.println("Preparing script job: " + parameters.toString());
       ScriptResultHandler scriptResult = execute(parameters);
       scriptResult.waitFor();
-      System.out.println("The script job has finished.");
       scriptExecuted = true;
+      System.out.println("The script job has finished.");
     } catch (IOException | InterruptedException ex) {
-      logException(ex, parameters.getScriptFileLocation());
+      logException(ex, parameters);
     }
 
     return scriptExecuted;
@@ -107,8 +107,8 @@ public final class ExternalProcessExecutor {
     return this.executeOutput;
   }
 
-  private void logException(final Exception ex, final Path path) {
-    System.err.println("Executing of the following script failed: " + path.toAbsolutePath());
+  private void logException(final Exception ex, final ScriptParameters parameters) {
+    System.err.println("Executing of the following script failed:" + parameters.toString());
     System.err.println("Message: " + ex.getMessage());
   }
 
