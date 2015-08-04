@@ -37,6 +37,9 @@ public class MyDatabase {
   private final String password;
 
   /**
+   * Always start derby database first in order to connect: NetBeans -> Services -> Databases ->
+   * right click jdbc:derby://localhost:1527/sample, Connect...
+   * 
    * Uses Database Connection Pool internally.
    * 
    * @param parameters
@@ -71,9 +74,6 @@ public class MyDatabase {
     driver.registerPool(CONNECTION_POOL_NAME, connectionPool);
   }
 
-  /**
-   * Always start derby database first in order to connect.
-   */
   public void submitQueriesAndReadResults() {
     String query = "SELECT * FROM Customer";
     try (Connection conn = DriverManager.getConnection(CONNECTION_POOL_URL);
@@ -92,9 +92,6 @@ public class MyDatabase {
     }
   }
 
-  /**
-   * Always start derby database first in order to connect.
-   */
   public void constructAndUseStatement() {
     try (Connection conn = DriverManager.getConnection(CONNECTION_POOL_URL);
         Statement stmt = conn.createStatement()) {
@@ -129,9 +126,6 @@ public class MyDatabase {
     }
   }
 
-  /**
-   * Always start derby database first in order to connect.
-   */
   public void getInformationAboutResultSet() {
     String query = "SELECT Customer_ID FROM Customer";
     try (Connection conn = DriverManager.getConnection(CONNECTION_POOL_URL);
@@ -151,9 +145,6 @@ public class MyDatabase {
     }
   }
 
-  /**
-   * Always start derby database first in order to connect.
-   */
   public void printReport() {
     String query = "SELECT Customer_ID, NAME, CITY FROM Customer";
     try (Connection conn = DriverManager.getConnection(CONNECTION_POOL_URL);
@@ -202,9 +193,6 @@ public class MyDatabase {
     return String.format("%1$-" + padSpace + "s", s);
   }
 
-  /**
-   * Always start derby database first in order to connect.
-   */
   public void moveAroundResultSets() {
     try (Connection conn = DriverManager.getConnection(CONNECTION_POOL_URL)) {
       DatabaseMetaData dbmd = conn.getMetaData();
