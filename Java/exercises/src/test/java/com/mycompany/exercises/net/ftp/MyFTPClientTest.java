@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import static org.apache.commons.io.FileUtils.contentEquals;
 import org.apache.commons.net.ftp.FTPFile;
@@ -50,11 +52,12 @@ public class MyFTPClientTest {
   public void testObtainListOfFileInformationAnonymous() {
     List<FTPFile> ftpFiles = ftpClient.obtainListOfFileInformationAnonymous(ftpProperties);
 
+    String currentDate = getCurrentDate();
     assertEquals(2, ftpFiles.size());
-    assertEquals("drwxrwxrwx  1 none     none                   0 Jul 24  2015 main",
+    assertEquals("drwxrwxrwx  1 none     none                   0 " + currentDate + " main",
         ftpFiles.get(0).toString());
-    assertEquals("-rwxrwxrwx  1 none     none                1072 Jul 24  2015 Release", ftpFiles
-        .get(1).toString());
+    assertEquals("-rwxrwxrwx  1 none     none                1072 " + currentDate + " Release",
+        ftpFiles.get(1).toString());
   }
 
   @Test
@@ -67,6 +70,12 @@ public class MyFTPClientTest {
     assertTrue(contentEquals(remoteFile.toFile(), localFile.toFile()));
 
     Files.delete(localFile);
+  }
+
+  private String getCurrentDate() {
+    LocalDate date = LocalDate.now();
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd  yyyy");
+    return date.format(formatter);
   }
 
 }
