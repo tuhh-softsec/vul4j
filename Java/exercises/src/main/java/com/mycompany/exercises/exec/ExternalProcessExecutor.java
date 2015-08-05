@@ -4,6 +4,7 @@
  */
 package com.mycompany.exercises.exec;
 
+import com.mycompany.exercises.io.FileAccessibilityUtils;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;

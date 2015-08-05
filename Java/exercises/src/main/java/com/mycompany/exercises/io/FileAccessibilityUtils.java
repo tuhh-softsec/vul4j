@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Company.
  * All rights reserved.
  */
-package com.mycompany.exercises.exec;
+package com.mycompany.exercises.io;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
