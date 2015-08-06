@@ -503,17 +503,6 @@ public class ProbeService {
         ) {
             return new Response(false, 699, null);
         }
-        /* Create a query and request the probetranslation object for the
-         * probe*/
-        QueryBuilder<ProbeTranslation> builder =
-            new QueryBuilder<ProbeTranslation>(
-                defaultRepo.entityManager("land"), ProbeTranslation.class);
-        builder.and("probe", probeObj.getId());
-        Response probeTrans = defaultRepo.filter(builder.getQuery(), "land");
-        @SuppressWarnings("unchecked")
-        ProbeTranslation probeTransObj = ((List<ProbeTranslation>)probeTrans.getData()).get(0);
-        /* Delete the probe translation object*/
-        defaultRepo.delete(probeTransObj, "land");
         /* Delete the probe object*/
         try {
             Response response = defaultRepo.delete(probeObj, "land");
@@ -521,7 +510,6 @@ public class ProbeService {
         }
         catch(IllegalArgumentException | EJBTransactionRolledbackException |
             TransactionRequiredException e) {
-            defaultRepo.update(probeTransObj, "land");
             return new Response(false, 600, "");
         }
     }
