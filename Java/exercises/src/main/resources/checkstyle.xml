@@ -63,7 +63,9 @@
         <module name="AtclauseOrder"/>
         <module name="AvoidEscapedUnicodeCharacters"/>
         <module name="AvoidNestedBlocks"/>
-        <module name="AvoidStarImport"/>
+        <module name="AvoidStarImport">
+            <property name="allowStaticMemberImports" value="true"/>
+        </module>
         <module name="BooleanExpressionComplexity">
             <property name="max" value="4"/>
         </module>

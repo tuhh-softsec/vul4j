@@ -4,12 +4,15 @@
  */
 package com.mycompany.exercises.net.ftp;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 // Builder Pattern
 public final class FTPConnectionProperties {
 
   private final String hostname;
   private final int port;
-  private final String directory;
+  private final Path directory;
   private final String username;
   private final String password;
   private final boolean passiveLocalDataConnectionMode;
@@ -21,7 +24,7 @@ public final class FTPConnectionProperties {
 
     // Optional parameters - initialized to default values
     private int port = -1;
-    private String directory = "/";
+    private Path directory = Paths.get(System.getProperty("user.home"));
     private String username = "anonymous";
     private String password = "anonymous";
     private boolean passiveLocalDataConnectionMode;
@@ -36,7 +39,7 @@ public final class FTPConnectionProperties {
     }
 
     public Builder directory(final String val) {
-      directory = val;
+      directory = Paths.get(val).toAbsolutePath();
       return this;
     }
 
@@ -77,7 +80,7 @@ public final class FTPConnectionProperties {
     return port;
   }
 
-  public String getDirectory() {
+  public Path getDirectory() {
     return directory;
   }
 

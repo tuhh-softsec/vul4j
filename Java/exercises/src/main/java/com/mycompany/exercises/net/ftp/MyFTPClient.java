@@ -4,16 +4,23 @@
  */
 package com.mycompany.exercises.net.ftp;
 
+import static com.mycompany.exercises.net.ftp.MyFTPClientLogger.*;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 
 public class MyFTPClient {
 
-  public void obtainListOfFileInformationAnonymous(final FTPConnectionProperties ftpProperties) {
-    obtainListOfFileInformation(ftpProperties.getHostname(), ftpProperties.getPort(),
+  public List<FTPFile> obtainListOfFileInformationAnonymous(
+      final FTPConnectionProperties ftpProperties) {
+    return obtainListOfFileInformation(ftpProperties.getHostname(), ftpProperties.getPort(),
         ftpProperties.getDirectory(), ftpProperties.getUsername(), ftpProperties.getPassword(),
         ftpProperties.isPassiveLocalDataConnectionMode());
   }
@@ -28,20 +35,27 @@ public class MyFTPClient {
    * @param password The password to use
    * @param passiveLocalDataConnectionMode Current data connection mode, set the value to true only
    *        for data transfers between the client and server.
+   * @return list of FTP files
    */
-  private void obtainListOfFileInformation(final String hostname, int port, final String directory,
-      final String username, final String password, boolean passiveLocalDataConnectionMode) {
+  private List<FTPFile> obtainListOfFileInformation(final String hostname, int port,
+      final Path directory, final String username, final String password,
+      boolean passiveLocalDataConnectionMode) {
     FTPClient ftp = new FTPClient();
     try {
       if (startNewFTPSessioin(ftp, hostname, port, username, password,
           passiveLocalDataConnectionMode)) {
-        listFiles(ftp, directory);
+        return listFiles(ftp, directory);
       }
     } catch (IOException ex) {
-      logConnectionError(hostname, port, ex);
+      if (portIsNotDefined(port)) {
+        logConnectionError(hostname, ex);
+      } else {
+        logConnectionError(hostname, port, ex);
+      }
     } finally {
       closeConnectionIfConnected(ftp);
     }
+    return Collections.emptyList();
   }
 
   private boolean startNewFTPSessioin(final FTPClient ftp, final String hostname, int port,
@@ -56,11 +70,9 @@ public class MyFTPClient {
     }
   }
 
-  private void listFiles(final FTPClient ftp, final String directory) throws IOException {
-    FTPFile[] ftpFiles = ftp.listFiles(directory);
-    Arrays.asList(ftpFiles)
-            .stream()
-            .forEach(file -> System.out.println(String.valueOf(file)));
+  private List<FTPFile> listFiles(final FTPClient ftp, final Path directory) throws IOException {
+    FTPFile[] ftpFiles = ftp.listFiles(directory.toString());
+    return Arrays.asList(ftpFiles);
   }
 
   private boolean connect(final FTPClient ftp, final String hostname) throws IOException {
@@ -119,66 +131,58 @@ public class MyFTPClient {
         ftp.logout();
         ftp.disconnect();
       } catch (IOException ex) {
-        System.err.println("Failed to close FTP server connectioin.");
-        System.err.println("Message: " + ex.getMessage());
+        logCloseConnectionFailed(ex);
       }
     }
-  }
-
-  private void logConnectionRefused(final String hostname, int port, final String reply) {
-    System.err.println("FTP server " + hostname + ":" + port + " refused connection.");
-    System.err.println("FTP server response: " + reply);
-  }
-
-  private void logConnectionRefused(final String hostname, final String reply) {
-    System.err.println("FTP server " + hostname + " refused connection.");
-    System.err.println("FTP server response: " + reply);
-  }
-
-  private void logConnectionSuccessful(final String hostname, int port, final String reply) {
-    System.out.println("Connected to FTP server " + hostname + ":" + port + ".");
-    System.out.print("FTP server response: " + reply);
-  }
-
-  private void logConnectionSuccessful(final String hostname, final String reply) {
-    System.out.println("Connected to FTP server " + hostname + ".");
-    System.out.print("FTP server response: " + reply);
-  }
-
-  private void logConnectionError(final String hostname, int port, final IOException ex) {
-    if (portIsNotDefined(port)) {
-      logConnectionError(hostname, ex);
-    } else {
-      System.err.println("Error while getting FTP files from " + hostname + ":" + port + ".");
-      System.err.println("------ IOException ------");
-      System.err.println("Message: " + ex.getMessage());
-    }
-  }
-
-  private void logConnectionError(final String hostname, final IOException ex) {
-    System.err.println("Error while getting FTP files from " + hostname);
-    System.err.println("------ IOException ------");
-    System.err.println("Message: " + ex.getMessage());
-  }
-
-  private void logLoginRefused(final String username, final String reply) {
-    System.err.println("Login to FTP server using the provided username " + username
-        + " and password unsuccessful.");
-    System.err.println("FTP server response: " + reply);
-  }
-
-  private void logLoginSuccessful(final String username, final String reply) {
-    System.out.println("User " + username + " logged to FTP server.");
-    System.out.print("FTP server response: " + reply);
-  }
-
-  private void logEnterPassiveLocalDataConnectionModeSuccessful() {
-    System.out
-        .println("Set the current data connection mode to PASSIVE_LOCAL_DATA_CONNECTION_MODE.");
   }
 
   private boolean portIsNotDefined(int port) {
     return port == -1;
   }
 
+  public boolean downloadFile(final FTPConnectionProperties ftpProperties,
+      final String remoteFileName, final Path localDestination) {
+
+    FTPClient ftp = new FTPClient();
+    try {
+      if (startNewFTPSessioin(ftp, ftpProperties.getHostname(), ftpProperties.getPort(),
+          ftpProperties.getUsername(), ftpProperties.getPassword(),
+          ftpProperties.isPassiveLocalDataConnectionMode())) {
+        return downLoadFile(ftp, ftpProperties.getDirectory(), remoteFileName,
+            localDestination.toAbsolutePath());
+      }
+    } catch (IOException ex) {
+      if (portIsNotDefined(ftpProperties.getPort())) {
+        logConnectionError(ftpProperties.getHostname(), ex);
+      } else {
+        logConnectionError(ftpProperties.getHostname(), ftpProperties.getPort(), ex);
+      }
+    } finally {
+      closeConnectionIfConnected(ftp);
+    }
+
+    return false;
+  }
+
+  private boolean downLoadFile(final FTPClient ftp, final Path directory,
+      final String remoteFileName, final Path localDestination) throws IOException {
+    long numberOfBytesReadOrWritten = 0L;
+
+    ftp.changeWorkingDirectory(directory.toString());
+    try (InputStream in = ftp.retrieveFileStream(remoteFileName)) {
+      numberOfBytesReadOrWritten = Files.copy(in, localDestination);
+    }
+
+    if (fileDownloadedSuccessfully(numberOfBytesReadOrWritten)) {
+      logFileDownloadedSuccessfully(remoteFileName, localDestination);
+      return true;
+    } else {
+      logFileDownloadFailed(remoteFileName);
+      return false;
+    }
+  }
+
+  private boolean fileDownloadedSuccessfully(final long numberOfBytesReadOrWritten) {
+    return numberOfBytesReadOrWritten > 0;
+  }
 }

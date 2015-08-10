@@ -28,12 +28,27 @@ import org.apache.commons.pool2.impl.GenericObjectPool;
  */
 public class MyDatabase {
 
-  // Local Apache Derby database available in NetBeans.
-  private final String url = "jdbc:derby://localhost:1527/sample";
-  private final String username = "app";
-  private final String password = "app";
+  private static final String CONNECTION_POOL_NAME = "pool1";
+  private static final String CONNECTION_POOL_URL = "jdbc:apache:commons:dbcp:"
+      + CONNECTION_POOL_NAME;
 
-  public MyDatabase() {
+  private final String url;
+  private final String username;
+  private final String password;
+
+  /**
+   * Always start derby database first in order to connect: NetBeans -> Services -> Databases ->
+   * right click jdbc:derby://localhost:1527/sample, Connect...
+   * 
+   * Uses Database Connection Pool internally.
+   * 
+   * @param parameters
+   */
+  public MyDatabase(final DatabaseParameters parameters) {
+    this.url = parameters.getURL();
+    this.username = parameters.getUsername();
+    this.password = parameters.getPassword();
+
     createPoolingDriver();
   }
 
@@ -56,15 +71,12 @@ public class MyDatabase {
     ObjectPool connectionPool = new GenericObjectPool(poolableConnectionFactory);
     poolableConnectionFactory.setPool(connectionPool);
     PoolingDriver driver = new PoolingDriver();
-    driver.registerPool("example", connectionPool);
+    driver.registerPool(CONNECTION_POOL_NAME, connectionPool);
   }
 
-  /**
-   * Always start derby database first in order to connect.
-   */
   public void submitQueriesAndReadResults() {
     String query = "SELECT * FROM Customer";
-    try (Connection conn = DriverManager.getConnection("jdbc:apache:commons:dbcp:example");
+    try (Connection conn = DriverManager.getConnection(CONNECTION_POOL_URL);
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery(query)) {
       // Process Results
@@ -80,11 +92,8 @@ public class MyDatabase {
     }
   }
 
-  /**
-   * Always start derby database first in order to connect.
-   */
   public void constructAndUseStatement() {
-    try (Connection conn = DriverManager.getConnection("jdbc:apache:commons:dbcp:example");
+    try (Connection conn = DriverManager.getConnection(CONNECTION_POOL_URL);
         Statement stmt = conn.createStatement()) {
       ResultSet rs;
       int numRows;
@@ -117,12 +126,9 @@ public class MyDatabase {
     }
   }
 
-  /**
-   * Always start derby database first in order to connect.
-   */
   public void getInformationAboutResultSet() {
     String query = "SELECT Customer_ID FROM Customer";
-    try (Connection conn = DriverManager.getConnection("jdbc:apache:commons:dbcp:example");
+    try (Connection conn = DriverManager.getConnection(CONNECTION_POOL_URL);
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery(query)) {
       ResultSetMetaData rsmd = rs.getMetaData();
@@ -139,12 +145,9 @@ public class MyDatabase {
     }
   }
 
-  /**
-   * Always start derby database first in order to connect.
-   */
   public void printReport() {
     String query = "SELECT Customer_ID, NAME, CITY FROM Customer";
-    try (Connection conn = DriverManager.getConnection("jdbc:apache:commons:dbcp:example");
+    try (Connection conn = DriverManager.getConnection(CONNECTION_POOL_URL);
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery(query)) {
       ResultSetMetaData rsmd = rs.getMetaData();
@@ -190,11 +193,8 @@ public class MyDatabase {
     return String.format("%1$-" + padSpace + "s", s);
   }
 
-  /**
-   * Always start derby database first in order to connect.
-   */
   public void moveAroundResultSets() {
-    try (Connection conn = DriverManager.getConnection("jdbc:apache:commons:dbcp:example")) {
+    try (Connection conn = DriverManager.getConnection(CONNECTION_POOL_URL)) {
       DatabaseMetaData dbmd = conn.getMetaData();
       if (dbmd.supportsResultSetType(ResultSet.TYPE_FORWARD_ONLY)) {
         System.out.print("Supports TYPE_FORWARD_ONLY");
@@ -226,7 +226,7 @@ public class MyDatabase {
 
   public void demonstrateGetRowCount() {
     String query = "SELECT Customer_ID, NAME, CITY FROM Customer";
-    try (Connection conn = DriverManager.getConnection("jdbc:apache:commons:dbcp:example");
+    try (Connection conn = DriverManager.getConnection(CONNECTION_POOL_URL);
         Statement stmt =
             conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
         ResultSet rs = stmt.executeQuery(query)) {
@@ -243,6 +243,7 @@ public class MyDatabase {
    *
    * @param rs ResulSet Note, this method should only be called on ResultSet objects that are
    *        scrollable (type TYPE_SCROLL_INSENSITIVE).
+   * @throws java.sql.SQLException
    */
   public static int getRowCount(final ResultSet rs) throws SQLException {
     int rowCount = -1;
@@ -297,7 +298,7 @@ public class MyDatabase {
   public void updateResultSet() {
     int newCreditLimit = 20_000; // SUPPRESS CHECKSTYLE MagicNumber
     String query = "SELECT CREDIT_LIMIT FROM Customer WHERE CITY = 'New York'";
-    try (Connection conn = DriverManager.getConnection("jdbc:apache:commons:dbcp:example");
+    try (Connection conn = DriverManager.getConnection(CONNECTION_POOL_URL);
         Statement stmt =
             conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
         ResultSet rs = stmt.executeQuery(query)) {
@@ -324,7 +325,7 @@ public class MyDatabase {
    */
   public void insertNewRow() {
     String query = "SELECT Customer_ID, NAME, CITY FROM Customer";
-    try (Connection conn = DriverManager.getConnection("jdbc:apache:commons:dbcp:example");
+    try (Connection conn = DriverManager.getConnection(CONNECTION_POOL_URL);
         Statement stmt =
             conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
         ResultSet rs = stmt.executeQuery(query)) {
@@ -346,7 +347,7 @@ public class MyDatabase {
   }
 
   public void getInformationAboutDatabase() {
-    try (Connection conn = DriverManager.getConnection("jdbc:apache:commons:dbcp:example")) {
+    try (Connection conn = DriverManager.getConnection(CONNECTION_POOL_URL)) {
       DatabaseMetaData dbmd = conn.getMetaData();
       getColumns(dbmd);
       getProcedures(dbmd);
@@ -394,7 +395,7 @@ public class MyDatabase {
 
   public void usePreparedStatement() {
     String pQuery = "SELECT * FROM Customer WHERE City LIKE ?";
-    try (Connection conn = DriverManager.getConnection("jdbc:apache:commons:dbcp:example");
+    try (Connection conn = DriverManager.getConnection(CONNECTION_POOL_URL);
         PreparedStatement pstmt = conn.prepareStatement(pQuery)) {
       // Substitute this String for the first parameter (?)
       pstmt.setString(1, "%New York%");
@@ -420,7 +421,7 @@ public class MyDatabase {
   }
 
   public void demonstrateTransaction() {
-    try (Connection conn = DriverManager.getConnection("jdbc:apache:commons:dbcp:example")) {
+    try (Connection conn = DriverManager.getConnection(CONNECTION_POOL_URL)) {
       conn.setAutoCommit(false);
       Statement stmt = conn.createStatement();
       try {
@@ -433,7 +434,6 @@ public class MyDatabase {
         // Rollback the entire transaction if an exception thrown
         conn.rollback();
         throw new SQLException("Failed to insert three new records in DISCOUNT_CODE.", ex);
-
       }
     } catch (SQLException ex) {
       logSQLException(ex);
@@ -441,7 +441,7 @@ public class MyDatabase {
   }
 
   public void demonstrateTransactionUsingSavepoints() {
-    try (Connection conn = DriverManager.getConnection("jdbc:apache:commons:dbcp:example")) {
+    try (Connection conn = DriverManager.getConnection(CONNECTION_POOL_URL)) {
       conn.setAutoCommit(false);
       Statement stmt = conn.createStatement();
       String query1 = "INSERT INTO Discount_Code VALUES ('O', 1.00)";
