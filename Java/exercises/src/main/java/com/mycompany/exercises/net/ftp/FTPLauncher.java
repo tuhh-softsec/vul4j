@@ -10,8 +10,8 @@ public final class FTPLauncher {
 
   public static void main(final String[] args) {
     FTPConnectionProperties ftpProperties =
-        new FTPConnectionProperties.Builder("ftp.uk.debian.org").directory(
-            "debian-armel/bootstrap/dists/sid/").build();
+        new FTPConnectionProperties.Builder("ftp.gnu.org").directory(
+            "third-party").build();
     MyFTPClient ftpClient = new MyFTPClient();
 
     ftpClient.obtainListOfFileInformationAnonymous(ftpProperties).stream()
