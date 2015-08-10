@@ -4,7 +4,6 @@
  */
 package com.mycompany.exercises.net.ftp;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -40,7 +39,7 @@ public final class FTPConnectionProperties {
     }
 
     public Builder directory(final String val) {
-      directory = Paths.get(File.separator + val).toAbsolutePath();
+      directory = Paths.get(val).toAbsolutePath();
       return this;
     }
 

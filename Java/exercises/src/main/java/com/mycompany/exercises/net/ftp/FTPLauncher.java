@@ -11,7 +11,7 @@ public final class FTPLauncher {
   public static void main(final String[] args) {
     FTPConnectionProperties ftpProperties =
         new FTPConnectionProperties.Builder("ftp.gnu.org").directory(
-            "third-party").build();
+            "/third-party").build();
     MyFTPClient ftpClient = new MyFTPClient();
 
     ftpClient.obtainListOfFileInformationAnonymous(ftpProperties).stream()
