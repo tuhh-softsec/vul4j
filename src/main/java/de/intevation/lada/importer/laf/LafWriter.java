@@ -50,7 +50,7 @@ public class LafWriter {
      * The authorization module.
      */
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.OPEN_ID)
+    @AuthorizationConfig(type=AuthorizationType.HEADER)
     private Authorization authorization;
 
     /**

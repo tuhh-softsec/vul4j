@@ -108,7 +108,7 @@ public class MessungService {
      * The authorization module.
      */
     @Inject
-    @AuthorizationConfig(type=AuthorizationType.OPEN_ID)
+    @AuthorizationConfig(type=AuthorizationType.HEADER)
     private Authorization authorization;
 
     @Inject
