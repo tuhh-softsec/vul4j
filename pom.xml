@@ -6,7 +6,7 @@
     <name>Lada Server</name>
 
     <groupId>de.intevation</groupId>
-    <artifactId>lada-server</artifactId>
+    <artifactId>lada-server-dev</artifactId>
     <packaging>war</packaging>
     <parent>
         <groupId>org.jboss</groupId>
@@ -68,6 +68,11 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
             <version>2.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.opensaml</groupId>
+            <artifactId>opensaml</artifactId>
+            <version>2.6.4</version>
         </dependency>
 
         <!-- Hibernate -->
@@ -159,100 +164,39 @@
                          </configuration>
                     </plugin>
                     <plugin>
-						<artifactId>maven-compiler-plugin</artifactId>
-						<version>3.1</version>
-						<executions>
-							<execution>
-								<id>default-testCompile</id>
-								<phase>test-compile</phase>
-								<goals>
-									<goal>testCompile</goal>
-								</goals>
-								<configuration>
-									<excludes>
-										<exclude>**/auth/TestAuthorization.java</exclude>
-									</excludes>
-								</configuration>
-							</execution>
-							<execution>
-								<id>default-compile</id>
-								<phase>compile</phase>
-								<goals>
-									<goal>compile</goal>
-								</goals>
-								<configuration>
-									<excludes>
-										<exclude>**/auth/TestAuthorization.java</exclude>
-									</excludes>
-								</configuration>
-							</execution>
-						</executions>
-						<configuration>
-							<showDeprecation>true</showDeprecation>
-							<showWarnings>true</showWarnings>
-							<compilerArguments>
-								<source>1.7</source>
-								<target>1.7</target>
-							</compilerArguments>
-						</configuration>
-					</plugin>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>3.1</version>
+                        <configuration>
+                            <showDeprecation>true</showDeprecation>
+                            <showWarnings>true</showWarnings>
+                            <compilerArguments>
+                                <source>1.7</source>
+                                <target>1.7</target>
+                            </compilerArguments>
+                        </configuration>
+                    </plugin>
                 </plugins>
             </build>
-            <dependencies>
-            	<dependency>
-            		<groupId>org.openid4java</groupId>
-            		<artifactId>openid4java</artifactId>
-            		<version>1.0.0</version>
-        		</dependency>
-        	</dependencies>
         </profile>
 
         <profile>
             <id>remote-test</id>
             <build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-compiler-plugin</artifactId>
-						<version>3.1</version>
-						<executions>
-							<execution>
-								<id>default-testCompile</id>
-								<phase>test-compile</phase>
-								<goals>
-									<goal>testCompile</goal>
-								</goals>
-								<configuration>
-									<excludes>
-										<exclude>**/auth/OpenIdAuthorization.java</exclude>
-										<exclude>**/auth/OpenIDFilter.java</exclude>
-									</excludes>
-								</configuration>
-							</execution>
-							<execution>
-								<id>default-compile</id>
-								<phase>compile</phase>
-								<goals>
-									<goal>compile</goal>
-								</goals>
-								<configuration>
-									<excludes>
-										<exclude>**/auth/OpenIdAuthorization.java</exclude>
-										<exclude>**/auth/OpenIDFilter.java</exclude>
-									</excludes>
-								</configuration>
-							</execution>
-						</executions>
-						<configuration>
-							<showDeprecation>true</showDeprecation>
-							<showWarnings>true</showWarnings>
-							<compilerArguments>
-								<source>1.7</source>
-								<target>1.7</target>
-							</compilerArguments>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>3.1</version>
+                        <configuration>
+                            <showDeprecation>true</showDeprecation>
+                            <showWarnings>true</showWarnings>
+                            <compilerArguments>
+                                <source>1.7</source>
+                                <target>1.7</target>
+                            </compilerArguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
             <dependencies>
                 <dependency>
                     <groupId>org.wildfly</groupId>
@@ -280,15 +224,33 @@
             <build>
                 <plugins>
                     <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                         <configuration>
+                             <skip>true</skip>
+                         </configuration>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>3.1</version>
+                        <configuration>
+                            <showDeprecation>true</showDeprecation>
+                            <showWarnings>true</showWarnings>
+                            <compilerArguments>
+                                <source>1.7</source>
+                                <target>1.7</target>
+                            </compilerArguments>
+                        </configuration>
+                    </plugin>
+                    <plugin>
                         <groupId>org.wildfly.plugins</groupId>
                         <artifactId>wildfly-maven-plugin</artifactId>
                         <configuration>
-                            <hostname>eulimene</hostname>
-                            <port>9990</port>
+                            <hostname>localhost</hostname>
+                            <port>19990</port>
                             <username>admin</username>
                             <password>secret</password>
                         </configuration>
-                        <executions>
+                        <!-- <executions>
                             <execution>
                                 <id>deploy-jar</id>
                                 <phase>install</phase>
@@ -296,17 +258,10 @@
                                     <goal>deploy</goal>
                                 </goals>
                             </execution>
-                        </executions>
+                        </executions>-->
                     </plugin>
                 </plugins>
             </build>
-            <dependencies>
-            	<dependency>
-            		<groupId>org.openid4java</groupId>
-            		<artifactId>openid4java</artifactId>
-            		<version>1.0.0</version>
-        		</dependency>
-        	</dependencies>
         </profile>
     </profiles>
 

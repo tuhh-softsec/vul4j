@@ -14,7 +14,7 @@ import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 
-@AuthorizationConfig(type=AuthorizationType.OPEN_ID)
+@AuthorizationConfig(type=AuthorizationType.NONE)
 public class TestAuthorization implements Authorization {
 
     @Override
