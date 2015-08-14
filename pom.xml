@@ -6,7 +6,7 @@
     <name>Lada Server</name>
 
     <groupId>de.intevation</groupId>
-    <artifactId>lada-server-dev</artifactId>
+    <artifactId>lada-server</artifactId>
     <packaging>war</packaging>
     <parent>
         <groupId>org.jboss</groupId>
