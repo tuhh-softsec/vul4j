@@ -227,7 +227,11 @@ public class HeaderAuthorization implements Authorization {
         QueryBuilder<Auth> builder = new QueryBuilder<Auth>(
             repository.entityManager("stamm"),
             Auth.class);
-        builder.andIn("ldapGroup", Arrays.asList(roles.split(",")));
+        roles = roles.replace("[","");
+        roles = roles.replace("]","");
+        roles = roles.replace(" ","");
+        String[] mst = roles.split(",");
+        builder.andIn("ldapGroup", Arrays.asList(mst));
         Response response = repository.filter(builder.getQuery(), "stamm");
         @SuppressWarnings("unchecked")
         List<Auth> auth = (List<Auth>)response.getData();
