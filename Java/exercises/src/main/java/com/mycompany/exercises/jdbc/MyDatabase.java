@@ -4,37 +4,27 @@
  */
 package com.mycompany.exercises.jdbc;
 
+import static com.mycompany.exercises.jdbc.MyDatabaseLogger.*;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.SQLWarning;
 import java.sql.Savepoint;
 import java.sql.Statement;
 import javax.sql.rowset.JdbcRowSet;
 import javax.sql.rowset.RowSetProvider;
-import org.apache.commons.dbcp2.ConnectionFactory;
-import org.apache.commons.dbcp2.DriverManagerConnectionFactory;
-import org.apache.commons.dbcp2.PoolableConnectionFactory;
-import org.apache.commons.dbcp2.PoolingDriver;
-import org.apache.commons.pool2.ObjectPool;
-import org.apache.commons.pool2.impl.GenericObjectPool;
 
 /**
  * From OCA/OCP Java SE7 Programmer 1 & 2 Study Guide, Chapter 15: JDBC.
  */
 public class MyDatabase {
 
-  private static final String CONNECTION_POOL_NAME = "pool1";
-  private static final String CONNECTION_POOL_URL = "jdbc:apache:commons:dbcp:"
-      + CONNECTION_POOL_NAME;
-
   private final String url;
   private final String username;
   private final String password;
+  private final DatabaseConnectionPool pool;
 
   /**
    * Always start derby database first in order to connect: NetBeans -> Services -> Databases ->
@@ -48,35 +38,12 @@ public class MyDatabase {
     this.url = parameters.getURL();
     this.username = parameters.getUsername();
     this.password = parameters.getPassword();
-
-    createPoolingDriver();
-  }
-
-  /**
-   * Creates Database Connection Pool using Apache Commons DBCP.
-   *
-   * This minimizes the number of times you close and re-create Connection objects. Connections in
-   * try-with-resources statements are taken from and returned to the connection pool. When a
-   * connection is returned to the pool, setAutoCommit is set to true.
-   *
-   * Note: DBCP 2 compiles and runs under Java 7 only (JDBC 4.1).
-   */
-  private void createPoolingDriver() {
-    ConnectionFactory connectionFactory =
-        new DriverManagerConnectionFactory(url, username, password);
-    PoolableConnectionFactory poolableConnectionFactory =
-        new PoolableConnectionFactory(connectionFactory, null);
-    // using defaults from GenericObjectPoolConfig (DEFAULT_MAX_IDLE=8, DEFAULT_MAX_TOTAL=8,
-    // DEFAULT_MIN_IDLE=0)
-    ObjectPool connectionPool = new GenericObjectPool(poolableConnectionFactory);
-    poolableConnectionFactory.setPool(connectionPool);
-    PoolingDriver driver = new PoolingDriver();
-    driver.registerPool(CONNECTION_POOL_NAME, connectionPool);
+    this.pool = new DatabaseConnectionPool(parameters);
   }
 
   public void submitQueriesAndReadResults() {
     String query = "SELECT * FROM Customer";
-    try (Connection conn = DriverManager.getConnection(CONNECTION_POOL_URL);
+    try (Connection conn = pool.getDatabaseConnection();
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery(query)) {
       // Process Results
@@ -93,8 +60,8 @@ public class MyDatabase {
   }
 
   public void constructAndUseStatement() {
-    try (Connection conn = DriverManager.getConnection(CONNECTION_POOL_URL);
-        Statement stmt = conn.createStatement()) {
+    try (Connection conn = pool.getDatabaseConnection();
+            Statement stmt = conn.createStatement()) {
       ResultSet rs;
       int numRows;
       boolean status = stmt.execute("SELECT * FROM Customer WHERE NAME LIKE 'B%'"); // True if there
@@ -128,7 +95,7 @@ public class MyDatabase {
 
   public void getInformationAboutResultSet() {
     String query = "SELECT Customer_ID FROM Customer";
-    try (Connection conn = DriverManager.getConnection(CONNECTION_POOL_URL);
+    try (Connection conn = pool.getDatabaseConnection();
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery(query)) {
       ResultSetMetaData rsmd = rs.getMetaData();
@@ -147,7 +114,7 @@ public class MyDatabase {
 
   public void printReport() {
     String query = "SELECT Customer_ID, NAME, CITY FROM Customer";
-    try (Connection conn = DriverManager.getConnection(CONNECTION_POOL_URL);
+    try (Connection conn = pool.getDatabaseConnection();
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery(query)) {
       ResultSetMetaData rsmd = rs.getMetaData();
@@ -194,7 +161,7 @@ public class MyDatabase {
   }
 
   public void moveAroundResultSets() {
-    try (Connection conn = DriverManager.getConnection(CONNECTION_POOL_URL)) {
+    try (Connection conn = pool.getDatabaseConnection()) {
       DatabaseMetaData dbmd = conn.getMetaData();
       if (dbmd.supportsResultSetType(ResultSet.TYPE_FORWARD_ONLY)) {
         System.out.print("Supports TYPE_FORWARD_ONLY");
@@ -226,7 +193,7 @@ public class MyDatabase {
 
   public void demonstrateGetRowCount() {
     String query = "SELECT Customer_ID, NAME, CITY FROM Customer";
-    try (Connection conn = DriverManager.getConnection(CONNECTION_POOL_URL);
+    try (Connection conn = pool.getDatabaseConnection();
         Statement stmt =
             conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
         ResultSet rs = stmt.executeQuery(query)) {
@@ -298,7 +265,7 @@ public class MyDatabase {
   public void updateResultSet() {
     int newCreditLimit = 20_000; // SUPPRESS CHECKSTYLE MagicNumber
     String query = "SELECT CREDIT_LIMIT FROM Customer WHERE CITY = 'New York'";
-    try (Connection conn = DriverManager.getConnection(CONNECTION_POOL_URL);
+    try (Connection conn = pool.getDatabaseConnection();
         Statement stmt =
             conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
         ResultSet rs = stmt.executeQuery(query)) {
@@ -325,7 +292,7 @@ public class MyDatabase {
    */
   public void insertNewRow() {
     String query = "SELECT Customer_ID, NAME, CITY FROM Customer";
-    try (Connection conn = DriverManager.getConnection(CONNECTION_POOL_URL);
+    try (Connection conn = pool.getDatabaseConnection();
         Statement stmt =
             conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
         ResultSet rs = stmt.executeQuery(query)) {
@@ -347,7 +314,7 @@ public class MyDatabase {
   }
 
   public void getInformationAboutDatabase() {
-    try (Connection conn = DriverManager.getConnection(CONNECTION_POOL_URL)) {
+    try (Connection conn = pool.getDatabaseConnection()) {
       DatabaseMetaData dbmd = conn.getMetaData();
       getColumns(dbmd);
       getProcedures(dbmd);
@@ -395,7 +362,7 @@ public class MyDatabase {
 
   public void usePreparedStatement() {
     String pQuery = "SELECT * FROM Customer WHERE City LIKE ?";
-    try (Connection conn = DriverManager.getConnection(CONNECTION_POOL_URL);
+    try (Connection conn = pool.getDatabaseConnection();
         PreparedStatement pstmt = conn.prepareStatement(pQuery)) {
       // Substitute this String for the first parameter (?)
       pstmt.setString(1, "%New York%");
@@ -421,7 +388,7 @@ public class MyDatabase {
   }
 
   public void demonstrateTransaction() {
-    try (Connection conn = DriverManager.getConnection(CONNECTION_POOL_URL)) {
+    try (Connection conn = pool.getDatabaseConnection()) {
       conn.setAutoCommit(false);
       Statement stmt = conn.createStatement();
       try {
@@ -441,7 +408,7 @@ public class MyDatabase {
   }
 
   public void demonstrateTransactionUsingSavepoints() {
-    try (Connection conn = DriverManager.getConnection(CONNECTION_POOL_URL)) {
+    try (Connection conn = pool.getDatabaseConnection()) {
       conn.setAutoCommit(false);
       Statement stmt = conn.createStatement();
       String query1 = "INSERT INTO Discount_Code VALUES ('O', 1.00)";
@@ -472,36 +439,6 @@ public class MyDatabase {
       logSQLWarning(conn.getWarnings()); // example how to log SQL Warnings
     } catch (SQLException ex) {
       logSQLException(ex);
-    }
-  }
-
-  private void logSQLException(SQLException ex) { // SUPPRESS CHECKSTYLE FinalParameters
-    while (ex != null) {
-      System.err.println("------ SQLException ------");
-      System.err.println("SQLState: " + ex.getSQLState());
-      System.err.println("Vendor Error code: " + ex.getErrorCode());
-      System.err.println("Message: " + ex.getMessage());
-      System.err.println("Cause: " + ex.getCause().getMessage());
-      logSuppressedExceptions(ex);
-      ex = ex.getNextException(); // SUPPRESS CHECKSTYLE ParameterAssignment
-    }
-  }
-
-  private void logSuppressedExceptions(final SQLException ex) {
-    Throwable[] suppressed = ex.getSuppressed();
-    for (Throwable t : suppressed) {
-      System.err.println("Suppressed exception: " + t);
-    }
-  }
-
-  private void logSQLWarning(SQLWarning warn) { // SUPPRESS CHECKSTYLE FinalParameters
-    while (warn != null) {
-      System.err.println("------ SQLWarning ------");
-      System.err.println("SQLState: " + warn.getSQLState());
-      System.err.println("Vendor Warning code: " + warn.getErrorCode());
-      System.err.println("Message: " + warn.getMessage());
-      System.err.println("Cause: " + warn.getCause().getMessage());
-      warn = warn.getNextWarning(); // SUPPRESS CHECKSTYLE ParameterAssignment
     }
   }
 
