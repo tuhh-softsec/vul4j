@@ -24,6 +24,7 @@
 package hudson.plugins.ccm;
 
 import hudson.model.AbstractBuild;
+import hudson.model.Run;
 import hudson.plugins.analysis.core.AbstractResultAction;
 import hudson.plugins.analysis.core.HealthDescriptor;
 import hudson.plugins.analysis.core.PluginDescriptor;
@@ -47,7 +48,7 @@ public class CcmResultAction extends AbstractResultAction<CcmResult> {
 	 * @param healthDescriptor
 	 * @param result
 	 */
-	public CcmResultAction(final AbstractBuild<?, ?> owner, final HealthDescriptor healthDescriptor, final CcmResult result) {
+	public CcmResultAction(final Run<?, ?> owner, final HealthDescriptor healthDescriptor, final CcmResult result) {
 		super(owner, new CcmHealthDescriptor(healthDescriptor), result);
 	}
 	
@@ -55,8 +56,8 @@ public class CcmResultAction extends AbstractResultAction<CcmResult> {
 	 * @param owner
 	 * @param healthDescriptor
 	 */
-	public CcmResultAction(AbstractBuild<?, ?> owner, final HealthDescriptor healthDescriptor) {
-		super(owner, new CcmHealthDescriptor(healthDescriptor));
+	public CcmResultAction(Run<?, ?> owner, final HealthDescriptor healthDescriptor) {
+		super(owner, new CcmHealthDescriptor(healthDescriptor), null);
 	}
 
 	/* (non-Javadoc)

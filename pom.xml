@@ -4,9 +4,7 @@
 	<parent>
         <groupId>org.jvnet.hudson.plugins</groupId>
         <artifactId>analysis-pom</artifactId>
-        <version>1.59</version><!-- which version of Jenkins is this plugin built 
-            against? -->
-        <relativePath>../analysis-pom/pom.xml</relativePath>
+        <version>1.63</version><!-- Jenkins 1.596.1 -->
 	</parent>
 
 	<inceptionYear>2010</inceptionYear>
@@ -67,7 +65,7 @@
         <dependency>
             <groupId>org.jvnet.hudson.plugins</groupId>
             <artifactId>analysis-core</artifactId>
-            <version>1.71</version>
+            <version>1.73-beta-SNAPSHOT</version><!-- TODO: change to 1.73 before release -->
             <type>hpi</type>
         </dependency>
         <dependency>

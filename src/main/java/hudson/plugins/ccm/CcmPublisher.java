@@ -23,12 +23,13 @@
  */
 package hudson.plugins.ccm;
 
+import hudson.FilePath;
 import hudson.Launcher;
 import hudson.matrix.MatrixAggregator;
 import hudson.matrix.MatrixBuild;
 import hudson.model.Action;
 import hudson.model.BuildListener;
-import hudson.model.AbstractBuild;
+import hudson.model.Run;
 import hudson.model.AbstractProject;
 import hudson.plugins.analysis.core.BuildResult;
 import hudson.plugins.analysis.core.FilesParser;
@@ -41,6 +42,7 @@ import java.io.IOException;
 
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 
 /**
  * Publishes the results of the CCM analysis (freestyle project type).
@@ -57,26 +59,13 @@ public class CcmPublisher extends HealthAwarePublisher {
     /** Default PMD pattern. */
     private static final String DEFAULT_PATTERN = "**/*.cs";
     /** Ant file-set pattern of files to work with. */
-    private final String pattern;
-    
+    private String pattern;
+
     @DataBoundConstructor
-    public CcmPublisher(final String healthy, final String unHealthy, final String thresholdLimit,
-            final String defaultEncoding, final boolean useDeltaValues,
-            final String unstableTotalAll, final String unstableTotalHigh, final String unstableTotalNormal, final String unstableTotalLow,
-            final String unstableNewAll, final String unstableNewHigh, final String unstableNewNormal, final String unstableNewLow,
-            final String failedTotalAll, final String failedTotalHigh, final String failedTotalNormal, final String failedTotalLow,
-            final String failedNewAll, final String failedNewHigh, final String failedNewNormal, final String failedNewLow,
-            final boolean canRunOnFailed, final boolean shouldDetectModules, final boolean canComputeNew,
-            final String pattern) {
-        super(healthy, unHealthy, thresholdLimit, defaultEncoding, useDeltaValues,
-                unstableTotalAll, unstableTotalHigh, unstableTotalNormal, unstableTotalLow,
-                unstableNewAll, unstableNewHigh, unstableNewNormal, unstableNewLow,
-                failedTotalAll, failedTotalHigh, failedTotalNormal, failedTotalLow,
-                failedNewAll, failedNewHigh, failedNewNormal, failedNewLow,
-                canRunOnFailed, shouldDetectModules, canComputeNew, PLUGIN_NAME);
-        this.pattern = pattern;
+    public CcmPublisher() {
+        super(PLUGIN_NAME);
     }
-    
+
     /**
      * Returns the Ant file-set pattern of files to work with.
      *
@@ -84,6 +73,14 @@ public class CcmPublisher extends HealthAwarePublisher {
      */
     public String getPattern() {
         return pattern;
+    }
+
+    /**
+     * @see #getPattern()
+     */
+    @DataBoundSetter
+    public void setPattern(final String pattern) {
+        this.pattern = pattern;
     }
     
     /** {@inheritDoc} */
@@ -94,15 +91,15 @@ public class CcmPublisher extends HealthAwarePublisher {
 
     /** {@inheritDoc} */
     @Override
-    public BuildResult perform(final AbstractBuild<?, ?> build, final PluginLogger logger) throws InterruptedException, IOException {
+    public BuildResult perform(final Run<?, ?> build, final FilePath workspace, final PluginLogger logger) throws InterruptedException, IOException {
         logger.log("Collecting CCM analysis files...");
         FilesParser pmdCollector = new FilesParser(PLUGIN_NAME, StringUtils.defaultIfEmpty(getPattern(), DEFAULT_PATTERN),
                 new CcmParser(getDefaultEncoding()), shouldDetectModules(), isMavenBuild(build));
-        ParserResult project = build.getWorkspace().act(pmdCollector);
+        ParserResult project = workspace.act(pmdCollector);
         logger.logLines(project.getLogMessages());
 
         CcmResult result = new CcmResult(build, getDefaultEncoding(), project);
-        build.getActions().add(new CcmResultAction(build, this, result));
+        build.addAction(new CcmResultAction(build, this, result));
 
         return result;
     }
