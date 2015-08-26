@@ -46,6 +46,7 @@ public class CcmResult extends BuildResult {
 	 */
 	public CcmResult(final Run<?, ?> build, final String defaultEncoding, final ParserResult result) {
 		super(build, new BuildHistory(build, CcmResultAction.class, false, false), result, defaultEncoding);
+		serializeAnnotations(result.getAnnotations());
 	}
 	
 	/* (non-Javadoc)
