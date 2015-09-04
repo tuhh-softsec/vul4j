@@ -117,11 +117,11 @@ public final class ExternalProcessExecutor {
 
     private ExecuteWatchdog watchdog;
 
-    public ScriptResultHandler(final ExecuteWatchdog watchdog) {
+    ScriptResultHandler(final ExecuteWatchdog watchdog) {
       this.watchdog = watchdog;
     }
 
-    public ScriptResultHandler(final int exitValue) {
+    ScriptResultHandler(final int exitValue) {
       super.onProcessComplete(exitValue);
     }
 
