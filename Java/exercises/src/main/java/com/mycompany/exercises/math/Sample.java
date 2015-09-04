@@ -21,7 +21,7 @@ public class Sample {
 
   private static final long ONE_SECOND = 1_000;
 
-  public static void main(String[] args) {
+  public static void main(final String[] args) {
     System.out.println("1 is prime: " + isPrime(1));
     System.out.println("2 is prime: " + isPrime(2));
     System.out.println("3 is prime: " + isPrime(3));
