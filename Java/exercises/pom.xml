@@ -16,7 +16,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
-                <version>3.0.1</version>
+                <version>3.0.2</version>
                 <configuration>
                     <onlyAnalyze>com.mycompany.exercises.*</onlyAnalyze>
                     <effort>Max</effort>
@@ -34,7 +34,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
-                <version>3.4</version>
+                <version>3.5</version>
                 <executions>
                     <execution>
                         <phase>test</phase> 
@@ -50,13 +50,13 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.15</version>
+                <version>2.16</version>
                 <dependencies>
                     <!-- Upgrade the version of Checkstyle used at runtime -->
                     <dependency>
                         <groupId>com.puppycrawl.tools</groupId>
                         <artifactId>checkstyle</artifactId>
-                        <version>6.7</version>
+                        <version>6.10.1</version>
                     </dependency>
                 </dependencies>
                 <configuration>
