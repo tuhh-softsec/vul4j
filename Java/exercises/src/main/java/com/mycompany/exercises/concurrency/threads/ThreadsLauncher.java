@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Company.
  * All rights reserved.
  */
-package com.mycompany.exercises.threads;
+package com.mycompany.exercises.concurrency.threads;
 
 /**
  * Helper class to execute other classes.

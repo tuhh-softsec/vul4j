@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Company.
  * All rights reserved.
  */
-package com.mycompany.exercises.threads;
+package com.mycompany.exercises.concurrency.threads;
 
 /**
  * Synchronizing a Block of Code. From OCA/OCP Java SE7 Programmer 1 & 2 Study Guide, Chapter 13:
