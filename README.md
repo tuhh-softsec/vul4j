@@ -1,2 +1,1 @@
-# perfsig-jenkins
-Performance Signature with Dynatrace for Jenkins
+# Performance Signature with Dynatrace for Jenkins
