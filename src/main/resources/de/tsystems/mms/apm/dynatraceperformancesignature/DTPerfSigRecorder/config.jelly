@@ -1,0 +1,92 @@
+<!--
+  ~ Copyright (c) 2014 T-Systems Multimedia Solutions GmbH
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:c="/lib/credentials">
+    <f:entry field="protocol" title="${%HTTP/HTTPS}" description="${%Specify the protocol to use}">
+        <f:select/>
+    </f:entry>
+    <f:entry title="${%Dynatrace REST Host}" field="host" description="${%Dynatrace Server Host}">
+        <f:textbox default="${descriptor.defaultHost}"/>
+    </f:entry>
+    <f:entry title="${%Dynatrace REST Port}" field="port"
+             description="${%Dynatrace Server REST Interface port} (${%default: 8020 for HTTP, 8021 for HTTPS})">
+        <f:number default="${descriptor.defaultPort}"/>
+    </f:entry>
+    <f:entry title="${%Dynatrace REST User credentials}" field="credentialsId">
+        <c:select/>
+    </f:entry>
+
+    <f:entry title="${%Dynatrace System Profile}" field="profile" description="${%corresponding Dynatrace Profile}">
+        <f:select/>
+    </f:entry>
+
+    <f:entry title="${%Testcase Dashboard mapping}">
+        <f:hetero-list name="configurationTestCases"
+                       items="${instance.configurationTestCases}"
+                       descriptors="${descriptor.testCaseTypes}"
+                       hasHeader="true"
+                       addCaption="${%Add Testcase}"/>
+    </f:entry>
+
+    <f:advanced>
+        <f:entry title="${%verify Certificate}" field="verifyCertificate"
+                 description="${%Verify or ignore the Dynatrace Server Certificate?}">
+            <f:checkbox default="${descriptor.defaultVerifyCertificate}"/>
+        </f:entry>
+        <f:entry title="${%Delay}" field="delay"
+                 description="${%Time to wait until requesting the build results to ensure all data has been processed by the Dynatrace Server}">
+            <f:number default="${descriptor.defaultDelay}"/>
+        </f:entry>
+        <f:entry title="${%Retry Count}" field="retryCount"
+                 description="${%The Dynatrace Server might take a while to fully process the data collected during the test run. By default, the plugin will try get data 5 times, 10 seconds apart.}">
+            <f:number default="${descriptor.defaultRetryCount}"/>
+        </f:entry>
+        <f:entry title="${%export Sessions}" field="exportSessions"
+                 description="${%Should Dynatrace Session be exported to the workspace directory?}">
+            <f:checkbox default="${descriptor.defaultExportSessions}"/>
+        </f:entry>
+        <f:entry title="${%modify build result}" field="modifyBuildResult"
+                 description="${%Should the Dynatrace Performance Signature  modify the build result in case of a failure?}">
+            <f:checkbox default="${descriptor.defaultModifyBuildResult}"/>
+        </f:entry>
+        <f:entry title="${%use configured Proxy Server}" field="useJenkinsProxy"
+                 description="${%Proxy can be configured in Jenkins Plugin Settings}">
+            <f:checkbox/>
+        </f:entry>
+        <f:block>
+            <j:set var="customProxy" value="${instance.customProxy}"/>
+            <f:optionalBlock name="customProxy" title="${%use custom Proxy Server}" checked="${customProxy != null}">
+                <f:entry title="${%Server}" field="proxyServer">
+                    <f:textbox value="${customProxy.proxyServer}"/>
+                </f:entry>
+                <f:entry title="${%Port}" field="proxyPort">
+                    <f:number value="${customProxy.proxyPort}"/>
+                </f:entry>
+                <f:entry title="${%User}" field="proxyUser">
+                    <f:textbox value="${customProxy.proxyUser}"/>
+                </f:entry>
+                <f:entry title="${%Password}" field="proxyPassword">
+                    <f:password value="${customProxy.proxyPassword}"/>
+                </f:entry>
+            </f:optionalBlock>
+        </f:block>
+    </f:advanced>
+
+    <f:validateButton title="${%Test Connection}" progress="${%Testing...}"
+                      method="testDynaTraceConnection"
+                      with="protocol,host,port,credentialsId,verifyCertificate,useJenkinsProxy,proxyServer,proxyPort,proxyUser,proxyPassword"/>
+</j:jelly>

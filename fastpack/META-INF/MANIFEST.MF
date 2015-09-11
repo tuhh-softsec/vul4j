@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.7.1
+Created-By: 24.60-b09 (Oracle Corporation)
+Bundle-ManifestVersion: 2
+Bundle-Name: PerfSigDashboards
+Bundle-SymbolicName: PerfSigDashboards;singleton:=true
+Bundle-Version: 1.0.0.000
+Require-Bundle: com.dynatrace.diagnostics.sdk;bundle-version="4.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

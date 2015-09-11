@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+		<extension id="PerfSigDashboards" point="com.dynatrace.diagnostics.InstallerContent">
+			<metainfo installer_type="resourcepack" name="Performance Signature Dashboards">
+			
+			<resource
+				resource="dashboards/PerformanceSignatur_Einzelreport.dashboard.xml" resource_type="dashboard">
+			</resource>
+			<resource
+				resource="dashboards/PerformanceSignatur_Vergleichsreport.dashboard.xml" resource_type="dashboard">
+			</resource>
+			<resource
+				resource="dashboards/PerformanceSignatur_NFA.dashboard.xml" resource_type="dashboard">
+			</resource>
+
+			<!--<resource
+				resource="profiles/PerfSigExample.profile.xml" resource_type="systemProfile">
+			</resource>-->
+		</metainfo>
+	</extension>
+</plugin>
