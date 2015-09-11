@@ -26,7 +26,8 @@ public class MyFTPClientTest {
   private static final String SERVER = "localhost";
   private static final int PORT = 9187;
 
-  private static final String FTP_DIRECTORY = "src/test/resources/ftp_dir";
+  private static final Path TEST_RESOURCES_DIR = Paths.get("src", "test", "resources");
+  private static final String FTP_DIRECTORY = TEST_RESOURCES_DIR.resolve("ftp_dir");
   private static final String TMP_DIRECTORY = System.getProperty("java.io.tmpdir");
 
   private static FtpServerMock serverMock;
