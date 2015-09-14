@@ -439,9 +439,9 @@ public class ProbeFactory {
             return "";
         }
 
-        int size = 1;
+        int size = 2;
         if (isZebs) {
-            size = 2;
+            size = 3;
         }
         for (int i = size; i >= 0; i--) {
             if (media.get(i) == -1) {
@@ -454,7 +454,7 @@ public class ProbeFactory {
         @SuppressWarnings("unchecked")
         List<DeskriptorUmwelt> data = (List<DeskriptorUmwelt>)response.getData();
         if (data.isEmpty()) {
-            return "";
+            return null;
         }
 
         boolean unique = isUnique(data);
@@ -511,7 +511,7 @@ public class ProbeFactory {
                     return data.get(found).getUmwId();
                 }
             }
-            return "";
+            return null;
         }
     }
 

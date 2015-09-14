@@ -108,9 +108,9 @@ public class DeskriptorToUmwelt implements Rule {
             return violation;
         }
 
-        int size = 3;
+        int size = 2;
         if (isZebs) {
-            size = 1;
+            size = 3;
         }
         for (int i = size; i >= 0; i--) {
             if (media.get(i) == -1) {
