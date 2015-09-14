@@ -439,10 +439,7 @@ public class ProbeFactory {
             return "";
         }
 
-        int size = 2;
-        if (isZebs) {
-            size = 3;
-        }
+        int size = 1;
         for (int i = size; i >= 0; i--) {
             if (media.get(i) == -1) {
                 continue;
