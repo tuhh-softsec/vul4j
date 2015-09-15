@@ -1,0 +1,47 @@
+<!--
+  ~ Copyright (c) 2014 T-Systems Multimedia Solutions GmbH
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:jm="/de/tsystems/mms/apm/performancesignature/jenkins/tags">
+    <j:set var="testRun" value="${it.matchingTestRun}"/>
+    <j:set var="testResult" value="${it.matchingTestResult}"/>
+    <j:if test="${testResult!=null}">
+        <j:if test="${!it.resourcesLoaded}">
+            <link type="text/css" href="${resURL}/plugin/performance-signature-dynatrace/css/bootstrap.min.css"
+                  rel="stylesheet"/>
+            <script data-main="${resURL}/plugin/performance-signature-dynatrace/js/buildactionresultsdisplay"
+                    src="${resURL}/plugin/performance-signature-dynatrace/js/require.js"/>
+            <script type="text/javascript">
+                var rootURL = "${rootURL}";
+                var resURL = "${resURL}";
+            </script>
+        </j:if>
+        <div class="tw-bs" style="display: inline;">
+            <j:new var="h" className="hudson.Functions"/>
+            <j:set var="id" value="collapse${h.generateId()}"/>
+            <a data-toggle="collapse" href="#${id}" aria-expanded="false" aria-controls="${id}">
+                <span title="Dynatrace Performance Status: ${testResult.status}" class="glyphicon ${testResult.statusIcon}"
+                      style="font-size: 15px; color: ${testResult.statusColor};" aria-hidden="true"/>
+            </a>
+            <div class="collapse" id="${id}">
+                <div class="well" style="padding-top:5px;">
+                    <h4>Performance Data</h4>
+                    <jm:testRunTable it="${it}" testRun="${testRun}" testResult="${testResult}"/>
+                </div>
+            </div>
+        </div>
+    </j:if>
+</j:jelly>
