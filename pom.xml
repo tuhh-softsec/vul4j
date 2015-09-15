@@ -7,12 +7,11 @@
         <version>1.588</version>
     </parent>
 
-    <groupId>com.tystems.mms.tic.apm.plugins</groupId>
-    <artifactId>dynatrace-performance-signature</artifactId>
-    <version>1.5.0000</version>
+    <artifactId>performance-signature-dynatrace</artifactId>
+    <version>1.5.1</version>
     <packaging>hpi</packaging>
 
-    <name>Dynatrace Performance Signature for Jenkins</name>
+    <name>Performance Signature with Dynatrace</name>
     <url>http://www.test-and-integration.de/</url>
     <scm>
         <connection>scm:git:https://github.com/T-Systems-MMS/perfsig-jenkins.git</connection>
@@ -82,7 +81,7 @@
         <checkstyle.version>2.15</checkstyle.version>
         <compileSource>1.6</compileSource>
         <compileTarget>1.6</compileTarget>
-        <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
+        <!--<maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>-->
     </properties>
 
     <build>
@@ -107,7 +106,7 @@
                 <artifactId>maven-hpi-plugin</artifactId>
                 <extensions>true</extensions>
                 <configuration>
-                    <compatibleSinceVersion>1.4.0</compatibleSinceVersion>
+                    <compatibleSinceVersion>1.5.1</compatibleSinceVersion>
                 </configuration>
             </plugin>
             <plugin>
@@ -131,8 +130,8 @@
                 <version>${checkstyle.version}</version>
             </plugin>
         </plugins>
-        <finalName>
-            dt_perfsig_jenkins_v${project.version}_${maven.build.timestamp}
-        </finalName>
+        <!--<finalName>
+            perfsig_dt_jenkins_v${project.version}_${maven.build.timestamp}
+        </finalName>-->
     </build>
 </project>
