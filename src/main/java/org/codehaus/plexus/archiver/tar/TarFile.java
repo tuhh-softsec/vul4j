@@ -1,17 +1,17 @@
 package org.codehaus.plexus.archiver.tar;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.FilterInputStream;
-import java.lang.reflect.UndeclaredThrowableException;
-import java.util.Enumeration;
-import java.util.NoSuchElementException;
-
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.codehaus.plexus.archiver.ArchiveFile;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FilterInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.UndeclaredThrowableException;
+import java.util.Enumeration;
+import java.util.NoSuchElementException;
 
 import static org.codehaus.plexus.archiver.util.Streams.bufferedInputStream;
 
@@ -137,8 +137,7 @@ public class TarFile
     protected InputStream getInputStream( File file )
         throws IOException
     {
-        final FileInputStream fileInputStream = new FileInputStream( file );
-        return fileInputStream;
+        return new FileInputStream( file );
     }
     
     private InputStream getInputStream( TarArchiveEntry entry, TarArchiveEntry currentEntry )

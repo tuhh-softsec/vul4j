@@ -18,12 +18,13 @@ package org.codehaus.plexus.archiver.gzip;
  */
 
 import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.archiver.util.Streams;
 import org.codehaus.plexus.archiver.util.Compressor;
+import org.codehaus.plexus.archiver.util.Streams;
 import org.codehaus.plexus.util.IOUtil;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.zip.GZIPOutputStream;
 
 /**
@@ -32,7 +33,7 @@ import java.util.zip.GZIPOutputStream;
 public class GZipCompressor
     extends Compressor
 {
-    private GZIPOutputStream zOut;
+    private OutputStream zOut;
 
     /**
      * perform the GZip compression operation.
@@ -42,7 +43,7 @@ public class GZipCompressor
     {
         try
         {
-            zOut = new GZIPOutputStream( Streams.bufferedOutputStream( new FileOutputStream( getDestFile() ) ));
+            zOut = Streams.bufferedOutputStream( new GZIPOutputStream( new FileOutputStream( getDestFile() ) ) );
             compress( getSource(), zOut );
         }
         catch ( IOException ioe )

@@ -1,6 +1,7 @@
 package org.codehaus.plexus.archiver.tar;
 
-import java.io.BufferedInputStream;
+import org.codehaus.plexus.archiver.util.Streams;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +11,8 @@ import java.util.zip.GZIPInputStream;
 /**
  * Extension of {@link TarFile} for gzip compressed files.
  */
-public class GZipTarFile extends TarFile
+public class GZipTarFile
+    extends TarFile
 {
     /**
      * Creates a new instance with the given file.
@@ -24,7 +26,7 @@ public class GZipTarFile extends TarFile
         throws IOException
     {
         final InputStream inputStream = super.getInputStream( file );
-        return new BufferedInputStream( new GZIPInputStream( inputStream )
+        return Streams.bufferedInputStream( new GZIPInputStream( inputStream )
         {
             public void close()
                 throws IOException
@@ -32,6 +34,6 @@ public class GZipTarFile extends TarFile
                 super.close();
                 inputStream.close();
             }
-        });
+        } );
     }
 }

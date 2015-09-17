@@ -22,6 +22,7 @@ import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.codehaus.plexus.archiver.AbstractUnArchiver;
 import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.archiver.util.Streams;
 import org.codehaus.plexus.util.IOUtil;
 import org.iq80.snappy.SnappyInputStream;
 
@@ -125,48 +126,51 @@ public class TarUnArchiver
         }
     }
 
-	/**
-	 * This method wraps the input stream with the
-	 * corresponding decompression method
-	 *
-	 * @param file    provides location information for BuildException
-	 * @param istream input stream
-	 * @return input stream with on-the-fly decompression
-	 * @throws IOException thrown by GZIPInputStream constructor
-	 */
-	private InputStream decompress( UntarCompressionMethod compression, final File file, final InputStream istream )
-			throws IOException, ArchiverException
-	{
-		if ( compression == UntarCompressionMethod.GZIP )
-		{
-			return new BufferedInputStream( new GZIPInputStream( istream ));
-		}
-		else if ( compression == UntarCompressionMethod.BZIP2 )
-		{
-			return new BZip2CompressorInputStream( istream );
-		}
+    /**
+     * This method wraps the input stream with the
+     * corresponding decompression method
+     *
+     * @param file    provides location information for BuildException
+     * @param istream input stream
+     * @return input stream with on-the-fly decompression
+     * @throws IOException thrown by GZIPInputStream constructor
+     */
+    private InputStream decompress( UntarCompressionMethod compression, final File file, final InputStream istream )
+        throws IOException, ArchiverException
+    {
+        if ( compression == UntarCompressionMethod.GZIP )
+        {
+            return Streams.bufferedInputStream( new GZIPInputStream( istream ) );
+        }
+        else if ( compression == UntarCompressionMethod.BZIP2 )
+        {
+            return new BZip2CompressorInputStream( istream );
+        }
         else if ( compression == UntarCompressionMethod.SNAPPY )
         {
-            return new SnappyInputStream( istream );
+            return new SnappyInputStream( istream, true );
         }
-		return istream;
-	}
+        return istream;
+    }
 
-	/**
+    /**
      * Valid Modes for Compression attribute to Untar Task
      */
     public static enum UntarCompressionMethod
     {
-		NONE("none"), GZIP("gzip"), BZIP2("bzip2"), SNAPPY("snappy");
+        NONE( "none" ),
+        GZIP( "gzip" ),
+        BZIP2( "bzip2" ),
+        SNAPPY( "snappy" );
 
-		final String value;
+        final String value;
 
         /**
          * Constructor
          */
-        UntarCompressionMethod(String value)
+        UntarCompressionMethod( String value )
         {
-			this.value = value;
+            this.value = value;
         }
 
     }

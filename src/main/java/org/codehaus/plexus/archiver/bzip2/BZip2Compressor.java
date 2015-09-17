@@ -44,6 +44,7 @@ public class BZip2Compressor
         try
         {
             zOut = new BZip2CompressorOutputStream( bufferedOutputStream( fileOutputStream( getDestFile() ) ) );
+            // BUffering of the source stream seems to have little/no impact
             compress( getSource(), zOut );
         }
         catch ( IOException ioe )
