@@ -1,21 +1,12 @@
 package org.codehaus.plexus.archiver.tar;
 
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.output.NullOutputStream;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.UnArchiver;
-import org.codehaus.plexus.archiver.util.Streams;
 import org.codehaus.plexus.components.io.fileselectors.FileSelector;
 import org.codehaus.plexus.components.io.fileselectors.IncludeExcludeFileSelector;
 import org.codehaus.plexus.util.FileUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * @author <a href="mailto:viktor@jv-ration.com">Viktor Sadovnikov</a>
@@ -75,39 +66,4 @@ public class TarUnArchiverTest extends PlexusTestCase
         runUnarchiver( new FileSelector[]{ fileSelector }, new boolean[]{ true, false, false } );
     }
 
-
-    private InputStream fis()
-        throws FileNotFoundException
-    {
-        File file = new File( "/Users/kristian/testFile.tar" );
-        return Streams.bufferedInputStream( new FileInputStream( file ) );
-    }
-
-    private InputStream fisub()
-        throws FileNotFoundException
-    {
-        File file = new File( "/Users/kristian/testFile.tar" );
-        return new FileInputStream( file );
-    }
-
-    public void testStreams()
-        throws IOException
-    {
-        long start = System.currentTimeMillis();
-        OutputStream bzin = new BZip2CompressorOutputStream( new NullOutputStream() );
-        IOUtils.copy( fis(), bzin );
-        System.out.println( "((System.currentTimeMillis() - start)) = " + ( ( System.currentTimeMillis() - start ) ) );
-        start = System.currentTimeMillis();
-        bzin = new BZip2CompressorOutputStream( new NullOutputStream() );
-        IOUtils.copy( fisub(), bzin );
-        System.out.println( "((System.currentTimeMillis() - start)) = " + ( ( System.currentTimeMillis() - start ) ) );
-        start = System.currentTimeMillis();
-        bzin = new BZip2CompressorOutputStream( new NullOutputStream() );
-        IOUtils.copy( fis(), bzin );
-        System.out.println( "((System.currentTimeMillis() - start)) = " + ( ( System.currentTimeMillis() - start ) ) );
-        start = System.currentTimeMillis();
-        bzin = new BZip2CompressorOutputStream( new NullOutputStream() );
-        IOUtils.copy( fisub(), bzin );
-        System.out.println( "((System.currentTimeMillis() - start)) = " + ( ( System.currentTimeMillis() - start ) ) );
-    }
 }
