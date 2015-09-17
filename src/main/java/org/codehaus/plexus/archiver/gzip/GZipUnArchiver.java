@@ -20,9 +20,11 @@ package org.codehaus.plexus.archiver.gzip;
 import org.codehaus.plexus.archiver.AbstractUnArchiver;
 import org.codehaus.plexus.archiver.ArchiverException;
 
+import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 
 import static org.codehaus.plexus.archiver.util.Streams.*;
@@ -59,12 +61,12 @@ public class GZipUnArchiver
         }
     }
 
-    private GZIPInputStream getGzipInputStream( FileInputStream in )
+    private InputStream getGzipInputStream( FileInputStream in )
         throws ArchiverException
     {
         try
         {
-            return new GZIPInputStream( in );
+            return new BufferedInputStream( new GZIPInputStream( in ));
         }
         catch ( IOException e )
         {

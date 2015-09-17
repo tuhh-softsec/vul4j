@@ -139,7 +139,7 @@ public class TarUnArchiver
 	{
 		if ( compression == UntarCompressionMethod.GZIP )
 		{
-			return new GZIPInputStream( istream );
+			return new BufferedInputStream( new GZIPInputStream( istream ));
 		}
 		else if ( compression == UntarCompressionMethod.BZIP2 )
 		{

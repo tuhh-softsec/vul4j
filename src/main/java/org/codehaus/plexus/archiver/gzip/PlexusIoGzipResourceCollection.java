@@ -1,5 +1,6 @@
 package org.codehaus.plexus.archiver.gzip;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -34,7 +35,7 @@ public class PlexusIoGzipResourceCollection
         InputStream fis = new FileInputStream( file );
         try
         {
-            InputStream result = new GZIPInputStream( fis );
+            InputStream result = new BufferedInputStream( new GZIPInputStream( fis ));
             fis = null;
             return result;
         }

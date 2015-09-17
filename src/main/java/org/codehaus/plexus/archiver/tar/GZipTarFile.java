@@ -1,5 +1,6 @@
 package org.codehaus.plexus.archiver.tar;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +24,7 @@ public class GZipTarFile extends TarFile
         throws IOException
     {
         final InputStream inputStream = super.getInputStream( file );
-        return new GZIPInputStream( inputStream )
+        return new BufferedInputStream( new GZIPInputStream( inputStream )
         {
             public void close()
                 throws IOException
@@ -31,6 +32,6 @@ public class GZipTarFile extends TarFile
                 super.close();
                 inputStream.close();
             }
-        };
+        });
     }
 }
