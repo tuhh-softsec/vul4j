@@ -340,9 +340,7 @@ public class ProbeService {
         if (probe.getUmwId() == null || probe.getUmwId().equals("")) {
             probe = factory.findUmweltId(probe);
         }
-        if (probe.getMediaDesk() != null || probe.getMediaDesk().length() > 0) {
-            probe = factory.findMediaDesk(probe);
-        }
+        probe = factory.findMediaDesk(probe);
         /* Persist the new probe object*/
         Response newProbe = defaultRepo.create(probe, "land");
         LProbe ret = (LProbe)newProbe.getData();
@@ -452,6 +450,7 @@ public class ProbeService {
         if (lock.isLocked(probe)) {
             return new Response(false, 697, null);
         }
+        probe = factory.findMediaDesk(probe);
         Violation violation = validator.validate(probe);
         if (violation.hasErrors()) {
             Response response = new Response(false, 604, null);
