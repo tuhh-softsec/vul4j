@@ -71,8 +71,8 @@ public final class MyFTPClientLogger {
     System.out.println("Size: " + getFileSizeInKilobytes(localFile.toFile()) + "KB.");
   }
 
-  public static void logFileDownloadFailed(final String remoreFile) {
-    System.err.println("Failed to download \"" + remoreFile + "\" from FTP server.");
+  public static void logFileDownloadFailed(final String remoteFile) {
+    System.err.println("Failed to download \"" + remoteFile + "\" from FTP server.");
   }
 
   // TODO to be moved into a new file project
