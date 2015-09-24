@@ -2,8 +2,8 @@
 <!-- ATTENTION - THIS IS AN AUTOMATICALLY GENERATED FILE -->
 <!-- Manual changes can cause severe problems and system instability -->
 <!-- Apply manual changes only if you have received explicit instructions from dynaTrace Support -->
-<dynatrace version="6.2.1.1031" date="9/23/15 1:14 PM">
-  <dashboardconfig memento.version="6.2.1.1031" icon="com.dynatrace.diagnostics.portlets/icons/agents.png" localizationenabled="false" sessiontype="live" locationassource="false" suppresssavewarning="false" groupname="" authorname="rapi" opendrilldowninnewdashboard="true" sessionid="easyTravel" autoreplacesession="false" modified="2015-09-23T13:14:17+0200" id="4ab1a9bc-d02f-4f75-9888-6c923d47f949" revision="0000014f-f9e9-4207-b0a1-d14b77573caf" source="server://PoC Dt PerfSig" created="2014-05-27T16:35:28+0200" description="" name="PerformanceSignature_singlereport" modifiedbyname="rapi" locationascomparesource="false">
+<dynatrace version="5.6.0.6203" date="9/23/15 1:14 PM">
+  <dashboardconfig memento.version="5.6.0.6203" icon="com.dynatrace.diagnostics.portlets/icons/agents.png" localizationenabled="false" sessiontype="live" locationassource="false" suppresssavewarning="false" groupname="" authorname="rapi" opendrilldowninnewdashboard="true" sessionid="easyTravel" autoreplacesession="false" modified="2015-09-23T13:14:17+0200" id="4ab1a9bc-d02f-4f75-9888-6c923d47f949" revision="0000014f-f9e9-4207-b0a1-d14b77573caf" source="server://PoC Dt PerfSig" created="2014-05-27T16:35:28+0200" description="" name="PerformanceSignature_singlereport" modifiedbyname="rapi" locationascomparesource="false">
     <reportconfig lines.per.table="10000" pagesize="A4" enabled="true" print.legends="true" orientation="portrait" formathtml="com.dynatrace.diagnostics.report.velocity.format.htmlrenderer" optimizeequalcolumns="false" type="PDF" title="" override="false" levels.per.tree="10" description="" formatpdf="com.dynatrace.diagnostics.report.velocity.format.pdfrenderer" print.images="true" />
     <filter>
       <criterion type="admfilteranalyzer" />
