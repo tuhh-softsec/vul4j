@@ -19,7 +19,7 @@
     <l:layout xmlns:jm="/de/tsystems/mms/apm/performancesignature/jenkins/tags"
               title="Performance Signature Report Details for Build ${it.getBuild().getNumber()}">
         <l:header>
-            <link type="text/css" href="${resURL}/plugin/performance-signature-dynatrace/css/bootstrap.min.css"
+            <link type="text/css" href="${resURL}/plugin/performance-signature/css/bootstrap.min.css"
                   rel="stylesheet"/>
             <style>
                 .nav::after, .row::after {
@@ -63,7 +63,7 @@
                                                 <j:forEach var="file"
                                                            items="${it.dTPerfSigUtils.getDownloadFiles('Single.*' + dashboardReport.name + '_.*pdf',it.build)}">
                                                     <a href="./downloadFile?f=${file.name}" target="_blank">
-                                                        <img src="${resURL}/plugin/performance-signature-dynatrace/images/pdficon_small.png"/>
+                                                        <img src="${resURL}/plugin/performance-signature/images/pdficon_small.png"/>
                                                         ${file.name}
                                                     </a>
                                                     <br/>
@@ -84,7 +84,7 @@
                                                 <j:forEach var="file"
                                                            items="${it.dTPerfSigUtils.getDownloadFiles('.*' + dashboardReport.name + '.dts',it.build)}">
                                                     <a href="./downloadFile?f=${file.name}" target="_blank">
-                                                        <img src="${resURL}/plugin/performance-signature-dynatrace/images/dtsession.png"/>
+                                                        <img src="${resURL}/plugin/performance-signature/images/dtsession.png"/>
                                                         ${file.name}
                                                     </a>
                                                     <br/>
@@ -106,8 +106,9 @@
                                                     <h4 class="panel-title">${%JUnit TestReport}</h4>
                                                 </div>
                                                 <div class="panel-body">
-                                                    <a href="${rootURL}/job/${it.build.project.name}/${it.build.number}/testReport">UnitTestReport with
-                                                        performance data
+                                                    <a href="${rootURL}/job/${it.build.project.name}/${it.build.number}/testReport">
+                                                        <img src="${resURL}/images/24x24/clipboard.png"/>
+                                                        UnitTestReport with performance data
                                                     </a>
                                                 </div>
                                             </div>
@@ -131,8 +132,8 @@
                 </div>
             </div>
             <br style="clear:both;"/>
-            <script data-main="${resURL}/plugin/performance-signature-dynatrace/js/buildactionresultsdisplay"
-                    src="${resURL}/plugin/performance-signature-dynatrace/js/require.js"/>
+            <script data-main="${resURL}/plugin/performance-signature/js/buildactionresultsdisplay"
+                    src="${resURL}/plugin/performance-signature/js/require.js"/>
             <script type="text/javascript">
                 var rootURL = "${rootURL}";
                 var resURL = "${resURL}";

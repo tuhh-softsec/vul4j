@@ -88,11 +88,6 @@ public class DTPerfSigRecorder extends Recorder {
         // This is where you 'build' the project.
         final PrintStream logger = listener.getLogger();
 
-        if (getBuildResult(build).isWorseOrEqualTo(Result.FAILURE)) {
-            logger.println(Messages.DTPerfSigRecorder_UnstableFailure());
-            return !isModifyBuildResult();
-        }
-
         final DTServerConnection connection = new DTServerConnection(this.getProtocol(), this.getHost(), this.getPort(), credentialsId,
                 verifyCertificate, useJenkinsProxy, customProxy);
         logger.println(Messages.DTPerfSigRecorder_VerifyDTConnection());

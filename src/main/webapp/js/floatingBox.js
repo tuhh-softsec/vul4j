@@ -25,7 +25,7 @@ define(['./common'], function () {
                     $.each(json, function (index) {
                         if (json[index].show) {
                             $(".carousel-inner", carousel).append('<div class="item">' +
-                                json[index].html.replace("###", testCase).replace("\.\/", "performance-signature-dynatrace/") + '</div>\n');
+                                json[index].html.replace("###", testCase).replace("\.\/", "performance-signature/") + '</div>\n');
                         }
                     });
                     $(".carousel-inner div:first-child", carousel).addClass("active");

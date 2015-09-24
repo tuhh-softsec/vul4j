@@ -16,13 +16,13 @@
 
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout" xmlns:fmt="jelly:fmt">
-    <l:layout title="Dynatrace Performance Overview for ${it.project.name}">
+    <l:layout title="Performance Signature Overview for ${it.project.name}">
         <l:header>
-            <link type="text/css" href="${resURL}/plugin/performance-signature-dynatrace/css/bootstrap.min.css"
+            <link type="text/css" href="${resURL}/plugin/performance-signature/css/bootstrap.min.css"
                   rel="stylesheet"/>
-            <link type="text/css" href="${resURL}/plugin/performance-signature-dynatrace/css/dataTables.bootstrap.min.css"
+            <link type="text/css" href="${resURL}/plugin/performance-signature/css/dataTables.bootstrap.min.css"
                   rel="stylesheet"/>
-            <link type="text/css" href="${resURL}/plugin/performance-signature-dynatrace/css/jquery.gridster.min.css"
+            <link type="text/css" href="${resURL}/plugin/performance-signature/css/jquery.gridster.min.css"
                   rel="stylesheet"/>
             <style>
                 .nav::after, .row::after {
@@ -37,7 +37,7 @@
             <div class="tw-bs">
                 <div class="row">
                     <div class="col-md-12">
-                        <h2>${%Dynatrace Performance Signature for} ${it.project.name}</h2>
+                        <h2>${%Performance Signature for} ${it.project.name}</h2>
                         <ul class="nav nav-tabs" role="tablist" id="tabList">
                             <j:forEach var="lastDashboardReport" items="${it.lastDashboardReports}">
                                 <li role="presentation">
@@ -147,7 +147,7 @@
                                         <j:forEach var="dashboardReport" items="${it.getDashBoardReports(lastDashboardReport.name)}">
                                             <tr>
                                                 <td>
-                                                    <a href="../${dashboardReport.buildAction.build.number}/performance-signature-dynatrace/#${lastDashboardReport.name}">
+                                                    <a href="../${dashboardReport.buildAction.build.number}/performance-signature/#${lastDashboardReport.name}">
                                                         <b>${dashboardReport.buildAction.build.number}</b>
                                                     </a>
                                                 </td>
@@ -156,7 +156,7 @@
                                                 <td>
                                                     <j:if test="${file.size()!=0}">
                                                         <a href="./downloadFile?f=${file.get(0).name}" target="_blank">
-                                                            <img src="${resURL}/plugin/performance-signature-dynatrace/images/pdficon_small.png"/>
+                                                            <img src="${resURL}/plugin/performance-signature/images/pdficon_small.png"/>
                                                         </a>
                                                     </j:if>
                                                 </td>
@@ -192,8 +192,8 @@
                 </div>
             </div>
             <br style="clear:both;"/>
-            <script data-main="${resURL}/plugin/performance-signature-dynatrace/js/projectaction"
-                    src="${resURL}/plugin/performance-signature-dynatrace/js/require.js"/>
+            <script data-main="${resURL}/plugin/performance-signature/js/projectaction"
+                    src="${resURL}/plugin/performance-signature/js/require.js"/>
             <script type="text/javascript">
                 var projectAction =
                 <st:bind value="${it}"/>
