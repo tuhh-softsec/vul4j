@@ -2,10 +2,11 @@
 <!-- ATTENTION - THIS IS AN AUTOMATICALLY GENERATED FILE -->
 <!-- Manual changes can cause severe problems and system instability -->
 <!-- Apply manual changes only if you have received explicit instructions from dynaTrace Support -->
-<dynatrace version="5.6.0.5924" date="8/12/14 4:13 PM">
-  <dashboardconfig memento.version="5.6.0.5924" icon="com.dynatrace.diagnostics.portlets/icons/agents.png" localizationenabled="false" sessiontype="stored" locationassource="false" groupname="" authorname="admin" opendrilldowninnewdashboard="true" sessionid="easyTravel/20140812154840_0.session" autoreplacesession="false" modified="2014-08-12T16:13:21+0200" id="e35742c5-d0fa-488e-9b71-8aa7a0080b57" revision="00000147-ca90-ec18-8ce8-f7d01b5e6d75" source="server://dT Demo System" created="2014-05-27T16:35:28+0200" description="" name="PerformanceSignatur_Einzelreport" modifiedbyname="admin" locationascomparesource="false">
+<dynatrace version="6.2.1.1031" date="9/23/15 1:14 PM">
+  <dashboardconfig memento.version="6.2.1.1031" icon="com.dynatrace.diagnostics.portlets/icons/agents.png" localizationenabled="false" sessiontype="live" locationassource="false" suppresssavewarning="false" groupname="" authorname="rapi" opendrilldowninnewdashboard="true" sessionid="easyTravel" autoreplacesession="false" modified="2015-09-23T13:14:17+0200" id="4ab1a9bc-d02f-4f75-9888-6c923d47f949" revision="0000014f-f9e9-4207-b0a1-d14b77573caf" source="server://PoC Dt PerfSig" created="2014-05-27T16:35:28+0200" description="" name="PerformanceSignature_singlereport" modifiedbyname="rapi" locationascomparesource="false">
     <reportconfig lines.per.table="10000" pagesize="A4" enabled="true" print.legends="true" orientation="portrait" formathtml="com.dynatrace.diagnostics.report.velocity.format.htmlrenderer" optimizeequalcolumns="false" type="PDF" title="" override="false" levels.per.tree="10" description="" formatpdf="com.dynatrace.diagnostics.report.velocity.format.pdfrenderer" print.images="true" />
     <filter>
+      <criterion type="admfilteranalyzer" />
       <criterion completepurepath="true" type="agents" mode="all">
         <textpattern enabled="true" name="agentname" type="contains" />
         <textpattern enabled="true" name="agenthost" type="contains" />
@@ -25,19 +26,20 @@
       <criterion type="btm" />
       <criterion type="casuemdimension" />
       <criterion filterinterval="false" intervalend="0" type="dcrumdimension" intervalstart="0" />
-      <criterion isactive="true" analyzeserverpath="true" type="enduserpath" analyzeenduserpath="true" />
+      <criterion isactive="true" analyzeserverpath="true" type="enduserpath" analyzeenduserpath="true" analyzeclienterrors="false" />
       <criterion completepurepath="true" type="hosts" mode="all" />
       <criterion severities="" statesmode="all" severitiesmode="all" states="" rulesmode="all" type="incident" />
       <criterion type="or" />
       <criterion enduser="false" type="purepaths" mode="all" />
       <criterion showrendering="true" isactive="false" contenttypegroupsmode="all" javascripttriggersmode="all" shownetwork="true" showjavascript="true" type="riapurepathtype" requestcriterion="ALL" />
-      <criterion includemeasurename="true" includetestname="true" type="tests" teststatus="OK" />
+      <criterion includemeasurename="true" includeplatform="true" includetestname="true" type="tests" testcategory="UNIT,BROWSER_TIMER,BROWSER_AUTO_TIMER,PERFORMANCE,LOAD,WEB_API" teststatus="FAILED,INVALIDATED,VOLATILE,DEGRADED,IMPROVED,passed" />
+      <criterion includeplatform="true" type="testsoverview" />
       <criterion enabled="false" filterbyid="false" type="threads" />
       <criterion type="timeframe">
         <timeframe start="0" type="Auto" end="9223372036854775807" />
       </criterion>
       <criterion type="visits">
-        <visitidset visitsidsetsize="0" />
+        <visitidset />
       </criterion>
       <criterion type="webpage">
         <textpattern enabled="true" name="timerName" type="contains" />
@@ -59,7 +61,7 @@
         <designconfig descriptionalignment="CENTER" descriptionfontstyle="NORMAL" headertype="DEFAULT" namealignment="CENTER" inherited="true" namefontsize="10" descriptionfontsize="8" descriptionshow="true" descriptionfontcolor="128,128,128" namefontstyle="BOLD" nameshow="true" />
       </portletfolder>
     </dashboardlayout>
-    <portletconfig usespecificautorefresh="false" icon="com.dynatrace.diagnostics.sdk/default_16x16.png" usedashboardsourceforcompare="true" folderid="folder" sessiontype="stored" displaymode="Base" locationassource="false" usedashboardsource="true" sessionid="easyTravel/20140812154840_0.session" id="87876592-fba7-4e04-8abd-7eccd23fce6d" addfilterinfo="false" source="server://dT Demo System" description="Durchschnittliche Antwortzeiten der Top 20 Webseiten Aufrufe, abzüglich Bilder, JavaScript, Stylesheets und bekannte synthetische Aufrufe." name="Web Requests" typeid="com.dynatrace.diagnostics.portlets.webrequest.WebRequest" ismaster="false" locationascomparesource="false">
+    <portletconfig usespecificautorefresh="false" icon="com.dynatrace.diagnostics.sdk/default_16x16.png" usedashboardsourceforcompare="true" folderid="folder" sessiontype="live" displaymode="Base" locationassource="false" usedashboardsource="true" sessionid="easyTravel" id="87876592-fba7-4e04-8abd-7eccd23fce6d" addfilterinfo="false" source="server://PoC Dt PerfSig" description="Durchschnittliche Antwortzeiten der Top 20 Webseiten Aufrufe, abzüglich Bilder, JavaScript, Stylesheets und bekannte synthetische Aufrufe." name="Web Requests" typeid="com.dynatrace.diagnostics.portlets.webrequest.WebRequest" ismaster="false" locationascomparesource="false">
       <reportconfig lines.per.table="10000" print.legends="true" enabled="true" optimizeequalcolumns="false" levels.per.tree="10" override="false" print.images="true" reportposition="5" />
       <filter>
         <criterion completepurepath="true" type="agents" mode="all">
@@ -72,7 +74,9 @@
         <criterion type="btm" />
         <criterion type="casuemdimension" />
         <criterion filterinterval="false" intervalend="0" type="dcrumdimension" intervalstart="0" />
+        <criterion active="false" type="forceanalysiscache" />
         <criterion completepurepath="true" type="hosts" mode="all" />
+        <criterion usefullanalysis="false" active="false" type="noanalysiscache" />
         <criterion type="or" />
         <criterion enduser="false" type="purepaths" mode="all" />
         <criterion enabled="false" filterbyid="false" type="threads" />
@@ -81,7 +85,7 @@
         </criterion>
         <criterion sort="highestValues" isactive="true" columnlabel="Total Avg [ms]" maxnrofrecords="20" customdefaultcolumnindex="5" customdefaultcolumnlabel="Count" columnindex="6" type="topx" />
         <criterion type="visits">
-          <visitidset visitsidsetsize="0" />
+          <visitidset />
         </criterion>
         <criterion type="webpage">
           <textpattern enabled="true" name="timerName" type="contains" />
@@ -140,7 +144,7 @@
       </datamodelconfig>
       <analyzerparameters analyzerrecordlimit="10000" requiredrilldowndata="true" analyzershow="true" analyzergrouping="appUri" />
     </portletconfig>
-    <portletconfig usespecificautorefresh="false" icon="com.dynatrace.diagnostics.sdk/chart_cust.png" usedashboardsourceforcompare="true" folderid="folder" sessiontype="stored" locationassource="false" usedashboardsource="true" sessionid="easyTravel/20140812154840_0.session" id="8cf85a31-0839-44ae-a3bb-d8e9e7bebf7d" addfilterinfo="false" source="server://dT Demo System" description="Anzahl der Webseiten Aufrufe, abzüglich Bilder, JavaScript, Stylesheets und bekannte synthetische Aufrufe." lastvalue="false" name="WebRequest Chart" typeid="com.dynatrace.diagnostics.portlets.chart.Chart" ismaster="false" showabsolutevalues="false" locationascomparesource="false">
+    <portletconfig usespecificautorefresh="false" icon="com.dynatrace.diagnostics.sdk/chart_cust.png" usedashboardsourceforcompare="true" folderid="folder" sessiontype="live" locationassource="false" usedashboardsource="true" sessionid="easyTravel" id="8cf85a31-0839-44ae-a3bb-d8e9e7bebf7d" addfilterinfo="false" source="server://PoC Dt PerfSig" description="Anzahl der Webseiten Aufrufe, abzüglich Bilder, JavaScript, Stylesheets und bekannte synthetische Aufrufe." lastvalue="false" name="WebRequest Chart" typeid="com.dynatrace.diagnostics.portlets.chart.Chart" ismaster="false" showabsolutevalues="false" locationascomparesource="false">
       <reportconfig lines.per.table="10000" print.legends="true" enabled="true" optimizeequalcolumns="true" levels.per.tree="10" override="false" print.images="true" reportposition="4" />
       <filter>
         <criterion completepurepath="true" type="agents" mode="all">
@@ -154,7 +158,7 @@
           <timeframe start="0" type="Auto" end="9223372036854775807" />
         </criterion>
         <criterion type="visits">
-          <visitidset visitsidsetsize="0" />
+          <visitidset />
         </criterion>
         <inheritancemap />
       </filter>
@@ -165,11 +169,11 @@
           <legendcomposition splittings="true" measure="true" avg="true">
             <pielabelcomposition unit="true" value="true" />
           </legendcomposition>
-          <chartsource position="1" scale="0" visible="false" sessiontype="stored" colorinheritancemode="random" aggregationtype="Avg" uiunit="ms" groupingvalue="" id="f7bf24f3-7f1a-4159-b684-0fda3d236ebf" fetchmeasurecolor="true" overridesource="false" rate="10s" ratesupported="true" name="Web Page Requests" sourcecolor="RGB(192,0,128,255)" sourcetype="MEASURE" fetchbaseline="false" dynamicconfig="false" autounit="false" sessionid="easyTravel/20140812154840_0.session" groupingcriterion="BTSP1" displayrate="10s" unit="ms" systemid="easyTravel/20140812154840_0.session" measuretype="TransactionMeasure" fetch.dynamic.measures="true" fetchthreshold="false" autoscale="false">
+          <chartsource position="1" scale="0" visible="false" sessiontype="live" colorinheritancemode="random" aggregationtype="Avg" uiunit="ms" groupingvalue="" id="f7bf24f3-7f1a-4159-b684-0fda3d236ebf" fetchmeasurecolor="true" overridesource="false" rate="10s" ratesupported="true" name="Web Page Requests" sourcecolor="RGB(192,0,128,255)" sourcetype="MEASURE" fetchbaseline="false" dynamicconfig="false" autounit="false" sessionid="easyTravel" groupingcriterion="BTSP1" displayrate="10s" unit="ms" systemid="easyTravel" measuretype="TransactionMeasure" fetch.dynamic.measures="true" fetchthreshold="false" autoscale="false">
             <tagtolabel>
               <taglabelentry value="Complete Uri Path" key="BTSP1" />
             </tagtolabel>
-            <lightweightuniquemeasureidentifier keyid="Web Page Requests" metricgroupkey="Business Transaction Results" collector="" systemid="easyTravel/20140812154840_0.session" application="" agenthost="" parentkeyid="Web Page Requests" measuretype="TransactionMeasure" metrickeyid="Value" agentname="" metricsimpledisplayname="Value" />
+            <lightweightuniquemeasureidentifier keyid="Web Page Requests" metricgroupkey="Business Transaction Results" collector="" systemid="easyTravel" application="" agenthost="" parentkeyid="Web Page Requests" measuretype="TransactionMeasure" metrickeyid="Value" agentname="" metricsimpledisplayname="Value" />
             <displaysourceinfo agenthost="" transactionname="Web Page Requests" measureunit="ms" agentname="" agentgroup="&lt;all-agents&gt;" measurerate="purepath" />
           </chartsource>
           <splitconfig splitmode="PerSeries" splitlayout="Horizontal" />
@@ -196,13 +200,13 @@
           <column index="18" sort="None" forcevisible="false" hidden="true" width="150" />
           <column index="19" sort="None" forcevisible="false" hidden="true" width="150" />
         </table>
-        <heatfieldconfig smartmeasure="true" filterconfirmed="false" smartserver="true" customevents="true">
+        <heatfieldconfig smartmeasure="true" filterconfirmed="false" smartserver="true" customevents="true" deploymentevents="true">
           <incidentrules />
         </heatfieldconfig>
       </datamodelconfig>
       <chartcolors />
     </portletconfig>
-    <portletconfig phpexpanded="true" browserexpanded="true" sessiontype="stored" locationassource="false" logexpanded="true" id="a17da626-a996-4a2e-8d5b-fefdbd32ad88" description="Festgestellte Fehler im Berichtszeitraum." typeid="com.dynatrace.diagnostics.portlets.ErrorDetection" name="Errors" ismaster="false" locationascomparesource="false" moileexpanded="true" icon="com.dynatrace.diagnostics.sdk/default_16x16.png" usespecificautorefresh="false" usedashboardsourceforcompare="true" httpexpanded="true" folderid="folder" exceptionexpanded="true" displaymode="Base" usedashboardsource="true" sessionid="easyTravel/20140812154840_0.session" addfilterinfo="false" source="server://dT Demo System">
+    <portletconfig phpexpanded="true" browserexpanded="true" sessiontype="live" locationassource="false" logexpanded="true" id="a17da626-a996-4a2e-8d5b-fefdbd32ad88" description="Festgestellte Fehler im Berichtszeitraum." typeid="com.dynatrace.diagnostics.portlets.ErrorDetection" name="Errors" ismaster="false" locationascomparesource="false" moileexpanded="true" icon="com.dynatrace.diagnostics.sdk/default_16x16.png" usespecificautorefresh="false" usedashboardsourceforcompare="true" httpexpanded="true" folderid="folder" exceptionexpanded="true" displaymode="Base" usedashboardsource="true" sessionid="easyTravel" addfilterinfo="false" source="server://PoC Dt PerfSig">
       <reportconfig lines.per.table="10000" print.legends="true" enabled="true" optimizeequalcolumns="false" levels.per.tree="10" override="false" print.images="true" reportposition="27" />
       <filter>
         <criterion completepurepath="true" type="agents" mode="all">
@@ -215,7 +219,9 @@
         <criterion type="btm" />
         <criterion type="casuemdimension" />
         <criterion filterinterval="false" intervalend="0" type="dcrumdimension" intervalstart="0" />
+        <criterion active="false" type="forceanalysiscache" />
         <criterion completepurepath="true" type="hosts" mode="all" />
+        <criterion usefullanalysis="false" active="false" type="noanalysiscache" />
         <criterion type="or" />
         <criterion enduser="false" type="purepaths" mode="all" />
         <criterion enabled="false" filterbyid="false" type="threads" />
@@ -223,7 +229,7 @@
           <timeframe start="0" type="Auto" end="9223372036854775807" />
         </criterion>
         <criterion type="visits">
-          <visitidset visitsidsetsize="0" />
+          <visitidset />
         </criterion>
         <criterion type="webpage">
           <textpattern enabled="true" name="timerName" type="contains" />
@@ -271,7 +277,7 @@
       </datamodelconfig>
       <analyzerparameters analyzerrecordlimit="1000" requiredrilldowndata="true" />
     </portletconfig>
-    <portletconfig usespecificautorefresh="false" icon="com.dynatrace.diagnostics.sdk/default_16x16.png" usedashboardsourceforcompare="true" folderid="folder" sessiontype="stored" locationassource="false" usedashboardsource="true" sessionid="easyTravel/20140812154840_0.session" id="ab26454d-91e8-4dd8-bbe7-2cb6a92e4e83" addfilterinfo="false" source="server://dT Demo System" description="Zeigt den Status der Anwendung (NFAs) und des Servers auf Basis von Incidents." lastvalue="false" name="Übersicht NFA" typeid="com.dynatrace.diagnostics.portlets.chart.Incident" ismaster="false" locationascomparesource="false">
+    <portletconfig usespecificautorefresh="false" icon="com.dynatrace.diagnostics.sdk/default_16x16.png" usedashboardsourceforcompare="true" folderid="folder" sessiontype="live" locationassource="false" usedashboardsource="true" sessionid="easyTravel" id="ab26454d-91e8-4dd8-bbe7-2cb6a92e4e83" addfilterinfo="false" source="server://PoC Dt PerfSig" description="Zeigt den Status der Anwendung (NFAs) und des Servers auf Basis von Incidents." lastvalue="false" name="Übersicht NFA" typeid="com.dynatrace.diagnostics.portlets.chart.Incident" ismaster="false" locationascomparesource="false">
       <reportconfig lines.per.table="10000" print.legends="true" enabled="true" optimizeequalcolumns="true" levels.per.tree="10" override="false" print.images="true" reportposition="1" />
       <filter>
         <criterion completepurepath="true" type="agents" mode="all">
@@ -302,36 +308,36 @@
           <legendcomposition splittings="true" measure="true">
             <pielabelcomposition unit="true" measure="true" value="true" />
           </legendcomposition>
-          <chartsource position="2" displayrate="10s" id="805289ae-5041-4a55-83f5-91e3fce13cd6" systemid="easyTravel/20140812154840_0.session" scale="0" overridesource="false" visible="true" sessiontype="stored" name="Durchschnittliche Datenbanklaufzeit" dynamicconfig="false" sessionid="easyTravel/20140812154840_0.session" sourcetype="INCIDENT_RULE" autoscale="false">
-            <incidentrule id="Durchschnittliche Datenbanklaufzeit" flags="1" incidentdashboardname="Incident Dashboard" description="" timeframe="10">
+          <chartsource position="2" displayrate="10s" id="805289ae-5041-4a55-83f5-91e3fce13cd6" systemid="easyTravel" scale="0" overridesource="false" visible="true" sessiontype="live" name="Durchschnittliche Datenbanklaufzeit" dynamicconfig="false" sessionid="easyTravel" sourcetype="INCIDENT_RULE" autoscale="false">
+            <incidentrule id="Durchschnittliche Datenbanklaufzeit" flags="1" visible="true" incidentdashboardname="Incident Dashboard" description="" timeframe="10">
               <sensitivity id="immediate" duration="0" minnonviolatedperiod="60" delay="0" />
               <actions>
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" severity="severe" type="Logging Notification" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" execution="begin" roletype="1" />
+                <actionref smartexecution="begin" severity="severe" type="Logging Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" roletype="1" />
               </actions>
             </incidentrule>
           </chartsource>
-          <chartsource position="6" displayrate="10s" id="8280d5d4-20f7-445e-9f9f-74460edabed2" systemid="easyTravel/20140812154840_0.session" scale="0" overridesource="false" visible="true" sessiontype="stored" name="Durchschnittliche Datenbanklaufzeit - SELECT" dynamicconfig="false" sessionid="easyTravel/20140812154840_0.session" sourcetype="INCIDENT_RULE" autoscale="false">
-            <incidentrule id="Durchschnittliche Datenbanklaufzeit - SELECT" flags="1" incidentdashboardname="Incident Dashboard" description="" timeframe="10">
+          <chartsource position="6" displayrate="10s" id="8280d5d4-20f7-445e-9f9f-74460edabed2" systemid="easyTravel" scale="0" overridesource="false" visible="true" sessiontype="live" name="Durchschnittliche Datenbanklaufzeit - SELECT" dynamicconfig="false" sessionid="easyTravel" sourcetype="INCIDENT_RULE" autoscale="false">
+            <incidentrule id="Durchschnittliche Datenbanklaufzeit - SELECT" flags="1" visible="true" incidentdashboardname="Incident Dashboard" description="" timeframe="10">
               <sensitivity id="immediate" duration="0" minnonviolatedperiod="60" delay="0" />
               <actions>
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" severity="severe" type="Logging Notification" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" execution="begin" roletype="1" />
+                <actionref smartexecution="begin" severity="severe" type="Logging Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" roletype="1" />
               </actions>
             </incidentrule>
           </chartsource>
-          <chartsource position="5" displayrate="10s" id="af4a7dba-57d8-4205-9dad-ad0bc02ba848" systemid="easyTravel/20140812154840_0.session" scale="0" overridesource="false" visible="true" sessiontype="stored" name="Durchschnittliche Datenbanklaufzeit - INSERT" dynamicconfig="false" sessionid="easyTravel/20140812154840_0.session" sourcetype="INCIDENT_RULE" autoscale="false">
-            <incidentrule id="Durchschnittliche Datenbanklaufzeit - INSERT" flags="1" incidentdashboardname="Incident Dashboard" description="" timeframe="10">
+          <chartsource position="5" displayrate="10s" id="af4a7dba-57d8-4205-9dad-ad0bc02ba848" systemid="easyTravel" scale="0" overridesource="false" visible="true" sessiontype="live" name="Durchschnittliche Datenbanklaufzeit - INSERT" dynamicconfig="false" sessionid="easyTravel" sourcetype="INCIDENT_RULE" autoscale="false">
+            <incidentrule id="Durchschnittliche Datenbanklaufzeit - INSERT" flags="1" visible="true" incidentdashboardname="Incident Dashboard" description="" timeframe="10">
               <sensitivity id="immediate" duration="0" minnonviolatedperiod="60" delay="0" />
               <actions>
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" severity="severe" type="Logging Notification" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" execution="begin" roletype="1" />
+                <actionref smartexecution="begin" severity="severe" type="Logging Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" roletype="1" />
               </actions>
             </incidentrule>
           </chartsource>
-          <chartsource position="9" displayrate="10s" id="d1fbafad-ab34-4cd1-9ece-524c9bda24fb" systemid="easyTravel/20140812154840_0.session" scale="0" overridesource="false" visible="true" sessiontype="stored" name="Host Memory Unhealthy" dynamicconfig="false" sessionid="easyTravel/20140812154840_0.session" sourcetype="INCIDENT_RULE" autoscale="false">
-            <incidentrule id="Host Memory Unhealthy" flags="1" incidentdashboardname="Incident Zero Conf Dashboard" description="" timeframe="10">
+          <chartsource position="9" displayrate="10s" id="d1fbafad-ab34-4cd1-9ece-524c9bda24fb" systemid="easyTravel" scale="0" overridesource="false" visible="true" sessiontype="live" name="Host Memory Unhealthy" dynamicconfig="false" sessionid="easyTravel" sourcetype="INCIDENT_RULE" autoscale="false">
+            <incidentrule id="Host Memory Unhealthy" flags="1" visible="true" incidentdashboardname="Incident Zero Conf Dashboard" description="" timeframe="10">
               <sensitivity id="immediate" duration="0" minnonviolatedperiod="60" delay="0" />
               <actions>
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" severity="severe" type="Logging Notification" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" execution="begin" roletype="1" />
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.plugins.EmailNotificationAction" smartalert="false" severity="informational" type="Email Notification" refaction="com.dynatrace.diagnostics.plugins.EmailNotification" key="com.dynatrace.diagnostics.plugins.EmailNotification" execution="begin" roletype="1">
+                <actionref smartexecution="begin" severity="severe" type="Logging Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" roletype="1" />
+                <actionref smartexecution="begin" severity="informational" type="Email Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.plugins.EmailNotificationAction" smartalert="false" refaction="com.dynatrace.diagnostics.plugins.EmailNotification" key="com.dynatrace.diagnostics.plugins.EmailNotification" roletype="1">
                   <property typeid="string" value="" key="from" />
                   <property typeid="string" value="group[Incident Email Group]" key="to" />
                   <property typeid="string" value="" key="cc" />
@@ -341,20 +347,20 @@
               </actions>
             </incidentrule>
           </chartsource>
-          <chartsource position="4" displayrate="10s" id="fa103e62-066f-4600-b30c-09e6a82a6bad" systemid="easyTravel/20140812154840_0.session" scale="0" overridesource="false" visible="true" sessiontype="stored" name="Durchschnittliche Datenbanklaufzeit - UPDATE" dynamicconfig="false" sessionid="easyTravel/20140812154840_0.session" sourcetype="INCIDENT_RULE" autoscale="false">
-            <incidentrule id="Durchschnittliche Datenbanklaufzeit - UPDATE" flags="1" incidentdashboardname="Incident Dashboard" description="" timeframe="10">
+          <chartsource position="4" displayrate="10s" id="fa103e62-066f-4600-b30c-09e6a82a6bad" systemid="easyTravel" scale="0" overridesource="false" visible="true" sessiontype="live" name="Durchschnittliche Datenbanklaufzeit - UPDATE" dynamicconfig="false" sessionid="easyTravel" sourcetype="INCIDENT_RULE" autoscale="false">
+            <incidentrule id="Durchschnittliche Datenbanklaufzeit - UPDATE" flags="1" visible="true" incidentdashboardname="Incident Dashboard" description="" timeframe="10">
               <sensitivity id="immediate" duration="0" minnonviolatedperiod="60" delay="0" />
               <actions>
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" severity="severe" type="Logging Notification" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" execution="begin" roletype="1" />
+                <actionref smartexecution="begin" severity="severe" type="Logging Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" roletype="1" />
               </actions>
             </incidentrule>
           </chartsource>
-          <chartsource position="8" displayrate="10s" id="ff748978-1b8d-4e58-ac20-8f2139efc867" systemid="easyTravel/20140812154840_0.session" scale="0" overridesource="false" visible="true" sessiontype="stored" name="Host CPU Unhealthy" dynamicconfig="false" sessionid="easyTravel/20140812154840_0.session" sourcetype="INCIDENT_RULE" autoscale="false">
-            <incidentrule id="Host CPU Unhealthy" flags="1" incidentdashboardname="Incident Zero Conf Dashboard" description="" timeframe="10">
+          <chartsource position="8" displayrate="10s" id="ff748978-1b8d-4e58-ac20-8f2139efc867" systemid="easyTravel" scale="0" overridesource="false" visible="true" sessiontype="live" name="Host CPU Unhealthy" dynamicconfig="false" sessionid="easyTravel" sourcetype="INCIDENT_RULE" autoscale="false">
+            <incidentrule id="Host CPU Unhealthy" flags="1" visible="true" incidentdashboardname="Incident Zero Conf Dashboard" description="" timeframe="10">
               <sensitivity id="immediate" duration="0" minnonviolatedperiod="60" delay="0" />
               <actions>
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" severity="severe" type="Logging Notification" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" execution="begin" roletype="1" />
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.plugins.EmailNotificationAction" smartalert="false" severity="informational" type="Email Notification" refaction="com.dynatrace.diagnostics.plugins.EmailNotification" key="com.dynatrace.diagnostics.plugins.EmailNotification" execution="begin" roletype="1">
+                <actionref smartexecution="begin" severity="severe" type="Logging Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" roletype="1" />
+                <actionref smartexecution="begin" severity="informational" type="Email Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.plugins.EmailNotificationAction" smartalert="false" refaction="com.dynatrace.diagnostics.plugins.EmailNotification" key="com.dynatrace.diagnostics.plugins.EmailNotification" roletype="1">
                   <property typeid="string" value="" key="from" />
                   <property typeid="string" value="group[Incident Email Group]" key="to" />
                   <property typeid="string" value="" key="cc" />
@@ -364,12 +370,12 @@
               </actions>
             </incidentrule>
           </chartsource>
-          <chartsource position="7" displayrate="10s" id="03148c29-57c3-4c4b-b471-7a6a6cc95e8d" systemid="easyTravel/20140812154840_0.session" scale="0" overridesource="false" visible="true" sessiontype="stored" name="Host Network Unhealthy" dynamicconfig="false" sessionid="easyTravel/20140812154840_0.session" sourcetype="INCIDENT_RULE" autoscale="false">
-            <incidentrule id="Host Network Unhealthy" flags="1" incidentdashboardname="Incident Zero Conf Dashboard" description="" timeframe="10">
+          <chartsource position="7" displayrate="10s" id="03148c29-57c3-4c4b-b471-7a6a6cc95e8d" systemid="easyTravel" scale="0" overridesource="false" visible="true" sessiontype="live" name="Host Network Unhealthy" dynamicconfig="false" sessionid="easyTravel" sourcetype="INCIDENT_RULE" autoscale="false">
+            <incidentrule id="Host Network Unhealthy" flags="1" visible="true" incidentdashboardname="Incident Zero Conf Dashboard" description="" timeframe="10">
               <sensitivity id="immediate" duration="0" minnonviolatedperiod="60" delay="0" />
               <actions>
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" severity="severe" type="Logging Notification" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" execution="begin" roletype="1" />
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.plugins.EmailNotificationAction" smartalert="false" severity="informational" type="Email Notification" refaction="com.dynatrace.diagnostics.plugins.EmailNotification" key="com.dynatrace.diagnostics.plugins.EmailNotification" execution="begin" roletype="1">
+                <actionref smartexecution="begin" severity="severe" type="Logging Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" roletype="1" />
+                <actionref smartexecution="begin" severity="informational" type="Email Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.plugins.EmailNotificationAction" smartalert="false" refaction="com.dynatrace.diagnostics.plugins.EmailNotification" key="com.dynatrace.diagnostics.plugins.EmailNotification" roletype="1">
                   <property typeid="string" value="" key="from" />
                   <property typeid="string" value="group[Incident Email Group]" key="to" />
                   <property typeid="string" value="" key="cc" />
@@ -379,12 +385,12 @@
               </actions>
             </incidentrule>
           </chartsource>
-          <chartsource position="11" displayrate="10s" id="220a7629-357c-4fa2-af7f-02ee62310ab7" systemid="easyTravel/20140812154840_0.session" scale="0" overridesource="false" visible="true" sessiontype="stored" name="Application Process Unhealthy" dynamicconfig="false" sessionid="easyTravel/20140812154840_0.session" sourcetype="INCIDENT_RULE" autoscale="false">
-            <incidentrule id="Application Process Unhealthy" flags="1" incidentdashboardname="Incident Zero Conf Dashboard" description="" timeframe="10">
+          <chartsource position="11" displayrate="10s" id="220a7629-357c-4fa2-af7f-02ee62310ab7" systemid="easyTravel" scale="0" overridesource="false" visible="true" sessiontype="live" name="Application Process Unhealthy" dynamicconfig="false" sessionid="easyTravel" sourcetype="INCIDENT_RULE" autoscale="false">
+            <incidentrule id="Application Process Unhealthy" flags="1" visible="true" incidentdashboardname="Incident Zero Conf Dashboard" description="" timeframe="10">
               <sensitivity id="immediate" duration="0" minnonviolatedperiod="60" delay="0" />
               <actions>
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" severity="severe" type="Logging Notification" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" execution="begin" roletype="1" />
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.plugins.EmailNotificationAction" smartalert="false" severity="informational" type="Email Notification" refaction="com.dynatrace.diagnostics.plugins.EmailNotification" key="com.dynatrace.diagnostics.plugins.EmailNotification" execution="begin" roletype="1">
+                <actionref smartexecution="begin" severity="severe" type="Logging Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" roletype="1" />
+                <actionref smartexecution="begin" severity="informational" type="Email Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.plugins.EmailNotificationAction" smartalert="false" refaction="com.dynatrace.diagnostics.plugins.EmailNotification" key="com.dynatrace.diagnostics.plugins.EmailNotification" roletype="1">
                   <property typeid="string" value="" key="from" />
                   <property typeid="string" value="group[Incident Email Group]" key="to" />
                   <property typeid="string" value="" key="cc" />
@@ -394,28 +400,28 @@
               </actions>
             </incidentrule>
           </chartsource>
-          <chartsource position="3" displayrate="10s" id="5e1c5037-3413-49de-9140-af549247034d" systemid="easyTravel/20140812154840_0.session" scale="0" overridesource="false" visible="true" sessiontype="stored" name="Durchschnittliche Datenbanklaufzeit - DELETE" dynamicconfig="false" sessionid="easyTravel/20140812154840_0.session" sourcetype="INCIDENT_RULE" autoscale="false">
-            <incidentrule id="Durchschnittliche Datenbanklaufzeit - DELETE" flags="1" incidentdashboardname="Incident Dashboard" description="" timeframe="10">
+          <chartsource position="3" displayrate="10s" id="5e1c5037-3413-49de-9140-af549247034d" systemid="easyTravel" scale="0" overridesource="false" visible="true" sessiontype="live" name="Durchschnittliche Datenbanklaufzeit - DELETE" dynamicconfig="false" sessionid="easyTravel" sourcetype="INCIDENT_RULE" autoscale="false">
+            <incidentrule id="Durchschnittliche Datenbanklaufzeit - DELETE" flags="1" visible="true" incidentdashboardname="Incident Dashboard" description="" timeframe="10">
               <sensitivity id="immediate" duration="0" minnonviolatedperiod="60" delay="0" />
               <actions>
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" severity="severe" type="Logging Notification" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" execution="begin" roletype="1" />
+                <actionref smartexecution="begin" severity="severe" type="Logging Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" roletype="1" />
               </actions>
             </incidentrule>
           </chartsource>
-          <chartsource position="1" displayrate="10s" id="5e7d9f75-ce64-45de-b76a-40db4f3ea41b" systemid="easyTravel/20140812154840_0.session" scale="0" overridesource="false" visible="true" sessiontype="stored" name="Durchschnittliche Antwortzeit" dynamicconfig="false" sessionid="easyTravel/20140812154840_0.session" sourcetype="INCIDENT_RULE" autoscale="false">
-            <incidentrule id="Durchschnittliche Antwortzeit" flags="1" incidentdashboardname="Incident Dashboard" description="Durchschnittliche Antwortzeit, Warning 1000ms, Severe 5000ms" timeframe="10">
+          <chartsource position="1" displayrate="10s" id="5e7d9f75-ce64-45de-b76a-40db4f3ea41b" systemid="easyTravel" scale="0" overridesource="false" visible="true" sessiontype="live" name="Durchschnittliche Antwortzeit" dynamicconfig="false" sessionid="easyTravel" sourcetype="INCIDENT_RULE" autoscale="false">
+            <incidentrule id="Durchschnittliche Antwortzeit" flags="1" visible="true" incidentdashboardname="Incident Dashboard" description="Durchschnittliche Antwortzeit, Warning 1000ms, Severe 5000ms" timeframe="10">
               <sensitivity id="immediate" duration="0" minnonviolatedperiod="60" delay="0" />
               <actions>
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" severity="severe" type="Logging Notification" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" execution="begin" roletype="1" />
+                <actionref smartexecution="begin" severity="severe" type="Logging Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" roletype="1" />
               </actions>
             </incidentrule>
           </chartsource>
-          <chartsource position="10" displayrate="10s" id="63a3917f-372a-4538-a8b9-f7f72865fb81" systemid="easyTravel/20140812154840_0.session" scale="0" overridesource="false" visible="true" sessiontype="stored" name="Host Disk Unhealthy" dynamicconfig="false" sessionid="easyTravel/20140812154840_0.session" sourcetype="INCIDENT_RULE" autoscale="false">
-            <incidentrule id="Host Disk Unhealthy" flags="1" incidentdashboardname="Incident Zero Conf Dashboard" description="" timeframe="10">
+          <chartsource position="10" displayrate="10s" id="63a3917f-372a-4538-a8b9-f7f72865fb81" systemid="easyTravel" scale="0" overridesource="false" visible="true" sessiontype="live" name="Host Disk Unhealthy" dynamicconfig="false" sessionid="easyTravel" sourcetype="INCIDENT_RULE" autoscale="false">
+            <incidentrule id="Host Disk Unhealthy" flags="1" visible="true" incidentdashboardname="Incident Zero Conf Dashboard" description="" timeframe="10">
               <sensitivity id="immediate" duration="0" minnonviolatedperiod="60" delay="0" />
               <actions>
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" severity="severe" type="Logging Notification" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" execution="begin" roletype="1" />
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.plugins.EmailNotificationAction" smartalert="false" severity="informational" type="Email Notification" refaction="com.dynatrace.diagnostics.plugins.EmailNotification" key="com.dynatrace.diagnostics.plugins.EmailNotification" execution="begin" roletype="1">
+                <actionref smartexecution="begin" severity="severe" type="Logging Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" roletype="1" />
+                <actionref smartexecution="begin" severity="informational" type="Email Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.plugins.EmailNotificationAction" smartalert="false" refaction="com.dynatrace.diagnostics.plugins.EmailNotification" key="com.dynatrace.diagnostics.plugins.EmailNotification" roletype="1">
                   <property typeid="string" value="" key="from" />
                   <property typeid="string" value="group[Incident Email Group]" key="to" />
                   <property typeid="string" value="" key="cc" />
@@ -429,7 +435,7 @@
         </chart>
       </datamodelconfig>
     </portletconfig>
-    <portletconfig usespecificautorefresh="false" icon="com.dynatrace.diagnostics.sdk/default_16x16.png" usedashboardsourceforcompare="true" folderid="folder" sessiontype="stored" locationassource="false" usedashboardsource="true" sessionid="easyTravel/20140812154840_0.session" id="eba254c5-32a1-4c03-8690-47cd7d993459" addfilterinfo="false" source="server://dT Demo System" description="Die festgestellten Abweichungen/Ereignisse im Berichtszeitraum." lastvalue="false" name="Detail NFA" typeid="com.dynatrace.diagnostics.portlets.chart.Incident" ismaster="false" locationascomparesource="false">
+    <portletconfig usespecificautorefresh="false" icon="com.dynatrace.diagnostics.sdk/default_16x16.png" usedashboardsourceforcompare="true" folderid="folder" sessiontype="live" locationassource="false" usedashboardsource="true" sessionid="easyTravel" id="eba254c5-32a1-4c03-8690-47cd7d993459" addfilterinfo="false" source="server://PoC Dt PerfSig" description="Die festgestellten Abweichungen/Ereignisse im Berichtszeitraum." lastvalue="false" name="Detail NFA" typeid="com.dynatrace.diagnostics.portlets.chart.Incident" ismaster="false" locationascomparesource="false">
       <reportconfig lines.per.table="10000" print.legends="true" enabled="true" optimizeequalcolumns="false" levels.per.tree="10" override="false" print.images="true" reportposition="26" />
       <filter>
         <criterion completepurepath="true" type="agents" mode="all">
@@ -460,36 +466,36 @@
           <legendcomposition splittings="true" measure="true">
             <pielabelcomposition unit="true" measure="true" value="true" />
           </legendcomposition>
-          <chartsource position="2" displayrate="10s" id="805289ae-5041-4a55-83f5-91e3fce13cd6" systemid="easyTravel/20140812154840_0.session" scale="0" overridesource="false" visible="true" sessiontype="stored" name="Durchschnittliche Datenbanklaufzeit" dynamicconfig="false" sessionid="easyTravel/20140812154840_0.session" sourcetype="INCIDENT_RULE" autoscale="false">
-            <incidentrule id="Durchschnittliche Datenbanklaufzeit" flags="1" incidentdashboardname="Incident Dashboard" description="" timeframe="10">
+          <chartsource position="2" displayrate="10s" id="805289ae-5041-4a55-83f5-91e3fce13cd6" systemid="easyTravel" scale="0" overridesource="false" visible="true" sessiontype="live" name="Durchschnittliche Datenbanklaufzeit" dynamicconfig="false" sessionid="easyTravel" sourcetype="INCIDENT_RULE" autoscale="false">
+            <incidentrule id="Durchschnittliche Datenbanklaufzeit" flags="1" visible="true" incidentdashboardname="Incident Dashboard" description="" timeframe="10">
               <sensitivity id="immediate" duration="0" minnonviolatedperiod="60" delay="0" />
               <actions>
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" severity="severe" type="Logging Notification" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" execution="begin" roletype="1" />
+                <actionref smartexecution="begin" severity="severe" type="Logging Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" roletype="1" />
               </actions>
             </incidentrule>
           </chartsource>
-          <chartsource position="6" displayrate="10s" id="8280d5d4-20f7-445e-9f9f-74460edabed2" systemid="easyTravel/20140812154840_0.session" scale="0" overridesource="false" visible="true" sessiontype="stored" name="Durchschnittliche Datenbanklaufzeit - SELECT" dynamicconfig="false" sessionid="easyTravel/20140812154840_0.session" sourcetype="INCIDENT_RULE" autoscale="false">
-            <incidentrule id="Durchschnittliche Datenbanklaufzeit - SELECT" flags="1" incidentdashboardname="Incident Dashboard" description="" timeframe="10">
+          <chartsource position="6" displayrate="10s" id="8280d5d4-20f7-445e-9f9f-74460edabed2" systemid="easyTravel" scale="0" overridesource="false" visible="true" sessiontype="live" name="Durchschnittliche Datenbanklaufzeit - SELECT" dynamicconfig="false" sessionid="easyTravel" sourcetype="INCIDENT_RULE" autoscale="false">
+            <incidentrule id="Durchschnittliche Datenbanklaufzeit - SELECT" flags="1" visible="true" incidentdashboardname="Incident Dashboard" description="" timeframe="10">
               <sensitivity id="immediate" duration="0" minnonviolatedperiod="60" delay="0" />
               <actions>
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" severity="severe" type="Logging Notification" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" execution="begin" roletype="1" />
+                <actionref smartexecution="begin" severity="severe" type="Logging Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" roletype="1" />
               </actions>
             </incidentrule>
           </chartsource>
-          <chartsource position="5" displayrate="10s" id="af4a7dba-57d8-4205-9dad-ad0bc02ba848" systemid="easyTravel/20140812154840_0.session" scale="0" overridesource="false" visible="true" sessiontype="stored" name="Durchschnittliche Datenbanklaufzeit - INSERT" dynamicconfig="false" sessionid="easyTravel/20140812154840_0.session" sourcetype="INCIDENT_RULE" autoscale="false">
-            <incidentrule id="Durchschnittliche Datenbanklaufzeit - INSERT" flags="1" incidentdashboardname="Incident Dashboard" description="" timeframe="10">
+          <chartsource position="5" displayrate="10s" id="af4a7dba-57d8-4205-9dad-ad0bc02ba848" systemid="easyTravel" scale="0" overridesource="false" visible="true" sessiontype="live" name="Durchschnittliche Datenbanklaufzeit - INSERT" dynamicconfig="false" sessionid="easyTravel" sourcetype="INCIDENT_RULE" autoscale="false">
+            <incidentrule id="Durchschnittliche Datenbanklaufzeit - INSERT" flags="1" visible="true" incidentdashboardname="Incident Dashboard" description="" timeframe="10">
               <sensitivity id="immediate" duration="0" minnonviolatedperiod="60" delay="0" />
               <actions>
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" severity="severe" type="Logging Notification" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" execution="begin" roletype="1" />
+                <actionref smartexecution="begin" severity="severe" type="Logging Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" roletype="1" />
               </actions>
             </incidentrule>
           </chartsource>
-          <chartsource position="9" displayrate="10s" id="d1fbafad-ab34-4cd1-9ece-524c9bda24fb" systemid="easyTravel/20140812154840_0.session" scale="0" overridesource="false" visible="true" sessiontype="stored" name="Host Memory Unhealthy" dynamicconfig="false" sessionid="easyTravel/20140812154840_0.session" sourcetype="INCIDENT_RULE" autoscale="false">
-            <incidentrule id="Host Memory Unhealthy" flags="1" incidentdashboardname="Incident Zero Conf Dashboard" description="" timeframe="10">
+          <chartsource position="9" displayrate="10s" id="d1fbafad-ab34-4cd1-9ece-524c9bda24fb" systemid="easyTravel" scale="0" overridesource="false" visible="true" sessiontype="live" name="Host Memory Unhealthy" dynamicconfig="false" sessionid="easyTravel" sourcetype="INCIDENT_RULE" autoscale="false">
+            <incidentrule id="Host Memory Unhealthy" flags="1" visible="true" incidentdashboardname="Incident Zero Conf Dashboard" description="" timeframe="10">
               <sensitivity id="immediate" duration="0" minnonviolatedperiod="60" delay="0" />
               <actions>
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" severity="severe" type="Logging Notification" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" execution="begin" roletype="1" />
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.plugins.EmailNotificationAction" smartalert="false" severity="informational" type="Email Notification" refaction="com.dynatrace.diagnostics.plugins.EmailNotification" key="com.dynatrace.diagnostics.plugins.EmailNotification" execution="begin" roletype="1">
+                <actionref smartexecution="begin" severity="severe" type="Logging Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" roletype="1" />
+                <actionref smartexecution="begin" severity="informational" type="Email Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.plugins.EmailNotificationAction" smartalert="false" refaction="com.dynatrace.diagnostics.plugins.EmailNotification" key="com.dynatrace.diagnostics.plugins.EmailNotification" roletype="1">
                   <property typeid="string" value="" key="from" />
                   <property typeid="string" value="group[Incident Email Group]" key="to" />
                   <property typeid="string" value="" key="cc" />
@@ -499,20 +505,20 @@
               </actions>
             </incidentrule>
           </chartsource>
-          <chartsource position="4" displayrate="10s" id="fa103e62-066f-4600-b30c-09e6a82a6bad" systemid="easyTravel/20140812154840_0.session" scale="0" overridesource="false" visible="true" sessiontype="stored" name="Durchschnittliche Datenbanklaufzeit - UPDATE" dynamicconfig="false" sessionid="easyTravel/20140812154840_0.session" sourcetype="INCIDENT_RULE" autoscale="false">
-            <incidentrule id="Durchschnittliche Datenbanklaufzeit - UPDATE" flags="1" incidentdashboardname="Incident Dashboard" description="" timeframe="10">
+          <chartsource position="4" displayrate="10s" id="fa103e62-066f-4600-b30c-09e6a82a6bad" systemid="easyTravel" scale="0" overridesource="false" visible="true" sessiontype="live" name="Durchschnittliche Datenbanklaufzeit - UPDATE" dynamicconfig="false" sessionid="easyTravel" sourcetype="INCIDENT_RULE" autoscale="false">
+            <incidentrule id="Durchschnittliche Datenbanklaufzeit - UPDATE" flags="1" visible="true" incidentdashboardname="Incident Dashboard" description="" timeframe="10">
               <sensitivity id="immediate" duration="0" minnonviolatedperiod="60" delay="0" />
               <actions>
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" severity="severe" type="Logging Notification" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" execution="begin" roletype="1" />
+                <actionref smartexecution="begin" severity="severe" type="Logging Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" roletype="1" />
               </actions>
             </incidentrule>
           </chartsource>
-          <chartsource position="8" displayrate="10s" id="ff748978-1b8d-4e58-ac20-8f2139efc867" systemid="easyTravel/20140812154840_0.session" scale="0" overridesource="false" visible="true" sessiontype="stored" name="Host CPU Unhealthy" dynamicconfig="false" sessionid="easyTravel/20140812154840_0.session" sourcetype="INCIDENT_RULE" autoscale="false">
-            <incidentrule id="Host CPU Unhealthy" flags="1" incidentdashboardname="Incident Zero Conf Dashboard" description="" timeframe="10">
+          <chartsource position="8" displayrate="10s" id="ff748978-1b8d-4e58-ac20-8f2139efc867" systemid="easyTravel" scale="0" overridesource="false" visible="true" sessiontype="live" name="Host CPU Unhealthy" dynamicconfig="false" sessionid="easyTravel" sourcetype="INCIDENT_RULE" autoscale="false">
+            <incidentrule id="Host CPU Unhealthy" flags="1" visible="true" incidentdashboardname="Incident Zero Conf Dashboard" description="" timeframe="10">
               <sensitivity id="immediate" duration="0" minnonviolatedperiod="60" delay="0" />
               <actions>
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" severity="severe" type="Logging Notification" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" execution="begin" roletype="1" />
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.plugins.EmailNotificationAction" smartalert="false" severity="informational" type="Email Notification" refaction="com.dynatrace.diagnostics.plugins.EmailNotification" key="com.dynatrace.diagnostics.plugins.EmailNotification" execution="begin" roletype="1">
+                <actionref smartexecution="begin" severity="severe" type="Logging Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" roletype="1" />
+                <actionref smartexecution="begin" severity="informational" type="Email Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.plugins.EmailNotificationAction" smartalert="false" refaction="com.dynatrace.diagnostics.plugins.EmailNotification" key="com.dynatrace.diagnostics.plugins.EmailNotification" roletype="1">
                   <property typeid="string" value="" key="from" />
                   <property typeid="string" value="group[Incident Email Group]" key="to" />
                   <property typeid="string" value="" key="cc" />
@@ -522,12 +528,12 @@
               </actions>
             </incidentrule>
           </chartsource>
-          <chartsource position="7" displayrate="10s" id="03148c29-57c3-4c4b-b471-7a6a6cc95e8d" systemid="easyTravel/20140812154840_0.session" scale="0" overridesource="false" visible="true" sessiontype="stored" name="Host Network Unhealthy" dynamicconfig="false" sessionid="easyTravel/20140812154840_0.session" sourcetype="INCIDENT_RULE" autoscale="false">
-            <incidentrule id="Host Network Unhealthy" flags="1" incidentdashboardname="Incident Zero Conf Dashboard" description="" timeframe="10">
+          <chartsource position="7" displayrate="10s" id="03148c29-57c3-4c4b-b471-7a6a6cc95e8d" systemid="easyTravel" scale="0" overridesource="false" visible="true" sessiontype="live" name="Host Network Unhealthy" dynamicconfig="false" sessionid="easyTravel" sourcetype="INCIDENT_RULE" autoscale="false">
+            <incidentrule id="Host Network Unhealthy" flags="1" visible="true" incidentdashboardname="Incident Zero Conf Dashboard" description="" timeframe="10">
               <sensitivity id="immediate" duration="0" minnonviolatedperiod="60" delay="0" />
               <actions>
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" severity="severe" type="Logging Notification" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" execution="begin" roletype="1" />
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.plugins.EmailNotificationAction" smartalert="false" severity="informational" type="Email Notification" refaction="com.dynatrace.diagnostics.plugins.EmailNotification" key="com.dynatrace.diagnostics.plugins.EmailNotification" execution="begin" roletype="1">
+                <actionref smartexecution="begin" severity="severe" type="Logging Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" roletype="1" />
+                <actionref smartexecution="begin" severity="informational" type="Email Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.plugins.EmailNotificationAction" smartalert="false" refaction="com.dynatrace.diagnostics.plugins.EmailNotification" key="com.dynatrace.diagnostics.plugins.EmailNotification" roletype="1">
                   <property typeid="string" value="" key="from" />
                   <property typeid="string" value="group[Incident Email Group]" key="to" />
                   <property typeid="string" value="" key="cc" />
@@ -537,12 +543,12 @@
               </actions>
             </incidentrule>
           </chartsource>
-          <chartsource position="11" displayrate="10s" id="220a7629-357c-4fa2-af7f-02ee62310ab7" systemid="easyTravel/20140812154840_0.session" scale="0" overridesource="false" visible="true" sessiontype="stored" name="Application Process Unhealthy" dynamicconfig="false" sessionid="easyTravel/20140812154840_0.session" sourcetype="INCIDENT_RULE" autoscale="false">
-            <incidentrule id="Application Process Unhealthy" flags="1" incidentdashboardname="Incident Zero Conf Dashboard" description="" timeframe="10">
+          <chartsource position="11" displayrate="10s" id="220a7629-357c-4fa2-af7f-02ee62310ab7" systemid="easyTravel" scale="0" overridesource="false" visible="true" sessiontype="live" name="Application Process Unhealthy" dynamicconfig="false" sessionid="easyTravel" sourcetype="INCIDENT_RULE" autoscale="false">
+            <incidentrule id="Application Process Unhealthy" flags="1" visible="true" incidentdashboardname="Incident Zero Conf Dashboard" description="" timeframe="10">
               <sensitivity id="immediate" duration="0" minnonviolatedperiod="60" delay="0" />
               <actions>
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" severity="severe" type="Logging Notification" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" execution="begin" roletype="1" />
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.plugins.EmailNotificationAction" smartalert="false" severity="informational" type="Email Notification" refaction="com.dynatrace.diagnostics.plugins.EmailNotification" key="com.dynatrace.diagnostics.plugins.EmailNotification" execution="begin" roletype="1">
+                <actionref smartexecution="begin" severity="severe" type="Logging Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" roletype="1" />
+                <actionref smartexecution="begin" severity="informational" type="Email Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.plugins.EmailNotificationAction" smartalert="false" refaction="com.dynatrace.diagnostics.plugins.EmailNotification" key="com.dynatrace.diagnostics.plugins.EmailNotification" roletype="1">
                   <property typeid="string" value="" key="from" />
                   <property typeid="string" value="group[Incident Email Group]" key="to" />
                   <property typeid="string" value="" key="cc" />
@@ -552,28 +558,28 @@
               </actions>
             </incidentrule>
           </chartsource>
-          <chartsource position="3" displayrate="10s" id="5e1c5037-3413-49de-9140-af549247034d" systemid="easyTravel/20140812154840_0.session" scale="0" overridesource="false" visible="true" sessiontype="stored" name="Durchschnittliche Datenbanklaufzeit - DELETE" dynamicconfig="false" sessionid="easyTravel/20140812154840_0.session" sourcetype="INCIDENT_RULE" autoscale="false">
-            <incidentrule id="Durchschnittliche Datenbanklaufzeit - DELETE" flags="1" incidentdashboardname="Incident Dashboard" description="" timeframe="10">
+          <chartsource position="3" displayrate="10s" id="5e1c5037-3413-49de-9140-af549247034d" systemid="easyTravel" scale="0" overridesource="false" visible="true" sessiontype="live" name="Durchschnittliche Datenbanklaufzeit - DELETE" dynamicconfig="false" sessionid="easyTravel" sourcetype="INCIDENT_RULE" autoscale="false">
+            <incidentrule id="Durchschnittliche Datenbanklaufzeit - DELETE" flags="1" visible="true" incidentdashboardname="Incident Dashboard" description="" timeframe="10">
               <sensitivity id="immediate" duration="0" minnonviolatedperiod="60" delay="0" />
               <actions>
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" severity="severe" type="Logging Notification" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" execution="begin" roletype="1" />
+                <actionref smartexecution="begin" severity="severe" type="Logging Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" roletype="1" />
               </actions>
             </incidentrule>
           </chartsource>
-          <chartsource position="1" displayrate="10s" id="5e7d9f75-ce64-45de-b76a-40db4f3ea41b" systemid="easyTravel/20140812154840_0.session" scale="0" overridesource="false" visible="true" sessiontype="stored" name="Durchschnittliche Antwortzeit" dynamicconfig="false" sessionid="easyTravel/20140812154840_0.session" sourcetype="INCIDENT_RULE" autoscale="false">
-            <incidentrule id="Durchschnittliche Antwortzeit" flags="1" incidentdashboardname="Incident Dashboard" description="Durchschnittliche Antwortzeit, Warning 1000ms, Severe 5000ms" timeframe="10">
+          <chartsource position="1" displayrate="10s" id="5e7d9f75-ce64-45de-b76a-40db4f3ea41b" systemid="easyTravel" scale="0" overridesource="false" visible="true" sessiontype="live" name="Durchschnittliche Antwortzeit" dynamicconfig="false" sessionid="easyTravel" sourcetype="INCIDENT_RULE" autoscale="false">
+            <incidentrule id="Durchschnittliche Antwortzeit" flags="1" visible="true" incidentdashboardname="Incident Dashboard" description="Durchschnittliche Antwortzeit, Warning 1000ms, Severe 5000ms" timeframe="10">
               <sensitivity id="immediate" duration="0" minnonviolatedperiod="60" delay="0" />
               <actions>
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" severity="severe" type="Logging Notification" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" execution="begin" roletype="1" />
+                <actionref smartexecution="begin" severity="severe" type="Logging Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" roletype="1" />
               </actions>
             </incidentrule>
           </chartsource>
-          <chartsource position="10" displayrate="10s" id="63a3917f-372a-4538-a8b9-f7f72865fb81" systemid="easyTravel/20140812154840_0.session" scale="0" overridesource="false" visible="true" sessiontype="stored" name="Host Disk Unhealthy" dynamicconfig="false" sessionid="easyTravel/20140812154840_0.session" sourcetype="INCIDENT_RULE" autoscale="false">
-            <incidentrule id="Host Disk Unhealthy" flags="1" incidentdashboardname="Incident Zero Conf Dashboard" description="" timeframe="10">
+          <chartsource position="10" displayrate="10s" id="63a3917f-372a-4538-a8b9-f7f72865fb81" systemid="easyTravel" scale="0" overridesource="false" visible="true" sessiontype="live" name="Host Disk Unhealthy" dynamicconfig="false" sessionid="easyTravel" sourcetype="INCIDENT_RULE" autoscale="false">
+            <incidentrule id="Host Disk Unhealthy" flags="1" visible="true" incidentdashboardname="Incident Zero Conf Dashboard" description="" timeframe="10">
               <sensitivity id="immediate" duration="0" minnonviolatedperiod="60" delay="0" />
               <actions>
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" severity="severe" type="Logging Notification" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" execution="begin" roletype="1" />
-                <actionref bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.plugins.EmailNotificationAction" smartalert="false" severity="informational" type="Email Notification" refaction="com.dynatrace.diagnostics.plugins.EmailNotification" key="com.dynatrace.diagnostics.plugins.EmailNotification" execution="begin" roletype="1">
+                <actionref smartexecution="begin" severity="severe" type="Logging Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.logging" smartalert="false" refaction="com.dynatrace.diagnostics.logging" key="com.dynatrace.diagnostics.logging" roletype="1" />
+                <actionref smartexecution="begin" severity="informational" type="Email Notification" execution="begin" bundleversion="0.0.0" rolekey="com.dynatrace.diagnostics.plugins.EmailNotificationAction" smartalert="false" refaction="com.dynatrace.diagnostics.plugins.EmailNotification" key="com.dynatrace.diagnostics.plugins.EmailNotification" roletype="1">
                   <property typeid="string" value="" key="from" />
                   <property typeid="string" value="group[Incident Email Group]" key="to" />
                   <property typeid="string" value="" key="cc" />
@@ -587,7 +593,7 @@
         </chart>
       </datamodelconfig>
     </portletconfig>
-    <portletconfig usespecificautorefresh="false" icon="com.dynatrace.diagnostics.sdk/default_16x16.png" usedashboardsourceforcompare="true" folderid="folder" sessiontype="stored" displaymode="Base" locationassource="false" usedashboardsource="true" sessionid="easyTravel/20140812154840_0.session" id="01b2ab39-7020-4ab0-b3a5-878c82911b42" addfilterinfo="false" source="server://dT Demo System" description="Durchschnittliche Antwortzeit der Top 20 Web Service Aufrufe in ms." name="Web Services" typeid="com.dynatrace.diagnostics.portlets.webservice.WebService" ismaster="false" locationascomparesource="false">
+    <portletconfig usespecificautorefresh="false" icon="com.dynatrace.diagnostics.sdk/default_16x16.png" usedashboardsourceforcompare="true" folderid="folder" sessiontype="live" displaymode="Base" locationassource="false" usedashboardsource="true" sessionid="easyTravel" id="01b2ab39-7020-4ab0-b3a5-878c82911b42" addfilterinfo="false" source="server://PoC Dt PerfSig" description="Durchschnittliche Antwortzeit der Top 20 Web Service Aufrufe in ms." name="Web Services" typeid="com.dynatrace.diagnostics.portlets.webservice.WebService" ismaster="false" locationascomparesource="false">
       <reportconfig lines.per.table="10000" print.legends="true" enabled="true" optimizeequalcolumns="false" levels.per.tree="10" override="false" print.images="true" reportposition="23" />
       <filter>
         <criterion completepurepath="true" type="agents" mode="all">
@@ -600,7 +606,9 @@
         <criterion type="btm" />
         <criterion type="casuemdimension" />
         <criterion filterinterval="false" intervalend="0" type="dcrumdimension" intervalstart="0" />
+        <criterion active="false" type="forceanalysiscache" />
         <criterion completepurepath="true" type="hosts" mode="all" />
+        <criterion usefullanalysis="false" active="false" type="noanalysiscache" />
         <criterion type="or" />
         <criterion enduser="false" type="purepaths" mode="all" />
         <criterion enabled="false" filterbyid="false" type="threads" />
@@ -609,7 +617,7 @@
         </criterion>
         <criterion sort="highestValues" isactive="true" columnlabel="Total Avg [ms]" maxnrofrecords="20" customdefaultcolumnindex="4" customdefaultcolumnlabel="Count" columnindex="5" type="topx" />
         <criterion type="visits">
-          <visitidset visitsidsetsize="0" />
+          <visitidset />
         </criterion>
         <criterion type="webpage">
           <textpattern enabled="true" name="timerName" type="contains" />
@@ -665,7 +673,7 @@
       </datamodelconfig>
       <analyzerparameters analyzerrecordlimit="10000" requiredrilldowndata="true" />
     </portletconfig>
-    <portletconfig xscrollpos="0" autozoom="false" sessiontype="stored" locationassource="false" showlatency="false" viewmode="Topology" id="0eeeb557-895d-4fbc-ab98-6974f80ad0b6" description="" typeid="com.dynatrace.diagnostics.adm.ADM" name="Transaction Flow" ismaster="false" locationascomparesource="false" icon="com.dynatrace.diagnostics.sdk/default_16x16.png" usespecificautorefresh="false" showentrypoints="true" usedashboardsourceforcompare="true" folderid="folder" displaymode="Base" usedashboardsource="true" sessionid="easyTravel/20140812154840_0.session" showdatabase="true" zoomlevel="0.55" addfilterinfo="false" yscrollpos="0" source="server://dT Demo System" showlegend="true">
+    <portletconfig xscrollpos="0" autozoom="false" sessiontype="live" locationassource="false" showlatency="false" viewmode="Topology" id="0eeeb557-895d-4fbc-ab98-6974f80ad0b6" description="" typeid="com.dynatrace.diagnostics.adm.ADM" name="Transaction Flow" ismaster="false" locationascomparesource="false" icon="com.dynatrace.diagnostics.sdk/default_16x16.png" usespecificautorefresh="false" showentrypoints="true" usedashboardsourceforcompare="true" folderid="folder" displaymode="Base" usedashboardsource="true" sessionid="easyTravel" showdatabase="true" zoomlevel="0.55" addfilterinfo="false" yscrollpos="0" source="server://PoC Dt PerfSig" showlegend="true">
       <reportconfig lines.per.table="10000" print.legends="true" enabled="false" optimizeequalcolumns="true" levels.per.tree="10" override="false" print.images="true" reportposition="3" />
       <filter>
         <criterion completepurepath="true" type="agents" mode="all">
@@ -679,8 +687,10 @@
         <criterion type="btm" />
         <criterion type="casuemdimension" />
         <criterion filterinterval="false" intervalend="0" type="dcrumdimension" intervalstart="0" />
-        <criterion isactive="true" analyzeserverpath="true" type="enduserpath" analyzeenduserpath="true" />
+        <criterion isactive="true" analyzeserverpath="true" type="enduserpath" analyzeenduserpath="true" analyzeclienterrors="false" />
+        <criterion active="false" type="forceanalysiscache" />
         <criterion completepurepath="true" type="hosts" mode="all" />
+        <criterion usefullanalysis="false" active="false" type="noanalysiscache" />
         <criterion type="or" />
         <criterion enduser="false" type="purepaths" mode="all" />
         <criterion enabled="false" filterbyid="false" type="threads" />
@@ -688,7 +698,7 @@
           <timeframe start="0" type="Auto" end="9223372036854775807" />
         </criterion>
         <criterion type="visits">
-          <visitidset visitsidsetsize="0" />
+          <visitidset />
         </criterion>
         <criterion type="webpage">
           <textpattern enabled="true" name="timerName" type="contains" />
@@ -742,7 +752,7 @@
           <column index="31" sort="None" forcevisible="false" hidden="false" width="40" />
         </table>
       </datamodelconfig>
-      <analyzerparameters analyzeentrypoints="true" analyzerrecordlimit="-1" requiredrilldowndata="true">
+      <analyzerparameters fixmissingpools="true" fixinsignificantpools="true" analyzeentrypoints="true" analyzerrecordlimit="-1" requiredrilldowndata="true">
         <keysmap />
       </analyzerparameters>
       <expandstates>
@@ -766,7 +776,7 @@
         <expandgroup agentgroupid="dhl.de|type:0" expandstate="Expanded" />
       </expandstates>
     </portletconfig>
-    <portletconfig usespecificautorefresh="false" icon="com.dynatrace.diagnostics.sdk/chart_cust.png" usedashboardsourceforcompare="true" folderid="folder" sessiontype="stored" locationassource="false" usedashboardsource="true" sessionid="easyTravel/20140812154840_0.session" id="22c8c0e0-c745-4f32-9124-751447795cab" addfilterinfo="false" source="server://dT Demo System" description="Durchschnittliche Laufzeit der Datenbank-Statements in ms" lastvalue="false" name="Database" typeid="com.dynatrace.diagnostics.portlets.chart.Chart" ismaster="false" showabsolutevalues="false" locationascomparesource="false">
+    <portletconfig usespecificautorefresh="false" icon="com.dynatrace.diagnostics.sdk/chart_cust.png" usedashboardsourceforcompare="true" folderid="folder" sessiontype="live" locationassource="false" usedashboardsource="true" sessionid="easyTravel" id="22c8c0e0-c745-4f32-9124-751447795cab" addfilterinfo="false" source="server://PoC Dt PerfSig" description="Durchschnittliche Laufzeit der Datenbank-Statements in ms" lastvalue="false" name="Database" typeid="com.dynatrace.diagnostics.portlets.chart.Chart" ismaster="false" showabsolutevalues="false" locationascomparesource="false">
       <reportconfig lines.per.table="10000" print.legends="true" enabled="true" optimizeequalcolumns="false" levels.per.tree="10" override="false" print.images="true" reportposition="24" />
       <filter>
         <criterion completepurepath="true" type="agents" mode="all">
@@ -780,7 +790,7 @@
           <timeframe start="0" type="Auto" end="9223372036854775807" />
         </criterion>
         <criterion type="visits">
-          <visitidset visitsidsetsize="0" />
+          <visitidset />
         </criterion>
         <inheritancemap />
       </filter>
@@ -791,24 +801,24 @@
           <legendcomposition splittings="true" measure="true">
             <pielabelcomposition unit="true" value="true" />
           </legendcomposition>
-          <chartsource position="4" scale="0" visible="true" sessiontype="stored" colorinheritancemode="random" aggregationtype="Avg" uiunit="ms" groupingvalue="" id="885cdf46-441f-4474-8ce9-06a9b8cbab59" fetchmeasurecolor="false" overridesource="true" rate="10s" ratesupported="false" name="DB Time SELECT" sourcecolor="RGB(90,196,82,255)" sourcetype="MEASURE" fetchbaseline="false" dynamicconfig="false" autounit="false" sessionid="easyTravel/20140812154840_0.session" displayrate="10s" unit="ms" systemid="easyTravel/20140812154840_0.session" measuretype="JdbcMeasure" fetch.dynamic.measures="false" fetchthreshold="false" autoscale="false">
-            <lightweightuniquemeasureidentifier keyid="DB Time SELECT" metricgroupkey="Database" collector="" systemid="easyTravel/20140812154840_0.session" application="" agenthost="" parentkeyid="DB Time SELECT" measuretype="JdbcMeasure" metrickeyid="Time" agentname="" metricsimpledisplayname="Time" />
+          <chartsource position="4" scale="0" visible="true" sessiontype="live" colorinheritancemode="random" aggregationtype="Avg" uiunit="ms" groupingvalue="" id="885cdf46-441f-4474-8ce9-06a9b8cbab59" fetchmeasurecolor="false" overridesource="true" rate="10s" ratesupported="false" name="DB Time SELECT" sourcecolor="RGB(90,196,82,255)" sourcetype="MEASURE" fetchbaseline="false" dynamicconfig="false" autounit="false" sessionid="easyTravel" displayrate="10s" unit="ms" systemid="easyTravel" measuretype="JdbcMeasure" fetch.dynamic.measures="false" fetchthreshold="false" autoscale="false">
+            <lightweightuniquemeasureidentifier keyid="DB Time SELECT" metricgroupkey="Database" collector="" systemid="easyTravel" application="" agenthost="" parentkeyid="DB Time SELECT" measuretype="JdbcMeasure" metrickeyid="Time" agentname="" metricsimpledisplayname="Time" />
             <displaysourceinfo agenthost="" measureunit="ms" agentname="" agentgroup="&lt;all-agents&gt;" measurerate="purepath" />
           </chartsource>
-          <chartsource position="5" scale="0" visible="true" sessiontype="stored" colorinheritancemode="random" aggregationtype="Avg" uiunit="ms" groupingvalue="" id="cc5ed839-e77e-4fa1-8e9b-ddfec1cb1871" fetchmeasurecolor="false" overridesource="true" rate="10s" ratesupported="false" name="DB Time UPDATE" sourcecolor="RGB(177,78,207,255)" sourcetype="MEASURE" fetchbaseline="false" dynamicconfig="false" autounit="false" sessionid="easyTravel/20140812154840_0.session" displayrate="10s" unit="ms" systemid="easyTravel/20140812154840_0.session" measuretype="JdbcMeasure" fetch.dynamic.measures="false" fetchthreshold="false" autoscale="false">
-            <lightweightuniquemeasureidentifier keyid="DB Time UPDATE" metricgroupkey="Database" collector="" systemid="easyTravel/20140812154840_0.session" application="" agenthost="" parentkeyid="DB Time UPDATE" measuretype="JdbcMeasure" metrickeyid="Time" agentname="" metricsimpledisplayname="Time" />
+          <chartsource position="5" scale="0" visible="true" sessiontype="live" colorinheritancemode="random" aggregationtype="Avg" uiunit="ms" groupingvalue="" id="cc5ed839-e77e-4fa1-8e9b-ddfec1cb1871" fetchmeasurecolor="false" overridesource="true" rate="10s" ratesupported="false" name="DB Time UPDATE" sourcecolor="RGB(177,78,207,255)" sourcetype="MEASURE" fetchbaseline="false" dynamicconfig="false" autounit="false" sessionid="easyTravel" displayrate="10s" unit="ms" systemid="easyTravel" measuretype="JdbcMeasure" fetch.dynamic.measures="false" fetchthreshold="false" autoscale="false">
+            <lightweightuniquemeasureidentifier keyid="DB Time UPDATE" metricgroupkey="Database" collector="" systemid="easyTravel" application="" agenthost="" parentkeyid="DB Time UPDATE" measuretype="JdbcMeasure" metrickeyid="Time" agentname="" metricsimpledisplayname="Time" />
             <displaysourceinfo agenthost="" measureunit="ms" agentname="" agentgroup="&lt;all-agents&gt;" measurerate="purepath" />
           </chartsource>
-          <chartsource position="1" scale="0" visible="true" sessiontype="stored" colorinheritancemode="random" aggregationtype="Avg" uiunit="ms" groupingvalue="" id="ea8219e2-924f-4ccb-919c-ede697b20696" fetchmeasurecolor="true" overridesource="false" rate="10s" ratesupported="false" name="DB Time" sourcecolor="RGB(0,0,128,255)" sourcetype="MEASURE" fetchbaseline="false" dynamicconfig="false" autounit="false" sessionid="easyTravel/20140812154840_0.session" displayrate="10s" unit="ms" systemid="easyTravel/20140812154840_0.session" measuretype="JdbcMeasure" fetch.dynamic.measures="false" fetchthreshold="false" autoscale="false">
-            <lightweightuniquemeasureidentifier keyid="DB Time" metricgroupkey="Database" collector="" systemid="easyTravel/20140812154840_0.session" application="" agenthost="" parentkeyid="DB Time" measuretype="JdbcMeasure" metrickeyid="Time" agentname="" metricsimpledisplayname="Time" />
+          <chartsource position="1" scale="0" visible="true" sessiontype="live" colorinheritancemode="random" aggregationtype="Avg" uiunit="ms" groupingvalue="" id="ea8219e2-924f-4ccb-919c-ede697b20696" fetchmeasurecolor="true" overridesource="false" rate="10s" ratesupported="false" name="DB Time" sourcecolor="RGB(0,0,128,255)" sourcetype="MEASURE" fetchbaseline="false" dynamicconfig="false" autounit="false" sessionid="easyTravel" displayrate="10s" unit="ms" systemid="easyTravel" measuretype="JdbcMeasure" fetch.dynamic.measures="false" fetchthreshold="false" autoscale="false">
+            <lightweightuniquemeasureidentifier keyid="DB Time" metricgroupkey="Database" collector="" systemid="easyTravel" application="" agenthost="" parentkeyid="DB Time" measuretype="JdbcMeasure" metrickeyid="Time" agentname="" metricsimpledisplayname="Time" />
             <displaysourceinfo agenthost="" measureunit="ms" agentname="" agentgroup="&lt;all-agents&gt;" measurerate="purepath" />
           </chartsource>
-          <chartsource position="3" scale="0" visible="true" sessiontype="stored" colorinheritancemode="random" aggregationtype="Avg" uiunit="ms" groupingvalue="" id="3fdfd9eb-2cc4-47da-859e-81b55579ab5a" fetchmeasurecolor="false" overridesource="true" rate="10s" ratesupported="false" name="DB Time INSERT" sourcecolor="RGB(242,217,51,255)" sourcetype="MEASURE" fetchbaseline="false" dynamicconfig="false" autounit="false" sessionid="easyTravel/20140812154840_0.session" displayrate="10s" unit="ms" systemid="easyTravel/20140812154840_0.session" measuretype="JdbcMeasure" fetch.dynamic.measures="false" fetchthreshold="false" autoscale="false">
-            <lightweightuniquemeasureidentifier keyid="DB Time INSERT" metricgroupkey="Database" collector="" systemid="easyTravel/20140812154840_0.session" application="" agenthost="" parentkeyid="DB Time INSERT" measuretype="JdbcMeasure" metrickeyid="Time" agentname="" metricsimpledisplayname="Time" />
+          <chartsource position="3" scale="0" visible="true" sessiontype="live" colorinheritancemode="random" aggregationtype="Avg" uiunit="ms" groupingvalue="" id="3fdfd9eb-2cc4-47da-859e-81b55579ab5a" fetchmeasurecolor="false" overridesource="true" rate="10s" ratesupported="false" name="DB Time INSERT" sourcecolor="RGB(242,217,51,255)" sourcetype="MEASURE" fetchbaseline="false" dynamicconfig="false" autounit="false" sessionid="easyTravel" displayrate="10s" unit="ms" systemid="easyTravel" measuretype="JdbcMeasure" fetch.dynamic.measures="false" fetchthreshold="false" autoscale="false">
+            <lightweightuniquemeasureidentifier keyid="DB Time INSERT" metricgroupkey="Database" collector="" systemid="easyTravel" application="" agenthost="" parentkeyid="DB Time INSERT" measuretype="JdbcMeasure" metrickeyid="Time" agentname="" metricsimpledisplayname="Time" />
             <displaysourceinfo agenthost="" measureunit="ms" agentname="" agentgroup="&lt;all-agents&gt;" measurerate="purepath" />
           </chartsource>
-          <chartsource position="2" scale="0" visible="true" sessiontype="stored" colorinheritancemode="random" aggregationtype="Avg" uiunit="ms" groupingvalue="" id="77fb9c4a-73fa-4ff2-8fb6-89bc3d05aae6" fetchmeasurecolor="false" overridesource="true" rate="10s" ratesupported="false" name="DB Time DELETE" sourcecolor="RGB(186,42,32,255)" sourcetype="MEASURE" fetchbaseline="false" dynamicconfig="false" autounit="false" sessionid="easyTravel/20140812154840_0.session" displayrate="10s" unit="ms" systemid="easyTravel/20140812154840_0.session" measuretype="JdbcMeasure" fetch.dynamic.measures="false" fetchthreshold="false" autoscale="false">
-            <lightweightuniquemeasureidentifier keyid="DB Time DELETE" metricgroupkey="Database" collector="" systemid="easyTravel/20140812154840_0.session" application="" agenthost="" parentkeyid="DB Time DELETE" measuretype="JdbcMeasure" metrickeyid="Time" agentname="" metricsimpledisplayname="Time" />
+          <chartsource position="2" scale="0" visible="true" sessiontype="live" colorinheritancemode="random" aggregationtype="Avg" uiunit="ms" groupingvalue="" id="77fb9c4a-73fa-4ff2-8fb6-89bc3d05aae6" fetchmeasurecolor="false" overridesource="true" rate="10s" ratesupported="false" name="DB Time DELETE" sourcecolor="RGB(186,42,32,255)" sourcetype="MEASURE" fetchbaseline="false" dynamicconfig="false" autounit="false" sessionid="easyTravel" displayrate="10s" unit="ms" systemid="easyTravel" measuretype="JdbcMeasure" fetch.dynamic.measures="false" fetchthreshold="false" autoscale="false">
+            <lightweightuniquemeasureidentifier keyid="DB Time DELETE" metricgroupkey="Database" collector="" systemid="easyTravel" application="" agenthost="" parentkeyid="DB Time DELETE" measuretype="JdbcMeasure" metrickeyid="Time" agentname="" metricsimpledisplayname="Time" />
             <displaysourceinfo agenthost="" measureunit="ms" agentname="" agentgroup="&lt;all-agents&gt;" measurerate="purepath" />
           </chartsource>
           <splitconfig splitmode="PerSeries" splitlayout="Horizontal" />
@@ -835,13 +845,13 @@
           <column index="18" sort="None" forcevisible="false" hidden="true" width="150" />
           <column index="19" sort="None" forcevisible="false" hidden="true" width="150" />
         </table>
-        <heatfieldconfig smartmeasure="true" filterconfirmed="false" smartserver="true" customevents="true">
+        <heatfieldconfig smartmeasure="true" filterconfirmed="false" smartserver="true" customevents="true" deploymentevents="true">
           <incidentrules />
         </heatfieldconfig>
       </datamodelconfig>
       <chartcolors />
     </portletconfig>
-    <portletconfig usespecificautorefresh="false" icon="com.dynatrace.diagnostics.sdk/chart_cust.png" usedashboardsourceforcompare="true" folderid="folder" sessiontype="stored" locationassource="false" usedashboardsource="true" sessionid="easyTravel/20140812154840_0.session" id="764855a4-db09-4e27-bc46-08da44e07f1e" addfilterinfo="false" source="server://dT Demo System" description="Anzahl der Web Service Aufrufe" lastvalue="false" name="WebService Chart" typeid="com.dynatrace.diagnostics.portlets.chart.Chart" ismaster="false" showabsolutevalues="false" locationascomparesource="false">
+    <portletconfig usespecificautorefresh="false" icon="com.dynatrace.diagnostics.sdk/chart_cust.png" usedashboardsourceforcompare="true" folderid="folder" sessiontype="live" locationassource="false" usedashboardsource="true" sessionid="easyTravel" id="764855a4-db09-4e27-bc46-08da44e07f1e" addfilterinfo="false" source="server://PoC Dt PerfSig" description="Anzahl der Web Service Aufrufe" lastvalue="false" name="WebService Chart" typeid="com.dynatrace.diagnostics.portlets.chart.Chart" ismaster="false" showabsolutevalues="false" locationascomparesource="false">
       <reportconfig lines.per.table="10000" print.legends="true" enabled="true" optimizeequalcolumns="true" levels.per.tree="10" override="false" print.images="true" reportposition="22" />
       <filter>
         <criterion completepurepath="true" type="agents" mode="all">
@@ -855,7 +865,7 @@
           <timeframe start="0" type="Auto" end="9223372036854775807" />
         </criterion>
         <criterion type="visits">
-          <visitidset visitsidsetsize="0" />
+          <visitidset />
         </criterion>
         <inheritancemap />
       </filter>
@@ -866,11 +876,11 @@
           <legendcomposition splittings="true" measure="true" avg="true">
             <pielabelcomposition unit="true" value="true" />
           </legendcomposition>
-          <chartsource position="1" scale="0" visible="false" sessiontype="stored" colorinheritancemode="random" aggregationtype="Avg" uiunit="ms" groupingvalue="" id="27c484e8-9d0f-41fb-bb4b-b5321e458f24" fetchmeasurecolor="true" overridesource="false" rate="10s" ratesupported="true" name="Web Service by Method" sourcecolor="RGB(192,192,0,255)" sourcetype="MEASURE" fetchbaseline="false" dynamicconfig="false" autounit="false" sessionid="easyTravel/20140812154840_0.session" groupingcriterion="BTSP1" displayrate="10s" unit="ms" systemid="easyTravel/20140812154840_0.session" measuretype="TransactionMeasure" fetch.dynamic.measures="true" fetchthreshold="false" autoscale="false">
+          <chartsource position="1" scale="0" visible="false" sessiontype="live" colorinheritancemode="random" aggregationtype="Avg" uiunit="ms" groupingvalue="" id="27c484e8-9d0f-41fb-bb4b-b5321e458f24" fetchmeasurecolor="true" overridesource="false" rate="10s" ratesupported="true" name="Web Service by Method" sourcecolor="RGB(192,192,0,255)" sourcetype="MEASURE" fetchbaseline="false" dynamicconfig="false" autounit="false" sessionid="easyTravel" groupingcriterion="BTSP1" displayrate="10s" unit="ms" systemid="easyTravel" measuretype="TransactionMeasure" fetch.dynamic.measures="true" fetchthreshold="false" autoscale="false">
             <tagtolabel>
               <taglabelentry value="Web Service Method Name" key="BTSP1" />
             </tagtolabel>
-            <lightweightuniquemeasureidentifier keyid="Web Service by Method" metricgroupkey="Business Transaction Results" collector="" systemid="easyTravel/20140812154840_0.session" application="" agenthost="" parentkeyid="Web Service by Method" measuretype="TransactionMeasure" metrickeyid="Value" agentname="" metricsimpledisplayname="Value" />
+            <lightweightuniquemeasureidentifier keyid="Web Service by Method" metricgroupkey="Business Transaction Results" collector="" systemid="easyTravel" application="" agenthost="" parentkeyid="Web Service by Method" measuretype="TransactionMeasure" metrickeyid="Value" agentname="" metricsimpledisplayname="Value" />
             <displaysourceinfo agenthost="" transactionname="Web Service by Method" measureunit="ms" agentname="" agentgroup="&lt;all-agents&gt;" measurerate="purepath" />
           </chartsource>
           <splitconfig splitmode="PerSeries" splitlayout="Horizontal" />
@@ -897,7 +907,7 @@
           <column index="18" sort="None" forcevisible="false" hidden="true" width="150" />
           <column index="19" sort="None" forcevisible="false" hidden="true" width="150" />
         </table>
-        <heatfieldconfig smartmeasure="true" filterconfirmed="false" smartserver="true" customevents="true">
+        <heatfieldconfig smartmeasure="true" filterconfirmed="false" smartserver="true" customevents="true" deploymentevents="true">
           <incidentrules />
         </heatfieldconfig>
       </datamodelconfig>
@@ -905,4 +915,3 @@
     </portletconfig>
   </dashboardconfig>
 </dynatrace>
-

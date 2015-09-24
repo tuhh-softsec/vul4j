@@ -5,13 +5,13 @@
 			<metainfo installer_type="resourcepack" name="Performance Signature Dashboards">
 			
 			<resource
-				resource="dashboards/PerformanceSignatur_Einzelreport.dashboard.xml" resource_type="dashboard">
+				resource="dashboards/PerformanceSignature_singlereport.dashboard.xml" resource_type="dashboard">
 			</resource>
 			<resource
-				resource="dashboards/PerformanceSignatur_Vergleichsreport.dashboard.xml" resource_type="dashboard">
+				resource="dashboards/PerformanceSignature_comparisonreport.dashboard.xml" resource_type="dashboard">
 			</resource>
 			<resource
-				resource="dashboards/PerformanceSignatur_NFA.dashboard.xml" resource_type="dashboard">
+				resource="dashboards/PerformanceSignature_xml.dashboard.xml" resource_type="dashboard">
 			</resource>
 
 			<!--<resource

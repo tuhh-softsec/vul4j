@@ -2,10 +2,11 @@
 <!-- ATTENTION - THIS IS AN AUTOMATICALLY GENERATED FILE -->
 <!-- Manual changes can cause severe problems and system instability -->
 <!-- Apply manual changes only if you have received explicit instructions from dynaTrace Support -->
-<dynatrace version="5.6.0.5924" date="8/12/14 4:09 PM">
-  <dashboardconfig memento.version="5.6.0.5924" icon="com.dynatrace.diagnostics.portlets/icons/agents.png" localizationenabled="false" sessiontype="stored" locationassource="false" groupname="" authorname="admin" opendrilldowninnewdashboard="false" sessionid="easyTravel/20140812155454_0.session" autoreplacesession="false" modified="2014-08-12T16:10:01+0200" id="14a290c2-406e-403d-8ab3-1ac2ac2cbdc9" revision="00000147-ca8d-e122-a053-9208afe2ae63" source="server://dT Demo System" created="2014-05-27T16:35:55+0200" description="Werte in ROT haben einen höheren Wert in dem aktuellen Build als der vorherige Build. Normalerweise bedeutet das eine Performanceverschlechterung.&#xD;&#xA;Werte in GRÜN haben einen höheren Wert in dem aktuellen Build als der vorherige Build. Normalerweise bedeutet das eine Performanceverbesserung.&#xD;&#xA;Werte in GRAU gibt es nur in einem der beiden Builds. Es sind keine Vergleichswerte vorhanden." name="PerformanceSignatur_Vergleichsreport" modifiedbyname="admin" locationascomparesource="false">
-    <comparesettings source="server://dT Demo System" sessiontype="stored" sessionid="easyTravel/20140812154840_0.session">
+<dynatrace version="6.2.1.1031" date="9/23/15 1:15 PM">
+  <dashboardconfig memento.version="6.2.1.1031" icon="com.dynatrace.diagnostics.portlets/icons/agents.png" localizationenabled="false" sessiontype="stored" locationassource="false" suppresssavewarning="false" groupname="" authorname="rapi" opendrilldowninnewdashboard="false" sessionid="easyTravel/20150923115645_0.t0.session" autoreplacesession="false" modified="2015-09-23T13:15:22+0200" id="ed91fa01-224b-41ef-b1e5-69612eaba003" revision="0000014f-f9ea-3d9f-bf3c-6cad4cd23d76" source="server://PoC Dt PerfSig" created="2014-05-27T16:35:55+0200" description="Werte in ROT haben einen höheren Wert in dem aktuellen Build als der vorherige Build. Normalerweise bedeutet das eine Performanceverschlechterung.&#xD;&#xA;Werte in GRÜN haben einen höheren Wert in dem aktuellen Build als der vorherige Build. Normalerweise bedeutet das eine Performanceverbesserung.&#xD;&#xA;Werte in GRAU gibt es nur in einem der beiden Builds. Es sind keine Vergleichswerte vorhanden." name="PerformanceSignature_comparisonreport" modifiedbyname="rapi" locationascomparesource="false">
+    <comparesettings source="server://PoC Dt PerfSig" sessiontype="stored" sessionid="easyTravel/20150923125558_0.t0.session">
       <filter>
+        <criterion type="admfilteranalyzer" />
         <criterion completepurepath="true" type="agents" mode="all">
           <textpattern enabled="true" name="agentname" type="contains" />
           <textpattern enabled="true" name="agenthost" type="contains" />
@@ -25,19 +26,20 @@
         <criterion type="btm" />
         <criterion type="casuemdimension" />
         <criterion filterinterval="false" intervalend="0" type="dcrumdimension" intervalstart="0" />
-        <criterion isactive="true" analyzeserverpath="true" type="enduserpath" analyzeenduserpath="true" />
+        <criterion isactive="true" analyzeserverpath="true" type="enduserpath" analyzeenduserpath="true" analyzeclienterrors="false" />
         <criterion completepurepath="true" type="hosts" mode="all" />
         <criterion severities="" statesmode="all" severitiesmode="all" states="" rulesmode="all" type="incident" />
         <criterion type="or" />
         <criterion enduser="false" type="purepaths" mode="all" />
         <criterion showrendering="true" isactive="false" contenttypegroupsmode="all" javascripttriggersmode="all" shownetwork="true" showjavascript="true" type="riapurepathtype" requestcriterion="ALL" />
-        <criterion includemeasurename="true" includetestname="true" type="tests" teststatus="OK" />
+        <criterion includemeasurename="true" includeplatform="true" includetestname="true" type="tests" testcategory="UNIT,BROWSER_TIMER,BROWSER_AUTO_TIMER,PERFORMANCE,LOAD,WEB_API" teststatus="FAILED,INVALIDATED,VOLATILE,DEGRADED,IMPROVED,passed" />
+        <criterion includeplatform="true" type="testsoverview" />
         <criterion enabled="false" filterbyid="false" type="threads" />
         <criterion type="timeframe">
           <timeframe start="0" type="Auto" end="9223372036854775807" />
         </criterion>
         <criterion type="visits">
-          <visitidset visitsidsetsize="0" />
+          <visitidset />
         </criterion>
         <criterion type="webpage">
           <textpattern enabled="true" name="timerName" type="contains" />
@@ -55,6 +57,7 @@
     </comparesettings>
     <reportconfig lines.per.table="100" pagesize="A4" enabled="true" print.legends="true" orientation="portrait" formathtml="com.dynatrace.diagnostics.report.velocity.format.htmlrenderer" optimizeequalcolumns="false" type="PDF" title="" override="false" levels.per.tree="10" description="" formatpdf="com.dynatrace.diagnostics.report.velocity.format.pdfrenderer" print.images="true" />
     <filter>
+      <criterion type="admfilteranalyzer" />
       <criterion completepurepath="true" type="agents" mode="all">
         <textpattern enabled="true" name="agentname" type="contains" />
         <textpattern enabled="true" name="agenthost" type="contains" />
@@ -74,19 +77,20 @@
       <criterion type="btm" />
       <criterion type="casuemdimension" />
       <criterion filterinterval="false" intervalend="0" type="dcrumdimension" intervalstart="0" />
-      <criterion isactive="true" analyzeserverpath="true" type="enduserpath" analyzeenduserpath="true" />
+      <criterion isactive="true" analyzeserverpath="true" type="enduserpath" analyzeenduserpath="true" analyzeclienterrors="false" />
       <criterion completepurepath="true" type="hosts" mode="all" />
       <criterion severities="" statesmode="all" severitiesmode="all" states="" rulesmode="all" type="incident" />
       <criterion type="or" />
       <criterion enduser="false" type="purepaths" mode="all" />
       <criterion showrendering="true" isactive="false" contenttypegroupsmode="all" javascripttriggersmode="all" shownetwork="true" showjavascript="true" type="riapurepathtype" requestcriterion="ALL" />
-      <criterion includemeasurename="true" includetestname="true" type="tests" teststatus="OK" />
+      <criterion includemeasurename="true" includeplatform="true" includetestname="true" type="tests" testcategory="UNIT,BROWSER_TIMER,BROWSER_AUTO_TIMER,PERFORMANCE,LOAD,WEB_API" teststatus="FAILED,INVALIDATED,VOLATILE,DEGRADED,IMPROVED,passed" />
+      <criterion includeplatform="true" type="testsoverview" />
       <criterion enabled="false" filterbyid="false" type="threads" />
       <criterion type="timeframe">
         <timeframe start="0" type="Auto" end="9223372036854775807" />
       </criterion>
       <criterion type="visits">
-        <visitidset visitsidsetsize="0" />
+        <visitidset />
       </criterion>
       <criterion type="webpage">
         <textpattern enabled="true" name="timerName" type="contains" />
@@ -108,8 +112,8 @@
         <designconfig descriptionalignment="CENTER" descriptionfontstyle="NORMAL" headertype="DEFAULT" namealignment="CENTER" inherited="true" namefontsize="10" descriptionfontsize="8" descriptionshow="true" descriptionfontcolor="128,128,128" namefontstyle="BOLD" nameshow="true" />
       </portletfolder>
     </dashboardlayout>
-    <portletconfig usespecificautorefresh="false" icon="com.dynatrace.diagnostics.sdk/default_16x16.png" usedashboardsourceforcompare="true" folderid="folder" sessiontype="stored" displaymode="Difference" locationassource="false" usedashboardsource="true" sessionid="easyTravel/20140812155454_0.session" id="a9e556eb-cb7c-4b58-93f6-997ebe8a507c" addfilterinfo="false" source="server://dT Demo System" description="Durchschnittliche Laufzeit der Datenbank-Statements in ms verglichen mit einem früheren Build." name="Database" typeid="com.dynatrace.diagnostics.portlets.database.Database" ismaster="false" locationascomparesource="false">
-      <comparesettings source="server://dT Demo System" sessiontype="stored" sessionid="easyTravel/20140812154840_0.session">
+    <portletconfig usespecificautorefresh="false" icon="com.dynatrace.diagnostics.sdk/default_16x16.png" usedashboardsourceforcompare="true" folderid="folder" sessiontype="stored" displaymode="Difference" locationassource="false" usedashboardsource="true" sessionid="easyTravel/20150923115645_0.t0.session" id="a9e556eb-cb7c-4b58-93f6-997ebe8a507c" addfilterinfo="false" source="server://PoC Dt PerfSig" description="Durchschnittliche Laufzeit der Datenbank-Statements in ms verglichen mit einem früheren Build." name="Database" typeid="com.dynatrace.diagnostics.portlets.database.Database" ismaster="false" locationascomparesource="false">
+      <comparesettings source="server://PoC Dt PerfSig" sessiontype="stored" sessionid="easyTravel/20150923125558_0.t0.session">
         <filter>
           <criterion completepurepath="true" type="agents" mode="all">
             <textpattern enabled="true" name="agentname" type="contains" />
@@ -122,8 +126,10 @@
           <criterion type="btm" />
           <criterion type="casuemdimension" />
           <criterion filterinterval="false" intervalend="0" type="dcrumdimension" intervalstart="0" />
-          <criterion isactive="true" analyzeserverpath="true" type="enduserpath" analyzeenduserpath="true" />
+          <criterion isactive="true" analyzeserverpath="true" type="enduserpath" analyzeenduserpath="true" analyzeclienterrors="false" />
+          <criterion active="false" type="forceanalysiscache" />
           <criterion completepurepath="true" type="hosts" mode="all" />
+          <criterion usefullanalysis="false" active="false" type="noanalysiscache" />
           <criterion type="or" />
           <criterion enduser="false" type="purepaths" mode="all" />
           <criterion enabled="false" filterbyid="false" type="threads" />
@@ -132,7 +138,7 @@
           </criterion>
           <criterion sort="highestValues" isactive="false" columnlabel="" maxnrofrecords="10" customdefaultcolumnindex="0" customdefaultcolumnlabel="" columnindex="0" type="topx" />
           <criterion type="visits">
-            <visitidset visitsidsetsize="0" />
+            <visitidset />
           </criterion>
           <criterion type="webpage">
             <textpattern enabled="true" name="timerName" type="contains" />
@@ -162,8 +168,10 @@
         <criterion type="btm" />
         <criterion type="casuemdimension" />
         <criterion filterinterval="false" intervalend="0" type="dcrumdimension" intervalstart="0" />
-        <criterion isactive="true" analyzeserverpath="true" type="enduserpath" analyzeenduserpath="true" />
+        <criterion isactive="true" analyzeserverpath="true" type="enduserpath" analyzeenduserpath="true" analyzeclienterrors="false" />
+        <criterion active="false" type="forceanalysiscache" />
         <criterion completepurepath="true" type="hosts" mode="all" />
+        <criterion usefullanalysis="false" active="false" type="noanalysiscache" />
         <criterion type="or" />
         <criterion enduser="false" type="purepaths" mode="all" />
         <criterion enabled="false" filterbyid="false" type="threads" />
@@ -172,7 +180,7 @@
         </criterion>
         <criterion sort="highestValues" isactive="true" columnlabel="Exec Avg [ms]" maxnrofrecords="20" customdefaultcolumnindex="4" customdefaultcolumnlabel="Executions" columnindex="6" type="topx" />
         <criterion type="visits">
-          <visitidset visitsidsetsize="0" />
+          <visitidset />
         </criterion>
         <criterion type="webpage">
           <textpattern enabled="true" name="timerName" type="contains" />
@@ -191,7 +199,7 @@
       <autorefreshconfig unit="MINUTES" enabled="false" time="5" />
       <sashconfig weights="250,750" displayoption="TABLE" />
       <datamodelconfig selectedtab="0" chartsortcolumn="6">
-        <table drawcolumn="-1" sortcolumn="6" structuremode="connectionpools" columnorder="0,1,2,16,17,18,19,20,21,3,27,32,29,6,7,8,13,23,9,4,35,5,10,11,24,12,14,15,22,25,26,28,34,30,31,36,37,33">
+        <table drawcolumn="-1" sortcolumn="6" structuremode="connectionpools" columnorder="0,1,2,16,17,18,19,20,21,3,27,32,29,6,7,8,13,23,9,4,35,5,10,11,24,12,14,15,22,25,26,28,34,30,31,36,37,33,38">
           <column index="0" sort="None" forcevisible="false" hidden="false" width="300" />
           <column index="1" sort="None" forcevisible="false" hidden="false" width="300" />
           <column index="2" sort="None" forcevisible="false" hidden="true" width="300" />
@@ -230,8 +238,9 @@
           <column index="35" sort="None" forcevisible="false" hidden="false" width="90" />
           <column index="36" sort="None" forcevisible="false" hidden="true" width="90" />
           <column index="37" sort="None" forcevisible="false" hidden="true" width="90" />
+          <column index="38" sort="None" forcevisible="false" hidden="true" width="300" />
         </table>
-        <table drawcolumn="-1" sortcolumn="30" structuremode="flat" columnorder="0,1,2,16,17,18,19,20,21,3,30,4,5,6,7,8,29,9,35,13,23,10,11,12,24,14,15,22,25,26,27,28,34,31,32,36,37,33">
+        <table drawcolumn="-1" sortcolumn="30" structuremode="flat" columnorder="0,1,2,16,17,18,19,20,21,3,30,4,5,6,7,8,29,9,35,13,23,10,11,12,24,14,15,22,25,26,27,28,34,31,32,36,37,33,38">
           <column index="0" sort="None" forcevisible="false" hidden="false" width="300" />
           <column index="1" sort="None" forcevisible="false" hidden="false" width="300" />
           <column index="2" sort="None" forcevisible="false" hidden="true" width="300" />
@@ -270,8 +279,9 @@
           <column index="35" sort="None" forcevisible="false" hidden="false" width="90" />
           <column index="36" sort="None" forcevisible="false" hidden="true" width="90" />
           <column index="37" sort="None" forcevisible="false" hidden="false" width="90" />
+          <column index="38" sort="None" forcevisible="false" hidden="true" width="300" />
         </table>
-        <table drawcolumn="-1" sortcolumn="10" columnorder="0,1,2,22,16,17,18,19,20,21,3,4,5,6,7,8,9,10,11,15,13,24,12,23,14,35,25,26,27,28,34,29,30,31,32,36,37,33">
+        <table drawcolumn="-1" sortcolumn="10" columnorder="0,1,2,22,16,17,18,19,20,21,3,4,5,6,7,8,9,10,11,15,13,24,12,23,14,35,25,26,27,28,34,29,30,31,32,36,37,33,38">
           <column index="0" sort="None" forcevisible="false" hidden="false" width="300" />
           <column index="1" sort="None" forcevisible="false" hidden="true" width="300" />
           <column index="2" sort="None" forcevisible="false" hidden="true" width="300" />
@@ -310,14 +320,15 @@
           <column index="35" sort="None" forcevisible="false" hidden="false" width="90" />
           <column index="36" sort="None" forcevisible="false" hidden="true" width="90" />
           <column index="37" sort="None" forcevisible="false" hidden="true" width="90" />
+          <column index="38" sort="None" forcevisible="false" hidden="true" width="300" />
         </table>
       </datamodelconfig>
-      <analyzerparameters analyzerrecordlimit="10000" requiredrilldowndata="true" analyzergrouping="sqlstatement">
+      <analyzerparameters fixmissingpools="true" fixinsignificantpools="true" analyzerrecordlimit="10000" requiredrilldowndata="true" analyzergrouping="sqlstatement">
         <keysmap />
       </analyzerparameters>
     </portletconfig>
-    <portletconfig usespecificautorefresh="false" icon="com.dynatrace.diagnostics.sdk/default_16x16.png" usedashboardsourceforcompare="true" folderid="folder" sessiontype="stored" displaymode="Difference" locationassource="false" usedashboardsource="true" sessionid="easyTravel/20140812155454_0.session" id="cb36db2f-6b52-4006-aa23-8dd099e073c3" addfilterinfo="false" source="server://dT Demo System" description="Anzahl der Webseiten Aufrufe, abzüglich Bilder, JavaScript, Stylesheets und bekannte synthetische Aufrufe im Verhältnis zu einem früheren Build." name="Business Transactions" typeid="com.dynatrace.diagnostics.portlets.transaction.Transaction" ismaster="false" locationascomparesource="false">
-      <comparesettings source="server://dT Demo System" sessiontype="stored" sessionid="easyTravel/20140812154840_0.session">
+    <portletconfig usespecificautorefresh="false" icon="com.dynatrace.diagnostics.sdk/default_16x16.png" usedashboardsourceforcompare="true" folderid="folder" sessiontype="stored" displaymode="Difference" locationassource="false" usedashboardsource="true" sessionid="easyTravel/20150923115645_0.t0.session" id="cb36db2f-6b52-4006-aa23-8dd099e073c3" addfilterinfo="false" source="server://PoC Dt PerfSig" description="Anzahl der Webseiten Aufrufe, abzüglich Bilder, JavaScript, Stylesheets und bekannte synthetische Aufrufe im Verhältnis zu einem früheren Build." name="Business Transactions" typeid="com.dynatrace.diagnostics.portlets.transaction.Transaction" ismaster="false" locationascomparesource="false">
+      <comparesettings source="server://PoC Dt PerfSig" sessiontype="stored" sessionid="easyTravel/20150923125558_0.t0.session">
         <filter>
           <criterion completepurepath="true" type="agents" mode="all">
             <textpattern enabled="true" name="agentname" type="contains" />
@@ -329,7 +340,9 @@
           <criterion type="btm" />
           <criterion type="casuemdimension" />
           <criterion filterinterval="false" intervalend="0" type="dcrumdimension" intervalstart="0" />
+          <criterion active="false" type="forceanalysiscache" />
           <criterion completepurepath="true" type="hosts" mode="all" />
+          <criterion usefullanalysis="false" active="false" type="noanalysiscache" />
           <criterion type="or" />
           <criterion enduser="false" type="purepaths" mode="all" />
           <criterion enabled="false" filterbyid="false" type="threads" />
@@ -338,7 +351,7 @@
           </criterion>
           <criterion sort="highestValues" isactive="false" columnlabel="" maxnrofrecords="10" customdefaultcolumnindex="0" customdefaultcolumnlabel="" columnindex="0" type="topx" />
           <criterion type="visits">
-            <visitidset visitsidsetsize="0" />
+            <visitidset />
           </criterion>
           <criterion type="webpage">
             <textpattern enabled="true" name="timerName" type="contains" />
@@ -369,7 +382,9 @@
         </criterion>
         <criterion type="casuemdimension" />
         <criterion filterinterval="false" intervalend="0" type="dcrumdimension" intervalstart="0" />
+        <criterion active="false" type="forceanalysiscache" />
         <criterion completepurepath="true" type="hosts" mode="all" />
+        <criterion usefullanalysis="false" active="false" type="noanalysiscache" />
         <criterion type="or" />
         <criterion enduser="false" type="purepaths" mode="all" />
         <criterion enabled="false" filterbyid="false" type="threads" />
@@ -378,7 +393,7 @@
         </criterion>
         <criterion sort="highestValues" isactive="true" columnlabel="Avg" maxnrofrecords="20" customdefaultcolumnindex="4" customdefaultcolumnlabel="Count" columnindex="7" type="topx" />
         <criterion type="visits">
-          <visitidset visitsidsetsize="0" />
+          <visitidset />
         </criterion>
         <criterion type="webpage">
           <textpattern enabled="true" name="timerName" type="contains" />
@@ -442,8 +457,8 @@
         <splitconfig splitmode="PerSeries" splitlayout="Horizontal" />
       </chart>
     </portletconfig>
-    <portletconfig phpexpanded="true" browserexpanded="true" sessiontype="stored" locationassource="false" logexpanded="true" id="cf9a236f-d6a3-47dc-8c0c-cf72cd00123a" description="Festgestellte Fehler im Berichtszeitraum verglichen mit einem früheren Build." typeid="com.dynatrace.diagnostics.portlets.ErrorDetection" name="Errors" ismaster="false" locationascomparesource="false" moileexpanded="true" icon="com.dynatrace.diagnostics.sdk/default_16x16.png" usespecificautorefresh="false" usedashboardsourceforcompare="true" httpexpanded="true" folderid="folder" exceptionexpanded="true" displaymode="Difference" usedashboardsource="true" sessionid="easyTravel/20140812155454_0.session" addfilterinfo="false" source="server://dT Demo System">
-      <comparesettings source="server://dT Demo System" sessiontype="stored" sessionid="easyTravel/20140812154840_0.session">
+    <portletconfig phpexpanded="true" browserexpanded="true" sessiontype="stored" locationassource="false" logexpanded="true" id="cf9a236f-d6a3-47dc-8c0c-cf72cd00123a" description="Festgestellte Fehler im Berichtszeitraum verglichen mit einem früheren Build." typeid="com.dynatrace.diagnostics.portlets.ErrorDetection" name="Errors" ismaster="false" locationascomparesource="false" moileexpanded="true" icon="com.dynatrace.diagnostics.sdk/default_16x16.png" usespecificautorefresh="false" usedashboardsourceforcompare="true" httpexpanded="true" folderid="folder" exceptionexpanded="true" displaymode="Difference" usedashboardsource="true" sessionid="easyTravel/20150923115645_0.t0.session" addfilterinfo="false" source="server://PoC Dt PerfSig">
+      <comparesettings source="server://PoC Dt PerfSig" sessiontype="stored" sessionid="easyTravel/20150923125558_0.t0.session">
         <filter>
           <criterion completepurepath="true" type="agents" mode="all">
             <textpattern enabled="true" name="agentname" type="contains" />
@@ -455,7 +470,9 @@
           <criterion type="btm" />
           <criterion type="casuemdimension" />
           <criterion filterinterval="false" intervalend="0" type="dcrumdimension" intervalstart="0" />
+          <criterion active="false" type="forceanalysiscache" />
           <criterion completepurepath="true" type="hosts" mode="all" />
+          <criterion usefullanalysis="false" active="false" type="noanalysiscache" />
           <criterion type="or" />
           <criterion enduser="false" type="purepaths" mode="all" />
           <criterion enabled="false" filterbyid="false" type="threads" />
@@ -463,7 +480,7 @@
             <timeframe start="0" type="Auto" end="9223372036854775807" />
           </criterion>
           <criterion type="visits">
-            <visitidset visitsidsetsize="0" />
+            <visitidset />
           </criterion>
           <criterion type="webpage">
             <textpattern enabled="true" name="timerName" type="contains" />
@@ -492,7 +509,9 @@
         <criterion type="btm" />
         <criterion type="casuemdimension" />
         <criterion filterinterval="false" intervalend="0" type="dcrumdimension" intervalstart="0" />
+        <criterion active="false" type="forceanalysiscache" />
         <criterion completepurepath="true" type="hosts" mode="all" />
+        <criterion usefullanalysis="false" active="false" type="noanalysiscache" />
         <criterion type="or" />
         <criterion enduser="false" type="purepaths" mode="all" />
         <criterion enabled="false" filterbyid="false" type="threads" />
@@ -500,7 +519,7 @@
           <timeframe start="0" type="Auto" end="9223372036854775807" />
         </criterion>
         <criterion type="visits">
-          <visitidset visitsidsetsize="0" />
+          <visitidset />
         </criterion>
         <criterion type="webpage">
           <textpattern enabled="true" name="timerName" type="contains" />
@@ -548,8 +567,8 @@
       </datamodelconfig>
       <analyzerparameters analyzerrecordlimit="1000" requiredrilldowndata="true" />
     </portletconfig>
-    <portletconfig usespecificautorefresh="false" icon="com.dynatrace.diagnostics.sdk/default_16x16.png" usedashboardsourceforcompare="true" folderid="folder" sessiontype="stored" displaymode="Difference" locationassource="false" usedashboardsource="true" sessionid="easyTravel/20140812155454_0.session" id="399839bd-d110-4bc2-9676-0076490e6862" addfilterinfo="false" source="server://dT Demo System" description="Durchschnittliche Antwortzeit der Web Service Aufrufe in ms verglichen mit einem früheren Build." name="Business Transactions" typeid="com.dynatrace.diagnostics.portlets.transaction.Transaction" ismaster="false" locationascomparesource="false">
-      <comparesettings source="server://dT Demo System" sessiontype="stored" sessionid="easyTravel/20140812154840_0.session">
+    <portletconfig usespecificautorefresh="false" icon="com.dynatrace.diagnostics.sdk/default_16x16.png" usedashboardsourceforcompare="true" folderid="folder" sessiontype="stored" displaymode="Difference" locationassource="false" usedashboardsource="true" sessionid="easyTravel/20150923115645_0.t0.session" id="399839bd-d110-4bc2-9676-0076490e6862" addfilterinfo="false" source="server://PoC Dt PerfSig" description="Durchschnittliche Antwortzeit der Web Service Aufrufe in ms verglichen mit einem früheren Build." name="Business Transactions" typeid="com.dynatrace.diagnostics.portlets.transaction.Transaction" ismaster="false" locationascomparesource="false">
+      <comparesettings source="server://PoC Dt PerfSig" sessiontype="stored" sessionid="easyTravel/20150923125558_0.t0.session">
         <filter>
           <criterion completepurepath="true" type="agents" mode="all">
             <textpattern enabled="true" name="agentname" type="contains" />
@@ -561,7 +580,9 @@
           <criterion type="btm" />
           <criterion type="casuemdimension" />
           <criterion filterinterval="false" intervalend="0" type="dcrumdimension" intervalstart="0" />
+          <criterion active="false" type="forceanalysiscache" />
           <criterion completepurepath="true" type="hosts" mode="all" />
+          <criterion usefullanalysis="false" active="false" type="noanalysiscache" />
           <criterion type="or" />
           <criterion enduser="false" type="purepaths" mode="all" />
           <criterion enabled="false" filterbyid="false" type="threads" />
@@ -570,7 +591,7 @@
           </criterion>
           <criterion sort="highestValues" isactive="false" columnlabel="" maxnrofrecords="10" customdefaultcolumnindex="0" customdefaultcolumnlabel="" columnindex="0" type="topx" />
           <criterion type="visits">
-            <visitidset visitsidsetsize="0" />
+            <visitidset />
           </criterion>
           <criterion type="webpage">
             <textpattern enabled="true" name="timerName" type="contains" />
@@ -601,7 +622,9 @@
         </criterion>
         <criterion type="casuemdimension" />
         <criterion filterinterval="false" intervalend="0" type="dcrumdimension" intervalstart="0" />
+        <criterion active="false" type="forceanalysiscache" />
         <criterion completepurepath="true" type="hosts" mode="all" />
+        <criterion usefullanalysis="false" active="false" type="noanalysiscache" />
         <criterion type="or" />
         <criterion enduser="false" type="purepaths" mode="all" />
         <criterion enabled="false" filterbyid="false" type="threads" />
@@ -610,7 +633,7 @@
         </criterion>
         <criterion sort="highestValues" isactive="true" columnlabel="Avg" maxnrofrecords="20" customdefaultcolumnindex="4" customdefaultcolumnlabel="Count" columnindex="7" type="topx" />
         <criterion type="visits">
-          <visitidset visitsidsetsize="0" />
+          <visitidset />
         </criterion>
         <criterion type="webpage">
           <textpattern enabled="true" name="timerName" type="contains" />
@@ -676,4 +699,3 @@
     </portletconfig>
   </dashboardconfig>
 </dynatrace>
-
