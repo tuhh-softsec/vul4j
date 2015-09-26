@@ -6,7 +6,7 @@
   <parent>
     <artifactId>plexus</artifactId>
     <groupId>org.codehaus.plexus</groupId>
-    <version>3.2</version>
+    <version>4.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>plexus-archiver</artifactId>
@@ -23,8 +23,15 @@
     <system>jira</system>
     <url>https://github.com/codehaus-plexus/plexus-archiver/issues</url>
   </issueManagement>
+  <distributionManagement>
+    <site>
+      <id>github:gh-pages</id>
+      <url>${project.scm.developerConnection}</url>
+    </site>
+  </distributionManagement>
 
   <properties>
+    <javaVersion>6</javaVersion>
     <useJvmChmod>true</useJvmChmod>
   </properties>
 
@@ -82,7 +89,6 @@
     </dependency>
   </dependencies>
 
-
   <build>
     <pluginManagement>
       <plugins>
@@ -94,6 +100,22 @@
       </plugins>
     </pluginManagement>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-scm-publish-plugin</artifactId>
+        <configuration>
+          <content>${project.reporting.outputDirectory}</content><!-- mono-module doesn't require site:stage -->
+        </configuration>
+        <executions>
+          <execution>
+            <id>scm-publish</id>
+            <phase>site-deploy</phase><!-- deploy site with maven-scm-publish-plugin -->
+            <goals>
+              <goal>publish-scm</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -117,7 +139,6 @@
       <plugin>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-component-metadata</artifactId>
-        <version>1.6</version>
         <executions>
           <execution>
             <goals>
@@ -146,14 +167,7 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <configuration>
-                <source>1.6</source>
-                <target>1.6</target>
-            </configuration>
-        </plugin>    
-     </plugins>
+    </plugins>
   </build>
 
 </project>
