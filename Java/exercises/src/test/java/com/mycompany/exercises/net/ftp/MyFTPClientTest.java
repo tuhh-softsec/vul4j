@@ -5,7 +5,6 @@
 package com.mycompany.exercises.net.ftp;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -17,6 +16,8 @@ import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 
 public class MyFTPClientTest {
 
@@ -27,11 +28,13 @@ public class MyFTPClientTest {
 
   private static final Path TEST_RESOURCES_DIR = Paths.get("src", "test", "resources");
   private static final Path FTP_DIRECTORY = TEST_RESOURCES_DIR.resolve("ftp_dir");
-  private static final String TMP_DIRECTORY = System.getProperty("java.io.tmpdir");
 
   private static FtpServerMock serverMock;
   private MyFTPClient ftpClient;
   private FTPConnectionProperties ftpProperties;
+
+  @Rule
+  public TemporaryFolder tempFolder = new TemporaryFolder();
 
   @Before
   public void setUp() {
@@ -63,13 +66,12 @@ public class MyFTPClientTest {
   @Test
   public void testDownloadFile() throws IOException {
     Path remoteFile = FTP_DIRECTORY.resolve("Release");
-    Path localFile = Paths.get(TMP_DIRECTORY, "LocalRelease");
-    boolean fileDownloaded = ftpClient.downloadFile(ftpProperties, "Release", localFile);
+    Path localDirectory = tempFolder.newFolder().toPath();
+    Path localFile = localDirectory.resolve("Release");
+    boolean fileDownloaded = ftpClient.downloadFile(ftpProperties, "Release", localDirectory);
 
     assertTrue(fileDownloaded);
     assertTrue(contentEquals(remoteFile.toFile(), localFile.toFile()));
-
-    Files.delete(localFile);
   }
 
   private String getCurrentDate() {
