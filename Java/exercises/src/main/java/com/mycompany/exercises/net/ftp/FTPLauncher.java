@@ -4,6 +4,8 @@
  */
 package com.mycompany.exercises.net.ftp;
 
+import java.nio.file.Paths;
+
 public final class FTPLauncher {
 
   private FTPLauncher() {}
@@ -11,7 +13,7 @@ public final class FTPLauncher {
   public static void main(final String[] args) {
     FTPConnectionProperties ftpProperties =
         new FTPConnectionProperties.Builder("ftp.gnu.org").directory(
-            "/third-party").build();
+            Paths.get("/third-party")).build();
     MyFTPClient ftpClient = new MyFTPClient();
 
     ftpClient.obtainListOfFileInformationAnonymous(ftpProperties).stream()

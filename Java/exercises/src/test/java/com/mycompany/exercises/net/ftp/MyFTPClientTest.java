@@ -4,7 +4,6 @@
  */
 package com.mycompany.exercises.net.ftp;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,7 +26,7 @@ public class MyFTPClientTest {
   private static final int PORT = 9187;
 
   private static final Path TEST_RESOURCES_DIR = Paths.get("src", "test", "resources");
-  private static final String FTP_DIRECTORY = TEST_RESOURCES_DIR.resolve("ftp_dir");
+  private static final Path FTP_DIRECTORY = TEST_RESOURCES_DIR.resolve("ftp_dir");
   private static final String TMP_DIRECTORY = System.getProperty("java.io.tmpdir");
 
   private static FtpServerMock serverMock;
@@ -36,8 +35,8 @@ public class MyFTPClientTest {
 
   @Before
   public void setUp() {
-    serverMock = new FtpServerMock(PORT, USERNAME, PASSWORD, new File(FTP_DIRECTORY));
-    serverMock.addDirectoryAndAllFilesRecursively(new File(FTP_DIRECTORY));
+    serverMock = new FtpServerMock(PORT, USERNAME, PASSWORD, FTP_DIRECTORY.toFile());
+    serverMock.addDirectoryAndAllFilesRecursively(FTP_DIRECTORY.toFile());
     serverMock.startServer();
     ftpClient = new MyFTPClient();
     ftpProperties =
@@ -63,7 +62,7 @@ public class MyFTPClientTest {
 
   @Test
   public void testDownloadFile() throws IOException {
-    Path remoteFile = Paths.get(FTP_DIRECTORY, "Release");
+    Path remoteFile = FTP_DIRECTORY.resolve("Release");
     Path localFile = Paths.get(TMP_DIRECTORY, "LocalRelease");
     boolean fileDownloaded = ftpClient.downloadFile(ftpProperties, "Release", localFile);
 

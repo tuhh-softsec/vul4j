@@ -38,8 +38,8 @@ public final class FTPConnectionProperties {
       return this;
     }
 
-    public Builder directory(final String val) {
-      directory = Paths.get(val).toAbsolutePath();
+    public Builder directory(final Path val) {
+      directory = val.toAbsolutePath();
       return this;
     }
 
