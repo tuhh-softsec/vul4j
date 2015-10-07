@@ -16,6 +16,7 @@
 
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler">
+    <j:if test="${from.lastDashboardReports != null}">
     <link type="text/css" href="${resURL}/plugin/performance-signature/css/bootstrap.min.css" rel="stylesheet"/>
     <style type="text/css">
         .carousel .carousel-control { visibility: hidden; }
@@ -27,45 +28,44 @@
             <div class="alert alert-success" role="alert">
                 <font size="3">${from.displayName}</font>
             </div>
-            <j:if test="it.lastDashboardReports != null">
-                <div class="panel panel-success">
-                    <ul class="nav nav-tabs" role="tablist" id="tabList">
-                        <j:forEach var="dashboardReport" items="${from.lastDashboardReports}">
-                            <li role="presentation">
-                                <a href="#${dashboardReport.name}" aria-controls="${dashboardReport.name}" role="tab" data-toggle="tab">
-                                    ${dashboardReport.name}
-                                </a>
-                            </li>
-                        </j:forEach>
-                    </ul>
-                    <div class="tab-content">
-                        <j:forEach var="dashboardReport" items="${from.lastDashboardReports}">
-                            <div role="tabpanel" class="tab-pane" id="${dashboardReport.name}">
-                                <a href="performance-signature/#${dashboardReport.name}">
-                                    <div id="carousel-${dashboardReport.name}" class="carousel slide" data-ride="carousel">
-                                        <!-- Wrapper for slides -->
-                                        <div class="carousel-inner" role="listbox"/>
-                                        <!-- Controls -->
-                                        <a style="background-image:none !important" class="left carousel-control"
-                                           href="#carousel-${dashboardReport.name}" role="button" data-slide="prev">
-                                            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-                                            <span class="sr-only">Previous</span>
-                                        </a>
-                                        <a style="background-image:none !important" class="right carousel-control"
-                                           href="#carousel-${dashboardReport.name}" role="button" data-slide="next">
-                                            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                                            <span class="sr-only">Next</span>
-                                        </a>
-                                    </div>
-                                </a>
-                            </div>
-                        </j:forEach>
-                    </div>
+            <div class="panel panel-success">
+                <ul class="nav nav-tabs" role="tablist" id="tabList">
+                    <j:forEach var="dashboardReport" items="${from.lastDashboardReports}">
+                        <li role="presentation">
+                            <a href="#${dashboardReport.name}" aria-controls="${dashboardReport.name}" role="tab" data-toggle="tab">
+                                ${dashboardReport.name}
+                            </a>
+                        </li>
+                    </j:forEach>
+                </ul>
+                <div class="tab-content">
+                    <j:forEach var="dashboardReport" items="${from.lastDashboardReports}">
+                        <div role="tabpanel" class="tab-pane" id="${dashboardReport.name}">
+                            <a href="performance-signature/#${dashboardReport.name}">
+                                <div id="carousel-${dashboardReport.name}" class="carousel slide" data-ride="carousel">
+                                    <!-- Wrapper for slides -->
+                                    <div class="carousel-inner" role="listbox"/>
+                                    <!-- Controls -->
+                                    <a style="background-image:none !important" class="left carousel-control"
+                                       href="#carousel-${dashboardReport.name}" role="button" data-slide="prev">
+                                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                    <a style="background-image:none !important" class="right carousel-control"
+                                       href="#carousel-${dashboardReport.name}" role="button" data-slide="next">
+                                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                </div>
+                            </a>
+                        </div>
+                    </j:forEach>
                 </div>
-            </j:if>
+            </div>
         </div>
         <br style="clear:both;"/>
     </div>
+    </j:if>
     <script data-main="${resURL}/plugin/performance-signature/js/floatingBox"
             src="${resURL}/plugin/performance-signature/js/require.js"/>
     <script type="text/javascript">
