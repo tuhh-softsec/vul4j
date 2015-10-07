@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package de.tsystems.mms.apm.performancesignature.jenkins;
+package de.tsystems.mms.apm.performancesignature;
 
+import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.Measure;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.Measurement;
-import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
-import de.tsystems.mms.apm.performancesignature.jenkins.util.DTPerfSigUtils;
+import de.tsystems.mms.apm.performancesignature.util.DTPerfSigUtils;
 import hudson.Functions;
 import hudson.model.AbstractBuild;
 import hudson.model.ModelObject;

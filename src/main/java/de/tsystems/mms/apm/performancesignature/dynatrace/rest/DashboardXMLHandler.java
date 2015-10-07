@@ -28,9 +28,9 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace.rest;
 
+import de.tsystems.mms.apm.performancesignature.dynatrace.model.ChartDashlet;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.Measure;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.Measurement;
-import de.tsystems.mms.apm.performancesignature.dynatrace.model.ChartDashlet;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;

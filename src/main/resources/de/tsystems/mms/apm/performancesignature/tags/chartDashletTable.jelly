@@ -15,7 +15,7 @@
   -->
 
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:jm="/de/tsystems/mms/apm/performancesignature/jenkins/tags">
+<j:jelly xmlns:j="jelly:core" xmlns:jm="/de/tsystems/mms/apm/performancesignature/tags">
     <h4>${it.name}</h4>
     <br/>
     <j:forEach var="measure" items="${it.measures}">

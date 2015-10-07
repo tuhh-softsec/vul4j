@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.tsystems.mms.apm.performancesignature.jenkins.model;
+package de.tsystems.mms.apm.performancesignature.model;
 
 import hudson.util.Scrambler;
 import org.kohsuke.stapler.DataBoundConstructor;

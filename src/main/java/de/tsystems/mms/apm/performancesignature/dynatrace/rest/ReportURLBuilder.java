@@ -16,7 +16,7 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace.rest;
 
-import de.tsystems.mms.apm.performancesignature.jenkins.util.DTPerfSigUtils;
+import de.tsystems.mms.apm.performancesignature.util.DTPerfSigUtils;
 
 import java.net.URL;
 import java.util.ArrayList;

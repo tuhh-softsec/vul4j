@@ -1,6 +1,6 @@
 work/
 .idea/
-dynatrace-performance-signature.iml
+performance-signature.iml
 target/
 pom.xml.tag
 pom.xml.releaseBackup

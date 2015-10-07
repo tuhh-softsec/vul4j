@@ -16,7 +16,7 @@
 
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout">
-    <l:layout xmlns:jm="/de/tsystems/mms/apm/performancesignature/jenkins/tags"
+    <l:layout xmlns:jm="/de/tsystems/mms/apm/performancesignature/tags"
               title="Performance Signature Report Details for Build ${it.getBuild().getNumber()}">
         <l:header>
             <link type="text/css" href="${resURL}/plugin/performance-signature/css/bootstrap.min.css"

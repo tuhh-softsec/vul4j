@@ -28,7 +28,7 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace.rest;
 
-import de.tsystems.mms.apm.performancesignature.jenkins.util.DTPerfSigUtils;
+import de.tsystems.mms.apm.performancesignature.util.DTPerfSigUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.MalformedURLException;

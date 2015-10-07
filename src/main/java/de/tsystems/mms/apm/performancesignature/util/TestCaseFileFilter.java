@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.tsystems.mms.apm.performancesignature.jenkins.util;
+package de.tsystems.mms.apm.performancesignature.util;
 
 import java.io.File;
 import java.io.FileFilter;

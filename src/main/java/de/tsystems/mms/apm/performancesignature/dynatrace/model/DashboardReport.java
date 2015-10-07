@@ -16,9 +16,9 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
-import de.tsystems.mms.apm.performancesignature.jenkins.DTPerfSigBuildAction;
-import de.tsystems.mms.apm.performancesignature.jenkins.model.ConfigurationTestCase;
-import de.tsystems.mms.apm.performancesignature.jenkins.model.UnitTestCase;
+import de.tsystems.mms.apm.performancesignature.DTPerfSigBuildAction;
+import de.tsystems.mms.apm.performancesignature.model.ConfigurationTestCase;
+import de.tsystems.mms.apm.performancesignature.model.UnitTestCase;
 import hudson.model.AbstractBuild;
 
 import java.util.Date;

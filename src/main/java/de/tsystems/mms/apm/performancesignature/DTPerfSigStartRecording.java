@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package de.tsystems.mms.apm.performancesignature.jenkins;
+package de.tsystems.mms.apm.performancesignature;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
-import de.tsystems.mms.apm.performancesignature.jenkins.model.ConfigurationTestCase;
-import de.tsystems.mms.apm.performancesignature.jenkins.model.GeneralTestCase;
-import de.tsystems.mms.apm.performancesignature.jenkins.model.UnitTestCase;
-import de.tsystems.mms.apm.performancesignature.jenkins.util.DTPerfSigUtils;
+import de.tsystems.mms.apm.performancesignature.model.ConfigurationTestCase;
+import de.tsystems.mms.apm.performancesignature.model.GeneralTestCase;
+import de.tsystems.mms.apm.performancesignature.model.UnitTestCase;
+import de.tsystems.mms.apm.performancesignature.util.DTPerfSigUtils;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;

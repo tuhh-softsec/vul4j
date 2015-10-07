@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package de.tsystems.mms.apm.performancesignature.jenkins.util;
+package de.tsystems.mms.apm.performancesignature.util;
 
 import com.cloudbees.plugins.credentials.CredentialsProvider;
 import com.cloudbees.plugins.credentials.common.StandardUsernameCredentials;
 import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
 import com.cloudbees.plugins.credentials.domains.DomainRequirement;
+import de.tsystems.mms.apm.performancesignature.DTPerfSigRecorder;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.SystemProfile;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionException;
-import de.tsystems.mms.apm.performancesignature.jenkins.DTPerfSigRecorder;
 import hudson.FilePath;
 import hudson.model.AbstractBuild;
 import hudson.model.Item;

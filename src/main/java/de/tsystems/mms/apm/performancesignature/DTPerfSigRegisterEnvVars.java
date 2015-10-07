@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.tsystems.mms.apm.performancesignature.jenkins;
+package de.tsystems.mms.apm.performancesignature;
 
 import hudson.EnvVars;
 import hudson.model.AbstractBuild;

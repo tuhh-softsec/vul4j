@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package de.tsystems.mms.apm.performancesignature.jenkins.model;
+package de.tsystems.mms.apm.performancesignature.model;
 
-import de.tsystems.mms.apm.performancesignature.jenkins.util.DTPerfSigUtils;
+import de.tsystems.mms.apm.performancesignature.util.DTPerfSigUtils;
 import hudson.model.AbstractProject;
 import hudson.model.Describable;
 import hudson.model.Descriptor;

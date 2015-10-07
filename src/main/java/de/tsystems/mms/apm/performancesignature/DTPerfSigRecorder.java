@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.tsystems.mms.apm.performancesignature.jenkins;
+package de.tsystems.mms.apm.performancesignature;
 
 import com.cloudbees.plugins.credentials.CredentialsProvider;
 import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
@@ -23,9 +23,12 @@ import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
 import com.cloudbees.plugins.credentials.domains.DomainRequirement;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
-import de.tsystems.mms.apm.performancesignature.jenkins.model.*;
-import de.tsystems.mms.apm.performancesignature.jenkins.model.ConfigurationTestCase.ConfigurationTestCaseDescriptor;
-import de.tsystems.mms.apm.performancesignature.jenkins.util.DTPerfSigUtils;
+import de.tsystems.mms.apm.performancesignature.model.ConfigurationTestCase;
+import de.tsystems.mms.apm.performancesignature.model.ConfigurationTestCase.ConfigurationTestCaseDescriptor;
+import de.tsystems.mms.apm.performancesignature.model.Dashboard;
+import de.tsystems.mms.apm.performancesignature.model.GeneralTestCase;
+import de.tsystems.mms.apm.performancesignature.model.ProxyBlock;
+import de.tsystems.mms.apm.performancesignature.util.DTPerfSigUtils;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.*;

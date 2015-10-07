@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package de.tsystems.mms.apm.performancesignature.jenkins.model;
+package de.tsystems.mms.apm.performancesignature.model;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
-import de.tsystems.mms.apm.performancesignature.jenkins.util.DTPerfSigUtils;
+import de.tsystems.mms.apm.performancesignature.util.DTPerfSigUtils;
 import hudson.Extension;
 import hudson.RelativePath;
 import hudson.util.ListBoxModel;

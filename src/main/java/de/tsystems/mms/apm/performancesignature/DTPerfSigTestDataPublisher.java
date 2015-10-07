@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package de.tsystems.mms.apm.performancesignature.jenkins;
+package de.tsystems.mms.apm.performancesignature;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRun;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
-import de.tsystems.mms.apm.performancesignature.jenkins.util.DTPerfSigUtils;
+import de.tsystems.mms.apm.performancesignature.util.DTPerfSigUtils;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -79,7 +79,7 @@ public class DTPerfSigTestDataPublisher extends TestDataPublisher {
                         testRuns.add(testRun);
                         logger.println(String.format(Messages.DTPerfSigRecorder_XMLReportResults(), testRun.getTestResults().size(), " " + testRun.getTestRunID()));
                     }
-                } catch(Exception e) {
+                } catch (Exception e) {
                     logger.println(e);
                     if (!dtRecorder.isModifyBuildResult()) return null;
                 }

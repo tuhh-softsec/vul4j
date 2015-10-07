@@ -15,7 +15,7 @@
   -->
 
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:jm="/de/tsystems/mms/apm/performancesignature/jenkins/tags">
+<j:jelly xmlns:j="jelly:core" xmlns:jm="/de/tsystems/mms/apm/performancesignature/tags">
     <link type="text/css" href="${resURL}/plugin/performance-signature/css/bootstrap.min.css"
           rel="stylesheet"/>
     <j:set var="testRun" value="${it.matchingTestRun}"/>
