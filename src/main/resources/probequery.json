@@ -110,5 +110,27 @@
         {"dataIndex": "netz", "type": "listnetz", "label": "Land"},
         {"dataIndex": "umw_id", "type": "listumw", "label": "Umweltbereich", "multiselect":true}
     ]
+},
+{   "id": "7",
+    "name": "Proben und Messungen pro Land und UMW (Multiselect)",
+    "description": "Abfrage aller Proben/Messungen gefiltert pro Land und Umweltbereich (mit Mehrfachauswahl)",
+    "sql": "select p.id as id, pt.probe_id_alt as probeId, p.netzbetreiber_id as netzbetreiberId, p.mst_id as mstId, to_char(p.probeentnahme_beginn,'YYYY-mm-dd HH24:MI') entnahmeVon, to_char(p.probeentnahme_ende,'YYYY-mm-dd HH24:MI') entnahmeBis, m.mmt_id as mmtId, p.umw_id as umwId, p.hauptproben_nr as hauptprobenNr, o.orts_typ as ortsTyp, so.gem_id as gemId, v.bezeichnung as bezeichnung from land.probe p left outer join land.probe_translation pt on p.id = pt.probe_id left outer join land.messung m on p.id = m.probe_id left outer join land.ort o on (p.id = o.probe_id) left outer join stammdaten.ort so on (o.ort_id = so.id) left outer join stammdaten.verwaltungseinheit v on (so.gem_id = v.id) where (o.orts_typ = 'E' or o.orts_typ is null) and (p.netzbetreiber_id = :netz OR '' =:netz) and (p.umw_id similar to (:umw_id) OR '' = :umw_id)",
+    "result": [
+        {"dataIndex": "probeId", "header": "ProbeId", "width": 100},
+        {"dataIndex": "netzbetreiberId", "header": "Land", "width": 50},
+        {"dataIndex": "mstId", "header": "MST", "width": 50},
+        {"dataIndex": "entnahmeVon", "header": "Entnahme von", "width": 120},
+        {"dataIndex": "entnahmeBis", "header": "Entnahme bis", "width": 120},
+        {"dataIndex": "mmtId", "header": "MMT", "width": 50},
+        {"dataIndex": "umwId", "header": "Umweltbereich", "width": 100},
+        {"dataIndex": "hauptprobenNr", "header": "Proben-Nr", "width": 100},
+        {"dataIndex": "ortsTyp", "header": "Ortstyp", "width": 50},
+        {"dataIndex": "genId", "header": "Gemeinde-ID", "width": 100},
+        {"dataIndex": "bezeichnung", "header": "Gemeinde", "flex": 1}
+    ],
+    "filters": [
+        {"dataIndex": "netz", "type": "listnetz", "label": "Land"},
+        {"dataIndex": "umw_id", "type": "listumw", "label": "Umweltbereich", "multiselect":true}
+    ]
 }
 ]
