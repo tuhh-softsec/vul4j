@@ -28,7 +28,7 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace.rest;
 
-import de.tsystems.mms.apm.performancesignature.util.DTPerfSigUtils;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.MalformedURLException;
@@ -58,7 +58,7 @@ public class ManagementURLBuilder {
     public URL reanalyzeSessionURL(final String sessionName) {
         try {
             return new URL(String.format("%1$s/rest/management/sessions/%2$s/reanalyze", this.serverAddress,
-                    DTPerfSigUtils.encodeString(sessionName)));
+                    PerfSigUtils.encodeString(sessionName)));
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -68,7 +68,7 @@ public class ManagementURLBuilder {
     public URL reanalyzeSessionStatusURL(final String sessionName) {
         try {
             return new URL(String.format("%1$s/rest/management/sessions/%2$s/reanalyze/finished", this.serverAddress,
-                    DTPerfSigUtils.encodeString(sessionName)));
+                    PerfSigUtils.encodeString(sessionName)));
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -82,10 +82,10 @@ public class ManagementURLBuilder {
         }
         try {
             this.parameters = String.format("recordingOption=%1$s&isSessionLocked=%2$s&isTimeStampAllowed=%3$s&description=%4$s&presentableName=%5$s",
-                    recordingOption, sessionLocked, isNoTimestamp, description == null ? "" : DTPerfSigUtils.encodeString(description),
-                    StringUtils.isBlank(sessionName) ? DTPerfSigUtils.encodeString(profileName) : DTPerfSigUtils.encodeString(sessionName));
+                    recordingOption, sessionLocked, isNoTimestamp, description == null ? "" : PerfSigUtils.encodeString(description),
+                    StringUtils.isBlank(sessionName) ? PerfSigUtils.encodeString(profileName) : PerfSigUtils.encodeString(sessionName));
             final String s = String.format("%1$s/rest/management/profiles/%2$s/startrecording", this.serverAddress,
-                    DTPerfSigUtils.encodeString(profileName));
+                    PerfSigUtils.encodeString(profileName));
             return new URL(s);
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -96,7 +96,7 @@ public class ManagementURLBuilder {
     public URL stopRecordingURL(final String profileName) {
         try {
             final String s = String.format("%1$s/rest/management/profiles/%2$s/stoprecording", this.serverAddress,
-                    DTPerfSigUtils.encodeString(profileName));
+                    PerfSigUtils.encodeString(profileName));
             return new URL(s);
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -117,7 +117,7 @@ public class ManagementURLBuilder {
     public URL listConfigurationsURL(final String profileName) {
         try {
             final String s = String.format("%1$s/rest/management/profiles/%2$s/configurations", this.serverAddress,
-                    DTPerfSigUtils.encodeString(profileName));
+                    PerfSigUtils.encodeString(profileName));
             return new URL(s);
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -128,7 +128,7 @@ public class ManagementURLBuilder {
     public URL activateConfigurationURL(final String profileName, final String configuration) {
         try {
             final String s = String.format("%1$s/rest/management/profiles/%2$s/configurations/%3$s/activate", this.serverAddress,
-                    DTPerfSigUtils.encodeString(profileName), DTPerfSigUtils.encodeString(configuration));
+                    PerfSigUtils.encodeString(profileName), PerfSigUtils.encodeString(configuration));
             return new URL(s);
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -149,7 +149,7 @@ public class ManagementURLBuilder {
     public URL hotSensorPlacementURL(final int agentId) {
         try {
             final String s = String.format("%1$s/rest/management/agents/%2$s/hotsensorplacement", this.serverAddress,
-                    DTPerfSigUtils.encodeString(String.valueOf(agentId)));
+                    PerfSigUtils.encodeString(String.valueOf(agentId)));
             return new URL(s);
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -206,7 +206,7 @@ public class ManagementURLBuilder {
     public URL memoryDumpStatusURL(final String profileName, final String memoryDumpName) {
         try {
             return new URL(String.format("%1$s/rest/management/profiles/%2$s/memorydumpcreated/%3$s", this.serverAddress,
-                    DTPerfSigUtils.encodeString(profileName), DTPerfSigUtils.encodeString(memoryDumpName)));
+                    PerfSigUtils.encodeString(profileName), PerfSigUtils.encodeString(memoryDumpName)));
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -230,7 +230,7 @@ public class ManagementURLBuilder {
             this.parameters = builder.toString();
 
             return new URL(String.format("%1$s/rest/management/profiles/%2$s/memorydump",
-                    this.serverAddress, DTPerfSigUtils.encodeString(profileName)));
+                    this.serverAddress, PerfSigUtils.encodeString(profileName)));
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -240,7 +240,7 @@ public class ManagementURLBuilder {
     public URL threadDumpStatusURL(final String profileName, final String threadDumpName) {
         try {
             return new URL(String.format("%1$s/rest/management/profiles/%2$s/threaddumpcreated/%3$s", this.serverAddress,
-                    DTPerfSigUtils.encodeString(profileName), DTPerfSigUtils.encodeString(threadDumpName)));
+                    PerfSigUtils.encodeString(profileName), PerfSigUtils.encodeString(threadDumpName)));
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -250,7 +250,7 @@ public class ManagementURLBuilder {
     public URL threadDumpURL(final String profileName, final String agentName, final String hostName, final int processId, final boolean sessionLocked) {
         try {
             this.parameters = String.format("agentName=%1$s&isSessionLocked=%2$s&hostName=%3$s&processId=%4$s", agentName, sessionLocked, hostName, processId);
-            return new URL(String.format("%1$s/rest/management/profiles/%2$s/threaddump", this.serverAddress, DTPerfSigUtils.encodeString(profileName)));
+            return new URL(String.format("%1$s/rest/management/profiles/%2$s/threaddump", this.serverAddress, PerfSigUtils.encodeString(profileName)));
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -259,7 +259,7 @@ public class ManagementURLBuilder {
 
     public URL registerTestRunURL(final String profileName) {
         try {
-            return new URL(String.format("%1$s/rest/management/profiles/%2$s/testruns", this.serverAddress, DTPerfSigUtils.encodeString(profileName)));
+            return new URL(String.format("%1$s/rest/management/profiles/%2$s/testruns", this.serverAddress, PerfSigUtils.encodeString(profileName)));
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -269,7 +269,7 @@ public class ManagementURLBuilder {
     public URL testRunDetailsURL(final String profileName, final String testRunID) {
         try {
             return new URL(String.format("%1$s/rest/management/profiles/%2$s/testruns/%3$s.xml", this.serverAddress,
-                    DTPerfSigUtils.encodeString(profileName), testRunID));
+                    PerfSigUtils.encodeString(profileName), testRunID));
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

@@ -84,7 +84,7 @@
                                             <label for="measureGroup">Select Measuregroup:</label>
                                             <select class="form-control" id="measureGroup">
                                                 <j:if test="${isUnitTest}">
-                                                    <option>Test result chart</option>
+                                                    <option>UnitTest Overview</option>
                                                 </j:if>
                                                 <j:forEach var="dr" items="${it.lastDashboardReports}">
                                                     <j:if test="${dr.name.equals(lastDashboardReport.name)}">
@@ -95,9 +95,17 @@
                                                 </j:forEach>
                                             </select>
                                         </div>
-                                        <div class="form-group col-md-2" id="measureContainer">
+                                        <div class="form-group col-md-2">
                                             <label for="measure">Select Measure:</label>
                                             <select class="form-control" id="measure"/>
+                                        </div>
+                                        <div class="form-group col-md-2">
+                                            <label for="measurename">custom measure name</label>
+                                            <input type="text" class="form-control" id="customName" placeholder="measure name" />
+                                        </div>
+                                        <div class="form-group col-md-2">
+                                            <label for="buildcount">custom build count</label>
+                                            <input type="number" class="form-control" id="customBuildCount" placeholder="0" />
                                         </div>
                                         <div class="form-group col-md-2">
                                             <button style="margin-top: 20px; margin-bottom: 10px;" type="button"

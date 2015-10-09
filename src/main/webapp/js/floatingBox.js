@@ -20,12 +20,19 @@ define(['./common'], function () {
             $(".carousel").each(function (carouselIndex, carousel) {
                 var testCase = $(carousel).attr('id').substring(9);
 
-                projectAction.getDashboardConfiguration(testCase, function (data) {
+                projectAction.getDashboardConfiguration(function (data) {
                     var json = JSON.parse(data.responseObject());
                     $.each(json, function (index) {
                         if (json[index].show) {
-                            $(".carousel-inner", carousel).append('<div class="item">' +
-                                json[index].html.replace("###", testCase).replace("\.\/", "performance-signature/") + '</div>\n');
+                            if (json[index].id === 'unittest_overview') {
+                                $(".carousel-inner", carousel).append('<div class="item">' +
+                                    '<img class="img-thumbnail" height="300" width="410"' +
+                                    'src="performance-signature/testRunGraph?width=410&amp;height=300"></div>\n');
+                            } else {
+                                $(".carousel-inner", carousel).append('<div class="item">' +
+                                    '<img class="img-thumbnail" height="300" width="410"' +
+                                    'src="performance-signature/summarizerGraph?width=410&amp;height=300&amp;id=' + json[index].id + '"></div>\n');
+                            }
                         }
                     });
                     $(".carousel-inner div:first-child", carousel).addClass("active");

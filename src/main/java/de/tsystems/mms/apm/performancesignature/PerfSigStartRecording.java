@@ -20,7 +20,7 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnectio
 import de.tsystems.mms.apm.performancesignature.model.ConfigurationTestCase;
 import de.tsystems.mms.apm.performancesignature.model.GeneralTestCase;
 import de.tsystems.mms.apm.performancesignature.model.UnitTestCase;
-import de.tsystems.mms.apm.performancesignature.util.DTPerfSigUtils;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
@@ -39,12 +39,12 @@ import java.io.PrintStream;
 /**
  * Created by rapi on 17.05.2014.
  */
-public class DTPerfSigStartRecording extends Builder {
+public class PerfSigStartRecording extends Builder {
     private final String testCase, recordingOption;
     private final boolean lockSession;
 
     @DataBoundConstructor
-    public DTPerfSigStartRecording(final String testCase, final String recordingOption, final boolean lockSession) {
+    public PerfSigStartRecording(final String testCase, final String recordingOption, final boolean lockSession) {
         this.testCase = testCase;
         this.recordingOption = recordingOption;
         this.lockSession = lockSession;
@@ -55,8 +55,8 @@ public class DTPerfSigStartRecording extends Builder {
         // This is where you 'build' the project.
         final PrintStream logger = listener.getLogger();
 
-        final DTPerfSigRecorder dtRecorder = DTPerfSigUtils.getRecorder(build);
-        final DTPerfSigStopRecording dtStopRecording = DTPerfSigUtils.getDTPerfSigBuilder(build, DTPerfSigStopRecording.class);
+        final PerfSigRecorder dtRecorder = PerfSigUtils.getRecorder(build);
+        final PerfSigStopRecording dtStopRecording = PerfSigUtils.getDTPerfSigBuilder(build, PerfSigStopRecording.class);
 
         if (dtRecorder == null) {
             logger.println(Messages.DTPerfSigStartRecording_MissingConfiguration());
@@ -86,8 +86,8 @@ public class DTPerfSigStartRecording extends Builder {
                     if (testRunId != null) {
                         logger.println(String.format(Messages.DTPerfSigStartRecording_StartedTestRun(), dtRecorder.getProfile(), testRunId));
                         logger.println("Dynatrace: registered test run " + testRunId + "" +
-                                " (available in the environment as " + DTPerfSigRegisterEnvVars.TESTRUN_ID_KEY +
-                                " and " + DTPerfSigRegisterEnvVars.SESSIONCOUNT + ")");
+                                " (available in the environment as " + PerfSigRegisterEnvVars.TESTRUN_ID_KEY +
+                                " and " + PerfSigRegisterEnvVars.SESSIONCOUNT + ")");
                     } else {
                         logger.println("Warning: Could not register TestRun");
                     }
@@ -102,7 +102,7 @@ public class DTPerfSigStartRecording extends Builder {
 
             if (result != null && result.equals(sessionName)) {
                 logger.println(String.format(Messages.DTPerfSigStartRecording_StartedSessionRecording(), dtRecorder.getProfile(), result));
-                build.addAction(new DTPerfSigRegisterEnvVars(sessionName, testCase, testRunId));
+                build.addAction(new PerfSigRegisterEnvVars(sessionName, testCase, testRunId));
                 return true;
             }
         } catch (RuntimeException e) {

@@ -20,7 +20,7 @@ import com.cloudbees.plugins.credentials.CredentialsProvider;
 import com.cloudbees.plugins.credentials.common.StandardUsernameCredentials;
 import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
 import com.cloudbees.plugins.credentials.domains.DomainRequirement;
-import de.tsystems.mms.apm.performancesignature.DTPerfSigRecorder;
+import de.tsystems.mms.apm.performancesignature.PerfSigRecorder;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.SystemProfile;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionException;
 import hudson.FilePath;
@@ -52,7 +52,7 @@ import java.util.regex.Pattern;
 /**
  * Created by rapi on 18.05.2014.
  */
-public class DTPerfSigUtils {
+public class PerfSigUtils {
     /**
      * @return {@link jenkins.model.Jenkins#getInstance()} if that isn't null, or die.
      */
@@ -87,15 +87,15 @@ public class DTPerfSigUtils {
         return listBoxModel;
     }
 
-    public static DTPerfSigRecorder getRecorder(final AbstractBuild build) {
-        final Project<?, ?> project = DTPerfSigUtils.cast(build.getProject());
+    public static PerfSigRecorder getRecorder(final AbstractBuild build) {
+        final Project<?, ?> project = PerfSigUtils.cast(build.getProject());
         final List<Publisher> publishers = project.getPublishersList().toList();
-        DTPerfSigRecorder dtRecorder = null;
+        PerfSigRecorder dtRecorder = null;
 
         //ToDo: add Flexible Publish Plugin compatibility
         for (Publisher publisher : publishers) {
-            if (publisher instanceof DTPerfSigRecorder) {
-                dtRecorder = (DTPerfSigRecorder) publisher;
+            if (publisher instanceof PerfSigRecorder) {
+                dtRecorder = (PerfSigRecorder) publisher;
                 break;
             }
         }
@@ -103,7 +103,7 @@ public class DTPerfSigUtils {
     }
 
     public static <T extends Builder> T getDTPerfSigBuilder(final AbstractBuild build, final Class<T> c) {
-        final Project<?, ?> project = DTPerfSigUtils.cast(build.getProject());
+        final Project<?, ?> project = PerfSigUtils.cast(build.getProject());
         final List<Builder> builders = project.getBuilders();
 
         for (Builder builder : builders) {
@@ -130,7 +130,7 @@ public class DTPerfSigUtils {
 
     public static List<FilePath> getDownloadFiles(final String testCase, final AbstractBuild<?, ?> build) {
         try {
-            final FilePath filePath = DTPerfSigUtils.getReportDirectory(build);
+            final FilePath filePath = PerfSigUtils.getReportDirectory(build);
             return filePath.list(new TestCaseFileFilter(testCase));
         } catch (IOException e) {
             e.printStackTrace();
@@ -143,7 +143,7 @@ public class DTPerfSigUtils {
     public static void downloadFile(final StaplerRequest request, final StaplerResponse response, final AbstractBuild<?, ?> build) throws IOException {
         final String file = request.getParameter("f");
         if (file.matches("[^a-zA-Z0-9\\._-]+")) return;
-        File downloadFile = new File(DTPerfSigUtils.getReportDirectory(build) + File.separator + file);
+        File downloadFile = new File(PerfSigUtils.getReportDirectory(build) + File.separator + file);
         FileInputStream inStream = new FileInputStream(downloadFile);
 
         // gets MIME type of the file

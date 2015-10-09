@@ -28,37 +28,37 @@ import java.util.List;
  * Created by rapi on 25.04.2014.
  */
 
-public class DTPerfSigBuildAction implements Action, StaplerProxy {
+public class PerfSigBuildAction implements Action, StaplerProxy {
     private final AbstractBuild<?, ?> build;
     private final List<DashboardReport> dashboardReports;
-    private transient WeakReference<DTPerfSigBuildActionResultsDisplay> buildActionResultsDisplay;
+    private transient WeakReference<PerfSigBuildActionResultsDisplay> buildActionResultsDisplay;
 
-    public DTPerfSigBuildAction(final AbstractBuild<?, ?> build, final List<DashboardReport> dashboardReports) {
+    public PerfSigBuildAction(final AbstractBuild<?, ?> build, final List<DashboardReport> dashboardReports) {
         this.build = build;
         this.dashboardReports = dashboardReports;
     }
 
     @Override
     public String toString() {
-        return "DTPerfSigBuildAction{ build=" + build + '}';
+        return "PerfSigBuildAction{ build=" + build + '}';
     }
 
     @SuppressWarnings("unchecked")
-    public DTPerfSigBuildActionResultsDisplay getBuildActionResultsDisplay() {
-        DTPerfSigBuildActionResultsDisplay buildDisplay;
-        WeakReference<DTPerfSigBuildActionResultsDisplay> wr = this.buildActionResultsDisplay;
+    public PerfSigBuildActionResultsDisplay getBuildActionResultsDisplay() {
+        PerfSigBuildActionResultsDisplay buildDisplay;
+        WeakReference<PerfSigBuildActionResultsDisplay> wr = this.buildActionResultsDisplay;
         if (wr != null) {
             buildDisplay = wr.get();
             if (buildDisplay != null) {
                 return buildDisplay;
             }
         }
-        buildDisplay = new DTPerfSigBuildActionResultsDisplay(this);
+        buildDisplay = new PerfSigBuildActionResultsDisplay(this);
         this.buildActionResultsDisplay = new WeakReference(buildDisplay);
         return buildDisplay;
     }
 
-    public DTPerfSigBuildActionResultsDisplay getTarget() {
+    public PerfSigBuildActionResultsDisplay getTarget() {
         return getBuildActionResultsDisplay();
     }
 

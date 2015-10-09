@@ -29,10 +29,10 @@
 package de.tsystems.mms.apm.performancesignature.dynatrace.rest;
 
 import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
-import de.tsystems.mms.apm.performancesignature.DTPerfSigRecorder;
+import de.tsystems.mms.apm.performancesignature.PerfSigRecorder;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.*;
 import de.tsystems.mms.apm.performancesignature.model.ProxyBlock;
-import de.tsystems.mms.apm.performancesignature.util.DTPerfSigUtils;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.ProxyConfiguration;
 import hudson.util.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -77,9 +77,9 @@ public class DTServerConnection {
 
     public DTServerConnection(final String protocol, final String host, final int port, final String credentialsId,
                               boolean verifyCertificate, final boolean useJenkinsProxy, final ProxyBlock proxyBlock) {
-        this.address = protocol + "://" + (host != null ? host : DTPerfSigRecorder.DescriptorImpl.getDefaultHost()) + ":" +
-                (port != 0 ? port : DTPerfSigRecorder.DescriptorImpl.getDefaultPort());
-        this.credentials = DTPerfSigUtils.getCredentials(credentialsId);
+        this.address = protocol + "://" + (host != null ? host : PerfSigRecorder.DescriptorImpl.getDefaultHost()) + ":" +
+                (port != 0 ? port : PerfSigRecorder.DescriptorImpl.getDefaultPort());
+        this.credentials = PerfSigUtils.getCredentials(credentialsId);
         this.verifyCertificate = verifyCertificate;
 
         // Install the all-trusting trust manager
@@ -104,8 +104,8 @@ public class DTServerConnection {
             e.printStackTrace();
         }
 
-        if (useJenkinsProxy && DTPerfSigUtils.getInstanceOrDie().proxy != null) {
-            final ProxyConfiguration proxyConfiguration = DTPerfSigUtils.getInstanceOrDie().proxy;
+        if (useJenkinsProxy && PerfSigUtils.getInstanceOrDie().proxy != null) {
+            final ProxyConfiguration proxyConfiguration = PerfSigUtils.getInstanceOrDie().proxy;
             if (StringUtils.isNotBlank(proxyConfiguration.name) && proxyConfiguration.port > 0) {
                 this.proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyConfiguration.name, proxyConfiguration.port));
                 if (StringUtils.isNotBlank(proxyConfiguration.getUserName())) {

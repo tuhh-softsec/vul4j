@@ -20,7 +20,7 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.model.ChartDashlet;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.Measure;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRun;
-import de.tsystems.mms.apm.performancesignature.util.DTPerfSigUtils;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.FilePath;
 import hudson.Functions;
 import hudson.model.AbstractBuild;
@@ -33,6 +33,8 @@ import hudson.tasks.test.TestResultProjectAction;
 import hudson.util.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -54,7 +56,9 @@ import java.awt.*;
 import java.io.*;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -62,10 +66,10 @@ import java.util.regex.Pattern;
  * Created by rapi on 25.04.2014.
  */
 
-public class DTPerfSigProjectAction implements ProminentProjectAction {
+public class PerfSigProjectAction implements ProminentProjectAction {
     private final AbstractProject<?, ?> project;
 
-    public DTPerfSigProjectAction(final AbstractProject<?, ?> project) {
+    public PerfSigProjectAction(final AbstractProject<?, ?> project) {
         this.project = project;
     }
 
@@ -89,8 +93,8 @@ public class DTPerfSigProjectAction implements ProminentProjectAction {
         return project.getAction(TestResultProjectAction.class);
     }
 
-    public DTPerfSigUtils getDTPerfSigUtils() {
-        return new DTPerfSigUtils();
+    public PerfSigUtils getDTPerfSigUtils() {
+        return new PerfSigUtils();
     }
 
     @SuppressWarnings("unused")
@@ -105,15 +109,27 @@ public class DTPerfSigProjectAction implements ProminentProjectAction {
         if (latestRun != null && request.checkIfModified(latestRun.getTimestamp(), response))
             return;
 
-        ChartUtil.generateGraph(request, response, createChart(request, buildDataSet(request)), calcDefaultSize());
+        final String id = request.getParameter("id");
+        final String json = getDashboardConfiguration();
+
+        final JSONArray jsonArray = JSONArray.fromObject(json);
+        JSONObject obj, jsonObject = null;
+        for (int i = 0; i < jsonArray.size(); i++) {
+            obj = jsonArray.getJSONObject(i);
+            if (obj.getString("id").equals(id)) {
+                jsonObject = obj;
+            }
+        }
+
+        ChartUtil.generateGraph(request, response, createChart(jsonObject, buildDataSet(jsonObject)), calcDefaultSize());
     }
 
-    private CategoryDataset buildDataSet(final StaplerRequest request) throws UnsupportedEncodingException {
-        final String measure = request.getParameter(Messages.DTPerfSigProjectAction_ReqParamMeasure());
-        final String chartDashlet = request.getParameter(Messages.DTPerfSigProjectAction_ReqParamChartDashlet());
-        final String testCase = request.getParameter(Messages.DTPerfSigProjectAction_ReqParamTestCase());
-        final List<DashboardReport> dashboardReports = getDashBoardReports(testCase);
+    private CategoryDataset buildDataSet(final JSONObject jsonObject) throws IOException {
+        final String dashboard = jsonObject.getString("dashboard");
+        final String chartDashlet = jsonObject.getString("chartDashlet");
+        final String measure = jsonObject.getString("measure");
 
+        final List<DashboardReport> dashboardReports = getDashBoardReports(dashboard);
         final DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dsb = new DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel>();
 
         for (DashboardReport dashboardReport : dashboardReports) {
@@ -127,10 +143,12 @@ public class DTPerfSigProjectAction implements ProminentProjectAction {
         return dsb.build();
     }
 
-    private JFreeChart createChart(final StaplerRequest req, final CategoryDataset dataset) throws UnsupportedEncodingException {
-        final String measure = req.getParameter(Messages.DTPerfSigProjectAction_ReqParamMeasure());
-        final String chartDashlet = req.getParameter(Messages.DTPerfSigProjectAction_ReqParamChartDashlet());
-        final String testCase = req.getParameter(Messages.DTPerfSigProjectAction_ReqParamTestCase());
+    private JFreeChart createChart(final JSONObject jsonObject, final CategoryDataset dataset) throws UnsupportedEncodingException {
+        final String measure = jsonObject.getString(Messages.DTPerfSigProjectAction_ReqParamMeasure());
+        final String chartDashlet = jsonObject.getString("chartDashlet");
+        final String testCase = jsonObject.getString("dashboard");
+        final String customMeasureName = jsonObject.getString("customName");
+        final String customBuildCount = jsonObject.getString("customBuildCount");
 
         String unit = "", color = "";
         final Measure m = getMeasure(testCase, chartDashlet, measure);
@@ -140,7 +158,12 @@ public class DTPerfSigProjectAction implements ProminentProjectAction {
         }
         if (StringUtils.isBlank(color)) color = Messages.DTPerfSigProjectAction_DefaultColor();
 
-        final JFreeChart chart = ChartFactory.createBarChart(DTPerfSigUtils.generateTitle(measure, chartDashlet), // title
+        String title = customMeasureName;
+        if (StringUtils.isBlank(customMeasureName))
+            title = PerfSigUtils.generateTitle(measure, chartDashlet);
+
+
+        final JFreeChart chart = ChartFactory.createBarChart(title, // title
                 "Build", // category axis label
                 unit, // value axis label
                 dataset, // data
@@ -195,7 +218,7 @@ public class DTPerfSigProjectAction implements ProminentProjectAction {
         final DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dsb = new DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel>();
 
         for (Run run : project.getBuilds()) {
-            DTPerfSigTestDataWrapper testDataWrapper = run.getAction(DTPerfSigTestDataWrapper.class);
+            PerfSigTestDataWrapper testDataWrapper = run.getAction(PerfSigTestDataWrapper.class);
             if (testDataWrapper != null && testDataWrapper.getTestRuns() != null) {
                 TestRun testRun = TestRun.mergeTestRuns(testDataWrapper.getTestRuns());
                 if (testRun == null) continue;
@@ -211,7 +234,9 @@ public class DTPerfSigProjectAction implements ProminentProjectAction {
     }
 
     private JFreeChart createTestRunChart(final CategoryDataset dataset) throws UnsupportedEncodingException {
-        final JFreeChart chart = ChartFactory.createBarChart("TestRun Results", // title
+        String title = "UnitTest Overview";
+
+        final JFreeChart chart = ChartFactory.createBarChart(title, // title
                 "Build", // category axis label
                 "num", // value axis label
                 dataset, // data
@@ -263,8 +288,8 @@ public class DTPerfSigProjectAction implements ProminentProjectAction {
 
     private Measure getMeasure(final String testCase, final String chartDashlet, final String measure) {
         final Run lastRun = project.getLastSuccessfulBuild();
-        if (lastRun != null && lastRun.getAction(DTPerfSigBuildAction.class) != null) {
-            for (DashboardReport dr : lastRun.getAction(DTPerfSigBuildAction.class).getDashboardReports())
+        if (lastRun != null && lastRun.getAction(PerfSigBuildAction.class) != null) {
+            for (DashboardReport dr : lastRun.getAction(PerfSigBuildAction.class).getDashboardReports())
                 if (dr.getName().equals(testCase))
                     for (ChartDashlet cd : dr.getChartDashlets())
                         if (cd.getName().equals(chartDashlet))
@@ -280,7 +305,7 @@ public class DTPerfSigProjectAction implements ProminentProjectAction {
 
         Run<?, ?> b = project.getLastBuild();
         while (b != null) {
-            DTPerfSigBuildAction a = b.getAction(DTPerfSigBuildAction.class);
+            PerfSigBuildAction a = b.getAction(PerfSigBuildAction.class);
             if (a != null && (!b.isBuilding())) return a.getDashboardReports();
             if (b == tb)
                 return null;
@@ -292,7 +317,7 @@ public class DTPerfSigProjectAction implements ProminentProjectAction {
     public TestRun getTestRun(final int buildNumber) {
         final Run run = project.getBuildByNumber(buildNumber);
         if (run != null) {
-            DTPerfSigTestDataWrapper testDataWrapper = run.getAction(DTPerfSigTestDataWrapper.class);
+            PerfSigTestDataWrapper testDataWrapper = run.getAction(PerfSigTestDataWrapper.class);
             if (testDataWrapper != null) {
                 return TestRun.mergeTestRuns(testDataWrapper.getTestRuns());
             }
@@ -318,12 +343,12 @@ public class DTPerfSigProjectAction implements ProminentProjectAction {
         }
         final List<? extends AbstractBuild> builds = project.getBuilds();
         for (AbstractBuild currentBuild : builds) {
-            final DTPerfSigBuildAction performanceBuildAction = currentBuild.getAction(DTPerfSigBuildAction.class);
+            final PerfSigBuildAction performanceBuildAction = currentBuild.getAction(PerfSigBuildAction.class);
             if (performanceBuildAction != null) {
                 DashboardReport dashboardReport = performanceBuildAction.getBuildActionResultsDisplay().getDashBoardReport(tc);
                 if (dashboardReport == null) {
                     dashboardReport = new DashboardReport(tc);
-                    dashboardReport.setBuildAction(new DTPerfSigBuildAction(currentBuild, null));
+                    dashboardReport.setBuildAction(new PerfSigBuildAction(currentBuild, null));
                 }
                 dashboardReportList.add(dashboardReport);
             }
@@ -337,7 +362,7 @@ public class DTPerfSigProjectAction implements ProminentProjectAction {
         final Matcher matcher = pattern.matcher(request.getParameter("f"));
         if (matcher.find()) {
             final int id = Integer.parseInt(matcher.group().substring(1));
-            DTPerfSigUtils.downloadFile(request, response, project.getBuildByNumber(id));
+            PerfSigUtils.downloadFile(request, response, project.getBuildByNumber(id));
         }
     }
 
@@ -348,11 +373,10 @@ public class DTPerfSigProjectAction implements ProminentProjectAction {
 
     @SuppressWarnings("unused")
     @JavaScriptMethod
-    public String getDashboardConfiguration(final String testCase) throws IOException {
-        if (StringUtils.isBlank(testCase)) return "";
-        File input = new File(getJsonConfigFilePath() + File.separator + testCase + "-config.json");
-        if (!input.exists()) {
-            input = new File(DTPerfSigUtils.getInstanceOrDie().getRootDir() + "/plugins/" + Messages.DTPerfSigProjectAction_UrlName() + "/defaultConfig.json");
+    public String getDashboardConfiguration() throws IOException {
+        File input = new File(getJsonConfigFilePath() + File.separator + "gridconfig.json");
+        if (!input.exists() || PerfSigUtils.getInstanceOrDie().getPluginManager().getPlugin("performance-signature").getVersionNumber().isOlderThan(new VersionNumber("1.5.2"))) {
+            FileUtils.writeStringToFile(input, createJSONConfigString());
         }
         FileInputStream fileInputStream = new FileInputStream(input);
         try {
@@ -362,11 +386,53 @@ public class DTPerfSigProjectAction implements ProminentProjectAction {
         }
     }
 
+    private String createJSONConfigString() {
+        int col = 1, row = 1;
+        JSONArray array = new JSONArray();
+        for (DashboardReport dashboardReport : getLastDashboardReports()) {
+            if (dashboardReport.isUnitTest()) {
+                JSONObject obj = new JSONObject();
+                obj.put("id", "unittest_overview");
+                obj.put("col", col++);
+                obj.put("row", row);
+                obj.put("dashboard", dashboardReport.getName());
+                obj.put("chartDashlet", "");
+                obj.put("measure", "");
+                obj.put("show", true);
+                obj.put("customName", "");
+                obj.put("customBuildCount", 0);
+
+                array.add(obj);
+            }
+            for (ChartDashlet chartDashlet : dashboardReport.getChartDashlets()) {
+                for (Measure measure : chartDashlet.getMeasures()) {
+                    JSONObject obj = new JSONObject();
+                    obj.put("id", DigestUtils.md5Hex(dashboardReport.getName() + chartDashlet.getName() + measure.getName()));
+                    obj.put("col", col++);
+                    obj.put("row", row);
+                    obj.put("dashboard", dashboardReport.getName());
+                    obj.put("chartDashlet", chartDashlet.getName());
+                    obj.put("measure", measure.getName());
+                    obj.put("show", true);
+                    obj.put("customName", "");
+                    obj.put("customBuildCount", 0);
+
+                    array.add(obj);
+
+                    if (col > 3) {
+                        col = 1;
+                        row++;
+                    }
+                }
+            }
+        }
+        return array.toString();
+    }
+
     @SuppressWarnings("unused")
     @JavaScriptMethod
-    public void setDashboardConfiguration(final String testCase, final String data) throws IOException {
-        if (StringUtils.isBlank(testCase)) return;
-        File output = new File(getJsonConfigFilePath() + File.separator + testCase + "-config" + ".json");
+    public void setDashboardConfiguration(final String data) throws IOException {
+        File output = new File(getJsonConfigFilePath() + File.separator + "gridconfig" + ".json");
         String json = StringEscapeUtils.unescapeJson(data);
         json = json.substring(1, json.length() - 1);
         PrintWriter out = new PrintWriter(output, "UTF-8");
@@ -376,14 +442,14 @@ public class DTPerfSigProjectAction implements ProminentProjectAction {
 
     @SuppressWarnings("unused")
     @JavaScriptMethod
-    public List<String> getAvailableMeasures(final String dashlet) throws IOException {
+    public Map<String, String> getAvailableMeasures(final String dashlet) throws IOException {
         if (StringUtils.isBlank(dashlet)) return null;
-        final List<String> availableMeasures = new ArrayList<String>();
+        final Map<String, String> availableMeasures = new HashMap<String, String>();
         for (DashboardReport dashboardReport : getLastDashboardReports()) {
             for (ChartDashlet chartDashlet : dashboardReport.getChartDashlets()) {
                 if (chartDashlet.getName().equals(dashlet)) {
                     for (Measure measure : chartDashlet.getMeasures())
-                        availableMeasures.add(measure.getName());
+                        availableMeasures.put(DigestUtils.md5Hex(dashboardReport.getName() + chartDashlet.getName() + measure.getName()), measure.getName());
                     return availableMeasures;
                 }
             }
@@ -394,15 +460,14 @@ public class DTPerfSigProjectAction implements ProminentProjectAction {
     @SuppressWarnings("unused")
     public List<ChartDashlet> getFilteredChartDashlets(final DashboardReport dashboardReport) throws IOException {
         final List<ChartDashlet> chartDashlets = new ArrayList<ChartDashlet>();
-        final String json = getDashboardConfiguration(dashboardReport.getName());
+        final String json = getDashboardConfiguration();
         if (StringUtils.isBlank(json) || dashboardReport.getChartDashlets() == null) return chartDashlets;
         final JSONArray jsonArray = JSONArray.fromObject(json);
 
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject obj = jsonArray.getJSONObject(i);
-            String html = obj.getString("html");
-            String measure = URLDecoder.decode(DTPerfSigUtils.extractXMLAttribute(html, "measure"), "UTF-8");
-            String chartDashlet = URLDecoder.decode(DTPerfSigUtils.extractXMLAttribute(html, "chartdashlet"), "UTF-8");
+            String measure = obj.getString("measure");
+            String chartDashlet = obj.getString("chartDashlet");
 
             for (ChartDashlet dashlet : dashboardReport.getChartDashlets()) {
                 if (dashlet.getName().equals(chartDashlet)) {

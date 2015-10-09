@@ -28,7 +28,7 @@ import de.tsystems.mms.apm.performancesignature.model.ConfigurationTestCase.Conf
 import de.tsystems.mms.apm.performancesignature.model.Dashboard;
 import de.tsystems.mms.apm.performancesignature.model.GeneralTestCase;
 import de.tsystems.mms.apm.performancesignature.model.ProxyBlock;
-import de.tsystems.mms.apm.performancesignature.util.DTPerfSigUtils;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.*;
@@ -56,7 +56,7 @@ import java.util.List;
 
 import static com.cloudbees.plugins.credentials.CredentialsMatchers.instanceOf;
 
-public class DTPerfSigRecorder extends Recorder {
+public class PerfSigRecorder extends Recorder {
     private final String protocol, host, profile;
     private final boolean verifyCertificate, exportSessions, useJenkinsProxy, modifyBuildResult;
     private final int delay, retryCount, port;
@@ -67,10 +67,10 @@ public class DTPerfSigRecorder extends Recorder {
 
     // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public DTPerfSigRecorder(final String protocol, final String host, final String credentialsId, final int port, final String profile,
-                             final boolean verifyCertificate, final boolean exportSessions, final int delay, final int retryCount,
-                             final List<ConfigurationTestCase> configurationTestCases, final ProxyBlock customProxy,
-                             final boolean useJenkinsProxy, final boolean modifyBuildResult) {
+    public PerfSigRecorder(final String protocol, final String host, final String credentialsId, final int port, final String profile,
+                           final boolean verifyCertificate, final boolean exportSessions, final int delay, final int retryCount,
+                           final List<ConfigurationTestCase> configurationTestCases, final ProxyBlock customProxy,
+                           final boolean useJenkinsProxy, final boolean modifyBuildResult) {
         this.protocol = protocol;
         this.host = host;
         this.credentialsId = credentialsId;
@@ -108,7 +108,7 @@ public class DTPerfSigRecorder extends Recorder {
             logger.println(Messages.DTPerfSigRecorder_SleepingDelay() + " " + this.getDelay() + " sec");
             Thread.sleep(this.getDelay() * 1000);
         }
-        logger.println(Messages.DTPerfSigRecorder_ReportDirectory() + " " + DTPerfSigUtils.getReportDirectory(build));
+        logger.println(Messages.DTPerfSigRecorder_ReportDirectory() + " " + PerfSigUtils.getReportDirectory(build));
 
         String sessionName, comparisonSessionName = null, singleFilename, comparisonFilename;
         int comparisonBuildNumber = 0;
@@ -131,7 +131,7 @@ public class DTPerfSigRecorder extends Recorder {
             }
             logger.println(String.format(Messages.DTPerfSigRecorder_ConnectionSuccessful(), configurationTestCase.getName()));
 
-            DTPerfSigRegisterEnvVars buildEnvVars = getBuildEnvVars(build, configurationTestCase.getName());
+            PerfSigRegisterEnvVars buildEnvVars = getBuildEnvVars(build, configurationTestCase.getName());
             if (buildEnvVars != null) {
                 sessionName = buildEnvVars.getSessionName();
             } else {
@@ -141,7 +141,7 @@ public class DTPerfSigRecorder extends Recorder {
             }
 
             if (comparisonBuildNumber != 0) {
-                DTPerfSigRegisterEnvVars otherEnvVars = getBuildEnvVars(previousBuildRun, configurationTestCase.getName());
+                PerfSigRegisterEnvVars otherEnvVars = getBuildEnvVars(previousBuildRun, configurationTestCase.getName());
                 if (otherEnvVars != null) {
                     comparisonSessionName = otherEnvVars.getSessionName();
                 } else {
@@ -177,7 +177,7 @@ public class DTPerfSigRecorder extends Recorder {
                     singleFilename = "Singlereport_" + sessionName + "_" + singleDashboard.getName() + ".pdf";
                     logger.println(Messages.DTPerfSigRecorder_GettingPDFReport() + " " + singleFilename);
                     boolean singleResult = connection.getPDFReport(sessionName, null, singleDashboard.getName(),
-                            new File(DTPerfSigUtils.getReportDirectory(build) + File.separator + singleFilename));
+                            new File(PerfSigUtils.getReportDirectory(build) + File.separator + singleFilename));
                     if (!singleResult) {
                         logger.println(Messages.DTPerfSigRecorder_SingleReportError());
                         if (isModifyBuildResult()) build.setResult(Result.FAILURE);
@@ -189,7 +189,7 @@ public class DTPerfSigRecorder extends Recorder {
                                 buildNumber + "_" + comparisonBuildNumber + "_") + "_" + comparisonDashboard.getName() + ".pdf";
                         logger.println(Messages.DTPerfSigRecorder_GettingPDFReport() + " " + comparisonFilename);
                         boolean comparisonResult = connection.getPDFReport(sessionName, comparisonSessionName, comparisonDashboard.getName(),
-                                new File(DTPerfSigUtils.getReportDirectory(build) + File.separator + comparisonFilename));
+                                new File(PerfSigUtils.getReportDirectory(build) + File.separator + comparisonFilename));
                         if (!comparisonResult) {
                             logger.println(Messages.DTPerfSigRecorder_ComparisonReportError());
                             if (isModifyBuildResult()) build.setResult(Result.FAILURE);
@@ -208,7 +208,7 @@ public class DTPerfSigRecorder extends Recorder {
                 }
 
                 if (exportSessions) {
-                    boolean exportedSession = connection.downloadSession(sessionName, new File(DTPerfSigUtils.getReportDirectory(build) + File.separator + sessionName + ".dts"));
+                    boolean exportedSession = connection.downloadSession(sessionName, new File(PerfSigUtils.getReportDirectory(build) + File.separator + sessionName + ".dts"));
                     if (!exportedSession) {
                         logger.println(Messages.DTPerfSigRecorder_SessionDownloadError());
                         if (isModifyBuildResult()) build.setResult(Result.FAILURE);
@@ -222,14 +222,14 @@ public class DTPerfSigRecorder extends Recorder {
             }
         }
 
-        DTPerfSigBuildAction action = new DTPerfSigBuildAction(build, dashboardReports);
+        PerfSigBuildAction action = new PerfSigBuildAction(build, dashboardReports);
         build.addAction(action);
         return true;
     }
 
-    private DTPerfSigRegisterEnvVars getBuildEnvVars(final Run build, final String testCase) {
-        final List<DTPerfSigRegisterEnvVars> envVars = build.getActions(DTPerfSigRegisterEnvVars.class);
-        for (DTPerfSigRegisterEnvVars vars : envVars) {
+    private PerfSigRegisterEnvVars getBuildEnvVars(final Run build, final String testCase) {
+        final List<PerfSigRegisterEnvVars> envVars = build.getActions(PerfSigRegisterEnvVars.class);
+        for (PerfSigRegisterEnvVars vars : envVars) {
             if (vars.getTestCase().equals(testCase))
                 return vars;
         }
@@ -248,7 +248,7 @@ public class DTPerfSigRecorder extends Recorder {
 
     @Override
     public Action getProjectAction(final AbstractProject<?, ?> project) {
-        return new DTPerfSigProjectAction(project);
+        return new PerfSigProjectAction(project);
     }
 
     public BuildStepMonitor getRequiredMonitorService() {
@@ -317,11 +317,11 @@ public class DTPerfSigRecorder extends Recorder {
     }
 
     /**
-     * Descriptor for {@link DTPerfSigRecorder}. Used as a singleton.
+     * Descriptor for {@link PerfSigRecorder}. Used as a singleton.
      * The class is marked as public so that it can be accessed from views.
      * <p>
      * <p>
-     * See <tt>src/main/resources/hudson/plugins/hello_world/DTPerfSigRecorder/*.jelly</tt>
+     * See <tt>src/main/resources/hudson/plugins/hello_world/PerfSigRecorder/*.jelly</tt>
      * for the actual HTML fragment for the configuration screen.
      */
     @Extension // This indicates to Jenkins that this is an implementation of an extension point.
@@ -490,7 +490,7 @@ public class DTPerfSigRecorder extends Recorder {
                 proxy = new ProxyBlock(proxyServer, proxyPort, proxyUser, proxyPassword);
             }
             final DTServerConnection newConnection = new DTServerConnection(protocol, host, port, credentialsId, verifyCertificate, useJenkinsProxy, proxy);
-            return DTPerfSigUtils.listToListBoxModel(newConnection.getProfiles());
+            return PerfSigUtils.listToListBoxModel(newConnection.getProfiles());
         }
 
         public ListBoxModel doFillCredentialsIdItems(@AncestorInPath final Project project) {

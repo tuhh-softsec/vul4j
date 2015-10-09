@@ -16,9 +16,9 @@
 
 package de.tsystems.mms.apm.performancesignature.model;
 
-import de.tsystems.mms.apm.performancesignature.DTPerfSigRecorder;
+import de.tsystems.mms.apm.performancesignature.PerfSigRecorder;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
-import de.tsystems.mms.apm.performancesignature.util.DTPerfSigUtils;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.Extension;
 import hudson.RelativePath;
 import hudson.model.AbstractDescribableImpl;
@@ -57,8 +57,8 @@ public class Dashboard extends AbstractDescribableImpl<Dashboard> implements Ser
             load();
         }
 
-        public DTPerfSigRecorder.DescriptorImpl getPublisherDescriptor() {
-            return DTPerfSigUtils.getInstanceOrDie().getDescriptorByType(DTPerfSigRecorder.DescriptorImpl.class);
+        public PerfSigRecorder.DescriptorImpl getPublisherDescriptor() {
+            return PerfSigUtils.getInstanceOrDie().getDescriptorByType(PerfSigRecorder.DescriptorImpl.class);
         }
 
         @Override
@@ -77,7 +77,7 @@ public class Dashboard extends AbstractDescribableImpl<Dashboard> implements Ser
                 proxy = new ProxyBlock(proxyServer, proxyPort, proxyUser, proxyPassword);
             }
             final DTServerConnection newConnection = new DTServerConnection(protocol, host, port, credentialsId, verifyCertificate, useJenkinsProxy, proxy);
-            return DTPerfSigUtils.listToListBoxModel(newConnection.getDashboards());
+            return PerfSigUtils.listToListBoxModel(newConnection.getDashboards());
         }
     }
 }

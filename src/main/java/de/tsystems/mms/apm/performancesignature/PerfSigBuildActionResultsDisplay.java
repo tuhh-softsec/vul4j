@@ -19,7 +19,7 @@ package de.tsystems.mms.apm.performancesignature;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.Measure;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.Measurement;
-import de.tsystems.mms.apm.performancesignature.util.DTPerfSigUtils;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.Functions;
 import hudson.model.AbstractBuild;
 import hudson.model.ModelObject;
@@ -58,12 +58,12 @@ import java.util.List;
  * Created by rapi on 19.05.2014.
  */
 
-public class DTPerfSigBuildActionResultsDisplay implements ModelObject {
+public class PerfSigBuildActionResultsDisplay implements ModelObject {
     private static AbstractBuild<?, ?> currentBuild = null;
-    private final transient DTPerfSigBuildAction buildAction;
+    private final transient PerfSigBuildAction buildAction;
     private final List<DashboardReport> currentDashboardReports;
 
-    public DTPerfSigBuildActionResultsDisplay(final DTPerfSigBuildAction buildAction) {
+    public PerfSigBuildActionResultsDisplay(final PerfSigBuildAction buildAction) {
         this.buildAction = buildAction;
 
         this.currentDashboardReports = this.buildAction.getDashboardReports();
@@ -79,8 +79,8 @@ public class DTPerfSigBuildActionResultsDisplay implements ModelObject {
         return Messages.DTPerfSigBuildActionResultsDisplay_DisplayName();
     }
 
-    public DTPerfSigUtils getDTPerfSigUtils() {
-        return new DTPerfSigUtils();
+    public PerfSigUtils getDTPerfSigUtils() {
+        return new PerfSigUtils();
     }
 
     public AbstractBuild<?, ?> getBuild() {
@@ -103,11 +103,11 @@ public class DTPerfSigBuildActionResultsDisplay implements ModelObject {
         if (previousBuild == null) {
             return;
         }
-        DTPerfSigBuildAction prevBuildAction = previousBuild.getAction(DTPerfSigBuildAction.class);
+        PerfSigBuildAction prevBuildAction = previousBuild.getAction(PerfSigBuildAction.class);
         if (prevBuildAction == null) {
             return;
         }
-        DTPerfSigBuildActionResultsDisplay previousBuildActionResults = prevBuildAction.getBuildActionResultsDisplay();
+        PerfSigBuildActionResultsDisplay previousBuildActionResults = prevBuildAction.getBuildActionResultsDisplay();
 
         for (DashboardReport currentDashboardReport : getCurrentDashboardReports()) {
             currentDashboardReport.setLastDashboardReport(previousBuildActionResults.getDashBoardReport(currentDashboardReport.getName()));
@@ -190,7 +190,7 @@ public class DTPerfSigBuildActionResultsDisplay implements ModelObject {
             URLDecoder.decode(req.getParameter(Messages.DTPerfSigBuildActionResultsDisplay_ReqParamColor()), "UTF-8");
 
         final JFreeChart chart = ChartFactory.createXYLineChart(
-                DTPerfSigUtils.generateTitle(measure, chartDashlet).replaceAll("\\d+\\w", ""), // title
+                PerfSigUtils.generateTitle(measure, chartDashlet).replaceAll("\\d+\\w", ""), // title
                 "%", // category axis label
                 unit, // value axis label
                 dataset, // data
@@ -223,7 +223,7 @@ public class DTPerfSigBuildActionResultsDisplay implements ModelObject {
         else
             URLDecoder.decode(req.getParameter(Messages.DTPerfSigBuildActionResultsDisplay_ReqParamColor()), "UTF-8");
 
-        final JFreeChart chart = ChartFactory.createXYBarChart(DTPerfSigUtils.generateTitle(measure, chartDashlet), // title
+        final JFreeChart chart = ChartFactory.createXYBarChart(PerfSigUtils.generateTitle(measure, chartDashlet), // title
                 "time", // domain axis label
                 true,
                 unit,
@@ -265,6 +265,6 @@ public class DTPerfSigBuildActionResultsDisplay implements ModelObject {
 
     @SuppressWarnings("unused")
     public void doDownloadFile(final StaplerRequest request, final StaplerResponse response) throws IOException {
-        DTPerfSigUtils.downloadFile(request, response, getBuild());
+        PerfSigUtils.downloadFile(request, response, getBuild());
     }
 }

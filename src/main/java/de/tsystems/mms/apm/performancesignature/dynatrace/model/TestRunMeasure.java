@@ -17,7 +17,7 @@
 package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
-import de.tsystems.mms.apm.performancesignature.util.DTPerfSigUtils;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import org.xml.sax.Attributes;
 
 import java.io.Serializable;
@@ -47,7 +47,7 @@ public class TestRunMeasure implements Serializable {
     }
 
     public BigDecimal getExpectedMax() {
-        return DTPerfSigUtils.round(this.expectedMax, 2);
+        return PerfSigUtils.round(this.expectedMax, 2);
     }
 
     public void setExpectedMax(final double expectedMax) {
@@ -55,7 +55,7 @@ public class TestRunMeasure implements Serializable {
     }
 
     public BigDecimal getExpectedMin() {
-        return DTPerfSigUtils.round(this.expectedMin, 2);
+        return PerfSigUtils.round(this.expectedMin, 2);
     }
 
     public void setExpectedMin(final double expectedMin) {
@@ -63,7 +63,7 @@ public class TestRunMeasure implements Serializable {
     }
 
     public BigDecimal getValue() {
-        return DTPerfSigUtils.round(this.value, 2);
+        return PerfSigUtils.round(this.value, 2);
     }
 
     public void setValue(final double value) {

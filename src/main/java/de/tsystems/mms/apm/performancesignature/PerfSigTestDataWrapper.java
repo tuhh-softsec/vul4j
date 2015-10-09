@@ -24,10 +24,10 @@ import java.util.List;
 /**
  * Created by rapi on 09.06.2015.
  */
-public class DTPerfSigTestDataWrapper extends InvisibleAction {
-    private final DTPerfSigTestData data;
+public class PerfSigTestDataWrapper extends InvisibleAction {
+    private final PerfSigTestData data;
 
-    public DTPerfSigTestDataWrapper(final DTPerfSigTestData data) {
+    public PerfSigTestDataWrapper(final PerfSigTestData data) {
         this.data = data;
     }
 
@@ -35,7 +35,7 @@ public class DTPerfSigTestDataWrapper extends InvisibleAction {
         return data.getTestRuns();
     }
 
-    public DTPerfSigTestData getData() {
+    public PerfSigTestData getData() {
         return data;
     }
 }

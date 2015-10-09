@@ -29,11 +29,11 @@ import java.util.List;
 /**
  * Created by rapi on 27.05.2015.
  */
-public class DTPerfSigTestData extends TestResultAction.Data {
+public class PerfSigTestData extends TestResultAction.Data {
     private final Run<?, ?> run;
     private final List<TestRun> testRuns;
 
-    public DTPerfSigTestData(final Run<?, ?> run, final List<TestRun> testRuns) {
+    public PerfSigTestData(final Run<?, ?> run, final List<TestRun> testRuns) {
         this.run = run;
         this.testRuns = testRuns;
     }
@@ -42,11 +42,11 @@ public class DTPerfSigTestData extends TestResultAction.Data {
         return testRuns == null ? Collections.<TestRun>emptyList() : testRuns;
     }
 
-    public DTPerfSigTestData getPreviousData() {
-        DTPerfSigTestData previousData = null;
+    public PerfSigTestData getPreviousData() {
+        PerfSigTestData previousData = null;
         Run previousRun = run.getPreviousNotFailedBuild();
         if (previousRun != null) {
-            DTPerfSigTestDataWrapper wrapper = previousRun.getAction(DTPerfSigTestDataWrapper.class);
+            PerfSigTestDataWrapper wrapper = previousRun.getAction(PerfSigTestDataWrapper.class);
             if (wrapper != null) {
                 previousData = wrapper.getData();
             }
@@ -64,7 +64,7 @@ public class DTPerfSigTestData extends TestResultAction.Data {
             CaseResult caseResult = (CaseResult) testObject;
             String packageName = caseResult.getPackageName();
             String fullName = caseResult.getSimpleName() + "." + caseResult.getSearchName();
-            return Collections.singletonList(new DTPerfSigTestAction(this, packageName, fullName));
+            return Collections.singletonList(new PerfSigTestAction(this, packageName, fullName));
         } else {
             return Collections.emptyList();
         }

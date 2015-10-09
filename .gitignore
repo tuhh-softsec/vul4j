@@ -1,6 +1,6 @@
 work/
 .idea/
-performance-signature.iml
+performance-signature-jenkins.iml
 target/
 pom.xml.tag
 pom.xml.releaseBackup

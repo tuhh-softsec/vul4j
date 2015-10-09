@@ -18,7 +18,7 @@ package de.tsystems.mms.apm.performancesignature;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRun;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
-import de.tsystems.mms.apm.performancesignature.util.DTPerfSigUtils;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -37,12 +37,12 @@ import java.util.List;
 /**
  * Created by rapi on 27.05.2015.
  */
-public class DTPerfSigTestDataPublisher extends TestDataPublisher {
+public class PerfSigTestDataPublisher extends TestDataPublisher {
     //ToDo parameter needed?
     private final String testCase;
 
     @DataBoundConstructor
-    public DTPerfSigTestDataPublisher(final String testCase) {
+    public PerfSigTestDataPublisher(final String testCase) {
         this.testCase = testCase;
     }
 
@@ -50,7 +50,7 @@ public class DTPerfSigTestDataPublisher extends TestDataPublisher {
     public TestResultAction.Data contributeTestData(final Run<?, ?> run, @Nonnull final FilePath workspace, final Launcher launcher,
                                                     final TaskListener listener, final TestResult testResult) {
         final PrintStream logger = listener.getLogger();
-        final DTPerfSigRecorder dtRecorder = DTPerfSigUtils.getRecorder((AbstractBuild) run);
+        final PerfSigRecorder dtRecorder = PerfSigUtils.getRecorder((AbstractBuild) run);
 
         if (dtRecorder == null) {
             logger.println("Unable to find Dynatrace Configuration Post Build Step!");
@@ -67,8 +67,8 @@ public class DTPerfSigTestDataPublisher extends TestDataPublisher {
         }
 
         final List<TestRun> testRuns = new ArrayList<TestRun>();
-        final List<DTPerfSigRegisterEnvVars> envVars = run.getActions(DTPerfSigRegisterEnvVars.class);
-        for (DTPerfSigRegisterEnvVars registerEnvVars : envVars) {
+        final List<PerfSigRegisterEnvVars> envVars = run.getActions(PerfSigRegisterEnvVars.class);
+        for (PerfSigRegisterEnvVars registerEnvVars : envVars) {
             if (StringUtils.isNotBlank(registerEnvVars.getTestRunID())) {
                 try {
                     TestRun testRun = connection.getTestRunFromXML(dtRecorder.getProfile(), registerEnvVars.getTestRunID());
@@ -86,13 +86,13 @@ public class DTPerfSigTestDataPublisher extends TestDataPublisher {
             }
         }
 
-        DTPerfSigTestData perfSigTestData = new DTPerfSigTestData(run, testRuns);
-        run.addAction(new DTPerfSigTestDataWrapper(perfSigTestData));
+        PerfSigTestData perfSigTestData = new PerfSigTestData(run, testRuns);
+        run.addAction(new PerfSigTestDataWrapper(perfSigTestData));
         return perfSigTestData;
     }
 
     private void checkForUnstableResult(final Run run) {
-        DTPerfSigRecorder recorder = DTPerfSigUtils.getRecorder((AbstractBuild) run);
+        PerfSigRecorder recorder = PerfSigUtils.getRecorder((AbstractBuild) run);
         if (getBuildResult(run).isBetterOrEqualTo(Result.UNSTABLE) && recorder.isModifyBuildResult()) {
             run.setResult(Result.FAILURE);
         }

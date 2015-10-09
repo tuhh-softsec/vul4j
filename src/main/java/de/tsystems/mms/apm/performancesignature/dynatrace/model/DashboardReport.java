@@ -16,7 +16,7 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
-import de.tsystems.mms.apm.performancesignature.DTPerfSigBuildAction;
+import de.tsystems.mms.apm.performancesignature.PerfSigBuildAction;
 import de.tsystems.mms.apm.performancesignature.model.ConfigurationTestCase;
 import de.tsystems.mms.apm.performancesignature.model.UnitTestCase;
 import hudson.model.AbstractBuild;
@@ -30,7 +30,7 @@ import java.util.List;
 public class DashboardReport {
     private String name;
     private List<ChartDashlet> chartDashlets;
-    private DTPerfSigBuildAction buildAction;
+    private PerfSigBuildAction buildAction;
     private DashboardReport lastDashboardReport;
     private ConfigurationTestCase configurationTestCase;
 
@@ -54,11 +54,11 @@ public class DashboardReport {
         this.name = name;
     }
 
-    public DTPerfSigBuildAction getBuildAction() {
+    public PerfSigBuildAction getBuildAction() {
         return this.buildAction;
     }
 
-    public void setBuildAction(final DTPerfSigBuildAction buildAction) {
+    public void setBuildAction(final PerfSigBuildAction buildAction) {
         this.buildAction = buildAction;
     }
 

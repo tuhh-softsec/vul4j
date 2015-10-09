@@ -17,7 +17,7 @@
 package de.tsystems.mms.apm.performancesignature.model;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
-import de.tsystems.mms.apm.performancesignature.util.DTPerfSigUtils;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.Extension;
 import hudson.RelativePath;
 import hudson.util.ListBoxModel;
@@ -55,7 +55,7 @@ public class PerformanceTestCase extends GeneralTestCase {
                 proxy = new ProxyBlock(proxyServer, proxyPort, proxyUser, proxyPassword);
             }
             final DTServerConnection newConnection = new DTServerConnection(protocol, host, port, credentialsId, verifyCertificate, useJenkinsProxy, proxy);
-            return DTPerfSigUtils.listToListBoxModel(newConnection.getDashboards());
+            return PerfSigUtils.listToListBoxModel(newConnection.getDashboards());
         }
     }
 

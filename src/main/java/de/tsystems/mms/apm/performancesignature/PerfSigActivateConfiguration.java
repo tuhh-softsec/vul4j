@@ -19,7 +19,7 @@ package de.tsystems.mms.apm.performancesignature;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.Agent;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
-import de.tsystems.mms.apm.performancesignature.util.DTPerfSigUtils;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
@@ -38,18 +38,18 @@ import java.io.PrintStream;
  * Created by rapi on 20.10.2014.
  */
 @SuppressWarnings("unused")
-public class DTPerfSigActivateConfiguration extends Builder {
+public class PerfSigActivateConfiguration extends Builder {
     private final String configuration;
 
     @DataBoundConstructor
-    public DTPerfSigActivateConfiguration(final String configuration) {
+    public PerfSigActivateConfiguration(final String configuration) {
         this.configuration = configuration;
     }
 
     @Override
     public boolean perform(final AbstractBuild build, final Launcher launcher, final BuildListener listener) {
         final PrintStream logger = listener.getLogger();
-        final DTPerfSigRecorder dtRecorder = DTPerfSigUtils.getRecorder(build);
+        final PerfSigRecorder dtRecorder = PerfSigUtils.getRecorder(build);
 
         if (dtRecorder == null) {
             logger.println(Messages.DTPerfSigActivateConfiguration_NoRecorderFailure());

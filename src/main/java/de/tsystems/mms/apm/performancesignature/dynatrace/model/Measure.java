@@ -17,7 +17,7 @@
 package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
-import de.tsystems.mms.apm.performancesignature.util.DTPerfSigUtils;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.xml.sax.Attributes;
 
@@ -85,7 +85,7 @@ public class Measure {
     }
 
     public String getColor() {
-        return DTPerfSigUtils.encodeString(this.color);
+        return PerfSigUtils.encodeString(this.color);
     }
 
     public void setColor(final String color) {
@@ -93,7 +93,7 @@ public class Measure {
     }
 
     public BigDecimal getAvg() {
-        return DTPerfSigUtils.round(this.avg, 2);
+        return PerfSigUtils.round(this.avg, 2);
     }
 
     public void setAvg(final double avg) {
@@ -101,7 +101,7 @@ public class Measure {
     }
 
     public BigDecimal getMin() {
-        return DTPerfSigUtils.round(this.min, 2);
+        return PerfSigUtils.round(this.min, 2);
     }
 
     public void setMin(final double min) {
@@ -110,7 +110,7 @@ public class Measure {
 
     public String getUnit() {
         if (this.aggregation != null && this.aggregation.equalsIgnoreCase("Count")) return "num";
-        return DTPerfSigUtils.encodeString(this.unit);
+        return PerfSigUtils.encodeString(this.unit);
     }
 
     public void setUnit(final String unit) {
@@ -118,7 +118,7 @@ public class Measure {
     }
 
     public BigDecimal getMax() {
-        return DTPerfSigUtils.round(this.max, 2);
+        return PerfSigUtils.round(this.max, 2);
     }
 
     public void setMax(final double max) {
@@ -166,8 +166,8 @@ public class Measure {
     public BigDecimal getStrMetricValue() {
         Double d = getMetricValue();
         if ((d % 1) == 0) //check for int values
-            return DTPerfSigUtils.round(d, 0);
-        return DTPerfSigUtils.round(d, 2);
+            return PerfSigUtils.round(d, 0);
+        return PerfSigUtils.round(d, 2);
     }
 
     @Override

@@ -107,7 +107,7 @@
                                                 </div>
                                                 <div class="panel-body">
                                                     <a href="${rootURL}/job/${it.build.project.name}/${it.build.number}/testReport">
-                                                        <img src="${resURL}/images/24x24/clipboard.png"/>
+                                                        <img width="16" height="16" src="${resURL}/images/24x24/clipboard.png"/>
                                                         UnitTestReport with performance data
                                                     </a>
                                                 </div>

@@ -26,13 +26,13 @@ import java.util.Date;
  * Created by rapi on 27.05.2015.
  */
 
-public class DTPerfSigTestAction extends TestAction {
+public class PerfSigTestAction extends TestAction {
     private static long timestamp;
-    private final DTPerfSigTestData testData;
+    private final PerfSigTestData testData;
     private TestRun matchingTestRun;
     private TestResult matchingTestResult;
 
-    public DTPerfSigTestAction(final DTPerfSigTestData testData, final String packageName, final String fullName) {
+    public PerfSigTestAction(final PerfSigTestData testData, final String packageName, final String fullName) {
         this.testData = testData;
 
         for (TestRun testRun : testData.getTestRuns()) {
@@ -55,7 +55,7 @@ public class DTPerfSigTestAction extends TestAction {
     }
 
     public TestResult getPreviousTestResult() {
-        DTPerfSigTestData previousData = testData.getPreviousData();
+        PerfSigTestData previousData = testData.getPreviousData();
         if (previousData != null) {
             for (TestRun testRun : previousData.getTestRuns()) {
                 for (TestResult testResult : testRun.getTestResults()) {
@@ -68,7 +68,7 @@ public class DTPerfSigTestAction extends TestAction {
         return null;
     }
 
-    public DTPerfSigTestData getTestData() {
+    public PerfSigTestData getTestData() {
         return testData;
     }
 

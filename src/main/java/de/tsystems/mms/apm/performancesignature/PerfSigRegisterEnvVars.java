@@ -24,13 +24,13 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * Created by rapi on 12.04.2015.
  */
-public class DTPerfSigRegisterEnvVars implements EnvironmentContributingAction {
+public class PerfSigRegisterEnvVars implements EnvironmentContributingAction {
     public static final String TESTRUN_ID_KEY = "DYNATRACE_TESTRUN_ID";
     public static final String SESSIONCOUNT = "DYNATRACE_SESSIONCOUNT";
 
     private final String sessionName, testRunID, testCase;
 
-    public DTPerfSigRegisterEnvVars(final String sessionName, final String testCase, final String testRunID) {
+    public PerfSigRegisterEnvVars(final String sessionName, final String testCase, final String testRunID) {
         this.sessionName = sessionName;
         this.testCase = testCase;
         this.testRunID = testRunID;

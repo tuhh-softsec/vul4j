@@ -19,7 +19,7 @@ define(['./common'], function () {
         $(document).ready(function () {
             $.fn.dataTableExt.sErrMode = 'none';
 
-            $('.panel-body').each(function () {  // for many elements
+            $('.panel-body').each(function () {
                 if (!/[\S]/.test($(this).html())) {
                     $(this).html('no PDF reports available!');
                 }
@@ -27,9 +27,6 @@ define(['./common'], function () {
 
             $(".tab-pane").each(function (pageIndex, page) {
                 $(".table", this).has("tbody").dataTable({
-                    //"searching": false,
-                    //"paging": false,
-                    //"info": false,
                     "stateSave": false,
                     "order": [0, 'desc']
                 });
@@ -40,7 +37,7 @@ define(['./common'], function () {
                     projectAction.getAvailableMeasures($(this).val(), function (data) {
                         $("#measure", page).empty();
                         $.each(data.responseObject(), function (val, text) {
-                            $("#measure", page).append($('<option></option>').val(text).html(text));
+                            $("#measure", page).append($('<option></option>').val(val).html(text));
                         });
                     });
                 });
@@ -59,14 +56,16 @@ define(['./common'], function () {
                     location.reload(true);
                 });
                 $("#addbutton", this).click(function () {
-                    if ($("#measureGroup", page).val() === 'Test result chart') {
+                    if ($("#measureGroup", page).val() === 'UnitTest Overview') {
                         gridster[pageIndex].add_widget('<li><img class="img-thumbnail" height="300" width="410"' +
-                            'src="./testRunGraph?width=410&amp;height=300"><span class="del_img glyphicon glyphicon-remove"></span></li>', 1, 1);
+                            'src="./testRunGraph?width=410&amp;height=300&amp;id=unittest_overview"' +
+                            '><span class="del_img glyphicon glyphicon-remove"></span>' +
+                            '<span class="chk_show"><input type="checkbox" title="show in project overview" checked="checked"/></span></li>', 1, 1);
                     } else {
                         gridster[pageIndex].add_widget('<li><img class="img-thumbnail" height="300" width="410"' +
-                            'src="./summarizerGraph?width=410&amp;height=300&amp;measure=' + htmlEncode($("#measure", page).val()) +
-                            '&amp;testcase=' + htmlEncode($(page).attr('id')) + '&amp;chartdashlet=' + htmlEncode($("#measureGroup", page).val()) +
-                            '"><span class="del_img glyphicon glyphicon-remove"></span>' +
+                            'src="./summarizerGraph?width=410&amp;height=300&amp;id=' + $("#measure", page).val() +
+                            '&amp;customName=' + encode($("#customName", page).val()) +
+                            '&amp;customBuildCount=' + $("#customBuildCount", page).val() + '"><span class="del_img glyphicon glyphicon-remove"></span>' +
                             '<span class="chk_show"><input type="checkbox" title="show in project overview" checked="checked"/></span></li>', 1, 1);
                     }
                     $(".del_img", page).click(function () {
@@ -75,9 +74,10 @@ define(['./common'], function () {
                 });
                 $("#donebutton", this).click(function () {
                     var serialize = sort_by_row_and_col_asc(gridster[pageIndex].serialize());
-                    projectAction.setDashboardConfiguration($(page).attr('id'), JSON.stringify(serialize), function () {
-                        location.reload(true);
-                    });
+                    /*projectAction.setDashboardConfiguration(JSON.stringify(serialize), function () {
+                     location.reload(true);
+                     });*/
+                    console.log(serialize);
                 });
 
                 $('#tabList').find('a').eq(pageIndex).tab('show'); // very messy :(
@@ -90,19 +90,34 @@ define(['./common'], function () {
                             return {
                                 col: wgd.col,
                                 row: wgd.row,
-                                html: $("img", $w).prop('outerHTML'),
-                                show: $("input[type='checkbox']", $w).prop('checked')
+                                id: url("?id", $("img", $w).attr("src")),
+                                dashboard: $(page).attr('id'),
+                                chartDashlet: $("img", $w).attr("src").indexOf("chartDashlet") > -1 ? url("?chartDashlet", $("img", $w).attr("src")) : "",
+                                measure: $("img", $w).attr("src").indexOf("measure") > -1 ? url("?measure", $("img", $w).attr("src")) : "",
+                                customName: $("img", $w).attr("src").indexOf("customName") > -1 ? url("?customName", $("img", $w).attr("src")) : "",
+                                customBuildCount: $("img", $w).attr("src").indexOf("customBuildCount") > -1 ? url("?customBuildCount", $("img", $w).attr("src")) : "",
+                                show: $("input[type='checkbox']", $w).prop('checked'),
                             };
                         }
                     }).data('gridster').disable();
 
-                    projectAction.getDashboardConfiguration($(page).attr('id'), function (data) {
+                    projectAction.getDashboardConfiguration(function (data) {
                         var json = JSON.parse(data.responseObject());
                         $.each(json, function (index) {
-                            gridster[pageIndex].add_widget('<li>' + json[index].html.replace("###", $(page).attr('id')) +
-                                '<span class="del_img glyphicon glyphicon-remove"></span>' +
-                                '<span class="chk_show"><input type="checkbox" title="show in project overview" ' + (json[index].show ? "checked='checked'" : "") +
-                                '/></span></li>', 1, 1, json[index].col, json[index].row);
+                            if (json[index].dashboard == $(page).attr('id')) {
+                                if (json[index].id === 'unittest_overview') {
+                                    gridster[pageIndex].add_widget('<li><img class="img-thumbnail" height="300" width="410"' +
+                                        'src="./testRunGraph?width=410&amp;height=300&amp;id=unittest_overview"><span class="del_img glyphicon glyphicon-remove"></span>' +
+                                        '<span class="chk_show"><input type="checkbox" title="show in project overview" checked="checked"/></span></li>', 1, 1,
+                                        json[index].col, json[index].row);
+                                } else {
+                                    gridster[pageIndex].add_widget('<li>' + '<img class="img-thumbnail" height="300" width="410"' +
+                                        'src="./summarizerGraph?width=410&amp;height=300&amp;id=' + json[index].id + '">' +
+                                        '<span class="del_img glyphicon glyphicon-remove"></span>' +
+                                        '<span class="chk_show"><input type="checkbox" title="show in project overview" ' + (json[index].show ? "checked='checked'" : "") +
+                                        '/></span></li>', 1, 1, json[index].col, json[index].row);
+                                }
+                            }
                         });
                         $(".chk_show", page).hide();
                         $(".del_img", page).hide().click(function () {
@@ -133,8 +148,13 @@ define(['./common'], function () {
             return widgets;
         }
 
-        function htmlEncode(value) {
-            return $('<div/>').text(value).html();
+        function encode(toEncode) {
+            return encodeURIComponent(toEncode)
+                .replace(/!/g, '%21')
+                .replace(/'/g, '%27')
+                .replace(/\(/g, '%28')
+                .replace(/\)/g, '%29')
+                .replace(/\*/g, '%2A');
         }
     });
 });

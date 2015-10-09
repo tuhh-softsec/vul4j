@@ -17,7 +17,7 @@
 package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
-import de.tsystems.mms.apm.performancesignature.util.DTPerfSigUtils;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.xml.sax.Attributes;
 
@@ -66,7 +66,7 @@ public class Measurement {
 
     @SuppressWarnings("unused")
     public BigDecimal getStrAvg() {
-        return DTPerfSigUtils.round(this.avg, 2);
+        return PerfSigUtils.round(this.avg, 2);
     }
 
     public double getMin() {
@@ -94,7 +94,7 @@ public class Measurement {
     }
 
     /*
-    used by DTPerfSigBuildActionResultsDisplay
+    used by PerfSigBuildActionResultsDisplay
     get the avg value of a metric
     */
     public double getMetricValue(final String aggregation) {

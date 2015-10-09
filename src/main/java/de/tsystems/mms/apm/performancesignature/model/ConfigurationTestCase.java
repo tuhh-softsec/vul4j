@@ -16,7 +16,7 @@
 
 package de.tsystems.mms.apm.performancesignature.model;
 
-import de.tsystems.mms.apm.performancesignature.util.DTPerfSigUtils;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.model.AbstractProject;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
@@ -48,7 +48,7 @@ public abstract class ConfigurationTestCase implements Describable<Configuration
     }
 
     public ConfigurationTestCaseDescriptor getDescriptor() {
-        return (ConfigurationTestCaseDescriptor) DTPerfSigUtils.getInstanceOrDie().getDescriptorOrDie(getClass());
+        return (ConfigurationTestCaseDescriptor) PerfSigUtils.getInstanceOrDie().getDescriptorOrDie(getClass());
     }
 
     public abstract static class ConfigurationTestCaseDescriptor extends Descriptor<ConfigurationTestCase> {
@@ -59,7 +59,7 @@ public abstract class ConfigurationTestCase implements Describable<Configuration
         }
 
         public static List<ConfigurationTestCaseDescriptor> all(final Class<? extends AbstractProject<?, ?>> jobType) {
-            return DTPerfSigUtils.getInstanceOrDie().getDescriptorList(ConfigurationTestCase.class);
+            return PerfSigUtils.getInstanceOrDie().getDescriptorList(ConfigurationTestCase.class);
         }
 
         public static List<ConfigurationTestCaseDescriptor> all() {

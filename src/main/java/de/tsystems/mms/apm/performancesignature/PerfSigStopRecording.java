@@ -18,7 +18,7 @@ package de.tsystems.mms.apm.performancesignature;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
-import de.tsystems.mms.apm.performancesignature.util.DTPerfSigUtils;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
@@ -33,13 +33,13 @@ import java.io.PrintStream;
 /**
  * Created by rapi on 17.05.2014.
  */
-public class DTPerfSigStopRecording extends Builder {
+public class PerfSigStopRecording extends Builder {
     private static final int reanalyzeSessionTimeout = 60000; //==1 minute
     private static final int reanalyzeSessionPollingInterval = 5000; //==5 seconds
     private final boolean reanalyzeSession;
 
     @DataBoundConstructor
-    public DTPerfSigStopRecording(final boolean reanalyzeSession) {
+    public PerfSigStopRecording(final boolean reanalyzeSession) {
         this.reanalyzeSession = reanalyzeSession;
     }
 
@@ -53,7 +53,7 @@ public class DTPerfSigStopRecording extends Builder {
         final PrintStream logger = listener.getLogger();
 
         logger.println(Messages.DTPerfSigStopRecording_StopSessionRecording());
-        final DTPerfSigRecorder dtRecorder = DTPerfSigUtils.getRecorder(build);
+        final PerfSigRecorder dtRecorder = PerfSigUtils.getRecorder(build);
         if (dtRecorder == null) {
             logger.println(Messages.DTPerfSigStopRecording_MissingConfiguration());
             return false;
