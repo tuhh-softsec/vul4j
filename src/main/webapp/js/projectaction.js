@@ -34,12 +34,17 @@ define(['./common'], function () {
                 //Gridster Stuff
                 var gridster = [];
                 $("#measureGroup", this).change(function () {
-                    projectAction.getAvailableMeasures($(this).val(), function (data) {
-                        $("#measure", page).empty();
-                        $.each(data.responseObject(), function (val, text) {
-                            $("#measure", page).append($('<option></option>').val(val).html(text));
+                    if($(this).val() === 'UnitTest Overview') {
+                        $("#customizing", page).hide();
+                    } else {
+                        projectAction.getAvailableMeasures($(page).attr('id'), $(this).val(), function (data) {
+                            $("#measure", page).empty();
+                            $("#customizing", page).show();
+                            $.each(data.responseObject(), function (val, text) {
+                                $("#measure", page).append($('<option></option>').val(val).html(text));
+                            });
                         });
-                    });
+                    }
                 });
 
                 $("#editbutton", this).click(function () {
@@ -64,6 +69,7 @@ define(['./common'], function () {
                     } else {
                         gridster[pageIndex].add_widget('<li><img class="img-thumbnail" height="300" width="410"' +
                             'src="./summarizerGraph?width=410&amp;height=300&amp;id=' + $("#measure", page).val() +
+                            '&amp;dashboard=' + $(page).attr('id') +
                             '&amp;customName=' + encode($("#customName", page).val()) +
                             '&amp;customBuildCount=' + $("#customBuildCount", page).val() + '"><span class="del_img glyphicon glyphicon-remove"></span>' +
                             '<span class="chk_show"><input type="checkbox" title="show in project overview" checked="checked"/></span></li>', 1, 1);
@@ -74,10 +80,9 @@ define(['./common'], function () {
                 });
                 $("#donebutton", this).click(function () {
                     var serialize = sort_by_row_and_col_asc(gridster[pageIndex].serialize());
-                    /*projectAction.setDashboardConfiguration(JSON.stringify(serialize), function () {
-                     location.reload(true);
-                     });*/
-                    console.log(serialize);
+                    projectAction.setDashboardConfiguration($(page).attr('id'), JSON.stringify(serialize), function () {
+                        location.reload(true);
+                    });
                 });
 
                 $('#tabList').find('a').eq(pageIndex).tab('show'); // very messy :(

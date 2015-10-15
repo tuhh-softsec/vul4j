@@ -110,15 +110,33 @@ public class PerfSigProjectAction implements ProminentProjectAction {
             return;
 
         final String id = request.getParameter("id");
-        final String json = getDashboardConfiguration();
 
-        final JSONArray jsonArray = JSONArray.fromObject(json);
-        JSONObject obj, jsonObject = null;
-        for (int i = 0; i < jsonArray.size(); i++) {
-            obj = jsonArray.getJSONObject(i);
-            if (obj.getString("id").equals(id)) {
-                jsonObject = obj;
+        final JSONArray jsonArray = JSONArray.fromObject(getDashboardConfiguration());
+        JSONObject jsonObject = null;
+
+        if (StringUtils.isBlank(request.getParameter("customName")) && StringUtils.isBlank(request.getParameter("customBuildCount"))) {
+            for (int i = 0; i < jsonArray.size(); i++) {
+                final JSONObject obj = jsonArray.getJSONObject(i);
+                if (obj.getString("id").equals(id)) {
+                    jsonObject = obj;
+                    break;
+                }
             }
+        } else {
+            for (DashboardReport dashboardReport : getLastDashboardReports())
+                for (ChartDashlet chartDashlet : dashboardReport.getChartDashlets())
+                    for (Measure measure : chartDashlet.getMeasures())
+                        if (id.equals(DigestUtils.md5Hex(dashboardReport.getName() + chartDashlet.getName() + measure.getName()))) {
+                            jsonObject = new JSONObject();
+                            jsonObject.put("id", id);
+                            jsonObject.put("dashboard", request.getParameter("dashboard"));
+                            jsonObject.put("chartDashlet", chartDashlet.getName());
+                            jsonObject.put("measure", measure.getName());
+                            jsonObject.put("customName", request.getParameter("customName"));
+                            jsonObject.put("customBuildCount", request.getParameter("customBuildCount"));
+
+                            ChartUtil.generateGraph(request, response, createChart(jsonObject, buildDataSet(jsonObject)), calcDefaultSize());
+                        }
         }
 
         ChartUtil.generateGraph(request, response, createChart(jsonObject, buildDataSet(jsonObject)), calcDefaultSize());
@@ -128,6 +146,11 @@ public class PerfSigProjectAction implements ProminentProjectAction {
         final String dashboard = jsonObject.getString("dashboard");
         final String chartDashlet = jsonObject.getString("chartDashlet");
         final String measure = jsonObject.getString("measure");
+        int customBuildCount, i = 0;
+        if (StringUtils.isBlank(jsonObject.getString("customBuildCount")))
+            customBuildCount = 0;
+        else
+            customBuildCount = Integer.parseInt(jsonObject.getString("customBuildCount"));
 
         final List<DashboardReport> dashboardReports = getDashBoardReports(dashboard);
         final DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dsb = new DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel>();
@@ -138,7 +161,9 @@ public class PerfSigProjectAction implements ProminentProjectAction {
                 Measure m = dashboardReport.getMeasure(chartDashlet, measure);
                 if (m != null) metricValue = m.getMetricValue();
             }
+            i++;
             dsb.add(metricValue, chartDashlet, new ChartUtil.NumberOnlyBuildLabel((Run<?, ?>) dashboardReport.getBuild()));
+            if (customBuildCount != 0 && i == customBuildCount) break;
         }
         return dsb.build();
     }
@@ -148,7 +173,6 @@ public class PerfSigProjectAction implements ProminentProjectAction {
         final String chartDashlet = jsonObject.getString("chartDashlet");
         final String testCase = jsonObject.getString("dashboard");
         final String customMeasureName = jsonObject.getString("customName");
-        final String customBuildCount = jsonObject.getString("customBuildCount");
 
         String unit = "", color = "";
         final Measure m = getMeasure(testCase, chartDashlet, measure);
@@ -161,7 +185,6 @@ public class PerfSigProjectAction implements ProminentProjectAction {
         String title = customMeasureName;
         if (StringUtils.isBlank(customMeasureName))
             title = PerfSigUtils.generateTitle(measure, chartDashlet);
-
 
         final JFreeChart chart = ChartFactory.createBarChart(title, // title
                 "Build", // category axis label
@@ -431,26 +454,53 @@ public class PerfSigProjectAction implements ProminentProjectAction {
 
     @SuppressWarnings("unused")
     @JavaScriptMethod
-    public void setDashboardConfiguration(final String data) throws IOException {
-        File output = new File(getJsonConfigFilePath() + File.separator + "gridconfig" + ".json");
+    public void setDashboardConfiguration(final String dashboard, final String data) throws IOException {
+        final HashMap<String, MeasureNameHelper> map = new HashMap<String, MeasureNameHelper>();
+        for (DashboardReport dashboardReport : getLastDashboardReports())
+            if (dashboardReport.getName().equals(dashboard))
+                for (ChartDashlet chartDashlet : dashboardReport.getChartDashlets())
+                    for (Measure measure : chartDashlet.getMeasures())
+                        map.put(DigestUtils.md5Hex(dashboardReport.getName() + chartDashlet.getName() + measure.getName()),
+                                new MeasureNameHelper(chartDashlet.getName(), measure.getName()));
+
         String json = StringEscapeUtils.unescapeJson(data);
         json = json.substring(1, json.length() - 1);
+
+        final JSONArray jsonArray = JSONArray.fromObject(json);
+        for (int i = 0; i < jsonArray.size(); i++) {
+            final JSONObject obj = jsonArray.getJSONObject(i);
+            final MeasureNameHelper tmp = map.get(obj.getString("id"));
+            obj.put("id", DigestUtils.md5Hex(dashboard + tmp.chartDashlet + tmp.measure + obj.getString("customName")));
+            obj.put("chartDashlet", tmp.chartDashlet);
+            obj.put("measure", tmp.measure);
+        }
+
+        final JSONArray oldJsonArray = JSONArray.fromObject(getDashboardConfiguration());
+        for (int i = 0; i < oldJsonArray.size(); i++) {
+            final JSONObject obj = oldJsonArray.getJSONObject(i);
+            if (!obj.getString("dashboard").equals(dashboard))
+                jsonArray.add(obj);
+        }
+
+        File output = new File(getJsonConfigFilePath() + File.separator + "gridconfig" + ".json");
         PrintWriter out = new PrintWriter(output, "UTF-8");
-        out.print(json);
+        out.print(jsonArray.toString());
         IOUtils.closeQuietly(out);
     }
 
     @SuppressWarnings("unused")
     @JavaScriptMethod
-    public Map<String, String> getAvailableMeasures(final String dashlet) throws IOException {
+    public Map<String, String> getAvailableMeasures(final String dashboard, final String dashlet) throws IOException {
         if (StringUtils.isBlank(dashlet)) return null;
         final Map<String, String> availableMeasures = new HashMap<String, String>();
         for (DashboardReport dashboardReport : getLastDashboardReports()) {
-            for (ChartDashlet chartDashlet : dashboardReport.getChartDashlets()) {
-                if (chartDashlet.getName().equals(dashlet)) {
-                    for (Measure measure : chartDashlet.getMeasures())
-                        availableMeasures.put(DigestUtils.md5Hex(dashboardReport.getName() + chartDashlet.getName() + measure.getName()), measure.getName());
-                    return availableMeasures;
+            if (dashboardReport.getName().equals(dashboard)) {
+                for (ChartDashlet chartDashlet : dashboardReport.getChartDashlets()) {
+                    if (chartDashlet.getName().equals(dashlet)) {
+                        for (Measure measure : chartDashlet.getMeasures())
+                            availableMeasures.put(DigestUtils.md5Hex(dashboardReport.getName() + chartDashlet.getName() + measure.getName()), measure.getName());
+                        return availableMeasures;
+                    }
                 }
             }
         }
@@ -483,5 +533,14 @@ public class PerfSigProjectAction implements ProminentProjectAction {
             }
         }
         return chartDashlets;
+    }
+}
+
+class MeasureNameHelper {
+    public String chartDashlet, measure;
+
+    public MeasureNameHelper(String chartDashlet, String measure) {
+        this.chartDashlet = chartDashlet;
+        this.measure = measure;
     }
 }

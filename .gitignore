@@ -1,6 +1,5 @@
 work/
 .idea/
-performance-signature-jenkins.iml
 target/
 pom.xml.tag
 pom.xml.releaseBackup
@@ -9,3 +8,4 @@ pom.xml.next
 release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
+performance-signature-jenkins.iml
