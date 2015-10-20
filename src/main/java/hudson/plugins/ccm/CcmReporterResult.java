@@ -24,6 +24,7 @@
 package hudson.plugins.ccm;
 
 import hudson.model.AbstractBuild;
+import hudson.model.Run;
 import hudson.plugins.analysis.core.BuildResult;
 import hudson.plugins.analysis.core.ParserResult;
 import hudson.plugins.analysis.core.ResultAction;
@@ -43,7 +44,7 @@ public class CcmReporterResult extends CcmResult {
 	 * @param defaultEncoding
 	 * @param result
 	 */
-	public CcmReporterResult(AbstractBuild<?, ?> build, String defaultEncoding,
+	public CcmReporterResult(Run<?, ?> build, String defaultEncoding,
 			ParserResult result) {
 		super(build, defaultEncoding, result);
 	}

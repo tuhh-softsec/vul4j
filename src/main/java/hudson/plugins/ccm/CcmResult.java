@@ -23,7 +23,7 @@
  */
 package hudson.plugins.ccm;
 
-import hudson.model.AbstractBuild;
+import hudson.model.Run;
 import hudson.plugins.analysis.core.BuildHistory;
 import hudson.plugins.analysis.core.BuildResult;
 import hudson.plugins.analysis.core.ParserResult;
@@ -44,8 +44,9 @@ public class CcmResult extends BuildResult {
 	 * @param defaultEncoding
 	 * @param result
 	 */
-	public CcmResult(final AbstractBuild<?, ?> build, final String defaultEncoding, final ParserResult result) {
-		super(build, defaultEncoding, result, new BuildHistory(build, CcmResultAction.class));
+	public CcmResult(final Run<?, ?> build, final String defaultEncoding, final ParserResult result) {
+		super(build, new BuildHistory(build, CcmResultAction.class, false, false), result, defaultEncoding);
+		serializeAnnotations(result.getAnnotations());
 	}
 	
 	/* (non-Javadoc)
