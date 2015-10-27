@@ -47,6 +47,9 @@ public class Messung implements Serializable {
     @Column(name="probe_id")
     private Integer probeId;
 
+    @Column(name="status")
+    private Integer status;
+
     @Transient
     private boolean owner;
 
@@ -110,6 +113,14 @@ public class Messung implements Serializable {
 
     public void setProbeId(Integer probeId) {
         this.probeId = probeId;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public boolean isOwner() {

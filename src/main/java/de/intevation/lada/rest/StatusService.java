@@ -26,7 +26,7 @@ import javax.ws.rs.core.UriInfo;
 import de.intevation.lada.lock.LockConfig;
 import de.intevation.lada.lock.LockType;
 import de.intevation.lada.lock.ObjectLocker;
-import de.intevation.lada.model.land.LStatus;
+import de.intevation.lada.model.land.LStatusProtokoll;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -116,18 +116,18 @@ public class StatusService {
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() || !params.containsKey("messungsId")) {
-            return defaultRepo.getAll(LStatus.class, "land");
+            return defaultRepo.getAll(LStatusProtokoll.class, "land");
         }
         String messungId = params.getFirst("messungsId");
-        QueryBuilder<LStatus> builder =
-            new QueryBuilder<LStatus>(
+        QueryBuilder<LStatusProtokoll> builder =
+            new QueryBuilder<LStatusProtokoll>(
                 defaultRepo.entityManager("land"),
-                LStatus.class);
+                LStatusProtokoll.class);
         builder.and("messungsId", messungId);
         return authorization.filter(
             request,
             defaultRepo.filter(builder.getQuery(), "land"),
-            LStatus.class);
+            LStatusProtokoll.class);
     }
 
     /**
@@ -149,8 +149,8 @@ public class StatusService {
     ) {
         return authorization.filter(
             request,
-            defaultRepo.getById(LStatus.class, Integer.valueOf(id), "land"),
-            LStatus.class);
+            defaultRepo.getById(LStatusProtokoll.class, Integer.valueOf(id), "land"),
+            LStatusProtokoll.class);
     }
 
     /**
@@ -181,13 +181,13 @@ public class StatusService {
     public Response create(
         @Context HttpHeaders headers,
         @Context HttpServletRequest request,
-        LStatus status
+        LStatusProtokoll status
     ) {
         if (!authorization.isAuthorized(
                 request,
                 status,
                 RequestMethod.POST,
-                LStatus.class)
+                LStatusProtokoll.class)
         ) {
             return new Response(false, 699, null);
         }
@@ -195,7 +195,7 @@ public class StatusService {
         return authorization.filter(
             request,
             defaultRepo.create(status, "land"),
-            LStatus.class);
+            LStatusProtokoll.class);
     }
 
     /**
@@ -226,13 +226,13 @@ public class StatusService {
     public Response update(
         @Context HttpHeaders headers,
         @Context HttpServletRequest request,
-        LStatus status
+        LStatusProtokoll status
     ) {
         if (!authorization.isAuthorized(
                 request,
                 status,
                 RequestMethod.PUT,
-                LStatus.class)
+                LStatusProtokoll.class)
         ) {
             return new Response(false, 699, null);
         }
@@ -241,12 +241,12 @@ public class StatusService {
         }
         Response response = defaultRepo.update(status, "land");
         Response updated = defaultRepo.getById(
-            LStatus.class,
-            ((LStatus)response.getData()).getId(), "land");
+            LStatusProtokoll.class,
+            ((LStatusProtokoll)response.getData()).getId(), "land");
         return authorization.filter(
             request,
             updated,
-            LStatus.class);
+            LStatusProtokoll.class);
     }
 
     /**
@@ -268,13 +268,13 @@ public class StatusService {
     ) {
         /* Get the object by id*/
         Response object =
-            defaultRepo.getById(LStatus.class, Integer.valueOf(id), "land");
-        LStatus obj = (LStatus)object.getData();
+            defaultRepo.getById(LStatusProtokoll.class, Integer.valueOf(id), "land");
+        LStatusProtokoll obj = (LStatusProtokoll)object.getData();
         if (!authorization.isAuthorized(
                 request,
                 obj,
                 RequestMethod.DELETE,
-                LStatus.class)
+                LStatusProtokoll.class)
         ) {
             return new Response(false, 699, null);
         }

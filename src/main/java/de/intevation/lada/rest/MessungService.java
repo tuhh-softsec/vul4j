@@ -33,8 +33,8 @@ import de.intevation.lada.lock.ObjectLocker;
 import de.intevation.lada.model.land.LKommentarM;
 import de.intevation.lada.model.land.LMessung;
 import de.intevation.lada.model.land.LMesswert;
-import de.intevation.lada.model.land.LStatus;
 import de.intevation.lada.model.land.MessungTranslation;
+import de.intevation.lada.model.land.LStatusProtokoll;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -245,6 +245,17 @@ public class MessungService {
             created.setWarnings(violation.getWarnings());
         }
 
+        LStatusProtokoll status = new LStatusProtokoll();
+        status.setDatum(new Timestamp(new Date().getTime()));
+        status.setMessungsId(((LMessung)created.getData()).getId());
+        //TODO set the correct value. use the probe to get the "erzeuger"!?
+        status.setErzeuger("11010");
+        status.setStatusStufe(1);
+        status.setStatusWert(1);
+        defaultRepo.create(status, "land");
+        ret.setStatus(status.getId());
+        defaultRepo.update(ret, "land");
+
         return authorization.filter(
             request,
             created,
@@ -359,17 +370,17 @@ public class MessungService {
             new QueryBuilder<LKommentarM>(
                 defaultRepo.entityManager("land"), LKommentarM.class);
         mkBuilder.and("messungsId", messungObj.getId());
-        QueryBuilder<LStatus> msBuilder =
-            new QueryBuilder<LStatus>(
-                defaultRepo.entityManager("land"), LStatus.class);
+        QueryBuilder<LStatusProtokoll> msBuilder =
+            new QueryBuilder<LStatusProtokoll>(
+                defaultRepo.entityManager("land"), LStatusProtokoll.class);
         msBuilder.and("messungsId", messungObj.getId());
 
         List<LMesswert> messwerte =
             (List<LMesswert>)defaultRepo.filter(mwBuilder.getQuery(), "land").getData();
         List<LKommentarM> kommentare =
             (List<LKommentarM>)defaultRepo.filter(mkBuilder.getQuery(), "land").getData();
-        List<LStatus> status =
-            (List<LStatus>)defaultRepo.filter(msBuilder.getQuery(), "land").getData();
+        List<LStatusProtokoll> status =
+            (List<LStatusProtokoll>)defaultRepo.filter(msBuilder.getQuery(), "land").getData();
 
         if (!messwerte.isEmpty() ||
             !kommentare.isEmpty() ||

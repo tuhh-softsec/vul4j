@@ -5,18 +5,18 @@
  * and comes with ABSOLUTELY NO WARRANTY! Check out
  * the documentation coming with IMIS-Labordaten-Application for details.
  */
-package de.intevation.lada.model.bund;
+package de.intevation.lada.model.land;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import de.intevation.lada.model.StatusProtokoll;
 
 /**
- * The persistent class for the status database table.
+ * The persistent class for the probe database table.
  */
 @Entity
-@Table(name="status")
-public class Status extends de.intevation.lada.model.Status {
+@Table(name="status_protokoll")
+public class LStatusProtokoll extends StatusProtokoll {
     private static final long serialVersionUID = 1L;
-
 }

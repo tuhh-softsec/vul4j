@@ -23,8 +23,8 @@ import javax.persistence.Transient;
  * The persistent class for the status database table.
  */
 @MappedSuperclass
-@Table(name="status")
-public class Status implements Serializable {
+@Table(name="status_protokoll")
+public class StatusProtokoll implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -32,18 +32,25 @@ public class Status implements Serializable {
     @Column(name="id", nullable=false, insertable=false)
     private Integer id;
 
-    private String erzeuger;
-
     @Column(name="messungs_id")
     private Integer messungsId;
 
-    @Column(name="s_datum")
-    private Timestamp sDatum;
+    @Column(name="status_stufe")
+    private Integer statusStufe;
 
-    @Column(name="s_kommentar")
-    private String sKommentar;
+    @Column(name="status_wert")
+    private Integer statusWert;
 
-    private Integer status;
+    private String erzeuger;
+
+    @Column(name="datum")
+    private Timestamp datum;
+
+    @Column(name="text")
+    private String text;
+
+    @Column(name="tree_modified")
+    private Timestamp treeModified;
 
     @Transient
     private boolean owner;
@@ -51,7 +58,7 @@ public class Status implements Serializable {
     @Transient
     private boolean readonly;
 
-    public Status() {
+    public StatusProtokoll() {
     }
 
     public Integer getId() {
@@ -60,6 +67,22 @@ public class Status implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getStatusStufe() {
+        return this.statusStufe;
+    }
+
+    public void setStatusStufe(Integer statusStufe) {
+        this.statusStufe = statusStufe;
+    }
+
+    public Integer getStatusWert() {
+        return this.statusWert;
+    }
+
+    public void setStatusWert(Integer statusWert) {
+        this.statusWert = statusWert;
     }
 
     public String getErzeuger() {
@@ -78,28 +101,28 @@ public class Status implements Serializable {
         this.messungsId = messungsId;
     }
 
-    public Timestamp getSDatum() {
-        return this.sDatum;
+    public Timestamp getDatum() {
+        return this.datum;
     }
 
-    public void setSDatum(Timestamp sDatum) {
-        this.sDatum = sDatum;
+    public void setDatum(Timestamp datum) {
+        this.datum = datum;
     }
 
-    public String getSKommentar() {
-        return this.sKommentar;
+    public String getText() {
+        return this.text;
     }
 
-    public void setSKommentar(String sKommentar) {
-        this.sKommentar = sKommentar;
+    public void setText(String text) {
+        this.text = text;
     }
 
-    public Integer getStatus() {
-        return this.status;
+    public Timestamp getTreeModified() {
+        return treeModified;
     }
 
-    public void setStatus(Integer status) {
-        this.status = status;
+    public void setTreeModified(Timestamp treeModified) {
+        this.treeModified = treeModified;
     }
 
     public boolean isOwner() {
