@@ -26,6 +26,7 @@ import javax.ws.rs.core.UriInfo;
 import de.intevation.lada.lock.LockConfig;
 import de.intevation.lada.lock.LockType;
 import de.intevation.lada.lock.ObjectLocker;
+import de.intevation.lada.model.land.LMessung;
 import de.intevation.lada.model.land.LStatusProtokoll;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
@@ -191,10 +192,17 @@ public class StatusService {
         ) {
             return new Response(false, 699, null);
         }
+        Response response = defaultRepo.create(status, "land");
+        LStatusProtokoll created = (LStatusProtokoll)response.getData();
+        Response messungResponse = defaultRepo.getById(
+            LMessung.class, status.getMessungsId(), "land");
+        LMessung messung = (LMessung)messungResponse.getData();
+        messung.setStatus(created.getId());
+        defaultRepo.update(messung, "land");
         /* Persist the new object*/
         return authorization.filter(
             request,
-            defaultRepo.create(status, "land"),
+            response,
             LStatusProtokoll.class);
     }
 
