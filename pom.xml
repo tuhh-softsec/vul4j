@@ -246,9 +246,11 @@
                         <artifactId>wildfly-maven-plugin</artifactId>
                         <configuration>
                             <hostname>localhost</hostname>
-                            <port>19990</port>
+                            <port>9990</port>
+<!--
                             <username>admin</username>
                             <password>secret</password>
+-->
                         </configuration>
                         <!-- <executions>
                             <execution>
