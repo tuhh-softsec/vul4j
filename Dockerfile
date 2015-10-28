@@ -71,7 +71,7 @@ RUN rm $JBOSS_HOME/standalone/configuration/standalone_xml_history/current/*
 #
 RUN mvn clean compile package
 RUN mv target/lada-server-2.2.0.war $JBOSS_HOME/standalone/deployments
-RUN touch $JBOSS_HOME/standalone/deployments/lada-server.war.dodeploy
+RUN touch $JBOSS_HOME/standalone/deployments/lada-server-2.2.0.war.dodeploy
 
 #
 # This will boot WildFly in the standalone mode and bind to all interface
