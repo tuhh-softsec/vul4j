@@ -6,7 +6,10 @@
 # Run with e.g.
 # `docker run --name lada_wildfly --link lada_db:lada_db
 #            -dp 8181:8080 -p 1818:9990 koala/lada_wildfly'
-# The linked container may be created from db_schema/Dockerfile
+# The linked container may be created from db_schema/Dockerfile.
+#
+# The LADA-server will be available under
+# http://yourdockerhost:8181/lada-server-2.2.0
 #
 
 FROM java:7-jdk
