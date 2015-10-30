@@ -37,18 +37,20 @@ Abhängigkeiten werden von dem maven build System aufgelöst.
 
 Installation
 ------------
-Zur Installation der Lada-Anwendung müssen folgende Schritte unternommen werden:
+Die Installation des Lada-Servers erfolgt in einem Wildfly-Application-Server
+(http://wildfly.org). Dazu müssen folgende Schritte unternommen werden:
 
  $ mvn clean compile package
- $ cd /opt/wildfly8.2.Final/standalone/deployments
- $ cp /path/where/the/war/file/is/lada-server.war .
- $ touch lada-server.war.dodeploy
+ $ mv target/lada-server-$VERSION.war $JBOSS_HOME/standalone/deployments
+ $ touch $JBOSS_HOME/standalone/deployments/lada-server-$VERSION.war.dodeploy
 
-Zum Aktualisieren der Anwendung genügt es, wenn die lada-server.war Datei aktualisiert
-wird.
+$JBOSS_HOME ist hierbei durch den Pfad zur Wildfly-Installation zu ersetzen,
+$VERSION durch die aktuelle Versionsbezeichnung (entsprechend der Angabe in
+pom.xml).
 
-Die Anwendung ist dann unter dem Pfad "/lada-server" (abhängig vom Archivnamen)
-erreichbar.
+Zum Aktualisieren der Anwendung genügt es, das WAR-Archiv zu aktualisieren.
+
+Die Anwendung ist dann unter dem Pfad "/lada-server-$VERSION" erreichbar.
 
 Tests
 -----
