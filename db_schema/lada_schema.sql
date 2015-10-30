@@ -61,127 +61,15 @@ COMMENT ON EXTENSION postgis IS 'PostGIS geometry, geography, and raster spatial
 SET search_path = bund, pg_catalog;
 
 --
--- Name: is_kommentar_unique(); Type: FUNCTION; Schema: bund; Owner: -
+-- Name: update_time_status(); Type: FUNCTION; Schema: bund; Owner: -
 --
 
-CREATE FUNCTION is_kommentar_unique() RETURNS trigger
+CREATE FUNCTION update_time_status() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
     BEGIN
-        -- Check that empname and salary are given
-        IF NEW.id IN (SELECT id from bund.kommentar) THEN
-            RAISE EXCEPTION 'Key (id)=(%) already present in bund.messung', NEW.id;
-        ELSE
-            RETURN NEW;
-        END IF;
-    END;
-$$;
-
-
---
--- Name: is_messung_unique(); Type: FUNCTION; Schema: bund; Owner: -
---
-
-CREATE FUNCTION is_messung_unique() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-    BEGIN
-        -- Check that empname and salary are given
-        IF NEW.id IN (SELECT id from bund.messung) THEN
-            RAISE EXCEPTION 'Key (id)=(%) already present in bund.messung', NEW.id;
-        ELSE
-            RETURN NEW;
-        END IF;
-    END;
-$$;
-
-
---
--- Name: is_messwert_unique(); Type: FUNCTION; Schema: bund; Owner: -
---
-
-CREATE FUNCTION is_messwert_unique() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-    BEGIN
-        -- Check that empname and salary are given
-        IF NEW.id IN (SELECT id from bund.messwert) THEN
-            RAISE EXCEPTION 'Key (id)=(%) already present in bund.messwert', NEW.id;
-        ELSE
-            RETURN NEW;
-        END IF;
-    END;
-$$;
-
-
---
--- Name: is_ort_unique(); Type: FUNCTION; Schema: bund; Owner: -
---
-
-CREATE FUNCTION is_ort_unique() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-    BEGIN
-        -- Check that empname and salary are given
-        IF NEW.id IN (SELECT id from bund.ort) THEN
-            RAISE EXCEPTION 'Key (id)=(%) already present in bund.ort', NEW.id;
-        ELSE
-            RETURN NEW;
-        END IF;
-    END;
-$$;
-
-
---
--- Name: is_probe_unique(); Type: FUNCTION; Schema: bund; Owner: -
---
-
-CREATE FUNCTION is_probe_unique() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-    BEGIN
-        -- Check that empname and salary are given
-        IF NEW.id IN (SELECT id from bund.probe) THEN
-            RAISE EXCEPTION 'Key (id)=(%) already present in bund.probe', NEW.id;
-        ELSE
-            RETURN NEW;
-        END IF;
-    END;
-$$;
-
-
---
--- Name: is_status_unique(); Type: FUNCTION; Schema: bund; Owner: -
---
-
-CREATE FUNCTION is_status_unique() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-    BEGIN
-        -- Check that empname and salary are given
-        IF NEW.id IN (SELECT id from bund.status) THEN
-            RAISE EXCEPTION 'Key (id)=(%) already present in bund.status', NEW.id;
-        ELSE
-            RETURN NEW;
-        END IF;
-    END;
-$$;
-
-
---
--- Name: is_zusatz_wert_unique(); Type: FUNCTION; Schema: bund; Owner: -
---
-
-CREATE FUNCTION is_zusatz_wert_unique() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-    BEGIN
-        -- Check that empname and salary are given
-        IF NEW.id IN (SELECT id from bund.zusatz_wert) THEN
-            RAISE EXCEPTION 'Key (id)=(%) already present in bund.zusatz_wert', NEW.id;
-        ELSE
-            RETURN NEW;
-        END IF;
+        NEW.tree_modified = now();
+        RETURN NEW;
     END;
 $$;
 
@@ -214,7 +102,7 @@ CREATE FUNCTION update_time_messung() RETURNS trigger
         RAISE NOTICE 'messung is %',NEW.id;
         NEW.tree_modified = now();
         UPDATE land.messwert SET tree_modified = now() WHERE messungs_id = NEW.id;
-        UPDATE land.status SET tree_modified = now() WHERE messungs_id = NEW.id;
+        UPDATE bund.status_protokoll SET tree_modified = now() WHERE messungs_id = NEW.id;
         RETURN NEW;
     END;
 $$;
@@ -262,20 +150,6 @@ CREATE FUNCTION update_time_probe() RETURNS trigger
         UPDATE land.messung SET tree_modified = now() WHERE probe_id = NEW.id;
         UPDATE land.ort SET tree_modified = now() WHERE probe_id = NEW.id;
         UPDATE land.zusatz_wert SET tree_modified = now() WHERE probe_id = NEW.id;
-        RETURN NEW;
-    END;
-$$;
-
-
---
--- Name: update_time_status(); Type: FUNCTION; Schema: land; Owner: -
---
-
-CREATE FUNCTION update_time_status() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-    BEGIN
-        NEW.tree_modified = now();
         RETURN NEW;
     END;
 $$;
@@ -480,6 +354,7 @@ CREATE TABLE messung (
     messdauer integer,
     messzeitpunkt timestamp with time zone,
     fertig boolean DEFAULT false NOT NULL,
+    status integer,
     letzte_aenderung timestamp without time zone DEFAULT now()
 );
 
@@ -592,6 +467,7 @@ CREATE TABLE probe (
     test boolean DEFAULT false NOT NULL,
     netzbetreiber_id character varying(2),
     mst_id character varying(5),
+    labor_mst_id character varying(5),
     hauptproben_nr character varying(20),
     datenbasis_id smallint,
     ba_id character varying(1),
@@ -624,7 +500,14 @@ COMMENT ON COLUMN probe.test IS 'Ist Testdatensatz?';
 -- Name: COLUMN probe.mst_id; Type: COMMENT; Schema: bund; Owner: -
 --
 
-COMMENT ON COLUMN probe.mst_id IS 'ID für Messstelle/Messlabor';
+COMMENT ON COLUMN probe.mst_id IS 'ID für Messstelle';
+
+
+--
+-- Name: COLUMN probe.labor_mst_id; Type: COMMENT; Schema: bund; Owner: -
+--
+
+COMMENT ON COLUMN probe.labor_mst_id IS '-- ID für Messlabor';
 
 
 --
@@ -682,29 +565,15 @@ CREATE SEQUENCE probe_probe_id_seq
 
 
 --
--- Name: status_id_seq; Type: SEQUENCE; Schema: bund; Owner: -
+-- Name: status_protokoll; Type: TABLE; Schema: bund; Owner: -; Tablespace: 
 --
 
-CREATE SEQUENCE status_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: status; Type: TABLE; Schema: bund; Owner: -; Tablespace: 
---
-
-CREATE TABLE status (
-    id integer DEFAULT nextval('status_id_seq'::regclass) NOT NULL,
-    messungs_id integer NOT NULL,
-    erzeuger character varying(5) NOT NULL,
-    status smallint,
-    s_datum timestamp with time zone NOT NULL,
-    s_kommentar character varying(1024)
-);
+CREATE TABLE status_protokoll (
+    status_stufe integer NOT NULL,
+    status_wert integer NOT NULL,
+    tree_modified timestamp without time zone DEFAULT now()
+)
+INHERITS (kommentar_m);
 
 
 --
@@ -950,13 +819,12 @@ ALTER SEQUENCE probe_translation_id_seq OWNED BY probe_translation.id;
 
 
 --
--- Name: status; Type: TABLE; Schema: land; Owner: -; Tablespace: 
+-- Name: status_protokoll; Type: TABLE; Schema: land; Owner: -; Tablespace: 
 --
 
-CREATE TABLE status (
-    tree_modified timestamp without time zone DEFAULT now()
+CREATE TABLE status_protokoll (
 )
-INHERITS (bund.status);
+INHERITS (bund.status_protokoll);
 
 
 --
@@ -1815,6 +1683,26 @@ ALTER SEQUENCE staat_id_seq OWNED BY staat.id;
 
 
 --
+-- Name: status_stufe; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+--
+
+CREATE TABLE status_stufe (
+    id integer NOT NULL,
+    stufe character varying(50)
+);
+
+
+--
+-- Name: status_wert; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+--
+
+CREATE TABLE status_wert (
+    id integer NOT NULL,
+    wert character varying(50)
+);
+
+
+--
 -- Name: umwelt; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
 --
 
@@ -1885,6 +1773,20 @@ ALTER TABLE ONLY kommentar_p ALTER COLUMN datum SET DEFAULT now();
 --
 
 ALTER TABLE ONLY list ALTER COLUMN id SET DEFAULT nextval('list_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: bund; Owner: -
+--
+
+ALTER TABLE ONLY status_protokoll ALTER COLUMN id SET DEFAULT nextval('kommentar_id_seq'::regclass);
+
+
+--
+-- Name: datum; Type: DEFAULT; Schema: bund; Owner: -
+--
+
+ALTER TABLE ONLY status_protokoll ALTER COLUMN datum SET DEFAULT now();
 
 
 SET search_path = land, pg_catalog;
@@ -2026,7 +1928,21 @@ ALTER TABLE ONLY probe_translation ALTER COLUMN id SET DEFAULT nextval('probe_tr
 -- Name: id; Type: DEFAULT; Schema: land; Owner: -
 --
 
-ALTER TABLE ONLY status ALTER COLUMN id SET DEFAULT nextval('bund.status_id_seq'::regclass);
+ALTER TABLE ONLY status_protokoll ALTER COLUMN id SET DEFAULT nextval('bund.kommentar_id_seq'::regclass);
+
+
+--
+-- Name: datum; Type: DEFAULT; Schema: land; Owner: -
+--
+
+ALTER TABLE ONLY status_protokoll ALTER COLUMN datum SET DEFAULT now();
+
+
+--
+-- Name: tree_modified; Type: DEFAULT; Schema: land; Owner: -
+--
+
+ALTER TABLE ONLY status_protokoll ALTER COLUMN tree_modified SET DEFAULT now();
 
 
 --
@@ -2188,19 +2104,11 @@ ALTER TABLE ONLY probe
 
 
 --
--- Name: status_messungs_id_key; Type: CONSTRAINT; Schema: bund; Owner: -; Tablespace: 
+-- Name: status_protokoll_pkey; Type: CONSTRAINT; Schema: bund; Owner: -; Tablespace: 
 --
 
-ALTER TABLE ONLY status
-    ADD CONSTRAINT status_messungs_id_key UNIQUE (messungs_id);
-
-
---
--- Name: status_pkey; Type: CONSTRAINT; Schema: bund; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY status
-    ADD CONSTRAINT status_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY status_protokoll
+    ADD CONSTRAINT status_protokoll_pkey PRIMARY KEY (id);
 
 
 --
@@ -2326,19 +2234,11 @@ ALTER TABLE ONLY probe_translation
 
 
 --
--- Name: status_messungs_id_key; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace: 
+-- Name: status_protokoll_pkey; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace: 
 --
 
-ALTER TABLE ONLY status
-    ADD CONSTRAINT status_messungs_id_key UNIQUE (messungs_id);
-
-
---
--- Name: status_pkey; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY status
-    ADD CONSTRAINT status_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY status_protokoll
+    ADD CONSTRAINT status_protokoll_pkey PRIMARY KEY (id);
 
 
 --
@@ -2520,6 +2420,22 @@ ALTER TABLE ONLY staat
 
 
 --
+-- Name: status_stufe_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY status_stufe
+    ADD CONSTRAINT status_stufe_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: status_wert_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY status_wert
+    ADD CONSTRAINT status_wert_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: umwelt_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
 --
 
@@ -2612,6 +2528,15 @@ CREATE INDEX de_vg_geom_gist ON de_vg USING gist (geom);
 CREATE INDEX fts_stauts_kooin10001 ON staat USING btree (kda_id);
 
 
+SET search_path = bund, pg_catalog;
+
+--
+-- Name: tree_timestamp_status; Type: TRIGGER; Schema: bund; Owner: -
+--
+
+CREATE TRIGGER tree_timestamp_status BEFORE UPDATE ON status_protokoll FOR EACH ROW EXECUTE PROCEDURE update_time_status();
+
+
 SET search_path = land, pg_catalog;
 
 --
@@ -2643,73 +2568,10 @@ CREATE TRIGGER tree_timestamp_probe BEFORE UPDATE ON probe FOR EACH ROW EXECUTE 
 
 
 --
--- Name: tree_timestamp_status; Type: TRIGGER; Schema: land; Owner: -
---
-
-CREATE TRIGGER tree_timestamp_status BEFORE UPDATE ON status FOR EACH ROW EXECUTE PROCEDURE update_time_status();
-
-
---
 -- Name: tree_timestamp_zusatzwert; Type: TRIGGER; Schema: land; Owner: -
 --
 
 CREATE TRIGGER tree_timestamp_zusatzwert BEFORE UPDATE ON zusatz_wert FOR EACH ROW EXECUTE PROCEDURE update_time_zusatzwert();
-
-
---
--- Name: verify_kommentar_m_id; Type: TRIGGER; Schema: land; Owner: -
---
-
-CREATE TRIGGER verify_kommentar_m_id BEFORE INSERT ON kommentar_m FOR EACH ROW EXECUTE PROCEDURE bund.is_kommentar_unique();
-
-
---
--- Name: verify_kommentar_p_id; Type: TRIGGER; Schema: land; Owner: -
---
-
-CREATE TRIGGER verify_kommentar_p_id BEFORE INSERT ON kommentar_p FOR EACH ROW EXECUTE PROCEDURE bund.is_kommentar_unique();
-
-
---
--- Name: verify_messung_id; Type: TRIGGER; Schema: land; Owner: -
---
-
-CREATE TRIGGER verify_messung_id BEFORE INSERT ON messung FOR EACH ROW EXECUTE PROCEDURE bund.is_messung_unique();
-
-
---
--- Name: verify_messwert_id; Type: TRIGGER; Schema: land; Owner: -
---
-
-CREATE TRIGGER verify_messwert_id BEFORE INSERT ON messwert FOR EACH ROW EXECUTE PROCEDURE bund.is_messwert_unique();
-
-
---
--- Name: verify_ort_id; Type: TRIGGER; Schema: land; Owner: -
---
-
-CREATE TRIGGER verify_ort_id BEFORE INSERT ON ort FOR EACH ROW EXECUTE PROCEDURE bund.is_ort_unique();
-
-
---
--- Name: verify_probe_id; Type: TRIGGER; Schema: land; Owner: -
---
-
-CREATE TRIGGER verify_probe_id BEFORE INSERT ON probe FOR EACH ROW EXECUTE PROCEDURE bund.is_probe_unique();
-
-
---
--- Name: verify_status_id; Type: TRIGGER; Schema: land; Owner: -
---
-
-CREATE TRIGGER verify_status_id BEFORE INSERT ON status FOR EACH ROW EXECUTE PROCEDURE bund.is_status_unique();
-
-
---
--- Name: verify_zusatz_wert_id; Type: TRIGGER; Schema: land; Owner: -
---
-
-CREATE TRIGGER verify_zusatz_wert_id BEFORE INSERT ON zusatz_wert FOR EACH ROW EXECUTE PROCEDURE bund.is_zusatz_wert_unique();
 
 
 SET search_path = bund, pg_catalog;
@@ -2744,6 +2606,14 @@ ALTER TABLE ONLY messung
 
 ALTER TABLE ONLY messung
     ADD CONSTRAINT messung_probe_id_fkey FOREIGN KEY (probe_id) REFERENCES probe(id);
+
+
+--
+-- Name: messung_status_protokoll_id_fkey; Type: FK CONSTRAINT; Schema: bund; Owner: -
+--
+
+ALTER TABLE ONLY messung
+    ADD CONSTRAINT messung_status_protokoll_id_fkey FOREIGN KEY (status) REFERENCES status_protokoll(id);
 
 
 --
@@ -2795,19 +2665,19 @@ ALTER TABLE ONLY probe
 
 
 --
+-- Name: probe_labor_mst_id_fkey; Type: FK CONSTRAINT; Schema: bund; Owner: -
+--
+
+ALTER TABLE ONLY probe
+    ADD CONSTRAINT probe_labor_mst_id_fkey FOREIGN KEY (labor_mst_id) REFERENCES stammdaten.mess_stelle(id);
+
+
+--
 -- Name: probe_mst_id_fkey; Type: FK CONSTRAINT; Schema: bund; Owner: -
 --
 
 ALTER TABLE ONLY probe
     ADD CONSTRAINT probe_mst_id_fkey FOREIGN KEY (mst_id) REFERENCES stammdaten.mess_stelle(id);
-
-
---
--- Name: probe_mst_id_fkey1; Type: FK CONSTRAINT; Schema: bund; Owner: -
---
-
-ALTER TABLE ONLY probe
-    ADD CONSTRAINT probe_mst_id_fkey1 FOREIGN KEY (mst_id) REFERENCES stammdaten.mess_stelle(id);
 
 
 --
@@ -2835,19 +2705,19 @@ ALTER TABLE ONLY probe
 
 
 --
--- Name: status_erzeuger_fkey; Type: FK CONSTRAINT; Schema: bund; Owner: -
+-- Name: status_protokoll_status_stufe_fkey; Type: FK CONSTRAINT; Schema: bund; Owner: -
 --
 
-ALTER TABLE ONLY status
-    ADD CONSTRAINT status_erzeuger_fkey FOREIGN KEY (erzeuger) REFERENCES stammdaten.mess_stelle(id);
+ALTER TABLE ONLY status_protokoll
+    ADD CONSTRAINT status_protokoll_status_stufe_fkey FOREIGN KEY (status_stufe) REFERENCES stammdaten.status_stufe(id);
 
 
 --
--- Name: status_messungs_id_fkey; Type: FK CONSTRAINT; Schema: bund; Owner: -
+-- Name: status_protokoll_status_wert_fkey; Type: FK CONSTRAINT; Schema: bund; Owner: -
 --
 
-ALTER TABLE ONLY status
-    ADD CONSTRAINT status_messungs_id_fkey FOREIGN KEY (messungs_id) REFERENCES messung(id);
+ALTER TABLE ONLY status_protokoll
+    ADD CONSTRAINT status_protokoll_status_wert_fkey FOREIGN KEY (status_wert) REFERENCES stammdaten.status_wert(id);
 
 
 --
@@ -2965,6 +2835,14 @@ ALTER TABLE ONLY messung
 
 
 --
+-- Name: messung_status_protokoll_id_fkey; Type: FK CONSTRAINT; Schema: land; Owner: -
+--
+
+ALTER TABLE ONLY messung
+    ADD CONSTRAINT messung_status_protokoll_id_fkey FOREIGN KEY (status) REFERENCES status_protokoll(id);
+
+
+--
 -- Name: messung_translation_messungs_id_fkey; Type: FK CONSTRAINT; Schema: land; Owner: -
 --
 
@@ -3061,19 +2939,11 @@ ALTER TABLE ONLY probe
 
 
 --
--- Name: status_erzeuger_fkey; Type: FK CONSTRAINT; Schema: land; Owner: -
+-- Name: status_protokoll_messungs_id_fkey; Type: FK CONSTRAINT; Schema: land; Owner: -
 --
 
-ALTER TABLE ONLY status
-    ADD CONSTRAINT status_erzeuger_fkey FOREIGN KEY (erzeuger) REFERENCES stammdaten.mess_stelle(id);
-
-
---
--- Name: status_messungs_id_fkey; Type: FK CONSTRAINT; Schema: land; Owner: -
---
-
-ALTER TABLE ONLY status
-    ADD CONSTRAINT status_messungs_id_fkey FOREIGN KEY (messungs_id) REFERENCES messung(id) ON DELETE CASCADE;
+ALTER TABLE ONLY status_protokoll
+    ADD CONSTRAINT status_protokoll_messungs_id_fkey FOREIGN KEY (messungs_id) REFERENCES messung(id) ON DELETE CASCADE;
 
 
 --
