@@ -7,8 +7,12 @@
  */
 package de.intevation.lada.rest.stamm;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -16,10 +20,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
 import de.intevation.lada.model.stamm.StatusWert;
+import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
+import de.intevation.lada.util.auth.Authorization;
+import de.intevation.lada.util.auth.AuthorizationType;
+import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.Response;
@@ -59,6 +68,10 @@ public class StatusWertService {
     @RepositoryConfig(type=RepositoryType.RO)
     private Repository defaultRepo;
 
+    @Inject
+    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    private Authorization authorization;
+
     /**
      * Get all StatusWert objects.
      * <p>
@@ -71,9 +84,18 @@ public class StatusWertService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response get(
         @Context HttpHeaders headers,
+        @Context HttpServletRequest request,
         @Context UriInfo info
     ) {
-        return defaultRepo.getAll(StatusWert.class, "stamm");
+        MultivaluedMap<String, String> params = info.getQueryParameters();
+        if (params.isEmpty() || !params.containsKey("messungsId")) {
+            return defaultRepo.getAll(StatusWert.class, "stamm");
+        }
+        UserInfo user = authorization.getInfo(request);
+        int messungsId = Integer.valueOf(params.getFirst("messungsId"));
+        List<StatusWert> werte = getReachable(messungsId, user);
+        Response response = new Response(true, 200, werte);
+        return response;
     }
 
     /**
@@ -96,5 +118,12 @@ public class StatusWertService {
             StatusWert.class,
             Integer.valueOf(id),
             "stamm");
+    }
+
+    private List<StatusWert> getReachable(int messungsId, UserInfo user) {
+        List<StatusWert> list = new ArrayList<StatusWert>();
+        // TODO get reachable status values from db using the current status and
+        // the user info.
+        return list;
     }
 }
