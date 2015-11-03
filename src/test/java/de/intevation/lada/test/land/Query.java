@@ -22,6 +22,7 @@ import javax.ws.rs.core.Response;
 
 import org.junit.Assert;
 
+import de.intevation.lada.BaseTest;
 import de.intevation.lada.Protocol;
 
 
@@ -58,7 +59,10 @@ public class Query {
         Client client = ClientBuilder.newClient();
         WebTarget target = client.target(baseUrl + "query/probe");
         /* Request all queries*/
-        Response response = target.request().get();
+        Response response = target.request()
+            .header("X-SHIB-user", BaseTest.TEST_USER)
+            .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+            .get();
         String entity = response.readEntity(String.class);
         try{
             /* Try to parse the response*/

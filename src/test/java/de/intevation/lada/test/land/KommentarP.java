@@ -24,6 +24,7 @@ import javax.ws.rs.core.Response;
 
 import org.junit.Assert;
 
+import de.intevation.lada.BaseTest;
 import de.intevation.lada.Protocol;
 
 
@@ -37,8 +38,8 @@ public class KommentarP {
     private static final String COMPARE_KOMMENTARP =
         "{\"datum\":1321002077000,\"erzeuger\":\"06010\",\"id\":1,\"text\":" +
         "\"Die Probe wurde in Darmstadt gammaspektrometrisch gemessen und " +
-        "für die Sr-Bestimmung verascht. \",\"probeId\":361,\"owner\":false," +
-        "\"readonly\":false}";
+        "für die Sr-Bestimmung verascht. \",\"probeId\":361,\"owner\":true," +
+        "\"readonly\":true}";
 
     private static final String CREATE_KOMMENTARP =
         "{\"probeId\":\"PID\",\"erzeuger\":\"11010\",\"text\":" +
@@ -79,7 +80,10 @@ public class KommentarP {
         Client client = ClientBuilder.newClient();
         WebTarget target = client.target(baseUrl + "pkommentar");
         /* Request all objects*/
-        Response response = target.request().get();
+        Response response = target.request()
+            .header("X-SHIB-user", BaseTest.TEST_USER)
+            .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+            .get();
         String entity = response.readEntity(String.class);
         try{
             /* Try to parse the response*/
@@ -123,7 +127,10 @@ public class KommentarP {
             WebTarget target = client.target(baseUrl + "pkommentar/1");
             prot.addInfo("kommentarId", 1);
             /* Request an object by id*/
-            Response response = target.request().get();
+            Response response = target.request()
+                .header("X-SHIB-user", BaseTest.TEST_USER)
+                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .get();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader fromServiceReader =
@@ -164,7 +171,10 @@ public class KommentarP {
                 client.target(baseUrl + "pkommentar?probeId=400");
             prot.addInfo("filter", "probeId=400");
             /* Request the objects using the filter*/
-            Response response = target.request().get();
+            Response response = target.request()
+                .header("X-SHIB-user", BaseTest.TEST_USER)
+                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .get();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader reader = Json.createReader(new StringReader(entity));
@@ -206,8 +216,10 @@ public class KommentarP {
             WebTarget target = client.target(baseUrl + "pkommentar");
             /* Send a post request containing a new kommentar*/
             String mess = CREATE_KOMMENTARP.replace("PID", probeId.toString());
-            Response response = target.request().post(
-                    Entity.entity(mess, MediaType.APPLICATION_JSON));
+            Response response = target.request()
+                .header("X-SHIB-user", BaseTest.TEST_USER)
+                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .post(Entity.entity(mess, MediaType.APPLICATION_JSON));
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader fromServiceReader =
@@ -250,7 +262,10 @@ public class KommentarP {
                 client.target(baseUrl + "pkommentar/" + createdKommentarId);
             prot.addInfo("kommentarId", createdKommentarId);
             /* Request a kommentar with the id saved when created a kommentar*/
-            Response response = target.request().get();
+            Response response = target.request()
+                .header("X-SHIB-user", BaseTest.TEST_USER)
+                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .get();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader reader = Json.createReader(new StringReader(entity));
@@ -263,8 +278,10 @@ public class KommentarP {
             prot.addInfo("updated to", "neu");
             /* Send the updated kommentar via put reauest*/
             WebTarget putTarget = client.target(baseUrl + "pkommentar/" + createdKommentarId);
-            Response updated = putTarget.request().put(
-                Entity.entity(updatedEntity, MediaType.APPLICATION_JSON));
+            Response updated = putTarget.request()
+                .header("X-SHIB-user", BaseTest.TEST_USER)
+                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .put(Entity.entity(updatedEntity, MediaType.APPLICATION_JSON));
             /* Try to parse the response*/
             JsonReader updatedReader = Json.createReader(
                 new StringReader(updated.readEntity(String.class)));
@@ -303,7 +320,10 @@ public class KommentarP {
                 client.target(baseUrl + "pkommentar/" + createdKommentarId);
             prot.addInfo("kommentarId", createdKommentarId);
             /* Delete a kommentar with the saved id*/
-            Response response = target.request().delete();
+            Response response = target.request()
+                .header("X-SHIB-user", BaseTest.TEST_USER)
+                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .delete();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader reader = Json.createReader(new StringReader(entity));

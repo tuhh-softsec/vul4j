@@ -24,6 +24,7 @@ import javax.ws.rs.core.Response;
 
 import org.junit.Assert;
 
+import de.intevation.lada.BaseTest;
 import de.intevation.lada.Protocol;
 
 
@@ -91,7 +92,10 @@ public class Probe {
         Client client = ClientBuilder.newClient();
         WebTarget target = client.target(baseUrl + "probe");
         /* Request all objects*/
-        Response response = target.request().get();
+        Response response = target.request()
+            .header("X-SHIB-user", BaseTest.TEST_USER)
+            .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+            .get();
         String entity = response.readEntity(String.class);
         try{
             /* Try to parse the response*/
@@ -131,7 +135,10 @@ public class Probe {
             WebTarget target = client.target(baseUrl + "probe/1");
             prot.addInfo("probeId", 1);
             /* Request a object by id*/
-            Response response = target.request().get();
+            Response response = target.request()
+                .header("X-SHIB-user", BaseTest.TEST_USER)
+                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .get();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader fromServiceReader =
@@ -171,7 +178,10 @@ public class Probe {
                 client.target(baseUrl + "probe?qid=2&mst_id=11010&umw_id=N24");
             prot.addInfo("filter", "qid=2&mst_id=11010&umw_id=N24");
             /* Request the objects using the filter*/
-            Response response = target.request().get();
+            Response response = target.request()
+                .header("X-SHIB-user", BaseTest.TEST_USER)
+                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .get();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader reader = Json.createReader(new StringReader(entity));
@@ -209,8 +219,10 @@ public class Probe {
             Client client = ClientBuilder.newClient();
             WebTarget target = client.target(baseUrl + "probe");
             /* Send a post request containing a new probe*/
-            Response response = target.request().post(
-                    Entity.entity(CREATE_PROBE, MediaType.APPLICATION_JSON));
+            Response response = target.request()
+                .header("X-SHIB-user", BaseTest.TEST_USER)
+                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .post(Entity.entity(CREATE_PROBE, MediaType.APPLICATION_JSON));
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader fromServiceReader =
@@ -253,7 +265,10 @@ public class Probe {
                 client.target(baseUrl + "probe/" + createdProbeId);
             prot.addInfo("probeId", createdProbeId);
             /* Request a with the saved id*/
-            Response response = target.request().get();
+            Response response = target.request()
+                .header("X-SHIB-user", BaseTest.TEST_USER)
+                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .get();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader reader = Json.createReader(new StringReader(entity));
@@ -266,8 +281,10 @@ public class Probe {
             prot.addInfo("updated to", "2345678901");
             /* Send the updated probe via put reauest*/
             WebTarget putTarget = client.target(baseUrl + "probe/" + createdProbeId);
-            Response updated = putTarget.request().put(
-                Entity.entity(updatedEntity, MediaType.APPLICATION_JSON));
+            Response updated = putTarget.request()
+                .header("X-SHIB-user", BaseTest.TEST_USER)
+                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .put(Entity.entity(updatedEntity, MediaType.APPLICATION_JSON));
             /* Try to parse the response*/
             JsonReader updatedReader = Json.createReader(
                 new StringReader(updated.readEntity(String.class)));
@@ -306,7 +323,10 @@ public class Probe {
                 client.target(baseUrl + "probe/" + createdProbeId);
             prot.addInfo("probeId", createdProbeId);
             /* Delete a probe with the id saved when created a probe*/
-            Response response = target.request().delete();
+            Response response = target.request()
+                .header("X-SHIB-user", BaseTest.TEST_USER)
+                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .delete();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader reader = Json.createReader(new StringReader(entity));

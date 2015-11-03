@@ -26,6 +26,10 @@ public class BaseTest {
 
     private static String ARCHIVE_NAME = "lada-basis-test.war";
 
+    public static String TEST_USER = "testeins";
+
+    public static String TEST_ROLES = "cn=Imis-World, cn=mst_06010, cn=mst_11010";
+
     private static Logger logger = Logger.getLogger(BaseTest.class);
 
     protected static List<Protocol> testProtocol;
@@ -40,6 +44,7 @@ public class BaseTest {
         WebArchive archive = ShrinkWrap.create(WebArchive.class, ARCHIVE_NAME)
             .addPackages(true, Package.getPackage("de.intevation.lada"))
             .addAsResource("log4j.properties", "log4j.properties")
+            .addAsResource("shibboleth.properties", "shibboleth.properties")
             .addAsResource("probequery.json", "probequery.json")
             .addAsResource("messprogrammquery.json", "messprogrammquery.json")
             .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")

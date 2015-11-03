@@ -24,6 +24,7 @@ import javax.ws.rs.core.Response;
 
 import org.junit.Assert;
 
+import de.intevation.lada.BaseTest;
 import de.intevation.lada.Protocol;
 
 /**
@@ -84,7 +85,10 @@ public class Messprogramm {
         Client client = ClientBuilder.newClient();
         WebTarget target = client.target(baseUrl + "messprogramm");
         /* Request all objects*/
-        Response response = target.request().get();
+        Response response = target.request()
+            .header("X-SHIB-user", BaseTest.TEST_USER)
+            .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+            .get();
         String entity = response.readEntity(String.class);
         try{
             /* Try to parse the response*/
@@ -128,7 +132,10 @@ public class Messprogramm {
             WebTarget target = client.target(baseUrl + "messprogramm/1");
             prot.addInfo("messprogrammId", 1);
             /* Request a object by id*/
-            Response response = target.request().get();
+            Response response = target.request()
+                .header("X-SHIB-user", BaseTest.TEST_USER)
+                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .get();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader fromServiceReader =
@@ -169,7 +176,10 @@ public class Messprogramm {
                 client.target(baseUrl + "messprogramm?qid=1");
             prot.addInfo("filter", "qid=1");
             /* Request the objects using the filter*/
-            Response response = target.request().get();
+            Response response = target.request()
+                .header("X-SHIB-user", BaseTest.TEST_USER)
+                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .get();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader reader = Json.createReader(new StringReader(entity));
@@ -209,8 +219,10 @@ public class Messprogramm {
             Client client = ClientBuilder.newClient();
             WebTarget target = client.target(baseUrl + "messprogramm");
             /* Send a post request containing a new object*/
-            Response response = target.request().post(
-                    Entity.entity(CREATE, MediaType.APPLICATION_JSON));
+            Response response = target.request()
+                .header("X-SHIB-user", BaseTest.TEST_USER)
+                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .post(Entity.entity(CREATE, MediaType.APPLICATION_JSON));
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader fromServiceReader =
@@ -253,7 +265,10 @@ public class Messprogramm {
                 client.target(baseUrl + "messprogramm/" + createdId);
             prot.addInfo("messprogrammId", createdId);
             /* Request a messprogramm with the saved id*/
-            Response response = target.request().get();
+            Response response = target.request()
+                .header("X-SHIB-user", BaseTest.TEST_USER)
+                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .get();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader reader = Json.createReader(new StringReader(entity));
@@ -266,8 +281,10 @@ public class Messprogramm {
             prot.addInfo("updated to", "Mess2");
             /* Send the updated messung via put request*/
             WebTarget putTarget = client.target(baseUrl + "messprogramm/" + createdId);
-            Response updated = putTarget.request().put(
-                Entity.entity(updatedEntity, MediaType.APPLICATION_JSON));
+            Response updated = putTarget.request()
+                .header("X-SHIB-user", BaseTest.TEST_USER)
+                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .put(Entity.entity(updatedEntity, MediaType.APPLICATION_JSON));
             /* Try to parse the response*/
             JsonReader updatedReader = Json.createReader(
                 new StringReader(updated.readEntity(String.class)));
@@ -306,7 +323,10 @@ public class Messprogramm {
                 client.target(baseUrl + "messprogramm/" + createdId);
             prot.addInfo("messprogrammId", createdId);
             /* Delete a messung with the saved id*/
-            Response response = target.request().delete();
+            Response response = target.request()
+                .header("X-SHIB-user", BaseTest.TEST_USER)
+                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .delete();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader reader = Json.createReader(new StringReader(entity));

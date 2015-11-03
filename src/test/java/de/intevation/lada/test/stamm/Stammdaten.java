@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 
 import org.junit.Assert;
 
+import de.intevation.lada.BaseTest;
 import de.intevation.lada.Protocol;
 
 public class Stammdaten {
@@ -104,7 +105,10 @@ public class Stammdaten {
         Client client = ClientBuilder.newClient();
         WebTarget target = client.target(baseUrl + type);
         /* Request all objects*/
-        Response response = target.request().get();
+        Response response = target.request()
+            .header("X-SHIB-user", BaseTest.TEST_USER)
+            .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+            .get();
         String entity = response.readEntity(String.class);
         try{
             /* Try to parse the response*/
@@ -147,7 +151,10 @@ public class Stammdaten {
             WebTarget target = client.target(baseUrl + type +"/" + id);
             prot.addInfo(type + "Id", id);
             /* Request an object by id*/
-            Response response = target.request().get();
+            Response response = target.request()
+                .header("X-SHIB-user", BaseTest.TEST_USER)
+                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .get();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader fromServiceReader =

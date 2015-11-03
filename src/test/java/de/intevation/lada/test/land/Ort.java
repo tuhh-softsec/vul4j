@@ -24,6 +24,7 @@ import javax.ws.rs.core.Response;
 
 import org.junit.Assert;
 
+import de.intevation.lada.BaseTest;
 import de.intevation.lada.Protocol;
 
 /**
@@ -74,7 +75,10 @@ public class Ort {
         Client client = ClientBuilder.newClient();
         WebTarget target = client.target(baseUrl + "ort");
         /* Request all objects*/
-        Response response = target.request().get();
+        Response response = target.request()
+            .header("X-SHIB-user", BaseTest.TEST_USER)
+            .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+            .get();
         String entity = response.readEntity(String.class);
         try{
             /* Try to parse the response*/
@@ -114,7 +118,10 @@ public class Ort {
             WebTarget target = client.target(baseUrl + "ort/1");
             prot.addInfo("ortId", 1);
             /* Request a object by id*/
-            Response response = target.request().get();
+            Response response = target.request()
+                .header("X-SHIB-user", BaseTest.TEST_USER)
+                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .get();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader fromServiceReader =
@@ -154,7 +161,10 @@ public class Ort {
                 client.target(baseUrl + "ort?probeId=1");
             prot.addInfo("filter", "probeId=1");
             /* Request the objects using the filter*/
-            Response response = target.request().get();
+            Response response = target.request()
+                .header("X-SHIB-user", BaseTest.TEST_USER)
+                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .get();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader reader = Json.createReader(new StringReader(entity));
@@ -196,8 +206,10 @@ public class Ort {
             WebTarget target = client.target(baseUrl + "ort");
             /* Send a post request containing a new object*/
             String mess = CREATE.replace("PID", probeId.toString());
-            Response response = target.request().post(
-                    Entity.entity(mess, MediaType.APPLICATION_JSON));
+            Response response = target.request()
+                .header("X-SHIB-user", BaseTest.TEST_USER)
+                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .post(Entity.entity(mess, MediaType.APPLICATION_JSON));
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader fromServiceReader =
@@ -240,7 +252,10 @@ public class Ort {
                 client.target(baseUrl + "ort/" + createdId);
             prot.addInfo("ortId", createdId);
             /* Request an object with the saved id*/
-            Response response = target.request().get();
+            Response response = target.request()
+                .header("X-SHIB-user", BaseTest.TEST_USER)
+                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .get();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader reader = Json.createReader(new StringReader(entity));
@@ -253,8 +268,10 @@ public class Ort {
             prot.addInfo("updated to", "zusatz");
             /* Send the updated messwert via put request*/
             WebTarget putTarget = client.target(baseUrl + "ort/" + createdId);
-            Response updated = putTarget.request().put(
-                Entity.entity(updatedEntity, MediaType.APPLICATION_JSON));
+            Response updated = putTarget.request()
+                .header("X-SHIB-user", BaseTest.TEST_USER)
+                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .put(Entity.entity(updatedEntity, MediaType.APPLICATION_JSON));
             /* Try to parse the response*/
             JsonReader updatedReader = Json.createReader(
                 new StringReader(updated.readEntity(String.class)));
@@ -293,7 +310,10 @@ public class Ort {
                 client.target(baseUrl + "ort/" + createdId);
             prot.addInfo("ortId", createdId);
             /* Delete the object with the saved id*/
-            Response response = target.request().delete();
+            Response response = target.request()
+                .header("X-SHIB-user", BaseTest.TEST_USER)
+                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .delete();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader reader = Json.createReader(new StringReader(entity));
