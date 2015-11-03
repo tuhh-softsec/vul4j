@@ -153,7 +153,6 @@ public class HeaderAuthorization implements Authorization {
                 LMessung messungDb = (LMessung)messResponse.getData();
                 boolean fertigChanged =
                     !messung.getFertig().equals(messungDb.getFertig());
-                logger.warn("changed " + fertigChanged);
                 return (!messung.getFertig() || fertigChanged) &&
                     getAuthorization(userInfo, probe);
             }
