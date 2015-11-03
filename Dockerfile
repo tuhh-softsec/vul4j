@@ -19,7 +19,7 @@ MAINTAINER raimund.renkert@intevation.de
 # install packages
 #
 RUN apt-get update -y && \
-    apt-get install -y libpostgresql-jdbc-java libpostgis-java libjts-java \
+    apt-get install -y libpostgis-java libjts-java \
             maven
 
 #
@@ -47,8 +47,10 @@ WORKDIR /usr/src/lada-server
 # Wildfly setup specific for LADA
 #
 RUN mkdir -p $JBOSS_HOME/modules/org/postgres/main
-RUN ln -s /usr/share/java/postgresql-jdbc4-9.2.jar \
-       $JBOSS_HOME/modules/org/postgres/main/
+
+RUN curl https://jdbc.postgresql.org/download/postgresql-9.4-1204.jdbc41.jar >\
+         $JBOSS_HOME/modules/org/postgres/main/postgresql-9.4-1204.jdbc41.jar
+
 RUN ln -s /usr/share/java/postgis-jdbc-2.1.4.jar \
        $JBOSS_HOME/modules/org/postgres/main/
 RUN ln -s /usr/share/java/jts-1.11.jar \
