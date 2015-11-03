@@ -24,7 +24,7 @@ import org.junit.AfterClass;
  */
 public class BaseTest {
 
-    private static String ARCHIVE_NAME = "lada-basis-test.war";
+    protected static String ARCHIVE_NAME = "lada-basis-test.war";
 
     public static String TEST_USER = "testeins";
 

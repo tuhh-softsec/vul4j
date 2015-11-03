@@ -1,11 +1,20 @@
 package de.intevation.lada;
 
+import static de.intevation.lada.BaseTest.ARCHIVE_NAME;
+
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,9 +25,13 @@ import de.intevation.lada.validation.Validator;
 import de.intevation.lada.validation.annotation.ValidationConfig;
 
 @RunWith(Arquillian.class)
-public class LadaValidatorTest extends BaseTest {
+public class LadaValidatorTest {
 
     private static Logger logger = Logger.getLogger(LadaStammTest.class);
+
+    protected static List<Protocol> testProtocol;
+
+    protected static boolean verboseLogging = false;
 
     @Inject
     @ValidationConfig(type="Probe")
@@ -36,9 +49,40 @@ public class LadaValidatorTest extends BaseTest {
         testProtocol = new ArrayList<Protocol>();
     }
 
+    /**
+     * Create a deployable WAR archive.
+     */
+    @Deployment(testable=true)
+    public static WebArchive createDeployment() throws Exception {
+        WebArchive archive = ShrinkWrap.create(WebArchive.class, ARCHIVE_NAME)
+            .addPackages(true, Package.getPackage("de.intevation.lada"))
+            .deleteClass("de.intevation.lada.util.auth.ShibbolethFilter")
+            .addAsResource("log4j.properties", "log4j.properties")
+            .addAsResource("shibboleth.properties", "shibboleth.properties")
+            .addAsResource("probequery.json", "probequery.json")
+            .addAsResource("messprogrammquery.json", "messprogrammquery.json")
+            .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
+            .addAsResource("META-INF/test-persistence.xml",
+                "META-INF/persistence.xml");
+        return archive;
+    }
+
+
     @BeforeClass
     public static void beforeTests() {
         logger.info("---------- Testing Lada Validator ----------");
+    }
+
+    @After
+    public final void printLogs() {
+        for (Protocol p : testProtocol) {
+            logger.info(p.toString(verboseLogging));
+        }
+    }
+
+    @AfterClass
+    public static final void afterTests() {
+        System.out.println("");
     }
 
     @Test
