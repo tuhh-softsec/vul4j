@@ -362,45 +362,7 @@ public class MessungService {
             return new Response(false, 697, null);
         }
 
-        QueryBuilder<LMesswert> mwBuilder =
-            new QueryBuilder<LMesswert>(
-                defaultRepo.entityManager("land"), LMesswert.class);
-        mwBuilder.and("messungsId", messungObj.getId());
-        QueryBuilder<LKommentarM> mkBuilder =
-            new QueryBuilder<LKommentarM>(
-                defaultRepo.entityManager("land"), LKommentarM.class);
-        mkBuilder.and("messungsId", messungObj.getId());
-        QueryBuilder<LStatusProtokoll> msBuilder =
-            new QueryBuilder<LStatusProtokoll>(
-                defaultRepo.entityManager("land"), LStatusProtokoll.class);
-        msBuilder.and("messungsId", messungObj.getId());
-
-        List<LMesswert> messwerte =
-            (List<LMesswert>)defaultRepo.filter(mwBuilder.getQuery(), "land").getData();
-        List<LKommentarM> kommentare =
-            (List<LKommentarM>)defaultRepo.filter(mkBuilder.getQuery(), "land").getData();
-        List<LStatusProtokoll> status =
-            (List<LStatusProtokoll>)defaultRepo.filter(msBuilder.getQuery(), "land").getData();
-
-        if (!messwerte.isEmpty() ||
-            !kommentare.isEmpty() ||
-            !status.isEmpty()
-        ) {
-            return new Response(false, 696, messung);
-        }
-
-        /* Create a query and request the messungTranslation object for the
-         * messung*/
-        QueryBuilder<MessungTranslation> builder =
-            new QueryBuilder<MessungTranslation>(
-                defaultRepo.entityManager("land"), MessungTranslation.class);
-        builder.and("messungs", messungObj.getId());
-        Response messungTrans = defaultRepo.filter(builder.getQuery(), "land");
-        MessungTranslation messungTransObj = ((List<MessungTranslation>)messungTrans.getData()).get(0);
-        /* Delete the messung translation object*/
-        defaultRepo.delete(messungTransObj, "land");
-        /* Delete the probe object*/
-        Response response = defaultRepo.delete(messungObj, "land");
-        return response;
+        /* Delete the messung object*/
+        return defaultRepo.delete(messungObj, "land");
     }
 }
