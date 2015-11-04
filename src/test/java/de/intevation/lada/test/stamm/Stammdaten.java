@@ -17,75 +17,165 @@ import javax.ws.rs.core.Response;
 
 import org.junit.Assert;
 
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
+
 import de.intevation.lada.BaseTest;
 import de.intevation.lada.Protocol;
 
 public class Stammdaten {
 
-    private static Map<String, String> compare;
+    private static Map<String, Matcher> matchers;
 
     public Stammdaten() {
-        compare = new HashMap<String, String>();
-        compare.put("datenbasis",
-            "{\"id\":9,\"beschreibung\":\"Europa\",\"datenbasis\":\"Europa\"}");
-        compare.put("messeinheit",
-            "{\"id\":207,\"beschreibung\":\"Becquerel pro Stunde\"," +
-            "\"einheit\":\"Bq/h\",\"eudfMesseinheitId\":null," +
-            "\"umrechnungsFaktorEudf\":null}");
-        compare.put("messgroesse",
-            "{\"id\":56,\"beschreibung\":\"Mangan\",\"defaultFarbe\":" +
-            "\"175175075\",\"eudfNuklidId\":50,\"idfNuklidKey\":\"Mn54\"," +
-            "\"istLeitnuklid\":false,\"kennungBvl\":\"1925054\"," +
-            "\"messgroesse\":\"Mn 54\"}");
-        compare.put("messmethode",
-            "{\"id\":\"GI\",\"beschreibung\":null,\"messmethode\":" +
-            "\"Iod, Gamma-Spektrometrie\"}");
-        compare.put("messstelle",
-            "{\"id\":\"06010\",\"amtskennung\":null,\"beschreibung\":" +
-            "\"Hessisches Landesamt für Umwelt und Geologie, Dienststelle " +
-            "Kassel, Ludwig-Mond-Str. 33, 34121 Kassel\",\"messStelle\":" +
-            "\"helm21-HLUG-Kassel\",\"mstTyp\":\"M\",\"netzbetreiberId\":" +
-            "\"06\"}");
-        compare.put("netzbetreiber",
-            "{\"id\":\"06\",\"aktiv\":true,\"idfNetzbetreiber\":\"f\"," +
-            "\"isBmn\":false,\"mailverteiler\":\"06\",\"netzbetreiber\":" +
-            "\"Hessen\",\"zustMstId\":null}");
-        compare.put("pflichtmessgroesse",
-            "{\"id\":33,\"messgroesseId\":904,\"datenbasisId\":4,\"mmtId\":" +
-            "\"A3\",\"umweltId\":\"B2\"}");
-        compare.put("probenart",
-            "{\"id\":1,\"beschreibung\":\"Einzelprobe\",\"probenart\":\"E\"," +
-            "\"probenartEudfId\":\"A\"}");
-        compare.put("probenzusatz",
-            "{\"id\":\"A74\",\"beschreibung\":\"Volumenstrom\"," +
-            "\"eudfKeyword\":null,\"zusatzwert\":\"VOLSTR\",\"mehId\":32}");
-        compare.put("location",
-            "{\"id\":19,\"beschreibung\":\"WW  Kassel\",\"bezeichnung\":" +
-            "\"T060014\",\"hoeheLand\":null,\"koordXExtern\":\"32531152\"," +
-            "\"koordYExtern\":\"5684269\",\"latitude\":51.30888," +
-            "\"letzteAenderung\":1376287046332,\"longitude\":9.44693," +
-            "\"nutsCode\":\"DE731\",\"unscharf\":\"0\",\"netzbetreiberId\":" +
-            "null,\"staatId\":0,\"verwaltungseinheitId\":\"06611000\"," +
-            "\"otyp\":\"Z\",\"koordinatenartId\":5}");
-        compare.put("koordinatenart",
-            "{\"id\":2,\"idfGeoKey\":\"D\",\"koordinatenart\":" +
-            "\"geografisch-gradiell (WGS84)\"}");
-        compare.put("staat",
-            "{\"id\":322,\"eu\":\"0\",\"hklId\":322,\"koordXExtern\":" +
-            "\"-59,6105\",\"koordYExtern\":\"13,0935\",\"staat\":" +
-            "\"Barbados\",\"staatIso\":\"BB\",\"staatKurz\":\"BDS\"," +
-            "\"koordinatenartId\":4}");
-        compare.put("umwelt",
-            "{\"id\":\"L6\",\"beschreibung\":null,\"umweltBereich\":" +
-            "\"Spurenmessung Luft\",\"mehId\":62}");
-        compare.put("verwaltungseinheit",
-            "{\"id\":\"09575134\",\"bezeichnung\":\"Ippesheim\"," +
-            "\"bundesland\":\"09000000\",\"isBundesland\":\"0\"," +
-            "\"isGemeinde\":\"1\",\"isLandkreis\":\"0\",\"isRegbezirk\":" +
-            "\"0\",\"koordXExtern\":\"32588490\",\"koordYExtern\":" +
-            "\"5495240\",\"kreis\":\"09575000\",\"latitude\":49.60325," +
-            "\"longitude\":10.2247,\"nuts\":\"DE25A09575\",\"plz\":null," +
-            "\"regbezirk\":\"09500000\",\"koordinatenartId\":5}");
+        matchers = new HashMap<String, Matcher>();
+
+        matchers.put("datenbasis",
+            Matchers.containsInAnyOrder("id","beschreibung","datenbasis")
+        );
+
+        matchers.put("messeinheit",
+            Matchers.containsInAnyOrder(
+                "id",
+                "beschreibung",
+                "einheit",
+                "eudfMesseinheitId",
+                "umrechnungsFaktorEudf"
+            )
+        );
+
+        matchers.put("messgroesse",
+            Matchers.containsInAnyOrder(
+                "id",
+                "beschreibung",
+                "defaultFarbe",
+                "eudfNuklidId",
+                "idfNuklidKey",
+                "istLeitnuklid",
+                "kennungBvl",
+                "messgroesse"
+            )
+        );
+
+        matchers.put("messmethode",
+            Matchers.containsInAnyOrder("id","beschreibung","messmethode")
+        );
+
+        matchers.put("messstelle",
+            Matchers.containsInAnyOrder(
+                "id",
+                "amtskennung",
+                "beschreibung",
+                "messStelle",
+                "mstTyp",
+                "netzbetreiberId"
+            )
+        );
+
+        matchers.put("netzbetreiber",
+            Matchers.containsInAnyOrder(
+                "id",
+                "aktiv",
+                "idfNetzbetreiber",
+                "isBmn",
+                "mailverteiler",
+                "netzbetreiber",
+                "zustMstId"
+            )
+        );
+
+        matchers.put("pflichtmessgroesse",
+            Matchers.containsInAnyOrder(
+                "id",
+                "messgroesseId",
+                "datenbasisId",
+                "mmtId",
+                "umweltId"
+            )
+        );
+
+        matchers.put("probenart",
+            Matchers.containsInAnyOrder(
+                "id",
+                "beschreibung",
+                "probenart",
+                "probenartEudfId"
+            )
+        );
+
+        matchers.put("probenzusatz",
+            Matchers.containsInAnyOrder(
+                "id",
+                "beschreibung",
+                "eudfKeyword",
+                "zusatzwert",
+                "mehId"
+            )
+        );
+
+        matchers.put("location",
+            Matchers.containsInAnyOrder(
+                "id",
+                "beschreibung",
+                "bezeichnung",
+                "hoeheLand",
+                "koordXExtern",
+                "koordYExtern",
+                "latitude",
+                "longitude",
+                "letzteAenderung",
+                "nutsCode",
+                "unscharf",
+                "netzbetreiberId",
+                "staatId",
+                "verwaltungseinheitId",
+                "otyp",
+                "koordinatenartId"
+            )
+        );
+
+        matchers.put("koordinatenart",
+            Matchers.containsInAnyOrder("id","idfGeoKey","koordinatenart")
+        );
+
+        matchers.put("staat",
+            Matchers.containsInAnyOrder(
+                "id",
+                "eu",
+                "hklId",
+                "koordXExtern",
+                "koordYExtern",
+                "staat",
+                "staatIso",
+                "staatKurz",
+                "koordinatenartId"
+            )
+        );
+
+        matchers.put("umwelt",
+            Matchers.containsInAnyOrder("id","beschreibung","umweltBereich","mehId")
+        );
+
+        matchers.put("verwaltungseinheit",
+            Matchers.containsInAnyOrder(
+                "id",
+                "bezeichnung",
+                "bundesland",
+                "isBundesland",
+                "isGemeinde",
+                "isLandkreis",
+                "isRegbezirk",
+                "koordXExtern",
+                "koordYExtern",
+                "kreis",
+                "latitude",
+                "longitude",
+                "nuts",
+                "plz",
+                "regbezirk",
+                "koordinatenartId"
+            )
+        );
     }
 
     /**
@@ -142,10 +232,6 @@ public class Stammdaten {
         prot.setPassed(false);
         protocol.add(prot);
         try {
-            /* Create a json object from static string*/
-            JsonReader fromStringRreader =
-                Json.createReader(new StringReader(compare.get(type)));
-            JsonObject comp = fromStringRreader.readObject();
             /* Create a client*/
             Client client = ClientBuilder.newClient();
             WebTarget target = client.target(baseUrl + type +"/" + id);
@@ -165,8 +251,8 @@ public class Stammdaten {
             prot.addInfo("success", content.getBoolean("success"));
             Assert.assertEquals("200", content.getString("message"));
             prot.addInfo("message", content.getString("message"));
-            Assert.assertEquals(comp,
-                content.getJsonObject("data"));
+            Assert.assertThat(content.getJsonObject("data").keySet(),
+                matchers.get(type));
             prot.addInfo("object", "equals");
         }
         catch(JsonException je) {
