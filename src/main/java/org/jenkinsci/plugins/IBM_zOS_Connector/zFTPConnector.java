@@ -1,9 +1,9 @@
 package org.jenkinsci.plugins.IBM_zOS_Connector;
 
-import hudson.model.TaskListener;
 import org.apache.commons.net.PrintCommandListener;
 import org.apache.commons.net.ftp.*;
 import java.io.*;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -64,10 +64,19 @@ public class zFTPConnector
      * FTPClient from <i>Apache Commons-Net</i>. Used for FTP communication.
      */
     private FTPClient FTPClient;
+	/**
+	 * Log prefix (default: "zFTPConnector")
+	 */
+	private String logPrefix;
     /**
      * Pattern for search of jobName
      */
     private static final Pattern JesJobName = Pattern.compile("250-It is known to JES as (.*)");
+	/**
+	 * Simple logger.
+	 */
+	private static final Logger logger = Logger.getLogger(zFTPConnector.class.getName());
+
 
     /**
      * Basic constructor with minimal parameters required.
@@ -76,8 +85,9 @@ public class zFTPConnector
      * @param port LPAR password.
      * @param userID UserID.
      * @param password User password.
+     * @param logPrefix Log prefix.
      */
-    public zFTPConnector (String server, int port, String userID, String password)
+    public zFTPConnector (String server, int port, String userID, String password, String logPrefix)
     {
         // Copy values
         this.server = server;
@@ -89,14 +99,18 @@ public class zFTPConnector
         this.FTPClient = new FTPClient();
         // Make password invisible from log
         this.FTPClient.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out), true));
+
+	    this.logPrefix = "";
+	    if (logPrefix != null)
+		    this.logPrefix = logPrefix;
+	    logger.info(logPrefix + "created zFTPConnector");
     }
 
     /**
      * Try to connect to the <b><code>server</code></b> using the parameters passed to the constructor.
      *
      * @return Whether the connection was established using the parameters passed to the constructor.
-     *
-     * @see zFTPConnector#zFTPConnector(java.lang.String, int, java.lang.String, java.lang.String)
+     * @see zFTPConnector#zFTPConnector(String, int, String, String, String)
      */
     private boolean connect()
     {
@@ -114,9 +128,10 @@ public class zFTPConnector
             {
                 // Bad reply code.
                 this.FTPClient.disconnect(); // Disconnect from LPAR.
-                System.err.println("FTP server refused connection."); // Print error.
+                logger.severe(logPrefix + "FTP server refused connection."); // Print error.
                 return false; // Finish with failure.
             }
+	        logger.info(logPrefix + "FTP: connected to " + server + ":" + port);
         }
         // IOException handling
         catch (IOException e)
@@ -133,7 +148,7 @@ public class zFTPConnector
                     // Do nothing
                 }
             }
-            System.err.println("Could not connect to server.");
+            logger.severe(logPrefix + "Could not connect to server.");
             e.printStackTrace();
             return false;
         }
@@ -147,7 +162,7 @@ public class zFTPConnector
      *
      * @return Whether the credentials supplied are valid and the connection was established.
      *
-     * @see zFTPConnector#zFTPConnector(java.lang.String, int, java.lang.String, java.lang.String)
+     * @see zFTPConnector#zFTPConnector(String, int, String, String, String)
      * @see zFTPConnector#connect()
      */
     private boolean logon()
@@ -174,7 +189,7 @@ public class zFTPConnector
             reply = this.FTPClient.getReplyCode();
             if (!FTPReply.isPositiveCompletion(reply)) {
                 this.FTPClient.disconnect();
-                System.err.println("FTP server refused to change FileType and JESJobName.");
+                logger.severe(logPrefix + "FTP server refused to change FileType and JESJobName.");
                 return false;
             }
         } catch (IOException e) {
@@ -185,7 +200,7 @@ public class zFTPConnector
                     // do nothing
                 }
             }
-            System.err.println("Could not connect to server.");
+            logger.severe(logPrefix + "Could not connect to server.");
             e.printStackTrace();
             return false;
         }
@@ -240,11 +255,12 @@ public class zFTPConnector
                     break;
                 }
             }
+	        logger.info(logPrefix + "submitted job [" + this.jobID + "]");
             inputStream.close();
         }
         catch (FTPConnectionClosedException e)
         {
-            System.err.println("Server closed connection.");
+            logger.severe(logPrefix + "Server closed connection.");
             e.printStackTrace();
             this.jobCC = "SERVER_CLOSED_CONNECTION";
             return false;
@@ -309,7 +325,7 @@ public class zFTPConnector
                     Thread.sleep(waitInterval);
                     curr = System.currentTimeMillis();
                 } catch (InterruptedException e) {
-                    System.err.println("Interrupted.");
+                    logger.severe(logPrefix + "Interrupted.");
                     this.jobCC = "WAIT_INTERRUPTED";
                     return false;
                 }

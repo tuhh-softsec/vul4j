@@ -14,6 +14,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import javax.annotation.Nonnull;
 import java.io.*;
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * <h1>SCLMSCM</h1>
@@ -78,6 +79,11 @@ public class SCLMSCM  extends SCM {
      * Current revision state.
      */
     private SCLMSCMRevisionState currentRevision;
+	/**
+	 * Simple logger.
+	 */
+	private static final Logger logger = Logger.getLogger(SCLMSCM.class.getName());
+	private static final String logPrefix = "SCLM: ";
 
     /**
      * Constructor that is invoked from project configuration page.
@@ -278,8 +284,9 @@ public class SCLMSCM  extends SCM {
      */
     private SCLMSCMRevisionState getNewRevision(SCLMSCMRevisionState baseline)
     {
+	    logger.info(logPrefix + "Will get new Revision State.");
         // Construct connector.
-        zFTPConnector zFTPConnector = new zFTPConnector(this.server,this.port,this.userID,this.password);
+        zFTPConnector zFTPConnector = new zFTPConnector(this.server,this.port,this.userID,this.password, logPrefix);
 
         // Fetch revision.
         return new SCLMSCMRevisionState(this.project, this.alternate, this.group,this.types,this.JobHeader + "\n" + this.JobStep, zFTPConnector, baseline);
@@ -357,6 +364,7 @@ public class SCLMSCM  extends SCM {
     @Override
     public void checkout(@Nonnull Run<?, ?> build, @Nonnull Launcher launcher, @Nonnull FilePath workspace, @Nonnull TaskListener listener, File changelogFile, SCMRevisionState baseline) throws IOException, InterruptedException
     {
+	    logger.info(logPrefix + "Will checkout");
         // Get new revision.
         this.currentRevision = this.getNewRevision((SCLMSCMRevisionState)baseline);
         if(changelogFile != null) {

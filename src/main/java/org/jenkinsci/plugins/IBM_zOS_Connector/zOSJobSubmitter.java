@@ -1,5 +1,6 @@
 package org.jenkinsci.plugins.IBM_zOS_Connector;
 
+import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -12,6 +13,7 @@ import org.kohsuke.stapler.QueryParameter;
 
 import javax.servlet.ServletException;
 import java.io.*;
+import java.util.logging.Logger;
 
 /**
  * <h1>zOSJobSubmitter</h1>
@@ -60,6 +62,11 @@ public class zOSJobSubmitter extends Builder {
      */
     private String MaxCC;
 
+	/**
+	 * Simple logger.
+	 */
+	private static final Logger logger = Logger.getLogger(zOSJobSubmitter.class.getName());
+
     /**
      * Constructor. Invoked when 'Apply' or 'Save' button is pressed on the project configuration page.
      *
@@ -69,7 +76,7 @@ public class zOSJobSubmitter extends Builder {
      * @param password User password.
      * @param wait Whether we need to wait for the job completion.
      * @param waitTime Maximum wait time. If set to <code>0</code> will wait forever.
-     * @param deleteJobFromSpool Whethe the job log will e deleted from the spool after end.
+     * @param deleteJobFromSpool Whether the job log will e deleted from the spool after end.
      * @param job JCL of the job to be submitted.
      */
     @DataBoundConstructor
@@ -118,13 +125,35 @@ public class zOSJobSubmitter extends Builder {
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener)
     {
-        // Get connector.
-        zFTPConnector zFTPConnector = new zFTPConnector(this.server,
+	    // variables to be expanded
+	    String  _server             = this.server;
+	    String  _userID             = this.userID;
+	    String  _password           = this.password;
+	    String  _job                = this.job;
+	    String  _MaxCC              = this.MaxCC;
+
+	    String logPrefix = build.getParent().getDisplayName() + " " + build.getId() + ": ";
+	    try {
+		    logger.info(logPrefix + "will expand variables");
+		    EnvVars environment = build.getEnvironment(listener);
+		    _server = environment.expand(_server);
+		    _userID = environment.expand(_userID);
+		    _password = environment.expand(_password);
+		    _job = environment.expand(_job);
+		    _MaxCC = environment.expand(_MaxCC);
+	    } catch (IOException e) {
+		    e.printStackTrace();
+	    } catch (InterruptedException e) {
+		    e.printStackTrace();
+	    }
+
+	    // Get connector.
+        zFTPConnector zFTPConnector = new zFTPConnector(_server,
                 this.port,
-                this.userID,
-                this.password);
+                _userID,
+                _password, logPrefix);
         // Read the JCL.
-        InputStream inputStream = new ByteArrayInputStream(this.job.getBytes());
+        InputStream inputStream = new ByteArrayInputStream(_job.getBytes());
         // Prepare the output stream.
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
@@ -135,9 +164,11 @@ public class zOSJobSubmitter extends Builder {
         String printableCC = zFTPConnector.getJobCC();
         if(printableCC != null)
             printableCC = printableCC.replaceAll("\\s+","");
+	    else
+            printableCC = "";
 
         // Print the info about the job
-        listener.getLogger().println("Job [" + zFTPConnector.getJobID() + "] processing finished.");
+	    logger.info("Job [" + zFTPConnector.getJobID() + "] processing finished.");
 
         // If wait was requested try to save the job log.
         if(this.wait) {
@@ -148,7 +179,7 @@ public class zOSJobSubmitter extends Builder {
                         String.format("[%s - %s] %s - %s [%s].log",
                                 build.getParent().getDisplayName(),
                                 build.getId(),
-                                this.server,
+                                _server,
                                 zFTPConnector.getJobID(),
                                 printableCC
                         ));
@@ -168,7 +199,7 @@ public class zOSJobSubmitter extends Builder {
         }
 
         // Return whether the job succeeded or not.
-        return result && (this.MaxCC.compareTo(printableCC) >= 0);
+        return result && (_MaxCC.compareTo(printableCC) >= 0);
     }
 
     /**
