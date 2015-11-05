@@ -99,12 +99,12 @@ public class LocationService {
         if (params.isEmpty() || !params.containsKey("ortId")) {
             return defaultRepo.getAll(SOrt.class, "stamm");
         }
-        String probeId = params.getFirst("ortId");
+        String ortId = params.getFirst("ortId");
         QueryBuilder<SOrt> builder =
             new QueryBuilder<SOrt>(
-                defaultRepo.entityManager("land"),
+                defaultRepo.entityManager("stamm"),
                 SOrt.class);
-        builder.and("probeId", probeId);
+        builder.and("ortId", ortId);
         return defaultRepo.filter(builder.getQuery(), "stamm");
     }
 

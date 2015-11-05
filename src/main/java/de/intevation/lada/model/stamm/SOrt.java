@@ -10,12 +10,16 @@ package de.intevation.lada.model.stamm;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import javax.inject.Inject;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.apache.log4j.Logger;
 
 
 /**
@@ -25,6 +29,9 @@ import javax.persistence.Table;
 @Table(name="ort")
 public class SOrt implements Serializable {
     private static final long serialVersionUID = 1L;
+    @Inject
+    @Transient
+    private Logger logger = Logger.getLogger(SOrt.class);
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -131,10 +138,12 @@ public class SOrt implements Serializable {
     }
 
     public Timestamp getLetzteAenderung() {
+        logger.debug("get date: " + this.letzteAenderung.toString());
         return this.letzteAenderung;
     }
 
     public void setLetzteAenderung(Timestamp letzteAenderung) {
+        logger.debug("set date: " + letzteAenderung.toString());
         this.letzteAenderung = letzteAenderung;
     }
 
