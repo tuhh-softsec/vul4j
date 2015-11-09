@@ -5,8 +5,10 @@
 package com.mycompany.exercises.io;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -14,7 +16,7 @@ import org.junit.Ignore;
 
 public class MyFileTest {
 
-  public MyFileTest() {}
+  private static final Path FILE = Paths.get("src", "test", "resources", "io", "publication.txt");
 
   @Ignore
   @Test
@@ -80,6 +82,13 @@ public class MyFileTest {
   @Test
   public void testWatchForFileChangesInDirectory() {
     MyFile.watchForFileChangesInDirectory(Paths.get("."));
+  }
+
+  @Test
+  public void testGetWords() throws IOException {
+    List<String> expected = Arrays.asList("Tony", "James", "Lee", "John", "Steve", "Andrew");
+    List<String> actual = MyFile.getWords(FILE);
+    assertEquals(expected, actual);
   }
 
 }
