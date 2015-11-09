@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 import static java.util.stream.Collectors.toList;
 import java.util.stream.Stream;
 
@@ -147,4 +148,18 @@ public final class MyFile {
       System.err.println("ERROR! Watch service was interrupted while waiting: " + ex.getMessage());
     }
   }
+
+  public static List<String> getWords(final Path path) throws IOException {
+    Stream<String> lines = Files.lines(path);
+    Stream<String> words = lines.flatMap(line -> Stream.of(line.split(" +")));
+    return words.filter(MyFile::isWord).collect(toList());
+  }
+
+  /**
+   * Checks if string has only word characters: [a-zA-Z_0-9]
+   */
+  private static boolean isWord(final String s) {
+    return Pattern.matches("\\w+", s);
+  }
+
 }
