@@ -119,7 +119,7 @@ public final class EsigateServer {
             configFile = System.getProperty(PROPERTY_PREFIX + "config", "server.properties");
             LOG.info("Loading server configuration from " + configFile);
 
-            try (InputStream is = new FileInputStream(configFile);) {
+            try (InputStream is = new FileInputStream(configFile)) {
                 serverProperties.load(is);
             }
 
