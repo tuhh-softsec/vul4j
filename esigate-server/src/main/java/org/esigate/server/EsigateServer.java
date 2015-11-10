@@ -45,13 +45,12 @@ import com.codahale.metrics.jetty9.InstrumentedQueuedThreadPool;
 
 /**
  * The bootstrap code for esigate-server, using jetty.
- * 
- * 
- * <p>
+ * <p/>
+ * <p/>
+ * <p/>
  * Inspiration from Ole Christian Rynning (http://open.bekk.no/embedded-jetty-7-webapp-executable-with-maven/)
- * 
+ *
  * @author Nicolas Richeton
- * 
  */
 public final class EsigateServer {
 
@@ -76,7 +75,7 @@ public final class EsigateServer {
 
     /**
      * Get an integer from System properties
-     * 
+     *
      * @param prefix
      * @param name
      * @param defaultValue
@@ -95,7 +94,7 @@ public final class EsigateServer {
 
     /**
      * Get String from System properties
-     * 
+     *
      * @param prefix
      * @param name
      * @param defaultValue
@@ -134,9 +133,8 @@ public final class EsigateServer {
 
     /**
      * Set the provided server configuration then read configuration from System properties or load defaults.
-     * 
-     * @param configuration
-     *            configuration to use.
+     *
+     * @param configuration configuration to use.
      */
     public static void init(Properties configuration) {
 
@@ -159,7 +157,7 @@ public final class EsigateServer {
 
     /**
      * Returns current control port.
-     * 
+     *
      * @return current control port.
      */
     public static int getControlPort() {
@@ -168,11 +166,9 @@ public final class EsigateServer {
 
     /**
      * Esigate Server entry point.
-     * 
-     * @param args
-     *            command line arguments.
-     * @throws Exception
-     *             when server cannot be started.
+     *
+     * @param args command line arguments.
+     * @throws Exception when server cannot be started.
      */
     public static void main(String[] args) throws Exception {
 
@@ -182,18 +178,18 @@ public final class EsigateServer {
         }
 
         switch (args[0]) {
-        case "start":
-            EsigateServer.init();
-            EsigateServer.start();
-            break;
+            case "start":
+                EsigateServer.init();
+                EsigateServer.start();
+                break;
 
-        case "stop":
-            EsigateServer.stop();
-            break;
+            case "stop":
+                EsigateServer.stop();
+                break;
 
-        default:
-            EsigateServer.usage();
-            break;
+            default:
+                EsigateServer.usage();
+                break;
         }
     }
 
@@ -222,9 +218,8 @@ public final class EsigateServer {
 
     /**
      * Create and start server.
-     * 
-     * @throws Exception
-     *             when server cannot be started.
+     *
+     * @throws Exception when server cannot be started.
      */
     public static void start() throws Exception {
         MetricRegistry registry = new MetricRegistry();
@@ -245,9 +240,9 @@ public final class EsigateServer {
         Timer processTime = registry.timer("processTime");
 
         try (ServerConnector connector =
-                new InstrumentedServerConnector("main", EsigateServer.port, srv, registry,
-                        new InstrumentedConnectionFactory(new HttpConnectionFactory(httpConfig), processTime));
-                ServerConnector controlConnector = new ServerConnector(srv)) {
+                     new InstrumentedServerConnector("main", EsigateServer.port, srv, registry,
+                             new InstrumentedConnectionFactory(new HttpConnectionFactory(httpConfig), processTime));
+             ServerConnector controlConnector = new ServerConnector(srv)) {
 
             // Main connector
             connector.setIdleTimeout(EsigateServer.idleTimeout);
@@ -260,7 +255,7 @@ public final class EsigateServer {
             controlConnector.setPort(EsigateServer.controlPort);
             controlConnector.setName("control");
 
-            srv.setConnectors(new Connector[] {connector, controlConnector});
+            srv.setConnectors(new Connector[]{connector, controlConnector});
             // War
             ProtectionDomain protectionDomain = EsigateServer.class.getProtectionDomain();
             String warFile = protectionDomain.getCodeSource().getLocation().toExternalForm();
@@ -297,7 +292,7 @@ public final class EsigateServer {
 
     /**
      * Check if server is started.
-     * 
+     *
      * @return true if started.
      */
     public static boolean isStarted() {
@@ -319,7 +314,7 @@ public final class EsigateServer {
      */
     private static void usage() {
         StringBuffer usageText = new StringBuffer();
-        usageText.append("Usage: java -Desigate.config=esigate.properties -jar esigate-server.jar [start|stop]\n\t");
+        usageText.append("Usage: java -D" + PROPERTY_PREFIX + "config=esigate.properties -jar esigate-server.jar [start|stop]\n\t");
         usageText.append("start    Start the server (default)\n\t");
         usageText.append("stop     Stop the server gracefully\n\t");
 
