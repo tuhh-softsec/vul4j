@@ -119,7 +119,7 @@ public final class EsigateServer {
             configFile = System.getProperty(PROPERTY_PREFIX + "config", "server.properties");
             LOG.info("Loading server configuration from " + configFile);
 
-            try (InputStream is = new FileInputStream(configFile);) {
+            try (InputStream is = new FileInputStream(configFile)) {
                 serverProperties.load(is);
             }
 
@@ -315,11 +315,12 @@ public final class EsigateServer {
     }
 
     /**
-     * Display usage informations.
+     * Display usage information.
      */
     private static void usage() {
         StringBuffer usageText = new StringBuffer();
-        usageText.append("Usage: java -Desigate.config=esigate.properties -jar esigate-server.jar [start|stop]\n\t");
+        usageText.append("Usage: java -D" + PROPERTY_PREFIX
+                + "config=esigate.properties -jar esigate-server.jar [start|stop]\n\t");
         usageText.append("start    Start the server (default)\n\t");
         usageText.append("stop     Stop the server gracefully\n\t");
 
