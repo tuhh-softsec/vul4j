@@ -310,7 +310,7 @@ public final class EsigateServer {
     }
 
     /**
-     * Display usage informations.
+     * Display usage information.
      */
     private static void usage() {
         StringBuffer usageText = new StringBuffer();
