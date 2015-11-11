@@ -29,11 +29,11 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
+import de.intevation.lada.BaseTest;
 import de.intevation.lada.test.stamm.Stammdaten;
 
 
@@ -231,11 +231,9 @@ public class LadaStammTest extends BaseTest {
         stammdatenTest.getById(baseUrl, "verwaltungseinheit", "09575134", testProtocol);
     }
 
-    //TODO: The location tests fail as there is no authentication information
-    //available for the server.
-    //The location service is moved to the "land"-services in future version.
+    /* TODO: The location service is moved to the "land"-services in
+       future version. */
     @Test
-    @Ignore
     @RunAsClient
     public final void testLocation1CreateService(@ArquillianResource URL baseUrl)
     throws Exception {
@@ -259,8 +257,10 @@ public class LadaStammTest extends BaseTest {
                 "\"verwaltungseinheitId\":\"06611000\",\"otyp\":\"Z\"," +
                 "\"koordinatenartId\":5}";
 
-            Response response = target.request().post(
-                    Entity.entity(newObj, MediaType.APPLICATION_JSON));
+            Response response = target.request()
+                .header("X-SHIB-user", BaseTest.TEST_USER)
+                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .post(Entity.entity(newObj, MediaType.APPLICATION_JSON));
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader fromServiceReader =
@@ -289,7 +289,6 @@ public class LadaStammTest extends BaseTest {
      * @param baseUrl The url pointing to the test deployment.
      */
     @Test
-    @Ignore
     @RunAsClient
     public final void testLocation2UpdateService(@ArquillianResource URL baseUrl)
     throws Exception {
@@ -306,7 +305,10 @@ public class LadaStammTest extends BaseTest {
                 client.target(baseUrl + "location/" + createdOrtId);
             prot.addInfo("locationId", createdOrtId);
             /* Request a kommentar with the id saved when created a kommentar*/
-            Response response = target.request().get();
+            Response response = target.request()
+                .header("X-SHIB-user", BaseTest.TEST_USER)
+                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .get();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader reader = Json.createReader(new StringReader(entity));
@@ -319,8 +321,10 @@ public class LadaStammTest extends BaseTest {
             prot.addInfo("updated to", "Neuerer Ort");
             /* Send the updated kommentar via put reauest*/
             WebTarget putTarget = client.target(baseUrl + "location/" + createdOrtId);
-            Response updated = putTarget.request().put(
-                Entity.entity(updatedEntity, MediaType.APPLICATION_JSON));
+            Response updated = putTarget.request()
+                .header("X-SHIB-user", BaseTest.TEST_USER)
+                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .put(Entity.entity(updatedEntity, MediaType.APPLICATION_JSON));
             /* Try to parse the response*/
             JsonReader updatedReader = Json.createReader(
                 new StringReader(updated.readEntity(String.class)));
@@ -341,7 +345,6 @@ public class LadaStammTest extends BaseTest {
     }
 
     @Test
-    @Ignore
     @RunAsClient
     public final void testLocation3DeleteService(@ArquillianResource URL baseUrl)
     throws Exception {
@@ -358,7 +361,10 @@ public class LadaStammTest extends BaseTest {
                 client.target(baseUrl + "location/" + createdOrtId);
             prot.addInfo("locationId", createdOrtId);
             /* Delete the object with the saved id*/
-            Response response = target.request().delete();
+            Response response = target.request()
+                .header("X-SHIB-user", BaseTest.TEST_USER)
+                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+                .delete();
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader reader = Json.createReader(new StringReader(entity));
