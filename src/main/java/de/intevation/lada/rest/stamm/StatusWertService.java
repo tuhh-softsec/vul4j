@@ -23,12 +23,20 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.log4j.Logger;
+
+import de.intevation.lada.model.bund.StatusProtokoll;
+import de.intevation.lada.model.land.LMessung;
+import de.intevation.lada.model.stamm.StatusErreichbar;
+import de.intevation.lada.model.stamm.StatusKombi;
+import de.intevation.lada.model.stamm.StatusReihenfolge;
 import de.intevation.lada.model.stamm.StatusWert;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.auth.UserInfo;
+import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.Response;
@@ -61,6 +69,8 @@ import de.intevation.lada.util.rest.Response;
 @RequestScoped
 public class StatusWertService {
 
+    @Inject
+    private Logger logger = Logger.getLogger(StatusWertService.class);
     /**
      * The data repository granting read access.
      */
@@ -122,8 +132,37 @@ public class StatusWertService {
 
     private List<StatusWert> getReachable(int messungsId, UserInfo user) {
         List<StatusWert> list = new ArrayList<StatusWert>();
-        // TODO get reachable status values from db using the current status and
-        // the user info.
+        LMessung messung =
+            defaultRepo.getByIdPlain(LMessung.class, messungsId, "land");
+        StatusProtokoll status = defaultRepo.getByIdPlain(
+            StatusProtokoll.class,
+            messung.getStatus(),
+            "land");
+        boolean allowed = false;
+        for (int i = 0; i < user.getFunktionen().size(); i++) {
+            if (user.getFunktionen().get(i) >= status.getStatusStufe()) {
+                allowed = true;
+                break;
+            }
+        }
+        if (!allowed) {
+            return list;
+        }
+        QueryBuilder<StatusErreichbar> errFilter =
+            new QueryBuilder<StatusErreichbar>(
+                defaultRepo.entityManager("stamm"),
+                StatusErreichbar.class);
+        errFilter.and("curStufe", status.getStatusStufe());
+        errFilter.and("curWert", status.getStatusWert());
+        List<StatusErreichbar> erreichbare = defaultRepo.filterPlain(errFilter.getQuery(), "stamm");
+        QueryBuilder<StatusWert> werteFilter =
+            new QueryBuilder<StatusWert>(
+                defaultRepo.entityManager("stamm"),
+                StatusWert.class);
+        for (int i = 0; i < erreichbare.size(); i++) {
+            werteFilter.or("id", erreichbare.get(i).getWertId());
+        }
+        list = defaultRepo.filterPlain(werteFilter.getQuery(), "stamm");
         return list;
     }
 }
