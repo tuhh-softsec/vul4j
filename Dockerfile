@@ -55,13 +55,14 @@ RUN ln -s /usr/share/java/postgis-jdbc-2.1.4.jar \
        $JBOSS_HOME/modules/org/postgres/main/
 RUN ln -s /usr/share/java/jts-1.11.jar \
        $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/
+
 RUN curl \
     http://www.hibernatespatial.org/repository/org/hibernate/hibernate-spatial/4.3/hibernate-spatial-4.3.jar > \
     $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/hibernate-spatial-4.3.jar
 
-RUN cp wildfly/postgres-module.xml \
+RUN ln -s $PWD/wildfly/postgres-module.xml \
        $JBOSS_HOME/modules/org/postgres/main/module.xml
-RUN cp wildfly/hibernate-module.xml \
+RUN ln -fs $PWD/wildfly/hibernate-module.xml \
        $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/module.xml
 
 RUN wildfly/execute.sh
