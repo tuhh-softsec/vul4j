@@ -284,7 +284,14 @@ public class StatusService {
         }
         LMessung messung = defaultRepo.getByIdPlain(
             LMessung.class, status.getMessungsId(), "land");
-        Response response = defaultRepo.create(status, "land");
+        LStatusProtokoll statusNew = new LStatusProtokoll();
+        statusNew.setDatum(status.getDatum());
+        statusNew.setErzeuger(status.getErzeuger());
+        statusNew.setMessungsId(status.getMessungsId());
+        statusNew.setStatusStufe(status.getStatusStufe());
+        statusNew.setStatusWert(status.getStatusWert());
+        statusNew.setText(status.getText());
+        Response response = defaultRepo.create(statusNew, "land");
         LStatusProtokoll created = (LStatusProtokoll)response.getData();
         messung.setStatus(created.getId());
         defaultRepo.update(messung, "land");

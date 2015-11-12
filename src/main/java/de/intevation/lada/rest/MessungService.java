@@ -248,7 +248,6 @@ public class MessungService {
         status.setMessungsId(((LMessung)created.getData()).getId());
         LProbe probe =
             defaultRepo.getByIdPlain(LProbe.class, ret.getProbeId(), "land");
-        //TODO set the correct value. use the probe to get the "erzeuger"!?
         status.setErzeuger(probe.getMstId());
         status.setStatusStufe(1);
         status.setStatusWert(0);
@@ -337,7 +336,6 @@ public class MessungService {
      *
      * @return Response object.
      */
-    @SuppressWarnings("unchecked")
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
