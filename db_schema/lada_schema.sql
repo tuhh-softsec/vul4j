@@ -847,7 +847,19 @@ CREATE TABLE auth (
     id integer NOT NULL,
     ldap_group character varying(40) NOT NULL,
     netzbetreiber_id character varying(2),
-    mst_id character varying(5)
+    mst_id character varying(5),
+    labor_mst_id character varying(5),
+    funktion_id smallint
+);
+
+
+--
+-- Name: auth_funktion; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+--
+
+CREATE TABLE auth_funktion (
+    id smallint NOT NULL,
+    funktion character varying(40)
 );
 
 
@@ -868,6 +880,55 @@ CREATE SEQUENCE auth_id_seq
 --
 
 ALTER SEQUENCE auth_id_seq OWNED BY auth.id;
+
+
+--
+-- Name: auth_id_seq1; Type: SEQUENCE; Schema: stammdaten; Owner: -
+--
+
+CREATE SEQUENCE auth_id_seq1
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: auth_id_seq1; Type: SEQUENCE OWNED BY; Schema: stammdaten; Owner: -
+--
+
+ALTER SEQUENCE auth_id_seq1 OWNED BY auth.id;
+
+
+--
+-- Name: auth_lst_umw; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+--
+
+CREATE TABLE auth_lst_umw (
+    id integer NOT NULL,
+    lst_id character varying(5),
+    umw_id character varying(3)
+);
+
+
+--
+-- Name: auth_lst_umw_id_seq; Type: SEQUENCE; Schema: stammdaten; Owner: -
+--
+
+CREATE SEQUENCE auth_lst_umw_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: auth_lst_umw_id_seq; Type: SEQUENCE OWNED BY; Schema: stammdaten; Owner: -
+--
+
+ALTER SEQUENCE auth_lst_umw_id_seq OWNED BY auth_lst_umw.id;
 
 
 --
@@ -1683,6 +1744,44 @@ ALTER SEQUENCE staat_id_seq OWNED BY staat.id;
 
 
 --
+-- Name: status_kombi; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+--
+
+CREATE TABLE status_kombi (
+    id integer NOT NULL,
+    stufe_id integer,
+    wert_id integer
+);
+
+
+--
+-- Name: status_reihenfolge; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+--
+
+CREATE TABLE status_reihenfolge (
+    id integer NOT NULL,
+    von_id integer,
+    zu_id integer
+);
+
+
+--
+-- Name: status_erreichbar; Type: VIEW; Schema: stammdaten; Owner: -
+--
+
+CREATE VIEW status_erreichbar AS
+ SELECT DISTINCT k.wert_id,
+    j.wert_id AS cur_wert,
+    j.stufe_id AS cur_stufe
+   FROM (status_kombi k
+     JOIN ( SELECT r.zu_id,
+            kom.wert_id,
+            kom.stufe_id
+           FROM (status_reihenfolge r
+             JOIN status_kombi kom ON ((kom.id = r.von_id)))) j ON ((j.zu_id = k.id)));
+
+
+--
 -- Name: status_stufe; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
 --
 
@@ -2260,11 +2359,27 @@ ALTER TABLE ONLY zusatz_wert
 SET search_path = stammdaten, pg_catalog;
 
 --
+-- Name: auth_lst_umw_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_lst_umw
+    ADD CONSTRAINT auth_lst_umw_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: auth_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY auth
     ADD CONSTRAINT auth_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_role_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_funktion
+    ADD CONSTRAINT auth_role_pkey PRIMARY KEY (id);
 
 
 --
@@ -2417,6 +2532,22 @@ ALTER TABLE ONLY probenart
 
 ALTER TABLE ONLY staat
     ADD CONSTRAINT staat_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: status_kombi_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY status_kombi
+    ADD CONSTRAINT status_kombi_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: status_reihenfolge_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY status_reihenfolge
+    ADD CONSTRAINT status_reihenfolge_pkey PRIMARY KEY (id);
 
 
 --
@@ -2965,6 +3096,38 @@ ALTER TABLE ONLY zusatz_wert
 SET search_path = stammdaten, pg_catalog;
 
 --
+-- Name: auth_funktion_fkey; Type: FK CONSTRAINT; Schema: stammdaten; Owner: -
+--
+
+ALTER TABLE ONLY auth
+    ADD CONSTRAINT auth_funktion_fkey FOREIGN KEY (funktion_id) REFERENCES auth_funktion(id);
+
+
+--
+-- Name: auth_labor_fkey; Type: FK CONSTRAINT; Schema: stammdaten; Owner: -
+--
+
+ALTER TABLE ONLY auth
+    ADD CONSTRAINT auth_labor_fkey FOREIGN KEY (labor_mst_id) REFERENCES mess_stelle(id);
+
+
+--
+-- Name: auth_lst_umw_lst_fkey; Type: FK CONSTRAINT; Schema: stammdaten; Owner: -
+--
+
+ALTER TABLE ONLY auth_lst_umw
+    ADD CONSTRAINT auth_lst_umw_lst_fkey FOREIGN KEY (lst_id) REFERENCES mess_stelle(id);
+
+
+--
+-- Name: auth_lst_umw_umw_fkey; Type: FK CONSTRAINT; Schema: stammdaten; Owner: -
+--
+
+ALTER TABLE ONLY auth_lst_umw
+    ADD CONSTRAINT auth_lst_umw_umw_fkey FOREIGN KEY (umw_id) REFERENCES umwelt(id);
+
+
+--
 -- Name: auth_mst_id_fkey; Type: FK CONSTRAINT; Schema: stammdaten; Owner: -
 --
 
@@ -3058,6 +3221,38 @@ ALTER TABLE ONLY proben_zusatz
 
 ALTER TABLE ONLY staat
     ADD CONSTRAINT staat_kda_id_fkey FOREIGN KEY (kda_id) REFERENCES koordinaten_art(id);
+
+
+--
+-- Name: status_kombi_stufe_id_fkey; Type: FK CONSTRAINT; Schema: stammdaten; Owner: -
+--
+
+ALTER TABLE ONLY status_kombi
+    ADD CONSTRAINT status_kombi_stufe_id_fkey FOREIGN KEY (stufe_id) REFERENCES status_stufe(id);
+
+
+--
+-- Name: status_kombi_wert_id_fkey; Type: FK CONSTRAINT; Schema: stammdaten; Owner: -
+--
+
+ALTER TABLE ONLY status_kombi
+    ADD CONSTRAINT status_kombi_wert_id_fkey FOREIGN KEY (wert_id) REFERENCES status_wert(id);
+
+
+--
+-- Name: status_reihenfolge_von_id_fkey; Type: FK CONSTRAINT; Schema: stammdaten; Owner: -
+--
+
+ALTER TABLE ONLY status_reihenfolge
+    ADD CONSTRAINT status_reihenfolge_von_id_fkey FOREIGN KEY (von_id) REFERENCES status_kombi(id);
+
+
+--
+-- Name: status_reihenfolge_zu_id_fkey; Type: FK CONSTRAINT; Schema: stammdaten; Owner: -
+--
+
+ALTER TABLE ONLY status_reihenfolge
+    ADD CONSTRAINT status_reihenfolge_zu_id_fkey FOREIGN KEY (zu_id) REFERENCES status_kombi(id);
 
 
 --
