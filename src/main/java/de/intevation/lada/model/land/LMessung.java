@@ -45,6 +45,9 @@ public class LMessung extends Messung {
     private Timestamp treeModified;
 
     @Transient
+    private Boolean statusEdit;
+
+    @Transient
     private Timestamp parentModified;
 
     public LMessung() {
@@ -64,6 +67,14 @@ public class LMessung extends Messung {
 
     public void setTreeModified(Timestamp treeModified) {
         this.treeModified = treeModified;
+    }
+
+    public Boolean getStatusEdit() {
+        return statusEdit;
+    }
+
+    public void setStatusEdit(Boolean statusEdit) {
+        this.statusEdit = statusEdit;
     }
 
     public Timestamp getParentModified() {
@@ -99,4 +110,5 @@ public class LMessung extends Messung {
     }
 
     public void setMessungsIdAlt(Integer messungsIdAlt) {}
+
 }

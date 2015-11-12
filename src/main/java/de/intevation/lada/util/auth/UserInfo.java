@@ -20,6 +20,8 @@ public class UserInfo {
     private List<String> messstellen;
     private List<String> netzbetreiber;
     private List<String> roles;
+    private List<Integer> funktionen;
+    private Integer statusRole;
 
     public UserInfo() {
         messstellen = new ArrayList<String>();
@@ -80,5 +82,44 @@ public class UserInfo {
      */
     public void setRoles(List<String> roles) {
         this.roles = roles;
+    }
+
+    /**
+     * @return the funktionen
+     */
+    public List<Integer> getFunktionen() {
+        return this.funktionen;
+    }
+
+    /**
+     * @return the funktionen
+     */
+    public List<String> getFunktionenAsString() {
+        List<String> retVal = new ArrayList<String>();
+        for (int i = 0; i < this.funktionen.size(); i++) {
+            retVal.add(this.funktionen.get(i).toString());
+        }
+        return retVal;
+    }
+
+    /**
+     * @param funktionen the funktionen to set
+     */
+    public void setFunktionen(List<Integer> funktionen) {
+        this.funktionen = funktionen;
+    }
+
+    /**
+     * @return the statusRole
+     */
+    public Integer getStatusRole() {
+        return statusRole;
+    }
+
+    /**
+     * @param statusRole the statusRole to set
+     */
+    public void setStatusRole(Integer statusRole) {
+        this.statusRole = statusRole;
     }
 }
