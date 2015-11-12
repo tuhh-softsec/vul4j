@@ -9,7 +9,6 @@ package de.intevation.lada.rest;
 
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -30,11 +29,10 @@ import javax.ws.rs.core.UriInfo;
 import de.intevation.lada.lock.LockConfig;
 import de.intevation.lada.lock.LockType;
 import de.intevation.lada.lock.ObjectLocker;
-import de.intevation.lada.model.land.LKommentarM;
 import de.intevation.lada.model.land.LMessung;
-import de.intevation.lada.model.land.LMesswert;
-import de.intevation.lada.model.land.MessungTranslation;
+import de.intevation.lada.model.land.LProbe;
 import de.intevation.lada.model.land.LStatusProtokoll;
+import de.intevation.lada.model.land.MessungTranslation;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -248,10 +246,12 @@ public class MessungService {
         LStatusProtokoll status = new LStatusProtokoll();
         status.setDatum(new Timestamp(new Date().getTime()));
         status.setMessungsId(((LMessung)created.getData()).getId());
+        LProbe probe =
+            defaultRepo.getByIdPlain(LProbe.class, ret.getProbeId(), "land");
         //TODO set the correct value. use the probe to get the "erzeuger"!?
-        status.setErzeuger("11010");
+        status.setErzeuger(probe.getMstId());
         status.setStatusStufe(1);
-        status.setStatusWert(1);
+        status.setStatusWert(0);
         defaultRepo.create(status, "land");
         ret.setStatus(status.getId());
         defaultRepo.update(ret, "land");
