@@ -26,14 +26,20 @@ public class Auth implements Serializable {
     @Id
     private Integer id;
 
+    @Column(name="funktion_id")
+    private Integer funktionId;
+
+    @Column(name="labor_mst_id")
+    private String laborMstId;
+
     @Column(name="ldap_group")
     private String ldapGroup;
 
     @Column(name="mst_id")
-    private String messStelle;
+    private String mstId;
 
     @Column(name="netzbetreiber_id")
-    private String netzBetreiber;
+    private String netzbetreiberId;
 
     public Auth() {
     }
@@ -46,6 +52,22 @@ public class Auth implements Serializable {
         this.id = id;
     }
 
+    public Integer getFunktionId() {
+        return this.funktionId;
+    }
+
+    public void setFunktionId(Integer funktionId) {
+        this.funktionId = funktionId;
+    }
+
+    public String getLaborMstId() {
+        return this.laborMstId;
+    }
+
+    public void setLaborMstId(String laborMstId) {
+        this.laborMstId = laborMstId;
+    }
+
     public String getLdapGroup() {
         return this.ldapGroup;
     }
@@ -54,20 +76,20 @@ public class Auth implements Serializable {
         this.ldapGroup = ldapGroup;
     }
 
-    public String getMessStelle() {
-        return this.messStelle;
+    public String getMstId() {
+        return this.mstId;
     }
 
-    public void setMessStelle(String messStelle) {
-        this.messStelle = messStelle;
+    public void setMstId(String mstId) {
+        this.mstId = mstId;
     }
 
-    public String getNetzBetreiber() {
-        return this.netzBetreiber;
+    public String getNetzbetreiberId() {
+        return this.netzbetreiberId;
     }
 
-    public void setNetzBetreiber(String netzBetreiber) {
-        this.netzBetreiber = netzBetreiber;
+    public void setNetzbetreiberId(String netzbetreiberId) {
+        this.netzbetreiberId = netzbetreiberId;
     }
 
 }
