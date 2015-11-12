@@ -32,6 +32,7 @@ import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
+import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
@@ -192,11 +193,37 @@ public class StatusService {
         ) {
             return new Response(false, 699, null);
         }
+        UserInfo userInfo = authorization.getInfo(request);
+        LMessung messung = defaultRepo.getByIdPlain(
+            LMessung.class, status.getMessungsId(), "land");
+        LStatusProtokoll currentStatus = defaultRepo.getByIdPlain(
+            LStatusProtokoll.class, messung.getStatus(), "land");
+        boolean next = false;
+        boolean change = false;
+        for (int i = 0; i < userInfo.getFunktionen().size(); i++) {
+            if (userInfo.getFunktionen().get(i) > currentStatus.getStatusStufe()) {
+                next = true;
+                change = false;
+                break;
+            }
+            else if (userInfo.getFunktionen().get(i) == currentStatus.getStatusStufe()) {
+                change = true;
+            }
+        }
+        if ((change || next) && status.getStatusWert() == 4) {
+            status.setStatusStufe(1);
+        }
+        else if (change) {
+            status.setStatusStufe(currentStatus.getStatusStufe());
+        }
+        else if (next) {
+            status.setStatusStufe(currentStatus.getStatusStufe() + 1);
+        }
+        else {
+            return new Response(false, 699, null);
+        }
         Response response = defaultRepo.create(status, "land");
         LStatusProtokoll created = (LStatusProtokoll)response.getData();
-        Response messungResponse = defaultRepo.getById(
-            LMessung.class, status.getMessungsId(), "land");
-        LMessung messung = (LMessung)messungResponse.getData();
         messung.setStatus(created.getId());
         defaultRepo.update(messung, "land");
         /* Persist the new object*/
@@ -247,13 +274,24 @@ public class StatusService {
         if (lock.isLocked(status)) {
             return new Response(false, 697, null);
         }
-        Response response = defaultRepo.update(status, "land");
-        Response updated = defaultRepo.getById(
-            LStatusProtokoll.class,
-            ((LStatusProtokoll)response.getData()).getId(), "land");
+        if (status.getStatusWert() == 0) {
+            return new Response(false, 699, null);
+        }
+
+        UserInfo userInfo = authorization.getInfo(request);
+        if (!userInfo.getMessstellen().contains(status.getErzeuger())) {
+            return new Response(false, 699, null);
+        }
+        LMessung messung = defaultRepo.getByIdPlain(
+            LMessung.class, status.getMessungsId(), "land");
+        Response response = defaultRepo.create(status, "land");
+        LStatusProtokoll created = (LStatusProtokoll)response.getData();
+        messung.setStatus(created.getId());
+        defaultRepo.update(messung, "land");
+
         return authorization.filter(
             request,
-            updated,
+            response,
             LStatusProtokoll.class);
     }
 
