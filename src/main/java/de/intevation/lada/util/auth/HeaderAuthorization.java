@@ -21,7 +21,9 @@ import org.apache.log4j.Logger;
 
 import de.intevation.lada.model.land.LMessung;
 import de.intevation.lada.model.land.LProbe;
+import de.intevation.lada.model.land.LStatusProtokoll;
 import de.intevation.lada.model.stamm.Auth;
+import de.intevation.lada.model.stamm.AuthLstUmw;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
@@ -236,17 +238,25 @@ public class HeaderAuthorization implements Authorization {
         List<Auth> auth = (List<Auth>)response.getData();
         List<String> netzbetreiber = new ArrayList<String>();
         List<String> messstellen = new ArrayList<String>();
+        List<Integer> funktionen = new ArrayList<Integer>();
         for (Auth a : auth) {
-            if (a.getNetzBetreiber() != null) {
-                netzbetreiber.add(a.getNetzBetreiber());
+            if (a.getNetzbetreiberId() != null) {
+                netzbetreiber.add(a.getNetzbetreiberId());
             }
-            if (a.getMessStelle() != null) {
-                messstellen.add(a.getMessStelle());
+            if (a.getMstId() != null) {
+                messstellen.add(a.getMstId());
+            }
+            if (a.getLaborMstId() != null) {
+                messstellen.add(a.getLaborMstId());
+            }
+            if (a.getFunktionId() != null) {
+                funktionen.add(a.getFunktionId());
             }
         }
         UserInfo userInfo = new UserInfo();
         userInfo.setNetzbetreiber(netzbetreiber);
         userInfo.setMessstellen(messstellen);
+        userInfo.setFunktionen(funktionen);
         return userInfo;
     }
 
@@ -509,7 +519,42 @@ public class HeaderAuthorization implements Authorization {
         else {
             messung.setOwner(false);
         }
-        messung.setReadonly(messung.getFertig());
+        if (messung.getStatus() == null) {
+            messung.setReadonly(false);
+        }
+        else {
+            LStatusProtokoll status = repository.getByIdPlain(
+                LStatusProtokoll.class,
+                messung.getStatus(),
+                "land");
+            messung.setReadonly(
+                status.getStatusWert() != 0 && status.getStatusWert() != 4);
+        }
+
+        boolean statusEdit = false;
+        if (userInfo.getFunktionen().contains(3)) {
+            QueryBuilder<AuthLstUmw> lstFilter = new QueryBuilder<AuthLstUmw>(
+                repository.entityManager("stamm"),
+                AuthLstUmw.class);
+            lstFilter.or("lstId", userInfo.getMessstellen());
+            List<AuthLstUmw> lsts =
+                repository.filterPlain(lstFilter.getQuery(), "stamm");
+            for (int i = 0; i < lsts.size(); i++) {
+                if (lsts.get(i).getUmwId().equals(probe.getUmwId())) {
+                    statusEdit = true;
+                }
+            }
+        }
+        else if (userInfo.getFunktionen().contains(2) &&
+            userInfo.getNetzbetreiber().contains(probe.getNetzbetreiberId())) {
+            statusEdit = true;
+        }
+        else if (userInfo.getFunktionen().contains(1) &&
+            userInfo.getMessstellen().contains(probe.getMstId())) {
+            statusEdit = true;
+        }
+        messung.setStatusEdit(statusEdit);
+
         return messung;
     }
 
@@ -527,14 +572,20 @@ public class HeaderAuthorization implements Authorization {
                 manager,
                 LMessung.class);
         builder.and("probeId", probeId);
-        builder.and("fertig", true);
         Response response = repository.filter(builder.getQuery(), "land");
         @SuppressWarnings("unchecked")
         List<LMessung> messungen = (List<LMessung>) response.getData();
-        if (messungen.isEmpty()) {
-            return false;
+        for (int i = 0; i < messungen.size(); i++) {
+            if (messungen.get(i).getStatus() == null) {
+                return false;
+            }
+            LStatusProtokoll status = repository.getByIdPlain(
+                LStatusProtokoll.class, messungen.get(i).getStatus(), "land");
+            if (status.getStatusWert() != 0 && status.getStatusWert() != 4) {
+                return true;
+            }
         }
-        return true;
+        return false;
     }
 
     /**
