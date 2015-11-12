@@ -7,6 +7,8 @@
  */
 package de.intevation.lada.util.data;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
@@ -29,7 +31,15 @@ public interface Repository {
 
     public <T> Response filter(CriteriaQuery<T> filter, String dataSource);
 
+    public <T> List<T> filterPlain(CriteriaQuery<T> filter, String dataSource);
+
     public <T> Response filter(
+        CriteriaQuery<T> filter,
+        int size,
+        int start,
+        String dataSource);
+
+    public <T> List<T> filterPlain(
         CriteriaQuery<T> filter,
         int size,
         int start,
@@ -37,7 +47,11 @@ public interface Repository {
 
     public <T> Response getAll(Class<T> clazz, String dataSource);
 
+    public <T> List<T> getAllPlain(Class<T> clazz, String dataSource);
+
     public <T> Response getById(Class<T> clazz, Object id, String dataSource);
+
+    public <T> T getByIdPlain(Class<T> clazz, Object id, String dataSource);
 
     public Query queryFromString(String sql, String dataSource);
 

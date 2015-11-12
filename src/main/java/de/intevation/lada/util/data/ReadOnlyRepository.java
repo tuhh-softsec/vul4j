@@ -151,4 +151,33 @@ public class ReadOnlyRepository implements Repository {
     public EntityManager entityManager(String dataSource) {
         return transaction.entityManager(dataSource);
     }
+
+    @Override
+    public <T> List<T> filterPlain(CriteriaQuery<T> filter, String dataSource) {
+        return transaction.entityManager(dataSource).createQuery(filter).getResultList();
+    }
+
+    @Override
+    public <T> List<T> filterPlain(CriteriaQuery<T> filter, int size,
+            int start, String dataSource) {
+        List<T> result =
+            transaction.entityManager(dataSource).createQuery(filter).getResultList();
+        if (size > 0 && start > -1) {
+            return result.subList(start, size + start);
+        }
+        return result;
+    }
+
+    @Override
+    public <T> List<T> getAllPlain(Class<T> clazz, String dataSource) {
+        EntityManager manager = transaction.entityManager(dataSource);
+        QueryBuilder<T> builder =
+            new QueryBuilder<T>(manager, clazz);
+        return manager.createQuery(builder.getQuery()).getResultList();
+    }
+
+    @Override
+    public <T> T getByIdPlain(Class<T> clazz, Object id, String dataSource) {
+        return transaction.entityManager(dataSource).find(clazz, id);
+    }
 }
