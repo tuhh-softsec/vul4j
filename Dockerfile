@@ -64,6 +64,7 @@ RUN ln -s $PWD/wildfly/postgres-module.xml \
        $JBOSS_HOME/modules/org/postgres/main/module.xml
 RUN ln -fs $PWD/wildfly/hibernate-module.xml \
        $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/module.xml
+RUN ln -s $PWD/wildfly/standalone.conf $JBOSS_HOME/bin/
 
 RUN wildfly/execute.sh
 
