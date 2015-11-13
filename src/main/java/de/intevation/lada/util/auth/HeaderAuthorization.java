@@ -150,12 +150,7 @@ public class HeaderAuthorization implements Authorization {
             }
             else if (method == RequestMethod.PUT ||
                      method == RequestMethod.DELETE) {
-                Response messResponse =
-                    repository.getById(LMessung.class, messung.getId(), "land");
-                LMessung messungDb = (LMessung)messResponse.getData();
-                boolean fertigChanged =
-                    !messung.getFertig().equals(messungDb.getFertig());
-                return (!messung.getFertig() || fertigChanged) &&
+                return !this.isMessungReadOnly(messung) &&
                     getAuthorization(userInfo, probe);
             }
         }
@@ -195,7 +190,7 @@ public class HeaderAuthorization implements Authorization {
                             messung.getProbeId(),
                             "land");
                     LProbe probe = (LProbe)pResponse.getData();
-                    return !messung.getFertig() &&
+                    return !this.isMessungReadOnly(messung) &&
                         getAuthorization(userInfo, probe);
                 }
             }
@@ -356,7 +351,7 @@ public class HeaderAuthorization implements Authorization {
                 else {
                     owner = false;
                 }
-                readOnly = messung.getFertig();
+                readOnly = this.isMessungReadOnly(messung);
             }
 
             Method setOwner = clazz.getMethod("setOwner", boolean.class);
@@ -601,5 +596,16 @@ public class HeaderAuthorization implements Authorization {
             return getAuthorization(userInfo, (LProbe)data);
         }
         return false;
+    }
+
+    private boolean isMessungReadOnly(LMessung messung) {
+        if (messung.getStatus() == null) {
+            return false;
+        }
+        LStatusProtokoll status = repository.getByIdPlain(
+            LStatusProtokoll.class,
+            messung.getStatus(),
+            "land");
+        return (status.getStatusWert() != 0 && status.getStatusWert() != 4);
     }
 }
