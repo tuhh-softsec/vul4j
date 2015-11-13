@@ -134,6 +134,9 @@ public class StatusWertService {
         List<StatusWert> list = new ArrayList<StatusWert>();
         LMessung messung =
             defaultRepo.getByIdPlain(LMessung.class, messungsId, "land");
+        if (messung.getStatus() == null) {
+            return defaultRepo.getAllPlain(StatusWert.class, "stamm");
+        }
         StatusProtokoll status = defaultRepo.getByIdPlain(
             StatusProtokoll.class,
             messung.getStatus(),
