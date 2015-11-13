@@ -52,6 +52,11 @@ Zum Aktualisieren der Anwendung genügt es, das WAR-Archiv zu aktualisieren.
 
 Die Anwendung ist dann unter dem Pfad "/lada-server-$VERSION" erreichbar.
 
+Um zu garantieren, dass die von den REST-Schnittstellen ausgelieferten
+Zeitstempel sich korrekt auf UTC beziehen, muss die entsprechende System-
+Property `user.timezone=UTC` vor dem Start des Application-Servers gesetzt
+werden (siehe `wildfly/standalone.conf`).
+
 Tests
 -----
 Die auf Arquillian basierenden Tests erfordern einen vollständig konfigurierten
