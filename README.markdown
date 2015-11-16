@@ -57,6 +57,13 @@ Zeitstempel sich korrekt auf UTC beziehen, muss die entsprechende System-
 Property `user.timezone=UTC` vor dem Start des Application-Servers gesetzt
 werden (siehe `wildfly/standalone.conf`).
 
+Das PostgreSQL-Datenbank-Backend des Lada-Servers kann als Nutzer `postgres`
+(bzw. als PostgreSQL-Superuser) mit dem Skript `db_schema/setup-db.sh`
+eingerichtet werden.
+
+Details zur Installation können den Dateien `Dockerfile` und
+`db_schema/Dockerfile` entnommen werden.
+
 Tests
 -----
 Die auf Arquillian basierenden Tests erfordern einen vollständig konfigurierten
