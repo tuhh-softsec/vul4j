@@ -176,12 +176,13 @@ public class zOSJobSubmitter extends Builder {
             try
             {
                 FilePath savedOutput = new FilePath(build.getWorkspace(),
-                        String.format("[%s - %s] %s - %s [%s].log",
-                                build.getParent().getDisplayName(),
-                                build.getId(),
-                                _server,
-                                zFTPConnector.getJobID(),
-                                printableCC
+                        String.format("%s [%s] (%s - %s) %s - %s.log",
+                            zFTPConnector.getJobName(),
+	                        printableCC,
+                            _server,
+	                        zFTPConnector.getJobID(),
+	                        build.getParent().getDisplayName(),
+                            build.getId()
                         ));
                 outputStream.writeTo(savedOutput.write());
                 outputStream.close();

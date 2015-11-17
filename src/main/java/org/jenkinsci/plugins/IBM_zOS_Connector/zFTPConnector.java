@@ -51,6 +51,10 @@ public class zFTPConnector
      */
     private String jobID;
     /**
+     * Jobname in JES.
+     */
+    private String jobName;
+    /**
      * Job's MaxCC.
      */
     private String jobCC;
@@ -230,6 +234,11 @@ public class zFTPConnector
     {
         this.waitTime = ((long)waitTime) * 60 * 1000; // Minutes to milliseconds.
 
+	    // Clean-up
+	    this.jobID = "";
+	    this.jobName = "";
+	    this.jobCC = "";
+
         // Verify connection.
         if(!this.FTPClient.isConnected())
             if(!this.logon())
@@ -393,10 +402,10 @@ public class zFTPConnector
 
         this.FTPClient.enterLocalPassiveMode();
 
-        Pattern CC = Pattern.compile("\\S+\\s+"+jobID+".* RC=(.*?) .*");
-        Pattern CCUndefined = Pattern.compile("\\S+\\s+"+jobID+".* RC\\s+(\\S+)\\s+.*");
-        Pattern ABEND = Pattern.compile("\\S+\\s+"+jobID+".* ABEND=(.*?)\\s+.*");
-        Pattern JCLERROR = Pattern.compile("\\S+\\s+"+jobID+".* \\(JCL error\\)\\s+.*");
+        Pattern CC = Pattern.compile("(\\S+)\\s+"+jobID+".* RC=(.*?) .*");
+        Pattern CCUndefined = Pattern.compile("(\\S+)\\s+"+jobID+".* RC\\s+(\\S+)\\s+.*");
+        Pattern ABEND = Pattern.compile("(\\S+)\\s+"+jobID+".* ABEND=(.*?)\\s+.*");
+        Pattern JCLERROR = Pattern.compile("(\\S+)\\s+"+jobID+".* \\(JCL error\\)\\s+.*");
 
         // Check RC.
         try
@@ -410,19 +419,23 @@ public class zFTPConnector
                 Matcher JCLERRORMatcher = JCLERROR.matcher(fileName);
 
                 if (JCLERRORMatcher.matches()) {
+	                this.jobName = JCLERRORMatcher.group(1);
                     this.jobCC = "JCL_ERROR";
                     return true;
                 } else {
                     if (ABENDMatcher.matches()) {
-                        this.jobCC = "ABEND_"+ABENDMatcher.group(1);
+	                    this.jobName = ABENDMatcher.group(1);
+                        this.jobCC = "ABEND_"+ABENDMatcher.group(2);
                         return true;
                     } else {
                         if (CCUndefinedMatcher.matches()) {
-                            this.jobCC = CCUndefinedMatcher.group(1).toUpperCase();
+	                        this.jobName = CCUndefinedMatcher.group(1);
+                            this.jobCC = CCUndefinedMatcher.group(2).toUpperCase();
                             return true;
                         } else {
                             if (CCMatcher.matches()) {
-                                this.jobCC = CCMatcher.group(1);
+	                            this.jobName = CCMatcher.group(1);
+                                this.jobCC = CCMatcher.group(2);
                                 return true;
                             }
                         }
@@ -473,6 +486,14 @@ public class zFTPConnector
     public String getJobID() {
         return this.jobID;
     }
+	/**
+	 * Get Jobname.
+	 *
+	 * @return Current <b><code>jobName</code></b>.
+	 */
+	public String getJobName() {
+		return this.jobName;
+	}
     /**
      * Get JobCC.
      *
