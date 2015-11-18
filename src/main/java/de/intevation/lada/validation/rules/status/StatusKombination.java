@@ -46,6 +46,7 @@ public class StatusKombination implements Rule {
         if (result.isEmpty()) {
             Violation violation = new Violation();
             violation.addError("status", 632);
+            return violation;
         }
         return null;
     }
