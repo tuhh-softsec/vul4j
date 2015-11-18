@@ -7,6 +7,8 @@
  */
 package de.intevation.lada.rest;
 
+import java.util.List;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +25,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.log4j.Logger;
+
 import de.intevation.lada.lock.LockConfig;
 import de.intevation.lada.lock.LockType;
 import de.intevation.lada.lock.ObjectLocker;
@@ -38,6 +42,9 @@ import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
+import de.intevation.lada.validation.Validator;
+import de.intevation.lada.validation.Violation;
+import de.intevation.lada.validation.annotation.ValidationConfig;
 
 /**
  * REST service for Status objects.
@@ -77,6 +84,9 @@ import de.intevation.lada.util.rest.Response;
 @RequestScoped
 public class StatusService {
 
+    @Inject
+    private Logger logger = Logger.getLogger(StatusService.class);
+
     /**
      * The data repository granting read/write access.
      */
@@ -97,6 +107,10 @@ public class StatusService {
     @Inject
     @AuthorizationConfig(type=AuthorizationType.HEADER)
     private Authorization authorization;
+
+    @Inject
+    @ValidationConfig(type="Status")
+    private Validator validator;
 
     /**
      * Get all Status objects.
@@ -149,9 +163,20 @@ public class StatusService {
         @Context HttpServletRequest request,
         @PathParam("id") String id
     ) {
+        Response response = defaultRepo.getById(
+            LStatusProtokoll.class,
+            Integer.valueOf(id),
+            "land");
+        LStatusProtokoll status = (LStatusProtokoll)response.getData();
+        Violation violation = validator.validate(status);
+        if (violation.hasErrors() || violation.hasWarnings()) {
+            response.setErrors(violation.getErrors());
+            response.setWarnings(violation.getWarnings());
+        }
+
         return authorization.filter(
             request,
-            defaultRepo.getById(LStatusProtokoll.class, Integer.valueOf(id), "land"),
+            response,
             LStatusProtokoll.class);
     }
 
@@ -227,6 +252,13 @@ public class StatusService {
                 return new Response(false, 699, null);
             }
         }
+        Violation violation = validator.validate(status);
+        if (violation.hasErrors()) {
+            Response response = new Response(false, 604, status);
+            response.setErrors(violation.getErrors());
+            response.setWarnings(violation.getWarnings());
+            return response;
+        }
         Response response = defaultRepo.create(status, "land");
         LStatusProtokoll created = (LStatusProtokoll)response.getData();
         messung.setStatus(created.getId());
@@ -285,6 +317,14 @@ public class StatusService {
         statusNew.setStatusStufe(status.getStatusStufe());
         statusNew.setStatusWert(status.getStatusWert());
         statusNew.setText(status.getText());
+        Violation violation = validator.validate(statusNew);
+        if (violation.hasErrors()) {
+            Response response = new Response(false, 604, statusNew);
+            response.setErrors(violation.getErrors());
+            response.setWarnings(violation.getWarnings());
+            return response;
+        }
+
         Response response = defaultRepo.create(statusNew, "land");
         LStatusProtokoll created = (LStatusProtokoll)response.getData();
         messung.setStatus(created.getId());
