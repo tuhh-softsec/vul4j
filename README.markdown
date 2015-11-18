@@ -52,6 +52,18 @@ Zum Aktualisieren der Anwendung genügt es, das WAR-Archiv zu aktualisieren.
 
 Die Anwendung ist dann unter dem Pfad "/lada-server-$VERSION" erreichbar.
 
+Um zu garantieren, dass die von den REST-Schnittstellen ausgelieferten
+Zeitstempel sich korrekt auf UTC beziehen, muss die entsprechende System-
+Property `user.timezone=UTC` vor dem Start des Application-Servers gesetzt
+werden (siehe `wildfly/standalone.conf`).
+
+Das PostgreSQL-Datenbank-Backend des Lada-Servers kann als Nutzer `postgres`
+(bzw. als PostgreSQL-Superuser) mit dem Skript `db_schema/setup-db.sh`
+eingerichtet werden.
+
+Details zur Installation können den Dateien `Dockerfile` und
+`db_schema/Dockerfile` entnommen werden.
+
 Tests
 -----
 Die auf Arquillian basierenden Tests erfordern einen vollständig konfigurierten
