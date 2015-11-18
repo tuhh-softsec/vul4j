@@ -327,7 +327,22 @@ public class StatusService {
 
         Response response = defaultRepo.create(statusNew, "land");
         LStatusProtokoll created = (LStatusProtokoll)response.getData();
-        messung.setStatus(created.getId());
+        if (status.getStatusWert() == 0) {
+            QueryBuilder<LStatusProtokoll> lastFilter =
+                new QueryBuilder<LStatusProtokoll>(
+                        defaultRepo.entityManager("land"),
+                        LStatusProtokoll.class);
+
+            lastFilter.and("messungsId", status.getMessungsId());
+            lastFilter.orderBy("datum", false);
+            List<LStatusProtokoll> protos =
+                defaultRepo.filterPlain(lastFilter.getQuery(), "land");
+            messung.setStatus(protos.get(protos.size() - 3).getId());
+        }
+        else {
+            messung.setStatus(created.getId());
+        }
+
         defaultRepo.update(messung, "land");
 
         return authorization.filter(
