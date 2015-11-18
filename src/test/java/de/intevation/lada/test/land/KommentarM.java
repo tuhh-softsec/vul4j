@@ -9,7 +9,9 @@ package de.intevation.lada.test.land;
 
 import java.io.StringReader;
 import java.net.URL;
+import java.sql.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.json.Json;
 import javax.json.JsonException;
@@ -36,7 +38,7 @@ import de.intevation.lada.Protocol;
 public class KommentarM {
 
     private static final String COMPARE_KOMMENTARM =
-        "{\"messungsId\":5,\"datum\":1336627500000,\"erzeuger\":\"12010\"," +
+        "{\"messungsId\":5,\"datum\":1336634700000,\"erzeuger\":\"12010\"," +
         "\"id\":478,\"text\":\"Hofladen Lenzen geschlossen\",\"owner\":false," +
         "\"readonly\":true}";
 

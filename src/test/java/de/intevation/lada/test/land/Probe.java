@@ -275,11 +275,11 @@ public class Probe {
             JsonObject oldProbe = reader.readObject().getJsonObject("data");
             /* Change the hauptprobenNr*/
             String updatedEntity =
-                oldProbe.toString().replace("4554567890", "2345678901");
+                oldProbe.toString().replace("4554567890", "2345678911");
             prot.addInfo("updated datafield", "hauptprobenNr");
             prot.addInfo("updated value", "1234567890");
-            prot.addInfo("updated to", "2345678901");
-            /* Send the updated probe via put reauest*/
+            prot.addInfo("updated to", "2345678911");
+            /* Send the updated probe via put request*/
             WebTarget putTarget = client.target(baseUrl + "probe/" + createdProbeId);
             Response updated = putTarget.request()
                 .header("X-SHIB-user", BaseTest.TEST_USER)
@@ -294,7 +294,7 @@ public class Probe {
             prot.addInfo("success", updatedProbe.getBoolean("success"));
             Assert.assertEquals("200", updatedProbe.getString("message"));
             prot.addInfo("message", updatedProbe.getString("message"));
-            Assert.assertEquals("2345678901",
+            Assert.assertEquals("2345678911",
                 updatedProbe.getJsonObject("data").getString("hauptprobenNr"));
         }
         catch(JsonException je) {

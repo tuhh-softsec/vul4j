@@ -17,7 +17,6 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -270,7 +269,6 @@ public class LadaLandTest extends BaseTest {
      * Testing GET Services.
      */
     @Test
-    @Ignore
     @RunAsClient
     public final void testA_StatusGetAllServices(@ArquillianResource URL baseUrl)
     throws Exception {
@@ -281,7 +279,6 @@ public class LadaLandTest extends BaseTest {
      * Testing GET Services.
      */
     @Test
-    @Ignore
     @RunAsClient
     public final void testA_StatusGetByIdServices(@ArquillianResource URL baseUrl)
     throws Exception {
@@ -292,7 +289,6 @@ public class LadaLandTest extends BaseTest {
      * Testing GET Services.
      */
     @Test
-    @Ignore
     @RunAsClient
     public final void testA_StatusGetFilterServices(@ArquillianResource URL baseUrl)
     throws Exception {
@@ -393,10 +389,6 @@ public class LadaLandTest extends BaseTest {
             baseUrl,
             testProtocol,
             this.messungTest.getCreatedMessungId());
-        //this.statusTest.createService(
-        //    baseUrl,
-        //    testProtocol,
-        //    this.messungTest.getCreatedMessungId());
         this.messprogrammTest.createService(
             baseUrl,
             testProtocol);
@@ -472,12 +464,21 @@ public class LadaLandTest extends BaseTest {
      * Testing UPDATE services.
      */
     @Test
-    @Ignore
     @RunAsClient
-    public final void testC_statusUpdateService(@ArquillianResource URL baseUrl)
+    public final void testC_messprogrammUpdateService(@ArquillianResource URL baseUrl)
     throws Exception {
         Assert.assertNotNull(this.ortTest.getCreatedId());
-        this.statusTest.updateService(baseUrl, testProtocol);
+        this.messprogrammTest.updateService(baseUrl, testProtocol);
+    }
+
+    @Test
+    @RunAsClient
+    public final void testC_zstatusCreateService(@ArquillianResource URL baseUrl)
+    throws Exception {
+        this.statusTest.createService(
+            baseUrl,
+            testProtocol,
+            this.messungTest.getCreatedMessungId());
     }
 
     /**
@@ -485,10 +486,10 @@ public class LadaLandTest extends BaseTest {
      */
     @Test
     @RunAsClient
-    public final void testC_messprogrammUpdateService(@ArquillianResource URL baseUrl)
+    public final void testC_zstatusUpdateService(@ArquillianResource URL baseUrl)
     throws Exception {
         Assert.assertNotNull(this.ortTest.getCreatedId());
-        this.messprogrammTest.updateService(baseUrl, testProtocol);
+        this.statusTest.updateService(baseUrl, testProtocol);
     }
 
     /**
@@ -498,10 +499,10 @@ public class LadaLandTest extends BaseTest {
     @RunAsClient
     public final void testD_DeleteServices(@ArquillianResource URL baseUrl)
     throws Exception {
+        //Assert.assertNotNull(this.statusTest.getCreatedId());
+        //this.statusTest.deleteService(baseUrl, testProtocol);
         Assert.assertNotNull(this.zusatzwertTest.getCreatedId());
         this.zusatzwertTest.deleteService(baseUrl, testProtocol);
-        // Assert.assertNotNull(this.statusTest.getCreatedId());
-        // this.statusTest.deleteService(baseUrl, testProtocol);
         Assert.assertNotNull(this.ortTest.getCreatedId());
         this.ortTest.deleteService(baseUrl, testProtocol);
         Assert.assertNotNull(this.messwertTest.getCreatedMesswertId());

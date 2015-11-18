@@ -37,7 +37,7 @@ public class Messprogramm {
     private static final String COMPARE = "{\"id\":1,\"baId\":null," +
         "\"datenbasisId\":2,\"gemId\":\"11000000\",\"gueltigBis\":null," +
         "\"gueltigVon\":null,\"intervallOffset\":null,\"letzteAenderung\":" +
-        "1381413048800,\"mediaDesk\":\"D: 50 90 01 06 02 05 00 00 00 00 00 00\"," +
+        "1381420248800,\"mediaDesk\":\"D: 50 90 01 06 02 05 00 00 00 00 00 00\"," +
         "\"mstId\":\"11010\",\"name\":null,\"netzbetreiberId\":\"11\"," +
         "\"ortId\":null,\"probeKommentar\":null,\"probeNehmerId\":null," +
         "\"probenartId\":3,\"probenintervall\":\"M\",\"teilintervallBis\":30," +

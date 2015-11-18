@@ -36,10 +36,10 @@ import de.intevation.lada.Protocol;
 public class KommentarP {
 
     private static final String COMPARE_KOMMENTARP =
-        "{\"datum\":1321002077000,\"erzeuger\":\"06010\",\"id\":1,\"text\":" +
+        "{\"datum\":1321005677000,\"erzeuger\":\"06010\",\"id\":1,\"text\":" +
         "\"Die Probe wurde in Darmstadt gammaspektrometrisch gemessen und " +
         "für die Sr-Bestimmung verascht. \",\"probeId\":361,\"owner\":true," +
-        "\"readonly\":true}";
+        "\"readonly\":false}";
 
     private static final String CREATE_KOMMENTARP =
         "{\"probeId\":\"PID\",\"erzeuger\":\"11010\",\"text\":" +
