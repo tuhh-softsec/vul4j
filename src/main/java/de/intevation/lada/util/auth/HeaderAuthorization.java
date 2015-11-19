@@ -212,7 +212,14 @@ public class HeaderAuthorization implements Authorization {
                             messung.getProbeId(),
                             "land");
                     LProbe probe = (LProbe)pResponse.getData();
-                    return !this.isMessungReadOnly(messung) &&
+                    if (messung.getStatus() == null) {
+                        return false;
+                    }
+                    LStatusProtokoll status = repository.getByIdPlain(
+                        LStatusProtokoll.class,
+                        messung.getStatus(),
+                        "land");
+                    return status.getStatusWert() == 0 &&
                         getAuthorization(userInfo, probe);
                 }
             }
@@ -616,6 +623,10 @@ public class HeaderAuthorization implements Authorization {
     public boolean isAuthorized(UserInfo userInfo, Object data) {
         if (data instanceof LProbe) {
             return getAuthorization(userInfo, (LProbe)data);
+        }
+        else if (data instanceof LMessung) {
+            LProbe probe = repository.getByIdPlain(LProbe.class, ((LMessung)data).getProbeId(), "land");
+            return getAuthorization(userInfo, probe);
         }
         return false;
     }
