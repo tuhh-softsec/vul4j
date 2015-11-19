@@ -204,29 +204,29 @@ begin
         if d02 = '00' or d00 <> '01' then
           select s01.beschreibung into result FROM stammdaten.deskriptoren s01
           where s01.ebene = 1 and s01.sn = d01::smallint
-            and s01.vorgaenger = 
+            and s01.vorgaenger =
               (select s00.id FROM stammdaten.deskriptoren s00
                where s00.ebene = 0 and s00.sn = d00::smallint);
         else
           if d03 = '00' then
             select s02.beschreibung into result FROM stammdaten.deskriptoren s02
             where s02.ebene = 2 and s02.sn = d02::smallint
-              and s02.vorgaenger = 
+              and s02.vorgaenger =
                 (select s01.id FROM stammdaten.deskriptoren s01
                  where s01.ebene = 1 and s01.sn = d01::smallint
-                   and s01.vorgaenger = 
+                   and s01.vorgaenger =
                      (select s00.id FROM stammdaten.deskriptoren s00
                       where s00.ebene = 0 and s00.sn = d00::smallint));
           else
             select s03.beschreibung into result FROM stammdaten.deskriptoren s03
             where s03.ebene = 3 and s03.sn = d03::smallint
-              and s03.vorgaenger = 
+              and s03.vorgaenger =
               (select s02.id FROM stammdaten.deskriptoren s02
               where s02.ebene = 2 and s02.sn = d02::smallint
-                and s02.vorgaenger = 
+                and s02.vorgaenger =
                   (select s01.id FROM stammdaten.deskriptoren s01
                   where s01.ebene = 1 and s01.sn = d01::smallint
-                    and s01.vorgaenger = 
+                    and s01.vorgaenger =
                       (select s00.id FROM stammdaten.deskriptoren s00
                       where s00.ebene = 0 and s00.sn = d00::smallint)));
           end if;
@@ -260,7 +260,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: kommentar; Type: TABLE; Schema: bund; Owner: -; Tablespace: 
+-- Name: kommentar; Type: TABLE; Schema: bund; Owner: -; Tablespace:
 --
 
 CREATE TABLE kommentar (
@@ -272,7 +272,7 @@ CREATE TABLE kommentar (
 
 
 --
--- Name: kommentar_m; Type: TABLE; Schema: bund; Owner: -; Tablespace: 
+-- Name: kommentar_m; Type: TABLE; Schema: bund; Owner: -; Tablespace:
 --
 
 CREATE TABLE kommentar_m (
@@ -282,7 +282,7 @@ INHERITS (kommentar);
 
 
 --
--- Name: kommentar_p; Type: TABLE; Schema: bund; Owner: -; Tablespace: 
+-- Name: kommentar_p; Type: TABLE; Schema: bund; Owner: -; Tablespace:
 --
 
 CREATE TABLE kommentar_p (
@@ -292,7 +292,7 @@ INHERITS (kommentar);
 
 
 --
--- Name: list; Type: TABLE; Schema: bund; Owner: -; Tablespace: 
+-- Name: list; Type: TABLE; Schema: bund; Owner: -; Tablespace:
 --
 
 CREATE TABLE list (
@@ -325,7 +325,7 @@ ALTER SEQUENCE list_id_seq OWNED BY list.id;
 
 
 --
--- Name: list_zuordnung; Type: TABLE; Schema: bund; Owner: -; Tablespace: 
+-- Name: list_zuordnung; Type: TABLE; Schema: bund; Owner: -; Tablespace:
 --
 
 CREATE TABLE list_zuordnung (
@@ -347,7 +347,7 @@ CREATE SEQUENCE messung_id_seq
 
 
 --
--- Name: messung; Type: TABLE; Schema: bund; Owner: -; Tablespace: 
+-- Name: messung; Type: TABLE; Schema: bund; Owner: -; Tablespace:
 --
 
 CREATE TABLE messung (
@@ -400,7 +400,7 @@ CREATE SEQUENCE messwert_id_seq
 
 
 --
--- Name: messwert; Type: TABLE; Schema: bund; Owner: -; Tablespace: 
+-- Name: messwert; Type: TABLE; Schema: bund; Owner: -; Tablespace:
 --
 
 CREATE TABLE messwert (
@@ -430,7 +430,7 @@ CREATE SEQUENCE ort_id_seq
 
 
 --
--- Name: ort; Type: TABLE; Schema: bund; Owner: -; Tablespace: 
+-- Name: ort; Type: TABLE; Schema: bund; Owner: -; Tablespace:
 --
 
 CREATE TABLE ort (
@@ -463,7 +463,7 @@ CREATE SEQUENCE probe_id_seq
 
 
 --
--- Name: probe; Type: TABLE; Schema: bund; Owner: -; Tablespace: 
+-- Name: probe; Type: TABLE; Schema: bund; Owner: -; Tablespace:
 --
 
 CREATE TABLE probe (
@@ -569,7 +569,7 @@ CREATE SEQUENCE probe_probe_id_seq
 
 
 --
--- Name: status_protokoll; Type: TABLE; Schema: bund; Owner: -; Tablespace: 
+-- Name: status_protokoll; Type: TABLE; Schema: bund; Owner: -; Tablespace:
 --
 
 CREATE TABLE status_protokoll (
@@ -593,7 +593,7 @@ CREATE SEQUENCE zusatz_wert_id_seq
 
 
 --
--- Name: zusatz_wert; Type: TABLE; Schema: bund; Owner: -; Tablespace: 
+-- Name: zusatz_wert; Type: TABLE; Schema: bund; Owner: -; Tablespace:
 --
 
 CREATE TABLE zusatz_wert (
@@ -610,7 +610,7 @@ CREATE TABLE zusatz_wert (
 SET search_path = land, pg_catalog;
 
 --
--- Name: kommentar_m; Type: TABLE; Schema: land; Owner: -; Tablespace: 
+-- Name: kommentar_m; Type: TABLE; Schema: land; Owner: -; Tablespace:
 --
 
 CREATE TABLE kommentar_m (
@@ -619,7 +619,7 @@ INHERITS (bund.kommentar_m);
 
 
 --
--- Name: kommentar_p; Type: TABLE; Schema: land; Owner: -; Tablespace: 
+-- Name: kommentar_p; Type: TABLE; Schema: land; Owner: -; Tablespace:
 --
 
 CREATE TABLE kommentar_p (
@@ -628,7 +628,7 @@ INHERITS (bund.kommentar_p);
 
 
 --
--- Name: messprogramm; Type: TABLE; Schema: land; Owner: -; Tablespace: 
+-- Name: messprogramm; Type: TABLE; Schema: land; Owner: -; Tablespace:
 --
 
 CREATE TABLE messprogramm (
@@ -683,7 +683,7 @@ ALTER SEQUENCE messprogramm_id_seq OWNED BY messprogramm.id;
 
 
 --
--- Name: messprogramm_mmt; Type: TABLE; Schema: land; Owner: -; Tablespace: 
+-- Name: messprogramm_mmt; Type: TABLE; Schema: land; Owner: -; Tablespace:
 --
 
 CREATE TABLE messprogramm_mmt (
@@ -715,7 +715,7 @@ ALTER SEQUENCE messprogramm_mmt_id_seq OWNED BY messprogramm_mmt.id;
 
 
 --
--- Name: messung; Type: TABLE; Schema: land; Owner: -; Tablespace: 
+-- Name: messung; Type: TABLE; Schema: land; Owner: -; Tablespace:
 --
 
 CREATE TABLE messung (
@@ -726,7 +726,7 @@ INHERITS (bund.messung);
 
 
 --
--- Name: messung_translation; Type: TABLE; Schema: land; Owner: -; Tablespace: 
+-- Name: messung_translation; Type: TABLE; Schema: land; Owner: -; Tablespace:
 --
 
 CREATE TABLE messung_translation (
@@ -756,7 +756,7 @@ ALTER SEQUENCE messung_translation_id_seq OWNED BY messung_translation.id;
 
 
 --
--- Name: messwert; Type: TABLE; Schema: land; Owner: -; Tablespace: 
+-- Name: messwert; Type: TABLE; Schema: land; Owner: -; Tablespace:
 --
 
 CREATE TABLE messwert (
@@ -766,7 +766,7 @@ INHERITS (bund.messwert);
 
 
 --
--- Name: ort; Type: TABLE; Schema: land; Owner: -; Tablespace: 
+-- Name: ort; Type: TABLE; Schema: land; Owner: -; Tablespace:
 --
 
 CREATE TABLE ort (
@@ -776,7 +776,7 @@ INHERITS (bund.ort);
 
 
 --
--- Name: probe; Type: TABLE; Schema: land; Owner: -; Tablespace: 
+-- Name: probe; Type: TABLE; Schema: land; Owner: -; Tablespace:
 --
 
 CREATE TABLE probe (
@@ -793,7 +793,7 @@ INHERITS (bund.probe);
 
 
 --
--- Name: probe_translation; Type: TABLE; Schema: land; Owner: -; Tablespace: 
+-- Name: probe_translation; Type: TABLE; Schema: land; Owner: -; Tablespace:
 --
 
 CREATE TABLE probe_translation (
@@ -823,7 +823,7 @@ ALTER SEQUENCE probe_translation_id_seq OWNED BY probe_translation.id;
 
 
 --
--- Name: status_protokoll; Type: TABLE; Schema: land; Owner: -; Tablespace: 
+-- Name: status_protokoll; Type: TABLE; Schema: land; Owner: -; Tablespace:
 --
 
 CREATE TABLE status_protokoll (
@@ -832,7 +832,7 @@ INHERITS (bund.status_protokoll);
 
 
 --
--- Name: zusatz_wert; Type: TABLE; Schema: land; Owner: -; Tablespace: 
+-- Name: zusatz_wert; Type: TABLE; Schema: land; Owner: -; Tablespace:
 --
 
 CREATE TABLE zusatz_wert (
@@ -844,7 +844,7 @@ INHERITS (bund.zusatz_wert);
 SET search_path = stammdaten, pg_catalog;
 
 --
--- Name: auth; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: auth; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE auth (
@@ -858,7 +858,7 @@ CREATE TABLE auth (
 
 
 --
--- Name: auth_funktion; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: auth_funktion; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE auth_funktion (
@@ -906,7 +906,7 @@ ALTER SEQUENCE auth_id_seq1 OWNED BY auth.id;
 
 
 --
--- Name: auth_lst_umw; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: auth_lst_umw; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE auth_lst_umw (
@@ -936,7 +936,7 @@ ALTER SEQUENCE auth_lst_umw_id_seq OWNED BY auth_lst_umw.id;
 
 
 --
--- Name: datenbasis; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: datenbasis; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE datenbasis (
@@ -966,7 +966,7 @@ ALTER SEQUENCE datenbasis_id_seq OWNED BY datenbasis.id;
 
 
 --
--- Name: de_vg; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: de_vg; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE de_vg (
@@ -1010,7 +1010,7 @@ ALTER SEQUENCE de_vg_id_seq OWNED BY de_vg.id;
 
 
 --
--- Name: deskriptor_umwelt; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: deskriptor_umwelt; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE deskriptor_umwelt (
@@ -1033,7 +1033,7 @@ CREATE TABLE deskriptor_umwelt (
 
 
 --
--- Name: deskriptoren; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: deskriptoren; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE deskriptoren (
@@ -1067,7 +1067,7 @@ ALTER SEQUENCE deskriptoren_id_seq OWNED BY deskriptoren.id;
 
 
 --
--- Name: koordinaten_art; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: koordinaten_art; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE koordinaten_art (
@@ -1097,7 +1097,7 @@ ALTER SEQUENCE koordinaten_art_id_seq OWNED BY koordinaten_art.id;
 
 
 --
--- Name: mess_einheit; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: mess_einheit; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE mess_einheit (
@@ -1129,7 +1129,7 @@ ALTER SEQUENCE mess_einheit_id_seq OWNED BY mess_einheit.id;
 
 
 --
--- Name: mess_methode; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: mess_methode; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE mess_methode (
@@ -1140,7 +1140,7 @@ CREATE TABLE mess_methode (
 
 
 --
--- Name: mess_stelle; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: mess_stelle; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE mess_stelle (
@@ -1154,7 +1154,7 @@ CREATE TABLE mess_stelle (
 
 
 --
--- Name: messgroesse; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: messgroesse; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE messgroesse (
@@ -1189,7 +1189,7 @@ ALTER SEQUENCE messgroesse_id_seq OWNED BY messgroesse.id;
 
 
 --
--- Name: messgroessen_gruppe; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: messgroessen_gruppe; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE messgroessen_gruppe (
@@ -1219,7 +1219,7 @@ ALTER SEQUENCE messgroessen_gruppe_id_seq OWNED BY messgroessen_gruppe.id;
 
 
 --
--- Name: mg_grp; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: mg_grp; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE mg_grp (
@@ -1229,7 +1229,7 @@ CREATE TABLE mg_grp (
 
 
 --
--- Name: mmt_messgroesse_grp; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: mmt_messgroesse_grp; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE mmt_messgroesse_grp (
@@ -1251,7 +1251,7 @@ CREATE VIEW mmt_messgroesse AS
 
 
 --
--- Name: netz_betreiber; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: netz_betreiber; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE netz_betreiber (
@@ -1266,7 +1266,7 @@ CREATE TABLE netz_betreiber (
 
 
 --
--- Name: ort; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: ort; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE ort (
@@ -1322,7 +1322,7 @@ ALTER SEQUENCE ort_id_seq OWNED BY ort.id;
 
 
 --
--- Name: pflicht_messgroesse; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: pflicht_messgroesse; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE pflicht_messgroesse (
@@ -1354,7 +1354,7 @@ ALTER SEQUENCE pflicht_messgroesse_id_seq OWNED BY pflicht_messgroesse.id;
 
 
 --
--- Name: proben_zusatz; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: proben_zusatz; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE proben_zusatz (
@@ -1367,7 +1367,7 @@ CREATE TABLE proben_zusatz (
 
 
 --
--- Name: probenart; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: probenart; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE probenart (
@@ -1712,7 +1712,7 @@ CREATE VIEW s_12_view AS
 
 
 --
--- Name: staat; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: staat; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE staat (
@@ -1748,7 +1748,7 @@ ALTER SEQUENCE staat_id_seq OWNED BY staat.id;
 
 
 --
--- Name: status_kombi; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: status_kombi; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE status_kombi (
@@ -1759,7 +1759,7 @@ CREATE TABLE status_kombi (
 
 
 --
--- Name: status_reihenfolge; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: status_reihenfolge; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE status_reihenfolge (
@@ -1770,7 +1770,7 @@ CREATE TABLE status_reihenfolge (
 
 
 --
--- Name: status_stufe; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: status_stufe; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE status_stufe (
@@ -1780,7 +1780,7 @@ CREATE TABLE status_stufe (
 
 
 --
--- Name: status_wert; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: status_wert; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE status_wert (
@@ -1790,7 +1790,7 @@ CREATE TABLE status_wert (
 
 
 --
--- Name: umwelt; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: umwelt; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE umwelt (
@@ -1802,7 +1802,7 @@ CREATE TABLE umwelt (
 
 
 --
--- Name: verwaltungseinheit; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: verwaltungseinheit; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE verwaltungseinheit (
@@ -2153,7 +2153,7 @@ ALTER TABLE ONLY staat ALTER COLUMN id SET DEFAULT nextval('staat_id_seq'::regcl
 SET search_path = bund, pg_catalog;
 
 --
--- Name: kommentar_pkey; Type: CONSTRAINT; Schema: bund; Owner: -; Tablespace: 
+-- Name: kommentar_pkey; Type: CONSTRAINT; Schema: bund; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY kommentar
@@ -2161,7 +2161,7 @@ ALTER TABLE ONLY kommentar
 
 
 --
--- Name: list_pkey; Type: CONSTRAINT; Schema: bund; Owner: -; Tablespace: 
+-- Name: list_pkey; Type: CONSTRAINT; Schema: bund; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY list
@@ -2169,7 +2169,7 @@ ALTER TABLE ONLY list
 
 
 --
--- Name: messung_pkey; Type: CONSTRAINT; Schema: bund; Owner: -; Tablespace: 
+-- Name: messung_pkey; Type: CONSTRAINT; Schema: bund; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY messung
@@ -2177,7 +2177,7 @@ ALTER TABLE ONLY messung
 
 
 --
--- Name: messwert_messungs_id_messgroesse_id_key; Type: CONSTRAINT; Schema: bund; Owner: -; Tablespace: 
+-- Name: messwert_messungs_id_messgroesse_id_key; Type: CONSTRAINT; Schema: bund; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY messwert
@@ -2185,7 +2185,7 @@ ALTER TABLE ONLY messwert
 
 
 --
--- Name: messwert_pkey; Type: CONSTRAINT; Schema: bund; Owner: -; Tablespace: 
+-- Name: messwert_pkey; Type: CONSTRAINT; Schema: bund; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY messwert
@@ -2193,7 +2193,7 @@ ALTER TABLE ONLY messwert
 
 
 --
--- Name: ort_pkey; Type: CONSTRAINT; Schema: bund; Owner: -; Tablespace: 
+-- Name: ort_pkey; Type: CONSTRAINT; Schema: bund; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY ort
@@ -2201,7 +2201,7 @@ ALTER TABLE ONLY ort
 
 
 --
--- Name: probe_pkey; Type: CONSTRAINT; Schema: bund; Owner: -; Tablespace: 
+-- Name: probe_pkey; Type: CONSTRAINT; Schema: bund; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY probe
@@ -2209,7 +2209,7 @@ ALTER TABLE ONLY probe
 
 
 --
--- Name: status_protokoll_pkey; Type: CONSTRAINT; Schema: bund; Owner: -; Tablespace: 
+-- Name: status_protokoll_pkey; Type: CONSTRAINT; Schema: bund; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY status_protokoll
@@ -2217,7 +2217,7 @@ ALTER TABLE ONLY status_protokoll
 
 
 --
--- Name: zusatz_wert_pkey; Type: CONSTRAINT; Schema: bund; Owner: -; Tablespace: 
+-- Name: zusatz_wert_pkey; Type: CONSTRAINT; Schema: bund; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY zusatz_wert
@@ -2225,7 +2225,7 @@ ALTER TABLE ONLY zusatz_wert
 
 
 --
--- Name: zusatz_wert_probe_id_pzs_id_key; Type: CONSTRAINT; Schema: bund; Owner: -; Tablespace: 
+-- Name: zusatz_wert_probe_id_pzs_id_key; Type: CONSTRAINT; Schema: bund; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY zusatz_wert
@@ -2235,7 +2235,7 @@ ALTER TABLE ONLY zusatz_wert
 SET search_path = land, pg_catalog;
 
 --
--- Name: kommentar_m_pkey; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace: 
+-- Name: kommentar_m_pkey; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY kommentar_m
@@ -2243,7 +2243,7 @@ ALTER TABLE ONLY kommentar_m
 
 
 --
--- Name: kommentar_p_pkey; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace: 
+-- Name: kommentar_p_pkey; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY kommentar_p
@@ -2251,7 +2251,7 @@ ALTER TABLE ONLY kommentar_p
 
 
 --
--- Name: messprogramm_mmt_pkey; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace: 
+-- Name: messprogramm_mmt_pkey; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY messprogramm_mmt
@@ -2259,7 +2259,7 @@ ALTER TABLE ONLY messprogramm_mmt
 
 
 --
--- Name: messprogramm_pkey; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace: 
+-- Name: messprogramm_pkey; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY messprogramm
@@ -2267,7 +2267,7 @@ ALTER TABLE ONLY messprogramm
 
 
 --
--- Name: messung_pkey; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace: 
+-- Name: messung_pkey; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY messung
@@ -2275,7 +2275,7 @@ ALTER TABLE ONLY messung
 
 
 --
--- Name: messung_translation_messungs_id_key; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace: 
+-- Name: messung_translation_messungs_id_key; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY messung_translation
@@ -2283,7 +2283,7 @@ ALTER TABLE ONLY messung_translation
 
 
 --
--- Name: messung_translation_pkey; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace: 
+-- Name: messung_translation_pkey; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY messung_translation
@@ -2291,7 +2291,7 @@ ALTER TABLE ONLY messung_translation
 
 
 --
--- Name: messwert_messungs_id_messgroesse_id_key; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace: 
+-- Name: messwert_messungs_id_messgroesse_id_key; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY messwert
@@ -2299,7 +2299,7 @@ ALTER TABLE ONLY messwert
 
 
 --
--- Name: messwert_pkey; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace: 
+-- Name: messwert_pkey; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY messwert
@@ -2307,7 +2307,7 @@ ALTER TABLE ONLY messwert
 
 
 --
--- Name: ort_pkey; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace: 
+-- Name: ort_pkey; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY ort
@@ -2315,7 +2315,7 @@ ALTER TABLE ONLY ort
 
 
 --
--- Name: probe_pkey; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace: 
+-- Name: probe_pkey; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY probe
@@ -2323,7 +2323,7 @@ ALTER TABLE ONLY probe
 
 
 --
--- Name: probe_translation_pkey; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace: 
+-- Name: probe_translation_pkey; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY probe_translation
@@ -2331,7 +2331,7 @@ ALTER TABLE ONLY probe_translation
 
 
 --
--- Name: probe_translation_probe_id_key; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace: 
+-- Name: probe_translation_probe_id_key; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY probe_translation
@@ -2339,7 +2339,7 @@ ALTER TABLE ONLY probe_translation
 
 
 --
--- Name: status_protokoll_pkey; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace: 
+-- Name: status_protokoll_pkey; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY status_protokoll
@@ -2347,7 +2347,7 @@ ALTER TABLE ONLY status_protokoll
 
 
 --
--- Name: zusatz_wert_pkey; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace: 
+-- Name: zusatz_wert_pkey; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY zusatz_wert
@@ -2355,7 +2355,7 @@ ALTER TABLE ONLY zusatz_wert
 
 
 --
--- Name: zusatz_wert_probe_id_pzs_id_key; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace: 
+-- Name: zusatz_wert_probe_id_pzs_id_key; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY zusatz_wert
@@ -2365,7 +2365,7 @@ ALTER TABLE ONLY zusatz_wert
 SET search_path = stammdaten, pg_catalog;
 
 --
--- Name: auth_lst_umw_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: auth_lst_umw_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY auth_lst_umw
@@ -2373,7 +2373,7 @@ ALTER TABLE ONLY auth_lst_umw
 
 
 --
--- Name: auth_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: auth_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY auth
@@ -2381,7 +2381,7 @@ ALTER TABLE ONLY auth
 
 
 --
--- Name: auth_role_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: auth_role_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY auth_funktion
@@ -2389,7 +2389,7 @@ ALTER TABLE ONLY auth_funktion
 
 
 --
--- Name: datenbasis_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: datenbasis_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY datenbasis
@@ -2397,7 +2397,7 @@ ALTER TABLE ONLY datenbasis
 
 
 --
--- Name: de_vg_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: de_vg_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY de_vg
@@ -2405,7 +2405,7 @@ ALTER TABLE ONLY de_vg
 
 
 --
--- Name: deskriptor_umwelt_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: deskriptor_umwelt_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY deskriptor_umwelt
@@ -2413,7 +2413,7 @@ ALTER TABLE ONLY deskriptor_umwelt
 
 
 --
--- Name: koordinaten_art_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: koordinaten_art_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY koordinaten_art
@@ -2421,7 +2421,7 @@ ALTER TABLE ONLY koordinaten_art
 
 
 --
--- Name: mess_einheit_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: mess_einheit_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY mess_einheit
@@ -2429,7 +2429,7 @@ ALTER TABLE ONLY mess_einheit
 
 
 --
--- Name: mess_methode_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: mess_methode_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY mess_methode
@@ -2437,7 +2437,7 @@ ALTER TABLE ONLY mess_methode
 
 
 --
--- Name: mess_stelle_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: mess_stelle_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY mess_stelle
@@ -2445,7 +2445,7 @@ ALTER TABLE ONLY mess_stelle
 
 
 --
--- Name: messgroesse_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: messgroesse_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY messgroesse
@@ -2453,7 +2453,7 @@ ALTER TABLE ONLY messgroesse
 
 
 --
--- Name: messgroessen_gruppe_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: messgroessen_gruppe_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY messgroessen_gruppe
@@ -2461,7 +2461,7 @@ ALTER TABLE ONLY messgroessen_gruppe
 
 
 --
--- Name: mg_grp_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: mg_grp_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY mg_grp
@@ -2469,7 +2469,7 @@ ALTER TABLE ONLY mg_grp
 
 
 --
--- Name: mmt_messgroesse_grp_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: mmt_messgroesse_grp_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY mmt_messgroesse_grp
@@ -2477,7 +2477,7 @@ ALTER TABLE ONLY mmt_messgroesse_grp
 
 
 --
--- Name: netz_betreiber_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: netz_betreiber_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY netz_betreiber
@@ -2485,7 +2485,7 @@ ALTER TABLE ONLY netz_betreiber
 
 
 --
--- Name: ort_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: ort_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY ort
@@ -2493,7 +2493,7 @@ ALTER TABLE ONLY ort
 
 
 --
--- Name: pflicht_messgroesse_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: pflicht_messgroesse_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY pflicht_messgroesse
@@ -2501,7 +2501,7 @@ ALTER TABLE ONLY pflicht_messgroesse
 
 
 --
--- Name: pk_deskriptoren; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: pk_deskriptoren; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY deskriptoren
@@ -2509,7 +2509,7 @@ ALTER TABLE ONLY deskriptoren
 
 
 --
--- Name: proben_zusatz_eudf_keyword_key; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: proben_zusatz_eudf_keyword_key; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY proben_zusatz
@@ -2517,7 +2517,7 @@ ALTER TABLE ONLY proben_zusatz
 
 
 --
--- Name: proben_zusatz_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: proben_zusatz_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY proben_zusatz
@@ -2525,7 +2525,7 @@ ALTER TABLE ONLY proben_zusatz
 
 
 --
--- Name: probenart_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: probenart_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY probenart
@@ -2533,7 +2533,7 @@ ALTER TABLE ONLY probenart
 
 
 --
--- Name: staat_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: staat_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY staat
@@ -2541,7 +2541,7 @@ ALTER TABLE ONLY staat
 
 
 --
--- Name: status_kombi_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: status_kombi_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY status_kombi
@@ -2549,7 +2549,7 @@ ALTER TABLE ONLY status_kombi
 
 
 --
--- Name: status_reihenfolge_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: status_reihenfolge_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY status_reihenfolge
@@ -2557,7 +2557,7 @@ ALTER TABLE ONLY status_reihenfolge
 
 
 --
--- Name: status_stufe_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: status_stufe_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY status_stufe
@@ -2565,7 +2565,7 @@ ALTER TABLE ONLY status_stufe
 
 
 --
--- Name: status_wert_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: status_wert_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY status_wert
@@ -2573,7 +2573,7 @@ ALTER TABLE ONLY status_wert
 
 
 --
--- Name: umwelt_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: umwelt_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY umwelt
@@ -2581,7 +2581,7 @@ ALTER TABLE ONLY umwelt
 
 
 --
--- Name: umwelt_umwelt_bereich_key; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: umwelt_umwelt_bereich_key; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY umwelt
@@ -2589,7 +2589,7 @@ ALTER TABLE ONLY umwelt
 
 
 --
--- Name: verwaltungseinheit_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: verwaltungseinheit_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY verwaltungseinheit
@@ -2599,14 +2599,14 @@ ALTER TABLE ONLY verwaltungseinheit
 SET search_path = bund, pg_catalog;
 
 --
--- Name: p_list_zuord1; Type: INDEX; Schema: bund; Owner: -; Tablespace: 
+-- Name: p_list_zuord1; Type: INDEX; Schema: bund; Owner: -; Tablespace:
 --
 
 CREATE INDEX p_list_zuord1 ON list_zuordnung USING btree (list_id);
 
 
 --
--- Name: p_list_zuord2; Type: INDEX; Schema: bund; Owner: -; Tablespace: 
+-- Name: p_list_zuord2; Type: INDEX; Schema: bund; Owner: -; Tablespace:
 --
 
 CREATE INDEX p_list_zuord2 ON list_zuordnung USING hash (list_id);
@@ -2615,35 +2615,35 @@ CREATE INDEX p_list_zuord2 ON list_zuordnung USING hash (list_id);
 SET search_path = land, pg_catalog;
 
 --
--- Name: messung_probe_id_idx; Type: INDEX; Schema: land; Owner: -; Tablespace: 
+-- Name: messung_probe_id_idx; Type: INDEX; Schema: land; Owner: -; Tablespace:
 --
 
 CREATE INDEX messung_probe_id_idx ON messung USING btree (probe_id);
 
 
 --
--- Name: messung_translation_messungs_id_idx; Type: INDEX; Schema: land; Owner: -; Tablespace: 
+-- Name: messung_translation_messungs_id_idx; Type: INDEX; Schema: land; Owner: -; Tablespace:
 --
 
 CREATE INDEX messung_translation_messungs_id_idx ON messung_translation USING btree (messungs_id);
 
 
 --
--- Name: messwert_messungs_id_idx; Type: INDEX; Schema: land; Owner: -; Tablespace: 
+-- Name: messwert_messungs_id_idx; Type: INDEX; Schema: land; Owner: -; Tablespace:
 --
 
 CREATE INDEX messwert_messungs_id_idx ON messwert USING btree (messungs_id);
 
 
 --
--- Name: probe_id_idx; Type: INDEX; Schema: land; Owner: -; Tablespace: 
+-- Name: probe_id_idx; Type: INDEX; Schema: land; Owner: -; Tablespace:
 --
 
 CREATE INDEX probe_id_idx ON probe USING btree (id);
 
 
 --
--- Name: probe_translation_probe_id_idx; Type: INDEX; Schema: land; Owner: -; Tablespace: 
+-- Name: probe_translation_probe_id_idx; Type: INDEX; Schema: land; Owner: -; Tablespace:
 --
 
 CREATE INDEX probe_translation_probe_id_idx ON probe_translation USING btree (probe_id);
@@ -2652,14 +2652,14 @@ CREATE INDEX probe_translation_probe_id_idx ON probe_translation USING btree (pr
 SET search_path = stammdaten, pg_catalog;
 
 --
--- Name: de_vg_geom_gist; Type: INDEX; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: de_vg_geom_gist; Type: INDEX; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE INDEX de_vg_geom_gist ON de_vg USING gist (geom);
 
 
 --
--- Name: fts_stauts_kooin10001; Type: INDEX; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: fts_stauts_kooin10001; Type: INDEX; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE INDEX fts_stauts_kooin10001 ON staat USING btree (kda_id);
