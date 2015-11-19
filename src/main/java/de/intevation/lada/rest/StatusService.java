@@ -132,9 +132,26 @@ public class StatusService {
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() || !params.containsKey("messungsId")) {
-            return defaultRepo.getAll(LStatusProtokoll.class, "land");
+            return new Response(false, 699, null);
         }
         String messungId = params.getFirst("messungsId");
+        int id;
+        try {
+            id = Integer.valueOf(messungId);
+        }
+        catch(NumberFormatException nfe) {
+            return new Response(false, 698, null);
+        }
+        LMessung messung = defaultRepo.getByIdPlain(
+            LMessung.class,
+            id,
+            "land");
+        if (!authorization.isAuthorized(authorization.getInfo(request), messung)) {
+            if (!authorization.isAuthorized(id, LMessung.class)) {
+                return new Response(false, 697, null);
+            }
+        }
+
         QueryBuilder<LStatusProtokoll> builder =
             new QueryBuilder<LStatusProtokoll>(
                 defaultRepo.entityManager("land"),

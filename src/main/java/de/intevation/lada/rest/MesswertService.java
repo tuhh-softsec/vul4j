@@ -31,6 +31,7 @@ import org.apache.log4j.Logger;
 import de.intevation.lada.lock.LockConfig;
 import de.intevation.lada.lock.LockType;
 import de.intevation.lada.lock.ObjectLocker;
+import de.intevation.lada.model.land.LMessung;
 import de.intevation.lada.model.land.LMesswert;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
@@ -138,10 +139,25 @@ public class MesswertService {
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() || !params.containsKey("messungsId")) {
-            logger.debug("get all");
-            return defaultRepo.getAll(LMesswert.class, "land");
+            return new Response(false, 699, null);
         }
         String messungId = params.getFirst("messungsId");
+        int id;
+        try {
+            id = Integer.valueOf(messungId);
+        }
+        catch(NumberFormatException nfe) {
+            return new Response(false, 698, null);
+        }
+        LMessung messung = defaultRepo.getByIdPlain(
+            LMessung.class,
+            id,
+            "land");
+        if (!authorization.isAuthorized(authorization.getInfo(request), messung)) {
+            if (!authorization.isAuthorized(id, LMessung.class)) {
+                return new Response(false, 697, null);
+            }
+        }
         QueryBuilder<LMesswert> builder =
             new QueryBuilder<LMesswert>(
                 defaultRepo.entityManager("land"),
@@ -173,6 +189,15 @@ public class MesswertService {
         Response response =
             defaultRepo.getById(LMesswert.class, Integer.valueOf(id), "land");
         LMesswert messwert = (LMesswert)response.getData();
+        LMessung messung = defaultRepo.getByIdPlain(
+            LMessung.class,
+            messwert.getMessungsId(),
+            "land");
+        if (!authorization.isAuthorized(authorization.getInfo(request), messung)) {
+            if (!authorization.isAuthorized(messung.getId(), LMessung.class)) {
+                return new Response(false, 699, null);
+            }
+        }
         Violation violation = validator.validate(messwert);
         if (violation.hasErrors() || violation.hasWarnings()) {
             response.setErrors(violation.getErrors());

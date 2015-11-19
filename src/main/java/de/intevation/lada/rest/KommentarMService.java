@@ -24,6 +24,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
 import de.intevation.lada.model.land.LKommentarM;
+import de.intevation.lada.model.land.LMessung;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -103,9 +104,26 @@ public class KommentarMService {
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() || !params.containsKey("messungsId")) {
-            return defaultRepo.getAll(LKommentarM.class, "land");
+            return new Response(false, 699, null);
         }
         String messungId = params.getFirst("messungsId");
+        int id;
+        try {
+            id = Integer.valueOf(messungId);
+        }
+        catch(NumberFormatException nfe) {
+            return new Response(false, 699, null);
+        }
+        LMessung messung = defaultRepo.getByIdPlain(
+            LMessung.class,
+            id,
+            "land");
+        if (!authorization.isAuthorized(authorization.getInfo(request), messung)) {
+            if (!authorization.isAuthorized(id, LMessung.class)) {
+                return new Response(false, 699, null);
+            }
+        }
+
         QueryBuilder<LKommentarM> builder =
             new QueryBuilder<LKommentarM>(
                 defaultRepo.entityManager("land"),
@@ -134,12 +152,22 @@ public class KommentarMService {
         @Context HttpServletRequest request,
         @PathParam("id") String id
     ) {
+        Response response =
+            defaultRepo.getById(LKommentarM.class, Integer.valueOf(id), "land");
+        LKommentarM kommentar = (LKommentarM)response.getData();
+        LMessung messung = defaultRepo.getByIdPlain(
+            LMessung.class,
+            kommentar.getMessungsId(),
+            "land");
+        if (!authorization.isAuthorized(authorization.getInfo(request), messung)) {
+            if (!authorization.isAuthorized(messung.getId(), LMessung.class)) {
+                return new Response(false, 699, null);
+            }
+        }
+
         return authorization.filter(
             request,
-            defaultRepo.getById(
-                LKommentarM.class,
-                Integer.valueOf(id),
-                "land"),
+            response,
             LKommentarM.class);
     }
 
