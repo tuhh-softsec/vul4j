@@ -60,6 +60,9 @@ public class StatusFolge implements Rule {
         lastFilter.orderBy("datum", true);
         List<LStatusProtokoll> protos =
             repository.filterPlain(lastFilter.getQuery(), "land");
+        if (protos.isEmpty()) {
+            return null;
+        }
         LStatusProtokoll last = protos.get(protos.size() - 1);
         QueryBuilder<StatusKombi> kombi2 = kombi.getEmptyBuilder();
         kombi2.and("stufeId", last.getStatusStufe());
