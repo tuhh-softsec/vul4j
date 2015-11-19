@@ -58,4 +58,9 @@ public class TestAuthorization implements Authorization {
         return false;
     }
 
+    @Override
+    public <T> boolean isAuthorized(int id, Class<T> clazz) {
+        return true;
+    }
+
 }

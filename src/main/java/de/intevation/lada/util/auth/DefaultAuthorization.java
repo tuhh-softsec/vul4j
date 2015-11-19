@@ -86,4 +86,9 @@ public class DefaultAuthorization implements Authorization {
     public boolean isAuthorized(UserInfo userInfo, Object data) {
         return true;
     }
+
+    @Override
+    public <T> boolean isAuthorized(int id, Class<T> clazz) {
+        return true;
+    }
 }

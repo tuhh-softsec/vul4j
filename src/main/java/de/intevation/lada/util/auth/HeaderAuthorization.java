@@ -107,6 +107,28 @@ public class HeaderAuthorization implements Authorization {
         return data;
     }
 
+    @Override
+    public <T> boolean isAuthorized(int id, Class<T> clazz) {
+        if (clazz == LMessung.class) {
+            LMessung messung = repository.getByIdPlain(
+                LMessung.class,
+                id,
+                "land");
+            if (messung.getStatus() == null) {
+                return false;
+            }
+            LStatusProtokoll status = repository.getByIdPlain(
+                LStatusProtokoll.class,
+                messung.getStatus(),
+                "land");
+            if (status.getStatusWert() == 0) {
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Check whether a user is authorized to operate on the given data.
      *
