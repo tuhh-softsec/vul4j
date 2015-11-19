@@ -265,7 +265,6 @@ public class Status {
             /* Change the mmtId*/
             String updatedEntity =
                 old.toString().replace("statusWert\":1", "statusWert\":0");
-            System.out.println(updatedEntity);
             prot.addInfo("updated field", "statusWert");
             prot.addInfo("updated value", "1");
             prot.addInfo("updated to", "0");
