@@ -45,7 +45,7 @@ public class StatusKombination implements Rule {
             repository.filterPlain(kombi.getQuery(), "stamm");
         if (result.isEmpty()) {
             Violation violation = new Violation();
-            violation.addError("status", 632);
+            violation.addError("kombi", 632);
             return violation;
         }
         return null;

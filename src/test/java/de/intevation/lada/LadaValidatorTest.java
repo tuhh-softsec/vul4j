@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 
 import de.intevation.lada.test.validator.Messung;
 import de.intevation.lada.test.validator.Probe;
+import de.intevation.lada.test.validator.Status;
 import de.intevation.lada.validation.Validator;
 import de.intevation.lada.validation.annotation.ValidationConfig;
 
@@ -43,9 +44,16 @@ public class LadaValidatorTest {
     private Validator messungValidator;
     private Messung messungTest;
 
+    @Inject
+    @ValidationConfig(type="Status")
+    private Validator statusValidator;
+    private Status statusTest;
+
+
     public LadaValidatorTest() {
         probeTest = new Probe();
         messungTest = new Messung();
+        statusTest = new Status();
         testProtocol = new ArrayList<Protocol>();
     }
 
@@ -239,5 +247,11 @@ public class LadaValidatorTest {
     public final void messungHasNoMesswert() {
         messungTest.setValidator(messungValidator);
         messungTest.hasNoMesswert(testProtocol);
+    }
+
+    @Test
+    public final void statusKombiNegative() {
+        statusTest.setValidator(statusValidator);
+        statusTest.checkKombiNegative(testProtocol);
     }
 }
