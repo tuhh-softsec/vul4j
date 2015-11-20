@@ -26,7 +26,7 @@
             <property name="jboss.entity.manager.jndi.name" value="java:app/entitymanager/land"/>
             <!-- Properties for Hibernate -->
             <property name="hibernate.hbm2ddl.auto" value="none"/>
-            <property name="hibernate.show_sql" value="true" />
+            <property name="hibernate.show_sql" value="false" />
             <!-- Use a special PostGIS dialect implmented for Lada. This dialect implements an additional integer array type -->
 			<property name="hibernate.dialect" value="de.intevation.lada.util.data.LadaPostgisDialect"/>
        </properties>
@@ -38,7 +38,7 @@
         	<!-- The JNDI name for lookups in the application -->
             <property name="jboss.entity.manager.jndi.name" value="java:app/entitymanager/stamm"/>
             <!-- Properties for Hibernate -->
-            <property name="hibernate.show_sql" value="true" />
+            <property name="hibernate.show_sql" value="false" />
             <property name="hibernate.hbm2ddl.auto" value="none"/>
 			<property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect"/>
         </properties>
