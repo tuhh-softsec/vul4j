@@ -98,7 +98,8 @@ public class ArchiveFileComparator
             throws Exception
     {
         Assert.assertEquals( entry1.isDirectory(), entry2.isDirectory() );
-        Assert.assertEquals( entry1.getLastModifiedDate().getTime(), entry2.getLastModifiedDate().getTime() );
+        long timeDelta = entry1.getLastModifiedDate().getTime() - entry2.getLastModifiedDate().getTime();
+        Assert.assertTrue( Math.abs( timeDelta ) <= 1000 );
 
         final InputStream is1 = file1.getInputStream( entry1 );
         final InputStream is2 = file2.getInputStream( entry2 );
