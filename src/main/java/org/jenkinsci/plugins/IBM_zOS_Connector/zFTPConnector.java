@@ -187,8 +187,8 @@ public class zFTPConnector
                 return false;
             }
 
-            // Try to set filetype and jesjobname.
-            this.FTPClient.site("filetype=jes jesjobname=* jesowner=*");
+            // Try to set filetype, jesjobname and jesstatus.
+            this.FTPClient.site("filetype=jes jesjobname=* jesstatus=ALL");
             // Check reply.
             reply = this.FTPClient.getReplyCode();
             if (!FTPReply.isPositiveCompletion(reply)) {
@@ -323,21 +323,23 @@ public class zFTPConnector
         // Perform wait
         while (eternal || (curr <= jobEndTime))
         {
+            // check job state
+            if (!this.checkJobAvailability())
+                return false;
+
             // Try to fetch job log.
             if (this.fetchJobLog(outputStream))
                 return true;
-            else
+
+            // Wait
+            try
             {
-                // Couldn't fetch the job log. Need to wait.
-                try
-                {
-                    Thread.sleep(waitInterval);
-                    curr = System.currentTimeMillis();
-                } catch (InterruptedException e) {
-                    logger.severe(logPrefix + "Interrupted.");
-                    this.jobCC = "WAIT_INTERRUPTED";
-                    return false;
-                }
+                Thread.sleep(waitInterval);
+                curr = System.currentTimeMillis();
+            } catch (InterruptedException e) {
+                logger.severe(logPrefix + "Interrupted.");
+                this.jobCC = "WAIT_INTERRUPTED";
+                return false;
             }
         }
 
@@ -346,6 +348,39 @@ public class zFTPConnector
         return false;
     }
 
+    /**
+     * @return true if job can be listed through FTP.
+     */
+    private boolean checkJobAvailability ()
+    {
+        // Verify connection.
+        if(!this.FTPClient.isConnected())
+            if(!this.logon())
+            {
+                this.jobCC = "FETCH_LOG_ERROR_LOGIN";
+                return false;
+            }
+
+        this.FTPClient.enterLocalPassiveMode();
+
+        // Try listing files
+        try
+        {
+            for (String name : this.FTPClient.listNames("*"))
+                if(this.jobID.equals(name)) {
+                    // Found our jobId
+                    return true;
+                }
+            logger.severe("Job [" + this.jobID + "] cannot be found in JES");
+            this.jobCC = "JOB_NOT_FOUND_IN_JES";
+            return false;
+        }
+        catch (IOException e)
+        {
+            this.jobCC = "FETCH_LOG_IO_ERROR";
+            return false;
+        }
+    }
     /**
      * Fetch job log from spool.
      *
