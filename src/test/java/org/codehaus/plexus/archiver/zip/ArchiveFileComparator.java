@@ -83,6 +83,7 @@ public class ArchiveFileComparator
         throws IOException
     {
         Assert.assertEquals( entry1.isDirectory(), entry2.isDirectory() );
+        Assert.assertEquals( entry1.isSymbolicLink(), entry2.isSymbolicLink() );
         Assert.assertEquals( entry1.getModTime().getTime(), entry2.getModTime().getTime() );
 
         final InputStream is1 = file1.getInputStream( entry1 );
@@ -98,6 +99,7 @@ public class ArchiveFileComparator
             throws Exception
     {
         Assert.assertEquals( entry1.isDirectory(), entry2.isDirectory() );
+        Assert.assertEquals( entry1.isUnixSymlink(), entry2.isUnixSymlink() );
         long timeDelta = entry1.getLastModifiedDate().getTime() - entry2.getLastModifiedDate().getTime();
         Assert.assertTrue( Math.abs( timeDelta ) <= 1000 );
 
