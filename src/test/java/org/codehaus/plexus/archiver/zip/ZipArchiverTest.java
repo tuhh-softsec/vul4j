@@ -533,6 +533,20 @@ public class ZipArchiverTest
         assertTrue( fa.isSymbolicLink() );
     }
 
+    public void testSymlinkArchivedFileSet()
+        throws Exception
+    {
+        final File zipFile = getTestFile( "src/test/resources/symlinks/symlinks.zip" );
+        final File zipFile2 = getTestFile( "target/output/pasymlinks-archivedFileset.zip" );
+        final ZipArchiver zipArchiver = getZipArchiver( zipFile2 );
+        zipArchiver.addArchivedFileSet( zipFile );
+        zipArchiver.createArchive();
+
+        final ZipFile cmp1 = new ZipFile( zipFile );
+        final ZipFile cmp2 = new ZipFile( zipFile2 );
+        ArchiveFileComparator.assertEquals( cmp1, cmp2, "" );
+    }
+
     /*
      */
 
