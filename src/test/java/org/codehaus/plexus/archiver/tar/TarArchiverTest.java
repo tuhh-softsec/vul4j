@@ -34,6 +34,7 @@ import org.codehaus.plexus.archiver.bzip2.BZip2Compressor;
 import org.codehaus.plexus.archiver.gzip.GZipCompressor;
 import org.codehaus.plexus.archiver.util.ArchiveEntryUtils;
 import org.codehaus.plexus.archiver.util.Compressor;
+import org.codehaus.plexus.archiver.util.DefaultArchivedFileSet;
 import org.codehaus.plexus.archiver.zip.ArchiveFileComparator;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributeUtils;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
@@ -532,5 +533,22 @@ public class TarArchiverTest
         ArchiveFileComparator.assertEquals( cmp1, cmp2, "prfx/" );
         cmp1.close();
         cmp2.close();
+    }
+
+    public void testSymlinkArchivedFileSet()
+        throws Exception
+    {
+        final File tarFile = getTestFile( "src/test/resources/symlinks/symlinks.tar" );
+        final File tarFile2 = getTestFile( "target/output/pasymlinks-archivedFileset.tar" );
+        final TarArchiver tarArchiver = getPosixTarArchiver();
+        tarArchiver.setDestFile( tarFile2 );
+        DefaultArchivedFileSet archivedFileSet = DefaultArchivedFileSet.archivedFileSet( tarFile );
+        archivedFileSet.setUsingDefaultExcludes( false );
+        tarArchiver.addArchivedFileSet( archivedFileSet );
+        tarArchiver.createArchive();
+
+        final TarFile cmp1 = new TarFile( tarFile );
+        final TarFile cmp2 = new TarFile( tarFile2 );
+        ArchiveFileComparator.assertEquals( cmp1, cmp2, "" );
     }
 }

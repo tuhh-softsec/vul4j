@@ -54,7 +54,9 @@ public class PlexusIoTarFileResourceCollection
             public PlexusIoResource next()
             {
                 final TarArchiveEntry entry = (TarArchiveEntry) en.nextElement();
-                return new TarResource( tarFile, entry );
+                return !entry.isSymbolicLink()
+                    ? new TarResource( tarFile, entry )
+                    : new TarSymlinkResource( tarFile, entry );
             }
 
             public void remove()
