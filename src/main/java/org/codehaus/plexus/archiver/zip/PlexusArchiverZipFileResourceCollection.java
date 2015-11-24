@@ -57,9 +57,9 @@ public class PlexusArchiverZipFileResourceCollection
         {
             final ZipArchiveEntry entry = (ZipArchiveEntry) en.nextElement();
 
-            return !entry.isUnixSymlink()
-                ? new ZipResource( zipFile, entry, getStreamTransformer() )
-                : new ZipSymlinkResource( zipFile, entry, getStreamTransformer() );
+            return entry.isUnixSymlink()
+                ? new ZipSymlinkResource( zipFile, entry, getStreamTransformer() )
+                : new ZipResource( zipFile, entry, getStreamTransformer() );
         }
 
         public void remove()
