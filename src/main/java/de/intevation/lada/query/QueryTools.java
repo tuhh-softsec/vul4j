@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -43,14 +44,13 @@ public class QueryTools
     public static String readConfigFile(String file) {
         try {
             InputStream inputStream = QueryConfig.class.getResourceAsStream(file);
-            int ch;
-            StringBuilder builder = new StringBuilder();
-            while((ch = inputStream.read()) != -1) {
-                builder.append((char)ch);
-            }
-            return builder.toString();
+            Scanner scanner = new Scanner(inputStream, "UTF-8");
+            scanner.useDelimiter("\\A");
+            String configString = scanner.next();
+            scanner.close();
+            return configString;
         }
-        catch (IOException ioe) {
+        catch (Exception ioe) {
             ioe.printStackTrace();
             return null;
         }
