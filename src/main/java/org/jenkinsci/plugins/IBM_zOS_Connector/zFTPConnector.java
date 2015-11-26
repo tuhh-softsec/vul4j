@@ -317,12 +317,23 @@ public class zFTPConnector
     {
         // Initialize current time and estimated time.
         long curr = System.currentTimeMillis();
-        long jobEndTime = System.currentTimeMillis() + this.waitTime;
+        long jobEndTime = curr + this.waitTime;
         boolean eternal = (waitTime == 0);
 
         // Perform wait
-        while (eternal || (curr <= jobEndTime))
+        do
         {
+	        // Wait
+	        try
+	        {
+		        Thread.sleep(waitInterval);
+		        curr = System.currentTimeMillis();
+	        } catch (InterruptedException e) {
+		        logger.severe(logPrefix + "Interrupted.");
+		        this.jobCC = "WAIT_INTERRUPTED";
+		        return false;
+	        }
+
             // check job state
             if (!this.checkJobAvailability())
                 return false;
@@ -331,17 +342,8 @@ public class zFTPConnector
             if (this.fetchJobLog(outputStream))
                 return true;
 
-            // Wait
-            try
-            {
-                Thread.sleep(waitInterval);
-                curr = System.currentTimeMillis();
-            } catch (InterruptedException e) {
-                logger.severe(logPrefix + "Interrupted.");
-                this.jobCC = "WAIT_INTERRUPTED";
-                return false;
-            }
-        }
+
+        } while (eternal || (curr <= jobEndTime)) ;
 
         // Exit with wait error.
         this.jobCC = "WAIT_ERROR";
@@ -367,11 +369,11 @@ public class zFTPConnector
         try
         {
             for (String name : this.FTPClient.listNames("*"))
-                if(this.jobID.equals(name)) {
-                    // Found our jobId
-                    return true;
-                }
-            logger.severe("Job [" + this.jobID + "] cannot be found in JES");
+	            if (this.jobID.equals(name)) {
+		            // Found our jobId
+		            return true;
+	            }
+            logger.severe(this.logPrefix + "Job [" + this.jobID + "] cannot be found in JES");
             this.jobCC = "JOB_NOT_FOUND_IN_JES";
             return false;
         }
