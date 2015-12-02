@@ -430,24 +430,24 @@ CREATE SEQUENCE ort_id_seq
 
 
 --
--- Name: ort; Type: TABLE; Schema: bund; Owner: -; Tablespace:
+-- Name: ortszuordnung; Type: TABLE; Schema: bund; Owner: -; Tablespace:
 --
 
-CREATE TABLE ort (
+CREATE TABLE ortszuordnung (
     id integer DEFAULT nextval('ort_id_seq'::regclass) NOT NULL,
     probe_id integer NOT NULL,
     ort_id bigint NOT NULL,
-    orts_typ character varying(1),
+    ortszuordnung_typ character varying(1),
     ortszusatztext character varying(100),
     letzte_aenderung timestamp without time zone DEFAULT now()
 );
 
 
 --
--- Name: COLUMN ort.orts_typ; Type: COMMENT; Schema: bund; Owner: -
+-- Name: COLUMN ortszuordnung.ortszuordnung_typ; Type: COMMENT; Schema: bund; Owner: -
 --
 
-COMMENT ON COLUMN ort.orts_typ IS 'E = Entnahmeport, U = Ursprungsort, Z = Ortszusatz';
+COMMENT ON COLUMN ortszuordnung.ortszuordnung_typ IS 'E = Entnahmeport, U = Ursprungsort, Z = Ortszusatz';
 
 
 --
@@ -766,13 +766,13 @@ INHERITS (bund.messwert);
 
 
 --
--- Name: ort; Type: TABLE; Schema: land; Owner: -; Tablespace:
+-- Name: ortszuordnung; Type: TABLE; Schema: land; Owner: -; Tablespace:
 --
 
-CREATE TABLE ort (
+CREATE TABLE ortszuordnung (
     tree_modified timestamp without time zone DEFAULT now()
 )
-INHERITS (bund.ort);
+INHERITS (bund.ortszuordnung);
 
 
 --
@@ -963,6 +963,39 @@ CREATE SEQUENCE datenbasis_id_seq
 --
 
 ALTER SEQUENCE datenbasis_id_seq OWNED BY datenbasis.id;
+
+
+--
+-- Name: datensatz_erzeuger; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
+--
+
+CREATE TABLE datensatz_erzeuger (
+    id integer NOT NULL,
+    netzbetreiber_id character varying(2),
+    da_erzeuger_id character varying(2),
+    mst_id character varying(5),
+    bezeichnung character varying(120),
+    letzte_aenderung timestamp without time zone
+);
+
+
+--
+-- Name: datensatz_erzeuger_id_seq; Type: SEQUENCE; Schema: stammdaten; Owner: -
+--
+
+CREATE SEQUENCE datensatz_erzeuger_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: datensatz_erzeuger_id_seq; Type: SEQUENCE OWNED BY; Schema: stammdaten; Owner: -
+--
+
+ALTER SEQUENCE datensatz_erzeuger_id_seq OWNED BY datensatz_erzeuger.id;
 
 
 --
@@ -1219,6 +1252,38 @@ ALTER SEQUENCE messgroessen_gruppe_id_seq OWNED BY messgroessen_gruppe.id;
 
 
 --
+-- Name: messprogramm_kategorie; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
+--
+
+CREATE TABLE messprogramm_kategorie (
+    id integer NOT NULL,
+    netzbetreiber_id character varying(2),
+    mpl_id character varying(3),
+    bezeichnung character varying(120),
+    letzte_aenderung timestamp without time zone
+);
+
+
+--
+-- Name: messprogramm_kategorie_id_seq; Type: SEQUENCE; Schema: stammdaten; Owner: -
+--
+
+CREATE SEQUENCE messprogramm_kategorie_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: messprogramm_kategorie_id_seq; Type: SEQUENCE OWNED BY; Schema: stammdaten; Owner: -
+--
+
+ALTER SEQUENCE messprogramm_kategorie_id_seq OWNED BY messprogramm_kategorie.id;
+
+
+--
 -- Name: mg_grp; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
@@ -1271,10 +1336,9 @@ CREATE TABLE netz_betreiber (
 
 CREATE TABLE ort (
     id integer NOT NULL,
-    o_typ character varying(1),
     netzbetreiber_id character varying(2),
-    bezeichnung character varying(10),
-    beschreibung character varying(100),
+    ort_id character varying(10),
+    langtext character varying(100),
     staat_id smallint,
     gem_id character varying(8),
     unscharf character(1) DEFAULT NULL::bpchar,
@@ -1287,19 +1351,18 @@ CREATE TABLE ort (
     latitude double precision,
     longitude double precision,
     geom public.geometry(Point,4326),
-    shape public.geometry(MultiPolygon,4326)
+    shape public.geometry(MultiPolygon,4326),
+    ort_typ smallint,
+    kurztext character varying(15),
+    berichtstext character varying(70),
+    zone character varying(1),
+    sektor character varying(2),
+    zustaendigkeit character varying(10),
+    mp_art character varying(10),
+    aktiv character(1),
+    anlage_id integer,
+    oz_id integer
 );
-
-
---
--- Name: COLUMN ort.o_typ; Type: COMMENT; Schema: stammdaten; Owner: -
---
-
-COMMENT ON COLUMN ort.o_typ IS 'D = dynamischer Messpunkt (nicht vordefiniert)
-V = vordefinierter Messpunkt
-R = REI-Messpunkt
-S = Station
-Z = Ortzszusatz';
 
 
 --
@@ -1319,6 +1382,26 @@ CREATE SEQUENCE ort_id_seq
 --
 
 ALTER SEQUENCE ort_id_seq OWNED BY ort.id;
+
+
+--
+-- Name: ort_typ; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
+--
+
+CREATE TABLE ort_typ (
+    id smallint NOT NULL,
+    ort_typ character varying(60)
+);
+
+
+--
+-- Name: ortszuordnung_typ; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
+--
+
+CREATE TABLE ortszuordnung_typ (
+    id character(1) NOT NULL,
+    ortstyp character varying(60)
+);
 
 
 --
@@ -1395,6 +1478,48 @@ CREATE SEQUENCE probenart_id_seq
 --
 
 ALTER SEQUENCE probenart_id_seq OWNED BY probenart.id;
+
+
+--
+-- Name: probenehmer; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
+--
+
+CREATE TABLE probenehmer (
+    id integer NOT NULL,
+    netzbetreiber_id character varying(2),
+    prn_id character varying(9),
+    bearbeiter character varying(25),
+    bemerkung character varying(60),
+    betrieb character varying(80),
+    bezeichnung character varying(80),
+    kurz_bezeichnung character varying(10),
+    ort character varying(20),
+    plz character varying(5),
+    strasse character varying(30),
+    telefon character varying(20),
+    tp character varying(3),
+    typ character(1),
+    letzte_aenderung timestamp without time zone
+);
+
+
+--
+-- Name: probenehmer_id_seq; Type: SEQUENCE; Schema: stammdaten; Owner: -
+--
+
+CREATE SEQUENCE probenehmer_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: probenehmer_id_seq; Type: SEQUENCE OWNED BY; Schema: stammdaten; Owner: -
+--
+
+ALTER SEQUENCE probenehmer_id_seq OWNED BY probenehmer.id;
 
 
 --
@@ -1991,14 +2116,14 @@ ALTER TABLE ONLY messwert ALTER COLUMN letzte_aenderung SET DEFAULT now();
 -- Name: id; Type: DEFAULT; Schema: land; Owner: -
 --
 
-ALTER TABLE ONLY ort ALTER COLUMN id SET DEFAULT nextval('bund.ort_id_seq'::regclass);
+ALTER TABLE ONLY ortszuordnung ALTER COLUMN id SET DEFAULT nextval('bund.ort_id_seq'::regclass);
 
 
 --
 -- Name: letzte_aenderung; Type: DEFAULT; Schema: land; Owner: -
 --
 
-ALTER TABLE ONLY ort ALTER COLUMN letzte_aenderung SET DEFAULT now();
+ALTER TABLE ONLY ortszuordnung ALTER COLUMN letzte_aenderung SET DEFAULT now();
 
 
 --
@@ -2084,6 +2209,13 @@ ALTER TABLE ONLY datenbasis ALTER COLUMN id SET DEFAULT nextval('datenbasis_id_s
 -- Name: id; Type: DEFAULT; Schema: stammdaten; Owner: -
 --
 
+ALTER TABLE ONLY datensatz_erzeuger ALTER COLUMN id SET DEFAULT nextval('datensatz_erzeuger_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: stammdaten; Owner: -
+--
+
 ALTER TABLE ONLY de_vg ALTER COLUMN id SET DEFAULT nextval('de_vg_id_seq'::regclass);
 
 
@@ -2126,6 +2258,13 @@ ALTER TABLE ONLY messgroessen_gruppe ALTER COLUMN id SET DEFAULT nextval('messgr
 -- Name: id; Type: DEFAULT; Schema: stammdaten; Owner: -
 --
 
+ALTER TABLE ONLY messprogramm_kategorie ALTER COLUMN id SET DEFAULT nextval('messprogramm_kategorie_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: stammdaten; Owner: -
+--
+
 ALTER TABLE ONLY ort ALTER COLUMN id SET DEFAULT nextval('ort_id_seq'::regclass);
 
 
@@ -2141,6 +2280,13 @@ ALTER TABLE ONLY pflicht_messgroesse ALTER COLUMN id SET DEFAULT nextval('pflich
 --
 
 ALTER TABLE ONLY probenart ALTER COLUMN id SET DEFAULT nextval('probenart_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: stammdaten; Owner: -
+--
+
+ALTER TABLE ONLY probenehmer ALTER COLUMN id SET DEFAULT nextval('probenehmer_id_seq'::regclass);
 
 
 --
@@ -2193,11 +2339,11 @@ ALTER TABLE ONLY messwert
 
 
 --
--- Name: ort_pkey; Type: CONSTRAINT; Schema: bund; Owner: -; Tablespace:
+-- Name: ortszuordnung_pkey; Type: CONSTRAINT; Schema: bund; Owner: -; Tablespace:
 --
 
-ALTER TABLE ONLY ort
-    ADD CONSTRAINT ort_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY ortszuordnung
+    ADD CONSTRAINT ortszuordnung_pkey PRIMARY KEY (id);
 
 
 --
@@ -2307,11 +2453,11 @@ ALTER TABLE ONLY messwert
 
 
 --
--- Name: ort_pkey; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace:
+-- Name: ortszuordnung_pkey; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace:
 --
 
-ALTER TABLE ONLY ort
-    ADD CONSTRAINT ort_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY ortszuordnung
+    ADD CONSTRAINT ortszuordnung_pkey PRIMARY KEY (id);
 
 
 --
@@ -2397,6 +2543,14 @@ ALTER TABLE ONLY datenbasis
 
 
 --
+-- Name: datensatz_erzeuger_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
+--
+
+ALTER TABLE ONLY datensatz_erzeuger
+    ADD CONSTRAINT datensatz_erzeuger_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: de_vg_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
@@ -2461,6 +2615,14 @@ ALTER TABLE ONLY messgroessen_gruppe
 
 
 --
+-- Name: messprogramm_kategorie_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
+--
+
+ALTER TABLE ONLY messprogramm_kategorie
+    ADD CONSTRAINT messprogramm_kategorie_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: mg_grp_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
@@ -2490,6 +2652,22 @@ ALTER TABLE ONLY netz_betreiber
 
 ALTER TABLE ONLY ort
     ADD CONSTRAINT ort_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: ort_typ_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
+--
+
+ALTER TABLE ONLY ort_typ
+    ADD CONSTRAINT ort_typ_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: ortszuordnung_typ_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
+--
+
+ALTER TABLE ONLY ortszuordnung_typ
+    ADD CONSTRAINT ortszuordnung_typ_pkey PRIMARY KEY (id);
 
 
 --
@@ -2530,6 +2708,14 @@ ALTER TABLE ONLY proben_zusatz
 
 ALTER TABLE ONLY probenart
     ADD CONSTRAINT probenart_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: probenehmer_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
+--
+
+ALTER TABLE ONLY probenehmer
+    ADD CONSTRAINT probenehmer_pkey PRIMARY KEY (id);
 
 
 --
@@ -2694,7 +2880,7 @@ CREATE TRIGGER tree_timestamp_messwert BEFORE UPDATE ON messwert FOR EACH ROW EX
 -- Name: tree_timestamp_ort; Type: TRIGGER; Schema: land; Owner: -
 --
 
-CREATE TRIGGER tree_timestamp_ort BEFORE UPDATE ON ort FOR EACH ROW EXECUTE PROCEDURE update_time_ort();
+CREATE TRIGGER tree_timestamp_ort BEFORE UPDATE ON ortszuordnung FOR EACH ROW EXECUTE PROCEDURE update_time_ort();
 
 
 --
@@ -2778,19 +2964,27 @@ ALTER TABLE ONLY messwert
 
 
 --
--- Name: ort_ort_id_fkey; Type: FK CONSTRAINT; Schema: bund; Owner: -
+-- Name: ortszuordnung_ort_id_fkey; Type: FK CONSTRAINT; Schema: bund; Owner: -
 --
 
-ALTER TABLE ONLY ort
-    ADD CONSTRAINT ort_ort_id_fkey FOREIGN KEY (ort_id) REFERENCES stammdaten.ort(id);
+ALTER TABLE ONLY ortszuordnung
+    ADD CONSTRAINT ortszuordnung_ort_id_fkey FOREIGN KEY (ort_id) REFERENCES stammdaten.ort(id);
 
 
 --
--- Name: ort_probe_id_fkey; Type: FK CONSTRAINT; Schema: bund; Owner: -
+-- Name: ortszuordnung_ortszuordnung_typ_fkey; Type: FK CONSTRAINT; Schema: bund; Owner: -
 --
 
-ALTER TABLE ONLY ort
-    ADD CONSTRAINT ort_probe_id_fkey FOREIGN KEY (probe_id) REFERENCES probe(id);
+ALTER TABLE ONLY ortszuordnung
+    ADD CONSTRAINT ortszuordnung_ortszuordnung_typ_fkey FOREIGN KEY (ortszuordnung_typ) REFERENCES stammdaten.ortszuordnung_typ(id);
+
+
+--
+-- Name: ortszuordnung_probe_id_fkey; Type: FK CONSTRAINT; Schema: bund; Owner: -
+--
+
+ALTER TABLE ONLY ortszuordnung
+    ADD CONSTRAINT ortszuordnung_probe_id_fkey FOREIGN KEY (probe_id) REFERENCES probe(id);
 
 
 --
@@ -3012,19 +3206,27 @@ ALTER TABLE ONLY messwert
 
 
 --
--- Name: ort_ort_id_fkey; Type: FK CONSTRAINT; Schema: land; Owner: -
+-- Name: ortszuordnung_ort_id_fkey; Type: FK CONSTRAINT; Schema: land; Owner: -
 --
 
-ALTER TABLE ONLY ort
-    ADD CONSTRAINT ort_ort_id_fkey FOREIGN KEY (ort_id) REFERENCES stammdaten.ort(id);
+ALTER TABLE ONLY ortszuordnung
+    ADD CONSTRAINT ortszuordnung_ort_id_fkey FOREIGN KEY (ort_id) REFERENCES stammdaten.ort(id);
 
 
 --
--- Name: ort_probe_id_fkey; Type: FK CONSTRAINT; Schema: land; Owner: -
+-- Name: ortszuordnung_ortszuordnung_typ_fkey; Type: FK CONSTRAINT; Schema: land; Owner: -
 --
 
-ALTER TABLE ONLY ort
-    ADD CONSTRAINT ort_probe_id_fkey FOREIGN KEY (probe_id) REFERENCES probe(id) ON DELETE CASCADE;
+ALTER TABLE ONLY ortszuordnung
+    ADD CONSTRAINT ortszuordnung_ortszuordnung_typ_fkey FOREIGN KEY (ortszuordnung_typ) REFERENCES stammdaten.ortszuordnung_typ(id);
+
+
+--
+-- Name: ortszuordnung_probe_id_fkey; Type: FK CONSTRAINT; Schema: land; Owner: -
+--
+
+ALTER TABLE ONLY ortszuordnung
+    ADD CONSTRAINT ortszuordnung_probe_id_fkey FOREIGN KEY (probe_id) REFERENCES probe(id) ON DELETE CASCADE;
 
 
 --
@@ -3150,11 +3352,43 @@ ALTER TABLE ONLY auth
 
 
 --
+-- Name: datensatz_erzeuger_mst_id_fkey1; Type: FK CONSTRAINT; Schema: stammdaten; Owner: -
+--
+
+ALTER TABLE ONLY datensatz_erzeuger
+    ADD CONSTRAINT datensatz_erzeuger_mst_id_fkey1 FOREIGN KEY (mst_id) REFERENCES mess_stelle(id);
+
+
+--
+-- Name: datensatz_erzeuger_netzbetreiber_id_fkey; Type: FK CONSTRAINT; Schema: stammdaten; Owner: -
+--
+
+ALTER TABLE ONLY datensatz_erzeuger
+    ADD CONSTRAINT datensatz_erzeuger_netzbetreiber_id_fkey FOREIGN KEY (netzbetreiber_id) REFERENCES netz_betreiber(id);
+
+
+--
 -- Name: fk_deskriptoren_vorgaenger; Type: FK CONSTRAINT; Schema: stammdaten; Owner: -
 --
 
 ALTER TABLE ONLY deskriptoren
     ADD CONSTRAINT fk_deskriptoren_vorgaenger FOREIGN KEY (vorgaenger) REFERENCES deskriptoren(id);
+
+
+--
+-- Name: messprogramm_kategorie_netzbetreiber_id_fkey; Type: FK CONSTRAINT; Schema: stammdaten; Owner: -
+--
+
+ALTER TABLE ONLY messprogramm_kategorie
+    ADD CONSTRAINT messprogramm_kategorie_netzbetreiber_id_fkey FOREIGN KEY (netzbetreiber_id) REFERENCES netz_betreiber(id);
+
+
+--
+-- Name: ort_anlage_fkey; Type: FK CONSTRAINT; Schema: stammdaten; Owner: -
+--
+
+ALTER TABLE ONLY ort
+    ADD CONSTRAINT ort_anlage_fkey FOREIGN KEY (anlage_id) REFERENCES ort(id);
 
 
 --
@@ -3179,6 +3413,22 @@ ALTER TABLE ONLY ort
 
 ALTER TABLE ONLY ort
     ADD CONSTRAINT ort_netzbetreiber_id_fkey FOREIGN KEY (netzbetreiber_id) REFERENCES netz_betreiber(id);
+
+
+--
+-- Name: ort_ort_typ_fkey; Type: FK CONSTRAINT; Schema: stammdaten; Owner: -
+--
+
+ALTER TABLE ONLY ort
+    ADD CONSTRAINT ort_ort_typ_fkey FOREIGN KEY (ort_typ) REFERENCES ort_typ(id);
+
+
+--
+-- Name: ort_oz_fkey; Type: FK CONSTRAINT; Schema: stammdaten; Owner: -
+--
+
+ALTER TABLE ONLY ort
+    ADD CONSTRAINT ort_oz_fkey FOREIGN KEY (oz_id) REFERENCES ort(id);
 
 
 --
@@ -3219,6 +3469,14 @@ ALTER TABLE ONLY pflicht_messgroesse
 
 ALTER TABLE ONLY proben_zusatz
     ADD CONSTRAINT proben_zusatz_meh_id_fkey FOREIGN KEY (meh_id) REFERENCES mess_einheit(id);
+
+
+--
+-- Name: probenehmer_netzbetreiber_id_fkey; Type: FK CONSTRAINT; Schema: stammdaten; Owner: -
+--
+
+ALTER TABLE ONLY probenehmer
+    ADD CONSTRAINT probenehmer_netzbetreiber_id_fkey FOREIGN KEY (netzbetreiber_id) REFERENCES netz_betreiber(id);
 
 
 --
