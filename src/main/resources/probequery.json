@@ -14,8 +14,8 @@
     ]
 },
 {   "id": "1",
-    "name": "HP-Nr-Filer",
-    "description": "Abfrage der Proben mit Wildcardfilter fuer die Hauptproben-Nr.",
+    "name": "HP-Nr-Filter",
+    "description": "Abfrage der Proben mit Wildcardfilter für die Hauptproben-Nr.",
     "sql": "select p.id as id, pt.probe_id_alt as probeId, p.netzbetreiber_id as netzbetreiberId, p.mst_id as mstId, p.umw_id as umwId, p.hauptproben_nr as hauptprobenNr from land.probe p join land.probe_translation pt on p.id = pt.probe_id where (p.hauptproben_nr like :hp_nr_id or '' = :hp_nr_id)",
     "result": [
         {"dataIndex": "probeId", "header": "ProbeId", "width": 120},
@@ -29,8 +29,8 @@
     ]
 },
 {   "id": "2",
-    "name": "Probe-ID-Filer",
-    "description": "Abfrage der Proben mit Wildcardfilter fuer die Probe_id",
+    "name": "Probe-ID-Filter",
+    "description": "Abfrage der Proben mit Wildcardfilter für die Probe_id",
     "sql": "select p.id as id, pt.probe_id_alt as probeId, p.netzbetreiber_id as netzbetreiberId, p.mst_id as mstId, p.umw_id as umwId, p.hauptproben_nr as hauptprobenNr from land.probe p join land.probe_translation pt on p.id = pt.probe_id where (pt.probe_id_alt like :probe_id or '' = :probe_id)",
     "result": [
         {"dataIndex": "probeId", "header": "ProbeId", "width": 120},
