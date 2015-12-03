@@ -19,7 +19,7 @@ import javax.inject.Inject;
 import de.intevation.lada.model.land.LKommentarP;
 import de.intevation.lada.model.land.LMessung;
 import de.intevation.lada.model.land.LMesswert;
-import de.intevation.lada.model.land.LOrt;
+import de.intevation.lada.model.land.LOrtszuordnung;
 import de.intevation.lada.model.land.LProbe;
 import de.intevation.lada.model.land.Messprogramm;
 import de.intevation.lada.model.land.MessprogrammMmt;
@@ -27,7 +27,7 @@ import de.intevation.lada.model.land.MessungTranslation;
 import de.intevation.lada.model.land.ProbeTranslation;
 import de.intevation.lada.model.stamm.DeskriptorUmwelt;
 import de.intevation.lada.model.stamm.Deskriptoren;
-import de.intevation.lada.model.stamm.SOrt;
+import de.intevation.lada.model.stamm.Ort;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
@@ -208,17 +208,17 @@ public class ProbeFactory {
         }
         if (messprogramm.getOrtId() != null &&
             !messprogramm.getOrtId().equals("")) {
-            LOrt ort = new LOrt();
-            ort.setOrtsTyp("E");
+            LOrtszuordnung ort = new LOrtszuordnung();
+            ort.setOrtszuordnungTyp("E");
             ort.setProbeId(probe.getId());
-            QueryBuilder<SOrt> ortBuilder = new QueryBuilder<SOrt>(
-                repository.entityManager("stamm"), SOrt.class);
+            QueryBuilder<Ort> ortBuilder = new QueryBuilder<Ort>(
+                repository.entityManager("stamm"), Ort.class);
             ortBuilder.and("id", messprogramm.getOrtId());
             Response ortResponse = repository.filter(ortBuilder.getQuery(), "stamm");
             @SuppressWarnings("unchecked")
-            List<SOrt> orte = (List<SOrt>) ortResponse.getData();
+            List<Ort> orte = (List<Ort>) ortResponse.getData();
             if (orte != null && !orte.isEmpty()) {
-                ort.setOrt(BigInteger.valueOf(orte.get(0).getId()));
+                ort.setOrtId(Long.valueOf(orte.get(0).getId()));
             }
             repository.create(ort, "land");
         }

@@ -10,13 +10,12 @@ package de.intevation.lada.model.bund;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-
 /**
- * The persistent class for the ort database table.
+ * The persistent class for the ortszuordung database table.
  */
 @Entity
-@Table(name="ort")
-public class Ort extends de.intevation.lada.model.Ort {
+@Table(name="ortszuordung")
+public class Ortszuordnung extends de.intevation.lada.model.Ortszuordnung {
     private static final long serialVersionUID = 1L;
 
 }

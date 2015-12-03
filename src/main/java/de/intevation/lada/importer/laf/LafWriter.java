@@ -19,11 +19,11 @@ import de.intevation.lada.model.land.LKommentarM;
 import de.intevation.lada.model.land.LKommentarP;
 import de.intevation.lada.model.land.LMessung;
 import de.intevation.lada.model.land.LMesswert;
-import de.intevation.lada.model.land.LOrt;
+import de.intevation.lada.model.land.LOrtszuordnung;
 import de.intevation.lada.model.land.LProbe;
 import de.intevation.lada.model.land.MessungTranslation;
 import de.intevation.lada.model.land.ProbeTranslation;
-import de.intevation.lada.model.stamm.SOrt;
+import de.intevation.lada.model.stamm.Ort;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -133,7 +133,7 @@ public class LafWriter {
      * @param orte      List of {@link SOrt} objects.
      * @return success
      */
-    public boolean writeOrte(UserInfo userInfo, List<SOrt> orte) {
+    public boolean writeOrte(UserInfo userInfo, List<Ort> orte) {
         return true;
     }
 
@@ -144,7 +144,7 @@ public class LafWriter {
      * @param orte  List of {@link LOrt} objects.
      * @return success
      */
-    public boolean writeLOrte(UserInfo userInfo, LOrt ort) {
+    public boolean writeLOrte(UserInfo userInfo, LOrtszuordnung ort) {
         ort.setProbeId(this.currentProbeId);
         repository.create(ort, "land");
         return true;

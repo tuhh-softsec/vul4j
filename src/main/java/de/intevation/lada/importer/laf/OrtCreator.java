@@ -16,8 +16,8 @@ import javax.inject.Inject;
 import org.apache.log4j.Logger;
 
 import de.intevation.lada.importer.ReportItem;
-import de.intevation.lada.model.land.LOrt;
-import de.intevation.lada.model.stamm.SOrt;
+import de.intevation.lada.model.land.LOrtszuordnung;
+import de.intevation.lada.model.stamm.Ort;
 import de.intevation.lada.model.stamm.Staat;
 import de.intevation.lada.model.stamm.Verwaltungseinheit;
 import de.intevation.lada.util.annotation.RepositoryConfig;
@@ -401,12 +401,12 @@ public class OrtCreator
      *
      * @return The new Ort.
      */
-    public SOrt toOrt() {
+    public Ort toOrt() {
         if (this.ortCode != null && this.ortCode.length() > 0) {
             return null;
         }
         logger.debug("create a new ort");
-        SOrt ort = new SOrt();
+        Ort ort = new Ort();
         repository.create(ort, "stamm");
         this.ortId = ort.getId();
         boolean koord = true;
@@ -460,14 +460,14 @@ public class OrtCreator
         if (this.nuts != null && this.nuts.length() > 0) {
             ort.setNutsCode(nuts);
         }
-        else if (ort.getVerwaltungseinheitId() != null &&
-            ort.getVerwaltungseinheitId().length() > 0)
+        else if (ort.getGemId() != null &&
+            ort.getGemId().length() > 0)
         {
             QueryBuilder<Verwaltungseinheit> builder =
                 new QueryBuilder<Verwaltungseinheit>(
                     repository.entityManager("stamm"),
                     Verwaltungseinheit.class);
-            builder.and("id", ort.getVerwaltungseinheitId());
+            builder.and("id", ort.getGemId());
             @SuppressWarnings("unchecked")
             List<Verwaltungseinheit> einheit =
                 (List<Verwaltungseinheit>)repository.filter(
@@ -478,7 +478,7 @@ public class OrtCreator
                 ort.setNutsCode(einheit.get(0).getNuts());
             }
         }
-        ort.setBeschreibung(beschreibung);
+        ort.setLangtext(beschreibung);
         if (this.hoehe != null) {
             ort.setHoeheLand(Float.valueOf(hoehe));
         }
@@ -494,7 +494,7 @@ public class OrtCreator
      * @param koord     Set the coordinates or not.
      * @return The Ort object.
      */
-    private SOrt setLandLang(SOrt ort, boolean koord) {
+    private Ort setLandLang(Ort ort, boolean koord) {
         QueryBuilder<Staat> builder =
             new QueryBuilder<Staat>(
                 repository.entityManager("stamm"),
@@ -526,7 +526,7 @@ public class OrtCreator
      * @param koord     Set the coordinates or not.
      * @return The Ort object.
      */
-    private SOrt setLandKurz(SOrt ort, boolean koord) {
+    private Ort setLandKurz(Ort ort, boolean koord) {
         QueryBuilder<Staat> builder =
             new QueryBuilder<Staat>(
                 repository.entityManager("stamm"),
@@ -558,7 +558,7 @@ public class OrtCreator
      * @param koord     Set the coordinates or not.
      * @return The Ort object.
      */
-    private SOrt setLandS(SOrt ort, boolean koord) {
+    private Ort setLandS(Ort ort, boolean koord) {
         ort.setStaatId(Integer.valueOf(this.landS));
         if (koord) {
             QueryBuilder<Staat> builder =
@@ -592,7 +592,7 @@ public class OrtCreator
      * @param koord     Set the coordinates or not.
      * @return The Ort object.
      */
-    private SOrt setGemeinde(SOrt ort, boolean koord) {
+    private Ort setGemeinde(Ort ort, boolean koord) {
         QueryBuilder<Verwaltungseinheit> builder =
             new QueryBuilder<Verwaltungseinheit>(
                 repository.entityManager("stamm"),
@@ -607,7 +607,7 @@ public class OrtCreator
             this.warnings.add(new ReportItem("verwaltungseinheit", null, 631));
             return ort;
         }
-        ort.setVerwaltungseinheitId(einheit.get(0).getId());
+        ort.setGemId(einheit.get(0).getId());
         if (koord) {
             ort.setKoordXExtern(einheit.get(0).getKoordXExtern());
             ort.setKoordYExtern(einheit.get(0).getKoordYExtern());
@@ -623,8 +623,8 @@ public class OrtCreator
      * @param koord     Set the coordinates or not.
      * @return The Ort object.
      */
-    private SOrt setGemeindeS(SOrt ort, boolean koord) {
-        ort.setVerwaltungseinheitId(this.gemSchluessel);
+    private Ort setGemeindeS(Ort ort, boolean koord) {
+        ort.setGemId(this.gemSchluessel);
         if (koord) {
             QueryBuilder<Verwaltungseinheit> builder =
                 new QueryBuilder<Verwaltungseinheit>(
@@ -652,7 +652,7 @@ public class OrtCreator
      * @param ort       The ort object.
      * @return The Ort object.
      */
-    private SOrt setKoordinaten(SOrt ort) {
+    private Ort setKoordinaten(Ort ort) {
         String art = "";
         String x = "";
         String y = "";
@@ -685,7 +685,7 @@ public class OrtCreator
         }
         ort.setKoordXExtern(x);
         ort.setKoordYExtern(y);
-        ort.setKoordinatenartId(Integer.valueOf(art));
+        ort.setKdaId(Integer.valueOf(art));
         return ort;
     }
 
@@ -695,7 +695,7 @@ public class OrtCreator
      * @param ort       The ort object.
      * @return The Ort object.
      */
-    private SOrt setKoordinatenS(SOrt ort) {
+    private Ort setKoordinatenS(Ort ort) {
         String art = "";
         String x = "";
         String y = "";
@@ -730,7 +730,7 @@ public class OrtCreator
         ort.setLongitude(Double.valueOf(x));
         ort.setKoordYExtern(y);
         ort.setLatitude(Double.valueOf(y));
-        ort.setKoordinatenartId(Integer.valueOf(art));
+        ort.setKdaId(Integer.valueOf(art));
         return ort;
     }
 
@@ -739,31 +739,31 @@ public class OrtCreator
      *
      * @return The new LOrt object.
      */
-    public LOrt toLOrt() {
+    public LOrtszuordnung toLOrt() {
         if (this.ortId == null &&
             (this.ortCode == null || this.ortCode.length() == 0)
         ) {
             return null;
         }
         if(this.ortCode != null && this.ortCode.length() > 0) {
-            QueryBuilder<SOrt> builder =
-                new QueryBuilder<SOrt>(
+            QueryBuilder<Ort> builder =
+                new QueryBuilder<Ort>(
                     repository.entityManager("stamm"),
-                    SOrt.class);
+                    Ort.class);
             builder.and("bezeichnung", this.ortCode);
             @SuppressWarnings("unchecked")
-            List<SOrt> orte=
-                (List<SOrt>)repository.filter(
+            List<Ort> orte=
+                (List<Ort>)repository.filter(
                     builder.getQuery(),
                     "stamm").getData();
             if (orte != null && !orte.isEmpty()) {
                 this.ortId = orte.get(0).getId();
             }
         }
-        LOrt ort = new LOrt();
-        ort.setOrt(BigInteger.valueOf(this.ortId));
+        LOrtszuordnung ort = new LOrtszuordnung();
+        ort.setOrtId(Long.valueOf(this.ortId));
         ort.setProbeId(this.probeId);
-        ort.setOrtsTyp(this.ortTyp);
+        ort.setOrtszuordnungTyp(this.ortTyp);
         ort.setOrtszusatztext(this.zusatztext);
         return ort;
     }

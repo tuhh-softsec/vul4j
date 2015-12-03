@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
 
 import de.intevation.lada.importer.ReportItem;
 import de.intevation.lada.model.land.LMessung;
-import de.intevation.lada.model.land.LOrt;
+import de.intevation.lada.model.land.LOrtszuordnung;
 import de.intevation.lada.model.land.LProbe;
 import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.validation.Validator;
@@ -215,7 +215,7 @@ public class LafParser {
             }
         }
         writer.writeOrte(userInfo, producer.getOrte());
-        for (LOrt ort: producer.getLOrte()) {
+        for (LOrtszuordnung ort: producer.getLOrte()) {
             Violation oViolation = ortValidator.validate(ort);
             if (oViolation.hasErrors()) {
                 ReportItem oErr = new ReportItem("validation", oViolation.getErrors(), null);

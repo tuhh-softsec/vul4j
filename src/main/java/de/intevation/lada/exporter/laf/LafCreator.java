@@ -19,7 +19,7 @@ import de.intevation.lada.model.land.LKommentarM;
 import de.intevation.lada.model.land.LKommentarP;
 import de.intevation.lada.model.land.LMessung;
 import de.intevation.lada.model.land.LMesswert;
-import de.intevation.lada.model.land.LOrt;
+import de.intevation.lada.model.land.LOrtszuordnung;
 import de.intevation.lada.model.land.LProbe;
 import de.intevation.lada.model.land.LZusatzWert;
 import de.intevation.lada.model.land.ProbeTranslation;
@@ -27,7 +27,7 @@ import de.intevation.lada.model.stamm.MessEinheit;
 import de.intevation.lada.model.stamm.Messgroesse;
 import de.intevation.lada.model.stamm.ProbenZusatz;
 import de.intevation.lada.model.stamm.Probenart;
-import de.intevation.lada.model.stamm.SOrt;
+import de.intevation.lada.model.stamm.Ort;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
@@ -197,30 +197,31 @@ implements Creator
      */
     @SuppressWarnings("unchecked")
     private String writeOrt(LProbe probe) {
-        QueryBuilder<LOrt> builder =
-            new QueryBuilder<LOrt>(
+        QueryBuilder<LOrtszuordnung> builder =
+            new QueryBuilder<LOrtszuordnung>(
                 repository.entityManager("land"),
-                LOrt.class);
+                LOrtszuordnung.class);
         builder.and("probeId", probe.getId());
         Response objects = repository.filter(builder.getQuery(), "land");
-        List<LOrt> orte = (List<LOrt>)objects.getData();
+        List<LOrtszuordnung> orte =
+            (List<LOrtszuordnung>)objects.getData();
 
         String laf = "";
-        for(LOrt o : orte) {
+        for(LOrtszuordnung o : orte) {
             laf += "%ORT%\n";
-            QueryBuilder<SOrt> oBuilder =
-                new QueryBuilder<SOrt>(
+            QueryBuilder<Ort> oBuilder =
+                new QueryBuilder<Ort>(
                     repository.entityManager("stamm"),
-                    SOrt.class);
-            oBuilder.and("id", o.getOrt());
-            List<SOrt> sOrte=
-                (List<SOrt>)repository.filter(
+                    Ort.class);
+            oBuilder.and("id", o.getOrtId());
+            List<Ort> sOrte=
+                (List<Ort>)repository.filter(
                     oBuilder.getQuery(),
                     "stamm").getData();
 
             laf += lafLine("ORT_CODE",
-                "\"" + sOrte.get(0).getBezeichnung() + "\"");
-            laf += lafLine("ORT_TYP", "\"" + o.getOrtsTyp() + "\"");
+                "\"" + sOrte.get(0).getAnlageId() + "\"");
+            laf += lafLine("ORT_TYP", "\"" + o.getOrtszuordnungTyp() + "\"");
             laf += o.getOrtszusatztext() == null ? "":
                 lafLine("ORT_ZUSATZTEXT", "\"" + o.getOrtszusatztext() + "\"");
             laf += lafLine("ORT_LAND_S", String.valueOf(sOrte.get(0).getStaatId()));
@@ -230,7 +231,7 @@ implements Creator
             koord += sOrte.get(0).getLatitude();
             //TODO: use table koordinatenart and koord*extern!
             laf += lafLine("ORT_KOORDINATEN_S", koord);
-            laf += lafLine("ORT_GEMEINDESCHLUESSEL", sOrte.get(0).getVerwaltungseinheitId());
+            laf += lafLine("ORT_GEMEINDESCHLUESSEL", sOrte.get(0).getOrtId());
         }
         return laf;
     }

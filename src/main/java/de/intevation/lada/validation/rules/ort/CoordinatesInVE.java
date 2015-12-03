@@ -16,9 +16,9 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
 
-import de.intevation.lada.model.land.LOrt;
+import de.intevation.lada.model.land.LOrtszuordnung;
 import de.intevation.lada.model.stamm.DeVg;
-import de.intevation.lada.model.stamm.SOrt;
+import de.intevation.lada.model.stamm.Ort;
 import de.intevation.lada.model.stamm.Verwaltungseinheit;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
@@ -45,19 +45,19 @@ public class CoordinatesInVE implements Rule {
     @SuppressWarnings("unchecked")
     @Override
     public Violation execute(Object object) {
-        LOrt ort = (LOrt)object;
-        if (!"E".equals(ort.getOrtsTyp())) {
+        LOrtszuordnung ort = (LOrtszuordnung)object;
+        if (!"E".equals(ort.getOrtszuordnungTyp())) {
             return null;
         }
-        QueryBuilder<SOrt> ortBuilder =
-            new QueryBuilder<SOrt>(repository.entityManager("stamm"), SOrt.class);
-        ortBuilder.and("id", ort.getOrt());
+        QueryBuilder<Ort> ortBuilder =
+            new QueryBuilder<Ort>(repository.entityManager("stamm"), Ort.class);
+        ortBuilder.and("id", ort.getOrtId());
         Response response = repository.filter(ortBuilder.getQuery(), "stamm");
-        List<SOrt> orte = (List<SOrt>)response.getData();
+        List<Ort> orte = (List<Ort>)response.getData();
         QueryBuilder<Verwaltungseinheit> veBuilder =
             new QueryBuilder<Verwaltungseinheit>(
                 repository.entityManager("stamm"), Verwaltungseinheit.class);
-        veBuilder.and("id", orte.get(0).getVerwaltungseinheitId());
+        veBuilder.and("id", orte.get(0).getGemId());
         Response ver = repository.filter(veBuilder.getQuery(), "stamm");
         if (((List<Verwaltungseinheit>)ver.getData()).isEmpty()) {
             Violation violation = new Violation();

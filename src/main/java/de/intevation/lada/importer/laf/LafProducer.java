@@ -15,17 +15,16 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import de.intevation.lada.importer.ReportItem;
-import de.intevation.lada.model.Ort;
 import de.intevation.lada.model.land.LKommentarM;
 import de.intevation.lada.model.land.LKommentarP;
 import de.intevation.lada.model.land.LMessung;
 import de.intevation.lada.model.land.LMesswert;
-import de.intevation.lada.model.land.LOrt;
+import de.intevation.lada.model.land.LOrtszuordnung;
 import de.intevation.lada.model.land.LProbe;
 import de.intevation.lada.model.land.LZusatzWert;
 import de.intevation.lada.model.land.MessungTranslation;
 import de.intevation.lada.model.land.ProbeTranslation;
-import de.intevation.lada.model.stamm.SOrt;
+import de.intevation.lada.model.stamm.Ort;
 
 /**
  * The LAFProducer creates entity objects form key-value pairs using the
@@ -79,12 +78,12 @@ public class LafProducer
     /**
      * Orte created by this producer.
      */
-    private List<LOrt> lorte;
+    private List<LOrtszuordnung> lorte;
 
     /**
      * SOrte created by this producer.
      */
-    private List<SOrt> orte;
+    private List<Ort> orte;
 
     /**
      * Messwerte created by this producer.
@@ -139,7 +138,7 @@ public class LafProducer
         this.pKommentare = new ArrayList<LKommentarP>();
         this.mKommentare = new HashMap<LMessung, List<LKommentarM>>();
         this.messungen = new HashMap<LMessung, MessungTranslation>();
-        this.lorte = new ArrayList<LOrt>();
+        this.lorte = new ArrayList<LOrtszuordnung>();
         this.messwerte = new HashMap<LMessung, List<LMesswert>>();
         String fileName = "/import.json";
         LafFormat format = new LafFormat();
@@ -333,14 +332,14 @@ public class LafProducer
     /**
      * @return List of {@link Ort} entities.
      */
-    public List<SOrt> getOrte() {
+    public List<Ort> getOrte() {
         return this.orte;
     }
 
     /**
      * @return List of {@link LOrt} entities.
      */
-    public List<LOrt> getLOrte() {
+    public List<LOrtszuordnung> getLOrte() {
         return this.lorte;
     }
 
@@ -381,8 +380,8 @@ public class LafProducer
         this.probe = new LProbe();
         this.messungen = new HashMap<LMessung, MessungTranslation>();
         this.messung = null;
-        this.lorte = new ArrayList<LOrt>();
-        this.orte = new ArrayList<SOrt>();
+        this.lorte = new ArrayList<LOrtszuordnung>();
+        this.orte = new ArrayList<Ort>();
         this.ort.reset();
         this.messwerte = new HashMap<LMessung, List<LMesswert>>();
         this.mKommentare = new HashMap<LMessung, List<LKommentarM>>();
@@ -413,11 +412,11 @@ public class LafProducer
      */
     public void newOrt() {
         if (this.ort != null) {
-            SOrt o = this.ort.toOrt();
+            Ort o = this.ort.toOrt();
             if (o != null) {
                 this.orte.add(o);
             }
-            LOrt lo = this.ort.toLOrt();
+            LOrtszuordnung lo = this.ort.toLOrt();
             if (lo != null) {
                 this.lorte.add(lo);
             }

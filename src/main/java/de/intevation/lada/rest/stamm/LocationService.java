@@ -22,7 +22,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-import de.intevation.lada.model.stamm.SOrt;
+import de.intevation.lada.model.stamm.Ort;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
@@ -97,14 +97,14 @@ public class LocationService {
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() || !params.containsKey("ortId")) {
-            return defaultRepo.getAll(SOrt.class, "stamm");
+            return defaultRepo.getAll(Ort.class, "stamm");
         }
         String ortId = params.getFirst("ortId");
-        QueryBuilder<SOrt> builder =
-            new QueryBuilder<SOrt>(
+        QueryBuilder<Ort> builder =
+            new QueryBuilder<Ort>(
                 defaultRepo.entityManager("stamm"),
-                SOrt.class);
-        builder.and("ortId", ortId);
+                Ort.class);
+        builder.and("id", ortId);
         return defaultRepo.filter(builder.getQuery(), "stamm");
     }
 
@@ -125,7 +125,7 @@ public class LocationService {
         @PathParam("id") String id
     ) {
         return defaultRepo.getById(
-            SOrt.class,
+            Ort.class,
             Integer.valueOf(id),
             "stamm");
     }
@@ -161,7 +161,7 @@ public class LocationService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response create(
         @Context HttpHeaders headers,
-        SOrt ort
+        Ort ort
     ) {
         /* Persist the new object*/
         return defaultRepo.create(ort, "stamm");
@@ -197,11 +197,11 @@ public class LocationService {
     @PUT
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response update(@Context HttpHeaders headers, SOrt ort) {
+    public Response update(@Context HttpHeaders headers, Ort ort) {
         Response response = defaultRepo.update(ort, "stamm");
         Response updated = defaultRepo.getById(
-            SOrt.class,
-            ((SOrt)response.getData()).getId(), "stamm");
+            Ort.class,
+            ((Ort)response.getData()).getId(), "stamm");
         return updated;
     }
 
@@ -223,8 +223,8 @@ public class LocationService {
     ) {
         /* Get the object by id*/
         Response object =
-            defaultRepo.getById(SOrt.class, Integer.valueOf(id), "stamm");
-        SOrt ortObj = (SOrt)object.getData();
+            defaultRepo.getById(Ort.class, Integer.valueOf(id), "stamm");
+        Ort ortObj = (Ort)object.getData();
         /* Delete the object*/
         return defaultRepo.delete(ortObj, "stamm");
     }
