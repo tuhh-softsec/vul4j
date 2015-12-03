@@ -21,12 +21,13 @@ import java.util.List;
  */
 public class QueryConfig
 {
-    String id;
-    String name;
-    String description;
-    String sql;
-    List<QueryFilter> filters;
-    List<ResultConfig> results;
+    private String id;
+    private String name;
+    private String description;
+    private String sql;
+    private String type;
+    private List<QueryFilter> filters;
+    private List<ResultConfig> results;
 
     public QueryConfig()
     {
@@ -86,6 +87,20 @@ public class QueryConfig
      */
     public void setSql(String sql) {
         this.sql = sql;
+    }
+
+    /**
+     * @return the type
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * @param type the type to set
+     */
+    public void setType(String type) {
+        this.type = type;
     }
 
     /**

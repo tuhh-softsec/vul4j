@@ -3,6 +3,7 @@
     "name": "Kein Filter",
     "description": "Abfrage der Proben ohne Filter",
     "sql": "select p.id as id, pt.probe_id_alt as probeId, p.netzbetreiber_id as netzbetreiberId, p.mst_id as mstId, p.umw_id as umwId, p.hauptproben_nr as hauptprobenNr from land.probe p join land.probe_translation pt on p.id = pt.probe_id",
+    "type": "probe",
     "result": [
         {"dataIndex": "probeId", "header": "ProbeId", "width": 120},
         {"dataIndex": "netzbetreiberId", "header": "Land", "width": 50},
@@ -17,6 +18,7 @@
     "name": "HP-Nr-Filter",
     "description": "Abfrage der Proben mit Wildcardfilter für die Hauptproben-Nr.",
     "sql": "select p.id as id, pt.probe_id_alt as probeId, p.netzbetreiber_id as netzbetreiberId, p.mst_id as mstId, p.umw_id as umwId, p.hauptproben_nr as hauptprobenNr from land.probe p join land.probe_translation pt on p.id = pt.probe_id where (p.hauptproben_nr like :hp_nr_id or '' = :hp_nr_id)",
+    "type": "probe",
     "result": [
         {"dataIndex": "probeId", "header": "ProbeId", "width": 120},
         {"dataIndex": "netzbetreiberId", "header": "Land", "width": 50},
@@ -32,6 +34,7 @@
     "name": "Probe-ID-Filter",
     "description": "Abfrage der Proben mit Wildcardfilter für die Probe_id",
     "sql": "select p.id as id, pt.probe_id_alt as probeId, p.netzbetreiber_id as netzbetreiberId, p.mst_id as mstId, p.umw_id as umwId, p.hauptproben_nr as hauptprobenNr from land.probe p join land.probe_translation pt on p.id = pt.probe_id where (pt.probe_id_alt like :probe_id or '' = :probe_id)",
+    "type": "probe",
     "result": [
         {"dataIndex": "probeId", "header": "ProbeId", "width": 120},
         {"dataIndex": "netzbetreiberId", "header": "Land", "width": 50},
@@ -47,6 +50,7 @@
     "name": "MST und UMW",
     "description": "Abfrage der Proben gefiltert nach Messtellen ID und ID des Umweltbereichs",
     "sql": "select p.id as id, pt.probe_id_alt as probeId, p.netzbetreiber_id as netzbetreiberId, p.mst_id as mstId, p.umw_id as umwId, p.hauptproben_nr as hauptprobenNr from land.probe p join land.probe_translation pt on p.id = pt.probe_id where (p.mst_id = :mst_id OR '' = :mst_id) and (p.umw_id = :umw_id OR '' = :umw_id)",
+    "type": "probe",
     "result": [
         {"dataIndex": "probeId", "header": "ProbeId", "width": 120},
         {"dataIndex": "netzbetreiberId", "header": "Land", "width": 50},
@@ -63,6 +67,7 @@
     "name": "Proben pro Land",
     "description": "Proben gefiltert nach Ländern",
     "sql": "select p.id as id, pt.probe_id_alt as probeId, p.netzbetreiber_id as netzbetreiberId, p.mst_id as mstId, p.umw_id as umwId, p.hauptproben_nr as hauptprobenNr from land.probe p join land.probe_translation pt on p.id = pt.probe_id where (netzbetreiber_id = :netz OR '' = :netz)",
+    "type": "probe",
     "result": [
         {"dataIndex": "probeId", "header": "ProbeId", "width": 100},
         {"dataIndex": "netzbetreiberId", "header": "Land", "width": 100},
@@ -78,6 +83,7 @@
     "name": "alle Proben mit Ort",
     "description": "alle Proben mit Entnahmeort",
     "sql": "select p.id as id,  pt.probe_id_alt as probeId, p.netzbetreiber_id as netzbetreiberId, p.mst_id as mstId, p.umw_id as umwId, p.hauptproben_nr as hauptprobenNr, so.gem_id as gemId, v.bezeichnung as bezeichnung from land.probe p join land.probe_translation pt on p.id = pt.probe_id left outer join land.ort o on (p.id = o.probe_id) left outer join stammdaten.ort so on (o.ort_id = so.id) left outer join stammdaten.verwaltungseinheit v on (so.gem_id = v.id) where o.orts_typ = 'E' or o.orts_typ is null",
+    "type": "probe",
     "result": [
         {"dataIndex": "probeId", "header": "ProbeId", "width": 100},
         {"dataIndex": "netzbetreiberId", "header": "Land", "width": 50},
@@ -94,6 +100,7 @@
     "name": "Proben pro Land und UMW (Multiselect)",
     "description": "Abfrage aller Proben gefiltert pro Land und Umweltbereich (mit Mehrfachauswahl)",
     "sql": "select p.id as id, pt.probe_id_alt as probeId, p.netzbetreiber_id as netzbetreiberId, p.mst_id as mstId, to_char(p.probeentnahme_beginn,'YYYY-mm-dd HH24:MI') entnahmeVon, to_char(p.probeentnahme_ende,'YYYY-mm-dd HH24:MI') entnahmeBis, p.umw_id as umwId, p.hauptproben_nr as hauptprobenNr, o.orts_typ as ortsTyp, so.gem_id as gemId, v.bezeichnung as bezeichnung from land.probe p join land.probe_translation pt on p.id = pt.probe_id left outer join land.ort o on (p.id = o.probe_id) left outer join stammdaten.ort so on (o.ort_id = so.id) left outer join stammdaten.verwaltungseinheit v on (so.gem_id = v.id) where (o.orts_typ = 'E' or o.orts_typ is null) and (p.netzbetreiber_id = :netz OR '' =:netz) and (p.umw_id similar to (:umw_id) OR '' = :umw_id)",
+    "type": "probe",
     "result": [
         {"dataIndex": "probeId", "header": "ProbeId", "width": 100},
         {"dataIndex": "netzbetreiberId", "header": "Land", "width": 50},
@@ -115,6 +122,7 @@
     "name": "Proben und Messungen pro Land und UMW (Multiselect)",
     "description": "Abfrage aller Proben/Messungen gefiltert pro Land und Umweltbereich (mit Mehrfachauswahl)",
     "sql": "select p.id as id, pt.probe_id_alt as probeId, p.netzbetreiber_id as netzbetreiberId, p.mst_id as mstId, to_char(p.probeentnahme_beginn,'YYYY-mm-dd HH24:MI') entnahmeVon, to_char(p.probeentnahme_ende,'YYYY-mm-dd HH24:MI') entnahmeBis, m.mmt_id as mmtId, p.umw_id as umwId, p.hauptproben_nr as hauptprobenNr, o.orts_typ as ortsTyp, so.gem_id as gemId, v.bezeichnung as bezeichnung from land.probe p left outer join land.probe_translation pt on p.id = pt.probe_id left outer join land.messung m on p.id = m.probe_id left outer join land.ort o on (p.id = o.probe_id) left outer join stammdaten.ort so on (o.ort_id = so.id) left outer join stammdaten.verwaltungseinheit v on (so.gem_id = v.id) where (o.orts_typ = 'E' or o.orts_typ is null) and (p.netzbetreiber_id = :netz OR '' =:netz) and (p.umw_id similar to (:umw_id) OR '' = :umw_id)",
+    "type": "probe",
     "result": [
         {"dataIndex": "probeId", "header": "ProbeId", "width": 100},
         {"dataIndex": "netzbetreiberId", "header": "Land", "width": 50},
