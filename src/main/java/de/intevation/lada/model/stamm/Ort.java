@@ -31,8 +31,6 @@ public class Ort implements Serializable {
     @Column(name="gem_id")
     private String gemId;
 
-    private Object geom;
-
     @Column(name="hoehe_land")
     private float hoeheLand;
 
@@ -75,8 +73,6 @@ public class Ort implements Serializable {
     private Integer ozId;
 
     private String sektor;
-
-    private Object shape;
 
     @Column(name="staat_id")
     private Integer staatId;
@@ -128,14 +124,6 @@ public class Ort implements Serializable {
 
     public void setGemId(String gemId) {
         this.gemId = gemId;
-    }
-
-    public Object getGeom() {
-        return this.geom;
-    }
-
-    public void setGeom(Object geom) {
-        this.geom = geom;
     }
 
     public float getHoeheLand() {
@@ -264,14 +252,6 @@ public class Ort implements Serializable {
 
     public void setSektor(String sektor) {
         this.sektor = sektor;
-    }
-
-    public Object getShape() {
-        return this.shape;
-    }
-
-    public void setShape(Object shape) {
-        this.shape = shape;
     }
 
     public Integer getStaatId() {
