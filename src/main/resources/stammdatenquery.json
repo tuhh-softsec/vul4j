@@ -1,0 +1,42 @@
+[
+{   "id": "1",
+    "name": "Orte",
+    "description": "Abfrage der Orte",
+    "sql": "",
+    "type": "ort",
+    "result": [
+    ],
+    "filters": [
+    ]
+}, {
+    "id": "2",
+    "name": "Probenehmer",
+    "description": "Abfrage aller Probenehmer",
+    "sql": "",
+    "type": "probenehmer",
+    "result": [
+    ],
+    "filters": [
+    ]
+}, {
+    "id": "3",
+    "name": "Datensatzerzeuger",
+    "description": "Abfrage aller Datensatzerzeuger",
+    "sql": "",
+    "type": "datensatzerzeuger",
+    "result": [
+    ],
+    "filters": [
+    ]
+}, {
+    "id": "4",
+    "name": "Messprogrammkategorie",
+    "description": "Abfrage der Messprogrammkategorien",
+    "sql": "",
+    "type": "messprogrammkategorie",
+    "result": [
+    ],
+    "filters": [
+    ]
+}
+]

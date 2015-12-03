@@ -69,4 +69,14 @@ public class QueryService {
     public Response getMessprogramm() {
         return new Response(true, 200, QueryTools.getMessprogrammConfig());
     }
+
+    /**
+     * Request all configured stammdaten queries.
+     */
+    @GET
+    @Path("/stammdaten")
+    @Produces("application/json")
+    public Response getStammdaten() {
+        return new Response(true, 200, QueryTools.getStammdatenConfig());
+    }
 }

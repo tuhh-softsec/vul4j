@@ -35,6 +35,7 @@ public class QueryTools
 {
     private static String PROBE_CONFIG = "/probequery.json";
     private static String MESSPROGRAMM_CONFIG = "/messprogrammquery.json";
+    private static String STAMMDATEN_CONFIG = "/stammdatenquery.json";
     /**
      * Read the config file using the system property
      * "de.intevation.lada.sqlconfig".
@@ -79,6 +80,7 @@ public class QueryTools
                 qConf.setName(query.getString("name"));
                 qConf.setDescription(query.getString("description"));
                 qConf.setSql(query.getString("sql"));
+                qConf.setType(query.getString("type"));
                 JsonArray filters = query.getJsonArray("filters");
                 List<QueryFilter> qFilters = new ArrayList<QueryFilter>();
                 for (int j = 0; j < filters.size(); j++) {
@@ -118,6 +120,10 @@ public class QueryTools
 
     public static List<QueryConfig> getMessprogrammConfig() {
         return getConfig(MESSPROGRAMM_CONFIG);
+    }
+
+    public static List<QueryConfig> getStammdatenConfig() {
+        return getConfig(STAMMDATEN_CONFIG);
     }
 
     /**
