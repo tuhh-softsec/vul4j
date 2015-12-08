@@ -160,8 +160,8 @@ public class Status {
             /* Create a client*/
             Client client = ClientBuilder.newClient();
             WebTarget target =
-                client.target(baseUrl + "status?messungId=1");
-            prot.addInfo("filter", "messungId=1");
+                client.target(baseUrl + "status?messungsId=1");
+            prot.addInfo("filter", "messungsId=1");
             /* Request the objects using the filter*/
             Response response = target.request()
                 .header("X-SHIB-user", BaseTest.TEST_USER)

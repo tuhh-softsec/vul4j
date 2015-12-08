@@ -148,7 +148,7 @@ public class StatusService {
             "land");
         if (!authorization.isAuthorized(authorization.getInfo(request), messung)) {
             if (!authorization.isAuthorized(id, LMessung.class)) {
-                return new Response(false, 697, null);
+                return new Response(false, 699, null);
             }
         }
 
