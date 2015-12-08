@@ -34,6 +34,8 @@ import de.intevation.lada.Protocol;
  */
 public class Status {
 
+    private static final int MESSUNGS_ID = 591;
+
     private static final String COMPARE =
         "{\"id\":1,\"erzeuger\":\"06010\",\"messungsId\":440,\"status\":3," +
         "\"owner\":false,\"readonly\":false,\"treeModified\":null," +
@@ -160,8 +162,8 @@ public class Status {
             /* Create a client*/
             Client client = ClientBuilder.newClient();
             WebTarget target =
-                client.target(baseUrl + "status?messungsId=1");
-            prot.addInfo("filter", "messungsId=1");
+                client.target(baseUrl + "status?messungsId=" + MESSUNGS_ID);
+            prot.addInfo("filter", "messungsId=" + MESSUNGS_ID);
             /* Request the objects using the filter*/
             Response response = target.request()
                 .header("X-SHIB-user", BaseTest.TEST_USER)
