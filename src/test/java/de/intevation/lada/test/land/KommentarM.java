@@ -169,8 +169,8 @@ public class KommentarM {
             /* Create a client*/
             Client client = ClientBuilder.newClient();
             WebTarget target =
-                client.target(baseUrl + "mkommentar?messungId=988");
-            prot.addInfo("filter", "messungId=988");
+                client.target(baseUrl + "mkommentar?messungsId=988");
+            prot.addInfo("filter", "messungsId=988");
             /* Request the objects using the filter*/
             Response response = target.request()
                 .header("X-SHIB-user", BaseTest.TEST_USER)
