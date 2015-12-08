@@ -37,10 +37,13 @@ import de.intevation.lada.Protocol;
  */
 public class KommentarM {
 
+    private static final int KOMMENTAR_ID = 507;
+
     private static final String COMPARE_KOMMENTARM =
-        "{\"messungsId\":5,\"datum\":1336634700000,\"erzeuger\":\"12010\"," +
-        "\"id\":478,\"text\":\"Hofladen Lenzen geschlossen\",\"owner\":false," +
-        "\"readonly\":true}";
+        "{\"messungsId\":988,\"datum\":1346932500000,\"erzeuger\":\"3002\"," +
+        "\"id\":" + KOMMENTAR_ID +
+        ",\"text\":\"Testkommentar 01\",\"owner\":true," +
+        "\"readonly\":false}";
 
     private static final String CREATE_KOMMENTARM =
         "{\"messungsId\":\"MID\",\"erzeuger\":\"06010\",\"text\":" +
@@ -125,8 +128,9 @@ public class KommentarM {
             JsonObject staticKommentar = fromStringRreader.readObject();
             /* Create a client*/
             Client client = ClientBuilder.newClient();
-            WebTarget target = client.target(baseUrl + "mkommentar/478");
-            prot.addInfo("kommentarId", 478);
+            WebTarget target = client.target(
+                baseUrl + "mkommentar/" + KOMMENTAR_ID);
+            prot.addInfo("kommentarId", KOMMENTAR_ID);
             /* Request an object by id*/
             Response response = target.request()
                 .header("X-SHIB-user", BaseTest.TEST_USER)
