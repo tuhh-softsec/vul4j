@@ -123,7 +123,7 @@ public class MesswertService {
      * Get all Messwert objects.
      * <p>
      * The requested objects can be filtered using a URL parameter named
-     * probeId.
+     * messungsId.
      * <p>
      * Example: http://example.com/messwert?messungsId=[ID]
      *
@@ -155,7 +155,7 @@ public class MesswertService {
             "land");
         if (!authorization.isAuthorized(authorization.getInfo(request), messung)) {
             if (!authorization.isAuthorized(id, LMessung.class)) {
-                return new Response(false, 697, null);
+                return new Response(false, 699, null);
             }
         }
         QueryBuilder<LMesswert> builder =
