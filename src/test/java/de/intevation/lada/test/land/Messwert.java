@@ -34,6 +34,8 @@ import de.intevation.lada.Protocol;
  */
 public class Messwert {
 
+    private static final int MESSUNGS_ID = 591;
+
     private static final String COMPARE_MESSWERT =
         "{\"id\":1,\"grenzwertueberschreitung\":null,\"letzteAenderung\":" +
         "1327305368000,\"mehId\":69,\"messfehler\":1.1,\"messgroesseId\":28," +
@@ -162,8 +164,8 @@ public class Messwert {
             /* Create a client*/
             Client client = ClientBuilder.newClient();
             WebTarget target =
-                client.target(baseUrl + "messwert?messungId=1");
-            prot.addInfo("filter", "messungId=1");
+                client.target(baseUrl + "messwert?messungsId=" + MESSUNGS_ID);
+            prot.addInfo("filter", "messungsId=" + MESSUNGS_ID);
             /* Request the objects using the filter*/
             Response response = target.request()
                 .header("X-SHIB-user", BaseTest.TEST_USER)
