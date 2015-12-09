@@ -87,12 +87,14 @@ public class KommentarMService {
     /**
      * Get all KommentarM objects.
      * <p>
-     * The requested objects can be filtered using a URL parameter named
+     * The requested objects have to be filtered using an URL parameter named
      * messungsId.
      * <p>
      * Example: http://example.com/mkommentar?messungsId=[ID]
      *
-     * @return Response object containing all (filtered) KommentarM objects.
+     * @return Response object containing filtered KommentarM objects.
+     * Status-Code 699 if parameter is missing or requested objects are
+     * not authorized.
      */
     @GET
     @Path("/")
@@ -118,7 +120,8 @@ public class KommentarMService {
             LMessung.class,
             id,
             "land");
-        if (!authorization.isAuthorized(authorization.getInfo(request), messung)) {
+        if (!authorization.isAuthorized(
+                authorization.getInfo(request), messung)) {
             if (!authorization.isAuthorized(id, LMessung.class)) {
                 return new Response(false, 699, null);
             }

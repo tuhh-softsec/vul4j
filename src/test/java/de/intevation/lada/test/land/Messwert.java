@@ -91,12 +91,10 @@ public class Messwert {
             JsonReader reader = Json.createReader(new StringReader(entity));
             JsonObject content = reader.readObject();
             /* Verify the response*/
-            Assert.assertTrue(content.getBoolean("success"));
+            Assert.assertFalse(content.getBoolean("success"));
             prot.addInfo("success", content.getBoolean("success"));
-            Assert.assertEquals("200", content.getString("message"));
+            Assert.assertEquals("699", content.getString("message"));
             prot.addInfo("message", content.getString("message"));
-            Assert.assertNotNull(content.getJsonArray("data"));
-            prot.addInfo("objects", content.getJsonArray("data").size());
         }
         catch(JsonException je) {
             prot.addInfo("exception", je.getMessage());
