@@ -8,6 +8,8 @@
 package de.intevation.lada.rest;
 
 import java.util.List;
+import java.util.Date;
+import java.sql.Timestamp;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -328,7 +330,7 @@ public class StatusService {
         LMessung messung = defaultRepo.getByIdPlain(
             LMessung.class, status.getMessungsId(), "land");
         LStatusProtokoll statusNew = new LStatusProtokoll();
-        statusNew.setDatum(status.getDatum());
+        statusNew.setDatum(new Timestamp(new Date().getTime()));
         statusNew.setErzeuger(status.getErzeuger());
         statusNew.setMessungsId(status.getMessungsId());
         statusNew.setStatusStufe(status.getStatusStufe());
