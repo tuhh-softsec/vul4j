@@ -24,7 +24,6 @@ import hudson.RelativePath;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
 import hudson.util.ListBoxModel;
-import org.apache.commons.lang3.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
@@ -66,18 +65,19 @@ public class Dashboard extends AbstractDescribableImpl<Dashboard> implements Ser
             return "Single/Comparison Report Dashboards";
         }
 
-        public ListBoxModel doFillDashboardItems(@RelativePath("../..") @QueryParameter("protocol") final String protocol, @RelativePath("../..") @QueryParameter("host") final String host,
-                                                 @RelativePath("../..") @QueryParameter("port") final int port, @RelativePath("../..") @QueryParameter("credentialsId") final String credentialsId,
-                                                 @RelativePath("../..") @QueryParameter("verifyCertificate") final boolean verifyCertificate, @RelativePath("../..") @QueryParameter("useJenkinsProxy") final boolean useJenkinsProxy,
-                                                 @RelativePath("../..") @QueryParameter("proxyServer") final String proxyServer, @RelativePath("../..") @QueryParameter("proxyPort") final int proxyPort,
-                                                 @RelativePath("../..") @QueryParameter("proxyUser") final String proxyUser, @RelativePath("../..") @QueryParameter("proxyPassword") final String proxyPassword) {
+        public ListBoxModel doFillDashboardItems(@RelativePath("../..") @QueryParameter final String protocol, @RelativePath("../..") @QueryParameter final String host,
+                                                 @RelativePath("../..") @QueryParameter final int port, @RelativePath("../..") @QueryParameter final String credentialsId,
+                                                 @RelativePath("../..") @QueryParameter final boolean verifyCertificate, @RelativePath("../..") @QueryParameter final boolean proxy,
+                                                 @RelativePath("../..") @QueryParameter final int proxySource,
+                                                 @RelativePath("../..") @QueryParameter final String proxyServer, @RelativePath("../..") @QueryParameter final int proxyPort,
+                                                 @RelativePath("../..") @QueryParameter final String proxyUser, @RelativePath("../..") @QueryParameter final String proxyPassword) {
 
-            ProxyBlock proxy = null;
-            if (StringUtils.isNotBlank(proxyServer) && proxyPort > 0 && StringUtils.isNotBlank(credentialsId)) {
-                proxy = new ProxyBlock(proxyServer, proxyPort, proxyUser, proxyPassword);
+            CustomProxy customProxyServer = null;
+            if (proxy) {
+                customProxyServer = new CustomProxy(proxyServer, proxyPort, proxyUser, proxyPassword, proxySource == 0);
             }
-            final DTServerConnection newConnection = new DTServerConnection(protocol, host, port, credentialsId, verifyCertificate, useJenkinsProxy, proxy);
-            return PerfSigUtils.listToListBoxModel(newConnection.getDashboards());
+            final DTServerConnection connection = new DTServerConnection(protocol, host, port, credentialsId, verifyCertificate, customProxyServer);
+            return PerfSigUtils.listToListBoxModel(connection.getDashboards());
         }
     }
 }

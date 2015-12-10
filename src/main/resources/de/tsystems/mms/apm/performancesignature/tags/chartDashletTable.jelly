@@ -16,7 +16,10 @@
 
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:jm="/de/tsystems/mms/apm/performancesignature/tags">
-    <h4>${it.name}</h4>
+    <h3>${it.name}</h3>
+    <p>
+        ${it.description}
+    </p>
     <br/>
     <j:forEach var="measure" items="${it.measures}">
         <img style="margin: 3px;" class="img-thumbnail"
@@ -35,11 +38,11 @@
                 </j:if>
             </tr>
             <tr>
-                <th>${%Avg}</th>
+                <th>${%Value}</th>
                 <th>${%Min}</th>
                 <th>${%Max}</th>
                 <j:if test="${previousDashboardReport!=null}">
-                    <th>${%Avg}</th>
+                    <th>${%Value}</th>
                     <th>${%Min}</th>
                     <th>${%Max}</th>
                 </j:if>
@@ -48,7 +51,7 @@
         <j:forEach var="measure" items="${it.measures}">
             <tr>
                 <td class="left" width="30%">
-                    <b>${measure.name} (${measure.unit})</b>
+                    <b>${measure.name} (${measure.aggregation}) (${measure.unit})</b>
                 </td>
                 <jm:summaryTable it="${measure}"/>
                 <j:if test="${previousDashboardReport!=null}">

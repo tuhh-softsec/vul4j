@@ -41,7 +41,7 @@ public final class AttributeUtils {
 
     public static double getDoubleAttribute(final String attributeName, final Attributes attr) {
         double val = 0.0D;
-        String strgVal = attr.getValue(attributeName);
+        final String strgVal = attr.getValue(attributeName);
         if (strgVal != null) {
             if (strgVal.equals("INF")) return Double.POSITIVE_INFINITY;
             val = Double.parseDouble(strgVal);
@@ -57,7 +57,7 @@ public final class AttributeUtils {
 
     public static int getIntAttribute(final String attributeName, final Attributes attr) {
         int val = 0;
-        String strgVal = attr.getValue(attributeName);
+        final String strgVal = attr.getValue(attributeName);
         if (strgVal != null) {
             val = Integer.parseInt(strgVal);
         }
@@ -66,7 +66,7 @@ public final class AttributeUtils {
 
     public static long getLongAttribute(final String attributeName, final Attributes attr) {
         long val = 0L;
-        String strgVal = attr.getValue(attributeName);
+        final String strgVal = attr.getValue(attributeName);
         if (strgVal != null) {
             val = Long.parseLong(strgVal);
         }

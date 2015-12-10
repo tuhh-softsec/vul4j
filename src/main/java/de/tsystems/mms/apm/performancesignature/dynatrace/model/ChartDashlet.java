@@ -29,6 +29,7 @@ import java.util.List;
 public class ChartDashlet {
     private final String name;
     private List<Measure> measures;
+    private String description;
 
     public ChartDashlet(final String name) {
         this.name = name;
@@ -36,6 +37,7 @@ public class ChartDashlet {
 
     public ChartDashlet(final Attributes attr) {
         this.name = AttributeUtils.getStringAttribute("name", attr);
+        this.description = AttributeUtils.getStringAttribute("description", attr);
     }
 
     public static String encode(final String string) {
@@ -44,6 +46,10 @@ public class ChartDashlet {
 
     public String getName() {
         return name;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     @Override

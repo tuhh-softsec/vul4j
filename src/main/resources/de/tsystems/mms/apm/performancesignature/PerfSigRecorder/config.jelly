@@ -56,37 +56,56 @@
             <f:number default="${descriptor.defaultRetryCount}"/>
         </f:entry>
         <f:entry title="${%export Sessions}" field="exportSessions"
-                 description="${%Should Dynatrace Session be exported to the workspace directory?}">
+                 description="${%Should Dynatrace sessions be exported to the workspace directory?}">
             <f:checkbox default="${descriptor.defaultExportSessions}"/>
         </f:entry>
-        <f:entry title="${%modify build result}" field="modifyBuildResult"
-                 description="${%Should the Dynatrace Performance Signature  modify the build result in case of a failure?}">
-            <f:checkbox default="${descriptor.defaultModifyBuildResult}"/>
-        </f:entry>
-        <f:entry title="${%use configured Proxy Server}" field="useJenkinsProxy"
-                 description="${%Proxy can be configured in Jenkins Plugin Settings}">
-            <f:checkbox/>
-        </f:entry>
-        <f:block>
-            <j:set var="customProxy" value="${instance.customProxy}"/>
-            <f:optionalBlock name="customProxy" title="${%use custom Proxy Server}" checked="${customProxy != null}">
+        <f:optionalBlock field="modifyBuildResult" title="${%modify build result}" inline="true"
+                         checked="${instance.technicalFailure || (instance.nonFunctionalFailure != null and instance.nonFunctionalFailure != 0)}">
+            <f:entry title="${%technical failure behaviour}" field="technicalFailure"
+                     description="${%Should the plugin modify the build result in case of a technical failure e.g. REST connection not possible?}">
+                <f:checkbox default="false"/>
+            </f:entry>
+            <f:entry title="${%non-functional failure behaviour}"
+                     description="${%Should the plugin modify the build result in case of any Dynatrace incidents?}">
+                <f:radio name="nonFunctionalFailure" value="0" checked="${instance.nonFunctionalFailure == 0}"
+                         title="do nothing"/>
+                <br/>
+                <f:radio name="nonFunctionalFailure" value="1" checked="${instance.nonFunctionalFailure == 1}"
+                         title="set build result to failed in case of severe incidents"/>
+                <br/>
+                <f:radio name="nonFunctionalFailure" value="2" checked="${instance.nonFunctionalFailure == 2}"
+                         title="set build result to failed in case of servere/warning incidents"/>
+                <br/>
+                <f:radio name="nonFunctionalFailure" value="3" checked="${instance.nonFunctionalFailure == 3}"
+                         title="set build result to unstable in case of severe incidents"/>
+                <br/>
+                <f:radio name="nonFunctionalFailure" value="4" checked="${instance.nonFunctionalFailure == 4}"
+                         title="set build result to unstable in case of severe/warning incidents"/>
+            </f:entry>
+        </f:optionalBlock>
+
+        <f:optionalBlock inline="true" name="proxy" title="${%use Proxy Server}" checked="${instance.customProxy != null}">
+            <f:radioBlock name="proxySource" title="${%use proxy server configured in Jenkins}" value="0"
+                          checked="${instance.customProxy.useJenkinsProxy}">
+            </f:radioBlock>
+            <f:radioBlock name="proxySource" title="use custom Proxy Server" value="1" checked="${!instance.customProxy.useJenkinsProxy}">
                 <f:entry title="${%Server}" field="proxyServer">
-                    <f:textbox value="${customProxy.proxyServer}"/>
+                    <f:textbox value="${instance.customProxy.proxyServer}"/>
                 </f:entry>
                 <f:entry title="${%Port}" field="proxyPort">
-                    <f:number value="${customProxy.proxyPort}"/>
+                    <f:number value="${instance.customProxy.proxyPort}"/>
                 </f:entry>
                 <f:entry title="${%User}" field="proxyUser">
-                    <f:textbox value="${customProxy.proxyUser}"/>
+                    <f:textbox value="${instance.customProxy.proxyUser}"/>
                 </f:entry>
                 <f:entry title="${%Password}" field="proxyPassword">
-                    <f:password value="${customProxy.proxyPassword}"/>
+                    <f:password value="${instance.customProxy.proxyPassword}"/>
                 </f:entry>
-            </f:optionalBlock>
-        </f:block>
+            </f:radioBlock>
+        </f:optionalBlock>
     </f:advanced>
 
     <f:validateButton title="${%Test Connection}" progress="${%Testing...}"
                       method="testDynaTraceConnection"
-                      with="protocol,host,port,credentialsId,verifyCertificate,useJenkinsProxy,proxyServer,proxyPort,proxyUser,proxyPassword"/>
+                      with="protocol,host,port,credentialsId,verifyCertificate,proxy,proxySource,proxyServer,proxyPort,proxyUser,proxyPassword"/>
 </j:jelly>

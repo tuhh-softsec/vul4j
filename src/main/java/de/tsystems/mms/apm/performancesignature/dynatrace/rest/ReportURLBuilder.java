@@ -38,7 +38,6 @@ public class ReportURLBuilder {
     public ReportURLBuilder() {
         serverAddress = Messages.DashboardURLBuilder_DefaultServerURL();
         parameter = new ArrayList<String>();
-        parameter.add("includeLayout=true");
     }
 
     public ReportURLBuilder setSource(final String source) {

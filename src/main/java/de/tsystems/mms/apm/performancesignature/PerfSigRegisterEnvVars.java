@@ -19,7 +19,7 @@ package de.tsystems.mms.apm.performancesignature;
 import hudson.EnvVars;
 import hudson.model.AbstractBuild;
 import hudson.model.EnvironmentContributingAction;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Created by rapi on 12.04.2015.

@@ -30,12 +30,21 @@ import java.util.List;
 public class DashboardReport {
     private String name;
     private List<ChartDashlet> chartDashlets;
+    private List<IncidentChart> incidents;
     private PerfSigBuildAction buildAction;
     private DashboardReport lastDashboardReport;
     private ConfigurationTestCase configurationTestCase;
 
     public DashboardReport(final String testCaseName) {
         this.name = testCaseName;
+    }
+
+    public List<IncidentChart> getIncidents() {
+        return incidents;
+    }
+
+    public void setIncidents(final List<IncidentChart> incidents) {
+        this.incidents = incidents;
     }
 
     public List<ChartDashlet> getChartDashlets() {
@@ -70,7 +79,6 @@ public class DashboardReport {
         this.configurationTestCase = configurationTestCase;
     }
 
-    @SuppressWarnings("unused")
     public DashboardReport getLastDashboardReport() {
         return lastDashboardReport;
     }
@@ -83,15 +91,12 @@ public class DashboardReport {
         return this.buildAction.getBuild();
     }
 
-    @SuppressWarnings("unused")
     public Date getBuildTime() {
         return getBuild().getTime();
     }
 
     public boolean isUnitTest() {
-        if (this.configurationTestCase instanceof UnitTestCase)
-            return true;
-        return false;
+        return this.configurationTestCase instanceof UnitTestCase;
     }
 
     @Override

@@ -25,7 +25,7 @@ import hudson.model.AbstractBuild;
 import hudson.model.ModelObject;
 import hudson.util.Area;
 import hudson.util.ChartUtil;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
@@ -57,7 +57,6 @@ import java.util.List;
 /**
  * Created by rapi on 19.05.2014.
  */
-
 public class PerfSigBuildActionResultsDisplay implements ModelObject {
     private static AbstractBuild<?, ?> currentBuild = null;
     private final transient PerfSigBuildAction buildAction;
@@ -76,10 +75,10 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
     }
 
     public String getDisplayName() {
-        return Messages.DTPerfSigBuildActionResultsDisplay_DisplayName();
+        return Messages.PerfSigBuildActionResultsDisplay_DisplayName();
     }
 
-    public PerfSigUtils getDTPerfSigUtils() {
+    public PerfSigUtils getPerfSigUtils() {
         return new PerfSigUtils();
     }
 
@@ -123,7 +122,6 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
         return null;
     }
 
-    @SuppressWarnings("unused")
     public void doSummarizerGraph(final StaplerRequest request, final StaplerResponse response) throws IOException {
         if (ChartUtil.awtProblemCause != null) {
             // not available. send out error message
@@ -134,8 +132,8 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
         if (getBuild() != null && request.checkIfModified(getBuild().getTimestamp(), response))
             return;
 
-        final String chartDashlet = request.getParameter(Messages.DTPerfSigBuildActionResultsDisplay_ReqParamChartDashlet());
-        final boolean percentile = chartDashlet.contains(Messages.DTPerfSigBuildActionResultsDisplay_Percentile());
+        final String chartDashlet = request.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamChartDashlet());
+        final boolean percentile = chartDashlet.contains(Messages.PerfSigBuildActionResultsDisplay_Percentile());
 
         if (percentile) {
             ChartUtil.generateGraph(request, response, createXYLineChart(request, buildXYDataSet(request)), calcDefaultSize());
@@ -145,9 +143,9 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
     }
 
     private XYDataset buildXYDataSet(final StaplerRequest request) {
-        final String measure = request.getParameter(Messages.DTPerfSigBuildActionResultsDisplay_ReqParamMeasure());
-        final String chartDashlet = request.getParameter(Messages.DTPerfSigBuildActionResultsDisplay_ReqParamChartDashlet());
-        final String testCase = request.getParameter(Messages.DTPerfSigBuildActionResultsDisplay_ReqParamTestCase());
+        final String measure = request.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamMeasure());
+        final String chartDashlet = request.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamChartDashlet());
+        final String testCase = request.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamTestCase());
         final XYSeries xySeries = new XYSeries(chartDashlet);
 
         final DashboardReport dashboardReport = getDashBoardReport(testCase);
@@ -162,9 +160,9 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
     }
 
     private IntervalXYDataset buildIntervalDataSet(final StaplerRequest request) {
-        final String measure = request.getParameter(Messages.DTPerfSigBuildActionResultsDisplay_ReqParamMeasure());
-        final String chartDashlet = request.getParameter(Messages.DTPerfSigBuildActionResultsDisplay_ReqParamChartDashlet());
-        final String testCase = request.getParameter(Messages.DTPerfSigBuildActionResultsDisplay_ReqParamTestCase());
+        final String measure = request.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamMeasure());
+        final String chartDashlet = request.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamChartDashlet());
+        final String testCase = request.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamTestCase());
         final TimeSeries timeSeries = new TimeSeries(chartDashlet, Second.class);
 
         final DashboardReport dashboardReport = getDashBoardReport(testCase);
@@ -180,14 +178,14 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
     }
 
     private JFreeChart createXYLineChart(final StaplerRequest req, final XYDataset dataset) throws UnsupportedEncodingException {
-        final String chartDashlet = req.getParameter(Messages.DTPerfSigBuildActionResultsDisplay_ReqParamChartDashlet());
-        final String measure = req.getParameter(Messages.DTPerfSigBuildActionResultsDisplay_ReqParamMeasure());
-        final String unit = req.getParameter(Messages.DTPerfSigBuildActionResultsDisplay_ReqParamUnit());
-        String color = req.getParameter(Messages.DTPerfSigBuildActionResultsDisplay_ReqParamColor());
+        final String chartDashlet = req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamChartDashlet());
+        final String measure = req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamMeasure());
+        final String unit = req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamUnit());
+        String color = req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamColor());
         if (StringUtils.isBlank(color))
-            color = Messages.DTPerfSigBuildActionResultsDisplay_DefaultColor();
+            color = Messages.PerfSigBuildActionResultsDisplay_DefaultColor();
         else
-            URLDecoder.decode(req.getParameter(Messages.DTPerfSigBuildActionResultsDisplay_ReqParamColor()), "UTF-8");
+            URLDecoder.decode(req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamColor()), "UTF-8");
 
         final JFreeChart chart = ChartFactory.createXYLineChart(
                 PerfSigUtils.generateTitle(measure, chartDashlet).replaceAll("\\d+\\w", ""), // title
@@ -214,14 +212,14 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
     }
 
     private JFreeChart createBarChart(final StaplerRequest req, final IntervalXYDataset dataset) throws UnsupportedEncodingException {
-        final String chartDashlet = req.getParameter(Messages.DTPerfSigBuildActionResultsDisplay_ReqParamChartDashlet());
-        final String measure = req.getParameter(Messages.DTPerfSigBuildActionResultsDisplay_ReqParamMeasure());
-        final String unit = req.getParameter(Messages.DTPerfSigBuildActionResultsDisplay_ReqParamUnit());
-        String color = req.getParameter(Messages.DTPerfSigBuildActionResultsDisplay_ReqParamColor());
+        final String chartDashlet = req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamChartDashlet());
+        final String measure = req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamMeasure());
+        final String unit = req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamUnit());
+        String color = req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamColor());
         if (StringUtils.isBlank(color))
-            color = Messages.DTPerfSigBuildActionResultsDisplay_DefaultColor();
+            color = Messages.PerfSigBuildActionResultsDisplay_DefaultColor();
         else
-            URLDecoder.decode(req.getParameter(Messages.DTPerfSigBuildActionResultsDisplay_ReqParamColor()), "UTF-8");
+            URLDecoder.decode(req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamColor()), "UTF-8");
 
         final JFreeChart chart = ChartFactory.createXYBarChart(PerfSigUtils.generateTitle(measure, chartDashlet), // title
                 "time", // domain axis label
@@ -263,7 +261,6 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
             return new Area(500, 200);
     }
 
-    @SuppressWarnings("unused")
     public void doDownloadFile(final StaplerRequest request, final StaplerResponse response) throws IOException {
         PerfSigUtils.downloadFile(request, response, getBuild());
     }

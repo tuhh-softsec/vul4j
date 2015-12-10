@@ -33,7 +33,8 @@ import hudson.tasks.Publisher;
 import hudson.util.ListBoxModel;
 import jenkins.model.Jenkins;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.io.filefilter.RegexFileFilter;
+import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
@@ -69,8 +70,9 @@ public class PerfSigUtils {
         return (T) obj;
     }
 
-    public static BigDecimal round(final double d, final int decimalPlace) {
+    public static BigDecimal round(final double d, int decimalPlace) {
         if (d == 0) return BigDecimal.valueOf(0);
+        if (d % 1 == 0) decimalPlace = 0;
         BigDecimal bd = new BigDecimal(d);
         bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
         return bd;
@@ -102,7 +104,7 @@ public class PerfSigUtils {
         return dtRecorder;
     }
 
-    public static <T extends Builder> T getDTPerfSigBuilder(final AbstractBuild build, final Class<T> c) {
+    public static <T extends Builder> T getPerfSigBuilder(final AbstractBuild build, final Class<T> c) {
         final Project<?, ?> project = PerfSigUtils.cast(build.getProject());
         final List<Builder> builders = project.getBuilders();
 
@@ -115,7 +117,7 @@ public class PerfSigUtils {
     }
 
     public static FilePath getReportDirectory(final AbstractBuild<?, ?> build) {
-        final FilePath filePath = new FilePath(new File(build.getRootDir(), Messages.DTPerfSigUtils_ReportDirectory()));
+        final FilePath filePath = new FilePath(new File(build.getRootDir(), Messages.PerfSigUtils_ReportDirectory()));
         try {
             if (!filePath.exists()) {
                 filePath.mkdirs();
@@ -131,7 +133,7 @@ public class PerfSigUtils {
     public static List<FilePath> getDownloadFiles(final String testCase, final AbstractBuild<?, ?> build) {
         try {
             final FilePath filePath = PerfSigUtils.getReportDirectory(build);
-            return filePath.list(new TestCaseFileFilter(testCase));
+            return filePath.list(new RegexFileFilter(testCase));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -180,7 +182,7 @@ public class PerfSigUtils {
         try {
             return URLEncoder.encode(value, "UTF-8").replaceAll("\\+", "%20");
         } catch (UnsupportedEncodingException e) {
-            throw new CommandExecutionException(Messages.DTPerfSigUtils_EncodingFailure(), e);
+            throw new CommandExecutionException(Messages.PerfSigUtils_EncodingFailure(), e);
         }
     }
 

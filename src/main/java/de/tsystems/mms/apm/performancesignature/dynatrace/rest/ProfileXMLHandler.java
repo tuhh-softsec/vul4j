@@ -32,10 +32,8 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.model.BaseConfiguratio
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.Configuration;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.SystemProfile;
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.io.CharArrayWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,8 +41,11 @@ import java.util.List;
  * Created by rapi on 27.10.2014.
  */
 public class ProfileXMLHandler extends DefaultHandler {
-    private final CharArrayWriter contents = new CharArrayWriter();
-    private final List<BaseConfiguration> configObjects = new ArrayList<BaseConfiguration>();
+    private final List<BaseConfiguration> configObjects;
+
+    public ProfileXMLHandler() {
+        configObjects = new ArrayList<BaseConfiguration>();
+    }
 
     public List<BaseConfiguration> getConfigurationObjects() {
         return this.configObjects;
@@ -57,10 +58,5 @@ public class ProfileXMLHandler extends DefaultHandler {
         if (localName.equals(Messages.ProfileXMLHandler_AttrConfiguration())) {
             this.configObjects.add(new Configuration(attr));
         }
-        this.contents.reset();
-    }
-
-    public void characters(final char[] ch, final int start, final int length) throws SAXException {
-        this.contents.write(ch, start, length);
     }
 }

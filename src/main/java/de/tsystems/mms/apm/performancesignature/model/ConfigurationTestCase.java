@@ -16,14 +16,18 @@
 
 package de.tsystems.mms.apm.performancesignature.model;
 
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
+import hudson.RelativePath;
 import hudson.model.AbstractProject;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
 import hudson.util.ListBoxModel;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
+import org.kohsuke.stapler.QueryParameter;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,19 +36,41 @@ import java.util.Set;
  * Created by rapi on 13.04.2015.
  */
 public abstract class ConfigurationTestCase implements Describable<ConfigurationTestCase>, Serializable {
-    private final String name;
+    private final String name, xmlDashboard;
+    private final List<Dashboard> singleDashboards;
+    private final List<Dashboard> comparisonDashboards;
 
-    public ConfigurationTestCase(final String name) {
-        this.name = name;
-    }
-
-    public boolean validate() {
-        return StringUtils.isNotBlank(name);
+    public ConfigurationTestCase(final String name, final List<Dashboard> singleDashboards,
+                                 final List<Dashboard> comparisonDashboards, final String xmlDashboard) {
+        this.name = StringUtils.deleteWhitespace(name);
+        this.singleDashboards = singleDashboards;
+        this.comparisonDashboards = comparisonDashboards;
+        this.xmlDashboard = xmlDashboard;
     }
 
     public String getName() {
         ConfigurationTestCaseDescriptor.addTestCases(name);
         return name;
+    }
+
+    public String getXmlDashboard() {
+        return xmlDashboard;
+    }
+
+    public List<Dashboard> getSingleDashboards() {
+        if (singleDashboards == null)
+            return new ArrayList<Dashboard>();
+        return singleDashboards;
+    }
+
+    public List<Dashboard> getComparisonDashboards() {
+        if (comparisonDashboards == null)
+            return new ArrayList<Dashboard>();
+        return comparisonDashboards;
+    }
+
+    public boolean validate() {
+        return StringUtils.isNotBlank(name) && StringUtils.isNotBlank(xmlDashboard);
     }
 
     public ConfigurationTestCaseDescriptor getDescriptor() {
@@ -75,6 +101,20 @@ public abstract class ConfigurationTestCase implements Describable<Configuration
             for (String s : testCases)
                 out.add(s);
             return out;
+        }
+        public ListBoxModel doFillXmlDashboardItems(@RelativePath("..") @QueryParameter final String protocol, @RelativePath("..") @QueryParameter final String host,
+                                                    @RelativePath("..") @QueryParameter final int port, @RelativePath("..") @QueryParameter final String credentialsId,
+                                                    @RelativePath("..") @QueryParameter final boolean verifyCertificate, @RelativePath("..") @QueryParameter final boolean proxy,
+                                                    @RelativePath("..") @QueryParameter final int proxySource,
+                                                    @RelativePath("..") @QueryParameter final String proxyServer, @RelativePath("..") @QueryParameter final int proxyPort,
+                                                    @RelativePath("..") @QueryParameter final String proxyUser, @RelativePath("..") @QueryParameter final String proxyPassword) {
+
+            CustomProxy customProxyServer = null;
+            if (proxy) {
+                customProxyServer = new CustomProxy(proxyServer, proxyPort, proxyUser, proxyPassword, proxySource == 0);
+            }
+            final DTServerConnection connection = new DTServerConnection(protocol, host, port, credentialsId, verifyCertificate, customProxyServer);
+            return PerfSigUtils.listToListBoxModel(connection.getDashboards());
         }
     }
 }

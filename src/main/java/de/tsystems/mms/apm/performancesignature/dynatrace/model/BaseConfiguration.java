@@ -46,15 +46,7 @@ public abstract class BaseConfiguration {
         return this.id;
     }
 
-    public void setId(final String id) {
-        this.id = id;
-    }
-
     public String getHref() {
         return this.href;
-    }
-
-    public void setHref(final String href) {
-        this.href = href;
     }
 }

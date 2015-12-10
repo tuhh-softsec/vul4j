@@ -23,7 +23,7 @@
             <link type="text/css" href="${resURL}/plugin/performance-signature/css/bootstrap.min.css"
                   rel="stylesheet"/>
             <script data-main="${resURL}/plugin/performance-signature/js/buildactionresultsdisplay"
-                    src="${resURL}/plugin/performance-signature/js/require.js"/>
+                    src="${resURL}/plugin/performance-signature/js/require.min.js"/>
             <script type="text/javascript">
                 var rootURL = "${rootURL}";
                 var resURL = "${resURL}";

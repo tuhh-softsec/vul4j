@@ -30,17 +30,13 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.rest;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-
-import java.io.CharArrayWriter;
 
 /**
  * Created by rapi on 27.10.2014.
  */
 public class RESTErrorXMLHandler extends DefaultHandler {
-    private final CharArrayWriter contents = new CharArrayWriter();
-    private String errorString = null;
+    private String errorString;
 
     public String getReasonString() {
         return this.errorString;
@@ -50,11 +46,5 @@ public class RESTErrorXMLHandler extends DefaultHandler {
         if (localName.equals("error")) {
             this.errorString = AttributeUtils.getStringAttribute("reason", attr);
         }
-        this.contents.reset();
-    }
-
-    public void characters(final char[] ch, final int start, final int length)
-            throws SAXException {
-        this.contents.write(ch, start, length);
     }
 }

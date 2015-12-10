@@ -33,21 +33,13 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.io.CharArrayWriter;
-
 public class TestMetaDataXMLHandler extends DefaultHandler {
-    private final CharArrayWriter contents = new CharArrayWriter();
-    private String testMetaDataUUID = null;
+    private String testMetaDataUUID;
 
     public void startElement(final String uri, final String localName, final String qName, final Attributes attributes) throws SAXException {
-        this.contents.reset();
         if (localName.equals("testRun")) {
             this.testMetaDataUUID = AttributeUtils.getStringAttribute("id", attributes);
         }
-    }
-
-    public void characters(final char[] ch, final int start, final int length) throws SAXException {
-        this.contents.write(ch, start, length);
     }
 
     public String getTestMetaDataUUID() {

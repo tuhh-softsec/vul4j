@@ -28,7 +28,7 @@ import hudson.model.BuildListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
@@ -37,7 +37,6 @@ import java.io.PrintStream;
 /**
  * Created by rapi on 20.10.2014.
  */
-@SuppressWarnings("unused")
 public class PerfSigActivateConfiguration extends Builder {
     private final String configuration;
 
@@ -52,29 +51,33 @@ public class PerfSigActivateConfiguration extends Builder {
         final PerfSigRecorder dtRecorder = PerfSigUtils.getRecorder(build);
 
         if (dtRecorder == null) {
-            logger.println(Messages.DTPerfSigActivateConfiguration_NoRecorderFailure());
+            logger.println(Messages.PerfSigActivateConfiguration_NoRecorderFailure());
             return false;
         }
 
-        logger.println(Messages.DTPerfSigActivateConfiguration_ActivatingProfileConfiguration());
+        logger.println(Messages.PerfSigActivateConfiguration_ActivatingProfileConfiguration());
         final DTServerConnection connection = new DTServerConnection(dtRecorder.getProtocol(), dtRecorder.getHost(), dtRecorder.getPort(),
-                dtRecorder.getCredentialsId(), dtRecorder.isVerifyCertificate(), dtRecorder.isUseJenkinsProxy(), dtRecorder.getCustomProxy());
+                dtRecorder.getCredentialsId(), dtRecorder.isVerifyCertificate(), dtRecorder.getCustomProxy());
 
         try {
             boolean result = connection.activateConfiguration(dtRecorder.getProfile(), this.configuration);
-            if (!result) throw new RESTErrorException(Messages.DTPerfSigActivateConfiguration_InternalError());
-            logger.println(Messages.DTPerfSigActivateConfiguration_SuccessfullyActivated() + dtRecorder.getProfile());
+            if (!result) throw new RESTErrorException(Messages.PerfSigActivateConfiguration_InternalError());
+            logger.println(Messages.PerfSigActivateConfiguration_SuccessfullyActivated() + dtRecorder.getProfile());
 
             for (Agent agent : connection.getAgents()) {
                 if (agent.getSystemProfile().equalsIgnoreCase(dtRecorder.getProfile())) {
                     boolean hotSensorPlacement = connection.hotSensorPlacement(agent.getAgentId());
-                    logger.println(Messages.DTPerfSigActivateConfiguration_HotSensorPlacementDone() + agent.getName());
+                    if (hotSensorPlacement) {
+                        logger.println(Messages.PerfSigActivateConfiguration_HotSensorPlacementDone() + " " + agent.getName());
+                    } else {
+                        logger.println(Messages.PerfSigActivateConfiguration_FailureActivation() + " " + agent.getName());
+                    }
                 }
             }
             return true;
         } catch (RESTErrorException e) {
-            logger.println(Messages.DTPerfSigActivateConfiguration_FailureActivation() + dtRecorder.getProfile() + " " + e);
-            return !dtRecorder.isModifyBuildResult();
+            logger.println(Messages.PerfSigActivateConfiguration_FailureActivation() + dtRecorder.getProfile() + " " + e);
+            return !dtRecorder.isTechnicalFailure();
         }
     }
 
@@ -94,7 +97,7 @@ public class PerfSigActivateConfiguration extends Builder {
             if (StringUtils.isNotBlank(configuration)) {
                 validationResult = FormValidation.ok();
             } else {
-                validationResult = FormValidation.error(Messages.DTPerfSigActivateConfiguration_ConfigurationNotValid());
+                validationResult = FormValidation.error(Messages.PerfSigActivateConfiguration_ConfigurationNotValid());
             }
             return validationResult;
         }
@@ -108,7 +111,7 @@ public class PerfSigActivateConfiguration extends Builder {
          * This human readable name is used in the configuration screen.
          */
         public String getDisplayName() {
-            return Messages.DTPerfSigActivateConfiguration_DisplayName();
+            return Messages.PerfSigActivateConfiguration_DisplayName();
         }
     }
 }

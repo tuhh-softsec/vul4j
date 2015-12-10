@@ -18,7 +18,7 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.xml.sax.Attributes;
 
 import java.math.BigDecimal;
@@ -64,48 +64,24 @@ public class Measure {
         return this.sum;
     }
 
-    public void setSum(final double sum) {
-        this.sum = sum;
-    }
-
     public int getCount() {
         return count;
-    }
-
-    public void setCount(final int count) {
-        this.count = count;
     }
 
     public String getName() {
         return this.name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
     public String getColor() {
         return PerfSigUtils.encodeString(this.color);
-    }
-
-    public void setColor(final String color) {
-        this.color = color;
     }
 
     public BigDecimal getAvg() {
         return PerfSigUtils.round(this.avg, 2);
     }
 
-    public void setAvg(final double avg) {
-        this.avg = avg;
-    }
-
     public BigDecimal getMin() {
         return PerfSigUtils.round(this.min, 2);
-    }
-
-    public void setMin(final double min) {
-        this.min = min;
     }
 
     public String getUnit() {
@@ -113,35 +89,24 @@ public class Measure {
         return PerfSigUtils.encodeString(this.unit);
     }
 
-    public void setUnit(final String unit) {
-        this.unit = unit;
-    }
-
     public BigDecimal getMax() {
         return PerfSigUtils.round(this.max, 2);
-    }
-
-    public void setMax(final double max) {
-        this.max = max;
     }
 
     public String getAggregation() {
         return aggregation;
     }
 
-    public void setAggregation(final String aggregation) {
-        this.aggregation = aggregation;
-    }
-
     public boolean isPercentile() {
         return StringUtils.isNotBlank(this.getAggregation()) && this.getAggregation().equalsIgnoreCase("Percentiles");
     }
 
-    /*
-    used by DTPerfSigProjectaction
-    get the avg value of a metric
-    in case of a percentile measure return the 95th percentile value
-    */
+    /**
+     * get the avg value of a metric
+     * in case of a percentile measure return the 95th percentile value
+     *
+     * @return metric Value
+     */
     public double getMetricValue() {
         if (this.isPercentile()) {
             List<Measurement> measurements = this.getMeasurements();
@@ -164,10 +129,7 @@ public class Measure {
     }
 
     public BigDecimal getStrMetricValue() {
-        Double d = getMetricValue();
-        if ((d % 1) == 0) //check for int values
-            return PerfSigUtils.round(d, 0);
-        return PerfSigUtils.round(d, 2);
+        return PerfSigUtils.round(getMetricValue(), 2);
     }
 
     @Override

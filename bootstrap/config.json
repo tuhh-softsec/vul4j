@@ -1,15 +1,11 @@
 {
   "vars": {},
-  "css": [
-    "glyphicons.less",
-    "wells.less",
-    "component-animations.less"
-  ],
+  "css": [],
   "js": [
     "carousel.js",
     "tab.js",
     "collapse.js",
     "transition.js"
   ],
-  "customizerUrl": "http://getbootstrap.com/customize/?id=c0dcbe75883d446ed041"
+  "customizerUrl": "http://getbootstrap.com/customize/?id=053ce5cd5304b7ed8588"
 }

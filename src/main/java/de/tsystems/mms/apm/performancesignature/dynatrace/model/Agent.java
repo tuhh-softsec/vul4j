@@ -43,50 +43,50 @@ public class Agent {
     public void setValue(final String property, final String parentProperty, final String value) {
         if (property.equalsIgnoreCase(Messages.Agent_PropAgentId())) {
             if (Messages.Agent_PropAgentInformation().equalsIgnoreCase(parentProperty)) {
-                setAgentId(Integer.parseInt(value));
+                this.agentId = Integer.parseInt(value);
             }
         } else if (property.equalsIgnoreCase(Messages.Agent_PropAgentGroup())) {
             this.agentGroup = value;
         } else if (property.equalsIgnoreCase(Messages.Agent_PropCapture())) {
-            setCapture(Boolean.parseBoolean(value));
+            this.capture = Boolean.parseBoolean(value);
         } else if (property.equalsIgnoreCase(Messages.Agent_PropClassLoadCount())) {
-            setClassLoadCount(Integer.parseInt(value));
+            this.classLoadCount = Integer.parseInt(value);
         } else if (property.equalsIgnoreCase(Messages.Agent_PropConfiguration())) {
-            setConfiguration(value);
+            this.configuration = value;
         } else if (property.equalsIgnoreCase(Messages.Agent_PropConnected())) {
-            setConnected(Boolean.parseBoolean(value));
+            this.connected = Boolean.parseBoolean(value);
         } else if (property.equalsIgnoreCase(Messages.Agent_PropEventCount())) {
-            setEventCount(Integer.parseInt(value));
+            this.eventCount = Integer.parseInt(value);
         } else if (property.equalsIgnoreCase(Messages.Agent_PropHost())) {
-            setHost(value);
+            this.host = value;
         } else if (property.equalsIgnoreCase(Messages.Agent_PropLicenseInformation())) {
-            setLicenseInformation(value);
+            this.licenseInformation = value;
         } else if (property.equalsIgnoreCase(Messages.Agent_PropLicenseOk())) {
-            setLicenseOk(value);
+            this.licenseOk = value;
         } else if (property.equalsIgnoreCase(Messages.Agent_PropName())) {
-            setName(value);
+            this.name = value;
         } else if (property.equalsIgnoreCase(Messages.Agent_PropProcessId())) {
-            setProcessId(Integer.parseInt(value));
+            this.processId = Integer.parseInt(value);
         } else if (property.equalsIgnoreCase(Messages.Agent_PropSkippedEvents())) {
-            setSkippedEvents(Integer.parseInt(value));
+            this.skippedEvents = Integer.parseInt(value);
         } else if (property.equalsIgnoreCase(Messages.Agent_PropSkippedPurePaths())) {
-            setSkippedPurePaths(Integer.parseInt(value));
+            this.skippedPurePaths = Integer.parseInt(value);
         } else if (property.equalsIgnoreCase(Messages.Agent_PropStartupTimeUtc())) {
-            setStartupTimeUTC(value);
+            this.startupTimeUTC = value;
         } else if (property.equalsIgnoreCase(Messages.Agent_PropSupportsHotSensorPlacement())) {
-            setSupportsHotsensorPlacement(Boolean.parseBoolean(value));
+            this.supportsHotsensorPlacement = Boolean.parseBoolean(value);
         } else if (property.equalsIgnoreCase(Messages.Agent_PropSystemProfile())) {
-            setSystemProfile(value);
+            this.systemProfile = value;
         } else if (property.equalsIgnoreCase(Messages.Agent_PropTechnologyType())) {
-            setTechnologyType(value);
+            this.technologyType = value;
         } else if (property.equalsIgnoreCase(Messages.Agent_PropTotalClassLoadCount())) {
-            setTotalClassLoadCount(Integer.parseInt(value));
+            this.totalClassLoadCount = Integer.parseInt(value);
         } else if (property.equalsIgnoreCase(Messages.Agent_PropTotalCpuTime())) {
-            setTotalCpuTime(Double.parseDouble(value));
+            this.totalCpuTime = Double.parseDouble(value);
         } else if (property.equalsIgnoreCase(Messages.Agent_PropTotalExecutionTime())) {
-            setTotalExecutionTime(Double.parseDouble(value));
+            this.totalExecutionTime = Double.parseDouble(value);
         } else if (property.equalsIgnoreCase(Messages.Agent_PropTotalPurePathCount())) {
-            setTotalPurePathCount(Integer.parseInt(value));
+            this.totalPurePathCount = Integer.parseInt(value);
         }
     }
 
@@ -94,183 +94,95 @@ public class Agent {
         return this.agentId;
     }
 
-    public void setAgentId(final int agentId) {
-        this.agentId = agentId;
-    }
-
     public String getAgentGroup() {
         return this.agentGroup;
-    }
-
-    public void setAgentGroup(final String agentGroup) {
-        this.agentGroup = agentGroup;
     }
 
     public String getLicenseInformation() {
         return this.licenseInformation;
     }
 
-    public void setLicenseInformation(final String licenseInformation) {
-        this.licenseInformation = licenseInformation;
-    }
-
     public String getLicenseOk() {
         return this.licenseOk;
-    }
-
-    public void setLicenseOk(final String licenseOk) {
-        this.licenseOk = licenseOk;
     }
 
     public String getStartupTimeUTC() {
         return this.startupTimeUTC;
     }
 
-    public void setStartupTimeUTC(final String startupTimeUTC) {
-        this.startupTimeUTC = startupTimeUTC;
-    }
-
     public String getSystemProfile() {
         return this.systemProfile;
-    }
-
-    public void setSystemProfile(final String systemProfile) {
-        this.systemProfile = systemProfile;
     }
 
     public String getTechnologyType() {
         return this.technologyType;
     }
 
-    public void setTechnologyType(final String technologyType) {
-        this.technologyType = technologyType;
-    }
-
     public boolean isSupportsHotsensorPlacement() {
         return this.supportsHotsensorPlacement;
-    }
-
-    public void setSupportsHotsensorPlacement(final boolean supportsHotsensorPlacement) {
-        this.supportsHotsensorPlacement = supportsHotsensorPlacement;
     }
 
     public boolean isConnected() {
         return this.connected;
     }
 
-    public void setConnected(final boolean connected) {
-        this.connected = connected;
-    }
-
     public boolean isCapture() {
         return this.capture;
-    }
-
-    public void setCapture(final boolean capture) {
-        this.capture = capture;
     }
 
     public int getClassLoadCount() {
         return this.classLoadCount;
     }
 
-    public void setClassLoadCount(final int classLoadCount) {
-        this.classLoadCount = classLoadCount;
-    }
-
     public int getEventCount() {
         return this.eventCount;
-    }
-
-    public void setEventCount(final int eventCount) {
-        this.eventCount = eventCount;
     }
 
     public int getProcessId() {
         return this.processId;
     }
 
-    public void setProcessId(final int processId) {
-        this.processId = processId;
-    }
-
     public int getSkippedEvents() {
         return this.skippedEvents;
-    }
-
-    public void setSkippedEvents(final int skippedEvents) {
-        this.skippedEvents = skippedEvents;
     }
 
     public int getSkippedPurePaths() {
         return this.skippedPurePaths;
     }
 
-    public void setSkippedPurePaths(final int skippedPurePaths) {
-        this.skippedPurePaths = skippedPurePaths;
-    }
-
     public int getTotalClassLoadCount() {
         return this.totalClassLoadCount;
-    }
-
-    public void setTotalClassLoadCount(final int totalClassLoadCount) {
-        this.totalClassLoadCount = totalClassLoadCount;
     }
 
     public int getTotalPurePathCount() {
         return this.totalPurePathCount;
     }
 
-    public void setTotalPurePathCount(final int totalPurePathCount) {
-        this.totalPurePathCount = totalPurePathCount;
-    }
-
     public double getTotalExecutionTime() {
         return this.totalExecutionTime;
-    }
-
-    public void setTotalExecutionTime(final double totalExecutionTime) {
-        this.totalExecutionTime = totalExecutionTime;
     }
 
     public double getTotalCpuTime() {
         return this.totalCpuTime;
     }
 
-    public void setTotalCpuTime(final double totalCpuTime) {
-        this.totalCpuTime = totalCpuTime;
-    }
-
     public String getConfiguration() {
         return this.configuration;
-    }
-
-    public void setConfiguration(final String configuration) {
-        this.configuration = configuration;
     }
 
     public String getHost() {
         return this.host;
     }
 
-    public void setHost(final String host) {
-        this.host = host;
-    }
-
     public String getName() {
         return this.name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 
     public Collector getCollector() {
         return this.collector;
     }
 
-    public void setCollector(final Collector collector) {
+    public void setCollector(Collector collector) {
         this.collector = collector;
     }
 

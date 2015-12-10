@@ -29,7 +29,7 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
@@ -38,7 +38,6 @@ import java.io.PrintStream;
 /**
  * Created by rapi on 20.10.2014.
  */
-@SuppressWarnings("unused")
 public class PerfSigMemoryDump extends Builder {
     private final String agent, host, type;
     private final boolean lockSession, captureStrings, capturePrimitives, autoPostProcess, dogc;
@@ -64,12 +63,12 @@ public class PerfSigMemoryDump extends Builder {
         final PerfSigRecorder dtRecorder = PerfSigUtils.getRecorder(build);
 
         if (dtRecorder == null) {
-            logger.println(Messages.DTPerfSigMemoryDump_NoRecorderFailure());
+            logger.println(Messages.PerfSigMemoryDump_NoRecorderFailure());
             return false;
         }
 
         final DTServerConnection connection = new DTServerConnection(dtRecorder.getProtocol(), dtRecorder.getHost(), dtRecorder.getPort(),
-                dtRecorder.getCredentialsId(), dtRecorder.isVerifyCertificate(), dtRecorder.isUseJenkinsProxy(), dtRecorder.getCustomProxy());
+                dtRecorder.getCredentialsId(), dtRecorder.isVerifyCertificate(), dtRecorder.getCustomProxy());
 
         try {
             for (Agent agent : connection.getAgents()) {
@@ -88,7 +87,7 @@ public class PerfSigMemoryDump extends Builder {
                         dumpFinished = connection.memoryDumpStatus(agent.getSystemProfile(), memoryDump).isResultValueTrue();
                     }
                     if (dumpFinished) {
-                        logger.println(Messages.DTPerfSigMemoryDump_SuccessfullyCreatedMemoryDump() + agent.getName());
+                        logger.println(Messages.PerfSigMemoryDump_SuccessfullyCreatedMemoryDump() + agent.getName());
                         return true;
                     } else {
                         throw new RESTErrorException("Timeout raised");
@@ -99,10 +98,10 @@ public class PerfSigMemoryDump extends Builder {
             throw e;
         } catch (Exception e) {
             logger.println(e);
-            return !dtRecorder.isModifyBuildResult();
+            return !dtRecorder.isTechnicalFailure();
         }
-        logger.println(String.format(Messages.DTPerfSigMemoryDump_AgentNotConnected(), agent));
-        return !dtRecorder.isModifyBuildResult();
+        logger.println(String.format(Messages.PerfSigMemoryDump_AgentNotConnected(), agent));
+        return !dtRecorder.isTechnicalFailure();
     }
 
     public String getAgent() {
@@ -173,7 +172,7 @@ public class PerfSigMemoryDump extends Builder {
             if (StringUtils.isNotBlank(agent)) {
                 validationResult = FormValidation.ok();
             } else {
-                validationResult = FormValidation.error(Messages.DTPerfSigMemoryDump_AgentNotValid());
+                validationResult = FormValidation.error(Messages.PerfSigMemoryDump_AgentNotValid());
             }
             return validationResult;
         }
@@ -183,7 +182,7 @@ public class PerfSigMemoryDump extends Builder {
             if (StringUtils.isNotBlank(host)) {
                 validationResult = FormValidation.ok();
             } else {
-                validationResult = FormValidation.error(Messages.DTPerfSigMemoryDump_AgentNotValid());
+                validationResult = FormValidation.error(Messages.PerfSigMemoryDump_AgentNotValid());
             }
             return validationResult;
         }
@@ -197,7 +196,7 @@ public class PerfSigMemoryDump extends Builder {
          * This human readable name is used in the agent screen.
          */
         public String getDisplayName() {
-            return Messages.DTPerfSigMemoryDump_DisplayName();
+            return Messages.PerfSigMemoryDump_DisplayName();
         }
     }
 }

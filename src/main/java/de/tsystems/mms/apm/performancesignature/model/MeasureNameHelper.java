@@ -14,24 +14,17 @@
  * limitations under the License.
  */
 
-package de.tsystems.mms.apm.performancesignature.util;
-
-import java.io.File;
-import java.io.FileFilter;
-import java.io.Serializable;
+package de.tsystems.mms.apm.performancesignature.model;
 
 /**
- * Created by rapi on 13.06.2014.
+ * Created by rapi on 20.10.2015.
  */
-public class TestCaseFileFilter implements FileFilter, Serializable {
-    private static final long serialVersionUID = 1L;
-    private final String testCase;
+public class MeasureNameHelper {
+    public final String chartDashlet, measure, description;
 
-    public TestCaseFileFilter(final String testCase) {
-        this.testCase = testCase;
-    }
-
-    public boolean accept(final File pathname) {
-        return pathname.getName().matches(testCase);
+    public MeasureNameHelper(final String chartDashlet, final String measure, final String description) {
+        this.chartDashlet = chartDashlet;
+        this.measure = measure;
+        this.description = description;
     }
 }

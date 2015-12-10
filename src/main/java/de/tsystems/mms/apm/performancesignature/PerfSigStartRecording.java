@@ -26,11 +26,13 @@ import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
+import hudson.model.Failure;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
-import org.apache.commons.lang3.StringUtils;
+import jenkins.model.Jenkins;
+import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
@@ -45,7 +47,7 @@ public class PerfSigStartRecording extends Builder {
 
     @DataBoundConstructor
     public PerfSigStartRecording(final String testCase, final String recordingOption, final boolean lockSession) {
-        this.testCase = testCase;
+        this.testCase = StringUtils.deleteWhitespace(testCase);
         this.recordingOption = recordingOption;
         this.lockSession = lockSession;
     }
@@ -56,24 +58,24 @@ public class PerfSigStartRecording extends Builder {
         final PrintStream logger = listener.getLogger();
 
         final PerfSigRecorder dtRecorder = PerfSigUtils.getRecorder(build);
-        final PerfSigStopRecording dtStopRecording = PerfSigUtils.getDTPerfSigBuilder(build, PerfSigStopRecording.class);
+        final PerfSigStopRecording dtStopRecording = PerfSigUtils.getPerfSigBuilder(build, PerfSigStopRecording.class);
 
         if (dtRecorder == null) {
-            logger.println(Messages.DTPerfSigStartRecording_MissingConfiguration());
+            logger.println(Messages.PerfSigStartRecording_MissingConfiguration());
             return false;
         }
         if (dtStopRecording == null) {
-            logger.println(Messages.DTPerfSigStartRecording_MissingStopRecording());
-            return !dtRecorder.isModifyBuildResult();
+            logger.println(Messages.PerfSigStartRecording_MissingStopRecording());
+            return !dtRecorder.isTechnicalFailure();
         }
 
         logger.println("starting session recording ...");
 
         final DTServerConnection connection = new DTServerConnection(dtRecorder.getProtocol(), dtRecorder.getHost(), dtRecorder.getPort(),
-                dtRecorder.getCredentialsId(), dtRecorder.isVerifyCertificate(), dtRecorder.isUseJenkinsProxy(), dtRecorder.getCustomProxy());
+                dtRecorder.getCredentialsId(), dtRecorder.isVerifyCertificate(), dtRecorder.getCustomProxy());
         if (!connection.validateConnection()) {
-            logger.println(Messages.DTPerfSigRecorder_DTConnectionError());
-            return !dtRecorder.isModifyBuildResult();
+            logger.println(Messages.PerfSigRecorder_DTConnectionError());
+            return !dtRecorder.isTechnicalFailure();
         }
 
         try {
@@ -84,7 +86,7 @@ public class PerfSigStartRecording extends Builder {
 
                     testRunId = connection.registerTestRun(dtRecorder.getProfile(), build.getNumber());
                     if (testRunId != null) {
-                        logger.println(String.format(Messages.DTPerfSigStartRecording_StartedTestRun(), dtRecorder.getProfile(), testRunId));
+                        logger.println(String.format(Messages.PerfSigStartRecording_StartedTestRun(), dtRecorder.getProfile(), testRunId));
                         logger.println("Dynatrace: registered test run " + testRunId + "" +
                                 " (available in the environment as " + PerfSigRegisterEnvVars.TESTRUN_ID_KEY +
                                 " and " + PerfSigRegisterEnvVars.SESSIONCOUNT + ")");
@@ -95,20 +97,20 @@ public class PerfSigStartRecording extends Builder {
                 }
             }
 
-            String testCase = build.getEnvironment(listener).expand(this.testCase);
+            final String testCase = build.getEnvironment(listener).expand(this.testCase);
             String sessionName = dtRecorder.getProfile() + "_" + build.getProject().getName() + "_Build-" + build.getNumber() + "_" + testCase;
             sessionName = sessionName.replace("/", "_");
-            String result = connection.startRecording(dtRecorder.getProfile(), sessionName, "This Session is triggered by Jenkins", this.recordingOption, lockSession, false);
+            final String result = connection.startRecording(dtRecorder.getProfile(), sessionName, "This Session is triggered by Jenkins", this.recordingOption, lockSession, false);
 
             if (result != null && result.equals(sessionName)) {
-                logger.println(String.format(Messages.DTPerfSigStartRecording_StartedSessionRecording(), dtRecorder.getProfile(), result));
+                logger.println(String.format(Messages.PerfSigStartRecording_StartedSessionRecording(), dtRecorder.getProfile(), result));
                 build.addAction(new PerfSigRegisterEnvVars(sessionName, testCase, testRunId));
                 return true;
             }
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
-            logger.println(String.format(Messages.DTPerfSigStartRecording_SessionRecordingError(), dtRecorder.getProfile(), e.getMessage()));
+            logger.println(String.format(Messages.PerfSigStartRecording_SessionRecordingError(), dtRecorder.getProfile(), e.getMessage()));
             if (e.getMessage().contains("already started")) {
                 try {
                     dtStopRecording.perform(build, launcher, listener);
@@ -116,13 +118,13 @@ public class PerfSigStartRecording extends Builder {
                     this.perform(build, launcher, listener);
                 } catch (Exception ex) {
                     logger.println(ex);
-                    return !dtRecorder.isModifyBuildResult();
+                    return !dtRecorder.isTechnicalFailure();
                 }
             }
-            return !dtRecorder.isModifyBuildResult();
+            return !dtRecorder.isTechnicalFailure();
         }
-        logger.println(String.format(Messages.DTPerfSigStartRecording_SessionRecordingError(), dtRecorder.getProfile(), ""));
-        return !dtRecorder.isModifyBuildResult();
+        logger.println(String.format(Messages.PerfSigStartRecording_SessionRecordingError(), dtRecorder.getProfile(), ""));
+        return !dtRecorder.isTechnicalFailure();
     }
 
     public String getTestCase() {
@@ -137,16 +139,11 @@ public class PerfSigStartRecording extends Builder {
         return lockSession;
     }
 
-    @SuppressWarnings("unused")
     @Extension // This indicates to Jenkins that this is an implementation of an extension point.
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
 
         public DescriptorImpl() {
             load();
-        }
-
-        public static boolean getDefaultRegisterTestRun() {
-            return false;
         }
 
         public static boolean getDefaultLockSession() {
@@ -158,14 +155,13 @@ public class PerfSigStartRecording extends Builder {
         }
 
         public FormValidation doCheckTestCase(@QueryParameter final String testCase) {
-            FormValidation validationResult;
-            if (StringUtils.isNotBlank(testCase)) {
+            try {
+                Jenkins.checkGoodName(testCase);
                 GeneralTestCase.DescriptorImpl.addTestCases(testCase);
-                validationResult = FormValidation.ok();
-            } else {
-                validationResult = FormValidation.error(Messages.DTPerfSigStartRecording_SessionSuffixNotValid());
+                return FormValidation.ok();
+            } catch (Failure e) {
+                return FormValidation.error(e.getMessage());
             }
-            return validationResult;
         }
 
         public boolean isApplicable(final Class<? extends AbstractProject> aClass) {
@@ -177,7 +173,7 @@ public class PerfSigStartRecording extends Builder {
          * This human readable name is used in the configuration screen.
          */
         public String getDisplayName() {
-            return Messages.DTPerfSigStartRecording_DisplayName();
+            return Messages.PerfSigStartRecording_DisplayName();
         }
     }
 }

@@ -45,24 +45,12 @@ public class TestResult implements Serializable {
         return new Date(exectime.getTime());
     }
 
-    public void setExectime(final Date exectime) {
-        this.exectime = new Date(exectime.getTime());
-    }
-
     public String getPackageName() {
         return packageName;
     }
 
-    public void setPackageName(final String packageName) {
-        this.packageName = packageName;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 
     public TestRunMeasure getMeasure(final String metricGroup, final String metric) {
@@ -122,10 +110,6 @@ public class TestResult implements Serializable {
 
     public TestResultStatus getStatus() {
         return status;
-    }
-
-    public void setStatus(final TestResultStatus status) {
-        this.status = status;
     }
 
     @Override

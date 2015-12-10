@@ -63,15 +63,15 @@ public class PerfSigBuildAction implements Action, StaplerProxy {
     }
 
     public String getIconFileName() {
-        return "/plugin/" + Messages.DTPerfSigBuildAction_UrlName() + "/images/icon.png";
+        return "/plugin/" + Messages.PerfSigBuildAction_UrlName() + "/images/icon.png";
     }
 
     public String getDisplayName() {
-        return Messages.DTPerfSigBuildAction_DisplayName();
+        return Messages.PerfSigBuildAction_DisplayName();
     }
 
     public String getUrlName() {
-        return Messages.DTPerfSigBuildAction_UrlName();
+        return Messages.PerfSigBuildAction_UrlName();
     }
 
     public AbstractBuild<?, ?> getBuild() {

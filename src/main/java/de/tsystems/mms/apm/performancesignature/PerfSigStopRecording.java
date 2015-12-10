@@ -52,19 +52,19 @@ public class PerfSigStopRecording extends Builder {
         // This is where you 'build' the project.
         final PrintStream logger = listener.getLogger();
 
-        logger.println(Messages.DTPerfSigStopRecording_StopSessionRecording());
+        logger.println(Messages.PerfSigStopRecording_StopSessionRecording());
         final PerfSigRecorder dtRecorder = PerfSigUtils.getRecorder(build);
         if (dtRecorder == null) {
-            logger.println(Messages.DTPerfSigStopRecording_MissingConfiguration());
+            logger.println(Messages.PerfSigStopRecording_MissingConfiguration());
             return false;
         }
 
         final DTServerConnection connection = new DTServerConnection(dtRecorder.getProtocol(), dtRecorder.getHost(), dtRecorder.getPort(),
-                dtRecorder.getCredentialsId(), dtRecorder.isVerifyCertificate(), dtRecorder.isUseJenkinsProxy(), dtRecorder.getCustomProxy());
+                dtRecorder.getCredentialsId(), dtRecorder.isVerifyCertificate(), dtRecorder.getCustomProxy());
 
         try {
             String sessionName = connection.stopRecording(dtRecorder.getProfile());
-            if (sessionName == null) throw new RESTErrorException(Messages.DTPerfSigStopRecording_InternalError());
+            if (sessionName == null) throw new RESTErrorException(Messages.PerfSigStopRecording_InternalError());
             logger.println(String.format("Stopped recording on %s with SessionName %s", dtRecorder.getProfile(), sessionName));
 
             if (this.reanalyzeSession) {
@@ -92,11 +92,10 @@ public class PerfSigStopRecording extends Builder {
             return true;
         } catch (RESTErrorException e) {
             logger.println(String.format("Failed to stop Dynatrace Session recording on %s: %s", dtRecorder.getProfile(), e));
-            return !dtRecorder.isModifyBuildResult();
+            return !dtRecorder.isTechnicalFailure();
         }
     }
 
-    @SuppressWarnings("unused")
     @Extension // This indicates to Jenkins that this is an implementation of an extension point.
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
 
@@ -117,7 +116,7 @@ public class PerfSigStopRecording extends Builder {
          * This human readable name is used in the configuration screen.
          */
         public String getDisplayName() {
-            return Messages.DTPerfSigStopRecording_DisplayName();
+            return Messages.PerfSigStopRecording_DisplayName();
         }
     }
 }

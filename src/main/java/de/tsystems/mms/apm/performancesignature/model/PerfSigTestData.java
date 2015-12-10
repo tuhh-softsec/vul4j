@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package de.tsystems.mms.apm.performancesignature;
+package de.tsystems.mms.apm.performancesignature.model;
 
+import de.tsystems.mms.apm.performancesignature.PerfSigTestAction;
+import de.tsystems.mms.apm.performancesignature.PerfSigTestDataWrapper;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRun;
 import hudson.model.Run;
 import hudson.tasks.junit.CaseResult;

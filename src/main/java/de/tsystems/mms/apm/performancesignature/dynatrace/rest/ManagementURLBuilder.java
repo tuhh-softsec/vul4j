@@ -29,7 +29,7 @@
 package de.tsystems.mms.apm.performancesignature.dynatrace.rest;
 
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -187,7 +187,7 @@ public class ManagementURLBuilder {
 
     public URL downloadSessionURL(final String sessionName) {
         try {
-            final String s = String.format("%1$s/rest/management/sessions/%2$s/export", this.serverAddress, sessionName);
+            final String s = String.format("%1$s/rest/management/sessions/%2$s/export", this.serverAddress, PerfSigUtils.encodeString(sessionName));
             return new URL(s);
         } catch (MalformedURLException e) {
             e.printStackTrace();

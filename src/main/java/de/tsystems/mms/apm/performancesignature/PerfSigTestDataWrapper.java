@@ -17,6 +17,7 @@
 package de.tsystems.mms.apm.performancesignature;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRun;
+import de.tsystems.mms.apm.performancesignature.model.PerfSigTestData;
 import hudson.model.InvisibleAction;
 
 import java.util.List;

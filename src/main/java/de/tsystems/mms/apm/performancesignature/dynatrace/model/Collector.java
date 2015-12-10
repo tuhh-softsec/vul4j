@@ -37,13 +37,13 @@ public class Collector {
 
     public void setValue(final String property, final String value) {
         if (property.equalsIgnoreCase(Messages.Collector_PropHost())) {
-            setHost(value);
+            this.host = value;
         } else if (property.equalsIgnoreCase(Messages.Collector_PropName())) {
-            setName(value);
+            this.name = value;
         } else if (property.equalsIgnoreCase(Messages.Collector_PropConnected())) {
-            setConnected(Boolean.valueOf(value));
+            this.connected = Boolean.valueOf(value);
         } else if (property.equalsIgnoreCase(Messages.Collector_PropEmbedded())) {
-            setEmbedded(Boolean.valueOf(value));
+            this.embedded = Boolean.valueOf(value);
         }
     }
 
@@ -51,32 +51,16 @@ public class Collector {
         return this.connected;
     }
 
-    public void setConnected(final boolean connected) {
-        this.connected = connected;
-    }
-
     public boolean isEmbedded() {
         return this.embedded;
-    }
-
-    public void setEmbedded(final boolean embedded) {
-        this.embedded = embedded;
     }
 
     public String getName() {
         return this.name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
     public String getHost() {
         return this.host;
-    }
-
-    public void setHost(final String host) {
-        this.host = host;
     }
 
     public String toString() {

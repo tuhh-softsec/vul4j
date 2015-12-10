@@ -19,13 +19,14 @@ require.config({
     paths: {
         'jquery': "jquery-1.11.3.min",
         'bootstrap': "bootstrap.min",
-        'datatables': "jquery.dataTables.min",
-        'datatables_bootstrap': "dataTables.bootstrap.min",
-        'gridster': "jquery.gridster.min"
+        'datatables.net': "jquery.dataTables.min",
+        'datatables.bootstrap': "dataTables.bootstrap.min",
+        'gridster': "jquery.gridster.min",
+        'lightbox': "lightbox.min"
     },
     shim: {
         'bootstrap': ['jquery'],
-        'datatables_bootstrap': ['jquery', 'datatables'],
+        'datatables.bootstrap': ['datatables.net'],
         'gridster': ['jquery']
     },
     map: {

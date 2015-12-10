@@ -50,88 +50,44 @@ public class TestRunMeasure implements Serializable {
         return PerfSigUtils.round(this.expectedMax, 2);
     }
 
-    public void setExpectedMax(final double expectedMax) {
-        this.expectedMax = expectedMax;
-    }
-
     public BigDecimal getExpectedMin() {
         return PerfSigUtils.round(this.expectedMin, 2);
-    }
-
-    public void setExpectedMin(final double expectedMin) {
-        this.expectedMin = expectedMin;
     }
 
     public BigDecimal getValue() {
         return PerfSigUtils.round(this.value, 2);
     }
 
-    public void setValue(final double value) {
-        this.value = value;
-    }
-
     public double getViolationPercentage() {
         return violationPercentage;
-    }
-
-    public void setViolationPercentage(final double violationPercentage) {
-        this.violationPercentage = violationPercentage;
     }
 
     public String getMetricGroup() {
         return metricGroup;
     }
 
-    public void setMetricGroup(final String metricGroup) {
-        this.metricGroup = metricGroup;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 
     public String getUnit() {
         return unit;
     }
 
-    public void setUnit(final String unit) {
-        this.unit = unit;
-    }
-
     public int getNumDegradedRuns() {
         return numDegradedRuns;
-    }
-
-    public void setNumDegradedRuns(final int numDegradedRuns) {
-        this.numDegradedRuns = numDegradedRuns;
     }
 
     public int getNumFailingOrInvalidatedRuns() {
         return numFailingOrInvalidatedRuns;
     }
 
-    public void setNumFailingOrInvalidatedRuns(final int numFailingOrInvalidatedRuns) {
-        this.numFailingOrInvalidatedRuns = numFailingOrInvalidatedRuns;
-    }
-
     public int getNumImprovedRuns() {
         return numImprovedRuns;
     }
 
-    public void setNumImprovedRuns(final int numImprovedRuns) {
-        this.numImprovedRuns = numImprovedRuns;
-    }
-
     public int getNumValidRuns() {
         return numValidRuns;
-    }
-
-    public void setNumValidRuns(final int numValidRuns) {
-        this.numValidRuns = numValidRuns;
     }
 
     @Override

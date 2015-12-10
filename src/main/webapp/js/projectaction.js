@@ -15,7 +15,7 @@
  */
 
 define(['./common'], function () {
-    require(['jquery', 'bootstrap', 'datatables_bootstrap', 'gridster'], function ($) {
+    require(['jquery', 'bootstrap', 'datatables.bootstrap', 'gridster', 'lightbox'], function ($) {
         $(document).ready(function () {
             $.fn.dataTableExt.sErrMode = 'none';
 
@@ -31,15 +31,16 @@ define(['./common'], function () {
                     "order": [0, 'desc']
                 });
 
-                //Gridster Stuff
                 var gridster = [];
                 $("#measureGroup", this).change(function () {
-                    if($(this).val() === 'UnitTest Overview') {
-                        $("#customizing", page).hide();
+                    if ($(this).val() === 'Unit Test Overview') {
+                        $("#measure", page).parent().hide();
                     } else {
                         projectAction.getAvailableMeasures($(page).attr('id'), $(this).val(), function (data) {
                             $("#measure", page).empty();
-                            $("#customizing", page).show();
+                            $("#customName", page).val("");
+                            $("#customBuildCount", page).val("");
+                            $("#measure", page).parent().show();
                             $.each(data.responseObject(), function (val, text) {
                                 $("#measure", page).append($('<option></option>').val(val).html(text));
                             });
@@ -49,6 +50,7 @@ define(['./common'], function () {
 
                 $("#editbutton", this).click(function () {
                     $(this).hide();
+                    $(".img-thumbnail", page).unwrap();
                     $("#measureGroup", page).trigger("change");
                     $("#donebutton", page).show();
                     $("#cancelbutton", page).show();
@@ -61,17 +63,17 @@ define(['./common'], function () {
                     location.reload(true);
                 });
                 $("#addbutton", this).click(function () {
-                    if ($("#measureGroup", page).val() === 'UnitTest Overview') {
-                        gridster[pageIndex].add_widget('<li><img class="img-thumbnail" height="300" width="410"' +
-                            'src="./testRunGraph?width=410&amp;height=300&amp;id=unittest_overview"' +
-                            '><span class="del_img glyphicon glyphicon-remove"></span>' +
+                    if ($("#measureGroup", page).val() === 'Unit Test Overview') {
+                        gridster[pageIndex].add_widget('<li><img class="img-thumbnail" height="300" width="410" ' +
+                            'src="./testRunGraph?width=410&amp;height=300&amp;id=unittest_overview&amp;customName=' + encode($("#customName", page).val()) +
+                            '&amp;customBuildCount=' + $("#customBuildCount", page).val() + '">' +
+                            '<span class="del_img glyphicon glyphicon-remove"></span>' +
                             '<span class="chk_show"><input type="checkbox" title="show in project overview" checked="checked"/></span></li>', 1, 1);
                     } else {
                         gridster[pageIndex].add_widget('<li><img class="img-thumbnail" height="300" width="410"' +
                             'src="./summarizerGraph?width=410&amp;height=300&amp;id=' + $("#measure", page).val() +
-                            '&amp;dashboard=' + $(page).attr('id') +
-                            '&amp;customName=' + encode($("#customName", page).val()) +
-                            '&amp;customBuildCount=' + $("#customBuildCount", page).val() + '"><span class="del_img glyphicon glyphicon-remove"></span>' +
+                            '&amp;customName=' + encode($("#customName", page).val()) + '&amp;customBuildCount=' + $("#customBuildCount", page).val() + '">' +
+                            '<span class="del_img glyphicon glyphicon-remove"></span>' +
                             '<span class="chk_show"><input type="checkbox" title="show in project overview" checked="checked"/></span></li>', 1, 1);
                     }
                     $(".del_img", page).click(function () {
@@ -101,25 +103,29 @@ define(['./common'], function () {
                                 measure: $("img", $w).attr("src").indexOf("measure") > -1 ? url("?measure", $("img", $w).attr("src")) : "",
                                 customName: $("img", $w).attr("src").indexOf("customName") > -1 ? url("?customName", $("img", $w).attr("src")) : "",
                                 customBuildCount: $("img", $w).attr("src").indexOf("customBuildCount") > -1 ? url("?customBuildCount", $("img", $w).attr("src")) : "",
-                                show: $("input[type='checkbox']", $w).prop('checked'),
+                                show: $("input[type='checkbox']", $w).prop('checked')
                             };
                         }
                     }).data('gridster').disable();
 
-                    projectAction.getDashboardConfiguration(function (data) {
+                    projectAction.getDashboardConfiguration($(page).attr('id'), function (data) {
                         var json = JSON.parse(data.responseObject());
                         $.each(json, function (index) {
                             if (json[index].dashboard == $(page).attr('id')) {
                                 if (json[index].id === 'unittest_overview') {
-                                    gridster[pageIndex].add_widget('<li><img class="img-thumbnail" height="300" width="410"' +
-                                        'src="./testRunGraph?width=410&amp;height=300&amp;id=unittest_overview"><span class="del_img glyphicon glyphicon-remove"></span>' +
+                                    gridster[pageIndex].add_widget('<li><a href="./testRunGraph?width=800&amp;height=585&amp;id=unittest_overview" ' +
+                                        'data-lightbox="' + $(page).attr('id') + '"><img class="img-thumbnail" height="300" width="410"' +
+                                        'src="./testRunGraph?width=410&amp;height=300&amp;id=unittest_overview"></a>' +
+                                        '<span class="del_img glyphicon glyphicon-remove"></span>' +
                                         '<span class="chk_show"><input type="checkbox" title="show in project overview" checked="checked"/></span></li>', 1, 1,
                                         json[index].col, json[index].row);
                                 } else {
-                                    gridster[pageIndex].add_widget('<li>' + '<img class="img-thumbnail" height="300" width="410"' +
-                                        'src="./summarizerGraph?width=410&amp;height=300&amp;id=' + json[index].id + '">' +
-                                        '<span class="del_img glyphicon glyphicon-remove"></span>' +
-                                        '<span class="chk_show"><input type="checkbox" title="show in project overview" ' + (json[index].show ? "checked='checked'" : "") +
+                                    gridster[pageIndex].add_widget('<li><a href="./summarizerGraph?width=800&amp;height=585&amp;id=' + json[index].id + '" ' +
+                                        'data-lightbox="' + $(page).attr('id') + '" data-title="' + json[index].description + '">' +
+                                        '<img class="img-thumbnail" height="300" width="410" src="./summarizerGraph?width=410&amp;height=300&amp;id=' + json[index].id + '' +
+                                        '" title="source: ' + json[index].chartDashlet + '-' + json[index].measure + '\n' + json[index].description + '"></a>' +
+                                        '<span class="del_img glyphicon glyphicon-remove"></span><span class="chk_show">' +
+                                        '<input type="checkbox" title="show in project overview" ' + (json[index].show ? "checked='checked'" : "") +
                                         '/></span></li>', 1, 1, json[index].col, json[index].row);
                                 }
                             }
@@ -143,23 +149,24 @@ define(['./common'], function () {
                 $('html,body').scrollTop(scrollmem);
             });
         });
-        function sort_by_row_and_col_asc(widgets) {
-            widgets = widgets.sort(function (a, b) {
-                if (a.row > b.row || a.row === b.row && a.col > b.col) {
-                    return 1;
-                }
-                return -1;
-            });
-            return widgets;
-        }
-
-        function encode(toEncode) {
-            return encodeURIComponent(toEncode)
-                .replace(/!/g, '%21')
-                .replace(/'/g, '%27')
-                .replace(/\(/g, '%28')
-                .replace(/\)/g, '%29')
-                .replace(/\*/g, '%2A');
-        }
     });
 });
+
+function sort_by_row_and_col_asc(widgets) {
+    widgets = widgets.sort(function (a, b) {
+        if (a.row > b.row || a.row === b.row && a.col > b.col) {
+            return 1;
+        }
+        return -1;
+    });
+    return widgets;
+}
+
+function encode(toEncode) {
+    return encodeURIComponent(toEncode)
+        .replace(/!/g, '%21')
+        .replace(/'/g, '%27')
+        .replace(/\(/g, '%28')
+        .replace(/\)/g, '%29')
+        .replace(/\*/g, '%2A');
+}

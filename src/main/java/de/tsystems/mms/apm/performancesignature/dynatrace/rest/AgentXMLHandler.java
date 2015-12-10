@@ -34,7 +34,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.io.CharArrayWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,13 +41,17 @@ import java.util.List;
  * Created by rapi on 27.10.2014.
  */
 public class AgentXMLHandler extends DefaultHandler {
-    private final CharArrayWriter contents = new CharArrayWriter();
-    private final List<Agent> agents = new ArrayList<Agent>();
-    private final List<Collector> collectors = new ArrayList<Collector>();
-    private Agent currentAgent = null;
-    private Collector currentCollector = null;
-    private String currentElement = null;
-    private String parentElement = null;
+    private final List<Agent> agents;
+    private final List<Collector> collectors;
+    private Agent currentAgent;
+    private Collector currentCollector;
+    private String currentElement;
+    private String parentElement;
+
+    public AgentXMLHandler() {
+        collectors = new ArrayList<Collector>();
+        agents = new ArrayList<Agent>();
+    }
 
     public List<Agent> getAgents() {
         return this.agents;
@@ -59,7 +62,6 @@ public class AgentXMLHandler extends DefaultHandler {
     }
 
     public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attr) {
-        this.contents.reset();
         if (localName.equals(Messages.AgentXMLHandler_AttrAgentInformation())) {
             this.parentElement = localName;
             this.currentAgent = new Agent();
@@ -84,7 +86,6 @@ public class AgentXMLHandler extends DefaultHandler {
     }
 
     public void characters(final char[] ch, final int start, final int length) throws SAXException {
-        this.contents.write(ch, start, length);
         if (this.currentCollector != null) {
             this.currentCollector.setValue(this.currentElement, String.copyValueOf(ch, start, length));
         } else if (this.currentAgent != null) {

@@ -22,9 +22,8 @@
             <link type="text/css" href="${resURL}/plugin/performance-signature/css/bootstrap.min.css"
                   rel="stylesheet"/>
             <style>
-                .nav::after, .row::after {
-                clear: none;
-                }
+                .nav::after, .row::after { clear: none; }
+                .text-center { text-align: center !important; }
             </style>
         </l:header>
         <st:include it="${it.build}" page="sidepanel.jelly"/>
@@ -32,12 +31,12 @@
             <div class="tw-bs">
                 <div class="row">
                     <div class="col-md-12">
-                        <h2>${%Dynatrace Performance Signature for Build} ${it.build.number}</h2>
+                        <h1>${%Performance Signature for Build} ${it.build.number}</h1>
                         <ul class="nav nav-tabs" role="tablist" id="tabList">
                             <j:forEach var="dashboardReport" items="${it.currentDashboardReports}">
                                 <li role="presentation">
                                     <a href="#${dashboardReport.name}" aria-controls="${dashboardReport.name}" role="tab" data-toggle="tab">
-                                        <h5>${dashboardReport.name}</h5>
+                                        <h3>${dashboardReport.name}</h3>
                                     </a>
                                 </li>
                             </j:forEach>
@@ -61,14 +60,14 @@
                                             </div>
                                             <div class="panel-body">
                                                 <j:forEach var="file"
-                                                           items="${it.dTPerfSigUtils.getDownloadFiles('Single.*' + dashboardReport.name + '_.*pdf',it.build)}">
+                                                           items="${it.PerfSigUtils.getDownloadFiles('Single.*' + dashboardReport.name + '_.*pdf',it.build)}">
                                                     <a href="./downloadFile?f=${file.name}" target="_blank">
                                                         <img src="${resURL}/plugin/performance-signature/images/pdficon_small.png"/>
                                                         ${file.name}
                                                     </a>
                                                     <br/>
                                                 </j:forEach>
-                                                <j:if test="${it.dTPerfSigUtils.getDownloadFiles('Single.*' + dashboardReport.name + '_.*pdf',it.build).isEmpty()}">
+                                                <j:if test="${it.PerfSigUtils.getDownloadFiles('Single.*' + dashboardReport.name + '_.*pdf',it.build).isEmpty()}">
                                                     ${%no Single Report available!}
                                                 </j:if>
                                             </div>
@@ -82,14 +81,14 @@
                                             </div>
                                             <div class="panel-body">
                                                 <j:forEach var="file"
-                                                           items="${it.dTPerfSigUtils.getDownloadFiles('.*' + dashboardReport.name + '.dts',it.build)}">
+                                                           items="${it.PerfSigUtils.getDownloadFiles('.*' + dashboardReport.name + '.dts',it.build)}">
                                                     <a href="./downloadFile?f=${file.name}" target="_blank">
                                                         <img src="${resURL}/plugin/performance-signature/images/dtsession.png"/>
                                                         ${file.name}
                                                     </a>
                                                     <br/>
                                                 </j:forEach>
-                                                <j:if test="${it.dTPerfSigUtils.getDownloadFiles('.*' + dashboardReport.name + '.dts',it.build).isEmpty()}">
+                                                <j:if test="${it.PerfSigUtils.getDownloadFiles('.*' + dashboardReport.name + '.dts',it.build).isEmpty()}">
                                                     ${%no Dynatrace Sessions available!}
                                                 </j:if>
                                             </div>
@@ -133,7 +132,7 @@
             </div>
             <br style="clear:both;"/>
             <script data-main="${resURL}/plugin/performance-signature/js/buildactionresultsdisplay"
-                    src="${resURL}/plugin/performance-signature/js/require.js"/>
+                    src="${resURL}/plugin/performance-signature/js/require.min.js"/>
             <script type="text/javascript">
                 var rootURL = "${rootURL}";
                 var resURL = "${resURL}";

@@ -28,7 +28,7 @@ import hudson.model.BuildListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
@@ -37,7 +37,6 @@ import java.io.PrintStream;
 /**
  * Created by rapi on 20.10.2014.
  */
-@SuppressWarnings("unused")
 public class PerfSigThreadDump extends Builder {
     private final String agent, host;
     private final boolean lockSession;
@@ -57,12 +56,12 @@ public class PerfSigThreadDump extends Builder {
         final PerfSigRecorder dtRecorder = PerfSigUtils.getRecorder(build);
 
         if (dtRecorder == null) {
-            logger.println(Messages.DTPerfSigThreadDump_NoRecorderFailure());
+            logger.println(Messages.PerfSigThreadDump_NoRecorderFailure());
             return false;
         }
 
         final DTServerConnection connection = new DTServerConnection(dtRecorder.getProtocol(), dtRecorder.getHost(), dtRecorder.getPort(),
-                dtRecorder.getCredentialsId(), dtRecorder.isVerifyCertificate(), dtRecorder.isUseJenkinsProxy(), dtRecorder.getCustomProxy());
+                dtRecorder.getCredentialsId(), dtRecorder.isVerifyCertificate(), dtRecorder.getCustomProxy());
 
         try {
             for (Agent agent : connection.getAgents()) {
@@ -78,7 +77,7 @@ public class PerfSigThreadDump extends Builder {
                         dumpFinished = connection.threadDumpStatus(agent.getSystemProfile(), threadDump).isResultValueTrue();
                     }
                     if (dumpFinished) {
-                        logger.println(Messages.DTPerfSigThreadDump_SuccessfullyCreatedThreadDump() + agent.getName());
+                        logger.println(Messages.PerfSigThreadDump_SuccessfullyCreatedThreadDump() + agent.getName());
                         return true;
                     } else {
                         throw new RESTErrorException("Timeout is raised");
@@ -87,10 +86,10 @@ public class PerfSigThreadDump extends Builder {
             }
         } catch (Exception e) {
             logger.println(e);
-            return !dtRecorder.isModifyBuildResult();
+            return !dtRecorder.isTechnicalFailure();
         }
-        logger.println(String.format(Messages.DTPerfSigThreadDump_AgentNotConnected(), agent));
-        return !dtRecorder.isModifyBuildResult();
+        logger.println(String.format(Messages.PerfSigThreadDump_AgentNotConnected(), agent));
+        return !dtRecorder.isTechnicalFailure();
     }
 
     public String getAgent() {
@@ -105,7 +104,6 @@ public class PerfSigThreadDump extends Builder {
         return lockSession;
     }
 
-    @SuppressWarnings("unused")
     @Extension // This indicates to Jenkins that this is an implementation of an extension point.
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
 
@@ -122,7 +120,7 @@ public class PerfSigThreadDump extends Builder {
             if (StringUtils.isNotBlank(agent)) {
                 validationResult = FormValidation.ok();
             } else {
-                validationResult = FormValidation.error(Messages.DTPerfSigThreadDump_AgentNotValid());
+                validationResult = FormValidation.error(Messages.PerfSigThreadDump_AgentNotValid());
             }
             return validationResult;
         }
@@ -132,7 +130,7 @@ public class PerfSigThreadDump extends Builder {
             if (StringUtils.isNotBlank(host)) {
                 validationResult = FormValidation.ok();
             } else {
-                validationResult = FormValidation.error(Messages.DTPerfSigThreadDump_AgentNotValid());
+                validationResult = FormValidation.error(Messages.PerfSigThreadDump_AgentNotValid());
             }
             return validationResult;
         }
@@ -146,7 +144,7 @@ public class PerfSigThreadDump extends Builder {
          * This human readable name is used in the agent screen.
          */
         public String getDisplayName() {
-            return Messages.DTPerfSigThreadDump_DisplayName();
+            return Messages.PerfSigThreadDump_DisplayName();
         }
     }
 }

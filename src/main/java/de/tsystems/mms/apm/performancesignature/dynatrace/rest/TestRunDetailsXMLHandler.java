@@ -20,17 +20,13 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestResult;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRun;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRunMeasure;
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-
-import java.io.CharArrayWriter;
 
 /**
  * Created by rapi on 27.10.2014.
  */
 
 public class TestRunDetailsXMLHandler extends DefaultHandler {
-    private final CharArrayWriter contents = new CharArrayWriter();
     private TestRun testRun;
     private TestResult testResult;
     private TestRunMeasure measure;
@@ -47,7 +43,6 @@ public class TestRunDetailsXMLHandler extends DefaultHandler {
         } else if (localName.equals("measure")) {
             measure = new TestRunMeasure(attr);
         }
-        this.contents.reset();
     }
 
     public void endElement(final String uri, final String localName, final String qName) {
@@ -56,9 +51,5 @@ public class TestRunDetailsXMLHandler extends DefaultHandler {
         } else if (localName.equals("measure")) {
             testResult.addTestRunMeasure(measure);
         }
-    }
-
-    public void characters(final char[] ch, final int start, final int length) throws SAXException {
-        this.contents.write(ch, start, length);
     }
 }

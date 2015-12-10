@@ -20,7 +20,7 @@ define(['./common'], function () {
             $(".carousel").each(function (carouselIndex, carousel) {
                 var testCase = $(carousel).attr('id').substring(9);
 
-                projectAction.getDashboardConfiguration(function (data) {
+                projectAction.getDashboardConfiguration(testCase, function (data) {
                     var json = JSON.parse(data.responseObject());
                     $.each(json, function (index) {
                         if (json[index].show && json[index].dashboard == testCase) {

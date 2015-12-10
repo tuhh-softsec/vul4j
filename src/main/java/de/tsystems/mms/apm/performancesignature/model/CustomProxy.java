@@ -22,16 +22,24 @@ import org.kohsuke.stapler.DataBoundConstructor;
 /**
  * Created by rapi on 25.08.2014.
  */
-public class ProxyBlock {
+public class CustomProxy {
     private final String proxyServer, proxyUser, proxyPassword;
     private final int proxyPort;
+    private boolean useJenkinsProxy;
 
     @DataBoundConstructor
-    public ProxyBlock(final String proxyServer, final int proxyPort, final String proxyUser, final String proxyPassword) {
+    public CustomProxy(final String proxyServer, final int proxyPort, final String proxyUser,
+                       final String proxyPassword, final int value) {
         this.proxyServer = proxyServer;
         this.proxyUser = proxyUser;
         this.proxyPassword = Scrambler.scramble(proxyPassword);
         this.proxyPort = proxyPort;
+        this.useJenkinsProxy = (value == 0);
+    }
+
+    public CustomProxy(final String proxyServer, final int proxyPort, final String proxyUser, final String proxyPassword,
+                       final boolean useJenkinsProxy) {
+        this(proxyServer, proxyPort, proxyUser, proxyPassword, useJenkinsProxy ? 0 : 1);
     }
 
     public String getProxyServer() {
@@ -48,5 +56,9 @@ public class ProxyBlock {
 
     public int getProxyPort() {
         return proxyPort;
+    }
+
+    public boolean isUseJenkinsProxy() {
+        return useJenkinsProxy;
     }
 }

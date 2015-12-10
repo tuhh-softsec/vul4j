@@ -17,7 +17,6 @@
 package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
-import org.apache.commons.lang3.SerializationUtils;
 import org.xml.sax.Attributes;
 
 import java.io.Serializable;
@@ -44,7 +43,7 @@ public class TestRun implements Serializable {
         this.versionMilestone = AttributeUtils.getStringAttribute("versionMilestone", attr);
         this.versionMinor = AttributeUtils.getStringAttribute("versionMinor", attr);
         this.versionRevision = AttributeUtils.getStringAttribute("versionRevision", attr);
-        this.setTimestamp(AttributeUtils.getDateAttribute("startTime", attr));
+        this.timestamp = AttributeUtils.getDateAttribute("startTime", attr);
         this.testRunID = AttributeUtils.getStringAttribute("id", attr);
         this.numPassed = AttributeUtils.getIntAttribute("numPassed", attr);
         this.numFailed = AttributeUtils.getIntAttribute("numFailed", attr);
@@ -53,14 +52,16 @@ public class TestRun implements Serializable {
         this.numDegraded = AttributeUtils.getIntAttribute("numDegraded", attr);
         this.numInvalidated = AttributeUtils.getIntAttribute("numInvalidated", attr);
         this.marker = AttributeUtils.getStringAttribute("marker", attr);
-        //sessionname and href possible
+    }
+
+    public TestRun() {
+        testResults = new ArrayList<TestResult>();
     }
 
     public static TestRun mergeTestRuns(final List<TestRun> testRuns) {
-        TestRun newTestRun = null;
+        TestRun newTestRun = new TestRun();
         if (testRuns != null && !testRuns.isEmpty()) {
-            newTestRun = SerializationUtils.clone(testRuns.get(0));
-            for (int i = 1; i < testRuns.size(); i++) {
+            for (int i = 0; i < testRuns.size(); i++) {
                 TestRun otherTestRun = testRuns.get(i);
                 newTestRun.numDegraded += otherTestRun.numDegraded;
                 newTestRun.numFailed += otherTestRun.numFailed;
@@ -78,120 +79,60 @@ public class TestRun implements Serializable {
         return category;
     }
 
-    public void setCategory(final String category) {
-        this.category = category;
-    }
-
     public String getVersionMilestone() {
         return versionMilestone;
-    }
-
-    public void setVersionMilestone(final String versionMilestone) {
-        this.versionMilestone = versionMilestone;
     }
 
     public String getVersionBuild() {
         return versionBuild;
     }
 
-    public void setVersionBuild(final String versionBuild) {
-        this.versionBuild = versionBuild;
-    }
-
     public String getVersionMajor() {
         return versionMajor;
-    }
-
-    public void setVersionMajor(final String versionMajor) {
-        this.versionMajor = versionMajor;
     }
 
     public String getVersionMinor() {
         return versionMinor;
     }
 
-    public void setVersionMinor(final String versionMinor) {
-        this.versionMinor = versionMinor;
-    }
-
     public String getVersionRevision() {
         return versionRevision;
-    }
-
-    public void setVersionRevision(final String versionRevision) {
-        this.versionRevision = versionRevision;
     }
 
     public String getTestRunID() {
         return testRunID;
     }
 
-    public void setTestRunID(final String testRunID) {
-        this.testRunID = testRunID;
-    }
-
     public String getMarker() {
         return marker;
-    }
-
-    public void setMarker(final String marker) {
-        this.marker = marker;
     }
 
     public int getNumPassed() {
         return numPassed;
     }
 
-    public void setNumPassed(final int numPassed) {
-        this.numPassed = numPassed;
-    }
-
     public int getNumFailed() {
         return numFailed;
-    }
-
-    public void setNumFailed(final int numFailed) {
-        this.numFailed = numFailed;
     }
 
     public int getNumVolatile() {
         return numVolatile;
     }
 
-    public void setNumVolatile(final int numVolatile) {
-        this.numVolatile = numVolatile;
-    }
-
     public int getNumImproved() {
         return numImproved;
-    }
-
-    public void setNumImproved(final int numImproved) {
-        this.numImproved = numImproved;
     }
 
     public int getNumDegraded() {
         return numDegraded;
     }
 
-    public void setNumDegraded(final int numDegraded) {
-        this.numDegraded = numDegraded;
-    }
-
     public int getNumInvalidated() {
         return numInvalidated;
     }
 
-    public void setNumInvalidated(final int numInvalidated) {
-        this.numInvalidated = numInvalidated;
-    }
-
     public Date getTimestamp() {
         return new Date(this.timestamp.getTime());
-    }
-
-    public void setTimestamp(final Date timestamp) {
-        this.timestamp = new Date(timestamp.getTime());
     }
 
     public List<TestResult> getTestResults() {

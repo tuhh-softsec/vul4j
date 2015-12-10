@@ -16,7 +16,7 @@
 
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core">
-    <td>${it.avg}</td>
+    <td>${it.strMetricValue}</td>
     <td>${it.min}</td>
     <td>${it.max}</td>
 </j:jelly>

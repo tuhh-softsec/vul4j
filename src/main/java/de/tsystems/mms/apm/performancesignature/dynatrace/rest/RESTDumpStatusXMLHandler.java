@@ -34,23 +34,23 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.io.CharArrayWriter;
-
 /**
  * Created by rapi on 01.07.2015.
  */
 public class RESTDumpStatusXMLHandler extends DefaultHandler {
-    private final DumpStatus dumpStatus = new DumpStatus();
-    private final CharArrayWriter contents = new CharArrayWriter();
-    private String prevElement = null;
-    private String currentElement = null;
+    private final DumpStatus dumpStatus;
+    private String prevElement;
+    private String currentElement;
+
+    public RESTDumpStatusXMLHandler() {
+        dumpStatus = new DumpStatus();
+    }
 
     public DumpStatus getDumpStatus() {
         return this.dumpStatus;
     }
 
     public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attr) {
-        this.contents.reset();
         if (localName.equals("result")) {
             this.dumpStatus.setValue(localName, this.prevElement, AttributeUtils.getStringAttribute("value", attr));
         }
@@ -58,12 +58,7 @@ public class RESTDumpStatusXMLHandler extends DefaultHandler {
         this.currentElement = localName;
     }
 
-    public void endElement(final String uri, final String localName, final String qName) {
-    }
-
-    public void characters(final char[] ch, final int start, final int length)
-            throws SAXException {
-        this.contents.write(ch, start, length);
+    public void characters(final char[] ch, final int start, final int length) throws SAXException {
         this.dumpStatus.setValue(this.currentElement, this.prevElement, String.copyValueOf(ch, start, length));
     }
 }

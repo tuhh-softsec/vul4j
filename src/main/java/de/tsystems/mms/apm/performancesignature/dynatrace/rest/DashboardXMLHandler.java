@@ -28,14 +28,10 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace.rest;
 
-import de.tsystems.mms.apm.performancesignature.dynatrace.model.ChartDashlet;
-import de.tsystems.mms.apm.performancesignature.dynatrace.model.Measure;
-import de.tsystems.mms.apm.performancesignature.dynatrace.model.Measurement;
+import de.tsystems.mms.apm.performancesignature.dynatrace.model.*;
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.io.CharArrayWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,35 +40,46 @@ import java.util.List;
  */
 
 public class DashboardXMLHandler extends DefaultHandler {
-    private final List<ChartDashlet> chartDashlets = new ArrayList<ChartDashlet>();
-    private final CharArrayWriter contents = new CharArrayWriter();
+    private final List<ChartDashlet> chartDashlets;
+    private final List<IncidentChart> incidents;
     private ChartDashlet chartDashlet;
     private Measure measure;
+    private IncidentChart incidentChart;
 
-    public List<ChartDashlet> getParsedObjects() {
-        return this.chartDashlets;
+    public DashboardXMLHandler() {
+        chartDashlets = new ArrayList<ChartDashlet>();
+        incidents = new ArrayList<IncidentChart>();
     }
 
     public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attr) {
-        if (localName.equals(Messages.DashboardXMLHandler_AttrChartDashlet())) {
+        if (localName.equals("incidentchart") && attr.getLength() == 3) {
+            incidentChart = new IncidentChart(attr);
+        } else if (localName.equals("incidentchart") && attr.getLength() > 3) {
+            incidentChart.add(new IncidentViolation(attr));
+        } else if (localName.equals(Messages.DashboardXMLHandler_AttrChartDashlet())) {
             chartDashlet = new ChartDashlet(attr);
         } else if (localName.equals(Messages.DashboardXMLHandler_AttrMeasure())) {
             measure = new Measure(attr);
         } else if (localName.equals(Messages.DashboardXMLHandler_AttrMeasurement())) {
             measure.addMeasurement(new Measurement(attr));
         }
-        this.contents.reset();
     }
 
     public void endElement(final String uri, final String localName, final String qName) {
-        if (localName.equals(Messages.DashboardXMLHandler_AttrChartDashlet())) {
+        if (localName.equals("incidentchart") && incidentChart != null && incidentChart.getViolations() != null && !incidents.contains(incidentChart)) {
+            incidents.add(incidentChart);
+        } else if (localName.equals(Messages.DashboardXMLHandler_AttrChartDashlet())) {
             chartDashlets.add(chartDashlet);
         } else if (localName.equals(Messages.DashboardXMLHandler_AttrMeasure())) {
             chartDashlet.addMeasure(measure);
         }
     }
 
-    public void characters(final char[] ch, final int start, final int length) throws SAXException {
-        this.contents.write(ch, start, length);
+    public List<ChartDashlet> getParsedObjects() {
+        return this.chartDashlets;
+    }
+
+    public List<IncidentChart> getIncidents() {
+        return this.incidents;
     }
 }

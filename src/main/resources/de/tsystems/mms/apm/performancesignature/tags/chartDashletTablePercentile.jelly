@@ -16,7 +16,7 @@
 
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:jm="/de/tsystems/mms/apm/performancesignature/tags">
-    <h4>${it.name.replaceAll("\d+\w", "")}</h4>
+    <h3>${it.name.replaceAll("\d+\w", "")}</h3>
     <br/>
     <j:forEach var="measure" items="${it.measures}">
         <img style="margin: 3px;" class="img-thumbnail"

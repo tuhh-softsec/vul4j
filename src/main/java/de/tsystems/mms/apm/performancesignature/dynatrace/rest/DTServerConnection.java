@@ -31,11 +31,12 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.rest;
 import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
 import de.tsystems.mms.apm.performancesignature.PerfSigRecorder;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.*;
-import de.tsystems.mms.apm.performancesignature.model.ProxyBlock;
+import de.tsystems.mms.apm.performancesignature.model.CustomProxy;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
+import hudson.FilePath;
 import hudson.ProxyConfiguration;
 import hudson.util.IOUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -68,15 +69,15 @@ public class DTServerConnection {
     // Dynatrace is unable to provide proper Certs to trust by default
     // Create a trust manager that does not validate certificate chains
     private final HostnameVerifier allHostsValid = new HostnameVerifier() {
-        public boolean verify(String hostname, SSLSession session) {
+        public boolean verify(final String hostname, final SSLSession session) {
             return true;
         }
     };
-    private Proxy proxy;
+    private java.net.Proxy proxy;
     private SSLContext sc;
 
     public DTServerConnection(final String protocol, final String host, final int port, final String credentialsId,
-                              boolean verifyCertificate, final boolean useJenkinsProxy, final ProxyBlock proxyBlock) {
+                              final boolean verifyCertificate, final CustomProxy customProxy) {
         this.address = protocol + "://" + (host != null ? host : PerfSigRecorder.DescriptorImpl.getDefaultHost()) + ":" +
                 (port != 0 ? port : PerfSigRecorder.DescriptorImpl.getDefaultPort());
         this.credentials = PerfSigUtils.getCredentials(credentialsId);
@@ -104,35 +105,41 @@ public class DTServerConnection {
             e.printStackTrace();
         }
 
-        if (useJenkinsProxy && PerfSigUtils.getInstanceOrDie().proxy != null) {
-            final ProxyConfiguration proxyConfiguration = PerfSigUtils.getInstanceOrDie().proxy;
-            if (StringUtils.isNotBlank(proxyConfiguration.name) && proxyConfiguration.port > 0) {
-                this.proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyConfiguration.name, proxyConfiguration.port));
-                if (StringUtils.isNotBlank(proxyConfiguration.getUserName())) {
-                    Authenticator authenticator = new Authenticator() {
-                        public PasswordAuthentication getPasswordAuthentication() {
-                            return (new PasswordAuthentication(proxyConfiguration.getUserName(), proxyConfiguration.getPassword().toCharArray()));
-                        }
-                    };
-                    Authenticator.setDefault(authenticator);
+        if (customProxy != null) {
+            if (customProxy.isUseJenkinsProxy() && PerfSigUtils.getInstanceOrDie().proxy != null) {
+                final ProxyConfiguration proxyConfiguration = PerfSigUtils.getInstanceOrDie().proxy;
+                if (StringUtils.isNotBlank(proxyConfiguration.name) && proxyConfiguration.port > 0) {
+                    this.proxy = new java.net.Proxy(java.net.Proxy.Type.HTTP, new InetSocketAddress(proxyConfiguration.name, proxyConfiguration.port));
+                    if (StringUtils.isNotBlank(proxyConfiguration.getUserName())) {
+                        Authenticator authenticator = new Authenticator() {
+                            public PasswordAuthentication getPasswordAuthentication() {
+                                return (new PasswordAuthentication(proxyConfiguration.getUserName(), proxyConfiguration.getPassword().toCharArray()));
+                            }
+                        };
+                        Authenticator.setDefault(authenticator);
+                    }
+                    logger.info("using customProxy: " + proxyConfiguration.name + ":" + proxyConfiguration.port);
+                } else {
+                    this.proxy = java.net.Proxy.NO_PROXY;
                 }
-                logger.info("using proxy: " + proxyConfiguration.name + ":" + proxyConfiguration.port);
-            }
-        } else if (proxyBlock != null) {
-            if (StringUtils.isNotBlank(proxyBlock.getProxyServer()) && proxyBlock.getProxyPort() > 0) {
-                this.proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyBlock.getProxyServer(), proxyBlock.getProxyPort()));
-                if (StringUtils.isNotBlank(proxyBlock.getProxyUser())) {
-                    Authenticator authenticator = new Authenticator() {
-                        public PasswordAuthentication getPasswordAuthentication() {
-                            return (new PasswordAuthentication(proxyBlock.getProxyUser(), proxyBlock.getProxyPassword().toCharArray()));
-                        }
-                    };
-                    Authenticator.setDefault(authenticator);
+            } else {
+                if (StringUtils.isNotBlank(customProxy.getProxyServer()) && customProxy.getProxyPort() > 0) {
+                    this.proxy = new java.net.Proxy(java.net.Proxy.Type.HTTP, new InetSocketAddress(customProxy.getProxyServer(), customProxy.getProxyPort()));
+                    if (StringUtils.isNotBlank(customProxy.getProxyUser())) {
+                        Authenticator authenticator = new Authenticator() {
+                            public PasswordAuthentication getPasswordAuthentication() {
+                                return (new PasswordAuthentication(customProxy.getProxyUser(), customProxy.getProxyPassword().toCharArray()));
+                            }
+                        };
+                        Authenticator.setDefault(authenticator);
+                    }
+                    logger.info("using customProxy: " + customProxy.getProxyServer() + ":" + customProxy.getProxyPort());
+                } else {
+                    this.proxy = java.net.Proxy.NO_PROXY;
                 }
-                logger.info("using proxy: " + proxyBlock.getProxyServer() + ":" + proxyBlock.getProxyPort());
             }
         } else {
-            this.proxy = Proxy.NO_PROXY;
+            this.proxy = java.net.Proxy.NO_PROXY;
         }
     }
 
@@ -160,17 +167,20 @@ public class DTServerConnection {
         builder.setServerAddress(this.address).setDashboardName(dashBoardName).setSource(sessionName);
         URL url = builder.buildURL(false);
         List<ChartDashlet> chartDashlets;
+        List<IncidentChart> incidentCharts;
         try {
             XMLReader xr = XMLReaderFactory.createXMLReader();
             DashboardXMLHandler handler = new DashboardXMLHandler();
             xr.setContentHandler(handler);
             xr.parse(new InputSource(getInputStream(url)));
             chartDashlets = handler.getParsedObjects();
+            incidentCharts = handler.getIncidents();
         } catch (Exception ex) {
             throw new ContentRetrievalException("Could not retrieve records from Dynatrace server: " + url.toString(), ex);
         }
 
         dashboardReport.setChartDashlets(chartDashlets);
+        dashboardReport.setIncidents(incidentCharts);
         return dashboardReport;
     }
 
@@ -188,7 +198,7 @@ public class DTServerConnection {
         conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
 
         conn.setConnectTimeout(60 * 1000);
-        conn.setReadTimeout(60 * 10000);
+        conn.setReadTimeout(120 * 1000);
 
         if (conn instanceof HttpsURLConnection && !verifyCertificate) {
             HttpsURLConnection httpsConn = (HttpsURLConnection) conn;
@@ -502,7 +512,6 @@ public class DTServerConnection {
     }
 
     public boolean getPDFReport(final String sessionName, final String comparedSessionName, final String dashboard, final File file) {
-        InputStream is = null;
         try {
             ReportURLBuilder builder = new ReportURLBuilder();
             builder.setServerAddress(this.address)
@@ -510,29 +519,24 @@ public class DTServerConnection {
                     .setSource(sessionName)
                     .setType("PDF");
             if (comparedSessionName != null) builder.setComparison(comparedSessionName);
-            is = getInputStream(builder.buildURL(true));
-            IOUtils.copy(is, file);
+            final FilePath out = new FilePath(file);
+            out.copyFrom(getInputStream(builder.buildURL(true)));
             return true;
         } catch (Exception ex) {
             throw new CommandExecutionException("Error downloading PDF Report: " + ex.getMessage(), ex);
-        } finally {
-            IOUtils.closeQuietly(is);
         }
     }
 
     public boolean downloadSession(final String sessionName, final File outputFile) {
-        InputStream is = null;
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(this.address);
 
-            is = getInputStream(builder.downloadSessionURL(sessionName));
-            IOUtils.copy(is, outputFile);
+            final FilePath out = new FilePath(outputFile);
+            out.copyFrom(getInputStream(builder.downloadSessionURL(sessionName)));
             return true;
         } catch (Exception ex) {
             throw new CommandExecutionException("Error downloading session: " + ex.getMessage(), ex);
-        } finally {
-            IOUtils.closeQuietly(is);
         }
     }
 

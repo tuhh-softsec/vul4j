@@ -18,6 +18,7 @@ package de.tsystems.mms.apm.performancesignature;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRun;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
+import de.tsystems.mms.apm.performancesignature.model.PerfSigTestData;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.Extension;
 import hudson.FilePath;
@@ -26,7 +27,7 @@ import hudson.model.*;
 import hudson.tasks.junit.TestDataPublisher;
 import hudson.tasks.junit.TestResult;
 import hudson.tasks.junit.TestResultAction;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import javax.annotation.Nonnull;
@@ -38,12 +39,9 @@ import java.util.List;
  * Created by rapi on 27.05.2015.
  */
 public class PerfSigTestDataPublisher extends TestDataPublisher {
-    //ToDo parameter needed?
-    private final String testCase;
 
     @DataBoundConstructor
-    public PerfSigTestDataPublisher(final String testCase) {
-        this.testCase = testCase;
+    public PerfSigTestDataPublisher() {
     }
 
     @Override
@@ -58,11 +56,11 @@ public class PerfSigTestDataPublisher extends TestDataPublisher {
         }
 
         final DTServerConnection connection = new DTServerConnection(dtRecorder.getProtocol(), dtRecorder.getHost(), dtRecorder.getPort(),
-                dtRecorder.getCredentialsId(), dtRecorder.isVerifyCertificate(), dtRecorder.isUseJenkinsProxy(), dtRecorder.getCustomProxy());
+                dtRecorder.getCredentialsId(), dtRecorder.isVerifyCertificate(), dtRecorder.getCustomProxy());
 
-        logger.println(Messages.DTPerfSigRecorder_VerifyDTConnection());
+        logger.println(Messages.PerfSigRecorder_VerifyDTConnection());
         if (!connection.validateConnection()) {
-            logger.println(Messages.DTPerfSigRecorder_DTConnectionError());
+            logger.println(Messages.PerfSigRecorder_DTConnectionError());
             checkForUnstableResult(run);
         }
 
@@ -73,15 +71,15 @@ public class PerfSigTestDataPublisher extends TestDataPublisher {
                 try {
                     TestRun testRun = connection.getTestRunFromXML(dtRecorder.getProfile(), registerEnvVars.getTestRunID());
                     if (testRun == null || testRun.getTestResults() == null || testRun.getTestResults().isEmpty()) {
-                        logger.println(Messages.DTPerfSigRecorder_XMLReportError());
-                        if (dtRecorder.isModifyBuildResult()) run.setResult(Result.FAILURE);
+                        logger.println(Messages.PerfSigRecorder_XMLReportError());
+                        if (dtRecorder.isTechnicalFailure()) run.setResult(Result.FAILURE);
                     } else {
                         testRuns.add(testRun);
-                        logger.println(String.format(Messages.DTPerfSigRecorder_XMLReportResults(), testRun.getTestResults().size(), " " + testRun.getTestRunID()));
+                        logger.println(String.format(Messages.PerfSigRecorder_XMLReportResults(), testRun.getTestResults().size(), " " + testRun.getTestRunID()));
                     }
                 } catch (Exception e) {
                     logger.println(e);
-                    if (!dtRecorder.isModifyBuildResult()) return null;
+                    if (!dtRecorder.isTechnicalFailure()) return null;
                 }
             }
         }
@@ -93,9 +91,7 @@ public class PerfSigTestDataPublisher extends TestDataPublisher {
 
     private void checkForUnstableResult(final Run run) {
         PerfSigRecorder recorder = PerfSigUtils.getRecorder((AbstractBuild) run);
-        if (getBuildResult(run).isBetterOrEqualTo(Result.UNSTABLE) && recorder.isModifyBuildResult()) {
-            run.setResult(Result.FAILURE);
-        }
+        if (recorder.isModifyBuildResult()) run.setResult(Result.FAILURE);
     }
 
     private Result getBuildResult(final Run run) {
@@ -107,8 +103,8 @@ public class PerfSigTestDataPublisher extends TestDataPublisher {
     }
 
     @Extension
-    public static final class DTPerfSigTestDataPublisherDescriptor extends Descriptor<TestDataPublisher> {
-        public DTPerfSigTestDataPublisherDescriptor() {
+    public static final class PerfSigTestDataPublisherDescriptor extends Descriptor<TestDataPublisher> {
+        public PerfSigTestDataPublisherDescriptor() {
             load();
         }
 
