@@ -34,7 +34,6 @@ import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 
-import javax.annotation.WillClose;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -119,8 +118,7 @@ public abstract class AbstractZipArchiver
      * Java versions from 8 and up round timestamp up.
      * s
      */
-    private static final boolean isJava7OrLower =
-        Integer.parseInt( System.getProperty( "java.version" ).split( "\\." )[1] ) <= 7;
+    private static final boolean isJava7OrLower = getJavaVersion()<= 7;
 
     // Renamed version of original file, if it exists
     private File renamedFile = null;
@@ -132,6 +130,16 @@ public abstract class AbstractZipArchiver
     private ConcurrentJarCreator zOut;
 
     protected ZipArchiveOutputStream zipArchiveOutputStream;
+
+    private static int getJavaVersion(){
+        String javaSpecVersion = System.getProperty( "java.specification.version" );
+        if (javaSpecVersion.contains(".")) {//before jdk 9
+            return Integer.parseInt(javaSpecVersion.split("\\.")[1]);
+        }else {
+            return Integer.parseInt(javaSpecVersion);
+        }
+    }
+
 
     public String getComment()
     {
