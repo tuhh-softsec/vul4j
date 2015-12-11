@@ -54,6 +54,13 @@ public class PlexusIoZipFileResourceCollection
 
     }
 
+    @Override
+    public boolean isConcurrentAccessSupported()
+    {
+        // Maybe we could support concurrent some time in the future
+        return false;
+    }
+
     protected Iterator<PlexusIoResource> getEntries()
         throws IOException
     {

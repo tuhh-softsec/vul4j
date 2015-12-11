@@ -36,6 +36,13 @@ public class PlexusArchiverZipFileResourceCollection
         return new CloseableIterator( zipFile );
     }
 
+    @Override
+    public boolean isConcurrentAccessSupported()
+    {
+        // Well maybe someday investigate if we can do concurrent zip
+        return false;
+    }
+
     class CloseableIterator
         implements Iterator<PlexusIoResource>, Closeable
     {

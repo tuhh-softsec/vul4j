@@ -48,6 +48,12 @@ public class PlexusIoTarFileResourceCollection
 
     }
 
+    @Override
+    public boolean isConcurrentAccessSupported()
+    {
+        return false;
+    }
+
     protected Iterator<PlexusIoResource> getEntries()
         throws IOException
     {
