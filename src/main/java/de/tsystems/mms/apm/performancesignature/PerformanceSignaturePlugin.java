@@ -22,7 +22,7 @@ import hudson.FilePath;
 import hudson.Plugin;
 import hudson.init.Initializer;
 import hudson.model.AbstractProject;
-import hudson.model.Items;
+import hudson.model.Run;
 import hudson.util.VersionNumber;
 import jenkins.model.Jenkins;
 import org.apache.commons.io.filefilter.RegexFileFilter;
@@ -38,8 +38,8 @@ import static hudson.init.InitMilestone.PLUGINS_STARTED;
 public class PerformanceSignaturePlugin extends Plugin {
     @Initializer(before = PLUGINS_STARTED)
     public static void addAliases() {
-        // Moved in 1.6.4
-        Items.XSTREAM2.addCompatibilityAlias("de.tsystems.mms.apm.performancesignature.PerfSigTestData", PerfSigTestData.class);
+        // Moved in 1.6.3
+        Run.XSTREAM2.addCompatibilityAlias("de.tsystems.mms.apm.performancesignature.PerfSigTestData", PerfSigTestData.class);
     }
 
     @Initializer(after = JOB_LOADED)
