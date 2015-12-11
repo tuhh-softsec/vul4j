@@ -37,6 +37,7 @@ import hudson.FilePath;
 import hudson.ProxyConfiguration;
 import hudson.util.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -155,7 +156,7 @@ public class DTServerConnection {
             xr.parse(new InputSource(getInputStream(url)));
             testRun = handler.getParsedObjects();
         } catch (Exception ex) {
-            throw new ContentRetrievalException("Could not retrieve records from Dynatrace server: " + url.toString(), ex);
+            throw new ContentRetrievalException(ExceptionUtils.getStackTrace(ex) + "Could not retrieve records from Dynatrace server: " + url.toString(), ex);
         }
 
         return testRun;
@@ -176,7 +177,7 @@ public class DTServerConnection {
             chartDashlets = handler.getParsedObjects();
             incidentCharts = handler.getIncidents();
         } catch (Exception ex) {
-            throw new ContentRetrievalException("Could not retrieve records from Dynatrace server: " + url.toString(), ex);
+            throw new ContentRetrievalException(ExceptionUtils.getStackTrace(ex) + "Could not retrieve records from Dynatrace server: " + url.toString(), ex);
         }
 
         dashboardReport.setChartDashlets(chartDashlets);
