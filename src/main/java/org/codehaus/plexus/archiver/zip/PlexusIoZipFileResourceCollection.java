@@ -18,6 +18,7 @@ package org.codehaus.plexus.archiver.zip;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
+import org.codehaus.plexus.components.io.functions.SymlinkDestinationSupplier;
 import org.codehaus.plexus.components.io.resources.AbstractPlexusIoArchiveResourceCollection;
 import org.codehaus.plexus.components.io.resources.EncodingSupported;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
@@ -86,6 +87,59 @@ public class PlexusIoZipFileResourceCollection
     private static class ZipFileResourceIterator
         implements Iterator<PlexusIoResource>, Closeable
     {
+        private class ZipFileResource
+            extends PlexusIoURLResource
+        {
+            private ZipFileResource( ZipArchiveEntry entry )
+            {
+                super( entry.getName(), entry.getTime() == -1 ? PlexusIoResource.UNKNOWN_MODIFICATION_DATE : entry.getTime(),
+                    entry.isDirectory() ? PlexusIoResource.UNKNOWN_RESOURCE_SIZE : entry.getSize(),
+                    !entry.isDirectory(), entry.isDirectory(), true );
+            }
+
+            public URL getURL()
+                throws IOException
+            {
+                String spec = getName();
+                if ( spec.startsWith( "/" ) )
+                {
+                    // Code path for PLXCOMP-170. Note that urlClassloader does not seem to produce correct
+                    // urls for this. Which again means files loaded via this path cannot have file names
+                    // requiring url encoding
+                    spec = "./" + spec;
+                    return new URL( url, spec );
+                }
+                return urlClassLoader.getResource( spec );
+            }
+        }
+
+        private class ZipFileSymlinkResource
+            extends ZipFileResource
+            implements SymlinkDestinationSupplier
+        {
+            private final ZipArchiveEntry entry;
+
+            private ZipFileSymlinkResource( ZipArchiveEntry entry )
+            {
+                super( entry );
+
+                this.entry = entry;
+            }
+
+            @Override
+            public String getSymlinkDestination()
+                throws IOException
+            {
+                return zipFile.getUnixSymlink( entry );
+            }
+
+            @Override
+            public boolean isSymbolicLink()
+            {
+                return true;
+            }
+       }
+
         private final Enumeration<ZipArchiveEntry> en;
 
         private final URL url;
@@ -110,28 +164,10 @@ public class PlexusIoZipFileResourceCollection
         public PlexusIoResource next()
         {
             final ZipArchiveEntry entry = en.nextElement();
-            long l = entry.getTime();
-            final long lastModified = l == -1 ? PlexusIoResource.UNKNOWN_MODIFICATION_DATE : l;
-            final boolean dir = entry.isDirectory();
-            final long size = dir ? PlexusIoResource.UNKNOWN_RESOURCE_SIZE : entry.getSize();
 
-            return new PlexusIoURLResource( entry.getName(), lastModified, size, !dir, dir, true )
-            {
-                public URL getURL()
-                    throws IOException
-                {
-                    String spec = getName();
-                    if ( spec.startsWith( "/" ) )
-                    {
-                        // Code path for PLXCOMP-170. Note that urlClassloader does not seem to produce correct
-                        // urls for this. Which again means files loaded via this path cannot have file names
-                        // requiring url encoding
-                        spec = "./" + spec;
-                        return new URL( url, spec );
-                    }
-                    return urlClassLoader.getResource( spec );
-                }
-            };
+            return entry.isUnixSymlink()
+                ? new ZipFileSymlinkResource( entry )
+                : new ZipFileResource( entry );
         }
 
         public void remove()
