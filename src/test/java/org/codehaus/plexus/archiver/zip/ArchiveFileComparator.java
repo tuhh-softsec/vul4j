@@ -94,6 +94,22 @@ public class ArchiveFileComparator
         is1.close();
         is2.close();
     }
+
+    private static void assertEquals( ArchiveFile file1, TarArchiveEntry entry1,
+                                      ZipFile file2, ZipArchiveEntry entry2 )
+            throws IOException
+    {
+        Assert.assertEquals( entry1.isDirectory(), entry2.isDirectory() );
+
+        final InputStream is1 = file1.getInputStream( entry1 );
+        final InputStream is2 = file2.getInputStream( entry2 );
+        final byte[] bytes1 = IOUtil.toByteArray( is1 );
+        final byte[] bytes2 = IOUtil.toByteArray( is2 );
+        Assert.assertTrue( Arrays.equals( bytes1, bytes2 ) );
+        is1.close();
+        is2.close();
+    }
+
     private static void assertEquals( ZipFile file1, ZipArchiveEntry entry1,
                                       ZipFile file2, ZipArchiveEntry entry2 )
             throws Exception
@@ -131,6 +147,26 @@ public class ArchiveFileComparator
                 Assert.assertNotNull(ze2);
                 assertEquals(file1, ze1, file2, ze2);
 
+            }
+        } );
+        Assert.assertTrue( map2.isEmpty() );
+    }
+
+    
+    public static void assertEquals( final ArchiveFile file1, final ZipFile file2, final String prefix )
+        throws Exception
+    {
+        final Map<String,ZipArchiveEntry> map2 = getFileEntries( file2 );
+        forEachTarArchiveEntry( file1, new TarArchiveEntryConsumer()
+        {
+            public void accept( TarArchiveEntry ze1 )
+                throws IOException
+            {
+                final String name1 = ze1.getName();
+                final String name2 = prefix == null ? name1 : ( prefix + name1 );
+                ZipArchiveEntry ze2 = map2.remove( name2 );
+                Assert.assertNotNull( ze2 );
+                assertEquals( file1, ze1, file2, ze2 );
             }
         } );
         Assert.assertTrue( map2.isEmpty() );
