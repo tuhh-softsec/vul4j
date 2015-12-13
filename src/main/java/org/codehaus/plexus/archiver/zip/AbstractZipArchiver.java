@@ -421,11 +421,14 @@ public abstract class AbstractZipArchiver
      * @param lastModified       last modification time for the entry.
      * @param fromArchive        the original archive we are copying this
      * @param symlinkDestination
+     * @param addInParallel      Indicates if the entry should be add in parallel.
+     *                           If set to {@code false} it is added synchronously.
+     *                           If the entry is symbolic link this parameter is ignored.
      */
     @SuppressWarnings( { "JavaDoc" } )
     protected void zipFile( InputStreamSupplier in, ConcurrentJarCreator zOut, String vPath,
                             long lastModified,
-                            File fromArchive, int mode, String symlinkDestination )
+                            File fromArchive, int mode, String symlinkDestination, boolean addInParallel )
         throws IOException, ArchiverException
     {
         getLogger().debug( "adding entry " + vPath );
@@ -446,11 +449,11 @@ public abstract class AbstractZipArchiver
                 ZipEncoding enc = ZipEncodingHelper.getZipEncoding( getEncoding() );
                 final byte[] bytes = enc.encode( symlinkDestination ).array();
                 payload = new ByteArrayInputStream( bytes );
-                zOut.addArchiveEntry( ze, createInputStreamSupplier( payload ) );
+                zOut.addArchiveEntry( ze, createInputStreamSupplier( payload ), true );
             }
             else
             {
-                zOut.addArchiveEntry( ze, wrappedRecompressor( ze, in ) );
+                zOut.addArchiveEntry( ze, wrappedRecompressor( ze, in ), addInParallel );
             }
         }
     }
@@ -502,7 +505,8 @@ public abstract class AbstractZipArchiver
         };
         try
         {
-            zipFile( in, zOut, vPath, resource.getLastModified(), null, entry.getMode(), symlinkTarget );
+            zipFile( in, zOut, vPath, resource.getLastModified(), null, entry.getMode(), symlinkTarget,
+                !entry.shouldAddSynchronously() );
         }
         catch ( IOException e )
         {
@@ -583,7 +587,7 @@ public abstract class AbstractZipArchiver
 
             if ( !isSymlink )
             {
-                zOut.addArchiveEntry( ze, createInputStreamSupplier( new ByteArrayInputStream( "".getBytes() ) ) );
+                zOut.addArchiveEntry( ze, createInputStreamSupplier( new ByteArrayInputStream( "".getBytes() ) ), true );
             }
             else
             {
@@ -591,7 +595,7 @@ public abstract class AbstractZipArchiver
                 ZipEncoding enc = ZipEncodingHelper.getZipEncoding( encodingToUse );
                 final byte[] bytes = enc.encode( symlinkDestination ).array();
                 ze.setMethod( ZipArchiveEntry.DEFLATED );
-                zOut.addArchiveEntry( ze, createInputStreamSupplier( new ByteArrayInputStream( bytes ) ) );
+                zOut.addArchiveEntry( ze, createInputStreamSupplier( new ByteArrayInputStream( bytes ) ), true );
             }
         }
     }

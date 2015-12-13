@@ -75,7 +75,7 @@ public class ConcurrentJarCreatorTest {
                         throw new RuntimeException(e);
                     }
                 }
-            });
+            }, true);
         }
 
     }

@@ -333,7 +333,7 @@ public class JarArchiver
 
         ByteArrayInputStream bais = new ByteArrayInputStream( baos.toByteArray() );
         super.zipFile( createInputStreamSupplier( bais ), zOut, MANIFEST_NAME, System.currentTimeMillis(), null,
-                       DEFAULT_FILE_MODE, null );
+                       DEFAULT_FILE_MODE, null, false );
         super.initZipOutputStream( zOut );
     }
 
@@ -435,7 +435,7 @@ public class JarArchiver
         ByteArrayInputStream bais = new ByteArrayInputStream( baos.toByteArray() );
 
         super.zipFile( createInputStreamSupplier( bais ), zOut, INDEX_NAME, System.currentTimeMillis(), null,
-                       DEFAULT_FILE_MODE, null );
+                       DEFAULT_FILE_MODE, null, true );
     }
 
     /**
@@ -443,7 +443,7 @@ public class JarArchiver
      */
     protected void zipFile( InputStreamSupplier is, ConcurrentJarCreator zOut, String vPath,
                             long lastModified, File fromArchive,
-                            int mode, String symlinkDestination )
+                            int mode, String symlinkDestination, boolean addInParallel )
         throws IOException, ArchiverException
     {
         if ( MANIFEST_NAME.equalsIgnoreCase( vPath ) )
@@ -464,7 +464,7 @@ public class JarArchiver
             {
                 rootEntries.addElement( vPath );
             }
-            super.zipFile( is, zOut, vPath, lastModified, fromArchive, mode, symlinkDestination );
+            super.zipFile( is, zOut, vPath, lastModified, fromArchive, mode, symlinkDestination, addInParallel );
         }
     }
 

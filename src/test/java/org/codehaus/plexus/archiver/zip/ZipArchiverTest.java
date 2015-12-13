@@ -34,6 +34,8 @@ import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.BasePlexusArchiverTest;
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.UnixStat;
+import org.codehaus.plexus.archiver.tar.TarArchiver;
+import org.codehaus.plexus.archiver.tar.TarFile;
 import org.codehaus.plexus.archiver.util.ArchiveEntryUtils;
 import org.codehaus.plexus.archiver.util.DefaultArchivedFileSet;
 import org.codehaus.plexus.archiver.util.DefaultFileSet;
@@ -670,6 +672,36 @@ public class ZipArchiverTest
 
         final ZipFile cmp1 = new ZipFile( zipFile );
         final ZipFile cmp2 = new ZipFile( zipFile2 );
+        ArchiveFileComparator.assertEquals( cmp1, cmp2, "prfx/" );
+        cmp1.close();
+        cmp2.close();
+    }
+
+    public void testZipNonConcurrentResourceCollection()
+        throws Exception
+    {
+        final File tarFile = getTestFile( "target/output/zip-non-concurrent.tar" );
+        TarArchiver tarArchiver = (TarArchiver) lookup( Archiver.ROLE, "tar" );
+        tarArchiver.setDestFile( tarFile );
+        // We're testing concurrency issue so we need large amount of files
+        for (int i = 0; i < 100; i++)
+        {
+            tarArchiver.addFile( getTestFile( "src/test/resources/manifests/manifest1.mf" ),
+                "manifest1.mf" + i );
+            // Directories are added separately so let's test them too
+            tarArchiver.addFile( getTestFile( "src/test/resources/manifests/manifest2.mf" ),
+                "subdir" + i + "/manifest2.mf" );
+        }
+        tarArchiver.createArchive();
+
+        final File zipFile = new File( "target/output/zip-non-concurrent.zip" );
+        ZipArchiver zipArchive = getZipArchiver( zipFile );
+        zipArchive.addArchivedFileSet( tarFile, "prfx/" );
+        zipArchive.setEncoding( "UTF-8" );
+        zipArchive.createArchive();
+
+        final TarFile cmp1 = new TarFile( tarFile );
+        final ZipFile cmp2 = new ZipFile( zipFile );
         ArchiveFileComparator.assertEquals( cmp1, cmp2, "prfx/" );
         cmp1.close();
         cmp2.close();

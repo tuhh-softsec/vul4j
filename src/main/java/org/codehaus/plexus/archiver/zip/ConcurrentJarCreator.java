@@ -37,6 +37,7 @@ public class ConcurrentJarCreator {
     private final ScatterZipOutputStream directories;
     private final ScatterZipOutputStream metaInfDir;
     private final ScatterZipOutputStream manifest;
+    private final ScatterZipOutputStream synchronousEntries;
 
     private final ParallelScatterZipCreator parallelScatterZipCreator;
     private long zipCloseElapsed;
@@ -61,6 +62,7 @@ public class ConcurrentJarCreator {
         directories = createDeferred(defaultSupplier);
         manifest = createDeferred(defaultSupplier);
         metaInfDir = createDeferred( defaultSupplier );
+        synchronousEntries = createDeferred( defaultSupplier );
 
         parallelScatterZipCreator = new ParallelScatterZipCreator(Executors.newFixedThreadPool(nThreads), defaultSupplier);
     }
@@ -72,10 +74,12 @@ public class ConcurrentJarCreator {
      *
      * @param zipArchiveEntry The entry to add. Compression method
      * @param source          The source input stream supplier
+     * @param addInParallel   Indicates if the entry should be add in parallel.
+     *                        If set to {@code false} the entry is added synchronously.
      * @throws java.io.IOException
      */
-
-    public void addArchiveEntry(final ZipArchiveEntry zipArchiveEntry, final InputStreamSupplier source) throws IOException {
+    public void addArchiveEntry(final ZipArchiveEntry zipArchiveEntry, final InputStreamSupplier source,
+            final boolean addInParallel) throws IOException {
         final int method = zipArchiveEntry.getMethod();
         if (method == -1) throw new IllegalArgumentException("Method must be set on the supplied zipArchiveEntry");
         if (zipArchiveEntry.isDirectory() && !zipArchiveEntry.isUnixSymlink()) {
@@ -93,8 +97,10 @@ public class ConcurrentJarCreator {
             if (zipArchiveEntry.isDirectory()) zipArchiveEntry.setMethod(ZipEntry.STORED);
             manifest.addArchiveEntry(createZipArchiveEntryRequest(zipArchiveEntry, createInputStreamSupplier(payload)));
             payload.close();
-        } else {
+        } else if (addInParallel) {
             parallelScatterZipCreator.addArchiveEntry(zipArchiveEntry, source);
+        } else {
+            synchronousEntries.addArchiveEntry( createZipArchiveEntryRequest( zipArchiveEntry, source ) );
         }
     }
 
@@ -110,12 +116,14 @@ public class ConcurrentJarCreator {
         metaInfDir.writeTo( targetStream );
         manifest.writeTo(targetStream);
         directories.writeTo(targetStream);
+        synchronousEntries.writeTo( targetStream );
         parallelScatterZipCreator.writeTo( targetStream);
         long startAt = System.currentTimeMillis();
         targetStream.close();
         zipCloseElapsed = System.currentTimeMillis() - startAt;
         manifest.close();
         directories.close();
+        synchronousEntries.close();
     }
 
     /**
