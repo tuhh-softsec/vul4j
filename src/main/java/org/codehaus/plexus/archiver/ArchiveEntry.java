@@ -60,6 +60,8 @@ public class ArchiveEntry
 
     private PlexusIoResourceAttributes attributes;
 
+    private final boolean addSynchronously;
+
     /**
      * @param name     the filename as it will appear in the archive. This is platform-specific
      *                 normalized with File.separatorChar
@@ -92,6 +94,8 @@ public class ArchiveEntry
 
         this.mode = permissions == -1 ? permissions : ( permissions & UnixStat.PERM_MASK ) |
             ( type == FILE ? UnixStat.FILE_FLAG : type == SYMLINK ? UnixStat.LINK_FLAG : UnixStat.DIR_FLAG );
+
+        this.addSynchronously = ( collection != null && !collection.isConcurrentAccessSupported() );
     }
 
     /**
@@ -152,6 +156,17 @@ public class ArchiveEntry
         return ( ( type == FILE ? Archiver.DEFAULT_FILE_MODE
             : type == SYMLINK ? Archiver.DEFAULT_SYMLILNK_MODE : Archiver.DEFAULT_DIR_MODE ) & UnixStat.PERM_MASK ) |
             ( type == FILE ? UnixStat.FILE_FLAG : type == SYMLINK ? UnixStat.LINK_FLAG : UnixStat.DIR_FLAG );
+    }
+
+    /**
+     * Indicates if this entry should be added to the archive synchronously
+     * before adding the next entry and/or accessing the next entry of {@link ResourceIterator}. 
+     * 
+     * @return {@code true} if this entry should be added synchronously
+     */
+    public boolean shouldAddSynchronously()
+    {
+        return addSynchronously;
     }
 
     public static ArchiveEntry createFileEntry( String target, PlexusIoResource resource, int permissions,
