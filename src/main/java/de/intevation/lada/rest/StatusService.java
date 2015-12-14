@@ -231,14 +231,6 @@ public class StatusService {
         @Context HttpServletRequest request,
         LStatusProtokoll status
     ) {
-        if (!authorization.isAuthorized(
-                request,
-                status,
-                RequestMethod.POST,
-                LStatusProtokoll.class)
-        ) {
-            return new Response(false, 699, null);
-        }
         UserInfo userInfo = authorization.getInfo(request);
         LMessung messung = defaultRepo.getByIdPlain(
             LMessung.class, status.getMessungsId(), "land");
@@ -251,7 +243,9 @@ public class StatusService {
             LStatusProtokoll currentStatus = defaultRepo.getByIdPlain(
                 LStatusProtokoll.class, messung.getStatus(), "land");
             for (int i = 0; i < userInfo.getFunktionen().size(); i++) {
-                if (userInfo.getFunktionen().get(i) > currentStatus.getStatusStufe()) {
+                if (userInfo.getFunktionen().get(i) > currentStatus.getStatusStufe() &&
+                    currentStatus.getStatusWert() != 0 &&
+                    currentStatus.getStatusWert() != 4) {
                     next = true;
                     change = false;
                     break;
@@ -329,19 +323,42 @@ public class StatusService {
             return new Response(false, 697, null);
         }
 
-        UserInfo userInfo = authorization.getInfo(request);
-        if (!userInfo.getMessstellen().contains(status.getErzeuger())) {
+        // Check if submitted status is the current one.
+        LMessung messung = defaultRepo.getByIdPlain(
+            LMessung.class,
+            status.getMessungsId(),
+            "land");
+        LStatusProtokoll current = defaultRepo.getByIdPlain(
+            LStatusProtokoll.class,
+            messung.getStatus(),
+            "land");
+        if (current.getId() != status.getId() ||
+            status.getStatusStufe() == 1) {
             return new Response(false, 699, null);
         }
-        LMessung messung = defaultRepo.getByIdPlain(
-            LMessung.class, status.getMessungsId(), "land");
+
+        // Check if the user is allowed to reset the status.
+        UserInfo userInfo = authorization.getInfo(request);
+        boolean allowed = false;
+        for (int i = 0; i < userInfo.getFunktionen().size(); i++) {
+            if (userInfo.getFunktionen().get(i) ==
+                status.getStatusStufe()) {
+                allowed = true;
+            }
+        }
+        if (!userInfo.getMessstellen().contains(status.getErzeuger()) ||
+            !allowed) {
+            return new Response(false, 699, null);
+        }
+
+        // Create a new Status with value = 0.
         LStatusProtokoll statusNew = new LStatusProtokoll();
         statusNew.setDatum(new Timestamp(new Date().getTime()));
         statusNew.setErzeuger(status.getErzeuger());
         statusNew.setMessungsId(status.getMessungsId());
         statusNew.setStatusStufe(status.getStatusStufe());
-        statusNew.setStatusWert(status.getStatusWert());
-        statusNew.setText(status.getText());
+        statusNew.setStatusWert(0);
+        statusNew.setText("Reset");
         Violation violation = validator.validate(statusNew);
         if (violation.hasErrors()) {
             Response response = new Response(false, 604, statusNew);
@@ -352,38 +369,17 @@ public class StatusService {
 
         Response response = defaultRepo.create(statusNew, "land");
         LStatusProtokoll created = (LStatusProtokoll)response.getData();
-        if (status.getStatusWert() == 0) {
-            QueryBuilder<LStatusProtokoll> lastFilter =
-                new QueryBuilder<LStatusProtokoll>(
-                        defaultRepo.entityManager("land"),
-                        LStatusProtokoll.class);
+        QueryBuilder<LStatusProtokoll> lastFilter =
+            new QueryBuilder<LStatusProtokoll>(
+                    defaultRepo.entityManager("land"),
+                    LStatusProtokoll.class);
 
-            lastFilter.and("messungsId", status.getMessungsId());
-            lastFilter.orderBy("datum", false);
-            List<LStatusProtokoll> protos =
-                defaultRepo.filterPlain(lastFilter.getQuery(), "land");
-            LStatusProtokoll prev;
-            if (protos.size() < 3) {
-                prev = created;
-            }
-            else {
-                prev = protos.get(protos.size() - 3);
-            }
-            if (prev.getStatusStufe() == 1 &&
-                prev.getStatusWert() != 0 &&
-                prev.getStatusWert( != 4) {
-                messung.setFertig(true);
-            }
-            messung.setStatus(prev.getId());
-        }
-        else {
-            if (created.getStatusStufe() == 1 &&
-                created.getStatusWert() == 4) {
-                messung.setFertig(false);
-            }
-            messung.setStatus(created.getId());
-        }
-
+        lastFilter.and("messungsId", status.getMessungsId());
+        lastFilter.and("statusStufe", status.getStatusStufe() - 1);
+        lastFilter.orderBy("datum", false);
+        List<LStatusProtokoll> proto =
+            defaultRepo.filterPlain(lastFilter.getQuery(), "land");
+        messung.setStatus(proto.get(proto.size() - 1).getId());
         defaultRepo.update(messung, "land");
 
         return authorization.filter(
