@@ -262,9 +262,13 @@ public class StatusService {
             }
             if ((change || next) && status.getStatusWert() == 4) {
                 status.setStatusStufe(1);
+                messung.setFertig(false);
             }
             else if (change) {
                 status.setStatusStufe(currentStatus.getStatusStufe());
+                if (status.getStatusStufe() == 1) {
+                    messung.setFertig(true);
+                }
             }
             else if (next) {
                 status.setStatusStufe(currentStatus.getStatusStufe() + 1);
@@ -358,9 +362,25 @@ public class StatusService {
             lastFilter.orderBy("datum", false);
             List<LStatusProtokoll> protos =
                 defaultRepo.filterPlain(lastFilter.getQuery(), "land");
-            messung.setStatus(protos.get(protos.size() - 3).getId());
+            LStatusProtokoll prev;
+            if (protos.size() < 3) {
+                prev = created;
+            }
+            else {
+                prev = protos.get(protos.size() - 3);
+            }
+            if (prev.getStatusStufe() == 1 &&
+                prev.getStatusWert() != 0 &&
+                prev.getStatusWert( != 4) {
+                messung.setFertig(true);
+            }
+            messung.setStatus(prev.getId());
         }
         else {
+            if (created.getStatusStufe() == 1 &&
+                created.getStatusWert() == 4) {
+                messung.setFertig(false);
+            }
             messung.setStatus(created.getId());
         }
 
