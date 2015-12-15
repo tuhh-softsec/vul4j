@@ -47,7 +47,7 @@ public class zOSJobSubmitter extends Builder {
 	/**
 	 * Whether FTP server is in JESINTERFACELEVEL=1.
 	 */
-	private boolean JESINTERFAVELEVEL1;
+	private boolean JESINTERFACELEVEL1;
     /**
      * Whether the job log is to be deleted upon job end.
      */
@@ -104,7 +104,7 @@ public class zOSJobSubmitter extends Builder {
         this.password = password.replaceAll("\\s","");
         this.wait = wait;
         this.waitTime = waitTime;
-	    this.JESINTERFAVELEVEL1 = JESINTERFACELEVEL1;
+	    this.JESINTERFACELEVEL1 = JESINTERFACELEVEL1;
         this.deleteJobFromSpool = deleteJobFromSpool;
         this.job = job;
         if (MaxCC == null || MaxCC.isEmpty()) {
@@ -159,7 +159,7 @@ public class zOSJobSubmitter extends Builder {
                 this.port,
                 _userID,
                 _password,
-	            this.JESINTERFAVELEVEL1,
+	            this.JESINTERFACELEVEL1,
 	            logPrefix);
         // Read the JCL.
         InputStream inputStream = new ByteArrayInputStream(_job.getBytes());
@@ -210,7 +210,7 @@ public class zOSJobSubmitter extends Builder {
 
         // Return whether the job succeeded or not.
 	    // If JESINTERFACELEVEL is configured, no real R is provided.
-        return result && (this.JESINTERFAVELEVEL1 || (_MaxCC.compareTo(printableCC) >= 0));
+        return result && (this.JESINTERFACELEVEL1 || (_MaxCC.compareTo(printableCC) >= 0));
     }
 
     /**
@@ -269,7 +269,7 @@ public class zOSJobSubmitter extends Builder {
 	 */
 	public boolean getJESINTERFACELEVEL1()
 	{
-		return this.JESINTERFAVELEVEL1;
+		return this.JESINTERFACELEVEL1;
 	}
 
 	/**

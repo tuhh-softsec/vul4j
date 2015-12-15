@@ -44,7 +44,7 @@
     </f:block>
     <f:advanced>
         <f:entry field="JESINTERFACELEVEL1" title="JESINTERFACELEVEL=1?" description="Check if FTP server is configured with JESINTERFACELEVEL=1">
-            <f:booleanRadio field="JESINTERFACELEVEL1"/>
+            <f:checkbox checked="${it.getJESINTERFACELEVEL1()}"/>
         </f:entry>
     </f:advanced>
 </j:jelly>
