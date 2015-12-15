@@ -41,6 +41,10 @@ public class SCLMSCM  extends SCM {
      * User password.
      */
     private String password;
+    /**
+     * FTP server JESINTERFACELEVEL=1?
+     */
+    private boolean JESINTERFACELEVEL1;
 
     // SCLM project information (project, alternate, group, types to monitor)
     /**
@@ -92,6 +96,7 @@ public class SCLMSCM  extends SCM {
      * @param port FTP port to connect to.
      * @param userID User ID.
      * @param password User password.
+     * @param JESINTERFACELEVEL1 JESINTERFACELEVEL=1?
      * @param project SCLM Project Name.
      * @param alternate SCLM Alternate Project Definition.
      * @param group SCLM Group.
@@ -106,6 +111,7 @@ public class SCLMSCM  extends SCM {
                    int port,
                    String userID,
                    String password,
+                   boolean JESINTERFACELEVEL1,
                    String project,
                    String alternate,
                    String group,
@@ -119,6 +125,7 @@ public class SCLMSCM  extends SCM {
         this.port = port;
         this.userID = userID.replaceAll("\\s","");
         this.password = password.replaceAll("\\s","");
+	    this.JESINTERFACELEVEL1 = JESINTERFACELEVEL1;
 
         this.project = project.replaceAll("\\s","");
         this.alternate = alternate.replaceAll("\\s","");
@@ -208,16 +215,25 @@ public class SCLMSCM  extends SCM {
         return this.userID;
     }
 
-    /**
-     * Get User password.
-     *
-     * @return <b><code>password</code></b>
-     */
-    public String   getPassword() {
-        return this.password;
-    }
+	/**
+	 * Get User password.
+	 *
+	 * @return <b><code>password</code></b>
+	 */
+	public String   getPassword() {
+		return this.password;
+	}
 
-    /**
+	/**
+	 * Get JESINTERFACELEVEL1.
+	 *
+	 * @return <b><code>JESINTERFACELEVEL1</code></b>
+	 */
+	public boolean  getJESINTERFACELEVEL1() {
+		return this.JESINTERFACELEVEL1;
+	}
+
+	/**
      * Get SCLM Project Name.
      *
      * @return <b><code>project</code></b>
@@ -286,7 +302,7 @@ public class SCLMSCM  extends SCM {
     {
 	    logger.info(logPrefix + "Will get new Revision State.");
         // Construct connector.
-        zFTPConnector zFTPConnector = new zFTPConnector(this.server,this.port,this.userID,this.password, logPrefix);
+        zFTPConnector zFTPConnector = new zFTPConnector(this.server,this.port,this.userID,this.password, this.JESINTERFACELEVEL1, logPrefix);
 
         // Fetch revision.
         return new SCLMSCMRevisionState(this.project, this.alternate, this.group,this.types,this.JobHeader + "\n" + this.JobStep, zFTPConnector, baseline);
@@ -507,11 +523,11 @@ public class SCLMSCM  extends SCM {
                 "/*                                                              \n" +
                 "//SYSPRINT DD SYSOUT=(*)                                        \n" +
                 "//SYSTSPRT DD SYSOUT=(*)";
-        /**
-         * Globally configured default job header.
-         */
-        private static String SCLMJobHeader = DefaultSCLMJobHeader;
-        /**
+	    /**
+	     * Globally configured default job header.
+	     */
+	    private static String SCLMJobHeader = DefaultSCLMJobHeader;
+	    /**
          * Globally configured FLMCMD job step.
          */
         private static String SCLMJobStep = DefaultSCLMJobStep;
@@ -523,7 +539,7 @@ public class SCLMSCM  extends SCM {
             super(SCLMSCM.class, null);
         }
 
-        /**
+	    /**
          * Get globally configured job header.
          *
          * @return <b><code>SCLMJobHeader</code></b>.
@@ -571,13 +587,13 @@ public class SCLMSCM  extends SCM {
                                  net.sf.json.JSONObject json)
             throws FormException
         {
-            SCLMJobHeader = Util.fixEmpty(req.getParameter("SCLMJobHeader").trim());
+            SCLMJobHeader = Util.fixEmptyAndTrim(req.getParameter("SCLMJobHeader"));
             if (SCLMJobHeader == null)
                 SCLMJobHeader = SCLMSCMDescriptor.DefaultSCLMJobHeader;
-            SCLMJobStep = Util.fixEmpty(req.getParameter("SCLMJobStep").trim());
+            SCLMJobStep = Util.fixEmptyAndTrim(req.getParameter("SCLMJobStep"));
             if (SCLMJobStep == null)
                 SCLMJobStep = SCLMSCMDescriptor.DefaultSCLMJobStep;
-            save();
+	        save();
             return true;
         }
     }

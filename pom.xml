@@ -9,7 +9,6 @@
     <version>1.608</version>
     <relativePath />
   </parent>
-  <groupId>org.jenkins-ci.plugins</groupId>
   <artifactId>zos-connector</artifactId>
   <name>IBM z/OS Connector</name>
   <version>1.2.1.1-SNAPSHOT</version>
@@ -34,7 +33,6 @@
     <connection>scm:git:https://github.com/jenkinsci/zos-connector-plugin.git</connection>
     <developerConnection>scm:git:https://github.com/jenkinsci/${project.artifactId}-plugin.git</developerConnection>
     <url>http://github.com/jenkinsci/${project.artifactId}-plugin</url>
-    <tag>zos-connector-1.0.0</tag>
   </scm>
   <repositories>
     <repository>

@@ -23,63 +23,66 @@ public class zFTPConnector
     /**
      * LPAR name or IP to connect to.
      */
-    private String server;
+    protected String server;
     /**
      * FTP port for connection
      */
-    private int port;
+    protected int port;
 
     // Credentials.
     /**
      * UserID.
      */
-    private String userID;
+    protected String userID;
     /**
      * User password.
      */
-    private String password;
+    protected String password;
 
     // Wait parameters.
     /**
      * Time to wait before giving up in milliseconds. If set to <code>0</code> will wait forever.
      */
-    private long waitTime;
+    protected long waitTime;
 
     // Job info from JES-like system.
     /**
      * JobID in JES.
      */
-    private String jobID;
+    protected String jobID;
     /**
      * Jobname in JES.
      */
-    private String jobName;
+    protected String jobName;
     /**
      * Job's MaxCC.
      */
-    private String jobCC;
+    protected String jobCC;
+
+    // JESINTERFACELEVEL=1
+	protected boolean JESINTERFACELEVEL1;
 
     // Work elements.
     /**
      * Will ask LPAR once in 10 seconds.
      */
-    private static final long waitInterval = 10*1000;
+    protected static final long waitInterval = 10*1000;
     /**
      * FTPClient from <i>Apache Commons-Net</i>. Used for FTP communication.
      */
-    private FTPClient FTPClient;
+    protected FTPClient FTPClient;
 	/**
 	 * Log prefix (default: "zFTPConnector")
 	 */
-	private String logPrefix;
+	protected String logPrefix;
     /**
      * Pattern for search of jobName
      */
-    private static final Pattern JesJobName = Pattern.compile("250-It is known to JES as (.*)");
+    protected static final Pattern JesJobName = Pattern.compile("250-It is known to JES as (.*)");
 	/**
 	 * Simple logger.
 	 */
-	private static final Logger logger = Logger.getLogger(zFTPConnector.class.getName());
+	protected static final Logger logger = Logger.getLogger(zFTPConnector.class.getName());
 
 
     /**
@@ -89,15 +92,17 @@ public class zFTPConnector
      * @param port LPAR password.
      * @param userID UserID.
      * @param password User password.
+     * @param JESINTERFACELEVEL1 Is FTP server configured for JESINTERFACELEVEL=1?
      * @param logPrefix Log prefix.
      */
-    public zFTPConnector (String server, int port, String userID, String password, String logPrefix)
+    public zFTPConnector (String server, int port, String userID, String password, boolean JESINTERFACELEVEL1, String logPrefix)
     {
         // Copy values
         this.server = server;
         this.port = port;
         this.userID = userID;
         this.password = password;
+	    this.JESINTERFACELEVEL1 = JESINTERFACELEVEL1;
 
         // Create FTPClient
         this.FTPClient = new FTPClient();
@@ -114,9 +119,9 @@ public class zFTPConnector
      * Try to connect to the <b><code>server</code></b> using the parameters passed to the constructor.
      *
      * @return Whether the connection was established using the parameters passed to the constructor.
-     * @see zFTPConnector#zFTPConnector(String, int, String, String, String)
+     * @see zFTPConnector#zFTPConnector(String, int, String, String, boolean, String)
      */
-    private boolean connect()
+    protected boolean connect()
     {
         // Perform the connection.
         try
@@ -156,7 +161,7 @@ public class zFTPConnector
             e.printStackTrace();
             return false;
         }
-        // Finall, return with success.
+        // Finally, return with success.
         return true;
     }
 
@@ -166,10 +171,10 @@ public class zFTPConnector
      *
      * @return Whether the credentials supplied are valid and the connection was established.
      *
-     * @see zFTPConnector#zFTPConnector(String, int, String, String, String)
+     * @see zFTPConnector#zFTPConnector(String, int, String, String, boolean, String)
      * @see zFTPConnector#connect()
      */
-    private boolean logon()
+    protected boolean logon()
     {
         // Check whether we are already connected. If not, try to reconnect.
         if (!this.FTPClient.isConnected())
@@ -313,7 +318,7 @@ public class zFTPConnector
      * @see zFTPConnector#submit(InputStream, boolean, int, OutputStream, boolean)
      * @see zFTPConnector#fetchJobLog(OutputStream)
      */
-    private boolean waitForCompletion(OutputStream outputStream)
+    protected boolean waitForCompletion(OutputStream outputStream)
     {
         // Initialize current time and estimated time.
         long curr = System.currentTimeMillis();
@@ -353,7 +358,7 @@ public class zFTPConnector
     /**
      * @return true if job can be listed through FTP.
      */
-    private boolean checkJobAvailability ()
+    protected boolean checkJobAvailability ()
     {
         // Verify connection.
         if(!this.FTPClient.isConnected())
@@ -392,7 +397,7 @@ public class zFTPConnector
      *
      * @see zFTPConnector#waitForCompletion(OutputStream)
      */
-    private boolean fetchJobLog(OutputStream outputStream)
+    protected boolean fetchJobLog(OutputStream outputStream)
     {
         // Verify connection.
         if(!this.FTPClient.isConnected())
@@ -426,8 +431,13 @@ public class zFTPConnector
     /**
      * @return Whether job RC was correctly obtained or not.
      */
-    private boolean obtainJobRC()
+    protected boolean obtainJobRC()
     {
+
+	    if (this.JESINTERFACELEVEL1) {
+		    this.jobCC = "NO_RC - JESINTERFACELEVEL_IS_1";
+		    return true;
+	    }
 
         this.jobCC =  "COULD_NOT_RETRIEVE_JOB_RC";
         // Verify connection.
@@ -493,7 +503,7 @@ public class zFTPConnector
      *
      * @see zFTPConnector#submit(InputStream, boolean, int, OutputStream, boolean)
      */
-    private void deleteJobLog ()
+    protected void deleteJobLog ()
     {
         // Verify connection.
         if(!this.FTPClient.isConnected())
@@ -540,4 +550,3 @@ public class zFTPConnector
         return this.jobCC;
     }
 }
-

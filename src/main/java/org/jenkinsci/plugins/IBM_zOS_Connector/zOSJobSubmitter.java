@@ -40,10 +40,14 @@ public class zOSJobSubmitter extends Builder {
      * User password.
      */
     private String password;
-    /**
-     * Whether need to wait for the job completion.
-     */
-    private boolean wait;
+	/**
+	 * Whether need to wait for the job completion.
+	 */
+	private boolean wait;
+	/**
+	 * Whether FTP server is in JESINTERFACELEVEL=1.
+	 */
+	private boolean JESINTERFAVELEVEL1;
     /**
      * Whether the job log is to be deleted upon job end.
      */
@@ -78,6 +82,7 @@ public class zOSJobSubmitter extends Builder {
      * @param waitTime Maximum wait time. If set to <code>0</code> will wait forever.
      * @param deleteJobFromSpool Whether the job log will e deleted from the spool after end.
      * @param job JCL of the job to be submitted.
+     * @param JESINTERFACELEVEL1 Is FTP server configured for JESINTERFACELEVEL=1?
      */
     @DataBoundConstructor
     public zOSJobSubmitter (
@@ -89,7 +94,8 @@ public class zOSJobSubmitter extends Builder {
         int waitTime,
         boolean deleteJobFromSpool,
         String job,
-        String MaxCC)
+        String MaxCC,
+        boolean JESINTERFACELEVEL1)
     {
         // Copy values
         this.server = server.replaceAll("\\s","");
@@ -98,6 +104,7 @@ public class zOSJobSubmitter extends Builder {
         this.password = password.replaceAll("\\s","");
         this.wait = wait;
         this.waitTime = waitTime;
+	    this.JESINTERFAVELEVEL1 = JESINTERFACELEVEL1;
         this.deleteJobFromSpool = deleteJobFromSpool;
         this.job = job;
         if (MaxCC == null || MaxCC.isEmpty()) {
@@ -151,7 +158,9 @@ public class zOSJobSubmitter extends Builder {
         zFTPConnector zFTPConnector = new zFTPConnector(_server,
                 this.port,
                 _userID,
-                _password, logPrefix);
+                _password,
+	            this.JESINTERFAVELEVEL1,
+	            logPrefix);
         // Read the JCL.
         InputStream inputStream = new ByteArrayInputStream(_job.getBytes());
         // Prepare the output stream.
@@ -200,7 +209,8 @@ public class zOSJobSubmitter extends Builder {
         }
 
         // Return whether the job succeeded or not.
-        return result && (_MaxCC.compareTo(printableCC) >= 0);
+	    // If JESINTERFACELEVEL is configured, no real R is provided.
+        return result && (this.JESINTERFAVELEVEL1 || (_MaxCC.compareTo(printableCC) >= 0));
     }
 
     /**
@@ -243,17 +253,26 @@ public class zOSJobSubmitter extends Builder {
         return this.password;
     }
 
-    /**
-     * Get wait.
-     *
-     * @return <b><code>wait</code></b>
-     */
-    public boolean getWait()
-    {
-        return this.wait;
-    }
+	/**
+	 * Get wait.
+	 *
+	 * @return <b><code>wait</code></b>
+	 */
+	public boolean getWait()
+	{
+		return this.wait;
+	}
+	/**
+	 * Get JESINTERFACELEVEL1.
+	 *
+	 * @return <b><code>JESINTERFACELEVEL1</code></b>
+	 */
+	public boolean getJESINTERFACELEVEL1()
+	{
+		return this.JESINTERFAVELEVEL1;
+	}
 
-    /**
+	/**
      * Get deleteJobFromSpool.
      *
      * @return <b><code>deleteJobFromSpool</code></b>
