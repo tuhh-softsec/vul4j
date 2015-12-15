@@ -36,6 +36,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.filefilter.RegexFileFilter;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -464,8 +465,10 @@ public class PerfSigProjectAction implements ProminentProjectAction {
                         map.put(DigestUtils.md5Hex(dashboardReport.getName() + chartDashlet.getName() + measure.getName()),
                                 new MeasureNameHelper(chartDashlet.getName(), measure.getName(), chartDashlet.getDescription()));
 
+        String json = StringEscapeUtils.unescapeJava(data);
+
         try {
-            final JSONArray gridConfiguration = JSONArray.fromObject(data);
+            final JSONArray gridConfiguration = JSONArray.fromObject(json);
             final JSONArray dashboardConfiguration = JSONArray.fromObject(getDashboardConfiguration(dashboard));
             for (int i = 0; i < gridConfiguration.size(); i++) {
                 final JSONObject obj = gridConfiguration.getJSONObject(i);
