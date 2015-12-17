@@ -10,7 +10,7 @@
     <version>1.7.0-SNAPSHOT</version>
     <packaging>hpi</packaging>
 
-    <name>Performance Signature Plugin</name>
+    <name>Performance Signature with Dynatrace Plugin</name>
     <url>https://community.dynatrace.com/community/display/DL/Performance+Signature+Plugin</url>
     <scm>
         <connection>scm:git:https://github.com/T-Systems-MMS/perfsig-jenkins.git</connection>
