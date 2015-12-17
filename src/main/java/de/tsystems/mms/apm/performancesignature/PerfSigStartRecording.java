@@ -56,17 +56,11 @@ public class PerfSigStartRecording extends Builder {
     public boolean perform(final AbstractBuild build, final Launcher launcher, final BuildListener listener) {
         // This is where you 'build' the project.
         final PrintStream logger = listener.getLogger();
-
         final PerfSigRecorder dtRecorder = PerfSigUtils.getRecorder(build);
-        final PerfSigStopRecording dtStopRecording = PerfSigUtils.getPerfSigBuilder(build, PerfSigStopRecording.class);
 
         if (dtRecorder == null) {
             logger.println(Messages.PerfSigStartRecording_MissingConfiguration());
             return false;
-        }
-        if (dtStopRecording == null) {
-            logger.println(Messages.PerfSigStartRecording_MissingStopRecording());
-            return !dtRecorder.isTechnicalFailure();
         }
 
         logger.println("starting session recording ...");
@@ -113,7 +107,8 @@ public class PerfSigStartRecording extends Builder {
             logger.println(String.format(Messages.PerfSigStartRecording_SessionRecordingError(), dtRecorder.getProfile(), e.getMessage()));
             if (e.getMessage().contains("already started")) {
                 try {
-                    dtStopRecording.perform(build, launcher, listener);
+                    PerfSigStopRecording stopRecording = new PerfSigStopRecording(false);
+                    stopRecording.perform(build, launcher, listener);
                     Thread.sleep(10000);
                     this.perform(build, launcher, listener);
                 } catch (Exception ex) {

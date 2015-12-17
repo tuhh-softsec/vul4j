@@ -25,10 +25,9 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.model.SystemProfile;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionException;
 import hudson.FilePath;
 import hudson.model.AbstractBuild;
+import hudson.model.AbstractProject;
 import hudson.model.Item;
-import hudson.model.Project;
 import hudson.security.ACL;
-import hudson.tasks.Builder;
 import hudson.tasks.Publisher;
 import hudson.util.ListBoxModel;
 import jenkins.model.Jenkins;
@@ -90,7 +89,7 @@ public class PerfSigUtils {
     }
 
     public static PerfSigRecorder getRecorder(final AbstractBuild build) {
-        final Project<?, ?> project = PerfSigUtils.cast(build.getProject());
+        final AbstractProject<?, ?> project = PerfSigUtils.cast(build.getProject());
         final List<Publisher> publishers = project.getPublishersList().toList();
         PerfSigRecorder dtRecorder = null;
 
@@ -102,18 +101,6 @@ public class PerfSigUtils {
             }
         }
         return dtRecorder;
-    }
-
-    public static <T extends Builder> T getPerfSigBuilder(final AbstractBuild build, final Class<T> c) {
-        final Project<?, ?> project = PerfSigUtils.cast(build.getProject());
-        final List<Builder> builders = project.getBuilders();
-
-        for (Builder builder : builders) {
-            if (c.isInstance(builder)) {
-                return c.cast(builder);
-            }
-        }
-        return null;
     }
 
     public static FilePath getReportDirectory(final AbstractBuild<?, ?> build) {

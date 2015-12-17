@@ -42,6 +42,7 @@ import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import hudson.util.ListBoxModel.Option;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -284,7 +285,7 @@ public class PerfSigRecorder extends Recorder {
                     }
                 }
             } catch (Exception e) {
-                logger.println(e);
+                logger.println(ExceptionUtils.getStackTrace(e));
                 return !isTechnicalFailure();
             }
         }
