@@ -24,11 +24,11 @@ import org.junit.AfterClass;
  */
 public class BaseTest {
 
-    protected static String ARCHIVE_NAME = "lada-basis-test.war";
+    protected static String ARCHIVE_NAME = "lada-server-test.war";
 
     public static String TEST_USER = "testeins";
 
-    public static String TEST_ROLES = "cn=Imis-World, cn=mst_06010, cn=mst_11010, cn=mst_11010_status";
+    public static String TEST_ROLES = "cn=Imis-World, cn=mst_06010, cn=mst_11010, cn=mst_06_status";
 
     private static Logger logger = Logger.getLogger(BaseTest.class);
 
