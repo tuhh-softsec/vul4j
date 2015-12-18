@@ -16,7 +16,6 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 import org.junit.Assert;
-
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 
@@ -25,8 +24,10 @@ import de.intevation.lada.Protocol;
 
 public class Stammdaten {
 
+    @SuppressWarnings("rawtypes")
     private static Map<String, Matcher> matchers;
 
+    @SuppressWarnings("rawtypes")
     public Stammdaten() {
         matchers = new HashMap<String, Matcher>();
 
@@ -186,14 +187,14 @@ public class Stammdaten {
     public final void getAll(URL baseUrl, String type, List<Protocol> protocol) {
         System.out.print(".");
         Protocol prot = new Protocol();
-        prot.setName(type + "Service");
+        prot.setName(type + " service");
         prot.setType("get all");
         prot.setPassed(false);
         protocol.add(prot);
         Assert.assertNotNull(type);
         /* Create a client*/
         Client client = ClientBuilder.newClient();
-        WebTarget target = client.target(baseUrl + type);
+        WebTarget target = client.target(baseUrl + "rest/" + type);
         /* Request all objects*/
         Response response = target.request()
             .header("X-SHIB-user", BaseTest.TEST_USER)
@@ -219,6 +220,7 @@ public class Stammdaten {
         prot.setPassed(true);
     }
 
+    @SuppressWarnings("unchecked")
     public final void getById(
         URL baseUrl,
         String type,
@@ -234,7 +236,7 @@ public class Stammdaten {
         try {
             /* Create a client*/
             Client client = ClientBuilder.newClient();
-            WebTarget target = client.target(baseUrl + type +"/" + id);
+            WebTarget target = client.target(baseUrl + "rest/" + type +"/" + id);
             prot.addInfo(type + "Id", id);
             /* Request an object by id*/
             Response response = target.request()
