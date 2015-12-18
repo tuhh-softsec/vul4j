@@ -152,7 +152,7 @@ CREATE FUNCTION update_time_probe() RETURNS trigger
         NEW.tree_modified = now();
         RAISE NOTICE 'updating other rows';
         UPDATE land.messung SET tree_modified = now() WHERE probe_id = NEW.id;
-        UPDATE land.ort SET tree_modified = now() WHERE probe_id = NEW.id;
+        UPDATE land.ortszuordnung SET tree_modified = now() WHERE probe_id = NEW.id;
         UPDATE land.zusatz_wert SET tree_modified = now() WHERE probe_id = NEW.id;
         RETURN NEW;
     END;
