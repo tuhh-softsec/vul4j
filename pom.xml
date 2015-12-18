@@ -123,7 +123,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>4.11</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -154,6 +154,12 @@
             <version>3.0.11.Final</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+    		<groupId>org.jboss.arquillian.extension</groupId>
+    		<artifactId>arquillian-persistence-dbunit</artifactId>
+    		<version>1.0.0.Alpha7</version>
+    		<scope>test</scope>
+		</dependency>
     </dependencies>
 
     <profiles>
