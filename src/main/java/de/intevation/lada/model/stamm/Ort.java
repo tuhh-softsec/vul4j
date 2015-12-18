@@ -32,7 +32,7 @@ public class Ort implements Serializable {
     private String gemId;
 
     @Column(name="hoehe_land")
-    private float hoeheLand;
+    private Float hoeheLand;
 
     @Column(name="kda_id")
     private Integer kdaId;
@@ -47,12 +47,12 @@ public class Ort implements Serializable {
 
     private String langtext;
 
-    private double latitude;
+    private Double latitude;
 
     @Column(name="letzte_aenderung")
     private Timestamp letzteAenderung;
 
-    private double longitude;
+    private Double longitude;
 
     @Column(name="mp_art")
     private String mpArt;
@@ -126,11 +126,11 @@ public class Ort implements Serializable {
         this.gemId = gemId;
     }
 
-    public float getHoeheLand() {
+    public Float getHoeheLand() {
         return this.hoeheLand;
     }
 
-    public void setHoeheLand(float hoeheLand) {
+    public void setHoeheLand(Float hoeheLand) {
         this.hoeheLand = hoeheLand;
     }
 
@@ -174,11 +174,11 @@ public class Ort implements Serializable {
         this.langtext = langtext;
     }
 
-    public double getLatitude() {
+    public Double getLatitude() {
         return this.latitude;
     }
 
-    public void setLatitude(double latitude) {
+    public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
 
@@ -190,11 +190,11 @@ public class Ort implements Serializable {
         this.letzteAenderung = letzteAenderung;
     }
 
-    public double getLongitude() {
+    public Double getLongitude() {
         return this.longitude;
     }
 
-    public void setLongitude(double longitude) {
+    public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
 

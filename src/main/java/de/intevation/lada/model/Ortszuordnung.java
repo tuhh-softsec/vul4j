@@ -4,9 +4,12 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 
 /**
@@ -18,6 +21,8 @@ public class Ortszuordnung implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name="id", unique=true, nullable=false)
     private Integer id;
 
     @Column(name="letzte_aenderung")
@@ -33,6 +38,12 @@ public class Ortszuordnung implements Serializable {
 
     @Column(name="probe_id")
     private Integer probeId;
+
+    @Transient
+    private boolean owner;
+
+    @Transient
+    private boolean readonly;
 
     public Ortszuordnung() {
     }
@@ -83,6 +94,22 @@ public class Ortszuordnung implements Serializable {
 
     public void setProbeId(Integer probeId) {
         this.probeId = probeId;
+    }
+
+    public boolean isOwner() {
+        return owner;
+    }
+
+    public void setOwner(boolean owner) {
+        this.owner = owner;
+    }
+
+    public boolean isReadonly() {
+        return readonly;
+    }
+
+    public void setReadonly(boolean readonly) {
+        this.readonly = readonly;
     }
 
 }
