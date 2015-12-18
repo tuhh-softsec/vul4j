@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 /** ServletFilter used for Shibboleth authentification. */
-@WebFilter("/*")
+@WebFilter({"/rest/*", "/data/*"})
 public class ShibbolethFilter implements Filter {
 
     private static final String CONFIG_FILE = "/shibboleth.properties";

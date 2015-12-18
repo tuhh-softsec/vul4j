@@ -111,7 +111,7 @@ import de.intevation.lada.validation.annotation.ValidationConfig;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@Path("probe")
+@Path("rest/probe")
 @RequestScoped
 public class ProbeService {
 

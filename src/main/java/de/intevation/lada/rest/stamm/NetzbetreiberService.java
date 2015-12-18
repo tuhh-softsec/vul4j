@@ -61,7 +61,7 @@ import de.intevation.lada.util.rest.Response;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@Path("netzbetreiber")
+@Path("rest/netzbetreiber")
 @RequestScoped
 public class NetzbetreiberService {
 

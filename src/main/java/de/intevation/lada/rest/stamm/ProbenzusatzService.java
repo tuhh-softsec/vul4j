@@ -51,7 +51,7 @@ import de.intevation.lada.util.rest.Response;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@Path("probenzusatz")
+@Path("rest/probenzusatz")
 @RequestScoped
 public class ProbenzusatzService {
 

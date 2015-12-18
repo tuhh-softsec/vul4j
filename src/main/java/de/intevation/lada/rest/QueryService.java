@@ -46,7 +46,7 @@ import de.intevation.lada.util.rest.Response;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@Path("/query")
+@Path("rest/query")
 @RequestScoped
 public class QueryService {
 

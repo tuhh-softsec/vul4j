@@ -56,7 +56,7 @@ import de.intevation.lada.util.rest.Response;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@Path("messstelle")
+@Path("rest/messstelle")
 @RequestScoped
 public class MessstelleService {
 

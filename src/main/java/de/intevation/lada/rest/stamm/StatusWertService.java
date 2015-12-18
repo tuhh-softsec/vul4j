@@ -65,7 +65,7 @@ import de.intevation.lada.util.rest.Response;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@Path("statuswert")
+@Path("rest/statuswert")
 @RequestScoped
 public class StatusWertService {
 

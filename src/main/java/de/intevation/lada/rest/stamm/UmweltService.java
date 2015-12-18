@@ -50,7 +50,7 @@ import de.intevation.lada.util.rest.Response;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@Path("umwelt")
+@Path("rest/umwelt")
 @RequestScoped
 public class UmweltService {
 

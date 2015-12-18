@@ -51,7 +51,7 @@ import de.intevation.lada.util.rest.Response;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@Path("pflichtmessgroesse")
+@Path("rest/pflichtmessgroesse")
 @RequestScoped
 public class PflichtmessgroesseService {
 

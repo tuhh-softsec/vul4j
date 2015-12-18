@@ -66,7 +66,7 @@ import de.intevation.lada.util.rest.Response;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@Path("mkommentar")
+@Path("rest/mkommentar")
 @RequestScoped
 public class KommentarMService {
 

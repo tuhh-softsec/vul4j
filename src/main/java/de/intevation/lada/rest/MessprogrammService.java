@@ -92,7 +92,7 @@ import de.intevation.lada.util.rest.Response;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@Path("messprogramm")
+@Path("rest/messprogramm")
 @RequestScoped
 public class MessprogrammService {
 

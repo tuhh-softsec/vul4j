@@ -42,7 +42,7 @@ import de.intevation.lada.util.rest.Response;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@Path("version")
+@Path("rest/version")
 @RequestScoped
 public class VersionService {
 

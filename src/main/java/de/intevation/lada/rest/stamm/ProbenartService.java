@@ -50,7 +50,7 @@ import de.intevation.lada.util.rest.Response;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@Path("probenart")
+@Path("rest/probenart")
 @RequestScoped
 public class ProbenartService {
 

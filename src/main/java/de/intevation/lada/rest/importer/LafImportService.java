@@ -34,7 +34,7 @@ import de.intevation.lada.util.rest.Response;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@Path("import")
+@Path("data/laf/import")
 @RequestScoped
 public class LafImportService {
 

@@ -79,7 +79,7 @@ import de.intevation.lada.validation.annotation.ValidationConfig;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@Path("ort")
+@Path("rest/ortszuordnung")
 @RequestScoped
 public class OrtService {
 

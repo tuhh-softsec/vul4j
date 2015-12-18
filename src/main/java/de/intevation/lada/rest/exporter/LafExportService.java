@@ -47,7 +47,7 @@ import de.intevation.lada.util.auth.UserInfo;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@Path("export")
+@Path("data/laf/export")
 @RequestScoped
 public class LafExportService {
 
