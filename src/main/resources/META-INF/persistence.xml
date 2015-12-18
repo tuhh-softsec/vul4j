@@ -5,8 +5,7 @@
     <!-- PU for bund datasource. Maps to the schema 'bund' in the Lada database. -->
     <persistence-unit name="bund">
         <!-- The JTA datasource configured in the Wildfly AS -->
-        <jta-data-source>java:/jboss/lada-bund</jta-data-source>
-        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <jta-data-source>java:jboss/lada-bund</jta-data-source>
         <properties>
         	<!-- The JNDI name for lookups in the application -->
             <property name="jboss.entity.manager.jndi.name" value="java:app/entitymanager/bund"/>
@@ -19,7 +18,7 @@
    	</persistence-unit>
    	<persistence-unit name="land">
         <!-- The JTA datasource configured in the Wildfly AS -->
-   	    <jta-data-source>java:/jboss/lada-land</jta-data-source>
+   	    <jta-data-source>java:jboss/lada-land</jta-data-source>
        	<exclude-unlisted-classes>false</exclude-unlisted-classes>
     	<properties>
         	<!-- The JNDI name for lookups in the application -->
@@ -33,7 +32,7 @@
     </persistence-unit>
     <persistence-unit name="stamm">
         <!-- The JTA datasource configured in the Wildfly AS -->
-        <jta-data-source>java:/jboss/lada-stamm</jta-data-source>
+        <jta-data-source>java:jboss/lada-stamm</jta-data-source>
         <properties>
         	<!-- The JNDI name for lookups in the application -->
             <property name="jboss.entity.manager.jndi.name" value="java:app/entitymanager/stamm"/>
