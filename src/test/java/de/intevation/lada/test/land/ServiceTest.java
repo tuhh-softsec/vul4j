@@ -1,20 +1,19 @@
-/* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
- * Software engineering by Intevation GmbH
- *
- * This file is Free Software under the GNU GPL (v>=3)
- * and comes with ABSOLUTELY NO WARRANTY! Check out
- * the documentation coming with IMIS-Labordaten-Application for details.
- */
 package de.intevation.lada.test.land;
 
+import java.io.InputStream;
 import java.io.StringReader;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Scanner;
 
 import javax.json.Json;
 import javax.json.JsonException;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.json.JsonReader;
+import javax.json.JsonValue;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -22,35 +21,23 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang.WordUtils;
 import org.junit.Assert;
 
 import de.intevation.lada.BaseTest;
 import de.intevation.lada.Protocol;
 
-/**
- * Class containing test cases for messung objects.
- *
- * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
- */
-public class Messung {
+public class ServiceTest {
 
-    private static final String COMPARE_MESSUNG =
-        "{\"id\":1,\"fertig\":true,\"letzteAenderung\":1331536340000," +
-        "\"messdauer\":73929,\"messzeitpunkt\":1329139620000,\"mmtId\":" +
-        "\"G1\",\"probeId\":575,\"owner\":false,\"readonly\":false," +
-        "\"nebenprobenNr\":\"01G1\",\"geplant\":true,";
+    protected List<Protocol> protocol;
 
-    private static final String CREATE_MESSUNG =
-        "{\"probeId\":\"PID\",\"mmtId\":\"A4\",\"nebenprobenNr\":\"10R1\"," +
-        "\"messdauer\":10,\"fertig\":false,\"letzteAenderung\":null," +
-        "\"geplant\":true,\"messzeitpunkt\":\"2015-02-09T10:58:36\"}";
+    protected List<String> timestampAttributes;
 
-    private List<Protocol> protocol;
+    protected URL baseUrl;
 
-    private static Integer createdMessungId;
-
-    public Integer getCreatedMessungId() {
-        return createdMessungId;
+    public void init(URL baseUrl, List<Protocol> protocol) {
+        this.baseUrl = baseUrl;
+        this.protocol = protocol;
     }
 
     /**
@@ -60,22 +47,46 @@ public class Messung {
         return protocol;
     }
 
-    /**
-     * Test the GET Service by requesting all objects.
-     *
-     * @param baseUrl The url pointing to the test deployment.
-     */
-    public final void getAllService(URL baseUrl, List<Protocol> protocol)
-    throws Exception {
+    protected JsonObject readJsonResource(String resource) {
+        InputStream stream =
+            ProbeTest.class.getResourceAsStream(resource);
+        Scanner scanner = new Scanner(stream, "UTF-8");
+        scanner.useDelimiter("\\A");
+        String raw = scanner.next();
+        scanner.close();
+        JsonReader reader = Json.createReader(new StringReader(raw));
+        JsonObject content = reader.readObject();
+        reader.close();
+        return content;
+    }
+
+    protected JsonObjectBuilder convertObject(JsonObject object) {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        for (Entry<String, JsonValue> entry : object.entrySet()) {
+            String key = WordUtils.capitalize(
+                entry.getKey(), new char[]{'_'}).replaceAll("_","");
+            key = key.replaceFirst(key.substring(0, 1), key.substring(0, 1).toLowerCase());
+            if (timestampAttributes.contains(key)) {
+                Timestamp timestamp = Timestamp.valueOf(entry.getValue().toString().replaceAll("\"", ""));
+                builder.add(key, timestamp.getTime());
+            }
+            else {
+                builder.add(key, entry.getValue());
+            }
+        }
+        return builder;
+    }
+
+    public JsonObject getAll(String name, String parameter) {
         System.out.print(".");
         Protocol prot = new Protocol();
-        prot.setName("MessungService");
+        prot.setName(name + " service");
         prot.setType("get all");
         prot.setPassed(false);
         protocol.add(prot);
         /* Create a client*/
         Client client = ClientBuilder.newClient();
-        WebTarget target = client.target(baseUrl + "messung");
+        WebTarget target = client.target(baseUrl + parameter);
         /* Request all objects*/
         Response response = target.request()
             .header("X-SHIB-user", BaseTest.TEST_USER)
@@ -93,32 +104,36 @@ public class Messung {
             prot.addInfo("message", content.getString("message"));
             Assert.assertNotNull(content.getJsonArray("data"));
             prot.addInfo("objects", content.getJsonArray("data").size());
+            prot.setPassed(true);
+            return content;
         }
         catch(JsonException je) {
             prot.addInfo("exception", je.getMessage());
             Assert.fail(je.getMessage());
         }
-        prot.setPassed(true);
+        return null;
     }
-
     /**
      * Test the GET Service by requesting a single object by id.
      *
      * @param baseUrl The url pointing to the test deployment.
      */
-    public final void getByIdService(URL baseUrl, List<Protocol> protocol)
-    throws Exception {
+    public JsonObject getById(
+        String name,
+        String parameter,
+        JsonObject expected
+    ) {
         System.out.print(".");
         Protocol prot = new Protocol();
-        prot.setName("MessungService");
+        prot.setName(name + " service");
         prot.setType("get by Id");
         prot.setPassed(false);
         protocol.add(prot);
         try {
             /* Create a client*/
             Client client = ClientBuilder.newClient();
-            WebTarget target = client.target(baseUrl + "messung/1");
-            prot.addInfo("messungId", 1);
+            WebTarget target = client.target(baseUrl + parameter);
+            prot.addInfo("parameter", parameter);
             /* Request a object by id*/
             Response response = target.request()
                 .header("X-SHIB-user", BaseTest.TEST_USER)
@@ -135,13 +150,23 @@ public class Messung {
             Assert.assertEquals("200", content.getString("message"));
             prot.addInfo("message", content.getString("message"));
             Assert.assertFalse(content.getJsonObject("data").isEmpty());
+            JsonObject object = content.getJsonObject("data");
+            for (Entry<String, JsonValue> entry : expected.entrySet()) {
+                if (entry.getKey().equals("parentModified") ||
+                    entry.getKey().equals("treeModified")) {
+                    continue;
+                }
+                Assert.assertEquals(entry.getValue(), object.get(entry.getKey()));
+            }
             prot.addInfo("object", "equals");
+            prot.setPassed(true);
+            return content;
         }
         catch(JsonException je) {
-            prot.addInfo("exception", je.getMessage());
+            prot.addInfo("exception",je.getMessage());
             Assert.fail(je.getMessage());
         }
-        prot.setPassed(true);
+        return null;
     }
 
     /**
@@ -149,19 +174,19 @@ public class Messung {
      *
      * @param baseUrl The url poining to the test deployment.
      */
-    public final void filterService(URL baseUrl, List<Protocol> protocol) {
+    public JsonObject filter(String name, String parameter) {
         System.out.print(".");
         Protocol prot = new Protocol();
-        prot.setName("MessungService");
-        prot.setType("get by filter");
+        prot.setName(name + " service");
+        prot.setType("filter");
         prot.setPassed(false);
         protocol.add(prot);
         try {
             /* Create a client*/
             Client client = ClientBuilder.newClient();
             WebTarget target =
-                client.target(baseUrl + "messung?probeId=1");
-            prot.addInfo("filter", "probeId=1");
+                client.target(baseUrl + parameter);//"probe?qid=2&mst_id=11010&umw_id=N24");
+            prot.addInfo("filter", parameter);//"qid=2&mst_id=11010&umw_id=N24");
             /* Request the objects using the filter*/
             Response response = target.request()
                 .header("X-SHIB-user", BaseTest.TEST_USER)
@@ -170,20 +195,22 @@ public class Messung {
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader reader = Json.createReader(new StringReader(entity));
-            JsonObject respObj = reader.readObject();
+            JsonObject content = reader.readObject();
             /* Verify the response*/
-            Assert.assertTrue(respObj.getBoolean("success"));
-            prot.addInfo("success", respObj.getBoolean("success"));
-            Assert.assertEquals("200", respObj.getString("message"));
-            prot.addInfo("message", respObj.getString("message"));
-            Assert.assertNotNull(respObj.getJsonArray("data"));
-            prot.addInfo("objects", respObj.getJsonArray("data").size());
+            Assert.assertTrue(content.getBoolean("success"));
+            prot.addInfo("success", content.getBoolean("success"));
+            Assert.assertEquals("200", content.getString("message"));
+            prot.addInfo("message", content.getString("message"));
+            Assert.assertNotNull(content.getJsonArray("data"));
+            prot.addInfo("objects", content.getJsonArray("data").size());
+            prot.setPassed(true);
+            return content;
         }
         catch(JsonException je) {
             prot.addInfo("exception", je.getMessage());
             Assert.fail(je.getMessage());
         }
-        prot.setPassed(true);
+        return null;
     }
 
     /**
@@ -191,69 +218,65 @@ public class Messung {
      *
      * @param baseUrl The url pointing to the test deployment.
      */
-    public final void createService(
-        URL baseUrl,
-        List<Protocol> protocol,
-        Integer probeId)
-    throws Exception {
+    public JsonObject create(String name, String parameter, JsonObject create) {
         System.out.print(".");
         Protocol prot = new Protocol();
-        prot.setName("MessungService");
+        prot.setName(name + " service");
         prot.setType("create");
         prot.setPassed(false);
         protocol.add(prot);
         try {
             /* Create a client*/
             Client client = ClientBuilder.newClient();
-            WebTarget target = client.target(baseUrl + "messung");
-            /* Send a post request containing a new object*/
-            String mess = CREATE_MESSUNG.replace("PID", probeId.toString());
+            WebTarget target = client.target(baseUrl + parameter);
+            /* Send a post request containing a new probe*/
             Response response = target.request()
                 .header("X-SHIB-user", BaseTest.TEST_USER)
                 .header("X-SHIB-roles", BaseTest.TEST_ROLES)
-                .post(Entity.entity(mess, MediaType.APPLICATION_JSON));
+                .post(Entity.entity(create.toString(), MediaType.APPLICATION_JSON));
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader fromServiceReader =
                 Json.createReader(new StringReader(entity));
             JsonObject content = fromServiceReader.readObject();
-            /* Save the id*/
-            createdMessungId =
-                content.getJsonObject("data").getJsonNumber("id").intValue();
-            prot.addInfo("messungId", createdMessungId);
             /* Verify the response*/
             Assert.assertTrue(content.getBoolean("success"));
             prot.addInfo("success", content.getBoolean("success"));
             Assert.assertEquals("200", content.getString("message"));
             prot.addInfo("message", content.getString("message"));
+            prot.setPassed(true);
+            return content;
         }
         catch(JsonException je) {
             prot.addInfo("exception", je.getMessage());
             Assert.fail(je.getMessage());
         }
-        prot.setPassed(true);
+        return null;
     }
 
     /**
-     * Test the UPDATE Service.
+     * Test the probe update service.
      *
      * @param baseUrl The url pointing to the test deployment.
      */
-    public final void updateService(URL baseUrl, List<Protocol> protocol)
-    throws Exception {
+    public JsonObject update(
+        String name,
+        String parameter,
+        String updateAttribute,
+        String oldValue,
+        String newValue
+    ) {
         System.out.print(".");
         Protocol prot = new Protocol();
-        prot.setName("MessungService");
+        prot.setName(name + " service");
         prot.setType("update");
         prot.setPassed(false);
         protocol.add(prot);
         try {
             /* Create a client*/
             Client client = ClientBuilder.newClient();
-            WebTarget target =
-                client.target(baseUrl + "messung/" + createdMessungId);
-            prot.addInfo("messungsId", createdMessungId);
-            /* Request a messung with the saved id*/
+            WebTarget target = client.target(baseUrl + parameter);
+            /* Request a with the saved id*/
             Response response = target.request()
                 .header("X-SHIB-user", BaseTest.TEST_USER)
                 .header("X-SHIB-roles", BaseTest.TEST_ROLES)
@@ -261,15 +284,15 @@ public class Messung {
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader reader = Json.createReader(new StringReader(entity));
-            JsonObject oldMessung = reader.readObject().getJsonObject("data");
-            /* Change the mmtId*/
+            JsonObject oldObject = reader.readObject().getJsonObject("data");
+            /* Change the hauptprobenNr*/
             String updatedEntity =
-                oldMessung.toString().replace("A4", "G1");
-            prot.addInfo("updated field", "mmtId");
-            prot.addInfo("updated value", "A4");
-            prot.addInfo("updated to", "G1");
-            /* Send the updated messung via put request*/
-            WebTarget putTarget = client.target(baseUrl + "messung/" + createdMessungId);
+                oldObject.toString().replace(oldValue, newValue);
+            prot.addInfo("updated datafield", updateAttribute);
+            prot.addInfo("updated value", oldValue);
+            prot.addInfo("updated to", newValue);
+            /* Send the updated probe via put request*/
+            WebTarget putTarget = client.target(baseUrl + parameter);
             Response updated = putTarget.request()
                 .header("X-SHIB-user", BaseTest.TEST_USER)
                 .header("X-SHIB-roles", BaseTest.TEST_ROLES)
@@ -277,20 +300,22 @@ public class Messung {
             /* Try to parse the response*/
             JsonReader updatedReader = Json.createReader(
                 new StringReader(updated.readEntity(String.class)));
-            JsonObject updatedMessung = updatedReader.readObject();
+            JsonObject updatedObject = updatedReader.readObject();
             /* Verify the response*/
-            Assert.assertTrue(updatedMessung.getBoolean("success"));
-            prot.addInfo("success", updatedMessung.getBoolean("success"));
-            Assert.assertEquals("200", updatedMessung.getString("message"));
-            prot.addInfo("message", updatedMessung.getString("message"));
-            Assert.assertEquals("G1",
-                updatedMessung.getJsonObject("data").getString("mmtId"));
+            Assert.assertTrue(updatedObject.getBoolean("success"));
+            prot.addInfo("success", updatedObject.getBoolean("success"));
+            Assert.assertEquals("200", updatedObject.getString("message"));
+            prot.addInfo("message", updatedObject.getString("message"));
+            Assert.assertEquals(newValue,
+                updatedObject.getJsonObject("data").getString(updateAttribute));
+            prot.setPassed(true);
+            return updatedObject;
         }
         catch(JsonException je) {
             prot.addInfo("exception", je.getMessage());
             Assert.fail(je.getMessage());
         }
-        prot.setPassed(true);
+        return null;
     }
 
     /**
@@ -298,10 +323,10 @@ public class Messung {
      *
      * @param baseUrl The url pointing to the test deployment.
      */
-    public final void deleteService(URL baseUrl, List<Protocol> protocol) {
+    public JsonObject delete(String name, String parameter) {
         System.out.print(".");
         Protocol prot = new Protocol();
-        prot.setName("MessungService");
+        prot.setName(name + " service");
         prot.setType("delete");
         prot.setPassed(false);
         protocol.add(prot);
@@ -309,9 +334,9 @@ public class Messung {
             /* Create a client*/
             Client client = ClientBuilder.newClient();
             WebTarget target =
-                client.target(baseUrl + "messung/" + createdMessungId);
-            prot.addInfo("messungId", createdMessungId);
-            /* Delete a messung with the saved id*/
+                client.target(baseUrl + parameter);
+            prot.addInfo("parameter", parameter);
+            /* Delete a probe with the id saved when created a probe*/
             Response response = target.request()
                 .header("X-SHIB-user", BaseTest.TEST_USER)
                 .header("X-SHIB-roles", BaseTest.TEST_ROLES)
@@ -319,17 +344,19 @@ public class Messung {
             String entity = response.readEntity(String.class);
             /* Try to parse the response*/
             JsonReader reader = Json.createReader(new StringReader(entity));
-            JsonObject respObj = reader.readObject();
+            JsonObject content = reader.readObject();
             /* Verify the response*/
-            Assert.assertTrue(respObj.getBoolean("success"));
-            prot.addInfo("success", respObj.getBoolean("success"));
-            Assert.assertEquals("200", respObj.getString("message"));
-            prot.addInfo("message", respObj.getString("message"));
+            Assert.assertTrue(content.getBoolean("success"));
+            prot.addInfo("success", content.getBoolean("success"));
+            Assert.assertEquals("200", content.getString("message"));
+            prot.addInfo("message", content.getString("message"));
+            prot.setPassed(true);
+            return content;
         }
         catch(JsonException je) {
             prot.addInfo("exception", je.getMessage());
             Assert.fail(je.getMessage());
         }
-        prot.setPassed(true);
+        return null;
     }
 }

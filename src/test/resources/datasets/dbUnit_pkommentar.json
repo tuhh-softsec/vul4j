@@ -1,0 +1,9 @@
+{
+    "land.kommentar_p": [{
+        "id": 1000,
+        "erzeuger": "06010",
+        "datum": "2012-05-11 12:01:00",
+        "text": "Testkommentar",
+        "probe_id": 1000
+    }]
+}

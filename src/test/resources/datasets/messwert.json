@@ -1,0 +1,11 @@
+{
+    "messungsId": 1200,
+    "messgroesseId": 242,
+    "messwert":1,
+    "messwertNwg":"",
+    "messfehler":1,
+    "nwgZuMesswert":3,
+    "mehId":207,
+    "grenzwertueberschreitung":false
+}
+

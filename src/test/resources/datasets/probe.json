@@ -1,0 +1,23 @@
+{
+    "baId":"1",
+    "datenbasisId":2,
+    "erzeugerId":"",
+    "hauptprobenNr":"4554554550",
+    "media":"",
+    "mediaDesk": "",
+    "mittelungsdauer":"",
+    "mpKat":"",
+    "mplId":"",
+    "mprId":"",
+    "mstId":"06010",
+    "netzbetreiberId":"11",
+    "probeNehmerId":3,
+    "probenartId":1,
+    "test":true,
+    "umwId":"A11",
+    "letzteAenderung":"2015-02-09T10:58:36",
+    "probeentnahmeBeginn":"2015-02-08T10:58:36",
+    "probeentnahmeEnde":"2015-02-09T10:58:36",
+    "solldatumBeginn":"2015-02-09T10:58:36",
+    "solldatumEnde":"2015-02-09T10:58:36"
+}

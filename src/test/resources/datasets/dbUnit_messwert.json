@@ -1,0 +1,14 @@
+{
+    "land.messwert":[{
+        "id": 10000,
+        "messungs_id": 1200,
+        "messgroesse_id": 29,
+        "messwert_nwg": "<",
+        "messwert": 28.0,
+        "messfehler": 3.3,
+        "nwg_zu_messwert": 2.4,
+        "meh_id": 65,
+        "grenzwertueberschreitung": false,
+        "letzte_aenderung": "2012-05-09 09:00:00"
+    }]
+}

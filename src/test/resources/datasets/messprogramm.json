@@ -1,0 +1,22 @@
+{
+    "baId": null,
+    "datenbasisId": 2,
+    "gemId": "11000000",
+    "gueltigBis": null,
+    "gueltigVon": null,
+    "intervallOffset": null,
+    "letzteAenderung": 1381413048800,
+    "mediaDesk": "D: 01 01 01 01 01 01 00 00 00 00 00 00",
+    "mstId": "06010",
+    "name": "Test 1",
+    "netzbetreiberId": "06",
+    "ortId": null,
+    "probeKommentar": null,
+    "probeNehmerId": null,
+    "probenartId": 3,
+    "probenintervall": "M",
+    "teilintervallBis": 30,
+    "teilintervallVon": 1,
+    "test": false,
+    "umwId": "N11"
+}

@@ -1,0 +1,29 @@
+{
+    "land.messung": [{
+        "id": 1200,
+        "probe_id": 1000,
+        "nebenproben_nr": "T100",
+        "mmt_id": "G1",
+        "messdauer": 3600,
+        "messzeitpunkt": "2012-05-06 14:00:00",
+        "fertig": false,
+        "letzte_aenderung": "2012-05-08 12:00:00",
+        "geplant": true,
+        "tree_modified": "2012-05-09 12:00:00"
+    }],
+    "land.messung_translation": [{
+        "id": 1200,
+        "messungs_id": 1200,
+        "messungs_id_alt": 453
+    }],
+    "land.status_protokoll": [{
+        "id": 1000,
+        "erzeuger": "06010",
+        "datum": "2012-05-08 11:00:00",
+        "text": "Initialer Status",
+        "messungs_id": 1200,
+        "status_stufe": 1,
+        "status_wert": 0,
+        "tree_modified": "2012-05-09 12:00:00"
+    }]
+}

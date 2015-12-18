@@ -1,0 +1,67 @@
+package de.intevation.lada.test.land;
+
+import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
+
+import org.junit.Assert;
+
+import de.intevation.lada.Protocol;
+
+public class MessungTest extends ServiceTest {
+
+    private JsonObject expectedById;
+    private JsonObject create;
+
+    /**
+     * @return The test protocol
+     */
+    public List<Protocol> getProtocol() {
+        return protocol;
+    }
+
+    @Override
+    public void init(
+        URL baseUrl,
+        List<Protocol> protocol
+    ) {
+        super.init(baseUrl, protocol);
+        // Attributes with timestamps
+        timestampAttributes = Arrays.asList(new String[]{
+            "letzteAenderung",
+            "messzeitpunkt",
+            "treeModified"
+        });
+
+        // Prepare expected probe object
+        JsonObject content = readJsonResource("/datasets/dbUnit_messung.json");
+        JsonObject messung = content.getJsonArray("land.messung").getJsonObject(0);
+        JsonObjectBuilder builder = convertObject(messung);
+        JsonObject trans =
+            content.getJsonArray("land.messung_translation").getJsonObject(0);
+        builder.add("messungsIdAlt", trans.get("messungs_id_alt"));
+        builder.add("parentModified", 1450371851654L);
+        builder.add("readonly", JsonValue.FALSE);
+        builder.add("owner", JsonValue.TRUE);
+        builder.add("statusEdit", JsonValue.TRUE);
+        builder.add("status", 1000);
+        expectedById = builder.build();
+        Assert.assertNotNull(expectedById);
+
+        // Load probe object to test POST request
+        create = readJsonResource("/datasets/messung.json");
+        Assert.assertNotNull(create);
+    }
+
+    public final void execute() {
+        getAll("messung", "rest/messung");
+        getById("messung", "rest/messung/1200", expectedById);
+        JsonObject created = create("messung", "rest/messung", create);
+        update("messung", "rest/messung/1200", "nebenprobenNr", "T100", "U200");
+        delete("messung", "rest/messung/" + created.getJsonObject("data").get("id"));
+    }
+}

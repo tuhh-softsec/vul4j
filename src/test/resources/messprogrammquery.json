@@ -1,6 +1,7 @@
 [
 {   "id": "1",
     "name": "Kein Filter",
+    "type": "messprogramm",
     "description": "Abfrage der Messprogramme ohne Filter",
     "sql": "select m.id as id, m.name as name, m.mst_id as mstId, m.umw_id as umwId from land.messprogramm m",
     "result": [

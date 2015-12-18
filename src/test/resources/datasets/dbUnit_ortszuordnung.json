@@ -1,0 +1,10 @@
+{
+    "land.ortszuordnung": [{
+        "id": 1000,
+        "probe_id": 1000,
+        "ort_id": 23,
+        "ortszuordnung_typ": "E",
+        "ortszusatztext": "Test",
+        "letzte_aenderung": "2012-05-07 09:00:00"
+    }]
+}

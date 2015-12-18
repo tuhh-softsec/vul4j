@@ -1,0 +1,9 @@
+{
+    "probeId":"1000",
+    "mmtId":"A4",
+    "nebenprobenNr":"10R1",
+    "messdauer":10,
+    "fertig":false,
+    "geplant":true,
+    "messzeitpunkt":"2015-02-09T10:58:36"
+}

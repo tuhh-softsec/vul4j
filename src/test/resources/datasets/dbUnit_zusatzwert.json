@@ -1,0 +1,11 @@
+{
+    "land.zusatz_wert": [{
+        "id": 1000,
+        "probe_id": 1000,
+        "pzs_id": "A77",
+        "messwert_pzs": 12.0,
+        "messfehler": 8.0,
+        "nwg_zu_messwert": 3.0,
+        "letzte_aenderung": "2012-05-08 14:00:00"
+    }]
+}

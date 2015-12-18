@@ -29,11 +29,11 @@ import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
-import de.intevation.lada.BaseTest;
 import de.intevation.lada.test.stamm.Stammdaten;
 
 
@@ -44,15 +44,15 @@ import de.intevation.lada.test.stamm.Stammdaten;
  */
 @RunWith(Arquillian.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class LadaStammTest extends BaseTest {
+public class StammdatenTest extends BaseTest {
 
-    private static Logger logger = Logger.getLogger(LadaStammTest.class);
+    private static Logger logger = Logger.getLogger(StammdatenTest.class);
 
     private static Integer createdOrtId;
 
     private Stammdaten stammdatenTest;
 
-    public LadaStammTest () {
+    public StammdatenTest () {
         stammdatenTest = new Stammdaten();
         testProtocol = new ArrayList<Protocol>();
         verboseLogging = false;
@@ -172,12 +172,14 @@ public class LadaStammTest extends BaseTest {
     }
 
     @Test
+    @Ignore
     @RunAsClient
     public final void testLocationAll(@ArquillianResource URL baseUrl) {
         stammdatenTest.getAll(baseUrl, "location", testProtocol);
     }
 
     @Test
+    @Ignore
     @RunAsClient
     public final void testLocationById(@ArquillianResource URL baseUrl) {
         stammdatenTest.getById(baseUrl, "location", "19", testProtocol);
@@ -234,6 +236,7 @@ public class LadaStammTest extends BaseTest {
     /* TODO: The location service is moved to the "land"-services in
        future version. */
     @Test
+    @Ignore
     @RunAsClient
     public final void testLocation1CreateService(@ArquillianResource URL baseUrl)
     throws Exception {
@@ -289,6 +292,7 @@ public class LadaStammTest extends BaseTest {
      * @param baseUrl The url pointing to the test deployment.
      */
     @Test
+    @Ignore
     @RunAsClient
     public final void testLocation2UpdateService(@ArquillianResource URL baseUrl)
     throws Exception {
@@ -345,6 +349,7 @@ public class LadaStammTest extends BaseTest {
     }
 
     @Test
+    @Ignore
     @RunAsClient
     public final void testLocation3DeleteService(@ArquillianResource URL baseUrl)
     throws Exception {

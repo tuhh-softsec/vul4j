@@ -1,0 +1,18 @@
+{
+    "land.messprogramm": [{
+        "id": 1000,
+        "name": "testprogramm",
+        "test": false,
+        "netzbetreiber_id": "06",
+        "mst_id": "06010",
+        "datenbasis_id": 2,
+        "gem_id": "11000000",
+        "media_desk": "D: 50 90 01 06 02 05 00 00 00 00 00 00",
+        "umw_id": "N81",
+        "probenart_id": 3,
+        "probenintervall": "M",
+        "teilintervall_von": 1,
+        "teilintervall_bis": 30,
+        "letzte_aenderung": "2015-03-01 12:00:00"
+    }]
+}

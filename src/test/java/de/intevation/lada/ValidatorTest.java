@@ -26,9 +26,9 @@ import de.intevation.lada.validation.Validator;
 import de.intevation.lada.validation.annotation.ValidationConfig;
 
 @RunWith(Arquillian.class)
-public class LadaValidatorTest {
+public class ValidatorTest {
 
-    private static Logger logger = Logger.getLogger(LadaStammTest.class);
+    private static Logger logger = Logger.getLogger(StammdatenTest.class);
 
     protected static List<Protocol> testProtocol;
 
@@ -50,7 +50,7 @@ public class LadaValidatorTest {
     private Status statusTest;
 
 
-    public LadaValidatorTest() {
+    public ValidatorTest() {
         probeTest = new Probe();
         messungTest = new Messung();
         statusTest = new Status();
@@ -64,7 +64,6 @@ public class LadaValidatorTest {
     public static WebArchive createDeployment() throws Exception {
         WebArchive archive = ShrinkWrap.create(WebArchive.class, ARCHIVE_NAME)
             .addPackages(true, Package.getPackage("de.intevation.lada"))
-            .deleteClass("de.intevation.lada.util.auth.ShibbolethFilter")
             .addAsResource("log4j.properties", "log4j.properties")
             .addAsResource("shibboleth.properties", "shibboleth.properties")
             .addAsResource("probequery.json", "probequery.json")
