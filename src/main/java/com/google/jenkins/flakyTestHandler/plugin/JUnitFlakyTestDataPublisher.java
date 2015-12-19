@@ -46,7 +46,7 @@ public class JUnitFlakyTestDataPublisher
   public TestResultAction.Data getTestData(AbstractBuild<?, ?> abstractBuild, Launcher launcher,
       BuildListener buildListener, TestResult testResult)
       throws IOException, InterruptedException {
-    FlakyTestResult flakyTestResult = new FlakyTestResult(testResult);
+    FlakyTestResult flakyTestResult = launcher.getChannel().call(new FlakyTestResultCollector(testResult));
     // TODO consider the possibility that there is >1 such action
     flakyTestResult.freeze(abstractBuild.getAction(AbstractTestResultAction.class), abstractBuild);
     return new JUnitFlakyTestData(flakyTestResult);

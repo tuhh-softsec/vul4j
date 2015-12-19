@@ -86,7 +86,7 @@ public class JUnitFlakyResultArchiver extends Recorder implements
   @Override
   public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
       throws InterruptedException, IOException {
-    FlakyTestResultAction flakyStatCollectionAction = new FlakyTestResultAction(build, listener);
+    FlakyTestResultAction flakyStatCollectionAction = new FlakyTestResultAction(build, launcher, listener);
     build.addAction(flakyStatCollectionAction);
     if (flakyStatCollectionAction.getFlakyRunStats().isFlaked()) {
       build.setResult(Result.UNSTABLE);
