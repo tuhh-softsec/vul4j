@@ -91,10 +91,17 @@ public class DriverEsiWhenTest extends AbstractDriverTestCase {
         addExpression(expected, "2<=1", false);
         addExpression(expected, "1<=2", true);
         addExpression(expected, "$(HTTP_COOKIE{test-cookie})==test-cookie-value", true);
+        addExpression(expected, "$(HTTP_COOKIE{'test-cookie'})==test-cookie-value", true);
         addExpression(expected, "$(HTTP_USER_AGENT{os})==MAC", true);
         addExpression(expected, "$(HTTP_USER_AGENT{os})=='MAC'", true);
         addExpression(expected, "$(HTTP_COOKIE{test-cookie})=='test-cookie-value'", true);
         addExpression(expected, "$(HTTP_COOKIE{test-cookie})!='test-cookie-not-this-value'", true);
+        addExpression(expected, "$(HTTP_COOKIE{'test-cookie'})=='test-cookie-value'", true);
+        addExpression(expected, "$(HTTP_COOKIE{'test-cookie'})!='test-cookie-not-this-value'", true);
+        addExpression(expected, "$exists($(HTTP_COOKIE{test-cookie}))", true);
+        addExpression(expected, "$exists($(HTTP_COOKIE{'test-cookie'}))", true);
+        addExpression(expected, "$exists($(HTTP_COOKIE{fake-cookie}))", false);
+        addExpression(expected, "$exists($(HTTP_COOKIE{'fake-cookie'}))", false);
 
         addExpression(expected, "$(HTTP_REFERER)==http://www.esigate.org", true);
         addExpression(expected, "$(HTTP_HOST)=='test.mydomain.fr'", true);

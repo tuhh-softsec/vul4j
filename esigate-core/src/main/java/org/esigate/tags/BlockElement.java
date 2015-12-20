@@ -25,6 +25,11 @@ class BlockElement implements Element {
             return new BlockElement();
         }
 
+        @Override
+        public boolean isSelfClosing(String tag) {
+            return false;
+        }
+
     };
 
     private BlockRenderer blockRenderer;
@@ -44,7 +49,7 @@ class BlockElement implements Element {
     }
 
     @Override
-    public void onTagStart(String tag, ParserContext ctx) {
+    public boolean onTagStart(String tag, ParserContext ctx) {
         String[] parameters = tag.split("\\$");
         if (parameters.length != 4) {
             throw new AggregationSyntaxException("Invalid syntax: " + tag);
@@ -56,11 +61,7 @@ class BlockElement implements Element {
         if (nameMatches) {
             blockRenderer.setWrite(true);
         }
-    }
-
-    @Override
-    public boolean isClosed() {
-        return false;
+        return true;
     }
 
     @Override

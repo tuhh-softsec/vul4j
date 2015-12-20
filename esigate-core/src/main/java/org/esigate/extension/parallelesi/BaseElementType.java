@@ -35,4 +35,10 @@ abstract class BaseElementType implements FutureElementType {
         return tag.startsWith(this.endTag);
     }
 
+    @Override
+    public boolean isSelfClosing(String tag) {
+        Tag tagObj = Tag.create(tag);
+        return tagObj.isOpenClosed();
+    }
+
 }

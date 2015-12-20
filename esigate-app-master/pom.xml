@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>esigate</artifactId>
 		<groupId>org.esigate</groupId>
-		<version>5.0-SNAPSHOT</version>
+		<version>5.2-SNAPSHOT</version>
 	</parent>
 	<dependencies>
 		<dependency>
@@ -17,7 +17,7 @@
 			<groupId>org.esigate</groupId>
 			<artifactId>esigate-app-provider</artifactId>
 			<scope>provided</scope>
-            <type>war</type>
+			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -36,14 +36,14 @@
 			<artifactId>xercesImpl</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-jdk14</artifactId>
-			<version>1.6.4</version>
-		</dependency>
-		<dependency>
 			<groupId>rhino</groupId>
 			<artifactId>js</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
 	<build>
@@ -102,10 +102,6 @@
 					</execution>
 				</executions>
 				<configuration>
-                    <container>
-                        <containerId>jetty7x</containerId>
-                        <type>embedded</type>
-                    </container>
                     <deployables>
                         <deployable>
                             <artifactId>esigate-app-provider</artifactId>

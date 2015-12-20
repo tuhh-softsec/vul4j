@@ -86,7 +86,7 @@ class ExceptElement extends BaseElement {
     private StringBuilderFutureAppendable buf = new StringBuilderFutureAppendable();
 
     @Override
-    protected void parseTag(Tag tag, FutureParserContext ctx) throws IOException {
+    protected boolean parseTag(Tag tag, FutureParserContext ctx) throws IOException {
         TryElement parent = ctx.findAncestor(TryElement.class);
 
         if (parent != null) {
@@ -94,6 +94,7 @@ class ExceptElement extends BaseElement {
             ctx.getCurrent().characters(new ExceptTask(tag, parent));
             parent.setWrite(false);
         }
+        return true;
     }
 
     @Override

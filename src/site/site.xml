@@ -39,9 +39,13 @@
 
 		<links>
 			<item name="Change log"
-				href="https://sourceforge.net/apps/mantisbt/webassembletool/changelog_page.php" />
+				href="https://github.com/esigate/esigate/milestones?state=closed" />
+			<item name="Old change log (prior to 5.0)"
+				href="http://www.esigate.org/mantisbt/changelog_page.php" />
 			<item name="Roadmap"
-				href="https://sourceforge.net/apps/mantisbt/webassembletool/roadmap_page.php" />
+				href="https://github.com/esigate/esigate/milestones?state=open" />
+			<item name="Old roadmap (prior to 5.0)"
+				href="http://www.esigate.org/mantisbt/roadmap_page.php" />
 			<item name="Stats (ohloh)" href="http://www.ohloh.net/p/webassembletool" />
 		</links>
 

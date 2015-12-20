@@ -3,7 +3,7 @@ esigate
 
 http://www.esigate.org - Webapp integration, Remote templating, Web accelerator 
 
-![Build status](http://esigate.org/esigate-status.svg)
+[![Build Status: Linux](https://travis-ci.org/esigate/esigate.svg?branch=master)](https://travis-ci.org/esigate/esigate)
 
 # Features
 **Server-side integration** : Esigate allows a fast and invisible mashup of any web applications.
@@ -32,4 +32,9 @@ Reference documentation:
 http://www.esigate.org/reference.html
 
 Bugtracker:
-http://sourceforge.net/apps/mantisbt/webassembletool/
+https://github.com/esigate/esigate/issues
+
+Old bugtracker (prior to version 5.0):
+http://www.esigate.org/mantisbt/
+
+Note: the bugtracker has been migrated from mantisbt to GitHub issue tracking system. New issues must be created in GitHub but the tickets opened before version 5.0 will stay in mantisbt.

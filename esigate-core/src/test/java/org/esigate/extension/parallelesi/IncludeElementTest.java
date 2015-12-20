@@ -225,7 +225,7 @@ public class IncludeElementTest extends AbstractElementTest {
      * <p>
      * See 0000262: Unable to use both alt and onerror in esi:include
      * <p>
-     * https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=262
+     * http://www.esigate.org/mantisbt/view.php?id=262
      * <p>
      * See http://www.akamai.com/dl/technical_publications/esi_faq.pdf
      * <p>

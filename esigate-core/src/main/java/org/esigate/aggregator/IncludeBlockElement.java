@@ -45,6 +45,11 @@ class IncludeBlockElement implements Element {
             return new IncludeBlockElement();
         }
 
+        @Override
+        public boolean isSelfClosing(String tag) {
+            return false;
+        }
+
     };
 
     @Override
@@ -58,7 +63,7 @@ class IncludeBlockElement implements Element {
     }
 
     @Override
-    public void onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+    public boolean onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
         ElementAttributes tagAttributes = ElementAttributesFactory.createElementAttributes(tag);
         Driver driver = tagAttributes.getDriver();
         String page = tagAttributes.getPage();
@@ -68,11 +73,7 @@ class IncludeBlockElement implements Element {
                 driver.render(page, ctx.getHttpRequest().getOriginalRequest(), new BlockRenderer(name, page),
                         new AggregateRenderer());
         new Adapter(ctx.getCurrent()).append(HttpResponseUtils.toString(response));
-    }
-
-    @Override
-    public boolean isClosed() {
-        return false;
+        return true;
     }
 
     @Override

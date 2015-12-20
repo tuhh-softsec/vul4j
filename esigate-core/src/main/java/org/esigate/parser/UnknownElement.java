@@ -15,9 +15,9 @@
 
 package org.esigate.parser;
 
-import org.esigate.HttpErrorPage;
-
 import java.io.IOException;
+
+import org.esigate.HttpErrorPage;
 
 /**
  * Handle unknown tag.
@@ -26,9 +26,10 @@ import java.io.IOException;
  */
 public class UnknownElement implements Element {
     @Override
-    public void onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+    public boolean onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
         // Write content in parent element
         ctx.characters(tag);
+        return true;
     }
 
     @Override
@@ -46,8 +47,4 @@ public class UnknownElement implements Element {
         throw new UnsupportedOperationException("characters are appended in onTagStart method");
     }
 
-    @Override
-    public boolean isClosed() {
-        return true;
-    }
 }

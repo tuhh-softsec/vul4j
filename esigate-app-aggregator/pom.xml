@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>esigate</artifactId>
 		<groupId>org.esigate</groupId>
-		<version>5.0-SNAPSHOT</version>
+		<version>5.2-SNAPSHOT</version>
 	</parent>
 	<dependencies>
 		<dependency>
@@ -131,10 +131,6 @@
 					</execution>
 				</executions>
 				<configuration>
-					<container>
-						<containerId>jetty8x</containerId>
-                        <type>embedded</type>
-					</container>
 					<deployables>
 						<deployable>
 							<groupId>org.esigate</groupId>

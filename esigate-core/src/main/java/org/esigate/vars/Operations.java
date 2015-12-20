@@ -15,6 +15,8 @@
 package org.esigate.vars;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Support for ESI expressions.
@@ -28,6 +30,8 @@ public final class Operations {
     private Operations() {
 
     }
+
+    private final static Pattern AKAMAI_EXISTS_PATTERN = Pattern.compile("\\$exists\\((.*?)\\)");
 
     private static boolean executeOperation(String op) {
 
@@ -178,17 +182,27 @@ public final class Operations {
 
     public static boolean processOperators(String test) {
 
-        if (test == null || test.equals("")) {
+        if (test == null || test.equals("") || test.contains("$exists()") || test.contains("$exists('')")) {
             return false;
         }
 
         ArrayList<String> operands = new ArrayList<String>();
         ArrayList<String> operations = new ArrayList<String>();
 
+        Matcher existsMatcher = AKAMAI_EXISTS_PATTERN.matcher(test);
+
+        while (existsMatcher.find()) {
+            String group = existsMatcher.group();
+            String existsValue = group.substring(8, group.length() - 1);
+
+            test = test.replace(group, existsValue + " != \"\"");
+        }
+
         String s = test.replaceAll(" ", "");
         if (s.startsWith("!")) {
             operations.add("!");
         }
+
         if (s.indexOf('(') == -1) {
             s = "(" + s + ")";
         }

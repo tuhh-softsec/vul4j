@@ -15,6 +15,8 @@
 
 package org.esigate.esi;
 
+import java.io.IOException;
+
 import junit.framework.TestCase;
 
 import org.apache.http.HttpResponse;
@@ -22,22 +24,20 @@ import org.esigate.impl.DriverRequest;
 import org.esigate.parser.Element;
 import org.esigate.parser.ParserContext;
 
-import java.io.IOException;
-
 public class BaseElementTest extends TestCase {
 
     public void testOnTagStart() throws Exception {
         final Tag[] parsed = new Tag[1];
         BaseElement tested = new MockBaseElement() {
             @Override
-            protected void parseTag(Tag tag, ParserContext ctx) {
+            protected boolean parseTag(Tag tag, ParserContext ctx) {
                 parsed[0] = tag;
+                return true;
             }
         };
         ParserContext ctx = new MockParserContext();
 
         tested.onTagStart("<do:something />", ctx);
-        assertEquals(true, tested.isClosed());
 
         assertNotNull(parsed[0]);
         assertEquals(true, parsed[0].isOpenClosed());
@@ -45,7 +45,6 @@ public class BaseElementTest extends TestCase {
         assertEquals("do:something", parsed[0].getName());
 
         tested.onTagStart("<do:something>", ctx);
-        assertEquals(false, tested.isClosed());
 
         assertNotNull(parsed[0]);
         assertEquals(false, parsed[0].isOpenClosed());
@@ -53,7 +52,6 @@ public class BaseElementTest extends TestCase {
         assertEquals("do:something", parsed[0].getName());
 
         tested.onTagStart("<do:something name='value'>", ctx);
-        assertEquals(false, tested.isClosed());
 
         assertNotNull(parsed[0]);
         assertEquals(false, parsed[0].isOpenClosed());

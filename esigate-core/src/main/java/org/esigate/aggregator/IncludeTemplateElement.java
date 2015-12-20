@@ -46,6 +46,11 @@ class IncludeTemplateElement implements Element {
             return new IncludeTemplateElement();
         }
 
+        @Override
+        public boolean isSelfClosing(String tag) {
+            return false;
+        }
+
     };
 
     private Driver driver;
@@ -60,7 +65,7 @@ class IncludeTemplateElement implements Element {
     }
 
     @Override
-    public void onTagStart(String tag, ParserContext ctx) {
+    public boolean onTagStart(String tag, ParserContext ctx) {
         this.out = new Adapter(ctx.getCurrent());
 
         ElementAttributes tagAttributes = ElementAttributesFactory.createElementAttributes(tag);
@@ -68,6 +73,7 @@ class IncludeTemplateElement implements Element {
         this.page = tagAttributes.getPage();
         this.name = tagAttributes.getName();
 
+        return true;
     }
 
     @Override
@@ -80,11 +86,6 @@ class IncludeTemplateElement implements Element {
 
     public void addParam(String paramName, String value) {
         params.put(paramName, value);
-    }
-
-    @Override
-    public boolean isClosed() {
-        return false;
     }
 
     @Override

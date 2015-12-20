@@ -21,28 +21,22 @@ import org.esigate.parser.Element;
 import org.esigate.parser.ParserContext;
 
 abstract class BaseElement implements Element {
-    private boolean closed = false;
     private Element parent = null;
 
     protected BaseElement() {
     }
 
     /** Additional tag initialization callback. */
-    protected void parseTag(Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
+    protected boolean parseTag(Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
         // Default implementation does nothing
+        return true;
     }
 
     @Override
-    public boolean isClosed() {
-        return closed;
-    }
-
-    @Override
-    public void onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
+    public boolean onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
         Tag tagObj = Tag.create(tag);
-        closed = tagObj.isOpenClosed();
         parent = ctx.getCurrent();
-        parseTag(tagObj, ctx);
+        return parseTag(tagObj, ctx);
     }
 
     @Override

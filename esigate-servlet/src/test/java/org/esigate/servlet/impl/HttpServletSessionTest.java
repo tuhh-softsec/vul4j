@@ -50,7 +50,7 @@ public class HttpServletSessionTest extends TestCase {
      * Ensure there is no exception when trying to create a session outside of a request (during background
      * revalidation). Expected behavior is no exception, but value not set.
      * 
-     * @see "https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=229"
+     * @see "http://www.esigate.org/mantisbt/view.php?id=229"
      * @throws Exception
      */
     public void testSetAttributeNoSession() throws Exception {

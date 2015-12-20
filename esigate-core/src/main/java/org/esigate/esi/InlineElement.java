@@ -38,9 +38,10 @@ class InlineElement extends BaseElement {
     }
 
     @Override
-    protected void parseTag(Tag tag, ParserContext ctx) {
+    protected boolean parseTag(Tag tag, ParserContext ctx) {
         this.uri = tag.getAttribute("name");
         this.fetchable = "yes".equalsIgnoreCase(tag.getAttribute("fetchable"));
+        return true;
     }
 
     @Override

@@ -41,9 +41,10 @@ class TryElement extends BaseElement {
     }
 
     @Override
-    protected void parseTag(Tag tag, FutureParserContext ctx) {
+    protected boolean parseTag(Tag tag, FutureParserContext ctx) {
         this.hasErrors = false;
         this.errorCode = 0;
+        return true;
     }
 
     @Override

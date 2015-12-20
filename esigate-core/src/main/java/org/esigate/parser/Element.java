@@ -32,10 +32,11 @@ public interface Element {
      *            The tag
      * @param ctx
      *            The parser context
+     * @return true if the body of this tag should be evaluated
      * @throws IOException
      * @throws HttpErrorPage
      */
-    void onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage;
+    boolean onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage;
 
     /**
      * Method called by the parser when it finds the matching closing tag.
@@ -69,9 +70,4 @@ public interface Element {
      */
     void characters(CharSequence csq, int start, int end) throws IOException;
 
-    /**
-     * @return Returns true if the tag is already closed, that means that it does not need a matching closing tag. Ex:
-     *         &lt;br /&gt;
-     */
-    boolean isClosed();
 }

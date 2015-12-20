@@ -19,69 +19,47 @@ import java.security.Principal;
 import java.util.Properties;
 
 import org.apache.http.Header;
-import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.util.EntityUtils;
 import org.esigate.Driver;
-import org.esigate.authentication.GenericAuthentificationHandler;
+import org.esigate.HttpErrorPage;
+import org.esigate.events.Event;
+import org.esigate.events.EventDefinition;
+import org.esigate.events.EventManager;
+import org.esigate.events.IEventListener;
+import org.esigate.events.impl.FragmentEvent;
+import org.esigate.extension.Extension;
 import org.esigate.http.IncomingRequest;
 import org.esigate.http.OutgoingRequest;
+import org.esigate.util.Parameter;
+import org.esigate.util.ParameterString;
 import org.jasig.cas.client.authentication.AttributePrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CasAuthenticationHandler extends GenericAuthentificationHandler {
-    private static final String DEFAULT_LOGIN_URL = "/login";
-
-    private static final Logger LOG = LoggerFactory.getLogger(GenericAuthentificationHandler.class);
-
+public class CasAuthenticationHandler implements IEventListener, Extension {
     // Configuration properties names
-    protected static final String LOGIN_URL_PROPERTY = "casLoginUrl";
-    protected static final String SECOND_REQUEST = "SECOND_REQUEST";
-    private static final String SPRING_SECURITY_PROPERTY = "isSpringSecurity";
-
-    private static final String SPRING_SECURITY_URL_PATTERN_PROPERTY = "springSecurityUrl";
-
+    public static final Parameter<String> CAS_LOGIN_URL = new ParameterString("casLoginUrl", "/login");
+    private static final Logger LOG = LoggerFactory.getLogger(CasAuthenticationHandler.class);
+    private Driver driver;
     private String loginUrl;
-    private boolean springSecurity;
-    private String springSecurityUrl;
 
-    private void addCasAuthentication(OutgoingRequest outgoingRequest, IncomingRequest request) {
+    private void addCasAuthentication(OutgoingRequest outgoingRequest, IncomingRequest incomingRequest) {
         String location = outgoingRequest.getRequestLine().getUri();
         String resultLocation = location;
-        Principal principal = request.getUserPrincipal();
-        if (principal != null && principal instanceof AttributePrincipal) {
-            AttributePrincipal casPrincipal = (AttributePrincipal) principal;
-            LOG.debug("User logged in CAS as: " + casPrincipal.getName());
-            String springRedirectParam = "";
-
-            if (springSecurity) {
-                String params = null;
-                if (resultLocation.indexOf("?") != -1) {
-                    params = resultLocation.substring(resultLocation.indexOf("?"));
-                    LOG.debug("params: " + params.substring(1));
-                }
-                if (springSecurityUrl != null && !"".equals(springSecurityUrl)) {
-                    resultLocation = outgoingRequest.getBaseUrl() + springSecurityUrl;
-                    if (params != null) {
-                        resultLocation = resultLocation + params;
-                    }
-                    /*
-                     * if (outgoingRequest.getContext().isProxy()) { springRedirectParam = "&spring-security-redirect="
-                     * + request.getRequestLine().getUri(); } else { springRedirectParam = "&spring-security-redirect="
-                     * + location; }
-                     */
-                    springRedirectParam = "&spring-security-redirect=" + location;
-                    LOG.debug("getIsSpringSecurity=true => updated location: " + resultLocation);
-                }
-            }
-            String casProxyTicket = casPrincipal.getProxyTicketFor(resultLocation);
-            LOG.debug("Proxy ticket retrieved: " + casPrincipal.getName() + " for service: " + location + " : "
+        AttributePrincipal principal = getCasAuthentication(incomingRequest);
+        if (principal != null) {
+            LOG.debug("User logged in CAS as: " + principal.getName());
+            String casProxyTicket = principal.getProxyTicketFor(resultLocation);
+            LOG.debug("Proxy ticket retrieved: " + principal.getName() + " for service: " + location + " : "
                     + casProxyTicket);
             if (casProxyTicket != null) {
                 if (resultLocation.indexOf("?") > 0) {
-                    resultLocation = resultLocation + "&ticket=" + casProxyTicket + springRedirectParam;
+                    resultLocation = resultLocation + "&ticket=" + casProxyTicket;
                 } else {
-                    resultLocation = resultLocation + "?ticket=" + casProxyTicket + springRedirectParam;
+                    resultLocation = resultLocation + "?ticket=" + casProxyTicket;
                 }
             }
         }
@@ -89,83 +67,63 @@ public class CasAuthenticationHandler extends GenericAuthentificationHandler {
     }
 
     @Override
-    public boolean beforeProxy(HttpRequest request) {
+    public boolean event(EventDefinition id, Event event) {
+        if (EventManager.EVENT_FRAGMENT_POST.equals(id)) {
+            FragmentEvent e = (FragmentEvent) event;
+            IncomingRequest incomingRequest = e.getOriginalRequest();
+            CloseableHttpResponse httpResponse = e.getHttpResponse();
+            if (isRedirectToCasServer(httpResponse)) {
+                if (getCasAuthentication(incomingRequest) != null) {
+                    LOG.debug("CAS authentication required for {}", e);
+                    EntityUtils.consumeQuietly(e.getHttpResponse().getEntity());
+                    e.setHttpResponse(null);
+                    addCasAuthentication(e.getHttpRequest(), e.getOriginalRequest());
+                    try {
+                        LOG.debug("Sending new request {}", e);
+                        e.setHttpResponse(this.driver.getRequestExecutor().execute(e.getHttpRequest()));
+                    } catch (HttpErrorPage e1) {
+                        e.setHttpResponse(e1.getHttpResponse());
+                    }
+                } else {
+                    LOG.debug("CAS authentication required but we are not authenticated for {}", e);
+                    e.setHttpResponse(HttpErrorPage.generateHttpResponse(HttpStatus.SC_UNAUTHORIZED,
+                            "CAS authentication required"));
+                }
+            }
+        }
         return true;
     }
 
-    /**
-     * Prefix attribute to be driver specific
+    private AttributePrincipal getCasAuthentication(IncomingRequest incomingRequest) {
+        Principal principal = incomingRequest.getUserPrincipal();
+        if (principal != null && principal instanceof AttributePrincipal) {
+            return (AttributePrincipal) principal;
+        }
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
      * 
-     * @param driver
-     * @param name
-     * @return
+     * @see org.esigate.extension.Extension#init(org.esigate.Driver, java.util.Properties)
      */
-    protected String driverSpecificName(Driver driver, String name) {
-        return new StringBuilder().append(driver.getConfiguration().getInstanceName()).append("-").append(name)
-                .toString();
+    @Override
+    public final void init(Driver d, Properties properties) {
+        this.driver = d;
+        this.driver.getEventManager().register(EventManager.EVENT_FRAGMENT_PRE, this);
+        this.driver.getEventManager().register(EventManager.EVENT_FRAGMENT_POST, this);
+        loginUrl = CAS_LOGIN_URL.getValue(properties);
     }
 
-    @Override
-    public void init(Properties properties) {
-
-        loginUrl = properties.getProperty(LOGIN_URL_PROPERTY);
-        if (loginUrl == null) {
-            loginUrl = DEFAULT_LOGIN_URL;
-        }
-
-        CASRedirectStrategy strategy = new CASRedirectStrategy();
-        strategy.setLoginURL(loginUrl);
-        getDriver().setRedirectStrategy(strategy);
-
-        String springSecurityString = properties.getProperty(SPRING_SECURITY_PROPERTY);
-        if (springSecurityString != null) {
-            springSecurity = Boolean.parseBoolean(springSecurityString);
-        } else {
-            springSecurity = false;
-        }
-        springSecurityUrl = properties.getProperty(SPRING_SECURITY_URL_PATTERN_PROPERTY);
-    }
-
-    @Override
-    public boolean needsNewRequest(HttpResponse httpResponse, OutgoingRequest outgoingRequest,
-            IncomingRequest incomingRequest) {
-        String secondRequestAttribute =
-                driverSpecificName(outgoingRequest.getOriginalRequest().getDriver(), SECOND_REQUEST);
-        Boolean secondRequest = incomingRequest.getAttribute(secondRequestAttribute);
-        if (secondRequest == null) {
-            secondRequest = Boolean.FALSE;
-        }
-        if (secondRequest) {
-            // Calculating the URL we may have been redirected to, as
-            // automatic redirect following is activated
-            Header locationHeader = httpResponse.getFirstHeader("Location");
-            String currentLocation = null;
-            if (locationHeader != null) {
-                currentLocation = locationHeader.getValue();
-            }
-            if (currentLocation != null && currentLocation.contains(loginUrl)) {
-                // If the user is authenticated we need a second request with
-                // the proxy ticket
-                Principal principal = incomingRequest.getUserPrincipal();
-                if (principal != null && principal instanceof AttributePrincipal) {
-                    return true;
-                }
+    private boolean isRedirectToCasServer(HttpResponse httpResponse) {
+        Header locationHeader = httpResponse.getFirstHeader("Location");
+        if (locationHeader != null) {
+            String locationHeaderValue = locationHeader.getValue();
+            if (locationHeaderValue != null && locationHeaderValue.contains(loginUrl)) {
+                return true;
             }
         }
         return false;
     }
 
-    @Override
-    public void preRequest(OutgoingRequest outgoingRequest, IncomingRequest incomingRequest) {
-        String secondRequestAttribute =
-                driverSpecificName(outgoingRequest.getOriginalRequest().getDriver(), SECOND_REQUEST);
-        Boolean secondRequest = incomingRequest.getAttribute(secondRequestAttribute);
-        if (secondRequest == null) {
-            secondRequest = Boolean.FALSE;
-        }
-        if (secondRequest) {
-            addCasAuthentication(outgoingRequest, incomingRequest);
-        }
-        incomingRequest.setAttribute(secondRequestAttribute, true);
-    }
 }

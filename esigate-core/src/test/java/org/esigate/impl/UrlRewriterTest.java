@@ -61,9 +61,14 @@ public class UrlRewriterTest extends TestCase {
         assertEquals(rewrittenUrl, rewriteUrl(sourceUrl));
     }
 
-    private void assertRewritesHtml(String sourceUrl, String rewrittenUrl) {
+    private void assertRewritesHtml(String sourceHtml, String rewrittenHtml) {
         createUrlRewriter();
-        assertEquals(rewrittenUrl, rewriteHtml(sourceUrl));
+        assertEquals(rewrittenHtml, rewriteHtml(sourceHtml));
+    }
+
+    private void assertDoesNotRewriteHtml(String sourceHtml) {
+        createUrlRewriter();
+        assertEquals(sourceHtml, rewriteHtml(sourceHtml));
     }
 
     private void assertDoesNotRewrite(String sourceUrl) {
@@ -389,6 +394,89 @@ public class UrlRewriterTest extends TestCase {
 
         absolute = true;
         assertRewrites("http://backend/test", "http://visible/context/test");
+    }
+
+    public void testRewriteInJavascript() {
+        baseUrl = "http://backend";
+        visibleUrlBase = "http://visible/context/";
+        requestUrl = "/";
+
+        String html = "<script>\n";
+        html = html + "link='<embed src=\"'+this.getAttribute(\"src\")+'\"> ';\n";
+        html = html + "</script>";
+        assertDoesNotRewriteHtml(html);
+
+        html = "<script>\n";
+        html = html + "link='<a href=\"'+d+'\">'+e+\"</a>\";\n";
+        html = html + "</script>";
+        assertDoesNotRewriteHtml(html);
+
+        html = "<script>\n";
+        html = html + "function LoadScript( url )\n";
+        html = html + "{\n";
+        html =
+                html
+                        + "document.write( '<scr' + 'ipt type=\"text/javascript\" src=\"' + url + '\"><\\/scr' + 'ipt>' ) ;\n";
+        html = html + "}\n";
+        html = html + "</script>";
+        assertDoesNotRewriteHtml(html);
+    }
+
+    public void testRewriteMetaRefresh() {
+        baseUrl = "http://backend";
+        visibleUrlBase = "http://visible/context/";
+        requestUrl = "/";
+        absolute = true;
+
+        String html = "<meta http-equiv=\"refresh\" content=\"5; url=http://backend/test\">";
+        String rewrittenHtml = "<meta http-equiv=\"refresh\" content=\"5; url=http://visible/context/test\">";
+        assertRewritesHtml(html, rewrittenHtml);
+    }
+
+    public void testDoesNotRewriteJavascriptUrl() {
+        baseUrl = "http://backend/path/";
+        visibleUrlBase = "http://backend/";
+        requestUrl = "/";
+
+        absolute = false;
+        assertDoesNotRewrite("javascript://alert('test')");
+
+        absolute = true;
+        assertDoesNotRewrite("javascript://alert('test')");
+    }
+
+    public void testDoesNotRewriteMailtoUrl() {
+        baseUrl = "http://backend/path/";
+        visibleUrlBase = "http://backend/";
+        requestUrl = "/";
+
+        absolute = false;
+        assertDoesNotRewrite("mailto:test@test.com");
+
+        absolute = true;
+        assertDoesNotRewrite("mailto:test@test.com");
+    }
+
+    public void testHtmlUnicodeEntities() {
+        baseUrl = "http://backend";
+        visibleUrlBase = "http://visible/context/";
+        requestUrl = "/";
+        absolute = true;
+
+        String html = "<a href='http://backend?param=I&#39;am&param2=I&#39;am'>";
+        String rewrittenHtml = "<a href='http://visible/context/?param=I&apos;am&amp;param2=I&apos;am'>";
+        assertRewritesHtml(html, rewrittenHtml);
+    }
+
+    public void testHtmlRewriteUrlWithEncodedCharacters() {
+        baseUrl = "http://backend";
+        visibleUrlBase = "http://visible/context/";
+        requestUrl = "/";
+        absolute = true;
+
+        String html = "<a href='http://backend?test=%20'>";
+        String rewrittenHtml = "<a href='http://visible/context/?test=%20'>";
+        assertRewritesHtml(html, rewrittenHtml);
     }
 
 }

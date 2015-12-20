@@ -85,6 +85,11 @@ public class ParserTest extends TestCase {
         public final boolean isEndTag(String tag) {
             return tag.startsWith(endTag);
         }
+
+        @Override
+        public boolean isSelfClosing(String tag) {
+            return tag.endsWith("/>");
+        }
     }
 
     private static class BodyElement extends SimpleElement {
@@ -108,19 +113,13 @@ public class ParserTest extends TestCase {
     }
 
     private static class SimpleElement implements Element {
-        private boolean closed;
 
         public SimpleElement() {
         }
 
         @Override
-        public boolean isClosed() {
-            return closed;
-        }
-
-        @Override
-        public void onTagStart(String tag, ParserContext ctx) {
-            closed = tag.endsWith("/>");
+        public boolean onTagStart(String tag, ParserContext ctx) {
+            return true;
         }
 
         @Override

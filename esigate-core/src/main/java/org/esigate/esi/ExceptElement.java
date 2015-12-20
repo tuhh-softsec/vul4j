@@ -36,7 +36,7 @@ class ExceptElement extends BaseElement {
     }
 
     @Override
-    protected void parseTag(Tag tag, ParserContext ctx) {
+    protected boolean parseTag(Tag tag, ParserContext ctx) {
         TryElement parent = ctx.findAncestor(TryElement.class);
         int code = -1;
         if (tag.getAttribute("code") != null) {
@@ -48,13 +48,14 @@ class ExceptElement extends BaseElement {
         if (processContent) {
             parent.setExceptProcessed(processContent);
         }
+        return processContent;
     }
 
     @Override
-    public void onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
-        super.onTagStart(tag, ctx);
+    public boolean onTagStart(String tag, ParserContext ctx) throws IOException, HttpErrorPage {
         TryElement parent = ctx.findAncestor(TryElement.class);
         parent.setWrite(true);
+        return super.onTagStart(tag, ctx);
     }
 
     @Override

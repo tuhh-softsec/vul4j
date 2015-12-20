@@ -121,11 +121,12 @@ class IncludeElement extends BaseElement {
     }
 
     @Override
-    protected void parseTag(Tag tag, ParserContext ctx) {
+    protected boolean parseTag(Tag tag, ParserContext ctx) {
         buf = new StringBuilder(Parameters.DEFAULT_BUFFER_SIZE);
         fragmentReplacements = new HashMap<String, CharSequence>();
         regexpReplacements = new HashMap<String, CharSequence>();
         includeTag = tag;
+        return true;
     }
 
     private void processPage(String src, Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {

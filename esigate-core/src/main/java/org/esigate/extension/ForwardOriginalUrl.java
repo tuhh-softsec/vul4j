@@ -22,7 +22,7 @@ import org.esigate.events.impl.FragmentEvent;
  * <b>Note</b>: copying the complete request URI in a header may cause issues if the URI is big because most servers
  * have a limit to the total size of http headers.
  * <p>
- * <b>See</b>: https://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=114
+ * <b>See</b>: http://www.esigate.org/mantisbt/view.php?id=114
  * 
  * @author Nicolas Richeton
  * 

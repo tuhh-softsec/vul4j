@@ -67,4 +67,20 @@ public class XpathRendererTest extends TestCase {
         tested.render(null, src, out);
         assertEquals("test", out.toString());
     }
+
+    /**
+     * Tests xpath expression evaluation for a html 5 document.
+     * 
+     * @throws Exception
+     */
+    public void testXpathHtml5() throws Exception {
+        String src =
+                "<!doctype html>\n" + "<html lang=\"fr\">\n" + "<head>\n" + "  <meta charset=\"utf-8\">\n"
+                        + "  <title>The title</title>\n" + "</head>\n" + "<body>The body</body>" + "</html>";
+        StringBuilderWriter out = new StringBuilderWriter();
+        XpathRenderer tested = new XpathRenderer("/html:html/html:body");
+        tested.render(null, src, out);
+        assertEquals("<body>The body</body>", out.toString());
+    }
+
 }

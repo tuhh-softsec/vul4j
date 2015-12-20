@@ -86,7 +86,7 @@ public class Parser {
                 }
                 Element element = type.newInstance();
                 ctx.startElement(type, element, tag);
-                if (element.isClosed()) {
+                if (type.isSelfClosing(tag)) {
                     ctx.endElement(tag);
                 }
 

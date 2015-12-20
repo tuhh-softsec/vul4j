@@ -38,9 +38,10 @@ class OtherwiseElement extends BaseElement {
     }
 
     @Override
-    protected void parseTag(Tag tag, ParserContext ctx) {
+    protected boolean parseTag(Tag tag, ParserContext ctx) {
         ChooseElement parent = ctx.findAncestor(ChooseElement.class);
         active = (parent != null) && !parent.hadConditionSet();
+        return active;
     }
 
     @Override

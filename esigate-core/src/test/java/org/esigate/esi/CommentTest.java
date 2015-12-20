@@ -46,7 +46,7 @@ public class CommentTest extends AbstractElementTest {
     /**
      * 0000126: Support for commented esi tags.
      * 
-     * http://sourceforge.net/apps/mantisbt/webassembletool/view.php?id=126
+     * http://www.esigate.org/mantisbt/view.php?id=126
      * 
      * @throws Exception
      */

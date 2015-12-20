@@ -1,10 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
 <web-app id="aggregated1">
 	<display-name>aggregated1</display-name>
 	<servlet>
 		<servlet-name>ChunkedEncodingServlet</servlet-name>
 		<servlet-class>org.esigate.test.ChunkedEncodingServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>utf8-redirect</servlet-name>
+		<jsp-file>/encoding/redirect.jsp</jsp-file>
+	</servlet>
+	<servlet>
+		<servlet-name>utf8-target</servlet-name>
+		<jsp-file>/encoding/target.jsp</jsp-file>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>utf8-redirect</servlet-name>
+		<url-pattern>/encoding/utf-8éèà/redirect.jsp</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>utf8-target</servlet-name>
+		<url-pattern>/encoding/utf-8éèà/target.jsp</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>ChunkedEncodingServlet</servlet-name>
 		<url-pattern>/ChunkedEncodingServlet</url-pattern>

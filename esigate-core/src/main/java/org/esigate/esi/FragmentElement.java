@@ -51,7 +51,7 @@ class FragmentElement extends BaseElement {
     }
 
     @Override
-    protected void parseTag(Tag tag, ParserContext ctx) {
+    protected boolean parseTag(Tag tag, ParserContext ctx) {
         String name = tag.getAttribute("name");
         esiRenderer = ctx.findAncestor(EsiRenderer.class);
         initialStateWrite = esiRenderer.isWrite();
@@ -68,5 +68,6 @@ class FragmentElement extends BaseElement {
                 }
             }
         }
+        return true;
     }
 }

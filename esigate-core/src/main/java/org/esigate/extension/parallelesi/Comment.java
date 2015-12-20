@@ -37,15 +37,21 @@ class Comment extends BaseElement {
             return new Comment();
         }
 
+        @Override
+        public boolean isSelfClosing(String tag) {
+            return false;
+        }
+
     };
 
     Comment() {
     }
 
     @Override
-    public void onTagStart(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
+    public boolean onTagStart(String tag, FutureParserContext ctx) throws IOException, HttpErrorPage {
         // do not try to parse tag string
         super.onTagStart("<esi!-->", ctx);
+        return true;
     }
 
     @Override

@@ -19,8 +19,10 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import org.apache.http.HttpHost;
+import org.apache.http.HttpRequest;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.protocol.HttpContext;
+import org.apache.http.protocol.HttpCoreContext;
 
 public class OutgoingRequestContext extends HttpClientContext {
     private static final String PROXY = "PROXY";
@@ -126,5 +128,12 @@ public class OutgoingRequestContext extends HttpClientContext {
             }
         }
         return value;
+    }
+
+    /**
+     * @return the actual request sent by th HttpClient.
+     */
+    public HttpRequest getSentRequest() {
+        return (HttpRequest) getAttribute(HttpCoreContext.HTTP_REQUEST);
     }
 }

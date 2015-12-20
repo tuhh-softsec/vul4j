@@ -34,7 +34,7 @@ class ParserContextImpl implements ParserContext {
     private final DriverRequest httpRequest;
     private final HttpResponse httpResponse;
 
-    private final Stack<Pair> stack = new Stack<Pair>();
+    private final Stack<ElementInfo> stack = new Stack<ElementInfo>();
 
     ParserContextImpl(Appendable root, DriverRequest httpRequest, HttpResponse httpResponse) {
         this.root = new RootAdapter(root);
@@ -75,13 +75,22 @@ class ParserContextImpl implements ParserContext {
     }
 
     void startElement(ElementType type, Element element, String tag) throws IOException, HttpErrorPage {
-        element.onTagStart(tag, this);
-        stack.push(new Pair(type, element));
+        boolean skipContent = false;
+        if (!stack.isEmpty()) {
+            // Inherit from parent
+            skipContent = stack.peek().skipContent;
+        }
+        if (!skipContent) {
+            skipContent = !element.onTagStart(tag, this);
+        }
+        stack.push(new ElementInfo(type, element, skipContent));
     }
 
     void endElement(String tag) throws IOException, HttpErrorPage {
-        Element element = stack.pop().element;
-        element.onTagEnd(tag, this);
+        ElementInfo elementInfo = stack.pop();
+        if (!elementInfo.skipContent) {
+            elementInfo.element.onTagEnd(tag, this);
+        }
     }
 
     boolean isCurrentTagEnd(String tag) {
@@ -112,13 +121,15 @@ class ParserContextImpl implements ParserContext {
         return this.httpRequest;
     }
 
-    private static class Pair {
+    private static class ElementInfo {
         private final ElementType type;
         private final Element element;
+        private final boolean skipContent;
 
-        public Pair(ElementType type, Element element) {
+        public ElementInfo(ElementType type, Element element, boolean skipContent) {
             this.type = type;
             this.element = element;
+            this.skipContent = skipContent;
         }
     }
 
@@ -130,8 +141,9 @@ class ParserContextImpl implements ParserContext {
         }
 
         @Override
-        public void onTagStart(String tag, ParserContext ctx) {
+        public boolean onTagStart(String tag, ParserContext ctx) {
             // Nothing to do, this is the root tag
+            return true;
         }
 
         @Override
@@ -149,10 +161,6 @@ class ParserContextImpl implements ParserContext {
             this.root.append(csq, start, end);
         }
 
-        @Override
-        public boolean isClosed() {
-            return false;
-        }
     }
 
     @Override

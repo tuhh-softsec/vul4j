@@ -77,7 +77,7 @@ public class EventManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(EventManager.class);
 
-    private String driverId = null;
+    private final String driverId;
 
     public EventManager(String driverId) {
         this.driverId = driverId;

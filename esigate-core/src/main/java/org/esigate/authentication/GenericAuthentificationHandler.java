@@ -123,6 +123,7 @@ public abstract class GenericAuthentificationHandler implements IEventListener, 
 
             while (needsNewRequest(e.getHttpResponse(), e.getHttpRequest(), e.getOriginalRequest())) {
                 EntityUtils.consumeQuietly(e.getHttpResponse().getEntity());
+                preRequest(e.getHttpRequest(), e.getOriginalRequest());
                 try {
                     e.setHttpResponse(this.driver.getRequestExecutor().execute(e.getHttpRequest()));
                 } catch (HttpErrorPage e1) {

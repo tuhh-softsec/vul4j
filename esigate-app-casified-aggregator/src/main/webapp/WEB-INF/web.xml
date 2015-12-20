@@ -55,7 +55,7 @@
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>CAS Authentication Filter</filter-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>/aggregated1/protected/*</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>

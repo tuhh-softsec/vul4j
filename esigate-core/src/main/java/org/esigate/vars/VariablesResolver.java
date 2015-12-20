@@ -150,7 +150,7 @@ public final class VariablesResolver {
                 // try to find argument
                 int argIndex = var.indexOf('{');
                 if (argIndex != -1) {
-                    arg = var.substring(argIndex + 1, var.indexOf('}'));
+                    arg = VarUtils.removeSimpleQuotes(var.substring(argIndex + 1, var.indexOf('}')));
                 }
 
                 // try to find default value

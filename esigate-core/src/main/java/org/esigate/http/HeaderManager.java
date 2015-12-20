@@ -196,17 +196,11 @@ public class HeaderManager {
 
                         } else if ("Refresh".equalsIgnoreCase(name)) {
                             // Header has the following format
-                            // Refresh: 5;
-                            // url=http://www.w3.org/pub/WWW/People.html
+                            // Refresh: 5; url=http://www.example.com
                             int urlPosition = value.indexOf("url=");
                             if (urlPosition >= 0) {
-                                String urlValue = value.substring(urlPosition + "url=".length());
-
-                                String targetUrlValue =
-                                        urlRewriter.rewriteUrl(urlValue, originalUri, baseUrl, visibleBaseUrl, true);
-                                targetUrlValue = HttpResponseUtils.removeSessionId(targetUrlValue, httpClientResponse);
-
-                                value = value.substring(0, urlPosition) + "url=" + targetUrlValue;
+                                value = urlRewriter.rewriteRefresh(value, originalUri, baseUrl, visibleBaseUrl);
+                                value = HttpResponseUtils.removeSessionId(value, httpClientResponse);
                             }
                             result.addHeader(name, value);
                         } else if ("P3p".equalsIgnoreCase(name)) {

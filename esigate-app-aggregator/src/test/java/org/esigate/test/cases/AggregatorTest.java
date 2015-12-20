@@ -28,14 +28,26 @@ public class AggregatorTest extends TestCase {
     private final static String RESOURCES_PATH = "/";
     private WebConversation webConversation;
 
+    private void assertEqualsIgnoreCarriageReturn(String expected, String actual) {
+        assertEquals(expected.replaceAll("\r", ""), actual.replaceAll("\r", ""));
+    }
+
+    private void assertEqualsIgnoreLineFeeds(String expected, String actual) {
+        assertEqualsIgnoreCarriageReturn(expected.replaceAll("\n", ""), actual.replaceAll("\n", ""));
+    }
+
+    private void assertEqualsIgnoreWhiteSpaces(String expected, String actual) {
+        assertEqualsIgnoreLineFeeds(expected.replaceAll("\t", "").replaceAll(" ", ""), actual.replaceAll("\t", "")
+                .replaceAll(" ", ""));
+    }
+
     private void doCookieSimpleTest(String page, String resultResource) throws Exception {
         WebRequest req = new GetMethodWebRequest(APPLICATION_PATH + page);
         WebResponse resp = webConversation.getResponse(req);
 
         assertEquals("Status should be 200", HttpServletResponse.SC_OK, resp.getResponseCode());
-        assertEquals(getResource(resultResource).replaceAll("\r", "").replaceAll("\n", "").replaceAll("\t", "")
-                .replaceAll(" ", "").replaceAll("JSESSIONID=[^;]+;", ""), resp.getText().replaceAll("\r", "")
-                .replaceAll("\n", "").replaceAll("\t", "").replaceAll(" ", "").replaceAll("JSESSIONID=[^;]+;", ""));
+        assertEqualsIgnoreWhiteSpaces(getResource(resultResource).replaceAll("JSESSIONID=[^;]+;", ""), resp.getText()
+                .replaceAll("JSESSIONID=[^;]+;", ""));
 
         String[] setcookies = resp.getHeaderFields("Set-Cookie");
         boolean containsHttpOnlyCookie = false;
@@ -58,8 +70,7 @@ public class AggregatorTest extends TestCase {
         WebRequest req = new GetMethodWebRequest(APPLICATION_PATH + page);
         WebResponse resp = webConversation.getResponse(req);
         assertEquals("Status should be 200\n" + resp.getText(), HttpServletResponse.SC_OK, resp.getResponseCode());
-        assertEquals(getResource(resultResource).replaceAll("\r", "").replaceAll("\n", ""),
-                resp.getText().replaceAll("\r", "").replaceAll("\n", ""));
+        assertEqualsIgnoreLineFeeds(getResource(resultResource), resp.getText());
     }
 
     private String getResource(String file) throws IOException {
@@ -154,6 +165,24 @@ public class AggregatorTest extends TestCase {
 
     public void testLocalPageWithEsiIncludeCrossContext() throws Exception {
         doSimpleTest("local/local-crosscontext.jsp");
+    }
+
+    /**
+     * Test for a post on a local page
+     * 
+     * @see <a href="https://github.com/esigate/esigate/issues/97">POST requests do not work with local providers
+     *      #97</a>
+     * 
+     * @throws Exception
+     */
+    public void testLocalPost() throws Exception {
+        // Post request with a e-acute urlencoded using UTF-8 charset
+        PostMethodWebRequest req =
+                new PostMethodWebRequest(APPLICATION_PATH + "local/post.jsp", new ByteArrayInputStream(
+                        "myField=%C3%A9".getBytes("UTF-8")), "application/x-www-form-urlencoded");
+        WebResponse resp = webConversation.getResponse(req);
+        assertEquals("Status should be 200", HttpServletResponse.SC_OK, resp.getResponseCode());
+        assertEqualsIgnoreCarriageReturn(getResource("post.jsp"), resp.getText());
     }
 
     public void testMixedEncodings() throws Exception {
