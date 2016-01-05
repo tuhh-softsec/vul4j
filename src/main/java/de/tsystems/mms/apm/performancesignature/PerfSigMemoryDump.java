@@ -41,8 +41,8 @@ import java.io.PrintStream;
 public class PerfSigMemoryDump extends Builder {
     private final String agent, host, type;
     private final boolean lockSession, captureStrings, capturePrimitives, autoPostProcess, dogc;
-    private int waitForDumpTimeout = 60000;
-    private int waitForDumpPollingInterval = 5000;
+    private static final int waitForDumpTimeout = 60000;
+    private static final int waitForDumpPollingInterval = 5000;
 
     @DataBoundConstructor
     public PerfSigMemoryDump(final String agent, final String host, final String type, final boolean lockSession, final boolean captureStrings,
@@ -136,7 +136,7 @@ public class PerfSigMemoryDump extends Builder {
         return dogc;
     }
 
-    @Extension // This indicates to Jenkins that this is an implementation of an extension point.
+    @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
 
         public DescriptorImpl() {
@@ -188,13 +188,9 @@ public class PerfSigMemoryDump extends Builder {
         }
 
         public boolean isApplicable(final Class<? extends AbstractProject> aClass) {
-            // Indicates that this builder can be used with all kinds of project types
             return true;
         }
 
-        /**
-         * This human readable name is used in the agent screen.
-         */
         public String getDisplayName() {
             return Messages.PerfSigMemoryDump_DisplayName();
         }

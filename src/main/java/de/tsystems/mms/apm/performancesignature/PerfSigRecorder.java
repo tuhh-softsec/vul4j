@@ -73,7 +73,6 @@ public class PerfSigRecorder extends Recorder {
     private final String credentialsId;
     private transient List<String> availableSessions;
 
-    // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
     public PerfSigRecorder(final String protocol, final String host, final String credentialsId, final int port, final String profile,
                            final boolean verifyCertificate, final boolean exportSessions, boolean technicalFailure, final int delay, final int retryCount,
@@ -386,20 +385,8 @@ public class PerfSigRecorder extends Recorder {
         return nonFunctionalFailure;
     }
 
-    /**
-     * Descriptor for {@link PerfSigRecorder}. Used as a singleton.
-     * The class is marked as public so that it can be accessed from views.
-     */
-    @Extension // This indicates to Jenkins that this is an implementation of an extension point.
+    @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
-        /**
-         * In order to load the persisted global configuration, you have to
-         * call load() in the constructor.
-         */
-        public DescriptorImpl() {
-            load();
-        }
-
         public static String getDefaultHost() {
             return Messages.PerfSigRecorder_DefaultAddress();
         }
@@ -517,13 +504,9 @@ public class PerfSigRecorder extends Recorder {
         }
 
         public boolean isApplicable(final Class<? extends AbstractProject> aClass) {
-            // Indicates that this builder can be used with all kinds of project types
             return true;
         }
 
-        /**
-         * This human readable name is used in the configuration screen.
-         */
         public String getDisplayName() {
             return Messages.PerfSigRecorder_DisplayName();
         }

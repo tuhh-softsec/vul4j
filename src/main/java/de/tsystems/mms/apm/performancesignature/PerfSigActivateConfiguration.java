@@ -85,7 +85,7 @@ public class PerfSigActivateConfiguration extends Builder {
         return configuration;
     }
 
-    @Extension // This indicates to Jenkins that this is an implementation of an extension point.
+    @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
 
         public DescriptorImpl() {
@@ -103,13 +103,9 @@ public class PerfSigActivateConfiguration extends Builder {
         }
 
         public boolean isApplicable(final Class<? extends AbstractProject> aClass) {
-            // Indicates that this builder can be used with all kinds of project types
             return true;
         }
 
-        /**
-         * This human readable name is used in the configuration screen.
-         */
         public String getDisplayName() {
             return Messages.PerfSigActivateConfiguration_DisplayName();
         }

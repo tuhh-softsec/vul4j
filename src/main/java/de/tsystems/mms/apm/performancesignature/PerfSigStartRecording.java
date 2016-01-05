@@ -54,7 +54,6 @@ public class PerfSigStartRecording extends Builder {
 
     @Override
     public boolean perform(final AbstractBuild build, final Launcher launcher, final BuildListener listener) {
-        // This is where you 'build' the project.
         final PrintStream logger = listener.getLogger();
         final PerfSigRecorder dtRecorder = PerfSigUtils.getRecorder(build);
 
@@ -134,7 +133,7 @@ public class PerfSigStartRecording extends Builder {
         return lockSession;
     }
 
-    @Extension // This indicates to Jenkins that this is an implementation of an extension point.
+    @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
 
         public DescriptorImpl() {
@@ -160,13 +159,9 @@ public class PerfSigStartRecording extends Builder {
         }
 
         public boolean isApplicable(final Class<? extends AbstractProject> aClass) {
-            // Indicates that this builder can be used with all kinds of project types
             return true;
         }
 
-        /**
-         * This human readable name is used in the configuration screen.
-         */
         public String getDisplayName() {
             return Messages.PerfSigStartRecording_DisplayName();
         }

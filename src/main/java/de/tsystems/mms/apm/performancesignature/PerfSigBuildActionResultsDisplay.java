@@ -20,10 +20,8 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.Measure;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.Measurement;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
-import hudson.Functions;
 import hudson.model.AbstractBuild;
 import hudson.model.ModelObject;
-import hudson.util.Area;
 import hudson.util.ChartUtil;
 import org.apache.commons.lang.StringUtils;
 import org.jfree.chart.ChartFactory;
@@ -136,9 +134,9 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
         final boolean percentile = chartDashlet.contains(Messages.PerfSigBuildActionResultsDisplay_Percentile());
 
         if (percentile) {
-            ChartUtil.generateGraph(request, response, createXYLineChart(request, buildXYDataSet(request)), calcDefaultSize());
+            ChartUtil.generateGraph(request, response, createXYLineChart(request, buildXYDataSet(request)), PerfSigUtils.calcDefaultSize());
         } else {
-            ChartUtil.generateGraph(request, response, createBarChart(request, buildIntervalDataSet(request)), calcDefaultSize());
+            ChartUtil.generateGraph(request, response, createBarChart(request, buildIntervalDataSet(request)), PerfSigUtils.calcDefaultSize());
         }
     }
 
@@ -251,14 +249,6 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
 
         chart.setBackgroundPaint(Color.white);
         return chart;
-    }
-
-    private Area calcDefaultSize() {
-        Area res = Functions.getScreenResolution();
-        if (res != null && res.width <= 800)
-            return new Area(250, 100);
-        else
-            return new Area(500, 200);
     }
 
     public void doDownloadFile(final StaplerRequest request, final StaplerResponse response) throws IOException {

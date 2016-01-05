@@ -23,7 +23,6 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRun;
 import de.tsystems.mms.apm.performancesignature.model.MeasureNameHelper;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.FilePath;
-import hudson.Functions;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.ProminentProjectAction;
@@ -31,7 +30,10 @@ import hudson.model.Run;
 import hudson.tasks.junit.TestResult;
 import hudson.tasks.junit.TestResultAction;
 import hudson.tasks.test.TestResultProjectAction;
-import hudson.util.*;
+import hudson.util.ChartUtil;
+import hudson.util.ColorPalette;
+import hudson.util.DataSetBuilder;
+import hudson.util.ShiftedCategoryAxis;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -111,7 +113,7 @@ public class PerfSigProjectAction implements ProminentProjectAction {
             for (int i = 0; i < jsonArray.size(); i++) {
                 final JSONObject obj = jsonArray.getJSONObject(i);
                 if (obj.getString("id").equals(id)) {
-                    ChartUtil.generateGraph(request, response, createChart(obj, buildDataSet(obj)), calcDefaultSize());
+                    ChartUtil.generateGraph(request, response, createChart(obj, buildDataSet(obj)), PerfSigUtils.calcDefaultSize());
                     return;
                 }
             }
@@ -128,7 +130,7 @@ public class PerfSigProjectAction implements ProminentProjectAction {
                             jsonObject.put("customName", request.getParameter("customName"));
                             jsonObject.put("customBuildCount", request.getParameter("customBuildCount"));
 
-                            ChartUtil.generateGraph(request, response, createChart(jsonObject, buildDataSet(jsonObject)), calcDefaultSize());
+                            ChartUtil.generateGraph(request, response, createChart(jsonObject, buildDataSet(jsonObject)), PerfSigUtils.calcDefaultSize());
                             return;
                         }
         }
@@ -231,13 +233,13 @@ public class PerfSigProjectAction implements ProminentProjectAction {
                 final JSONObject obj = jsonArray.getJSONObject(i);
                 if (obj.getString("id").equals("unittest_overview")) {
                     ChartUtil.generateGraph(request, response, createTestRunChart(buildTestRunDataSet(obj.getString("customBuildCount")),
-                            obj.getString("customName")), calcDefaultSize());
+                            obj.getString("customName")), PerfSigUtils.calcDefaultSize());
                     return;
                 }
             }
         } else {
             ChartUtil.generateGraph(request, response, createTestRunChart(buildTestRunDataSet(request.getParameter("customBuildCount")),
-                    request.getParameter("customName")), calcDefaultSize());
+                    request.getParameter("customName")), PerfSigUtils.calcDefaultSize());
         }
     }
 
@@ -312,14 +314,6 @@ public class PerfSigProjectAction implements ProminentProjectAction {
         br.setSeriesPaint(5, ColorPalette.YELLOW); // volatile
 
         return chart;
-    }
-
-    private Area calcDefaultSize() {
-        Area res = Functions.getScreenResolution();
-        if (res != null && res.width <= 800)
-            return new Area(250, 100);
-        else
-            return new Area(500, 200);
     }
 
     public List<DashboardReport> getLastDashboardReports() {

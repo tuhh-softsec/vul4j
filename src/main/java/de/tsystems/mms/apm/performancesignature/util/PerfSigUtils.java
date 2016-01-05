@@ -24,11 +24,13 @@ import de.tsystems.mms.apm.performancesignature.PerfSigRecorder;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.SystemProfile;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionException;
 import hudson.FilePath;
+import hudson.Functions;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Item;
 import hudson.security.ACL;
 import hudson.tasks.Publisher;
+import hudson.util.Area;
 import hudson.util.ListBoxModel;
 import jenkins.model.Jenkins;
 import org.apache.commons.io.IOUtils;
@@ -186,6 +188,14 @@ public class PerfSigUtils {
         int minutes = (int) ((seconds % 3600) / 60);
         float rest = seconds % 60;
         return minutes + " min " + (int) rest + " s";
+    }
+
+    public static Area calcDefaultSize() {
+        Area res = Functions.getScreenResolution();
+        if (res != null && res.width <= 800)
+            return new Area(250, 100);
+        else
+            return new Area(500, 200);
     }
 
     public static UsernamePasswordCredentials getCredentials(final String credsId) {

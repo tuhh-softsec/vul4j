@@ -43,7 +43,6 @@ public class PerfSigBuildAction implements Action, StaplerProxy {
         return "PerfSigBuildAction{ build=" + build + '}';
     }
 
-    @SuppressWarnings("unchecked")
     public PerfSigBuildActionResultsDisplay getBuildActionResultsDisplay() {
         PerfSigBuildActionResultsDisplay buildDisplay;
         WeakReference<PerfSigBuildActionResultsDisplay> wr = this.buildActionResultsDisplay;
@@ -54,7 +53,7 @@ public class PerfSigBuildAction implements Action, StaplerProxy {
             }
         }
         buildDisplay = new PerfSigBuildActionResultsDisplay(this);
-        this.buildActionResultsDisplay = new WeakReference(buildDisplay);
+        this.buildActionResultsDisplay = new WeakReference<PerfSigBuildActionResultsDisplay>(buildDisplay);
         return buildDisplay;
     }
 

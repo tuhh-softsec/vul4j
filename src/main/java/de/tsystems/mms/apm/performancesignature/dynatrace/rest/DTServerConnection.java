@@ -374,7 +374,6 @@ public class DTServerConnection {
             builder.setServerAddress(this.address);
             URL commandURL = builder.startRecordingURL(profileName, sessionName, description, recordingOption, sessionLocked, isNoTimestamp);
             URLConnection conn = commandURL.openConnection(proxy);
-
             addAuthenticationHeader(conn);
             addPostHeaders(conn, builder.getPostParameters());
 
