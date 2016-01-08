@@ -9,6 +9,7 @@ package de.intevation.lada.rest.stamm;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -23,10 +24,14 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
 import de.intevation.lada.model.stamm.Ort;
+import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
+import de.intevation.lada.util.auth.Authorization;
+import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 
 /**
@@ -69,7 +74,7 @@ import de.intevation.lada.util.rest.Response;
  */
 @Path("rest/ort")
 @RequestScoped
-public class LocationService {
+public class OrtService {
 
     /**
      * The data repository granting read/write access.
@@ -77,6 +82,10 @@ public class LocationService {
     @Inject
     @RepositoryConfig(type=RepositoryType.RW)
     private Repository defaultRepo;
+
+    @Inject
+    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    private Authorization authorization;
 
     /**
      * Get all SOrt objects.
@@ -160,9 +169,17 @@ public class LocationService {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response create(
-        @Context HttpHeaders headers,
+        @Context HttpServletRequest request,
         Ort ort
     ) {
+        if (!authorization.isAuthorized(
+            request,
+            ort,
+            RequestMethod.DELETE,
+            Ort.class)
+        ) {
+            return new Response(false, 699, ort);
+        }
         /* Persist the new object*/
         return defaultRepo.create(ort, "stamm");
     }
@@ -197,7 +214,18 @@ public class LocationService {
     @PUT
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response update(@Context HttpHeaders headers, Ort ort) {
+    public Response update(
+        @Context HttpServletRequest request,
+        Ort ort
+    ) {
+        if (!authorization.isAuthorized(
+            request,
+            ort,
+            RequestMethod.DELETE,
+            Ort.class)
+        ) {
+            return new Response(false, 699, ort);
+        }
         Response response = defaultRepo.update(ort, "stamm");
         Response updated = defaultRepo.getById(
             Ort.class,
@@ -218,14 +246,21 @@ public class LocationService {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response delete(
-        @Context HttpHeaders headers,
+        @Context HttpServletRequest request,
         @PathParam("id") String id
     ) {
         /* Get the object by id*/
-        Response object =
-            defaultRepo.getById(Ort.class, Integer.valueOf(id), "stamm");
-        Ort ortObj = (Ort)object.getData();
+        Ort ort =
+            defaultRepo.getByIdPlain(Ort.class, Integer.valueOf(id), "stamm");
+        if (!authorization.isAuthorized(
+            request,
+            ort,
+            RequestMethod.DELETE,
+            Ort.class)
+        ) {
+            return new Response(false, 699, ort);
+        }
         /* Delete the object*/
-        return defaultRepo.delete(ortObj, "stamm");
+        return defaultRepo.delete(ort, "stamm");
     }
 }
