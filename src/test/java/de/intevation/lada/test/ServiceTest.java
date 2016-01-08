@@ -1,4 +1,4 @@
-package de.intevation.lada.test.land;
+package de.intevation.lada.test;
 
 import java.io.InputStream;
 import java.io.StringReader;
@@ -26,6 +26,7 @@ import org.junit.Assert;
 
 import de.intevation.lada.BaseTest;
 import de.intevation.lada.Protocol;
+import de.intevation.lada.test.land.ProbeTest;
 
 public class ServiceTest {
 

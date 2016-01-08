@@ -11,6 +11,7 @@ import javax.json.JsonValue;
 import org.junit.Assert;
 
 import de.intevation.lada.Protocol;
+import de.intevation.lada.test.ServiceTest;
 
 public class MessprogrammTest extends ServiceTest {
     private JsonObject expectedById;

@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.List;
 
 import de.intevation.lada.Protocol;
+import de.intevation.lada.test.ServiceTest;
 
 public class QueryTest extends ServiceTest {
 
