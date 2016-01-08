@@ -238,13 +238,13 @@ public class ProbeService {
                 boolean readOnly =
                     authorization.isReadOnly((Integer)entry.get("id"));
                 entry.put("readonly", readOnly);
-                UserInfo ui = authorization.getInfo(request);
                 QueryBuilder<LProbe> builder = new QueryBuilder<LProbe>(
                     defaultRepo.entityManager("land"), LProbe.class);
                 builder.and("id", (Integer)entry.get("id"));
                 Response r = defaultRepo.filter(builder.getQuery(), "land");
                 List<LProbe> probe = (List<LProbe>)r.getData();
-                entry.put("owner", authorization.isAuthorized(ui, probe.get(0)));
+                entry.put("owner", authorization.isAuthorized(
+                    request, probe.get(0), RequestMethod.GET, LProbe.class));
             }
             return new Response(true, 200, subList, result.size());
         }

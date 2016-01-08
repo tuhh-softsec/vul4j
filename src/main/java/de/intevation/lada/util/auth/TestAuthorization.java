@@ -49,7 +49,7 @@ public class TestAuthorization implements Authorization {
     }
 
     @Override
-    public boolean isAuthorized(UserInfo userInfo, Object data) {
+    public <T> boolean isAuthorized(UserInfo userInfo, Object data, Class<T> clazz) {
         return true;
     }
 
@@ -57,10 +57,4 @@ public class TestAuthorization implements Authorization {
     public boolean isReadOnly(Integer probeId) {
         return false;
     }
-
-    @Override
-    public <T> boolean isAuthorized(int id, Class<T> clazz) {
-        return true;
-    }
-
 }

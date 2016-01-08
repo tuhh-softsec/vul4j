@@ -146,10 +146,12 @@ public class StatusService {
             LMessung.class,
             id,
             "land");
-        if (!authorization.isAuthorized(authorization.getInfo(request), messung)) {
-            if (!authorization.isAuthorized(id, LMessung.class)) {
-                return new Response(false, 697, null);
-            }
+        if (!authorization.isAuthorized(
+            request,
+            messung,
+            RequestMethod.GET,
+            LMessung.class)) {
+            return new Response(false, 697, null);
         }
 
         QueryBuilder<LStatusProtokoll> builder =
@@ -227,14 +229,6 @@ public class StatusService {
         @Context HttpServletRequest request,
         LStatusProtokoll status
     ) {
-        if (!authorization.isAuthorized(
-                request,
-                status,
-                RequestMethod.POST,
-                LStatusProtokoll.class)
-        ) {
-            return new Response(false, 699, null);
-        }
         UserInfo userInfo = authorization.getInfo(request);
         LMessung messung = defaultRepo.getByIdPlain(
             LMessung.class, status.getMessungsId(), "land");

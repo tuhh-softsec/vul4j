@@ -85,7 +85,7 @@ public class LafWriter {
      * @return success
      */
     public boolean writeProbe(UserInfo userInfo, LProbe probe, ProbeTranslation probeTranslation) {
-        if (!authorization.isAuthorized(userInfo, probe)) {
+        if (!authorization.isAuthorized(userInfo, probe, LProbe.class)) {
             errors.add(new ReportItem("auth", "not authorized", 699));
             return false;
         }

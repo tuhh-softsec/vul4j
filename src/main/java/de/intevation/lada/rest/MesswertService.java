@@ -153,10 +153,13 @@ public class MesswertService {
             LMessung.class,
             id,
             "land");
-        if (!authorization.isAuthorized(authorization.getInfo(request), messung)) {
-            if (!authorization.isAuthorized(id, LMessung.class)) {
-                return new Response(false, 697, null);
-            }
+        if (!authorization.isAuthorized(
+                request,
+                messung,
+                RequestMethod.GET,
+                LMessung.class)
+        ) {
+            return new Response(false, 697, null);
         }
         QueryBuilder<LMesswert> builder =
             new QueryBuilder<LMesswert>(
@@ -193,10 +196,13 @@ public class MesswertService {
             LMessung.class,
             messwert.getMessungsId(),
             "land");
-        if (!authorization.isAuthorized(authorization.getInfo(request), messung)) {
-            if (!authorization.isAuthorized(messung.getId(), LMessung.class)) {
-                return new Response(false, 699, null);
-            }
+        if (!authorization.isAuthorized(
+            request,
+            messung,
+            RequestMethod.GET,
+            LMessung.class)
+        ) {
+            return new Response(false, 699, null);
         }
         Violation violation = validator.validate(messwert);
         if (violation.hasErrors() || violation.hasWarnings()) {

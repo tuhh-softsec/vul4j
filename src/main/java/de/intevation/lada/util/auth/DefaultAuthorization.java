@@ -83,12 +83,11 @@ public class DefaultAuthorization implements Authorization {
      * @return true
      */
     @Override
-    public boolean isAuthorized(UserInfo userInfo, Object data) {
+    public <T> boolean isAuthorized(
+        UserInfo userInfo,
+        Object data,
+        Class<T> clazz) {
         return true;
     }
 
-    @Override
-    public <T> boolean isAuthorized(int id, Class<T> clazz) {
-        return true;
-    }
 }

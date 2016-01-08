@@ -7,23 +7,30 @@
  */
 package de.intevation.lada.util.auth;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Logger;
-
+import de.intevation.lada.model.land.LKommentarM;
+import de.intevation.lada.model.land.LKommentarP;
 import de.intevation.lada.model.land.LMessung;
+import de.intevation.lada.model.land.LMesswert;
+import de.intevation.lada.model.land.LOrtszuordnung;
 import de.intevation.lada.model.land.LProbe;
 import de.intevation.lada.model.land.LStatusProtokoll;
+import de.intevation.lada.model.land.LZusatzWert;
 import de.intevation.lada.model.stamm.Auth;
-import de.intevation.lada.model.stamm.AuthLstUmw;
+import de.intevation.lada.model.stamm.DatensatzErzeuger;
+import de.intevation.lada.model.stamm.MessprogrammKategorie;
+import de.intevation.lada.model.stamm.Ort;
+import de.intevation.lada.model.stamm.Probenehmer;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
@@ -41,17 +48,37 @@ import de.intevation.lada.util.rest.Response;
 public class HeaderAuthorization implements Authorization {
 
     /**
-     * The logger used in this class.
-     */
-    @Inject
-    private Logger logger;
-
-    /**
      * The Repository used to read from Database.
      */
     @Inject
     @RepositoryConfig(type=RepositoryType.RO)
     private Repository repository;
+
+    @SuppressWarnings("rawtypes")
+    private Map<Class, Authorizer> authorizers;
+    @Inject ProbeAuthorizer probeAuthorizer;
+    @Inject MessungAuthorizer messungAuthorizer;
+    @Inject ProbeIdAuthorizer pIdAuthorizer;
+    @Inject MessungIdAuthorizer mIdAuthorizer;
+    @Inject NetzbetreiberAuthorizer netzAuthorizer;
+
+    @SuppressWarnings("rawtypes")
+    @PostConstruct
+    public void init() {
+        authorizers = new HashMap<Class, Authorizer>();
+        authorizers.put(LProbe.class, probeAuthorizer);
+        authorizers.put(LMessung.class, messungAuthorizer);
+        authorizers.put(LOrtszuordnung.class, pIdAuthorizer);
+        authorizers.put(LKommentarP.class, pIdAuthorizer);
+        authorizers.put(LZusatzWert.class, pIdAuthorizer);
+        authorizers.put(LKommentarM.class, mIdAuthorizer);
+        authorizers.put(LMesswert.class, mIdAuthorizer);
+        authorizers.put(LStatusProtokoll.class, mIdAuthorizer);
+        authorizers.put(Probenehmer.class, netzAuthorizer);
+        authorizers.put(DatensatzErzeuger.class, netzAuthorizer);
+        authorizers.put(MessprogrammKategorie.class, netzAuthorizer);
+        authorizers.put(Ort.class, netzAuthorizer);
+    }
 
     /**
      * Request user informations using the HttpServletRequest.
@@ -89,44 +116,12 @@ public class HeaderAuthorization implements Authorization {
         if (userInfo == null) {
             return data;
         }
-        if (clazz == LProbe.class) {
-            return this.authorizeProbe(userInfo, data);
+        Authorizer authorizer = authorizers.get(clazz);
+        //This is a hack... Allows wildcard for unknown classes.
+        if (authorizer == null) {
+            return data;
         }
-        if (clazz == LMessung.class) {
-            return this.authorizeMessung(userInfo, data);
-        }
-        Method[] methods = clazz.getMethods();
-        for (Method method: methods) {
-            if (method.getName().equals("getProbeId")) {
-                return this.authorizeWithProbeId(userInfo, data, clazz);
-            }
-            if (method.getName().equals("getMessungsId")) {
-                return this.authorizeWithMessungsId(userInfo, data, clazz);
-            }
-        }
-        return data;
-    }
-
-    @Override
-    public <T> boolean isAuthorized(int id, Class<T> clazz) {
-        if (clazz == LMessung.class) {
-            LMessung messung = repository.getByIdPlain(
-                LMessung.class,
-                id,
-                "land");
-            if (messung.getStatus() == null) {
-                return false;
-            }
-            LStatusProtokoll status = repository.getByIdPlain(
-                LStatusProtokoll.class,
-                messung.getStatus(),
-                "land");
-            if (status.getStatusWert() == 0) {
-                return false;
-            }
-            return true;
-        }
-        return false;
+        return authorizer.filter(data, userInfo, clazz);
     }
 
     /**
@@ -149,97 +144,12 @@ public class HeaderAuthorization implements Authorization {
         if (userInfo == null) {
             return false;
         }
-        if (clazz == LProbe.class) {
-            LProbe probe = (LProbe)data;
-            if (method == RequestMethod.POST) {
-                return getAuthorization(userInfo, probe);
-            }
-            else if (method == RequestMethod.PUT ||
-                     method == RequestMethod.DELETE) {
-                return !isReadOnly(probe.getId());
-            }
-            else {
-                return false;
-            }
-        }
-        else if (clazz == LMessung.class) {
-            LMessung messung = (LMessung)data;
-            Response response =
-                repository.getById(LProbe.class, messung.getProbeId(), "land");
-            LProbe probe = (LProbe)response.getData();
-            if (method == RequestMethod.POST) {
-                return getAuthorization(userInfo, probe);
-            }
-            else if (method == RequestMethod.PUT ||
-                     method == RequestMethod.DELETE) {
-                return !this.isMessungReadOnly(messung) &&
-                    getAuthorization(userInfo, probe);
-            }
-        }
-        else {
-            Method[] methods = clazz.getMethods();
-            for (Method m: methods) {
-                if (m.getName().equals("getProbeId")) {
-                    Integer id;
-                    try {
-                        id = (Integer) m.invoke(data);
-                    } catch (IllegalAccessException | IllegalArgumentException
-                            | InvocationTargetException e) {
-                        logger.warn(e.getCause() + ": " + e.getMessage());
-                        return false;
-                    }
-                    Response response =
-                        repository.getById(LProbe.class, id, "land");
-                    LProbe probe = (LProbe)response.getData();
-                    return !isReadOnly(id) && getAuthorization(userInfo, probe);
-
-                }
-                if (m.getName().equals("getMessungsId")) {
-                    Integer id;
-                    try {
-                        id = (Integer) m.invoke(data);
-                    } catch (IllegalAccessException | IllegalArgumentException
-                            | InvocationTargetException e) {
-                        logger.warn(e.getCause() + ": " + e.getMessage());
-                        return false;
-                    }
-                    Response mResponse =
-                        repository.getById(LMessung.class, id, "land");
-                    LMessung messung = (LMessung)mResponse.getData();
-                    Response pResponse =
-                        repository.getById(
-                            LProbe.class,
-                            messung.getProbeId(),
-                            "land");
-                    LProbe probe = (LProbe)pResponse.getData();
-                    if (messung.getStatus() == null) {
-                        return false;
-                    }
-                    LStatusProtokoll status = repository.getByIdPlain(
-                        LStatusProtokoll.class,
-                        messung.getStatus(),
-                        "land");
-                    return status.getStatusWert() == 0 &&
-                        getAuthorization(userInfo, probe);
-                }
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Get the authorization of a single probe.
-     *
-     * @param userInfo  The user information.
-     * @param probe     The probe to authorize.
-     */
-    private boolean getAuthorization(UserInfo userInfo, LProbe probe) {
-        if (userInfo.getMessstellen().contains(probe.getMstId())) {
+        Authorizer authorizer = authorizers.get(clazz);
+        //This is a hack... Allows wildcard for unknown classes.
+        if (authorizer == null) {
             return true;
         }
-        else {
-            return false;
-        }
+        return authorizer.isAuthorized(data, method, userInfo, clazz);
     }
 
     /**
@@ -285,304 +195,6 @@ public class HeaderAuthorization implements Authorization {
     }
 
     /**
-     * Authorize data that has a messungsId Attribute.
-     *
-     * @param userInfo  The user information.
-     * @param data      The Response object containing the data.
-     * @param clazz     The data object class.
-     * @return A Response object containing the data.
-     */
-    @SuppressWarnings("unchecked")
-    private <T> Response authorizeWithMessungsId(
-        UserInfo userInfo,
-        Response data,
-        Class<T> clazz
-    ) {
-        if (data.getData() instanceof List<?>) {
-            List<Object> objects = new ArrayList<Object>();
-            for (Object object :(List<Object>)data.getData()) {
-                objects.add(authorizeSingleWithMessungsId(userInfo, object, clazz));
-            }
-            data.setData(objects);
-        }
-        else {
-            Object object = data.getData();
-            data.setData(authorizeSingleWithMessungsId(userInfo, object, clazz));
-        }
-        return data;
-    }
-
-    /**
-     * Authorize data that has a probeId Attribute.
-     *
-     * @param userInfo  The user information.
-     * @param data      The Response object containing the data.
-     * @param clazz     The data object class.
-     * @return A Response object containing the data.
-     */
-    @SuppressWarnings("unchecked")
-    private <T> Response authorizeWithProbeId(
-        UserInfo userInfo,
-        Response data,
-        Class<T> clazz
-    ) {
-        if (data.getData() instanceof List<?>) {
-            List<Object> objects = new ArrayList<Object>();
-            for (Object object :(List<Object>)data.getData()) {
-                objects.add(authorizeSingleWithProbeId(
-                    userInfo,
-                    object,
-                    clazz));
-            }
-            data.setData(objects);
-        }
-        else {
-            Object object = data.getData();
-            data.setData(authorizeSingleWithProbeId(userInfo, object, clazz));
-        }
-        return data;
-    }
-
-    /**
-     * Authorize a single data object that has a messungsId Attribute.
-     *
-     * @param userInfo  The user information.
-     * @param data      The Response object containing the data.
-     * @param clazz     The data object class.
-     * @return A Response object containing the data.
-     */
-    private <T> Object authorizeSingleWithMessungsId(
-        UserInfo userInfo,
-        Object data,
-        Class<T> clazz
-    ) {
-        try {
-            Method getMessungsId = clazz.getMethod("getMessungsId");
-            Integer id = (Integer)getMessungsId.invoke(data);
-            LMessung messung =
-                (LMessung)repository.getById(
-                    LMessung.class, id, "land").getData();
-            LProbe probe =
-                (LProbe)repository.getById(
-                    LProbe.class, messung.getProbeId(), "land").getData();
-
-            boolean readOnly = true;
-            boolean owner = false;
-            if (!userInfo.getNetzbetreiber().contains(
-                    probe.getNetzbetreiberId())) {
-                owner = false;
-                readOnly = true;
-            }
-            else {
-                if (userInfo.getMessstellen().contains(probe.getMstId())) {
-                    owner = true;
-                }
-                else {
-                    owner = false;
-                }
-                readOnly = this.isMessungReadOnly(messung);
-            }
-
-            Method setOwner = clazz.getMethod("setOwner", boolean.class);
-            Method setReadonly = clazz.getMethod("setReadonly", boolean.class);
-            setOwner.invoke(data, owner);
-            setReadonly.invoke(data, readOnly);
-        } catch (NoSuchMethodException | SecurityException
-            | IllegalAccessException | IllegalArgumentException
-            | InvocationTargetException e) {
-            return null;
-        }
-        return data;
-    }
-
-    /**
-     * Authorize a single data object that has a probeId Attribute.
-     *
-     * @param userInfo  The user information.
-     * @param data      The Response object containing the data.
-     * @param clazz     The data object class.
-     * @return A Response object containing the data.
-     */
-    private <T> Object authorizeSingleWithProbeId(
-        UserInfo userInfo,
-        Object data,
-        Class<T> clazz
-    ) {
-        try {
-            Method getProbeId = clazz.getMethod("getProbeId");
-            Integer id = null;
-            if (getProbeId != null) {
-                id = (Integer) getProbeId.invoke(data);
-            }
-            else {
-                return null;
-            }
-            LProbe probe =
-                (LProbe)repository.getById(LProbe.class, id, "land").getData();
-
-            boolean readOnly = true;
-            boolean owner = false;
-            if (!userInfo.getNetzbetreiber().contains(
-                    probe.getNetzbetreiberId())) {
-                owner = false;
-                readOnly = true;
-            }
-            else {
-                if (userInfo.getMessstellen().contains(probe.getMstId())) {
-                    owner = true;
-                }
-                else {
-                    owner = false;
-                }
-                readOnly = this.isReadOnly(id);
-            }
-
-            Method setOwner = clazz.getMethod("setOwner", boolean.class);
-            Method setReadonly = clazz.getMethod("setReadonly", boolean.class);
-            setOwner.invoke(data, owner);
-            setReadonly.invoke(data, readOnly);
-        } catch (NoSuchMethodException | SecurityException
-            | IllegalAccessException | IllegalArgumentException
-            | InvocationTargetException e) {
-            return null;
-        }
-        return data;
-    }
-
-    /**
-     * Authorize probe objects.
-     *
-     * @param userInfo  The user information.
-     * @param data      The Response object containing the probe objects.
-     * @return A Response object containing the data.
-     */
-    @SuppressWarnings("unchecked")
-    private Response authorizeProbe(UserInfo userInfo, Response data) {
-        if (data.getData() instanceof List<?>) {
-            List<LProbe> proben = new ArrayList<LProbe>();
-            for (LProbe probe :(List<LProbe>)data.getData()) {
-                proben.add(authorizeSingleProbe(userInfo, probe));
-            }
-            data.setData(proben);
-        }
-        else if (data.getData() instanceof LProbe) {
-            LProbe probe = (LProbe)data.getData();
-            data.setData(authorizeSingleProbe(userInfo, probe));
-        }
-        return data;
-    }
-
-    /**
-     * Authorize a sinle probe object.
-     *
-     * @param userInfo  The user information.
-     * @param probe     The probe object.
-     * @return The probe.
-     */
-    private LProbe authorizeSingleProbe(UserInfo userInfo, LProbe probe) {
-        if (!userInfo.getNetzbetreiber().contains(probe.getNetzbetreiberId())) {
-            probe.setOwner(false);
-            probe.setReadonly(true);
-            return probe;
-        }
-        if (userInfo.getMessstellen().contains(probe.getMstId())) {
-            probe.setOwner(true);
-        }
-        else {
-            probe.setOwner(false);
-        }
-        probe.setReadonly(this.isReadOnly(probe.getId()));
-        return probe;
-    }
-
-    /**
-     * Authorize messung objects.
-     *
-     * @param userInfo  The user information.
-     * @param data      The Response object containing the messung objects.
-     * @return A Response object containing the data.
-     */
-    @SuppressWarnings("unchecked")
-    private Response authorizeMessung(UserInfo userInfo, Response data) {
-        if (data.getData() instanceof List<?>) {
-            List<LMessung> messungen = new ArrayList<LMessung>();
-            for (LMessung messung :(List<LMessung>)data.getData()) {
-                messungen.add(authorizeSingleMessung(userInfo, messung));
-            }
-            data.setData(messungen);
-        }
-        else if (data.getData() instanceof LMessung) {
-            LMessung messung = (LMessung)data.getData();
-            data.setData(authorizeSingleMessung(userInfo, messung));
-        }
-        return data;
-    }
-
-    /**
-     * Authorize a sinle messung object.
-     *
-     * @param userInfo  The user information.
-     * @param messung     The messung object.
-     * @return The messung.
-     */
-    private LMessung authorizeSingleMessung(
-        UserInfo userInfo,
-        LMessung messung
-    ) {
-        LProbe probe =
-            (LProbe)repository.getById(
-                LProbe.class, messung.getProbeId(), "land").getData();
-        if (!userInfo.getNetzbetreiber().contains(probe.getNetzbetreiberId())) {
-            messung.setOwner(false);
-            messung.setReadonly(true);
-            return messung;
-        }
-        if (userInfo.getMessstellen().contains(probe.getMstId())) {
-            messung.setOwner(true);
-        }
-        else {
-            messung.setOwner(false);
-        }
-        if (messung.getStatus() == null) {
-            messung.setReadonly(false);
-        }
-        else {
-            LStatusProtokoll status = repository.getByIdPlain(
-                LStatusProtokoll.class,
-                messung.getStatus(),
-                "land");
-            messung.setReadonly(
-                status.getStatusWert() != 0 && status.getStatusWert() != 4);
-        }
-
-        boolean statusEdit = false;
-        if (userInfo.getFunktionen().contains(3)) {
-            QueryBuilder<AuthLstUmw> lstFilter = new QueryBuilder<AuthLstUmw>(
-                repository.entityManager("stamm"),
-                AuthLstUmw.class);
-            lstFilter.or("lstId", userInfo.getMessstellen());
-            List<AuthLstUmw> lsts =
-                repository.filterPlain(lstFilter.getQuery(), "stamm");
-            for (int i = 0; i < lsts.size(); i++) {
-                if (lsts.get(i).getUmwId().equals(probe.getUmwId())) {
-                    statusEdit = true;
-                }
-            }
-        }
-        else if (userInfo.getFunktionen().contains(2) &&
-            userInfo.getNetzbetreiber().contains(probe.getNetzbetreiberId())) {
-            statusEdit = true;
-        }
-        else if (userInfo.getFunktionen().contains(1) &&
-            userInfo.getMessstellen().contains(probe.getMstId())) {
-            statusEdit = true;
-        }
-        messung.setStatusEdit(statusEdit);
-
-        return messung;
-    }
-
-    /**
      * Test whether a probe is readonly.
      *
      * @param probeId   The probe Id.
@@ -620,25 +232,16 @@ public class HeaderAuthorization implements Authorization {
      * @return True if the user is authorized else returns false.
      */
     @Override
-    public boolean isAuthorized(UserInfo userInfo, Object data) {
-        if (data instanceof LProbe) {
-            return getAuthorization(userInfo, (LProbe)data);
+    public <T> boolean isAuthorized(
+        UserInfo userInfo,
+        Object data,
+        Class<T> clazz
+    ) {
+        Authorizer authorizer = authorizers.get(clazz);
+        //This is a hack... Allows wildcard for unknown classes.
+        if (authorizer == null) {
+            return true;
         }
-        else if (data instanceof LMessung) {
-            LProbe probe = repository.getByIdPlain(LProbe.class, ((LMessung)data).getProbeId(), "land");
-            return getAuthorization(userInfo, probe);
-        }
-        return false;
-    }
-
-    private boolean isMessungReadOnly(LMessung messung) {
-        if (messung.getStatus() == null) {
-            return false;
-        }
-        LStatusProtokoll status = repository.getByIdPlain(
-            LStatusProtokoll.class,
-            messung.getStatus(),
-            "land");
-        return (status.getStatusWert() != 0 && status.getStatusWert() != 4);
+        return authorizer.isAuthorized(data, RequestMethod.GET, userInfo, clazz);
     }
 }

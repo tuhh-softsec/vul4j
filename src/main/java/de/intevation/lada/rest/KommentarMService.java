@@ -118,10 +118,8 @@ public class KommentarMService {
             LMessung.class,
             id,
             "land");
-        if (!authorization.isAuthorized(authorization.getInfo(request), messung)) {
-            if (!authorization.isAuthorized(id, LMessung.class)) {
-                return new Response(false, 699, null);
-            }
+        if (!authorization.isAuthorized(request, messung, RequestMethod.GET, LMessung.class)) {
+            return new Response(false, 699, null);
         }
 
         QueryBuilder<LKommentarM> builder =
@@ -159,10 +157,8 @@ public class KommentarMService {
             LMessung.class,
             kommentar.getMessungsId(),
             "land");
-        if (!authorization.isAuthorized(authorization.getInfo(request), messung)) {
-            if (!authorization.isAuthorized(messung.getId(), LMessung.class)) {
-                return new Response(false, 699, null);
-            }
+        if (!authorization.isAuthorized(request, messung, RequestMethod.GET, LMessung.class)) {
+            return new Response(false, 699, null);
         }
 
         return authorization.filter(
