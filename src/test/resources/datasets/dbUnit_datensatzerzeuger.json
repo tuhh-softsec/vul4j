@@ -1,0 +1,10 @@
+{
+    "stammdaten.datensatz_erzeuger": [{
+        "id": 1000,
+        "bezeichnung": "Testbezeichnung",
+        "netzbetreiber_id": "06",
+        "mst_id": "06010",
+        "da_erzeuger_id": "06",
+        "letzte_aenderung": "2015-03-01 12:00:00"
+    }]
+}

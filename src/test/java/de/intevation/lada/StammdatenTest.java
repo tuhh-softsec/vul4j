@@ -7,33 +7,36 @@
  */
 package de.intevation.lada;
 
-import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
 
-import javax.json.Json;
-import javax.json.JsonException;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.apache.log4j.Logger;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit.InSequence;
+import org.jboss.arquillian.persistence.Cleanup;
+import org.jboss.arquillian.persistence.DataSource;
+import org.jboss.arquillian.persistence.TestExecutionPhase;
+import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
+import de.intevation.lada.model.stamm.DatensatzErzeuger;
+import de.intevation.lada.model.stamm.MessprogrammKategorie;
+import de.intevation.lada.model.stamm.Ort;
+import de.intevation.lada.model.stamm.Probenehmer;
+import de.intevation.lada.test.stamm.DatensatzErzeugerTest;
+import de.intevation.lada.test.stamm.MessprogrammKategorieTest;
+import de.intevation.lada.test.stamm.OrtTest;
+import de.intevation.lada.test.stamm.ProbenehmerTest;
 import de.intevation.lada.test.stamm.Stammdaten;
 
 
@@ -48,12 +51,21 @@ public class StammdatenTest extends BaseTest {
 
     private static Logger logger = Logger.getLogger(StammdatenTest.class);
 
-    private static Integer createdOrtId;
+    @PersistenceContext(unitName="stamm")
+    EntityManager em;
 
     private Stammdaten stammdatenTest;
+    private DatensatzErzeugerTest datensatzerzeugerTest;
+    private ProbenehmerTest probenehmerTest;
+    private MessprogrammKategorieTest messprogrammkategorieTest;
+    private OrtTest ortTest;
 
     public StammdatenTest () {
         stammdatenTest = new Stammdaten();
+        datensatzerzeugerTest = new DatensatzErzeugerTest();
+        probenehmerTest = new ProbenehmerTest();
+        messprogrammkategorieTest = new MessprogrammKategorieTest();
+        ortTest = new OrtTest();
         testProtocol = new ArrayList<Protocol>();
         verboseLogging = false;
     }
@@ -61,6 +73,130 @@ public class StammdatenTest extends BaseTest {
     @BeforeClass
     public static void beforeTests() {
         logger.info("---------- Testing Lada Stamm Services ----------");
+    }
+
+    /**
+     * Insert a probe object into the database.
+     */
+    @Test
+    @InSequence(1)
+    @UsingDataSet("datasets/dbUnit_datensatzerzeuger.json")
+    @DataSource("java:jboss/lada-stamm")
+    @Cleanup(phase=TestExecutionPhase.NONE)
+    public final void prepareDatabaseDatensatzerzeuger() throws Exception {
+        Protocol protocol = new Protocol();
+        protocol.setName("database");
+        protocol.setType("insert datensatzerzeuger");
+        protocol.addInfo("database", "Insert datensatzerzeuger into database");
+        testProtocol.add(protocol);
+        DatensatzErzeuger erzeuger = em.find(DatensatzErzeuger.class, 1000);
+        Assert.assertNotNull(erzeuger);
+        protocol.setPassed(true);
+    }
+
+    /**
+     * Tests for probe operations
+     */
+    @Test
+    @InSequence(2)
+    @RunAsClient
+    public final void testDatensatzerzeuger(@ArquillianResource URL baseUrl)
+    throws Exception {
+        datensatzerzeugerTest.init(baseUrl, testProtocol);
+        datensatzerzeugerTest.execute();
+    }
+
+    /**
+     * Insert a probe object into the database.
+     */
+    @Test
+    @InSequence(3)
+    @UsingDataSet("datasets/dbUnit_probenehmer.json")
+    @DataSource("java:jboss/lada-stamm")
+    @Cleanup(phase=TestExecutionPhase.NONE)
+    public final void prepareDatabaseProbenehmer() throws Exception {
+        Protocol protocol = new Protocol();
+        protocol.setName("database");
+        protocol.setType("insert probenehmer");
+        protocol.addInfo("database", "Insert Probenehmer into database");
+        testProtocol.add(protocol);
+        Probenehmer probenehmer = em.find(Probenehmer.class, 1000);
+        Assert.assertNotNull(probenehmer);
+        protocol.setPassed(true);
+    }
+
+    /**
+     * Tests for probe operations
+     */
+    @Test
+    @InSequence(4)
+    @RunAsClient
+    public final void testProbenehmer(@ArquillianResource URL baseUrl)
+    throws Exception {
+        probenehmerTest.init(baseUrl, testProtocol);
+        probenehmerTest.execute();
+    }
+
+    /**
+     * Insert a probe object into the database.
+     */
+    @Test
+    @InSequence(5)
+    @UsingDataSet("datasets/dbUnit_messprogrammkategorie.json")
+    @DataSource("java:jboss/lada-stamm")
+    @Cleanup(phase=TestExecutionPhase.NONE)
+    public final void prepareDatabaseMessprogrammKategorie() throws Exception {
+        Protocol protocol = new Protocol();
+        protocol.setName("database");
+        protocol.setType("insert messprogrammkategorie");
+        protocol.addInfo("database", "Insert messprogrammkategorie into database");
+        testProtocol.add(protocol);
+        MessprogrammKategorie kategorie = em.find(MessprogrammKategorie.class, 1000);
+        Assert.assertNotNull(kategorie);
+        protocol.setPassed(true);
+    }
+
+    /**
+     * Tests for probe operations
+     */
+    @Test
+    @InSequence(6)
+    @RunAsClient
+    public final void testMessprogrammKategorie(@ArquillianResource URL baseUrl)
+    throws Exception {
+        messprogrammkategorieTest.init(baseUrl, testProtocol);
+        messprogrammkategorieTest.execute();
+    }
+
+    /**
+     * Insert a probe object into the database.
+     */
+    @Test
+    @InSequence(7)
+    @UsingDataSet("datasets/dbUnit_ort.json")
+    @DataSource("java:jboss/lada-stamm")
+    @Cleanup(phase=TestExecutionPhase.NONE)
+    public final void prepareDatabaseOrt() throws Exception {
+        Protocol protocol = new Protocol();
+        protocol.setName("database");
+        protocol.setType("insert ort");
+        protocol.addInfo("database", "Insert ortinto database");
+        testProtocol.add(protocol);
+        Ort ort = em.find(Ort.class, 1000);
+        Assert.assertNotNull(ort);
+        protocol.setPassed(true);
+    }
+
+    /**
+     * Tests for probe operations
+     */
+    @Test
+    @InSequence(8)
+    @RunAsClient
+    public final void testOrt(@ArquillianResource URL baseUrl)
+    throws Exception {
+        ortTest.init(baseUrl, testProtocol);
+        ortTest.execute();
     }
 
     @Test
@@ -172,20 +308,6 @@ public class StammdatenTest extends BaseTest {
     }
 
     @Test
-    @Ignore
-    @RunAsClient
-    public final void testLocationAll(@ArquillianResource URL baseUrl) {
-        stammdatenTest.getAll(baseUrl, "location", testProtocol);
-    }
-
-    @Test
-    @Ignore
-    @RunAsClient
-    public final void testLocationById(@ArquillianResource URL baseUrl) {
-        stammdatenTest.getById(baseUrl, "location", "19", testProtocol);
-    }
-
-    @Test
     @RunAsClient
     public final void testKoordinatenartAll(@ArquillianResource URL baseUrl) {
         stammdatenTest.getAll(baseUrl, "koordinatenart", testProtocol);
@@ -231,159 +353,5 @@ public class StammdatenTest extends BaseTest {
     @RunAsClient
     public final void testVerwaltungseinheitById(@ArquillianResource URL baseUrl) {
         stammdatenTest.getById(baseUrl, "verwaltungseinheit", "09575134", testProtocol);
-    }
-
-    /* TODO: The location service is moved to the "land"-services in
-       future version. */
-    @Test
-    @Ignore
-    @RunAsClient
-    public final void testLocation1CreateService(@ArquillianResource URL baseUrl)
-    throws Exception {
-        System.out.print(".");
-        Protocol prot = new Protocol();
-        prot.setName("locationService");
-        prot.setType("create");
-        prot.setPassed(false);
-        testProtocol.add(prot);
-        try {
-            /* Create a client*/
-            Client client = ClientBuilder.newClient();
-            WebTarget target = client.target(baseUrl + "location");
-            /* Send a post request containing a new kommentar*/
-            String newObj = "{\"beschreibung\":\"Neuer Ort\"," +
-                "\"bezeichnung\":\"T123456\",\"hoeheLand\":null," +
-                "\"koordXExtern\":\"32531152\",\"koordYExtern\":\"5684269\"," +
-                "\"latitude\":51.30888,\"letzteAenderung\":1376287046332," +
-                "\"longitude\":9.44693,\"nutsCode\":\"DE731\",\"unscharf\":" +
-                "\"0\",\"netzbetreiberId\":null,\"staatId\":0," +
-                "\"verwaltungseinheitId\":\"06611000\",\"otyp\":\"Z\"," +
-                "\"koordinatenartId\":5}";
-
-            Response response = target.request()
-                .header("X-SHIB-user", BaseTest.TEST_USER)
-                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
-                .post(Entity.entity(newObj, MediaType.APPLICATION_JSON));
-            String entity = response.readEntity(String.class);
-            /* Try to parse the response*/
-            JsonReader fromServiceReader =
-                Json.createReader(new StringReader(entity));
-            JsonObject content = fromServiceReader.readObject();
-            /* Save the id*/
-            createdOrtId =
-                content.getJsonObject("data").getJsonNumber("id").intValue();
-            prot.addInfo("ortId", createdOrtId);
-            /* Verify the response*/
-            Assert.assertTrue(content.getBoolean("success"));
-            prot.addInfo("success", content.getBoolean("success"));
-            Assert.assertEquals("200", content.getString("message"));
-            prot.addInfo("message", content.getString("message"));
-        }
-        catch(JsonException je) {
-            prot.addInfo("exception", je.getMessage());
-            Assert.fail(je.getMessage());
-        }
-        prot.setPassed(true);
-    }
-
-    /**
-     * Test the UPDATE Service.
-     *
-     * @param baseUrl The url pointing to the test deployment.
-     */
-    @Test
-    @Ignore
-    @RunAsClient
-    public final void testLocation2UpdateService(@ArquillianResource URL baseUrl)
-    throws Exception {
-        System.out.print(".");
-        Protocol prot = new Protocol();
-        prot.setName("locationService");
-        prot.setType("update");
-        prot.setPassed(false);
-        testProtocol.add(prot);
-        try {
-            /* Create a client*/
-            Client client = ClientBuilder.newClient();
-            WebTarget target =
-                client.target(baseUrl + "location/" + createdOrtId);
-            prot.addInfo("locationId", createdOrtId);
-            /* Request a kommentar with the id saved when created a kommentar*/
-            Response response = target.request()
-                .header("X-SHIB-user", BaseTest.TEST_USER)
-                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
-                .get();
-            String entity = response.readEntity(String.class);
-            /* Try to parse the response*/
-            JsonReader reader = Json.createReader(new StringReader(entity));
-            JsonObject oldObj = reader.readObject().getJsonObject("data");
-            /* Change the text*/
-            String updatedEntity =
-                oldObj.toString().replace("Neuer Ort", "Neuerer Ort");
-            prot.addInfo("updated field", "beschreibung");
-            prot.addInfo("updated value", "Neuer Ort");
-            prot.addInfo("updated to", "Neuerer Ort");
-            /* Send the updated kommentar via put reauest*/
-            WebTarget putTarget = client.target(baseUrl + "location/" + createdOrtId);
-            Response updated = putTarget.request()
-                .header("X-SHIB-user", BaseTest.TEST_USER)
-                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
-                .put(Entity.entity(updatedEntity, MediaType.APPLICATION_JSON));
-            /* Try to parse the response*/
-            JsonReader updatedReader = Json.createReader(
-                new StringReader(updated.readEntity(String.class)));
-            JsonObject updatedObj = updatedReader.readObject();
-            /* Verify the response*/
-            Assert.assertTrue(updatedObj.getBoolean("success"));
-            prot.addInfo("success", updatedObj.getBoolean("success"));
-            Assert.assertEquals("200", updatedObj.getString("message"));
-            prot.addInfo("message", updatedObj.getString("message"));
-            Assert.assertEquals("Neuerer Ort",
-                updatedObj.getJsonObject("data").getString("beschreibung"));
-        }
-        catch(JsonException je) {
-            prot.addInfo("exception", je.getMessage());
-            Assert.fail(je.getMessage());
-        }
-        prot.setPassed(true);
-    }
-
-    @Test
-    @Ignore
-    @RunAsClient
-    public final void testLocation3DeleteService(@ArquillianResource URL baseUrl)
-    throws Exception {
-        System.out.print(".");
-        Protocol prot = new Protocol();
-        prot.setName("locationService");
-        prot.setType("delete");
-        prot.setPassed(false);
-        testProtocol.add(prot);
-        try {
-            /* Create a client*/
-            Client client = ClientBuilder.newClient();
-            WebTarget target =
-                client.target(baseUrl + "location/" + createdOrtId);
-            prot.addInfo("locationId", createdOrtId);
-            /* Delete the object with the saved id*/
-            Response response = target.request()
-                .header("X-SHIB-user", BaseTest.TEST_USER)
-                .header("X-SHIB-roles", BaseTest.TEST_ROLES)
-                .delete();
-            String entity = response.readEntity(String.class);
-            /* Try to parse the response*/
-            JsonReader reader = Json.createReader(new StringReader(entity));
-            JsonObject respObj = reader.readObject();
-            /* Verify the response*/
-            Assert.assertTrue(respObj.getBoolean("success"));
-            prot.addInfo("success", respObj.getBoolean("success"));
-            Assert.assertEquals("200", respObj.getString("message"));
-            prot.addInfo("message", respObj.getString("message"));
-        }
-        catch(JsonException je) {
-            prot.addInfo("exception", je.getMessage());
-            Assert.fail(je.getMessage());
-        }
-        prot.setPassed(true);
     }
 }

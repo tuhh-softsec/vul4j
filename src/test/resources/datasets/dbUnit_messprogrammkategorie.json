@@ -1,0 +1,9 @@
+{
+    "stammdaten.messprogramm_kategorie": [{
+        "id": 1000,
+        "netzbetreiber_id": "06",
+        "mpl_id": "mp2",
+        "bezeichnung": "Testbezeichnung",
+        "letzte_aenderung": "2015-03-01 12:00:00"
+    }]
+}

@@ -1,0 +1,21 @@
+{
+    "stammdaten.ort": [{
+        "id": 1000,
+        "netzbetreiber_id": "06",
+        "ort_id": "D_ 00191",
+        "langtext": "Langer Text",
+        "staat_id": 0,
+        "gem_id": "11000000",
+        "unscharf": "t",
+        "nuts_code": "DE716",
+        "kda_id": 5,
+        "koord_x_extern": "32487017",
+        "koord_y_extern": "5519769",
+        "letzte_aenderung": "2015-03-01 12:00:00",
+        "latitude": 49.83021,
+        "longitude": 8.81948,
+        "ort_typ": 1,
+        "kurztext": "kurz",
+        "berichtstext": "bericht"
+    }]
+}
