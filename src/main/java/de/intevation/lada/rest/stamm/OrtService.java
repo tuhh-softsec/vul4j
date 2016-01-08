@@ -175,7 +175,7 @@ public class OrtService {
         if (!authorization.isAuthorized(
             request,
             ort,
-            RequestMethod.DELETE,
+            RequestMethod.POST,
             Ort.class)
         ) {
             return new Response(false, 699, ort);
@@ -221,7 +221,7 @@ public class OrtService {
         if (!authorization.isAuthorized(
             request,
             ort,
-            RequestMethod.DELETE,
+            RequestMethod.PUT,
             Ort.class)
         ) {
             return new Response(false, 699, ort);
