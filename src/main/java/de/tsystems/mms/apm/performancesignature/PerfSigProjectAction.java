@@ -460,6 +460,7 @@ public class PerfSigProjectAction implements ProminentProjectAction {
                                 new MeasureNameHelper(chartDashlet.getName(), measure.getName(), chartDashlet.getDescription()));
 
         String json = StringEscapeUtils.unescapeJava(data);
+        if (!json.startsWith("[")) json = json.substring(1, json.length() - 1);
 
         try {
             final JSONArray gridConfiguration = JSONArray.fromObject(json);
