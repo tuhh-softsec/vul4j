@@ -29,6 +29,7 @@ import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import jenkins.tasks.SimpleBuildStep;
+import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
@@ -51,15 +52,6 @@ public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
         setReanalyzeSession(reanalyzeSession);
     }
 
-    public boolean getReanalyzeSession() {
-        return reanalyzeSession;
-    }
-
-    @DataBoundSetter
-    public void setReanalyzeSession(final boolean reanalyzeSession) {
-        this.reanalyzeSession = reanalyzeSession;
-    }
-
     @Override
     public void perform(@Nonnull final Run<?, ?> run, @Nonnull final FilePath workspace, @Nonnull final Launcher launcher, @Nonnull final TaskListener listener)
             throws InterruptedException, IOException {
@@ -75,11 +67,11 @@ public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
                 dtRecorder.getCredentialsId(), dtRecorder.isVerifyCertificate(), dtRecorder.getCustomProxy());
 
         String sessionName = connection.stopRecording(dtRecorder.getProfile());
-        if (sessionName == null)
+        if (StringUtils.isBlank(sessionName))
             throw new RESTErrorException(Messages.PerfSigStopRecording_InternalError());
         logger.println(String.format("Stopped recording on %s with SessionName %s", dtRecorder.getProfile(), sessionName));
 
-        if (this.reanalyzeSession) {
+        if (getReanalyzeSession()) {
             logger.println("reanalyze session ...");
             boolean reanalyzeFinished = connection.reanalyzeSessionStatus(sessionName);
             if (connection.reanalyzeSession(sessionName)) {
@@ -100,6 +92,15 @@ public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
                 }
             }
         }
+    }
+
+    public boolean getReanalyzeSession() {
+        return reanalyzeSession;
+    }
+
+    @DataBoundSetter
+    public void setReanalyzeSession(final boolean reanalyzeSession) {
+        this.reanalyzeSession = reanalyzeSession;
     }
 
     @Extension

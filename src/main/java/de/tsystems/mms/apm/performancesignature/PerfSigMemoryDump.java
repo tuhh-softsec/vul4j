@@ -20,88 +20,89 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.model.Agent;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
+import hudson.AbortException;
 import hudson.Extension;
+import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
-import hudson.model.BuildListener;
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
+import jenkins.tasks.SimpleBuildStep;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
+import javax.annotation.Nonnull;
+import java.io.IOException;
 import java.io.PrintStream;
 
-/**
- * Created by rapi on 20.10.2014.
- */
-public class PerfSigMemoryDump extends Builder {
-    private final String agent, host, type;
-    private final boolean lockSession, captureStrings, capturePrimitives, autoPostProcess, dogc;
+public class PerfSigMemoryDump extends Builder implements SimpleBuildStep {
     private static final int waitForDumpTimeout = 60000;
     private static final int waitForDumpPollingInterval = 5000;
+    private final String agent, host;
+    private String type;
+    private boolean lockSession, captureStrings, capturePrimitives, autoPostProcess, dogc;
 
     @DataBoundConstructor
-    public PerfSigMemoryDump(final String agent, final String host, final String type, final boolean lockSession, final boolean captureStrings,
-                             final boolean capturePrimitives, final boolean autoPostProcess, final boolean dogc) {
+    public PerfSigMemoryDump(final String agent, final String host) {
         this.agent = agent;
         this.host = host;
-        this.type = type;
-        this.lockSession = lockSession;
-        this.captureStrings = captureStrings;
-        this.capturePrimitives = capturePrimitives;
-        this.autoPostProcess = autoPostProcess;
-        this.dogc = dogc;
+    }
+
+    @Deprecated
+    public PerfSigMemoryDump(final String agent, final String host, final String type, final boolean lockSession, final boolean captureStrings,
+                             final boolean capturePrimitives, final boolean autoPostProcess, final boolean dogc) {
+        this(agent, host);
+        setType(type);
+        setLockSession(lockSession);
+        setCaptureStrings(captureStrings);
+        setCapturePrimitives(capturePrimitives);
+        setAutoPostProcess(autoPostProcess);
+        setDogc(dogc);
     }
 
     @Override
-    public boolean perform(final AbstractBuild build, final Launcher launcher, final BuildListener listener) {
+    public void perform(@Nonnull final Run<?, ?> run, @Nonnull final FilePath workspace, @Nonnull final Launcher launcher, @Nonnull final TaskListener listener)
+            throws InterruptedException, IOException {
         final PrintStream logger = listener.getLogger();
-        final PerfSigRecorder dtRecorder = PerfSigUtils.getRecorder(build);
+        final PerfSigRecorder dtRecorder = PerfSigUtils.getRecorder(run);
 
         if (dtRecorder == null) {
-            logger.println(Messages.PerfSigMemoryDump_NoRecorderFailure());
-            return false;
+            throw new AbortException(Messages.PerfSigMemoryDump_NoRecorderFailure());
         }
 
         final DTServerConnection connection = new DTServerConnection(dtRecorder.getProtocol(), dtRecorder.getHost(), dtRecorder.getPort(),
                 dtRecorder.getCredentialsId(), dtRecorder.isVerifyCertificate(), dtRecorder.getCustomProxy());
 
-        try {
-            for (Agent agent : connection.getAgents()) {
-                if (agent.getName().equalsIgnoreCase(this.agent) && agent.getSystemProfile().equalsIgnoreCase(dtRecorder.getProfile()) && agent.getHost().equalsIgnoreCase(this.host)) {
-                    logger.println("Creating Memory Dump for " + agent.getSystemProfile() + "-" + agent.getName() + "-" + agent.getHost() + "-" + agent.getProcessId());
+        for (Agent agent : connection.getAgents()) {
+            if (agent.getName().equalsIgnoreCase(this.agent) && agent.getSystemProfile().equalsIgnoreCase(dtRecorder.getProfile()) && agent.getHost().equalsIgnoreCase(this.host)) {
+                logger.println("Creating Memory Dump for " + agent.getSystemProfile() + "-" + agent.getName() + "-" + agent.getHost() + "-" + agent.getProcessId());
 
-                    String memoryDump = connection.memoryDump(agent.getSystemProfile(), agent.getName(), agent.getHost(), agent.getProcessId(), this.type, this.lockSession, this.captureStrings, this.capturePrimitives, this.autoPostProcess, this.dogc);
-                    if ((memoryDump == null) || (memoryDump.length() == 0)) {
-                        throw new RESTErrorException("Memory Dump wasnt taken");
-                    }
-                    int timeout = waitForDumpTimeout;
-                    boolean dumpFinished = connection.memoryDumpStatus(agent.getSystemProfile(), memoryDump).isResultValueTrue();
-                    while ((!dumpFinished) && (timeout > 0)) {
-                        Thread.sleep(waitForDumpPollingInterval);
-                        timeout -= waitForDumpPollingInterval;
-                        dumpFinished = connection.memoryDumpStatus(agent.getSystemProfile(), memoryDump).isResultValueTrue();
-                    }
-                    if (dumpFinished) {
-                        logger.println(Messages.PerfSigMemoryDump_SuccessfullyCreatedMemoryDump() + agent.getName());
-                        return true;
-                    } else {
-                        throw new RESTErrorException("Timeout raised");
-                    }
+                String memoryDump = connection.memoryDump(agent.getSystemProfile(), agent.getName(), agent.getHost(), agent.getProcessId(), getType(),
+                        this.lockSession, this.captureStrings, this.capturePrimitives, this.autoPostProcess, this.dogc);
+                if (StringUtils.isBlank(memoryDump))
+                    throw new RESTErrorException("Memory Dump wasnt taken");
+                int timeout = waitForDumpTimeout;
+                boolean dumpFinished = connection.memoryDumpStatus(agent.getSystemProfile(), memoryDump).isResultValueTrue();
+                while ((!dumpFinished) && (timeout > 0)) {
+                    Thread.sleep(waitForDumpPollingInterval);
+                    timeout -= waitForDumpPollingInterval;
+                    dumpFinished = connection.memoryDumpStatus(agent.getSystemProfile(), memoryDump).isResultValueTrue();
+                }
+                if (dumpFinished) {
+                    logger.println(Messages.PerfSigMemoryDump_SuccessfullyCreatedMemoryDump() + agent.getName());
+                    return;
+                } else {
+                    throw new RESTErrorException("Timeout raised");
                 }
             }
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            logger.println(e);
-            return !dtRecorder.isTechnicalFailure();
         }
-        logger.println(String.format(Messages.PerfSigMemoryDump_AgentNotConnected(), agent));
-        return !dtRecorder.isTechnicalFailure();
+        throw new AbortException(String.format(Messages.PerfSigMemoryDump_AgentNotConnected(), agent));
     }
 
     public String getAgent() {
@@ -113,55 +114,67 @@ public class PerfSigMemoryDump extends Builder {
     }
 
     public String getType() {
-        return type;
+        return type == null ? DescriptorImpl.defaultType : type;
+    }
+
+    @DataBoundSetter
+    public void setType(final String type) {
+        this.type = type == null ? DescriptorImpl.defaultType : type;
     }
 
     public boolean getLockSession() {
         return lockSession;
     }
 
+    @DataBoundSetter
+    public void setLockSession(final boolean lockSession) {
+        this.lockSession = lockSession;
+    }
+
     public boolean getCaptureStrings() {
         return captureStrings;
+    }
+
+    @DataBoundSetter
+    public void setCaptureStrings(final boolean captureStrings) {
+        this.captureStrings = captureStrings;
     }
 
     public boolean getCapturePrimitives() {
         return capturePrimitives;
     }
 
+    @DataBoundSetter
+    public void setCapturePrimitives(final boolean capturePrimitives) {
+        this.capturePrimitives = capturePrimitives;
+    }
+
     public boolean getAutoPostProcess() {
         return autoPostProcess;
+    }
+
+    @DataBoundSetter
+    public void setAutoPostProcess(final boolean autoPostProcess) {
+        this.autoPostProcess = autoPostProcess;
     }
 
     public boolean getDogc() {
         return dogc;
     }
 
+    @DataBoundSetter
+    public void setDogc(final boolean dogc) {
+        this.dogc = dogc;
+    }
+
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
-
-        public DescriptorImpl() {
-            load();
-        }
-
-        public static boolean getDefaultLockSession() {
-            return false;
-        }
-
-        public static boolean getDefaultCaptureStrings() {
-            return false;
-        }
-
-        public static boolean getDefaultCapturePrimitives() {
-            return false;
-        }
-
-        public static boolean getDefaultAutoPostProcess() {
-            return false;
-        }
-
-        public static boolean getDefaultDogc() {
-            return false;
-        }
+        public static final String defaultType = "simple";
+        public static final boolean defaultLockSession = false;
+        public static final boolean defaultCaptureStrings = false;
+        public static final boolean defaultCapturePrimitives = false;
+        public static final boolean defaultAutoPostProcess = false;
+        public static final boolean defaultDogc = false;
 
         public ListBoxModel doFillTypeItems() {
             return new ListBoxModel(new ListBoxModel.Option("simple"), new ListBoxModel.Option("extended"), new ListBoxModel.Option("selective"));

@@ -20,24 +20,26 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.model.Agent;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
+import hudson.AbortException;
 import hudson.Extension;
+import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
-import hudson.model.BuildListener;
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
+import jenkins.tasks.SimpleBuildStep;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
+import javax.annotation.Nonnull;
+import java.io.IOException;
 import java.io.PrintStream;
 
-/**
- * Created by rapi on 20.10.2014.
- */
-public class PerfSigActivateConfiguration extends Builder {
+public class PerfSigActivateConfiguration extends Builder implements SimpleBuildStep {
     private final String configuration;
 
     @DataBoundConstructor
@@ -45,39 +47,35 @@ public class PerfSigActivateConfiguration extends Builder {
         this.configuration = configuration;
     }
 
+
     @Override
-    public boolean perform(final AbstractBuild build, final Launcher launcher, final BuildListener listener) {
+    public void perform(@Nonnull final Run<?, ?> run, @Nonnull final FilePath workspace, @Nonnull final Launcher launcher, @Nonnull final TaskListener listener)
+            throws InterruptedException, IOException {
         final PrintStream logger = listener.getLogger();
-        final PerfSigRecorder dtRecorder = PerfSigUtils.getRecorder(build);
+        final PerfSigRecorder dtRecorder = PerfSigUtils.getRecorder(run);
 
         if (dtRecorder == null) {
-            logger.println(Messages.PerfSigActivateConfiguration_NoRecorderFailure());
-            return false;
+            throw new AbortException(Messages.PerfSigActivateConfiguration_NoRecorderFailure());
         }
 
         logger.println(Messages.PerfSigActivateConfiguration_ActivatingProfileConfiguration());
         final DTServerConnection connection = new DTServerConnection(dtRecorder.getProtocol(), dtRecorder.getHost(), dtRecorder.getPort(),
                 dtRecorder.getCredentialsId(), dtRecorder.isVerifyCertificate(), dtRecorder.getCustomProxy());
 
-        try {
-            boolean result = connection.activateConfiguration(dtRecorder.getProfile(), this.configuration);
-            if (!result) throw new RESTErrorException(Messages.PerfSigActivateConfiguration_InternalError());
-            logger.println(Messages.PerfSigActivateConfiguration_SuccessfullyActivated() + dtRecorder.getProfile());
+        boolean result = connection.activateConfiguration(dtRecorder.getProfile(), this.configuration);
+        if (!result)
+            throw new RESTErrorException(Messages.PerfSigActivateConfiguration_InternalError());
+        logger.println(Messages.PerfSigActivateConfiguration_SuccessfullyActivated() + dtRecorder.getProfile());
 
-            for (Agent agent : connection.getAgents()) {
-                if (agent.getSystemProfile().equalsIgnoreCase(dtRecorder.getProfile())) {
-                    boolean hotSensorPlacement = connection.hotSensorPlacement(agent.getAgentId());
-                    if (hotSensorPlacement) {
-                        logger.println(Messages.PerfSigActivateConfiguration_HotSensorPlacementDone() + " " + agent.getName());
-                    } else {
-                        logger.println(Messages.PerfSigActivateConfiguration_FailureActivation() + " " + agent.getName());
-                    }
+        for (Agent agent : connection.getAgents()) {
+            if (agent.getSystemProfile().equalsIgnoreCase(dtRecorder.getProfile())) {
+                boolean hotSensorPlacement = connection.hotSensorPlacement(agent.getAgentId());
+                if (hotSensorPlacement) {
+                    logger.println(Messages.PerfSigActivateConfiguration_HotSensorPlacementDone() + " " + agent.getName());
+                } else {
+                    logger.println(Messages.PerfSigActivateConfiguration_FailureActivation() + " " + agent.getName());
                 }
             }
-            return true;
-        } catch (RESTErrorException e) {
-            logger.println(Messages.PerfSigActivateConfiguration_FailureActivation() + dtRecorder.getProfile() + " " + e);
-            return !dtRecorder.isTechnicalFailure();
         }
     }
 
@@ -87,11 +85,6 @@ public class PerfSigActivateConfiguration extends Builder {
 
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
-
-        public DescriptorImpl() {
-            load();
-        }
-
         public FormValidation doCheckConfiguration(@QueryParameter final String configuration) {
             FormValidation validationResult;
             if (StringUtils.isNotBlank(configuration)) {

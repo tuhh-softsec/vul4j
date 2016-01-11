@@ -102,7 +102,7 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
         String sessionName = dtRecorder.getProfile() + "_" + run.getParent().getName() + "_Build-" + run.getNumber() + "_" + testCase;
         sessionName = sessionName.replace("/", "_");
         try {
-            final String result = connection.startRecording(dtRecorder.getProfile(), sessionName, "This Session is triggered by Jenkins", this.recordingOption, lockSession, false);
+            final String result = connection.startRecording(dtRecorder.getProfile(), sessionName, "This Session is triggered by Jenkins", getRecordingOption(), lockSession, false);
 
             if (result != null && result.equals(sessionName)) {
                 logger.println(String.format(Messages.PerfSigStartRecording_StartedSessionRecording(), dtRecorder.getProfile(), result));

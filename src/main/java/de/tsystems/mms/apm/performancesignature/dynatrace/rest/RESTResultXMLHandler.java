@@ -29,12 +29,10 @@
 package de.tsystems.mms.apm.performancesignature.dynatrace.rest;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
-/**
- * Created by rapi on 27.10.2014.
- */
 public class RESTResultXMLHandler extends DefaultHandler {
     private String resultString;
 
@@ -43,7 +41,7 @@ public class RESTResultXMLHandler extends DefaultHandler {
     }
 
     public boolean isResultTrue() {
-        return (this.resultString != null) && (this.resultString.equalsIgnoreCase("true"));
+        return StringUtils.isNotBlank(resultString) && resultString.equalsIgnoreCase(String.valueOf(true));
     }
 
     public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attr) {

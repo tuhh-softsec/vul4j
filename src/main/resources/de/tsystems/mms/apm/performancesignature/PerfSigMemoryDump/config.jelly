@@ -27,7 +27,7 @@
         <f:entry title="${%Type}" field="type" description="${%simple specifies a Simple Total Memory Dump,
 extended specifies an Extended Total Memory Dump,
 selective specifies a Selective Memory Dump}">
-            <f:select/>
+            <f:select default="{descriptor.defaultType}"/>
         </f:entry>
         <f:entry title="${%lock Session}" field="lockSession"
                  description="${%prevent the deletion of the memory dump}">

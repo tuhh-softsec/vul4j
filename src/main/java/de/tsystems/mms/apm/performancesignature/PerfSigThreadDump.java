@@ -20,76 +20,80 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.model.Agent;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
+import hudson.AbortException;
 import hudson.Extension;
+import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
-import hudson.model.BuildListener;
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
+import jenkins.tasks.SimpleBuildStep;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
+import javax.annotation.Nonnull;
+import java.io.IOException;
 import java.io.PrintStream;
 
-/**
- * Created by rapi on 20.10.2014.
- */
-public class PerfSigThreadDump extends Builder {
+public class PerfSigThreadDump extends Builder implements SimpleBuildStep {
+    private static final int waitForDumpTimeout = 60000;
+    private static final int waitForDumpPollingInterval = 5000;
     private final String agent, host;
-    private final boolean lockSession;
-    private int waitForDumpTimeout = 60000;
-    private int waitForDumpPollingInterval = 5000;
+    private boolean lockSession;
 
     @DataBoundConstructor
-    public PerfSigThreadDump(final String agent, final String host, final boolean lockSession) {
+    public PerfSigThreadDump(final String agent, final String host) {
         this.agent = agent;
         this.host = host;
-        this.lockSession = lockSession;
+    }
+
+    @Deprecated
+    public PerfSigThreadDump(final String agent, final String host, final boolean lockSession) {
+        this(agent, host);
+        setLockSession(lockSession);
     }
 
     @Override
-    public boolean perform(final AbstractBuild build, final Launcher launcher, final BuildListener listener) {
+    public void perform(@Nonnull final Run<?, ?> run, @Nonnull final FilePath workspace, @Nonnull final Launcher launcher, @Nonnull final TaskListener listener)
+            throws InterruptedException, IOException {
         final PrintStream logger = listener.getLogger();
-        final PerfSigRecorder dtRecorder = PerfSigUtils.getRecorder(build);
+        final PerfSigRecorder dtRecorder = PerfSigUtils.getRecorder(run);
 
         if (dtRecorder == null) {
-            logger.println(Messages.PerfSigThreadDump_NoRecorderFailure());
-            return false;
+            throw new AbortException(Messages.PerfSigThreadDump_NoRecorderFailure());
         }
 
         final DTServerConnection connection = new DTServerConnection(dtRecorder.getProtocol(), dtRecorder.getHost(), dtRecorder.getPort(),
                 dtRecorder.getCredentialsId(), dtRecorder.isVerifyCertificate(), dtRecorder.getCustomProxy());
 
-        try {
-            for (Agent agent : connection.getAgents()) {
-                if (agent.getName().equalsIgnoreCase(this.agent) && agent.getSystemProfile().equalsIgnoreCase(dtRecorder.getProfile()) && agent.getHost().equalsIgnoreCase(this.host)) {
-                    logger.println("Creating Memory Dump for " + agent.getSystemProfile() + "-" + agent.getName() + "-" + agent.getHost() + "-" + agent.getProcessId());
+        for (Agent agent : connection.getAgents()) {
+            if (agent.getName().equalsIgnoreCase(this.agent) && agent.getSystemProfile().equalsIgnoreCase(dtRecorder.getProfile()) && agent.getHost().equalsIgnoreCase(this.host)) {
+                logger.println("Creating Memory Dump for " + agent.getSystemProfile() + "-" + agent.getName() + "-" + agent.getHost() + "-" + agent.getProcessId());
 
-                    String threadDump = connection.threadDump(agent.getSystemProfile(), agent.getName(), agent.getHost(), agent.getProcessId(), getLockSession());
-                    int timeout = this.waitForDumpTimeout;
-                    boolean dumpFinished = connection.threadDumpStatus(agent.getSystemProfile(), threadDump).isResultValueTrue();
-                    while ((!dumpFinished) && (timeout > 0)) {
-                        Thread.sleep(this.waitForDumpPollingInterval);
-                        timeout -= this.waitForDumpPollingInterval;
-                        dumpFinished = connection.threadDumpStatus(agent.getSystemProfile(), threadDump).isResultValueTrue();
-                    }
-                    if (dumpFinished) {
-                        logger.println(Messages.PerfSigThreadDump_SuccessfullyCreatedThreadDump() + agent.getName());
-                        return true;
-                    } else {
-                        throw new RESTErrorException("Timeout is raised");
-                    }
+                String threadDump = connection.threadDump(agent.getSystemProfile(), agent.getName(), agent.getHost(), agent.getProcessId(), getLockSession());
+                if (StringUtils.isBlank(threadDump))
+                    throw new RESTErrorException("Thread Dump wasnt taken");
+                int timeout = waitForDumpTimeout;
+                boolean dumpFinished = connection.threadDumpStatus(agent.getSystemProfile(), threadDump).isResultValueTrue();
+                while ((!dumpFinished) && (timeout > 0)) {
+                    Thread.sleep(waitForDumpPollingInterval);
+                    timeout -= waitForDumpPollingInterval;
+                    dumpFinished = connection.threadDumpStatus(agent.getSystemProfile(), threadDump).isResultValueTrue();
+                }
+                if (dumpFinished) {
+                    logger.println(Messages.PerfSigThreadDump_SuccessfullyCreatedThreadDump() + agent.getName());
+                    return;
+                } else {
+                    throw new RESTErrorException("Timeout is raised");
                 }
             }
-        } catch (Exception e) {
-            logger.println(e);
-            return !dtRecorder.isTechnicalFailure();
         }
-        logger.println(String.format(Messages.PerfSigThreadDump_AgentNotConnected(), agent));
-        return !dtRecorder.isTechnicalFailure();
+        throw new AbortException(String.format(Messages.PerfSigThreadDump_AgentNotConnected(), agent));
     }
 
     public String getAgent() {
@@ -104,16 +108,14 @@ public class PerfSigThreadDump extends Builder {
         return lockSession;
     }
 
+    @DataBoundSetter
+    public void setLockSession(final boolean lockSession) {
+        this.lockSession = lockSession;
+    }
+
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
-
-        public DescriptorImpl() {
-            load();
-        }
-
-        public static boolean getDefaultLockSession() {
-            return false;
-        }
+        public static final boolean defaultLockSession = false;
 
         public FormValidation doCheckAgent(@QueryParameter final String agent) {
             FormValidation validationResult;
