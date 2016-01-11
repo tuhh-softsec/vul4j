@@ -19,92 +19,92 @@ package de.tsystems.mms.apm.performancesignature;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
+import hudson.AbortException;
 import hudson.Extension;
+import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
-import hudson.model.BuildListener;
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
+import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 
+import javax.annotation.Nonnull;
+import java.io.IOException;
 import java.io.PrintStream;
 
-/**
- * Created by rapi on 17.05.2014.
- */
-public class PerfSigStopRecording extends Builder {
+public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
     private static final int reanalyzeSessionTimeout = 60000; //==1 minute
     private static final int reanalyzeSessionPollingInterval = 5000; //==5 seconds
-    private final boolean reanalyzeSession;
+    private boolean reanalyzeSession;
 
     @DataBoundConstructor
+    public PerfSigStopRecording() {
+    }
+
+    @Deprecated
     public PerfSigStopRecording(final boolean reanalyzeSession) {
-        this.reanalyzeSession = reanalyzeSession;
+        this();
+        setReanalyzeSession(reanalyzeSession);
     }
 
     public boolean getReanalyzeSession() {
         return reanalyzeSession;
     }
 
+    @DataBoundSetter
+    public void setReanalyzeSession(final boolean reanalyzeSession) {
+        this.reanalyzeSession = reanalyzeSession;
+    }
+
     @Override
-    public boolean perform(final AbstractBuild build, final Launcher launcher, final BuildListener listener) {
+    public void perform(@Nonnull final Run<?, ?> run, @Nonnull final FilePath workspace, @Nonnull final Launcher launcher, @Nonnull final TaskListener listener)
+            throws InterruptedException, IOException {
         final PrintStream logger = listener.getLogger();
 
         logger.println(Messages.PerfSigStopRecording_StopSessionRecording());
-        final PerfSigRecorder dtRecorder = PerfSigUtils.getRecorder(build);
+        final PerfSigRecorder dtRecorder = PerfSigUtils.getRecorder(run);
         if (dtRecorder == null) {
-            logger.println(Messages.PerfSigStopRecording_MissingConfiguration());
-            return false;
+            throw new AbortException(Messages.PerfSigStopRecording_MissingConfiguration());
         }
 
         final DTServerConnection connection = new DTServerConnection(dtRecorder.getProtocol(), dtRecorder.getHost(), dtRecorder.getPort(),
                 dtRecorder.getCredentialsId(), dtRecorder.isVerifyCertificate(), dtRecorder.getCustomProxy());
 
-        try {
-            String sessionName = connection.stopRecording(dtRecorder.getProfile());
-            if (sessionName == null) throw new RESTErrorException(Messages.PerfSigStopRecording_InternalError());
-            logger.println(String.format("Stopped recording on %s with SessionName %s", dtRecorder.getProfile(), sessionName));
+        String sessionName = connection.stopRecording(dtRecorder.getProfile());
+        if (sessionName == null)
+            throw new RESTErrorException(Messages.PerfSigStopRecording_InternalError());
+        logger.println(String.format("Stopped recording on %s with SessionName %s", dtRecorder.getProfile(), sessionName));
 
-            if (this.reanalyzeSession) {
-                logger.println("reanalyze session ...");
-                boolean reanalyzeFinished = connection.reanalyzeSessionStatus(sessionName);
-                if (connection.reanalyzeSession(sessionName)) {
-                    int timeout = reanalyzeSessionTimeout;
-                    while ((!reanalyzeFinished) && (timeout > 0)) {
-                        logger.println("querying session analysis status");
-                        try {
-                            Thread.sleep(reanalyzeSessionPollingInterval);
-                            timeout -= reanalyzeSessionPollingInterval;
-                        } catch (InterruptedException ignored) {
-                        }
-                        reanalyzeFinished = connection.reanalyzeSessionStatus(sessionName);
+        if (this.reanalyzeSession) {
+            logger.println("reanalyze session ...");
+            boolean reanalyzeFinished = connection.reanalyzeSessionStatus(sessionName);
+            if (connection.reanalyzeSession(sessionName)) {
+                int timeout = reanalyzeSessionTimeout;
+                while ((!reanalyzeFinished) && (timeout > 0)) {
+                    logger.println("querying session analysis status");
+                    try {
+                        Thread.sleep(reanalyzeSessionPollingInterval);
+                        timeout -= reanalyzeSessionPollingInterval;
+                    } catch (InterruptedException ignored) {
                     }
-                    if (reanalyzeFinished) {
-                        logger.println("session reanalysis finished");
-                        return true;
-                    } else {
-                        throw new RESTErrorException("Timeout raised");
-                    }
+                    reanalyzeFinished = connection.reanalyzeSessionStatus(sessionName);
+                }
+                if (reanalyzeFinished) {
+                    logger.println("session reanalysis finished");
+                } else {
+                    throw new RESTErrorException("Timeout raised");
                 }
             }
-            return true;
-        } catch (RESTErrorException e) {
-            logger.println(String.format("Failed to stop Dynatrace Session recording on %s: %s", dtRecorder.getProfile(), e));
-            return !dtRecorder.isTechnicalFailure();
         }
     }
 
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
-
-        public DescriptorImpl() {
-            load();
-        }
-
-        public static boolean getDefaultReanalyzeSession() {
-            return false;
-        }
+        public static final boolean defaultReanalyzeSession = false;
 
         public boolean isApplicable(final Class<? extends AbstractProject> aClass) {
             return true;

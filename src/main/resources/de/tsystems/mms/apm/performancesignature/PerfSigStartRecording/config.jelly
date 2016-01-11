@@ -23,7 +23,7 @@
     <f:advanced>
         <f:entry title="${%Recording Option}" field="recordingOption" description="${%
 all – All PurePaths including time series || violations – Only PurePaths marked as violated, including time series || timeseries – Time series only}">
-            <f:select/>
+            <f:select default="{descriptor.defaultRecordingOption}"/>
         </f:entry>
         <f:entry title="${%lock Session}" field="lockSession" description="${%prevent the deletion of the session on the Dynatrace server}">
             <f:checkbox default="${descriptor.defaultLockSession}"/>

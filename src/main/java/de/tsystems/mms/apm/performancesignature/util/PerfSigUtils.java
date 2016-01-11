@@ -28,6 +28,7 @@ import hudson.Functions;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Item;
+import hudson.model.Run;
 import hudson.security.ACL;
 import hudson.tasks.Publisher;
 import hudson.util.Area;
@@ -51,9 +52,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Created by rapi on 18.05.2014.
- */
 public class PerfSigUtils {
     /**
      * @return {@link jenkins.model.Jenkins#getInstance()} if that isn't null, or die.
@@ -90,9 +88,9 @@ public class PerfSigUtils {
         return listBoxModel;
     }
 
-    public static PerfSigRecorder getRecorder(final AbstractBuild build) {
-        final AbstractProject<?, ?> project = PerfSigUtils.cast(build.getProject());
-        final List<Publisher> publishers = project.getPublishersList().toList();
+    public static PerfSigRecorder getRecorder(final Run<?, ?> run) {
+        AbstractProject<?, ?> project = PerfSigUtils.cast(run.getParent());
+        List<Publisher> publishers = project.getPublishersList().toList();
         PerfSigRecorder dtRecorder = null;
 
         //ToDo: add Flexible Publish Plugin compatibility

@@ -35,7 +35,7 @@ import de.tsystems.mms.apm.performancesignature.model.CustomProxy;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.FilePath;
 import hudson.ProxyConfiguration;
-import hudson.util.IOUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.xml.sax.InputSource;
@@ -58,9 +58,6 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
-/**
- * Created by rapi on 25.04.2014.
- */
 public class DTServerConnection {
     private static final Logger logger = Logger.getLogger(DTServerConnection.class.getName());
 
@@ -213,14 +210,7 @@ public class DTServerConnection {
             return;
         }
         conn.setDoOutput(true);
-        OutputStreamWriter wr = null;
-        try {
-            wr = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
-            wr.write(parameters);
-        } catch (IOException ignored) {
-        } finally {
-            IOUtils.closeQuietly(wr);
-        }
+        IOUtils.write(parameters, conn.getOutputStream());
     }
 
     private InputStream handleInputStream(final HttpURLConnection conn) throws IOException {
@@ -236,7 +226,7 @@ public class DTServerConnection {
         return resultingInputStream;
     }
 
-    private RESTResultXMLHandler getResultXMLHandler(final URLConnection conn) throws RESTErrorException, IOException, SAXException {
+    private RESTResultXMLHandler getResultXMLHandler(final URLConnection conn) throws IOException, SAXException {
         HttpURLConnection httpURLConnection = (HttpURLConnection) conn;
         handleHTTPResponseCode(httpURLConnection);
 
@@ -248,7 +238,7 @@ public class DTServerConnection {
         return handler;
     }
 
-    private ProfileXMLHandler getProfileXMLHandler(final URLConnection conn) throws RESTErrorException, IOException, SAXException {
+    private ProfileXMLHandler getProfileXMLHandler(final URLConnection conn) throws IOException, SAXException {
         HttpURLConnection httpURLConnection = (HttpURLConnection) conn;
         handleHTTPResponseCode(httpURLConnection);
 
@@ -260,7 +250,7 @@ public class DTServerConnection {
         return handler;
     }
 
-    private AgentXMLHandler getAgentXMLHandler(final URLConnection conn) throws RESTErrorException, IOException, SAXException {
+    private AgentXMLHandler getAgentXMLHandler(final URLConnection conn) throws IOException, SAXException {
         HttpURLConnection httpURLConnection = (HttpURLConnection) conn;
         handleHTTPResponseCode(httpURLConnection);
 
@@ -272,7 +262,7 @@ public class DTServerConnection {
         return handler;
     }
 
-    private RESTStringArrayXMLHandler getStringArrayXMLHandler(final URLConnection conn) throws RESTErrorException, IOException, SAXException {
+    private RESTStringArrayXMLHandler getStringArrayXMLHandler(final URLConnection conn) throws IOException, SAXException {
         HttpURLConnection httpURLConnection = (HttpURLConnection) conn;
         handleHTTPResponseCode(httpURLConnection);
 
@@ -284,7 +274,7 @@ public class DTServerConnection {
         return handler;
     }
 
-    private RESTDumpStatusXMLHandler getDumpStatusXMLHandler(final URLConnection conn) throws RESTErrorException, IOException, SAXException {
+    private RESTDumpStatusXMLHandler getDumpStatusXMLHandler(final URLConnection conn) throws IOException, SAXException {
         HttpURLConnection httpURLConnection = (HttpURLConnection) conn;
         handleHTTPResponseCode(httpURLConnection);
 
@@ -296,7 +286,7 @@ public class DTServerConnection {
         return handler;
     }
 
-    private void handleHTTPResponseCode(final HttpURLConnection httpURLConnection) throws RESTErrorException, IOException, SAXException {
+    private void handleHTTPResponseCode(final HttpURLConnection httpURLConnection) throws IOException, SAXException {
         XMLReader xr = XMLReaderFactory.createXMLReader();
         if (httpURLConnection.getResponseCode() >= 300) {
             if (httpURLConnection.getResponseCode() == 401) {
@@ -630,10 +620,7 @@ public class DTServerConnection {
             conn.setRequestProperty("Content-Type", "text/xml");
 
             conn.setDoOutput(true);
-            DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
-            wr.writeBytes(testMetaDataPostXml);
-            wr.flush();
-            IOUtils.closeQuietly(wr);
+            IOUtils.write(testMetaDataPostXml, conn.getOutputStream());
 
             handleHTTPResponseCode(conn);
             TestMetaDataXMLHandler handler = new TestMetaDataXMLHandler();

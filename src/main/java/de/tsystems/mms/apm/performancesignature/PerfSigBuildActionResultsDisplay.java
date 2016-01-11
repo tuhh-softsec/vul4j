@@ -52,9 +52,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by rapi on 19.05.2014.
- */
 public class PerfSigBuildActionResultsDisplay implements ModelObject {
     private static AbstractBuild<?, ?> currentBuild = null;
     private final transient PerfSigBuildAction buildAction;
@@ -170,9 +167,7 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
         for (Measurement measurement : m.getMeasurements()) {
             timeSeries.add(new Second(new Date(measurement.getTimestamp())), measurement.getMetricValue(m.getAggregation()));
         }
-        final TimeSeriesCollection data = new TimeSeriesCollection(timeSeries);
-        data.setDomainIsPointsInTime(false);
-        return data;
+        return new TimeSeriesCollection(timeSeries);
     }
 
     private JFreeChart createXYLineChart(final StaplerRequest req, final XYDataset dataset) throws UnsupportedEncodingException {
