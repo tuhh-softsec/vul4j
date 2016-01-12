@@ -17,8 +17,8 @@
 package de.tsystems.mms.apm.performancesignature;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.Agent;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionException;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.AbortException;
 import hudson.Extension;
@@ -51,8 +51,8 @@ public class PerfSigActivateConfiguration extends Builder implements SimpleBuild
     @Override
     public void perform(@Nonnull final Run<?, ?> run, @Nonnull final FilePath workspace, @Nonnull final Launcher launcher, @Nonnull final TaskListener listener)
             throws InterruptedException, IOException {
-        final PrintStream logger = listener.getLogger();
-        final PerfSigRecorder dtRecorder = PerfSigUtils.getRecorder(run);
+        PrintStream logger = listener.getLogger();
+        PerfSigRecorder dtRecorder = PerfSigUtils.getRecorder(run);
 
         if (dtRecorder == null) {
             throw new AbortException(Messages.PerfSigActivateConfiguration_NoRecorderFailure());
@@ -64,7 +64,7 @@ public class PerfSigActivateConfiguration extends Builder implements SimpleBuild
 
         boolean result = connection.activateConfiguration(dtRecorder.getProfile(), this.configuration);
         if (!result)
-            throw new RESTErrorException(Messages.PerfSigActivateConfiguration_InternalError());
+            throw new CommandExecutionException(Messages.PerfSigActivateConfiguration_InternalError());
         logger.println(Messages.PerfSigActivateConfiguration_SuccessfullyActivated() + dtRecorder.getProfile());
 
         for (Agent agent : connection.getAgents()) {

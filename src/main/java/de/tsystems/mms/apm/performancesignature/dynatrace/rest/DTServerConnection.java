@@ -29,7 +29,6 @@
 package de.tsystems.mms.apm.performancesignature.dynatrace.rest;
 
 import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
-import de.tsystems.mms.apm.performancesignature.PerfSigRecorder;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.*;
 import de.tsystems.mms.apm.performancesignature.model.CustomProxy;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
@@ -76,8 +75,7 @@ public class DTServerConnection {
 
     public DTServerConnection(final String protocol, final String host, final int port, final String credentialsId,
                               final boolean verifyCertificate, final CustomProxy customProxy) {
-        this.address = protocol + "://" + (host != null ? host : PerfSigRecorder.DescriptorImpl.getDefaultHost()) + ":" +
-                (port != 0 ? port : PerfSigRecorder.DescriptorImpl.getDefaultPort());
+        this.address = protocol + "://" + host + ":" + port;
         this.credentials = PerfSigUtils.getCredentials(credentialsId);
         this.verifyCertificate = verifyCertificate;
 
@@ -369,12 +367,9 @@ public class DTServerConnection {
 
             RESTResultXMLHandler handler = getResultXMLHandler(conn);
             return handler.getResultString();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            throw new CommandExecutionException("Error start recording session: " + ex.getMessage(), ex);
         }
-        return null;
     }
 
     public String stopRecording(final String profileName) throws RESTErrorException {
@@ -387,12 +382,9 @@ public class DTServerConnection {
 
             RESTResultXMLHandler handler = getResultXMLHandler(conn);
             return handler.getResultString();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            throw new CommandExecutionException("Error stop recording session: " + ex.getMessage(), ex);
         }
-        return null;
     }
 
     public List<String> getSessions() {
@@ -425,7 +417,7 @@ public class DTServerConnection {
         }
     }
 
-    public List<BaseConfiguration> getProfiles() {
+    public List<BaseConfiguration> getSystemProfiles() {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(this.address);

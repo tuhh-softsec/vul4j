@@ -25,12 +25,15 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.IncidentChart;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.IncidentViolation;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
 import de.tsystems.mms.apm.performancesignature.model.ConfigurationTestCase;
 import de.tsystems.mms.apm.performancesignature.model.ConfigurationTestCase.ConfigurationTestCaseDescriptor;
 import de.tsystems.mms.apm.performancesignature.model.CustomProxy;
 import de.tsystems.mms.apm.performancesignature.model.Dashboard;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
+import hudson.AbortException;
 import hudson.Extension;
+import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.*;
 import hudson.security.ACL;
@@ -41,11 +44,12 @@ import hudson.tasks.Recorder;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import hudson.util.ListBoxModel.Option;
+import jenkins.tasks.SimpleBuildStep;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
 import javax.annotation.Nonnull;
@@ -58,83 +62,73 @@ import java.util.List;
 
 import static com.cloudbees.plugins.credentials.CredentialsMatchers.instanceOf;
 
-public class PerfSigRecorder extends Recorder {
-    private final String protocol, host, profile;
-    private final boolean verifyCertificate;
-    private final boolean exportSessions;
-    private final boolean modifyBuildResult;
-    private final boolean technicalFailure;
-    private final int delay;
-    private final int retryCount;
+public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
+    private final String protocol, host, profile, credentialsId;
     private final int port;
-    private final int nonFunctionalFailure;
     private final List<ConfigurationTestCase> configurationTestCases;
-    private final CustomProxy customProxy;
-    private final String credentialsId;
+    private boolean verifyCertificate, exportSessions, proxy;
+    private int delay, retryCount, nonFunctionalFailure;
+    private CustomProxy customProxy;
     private transient List<String> availableSessions;
 
     @DataBoundConstructor
-    public PerfSigRecorder(final String protocol, final String host, final String credentialsId, final int port, final String profile,
-                           final boolean verifyCertificate, final boolean exportSessions, boolean technicalFailure, final int delay, final int retryCount,
-                           final List<ConfigurationTestCase> configurationTestCases, final boolean modifyBuildResult,
-                           final boolean proxy, final CustomProxy proxySource, final int nonFunctionalFailure) {
+    public PerfSigRecorder(final String protocol, final String host, final int port, final String credentialsId, final String profile,
+                           final List<ConfigurationTestCase> configurationTestCases) {
         this.protocol = protocol;
         this.host = host;
-        this.modifyBuildResult = modifyBuildResult;
-        this.credentialsId = credentialsId;
         this.port = port;
+        this.credentialsId = credentialsId;
         this.profile = profile;
-        this.verifyCertificate = verifyCertificate;
-        this.exportSessions = exportSessions;
-        this.delay = delay;
-        this.retryCount = retryCount;
         this.configurationTestCases = configurationTestCases;
-        if (modifyBuildResult) {
-            this.technicalFailure = technicalFailure;
-            this.nonFunctionalFailure = nonFunctionalFailure;
-        } else {
-            this.technicalFailure = false;
-            this.nonFunctionalFailure = 0;
-        }
-        if (proxy) {
-            this.customProxy = proxySource;
-        } else {
-            this.customProxy = null;
-        }
+        setExportSessions(DescriptorImpl.defaultExportSessions);
+    }
+
+    @Deprecated
+    public PerfSigRecorder(final String protocol, final String host, final int port, final String credentialsId, final String profile,
+                           final boolean verifyCertificate, final boolean exportSessions, final int delay, final int retryCount,
+                           final List<ConfigurationTestCase> configurationTestCases,
+                           final boolean proxy, final CustomProxy proxySource, final int nonFunctionalFailure) {
+        this(protocol, host, port, credentialsId, profile, configurationTestCases);
+        setVerifyCertificate(verifyCertificate);
+        setExportSessions(exportSessions);
+        setDelay(delay);
+        setRetryCount(retryCount);
+        setNonFunctionalFailure(nonFunctionalFailure);
+        setProxy(proxy);
+        setCustomProxy(proxySource);
     }
 
     @Override
-    public boolean perform(final AbstractBuild build, final Launcher launcher, final BuildListener listener) throws InterruptedException, IOException {
-        final PrintStream logger = listener.getLogger();
+    public void perform(@Nonnull final Run<?, ?> run, @Nonnull final FilePath workspace, @Nonnull final Launcher launcher, @Nonnull final TaskListener listener)
+            throws InterruptedException, IOException {
 
-        final DTServerConnection connection = new DTServerConnection(this.getProtocol(), this.getHost(), this.getPort(), credentialsId,
+        PrintStream logger = listener.getLogger();
+        DTServerConnection connection = new DTServerConnection(this.getProtocol(), this.getHost(), this.getPort(), credentialsId,
                 verifyCertificate, customProxy);
         logger.println(Messages.PerfSigRecorder_VerifyDTConnection());
         if (!connection.validateConnection()) {
-            logger.println(Messages.PerfSigRecorder_DTConnectionError());
-            checkForUnstableResult(build);
-            return !isTechnicalFailure();
+            throw new RESTErrorException(Messages.PerfSigRecorder_DTConnectionError());
         }
 
         if (configurationTestCases == null) {
-            logger.println(Messages.PerfSigRecorder_MissingTestCases());
+            throw new AbortException(Messages.PerfSigRecorder_MissingTestCases());
         }
 
         if (this.delay != 0) {
-            logger.println(Messages.PerfSigRecorder_SleepingDelay() + " " + this.getDelay() + " sec");
-            Thread.sleep(this.getDelay() * 1000);
+            logger.println(Messages.PerfSigRecorder_SleepingDelay() + " " + getDelay() + " sec");
+            Thread.sleep(getDelay() * 1000);
         }
-        logger.println(Messages.PerfSigRecorder_ReportDirectory() + " " + PerfSigUtils.getReportDirectory(build));
+        logger.println(Messages.PerfSigRecorder_ReportDirectory() + " " + PerfSigUtils.getReportDirectory(run));
 
         String sessionName, comparisonSessionName = null, singleFilename, comparisonFilename;
         int comparisonBuildNumber = 0;
-        final int buildNumber = build.getNumber();
+        final int buildNumber = run.getNumber();
         final List<DashboardReport> dashboardReports = new ArrayList<DashboardReport>();
 
-        Run previousBuildRun = build.getPreviousNotFailedBuild();
+        Run<?, ?> previousBuildRun = run.getPreviousNotFailedBuild();
         if (previousBuildRun != null) {
-            if (!previousBuildRun.getResult().isCompleteBuild() && build.getPreviousCompletedBuild() != null) {
-                previousBuildRun = build.getPreviousCompletedBuild();
+            if (!previousBuildRun.getResult().isCompleteBuild() && run.getPreviousCompletedBuild() != null) {
+                previousBuildRun = run.getPreviousCompletedBuild();
             }
             comparisonBuildNumber = previousBuildRun.getNumber();
             logger.println(Messages.PerfSigRecorder_LastSuccessfulBuild() + " #" + comparisonBuildNumber);
@@ -144,19 +138,15 @@ public class PerfSigRecorder extends Recorder {
 
         for (ConfigurationTestCase configurationTestCase : getConfigurationTestCases()) {
             if (!configurationTestCase.validate()) {
-                logger.println(Messages.PerfSigRecorder_TestCaseValidationError());
-                checkForUnstableResult(build);
-                return !isTechnicalFailure();
+                throw new AbortException(Messages.PerfSigRecorder_TestCaseValidationError());
             }
             logger.println(String.format(Messages.PerfSigRecorder_ConnectionSuccessful(), configurationTestCase.getName()));
 
-            final PerfSigRegisterEnvVars buildEnvVars = getBuildEnvVars(build, configurationTestCase.getName());
+            final PerfSigRegisterEnvVars buildEnvVars = getBuildEnvVars(run, configurationTestCase.getName());
             if (buildEnvVars != null) {
                 sessionName = buildEnvVars.getSessionName();
             } else {
-                logger.println("No sessionname found, aborting ...");
-                checkForUnstableResult(build);
-                return !isTechnicalFailure();
+                throw new RESTErrorException("No sessionname found, aborting ...");
             }
 
             if (comparisonBuildNumber != 0) {
@@ -166,135 +156,118 @@ public class PerfSigRecorder extends Recorder {
                 }
             }
 
-            try {
+            availableSessions = connection.getSessions();
+            int retryCount = 0;
+            while ((!validateSessionName(sessionName)) && (retryCount < getRetryCount())) {
+                retryCount++;
                 availableSessions = connection.getSessions();
-                int retryCount = 0;
-                while ((!validateSessionName(sessionName)) && (retryCount < getRetryCount())) {
-                    retryCount++;
-                    availableSessions = connection.getSessions();
-                    logger.println(String.format(Messages.PerfSigRecorder_WaitingForSession(), retryCount, getRetryCount()));
-                    Thread.sleep(10000);
-                }
-            } catch (Exception e) {
-                logger.println(e);
-                return !isTechnicalFailure();
+                logger.println(String.format(Messages.PerfSigRecorder_WaitingForSession(), retryCount, getRetryCount()));
+                Thread.sleep(10000);
             }
 
             if (!validateSessionName(sessionName)) {
-                logger.println(String.format(Messages.PerfSigRecorder_SessionNotAvailable(), sessionName));
-                checkForUnstableResult(build);
-                continue;
+                throw new RESTErrorException(String.format(Messages.PerfSigRecorder_SessionNotAvailable(), sessionName));
             }
             if (comparisonBuildNumber != 0 && !validateSessionName(comparisonSessionName)) {
                 logger.println(String.format(Messages.PerfSigRecorder_ComparisonNotPossible(), comparisonSessionName));
             }
 
-            try {
-                for (Dashboard singleDashboard : configurationTestCase.getSingleDashboards()) {
-                    singleFilename = "Singlereport_" + sessionName + "_" + singleDashboard.getName() + ".pdf";
-                    logger.println(Messages.PerfSigRecorder_GettingPDFReport() + " " + singleFilename);
-                    boolean singleResult = connection.getPDFReport(sessionName, null, singleDashboard.getName(),
-                            new File(PerfSigUtils.getReportDirectory(build) + File.separator + singleFilename));
-                    if (!singleResult) {
-                        logger.println(Messages.PerfSigRecorder_SingleReportError());
-                        checkForUnstableResult(build);
+            for (Dashboard singleDashboard : configurationTestCase.getSingleDashboards()) {
+                singleFilename = "Singlereport_" + sessionName + "_" + singleDashboard.getName() + ".pdf";
+                logger.println(Messages.PerfSigRecorder_GettingPDFReport() + " " + singleFilename);
+                boolean singleResult = connection.getPDFReport(sessionName, null, singleDashboard.getName(),
+                        new File(PerfSigUtils.getReportDirectory(run), File.separator + singleFilename));
+                if (!singleResult) {
+                    throw new RESTErrorException(Messages.PerfSigRecorder_SingleReportError());
+                }
+            }
+            for (Dashboard comparisonDashboard : configurationTestCase.getComparisonDashboards()) {
+                if (comparisonBuildNumber != 0 && comparisonSessionName != null && run.getResult().isBetterThan(Result.FAILURE)) {
+                    comparisonFilename = "Comparisonreport_" + comparisonSessionName.replace(comparisonBuildNumber + "_",
+                            buildNumber + "_" + comparisonBuildNumber + "_") + "_" + comparisonDashboard.getName() + ".pdf";
+                    logger.println(Messages.PerfSigRecorder_GettingPDFReport() + " " + comparisonFilename);
+                    boolean comparisonResult = connection.getPDFReport(sessionName, comparisonSessionName, comparisonDashboard.getName(),
+                            new File(PerfSigUtils.getReportDirectory(run), File.separator + comparisonFilename));
+                    if (!comparisonResult) {
+                        throw new RESTErrorException(Messages.PerfSigRecorder_ComparisonReportError());
                     }
                 }
-                for (Dashboard comparisonDashboard : configurationTestCase.getComparisonDashboards()) {
-                    if (comparisonBuildNumber != 0 && comparisonSessionName != null && getBuildResult(build).isBetterThan(Result.FAILURE)) {
-                        comparisonFilename = "Comparisonreport_" + comparisonSessionName.replace(comparisonBuildNumber + "_",
-                                buildNumber + "_" + comparisonBuildNumber + "_") + "_" + comparisonDashboard.getName() + ".pdf";
-                        logger.println(Messages.PerfSigRecorder_GettingPDFReport() + " " + comparisonFilename);
-                        boolean comparisonResult = connection.getPDFReport(sessionName, comparisonSessionName, comparisonDashboard.getName(),
-                                new File(PerfSigUtils.getReportDirectory(build) + File.separator + comparisonFilename));
-                        if (!comparisonResult) {
-                            logger.println(Messages.PerfSigRecorder_ComparisonReportError());
-                            checkForUnstableResult(build);
-                        }
-                    }
-                }
-                logger.println(Messages.PerfSigRecorder_ParseXMLReport());
-                final DashboardReport dashboardReport = connection.getDashboardReportFromXML(configurationTestCase.getXmlDashboard(), sessionName, configurationTestCase.getName());
-                if (dashboardReport == null || dashboardReport.getChartDashlets() == null || dashboardReport.getChartDashlets().isEmpty()) {
-                    logger.println(Messages.PerfSigRecorder_XMLReportError());
-                    checkForUnstableResult(build);
-                } else {
-                    dashboardReport.setConfigurationTestCase(configurationTestCase);
-                    dashboardReports.add(dashboardReport);
+            }
+            logger.println(Messages.PerfSigRecorder_ParseXMLReport());
+            final DashboardReport dashboardReport = connection.getDashboardReportFromXML(configurationTestCase.getXmlDashboard(), sessionName, configurationTestCase.getName());
+            if (dashboardReport == null || dashboardReport.getChartDashlets() == null || dashboardReport.getChartDashlets().isEmpty()) {
+                throw new RESTErrorException(Messages.PerfSigRecorder_XMLReportError());
+            } else {
+                dashboardReport.setConfigurationTestCase(configurationTestCase);
+                dashboardReports.add(dashboardReport);
 
-                    List<IncidentChart> incidents = dashboardReport.getIncidents();
-                    int numWarning = 0, numSevere = 0;
-                    if (incidents != null && incidents.size() > 0) {
-                        logger.println("Following incidents occured:");
-                        for (IncidentChart incident : incidents) {
-                            for (IncidentViolation violation : incident.getViolations()) {
-                                switch (violation.getSeverity()) {
-                                    case SEVERE:
-                                        logger.println("Severe Incident:     " + incident.getRule() + " " + violation.getRule() + " " + violation.getDescription());
-                                        numSevere++;
-                                        break;
-                                    case WARNING:
-                                        logger.println("Warning Incident:    " + incident.getRule() + " " + violation.getRule() + " " + violation.getDescription());
-                                        numWarning++;
-                                        break;
-                                    default:
-                                        break;
-                                }
+                List<IncidentChart> incidents = dashboardReport.getIncidents();
+                int numWarning = 0, numSevere = 0;
+                if (incidents != null && incidents.size() > 0) {
+                    logger.println("Following incidents occured:");
+                    for (IncidentChart incident : incidents) {
+                        for (IncidentViolation violation : incident.getViolations()) {
+                            switch (violation.getSeverity()) {
+                                case SEVERE:
+                                    logger.println("Severe Incident:     " + incident.getRule() + " " + violation.getRule() + " " + violation.getDescription());
+                                    numSevere++;
+                                    break;
+                                case WARNING:
+                                    logger.println("Warning Incident:    " + incident.getRule() + " " + violation.getRule() + " " + violation.getDescription());
+                                    numWarning++;
+                                    break;
+                                default:
+                                    break;
                             }
                         }
+                    }
 
-                        switch (nonFunctionalFailure) {
-                            case 1:
-                                if (numSevere > 0) {
-                                    logger.println("builds status was set to 'failed' due to severe incidents");
-                                    build.setResult(Result.FAILURE);
-                                }
-                                break;
-                            case 2:
-                                if (numSevere > 0 || numWarning > 0) {
-                                    logger.println("builds status was set to 'failed' due to warning/severe incidents");
-                                    build.setResult(Result.FAILURE);
-                                }
-                                break;
-                            case 3:
-                                if (numSevere > 0) {
-                                    logger.println("builds status was set to 'unstable' due to severe incidents");
-                                    build.setResult(Result.UNSTABLE);
-                                }
-                                break;
-                            case 4:
-                                if (numSevere > 0 || numWarning > 0) {
-                                    logger.println("builds status was set to 'unstable' due to warning/severe incidents");
-                                    build.setResult(Result.UNSTABLE);
-                                }
-                                break;
-                            default:
-                                break;
-                        }
+                    switch (nonFunctionalFailure) {
+                        case 1:
+                            if (numSevere > 0) {
+                                logger.println("builds status was set to 'failed' due to severe incidents");
+                                run.setResult(Result.FAILURE);
+                            }
+                            break;
+                        case 2:
+                            if (numSevere > 0 || numWarning > 0) {
+                                logger.println("builds status was set to 'failed' due to warning/severe incidents");
+                                run.setResult(Result.FAILURE);
+                            }
+                            break;
+                        case 3:
+                            if (numSevere > 0) {
+                                logger.println("builds status was set to 'unstable' due to severe incidents");
+                                run.setResult(Result.UNSTABLE);
+                            }
+                            break;
+                        case 4:
+                            if (numSevere > 0 || numWarning > 0) {
+                                logger.println("builds status was set to 'unstable' due to warning/severe incidents");
+                                run.setResult(Result.UNSTABLE);
+                            }
+                            break;
+                        default:
+                            break;
                     }
                 }
+            }
 
-                if (exportSessions) {
-                    boolean exportedSession = connection.downloadSession(sessionName, new File(PerfSigUtils.getReportDirectory(build) + File.separator + sessionName + ".dts"));
-                    if (!exportedSession) {
-                        logger.println(Messages.PerfSigRecorder_SessionDownloadError());
-                        checkForUnstableResult(build);
-                    } else {
-                        logger.println(Messages.PerfSigRecorder_SessionDownloadSuccessful());
-                    }
+            if (exportSessions) {
+                boolean exportedSession = connection.downloadSession(sessionName, new File(PerfSigUtils.getReportDirectory(run) + File.separator + sessionName + ".dts"));
+                if (!exportedSession) {
+                    throw new RESTErrorException(Messages.PerfSigRecorder_SessionDownloadError());
+                } else {
+                    logger.println(Messages.PerfSigRecorder_SessionDownloadSuccessful());
                 }
-            } catch (Exception e) {
-                logger.println(ExceptionUtils.getStackTrace(e));
-                return !isTechnicalFailure();
             }
         }
 
-        PerfSigBuildAction action = new PerfSigBuildAction(build, dashboardReports);
-        build.addAction(action);
-        return true;
+        PerfSigBuildAction action = new PerfSigBuildAction(run, dashboardReports);
+        run.addAction(action);
     }
 
-    private PerfSigRegisterEnvVars getBuildEnvVars(final Run build, final String testCase) {
+    private PerfSigRegisterEnvVars getBuildEnvVars(final Run<?, ?> build, final String testCase) {
         final List<PerfSigRegisterEnvVars> envVars = build.getActions(PerfSigRegisterEnvVars.class);
         for (PerfSigRegisterEnvVars vars : envVars) {
             if (vars.getTestCase().equals(testCase))
@@ -305,10 +278,6 @@ public class PerfSigRecorder extends Recorder {
 
     private boolean validateSessionName(final String name) {
         return availableSessions.contains(name);
-    }
-
-    private void checkForUnstableResult(final AbstractBuild build) {
-        if (isTechnicalFailure()) build.setResult(Result.FAILURE);
     }
 
     @Override
@@ -340,35 +309,56 @@ public class PerfSigRecorder extends Recorder {
         return this.delay;
     }
 
+    @DataBoundSetter
+    public void setDelay(final int delay) {
+        this.delay = delay <= 0 ? DescriptorImpl.defaultDelay : delay;
+    }
+
     public int getRetryCount() {
         return retryCount;
+    }
+
+    @DataBoundSetter
+    public void setRetryCount(final int retryCount) {
+        this.retryCount = retryCount <= 0 ? DescriptorImpl.defaultRetryCount : retryCount;
     }
 
     public CustomProxy getCustomProxy() {
         return customProxy;
     }
 
+    @DataBoundSetter
+    public void setCustomProxy(final CustomProxy customProxy) {
+        this.customProxy = isProxy() ? customProxy : null;
+    }
+
     public boolean isVerifyCertificate() {
         return verifyCertificate;
+    }
+
+    @DataBoundSetter
+    public void setVerifyCertificate(final boolean verifyCertificate) {
+        this.verifyCertificate = verifyCertificate;
     }
 
     public boolean isExportSessions() {
         return exportSessions;
     }
 
-    public boolean isModifyBuildResult() {
-        return modifyBuildResult;
+    @DataBoundSetter
+    public void setExportSessions(final boolean exportSessions) {
+        this.exportSessions = exportSessions;
     }
 
-    private Result getBuildResult(final AbstractBuild build) {
-        Result result = build.getResult();
-        if (result == null) {
-            throw new IllegalStateException("build is ongoing");
-        }
-        return result;
+    public boolean isProxy() {
+        return proxy;
     }
 
-    @Nonnull
+    @DataBoundSetter
+    public void setProxy(final boolean proxy) {
+        this.proxy = proxy;
+    }
+
     public List<ConfigurationTestCase> getConfigurationTestCases() {
         return configurationTestCases == null ? Collections.<ConfigurationTestCase>emptyList() : configurationTestCases;
     }
@@ -377,43 +367,24 @@ public class PerfSigRecorder extends Recorder {
         return credentialsId;
     }
 
-    public boolean isTechnicalFailure() {
-        return technicalFailure;
-    }
-
     public int getNonFunctionalFailure() {
         return nonFunctionalFailure;
     }
 
+    @DataBoundSetter
+    public void setNonFunctionalFailure(final int nonFunctionalFailure) {
+        this.nonFunctionalFailure = nonFunctionalFailure <= 0 ? DescriptorImpl.defaultNonFunctionalFailure : nonFunctionalFailure;
+    }
+
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
-        public static String getDefaultHost() {
-            return Messages.PerfSigRecorder_DefaultAddress();
-        }
-
-        public static int getDefaultPort() {
-            return Integer.parseInt(Messages.PerfSigRecorder_DefaultPort());
-        }
-
-        public static int getDefaultDelay() {
-            return Integer.parseInt(Messages.PerfSigRecorder_DefaultDelay());
-        }
-
-        public static int getDefaultRetryCount() {
-            return Integer.parseInt(Messages.PerfSigRecorder_DefaultRetryCount());
-        }
-
-        public static boolean getDefaultVerifyCertificate() {
-            return Boolean.valueOf("false");
-        }
-
-        public static boolean getDefaultExportSessions() {
-            return Boolean.valueOf(Messages.PerfSigRecorder_DefaultExportSessions());
-        }
-
-        public static boolean getDefaultModifyBuildResult() {
-            return Boolean.valueOf(Messages.PerfSigRecorder_DefaultModifyBuildResult());
-        }
+        public static final String defaultHost = "localhost";
+        public static final int defaultPort = 8021;
+        public static final int defaultDelay = 10;
+        public static final int defaultRetryCount = 5;
+        public static final boolean defaultVerifyCertificate = false;
+        public static final boolean defaultExportSessions = true;
+        public static final int defaultNonFunctionalFailure = 0;
 
         protected static boolean checkNotNullOrEmpty(final String string) {
             return StringUtils.isNotBlank(string);
@@ -527,7 +498,7 @@ public class PerfSigRecorder extends Recorder {
                 customProxyServer = new CustomProxy(proxyServer, proxyPort, proxyUser, proxyPassword, proxySource == 0);
             }
             final DTServerConnection connection = new DTServerConnection(protocol, host, port, credentialsId, verifyCertificate, customProxyServer);
-            return PerfSigUtils.listToListBoxModel(connection.getProfiles());
+            return PerfSigUtils.listToListBoxModel(connection.getSystemProfiles());
         }
 
         public ListBoxModel doFillCredentialsIdItems(@AncestorInPath final Project project) {

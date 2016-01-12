@@ -61,8 +61,8 @@ public class PerfSigThreadDump extends Builder implements SimpleBuildStep {
     @Override
     public void perform(@Nonnull final Run<?, ?> run, @Nonnull final FilePath workspace, @Nonnull final Launcher launcher, @Nonnull final TaskListener listener)
             throws InterruptedException, IOException {
-        final PrintStream logger = listener.getLogger();
-        final PerfSigRecorder dtRecorder = PerfSigUtils.getRecorder(run);
+        PrintStream logger = listener.getLogger();
+        PerfSigRecorder dtRecorder = PerfSigUtils.getRecorder(run);
 
         if (dtRecorder == null) {
             throw new AbortException(Messages.PerfSigThreadDump_NoRecorderFailure());

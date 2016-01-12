@@ -25,7 +25,6 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.model.SystemProfile;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionException;
 import hudson.FilePath;
 import hudson.Functions;
-import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Item;
 import hudson.model.Run;
@@ -49,15 +48,13 @@ import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class PerfSigUtils {
     /**
      * @return {@link jenkins.model.Jenkins#getInstance()} if that isn't null, or die.
      */
     public static Jenkins getInstanceOrDie() {
-        final Jenkins jenkins = Jenkins.getInstance();
+        Jenkins jenkins = Jenkins.getInstance();
         if (jenkins == null) {
             throw new IllegalStateException("Jenkins is not running");
         }
@@ -103,36 +100,23 @@ public class PerfSigUtils {
         return dtRecorder;
     }
 
-    public static FilePath getReportDirectory(final AbstractBuild<?, ?> build) {
-        final FilePath filePath = new FilePath(new File(build.getRootDir(), Messages.PerfSigUtils_ReportDirectory()));
-        try {
-            if (!filePath.exists()) {
-                filePath.mkdirs();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    public static File getReportDirectory(final Run<?, ?> run) {
+        File reportDirectory = new File(run.getRootDir(), Messages.PerfSigUtils_ReportDirectory());
+        if (!reportDirectory.exists()) {
+            reportDirectory.mkdirs();
         }
-        return filePath;
+        return reportDirectory;
     }
 
-    public static List<FilePath> getDownloadFiles(final String testCase, final AbstractBuild<?, ?> build) {
-        try {
-            final FilePath filePath = PerfSigUtils.getReportDirectory(build);
-            return filePath.list(new RegexFileFilter(testCase));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public static List<FilePath> getDownloadFiles(final String testCase, final Run<?, ?> build) throws IOException, InterruptedException {
+        FilePath filePath = new FilePath(PerfSigUtils.getReportDirectory(build));
+        return filePath.list(new RegexFileFilter(testCase));
     }
 
-    public static void downloadFile(final StaplerRequest request, final StaplerResponse response, final AbstractBuild<?, ?> build) throws IOException {
+    public static void downloadFile(final StaplerRequest request, final StaplerResponse response, final Run build) throws IOException {
         final String file = request.getParameter("f");
         if (file.matches("[^a-zA-Z0-9\\._-]+")) return;
-        File downloadFile = new File(PerfSigUtils.getReportDirectory(build) + File.separator + file);
+        File downloadFile = new File(PerfSigUtils.getReportDirectory(build), File.separator + file);
         FileInputStream inStream = new FileInputStream(downloadFile);
 
         // gets MIME type of the file
@@ -171,15 +155,6 @@ public class PerfSigUtils {
         } catch (UnsupportedEncodingException e) {
             throw new CommandExecutionException(Messages.PerfSigUtils_EncodingFailure(), e);
         }
-    }
-
-    public static String extractXMLAttribute(final String xml, final String attribute) {
-        Pattern pattern = Pattern.compile(attribute + "=(.*?)[&|\"]", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-        Matcher m = pattern.matcher(xml);
-        if (m.find())
-            return m.group(1);
-        else
-            return "";
     }
 
     public static String getDurationString(final float seconds) {

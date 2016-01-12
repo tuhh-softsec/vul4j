@@ -57,6 +57,7 @@ import org.kohsuke.stapler.bind.JavaScriptMethod;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,9 +66,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Created by rapi on 25.04.2014.
- */
 public class PerfSigProjectAction implements ProminentProjectAction {
     private final AbstractProject<?, ?> project;
 
@@ -155,13 +153,13 @@ public class PerfSigProjectAction implements ProminentProjectAction {
                 if (m != null) metricValue = m.getMetricValue();
             }
             i++;
-            dsb.add(metricValue, chartDashlet, new ChartUtil.NumberOnlyBuildLabel((Run<?, ?>) dashboardReport.getBuild()));
+            dsb.add(metricValue, chartDashlet, new ChartUtil.NumberOnlyBuildLabel(dashboardReport.getBuild()));
             if (customBuildCount != 0 && i == customBuildCount) break;
         }
         return dsb.build();
     }
 
-    private JFreeChart createChart(final JSONObject jsonObject, final CategoryDataset dataset) {
+    private JFreeChart createChart(final JSONObject jsonObject, final CategoryDataset dataset) throws UnsupportedEncodingException {
         final String measure = jsonObject.getString(Messages.PerfSigProjectAction_ReqParamMeasure());
         final String chartDashlet = jsonObject.getString("chartDashlet");
         final String testCase = jsonObject.getString("dashboard");
@@ -174,7 +172,7 @@ public class PerfSigProjectAction implements ProminentProjectAction {
                 final Measure m = dr.getMeasure(chartDashlet, measure);
                 if (m != null) {
                     unit = m.getUnit();
-                    color = URLDecoder.decode(m.getColor());
+                    color = URLDecoder.decode(m.getColor(), "UTF-8");
                 }
                 break;
             }
@@ -249,7 +247,7 @@ public class PerfSigProjectAction implements ProminentProjectAction {
         if (StringUtils.isNotBlank(customBuildCount))
             buildCount = Integer.parseInt(customBuildCount);
 
-        for (Run run : project.getBuilds()) {
+        for (Run<?, ?> run : project.getBuilds()) {
             PerfSigTestDataWrapper testDataWrapper = run.getAction(PerfSigTestDataWrapper.class);
             if (testDataWrapper != null && testDataWrapper.getTestRuns() != null) {
                 TestRun testRun = TestRun.mergeTestRuns(testDataWrapper.getTestRuns());
@@ -331,7 +329,7 @@ public class PerfSigProjectAction implements ProminentProjectAction {
     }
 
     public TestRun getTestRun(final int buildNumber) {
-        final Run run = project.getBuildByNumber(buildNumber);
+        final Run<?, ?> run = project.getBuildByNumber(buildNumber);
         if (run != null) {
             PerfSigTestDataWrapper testDataWrapper = run.getAction(PerfSigTestDataWrapper.class);
             if (testDataWrapper != null) {
@@ -342,7 +340,7 @@ public class PerfSigProjectAction implements ProminentProjectAction {
     }
 
     public TestResult getTestAction(final int buildNumber) {
-        final Run run = project.getBuildByNumber(buildNumber);
+        final Run<?, ?> run = project.getBuildByNumber(buildNumber);
         if (run != null) {
             TestResultAction testResultAction = run.getAction(TestResultAction.class);
             if (testResultAction != null) {

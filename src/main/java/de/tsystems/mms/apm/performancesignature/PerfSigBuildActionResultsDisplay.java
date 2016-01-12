@@ -20,8 +20,8 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.Measure;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.Measurement;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
-import hudson.model.AbstractBuild;
 import hudson.model.ModelObject;
+import hudson.model.Run;
 import hudson.util.ChartUtil;
 import org.apache.commons.lang.StringUtils;
 import org.jfree.chart.ChartFactory;
@@ -53,7 +53,7 @@ import java.util.Date;
 import java.util.List;
 
 public class PerfSigBuildActionResultsDisplay implements ModelObject {
-    private static AbstractBuild<?, ?> currentBuild = null;
+    private static Run<?, ?> currentBuild = null;
     private final transient PerfSigBuildAction buildAction;
     private final List<DashboardReport> currentDashboardReports;
 
@@ -77,7 +77,7 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
         return new PerfSigUtils();
     }
 
-    public AbstractBuild<?, ?> getBuild() {
+    public Run<?, ?> getBuild() {
         return this.buildAction.getBuild();
     }
 
@@ -93,7 +93,7 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
             return;
         }
 
-        AbstractBuild<?, ?> previousBuild = getBuild().getPreviousNotFailedBuild();
+        Run<?, ?> previousBuild = getBuild().getPreviousNotFailedBuild();
         if (previousBuild == null) {
             return;
         }

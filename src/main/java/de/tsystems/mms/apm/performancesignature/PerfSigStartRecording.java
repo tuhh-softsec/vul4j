@@ -16,6 +16,7 @@
 
 package de.tsystems.mms.apm.performancesignature;
 
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionException;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
 import de.tsystems.mms.apm.performancesignature.model.ConfigurationTestCase;
@@ -37,7 +38,6 @@ import hudson.util.ListBoxModel;
 import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildStep;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
@@ -110,13 +110,16 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
             } else {
                 throw new RESTErrorException(String.format(Messages.PerfSigStartRecording_SessionRecordingError(), dtRecorder.getProfile()));
             }
-        } catch (RESTErrorException e) {
-            logger.println(String.format(Messages.PerfSigStartRecording_SessionRecordingError(), dtRecorder.getProfile(), ExceptionUtils.getStackTrace(e)));
+        } catch (CommandExecutionException e) {
             if (e.getMessage().contains("already started")) {
+                logger.println(e.getMessage());
+                logger.println("trying to stop session recording");
                 PerfSigStopRecording stopRecording = new PerfSigStopRecording();
                 stopRecording.perform(run, workspace, launcher, listener);
                 Thread.sleep(10000);
                 this.perform(run, workspace, launcher, listener);
+            } else {
+                throw e;
             }
         }
     }

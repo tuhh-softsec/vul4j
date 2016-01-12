@@ -21,9 +21,6 @@ import hudson.model.AbstractBuild;
 import hudson.model.EnvironmentContributingAction;
 import org.apache.commons.lang.StringUtils;
 
-/**
- * Created by rapi on 12.04.2015.
- */
 public class PerfSigRegisterEnvVars implements EnvironmentContributingAction {
     public static final String TESTRUN_ID_KEY = "DYNATRACE_TESTRUN_ID";
     public static final String SESSIONCOUNT = "DYNATRACE_SESSIONCOUNT";
@@ -66,7 +63,7 @@ public class PerfSigRegisterEnvVars implements EnvironmentContributingAction {
 
     @Override
     public String getDisplayName() {
-        return "put TestRunID and SessionCount in EnvVars";
+        return null;
     }
 
     @Override

@@ -17,24 +17,20 @@
 package de.tsystems.mms.apm.performancesignature;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
-import hudson.model.AbstractBuild;
 import hudson.model.Action;
+import hudson.model.Run;
 import org.kohsuke.stapler.StaplerProxy;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-/**
- * Created by rapi on 25.04.2014.
- */
-
 public class PerfSigBuildAction implements Action, StaplerProxy {
-    private final AbstractBuild<?, ?> build;
+    private final Run<?, ?> build;
     private final List<DashboardReport> dashboardReports;
     private transient WeakReference<PerfSigBuildActionResultsDisplay> buildActionResultsDisplay;
 
-    public PerfSigBuildAction(final AbstractBuild<?, ?> build, final List<DashboardReport> dashboardReports) {
-        this.build = build;
+    public PerfSigBuildAction(final Run<?, ?> run, final List<DashboardReport> dashboardReports) {
+        this.build = run;
         this.dashboardReports = dashboardReports;
     }
 
@@ -73,7 +69,7 @@ public class PerfSigBuildAction implements Action, StaplerProxy {
         return Messages.PerfSigBuildAction_UrlName();
     }
 
-    public AbstractBuild<?, ?> getBuild() {
+    public Run<?, ?> getBuild() {
         return this.build;
     }
 

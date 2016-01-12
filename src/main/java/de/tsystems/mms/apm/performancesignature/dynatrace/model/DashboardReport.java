@@ -19,14 +19,11 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 import de.tsystems.mms.apm.performancesignature.PerfSigBuildAction;
 import de.tsystems.mms.apm.performancesignature.model.ConfigurationTestCase;
 import de.tsystems.mms.apm.performancesignature.model.UnitTestCase;
-import hudson.model.AbstractBuild;
+import hudson.model.Run;
 
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by rapi on 19.05.2014.
- */
 public class DashboardReport {
     private String name;
     private List<ChartDashlet> chartDashlets;
@@ -87,7 +84,7 @@ public class DashboardReport {
         this.lastDashboardReport = lastDashboardReport;
     }
 
-    public AbstractBuild<?, ?> getBuild() {
+    public Run<?, ?> getBuild() {
         return this.buildAction.getBuild();
     }
 
