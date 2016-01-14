@@ -33,6 +33,7 @@ import de.intevation.lada.lock.LockConfig;
 import de.intevation.lada.lock.LockType;
 import de.intevation.lada.lock.ObjectLocker;
 import de.intevation.lada.model.land.LMessung;
+import de.intevation.lada.model.land.LProbe;
 import de.intevation.lada.model.land.LStatusProtokoll;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
@@ -242,33 +243,71 @@ public class StatusService {
         else {
             LStatusProtokoll currentStatus = defaultRepo.getByIdPlain(
                 LStatusProtokoll.class, messung.getStatus(), "land");
-            for (int i = 0; i < userInfo.getFunktionen().size(); i++) {
-                if (userInfo.getFunktionen().get(i) > currentStatus.getStatusStufe() &&
-                    currentStatus.getStatusWert() != 0 &&
-                    currentStatus.getStatusWert() != 4) {
-                    next = true;
-                    change = false;
-                    break;
+
+            if (currentStatus.getStatusWert() == 4) {
+                LProbe probe = defaultRepo.getByIdPlain(
+                    LProbe.class,
+                    messung.getProbeId(),
+                    "land");
+                if (userInfo.getFunktionenForMst(probe.getMstId()).contains(1) &&
+                    probe.getMstId().equals(status.getErzeuger())
+                ) {
+                    status.setStatusStufe(1);
                 }
-                else if (userInfo.getFunktionen().get(i) == currentStatus.getStatusStufe()) {
-                    change = true;
+                else {
+                    return new Response(false, 699, null);
                 }
-            }
-            if ((change || next) && status.getStatusWert() == 4) {
-                status.setStatusStufe(1);
-                messung.setFertig(false);
-            }
-            else if (change) {
-                status.setStatusStufe(currentStatus.getStatusStufe());
-                if (status.getStatusStufe() == 1) {
-                    messung.setFertig(true);
-                }
-            }
-            else if (next) {
-                status.setStatusStufe(currentStatus.getStatusStufe() + 1);
             }
             else {
-                return new Response(false, 699, null);
+                for (int i = 0;
+                    i < userInfo.getFunktionenForMst(status.getErzeuger()).size();
+                    i++
+                ) {
+                    if (userInfo.getFunktionenForMst(
+                            status.getErzeuger()).get(i) >
+                                currentStatus.getStatusStufe() &&
+                        currentStatus.getStatusWert() != 0
+                    ) {
+                        next = true;
+                    }
+                    else if (userInfo.getFunktionenForMst(
+                        status.getErzeuger()).get(i) ==
+                            currentStatus.getStatusStufe()
+                    ) {
+                        change = true;
+                    }
+                }
+                if (change &&
+                    status.getStatusWert() == 4 &&
+                    status.getStatusStufe() > 1
+                ) {
+                    status.setStatusStufe(currentStatus.getStatusStufe());
+                    messung.setFertig(false);
+                }
+                else if (change && status.getStatusWert() == 8) {
+                    return authorization.filter(
+                        request,
+                        resetStatus(status, currentStatus, messung),
+                        LStatusProtokoll.class);
+                }
+                else if (change && status.getStatusWert() != 0) {
+                    status.setStatusStufe(currentStatus.getStatusStufe());
+                    if (status.getStatusStufe() == 1) {
+                        messung.setFertig(true);
+                    }
+                }
+                else if (next &&
+                    (status.getStatusWert() > 0 &&
+                     status.getStatusWert() <= 4 ||
+                     status.getStatusWert() == 7)) {
+                    status.setStatusStufe(currentStatus.getStatusStufe() + 1);
+                    if (status.getStatusWert() == 4) {
+                        messung.setFertig(false);
+                    }
+                }
+                else {
+                    return new Response(false, 699, null);
+                }
             }
         }
         Violation violation = validator.validate(status);
@@ -319,73 +358,7 @@ public class StatusService {
         @Context HttpServletRequest request,
         LStatusProtokoll status
     ) {
-        if (lock.isLocked(status)) {
-            return new Response(false, 697, null);
-        }
-
-        // Check if submitted status is the current one.
-        LMessung messung = defaultRepo.getByIdPlain(
-            LMessung.class,
-            status.getMessungsId(),
-            "land");
-        LStatusProtokoll current = defaultRepo.getByIdPlain(
-            LStatusProtokoll.class,
-            messung.getStatus(),
-            "land");
-        if (current.getId() != status.getId() ||
-            status.getStatusStufe() == 1) {
-            return new Response(false, 699, null);
-        }
-
-        // Check if the user is allowed to reset the status.
-        UserInfo userInfo = authorization.getInfo(request);
-        boolean allowed = false;
-        for (int i = 0; i < userInfo.getFunktionen().size(); i++) {
-            if (userInfo.getFunktionen().get(i) ==
-                status.getStatusStufe()) {
-                allowed = true;
-            }
-        }
-        if (!userInfo.getMessstellen().contains(status.getErzeuger()) ||
-            !allowed) {
-            return new Response(false, 699, null);
-        }
-
-        // Create a new Status with value = 0.
-        LStatusProtokoll statusNew = new LStatusProtokoll();
-        statusNew.setDatum(new Timestamp(new Date().getTime()));
-        statusNew.setErzeuger(status.getErzeuger());
-        statusNew.setMessungsId(status.getMessungsId());
-        statusNew.setStatusStufe(status.getStatusStufe());
-        statusNew.setStatusWert(0);
-        statusNew.setText("Reset");
-        Violation violation = validator.validate(statusNew);
-        if (violation.hasErrors()) {
-            Response response = new Response(false, 604, statusNew);
-            response.setErrors(violation.getErrors());
-            response.setWarnings(violation.getWarnings());
-            return response;
-        }
-
-        Response response = defaultRepo.create(statusNew, "land");
-        LStatusProtokoll created = (LStatusProtokoll)response.getData();
-        QueryBuilder<LStatusProtokoll> lastFilter =
-            new QueryBuilder<LStatusProtokoll>(
-                    defaultRepo.entityManager("land"),
-                    LStatusProtokoll.class);
-
-        lastFilter.and("messungsId", status.getMessungsId());
-        lastFilter.and("statusStufe", status.getStatusStufe() - 1);
-        lastFilter.orderBy("datum", false);
-        List<LStatusProtokoll> proto =
-            defaultRepo.filterPlain(lastFilter.getQuery(), "land");
-        messung.setStatus(proto.get(proto.size() - 1).getId());
-        defaultRepo.update(messung, "land");
-
-        return authorization.filter(
-            request,
-            response,
-            LStatusProtokoll.class);
+        return null;
     }
 
     /**
@@ -422,5 +395,60 @@ public class StatusService {
         }
         /* Delete the object*/
         return defaultRepo.delete(obj, "land");
+    }
+
+    private Response resetStatus(
+        LStatusProtokoll status,
+        LStatusProtokoll currentStatus,
+        LMessung messung
+    ) {
+        // Create a new Status with value = 8.
+        LStatusProtokoll statusNew = new LStatusProtokoll();
+        statusNew.setDatum(new Timestamp(new Date().getTime()));
+        statusNew.setErzeuger(status.getErzeuger());
+        statusNew.setMessungsId(status.getMessungsId());
+        statusNew.setStatusStufe(status.getStatusStufe());
+        statusNew.setStatusWert(8);
+        statusNew.setText("Reset");
+
+        defaultRepo.create(statusNew, "land");
+
+        Response retValue;
+        if (currentStatus.getStatusStufe() == 1) {
+            LStatusProtokoll nV = new LStatusProtokoll();
+            nV.setDatum(new Timestamp(new Date().getTime()));
+            nV.setErzeuger(status.getErzeuger());
+            nV.setMessungsId(status.getMessungsId());
+            nV.setStatusStufe(1);
+            nV.setStatusWert(0);
+            nV.setText("");
+            retValue = defaultRepo.create(nV, "land");
+            messung.setStatus(((LStatusProtokoll)retValue.getData()).getId());
+            messung.setFertig(false);
+        }
+        else {
+            QueryBuilder<LStatusProtokoll> lastFilter =
+                new QueryBuilder<LStatusProtokoll>(
+                        defaultRepo.entityManager("land"),
+                        LStatusProtokoll.class);
+            lastFilter.and("messungsId", status.getMessungsId());
+            lastFilter.and("statusStufe", status.getStatusStufe() - 1);
+            lastFilter.orderBy("datum", true);
+            List<LStatusProtokoll> proto =
+                defaultRepo.filterPlain(lastFilter.getQuery(), "land");
+            LStatusProtokoll copy = new LStatusProtokoll();
+            LStatusProtokoll orig = proto.get(proto.size() - 1);
+            copy.setDatum(new Timestamp(new Date().getTime()));
+            copy.setErzeuger(orig.getErzeuger());
+            copy.setMessungsId(orig.getMessungsId());
+            copy.setStatusStufe(orig.getStatusStufe());
+            copy.setStatusWert(orig.getStatusWert());
+            copy.setText(orig.getText());
+            retValue = defaultRepo.create(copy, "land");
+            LStatusProtokoll createdCopy = (LStatusProtokoll)retValue.getData();
+            messung.setStatus(createdCopy.getId());
+        }
+        defaultRepo.update(messung, "land");
+        return retValue;
     }
 }
