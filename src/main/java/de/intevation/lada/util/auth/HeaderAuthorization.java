@@ -65,9 +65,7 @@ public class HeaderAuthorization implements Authorization {
             HttpServletRequest request = (HttpServletRequest)source;
             String roleString =
                 request.getAttribute("lada.user.roles").toString();
-            String[] roles = roleString.split(",");
             UserInfo info = getGroupsFromDB(roleString);
-            info.setRoles(new ArrayList<String>(Arrays.asList(roles)));
             info.setName(request.getAttribute("lada.user.name").toString());
             return info;
         }
@@ -260,27 +258,8 @@ public class HeaderAuthorization implements Authorization {
         Response response = repository.filter(builder.getQuery(), "stamm");
         @SuppressWarnings("unchecked")
         List<Auth> auth = (List<Auth>)response.getData();
-        List<String> netzbetreiber = new ArrayList<String>();
-        List<String> messstellen = new ArrayList<String>();
-        List<Integer> funktionen = new ArrayList<Integer>();
-        for (Auth a : auth) {
-            if (a.getNetzbetreiberId() != null) {
-                netzbetreiber.add(a.getNetzbetreiberId());
-            }
-            if (a.getMstId() != null) {
-                messstellen.add(a.getMstId());
-            }
-            if (a.getLaborMstId() != null) {
-                messstellen.add(a.getLaborMstId());
-            }
-            if (a.getFunktionId() != null) {
-                funktionen.add(a.getFunktionId());
-            }
-        }
         UserInfo userInfo = new UserInfo();
-        userInfo.setNetzbetreiber(netzbetreiber);
-        userInfo.setMessstellen(messstellen);
-        userInfo.setFunktionen(funktionen);
+        userInfo.setAuth(auth);
         return userInfo;
     }
 
