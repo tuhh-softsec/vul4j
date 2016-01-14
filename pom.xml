@@ -591,7 +591,7 @@
 			<dependency>
 				<groupId>org.jasig.cas.client</groupId>
 				<artifactId>cas-client-core</artifactId>
-				<version>3.3.3</version>
+				<version>3.4.1</version>
 				<scope>compile</scope>
 				<exclusions>
 					<!-- In order to avoid infinite loops between slf4j and log4j as we 
