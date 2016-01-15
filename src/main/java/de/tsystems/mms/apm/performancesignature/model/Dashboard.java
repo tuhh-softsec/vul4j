@@ -29,9 +29,6 @@ import org.kohsuke.stapler.QueryParameter;
 
 import java.io.Serializable;
 
-/**
- * Created by rapi on 18.09.2014.
- */
 public class Dashboard extends AbstractDescribableImpl<Dashboard> implements Serializable {
     private static final long serialVersionUID = 1L;
     private final String name;
@@ -65,19 +62,13 @@ public class Dashboard extends AbstractDescribableImpl<Dashboard> implements Ser
             return "Single/Comparison Report Dashboards";
         }
 
-        public ListBoxModel doFillDashboardItems(@RelativePath("../..") @QueryParameter final String protocol, @RelativePath("../..") @QueryParameter final String host,
-                                                 @RelativePath("../..") @QueryParameter final int port, @RelativePath("../..") @QueryParameter final String credentialsId,
-                                                 @RelativePath("../..") @QueryParameter final boolean verifyCertificate, @RelativePath("../..") @QueryParameter final boolean proxy,
-                                                 @RelativePath("../..") @QueryParameter final int proxySource,
-                                                 @RelativePath("../..") @QueryParameter final String proxyServer, @RelativePath("../..") @QueryParameter final int proxyPort,
-                                                 @RelativePath("../..") @QueryParameter final String proxyUser, @RelativePath("../..") @QueryParameter final String proxyPassword) {
-
-            CustomProxy customProxyServer = null;
-            if (proxy) {
-                customProxyServer = new CustomProxy(proxyServer, proxyPort, proxyUser, proxyPassword, proxySource == 0);
+        public ListBoxModel doFillDashboardItems(@RelativePath("../..") @QueryParameter final String dynatraceServer) {
+            DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceServer);
+            if (serverConfiguration != null) {
+                final DTServerConnection connection = new DTServerConnection(serverConfiguration);
+                return PerfSigUtils.listToListBoxModel(connection.getDashboards());
             }
-            final DTServerConnection connection = new DTServerConnection(protocol, host, port, credentialsId, verifyCertificate, customProxyServer);
-            return PerfSigUtils.listToListBoxModel(connection.getDashboards());
+            return null;
         }
     }
 }

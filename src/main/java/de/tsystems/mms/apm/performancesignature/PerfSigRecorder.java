@@ -16,41 +16,26 @@
 
 package de.tsystems.mms.apm.performancesignature;
 
-import com.cloudbees.plugins.credentials.CredentialsProvider;
-import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
-import com.cloudbees.plugins.credentials.common.StandardUsernameCredentials;
-import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
-import com.cloudbees.plugins.credentials.domains.DomainRequirement;
-import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
-import de.tsystems.mms.apm.performancesignature.dynatrace.model.IncidentChart;
-import de.tsystems.mms.apm.performancesignature.dynatrace.model.IncidentViolation;
+import de.tsystems.mms.apm.performancesignature.dynatrace.model.*;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
 import de.tsystems.mms.apm.performancesignature.model.ConfigurationTestCase;
 import de.tsystems.mms.apm.performancesignature.model.ConfigurationTestCase.ConfigurationTestCaseDescriptor;
-import de.tsystems.mms.apm.performancesignature.model.CustomProxy;
 import de.tsystems.mms.apm.performancesignature.model.Dashboard;
+import de.tsystems.mms.apm.performancesignature.model.DynatraceServerConfiguration;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
-import hudson.AbortException;
-import hudson.Extension;
-import hudson.FilePath;
-import hudson.Launcher;
+import hudson.*;
 import hudson.model.*;
-import hudson.security.ACL;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
-import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
-import hudson.util.ListBoxModel.Option;
 import jenkins.tasks.SimpleBuildStep;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
-import org.kohsuke.stapler.AncestorInPath;
+import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
-import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.StaplerRequest;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -60,42 +45,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.cloudbees.plugins.credentials.CredentialsMatchers.instanceOf;
-
 public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
-    private final String protocol, host, profile, credentialsId;
-    private final int port;
+    private final String dynatraceServer;
     private final List<ConfigurationTestCase> configurationTestCases;
-    private boolean verifyCertificate, exportSessions, proxy;
-    private int delay, retryCount, nonFunctionalFailure;
-    private CustomProxy customProxy;
+    private boolean exportSessions;
+    private int nonFunctionalFailure;
     private transient List<String> availableSessions;
 
     @DataBoundConstructor
-    public PerfSigRecorder(final String protocol, final String host, final int port, final String credentialsId, final String profile,
-                           final List<ConfigurationTestCase> configurationTestCases) {
-        this.protocol = protocol;
-        this.host = host;
-        this.port = port;
-        this.credentialsId = credentialsId;
-        this.profile = profile;
+    public PerfSigRecorder(final String dynatraceServer, final List<ConfigurationTestCase> configurationTestCases) {
+        this.dynatraceServer = dynatraceServer;
         this.configurationTestCases = configurationTestCases;
-        setExportSessions(DescriptorImpl.defaultExportSessions);
-    }
-
-    @Deprecated
-    public PerfSigRecorder(final String protocol, final String host, final int port, final String credentialsId, final String profile,
-                           final boolean verifyCertificate, final boolean exportSessions, final int delay, final int retryCount,
-                           final List<ConfigurationTestCase> configurationTestCases,
-                           final boolean proxy, final CustomProxy proxySource, final int nonFunctionalFailure) {
-        this(protocol, host, port, credentialsId, profile, configurationTestCases);
-        setVerifyCertificate(verifyCertificate);
-        setExportSessions(exportSessions);
-        setDelay(delay);
-        setRetryCount(retryCount);
-        setNonFunctionalFailure(nonFunctionalFailure);
-        setProxy(proxy);
-        setCustomProxy(proxySource);
     }
 
     @Override
@@ -103,22 +63,36 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
             throws InterruptedException, IOException {
 
         PrintStream logger = listener.getLogger();
-        DTServerConnection connection = new DTServerConnection(this.getProtocol(), this.getHost(), this.getPort(), credentialsId,
-                verifyCertificate, customProxy);
-        logger.println(Messages.PerfSigRecorder_VerifyDTConnection());
-        if (!connection.validateConnection()) {
-            throw new RESTErrorException(Messages.PerfSigRecorder_DTConnectionError());
-        }
+
+        DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceServer);
+        if (serverConfiguration == null)
+            throw new AbortException("failed to lookup Dynatrace server configuration");
 
         if (configurationTestCases == null) {
             throw new AbortException(Messages.PerfSigRecorder_MissingTestCases());
         }
 
-        if (this.delay != 0) {
-            logger.println(Messages.PerfSigRecorder_SleepingDelay() + " " + getDelay() + " sec");
-            Thread.sleep(getDelay() * 1000);
+        DTServerConnection connection = new DTServerConnection(serverConfiguration);
+        logger.println(Messages.PerfSigRecorder_VerifyDTConnection());
+        if (!connection.validateConnection()) {
+            throw new RESTErrorException(Messages.PerfSigRecorder_DTConnectionError());
+        }
+
+        if (serverConfiguration.getDelay() != 0) {
+            logger.println(Messages.PerfSigRecorder_SleepingDelay() + " " + serverConfiguration.getDelay() + " sec");
+            Thread.sleep(serverConfiguration.getDelay() * 1000);
         }
         logger.println(Messages.PerfSigRecorder_ReportDirectory() + " " + PerfSigUtils.getReportDirectory(run));
+
+        for (BaseConfiguration profile : connection.getSystemProfiles()) {
+            SystemProfile systemProfile = PerfSigUtils.cast(profile);
+            if (serverConfiguration.getProfile().equals(systemProfile.getId()) && systemProfile.isRecording()) {
+                logger.println("Sesssion is still recording, trying to stop recording");
+                PerfSigStopRecording stopRecording = new PerfSigStopRecording(dynatraceServer);
+                stopRecording.perform(run, workspace, launcher, listener);
+                break;
+            }
+        }
 
         String sessionName, comparisonSessionName = null, singleFilename, comparisonFilename;
         int comparisonBuildNumber = 0;
@@ -158,10 +132,10 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
 
             availableSessions = connection.getSessions();
             int retryCount = 0;
-            while ((!validateSessionName(sessionName)) && (retryCount < getRetryCount())) {
+            while ((!validateSessionName(sessionName)) && (retryCount < serverConfiguration.getRetryCount())) {
                 retryCount++;
                 availableSessions = connection.getSessions();
-                logger.println(String.format(Messages.PerfSigRecorder_WaitingForSession(), retryCount, getRetryCount()));
+                logger.println(String.format(Messages.PerfSigRecorder_WaitingForSession(), retryCount, serverConfiguration.getRetryCount()));
                 Thread.sleep(10000);
             }
 
@@ -289,58 +263,6 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
         return BuildStepMonitor.NONE;
     }
 
-    public String getProtocol() {
-        return this.protocol;
-    }
-
-    public String getHost() {
-        return this.host;
-    }
-
-    public int getPort() {
-        return this.port;
-    }
-
-    public String getProfile() {
-        return this.profile;
-    }
-
-    public int getDelay() {
-        return this.delay;
-    }
-
-    @DataBoundSetter
-    public void setDelay(final int delay) {
-        this.delay = delay <= 0 ? DescriptorImpl.defaultDelay : delay;
-    }
-
-    public int getRetryCount() {
-        return retryCount;
-    }
-
-    @DataBoundSetter
-    public void setRetryCount(final int retryCount) {
-        this.retryCount = retryCount <= 0 ? DescriptorImpl.defaultRetryCount : retryCount;
-    }
-
-    public CustomProxy getCustomProxy() {
-        return customProxy;
-    }
-
-    @DataBoundSetter
-    public void setCustomProxy(final CustomProxy customProxy) {
-        this.customProxy = isProxy() ? customProxy : null;
-    }
-
-    public boolean isVerifyCertificate() {
-        return verifyCertificate;
-    }
-
-    @DataBoundSetter
-    public void setVerifyCertificate(final boolean verifyCertificate) {
-        this.verifyCertificate = verifyCertificate;
-    }
-
     public boolean isExportSessions() {
         return exportSessions;
     }
@@ -350,21 +272,8 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
         this.exportSessions = exportSessions;
     }
 
-    public boolean isProxy() {
-        return proxy;
-    }
-
-    @DataBoundSetter
-    public void setProxy(final boolean proxy) {
-        this.proxy = proxy;
-    }
-
     public List<ConfigurationTestCase> getConfigurationTestCases() {
         return configurationTestCases == null ? Collections.<ConfigurationTestCase>emptyList() : configurationTestCases;
-    }
-
-    public String getCredentialsId() {
-        return credentialsId;
     }
 
     public int getNonFunctionalFailure() {
@@ -376,102 +285,33 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
         this.nonFunctionalFailure = nonFunctionalFailure <= 0 ? DescriptorImpl.defaultNonFunctionalFailure : nonFunctionalFailure;
     }
 
+    public String getDynatraceServer() {
+        return dynatraceServer;
+    }
+
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
-        public static final String defaultHost = "localhost";
-        public static final int defaultPort = 8021;
-        public static final int defaultDelay = 10;
-        public static final int defaultRetryCount = 5;
-        public static final boolean defaultVerifyCertificate = false;
         public static final boolean defaultExportSessions = true;
         public static final int defaultNonFunctionalFailure = 0;
+        private List<DynatraceServerConfiguration> configurations = new ArrayList<DynatraceServerConfiguration>();
 
-        protected static boolean checkNotNullOrEmpty(final String string) {
-            return StringUtils.isNotBlank(string);
+        public DescriptorImpl() {
+            load();
         }
 
-        protected static boolean checkNotEmptyAndIsNumber(final String number) {
-            return StringUtils.isNotBlank(number) && NumberUtils.isNumber(number);
+        @Override
+        public boolean configure(final StaplerRequest req, final JSONObject formData) throws FormException {
+            configurations = req.bindJSONToList(DynatraceServerConfiguration.class, formData.get("configurations"));
+            save();
+            return false;
         }
 
-        public FormValidation doCheckHost(@QueryParameter final String host) {
-            FormValidation validationResult;
-            if (checkNotNullOrEmpty(host)) {
-                validationResult = FormValidation.ok();
-            } else {
-                validationResult = FormValidation.error(Messages.PerfSigRecorder_DTHostNotValid());
-            }
-            return validationResult;
+        public ListBoxModel doFillDynatraceServerItems() {
+            return PerfSigUtils.listToListBoxModel(PerfSigUtils.getDTConfigurations());
         }
 
-        public FormValidation doCheckPort(@QueryParameter final String port) {
-            FormValidation validationResult;
-            if (checkNotEmptyAndIsNumber(port)) {
-                validationResult = FormValidation.ok();
-            } else {
-                validationResult = FormValidation.error(Messages.PerfSigRecorder_DTPortNotValid());
-            }
-            return validationResult;
-        }
-
-        public FormValidation doCheckCredentialsId(@QueryParameter final String credentialsId) {
-            FormValidation validationResult;
-            if (checkNotNullOrEmpty(credentialsId)) {
-                validationResult = FormValidation.ok();
-            } else {
-                validationResult = FormValidation.error(Messages.PerfSigRecorder_DTUserEmpty());
-            }
-            return validationResult;
-        }
-
-        public FormValidation doCheckProfile(@QueryParameter final String profile) {
-            FormValidation validationResult;
-            if (checkNotNullOrEmpty(profile)) {
-                validationResult = FormValidation.ok();
-            } else {
-                validationResult = FormValidation.error(Messages.PerfSigRecorder_DTProfileNotValid());
-            }
-            return validationResult;
-        }
-
-        public FormValidation doCheckDelay(@QueryParameter final String delay) {
-            FormValidation validationResult;
-            if (checkNotEmptyAndIsNumber(delay)) {
-                validationResult = FormValidation.ok();
-            } else {
-                validationResult = FormValidation.error(Messages.PerfSigRecorder_DelayNotValid());
-            }
-            return validationResult;
-        }
-
-        public FormValidation doCheckRetryCount(@QueryParameter final String retryCount) {
-            FormValidation validationResult;
-            if (checkNotEmptyAndIsNumber(retryCount)) {
-                validationResult = FormValidation.ok();
-            } else {
-                validationResult = FormValidation.error(Messages.PerfSigRecorder_RetryCountNotValid());
-            }
-            return validationResult;
-        }
-
-        public FormValidation doTestDynaTraceConnection(@QueryParameter final String protocol, @QueryParameter final String host,
-                                                        @QueryParameter final int port, @QueryParameter final String credentialsId,
-                                                        @QueryParameter final boolean verifyCertificate, @QueryParameter final boolean proxy,
-                                                        @QueryParameter final int proxySource,
-                                                        @QueryParameter final String proxyServer, @QueryParameter final int proxyPort,
-                                                        @QueryParameter final String proxyUser, @QueryParameter final String proxyPassword) {
-
-            CustomProxy customProxyServer = null;
-            if (proxy) {
-                customProxyServer = new CustomProxy(proxyServer, proxyPort, proxyUser, proxyPassword, proxySource == 0);
-            }
-            final DTServerConnection connection = new DTServerConnection(protocol, host, port, credentialsId, verifyCertificate, customProxyServer);
-
-            if (connection.validateConnection()) {
-                return FormValidation.ok(Messages.PerfSigRecorder_TestConnectionSuccessful());
-            } else {
-                return FormValidation.warning(Messages.PerfSigRecorder_TestConnectionNotSuccessful());
-            }
+        public List<DynatraceServerConfiguration> getConfigurations() {
+            return configurations;
         }
 
         public boolean isApplicable(final Class<? extends AbstractProject> aClass) {
@@ -482,38 +322,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
             return Messages.PerfSigRecorder_DisplayName();
         }
 
-        public ListBoxModel doFillProtocolItems() {
-            return new ListBoxModel(new Option("https"), new Option("http"));
-        }
-
-        public ListBoxModel doFillProfileItems(@QueryParameter final String protocol, @QueryParameter final String host,
-                                               @QueryParameter final int port, @QueryParameter final String credentialsId,
-                                               @QueryParameter final boolean verifyCertificate, @QueryParameter final boolean proxy,
-                                               @QueryParameter final int proxySource,
-                                               @QueryParameter final String proxyServer, @QueryParameter final int proxyPort,
-                                               @QueryParameter final String proxyUser, @QueryParameter final String proxyPassword) {
-
-            CustomProxy customProxyServer = null;
-            if (proxy) {
-                customProxyServer = new CustomProxy(proxyServer, proxyPort, proxyUser, proxyPassword, proxySource == 0);
-            }
-            final DTServerConnection connection = new DTServerConnection(protocol, host, port, credentialsId, verifyCertificate, customProxyServer);
-            return PerfSigUtils.listToListBoxModel(connection.getSystemProfiles());
-        }
-
-        public ListBoxModel doFillCredentialsIdItems(@AncestorInPath final Project project) {
-            return new StandardListBoxModel()
-                    .withEmptySelection()
-                    .withMatching(instanceOf(UsernamePasswordCredentials.class),
-                            CredentialsProvider.lookupCredentials(
-                                    StandardUsernameCredentials.class, project, ACL.SYSTEM, Collections.<DomainRequirement>emptyList()));
-        }
-
-        public List<ConfigurationTestCaseDescriptor> getTestCaseTypes(final AbstractProject<?, ?> project) {
-            return ConfigurationTestCaseDescriptor.all((Class<? extends AbstractProject<?, ?>>) project.getClass());
-        }
-
-        public List<ConfigurationTestCaseDescriptor> getTestCaseTypes() {
+        public DescriptorExtensionList<ConfigurationTestCase, Descriptor<ConfigurationTestCase>> getTestCaseTypes() {
             return ConfigurationTestCaseDescriptor.all();
         }
     }

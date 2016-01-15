@@ -15,25 +15,10 @@
   -->
 
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:c="/lib/credentials">
-    <f:entry field="protocol" title="${%HTTP/HTTPS}" description="${%Specify the protocol to use}">
-        <f:select default="{descriptor.defaultProtocol}"/>
-    </f:entry>
-    <f:entry title="${%Dynatrace REST Host}" field="host" description="${%Dynatrace Server Host}">
-        <f:textbox default="${descriptor.defaultHost}"/>
-    </f:entry>
-    <f:entry title="${%Dynatrace REST Port}" field="port"
-             description="${%Dynatrace Server REST Interface port} (${%default: 8020 for HTTP, 8021 for HTTPS})">
-        <f:number default="${descriptor.defaultPort}"/>
-    </f:entry>
-    <f:entry title="${%Dynatrace REST User credentials}" field="credentialsId">
-        <c:select/>
-    </f:entry>
-
-    <f:entry title="${%Dynatrace System Profile}" field="profile" description="${%corresponding Dynatrace Profile}">
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+    <f:entry title="${%Dynatrace server}" field="dynatraceServer" description="${%used Dynatrace server}">
         <f:select/>
     </f:entry>
-
     <f:entry title="${%Testcase Dashboard mapping}">
         <f:hetero-list name="configurationTestCases"
                        items="${instance.configurationTestCases}"
@@ -43,18 +28,6 @@
     </f:entry>
 
     <f:advanced>
-        <f:entry title="${%verify Certificate}" field="verifyCertificate"
-                 description="${%Verify or ignore the Dynatrace Server Certificate?}">
-            <f:checkbox default="${descriptor.defaultVerifyCertificate}"/>
-        </f:entry>
-        <f:entry title="${%Delay}" field="delay"
-                 description="${%Time to wait until requesting the build results to ensure all data has been processed by the Dynatrace Server}">
-            <f:number default="${descriptor.defaultDelay}"/>
-        </f:entry>
-        <f:entry title="${%Retry Count}" field="retryCount"
-                 description="${%The Dynatrace Server might take a while to fully process the data collected during the test run. By default, the plugin will try get data 5 times, 10 seconds apart.}">
-            <f:number default="${descriptor.defaultRetryCount}"/>
-        </f:entry>
         <f:entry title="${%export Sessions}" field="exportSessions"
                  description="${%Should Dynatrace sessions be exported to the workspace directory?}">
             <f:checkbox default="${descriptor.defaultExportSessions}"/>
@@ -76,28 +49,5 @@
             <f:radio name="nonFunctionalFailure" value="4" checked="${instance.nonFunctionalFailure == 4}"
                      title="set build result to unstable in case of severe/warning incidents"/>
         </f:entry>
-
-        <f:optionalBlock inline="true" name="proxy" title="${%use Proxy Server}" checked="${instance.customProxy != null}">
-            <f:radioBlock name="proxySource" title="${%use proxy server configured in Jenkins}" value="0"
-                          checked="${instance.customProxy.useJenkinsProxy}"/>
-            <f:radioBlock name="proxySource" title="use custom Proxy Server" value="1" checked="${!instance.customProxy.useJenkinsProxy}">
-                <f:entry title="${%Server}" field="proxyServer">
-                    <f:textbox value="${instance.customProxy.proxyServer}"/>
-                </f:entry>
-                <f:entry title="${%Port}" field="proxyPort">
-                    <f:number value="${instance.customProxy.proxyPort}"/>
-                </f:entry>
-                <f:entry title="${%User}" field="proxyUser">
-                    <f:textbox value="${instance.customProxy.proxyUser}"/>
-                </f:entry>
-                <f:entry title="${%Password}" field="proxyPassword">
-                    <f:password value="${instance.customProxy.proxyPassword}"/>
-                </f:entry>
-            </f:radioBlock>
-        </f:optionalBlock>
     </f:advanced>
-
-    <f:validateButton title="${%Test Connection}" progress="${%Testing...}"
-                      method="testDynaTraceConnection"
-                      with="protocol,host,port,credentialsId,verifyCertificate,proxy,proxySource,proxyServer,proxyPort,proxyUser,proxyPassword"/>
 </j:jelly>

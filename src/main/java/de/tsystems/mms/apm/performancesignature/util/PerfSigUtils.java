@@ -23,13 +23,12 @@ import com.cloudbees.plugins.credentials.domains.DomainRequirement;
 import de.tsystems.mms.apm.performancesignature.PerfSigRecorder;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.SystemProfile;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionException;
+import de.tsystems.mms.apm.performancesignature.model.DynatraceServerConfiguration;
 import hudson.FilePath;
 import hudson.Functions;
-import hudson.model.AbstractProject;
 import hudson.model.Item;
 import hudson.model.Run;
 import hudson.security.ACL;
-import hudson.tasks.Publisher;
 import hudson.util.Area;
 import hudson.util.ListBoxModel;
 import jenkins.model.Jenkins;
@@ -81,23 +80,10 @@ public class PerfSigUtils {
                 listBoxModel.add(((SystemProfile) item).getId());
             else if (item instanceof String)
                 listBoxModel.add((String) item);
+            else if (item instanceof DynatraceServerConfiguration)
+                listBoxModel.add(((DynatraceServerConfiguration) item).getName());
         }
         return listBoxModel;
-    }
-
-    public static PerfSigRecorder getRecorder(final Run<?, ?> run) {
-        AbstractProject<?, ?> project = PerfSigUtils.cast(run.getParent());
-        List<Publisher> publishers = project.getPublishersList().toList();
-        PerfSigRecorder dtRecorder = null;
-
-        //ToDo: add Flexible Publish Plugin compatibility
-        for (Publisher publisher : publishers) {
-            if (publisher instanceof PerfSigRecorder) {
-                dtRecorder = (PerfSigRecorder) publisher;
-                break;
-            }
-        }
-        return dtRecorder;
     }
 
     public static File getReportDirectory(final Run<?, ?> run) {
@@ -106,6 +92,19 @@ public class PerfSigUtils {
             reportDirectory.mkdirs();
         }
         return reportDirectory;
+    }
+
+    public static List<DynatraceServerConfiguration> getDTConfigurations() {
+        return getInstanceOrDie().getDescriptorByType(PerfSigRecorder.DescriptorImpl.class).getConfigurations();
+    }
+
+    public static DynatraceServerConfiguration getServerConfiguration(final String dynatraceServer) {
+        for (DynatraceServerConfiguration serverConfiguration : getDTConfigurations()) {
+            if (dynatraceServer.equals(serverConfiguration.getName())) {
+                return serverConfiguration;
+            }
+        }
+        return null;
     }
 
     public static List<FilePath> getDownloadFiles(final String testCase, final Run<?, ?> build) throws IOException, InterruptedException {

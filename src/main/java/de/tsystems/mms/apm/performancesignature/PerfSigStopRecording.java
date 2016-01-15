@@ -18,6 +18,7 @@ package de.tsystems.mms.apm.performancesignature;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
+import de.tsystems.mms.apm.performancesignature.model.DynatraceServerConfiguration;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.AbortException;
 import hudson.Extension;
@@ -28,6 +29,7 @@ import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
+import hudson.util.ListBoxModel;
 import jenkins.tasks.SimpleBuildStep;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -40,16 +42,12 @@ import java.io.PrintStream;
 public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
     private static final int reanalyzeSessionTimeout = 60000; //==1 minute
     private static final int reanalyzeSessionPollingInterval = 5000; //==5 seconds
+    private final String dynatraceServer;
     private boolean reanalyzeSession;
 
     @DataBoundConstructor
-    public PerfSigStopRecording() {
-    }
-
-    @Deprecated
-    public PerfSigStopRecording(final boolean reanalyzeSession) {
-        this();
-        setReanalyzeSession(reanalyzeSession);
+    public PerfSigStopRecording(final String dynatraceServer) {
+        this.dynatraceServer = dynatraceServer;
     }
 
     @Override
@@ -58,18 +56,16 @@ public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
         final PrintStream logger = listener.getLogger();
 
         logger.println(Messages.PerfSigStopRecording_StopSessionRecording());
-        final PerfSigRecorder dtRecorder = PerfSigUtils.getRecorder(run);
-        if (dtRecorder == null) {
-            throw new AbortException(Messages.PerfSigStopRecording_MissingConfiguration());
-        }
+        DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceServer);
+        if (serverConfiguration == null)
+            throw new AbortException("failed to lookup Dynatrace server configuration");
 
-        final DTServerConnection connection = new DTServerConnection(dtRecorder.getProtocol(), dtRecorder.getHost(), dtRecorder.getPort(),
-                dtRecorder.getCredentialsId(), dtRecorder.isVerifyCertificate(), dtRecorder.getCustomProxy());
+        final DTServerConnection connection = new DTServerConnection(serverConfiguration);
 
-        String sessionName = connection.stopRecording(dtRecorder.getProfile());
+        String sessionName = connection.stopRecording(serverConfiguration.getProfile());
         if (StringUtils.isBlank(sessionName))
             throw new RESTErrorException(Messages.PerfSigStopRecording_InternalError());
-        logger.println(String.format("Stopped recording on %s with SessionName %s", dtRecorder.getProfile(), sessionName));
+        logger.println(String.format("Stopped recording on %s with SessionName %s", serverConfiguration.getProfile(), sessionName));
 
         if (getReanalyzeSession()) {
             logger.println("reanalyze session ...");
@@ -94,6 +90,10 @@ public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
         }
     }
 
+    public String getDynatraceServer() {
+        return dynatraceServer;
+    }
+
     public boolean getReanalyzeSession() {
         return reanalyzeSession;
     }
@@ -106,6 +106,10 @@ public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
         public static final boolean defaultReanalyzeSession = false;
+
+        public ListBoxModel doFillDynatraceServerItems() {
+            return PerfSigUtils.listToListBoxModel(PerfSigUtils.getDTConfigurations());
+        }
 
         public boolean isApplicable(final Class<? extends AbstractProject> aClass) {
             return true;

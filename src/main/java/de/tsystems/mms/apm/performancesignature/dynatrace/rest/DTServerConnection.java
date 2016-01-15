@@ -31,6 +31,7 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.rest;
 import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.*;
 import de.tsystems.mms.apm.performancesignature.model.CustomProxy;
+import de.tsystems.mms.apm.performancesignature.model.DynatraceServerConfiguration;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.FilePath;
 import hudson.ProxyConfiguration;
@@ -137,6 +138,10 @@ public class DTServerConnection {
         } else {
             this.proxy = java.net.Proxy.NO_PROXY;
         }
+    }
+
+    public DTServerConnection(DynatraceServerConfiguration config) {
+        this(config.getProtocol(), config.getHost(), config.getPort(), config.getCredentialsId(), config.isVerifyCertificate(), config.getCustomProxy());
     }
 
     public TestRun getTestRunFromXML(final String profileName, final String uuid) {

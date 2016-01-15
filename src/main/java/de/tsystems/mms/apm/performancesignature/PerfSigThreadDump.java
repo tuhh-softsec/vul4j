@@ -19,6 +19,7 @@ package de.tsystems.mms.apm.performancesignature;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.Agent;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
+import de.tsystems.mms.apm.performancesignature.model.DynatraceServerConfiguration;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.AbortException;
 import hudson.Extension;
@@ -30,6 +31,7 @@ import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
+import hudson.util.ListBoxModel;
 import jenkins.tasks.SimpleBuildStep;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -43,36 +45,29 @@ import java.io.PrintStream;
 public class PerfSigThreadDump extends Builder implements SimpleBuildStep {
     private static final int waitForDumpTimeout = 60000;
     private static final int waitForDumpPollingInterval = 5000;
-    private final String agent, host;
+    private final String dynatraceServer, agent, host;
     private boolean lockSession;
 
     @DataBoundConstructor
-    public PerfSigThreadDump(final String agent, final String host) {
+    public PerfSigThreadDump(final String dynatraceServer, final String agent, final String host) {
+        this.dynatraceServer = dynatraceServer;
         this.agent = agent;
         this.host = host;
-    }
-
-    @Deprecated
-    public PerfSigThreadDump(final String agent, final String host, final boolean lockSession) {
-        this(agent, host);
-        setLockSession(lockSession);
     }
 
     @Override
     public void perform(@Nonnull final Run<?, ?> run, @Nonnull final FilePath workspace, @Nonnull final Launcher launcher, @Nonnull final TaskListener listener)
             throws InterruptedException, IOException {
         PrintStream logger = listener.getLogger();
-        PerfSigRecorder dtRecorder = PerfSigUtils.getRecorder(run);
 
-        if (dtRecorder == null) {
-            throw new AbortException(Messages.PerfSigThreadDump_NoRecorderFailure());
-        }
+        DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceServer);
+        if (serverConfiguration == null)
+            throw new AbortException("failed to lookup Dynatrace server configuration");
 
-        final DTServerConnection connection = new DTServerConnection(dtRecorder.getProtocol(), dtRecorder.getHost(), dtRecorder.getPort(),
-                dtRecorder.getCredentialsId(), dtRecorder.isVerifyCertificate(), dtRecorder.getCustomProxy());
+        final DTServerConnection connection = new DTServerConnection(serverConfiguration);
 
         for (Agent agent : connection.getAgents()) {
-            if (agent.getName().equalsIgnoreCase(this.agent) && agent.getSystemProfile().equalsIgnoreCase(dtRecorder.getProfile()) && agent.getHost().equalsIgnoreCase(this.host)) {
+            if (agent.getName().equalsIgnoreCase(this.agent) && agent.getSystemProfile().equalsIgnoreCase(serverConfiguration.getProfile()) && agent.getHost().equalsIgnoreCase(this.host)) {
                 logger.println("Creating Memory Dump for " + agent.getSystemProfile() + "-" + agent.getName() + "-" + agent.getHost() + "-" + agent.getProcessId());
 
                 String threadDump = connection.threadDump(agent.getSystemProfile(), agent.getName(), agent.getHost(), agent.getProcessId(), getLockSession());
@@ -94,6 +89,10 @@ public class PerfSigThreadDump extends Builder implements SimpleBuildStep {
             }
         }
         throw new AbortException(String.format(Messages.PerfSigThreadDump_AgentNotConnected(), agent));
+    }
+
+    public String getDynatraceServer() {
+        return dynatraceServer;
     }
 
     public String getAgent() {
@@ -135,6 +134,10 @@ public class PerfSigThreadDump extends Builder implements SimpleBuildStep {
                 validationResult = FormValidation.error(Messages.PerfSigThreadDump_AgentNotValid());
             }
             return validationResult;
+        }
+
+        public ListBoxModel doFillDynatraceServerItems() {
+            return PerfSigUtils.listToListBoxModel(PerfSigUtils.getDTConfigurations());
         }
 
         public boolean isApplicable(final Class<? extends AbstractProject> aClass) {
