@@ -45,7 +45,7 @@ public class PerfSigActivateConfiguration extends Builder implements SimpleBuild
     private final String dynatraceServer, configuration;
 
     @DataBoundConstructor
-    public PerfSigActivateConfiguration(String dynatraceServer, final String configuration) {
+    public PerfSigActivateConfiguration(final String dynatraceServer, final String configuration) {
         this.dynatraceServer = dynatraceServer;
         this.configuration = configuration;
     }
@@ -101,6 +101,15 @@ public class PerfSigActivateConfiguration extends Builder implements SimpleBuild
 
         public ListBoxModel doFillDynatraceServerItems() {
             return PerfSigUtils.listToListBoxModel(PerfSigUtils.getDTConfigurations());
+        }
+
+        public ListBoxModel doFillConfigurationItems(@QueryParameter final String dynatraceServer) {
+            DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceServer);
+            if (serverConfiguration != null) {
+                final DTServerConnection connection = new DTServerConnection(serverConfiguration);
+                return PerfSigUtils.listToListBoxModel(connection.getProfileConfigurations(serverConfiguration.getProfile()));
+            }
+            return null;
         }
 
         public boolean isApplicable(final Class<? extends AbstractProject> aClass) {

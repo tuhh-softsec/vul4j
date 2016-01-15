@@ -21,6 +21,7 @@ import com.cloudbees.plugins.credentials.common.StandardUsernameCredentials;
 import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
 import com.cloudbees.plugins.credentials.domains.DomainRequirement;
 import de.tsystems.mms.apm.performancesignature.PerfSigRecorder;
+import de.tsystems.mms.apm.performancesignature.dynatrace.model.BaseConfiguration;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.SystemProfile;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionException;
 import de.tsystems.mms.apm.performancesignature.model.DynatraceServerConfiguration;
@@ -82,6 +83,8 @@ public class PerfSigUtils {
                 listBoxModel.add((String) item);
             else if (item instanceof DynatraceServerConfiguration)
                 listBoxModel.add(((DynatraceServerConfiguration) item).getName());
+            else if (item instanceof BaseConfiguration)
+                listBoxModel.add(((BaseConfiguration) item).getId());
         }
         return listBoxModel;
     }

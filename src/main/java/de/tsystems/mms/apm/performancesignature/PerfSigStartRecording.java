@@ -16,7 +16,8 @@
 
 package de.tsystems.mms.apm.performancesignature;
 
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionException;
+import de.tsystems.mms.apm.performancesignature.dynatrace.model.BaseConfiguration;
+import de.tsystems.mms.apm.performancesignature.dynatrace.model.SystemProfile;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
 import de.tsystems.mms.apm.performancesignature.model.DynatraceServerConfiguration;
@@ -71,6 +72,16 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
             throw new RESTErrorException(Messages.PerfSigRecorder_DTConnectionError());
         }
 
+        for (BaseConfiguration profile : connection.getSystemProfiles()) {
+            SystemProfile systemProfile = PerfSigUtils.cast(profile);
+            if (serverConfiguration.getProfile().equals(systemProfile.getId()) && systemProfile.isRecording()) {
+                logger.println("another Sesssion is still recording, trying to stop recording");
+                PerfSigStopRecording stopRecording = new PerfSigStopRecording(dynatraceServer);
+                stopRecording.perform(run, workspace, launcher, listener);
+                break;
+            }
+        }
+
         logger.println("registering new TestRun");
         String testRunId = connection.registerTestRun(serverConfiguration.getProfile(), run.getNumber());
         if (testRunId != null) {
@@ -85,26 +96,13 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
         final String testCase = run.getEnvironment(listener).expand(this.testCase);
         String sessionName = serverConfiguration.getProfile() + "_" + run.getParent().getName() + "_Build-" + run.getNumber() + "_" + testCase;
         sessionName = sessionName.replace("/", "_");
-        try {
-            final String result = connection.startRecording(serverConfiguration.getProfile(), sessionName, "This Session is triggered by Jenkins", getRecordingOption(), lockSession, false);
 
-            if (result != null && result.equals(sessionName)) {
-                logger.println(String.format(Messages.PerfSigStartRecording_StartedSessionRecording(), serverConfiguration.getProfile(), result));
-                run.addAction(new PerfSigRegisterEnvVars(sessionName, testCase, testRunId));
-            } else {
-                throw new RESTErrorException(String.format(Messages.PerfSigStartRecording_SessionRecordingError(), serverConfiguration.getProfile()));
-            }
-        } catch (CommandExecutionException e) {
-            if (e.getMessage().contains("already started")) {
-                logger.println(e.getMessage());
-                logger.println("trying to stop session recording");
-                PerfSigStopRecording stopRecording = new PerfSigStopRecording(dynatraceServer);
-                stopRecording.perform(run, workspace, launcher, listener);
-                Thread.sleep(10000);
-                this.perform(run, workspace, launcher, listener);
-            } else {
-                throw e;
-            }
+        final String result = connection.startRecording(serverConfiguration.getProfile(), sessionName, "This Session is triggered by Jenkins", getRecordingOption(), lockSession, false);
+        if (result != null && result.equals(sessionName)) {
+            logger.println(String.format(Messages.PerfSigStartRecording_StartedSessionRecording(), serverConfiguration.getProfile(), result));
+            run.addAction(new PerfSigRegisterEnvVars(sessionName, testCase, testRunId));
+        } else {
+            throw new RESTErrorException(String.format(Messages.PerfSigStartRecording_SessionRecordingError(), serverConfiguration.getProfile()));
         }
     }
 
@@ -128,6 +126,10 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
     @DataBoundSetter
     public void setLockSession(final boolean lockSession) {
         this.lockSession = lockSession;
+    }
+
+    public String getDynatraceServer() {
+        return dynatraceServer;
     }
 
     @Extension

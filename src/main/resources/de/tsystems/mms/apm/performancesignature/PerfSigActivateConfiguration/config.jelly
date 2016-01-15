@@ -20,6 +20,6 @@
         <f:select/>
     </f:entry>
     <f:entry title="${%configuration}" field="configuration" description="${%Dynatrace profile configuration}">
-        <f:textbox/>
+        <f:select/>
     </f:entry>
 </j:jelly>

@@ -41,6 +41,7 @@ import org.kohsuke.stapler.QueryParameter;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.List;
 
 public class PerfSigMemoryDump extends Builder implements SimpleBuildStep {
     private static final int waitForDumpTimeout = 60000;
@@ -66,8 +67,9 @@ public class PerfSigMemoryDump extends Builder implements SimpleBuildStep {
             throw new AbortException("failed to lookup Dynatrace server configuration");
 
         final DTServerConnection connection = new DTServerConnection(serverConfiguration);
+        List<Agent> agents = connection.getAgents();
 
-        for (Agent agent : connection.getAgents()) {
+        for (Agent agent : agents) {
             if (agent.getName().equalsIgnoreCase(this.agent) && agent.getSystemProfile().equalsIgnoreCase(serverConfiguration.getProfile()) && agent.getHost().equalsIgnoreCase(this.host)) {
                 logger.println("Creating Memory Dump for " + agent.getSystemProfile() + "-" + agent.getName() + "-" + agent.getHost() + "-" + agent.getProcessId());
 
@@ -83,7 +85,7 @@ public class PerfSigMemoryDump extends Builder implements SimpleBuildStep {
                     dumpFinished = connection.memoryDumpStatus(agent.getSystemProfile(), memoryDump).isResultValueTrue();
                 }
                 if (dumpFinished) {
-                    logger.println(Messages.PerfSigMemoryDump_SuccessfullyCreatedMemoryDump() + agent.getName());
+                    logger.println(String.format(Messages.PerfSigMemoryDump_SuccessfullyCreatedMemoryDump(), agent.getName()));
                     return;
                 } else {
                     throw new RESTErrorException("Timeout raised");

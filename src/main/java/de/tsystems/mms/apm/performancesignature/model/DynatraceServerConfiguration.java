@@ -45,13 +45,13 @@ import static com.cloudbees.plugins.credentials.CredentialsMatchers.instanceOf;
 public class DynatraceServerConfiguration extends AbstractDescribableImpl<DynatraceServerConfiguration> {
     private final String name, protocol, host, profile, credentialsId;
     private final int port;
-    private boolean verifyCertificate, proxy;
+    private boolean verifyCertificate;
     private int delay, retryCount;
     private CustomProxy customProxy;
 
     @DataBoundConstructor
     public DynatraceServerConfiguration(final String name, final String protocol, final String host, final int port, final String credentialsId, final String profile,
-                                        final boolean verifyCertificate, final int delay, final int retryCount, final boolean proxy, final CustomProxy customProxy) {
+                                        final boolean verifyCertificate, final int delay, final int retryCount, final boolean proxy, final CustomProxy proxySource) {
         this.name = name;
         this.protocol = protocol;
         this.host = host;
@@ -61,8 +61,7 @@ public class DynatraceServerConfiguration extends AbstractDescribableImpl<Dynatr
         this.verifyCertificate = verifyCertificate;
         this.delay = delay;
         this.retryCount = retryCount;
-        this.proxy = proxy;
-        this.customProxy = customProxy;
+        this.customProxy = proxy ? proxySource : null;
     }
 
     public String getName() {
@@ -91,10 +90,6 @@ public class DynatraceServerConfiguration extends AbstractDescribableImpl<Dynatr
 
     public boolean isVerifyCertificate() {
         return verifyCertificate;
-    }
-
-    public boolean isProxy() {
-        return proxy;
     }
 
     public int getDelay() {

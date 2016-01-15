@@ -71,7 +71,7 @@ public class DTServerConnection {
             return true;
         }
     };
-    private java.net.Proxy proxy;
+    private Proxy proxy;
     private SSLContext sc;
 
     public DTServerConnection(final String protocol, final String host, final int port, final String credentialsId,
@@ -79,6 +79,7 @@ public class DTServerConnection {
         this.address = protocol + "://" + host + ":" + port;
         this.credentials = PerfSigUtils.getCredentials(credentialsId);
         this.verifyCertificate = verifyCertificate;
+        this.proxy = Proxy.NO_PROXY;
 
         // Install the all-trusting trust manager
         try {
@@ -115,9 +116,6 @@ public class DTServerConnection {
                         };
                         Authenticator.setDefault(authenticator);
                     }
-                    logger.info("using customProxy: " + proxyConfiguration.name + ":" + proxyConfiguration.port);
-                } else {
-                    this.proxy = java.net.Proxy.NO_PROXY;
                 }
             } else {
                 if (StringUtils.isNotBlank(customProxy.getProxyServer()) && customProxy.getProxyPort() > 0) {
@@ -130,13 +128,8 @@ public class DTServerConnection {
                         };
                         Authenticator.setDefault(authenticator);
                     }
-                    logger.info("using customProxy: " + customProxy.getProxyServer() + ":" + customProxy.getProxyPort());
-                } else {
-                    this.proxy = java.net.Proxy.NO_PROXY;
                 }
             }
-        } else {
-            this.proxy = java.net.Proxy.NO_PROXY;
         }
     }
 
@@ -437,8 +430,7 @@ public class DTServerConnection {
         }
     }
 
-    //ToDo implement getConfigurations in activate ProfileConfiguration Builder
-    public List<BaseConfiguration> getConfigurations(final String profileName) {
+    public List<BaseConfiguration> getProfileConfigurations(final String profileName) {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(this.address);
