@@ -26,7 +26,7 @@ limitations under the License.
   <artifactId>flaky-test-handler</artifactId>
   <name>Flaky Test Handler plugin</name>
   <description>Display rerun flaky tests</description>
-  <version>1.0.2-SNAPSHOT</version>
+  <version>1.0.2</version>
   <packaging>hpi</packaging>
   <url>https://wiki.jenkins-ci.org/display/JENKINS/Flaky+Test+Handler+Plugin</url>
 
@@ -117,7 +117,7 @@ limitations under the License.
     <connection>scm:git:ssh://github.com/jenkinsci/flaky-test-handler-plugin.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/jenkinsci/flaky-test-handler-plugin.git</developerConnection>
     <url>https://github.com/jenkinsci/flaky-test-handler-plugin</url>
-    <tag>flaky-test-handler-1.0.1</tag>
+    <tag>flaky-test-handler-1.0.2</tag>
   </scm>
 
 </project>
