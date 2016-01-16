@@ -115,9 +115,9 @@ limitations under the License.
 
   <scm>
     <connection>scm:git:ssh://github.com/jenkinsci/flaky-test-handler-plugin.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/jenkinsci/flaky-test-handler-plugin.git</developerConnection>
+    <developerConnection>scm:git:git://git@github.com/jenkinsci/flaky-test-handler-plugin.git</developerConnection>
     <url>https://github.com/jenkinsci/flaky-test-handler-plugin</url>
-    <tag>flaky-test-handler-1.0.2-2</tag>
+    <tag>flaky-test-handler-1.0.2</tag>
   </scm>
 
 </project>
