@@ -156,7 +156,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
                 }
             }
             for (Dashboard comparisonDashboard : configurationTestCase.getComparisonDashboards()) {
-                if (comparisonBuildNumber != 0 && comparisonSessionName != null && run.getResult().isBetterThan(Result.FAILURE)) {
+                if (comparisonBuildNumber != 0 && comparisonSessionName != null) {
                     comparisonFilename = "Comparisonreport_" + comparisonSessionName.replace(comparisonBuildNumber + "_",
                             buildNumber + "_" + comparisonBuildNumber + "_") + "_" + comparisonDashboard.getName() + ".pdf";
                     logger.println(Messages.PerfSigRecorder_GettingPDFReport() + " " + comparisonFilename);
