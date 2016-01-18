@@ -142,6 +142,29 @@ public class PerfSigThreadDump extends Builder implements SimpleBuildStep {
             return PerfSigUtils.listToListBoxModel(PerfSigUtils.getDTConfigurations());
         }
 
+        public ListBoxModel doFillAgentItems(@QueryParameter final String dynatraceServer) {
+            DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceServer);
+            if (serverConfiguration != null) {
+                final DTServerConnection connection = new DTServerConnection(serverConfiguration);
+                return PerfSigUtils.listToListBoxModel(connection.getAgents(serverConfiguration.getProfile()));
+            }
+            return null;
+        }
+
+        public ListBoxModel doFillHostItems(@QueryParameter final String dynatraceServer, @QueryParameter final String agent) {
+            DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceServer);
+            if (serverConfiguration != null) {
+                final DTServerConnection connection = new DTServerConnection(serverConfiguration);
+                List<Agent> agents = connection.getAgents(serverConfiguration.getProfile());
+                ListBoxModel hosts = new ListBoxModel();
+                for (Agent a : agents)
+                    if (a.getName().equals(agent))
+                        hosts.add(a.getHost());
+                return hosts;
+            }
+            return null;
+        }
+
         public boolean isApplicable(final Class<? extends AbstractProject> aClass) {
             return true;
         }

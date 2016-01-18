@@ -20,10 +20,10 @@
         <f:select/>
     </f:entry>
     <f:entry title="${%Agent}" field="agent" description="${%memory dump on agent}">
-        <f:textbox/>
+        <f:select/>
     </f:entry>
     <f:entry title="${%Host}" field="host">
-        <f:textbox/>
+        <f:select/>
     </f:entry>
 
     <f:advanced>

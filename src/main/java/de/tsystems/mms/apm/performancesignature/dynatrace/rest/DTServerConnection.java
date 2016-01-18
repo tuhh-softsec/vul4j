@@ -52,6 +52,7 @@ import java.net.*;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
@@ -473,6 +474,16 @@ public class DTServerConnection {
         } catch (Exception ex) {
             throw new CommandExecutionException("Error listing agents: " + ex.getMessage(), ex);
         }
+    }
+
+    public List<Agent> getAgents(final String systemProfile) {
+        List<Agent> agents = getAgents();
+        List<Agent> filteredAgents = new ArrayList<Agent>();
+        for (Agent agent : agents) {
+            if (agent.getSystemProfile().equals(systemProfile))
+                filteredAgents.add(agent);
+        }
+        return filteredAgents;
     }
 
     public boolean hotSensorPlacement(final int agentId) {

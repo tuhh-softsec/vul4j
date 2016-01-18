@@ -21,8 +21,8 @@ import com.cloudbees.plugins.credentials.common.StandardUsernameCredentials;
 import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
 import com.cloudbees.plugins.credentials.domains.DomainRequirement;
 import de.tsystems.mms.apm.performancesignature.PerfSigRecorder;
+import de.tsystems.mms.apm.performancesignature.dynatrace.model.Agent;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.BaseConfiguration;
-import de.tsystems.mms.apm.performancesignature.dynatrace.model.SystemProfile;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionException;
 import de.tsystems.mms.apm.performancesignature.model.DynatraceServerConfiguration;
 import hudson.FilePath;
@@ -77,10 +77,10 @@ public class PerfSigUtils {
     public static ListBoxModel listToListBoxModel(final List<?> arrayList) {
         final ListBoxModel listBoxModel = new ListBoxModel();
         for (Object item : arrayList) {
-            if (item instanceof SystemProfile)
-                listBoxModel.add(((SystemProfile) item).getId());
-            else if (item instanceof String)
+            if (item instanceof String)
                 listBoxModel.add((String) item);
+            else if (item instanceof Agent)
+                listBoxModel.add(((Agent) item).getName());
             else if (item instanceof DynatraceServerConfiguration)
                 listBoxModel.add(((DynatraceServerConfiguration) item).getName());
             else if (item instanceof BaseConfiguration)
