@@ -23,8 +23,8 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRun;
 import de.tsystems.mms.apm.performancesignature.model.MeasureNameHelper;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.FilePath;
-import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
+import hudson.model.Job;
 import hudson.model.ProminentProjectAction;
 import hudson.model.Run;
 import hudson.tasks.junit.TestResult;
@@ -66,35 +66,33 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PerfSigProjectAction implements ProminentProjectAction {
-    private final AbstractProject<?, ?> project;
+public class PerfSigProjectAction extends PerfSigBaseAction implements ProminentProjectAction {
+    public final Job<?, ?> job;
 
+    public PerfSigProjectAction(final Job<?, ?> job) {
+        this.job = job;
+    }
+
+    @Deprecated
     public PerfSigProjectAction(final AbstractProject<?, ?> project) {
-        this.project = project;
+        this((Job) project);
     }
 
-    public String getIconFileName() {
-        return "/plugin/" + Messages.PerfSigProjectAction_UrlName() + "/images/icon.png";
+    @Override
+    protected String getTitle() {
+        return job.getDisplayName() + " PerfSig";
     }
 
-    public String getDisplayName() {
-        return Messages.PerfSigProjectAction_DisplayName();
-    }
-
-    public String getUrlName() {
-        return Messages.PerfSigProjectAction_UrlName();
-    }
-
-    public AbstractProject<?, ?> getProject() {
-        return this.project;
+    public Job<?, ?> getJob() {
+        return job;
     }
 
     public TestResultProjectAction getTestResultProjectAction() {
-        return project.getAction(TestResultProjectAction.class);
+        return job.getAction(TestResultProjectAction.class);
     }
 
-    public PerfSigUtils getPerfSigUtils() {
-        return new PerfSigUtils();
+    public Class getPerfSigUtils() {
+        return PerfSigUtils.class;
     }
 
     public void doSummarizerGraph(final StaplerRequest request, final StaplerResponse response) throws IOException, InterruptedException {
@@ -247,7 +245,7 @@ public class PerfSigProjectAction implements ProminentProjectAction {
         if (StringUtils.isNotBlank(customBuildCount))
             buildCount = Integer.parseInt(customBuildCount);
 
-        for (Run<?, ?> run : project.getBuilds()) {
+        for (Run<?, ?> run : job.getBuilds()) {
             PerfSigTestDataWrapper testDataWrapper = run.getAction(PerfSigTestDataWrapper.class);
             if (testDataWrapper != null && testDataWrapper.getTestRuns() != null) {
                 TestRun testRun = TestRun.mergeTestRuns(testDataWrapper.getTestRuns());
@@ -315,9 +313,9 @@ public class PerfSigProjectAction implements ProminentProjectAction {
     }
 
     public List<DashboardReport> getLastDashboardReports() {
-        final Run<?, ?> tb = project.getLastSuccessfulBuild();
+        final Run<?, ?> tb = job.getLastSuccessfulBuild();
 
-        Run<?, ?> b = project.getLastBuild();
+        Run<?, ?> b = job.getLastBuild();
         while (b != null) {
             PerfSigBuildAction a = b.getAction(PerfSigBuildAction.class);
             if (a != null && (!b.isBuilding())) return a.getDashboardReports();
@@ -329,7 +327,7 @@ public class PerfSigProjectAction implements ProminentProjectAction {
     }
 
     public TestRun getTestRun(final int buildNumber) {
-        final Run<?, ?> run = project.getBuildByNumber(buildNumber);
+        final Run<?, ?> run = job.getBuildByNumber(buildNumber);
         if (run != null) {
             PerfSigTestDataWrapper testDataWrapper = run.getAction(PerfSigTestDataWrapper.class);
             if (testDataWrapper != null) {
@@ -340,7 +338,7 @@ public class PerfSigProjectAction implements ProminentProjectAction {
     }
 
     public TestResult getTestAction(final int buildNumber) {
-        final Run<?, ?> run = project.getBuildByNumber(buildNumber);
+        final Run<?, ?> run = job.getBuildByNumber(buildNumber);
         if (run != null) {
             TestResultAction testResultAction = run.getAction(TestResultAction.class);
             if (testResultAction != null) {
@@ -352,17 +350,16 @@ public class PerfSigProjectAction implements ProminentProjectAction {
 
     public List<DashboardReport> getDashBoardReports(final String tc) {
         final List<DashboardReport> dashboardReportList = new ArrayList<DashboardReport>();
-        if (project == null) {
+        if (job == null) {
             return dashboardReportList;
         }
-        final List<? extends AbstractBuild> builds = project.getBuilds();
-        for (AbstractBuild currentBuild : builds) {
-            final PerfSigBuildAction performanceBuildAction = currentBuild.getAction(PerfSigBuildAction.class);
+        for (Run<?, ?> currentRun : job.getBuilds()) {
+            final PerfSigBuildAction performanceBuildAction = currentRun.getAction(PerfSigBuildAction.class);
             if (performanceBuildAction != null) {
                 DashboardReport dashboardReport = performanceBuildAction.getBuildActionResultsDisplay().getDashBoardReport(tc);
                 if (dashboardReport == null) {
                     dashboardReport = new DashboardReport(tc);
-                    dashboardReport.setBuildAction(new PerfSigBuildAction(currentBuild, null));
+                    dashboardReport.setBuildAction(new PerfSigBuildAction(null));
                 }
                 dashboardReportList.add(dashboardReport);
             }
@@ -375,12 +372,12 @@ public class PerfSigProjectAction implements ProminentProjectAction {
         final Matcher matcher = pattern.matcher(request.getParameter("f"));
         if (matcher.find()) {
             final int id = Integer.parseInt(matcher.group().substring(1));
-            PerfSigUtils.downloadFile(request, response, project.getBuildByNumber(id));
+            PerfSigUtils.downloadFile(request, response, job.getBuildByNumber(id));
         }
     }
 
     private FilePath getJsonConfigFilePath() {
-        final FilePath configPath = new FilePath(project.getConfigFile().getFile());
+        final FilePath configPath = new FilePath(job.getConfigFile().getFile());
         return configPath.getParent();
     }
 

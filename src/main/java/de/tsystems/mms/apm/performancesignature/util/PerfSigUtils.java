@@ -50,6 +50,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class PerfSigUtils {
+    private PerfSigUtils() {
+    }
+
     /**
      * @return {@link jenkins.model.Jenkins#getInstance()} if that isn't null, or die.
      */
@@ -66,11 +69,10 @@ public class PerfSigUtils {
         return (T) obj;
     }
 
-    public static BigDecimal round(final double d, int decimalPlace) {
+    public static BigDecimal round(final double d, final int decimalPlace) {
         if (d == 0) return BigDecimal.valueOf(0);
-        if (d % 1 == 0) decimalPlace = 0;
         BigDecimal bd = new BigDecimal(d);
-        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
+        bd = bd.setScale(d % 1 == 0 ? 0 : decimalPlace, BigDecimal.ROUND_HALF_UP);
         return bd;
     }
 

@@ -19,18 +19,21 @@ package de.tsystems.mms.apm.performancesignature;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import hudson.model.Action;
 import hudson.model.Run;
+import jenkins.model.RunAction2;
+import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.StaplerProxy;
 
 import java.lang.ref.WeakReference;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
-public class PerfSigBuildAction implements Action, StaplerProxy {
-    private final Run<?, ?> build;
+public class PerfSigBuildAction extends PerfSigBaseAction implements SimpleBuildStep.LastBuildAction, RunAction2, StaplerProxy {
     private final List<DashboardReport> dashboardReports;
+    private transient Run<?, ?> build;
     private transient WeakReference<PerfSigBuildActionResultsDisplay> buildActionResultsDisplay;
 
-    public PerfSigBuildAction(final Run<?, ?> run, final List<DashboardReport> dashboardReports) {
-        this.build = run;
+    public PerfSigBuildAction(final List<DashboardReport> dashboardReports) {
         this.dashboardReports = dashboardReports;
     }
 
@@ -57,16 +60,9 @@ public class PerfSigBuildAction implements Action, StaplerProxy {
         return getBuildActionResultsDisplay();
     }
 
-    public String getIconFileName() {
-        return "/plugin/" + Messages.PerfSigBuildAction_UrlName() + "/images/icon.png";
-    }
-
-    public String getDisplayName() {
-        return Messages.PerfSigBuildAction_DisplayName();
-    }
-
-    public String getUrlName() {
-        return Messages.PerfSigBuildAction_UrlName();
+    @Override
+    protected String getTitle() {
+        return build.getDisplayName() + " PerfSig";
     }
 
     public Run<?, ?> getBuild() {
@@ -75,5 +71,20 @@ public class PerfSigBuildAction implements Action, StaplerProxy {
 
     public List<DashboardReport> getDashboardReports() {
         return this.dashboardReports;
+    }
+
+    @Override
+    public Collection<? extends Action> getProjectActions() {
+        return Collections.singleton(new PerfSigProjectAction(build.getParent()));
+    }
+
+    @Override
+    public void onAttached(Run<?, ?> r) {
+        this.build = r;
+    }
+
+    @Override
+    public void onLoad(Run<?, ?> r) {
+        this.build = r;
     }
 }

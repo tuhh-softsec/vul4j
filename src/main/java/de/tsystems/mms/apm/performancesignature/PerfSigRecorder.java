@@ -237,7 +237,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
             }
         }
 
-        PerfSigBuildAction action = new PerfSigBuildAction(run, dashboardReports);
+        PerfSigBuildAction action = new PerfSigBuildAction(dashboardReports);
         run.addAction(action);
     }
 
@@ -252,11 +252,6 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
 
     private boolean validateSessionName(final String name) {
         return availableSessions.contains(name);
-    }
-
-    @Override
-    public Action getProjectAction(final AbstractProject<?, ?> project) {
-        return new PerfSigProjectAction(project);
     }
 
     public BuildStepMonitor getRequiredMonitorService() {

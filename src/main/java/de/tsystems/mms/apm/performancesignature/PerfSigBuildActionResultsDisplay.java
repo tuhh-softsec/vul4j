@@ -55,7 +55,7 @@ import java.util.List;
 public class PerfSigBuildActionResultsDisplay implements ModelObject {
     private static Run<?, ?> currentBuild = null;
     private final transient PerfSigBuildAction buildAction;
-    private final List<DashboardReport> currentDashboardReports;
+    private final transient List<DashboardReport> currentDashboardReports;
 
     public PerfSigBuildActionResultsDisplay(final PerfSigBuildAction buildAction) {
         this.buildAction = buildAction;
@@ -73,8 +73,8 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
         return Messages.PerfSigBuildActionResultsDisplay_DisplayName();
     }
 
-    public PerfSigUtils getPerfSigUtils() {
-        return new PerfSigUtils();
+    public Class getPerfSigUtils() {
+        return PerfSigUtils.class;
     }
 
     public Run<?, ?> getBuild() {
