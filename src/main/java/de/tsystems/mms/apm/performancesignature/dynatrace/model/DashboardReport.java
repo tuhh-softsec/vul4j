@@ -17,20 +17,18 @@
 package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
 import de.tsystems.mms.apm.performancesignature.PerfSigBuildAction;
-import de.tsystems.mms.apm.performancesignature.model.ConfigurationTestCase;
-import de.tsystems.mms.apm.performancesignature.model.UnitTestCase;
 import hudson.model.Run;
 
 import java.util.Date;
 import java.util.List;
 
 public class DashboardReport {
-    private String name;
+    private final String name;
     private List<ChartDashlet> chartDashlets;
     private List<IncidentChart> incidents;
     private PerfSigBuildAction buildAction;
     private DashboardReport lastDashboardReport;
-    private ConfigurationTestCase configurationTestCase;
+    private boolean isUnitTest;
 
     public DashboardReport(final String testCaseName) {
         this.name = testCaseName;
@@ -56,24 +54,12 @@ public class DashboardReport {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
     public PerfSigBuildAction getBuildAction() {
         return this.buildAction;
     }
 
     public void setBuildAction(final PerfSigBuildAction buildAction) {
         this.buildAction = buildAction;
-    }
-
-    public ConfigurationTestCase getConfigurationTestCase() {
-        return configurationTestCase;
-    }
-
-    public void setConfigurationTestCase(final ConfigurationTestCase configurationTestCase) {
-        this.configurationTestCase = configurationTestCase;
     }
 
     public DashboardReport getLastDashboardReport() {
@@ -92,8 +78,16 @@ public class DashboardReport {
         return getBuild().getTime();
     }
 
+    public void setIsUnitTest(final boolean isUnitTest) {
+        this.isUnitTest = isUnitTest;
+    }
+
     public boolean isUnitTest() {
-        return this.configurationTestCase instanceof UnitTestCase;
+        return isUnitTest;
+    }
+
+    public void setUnitTest(boolean unitTest) {
+        isUnitTest = unitTest;
     }
 
     @Override
@@ -101,9 +95,10 @@ public class DashboardReport {
         return "DashboardReport{" +
                 "name='" + name + '\'' +
                 ", chartDashlets=" + chartDashlets +
+                ", incidents=" + incidents +
                 ", buildAction=" + buildAction +
                 ", lastDashboardReport=" + lastDashboardReport +
-                ", configurationTestCase=" + configurationTestCase +
+                ", isUnitTest=" + isUnitTest +
                 '}';
     }
 

@@ -21,23 +21,18 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.util.List;
 
-/**
- * Created by rapi on 07.05.2014.
- */
-public class GeneralTestCase extends ConfigurationTestCase {
+public class GenericTestCase extends ConfigurationTestCase {
 
     @DataBoundConstructor
-    public GeneralTestCase(final String name, final List<Dashboard> singleDashboards,
-                           final List<Dashboard> comparisonDashboards, final String xmlDashboard) {
+    public GenericTestCase(final String name, final List<Dashboard> singleDashboards, final List<Dashboard> comparisonDashboards, final String xmlDashboard) {
         super(name, singleDashboards, comparisonDashboards, xmlDashboard);
-
     }
 
     @Extension
     public static final class DescriptorImpl extends ConfigurationTestCaseDescriptor {
         @Override
         public String getDisplayName() {
-            return "other TestCases";
+            return "generic TestCase";
         }
     }
 }

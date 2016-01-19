@@ -23,6 +23,7 @@ import de.tsystems.mms.apm.performancesignature.model.ConfigurationTestCase;
 import de.tsystems.mms.apm.performancesignature.model.ConfigurationTestCase.ConfigurationTestCaseDescriptor;
 import de.tsystems.mms.apm.performancesignature.model.Dashboard;
 import de.tsystems.mms.apm.performancesignature.model.DynatraceServerConfiguration;
+import de.tsystems.mms.apm.performancesignature.model.UnitTestCase;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.*;
 import hudson.model.*;
@@ -172,7 +173,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
             if (dashboardReport == null || dashboardReport.getChartDashlets() == null || dashboardReport.getChartDashlets().isEmpty()) {
                 throw new RESTErrorException(Messages.PerfSigRecorder_XMLReportError());
             } else {
-                dashboardReport.setConfigurationTestCase(configurationTestCase);
+                dashboardReport.setIsUnitTest(configurationTestCase instanceof UnitTestCase);
                 dashboardReports.add(dashboardReport);
 
                 List<IncidentChart> incidents = dashboardReport.getIncidents();

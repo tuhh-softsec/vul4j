@@ -21,7 +21,7 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.model.SystemProfile;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
 import de.tsystems.mms.apm.performancesignature.model.DynatraceServerConfiguration;
-import de.tsystems.mms.apm.performancesignature.model.GeneralTestCase;
+import de.tsystems.mms.apm.performancesignature.model.GenericTestCase;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.AbortException;
 import hudson.Extension;
@@ -144,7 +144,7 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
         public FormValidation doCheckTestCase(@QueryParameter final String testCase) {
             try {
                 Jenkins.checkGoodName(testCase);
-                GeneralTestCase.DescriptorImpl.addTestCases(testCase);
+                GenericTestCase.DescriptorImpl.addTestCases(testCase);
                 return FormValidation.ok();
             } catch (Failure e) {
                 return FormValidation.error(e.getMessage());

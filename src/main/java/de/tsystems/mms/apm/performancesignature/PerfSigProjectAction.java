@@ -23,7 +23,6 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRun;
 import de.tsystems.mms.apm.performancesignature.model.MeasureNameHelper;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.FilePath;
-import hudson.model.AbstractProject;
 import hudson.model.Job;
 import hudson.model.ProminentProjectAction;
 import hudson.model.Run;
@@ -71,11 +70,6 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
 
     public PerfSigProjectAction(final Job<?, ?> job) {
         this.job = job;
-    }
-
-    @Deprecated
-    public PerfSigProjectAction(final AbstractProject<?, ?> project) {
-        this((Job) project);
     }
 
     @Override
@@ -354,9 +348,9 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             return dashboardReportList;
         }
         for (Run<?, ?> currentRun : job.getBuilds()) {
-            final PerfSigBuildAction performanceBuildAction = currentRun.getAction(PerfSigBuildAction.class);
-            if (performanceBuildAction != null) {
-                DashboardReport dashboardReport = performanceBuildAction.getBuildActionResultsDisplay().getDashBoardReport(tc);
+            final PerfSigBuildAction perfSigBuildAction = currentRun.getAction(PerfSigBuildAction.class);
+            if (perfSigBuildAction != null) {
+                DashboardReport dashboardReport = perfSigBuildAction.getBuildActionResultsDisplay().getDashBoardReport(tc);
                 if (dashboardReport == null) {
                     dashboardReport = new DashboardReport(tc);
                     dashboardReport.setBuildAction(new PerfSigBuildAction(null));
