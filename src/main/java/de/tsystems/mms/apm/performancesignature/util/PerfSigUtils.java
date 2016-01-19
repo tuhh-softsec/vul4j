@@ -49,7 +49,7 @@ import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.List;
 
-public class PerfSigUtils {
+public final class PerfSigUtils {
     private PerfSigUtils() {
     }
 

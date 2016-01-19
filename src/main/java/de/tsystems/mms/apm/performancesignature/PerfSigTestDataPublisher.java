@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PerfSigTestDataPublisher extends TestDataPublisher {
-    public final String dynatraceServer;
+    private final String dynatraceServer;
 
     @DataBoundConstructor
     public PerfSigTestDataPublisher(final String dynatraceServer) {

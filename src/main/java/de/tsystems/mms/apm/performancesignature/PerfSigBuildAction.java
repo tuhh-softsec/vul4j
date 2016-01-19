@@ -79,12 +79,12 @@ public class PerfSigBuildAction extends PerfSigBaseAction implements SimpleBuild
     }
 
     @Override
-    public void onAttached(Run<?, ?> r) {
+    public void onAttached(final Run<?, ?> r) {
         this.build = r;
     }
 
     @Override
-    public void onLoad(Run<?, ?> r) {
+    public void onLoad(final Run<?, ?> r) {
         this.build = r;
     }
 }

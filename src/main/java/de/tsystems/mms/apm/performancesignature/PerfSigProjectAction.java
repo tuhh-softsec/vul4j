@@ -67,7 +67,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PerfSigProjectAction extends PerfSigBaseAction implements ProminentProjectAction {
-    public final Job<?, ?> job;
+    private final Job<?, ?> job;
 
     public PerfSigProjectAction(final Job<?, ?> job) {
         this.job = job;
@@ -464,10 +464,10 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
                 final JSONObject obj = gridConfiguration.getJSONObject(i);
                 final MeasureNameHelper tmp = map.get(obj.getString("id"));
                 if (tmp != null) {
-                    obj.put("id", DigestUtils.md5Hex(dashboard + tmp.chartDashlet + tmp.measure + obj.getString("customName")));
-                    obj.put("chartDashlet", tmp.chartDashlet);
-                    obj.put("measure", tmp.measure);
-                    obj.put("description", tmp.description);
+                    obj.put("id", DigestUtils.md5Hex(dashboard + tmp.getChartDashlet() + tmp.getMeasure() + obj.getString("customName")));
+                    obj.put("chartDashlet", tmp.getChartDashlet());
+                    obj.put("measure", tmp.getMeasure());
+                    obj.put("description", tmp.getDescription());
                 } else {
                     for (int j = 0; j < dashboardConfiguration.size(); j++) {
                         final JSONObject jsonObject = dashboardConfiguration.getJSONObject(j);

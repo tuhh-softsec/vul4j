@@ -16,15 +16,24 @@
 
 package de.tsystems.mms.apm.performancesignature.model;
 
-/**
- * Created by rapi on 20.10.2015.
- */
 public class MeasureNameHelper {
-    public final String chartDashlet, measure, description;
+    private final String chartDashlet, measure, description;
 
     public MeasureNameHelper(final String chartDashlet, final String measure, final String description) {
         this.chartDashlet = chartDashlet;
         this.measure = measure;
         this.description = description;
+    }
+
+    public String getChartDashlet() {
+        return chartDashlet;
+    }
+
+    public String getMeasure() {
+        return measure;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }
