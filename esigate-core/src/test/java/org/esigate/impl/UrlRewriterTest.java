@@ -479,4 +479,19 @@ public class UrlRewriterTest extends TestCase {
         assertRewritesHtml(html, rewrittenHtml);
     }
 
+    /**
+     * Issue https://github.com/esigate/esigate/issues/139.
+     * Url rewriting prevents using $(PROVIDER{}) in a html link
+     */
+    public void testUrlRewriteEsiVarUrl() {
+        baseUrl = "http://backend/path/";
+        visibleUrlBase = "http://backend/";
+        requestUrl = "/";
+
+        absolute = false;
+        assertDoesNotRewrite("$(PROVIDERS{default})/controller");
+
+        absolute = true;
+        assertDoesNotRewrite("$(PROVIDERS{default})/controller");
+    }
 }

@@ -117,6 +117,8 @@ public class UrlRewriter {
 
     /**
      * Fixes an url according to the chosen mode.
+     * <p>
+     * Note: urls starting with an ESI variable are not rewriten.
      * 
      * @param url
      *            the url to fix (can be anything found in an html page, relative, absolute, empty...)
@@ -132,6 +134,14 @@ public class UrlRewriter {
      * @return the fixed url.
      */
     public String rewriteUrl(String url, String requestUrl, String baseUrl, String visibleBaseUrl, boolean absolute) {
+        
+        // Do not rewrite Urls starting with ESI variables
+        // This could be improved by detecting we are in an 'esi:vars' block, 
+        // but this would link the rewriter with ESI parsing. 
+        if( url.startsWith("$(")){
+            return url;
+        }
+        
         // Base url should end with /
         if (!baseUrl.endsWith("/")) {
             baseUrl = baseUrl + "/";
