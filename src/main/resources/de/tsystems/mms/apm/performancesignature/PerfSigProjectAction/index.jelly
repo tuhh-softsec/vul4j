@@ -155,12 +155,12 @@
                                         <j:forEach var="dashboardReport" items="${it.getDashBoardReports(lastDashboardReport.name)}">
                                             <tr>
                                                 <td>
-                                                    <a href="../${dashboardReport.buildAction.build.number}/performance-signature/#${lastDashboardReport.name}">
-                                                        <b>${dashboardReport.buildAction.build.number}</b>
+                                                    <a href="../${dashboardReport.key.number}/performance-signature/#${lastDashboardReport.name}">
+                                                        <b>${dashboardReport.key.number}</b>
                                                     </a>
                                                 </td>
                                                 <j:set var="file"
-                                                       value="${it.PerfSigUtils.getDownloadFiles('Comparison.*' + dashboardReport.name + '_.*pdf',dashboardReport.build)}"/>
+                                                       value="${it.PerfSigUtils.getDownloadFiles('Comparison.*' + lastDashboardReport.name + '_.*pdf',dashboardReport.key)}"/>
                                                 <td>
                                                     <j:if test="${file.size()!=0}">
                                                         <a href="./downloadFile?f=${file.get(0).name}" target="_blank">
@@ -169,11 +169,11 @@
                                                     </j:if>
                                                 </td>
                                                 <td>
-                                                    <fmt:formatDate dateStyle="medium" type="both" value="${dashboardReport.buildTime}"/>
+                                                    <fmt:formatDate dateStyle="medium" type="both" value="${dashboardReport.key.time}"/>
                                                 </td>
                                                 <j:if test="${isUnitTest}">
-                                                    <j:set var="testRun" value="${it.getTestRun(dashboardReport.buildAction.build.number)}"/>
-                                                    <j:set var="testResult" value="${it.getTestAction(dashboardReport.buildAction.build.number)}"/>
+                                                    <j:set var="testRun" value="${it.getTestRun(dashboardReport.key)}"/>
+                                                    <j:set var="testResult" value="${it.getTestAction(dashboardReport.key)}"/>
                                                     <td class="nowrap">${it.PerfSigUtils.getDurationString(testResult.duration)}</td>
                                                     <td>${testResult.failCount}</td>
                                                     <td>${testRun.numFailed}</td>
@@ -185,7 +185,7 @@
                                                     <td>${testRun.numPassed}</td>
                                                     <td>${testResult.totalCount}</td>
                                                 </j:if>
-                                                <j:forEach var="chartDashlet" items="${it.getFilteredChartDashlets(dashboardReport)}">
+                                                <j:forEach var="chartDashlet" items="${it.getFilteredChartDashlets(dashboardReport.value)}">
                                                     <j:forEach var="measure" items="${chartDashlet.measures}">
                                                         <td>${measure.strMetricValue}</td>
                                                     </j:forEach>
@@ -202,9 +202,8 @@
             <br style="clear:both;"/>
             <script data-main="${resURL}/plugin/performance-signature/js/projectaction"
                     src="${resURL}/plugin/performance-signature/js/require.min.js"/>
+            <st:bind var="projectAction" value="${it}"/>
             <script type="text/javascript">
-                var projectAction =
-                <st:bind value="${it}"/>
                 var rootURL = "${rootURL}";
                 var resURL = "${resURL}";
             </script>

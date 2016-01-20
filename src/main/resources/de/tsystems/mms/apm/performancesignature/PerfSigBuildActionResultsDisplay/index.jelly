@@ -16,8 +16,8 @@
 
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout">
-    <l:layout xmlns:jm="/de/tsystems/mms/apm/performancesignature/tags"
-              title="Performance Signature Report Details for Build ${it.getBuild().getNumber()}">
+    <l:layout
+            title="Performance Signature Report Details for Build ${it.build.number}">
         <l:header>
             <link type="text/css" href="${resURL}/plugin/performance-signature/css/bootstrap.min.css"
                   rel="stylesheet"/>
@@ -43,13 +43,13 @@
                         </ul>
                     </div>
                 </div>
-                <div class="row">
+                <!--<div class="row">
                     <div class="col-md-12 tab-content">
                         <j:forEach var="dashboardReport" items="${it.currentDashboardReports}">
-                            <j:set var="previousTestCase" value="${dashboardReport.lastDashboardReport}"/>
+                            <j:set var="previousTestCase" value="${dashboardReport.getPreviousDashboardReport(dashboardReport.name)}"/>
                             <div class="tab-pane fade" id="${dashboardReport.name}">
                                 <h3>${%Testcase:} ${dashboardReport.name}</h3>
-                                ${%Timestamp:} ${dashboardReport.buildTime}
+                                ${%Timestamp:} ${it.build.time}
                                 <br/>
                                 <br/>
                                 <div class="row">
@@ -128,7 +128,7 @@
                             </div>
                         </j:forEach>
                     </div>
-                </div>
+                </div>-->
             </div>
             <br style="clear:both;"/>
             <script data-main="${resURL}/plugin/performance-signature/js/buildactionresultsdisplay"

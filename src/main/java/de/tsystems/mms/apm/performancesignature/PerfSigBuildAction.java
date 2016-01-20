@@ -39,7 +39,11 @@ public class PerfSigBuildAction extends PerfSigBaseAction implements SimpleBuild
 
     @Override
     public String toString() {
-        return "PerfSigBuildAction{ build=" + build + '}';
+        return "PerfSigBuildAction{" +
+                "dashboardReports=" + dashboardReports +
+                ", build=" + build +
+                ", buildActionResultsDisplay=" + buildActionResultsDisplay +
+                '}';
     }
 
     public PerfSigBuildActionResultsDisplay getBuildActionResultsDisplay() {

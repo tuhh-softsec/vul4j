@@ -16,19 +16,13 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
-import de.tsystems.mms.apm.performancesignature.PerfSigBuildAction;
-import hudson.model.Run;
-
-import java.util.Date;
 import java.util.List;
 
 public class DashboardReport {
     private final String name;
     private List<ChartDashlet> chartDashlets;
     private List<IncidentChart> incidents;
-    private PerfSigBuildAction buildAction;
-    private DashboardReport lastDashboardReport;
-    private boolean isUnitTest;
+    private boolean unitTest;
 
     public DashboardReport(final String testCaseName) {
         this.name = testCaseName;
@@ -54,40 +48,12 @@ public class DashboardReport {
         return name;
     }
 
-    public PerfSigBuildAction getBuildAction() {
-        return this.buildAction;
-    }
-
-    public void setBuildAction(final PerfSigBuildAction buildAction) {
-        this.buildAction = buildAction;
-    }
-
-    public DashboardReport getLastDashboardReport() {
-        return lastDashboardReport;
-    }
-
-    public void setLastDashboardReport(final DashboardReport lastDashboardReport) {
-        this.lastDashboardReport = lastDashboardReport;
-    }
-
-    public Run<?, ?> getBuild() {
-        return this.buildAction.getBuild();
-    }
-
-    public Date getBuildTime() {
-        return getBuild().getTime();
-    }
-
-    public void setIsUnitTest(final boolean isUnitTest) {
-        this.isUnitTest = isUnitTest;
-    }
-
     public boolean isUnitTest() {
-        return isUnitTest;
+        return unitTest;
     }
 
-    public void setUnitTest(boolean unitTest) {
-        isUnitTest = unitTest;
+    public void setUnitTest(final boolean unitTest) {
+        this.unitTest = unitTest;
     }
 
     @Override
@@ -96,9 +62,7 @@ public class DashboardReport {
                 "name='" + name + '\'' +
                 ", chartDashlets=" + chartDashlets +
                 ", incidents=" + incidents +
-                ", buildAction=" + buildAction +
-                ", lastDashboardReport=" + lastDashboardReport +
-                ", isUnitTest=" + isUnitTest +
+                ", unitTest=" + unitTest +
                 '}';
     }
 

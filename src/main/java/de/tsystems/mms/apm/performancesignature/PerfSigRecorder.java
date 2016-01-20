@@ -173,7 +173,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
             if (dashboardReport == null || dashboardReport.getChartDashlets() == null || dashboardReport.getChartDashlets().isEmpty()) {
                 throw new RESTErrorException(Messages.PerfSigRecorder_XMLReportError());
             } else {
-                dashboardReport.setIsUnitTest(configurationTestCase instanceof UnitTestCase);
+                dashboardReport.setUnitTest(configurationTestCase instanceof UnitTestCase);
                 dashboardReports.add(dashboardReport);
 
                 List<IncidentChart> incidents = dashboardReport.getIncidents();

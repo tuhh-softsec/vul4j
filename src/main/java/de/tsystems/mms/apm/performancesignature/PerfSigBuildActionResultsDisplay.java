@@ -53,20 +53,12 @@ import java.util.Date;
 import java.util.List;
 
 public class PerfSigBuildActionResultsDisplay implements ModelObject {
-    private static Run<?, ?> currentBuild = null;
     private final transient PerfSigBuildAction buildAction;
     private final transient List<DashboardReport> currentDashboardReports;
 
     public PerfSigBuildActionResultsDisplay(final PerfSigBuildAction buildAction) {
         this.buildAction = buildAction;
-
         this.currentDashboardReports = this.buildAction.getDashboardReports();
-        if (currentDashboardReports != null) {
-            for (DashboardReport dashboardReport : currentDashboardReports) {
-                dashboardReport.setBuildAction(buildAction);
-                addPreviousBuildTestCaseToExistingTestCase();
-            }
-        }
     }
 
     public String getDisplayName() {
@@ -85,27 +77,17 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
         return this.currentDashboardReports;
     }
 
-    private void addPreviousBuildTestCaseToExistingTestCase() {
-        if (currentBuild == null) {
-            currentBuild = getBuild();
-        } else if (currentBuild != getBuild()) {
-            currentBuild = null;
-            return;
-        }
-
+    public DashboardReport getPreviousDashboardReport(final String dashboard) {
         Run<?, ?> previousBuild = getBuild().getPreviousNotFailedBuild();
         if (previousBuild == null) {
-            return;
+            return null;
         }
         PerfSigBuildAction prevBuildAction = previousBuild.getAction(PerfSigBuildAction.class);
         if (prevBuildAction == null) {
-            return;
+            return null;
         }
         PerfSigBuildActionResultsDisplay previousBuildActionResults = prevBuildAction.getBuildActionResultsDisplay();
-
-        for (DashboardReport currentDashboardReport : getCurrentDashboardReports()) {
-            currentDashboardReport.setLastDashboardReport(previousBuildActionResults.getDashBoardReport(currentDashboardReport.getName()));
-        }
+        return previousBuildActionResults.getDashBoardReport(dashboard);
     }
 
     public DashboardReport getDashBoardReport(final String report) {

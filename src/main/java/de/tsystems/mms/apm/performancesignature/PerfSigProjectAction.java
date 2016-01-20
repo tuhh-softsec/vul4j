@@ -127,25 +127,25 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     }
 
     private CategoryDataset buildDataSet(final JSONObject jsonObject) throws IOException {
-        final String dashboard = jsonObject.getString("dashboard");
-        final String chartDashlet = jsonObject.getString("chartDashlet");
-        final String measure = jsonObject.getString("measure");
-        final String buildCount = jsonObject.getString("customBuildCount");
+        String dashboard = jsonObject.getString("dashboard");
+        String chartDashlet = jsonObject.getString("chartDashlet");
+        String measure = jsonObject.getString("measure");
+        String buildCount = jsonObject.getString("customBuildCount");
         int customBuildCount = 0, i = 0;
         if (StringUtils.isNotBlank(buildCount))
             customBuildCount = Integer.parseInt(buildCount);
 
-        final List<DashboardReport> dashboardReports = getDashBoardReports(dashboard);
-        final DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dsb = new DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel>();
+        Map<Run<?, ?>, DashboardReport> dashboardReports = getDashBoardReports(dashboard);
+        DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dsb = new DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel>();
 
-        for (DashboardReport dashboardReport : dashboardReports) {
+        for (Map.Entry<Run<?, ?>, DashboardReport> dashboardReport : dashboardReports.entrySet()) {
             double metricValue = 0;
-            if (dashboardReport.getChartDashlets() != null) {
-                Measure m = dashboardReport.getMeasure(chartDashlet, measure);
+            if (dashboardReport.getValue().getChartDashlets() != null) {
+                Measure m = dashboardReport.getValue().getMeasure(chartDashlet, measure);
                 if (m != null) metricValue = m.getMetricValue();
             }
             i++;
-            dsb.add(metricValue, chartDashlet, new ChartUtil.NumberOnlyBuildLabel(dashboardReport.getBuild()));
+            dsb.add(metricValue, chartDashlet, new ChartUtil.NumberOnlyBuildLabel(dashboardReport.getKey()));
             if (customBuildCount != 0 && i == customBuildCount) break;
         }
         return dsb.build();
@@ -320,8 +320,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         return null;
     }
 
-    public TestRun getTestRun(final int buildNumber) {
-        final Run<?, ?> run = job.getBuildByNumber(buildNumber);
+    public TestRun getTestRun(final Run<?, ?> run) {
         if (run != null) {
             PerfSigTestDataWrapper testDataWrapper = run.getAction(PerfSigTestDataWrapper.class);
             if (testDataWrapper != null) {
@@ -331,8 +330,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         return null;
     }
 
-    public TestResult getTestAction(final int buildNumber) {
-        final Run<?, ?> run = job.getBuildByNumber(buildNumber);
+    public TestResult getTestAction(final Run<?, ?> run) {
         if (run != null) {
             TestResultAction testResultAction = run.getAction(TestResultAction.class);
             if (testResultAction != null) {
@@ -342,10 +340,10 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         return null;
     }
 
-    public List<DashboardReport> getDashBoardReports(final String tc) {
-        final List<DashboardReport> dashboardReportList = new ArrayList<DashboardReport>();
+    public Map<Run<?, ?>, DashboardReport> getDashBoardReports(final String tc) {
+        final Map<Run<?, ?>, DashboardReport> dashboardReports = new HashMap<Run<?, ?>, DashboardReport>();
         if (job == null) {
-            return dashboardReportList;
+            return dashboardReports;
         }
         for (Run<?, ?> currentRun : job.getBuilds()) {
             final PerfSigBuildAction perfSigBuildAction = currentRun.getAction(PerfSigBuildAction.class);
@@ -353,12 +351,11 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
                 DashboardReport dashboardReport = perfSigBuildAction.getBuildActionResultsDisplay().getDashBoardReport(tc);
                 if (dashboardReport == null) {
                     dashboardReport = new DashboardReport(tc);
-                    dashboardReport.setBuildAction(new PerfSigBuildAction(null));
                 }
-                dashboardReportList.add(dashboardReport);
+                dashboardReports.put(currentRun, dashboardReport);
             }
         }
-        return dashboardReportList;
+        return dashboardReports;
     }
 
     public void doDownloadFile(final StaplerRequest request, final StaplerResponse response) throws IOException {
@@ -440,7 +437,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
 
     @JavaScriptMethod
     public void setDashboardConfiguration(final String dashboard, final String data) {
-        final HashMap<String, MeasureNameHelper> map = new HashMap<String, MeasureNameHelper>();
+        final Map<String, MeasureNameHelper> map = new HashMap<String, MeasureNameHelper>();
         for (DashboardReport dashboardReport : getLastDashboardReports())
             if (dashboardReport.getName().equals(dashboard))
                 for (ChartDashlet chartDashlet : dashboardReport.getChartDashlets())
