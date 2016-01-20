@@ -26,6 +26,7 @@ import org.kohsuke.stapler.export.Exported;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -633,7 +634,7 @@ public class FlakyCaseResult extends TestResult implements Comparable<FlakyCaseR
     }
   }
 
-  public static class FlakyRunInformation {
+  public static class FlakyRunInformation implements Serializable {
 
     public FlakyRunInformation(String flakyErrorDetails, String flakyErrorStackTrace,
         String flakyStdOut, String flakyStdErr) {
