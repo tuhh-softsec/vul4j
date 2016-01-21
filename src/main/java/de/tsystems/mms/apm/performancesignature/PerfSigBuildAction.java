@@ -37,15 +37,6 @@ public class PerfSigBuildAction extends PerfSigBaseAction implements SimpleBuild
         this.dashboardReports = dashboardReports;
     }
 
-    @Override
-    public String toString() {
-        return "PerfSigBuildAction{" +
-                "dashboardReports=" + dashboardReports +
-                ", build=" + build +
-                ", buildActionResultsDisplay=" + buildActionResultsDisplay +
-                '}';
-    }
-
     public PerfSigBuildActionResultsDisplay getBuildActionResultsDisplay() {
         PerfSigBuildActionResultsDisplay buildDisplay;
         WeakReference<PerfSigBuildActionResultsDisplay> wr = this.buildActionResultsDisplay;

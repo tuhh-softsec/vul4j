@@ -31,7 +31,7 @@
                 <th rowspan="2">${%Measure}</th>
                 <th colspan="4">${%Current Build}</th>
                 <j:if test="${previousDashboardReport!=null}">
-                    <th colspan="4">${%Previous Build} (#${previousDashboardReport.build.number})</th>
+                    <th colspan="4">${%Previous Build} (#${build.previousNotFailedBuild.number})</th>
                 </j:if>
             </tr>
             <tr>
