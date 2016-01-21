@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 
 /**
@@ -54,6 +55,9 @@ public class Probenehmer implements Serializable {
     private String tp;
 
     private String typ;
+
+    @Transient
+    private boolean readonly;
 
     public Probenehmer() {
     }
@@ -176,6 +180,14 @@ public class Probenehmer implements Serializable {
 
     public void setTyp(String typ) {
         this.typ = typ;
+    }
+
+    public boolean isReadonly() {
+        return readonly;
+    }
+
+    public void setReadonly(boolean readonly) {
+        this.readonly = readonly;
     }
 
 }

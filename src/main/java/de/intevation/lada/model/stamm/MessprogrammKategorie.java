@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 
 /**
@@ -35,6 +36,9 @@ public class MessprogrammKategorie implements Serializable {
 
     @Column(name="netzbetreiber_id")
     private String netzbetreiberId;
+
+    @Transient
+    private boolean readonly;
 
     public MessprogrammKategorie() {
     }
@@ -77,6 +81,14 @@ public class MessprogrammKategorie implements Serializable {
 
     public void setNetzbetreiberId(String netzbetreiberId) {
         this.netzbetreiberId = netzbetreiberId;
+    }
+
+    public boolean isReadonly() {
+        return readonly;
+    }
+
+    public void setReadonly(boolean readonly) {
+        this.readonly = readonly;
     }
 
 }

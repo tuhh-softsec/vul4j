@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 
 /**
@@ -86,6 +87,9 @@ public class Ort implements Serializable {
     private String zone;
 
     private String zustaendigkeit;
+
+    @Transient
+    private boolean readonly;
 
     public Ort() {
     }
@@ -288,6 +292,14 @@ public class Ort implements Serializable {
 
     public void setZustaendigkeit(String zustaendigkeit) {
         this.zustaendigkeit = zustaendigkeit;
+    }
+
+    public boolean isReadonly() {
+        return readonly;
+    }
+
+    public void setReadonly(boolean readonly) {
+        this.readonly = readonly;
     }
 
 }
