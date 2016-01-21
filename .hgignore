@@ -8,6 +8,8 @@ syntax: glob
 .factorypath
 .gitignore
 .project
+*.swp
+*.swo
 *~
 
 # intellij support - ignore *.iml, .idea
@@ -18,4 +20,3 @@ syntax: glob
 syntax: regexp
 ^target/
 ^.settings
-

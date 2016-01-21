@@ -56,7 +56,7 @@ public abstract class BaseAuthorizer implements Authorizer {
         List<LMessung> messungen = (List<LMessung>) response.getData();
         for (int i = 0; i < messungen.size(); i++) {
             if (messungen.get(i).getStatus() == null) {
-                return false;
+                continue;
             }
             LStatusProtokoll status = repository.getByIdPlain(
                 LStatusProtokoll.class, messungen.get(i).getStatus(), "land");

@@ -17,14 +17,11 @@ public class ProbeAuthorizer extends BaseAuthorizer {
         Class<T> clazz
     ) {
         LProbe probe = (LProbe)data;
-        if (method == RequestMethod.POST) {
-            return getAuthorization(userInfo, probe);
-        }
-        else if (method == RequestMethod.PUT ||
-                 method == RequestMethod.DELETE) {
+        if (method == RequestMethod.PUT ||
+            method == RequestMethod.DELETE) {
             return !isProbeReadOnly(probe.getId());
         }
-        return false;
+        return getAuthorization(userInfo, probe);
     }
 
     @SuppressWarnings("unchecked")

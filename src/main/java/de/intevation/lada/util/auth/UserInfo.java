@@ -10,6 +10,8 @@ package de.intevation.lada.util.auth;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.intevation.lada.model.stamm.Auth;
+
 /**
  * Container for user specific information.
  *
@@ -21,6 +23,7 @@ public class UserInfo {
     private List<String> netzbetreiber;
     private List<String> roles;
     private List<Integer> funktionen;
+    private List<Auth> auth;
     private Integer statusRole;
 
     public UserInfo() {
@@ -46,49 +49,63 @@ public class UserInfo {
      * @return the messstellen
      */
     public List<String> getMessstellen() {
-        return messstellen;
-    }
-
-    /**
-     * @param messstellen the messstellen to set
-     */
-    public void setMessstellen(List<String> messstellen) {
-        this.messstellen = messstellen;
+        List<String> ret = new ArrayList<String>();
+        for (Auth a : auth) {
+            if (a.getMstId() != null) {
+                ret.add(a.getMstId());
+            }
+        }
+        return ret;
     }
 
     /**
      * @return the netzbetreiber
      */
     public List<String> getNetzbetreiber() {
-        return netzbetreiber;
+        List<String> ret = new ArrayList<String>();
+        for (Auth a : auth) {
+            if (a.getNetzbetreiberId() != null) {
+                ret.add(a.getNetzbetreiberId());
+            }
+        }
+        return ret;
     }
 
-    /**
-     * @param netzbetreiber the netzbetreiber to set
-     */
-    public void setNetzbetreiber(List<String> netzbetreiber) {
-        this.netzbetreiber = netzbetreiber;
-    }
-
-    /**
-     * @return the roles
-     */
-    public List<String> getRoles() {
-        return roles;
-    }
-
-    /**
-     * @param roles the roles to set
-     */
-    public void setRoles(List<String> roles) {
-        this.roles = roles;
+    public List<Integer> getFunktionen() {
+        List<Integer> ret = new ArrayList<Integer>();
+        for (Auth a : auth) {
+            if (a.getFunktionId() != null) {
+                ret.add(a.getFunktionId());
+            }
+        }
+        return ret;
     }
 
     /**
      * @return the funktionen
      */
-    public List<Integer> getFunktionen() {
-        return this.funktionen;
+    public List<Integer> getFunktionenForMst(String mstId) {
+        List<Integer> ret = new ArrayList<Integer>();
+        for (Auth a : auth) {
+            if (a.getMstId() != null && a.getMstId().equals(mstId)) {
+                ret.add(a.getFunktionId());
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * @return the funktionen
+     */
+    public List<Integer> getFunktionenForNetzbetreiber(String nId) {
+        List<Integer> ret = new ArrayList<Integer>();
+        for (Auth a : auth) {
+            if (a.getNetzbetreiberId() != null &&
+                a.getNetzbetreiberId().equals(nId)) {
+                ret.add(a.getFunktionId());
+            }
+        }
+        return ret;
     }
 
     /**
@@ -102,11 +119,14 @@ public class UserInfo {
         return retVal;
     }
 
-    /**
-     * @param funktionen the funktionen to set
-     */
-    public void setFunktionen(List<Integer> funktionen) {
-        this.funktionen = funktionen;
+    public List<String> getRoles() {
+        List<String> ret = new ArrayList<String>();
+        for (Auth a : auth) {
+            if (a.getLdapGroup() != null) {
+                ret.add(a.getLdapGroup());
+            }
+        }
+        return ret;
     }
 
     /**
@@ -121,5 +141,9 @@ public class UserInfo {
      */
     public void setStatusRole(Integer statusRole) {
         this.statusRole = statusRole;
+    }
+
+    public void setAuth(List<Auth> auth) {
+        this.auth = auth;
     }
 }

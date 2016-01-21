@@ -122,12 +122,14 @@ public class MesswertService {
     /**
      * Get all Messwert objects.
      * <p>
-     * The requested objects can be filtered using a URL parameter named
-     * probeId.
+     * The requested objects have to be filtered using an URL parameter named
+     * messungsId.
      * <p>
      * Example: http://example.com/messwert?messungsId=[ID]
      *
-     * @return Response object containing all Messwert objects.
+     * @return Response object containing filtered Messwert objects.
+     * Status-Code 699 if parameter is missing or requested objects are
+     * not authorized.
      */
     @GET
     @Path("/")

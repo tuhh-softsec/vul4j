@@ -326,7 +326,9 @@ public class MessprogrammService {
             return new Response(false, 699, null);
         }
         messprogramm.setLetzteAenderung(new Timestamp(new Date().getTime()));
-        messprogramm = factory.findUmweltId(messprogramm);
+        if (messprogramm.getUmwId() == null || messprogramm.getUmwId().equals("")) {
+            messprogramm = factory.findUmweltId(messprogramm);
+        }
         Response response = defaultRepo.update(messprogramm, "land");
         Response updated = defaultRepo.getById(
             Messprogramm.class,

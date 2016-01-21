@@ -450,7 +450,9 @@ public class ProbeService {
         if (lock.isLocked(probe)) {
             return new Response(false, 697, null);
         }
-        probe = factory.findMediaDesk(probe);
+        if (probe.getMediaDesk() == null || probe.getMediaDesk() == "") {
+            probe = factory.findMediaDesk(probe);
+        }
         Violation violation = validator.validate(probe);
         if (violation.hasErrors()) {
             Response response = new Response(false, 604, null);
@@ -458,7 +460,9 @@ public class ProbeService {
             response.setWarnings(violation.getWarnings());
             return response;
         }
-        factory.findUmweltId(probe);
+        if (probe.getUmwId() == null || probe.getUmwId() == "") {
+            factory.findUmweltId(probe);
+        }
         probe.setLetzteAenderung(new Timestamp(new Date().getTime()));
         Response response = defaultRepo.update(probe, "land");
         Response updated = defaultRepo.getById(
