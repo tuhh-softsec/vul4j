@@ -7,6 +7,8 @@
  */
 package de.intevation.lada.rest.stamm;
 
+import java.util.List;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -20,9 +22,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-import de.intevation.lada.model.stamm.DatensatzErzeuger;
 import de.intevation.lada.model.stamm.Probenehmer;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
@@ -84,10 +86,32 @@ public class ProbenehmerService {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response get(
-        @Context HttpHeaders headers,
+        @Context HttpServletRequest request,
         @Context UriInfo info
     ) {
-        return repository.getAll(Probenehmer.class, "stamm");
+        MultivaluedMap<String, String> params = info.getQueryParameters();
+        List<Probenehmer> nehmer =
+            repository.getAllPlain(Probenehmer.class, "stamm");
+        int size = nehmer.size();
+        if (params.containsKey("start") && params.containsKey("limit")) {
+            int start = Integer.valueOf(params.getFirst("start"));
+            int limit = Integer.valueOf(params.getFirst("limit"));
+            int end = limit + start;
+            if (start + limit > nehmer.size()) {
+                end = nehmer.size();
+            }
+            nehmer = nehmer.subList(start, end);
+        }
+
+        for (Probenehmer p : nehmer) {
+            p.setReadonly(
+                !authorization.isAuthorized(
+                    request,
+                    p,
+                    RequestMethod.POST,
+                    Probenehmer.class));
+        }
+        return new Response(true, 200, nehmer, size);
     }
 
     /**

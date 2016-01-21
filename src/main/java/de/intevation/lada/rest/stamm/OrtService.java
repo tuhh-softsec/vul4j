@@ -7,6 +7,8 @@
  */
 package de.intevation.lada.rest.stamm;
 
+import java.util.List;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -101,12 +103,31 @@ public class OrtService {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response get(
-        @Context HttpHeaders headers,
+        @Context HttpServletRequest request,
         @Context UriInfo info
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() || !params.containsKey("ortId")) {
-            return defaultRepo.getAll(Ort.class, "stamm");
+            List<Ort> orte = defaultRepo.getAllPlain(Ort.class, "stamm");
+            int size = orte.size();
+            if (params.containsKey("start") && params.containsKey("limit")) {
+                int start = Integer.valueOf(params.getFirst("start"));
+                int limit = Integer.valueOf(params.getFirst("limit"));
+                int end = limit + start;
+                if (start + limit > orte.size()) {
+                    end = orte.size();
+                }
+                orte = orte.subList(start, end);
+            }
+            for (Ort o : orte) {
+                o.setReadonly(
+                    !authorization.isAuthorized(
+                        request,
+                        o,
+                        RequestMethod.POST,
+                        Ort.class));
+            }
+            return new Response(true, 200, orte, size);
         }
         String ortId = params.getFirst("ortId");
         QueryBuilder<Ort> builder =

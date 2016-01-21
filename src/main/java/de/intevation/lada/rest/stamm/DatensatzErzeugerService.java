@@ -7,6 +7,8 @@
  */
 package de.intevation.lada.rest.stamm;
 
+import java.util.List;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +22,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
 import de.intevation.lada.model.stamm.DatensatzErzeuger;
@@ -86,10 +89,32 @@ public class DatensatzErzeugerService {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response get(
-        @Context HttpHeaders headers,
+        @Context HttpServletRequest request,
         @Context UriInfo info
     ) {
-        return repository.getAll(DatensatzErzeuger.class, "stamm");
+        MultivaluedMap<String, String> params = info.getQueryParameters();
+        List<DatensatzErzeuger> erzeuger =
+            repository.getAllPlain(DatensatzErzeuger.class, "stamm");
+        int size = erzeuger.size();
+        if (params.containsKey("start") && params.containsKey("limit")) {
+            int start = Integer.valueOf(params.getFirst("start"));
+            int limit = Integer.valueOf(params.getFirst("limit"));
+            int end = limit + start;
+            if (start + limit > erzeuger.size()) {
+                end = erzeuger.size();
+            }
+            erzeuger = erzeuger.subList(start, end);
+        }
+
+        for (DatensatzErzeuger erz : erzeuger) {
+            erz.setReadonly(
+                !authorization.isAuthorized(
+                    request,
+                    erz,
+                    RequestMethod.POST,
+                    DatensatzErzeuger.class));
+        }
+        return new Response (true, 200, erzeuger, size);
     }
 
     /**
