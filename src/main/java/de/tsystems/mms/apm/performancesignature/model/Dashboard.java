@@ -16,7 +16,6 @@
 
 package de.tsystems.mms.apm.performancesignature.model;
 
-import de.tsystems.mms.apm.performancesignature.PerfSigRecorder;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.Extension;
@@ -27,10 +26,7 @@ import hudson.util.ListBoxModel;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
-import java.io.Serializable;
-
-public class Dashboard extends AbstractDescribableImpl<Dashboard> implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class Dashboard extends AbstractDescribableImpl<Dashboard> {
     private final String name;
 
     @DataBoundConstructor
@@ -48,18 +44,9 @@ public class Dashboard extends AbstractDescribableImpl<Dashboard> implements Ser
 
     @Extension
     public static class DescriptorImpl extends Descriptor<Dashboard> {
-        public DescriptorImpl() {
-            super(Dashboard.class);
-            load();
-        }
-
-        public PerfSigRecorder.DescriptorImpl getPublisherDescriptor() {
-            return PerfSigUtils.getInstanceOrDie().getDescriptorByType(PerfSigRecorder.DescriptorImpl.class);
-        }
-
         @Override
         public String getDisplayName() {
-            return "Single/Comparison Report Dashboards";
+            return "";
         }
 
         public ListBoxModel doFillDashboardItems(@RelativePath("../..") @QueryParameter final String dynatraceServer) {

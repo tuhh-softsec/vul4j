@@ -23,15 +23,15 @@ import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.model.ModelObject;
 import hudson.model.Run;
 import hudson.util.ChartUtil;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.DateTickMarkPosition;
-import org.jfree.chart.labels.StandardXYToolTipGenerator;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYBarRenderer;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.time.Second;
 import org.jfree.data.time.TimeSeries;
@@ -47,7 +47,6 @@ import java.awt.*;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -115,7 +114,7 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
         if (percentile) {
             ChartUtil.generateGraph(request, response, createXYLineChart(request, buildXYDataSet(request)), PerfSigUtils.calcDefaultSize());
         } else {
-            ChartUtil.generateGraph(request, response, createBarChart(request, buildIntervalDataSet(request)), PerfSigUtils.calcDefaultSize());
+            ChartUtil.generateGraph(request, response, createTimeSeriesChart(request, buildTimeSeriesDataSet(request)), PerfSigUtils.calcDefaultSize());
         }
     }
 
@@ -136,7 +135,7 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
         return new XYSeriesCollection(xySeries);
     }
 
-    private IntervalXYDataset buildIntervalDataSet(final StaplerRequest request) {
+    private XYDataset buildTimeSeriesDataSet(final StaplerRequest request) {
         final String measure = request.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamMeasure());
         final String chartDashlet = request.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamChartDashlet());
         final String testCase = request.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamTestCase());
@@ -186,43 +185,58 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
         return chart;
     }
 
-    private JFreeChart createBarChart(final StaplerRequest req, final IntervalXYDataset dataset) throws UnsupportedEncodingException {
-        final String chartDashlet = req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamChartDashlet());
-        final String measure = req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamMeasure());
-        final String unit = req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamUnit());
+    private JFreeChart createTimeSeriesChart(final StaplerRequest req, final XYDataset dataset) throws UnsupportedEncodingException {
+        String chartDashlet = req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamChartDashlet());
+        String measure = req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamMeasure());
+        String unit = req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamUnit());
         String color = req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamColor());
         if (StringUtils.isBlank(color))
             color = Messages.PerfSigBuildActionResultsDisplay_DefaultColor();
         else
             URLDecoder.decode(req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamColor()), "UTF-8");
 
-        final JFreeChart chart = ChartFactory.createXYBarChart(PerfSigUtils.generateTitle(measure, chartDashlet), // title
-                "time", // domain axis label
-                true,
-                unit,
-                dataset, // data
-                PlotOrientation.VERTICAL, // orientation
-                false, // include legend
-                true, // tooltips
-                false // urls
-        );
+        String[] timeUnits = {"ns", "ms", "s", "min", "h"};
+        JFreeChart chart;
 
-        final XYPlot xyPlot = chart.getXYPlot();
+        if (ArrayUtils.contains(timeUnits, unit)) {
+            chart = ChartFactory.createTimeSeriesChart(PerfSigUtils.generateTitle(measure, chartDashlet), // title
+                    "time", // domain axis label
+                    unit,
+                    dataset, // data
+                    false, // include legend
+                    false, // tooltips
+                    false // urls
+            );
+        } else {
+            chart = ChartFactory.createXYBarChart(PerfSigUtils.generateTitle(measure, chartDashlet), // title
+                    "time", // domain axis label
+                    true,
+                    unit,
+                    (IntervalXYDataset) dataset, // data
+                    PlotOrientation.VERTICAL, // orientation
+                    false, // include legend
+                    false, // tooltips
+                    false // urls
+            );
+        }
+
+        XYPlot xyPlot = chart.getXYPlot();
         xyPlot.setForegroundAlpha(0.8f);
         xyPlot.setRangeGridlinesVisible(true);
         xyPlot.setRangeGridlinePaint(Color.black);
         xyPlot.setOutlinePaint(null);
 
+        XYItemRenderer xyitemrenderer = xyPlot.getRenderer();
+        if (xyitemrenderer instanceof XYLineAndShapeRenderer) {
+            XYLineAndShapeRenderer xylineandshaperenderer = (XYLineAndShapeRenderer) xyitemrenderer;
+            xylineandshaperenderer.setBaseShapesVisible(true);
+            xylineandshaperenderer.setBaseShapesFilled(true);
+        }
         DateAxis dateAxis = (DateAxis) xyPlot.getDomainAxis();
         dateAxis.setTickMarkPosition(DateTickMarkPosition.MIDDLE);
         dateAxis.setDateFormatOverride(new SimpleDateFormat("HH:mm:ss"));
-        dateAxis.setAutoRange(true);
-        dateAxis.setTickLabelsVisible(true);
-
-        XYBarRenderer renderer = (XYBarRenderer) xyPlot.getRenderer();
-        StandardXYToolTipGenerator generator = new StandardXYToolTipGenerator("{1} = {2}", new SimpleDateFormat("yyyy"), new DecimalFormat("0"));
-        renderer.setBaseToolTipGenerator(generator);
-        renderer.setSeriesPaint(0, Color.decode(color));
+        xyitemrenderer.setSeriesPaint(0, Color.decode(color));
+        xyitemrenderer.setSeriesStroke(0, new BasicStroke(2));
 
         chart.setBackgroundPaint(Color.white);
         return chart;
