@@ -66,8 +66,8 @@ public class PerfSigTestDataPublisher extends TestDataPublisher {
         }
 
         final List<TestRun> testRuns = new ArrayList<TestRun>();
-        final List<PerfSigRegisterEnvVars> envVars = run.getActions(PerfSigRegisterEnvVars.class);
-        for (PerfSigRegisterEnvVars registerEnvVars : envVars) {
+        final List<PerfSigEnvInvisAction> envVars = run.getActions(PerfSigEnvInvisAction.class);
+        for (PerfSigEnvInvisAction registerEnvVars : envVars) {
             if (StringUtils.isNotBlank(registerEnvVars.getTestRunID())) {
                 TestRun testRun = connection.getTestRunFromXML(serverConfiguration.getProfile(), registerEnvVars.getTestRunID());
                 if (testRun == null || testRun.getTestResults() == null || testRun.getTestResults().isEmpty()) {

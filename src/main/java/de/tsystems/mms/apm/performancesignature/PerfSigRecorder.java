@@ -117,7 +117,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
             }
             logger.println(String.format(Messages.PerfSigRecorder_ConnectionSuccessful(), configurationTestCase.getName()));
 
-            final PerfSigRegisterEnvVars buildEnvVars = getBuildEnvVars(run, configurationTestCase.getName());
+            final PerfSigEnvInvisAction buildEnvVars = getBuildEnvVars(run, configurationTestCase.getName());
             if (buildEnvVars != null) {
                 sessionName = buildEnvVars.getSessionName();
             } else {
@@ -125,7 +125,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
             }
 
             if (comparisonBuildNumber != 0) {
-                final PerfSigRegisterEnvVars otherEnvVars = getBuildEnvVars(previousBuildRun, configurationTestCase.getName());
+                final PerfSigEnvInvisAction otherEnvVars = getBuildEnvVars(previousBuildRun, configurationTestCase.getName());
                 if (otherEnvVars != null) {
                     comparisonSessionName = otherEnvVars.getSessionName();
                 }
@@ -242,9 +242,9 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
         run.addAction(action);
     }
 
-    private PerfSigRegisterEnvVars getBuildEnvVars(final Run<?, ?> build, final String testCase) {
-        final List<PerfSigRegisterEnvVars> envVars = build.getActions(PerfSigRegisterEnvVars.class);
-        for (PerfSigRegisterEnvVars vars : envVars) {
+    private PerfSigEnvInvisAction getBuildEnvVars(final Run<?, ?> build, final String testCase) {
+        final List<PerfSigEnvInvisAction> envVars = build.getActions(PerfSigEnvInvisAction.class);
+        for (PerfSigEnvInvisAction vars : envVars) {
             if (vars.getTestCase().equals(testCase))
                 return vars;
         }

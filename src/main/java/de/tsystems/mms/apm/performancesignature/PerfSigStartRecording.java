@@ -87,8 +87,8 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
         if (testRunId != null) {
             logger.println(String.format(Messages.PerfSigStartRecording_StartedTestRun(), serverConfiguration.getProfile(), testRunId));
             logger.println("Dynatrace: registered test run " + testRunId + "" +
-                    " (available in the environment as " + PerfSigRegisterEnvVars.TESTRUN_ID_KEY +
-                    " and " + PerfSigRegisterEnvVars.SESSIONCOUNT + ")");
+                    " (available as environment variables " + PerfSigEnvContributor.TESTRUN_ID_KEY +
+                    " and " + PerfSigEnvContributor.SESSIONCOUNT + ")");
         } else {
             logger.println("Warning: Could not register TestRun");
         }
@@ -100,7 +100,7 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
         final String result = connection.startRecording(serverConfiguration.getProfile(), sessionName, "This Session is triggered by Jenkins", getRecordingOption(), lockSession, false);
         if (result != null && result.equals(sessionName)) {
             logger.println(String.format(Messages.PerfSigStartRecording_StartedSessionRecording(), serverConfiguration.getProfile(), result));
-            run.addAction(new PerfSigRegisterEnvVars(sessionName, testCase, testRunId));
+            run.addAction(new PerfSigEnvInvisAction(sessionName, testCase, testRunId));
         } else {
             throw new RESTErrorException(String.format(Messages.PerfSigStartRecording_SessionRecordingError(), serverConfiguration.getProfile()));
         }

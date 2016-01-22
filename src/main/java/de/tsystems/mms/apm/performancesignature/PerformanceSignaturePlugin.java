@@ -32,14 +32,13 @@ import java.io.IOException;
 import static hudson.init.InitMilestone.JOB_LOADED;
 import static hudson.init.InitMilestone.PLUGINS_STARTED;
 
-/**
- * Created by rapi on 01.12.2015.
- */
 public class PerformanceSignaturePlugin extends Plugin {
     @Initializer(before = PLUGINS_STARTED)
     public static void addAliases() {
         // Moved in 1.6.3
         Run.XSTREAM2.addCompatibilityAlias("de.tsystems.mms.apm.performancesignature.PerfSigTestData", PerfSigTestData.class);
+        // Moved in 1.7.0
+        Run.XSTREAM2.addCompatibilityAlias("de.tsystems.mms.apm.performancesignature.PerfSigRegisterEnvVars", PerfSigEnvInvisAction.class);
     }
 
     @Initializer(after = JOB_LOADED)
