@@ -100,7 +100,7 @@ public class DefaultCookieManagerTest extends TestCase {
     public void testInit() {
         assertNotNull(cookieManager.getStoredCookies());
         assertEquals(2, cookieManager.getStoredCookies().size());
-        List<String> cookieNames = new ArrayList<String>(cookieManager.getStoredCookies());
+        List<String> cookieNames = new ArrayList<>(cookieManager.getStoredCookies());
         Collections.sort(cookieNames);
         assertEquals("b", cookieNames.get(0));
         assertEquals("f", cookieNames.get(1));

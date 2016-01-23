@@ -123,8 +123,8 @@ class IncludeElement extends BaseElement {
     @Override
     protected boolean parseTag(Tag tag, ParserContext ctx) {
         buf = new StringBuilder(Parameters.DEFAULT_BUFFER_SIZE);
-        fragmentReplacements = new HashMap<String, CharSequence>();
-        regexpReplacements = new HashMap<String, CharSequence>();
+        fragmentReplacements = new HashMap<>();
+        regexpReplacements = new HashMap<>();
         includeTag = tag;
         return true;
     }
@@ -135,7 +135,7 @@ class IncludeElement extends BaseElement {
         String xslt = tag.getAttribute("stylesheet");
 
         DriverRequest httpRequest = ctx.getHttpRequest();
-        List<Renderer> rendererList = new ArrayList<Renderer>();
+        List<Renderer> rendererList = new ArrayList<>();
         Driver driver;
         String page;
 

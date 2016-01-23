@@ -29,7 +29,7 @@ public interface RequestExecutor {
 
     CloseableHttpResponse execute(OutgoingRequest outgoingRequest) throws HttpErrorPage;
 
-    public interface RequestExecutorBuilder {
+    interface RequestExecutorBuilder {
 
         RequestExecutorBuilder setEventManager(EventManager eventManager);
 

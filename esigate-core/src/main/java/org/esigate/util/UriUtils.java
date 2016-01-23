@@ -306,10 +306,7 @@ public final class UriUtils {
     public static URI concatPath(URI base, String relPath) {
         String resultPath = base.getPath() + StringUtils.stripStart(relPath, "/");
         try {
-            URI result =
-                    new URI(base.getScheme(), base.getUserInfo(), base.getHost(), base.getPort(), resultPath, null,
-                            null);
-            return result;
+            return new URI(base.getScheme(), base.getUserInfo(), base.getHost(), base.getPort(), resultPath, null, null);
         } catch (URISyntaxException e) {
             throw new InvalidUriException(e);
         }

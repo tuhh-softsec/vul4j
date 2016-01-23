@@ -103,7 +103,7 @@ public class ParallelEsiTest extends AbstractElementTest {
      */
     static class BlockingExecutor implements Executor {
         private static final Logger LOG = LoggerFactory.getLogger(BlockingExecutor.class);
-        private List<Runnable> runnables = new ArrayList<Runnable>();
+        private List<Runnable> runnables = new ArrayList<>();
 
         @Override
         public void execute(Runnable command) {

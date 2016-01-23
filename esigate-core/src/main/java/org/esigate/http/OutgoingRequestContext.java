@@ -47,11 +47,7 @@ public class OutgoingRequestContext extends HttpClientContext {
 
     public boolean isProxy() {
         Boolean proxy = getAttribute(PROXY, Boolean.class);
-        if (proxy == null) {
-            return false;
-        } else {
-            return proxy.booleanValue();
-        }
+        return proxy != null && proxy;
     }
 
     void setProxy(boolean proxy) {
@@ -98,7 +94,7 @@ public class OutgoingRequestContext extends HttpClientContext {
             String historyAttribute = id + "history";
             Queue<Object> history = (Queue<Object>) getAttribute(historyAttribute);
             if (history == null) {
-                history = new LinkedList<Object>();
+                history = new LinkedList<>();
                 setAttribute(historyAttribute, history);
             }
             if (this.getAttribute(id) != null) {

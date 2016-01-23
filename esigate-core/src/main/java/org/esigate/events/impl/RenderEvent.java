@@ -31,7 +31,7 @@ import org.esigate.impl.DriverRequest;
  */
 public class RenderEvent extends Event {
 
-    private final List<Renderer> renderers = new ArrayList<Renderer>(10);
+    private final List<Renderer> renderers = new ArrayList<>(10);
     private final String remoteUrl;
     private final DriverRequest originalRequest;
 

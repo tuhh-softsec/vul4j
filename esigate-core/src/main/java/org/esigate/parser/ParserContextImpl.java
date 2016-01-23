@@ -34,7 +34,7 @@ class ParserContextImpl implements ParserContext {
     private final DriverRequest httpRequest;
     private final HttpResponse httpResponse;
 
-    private final Stack<ElementInfo> stack = new Stack<ElementInfo>();
+    private final Stack<ElementInfo> stack = new Stack<>();
 
     ParserContextImpl(Appendable root, DriverRequest httpRequest, HttpResponse httpResponse) {
         this.root = new RootAdapter(root);

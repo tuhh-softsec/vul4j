@@ -58,8 +58,6 @@ public class TemplateRenderer implements Renderer, Appendable {
         this.page = page;
         if (name == null) {
             write = true;
-        } else {
-            write = false;
         }
     }
 

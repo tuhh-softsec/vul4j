@@ -127,8 +127,7 @@ public class ConfigReloadOnChange implements Extension {
             LOG.warn("Unable to convert {}={} as number", CONFIG_RELOAD_DELAY.getName(), e);
         }
 
-        LOG.info("Will reload configuration every {}ms if {} is modified", Long.valueOf(delay),
-                configuration.getAbsoluteFile());
+        LOG.info("Will reload configuration every {}ms if {} is modified", delay, configuration.getAbsoluteFile());
     }
 
     // This static block ensure thread is started only once.

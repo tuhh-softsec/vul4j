@@ -33,8 +33,7 @@ public class ParameterInteger extends Parameter<Integer> {
         if (getDefaultValue() != null) {
             defaultValue = getDefaultValue();
         }
-        Integer value = PropertiesUtil.getPropertyValue(properties, getName(), defaultValue);
-        return value;
+        return PropertiesUtil.getPropertyValue(properties, getName(), defaultValue);
 
     }
 }

@@ -15,7 +15,6 @@
 
 package org.esigate.util;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.http.Header;
@@ -46,9 +45,7 @@ public final class HttpRequestHelper {
         }
         List<NameValuePair> parameters =
                 UriUtils.parse(request.getOriginalRequest().getRequestLine().getUri(), characterEncoding);
-        Iterator<NameValuePair> it = parameters.iterator();
-        while (it.hasNext()) {
-            NameValuePair nameValuePair = it.next();
+        for (NameValuePair nameValuePair : parameters) {
             if (nameValuePair.getName().equals(name)) {
                 return nameValuePair.getValue();
             }

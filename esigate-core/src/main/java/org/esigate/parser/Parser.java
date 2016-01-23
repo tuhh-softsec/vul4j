@@ -17,6 +17,7 @@ package org.esigate.parser;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -44,10 +45,8 @@ public class Parser {
      */
     public Parser(Pattern pattern, ElementType... elementTypes) {
         this.pattern = pattern;
-        this.elementTypes = new ArrayList<ElementType>(elementTypes.length + 1);
-        for (ElementType elementType : elementTypes) {
-            this.elementTypes.add(elementType);
-        }
+        this.elementTypes = new ArrayList<>(elementTypes.length + 1);
+        Collections.addAll(this.elementTypes, elementTypes);
         this.elementTypes.add(new UnknownElementType());
 
     }

@@ -46,7 +46,7 @@ final class Tag {
         if (startMatcher.find()) {
             String name = startMatcher.group(1);
 
-            Map<String, String> attributes = new HashMap<String, String>();
+            Map<String, String> attributes = new HashMap<>();
             Matcher attributesMatcher = ATTRIBUTE_PATTERN.matcher(tag);
             while (attributesMatcher.find()) {
                 // attributesMatcher.group(2) matches to the attribute value including surrounded quotes

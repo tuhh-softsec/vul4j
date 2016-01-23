@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 final class InlineCache {
-    private static final Map<String, InlineCache> CACHE = new HashMap<String, InlineCache>();
+    private static final Map<String, InlineCache> CACHE = new HashMap<>();
 
     private final Date outdate;
     private final boolean fetchable;

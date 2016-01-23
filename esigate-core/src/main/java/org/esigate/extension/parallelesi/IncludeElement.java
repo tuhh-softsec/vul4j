@@ -106,13 +106,8 @@ class IncludeElement extends BaseElement {
             if (currentException != null && !ignoreError && !ctx.reportError(current, currentException)) {
                 if (currentException instanceof IOException) {
                     throw (IOException) currentException;
-                } else if (currentException instanceof HttpErrorPage) {
-                    throw (HttpErrorPage) currentException;
                 }
-                throw new IllegalStateException(
-                        "This type of exception is unexpected here. Should be IOException or HttpErrorPageException.",
-                        currentException);
-
+                throw (HttpErrorPage) currentException;
             }
 
             // apply regexp replacements
@@ -134,7 +129,7 @@ class IncludeElement extends BaseElement {
             String xslt = tag.getAttribute("stylesheet");
 
             DriverRequest httpRequest = ctx.getHttpRequest();
-            List<Renderer> rendererList = new ArrayList<Renderer>();
+            List<Renderer> rendererList = new ArrayList<>();
             Driver driver;
             String page;
 
@@ -229,7 +224,7 @@ class IncludeElement extends BaseElement {
         FutureElement current = ctx.getCurrent();
         // write accumulated data into parent
         Executor executor = (Executor) ctx.getData(EsiRenderer.DATA_EXECUTOR);
-        Future<CharSequence> result = null;
+        Future<CharSequence> result;
         IncludeTask task =
                 new IncludeTask(includeTag, src, alt, ctx, current, ignoreError, fragmentReplacements,
                         regexpReplacements, executor);
@@ -239,7 +234,7 @@ class IncludeElement extends BaseElement {
             result = new CharSequenceFuture(content);
         } else {
             // Start processing in a new thread.
-            RunnableFuture<CharSequence> r = new FutureTask<CharSequence>(task);
+            RunnableFuture<CharSequence> r = new FutureTask<>(task);
             executor.execute(r);
             result = r;
         }
@@ -249,8 +244,8 @@ class IncludeElement extends BaseElement {
     @Override
     protected boolean parseTag(Tag tag, FutureParserContext ctx) {
         buf = new StringBuilderFutureAppendable();
-        fragmentReplacements = new HashMap<String, CharSequence>();
-        regexpReplacements = new HashMap<String, CharSequence>();
+        fragmentReplacements = new HashMap<>();
+        regexpReplacements = new HashMap<>();
         includeTag = tag;
         return true;
     }

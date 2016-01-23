@@ -30,7 +30,7 @@ import org.apache.http.HttpResponse;
  */
 public class SequenceResponse implements IResponseHandler {
     private int count = 0;
-    private List<HttpResponse> responses = new ArrayList<HttpResponse>();
+    private List<HttpResponse> responses = new ArrayList<>();
 
     @Override
     public HttpResponse execute(HttpRequest request) {

@@ -177,7 +177,6 @@
 							</manifest>
 							<manifestEntries>
 								<Specification-Version>${project.version}</Specification-Version>
-								<Implementation-Version>${env.SVN_REVISION}</Implementation-Version>
 							</manifestEntries>
 						</archive>
 					</configuration>

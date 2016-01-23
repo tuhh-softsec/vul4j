@@ -41,7 +41,7 @@ public class RemoteUserAuthenticationHandler extends GenericAuthentificationHand
     @Override
     public void preRequest(OutgoingRequest outgoingRequest, IncomingRequest incomingRequest) {
         UserContext userContext = outgoingRequest.getUserContext();
-        String remoteUser = null;
+        String remoteUser;
         if (userContext != null && userContext.getUser() != null) {
             remoteUser = userContext.getUser();
         } else {

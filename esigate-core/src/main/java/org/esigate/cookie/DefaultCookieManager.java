@@ -259,11 +259,8 @@ public class DefaultCookieManager implements CookieManager {
         UserContext userContext = request.getUserContext();
         BasicCookieStore cookies = (BasicCookieStore) userContext.getAttribute(COOKIES_LIST_SESSION_KEY);
 
-        if (cookies != null) {
-            return cookies.clearExpired(date);
-        }
+        return cookies != null && cookies.clearExpired(date);
 
-        return false;
     }
 
     @Override

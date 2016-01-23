@@ -29,8 +29,6 @@ public class ConfigReloadOnHup implements Extension {
     private static final Logger LOG = LoggerFactory.getLogger(ConfigReloadOnHup.class);
     private static final String SIGNAL_NAME = "HUP";
 
-    private static File configuration = null;
-
     @Override
     public void init(Driver driver, Properties properties) {
         // Initialization is done is static block.
@@ -51,14 +49,14 @@ public class ConfigReloadOnHup implements Extension {
     static {
         String envPath = System.getProperty("esigate.config");
         if (envPath != null) {
-            configuration = new File(envPath);
+            File configuration = new File(envPath);
 
             // Register for signal
             Signal signal = new Signal(SIGNAL_NAME);
             Signal.handle(signal, SH);
 
             LOG.info("Will reload configuration from {} on signal {}", configuration.getAbsoluteFile(),
-                    Integer.valueOf(signal.getNumber()));
+                    signal.getNumber());
         } else {
             // Do nothing if configuration is loaded from the classpath
             LOG.warn("Cannot reload configuration from classpath. Please use -Desigate.config");

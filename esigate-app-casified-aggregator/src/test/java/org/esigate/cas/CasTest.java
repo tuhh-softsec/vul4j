@@ -28,7 +28,7 @@ public class CasTest extends TestCase {
         webConversation.getClientProperties().setAcceptCookies(true);
     }
 
-    public void testAuthenticationOk() throws MalformedURLException, IOException, SAXException {
+    public void testAuthenticationOk() throws IOException, SAXException {
         // Trying to access the application
         WebRequest req =
                 new GetMethodWebRequest(
@@ -72,7 +72,7 @@ public class CasTest extends TestCase {
         StringAssert.assertContains("The user should be authenticated as test", "User: test", pageContent);
     }
 
-    public void testUnauthenthorized() throws MalformedURLException, IOException, SAXException {
+    public void testUnauthenthorized() throws IOException, SAXException {
         // Trying to access the application
         WebRequest req =
                 new GetMethodWebRequest("http://localhost:8080/esigate-app-casified-aggregator/aggregated1/block.jsp");

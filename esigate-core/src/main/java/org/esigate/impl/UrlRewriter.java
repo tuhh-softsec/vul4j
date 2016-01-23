@@ -16,7 +16,6 @@
 package org.esigate.impl;
 
 import java.net.URI;
-import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -68,11 +67,9 @@ public class UrlRewriter {
      * <li>images/image.png is replaced by /context/images/image.png</li>
      * </ul>
      * 
-     * @param properties
-     *            Configuration properties
      * 
      */
-    public UrlRewriter(Properties properties) {
+    public UrlRewriter() {
     }
 
     /**
@@ -134,14 +131,14 @@ public class UrlRewriter {
      * @return the fixed url.
      */
     public String rewriteUrl(String url, String requestUrl, String baseUrl, String visibleBaseUrl, boolean absolute) {
-        
+
         // Do not rewrite Urls starting with ESI variables
-        // This could be improved by detecting we are in an 'esi:vars' block, 
-        // but this would link the rewriter with ESI parsing. 
-        if( url.startsWith("$(")){
+        // This could be improved by detecting we are in an 'esi:vars' block,
+        // but this would link the rewriter with ESI parsing.
+        if (url.startsWith("$(")) {
             return url;
         }
-        
+
         // Base url should end with /
         if (!baseUrl.endsWith("/")) {
             baseUrl = baseUrl + "/";

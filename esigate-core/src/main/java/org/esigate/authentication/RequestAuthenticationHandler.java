@@ -48,8 +48,8 @@ import org.slf4j.LoggerFactory;
  */
 public class RequestAuthenticationHandler extends GenericAuthentificationHandler {
     private static final Logger LOG = LoggerFactory.getLogger(RequestAuthenticationHandler.class);
-    private final List<String> sessionAttributes = new ArrayList<String>();
-    private final List<String> requestAttributes = new ArrayList<String>();
+    private final List<String> sessionAttributes = new ArrayList<>();
+    private final List<String> requestAttributes = new ArrayList<>();
     private String headerPrefix = "X-ATTR-";
 
     @Override

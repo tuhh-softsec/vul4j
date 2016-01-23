@@ -52,7 +52,6 @@ public class Metric implements Extension, IEventListener {
     private static final Parameter<Integer> PARAM_METRIC_PERIOD = new ParameterInteger("metricPeriod", 60);
 
     private MetricRegistry metric = new MetricRegistry();
-    private ScheduledReporter reporter;
     private Driver driver;
 
     @Override
@@ -62,7 +61,7 @@ public class Metric implements Extension, IEventListener {
         driver.getEventManager().register(EventManager.EVENT_PROXY_POST, this);
         driver.getEventManager().register(EventManager.EVENT_FETCH_POST, this);
 
-        reporter =
+        ScheduledReporter reporter =
                 Slf4jReporter.forRegistry(this.metric).outputTo(LOG).convertRatesTo(TimeUnit.SECONDS)
                         .convertDurationsTo(TimeUnit.MILLISECONDS).build();
 

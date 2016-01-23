@@ -30,7 +30,7 @@ import org.esigate.api.Session;
  */
 public class MockSession implements Session {
 
-    private final HashMap<String, Serializable> map = new HashMap<String, Serializable>();
+    private final HashMap<String, Serializable> map = new HashMap<>();
 
     @Override
     public void setAttribute(String key, Serializable value) {

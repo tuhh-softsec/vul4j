@@ -52,7 +52,7 @@ public class AggregatorTest extends TestCase {
         String[] setcookies = resp.getHeaderFields("Set-Cookie");
         boolean containsHttpOnlyCookie = false;
         for (String setcookie : setcookies) {
-            if (setcookie.toString().contains("test0")) {
+            if (setcookie.contains("test0")) {
                 assertTrue(setcookie.contains("HttpOnly"));
                 containsHttpOnlyCookie = true;
             }

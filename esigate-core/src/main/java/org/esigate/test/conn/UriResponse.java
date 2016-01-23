@@ -30,7 +30,7 @@ import org.apache.http.HttpResponse;
  * 
  */
 public class UriResponse implements IResponseHandler {
-    private Map<String, HttpResponse> responses = new HashMap<String, HttpResponse>();
+    private Map<String, HttpResponse> responses = new HashMap<>();
 
     @Override
     public HttpResponse execute(HttpRequest request) {

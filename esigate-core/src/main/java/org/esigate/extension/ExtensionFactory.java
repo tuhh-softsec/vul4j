@@ -55,7 +55,7 @@ public final class ExtensionFactory {
      * @return instance of {@link Extension} or null.
      */
     public static <T extends Extension> T getExtension(Properties properties, Parameter<String> parameter, Driver d) {
-        T result = null;
+        T result;
         String className = parameter.getValue(properties);
         if (className == null) {
             return null;
@@ -83,10 +83,10 @@ public final class ExtensionFactory {
     public static <T extends Extension> List<T> getExtensions(Properties properties,
             Parameter<Collection<String>> parameter, Driver d) {
         Collection<String> className = parameter.getValue(properties);
-        List<T> finalResult = new ArrayList<T>();
+        List<T> finalResult = new ArrayList<>();
         for (String cName : className) {
             try {
-                T result = null;
+                T result;
 
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Creating  extension " + className);

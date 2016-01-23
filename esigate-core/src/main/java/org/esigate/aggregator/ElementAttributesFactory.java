@@ -33,7 +33,7 @@ final class ElementAttributesFactory {
         // in order to retrieve driver, page and name attributes
         Pattern pattern = Pattern.compile("(?<=\\$)(?:[^\\$]|\\$\\()*(?=\\$)");
         Matcher matcher = pattern.matcher(tag);
-        List<String> listparameters = new ArrayList<String>();
+        List<String> listparameters = new ArrayList<>();
         while (matcher.find()) {
             listparameters.add(matcher.group());
         }
@@ -57,8 +57,7 @@ final class ElementAttributesFactory {
         if (parameters.length > 3) {
             name = parameters[3];
         }
-        ElementAttributes tagattributes = new ElementAttributes(driver, page, name);
-        return tagattributes;
+        return new ElementAttributes(driver, page, name);
 
     }
 }

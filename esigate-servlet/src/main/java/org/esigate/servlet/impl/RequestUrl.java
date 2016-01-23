@@ -64,8 +64,8 @@ public final class RequestUrl {
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("requestURI: {}, contextPath: {}, servletPath: {}, relativeUrl: {}, ", new Object[] {requestURI,
-                    contextPath, servletPath, relativeUrl});
+            LOG.debug("requestURI: {}, contextPath: {}, servletPath: {}, relativeUrl: {}, ", requestURI, contextPath,
+                    servletPath, relativeUrl);
         }
 
         return relativeUrl;

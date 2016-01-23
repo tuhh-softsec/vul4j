@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -39,9 +38,8 @@ public class MemcachedCacheStorage extends CacheStorage {
             throw new ConfigurationException("No memcached server defined. Property '"
                     + Parameters.MEMCACHED_SERVERS_PROPERTY + "' must be defined.");
         }
-        List<InetSocketAddress> servers = new ArrayList<InetSocketAddress>();
-        for (Iterator<String> iterator = serverStringList.iterator(); iterator.hasNext();) {
-            String server = iterator.next();
+        List<InetSocketAddress> servers = new ArrayList<>();
+        for (String server : serverStringList) {
             String[] serverHostPort = server.split(":");
             if (serverHostPort.length != 2) {
                 throw new ConfigurationException("Invalid memcached server: '" + server

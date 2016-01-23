@@ -56,7 +56,7 @@ class IncludeTemplateElement implements Element {
     private Driver driver;
     private String page;
     private String name;
-    private final Map<String, String> params = new HashMap<String, String>();
+    private final Map<String, String> params = new HashMap<>();
     private Appendable out;
 
     @Override

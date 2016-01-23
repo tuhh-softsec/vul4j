@@ -37,8 +37,7 @@ public class ParameterLong extends Parameter<Long> {
         if (getDefaultValue() != null) {
             defaultValue = getDefaultValue();
         }
-        Long value = PropertiesUtil.getPropertyValue(properties, getName(), defaultValue);
-        return value;
+        return PropertiesUtil.getPropertyValue(properties, getName(), defaultValue);
 
     }
 }

@@ -98,7 +98,7 @@ public class DriverTest extends TestCase {
     }
 
     public void testRenderTemplateFullPage() throws IOException, HttpErrorPage {
-        HashMap<String, String> params = new HashMap<String, String>();
+        HashMap<String, String> params = new HashMap<>();
         params.put("key", "'value'");
         params.put("some other key", "'another value'");
         CloseableHttpResponse response =
