@@ -98,7 +98,6 @@ public class ControlHandler extends AbstractHandler {
      */
     public static void shutdown(int port) {
         Http.doPOST("http://127.0.0.1:" + port + "/shutdown");
-        return;
     }
 
     /**
@@ -109,7 +108,6 @@ public class ControlHandler extends AbstractHandler {
      */
     public static void status(int port) {
         Http.doGET("http://127.0.0.1:" + port + URL_STATUS);
-        return;
     }
 
     @Override
@@ -136,7 +134,7 @@ public class ControlHandler extends AbstractHandler {
                         try (Writer sos = response.getWriter()) {
                             Map<String, Object> status = getServerStatus();
                             for (String key : status.keySet()) {
-                                sos.append(key + ": " + status.get(key) + "\n");
+                                sos.append(key).append(": ").append(String.valueOf(status.get(key))).append("\n");
                             }
                         }
 
@@ -146,7 +144,7 @@ public class ControlHandler extends AbstractHandler {
                             sos.append("Esigate Server Status\n");
                             Map<String, Object> status = getServerStatus();
                             for (String key : status.keySet()) {
-                                sos.append(key + ": " + status.get(key) + "\n");
+                                sos.append(key).append(": ").append(String.valueOf(status.get(key))).append("\n");
                             }
                         }
                     }
@@ -189,28 +187,28 @@ public class ControlHandler extends AbstractHandler {
 
         // Get total accesses
         Long accesses =
-                new Long(meters.get(PREFIX_CONTEXT + "1xx-responses").getCount()
+                meters.get(PREFIX_CONTEXT + "1xx-responses").getCount()
                         + meters.get(PREFIX_CONTEXT + "2xx-responses").getCount()
                         + meters.get(PREFIX_CONTEXT + "3xx-responses").getCount()
                         + meters.get(PREFIX_CONTEXT + "4xx-responses").getCount()
-                        + meters.get(PREFIX_CONTEXT + "5xx-responses").getCount());
+                        + meters.get(PREFIX_CONTEXT + "5xx-responses").getCount();
         result.put("Total Accesses", accesses);
 
         // Get ReqPerSec
         Double reqPerSec =
-                new Double(meters.get(PREFIX_CONTEXT + "1xx-responses").getOneMinuteRate()
+                meters.get(PREFIX_CONTEXT + "1xx-responses").getOneMinuteRate()
                         + meters.get(PREFIX_CONTEXT + "2xx-responses").getOneMinuteRate()
                         + meters.get(PREFIX_CONTEXT + "3xx-responses").getOneMinuteRate()
                         + meters.get(PREFIX_CONTEXT + "4xx-responses").getOneMinuteRate()
-                        + meters.get(PREFIX_CONTEXT + "5xx-responses").getOneMinuteRate());
+                        + meters.get(PREFIX_CONTEXT + "5xx-responses").getOneMinuteRate();
         result.put("ReqPerSec", reqPerSec);
 
         // Get uptime
-        result.put("Uptime", new Long(ManagementFactory.getRuntimeMXBean().getUptime()));
+        result.put("Uptime", ManagementFactory.getRuntimeMXBean().getUptime());
 
         // Get CPULoad
-        Double cpuLoad = new Double(ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage());
-        if (cpuLoad.doubleValue() >= 0d) {
+        Double cpuLoad = ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage();
+        if (cpuLoad >= 0d) {
             result.put("CPULoad", cpuLoad);
         }
 

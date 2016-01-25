@@ -27,7 +27,7 @@ public final class SurrogateCapabilities {
     }
 
     private SurrogateCapabilities() {
-        capabilities = new ArrayList<Capability>();
+        capabilities = new ArrayList<>();
         deviceToken = null;
     }
 

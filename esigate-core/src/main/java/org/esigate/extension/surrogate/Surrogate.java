@@ -153,7 +153,8 @@ public class Surrogate implements Extension, IEventListener {
 
         // Build all supported capabilities
         driver.getEventManager().fire(EVENT_SURROGATE_CAPABILITIES, capEvent);
-        this.capabilities = capEvent.getCapabilities().toArray(new String[] {});
+        List<String> var = capEvent.getCapabilities();
+        this.capabilities = var.toArray(new String[var.size()]);
         LOG.info("Surrogate capabilities: {}", join(this.capabilities, " "));
 
         // Build esigate token
@@ -292,7 +293,7 @@ public class Surrogate implements Extension, IEventListener {
 
             // Ensure another proxy can process the request
 
-            LinkedHashMap<String, List<String>> targetCapabilities = new LinkedHashMap<String, List<String>>();
+            LinkedHashMap<String, List<String>> targetCapabilities = new LinkedHashMap<>();
             initSurrogateMap(targetCapabilities, surrogateCapabilitiesHeader);
             for (String c : this.capabilities) {
 
@@ -350,10 +351,10 @@ public class Surrogate implements Extension, IEventListener {
         // different set of Surrogates
         e.getHttpResponse().addHeader("Vary", H_SURROGATE_CAPABILITIES);
 
-        List<String> enabledCapabilities = new ArrayList<String>();
-        List<String> remainingCapabilities = new ArrayList<String>();
-        List<String> newSurrogateControlL = new ArrayList<String>();
-        List<String> newCacheContent = new ArrayList<String>();
+        List<String> enabledCapabilities = new ArrayList<>();
+        List<String> remainingCapabilities = new ArrayList<>();
+        List<String> newSurrogateControlL = new ArrayList<>();
+        List<String> newCacheContent = new ArrayList<>();
 
         String controlHeader = e.getHttpResponse().getFirstHeader(H_SURROGATE_CONTROL).getValue();
         String[] control = split(controlHeader, ",");

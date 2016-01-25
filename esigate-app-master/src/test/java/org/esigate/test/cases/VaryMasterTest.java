@@ -65,8 +65,7 @@ public class VaryMasterTest extends TestCase {
 
         client.close();
 
-        String result = text.substring(text.indexOf("stime") + 5, text.indexOf("etime"));
-        return result;
+        return text.substring(text.indexOf("stime") + 5, text.indexOf("etime"));
     }
 
     /**

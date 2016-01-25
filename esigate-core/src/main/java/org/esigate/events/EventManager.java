@@ -86,12 +86,11 @@ public class EventManager {
     /**
      * Listener mappings. This saves times when an event is fired.
      */
-    private Map<EventDefinition, List<IEventListener>> listeners = new HashMap<EventDefinition, List<IEventListener>>();
+    private Map<EventDefinition, List<IEventListener>> listeners = new HashMap<>();
     /**
      * Post events are stored in reverse order. This allows an extension to enclose the whole processing.
      */
-    private Map<EventDefinition, List<IEventListener>> listenersPost =
-            new HashMap<EventDefinition, List<IEventListener>>();
+    private Map<EventDefinition, List<IEventListener>> listenersPost = new HashMap<>();
 
     private void register(Map<EventDefinition, List<IEventListener>> listenerMappings, EventDefinition eventDefinition,
             IEventListener listener, boolean reverseOrder) {
@@ -99,7 +98,7 @@ public class EventManager {
 
         // Create listener list for this event
         if (eventListeners == null) {
-            eventListeners = new ArrayList<IEventListener>();
+            eventListeners = new ArrayList<>();
             listenerMappings.put(eventDefinition, eventListeners);
         }
         if (!eventListeners.contains(listener)) {

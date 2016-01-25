@@ -41,7 +41,7 @@ class FutureParserContextImpl implements FutureParserContext {
     private final DriverRequest httpRequest;
     private final HttpResponse httpResponse;
 
-    private final Stack<Pair> stack = new Stack<Pair>();
+    private final Stack<Pair> stack = new Stack<>();
     private Map<String, Object> data;
 
     FutureParserContextImpl(FutureAppendable root, DriverRequest httpRequest, HttpResponse httpResponse,

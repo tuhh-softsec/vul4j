@@ -43,7 +43,7 @@ import org.mockito.Mockito;
 public class MockHttpServletRequestBuilder {
     private String protocolVersion = "HTTP/1.1";
     private String uriString = "http://localhost/";
-    private List<Header> headers = new ArrayList<Header>();
+    private List<Header> headers = new ArrayList<>();
     private String method = "GET";
     private Map<String, Object> session = null;
 
@@ -99,7 +99,7 @@ public class MockHttpServletRequestBuilder {
 
         Mockito.when(request.getHeaderNames()).thenReturn(Collections.enumeration(headers));
         for (Header h : headers) {
-            List<String> hresult = new ArrayList<String>();
+            List<String> hresult = new ArrayList<>();
             hresult.add(h.getValue());
             Mockito.when(request.getHeaders(h.getName())).thenReturn(Collections.enumeration(hresult));
             Mockito.when(request.getHeader(h.getName())).thenReturn(h.getValue());

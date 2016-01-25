@@ -69,7 +69,7 @@ public final class MockRequestExecutor implements RequestExecutor {
 
     }
 
-    private final HashMap<String, String> resources = new HashMap<String, String>();
+    private final HashMap<String, String> resources = new HashMap<>();
 
     private MockRequestExecutor() {
     }

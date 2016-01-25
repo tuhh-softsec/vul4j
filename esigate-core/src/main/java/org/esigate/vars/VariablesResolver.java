@@ -194,26 +194,26 @@ public final class VariablesResolver {
             incomingRequest = request.getOriginalRequest();
         }
         String res = null;
-        if (var.indexOf("QUERY_STRING") != -1) {
+        if (var.contains("QUERY_STRING")) {
             if (arg == null) {
                 res = UriUtils.getRawQuery(incomingRequest.getRequestLine().getUri());
             } else {
                 res = HttpRequestHelper.getParameter(request, arg);
             }
-        } else if (var.indexOf("HTTP_ACCEPT_LANGUAGE") != -1) {
+        } else if (var.contains("HTTP_ACCEPT_LANGUAGE")) {
             String langs = HttpRequestHelper.getFirstHeader("Accept-Language", incomingRequest);
             if (arg == null) {
                 res = langs;
             } else {
-                res = String.valueOf(!(langs == null || langs.indexOf(arg) == -1));
+                res = String.valueOf(!(langs == null || !langs.contains(arg)));
             }
         } else if (var.contains("HTTP_HEADER")) {
             res = HttpRequestHelper.getFirstHeader(arg, incomingRequest);
-        } else if (var.indexOf("HTTP_HOST") != -1) {
+        } else if (var.contains("HTTP_HOST")) {
             res = HttpRequestHelper.getFirstHeader("Host", incomingRequest);
-        } else if (var.indexOf("HTTP_REFERER") != -1) {
+        } else if (var.contains("HTTP_REFERER")) {
             res = HttpRequestHelper.getFirstHeader("Referer", incomingRequest);
-        } else if (var.indexOf("HTTP_COOKIE") != -1) {
+        } else if (var.contains("HTTP_COOKIE")) {
             if (arg == null) {
                 // Add cookies
                 // In request header
@@ -236,7 +236,7 @@ public final class VariablesResolver {
                     }
                 }
             }
-        } else if (var.indexOf("HTTP_USER_AGENT") != -1) {
+        } else if (var.contains("HTTP_USER_AGENT")) {
             if (arg == null) {
                 res = HttpRequestHelper.getFirstHeader("User-agent", incomingRequest);
             } else {
@@ -244,17 +244,17 @@ public final class VariablesResolver {
                         StringUtils.defaultString(HttpRequestHelper.getFirstHeader("User-Agent", incomingRequest))
                                 .toLowerCase();
                 if (arg.equals("os")) {
-                    if (userAgent.indexOf("unix") != -1) {
+                    if (userAgent.contains("unix")) {
                         res = "UNIX";
-                    } else if (userAgent.indexOf("mac") != -1) {
+                    } else if (userAgent.contains("mac")) {
                         res = "MAC";
-                    } else if (userAgent.indexOf("windows") != -1) {
+                    } else if (userAgent.contains("windows")) {
                         res = "WIN";
                     } else {
                         res = "OTHER";
                     }
                 } else if (arg.equals("browser")) {
-                    if (userAgent.indexOf("msie") != -1) {
+                    if (userAgent.contains("msie")) {
                         res = "MSIE";
                     } else {
                         res = "MOZILLA";
@@ -267,7 +267,7 @@ public final class VariablesResolver {
                     }
                 }
             }
-        } else if (var.indexOf("PROVIDER") != -1) {
+        } else if (var.contains("PROVIDER")) {
             String providerUrl = StringUtils.EMPTY;
             try {
                 Driver driver = DriverFactory.getInstance(arg);

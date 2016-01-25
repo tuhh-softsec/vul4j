@@ -43,7 +43,7 @@ public final class ResourceUtils {
             // As we are in a java application, the container might add
             // jsessionid to the querystring. We must not forward it to
             // included applications.
-            String jsessionid = null;
+            String jsessionid;
             jsessionid = originalRequest.getOriginalRequest().getSessionId();
             if (jsessionid != null) {
                 originalQuerystring = UriUtils.removeSessionId(jsessionid, originalQuerystring);

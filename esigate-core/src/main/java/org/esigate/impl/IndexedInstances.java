@@ -40,9 +40,9 @@ public class IndexedInstances {
     }
 
     private Map<UriMapping, String> buildUriMappings() {
-        Map<UriMapping, String> result = new LinkedHashMap<UriMapping, String>();
+        Map<UriMapping, String> result = new LinkedHashMap<>();
 
-        Map<UriMapping, String> unsortedResult = new LinkedHashMap<UriMapping, String>();
+        Map<UriMapping, String> unsortedResult = new LinkedHashMap<>();
 
         if (this.instances != null) {
             for (String instanceId : this.instances.keySet()) {
@@ -55,7 +55,7 @@ public class IndexedInstances {
         }
 
         // Order according to weight.
-        SortedSet<UriMapping> keys = new TreeSet<UriMapping>(new UriMappingComparator());
+        SortedSet<UriMapping> keys = new TreeSet<>(new UriMappingComparator());
         keys.addAll(unsortedResult.keySet());
         for (UriMapping key : keys) {
             result.put(key, unsortedResult.get(key));

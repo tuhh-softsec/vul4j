@@ -45,8 +45,7 @@ public class StickySessionBaseUrlRetrieveStrategy implements BaseUrlRetrieveStra
 
             if (null != indexStr) {
                 try {
-                    Integer indexInt = Integer.parseInt(indexStr);
-                    index = indexInt.intValue();
+                    index = Integer.parseInt(indexStr);
                 } catch (Exception e) {
                     index = -1;
                 }

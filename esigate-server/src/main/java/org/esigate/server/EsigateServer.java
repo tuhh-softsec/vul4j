@@ -301,10 +301,7 @@ public final class EsigateServer {
      * @return true if started.
      */
     public static boolean isStarted() {
-        if (srv == null) {
-            return false;
-        }
-        return srv.isStarted();
+        return srv != null && srv.isStarted();
     }
 
     /**
@@ -318,9 +315,9 @@ public final class EsigateServer {
      * Display usage information.
      */
     private static void usage() {
-        StringBuffer usageText = new StringBuffer();
-        usageText.append("Usage: java -D" + PROPERTY_PREFIX
-                + "config=esigate.properties -jar esigate-server.jar [start|stop]\n\t");
+        StringBuilder usageText = new StringBuilder();
+        usageText.append("Usage: java -D").append(PROPERTY_PREFIX)
+                .append("config=esigate.properties -jar esigate-server.jar [start|stop]\n\t");
         usageText.append("start    Start the server (default)\n\t");
         usageText.append("stop     Stop the server gracefully\n\t");
 

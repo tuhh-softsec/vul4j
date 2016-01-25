@@ -33,7 +33,7 @@ public abstract class Parameter<T> {
         if (obj != null) {
             if (obj instanceof Parameter) {
                 equals = this.name.equals(((Parameter) obj).getName());
-            } else if (obj != null && obj instanceof String) {
+            } else if (obj instanceof String) {
                 equals = this.name.equals(obj);
             }
         }

@@ -93,7 +93,7 @@ public final class Driver {
             driver.contentTypeHelper = new ContentTypeHelper(properties);
             // Load extensions.
             ExtensionFactory.getExtensions(properties, Parameters.EXTENSIONS, driver);
-            UrlRewriter urlRewriter = new UrlRewriter(properties);
+            UrlRewriter urlRewriter = new UrlRewriter();
             driver.requestExecutor =
                     requestExecutorBuilder.setDriver(driver).setEventManager(driver.eventManager)
                             .setProperties(properties).setContentTypeHelper(driver.contentTypeHelper).build();
@@ -193,7 +193,7 @@ public final class Driver {
             response = headerManager.copyHeaders(outgoingRequest, incomingRequest, response);
             currentValue = HttpResponseUtils.toString(response, this.eventManager);
             // Cache
-            cachedValue = new ImmutablePair<String, CloseableHttpResponse>(currentValue, response);
+            cachedValue = new ImmutablePair<>(currentValue, response);
             incomingRequest.setAttribute(cacheKey, cachedValue);
         }
         currentValue = cachedValue.getKey();
@@ -232,7 +232,7 @@ public final class Driver {
      */
     private void logAction(String action, String onUrl, Renderer[] renderers) {
         if (LOG.isInfoEnabled()) {
-            List<String> rendererNames = new ArrayList<String>(renderers.length);
+            List<String> rendererNames = new ArrayList<>(renderers.length);
             for (Renderer renderer : renderers) {
                 rendererNames.add(renderer.getClass().getName());
             }

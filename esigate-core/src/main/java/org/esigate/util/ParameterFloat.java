@@ -33,8 +33,7 @@ public class ParameterFloat extends Parameter<Float> {
         if (getDefaultValue() != null) {
             defaultValue = getDefaultValue();
         }
-        Float value = PropertiesUtil.getPropertyValue(properties, getName(), defaultValue);
-        return value;
+        return PropertiesUtil.getPropertyValue(properties, getName(), defaultValue);
 
     }
 }

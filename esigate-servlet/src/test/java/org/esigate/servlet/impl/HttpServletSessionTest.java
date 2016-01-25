@@ -37,11 +37,10 @@ import org.esigate.servlet.MockHttpServletRequestBuilder;
 import org.esigate.test.http.HttpResponseBuilder;
 
 public class HttpServletSessionTest extends TestCase {
-    private SimpleDateFormat format;
 
     @Override
     protected void setUp() throws Exception {
-        format = new SimpleDateFormat(DateUtils.PATTERN_RFC1123, Locale.US);
+        SimpleDateFormat format = new SimpleDateFormat(DateUtils.PATTERN_RFC1123, Locale.US);
         format.setTimeZone(TimeZone.getTimeZone("GMT"));
         super.setUp();
     }

@@ -12,7 +12,7 @@ import java.util.TreeSet;
  * 
  */
 public class FilterList {
-    private Set<String> set = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+    private Set<String> set = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     private boolean defaultContains = false;
 
     /**

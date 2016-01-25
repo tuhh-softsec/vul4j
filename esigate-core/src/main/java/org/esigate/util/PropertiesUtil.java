@@ -62,7 +62,7 @@ public final class PropertiesUtil {
      * @return Ordered collection
      */
     static Collection<String> toCollection(String list) {
-        Collection<String> result = new ArrayList<String>();
+        Collection<String> result = new ArrayList<>();
         if (list != null) {
             String[] values = list.split(",");
             for (String value : values) {

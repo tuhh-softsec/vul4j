@@ -15,7 +15,7 @@ public final class SurrogateCapabilitiesHeader {
     private List<SurrogateCapabilities> surrogates;
 
     private SurrogateCapabilitiesHeader() {
-        surrogates = new ArrayList<SurrogateCapabilities>();
+        surrogates = new ArrayList<>();
     }
 
     public static SurrogateCapabilitiesHeader fromHeaderValue(String value) {

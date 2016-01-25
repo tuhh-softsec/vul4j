@@ -61,12 +61,12 @@ public class DriverCookieTest extends AbstractDriverTestCase {
         IncomingRequest request = TestUtils.createRequest("https://test.mydomain.fr/foobar/").build();
 
         TestUtils.driverProxy(driver, request);
-        Assert.assertTrue(((ClientCookie) request.getNewCookies()[0]).isSecure());
+        Assert.assertTrue(request.getNewCookies()[0].isSecure());
 
         // Http request : Cookie is forwarded as NOT secure
         request = TestUtils.createRequest("http://test.mydomain.fr/foobar/").build();
         TestUtils.driverProxy(driver, request);
-        Assert.assertFalse(((ClientCookie) request.getNewCookies()[0]).isSecure());
+        Assert.assertFalse(request.getNewCookies()[0].isSecure());
     }
 
 }

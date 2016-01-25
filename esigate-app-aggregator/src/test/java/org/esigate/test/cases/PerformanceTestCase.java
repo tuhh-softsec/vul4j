@@ -81,7 +81,6 @@ public class PerformanceTestCase extends TestCase {
     private final static String AGGREGATOR_NO_CACHE = "http://localhost:8080/esigate-app-aggregator/nocache/ag1/";
 
     private static final Logger LOG = LoggerFactory.getLogger(PerformanceTestCase.class);
-    private PoolingHttpClientConnectionManager connectionManager;
 
     private HttpClient httpClient;
 
@@ -93,7 +92,7 @@ public class PerformanceTestCase extends TestCase {
      * @throws Exception
      */
     private long execute(HttpGetRequestRunnable request, int numberOfRequests, int threads) throws Exception {
-        connectionManager = new PoolingHttpClientConnectionManager();
+        PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
         httpClient =
                 HttpClientBuilder
                         .create()
@@ -106,7 +105,7 @@ public class PerformanceTestCase extends TestCase {
         // Warm up
         request.run();
 
-        BlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>();
+        BlockingQueue<Runnable> queue = new LinkedBlockingQueue<>();
         ThreadPoolExecutor threadPool = new ThreadPoolExecutor(threads, threads, 5, TimeUnit.SECONDS, queue);
 
         long start = System.currentTimeMillis();

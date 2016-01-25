@@ -33,7 +33,7 @@ public class TemplateRendererTest extends TestCase {
     }
 
     public void testRenderTemplateNull2() throws IOException, HttpErrorPage {
-        HashMap<String, String> params = new HashMap<String, String>();
+        HashMap<String, String> params = new HashMap<>();
         params.put("key", "'value'");
         params.put("some other key", "'another value'");
         StringBuilderWriter out = new StringBuilderWriter();
@@ -49,7 +49,7 @@ public class TemplateRendererTest extends TestCase {
 
     public void testRenderTemplate1() throws IOException, HttpErrorPage {
         final String input = "some <!--$beginparam$key$-->some hidden text goes here<!--$endparam$key$--> printed";
-        HashMap<String, String> params = new HashMap<String, String>();
+        HashMap<String, String> params = new HashMap<>();
         params.put("key", "'value'");
         params.put("some other key", "'another value'");
         StringBuilderWriter out = new StringBuilderWriter();
@@ -66,7 +66,7 @@ public class TemplateRendererTest extends TestCase {
     public void testRenderTemplateWithSimilarParamNames() throws IOException, HttpErrorPage {
         final String expectedOutput =
                 "some <!--$beginparam$key1$-->" + "some hidden text goes here" + "<!--$endparam$key1$--> printed";
-        HashMap<String, String> params = new HashMap<String, String>();
+        HashMap<String, String> params = new HashMap<>();
         params.put("key", "Should not work");
         StringBuilderWriter out = new StringBuilderWriter();
         TemplateRenderer tested = new TemplateRenderer(null, params, null);

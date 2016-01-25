@@ -38,7 +38,7 @@ public class FutureAppendableAdapter implements FutureAppendable {
 
     public FutureAppendableAdapter(Appendable out) {
         this.out = out;
-        this.futureList = new ArrayList<Future<CharSequence>>();
+        this.futureList = new ArrayList<>();
     }
 
     @Override

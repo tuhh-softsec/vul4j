@@ -62,7 +62,7 @@ public class DriverConfiguration {
      * @return The mapping rules for this driver instance.
      */
     private static List<UriMapping> parseMappings(Properties props) {
-        List<UriMapping> mappings = new ArrayList<UriMapping>();
+        List<UriMapping> mappings = new ArrayList<>();
 
         Collection<String> mappingsParam = Parameters.MAPPINGS.getValue(props);
         for (String mappingParam : mappingsParam) {

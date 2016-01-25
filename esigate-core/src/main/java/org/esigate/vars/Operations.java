@@ -40,7 +40,7 @@ public final class Operations {
         String op1, op2;
 
         try {
-            if (op.indexOf("==") != -1) {
+            if (op.contains("==")) {
                 i = op.indexOf("==");
                 op1 = VarUtils.removeSimpleQuotes(op.substring(0, i));
                 op2 = VarUtils.removeSimpleQuotes(op.substring(i + 2));
@@ -53,7 +53,7 @@ public final class Operations {
 
                 return op1.equals(op2);
 
-            } else if (op.indexOf("!=") != -1) {
+            } else if (op.contains("!=")) {
                 i = op.indexOf("!=");
                 op1 = VarUtils.removeSimpleQuotes(op.substring(0, i));
                 op2 = VarUtils.removeSimpleQuotes(op.substring(i + 2));
@@ -66,7 +66,7 @@ public final class Operations {
 
                 return !op1.equals(op2);
 
-            } else if (op.indexOf(">=") != -1) {
+            } else if (op.contains(">=")) {
                 i = op.indexOf(">=");
                 op1 = VarUtils.removeSimpleQuotes(op.substring(0, i));
                 op2 = VarUtils.removeSimpleQuotes(op.substring(i + 2));
@@ -74,12 +74,12 @@ public final class Operations {
                 dop1 = getOperandAsNumeric(op1);
                 dop2 = getOperandAsNumeric(op2);
                 if (dop1 != null && dop2 != null) {
-                    return dop1.doubleValue() >= dop2.doubleValue();
+                    return dop1 >= dop2;
                 }
                 int cmp = op1.compareTo(op2);
                 return cmp >= 0;
 
-            } else if (op.indexOf("<=") != -1) {
+            } else if (op.contains("<=")) {
                 i = op.indexOf("<=");
                 op1 = VarUtils.removeSimpleQuotes(op.substring(0, i));
                 op2 = VarUtils.removeSimpleQuotes(op.substring(i + 2));
@@ -87,13 +87,13 @@ public final class Operations {
                 dop1 = getOperandAsNumeric(op1);
                 dop2 = getOperandAsNumeric(op2);
                 if (dop1 != null && dop2 != null) {
-                    return dop1.doubleValue() <= dop2.doubleValue();
+                    return dop1 <= dop2;
                 }
 
                 int cmp = op1.compareTo(op2);
                 return cmp <= 0;
 
-            } else if (op.indexOf(">") != -1) {
+            } else if (op.contains(">")) {
                 i = op.indexOf(">");
                 op1 = VarUtils.removeSimpleQuotes(op.substring(0, i));
                 op2 = VarUtils.removeSimpleQuotes(op.substring(i + 1));
@@ -101,12 +101,12 @@ public final class Operations {
                 dop1 = getOperandAsNumeric(op1);
                 dop2 = getOperandAsNumeric(op2);
                 if (dop1 != null && dop2 != null) {
-                    return dop1.doubleValue() > dop2.doubleValue();
+                    return dop1 > dop2;
                 }
 
                 int cmp = op1.compareTo(op2);
                 return cmp > 0;
-            } else if (op.indexOf("<") != -1) {
+            } else if (op.contains("<")) {
                 i = op.indexOf("<");
                 op1 = VarUtils.removeSimpleQuotes(op.substring(0, i));
                 op2 = VarUtils.removeSimpleQuotes(op.substring(i + 1));
@@ -114,7 +114,7 @@ public final class Operations {
                 dop1 = getOperandAsNumeric(op1);
                 dop2 = getOperandAsNumeric(op2);
                 if (dop1 != null && dop2 != null) {
-                    return dop1.doubleValue() < dop2.doubleValue();
+                    return dop1 < dop2;
                 }
 
                 int cmp = op1.compareTo(op2);
@@ -129,7 +129,7 @@ public final class Operations {
 
     private static boolean executeOperations(ArrayList<String> operands, ArrayList<String> operations) {
         boolean res;
-        ArrayList<Boolean> results = new ArrayList<Boolean>();
+        ArrayList<Boolean> results = new ArrayList<>();
 
         try {
             for (String op : operands) {
@@ -186,8 +186,8 @@ public final class Operations {
             return false;
         }
 
-        ArrayList<String> operands = new ArrayList<String>();
-        ArrayList<String> operations = new ArrayList<String>();
+        ArrayList<String> operands = new ArrayList<>();
+        ArrayList<String> operations = new ArrayList<>();
 
         Matcher existsMatcher = AKAMAI_EXISTS_PATTERN.matcher(test);
 

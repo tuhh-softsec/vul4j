@@ -112,7 +112,6 @@ public class CasAuthenticationHandlerTest extends TestCase {
         };
         IncomingRequest incomingRequest = TestUtils.createIncomingRequest().setUserPrincipal(userPrincipal).build();
         DriverRequest driverRequest = new DriverRequest(incomingRequest, driver1, "/");
-        ;
         OutgoingRequest outgoingRequest =
                 httpClientRequestExecutor.createOutgoingRequest(driverRequest, "http://localhost:8080", true);
         FragmentEvent event =

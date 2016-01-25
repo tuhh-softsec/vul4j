@@ -152,7 +152,7 @@ public final class DriverFactory {
     public static void configure(Properties props) {
         Properties defaultProperties = new Properties();
 
-        HashMap<String, Properties> driversProps = new HashMap<String, Properties>();
+        HashMap<String, Properties> driversProps = new HashMap<>();
         for (Enumeration<?> enumeration = props.propertyNames(); enumeration.hasMoreElements();) {
             String propertyName = (String) enumeration.nextElement();
             String value = props.getProperty(propertyName);
@@ -172,7 +172,7 @@ public final class DriverFactory {
         }
 
         // Merge with default properties
-        Map<String, Driver> newInstances = new HashMap<String, Driver>();
+        Map<String, Driver> newInstances = new HashMap<>();
         for (Entry<String, Properties> entry : driversProps.entrySet()) {
             String name = entry.getKey();
             Properties properties = new Properties();
@@ -296,7 +296,7 @@ public final class DriverFactory {
      */
     public static void put(String instanceName, Driver instance) {
         // Copy current instances
-        Map<String, Driver> newInstances = new HashMap<String, Driver>();
+        Map<String, Driver> newInstances = new HashMap<>();
         synchronized (instances) {
             Set<String> keys = instances.getInstances().keySet();
 

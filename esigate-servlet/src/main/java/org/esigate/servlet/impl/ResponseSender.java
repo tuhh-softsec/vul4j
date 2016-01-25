@@ -60,8 +60,8 @@ public class ResponseSender {
         // Copy new cookies
         Cookie[] newCookies = httpRequest.getNewCookies();
 
-        for (int i = 0; i < newCookies.length; i++) {
-            response.addHeader("Set-Cookie", CookieUtil.encodeCookie(newCookies[i]));
+        for (Cookie newCooky : newCookies) {
+            response.addHeader("Set-Cookie", CookieUtil.encodeCookie(newCooky));
         }
         HttpEntity httpEntity = httpResponse.getEntity();
         if (httpEntity != null) {

@@ -32,8 +32,6 @@ class FragmentElement extends BaseElement {
 
     private EsiRenderer esiRenderer;
 
-    private boolean nameMatches;
-
     private CharSequence replacement = null;
 
     private boolean initialStateWrite = false;
@@ -57,7 +55,7 @@ class FragmentElement extends BaseElement {
         initialStateWrite = esiRenderer.isWrite();
         // If name matches, start writing
         if (esiRenderer != null) {
-            nameMatches = name.equals(esiRenderer.getName());
+            boolean nameMatches = name.equals(esiRenderer.getName());
             if (nameMatches) {
                 esiRenderer.setWrite(true);
                 esiRenderer.setFound(true);

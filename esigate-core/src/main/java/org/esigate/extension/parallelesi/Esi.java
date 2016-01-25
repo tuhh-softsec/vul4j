@@ -49,8 +49,6 @@ public class Esi implements Extension, IEventListener {
     // esi_max_threads = 0 -> linear execution
     private static final Parameter<Integer> THREADS = new ParameterInteger("esi_max_threads", 0);
     private static final Parameter<Integer> IDLE = new ParameterInteger("esi_max_idle", 60);
-    private int maxThreads;
-    private int idle;
     private Executor executor;
     public static final String[] CAPABILITIES = new String[] {"ESI/1.0", "ESI-Inline/1.0", "X-ESI-Fragment/1.0",
             "X-ESI-Replace/1.0", "X-ESI-XSLT/1.0", "ESIGATE/4.0"};
@@ -101,19 +99,18 @@ public class Esi implements Extension, IEventListener {
         });
 
         // Load configuration
-        this.maxThreads = THREADS.getValue(properties);
-        this.idle = IDLE.getValue(properties);
+        int maxThreads = THREADS.getValue(properties);
+        int idle = IDLE.getValue(properties);
 
-        if (this.maxThreads == 0) {
+        if (maxThreads == 0) {
             this.executor = null;
             LOG.info("Linear ESI processing enabled.");
         } else {
             this.executor =
-                    new ThreadPoolExecutor(0, this.maxThreads, this.idle, TimeUnit.SECONDS,
-                            new SynchronousQueue<Runnable>());
+                    new ThreadPoolExecutor(0, maxThreads, idle, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
 
             LOG.info("Multi-threaded ESI processing enabled. Thread limit: {}, max idle {}.",
-                    String.valueOf(this.maxThreads), String.valueOf(this.idle));
+                    String.valueOf(maxThreads), String.valueOf(idle));
         }
 
     }

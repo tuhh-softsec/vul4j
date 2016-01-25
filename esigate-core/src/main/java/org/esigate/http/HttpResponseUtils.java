@@ -112,8 +112,7 @@ public final class HttpResponseUtils {
         CookieOrigin cookieOrigin = new CookieOrigin("dummy", Http.DEFAULT_HTTP_PORT, "/", false);
         Header[] responseHeaders = httpResponse.getHeaders("Set-cookie");
         String jsessionid = null;
-        for (int i = 0; i < responseHeaders.length; i++) {
-            Header header = responseHeaders[i];
+        for (Header header : responseHeaders) {
             try {
                 List<Cookie> cookies = cookieSpec.parse(header, cookieOrigin);
                 for (Cookie cookie : cookies) {
@@ -175,9 +174,9 @@ public final class HttpResponseUtils {
 
             try {
                 byte[] rawEntityContent = EntityUtils.toByteArray(httpEntity);
-                ContentType contentType = null;
-                Charset charset = null;
-                String mimeType = null;
+                ContentType contentType;
+                Charset charset;
+                String mimeType;
                 try {
                     contentType = ContentType.getOrDefault(httpEntity);
                     mimeType = contentType.getMimeType();
@@ -237,8 +236,7 @@ public final class HttpResponseUtils {
      */
     public static void writeTo(final HttpEntity httpEntity, final OutputStream outstream) throws IOException {
         Args.notNull(outstream, "Output stream");
-        final InputStream instream = httpEntity.getContent();
-        try {
+        try (InputStream instream = httpEntity.getContent()) {
             final byte[] buffer = new byte[OUTPUT_BUFFER_SIZE];
             int l;
             if (httpEntity.getContentLength() < 0) {
@@ -262,8 +260,6 @@ public final class HttpResponseUtils {
                     remaining -= l;
                 }
             }
-        } finally {
-            instream.close();
         }
     }
 

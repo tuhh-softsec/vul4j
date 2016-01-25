@@ -35,8 +35,9 @@ public class HeaderManagerTest extends TestCase {
         headerManager = new HeaderManager(urlRewriter);
     }
 
-    public void testIsBlackListed() {
-
+    public void testBlackListed() {
+        assertRequestHeaderIsBlacklisted("MyHeader", false);
+        assertResponseHeaderIsBlacklisted("MyHeader", false);
         assertRequestHeaderIsBlacklisted("Content-Length", true);
         assertRequestHeaderIsBlacklisted("Content-Length".toUpperCase(), true);
         assertRequestHeaderIsBlacklisted("Content-Length".toLowerCase(), true);
@@ -53,7 +54,7 @@ public class HeaderManagerTest extends TestCase {
     }
 
     private void assertRequestHeaderIsBlacklisted(String header, boolean blacklisted) {
-        String not = "not ";
+        String not;
         if (blacklisted) {
             not = "";
         } else {

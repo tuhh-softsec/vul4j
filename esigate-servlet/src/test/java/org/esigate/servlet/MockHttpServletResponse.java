@@ -20,7 +20,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
     private int bufferSize = 0;
     private boolean committed = false;
     private boolean closed = false;
-    private HashMap<String, String> headers = new HashMap<String, String>();
+    private HashMap<String, String> headers = new HashMap<>();
 
     @Override
     public String getCharacterEncoding() {

@@ -36,7 +36,7 @@ public class RoundRobinBaseUrlRetrieveStrategyTest extends TestCase {
         IncomingRequest request = TestUtils.createIncomingRequest().build();
         int times = 5;
         int requestsCount = baseUrls.length * times;
-        ConcurrentMap<String, AtomicInteger> counterMap = new ConcurrentHashMap<String, AtomicInteger>();
+        ConcurrentMap<String, AtomicInteger> counterMap = new ConcurrentHashMap<>();
         for (int i = 0; i < requestsCount; i++) {
             String baseUrl = strategy.getBaseURL(request);
             counterMap.putIfAbsent(baseUrl, new AtomicInteger(0));

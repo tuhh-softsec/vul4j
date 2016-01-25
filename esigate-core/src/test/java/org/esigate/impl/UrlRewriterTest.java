@@ -45,7 +45,7 @@ public class UrlRewriterTest extends TestCase {
 
     private void createUrlRewriter() {
         Properties properties = new Properties();
-        urlRewriter = new UrlRewriter(properties);
+        urlRewriter = new UrlRewriter();
     }
 
     private String rewriteUrl(String url) {
@@ -480,8 +480,7 @@ public class UrlRewriterTest extends TestCase {
     }
 
     /**
-     * Issue https://github.com/esigate/esigate/issues/139.
-     * Url rewriting prevents using $(PROVIDER{}) in a html link
+     * Issue https://github.com/esigate/esigate/issues/139. Url rewriting prevents using $(PROVIDER{}) in a html link
      */
     public void testUrlRewriteEsiVarUrl() {
         baseUrl = "http://backend/path/";

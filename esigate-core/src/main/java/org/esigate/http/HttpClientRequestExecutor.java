@@ -66,10 +66,10 @@ import org.slf4j.LoggerFactory;
  */
 public final class HttpClientRequestExecutor implements RequestExecutor {
     private static final Logger LOG = LoggerFactory.getLogger(HttpClientRequestExecutor.class);
-    private static final Set<String> SIMPLE_METHODS = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(
-            "GET", "HEAD", "OPTIONS", "TRACE", "DELETE")));
-    private static final Set<String> ENTITY_METHODS = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(
-            "POST", "PUT", "PROPFIND", "PROPPATCH", "MKCOL", "COPY", "MOVE", "LOCK", "UNLOCK")));
+    private static final Set<String> SIMPLE_METHODS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("GET",
+            "HEAD", "OPTIONS", "TRACE", "DELETE")));
+    private static final Set<String> ENTITY_METHODS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("POST",
+            "PUT", "PROPFIND", "PROPPATCH", "MKCOL", "COPY", "MOVE", "LOCK", "UNLOCK")));
     private boolean preserveHost;
     private CookieManager cookieManager;
     private HttpClient httpClient;

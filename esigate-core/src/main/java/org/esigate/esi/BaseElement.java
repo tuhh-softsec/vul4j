@@ -27,7 +27,7 @@ abstract class BaseElement implements Element {
     }
 
     /** Additional tag initialization callback. */
-    protected boolean parseTag(Tag tag, ParserContext ctx) throws IOException, HttpErrorPage {
+    protected boolean parseTag(Tag tag, ParserContext ctx) throws HttpErrorPage {
         // Default implementation does nothing
         return true;
     }

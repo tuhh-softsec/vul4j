@@ -16,10 +16,7 @@
 package org.esigate.parser.future;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -54,10 +51,8 @@ public class FutureParser {
      */
     public FutureParser(Pattern pattern, FutureElementType... elementTypes) {
         this.pattern = pattern;
-        this.elementTypes = new ArrayList<FutureElementType>(elementTypes.length + 1);
-        for (FutureElementType elementType : elementTypes) {
-            this.elementTypes.add(elementType);
-        }
+        this.elementTypes = new ArrayList<>(elementTypes.length + 1);
+        Collections.addAll(this.elementTypes, elementTypes);
         this.elementTypes.add(UnknownElement.TYPE);
     }
 
@@ -110,7 +105,7 @@ public class FutureParser {
 
     public void setData(String key, Object o) {
         if (this.data == null) {
-            this.data = new HashMap<String, Object>();
+            this.data = new HashMap<>();
         }
 
         this.data.put(key, o);

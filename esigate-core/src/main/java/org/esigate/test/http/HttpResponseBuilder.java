@@ -46,7 +46,7 @@ public class HttpResponseBuilder {
     private ProtocolVersion protocolVersion = new ProtocolVersion("HTTP", 1, 1);
     private int status = HttpStatus.SC_OK;
     private String reason = "Ok";
-    private List<Header> headers = new ArrayList<Header>();
+    private List<Header> headers = new ArrayList<>();
     private HttpEntity entity = null;
 
     /**

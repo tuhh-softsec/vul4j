@@ -20,6 +20,7 @@ import java.util.Enumeration;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletContext;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -86,8 +87,7 @@ public class RequestFactory {
         // all attributes!
         javax.servlet.http.Cookie[] src = request.getCookies();
         if (src != null) {
-            for (int i = 0; i < src.length; i++) {
-                javax.servlet.http.Cookie c = src[i];
+            for (Cookie c : src) {
                 BasicClientCookie dest = new BasicClientCookie(c.getName(), c.getValue());
                 builder.addCookie(dest);
             }

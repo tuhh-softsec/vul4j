@@ -38,14 +38,14 @@ import org.esigate.api.Session;
  */
 public final class IncomingRequest extends BasicHttpEntityEnclosingRequest {
 
-    private final Map<String, Object> attributes = new HashMap<String, Object>();
+    private final Map<String, Object> attributes = new HashMap<>();
     private ContainerRequestContext context;
     private String remoteUser;
     private String remoteAddr;
     private String sessionId;
     private Principal userPrincipal;
-    private List<Cookie> cookies = new ArrayList<Cookie>();
-    private List<Cookie> newCookies = new ArrayList<Cookie>();
+    private List<Cookie> cookies = new ArrayList<>();
+    private List<Cookie> newCookies = new ArrayList<>();
     private Session session;
     private String contextPath;
 
