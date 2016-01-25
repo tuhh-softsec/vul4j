@@ -23,9 +23,6 @@ import org.xml.sax.Attributes;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by rapi on 19.05.2014.
- */
 public class ChartDashlet {
     private final String name;
     private List<Measure> measures;
@@ -50,14 +47,6 @@ public class ChartDashlet {
 
     public String getDescription() {
         return description;
-    }
-
-    @Override
-    public String toString() {
-        return "ChartDashlet{" +
-                "name='" + name + '\'' +
-                ", measures=" + measures +
-                '}';
     }
 
     public List<Measure> getMeasures() {

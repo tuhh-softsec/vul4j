@@ -28,9 +28,6 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
-/**
- * Created by rapi on 27.10.2014.
- */
 public class Collector {
     private boolean connected, embedded;
     private String host, name;
@@ -61,9 +58,5 @@ public class Collector {
 
     public String getHost() {
         return this.host;
-    }
-
-    public String toString() {
-        return "Name=" + this.name + ";Host=" + this.host + ";Embedded=" + this.embedded;
     }
 }

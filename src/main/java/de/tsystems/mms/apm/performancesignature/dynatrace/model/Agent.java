@@ -182,9 +182,4 @@ public class Agent {
     public void setCollector(Collector collector) {
         this.collector = collector;
     }
-
-    public String toString() {
-        return "AgentId=" + this.agentId + ";AgentGroup" + this.agentGroup + ";Name=" + this.name + ";Host=" +
-                this.host + ";ProcessId=" + this.processId + ";SystemProfile=" + this.systemProfile;
-    }
 }

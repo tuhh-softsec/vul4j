@@ -23,9 +23,6 @@ import org.xml.sax.Attributes;
 
 import java.math.BigDecimal;
 
-/**
- * Created by rapi on 19.05.2014.
- */
 public class Measurement {
     private double avg, min, max, sum;
     private long timestamp;
@@ -86,17 +83,5 @@ public class Measurement {
             return this.getMin();
         else
             return 0;
-    }
-
-    @Override
-    public String toString() {
-        return "Measurement{" +
-                "avg='" + avg + '\'' +
-                ", min='" + min + '\'' +
-                ", max='" + max + '\'' +
-                ", sum='" + sum + '\'' +
-                ", count='" + count + '\'' +
-                ", timestamp=" + timestamp +
-                '}';
     }
 }

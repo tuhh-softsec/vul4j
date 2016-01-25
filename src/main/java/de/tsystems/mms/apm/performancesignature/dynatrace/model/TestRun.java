@@ -24,9 +24,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by rapi on 13.04.2015.
- */
 public class TestRun implements Serializable {
     private static final long serialVersionUID = 1L;
     private String category, versionMilestone, versionBuild, versionMajor, versionMinor, versionRevision;
@@ -61,8 +58,7 @@ public class TestRun implements Serializable {
     public static TestRun mergeTestRuns(final List<TestRun> testRuns) {
         TestRun newTestRun = new TestRun();
         if (testRuns != null && !testRuns.isEmpty()) {
-            for (int i = 0; i < testRuns.size(); i++) {
-                TestRun otherTestRun = testRuns.get(i);
+            for (TestRun otherTestRun : testRuns) {
                 newTestRun.numDegraded += otherTestRun.numDegraded;
                 newTestRun.numFailed += otherTestRun.numFailed;
                 newTestRun.numImproved += otherTestRun.numImproved;
@@ -146,27 +142,5 @@ public class TestRun implements Serializable {
             testResults = new ArrayList<TestResult>();
         }
         testResults.add(testResult);
-    }
-
-    @Override
-    public String toString() {
-        return "TestRun{" +
-                "category='" + category + '\'' +
-                ", versionMilestone='" + versionMilestone + '\'' +
-                ", versionBuild='" + versionBuild + '\'' +
-                ", versionMajor='" + versionMajor + '\'' +
-                ", versionMinor='" + versionMinor + '\'' +
-                ", versionRevision='" + versionRevision + '\'' +
-                ", testRunID='" + testRunID + '\'' +
-                ", marker='" + marker + '\'' +
-                ", numPassed=" + numPassed +
-                ", numFailed=" + numFailed +
-                ", numVolatile=" + numVolatile +
-                ", numImproved=" + numImproved +
-                ", numDegraded=" + numDegraded +
-                ", numInvalidated=" + numInvalidated +
-                ", timestamp=" + timestamp +
-                ", testResults=" + testResults +
-                '}';
     }
 }

@@ -25,9 +25,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by rapi on 19.05.2014.
- */
 public class Measure {
     private String name, color, unit, aggregation;
     private double max, avg, min, sum;
@@ -130,21 +127,5 @@ public class Measure {
 
     public BigDecimal getStrMetricValue() {
         return PerfSigUtils.round(getMetricValue(), 2);
-    }
-
-    @Override
-    public String toString() {
-        return "Measure{" +
-                "name='" + name + '\'' +
-                ", color='" + color + '\'' +
-                ", avg='" + avg + '\'' +
-                ", min='" + min + '\'' +
-                ", unit='" + unit + '\'' +
-                ", max='" + max + '\'' +
-                ", sum='" + sum + '\'' +
-                ", count='" + count + '\'' +
-                ", aggregation='" + aggregation + '\'' +
-                ", measurements=" + measurements +
-                '}';
     }
 }

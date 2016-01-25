@@ -23,9 +23,6 @@ import org.xml.sax.Attributes;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-/**
- * Created by rapi on 13.04.2015.
- */
 public class TestRunMeasure implements Serializable {
     private static final long serialVersionUID = 1L;
     private double expectedMax, expectedMin, value, violationPercentage;
@@ -88,22 +85,5 @@ public class TestRunMeasure implements Serializable {
 
     public int getNumValidRuns() {
         return numValidRuns;
-    }
-
-    @Override
-    public String toString() {
-        return "TestRunMeasure{" +
-                "expectedMax=" + expectedMax +
-                ", expectedMin=" + expectedMin +
-                ", value=" + value +
-                ", violationPercentage=" + violationPercentage +
-                ", metricGroup='" + metricGroup + '\'' +
-                ", name='" + name + '\'' +
-                ", unit='" + unit + '\'' +
-                ", numDegradedRuns=" + numDegradedRuns +
-                ", numFailingOrInvalidatedRuns=" + numFailingOrInvalidatedRuns +
-                ", numImprovedRuns=" + numImprovedRuns +
-                ", numValidRuns=" + numValidRuns +
-                '}';
     }
 }

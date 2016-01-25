@@ -56,16 +56,6 @@ public class DashboardReport {
         this.unitTest = unitTest;
     }
 
-    @Override
-    public String toString() {
-        return "DashboardReport{" +
-                "name='" + name + '\'' +
-                ", chartDashlets=" + chartDashlets +
-                ", incidents=" + incidents +
-                ", unitTest=" + unitTest +
-                '}';
-    }
-
     public Measure getMeasure(final String chartDashlet, final String measure) {
         for (ChartDashlet cd : this.chartDashlets) {
             if (cd.getName().equalsIgnoreCase(chartDashlet) && cd.getMeasures() != null) {

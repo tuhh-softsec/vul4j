@@ -24,9 +24,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by rapi on 13.04.2015.
- */
 public class TestResult implements Serializable {
     private static final long serialVersionUID = 1L;
     private Date exectime;
@@ -110,16 +107,5 @@ public class TestResult implements Serializable {
 
     public TestResultStatus getStatus() {
         return status;
-    }
-
-    @Override
-    public String toString() {
-        return "TestResult{" +
-                "exectime=" + exectime +
-                ", name='" + name + '\'' +
-                ", packageName='" + packageName + '\'' +
-                ", status=" + status +
-                ", measures=" + measures +
-                '}';
     }
 }
