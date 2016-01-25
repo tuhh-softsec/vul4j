@@ -21,9 +21,6 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- * Created by rapi on 12.04.2015.
- */
 @SuppressFBWarnings(value = "URF_UNREAD_FIELD", justification = "we need this class to communicate with the Dynatrace REST Interface")
 @XmlRootElement(name = "testRun")
 public class RegisterTestRunRequest {

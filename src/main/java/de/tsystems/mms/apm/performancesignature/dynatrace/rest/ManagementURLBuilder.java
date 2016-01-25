@@ -34,9 +34,6 @@ import org.apache.commons.lang.StringUtils;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-/**
- * Created by rapi on 27.10.2014.
- */
 public class ManagementURLBuilder {
     private String serverAddress = Messages.ManagementURLBuilder_DefaultServerUrl();
     private String parameters = null;

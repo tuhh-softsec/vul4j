@@ -35,10 +35,6 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by rapi on 27.10.2014.
- */
-
 public class DashboardXMLHandler extends DefaultHandler {
     private final List<ChartDashlet> chartDashlets;
     private final List<IncidentChart> incidents;

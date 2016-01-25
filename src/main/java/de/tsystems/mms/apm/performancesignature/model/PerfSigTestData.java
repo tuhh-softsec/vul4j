@@ -28,9 +28,6 @@ import hudson.tasks.junit.TestResultAction;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Created by rapi on 27.05.2015.
- */
 public class PerfSigTestData extends TestResultAction.Data {
     private final Run<?, ?> run;
     private final List<TestRun> testRuns;

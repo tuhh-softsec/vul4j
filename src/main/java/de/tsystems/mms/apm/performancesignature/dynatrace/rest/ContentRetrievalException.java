@@ -28,9 +28,6 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace.rest;
 
-/**
- * Created by rapi on 27.10.2014.
- */
 public class ContentRetrievalException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 

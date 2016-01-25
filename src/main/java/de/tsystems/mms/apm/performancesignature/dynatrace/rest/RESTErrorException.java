@@ -31,8 +31,6 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.rest;
 import java.io.IOException;
 
 public class RESTErrorException extends IOException {
-    private static final long serialVersionUID = 1L;
-
     public RESTErrorException(final String message) {
         super(message);
     }

@@ -31,9 +31,6 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
 import org.xml.sax.Attributes;
 
-/**
- * Created by rapi on 27.10.2014.
- */
 public class SystemProfile extends BaseConfiguration {
     private final boolean isRecording;
 

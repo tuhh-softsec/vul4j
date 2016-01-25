@@ -22,9 +22,6 @@ import hudson.model.InvisibleAction;
 
 import java.util.List;
 
-/**
- * Created by rapi on 09.06.2015.
- */
 public class PerfSigTestDataWrapper extends InvisibleAction {
     private final PerfSigTestData data;
 

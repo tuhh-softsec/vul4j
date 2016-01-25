@@ -28,9 +28,6 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
-/**
- * Created by rapi on 13.04.2015.
- */
 public enum TestResultStatus {
     FAILED("Failed"), VOLATILE("Volatile"), DEGRADED("Degraded"), IMPROVED("Improved"), PASSED("Passed"), NONE("None");
 

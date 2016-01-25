@@ -22,10 +22,6 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRunMeasure;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
-/**
- * Created by rapi on 27.10.2014.
- */
-
 public class TestRunDetailsXMLHandler extends DefaultHandler {
     private TestRun testRun;
     private TestResult testResult;

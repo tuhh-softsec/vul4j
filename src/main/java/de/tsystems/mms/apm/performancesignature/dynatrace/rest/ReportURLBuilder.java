@@ -24,9 +24,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Created by rapi on 27.10.2014.
- */
 public class ReportURLBuilder {
     private static final String RESTPATH_REPORTS = "/rest/management/reports/create/";
     private static final String RESTPATH_DASHBOARDS = "/rest/management/dashboard/";

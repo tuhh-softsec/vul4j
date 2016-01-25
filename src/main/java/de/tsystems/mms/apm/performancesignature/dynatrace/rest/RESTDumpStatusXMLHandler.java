@@ -34,9 +34,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-/**
- * Created by rapi on 01.07.2015.
- */
 public class RESTDumpStatusXMLHandler extends DefaultHandler {
     private final DumpStatus dumpStatus;
     private String prevElement;

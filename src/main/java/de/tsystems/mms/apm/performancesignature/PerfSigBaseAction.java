@@ -20,7 +20,7 @@ import hudson.model.Action;
 
 abstract class PerfSigBaseAction implements Action {
     public String getUrlName() {
-        return Messages.PerfSigBuildAction_UrlName();
+        return Messages.PerfSigBaseAction_UrlName();
     }
 
     public String getDisplayName() {

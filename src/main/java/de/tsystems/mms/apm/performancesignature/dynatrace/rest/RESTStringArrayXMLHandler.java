@@ -23,9 +23,6 @@ import java.io.CharArrayWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by rapi on 27.10.2014.
- */
 public class RESTStringArrayXMLHandler extends DefaultHandler {
     private final CharArrayWriter contents = new CharArrayWriter();
     private final List<String> objects = new ArrayList<String>();

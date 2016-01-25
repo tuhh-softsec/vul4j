@@ -19,9 +19,6 @@ package de.tsystems.mms.apm.performancesignature.model;
 import hudson.util.Scrambler;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-/**
- * Created by rapi on 25.08.2014.
- */
 public class CustomProxy {
     private final String proxyServer, proxyUser, proxyPassword;
     private final int proxyPort;

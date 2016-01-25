@@ -24,9 +24,6 @@ import org.xml.sax.Attributes;
 import javax.xml.bind.DatatypeConverter;
 import java.util.Date;
 
-/**
- * Created by rapi on 02.11.2015.
- */
 public class IncidentViolation {
     private final String rule, description;
     private final Severity severity;

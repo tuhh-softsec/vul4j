@@ -23,10 +23,6 @@ import hudson.tasks.junit.TestAction;
 
 import java.util.Date;
 
-/**
- * Created by rapi on 27.05.2015.
- */
-
 public class PerfSigTestAction extends TestAction {
     private static long timestamp;
     private final PerfSigTestData testData;

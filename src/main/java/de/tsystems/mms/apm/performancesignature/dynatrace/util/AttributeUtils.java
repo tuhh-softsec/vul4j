@@ -32,9 +32,6 @@ import org.xml.sax.Attributes;
 
 import java.util.Date;
 
-/**
- * Created by rapi on 27.10.2014.
- */
 public final class AttributeUtils {
     private AttributeUtils() {
     }

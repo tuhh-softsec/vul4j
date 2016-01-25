@@ -54,19 +54,16 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
 public class DTServerConnection {
-    private static final Logger logger = Logger.getLogger(DTServerConnection.class.getName());
-
     private final String address;
     private final boolean verifyCertificate;
     private final UsernamePasswordCredentials credentials;
-    // Dynatrace is unable to provide proper Certs to trust by default
-    // Create a trust manager that does not validate certificate chains
+    /* Dynatrace is unable to provide proper Certs to trust by default
+     Create a trust manager that does not validate certificate chains */
     private final HostnameVerifier allHostsValid = new HostnameVerifier() {
         public boolean verify(final String hostname, final SSLSession session) {
             return true;

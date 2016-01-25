@@ -30,9 +30,6 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
 import org.xml.sax.Attributes;
 
-/**
- * Created by rapi on 27.10.2014.
- */
 public class Configuration extends BaseConfiguration {
     public Configuration(final Attributes attr) {
         super(attr);

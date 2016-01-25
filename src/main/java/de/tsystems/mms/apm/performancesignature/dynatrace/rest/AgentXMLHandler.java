@@ -37,9 +37,6 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by rapi on 27.10.2014.
- */
 public class AgentXMLHandler extends DefaultHandler {
     private final List<Agent> agents;
     private final List<Collector> collectors;

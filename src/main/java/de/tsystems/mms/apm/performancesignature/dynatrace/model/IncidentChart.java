@@ -22,9 +22,6 @@ import org.xml.sax.Attributes;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by rapi on 02.11.2015.
- */
 public class IncidentChart {
     private final String rule;
     private final Severity severity;
