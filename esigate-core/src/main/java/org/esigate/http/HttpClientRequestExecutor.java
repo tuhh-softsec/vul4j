@@ -48,6 +48,7 @@ import org.esigate.cache.CacheConfigHelper;
 import org.esigate.cookie.CookieManager;
 import org.esigate.events.EventManager;
 import org.esigate.events.impl.FragmentEvent;
+import org.esigate.events.impl.HttpClientBuilderEvent;
 import org.esigate.extension.ExtensionFactory;
 import org.esigate.http.cookie.CustomBrowserCompatSpecFactory;
 import org.esigate.impl.DriverRequest;
@@ -62,7 +63,6 @@ import org.slf4j.LoggerFactory;
  * which http headers have to be copied and whether or not to preserve the original host header.
  * 
  * @author Francois-Xavier Bonnet
- * 
  */
 public final class HttpClientRequestExecutor implements RequestExecutor {
     private static final Logger LOG = LoggerFactory.getLogger(HttpClientRequestExecutor.class);
@@ -82,7 +82,6 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
      * Builder class used to produce an immutable instance.
      * 
      * @author Francois-Xavier Bonnet
-     * 
      */
     public static final class HttpClientRequestExecutorBuilder implements RequestExecutorBuilder {
         private EventManager eventManager;
@@ -210,6 +209,9 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
                             .build();
 
             httpClientBuilder.setDefaultCookieSpecRegistry(cookieSpecRegistry).setDefaultRequestConfig(config);
+
+            driver.getEventManager().fire(EventManager.EVENT_HTTP_BUILDER_INITIALIZATION,
+                    new HttpClientBuilderEvent(httpClientBuilder));
             return httpClientBuilder.build();
         }
     }
