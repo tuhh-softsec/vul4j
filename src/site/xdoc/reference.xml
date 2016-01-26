@@ -2073,7 +2073,7 @@ discardCookies=*
 						<td>5.0</td>
 					</tr>
 					<tr>
-						<td>org.esigate.extension.Aggregate</td>
+						<td>org.esigate.extension.Aggregate (deprecated)</td>
 						<td>This
 							extension processes the old esigate directives based on html comments,
 							like :
@@ -2147,6 +2147,28 @@ In this example, proxy-post for aggregated1 driver show 31 successfull request ,
                         <td>No</td>
                         <td>5.0</td>
                     </tr>
+					<tr>
+						<td>org.esigate.extension.http.DNS</td>
+						<td>
+							DNS extension allow to associates IP addresses to the given host in a DNS overrider. The IP addresses are assumed to be already resolved.
+							With this extension, you can force an arbitrary Host header value to be sent to the remote app without any modification of the DNS or network alias in /etc/hosts.
+
+							<br/>
+
+							Sample configuration :
+
+							<pre>
+								dns.remoteUrlBase=http://myPrivateVirtualHost:8080/
+								dns.remoteIP=172.17.42.1
+							</pre>
+
+
+
+
+						</td>
+						<td>No</td>
+						<td>5.2</td>
+					</tr>
 
 				</table>
 				

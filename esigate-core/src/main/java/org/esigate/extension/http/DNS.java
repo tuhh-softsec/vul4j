@@ -27,6 +27,7 @@ import org.esigate.events.impl.HttpClientBuilderEvent;
 import org.esigate.extension.Extension;
 import org.esigate.util.Parameter;
 import org.esigate.util.ParameterArray;
+import org.esigate.util.ParameterCollection;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
@@ -47,7 +49,7 @@ public class DNS implements Extension, IEventListener {
     private static final Logger LOG = LoggerFactory.getLogger(DNS.class);
 
     // Core parameters
-    public static final Parameter<String[]> REMOTE_IP = new ParameterArray("remoteIP");
+    public static final Parameter<Collection<String>> REMOTE_IP = new ParameterCollection("remoteIP");
 
     private DnsResolver dnsResolver;
 
@@ -57,26 +59,32 @@ public class DNS implements Extension, IEventListener {
 
     @Override
     public void init(Driver driver, Properties properties) {
-        String[] ips = REMOTE_IP.getValue(properties);
-        String[] remoteURLS = Parameters.REMOTE_URL_BASE.getValue(properties);
-        List<InetAddress> inetAddresses = new ArrayList<>();
-        CustomizableDNSResolver customizableDNSResolver = new CustomizableDNSResolver();
-        dnsResolver = customizableDNSResolver;
-        for (String ip : ips) {
-            try {
-                inetAddresses.add(InetAddress.getByName(ip));
-            } catch (UnknownHostException e) {
-                LOG.error("Unable to resolve InetAddress [{}]", ip, e);
+        Collection<String> ips = REMOTE_IP.getValue(properties);
+
+        if (ips.isEmpty()) {
+            LOG.error("Missing configuration properties for driver {}. Property {}", driver.getConfiguration()
+                    .getInstanceName(), REMOTE_IP.getName());
+        } else {
+            String[] remoteURLS = Parameters.REMOTE_URL_BASE.getValue(properties);
+            List<InetAddress> inetAddresses = new ArrayList<>();
+            CustomizableDNSResolver customizableDNSResolver = new CustomizableDNSResolver();
+            dnsResolver = customizableDNSResolver;
+            for (String ip : ips) {
+                try {
+                    inetAddresses.add(InetAddress.getByName(ip));
+                } catch (UnknownHostException e) {
+                    LOG.error("Unable to resolve InetAddress [{}]", ip, e);
+                }
             }
+
+            for (String remoteURL : remoteURLS) {
+
+                HttpHost host = UriUtils.extractHost(remoteURL);
+                customizableDNSResolver.add(host.getHostName(), inetAddresses.toArray(new InetAddress[] {}));
+            }
+
+            driver.getEventManager().register(EventManager.EVENT_HTTP_BUILDER_INITIALIZATION, this);
         }
-
-        for (String remoteURL : remoteURLS) {
-
-            HttpHost host = UriUtils.extractHost(remoteURL);
-            customizableDNSResolver.add(host.getHostName(), inetAddresses.toArray(new InetAddress[] {}));
-        }
-
-        driver.getEventManager().register(EventManager.EVENT_HTTP_BUILDER_INITIALIZATION, this);
     }
 
     @Override

@@ -53,6 +53,7 @@ public class DNSTest extends TestCase {
         // Test one IP and two host
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://myvirtualhost1/,http://myvirtualhost2/");
         properties.put(DNS.REMOTE_IP.getName(), "127.0.0.1");
+        dns = new DNS();
         dns.init(driver, properties);
 
         inetAddresses = dns.getDnsResolver().resolve("myvirtualhost1");
@@ -66,6 +67,7 @@ public class DNSTest extends TestCase {
         // Test two IP and one host
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://myvirtualhost/");
         properties.put(DNS.REMOTE_IP.getName(), "127.0.0.1,127.0.0.0");
+        dns = new DNS();
         dns.init(driver, properties);
 
         inetAddresses = dns.getDnsResolver().resolve("myvirtualhost");
@@ -77,6 +79,7 @@ public class DNSTest extends TestCase {
         // Test two IP and two host
         properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://myvirtualhost1/,http://myvirtualhost2/");
         properties.put(DNS.REMOTE_IP.getName(), "127.0.0.1,127.0.0.0");
+        dns = new DNS();
         dns.init(driver, properties);
 
         inetAddresses = dns.getDnsResolver().resolve("myvirtualhost1");
@@ -86,6 +89,18 @@ public class DNSTest extends TestCase {
         inetAddresses = dns.getDnsResolver().resolve("myvirtualhost2");
         assertEquals(2, inetAddresses.length);
         assertTrue("IP 127.0.0.0 should be resolved", ips.contains("127.0.0.0"));
+
+        // Test two IP and two host
+        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://myvirtualhost1/,http://myvirtualhost2/");
+        properties.remove(DNS.REMOTE_IP.getName());
+        dns = new DNS();
+        dns.init(driver, properties);
+        try {
+            dns.getDnsResolver().resolve("myvirtualhost1");
+            fail("Should throw exception");
+        } catch (Exception e) {
+
+        }
 
     }
 
