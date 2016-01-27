@@ -5,14 +5,19 @@
  * and comes with ABSOLUTELY NO WARRANTY! Check out
  * the documentation coming with IMIS-Labordaten-Application for details.
  */
-package de.intevation.lada.rest;
+package de.intevation.lada.rest.stamm;
 
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import de.intevation.lada.query.QueryTools;
+import de.intevation.lada.model.stamm.Query;
+import de.intevation.lada.util.annotation.RepositoryConfig;
+import de.intevation.lada.util.data.QueryBuilder;
+import de.intevation.lada.util.data.Repository;
+import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.Response;
 
 
@@ -50,6 +55,10 @@ import de.intevation.lada.util.rest.Response;
 @RequestScoped
 public class QueryService {
 
+    @Inject
+    @RepositoryConfig(type=RepositoryType.RO)
+    private Repository repository;
+
     /**
      * Request all configured probe queries.
      */
@@ -57,7 +66,13 @@ public class QueryService {
     @Path("/probe")
     @Produces("application/json")
     public Response getProbe() {
-        return new Response(true, 200, QueryTools.getProbeConfig());
+        QueryBuilder<Query> builder = new QueryBuilder<Query>(
+            repository.entityManager("stamm"),
+            Query.class
+        );
+        builder.and("type", "probe");
+        return repository.filter(builder.getQuery(), "stamm");
+        //return new Response(true, 200, QueryTools.getProbeConfig());
     }
 
     /**
@@ -67,7 +82,12 @@ public class QueryService {
     @Path("/messprogramm")
     @Produces("application/json")
     public Response getMessprogramm() {
-        return new Response(true, 200, QueryTools.getMessprogrammConfig());
+        QueryBuilder<Query> builder = new QueryBuilder<Query>(
+            repository.entityManager("stamm"),
+            Query.class
+        );
+        builder.and("type", "messprogramm");
+        return repository.filter(builder.getQuery(), "stamm");
     }
 
     /**
@@ -77,6 +97,14 @@ public class QueryService {
     @Path("/stammdaten")
     @Produces("application/json")
     public Response getStammdaten() {
-        return new Response(true, 200, QueryTools.getStammdatenConfig());
+        QueryBuilder<Query> builder = new QueryBuilder<Query>(
+            repository.entityManager("stamm"),
+            Query.class
+        );
+        builder.or("type", "ort");
+        builder.or("type", "probenehmer");
+        builder.or("type", "datensatzerzeuger");
+        builder.or("type", "messprogrammkategorie");
+        return repository.filter(builder.getQuery(), "stamm");
     }
 }
