@@ -1100,7 +1100,102 @@ ALTER SEQUENCE deskriptoren_id_seq OWNED BY deskriptoren.id;
 
 
 --
--- Name: koordinaten_art; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
+-- Name: favorite; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+--
+
+CREATE TABLE favorite (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    query_id integer NOT NULL
+);
+
+
+--
+-- Name: favorite_id_seq; Type: SEQUENCE; Schema: stammdaten; Owner: -
+--
+
+CREATE SEQUENCE favorite_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: favorite_id_seq; Type: SEQUENCE OWNED BY; Schema: stammdaten; Owner: -
+--
+
+ALTER SEQUENCE favorite_id_seq OWNED BY favorite.id;
+
+
+--
+-- Name: filter; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+--
+
+CREATE TABLE filter (
+    id integer NOT NULL,
+    query_id integer NOT NULL,
+    data_index character varying(50) NOT NULL,
+    type character varying(10) NOT NULL,
+    label character varying(50) NOT NULL,
+    multiselect boolean
+);
+
+
+--
+-- Name: filter_id_seq; Type: SEQUENCE; Schema: stammdaten; Owner: -
+--
+
+CREATE SEQUENCE filter_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: filter_id_seq; Type: SEQUENCE OWNED BY; Schema: stammdaten; Owner: -
+--
+
+ALTER SEQUENCE filter_id_seq OWNED BY filter.id;
+
+
+--
+-- Name: filter_value; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+--
+
+CREATE TABLE filter_value (
+    id integer NOT NULL,
+    query_id integer NOT NULL,
+    user_id integer NOT NULL,
+    filter_id integer NOT NULL,
+    value text
+);
+
+
+--
+-- Name: filter_value_id_seq; Type: SEQUENCE; Schema: stammdaten; Owner: -
+--
+
+CREATE SEQUENCE filter_value_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: filter_value_id_seq; Type: SEQUENCE OWNED BY; Schema: stammdaten; Owner: -
+--
+
+ALTER SEQUENCE filter_value_id_seq OWNED BY filter_value.id;
+
+
+--
+-- Name: koordinaten_art; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
 --
 
 CREATE TABLE koordinaten_art (
@@ -1130,7 +1225,36 @@ ALTER SEQUENCE koordinaten_art_id_seq OWNED BY koordinaten_art.id;
 
 
 --
--- Name: mess_einheit; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
+-- Name: lada_user; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+--
+
+CREATE TABLE lada_user (
+    id integer NOT NULL,
+    name character varying(80) NOT NULL
+);
+
+
+--
+-- Name: lada_user_id_seq; Type: SEQUENCE; Schema: stammdaten; Owner: -
+--
+
+CREATE SEQUENCE lada_user_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: lada_user_id_seq; Type: SEQUENCE OWNED BY; Schema: stammdaten; Owner: -
+--
+
+ALTER SEQUENCE lada_user_id_seq OWNED BY lada_user.id;
+
+
+--
+-- Name: mess_einheit; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
 --
 
 CREATE TABLE mess_einheit (
@@ -1520,6 +1644,72 @@ CREATE SEQUENCE probenehmer_id_seq
 --
 
 ALTER SEQUENCE probenehmer_id_seq OWNED BY probenehmer.id;
+
+
+--
+-- Name: query; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+--
+
+CREATE TABLE query (
+    id integer NOT NULL,
+    name character varying(80) NOT NULL,
+    type character varying(30) NOT NULL,
+    sql character varying(1500) NOT NULL,
+    description character varying(100)
+);
+
+
+--
+-- Name: query_id_seq; Type: SEQUENCE; Schema: stammdaten; Owner: -
+--
+
+CREATE SEQUENCE query_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: query_id_seq; Type: SEQUENCE OWNED BY; Schema: stammdaten; Owner: -
+--
+
+ALTER SEQUENCE query_id_seq OWNED BY query.id;
+
+
+--
+-- Name: result; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+--
+
+CREATE TABLE result (
+    id integer NOT NULL,
+    query_id integer NOT NULL,
+    data_index character varying(50) NOT NULL,
+    header character varying(50) NOT NULL,
+    width integer,
+    flex boolean,
+    index integer
+);
+
+
+--
+-- Name: result_id_seq; Type: SEQUENCE; Schema: stammdaten; Owner: -
+--
+
+CREATE SEQUENCE result_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: result_id_seq; Type: SEQUENCE OWNED BY; Schema: stammdaten; Owner: -
+--
+
+ALTER SEQUENCE result_id_seq OWNED BY result.id;
 
 
 --
@@ -2230,7 +2420,35 @@ ALTER TABLE ONLY deskriptoren ALTER COLUMN id SET DEFAULT nextval('deskriptoren_
 -- Name: id; Type: DEFAULT; Schema: stammdaten; Owner: -
 --
 
+ALTER TABLE ONLY favorite ALTER COLUMN id SET DEFAULT nextval('favorite_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: stammdaten; Owner: -
+--
+
+ALTER TABLE ONLY filter ALTER COLUMN id SET DEFAULT nextval('filter_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: stammdaten; Owner: -
+--
+
+ALTER TABLE ONLY filter_value ALTER COLUMN id SET DEFAULT nextval('filter_value_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: stammdaten; Owner: -
+--
+
 ALTER TABLE ONLY koordinaten_art ALTER COLUMN id SET DEFAULT nextval('koordinaten_art_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: stammdaten; Owner: -
+--
+
+ALTER TABLE ONLY lada_user ALTER COLUMN id SET DEFAULT nextval('lada_user_id_seq'::regclass);
 
 
 --
@@ -2287,6 +2505,20 @@ ALTER TABLE ONLY probenart ALTER COLUMN id SET DEFAULT nextval('probenart_id_seq
 --
 
 ALTER TABLE ONLY probenehmer ALTER COLUMN id SET DEFAULT nextval('probenehmer_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: stammdaten; Owner: -
+--
+
+ALTER TABLE ONLY query ALTER COLUMN id SET DEFAULT nextval('query_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: stammdaten; Owner: -
+--
+
+ALTER TABLE ONLY result ALTER COLUMN id SET DEFAULT nextval('result_id_seq'::regclass);
 
 
 --
@@ -2567,7 +2799,31 @@ ALTER TABLE ONLY deskriptor_umwelt
 
 
 --
--- Name: koordinaten_art_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
+-- Name: favorite_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY favorite
+    ADD CONSTRAINT favorite_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: filter_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY filter
+    ADD CONSTRAINT filter_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: filter_value_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY filter_value
+    ADD CONSTRAINT filter_value_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: koordinaten_art_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY koordinaten_art
@@ -2575,7 +2831,23 @@ ALTER TABLE ONLY koordinaten_art
 
 
 --
--- Name: mess_einheit_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
+-- Name: lada_user_name_key; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY lada_user
+    ADD CONSTRAINT lada_user_name_key UNIQUE (name);
+
+
+--
+-- Name: lada_user_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY lada_user
+    ADD CONSTRAINT lada_user_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: mess_einheit_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY mess_einheit
@@ -2719,7 +2991,23 @@ ALTER TABLE ONLY probenehmer
 
 
 --
--- Name: staat_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
+-- Name: query_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY query
+    ADD CONSTRAINT query_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: result_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY result
+    ADD CONSTRAINT result_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: staat_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY staat
@@ -3368,6 +3656,54 @@ ALTER TABLE ONLY datensatz_erzeuger
 
 
 --
+-- Name: favorite_query_id_fkey; Type: FK CONSTRAINT; Schema: stammdaten; Owner: -
+--
+
+ALTER TABLE ONLY favorite
+    ADD CONSTRAINT favorite_query_id_fkey FOREIGN KEY (query_id) REFERENCES query(id);
+
+
+--
+-- Name: favorite_user_id_fkey; Type: FK CONSTRAINT; Schema: stammdaten; Owner: -
+--
+
+ALTER TABLE ONLY favorite
+    ADD CONSTRAINT favorite_user_id_fkey FOREIGN KEY (user_id) REFERENCES lada_user(id);
+
+
+--
+-- Name: filter_query_id_fkey; Type: FK CONSTRAINT; Schema: stammdaten; Owner: -
+--
+
+ALTER TABLE ONLY filter
+    ADD CONSTRAINT filter_query_id_fkey FOREIGN KEY (query_id) REFERENCES query(id);
+
+
+--
+-- Name: filter_value_filter_id_fkey; Type: FK CONSTRAINT; Schema: stammdaten; Owner: -
+--
+
+ALTER TABLE ONLY filter_value
+    ADD CONSTRAINT filter_value_filter_id_fkey FOREIGN KEY (filter_id) REFERENCES filter(id);
+
+
+--
+-- Name: filter_value_query_id_fkey; Type: FK CONSTRAINT; Schema: stammdaten; Owner: -
+--
+
+ALTER TABLE ONLY filter_value
+    ADD CONSTRAINT filter_value_query_id_fkey FOREIGN KEY (query_id) REFERENCES query(id);
+
+
+--
+-- Name: filter_value_user_id_fkey; Type: FK CONSTRAINT; Schema: stammdaten; Owner: -
+--
+
+ALTER TABLE ONLY filter_value
+    ADD CONSTRAINT filter_value_user_id_fkey FOREIGN KEY (user_id) REFERENCES lada_user(id);
+
+
+--
 -- Name: fk_deskriptoren_vorgaenger; Type: FK CONSTRAINT; Schema: stammdaten; Owner: -
 --
 
@@ -3477,6 +3813,14 @@ ALTER TABLE ONLY proben_zusatz
 
 ALTER TABLE ONLY probenehmer
     ADD CONSTRAINT probenehmer_netzbetreiber_id_fkey FOREIGN KEY (netzbetreiber_id) REFERENCES netz_betreiber(id);
+
+
+--
+-- Name: result_query_id_fkey; Type: FK CONSTRAINT; Schema: stammdaten; Owner: -
+--
+
+ALTER TABLE ONLY result
+    ADD CONSTRAINT result_query_id_fkey FOREIGN KEY (query_id) REFERENCES query(id);
 
 
 --
