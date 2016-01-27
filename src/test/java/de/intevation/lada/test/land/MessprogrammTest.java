@@ -65,7 +65,7 @@ public class MessprogrammTest extends ServiceTest {
     public final void execute() {
         getAll("messprogramm", "rest/messprogramm");
         getById("messprogramm", "rest/messprogramm/1000", expectedById);
-        filter("messprogramm", "rest/messprogramm?qid=1");
+        filter("messprogramm", "rest/messprogramm?qid=9");
         update("messprogramm", "rest/messprogramm/1000", "mediaDesk", "D: 50 90 01 06 02 05 00 00 00 00 00 00", "D: 50 90 01 06 02 05 00 00 00 00 00 01");
         JsonObject created = create("messprogramm", "rest/messprogramm", create);
         delete("messprogramm", "rest/messprogramm/" + created.getJsonObject("data").get("id"));

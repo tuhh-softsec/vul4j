@@ -243,7 +243,6 @@ public class ServiceTest {
                 .header("X-SHIB-roles", BaseTest.TEST_ROLES)
                 .post(Entity.entity(create.toString(), MediaType.APPLICATION_JSON));
             String entity = response.readEntity(String.class);
-            System.out.println(entity);
             /* Try to parse the response*/
             JsonReader fromServiceReader =
                 Json.createReader(new StringReader(entity));

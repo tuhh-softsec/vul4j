@@ -33,5 +33,6 @@ public class QueryTest extends ServiceTest {
     public final void execute() {
         getAll("query", "rest/query/probe");
         getAll("query", "rest/query/messprogramm");
+        getAll("query", "rest/query/stammdaten");
     }
 }
