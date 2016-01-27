@@ -7,7 +7,6 @@
  */
 package de.intevation.lada.query;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -16,14 +15,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonException;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.ws.rs.core.MultivaluedMap;
+
+import org.apache.log4j.Logger;
+
+import de.intevation.lada.model.stamm.Filter;
+import de.intevation.lada.model.stamm.Query;
+import de.intevation.lada.model.stamm.Result;
+import de.intevation.lada.util.annotation.RepositoryConfig;
+import de.intevation.lada.util.data.QueryBuilder;
+import de.intevation.lada.util.data.Repository;
+import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.rest.Response;
 
 
 /**
@@ -33,9 +43,18 @@ import javax.ws.rs.core.MultivaluedMap;
  */
 public class QueryTools
 {
+
+    @Inject
+    @RepositoryConfig(type=RepositoryType.RO)
+    private Repository repository;
+
     private static String PROBE_CONFIG = "/probequery.json";
     private static String MESSPROGRAMM_CONFIG = "/messprogrammquery.json";
     private static String STAMMDATEN_CONFIG = "/stammdatenquery.json";
+
+    @Inject
+    private Logger logger;
+
     /**
      * Read the config file using the system property
      * "de.intevation.lada.sqlconfig".
@@ -154,33 +173,74 @@ public class QueryTools
         }
     }
 
-    public static Query prepareQuery(
+    public List<Map<String, Object>> getResultForQuery(MultivaluedMap<String, String> params, Integer qId, String type) {
+        QueryBuilder<Query> builder = new QueryBuilder<Query>(
+            repository.entityManager("stamm"),
+            Query.class
+        );
+        builder.and("id", qId);
+        Query query = repository.filterPlain(builder.getQuery(), "stamm").get(0);
+        if (!query.getType().equals(type)) {
+            return null;
+        }
+
+        String sql = query.getSql();
+
+        List<Filter> filters = query.getFilters();
+        QueryBuilder<Result> rBuilder = new QueryBuilder<Result>(
+            repository.entityManager("stamm"),
+            Result.class
+        );
+        rBuilder.and("query", qId);
+        rBuilder.orderBy("index", true);
+        List<Result> results = repository.filterPlain(rBuilder.getQuery(), "stamm");
+        Result idResult = new Result();
+        idResult.setDataIndex("id");
+        results.add(0, idResult);
+        if (params.containsKey("sort")) {
+            String sort = params.getFirst("sort");
+            logger.debug("Sort parameter: " + sort);
+            JsonReader reader = Json.createReader(new StringReader(sort));
+            JsonObject sortProperties = reader.readArray().getJsonObject(0);
+            sql += " ORDER BY ";
+            sql += sortProperties.getJsonString("property").getString() + " ";
+            sql += sortProperties.getJsonString("direction").getString();
+        }
+        javax.persistence.Query q = prepareQuery(
+            sql,
+            filters,
+            params,
+            repository.entityManager("land"));
+        return prepareResult(q.getResultList(), results);
+    }
+
+    public javax.persistence.Query prepareQuery(
         String sql,
-        List<String> filters,
+        List<Filter> filters,
         MultivaluedMap<String, String> params,
         EntityManager manager
     ) {
-        Query query = manager.createNativeQuery(sql);
-        for (String filter: filters) {
-            List<String> param = params.get(filter);
+        javax.persistence.Query query = manager.createNativeQuery(sql);
+        for (Filter filter: filters) {
+            List<String> param = params.get(filter.getDataIndex());
             List<String> clean = new ArrayList<String>();
             for(String p : param) {
                 clean.add(p.replace(",", "|"));
             }
-            query.setParameter(filter, clean);
+            query.setParameter(filter.getDataIndex(), clean);
         }
         return query;
     }
 
-    public static List<Map<String, Object>> prepareResult(
+    public List<Map<String, Object>> prepareResult(
         List<Object[]> result,
-        List<String> names
+        List<Result> names
     ) {
         List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
         for (Object[] row: result) {
             Map<String, Object> set = new HashMap<String, Object>();
             for (int i = 0; i < row.length; i++) {
-                set.put(names.get(i), row[i]);
+                set.put(names.get(i).getDataIndex(), row[i]);
             }
             ret.add(set);
         }

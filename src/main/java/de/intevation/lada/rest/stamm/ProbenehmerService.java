@@ -25,11 +25,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
+import de.intevation.lada.model.stamm.Filter;
 import de.intevation.lada.model.stamm.Probenehmer;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
+import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.RequestMethod;
@@ -92,6 +94,39 @@ public class ProbenehmerService {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         List<Probenehmer> nehmer =
             repository.getAllPlain(Probenehmer.class, "stamm");
+        if (params.containsKey("qid")) {
+            Integer id = null;
+            try {
+                id = Integer.valueOf(params.getFirst("qid"));
+            }
+            catch (NumberFormatException e) {
+                return new Response(false, 603, "Not a valid filter id");
+            }
+            QueryBuilder<Filter> fBuilder = new QueryBuilder<Filter>(
+                repository.entityManager("stamm"),
+                Filter.class
+            );
+            fBuilder.and("query", id);
+            List<Filter> filters = repository.filterPlain(fBuilder.getQuery(), "stamm");
+            QueryBuilder<Probenehmer> builder =
+                new QueryBuilder<Probenehmer>(
+                    repository.entityManager("stamm"),
+                    Probenehmer.class
+                );
+            for (Filter filter: filters) {
+                String param = params.get(filter.getDataIndex()).get(0);
+                if (param == null || param.isEmpty()) {
+                    continue;
+                }
+                builder.or(filter.getDataIndex(), param);
+            }
+
+            nehmer = repository.filterPlain(builder.getQuery(), "stamm");
+        }
+        else {
+            nehmer = repository.getAllPlain(Probenehmer.class, "stamm");
+        }
+
         int size = nehmer.size();
         if (params.containsKey("start") && params.containsKey("limit")) {
             int start = Integer.valueOf(params.getFirst("start"));

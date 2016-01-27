@@ -7,21 +7,13 @@
  */
 package de.intevation.lada.rest;
 
-import java.io.StringReader;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonException;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -113,6 +105,9 @@ public class MessprogrammService {
     @Inject
     private ProbeFactory factory;
 
+    @Inject
+    private QueryTools queryTools;
+
     /**
      * Get all Messprogramm objects.
      * <p>
@@ -143,44 +138,18 @@ public class MessprogrammService {
         if (params.isEmpty() || !params.containsKey("qid")) {
             return defaultRepo.getAll(Messprogramm.class, "land");
         }
-        String qid = params.getFirst("qid");
-        JsonObject jsonQuery = QueryTools.getMpQueryById(qid);
-        String sql = "";
-        List<String> filters = new ArrayList<String>();
-        List<String> results = new ArrayList<String>();
+        Integer id = null;
         try {
-            sql = jsonQuery.getString("sql");
-            if (params.containsKey("sort")) {
-                String sort = params.getFirst("sort");
-                JsonReader reader = Json.createReader(new StringReader(sort));
-                JsonObject sortProperties = reader.readArray().getJsonObject(0);
-                sql += " ORDER BY ";
-                sql += sortProperties.getJsonString("property").getString() + " ";
-                sql += sortProperties.getJsonString("direction").getString();
-            }
-            JsonArray jsonFilters = jsonQuery.getJsonArray("filters");
-            JsonArray jsonResults = jsonQuery.getJsonArray("result");
-            for (int i = 0; i < jsonFilters.size(); i++) {
-                filters.add(
-                    jsonFilters.getJsonObject(i).getString("dataIndex"));
-            }
-            results.add("id");
-            for (int i = 0; i < jsonResults.size(); i++) {
-                results.add(
-                    jsonResults.getJsonObject(i).getString("dataIndex"));
-            }
+            id = Integer.valueOf(params.getFirst("qid"));
         }
-        catch (JsonException je) {
-            return new Response(false, 603, new ArrayList<Object>());
+        catch (NumberFormatException e) {
+            return new Response(false, 603, "Not a valid filter id");
         }
-        Query query = QueryTools.prepareQuery(
-            sql,
-            filters,
-            params,
-            defaultRepo.entityManager("land"));
-        @SuppressWarnings("unchecked")
+
         List<Map<String, Object>> result =
-            QueryTools.prepareResult(query.getResultList(), results);
+            queryTools.getResultForQuery(params, id, "messprogramm");
+
+        int size = result.size();
         if (params.containsKey("start") && params.containsKey("limit")) {
             int start = Integer.valueOf(params.getFirst("start"));
             int limit = Integer.valueOf(params.getFirst("limit"));
@@ -188,10 +157,9 @@ public class MessprogrammService {
             if (start + limit > result.size()) {
                 end = result.size();
             }
-            List<Map<String, Object>> subList = result.subList(start, end);
-            return new Response(true, 200, subList, result.size());
+            result = result.subList(start, end);
         }
-        return new Response(true, 200, result, result.size());
+        return new Response(true, 200, result, size);
     }
 
     /**

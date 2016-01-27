@@ -7,9 +7,7 @@
  */
 package de.intevation.lada.rest;
 
-import java.io.StringReader;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -17,12 +15,7 @@ import java.util.Map;
 import javax.ejb.EJBTransactionRolledbackException;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonException;
 import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.persistence.Query;
 import javax.persistence.TransactionRequiredException;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
@@ -51,7 +44,6 @@ import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
-import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
@@ -126,7 +118,7 @@ public class ProbeService {
      */
     @Inject
     @RepositoryConfig(type=RepositoryType.RW)
-    private Repository defaultRepo;
+    private Repository repository;
 
     /**
      * The authorization module.
@@ -155,6 +147,9 @@ public class ProbeService {
      */
     @Inject
     private ProbeFactory factory;
+
+    @Inject
+    private QueryTools queryTools;
 
     /**
      * Get all Probe objects.
@@ -186,46 +181,19 @@ public class ProbeService {
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() || !params.containsKey("qid")) {
-            return defaultRepo.getAll(LProbe.class, "land");
+            return repository.getAll(LProbe.class, "land");
         }
-        String qid = params.getFirst("qid");
-        JsonObject jsonQuery = QueryTools.getQueryById(qid);
-        String sql = "";
-        List<String> filters = new ArrayList<String>();
-        List<String> results = new ArrayList<String>();
+        Integer id = null;
         try {
-            sql = jsonQuery.getString("sql");
-            if (params.containsKey("sort")) {
-                String sort = params.getFirst("sort");
-                logger.debug("Sort parameter: " + sort);
-                JsonReader reader = Json.createReader(new StringReader(sort));
-                JsonObject sortProperties = reader.readArray().getJsonObject(0);
-                sql += " ORDER BY ";
-                sql += sortProperties.getJsonString("property").getString() + " ";
-                sql += sortProperties.getJsonString("direction").getString();
-            }
-            JsonArray jsonFilters = jsonQuery.getJsonArray("filters");
-            JsonArray jsonResults = jsonQuery.getJsonArray("result");
-            for (int i = 0; i < jsonFilters.size(); i++) {
-                filters.add(
-                    jsonFilters.getJsonObject(i).getString("dataIndex"));
-            }
-            results.add("id");
-            for (int i = 0; i < jsonResults.size(); i++) {
-                results.add(
-                    jsonResults.getJsonObject(i).getString("dataIndex"));
-            }
+            id = Integer.valueOf(params.getFirst("qid"));
         }
-        catch (JsonException je) {
-            return new Response(false, 603, new ArrayList<Object>());
+        catch (NumberFormatException e) {
+            return new Response(false, 603, "Not a valid filter id");
         }
-        Query query = QueryTools.prepareQuery(
-            sql,
-            filters,
-            params,
-            defaultRepo.entityManager("land"));
         List<Map<String, Object>> result =
-            QueryTools.prepareResult(query.getResultList(), results);
+            queryTools.getResultForQuery(params, id, "probe");
+
+        int size = result.size();
         if (params.containsKey("start") && params.containsKey("limit")) {
             int start = Integer.valueOf(params.getFirst("start"));
             int limit = Integer.valueOf(params.getFirst("limit"));
@@ -233,22 +201,36 @@ public class ProbeService {
             if (start + limit > result.size()) {
                 end = result.size();
             }
-            List<Map<String, Object>> subList = result.subList(start, end);
-            for (Map<String, Object> entry: subList) {
-                boolean readOnly =
-                    authorization.isReadOnly((Integer)entry.get("id"));
-                entry.put("readonly", readOnly);
-                QueryBuilder<LProbe> builder = new QueryBuilder<LProbe>(
-                    defaultRepo.entityManager("land"), LProbe.class);
-                builder.and("id", (Integer)entry.get("id"));
-                Response r = defaultRepo.filter(builder.getQuery(), "land");
-                List<LProbe> probe = (List<LProbe>)r.getData();
-                entry.put("owner", authorization.isAuthorized(
-                    request, probe.get(0), RequestMethod.GET, LProbe.class));
-            }
-            return new Response(true, 200, subList, result.size());
+            result = result.subList(start, end);
         }
-        return new Response(true, 200, result, result.size());
+
+        QueryBuilder<LProbe> pBuilder = new QueryBuilder<LProbe>(
+            repository.entityManager("land"), LProbe.class);
+        for (Map<String, Object> entry: result) {
+            pBuilder.or("id", (Integer)entry.get("id"));
+        }
+        Response r = repository.filter(pBuilder.getQuery(), "land");
+        r = authorization.filter(request, r, LProbe.class);
+        List<LProbe> proben = (List<LProbe>)r.getData();
+        for (Map<String, Object> entry: result) {
+            Integer pId = Integer.valueOf(entry.get("id").toString());
+            setAuthData(proben, entry, pId);
+        }
+        return new Response(true, 200, result, size);
+    }
+
+    private void setAuthData(
+        List<LProbe> proben,
+        Map<String, Object> entry,
+        Integer id
+    ) {
+        for (int i = 0; i < proben.size(); i++) {
+            if (id.equals(proben.get(i).getId())) {
+                entry.put("readonly", proben.get(i).getReadonly());
+                entry.put("owner", proben.get(i).getOwner());
+                return;
+            }
+        }
     }
 
     /**
@@ -269,7 +251,7 @@ public class ProbeService {
         @Context HttpServletRequest request
     ) {
         Response response =
-            defaultRepo.getById(LProbe.class, Integer.valueOf(id), "land");
+            repository.getById(LProbe.class, Integer.valueOf(id), "land");
         Violation violation = validator.validate(response.getData());
         if (violation.hasWarnings()) {
             response.setWarnings(violation.getWarnings());
@@ -342,15 +324,15 @@ public class ProbeService {
         }
         probe = factory.findMediaDesk(probe);
         /* Persist the new probe object*/
-        Response newProbe = defaultRepo.create(probe, "land");
+        Response newProbe = repository.create(probe, "land");
         LProbe ret = (LProbe)newProbe.getData();
         /* Create and persist a new probe translation object*/
         ProbeTranslation trans = new ProbeTranslation();
         trans.setProbeId(ret);
-        defaultRepo.create(trans, "land");
+        repository.create(trans, "land");
         /* Get and return the new probe object*/
         Response response =
-            defaultRepo.getById(LProbe.class, ret.getId(), "land");
+            repository.getById(LProbe.class, ret.getId(), "land");
         if(violation.hasWarnings()) {
             response.setWarnings(violation.getWarnings());
         }
@@ -464,8 +446,8 @@ public class ProbeService {
             factory.findUmweltId(probe);
         }
         probe.setLetzteAenderung(new Timestamp(new Date().getTime()));
-        Response response = defaultRepo.update(probe, "land");
-        Response updated = defaultRepo.getById(
+        Response response = repository.update(probe, "land");
+        Response updated = repository.getById(
             LProbe.class,
             ((LProbe)response.getData()).getId(), "land");
         if (violation.hasWarnings()) {
@@ -496,7 +478,7 @@ public class ProbeService {
     ) {
         /* Get the probe object by id*/
         Response probe =
-            defaultRepo.getById(LProbe.class, Integer.valueOf(id), "land");
+            repository.getById(LProbe.class, Integer.valueOf(id), "land");
         LProbe probeObj = (LProbe)probe.getData();
         if (!authorization.isAuthorized(
                 request,
@@ -508,7 +490,7 @@ public class ProbeService {
         }
         /* Delete the probe object*/
         try {
-            Response response = defaultRepo.delete(probeObj, "land");
+            Response response = repository.delete(probeObj, "land");
             return response;
         }
         catch(IllegalArgumentException | EJBTransactionRolledbackException |
