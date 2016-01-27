@@ -20,7 +20,7 @@ MAINTAINER raimund.renkert@intevation.de
 #
 RUN apt-get update -y && \
     apt-get install -y libpostgis-java libjts-java \
-            maven
+            maven lighttpd
 
 #
 # Set up Wildfly
@@ -35,7 +35,7 @@ ENV JBOSS_HOME /opt/jboss/wildfly
 
 RUN $JBOSS_HOME/bin/add-user.sh admin secret --silent
 
-EXPOSE 8080 9990
+EXPOSE 8080 9990 80
 
 #
 # Add LADA-server repo
@@ -73,12 +73,19 @@ RUN rm $JBOSS_HOME/standalone/configuration/standalone_xml_history/current/*
 #
 # Build and deploy LADA-server
 #
-RUN mvn clean compile package
+RUN mvn clean compile package javadoc:javadoc
 RUN mv target/lada-server-2.2.0.war $JBOSS_HOME/standalone/deployments
 RUN touch $JBOSS_HOME/standalone/deployments/lada-server-2.2.0.war.dodeploy
+
+##configure lighttpd for apidoc
+RUN sed -i 's|server.document-root        = "/var/www/html"|server.document-root        = "/usr/src/lada-server/target/site/apidocs"|' /etc/lighttpd/lighttpd.conf
+
+## Start the webserver manually, when the container is started
+# service lighttpd start
 
 #
 # This will boot WildFly in the standalone mode and bind to all interface
 #
 CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", \
      "-bmanagement=0.0.0.0"]
+
