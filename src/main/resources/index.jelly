@@ -13,7 +13,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
+<?jelly escape-by-default='true'?>
 <div>
     This plugin collects Dynatrace Performance Signature Reports and stores them locally.
 </div>
