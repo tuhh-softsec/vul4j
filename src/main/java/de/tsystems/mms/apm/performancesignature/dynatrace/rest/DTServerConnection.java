@@ -30,11 +30,13 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.rest;
 
 import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.*;
+import de.tsystems.mms.apm.performancesignature.model.CredProfilePair;
 import de.tsystems.mms.apm.performancesignature.model.CustomProxy;
 import de.tsystems.mms.apm.performancesignature.model.DynatraceServerConfiguration;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.FilePath;
 import hudson.ProxyConfiguration;
+import jenkins.model.Jenkins;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -69,13 +71,14 @@ public class DTServerConnection {
             return true;
         }
     };
+    private String systemProfile;
     private Proxy proxy;
     private SSLContext sc;
 
-    public DTServerConnection(final String protocol, final String host, final int port, final String credentialsId,
+    public DTServerConnection(final String protocol, final String host, final int port, final CredProfilePair pair,
                               final boolean verifyCertificate, final CustomProxy customProxy) {
         this.address = protocol + "://" + host + ":" + port;
-        this.credentials = PerfSigUtils.getCredentials(credentialsId);
+        this.credentials = PerfSigUtils.getCredentials(pair.getCredentialsId());
         this.verifyCertificate = verifyCertificate;
         this.proxy = Proxy.NO_PROXY;
 
@@ -102,8 +105,9 @@ public class DTServerConnection {
         }
 
         if (customProxy != null) {
-            if (customProxy.isUseJenkinsProxy() && PerfSigUtils.getInstanceOrDie().proxy != null) {
-                final ProxyConfiguration proxyConfiguration = PerfSigUtils.getInstanceOrDie().proxy;
+            Jenkins jenkins = Jenkins.getActiveInstance();
+            if (customProxy.isUseJenkinsProxy() && jenkins.proxy != null) {
+                final ProxyConfiguration proxyConfiguration = jenkins.proxy;
                 if (StringUtils.isNotBlank(proxyConfiguration.name) && proxyConfiguration.port > 0) {
                     this.proxy = new java.net.Proxy(java.net.Proxy.Type.HTTP, new InetSocketAddress(proxyConfiguration.name, proxyConfiguration.port));
                     if (StringUtils.isNotBlank(proxyConfiguration.getUserName())) {
@@ -131,14 +135,15 @@ public class DTServerConnection {
         }
     }
 
-    public DTServerConnection(DynatraceServerConfiguration config) {
-        this(config.getProtocol(), config.getHost(), config.getPort(), config.getCredentialsId(), config.isVerifyCertificate(), config.getCustomProxy());
+    public DTServerConnection(final DynatraceServerConfiguration config, final CredProfilePair pair) {
+        this(config.getProtocol(), config.getHost(), config.getPort(), pair, config.isVerifyCertificate(), config.getCustomProxy());
+        this.systemProfile = pair.getProfile();
     }
 
-    public TestRun getTestRunFromXML(final String profileName, final String uuid) {
+    public TestRun getTestRunFromXML(final String uuid) {
         ManagementURLBuilder builder = new ManagementURLBuilder();
         builder.setServerAddress(this.address);
-        URL url = builder.testRunDetailsURL(profileName, uuid);
+        URL url = builder.testRunDetailsURL(systemProfile, uuid);
         TestRun testRun;
         try {
             XMLReader xr = XMLReaderFactory.createXMLReader();
@@ -351,12 +356,12 @@ public class DTServerConnection {
         }
     }
 
-    public String startRecording(final String profileName, final String sessionName, final String description, final String recordingOption,
+    public String startRecording(final String sessionName, final String description, final String recordingOption,
                                  final boolean sessionLocked, final boolean isNoTimestamp) throws RESTErrorException {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(this.address);
-            URL commandURL = builder.startRecordingURL(profileName, sessionName, description, recordingOption, sessionLocked, isNoTimestamp);
+            URL commandURL = builder.startRecordingURL(systemProfile, sessionName, description, recordingOption, sessionLocked, isNoTimestamp);
             URLConnection conn = commandURL.openConnection(proxy);
             addAuthenticationHeader(conn);
             addPostHeaders(conn, builder.getPostParameters());
@@ -368,11 +373,11 @@ public class DTServerConnection {
         }
     }
 
-    public String stopRecording(final String profileName) throws RESTErrorException {
+    public String stopRecording() throws RESTErrorException {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(this.address);
-            URL commandURL = builder.stopRecordingURL(profileName);
+            URL commandURL = builder.stopRecordingURL(systemProfile);
             URLConnection conn = commandURL.openConnection(proxy);
             addAuthenticationHeader(conn);
 
@@ -428,26 +433,26 @@ public class DTServerConnection {
         }
     }
 
-    public List<BaseConfiguration> getProfileConfigurations(final String profileName) {
+    public List<BaseConfiguration> getProfileConfigurations() {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(this.address);
-            URL commandURL = builder.listConfigurationsURL(profileName);
+            URL commandURL = builder.listConfigurationsURL(systemProfile);
             URLConnection conn = commandURL.openConnection(proxy);
             addAuthenticationHeader(conn);
 
             ProfileXMLHandler handler = getProfileXMLHandler(conn);
             return handler.getConfigurationObjects();
         } catch (Exception ex) {
-            throw new CommandExecutionException("Error listing configurations of profile " + profileName + ": " + ex.getMessage(), ex);
+            throw new CommandExecutionException("Error listing configurations of profile " + systemProfile + ": " + ex.getMessage(), ex);
         }
     }
 
-    public boolean activateConfiguration(final String profileName, final String configuration) {
+    public boolean activateConfiguration(final String configuration) {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(this.address);
-            URL commandURL = builder.activateConfigurationURL(profileName, configuration);
+            URL commandURL = builder.activateConfigurationURL(systemProfile, configuration);
             URLConnection conn = commandURL.openConnection(proxy);
             addAuthenticationHeader(conn);
 
@@ -458,7 +463,7 @@ public class DTServerConnection {
         }
     }
 
-    public List<Agent> getAgents() {
+    public List<Agent> getAllAgents() {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(this.address);
@@ -473,8 +478,8 @@ public class DTServerConnection {
         }
     }
 
-    public List<Agent> getAgents(final String systemProfile) {
-        List<Agent> agents = getAgents();
+    public List<Agent> getAgents() {
+        List<Agent> agents = getAllAgents();
         List<Agent> filteredAgents = new ArrayList<Agent>();
         for (Agent agent : agents) {
             if (agent.getSystemProfile().equals(systemProfile))
@@ -527,11 +532,11 @@ public class DTServerConnection {
         }
     }
 
-    public String threadDump(final String profileName, final String agentName, final String hostName, final int processId, final boolean sessionLocked) {
+    public String threadDump(final String agentName, final String hostName, final int processId, final boolean sessionLocked) {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(this.address);
-            URL commandURL = builder.threadDumpURL(profileName, agentName, hostName, processId, sessionLocked);
+            URL commandURL = builder.threadDumpURL(systemProfile, agentName, hostName, processId, sessionLocked);
             URLConnection conn = commandURL.openConnection(proxy);
             addAuthenticationHeader(conn);
             addPostHeaders(conn, builder.getPostParameters());
@@ -543,11 +548,11 @@ public class DTServerConnection {
         }
     }
 
-    public DumpStatus threadDumpStatus(final String profileName, final String threadDump) {
+    public DumpStatus threadDumpStatus(final String threadDump) {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(this.address);
-            URL commandURL = builder.threadDumpStatusURL(profileName, threadDump);
+            URL commandURL = builder.threadDumpStatusURL(systemProfile, threadDump);
             URLConnection conn = commandURL.openConnection(proxy);
             addAuthenticationHeader(conn);
 
@@ -558,12 +563,12 @@ public class DTServerConnection {
         }
     }
 
-    public String memoryDump(final String profileName, final String agentName, final String hostName, final int processId, final String dumpType,
+    public String memoryDump(final String agentName, final String hostName, final int processId, final String dumpType,
                              final boolean sessionLocked, final boolean captureStrings, final boolean capturePrimitives, final boolean autoPostProcess, final boolean dogC) {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(this.address);
-            URL commandURL = builder.memoryDumpURL(profileName, agentName, hostName, processId, dumpType, sessionLocked, captureStrings, capturePrimitives, autoPostProcess, dogC);
+            URL commandURL = builder.memoryDumpURL(systemProfile, agentName, hostName, processId, dumpType, sessionLocked, captureStrings, capturePrimitives, autoPostProcess, dogC);
             URLConnection conn = commandURL.openConnection(proxy);
             addAuthenticationHeader(conn);
             addPostHeaders(conn, builder.getPostParameters());
@@ -575,11 +580,11 @@ public class DTServerConnection {
         }
     }
 
-    public DumpStatus memoryDumpStatus(final String profileName, final String memoryDump) {
+    public DumpStatus memoryDumpStatus(final String memoryDump) {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(this.address);
-            URL commandURL = builder.memoryDumpStatusURL(profileName, memoryDump);
+            URL commandURL = builder.memoryDumpStatusURL(systemProfile, memoryDump);
             URLConnection conn = commandURL.openConnection(proxy);
             addAuthenticationHeader(conn);
 
@@ -590,7 +595,7 @@ public class DTServerConnection {
         }
     }
 
-    public String registerTestRun(final String systemProfile, final int versionBuild) {
+    public String registerTestRun(final int versionBuild) {
         try {
             RegisterTestRunRequest requestContent = new RegisterTestRunRequest();
             requestContent.setVersionBuild(String.valueOf(versionBuild));

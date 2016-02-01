@@ -24,6 +24,7 @@ import de.tsystems.mms.apm.performancesignature.PerfSigRecorder;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.Agent;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.BaseConfiguration;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionException;
+import de.tsystems.mms.apm.performancesignature.model.CredProfilePair;
 import de.tsystems.mms.apm.performancesignature.model.DynatraceServerConfiguration;
 import hudson.FilePath;
 import hudson.Functions;
@@ -33,6 +34,7 @@ import hudson.security.ACL;
 import hudson.util.Area;
 import hudson.util.ListBoxModel;
 import jenkins.model.Jenkins;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.commons.lang.StringUtils;
@@ -53,22 +55,6 @@ public final class PerfSigUtils {
     private PerfSigUtils() {
     }
 
-    /**
-     * @return {@link jenkins.model.Jenkins#getInstance()} if that isn't null, or die.
-     */
-    public static Jenkins getInstanceOrDie() {
-        Jenkins jenkins = Jenkins.getInstance();
-        if (jenkins == null) {
-            throw new IllegalStateException("Jenkins is not running");
-        }
-        return jenkins;
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> T cast(final Object obj) {
-        return (T) obj;
-    }
-
     public static BigDecimal round(final double d, final int decimalPlace) {
         if (d == 0) return BigDecimal.valueOf(0);
         BigDecimal bd = new BigDecimal(d);
@@ -83,9 +69,12 @@ public final class PerfSigUtils {
                 listBoxModel.add((String) item);
             else if (item instanceof Agent)
                 listBoxModel.add(((Agent) item).getName());
-            else if (item instanceof DynatraceServerConfiguration)
-                listBoxModel.add(((DynatraceServerConfiguration) item).getName());
-            else if (item instanceof BaseConfiguration)
+            else if (item instanceof DynatraceServerConfiguration) {
+                DynatraceServerConfiguration conf = (DynatraceServerConfiguration) item;
+                if (CollectionUtils.isNotEmpty(conf.getCredProfilePairs()))
+                    for (CredProfilePair credProfilePair : conf.getCredProfilePairs())
+                        listBoxModel.add(credProfilePair.getProfile() + " @ " + conf.getName());
+            } else if (item instanceof BaseConfiguration)
                 listBoxModel.add(((BaseConfiguration) item).getId());
         }
         return listBoxModel;
@@ -100,12 +89,13 @@ public final class PerfSigUtils {
     }
 
     public static List<DynatraceServerConfiguration> getDTConfigurations() {
-        return getInstanceOrDie().getDescriptorByType(PerfSigRecorder.DescriptorImpl.class).getConfigurations();
+        return Jenkins.getActiveInstance().getDescriptorByType(PerfSigRecorder.DescriptorImpl.class).getConfigurations();
     }
 
     public static DynatraceServerConfiguration getServerConfiguration(final String dynatraceServer) {
         for (DynatraceServerConfiguration serverConfiguration : getDTConfigurations()) {
-            if (dynatraceServer.equals(serverConfiguration.getName())) {
+            String strippedName = dynatraceServer.replaceAll(".*@", "").trim();
+            if (strippedName.equals(serverConfiguration.getName())) {
                 return serverConfiguration;
             }
         }

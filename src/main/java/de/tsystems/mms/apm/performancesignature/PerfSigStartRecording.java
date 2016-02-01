@@ -20,6 +20,7 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.model.BaseConfiguratio
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.SystemProfile;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
+import de.tsystems.mms.apm.performancesignature.model.CredProfilePair;
 import de.tsystems.mms.apm.performancesignature.model.DynatraceServerConfiguration;
 import de.tsystems.mms.apm.performancesignature.model.GenericTestCase;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
@@ -47,13 +48,13 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
-    private final String dynatraceServer, testCase;
+    private final String dynatraceProfile, testCase;
     private String recordingOption;
     private boolean lockSession;
 
     @DataBoundConstructor
-    public PerfSigStartRecording(final String dynatraceServer, final String testCase) {
-        this.dynatraceServer = dynatraceServer;
+    public PerfSigStartRecording(final String dynatraceProfile, final String testCase) {
+        this.dynatraceProfile = dynatraceProfile;
         this.testCase = StringUtils.deleteWhitespace(testCase);
     }
 
@@ -62,30 +63,34 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
             throws InterruptedException, IOException {
         final PrintStream logger = listener.getLogger();
 
-        DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceServer);
+        DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
         if (serverConfiguration == null)
             throw new AbortException("failed to lookup Dynatrace server configuration");
 
+        CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
+        if (pair == null)
+            throw new AbortException("failed to lookup Dynatrace server profile");
+
         logger.println("starting session recording ...");
-        final DTServerConnection connection = new DTServerConnection(serverConfiguration);
+        final DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
         if (!connection.validateConnection()) {
             throw new RESTErrorException(Messages.PerfSigRecorder_DTConnectionError());
         }
 
         for (BaseConfiguration profile : connection.getSystemProfiles()) {
-            SystemProfile systemProfile = PerfSigUtils.cast(profile);
-            if (serverConfiguration.getProfile().equals(systemProfile.getId()) && systemProfile.isRecording()) {
+            SystemProfile systemProfile = (SystemProfile) profile;
+            if (pair.getProfile().equals(systemProfile.getId()) && systemProfile.isRecording()) {
                 logger.println("another Sesssion is still recording, trying to stop recording");
-                PerfSigStopRecording stopRecording = new PerfSigStopRecording(dynatraceServer);
+                PerfSigStopRecording stopRecording = new PerfSigStopRecording(dynatraceProfile);
                 stopRecording.perform(run, workspace, launcher, listener);
                 break;
             }
         }
 
         logger.println("registering new TestRun");
-        String testRunId = connection.registerTestRun(serverConfiguration.getProfile(), run.getNumber());
+        String testRunId = connection.registerTestRun(run.getNumber());
         if (testRunId != null) {
-            logger.println(String.format(Messages.PerfSigStartRecording_StartedTestRun(), serverConfiguration.getProfile(), testRunId));
+            logger.println(String.format(Messages.PerfSigStartRecording_StartedTestRun(), pair.getProfile(), testRunId));
             logger.println("Dynatrace: registered test run " + testRunId + "" +
                     " (available as environment variables " + PerfSigEnvContributor.TESTRUN_ID_KEY +
                     " and " + PerfSigEnvContributor.SESSIONCOUNT + ")");
@@ -94,15 +99,15 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
         }
 
         final String testCase = run.getEnvironment(listener).expand(this.testCase);
-        String sessionName = serverConfiguration.getProfile() + "_" + run.getParent().getName() + "_Build-" + run.getNumber() + "_" + testCase;
+        String sessionName = pair.getProfile() + "_" + run.getParent().getName() + "_Build-" + run.getNumber() + "_" + testCase;
         sessionName = sessionName.replace("/", "_");
 
-        final String result = connection.startRecording(serverConfiguration.getProfile(), sessionName, "This Session is triggered by Jenkins", getRecordingOption(), lockSession, false);
+        final String result = connection.startRecording(sessionName, "This Session is triggered by Jenkins", getRecordingOption(), lockSession, false);
         if (result != null && result.equals(sessionName)) {
-            logger.println(String.format(Messages.PerfSigStartRecording_StartedSessionRecording(), serverConfiguration.getProfile(), result));
+            logger.println(String.format(Messages.PerfSigStartRecording_StartedSessionRecording(), pair.getProfile(), result));
             run.addAction(new PerfSigEnvInvisAction(sessionName, testCase, testRunId));
         } else {
-            throw new RESTErrorException(String.format(Messages.PerfSigStartRecording_SessionRecordingError(), serverConfiguration.getProfile()));
+            throw new RESTErrorException(String.format(Messages.PerfSigStartRecording_SessionRecordingError(), pair.getProfile()));
         }
     }
 
@@ -128,8 +133,8 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
         this.lockSession = lockSession;
     }
 
-    public String getDynatraceServer() {
-        return dynatraceServer;
+    public String getDynatraceProfile() {
+        return dynatraceProfile;
     }
 
     @Extension
@@ -151,7 +156,7 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
             }
         }
 
-        public ListBoxModel doFillDynatraceServerItems() {
+        public ListBoxModel doFillDynatraceProfileItems() {
             return PerfSigUtils.listToListBoxModel(PerfSigUtils.getDTConfigurations());
         }
 

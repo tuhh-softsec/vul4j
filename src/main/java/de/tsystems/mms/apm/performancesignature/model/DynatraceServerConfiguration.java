@@ -16,48 +16,36 @@
 
 package de.tsystems.mms.apm.performancesignature.model;
 
-import com.cloudbees.plugins.credentials.CredentialsProvider;
-import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
-import com.cloudbees.plugins.credentials.common.StandardUsernameCredentials;
-import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
-import com.cloudbees.plugins.credentials.domains.DomainRequirement;
 import de.tsystems.mms.apm.performancesignature.Messages;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionException;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
-import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.Extension;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
-import hudson.model.Project;
-import hudson.security.ACL;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
-import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
-import java.util.Collections;
-
-import static com.cloudbees.plugins.credentials.CredentialsMatchers.instanceOf;
+import java.util.List;
 
 public class DynatraceServerConfiguration extends AbstractDescribableImpl<DynatraceServerConfiguration> {
-    private final String name, protocol, host, profile, credentialsId;
+    private final String name, protocol, host;
     private final int port;
-    private boolean verifyCertificate;
-    private int delay, retryCount;
-    private CustomProxy customProxy;
+    private final boolean verifyCertificate;
+    private final int delay, retryCount;
+    private final CustomProxy customProxy;
+    private final List<CredProfilePair> credProfilePairs;
 
     @DataBoundConstructor
-    public DynatraceServerConfiguration(final String name, final String protocol, final String host, final int port, final String credentialsId, final String profile,
+    public DynatraceServerConfiguration(final String name, final String protocol, final String host, final int port, final List<CredProfilePair> credProfilePairs,
                                         final boolean verifyCertificate, final int delay, final int retryCount, final boolean proxy, final CustomProxy proxySource) {
         this.name = name;
         this.protocol = protocol;
         this.host = host;
         this.port = port;
-        this.credentialsId = credentialsId;
-        this.profile = profile;
+        this.credProfilePairs = credProfilePairs;
         this.verifyCertificate = verifyCertificate;
         this.delay = delay;
         this.retryCount = retryCount;
@@ -76,16 +64,21 @@ public class DynatraceServerConfiguration extends AbstractDescribableImpl<Dynatr
         return host;
     }
 
-    public String getProfile() {
-        return profile;
-    }
-
-    public String getCredentialsId() {
-        return credentialsId;
+    public CredProfilePair getCredProfilePair(final String profile) {
+        String systemProfile = profile.replaceAll("@.*", "").trim();
+        for (CredProfilePair pair : credProfilePairs) {
+            if (pair.getProfile().equals(systemProfile))
+                return pair;
+        }
+        return null;
     }
 
     public int getPort() {
         return port;
+    }
+
+    public List<CredProfilePair> getCredProfilePairs() {
+        return credProfilePairs;
     }
 
     public boolean isVerifyCertificate() {
@@ -201,40 +194,14 @@ public class DynatraceServerConfiguration extends AbstractDescribableImpl<Dynatr
             if (proxy) {
                 customProxyServer = new CustomProxy(proxyServer, proxyPort, proxyUser, proxyPassword, proxySource == 0);
             }
-            final DTServerConnection connection = new DTServerConnection(protocol, host, port, credentialsId, verifyCertificate, customProxyServer);
+            CredProfilePair pair = new CredProfilePair("", credentialsId);
+            final DTServerConnection connection = new DTServerConnection(protocol, host, port, pair, verifyCertificate, customProxyServer);
 
             if (connection.validateConnection()) {
                 return FormValidation.ok(Messages.PerfSigRecorder_TestConnectionSuccessful());
             } else {
                 return FormValidation.warning(Messages.PerfSigRecorder_TestConnectionNotSuccessful());
             }
-        }
-
-        public ListBoxModel doFillProfileItems(@QueryParameter final String protocol, @QueryParameter final String host,
-                                               @QueryParameter final int port, @QueryParameter final String credentialsId,
-                                               @QueryParameter final boolean verifyCertificate, @QueryParameter final boolean proxy,
-                                               @QueryParameter final int proxySource,
-                                               @QueryParameter final String proxyServer, @QueryParameter final int proxyPort,
-                                               @QueryParameter final String proxyUser, @QueryParameter final String proxyPassword) {
-
-            CustomProxy customProxyServer = null;
-            if (proxy) {
-                customProxyServer = new CustomProxy(proxyServer, proxyPort, proxyUser, proxyPassword, proxySource == 0);
-            }
-            try {
-                final DTServerConnection connection = new DTServerConnection(protocol, host, port, credentialsId, verifyCertificate, customProxyServer);
-                return PerfSigUtils.listToListBoxModel(connection.getSystemProfiles());
-            } catch (CommandExecutionException ignored) {
-                return null;
-            }
-        }
-
-        public ListBoxModel doFillCredentialsIdItems(@AncestorInPath final Project project) {
-            return new StandardListBoxModel()
-                    .withEmptySelection()
-                    .withMatching(instanceOf(UsernamePasswordCredentials.class),
-                            CredentialsProvider.lookupCredentials(
-                                    StandardUsernameCredentials.class, project, ACL.SYSTEM, Collections.<DomainRequirement>emptyList()));
         }
     }
 }

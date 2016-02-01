@@ -19,6 +19,7 @@ package de.tsystems.mms.apm.performancesignature;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRun;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
+import de.tsystems.mms.apm.performancesignature.model.CredProfilePair;
 import de.tsystems.mms.apm.performancesignature.model.DynatraceServerConfiguration;
 import de.tsystems.mms.apm.performancesignature.model.PerfSigTestData;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
@@ -42,11 +43,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PerfSigTestDataPublisher extends TestDataPublisher {
-    private final String dynatraceServer;
+    private final String dynatraceProfile;
 
     @DataBoundConstructor
-    public PerfSigTestDataPublisher(final String dynatraceServer) {
-        this.dynatraceServer = dynatraceServer;
+    public PerfSigTestDataPublisher(final String dynatraceProfile) {
+        this.dynatraceProfile = dynatraceProfile;
     }
 
     @Override
@@ -54,11 +55,15 @@ public class PerfSigTestDataPublisher extends TestDataPublisher {
                                                     final TaskListener listener, final TestResult testResult) throws AbortException, RESTErrorException {
         PrintStream logger = listener.getLogger();
 
-        DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceServer);
+        DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
         if (serverConfiguration == null)
             throw new AbortException("failed to lookup Dynatrace server configuration");
 
-        final DTServerConnection connection = new DTServerConnection(serverConfiguration);
+        CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
+        if (pair == null)
+            throw new AbortException("failed to lookup Dynatrace server profile");
+
+        final DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
 
         logger.println(Messages.PerfSigRecorder_VerifyDTConnection());
         if (!connection.validateConnection()) {
@@ -69,7 +74,7 @@ public class PerfSigTestDataPublisher extends TestDataPublisher {
         final List<PerfSigEnvInvisAction> envVars = run.getActions(PerfSigEnvInvisAction.class);
         for (PerfSigEnvInvisAction registerEnvVars : envVars) {
             if (StringUtils.isNotBlank(registerEnvVars.getTestRunID())) {
-                TestRun testRun = connection.getTestRunFromXML(serverConfiguration.getProfile(), registerEnvVars.getTestRunID());
+                TestRun testRun = connection.getTestRunFromXML(registerEnvVars.getTestRunID());
                 if (testRun == null || testRun.getTestResults() == null || testRun.getTestResults().isEmpty()) {
                     throw new RESTErrorException(Messages.PerfSigRecorder_XMLReportError());
                 } else {
@@ -84,14 +89,14 @@ public class PerfSigTestDataPublisher extends TestDataPublisher {
         return perfSigTestData;
     }
 
-    public String getDynatraceServer() {
-        return dynatraceServer;
+    public String getDynatraceProfile() {
+        return dynatraceProfile;
     }
 
     @Extension
     public static final class PerfSigTestDataPublisherDescriptor extends Descriptor<TestDataPublisher> {
 
-        public ListBoxModel doFillDynatraceServerItems() {
+        public ListBoxModel doFillDynatraceProfileItems() {
             return PerfSigUtils.listToListBoxModel(PerfSigUtils.getDTConfigurations());
         }
 

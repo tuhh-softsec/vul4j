@@ -49,11 +49,14 @@ public class Dashboard extends AbstractDescribableImpl<Dashboard> {
             return "";
         }
 
-        public ListBoxModel doFillDashboardItems(@RelativePath("../..") @QueryParameter final String dynatraceServer) {
-            DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceServer);
+        public ListBoxModel doFillDashboardItems(@RelativePath("../..") @QueryParameter final String dynatraceProfile) {
+            DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
             if (serverConfiguration != null) {
-                final DTServerConnection connection = new DTServerConnection(serverConfiguration);
-                return PerfSigUtils.listToListBoxModel(connection.getDashboards());
+                CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
+                if (pair != null) {
+                    DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
+                    return PerfSigUtils.listToListBoxModel(connection.getDashboards());
+                }
             }
             return null;
         }

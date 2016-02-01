@@ -18,6 +18,7 @@ package de.tsystems.mms.apm.performancesignature;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
+import de.tsystems.mms.apm.performancesignature.model.CredProfilePair;
 import de.tsystems.mms.apm.performancesignature.model.DynatraceServerConfiguration;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.AbortException;
@@ -42,12 +43,12 @@ import java.io.PrintStream;
 public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
     private static final int reanalyzeSessionTimeout = 60000; //==1 minute
     private static final int reanalyzeSessionPollingInterval = 5000; //==5 seconds
-    private final String dynatraceServer;
+    private final String dynatraceProfile;
     private boolean reanalyzeSession;
 
     @DataBoundConstructor
-    public PerfSigStopRecording(final String dynatraceServer) {
-        this.dynatraceServer = dynatraceServer;
+    public PerfSigStopRecording(final String dynatraceProfile) {
+        this.dynatraceProfile = dynatraceProfile;
     }
 
     @Override
@@ -56,16 +57,20 @@ public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
         final PrintStream logger = listener.getLogger();
 
         logger.println(Messages.PerfSigStopRecording_StopSessionRecording());
-        DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceServer);
+        DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
         if (serverConfiguration == null)
             throw new AbortException("failed to lookup Dynatrace server configuration");
 
-        final DTServerConnection connection = new DTServerConnection(serverConfiguration);
+        CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
+        if (pair == null)
+            throw new AbortException("failed to lookup Dynatrace server profile");
 
-        String sessionName = connection.stopRecording(serverConfiguration.getProfile());
+        final DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
+
+        String sessionName = connection.stopRecording();
         if (StringUtils.isBlank(sessionName))
             throw new RESTErrorException(Messages.PerfSigStopRecording_InternalError());
-        logger.println(String.format("Stopped recording on %s with SessionName %s", serverConfiguration.getProfile(), sessionName));
+        logger.println(String.format("Stopped recording on %s with SessionName %s", pair.getProfile(), sessionName));
 
         if (getReanalyzeSession()) {
             logger.println("reanalyze session ...");
@@ -90,8 +95,8 @@ public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
         }
     }
 
-    public String getDynatraceServer() {
-        return dynatraceServer;
+    public String getDynatraceProfile() {
+        return dynatraceProfile;
     }
 
     public boolean getReanalyzeSession() {
@@ -107,7 +112,7 @@ public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
         public static final boolean defaultReanalyzeSession = false;
 
-        public ListBoxModel doFillDynatraceServerItems() {
+        public ListBoxModel doFillDynatraceProfileItems() {
             return PerfSigUtils.listToListBoxModel(PerfSigUtils.getDTConfigurations());
         }
 

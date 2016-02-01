@@ -19,6 +19,7 @@ package de.tsystems.mms.apm.performancesignature;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.Agent;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionException;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
+import de.tsystems.mms.apm.performancesignature.model.CredProfilePair;
 import de.tsystems.mms.apm.performancesignature.model.DynatraceServerConfiguration;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.AbortException;
@@ -42,11 +43,11 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 public class PerfSigActivateConfiguration extends Builder implements SimpleBuildStep {
-    private final String dynatraceServer, configuration;
+    private final String dynatraceProfile, configuration;
 
     @DataBoundConstructor
-    public PerfSigActivateConfiguration(final String dynatraceServer, final String configuration) {
-        this.dynatraceServer = dynatraceServer;
+    public PerfSigActivateConfiguration(final String dynatraceProfile, final String configuration) {
+        this.dynatraceProfile = dynatraceProfile;
         this.configuration = configuration;
     }
 
@@ -55,20 +56,24 @@ public class PerfSigActivateConfiguration extends Builder implements SimpleBuild
             throws InterruptedException, IOException {
         PrintStream logger = listener.getLogger();
 
-        DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceServer);
+        DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
         if (serverConfiguration == null)
             throw new AbortException("failed to lookup Dynatrace server configuration");
 
-        logger.println(Messages.PerfSigActivateConfiguration_ActivatingProfileConfiguration());
-        final DTServerConnection connection = new DTServerConnection(serverConfiguration);
+        CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
+        if (pair == null)
+            throw new AbortException("failed to lookup Dynatrace server profile");
 
-        boolean result = connection.activateConfiguration(serverConfiguration.getProfile(), this.configuration);
+        logger.println(Messages.PerfSigActivateConfiguration_ActivatingProfileConfiguration());
+        final DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
+
+        boolean result = connection.activateConfiguration(this.configuration);
         if (!result)
             throw new CommandExecutionException(Messages.PerfSigActivateConfiguration_InternalError());
-        logger.println(Messages.PerfSigActivateConfiguration_SuccessfullyActivated() + serverConfiguration.getProfile());
+        logger.println(Messages.PerfSigActivateConfiguration_SuccessfullyActivated() + pair.getProfile());
 
         for (Agent agent : connection.getAgents()) {
-            if (agent.getSystemProfile().equalsIgnoreCase(serverConfiguration.getProfile())) {
+            if (agent.getSystemProfile().equalsIgnoreCase(pair.getProfile())) {
                 boolean hotSensorPlacement = connection.hotSensorPlacement(agent.getAgentId());
                 if (hotSensorPlacement) {
                     logger.println(Messages.PerfSigActivateConfiguration_HotSensorPlacementDone() + " " + agent.getName());
@@ -79,8 +84,8 @@ public class PerfSigActivateConfiguration extends Builder implements SimpleBuild
         }
     }
 
-    public String getDynatraceServer() {
-        return dynatraceServer;
+    public String getDynatraceProfile() {
+        return dynatraceProfile;
     }
 
     public String getConfiguration() {
@@ -99,15 +104,18 @@ public class PerfSigActivateConfiguration extends Builder implements SimpleBuild
             return validationResult;
         }
 
-        public ListBoxModel doFillDynatraceServerItems() {
+        public ListBoxModel doFillDynatraceProfileItems() {
             return PerfSigUtils.listToListBoxModel(PerfSigUtils.getDTConfigurations());
         }
 
-        public ListBoxModel doFillConfigurationItems(@QueryParameter final String dynatraceServer) {
-            DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceServer);
+        public ListBoxModel doFillConfigurationItems(@QueryParameter final String dynatraceProfile) {
+            DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
             if (serverConfiguration != null) {
-                final DTServerConnection connection = new DTServerConnection(serverConfiguration);
-                return PerfSigUtils.listToListBoxModel(connection.getProfileConfigurations(serverConfiguration.getProfile()));
+                CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
+                if (pair != null) {
+                    DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
+                    return PerfSigUtils.listToListBoxModel(connection.getProfileConfigurations());
+                }
             }
             return null;
         }

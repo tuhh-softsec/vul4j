@@ -19,11 +19,8 @@ package de.tsystems.mms.apm.performancesignature;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.*;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
-import de.tsystems.mms.apm.performancesignature.model.ConfigurationTestCase;
+import de.tsystems.mms.apm.performancesignature.model.*;
 import de.tsystems.mms.apm.performancesignature.model.ConfigurationTestCase.ConfigurationTestCaseDescriptor;
-import de.tsystems.mms.apm.performancesignature.model.Dashboard;
-import de.tsystems.mms.apm.performancesignature.model.DynatraceServerConfiguration;
-import de.tsystems.mms.apm.performancesignature.model.UnitTestCase;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.*;
 import hudson.model.*;
@@ -47,15 +44,15 @@ import java.util.Collections;
 import java.util.List;
 
 public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
-    private final String dynatraceServer;
+    private final String dynatraceProfile;
     private final List<ConfigurationTestCase> configurationTestCases;
     private boolean exportSessions;
     private int nonFunctionalFailure;
     private transient List<String> availableSessions;
 
     @DataBoundConstructor
-    public PerfSigRecorder(final String dynatraceServer, final List<ConfigurationTestCase> configurationTestCases) {
-        this.dynatraceServer = dynatraceServer;
+    public PerfSigRecorder(final String dynatraceProfile, final List<ConfigurationTestCase> configurationTestCases) {
+        this.dynatraceProfile = dynatraceProfile;
         this.configurationTestCases = configurationTestCases;
     }
 
@@ -65,15 +62,19 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
 
         PrintStream logger = listener.getLogger();
 
-        DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceServer);
+        DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
         if (serverConfiguration == null)
             throw new AbortException("failed to lookup Dynatrace server configuration");
+
+        CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
+        if (pair == null)
+            throw new AbortException("failed to lookup Dynatrace server profile");
 
         if (configurationTestCases == null) {
             throw new AbortException(Messages.PerfSigRecorder_MissingTestCases());
         }
 
-        DTServerConnection connection = new DTServerConnection(serverConfiguration);
+        DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
         logger.println(Messages.PerfSigRecorder_VerifyDTConnection());
         if (!connection.validateConnection()) {
             throw new RESTErrorException(Messages.PerfSigRecorder_DTConnectionError());
@@ -86,10 +87,10 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
         logger.println(Messages.PerfSigRecorder_ReportDirectory() + " " + PerfSigUtils.getReportDirectory(run));
 
         for (BaseConfiguration profile : connection.getSystemProfiles()) {
-            SystemProfile systemProfile = PerfSigUtils.cast(profile);
-            if (serverConfiguration.getProfile().equals(systemProfile.getId()) && systemProfile.isRecording()) {
+            SystemProfile systemProfile = (SystemProfile) profile;
+            if (pair.getProfile().equals(systemProfile.getId()) && systemProfile.isRecording()) {
                 logger.println("Sesssion is still recording, trying to stop recording");
-                PerfSigStopRecording stopRecording = new PerfSigStopRecording(dynatraceServer);
+                PerfSigStopRecording stopRecording = new PerfSigStopRecording(dynatraceProfile);
                 stopRecording.perform(run, workspace, launcher, listener);
                 break;
             }
@@ -281,8 +282,8 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
         this.nonFunctionalFailure = nonFunctionalFailure <= 0 ? DescriptorImpl.defaultNonFunctionalFailure : nonFunctionalFailure;
     }
 
-    public String getDynatraceServer() {
-        return dynatraceServer;
+    public String getDynatraceProfile() {
+        return dynatraceProfile;
     }
 
     @Extension
@@ -302,7 +303,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
             return false;
         }
 
-        public ListBoxModel doFillDynatraceServerItems() {
+        public ListBoxModel doFillDynatraceProfileItems() {
             return PerfSigUtils.listToListBoxModel(PerfSigUtils.getDTConfigurations());
         }
 

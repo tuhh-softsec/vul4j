@@ -33,11 +33,23 @@
                              description="${%Dynatrace Server REST Interface port} (${%default: 8020 for HTTP, 8021 for HTTPS})">
                         <f:number default="${descriptor.defaultPort}"/>
                     </f:entry>
-                    <f:entry title="${%Dynatrace REST User credentials}" field="credentialsId">
-                        <c:select/>
-                    </f:entry>
-                    <f:entry title="${%Dynatrace System Profile}" field="profile" description="${%corresponding Dynatrace Profile}">
-                        <f:select/>
+                    <f:entry title="credentials/profiles pairs">
+                        <f:repeatable field="credProfilePairs" header="credentials/profile pair">
+                            <table width="100%">
+                                <br/>
+                                <f:entry title="${%Dynatrace REST credentials}" field="credentialsId">
+                                    <c:select/>
+                                </f:entry>
+                                <f:entry title="${%Dynatrace System Profile}" field="profile" description="${%corresponding Dynatrace Profile}">
+                                    <f:select/>
+                                </f:entry>
+                                <f:entry title="">
+                                    <div align="right">
+                                        <f:repeatableDeleteButton/>
+                                    </div>
+                                </f:entry>
+                            </table>
+                        </f:repeatable>
                     </f:entry>
 
                     <f:advanced>

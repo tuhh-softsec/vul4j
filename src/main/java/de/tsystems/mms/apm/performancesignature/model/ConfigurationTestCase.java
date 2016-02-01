@@ -24,6 +24,7 @@ import hudson.model.AbstractProject;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
 import hudson.util.ListBoxModel;
+import jenkins.model.Jenkins;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.QueryParameter;
 
@@ -72,7 +73,7 @@ public abstract class ConfigurationTestCase implements Describable<Configuration
     }
 
     public ConfigurationTestCaseDescriptor getDescriptor() {
-        return (ConfigurationTestCaseDescriptor) PerfSigUtils.getInstanceOrDie().getDescriptorOrDie(getClass());
+        return (ConfigurationTestCaseDescriptor) Jenkins.getActiveInstance().getDescriptorOrDie(getClass());
     }
 
     public abstract static class ConfigurationTestCaseDescriptor extends Descriptor<ConfigurationTestCase> {
@@ -83,7 +84,7 @@ public abstract class ConfigurationTestCase implements Describable<Configuration
         }
 
         public static DescriptorExtensionList<ConfigurationTestCase, Descriptor<ConfigurationTestCase>> all() {
-            return PerfSigUtils.getInstanceOrDie().getDescriptorList(ConfigurationTestCase.class);
+            return Jenkins.getActiveInstance().getDescriptorList(ConfigurationTestCase.class);
         }
 
         public boolean isApplicable(final Class<? extends AbstractProject<?, ?>> jobType) {
@@ -97,11 +98,14 @@ public abstract class ConfigurationTestCase implements Describable<Configuration
             return out;
         }
 
-        public ListBoxModel doFillXmlDashboardItems(@RelativePath("..") @QueryParameter final String dynatraceServer) {
-            DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceServer);
+        public ListBoxModel doFillXmlDashboardItems(@RelativePath("..") @QueryParameter final String dynatraceProfile) {
+            DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
             if (serverConfiguration != null) {
-                final DTServerConnection connection = new DTServerConnection(serverConfiguration);
-                return PerfSigUtils.listToListBoxModel(connection.getDashboards());
+                CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
+                if (pair != null) {
+                    DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
+                    return PerfSigUtils.listToListBoxModel(connection.getDashboards());
+                }
             }
             return null;
         }
