@@ -10,7 +10,11 @@ package de.intevation.lada.model.stamm;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -26,17 +30,11 @@ public class LadaUser implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name="id", unique=true, nullable=false)
     private Integer id;
 
     private String name;
-
-    //bi-directional many-to-one association to Favorite
-    @OneToMany(mappedBy="ladaUser")
-    private List<Favorite> favorites;
-
-    //bi-directional many-to-one association to FilterValue
-    @OneToMany(mappedBy="ladaUser")
-    private List<FilterValue> filterValues;
 
     public LadaUser() {
     }
@@ -56,49 +54,4 @@ public class LadaUser implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-
-    public List<Favorite> getFavorites() {
-        return this.favorites;
-    }
-
-    public void setFavorites(List<Favorite> favorites) {
-        this.favorites = favorites;
-    }
-
-    public Favorite addFavorite(Favorite favorite) {
-        getFavorites().add(favorite);
-        favorite.setLadaUser(this);
-
-        return favorite;
-    }
-
-    public Favorite removeFavorite(Favorite favorite) {
-        getFavorites().remove(favorite);
-        favorite.setLadaUser(null);
-
-        return favorite;
-    }
-
-    public List<FilterValue> getFilterValues() {
-        return this.filterValues;
-    }
-
-    public void setFilterValues(List<FilterValue> filterValues) {
-        this.filterValues = filterValues;
-    }
-
-    public FilterValue addFilterValue(FilterValue filterValue) {
-        getFilterValues().add(filterValue);
-        filterValue.setLadaUser(this);
-
-        return filterValue;
-    }
-
-    public FilterValue removeFilterValue(FilterValue filterValue) {
-        getFilterValues().remove(filterValue);
-        filterValue.setLadaUser(null);
-
-        return filterValue;
-    }
-
 }

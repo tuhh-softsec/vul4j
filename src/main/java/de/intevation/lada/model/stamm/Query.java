@@ -10,10 +10,14 @@ package de.intevation.lada.model.stamm;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -27,6 +31,8 @@ public class Query implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name="id", unique=true, nullable=false)
     private Integer id;
 
     private String description;
@@ -37,9 +43,8 @@ public class Query implements Serializable {
 
     private String type;
 
-    //bi-directional many-to-one association to Favorite
-    @OneToMany(fetch=FetchType.EAGER, mappedBy="query")
-    private List<Favorite> favorites;
+    @Transient
+    private Boolean favorite;
 
     //bi-directional many-to-one association to Filter
     @OneToMany(fetch=FetchType.EAGER, mappedBy="query")
@@ -92,28 +97,15 @@ public class Query implements Serializable {
         this.type = type;
     }
 
-    @JsonIgnore
-    public List<Favorite> getFavorites() {
-        return this.favorites;
-    }
-
-    @JsonIgnore
-    public void setFavorites(List<Favorite> favorites) {
-        this.favorites = favorites;
-    }
-
-    public Favorite addFavorite(Favorite favorite) {
-        getFavorites().add(favorite);
-        favorite.setQuery(this);
-
+    public Boolean isFavorite() {
+        if (favorite == null) {
+            return false;
+        }
         return favorite;
     }
 
-    public Favorite removeFavorite(Favorite favorite) {
-        getFavorites().remove(favorite);
-        favorite.setQuery(null);
-
-        return favorite;
+    public void setFavorite(Boolean favorite) {
+        this.favorite = favorite;
     }
 
     public List<Filter> getFilters() {

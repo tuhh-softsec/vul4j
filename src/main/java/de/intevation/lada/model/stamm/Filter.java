@@ -11,8 +11,11 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -26,6 +29,8 @@ public class Filter implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name="id", unique=true, nullable=false)
     private Integer id;
 
     @Column(name="data_index")
@@ -40,6 +45,9 @@ public class Filter implements Serializable {
     //bi-directional many-to-one association to Query
     @ManyToOne
     private Query query;
+
+    @Transient
+    private String value;
 
     public Filter() {
     }
@@ -92,5 +100,19 @@ public class Filter implements Serializable {
     @JsonIgnore
     public void setQuery(Query query) {
         this.query = query;
+    }
+
+    /**
+     * @return the value
+     */
+    public String getValue() {
+        return value;
+    }
+
+    /**
+     * @param value the value to set
+     */
+    public void setValue(String value) {
+        this.value = value;
     }
 }

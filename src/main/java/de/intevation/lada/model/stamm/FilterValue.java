@@ -11,6 +11,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -27,21 +29,22 @@ public class FilterValue implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name="id", unique=true, nullable=false)
     private Integer id;
 
     private String value;
 
     //bi-directional many-to-one association to Filter
-    @ManyToOne
-    private Filter filter;
+    @Column(name="filter_id")
+    private Integer filterId;
 
     //bi-directional many-to-one association to LadaUser
-    @ManyToOne
-    @JoinColumn(name="user_id")
-    private LadaUser ladaUser;
+    @Column(name="user_id")
+    private Integer userId;
 
     @Column(name="query_id")
-    private Integer query;
+    private Integer queryId;
 
     public FilterValue() {
     }
@@ -62,28 +65,27 @@ public class FilterValue implements Serializable {
         this.value = value;
     }
 
-    public Filter getFilter() {
-        return this.filter;
+    public Integer getFilterId() {
+        return this.filterId;
     }
 
-    public void setFilter(Filter filter) {
-        this.filter = filter;
+    public void setFilterId(Integer filterId) {
+        this.filterId = filterId;
     }
 
-    public LadaUser getLadaUser() {
-        return this.ladaUser;
+    public Integer getUserId() {
+        return this.userId;
     }
 
-    public void setLadaUser(LadaUser ladaUser) {
-        this.ladaUser = ladaUser;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
-    public Integer getQuery() {
-        return this.query;
+    public Integer getQueryId() {
+        return this.queryId;
     }
 
-    public void setQuery(Integer query) {
-        this.query = query;
+    public void setQueryId(Integer queryId) {
+        this.queryId = queryId;
     }
-
 }

@@ -9,7 +9,10 @@ package de.intevation.lada.model.stamm;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -26,16 +29,16 @@ public class Favorite implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name="id", unique=true, nullable=false)
     private Integer id;
 
     //bi-directional many-to-one association to LadaUser
-    @ManyToOne
-    @JoinColumn(name="user_id")
-    private LadaUser ladaUser;
+    @Column(name="user_id")
+    private Integer userId;
 
-    //bi-directional many-to-one association to Query
-    @ManyToOne
-    private Query query;
+    @Column(name="query_id")
+    private Integer queryId;
 
     public Favorite() {
     }
@@ -48,20 +51,20 @@ public class Favorite implements Serializable {
         this.id = id;
     }
 
-    public LadaUser getLadaUser() {
-        return this.ladaUser;
+    public Integer getUserId() {
+        return this.userId;
     }
 
-    public void setLadaUser(LadaUser ladaUser) {
-        this.ladaUser = ladaUser;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
-    public Query getQuery() {
-        return this.query;
+    public Integer getQueryId() {
+        return this.queryId;
     }
 
-    public void setQuery(Query query) {
-        this.query = query;
+    public void setQueryId(Integer queryId) {
+        this.queryId = queryId;
     }
 
 }
