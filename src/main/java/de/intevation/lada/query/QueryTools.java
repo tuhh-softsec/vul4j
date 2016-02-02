@@ -211,6 +211,9 @@ public class QueryTools
             filters,
             params,
             repository.entityManager("land"));
+        if (q == null) {
+            return new ArrayList();
+        }
         return prepareResult(q.getResultList(), results);
     }
 
@@ -223,6 +226,9 @@ public class QueryTools
         javax.persistence.Query query = manager.createNativeQuery(sql);
         for (Filter filter: filters) {
             List<String> param = params.get(filter.getDataIndex());
+            if (param == null) {
+                return null;
+            }
             List<String> clean = new ArrayList<String>();
             for(String p : param) {
                 clean.add(p.replace(",", "|"));
