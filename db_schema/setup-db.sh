@@ -1,9 +1,9 @@
 #!/bin/sh
 DIR=`dirname $0`
 
-ROLE_NAME=lada
-ROLE_PW=lada
-DB_NAME=lada
+ROLE_NAME=${1:-lada}
+ROLE_PW=${2:-$ROLE_NAME}
+DB_NAME=${3:-$ROLE_NAME}
 
 psql --command "CREATE USER $ROLE_NAME PASSWORD '$ROLE_PW';"
 createdb -E UTF-8 $DB_NAME
