@@ -7,7 +7,6 @@
  */
 package de.intevation.lada.util.auth;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +16,8 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
 
 import de.intevation.lada.model.land.LKommentarM;
 import de.intevation.lada.model.land.LKommentarP;
@@ -28,6 +29,7 @@ import de.intevation.lada.model.land.LStatusProtokoll;
 import de.intevation.lada.model.land.LZusatzWert;
 import de.intevation.lada.model.stamm.Auth;
 import de.intevation.lada.model.stamm.DatensatzErzeuger;
+import de.intevation.lada.model.stamm.LadaUser;
 import de.intevation.lada.model.stamm.MessprogrammKategorie;
 import de.intevation.lada.model.stamm.Ort;
 import de.intevation.lada.model.stamm.Probenehmer;
@@ -47,11 +49,14 @@ import de.intevation.lada.util.rest.Response;
 @AuthorizationConfig(type=AuthorizationType.HEADER)
 public class HeaderAuthorization implements Authorization {
 
+    @Inject
+    private Logger logger;
+
     /**
      * The Repository used to read from Database.
      */
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type=RepositoryType.RW)
     private Repository repository;
 
     @SuppressWarnings("rawtypes")
@@ -94,6 +99,19 @@ public class HeaderAuthorization implements Authorization {
                 request.getAttribute("lada.user.roles").toString();
             UserInfo info = getGroupsFromDB(roleString);
             info.setName(request.getAttribute("lada.user.name").toString());
+            QueryBuilder<LadaUser> builder = new QueryBuilder<LadaUser>(
+                repository.entityManager("stamm"),
+                LadaUser.class
+            );
+            builder.and("name", info.getName());
+            List<LadaUser> user = repository.filterPlain(builder.getQuery(), "stamm");
+            if (user == null || user.isEmpty()) {
+                LadaUser newUser = new LadaUser();
+                newUser.setName(info.getName());
+                Response r = repository.create(newUser, "stamm");
+                user = repository.filterPlain(builder.getQuery(), "stamm");
+            }
+            info.setUserId(user.get(0).getId());
             return info;
         }
         return null;

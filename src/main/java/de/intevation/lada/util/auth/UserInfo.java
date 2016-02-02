@@ -19,6 +19,7 @@ import de.intevation.lada.model.stamm.Auth;
  */
 public class UserInfo {
     private String name;
+    private Integer userId;
     private List<String> messstellen;
     private List<String> netzbetreiber;
     private List<String> roles;
@@ -43,6 +44,20 @@ public class UserInfo {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * @return the userId
+     */
+    public Integer getUserId() {
+        return userId;
+    }
+
+    /**
+     * @param userId the userId to set
+     */
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     /**
