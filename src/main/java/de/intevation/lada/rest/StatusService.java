@@ -147,23 +147,12 @@ public class StatusService {
         catch(NumberFormatException nfe) {
             return new Response(false, 698, null);
         }
-        LMessung messung = defaultRepo.getByIdPlain(
-            LMessung.class,
-            id,
-            "land");
-        if (!authorization.isAuthorized(
-            request,
-            messung,
-            RequestMethod.GET,
-            LMessung.class)) {
-            return new Response(false, 697, null);
-        }
 
         QueryBuilder<LStatusProtokoll> builder =
             new QueryBuilder<LStatusProtokoll>(
                 defaultRepo.entityManager("land"),
                 LStatusProtokoll.class);
-        builder.and("messungsId", messungId);
+        builder.and("messungsId", id);
         return authorization.filter(
             request,
             defaultRepo.filter(builder.getQuery(), "land"),
