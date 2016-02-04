@@ -19,8 +19,8 @@
     <f:entry title="${%Testcase Name}" field="name" description="${%use the exact test case name}">
         <f:select/>
     </f:entry>
-    <f:entry title="${%Single Report Dashboards}" field="singleDashboards" description="">
-        <f:repeatable field="singleDashboards" add="${%Add Dashboard}" header="${%Single Report Dashboard}"
+    <f:entry title="${%Single Report Dashboards}" field="singleDashboards">
+        <f:repeatable field="singleDashboards" add="${%add Dashboard}" header="${%Single Report Dashboard}"
                       minimum="1">
             <br/>
             <table width="100%">
@@ -29,14 +29,14 @@
                 </f:entry>
                 <f:entry>
                     <div align="right">
-                        <f:repeatableDeleteButton value="${%Remove Dashboard}"/>
+                        <f:repeatableDeleteButton value="${%remove Dashboard}"/>
                     </div>
                 </f:entry>
             </table>
         </f:repeatable>
     </f:entry>
     <f:entry title="${%Comparison Report Dashboards}" field="comparisonDashboards" description="">
-        <f:repeatable field="comparisonDashboards" add="${%Add Dashboard}" header="${%Comparison Report Dashboard}"
+        <f:repeatable field="comparisonDashboards" add="${%add Dashboard}" header="${%Comparison Report Dashboard}"
                       minimum="1">
             <br/>
             <table width="100%">
@@ -45,7 +45,7 @@
                 </f:entry>
                 <f:entry>
                     <div align="right">
-                        <f:repeatableDeleteButton value="${%Remove Dashboard}"/>
+                        <f:repeatableDeleteButton value="${%remove Dashboard}"/>
                     </div>
                 </f:entry>
             </table>
