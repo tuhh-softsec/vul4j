@@ -19,6 +19,7 @@ package de.tsystems.mms.apm.performancesignature;
 import de.tsystems.mms.apm.performancesignature.model.PerfSigTestData;
 import hudson.FilePath;
 import hudson.Plugin;
+import hudson.PluginWrapper;
 import hudson.init.Initializer;
 import hudson.model.AbstractProject;
 import hudson.model.Run;
@@ -44,8 +45,8 @@ public class PerformanceSignaturePlugin extends Plugin {
     public static void init1() throws IOException, InterruptedException {
         // Check for old dashboard configurations
         Jenkins jenkins = Jenkins.getActiveInstance();
-        if (jenkins.getPluginManager()
-                .getPlugin("performance-signature").getVersionNumber().isOlderThan(new VersionNumber("1.6.0"))) {
+        PluginWrapper perfSig = jenkins.getPluginManager().getPlugin("performance-signature");
+        if (perfSig != null && perfSig.getVersionNumber().isOlderThan(new VersionNumber("1.6.0"))) {
             for (AbstractProject<?, ?> job : jenkins.getAllItems(AbstractProject.class)) {
                 FilePath jobPath = new FilePath(job.getConfigFile().getFile()).getParent();
                 if (jobPath == null) continue;
