@@ -434,7 +434,7 @@ public class StatusService {
             copy.setMessungsId(orig.getMessungsId());
             copy.setStatusStufe(orig.getStatusStufe());
             copy.setStatusWert(orig.getStatusWert());
-            copy.setText(orig.getText());
+            copy.setText("");
             retValue = defaultRepo.create(copy, "land");
             LStatusProtokoll createdCopy = (LStatusProtokoll)retValue.getData();
             messung.setStatus(createdCopy.getId());
