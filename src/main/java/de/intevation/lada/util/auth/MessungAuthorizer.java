@@ -74,7 +74,8 @@ public class MessungAuthorizer extends BaseAuthorizer {
         LProbe probe =
             (LProbe)repository.getById(
                 LProbe.class, messung.getProbeId(), "land").getData();
-        if (!userInfo.getNetzbetreiber().contains(probe.getNetzbetreiberId())) {
+        if (!userInfo.getNetzbetreiber().contains(probe.getNetzbetreiberId()) &&
+            !userInfo.getFunktionen().contains(3)) {
             messung.setOwner(false);
             messung.setReadonly(true);
             return messung;
