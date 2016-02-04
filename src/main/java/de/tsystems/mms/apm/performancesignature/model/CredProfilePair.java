@@ -21,6 +21,7 @@ import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
 import com.cloudbees.plugins.credentials.common.StandardUsernameCredentials;
 import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
 import com.cloudbees.plugins.credentials.domains.DomainRequirement;
+import de.tsystems.mms.apm.performancesignature.Messages;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionException;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
@@ -30,6 +31,7 @@ import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
 import hudson.model.Project;
 import hudson.security.ACL;
+import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -88,6 +90,27 @@ public class CredProfilePair extends AbstractDescribableImpl<CredProfilePair> {
                 return PerfSigUtils.listToListBoxModel(connection.getSystemProfiles());
             } catch (CommandExecutionException ignored) {
                 return null;
+            }
+        }
+
+        public FormValidation doTestDynaTraceConnection(@QueryParameter final String protocol, @QueryParameter final String host,
+                                                        @QueryParameter final int port, @QueryParameter final String credentialsId,
+                                                        @QueryParameter final boolean verifyCertificate, @QueryParameter final boolean proxy,
+                                                        @QueryParameter final int proxySource,
+                                                        @QueryParameter final String proxyServer, @QueryParameter final int proxyPort,
+                                                        @QueryParameter final String proxyUser, @QueryParameter final String proxyPassword) {
+
+            CustomProxy customProxyServer = null;
+            if (proxy) {
+                customProxyServer = new CustomProxy(proxyServer, proxyPort, proxyUser, proxyPassword, proxySource == 0);
+            }
+            CredProfilePair pair = new CredProfilePair("", credentialsId);
+            final DTServerConnection connection = new DTServerConnection(protocol, host, port, pair, verifyCertificate, customProxyServer);
+
+            if (connection.validateConnection()) {
+                return FormValidation.ok(Messages.PerfSigRecorder_TestConnectionSuccessful());
+            } else {
+                return FormValidation.warning(Messages.PerfSigRecorder_TestConnectionNotSuccessful());
             }
         }
     }

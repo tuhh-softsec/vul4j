@@ -17,7 +17,6 @@
 package de.tsystems.mms.apm.performancesignature.model;
 
 import de.tsystems.mms.apm.performancesignature.Messages;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import hudson.Extension;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
@@ -181,27 +180,6 @@ public class DynatraceServerConfiguration extends AbstractDescribableImpl<Dynatr
                 validationResult = FormValidation.error(Messages.PerfSigRecorder_RetryCountNotValid());
             }
             return validationResult;
-        }
-
-        public FormValidation doTestDynaTraceConnection(@QueryParameter final String protocol, @QueryParameter final String host,
-                                                        @QueryParameter final int port, @QueryParameter final String credentialsId,
-                                                        @QueryParameter final boolean verifyCertificate, @QueryParameter final boolean proxy,
-                                                        @QueryParameter final int proxySource,
-                                                        @QueryParameter final String proxyServer, @QueryParameter final int proxyPort,
-                                                        @QueryParameter final String proxyUser, @QueryParameter final String proxyPassword) {
-
-            CustomProxy customProxyServer = null;
-            if (proxy) {
-                customProxyServer = new CustomProxy(proxyServer, proxyPort, proxyUser, proxyPassword, proxySource == 0);
-            }
-            CredProfilePair pair = new CredProfilePair("", credentialsId);
-            final DTServerConnection connection = new DTServerConnection(protocol, host, port, pair, verifyCertificate, customProxyServer);
-
-            if (connection.validateConnection()) {
-                return FormValidation.ok(Messages.PerfSigRecorder_TestConnectionSuccessful());
-            } else {
-                return FormValidation.warning(Messages.PerfSigRecorder_TestConnectionNotSuccessful());
-            }
         }
     }
 }
