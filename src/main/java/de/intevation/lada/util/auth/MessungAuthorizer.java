@@ -86,14 +86,14 @@ public class MessungAuthorizer extends BaseAuthorizer {
         else {
             messung.setOwner(false);
         }
+        LStatusProtokoll status = repository.getByIdPlain(
+            LStatusProtokoll.class,
+            messung.getStatus(),
+            "land");
         if (messung.getStatus() == null) {
             messung.setReadonly(false);
         }
         else {
-            LStatusProtokoll status = repository.getByIdPlain(
-                LStatusProtokoll.class,
-                messung.getStatus(),
-                "land");
             messung.setReadonly(
                 status.getStatusWert() != 0 && status.getStatusWert() != 4);
         }
@@ -113,11 +113,14 @@ public class MessungAuthorizer extends BaseAuthorizer {
             }
         }
         else if (userInfo.getFunktionen().contains(2) &&
-            userInfo.getNetzbetreiber().contains(probe.getNetzbetreiberId())) {
+            userInfo.getNetzbetreiber().contains(probe.getNetzbetreiberId()) &&
+            status.getStatusStufe() <= 2) {
             statusEdit = true;
         }
         else if (userInfo.getFunktionen().contains(1) &&
-            userInfo.getMessstellen().contains(probe.getMstId())) {
+            userInfo.getMessstellen().contains(probe.getMstId()) &&
+            status.getStatusStufe() <= 1
+        ) {
             statusEdit = true;
         }
         messung.setStatusEdit(statusEdit);
