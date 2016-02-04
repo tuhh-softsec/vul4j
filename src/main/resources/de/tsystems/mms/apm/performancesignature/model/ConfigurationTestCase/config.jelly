@@ -16,7 +16,7 @@
 
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
-    <f:entry title="${%Testcase Name}" field="name" description="${%use the exact test case name}">
+    <f:entry title="${%Testcase Name}" field="name" description="${%use the same test case name, as in the start recording step}">
         <f:select/>
     </f:entry>
     <f:entry title="${%Single Report Dashboards}" field="singleDashboards">
