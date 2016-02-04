@@ -119,7 +119,7 @@ public class MessungAuthorizer extends BaseAuthorizer {
         }
         else if (userInfo.getFunktionen().contains(1) &&
             userInfo.getMessstellen().contains(probe.getMstId()) &&
-            status.getStatusStufe() <= 1
+            (status.getStatusStufe() <= 1 || status.getStatusWert() == 4)
         ) {
             statusEdit = true;
         }
