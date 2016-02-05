@@ -17,7 +17,7 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler">
     <j:if test="${from.lastDashboardReports != null}">
-        <link type="text/css" href="${resURL}/plugin/${it.urlName}/css/bootstrap.min.css" rel="stylesheet"/>
+        <link type="text/css" href="${resURL}/plugin/${from.urlName}/css/bootstrap.min.css" rel="stylesheet"/>
         <style type="text/css">
             .carousel .carousel-control { visibility: hidden; }
             .carousel:hover .carousel-control { visibility: visible; }
@@ -41,7 +41,7 @@
                     <div class="tab-content">
                         <j:forEach var="dashboardReport" items="${from.lastDashboardReports}">
                             <div role="tabpanel" class="tab-pane" id="${dashboardReport.name}">
-                                <a href="${it.urlName}/#${dashboardReport.name}">
+                                <a href="${from.urlName}/#${dashboardReport.name}">
                                     <div id="carousel-${dashboardReport.name}" class="carousel slide" data-ride="carousel">
                                         <!-- Wrapper for slides -->
                                         <div class="carousel-inner" role="listbox"/>
@@ -67,8 +67,8 @@
         </div>
     </j:if>
     <st:bind var="projectAction" value="${from}"/>
-    <script data-main="${resURL}/plugin/${it.urlName}/js/floatingBox"
-            src="${resURL}/plugin/${it.urlName}/js/require.min.js"/>
+    <script data-main="${resURL}/plugin/${from.urlName}/js/floatingBox"
+            src="${resURL}/plugin/${from.urlName}/js/require.min.js"/>
     <script type="text/javascript">
         var rootURL = "${rootURL}";
         var resURL = "${resURL}";
