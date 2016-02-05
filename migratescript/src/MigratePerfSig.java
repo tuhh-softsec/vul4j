@@ -27,7 +27,10 @@ public final class MigratePerfSig {
     final static Charset charset = StandardCharsets.UTF_8;
 
     public static void main(final String[] args) throws IOException {
-        if (args.length != 1) System.exit(1);
+        if (args.length != 1) {
+            System.out.println("usage: java -jar migratePerfSig <JenkinsJobDirectory>");
+            System.exit(1);
+        }
         walk(args[0]);
     }
 
