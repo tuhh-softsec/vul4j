@@ -330,7 +330,7 @@ ALTER SEQUENCE deskriptoren_id_seq OWNED BY deskriptoren.id;
 
 
 --
--- Name: favorite; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: favorite; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE favorite (
@@ -360,7 +360,7 @@ ALTER SEQUENCE favorite_id_seq OWNED BY favorite.id;
 
 
 --
--- Name: filter; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: filter; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE filter (
@@ -393,7 +393,7 @@ ALTER SEQUENCE filter_id_seq OWNED BY filter.id;
 
 
 --
--- Name: filter_value; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: filter_value; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE filter_value (
@@ -425,7 +425,7 @@ ALTER SEQUENCE filter_value_id_seq OWNED BY filter_value.id;
 
 
 --
--- Name: koordinaten_art; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: koordinaten_art; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE koordinaten_art (
@@ -455,7 +455,7 @@ ALTER SEQUENCE koordinaten_art_id_seq OWNED BY koordinaten_art.id;
 
 
 --
--- Name: lada_user; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: lada_user; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE lada_user (
@@ -484,7 +484,7 @@ ALTER SEQUENCE lada_user_id_seq OWNED BY lada_user.id;
 
 
 --
--- Name: mess_einheit; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: mess_einheit; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE mess_einheit (
@@ -877,7 +877,7 @@ ALTER SEQUENCE probenehmer_id_seq OWNED BY probenehmer.id;
 
 
 --
--- Name: query; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: query; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE query (
@@ -909,7 +909,7 @@ ALTER SEQUENCE query_id_seq OWNED BY query.id;
 
 
 --
--- Name: result; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: result; Type: TABLE; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 CREATE TABLE result (
@@ -1591,7 +1591,7 @@ ALTER TABLE ONLY deskriptor_umwelt
 
 
 --
--- Name: favorite_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: favorite_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY favorite
@@ -1599,7 +1599,7 @@ ALTER TABLE ONLY favorite
 
 
 --
--- Name: filter_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: filter_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY filter
@@ -1607,7 +1607,7 @@ ALTER TABLE ONLY filter
 
 
 --
--- Name: filter_value_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: filter_value_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY filter_value
@@ -1615,7 +1615,7 @@ ALTER TABLE ONLY filter_value
 
 
 --
--- Name: koordinaten_art_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: koordinaten_art_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY koordinaten_art
@@ -1623,7 +1623,7 @@ ALTER TABLE ONLY koordinaten_art
 
 
 --
--- Name: lada_user_name_key; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: lada_user_name_key; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY lada_user
@@ -1631,7 +1631,7 @@ ALTER TABLE ONLY lada_user
 
 
 --
--- Name: lada_user_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: lada_user_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY lada_user
@@ -1639,7 +1639,7 @@ ALTER TABLE ONLY lada_user
 
 
 --
--- Name: mess_einheit_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: mess_einheit_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY mess_einheit
@@ -1783,7 +1783,7 @@ ALTER TABLE ONLY probenehmer
 
 
 --
--- Name: query_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: query_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY query
@@ -1791,7 +1791,7 @@ ALTER TABLE ONLY query
 
 
 --
--- Name: result_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: result_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY result
@@ -1799,7 +1799,7 @@ ALTER TABLE ONLY result
 
 
 --
--- Name: staat_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace: 
+-- Name: staat_pkey; Type: CONSTRAINT; Schema: stammdaten; Owner: -; Tablespace:
 --
 
 ALTER TABLE ONLY staat
