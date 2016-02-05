@@ -35,7 +35,6 @@ import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
-import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
@@ -101,9 +100,8 @@ public class StatusWertService {
         if (params.isEmpty() || !params.containsKey("messungsId")) {
             return defaultRepo.getAll(StatusWert.class, "stamm");
         }
-        UserInfo user = authorization.getInfo(request);
         int messungsId = Integer.valueOf(params.getFirst("messungsId"));
-        List<StatusWert> werte = getReachable(messungsId, user);
+        List<StatusWert> werte = getReachable(messungsId);
         Response response = new Response(true, 200, werte);
         return response;
     }
@@ -130,7 +128,7 @@ public class StatusWertService {
             "stamm");
     }
 
-    private List<StatusWert> getReachable(int messungsId, UserInfo user) {
+    private List<StatusWert> getReachable(int messungsId) {
         List<StatusWert> list = new ArrayList<StatusWert>();
         LMessung messung =
             defaultRepo.getByIdPlain(LMessung.class, messungsId, "land");
@@ -141,23 +139,15 @@ public class StatusWertService {
             StatusProtokoll.class,
             messung.getStatus(),
             "land");
-        boolean allowed = false;
-        for (int i = 0; i < user.getFunktionen().size(); i++) {
-            if (user.getFunktionen().get(i) >= status.getStatusStufe()) {
-                allowed = true;
-                break;
-            }
-        }
-        if (!allowed) {
-            return list;
-        }
+
         QueryBuilder<StatusErreichbar> errFilter =
             new QueryBuilder<StatusErreichbar>(
                 defaultRepo.entityManager("stamm"),
                 StatusErreichbar.class);
         errFilter.and("curStufe", status.getStatusStufe());
         errFilter.and("curWert", status.getStatusWert());
-        List<StatusErreichbar> erreichbare = defaultRepo.filterPlain(errFilter.getQuery(), "stamm");
+        List<StatusErreichbar> erreichbare = defaultRepo.filterPlain(
+            errFilter.getQuery(), "stamm");
         QueryBuilder<StatusWert> werteFilter =
             new QueryBuilder<StatusWert>(
                 defaultRepo.entityManager("stamm"),
