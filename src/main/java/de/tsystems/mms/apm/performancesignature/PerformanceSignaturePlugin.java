@@ -19,11 +19,9 @@ package de.tsystems.mms.apm.performancesignature;
 import de.tsystems.mms.apm.performancesignature.model.PerfSigTestData;
 import hudson.FilePath;
 import hudson.Plugin;
-import hudson.PluginWrapper;
 import hudson.init.Initializer;
 import hudson.model.AbstractProject;
 import hudson.model.Run;
-import hudson.util.VersionNumber;
 import jenkins.model.Jenkins;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 
@@ -44,15 +42,11 @@ public class PerformanceSignaturePlugin extends Plugin {
     @Initializer(after = JOB_LOADED)
     public static void init1() throws IOException, InterruptedException {
         // Check for old dashboard configurations
-        Jenkins jenkins = Jenkins.getActiveInstance();
-        PluginWrapper perfSig = jenkins.getPluginManager().getPlugin("performance-signature");
-        if (perfSig != null && perfSig.getVersionNumber().isOlderThan(new VersionNumber("1.6.0"))) {
-            for (AbstractProject<?, ?> job : jenkins.getAllItems(AbstractProject.class)) {
-                FilePath jobPath = new FilePath(job.getConfigFile().getFile()).getParent();
-                if (jobPath == null) continue;
-                for (FilePath file : jobPath.list(new RegexFileFilter(".*-config.json"))) {
-                    file.delete();
-                }
+        for (AbstractProject<?, ?> job : Jenkins.getActiveInstance().getAllItems(AbstractProject.class)) {
+            FilePath jobPath = new FilePath(job.getConfigFile().getFile()).getParent();
+            if (jobPath == null) continue;
+            for (FilePath file : jobPath.list(new RegexFileFilter(".*-config.json"))) {
+                file.delete();
             }
         }
     }
