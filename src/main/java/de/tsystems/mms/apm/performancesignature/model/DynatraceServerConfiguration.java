@@ -64,7 +64,7 @@ public class DynatraceServerConfiguration extends AbstractDescribableImpl<Dynatr
     }
 
     public CredProfilePair getCredProfilePair(final String profile) {
-        String systemProfile = profile.replaceAll("@.*", "").trim();
+        String systemProfile = profile.replaceAll("\\(.*", "").trim();
         for (CredProfilePair pair : credProfilePairs) {
             if (pair.getProfile().equals(systemProfile))
                 return pair;

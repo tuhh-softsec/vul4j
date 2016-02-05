@@ -54,6 +54,10 @@ public class CredProfilePair extends AbstractDescribableImpl<CredProfilePair> {
         return credentialsId;
     }
 
+    public UsernamePasswordCredentials getCredentials() {
+        return PerfSigUtils.getCredentials(credentialsId);
+    }
+
     public String getProfile() {
         return profile;
     }

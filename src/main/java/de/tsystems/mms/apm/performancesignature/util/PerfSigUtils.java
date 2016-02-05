@@ -72,8 +72,11 @@ public final class PerfSigUtils {
             else if (item instanceof DynatraceServerConfiguration) {
                 DynatraceServerConfiguration conf = (DynatraceServerConfiguration) item;
                 if (CollectionUtils.isNotEmpty(conf.getCredProfilePairs()))
-                    for (CredProfilePair credProfilePair : conf.getCredProfilePairs())
-                        listBoxModel.add(credProfilePair.getProfile() + " @ " + conf.getName());
+                    for (CredProfilePair credProfilePair : conf.getCredProfilePairs()) {
+                        String listItem = credProfilePair.getProfile() + " (" + credProfilePair.getCredentials().getUsername() + ") @ " +
+                                conf.getName();
+                        listBoxModel.add(listItem);
+                    }
             } else if (item instanceof BaseConfiguration)
                 listBoxModel.add(((BaseConfiguration) item).getId());
         }
