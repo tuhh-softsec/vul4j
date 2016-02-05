@@ -15,7 +15,7 @@
  */
 
 require.config({
-    baseUrl: resURL + '/plugin/performance-signature/js/',
+    baseUrl: resURL + '/plugin/performance-signature-dynatrace/js/',
     paths: {
         'jquery': "jquery-2.2.0.min",
         'bootstrap': "bootstrap.min",
