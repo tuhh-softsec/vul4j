@@ -106,6 +106,7 @@ INSERT INTO auth_funktion VALUES (2, 'Status-Land');
 INSERT INTO auth_funktion VALUES (3, 'Status-Leitstelle');
 INSERT INTO auth_funktion VALUES (4, 'Stammdatenpflege-Land');
 
+
 CREATE SEQUENCE auth_lst_umw_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -864,18 +865,7 @@ CREATE TABLE staat (
 ALTER SEQUENCE staat_id_seq OWNED BY staat.id;
 
 
-CREATE TABLE status_kombi (
-    id integer PRIMARY KEY,
-    stufe_id integer,
-    wert_id integer
-);
-
-CREATE TABLE status_reihenfolge (
-    id integer PRIMARY KEY,
-    von_id integer,
-    zu_id integer
-);
-
+-- Status workflow
 CREATE TABLE status_stufe (
     id integer PRIMARY KEY,
     stufe character varying(50)
@@ -885,6 +875,33 @@ CREATE TABLE status_wert (
     id integer PRIMARY KEY,
     wert character varying(50)
 );
+
+CREATE TABLE status_kombi (
+    id integer PRIMARY KEY,
+    stufe_id integer REFERENCES status_stufe,
+    wert_id integer REFERENCES status_wert
+);
+
+CREATE TABLE status_reihenfolge (
+    id integer PRIMARY KEY,
+    von_id integer REFERENCES status_kombi,
+    zu_id integer REFERENCES status_kombi
+);
+
+CREATE VIEW status_erreichbar AS (
+    SELECT DISTINCT k.wert_id,
+        j.wert_id AS cur_wert,
+        j.stufe_id AS cur_stufe
+    FROM stammdaten.status_kombi k
+    JOIN (SELECT r.zu_id,
+              kom.wert_id,
+              kom.stufe_id
+          FROM stammdaten.status_reihenfolge r
+          JOIN stammdaten.status_kombi kom
+          ON kom.id = r.von_id) j
+    ON j.zu_id = k.id
+);
+-- Status workflow
 
 
 CREATE TABLE umwelt (
@@ -914,20 +931,6 @@ CREATE TABLE verwaltungseinheit (
     latitude double precision
 );
 
-
-CREATE VIEW status_erreichbar AS (
-    SELECT DISTINCT k.wert_id,
-        j.wert_id AS cur_wert,
-        j.stufe_id AS cur_stufe
-    FROM stammdaten.status_kombi k
-    JOIN (SELECT r.zu_id,
-              kom.wert_id,
-              kom.stufe_id
-          FROM stammdaten.status_reihenfolge r
-          JOIN stammdaten.status_kombi kom
-          ON kom.id = r.von_id) j
-    ON j.zu_id = k.id
-);
 
 
 
@@ -1107,24 +1110,6 @@ ALTER TABLE ONLY staat
     ADD CONSTRAINT staat_kda_id_fkey FOREIGN KEY (kda_id) REFERENCES koordinaten_art(id);
 
 
-
-ALTER TABLE ONLY status_kombi
-    ADD CONSTRAINT status_kombi_stufe_id_fkey FOREIGN KEY (stufe_id) REFERENCES status_stufe(id);
-
-
-
-ALTER TABLE ONLY status_kombi
-    ADD CONSTRAINT status_kombi_wert_id_fkey FOREIGN KEY (wert_id) REFERENCES status_wert(id);
-
-
-
-ALTER TABLE ONLY status_reihenfolge
-    ADD CONSTRAINT status_reihenfolge_von_id_fkey FOREIGN KEY (von_id) REFERENCES status_kombi(id);
-
-
-
-ALTER TABLE ONLY status_reihenfolge
-    ADD CONSTRAINT status_reihenfolge_zu_id_fkey FOREIGN KEY (zu_id) REFERENCES status_kombi(id);
 
 
 
