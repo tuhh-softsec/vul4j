@@ -870,23 +870,99 @@ CREATE TABLE status_stufe (
     id integer PRIMARY KEY,
     stufe character varying(50)
 );
+INSERT INTO status_stufe VALUES (1, 'MST');
+INSERT INTO status_stufe VALUES (2, 'LAND');
+INSERT INTO status_stufe VALUES (3, 'LST');
+
 
 CREATE TABLE status_wert (
     id integer PRIMARY KEY,
     wert character varying(50)
 );
+INSERT INTO status_wert VALUES (0, 'nicht vergeben');
+INSERT INTO status_wert VALUES (1, 'plausibel');
+INSERT INTO status_wert VALUES (2, 'nicht repräsentativ');
+INSERT INTO status_wert VALUES (3, 'nicht plausibel');
+INSERT INTO status_wert VALUES (4, 'Rückfrage');
+INSERT INTO status_wert VALUES (7, 'nicht lieferbar');
+INSERT INTO status_wert VALUES (8, 'zurückgesetzt');
+
 
 CREATE TABLE status_kombi (
     id integer PRIMARY KEY,
     stufe_id integer REFERENCES status_stufe,
     wert_id integer REFERENCES status_wert
 );
+-- 'zurückgesetzt' is left out here deliberately!
+INSERT INTO status_kombi VALUES (1, 1, 0);
+INSERT INTO status_kombi VALUES (2, 1, 1);
+INSERT INTO status_kombi VALUES (3, 1, 2);
+INSERT INTO status_kombi VALUES (4, 1, 3);
+INSERT INTO status_kombi VALUES (5, 1, 7);
+INSERT INTO status_kombi VALUES (6, 2, 1);
+INSERT INTO status_kombi VALUES (7, 2, 2);
+INSERT INTO status_kombi VALUES (8, 2, 3);
+INSERT INTO status_kombi VALUES (9, 2, 4);
+INSERT INTO status_kombi VALUES (10, 3, 1);
+INSERT INTO status_kombi VALUES (11, 3, 2);
+INSERT INTO status_kombi VALUES (12, 3, 3);
+INSERT INTO status_kombi VALUES (13, 3, 4);
 
+
+CREATE SEQUENCE status_reihenfolge_id_seq;
 CREATE TABLE status_reihenfolge (
-    id integer PRIMARY KEY,
+    id integer PRIMARY KEY DEFAULT nextval('status_reihenfolge_id_seq'),
     von_id integer REFERENCES status_kombi,
     zu_id integer REFERENCES status_kombi
 );
+
+CREATE FUNCTION populate_status_reihenfolge() RETURNS void AS $$
+DECLARE kombi_from RECORD;
+DECLARE s_from integer;
+DECLARE w_from integer;
+DECLARE kombi_to RECORD;
+DECLARE s_to integer;
+DECLARE w_to integer;
+
+BEGIN
+FOR kombi_from IN SELECT * FROM status_kombi LOOP
+    s_from := kombi_from.stufe_id;
+    w_from := kombi_from.wert_id;
+
+    FOR kombi_to IN SELECT * FROM status_kombi LOOP
+        s_to := kombi_to.stufe_id;
+        w_to := kombi_to.wert_id;
+
+        IF s_from = s_to AND w_to <> 0 AND w_from <> 4 THEN
+           -- At the same 'stufe', all permutations occur,
+           -- but 'nicht vergeben' is only allowed for von_id
+           -- and 'Rückfrage' is only allowed for zu_id
+           INSERT INTO status_reihenfolge (von_id, zu_id)
+                  VALUES (kombi_from.id, kombi_to.id);
+
+        ELSEIF s_to = s_from + 1 AND w_from <> 0 AND w_from <> 4 THEN
+           -- Going to the next 'stufe' all available status_kombi are allowed
+           -- in case current wert is not 'nicht vergeben' or 'Rückfrage'
+           INSERT INTO status_reihenfolge (von_id, zu_id)
+                  VALUES (kombi_from.id, kombi_to.id);
+
+        ELSEIF w_from = 4 AND s_to = 1 AND w_to >= 1 AND w_to <= 3 THEN
+           -- After 'Rückfrage' follows 'MST' with
+           -- 'plausibel', 'nicht plausibel' or 'nicht repräsentativ'
+           INSERT INTO status_reihenfolge (von_id, zu_id)
+                  VALUES (kombi_from.id, kombi_to.id);
+
+        END IF;
+    END LOOP;
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT populate_status_reihenfolge();
+DROP FUNCTION populate_status_reihenfolge();
+ALTER TABLE status_reihenfolge ALTER COLUMN id DROP DEFAULT;
+DROP SEQUENCE status_reihenfolge_id_seq;
+
 
 CREATE VIEW status_erreichbar AS (
     SELECT DISTINCT k.wert_id,
