@@ -98,7 +98,7 @@ ALTER SEQUENCE auth_id_seq OWNED BY auth.id;
 
 CREATE TABLE auth_funktion (
     id smallint PRIMARY KEY,
-    funktion character varying(40)
+    funktion character varying(40) UNIQUE NOT NULL
 );
 INSERT INTO auth_funktion VALUES (0, 'Erfasser');
 INSERT INTO auth_funktion VALUES (1, 'Status-Erfasser');
@@ -868,7 +868,7 @@ ALTER SEQUENCE staat_id_seq OWNED BY staat.id;
 -- Status workflow
 CREATE TABLE status_stufe (
     id integer PRIMARY KEY,
-    stufe character varying(50)
+    stufe character varying(50) UNIQUE NOT NULL
 );
 INSERT INTO status_stufe VALUES (1, 'MST');
 INSERT INTO status_stufe VALUES (2, 'LAND');
@@ -877,7 +877,7 @@ INSERT INTO status_stufe VALUES (3, 'LST');
 
 CREATE TABLE status_wert (
     id integer PRIMARY KEY,
-    wert character varying(50)
+    wert character varying(50) UNIQUE NOT NULL
 );
 INSERT INTO status_wert VALUES (0, 'nicht vergeben');
 INSERT INTO status_wert VALUES (1, 'plausibel');
@@ -890,8 +890,9 @@ INSERT INTO status_wert VALUES (8, 'zurückgesetzt');
 
 CREATE TABLE status_kombi (
     id integer PRIMARY KEY,
-    stufe_id integer REFERENCES status_stufe,
-    wert_id integer REFERENCES status_wert
+    stufe_id integer REFERENCES status_stufe NOT NULL,
+    wert_id integer REFERENCES status_wert NOT NULL,
+    UNIQUE(stufe_id, wert_id)
 );
 -- 'zurückgesetzt' is left out here deliberately!
 INSERT INTO status_kombi VALUES (1, 1, 0);
@@ -912,8 +913,9 @@ INSERT INTO status_kombi VALUES (13, 3, 4);
 CREATE SEQUENCE status_reihenfolge_id_seq;
 CREATE TABLE status_reihenfolge (
     id integer PRIMARY KEY DEFAULT nextval('status_reihenfolge_id_seq'),
-    von_id integer REFERENCES status_kombi,
-    zu_id integer REFERENCES status_kombi
+    von_id integer REFERENCES status_kombi NOT NULL,
+    zu_id integer REFERENCES status_kombi NOT NULL,
+    UNIQUE(von_id, zu_id)
 );
 
 CREATE FUNCTION populate_status_reihenfolge() RETURNS void AS $$
