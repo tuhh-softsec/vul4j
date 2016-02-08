@@ -100,7 +100,11 @@ CREATE TABLE auth_funktion (
     id smallint PRIMARY KEY,
     funktion character varying(40)
 );
-
+INSERT INTO auth_funktion VALUES (0, 'Erfasser');
+INSERT INTO auth_funktion VALUES (1, 'Status-Erfasser');
+INSERT INTO auth_funktion VALUES (2, 'Status-Land');
+INSERT INTO auth_funktion VALUES (3, 'Status-Leitstelle');
+INSERT INTO auth_funktion VALUES (4, 'Stammdatenpflege-Land');
 
 CREATE SEQUENCE auth_lst_umw_id_seq
     START WITH 1
