@@ -255,8 +255,8 @@ public class StatusService {
                     i++
                 ) {
                     if (userInfo.getFunktionenForMst(
-                            status.getErzeuger()).get(i) >
-                                currentStatus.getStatusStufe() &&
+                            status.getErzeuger()).get(i) ==
+                                currentStatus.getStatusStufe() + 1 &&
                         currentStatus.getStatusWert() != 0
                     ) {
                         next = true;
