@@ -254,10 +254,12 @@ public class MessungService {
         defaultRepo.create(status, "land");
         ret.setStatus(status.getId());
         defaultRepo.update(ret, "land");
+        Response updated=
+            defaultRepo.getById(LMessung.class, ret.getId(), "land");
 
         return authorization.filter(
             request,
-            created,
+            updated,
             LMessung.class);
     }
 
