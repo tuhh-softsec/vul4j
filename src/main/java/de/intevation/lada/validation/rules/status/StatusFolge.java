@@ -68,7 +68,7 @@ public class StatusFolge implements Rule {
         kombi2.and("stufeId", last.getStatusStufe());
         kombi2.and("wertId", last.getStatusWert());
         List<StatusKombi> result2 =
-            repository.filterPlain(kombi.getQuery(), "stamm");
+            repository.filterPlain(kombi2.getQuery(), "stamm");
         if (result2.isEmpty()) {
             Violation violation = new Violation();
             violation.addError("status", 632);
