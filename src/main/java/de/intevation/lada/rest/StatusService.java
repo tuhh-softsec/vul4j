@@ -226,6 +226,9 @@ public class StatusService {
         UserInfo userInfo = authorization.getInfo(request);
         LMessung messung = defaultRepo.getByIdPlain(
             LMessung.class, status.getMessungsId(), "land");
+        if (lock.isLocked(messung)) {
+            return new Response(false, 697, null);
+        }
         boolean next = false;
         boolean change = false;
         if (messung.getStatus() == null) {
