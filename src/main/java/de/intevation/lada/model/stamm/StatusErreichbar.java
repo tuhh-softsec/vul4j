@@ -24,17 +24,38 @@ import javax.persistence.Table;
 public class StatusErreichbar implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @Id
+    private Integer id;
+
+    @Column(name="wert_id")
+    private Integer wertId;
+
+    @Column(name="stufe_id")
+    private Integer stufeId;
+
     @Column(name="cur_stufe")
     private Integer curStufe;
 
     @Column(name="cur_wert")
     private Integer curWert;
 
-    @Id
-    @Column(name="wert_id")
-    private Integer wertId;
-
     public StatusErreichbar() {
+    }
+
+    public Integer getWertId() {
+        return this.wertId;
+    }
+
+    public void setWertId(Integer wertId) {
+        this.wertId = wertId;
+    }
+
+    public Integer getStufeId() {
+        return this.stufeId;
+    }
+
+    public void setStufeId(Integer stufeId) {
+        this.stufeId = stufeId;
     }
 
     public Integer getCurStufe() {
@@ -51,14 +72,6 @@ public class StatusErreichbar implements Serializable {
 
     public void setCurWert(Integer curWert) {
         this.curWert = curWert;
-    }
-
-    public Integer getWertId() {
-        return this.wertId;
-    }
-
-    public void setWertId(Integer wertId) {
-        this.wertId = wertId;
     }
 
 }

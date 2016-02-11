@@ -725,17 +725,16 @@ DROP SEQUENCE status_reihenfolge_id_seq;
 
 
 CREATE VIEW status_erreichbar AS (
-    SELECT DISTINCT k.wert_id,
-        j.wert_id AS cur_wert,
-        j.stufe_id AS cur_stufe
-    FROM stammdaten.status_kombi k
-    JOIN (SELECT r.zu_id,
-              kom.wert_id,
-              kom.stufe_id
-          FROM stammdaten.status_reihenfolge r
-          JOIN stammdaten.status_kombi kom
-          ON kom.id = r.von_id) j
-    ON j.zu_id = k.id
+    SELECT r.id,
+           zu.wert_id,
+           zu.stufe_id,
+           von.wert_id AS cur_wert,
+           von.stufe_id AS cur_stufe
+    FROM stammdaten.status_reihenfolge r
+        JOIN stammdaten.status_kombi von
+            ON von.id = r.von_id
+        JOIN stammdaten.status_kombi zu
+            ON zu.id = r.zu_id
 );
 -- Status workflow
 
