@@ -46,32 +46,16 @@ public class StatusErreichbar implements Serializable {
         return this.wertId;
     }
 
-    public void setWertId(Integer wertId) {
-        this.wertId = wertId;
-    }
-
     public Integer getStufeId() {
         return this.stufeId;
-    }
-
-    public void setStufeId(Integer stufeId) {
-        this.stufeId = stufeId;
     }
 
     public Integer getCurStufe() {
         return this.curStufe;
     }
 
-    public void setCurStufe(Integer curStufe) {
-        this.curStufe = curStufe;
-    }
-
     public Integer getCurWert() {
         return this.curWert;
-    }
-
-    public void setCurWert(Integer curWert) {
-        this.curWert = curWert;
     }
 
 }
