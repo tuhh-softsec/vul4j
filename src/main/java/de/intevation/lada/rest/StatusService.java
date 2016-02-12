@@ -223,6 +223,13 @@ public class StatusService {
         @Context HttpServletRequest request,
         LStatusProtokoll status
     ) {
+        if (status.getMessungsId() == null
+            || status.getErzeuger() == null
+            || status.getStatusWert() == null
+        ) {
+            return new Response(false, 631, null);
+        }
+
         UserInfo userInfo = authorization.getInfo(request);
         LMessung messung = defaultRepo.getByIdPlain(
             LMessung.class, status.getMessungsId(), "land");
