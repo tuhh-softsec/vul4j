@@ -35,6 +35,7 @@ import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
+import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
@@ -101,7 +102,8 @@ public class StatusWertService {
             return defaultRepo.getAll(StatusWert.class, "stamm");
         }
         int messungsId = Integer.valueOf(params.getFirst("messungsId"));
-        List<StatusWert> werte = getReachable(messungsId);
+        UserInfo user = authorization.getInfo(request);
+        List<StatusWert> werte = getReachable(messungsId, user);
         Response response = new Response(true, 200, werte);
         return response;
     }
@@ -128,7 +130,7 @@ public class StatusWertService {
             "stamm");
     }
 
-    private List<StatusWert> getReachable(int messungsId) {
+    private List<StatusWert> getReachable(int messungsId, UserInfo user) {
         List<StatusWert> list = new ArrayList<StatusWert>();
         LMessung messung =
             defaultRepo.getByIdPlain(LMessung.class, messungsId, "land");
@@ -144,6 +146,7 @@ public class StatusWertService {
             new QueryBuilder<StatusErreichbar>(
                 defaultRepo.entityManager("stamm"),
                 StatusErreichbar.class);
+        errFilter.andIn("stufeId", user.getFunktionen());
         errFilter.and("curStufe", status.getStatusStufe());
         errFilter.and("curWert", status.getStatusWert());
         List<StatusErreichbar> erreichbare = defaultRepo.filterPlain(

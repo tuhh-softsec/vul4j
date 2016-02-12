@@ -248,8 +248,8 @@ public class QueryBuilder<T> {
      *
      * @return The current Querybuilder.
      */
-    public QueryBuilder<T> orIn(String key, List<String> values) {
-        Expression<String> exp = this.root.get(key);
+    public <M> QueryBuilder<T> orIn(String key, List<M> values) {
+        Expression<M> exp = this.root.get(key);
         Predicate p = exp.in(values);
         if (this.filter == null) {
             this.filter = this.builder.or(p);
@@ -269,8 +269,8 @@ public class QueryBuilder<T> {
      *
      * @return The current Querybuilder.
      */
-    public QueryBuilder<T> andIn(String key, List<String> values) {
-        Expression<String> exp = this.root.get(key);
+    public <M> QueryBuilder<T> andIn(String key, List<M> values) {
+        Expression<M> exp = this.root.get(key);
         Predicate p = exp.in(values);
         if (this.filter == null) {
             this.filter = this.builder.and(p);
