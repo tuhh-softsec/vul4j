@@ -250,8 +250,19 @@ public class StatusService {
                     LProbe.class,
                     messung.getProbeId(),
                     "land");
-                if (userInfo.getFunktionenForMst(probe.getMstId()).contains(1) &&
-                    probe.getMstId().equals(status.getErzeuger())
+                if (status.getStatusWert() == 4
+                    && userInfo.getMessstellen().contains(
+                        currentStatus.getErzeuger())
+                    && status.getErzeuger().equals(
+                        currentStatus.getErzeuger())
+                ) {
+                    // 'edit' currentStatus
+                    status.setStatusStufe(currentStatus.getStatusStufe());
+                }
+                else if (
+                    userInfo.getFunktionenForMst(probe.getMstId())
+                        .contains(1)
+                    && probe.getMstId().equals(status.getErzeuger())
                 ) {
                     status.setStatusStufe(1);
                 }

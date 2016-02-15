@@ -693,10 +693,9 @@ FOR kombi_from IN SELECT * FROM status_kombi LOOP
         s_to := kombi_to.stufe_id;
         w_to := kombi_to.wert_id;
 
-        IF s_from = s_to AND w_to <> 0 AND w_from <> 4 THEN
+        IF s_from = s_to AND w_to <> 0 THEN
            -- At the same 'stufe', all permutations occur,
            -- but 'nicht vergeben' is only allowed for von_id
-           -- and 'Rückfrage' is only allowed for zu_id
            INSERT INTO status_reihenfolge (von_id, zu_id)
                   VALUES (kombi_from.id, kombi_to.id);
 
