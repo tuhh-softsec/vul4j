@@ -293,7 +293,6 @@ public class StatusService {
                     status.getStatusStufe() > 1
                 ) {
                     status.setStatusStufe(currentStatus.getStatusStufe());
-                    messung.setFertig(false);
                 }
                 else if (change && status.getStatusWert() == 8) {
                     return authorization.filter(
@@ -303,21 +302,23 @@ public class StatusService {
                 }
                 else if (change && status.getStatusWert() != 0) {
                     status.setStatusStufe(currentStatus.getStatusStufe());
-                    if (status.getStatusStufe() == 1) {
-                        messung.setFertig(true);
-                    }
                 }
                 else if (next &&
                     (status.getStatusWert() > 0 &&
                      status.getStatusWert() <= 4 ||
                      status.getStatusWert() == 7)) {
                     status.setStatusStufe(currentStatus.getStatusStufe() + 1);
-                    if (status.getStatusWert() == 4) {
-                        messung.setFertig(false);
-                    }
                 }
                 else {
                     return new Response(false, 699, null);
+                }
+
+                // auto-set 'fertig'-flag
+                if (status.getStatusStufe() == 1) {
+                    messung.setFertig(true);
+                }
+                else if (status.getStatusWert() == 4) {
+                    messung.setFertig(false);
                 }
             }
         }
@@ -435,7 +436,6 @@ public class StatusService {
             nV.setText("");
             retValue = defaultRepo.create(nV, "land");
             messung.setStatus(((LStatusProtokoll)retValue.getData()).getId());
-            messung.setFertig(false);
         }
         else {
             QueryBuilder<LStatusProtokoll> lastFilter =
