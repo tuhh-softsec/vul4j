@@ -48,8 +48,8 @@ WORKDIR /usr/src/lada-server
 #
 RUN mkdir -p $JBOSS_HOME/modules/org/postgres/main
 
-RUN curl https://jdbc.postgresql.org/download/postgresql-9.4-1204.jdbc41.jar >\
-         $JBOSS_HOME/modules/org/postgres/main/postgresql-9.4-1204.jdbc41.jar
+RUN curl https://jdbc.postgresql.org/download/postgresql-9.4-1200.jdbc4.jar >\
+         $JBOSS_HOME/modules/org/postgres/main/postgresql.jar
 
 RUN ln -s /usr/share/java/postgis-jdbc-2.1.4.jar \
        $JBOSS_HOME/modules/org/postgres/main/

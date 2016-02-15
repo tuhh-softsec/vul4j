@@ -4,7 +4,7 @@
 
     <resources>
         <resource-root path="postgis-jdbc-2.1.4.jar"/>
-        <resource-root path="postgresql-9.4-1204.jdbc41.jar"/>
+        <resource-root path="postgresql.jar"/>
     </resources>
 
     <dependencies>
