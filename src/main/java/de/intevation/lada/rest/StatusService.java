@@ -312,14 +312,14 @@ public class StatusService {
                 else {
                     return new Response(false, 699, null);
                 }
+            }
 
-                // auto-set 'fertig'-flag
-                if (status.getStatusStufe() == 1) {
-                    messung.setFertig(true);
-                }
-                else if (status.getStatusWert() == 4) {
-                    messung.setFertig(false);
-                }
+            // auto-set 'fertig'-flag
+            if (status.getStatusStufe() == 1) {
+                messung.setFertig(true);
+            }
+            else if (status.getStatusWert() == 4) {
+                messung.setFertig(false);
             }
         }
         Violation violation = validator.validate(status);

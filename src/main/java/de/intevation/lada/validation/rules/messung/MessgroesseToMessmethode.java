@@ -74,7 +74,9 @@ public class MessgroesseToMessmethode implements Rule {
         for(LMesswert messwert: messwerte) {
             boolean hit = false;
             for (MmtMessgroesse messgroesse: found) {
-                logger.debug("###### mmt: " + messwert.getMessgroesseId() + " mmtmg: " + messgroesse.getMmtMessgroessePK().getMessgroessengruppeId());
+                logger.trace("###### mmt: " + messwert.getMessgroesseId()
+                    + " mmtmg: " + messgroesse.getMmtMessgroessePK()
+                    .getMessgroessengruppeId());
                 if (messwert.getMessgroesseId().equals(
                         messgroesse.getMmtMessgroessePK().getMessgroessengruppeId())) {
                     hit = true;
