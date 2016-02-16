@@ -16,6 +16,7 @@
 
 package de.tsystems.mms.apm.performancesignature;
 
+import de.tsystems.mms.apm.performancesignature.model.GenericTestCase;
 import de.tsystems.mms.apm.performancesignature.model.PerfSigTestData;
 import hudson.FilePath;
 import hudson.Plugin;
@@ -35,8 +36,9 @@ public class PerformanceSignaturePlugin extends Plugin {
     public static void addAliases() {
         // Moved in 1.6.3
         Run.XSTREAM2.addCompatibilityAlias("de.tsystems.mms.apm.performancesignature.PerfSigTestData", PerfSigTestData.class);
-        // Moved in 1.7.0
+        // Moved in 2.0.0
         Run.XSTREAM2.addCompatibilityAlias("de.tsystems.mms.apm.performancesignature.PerfSigRegisterEnvVars", PerfSigEnvInvisAction.class);
+        Run.XSTREAM2.addCompatibilityAlias("de.tsystems.mms.apm.performancesignature.model.GeneralTestCase", GenericTestCase.class);
     }
 
     @Initializer(after = JOB_LOADED)
