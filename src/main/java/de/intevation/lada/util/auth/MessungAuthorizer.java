@@ -32,11 +32,15 @@ public class MessungAuthorizer extends BaseAuthorizer {
             repository.getById(LProbe.class, messung.getProbeId(), "land");
         LProbe probe = (LProbe)response.getData();
         if (method == RequestMethod.PUT ||
-                 method == RequestMethod.DELETE) {
+            method == RequestMethod.DELETE) {
             return !this.isMessungReadOnly(messung.getId()) &&
                 getAuthorization(userInfo, probe);
         }
-        return getAuthorization(userInfo, probe);
+        LStatusProtokoll status = repository.getByIdPlain(
+            LStatusProtokoll.class,
+            messung.getStatus(),
+            "land");
+        return status.getStatusWert() > 0 || getAuthorization(userInfo, probe);
     }
 
     @SuppressWarnings("unchecked")
