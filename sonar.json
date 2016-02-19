@@ -1,6 +1,6 @@
 {
 
-"sonarHost": "http://localhost:9000/",
+"sonarHost": "https://analysis.apache.org",
 
 "sonarProjectKey": "misc"
 
