@@ -97,6 +97,7 @@ public class UserService{
         UserInfo userInfo = authorization.getInfo(request);
         response.put("mst", userInfo.getMessstellen());
         response.put("netzbetreiber", userInfo.getNetzbetreiber());
+        response.put("funktionen", userInfo.getFunktionen());
         return new Response(true, 200, response);
     }
 }
