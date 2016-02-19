@@ -43,9 +43,6 @@ public class FilterValue implements Serializable {
     @Column(name="user_id")
     private Integer userId;
 
-    @Column(name="query_id")
-    private Integer queryId;
-
     public FilterValue() {
     }
 
@@ -79,13 +76,5 @@ public class FilterValue implements Serializable {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
-    }
-
-    public Integer getQueryId() {
-        return this.queryId;
-    }
-
-    public void setQueryId(Integer queryId) {
-        this.queryId = queryId;
     }
 }

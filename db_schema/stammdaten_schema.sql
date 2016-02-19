@@ -272,7 +272,6 @@ CREATE SEQUENCE filter_value_id_seq
 
 CREATE TABLE filter_value (
     id integer PRIMARY KEY DEFAULT nextval('filter_value_id_seq'::regclass),
-    query_id integer NOT NULL,
     user_id integer NOT NULL,
     filter_id integer NOT NULL,
     value text
@@ -852,11 +851,6 @@ ALTER TABLE ONLY filter
 
 ALTER TABLE ONLY filter_value
     ADD CONSTRAINT filter_value_filter_id_fkey FOREIGN KEY (filter_id) REFERENCES filter(id);
-
-
-
-ALTER TABLE ONLY filter_value
-    ADD CONSTRAINT filter_value_query_id_fkey FOREIGN KEY (query_id) REFERENCES query(id);
 
 
 

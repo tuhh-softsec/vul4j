@@ -169,7 +169,6 @@ public class QueryService {
         );
         builder.and("userId", userId);
         for (Query q : queries) {
-            builder.and("queryId", q.getId());
             List<FilterValue> values = repository.filterPlain(builder.getQuery(), "stamm");
             for (Filter f : q.getFilters()) {
                 for (FilterValue fv : values) {
