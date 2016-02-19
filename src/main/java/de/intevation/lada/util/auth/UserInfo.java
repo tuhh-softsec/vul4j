@@ -22,10 +22,8 @@ public class UserInfo {
     private Integer userId;
     private List<String> messstellen;
     private List<String> netzbetreiber;
-    private List<String> roles;
     private List<Integer> funktionen;
     private List<Auth> auth;
-    private Integer statusRole;
 
     public UserInfo() {
         messstellen = new ArrayList<String>();
@@ -132,30 +130,6 @@ public class UserInfo {
             retVal.add(this.funktionen.get(i).toString());
         }
         return retVal;
-    }
-
-    public List<String> getRoles() {
-        List<String> ret = new ArrayList<String>();
-        for (Auth a : auth) {
-            if (a.getLdapGroup() != null) {
-                ret.add(a.getLdapGroup());
-            }
-        }
-        return ret;
-    }
-
-    /**
-     * @return the statusRole
-     */
-    public Integer getStatusRole() {
-        return statusRole;
-    }
-
-    /**
-     * @param statusRole the statusRole to set
-     */
-    public void setStatusRole(Integer statusRole) {
-        this.statusRole = statusRole;
     }
 
     public void setAuth(List<Auth> auth) {
