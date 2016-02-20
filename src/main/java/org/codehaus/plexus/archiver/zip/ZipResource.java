@@ -45,14 +45,15 @@ public class ZipResource extends AbstractPlexusIoResource
 
     public synchronized PlexusIoResourceAttributes getAttributes()
     {
-        int mode = entry.getUnixMode();
-        if ( ( mode & UnixStat.FILE_FLAG ) == UnixStat.FILE_FLAG )
+        int mode = -1;
+        if (entry.getPlatform() == ZipArchiveEntry.PLATFORM_UNIX)
         {
-            mode = mode & ~UnixStat.FILE_FLAG;
-        }
-        else
-        {
-            mode = mode & ~UnixStat.DIR_FLAG;
+            mode = entry.getUnixMode();
+            if ((mode & UnixStat.FILE_FLAG) == UnixStat.FILE_FLAG) {
+                mode = mode & ~UnixStat.FILE_FLAG;
+            } else {
+                mode = mode & ~UnixStat.DIR_FLAG;
+            }
         }
         
         if ( attributes == null )
