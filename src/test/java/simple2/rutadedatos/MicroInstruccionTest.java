@@ -1,11 +1,15 @@
 package simple2.rutadedatos;
 
-import junit.framework.*;
-import simple2.rutadedatos.*;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 
-public class MicroInstruccionTest extends TestCase {
-
+public class MicroInstruccionTest {
+	public MicroInstruccionTest(){
+		super();
+	}
+	@Test
 	public void testAlu ()
 	{
 		MicroInstruccion mic = new MicroInstruccion(0);
@@ -19,7 +23,7 @@ public class MicroInstruccionTest extends TestCase {
 		MicroInstruccion mic4 = new MicroInstruccion(1024);
 		Assert.assertEquals ("ErrorALU4", (int)2, mic4.GetALU());
 	}
-
+	@Test
 	public void testFIR()
 	{
 		MicroInstruccion mic = new MicroInstruccion(0);
@@ -27,7 +31,7 @@ public class MicroInstruccionTest extends TestCase {
 		MicroInstruccion mic1 = new MicroInstruccion(8192);
 		Assert.assertEquals ("ErrorFIR1", (int)1, mic1.GetFIR());
 	}
-
+	@Test
 	public void testADDR()
 	{
 		MicroInstruccion mic = new MicroInstruccion(0);
@@ -40,7 +44,7 @@ public class MicroInstruccionTest extends TestCase {
 		Assert.assertEquals ("ErrorADDR3", (int)12, mic3.GetALU());
 
 	}
-
+	@Test
 	public void testA()
 	{
 		MicroInstruccion mic = new MicroInstruccion(0);
@@ -48,7 +52,7 @@ public class MicroInstruccionTest extends TestCase {
 		MicroInstruccion mic1 = new MicroInstruccion(134217728);
 		Assert.assertEquals ("ErrorA1", (int)8, mic1.GetA());
 	}
-
+	@Test
 	public void testB()
 	{
 		MicroInstruccion mic = new MicroInstruccion(0);
@@ -70,7 +74,7 @@ public class MicroInstruccionTest extends TestCase {
 		MicroInstruccion mic8 = new MicroInstruccion(1610612736);
 		Assert.assertEquals ("ErrorB8", (int)6, mic8.GetB());
 	}
-
+	@Test
 	public void testC()
 	{
 		MicroInstruccion mic = new MicroInstruccion(0);
@@ -84,7 +88,7 @@ public class MicroInstruccionTest extends TestCase {
 		MicroInstruccion mic4 = new MicroInstruccion(34294967296L);
 		Assert.assertEquals ("ErrorC4", (int)7, mic4.GetC());
 	}
-
+	@Test
 	public void testENC()
 	{
 		MicroInstruccion mic = new MicroInstruccion(0);
@@ -92,7 +96,7 @@ public class MicroInstruccionTest extends TestCase {
 		MicroInstruccion mic1 = new MicroInstruccion(68719476736L);
 		Assert.assertEquals ("ErrorENC1", (int)1, mic1.GetENC());
 	}
-
+	@Test
 	public void testWR()
 	{
 		MicroInstruccion mic = new MicroInstruccion(0);
@@ -100,7 +104,7 @@ public class MicroInstruccionTest extends TestCase {
 		MicroInstruccion mic1 = new MicroInstruccion(137438953472L);
 		Assert.assertEquals ("ErrorWR1", (int)1, mic1.GetWR());
 	}
-
+	@Test
 	public void testRD()
 	{
 		MicroInstruccion mic = new MicroInstruccion(0);
@@ -108,7 +112,7 @@ public class MicroInstruccionTest extends TestCase {
 		MicroInstruccion mic1 = new MicroInstruccion(274877906944L);
 		Assert.assertEquals ("ErrorRD1", (int)1, mic1.GetRD());
 	}
-
+	@Test
 	public void testMAR()
 	{
 		MicroInstruccion mic = new MicroInstruccion(0);
@@ -116,7 +120,7 @@ public class MicroInstruccionTest extends TestCase {
 		MicroInstruccion mic1 = new MicroInstruccion(549755813888L);
 		Assert.assertEquals ("ErrorMAR1", (int)1, mic1.GetMAR());
 	}
-
+	@Test
 	public void testMBR()
 	{
 		MicroInstruccion mic = new MicroInstruccion(0);
@@ -124,7 +128,7 @@ public class MicroInstruccionTest extends TestCase {
 		MicroInstruccion mic1 = new MicroInstruccion(1099511627776L);
 		Assert.assertEquals ("ErrorMBR1", (int)1, mic1.GetMBR());
 	}
-
+	@Test
 	public void testSH()
 	{
 		MicroInstruccion mic = new MicroInstruccion(0);
@@ -136,7 +140,7 @@ public class MicroInstruccionTest extends TestCase {
 		MicroInstruccion mic3 = new MicroInstruccion(2199023255552L);
 		Assert.assertEquals ("ErrorSH3", (int)1, mic3.GetSH());
 	}
-
+	@Test
 	public void testCOND()
 	{
 		MicroInstruccion mic = new MicroInstruccion(0);
@@ -148,7 +152,7 @@ public class MicroInstruccionTest extends TestCase {
 		MicroInstruccion mic3 = new MicroInstruccion(17592186044416L);
 		Assert.assertEquals ("ErrorCOND3", (int)1, mic3.GetCOND());
 	}
-
+	@Test
 	public void testAMUX()
 	{
 		MicroInstruccion mic = new MicroInstruccion(0);

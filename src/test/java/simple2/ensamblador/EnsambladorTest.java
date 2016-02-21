@@ -1,9 +1,12 @@
 package simple2.ensamblador;
 
-import junit.framework.*;
+import org.junit.Test;
 
-public class EnsambladorTest extends TestCase{
 
+
+public class EnsambladorTest {
+
+	@Test
 	public void test01(){
 	}
 }
