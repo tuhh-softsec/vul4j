@@ -27,6 +27,10 @@ public class CampoNumerico extends JTextField
 	
 	
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -607499991012895863L;
+	/**
 	 * Valor en el que se almacena el valor del ancho del campo de edición.
 	 * La clase almacena internamente el ancho del campo en carácteres. 
 	 * Además, es el máximo y no permite introducir un número con más
@@ -102,6 +106,11 @@ public class CampoNumerico extends JTextField
 	protected class CampoNumericoDoc extends PlainDocument 
 	{
 		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 803699531167972655L;
+
 		public void insertString(int offs, String str, AttributeSet a) 
 			throws BadLocationException 
 		{

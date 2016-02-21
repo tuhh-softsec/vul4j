@@ -14,6 +14,11 @@ package simple2.rutadedatos;
 public class SimulacionFinalizadaException extends Exception
 {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3536272960457696642L;
+
+	/**
 	 * Crea una instancia de la clase
 	 * @param mensaje El mensaje de la excepcion
 	 */

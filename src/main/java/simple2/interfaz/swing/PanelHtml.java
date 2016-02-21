@@ -26,6 +26,10 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 public class PanelHtml extends JScrollPane implements HyperlinkListener{
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4855422234681163552L;
+	/**
 	 * Campo de edición donde se mostrará la página html.
 	 */
 	private JEditorPane html;

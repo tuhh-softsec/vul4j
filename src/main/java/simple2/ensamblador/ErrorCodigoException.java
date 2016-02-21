@@ -15,6 +15,11 @@ package simple2.ensamblador;
 public class ErrorCodigoException extends Exception{
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5886778339065866481L;
+
+	/**
 	 * Crea una instancia de la clase.
 	 */
 	public ErrorCodigoException() {

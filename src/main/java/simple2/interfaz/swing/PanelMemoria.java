@@ -28,6 +28,10 @@ public class PanelMemoria extends JPanel implements MemoryChangeListener
 {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1293539651735935280L;
+	/**
 	 * Area de texto donde se almacenan los datos de memoria
 	 */
 	public static int tamanno=2048;

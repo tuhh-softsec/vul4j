@@ -31,6 +31,11 @@ import javax.swing.text.DefaultStyledDocument;
 public class PanelNuevo extends JPanel{
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Area donde se puede escribir el codigo
 	 */
 	public AreaTexto texto;  
@@ -119,6 +124,11 @@ public class PanelNuevo extends JPanel{
 	 * columna, ...
 	 */
 	protected class CaretTextListenerLabel extends JLabel implements CaretListener, DocumentListener {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		/**
 		 * Constructor de la clase.
 		 * @param label - texto inicial.

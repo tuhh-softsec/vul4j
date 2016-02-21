@@ -26,6 +26,11 @@ import simple2.representacionruta.RepresentacionRDD;
 public class PanelDibujo extends JPanel implements InterfaceDibujo,ComponentListener{
 	
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3173464326719078682L;
+
+	/**
 	 * Objeto que pintará sobre la imagen.
 	 */
 	private RepresentacionRDD rdd = null;

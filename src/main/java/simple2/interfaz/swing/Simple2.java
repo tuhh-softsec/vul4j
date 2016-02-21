@@ -31,6 +31,11 @@ import simple2.ensamblador.Ejecutar;
 public class Simple2 extends JApplet{
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6628444410002934438L;
+
+	/**
 	 * Nombre del programa
 	 */
 	private static final String titulo = "SIMPLE2";

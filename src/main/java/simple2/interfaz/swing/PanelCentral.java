@@ -22,6 +22,11 @@ import simple2.rutadedatos.SecuenciadorMicroprograma;
 public class PanelCentral extends javax.swing.JPanel{	
 	
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4498144025637867213L;
+
+	/**
 	* Panel para introducir los patrones.
 	*/
 	private PanelNuevo panelnuevo;	

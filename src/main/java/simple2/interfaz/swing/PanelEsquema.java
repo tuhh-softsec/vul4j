@@ -21,6 +21,11 @@ import javax.swing.JPanel;
 public class PanelEsquema extends JPanel{
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -628485690033905931L;
+
+	/**
 	 * Panel donde dibujamos
 	 */
 	PanelDibujo pdibujo;

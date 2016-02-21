@@ -24,6 +24,11 @@ import javax.swing.JToggleButton;
 public class Boton extends JToggleButton{
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7818066963818582018L;
+
+	/**
 	 * Almacena el color del botón en estado normal.
 	 */
 	private Color colorNormal;

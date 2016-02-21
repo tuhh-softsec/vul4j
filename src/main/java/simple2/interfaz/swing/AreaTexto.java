@@ -28,6 +28,11 @@ import javax.swing.undo.UndoManager;
 public class AreaTexto extends javax.swing.JTextArea{
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6863593338645279451L;
+
+	/**
 	 * Indica si el texto que contiene el area de texto ha sufrido cambios.
 	 */
 	private boolean modificado;
