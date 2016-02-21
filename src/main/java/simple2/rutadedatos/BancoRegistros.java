@@ -5,6 +5,7 @@
 
 package simple2.rutadedatos;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Montserrat Sotomayor Gonzalez
@@ -53,7 +54,7 @@ public class BancoRegistros
 	 * Array en el que se almacena internamente el contenido
 	 * de los registros
 	 */
-	private ArrayList listeners = new ArrayList();
+	private List<RegisterChangeListener> listeners = new ArrayList<>();
 
 	/**
 	 * Contenido de los registros
@@ -88,8 +89,9 @@ public class BancoRegistros
 	 */	
 	public void Reset ()
 	{
-		for (int i = 0; i < this.registros.length; i++)
+		for (int i = 0; i < this.registros.length; i++) {
 			this.registros[i] = 0;
+		}
 
 		this.registros[4] = (short) 0x07FF;//OMASK
 		this.registros[5] = (short) 0x0000;//RCON1
@@ -107,8 +109,9 @@ public class BancoRegistros
 	 */	
 	public void EscribirRegistro (int registro, short valor)
 	{
-		if ((registro > 15) || (registro < 0))
+		if ((registro > 15) || (registro < 0)) {
 			return;
+		}
 		if ((registro < 4) || (registro > 9))
 		{
 			this.registros[registro] = valor;
@@ -125,8 +128,9 @@ public class BancoRegistros
 	 */	
 	public short LeerRegistro (int registro)
 		{
-		if ((registro < 0) || (registro > 15))
+		if ((registro < 0) || (registro > 15)) {
 			return 0;
+		}
 		return this.registros[registro];
 	}
 		
@@ -147,9 +151,8 @@ public class BancoRegistros
 	 */	
 	private void ActualizarListeners (int dir, short newValue)
 	{
-		for (int i = 0; i < this.listeners.size(); i++)
-		{
-			((RegisterChangeListener) this.listeners.get(i)).RegisterChanged (dir, newValue);
+		for (RegisterChangeListener listener: this.listeners){
+			listener.RegisterChanged(dir, newValue);
 		}
 	}
 		

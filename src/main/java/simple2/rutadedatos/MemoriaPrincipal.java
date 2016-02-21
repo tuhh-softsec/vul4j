@@ -8,6 +8,7 @@ import java.util.ArrayList;
  * @author Montserrat Sotomayor Gonzalez
  *
  */
+import java.util.List;
 
 /**
  * 
@@ -30,7 +31,7 @@ public class MemoriaPrincipal
 	/**
 	 * Array donde se guardan los datos que hay en la memoria principal
 	 */
-	private ArrayList listeners = new ArrayList ();
+	private List<MemoryChangeListener> listeners = new ArrayList<> ();
 
 		
 	private short[] memoria = null;
@@ -84,22 +85,20 @@ public class MemoriaPrincipal
 	 * @param direccion La direccion donde leeremos el dato
 	 * @return El dato solicitado
 	 */	
-	public short LeerDato (short direccion)
-		{
+	public short LeerDato(short direccion) {
 		int dir = (direccion & this.mask);
 		return this.memoria[dir];
-		}
+	}
 
 	/**
 	 * Añade un listener para los cambios en la memoria.
 	 * @param l El listener.
 	 */
 
-	public void AddMemoryChangeListener (MemoryChangeListener l)
-		{
-		this.listeners.add (l);
-		l.MemoryChanged (this.memoria);
-		}
+	public void AddMemoryChangeListener(MemoryChangeListener l) {
+		this.listeners.add(l);
+		l.MemoryChanged(this.memoria);
+	}
 		
 	/**
 	 * Notifica a los listeners que se ha producido una 
@@ -109,10 +108,8 @@ public class MemoriaPrincipal
 	 */
 	private void ActualizarListeners (int dir, short newValue)
 		{
-		for (int i = 0; i < this.listeners.size(); i++)
-		{
-			((MemoryChangeListener) this.listeners.get(i)).
-				MemoryChanged (dir, newValue);
-		}
+		for (MemoryChangeListener listener: this.listeners) {
+			listener.MemoryChanged (dir, newValue);
+		}		
 	}
 }
