@@ -4,9 +4,13 @@
  */
 
 package simple2.interfaz.swing;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.JToggleButton;
 
 /**
  * @author Montserrat Sotomayor Gonzalez

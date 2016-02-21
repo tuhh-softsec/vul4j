@@ -4,15 +4,16 @@
  */
 
 package simple2.interfaz.swing;
-import java.awt.*;
-import java.util.*;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.util.Vector;
 
-import simple2.rutadedatos.*;
-import simple2.representacionruta.*;
+import simple2.representacionruta.RepresentacionRDD;
 /**
  * @author Montserrat Sotomayor Gonzalez
  *
  */
+import simple2.rutadedatos.SecuenciadorMicroprograma;
 
 /**
 * Panel que contiene todos los paneles que se van a utilizar en el 

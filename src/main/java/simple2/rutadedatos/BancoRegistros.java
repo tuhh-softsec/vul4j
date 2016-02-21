@@ -4,7 +4,7 @@
  */
 
 package simple2.rutadedatos;
-import java.util.*;
+import java.util.ArrayList;
 
 /**
  * @author Montserrat Sotomayor Gonzalez

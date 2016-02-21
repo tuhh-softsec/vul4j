@@ -3,13 +3,20 @@
  *
  */
 package simple2.interfaz.swing;
-import javax.swing.*;
-import java.awt.event.*;
-import javax.swing.text.*;
-import javax.swing.event.*;
-import javax.swing.undo.*;
-import java.io.*;
-import java.util.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.util.Vector;
+
+import javax.swing.JPopupMenu;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.UndoableEditEvent;
+import javax.swing.event.UndoableEditListener;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.undo.CannotRedoException;
+import javax.swing.undo.CannotUndoException;
+import javax.swing.undo.UndoManager;
 
 /**
  * @author Montserrat Sotomayor Gonzalez

@@ -4,14 +4,18 @@
  */
  
 package simple2.representacionruta;
-import java.awt.*;
+import java.awt.Color;
 
-import simple2.rutadedatos.*;
-import simple2.utilidades.*;
+import simple2.rutadedatos.BancoRegistros;
+import simple2.rutadedatos.IRepresentacionRDD;
+import simple2.rutadedatos.MicroInstruccion;
+import simple2.rutadedatos.RegisterChangeListener;
+import simple2.utilidades.Conversiones;
 /**
  * @author Montserrat Sotomayor Gonzalez
  *
  */
+import simple2.utilidades.Desensamblador;
 
 /**
  * 

@@ -3,7 +3,7 @@
  *
  */
 package simple2.ensamblador;
-import java.util.*;
+import java.util.Vector;
 /**
  * @author Montserrat Sotomayor Gonzalez
  *

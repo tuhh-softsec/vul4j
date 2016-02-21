@@ -4,7 +4,9 @@
  */
 
 package simple2.utilidades;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.Window;
 
 /**
  * @author Montserrat Sotomayor Gonzalez

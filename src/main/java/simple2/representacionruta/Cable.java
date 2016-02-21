@@ -3,7 +3,7 @@
  *
  */
 package simple2.representacionruta;
-import java.awt.*;
+import java.awt.Color;
 /**
  * @author Montserrat Sotomayor Gonzalez
  *

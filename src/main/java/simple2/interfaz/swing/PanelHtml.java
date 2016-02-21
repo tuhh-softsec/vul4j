@@ -3,12 +3,16 @@
  *
  */
 package simple2.interfaz.swing;
-import javax.swing.*;
-import java.net.URL;
+import java.io.IOException;
 import java.net.MalformedURLException;
-import java.io.*;
-import javax.swing.event.*;
-import javax.swing.text.html.*;
+import java.net.URL;
+
+import javax.swing.JEditorPane;
+import javax.swing.JScrollPane;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 
 /**
  * @author Montserrat Sotomayor Gonzalez

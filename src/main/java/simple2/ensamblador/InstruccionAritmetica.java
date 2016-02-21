@@ -4,7 +4,7 @@
  */
 
 package simple2.ensamblador;
-import java.util.*;
+import java.util.Hashtable;
 
 /**
  * @author Montserrat Sotomayor Gonzalez

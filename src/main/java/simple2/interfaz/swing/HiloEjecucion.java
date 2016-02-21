@@ -4,7 +4,8 @@ package simple2.interfaz.swing;
  *
  */
 
-import simple2.rutadedatos.*;
+import simple2.rutadedatos.SecuenciadorMicroprograma;
+import simple2.rutadedatos.SimulacionFinalizadaException;
 /**
  * @author Montserrat Sotomayor Gonzalez
  *

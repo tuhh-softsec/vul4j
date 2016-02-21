@@ -4,12 +4,17 @@
  */
 
 package simple2.interfaz.swing;
-import java.util.*;
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Rectangle;
+import java.util.Vector;
+
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-import simple2.rutadedatos.*;
+import simple2.rutadedatos.MemoryChangeListener;
 /**
  * @author Montserrat Sotomayor Gonzalez
  *

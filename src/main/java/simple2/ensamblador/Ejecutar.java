@@ -3,11 +3,12 @@
  *
  */
 package simple2.ensamblador;
-import java.util.*;
+import java.util.Hashtable;
 /**
  * @author Montserrat Sotomayor Gonzalez
  *
  */
+import java.util.Vector;
 
 /** 
  * Esta clase es la encargada de ensamblar el codigo fuente.

@@ -4,12 +4,16 @@
  */
 
 package simple2.interfaz.swing;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 
-import javax.swing.*;
+import javax.swing.JPanel;
 
-import simple2.representacionruta.*;
+import simple2.representacionruta.InterfaceDibujo;
+import simple2.representacionruta.RepresentacionRDD;
 
 /**
  * @author Montserrat Sotomayor Gonzalez
