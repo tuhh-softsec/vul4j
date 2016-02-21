@@ -69,13 +69,13 @@ package simple2.rutadedatos;
 				     short operandoA, short operandoB)
 		{
 			short retval = 0;
-			c = 0;
+			this.c = 0;
 			switch (operacion)
 			{
 			case 0:
 				retval = (short) (operandoA + operandoB);
 				if (Arrastre (operandoA, operandoB))
-					c = 1;
+					this.c = 1;
 				break;
 			case 1:
 				retval = (short) (operandoA & operandoB);
@@ -94,11 +94,11 @@ package simple2.rutadedatos;
 				break;
 			}
 
-			n = (retval < 0) ? 1 : 0;
-			z = (retval == 0) ? 1 : 0;
+			this.n = (retval < 0) ? 1 : 0;
+			this.z = (retval == 0) ? 1 : 0;
 
-			resultado = OperarSH (operacionSH, retval);
-			return resultado;
+			this.resultado = OperarSH (operacionSH, retval);
+			return this.resultado;
 		}
 		
 		/**
@@ -127,7 +127,7 @@ package simple2.rutadedatos;
 		 */
 		public short LeerResultado ()
 		{
-			return resultado;
+			return this.resultado;
 		}
 		
 		/**
@@ -136,7 +136,7 @@ package simple2.rutadedatos;
 		 */
 		public int LeerC ()
 		{
-			return c;
+			return this.c;
 		}
 		
 		/**
@@ -145,7 +145,7 @@ package simple2.rutadedatos;
 		 */
 		public int LeerN ()
 		{
-			return n;
+			return this.n;
 		}
 		
 		/**
@@ -154,7 +154,7 @@ package simple2.rutadedatos;
 		 */
 		public int LeerZ ()
 		{
-			return z;
+			return this.z;
 		}
 
 

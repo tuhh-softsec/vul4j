@@ -34,6 +34,7 @@ public class InstruccionSinParametros extends InstruccionGeneral{
 	* contiene el mensaje de error
 	*/	
 	
+	@Override
 	public String validar (String instruccion, int linea) throws ErrorCodigoException
 		{
 		if ((instruccion.compareTo("PUSH") == 0)||
@@ -41,9 +42,7 @@ public class InstruccionSinParametros extends InstruccionGeneral{
 			(instruccion.compareTo("RETN") == 0)||
 			(instruccion.compareTo("HALT") == 0))
 			return "";
-		else{
-			throw new ErrorCodigoException ("Esta instrucción no lleva parámetros");
-			}
+		throw new ErrorCodigoException ("Esta instrucción no lleva parámetros");
 		}
 	
 	/**
@@ -55,6 +54,7 @@ public class InstruccionSinParametros extends InstruccionGeneral{
 	*
 	* @return La codificación de la instrucción.
 	*/
+	@Override
 	public short codificar (String instruccion,int linea)
 		{
 		int codigo;

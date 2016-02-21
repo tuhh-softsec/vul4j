@@ -28,7 +28,7 @@ public abstract class ElementoDibujable implements IElementoDibujable {
 	 */
 	public void Apagar() {
 		PintarInactivo();
-		activo = false;
+		this.activo = false;
 	}
 	
 	/**
@@ -36,14 +36,14 @@ public abstract class ElementoDibujable implements IElementoDibujable {
 	 */
 	public void Encender() {
 		PintarActivo();
-		activo = true;
+		this.activo = true;
 	}
 	
 	/**
 	 * Redibuja el objeto en su estado actual.
 	 */
 	public void Repintar() {
-		if (activo)
+		if (this.activo)
 			PintarActivo();
 		else
 			PintarInactivo();

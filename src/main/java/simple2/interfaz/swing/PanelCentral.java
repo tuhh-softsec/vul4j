@@ -60,22 +60,22 @@ public class PanelCentral extends javax.swing.JPanel{
 				
 		this.setLayout(new CardLayout());
 		
-		panelnuevo= new PanelNuevo ();
+		this.panelnuevo= new PanelNuevo ();
 		
-		panelmemoria=new PanelMemoria();
+		this.panelmemoria=new PanelMemoria();
 		
-		panelesquema=new PanelEsquema();
+		this.panelesquema=new PanelEsquema();
 		
-		panelayuda=new PanelAyuda();
+		this.panelayuda=new PanelAyuda();
 		
 		
-		panelesquema.pdibujo.setBackground(Color.WHITE);
-		this.add (panelnuevo, "NUEVO");
-		this.add(panelmemoria,"MEMORIA");
-		this.add (panelesquema, "ESQUEMA" );
-		this.add (panelayuda,"AYUDA");
-		panelesquema.pdibujo.clean();
-		panelesquema.pdibujo.refresh();
+		this.panelesquema.pdibujo.setBackground(Color.WHITE);
+		this.add (this.panelnuevo, "NUEVO");
+		this.add(this.panelmemoria,"MEMORIA");
+		this.add (this.panelesquema, "ESQUEMA" );
+		this.add (this.panelayuda,"AYUDA");
+		this.panelesquema.pdibujo.clean();
+		this.panelesquema.pdibujo.refresh();
 	}
 	
 	/**
@@ -84,7 +84,7 @@ public class PanelCentral extends javax.swing.JPanel{
 	 */
 	public void clean()
 	{
-		panelesquema.pdibujo.clean();
+		this.panelesquema.pdibujo.clean();
 	}
 	
 	/**
@@ -92,9 +92,9 @@ public class PanelCentral extends javax.swing.JPanel{
 	*/
 	public void limpiar()
 		{
-		panelnuevo.texto.setText("");
-		panelnuevo.resultado.setText("");
-		panelnuevo.errores.setText("");
+		this.panelnuevo.texto.setText("");
+		this.panelnuevo.resultado.setText("");
+		this.panelnuevo.errores.setText("");
 		}
 		
 	/**
@@ -103,8 +103,8 @@ public class PanelCentral extends javax.swing.JPanel{
 	 */
 	public void limpiarEjecutar()
 		{
-		panelnuevo.resultado.setText("");
-		panelnuevo.errores.setText("");
+		this.panelnuevo.resultado.setText("");
+		this.panelnuevo.errores.setText("");
 		}
 		
 	/**
@@ -127,7 +127,7 @@ public class PanelCentral extends javax.swing.JPanel{
 	 */
 	String CogerDatos()
 		{
-		return panelnuevo.texto.getText();
+		return this.panelnuevo.texto.getText();
 		}
 	
 	/**
@@ -139,7 +139,7 @@ public class PanelCentral extends javax.swing.JPanel{
 	 * @param instruccionesTotales Numero de instrucciones totales
 	 */
 	public void Escribir (Vector codigo_limpio,short[] ensamblado,int instruccionesTotales){
-		panelnuevo.Escribir (codigo_limpio,ensamblado,instruccionesTotales);	
+		this.panelnuevo.Escribir (codigo_limpio,ensamblado,instruccionesTotales);	
 		}
 		
 	/**
@@ -148,7 +148,7 @@ public class PanelCentral extends javax.swing.JPanel{
 	 * @param errores Cadena que contiene los errores producidos en el ensamblado
 	 */
 	public void Errores (String errores){
-		panelnuevo.Errores (errores);	
+		this.panelnuevo.Errores (errores);	
 	}
 
 	/**
@@ -157,8 +157,8 @@ public class PanelCentral extends javax.swing.JPanel{
 	 */
 	public void limpiarEsquema()
 		{
-		panelesquema.pdibujo.clean();
-		panelesquema.pdibujo.refresh();
+		this.panelesquema.pdibujo.clean();
+		this.panelesquema.pdibujo.refresh();
 		}
 	
 	/**
@@ -168,7 +168,7 @@ public class PanelCentral extends javax.swing.JPanel{
 	 * @param instruccionesTotales Numero de instrucciones totales 
 	 */	
 	public void EscribirMemoria(short[] ensamblado,int instruccionesTotales,Vector codigo_limpio){
-		panelmemoria.EscribirMemoria(ensamblado,instruccionesTotales,codigo_limpio);
+		this.panelmemoria.EscribirMemoria(ensamblado,instruccionesTotales,codigo_limpio);
 	}
 	
 	/**
@@ -177,7 +177,7 @@ public class PanelCentral extends javax.swing.JPanel{
 	 *
 	 */
 	public void NoEditable(){
-		panelnuevo.texto.setEditable(false);
+		this.panelnuevo.texto.setEditable(false);
 	}
 	
 	/**
@@ -185,7 +185,7 @@ public class PanelCentral extends javax.swing.JPanel{
 	 * editar(modificar)
 	 */
 	public void Editable(){
-			panelnuevo.texto.setEditable(true);
+			this.panelnuevo.texto.setEditable(true);
 	}
 	
 	/**
@@ -193,22 +193,22 @@ public class PanelCentral extends javax.swing.JPanel{
 	 * @param ensamblado Codigo ensamblado(Valores iniciales de la MemoriaPrincipal)
 	 */
 	public void Principal(short[] ensamblado,int tiempo){
-		RepresentacionRDD repRdd = new RepresentacionRDD (panelesquema.pdibujo);
-		panelesquema.pdibujo.clean();
+		RepresentacionRDD repRdd = new RepresentacionRDD (this.panelesquema.pdibujo);
+		this.panelesquema.pdibujo.clean();
 		//Almacenamiento del dibujo cuando cambia de tamaño
-		panelesquema.pdibujo.setRepresentacionRDD(repRdd);
+		this.panelesquema.pdibujo.setRepresentacionRDD(repRdd);
 		//Crear un nuevo "secuenciador" con el short[] creado al ensamblar y micromemoria null
 		SecuenciadorMicroprograma mic =	new SecuenciadorMicroprograma (ensamblado,null);
 
 		//Añadimos el listener de memoria (si hay)
-		mic.AddMemoryChangeListener (panelmemoria);
+		mic.AddMemoryChangeListener (this.panelmemoria);
 	
 		//Asociamos la representacion de datos.
 		mic.SetRepresentacionRDD(repRdd);
 		mic.AddRegisterChangeListener(repRdd);
-		hilo = new HiloEjecucion (mic);
-		hilo.SetTSubciclo(tiempo);
-		hilo.start();	
+		this.hilo = new HiloEjecucion (mic);
+		this.hilo.SetTSubciclo(tiempo);
+		this.hilo.start();	
 	}
 	
 	/**
@@ -217,8 +217,8 @@ public class PanelCentral extends javax.swing.JPanel{
 	 */
 	public void Parar()
 	{
-		if(hilo!=null)
-			hilo.CambiarPausado();
+		if(this.hilo!=null)
+			this.hilo.CambiarPausado();
 	}
 	
 	/**
@@ -228,7 +228,7 @@ public class PanelCentral extends javax.swing.JPanel{
 	 */
 	public boolean HiloActivo()
 	{
-		return ((hilo!=null) && hilo.isAlive());
+		return ((this.hilo!=null) && this.hilo.isAlive());
 	}
 	
 	/**
@@ -237,8 +237,8 @@ public class PanelCentral extends javax.swing.JPanel{
 	 */
 	public void Fin()
 	{
-		if(hilo!=null)
-			hilo.detener();
+		if(this.hilo!=null)
+			this.hilo.detener();
 	}
 	
 	/**
@@ -247,8 +247,8 @@ public class PanelCentral extends javax.swing.JPanel{
 	 */
 	public void Activar()
 		{
-		if(hilo!=null)
-			hilo.detener();
+		if(this.hilo!=null)
+			this.hilo.detener();
 		}
 	
 }

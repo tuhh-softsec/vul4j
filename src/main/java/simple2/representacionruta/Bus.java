@@ -41,11 +41,11 @@ public class Bus
 	 */
 	public void Encender (int linea)
 	{
-		if ((linea >= cables.length) || (linea < 0))
+		if ((linea >= this.cables.length) || (linea < 0))
 			return;			
 		Apagar();
-		cables[linea].Encender();
-		cableActivo = linea;
+		this.cables[linea].Encender();
+		this.cableActivo = linea;
 	}
 	
 	/**
@@ -54,11 +54,11 @@ public class Bus
 	 */
 	public void Repintar ()
 	{
-		for (int i=0; i < cables.length; i++)
-			cables[i].Repintar();
+		for (int i=0; i < this.cables.length; i++)
+			this.cables[i].Repintar();
 				
-		if (cableActivo > -1)
-			cables[cableActivo].Repintar();
+		if (this.cableActivo > -1)
+			this.cables[this.cableActivo].Repintar();
 	}
 	
 	/**
@@ -67,8 +67,8 @@ public class Bus
 	 */
 	public void Apagar()
 	{
-		for (int i=0; i < cables.length; i++)
-			cables[i].Apagar();
-		cableActivo = -1;
+		for (int i=0; i < this.cables.length; i++)
+			this.cables[i].Apagar();
+		this.cableActivo = -1;
 	}
 }

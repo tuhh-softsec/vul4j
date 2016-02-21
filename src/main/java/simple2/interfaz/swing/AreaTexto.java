@@ -62,9 +62,10 @@ public class AreaTexto extends javax.swing.JTextArea{
     	* Cuando ocurre una nueva acción se la añade al administrador de acciones.
     	* @param e evento
     	*/
+		@Override
 		public void undoableEditHappened(UndoableEditEvent e) 
 		{
-            undo.addEdit(e.getEdit());
+            AreaTexto.this.undo.addEdit(e.getEdit());
         }
     }
     /**
@@ -72,7 +73,7 @@ public class AreaTexto extends javax.swing.JTextArea{
 	 */
 	public void descartarDeshacer()
 	{
-		undo.discardAllEdits();
+		this.undo.discardAllEdits();
 	}
     
 	/**
@@ -82,7 +83,7 @@ public class AreaTexto extends javax.swing.JTextArea{
 	{
 		try 
 		{
-			undo.undo();
+			this.undo.undo();
 			
 		}catch (CannotUndoException ex)
 		{
@@ -97,7 +98,7 @@ public class AreaTexto extends javax.swing.JTextArea{
 	{
 		try
 		{
-			undo.redo();
+			this.undo.redo();
 		}catch (CannotRedoException ex)
 		{
 			//Simplemente no hacemos nada
@@ -112,7 +113,7 @@ public class AreaTexto extends javax.swing.JTextArea{
 	 */
 	public boolean puedeRehacer()
 	{
-		return undo.canRedo();	
+		return this.undo.canRedo();	
 	}
 	/**
 	 * Indica si hay acciones que se puedan deshacer.
@@ -122,7 +123,7 @@ public class AreaTexto extends javax.swing.JTextArea{
 	 */
 	public boolean puedeDeshacer()
 	{
-		return undo.canUndo();
+		return this.undo.canUndo();
 	}
 	
 	/**
@@ -133,7 +134,7 @@ public class AreaTexto extends javax.swing.JTextArea{
 	 */
 	public void setModificado (boolean estado)
 	{
-		modificado = estado;
+		this.modificado = estado;
 		fireCaretUpdate(null);
 	}
 	
@@ -145,7 +146,7 @@ public class AreaTexto extends javax.swing.JTextArea{
 	 */
 	public boolean isModificado ()
 	{
-		return modificado;
+		return this.modificado;
 	}
 
 	/** 
@@ -156,7 +157,7 @@ public class AreaTexto extends javax.swing.JTextArea{
 	{
 		super (doc);
 		addMouseListener (new PopupListener());
-		modificado = false;
+		this.modificado = false;
 		getDocument().addDocumentListener (new listener());
 		getDocument().addUndoableEditListener(new  MyUndoableEditListener());
 		this.setTabSize(2);
@@ -176,6 +177,7 @@ public class AreaTexto extends javax.swing.JTextArea{
 	 * Cuenta el numero de lineas y caracteres que contiene el area de texto.
 	 * @return el numero de lineas de texto de la ventana de edición.
 	 */
+	@Override
 	public int getLineCount()
 	{
 		int lineas = super.getLineCount();
@@ -285,7 +287,7 @@ public class AreaTexto extends javax.swing.JTextArea{
 	public String getLineInfo ()
 	{
 		try{
-			String modificado ="  ";
+			String textoIndicaModificacion ="  ";
 			int dot = getCaretPosition();
 			int linea = getLineOfOffset(dot);
 			int columna = 1 + dot - getLineStartOffset(linea);
@@ -293,7 +295,7 @@ public class AreaTexto extends javax.swing.JTextArea{
 			int caracter = dot + 1;
 			int total_caracteres = this.getDocument().getLength();
 			if (isModificado())
-				modificado = " *";
+				textoIndicaModificacion = " *";
 
 
 			return ("Línea " + (linea+1) + " de " + lineastotales +
@@ -301,7 +303,7 @@ public class AreaTexto extends javax.swing.JTextArea{
 				+ "(" 
 				+ 100 * caracter / (total_caracteres+1) 
 				+ "%) " 
-				+ modificado);
+				+ textoIndicaModificacion);
 		} catch (javax.swing.text.BadLocationException e) 
 		{
 			return (" ");
@@ -315,8 +317,8 @@ public class AreaTexto extends javax.swing.JTextArea{
 	 */
 	public JPopupMenu anadirPopup (JPopupMenu menu)
 	{
-		popup = menu;
-		return popup;
+		this.popup = menu;
+		return this.popup;
 	}
 
     /**
@@ -337,27 +339,30 @@ public class AreaTexto extends javax.swing.JTextArea{
 		 * Se activa si cambia el contenido de documento.
 		 * @param e Un evento.
 		 */
+		@Override
 		public void changedUpdate (DocumentEvent e)
 		{
-			modificado = true;
+			AreaTexto.this.modificado = true;
 		}
 		
 		/**
 		 * Se activa si se inserta algo en el documento.
 		 * @param e Un evento.
 		 */
+		@Override
 		public void insertUpdate (DocumentEvent e)
 		{
-			modificado = true;
+			AreaTexto.this.modificado = true;
 		}
 		
 		/**
 		 * Se activa si elimina algo del documento.
 		 * @param e Un evento.
 		 */
+		@Override
 		public void removeUpdate (DocumentEvent e)
 		{
-			modificado = true;
+			AreaTexto.this.modificado = true;
 		}
 	}
 	
@@ -371,6 +376,7 @@ public class AreaTexto extends javax.swing.JTextArea{
 		 * Depende del botón pulsado.
 		 * @param e Evento de ratón.
 		 */
+		@Override
 		public void mousePressed(MouseEvent e) 
 		{
 			mostrarPopup(e);
@@ -381,6 +387,7 @@ public class AreaTexto extends javax.swing.JTextArea{
 		 * Depende del botón pulsado.
 		 * @param e Evento de ratón.
 		 */
+		@Override
 		public void mouseReleased(MouseEvent e) 
 		{
 			mostrarPopup(e);
@@ -396,12 +403,12 @@ public class AreaTexto extends javax.swing.JTextArea{
 		private void mostrarPopup (MouseEvent e) 
 		{
 			// Si no tenemos popup volvemos
-			if (popup == null)
+			if (AreaTexto.this.popup == null)
 				return;
 			//Si tenemos popup, y el es el botón derecho o central, mostramos el popup.
 			if (e.isPopupTrigger()) 
 			{
-				popup.show(e.getComponent(),e.getX(), e.getY());
+				AreaTexto.this.popup.show(e.getComponent(),e.getX(), e.getY());
 			}
 		}
 	}

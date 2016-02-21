@@ -43,8 +43,8 @@ public class MemoriaPrincipal
 	 */	
 	public MemoriaPrincipal ()
 	{
-		memoria = new short[TAMANO];
-		mask = (0xFFFF >> (16 - BITSDIRECCION));
+		this.memoria = new short[this.TAMANO];
+		this.mask = (0xFFFF >> (16 - this.BITSDIRECCION));
 	}
 	
 	/**
@@ -56,12 +56,12 @@ public class MemoriaPrincipal
 	 */
 	public MemoriaPrincipal (short[] codigoInicial)
 	{
-		memoria = new short[TAMANO];
-		mask = (0xFFFF >> (16 - BITSDIRECCION));
+		this.memoria = new short[this.TAMANO];
+		this.mask = (0xFFFF >> (16 - this.BITSDIRECCION));
 			
-		for (int i = 0; (i < memoria.length) && (i < codigoInicial.length); i++)
+		for (int i = 0; (i < this.memoria.length) && (i < codigoInicial.length); i++)
 		{
-			memoria[i] = codigoInicial[i];
+			this.memoria[i] = codigoInicial[i];
 		}
 	}
 	
@@ -72,8 +72,8 @@ public class MemoriaPrincipal
 	 */	
 	public void EscribirDato (short direccion, short dato)
 	{
-		int dir = (direccion & mask);
-		memoria[dir] = dato;
+		int dir = (direccion & this.mask);
+		this.memoria[dir] = dato;
 
 		ActualizarListeners (dir, dato);
 	}
@@ -86,8 +86,8 @@ public class MemoriaPrincipal
 	 */	
 	public short LeerDato (short direccion)
 		{
-		int dir = (direccion & mask);
-		return memoria[dir];
+		int dir = (direccion & this.mask);
+		return this.memoria[dir];
 		}
 
 	/**
@@ -97,8 +97,8 @@ public class MemoriaPrincipal
 
 	public void AddMemoryChangeListener (MemoryChangeListener l)
 		{
-		listeners.add (l);
-		l.MemoryChanged (memoria);
+		this.listeners.add (l);
+		l.MemoryChanged (this.memoria);
 		}
 		
 	/**
@@ -109,9 +109,9 @@ public class MemoriaPrincipal
 	 */
 	private void ActualizarListeners (int dir, short newValue)
 		{
-		for (int i = 0; i < listeners.size(); i++)
+		for (int i = 0; i < this.listeners.size(); i++)
 		{
-			((MemoryChangeListener) listeners.get(i)).
+			((MemoryChangeListener) this.listeners.get(i)).
 				MemoryChanged (dir, newValue);
 		}
 	}

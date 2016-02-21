@@ -200,7 +200,7 @@ public class MemoriaControl
 	 */
 	public long LeerDato (short direccion)
 	{
-		return memoria[direccion];
+		return this.memoria[direccion];
 	}
 		
 	/**
@@ -211,7 +211,7 @@ public class MemoriaControl
 	 */
 	public void EscribirDato (short direccion, long dato)
 	{
-		memoria[direccion] = dato;
+		this.memoria[direccion] = dato;
 	}
 		
 	/**
@@ -223,7 +223,7 @@ public class MemoriaControl
 	 */
 	public MicroInstruccion LeerMicroInstruccion (short direccion)
 	{
-		return new MicroInstruccion (memoria[direccion]);
+		return new MicroInstruccion (this.memoria[direccion]);
 	}
 
 }

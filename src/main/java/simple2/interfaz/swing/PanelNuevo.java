@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
@@ -64,31 +65,31 @@ public class PanelNuevo extends JPanel{
 		//Creamos el estilo de documento para el area de texto
 		DefaultStyledDocument estiloDefectoDoc = new DefaultStyledDocument();
 
-		texto = new AreaTexto(estiloDefectoDoc);
-		texto.setCaretPosition(0);
-		texto.setMargin(new Insets(5,5,5,5));
+		this.texto = new AreaTexto(estiloDefectoDoc);
+		this.texto.setCaretPosition(0);
+		this.texto.setMargin(new Insets(5,5,5,5));
      
-		JScrollPane editorScrollPane = new JScrollPane(texto);
+		JScrollPane editorScrollPane = new JScrollPane(this.texto);
  	
-		editorScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		editorScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 	
 		//panel de texto no editable para el codigo fuente codificado en hexadecimal
-		resultado = new AreaTexto();
-		resultado.setEditable(false);
-		resultado.setBackground(Color.lightGray);
-		resultado.setMargin(new Insets(5,5,5,5));
+		this.resultado = new AreaTexto();
+		this.resultado.setEditable(false);
+		this.resultado.setBackground(Color.lightGray);
+		this.resultado.setMargin(new Insets(5,5,5,5));
 
-		JScrollPane hexadecimalScrollPane = new JScrollPane(resultado);
-		hexadecimalScrollPane .setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		JScrollPane hexadecimalScrollPane = new JScrollPane(this.resultado);
+		hexadecimalScrollPane .setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 	
 		//panel de texto no editable que contiene los posibles errores
-		errores = new JTextArea();
-		errores.setEditable(false);
-		errores.setBackground(Color.lightGray);
-		errores.setMargin(new Insets(5,5,5,5));
+		this.errores = new JTextArea();
+		this.errores.setEditable(false);
+		this.errores.setBackground(Color.lightGray);
+		this.errores.setMargin(new Insets(5,5,5,5));
 
-		JScrollPane erroresScrollPane = new JScrollPane(errores);
-		erroresScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		JScrollPane erroresScrollPane = new JScrollPane(this.errores);
+		erroresScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 	
 
 		JPanel statusPane=new JPanel(new GridLayout(1,1));
@@ -96,8 +97,8 @@ public class PanelNuevo extends JPanel{
 		statusPane.add(barraPosicion);
 
 		
-		texto.addCaretListener(barraPosicion);
-		texto.getDocument().addDocumentListener(barraPosicion);
+		this.texto.addCaretListener(barraPosicion);
+		this.texto.getDocument().addDocumentListener(barraPosicion);
   
 		JPanel aux=new JPanel(new BorderLayout());
 		aux.add(statusPane,BorderLayout.SOUTH);
@@ -175,7 +176,7 @@ public class PanelNuevo extends JPanel{
 		 */
 		public void caretUpdate  (CaretEvent e)
 		{
-			setText(texto.getLineInfo());
+			setText(PanelNuevo.this.texto.getLineInfo());
 		}
 	}
 	
@@ -187,21 +188,21 @@ public class PanelNuevo extends JPanel{
 	 * @param instruccionesTotales Número de instrucciones totales 
 	 */
 	public void Escribir (Vector codigo_limpio,short[] ensamblado,int instruccionesTotales){
-		resultado.setEditable(false);
-		resultado.setBackground(Color.lightGray);
+		this.resultado.setEditable(false);
+		this.resultado.setBackground(Color.lightGray);
 		String codificado="";
 		int i;
 		for (i = 0; i < instruccionesTotales; i++)
 		{
-			String cadena=(Integer.toHexString((int) ensamblado[i])).toUpperCase();
-			if ((int) ensamblado[i] < 0)
+			String cadena=(Integer.toHexString(ensamblado[i])).toUpperCase();
+			if (ensamblado[i] < 0)
 				cadena=cadena.substring(cadena.length()-4);
 			if(cadena.length()==1) cadena="000"+cadena;
 			if(cadena.length()==2) cadena="00"+cadena;
 			if(cadena.length()==3) cadena="0"+cadena;
 			codificado=codificado+"("+codigo_limpio.elementAt(i)+")"+ cadena+"\n";
 		}
-		resultado.setText(codificado);
+		this.resultado.setText(codificado);
 				
 	}
 	
@@ -210,9 +211,9 @@ public class PanelNuevo extends JPanel{
 	 * @param error cadena de caracteres con los errores que se han producido
 	 */
 	public void Errores (String error){
-		resultado.setEditable(false);
-		resultado.setBackground(Color.lightGray);
-		errores.setText(error);	
+		this.resultado.setEditable(false);
+		this.resultado.setBackground(Color.lightGray);
+		this.errores.setText(error);	
 	}
 
 }

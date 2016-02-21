@@ -120,23 +120,23 @@ public class RepresentacionRDD implements RegisterChangeListener,IRepresentacion
 		this.dibujo = dibujo;
 		dibujo.setRepresentacionRDD(this);
 	
-		etiqueta = new Etiqueta (dibujo, 30, 10, "");
-		etiqueta_rmc_Inst = new Etiqueta (dibujo, 10, 25, "");
-		etiqueta_rmc_AMUX = new Etiqueta (dibujo, 10, 40, "");
-		etiqueta_rmc_COND = new Etiqueta (dibujo, 10, 55, "");
-		etiqueta_rmc_SH = new Etiqueta (dibujo, 10, 70, "");
-		etiqueta_rmc_MBR = new Etiqueta (dibujo, 10, 85, "");
-		etiqueta_rmc_MAR = new Etiqueta (dibujo, 10, 100, "");
-		etiqueta_rmc_RD = new Etiqueta (dibujo, 10, 115, "");
-		etiqueta_rmc_WR = new Etiqueta (dibujo, 10, 130, "");
-		etiqueta_rmc_ENC = new Etiqueta (dibujo, 10, 145, "");
-		etiqueta_rmc_C = new Etiqueta (dibujo, 10, 160, "");
-		etiqueta_rmc_B = new Etiqueta (dibujo, 10, 175, "");
-		etiqueta_rmc_A = new Etiqueta (dibujo, 10, 190, "");
-		etiqueta_rmc_ADDR = new Etiqueta (dibujo, 10, 205, "");
-		etiqueta_rmc_FIR = new Etiqueta (dibujo, 10, 220, "");
-		etiqueta_rmc_ALU = new Etiqueta (dibujo, 10, 235, "");
-		etiqueta_rmc_NombInst=new Etiqueta (dibujo,10,250, "");
+		this.etiqueta = new Etiqueta (dibujo, 30, 10, "");
+		this.etiqueta_rmc_Inst = new Etiqueta (dibujo, 10, 25, "");
+		this.etiqueta_rmc_AMUX = new Etiqueta (dibujo, 10, 40, "");
+		this.etiqueta_rmc_COND = new Etiqueta (dibujo, 10, 55, "");
+		this.etiqueta_rmc_SH = new Etiqueta (dibujo, 10, 70, "");
+		this.etiqueta_rmc_MBR = new Etiqueta (dibujo, 10, 85, "");
+		this.etiqueta_rmc_MAR = new Etiqueta (dibujo, 10, 100, "");
+		this.etiqueta_rmc_RD = new Etiqueta (dibujo, 10, 115, "");
+		this.etiqueta_rmc_WR = new Etiqueta (dibujo, 10, 130, "");
+		this.etiqueta_rmc_ENC = new Etiqueta (dibujo, 10, 145, "");
+		this.etiqueta_rmc_C = new Etiqueta (dibujo, 10, 160, "");
+		this.etiqueta_rmc_B = new Etiqueta (dibujo, 10, 175, "");
+		this.etiqueta_rmc_A = new Etiqueta (dibujo, 10, 190, "");
+		this.etiqueta_rmc_ADDR = new Etiqueta (dibujo, 10, 205, "");
+		this.etiqueta_rmc_FIR = new Etiqueta (dibujo, 10, 220, "");
+		this.etiqueta_rmc_ALU = new Etiqueta (dibujo, 10, 235, "");
+		this.etiqueta_rmc_NombInst=new Etiqueta (dibujo,10,250, "");
 		int x_deC1 = 350;
 		int x_deC2 = 400;
 		int y_deC = 436;
@@ -159,9 +159,9 @@ public class RepresentacionRDD implements RegisterChangeListener,IRepresentacion
 		int y_deMBR = y_deMUX;
 
 			
-		et_busa = new Etiqueta (dibujo, x_deA2-25 , yreg1 - 5, "Bus A");
-		et_busb = new Etiqueta (dibujo, x_deB2-10, yreg1, "Bus B");
-		et_busc = new Etiqueta (dibujo, x_deC1, yreg1 - 5, "Bus C");
+		this.et_busa = new Etiqueta (dibujo, x_deA2-25 , yreg1 - 5, "Bus A");
+		this.et_busb = new Etiqueta (dibujo, x_deB2-10, yreg1, "Bus B");
+		this.et_busc = new Etiqueta (dibujo, x_deC1, yreg1 - 5, "Bus C");
 
 		Cable[] cablesDeC = new Cable[16];
 
@@ -169,7 +169,7 @@ public class RepresentacionRDD implements RegisterChangeListener,IRepresentacion
 		{
 			cablesDeC[i] = new CableUnidireccional (dibujo, new int[]{x_deC1,y_deC, x_deC1, yreg1+ 5 + (altoRegistro+ separacionRegistros)*i, x_deC2, yreg1+5 + (altoRegistro+ separacionRegistros)*i});
 		}
-		busC = new Bus (cablesDeC);
+		this.busC = new Bus (cablesDeC);
 			
 		Cable[] cablesDeA = new Cable[16];
 			
@@ -177,7 +177,7 @@ public class RepresentacionRDD implements RegisterChangeListener,IRepresentacion
 		{
 			cablesDeA[i] = new CableUnidireccional (dibujo, new int[]{x_deC2 + anchoRegistro, yreg1+5+(altoRegistro+ separacionRegistros)*i, x_deA2, yreg1+5+(altoRegistro+ separacionRegistros)*i, x_deA2, y_deB});
 		}
-		busA = new Bus (cablesDeA);
+		this.busA = new Bus (cablesDeA);
 			
 		Cable[] cablesDeB = new Cable[16];
 			
@@ -185,74 +185,74 @@ public class RepresentacionRDD implements RegisterChangeListener,IRepresentacion
 		{
 			cablesDeB[i] = new CableUnidireccional (dibujo, new int[]{x_deC2 + anchoRegistro,yreg1+10+(altoRegistro+ separacionRegistros)*i, x_deB2, yreg1+10+(altoRegistro+ separacionRegistros)*i, x_deB2,y_deB});
 		}
-		busB = new Bus (cablesDeB);
+		this.busB = new Bus (cablesDeB);
 			
 		for (int i=0; i < 16; i++)
 		{
-			regs[i] = new CajaRegistro (dibujo, x_deC2, yreg1 +(altoRegistro+ separacionRegistros)*i,anchoRegistro,altoRegistro, BancoRegistros.GetNombreRegistro(i));
+			this.regs[i] = new CajaRegistro (dibujo, x_deC2, yreg1 +(altoRegistro+ separacionRegistros)*i,anchoRegistro,altoRegistro, BancoRegistros.GetNombreRegistro(i));
 		}			
 			
-		memoriappal = new CajaRegistro(dibujo,31,330,90,100,"Memoria");
+		this.memoriappal = new CajaRegistro(dibujo,31,330,90,100,"Memoria");
 		dibujo.dibujarTexto(Color.BLACK,34,380,"Principal");
 		dibujo.dibujarTexto(Color.BLACK,34,420,"(2048x16)");
-		cable_rd = new CableUnidireccional (dibujo, new int[]{65,320,65,330} );
-		cable_wr = new CableUnidireccional (dibujo, new int[]{100,320,100,330} );
-		et_rd = new Etiqueta (dibujo, 58,317, "RD");
-		et_wr = new Etiqueta (dibujo, 93,317, "WR");
+		this.cable_rd = new CableUnidireccional (dibujo, new int[]{65,320,65,330} );
+		this.cable_wr = new CableUnidireccional (dibujo, new int[]{100,320,100,330} );
+		this.et_rd = new Etiqueta (dibujo, 58,317, "RD");
+		this.et_wr = new Etiqueta (dibujo, 93,317, "WR");
 			
 			
-		bufferA = new CajaRegistro (dibujo, 450,y_deB,110,16, "BufferA 0000");
-		bufferB = new CajaRegistro(dibujo,570,y_deB,110,16,"BufferB 0000");
-		cable_l0 = new CableUnidireccional (dibujo, new int[]{440,y_deB + 8,450,y_deB+8} );
-		cable_l1 = new CableUnidireccional (dibujo, new int[]{690,y_deB + 8,680,y_deB+8} );
+		this.bufferA = new CajaRegistro (dibujo, 450,y_deB,110,16, "BufferA 0000");
+		this.bufferB = new CajaRegistro(dibujo,570,y_deB,110,16,"BufferB 0000");
+		this.cable_l0 = new CableUnidireccional (dibujo, new int[]{440,y_deB + 8,450,y_deB+8} );
+		this.cable_l1 = new CableUnidireccional (dibujo, new int[]{690,y_deB + 8,680,y_deB+8} );
 			
-		et_l0 = new Etiqueta (dibujo, 420, y_deB + 12 , "L0");
-		et_l1 = new Etiqueta (dibujo, 700, y_deB + 12 , "L1");
+		this.et_l0 = new Etiqueta (dibujo, 420, y_deB + 12 , "L0");
+		this.et_l1 = new Etiqueta (dibujo, 700, y_deB + 12 , "L1");
 			
 			
-		cable_bufferB_alu = new CableUnidireccional (dibujo, new int[]{580,y_deB+16,580,y_deAlu} );
-		cable_bufferB_mar  = new CableUnidireccional (dibujo, new int[]{580,y_deB + 16,580,y_deMAR+8,x_deMAR + ancho_MAR,y_deMAR +8});
-		cable_bufferA_mux = new CableUnidireccional (dibujo, new int[]{550,y_deB+16,550,y_deMUX} );
+		this.cable_bufferB_alu = new CableUnidireccional (dibujo, new int[]{580,y_deB+16,580,y_deAlu} );
+		this.cable_bufferB_mar  = new CableUnidireccional (dibujo, new int[]{580,y_deB + 16,580,y_deMAR+8,x_deMAR + ancho_MAR,y_deMAR +8});
+		this.cable_bufferA_mux = new CableUnidireccional (dibujo, new int[]{550,y_deB+16,550,y_deMUX} );
 			
-		mux = new CajaRegistro(dibujo,500,y_deMUX,60,16,"MUX");
-		cable_a0 = new CableUnidireccional (dibujo, new int[]{510,y_deMUX+26,510,y_deMUX+16} );
-		cable_mux_alu = new CableUnidireccional (dibujo, new int[]{550,y_deMUX+16,550,390} );
-		cable_alu_sh = new CableUnidireccional (dibujo, new int[]{570,422,570,430} );
+		this.mux = new CajaRegistro(dibujo,500,y_deMUX,60,16,"MUX");
+		this.cable_a0 = new CableUnidireccional (dibujo, new int[]{510,y_deMUX+26,510,y_deMUX+16} );
+		this.cable_mux_alu = new CableUnidireccional (dibujo, new int[]{550,y_deMUX+16,550,390} );
+		this.cable_alu_sh = new CableUnidireccional (dibujo, new int[]{570,422,570,430} );
 			
-		et_a0 = new Etiqueta (dibujo, 500, y_deMUX + 40, "A0 0");
+		this.et_a0 = new Etiqueta (dibujo, 500, y_deMUX + 40, "A0 0");
 			
-		mar = new CajaRegistro(dibujo, x_deMAR,y_deMAR,ancho_MAR,16,"MAR 0000");
-		mbr = new CajaRegistro (dibujo, x_deMAR,y_deMUX,ancho_MAR,16,"MBR 0000");
+		this.mar = new CajaRegistro(dibujo, x_deMAR,y_deMAR,ancho_MAR,16,"MAR 0000");
+		this.mbr = new CajaRegistro (dibujo, x_deMAR,y_deMUX,ancho_MAR,16,"MBR 0000");
 			
-		cable_m0 = new CableUnidireccional (dibujo, new int[]{190,y_deMAR-10,190,y_deMAR} );
-		cable_m1 = new CableUnidireccional (dibujo, new int[]{170,y_deMBR+26,170,y_deMBR+16} );
+		this.cable_m0 = new CableUnidireccional (dibujo, new int[]{190,y_deMAR-10,190,y_deMAR} );
+		this.cable_m1 = new CableUnidireccional (dibujo, new int[]{170,y_deMBR+26,170,y_deMBR+16} );
 			
-		et_m0 = new Etiqueta (dibujo, 182, y_deMAR - 12, "M0");
-		et_m1 = new Etiqueta (dibujo, 162, y_deMBR + 39, "M1");
+		this.et_m0 = new Etiqueta (dibujo, 182, y_deMAR - 12, "M0");
+		this.et_m1 = new Etiqueta (dibujo, 162, y_deMBR + 39, "M1");
 			
-		cable_mbr_mux = new CableUnidireccional (dibujo, new int[]{x_deMAR + ancho_MAR,y_deMUX+8,500,y_deMUX+8} );
-		cable_mar_ppal = new CableUnidireccional (dibujo, new int[]{x_deMAR,y_deMAR+8,121,y_deMAR+8} );
-		cable_mbr_ppal = new CableBidireccional (dibujo, new int[]{121,y_deMUX+8,x_deMAR,y_deMUX+8} );		
+		this.cable_mbr_mux = new CableUnidireccional (dibujo, new int[]{x_deMAR + ancho_MAR,y_deMUX+8,500,y_deMUX+8} );
+		this.cable_mar_ppal = new CableUnidireccional (dibujo, new int[]{x_deMAR,y_deMAR+8,121,y_deMAR+8} );
+		this.cable_mbr_ppal = new CableBidireccional (dibujo, new int[]{121,y_deMUX+8,x_deMAR,y_deMUX+8} );		
 		
-		sh = new CajaRegistro(dibujo,x_deAlu,430,anchoAlu,16,"SH 0000");
-		cable_s2_s0 = new CableUnidireccional (dibujo, new int[]{x_deAlu+anchoAlu+10,438,x_deAlu+anchoAlu,438} );
-		et_s0 = new Etiqueta (dibujo, x_deAlu+anchoAlu + 15, 443, "S2-S0 000");
+		this.sh = new CajaRegistro(dibujo,x_deAlu,430,anchoAlu,16,"SH 0000");
+		this.cable_s2_s0 = new CableUnidireccional (dibujo, new int[]{x_deAlu+anchoAlu+10,438,x_deAlu+anchoAlu,438} );
+		this.et_s0 = new Etiqueta (dibujo, x_deAlu+anchoAlu + 15, 443, "S2-S0 000");
 			
-		cable_sh_mbr  = new CableUnidireccional (dibujo, new int[]{x_deC1,y_deC,190,y_deC,190,y_deMUX+16});
-		cable_sh = new Cable (dibujo, new int[] {x_deAlu, y_deC, x_deC1, y_deC});
-			
-			
-		alu=new CajaRegistro(dibujo,x_deAlu,y_deAlu,anchoAlu,32,"ALU");
+		this.cable_sh_mbr  = new CableUnidireccional (dibujo, new int[]{x_deC1,y_deC,190,y_deC,190,y_deMUX+16});
+		this.cable_sh = new Cable (dibujo, new int[] {x_deAlu, y_deC, x_deC1, y_deC});
 			
 			
-		cable_c = new CableUnidireccional (dibujo, new int[]{x_deAlu+anchoAlu,395,x_deAlu+anchoAlu+10,395} );
-		cable_n = new CableUnidireccional (dibujo, new int[]{x_deAlu+anchoAlu,405,x_deAlu+anchoAlu+10,405} );
-		cable_z = new CableUnidireccional (dibujo, new int[]{x_deAlu+anchoAlu,415,x_deAlu+anchoAlu+10,415} );
-		cable_f3_f0 = new CableUnidireccional (dibujo, new int[]{x_deAlu-10,415,x_deAlu,415} );
-		et_f0 = new Etiqueta (dibujo, x_deAlu - 75, 420, "F3-F0 0000");
-		et_c = new Etiqueta (dibujo, x_deAlu+anchoAlu+15, 400, "C 0");
-		et_n = new Etiqueta (dibujo, x_deAlu+anchoAlu+15, 410, "N 0");
-		et_z = new Etiqueta (dibujo, x_deAlu+anchoAlu+15, 420, "Z 0");
+		this.alu=new CajaRegistro(dibujo,x_deAlu,y_deAlu,anchoAlu,32,"ALU");
+			
+			
+		this.cable_c = new CableUnidireccional (dibujo, new int[]{x_deAlu+anchoAlu,395,x_deAlu+anchoAlu+10,395} );
+		this.cable_n = new CableUnidireccional (dibujo, new int[]{x_deAlu+anchoAlu,405,x_deAlu+anchoAlu+10,405} );
+		this.cable_z = new CableUnidireccional (dibujo, new int[]{x_deAlu+anchoAlu,415,x_deAlu+anchoAlu+10,415} );
+		this.cable_f3_f0 = new CableUnidireccional (dibujo, new int[]{x_deAlu-10,415,x_deAlu,415} );
+		this.et_f0 = new Etiqueta (dibujo, x_deAlu - 75, 420, "F3-F0 0000");
+		this.et_c = new Etiqueta (dibujo, x_deAlu+anchoAlu+15, 400, "C 0");
+		this.et_n = new Etiqueta (dibujo, x_deAlu+anchoAlu+15, 410, "N 0");
+		this.et_z = new Etiqueta (dibujo, x_deAlu+anchoAlu+15, 420, "Z 0");
 			
 		ActualizarTodo();
 	}
@@ -263,84 +263,85 @@ public class RepresentacionRDD implements RegisterChangeListener,IRepresentacion
 	 */
 	public void ActualizarTodo()
 	{
-		dibujo.clean();
-		etiqueta.Repintar();
-		etiqueta_rmc_Inst.Repintar();
-		etiqueta_rmc_AMUX.Repintar();
-		etiqueta_rmc_COND.Repintar();
-		etiqueta_rmc_SH.Repintar();
-		etiqueta_rmc_MBR.Repintar();
-		etiqueta_rmc_MAR.Repintar();
-		etiqueta_rmc_RD.Repintar();
-		etiqueta_rmc_WR.Repintar();
-		etiqueta_rmc_ENC.Repintar();
-		etiqueta_rmc_C.Repintar();
-		etiqueta_rmc_B.Repintar();
-		etiqueta_rmc_A.Repintar();
-		etiqueta_rmc_ADDR.Repintar();
-		etiqueta_rmc_FIR.Repintar();
-		etiqueta_rmc_ALU.Repintar();
-		etiqueta_rmc_NombInst.Repintar();
+		this.dibujo.clean();
+		this.etiqueta.Repintar();
+		this.etiqueta_rmc_Inst.Repintar();
+		this.etiqueta_rmc_AMUX.Repintar();
+		this.etiqueta_rmc_COND.Repintar();
+		this.etiqueta_rmc_SH.Repintar();
+		this.etiqueta_rmc_MBR.Repintar();
+		this.etiqueta_rmc_MAR.Repintar();
+		this.etiqueta_rmc_RD.Repintar();
+		this.etiqueta_rmc_WR.Repintar();
+		this.etiqueta_rmc_ENC.Repintar();
+		this.etiqueta_rmc_C.Repintar();
+		this.etiqueta_rmc_B.Repintar();
+		this.etiqueta_rmc_A.Repintar();
+		this.etiqueta_rmc_ADDR.Repintar();
+		this.etiqueta_rmc_FIR.Repintar();
+		this.etiqueta_rmc_ALU.Repintar();
+		this.etiqueta_rmc_NombInst.Repintar();
 			
-		et_busa.Repintar();
-		et_busb.Repintar();
-		et_busc.Repintar();
+		this.et_busa.Repintar();
+		this.et_busb.Repintar();
+		this.et_busc.Repintar();
 			
-		et_rd.Repintar();
-		et_wr.Repintar();
-		et_m0.Repintar();
-		et_m1.Repintar();
-		et_l0.Repintar();
-		et_l1.Repintar();
+		this.et_rd.Repintar();
+		this.et_wr.Repintar();
+		this.et_m0.Repintar();
+		this.et_m1.Repintar();
+		this.et_l0.Repintar();
+		this.et_l1.Repintar();
 			
-		et_s0.Repintar();
-		et_a0.Repintar();
-		et_f0.Repintar();
-		et_c.Repintar();
-		et_n.Repintar();
-		et_z.Repintar();
+		this.et_s0.Repintar();
+		this.et_a0.Repintar();
+		this.et_f0.Repintar();
+		this.et_c.Repintar();
+		this.et_n.Repintar();
+		this.et_z.Repintar();
 			
 			
-		for (int i=0; i < 16; i++)
-			regs[i].Repintar();
-		busC.Repintar();
-		busA.Repintar();
-		busB.Repintar();
-		bufferA.Repintar();
-		bufferB.Repintar();
-		mar.Repintar();
-		mbr.Repintar();
-		sh.Repintar();
+		for (int i=0; i < 16; i++) {
+			this.regs[i].Repintar();
+		}
+		this.busC.Repintar();
+		this.busA.Repintar();
+		this.busB.Repintar();
+		this.bufferA.Repintar();
+		this.bufferB.Repintar();
+		this.mar.Repintar();
+		this.mbr.Repintar();
+		this.sh.Repintar();
 
 
-		cable_m0.Repintar();
-		cable_m1.Repintar();
-		cable_l0.Repintar();
-		cable_l1.Repintar();
-		cable_a0.Repintar();
-		cable_f3_f0.Repintar();
-		cable_c.Repintar();
-		cable_n.Repintar();
-		cable_z.Repintar();
-		cable_s2_s0.Repintar();
-		cable_mbr_mux.Repintar();
-		cable_mar_ppal.Repintar();
-		cable_mbr_ppal.Repintar();
-		cable_bufferA_mux.Repintar();
-		cable_mux_alu.Repintar();
-		cable_alu_sh.Repintar();
-		cable_bufferB_mar.Repintar();
-		cable_bufferB_alu.Repintar();
-		cable_sh_mbr.Repintar();
-		cable_sh.Repintar();
-		memoriappal.Repintar();
-		cable_rd.Repintar();
-		cable_wr.Repintar();			
-		mux.Repintar();			
-		alu.Repintar();
-		dibujo.dibujarTexto(Color.BLACK,34,380,"Principal");
-		dibujo.dibujarTexto(Color.BLACK,34,420,"(2048x16)");
-		dibujo.refresh();
+		this.cable_m0.Repintar();
+		this.cable_m1.Repintar();
+		this.cable_l0.Repintar();
+		this.cable_l1.Repintar();
+		this.cable_a0.Repintar();
+		this.cable_f3_f0.Repintar();
+		this.cable_c.Repintar();
+		this.cable_n.Repintar();
+		this.cable_z.Repintar();
+		this.cable_s2_s0.Repintar();
+		this.cable_mbr_mux.Repintar();
+		this.cable_mar_ppal.Repintar();
+		this.cable_mbr_ppal.Repintar();
+		this.cable_bufferA_mux.Repintar();
+		this.cable_mux_alu.Repintar();
+		this.cable_alu_sh.Repintar();
+		this.cable_bufferB_mar.Repintar();
+		this.cable_bufferB_alu.Repintar();
+		this.cable_sh_mbr.Repintar();
+		this.cable_sh.Repintar();
+		this.memoriappal.Repintar();
+		this.cable_rd.Repintar();
+		this.cable_wr.Repintar();			
+		this.mux.Repintar();			
+		this.alu.Repintar();
+		this.dibujo.dibujarTexto(Color.BLACK,34,380,"Principal");
+		this.dibujo.dibujarTexto(Color.BLACK,34,420,"(2048x16)");
+		this.dibujo.refresh();
 	}
 		
 		
@@ -350,19 +351,19 @@ public class RepresentacionRDD implements RegisterChangeListener,IRepresentacion
 	 */
 	public void DibujarCiclo1 (MicroInstruccion mic, short rdc)
 	{
-		ciclo++;
+		this.ciclo++;
 		PintarMicro (mic);
-		etiqueta.setText ("Ciclo: " + ciclo + " Subciclo 1");
-		cable_sh.Apagar();
-		cable_sh_mbr.Apagar();
-		mbr.Apagar();
-		sh.Apagar();
-		busC.Apagar();
+		this.etiqueta.setText ("Ciclo: " + this.ciclo + " Subciclo 1");
+		this.cable_sh.Apagar();
+		this.cable_sh_mbr.Apagar();
+		this.mbr.Apagar();
+		this.sh.Apagar();
+		this.busC.Apagar();
 		for (int i=0; i < 16; i++)
-			regs[i].Apagar();
+			this.regs[i].Apagar();
 		if ((rdc == 0) ||((rdc > 1019) && (rdc < 1023)))
 		{
-			etiqueta_rmc_NombInst.setText("NOMBRE=Cargando Instrucción...");
+			this.etiqueta_rmc_NombInst.setText("NOMBRE=Cargando Instrucción...");
 		}
 		ActualizarTodo();
 	}
@@ -376,18 +377,18 @@ public class RepresentacionRDD implements RegisterChangeListener,IRepresentacion
 	public void DibujarCiclo2 (MicroInstruccion mic, short regA, short regB)
 	{
 		PintarMicro (mic);
-		etiqueta.setText ("Ciclo: " + ciclo + " Subciclo 2");
-		busA.Encender (mic.GetA());
-		busB.Encender (mic.GetB());
+		this.etiqueta.setText ("Ciclo: " + this.ciclo + " Subciclo 2");
+		this.busA.Encender (mic.GetA());
+		this.busB.Encender (mic.GetB());
 			
-		regs[mic.GetA()].Encender();
-		regs[mic.GetB()].Encender();
+		this.regs[mic.GetA()].Encender();
+		this.regs[mic.GetB()].Encender();
 			
-		bufferA.setText ("BufferA " + Conversiones.ToHexString(regA));
-		bufferB.setText ("BufferB " + Conversiones.ToHexString(regB));			
+		this.bufferA.setText ("BufferA " + Conversiones.ToHexString(regA));
+		this.bufferB.setText ("BufferB " + Conversiones.ToHexString(regB));			
 			
-		bufferA.Encender();
-		bufferB.Encender();
+		this.bufferA.Encender();
+		this.bufferB.Encender();
 			
 		ActualizarTodo();
 
@@ -407,44 +408,44 @@ public class RepresentacionRDD implements RegisterChangeListener,IRepresentacion
 		short vMBR, int valorC, int valorN, int valorZ )
 	{
 		PintarMicro (mic);
-		etiqueta.setText("Ciclo: "+ ciclo + " Subciclo 3");
-		busA.Apagar();
-		busB.Apagar();			
-		regs[mic.GetA()].Apagar();
-		regs[mic.GetB()].Apagar();
-		sh.Encender();
+		this.etiqueta.setText("Ciclo: "+ this.ciclo + " Subciclo 3");
+		this.busA.Apagar();
+		this.busB.Apagar();			
+		this.regs[mic.GetA()].Apagar();
+		this.regs[mic.GetB()].Apagar();
+		this.sh.Encender();
 			
-		mbr.setText ("MBR " + Conversiones.ToHexString (vMBR));
-		mar.setText ("MAR " + Conversiones.ToHexString (vMAR));
-		sh.setText ("SH " + Conversiones.ToHexString (vSH));
-		et_s0.setText ("S2-S0 " + Conversiones.ToBinaryString(mic.GetSH(), 3));
-		et_a0.setText ("A0 " + Conversiones.ToBinaryString(mic.GetAMUX(), 1));
-		et_f0.setText ("F3-F0 " + Conversiones.ToBinaryString(mic.GetALU(), 4));
-		et_c.setText ("C " + valorC);
-		et_n.setText ("N " + valorN);
-		et_z.setText ("Z " + valorZ);
+		this.mbr.setText ("MBR " + Conversiones.ToHexString (vMBR));
+		this.mar.setText ("MAR " + Conversiones.ToHexString (vMAR));
+		this.sh.setText ("SH " + Conversiones.ToHexString (vSH));
+		this.et_s0.setText ("S2-S0 " + Conversiones.ToBinaryString(mic.GetSH(), 3));
+		this.et_a0.setText ("A0 " + Conversiones.ToBinaryString(mic.GetAMUX(), 1));
+		this.et_f0.setText ("F3-F0 " + Conversiones.ToBinaryString(mic.GetALU(), 4));
+		this.et_c.setText ("C " + valorC);
+		this.et_n.setText ("N " + valorN);
+		this.et_z.setText ("Z " + valorZ);
 			
 			
 		if (mic.GetMAR() == 1)
 		{
 			//Activamos el cable que va de bufferB a MAR
-			mar.Encender();
-			cable_bufferB_mar.Encender();
+			this.mar.Encender();
+			this.cable_bufferB_mar.Encender();
 		}
 		if (mic.GetAMUX() == 1)
 		{
-			cable_mbr_mux.Encender();
-			mbr.Encender();
+			this.cable_mbr_mux.Encender();
+			this.mbr.Encender();
 		}
 		else
 		{
-			cable_bufferA_mux.Encender();
+			this.cable_bufferA_mux.Encender();
 		}
-		cable_bufferB_alu.Encender();
-		cable_alu_sh.Encender();
-		alu.Encender();
-		mux.Encender();
-		cable_mux_alu.Encender();
+		this.cable_bufferB_alu.Encender();
+		this.cable_alu_sh.Encender();
+		this.alu.Encender();
+		this.mux.Encender();
+		this.cable_mux_alu.Encender();
 
 		ActualizarTodo();
 	}
@@ -457,40 +458,40 @@ public class RepresentacionRDD implements RegisterChangeListener,IRepresentacion
 	public void DibujarCiclo4(MicroInstruccion mic, short vMBR)
 	{
 		PintarMicro (mic);
-		etiqueta.setText ("Ciclo: " + ciclo + " Subciclo 4");
-		bufferA.Apagar();
-		bufferB.Apagar();
-		mar.Apagar();
-		mbr.Apagar();
-		mbr.setText ("MBR " + Conversiones.ToHexString (vMBR));
-		cable_bufferB_mar.Apagar();
-		cable_bufferB_alu.Apagar();
-		alu.Apagar();
-		mux.Apagar();
-		cable_bufferA_mux.Apagar();
-		cable_alu_sh.Apagar();
-		cable_mux_alu.Apagar();
-		cable_mbr_mux.Apagar();
+		this.etiqueta.setText ("Ciclo: " + this.ciclo + " Subciclo 4");
+		this.bufferA.Apagar();
+		this.bufferB.Apagar();
+		this.mar.Apagar();
+		this.mbr.Apagar();
+		this.mbr.setText ("MBR " + Conversiones.ToHexString (vMBR));
+		this.cable_bufferB_mar.Apagar();
+		this.cable_bufferB_alu.Apagar();
+		this.alu.Apagar();
+		this.mux.Apagar();
+		this.cable_bufferA_mux.Apagar();
+		this.cable_alu_sh.Apagar();
+		this.cable_mux_alu.Apagar();
+		this.cable_mbr_mux.Apagar();
 		//Escribir el dato de salida en la ALU.
 		//Activar los cables de salida necesarios.
 		if (mic.GetENC() == 1)
 		{
-			busC.Encender(mic.GetC());
-			regs[mic.GetC()].Encender();
+			this.busC.Encender(mic.GetC());
+			this.regs[mic.GetC()].Encender();
 		}
 		if (mic.GetMBR() == 1)
 		{
 			//Activamos el cable que va de SH a MBR
-			cable_sh_mbr.Encender();
-			mbr.Encender();
+			this.cable_sh_mbr.Encender();
+			this.mbr.Encender();
 		}
 		if ( (!(mic.GetENC()==1)) && (!(mic.GetMBR()==1) ) )
 		{
-			sh.Apagar();
+			this.sh.Apagar();
 		}
 		else
 		{
-			cable_sh.Encender();
+			this.cable_sh.Encender();
 		}
 		ActualizarTodo();
 	}
@@ -500,43 +501,43 @@ public class RepresentacionRDD implements RegisterChangeListener,IRepresentacion
 	 */
 	public void Clean()
 	{			
-		busC.Apagar();
-		busA.Apagar();
-		busB.Apagar();
-		bufferA.Apagar();
-		bufferB.Apagar();
-		mar.Apagar();
-		mbr.Apagar();
-		sh.Apagar();
+		this.busC.Apagar();
+		this.busA.Apagar();
+		this.busB.Apagar();
+		this.bufferA.Apagar();
+		this.bufferB.Apagar();
+		this.mar.Apagar();
+		this.mbr.Apagar();
+		this.sh.Apagar();
 
-		cable_m0.Apagar();
-		cable_m1.Apagar();
-		cable_l0.Apagar();
-		cable_l1.Apagar();
-		cable_a0.Apagar();
-		cable_f3_f0.Apagar();
-		cable_c.Apagar();
-		cable_n.Apagar();
-		cable_z.Apagar();
-		cable_s2_s0.Apagar();
-		cable_mbr_mux.Apagar();
-		cable_mar_ppal.Apagar();
-		cable_mbr_ppal.Apagar();
-		cable_bufferA_mux.Apagar();
-		cable_mux_alu.Apagar();
-		cable_alu_sh.Apagar();
-		cable_bufferB_alu.Apagar();
-		cable_bufferB_mar.Apagar();
-		cable_sh_mbr.Apagar();
-		cable_sh.Apagar();
-		memoriappal.Apagar();
-		cable_rd.Apagar();
-		cable_wr.Apagar();			
-		mux.Apagar();	
-		alu.Apagar();			
+		this.cable_m0.Apagar();
+		this.cable_m1.Apagar();
+		this.cable_l0.Apagar();
+		this.cable_l1.Apagar();
+		this.cable_a0.Apagar();
+		this.cable_f3_f0.Apagar();
+		this.cable_c.Apagar();
+		this.cable_n.Apagar();
+		this.cable_z.Apagar();
+		this.cable_s2_s0.Apagar();
+		this.cable_mbr_mux.Apagar();
+		this.cable_mar_ppal.Apagar();
+		this.cable_mbr_ppal.Apagar();
+		this.cable_bufferA_mux.Apagar();
+		this.cable_mux_alu.Apagar();
+		this.cable_alu_sh.Apagar();
+		this.cable_bufferB_alu.Apagar();
+		this.cable_bufferB_mar.Apagar();
+		this.cable_sh_mbr.Apagar();
+		this.cable_sh.Apagar();
+		this.memoriappal.Apagar();
+		this.cable_rd.Apagar();
+		this.cable_wr.Apagar();			
+		this.mux.Apagar();	
+		this.alu.Apagar();			
 			
 		for (int i=0; i < 16; i++)
-			regs[i].Apagar();			
+			this.regs[i].Apagar();			
 		ActualizarTodo();
 
 	}
@@ -556,16 +557,26 @@ public class RepresentacionRDD implements RegisterChangeListener,IRepresentacion
 	 */
 	public void RegisterChanged (int registro, short newValue)
 	{
-		String cadena=(Integer.toHexString((int) newValue)).toUpperCase();
-		if ((int) newValue < 0)
+		String cadena=(Integer.toHexString(newValue)).toUpperCase();
+		// TODO String.format
+		if (newValue < 0) {
 			cadena=cadena.substring(cadena.length()-4);
-		if(cadena.length()==0) cadena="0000";
-		if(cadena.length()==1) cadena="000"+cadena;
-		if(cadena.length()==2) cadena="00"+cadena;
-		if(cadena.length()==3) cadena="0"+cadena;
-		regs[registro].setText (BancoRegistros.GetNombreRegistro(registro) + " " + cadena);
+		}
+		if(cadena.length()==0) {
+			cadena="0000";
+		}
+		if(cadena.length()==1) {
+			cadena="000"+cadena;
+		}
+		if(cadena.length()==2){
+			cadena="00"+cadena;
+		}
+		if(cadena.length()==3){
+			cadena="0"+cadena;
+		}
+		this.regs[registro].setText (BancoRegistros.GetNombreRegistro(registro) + " " + cadena);
 		if(registro==3){
-			etiqueta_rmc_NombInst.setText ("NOMBRE=" + Desensamblador.Desensamblar(newValue));	
+			this.etiqueta_rmc_NombInst.setText ("NOMBRE=" + Desensamblador.Desensamblar(newValue));	
 		}
 		
 	}
@@ -589,21 +600,21 @@ public class RepresentacionRDD implements RegisterChangeListener,IRepresentacion
 	 */	
 	private void PintarMicro (MicroInstruccion mic)
 	{
-		etiqueta_rmc_Inst.setText ("Inst = " + mic.toHexString());
-		etiqueta_rmc_AMUX.setText ("AMUX="+ Conversiones.ToBinaryString (mic.GetAMUX(),1));
-		etiqueta_rmc_COND.setText ("COND="+ Conversiones.ToBinaryString (mic.GetCOND(),3));
-		etiqueta_rmc_SH.setText ("SH="  + Conversiones.ToBinaryString (mic.GetSH(),3));
-		etiqueta_rmc_MBR.setText ("MBR=" + Conversiones.ToBinaryString (mic.GetMBR(),1));
-		etiqueta_rmc_MAR.setText ("MAR=" + Conversiones.ToBinaryString (mic.GetMAR(),1));
-		etiqueta_rmc_RD.setText ("RD="  + Conversiones.ToBinaryString (mic.GetRD(),1));
-		etiqueta_rmc_WR.setText ("WR="  + Conversiones.ToBinaryString (mic.GetWR(),1));
-		etiqueta_rmc_ENC.setText ("ENC=" + Conversiones.ToBinaryString (mic.GetENC(),1));
-		etiqueta_rmc_C.setText ("C="   + Conversiones.ToBinaryString (mic.GetC(),4));
-		etiqueta_rmc_B.setText ("B="   + Conversiones.ToBinaryString (mic.GetB(),4));
-		etiqueta_rmc_A.setText ("A="   + Conversiones.ToBinaryString (mic.GetA(),4) );
-		etiqueta_rmc_ADDR.setText ("ADDR="+ Conversiones.ToBinaryString (mic.GetADDR(),10));
-		etiqueta_rmc_FIR.setText ("FIR=" + Conversiones.ToBinaryString (mic.GetFIR() , 1));
-		etiqueta_rmc_ALU.setText ("ALU=" + Conversiones.ToBinaryString (mic.GetALU(),4));	
+		this.etiqueta_rmc_Inst.setText ("Inst = " + mic.toHexString());
+		this.etiqueta_rmc_AMUX.setText ("AMUX="+ Conversiones.ToBinaryString (mic.GetAMUX(),1));
+		this.etiqueta_rmc_COND.setText ("COND="+ Conversiones.ToBinaryString (mic.GetCOND(),3));
+		this.etiqueta_rmc_SH.setText ("SH="  + Conversiones.ToBinaryString (mic.GetSH(),3));
+		this.etiqueta_rmc_MBR.setText ("MBR=" + Conversiones.ToBinaryString (mic.GetMBR(),1));
+		this.etiqueta_rmc_MAR.setText ("MAR=" + Conversiones.ToBinaryString (mic.GetMAR(),1));
+		this.etiqueta_rmc_RD.setText ("RD="  + Conversiones.ToBinaryString (mic.GetRD(),1));
+		this.etiqueta_rmc_WR.setText ("WR="  + Conversiones.ToBinaryString (mic.GetWR(),1));
+		this.etiqueta_rmc_ENC.setText ("ENC=" + Conversiones.ToBinaryString (mic.GetENC(),1));
+		this.etiqueta_rmc_C.setText ("C="   + Conversiones.ToBinaryString (mic.GetC(),4));
+		this.etiqueta_rmc_B.setText ("B="   + Conversiones.ToBinaryString (mic.GetB(),4));
+		this.etiqueta_rmc_A.setText ("A="   + Conversiones.ToBinaryString (mic.GetA(),4) );
+		this.etiqueta_rmc_ADDR.setText ("ADDR="+ Conversiones.ToBinaryString (mic.GetADDR(),10));
+		this.etiqueta_rmc_FIR.setText ("FIR=" + Conversiones.ToBinaryString (mic.GetFIR() , 1));
+		this.etiqueta_rmc_ALU.setText ("ALU=" + Conversiones.ToBinaryString (mic.GetALU(),4));	
 				
 	}			
 }

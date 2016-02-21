@@ -62,11 +62,11 @@ public class PanelDibujo extends JPanel implements InterfaceDibujo,ComponentList
 	
 	private int coordX (int x)
 	{
-		return (_ancho*x/720);
+		return (this._ancho*x/720);
 	}
 	private int coordY (int y)
 	{
-		return (_alto*y/470);
+		return (this._alto*y/470);
 	}
 
 	/**
@@ -82,6 +82,7 @@ public class PanelDibujo extends JPanel implements InterfaceDibujo,ComponentList
 	/**
 	 *Actualiza el dibujo 
 	 */
+	@Override
 	public void refresh() {
 		this.repaint();
 	}
@@ -89,6 +90,7 @@ public class PanelDibujo extends JPanel implements InterfaceDibujo,ComponentList
 	/**
 	 * Limpia el contenido del dibujo (no lo vuelca en pantalla). 
 	 */
+	@Override
 	public void clean() {
 		if (gr != null) {
 			gr.setColor(BACKGROUND);
@@ -103,7 +105,8 @@ public class PanelDibujo extends JPanel implements InterfaceDibujo,ComponentList
 	 * @param ancho Ancho del rectangulo que queremos borrar
 	 * @param alto Alto del rectangulo que queremos borrar
 	 */
-	 public void  clean(int x, int y, int ancho, int alto) {
+	 @Override
+	public void  clean(int x, int y, int ancho, int alto) {
 		if (gr != null) {
 		   gr.setColor(BACKGROUND);
 		   gr.fillRect(coordX(x), coordY(y),coordX(ancho), coordY(alto));
@@ -119,7 +122,8 @@ public class PanelDibujo extends JPanel implements InterfaceDibujo,ComponentList
 	  * @param x2 Coordenada horizontal donde termina la linea
 	  * @param y2 Coordenada vertical donde termina la linea
 	  */
-	 public void dibujarRecta(Color c, int x1, int y1, int x2, int y2) {
+	 @Override
+	public void dibujarRecta(Color c, int x1, int y1, int x2, int y2) {
 		if (gr != null) {
 			gr.setColor(c);
 			gr.drawLine(coordX(x1),coordY(y1),coordX(x2),coordY(y2));
@@ -133,6 +137,7 @@ public class PanelDibujo extends JPanel implements InterfaceDibujo,ComponentList
 	 * @param y Coordenada vertical donde comienzan las letras
 	 * @param texto Texto que queremos escribir
 	 */
+	@Override
 	public void dibujarTexto(Color c, int x, int y, String texto) {
 		if (gr != null) {
 			gr.setColor(c);
@@ -148,6 +153,7 @@ public class PanelDibujo extends JPanel implements InterfaceDibujo,ComponentList
 	* @param ancho Ancho del rectangulo
 	* @param alto Alto del rectangulo
 	*/
+	@Override
 	public void dibujarRectangulo(Color c,int x1,int y1,int ancho,int alto) {
 		if (gr != null) {
 			gr.setColor(c);
@@ -161,12 +167,13 @@ public class PanelDibujo extends JPanel implements InterfaceDibujo,ComponentList
 	 * Vuelcan el contenido de la imagen en la pantalla.
 	 * @param g
 	 */
+	@Override
 	public void paint(Graphics g) {
 		if (buffer == null) {
 			buffer = createImage(getSize().width, getSize().height);
 			gr = buffer.getGraphics();
-			_ancho = getSize().width;
-			_alto = getSize().height;
+			this._ancho = getSize().width;
+			this._alto = getSize().height;
 		}
 
 		//PRINCIPAL.
@@ -179,12 +186,13 @@ public class PanelDibujo extends JPanel implements InterfaceDibujo,ComponentList
 	 * llama al método paint().
 	 * @param g
 	 */
+	@Override
 	public void update(Graphics g) {
 		if (buffer == null) {
 			buffer = createImage(getSize().width, getSize().height);
 			gr = buffer.getGraphics();
-			_ancho = getSize().width;
-			_alto = getSize().height;
+			this._ancho = getSize().width;
+			this._alto = getSize().height;
 		}
 		g.drawImage(buffer,0,0,this);
 	}
@@ -194,6 +202,7 @@ public class PanelDibujo extends JPanel implements InterfaceDibujo,ComponentList
 	 * Es utilizado para notificarle de los cambios
 	 * de tamaño, de modo que se redibuje entero de nuevo.
 	 */
+	@Override
 	public void setRepresentacionRDD (RepresentacionRDD r)
 	{
 		this.rdd = r;
@@ -203,6 +212,7 @@ public class PanelDibujo extends JPanel implements InterfaceDibujo,ComponentList
 	 * Redimensiona el dibujo
 	 * @param e Es un componente del evento
 	 */
+	@Override
 	public void componentResized(ComponentEvent e){
 		if((getSize().width <= 0)|| (getSize().height <= 0))
 		{
@@ -210,11 +220,11 @@ public class PanelDibujo extends JPanel implements InterfaceDibujo,ComponentList
 		}
 		buffer = createImage(getSize().width, getSize().height);
 		gr = buffer.getGraphics();
-		_ancho = getSize().width;
-		_alto = getSize().height;
+		this._ancho = getSize().width;
+		this._alto = getSize().height;
 		this.clean();
-		if(rdd!=null)
-			rdd.ActualizarTodo();
+		if(this.rdd!=null)
+			this.rdd.ActualizarTodo();
 		
 	}
 
@@ -222,6 +232,7 @@ public class PanelDibujo extends JPanel implements InterfaceDibujo,ComponentList
 	 * Mover un componente
 	 * @param e Es un componente del evento
 	 */
+	@Override
 	public void componentMoved(ComponentEvent e){
 	}
 
@@ -229,6 +240,7 @@ public class PanelDibujo extends JPanel implements InterfaceDibujo,ComponentList
 	 * Mostrar un componente
 	 * @param e Es un componente del evento
 	 */
+	@Override
 	public void componentShown(ComponentEvent e){
 	}
 	
@@ -236,6 +248,7 @@ public class PanelDibujo extends JPanel implements InterfaceDibujo,ComponentList
 	 * Ocultar un componente
 	 * @param e Es un componente del evento
 	 */
+	@Override
 	public void componentHidden(ComponentEvent e){
 	}
 }

@@ -43,7 +43,7 @@ public class Boton extends JToggleButton{
 	 */
 	public Boton() {
 		super();
-		colorNormal = getBackground ();
+		this.colorNormal = getBackground ();
 		addMouseListener (new ManejadorRaton ());
 	}
 	
@@ -56,7 +56,7 @@ public class Boton extends JToggleButton{
 	public Boton (Action a)
 	{
 		super (a);
-		colorNormal = getBackground();
+		this.colorNormal = getBackground();
 		addMouseListener (new ManejadorRaton ());
 	}
 	
@@ -67,7 +67,7 @@ public class Boton extends JToggleButton{
 	public Boton (String etiqueta)
 	{
 		super (etiqueta);
-		colorNormal = getBackground ();
+		this.colorNormal = getBackground ();
 		addMouseListener (new ManejadorRaton ());
 	}
 	
@@ -78,7 +78,7 @@ public class Boton extends JToggleButton{
 	public Boton (Icon icono)
 	{
 		super (icono);
-		colorNormal = getBackground ();
+		this.colorNormal = getBackground ();
 		addMouseListener (new ManejadorRaton ());
 	}
 	
@@ -91,7 +91,7 @@ public class Boton extends JToggleButton{
 	public Boton (String etiqueta, Icon icono)
 	{
 		super (etiqueta, icono);
-		colorNormal = getBackground ();
+		this.colorNormal = getBackground ();
 		addMouseListener (new ManejadorRaton ());
 	}
 	
@@ -115,21 +115,23 @@ public class Boton extends JToggleButton{
 		 * Cambia el color de fondo del botón.
 		 * @param me Evento del ratón.
 		 */
+		@Override
 		public void mouseEntered (MouseEvent me)
 		{
 			if (isEnabled ())
-				setBackground (colorSobre);
+				setBackground (Boton.this.colorSobre);
 			else 
-				setBackground (colorNormal);
+				setBackground (Boton.this.colorNormal);
 		}
 		
 		/**
 		 * Restaura el color del fondo del botón que tenia inicialmente.
 		 * @param me Evento del ratón.
 		 */
+		@Override
 		public void mouseExited (MouseEvent me)
 		{
-			setBackground (colorNormal);
+			setBackground (Boton.this.colorNormal);
 		}
 	}
 

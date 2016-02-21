@@ -64,8 +64,8 @@ public class SecuenciadorMicroprograma
 	 */	
 	public SecuenciadorMicroprograma (short[] memoriaPrincipal, long[] memControl)
 	{
-		mp = new MemoriaPrincipal (memoriaPrincipal);
-		memoriaControl = new MemoriaControl (memControl);
+		this.mp = new MemoriaPrincipal (memoriaPrincipal);
+		this.memoriaControl = new MemoriaControl (memControl);
 			
 	}
 		
@@ -79,46 +79,37 @@ public class SecuenciadorMicroprograma
 
 		if ((inst.GetMAR () == 1) || (inst.GetMBR () == 1))
 		{
-			_petLecturaMemoria = 0;
-			_petEscrituraMemoria = 0;
+			this._petLecturaMemoria = 0;
+			this._petEscrituraMemoria = 0;
 		}
 
 		if ((inst.GetWR () == 1) && (inst.GetRD () == 1))
 		{
-			_petEscrituraMemoria = 0;
-			_petLecturaMemoria = 0;
+			this._petEscrituraMemoria = 0;
+			this._petLecturaMemoria = 0;
 		}
 		else if (inst.GetWR () == 1)
 		{
-			_petEscrituraMemoria++;
-			_petLecturaMemoria = 0;
+			this._petEscrituraMemoria++;
+			this._petLecturaMemoria = 0;
 		}
 		else if (inst.GetRD () == 1)
 		{
-			_petLecturaMemoria++;
-			_petEscrituraMemoria = 0;
+			this._petLecturaMemoria++;
+			this._petEscrituraMemoria = 0;
 		}
 		else
 		{
-			_petLecturaMemoria = 0;
-			_petEscrituraMemoria = 0;
+			this._petLecturaMemoria = 0;
+			this._petEscrituraMemoria = 0;
 		}
-		if (_petLecturaMemoria > 1)
-			_mbr = mp.LeerDato (_mar);
-		if (_petEscrituraMemoria > 1)
-			mp.EscribirDato (_mar, _mbr);
+		if (this._petLecturaMemoria > 1)
+			this._mbr = this.mp.LeerDato (this._mar);
+		if (this._petEscrituraMemoria > 1)
+			this.mp.EscribirDato (this._mar, this._mbr);
 	}
 
-	/**
-	 * Leer MBR
-	 * @return Devuelve _mbr
-	 */
-	private short LeerMBR ()
-	{
-		if (_petLecturaMemoria > 1)
-			_mbr = mp.LeerDato (_mar);
-		return _mbr;
-	}
+
 		
 	/**
 	 * Ejecuta el siguiente subciclo en la ruta de datos
@@ -126,7 +117,7 @@ public class SecuenciadorMicroprograma
 	public void EjecutarSubciclo () throws SimulacionFinalizadaException
 	{
 
-		switch (subciclos % 4)
+		switch (this.subciclos % 4)
 		{
 			case 0: EjecutarSubciclo1();
 					break;
@@ -137,7 +128,7 @@ public class SecuenciadorMicroprograma
 			case 3: EjecutarSubciclo4();
 					break;
 		}
-		subciclos++;
+		this.subciclos++;
 	}
 		
 	/**
@@ -147,16 +138,16 @@ public class SecuenciadorMicroprograma
 	 */	
 	private void EjecutarSubciclo1() throws SimulacionFinalizadaException
 	{
-		if ( ( registros.LeerRegistro(BancoRegistros.IR) & (short) 0xF800) == (short) 0xF800)
+		if ( ( this.registros.LeerRegistro(BancoRegistros.IR) & (short) 0xF800) == (short) 0xF800)
 		{			
 			throw new SimulacionFinalizadaException ("Fin normal");
 		}
 			
 		//Leemos la siguiente microinstrucción de la memoria de control
-		rmc = memoriaControl.LeerMicroInstruccion (RDC);
+		this.rmc = this.memoriaControl.LeerMicroInstruccion (this.RDC);
 			
 		
-		repRdd.DibujarCiclo1(rmc, RDC);
+		this.repRdd.DibujarCiclo1(this.rmc, this.RDC);
 	}
 		
 	/**
@@ -168,11 +159,11 @@ public class SecuenciadorMicroprograma
 	{
 		//Subciclo 2. Cargar en bufferA y bufferB los contenidos de
 		// los registros correspondientes.
-		ActualizarPeticionesMemoria (rmc);
-		regA =registros.LeerRegistro (rmc.GetA ());
-		regB =	registros.LeerRegistro (rmc.GetB ());
+		ActualizarPeticionesMemoria (this.rmc);
+		this.regA =this.registros.LeerRegistro (this.rmc.GetA ());
+		this.regB =	this.registros.LeerRegistro (this.rmc.GetB ());
 		
-		repRdd.DibujarCiclo2(rmc, regA, regB);
+		this.repRdd.DibujarCiclo2(this.rmc, this.regA, this.regB);
 
 	}
 		
@@ -192,21 +183,21 @@ public class SecuenciadorMicroprograma
 		* el registro MAR (directamente desde bufferB)
 		*/
 
-		if (rmc.GetAMUX () == 1)
+		if (this.rmc.GetAMUX () == 1)
 		{
-			alu.Operar (rmc.GetALU (),  rmc.GetSH (), _mbr, regB);
+			this.alu.Operar (this.rmc.GetALU (),  this.rmc.GetSH (), this._mbr, this.regB);
 		}
 		else
 		{
-			alu.Operar (rmc.GetALU (),  rmc.GetSH (), regA, regB);
+			this.alu.Operar (this.rmc.GetALU (),  this.rmc.GetSH (), this.regA, this.regB);
 		}
 
 
-		if (rmc.GetMAR () == 1)
-			_mar = regB;
+		if (this.rmc.GetMAR () == 1)
+			this._mar = this.regB;
 			
-		repRdd.DibujarCiclo3(rmc, alu.LeerResultado(), _mar, _mbr, 
-						alu.LeerC(), alu.LeerN(), alu.LeerZ());
+		this.repRdd.DibujarCiclo3(this.rmc, this.alu.LeerResultado(), this._mar, this._mbr, 
+						this.alu.LeerC(), this.alu.LeerN(), this.alu.LeerZ());
 	}
 		
 	/**
@@ -225,29 +216,29 @@ public class SecuenciadorMicroprograma
 	 * necesario en MBR.
 	 * Vemos la lógica de bifurcación
 	 */               
-		if (rmc.GetMBR () == 1)
+		if (this.rmc.GetMBR () == 1)
 		{
-			_mbr = alu.LeerResultado ();
+			this._mbr = this.alu.LeerResultado ();
 		}
-		if (rmc.GetENC () == 1)
+		if (this.rmc.GetENC () == 1)
 		{
-			registros.EscribirRegistro (rmc.GetC (),  alu.LeerResultado());
+			this.registros.EscribirRegistro (this.rmc.GetC (),  this.alu.LeerResultado());
 		}
 		//Opciones de salto.
-		if (rmc.GetFIR () == 1)
+		if (this.rmc.GetFIR () == 1)
 		{
-			RDC = (short) ((registros.LeerRegistro
+			this.RDC = (short) ((this.registros.LeerRegistro
 				(BancoRegistros.IR) >> 11) & (0x1F));
 		}
-		else if (Bifurca (rmc.GetCOND()))
+		else if (Bifurca (this.rmc.GetCOND()))
 		{
-			RDC = (short) rmc.GetADDR ();
+			this.RDC = (short) this.rmc.GetADDR ();
 		}
 		else
 		{
-			RDC++;
+			this.RDC++;
 		}
-		repRdd.DibujarCiclo4(rmc, _mbr);
+		this.repRdd.DibujarCiclo4(this.rmc, this._mbr);
 	}
 		
 	/**
@@ -255,7 +246,7 @@ public class SecuenciadorMicroprograma
 	 */	
 	public void Detener ()
 	{
-		repRdd.Detener();
+		this.repRdd.Detener();
 	}
 
 	/**
@@ -270,11 +261,11 @@ public class SecuenciadorMicroprograma
 		case 0:
 			return false;
 		case 1:
-			return (alu.LeerN () == 1);
+			return (this.alu.LeerN () == 1);
 		case 2:
-			return (alu.LeerZ () == 1);
+			return (this.alu.LeerZ () == 1);
 		case 3:
-			return (alu.LeerC () == 1);
+			return (this.alu.LeerC () == 1);
 		case 4:
 			return true;
 		}
@@ -287,7 +278,7 @@ public class SecuenciadorMicroprograma
 	 */
 	public void AddMemoryChangeListener (MemoryChangeListener l)
 	{
-		mp.AddMemoryChangeListener (l);
+		this.mp.AddMemoryChangeListener (l);
 	}
 	
 	/**
@@ -296,7 +287,7 @@ public class SecuenciadorMicroprograma
 	 */	
 	public void AddRegisterChangeListener (RegisterChangeListener l)
 	{
-		registros.AddRegisterChangeListener(l);
+		this.registros.AddRegisterChangeListener(l);
 	}
 	
 	/**
@@ -305,8 +296,8 @@ public class SecuenciadorMicroprograma
 	 */
 	public void SetRepresentacionRDD(IRepresentacionRDD r)
 	{
-		repRdd = r;
-		repRdd.Clean();
+		this.repRdd = r;
+		this.repRdd.Clean();
 	}
 
 }

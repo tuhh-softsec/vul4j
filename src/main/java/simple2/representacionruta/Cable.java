@@ -34,18 +34,19 @@ public class Cable extends ElementoDibujable
 	/**
 	 * Pinta el cable inactivo
 	 */	
+	@Override
 	protected void PintarInactivo ()
 	{
 		int x = 0;
-		while (x < (puntos.length -2) )
+		while (x < (this.puntos.length -2) )
 		{
-			int x1 = puntos[x];
-			int y1 = puntos[x+1];
-			int x2 = puntos[x+2];
-			int y2 = puntos[x+3];
+			int x1 = this.puntos[x];
+			int y1 = this.puntos[x+1];
+			int x2 = this.puntos[x+2];
+			int y2 = this.puntos[x+3];
 				
 			x+=2;
-			dibujo.dibujarRecta (Color.BLACK, x1, y1, x2, y2);
+			this.dibujo.dibujarRecta (Color.BLACK, x1, y1, x2, y2);
 		}
 
 	}
@@ -55,9 +56,9 @@ public class Cable extends ElementoDibujable
 	 */
 	protected void PintarFlechaFin ()
 	{
-		int x = puntos.length;
+		int x = this.puntos.length;
 			
-		PintarFlecha ( new int[] { puntos[x-4], puntos[x-3], puntos[x-2], puntos[x-1]});
+		PintarFlecha ( new int[] { this.puntos[x-4], this.puntos[x-3], this.puntos[x-2], this.puntos[x-1]});
 	}
 	
 	/**
@@ -65,7 +66,7 @@ public class Cable extends ElementoDibujable
 	 */
 	protected void PintarFlechaInicio ()
 	{
-		PintarFlecha (new int[] { puntos[2], puntos[3], puntos[0], puntos[1]});
+		PintarFlecha (new int[] { this.puntos[2], this.puntos[3], this.puntos[0], this.puntos[1]});
 	}
 	
 	/**
@@ -108,25 +109,26 @@ public class Cable extends ElementoDibujable
 			return;
 		}			
 			
-		dibujo.dibujarRecta (Color.RED,linea[2], linea[3], x1, y1);
-		dibujo.dibujarRecta (Color.RED,linea[2], linea[3], x2, y2);
+		this.dibujo.dibujarRecta (Color.RED,linea[2], linea[3], x1, y1);
+		this.dibujo.dibujarRecta (Color.RED,linea[2], linea[3], x2, y2);
 	}
 	
 	/**
 	 * Pintar cable activo
 	 */	
+	@Override
 	protected void PintarActivo ()
 	{
 		int x = 0;
-		while (x < (puntos.length -2) )
+		while (x < (this.puntos.length -2) )
 		{
-			int x1 = puntos[x];
-			int y1 = puntos[x+1];
-			int x2 = puntos[x+2];
-			int y2 = puntos[x+3];
+			int x1 = this.puntos[x];
+			int y1 = this.puntos[x+1];
+			int x2 = this.puntos[x+2];
+			int y2 = this.puntos[x+3];
 				
 			x+=2;
-			dibujo.dibujarRecta (Color.RED, x1, y1, x2, y2);
+			this.dibujo.dibujarRecta (Color.RED, x1, y1, x2, y2);
 		}
 	}
 }

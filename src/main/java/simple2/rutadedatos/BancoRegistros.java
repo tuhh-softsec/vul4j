@@ -69,8 +69,7 @@ public class BancoRegistros
 	{
 		if ((reg>=0) && (reg < nombres.length))
 			return nombres[reg];
-		else
-			return "";
+		return "";
 	}
 		
 	/**
@@ -78,7 +77,7 @@ public class BancoRegistros
 	 */
 	public BancoRegistros ()
 	{
-		registros = new short[16];
+		this.registros = new short[16];
 		Reset ();
 
 	}
@@ -89,15 +88,15 @@ public class BancoRegistros
 	 */	
 	public void Reset ()
 	{
-		for (int i = 0; i < registros.length; i++)
-			registros[i] = 0;
+		for (int i = 0; i < this.registros.length; i++)
+			this.registros[i] = 0;
 
-		registros[4] = (short) 0x07FF;//OMASK
-		registros[5] = (short) 0x0000;//RCON1
-		registros[6] = (short) 0x0001;//RCON2
-		registros[7] = (short) -1;//RCON3
-		registros[8] = (short) 0x0FFF;//AMASK
-		registros[9] = (short) 0x00FF;//SMASK
+		this.registros[4] = (short) 0x07FF;//OMASK
+		this.registros[5] = (short) 0x0000;//RCON1
+		this.registros[6] = (short) 0x0001;//RCON2
+		this.registros[7] = (short) -1;//RCON3
+		this.registros[8] = (short) 0x0FFF;//AMASK
+		this.registros[9] = (short) 0x00FF;//SMASK
 	}
 
 	/**
@@ -112,7 +111,7 @@ public class BancoRegistros
 			return;
 		if ((registro < 4) || (registro > 9))
 		{
-			registros[registro] = valor;
+			this.registros[registro] = valor;
 			ActualizarListeners(registro, valor);
 		}
 	}
@@ -128,7 +127,7 @@ public class BancoRegistros
 		{
 		if ((registro < 0) || (registro > 15))
 			return 0;
-		return registros[registro];
+		return this.registros[registro];
 	}
 		
 	/**
@@ -137,8 +136,8 @@ public class BancoRegistros
 	 */	
 	public void AddRegisterChangeListener (RegisterChangeListener l)
 	{
-		l.RegisterChanged(registros);
-		listeners.add(l);
+		l.RegisterChanged(this.registros);
+		this.listeners.add(l);
 	}
 	
 	/**
@@ -148,9 +147,9 @@ public class BancoRegistros
 	 */	
 	private void ActualizarListeners (int dir, short newValue)
 	{
-		for (int i = 0; i < listeners.size(); i++)
+		for (int i = 0; i < this.listeners.size(); i++)
 		{
-			((RegisterChangeListener) listeners.get(i)).RegisterChanged (dir, newValue);
+			((RegisterChangeListener) this.listeners.get(i)).RegisterChanged (dir, newValue);
 		}
 	}
 		

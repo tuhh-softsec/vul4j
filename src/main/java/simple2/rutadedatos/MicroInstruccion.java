@@ -25,7 +25,7 @@ public class MicroInstruccion
 	 */
 	public MicroInstruccion (long valor)
 	{
-		instruccion = valor;
+		this.instruccion = valor;
 	}
 		
 	/**
@@ -34,7 +34,7 @@ public class MicroInstruccion
 	 */
 	public long ToLong ()
 	{
-		return instruccion;
+		return this.instruccion;
 	}
 		
 	/**
@@ -174,7 +174,7 @@ public class MicroInstruccion
 	{
 		long mask = 0xFFFFFFFFFFFFFFFFL >>> (64 - count);
 		mask = mask << b;
-		long resultado = (instruccion & mask) >> b;
+		long resultado = (this.instruccion & mask) >> b;
 		return (int) resultado;
 	}
 		
@@ -184,7 +184,7 @@ public class MicroInstruccion
 	 */
 	public String toHexString ()
 	{
-		String tmp = "" + Long.toHexString (instruccion);
+		String tmp = "" + Long.toHexString (this.instruccion);
 		while (tmp.length() < 12)
 			tmp = "0" + tmp;
 		String ret = tmp.substring(0,4) + " " + tmp.substring(4,8) +" " + tmp.substring(8);

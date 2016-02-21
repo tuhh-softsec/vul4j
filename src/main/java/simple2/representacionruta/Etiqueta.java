@@ -48,20 +48,23 @@ public class Etiqueta extends ElementoDibujable {
 	/**
 	 * Pintar el objeto en estado activo
 	 */
+	@Override
 	protected void PintarActivo() {
-		dibujo.dibujarTexto(Color.RED, x, y, texto);
+		this.dibujo.dibujarTexto(Color.RED, this.x, this.y, this.texto);
 	}
 
 	/**
 	 * Pintar el objeto en estado inactivo
 	 */
+	@Override
 	protected void PintarInactivo() {
-		dibujo.dibujarTexto(Color.BLACK, x, y, texto);
+		this.dibujo.dibujarTexto(Color.BLACK, this.x, this.y, this.texto);
 	}
 
 	/**
 	 * Escribir el texto en la etiqueta
 	 */
+	@Override
 	public void setText(String texto) {
 		this.texto = texto;
 	}
@@ -70,8 +73,9 @@ public class Etiqueta extends ElementoDibujable {
 	 * Obtener el texto de la etiqueta
 	 * @return Devuelve el texto de la etiqueta
 	 */
+	@Override
 	public String getText() {
-		return texto;
+		return this.texto;
 	}
 
 }

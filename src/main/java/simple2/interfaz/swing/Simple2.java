@@ -35,11 +35,7 @@ public class Simple2 extends JApplet{
 	 */
 	private static final long serialVersionUID = 6628444410002934438L;
 
-	/**
-	 * Nombre del programa
-	 */
-	private static final String titulo = "SIMPLE2";
-		
+
 	/**
 	 * Panel central que contendrá todos los paneles que se utilizarán en el programa
 	 */
@@ -102,6 +98,7 @@ public class Simple2 extends JApplet{
 	 *
 	 */
 	public Simple2(){}
+	@Override
 	public void init(){
 		setSize (720,500);
 		panelCentral = new PanelCentral();
@@ -133,6 +130,7 @@ public class Simple2 extends JApplet{
 			
 			
 		botonCodigo.addActionListener (new ActionListener() {
+			@Override
 			public void actionPerformed (ActionEvent e)
 			{
 				Seleccionar();
@@ -143,6 +141,7 @@ public class Simple2 extends JApplet{
 		});
 			
 		botonEjecutar.addActionListener (new ActionListener() {
+			@Override
 			public void actionPerformed (ActionEvent e)
 			{
 				
@@ -182,10 +181,10 @@ public class Simple2 extends JApplet{
 					int instruccionesTotales = codigo_limpio.size();
 					panelCentral.Escribir(codigo_limpio,ensamblado,instruccionesTotales);
 					panelCentral.EscribirMemoria(ensamblado,instruccionesTotales,codigo_limpio);
-					panelCentral.Principal(ensamblado,tiempo);
+					panelCentral.Principal(ensamblado,Simple2.this.tiempo);
 					
-					hiloEspera = new HiloEspera (panelCentral.hilo);
-					hiloEspera.start();
+					Simple2.this.hiloEspera = new HiloEspera (panelCentral.hilo);
+					Simple2.this.hiloEspera.start();
 
 					
 					panelCentral.clean();
@@ -199,6 +198,7 @@ public class Simple2 extends JApplet{
 		});
 			
 		botonMemoria.addActionListener (new ActionListener() {
+			@Override
 			public void actionPerformed (ActionEvent e)
 			{
 				Seleccionar();
@@ -208,6 +208,7 @@ public class Simple2 extends JApplet{
 		});
 		
 		botonEsquema.addActionListener (new ActionListener() {
+			@Override
 			public void actionPerformed (ActionEvent e)
 			{
 				Seleccionar();
@@ -217,13 +218,14 @@ public class Simple2 extends JApplet{
 		});
 		
 		botonParar.addActionListener (new ActionListener() {
+			@Override
 			public void actionPerformed (ActionEvent e)
 			{
 				String aux=botonEjecutar.getText();
 				if(aux.compareTo("EJECUTAR")!=0){
-					parado = !parado;
+					Simple2.this.parado = !Simple2.this.parado;
 					Seleccionar();
-					if(parado){
+					if(Simple2.this.parado){
 						botonParar.setText("SEGUIR");
 						botonParar.setIcon(new ImageIcon(getClass().getResource("/images/dot_verde.gif")));
 						botonEjecutar.setText("PARADO");
@@ -254,7 +256,7 @@ public class Simple2 extends JApplet{
 		botonEsquema.setSelected(false);
 		botonMemoria.setSelected(false);
 		botonParar.setSelected(false);
-		if(parado) botonParar.setSelected(parado);
+		if(this.parado) botonParar.setSelected(this.parado);
 		boolean c=panelCentral.HiloActivo();
 		if(c)
 			{
@@ -268,7 +270,7 @@ public class Simple2 extends JApplet{
 	 */
 	private void crearMenus()
 	{
-		t=new CampoNumerico(tiempo,4);
+		this.t=new CampoNumerico(this.tiempo,4);
 		JMenuBar menubar = new JMenuBar ();
 		setJMenuBar (menubar);
 		
@@ -280,11 +282,12 @@ public class Simple2 extends JApplet{
 		menuItem = new JMenuItem ("Nuevo");
 		menuItem.setIcon(new ImageIcon(getClass().getResource("/images/new.gif")));
 		menuItem.addActionListener (new ActionListener(){
+		@Override
 		public void actionPerformed(ActionEvent e)
 			{	
-			if(parado){
+			if(Simple2.this.parado){
 				panelCentral.Activar();
-				parado=false;
+				Simple2.this.parado=false;
 				}
 			panelCentral.Fin();
 			botonEjecutar.setText("EJECUTAR");
@@ -305,13 +308,14 @@ public class Simple2 extends JApplet{
 		menuItem =new JMenuItem ("Tiempo");
 		menuItem.setIcon(new ImageIcon(getClass().getResource("/images/reloj.gif")));
 		menuItem.addActionListener (new ActionListener() {
+		@Override
 		public void actionPerformed (ActionEvent e)
 			{
 			Seleccionar();
-			String cad=t.getText();
+			String cad=Simple2.this.t.getText();
 			if(cad.length()!=0){
 				try{
-					tiempo=Integer.parseInt(cad);
+					Simple2.this.tiempo=Integer.parseInt(cad);
 					}
 				catch(Exception ex){
 					}
@@ -321,7 +325,7 @@ public class Simple2 extends JApplet{
 		
 		
 		menu.add (menuItem);
-		menu.add(t);
+		menu.add(this.t);
 		menubar.add (menu);
 								
 		menu = new JMenu ("Ayuda");
@@ -329,6 +333,7 @@ public class Simple2 extends JApplet{
 		menuItem =new JMenuItem ("Ayuda");
 		menuItem.setIcon(new ImageIcon(getClass().getResource("/images/ayuda.gif")));
 		menuItem.addActionListener (new ActionListener() {
+		@Override
 		public void actionPerformed (ActionEvent e)
 			{
 			Seleccionar();
@@ -353,24 +358,25 @@ public class Simple2 extends JApplet{
 	 */
 	public class HiloEspera extends Thread
 	{
-		private Thread t = null;
+		private Thread thread = null;
 		/**
 		 * Instancia de la clase
 		 * @param t hilo que controla
 		 */
 		public HiloEspera (Thread t)
 		{
-			this.t = t;
+			this.thread = t;
 		}
 		
 		/**
 		 * Método de ejecución del hilo.
 		 */	
+		@Override
 		public void run()
 		{
 			try
 			{
-				t.join ();
+				this.thread.join ();
 			}
 			catch (InterruptedException ex)
 			{

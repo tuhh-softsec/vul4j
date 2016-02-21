@@ -77,27 +77,30 @@ public class CajaRegistro extends ElementoDibujable
 	/**
 	 * Pinta la caja de Registro activa
 	 */
+	@Override
 	protected void PintarActivo ()
 	{
-		dibujo.clean (x,y,ancho,alto);
-		dibujo.dibujarRectangulo (Color.RED, x,y,ancho,alto);			
-		dibujo.dibujarTexto (Color.BLACK, x+4,y+12, texto);
+		this.dibujo.clean (this.x,this.y,this.ancho,this.alto);
+		this.dibujo.dibujarRectangulo (Color.RED, this.x,this.y,this.ancho,this.alto);			
+		this.dibujo.dibujarTexto (Color.BLACK, this.x+4,this.y+12, this.texto);
 	}
 	
 	/**
 	 * Pinta la caja de Registro inactiva
 	 */
+	@Override
 	protected void PintarInactivo()
 	{
-		dibujo.clean (x,y,ancho,alto);
-		dibujo.dibujarRectangulo(Color.BLACK, x,y,ancho,alto);
-		dibujo.dibujarTexto (Color.BLACK, x+4, y+12, texto);
+		this.dibujo.clean (this.x,this.y,this.ancho,this.alto);
+		this.dibujo.dibujarRectangulo(Color.BLACK, this.x,this.y,this.ancho,this.alto);
+		this.dibujo.dibujarTexto (Color.BLACK, this.x+4, this.y+12, this.texto);
 	}
 	
 	/**
 	 * Escribe el texto dentro de la caja de Registro
 	 * @param texto El texto que se va a escribir
 	 */
+	@Override
 	public void setText (String texto)
 	{
 		this.texto=texto;
@@ -108,9 +111,10 @@ public class CajaRegistro extends ElementoDibujable
 	 * Obntener el texto de la caja de Registro
 	 * @return El texto que nos devuelve
 	 */	
+	@Override
 	public String getText ()
 	{
-		return texto;
+		return this.texto;
 	}
 }
 	

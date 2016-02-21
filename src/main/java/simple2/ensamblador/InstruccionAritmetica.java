@@ -28,15 +28,15 @@ public class InstruccionAritmetica extends InstruccionGeneral{
 	* instrucciones .
 	*/
 	public InstruccionAritmetica() {
-		tabla = new Hashtable ();
+		this.tabla = new Hashtable ();
 
-		tabla.put ("LODD", new Integer(0x01));
-		tabla.put ("LODI", new Integer(0x02));
-		tabla.put ("STOD", new Integer(0x03));
-		tabla.put ("ADDD", new Integer(0x04));
-		tabla.put ("ADDI", new Integer(0x05));
-		tabla.put ("SUBD", new Integer(0x06));
-		tabla.put ("SUBI", new Integer(0x07));
+		this.tabla.put ("LODD", new Integer(0x01));
+		this.tabla.put ("LODI", new Integer(0x02));
+		this.tabla.put ("STOD", new Integer(0x03));
+		this.tabla.put ("ADDD", new Integer(0x04));
+		this.tabla.put ("ADDI", new Integer(0x05));
+		this.tabla.put ("SUBD", new Integer(0x06));
+		this.tabla.put ("SUBI", new Integer(0x07));
 	}
 	
 	/**
@@ -48,13 +48,14 @@ public class InstruccionAritmetica extends InstruccionGeneral{
 	 *
 	 * @return La codificación de la instrucción.
 	 */
+	@Override
 	public short codificar (String instruccion, int linea)
 		{		
 			
 		int codigo;
 		String[] cadena = separarOperandos (instruccion);
 		int inmediato=Integer.parseInt(cadena[1]);
-		Object c = tabla.get (cadena[0]);
+		Object c = this.tabla.get (cadena[0]);
 		codigo=((Integer) c).intValue();
 		codigo=codigo<<11;	
 		return ((short) (codigo+inmediato));
@@ -72,6 +73,7 @@ public class InstruccionAritmetica extends InstruccionGeneral{
 	 * @throws ErrorCodigoException   si ocurre algun error en el código, la excepcion
 	 * contiene el mensaje de error
 	 */	
+	@Override
 	public String validar (String instruccion, int linea) throws ErrorCodigoException
 		{
 		String[]cadena = separarOperandos (instruccion);
@@ -79,20 +81,18 @@ public class InstruccionAritmetica extends InstruccionGeneral{
 		if (contieneCaracteresNoValidos (instruccion)){
 			return "Linea: " + linea + ". " + CONTIENE_CARACTERES_INVALIDOS;
 			}
-		Object c = tabla.get (cadena[0]);
+		Object c = this.tabla.get (cadena[0]);
 		if (c == null){
 			return "Linea: " + linea +". No se reconoce la instruccion " + cadena[0] + "\n";
 		}	
 		if (cadena.length != 2){
 			return "Linea: " + linea + ". El número de parámetros no es correcto\n";		
 		}
-		else{
-			try{
-				int numero=Integer.parseInt(cadena[1]);
-			}
-			catch(Exception e){
-				return "Linea: "+linea+". El segundo parametro tiene que ser un número\n";
-			}
+		try{
+			Integer.parseInt(cadena[1]);
+		}
+		catch(Exception e){
+			return "Linea: "+linea+". El segundo parametro tiene que ser un número\n";
 		}
 			
 		return "";

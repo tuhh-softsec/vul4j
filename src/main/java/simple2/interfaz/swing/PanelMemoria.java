@@ -12,6 +12,7 @@ import java.util.Vector;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.table.DefaultTableModel;
 
 import simple2.rutadedatos.MemoryChangeListener;
@@ -37,7 +38,7 @@ public class PanelMemoria extends JPanel implements MemoryChangeListener
 	public static int tamanno=2048;
 	Object[][] data = new Object[][]{ {} };
 	String[] headers = new String[]{ } ;
-	DefaultTableModel model = new DefaultTableModel(data,  headers); 
+	DefaultTableModel model = new DefaultTableModel(this.data,  this.headers); 
 	JTable tabla;
 	JScrollPane a1;
 	
@@ -54,19 +55,19 @@ public class PanelMemoria extends JPanel implements MemoryChangeListener
 
 		super();
 		setLayout (new BorderLayout());
-		tabla=new JTable(model);
-		tabla.setPreferredSize (new Dimension (714,230));
-		tabla.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tabla.setEnabled(false);
+		this.tabla=new JTable(this.model);
+		this.tabla.setPreferredSize (new Dimension (714,230));
+		this.tabla.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		this.tabla.setEnabled(false);
 			
-		a1=new JScrollPane (tabla);
-		a1.setPreferredSize(new Dimension(400,250));
+		this.a1=new JScrollPane (this.tabla);
+		this.a1.setPreferredSize(new Dimension(400,250));
 		
-		add(a1, BorderLayout.CENTER);
+		add(this.a1, BorderLayout.CENTER);
 
-		a1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		this.a1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		for (int i=0;i<2048;i++)
-			memoria.addElement(ToHexString(i));
+			this.memoria.addElement(ToHexString(i));
 	}
 	
 	/**
@@ -81,38 +82,38 @@ public class PanelMemoria extends JPanel implements MemoryChangeListener
 		titulo[1]="VALOR HEXADECIMAL";
 		titulo[2]="VALOR BINARIO";
 		titulo[3]="INSTRUCCION";
-		model.setColumnIdentifiers(titulo);
+		this.model.setColumnIdentifiers(titulo);
 
-		model.setRowCount(tamanno);
-		model.setColumnCount(4);
+		this.model.setRowCount(tamanno);
+		this.model.setColumnCount(4);
 		int c=0;
 		while(c!=tamanno){
-			model.setValueAt(String.valueOf(memoria.elementAt(c)),c,0);
+			this.model.setValueAt(String.valueOf(this.memoria.elementAt(c)),c,0);
 			if(c<instruccionesTotales){
-				String cadena=(Integer.toHexString((int) ensamblado[c])).toUpperCase();
-				if ((int) ensamblado[c] < 0)
+				String cadena=(Integer.toHexString(ensamblado[c])).toUpperCase();
+				if (ensamblado[c] < 0)
 					cadena=cadena.substring(cadena.length()-4);
 				if(cadena.length()==1) cadena="000"+cadena;
 				if(cadena.length()==2) cadena="00"+cadena;
 				if(cadena.length()==3) cadena="0"+cadena;
-				model.setValueAt(String.valueOf(cadena),c,1);
-				model.setValueAt(ToBinString((int) ensamblado[c]),c,2);
-				model.setValueAt(String.valueOf(codigo_limpio.elementAt(c)),c,3);
+				this.model.setValueAt(String.valueOf(cadena),c,1);
+				this.model.setValueAt(ToBinString(ensamblado[c]),c,2);
+				this.model.setValueAt(String.valueOf(codigo_limpio.elementAt(c)),c,3);
 			}
 			else{
-				model.setValueAt("0000",c,1);
-				model.setValueAt("0000000000000000",c,2);
+				this.model.setValueAt("0000",c,1);
+				this.model.setValueAt("0000000000000000",c,2);
 			}
 			c++;
 		}
 
-		int alto_fila = tabla.getRowHeight() ;
-		Dimension size = tabla.getSize();
+		int alto_fila = this.tabla.getRowHeight() ;
+		Dimension size = this.tabla.getSize();
 		
 		size.height = alto_fila  * (tamanno );
-		tabla.setPreferredSize(size);
-		tabla.revalidate();
-		tabla.scrollRectToVisible(new Rectangle (0, size.height - alto_fila ,100, size.height));
+		this.tabla.setPreferredSize(size);
+		this.tabla.revalidate();
+		this.tabla.scrollRectToVisible(new Rectangle (0, size.height - alto_fila ,100, size.height));
 	}
 	
 	/**
@@ -122,23 +123,23 @@ public class PanelMemoria extends JPanel implements MemoryChangeListener
 	 */
 	public void MemoryChanged (int dir, short newValue)
 	{
-		model.setValueAt(String.valueOf(memoria.elementAt(dir)),dir,0);
-		String cadena=(Integer.toHexString((int) newValue)).toUpperCase();
-		if ((int) newValue < 0)
+		this.model.setValueAt(String.valueOf(this.memoria.elementAt(dir)),dir,0);
+		String cadena=(Integer.toHexString(newValue)).toUpperCase();
+		if (newValue < 0)
 			cadena=cadena.substring(cadena.length()-4);
 		if(cadena.length()==1) cadena="000"+cadena;
 		if(cadena.length()==2) cadena="00"+cadena;
 		if(cadena.length()==3) cadena="0"+cadena;
-		model.setValueAt(String.valueOf(cadena),dir,1);
-		model.setValueAt(ToBinString(newValue),dir,2);
+		this.model.setValueAt(String.valueOf(cadena),dir,1);
+		this.model.setValueAt(ToBinString(newValue),dir,2);
 
-		int alto_fila = tabla.getRowHeight() ;
-		Dimension size = tabla.getSize();
+		int alto_fila = this.tabla.getRowHeight() ;
+		Dimension size = this.tabla.getSize();
 		
 		size.height = alto_fila  * (tamanno );
-		tabla.setPreferredSize(size);
-		tabla.revalidate();
-		tabla.scrollRectToVisible(new Rectangle (0, size.height - alto_fila ,100, size.height));
+		this.tabla.setPreferredSize(size);
+		this.tabla.revalidate();
+		this.tabla.scrollRectToVisible(new Rectangle (0, size.height - alto_fila ,100, size.height));
 			
 	}
 	
@@ -151,20 +152,20 @@ public class PanelMemoria extends JPanel implements MemoryChangeListener
 		int instruccionesTotales=ensamblado.length;
 		int c=0;
 		while(c!=tamanno){
-			model.setValueAt(String.valueOf(memoria.elementAt(c)),c,0);
+			this.model.setValueAt(String.valueOf(this.memoria.elementAt(c)),c,0);
 			if(c<instruccionesTotales){
-				String cadena=(Integer.toHexString((int) ensamblado[c])).toUpperCase();
-				if ((int) ensamblado[c] < 0)
+				String cadena=(Integer.toHexString(ensamblado[c])).toUpperCase();
+				if (ensamblado[c] < 0)
 					cadena=cadena.substring(cadena.length()-4);
 				if(cadena.length()==1) cadena="000"+cadena;
 				if(cadena.length()==2) cadena="00"+cadena;
 				if(cadena.length()==3) cadena="0"+cadena;
-					model.setValueAt(String.valueOf(cadena),c,1);
-					model.setValueAt(ToBinString((int) ensamblado[c]),c,2);
+					this.model.setValueAt(String.valueOf(cadena),c,1);
+					this.model.setValueAt(ToBinString(ensamblado[c]),c,2);
 				}
 				else{
-					model.setValueAt("0000",c,1);
-					model.setValueAt("0000000000000000",c,2);
+					this.model.setValueAt("0000",c,1);
+					this.model.setValueAt("0000000000000000",c,2);
 				}
 			c++;
 		}
@@ -191,7 +192,7 @@ public class PanelMemoria extends JPanel implements MemoryChangeListener
 	public static String ToBinString (int valor)
 	{
 		String ret=Integer.toBinaryString(valor);
-		if ((int) valor < 0)
+		if (valor < 0)
 			ret=ret.substring(ret.length()-16);
 		while (ret.length() < 16)
 			ret = "0" + ret;

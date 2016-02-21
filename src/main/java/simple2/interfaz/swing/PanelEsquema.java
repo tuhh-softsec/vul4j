@@ -40,16 +40,7 @@ public class PanelEsquema extends JPanel{
 	 */
 	JLabel l1;
 	
-	/**
-	 * Anchura del panel de dibujo
-	 */
-	private static final int ANCHO = 740;
-	
-	/**
-	 *Altura del panel de dibujo 
-	 */
-	private static final int ALTO = 560;
-	
+
 	/**
 	 * Instancia de la clase. Dibuja la ruta de datos.
 	 *
@@ -57,13 +48,13 @@ public class PanelEsquema extends JPanel{
 	public PanelEsquema() {
 		super();
 		setLayout(new BorderLayout());
-		pdibujo = new PanelDibujo ();
-		panel =new JPanel();
-		l1 = new JLabel ("RUTA DE DATOS DE SIMPLE2");
+		this.pdibujo = new PanelDibujo ();
+		this.panel =new JPanel();
+		this.l1 = new JLabel ("RUTA DE DATOS DE SIMPLE2");
 			
-		panel.add (l1);
-		add (panel, BorderLayout.NORTH);
-		add (pdibujo, BorderLayout.CENTER);
+		this.panel.add (this.l1);
+		add (this.panel, BorderLayout.NORTH);
+		add (this.pdibujo, BorderLayout.CENTER);
 	}
 
 

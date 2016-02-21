@@ -54,17 +54,17 @@ public class PanelHtml extends JScrollPane implements HyperlinkListener{
 			}
 			if (url != null)
 			{
-				html = new JEditorPane (url);
-				html.setEditable (false);
-				html.addHyperlinkListener (this);
-				this.getViewport ().add (html);
+				this.html = new JEditorPane (url);
+				this.html.setEditable (false);
+				this.html.addHyperlinkListener (this);
+				this.getViewport ().add (this.html);
 			}
 			else
 			{
-				html = new JEditorPane();
-				html.setEditable(false);
-				html.setText("No pude encontrar el archivo");
-				this.getViewport ().add (html);
+				this.html = new JEditorPane();
+				this.html.setEditable(false);
+				this.html.setText("No pude encontrar el archivo");
+				this.getViewport ().add (this.html);
 			}
 		}
 		catch (MalformedURLException e)
@@ -98,7 +98,7 @@ public class PanelHtml extends JScrollPane implements HyperlinkListener{
 		{
 			try
 			{			
-				html.setPage(url);
+				this.html.setPage(url);
 			}
 			catch (IOException ioe)
 			{
@@ -118,14 +118,14 @@ public class PanelHtml extends JScrollPane implements HyperlinkListener{
 		{
 			if (e instanceof HTMLFrameHyperlinkEvent)
 			{
-				((HTMLDocument) html.getDocument ()).
+				((HTMLDocument) this.html.getDocument ()).
 					processHTMLFrameHyperlinkEvent ((HTMLFrameHyperlinkEvent) e);
 			}
 			else
 			{
 				try
 				{
-					html.setPage (e.getURL ());
+					this.html.setPage (e.getURL ());
 				}
 				catch (IOException ioe)
 				{

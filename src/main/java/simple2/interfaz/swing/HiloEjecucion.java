@@ -49,35 +49,36 @@ public class HiloEjecucion extends Thread {
 	/**
 	 * Método de ejecución del hilo.
 	 */	
+	@Override
 	public void run ()
 	{
 		int acumulado = 0;
 		int paso = 100;
 		try
 		{
-			mic.EjecutarSubciclo();
-			while (!terminar)
+			this.mic.EjecutarSubciclo();
+			while (!this.terminar)
 			{
 				try{
 					Thread.sleep (paso);
 					}
 				catch(InterruptedException ie){
 				}
-				if (!pausado)
+				if (!this.pausado)
 				{
 					acumulado += paso;
-					if (acumulado >= tSubciclo)
+					if (acumulado >= this.tSubciclo)
 					{
 						acumulado=0;
-						mic.EjecutarSubciclo();
+						this.mic.EjecutarSubciclo();
 					}
 				}
 			}
-			mic.Detener();
+			this.mic.Detener();
 		}
 		catch (SimulacionFinalizadaException e)
 		{
-			mic.Detener();
+			this.mic.Detener();
 			return;
 		}
 	}
@@ -87,7 +88,7 @@ public class HiloEjecucion extends Thread {
 	 */	
 	public void detener ()
 	{
-		terminar = true;
+		this.terminar = true;
 	}
 		
 	/**
@@ -105,7 +106,7 @@ public class HiloEjecucion extends Thread {
 	 */	
 	public void CambiarPausado ()
 	{
-		pausado = !pausado;
+		this.pausado = !this.pausado;
 	}
 		
 	/**

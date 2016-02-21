@@ -28,13 +28,13 @@ public class InstruccionSalto extends InstruccionGeneral{
 	* instrucciones .
 	*/
 	public InstruccionSalto() {
-		tabla = new Hashtable ();
+		this.tabla = new Hashtable ();
 		
-		tabla.put ("JNEG", new Integer (0x0A));
-		tabla.put ("JZER", new Integer (0x0B));
-		tabla.put ("JCAR", new Integer (0x0C));
-		tabla.put ("JUMP", new Integer (0x0D));
-		tabla.put ("CALL", new Integer (0x0E));
+		this.tabla.put ("JNEG", new Integer (0x0A));
+		this.tabla.put ("JZER", new Integer (0x0B));
+		this.tabla.put ("JCAR", new Integer (0x0C));
+		this.tabla.put ("JUMP", new Integer (0x0D));
+		this.tabla.put ("CALL", new Integer (0x0E));
 	}
 	
 	/**
@@ -46,12 +46,13 @@ public class InstruccionSalto extends InstruccionGeneral{
 	 *
 	 * @return La codificación de la instrucción.
 	 */
+	@Override
 	public short codificar (String instruccion,int linea)
 		{
 			int codigo;
 			String[] cadena = separarOperandos (instruccion);
 			int inmediato=Integer.parseInt(cadena[1]);
-			Object c = tabla.get (cadena[0]);
+			Object c = this.tabla.get (cadena[0]);
 			codigo=((Integer) c).intValue();
 			codigo=codigo<<11;
 			
@@ -69,27 +70,25 @@ public class InstruccionSalto extends InstruccionGeneral{
      * @throws ErrorCodigoException   si ocurre algun error en el código, la excepcion
      * contiene el mensaje de error
      */	
+	@Override
 	public String validar (String instruccion, int linea) throws ErrorCodigoException
 			{
-				String tipo="";
 				if (contieneCaracteresNoValidos (instruccion)){
 					return "Linea: " + linea + ". " + CONTIENE_CARACTERES_INVALIDOS;
 				}
 				String[] cadena = separarOperandos (instruccion);
-				Object c = tabla.get (cadena[0]);
+				Object c = this.tabla.get (cadena[0]);
 				if (c == null){
 					return "Linea: " + linea +". No se reconoce la instruccion " + cadena[0] + "\n";
 				}
 				if (cadena.length != 2){
 					return "Linea: " + linea + ". Número de parámetros incorrectos.\n";
 				}
-				else{
-					try{
-						int numero=Integer.parseInt(cadena[1]);
-						}
-					catch(Exception e){
-						return "Linea: "+linea+". El segundo parametro tiene que ser un número\n";
-						}
+				try{
+					Integer.parseInt(cadena[1]);
+					}
+				catch(Exception e){
+					return "Linea: "+linea+". El segundo parametro tiene que ser un número\n";
 					}
 			
 				return "";

@@ -41,10 +41,7 @@ public class Ejecutar extends InstruccionGeneral{
 	public Vector Comprobar(String datos) {
 		Vector v= null;
 		Vector codigo_limpio = null;
-		String errores = "";
 		crearHashInstrucciones ();
-		String[] salida=null;
-		String[] ensamblado=null;
 		
 		v= SepararEnVector(datos);
 		try
@@ -53,7 +50,6 @@ public class Ejecutar extends InstruccionGeneral{
 			}
 		catch (ErrorCodigoException ex)
 			{
-			errores += ex.getMessage();
 			}
 		return codigo_limpio;
 	}
@@ -66,16 +62,13 @@ public class Ejecutar extends InstruccionGeneral{
 	 */
 	public String EjecutarErrores(String datos) {
 			Vector v= null;
-			Vector codigo_limpio = null;
 			String errores = "";
 			crearHashInstrucciones ();
-			String[] salida=null;
-			String[] ensamblado=null;
 		
 			v= SepararEnVector(datos);
 			try
 				{
-				codigo_limpio= PrimeraPasada(v);
+				PrimeraPasada(v);
 				}
 			catch (ErrorCodigoException ex)
 				{
@@ -91,7 +84,6 @@ public class Ejecutar extends InstruccionGeneral{
 	 * @return Devuelve el código ensamblado
 	 */
 	public short[] EnsamblarCodigo(Vector codigo_limpio) {
-		String errores = "";
 		crearHashInstrucciones ();
 		short[] ensamblado=null;
 		ensamblado = ensamblar (codigo_limpio);
@@ -103,28 +95,28 @@ public class Ejecutar extends InstruccionGeneral{
 	*/ 
 	private void crearHashInstrucciones ()
 	{
-		instrucciones = new Hashtable ();
+		this.instrucciones = new Hashtable ();
 		
 		InstruccionGeneral aritmeticas = new InstruccionAritmetica();
 		InstruccionGeneral  saltos= new InstruccionSalto ();
 		InstruccionGeneral sinparametros = new InstruccionSinParametros();
 
-		instrucciones.put ("LODD", aritmeticas);
-		instrucciones.put ("LODI", aritmeticas);
-		instrucciones.put ("STOD", aritmeticas);
-		instrucciones.put ("ADDD", aritmeticas);
-		instrucciones.put ("ADDI", aritmeticas);
-		instrucciones.put ("SUBD", aritmeticas);
-		instrucciones.put ("SUBI", aritmeticas);
-		instrucciones.put ("PUSH", sinparametros);
-		instrucciones.put ("POP", sinparametros);
-		instrucciones.put ("RETN", sinparametros);
-		instrucciones.put ("HALT", sinparametros);
-		instrucciones.put ("JNEG", saltos);
-		instrucciones.put ("JZER", saltos);
-		instrucciones.put ("JCAR", saltos);
-		instrucciones.put ("JUMP", saltos);
-		instrucciones.put ("CALL", saltos);
+		this.instrucciones.put ("LODD", aritmeticas);
+		this.instrucciones.put ("LODI", aritmeticas);
+		this.instrucciones.put ("STOD", aritmeticas);
+		this.instrucciones.put ("ADDD", aritmeticas);
+		this.instrucciones.put ("ADDI", aritmeticas);
+		this.instrucciones.put ("SUBD", aritmeticas);
+		this.instrucciones.put ("SUBI", aritmeticas);
+		this.instrucciones.put ("PUSH", sinparametros);
+		this.instrucciones.put ("POP", sinparametros);
+		this.instrucciones.put ("RETN", sinparametros);
+		this.instrucciones.put ("HALT", sinparametros);
+		this.instrucciones.put ("JNEG", saltos);
+		this.instrucciones.put ("JZER", saltos);
+		this.instrucciones.put ("JCAR", saltos);
+		this.instrucciones.put ("JUMP", saltos);
+		this.instrucciones.put ("CALL", saltos);
 	}
 	
 	/**
@@ -162,6 +154,7 @@ public class Ejecutar extends InstruccionGeneral{
 	* @param linea linea a codificar
 	* @return  0
 	*/
+	@Override
 	public short codificar (String instruccion, int linea)
 		{
 			return 0;
@@ -175,6 +168,7 @@ public class Ejecutar extends InstruccionGeneral{
       * @throws ErrorCodigoException si instruccion no valida
       * @return  cadena de texto
 	  */
+	@Override
 	public String validar (String instruccion,int linea) throws ErrorCodigoException
 		{
 			return "";	
@@ -183,22 +177,23 @@ public class Ejecutar extends InstruccionGeneral{
 	/** 
 	* Transforma una cadena de texto en un vector en el que
 	* cada elemento es una línea del texto.
-	* @param instrucciones a meter en el vector
+	* @param texto a meter en el vector
 	* @return  vector con todas las instrucciones
 	*/
-	public Vector stringToVector (String instrucciones)
+	public Vector stringToVector (String texto)
 		{
+		// TODO Usar split
 			Vector v0 =  new Vector();
 			int first = 0;
 			int last = 0;
 		
-			last = instrucciones.indexOf ('\n', first);
+			last = texto.indexOf ('\n', first);
 			while (last != -1)
 			{
-				String inst = instrucciones.substring(first, last);
+				String inst = texto.substring(first, last);
 				v0.add (inst);
 				first = last+1;
-				last = instrucciones.indexOf('\n', first);
+				last = texto.indexOf('\n', first);
 			}	
 			return v0;
 		}
@@ -231,7 +226,7 @@ public class Ejecutar extends InstruccionGeneral{
 				in = inst;
 			
 			//extrae de la tabla de instrucciones la instancia correspondiente al mnemonico	
-			x = ((InstruccionGeneral)instrucciones.get(in));
+			x = ((InstruccionGeneral)this.instrucciones.get(in));
 			
 			//codifica la instrucion 
 			out[i] = x.codificar (inst, i);	
@@ -303,18 +298,14 @@ public class Ejecutar extends InstruccionGeneral{
 		String errores = "";
 		InstruccionGeneral n;
 		String in;
-		int aux;
-		int l_fichero, l_salida;
+		int l_fichero;
 		
 		l_fichero = 0;
 		Vector vectorInstrucciones = new Vector();
 		
-		int l_fichero2=0;
-		int l_base=0;
 				
 		for (l_fichero = 1; l_fichero <origen.size()+1; l_fichero++)
 			{
-			l_fichero2 = l_fichero + l_base;
 			//lee la siguiente linea del fichero para analizarla
 			instruc = (String) origen.get(l_fichero-1);
 			
@@ -330,7 +321,7 @@ public class Ejecutar extends InstruccionGeneral{
 			else
 				in = instruc;
 							
-			n = (InstruccionGeneral) instrucciones.get(in);
+			n = (InstruccionGeneral) this.instrucciones.get(in);
 			String salida_ = "";
 			if (n != null)
 				{
@@ -349,8 +340,7 @@ public class Ejecutar extends InstruccionGeneral{
 				vectorInstrucciones.add ("HALT");
 			return vectorInstrucciones;
 		}
-		else
-			throw new ErrorCodigoException (errores);
+		throw new ErrorCodigoException (errores);
 					
 		}
 		

@@ -28,6 +28,7 @@ public class CableBidireccional extends Cable
 	/**
 	 * Pinta el cable inactivo
 	 */	
+	@Override
 	protected void PintarInactivo ()
 	{
 		super.PintarInactivo();	
@@ -38,6 +39,7 @@ public class CableBidireccional extends Cable
 	/**
 	 * Pinta el cable activo
 	 */	
+	@Override
 	protected void PintarActivo ()
 	{
 		super.PintarActivo();	

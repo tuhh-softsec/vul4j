@@ -27,6 +27,7 @@ public class CableUnidireccional extends Cable{
 	/**
 	 * Pintar el cable inactivo
 	 */	
+	@Override
 	protected void PintarInactivo ()
 		{
 		super.PintarInactivo();	
@@ -36,6 +37,7 @@ public class CableUnidireccional extends Cable{
 	/**
 	 * Pintar el cable activo
 	 */
+	@Override
 	protected void PintarActivo ()
 		{
 		super.PintarActivo();

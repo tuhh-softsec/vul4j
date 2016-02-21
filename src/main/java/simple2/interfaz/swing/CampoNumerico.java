@@ -46,14 +46,14 @@ public class CampoNumerico extends JTextField
 	public CampoNumerico (int columnas)
 	{
 		super();
-		cols = columnas;
+		this.cols = columnas;
 	}
 	
 
 	public CampoNumerico(int valor_inicial, int columnas) 
 	{
 		super(columnas);
-		cols = columnas;
+		this.cols = columnas;
 		setValue(valor_inicial);
 	}
 	
@@ -91,6 +91,7 @@ public class CampoNumerico extends JTextField
 	 *
 	 * @return El nuevo modelo de documento.
 	 */
+	@Override
 	protected Document createDefaultModel() 
 	{
 		return new CampoNumericoDoc();
@@ -111,6 +112,7 @@ public class CampoNumerico extends JTextField
 		 */
 		private static final long serialVersionUID = 803699531167972655L;
 
+		@Override
 		public void insertString(int offs, String str, AttributeSet a) 
 			throws BadLocationException 
 		{
@@ -130,7 +132,7 @@ public class CampoNumerico extends JTextField
 					Toolkit.getDefaultToolkit().beep();
 			}
 			
-			if ((getLength()+source.length) <= cols) 
+			if ((getLength()+source.length) <= CampoNumerico.this.cols) 
 				super.insertString(offs, new String(result, 0, j), a);
 			else
 				Toolkit.getDefaultToolkit().beep();						
