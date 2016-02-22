@@ -22,14 +22,14 @@ public abstract class InstruccionGeneral {
 	 * Array de caracteres que contiene los 'simbolos especiales' validos en el
 	 * código fuente. Se incluyen : ' ', '#', '(', ')', ',', '_', '-', '$', '%'
 	 */
-	protected static final char[] caracteresValidos = { ' ', '#', '(', ')', ',', '_', '-', '$', '%' };
+	private static final char[] caracteresValidos = { ' ', '#', '(', ')', ',', '_', '-', '$', '%' };
 
 	/**
 	 * Array de caracteres que contiene los caracteres que se pueden usar como
 	 * separadores validos de los argumentos... Se incluyen : el espacio, la
 	 * coma y el tabulador
 	 */
-	protected static final char[] caracteresSeparador = { ' ', ',', '\t' };
+	private static final char[] caracteresSeparador = { ' ', ',', '\t' };
 
 	/**
 	 * Error que se produce cuando en alguna instruccion apareces caracteres no

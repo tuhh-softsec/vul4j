@@ -13,7 +13,7 @@ public class MemoriaControl {
 	/**
 	 * Tamaño de la memoria de Contol
 	 */
-	public static int TAMANO = 1024;
+	public static final int TAMANO = 1024;
 
 	/**
 	 * Array donde se guardan los datos de memoria

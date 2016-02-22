@@ -16,23 +16,23 @@ import java.util.List;
  * Clase de los Bancos de Registros
  */
 public class BancoRegistros {
-	public static int PC = 0x00;
-	public static int AC = 0x01;
-	public static int SP = 0x02;
-	public static int IR = 0x03;
-	public static int OMASK = 0x04;
-	public static int RCON1 = 0x05;
-	public static int RCON2 = 0x06;
-	public static int RCON3 = 0x07;
-	public static int AMASK = 0x08;
-	public static int SMASK = 0x09;
-	public static int A = 0x0A;
-	public static int B = 0x0B;
-	public static int C = 0x0C;
-	public static int D = 0x0D;
-	public static int E = 0x0E;
-	public static int F = 0x0F;
-	private static String[] nombres = new String[] { "PC", "AC", "SP", "IR", "OMASK", "RCON1", "RCON2", "RCON3",
+	public static final int PC = 0x00;
+	public static final int AC = 0x01;
+	public static final int SP = 0x02;
+	public static final int IR = 0x03;
+	public static final int OMASK = 0x04;
+	public static final int RCON1 = 0x05;
+	public static final int RCON2 = 0x06;
+	public static final int RCON3 = 0x07;
+	public static final int AMASK = 0x08;
+	public static final int SMASK = 0x09;
+	public static final int A = 0x0A;
+	public static final int B = 0x0B;
+	public static final int C = 0x0C;
+	public static final int D = 0x0D;
+	public static final int E = 0x0E;
+	public static final  int F = 0x0F;
+	private static final  String[] nombres = new String[] { "PC", "AC", "SP", "IR", "OMASK", "RCON1", "RCON2", "RCON3",
 			"AMASK", "SMASK", "A", "B", "C", "D", "E", "F" };
 
 	/**
