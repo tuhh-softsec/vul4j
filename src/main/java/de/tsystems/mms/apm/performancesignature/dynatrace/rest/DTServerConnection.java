@@ -144,18 +144,15 @@ public class DTServerConnection {
         ManagementURLBuilder builder = new ManagementURLBuilder();
         builder.setServerAddress(this.address);
         URL url = builder.testRunDetailsURL(systemProfile, uuid);
-        TestRun testRun;
         try {
             XMLReader xr = XMLReaderFactory.createXMLReader();
             TestRunDetailsXMLHandler handler = new TestRunDetailsXMLHandler();
             xr.setContentHandler(handler);
             xr.parse(new InputSource(getInputStream(url)));
-            testRun = handler.getParsedObjects();
+            return handler.getParsedObjects();
         } catch (Exception ex) {
             throw new ContentRetrievalException(ExceptionUtils.getStackTrace(ex) + "Could not retrieve records from Dynatrace server: " + url.toString(), ex);
         }
-
-        return testRun;
     }
 
     public DashboardReport getDashboardReportFromXML(final String dashBoardName, final String sessionName, final String testCaseName) {
