@@ -30,11 +30,11 @@
     <packaging>hpi</packaging>
 
     <name>Performance Signature with Dynatrace</name>
-    <url>https://community.dynatrace.com/community/display/DL/Performance+Signature+Plugin</url>
+    <url>https://wiki.jenkins-ci.org/display/JENKINS/Performance+Signature+with+Dynatrace+Plugin</url>
     <scm>
-        <connection>scm:git:https://github.com/T-Systems-MMS/perfsig-jenkins.git</connection>
-        <developerConnection>scm:git:https://rpionke@github.com/T-Systems-MMS/perfsig-jenkins.git</developerConnection>
-        <url>https://github.com/T-Systems-MMS/perfsig-jenkins</url>
+        <connection>scm:git:https://github.com/jenkinsci/performance-signature-dynatrace-plugin.git</connection>
+        <developerConnection>scm:git:https://github.com/jenkinsci/performance-signature-dynatrace-plugin.git</developerConnection>
+        <url>https://github.com/jenkinsci/performance-signature-dynatrace-plugin</url>
         <tag>HEAD</tag>
     </scm>
 
