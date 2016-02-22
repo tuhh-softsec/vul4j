@@ -60,7 +60,6 @@ public class SecuenciadorMicroprograma
 	 * 
 	 * @param memoriaPrincipal La memoria principal con su contenido inicial
 	 * 
-	 * @return La memoria de control con su contenido inicial
 	 */	
 	public SecuenciadorMicroprograma (short[] memoriaPrincipal, long[] memControl)
 	{
@@ -288,7 +287,7 @@ public class SecuenciadorMicroprograma
 	
 	/**
 	 * Añade un listener para los cambios de los registros.
-	 * @l El listener
+	 * @param l El listener
 	 */	
 	public void AddRegisterChangeListener (RegisterChangeListener l)
 	{

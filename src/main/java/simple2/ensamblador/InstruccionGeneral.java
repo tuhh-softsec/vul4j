@@ -86,7 +86,7 @@ public abstract class InstruccionGeneral {
 	* Comprueba si una instruccion tiene caracteres no válidos.
 	* (los caracteres validos son letras (A..Z), numeros (0..9)
 	*
-	* @param instrucción- cadena.
+	* @param instruccion cadena.
 	*
 	* @return 
 	* 		true - si validación cierta.
@@ -130,10 +130,9 @@ public abstract class InstruccionGeneral {
 	* Separa los distintos operandos de una instrucción y mete cada uno 
 	* como un elemento de una array de cadenas.
 	*
-	* @param instrucción Exprexion a disgregar.
+	* @param instruccion Exprexion a disgregar.
 	*
-	* @return Array con los operandos de la instruccion, incluido el nombre
-	* de la función.
+	* @return Array con los operandos de la instruccion, incluido el nombre de la función.
 	*/
 	public String[] separarOperandos (String instruccion)
 	{

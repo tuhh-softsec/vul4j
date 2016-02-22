@@ -148,8 +148,8 @@ public class PanelDibujo extends JPanel implements InterfaceDibujo,ComponentList
 	/**
 	* Dibuja un área rectangular determinada
 	* @param c Color que tendrá el rectangulo
-	* @param x Coordenada horizontal donde empieza el rectángulo
-	* @param y Coordenada vertical donde empieza el rectángulo
+	* @param x1 Coordenada horizontal donde empieza el rectángulo
+	* @param y1 Coordenada vertical donde empieza el rectángulo
 	* @param ancho Ancho del rectangulo
 	* @param alto Alto del rectangulo
 	*/

@@ -148,7 +148,7 @@ public class PanelMemoria extends JPanel implements MemoryChangeListener
 	
 	/**
 	 * Cambiamos todos los valores del panel de memoria
-	 * @param newMemoryValues Los nuevos valores de la Memoria Principal
+	 * @param ensamblado Los nuevos valores de la Memoria Principal
 	 */
 	public void MemoryChanged (short[]ensamblado)
 		{
@@ -158,11 +158,18 @@ public class PanelMemoria extends JPanel implements MemoryChangeListener
 			this.model.setValueAt(String.valueOf(this.memoria.elementAt(c)),c,0);
 			if(c<instruccionesTotales){
 				String cadena=(Integer.toHexString(ensamblado[c])).toUpperCase();
-				if (ensamblado[c] < 0)
+				if (ensamblado[c] < 0){
 					cadena=cadena.substring(cadena.length()-4);
-				if(cadena.length()==1) cadena="000"+cadena;
-				if(cadena.length()==2) cadena="00"+cadena;
-				if(cadena.length()==3) cadena="0"+cadena;
+				}
+				if(cadena.length()==1){
+					cadena="000"+cadena;
+				}
+				if(cadena.length()==2){
+					cadena="00"+cadena;
+				}
+				if(cadena.length()==3) {
+					cadena="0"+cadena;
+				}
 					this.model.setValueAt(String.valueOf(cadena),c,1);
 					this.model.setValueAt(ToBinString(ensamblado[c]),c,2);
 				}

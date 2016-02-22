@@ -148,20 +148,7 @@ public class Ejecutar extends InstruccionGeneral{
 		return v; 
 	}
 	
-	/** 
-	* Actualmente devuelve 0
-	* 
-	* @param instruccion instrucion a codificar
-	* @param etiquetas etiquetas encontradas en el código
-	* @param linea linea a codificar
-	* @return  0
-	*/
-	@Override
-	public short codificar (String instruccion, int linea)
-		{
-			return 0;
-		}
-	
+
 	
 	/** Comprueba si una instruccion es valida y si no lo es lanza una excepcion.
 	  *
