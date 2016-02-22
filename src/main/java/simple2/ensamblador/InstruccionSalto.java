@@ -31,11 +31,11 @@ public class InstruccionSalto extends InstruccionGeneral {
 	public InstruccionSalto() {
 		this.tabla = new Hashtable<>();
 
-		this.tabla.put("JNEG", new Integer(0x0A));
-		this.tabla.put("JZER", new Integer(0x0B));
-		this.tabla.put("JCAR", new Integer(0x0C));
-		this.tabla.put("JUMP", new Integer(0x0D));
-		this.tabla.put("CALL", new Integer(0x0E));
+		this.tabla.put("JNEG", Integer.valueOf(0x0A));
+		this.tabla.put("JZER", Integer.valueOf(0x0B));
+		this.tabla.put("JCAR", Integer.valueOf(0x0C));
+		this.tabla.put("JUMP", Integer.valueOf(0x0D));
+		this.tabla.put("CALL", Integer.valueOf(0x0E));
 	}
 
 	/**

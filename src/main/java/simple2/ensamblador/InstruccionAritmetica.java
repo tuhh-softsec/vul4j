@@ -31,13 +31,13 @@ public class InstruccionAritmetica extends InstruccionGeneral {
 	public InstruccionAritmetica() {
 		this.tabla = new Hashtable<>();
 
-		this.tabla.put("LODD", new Integer(0x01));
-		this.tabla.put("LODI", new Integer(0x02));
-		this.tabla.put("STOD", new Integer(0x03));
-		this.tabla.put("ADDD", new Integer(0x04));
-		this.tabla.put("ADDI", new Integer(0x05));
-		this.tabla.put("SUBD", new Integer(0x06));
-		this.tabla.put("SUBI", new Integer(0x07));
+		this.tabla.put("LODD", Integer.valueOf(0x01));
+		this.tabla.put("LODI", Integer.valueOf(0x02));
+		this.tabla.put("STOD", Integer.valueOf(0x03));
+		this.tabla.put("ADDD", Integer.valueOf(0x04));
+		this.tabla.put("ADDI", Integer.valueOf(0x05));
+		this.tabla.put("SUBD", Integer.valueOf(0x06));
+		this.tabla.put("SUBI", Integer.valueOf(0x07));
 	}
 
 	/**
