@@ -36,7 +36,7 @@ public class PanelMemoria extends JPanel implements MemoryChangeListener {
 	/**
 	 * Area de texto donde se almacenan los datos de memoria
 	 */
-	public static int tamanno = 2048;
+	public static final int TAMANO = 2048;
 	Object[][] data = new Object[][] { {} };
 	String[] headers = new String[] {};
 	DefaultTableModel model = new DefaultTableModel(this.data, this.headers);
@@ -84,10 +84,10 @@ public class PanelMemoria extends JPanel implements MemoryChangeListener {
 		String[] titulo = new String[] { "POSICION EN MEMORIA", "VALOR HEXADECIMAL", "VALOR BINARIO", "INSTRUCCION" };
 		this.model.setColumnIdentifiers(titulo);
 
-		this.model.setRowCount(tamanno);
+		this.model.setRowCount(TAMANO);
 		this.model.setColumnCount(4);
 		int c = 0;
-		while (c != tamanno) {
+		while (c != TAMANO) {
 			this.model.setValueAt(String.valueOf(this.memoria.elementAt(c)), c, 0);
 			if (c < instruccionesTotales) {
 				String cadena = (Integer.toHexString(ensamblado[c])).toUpperCase();
@@ -116,7 +116,7 @@ public class PanelMemoria extends JPanel implements MemoryChangeListener {
 		int alto_fila = this.tabla.getRowHeight();
 		Dimension size = this.tabla.getSize();
 
-		size.height = alto_fila * (tamanno);
+		size.height = alto_fila * (TAMANO);
 		this.tabla.setPreferredSize(size);
 		this.tabla.revalidate();
 		this.tabla.scrollRectToVisible(new Rectangle(0, size.height - alto_fila, 100, size.height));
@@ -147,7 +147,7 @@ public class PanelMemoria extends JPanel implements MemoryChangeListener {
 		int alto_fila = this.tabla.getRowHeight();
 		Dimension size = this.tabla.getSize();
 
-		size.height = alto_fila * (tamanno);
+		size.height = alto_fila * (TAMANO);
 		this.tabla.setPreferredSize(size);
 		this.tabla.revalidate();
 		this.tabla.scrollRectToVisible(new Rectangle(0, size.height - alto_fila, 100, size.height));
@@ -163,7 +163,7 @@ public class PanelMemoria extends JPanel implements MemoryChangeListener {
 	public void memoryChanged(short[] ensamblado) {
 		int instruccionesTotales = ensamblado.length;
 		int c = 0;
-		while (c != tamanno) {
+		while (c != TAMANO) {
 			this.model.setValueAt(String.valueOf(this.memoria.elementAt(c)), c, 0);
 			if (c < instruccionesTotales) {
 				String cadena = (Integer.toHexString(ensamblado[c])).toUpperCase();
