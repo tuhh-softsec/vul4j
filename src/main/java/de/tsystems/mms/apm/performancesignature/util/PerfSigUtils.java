@@ -83,10 +83,10 @@ public final class PerfSigUtils {
         return listBoxModel;
     }
 
-    public static File getReportDirectory(final Run<?, ?> run) {
+    public static File getReportDirectory(final Run<?, ?> run) throws IOException {
         File reportDirectory = new File(run.getRootDir(), Messages.PerfSigUtils_ReportDirectory());
         if (!reportDirectory.exists()) {
-            reportDirectory.mkdirs();
+            if (!reportDirectory.mkdirs()) throw new IOException("failed to create report directory");
         }
         return reportDirectory;
     }

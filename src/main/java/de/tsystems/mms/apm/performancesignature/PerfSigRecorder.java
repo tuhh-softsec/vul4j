@@ -101,12 +101,12 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
         final int buildNumber = run.getNumber();
         final List<DashboardReport> dashboardReports = new ArrayList<DashboardReport>();
 
-        Run<?, ?> previousBuildRun = run.getPreviousNotFailedBuild();
-        if (previousBuildRun != null) {
-            if (!previousBuildRun.getResult().isCompleteBuild() && run.getPreviousCompletedBuild() != null) {
-                previousBuildRun = run.getPreviousCompletedBuild();
+        Run<?, ?> previousRun = run.getPreviousNotFailedBuild();
+        if (previousRun != null && previousRun.getResult() != null) {
+            if (!previousRun.getResult().isCompleteBuild() && run.getPreviousCompletedBuild() != null) {
+                previousRun = run.getPreviousCompletedBuild();
             }
-            comparisonBuildNumber = previousBuildRun.getNumber();
+            comparisonBuildNumber = previousRun.getNumber();
             logger.println(Messages.PerfSigRecorder_LastSuccessfulBuild() + " #" + comparisonBuildNumber);
         } else {
             logger.println("No previous build found! No comparison possible!");
@@ -126,7 +126,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
             }
 
             if (comparisonBuildNumber != 0) {
-                final PerfSigEnvInvisAction otherEnvVars = getBuildEnvVars(previousBuildRun, configurationTestCase.getName());
+                final PerfSigEnvInvisAction otherEnvVars = getBuildEnvVars(previousRun, configurationTestCase.getName());
                 if (otherEnvVars != null) {
                     comparisonSessionName = otherEnvVars.getSessionName();
                 }
