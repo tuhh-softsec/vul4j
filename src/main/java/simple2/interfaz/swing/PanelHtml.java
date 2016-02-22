@@ -4,15 +4,15 @@
  */
 package simple2.interfaz.swing;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 
 import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
 import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.HTMLFrameHyperlinkEvent;
+import javax.swing.text.html.HTMLEditorKit;
+
 
 /**
  * @author Montserrat Sotomayor Gonzalez
@@ -23,7 +23,7 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
  * Además permite el seguimiento de los links.
  *
  */
-public class PanelHtml extends JScrollPane implements HyperlinkListener{
+public class PanelHtml extends JScrollPane {
 
 	/**
 	 * 
@@ -38,102 +38,39 @@ public class PanelHtml extends JScrollPane implements HyperlinkListener{
 	 *
 	 * @param fichero El fichero a visualizar.
 	 */
-	public PanelHtml (String fichero)
-	{
-		URL url = null;
+	public PanelHtml (String fichero){
+		Reader reader = null;
 		try
 		{
-			try
-			{
-				url = getClass().getResource (fichero);
-				
+			reader = new InputStreamReader(getClass().getResourceAsStream(fichero), StandardCharsets.ISO_8859_1);
+			this.html = new JEditorPane();
+			HTMLEditorKit editorKit = new HTMLEditorKit();
+			this.html.setEditorKit(editorKit);
+			this.html.setEditable(false);
+			try {
+				HTMLDocument document = new HTMLDocument();
+				document.getDocumentProperties().put("IgnoreCharsetDirective", Boolean.TRUE);
+				this.html.read(reader, document);
 			}
-			catch (Exception ex)
-			{
-				url = null;
-			}
-			if (url != null)
-			{
-				this.html = new JEditorPane (url);
-				this.html.setEditable (false);
-				this.html.addHyperlinkListener (this);
-				this.getViewport ().add (this.html);
-			}
-			else
-			{
-				this.html = new JEditorPane();
-				this.html.setEditable(false);
+			catch (IOException ioe) {
+				ioe.printStackTrace();
 				this.html.setText("No pude encontrar el archivo");
-				this.getViewport ().add (this.html);
 			}
-		}
-		catch (MalformedURLException e)
-		{
-			System.err.println ("Malformed URL: " + e);
-		}
-		catch (IOException e)
-		{
-			System.err.println ("IOException: " + e);
-		}
-	}
-	/**
-	 * Cambia el fichero a visualizar
-	 *
-	 * @param fichero El nuevo fichero a visualizar.
-	 */
-	public void setPage (String fichero)
-	{
-		URL url = null;
-		try
-		{
-			url = getClass().getResource (fichero);
-			
-		}
-		catch (Exception ex)
-		{
-			System.err.println ("No pude abrir " + fichero);
-			url = null;
-		}
-		if (url != null)
-		{
-			try
-			{			
-				this.html.setPage(url);
-			}
-			catch (IOException ioe)
-			{
-				System.err.println ("IOE: " + ioe);
-			}
-		}
-		
-	}
-	/** 
-	 * Se ejecuta al pulsar sobre un link.
-	 * Su efecto es cambiar la página a visualizar a la que apunta el enlace.
-	 * @param e evento que se lanza al pulsar sobre un link.
-	 */
-	public void hyperlinkUpdate (HyperlinkEvent e)
-	{
-		if (e.getEventType () == HyperlinkEvent.EventType.ACTIVATED)
-		{
-			if (e instanceof HTMLFrameHyperlinkEvent)
-			{
-				((HTMLDocument) this.html.getDocument ()).
-					processHTMLFrameHyperlinkEvent ((HTMLFrameHyperlinkEvent) e);
-			}
-			else
-			{
-				try
-				{
-					this.html.setPage (e.getURL ());
+			this.getViewport().add(this.html);
+		}		
+		finally {
+			if (reader != null) {
+				try {
+					reader.close();
 				}
-				catch (IOException ioe)
-				{
-					System.err.println ("IOE: " + ioe);
+				catch (IOException ioe) {
+					//
 				}
 			}
 		}
 	}
+
+
 }
 
 

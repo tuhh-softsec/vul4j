@@ -11,12 +11,12 @@ import java.awt.event.ActionListener;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
-import javax.swing.JApplet;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.RootPaneContainer;
 
 import simple2.ensamblador.Ejecutar;
 
@@ -28,13 +28,7 @@ import simple2.ensamblador.Ejecutar;
 /**
  * Clase principal del programa
  */
-public class Simple2 extends JApplet{
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 6628444410002934438L;
-
+public class Simple2 {
 
 	/**
 	 * Panel central que contendrá todos los paneles que se utilizarán en el programa
@@ -88,6 +82,9 @@ public class Simple2 extends JApplet{
 	 */
 	JTextField t;
 	
+	
+	private RootPaneContainer rootPaneContainer;
+	
 	/**
 	 * Hilo que nos controla cuando termina el hilo de la simulación
 	 */
@@ -97,10 +94,12 @@ public class Simple2 extends JApplet{
 	 * el programa el panel de inicio.
 	 *
 	 */
-	public Simple2(){}
-	@Override
+	public Simple2(RootPaneContainer rootPaneContainer){
+		this.rootPaneContainer = rootPaneContainer;
+	}
+
+	
 	public void init(){
-		setSize (720,500);
 		panelCentral = new PanelCentral();
 		panelSuperior =new JPanel();
 		
@@ -116,15 +115,15 @@ public class Simple2 extends JApplet{
 		botonEsquema.setIcon(new ImageIcon(getClass().getResource("/images/ruta.gif")));
 			
 			
-		getContentPane().setLayout(new BorderLayout());
+		this.rootPaneContainer.getRootPane().getContentPane().setLayout(new BorderLayout());
 		panelSuperior.setLayout(new GridLayout(1,5));
 		panelSuperior.add(botonCodigo);
 		panelSuperior.add(botonMemoria);
 		panelSuperior.add(botonEjecutar);
 		panelSuperior.add(botonEsquema);
 		panelSuperior.add(botonParar);
-		getContentPane().add (panelCentral, BorderLayout.CENTER);
-		getContentPane().add (panelSuperior, BorderLayout.NORTH);
+		this.rootPaneContainer.getRootPane().getContentPane().add (panelCentral, BorderLayout.CENTER);
+		this.rootPaneContainer.getRootPane().getContentPane().add (panelSuperior, BorderLayout.NORTH);
 		panelCentral.verPanel("NUEVO");
 		crearMenus();
 			
@@ -272,7 +271,7 @@ public class Simple2 extends JApplet{
 	{
 		this.t=new CampoNumerico(this.tiempo,4);
 		JMenuBar menubar = new JMenuBar ();
-		setJMenuBar (menubar);
+		this.rootPaneContainer.getRootPane().setJMenuBar (menubar);
 		
 		JMenu menu;
 		JMenuItem menuItem;
