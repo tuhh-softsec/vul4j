@@ -21,14 +21,14 @@ public class InstruccionSalto extends InstruccionGeneral{
 	* Contiene las instrucciones que maneja la clase con su código de
 	* operación.
 	*/
-	private Hashtable tabla;
+	private Hashtable<String, Integer> tabla;
 
 	/**
 	* Crea una instancia de la clase e inicializa el atributo tabla con las
 	* instrucciones .
 	*/
 	public InstruccionSalto() {
-		this.tabla = new Hashtable ();
+		this.tabla = new Hashtable<> ();
 		
 		this.tabla.put ("JNEG", new Integer (0x0A));
 		this.tabla.put ("JZER", new Integer (0x0B));

@@ -187,7 +187,7 @@ public class PanelNuevo extends JPanel{
 	 * @param ensamblado código que ha sido ensamblado
 	 * @param instruccionesTotales Número de instrucciones totales 
 	 */
-	public void Escribir (Vector codigo_limpio,short[] ensamblado,int instruccionesTotales){
+	public void Escribir (Vector<String> codigo_limpio,short[] ensamblado,int instruccionesTotales){
 		this.resultado.setEditable(false);
 		this.resultado.setBackground(Color.lightGray);
 		String codificado="";
@@ -195,11 +195,18 @@ public class PanelNuevo extends JPanel{
 		for (i = 0; i < instruccionesTotales; i++)
 		{
 			String cadena=(Integer.toHexString(ensamblado[i])).toUpperCase();
-			if (ensamblado[i] < 0)
+			if (ensamblado[i] < 0){
 				cadena=cadena.substring(cadena.length()-4);
-			if(cadena.length()==1) cadena="000"+cadena;
-			if(cadena.length()==2) cadena="00"+cadena;
-			if(cadena.length()==3) cadena="0"+cadena;
+			}
+			if(cadena.length()==1) {
+				cadena="000"+cadena;
+			}
+			if(cadena.length()==2) {
+				cadena="00"+cadena;
+			}
+			if(cadena.length()==3){
+				cadena="0"+cadena;
+			}
 			codificado=codificado+"("+codigo_limpio.elementAt(i)+")"+ cadena+"\n";
 		}
 		this.resultado.setText(codificado);

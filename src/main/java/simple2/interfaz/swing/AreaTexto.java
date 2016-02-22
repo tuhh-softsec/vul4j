@@ -230,10 +230,10 @@ public class AreaTexto extends javax.swing.JTextArea{
 	 * Cada elemento del vector corresponde a una linea del editor.
 	 * @return El vector con el texto.
 	 */
-	public Vector getTextAsVector ()
+	public Vector<String> getTextAsVector ()
 	{
 		int inicio, fin;
-		Vector v = new Vector();
+		Vector<String> v = new Vector<String>();
 		int lineas = this.getLineCount ();
 		for (int i = 0; i < lineas; i++)
 		{

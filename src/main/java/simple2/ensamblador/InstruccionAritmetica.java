@@ -21,14 +21,14 @@ public class InstruccionAritmetica extends InstruccionGeneral{
 	* Contiene las instrucciones que maneja la clase con su código de
 	* operación.
 	*/
-	private Hashtable tabla;
+	private Hashtable<String, Integer> tabla;
 
 	/**
 	* Crea una instancia de la clase e inicializa el atributo 'tabla' con las
 	* instrucciones .
 	*/
 	public InstruccionAritmetica() {
-		this.tabla = new Hashtable ();
+		this.tabla = new Hashtable<> ();
 
 		this.tabla.put ("LODD", new Integer(0x01));
 		this.tabla.put ("LODI", new Integer(0x02));

@@ -138,7 +138,7 @@ public class PanelCentral extends javax.swing.JPanel{
 	 * @param ensamblado El código limpio ensamblado
 	 * @param instruccionesTotales Numero de instrucciones totales
 	 */
-	public void Escribir (Vector codigo_limpio,short[] ensamblado,int instruccionesTotales){
+	public void Escribir (Vector<String> codigo_limpio,short[] ensamblado,int instruccionesTotales){
 		this.panelnuevo.Escribir (codigo_limpio,ensamblado,instruccionesTotales);	
 		}
 		
@@ -167,7 +167,7 @@ public class PanelCentral extends javax.swing.JPanel{
 	 * @param ensamblado Codigo ensamblado correctamente
 	 * @param instruccionesTotales Numero de instrucciones totales 
 	 */	
-	public void EscribirMemoria(short[] ensamblado,int instruccionesTotales,Vector codigo_limpio){
+	public void EscribirMemoria(short[] ensamblado,int instruccionesTotales,Vector<String> codigo_limpio){
 		this.panelmemoria.EscribirMemoria(ensamblado,instruccionesTotales,codigo_limpio);
 	}
 	

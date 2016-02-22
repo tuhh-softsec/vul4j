@@ -45,7 +45,7 @@ public class PanelMemoria extends JPanel implements MemoryChangeListener
 	/**
 	 * Vector donde se guardan los nombres de las posiciones de la memoria
 	 */
-	Vector memoria=new Vector();
+	Vector<String> memoria=new Vector<>();
 	
 	/**
 	 * Creamos una instancia de la clase
@@ -66,8 +66,9 @@ public class PanelMemoria extends JPanel implements MemoryChangeListener
 		add(this.a1, BorderLayout.CENTER);
 
 		this.a1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		for (int i=0;i<2048;i++)
+		for (int i=0;i<2048;i++) {
 			this.memoria.addElement(ToHexString(i));
+		}
 	}
 	
 	/**
@@ -75,13 +76,8 @@ public class PanelMemoria extends JPanel implements MemoryChangeListener
 	 * @param ensamblado Los valores que tiene la Memoria Principal
 	 * @param instruccionesTotales Numero de elementos de la memoria
 	 */
-	public void EscribirMemoria(short[] ensamblado,int instruccionesTotales,Vector codigo_limpio){
-		String titulo[];
-		titulo=new String[4];
-		titulo[0]="POSICION EN MEMORIA";
-		titulo[1]="VALOR HEXADECIMAL";
-		titulo[2]="VALOR BINARIO";
-		titulo[3]="INSTRUCCION";
+	public void EscribirMemoria(short[] ensamblado,int instruccionesTotales,Vector<String> codigo_limpio){
+		String[] titulo = new String[] {"POSICION EN MEMORIA", "VALOR HEXADECIMAL", "VALOR BINARIO", "INSTRUCCION"};
 		this.model.setColumnIdentifiers(titulo);
 
 		this.model.setRowCount(tamanno);
@@ -91,11 +87,18 @@ public class PanelMemoria extends JPanel implements MemoryChangeListener
 			this.model.setValueAt(String.valueOf(this.memoria.elementAt(c)),c,0);
 			if(c<instruccionesTotales){
 				String cadena=(Integer.toHexString(ensamblado[c])).toUpperCase();
-				if (ensamblado[c] < 0)
+				if (ensamblado[c] < 0) {
 					cadena=cadena.substring(cadena.length()-4);
-				if(cadena.length()==1) cadena="000"+cadena;
-				if(cadena.length()==2) cadena="00"+cadena;
-				if(cadena.length()==3) cadena="0"+cadena;
+				}
+				if(cadena.length()==1){
+					cadena="000"+cadena;
+				}
+				if(cadena.length()==2){
+					cadena="00"+cadena;
+				}
+				if(cadena.length()==3){
+					cadena="0"+cadena;
+				}
 				this.model.setValueAt(String.valueOf(cadena),c,1);
 				this.model.setValueAt(ToBinString(ensamblado[c]),c,2);
 				this.model.setValueAt(String.valueOf(codigo_limpio.elementAt(c)),c,3);
@@ -179,8 +182,9 @@ public class PanelMemoria extends JPanel implements MemoryChangeListener
 	public static String ToHexString (int valor)
 	{
 		String ret = Integer.toHexString(valor);
-		while (ret.length() < 4)
+		while (ret.length() < 4){
 			ret = "0" + ret;
+		}
 		return ret.toUpperCase();
 	}
 	

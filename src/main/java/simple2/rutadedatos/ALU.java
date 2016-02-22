@@ -92,10 +92,12 @@ package simple2.rutadedatos;
 			case 5:
 				retval = (short) (operandoA ^ operandoB);
 				break;
+				default: 
+					throw new IllegalArgumentException("codigo de operación no válido" + operacion);
 			}
 
-			this.n = (retval < 0) ? 1 : 0;
-			this.z = (retval == 0) ? 1 : 0;
+			this.n = retval < 0 ? 1 : 0;
+			this.z = retval == 0 ? 1 : 0;
 
 			this.resultado = OperarSH (operacionSH, retval);
 			return this.resultado;
@@ -117,6 +119,8 @@ package simple2.rutadedatos;
 			case 2:
 				valor = (short) (valor << 1);
 				break;
+			default:
+				throw new IllegalArgumentException("codigo de tipo de desplazamiento no válido" + op);
 			}
 			return valor;
 		}

@@ -103,10 +103,12 @@ public class SecuenciadorMicroprograma
 			this._petLecturaMemoria = 0;
 			this._petEscrituraMemoria = 0;
 		}
-		if (this._petLecturaMemoria > 1)
+		if (this._petLecturaMemoria > 1) {
 			this._mbr = this.mp.LeerDato (this._mar);
-		if (this._petEscrituraMemoria > 1)
+		}
+		if (this._petEscrituraMemoria > 1) {
 			this.mp.EscribirDato (this._mar, this._mbr);
+		}
 	}
 
 
@@ -127,6 +129,8 @@ public class SecuenciadorMicroprograma
 					break;
 			case 3: EjecutarSubciclo4();
 					break;
+			default:
+				throw new AssertionError("Opcion no contemplada");
 		}
 		this.subciclos++;
 	}
@@ -268,8 +272,9 @@ public class SecuenciadorMicroprograma
 			return (this.alu.LeerC () == 1);
 		case 4:
 			return true;
+		default:
+			return true;
 		}
-		return true;
 	}
 		
 	/**

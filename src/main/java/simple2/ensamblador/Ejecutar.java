@@ -21,7 +21,7 @@ public class Ejecutar extends InstruccionGeneral{
 	* Tabla hash que contiene los mnemonicos de las intrucciones y una instancia del tipo de clase 
 	* a la que pertenece la instrucion.
 	*/
-	private Hashtable instrucciones;
+	private Hashtable<String, InstruccionGeneral> instrucciones;
 	
 	
 	/**
@@ -38,9 +38,9 @@ public class Ejecutar extends InstruccionGeneral{
 	 * @param datos Codigo que hemos escrito para ensamblar
 	 * @return Nos devuelve el código limpiado si no tiene errores
 	 */
-	public Vector Comprobar(String datos) {
-		Vector v= null;
-		Vector codigo_limpio = null;
+	public Vector<String> Comprobar(String datos) {
+		Vector<String> v= null;
+		Vector<String> codigo_limpio = null;
 		crearHashInstrucciones ();
 		
 		v= SepararEnVector(datos);
@@ -61,7 +61,7 @@ public class Ejecutar extends InstruccionGeneral{
 	 * @return Nos devuelve los errores producidos al escribir el código
 	 */
 	public String EjecutarErrores(String datos) {
-			Vector v= null;
+			Vector<String> v= null;
 			String errores = "";
 			crearHashInstrucciones ();
 		
@@ -83,7 +83,7 @@ public class Ejecutar extends InstruccionGeneral{
 	 * @param codigo_limpio Código sin comentarios y sin lineas en blanco
 	 * @return Devuelve el código ensamblado
 	 */
-	public short[] EnsamblarCodigo(Vector codigo_limpio) {
+	public short[] EnsamblarCodigo(Vector<String> codigo_limpio) {
 		crearHashInstrucciones ();
 		short[] ensamblado=null;
 		ensamblado = ensamblar (codigo_limpio);
@@ -95,7 +95,7 @@ public class Ejecutar extends InstruccionGeneral{
 	*/ 
 	private void crearHashInstrucciones ()
 	{
-		this.instrucciones = new Hashtable ();
+		this.instrucciones = new Hashtable<> ();
 		
 		InstruccionGeneral aritmeticas = new InstruccionAritmetica();
 		InstruccionGeneral  saltos= new InstruccionSalto ();
@@ -125,8 +125,8 @@ public class Ejecutar extends InstruccionGeneral{
 	 * @param datos Codigo que hemos escrito para ensamblar
 	 * @return Devuelve el código en un Vector
 	 */
-	public Vector SepararEnVector(String datos){
-		Vector v=new Vector();
+	public Vector<String> SepararEnVector(String datos){
+		Vector<String> v=new Vector<>();
 		int s=0;
 		String texto="";
 		while(s!=datos.length())//Mientras no termine de leer todo el texto
@@ -135,7 +135,9 @@ public class Ejecutar extends InstruccionGeneral{
 				v.addElement(texto);
 				texto="";
 			}
-			else texto=texto+datos.charAt(s);
+			else {
+				texto=texto+datos.charAt(s);
+			}
 			s++;
 		}
 		if(texto.length()>0){
@@ -180,10 +182,10 @@ public class Ejecutar extends InstruccionGeneral{
 	* @param texto a meter en el vector
 	* @return  vector con todas las instrucciones
 	*/
-	public Vector stringToVector (String texto)
+	public Vector<String> stringToVector (String texto)
 		{
 		// TODO Usar split
-			Vector v0 =  new Vector();
+			Vector<String> v0 =  new Vector<String>();
 			int first = 0;
 			int last = 0;
 		
@@ -205,7 +207,7 @@ public class Ejecutar extends InstruccionGeneral{
 	* las instrucciones.
 	* @param vectorInstrucciones vector con todas las instrucciones a ensamblar
 	*/
-	public short[] ensamblar(Vector vectorInstrucciones)
+	public short[] ensamblar(Vector<String> vectorInstrucciones)
 		{
 		InstruccionGeneral x;
 		String inst;
@@ -217,7 +219,7 @@ public class Ejecutar extends InstruccionGeneral{
 		
 		for (i = 0; i < instruccionesTotales; i++)
 		{
-			inst = (String) vectorInstrucciones.get(i);
+			inst =  vectorInstrucciones.get(i);
 			
 			//coge el mnemonico de la instruccion (hasta el primer espacio o la intruccion entera)
 			if (inst.indexOf (' ') != -1)
@@ -226,7 +228,7 @@ public class Ejecutar extends InstruccionGeneral{
 				in = inst;
 			
 			//extrae de la tabla de instrucciones la instancia correspondiente al mnemonico	
-			x = ((InstruccionGeneral)this.instrucciones.get(in));
+			x = this.instrucciones.get(in);
 			
 			//codifica la instrucion 
 			out[i] = x.codificar (inst, i);	
@@ -292,7 +294,7 @@ public class Ejecutar extends InstruccionGeneral{
 	 * @throws ErrorCodigoException si se encuentra algun error, la excepcion con tiene un mensaje con el error 
 	 * producido.	
 	 */
-	public Vector PrimeraPasada (Vector origen) throws ErrorCodigoException
+	public Vector<String> PrimeraPasada (Vector<String> origen) throws ErrorCodigoException
 		{
 		String instruc="";
 		String errores = "";
@@ -301,13 +303,13 @@ public class Ejecutar extends InstruccionGeneral{
 		int l_fichero;
 		
 		l_fichero = 0;
-		Vector vectorInstrucciones = new Vector();
+		Vector<String> vectorInstrucciones = new Vector<String>();
 		
 				
 		for (l_fichero = 1; l_fichero <origen.size()+1; l_fichero++)
 			{
 			//lee la siguiente linea del fichero para analizarla
-			instruc = (String) origen.get(l_fichero-1);
+			instruc = origen.get(l_fichero-1);
 			
 			instruc = quitarComentariosYEspacios (instruc);
 					
@@ -321,7 +323,7 @@ public class Ejecutar extends InstruccionGeneral{
 			else
 				in = instruc;
 							
-			n = (InstruccionGeneral) this.instrucciones.get(in);
+			n = this.instrucciones.get(in);
 			String salida_ = "";
 			if (n != null)
 				{

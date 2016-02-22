@@ -127,7 +127,7 @@ public abstract class InstruccionGeneral {
 	}
 		
 	/**
-	* Separa los distintos operandos de una instrucció y mete cada uno 
+	* Separa los distintos operandos de una instrucción y mete cada uno 
 	* como un elemento de una array de cadenas.
 	*
 	* @param instrucción Exprexion a disgregar.
@@ -137,10 +137,11 @@ public abstract class InstruccionGeneral {
 	*/
 	public String[] separarOperandos (String instruccion)
 	{
+		// TODO Usar split
 		int i = 0;
 		int a = 0;
 		boolean continuar = true;
-		Vector v = new Vector ();
+		Vector<String> v = new Vector<String> ();
 		while (continuar)
 		{
 			while ((i < instruccion.length ())&& !esSeparador (instruccion.charAt (i)))
@@ -164,7 +165,7 @@ public abstract class InstruccionGeneral {
 		String[]d = new String[v.size ()];
 		for (int z = 0; z < v.size (); z++)
 		{
-			d[z] = (String) v.get (z);
+			d[z] = v.get (z);
 		}
 		return d;
 	}

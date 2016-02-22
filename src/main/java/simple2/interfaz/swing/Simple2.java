@@ -163,7 +163,7 @@ public class Simple2 {
 				
 				panelCentral.limpiarEjecutar();
 				String datos=panelCentral.CogerDatos();
-				Vector codigo_limpio=new Vector();
+				Vector<String> codigo_limpio=new Vector<>();
 				short[] ensamblado;
 				String error="";
 						
