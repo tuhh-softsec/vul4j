@@ -25,7 +25,7 @@ public class MemoriaControl {
 	 * 
 	 * @return Memoria de Control que se le pasa por defecto
 	 */
-	public static long[] GetMemoriaDefecto() {
+	public static long[] getMemoriaDefecto() {
 		long[] mem = new long[TAMANO];
 
 		mem[0] = 0x400000FF4000L; // Salto al microprograma de búsqueda y
@@ -159,7 +159,7 @@ public class MemoriaControl {
 	 */
 	public MemoriaControl(long[] memoriaInicial) {
 		if ((memoriaInicial == null) || (memoriaInicial.length != TAMANO)) {
-			this.memoria = MemoriaControl.GetMemoriaDefecto();
+			this.memoria = MemoriaControl.getMemoriaDefecto();
 		} else {
 			this.memoria = memoriaInicial;
 		}
