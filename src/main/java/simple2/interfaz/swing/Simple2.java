@@ -35,40 +35,40 @@ public class Simple2 {
 	 * Panel central que contendrá todos los paneles que se utilizarán en el
 	 * programa
 	 */
-	public static PanelCentral panelCentral;
+	private PanelCentral panelCentral;
 
 	/**
 	 * Panel superior que contendra los botones del programa
 	 */
-	public static JPanel panelSuperior;
+	private JPanel panelSuperior;
 
 	/**
 	 * Boton que al pulsar nos muestra el codigo qu hemos escrito y la
 	 * codificacion o errores
 	 */
-	public static Boton botonCodigo;
+	private Boton botonCodigo;
 
 	/**
 	 * Boton que al pulsar nos ejecuta: -Primero codifica el codigo y si no
 	 * tiene errores pasa al siguiente punto -Una vez codificado el codigo pasa
 	 * a mostrarnos la simulación
 	 */
-	public static Boton botonEjecutar;
+	private Boton botonEjecutar;
 
 	/**
 	 * Boton que al pulsar nos muestra el estado de la memoria
 	 */
-	public static Boton botonMemoria;
+	private Boton botonMemoria;
 
 	/**
 	 * Boton que al pulsar para la simulacion
 	 */
-	public static Boton botonParar;
+	private Boton botonParar;
 
 	/**
 	 * Boton que nos muestra la ruta
 	 */
-	public static Boton botonEsquema;
+	private Boton botonEsquema;
 
 	/**
 	 * Variable que nos indica si el botón parado ha sido pulsado
@@ -103,63 +103,63 @@ public class Simple2 {
 	}
 
 	public void init() {
-		panelCentral = new PanelCentral();
-		panelSuperior = new JPanel();
+		this.panelCentral = new PanelCentral();
+		this.panelSuperior = new JPanel();
 
-		botonCodigo = new Boton("CODIGO");
-		botonCodigo.setIcon(new ImageIcon(getClass().getResource("/images/codigo.gif")));
-		botonEjecutar = new Boton("EJECUTAR");
-		botonEjecutar.setIcon(new ImageIcon(getClass().getResource("/images/ejecutar.gif")));
-		botonMemoria = new Boton("MEMORIA");
-		botonMemoria.setIcon(new ImageIcon(getClass().getResource("/images/memoria.gif")));
-		botonParar = new Boton("PARAR");
-		botonParar.setIcon(new ImageIcon(getClass().getResource("/images/dot_rojo.gif")));
-		botonEsquema = new Boton("RUTA");
-		botonEsquema.setIcon(new ImageIcon(getClass().getResource("/images/ruta.gif")));
+		this.botonCodigo = new Boton("CODIGO");
+		this.botonCodigo.setIcon(new ImageIcon(getClass().getResource("/images/codigo.gif")));
+		this.botonEjecutar = new Boton("EJECUTAR");
+		this.botonEjecutar.setIcon(new ImageIcon(getClass().getResource("/images/ejecutar.gif")));
+		this.botonMemoria = new Boton("MEMORIA");
+		this.botonMemoria.setIcon(new ImageIcon(getClass().getResource("/images/memoria.gif")));
+		this.botonParar = new Boton("PARAR");
+		this.botonParar.setIcon(new ImageIcon(getClass().getResource("/images/dot_rojo.gif")));
+		this.botonEsquema = new Boton("RUTA");
+		this.botonEsquema.setIcon(new ImageIcon(getClass().getResource("/images/ruta.gif")));
 
 		this.rootPaneContainer.getRootPane().getContentPane().setLayout(new BorderLayout());
-		panelSuperior.setLayout(new GridLayout(1, 5));
-		panelSuperior.add(botonCodigo);
-		panelSuperior.add(botonMemoria);
-		panelSuperior.add(botonEjecutar);
-		panelSuperior.add(botonEsquema);
-		panelSuperior.add(botonParar);
-		this.rootPaneContainer.getRootPane().getContentPane().add(panelCentral, BorderLayout.CENTER);
-		this.rootPaneContainer.getRootPane().getContentPane().add(panelSuperior, BorderLayout.NORTH);
-		panelCentral.verPanel("NUEVO");
+		this.panelSuperior.setLayout(new GridLayout(1, 5));
+		this.panelSuperior.add(this.botonCodigo);
+		this.panelSuperior.add(this.botonMemoria);
+		this.panelSuperior.add(this.botonEjecutar);
+		this.panelSuperior.add(this.botonEsquema);
+		this.panelSuperior.add(this.botonParar);
+		this.rootPaneContainer.getRootPane().getContentPane().add(this.panelCentral, BorderLayout.CENTER);
+		this.rootPaneContainer.getRootPane().getContentPane().add(this.panelSuperior, BorderLayout.NORTH);
+		this.panelCentral.verPanel("NUEVO");
 		crearMenus();
 
-		botonCodigo.addActionListener(new ActionListener() {
+		this.botonCodigo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				seleccionar();
-				botonCodigo.setSelected(true);
-				panelCentral.verPanel("NUEVO");
-				panelCentral.noEditable();
+				Simple2.this.botonCodigo.setSelected(true);
+				Simple2.this.panelCentral.verPanel("NUEVO");
+				Simple2.this.panelCentral.noEditable();
 			}
 		});
 
-		botonEjecutar.addActionListener(new ActionListener() {
+		this.botonEjecutar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				if (botonParar.isSelected()) {
-					botonEjecutar.setSelected(false);
+				if (Simple2.this.botonParar.isSelected()) {
+					Simple2.this.botonEjecutar.setSelected(false);
 					return;
 				}
-				if (botonEjecutar.isSelected() == false) {
-					botonEjecutar.setText("EJECUTAR");
-					panelCentral.fin();
-					botonEjecutar.setSelected(false);
+				if (Simple2.this.botonEjecutar.isSelected() == false) {
+					Simple2.this.botonEjecutar.setText("EJECUTAR");
+					Simple2.this.panelCentral.fin();
+					Simple2.this.botonEjecutar.setSelected(false);
 					return;
 				}
-				boolean c = panelCentral.isHiloActivo();
+				boolean c = Simple2.this.panelCentral.isHiloActivo();
 				if (c) {
 					return;
 				}
 
-				panelCentral.limpiarEjecutar();
-				String datos = panelCentral.cogerDatos();
+				Simple2.this.panelCentral.limpiarEjecutar();
+				String datos = Simple2.this.panelCentral.cogerDatos();
 				short[] ensamblado;
 				String error = "";
 
@@ -169,65 +169,65 @@ public class Simple2 {
 
 				if (error.length() == 0) {
 					seleccionar();
-					botonEjecutar.setSelected(true);
-					panelCentral.verPanel("ESQUEMA");
-					botonEjecutar.setText("FIN");
+					Simple2.this.botonEjecutar.setSelected(true);
+					Simple2.this.panelCentral.verPanel("ESQUEMA");
+					Simple2.this.botonEjecutar.setText("FIN");
 					ensamblado = ejecutar.ensamblarCodigo(codigo_limpio);
 					int instruccionesTotales = codigo_limpio.size();
-					panelCentral.escribir(codigo_limpio, ensamblado, instruccionesTotales);
-					panelCentral.escribirMemoria(ensamblado, instruccionesTotales, codigo_limpio);
-					panelCentral.principal(ensamblado, Simple2.this.tiempo);
+					Simple2.this.panelCentral.escribir(codigo_limpio, ensamblado, instruccionesTotales);
+					Simple2.this.panelCentral.escribirMemoria(ensamblado, instruccionesTotales, codigo_limpio);
+					Simple2.this.panelCentral.principal(ensamblado, Simple2.this.tiempo);
 
-					Simple2.this.hiloEspera = new HiloEspera(panelCentral.hilo);
+					Simple2.this.hiloEspera = new HiloEspera(Simple2.this.panelCentral.hilo);
 					Simple2.this.hiloEspera.start();
 
-					panelCentral.clean();
+					Simple2.this.panelCentral.clean();
 				} else {
-					botonEjecutar.setSelected(false);
-					panelCentral.errores(error);
-					panelCentral.editable();
+					Simple2.this.botonEjecutar.setSelected(false);
+					Simple2.this.panelCentral.errores(error);
+					Simple2.this.panelCentral.editable();
 				}
 			}
 		});
 
-		botonMemoria.addActionListener(new ActionListener() {
+		this.botonMemoria.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				seleccionar();
-				botonMemoria.setSelected(true);
-				panelCentral.verPanel("MEMORIA");
+				Simple2.this.botonMemoria.setSelected(true);
+				Simple2.this.panelCentral.verPanel("MEMORIA");
 			}
 		});
 
-		botonEsquema.addActionListener(new ActionListener() {
+		this.botonEsquema.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				seleccionar();
-				botonEsquema.setSelected(true);
-				panelCentral.verPanel("ESQUEMA");
+				Simple2.this.botonEsquema.setSelected(true);
+				Simple2.this.panelCentral.verPanel("ESQUEMA");
 			}
 		});
 
-		botonParar.addActionListener(new ActionListener() {
+		this.botonParar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String aux = botonEjecutar.getText();
+				String aux = Simple2.this.botonEjecutar.getText();
 				if (aux.compareTo("EJECUTAR") != 0) {
 					Simple2.this.parado = !Simple2.this.parado;
 					seleccionar();
 					if (Simple2.this.parado) {
-						botonParar.setText("SEGUIR");
-						botonParar.setIcon(new ImageIcon(getClass().getResource("/images/dot_verde.gif")));
-						botonEjecutar.setText("PARADO");
+						Simple2.this.botonParar.setText("SEGUIR");
+						Simple2.this.botonParar.setIcon(new ImageIcon(getClass().getResource("/images/dot_verde.gif")));
+						Simple2.this.botonEjecutar.setText("PARADO");
 					} else {
-						botonParar.setText("PARAR");
-						botonParar.setIcon(new ImageIcon(getClass().getResource("/images/dot_rojo.gif")));
-						botonEjecutar.setSelected(true);
-						botonEjecutar.setText("FIN");
+						Simple2.this.botonParar.setText("PARAR");
+						Simple2.this.botonParar.setIcon(new ImageIcon(getClass().getResource("/images/dot_rojo.gif")));
+						Simple2.this.botonEjecutar.setSelected(true);
+						Simple2.this.botonEjecutar.setText("FIN");
 					}
-					panelCentral.parar();
+					Simple2.this.panelCentral.parar();
 				} else {
-					botonParar.setSelected(false);
+					Simple2.this.botonParar.setSelected(false);
 				}
 			}
 		});
@@ -239,16 +239,16 @@ public class Simple2 {
 	 *
 	 */
 	public void seleccionar() {
-		botonCodigo.setSelected(false);
-		botonEjecutar.setSelected(false);
-		botonEsquema.setSelected(false);
-		botonMemoria.setSelected(false);
-		botonParar.setSelected(false);
+		this.botonCodigo.setSelected(false);
+		this.botonEjecutar.setSelected(false);
+		this.botonEsquema.setSelected(false);
+		this.botonMemoria.setSelected(false);
+		this.botonParar.setSelected(false);
 		if (this.parado)
-			botonParar.setSelected(this.parado);
-		boolean c = panelCentral.isHiloActivo();
+			this.botonParar.setSelected(this.parado);
+		boolean c = this.panelCentral.isHiloActivo();
 		if (c) {
-			botonEjecutar.setSelected(true);
+			this.botonEjecutar.setSelected(true);
 		}
 	}
 
@@ -272,18 +272,18 @@ public class Simple2 {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (Simple2.this.parado) {
-					panelCentral.activar();
+					Simple2.this.panelCentral.activar();
 					Simple2.this.parado = false;
 				}
-				panelCentral.fin();
-				botonEjecutar.setText("EJECUTAR");
-				botonParar.setText("PARAR");
-				botonParar.setIcon(new ImageIcon(getClass().getResource("/images/dot_rojo.gif")));
+				Simple2.this.panelCentral.fin();
+				Simple2.this.botonEjecutar.setText("EJECUTAR");
+				Simple2.this.botonParar.setText("PARAR");
+				Simple2.this.botonParar.setIcon(new ImageIcon(getClass().getResource("/images/dot_rojo.gif")));
 				seleccionar();
-				botonParar.setSelected(false);
-				panelCentral.verPanel("NUEVO");
-				panelCentral.editable();
-				panelCentral.limpiar();
+				Simple2.this.botonParar.setSelected(false);
+				Simple2.this.panelCentral.verPanel("NUEVO");
+				Simple2.this.panelCentral.editable();
+				Simple2.this.panelCentral.limpiar();
 			}
 		});
 		menu.add(menuItem);
@@ -319,7 +319,7 @@ public class Simple2 {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				seleccionar();
-				panelCentral.verPanel("AYUDA");
+				Simple2.this.panelCentral.verPanel("AYUDA");
 			}
 		});
 
@@ -360,9 +360,9 @@ public class Simple2 {
 			} catch (InterruptedException ex) {
 
 			}
-			botonEjecutar.setSelected(false);
-			botonEjecutar.setText("EJECUTAR");
-			botonEjecutar.setIcon(new ImageIcon(getClass().getResource("/images/ejecutar.gif")));
+			Simple2.this.botonEjecutar.setSelected(false);
+			Simple2.this.botonEjecutar.setText("EJECUTAR");
+			Simple2.this.botonEjecutar.setIcon(new ImageIcon(getClass().getResource("/images/ejecutar.gif")));
 
 		}
 	};
