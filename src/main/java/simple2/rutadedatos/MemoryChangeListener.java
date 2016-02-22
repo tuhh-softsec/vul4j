@@ -23,7 +23,7 @@ public interface MemoryChangeListener {
 	 *            Los valores almacenados en la memoria
 	 */
 
-	void MemoryChanged(short[] newMemoryValues);
+	void memoryChanged(short[] newMemoryValues);
 
 	/**
 	 * Se llama cuando cambia una posicion de la memoria.
@@ -33,5 +33,5 @@ public interface MemoryChangeListener {
 	 * @param newValue
 	 *            El nuevo valor de la posición de memoria
 	 */
-	void MemoryChanged(int dir, short newValue);
+	void memoryChanged(int dir, short newValue);
 }

@@ -31,20 +31,20 @@ public class CableBidireccional extends Cable {
 	 * Pinta el cable inactivo
 	 */
 	@Override
-	protected void PintarInactivo() {
-		super.PintarInactivo();
-		PintarFlechaFin();
-		PintarFlechaInicio();
+	protected void pintarInactivo() {
+		super.pintarInactivo();
+		pintarFlechaFin();
+		pintarFlechaInicio();
 	}
 
 	/**
 	 * Pinta el cable activo
 	 */
 	@Override
-	protected void PintarActivo() {
-		super.PintarActivo();
-		PintarFlechaFin();
-		PintarFlechaInicio();
+	protected void pintarActivo() {
+		super.pintarActivo();
+		pintarFlechaFin();
+		pintarFlechaInicio();
 	}
 
 }

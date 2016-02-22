@@ -57,7 +57,7 @@ public class HiloEjecucion extends Thread {
 		int acumulado = 0;
 		int paso = 100;
 		try {
-			this.mic.EjecutarSubciclo();
+			this.mic.ejecutarSubciclo();
 			while (!this.terminar) {
 				try {
 					Thread.sleep(paso);
@@ -67,13 +67,13 @@ public class HiloEjecucion extends Thread {
 					acumulado += paso;
 					if (acumulado >= this.tSubciclo) {
 						acumulado = 0;
-						this.mic.EjecutarSubciclo();
+						this.mic.ejecutarSubciclo();
 					}
 				}
 			}
-			this.mic.Detener();
+			this.mic.detener();
 		} catch (SimulacionFinalizadaException e) {
-			this.mic.Detener();
+			this.mic.detener();
 			return;
 		}
 	}
@@ -90,14 +90,14 @@ public class HiloEjecucion extends Thread {
 	 * 
 	 * @return True: si el hilo está pausado False:en otro caso
 	 */
-	public boolean GetPausado() {
+	public boolean getPausado() {
 		return this.pausado;
 	}
 
 	/**
 	 * Detiene y reanuda la ejecucion del hilo.
 	 */
-	public void CambiarPausado() {
+	public void cambiarPausado() {
 		this.pausado = !this.pausado;
 	}
 
@@ -107,7 +107,7 @@ public class HiloEjecucion extends Thread {
 	 * @param valor
 	 *            El tiempo en ms que durará cada subciclo.
 	 */
-	public void SetTSubciclo(int valor) {
+	public void setTiempoSubciclo(int valor) {
 		this.tSubciclo = valor;
 	}
 }

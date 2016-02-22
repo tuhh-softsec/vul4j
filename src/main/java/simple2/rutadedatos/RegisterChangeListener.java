@@ -23,7 +23,7 @@ public interface RegisterChangeListener {
 	 *            El nuevo valor almacenado en registro
 	 */
 
-	void RegisterChanged(int registro, short newValue);
+	void registerChanged(int registro, short newValue);
 
 	/**
 	 * Se llama para inicializar el listener, pasandole un array con el
@@ -32,5 +32,5 @@ public interface RegisterChangeListener {
 	 * @param newValues
 	 *            Los valores almacenados en los registros
 	 */
-	void RegisterChanged(short[] newValues);
+	void registerChanged(short[] newValues);
 }

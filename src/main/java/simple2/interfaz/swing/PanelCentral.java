@@ -121,7 +121,7 @@ public class PanelCentral extends javax.swing.JPanel {
 	 * 
 	 * @return los datos que se encuentren en el area de texto de PanelNuevo
 	 */
-	String CogerDatos() {
+	String cogerDatos() {
 		return this.panelnuevo.texto.getText();
 	}
 
@@ -136,8 +136,8 @@ public class PanelCentral extends javax.swing.JPanel {
 	 * @param instruccionesTotales
 	 *            Numero de instrucciones totales
 	 */
-	public void Escribir(Vector<String> codigo_limpio, short[] ensamblado, int instruccionesTotales) {
-		this.panelnuevo.Escribir(codigo_limpio, ensamblado, instruccionesTotales);
+	public void escribir(Vector<String> codigo_limpio, short[] ensamblado, int instruccionesTotales) {
+		this.panelnuevo.escribir(codigo_limpio, ensamblado, instruccionesTotales);
 	}
 
 	/**
@@ -146,8 +146,8 @@ public class PanelCentral extends javax.swing.JPanel {
 	 * @param errores
 	 *            Cadena que contiene los errores producidos en el ensamblado
 	 */
-	public void Errores(String errores) {
-		this.panelnuevo.Errores(errores);
+	public void errores(String errores) {
+		this.panelnuevo.errores(errores);
 	}
 
 	/**
@@ -167,8 +167,8 @@ public class PanelCentral extends javax.swing.JPanel {
 	 * @param instruccionesTotales
 	 *            Numero de instrucciones totales
 	 */
-	public void EscribirMemoria(short[] ensamblado, int instruccionesTotales, Vector<String> codigo_limpio) {
-		this.panelmemoria.EscribirMemoria(ensamblado, instruccionesTotales, codigo_limpio);
+	public void escribirMemoria(short[] ensamblado, int instruccionesTotales, Vector<String> codigo_limpio) {
+		this.panelmemoria.escribirMemoria(ensamblado, instruccionesTotales, codigo_limpio);
 	}
 
 	/**
@@ -176,7 +176,7 @@ public class PanelCentral extends javax.swing.JPanel {
 	 * editar(modificar)
 	 *
 	 */
-	public void NoEditable() {
+	public void noEditable() {
 		this.panelnuevo.texto.setEditable(false);
 	}
 
@@ -184,7 +184,7 @@ public class PanelCentral extends javax.swing.JPanel {
 	 * En el panel donde se escribe el código a ensamblar se puede
 	 * editar(modificar)
 	 */
-	public void Editable() {
+	public void editable() {
 		this.panelnuevo.texto.setEditable(true);
 	}
 
@@ -194,7 +194,7 @@ public class PanelCentral extends javax.swing.JPanel {
 	 * @param ensamblado
 	 *            Codigo ensamblado(Valores iniciales de la MemoriaPrincipal)
 	 */
-	public void Principal(short[] ensamblado, int tiempo) {
+	public void principal(short[] ensamblado, int tiempo) {
 		RepresentacionRDD repRdd = new RepresentacionRDD(this.panelesquema.pdibujo);
 		this.panelesquema.pdibujo.clean();
 		// Almacenamiento del dibujo cuando cambia de tamaño
@@ -204,13 +204,13 @@ public class PanelCentral extends javax.swing.JPanel {
 		SecuenciadorMicroprograma mic = new SecuenciadorMicroprograma(ensamblado, null);
 
 		// Añadimos el listener de memoria (si hay)
-		mic.AddMemoryChangeListener(this.panelmemoria);
+		mic.addMemoryChangeListener(this.panelmemoria);
 
 		// Asociamos la representacion de datos.
-		mic.SetRepresentacionRDD(repRdd);
-		mic.AddRegisterChangeListener(repRdd);
+		mic.setRepresentacionRDD(repRdd);
+		mic.addRegisterChangeListener(repRdd);
 		this.hilo = new HiloEjecucion(mic);
-		this.hilo.SetTSubciclo(tiempo);
+		this.hilo.setTiempoSubciclo(tiempo);
 		this.hilo.start();
 	}
 
@@ -218,9 +218,10 @@ public class PanelCentral extends javax.swing.JPanel {
 	 * Parar el hilo de ejecucion
 	 *
 	 */
-	public void Parar() {
-		if (this.hilo != null)
-			this.hilo.CambiarPausado();
+	public void parar() {
+		if (this.hilo != null) {
+			this.hilo.cambiarPausado();
+		}
 	}
 
 	/**
@@ -228,26 +229,28 @@ public class PanelCentral extends javax.swing.JPanel {
 	 * 
 	 * @return True hilo activo False hilo inactivo
 	 */
-	public boolean HiloActivo() {
-		return ((this.hilo != null) && this.hilo.isAlive());
+	public boolean isHiloActivo() {
+		return this.hilo != null && this.hilo.isAlive();
 	}
 
 	/**
 	 * Detiene el hilo
 	 *
 	 */
-	public void Fin() {
-		if (this.hilo != null)
+	public void fin() {
+		if (this.hilo != null) {
 			this.hilo.detener();
+		}
 	}
 
 	/**
 	 * Detiene el hilo
 	 *
 	 */
-	public void Activar() {
-		if (this.hilo != null)
+	public void activar() {
+		if (this.hilo != null){
 			this.hilo.detener();
+		}
 	}
 
 }

@@ -38,7 +38,7 @@ public class Cable extends ElementoDibujable {
 	 * Pinta el cable inactivo
 	 */
 	@Override
-	protected void PintarInactivo() {
+	protected void pintarInactivo() {
 		int x = 0;
 		while (x < (this.puntos.length - 2)) {
 			int x1 = this.puntos[x];
@@ -55,17 +55,17 @@ public class Cable extends ElementoDibujable {
 	/**
 	 * Pinta una punta de flecha al final del cable.
 	 */
-	protected void PintarFlechaFin() {
+	protected void pintarFlechaFin() {
 		int x = this.puntos.length;
 
-		PintarFlecha(new int[] { this.puntos[x - 4], this.puntos[x - 3], this.puntos[x - 2], this.puntos[x - 1] });
+		pintarFlecha(new int[] { this.puntos[x - 4], this.puntos[x - 3], this.puntos[x - 2], this.puntos[x - 1] });
 	}
 
 	/**
 	 * Dibuja una punta de flecha al principio del cable.
 	 */
-	protected void PintarFlechaInicio() {
-		PintarFlecha(new int[] { this.puntos[2], this.puntos[3], this.puntos[0], this.puntos[1] });
+	protected void pintarFlechaInicio() {
+		pintarFlecha(new int[] { this.puntos[2], this.puntos[3], this.puntos[0], this.puntos[1] });
 	}
 
 	/**
@@ -74,9 +74,10 @@ public class Cable extends ElementoDibujable {
 	 * @param linea
 	 *            Coordenadas de la linea
 	 */
-	private void PintarFlecha(int[] linea) {
-		if (linea.length != 4)
+	private void pintarFlecha(int[] linea) {
+		if (linea.length != 4) {
 			return;
+		}
 		int x1 = 0;
 		int x2 = 0;
 		int y1 = 0;
@@ -114,7 +115,7 @@ public class Cable extends ElementoDibujable {
 	 * Pintar cable activo
 	 */
 	@Override
-	protected void PintarActivo() {
+	protected void pintarActivo() {
 		int x = 0;
 		while (x < (this.puntos.length - 2)) {
 			int x1 = this.puntos[x];

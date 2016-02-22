@@ -43,11 +43,12 @@ public class Bus {
 	 * @param linea
 	 *            Linea que hay que encender del bus
 	 */
-	public void Encender(int linea) {
-		if ((linea >= this.cables.length) || (linea < 0))
+	public void encender(int linea) {
+		if ((linea >= this.cables.length) || (linea < 0)) {
 			return;
-		Apagar();
-		this.cables[linea].Encender();
+		}
+		apagar();
+		this.cables[linea].encender();
 		this.cableActivo = linea;
 	}
 
@@ -55,21 +56,24 @@ public class Bus {
 	 * Pinta el bus
 	 *
 	 */
-	public void Repintar() {
-		for (int i = 0; i < this.cables.length; i++)
-			this.cables[i].Repintar();
+	public void repintar() {
+		for (int i = 0; i < this.cables.length; i++) {
+			this.cables[i].repintar();
+		}
 
-		if (this.cableActivo > -1)
-			this.cables[this.cableActivo].Repintar();
+		if (this.cableActivo > -1){
+			this.cables[this.cableActivo].repintar();
+		}
 	}
 
 	/**
 	 * Apaga el bus
 	 *
 	 */
-	public void Apagar() {
-		for (int i = 0; i < this.cables.length; i++)
-			this.cables[i].Apagar();
+	public void apagar() {
+		for (int i = 0; i < this.cables.length; i++){
+			this.cables[i].apagar();
+		}
 		this.cableActivo = -1;
 	}
 }

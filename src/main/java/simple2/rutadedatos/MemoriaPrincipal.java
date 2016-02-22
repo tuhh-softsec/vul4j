@@ -69,11 +69,11 @@ public class MemoriaPrincipal {
 	 * @param dato
 	 *            El dato a escribir
 	 */
-	public void EscribirDato(short direccion, short dato) {
+	public void escribirDato(short direccion, short dato) {
 		int dir = (direccion & this.mask);
 		this.memoria[dir] = dato;
 
-		ActualizarListeners(dir, dato);
+		notificarListeners(dir, dato);
 	}
 
 	/**
@@ -83,7 +83,7 @@ public class MemoriaPrincipal {
 	 *            La direccion donde leeremos el dato
 	 * @return El dato solicitado
 	 */
-	public short LeerDato(short direccion) {
+	public short leerDato(short direccion) {
 		int dir = (direccion & this.mask);
 		return this.memoria[dir];
 	}
@@ -95,9 +95,9 @@ public class MemoriaPrincipal {
 	 *            El listener.
 	 */
 
-	public void AddMemoryChangeListener(MemoryChangeListener l) {
+	public void addMemoryChangeListener(MemoryChangeListener l) {
 		this.listeners.add(l);
-		l.MemoryChanged(this.memoria);
+		l.memoryChanged(this.memoria);
 	}
 
 	/**
@@ -109,9 +109,9 @@ public class MemoriaPrincipal {
 	 * @param newValue
 	 *            El nuevo valor almacenado en dir
 	 */
-	private void ActualizarListeners(int dir, short newValue) {
+	private void notificarListeners(int dir, short newValue) {
 		for (MemoryChangeListener listener : this.listeners) {
-			listener.MemoryChanged(dir, newValue);
+			listener.memoryChanged(dir, newValue);
 		}
 	}
 }

@@ -68,7 +68,7 @@ public class PanelMemoria extends JPanel implements MemoryChangeListener {
 
 		this.a1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		for (int i = 0; i < 2048; i++) {
-			this.memoria.addElement(ToHexString(i));
+			this.memoria.addElement(toHexString(i));
 		}
 	}
 
@@ -80,7 +80,7 @@ public class PanelMemoria extends JPanel implements MemoryChangeListener {
 	 * @param instruccionesTotales
 	 *            Numero de elementos de la memoria
 	 */
-	public void EscribirMemoria(short[] ensamblado, int instruccionesTotales, Vector<String> codigo_limpio) {
+	public void escribirMemoria(short[] ensamblado, int instruccionesTotales, Vector<String> codigo_limpio) {
 		String[] titulo = new String[] { "POSICION EN MEMORIA", "VALOR HEXADECIMAL", "VALOR BINARIO", "INSTRUCCION" };
 		this.model.setColumnIdentifiers(titulo);
 
@@ -104,7 +104,7 @@ public class PanelMemoria extends JPanel implements MemoryChangeListener {
 					cadena = "0" + cadena;
 				}
 				this.model.setValueAt(String.valueOf(cadena), c, 1);
-				this.model.setValueAt(ToBinString(ensamblado[c]), c, 2);
+				this.model.setValueAt(toBinString(ensamblado[c]), c, 2);
 				this.model.setValueAt(String.valueOf(codigo_limpio.elementAt(c)), c, 3);
 			} else {
 				this.model.setValueAt("0000", c, 1);
@@ -130,7 +130,7 @@ public class PanelMemoria extends JPanel implements MemoryChangeListener {
 	 * @param newValue
 	 *            Nuevo valor que tiene esa posicion de memoria
 	 */
-	public void MemoryChanged(int dir, short newValue) {
+	public void memoryChanged(int dir, short newValue) {
 		this.model.setValueAt(String.valueOf(this.memoria.elementAt(dir)), dir, 0);
 		String cadena = (Integer.toHexString(newValue)).toUpperCase();
 		if (newValue < 0)
@@ -142,7 +142,7 @@ public class PanelMemoria extends JPanel implements MemoryChangeListener {
 		if (cadena.length() == 3)
 			cadena = "0" + cadena;
 		this.model.setValueAt(String.valueOf(cadena), dir, 1);
-		this.model.setValueAt(ToBinString(newValue), dir, 2);
+		this.model.setValueAt(toBinString(newValue), dir, 2);
 
 		int alto_fila = this.tabla.getRowHeight();
 		Dimension size = this.tabla.getSize();
@@ -160,7 +160,7 @@ public class PanelMemoria extends JPanel implements MemoryChangeListener {
 	 * @param ensamblado
 	 *            Los nuevos valores de la Memoria Principal
 	 */
-	public void MemoryChanged(short[] ensamblado) {
+	public void memoryChanged(short[] ensamblado) {
 		int instruccionesTotales = ensamblado.length;
 		int c = 0;
 		while (c != tamanno) {
@@ -180,7 +180,7 @@ public class PanelMemoria extends JPanel implements MemoryChangeListener {
 					cadena = "0" + cadena;
 				}
 				this.model.setValueAt(String.valueOf(cadena), c, 1);
-				this.model.setValueAt(ToBinString(ensamblado[c]), c, 2);
+				this.model.setValueAt(toBinString(ensamblado[c]), c, 2);
 			} else {
 				this.model.setValueAt("0000", c, 1);
 				this.model.setValueAt("0000000000000000", c, 2);
@@ -196,7 +196,7 @@ public class PanelMemoria extends JPanel implements MemoryChangeListener {
 	 *            Numero que queremos pasar a hexadecimal
 	 * @return El resultado en hexadecimal
 	 */
-	public static String ToHexString(int valor) {
+	public static String toHexString(int valor) {
 		String ret = Integer.toHexString(valor);
 		while (ret.length() < 4) {
 			ret = "0" + ret;
@@ -211,12 +211,14 @@ public class PanelMemoria extends JPanel implements MemoryChangeListener {
 	 *            Numero que queremos pasar a binario
 	 * @return El resultado en binario
 	 */
-	public static String ToBinString(int valor) {
+	public static String toBinString(int valor) {
 		String ret = Integer.toBinaryString(valor);
-		if (valor < 0)
+		if (valor < 0) {
 			ret = ret.substring(ret.length() - 16);
-		while (ret.length() < 16)
+		}
+		while (ret.length() < 16) {
 			ret = "0" + ret;
+		}
 
 		return ret.toUpperCase();
 	}

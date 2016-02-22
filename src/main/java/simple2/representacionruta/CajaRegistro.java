@@ -88,7 +88,7 @@ public class CajaRegistro extends ElementoDibujable {
 	 * Pinta la caja de Registro activa
 	 */
 	@Override
-	protected void PintarActivo() {
+	protected void pintarActivo() {
 		this.dibujo.clean(this.x, this.y, this.ancho, this.alto);
 		this.dibujo.dibujarRectangulo(Color.RED, this.x, this.y, this.ancho, this.alto);
 		this.dibujo.dibujarTexto(Color.BLACK, this.x + 4, this.y + 12, this.texto);
@@ -98,7 +98,7 @@ public class CajaRegistro extends ElementoDibujable {
 	 * Pinta la caja de Registro inactiva
 	 */
 	@Override
-	protected void PintarInactivo() {
+	protected void pintarInactivo() {
 		this.dibujo.clean(this.x, this.y, this.ancho, this.alto);
 		this.dibujo.dibujarRectangulo(Color.BLACK, this.x, this.y, this.ancho, this.alto);
 		this.dibujo.dibujarTexto(Color.BLACK, this.x + 4, this.y + 12, this.texto);
@@ -113,7 +113,7 @@ public class CajaRegistro extends ElementoDibujable {
 	@Override
 	public void setText(String texto) {
 		this.texto = texto;
-		this.Repintar();
+		this.repintar();
 	}
 
 	/**

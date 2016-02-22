@@ -195,7 +195,7 @@ public class PanelNuevo extends JPanel {
 	 * @param instruccionesTotales
 	 *            Número de instrucciones totales
 	 */
-	public void Escribir(Vector<String> codigo_limpio, short[] ensamblado, int instruccionesTotales) {
+	public void escribir(Vector<String> codigo_limpio, short[] ensamblado, int instruccionesTotales) {
 		this.resultado.setEditable(false);
 		this.resultado.setBackground(Color.lightGray);
 		String codificado = "";
@@ -227,7 +227,7 @@ public class PanelNuevo extends JPanel {
 	 * @param error
 	 *            cadena de caracteres con los errores que se han producido
 	 */
-	public void Errores(String error) {
+	public void errores(String error) {
 		this.resultado.setEditable(false);
 		this.resultado.setBackground(Color.lightGray);
 		this.errores.setText(error);

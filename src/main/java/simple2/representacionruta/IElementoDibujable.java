@@ -16,17 +16,17 @@ public interface IElementoDibujable {
 	/**
 	 * Dibuja el objeto en su estado inactivo.
 	 */
-	public void Apagar();
+	public void apagar();
 
 	/**
 	 * Dibuja el objeto en su estado activo.
 	 */
-	public void Encender();
+	public void encender();
 
 	/**
 	 * Redibuja el objeto en su estado actual.
 	 */
-	public void Repintar();
+	public void repintar();
 
 	/**
 	 * El texto que se desea escribir

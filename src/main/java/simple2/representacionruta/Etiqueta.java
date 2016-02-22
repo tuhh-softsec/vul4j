@@ -55,7 +55,7 @@ public class Etiqueta extends ElementoDibujable {
 	 * Pintar el objeto en estado activo
 	 */
 	@Override
-	protected void PintarActivo() {
+	protected void pintarActivo() {
 		this.dibujo.dibujarTexto(Color.RED, this.x, this.y, this.texto);
 	}
 
@@ -63,7 +63,7 @@ public class Etiqueta extends ElementoDibujable {
 	 * Pintar el objeto en estado inactivo
 	 */
 	@Override
-	protected void PintarInactivo() {
+	protected void pintarInactivo() {
 		this.dibujo.dibujarTexto(Color.BLACK, this.x, this.y, this.texto);
 	}
 

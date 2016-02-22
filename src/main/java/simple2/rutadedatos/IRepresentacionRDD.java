@@ -13,7 +13,7 @@ public interface IRepresentacionRDD {
 	/**
 	 * Vuelve a dibujar todos los elementos en la superficie de dibujo
 	 */
-	void ActualizarTodo();
+	void actualizarTodo();
 
 	/**
 	 * Activa los elementos activos durante el subciclo 1.
@@ -21,7 +21,7 @@ public interface IRepresentacionRDD {
 	 * @param mic
 	 *            La microinstrucción que se acaba de cargar.
 	 */
-	void DibujarCiclo1(MicroInstruccion mic, short rdc);
+	void dibujarCiclo1(MicroInstruccion mic, short rdc);
 
 	/**
 	 * Activa los elementos activos durante el subciclo 2.
@@ -33,7 +33,7 @@ public interface IRepresentacionRDD {
 	 *            El contenido de BufferA.
 	 * @param regB
 	 */
-	void DibujarCiclo2(MicroInstruccion mic, short regA, short regB);
+	void dibujarCiclo2(MicroInstruccion mic, short regA, short regB);
 
 	/**
 	 * Activa los elementos activos durante el subciclo 3.
@@ -53,7 +53,7 @@ public interface IRepresentacionRDD {
 	 * @param valorZ
 	 *            El valor de la salida Z de la ALU.
 	 */
-	void DibujarCiclo3(MicroInstruccion mic, short vSH, short vMAR, short vMBR, int valorC, int valorN, int valorZ);
+	void dibujarCiclo3(MicroInstruccion mic, short vSH, short vMAR, short vMBR, int valorC, int valorN, int valorZ);
 
 	/**
 	 * Activa los elementos activos durante el subciclo 4.
@@ -63,16 +63,16 @@ public interface IRepresentacionRDD {
 	 * @param vMBR
 	 *            El valor del registro MBR.
 	 */
-	void DibujarCiclo4(MicroInstruccion mic, short vMBR);
+	void dibujarCiclo4(MicroInstruccion mic, short vMBR);
 
 	/**
 	 * Apaga todos los elementos.
 	 */
-	void Clean();
+	void clean();
 
 	/**
 	 * Apaga todos los elementos.
 	 */
-	void Detener();
+	void detener();
 
 }

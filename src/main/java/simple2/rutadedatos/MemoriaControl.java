@@ -173,7 +173,7 @@ public class MemoriaControl {
 	 * 
 	 * @return El dato solicitado
 	 */
-	public long LeerDato(short direccion) {
+	public long leerDato(short direccion) {
 		return this.memoria[direccion];
 	}
 
@@ -185,7 +185,7 @@ public class MemoriaControl {
 	 * @param dato
 	 *            El dato a escribir
 	 */
-	public void EscribirDato(short direccion, long dato) {
+	public void escribirDato(short direccion, long dato) {
 		this.memoria[direccion] = dato;
 	}
 
@@ -197,7 +197,7 @@ public class MemoriaControl {
 	 * 
 	 * @return La microinstruccion solicitada
 	 */
-	public MicroInstruccion LeerMicroInstruccion(short direccion) {
+	public MicroInstruccion leerMicroInstruccion(short direccion) {
 		return new MicroInstruccion(this.memoria[direccion]);
 	}
 

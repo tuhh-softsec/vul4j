@@ -34,7 +34,7 @@ public class MicroInstruccion {
 	 * 
 	 * @return La microinstruccion como un entero sin signo
 	 */
-	public long ToLong() {
+	public long toLong() {
 		return this.instruccion;
 	}
 
@@ -43,8 +43,8 @@ public class MicroInstruccion {
 	 * 
 	 * @return La operacion de la ALU
 	 */
-	public int GetALU() {
-		return GetBits(9, 4);
+	public int getALU() {
+		return getBits(9, 4);
 	}
 
 	/**
@@ -52,8 +52,8 @@ public class MicroInstruccion {
 	 * 
 	 * @return El valor del campo FIR
 	 */
-	public int GetFIR() {
-		return GetBits(13, 1);
+	public int getFIR() {
+		return getBits(13, 1);
 	}
 
 	/**
@@ -61,8 +61,8 @@ public class MicroInstruccion {
 	 * 
 	 * @return El valor del campo ADDR.
 	 */
-	public int GetADDR() {
-		return GetBits(14, 10);
+	public int getADDR() {
+		return getBits(14, 10);
 	}
 
 	/**
@@ -70,8 +70,8 @@ public class MicroInstruccion {
 	 * 
 	 * @return El valor del campo A.
 	 */
-	public int GetA() {
-		return GetBits(24, 4);
+	public int getA() {
+		return getBits(24, 4);
 	}
 
 	/**
@@ -79,8 +79,8 @@ public class MicroInstruccion {
 	 * 
 	 * @return El valor del campo B.
 	 */
-	public int GetB() {
-		return GetBits(28, 4);
+	public int getB() {
+		return getBits(28, 4);
 	}
 
 	/**
@@ -88,8 +88,8 @@ public class MicroInstruccion {
 	 * 
 	 * @return El valor del campo C.
 	 */
-	public int GetC() {
-		return GetBits(32, 4);
+	public int getC() {
+		return getBits(32, 4);
 	}
 
 	/**
@@ -97,8 +97,8 @@ public class MicroInstruccion {
 	 * 
 	 * @return El valor del campo ENC.
 	 */
-	public int GetENC() {
-		return GetBits(36, 1);
+	public int getENC() {
+		return getBits(36, 1);
 	}
 
 	/**
@@ -106,8 +106,8 @@ public class MicroInstruccion {
 	 * 
 	 * @return El valor del campo WR.
 	 */
-	public int GetWR() {
-		return GetBits(37, 1);
+	public int getWR() {
+		return getBits(37, 1);
 	}
 
 	/**
@@ -115,8 +115,8 @@ public class MicroInstruccion {
 	 * 
 	 * @return El valor del campo RD
 	 */
-	public int GetRD() {
-		return GetBits(38, 1);
+	public int getRD() {
+		return getBits(38, 1);
 	}
 
 	/**
@@ -124,8 +124,8 @@ public class MicroInstruccion {
 	 * 
 	 * @return El valor del campo MAR
 	 */
-	public int GetMAR() {
-		return GetBits(39, 1);
+	public int getMAR() {
+		return getBits(39, 1);
 	}
 
 	/**
@@ -133,8 +133,8 @@ public class MicroInstruccion {
 	 * 
 	 * @return El valor del campo MBR
 	 */
-	public int GetMBR() {
-		return GetBits(40, 1);
+	public int getMBR() {
+		return getBits(40, 1);
 	}
 
 	/**
@@ -142,8 +142,8 @@ public class MicroInstruccion {
 	 * 
 	 * @return El valor del campo SH
 	 */
-	public int GetSH() {
-		return GetBits(41, 3);
+	public int getSH() {
+		return getBits(41, 3);
 	}
 
 	/**
@@ -151,8 +151,8 @@ public class MicroInstruccion {
 	 * 
 	 * @return El valor del campo COND
 	 */
-	public int GetCOND() {
-		return GetBits(44, 3);
+	public int getCOND() {
+		return getBits(44, 3);
 	}
 
 	/**
@@ -160,8 +160,8 @@ public class MicroInstruccion {
 	 * 
 	 * @return El valor del campo AMUX
 	 */
-	public int GetAMUX() {
-		return GetBits(47, 1);
+	public int getAMUX() {
+		return getBits(47, 1);
 	}
 
 	/**
@@ -173,7 +173,7 @@ public class MicroInstruccion {
 	 * @param count
 	 *            Número de bits que componen el campo.
 	 */
-	private int GetBits(int b, int count) {
+	private int getBits(int b, int count) {
 		long mask = 0xFFFFFFFFFFFFFFFFL >>> (64 - count);
 		mask = mask << b;
 		long resultado = (this.instruccion & mask) >> b;
@@ -187,8 +187,9 @@ public class MicroInstruccion {
 	 */
 	public String toHexString() {
 		String tmp = "" + Long.toHexString(this.instruccion);
-		while (tmp.length() < 12)
+		while (tmp.length() < 12){
 			tmp = "0" + tmp;
+		}
 		String ret = tmp.substring(0, 4) + " " + tmp.substring(4, 8) + " " + tmp.substring(8);
 		ret = ret.toUpperCase();
 		return ret;

@@ -31,18 +31,18 @@ public class CableUnidireccional extends Cable {
 	 * Pintar el cable inactivo
 	 */
 	@Override
-	protected void PintarInactivo() {
-		super.PintarInactivo();
-		PintarFlechaFin();
+	protected void pintarInactivo() {
+		super.pintarInactivo();
+		pintarFlechaFin();
 	}
 
 	/**
 	 * Pintar el cable activo
 	 */
 	@Override
-	protected void PintarActivo() {
-		super.PintarActivo();
-		PintarFlechaFin();
+	protected void pintarActivo() {
+		super.pintarActivo();
+		pintarFlechaFin();
 	}
 
 }

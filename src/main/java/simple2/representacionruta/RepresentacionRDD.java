@@ -189,7 +189,7 @@ public class RepresentacionRDD implements RegisterChangeListener,IRepresentacion
 			
 		for (int i=0; i < 16; i++)
 		{
-			this.regs[i] = new CajaRegistro (dibujo, x_deC2, yreg1 +(altoRegistro+ separacionRegistros)*i,anchoRegistro,altoRegistro, BancoRegistros.GetNombreRegistro(i));
+			this.regs[i] = new CajaRegistro (dibujo, x_deC2, yreg1 +(altoRegistro+ separacionRegistros)*i,anchoRegistro,altoRegistro, BancoRegistros.getNombreRegistro(i));
 		}			
 			
 		this.memoriappal = new CajaRegistro(dibujo,31,330,90,100,"Memoria");
@@ -254,91 +254,91 @@ public class RepresentacionRDD implements RegisterChangeListener,IRepresentacion
 		this.et_n = new Etiqueta (dibujo, x_deAlu+anchoAlu+15, 410, "N 0");
 		this.et_z = new Etiqueta (dibujo, x_deAlu+anchoAlu+15, 420, "Z 0");
 			
-		ActualizarTodo();
+		actualizarTodo();
 	}
 
 	/**
 	 * Vuelve a dibujar todos los elementos en la 
 	 * superficie de dibujo.
 	 */
-	public void ActualizarTodo()
+	public void actualizarTodo()
 	{
 		this.dibujo.clean();
-		this.etiqueta.Repintar();
-		this.etiqueta_rmc_Inst.Repintar();
-		this.etiqueta_rmc_AMUX.Repintar();
-		this.etiqueta_rmc_COND.Repintar();
-		this.etiqueta_rmc_SH.Repintar();
-		this.etiqueta_rmc_MBR.Repintar();
-		this.etiqueta_rmc_MAR.Repintar();
-		this.etiqueta_rmc_RD.Repintar();
-		this.etiqueta_rmc_WR.Repintar();
-		this.etiqueta_rmc_ENC.Repintar();
-		this.etiqueta_rmc_C.Repintar();
-		this.etiqueta_rmc_B.Repintar();
-		this.etiqueta_rmc_A.Repintar();
-		this.etiqueta_rmc_ADDR.Repintar();
-		this.etiqueta_rmc_FIR.Repintar();
-		this.etiqueta_rmc_ALU.Repintar();
-		this.etiqueta_rmc_NombInst.Repintar();
+		this.etiqueta.repintar();
+		this.etiqueta_rmc_Inst.repintar();
+		this.etiqueta_rmc_AMUX.repintar();
+		this.etiqueta_rmc_COND.repintar();
+		this.etiqueta_rmc_SH.repintar();
+		this.etiqueta_rmc_MBR.repintar();
+		this.etiqueta_rmc_MAR.repintar();
+		this.etiqueta_rmc_RD.repintar();
+		this.etiqueta_rmc_WR.repintar();
+		this.etiqueta_rmc_ENC.repintar();
+		this.etiqueta_rmc_C.repintar();
+		this.etiqueta_rmc_B.repintar();
+		this.etiqueta_rmc_A.repintar();
+		this.etiqueta_rmc_ADDR.repintar();
+		this.etiqueta_rmc_FIR.repintar();
+		this.etiqueta_rmc_ALU.repintar();
+		this.etiqueta_rmc_NombInst.repintar();
 			
-		this.et_busa.Repintar();
-		this.et_busb.Repintar();
-		this.et_busc.Repintar();
+		this.et_busa.repintar();
+		this.et_busb.repintar();
+		this.et_busc.repintar();
 			
-		this.et_rd.Repintar();
-		this.et_wr.Repintar();
-		this.et_m0.Repintar();
-		this.et_m1.Repintar();
-		this.et_l0.Repintar();
-		this.et_l1.Repintar();
+		this.et_rd.repintar();
+		this.et_wr.repintar();
+		this.et_m0.repintar();
+		this.et_m1.repintar();
+		this.et_l0.repintar();
+		this.et_l1.repintar();
 			
-		this.et_s0.Repintar();
-		this.et_a0.Repintar();
-		this.et_f0.Repintar();
-		this.et_c.Repintar();
-		this.et_n.Repintar();
-		this.et_z.Repintar();
+		this.et_s0.repintar();
+		this.et_a0.repintar();
+		this.et_f0.repintar();
+		this.et_c.repintar();
+		this.et_n.repintar();
+		this.et_z.repintar();
 			
 			
 		for (int i=0; i < 16; i++) {
-			this.regs[i].Repintar();
+			this.regs[i].repintar();
 		}
-		this.busC.Repintar();
-		this.busA.Repintar();
-		this.busB.Repintar();
-		this.bufferA.Repintar();
-		this.bufferB.Repintar();
-		this.mar.Repintar();
-		this.mbr.Repintar();
-		this.sh.Repintar();
+		this.busC.repintar();
+		this.busA.repintar();
+		this.busB.repintar();
+		this.bufferA.repintar();
+		this.bufferB.repintar();
+		this.mar.repintar();
+		this.mbr.repintar();
+		this.sh.repintar();
 
 
-		this.cable_m0.Repintar();
-		this.cable_m1.Repintar();
-		this.cable_l0.Repintar();
-		this.cable_l1.Repintar();
-		this.cable_a0.Repintar();
-		this.cable_f3_f0.Repintar();
-		this.cable_c.Repintar();
-		this.cable_n.Repintar();
-		this.cable_z.Repintar();
-		this.cable_s2_s0.Repintar();
-		this.cable_mbr_mux.Repintar();
-		this.cable_mar_ppal.Repintar();
-		this.cable_mbr_ppal.Repintar();
-		this.cable_bufferA_mux.Repintar();
-		this.cable_mux_alu.Repintar();
-		this.cable_alu_sh.Repintar();
-		this.cable_bufferB_mar.Repintar();
-		this.cable_bufferB_alu.Repintar();
-		this.cable_sh_mbr.Repintar();
-		this.cable_sh.Repintar();
-		this.memoriappal.Repintar();
-		this.cable_rd.Repintar();
-		this.cable_wr.Repintar();			
-		this.mux.Repintar();			
-		this.alu.Repintar();
+		this.cable_m0.repintar();
+		this.cable_m1.repintar();
+		this.cable_l0.repintar();
+		this.cable_l1.repintar();
+		this.cable_a0.repintar();
+		this.cable_f3_f0.repintar();
+		this.cable_c.repintar();
+		this.cable_n.repintar();
+		this.cable_z.repintar();
+		this.cable_s2_s0.repintar();
+		this.cable_mbr_mux.repintar();
+		this.cable_mar_ppal.repintar();
+		this.cable_mbr_ppal.repintar();
+		this.cable_bufferA_mux.repintar();
+		this.cable_mux_alu.repintar();
+		this.cable_alu_sh.repintar();
+		this.cable_bufferB_mar.repintar();
+		this.cable_bufferB_alu.repintar();
+		this.cable_sh_mbr.repintar();
+		this.cable_sh.repintar();
+		this.memoriappal.repintar();
+		this.cable_rd.repintar();
+		this.cable_wr.repintar();			
+		this.mux.repintar();			
+		this.alu.repintar();
 		this.dibujo.dibujarTexto(Color.BLACK,34,380,"Principal");
 		this.dibujo.dibujarTexto(Color.BLACK,34,420,"(2048x16)");
 		this.dibujo.refresh();
@@ -349,23 +349,23 @@ public class RepresentacionRDD implements RegisterChangeListener,IRepresentacion
 	 * Activa los elementos activos durante el subciclo 1.
 	 * @param mic La instruccion que se acaba de cargar.
 	 */
-	public void DibujarCiclo1 (MicroInstruccion mic, short rdc)
+	public void dibujarCiclo1 (MicroInstruccion mic, short rdc)
 	{
 		this.ciclo++;
-		PintarMicro (mic);
+		pintarMicro (mic);
 		this.etiqueta.setText ("Ciclo: " + this.ciclo + " Subciclo 1");
-		this.cable_sh.Apagar();
-		this.cable_sh_mbr.Apagar();
-		this.mbr.Apagar();
-		this.sh.Apagar();
-		this.busC.Apagar();
+		this.cable_sh.apagar();
+		this.cable_sh_mbr.apagar();
+		this.mbr.apagar();
+		this.sh.apagar();
+		this.busC.apagar();
 		for (int i=0; i < 16; i++)
-			this.regs[i].Apagar();
+			this.regs[i].apagar();
 		if ((rdc == 0) ||((rdc > 1019) && (rdc < 1023)))
 		{
 			this.etiqueta_rmc_NombInst.setText("NOMBRE=Cargando Instrucción...");
 		}
-		ActualizarTodo();
+		actualizarTodo();
 	}
 	
 	/**
@@ -374,23 +374,23 @@ public class RepresentacionRDD implements RegisterChangeListener,IRepresentacion
 	 * @param regA El contenido de BufferA.
 	 * @param regB El contenido de BufferB.
 	 */
-	public void DibujarCiclo2 (MicroInstruccion mic, short regA, short regB)
+	public void dibujarCiclo2 (MicroInstruccion mic, short regA, short regB)
 	{
-		PintarMicro (mic);
+		pintarMicro (mic);
 		this.etiqueta.setText ("Ciclo: " + this.ciclo + " Subciclo 2");
-		this.busA.Encender (mic.GetA());
-		this.busB.Encender (mic.GetB());
+		this.busA.encender (mic.getA());
+		this.busB.encender (mic.getB());
 			
-		this.regs[mic.GetA()].Encender();
-		this.regs[mic.GetB()].Encender();
+		this.regs[mic.getA()].encender();
+		this.regs[mic.getB()].encender();
 			
 		this.bufferA.setText ("BufferA " + Conversiones.toHexString(regA));
 		this.bufferB.setText ("BufferB " + Conversiones.toHexString(regB));			
 			
-		this.bufferA.Encender();
-		this.bufferB.Encender();
+		this.bufferA.encender();
+		this.bufferB.encender();
 			
-		ActualizarTodo();
+		actualizarTodo();
 
 	}
 		
@@ -404,50 +404,50 @@ public class RepresentacionRDD implements RegisterChangeListener,IRepresentacion
 	 * @param valorN El valor de la salida N de la ALU.
 	 * @param valorZ El valor de la salida Z de la ALU.
 	 */
-	public void DibujarCiclo3(MicroInstruccion mic, short vSH, short vMAR,
+	public void dibujarCiclo3(MicroInstruccion mic, short vSH, short vMAR,
 		short vMBR, int valorC, int valorN, int valorZ )
 	{
-		PintarMicro (mic);
+		pintarMicro (mic);
 		this.etiqueta.setText("Ciclo: "+ this.ciclo + " Subciclo 3");
-		this.busA.Apagar();
-		this.busB.Apagar();			
-		this.regs[mic.GetA()].Apagar();
-		this.regs[mic.GetB()].Apagar();
-		this.sh.Encender();
+		this.busA.apagar();
+		this.busB.apagar();			
+		this.regs[mic.getA()].apagar();
+		this.regs[mic.getB()].apagar();
+		this.sh.encender();
 			
 		this.mbr.setText ("MBR " + Conversiones.toHexString (vMBR));
 		this.mar.setText ("MAR " + Conversiones.toHexString (vMAR));
 		this.sh.setText ("SH " + Conversiones.toHexString (vSH));
-		this.et_s0.setText ("S2-S0 " + Conversiones.toBinaryString(mic.GetSH(), 3));
-		this.et_a0.setText ("A0 " + Conversiones.toBinaryString(mic.GetAMUX(), 1));
-		this.et_f0.setText ("F3-F0 " + Conversiones.toBinaryString(mic.GetALU(), 4));
+		this.et_s0.setText ("S2-S0 " + Conversiones.toBinaryString(mic.getSH(), 3));
+		this.et_a0.setText ("A0 " + Conversiones.toBinaryString(mic.getAMUX(), 1));
+		this.et_f0.setText ("F3-F0 " + Conversiones.toBinaryString(mic.getALU(), 4));
 		this.et_c.setText ("C " + valorC);
 		this.et_n.setText ("N " + valorN);
 		this.et_z.setText ("Z " + valorZ);
 			
 			
-		if (mic.GetMAR() == 1)
+		if (mic.getMAR() == 1)
 		{
 			//Activamos el cable que va de bufferB a MAR
-			this.mar.Encender();
-			this.cable_bufferB_mar.Encender();
+			this.mar.encender();
+			this.cable_bufferB_mar.encender();
 		}
-		if (mic.GetAMUX() == 1)
+		if (mic.getAMUX() == 1)
 		{
-			this.cable_mbr_mux.Encender();
-			this.mbr.Encender();
+			this.cable_mbr_mux.encender();
+			this.mbr.encender();
 		}
 		else
 		{
-			this.cable_bufferA_mux.Encender();
+			this.cable_bufferA_mux.encender();
 		}
-		this.cable_bufferB_alu.Encender();
-		this.cable_alu_sh.Encender();
-		this.alu.Encender();
-		this.mux.Encender();
-		this.cable_mux_alu.Encender();
+		this.cable_bufferB_alu.encender();
+		this.cable_alu_sh.encender();
+		this.alu.encender();
+		this.mux.encender();
+		this.cable_mux_alu.encender();
 
-		ActualizarTodo();
+		actualizarTodo();
 	}
 		
 	/**
@@ -455,99 +455,99 @@ public class RepresentacionRDD implements RegisterChangeListener,IRepresentacion
 	 * @param mic La microinstruccion en ejecucion
 	 * @param vMBR El valor del registro MBR
 	 */	
-	public void DibujarCiclo4(MicroInstruccion mic, short vMBR)
+	public void dibujarCiclo4(MicroInstruccion mic, short vMBR)
 	{
-		PintarMicro (mic);
+		pintarMicro (mic);
 		this.etiqueta.setText ("Ciclo: " + this.ciclo + " Subciclo 4");
-		this.bufferA.Apagar();
-		this.bufferB.Apagar();
-		this.mar.Apagar();
-		this.mbr.Apagar();
+		this.bufferA.apagar();
+		this.bufferB.apagar();
+		this.mar.apagar();
+		this.mbr.apagar();
 		this.mbr.setText ("MBR " + Conversiones.toHexString (vMBR));
-		this.cable_bufferB_mar.Apagar();
-		this.cable_bufferB_alu.Apagar();
-		this.alu.Apagar();
-		this.mux.Apagar();
-		this.cable_bufferA_mux.Apagar();
-		this.cable_alu_sh.Apagar();
-		this.cable_mux_alu.Apagar();
-		this.cable_mbr_mux.Apagar();
+		this.cable_bufferB_mar.apagar();
+		this.cable_bufferB_alu.apagar();
+		this.alu.apagar();
+		this.mux.apagar();
+		this.cable_bufferA_mux.apagar();
+		this.cable_alu_sh.apagar();
+		this.cable_mux_alu.apagar();
+		this.cable_mbr_mux.apagar();
 		//Escribir el dato de salida en la ALU.
 		//Activar los cables de salida necesarios.
-		if (mic.GetENC() == 1)
+		if (mic.getENC() == 1)
 		{
-			this.busC.Encender(mic.GetC());
-			this.regs[mic.GetC()].Encender();
+			this.busC.encender(mic.getC());
+			this.regs[mic.getC()].encender();
 		}
-		if (mic.GetMBR() == 1)
+		if (mic.getMBR() == 1)
 		{
 			//Activamos el cable que va de SH a MBR
-			this.cable_sh_mbr.Encender();
-			this.mbr.Encender();
+			this.cable_sh_mbr.encender();
+			this.mbr.encender();
 		}
-		if ( (!(mic.GetENC()==1)) && (!(mic.GetMBR()==1) ) )
+		if ( (!(mic.getENC()==1)) && (!(mic.getMBR()==1) ) )
 		{
-			this.sh.Apagar();
+			this.sh.apagar();
 		}
 		else
 		{
-			this.cable_sh.Encender();
+			this.cable_sh.encender();
 		}
-		ActualizarTodo();
+		actualizarTodo();
 	}
 		
 	/**
 	 * Apaga todos los elementos
 	 */
-	public void Clean()
+	public void clean()
 	{			
-		this.busC.Apagar();
-		this.busA.Apagar();
-		this.busB.Apagar();
-		this.bufferA.Apagar();
-		this.bufferB.Apagar();
-		this.mar.Apagar();
-		this.mbr.Apagar();
-		this.sh.Apagar();
+		this.busC.apagar();
+		this.busA.apagar();
+		this.busB.apagar();
+		this.bufferA.apagar();
+		this.bufferB.apagar();
+		this.mar.apagar();
+		this.mbr.apagar();
+		this.sh.apagar();
 
-		this.cable_m0.Apagar();
-		this.cable_m1.Apagar();
-		this.cable_l0.Apagar();
-		this.cable_l1.Apagar();
-		this.cable_a0.Apagar();
-		this.cable_f3_f0.Apagar();
-		this.cable_c.Apagar();
-		this.cable_n.Apagar();
-		this.cable_z.Apagar();
-		this.cable_s2_s0.Apagar();
-		this.cable_mbr_mux.Apagar();
-		this.cable_mar_ppal.Apagar();
-		this.cable_mbr_ppal.Apagar();
-		this.cable_bufferA_mux.Apagar();
-		this.cable_mux_alu.Apagar();
-		this.cable_alu_sh.Apagar();
-		this.cable_bufferB_alu.Apagar();
-		this.cable_bufferB_mar.Apagar();
-		this.cable_sh_mbr.Apagar();
-		this.cable_sh.Apagar();
-		this.memoriappal.Apagar();
-		this.cable_rd.Apagar();
-		this.cable_wr.Apagar();			
-		this.mux.Apagar();	
-		this.alu.Apagar();			
+		this.cable_m0.apagar();
+		this.cable_m1.apagar();
+		this.cable_l0.apagar();
+		this.cable_l1.apagar();
+		this.cable_a0.apagar();
+		this.cable_f3_f0.apagar();
+		this.cable_c.apagar();
+		this.cable_n.apagar();
+		this.cable_z.apagar();
+		this.cable_s2_s0.apagar();
+		this.cable_mbr_mux.apagar();
+		this.cable_mar_ppal.apagar();
+		this.cable_mbr_ppal.apagar();
+		this.cable_bufferA_mux.apagar();
+		this.cable_mux_alu.apagar();
+		this.cable_alu_sh.apagar();
+		this.cable_bufferB_alu.apagar();
+		this.cable_bufferB_mar.apagar();
+		this.cable_sh_mbr.apagar();
+		this.cable_sh.apagar();
+		this.memoriappal.apagar();
+		this.cable_rd.apagar();
+		this.cable_wr.apagar();			
+		this.mux.apagar();	
+		this.alu.apagar();			
 			
 		for (int i=0; i < 16; i++)
-			this.regs[i].Apagar();			
-		ActualizarTodo();
+			this.regs[i].apagar();			
+		actualizarTodo();
 
 	}
 		
 	/**
 	 * apagar todos los elementos
 	 */	
-	public void Detener ()
+	public void detener ()
 	{
-		this.Clean();
+		this.clean();
 	}
 		
 	/**
@@ -555,7 +555,7 @@ public class RepresentacionRDD implements RegisterChangeListener,IRepresentacion
 	 * @param registro El registro que se ha cambiado 
 	 * @param newValue El nuevo valor almacenado en registro
 	 */
-	public void RegisterChanged (int registro, short newValue)
+	public void registerChanged (int registro, short newValue)
 	{
 		String cadena=(Integer.toHexString(newValue)).toUpperCase();
 		// TODO String.format
@@ -574,7 +574,7 @@ public class RepresentacionRDD implements RegisterChangeListener,IRepresentacion
 		if(cadena.length()==3){
 			cadena="0"+cadena;
 		}
-		this.regs[registro].setText (BancoRegistros.GetNombreRegistro(registro) + " " + cadena);
+		this.regs[registro].setText (BancoRegistros.getNombreRegistro(registro) + " " + cadena);
 		if(registro==3){
 			this.etiqueta_rmc_NombInst.setText ("NOMBRE=" + Desensamblador.desensamblar(newValue));	
 		}
@@ -586,11 +586,11 @@ public class RepresentacionRDD implements RegisterChangeListener,IRepresentacion
 	 * contenido de todos los registros.
 	 * @param newValues Los valores almacenados en los registros.
 	 */
-	public void RegisterChanged (short[] newValues)
+	public void registerChanged (short[] newValues)
 	{
 		for (int i=0; i < newValues.length; i++)
 		{
-			RegisterChanged (i, newValues[i]);
+			registerChanged (i, newValues[i]);
 		}
 	}
 	
@@ -598,23 +598,23 @@ public class RepresentacionRDD implements RegisterChangeListener,IRepresentacion
 	 * Nos muestra los valores que tiene en cada momento la microinstruccion
 	 * @param mic Microinstruccion que vamos a analizar
 	 */	
-	private void PintarMicro (MicroInstruccion mic)
+	private void pintarMicro (MicroInstruccion mic)
 	{
 		this.etiqueta_rmc_Inst.setText ("Inst = " + mic.toHexString());
-		this.etiqueta_rmc_AMUX.setText ("AMUX="+ Conversiones.toBinaryString (mic.GetAMUX(),1));
-		this.etiqueta_rmc_COND.setText ("COND="+ Conversiones.toBinaryString (mic.GetCOND(),3));
-		this.etiqueta_rmc_SH.setText ("SH="  + Conversiones.toBinaryString (mic.GetSH(),3));
-		this.etiqueta_rmc_MBR.setText ("MBR=" + Conversiones.toBinaryString (mic.GetMBR(),1));
-		this.etiqueta_rmc_MAR.setText ("MAR=" + Conversiones.toBinaryString (mic.GetMAR(),1));
-		this.etiqueta_rmc_RD.setText ("RD="  + Conversiones.toBinaryString (mic.GetRD(),1));
-		this.etiqueta_rmc_WR.setText ("WR="  + Conversiones.toBinaryString (mic.GetWR(),1));
-		this.etiqueta_rmc_ENC.setText ("ENC=" + Conversiones.toBinaryString (mic.GetENC(),1));
-		this.etiqueta_rmc_C.setText ("C="   + Conversiones.toBinaryString (mic.GetC(),4));
-		this.etiqueta_rmc_B.setText ("B="   + Conversiones.toBinaryString (mic.GetB(),4));
-		this.etiqueta_rmc_A.setText ("A="   + Conversiones.toBinaryString (mic.GetA(),4) );
-		this.etiqueta_rmc_ADDR.setText ("ADDR="+ Conversiones.toBinaryString (mic.GetADDR(),10));
-		this.etiqueta_rmc_FIR.setText ("FIR=" + Conversiones.toBinaryString (mic.GetFIR() , 1));
-		this.etiqueta_rmc_ALU.setText ("ALU=" + Conversiones.toBinaryString (mic.GetALU(),4));	
+		this.etiqueta_rmc_AMUX.setText ("AMUX="+ Conversiones.toBinaryString (mic.getAMUX(),1));
+		this.etiqueta_rmc_COND.setText ("COND="+ Conversiones.toBinaryString (mic.getCOND(),3));
+		this.etiqueta_rmc_SH.setText ("SH="  + Conversiones.toBinaryString (mic.getSH(),3));
+		this.etiqueta_rmc_MBR.setText ("MBR=" + Conversiones.toBinaryString (mic.getMBR(),1));
+		this.etiqueta_rmc_MAR.setText ("MAR=" + Conversiones.toBinaryString (mic.getMAR(),1));
+		this.etiqueta_rmc_RD.setText ("RD="  + Conversiones.toBinaryString (mic.getRD(),1));
+		this.etiqueta_rmc_WR.setText ("WR="  + Conversiones.toBinaryString (mic.getWR(),1));
+		this.etiqueta_rmc_ENC.setText ("ENC=" + Conversiones.toBinaryString (mic.getENC(),1));
+		this.etiqueta_rmc_C.setText ("C="   + Conversiones.toBinaryString (mic.getC(),4));
+		this.etiqueta_rmc_B.setText ("B="   + Conversiones.toBinaryString (mic.getB(),4));
+		this.etiqueta_rmc_A.setText ("A="   + Conversiones.toBinaryString (mic.getA(),4) );
+		this.etiqueta_rmc_ADDR.setText ("ADDR="+ Conversiones.toBinaryString (mic.getADDR(),10));
+		this.etiqueta_rmc_FIR.setText ("FIR=" + Conversiones.toBinaryString (mic.getFIR() , 1));
+		this.etiqueta_rmc_ALU.setText ("ALU=" + Conversiones.toBinaryString (mic.getALU(),4));	
 				
 	}			
 }

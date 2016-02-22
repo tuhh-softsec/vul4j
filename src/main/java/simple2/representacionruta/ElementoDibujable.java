@@ -28,27 +28,27 @@ public abstract class ElementoDibujable implements IElementoDibujable {
 	/**
 	 * Dibuja el objeto en su estado inactivo.
 	 */
-	public void Apagar() {
-		PintarInactivo();
+	public void apagar() {
+		pintarInactivo();
 		this.activo = false;
 	}
 
 	/**
 	 * Dibuja el objeto en su estado activo.
 	 */
-	public void Encender() {
-		PintarActivo();
+	public void encender() {
+		pintarActivo();
 		this.activo = true;
 	}
 
 	/**
 	 * Redibuja el objeto en su estado actual.
 	 */
-	public void Repintar() {
+	public void repintar() {
 		if (this.activo)
-			PintarActivo();
+			pintarActivo();
 		else
-			PintarInactivo();
+			pintarInactivo();
 
 	}
 
@@ -71,12 +71,12 @@ public abstract class ElementoDibujable implements IElementoDibujable {
 	 * Pinta el elemento dibujable como estado inactivo
 	 *
 	 */
-	protected abstract void PintarInactivo();
+	protected abstract void pintarInactivo();
 
 	/**
 	 * Pinta el elemento dibujable como estado activo
 	 *
 	 */
-	protected abstract void PintarActivo();
+	protected abstract void pintarActivo();
 
 }

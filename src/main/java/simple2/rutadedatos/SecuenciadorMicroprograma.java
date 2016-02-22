@@ -72,20 +72,20 @@ public class SecuenciadorMicroprograma {
 	 * @param inst
 	 *            Microinstruccion que se quiere actualizar
 	 */
-	private void ActualizarPeticionesMemoria(MicroInstruccion inst) {
+	private void actualizarPeticionesMemoria(MicroInstruccion inst) {
 
-		if ((inst.GetMAR() == 1) || (inst.GetMBR() == 1)) {
+		if ((inst.getMAR() == 1) || (inst.getMBR() == 1)) {
 			this._petLecturaMemoria = 0;
 			this._petEscrituraMemoria = 0;
 		}
 
-		if ((inst.GetWR() == 1) && (inst.GetRD() == 1)) {
+		if ((inst.getWR() == 1) && (inst.getRD() == 1)) {
 			this._petEscrituraMemoria = 0;
 			this._petLecturaMemoria = 0;
-		} else if (inst.GetWR() == 1) {
+		} else if (inst.getWR() == 1) {
 			this._petEscrituraMemoria++;
 			this._petLecturaMemoria = 0;
-		} else if (inst.GetRD() == 1) {
+		} else if (inst.getRD() == 1) {
 			this._petLecturaMemoria++;
 			this._petEscrituraMemoria = 0;
 		} else {
@@ -93,30 +93,30 @@ public class SecuenciadorMicroprograma {
 			this._petEscrituraMemoria = 0;
 		}
 		if (this._petLecturaMemoria > 1) {
-			this._mbr = this.mp.LeerDato(this._mar);
+			this._mbr = this.mp.leerDato(this._mar);
 		}
 		if (this._petEscrituraMemoria > 1) {
-			this.mp.EscribirDato(this._mar, this._mbr);
+			this.mp.escribirDato(this._mar, this._mbr);
 		}
 	}
 
 	/**
 	 * Ejecuta el siguiente subciclo en la ruta de datos
 	 */
-	public void EjecutarSubciclo() throws SimulacionFinalizadaException {
+	public void ejecutarSubciclo() throws SimulacionFinalizadaException {
 
 		switch (this.subciclos % 4) {
 		case 0:
-			EjecutarSubciclo1();
+			ejecutarSubciclo1();
 			break;
 		case 1:
-			EjecutarSubciclo2();
+			ejecutarSubciclo2();
 			break;
 		case 2:
-			EjecutarSubciclo3();
+			ejecutarSubciclo3();
 			break;
 		case 3:
-			EjecutarSubciclo4();
+			ejecutarSubciclo4();
 			break;
 		default:
 			throw new AssertionError("Opcion no contemplada");
@@ -129,15 +129,15 @@ public class SecuenciadorMicroprograma {
 	 * cargar en RMC la microinstrucción situada en la dirección indicada por
 	 * RDC en la memoria de control.
 	 */
-	private void EjecutarSubciclo1() throws SimulacionFinalizadaException {
-		if ((this.registros.LeerRegistro(BancoRegistros.IR) & (short) 0xF800) == (short) 0xF800) {
+	private void ejecutarSubciclo1() throws SimulacionFinalizadaException {
+		if ((this.registros.getValorRegistro(BancoRegistros.IR) & (short) 0xF800) == (short) 0xF800) {
 			throw new SimulacionFinalizadaException("Fin normal");
 		}
 
 		// Leemos la siguiente microinstrucción de la memoria de control
-		this.rmc = this.memoriaControl.LeerMicroInstruccion(this.RDC);
+		this.rmc = this.memoriaControl.leerMicroInstruccion(this.RDC);
 
-		this.repRdd.DibujarCiclo1(this.rmc, this.RDC);
+		this.repRdd.dibujarCiclo1(this.rmc, this.RDC);
 	}
 
 	/**
@@ -145,14 +145,14 @@ public class SecuenciadorMicroprograma {
 	 * bufferA y bufferB los contenidos de los registros indicados en los campos
 	 * A y B de la microinstrucción.
 	 */
-	private void EjecutarSubciclo2() {
+	private void ejecutarSubciclo2() {
 		// Subciclo 2. Cargar en bufferA y bufferB los contenidos de
 		// los registros correspondientes.
-		ActualizarPeticionesMemoria(this.rmc);
-		this.regA = this.registros.LeerRegistro(this.rmc.GetA());
-		this.regB = this.registros.LeerRegistro(this.rmc.GetB());
+		actualizarPeticionesMemoria(this.rmc);
+		this.regA = this.registros.getValorRegistro(this.rmc.getA());
+		this.regB = this.registros.getValorRegistro(this.rmc.getB());
 
-		this.repRdd.DibujarCiclo2(this.rmc, this.regA, this.regB);
+		this.repRdd.dibujarCiclo2(this.rmc, this.regA, this.regB);
 
 	}
 
@@ -162,24 +162,24 @@ public class SecuenciadorMicroprograma {
 	 * Desplaza el resultado obtenido en la ALU en el registro SH. Si es
 	 * necesario se carga el registro MAR con el contenido de bufferB.
 	 */
-	private void EjecutarSubciclo3() {
+	private void ejecutarSubciclo3() {
 		/*
 		 * Subciclo 3.Operación de la ALU. Esperamos a que la ALU y el registro
 		 * de desplazamiento produzcan una salida estable, y si es necesario
 		 * carga el registro MAR (directamente desde bufferB)
 		 */
 
-		if (this.rmc.GetAMUX() == 1) {
-			this.alu.Operar(this.rmc.GetALU(), this.rmc.GetSH(), this._mbr, this.regB);
+		if (this.rmc.getAMUX() == 1) {
+			this.alu.operar(this.rmc.getALU(), this.rmc.getSH(), this._mbr, this.regB);
 		} else {
-			this.alu.Operar(this.rmc.GetALU(), this.rmc.GetSH(), this.regA, this.regB);
+			this.alu.operar(this.rmc.getALU(), this.rmc.getSH(), this.regA, this.regB);
 		}
 
-		if (this.rmc.GetMAR() == 1)
+		if (this.rmc.getMAR() == 1)
 			this._mar = this.regB;
 
-		this.repRdd.DibujarCiclo3(this.rmc, this.alu.LeerResultado(), this._mar, this._mbr, this.alu.LeerC(),
-				this.alu.LeerN(), this.alu.LeerZ());
+		this.repRdd.dibujarCiclo3(this.rmc, this.alu.getResultado(), this._mar, this._mbr, this.alu.getC(),
+				this.alu.getN(), this.alu.getZ());
 	}
 
 	/**
@@ -188,33 +188,33 @@ public class SecuenciadorMicroprograma {
 	 * MBR. Obtenemos en RDC la dirección de la siguiente microinstrucción a
 	 * ejecutar.
 	 */
-	private void EjecutarSubciclo4() {
+	private void ejecutarSubciclo4() {
 		/*
 		 * Subciclo 4. Almacenamos el contenido de SH en el banco de registros y
 		 * si es necesario en MBR. Vemos la lógica de bifurcación
 		 */
-		if (this.rmc.GetMBR() == 1) {
-			this._mbr = this.alu.LeerResultado();
+		if (this.rmc.getMBR() == 1) {
+			this._mbr = this.alu.getResultado();
 		}
-		if (this.rmc.GetENC() == 1) {
-			this.registros.EscribirRegistro(this.rmc.GetC(), this.alu.LeerResultado());
+		if (this.rmc.getENC() == 1) {
+			this.registros.setValorRegistro(this.rmc.getC(), this.alu.getResultado());
 		}
 		// Opciones de salto.
-		if (this.rmc.GetFIR() == 1) {
-			this.RDC = (short) ((this.registros.LeerRegistro(BancoRegistros.IR) >> 11) & (0x1F));
-		} else if (Bifurca(this.rmc.GetCOND())) {
-			this.RDC = (short) this.rmc.GetADDR();
+		if (this.rmc.getFIR() == 1) {
+			this.RDC = (short) ((this.registros.getValorRegistro(BancoRegistros.IR) >> 11) & (0x1F));
+		} else if (bifurca(this.rmc.getCOND())) {
+			this.RDC = (short) this.rmc.getADDR();
 		} else {
 			this.RDC++;
 		}
-		this.repRdd.DibujarCiclo4(this.rmc, this._mbr);
+		this.repRdd.dibujarCiclo4(this.rmc, this._mbr);
 	}
 
 	/**
 	 * Detiene la simulación de la ruta de datos
 	 */
-	public void Detener() {
-		this.repRdd.Detener();
+	public void detener() {
+		this.repRdd.detener();
 	}
 
 	/**
@@ -224,16 +224,16 @@ public class SecuenciadorMicroprograma {
 	 *            Numero de la condicion
 	 * @return true si se bifurca, false en otro caso
 	 */
-	private boolean Bifurca(int condicion) {
+	private boolean bifurca(int condicion) {
 		switch (condicion) {
 		case 0:
 			return false;
 		case 1:
-			return (this.alu.LeerN() == 1);
+			return (this.alu.getN() == 1);
 		case 2:
-			return (this.alu.LeerZ() == 1);
+			return (this.alu.getZ() == 1);
 		case 3:
-			return (this.alu.LeerC() == 1);
+			return (this.alu.getC() == 1);
 		case 4:
 			return true;
 		default:
@@ -247,8 +247,8 @@ public class SecuenciadorMicroprograma {
 	 * @param l
 	 *            El listener
 	 */
-	public void AddMemoryChangeListener(MemoryChangeListener l) {
-		this.mp.AddMemoryChangeListener(l);
+	public void addMemoryChangeListener(MemoryChangeListener l) {
+		this.mp.addMemoryChangeListener(l);
 	}
 
 	/**
@@ -257,8 +257,8 @@ public class SecuenciadorMicroprograma {
 	 * @param l
 	 *            El listener
 	 */
-	public void AddRegisterChangeListener(RegisterChangeListener l) {
-		this.registros.AddRegisterChangeListener(l);
+	public void addRegisterChangeListener(RegisterChangeListener l) {
+		this.registros.addRegisterChangeListener(l);
 	}
 
 	/**
@@ -267,9 +267,9 @@ public class SecuenciadorMicroprograma {
 	 * @param r
 	 *            La representacion
 	 */
-	public void SetRepresentacionRDD(IRepresentacionRDD r) {
+	public void setRepresentacionRDD(IRepresentacionRDD r) {
 		this.repRdd = r;
-		this.repRdd.Clean();
+		this.repRdd.clean();
 	}
 
 }

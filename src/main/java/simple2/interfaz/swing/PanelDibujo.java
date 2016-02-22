@@ -248,7 +248,7 @@ public class PanelDibujo extends JPanel implements InterfaceDibujo, ComponentLis
 		this._alto = getSize().height;
 		this.clean();
 		if (this.rdd != null){
-			this.rdd.ActualizarTodo();
+			this.rdd.actualizarTodo();
 		}
 
 	}

@@ -41,6 +41,7 @@ public class ALU {
 	 * Crea una instancia de la clase.
 	 */
 	public ALU() {
+		super();
 	}
 
 	/**
@@ -52,7 +53,7 @@ public class ALU {
 	 *            Segundo operando
 	 * @return Devuelve si hay arrastre o no
 	 */
-	private static boolean Arrastre(short operandoA, short operandoB) {
+	private static boolean arrastre(short operandoA, short operandoB) {
 		return (((operandoA + operandoB) > 0x7FFF) || ((operandoA + operandoB) < -32767));
 	}
 
@@ -69,13 +70,13 @@ public class ALU {
 	 *            El operando B
 	 * @return El resultado tras pasar por SH de la operación.
 	 */
-	public short Operar(int operacion, int operacionSH, short operandoA, short operandoB) {
+	public short operar(int operacion, int operacionSH, short operandoA, short operandoB) {
 		short retval = 0;
 		this.c = 0;
 		switch (operacion) {
 		case 0:
 			retval = (short) (operandoA + operandoB);
-			if (Arrastre(operandoA, operandoB))
+			if (arrastre(operandoA, operandoB))
 				this.c = 1;
 			break;
 		case 1:
@@ -100,7 +101,7 @@ public class ALU {
 		this.n = retval < 0 ? 1 : 0;
 		this.z = retval == 0 ? 1 : 0;
 
-		this.resultado = OperarSH(operacionSH, retval);
+		this.resultado = operarSH(operacionSH, retval);
 		return this.resultado;
 	}
 
@@ -113,7 +114,7 @@ public class ALU {
 	 *            El valor a desplazar
 	 * @return valor desplazado segun op.
 	 */
-	private short OperarSH(int op, short valor) {
+	private short operarSH(int op, short valor) {
 		switch (op) {
 		case 1:
 			return (short) (valor >> 1);
@@ -129,7 +130,7 @@ public class ALU {
 	 * 
 	 * @return El resultado de la última operación de la ALU.
 	 */
-	public short LeerResultado() {
+	public short getResultado() {
 		return this.resultado;
 	}
 
@@ -138,7 +139,7 @@ public class ALU {
 	 * 
 	 * @return El valor de C tras la última operación de la ALU.
 	 */
-	public int LeerC() {
+	public int getC() {
 		return this.c;
 	}
 
@@ -147,7 +148,7 @@ public class ALU {
 	 * 
 	 * @return El valor de N tras la última operación de la ALU.
 	 */
-	public int LeerN() {
+	public int getN() {
 		return this.n;
 	}
 
@@ -156,7 +157,7 @@ public class ALU {
 	 * 
 	 * @return El valor de Z tras la última operación de la ALU.
 	 */
-	public int LeerZ() {
+	public int getZ() {
 		return this.z;
 	}
 

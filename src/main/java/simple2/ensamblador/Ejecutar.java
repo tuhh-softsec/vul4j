@@ -40,14 +40,14 @@ public class Ejecutar extends InstruccionGeneral {
 	 *            Codigo que hemos escrito para ensamblar
 	 * @return Nos devuelve el código limpiado si no tiene errores
 	 */
-	public Vector<String> Comprobar(String datos) {
+	public Vector<String> comprobar(String datos) {
 		Vector<String> v = null;
 		Vector<String> codigo_limpio = null;
 		crearHashInstrucciones();
 
-		v = SepararEnVector(datos);
+		v = separarEnVector(datos);
 		try {
-			codigo_limpio = PrimeraPasada(v);
+			codigo_limpio = primeraPasada(v);
 		} catch (ErrorCodigoException ex) {
 		}
 		return codigo_limpio;
@@ -60,14 +60,14 @@ public class Ejecutar extends InstruccionGeneral {
 	 *            Codigo que hemos escrito para ensamblar
 	 * @return Nos devuelve los errores producidos al escribir el código
 	 */
-	public String EjecutarErrores(String datos) {
+	public String ejecutarErrores(String datos) {
 		Vector<String> v = null;
 		String errores = "";
 		crearHashInstrucciones();
 
-		v = SepararEnVector(datos);
+		v = separarEnVector(datos);
 		try {
-			PrimeraPasada(v);
+			primeraPasada(v);
 		} catch (ErrorCodigoException ex) {
 			errores += ex.getMessage();
 		}
@@ -81,7 +81,7 @@ public class Ejecutar extends InstruccionGeneral {
 	 *            Código sin comentarios y sin lineas en blanco
 	 * @return Devuelve el código ensamblado
 	 */
-	public short[] EnsamblarCodigo(Vector<String> codigo_limpio) {
+	public short[] ensamblarCodigo(Vector<String> codigo_limpio) {
 		crearHashInstrucciones();
 		short[] ensamblado = null;
 		ensamblado = ensamblar(codigo_limpio);
@@ -123,7 +123,7 @@ public class Ejecutar extends InstruccionGeneral {
 	 *            Codigo que hemos escrito para ensamblar
 	 * @return Devuelve el código en un Vector
 	 */
-	public Vector<String> SepararEnVector(String datos) {
+	public Vector<String> separarEnVector(String datos) {
 		Vector<String> v = new Vector<>();
 		int s = 0;
 		String texto = "";
@@ -277,7 +277,7 @@ public class Ejecutar extends InstruccionGeneral {
 	 *             si se encuentra algun error, la excepcion con tiene un
 	 *             mensaje con el error producido.
 	 */
-	public Vector<String> PrimeraPasada(Vector<String> origen) throws ErrorCodigoException {
+	public Vector<String> primeraPasada(Vector<String> origen) throws ErrorCodigoException {
 		String instruc = "";
 		String errores = "";
 		InstruccionGeneral n;

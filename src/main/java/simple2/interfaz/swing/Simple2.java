@@ -98,6 +98,7 @@ public class Simple2 {
 	 *
 	 */
 	public Simple2(RootPaneContainer rootPaneContainer) {
+		super();
 		this.rootPaneContainer = rootPaneContainer;
 	}
 
@@ -131,10 +132,10 @@ public class Simple2 {
 		botonCodigo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Seleccionar();
+				seleccionar();
 				botonCodigo.setSelected(true);
 				panelCentral.verPanel("NUEVO");
-				panelCentral.NoEditable();
+				panelCentral.noEditable();
 			}
 		});
 
@@ -148,35 +149,35 @@ public class Simple2 {
 				}
 				if (botonEjecutar.isSelected() == false) {
 					botonEjecutar.setText("EJECUTAR");
-					panelCentral.Fin();
+					panelCentral.fin();
 					botonEjecutar.setSelected(false);
 					return;
 				}
-				boolean c = panelCentral.HiloActivo();
+				boolean c = panelCentral.isHiloActivo();
 				if (c) {
 					return;
 				}
 
 				panelCentral.limpiarEjecutar();
-				String datos = panelCentral.CogerDatos();
+				String datos = panelCentral.cogerDatos();
 				Vector<String> codigo_limpio = new Vector<>();
 				short[] ensamblado;
 				String error = "";
 
 				Ejecutar ejecutar = new Ejecutar();
-				codigo_limpio = ejecutar.Comprobar(datos);
-				error = ejecutar.EjecutarErrores(datos);
+				codigo_limpio = ejecutar.comprobar(datos);
+				error = ejecutar.ejecutarErrores(datos);
 
 				if (error.length() == 0) {
-					Seleccionar();
+					seleccionar();
 					botonEjecutar.setSelected(true);
 					panelCentral.verPanel("ESQUEMA");
 					botonEjecutar.setText("FIN");
-					ensamblado = ejecutar.EnsamblarCodigo(codigo_limpio);
+					ensamblado = ejecutar.ensamblarCodigo(codigo_limpio);
 					int instruccionesTotales = codigo_limpio.size();
-					panelCentral.Escribir(codigo_limpio, ensamblado, instruccionesTotales);
-					panelCentral.EscribirMemoria(ensamblado, instruccionesTotales, codigo_limpio);
-					panelCentral.Principal(ensamblado, Simple2.this.tiempo);
+					panelCentral.escribir(codigo_limpio, ensamblado, instruccionesTotales);
+					panelCentral.escribirMemoria(ensamblado, instruccionesTotales, codigo_limpio);
+					panelCentral.principal(ensamblado, Simple2.this.tiempo);
 
 					Simple2.this.hiloEspera = new HiloEspera(panelCentral.hilo);
 					Simple2.this.hiloEspera.start();
@@ -184,8 +185,8 @@ public class Simple2 {
 					panelCentral.clean();
 				} else {
 					botonEjecutar.setSelected(false);
-					panelCentral.Errores(error);
-					panelCentral.Editable();
+					panelCentral.errores(error);
+					panelCentral.editable();
 				}
 			}
 		});
@@ -193,7 +194,7 @@ public class Simple2 {
 		botonMemoria.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Seleccionar();
+				seleccionar();
 				botonMemoria.setSelected(true);
 				panelCentral.verPanel("MEMORIA");
 			}
@@ -202,7 +203,7 @@ public class Simple2 {
 		botonEsquema.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Seleccionar();
+				seleccionar();
 				botonEsquema.setSelected(true);
 				panelCentral.verPanel("ESQUEMA");
 			}
@@ -214,7 +215,7 @@ public class Simple2 {
 				String aux = botonEjecutar.getText();
 				if (aux.compareTo("EJECUTAR") != 0) {
 					Simple2.this.parado = !Simple2.this.parado;
-					Seleccionar();
+					seleccionar();
 					if (Simple2.this.parado) {
 						botonParar.setText("SEGUIR");
 						botonParar.setIcon(new ImageIcon(getClass().getResource("/images/dot_verde.gif")));
@@ -225,7 +226,7 @@ public class Simple2 {
 						botonEjecutar.setSelected(true);
 						botonEjecutar.setText("FIN");
 					}
-					panelCentral.Parar();
+					panelCentral.parar();
 				} else {
 					botonParar.setSelected(false);
 				}
@@ -238,7 +239,7 @@ public class Simple2 {
 	 * Nos deselecciona todos los botones
 	 *
 	 */
-	public void Seleccionar() {
+	public void seleccionar() {
 		botonCodigo.setSelected(false);
 		botonEjecutar.setSelected(false);
 		botonEsquema.setSelected(false);
@@ -246,7 +247,7 @@ public class Simple2 {
 		botonParar.setSelected(false);
 		if (this.parado)
 			botonParar.setSelected(this.parado);
-		boolean c = panelCentral.HiloActivo();
+		boolean c = panelCentral.isHiloActivo();
 		if (c) {
 			botonEjecutar.setSelected(true);
 		}
@@ -272,17 +273,17 @@ public class Simple2 {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (Simple2.this.parado) {
-					panelCentral.Activar();
+					panelCentral.activar();
 					Simple2.this.parado = false;
 				}
-				panelCentral.Fin();
+				panelCentral.fin();
 				botonEjecutar.setText("EJECUTAR");
 				botonParar.setText("PARAR");
 				botonParar.setIcon(new ImageIcon(getClass().getResource("/images/dot_rojo.gif")));
-				Seleccionar();
+				seleccionar();
 				botonParar.setSelected(false);
 				panelCentral.verPanel("NUEVO");
-				panelCentral.Editable();
+				panelCentral.editable();
 				panelCentral.limpiar();
 			}
 		});
@@ -296,7 +297,7 @@ public class Simple2 {
 		menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Seleccionar();
+				seleccionar();
 				String cad = Simple2.this.t.getText();
 				if (cad.length() != 0) {
 					try {
@@ -318,7 +319,7 @@ public class Simple2 {
 		menuItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Seleccionar();
+				seleccionar();
 				panelCentral.verPanel("AYUDA");
 			}
 		});

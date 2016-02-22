@@ -52,9 +52,10 @@ public class BancoRegistros {
 	 *            Posicion del registro
 	 * @return Devuelve el nombre del registro si la posicion existe
 	 */
-	public static String GetNombreRegistro(int reg) {
-		if ((reg >= 0) && (reg < nombres.length))
+	public static String getNombreRegistro(int reg) {
+		if ((reg >= 0) && (reg < nombres.length)){
 			return nombres[reg];
+		}
 		return "";
 	}
 
@@ -63,7 +64,7 @@ public class BancoRegistros {
 	 */
 	public BancoRegistros() {
 		this.registros = new short[16];
-		Reset();
+		reset();
 
 	}
 
@@ -71,7 +72,7 @@ public class BancoRegistros {
 	 * Inicializa el contenido de todos los registros a los que son constantes
 	 * les da el valor
 	 */
-	public void Reset() {
+	public void reset() {
 		for (int i = 0; i < this.registros.length; i++) {
 			this.registros[i] = 0;
 		}
@@ -92,13 +93,13 @@ public class BancoRegistros {
 	 * @param valor
 	 *            El valor que se quiere escribir
 	 */
-	public void EscribirRegistro(int registro, short valor) {
+	public void setValorRegistro(int registro, short valor) {
 		if ((registro > 15) || (registro < 0)) {
 			return;
 		}
 		if ((registro < 4) || (registro > 9)) {
 			this.registros[registro] = valor;
-			ActualizarListeners(registro, valor);
+			notificarListeners(registro, valor);
 		}
 	}
 
@@ -110,7 +111,7 @@ public class BancoRegistros {
 	 * 
 	 * @return El dato almacenado en el registro(si existe la posicion)
 	 */
-	public short LeerRegistro(int registro) {
+	public short getValorRegistro(int registro) {
 		if ((registro < 0) || (registro > 15)) {
 			return 0;
 		}
@@ -122,8 +123,8 @@ public class BancoRegistros {
 	 * 
 	 * @param l
 	 */
-	public void AddRegisterChangeListener(RegisterChangeListener l) {
-		l.RegisterChanged(this.registros);
+	public void addRegisterChangeListener(RegisterChangeListener l) {
+		l.registerChanged(this.registros);
 		this.listeners.add(l);
 	}
 
@@ -135,9 +136,9 @@ public class BancoRegistros {
 	 * @param newValue
 	 *            El nuevo valor de ese registro
 	 */
-	private void ActualizarListeners(int dir, short newValue) {
+	private void notificarListeners(int dir, short newValue) {
 		for (RegisterChangeListener listener : this.listeners) {
-			listener.RegisterChanged(dir, newValue);
+			listener.registerChanged(dir, newValue);
 		}
 	}
 
