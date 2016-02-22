@@ -39,12 +39,12 @@ public class PanelDibujo extends JPanel implements InterfaceDibujo, ComponentLis
 	/**
 	 * Imagen en la que dibujamos.
 	 */
-	private static Image buffer = null;
+	private Image buffer = null;
 
 	/**
 	 * Graphics que usamos para dibujar en buffer.
 	 */
-	private static Graphics gr = null;
+	private Graphics gr = null;
 
 	/**
 	 * Color de fondo del dibujo
@@ -92,9 +92,9 @@ public class PanelDibujo extends JPanel implements InterfaceDibujo, ComponentLis
 	 */
 	@Override
 	public void clean() {
-		if (gr != null) {
-			gr.setColor(BACKGROUND);
-			gr.fillRect(0, 0, getSize().width, getSize().height);
+		if (this.gr != null) {
+			this.gr.setColor(BACKGROUND);
+			this.gr.fillRect(0, 0, getSize().width, getSize().height);
 		}
 	}
 
@@ -112,9 +112,9 @@ public class PanelDibujo extends JPanel implements InterfaceDibujo, ComponentLis
 	 */
 	@Override
 	public void clean(int x, int y, int ancho, int alto) {
-		if (gr != null) {
-			gr.setColor(BACKGROUND);
-			gr.fillRect(coordX(x), coordY(y), coordX(ancho), coordY(alto));
+		if (this.gr != null) {
+			this.gr.setColor(BACKGROUND);
+			this.gr.fillRect(coordX(x), coordY(y), coordX(ancho), coordY(alto));
 		}
 
 	}
@@ -135,9 +135,9 @@ public class PanelDibujo extends JPanel implements InterfaceDibujo, ComponentLis
 	 */
 	@Override
 	public void dibujarRecta(Color c, int x1, int y1, int x2, int y2) {
-		if (gr != null) {
-			gr.setColor(c);
-			gr.drawLine(coordX(x1), coordY(y1), coordX(x2), coordY(y2));
+		if (this.gr != null) {
+			this.gr.setColor(c);
+			this.gr.drawLine(coordX(x1), coordY(y1), coordX(x2), coordY(y2));
 		}
 	}
 
@@ -155,9 +155,9 @@ public class PanelDibujo extends JPanel implements InterfaceDibujo, ComponentLis
 	 */
 	@Override
 	public void dibujarTexto(Color c, int x, int y, String texto) {
-		if (gr != null) {
-			gr.setColor(c);
-			gr.drawString(texto, coordX(x), coordY(y));
+		if (this.gr != null) {
+			this.gr.setColor(c);
+			this.gr.drawString(texto, coordX(x), coordY(y));
 		}
 	}
 
@@ -177,9 +177,9 @@ public class PanelDibujo extends JPanel implements InterfaceDibujo, ComponentLis
 	 */
 	@Override
 	public void dibujarRectangulo(Color c, int x1, int y1, int ancho, int alto) {
-		if (gr != null) {
-			gr.setColor(c);
-			gr.drawRect(coordX(x1), coordY(y1), coordX(ancho), coordY(alto));
+		if (this.gr != null) {
+			this.gr.setColor(c);
+			this.gr.drawRect(coordX(x1), coordY(y1), coordX(ancho), coordY(alto));
 		}
 	}
 
@@ -192,16 +192,16 @@ public class PanelDibujo extends JPanel implements InterfaceDibujo, ComponentLis
 	 */
 	@Override
 	public void paint(Graphics g) {
-		if (buffer == null) {
-			buffer = createImage(getSize().width, getSize().height);
-			gr = buffer.getGraphics();
+		if (this.buffer == null) {
+			this.buffer = createImage(getSize().width, getSize().height);
+			this.gr = this.buffer.getGraphics();
 			this._ancho = getSize().width;
 			this._alto = getSize().height;
 		}
 
 		// PRINCIPAL.
 		// Vuelca el contenido de buffer en la pantalla.
-		g.drawImage(buffer, 0, 0, this);
+		g.drawImage(this.buffer, 0, 0, this);
 	}
 
 	/**
@@ -212,13 +212,13 @@ public class PanelDibujo extends JPanel implements InterfaceDibujo, ComponentLis
 	 */
 	@Override
 	public void update(Graphics g) {
-		if (buffer == null) {
-			buffer = createImage(getSize().width, getSize().height);
-			gr = buffer.getGraphics();
+		if (this.buffer == null) {
+			this.buffer = createImage(getSize().width, getSize().height);
+			this.gr = this.buffer.getGraphics();
 			this._ancho = getSize().width;
 			this._alto = getSize().height;
 		}
-		g.drawImage(buffer, 0, 0, this);
+		g.drawImage(this.buffer, 0, 0, this);
 	}
 
 	/**
@@ -242,8 +242,8 @@ public class PanelDibujo extends JPanel implements InterfaceDibujo, ComponentLis
 		if ((getSize().width <= 0) || (getSize().height <= 0)) {
 			return;
 		}
-		buffer = createImage(getSize().width, getSize().height);
-		gr = buffer.getGraphics();
+		this.buffer = createImage(getSize().width, getSize().height);
+		this.gr = this.buffer.getGraphics();
 		this._ancho = getSize().width;
 		this._alto = getSize().height;
 		this.clean();
