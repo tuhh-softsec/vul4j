@@ -114,15 +114,12 @@ package simple2.rutadedatos;
 			switch (op)
 			{
 			case 1:
-				valor = (short) (valor >> 1);
-				break;
+				return (short) (valor >> 1);
 			case 2:
-				valor = (short) (valor << 1);
-				break;
+				return (short) (valor << 1);
 			default:
-				throw new IllegalArgumentException("codigo de tipo de desplazamiento no válido" + op);
+				return valor; // no hacemos operacion
 			}
-			return valor;
 		}
 		
 		/**
