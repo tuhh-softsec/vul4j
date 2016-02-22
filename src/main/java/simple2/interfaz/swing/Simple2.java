@@ -160,12 +160,11 @@ public class Simple2 {
 
 				panelCentral.limpiarEjecutar();
 				String datos = panelCentral.cogerDatos();
-				Vector<String> codigo_limpio = new Vector<>();
 				short[] ensamblado;
 				String error = "";
 
 				Ejecutar ejecutar = new Ejecutar();
-				codigo_limpio = ejecutar.comprobar(datos);
+				Vector<String> codigo_limpio  = ejecutar.comprobar(datos);
 				error = ejecutar.ejecutarErrores(datos);
 
 				if (error.length() == 0) {
