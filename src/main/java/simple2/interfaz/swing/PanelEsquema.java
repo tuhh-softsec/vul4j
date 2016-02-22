@@ -4,21 +4,21 @@
  */
 
 package simple2.interfaz.swing;
+
 import java.awt.BorderLayout;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-
 /**
  * @author Montserrat Sotomayor Gonzalez
  *
- */ 
+ */
 
- /**
-  * Clase que se va a utilizar para dibujar en el panel  
-  */
-public class PanelEsquema extends JPanel{
+/**
+ * Clase que se va a utilizar para dibujar en el panel
+ */
+public class PanelEsquema extends JPanel {
 
 	/**
 	 * 
@@ -29,17 +29,16 @@ public class PanelEsquema extends JPanel{
 	 * Panel donde dibujamos
 	 */
 	PanelDibujo pdibujo;
-	
+
 	/**
-	 *Panel superior 
+	 * Panel superior
 	 */
 	JPanel panel;
-	
+
 	/**
 	 * Etiqueta que usamos como titulo
 	 */
 	JLabel l1;
-	
 
 	/**
 	 * Instancia de la clase. Dibuja la ruta de datos.
@@ -48,14 +47,13 @@ public class PanelEsquema extends JPanel{
 	public PanelEsquema() {
 		super();
 		setLayout(new BorderLayout());
-		this.pdibujo = new PanelDibujo ();
-		this.panel =new JPanel();
-		this.l1 = new JLabel ("RUTA DE DATOS DE SIMPLE2");
-			
-		this.panel.add (this.l1);
-		add (this.panel, BorderLayout.NORTH);
-		add (this.pdibujo, BorderLayout.CENTER);
-	}
+		this.pdibujo = new PanelDibujo();
+		this.panel = new JPanel();
+		this.l1 = new JLabel("RUTA DE DATOS DE SIMPLE2");
 
+		this.panel.add(this.l1);
+		add(this.panel, BorderLayout.NORTH);
+		add(this.pdibujo, BorderLayout.CENTER);
+	}
 
 }

@@ -3,42 +3,43 @@
  *
  */
 package simple2.representacionruta;
+
 /**
  * @author Montserrat Sotomayor Gonzalez
  *
  */
 
 /**
- * Interface que deben implementar todos los objetos
- *  que se puedan dibujar.
+ * Interface que deben implementar todos los objetos que se puedan dibujar.
  */
-public interface IElementoDibujable
-{
+public interface IElementoDibujable {
 	/**
 	 * Dibuja el objeto en su estado inactivo.
 	 */
 	public void Apagar();
-	
+
 	/**
 	 * Dibuja el objeto en su estado activo.
 	 */
-	public void Encender ();
-	
+	public void Encender();
+
 	/**
 	 * Redibuja el objeto en su estado actual.
 	 */
 	public void Repintar();
-	
+
 	/**
 	 * El texto que se desea escribir
-	 * @param texto La cadena que se le pasa para escribir
+	 * 
+	 * @param texto
+	 *            La cadena que se le pasa para escribir
 	 */
-	public void setText (String texto);
-	
+	public void setText(String texto);
+
 	/**
 	 * Devuelve el texto escrito
+	 * 
 	 * @return El texto escrito
 	 */
-	public String getText ();
+	public String getText();
 }
-

@@ -3,6 +3,7 @@
  *
  */
 package simple2.rutadedatos;
+
 import java.util.ArrayList;
 /**
  * @author Montserrat Sotomayor Gonzalez
@@ -12,79 +13,76 @@ import java.util.List;
 
 /**
  * 
- * Esta clase representa la memoria principal del ordenador
- * Simple2.
+ * Esta clase representa la memoria principal del ordenador Simple2.
  */
-public class MemoriaPrincipal
-{
+public class MemoriaPrincipal {
 
 	/**
 	 * Numero de palabras de 16 bits que amacena la memoria
 	 */
 	public int TAMANO = 2048;
-		
+
 	/**
 	 * Numero de bits utilizados para las direcciones
-	 */	
+	 */
 	public int BITSDIRECCION = 11;
 
 	/**
 	 * Array donde se guardan los datos que hay en la memoria principal
 	 */
-	private List<MemoryChangeListener> listeners = new ArrayList<> ();
+	private List<MemoryChangeListener> listeners = new ArrayList<>();
 
-		
 	private short[] memoria = null;
-		
 
 	private int mask = 0;
-		
+
 	/**
 	 * Crea una instancia de la clase con todos los datos inicializados a 0
-	 */	
-	public MemoriaPrincipal ()
-	{
+	 */
+	public MemoriaPrincipal() {
 		this.memoria = new short[this.TAMANO];
 		this.mask = (0xFFFF >> (16 - this.BITSDIRECCION));
 	}
-	
+
 	/**
-	 * Crea una instancia de la clase con los datos iniciales 
-	 * que se le indican como parametros
+	 * Crea una instancia de la clase con los datos iniciales que se le indican
+	 * como parametros
 	 * 
-	 * @param codigoInicial Los datos iniciales de la memoria, se ponen en 
-	 * la memoria a partir de la posicion 0
+	 * @param codigoInicial
+	 *            Los datos iniciales de la memoria, se ponen en la memoria a
+	 *            partir de la posicion 0
 	 */
-	public MemoriaPrincipal (short[] codigoInicial)
-	{
+	public MemoriaPrincipal(short[] codigoInicial) {
 		this.memoria = new short[this.TAMANO];
 		this.mask = (0xFFFF >> (16 - this.BITSDIRECCION));
-			
-		for (int i = 0; (i < this.memoria.length) && (i < codigoInicial.length); i++)
-		{
+
+		for (int i = 0; (i < this.memoria.length) && (i < codigoInicial.length); i++) {
 			this.memoria[i] = codigoInicial[i];
 		}
 	}
-	
+
 	/**
 	 * Escribe un dato en la memoria
-	 * @param direccion La direccion en la que se escribira el dato
-	 * @param dato El dato a escribir
-	 */	
-	public void EscribirDato (short direccion, short dato)
-	{
+	 * 
+	 * @param direccion
+	 *            La direccion en la que se escribira el dato
+	 * @param dato
+	 *            El dato a escribir
+	 */
+	public void EscribirDato(short direccion, short dato) {
 		int dir = (direccion & this.mask);
 		this.memoria[dir] = dato;
 
-		ActualizarListeners (dir, dato);
+		ActualizarListeners(dir, dato);
 	}
-		
+
 	/**
 	 * Lee un dato de la memoria
 	 * 
-	 * @param direccion La direccion donde leeremos el dato
+	 * @param direccion
+	 *            La direccion donde leeremos el dato
 	 * @return El dato solicitado
-	 */	
+	 */
 	public short LeerDato(short direccion) {
 		int dir = (direccion & this.mask);
 		return this.memoria[dir];
@@ -92,24 +90,28 @@ public class MemoriaPrincipal
 
 	/**
 	 * Añade un listener para los cambios en la memoria.
-	 * @param l El listener.
+	 * 
+	 * @param l
+	 *            El listener.
 	 */
 
 	public void AddMemoryChangeListener(MemoryChangeListener l) {
 		this.listeners.add(l);
 		l.MemoryChanged(this.memoria);
 	}
-		
+
 	/**
-	 * Notifica a los listeners que se ha producido una 
-	 * una modificación en la memoria.
-	 * @param dir La dirección de la memoria modificada.
-	 * @param newValue El nuevo valor almacenado en dir
+	 * Notifica a los listeners que se ha producido una una modificación en la
+	 * memoria.
+	 * 
+	 * @param dir
+	 *            La dirección de la memoria modificada.
+	 * @param newValue
+	 *            El nuevo valor almacenado en dir
 	 */
-	private void ActualizarListeners (int dir, short newValue)
-		{
-		for (MemoryChangeListener listener: this.listeners) {
-			listener.MemoryChanged (dir, newValue);
-		}		
+	private void ActualizarListeners(int dir, short newValue) {
+		for (MemoryChangeListener listener : this.listeners) {
+			listener.MemoryChanged(dir, newValue);
+		}
 	}
 }

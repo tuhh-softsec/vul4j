@@ -384,8 +384,8 @@ public class RepresentacionRDD implements RegisterChangeListener,IRepresentacion
 		this.regs[mic.GetA()].Encender();
 		this.regs[mic.GetB()].Encender();
 			
-		this.bufferA.setText ("BufferA " + Conversiones.ToHexString(regA));
-		this.bufferB.setText ("BufferB " + Conversiones.ToHexString(regB));			
+		this.bufferA.setText ("BufferA " + Conversiones.toHexString(regA));
+		this.bufferB.setText ("BufferB " + Conversiones.toHexString(regB));			
 			
 		this.bufferA.Encender();
 		this.bufferB.Encender();
@@ -415,12 +415,12 @@ public class RepresentacionRDD implements RegisterChangeListener,IRepresentacion
 		this.regs[mic.GetB()].Apagar();
 		this.sh.Encender();
 			
-		this.mbr.setText ("MBR " + Conversiones.ToHexString (vMBR));
-		this.mar.setText ("MAR " + Conversiones.ToHexString (vMAR));
-		this.sh.setText ("SH " + Conversiones.ToHexString (vSH));
-		this.et_s0.setText ("S2-S0 " + Conversiones.ToBinaryString(mic.GetSH(), 3));
-		this.et_a0.setText ("A0 " + Conversiones.ToBinaryString(mic.GetAMUX(), 1));
-		this.et_f0.setText ("F3-F0 " + Conversiones.ToBinaryString(mic.GetALU(), 4));
+		this.mbr.setText ("MBR " + Conversiones.toHexString (vMBR));
+		this.mar.setText ("MAR " + Conversiones.toHexString (vMAR));
+		this.sh.setText ("SH " + Conversiones.toHexString (vSH));
+		this.et_s0.setText ("S2-S0 " + Conversiones.toBinaryString(mic.GetSH(), 3));
+		this.et_a0.setText ("A0 " + Conversiones.toBinaryString(mic.GetAMUX(), 1));
+		this.et_f0.setText ("F3-F0 " + Conversiones.toBinaryString(mic.GetALU(), 4));
 		this.et_c.setText ("C " + valorC);
 		this.et_n.setText ("N " + valorN);
 		this.et_z.setText ("Z " + valorZ);
@@ -463,7 +463,7 @@ public class RepresentacionRDD implements RegisterChangeListener,IRepresentacion
 		this.bufferB.Apagar();
 		this.mar.Apagar();
 		this.mbr.Apagar();
-		this.mbr.setText ("MBR " + Conversiones.ToHexString (vMBR));
+		this.mbr.setText ("MBR " + Conversiones.toHexString (vMBR));
 		this.cable_bufferB_mar.Apagar();
 		this.cable_bufferB_alu.Apagar();
 		this.alu.Apagar();
@@ -576,7 +576,7 @@ public class RepresentacionRDD implements RegisterChangeListener,IRepresentacion
 		}
 		this.regs[registro].setText (BancoRegistros.GetNombreRegistro(registro) + " " + cadena);
 		if(registro==3){
-			this.etiqueta_rmc_NombInst.setText ("NOMBRE=" + Desensamblador.Desensamblar(newValue));	
+			this.etiqueta_rmc_NombInst.setText ("NOMBRE=" + Desensamblador.desensamblar(newValue));	
 		}
 		
 	}
@@ -601,20 +601,20 @@ public class RepresentacionRDD implements RegisterChangeListener,IRepresentacion
 	private void PintarMicro (MicroInstruccion mic)
 	{
 		this.etiqueta_rmc_Inst.setText ("Inst = " + mic.toHexString());
-		this.etiqueta_rmc_AMUX.setText ("AMUX="+ Conversiones.ToBinaryString (mic.GetAMUX(),1));
-		this.etiqueta_rmc_COND.setText ("COND="+ Conversiones.ToBinaryString (mic.GetCOND(),3));
-		this.etiqueta_rmc_SH.setText ("SH="  + Conversiones.ToBinaryString (mic.GetSH(),3));
-		this.etiqueta_rmc_MBR.setText ("MBR=" + Conversiones.ToBinaryString (mic.GetMBR(),1));
-		this.etiqueta_rmc_MAR.setText ("MAR=" + Conversiones.ToBinaryString (mic.GetMAR(),1));
-		this.etiqueta_rmc_RD.setText ("RD="  + Conversiones.ToBinaryString (mic.GetRD(),1));
-		this.etiqueta_rmc_WR.setText ("WR="  + Conversiones.ToBinaryString (mic.GetWR(),1));
-		this.etiqueta_rmc_ENC.setText ("ENC=" + Conversiones.ToBinaryString (mic.GetENC(),1));
-		this.etiqueta_rmc_C.setText ("C="   + Conversiones.ToBinaryString (mic.GetC(),4));
-		this.etiqueta_rmc_B.setText ("B="   + Conversiones.ToBinaryString (mic.GetB(),4));
-		this.etiqueta_rmc_A.setText ("A="   + Conversiones.ToBinaryString (mic.GetA(),4) );
-		this.etiqueta_rmc_ADDR.setText ("ADDR="+ Conversiones.ToBinaryString (mic.GetADDR(),10));
-		this.etiqueta_rmc_FIR.setText ("FIR=" + Conversiones.ToBinaryString (mic.GetFIR() , 1));
-		this.etiqueta_rmc_ALU.setText ("ALU=" + Conversiones.ToBinaryString (mic.GetALU(),4));	
+		this.etiqueta_rmc_AMUX.setText ("AMUX="+ Conversiones.toBinaryString (mic.GetAMUX(),1));
+		this.etiqueta_rmc_COND.setText ("COND="+ Conversiones.toBinaryString (mic.GetCOND(),3));
+		this.etiqueta_rmc_SH.setText ("SH="  + Conversiones.toBinaryString (mic.GetSH(),3));
+		this.etiqueta_rmc_MBR.setText ("MBR=" + Conversiones.toBinaryString (mic.GetMBR(),1));
+		this.etiqueta_rmc_MAR.setText ("MAR=" + Conversiones.toBinaryString (mic.GetMAR(),1));
+		this.etiqueta_rmc_RD.setText ("RD="  + Conversiones.toBinaryString (mic.GetRD(),1));
+		this.etiqueta_rmc_WR.setText ("WR="  + Conversiones.toBinaryString (mic.GetWR(),1));
+		this.etiqueta_rmc_ENC.setText ("ENC=" + Conversiones.toBinaryString (mic.GetENC(),1));
+		this.etiqueta_rmc_C.setText ("C="   + Conversiones.toBinaryString (mic.GetC(),4));
+		this.etiqueta_rmc_B.setText ("B="   + Conversiones.toBinaryString (mic.GetB(),4));
+		this.etiqueta_rmc_A.setText ("A="   + Conversiones.toBinaryString (mic.GetA(),4) );
+		this.etiqueta_rmc_ADDR.setText ("ADDR="+ Conversiones.toBinaryString (mic.GetADDR(),10));
+		this.etiqueta_rmc_FIR.setText ("FIR=" + Conversiones.toBinaryString (mic.GetFIR() , 1));
+		this.etiqueta_rmc_ALU.setText ("ALU=" + Conversiones.toBinaryString (mic.GetALU(),4));	
 				
 	}			
 }

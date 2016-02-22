@@ -4,6 +4,7 @@
  */
 
 package simple2.representacionruta;
+
 import java.awt.Color;
 
 /**
@@ -13,59 +14,68 @@ import java.awt.Color;
  */
 /**
  * 
- * Esta clase representa un dibujo de un rectángulo con
- * un texto en su interior.
+ * Esta clase representa un dibujo de un rectángulo con un texto en su interior.
  */
-public class CajaRegistro extends ElementoDibujable
-	{
+public class CajaRegistro extends ElementoDibujable {
 	/**
 	 * Posición x de la esquina superior izquierda de la caja.
-	 */	
+	 */
 	private int x;
-	
+
 	/**
 	 * Posición y de la esquina superior izquierda de la caja.
 	 */
 	private int y;
-	
+
 	/**
 	 * Ancho de la caja.
 	 */
 	private int ancho;
-	
+
 	/**
 	 * Alto de la caja.
 	 */
 	private int alto;
-	
+
 	/**
 	 * Texto que se muestra dentro de la caja.
 	 */
 	private String texto;
-	
+
 	/**
-	 * Crea una instancia de la clase. 
-	 * El ancho y el alto son valores por defecto
-	 * @param dib La superficie sobre la que se debe dibujar este objeto.
-	 * @param x Posición x de la esquina superior izquierda de la caja
-	 * @param y Posición y de la esquina superior izquierda de la caja.
-	 * @param texto Texto a mostrar dentro de la caja.
-	 */	
-	public CajaRegistro (InterfaceDibujo dib, int x, int y, String texto){ 
-		this(dib,x,y,60,20, texto);
+	 * Crea una instancia de la clase. El ancho y el alto son valores por
+	 * defecto
+	 * 
+	 * @param dib
+	 *            La superficie sobre la que se debe dibujar este objeto.
+	 * @param x
+	 *            Posición x de la esquina superior izquierda de la caja
+	 * @param y
+	 *            Posición y de la esquina superior izquierda de la caja.
+	 * @param texto
+	 *            Texto a mostrar dentro de la caja.
+	 */
+	public CajaRegistro(InterfaceDibujo dib, int x, int y, String texto) {
+		this(dib, x, y, 60, 20, texto);
 	}
-	
+
 	/**
 	 * Crea una instancia de la clase.
-	 * @param dib La superficie sobre la que se debe dibujar este objeto.
-	 * @param x Posición x de la esquina superior izquierda de la caja.
-	 * @param y Posición y de la esquina superior izquierda de la caja.
-	 * @param ancho El ancho de la caja de texto.
-	 * @param alto El alto de la caja de texto.
-	 * @param texto Texto a mostrar dentro de la caja.
+	 * 
+	 * @param dib
+	 *            La superficie sobre la que se debe dibujar este objeto.
+	 * @param x
+	 *            Posición x de la esquina superior izquierda de la caja.
+	 * @param y
+	 *            Posición y de la esquina superior izquierda de la caja.
+	 * @param ancho
+	 *            El ancho de la caja de texto.
+	 * @param alto
+	 *            El alto de la caja de texto.
+	 * @param texto
+	 *            Texto a mostrar dentro de la caja.
 	 */
-	public CajaRegistro (InterfaceDibujo dib, int x, int y, int ancho, int alto, String texto)
-	{
+	public CajaRegistro(InterfaceDibujo dib, int x, int y, int ancho, int alto, String texto) {
 		super(dib);
 		this.x = x;
 		this.y = y;
@@ -73,48 +83,46 @@ public class CajaRegistro extends ElementoDibujable
 		this.alto = alto;
 		this.texto = texto;
 	}
-	
+
 	/**
 	 * Pinta la caja de Registro activa
 	 */
 	@Override
-	protected void PintarActivo ()
-	{
-		this.dibujo.clean (this.x,this.y,this.ancho,this.alto);
-		this.dibujo.dibujarRectangulo (Color.RED, this.x,this.y,this.ancho,this.alto);			
-		this.dibujo.dibujarTexto (Color.BLACK, this.x+4,this.y+12, this.texto);
+	protected void PintarActivo() {
+		this.dibujo.clean(this.x, this.y, this.ancho, this.alto);
+		this.dibujo.dibujarRectangulo(Color.RED, this.x, this.y, this.ancho, this.alto);
+		this.dibujo.dibujarTexto(Color.BLACK, this.x + 4, this.y + 12, this.texto);
 	}
-	
+
 	/**
 	 * Pinta la caja de Registro inactiva
 	 */
 	@Override
-	protected void PintarInactivo()
-	{
-		this.dibujo.clean (this.x,this.y,this.ancho,this.alto);
-		this.dibujo.dibujarRectangulo(Color.BLACK, this.x,this.y,this.ancho,this.alto);
-		this.dibujo.dibujarTexto (Color.BLACK, this.x+4, this.y+12, this.texto);
+	protected void PintarInactivo() {
+		this.dibujo.clean(this.x, this.y, this.ancho, this.alto);
+		this.dibujo.dibujarRectangulo(Color.BLACK, this.x, this.y, this.ancho, this.alto);
+		this.dibujo.dibujarTexto(Color.BLACK, this.x + 4, this.y + 12, this.texto);
 	}
-	
+
 	/**
 	 * Escribe el texto dentro de la caja de Registro
-	 * @param texto El texto que se va a escribir
+	 * 
+	 * @param texto
+	 *            El texto que se va a escribir
 	 */
 	@Override
-	public void setText (String texto)
-	{
-		this.texto=texto;
+	public void setText(String texto) {
+		this.texto = texto;
 		this.Repintar();
 	}
-	
+
 	/**
 	 * Obntener el texto de la caja de Registro
+	 * 
 	 * @return El texto que nos devuelve
-	 */	
+	 */
 	@Override
-	public String getText ()
-	{
+	public String getText() {
 		return this.texto;
 	}
 }
-	

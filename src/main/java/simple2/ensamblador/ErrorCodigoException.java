@@ -1,4 +1,5 @@
 package simple2.ensamblador;
+
 /*
  * Created on 28-jul-2003
  *
@@ -9,10 +10,11 @@ package simple2.ensamblador;
  *
  */
 
-/**Excepcion que se produce si hay algun error en el codigo ensamblador
- * del programa.
+/**
+ * Excepcion que se produce si hay algun error en el codigo ensamblador del
+ * programa.
  */
-public class ErrorCodigoException extends Exception{
+public class ErrorCodigoException extends Exception {
 
 	/**
 	 * 
@@ -25,14 +27,15 @@ public class ErrorCodigoException extends Exception{
 	public ErrorCodigoException() {
 		super();
 	}
-	
+
 	/**
 	 * Crea una instancia de la clase
-     * @param linea Texto que almacena la excepcion.
+	 * 
+	 * @param linea
+	 *            Texto que almacena la excepcion.
 	 */
-	public ErrorCodigoException(String linea){
-		super (linea);
+	public ErrorCodigoException(String linea) {
+		super(linea);
 	}
-
 
 }

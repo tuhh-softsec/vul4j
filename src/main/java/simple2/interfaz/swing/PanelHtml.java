@@ -3,6 +3,7 @@
  *
  */
 package simple2.interfaz.swing;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -13,14 +14,13 @@ import javax.swing.JScrollPane;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 
-
 /**
  * @author Montserrat Sotomayor Gonzalez
  *
  */
 /**
- * Panel que renderiza el contenido de un archivo html.
- * Además permite el seguimiento de los links.
+ * Panel que renderiza el contenido de un archivo html. Además permite el
+ * seguimiento de los links.
  *
  */
 public class PanelHtml extends JScrollPane {
@@ -33,15 +33,16 @@ public class PanelHtml extends JScrollPane {
 	 * Campo de edición donde se mostrará la página html.
 	 */
 	private JEditorPane html;
+
 	/**
 	 * Constructor de la clase.
 	 *
-	 * @param fichero El fichero a visualizar.
+	 * @param fichero
+	 *            El fichero a visualizar.
 	 */
-	public PanelHtml (String fichero){
+	public PanelHtml(String fichero) {
 		Reader reader = null;
-		try
-		{
+		try {
 			reader = new InputStreamReader(getClass().getResourceAsStream(fichero), StandardCharsets.ISO_8859_1);
 			this.html = new JEditorPane();
 			HTMLEditorKit editorKit = new HTMLEditorKit();
@@ -51,27 +52,20 @@ public class PanelHtml extends JScrollPane {
 				HTMLDocument document = new HTMLDocument();
 				document.getDocumentProperties().put("IgnoreCharsetDirective", Boolean.TRUE);
 				this.html.read(reader, document);
-			}
-			catch (IOException ioe) {
+			} catch (IOException ioe) {
 				ioe.printStackTrace();
 				this.html.setText("No pude encontrar el archivo");
 			}
 			this.getViewport().add(this.html);
-		}		
-		finally {
+		} finally {
 			if (reader != null) {
 				try {
 					reader.close();
-				}
-				catch (IOException ioe) {
+				} catch (IOException ioe) {
 					//
 				}
 			}
 		}
 	}
 
-
 }
-
-
-

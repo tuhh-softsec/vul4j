@@ -4,6 +4,7 @@
  */
 
 package simple2.interfaz.swing;
+
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -31,321 +32,302 @@ import simple2.ensamblador.Ejecutar;
 public class Simple2 {
 
 	/**
-	 * Panel central que contendrá todos los paneles que se utilizarán en el programa
+	 * Panel central que contendrá todos los paneles que se utilizarán en el
+	 * programa
 	 */
 	public static PanelCentral panelCentral;
-		
+
 	/**
 	 * Panel superior que contendra los botones del programa
-	 */	
+	 */
 	public static JPanel panelSuperior;
-		
+
 	/**
-	 * Boton que al pulsar nos muestra el codigo qu hemos escrito y la codificacion o errores
+	 * Boton que al pulsar nos muestra el codigo qu hemos escrito y la
+	 * codificacion o errores
 	 */
 	public static Boton botonCodigo;
-		
+
 	/**
-	 * Boton que al pulsar nos ejecuta:
-	 *	-Primero codifica el codigo y si no tiene errores pasa al siguiente punto
-	 * 	-Una vez codificado el codigo pasa a mostrarnos la simulación
+	 * Boton que al pulsar nos ejecuta: -Primero codifica el codigo y si no
+	 * tiene errores pasa al siguiente punto -Una vez codificado el codigo pasa
+	 * a mostrarnos la simulación
 	 */
 	public static Boton botonEjecutar;
-		
+
 	/**
-	 * Boton que al pulsar nos muestra el estado de la memoria 
+	 * Boton que al pulsar nos muestra el estado de la memoria
 	 */
 	public static Boton botonMemoria;
-		
+
 	/**
 	 * Boton que al pulsar para la simulacion
 	 */
 	public static Boton botonParar;
-	
+
 	/**
 	 * Boton que nos muestra la ruta
 	 */
 	public static Boton botonEsquema;
-	
+
 	/**
 	 * Variable que nos indica si el botón parado ha sido pulsado
 	 */
-	boolean parado= false;
-	
+	boolean parado = false;
+
 	/**
 	 * Variable que guarda el tiempo de cada subciclo
 	 */
-	int tiempo=1000;
-	
+	int tiempo = 1000;
+
 	/**
-	 * Texto donde escribimos el tiempo 
+	 * Texto donde escribimos el tiempo
 	 */
 	JTextField t;
-	
-	
+
 	private RootPaneContainer rootPaneContainer;
-	
+
 	/**
 	 * Hilo que nos controla cuando termina el hilo de la simulación
 	 */
 	private Thread hiloEspera = null;
+
 	/**
-	 * Crea una instancia de la clase.Con el tamaño, nombre y mostrando al arrancar 
-	 * el programa el panel de inicio.
+	 * Crea una instancia de la clase.Con el tamaño, nombre y mostrando al
+	 * arrancar el programa el panel de inicio.
 	 *
 	 */
-	public Simple2(RootPaneContainer rootPaneContainer){
+	public Simple2(RootPaneContainer rootPaneContainer) {
 		this.rootPaneContainer = rootPaneContainer;
 	}
 
-	
-	public void init(){
+	public void init() {
 		panelCentral = new PanelCentral();
-		panelSuperior =new JPanel();
-		
-		botonCodigo=new Boton("CODIGO");
+		panelSuperior = new JPanel();
+
+		botonCodigo = new Boton("CODIGO");
 		botonCodigo.setIcon(new ImageIcon(getClass().getResource("/images/codigo.gif")));
-		botonEjecutar=new Boton("EJECUTAR");
+		botonEjecutar = new Boton("EJECUTAR");
 		botonEjecutar.setIcon(new ImageIcon(getClass().getResource("/images/ejecutar.gif")));
-		botonMemoria=new Boton("MEMORIA");
+		botonMemoria = new Boton("MEMORIA");
 		botonMemoria.setIcon(new ImageIcon(getClass().getResource("/images/memoria.gif")));
-		botonParar=new Boton("PARAR");
+		botonParar = new Boton("PARAR");
 		botonParar.setIcon(new ImageIcon(getClass().getResource("/images/dot_rojo.gif")));
-		botonEsquema=new Boton("RUTA");
+		botonEsquema = new Boton("RUTA");
 		botonEsquema.setIcon(new ImageIcon(getClass().getResource("/images/ruta.gif")));
-			
-			
+
 		this.rootPaneContainer.getRootPane().getContentPane().setLayout(new BorderLayout());
-		panelSuperior.setLayout(new GridLayout(1,5));
+		panelSuperior.setLayout(new GridLayout(1, 5));
 		panelSuperior.add(botonCodigo);
 		panelSuperior.add(botonMemoria);
 		panelSuperior.add(botonEjecutar);
 		panelSuperior.add(botonEsquema);
 		panelSuperior.add(botonParar);
-		this.rootPaneContainer.getRootPane().getContentPane().add (panelCentral, BorderLayout.CENTER);
-		this.rootPaneContainer.getRootPane().getContentPane().add (panelSuperior, BorderLayout.NORTH);
+		this.rootPaneContainer.getRootPane().getContentPane().add(panelCentral, BorderLayout.CENTER);
+		this.rootPaneContainer.getRootPane().getContentPane().add(panelSuperior, BorderLayout.NORTH);
 		panelCentral.verPanel("NUEVO");
 		crearMenus();
-			
-			
-		botonCodigo.addActionListener (new ActionListener() {
+
+		botonCodigo.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed (ActionEvent e)
-			{
+			public void actionPerformed(ActionEvent e) {
 				Seleccionar();
 				botonCodigo.setSelected(true);
 				panelCentral.verPanel("NUEVO");
 				panelCentral.NoEditable();
 			}
 		});
-			
-		botonEjecutar.addActionListener (new ActionListener() {
+
+		botonEjecutar.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed (ActionEvent e)
-			{
-				
-				if(botonParar.isSelected()){
+			public void actionPerformed(ActionEvent e) {
+
+				if (botonParar.isSelected()) {
 					botonEjecutar.setSelected(false);
 					return;
 				}
-				if(botonEjecutar.isSelected()==false){
+				if (botonEjecutar.isSelected() == false) {
 					botonEjecutar.setText("EJECUTAR");
 					panelCentral.Fin();
 					botonEjecutar.setSelected(false);
 					return;
 				}
-				boolean c=panelCentral.HiloActivo();
-				if(c)
-				{
+				boolean c = panelCentral.HiloActivo();
+				if (c) {
 					return;
 				}
-				
-				
+
 				panelCentral.limpiarEjecutar();
-				String datos=panelCentral.CogerDatos();
-				Vector<String> codigo_limpio=new Vector<>();
+				String datos = panelCentral.CogerDatos();
+				Vector<String> codigo_limpio = new Vector<>();
 				short[] ensamblado;
-				String error="";
-						
-				Ejecutar ejecutar=new Ejecutar();
-				codigo_limpio=ejecutar.Comprobar(datos);
-				error=ejecutar.EjecutarErrores(datos);
-						
-				if(error.length()==0){
+				String error = "";
+
+				Ejecutar ejecutar = new Ejecutar();
+				codigo_limpio = ejecutar.Comprobar(datos);
+				error = ejecutar.EjecutarErrores(datos);
+
+				if (error.length() == 0) {
 					Seleccionar();
 					botonEjecutar.setSelected(true);
 					panelCentral.verPanel("ESQUEMA");
-					botonEjecutar.setText("FIN");	
-					ensamblado=ejecutar.EnsamblarCodigo(codigo_limpio);
+					botonEjecutar.setText("FIN");
+					ensamblado = ejecutar.EnsamblarCodigo(codigo_limpio);
 					int instruccionesTotales = codigo_limpio.size();
-					panelCentral.Escribir(codigo_limpio,ensamblado,instruccionesTotales);
-					panelCentral.EscribirMemoria(ensamblado,instruccionesTotales,codigo_limpio);
-					panelCentral.Principal(ensamblado,Simple2.this.tiempo);
-					
-					Simple2.this.hiloEspera = new HiloEspera (panelCentral.hilo);
+					panelCentral.Escribir(codigo_limpio, ensamblado, instruccionesTotales);
+					panelCentral.EscribirMemoria(ensamblado, instruccionesTotales, codigo_limpio);
+					panelCentral.Principal(ensamblado, Simple2.this.tiempo);
+
+					Simple2.this.hiloEspera = new HiloEspera(panelCentral.hilo);
 					Simple2.this.hiloEspera.start();
 
-					
 					panelCentral.clean();
-				}
-				else{	
+				} else {
 					botonEjecutar.setSelected(false);
 					panelCentral.Errores(error);
-					panelCentral.Editable(); 
-				}	 
+					panelCentral.Editable();
+				}
 			}
 		});
-			
-		botonMemoria.addActionListener (new ActionListener() {
+
+		botonMemoria.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed (ActionEvent e)
-			{
+			public void actionPerformed(ActionEvent e) {
 				Seleccionar();
 				botonMemoria.setSelected(true);
 				panelCentral.verPanel("MEMORIA");
 			}
 		});
-		
-		botonEsquema.addActionListener (new ActionListener() {
+
+		botonEsquema.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed (ActionEvent e)
-			{
+			public void actionPerformed(ActionEvent e) {
 				Seleccionar();
 				botonEsquema.setSelected(true);
 				panelCentral.verPanel("ESQUEMA");
 			}
 		});
-		
-		botonParar.addActionListener (new ActionListener() {
+
+		botonParar.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed (ActionEvent e)
-			{
-				String aux=botonEjecutar.getText();
-				if(aux.compareTo("EJECUTAR")!=0){
+			public void actionPerformed(ActionEvent e) {
+				String aux = botonEjecutar.getText();
+				if (aux.compareTo("EJECUTAR") != 0) {
 					Simple2.this.parado = !Simple2.this.parado;
 					Seleccionar();
-					if(Simple2.this.parado){
+					if (Simple2.this.parado) {
 						botonParar.setText("SEGUIR");
 						botonParar.setIcon(new ImageIcon(getClass().getResource("/images/dot_verde.gif")));
 						botonEjecutar.setText("PARADO");
-					}
-					else{
+					} else {
 						botonParar.setText("PARAR");
 						botonParar.setIcon(new ImageIcon(getClass().getResource("/images/dot_rojo.gif")));
 						botonEjecutar.setSelected(true);
 						botonEjecutar.setText("FIN");
 					}
 					panelCentral.Parar();
-				}
-				else{
+				} else {
 					botonParar.setSelected(false);
 				}
 			}
 		});
-			
+
 	}
-	
+
 	/**
 	 * Nos deselecciona todos los botones
 	 *
-	 */		
-	public void Seleccionar(){
+	 */
+	public void Seleccionar() {
 		botonCodigo.setSelected(false);
 		botonEjecutar.setSelected(false);
 		botonEsquema.setSelected(false);
 		botonMemoria.setSelected(false);
 		botonParar.setSelected(false);
-		if(this.parado) botonParar.setSelected(this.parado);
-		boolean c=panelCentral.HiloActivo();
-		if(c)
-			{
-				botonEjecutar.setSelected(true);
-			}
+		if (this.parado)
+			botonParar.setSelected(this.parado);
+		boolean c = panelCentral.HiloActivo();
+		if (c) {
+			botonEjecutar.setSelected(true);
+		}
 	}
-	
+
 	/**
 	 * Menú que te permite elegir varias opciones
 	 *
 	 */
-	private void crearMenus()
-	{
-		this.t=new CampoNumerico(this.tiempo,4);
-		JMenuBar menubar = new JMenuBar ();
-		this.rootPaneContainer.getRootPane().setJMenuBar (menubar);
-		
+	private void crearMenus() {
+		this.t = new CampoNumerico(this.tiempo, 4);
+		JMenuBar menubar = new JMenuBar();
+		this.rootPaneContainer.getRootPane().setJMenuBar(menubar);
+
 		JMenu menu;
 		JMenuItem menuItem;
 
-		menu=new JMenu("Nuevo");
+		menu = new JMenu("Nuevo");
 		menu.setIcon(new ImageIcon(getClass().getResource("/images/new.gif")));
-		menuItem = new JMenuItem ("Nuevo");
+		menuItem = new JMenuItem("Nuevo");
 		menuItem.setIcon(new ImageIcon(getClass().getResource("/images/new.gif")));
-		menuItem.addActionListener (new ActionListener(){
-		@Override
-		public void actionPerformed(ActionEvent e)
-			{	
-			if(Simple2.this.parado){
-				panelCentral.Activar();
-				Simple2.this.parado=false;
+		menuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (Simple2.this.parado) {
+					panelCentral.Activar();
+					Simple2.this.parado = false;
 				}
-			panelCentral.Fin();
-			botonEjecutar.setText("EJECUTAR");
-			botonParar.setText("PARAR");
-			botonParar.setIcon(new ImageIcon(getClass().getResource("/images/dot_rojo.gif")));
-			Seleccionar();
-			botonParar.setSelected(false);
-			panelCentral.verPanel("NUEVO");
-			panelCentral.Editable();
-			panelCentral.limpiar();
+				panelCentral.Fin();
+				botonEjecutar.setText("EJECUTAR");
+				botonParar.setText("PARAR");
+				botonParar.setIcon(new ImageIcon(getClass().getResource("/images/dot_rojo.gif")));
+				Seleccionar();
+				botonParar.setSelected(false);
+				panelCentral.verPanel("NUEVO");
+				panelCentral.Editable();
+				panelCentral.limpiar();
 			}
 		});
-		menu.add (menuItem);
-		menubar.add( menu);
+		menu.add(menuItem);
+		menubar.add(menu);
 
-		menu = new JMenu ("Opciones");
+		menu = new JMenu("Opciones");
 		menu.setIcon(new ImageIcon(getClass().getResource("/images/reloj.gif")));
-		menuItem =new JMenuItem ("Tiempo");
+		menuItem = new JMenuItem("Tiempo");
 		menuItem.setIcon(new ImageIcon(getClass().getResource("/images/reloj.gif")));
-		menuItem.addActionListener (new ActionListener() {
-		@Override
-		public void actionPerformed (ActionEvent e)
-			{
-			Seleccionar();
-			String cad=Simple2.this.t.getText();
-			if(cad.length()!=0){
-				try{
-					Simple2.this.tiempo=Integer.parseInt(cad);
-					}
-				catch(Exception ex){
+		menuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Seleccionar();
+				String cad = Simple2.this.t.getText();
+				if (cad.length() != 0) {
+					try {
+						Simple2.this.tiempo = Integer.parseInt(cad);
+					} catch (Exception ex) {
 					}
 				}
 			}
 		});
-		
-		
-		menu.add (menuItem);
+
+		menu.add(menuItem);
 		menu.add(this.t);
-		menubar.add (menu);
-								
-		menu = new JMenu ("Ayuda");
+		menubar.add(menu);
+
+		menu = new JMenu("Ayuda");
 		menu.setIcon(new ImageIcon(getClass().getResource("/images/ayuda.gif")));
-		menuItem =new JMenuItem ("Ayuda");
+		menuItem = new JMenuItem("Ayuda");
 		menuItem.setIcon(new ImageIcon(getClass().getResource("/images/ayuda.gif")));
-		menuItem.addActionListener (new ActionListener() {
-		@Override
-		public void actionPerformed (ActionEvent e)
-			{
-			Seleccionar();
-			panelCentral.verPanel("AYUDA");
+		menuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Seleccionar();
+				panelCentral.verPanel("AYUDA");
 			}
 		});
 
-		menu.add (menuItem);
-		menubar.add (menu);
-		
-		
+		menu.add(menuItem);
+		menubar.add(menu);
+
 	}
-	
+
 	/**
 	 * 
 	 * @author Montserrat Sotomayor Gonzalez
@@ -355,31 +337,28 @@ public class Simple2 {
 	 * 
 	 * Hilo que controla cuando el hilo de ejecucion termina
 	 */
-	public class HiloEspera extends Thread
-	{
+	public class HiloEspera extends Thread {
 		private Thread thread = null;
+
 		/**
 		 * Instancia de la clase
-		 * @param t hilo que controla
+		 * 
+		 * @param t
+		 *            hilo que controla
 		 */
-		public HiloEspera (Thread t)
-		{
+		public HiloEspera(Thread t) {
 			this.thread = t;
 		}
-		
+
 		/**
 		 * Método de ejecución del hilo.
-		 */	
+		 */
 		@Override
-		public void run()
-		{
-			try
-			{
-				this.thread.join ();
-			}
-			catch (InterruptedException ex)
-			{
-				
+		public void run() {
+			try {
+				this.thread.join();
+			} catch (InterruptedException ex) {
+
 			}
 			botonEjecutar.setSelected(false);
 			botonEjecutar.setText("EJECUTAR");

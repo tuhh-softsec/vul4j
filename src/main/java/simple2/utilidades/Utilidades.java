@@ -15,14 +15,15 @@ import java.awt.Window;
 /**
  * Esta clase provee al usuario de una forma fácil de centrar una ventana en la pantalla del ordenador.
  */
-public class Utilidades extends Object{
+public final class Utilidades {
 
 	/**
 	 * Constructor de la clase.
 	 * Como todos son métodos estáticos pensados para ser llamados sin crear objetos de esta
 	 * clase, esta función no debería ser utilizada.
 	 */
-	public Utilidades() {
+	private Utilidades() {
+		throw new AssertionError("No se permiten instancias de esta clase");
 	}
 	
 	/**
