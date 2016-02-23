@@ -102,9 +102,11 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
         final List<DashboardReport> dashboardReports = new ArrayList<DashboardReport>();
 
         Run<?, ?> previousRun = run.getPreviousNotFailedBuild();
-        if (previousRun != null && previousRun.getResult() != null) {
-            if (!previousRun.getResult().isCompleteBuild() && run.getPreviousCompletedBuild() != null) {
-                previousRun = run.getPreviousCompletedBuild();
+        if (previousRun != null) {
+            Result previousRunResult = previousRun.getResult();
+            Run<?, ?> previousCompletedRun = run.getPreviousCompletedBuild();
+            if (previousRunResult != null && !previousRunResult.isCompleteBuild() && previousCompletedRun != null) {
+                previousRun = previousCompletedRun;
             }
             comparisonBuildNumber = previousRun.getNumber();
             logger.println(Messages.PerfSigRecorder_LastSuccessfulBuild() + " #" + comparisonBuildNumber);
