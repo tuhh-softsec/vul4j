@@ -6,6 +6,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 
 import simple2.interfaz.swing.Simple2;
+import simple2.utilidades.Utilidades;
 
 public class Simple2App {
 
@@ -23,6 +24,7 @@ public class Simple2App {
 		});
 		Simple2 simple = new Simple2(window);
 		simple.init();
+		Utilidades.centrarVentana(window);
 		window.setVisible(true);
 
 	}
