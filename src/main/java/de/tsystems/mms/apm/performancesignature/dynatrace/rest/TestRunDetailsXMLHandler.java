@@ -19,6 +19,8 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.rest;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestResult;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRun;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRunMeasure;
+import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -26,14 +28,17 @@ public class TestRunDetailsXMLHandler extends DefaultHandler {
     private TestRun testRun;
     private TestResult testResult;
     private TestRunMeasure measure;
+    private String errorMsg;
 
-    public TestRun getParsedObjects() {
+    public TestRun getParsedObjects() throws RESTErrorException {
+        if (StringUtils.isNotBlank(errorMsg)) throw new RESTErrorException(errorMsg);
         return this.testRun;
     }
 
     public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attr) {
         if (localName.equals("testRun")) {
-            testRun = new TestRun(attr);
+            errorMsg = AttributeUtils.getStringAttribute("message", attr);
+            if (StringUtils.isBlank(errorMsg)) testRun = new TestRun(attr);
         } else if (localName.equals("testResult")) {
             testResult = new TestResult(attr);
         } else if (localName.equals("measure")) {
