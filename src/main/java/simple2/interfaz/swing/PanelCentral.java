@@ -201,7 +201,7 @@ public class PanelCentral extends javax.swing.JPanel {
 		this.panelesquema.pdibujo.setRepresentacionRDD(repRdd);
 		// Crear un nuevo "secuenciador" con el short[] creado al ensamblar y
 		// micromemoria null
-		SecuenciadorMicroprograma mic = new SecuenciadorMicroprograma(ensamblado, null);
+		SecuenciadorMicroprograma mic = new SecuenciadorMicroprograma(ensamblado);
 
 		// Añadimos el listener de memoria (si hay)
 		mic.addMemoryChangeListener(this.panelmemoria);

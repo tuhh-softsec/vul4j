@@ -60,9 +60,9 @@ public class SecuenciadorMicroprograma {
 	 *            La memoria principal con su contenido inicial
 	 * 
 	 */
-	public SecuenciadorMicroprograma(short[] memoriaPrincipal, long[] memControl) {
+	public SecuenciadorMicroprograma(short[] memoriaPrincipal) {
 		this.mp = new MemoriaPrincipal(memoriaPrincipal);
-		this.memoriaControl = new MemoriaControl(memControl);
+		this.memoriaControl = new MemoriaControl();
 
 	}
 

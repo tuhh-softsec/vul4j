@@ -154,15 +154,9 @@ public class MemoriaControl {
 	 * control esa es Memoria de Control y si no existe la Memoria de Control es
 	 * la Memoria de Control por Defecto
 	 * 
-	 * @param memoriaInicial
-	 *            Le pasamos la Memoria de Control inicial
 	 */
-	public MemoriaControl(long[] memoriaInicial) {
-		if ((memoriaInicial == null) || (memoriaInicial.length != TAMANO)) {
-			this.memoria = MemoriaControl.getMemoriaDefecto();
-		} else {
-			this.memoria = memoriaInicial;
-		}
+	public MemoriaControl() {
+		this.memoria = MemoriaControl.getMemoriaDefecto();
 	}
 
 	/**
