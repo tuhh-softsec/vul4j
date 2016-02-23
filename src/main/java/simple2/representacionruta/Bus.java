@@ -34,7 +34,7 @@ public class Bus {
 	 *            Los cables que componen el bus.
 	 */
 	public Bus(Cable[] cables) {
-		this.cables = cables;
+		this.cables = cables.clone();
 	}
 
 	/**

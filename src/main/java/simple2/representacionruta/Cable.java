@@ -31,7 +31,7 @@ public class Cable extends ElementoDibujable {
 	 */
 	public Cable(InterfaceDibujo dib, int[] puntos) {
 		super(dib);
-		this.puntos = puntos;
+		this.puntos = puntos.clone();
 	}
 
 	/**
