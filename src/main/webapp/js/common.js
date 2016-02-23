@@ -17,7 +17,7 @@
 require.config({
     baseUrl: resURL + '/plugin/performance-signature-dynatrace/js/',
     paths: {
-        'jquery': "jquery-2.2.0.min",
+        'jquery': "jquery-2.2.1.min",
         'bootstrap': "bootstrap.min",
         'datatables.net': "jquery.dataTables.min",
         'datatables.bootstrap': "dataTables.bootstrap.min",
