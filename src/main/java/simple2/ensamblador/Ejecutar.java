@@ -279,7 +279,7 @@ public class Ejecutar extends InstruccionGeneral {
 	 */
 	public Vector<String> primeraPasada(Vector<String> origen) throws ErrorCodigoException {
 		String instruc = "";
-		String errores = "";
+		StringBuilder errores = new StringBuilder();
 		InstruccionGeneral n;
 		String in;
 		int l_fichero;
@@ -310,18 +310,18 @@ public class Ejecutar extends InstruccionGeneral {
 				salida_ = n.validar(instruc, l_fichero);
 				vectorInstrucciones.add(instruc);
 				if (!salida_.equals(""))
-					errores = errores + salida_;
+					errores.append(salida_);
 			} else {
-				errores = errores + "Linea: " + l_fichero + ". No existe la instruccion\n";
+				errores.append("Linea: ").append(l_fichero).append(". No existe la instruccion\n");
 			}
 
 		}
-		if (errores.equals("")) {
-			if (instruc.compareTo("HALT") != 0)
-				vectorInstrucciones.add("HALT");
-			return vectorInstrucciones;
+		if (errores.length() != 0) {
+			throw new ErrorCodigoException(errores.toString());
 		}
-		throw new ErrorCodigoException(errores);
+		if (instruc.compareTo("HALT") != 0)
+			vectorInstrucciones.add("HALT");
+		return vectorInstrucciones;
 
 	}
 
