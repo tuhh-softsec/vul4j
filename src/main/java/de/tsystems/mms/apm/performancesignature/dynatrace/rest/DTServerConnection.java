@@ -71,7 +71,7 @@ public class DTServerConnection {
             return true;
         }
     };
-    private String systemProfile;
+    private final String systemProfile;
     private Proxy proxy;
     private SSLContext sc;
 
@@ -81,6 +81,7 @@ public class DTServerConnection {
         this.credentials = PerfSigUtils.getCredentials(pair.getCredentialsId());
         this.verifyCertificate = verifyCertificate;
         this.proxy = Proxy.NO_PROXY;
+        this.systemProfile = pair.getProfile();
 
         // Install the all-trusting trust manager
         try {
@@ -137,7 +138,6 @@ public class DTServerConnection {
 
     public DTServerConnection(final DynatraceServerConfiguration config, final CredProfilePair pair) {
         this(config.getProtocol(), config.getHost(), config.getPort(), pair, config.isVerifyCertificate(), config.getCustomProxy());
-        this.systemProfile = pair.getProfile();
     }
 
     public TestRun getTestRunFromXML(final String uuid) {
