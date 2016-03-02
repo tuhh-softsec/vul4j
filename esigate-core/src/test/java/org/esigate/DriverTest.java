@@ -760,9 +760,15 @@ public class DriverTest extends TestCase {
         request = TestUtils.createIncomingRequest("http://localhost:8080/foo/foobar.jsp");
 
         IncomingRequest incomingRequest = request.build();
-        driver.proxy("http://wwww.external.server/foo/foobar.jsp", incomingRequest);
+        driver.proxy("http://www.external.server/foo/foobar.jsp", incomingRequest);
 
         Assert.assertEquals(1, incomingRequest.getNewCookies().length);
+
+        request = TestUtils.createIncomingRequest("http://localhost:8080/foo/foobar.jsp");
+        incomingRequest = request.build();
+        driver.proxy("http://anotherdomain.external.server/foo/foobar.jsp", incomingRequest);
+
+        Assert.assertEquals(0, incomingRequest.getNewCookies().length);
     }
 
     public void testRewriteCookiePath() throws Exception {
