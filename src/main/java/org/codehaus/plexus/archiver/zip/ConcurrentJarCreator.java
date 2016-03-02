@@ -86,7 +86,7 @@ public class ConcurrentJarCreator {
             final ByteArrayInputStream payload = new ByteArrayInputStream(new byte[]{});
             directories.addArchiveEntry(createZipArchiveEntryRequest(zipArchiveEntry, createInputStreamSupplier(payload)));
             payload.close();
-        } else if ("META-INF".equals(zipArchiveEntry.getName())) {
+        } else if ("META-INF".equals(zipArchiveEntry.getName()) || "META-INF/".equals(zipArchiveEntry.getName()) ) {
             InputStream payload = source.get();
             if (zipArchiveEntry.isDirectory()) zipArchiveEntry.setMethod(ZipEntry.STORED);
             metaInfDir.addArchiveEntry(

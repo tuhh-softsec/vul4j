@@ -2,6 +2,7 @@ package org.codehaus.plexus.archiver.zip;
 
 import org.apache.commons.io.IOUtils;
 import org.codehaus.plexus.PlexusTestCase;
+import org.codehaus.plexus.components.io.functions.SymlinkDestinationSupplier;
 import org.codehaus.plexus.components.io.resources.*;
 
 import java.io.BufferedReader;
@@ -9,8 +10,10 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 public class PlexusIoZipFileResourceCollectionTest
@@ -85,6 +88,41 @@ public class PlexusIoZipFileResourceCollectionTest
             final InputStream contents = next.getContents();
             contents.close();
         }
+    }
+
+    public void testSymlinkEntries()
+        throws Exception
+    {
+        File testZip = new File( getBasedir(), "src/test/resources/symlinks/symlinks.zip" );
+        Map<String, String> symLinks = new HashMap<String, String>();
+        symLinks.put( "symDir", "targetDir/" );
+        symLinks.put( "symLinkToDirOnTheOutside", "../dirOnTheOutside/" );
+        symLinks.put( "symLinkToTheOutside", "../onTheOutside.txt" );
+        symLinks.put( "symR", "fileR.txt" );
+        symLinks.put( "symW", "fileW.txt" );
+        symLinks.put( "symX", "fileX.txt" );
+        PlexusIoZipFileResourceCollection
+            prc = new PlexusIoZipFileResourceCollection();
+        prc.setFile( testZip );
+        final Iterator<PlexusIoResource> entries = prc.getEntries();
+        while ( entries.hasNext() )
+        {
+            final PlexusIoResource next = entries.next();
+            String symLinkTarget = symLinks.remove( next.getName() );
+            if ( symLinkTarget != null )
+            {
+                assertTrue( next.getName() + " must be symlink", next.isSymbolicLink() );
+                assertTrue( next instanceof SymlinkDestinationSupplier );
+                assertEquals( symLinkTarget,
+                    ( (SymlinkDestinationSupplier) next ).getSymlinkDestination() );
+            }
+            else
+            {
+                assertFalse( next.getName() + " must not be symlink", next.isSymbolicLink() );
+            }
+        }
+
+        assertTrue( symLinks.isEmpty() );
     }
 
 }
