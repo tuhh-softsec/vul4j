@@ -75,6 +75,9 @@ public class EventManager {
     public static final EventDefinition EVENT_READ_ENTITY = new EventDefinition("org.esigate.readEntity.",
             EventDefinition.TYPE_DEFAULT);
 
+    public static final EventDefinition EVENT_HTTP_BUILDER_INITIALIZATION = new EventDefinition(
+            "org.esigate.httpBuilderInitialization.", EventDefinition.TYPE_POST);
+
     private static final Logger LOG = LoggerFactory.getLogger(EventManager.class);
 
     private final String driverId;

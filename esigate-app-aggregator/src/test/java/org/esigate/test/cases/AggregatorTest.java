@@ -23,23 +23,7 @@ import com.meterware.httpunit.WebResponse;
  * @author Francois-Xavier Bonnet
  * @author Nicolas Richeton
  */
-public class AggregatorTest extends TestCase {
-    private final static String APPLICATION_PATH = "http://localhost:8080/esigate-app-aggregator/";
-    private final static String RESOURCES_PATH = "/";
-    private WebConversation webConversation;
-
-    private void assertEqualsIgnoreCarriageReturn(String expected, String actual) {
-        assertEquals(expected.replaceAll("\r", ""), actual.replaceAll("\r", ""));
-    }
-
-    private void assertEqualsIgnoreLineFeeds(String expected, String actual) {
-        assertEqualsIgnoreCarriageReturn(expected.replaceAll("\n", ""), actual.replaceAll("\n", ""));
-    }
-
-    private void assertEqualsIgnoreWhiteSpaces(String expected, String actual) {
-        assertEqualsIgnoreLineFeeds(expected.replaceAll("\t", "").replaceAll(" ", ""), actual.replaceAll("\t", "")
-                .replaceAll(" ", ""));
-    }
+public class AggregatorTest extends BaseAggregatorTest {
 
     private void doCookieSimpleTest(String page, String resultResource) throws Exception {
         WebRequest req = new GetMethodWebRequest(APPLICATION_PATH + page);
@@ -59,32 +43,6 @@ public class AggregatorTest extends TestCase {
         }
         assertTrue("Response should contains an HttpOnly cookie test0", containsHttpOnlyCookie);
 
-    }
-
-    private void doSimpleTest(String page) throws Exception {
-        // We assume the file name is the name of the resource
-        doSimpleTest(page, page);
-    }
-
-    private void doSimpleTest(String page, String resultResource) throws Exception {
-        WebRequest req = new GetMethodWebRequest(APPLICATION_PATH + page);
-        WebResponse resp = webConversation.getResponse(req);
-        assertEquals("Status should be 200\n" + resp.getText(), HttpServletResponse.SC_OK, resp.getResponseCode());
-        assertEqualsIgnoreLineFeeds(getResource(resultResource), resp.getText());
-    }
-
-    private String getResource(String file) throws IOException {
-        InputStream inputStream = this.getClass().getResourceAsStream(RESOURCES_PATH + file);
-        String result = IOUtils.toString(inputStream, "UTF-8");
-        inputStream.close();
-        return result;
-    }
-
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-        webConversation = new WebConversation();
-        webConversation.setExceptionsThrownOnErrorStatus(false);
     }
 
     public void testAg2Index() throws Exception {

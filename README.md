@@ -4,6 +4,7 @@ esigate
 http://www.esigate.org - Webapp integration, Remote templating, Web accelerator 
 
 [![Build Status: Linux](https://travis-ci.org/esigate/esigate.svg?branch=master)](https://travis-ci.org/esigate/esigate)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.esigate/esigate/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.esigate/esigate)
 
 # Features
 **Server-side integration** : Esigate allows a fast and invisible mashup of any web applications.

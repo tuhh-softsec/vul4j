@@ -93,10 +93,6 @@ public final class PropertiesUtil {
         return result;
     }
 
-    public static String getPropertyValue(Properties props, String name, String defaultValue) {
-        return props.getProperty(name, defaultValue);
-    }
-
     public static float getPropertyValue(Properties properties, String name, float defaultValue) {
         String value = properties.getProperty(name);
         float result = defaultValue;
