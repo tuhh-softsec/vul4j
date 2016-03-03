@@ -42,11 +42,6 @@ public final class MigratePerfSig {
         for (File f : list) {
             if (f.isDirectory()) {
                 walk(f.getAbsolutePath());
-                if(f.getName().equals(SEARCHSTRING)) {
-                    f.renameTo(new File(f.getParent(), REPLACESTRING));
-                    System.out.println("Dir: " + f.getAbsoluteFile());
-                    System.out.println("Dir migrated");
-                }
             } else {
                 if(f.getName().matches("(build|config)\\.xml")) {
                     System.out.println("File: " + f.getAbsoluteFile());
