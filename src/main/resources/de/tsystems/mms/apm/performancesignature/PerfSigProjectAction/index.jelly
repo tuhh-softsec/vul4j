@@ -18,13 +18,13 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout" xmlns:fmt="jelly:fmt">
     <l:layout title="Performance Signature Overview for ${it.job.name}">
         <l:header>
-            <link type="text/css" href="${resURL}/plugin/${it.urlName}/css/bootstrap.min.css"
+            <link type="text/css" href="${resURL}/plugin/performance-signature-dynatrace/css/bootstrap.min.css"
                   rel="stylesheet"/>
-            <link type="text/css" href="${resURL}/plugin/${it.urlName}/css/dataTables.bootstrap.min.css"
+            <link type="text/css" href="${resURL}/plugin/performance-signature-dynatrace/css/dataTables.bootstrap.min.css"
                   rel="stylesheet"/>
-            <link type="text/css" href="${resURL}/plugin/${it.urlName}/css/jquery.gridster.min.css"
+            <link type="text/css" href="${resURL}/plugin/performance-signature-dynatrace/css/jquery.gridster.min.css"
                   rel="stylesheet"/>
-            <link type="text/css" href="${resURL}/plugin/${it.urlName}/css/lightbox.min.css"
+            <link type="text/css" href="${resURL}/plugin/performance-signature-dynatrace/css/lightbox.min.css"
                   rel="stylesheet"/>
             <style>
                 .nav::after, .row::after { clear: none; }
@@ -164,7 +164,7 @@
                                                 <td>
                                                     <j:if test="${file.size()!=0}">
                                                         <a href="./downloadFile?f=${file.get(0).name}" target="_blank">
-                                                            <img src="${resURL}/plugin/${it.urlName}/images/pdficon_small.png"/>
+                                                            <img src="${resURL}/plugin/performance-signature-dynatrace/images/pdficon_small.png"/>
                                                         </a>
                                                     </j:if>
                                                 </td>
@@ -200,8 +200,8 @@
                 </div>
             </div>
             <br style="clear:both;"/>
-            <script data-main="${resURL}/plugin/${it.urlName}/js/projectaction"
-                    src="${resURL}/plugin/${it.urlName}/js/require.min.js"/>
+            <script data-main="${resURL}/plugin/performance-signature-dynatrace/js/projectaction"
+                    src="${resURL}/plugin/performance-signature-dynatrace/js/require.min.js"/>
             <st:bind var="projectAction" value="${it}"/>
             <script type="text/javascript">
                 var rootURL = "${rootURL}";
