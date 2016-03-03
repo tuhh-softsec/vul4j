@@ -27,11 +27,11 @@ define(['./common'], function () {
                             if (json[index].id === 'unittest_overview') {
                                 $(".carousel-inner", carousel).append('<div class="item">' +
                                     '<img class="img-thumbnail" height="300" width="410"' +
-                                    'src="performance-signature-dynatrace/testRunGraph?width=410&amp;height=300"></div>\n');
+                                    'src="performance-signature/testRunGraph?width=410&amp;height=300"></div>\n');
                             } else {
                                 $(".carousel-inner", carousel).append('<div class="item">' +
                                     '<img class="img-thumbnail" height="300" width="410"' +
-                                    'src="performance-signature-dynatrace/summarizerGraph?width=410&amp;height=300&amp;id=' + json[index].id + '"></div>\n');
+                                    'src="performance-signature/summarizerGraph?width=410&amp;height=300&amp;id=' + json[index].id + '"></div>\n');
                             }
                         }
                     });

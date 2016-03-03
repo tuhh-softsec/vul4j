@@ -28,7 +28,7 @@ abstract class PerfSigBaseAction implements Action {
     }
 
     public String getIconFileName() {
-        return "/plugin/" + getUrlName() + "/images/icon.png";
+        return "/plugin/" + getUrlName() + "-dynatrace/images/icon.png";
     }
 
     protected abstract String getTitle();

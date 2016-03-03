@@ -45,7 +45,7 @@ public class CredProfilePair extends AbstractDescribableImpl<CredProfilePair> {
     private final String profile, credentialsId;
 
     @DataBoundConstructor
-    public CredProfilePair(String profile, String credentialsId) {
+    public CredProfilePair(final String profile, final String credentialsId) {
         this.profile = profile;
         this.credentialsId = credentialsId;
     }
