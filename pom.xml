@@ -25,7 +25,7 @@
 
     <groupId>de.tsystems.mms.apm</groupId>
     <artifactId>performance-signature-dynatrace</artifactId>
-    <version>2.0.1-SNAPSHOT</version>
+    <version>2.0.1</version>
     <packaging>hpi</packaging>
 
     <name>Performance Signature with Dynatrace</name>
@@ -34,7 +34,7 @@
         <connection>scm:git:git@github.com:jenkinsci/performance-signature-dynatrace-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:jenkinsci/performance-signature-dynatrace-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/performance-signature-dynatrace-plugin</url>
-        <tag>HEAD</tag>
+        <tag>performance-signature-dynatrace-2.0.1</tag>
     </scm>
 
     <developers>
