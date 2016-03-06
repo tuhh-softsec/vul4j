@@ -121,6 +121,7 @@ public class ConcurrentJarCreator {
         long startAt = System.currentTimeMillis();
         targetStream.close();
         zipCloseElapsed = System.currentTimeMillis() - startAt;
+        metaInfDir.close();
         manifest.close();
         directories.close();
         synchronousEntries.close();
