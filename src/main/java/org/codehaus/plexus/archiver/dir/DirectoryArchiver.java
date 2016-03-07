@@ -103,6 +103,7 @@ public class DirectoryArchiver
             {
                 directoryChmod.run();
             }
+            directoryChmods.clear();
         }
         catch ( final IOException ioe )
         {
