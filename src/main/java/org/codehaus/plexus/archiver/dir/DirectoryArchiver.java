@@ -28,6 +28,8 @@ import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A plexus archiver implementation that stores the files to archive in a directory.
@@ -35,6 +37,9 @@ import java.io.IOException;
 public class DirectoryArchiver
     extends AbstractArchiver
 {
+
+    private final List<Runnable> directoryChmods = new ArrayList<Runnable>();
+
     public void resetArchiver()
         throws IOException
     {
@@ -93,6 +98,11 @@ public class DirectoryArchiver
                     copyFile( f, fileName );
                 }
             }
+
+            for ( Runnable directoryChmod : directoryChmods )
+            {
+                directoryChmod.run();
+            }
         }
         catch ( final IOException ioe )
         {
@@ -141,6 +151,8 @@ public class DirectoryArchiver
                 }
             }
             ResourceUtils.copyFile( entry.getInputStream(), outFile );
+
+            setFileModes( entry, outFile, inLastModified );
         }
         else
         { // file is a directory
@@ -159,8 +171,21 @@ public class DirectoryArchiver
                 // Failure, unable to create specified directory for some unknown reason.
                 throw new ArchiverException( "Unable to create directory or parent directory of " + outFile );
             }
+
+            directoryChmods.add( new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    setFileModes( entry, outFile, inLastModified );
+                }
+            } );
         }
 
+    }
+
+    private void setFileModes( ArchiveEntry entry, File outFile, long inLastModified )
+    {
         if ( !isIgnorePermissions() )
         {
             ArchiveEntryUtils.chmod( outFile, entry.getMode(), getLogger(), isUseJvmChmod() );
