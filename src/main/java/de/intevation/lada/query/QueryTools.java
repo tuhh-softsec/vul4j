@@ -231,7 +231,8 @@ public class QueryTools
             }
             List<String> clean = new ArrayList<String>();
             for(String p : param) {
-                clean.add(p.replace(",", "|"));
+                p = p.trim();
+                clean.add(p.replace(" ", "|"));
             }
             query.setParameter(filter.getDataIndex(), clean);
         }
