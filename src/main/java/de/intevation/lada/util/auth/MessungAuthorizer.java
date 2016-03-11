@@ -36,6 +36,9 @@ public class MessungAuthorizer extends BaseAuthorizer {
             return !this.isMessungReadOnly(messung.getId()) &&
                 getAuthorization(userInfo, probe);
         }
+        if (method == RequestMethod.POST) {
+            return getAuthorization(userInfo, probe);
+        }
         LStatusProtokoll status = repository.getByIdPlain(
             LStatusProtokoll.class,
             messung.getStatus(),
