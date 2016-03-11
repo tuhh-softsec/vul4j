@@ -84,7 +84,7 @@ public class MessungAuthorizer extends BaseAuthorizer {
             messung.setReadonly(true);
             return messung;
         }
-        if (userInfo.getMessstellen().contains(probe.getMstId())) {
+        if (userInfo.belongsTo(probe.getMstId(), probe.getLaborMstId())) {
             messung.setOwner(true);
         }
         else {
@@ -128,7 +128,7 @@ public class MessungAuthorizer extends BaseAuthorizer {
             statusEdit = true;
         }
         else if (userInfo.getFunktionen().contains(1) &&
-            userInfo.getMessstellen().contains(probe.getMstId()) &&
+            userInfo.belongsTo(probe.getMstId(), probe.getLaborMstId()) &&
             (status.getStatusStufe() <= 1 || status.getStatusWert() == 4)
         ) {
             statusEdit = true;

@@ -98,7 +98,7 @@ public class ProbeIdAuthorizer extends BaseAuthorizer {
                 readOnly = true;
             }
             else {
-                if (userInfo.getMessstellen().contains(probe.getMstId())) {
+                if (userInfo.belongsTo(probe.getMstId(), probe.getLaborMstId())) {
                     owner = true;
                 }
                 else {

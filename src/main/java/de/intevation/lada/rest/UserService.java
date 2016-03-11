@@ -95,7 +95,7 @@ public class UserService{
         response.put("roles", request.getAttribute("lada.user.roles"));
         response.put("servertime", new Date().getTime());
         UserInfo userInfo = authorization.getInfo(request);
-        response.put("mst", userInfo.getMessstellen());
+        response.put("messstelleLabor", userInfo.getMessLaborId());
         response.put("netzbetreiber", userInfo.getNetzbetreiber());
         response.put("funktionen", userInfo.getFunktionen());
         return new Response(true, 200, response);

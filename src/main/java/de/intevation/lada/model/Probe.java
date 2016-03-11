@@ -50,6 +50,9 @@ public class Probe implements Serializable {
     @Column(name="mst_id")
     private String mstId;
 
+    @Column(name="labor_mst_id")
+    private String laborMstId;
+
     @Column(name="netzbetreiber_id")
     private String netzbetreiberId;
 
@@ -132,6 +135,20 @@ public class Probe implements Serializable {
 
     public void setMstId(String mstId) {
         this.mstId = mstId;
+    }
+
+    /**
+     * @return the laborMstId
+     */
+    public String getLaborMstId() {
+        return laborMstId;
+    }
+
+    /**
+     * @param laborMstId the laborMstId to set
+     */
+    public void setLaborMstId(String laborMstId) {
+        this.laborMstId = laborMstId;
     }
 
     public String getNetzbetreiberId() {

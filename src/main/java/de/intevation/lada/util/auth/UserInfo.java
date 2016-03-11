@@ -25,6 +25,39 @@ public class UserInfo {
     private List<Integer> funktionen;
     private List<Auth> auth;
 
+    public class MessLaborId {
+        private String messstelle;
+        private String labor;
+
+        /**
+         * @return the messstelle
+         */
+        public String getMessstelle() {
+            return messstelle;
+        }
+
+        /**
+         * @param messstelle the messstelle to set
+         */
+        public void setMessstelle(String messstelle) {
+            this.messstelle = messstelle;
+        }
+
+        /**
+         * @return the labor
+         */
+        public String getLabor() {
+            return labor;
+        }
+
+        /**
+         * @param labor the labor to set
+         */
+        public void setLabor(String labor) {
+            this.labor = labor;
+        }
+    }
+
     public UserInfo() {
         messstellen = new ArrayList<String>();
         netzbetreiber = new ArrayList<String>();
@@ -58,6 +91,31 @@ public class UserInfo {
         this.userId = userId;
     }
 
+    public List<MessLaborId> getMessLaborId() {
+        List<MessLaborId> ret = new ArrayList<MessLaborId>();
+        for (Auth a : auth) {
+            if (a.getMstId() != null) {
+                MessLaborId id = new MessLaborId();
+                id.setMessstelle(a.getMstId());
+                id.setLabor(a.getLaborMstId());
+                ret.add(id);
+            }
+        }
+        return ret;
+    }
+
+    public boolean belongsTo(String messstelle, String labor) {
+        for (Auth a : auth) {
+            if (a.getMstId().contains(messstelle) &&
+                a.getLaborMstId() != null &&
+                labor != null &&
+                a.getLaborMstId().contains(labor)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * @return the messstellen
      */
@@ -66,6 +124,19 @@ public class UserInfo {
         for (Auth a : auth) {
             if (a.getMstId() != null) {
                 ret.add(a.getMstId());
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * @return the labor messstellen
+     */
+    public List<String> getLaborMessstellen() {
+        List<String> ret = new ArrayList<String>();
+        for (Auth a : auth) {
+            if (a.getLaborMstId() != null) {
+                ret.add(a.getLaborMstId());
             }
         }
         return ret;
