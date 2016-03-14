@@ -154,6 +154,7 @@ public class ProbeFactory {
         probe.setDatenbasisId(messprogramm.getDatenbasisId());
         probe.setMediaDesk(messprogramm.getMediaDesk());
         probe.setMstId(messprogramm.getMstId());
+        probe.setLaborMstId(messprogramm.getLaborMstId());
         probe.setNetzbetreiberId(messprogramm.getNetzbetreiberId());
         probe.setProbenartId(messprogramm.getProbenartId());
         probe.setProbeNehmerId(messprogramm.getProbeNehmerId());

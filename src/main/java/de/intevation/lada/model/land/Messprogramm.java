@@ -58,6 +58,9 @@ public class Messprogramm implements Serializable {
     @Column(name="mst_id")
     private String mstId;
 
+    @Column(name="labor_mst_id")
+    private String laborMstId;
+
     private String name;
 
     @Column(name="netzbetreiber_id")
@@ -169,6 +172,14 @@ public class Messprogramm implements Serializable {
 
     public void setMstId(String mstId) {
         this.mstId = mstId;
+    }
+
+    public String getLaborMstId() {
+        return laborMstId;
+    }
+
+    public void setLaborMstId(String laborMstId) {
+        this.laborMstId = laborMstId;
     }
 
     public String getName() {
