@@ -7,7 +7,6 @@
  */
 package de.intevation.lada.factory;
 
-import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -21,6 +20,7 @@ import de.intevation.lada.model.land.LMessung;
 import de.intevation.lada.model.land.LMesswert;
 import de.intevation.lada.model.land.LOrtszuordnung;
 import de.intevation.lada.model.land.LProbe;
+import de.intevation.lada.model.land.LStatusProtokoll;
 import de.intevation.lada.model.land.Messprogramm;
 import de.intevation.lada.model.land.MessprogrammMmt;
 import de.intevation.lada.model.land.MessungTranslation;
@@ -198,6 +198,17 @@ public class ProbeFactory {
             MessungTranslation mTranslation = new MessungTranslation();
             mTranslation.setMessungsId(messung);
             repository.create(mTranslation, "land");
+
+            LStatusProtokoll status = new LStatusProtokoll();
+            status.setDatum(new Timestamp(new Date().getTime()));
+            status.setMessungsId(messung.getId());
+            status.setErzeuger(probe.getMstId());
+            status.setStatusStufe(1);
+            status.setStatusWert(0);
+            repository.create(status, "land");
+            messung.setStatus(status.getId());
+            repository.update(messung, "land");
+
             for (int mw : mmt.getMessgroessen()) {
                 LMesswert wert = new LMesswert();
                 wert.setMessgroesseId(mw);
