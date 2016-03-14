@@ -531,6 +531,7 @@ CREATE TABLE messprogramm (
     test boolean DEFAULT false NOT NULL,
     netzbetreiber_id character varying(2) NOT NULL,
     mst_id character varying(5) NOT NULL,
+    labor_mst_id character varying(5),
     datenbasis_id integer NOT NULL,
     ba_id character varying(1),
     gem_id character varying(8),
