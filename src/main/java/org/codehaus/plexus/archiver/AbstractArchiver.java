@@ -411,7 +411,7 @@ public abstract class AbstractArchiver
     {
         final String destFileName = collection.resources.getName( resource );
 
-        int fromResource = -1;
+        int fromResource = PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE;
         if ( resource instanceof ResourceAttributeSupplier )
         {
             final PlexusIoResourceAttributes attrs = ( (ResourceAttributeSupplier) resource ).getAttributes();

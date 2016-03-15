@@ -86,13 +86,14 @@ public class ArchiveEntry
         this.type = type;
         int permissions = mode;
 
-        if ( mode == -1 && this.attributes == null )
+        if ( mode == PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE && this.attributes == null )
         {
             permissions = resource.isFile() ? Archiver.DEFAULT_FILE_MODE
                 : resource.isSymbolicLink() ? Archiver.DEFAULT_SYMLILNK_MODE : Archiver.DEFAULT_DIR_MODE;
         }
 
-        this.mode = permissions == -1 ? permissions : ( permissions & UnixStat.PERM_MASK ) |
+        this.mode = permissions == PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ? permissions
+            : ( permissions & UnixStat.PERM_MASK ) |
             ( type == FILE ? UnixStat.FILE_FLAG : type == SYMLINK ? UnixStat.LINK_FLAG : UnixStat.DIR_FLAG );
 
         this.addSynchronously = ( collection != null && !collection.isConcurrentAccessSupported() );
