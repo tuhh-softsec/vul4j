@@ -24,7 +24,7 @@
     <j:if test="${testResult!=null}">
         <tr>
             <td>
-                <h3>Performance Data</h3>
+                <h3>Performance data</h3>
                 <div class="tw-bs">
                     <jm:testRunTable it="${it}" testRun="${testRun}" testResult="${testResult}"/>
                 </div>

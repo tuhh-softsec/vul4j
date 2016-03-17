@@ -170,7 +170,7 @@ public class DTServerConnection {
             chartDashlets = handler.getParsedObjects();
             incidentCharts = handler.getIncidents();
         } catch (Exception ex) {
-            throw new ContentRetrievalException(ExceptionUtils.getStackTrace(ex) + "Could not retrieve records from Dynatrace server: " + url.toString(), ex);
+            throw new ContentRetrievalException(ExceptionUtils.getStackTrace(ex) + "could not retrieve records from Dynatrace server: " + url.toString(), ex);
         }
 
         dashboardReport.setChartDashlets(chartDashlets);
@@ -286,7 +286,7 @@ public class DTServerConnection {
         XMLReader xr = XMLReaderFactory.createXMLReader();
         if (httpURLConnection.getResponseCode() >= 300) {
             if (httpURLConnection.getResponseCode() == 401) {
-                throw new RESTErrorException("Invalid username/password. ResponseCode " + httpURLConnection.getResponseCode());
+                throw new RESTErrorException("invalid username/password. ResponseCode " + httpURLConnection.getResponseCode());
             }
             RESTErrorXMLHandler handler = new RESTErrorXMLHandler();
             xr.setContentHandler(handler);
@@ -294,7 +294,7 @@ public class DTServerConnection {
             try {
                 xr.parse(new InputSource(httpURLConnection.getErrorStream()));
             } catch (RuntimeException e) {
-                throw new RESTErrorException("Unexpected response code HTTP " + httpURLConnection.getResponseCode());
+                throw new RESTErrorException("unexpected response code HTTP " + httpURLConnection.getResponseCode());
             }
             throw new RESTErrorException(handler.getReasonString());
         }
@@ -320,7 +320,7 @@ public class DTServerConnection {
             RESTResultXMLHandler handler = getResultXMLHandler(conn);
             return handler.getResultString();
         } catch (Exception ex) {
-            throw new CommandExecutionException("Error getting version of server: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error getting version of server: " + ex.getMessage(), ex);
         }
     }
 
@@ -334,7 +334,7 @@ public class DTServerConnection {
             RESTResultXMLHandler handler = getResultXMLHandler(conn);
             return handler.isResultTrue();
         } catch (Exception ex) {
-            throw new CommandExecutionException("Error reanalyzing session: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error reanalyzing session: " + ex.getMessage(), ex);
         }
     }
 
@@ -349,7 +349,7 @@ public class DTServerConnection {
             RESTResultXMLHandler handler = getResultXMLHandler(conn);
             return handler.isResultTrue();
         } catch (Exception ex) {
-            throw new CommandExecutionException("Error reanalyzing session: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error reanalyzing session: " + ex.getMessage(), ex);
         }
     }
 
@@ -366,7 +366,7 @@ public class DTServerConnection {
             RESTResultXMLHandler handler = getResultXMLHandler(conn);
             return handler.getResultString();
         } catch (Exception ex) {
-            throw new CommandExecutionException("Error start recording session: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error start recording session: " + ex.getMessage(), ex);
         }
     }
 
@@ -381,7 +381,7 @@ public class DTServerConnection {
             RESTResultXMLHandler handler = getResultXMLHandler(conn);
             return handler.getResultString();
         } catch (Exception ex) {
-            throw new CommandExecutionException("Error stop recording session: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error stop recording session: " + ex.getMessage(), ex);
         }
     }
 
@@ -396,7 +396,7 @@ public class DTServerConnection {
             RESTStringArrayXMLHandler handler = getStringArrayXMLHandler(conn);
             return handler.getObjects();
         } catch (Exception ex) {
-            throw new CommandExecutionException("Error listing sessions: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error listing sessions: " + ex.getMessage(), ex);
         }
     }
 
@@ -411,7 +411,7 @@ public class DTServerConnection {
             RESTStringArrayXMLHandler handler = getStringArrayXMLHandler(conn);
             return handler.getObjects();
         } catch (Exception ex) {
-            throw new CommandExecutionException("Error listing profiles: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error listing profiles: " + ex.getMessage(), ex);
         }
     }
 
@@ -426,7 +426,7 @@ public class DTServerConnection {
             ProfileXMLHandler handler = getProfileXMLHandler(conn);
             return handler.getConfigurationObjects();
         } catch (Exception ex) {
-            throw new CommandExecutionException("Error listing profiles: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error listing profiles: " + ex.getMessage(), ex);
         }
     }
 
@@ -441,7 +441,7 @@ public class DTServerConnection {
             ProfileXMLHandler handler = getProfileXMLHandler(conn);
             return handler.getConfigurationObjects();
         } catch (Exception ex) {
-            throw new CommandExecutionException("Error listing configurations of profile " + systemProfile + ": " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error listing configurations of profile " + systemProfile + ": " + ex.getMessage(), ex);
         }
     }
 
@@ -456,7 +456,7 @@ public class DTServerConnection {
             RESTResultXMLHandler handler = getResultXMLHandler(conn);
             return handler.isResultTrue();
         } catch (Exception ex) {
-            throw new CommandExecutionException("Error activating configuration: " + ex.getMessage());
+            throw new CommandExecutionException("error activating configuration: " + ex.getMessage());
         }
     }
 
@@ -471,7 +471,7 @@ public class DTServerConnection {
             AgentXMLHandler handler = getAgentXMLHandler(conn);
             return handler.getAgents();
         } catch (Exception ex) {
-            throw new CommandExecutionException("Error listing agents: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error listing agents: " + ex.getMessage(), ex);
         }
     }
 
@@ -496,7 +496,7 @@ public class DTServerConnection {
             RESTResultXMLHandler handler = getResultXMLHandler(conn);
             return handler.isResultTrue();
         } catch (Exception ex) {
-            throw new CommandExecutionException("Error doing hot sensor placement: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error doing hot sensor placement: " + ex.getMessage(), ex);
         }
     }
 
@@ -512,7 +512,7 @@ public class DTServerConnection {
             out.copyFrom(getInputStream(builder.buildURL(true)));
             return true;
         } catch (Exception ex) {
-            throw new CommandExecutionException("Error downloading PDF Report: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error downloading PDF Report: " + ex.getMessage(), ex);
         }
     }
 
@@ -525,7 +525,7 @@ public class DTServerConnection {
             out.copyFrom(getInputStream(builder.downloadSessionURL(sessionName)));
             return true;
         } catch (Exception ex) {
-            throw new CommandExecutionException("Error downloading session: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error downloading session: " + ex.getMessage(), ex);
         }
     }
 
@@ -541,7 +541,7 @@ public class DTServerConnection {
             RESTResultXMLHandler handler = getResultXMLHandler(conn);
             return handler.getResultString();
         } catch (Exception ex) {
-            throw new CommandExecutionException("Error with thread dump: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error with thread dump: " + ex.getMessage(), ex);
         }
     }
 
@@ -556,7 +556,7 @@ public class DTServerConnection {
             RESTDumpStatusXMLHandler handler = getDumpStatusXMLHandler(conn);
             return handler.getDumpStatus();
         } catch (Exception ex) {
-            throw new CommandExecutionException("Error with thread dump status: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error with thread dump status: " + ex.getMessage(), ex);
         }
     }
 
@@ -573,7 +573,7 @@ public class DTServerConnection {
             RESTResultXMLHandler handler = getResultXMLHandler(conn);
             return handler.getResultString();
         } catch (Exception ex) {
-            throw new CommandExecutionException("Error with memory dump: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error with memory dump: " + ex.getMessage(), ex);
         }
     }
 
@@ -588,7 +588,7 @@ public class DTServerConnection {
             RESTDumpStatusXMLHandler handler = getDumpStatusXMLHandler(conn);
             return handler.getDumpStatus();
         } catch (Exception ex) {
-            throw new CommandExecutionException("Error with memory dump status: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error with memory dump status: " + ex.getMessage(), ex);
         }
     }
 
@@ -629,7 +629,7 @@ public class DTServerConnection {
 
             return handler.getTestMetaDataUUID();
         } catch (Exception ex) {
-            throw new CommandExecutionException(ex.toString() + " Error setting testdata in startTest: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error setting testdata in startTest: " + ex.getMessage(), ex);
         }
     }
 }

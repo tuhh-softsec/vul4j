@@ -49,7 +49,6 @@ public class Measurement {
         return this.avg;
     }
 
-
     public BigDecimal getStrAvg() {
         return PerfSigUtils.round(this.avg, 2);
     }

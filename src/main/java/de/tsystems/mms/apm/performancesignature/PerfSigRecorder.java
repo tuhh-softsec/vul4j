@@ -89,7 +89,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
         for (BaseConfiguration profile : connection.getSystemProfiles()) {
             SystemProfile systemProfile = (SystemProfile) profile;
             if (pair.getProfile().equals(systemProfile.getId()) && systemProfile.isRecording()) {
-                logger.println("Sesssion is still recording, trying to stop recording");
+                logger.println("sesssion is still recording, trying to stop recording");
                 PerfSigStopRecording stopRecording = new PerfSigStopRecording(dynatraceProfile);
                 stopRecording.perform(run, workspace, launcher, listener);
                 break;
@@ -111,7 +111,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
             comparisonBuildNumber = previousRun.getNumber();
             logger.println(Messages.PerfSigRecorder_LastSuccessfulBuild() + " #" + comparisonBuildNumber);
         } else {
-            logger.println("No previous build found! No comparison possible!");
+            logger.println("no previous build found, no comparison possible!");
         }
 
         for (ConfigurationTestCase configurationTestCase : getConfigurationTestCases()) {
@@ -124,7 +124,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
             if (buildEnvVars != null) {
                 sessionName = buildEnvVars.getSessionName();
             } else {
-                throw new RESTErrorException("No sessionname found, aborting ...");
+                throw new RESTErrorException("no sessionname found, aborting ...");
             }
 
             if (comparisonBuildNumber != 0) {
@@ -182,16 +182,16 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
                 List<IncidentChart> incidents = dashboardReport.getIncidents();
                 int numWarning = 0, numSevere = 0;
                 if (incidents != null && incidents.size() > 0) {
-                    logger.println("Following incidents occured:");
+                    logger.println("following incidents occured:");
                     for (IncidentChart incident : incidents) {
                         for (IncidentViolation violation : incident.getViolations()) {
                             switch (violation.getSeverity()) {
                                 case SEVERE:
-                                    logger.println("Severe Incident:     " + incident.getRule() + " " + violation.getRule() + " " + violation.getDescription());
+                                    logger.println("severe incident:     " + incident.getRule() + " " + violation.getRule() + " " + violation.getDescription());
                                     numSevere++;
                                     break;
                                 case WARNING:
-                                    logger.println("Warning Incident:    " + incident.getRule() + " " + violation.getRule() + " " + violation.getDescription());
+                                    logger.println("warning incident:    " + incident.getRule() + " " + violation.getRule() + " " + violation.getDescription());
                                     numWarning++;
                                     break;
                                 default:
@@ -203,25 +203,25 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
                     switch (nonFunctionalFailure) {
                         case 1:
                             if (numSevere > 0) {
-                                logger.println("builds status was set to 'failed' due to severe incidents");
+                                logger.println("build's status was set to 'failed' due to severe incidents");
                                 run.setResult(Result.FAILURE);
                             }
                             break;
                         case 2:
                             if (numSevere > 0 || numWarning > 0) {
-                                logger.println("builds status was set to 'failed' due to warning/severe incidents");
+                                logger.println("build's status was set to 'failed' due to warning/severe incidents");
                                 run.setResult(Result.FAILURE);
                             }
                             break;
                         case 3:
                             if (numSevere > 0) {
-                                logger.println("builds status was set to 'unstable' due to severe incidents");
+                                logger.println("build's status was set to 'unstable' due to severe incidents");
                                 run.setResult(Result.UNSTABLE);
                             }
                             break;
                         case 4:
                             if (numSevere > 0 || numWarning > 0) {
-                                logger.println("builds status was set to 'unstable' due to warning/severe incidents");
+                                logger.println("build's status was set to 'unstable' due to warning/severe incidents");
                                 run.setResult(Result.UNSTABLE);
                             }
                             break;

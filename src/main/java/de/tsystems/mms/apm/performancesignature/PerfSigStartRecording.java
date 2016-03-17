@@ -80,7 +80,7 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
         for (BaseConfiguration profile : connection.getSystemProfiles()) {
             SystemProfile systemProfile = (SystemProfile) profile;
             if (pair.getProfile().equals(systemProfile.getId()) && systemProfile.isRecording()) {
-                logger.println("another Sesssion is still recording, trying to stop recording");
+                logger.println("another sesssion is still recording, trying to stop recording");
                 PerfSigStopRecording stopRecording = new PerfSigStopRecording(dynatraceProfile);
                 stopRecording.perform(run, workspace, launcher, listener);
                 break;
@@ -95,14 +95,14 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
                     " (available as environment variables " + PerfSigEnvContributor.TESTRUN_ID_KEY +
                     " and " + PerfSigEnvContributor.SESSIONCOUNT + ")");
         } else {
-            logger.println("Warning: Could not register TestRun");
+            logger.println("warning: could not register TestRun");
         }
 
         final String testCase = run.getEnvironment(listener).expand(this.testCase);
         String sessionName = pair.getProfile() + "_" + run.getParent().getName() + "_Build-" + run.getNumber() + "_" + testCase;
         sessionName = sessionName.replace("/", "_");
 
-        final String result = connection.startRecording(sessionName, "This Session is triggered by Jenkins", getRecordingOption(), lockSession, false);
+        final String result = connection.startRecording(sessionName, "This session is triggered by Jenkins", getRecordingOption(), lockSession, false);
         if (result != null && result.equals(sessionName)) {
             logger.println(String.format(Messages.PerfSigStartRecording_StartedSessionRecording(), pair.getProfile(), result));
             run.addAction(new PerfSigEnvInvisAction(sessionName, testCase, testRunId));

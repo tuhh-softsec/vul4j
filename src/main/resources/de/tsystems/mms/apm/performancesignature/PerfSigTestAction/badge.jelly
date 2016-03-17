@@ -33,12 +33,12 @@
             <j:new var="h" className="hudson.Functions"/>
             <j:set var="id" value="collapse${h.generateId()}"/>
             <a data-toggle="collapse" href="#${id}" aria-expanded="false" aria-controls="${id}">
-                <span title="Dynatrace Performance Status: ${testResult.status}" class="glyphicon ${testResult.statusIcon}"
+                <span title="Dynatrace performance status: ${testResult.status}" class="glyphicon ${testResult.statusIcon}"
                       style="font-size: 15px; color: ${testResult.statusColor};" aria-hidden="true"/>
             </a>
             <div class="collapse" id="${id}">
                 <div class="well" style="padding-top:5px;">
-                    <h4>Performance Data</h4>
+                    <h4>Performance data</h4>
                     <jm:testRunTable it="${it}" testRun="${testRun}" testResult="${testResult}"/>
                 </div>
             </div>

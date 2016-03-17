@@ -58,7 +58,7 @@
                             <div role="tabpanel fade" class="tab-pane" id="${lastDashboardReport.name}">
                                 <div class="row-fluid">
                                     <div class="col-md-4" style="padding-left: 0;">
-                                        <h2>${%Testcase:} ${lastDashboardReport.name}</h2>
+                                        <h2>${%test case:} ${lastDashboardReport.name}</h2>
                                     </div>
                                     <button style="margin-top: 20px; margin-bottom: 10px;" type="button"
                                             class="btn btn-primary pull-right" id="editbutton">
@@ -80,10 +80,10 @@
                                 <div class="row-fluid" id="editform" style="display:none;">
                                     <form role="form">
                                         <div class="form-group col-md-2" id="measureGroupContainer">
-                                            <label for="measureGroup">Select Measuregroup:</label>
+                                            <label for="measureGroup">select measure group:</label>
                                             <select class="form-control" id="measureGroup">
                                                 <j:if test="${isUnitTest}">
-                                                    <option>Unit Test Overview</option>
+                                                    <option>Unit Test overview</option>
                                                 </j:if>
                                                 <j:forEach var="dr" items="${it.lastDashboardReports}">
                                                     <j:if test="${dr.name.equals(lastDashboardReport.name)}">
@@ -95,7 +95,7 @@
                                             </select>
                                         </div>
                                         <div class="form-group col-md-3">
-                                            <label for="measure">Select Measure:</label>
+                                            <label for="measure">select measure:</label>
                                             <select class="form-control" id="measure"/>
                                         </div>
                                         <div class="form-group col-md-3">
@@ -124,9 +124,9 @@
                                 <table class="table table-striped table-bordered text-center table-hover dt-responsive">
                                     <thead>
                                         <tr>
-                                            <th class="text-center">${%Build #}</th>
+                                            <th class="text-center">${%build #}</th>
                                             <th class="text-center">${%PDF}</th>
-                                            <th class="text-center">${%Date}</th>
+                                            <th class="text-center">${%date}</th>
                                             <j:if test="${isUnitTest}">
                                                 <th class="text-center">${%duration}</th>
                                                 <th class="text-center">${%failed #}</th>

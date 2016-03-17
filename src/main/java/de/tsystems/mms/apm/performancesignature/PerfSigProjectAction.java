@@ -175,7 +175,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             title = PerfSigUtils.generateTitle(measure, chartDashlet);
 
         final JFreeChart chart = ChartFactory.createBarChart(title, // title
-                "Build", // category axis label
+                "build", // category axis label
                 unit, // value axis label
                 dataset, // data
                 PlotOrientation.VERTICAL, // orientation
@@ -259,13 +259,13 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     }
 
     private JFreeChart createTestRunChart(final CategoryDataset dataset, final String customName) {
-        String title = "Unit Test Overview";
+        String title = "Unit test overview";
         if (StringUtils.isNotBlank(customName)) {
             title = customName;
         }
 
         final JFreeChart chart = ChartFactory.createBarChart(title, // title
-                "Build", // category axis label
+                "build", // category axis label
                 "num", // value axis label
                 dataset, // data
                 PlotOrientation.VERTICAL, // orientation

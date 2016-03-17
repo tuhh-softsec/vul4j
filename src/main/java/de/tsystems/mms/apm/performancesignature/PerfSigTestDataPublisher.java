@@ -102,7 +102,7 @@ public class PerfSigTestDataPublisher extends TestDataPublisher {
 
         @Override
         public String getDisplayName() {
-            return "Add Dynatrace Performance Data to each test result";
+            return "add Dynatrace performance data to each test result";
         }
     }
 

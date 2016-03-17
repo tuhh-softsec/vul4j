@@ -21,7 +21,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.util.List;
 
-public class UnitTestCase extends GenericTestCase {
+public class UnitTestCase extends ConfigurationTestCase {
 
     @DataBoundConstructor
     public UnitTestCase(final String name, final List<Dashboard> singleDashboards, final List<Dashboard> comparisonDashboards, final String xmlDashboard) {
@@ -32,7 +32,7 @@ public class UnitTestCase extends GenericTestCase {
     public static final class DescriptorImpl extends ConfigurationTestCaseDescriptor {
         @Override
         public String getDisplayName() {
-            return "UnitTest TestCase";
+            return "UnitTest test case";
         }
     }
 

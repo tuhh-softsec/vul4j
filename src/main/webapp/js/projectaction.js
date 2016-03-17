@@ -33,7 +33,7 @@ define(['./common'], function () {
 
                 var gridster = [];
                 $("#measureGroup", this).change(function () {
-                    if ($(this).val() === 'Unit Test Overview') {
+                    if ($(this).val() === 'Unit test overview') {
                         $("#measure", page).parent().hide();
                     } else {
                         projectAction.getAvailableMeasures($(page).attr('id'), $(this).val(), function (data) {

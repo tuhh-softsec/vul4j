@@ -16,11 +16,11 @@
 
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
-    <f:entry title="${%Testcase Name}" field="name" description="${%use the same test case name, as in the start recording step}">
+    <f:entry title="${%test case name}" field="name" description="${%use the same test case name, as in the start recording step}">
         <f:select/>
     </f:entry>
-    <f:entry title="${%Single Report Dashboards}" field="singleDashboards">
-        <f:repeatable field="singleDashboards" add="${%add Dashboard}" header="${%Single Report Dashboard}" minimum="1">
+    <f:entry title="${%Single Report dashboards}" field="singleDashboards">
+        <f:repeatable field="singleDashboards" add="${%add dashboard}" header="${%Single Report dashboard}" minimum="1">
             <br/>
             <table width="100%">
                 <f:entry field="dashboard">
@@ -28,14 +28,14 @@
                 </f:entry>
                 <f:entry>
                     <div align="right">
-                        <f:repeatableDeleteButton value="${%remove Dashboard}"/>
+                        <f:repeatableDeleteButton value="${%remove dashboard}"/>
                     </div>
                 </f:entry>
             </table>
         </f:repeatable>
     </f:entry>
-    <f:entry title="${%Comparison Report Dashboards}" field="comparisonDashboards">
-        <f:repeatable field="comparisonDashboards" add="${%add Dashboard}" header="${%Comparison Report Dashboard}" minimum="1">
+    <f:entry title="${%Comparison Report dashboards}" field="comparisonDashboards">
+        <f:repeatable field="comparisonDashboards" add="${%add dashboard}" header="${%Comparison Report dashboard}" minimum="1">
             <br/>
             <table width="100%">
                 <f:entry field="dashboard">
@@ -43,14 +43,14 @@
                 </f:entry>
                 <f:entry>
                     <div align="right">
-                        <f:repeatableDeleteButton value="${%remove Dashboard}"/>
+                        <f:repeatableDeleteButton value="${%remove dashboard}"/>
                     </div>
                 </f:entry>
             </table>
         </f:repeatable>
     </f:entry>
     <br/>
-    <f:entry field="xmlDashboard" title="${%XML Report Dashboard}">
+    <f:entry field="xmlDashboard" title="${%XML Report dashboard}">
         <f:select/>
     </f:entry>
     <f:entry>

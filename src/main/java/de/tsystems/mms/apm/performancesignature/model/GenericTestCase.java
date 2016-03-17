@@ -32,7 +32,7 @@ public class GenericTestCase extends ConfigurationTestCase {
     public static final class DescriptorImpl extends ConfigurationTestCaseDescriptor {
         @Override
         public String getDisplayName() {
-            return "generic TestCase";
+            return "generic test case";
         }
     }
 }

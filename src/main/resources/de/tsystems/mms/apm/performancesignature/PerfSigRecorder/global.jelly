@@ -74,10 +74,10 @@
                                 <f:entry title="${%Dynatrace REST credentials}" field="credentialsId">
                                     <c:select/>
                                 </f:entry>
-                                <f:entry title="${%Dynatrace System Profile}" field="profile" description="${%corresponding Dynatrace Profile}">
+                                <f:entry title="${%Dynatrace system profile}" field="profile" description="${%corresponding Dynatrace Profile}">
                                     <f:select/>
                                 </f:entry>
-                                <f:validateButton title="${%Test Connection}" progress="${%Testing...}"
+                                <f:validateButton title="${%test connection}" progress="${%Testing...}"
                                                   method="testDynaTraceConnection"
                                                   with="protocol,host,port,credentialsId,verifyCertificate,proxy,proxySource,proxyServer,proxyPort,proxyUser,proxyPassword"/>
                                 <f:entry title="">

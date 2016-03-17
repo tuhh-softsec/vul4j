@@ -17,7 +17,7 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout">
     <l:layout xmlns:jm="/de/tsystems/mms/apm/performancesignature/tags"
-              title="Performance Signature Report Details for Build ${it.build.number}">
+              title="Performance Signature report details for build ${it.build.number}">
         <l:header>
             <link type="text/css" href="${resURL}/plugin/performance-signature-dynatrace/css/bootstrap.min.css"
                   rel="stylesheet"/>
@@ -31,7 +31,7 @@
             <div class="tw-bs">
                 <div class="row">
                     <div class="col-md-12">
-                        <h1>${%Performance Signature for Build} ${it.build.number}</h1>
+                        <h1>${%Performance Signature for build} ${it.build.number}</h1>
                         <ul class="nav nav-tabs" role="tablist" id="tabList">
                             <j:forEach var="dashboardReport" items="${it.currentDashboardReports}">
                                 <li role="presentation">
@@ -48,8 +48,8 @@
                         <j:forEach var="dashboardReport" items="${it.currentDashboardReports}">
                             <j:set var="previousTestCase" value="${it.getPreviousDashboardReport(dashboardReport.name)}"/>
                             <div class="tab-pane fade" id="${dashboardReport.name}">
-                                <h3>${%Testcase:} ${dashboardReport.name}</h3>
-                                ${%Timestamp:} ${it.build.time}
+                                <h3>${%test case:} ${dashboardReport.name}</h3>
+                                ${%timestamp:} ${it.build.time}
                                 <br/>
                                 <br/>
                                 <div class="row">
@@ -77,7 +77,7 @@
                                     <div class="col-md-5">
                                         <div class="panel panel-success">
                                             <div class="panel-heading">
-                                                <h4 class="panel-title">${%Dynatrace Sessions}</h4>
+                                                <h4 class="panel-title">${%Dynatrace sessions}</h4>
                                             </div>
                                             <div class="panel-body">
                                                 <j:forEach var="file"
@@ -89,7 +89,7 @@
                                                     <br/>
                                                 </j:forEach>
                                                 <j:if test="${it.PerfSigUtils.getDownloadFiles('.*' + dashboardReport.name + '.dts',it.build).isEmpty()}">
-                                                    ${%no Dynatrace Sessions available!}
+                                                    ${%no Dynatrace sessions available!}
                                                 </j:if>
                                             </div>
                                         </div>
