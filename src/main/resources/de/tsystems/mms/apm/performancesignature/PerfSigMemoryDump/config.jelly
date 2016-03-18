@@ -32,23 +32,23 @@ extended specifies an Extended Total Memory Dump,
 selective specifies a Selective Memory Dump}">
             <f:select default="{descriptor.defaultType}"/>
         </f:entry>
-        <f:entry title="${%lock memory dump}" field="lockSession"
+        <f:entry title="${%Lock memory dump}" field="lockSession"
                  description="${%prevent the deletion of the memory dump}">
             <f:checkbox default="${descriptor.defaultLockSession}"/>
         </f:entry>
-        <f:entry title="${%capture strings}" field="captureStrings"
+        <f:entry title="${%Capture strings}" field="captureStrings"
                  description="${%record string values in the memory dump}">
             <f:checkbox default="${descriptor.defaultCaptureStrings}"/>
         </f:entry>
-        <f:entry title="${%capture primitives}" field="capturePrimitives"
+        <f:entry title="${%Capture primitives}" field="capturePrimitives"
                  description="${%record values of primitive variables, e.g. integer, short, byte, ...}">
             <f:checkbox default="${descriptor.defaultCapturePrimitives}"/>
         </f:entry>
-        <f:entry title="${%auto post process}" field="autoPostProcess"
+        <f:entry title="${%Auto post process}" field="autoPostProcess"
                  description="${%post-process the memory immediately to make it available for immediate analysis}">
             <f:checkbox default="${descriptor.defaultAutoPostProcess}"/>
         </f:entry>
-        <f:entry title="${%perform GC}" field="dogc"
+        <f:entry title="${%Perform GC}" field="dogc"
                  description="${%perform a garbage collection before triggering the memory dump}">
             <f:checkbox default="${descriptor.defaultDogc}"/>
         </f:entry>

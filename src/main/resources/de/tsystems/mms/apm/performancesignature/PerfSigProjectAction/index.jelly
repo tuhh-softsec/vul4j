@@ -58,7 +58,7 @@
                             <div role="tabpanel fade" class="tab-pane" id="${lastDashboardReport.name}">
                                 <div class="row-fluid">
                                     <div class="col-md-4" style="padding-left: 0;">
-                                        <h2>${%test case:} ${lastDashboardReport.name}</h2>
+                                        <h2>${%Test case:} ${lastDashboardReport.name}</h2>
                                     </div>
                                     <button style="margin-top: 20px; margin-bottom: 10px;" type="button"
                                             class="btn btn-primary pull-right" id="editbutton">
@@ -83,7 +83,7 @@
                                             <label for="measureGroup">select measure group:</label>
                                             <select class="form-control" id="measureGroup">
                                                 <j:if test="${isUnitTest}">
-                                                    <option>Unit Test overview</option>
+                                                    <option>UnitTest overview</option>
                                                 </j:if>
                                                 <j:forEach var="dr" items="${it.lastDashboardReports}">
                                                     <j:if test="${dr.name.equals(lastDashboardReport.name)}">

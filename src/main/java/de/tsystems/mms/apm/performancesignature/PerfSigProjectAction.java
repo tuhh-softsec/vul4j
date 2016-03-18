@@ -259,7 +259,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     }
 
     private JFreeChart createTestRunChart(final CategoryDataset dataset, final String customName) {
-        String title = "Unit test overview";
+        String title = "UnitTest overview";
         if (StringUtils.isNotBlank(customName)) {
             title = customName;
         }
@@ -314,10 +314,10 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             PerfSigBuildAction a = b.getAction(PerfSigBuildAction.class);
             if (a != null && (!b.isBuilding())) return a.getDashboardReports();
             if (b == tb)
-                return null;
+                return new ArrayList<DashboardReport>();
             b = b.getPreviousBuild();
         }
-        return null;
+        return new ArrayList<DashboardReport>();
     }
 
     public TestRun getTestRun(final Run<?, ?> run) {

@@ -20,16 +20,16 @@
         <f:select/>
     </f:entry>
 
-    <f:entry title="${%test case}" field="testCase"
+    <f:entry title="${%Test case}" field="testCase"
              description="${%Dynatrace session name suffix e.g.: loadtest, soap-ui}">
         <f:textbox/>
     </f:entry>
     <f:advanced>
-        <f:entry title="${%recording option}" field="recordingOption" description="${%
+        <f:entry title="${%Recording option}" field="recordingOption" description="${%
 all – All PurePaths including time series || violations – Only PurePaths marked as violated, including time series || timeseries – Time series only}">
             <f:select default="{descriptor.defaultRecordingOption}"/>
         </f:entry>
-        <f:entry title="${%lock session}" field="lockSession" description="${%prevent the deletion of the session on the Dynatrace server}">
+        <f:entry title="${%Lock session}" field="lockSession" description="${%prevent the deletion of the session on the Dynatrace server}">
             <f:checkbox default="${descriptor.defaultLockSession}"/>
         </f:entry>
     </f:advanced>

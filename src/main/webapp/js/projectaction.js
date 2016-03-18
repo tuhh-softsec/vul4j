@@ -33,7 +33,7 @@ define(['./common'], function () {
 
                 var gridster = [];
                 $("#measureGroup", this).change(function () {
-                    if ($(this).val() === 'Unit test overview') {
+                    if ($(this).val() === 'UnitTest overview') {
                         $("#measure", page).parent().hide();
                     } else {
                         projectAction.getAvailableMeasures($(page).attr('id'), $(this).val(), function (data) {
@@ -63,7 +63,7 @@ define(['./common'], function () {
                     location.reload(true);
                 });
                 $("#addbutton", this).click(function () {
-                    if ($("#measureGroup", page).val() === 'Unit Test Overview') {
+                    if ($("#measureGroup", page).val() === 'UnitTest overview') {
                         gridster[pageIndex].add_widget('<li><img class="img-thumbnail" height="300" width="410" ' +
                             'src="./testRunGraph?width=410&amp;height=300&amp;id=unittest_overview&amp;customName=' + encode($("#customName", page).val()) +
                             '&amp;customBuildCount=' + $("#customBuildCount", page).val() + '">' +

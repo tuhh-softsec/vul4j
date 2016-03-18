@@ -26,7 +26,7 @@
         <f:select/>
     </f:entry>
     <f:advanced>
-        <f:entry title="${%lock thread dump}" field="lockSession"
+        <f:entry title="${%Lock thread dump}" field="lockSession"
                  description="${%prevent the deletion of the thread dump}">
             <f:checkbox default="${descriptor.defaultLockSession}"/>
         </f:entry>

@@ -19,7 +19,7 @@
     <f:entry title="${%Dynatrace profile}" field="dynatraceProfile" description="${%description(rootURL)}">
         <f:select/>
     </f:entry>
-    <f:entry title="${%configuration}" field="configuration" description="${%Dynatrace profile configuration}">
+    <f:entry title="${%Configuration}" field="configuration" description="${%Dynatrace profile configuration}">
         <f:select/>
     </f:entry>
 </j:jelly>

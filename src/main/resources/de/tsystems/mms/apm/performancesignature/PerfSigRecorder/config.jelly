@@ -19,7 +19,7 @@
     <f:entry title="${%Dynatrace profile}" field="dynatraceProfile" description="${%description(rootURL)}">
         <f:select/>
     </f:entry>
-    <f:entry title="${%test case dashboard mapping}">
+    <f:entry title="${%Test case dashboard mapping}">
         <f:hetero-list name="configurationTestCases"
                        items="${instance.configurationTestCases}"
                        descriptors="${descriptor.testCaseTypes}"
@@ -29,11 +29,11 @@
     </f:entry>
 
     <f:advanced>
-        <f:entry title="${%export sessions}" field="exportSessions"
+        <f:entry title="${%Export sessions}" field="exportSessions"
                  description="${%Should Dynatrace sessions be exported to the workspace directory?}">
             <f:checkbox default="${descriptor.defaultExportSessions}"/>
         </f:entry>
-        <f:entry title="${%non-functional failure behaviour}" field="nonFunctionalFailure"
+        <f:entry title="${%Non-functional failure behaviour}" field="nonFunctionalFailure"
                  description="${%Should the plugin modify the build result in case of any Dynatrace incidents?}">
             <f:radio name="nonFunctionalFailure" value="0" checked="${instance.nonFunctionalFailure == 0 || instance.nonFunctionalFailure == null}"
                      title="do nothing"/>

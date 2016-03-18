@@ -48,8 +48,8 @@
                         <j:forEach var="dashboardReport" items="${it.currentDashboardReports}">
                             <j:set var="previousTestCase" value="${it.getPreviousDashboardReport(dashboardReport.name)}"/>
                             <div class="tab-pane fade" id="${dashboardReport.name}">
-                                <h3>${%test case:} ${dashboardReport.name}</h3>
-                                ${%timestamp:} ${it.build.time}
+                                <h3>${%Test case:} ${dashboardReport.name}</h3>
+                                ${%Timestamp:} ${it.build.time}
                                 <br/>
                                 <br/>
                                 <div class="row">
@@ -68,7 +68,7 @@
                                                     <br/>
                                                 </j:forEach>
                                                 <j:if test="${it.PerfSigUtils.getDownloadFiles('Single.*' + dashboardReport.name + '_.*pdf',it.build).isEmpty()}">
-                                                    ${%no Single Report available!}
+                                                    ${%no Single report available!}
                                                 </j:if>
                                             </div>
                                         </div>

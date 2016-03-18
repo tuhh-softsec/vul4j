@@ -20,7 +20,7 @@
         <f:select/>
     </f:entry>
     <f:advanced>
-        <f:entry title="${%reanalyze Session}" field="reanalyzeSession"
+        <f:entry title="${%Reanalyze Session}" field="reanalyzeSession"
                  description="${%reanalyze previous recorded session}">
             <f:checkbox default="${descriptor.defaultReanalyzeSession}"/>
         </f:entry>
