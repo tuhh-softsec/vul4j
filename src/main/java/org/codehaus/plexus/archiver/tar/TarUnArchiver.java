@@ -20,6 +20,7 @@ package org.codehaus.plexus.archiver.tar;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
+import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
 import org.codehaus.plexus.archiver.AbstractUnArchiver;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.util.Streams;
@@ -63,6 +64,7 @@ public class TarUnArchiver
      * <li>gzip - Gzip compression</li>
      * <li>bzip2 - Bzip2 compression</li>
      * <li>snappy - Snappy compression</li>
+     * <li>xz - Xz compression</li>
      * </ul>
      *
      * @param method compression method
@@ -149,6 +151,10 @@ public class TarUnArchiver
         else if ( compression == UntarCompressionMethod.SNAPPY )
         {
             return new SnappyInputStream( istream, true );
+        } 
+        else if (compression == UntarCompressionMethod.XZ) 
+        {
+            return new XZCompressorInputStream(istream);
         }
         return istream;
     }
@@ -161,7 +167,8 @@ public class TarUnArchiver
         NONE( "none" ),
         GZIP( "gzip" ),
         BZIP2( "bzip2" ),
-        SNAPPY( "snappy" );
+        SNAPPY( "snappy" ),
+        XZ("xz");
 
         final String value;
 
