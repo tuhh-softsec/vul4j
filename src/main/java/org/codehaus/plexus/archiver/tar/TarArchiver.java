@@ -20,6 +20,7 @@ package org.codehaus.plexus.archiver.tar;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
+import org.apache.commons.compress.compressors.xz.XZCompressorOutputStream;
 import org.codehaus.plexus.archiver.AbstractArchiver;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
@@ -465,7 +466,8 @@ public class TarArchiver
         none,
         gzip,
         bzip2,
-        snappy
+        snappy,
+        xz
 
     }
 
@@ -484,6 +486,11 @@ public class TarArchiver
         {
             return new SnappyOutputStream( bufferedOutputStream( ostream ) );
         }
+        else if (TarCompressionMethod.xz.equals( tarCompressionMethod ) ) 
+        {
+            return new XZCompressorOutputStream( bufferedOutputStream( ostream ) );
+        }
+
         return ostream;
     }
 
