@@ -361,24 +361,23 @@ CREATE SEQUENCE probe_id_seq
 --
 
 CREATE TABLE probe (
-    id integer DEFAULT nextval('probe_id_seq'::regclass) NOT NULL,
+    id integer PRIMARY KEY DEFAULT nextval('probe_id_seq'::regclass),
     test boolean DEFAULT false NOT NULL,
-    netzbetreiber_id character varying(2),
-    mst_id character varying(5),
-    labor_mst_id character varying(5),
+    netzbetreiber_id character varying(2) REFERENCES stammdaten.netz_betreiber,
+    mst_id character varying(5) REFERENCES stammdaten.mess_stelle,
+    labor_mst_id character varying(5) REFERENCES stammdaten.mess_stelle,
     hauptproben_nr character varying(20),
-    datenbasis_id smallint,
+    datenbasis_id smallint REFERENCES stammdaten.datenbasis,
     ba_id character varying(1),
-    probenart_id smallint NOT NULL,
+    probenart_id smallint NOT NULL REFERENCES stammdaten.probenart,
     media_desk character varying(100),
     media character varying(100),
-    umw_id character varying(3),
+    umw_id character varying(3) REFERENCES stammdaten.umwelt,
     probeentnahme_beginn timestamp with time zone,
     probeentnahme_ende timestamp with time zone,
     mittelungsdauer bigint,
     letzte_aenderung timestamp without time zone DEFAULT now()
 );
-
 
 --
 -- Name: COLUMN probe.id; Type: COMMENT; Schema: bund; Owner: -
@@ -686,6 +685,33 @@ CREATE TABLE probe (
 )
 INHERITS (bund.probe);
 
+ALTER TABLE ONLY probe
+    ADD CONSTRAINT probe_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY probe
+    ADD CONSTRAINT probe_datenbasis_id_fkey
+    FOREIGN KEY (datenbasis_id) REFERENCES stammdaten.datenbasis(id);
+
+ALTER TABLE ONLY probe
+    ADD CONSTRAINT probe_mst_id_fkey
+    FOREIGN KEY (mst_id) REFERENCES stammdaten.mess_stelle(id);
+
+ALTER TABLE ONLY probe
+    ADD CONSTRAINT probe_labor_mst_id_fkey
+    FOREIGN KEY (labor_mst_id) REFERENCES stammdaten.mess_stelle(id);
+
+ALTER TABLE ONLY probe
+    ADD CONSTRAINT probe_netzbetreiber_id_fkey
+    FOREIGN KEY (netzbetreiber_id) REFERENCES stammdaten.netz_betreiber(id);
+
+ALTER TABLE ONLY probe
+    ADD CONSTRAINT probe_probenart_id_fkey
+    FOREIGN KEY (probenart_id) REFERENCES stammdaten.probenart(id);
+
+ALTER TABLE ONLY probe
+    ADD CONSTRAINT probe_umw_id_fkey
+    FOREIGN KEY (umw_id) REFERENCES stammdaten.umwelt(id);
+
 
 --
 -- Name: probe_translation; Type: TABLE; Schema: land; Owner: -; Tablespace:
@@ -898,27 +924,6 @@ ALTER TABLE ONLY ortszuordnung ALTER COLUMN letzte_aenderung SET DEFAULT now();
 -- Name: id; Type: DEFAULT; Schema: land; Owner: -
 --
 
-ALTER TABLE ONLY probe ALTER COLUMN id SET DEFAULT nextval('bund.probe_id_seq'::regclass);
-
-
---
--- Name: test; Type: DEFAULT; Schema: land; Owner: -
---
-
-ALTER TABLE ONLY probe ALTER COLUMN test SET DEFAULT false;
-
-
---
--- Name: letzte_aenderung; Type: DEFAULT; Schema: land; Owner: -
---
-
-ALTER TABLE ONLY probe ALTER COLUMN letzte_aenderung SET DEFAULT now();
-
-
---
--- Name: id; Type: DEFAULT; Schema: land; Owner: -
---
-
 ALTER TABLE ONLY probe_translation ALTER COLUMN id SET DEFAULT nextval('probe_translation_id_seq'::regclass);
 
 
@@ -1005,14 +1010,6 @@ ALTER TABLE ONLY messwert
 
 ALTER TABLE ONLY ortszuordnung
     ADD CONSTRAINT ortszuordnung_pkey PRIMARY KEY (id);
-
-
---
--- Name: probe_pkey; Type: CONSTRAINT; Schema: bund; Owner: -; Tablespace:
---
-
-ALTER TABLE ONLY probe
-    ADD CONSTRAINT probe_pkey PRIMARY KEY (id);
 
 
 --
@@ -1119,14 +1116,6 @@ ALTER TABLE ONLY messwert
 
 ALTER TABLE ONLY ortszuordnung
     ADD CONSTRAINT ortszuordnung_pkey PRIMARY KEY (id);
-
-
---
--- Name: probe_pkey; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace:
---
-
-ALTER TABLE ONLY probe
-    ADD CONSTRAINT probe_pkey PRIMARY KEY (id);
 
 
 --
@@ -1359,54 +1348,6 @@ ALTER TABLE ONLY ortszuordnung
 
 
 --
--- Name: probe_datenbasis_id_fkey; Type: FK CONSTRAINT; Schema: bund; Owner: -
---
-
-ALTER TABLE ONLY probe
-    ADD CONSTRAINT probe_datenbasis_id_fkey FOREIGN KEY (datenbasis_id) REFERENCES stammdaten.datenbasis(id);
-
-
---
--- Name: probe_labor_mst_id_fkey; Type: FK CONSTRAINT; Schema: bund; Owner: -
---
-
-ALTER TABLE ONLY probe
-    ADD CONSTRAINT probe_labor_mst_id_fkey FOREIGN KEY (labor_mst_id) REFERENCES stammdaten.mess_stelle(id);
-
-
---
--- Name: probe_mst_id_fkey; Type: FK CONSTRAINT; Schema: bund; Owner: -
---
-
-ALTER TABLE ONLY probe
-    ADD CONSTRAINT probe_mst_id_fkey FOREIGN KEY (mst_id) REFERENCES stammdaten.mess_stelle(id);
-
-
---
--- Name: probe_netzbetreiber_id_fkey; Type: FK CONSTRAINT; Schema: bund; Owner: -
---
-
-ALTER TABLE ONLY probe
-    ADD CONSTRAINT probe_netzbetreiber_id_fkey FOREIGN KEY (netzbetreiber_id) REFERENCES stammdaten.netz_betreiber(id);
-
-
---
--- Name: probe_probenart_id_fkey; Type: FK CONSTRAINT; Schema: bund; Owner: -
---
-
-ALTER TABLE ONLY probe
-    ADD CONSTRAINT probe_probenart_id_fkey FOREIGN KEY (probenart_id) REFERENCES stammdaten.probenart(id);
-
-
---
--- Name: probe_umw_id_fkey; Type: FK CONSTRAINT; Schema: bund; Owner: -
---
-
-ALTER TABLE ONLY probe
-    ADD CONSTRAINT probe_umw_id_fkey FOREIGN KEY (umw_id) REFERENCES stammdaten.umwelt(id);
-
-
---
 -- Name: status_protokoll_status_stufe_fkey; Type: FK CONSTRAINT; Schema: bund; Owner: -
 --
 
@@ -1601,51 +1542,11 @@ ALTER TABLE ONLY ortszuordnung
 
 
 --
--- Name: probe_datenbasis_id_fkey; Type: FK CONSTRAINT; Schema: land; Owner: -
---
-
-ALTER TABLE ONLY probe
-    ADD CONSTRAINT probe_datenbasis_id_fkey FOREIGN KEY (datenbasis_id) REFERENCES stammdaten.datenbasis(id);
-
-
---
--- Name: probe_mst_id_fkey; Type: FK CONSTRAINT; Schema: land; Owner: -
---
-
-ALTER TABLE ONLY probe
-    ADD CONSTRAINT probe_mst_id_fkey FOREIGN KEY (mst_id) REFERENCES stammdaten.mess_stelle(id);
-
-
---
--- Name: probe_netzbetreiber_id_fkey; Type: FK CONSTRAINT; Schema: land; Owner: -
---
-
-ALTER TABLE ONLY probe
-    ADD CONSTRAINT probe_netzbetreiber_id_fkey FOREIGN KEY (netzbetreiber_id) REFERENCES stammdaten.netz_betreiber(id);
-
-
---
--- Name: probe_probenart_id_fkey; Type: FK CONSTRAINT; Schema: land; Owner: -
---
-
-ALTER TABLE ONLY probe
-    ADD CONSTRAINT probe_probenart_id_fkey FOREIGN KEY (probenart_id) REFERENCES stammdaten.probenart(id);
-
-
---
 -- Name: probe_translation_probe_id_fkey; Type: FK CONSTRAINT; Schema: land; Owner: -
 --
 
 ALTER TABLE ONLY probe_translation
     ADD CONSTRAINT probe_translation_probe_id_fkey FOREIGN KEY (probe_id) REFERENCES probe(id) ON DELETE CASCADE;
-
-
---
--- Name: probe_umw_id_fkey; Type: FK CONSTRAINT; Schema: land; Owner: -
---
-
-ALTER TABLE ONLY probe
-    ADD CONSTRAINT probe_umw_id_fkey FOREIGN KEY (umw_id) REFERENCES stammdaten.umwelt(id);
 
 
 --
