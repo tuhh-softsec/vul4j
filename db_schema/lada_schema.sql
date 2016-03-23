@@ -521,43 +521,6 @@ INHERITS (bund.kommentar_p);
 
 
 --
--- Name: messprogramm; Type: TABLE; Schema: land; Owner: -; Tablespace:
---
-
-CREATE TABLE messprogramm (
-    id integer NOT NULL,
-    name character varying(256),
-    test boolean DEFAULT false NOT NULL,
-    netzbetreiber_id character varying(2) NOT NULL,
-    mst_id character varying(5) NOT NULL,
-    labor_mst_id character varying(5),
-    datenbasis_id integer NOT NULL,
-    ba_id character varying(1),
-    gem_id character varying(8),
-    ort_id integer,
-    media_desk character varying(100),
-    umw_id character varying(3),
-    probenart_id integer NOT NULL,
-    probenintervall character varying(2),
-    teilintervall_von integer,
-    teilintervall_bis integer,
-    intervall_offset integer,
-    gueltig_von integer,
-    gueltig_bis integer,
-    probe_nehmer_id integer,
-    probe_kommentar character varying(80),
-    letzte_aenderung timestamp without time zone DEFAULT now() NOT NULL
-);
-
-
---
--- Name: COLUMN messprogramm.media_desk; Type: COMMENT; Schema: land; Owner: -
---
-
-COMMENT ON COLUMN messprogramm.media_desk IS 'dekodierte Medienbezeichnung (aus media_desk abgeleitet)';
-
-
---
 -- Name: messprogramm_id_seq; Type: SEQUENCE; Schema: land; Owner: -
 --
 
@@ -570,10 +533,47 @@ CREATE SEQUENCE messprogramm_id_seq
 
 
 --
+-- Name: messprogramm; Type: TABLE; Schema: land; Owner: -; Tablespace:
+--
+
+CREATE TABLE messprogramm (
+    id integer PRIMARY KEY DEFAULT nextval('messprogramm_id_seq'::regclass),
+    name character varying(256),
+    test boolean DEFAULT false NOT NULL,
+    netzbetreiber_id character varying(2) NOT NULL
+        REFERENCES stammdaten.netz_betreiber,
+    mst_id character varying(5) NOT NULL REFERENCES stammdaten.mess_stelle,
+    labor_mst_id character varying(5) REFERENCES stammdaten.mess_stelle,
+    datenbasis_id integer NOT NULL REFERENCES stammdaten.datenbasis,
+    ba_id character varying(1),
+    gem_id character varying(8),
+    ort_id integer REFERENCES stammdaten.ort,
+    media_desk character varying(100),
+    umw_id character varying(3) REFERENCES stammdaten.umwelt,
+    probenart_id integer NOT NULL REFERENCES stammdaten.probenart,
+    probenintervall character varying(2),
+    teilintervall_von integer,
+    teilintervall_bis integer,
+    intervall_offset integer,
+    gueltig_von integer,
+    gueltig_bis integer,
+    probe_nehmer_id integer,
+    probe_kommentar character varying(80),
+    letzte_aenderung timestamp without time zone DEFAULT now() NOT NULL
+);
+
+--
 -- Name: messprogramm_id_seq; Type: SEQUENCE OWNED BY; Schema: land; Owner: -
 --
 
 ALTER SEQUENCE messprogramm_id_seq OWNED BY messprogramm.id;
+
+
+--
+-- Name: COLUMN messprogramm.media_desk; Type: COMMENT; Schema: land; Owner: -
+--
+
+COMMENT ON COLUMN messprogramm.media_desk IS 'dekodierte Medienbezeichnung (aus media_desk abgeleitet)';
 
 
 --
@@ -847,13 +847,6 @@ ALTER TABLE ONLY kommentar_p ALTER COLUMN datum SET DEFAULT now();
 -- Name: id; Type: DEFAULT; Schema: land; Owner: -
 --
 
-ALTER TABLE ONLY messprogramm ALTER COLUMN id SET DEFAULT nextval('messprogramm_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: land; Owner: -
---
-
 ALTER TABLE ONLY messprogramm_mmt ALTER COLUMN id SET DEFAULT nextval('messprogramm_mmt_id_seq'::regclass);
 
 
@@ -1060,14 +1053,6 @@ ALTER TABLE ONLY kommentar_p
 
 ALTER TABLE ONLY messprogramm_mmt
     ADD CONSTRAINT messprogramm_mmt_pkey PRIMARY KEY (id);
-
-
---
--- Name: messprogramm_pkey; Type: CONSTRAINT; Schema: land; Owner: -; Tablespace:
---
-
-ALTER TABLE ONLY messprogramm
-    ADD CONSTRAINT messprogramm_pkey PRIMARY KEY (id);
 
 
 --
@@ -1398,14 +1383,6 @@ ALTER TABLE ONLY kommentar_p
 
 
 --
--- Name: messprogramm_datenbasis_id_fkey; Type: FK CONSTRAINT; Schema: land; Owner: -
---
-
-ALTER TABLE ONLY messprogramm
-    ADD CONSTRAINT messprogramm_datenbasis_id_fkey FOREIGN KEY (datenbasis_id) REFERENCES stammdaten.datenbasis(id);
-
-
---
 -- Name: messprogramm_mmt_messprogramm_id_fkey; Type: FK CONSTRAINT; Schema: land; Owner: -
 --
 
@@ -1419,46 +1396,6 @@ ALTER TABLE ONLY messprogramm_mmt
 
 ALTER TABLE ONLY messprogramm_mmt
     ADD CONSTRAINT messprogramm_mmt_mmt_id_fkey FOREIGN KEY (mmt_id) REFERENCES stammdaten.mess_methode(id);
-
-
---
--- Name: messprogramm_mst_id_fkey; Type: FK CONSTRAINT; Schema: land; Owner: -
---
-
-ALTER TABLE ONLY messprogramm
-    ADD CONSTRAINT messprogramm_mst_id_fkey FOREIGN KEY (mst_id) REFERENCES stammdaten.mess_stelle(id);
-
-
---
--- Name: messprogramm_netzbetreiber_id_fkey; Type: FK CONSTRAINT; Schema: land; Owner: -
---
-
-ALTER TABLE ONLY messprogramm
-    ADD CONSTRAINT messprogramm_netzbetreiber_id_fkey FOREIGN KEY (netzbetreiber_id) REFERENCES stammdaten.netz_betreiber(id);
-
-
---
--- Name: messprogramm_ort_id_fkey; Type: FK CONSTRAINT; Schema: land; Owner: -
---
-
-ALTER TABLE ONLY messprogramm
-    ADD CONSTRAINT messprogramm_ort_id_fkey FOREIGN KEY (ort_id) REFERENCES stammdaten.ort(id);
-
-
---
--- Name: messprogramm_probenart_id_fkey; Type: FK CONSTRAINT; Schema: land; Owner: -
---
-
-ALTER TABLE ONLY messprogramm
-    ADD CONSTRAINT messprogramm_probenart_id_fkey FOREIGN KEY (probenart_id) REFERENCES stammdaten.probenart(id);
-
-
---
--- Name: messprogramm_umw_id_fkey; Type: FK CONSTRAINT; Schema: land; Owner: -
---
-
-ALTER TABLE ONLY messprogramm
-    ADD CONSTRAINT messprogramm_umw_id_fkey FOREIGN KEY (umw_id) REFERENCES stammdaten.umwelt(id);
 
 
 --
