@@ -364,8 +364,10 @@ CREATE TABLE probe (
     id integer PRIMARY KEY DEFAULT nextval('probe_id_seq'::regclass),
     test boolean DEFAULT false NOT NULL,
     netzbetreiber_id character varying(2) REFERENCES stammdaten.netz_betreiber,
-    mst_id character varying(5) REFERENCES stammdaten.mess_stelle,
-    labor_mst_id character varying(5) REFERENCES stammdaten.mess_stelle,
+    mst_id character varying(5) NOT NULL
+        REFERENCES stammdaten.mess_stelle,
+    labor_mst_id character varying(5) NOT NULL
+        REFERENCES stammdaten.mess_stelle,
     hauptproben_nr character varying(20),
     datenbasis_id smallint REFERENCES stammdaten.datenbasis,
     ba_id character varying(1),
@@ -543,7 +545,8 @@ CREATE TABLE messprogramm (
     netzbetreiber_id character varying(2) NOT NULL
         REFERENCES stammdaten.netz_betreiber,
     mst_id character varying(5) NOT NULL REFERENCES stammdaten.mess_stelle,
-    labor_mst_id character varying(5) REFERENCES stammdaten.mess_stelle,
+    labor_mst_id character varying(5) NOT NULL
+        REFERENCES stammdaten.mess_stelle,
     datenbasis_id integer NOT NULL REFERENCES stammdaten.datenbasis,
     ba_id character varying(1),
     gem_id character varying(8),
