@@ -192,7 +192,7 @@ public class ManagementURLBuilder {
         return null;
     }
 
-    protected StringBuilder resourceDumpURL(final String agentName, final String hostName, final int processId, final boolean sessionLocked) {
+    public StringBuilder resourceDumpURL(final String agentName, final String hostName, final int processId, final boolean sessionLocked) {
         StringBuilder builder = new StringBuilder();
         builder.append(String.format("agentName=%1$s&isSessionLocked=%2$s&hostName=%3$s&processId=%4$s",
                 agentName, sessionLocked ? "true" : "false", hostName, String.valueOf(processId)));

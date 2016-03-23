@@ -110,7 +110,7 @@ public final class PerfSigUtils {
         return filePath.list(new RegexFileFilter(testCase));
     }
 
-    public static void downloadFile(final StaplerRequest request, final StaplerResponse response, final Run build) throws IOException {
+    public static void downloadFile(final StaplerRequest request, final StaplerResponse response, final Run<?, ?> build) throws IOException {
         final String file = request.getParameter("f");
         if (file.matches("[^a-zA-Z0-9\\._-]+")) return;
         File downloadFile = new File(PerfSigUtils.getReportDirectory(build), File.separator + file);

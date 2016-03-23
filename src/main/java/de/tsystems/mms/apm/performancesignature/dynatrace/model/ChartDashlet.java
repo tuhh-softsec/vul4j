@@ -35,6 +35,7 @@ public class ChartDashlet {
     public ChartDashlet(final Attributes attr) {
         this.name = AttributeUtils.getStringAttribute("name", attr);
         this.description = AttributeUtils.getStringAttribute("description", attr);
+        this.measures = new ArrayList<Measure>();
     }
 
     public static String encode(final String string) {
@@ -54,8 +55,6 @@ public class ChartDashlet {
     }
 
     public void addMeasure(final Measure tm) {
-        if (this.measures == null)
-            this.measures = new ArrayList<Measure>();
         this.measures.add(tm);
     }
 }

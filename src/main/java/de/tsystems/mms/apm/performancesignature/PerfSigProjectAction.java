@@ -62,8 +62,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class PerfSigProjectAction extends PerfSigBaseAction implements ProminentProjectAction {
     private final Job<?, ?> job;
@@ -356,15 +354,6 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             }
         }
         return dashboardReports;
-    }
-
-    public void doDownloadFile(final StaplerRequest request, final StaplerResponse response) throws IOException {
-        final Pattern pattern = Pattern.compile("-\\d+");
-        final Matcher matcher = pattern.matcher(request.getParameter("f"));
-        if (matcher.find()) {
-            final int id = Integer.parseInt(matcher.group().substring(1));
-            PerfSigUtils.downloadFile(request, response, job.getBuildByNumber(id));
-        }
     }
 
     private FilePath getJsonConfigFilePath() {

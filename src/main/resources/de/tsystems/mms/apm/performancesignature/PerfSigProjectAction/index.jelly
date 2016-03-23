@@ -159,14 +159,15 @@
                                                         <b>${dashboardReport.key.number}</b>
                                                     </a>
                                                 </td>
-                                                <j:set var="file"
-                                                       value="${it.PerfSigUtils.getDownloadFiles('Comparison.*' + lastDashboardReport.name + '_.*pdf',dashboardReport.key)}"/>
                                                 <td>
-                                                    <j:if test="${file.size()!=0}">
-                                                        <a href="./downloadFile?f=${file.get(0).name}" target="_blank">
-                                                            <img src="${resURL}/plugin/performance-signature-dynatrace/images/pdficon_small.png"/>
+                                                    <j:forEach var="tmp"
+                                                               items="${it.PerfSigUtils.getDownloadFiles('Comparison.*' + lastDashboardReport.name + '_.*pdf',dashboardReport.key)}">
+                                                        <a href="../${dashboardReport.key.number}/performance-signature/downloadFile?f=${tmp.name}"
+                                                           target="_blank">
+                                                            <img src="${resURL}/plugin/performance-signature-dynatrace/images/pdficon_small.png"
+                                                                 style="margin: 0 2px;"/>
                                                         </a>
-                                                    </j:if>
+                                                    </j:forEach>
                                                 </td>
                                                 <td>
                                                     <fmt:formatDate dateStyle="medium" type="both" value="${dashboardReport.key.time}"/>
