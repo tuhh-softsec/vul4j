@@ -77,6 +77,69 @@ end;
 $$;
 
 
+CREATE SEQUENCE staat_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+CREATE TABLE staat (
+    id integer PRIMARY KEY DEFAULT nextval('staat_id_seq'::regclass),
+    staat character varying(50) NOT NULL,
+    hkl_id smallint NOT NULL,
+    staat_iso character varying(2) NOT NULL,
+    staat_kurz character varying(5),
+    eu character(1) DEFAULT NULL::bpchar,
+    koord_x_extern character varying(22),
+    koord_y_extern character varying(22),
+    kda_id integer
+);
+
+ALTER SEQUENCE staat_id_seq OWNED BY staat.id;
+
+
+CREATE TABLE verwaltungseinheit (
+    id character varying(8) PRIMARY KEY,
+    bundesland character varying(8) NOT NULL,
+    kda_id integer,
+    kreis character varying(8),
+    nuts character varying(10),
+    regbezirk character varying(8),
+    bezeichnung character varying(80) NOT NULL,
+    is_bundesland character(1) NOT NULL,
+    is_gemeinde character(1) NOT NULL,
+    is_landkreis character(1) NOT NULL,
+    is_regbezirk character(1) NOT NULL,
+    koord_x_extern character varying(22),
+    koord_y_extern character varying(22),
+    plz character varying(6),
+    longitude double precision,
+    latitude double precision
+);
+
+
+CREATE TABLE netz_betreiber (
+    id character varying(2) PRIMARY KEY,
+    netzbetreiber character varying(50),
+    idf_netzbetreiber character varying(1),
+    is_bmn boolean DEFAULT false,
+    mailverteiler character varying(512),
+    aktiv boolean DEFAULT false,
+    zust_mst_id character varying(5)
+);
+
+
+CREATE TABLE mess_stelle (
+    id character varying(5) PRIMARY KEY,
+    netzbetreiber_id character varying(2),
+    beschreibung character varying(300),
+    mess_stelle character varying(60),
+    mst_typ character varying(1),
+    amtskennung character varying(6)
+);
+
+
 CREATE SEQUENCE auth_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -149,9 +212,9 @@ CREATE SEQUENCE datensatz_erzeuger_id_seq
 CREATE TABLE datensatz_erzeuger (
     id integer PRIMARY KEY
         DEFAULT nextval('datensatz_erzeuger_id_seq'::regclass),
-    netzbetreiber_id character varying(2),
+    netzbetreiber_id character varying(2) REFERENCES netz_betreiber,
     da_erzeuger_id character varying(2),
-    mst_id character varying(5),
+    mst_id character varying(5) REFERENCES mess_stelle,
     bezeichnung character varying(120),
     letzte_aenderung timestamp without time zone
 );
@@ -336,17 +399,6 @@ CREATE TABLE mess_methode (
 );
 
 
-CREATE TABLE mess_stelle (
-    id character varying(5) PRIMARY KEY,
-    netzbetreiber_id character varying(2),
-    beschreibung character varying(300),
-    mess_stelle character varying(60),
-    mst_typ character varying(1),
-    amtskennung character varying(6)
-);
-
-
-
 CREATE SEQUENCE messgroesse_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -395,7 +447,7 @@ CREATE SEQUENCE messprogramm_kategorie_id_seq
 CREATE TABLE messprogramm_kategorie (
     id integer PRIMARY KEY
         DEFAULT nextval('messprogramm_kategorie_id_seq'::regclass),
-    netzbetreiber_id character varying(2),
+    netzbetreiber_id character varying(2) REFERENCES netz_betreiber,
     mpl_id character varying(3),
     bezeichnung character varying(120),
     letzte_aenderung timestamp without time zone
@@ -425,14 +477,9 @@ CREATE VIEW mmt_messgroesse AS
   WHERE (mg_grp.messgroessengruppe_id = mmt_messgroesse_grp.messgroessengruppe_id);
 
 
-CREATE TABLE netz_betreiber (
-    id character varying(2) PRIMARY KEY,
-    netzbetreiber character varying(50),
-    idf_netzbetreiber character varying(1),
-    is_bmn boolean DEFAULT false,
-    mailverteiler character varying(512),
-    aktiv boolean DEFAULT false,
-    zust_mst_id character varying(5)
+CREATE TABLE ort_typ (
+    id smallint PRIMARY KEY,
+    ort_typ character varying(60)
 );
 
 
@@ -445,14 +492,14 @@ CREATE SEQUENCE ort_id_seq
 
 CREATE TABLE ort (
     id integer PRIMARY KEY DEFAULT nextval('ort_id_seq'::regclass),
-    netzbetreiber_id character varying(2),
+    netzbetreiber_id character varying(2) REFERENCES netz_betreiber,
     ort_id character varying(10),
     langtext character varying(100),
-    staat_id smallint,
-    gem_id character varying(8),
+    staat_id smallint REFERENCES staat,
+    gem_id character varying(8) REFERENCES verwaltungseinheit,
     unscharf character(1) DEFAULT NULL::bpchar,
     nuts_code character varying(10),
-    kda_id integer,
+    kda_id integer REFERENCES koordinaten_art,
     koord_x_extern character varying(22),
     koord_y_extern character varying(22),
     hoehe_land real,
@@ -461,7 +508,7 @@ CREATE TABLE ort (
     longitude double precision,
     geom public.geometry(Point,4326),
     shape public.geometry(MultiPolygon,4326),
-    ort_typ smallint,
+    ort_typ smallint REFERENCES ort_typ,
     kurztext character varying(15),
     berichtstext character varying(70),
     zone character varying(1),
@@ -473,13 +520,13 @@ CREATE TABLE ort (
     oz_id integer
 );
 
+ALTER TABLE ONLY ort
+    ADD CONSTRAINT ort_anlage_fkey FOREIGN KEY (anlage_id) REFERENCES ort(id);
+
+ALTER TABLE ONLY ort
+    ADD CONSTRAINT ort_oz_fkey FOREIGN KEY (oz_id) REFERENCES ort(id);
+
 ALTER SEQUENCE ort_id_seq OWNED BY ort.id;
-
-
-CREATE TABLE ort_typ (
-    id smallint PRIMARY KEY,
-    ort_typ character varying(60)
-);
 
 
 CREATE TABLE ortszuordnung_typ (
@@ -542,7 +589,7 @@ CREATE SEQUENCE probenehmer_id_seq
 
 CREATE TABLE probenehmer (
     id integer PRIMARY KEY DEFAULT nextval('probenehmer_id_seq'::regclass),
-    netzbetreiber_id character varying(2),
+    netzbetreiber_id character varying(2) REFERENCES netz_betreiber,
     prn_id character varying(9),
     bearbeiter character varying(25),
     bemerkung character varying(60),
@@ -598,28 +645,6 @@ CREATE TABLE result (
 
 ALTER SEQUENCE result_id_seq OWNED BY result.id;
 
-
-
-CREATE SEQUENCE staat_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-CREATE TABLE staat (
-    id integer PRIMARY KEY DEFAULT nextval('staat_id_seq'::regclass),
-    staat character varying(50) NOT NULL,
-    hkl_id smallint NOT NULL,
-    staat_iso character varying(2) NOT NULL,
-    staat_kurz character varying(5),
-    eu character(1) DEFAULT NULL::bpchar,
-    koord_x_extern character varying(22),
-    koord_y_extern character varying(22),
-    kda_id integer
-);
-
-ALTER SEQUENCE staat_id_seq OWNED BY staat.id;
 
 
 -- Status workflow
@@ -745,26 +770,6 @@ CREATE TABLE umwelt (
 );
 
 
-CREATE TABLE verwaltungseinheit (
-    id character varying(8) PRIMARY KEY,
-    bundesland character varying(8) NOT NULL,
-    kda_id integer,
-    kreis character varying(8),
-    nuts character varying(10),
-    regbezirk character varying(8),
-    bezeichnung character varying(80) NOT NULL,
-    is_bundesland character(1) NOT NULL,
-    is_gemeinde character(1) NOT NULL,
-    is_landkreis character(1) NOT NULL,
-    is_regbezirk character(1) NOT NULL,
-    koord_x_extern character varying(22),
-    koord_y_extern character varying(22),
-    plz character varying(6),
-    longitude double precision,
-    latitude double precision
-);
-
-
 
 
 ALTER TABLE ONLY lada_user
@@ -824,16 +829,6 @@ ALTER TABLE ONLY auth
 
 
 
-ALTER TABLE ONLY datensatz_erzeuger
-    ADD CONSTRAINT datensatz_erzeuger_mst_id_fkey1 FOREIGN KEY (mst_id) REFERENCES mess_stelle(id);
-
-
-
-ALTER TABLE ONLY datensatz_erzeuger
-    ADD CONSTRAINT datensatz_erzeuger_netzbetreiber_id_fkey FOREIGN KEY (netzbetreiber_id) REFERENCES netz_betreiber(id);
-
-
-
 ALTER TABLE ONLY favorite
     ADD CONSTRAINT favorite_query_id_fkey FOREIGN KEY (query_id) REFERENCES query(id);
 
@@ -864,46 +859,6 @@ ALTER TABLE ONLY deskriptoren
 
 
 
-ALTER TABLE ONLY messprogramm_kategorie
-    ADD CONSTRAINT messprogramm_kategorie_netzbetreiber_id_fkey FOREIGN KEY (netzbetreiber_id) REFERENCES netz_betreiber(id);
-
-
-
-ALTER TABLE ONLY ort
-    ADD CONSTRAINT ort_anlage_fkey FOREIGN KEY (anlage_id) REFERENCES ort(id);
-
-
-
-ALTER TABLE ONLY ort
-    ADD CONSTRAINT ort_gem_id_fkey FOREIGN KEY (gem_id) REFERENCES verwaltungseinheit(id);
-
-
-
-ALTER TABLE ONLY ort
-    ADD CONSTRAINT ort_kda_id_fkey FOREIGN KEY (kda_id) REFERENCES koordinaten_art(id);
-
-
-
-ALTER TABLE ONLY ort
-    ADD CONSTRAINT ort_netzbetreiber_id_fkey FOREIGN KEY (netzbetreiber_id) REFERENCES netz_betreiber(id);
-
-
-
-ALTER TABLE ONLY ort
-    ADD CONSTRAINT ort_ort_typ_fkey FOREIGN KEY (ort_typ) REFERENCES ort_typ(id);
-
-
-
-ALTER TABLE ONLY ort
-    ADD CONSTRAINT ort_oz_fkey FOREIGN KEY (oz_id) REFERENCES ort(id);
-
-
-
-ALTER TABLE ONLY ort
-    ADD CONSTRAINT ort_staat_id_fkey FOREIGN KEY (staat_id) REFERENCES staat(id);
-
-
-
 ALTER TABLE ONLY pflicht_messgroesse
     ADD CONSTRAINT pflicht_messgroesse_datenbasis_id_fkey FOREIGN KEY (datenbasis_id) REFERENCES datenbasis(id);
 
@@ -921,11 +876,6 @@ ALTER TABLE ONLY pflicht_messgroesse
 
 ALTER TABLE ONLY proben_zusatz
     ADD CONSTRAINT proben_zusatz_meh_id_fkey FOREIGN KEY (meh_id) REFERENCES mess_einheit(id);
-
-
-
-ALTER TABLE ONLY probenehmer
-    ADD CONSTRAINT probenehmer_netzbetreiber_id_fkey FOREIGN KEY (netzbetreiber_id) REFERENCES netz_betreiber(id);
 
 
 
