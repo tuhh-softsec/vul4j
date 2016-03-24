@@ -5,6 +5,7 @@
         "test": false,
         "netzbetreiber_id": "06",
         "mst_id": "06010",
+        "labor_mst_id": "06010",
         "datenbasis_id": 2,
         "gem_id": "11000000",
         "media_desk": "D: 50 90 01 06 02 05 00 00 00 00 00 00",
