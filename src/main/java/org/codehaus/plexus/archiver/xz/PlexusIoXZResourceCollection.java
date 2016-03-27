@@ -23,41 +23,28 @@ import java.util.HashMap;
 import org.codehaus.plexus.components.io.attributes.Java7FileAttributes;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.resources.PlexusIoCompressedFileResourceCollection;
-import org.codehaus.plexus.util.IOUtil;
 
 /**
  *
  * @author lore
  */
-public class PlexusIoXZResourceCollection extends PlexusIoCompressedFileResourceCollection
-{
+public class PlexusIoXZResourceCollection extends PlexusIoCompressedFileResourceCollection {
 
     @Override
-    protected PlexusIoResourceAttributes getAttributes( File file ) throws IOException 
-    {
+    protected PlexusIoResourceAttributes getAttributes(File file) throws IOException {
         return new Java7FileAttributes(file, new HashMap<Integer, String>(), new HashMap<Integer, String>());
     }
 
     @Override
-    protected String getDefaultExtension()
-    {
+    protected String getDefaultExtension() {
         return ".xz";
     }
 
     @Override
-    protected InputStream getInputStream( File file ) throws IOException
-    {
-        FileInputStream fileIs = new FileInputStream( file );
-        
-        try
-        {
-            final InputStream result = XZUnArchiver.getXZInputStream( fileIs );
+    protected InputStream getInputStream(File file) throws IOException {
+        FileInputStream fileIs = new FileInputStream(file);
 
-            return result;
-        }
-        finally
-        {
-            IOUtil.close(fileIs);
-        }
+        return XZUnArchiver.getXZInputStream(fileIs);
+
     }
 }
