@@ -27,7 +27,6 @@ import static junit.framework.TestCase.assertTrue;
 import static org.codehaus.plexus.PlexusTestCase.getTestFile;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.BasePlexusArchiverTest;
-import org.codehaus.plexus.archiver.xz.XZArchiver;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
@@ -96,7 +95,7 @@ public class XzArchiverTest extends BasePlexusArchiverTest
      * 
      * @throws Exception
      */
-    public void testBz2IsForcedBehaviour() throws Exception
+    public void testXzIsForcedBehaviour() throws Exception
     {
         XZArchiver xzArchiver = (XZArchiver) createArchiver( "xz" );
         
