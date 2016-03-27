@@ -56,10 +56,11 @@ public class TarXzUnArchiverTest extends PlexusTestCase {
 
         XZArchiver xzArchiver = (XZArchiver) lookup( Archiver.ROLE, "xz" );
 
-        assertTrue(testXZFile.exists());
         xzArchiver.setDestFile( testXZFile );
         xzArchiver.addFile( getTestFile( "target/output/archive.tar" ), "dontcare" );
         xzArchiver.createArchive();
+        
+        assertTrue(testXZFile.exists());
 
         TarXZUnArchiver tarXZUnArchiver = (TarXZUnArchiver) lookup( UnArchiver.ROLE, "tar.xz" );
 
