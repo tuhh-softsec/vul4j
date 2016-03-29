@@ -82,7 +82,7 @@ public class Measure {
     }
 
     public String getUnit() {
-        if (this.aggregation != null && this.aggregation.equalsIgnoreCase("Count")) return "num";
+        if (this.aggregation != null && this.aggregation.equalsIgnoreCase("count")) return "num";
         return PerfSigUtils.encodeString(this.unit);
     }
 
@@ -95,7 +95,7 @@ public class Measure {
     }
 
     public boolean isPercentile() {
-        return StringUtils.isNotBlank(this.getAggregation()) && this.getAggregation().equalsIgnoreCase("Percentiles");
+        return StringUtils.isNotBlank(this.getAggregation()) && this.getAggregation().equalsIgnoreCase("percentiles");
     }
 
     /**
@@ -111,18 +111,18 @@ public class Measure {
             Measurement measurement95th = measurements.get(95);
             if (measurement95th == null) return 0;
             return measurement95th.getAvg();
-        } else if (this.getAggregation().equalsIgnoreCase("Count"))
+        } else if (this.getAggregation().equalsIgnoreCase("count"))
             return this.getCount();
-        else if (this.getAggregation().equalsIgnoreCase("Average") || StringUtils.isBlank(this.getAggregation()))
+        else if (this.getAggregation().equalsIgnoreCase("average") || this.getAggregation().equalsIgnoreCase("last"))
             return this.getAvg().doubleValue();
-        else if (this.getAggregation().equalsIgnoreCase("Sum"))
+        else if (this.getAggregation().equalsIgnoreCase("sum"))
             return this.getSum();
-        else if (this.getAggregation().equalsIgnoreCase("Max"))
+        else if (this.getAggregation().equalsIgnoreCase("maximum"))
             return this.getMax().doubleValue();
-        else if (this.getAggregation().equalsIgnoreCase("Min"))
+        else if (this.getAggregation().equalsIgnoreCase("minimum"))
             return this.getMin().doubleValue();
         else
-            return 0;
+            return this.getAvg().doubleValue();
     }
 
     public BigDecimal getStrMetricValue() {

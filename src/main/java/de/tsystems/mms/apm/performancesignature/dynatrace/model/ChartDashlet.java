@@ -25,17 +25,17 @@ import java.util.List;
 
 public class ChartDashlet {
     private final String name;
-    private List<Measure> measures;
+    private final List<Measure> measures;
     private String description;
 
     public ChartDashlet(final String name) {
         this.name = name;
+        this.measures = new ArrayList<Measure>();
     }
 
     public ChartDashlet(final Attributes attr) {
-        this.name = AttributeUtils.getStringAttribute("name", attr);
+        this(AttributeUtils.getStringAttribute("name", attr));
         this.description = AttributeUtils.getStringAttribute("description", attr);
-        this.measures = new ArrayList<Measure>();
     }
 
     public static String encode(final String string) {

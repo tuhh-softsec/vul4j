@@ -18,7 +18,6 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
-import org.apache.commons.lang.StringUtils;
 import org.xml.sax.Attributes;
 
 import java.math.BigDecimal;
@@ -70,17 +69,17 @@ public class Measurement {
      * get the avg value of a metric
      */
     public double getMetricValue(final String aggregation) {
-        if (aggregation.equalsIgnoreCase("Count"))
+        if (aggregation.equalsIgnoreCase("count"))
             return this.getCount();
-        else if (aggregation.equalsIgnoreCase("Average") || StringUtils.isBlank(aggregation))
+        else if (aggregation.equalsIgnoreCase("average"))
             return this.getAvg();
-        else if (aggregation.equalsIgnoreCase("Sum"))
+        else if (aggregation.equalsIgnoreCase("sum"))
             return this.getSum();
-        else if (aggregation.equalsIgnoreCase("Max"))
+        else if (aggregation.equalsIgnoreCase("maximum"))
             return this.getMax();
-        else if (aggregation.equalsIgnoreCase("Min"))
+        else if (aggregation.equalsIgnoreCase("minimum"))
             return this.getMin();
         else
-            return 0;
+            return this.getAvg();
     }
 }
