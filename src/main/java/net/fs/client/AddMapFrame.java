@@ -104,12 +104,12 @@ public class AddMapFrame extends JDialog{
 					}else {
 						ui.mapClient.portMapManager.updateMapRule(maprule_origin,mapRule_new);
 					}
-					ui.loadMapRule();
-					ui.select(mapRule_new.name);
+					//ui.loadMapRule();
+					//ui.select(mapRule_new.name);
 					setVisible(false);
 				} catch (Exception e1) {
 					//e2.printStackTrace();
-					JOptionPane.showMessageDialog(ui.mainFrame, e1.getMessage(),"消息",JOptionPane.WARNING_MESSAGE);
+					//JOptionPane.showMessageDialog(ui.mainFrame, e1.getMessage(),"消息",JOptionPane.WARNING_MESSAGE);
 				}
 			}
 		});

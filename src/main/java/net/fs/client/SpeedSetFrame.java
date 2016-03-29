@@ -78,11 +78,11 @@ public class SpeedSetFrame extends JDialog{
 				try {
 					int d=(int) (Float.parseFloat(us)*1024*1024/8/1.1);
 					int u=(int) (Float.parseFloat(ds)*1024*1024/8/1.1);
-					ui.setSpeed(d, u);
+					//ui.setSpeed(d, u);
 					setVisible(false);
 				} catch (Exception e2) {
 					//e2.printStackTrace();
-					JOptionPane.showMessageDialog(ui.mainFrame, "输入错误!");
+					//JOptionPane.showMessageDialog(ui.mainFrame, "输入错误!");
 				}
 				
 			}
@@ -102,13 +102,13 @@ public class SpeedSetFrame extends JDialog{
 
 		pack();
 		setLocationRelativeTo(parent);
-		if(ui.isVisible){
+		/*if(ui.isVisible){
 			setVisible(true);
 			//MLog.println("请在client_config.json中设置带宽");
 		} else {
 			//MLog.println("请在client_config.json中设置带宽");
 			//System.exit(0);
-		}
+		}*/
 	}
 	
 	JButton createButton(String name){

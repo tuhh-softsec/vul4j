@@ -98,7 +98,7 @@ public class MapRuleListTable extends JTable{
 		int index=getSelectedRow();
 		int modelIndex=convertRowIndexToModel(index);
 		MapRule mapRule=getModel().getMapRuleAt(modelIndex);
-		AddMapFrame sf=new AddMapFrame(ui,ui.mainFrame,mapRule,true);
+		//AddMapFrame sf=new AddMapFrame(ui,ui.mainFrame,mapRule,true);
 		//sf.setVisible(true);
 	}
 	

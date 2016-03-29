@@ -46,7 +46,7 @@ public class MapClient implements Trafficlistener{
 
 	short routePort=45;
 
-	ClientUII ui;
+	//ClientUII ui;
 
 	String serverAddress="";
 
@@ -91,7 +91,7 @@ public class MapClient implements Trafficlistener{
 	boolean tcpEnable;
 
 	MapClient(ClientUI ui,boolean tcpEnvSuccess) throws Exception {
-		this.ui=ui;
+		//this.ui=ui;
 		mapClient=this;
 		try {
 			final ServerSocket socket=new ServerSocket(monPort);
@@ -147,9 +147,9 @@ public class MapClient implements Trafficlistener{
 	}
 
 	private void updateUISpeed(){
-		if(ui!=null){
+		/*if(ui!=null){
 			ui.updateUISpeed(connNum,netStatus.getDownSpeed(),netStatus.getUpSpeed());
-		}
+		}*/
 	}
 	
 	public void setMapServer(String serverAddress,int serverPort,int remotePort,String passwordMd5,String password_proxy_Md5,boolean direct_cn,boolean tcp,
@@ -184,7 +184,7 @@ public class MapClient implements Trafficlistener{
 		String ip;
 		try {
 			ip = InetAddress.getByName(serverAddress).getHostAddress();
-			if(systemName.contains("mac os")){
+			/*if(systemName.contains("mac os")){
 				if(ui.isOsx_fw_pf ()){
 					String tempPath="./pf.conf";
 					File f=new File(tempPath);
@@ -213,7 +213,8 @@ public class MapClient implements Trafficlistener{
 					String cmd2="sudo ipfw add 5050 deny tcp from any to "+ip+" "+serverAddress+" out";
 					runCommand(cmd2);
 				}				
-			}else if(systemName.contains("linux")){
+			}else */
+			if(systemName.contains("linux")){
 				String cmd2="iptables -t filter -A OUTPUT -d "+ip+" -p tcp --dport "+serverPort+" -j DROP -m comment --comment tcptun_fs ";
 				runCommand(cmd2);
 			}else if (systemName.contains("windows")) {
@@ -384,11 +385,11 @@ public class MapClient implements Trafficlistener{
 
 	synchronized public void closeAndTryConnect_Login(boolean testSpeed){
 		close();
-		boolean loginOK=ui.login();
+		/*boolean loginOK=ui.login();
 		if(loginOK){
 			ui.updateNode(testSpeed);
 			//testPool();
-		}
+		}*/
 	}
 
 	synchronized public void closeAndTryConnect(){
@@ -481,12 +482,5 @@ public class MapClient implements Trafficlistener{
 		this.useTcp = useTcp;
 	}
 
-	public ClientUII getUi() {
-		return ui;
-	}
-
-	public void setUi(ClientUII ui) {
-		this.ui = ui;
-	}
 
 }
