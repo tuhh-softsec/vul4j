@@ -24,7 +24,6 @@ import com.alibaba.fastjson.JSONObject;
 import net.fs.rudp.Route;
 import net.fs.utils.LogOutputStream;
 import net.fs.utils.MLog;
-import net.fs.utils.Tools;
 
 import org.pcap4j.core.Pcaps;
 
@@ -33,14 +32,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.net.HttpURLConnection;
-import java.util.Properties;
 
-import javax.swing.*;
 
-public class ClientUI {
+public class Client {
 
     MapClient mapClient;
 
@@ -58,7 +53,7 @@ public class ClientUI {
 
     String homeUrl;
 
-    public static ClientUI ui;
+    public static Client ui;
 
     MapRuleListModel model;
 
@@ -83,7 +78,7 @@ public class ClientUI {
         updateUrl = "http://fs.d1sm.net/finalspeed/update.properties";
     }
 
-    ClientUI(final boolean isVisible,boolean min) {
+    Client(final boolean isVisible, boolean min) {
     	this.min=min;
 
         if(isVisible){
@@ -122,32 +117,19 @@ public class ClientUI {
         }
         if (!b1) {
         	tcpEnvSuccess=false;
-            try {
-                SwingUtilities.invokeAndWait(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        String msg = "启动失败,请先安装libpcap,否则无法使用tcp协议";
-                        if (systemName.contains("windows")) {
-                            msg = "启动失败,请先安装winpcap,否则无法使用tcp协议";
-                        }
-                        MLog.println(msg);
-                        if (systemName.contains("windows")) {
-                            try {
-                                Process p = Runtime.getRuntime().exec("winpcap_install.exe", null);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            tcpEnable=false;
-                            //System.exit(0);
-                        }
-                    }
-
-                });
-            } catch (InvocationTargetException e2) {
-                e2.printStackTrace();
-            } catch (InterruptedException e2) {
-                e2.printStackTrace();
+            String msg = "启动失败,请先安装libpcap,否则无法使用tcp协议";
+            if (systemName.contains("windows")) {
+                msg = "启动失败,请先安装winpcap,否则无法使用tcp协议";
+            }
+            MLog.println(msg);
+            if (systemName.contains("windows")) {
+                try {
+                    Process p = Runtime.getRuntime().exec("winpcap_install.exe", null);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                tcpEnable=false;
+                //System.exit(0);
             }
         }
 
@@ -248,7 +230,7 @@ public class ClientUI {
             fos.write(data);
         } catch (Exception e) {
             if (systemName.contains("windows")) {
-                JOptionPane.showMessageDialog(null, "保存配置文件失败,请尝试以管理员身份运行! " + path);
+                MLog.info("保存配置文件失败,请尝试以管理员身份运行! " + path);
                 System.exit(0);
             }
             throw e;

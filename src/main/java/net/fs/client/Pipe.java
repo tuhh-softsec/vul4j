@@ -91,7 +91,7 @@ public class Pipe {
 				sendedb=true;
 			}
 			if(dstPort>0){
-				if(ClientUI.ui!=null){
+				if(Client.ui!=null){
 					if(!msged){
 						msged=true;
 						String msg="端口"+dstPort+"连接成功";

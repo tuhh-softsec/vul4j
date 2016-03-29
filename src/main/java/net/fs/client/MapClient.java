@@ -24,11 +24,9 @@ import net.fs.rudp.ConnectionProcessor;
 import net.fs.rudp.Route;
 import net.fs.rudp.TrafficEvent;
 import net.fs.rudp.Trafficlistener;
-import net.fs.utils.MLog;
 import net.fs.utils.NetStatus;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -90,7 +88,7 @@ public class MapClient implements Trafficlistener{
 	
 	boolean tcpEnable;
 
-	MapClient(ClientUI ui,boolean tcpEnvSuccess) throws Exception {
+	MapClient(Client ui,boolean tcpEnvSuccess) throws Exception {
 		//this.ui=ui;
 		mapClient=this;
 		try {

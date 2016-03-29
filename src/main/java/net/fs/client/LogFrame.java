@@ -21,7 +21,6 @@ package net.fs.client;
 
 import net.fs.utils.LogListener;
 import net.fs.utils.LogOutputStream;
-import net.miginfocom.swing.MigLayout;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -34,7 +33,7 @@ public class LogFrame extends JFrame implements LogListener{
 	
 	private static final long serialVersionUID = 8642892909397273483L;
 
-	ClientUI ui;
+	Client ui;
 	
 	JTextArea logArea;
 	
@@ -44,12 +43,11 @@ public class LogFrame extends JFrame implements LogListener{
 	
 	final int SCROLL_BUFFER_SIZE = 1000;
 	
-	LogFrame(ClientUI ui){
+	LogFrame(Client ui){
 		super("日志");
 		this.ui=ui;
 		JPanel panel=(JPanel) getContentPane();
-		panel.setLayout(new MigLayout("insets 5 5 5 5"));
-		
+
 
 		logArea=new JTextArea();
 		
@@ -59,7 +57,6 @@ public class LogFrame extends JFrame implements LogListener{
 		
 		JPanel p3=new JPanel();
 		panel.add(p3,"align center,wrap");
-		p3.setLayout(new MigLayout("inset 5 5 5 5"));
 
 		final JCheckBox cb_lock=new JCheckBox("自动滚动",autoScroll);
 		p3.add(cb_lock,"align center");
