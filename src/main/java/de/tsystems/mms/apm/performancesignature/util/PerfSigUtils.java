@@ -35,15 +35,10 @@ import hudson.util.Area;
 import hudson.util.ListBoxModel;
 import jenkins.model.Jenkins;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.commons.lang.StringUtils;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
 
-import javax.servlet.ServletException;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
@@ -108,30 +103,6 @@ public final class PerfSigUtils {
     public static List<FilePath> getDownloadFiles(final String testCase, final Run<?, ?> build) throws IOException, InterruptedException {
         FilePath filePath = new FilePath(PerfSigUtils.getReportDirectory(build));
         return filePath.list(new RegexFileFilter(testCase));
-    }
-
-    public static void downloadFile(final StaplerRequest request, final StaplerResponse response, final Run<?, ?> build) throws IOException {
-        final String file = request.getParameter("f");
-        if (file.matches("[^a-zA-Z0-9\\._-]+")) return;
-        File downloadFile = new File(PerfSigUtils.getReportDirectory(build), File.separator + file);
-        FileInputStream inStream = new FileInputStream(downloadFile);
-
-        // gets MIME type of the file
-        String mimeType;
-        if (file.contains("pdf")) mimeType = "application/pdf";
-        else mimeType = "application/octet-stream"; // set to binary type if MIME mapping not found
-
-        try {
-            // forces download
-            String headerKey = "Content-Disposition";
-            String headerValue = String.format("attachment; filename=\"%s\"", file);
-            response.setHeader(headerKey, headerValue);
-            response.serveFile(request, inStream, downloadFile.lastModified(), 604800000, (int) downloadFile.length(), "mime-type:" + mimeType);
-        } catch (ServletException e) {
-            e.printStackTrace();
-        } finally {
-            IOUtils.closeQuietly(inStream);
-        }
     }
 
     /*

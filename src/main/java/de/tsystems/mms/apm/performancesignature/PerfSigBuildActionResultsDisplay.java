@@ -20,9 +20,12 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.Measure;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.Measurement;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
+import hudson.FilePath;
 import hudson.model.ModelObject;
 import hudson.model.Run;
 import hudson.util.ChartUtil;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jfree.chart.ChartFactory;
@@ -43,8 +46,10 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
+import javax.servlet.ServletException;
 import java.awt.*;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
@@ -242,7 +247,50 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
         return chart;
     }
 
-    public void doDownloadFile(final StaplerRequest request, final StaplerResponse response) throws IOException {
-        PerfSigUtils.downloadFile(request, response, getBuild());
+    public void doGetSingleReport(final StaplerRequest request, final StaplerResponse response) throws IOException, InterruptedException {
+        serveFile("Singlereport", request, response);
+    }
+
+    public void doGetComparisonReport(final StaplerRequest request, final StaplerResponse response) throws IOException, InterruptedException {
+        serveFile("Comparisonreport", request, response);
+    }
+
+    public void doGetSession(final StaplerRequest request, final StaplerResponse response) throws IOException, InterruptedException {
+        serveFile("", request, response);
+    }
+
+    private void serveFile(final String type, final StaplerRequest request, final StaplerResponse response) throws IOException, InterruptedException {
+        String testCase = request.getParameter("testCase");
+        String numberString = request.getParameter("number");
+        int number = 0;
+
+        FilePath filePath = new FilePath(PerfSigUtils.getReportDirectory(getBuild()));
+        String extension = StringUtils.isBlank(type) ? ".dts" : ".pdf";
+        List<FilePath> files = filePath.list(new RegexFileFilter(type + ".*" + testCase + ".*" + extension));
+
+        if (StringUtils.isNotBlank(numberString)) {
+            try {
+                number = Integer.parseInt(numberString);
+            } catch (NumberFormatException ignored) {
+            }
+        }
+
+        FilePath requestedFile = number > 0 ? files.get(number) : files.get(0);
+        if (requestedFile == null) return;
+        InputStream inStream = requestedFile.read();
+        // gets MIME type of the file
+        String mimeType = requestedFile.getName().contains("pdf") ? "application/pdf" : "application/octet-stream";// set to binary type if MIME mapping not found
+
+        try {
+            // forces download
+            String headerKey = "Content-Disposition";
+            String headerValue = String.format("attachment; filename=\"%s\"", requestedFile.getName());
+            response.setHeader(headerKey, headerValue);
+            response.serveFile(request, inStream, requestedFile.lastModified(), requestedFile.length(), "mime-type:" + mimeType);
+        } catch (ServletException e) {
+            e.printStackTrace();
+        } finally {
+            IOUtils.closeQuietly(inStream);
+        }
     }
 }

@@ -59,15 +59,17 @@
                                                 <h4 class="panel-title">${%Singlereports}</h4>
                                             </div>
                                             <div class="panel-body">
-                                                <j:forEach var="file"
-                                                           items="${it.PerfSigUtils.getDownloadFiles('Single.*' + dashboardReport.name + '_.*pdf',it.build)}">
-                                                    <a href="./downloadFile?f=${file.name}" target="_blank">
+                                                <j:set var="files"
+                                                       value="${it.PerfSigUtils.getDownloadFiles('Single.*' + dashboardReport.name + '_.*pdf',it.build)}"/>
+                                                <j:forEach var="file" items="${files}">
+                                                    <a href="./getSingleReport?testCase=${dashboardReport.name}&amp;number=${files.indexOf(file)}"
+                                                       target="_blank">
                                                         <img src="${resURL}/plugin/performance-signature-dynatrace/images/pdficon_small.png"/>
                                                         ${file.name}
                                                     </a>
                                                     <br/>
                                                 </j:forEach>
-                                                <j:if test="${it.PerfSigUtils.getDownloadFiles('Single.*' + dashboardReport.name + '_.*pdf',it.build).isEmpty()}">
+                                                <j:if test="${files.isEmpty()}">
                                                     ${%no Single report available!}
                                                 </j:if>
                                             </div>
@@ -80,15 +82,14 @@
                                                 <h4 class="panel-title">${%Dynatrace sessions}</h4>
                                             </div>
                                             <div class="panel-body">
-                                                <j:forEach var="file"
-                                                           items="${it.PerfSigUtils.getDownloadFiles('.*' + dashboardReport.name + '.dts',it.build)}">
-                                                    <a href="./downloadFile?f=${file.name}" target="_blank">
+                                                <j:set var="file" value="${it.PerfSigUtils.getDownloadFiles('.*' + dashboardReport.name + '.dts',it.build)}"/>
+                                                <j:if test="${!file.isEmtpy()}">
+                                                    <a href="./getSession?testCase=${dashboardReport.name}" target="_blank">
                                                         <img src="${resURL}/plugin/performance-signature-dynatrace/images/dtsession.png"/>
-                                                        ${file.name}
+                                                        ${file.get(0).name}
                                                     </a>
-                                                    <br/>
-                                                </j:forEach>
-                                                <j:if test="${it.PerfSigUtils.getDownloadFiles('.*' + dashboardReport.name + '.dts',it.build).isEmpty()}">
+                                                </j:if>
+                                                <j:if test="${file.isEmpty()}">
                                                     ${%no Dynatrace sessions available!}
                                                 </j:if>
                                             </div>

@@ -160,9 +160,10 @@
                                                     </a>
                                                 </td>
                                                 <td>
-                                                    <j:forEach var="tmp"
-                                                               items="${it.PerfSigUtils.getDownloadFiles('Comparison.*' + lastDashboardReport.name + '_.*pdf',dashboardReport.key)}">
-                                                        <a href="../${dashboardReport.key.number}/performance-signature/downloadFile?f=${tmp.name}"
+                                                    <j:set var="files"
+                                                           value="${it.PerfSigUtils.getDownloadFiles('Comparison.*' + lastDashboardReport.name + '_.*pdf',dashboardReport.key)}"/>
+                                                    <j:forEach var="file" items="${files}">
+                                                        <a href="../${dashboardReport.key.number}/performance-signature/getComparisonReport?testCase=${lastDashboardReport.name}&amp;number=${files.indexOf(file)}"
                                                            target="_blank">
                                                             <img src="${resURL}/plugin/performance-signature-dynatrace/images/pdficon_small.png"
                                                                  style="margin: 0 2px;"/>

@@ -67,8 +67,8 @@
                             </f:radioBlock>
                         </f:optionalBlock>
                     </f:advanced>
-                    <f:entry title="${%credentials/profiles pairs}">
-                        <f:repeatable field="credProfilePairs" header="${%credentials/profile pair}" add="${%add credentials/profile pair}">
+                    <f:entry title="${%Credentials/profiles pairs}">
+                        <f:repeatable field="credProfilePairs" header="${%Credentials/profile pair}" add="${%Add credentials/profile pair}">
                             <table width="100%">
                                 <br/>
                                 <f:entry title="${%Dynatrace REST credentials}" field="credentialsId">
@@ -77,12 +77,12 @@
                                 <f:entry title="${%Dynatrace system profile}" field="profile" description="${%corresponding Dynatrace Profile}">
                                     <f:select/>
                                 </f:entry>
-                                <f:validateButton title="${%test connection}" progress="${%Testing...}"
+                                <f:validateButton title="${%Test connection}" progress="${%Testing...}"
                                                   method="testDynaTraceConnection"
                                                   with="protocol,host,port,credentialsId,verifyCertificate,proxy,proxySource,proxyServer,proxyPort,proxyUser,proxyPassword"/>
                                 <f:entry title="">
                                     <div align="right">
-                                        <f:repeatableDeleteButton value="${%remove credentials/profile pair}"/>
+                                        <f:repeatableDeleteButton value="${%Remove credentials/profile pair}"/>
                                     </div>
                                 </f:entry>
                             </table>
@@ -91,7 +91,7 @@
 
                     <f:entry title="">
                         <div align="right">
-                            <f:repeatableDeleteButton value="${%remove Dynatrace server}"/>
+                            <f:repeatableDeleteButton value="${%Remove Dynatrace server}"/>
                         </div>
                     </f:entry>
                 </table>
