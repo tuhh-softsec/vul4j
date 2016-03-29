@@ -78,16 +78,11 @@ public class Client {
         updateUrl = "http://fs.d1sm.net/finalspeed/update.properties";
     }
 
-    Client(final boolean isVisible, boolean min) {
-    	this.min=min;
+    Client() {
+        los=new LogOutputStream(System.out);
+        System.setOut(los);
+        System.setErr(los);
 
-        if(isVisible){
-        	 los=new LogOutputStream(System.out);
-             System.setOut(los);
-             System.setErr(los);
-        }
-        
-        
         systemName = System.getProperty("os.name").toLowerCase();
         MLog.info("System: " + systemName + " " + System.getProperty("os.version"));
         ui = this;
