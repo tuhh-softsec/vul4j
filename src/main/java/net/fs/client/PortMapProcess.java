@@ -1,26 +1,13 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-
+// Copyright (c) 2015 D1SM.net
 package net.fs.client;
 
-import com.alibaba.fastjson.JSONObject;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.util.Random;
 
+import com.alibaba.fastjson.JSONObject;
 import net.fs.rudp.ClientProcessorInterface;
 import net.fs.rudp.ConnectionUDP;
 import net.fs.rudp.Constant;
@@ -28,12 +15,6 @@ import net.fs.rudp.Route;
 import net.fs.rudp.UDPInputStream;
 import net.fs.rudp.UDPOutputStream;
 import net.fs.utils.MLog;
-
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.Socket;
-import java.util.Random;
 
 public class PortMapProcess implements ClientProcessorInterface{
 

@@ -28,7 +28,7 @@
         <version>1.0</version>
     </parent>
     <groupId>me.sundp</groupId>
-    <artifactId>FinalSpeed</artifactId>
+    <artifactId>finalspeed</artifactId>
     <version>1.0</version>
     <dependencies>
         <dependency>
