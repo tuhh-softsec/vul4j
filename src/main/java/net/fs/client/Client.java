@@ -19,21 +19,17 @@
 
 package net.fs.client;
 
-import com.alibaba.fastjson.JSONObject;
-
-import net.fs.rudp.Route;
-import net.fs.utils.LogOutputStream;
-import net.fs.utils.MLog;
-
-import org.pcap4j.core.Pcaps;
-
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 
+import com.alibaba.fastjson.JSONObject;
+import net.fs.rudp.Route;
+import net.fs.utils.LogOutputStream;
+import net.fs.utils.MLog;
+import org.pcap4j.core.Pcaps;
 
 public class Client {
 
@@ -42,12 +38,6 @@ public class Client {
     ClientConfig config = null;
 
     String configFilePath = "client_config.json";
-
-    int serverVersion = -1;
-
-    int localVersion = 2;
-
-    boolean checkingUpdate = false;
 
     String domain = "";
 
