@@ -265,18 +265,24 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
         int number = 0;
 
         FilePath filePath = new FilePath(PerfSigUtils.getReportDirectory(getBuild()));
+        if (StringUtils.isBlank(testCase)) testCase = "";
         String extension = StringUtils.isBlank(type) ? ".dts" : ".pdf";
         List<FilePath> files = filePath.list(new RegexFileFilter(type + ".*" + testCase + ".*" + extension));
+        if (files.isEmpty()) {
+            response.sendError(404, "requested resource not found");
+            return;
+        }
 
-        if (StringUtils.isNotBlank(numberString)) {
-            try {
-                number = Integer.parseInt(numberString);
-            } catch (NumberFormatException ignored) {
-            }
+        try {
+            number = Integer.parseInt(numberString);
+        } catch (NumberFormatException ignored) {
         }
 
         FilePath requestedFile = number > 0 ? files.get(number) : files.get(0);
-        if (requestedFile == null) return;
+        if (requestedFile == null) {
+            response.sendError(404, "requested resource not found");
+            return;
+        }
         InputStream inStream = requestedFile.read();
         // gets MIME type of the file
         String mimeType = requestedFile.getName().contains("pdf") ? "application/pdf" : "application/octet-stream";// set to binary type if MIME mapping not found
