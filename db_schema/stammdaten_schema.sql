@@ -216,7 +216,8 @@ CREATE TABLE datensatz_erzeuger (
     da_erzeuger_id character varying(2) NOT NULL,
     mst_id character varying(5) NOT NULL REFERENCES mess_stelle,
     bezeichnung character varying(120) NOT NULL,
-    letzte_aenderung timestamp without time zone
+    letzte_aenderung timestamp without time zone,
+    UNIQUE(da_erzeuger_id, netzbetreiber_id)
 );
 
 ALTER SEQUENCE datensatz_erzeuger_id_seq OWNED BY datensatz_erzeuger.id;
@@ -450,7 +451,8 @@ CREATE TABLE messprogramm_kategorie (
     netzbetreiber_id character varying(2) NOT NULL REFERENCES netz_betreiber,
     mpl_id character varying(3) NOT NULL,
     bezeichnung character varying(120) NOT NULL,
-    letzte_aenderung timestamp without time zone
+    letzte_aenderung timestamp without time zone,
+    UNIQUE(mpl_id, netzbetreiber_id)
 );
 
 ALTER SEQUENCE messprogramm_kategorie_id_seq
@@ -517,7 +519,8 @@ CREATE TABLE ort (
     mp_art character varying(10),
     aktiv character(1),
     anlage_id integer,
-    oz_id integer
+    oz_id integer,
+    UNIQUE(ort_id, netzbetreiber_id)
 );
 
 ALTER TABLE ONLY ort
@@ -602,7 +605,8 @@ CREATE TABLE probenehmer (
     telefon character varying(20),
     tp character varying(3),
     typ character(1),
-    letzte_aenderung timestamp without time zone
+    letzte_aenderung timestamp without time zone,
+    UNIQUE(prn_id, netzbetreiber_id)
 );
 
 ALTER SEQUENCE probenehmer_id_seq OWNED BY probenehmer.id;
