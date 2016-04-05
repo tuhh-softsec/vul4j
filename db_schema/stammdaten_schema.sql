@@ -212,10 +212,10 @@ CREATE SEQUENCE datensatz_erzeuger_id_seq
 CREATE TABLE datensatz_erzeuger (
     id integer PRIMARY KEY
         DEFAULT nextval('datensatz_erzeuger_id_seq'::regclass),
-    netzbetreiber_id character varying(2) REFERENCES netz_betreiber,
-    da_erzeuger_id character varying(2),
-    mst_id character varying(5) REFERENCES mess_stelle,
-    bezeichnung character varying(120),
+    netzbetreiber_id character varying(2) NOT NULL REFERENCES netz_betreiber,
+    da_erzeuger_id character varying(2) NOT NULL,
+    mst_id character varying(5) NOT NULL REFERENCES mess_stelle,
+    bezeichnung character varying(120) NOT NULL,
     letzte_aenderung timestamp without time zone
 );
 
@@ -447,9 +447,9 @@ CREATE SEQUENCE messprogramm_kategorie_id_seq
 CREATE TABLE messprogramm_kategorie (
     id integer PRIMARY KEY
         DEFAULT nextval('messprogramm_kategorie_id_seq'::regclass),
-    netzbetreiber_id character varying(2) REFERENCES netz_betreiber,
-    mpl_id character varying(3),
-    bezeichnung character varying(120),
+    netzbetreiber_id character varying(2) NOT NULL REFERENCES netz_betreiber,
+    mpl_id character varying(3) NOT NULL,
+    bezeichnung character varying(120) NOT NULL,
     letzte_aenderung timestamp without time zone
 );
 
@@ -493,15 +493,15 @@ CREATE SEQUENCE ort_id_seq
 CREATE TABLE ort (
     id integer PRIMARY KEY DEFAULT nextval('ort_id_seq'::regclass),
     netzbetreiber_id character varying(2) REFERENCES netz_betreiber,
-    ort_id character varying(10),
-    langtext character varying(100),
-    staat_id smallint REFERENCES staat,
+    ort_id character varying(10) NOT NULL,
+    langtext character varying(100) NOT NULL,
+    staat_id smallint NOT NULL REFERENCES staat,
     gem_id character varying(8) REFERENCES verwaltungseinheit,
     unscharf character(1) DEFAULT NULL::bpchar,
     nuts_code character varying(10),
-    kda_id integer REFERENCES koordinaten_art,
-    koord_x_extern character varying(22),
-    koord_y_extern character varying(22),
+    kda_id integer NOT NULL REFERENCES koordinaten_art,
+    koord_x_extern character varying(22) NOT NULL,
+    koord_y_extern character varying(22) NOT NULL,
     hoehe_land real,
     letzte_aenderung timestamp without time zone DEFAULT now(),
     latitude double precision,
@@ -509,7 +509,7 @@ CREATE TABLE ort (
     geom public.geometry(Point,4326),
     shape public.geometry(MultiPolygon,4326),
     ort_typ smallint REFERENCES ort_typ,
-    kurztext character varying(15),
+    kurztext character varying(15) NOT NULL,
     berichtstext character varying(70),
     zone character varying(1),
     sektor character varying(2),
@@ -589,13 +589,13 @@ CREATE SEQUENCE probenehmer_id_seq
 
 CREATE TABLE probenehmer (
     id integer PRIMARY KEY DEFAULT nextval('probenehmer_id_seq'::regclass),
-    netzbetreiber_id character varying(2) REFERENCES netz_betreiber,
-    prn_id character varying(9),
+    netzbetreiber_id character varying(2) NOT NULL REFERENCES netz_betreiber,
+    prn_id character varying(9) NOT NULL,
     bearbeiter character varying(25),
     bemerkung character varying(60),
     betrieb character varying(80),
-    bezeichnung character varying(80),
-    kurz_bezeichnung character varying(10),
+    bezeichnung character varying(80) NOT NULL,
+    kurz_bezeichnung character varying(10) NOT NULL,
     ort character varying(20),
     plz character varying(5),
     strasse character varying(30),
