@@ -106,6 +106,9 @@ public class UserInfo {
 
     public boolean belongsTo(String messstelle, String labor) {
         for (Auth a : auth) {
+            if (a.getMstId() == null) {
+                continue;
+            }
             if (a.getMstId().contains(messstelle) &&
                 a.getLaborMstId() != null &&
                 labor != null &&
