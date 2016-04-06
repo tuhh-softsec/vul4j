@@ -7,6 +7,7 @@
         "media": "Trinkwasser Zentralversorgung Oberflächenwasser aufbereitet",
         "media_desk": "D: 59 04 01 00 05 05 01 02 00 00 00 00",
         "mst_id": "06010",
+        "labor_mst_id": "06010",
         "netzbetreiber_id": "06",
         "probeentnahme_beginn": "2012-05-03 13:07:00",
         "probenart_id": 1,
