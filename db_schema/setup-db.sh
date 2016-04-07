@@ -19,3 +19,6 @@ psql -d $DB_NAME --command \
             ON ALL SEQUENCES IN SCHEMA stammdaten, bund, land TO $ROLE_NAME;
       GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES
             ON ALL TABLES IN SCHEMA stammdaten, bund, land TO $ROLE_NAME;"
+
+psql -d $DB_NAME -f $DIR/stammdaten_data.sql
+psql -d $DB_NAME -f $DIR/lada_data.sql
