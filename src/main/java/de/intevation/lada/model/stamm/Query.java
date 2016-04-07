@@ -17,9 +17,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Transient;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 /**
@@ -52,6 +51,7 @@ public class Query implements Serializable {
 
     //bi-directional many-to-one association to Result
     @OneToMany(fetch=FetchType.EAGER, mappedBy="query")
+    @OrderBy("index")
     private List<Result> results;
 
     public Query() {
