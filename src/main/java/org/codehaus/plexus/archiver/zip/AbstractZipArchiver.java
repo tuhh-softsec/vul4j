@@ -779,7 +779,9 @@ public abstract class AbstractZipArchiver
         {
             if ( zipArchiveOutputStream != null )
             {
-                zOut.writeTo( zipArchiveOutputStream );
+                if ( zOut != null) {
+                  zOut.writeTo( zipArchiveOutputStream );
+                }
                 zipArchiveOutputStream.close();
             }
         }
