@@ -93,51 +93,52 @@ public class MessungAuthorizer extends BaseAuthorizer {
         else {
             messung.setOwner(false);
         }
-        LStatusProtokoll status = repository.getByIdPlain(
-            LStatusProtokoll.class,
-            messung.getStatus(),
-            "land");
         if (messung.getStatus() == null) {
             messung.setReadonly(false);
+            messung.setStatusEdit(false);
         }
         else {
+            LStatusProtokoll status = repository.getByIdPlain(
+                LStatusProtokoll.class,
+                messung.getStatus(),
+                "land");
             messung.setReadonly(
                 status.getStatusWert() != 0 && status.getStatusWert() != 4);
-        }
 
-        boolean statusEdit = false;
-        if (userInfo.getFunktionen().contains(3)) {
-            QueryBuilder<AuthLstUmw> lstFilter = new QueryBuilder<AuthLstUmw>(
-                repository.entityManager("stamm"),
-                AuthLstUmw.class);
-            lstFilter.or("lstId", userInfo.getMessstellen());
-            List<AuthLstUmw> lsts =
-                repository.filterPlain(lstFilter.getQuery(), "stamm");
-            for (int i = 0; i < lsts.size(); i++) {
-                if (lsts.get(i).getUmwId().equals(probe.getUmwId())
-                    && status.getStatusStufe() == 2
-                    && status.getStatusWert() != 4
-                    || status.getStatusStufe() == 3
-                ) {
-                    statusEdit = true;
+            boolean statusEdit = false;
+            if (userInfo.getFunktionen().contains(3)) {
+                QueryBuilder<AuthLstUmw> lstFilter = new QueryBuilder<AuthLstUmw>(
+                    repository.entityManager("stamm"),
+                    AuthLstUmw.class);
+                lstFilter.or("lstId", userInfo.getMessstellen());
+                List<AuthLstUmw> lsts =
+                    repository.filterPlain(lstFilter.getQuery(), "stamm");
+                for (int i = 0; i < lsts.size(); i++) {
+                    if (lsts.get(i).getUmwId().equals(probe.getUmwId())
+                        && status.getStatusStufe() == 2
+                        && status.getStatusWert() != 4
+                        || status.getStatusStufe() == 3
+                    ) {
+                        statusEdit = true;
+                    }
                 }
             }
-        }
-        else if (userInfo.getFunktionen().contains(2) &&
-            userInfo.getNetzbetreiber().contains(probe.getNetzbetreiberId()) &&
-            (status.getStatusStufe() == 1 || status.getStatusStufe() == 2) &&
-            status.getStatusWert() >= 1
-        ) {
-            statusEdit = true;
-        }
-        else if (userInfo.getFunktionen().contains(1) &&
-            userInfo.belongsTo(probe.getMstId(), probe.getLaborMstId()) &&
-            (status.getStatusStufe() <= 1 || status.getStatusWert() == 4)
-        ) {
-            statusEdit = true;
-        }
-        messung.setStatusEdit(statusEdit);
+            else if (userInfo.getFunktionen().contains(2) &&
+                userInfo.getNetzbetreiber().contains(probe.getNetzbetreiberId()) &&
+                (status.getStatusStufe() == 1 || status.getStatusStufe() == 2) &&
+                status.getStatusWert() >= 1
+            ) {
+                statusEdit = true;
+            }
+            else if (userInfo.getFunktionen().contains(1) &&
+                userInfo.belongsTo(probe.getMstId(), probe.getLaborMstId()) &&
+                (status.getStatusStufe() <= 1 || status.getStatusWert() == 4)
+            ) {
+                statusEdit = true;
+            }
+            messung.setStatusEdit(statusEdit);
 
+        }
         return messung;
     }
 
