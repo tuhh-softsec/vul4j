@@ -2,17 +2,13 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.5.1
--- Dumped by pg_dump version 9.5.0
-
--- Started on 2016-03-31 11:55:47
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
+
 
 SET search_path = land, pg_catalog;
 
@@ -1235,7 +1231,22 @@ COPY zusatz_wert (id, probe_id, pzs_id, messwert_pzs, messfehler, letzte_aenderu
 
 ALTER TABLE zusatz_wert ENABLE TRIGGER ALL;
 
--- Completed on 2016-03-31 11:55:55
+
+
+SET search_path = bund, pg_catalog;
+
+SELECT pg_catalog.setval('kommentar_id_seq', 661, true);
+
+SELECT pg_catalog.setval('messung_id_seq', 1009, true);
+
+SELECT pg_catalog.setval('messwert_id_seq', 6471, true);
+
+SELECT pg_catalog.setval('ort_id_seq', 921, true);
+
+SELECT pg_catalog.setval('probe_id_seq', 733, true);
+
+SELECT pg_catalog.setval('zusatz_wert_id_seq', 30, true);
+
 
 --
 -- PostgreSQL database dump complete
