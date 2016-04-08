@@ -22007,7 +22007,7 @@ COPY query (id, name, type, sql, description) FROM stdin;
 --
 
 COPY favorite (id, user_id, query_id) FROM stdin;
-11	1	6
+11	1	2
 \.
 
 
