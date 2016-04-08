@@ -9,6 +9,8 @@ package de.intevation.lada.rest;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -33,6 +35,7 @@ import de.intevation.lada.model.land.LMessung;
 import de.intevation.lada.model.land.LProbe;
 import de.intevation.lada.model.land.LStatusProtokoll;
 import de.intevation.lada.model.land.MessungTranslation;
+import de.intevation.lada.query.QueryTools;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -93,7 +96,7 @@ public class MessungService {
      */
     @Inject
     @RepositoryConfig(type=RepositoryType.RW)
-    private Repository defaultRepo;
+    private Repository repository;
 
     /**
      * The object lock mechanism.
@@ -112,6 +115,9 @@ public class MessungService {
     @Inject
     @ValidationConfig(type="Messung")
     private Validator validator;
+
+    @Inject
+    private QueryTools queryTools;
 
     /**
      * Get all Messung objects.
@@ -132,20 +138,75 @@ public class MessungService {
         @Context HttpServletRequest request
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
-        if (params.isEmpty() || !params.containsKey("probeId")) {
-            return defaultRepo.getAll(LMessung.class, "land");
+        if (params.isEmpty() ||
+            (!params.containsKey("probeId") && !params.containsKey("qid"))) {
+            return repository.getAll(LMessung.class, "land");
         }
-        String probeId = params.getFirst("probeId");
-        QueryBuilder<LMessung> builder =
-            new QueryBuilder<LMessung>(
-                defaultRepo.entityManager("land"),
+        if (params.containsKey("probeId")) {
+            String probeId = params.getFirst("probeId");
+            QueryBuilder<LMessung> builder =
+                new QueryBuilder<LMessung>(
+                    repository.entityManager("land"),
+                    LMessung.class);
+            builder.and("probeId", probeId);
+            return authorization.filter(
+                request,
+                repository.filter(builder.getQuery(), "land"),
                 LMessung.class);
-        builder.and("probeId", probeId);
-        return authorization.filter(
-            request,
-            defaultRepo.filter(builder.getQuery(), "land"),
-            LMessung.class);
+        }
+        else if (params.containsKey("qid")) {
+            Integer id = null;
+            try {
+                id = Integer.valueOf(params.getFirst("qid"));
+            }
+            catch (NumberFormatException e) {
+                return new Response(false, 603, "Not a valid filter id");
+            }
+            List<Map<String, Object>> result =
+                queryTools.getResultForQuery(params, id, "messung");
+
+            int size = result.size();
+            if (params.containsKey("start") && params.containsKey("limit")) {
+                int start = Integer.valueOf(params.getFirst("start"));
+                int limit = Integer.valueOf(params.getFirst("limit"));
+                int end = limit + start;
+                if (start + limit > result.size()) {
+                    end = result.size();
+                }
+                result = result.subList(start, end);
+            }
+
+            QueryBuilder<LMessung> pBuilder = new QueryBuilder<LMessung>(
+                repository.entityManager("land"), LMessung.class);
+            for (Map<String, Object> entry: result) {
+                pBuilder.or("id", (Integer)entry.get("id"));
+            }
+            Response r = repository.filter(pBuilder.getQuery(), "land");
+            r = authorization.filter(request, r, LMessung.class);
+            List<LMessung> messungen= (List<LMessung>)r.getData();
+            for (Map<String, Object> entry: result) {
+                Integer pId = Integer.valueOf(entry.get("id").toString());
+                setAuthData(messungen, entry, pId);
+            }
+            return new Response(true, 200, result, size);
+        }
+        return new Response(false, 603, "No valid paramter given.");
     }
+
+    private void setAuthData(
+        List<LMessung> messungen,
+        Map<String, Object> entry,
+        Integer id
+    ) {
+        for (int i = 0; i < messungen.size(); i++) {
+            if (id.equals(messungen.get(i).getId())) {
+                entry.put("readonly", messungen.get(i).isReadonly());
+                entry.put("owner", messungen.get(i).isOwner());
+                return;
+            }
+        }
+    }
+
 
     /**
      * Get a Messung object by id.
@@ -165,7 +226,7 @@ public class MessungService {
         @PathParam("id") String id
     ) {
         Response response =
-            defaultRepo.getById(LMessung.class, Integer.valueOf(id), "land");
+            repository.getById(LMessung.class, Integer.valueOf(id), "land");
         LMessung messung = (LMessung)response.getData();
         Violation violation = validator.validate(messung);
         if (violation.hasErrors() || violation.hasWarnings()) {
@@ -230,15 +291,15 @@ public class MessungService {
         }
 
         /* Persist the new messung object*/
-        Response response = defaultRepo.create(messung, "land");
+        Response response = repository.create(messung, "land");
         LMessung ret = (LMessung)response.getData();
         /* Create and persist a new probe translation object*/
         MessungTranslation trans = new MessungTranslation();
         trans.setMessungsId(ret);
-        defaultRepo.create(trans, "land");
+        repository.create(trans, "land");
         /* Get and return the new probe object*/
         Response created =
-            defaultRepo.getById(LMessung.class, ret.getId(), "land");
+            repository.getById(LMessung.class, ret.getId(), "land");
         if(violation.hasWarnings()) {
             created.setWarnings(violation.getWarnings());
         }
@@ -247,15 +308,15 @@ public class MessungService {
         status.setDatum(new Timestamp(new Date().getTime()));
         status.setMessungsId(((LMessung)created.getData()).getId());
         LProbe probe =
-            defaultRepo.getByIdPlain(LProbe.class, ret.getProbeId(), "land");
+            repository.getByIdPlain(LProbe.class, ret.getProbeId(), "land");
         status.setErzeuger(probe.getMstId());
         status.setStatusStufe(1);
         status.setStatusWert(0);
-        defaultRepo.create(status, "land");
+        repository.create(status, "land");
         ret.setStatus(status.getId());
-        defaultRepo.update(ret, "land");
+        repository.update(ret, "land");
         Response updated=
-            defaultRepo.getById(LMessung.class, ret.getId(), "land");
+            repository.getById(LMessung.class, ret.getId(), "land");
 
         return authorization.filter(
             request,
@@ -316,8 +377,8 @@ public class MessungService {
             return response;
         }
         messung.setLetzteAenderung(new Timestamp(new Date().getTime()));
-        Response response = defaultRepo.update(messung, "land");
-        Response updated = defaultRepo.getById(
+        Response response = repository.update(messung, "land");
+        Response updated = repository.getById(
             LMessung.class,
             ((LMessung)response.getData()).getId(), "land");
         if(violation.hasWarnings()) {
@@ -348,7 +409,7 @@ public class MessungService {
     ) {
         /* Get the messung object by id*/
         Response messung =
-            defaultRepo.getById(LMessung.class, Integer.valueOf(id), "land");
+            repository.getById(LMessung.class, Integer.valueOf(id), "land");
         LMessung messungObj = (LMessung)messung.getData();
         if (!authorization.isAuthorized(
                 request,
@@ -363,6 +424,6 @@ public class MessungService {
         }
 
         /* Delete the messung object*/
-        return defaultRepo.delete(messungObj, "land");
+        return repository.delete(messungObj, "land");
     }
 }
