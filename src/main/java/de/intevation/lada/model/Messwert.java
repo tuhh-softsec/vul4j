@@ -48,13 +48,13 @@ public class Messwert implements Serializable {
     @Column(name="messungs_id")
     private Integer messungsId;
 
-    private Float messwert;
+    private Double messwert;
 
     @Column(name="messwert_nwg")
     private String messwertNwg;
 
     @Column(name="nwg_zu_messwert")
-    private Float nwgZuMesswert;
+    private Double nwgZuMesswert;
 
     @Transient
     private boolean owner;
@@ -121,11 +121,11 @@ public class Messwert implements Serializable {
         this.messungsId = messungsId;
     }
 
-    public Float getMesswert() {
+    public Double getMesswert() {
         return this.messwert;
     }
 
-    public void setMesswert(Float messwert) {
+    public void setMesswert(Double messwert) {
         this.messwert = messwert;
     }
 
@@ -137,11 +137,11 @@ public class Messwert implements Serializable {
         this.messwertNwg = messwertNwg;
     }
 
-    public Float getNwgZuMesswert() {
+    public Double getNwgZuMesswert() {
         return this.nwgZuMesswert;
     }
 
-    public void setNwgZuMesswert(Float nwgZuMesswert) {
+    public void setNwgZuMesswert(Double nwgZuMesswert) {
         this.nwgZuMesswert = nwgZuMesswert;
     }
 

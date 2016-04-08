@@ -416,8 +416,7 @@ public class AttributeMapper
                 wert = wert.substring(2);
                 messwert.setGrenzwertueberschreitung(true);
             }
-            float fWert = Float.valueOf(wert);
-            messwert.setMesswert(fWert);
+            messwert.setMesswert(Double.valueOf(wert));
 
             QueryBuilder<MessEinheit> builder =
                 new QueryBuilder<MessEinheit>(
@@ -552,7 +551,7 @@ public class AttributeMapper
             return null;
         }
         wert.setPzsId(zusatz.get(0).getId());
-        wert.setMesswertPzs(Float.valueOf(w));
+        wert.setMesswertPzs(Double.valueOf(w));
         wert.setMessfehler(Float.valueOf(fehler));
         return wert;
     }
@@ -580,7 +579,7 @@ public class AttributeMapper
         ndx = v.indexOf(" ");
         String fehler = v.substring(ndx + 2);
         wert.setPzsId(groesse);
-        wert.setMesswertPzs(Float.valueOf(w));
+        wert.setMesswertPzs(Double.valueOf(w));
         wert.setMessfehler(Float.valueOf(fehler));
         return wert;
     }
