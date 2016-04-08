@@ -494,7 +494,7 @@ CREATE SEQUENCE ort_id_seq
 
 CREATE TABLE ort (
     id integer PRIMARY KEY DEFAULT nextval('ort_id_seq'::regclass),
-    netzbetreiber_id character varying(2) REFERENCES netz_betreiber,
+    netzbetreiber_id character varying(2) NOT NULL REFERENCES netz_betreiber,
     ort_id character varying(10) NOT NULL,
     langtext character varying(100) NOT NULL,
     staat_id smallint NOT NULL REFERENCES staat,
