@@ -302,9 +302,9 @@ CREATE TABLE messwert (
     messungs_id integer NOT NULL,
     messgroesse_id integer NOT NULL,
     messwert_nwg character varying(1),
-    messwert real NOT NULL,
+    messwert double precision NOT NULL,
     messfehler real,
-    nwg_zu_messwert real,
+    nwg_zu_messwert double precision,
     meh_id smallint NOT NULL,
     grenzwertueberschreitung boolean DEFAULT false,
     letzte_aenderung timestamp without time zone DEFAULT now()
@@ -495,10 +495,10 @@ CREATE TABLE zusatz_wert (
     id integer DEFAULT nextval('zusatz_wert_id_seq'::regclass) NOT NULL,
     probe_id integer NOT NULL,
     pzs_id character varying(3) NOT NULL,
-    messwert_pzs real,
+    messwert_pzs double precision,
     messfehler real,
     letzte_aenderung timestamp without time zone DEFAULT now(),
-    nwg_zu_messwert real
+    nwg_zu_messwert double precision
 );
 
 

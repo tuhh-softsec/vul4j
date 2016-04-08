@@ -38,10 +38,10 @@ public class ZusatzWert implements Serializable {
     private Float messfehler;
 
     @Column(name="messwert_pzs")
-    private Float messwertPzs;
+    private Double messwertPzs;
 
     @Column(name="nwg_zu_messwert")
-    private Float nwgZuMesswert;
+    private Double nwgZuMesswert;
 
     @Column(name="probe_id")
     private Integer probeId;
@@ -82,19 +82,19 @@ public class ZusatzWert implements Serializable {
         this.messfehler = messfehler;
     }
 
-    public Float getMesswertPzs() {
+    public Double getMesswertPzs() {
         return this.messwertPzs;
     }
 
-    public void setMesswertPzs(Float messwertPzs) {
+    public void setMesswertPzs(Double messwertPzs) {
         this.messwertPzs = messwertPzs;
     }
 
-    public Float getNwgZuMesswert() {
+    public Double getNwgZuMesswert() {
         return this.nwgZuMesswert;
     }
 
-    public void setNwgZuMesswert(Float nwgZuMesswert) {
+    public void setNwgZuMesswert(Double nwgZuMesswert) {
         this.nwgZuMesswert = nwgZuMesswert;
     }
 

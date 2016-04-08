@@ -213,7 +213,7 @@ public class ProbeFactory {
                 LMesswert wert = new LMesswert();
                 wert.setMessgroesseId(mw);
                 wert.setMessungsId(messung.getId());
-                wert.setMesswert(0f);
+                wert.setMesswert(0d);
                 wert.setMehId(1);
                 repository.create(wert, "land");
             }

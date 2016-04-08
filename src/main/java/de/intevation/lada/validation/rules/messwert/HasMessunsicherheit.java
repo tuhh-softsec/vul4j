@@ -25,8 +25,8 @@ public class HasMessunsicherheit implements Rule {
     public Violation execute(Object object) {
         LMesswert messwert = (LMesswert)object;
         Float unsicherheit = messwert.getMessfehler();
-        Float nachweisgrenze = messwert.getNwgZuMesswert();
-        Float wert = messwert.getMesswert();
+        Double nachweisgrenze = messwert.getNwgZuMesswert();
+        Double wert = messwert.getMesswert();
         if (unsicherheit != null && unsicherheit > 0f) {
             return null;
         }
