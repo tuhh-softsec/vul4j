@@ -125,6 +125,8 @@ public final class FlakyTestResult extends MetaTabulatedResult {
         e.printStackTrace();
       } catch (InterruptedException e) {
         e.printStackTrace();
+      } catch (NullPointerException e) {
+        e.printStackTrace();
       }
     }
     keepLongStdio = true;
