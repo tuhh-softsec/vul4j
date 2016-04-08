@@ -100,6 +100,31 @@ public class QueryService {
     }
 
     /**
+     * Request all configured messung queries.
+     */
+    @GET
+    @Path("/messung")
+    @Produces("application/json")
+    public Response getMessung(
+        @Context HttpServletRequest request
+    ) {
+        UserInfo userInfo = authorization.getInfo(request);
+        QueryBuilder<Query> builder = new QueryBuilder<Query>(
+            repository.entityManager("stamm"),
+            Query.class
+        );
+        builder.and("type", "messung");
+        List<Query> queries = repository.filterPlain(builder.getQuery(), "stamm");
+
+        markFavorites(queries, userInfo);
+
+        setFilterValues(queries, 0);
+        setFilterValues(queries, userInfo.getUserId());
+
+        return new Response(true, 200, queries);
+    }
+
+    /**
      * Request all configured messprogramm queries.
      */
     @GET
