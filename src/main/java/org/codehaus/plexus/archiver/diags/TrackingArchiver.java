@@ -20,6 +20,7 @@ package org.codehaus.plexus.archiver.diags;
  */
 
 import org.codehaus.plexus.archiver.*;
+import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
 import org.codehaus.plexus.util.StringUtils;
@@ -55,38 +56,39 @@ public class TrackingArchiver
     public void addDirectory( final @Nonnull File directory )
         throws ArchiverException
     {
-        added.add( new Addition( directory, null, null, null, -1 ) );
+        added.add( new Addition( directory, null, null, null, PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
     }
 
     public void addDirectory( final @Nonnull File directory, final String prefix )
         throws ArchiverException
     {
-        added.add( new Addition( directory, prefix, null, null, -1 ) );
+        added.add( new Addition( directory, prefix, null, null, PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
     }
 
     public void addDirectory( final @Nonnull File directory, final String[] includes, final String[] excludes )
         throws ArchiverException
     {
-        added.add( new Addition( directory, null, includes, excludes, -1 ) );
+        added.add( new Addition( directory, null, includes, excludes, PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
     }
 
     public void addDirectory( final @Nonnull File directory, final String prefix, final String[] includes,
                               final String[] excludes )
         throws ArchiverException
     {
-        added.add( new Addition( directory, prefix, includes, excludes, -1 ) );
+        added.add( new Addition( directory, prefix, includes, excludes,
+            PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
     }
 
     public void addFileSet( final @Nonnull FileSet fileSet )
         throws ArchiverException
     {
-        added.add( new Addition( fileSet, null, null, null, -1 ) );
+        added.add( new Addition( fileSet, null, null, null, PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
     }
 
     public void addFile( final @Nonnull File inputFile, final @Nonnull String destFileName )
         throws ArchiverException
     {
-        added.add( new Addition( inputFile, destFileName, null, null, -1 ) );
+        added.add( new Addition( inputFile, destFileName, null, null, PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
     }
 
     public void addFile( final @Nonnull File inputFile, final @Nonnull String destFileName, final int permissions )
@@ -98,51 +100,53 @@ public class TrackingArchiver
     public void addArchivedFileSet( final @Nonnull File archiveFile )
         throws ArchiverException
     {
-        added.add( new Addition( archiveFile, null, null, null, -1 ) );
+        added.add( new Addition( archiveFile, null, null, null, PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
     }
 
     public void addArchivedFileSet( final @Nonnull File archiveFile, final String prefix )
         throws ArchiverException
     {
-        added.add( new Addition( archiveFile, prefix, null, null, -1 ) );
+        added.add( new Addition( archiveFile, prefix, null, null, PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
     }
 
     public void addSymlink( String s, String s2 )
         throws ArchiverException
     {
-        added.add( new Addition( s, null, null, null, -1 ) );
+        added.add( new Addition( s, null, null, null, PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
     }
 
     public void addSymlink( String s, int i, String s2 )
         throws ArchiverException
     {
-        added.add( new Addition( s, null, null, null, -1 ) );
+        added.add( new Addition( s, null, null, null, PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
 
     }
 
     public void addArchivedFileSet( final File archiveFile, final String[] includes, final String[] excludes )
         throws ArchiverException
     {
-        added.add( new Addition( archiveFile, null, includes, excludes, -1 ) );
+        added.add( new Addition( archiveFile, null, includes, excludes,
+            PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
     }
 
     public void addArchivedFileSet( final @Nonnull File archiveFile, final String prefix, final String[] includes,
                                     final String[] excludes )
         throws ArchiverException
     {
-        added.add( new Addition( archiveFile, prefix, includes, excludes, -1 ) );
+        added.add( new Addition( archiveFile, prefix, includes, excludes,
+            PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
     }
 
     public void addArchivedFileSet( final ArchivedFileSet fileSet )
         throws ArchiverException
     {
-        added.add( new Addition( fileSet, null, null, null, -1 ) );
+        added.add( new Addition( fileSet, null, null, null, PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
     }
 
     public void addArchivedFileSet( final ArchivedFileSet fileSet, Charset charset )
         throws ArchiverException
     {
-        added.add( new Addition( fileSet, null, null, null, -1 ) );
+        added.add( new Addition( fileSet, null, null, null, PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
     }
 
     public void addResource( final PlexusIoResource resource, final String destFileName, final int permissions )
@@ -154,7 +158,7 @@ public class TrackingArchiver
     public void addResources( final PlexusIoResourceCollection resources )
         throws ArchiverException
     {
-        added.add( new Addition( resources, null, null, null, -1 ) );
+        added.add( new Addition( resources, null, null, null, PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
     }
 
     public File getDestFile()

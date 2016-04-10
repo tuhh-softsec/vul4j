@@ -45,7 +45,7 @@ public class ZipResource extends AbstractPlexusIoResource
 
     public synchronized PlexusIoResourceAttributes getAttributes()
     {
-        int mode = -1;
+        int mode = PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE;
         if (entry.getPlatform() == ZipArchiveEntry.PLATFORM_UNIX)
         {
             mode = entry.getUnixMode();
