@@ -5,9 +5,10 @@ Since archiver depends on a given version of IO this list is cumulative,
 any version includes *all* changes below.
 
 
-Plexus Archiver - 3.1.1
----------
+## Release 3.1.1
+
  * Fixed #28 which checks for null preventing NPE.
+ * Pull Request #26 - Improvement from Plamen Totev.
 
 Plexus Components - Version plexus-io-2.6.1
 -----

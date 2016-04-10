@@ -6,3 +6,10 @@ Plexus-archiver
 [![Build Status](https://travis-ci.org/codehaus-plexus/plexus-archiver.svg?branch=master)](https://travis-ci.org/codehaus-plexus/plexus-archiver)
 
 The current master is now at https://github.com/codehaus-plexus/plexus-archiver
+
+## Release Notes
+
+You can find details about the different releases in the [Release Notes](https://github.com/codehaus-plexus/plexus-archiver/blob/master/ReleaseNotes.md).
+
+ * [Release 3.1.1](https://github.com/codehaus-plexus/plexus-archiver/blob/master/ReleaseNotes.md#release-311).
+
