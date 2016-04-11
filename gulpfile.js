@@ -10,8 +10,13 @@ gulp.task('lint', function () {
 //
 builder.bundle('src/main/js/buildactionresultsdisplay.js')
     .withExternalModuleMapping('bootstrap-detached', 'bootstrap:bootstrap3', {addDefaultCSS: true})
-    .inDir('src/main/webapp/jsbundles').minify();
+    .inDir('src/main/webapp/jsbundles');
 
 builder.bundle('src/main/js/floatingBox.js')
     .withExternalModuleMapping('bootstrap-detached', 'bootstrap:bootstrap3', {addDefaultCSS: true})
-    .inDir('src/main/webapp/jsbundles').minify();
+    .inDir('src/main/webapp/jsbundles');
+
+/*builder.bundle('src/main/js/projectaction.js')
+    .withExternalModuleMapping('bootstrap-detached', 'bootstrap:bootstrap3', {addDefaultCSS: true})
+    .withExternalModuleMapping('jquery', 'bootstrap:bootstrap3')
+ .inDir('src/main/webapp/jsbundles');*/
