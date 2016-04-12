@@ -19,8 +19,7 @@
     <l:layout xmlns:jm="/de/tsystems/mms/apm/performancesignature/tags"
               title="Performance Signature report details for build ${it.build.number}">
         <l:header>
-            <!--<link type="text/css" href="${resURL}/plugin/performance-signature-dynatrace/css/bootstrap.min.css"
-                  rel="stylesheet"/>-->
+            <link type="text/css" href="${resURL}/plugin/performance-signature-dynatrace/jsbundles/bootstrapprefix.css" rel="stylesheet"/>
             <style>
                 .nav::after, .row::after { clear: none; }
                 .text-center { text-align: center !important; }
@@ -28,7 +27,7 @@
         </l:header>
         <st:include it="${it.build}" page="sidepanel.jelly"/>
         <l:main-panel>
-            <div class="bootstrap-3">
+            <div class="tw-bs">
                 <div class="row">
                     <div class="col-md-12">
                         <h1>${%Performance Signature for build} ${it.build.number}</h1>
@@ -132,8 +131,6 @@
                 </div>
             </div>
             <br style="clear:both;"/>
-            <!--<script data-main="${resURL}/plugin/performance-signature-dynatrace/js/buildactionresultsdisplay"
-                    src="${resURL}/plugin/performance-signature-dynatrace/js/require.min.js"/>-->
             <script src="${resURL}/plugin/performance-signature-dynatrace/jsbundles/buildactionresultsdisplay.js" type="text/javascript"/>
             <script type="text/javascript">
                 var rootURL = "${rootURL}";

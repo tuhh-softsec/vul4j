@@ -4,7 +4,8 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "gulp": "^3.9.1",
-    "jenkins-js-builder": "0.0.51"
+    "jenkins-js-builder": "0.0.51",
+    "minifyify": "^7.3.3"
   },
   "dependencies": {
     "bootstrap-detached": "^3.3.5-v1",
