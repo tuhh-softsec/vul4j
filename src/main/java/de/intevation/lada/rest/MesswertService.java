@@ -331,7 +331,6 @@ public class MesswertService {
             return response;
         }
 
-        messwert.setLetzteAenderung(new Timestamp(new Date().getTime()));
         Response response = defaultRepo.update(messwert, "land");
         Response updated = defaultRepo.getById(
             LMesswert.class,

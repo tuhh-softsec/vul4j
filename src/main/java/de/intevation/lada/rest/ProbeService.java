@@ -445,7 +445,6 @@ public class ProbeService {
         if (probe.getUmwId() == null || probe.getUmwId() == "") {
             factory.findUmweltId(probe);
         }
-        probe.setLetzteAenderung(new Timestamp(new Date().getTime()));
         Response response = repository.update(probe, "land");
         Response updated = repository.getById(
             LProbe.class,

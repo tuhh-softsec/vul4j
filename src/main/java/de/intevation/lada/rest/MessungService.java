@@ -377,7 +377,6 @@ public class MessungService {
             response.setWarnings(violation.getWarnings());
             return response;
         }
-        messung.setLetzteAenderung(new Timestamp(new Date().getTime()));
         Response response = repository.update(messung, "land");
         Response updated = repository.getById(
             LMessung.class,

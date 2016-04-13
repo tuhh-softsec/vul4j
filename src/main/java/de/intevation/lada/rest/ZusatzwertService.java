@@ -246,7 +246,6 @@ public class ZusatzwertService {
         if (lock.isLocked(zusatzwert)) {
             return new Response(false, 697, null);
         }
-        zusatzwert.setLetzteAenderung(new Timestamp(new Date().getTime()));
         Response response = defaultRepo.update(zusatzwert, "land");
         Response updated = defaultRepo.getById(
             LZusatzWert.class,
