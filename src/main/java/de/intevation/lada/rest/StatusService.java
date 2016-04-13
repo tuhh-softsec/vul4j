@@ -236,6 +236,15 @@ public class StatusService {
         if (lock.isLocked(messung)) {
             return new Response(false, 697, null);
         }
+
+        Response r = authorization.filter(
+            request,
+            new Response(true, 200, messung),
+            LMessung.class);
+        LMessung filteredMessung = (LMessung)r.getData();
+        if (filteredMessung.getStatusEdit() == false) {
+            return new Response(false, 699, null);
+        }
         boolean next = false;
         boolean change = false;
         if (messung.getStatus() == null) {
