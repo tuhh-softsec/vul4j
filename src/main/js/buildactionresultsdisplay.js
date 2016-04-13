@@ -48,10 +48,9 @@ $(document).ready(function () {
         $('#tabList').find('a:first').tab('show'); // Select first tab
     }
 
-
     $('.nav-tabs a').click(function () {
         $(this).tab('show');
-        var scrollmem = $('body').scrollTop();
+        var scrollmem = $('body').scrollTop() || $('html').scrollTop();
         window.location.hash = this.hash;
         $('html,body').scrollTop(scrollmem);
     });

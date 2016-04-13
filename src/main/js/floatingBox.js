@@ -47,7 +47,7 @@ $(document).ready(function () {
                             '<img class="img-thumbnail" height="300" width="410"' +
                             'src="performance-signature/testRunGraph?width=410&amp;height=300"></div>\n');
                     } else {
-                        $(".carousel-inner", carousel).append('<div class="item">' +
+                        $('.carousel-inner', carousel).append('<div class="item">' +
                             '<img class="img-thumbnail" height="300" width="410"' +
                             'src="performance-signature/summarizerGraph?width=410&amp;height=300&amp;id=' + json[index].id + '"></div>\n');
                     }
@@ -67,7 +67,7 @@ $(document).ready(function () {
 
     $('.nav-tabs a').click(function () {
         $(this).tab('show');
-        var scrollmem = $('body').scrollTop();
+        var scrollmem = $('body').scrollTop() || $('html').scrollTop();
         window.location.hash = this.hash;
         $('html,body').scrollTop(scrollmem);
     });
