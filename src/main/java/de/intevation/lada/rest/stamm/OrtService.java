@@ -25,6 +25,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
+import de.intevation.lada.model.stamm.Filter;
 import de.intevation.lada.model.stamm.Ort;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
@@ -83,7 +84,7 @@ public class OrtService {
      */
     @Inject
     @RepositoryConfig(type=RepositoryType.RW)
-    private Repository defaultRepo;
+    private Repository repository;
 
     @Inject
     @AuthorizationConfig(type=AuthorizationType.HEADER)
@@ -107,38 +108,86 @@ public class OrtService {
         @Context UriInfo info
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
-        if (params.isEmpty() || !params.containsKey("ortId")) {
-            List<Ort> orte = defaultRepo.getAllPlain(Ort.class, "stamm");
-            int size = orte.size();
-            if (params.containsKey("start") && params.containsKey("limit")) {
-                int start = Integer.valueOf(params.getFirst("start"));
-                int limit = Integer.valueOf(params.getFirst("limit"));
-                int end = limit + start;
-                if (limit == 0) {
-                    end = orte.size();
-                }
-                else if (start + limit > orte.size()) {
-                    end = orte.size();
-                }
-                orte = orte.subList(start, end);
+        List<Ort> orte = repository.getAllPlain(Ort.class, "stamm");
+        if (params.containsKey("ortId")) {
+            Integer id;
+            try {
+                id = Integer.valueOf(params.getFirst("qid"));
             }
-            for (Ort o : orte) {
-                o.setReadonly(
-                    !authorization.isAuthorized(
-                        request,
-                        o,
-                        RequestMethod.POST,
-                        Ort.class));
+            catch (NumberFormatException e) {
+                return new Response(false, 603, "Not a valid filter id");
             }
-            return new Response(true, 200, orte, size);
+
+            Ort o = repository.getByIdPlain(Ort.class, id, "stamm");
+            o.setReadonly(
+                !authorization.isAuthorized(
+                    request,
+                    o,
+                    RequestMethod.POST,
+                    Ort.class));
+            return new Response(true, 200, o);
         }
-        String ortId = params.getFirst("ortId");
-        QueryBuilder<Ort> builder =
-            new QueryBuilder<Ort>(
-                defaultRepo.entityManager("stamm"),
-                Ort.class);
-        builder.and("id", ortId);
-        return defaultRepo.filter(builder.getQuery(), "stamm");
+        if (params.containsKey("qid")) {
+            Integer id = null;
+            try {
+                id = Integer.valueOf(params.getFirst("qid"));
+            }
+            catch (NumberFormatException e) {
+                return new Response(false, 603, "Not a valid filter id");
+            }
+            QueryBuilder<Filter> fBuilder = new QueryBuilder<Filter>(
+                repository.entityManager("stamm"),
+                Filter.class
+            );
+            fBuilder.and("query", id);
+            List<Filter> filters = repository.filterPlain(fBuilder.getQuery(), "stamm");
+            QueryBuilder<Ort> builder =
+                new QueryBuilder<Ort>(
+                    repository.entityManager("stamm"),
+                    Ort.class
+                );
+            for (Filter filter: filters) {
+                String param = params.get(filter.getDataIndex()).get(0);
+                if (param == null || param.isEmpty()) {
+                    continue;
+                }
+                if (filter.getMultiselect()) {
+                    param = param.trim();
+                    String[] parts = param.split(",");
+                    for (String part: parts) {
+                        builder.or(filter.getDataIndex(), part);
+                    }
+                }
+                else {
+                    builder.or(filter.getDataIndex(), param);
+                }
+            }
+
+            orte = repository.filterPlain(builder.getQuery(), "stamm");
+        }
+
+        int size = orte.size();
+        if (params.containsKey("start") && params.containsKey("limit")) {
+            int start = Integer.valueOf(params.getFirst("start"));
+            int limit = Integer.valueOf(params.getFirst("limit"));
+            int end = limit + start;
+            if (limit == 0) {
+                end = orte.size();
+            }
+            else if (start + limit > orte.size()) {
+                end = orte.size();
+            }
+            orte = orte.subList(start, end);
+        }
+        for (Ort o : orte) {
+            o.setReadonly(
+                !authorization.isAuthorized(
+                    request,
+                    o,
+                    RequestMethod.POST,
+                    Ort.class));
+        }
+        return new Response(true, 200, orte, size);
     }
 
     /**
@@ -157,7 +206,7 @@ public class OrtService {
         @Context HttpHeaders headers,
         @PathParam("id") String id
     ) {
-        return defaultRepo.getById(
+        return repository.getById(
             Ort.class,
             Integer.valueOf(id),
             "stamm");
@@ -204,8 +253,21 @@ public class OrtService {
         ) {
             return new Response(false, 699, ort);
         }
-        /* Persist the new object*/
-        return defaultRepo.create(ort, "stamm");
+        QueryBuilder<Ort> builder =
+            new QueryBuilder<Ort>(
+                repository.entityManager("stamm"),
+                Ort.class
+            );
+        builder.and("ortId", ort.getOrtId());
+        builder.and("netzbetreiberId", ort.getNetzbetreiberId());
+
+        List<Ort> orte =
+            repository.filterPlain(builder.getQuery(), "stamm");
+        if (orte.isEmpty() ||
+            orte.get(0).getId() == ort.getId()) {
+            return repository.create(ort, "stamm");
+        }
+        return new Response(false, 672, null);
     }
 
     /**
@@ -250,11 +312,21 @@ public class OrtService {
         ) {
             return new Response(false, 699, ort);
         }
-        Response response = defaultRepo.update(ort, "stamm");
-        Response updated = defaultRepo.getById(
-            Ort.class,
-            ((Ort)response.getData()).getId(), "stamm");
-        return updated;
+        QueryBuilder<Ort> builder =
+            new QueryBuilder<Ort>(
+                repository.entityManager("stamm"),
+                Ort.class
+            );
+        builder.and("ortId", ort.getOrtId());
+        builder.and("netzbetreiberId", ort.getNetzbetreiberId());
+
+        List<Ort> orte =
+            repository.filterPlain(builder.getQuery(), "stamm");
+        if (orte.isEmpty() ||
+            orte.get(0).getId() == ort.getId()) {
+            return repository.update(ort, "stamm");
+        }
+        return new Response(false, 672, null);
     }
 
     /**
@@ -275,7 +347,7 @@ public class OrtService {
     ) {
         /* Get the object by id*/
         Ort ort =
-            defaultRepo.getByIdPlain(Ort.class, Integer.valueOf(id), "stamm");
+            repository.getByIdPlain(Ort.class, Integer.valueOf(id), "stamm");
         if (!authorization.isAuthorized(
             request,
             ort,
@@ -285,6 +357,6 @@ public class OrtService {
             return new Response(false, 699, ort);
         }
         /* Delete the object*/
-        return defaultRepo.delete(ort, "stamm");
+        return repository.delete(ort, "stamm");
     }
 }

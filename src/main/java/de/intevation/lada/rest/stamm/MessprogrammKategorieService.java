@@ -120,7 +120,16 @@ public class MessprogrammKategorieService {
                 if (param == null || param.isEmpty()) {
                     continue;
                 }
-                mBuilder.or(filter.getDataIndex(), param);
+                if (filter.getMultiselect()) {
+                    param = param.trim();
+                    String[] parts = param.split(",");
+                    for (String part: parts) {
+                        mBuilder.or(filter.getDataIndex(), part);
+                    }
+                }
+                else {
+                    mBuilder.or(filter.getDataIndex(), param);
+                }
             }
 
             kategorie = repository.filterPlain(mBuilder.getQuery(), "stamm");
@@ -187,8 +196,21 @@ public class MessprogrammKategorieService {
         ) {
             return new Response(false, 699, kategorie);
         }
+        QueryBuilder<MessprogrammKategorie> builder =
+            new QueryBuilder<MessprogrammKategorie>(
+                repository.entityManager("stamm"),
+                MessprogrammKategorie.class
+            );
+        builder.and("ortId", kategorie.getMplId());
+        builder.and("netzbetreiberId", kategorie.getNetzbetreiberId());
 
-        return repository.create(kategorie, "stamm");
+        List<MessprogrammKategorie> kategorien =
+            repository.filterPlain(builder.getQuery(), "stamm");
+        if (kategorien.isEmpty() ||
+            kategorien.get(0).getId() == kategorie.getId()) {
+            return repository.create(kategorie, "stamm");
+        }
+        return new Response(false, 672, null);
     }
 
     @PUT
@@ -206,8 +228,21 @@ public class MessprogrammKategorieService {
         ) {
             return new Response(false, 699, kategorie);
         }
+        QueryBuilder<MessprogrammKategorie> builder =
+            new QueryBuilder<MessprogrammKategorie>(
+                repository.entityManager("stamm"),
+                MessprogrammKategorie.class
+            );
+        builder.and("ortId", kategorie.getMplId());
+        builder.and("netzbetreiberId", kategorie.getNetzbetreiberId());
 
-        return repository.update(kategorie, "stamm");
+        List<MessprogrammKategorie> kategorien =
+            repository.filterPlain(builder.getQuery(), "stamm");
+        if (kategorien.isEmpty() ||
+            kategorien.get(0).getId() == kategorie.getId()) {
+            return repository.update(kategorie, "stamm");
+        }
+        return new Response(false, 672, null);
     }
 
     @DELETE

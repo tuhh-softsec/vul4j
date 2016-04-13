@@ -121,7 +121,16 @@ public class DatensatzErzeugerService {
                 if (param == null || param.isEmpty()) {
                     continue;
                 }
-                builder.or(filter.getDataIndex(), param);
+                if (filter.getMultiselect()) {
+                    param = param.trim();
+                    String[] parts = param.split(",");
+                    for (String part: parts) {
+                        builder.or(filter.getDataIndex(), part);
+                    }
+                }
+                else {
+                    builder.or(filter.getDataIndex(), param);
+                }
             }
 
             erzeuger = repository.filterPlain(builder.getQuery(), "stamm");
@@ -189,8 +198,20 @@ public class DatensatzErzeugerService {
         ) {
             return new Response(false, 699, datensatzerzeuger);
         }
+        QueryBuilder<DatensatzErzeuger> builder =
+            new QueryBuilder<DatensatzErzeuger>(
+                repository.entityManager("stamm"),
+                DatensatzErzeuger.class
+            );
+        builder.and("daErzeugerId", datensatzerzeuger.getDaErzeugerId());
+        builder.and("netzbetreiberId", datensatzerzeuger.getNetzbetreiberId());
 
-        return repository.create(datensatzerzeuger, "stamm");
+        List<DatensatzErzeuger> erzeuger =
+            repository.filterPlain(builder.getQuery(), "stamm");
+        if (erzeuger.isEmpty()) {
+            return repository.create(datensatzerzeuger, "stamm");
+        }
+        return new Response(false, 672, null);
     }
 
     @PUT
@@ -208,8 +229,21 @@ public class DatensatzErzeugerService {
         ) {
             return new Response(false, 699, datensatzerzeuger);
         }
+        QueryBuilder<DatensatzErzeuger> builder =
+            new QueryBuilder<DatensatzErzeuger>(
+                repository.entityManager("stamm"),
+                DatensatzErzeuger.class
+            );
+        builder.and("daErzeugerId", datensatzerzeuger.getDaErzeugerId());
+        builder.and("netzbetreiberId", datensatzerzeuger.getNetzbetreiberId());
 
-        return repository.update(datensatzerzeuger, "stamm");
+        List<DatensatzErzeuger> erzeuger =
+            repository.filterPlain(builder.getQuery(), "stamm");
+        if (erzeuger.isEmpty() ||
+            erzeuger.get(0).getId() == datensatzerzeuger.getId()) {
+            return repository.update(datensatzerzeuger, "stamm");
+        }
+        return new Response(false, 672, null);
     }
 
     @DELETE

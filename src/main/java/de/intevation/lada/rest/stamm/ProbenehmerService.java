@@ -25,6 +25,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
+import de.intevation.lada.model.stamm.DatensatzErzeuger;
 import de.intevation.lada.model.stamm.Filter;
 import de.intevation.lada.model.stamm.Probenehmer;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
@@ -118,13 +119,19 @@ public class ProbenehmerService {
                 if (param == null || param.isEmpty()) {
                     continue;
                 }
-                builder.or(filter.getDataIndex(), param);
+                if (filter.getMultiselect()) {
+                    param = param.trim();
+                    String[] parts = param.split(",");
+                    for (String part: parts) {
+                        builder.or(filter.getDataIndex(), part);
+                    }
+                }
+                else {
+                    builder.or(filter.getDataIndex(), param);
+                }
             }
 
             nehmer = repository.filterPlain(builder.getQuery(), "stamm");
-        }
-        else {
-            nehmer = repository.getAllPlain(Probenehmer.class, "stamm");
         }
 
         int size = nehmer.size();
@@ -186,8 +193,20 @@ public class ProbenehmerService {
         ) {
             return new Response(false, 699, probenehmer);
         }
+        QueryBuilder<Probenehmer> builder =
+            new QueryBuilder<Probenehmer>(
+                repository.entityManager("stamm"),
+                Probenehmer.class
+            );
+        builder.and("prnId", probenehmer.getPrnId());
+        builder.and("netzbetreiberId", probenehmer.getNetzbetreiberId());
 
-        return repository.create(probenehmer, "stamm");
+        List<Probenehmer> nehmer=
+            repository.filterPlain(builder.getQuery(), "stamm");
+        if (nehmer.isEmpty()) {
+            return repository.create(probenehmer, "stamm");
+        }
+        return new Response(false, 672, null);
     }
 
     @PUT
@@ -205,8 +224,21 @@ public class ProbenehmerService {
         ) {
             return new Response(false, 699, probenehmer);
         }
+        QueryBuilder<Probenehmer> builder =
+            new QueryBuilder<Probenehmer>(
+                repository.entityManager("stamm"),
+                Probenehmer.class
+            );
+        builder.and("prnId", probenehmer.getPrnId());
+        builder.and("netzbetreiberId", probenehmer.getNetzbetreiberId());
 
-        return repository.update(probenehmer, "stamm");
+        List<Probenehmer> nehmer=
+            repository.filterPlain(builder.getQuery(), "stamm");
+        if (nehmer.isEmpty() ||
+            nehmer.get(0).getId() == probenehmer.getId()) {
+            return repository.update(probenehmer, "stamm");
+        }
+        return new Response(false, 672, null);
     }
 
     @DELETE
