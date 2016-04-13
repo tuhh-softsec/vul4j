@@ -1,0 +1,18 @@
+{
+  "name": "perfsig-jenkins",
+  "version": "1.0.0",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "jenkins-js-builder": "0.0.51",
+    "minifyify": "^7.3.3"
+  },
+  "dependencies": {
+    "bootstrap-detached": "^3.3.5-v1",
+    "datatables.net": "^1.10.11",
+    "datatables.net-dt": "^1.10.11",
+    "jenkins-js-modules": "^1.5.4",
+    "lightbox2": "^2.8.2",
+    "wurl": "^2.1.0"
+  }
+}

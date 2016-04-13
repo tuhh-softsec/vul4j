@@ -17,11 +17,7 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler">
     <j:if test="${from.lastDashboardReports != null}">
-        <link type="text/css" href="${resURL}/plugin/performance-signature-dynatrace/css/bootstrap.min.css" rel="stylesheet"/>
-        <style type="text/css">
-            .carousel .carousel-control { visibility: hidden; }
-            .carousel:hover .carousel-control { visibility: visible; }
-        </style>
+        <link type="text/css" href="${resURL}/plugin/performance-signature-dynatrace/jsbundles/bootstrapprefix.css" rel="stylesheet"/>
         <br/>
         <div class="tw-bs">
             <div class="pull-right">
@@ -67,8 +63,7 @@
         </div>
     </j:if>
     <st:bind var="projectAction" value="${from}"/>
-    <script data-main="${resURL}/plugin/performance-signature-dynatrace/js/floatingBox"
-            src="${resURL}/plugin/performance-signature-dynatrace/js/require.min.js"/>
+    <script src="${resURL}/plugin/performance-signature-dynatrace/jsbundles/floatingBox.js" type="text/javascript"/>
     <script type="text/javascript">
         var rootURL = "${rootURL}";
         var resURL = "${resURL}";

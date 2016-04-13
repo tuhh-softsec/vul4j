@@ -139,12 +139,15 @@ define(['./common'], function () {
             });
 
             var hash = window.location.hash;
-            if (!hash) $('#tabList').find('a:first').tab('show'); // Select first tab
-            hash && $('ul.nav a[href="' + hash + '"]').tab('show');
+            if (hash) {
+                $('ul.nav a[href="' + hash + '"]').tab('show');
+            } else {
+                $('#tabList').find('a:first').tab('show'); // Select first tab
+            }
 
             $('.nav-tabs a').click(function () {
                 $(this).tab('show');
-                var scrollmem = $('body').scrollTop();
+                var scrollmem = $('body').scrollTop() || $('html').scrollTop();
                 window.location.hash = this.hash;
                 $('html,body').scrollTop(scrollmem);
             });
