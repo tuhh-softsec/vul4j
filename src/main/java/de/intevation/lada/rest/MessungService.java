@@ -202,6 +202,7 @@ public class MessungService {
             if (id.equals(messungen.get(i).getId())) {
                 entry.put("readonly", messungen.get(i).isReadonly());
                 entry.put("owner", messungen.get(i).isOwner());
+                entry.put("statusEdit", messungen.get(i).getStatusEdit());
                 return;
             }
         }

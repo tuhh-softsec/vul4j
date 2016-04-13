@@ -85,6 +85,7 @@ public class MessungAuthorizer extends BaseAuthorizer {
             !userInfo.getFunktionen().contains(3)) {
             messung.setOwner(false);
             messung.setReadonly(true);
+            messung.setStatusEdit(false);
             return messung;
         }
         if (userInfo.belongsTo(probe.getMstId(), probe.getLaborMstId())) {
