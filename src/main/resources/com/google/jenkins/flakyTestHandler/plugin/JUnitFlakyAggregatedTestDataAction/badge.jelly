@@ -16,5 +16,5 @@ limitations under the License.
 
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
          xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-   <img src="${rootURL}${it.imagePath}"/> <span> ${it.flaked} tests flaked among all the passing tests </span>
+   <img src="${rootURL}${it.imagePath}"/> <span style="float:right"> ${it.flaked} tests flaked among all the passing tests </span>
 </j:jelly>
