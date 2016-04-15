@@ -19,18 +19,17 @@
     <l:layout xmlns:jm="/de/tsystems/mms/apm/performancesignature/tags"
               title="Performance Signature report details for build ${it.build.number}">
         <l:header>
-            <link type="text/css" href="${resURL}/plugin/performance-signature-dynatrace/jsbundles/bootstrapprefix.css" rel="stylesheet"/>
+            <link type="text/css" href="${resURL}/plugin/performance-signature-dynatrace/css/bootstrapprefix.css" rel="stylesheet"/>
             <style>
-                .nav::after, .row::after { clear: none; }
                 .text-center { text-align: center !important; }
             </style>
         </l:header>
         <st:include it="${it.build}" page="sidepanel.jelly"/>
         <l:main-panel>
             <div class="tw-bs">
-                <div class="row">
-                    <div class="col-md-12">
-                        <h1>${%Performance Signature for build} ${it.build.number}</h1>
+                <div class="container-fluid">
+                    <h1>${%Performance Signature for build} ${it.build.number}</h1>
+                    <div class="row col-md-24">
                         <ul class="nav nav-tabs" role="tablist" id="tabList">
                             <j:forEach var="dashboardReport" items="${it.currentDashboardReports}">
                                 <li role="presentation">
@@ -42,17 +41,30 @@
                         </ul>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-12 tab-content">
-                        <j:forEach var="dashboardReport" items="${it.currentDashboardReports}">
-                            <j:set var="previousTestCase" value="${it.getPreviousDashboardReport(dashboardReport.name)}"/>
-                            <div class="tab-pane fade" id="${dashboardReport.name}">
-                                <h3>${%Test case:} ${dashboardReport.name}</h3>
-                                ${%Timestamp:} ${it.build.time}
+                <div class="tab-content">
+                    <j:forEach var="dashboardReport" items="${it.currentDashboardReports}">
+                        <j:set var="previousTestCase" value="${it.getPreviousDashboardReport(dashboardReport.name)}"/>
+                        <div class="tab-pane fade" id="${dashboardReport.name}">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <h3>${%Test case:} ${dashboardReport.name}</h3>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button style="margin-top: 5px; margin-bottom: 10px;" type="button"
+                                                class="btn btn-success" id="editbutton">
+                                            <span class="glyphicon glyphicon-eye-open" aria-hidden="true"/>
+                                            open in Dynatrace client
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row col-md-6">
+                                    ${%Timestamp:} ${it.build.time}
+                                </div>
                                 <br/>
                                 <br/>
                                 <div class="row">
-                                    <div class="col-md-5">
+                                    <div class="col-md-9">
                                         <div class="panel panel-danger">
                                             <div class="panel-heading">
                                                 <h4 class="panel-title">${%Singlereports}</h4>
@@ -75,7 +87,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-5">
+                                    <div class="col-md-9">
                                         <div class="panel panel-success">
                                             <div class="panel-heading">
                                                 <h4 class="panel-title">${%Dynatrace sessions}</h4>
@@ -97,9 +109,8 @@
                                 </div>
 
                                 <j:if test="${dashboardReport.isUnitTest()}">
-                                    <br style="clear:both;"/>
                                     <div class="row">
-                                        <div class="col-md-5">
+                                        <div class="col-md-9">
                                             <div class="panel panel-warning">
                                                 <div class="panel-heading">
                                                     <h4 class="panel-title">${%JUnit TestReport}</h4>
@@ -114,7 +125,6 @@
                                         </div>
                                     </div>
                                 </j:if>
-                                <br style="clear:both;"/>
                                 <j:forEach var="chartDashlet" items="${dashboardReport.chartDashlets}">
                                     <j:if test="${chartDashlet.name.contains('Percentile')}">
                                         <jm:chartDashletTablePercentile it="${chartDashlet}" build="${it.build}" dashboardReport="${dashboardReport}"
@@ -126,16 +136,12 @@
                                     </j:if>
                                 </j:forEach>
                             </div>
-                        </j:forEach>
-                    </div>
+                        </div>
+                    </j:forEach>
                 </div>
             </div>
             <br style="clear:both;"/>
-            <script src="${resURL}/plugin/performance-signature-dynatrace/jsbundles/buildactionresultsdisplay.js" type="text/javascript"/>
-            <script type="text/javascript">
-                var rootURL = "${rootURL}";
-                var resURL = "${resURL}";
-            </script>
+            <st:adjunct includes="org.jenkins.ui.jsmodules.performance_signature_dynatrace.buildactionresultsdisplay"/>
         </l:main-panel>
     </l:layout>
 </j:jelly>

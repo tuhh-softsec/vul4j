@@ -15,13 +15,17 @@
  */
 
 var $ = require('bootstrap-detached').getBootstrap();
-var compat = require('./prototypecompat.js');
-var th = require('./tabhashes.js');
 
-$(document).ready(function () {
-    $('.panel-body').each(function () {  // for many elements
-        if (!/[\S]/.test($(this).html())) {
-            $(this).html('no PDF reports available!');
-        }
-    });
+var hash = window.location.hash;
+if (hash) {
+    $('ul.nav a[href="' + hash + '"]').tab('show');
+} else {
+    $('#tabList').find('a:first').tab('show'); // Select first tab
+}
+
+$('.nav-tabs a').click(function () {
+    $(this).tab('show');
+    var scrollmem = $('body').scrollTop() || $('html').scrollTop();
+    window.location.hash = this.hash;
+    $('html,body').scrollTop(scrollmem);
 });

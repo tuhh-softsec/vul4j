@@ -15,24 +15,8 @@
  */
 
 var $ = require('bootstrap-detached').getBootstrap();
-
-if (Prototype.BrowserFeatures.ElementExtensions) {
-    // Fix incompatibilities between BootStrap and Prototype
-    var disablePrototypeJS = function (method, pluginsToDisable) {
-            var handler = function (event) {
-                event.target[method] = undefined;
-                setTimeout(function () {
-                    delete event.target[method];
-                }, 0);
-            };
-            pluginsToDisable.each(function (plugin) {
-                $(window).on(method + '.bs.' + plugin, handler);
-            });
-        },
-        pluginsToDisable = ['collapse', 'dropdown', 'modal', 'tooltip', 'popover', 'tab'];
-    disablePrototypeJS('show', pluginsToDisable);
-    disablePrototypeJS('hide', pluginsToDisable);
-}
+var compat = require('./prototypecompat.js');
+var th = require('./tabhashes.js');
 
 $(document).ready(function () {
     $('.carousel').each(function (carouselIndex, carousel) {
@@ -56,19 +40,5 @@ $(document).ready(function () {
             $('.carousel-inner div:first-child', carousel).addClass('active');
             $('.carousel').carousel(0);
         });
-    });
-
-    var hash = window.location.hash;
-    if (hash) {
-        $('ul.nav a[href="' + hash + '"]').tab('show');
-    } else {
-        $('#tabList').find('a:first').tab('show'); // Select first tab
-    }
-
-    $('.nav-tabs a').click(function () {
-        $(this).tab('show');
-        var scrollmem = $('body').scrollTop() || $('html').scrollTop();
-        window.location.hash = this.hash;
-        $('html,body').scrollTop(scrollmem);
     });
 });
