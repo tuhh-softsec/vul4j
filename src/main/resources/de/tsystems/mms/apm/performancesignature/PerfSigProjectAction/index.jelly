@@ -22,8 +22,10 @@
             <link type="text/css" href="${resURL}/plugin/performance-signature-dynatrace/css/jquery.gridster.min.css" rel="stylesheet"/>
             <link type="text/css" href="${resURL}/plugin/performance-signature-dynatrace/css/lightbox.min.css" rel="stylesheet"/>
             <style>
-                .nav::after, .row::after { clear: none; }
                 .text-center { text-align: center !important; }
+                .col-sm-5 { width: 41.66666667%; }
+                .col-sm-6 { width: 50%; }
+                .col-sm-7 { width: 58.33333333%; }
             </style>
         </l:header>
         <st:include it="${it.job}" page="sidepanel.jelly"/>
@@ -31,9 +33,9 @@
         <j:set var="tr" value="${trpa.lastTestResultAction}"/>
         <l:main-panel>
             <div class="tw-bs">
-                <div class="row">
-                    <div class="col-md-12">
-                        <h1>${%Performance Signature for} ${it.job.name}</h1>
+                <div class="container-fluid" style="height: 170px;">
+                    <h1>${%Performance Signature for} ${it.job.name}</h1>
+                    <div class="row col-md-24">
                         <ul class="nav nav-tabs" role="tablist" id="tabList">
                             <j:forEach var="lastDashboardReport" items="${it.lastDashboardReports}">
                                 <li role="presentation">
@@ -46,13 +48,13 @@
                         </ul>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-12 tab-content">
-                        <j:forEach var="lastDashboardReport" items="${it.lastDashboardReports}">
-                            <j:set var="isUnitTest" value="${lastDashboardReport.isUnitTest() and tr.previousResult!=null}"/>
-                            <div role="tabpanel fade" class="tab-pane" id="${lastDashboardReport.name}">
-                                <div class="row-fluid">
-                                    <div class="col-md-4" style="padding-left: 0;">
+                <div class="tab-content">
+                    <j:forEach var="lastDashboardReport" items="${it.lastDashboardReports}">
+                        <j:set var="isUnitTest" value="${lastDashboardReport.isUnitTest() and tr.previousResult!=null}"/>
+                        <div role="tabpanel fade" class="tab-pane" id="${lastDashboardReport.name}">
+                            <div class="container-fluid">
+                                <div class="row" style="height: 50px;">
+                                    <div class="col-md-6">
                                         <h2>${%Test case:} ${lastDashboardReport.name}</h2>
                                     </div>
                                     <button style="margin-top: 20px; margin-bottom: 10px;" type="button"
@@ -71,10 +73,10 @@
                                         Cancel
                                     </button>
                                 </div>
-                                <br style="clear:both;"/>
-                                <div class="row-fluid" id="editform" style="display:none;">
+                                <br/>
+                                <div class="row" id="editform" style="display:none; height: 100px;">
                                     <form role="form">
-                                        <div class="form-group col-md-2" id="measureGroupContainer">
+                                        <div class="form-group col-md-4" id="measureGroupContainer">
                                             <label for="measureGroup">select measure group:</label>
                                             <select class="form-control" id="measureGroup">
                                                 <j:if test="${isUnitTest}">
@@ -89,15 +91,15 @@
                                                 </j:forEach>
                                             </select>
                                         </div>
-                                        <div class="form-group col-md-3">
+                                        <div class="form-group col-md-4">
                                             <label for="measure">select measure:</label>
                                             <select class="form-control" id="measure"/>
                                         </div>
-                                        <div class="form-group col-md-3">
+                                        <div class="form-group col-md-4">
                                             <label for="measurename">custom measure name</label>
                                             <input type="text" class="form-control" id="customName" placeholder="measure name"/>
                                         </div>
-                                        <div class="form-group col-md-2">
+                                        <div class="form-group col-md-3">
                                             <label for="buildcount">custom build count</label>
                                             <input type="number" class="form-control" id="customBuildCount" placeholder="0"/>
                                         </div>
@@ -110,13 +112,12 @@
                                         </div>
                                     </form>
                                 </div>
-                                <br style="clear:both;"/>
-                                <br/>
-                                <div class="gridster" id="gridster-${lastDashboardReport.name}">
-                                    <ul class="center-block"/>
+                                <div class="row" style="margin-bottom: 20px;">
+                                    <div class="gridster" id="gridster-${lastDashboardReport.name}">
+                                        <ul class="center-block"/>
+                                    </div>
                                 </div>
-                                <br style="clear: both;"/>
-                                <table class="table table-striped table-bordered text-center table-hover dt-responsive">
+                                <table class="table table-striped table-bordered text-center table-hover">
                                     <thead>
                                         <tr>
                                             <th class="text-center">${%build #}</th>
@@ -192,11 +193,10 @@
                                     </tbody>
                                 </table>
                             </div>
-                        </j:forEach>
-                    </div>
+                        </div>
+                    </j:forEach>
                 </div>
             </div>
-            <br style="clear:both;"/>
             <st:adjunct includes="org.jenkins.ui.jsmodules.css.bootstrapprefix"/>
             <script data-main="${resURL}/plugin/performance-signature-dynatrace/js/projectaction"
                     src="${resURL}/plugin/performance-signature-dynatrace/js/require.min.js"/>

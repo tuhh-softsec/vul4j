@@ -26,7 +26,7 @@
         <st:include it="${it.build}" page="sidepanel.jelly"/>
         <l:main-panel>
             <div class="tw-bs">
-                <div class="container-fluid">
+                <div class="container-fluid" style="height: 170px;">
                     <h1>${%Performance Signature for build} ${it.build.number}</h1>
                     <div class="row col-md-24">
                         <ul class="nav nav-tabs" role="tablist" id="tabList">
@@ -45,8 +45,8 @@
                         <j:set var="previousTestCase" value="${it.getPreviousDashboardReport(dashboardReport.name)}"/>
                         <div class="tab-pane fade" id="${dashboardReport.name}">
                             <div class="container-fluid">
-                                <div class="row">
-                                    <div class="col-md-5">
+                                <div class="row" style="height: 50px">
+                                    <div class="col-md-6">
                                         <h3>${%Test case:} ${dashboardReport.name}</h3>
                                     </div>
                                     <div class="col-md-4">
