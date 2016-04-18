@@ -19,7 +19,6 @@
     <l:layout xmlns:jm="/de/tsystems/mms/apm/performancesignature/tags"
               title="Performance Signature report details for build ${it.build.number}">
         <l:header>
-            <link type="text/css" href="${resURL}/plugin/performance-signature-dynatrace/css/bootstrapprefix.css" rel="stylesheet"/>
             <style>
                 .text-center { text-align: center !important; }
             </style>
@@ -141,6 +140,7 @@
                 </div>
             </div>
             <br style="clear:both;"/>
+            <st:adjunct includes="org.jenkins.ui.jsmodules.css.bootstrapprefix"/>
             <st:adjunct includes="org.jenkins.ui.jsmodules.performance_signature_dynatrace.buildactionresultsdisplay"/>
         </l:main-panel>
     </l:layout>

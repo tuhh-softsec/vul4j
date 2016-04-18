@@ -11,4 +11,3 @@ buildNumber.properties
 performance-signature-jenkins.iml
 node_modules
 node
-/src/main/webapp/css/bootstrapprefix.less

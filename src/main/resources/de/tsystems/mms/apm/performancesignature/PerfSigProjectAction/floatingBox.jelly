@@ -17,7 +17,6 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler">
     <j:if test="${from.lastDashboardReports != null}">
-        <link type="text/css" href="${resURL}/plugin/performance-signature-dynatrace/css/bootstrapprefix.css" rel="stylesheet"/>
         <br/>
         <div class="tw-bs">
             <div class="pull-right">
@@ -63,5 +62,6 @@
         </div>
     </j:if>
     <st:bind var="projectAction" value="${from}"/>
+    <st:adjunct includes="org.jenkins.ui.jsmodules.css.bootstrapprefix"/>
     <st:adjunct includes="org.jenkins.ui.jsmodules.performance_signature_dynatrace.floatingBox"/>
 </j:jelly>
