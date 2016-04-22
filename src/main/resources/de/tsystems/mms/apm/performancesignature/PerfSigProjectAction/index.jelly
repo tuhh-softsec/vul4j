@@ -19,7 +19,7 @@
     <l:layout title="Performance Signature Overview for ${it.job.name}">
         <l:header>
             <link type="text/css" href="${resURL}/plugin/performance-signature-dynatrace/css/datatables.min.css" rel="stylesheet"/>
-            <link type="text/css" href="${resURL}/plugin/performance-signature-dynatrace/css/jquery.gridster.min.css" rel="stylesheet"/>
+            <link type="text/css" href="${resURL}/plugin/performance-signature-dynatrace/css/gridstack.min.css" rel="stylesheet"/>
             <link type="text/css" href="${resURL}/plugin/performance-signature-dynatrace/css/lightbox.min.css" rel="stylesheet"/>
             <style>
                 .text-center { text-align: center !important; }
@@ -198,8 +198,7 @@
                 </div>
             </div>
             <st:adjunct includes="org.jenkins.ui.jsmodules.css.bootstrapprefix"/>
-            <script data-main="${resURL}/plugin/performance-signature-dynatrace/js/projectaction"
-                    src="${resURL}/plugin/performance-signature-dynatrace/js/require.min.js"/>
+            <st:adjunct includes="org.jenkins.ui.jsmodules.performance_signature_dynatrace.projectaction"/>
             <st:bind var="projectAction" value="${it}"/>
         </l:main-panel>
     </l:layout>

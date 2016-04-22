@@ -6,9 +6,9 @@ var builder = require('@jenkins-cd/js-builder');
 //
 builder.bundle('src/main/js/buildactionresultsdisplay.js').minify();
 builder.bundle('src/main/js/floatingBox.js').minify();
-builder.bundle('src/main/css/bootstrapprefix.less');
+builder.bundle('src/main/js/projectaction.js').minify();
 
-//builder.bundle('src/main/js/projectaction.js')
+builder.bundle('src/main/css/bootstrapprefix.less');
 
 builder.defineTasks(['test', 'bundle']);
 builder.defineTask('lint', function () {
