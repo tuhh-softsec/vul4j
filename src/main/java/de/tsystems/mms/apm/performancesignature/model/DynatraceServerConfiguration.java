@@ -39,7 +39,8 @@ public class DynatraceServerConfiguration extends AbstractDescribableImpl<Dynatr
 
     @DataBoundConstructor
     public DynatraceServerConfiguration(final String name, final String protocol, final String host, final int port, final List<CredProfilePair> credProfilePairs,
-                                        final boolean verifyCertificate, final int delay, final int retryCount, final boolean proxy, final CustomProxy proxySource) {
+                                        final boolean verifyCertificate, final int delay, final int retryCount, final boolean proxy, final int proxySource,
+                                        final String proxyServer, final int proxyPort, final String proxyUser, final String proxyPassword) {
         this.name = name;
         this.protocol = protocol;
         this.host = host;
@@ -48,7 +49,10 @@ public class DynatraceServerConfiguration extends AbstractDescribableImpl<Dynatr
         this.verifyCertificate = verifyCertificate;
         this.delay = delay;
         this.retryCount = retryCount;
-        this.customProxy = proxy ? proxySource : null;
+        if (proxy) {
+            this.customProxy = new CustomProxy(proxyServer, proxyPort, proxyUser, proxyPassword, proxySource);
+        } else
+            this.customProxy = null;
     }
 
     public String getName() {

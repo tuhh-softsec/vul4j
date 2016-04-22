@@ -49,9 +49,10 @@
                         </f:entry>
 
                         <f:optionalBlock inline="true" name="proxy" title="${%use Proxy Server}" checked="${instance.customProxy != null}">
-                            <f:radioBlock name="proxySource" title="${%use proxy server configured in Jenkins}" value="0"
+                            <f:radioBlock inline="true" name="proxySource" title="${%use proxy server configured in Jenkins}" value="0"
                                           checked="${instance.customProxy.useJenkinsProxy}"/>
-                            <f:radioBlock name="proxySource" title="use custom Proxy Server" value="1" checked="${!instance.customProxy.useJenkinsProxy}">
+                            <f:radioBlock inline="true" name="proxySource" title="use custom Proxy Server" value="1"
+                                          checked="${!instance.customProxy.useJenkinsProxy}">
                                 <f:entry title="${%Server}" field="proxyServer">
                                     <f:textbox value="${instance.customProxy.proxyServer}"/>
                                 </f:entry>
@@ -79,7 +80,7 @@
                                 </f:entry>
                                 <f:validateButton title="${%Test connection}" progress="${%Testing...}"
                                                   method="testDynaTraceConnection"
-                                                  with="protocol,host,port,credentialsId,verifyCertificate,proxy,proxySource,proxyServer,proxyPort,proxyUser,proxyPassword"/>
+                                                  with="protocol,host,port,credentialsId,verifyCertificate,proxy,proxyServer,proxyPort,proxyUser,proxyPassword"/>
                                 <f:entry title="">
                                     <div align="right">
                                         <f:repeatableDeleteButton value="${%Remove credentials/profile pair}"/>

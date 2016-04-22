@@ -25,17 +25,22 @@ public class CustomProxy {
     private boolean useJenkinsProxy;
 
     @DataBoundConstructor
-    public CustomProxy(final String proxyServer, final int proxyPort, final String proxyUser,
-                       final String proxyPassword, final int value) {
-        this.proxyServer = proxyServer;
-        this.proxyUser = proxyUser;
-        this.proxyPassword = Scrambler.scramble(proxyPassword);
-        this.proxyPort = proxyPort;
+    public CustomProxy(final String proxyServer, final int proxyPort, final String proxyUser, final String proxyPassword, final int value) {
         this.useJenkinsProxy = (value == 0);
+        if (useJenkinsProxy) {
+            this.proxyServer = null;
+            this.proxyPort = 0;
+            this.proxyUser = null;
+            this.proxyPassword = null;
+        } else {
+            this.proxyServer = proxyServer;
+            this.proxyUser = proxyUser;
+            this.proxyPassword = Scrambler.scramble(proxyPassword);
+            this.proxyPort = proxyPort;
+        }
     }
 
-    public CustomProxy(final String proxyServer, final int proxyPort, final String proxyUser, final String proxyPassword,
-                       final boolean useJenkinsProxy) {
+    public CustomProxy(final String proxyServer, final int proxyPort, final String proxyUser, final String proxyPassword, final boolean useJenkinsProxy) {
         this(proxyServer, proxyPort, proxyUser, proxyPassword, useJenkinsProxy ? 0 : 1);
     }
 

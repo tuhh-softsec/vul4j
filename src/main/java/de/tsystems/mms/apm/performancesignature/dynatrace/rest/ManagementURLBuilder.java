@@ -81,9 +81,9 @@ public class ManagementURLBuilder {
             this.parameters = String.format("recordingOption=%1$s&isSessionLocked=%2$s&isTimeStampAllowed=%3$s&description=%4$s&presentableName=%5$s",
                     recordingOption, sessionLocked, isNoTimestamp, description == null ? "" : PerfSigUtils.encodeString(description),
                     StringUtils.isBlank(sessionName) ? PerfSigUtils.encodeString(profileName) : PerfSigUtils.encodeString(sessionName));
-            final String s = String.format("%1$s/rest/management/profiles/%2$s/startrecording", this.serverAddress,
+            final String url = String.format("%1$s/rest/management/profiles/%2$s/startrecording", this.serverAddress,
                     PerfSigUtils.encodeString(profileName));
-            return new URL(s);
+            return new URL(url);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
