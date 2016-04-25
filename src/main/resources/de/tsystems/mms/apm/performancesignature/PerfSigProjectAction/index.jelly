@@ -26,6 +26,7 @@
                 .col-sm-5 { width: 41.66666667%; }
                 .col-sm-6 { width: 50%; }
                 .col-sm-7 { width: 58.33333333%; }
+                .dataTables_wrapper > .row:first-child { height: 50px; }
             </style>
         </l:header>
         <st:include it="${it.job}" page="sidepanel.jelly"/>
@@ -57,21 +58,23 @@
                                     <div class="col-md-6">
                                         <h2>${%Test case:} ${lastDashboardReport.name}</h2>
                                     </div>
-                                    <button style="margin-top: 20px; margin-bottom: 10px;" type="button"
-                                            class="btn btn-primary pull-right" id="editbutton">
-                                        <span class="glyphicon glyphicon-pencil" aria-hidden="true"/>
-                                        Edit
-                                    </button>
-                                    <button style="margin-top: 20px; margin-bottom: 10px; margin-left: 5px; display: none;"
-                                            type="button" class="btn btn-success pull-right" id="donebutton">
-                                        <span class="glyphicon glyphicon-ok" aria-hidden="true"/>
-                                        Done
-                                    </button>
-                                    <button style="margin-top: 20px; margin-bottom: 10px; margin-left: 5px; display: none;"
-                                            type="button" class="btn btn-danger pull-right" id="cancelbutton">
-                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"/>
-                                        Cancel
-                                    </button>
+                                    <div class="col-md-4 pull-right">
+                                        <button style="margin-top: 20px; margin-bottom: 10px;" type="button"
+                                                class="btn btn-primary" id="editbutton">
+                                            <span class="glyphicon glyphicon-pencil" aria-hidden="true"/>
+                                            Edit
+                                        </button>
+                                        <button style="margin-top: 20px; margin-bottom: 10px; margin-left: 5px; display: none;"
+                                                type="button" class="btn btn-success" id="donebutton">
+                                            <span class="glyphicon glyphicon-ok" aria-hidden="true"/>
+                                            Done
+                                        </button>
+                                        <button style="margin-top: 20px; margin-bottom: 10px; margin-left: 5px; display: none;"
+                                                type="button" class="btn btn-danger" id="cancelbutton">
+                                            <span class="glyphicon glyphicon-remove" aria-hidden="true"/>
+                                            Cancel
+                                        </button>
+                                    </div>
                                 </div>
                                 <br/>
                                 <div class="row" id="editform" style="display:none; height: 100px;">
@@ -112,9 +115,21 @@
                                         </div>
                                     </form>
                                 </div>
-                                <div class="row" style="margin-bottom: 20px;">
+                                <!--<div class="row" style="margin-bottom: 20px;">
                                     <div class="gridster" id="gridster-${lastDashboardReport.name}">
                                         <ul class="center-block"/>
+                                    </div>
+                                </div>-->
+                                <div class="grid-stack" id="grid-${lastDashboardReport.name}">
+                                    <div class="grid-stack-item"
+                                         data-gs-x="0" data-gs-y="0"
+                                         data-gs-width="4" data-gs-height="2">
+                                        <div class="grid-stack-item-content"></div>
+                                    </div>
+                                    <div class="grid-stack-item"
+                                         data-gs-x="4" data-gs-y="0"
+                                         data-gs-width="4" data-gs-height="4">
+                                        <div class="grid-stack-item-content"></div>
                                     </div>
                                 </div>
                                 <table class="table table-striped table-bordered text-center table-hover">

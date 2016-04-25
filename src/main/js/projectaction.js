@@ -15,10 +15,10 @@
  */
 
 var $ = require('bootstrap-detached').getBootstrap();
-var dt = require('datatables.net-bs')(window, $);
-var lightbox = require('lightbox2');
 var wurl = require('wurl');
-var gridster = require('gridstack');
+require('datatables.net-bs')(window, $);
+require('lightbox2');
+require('gridstack');
 
 $(document).ready(function () {
     var grid = [];
@@ -28,6 +28,11 @@ $(document).ready(function () {
         if (!/[\S]/.test($(this).html())) {
             $(this).html('no PDF reports available!');
         }
+    });
+
+    $('.grid-stack').gridstack({
+        cell_height: 80,
+        vertical_margin: 10
     });
 
     $(".tab-pane").each(function (pageIndex, page) {
@@ -66,6 +71,7 @@ $(document).ready(function () {
         $("#cancelbutton", this).click(function () {
             location.reload(true);
         });
+
         /*$("#addbutton", this).click(function () {
          if ($("#measureGroup", page).val() === 'UnitTest overview') {
          grid[pageIndex].add_widget('<li><img class="img-thumbnail" height="300" width="410" ' +
