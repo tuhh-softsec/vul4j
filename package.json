@@ -12,7 +12,6 @@
     "bootstrap-detached": "^3.3.5-v1",
     "datatables.net": "^1.10.11",
     "datatables.net-bs": "^1.10.11",
-    "gridstack": "^0.2.5",
     "lightbox2": "^2.8.2",
     "jquery": "latest",
     "wurl": "^2.1.0"
