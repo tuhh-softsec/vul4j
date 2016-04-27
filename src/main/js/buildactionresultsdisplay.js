@@ -15,8 +15,8 @@
  */
 
 var $ = require('bootstrap-detached').getBootstrap();
-var compat = require('./prototypecompat.js');
-var th = require('./tabhashes.js');
+require('./prototypecompat.js');
+require('./tabhashes.js');
 
 $(document).ready(function () {
     $('.panel-body').each(function () {  // for many elements

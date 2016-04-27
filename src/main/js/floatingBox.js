@@ -15,8 +15,8 @@
  */
 
 var $ = require('bootstrap-detached').getBootstrap();
-var compat = require('./prototypecompat.js');
-var th = require('./tabhashes.js');
+require('./prototypecompat.js');
+require('./tabhashes.js');
 
 $(document).ready(function () {
     $('.carousel').each(function (carouselIndex, carousel) {
@@ -28,11 +28,11 @@ $(document).ready(function () {
                 if (json[index].show && json[index].dashboard === testCase) {
                     if (json[index].id === 'unittest_overview') {
                         $('.carousel-inner', carousel).append('<div class="item">' +
-                            '<img class="img-thumbnail" height="300" width="410"' +
+                            '<img class="img-thumbnail" height="300" width="410" ' +
                             'src="performance-signature/testRunGraph?width=410&amp;height=300"></div>\n');
                     } else {
                         $('.carousel-inner', carousel).append('<div class="item">' +
-                            '<img class="img-thumbnail" height="300" width="410"' +
+                            '<img class="img-thumbnail" height="300" width="410" ' +
                             'src="performance-signature/summarizerGraph?width=410&amp;height=300&amp;id=' + json[index].id + '"></div>\n');
                     }
                 }

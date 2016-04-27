@@ -15,6 +15,8 @@
  */
 
 var $ = require('bootstrap-detached').getBootstrap();
+require('./prototypecompat.js');
+require('./tabhashes.js');
 var wurl = require('wurl');
 require('datatables.net-bs')(window, $);
 require('lightbox2');
