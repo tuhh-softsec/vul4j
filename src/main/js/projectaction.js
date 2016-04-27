@@ -161,6 +161,16 @@ $(document).ready(function () {
     });
 });
 
+function sort_by_row_and_col_asc(widgets) {
+    widgets = widgets.sort(function (a, b) {
+        if (a.row > b.row || a.row === b.row && a.col > b.col) {
+            return 1;
+        }
+        return -1;
+    });
+    return widgets;
+}
+
 function encode(toEncode) {
     return encodeURIComponent(toEncode)
         .replace(/!/g, '%21')
