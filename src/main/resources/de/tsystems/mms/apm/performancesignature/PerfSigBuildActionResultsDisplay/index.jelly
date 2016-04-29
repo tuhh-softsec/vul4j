@@ -63,6 +63,7 @@
                                         </div>
                                     </j:if>
                                 </div>
+                                <br/>
                                 <div class="row col-md-6">
                                     ${%Timestamp:} ${it.build.time}
                                 </div>

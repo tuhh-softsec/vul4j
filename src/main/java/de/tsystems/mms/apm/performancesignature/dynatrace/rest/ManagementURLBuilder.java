@@ -35,11 +35,15 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class ManagementURLBuilder {
-    private String serverAddress = Messages.ManagementURLBuilder_DefaultServerUrl();
-    private String parameters = null;
+    private String serverAddress;
+    private String parameters;
 
     public String getPostParameters() {
         return this.parameters;
+    }
+
+    public void setServerAddress(final String serverAddress) {
+        this.serverAddress = serverAddress;
     }
 
     public URL serverVersionURL() {
@@ -152,14 +156,6 @@ public class ManagementURLBuilder {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public String getServerAddress() {
-        return this.serverAddress;
-    }
-
-    public void setServerAddress(final String serverAddress) {
-        this.serverAddress = serverAddress;
     }
 
     public URL listSessionsURL() {
