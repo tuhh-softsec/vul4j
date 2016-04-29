@@ -177,6 +177,9 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
                 throw new RESTErrorException(Messages.PerfSigRecorder_XMLReportError());
             } else {
                 dashboardReport.setUnitTest(configurationTestCase instanceof UnitTestCase);
+                ClientLinkGenerator clientLink = new ClientLinkGenerator(serverConfiguration.getPort(), serverConfiguration.getProtocol(),
+                        serverConfiguration.getHost(), configurationTestCase.getXmlDashboard(), sessionName, configurationTestCase.getClientDashboard());
+                dashboardReport.setClientLink(clientLink);
                 dashboardReports.add(dashboardReport);
 
                 List<IncidentChart> incidents = dashboardReport.getIncidents();
@@ -281,7 +284,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
 
     @DataBoundSetter
     public void setNonFunctionalFailure(final int nonFunctionalFailure) {
-        this.nonFunctionalFailure = nonFunctionalFailure <= 0 ? DescriptorImpl.defaultNonFunctionalFailure : nonFunctionalFailure;
+        this.nonFunctionalFailure = nonFunctionalFailure < 0 ? DescriptorImpl.defaultNonFunctionalFailure : nonFunctionalFailure;
     }
 
     public String getDynatraceProfile() {

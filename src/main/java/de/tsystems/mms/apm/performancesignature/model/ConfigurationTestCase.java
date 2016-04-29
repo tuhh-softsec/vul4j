@@ -18,6 +18,7 @@ package de.tsystems.mms.apm.performancesignature.model;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.DescriptorExtensionList;
 import hudson.RelativePath;
 import hudson.model.AbstractProject;
@@ -35,9 +36,11 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class ConfigurationTestCase implements Describable<ConfigurationTestCase>, Serializable {
-    private final String name, xmlDashboard;
+    private final String name;
+    private final String xmlDashboard;
     private final List<Dashboard> singleDashboards;
     private final List<Dashboard> comparisonDashboards;
+    private String clientDashboard;
 
     public ConfigurationTestCase(final String name, final List<Dashboard> singleDashboards,
                                  final List<Dashboard> comparisonDashboards, final String xmlDashboard) {
@@ -56,12 +59,22 @@ public abstract class ConfigurationTestCase implements Describable<Configuration
         return xmlDashboard;
     }
 
+    public String getClientDashboard() {
+        return clientDashboard;
+    }
+
+    public void setClientDashboard(final String clientDashboard) {
+        this.clientDashboard = StringUtils.isBlank(clientDashboard) ? ConfigurationTestCaseDescriptor.defaultClientDashboard : clientDashboard;
+    }
+
+    @NonNull
     public List<Dashboard> getSingleDashboards() {
         if (singleDashboards == null)
             return new ArrayList<Dashboard>();
         return singleDashboards;
     }
 
+    @NonNull
     public List<Dashboard> getComparisonDashboards() {
         if (comparisonDashboards == null)
             return new ArrayList<Dashboard>();
@@ -77,6 +90,7 @@ public abstract class ConfigurationTestCase implements Describable<Configuration
     }
 
     public abstract static class ConfigurationTestCaseDescriptor extends Descriptor<ConfigurationTestCase> {
+        public static final String defaultClientDashboard = ClientLinkGenerator.WEBSTART;
         private static final Set<String> testCases = new LinkedHashSet<String>(); //avoid duplicates
 
         public static void addTestCases(final String testCase) {
@@ -95,6 +109,14 @@ public abstract class ConfigurationTestCase implements Describable<Configuration
             final ListBoxModel out = new ListBoxModel();
             for (String s : testCases)
                 out.add(s);
+            return out;
+        }
+
+        public ListBoxModel doFillClientDashboardItems() {
+            ListBoxModel out = new ListBoxModel();
+            out.add(ClientLinkGenerator.LOADTEST_OVERVIEW)
+                    .add(ClientLinkGenerator.PUREPATH_OVERVIEW)
+                    .add(ClientLinkGenerator.WEBSTART);
             return out;
         }
 

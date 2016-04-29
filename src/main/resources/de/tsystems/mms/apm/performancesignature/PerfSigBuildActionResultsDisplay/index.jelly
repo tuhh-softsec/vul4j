@@ -49,13 +49,19 @@
                                     <div class="col-md-6">
                                         <h3>${%Test case:} ${dashboardReport.name}</h3>
                                     </div>
-                                    <div class="col-md-4">
-                                        <button style="margin-top: 5px; margin-bottom: 10px;" type="button"
-                                                class="btn btn-success" id="editbutton">
-                                            <span class="glyphicon glyphicon-eye-open" aria-hidden="true"/>
-                                            open in Dynatrace client
-                                        </button>
-                                    </div>
+                                    <j:set var="sessionFiles" value="${it.PerfSigUtils.getDownloadFiles('.*' + dashboardReport.name + '.dts',it.build)}"/>
+                                    <j:if test="${!sessionFiles.isEmtpy()}">
+                                        <div class="col-md-4 pull-right">
+                                            <a target="_blank" href="${dashboardReport.getClientLink().generateLink()}">
+                                                <button style="margin-top: 5px; margin-bottom: 10px;" type="button"
+                                                        title="Dynatrace client must be started on local machine"
+                                                        class="btn btn-success" id="editbutton">
+                                                    <span class="glyphicon glyphicon-eye-open" aria-hidden="true"/>
+                                                    open in Dynatrace client
+                                                </button>
+                                            </a>
+                                        </div>
+                                    </j:if>
                                 </div>
                                 <div class="row col-md-6">
                                     ${%Timestamp:} ${it.build.time}
@@ -69,17 +75,17 @@
                                                 <h4 class="panel-title">${%Singlereports}</h4>
                                             </div>
                                             <div class="panel-body">
-                                                <j:set var="files"
+                                                <j:set var="pdfFiles"
                                                        value="${it.PerfSigUtils.getDownloadFiles('Single.*' + dashboardReport.name + '_.*pdf',it.build)}"/>
-                                                <j:forEach var="file" items="${files}">
-                                                    <a href="./getSingleReport?testCase=${dashboardReport.name}&amp;number=${files.indexOf(file)}"
+                                                <j:forEach var="pdfFile" items="${pdfFiles}">
+                                                    <a href="./getSingleReport?testCase=${dashboardReport.name}&amp;number=${pdfFiles.indexOf(pdfFile)}"
                                                        target="_blank">
                                                         <img src="${resURL}/plugin/performance-signature-dynatrace/images/pdficon_small.png"/>
-                                                        ${file.name}
+                                                        ${it.PerfSigUtils.removeExtension(pdfFile.name)}
                                                     </a>
                                                     <br/>
                                                 </j:forEach>
-                                                <j:if test="${files.isEmpty()}">
+                                                <j:if test="${pdfFiles.isEmpty()}">
                                                     ${%no Single report available!}
                                                 </j:if>
                                             </div>
@@ -92,14 +98,13 @@
                                                 <h4 class="panel-title">${%Dynatrace sessions}</h4>
                                             </div>
                                             <div class="panel-body">
-                                                <j:set var="file" value="${it.PerfSigUtils.getDownloadFiles('.*' + dashboardReport.name + '.dts',it.build)}"/>
-                                                <j:if test="${!file.isEmtpy()}">
+                                                <j:if test="${!sessionFiles.isEmtpy()}">
                                                     <a href="./getSession?testCase=${dashboardReport.name}" target="_blank">
                                                         <img src="${resURL}/plugin/performance-signature-dynatrace/images/dtsession.png"/>
-                                                        ${file.get(0).name}
+                                                        ${it.PerfSigUtils.removeExtension(sessionFiles.get(0).name)}
                                                     </a>
                                                 </j:if>
-                                                <j:if test="${file.isEmpty()}">
+                                                <j:if test="${sessionFiles.isEmpty()}">
                                                     ${%no Dynatrace sessions available!}
                                                 </j:if>
                                             </div>

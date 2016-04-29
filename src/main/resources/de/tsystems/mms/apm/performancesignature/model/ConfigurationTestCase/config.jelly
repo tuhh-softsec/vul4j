@@ -53,6 +53,10 @@
     <f:entry field="xmlDashboard" title="${%XML report dashboard}">
         <f:select/>
     </f:entry>
+    <f:entry field="clientDashboard" title="${%select client dashboard}"
+             description="${%select the dashboard, which should be opened after visiting the 'open in Dynatrace client' link}">
+        <f:select/>
+    </f:entry>
     <f:entry>
         <br/>
     </f:entry>

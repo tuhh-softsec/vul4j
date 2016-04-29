@@ -35,6 +35,7 @@ import hudson.util.Area;
 import hudson.util.ListBoxModel;
 import jenkins.model.Jenkins;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.commons.lang.StringUtils;
 
@@ -105,6 +106,10 @@ public final class PerfSigUtils {
         return filePath.list(new RegexFileFilter(testCase));
     }
 
+    public static String removeExtension(final String fileName) {
+        return FilenameUtils.removeExtension(fileName);
+    }
+
     /*
     Change this in case of new Dashboardstuff
     Used for rewriting diagram titles from Time to WebService-Time etc.
@@ -117,7 +122,7 @@ public final class PerfSigUtils {
     }
 
     public static String encodeString(final String value) {
-        if (value == null) return null;
+        if (StringUtils.isBlank(value)) return "";
         try {
             return URLEncoder.encode(value, "UTF-8").replaceAll("\\+", "%20");
         } catch (UnsupportedEncodingException e) {

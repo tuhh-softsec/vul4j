@@ -16,6 +16,8 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
+import de.tsystems.mms.apm.performancesignature.model.ClientLinkGenerator;
+
 import java.util.List;
 
 public class DashboardReport {
@@ -23,6 +25,7 @@ public class DashboardReport {
     private List<ChartDashlet> chartDashlets;
     private List<IncidentChart> incidents;
     private boolean unitTest;
+    private ClientLinkGenerator clientLink;
 
     public DashboardReport(final String testCaseName) {
         this.name = testCaseName;
@@ -54,6 +57,14 @@ public class DashboardReport {
 
     public void setUnitTest(final boolean unitTest) {
         this.unitTest = unitTest;
+    }
+
+    public ClientLinkGenerator getClientLink() {
+        return clientLink;
+    }
+
+    public void setClientLink(ClientLinkGenerator clientLink) {
+        this.clientLink = clientLink;
     }
 
     public Measure getMeasure(final String chartDashlet, final String measure) {

@@ -18,6 +18,7 @@ package de.tsystems.mms.apm.performancesignature.model;
 
 import hudson.Extension;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 
 import java.util.List;
 
@@ -26,6 +27,11 @@ public class UnitTestCase extends ConfigurationTestCase {
     @DataBoundConstructor
     public UnitTestCase(final String name, final List<Dashboard> singleDashboards, final List<Dashboard> comparisonDashboards, final String xmlDashboard) {
         super(name, singleDashboards, comparisonDashboards, xmlDashboard);
+    }
+
+    @DataBoundSetter
+    public void setClientDashboard(String clientDashboard) {
+        super.setClientDashboard(clientDashboard);
     }
 
     @Extension
