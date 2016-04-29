@@ -14,6 +14,14 @@ CREATE SCHEMA stammdaten;
 
 SET search_path = stammdaten, pg_catalog;
 
+CREATE FUNCTION update_letzte_aenderung() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+    BEGIN
+        NEW.letzte_aenderung = now();
+        RETURN NEW;
+    END;
+$$;
 
 CREATE FUNCTION get_media_from_media_desk(media_desk character varying) RETURNS character varying
     LANGUAGE plpgsql
@@ -219,6 +227,7 @@ CREATE TABLE datensatz_erzeuger (
     letzte_aenderung timestamp without time zone,
     UNIQUE(da_erzeuger_id, netzbetreiber_id)
 );
+CREATE TRIGGER letzte_aenderung_datensatz_erzeuger BEFORE UPDATE ON datensatz_erzeuger FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 
 ALTER SEQUENCE datensatz_erzeuger_id_seq OWNED BY datensatz_erzeuger.id;
 
@@ -454,6 +463,7 @@ CREATE TABLE messprogramm_kategorie (
     letzte_aenderung timestamp without time zone,
     UNIQUE(mpl_id, netzbetreiber_id)
 );
+CREATE TRIGGER letzte_aenderung_messprogramm_kategorie BEFORE UPDATE ON messprogramm_kategorie FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 
 ALTER SEQUENCE messprogramm_kategorie_id_seq
     OWNED BY messprogramm_kategorie.id;
@@ -522,6 +532,7 @@ CREATE TABLE ort (
     oz_id integer,
     UNIQUE(ort_id, netzbetreiber_id)
 );
+CREATE TRIGGER letzte_aenderung_ort BEFORE UPDATE ON ort FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 
 ALTER TABLE ONLY ort
     ADD CONSTRAINT ort_anlage_fkey FOREIGN KEY (anlage_id) REFERENCES ort(id);
@@ -608,6 +619,7 @@ CREATE TABLE probenehmer (
     letzte_aenderung timestamp without time zone,
     UNIQUE(prn_id, netzbetreiber_id)
 );
+CREATE TRIGGER letzte_aenderung_probenehmer BEFORE UPDATE ON probenehmer FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 
 ALTER SEQUENCE probenehmer_id_seq OWNED BY probenehmer.id;
 

@@ -39,8 +39,25 @@ CREATE FUNCTION update_time_status() RETURNS trigger
     END;
 $$;
 
+CREATE FUNCTION update_letzte_aenderung() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+    BEGIN
+        NEW.letzte_aenderung = now();
+        RETURN NEW;
+    END;
+$$;
 
 SET search_path = land, pg_catalog;
+
+CREATE FUNCTION update_letzte_aenderung() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+    BEGIN
+        NEW.letzte_aenderung = now();
+        RETURN NEW;
+    END;
+$$;
 
 --
 -- Name: is_probe_fertig(integer); Type: FUNCTION; Schema: land; Owner: -
@@ -197,6 +214,7 @@ CREATE TABLE list (
     letzte_aenderung timestamp with time zone NOT NULL,
     gueltig_bis timestamp with time zone
 );
+CREATE TRIGGER letzte_aenderung_list BEFORE UPDATE ON list FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 
 
 --
@@ -255,6 +273,7 @@ CREATE TABLE messung (
     status integer,
     letzte_aenderung timestamp without time zone DEFAULT now()
 );
+CREATE TRIGGER letzte_aenderung_messung BEFORE UPDATE ON messung FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 
 
 --
@@ -309,6 +328,7 @@ CREATE TABLE messwert (
     grenzwertueberschreitung boolean DEFAULT false,
     letzte_aenderung timestamp without time zone DEFAULT now()
 );
+CREATE TRIGGER letzte_aenderung_messwert BEFORE UPDATE ON messwert FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 
 
 --
@@ -335,6 +355,7 @@ CREATE TABLE ortszuordnung (
     ortszusatztext character varying(100),
     letzte_aenderung timestamp without time zone DEFAULT now()
 );
+CREATE TRIGGER letzte_aenderung_ortszuordnung BEFORE UPDATE ON ortszuordnung FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 
 
 --
@@ -380,6 +401,8 @@ CREATE TABLE probe (
     mittelungsdauer bigint,
     letzte_aenderung timestamp without time zone DEFAULT now()
 );
+
+CREATE TRIGGER letzte_aenderung_probe BEFORE UPDATE ON probe FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 
 --
 -- Name: COLUMN probe.id; Type: COMMENT; Schema: bund; Owner: -
@@ -500,6 +523,7 @@ CREATE TABLE zusatz_wert (
     letzte_aenderung timestamp without time zone DEFAULT now(),
     nwg_zu_messwert double precision
 );
+CREATE TRIGGER letzte_aenderung_zusatzwert BEFORE UPDATE ON zusatz_wert FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 
 
 SET search_path = land, pg_catalog;
@@ -564,6 +588,7 @@ CREATE TABLE messprogramm (
     probe_kommentar character varying(80),
     letzte_aenderung timestamp without time zone DEFAULT now() NOT NULL
 );
+CREATE TRIGGER letzte_aenderung_messprogramm BEFORE UPDATE ON messprogramm FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 
 --
 -- Name: messprogramm_id_seq; Type: SEQUENCE OWNED BY; Schema: land; Owner: -
@@ -590,6 +615,7 @@ CREATE TABLE messprogramm_mmt (
     messgroessen integer[],
     letzte_aenderung timestamp without time zone DEFAULT now()
 );
+CREATE TRIGGER letzte_aenderung_messprogramm_mmt BEFORE UPDATE ON messprogramm_mmt FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 
 
 --
