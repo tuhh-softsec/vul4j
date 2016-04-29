@@ -399,7 +399,8 @@ CREATE TABLE probe (
     probeentnahme_beginn timestamp with time zone,
     probeentnahme_ende timestamp with time zone,
     mittelungsdauer bigint,
-    letzte_aenderung timestamp without time zone DEFAULT now()
+    letzte_aenderung timestamp without time zone DEFAULT now(),
+    UNIQUE (mst_id, hauptproben_nr)
 );
 
 CREATE TRIGGER letzte_aenderung_probe BEFORE UPDATE ON probe FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
