@@ -33,7 +33,6 @@ public class ReportURLBuilder {
     private String serverAddress;
 
     public ReportURLBuilder() {
-        serverAddress = Messages.DashboardURLBuilder_DefaultServerURL();
         parameter = new ArrayList<String>();
     }
 
