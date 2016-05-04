@@ -2,7 +2,7 @@
 DIR=`dirname $0`
 
 ROLE_NAME=${1:-lada}
-echo "DROLE_NAME = $ROLE_NAME="
+echo "DROLE_NAME = $ROLE_NAME"
 ROLE_PW=${2:-$ROLE_NAME}
 echo "ROLE_PW = $ROLE_PW"
 DB_NAME=${3:-$ROLE_NAME}
@@ -14,13 +14,12 @@ if [ -n "$DB_SRV" -a -n "$DB_PORT"  ] ; then
   DB_CONNECT_STRING="$DB_CONNECT_STRING -p $DB_PORT"
 fi
 DB_CONNECT_STRING="$DB_CONNECT_STRING -U postgres"
-echo "DB_CONNECT_STRING =  $DB_CONNECT_STRING"
+echo "DB_CONNECT_STRING = $DB_CONNECT_STRING"
 
 if [ `psql $DB_CONNECT_STRING -t --command "SELECT count(*) FROM pg_catalog.pg_user WHERE usename = '$ROLE_NAME'"` -eq 0 ] ; then
   echo create user $ROLE_NAME
   psql $DB_CONNECT_STRING --command "CREATE USER $ROLE_NAME PASSWORD '$ROLE_PW';"
 fi
-exit
 
 if psql -h test-pgsql1-fr.lab.bfs.de -U postgres -l | grep -q "^ $DB_NAME " ; then
   echo drop db $DB_NAME 
@@ -30,7 +29,6 @@ fi
 echo create db $DB_NAME
 psql $DB_CONNECT_STRING --command \
      "CREATE DATABASE $DB_NAME WITH OWNER = $ROLE_NAME ENCODING = 'UTF8'"
-exit
 
 echo create postgis extention
 psql $DB_CONNECT_STRING -d $DB_NAME  --command  \
