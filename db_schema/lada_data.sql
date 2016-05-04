@@ -1188,9 +1188,20 @@ COPY zusatz_wert (id, probe_id, pzs_id, messwert_pzs, messfehler, letzte_aenderu
 
 ALTER TABLE zusatz_wert ENABLE TRIGGER ALL;
 
--- Completed on 2016-05-04 09:10:50 CEST
+SET search_path = bund, pg_catalog;
+
+SELECT pg_catalog.setval('kommentar_id_seq', 661, true);
+
+SELECT pg_catalog.setval('messung_id_seq', 1009, true);
+
+SELECT pg_catalog.setval('messwert_id_seq', 6471, true);
+
+SELECT pg_catalog.setval('ort_id_seq', 921, true);
+
+SELECT pg_catalog.setval('probe_id_seq', 734, true);
+
+SELECT pg_catalog.setval('zusatz_wert_id_seq', 30, true);
 
 --
 -- PostgreSQL database dump complete
 --
-

@@ -1,5 +1,20 @@
-#!/bin/sh
+#!/bin/sh -x
+# SYNOPSIS
+# ./setup-db.sh [-c] [ROLE_NAME] [ROLE_PW] [DB_NAME]
+#   -c         clean - drop an existing database
+#   ROLE_NAME  nema of db user (default = lada)
+#   ROLE_PW    login password  (default = ROLE_NAME)
+#   DB_NAME    name of the databaes (default = ROLE_NAME)
+#
+# There will be used a remote database server if there exists the  enviroment variable DB_SRV 
+# and optional DB_PORT 
+
 DIR=`dirname $0`
+
+if [ " $1" == " -c" ] ; then 
+   DROP_DB="true"
+   shift
+fi
 
 ROLE_NAME=${1:-lada}
 echo "DROLE_NAME = $ROLE_NAME"
@@ -21,7 +36,7 @@ if [ `psql $DB_CONNECT_STRING -t --command "SELECT count(*) FROM pg_catalog.pg_u
   psql $DB_CONNECT_STRING --command "CREATE USER $ROLE_NAME PASSWORD '$ROLE_PW';"
 fi
 
-if psql -h test-pgsql1-fr.lab.bfs.de -U postgres -l | grep -q "^ $DB_NAME " ; then
+if [ "$DROP_DB" == "true" ] && psql $DB_CONNECT_STRING -l | grep -q "^ $DB_NAME " ; then
   echo drop db $DB_NAME 
   psql $DB_CONNECT_STRING --command "DROP DATABASE $DB_NAME"
 fi
