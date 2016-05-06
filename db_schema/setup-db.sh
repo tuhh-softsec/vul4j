@@ -11,10 +11,15 @@
 
 DIR=`dirname $0`
 
-if [ " $1" == " -c" ] ; then 
-   DROP_DB="true"
-   shift
-fi
+while getopts "c" opt; do
+    case "$opt" in
+        c)
+            DROP_DB="true"
+            ;;
+    esac
+done
+
+shift $((OPTIND-1))
 
 ROLE_NAME=${1:-lada}
 echo "DROLE_NAME = $ROLE_NAME"
@@ -36,8 +41,8 @@ if [ `psql $DB_CONNECT_STRING -t --command "SELECT count(*) FROM pg_catalog.pg_u
   psql $DB_CONNECT_STRING --command "CREATE USER $ROLE_NAME PASSWORD '$ROLE_PW';"
 fi
 
-if [ "$DROP_DB" == "true" ] && psql $DB_CONNECT_STRING -l | grep -q "^ $DB_NAME " ; then
-  echo drop db $DB_NAME 
+if [ "$DROP_DB" = "true" ] && psql $DB_CONNECT_STRING -l | grep -q "^ $DB_NAME " ; then
+  echo drop db $DB_NAME
   psql $DB_CONNECT_STRING --command "DROP DATABASE $DB_NAME"
 fi
 
