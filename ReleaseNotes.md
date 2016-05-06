@@ -7,8 +7,8 @@ any version includes *all* changes below.
 
 ## Release 3.1.1
 
- * Fixed #28 which checks for null preventing NPE.
- * Pull Request #26 - Improvement from Plamen Totev.
+ * Fixed [#28](https://github.com/codehaus-plexus/plexus-archiver/issues/28) which checks for null preventing NPE.
+ * Pull Request [#26](https://github.com/codehaus-plexus/plexus-archiver/issues/26) - Improvement from Plamen Totev.
 
 Plexus Components - Version plexus-io-2.6.1
 -----
@@ -27,7 +27,7 @@ Plexus Archiver - Version 3.0.1
 ------
 ** Improvement
 
-Switched to pure-java snappy. Fixed issue #3
+Switched to pure-java snappy. Fixed issue [#3](https://github.com/codehaus-plexus/plexus-archiver/issues/3)
 
 Plexus Archiver - Version 3.0
 ------
@@ -38,7 +38,7 @@ Plexus Archiver - Version 3.0
 Plexus Components - Version plexus-archiver-2.10.3
 -----
 
-Issue #6 fix
+Issue [#6](https://github.com/codehaus-plexus/plexus-archiver/issues/6) fix
 
 Plexus Components - Version plexus-archiver-2.10.2
 -----
