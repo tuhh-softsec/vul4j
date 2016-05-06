@@ -59,6 +59,12 @@
       <version>2.7.1</version>
     </dependency>
     <dependency>
+      <!-- Upgrade to transitive dependency of 'plexus-io' which is JDK 5+ only. -->
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.5</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-compress</artifactId>
       <version>1.10</version>
