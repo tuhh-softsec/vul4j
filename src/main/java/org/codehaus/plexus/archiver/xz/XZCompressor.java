@@ -19,7 +19,6 @@ import java.io.IOException;
 import org.apache.commons.compress.compressors.xz.XZCompressorOutputStream;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.util.Compressor;
-import org.codehaus.plexus.util.IOUtil;
 
 import static org.codehaus.plexus.archiver.util.Streams.bufferedOutputStream;
 import static org.codehaus.plexus.archiver.util.Streams.fileOutputStream;
@@ -54,7 +53,17 @@ public class XZCompressor extends Compressor
     @Override
     public void close() 
     {
-        IOUtil.close( xzOut );
-        xzOut = null;
+        try
+        {
+            if ( this.xzOut != null )
+            {
+                this.xzOut.close();
+                xzOut = null;
+            }
+        }
+        catch ( final IOException e )
+        {
+            throw new ArchiverException( "Failure closing target.", e );
+        }
     }
 }

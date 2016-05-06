@@ -23,6 +23,7 @@ import java.util.HashMap;
 import org.codehaus.plexus.components.io.attributes.Java7FileAttributes;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.resources.PlexusIoCompressedFileResourceCollection;
+import org.codehaus.plexus.util.IOUtil;
 
 /**
  *
@@ -43,8 +44,13 @@ public class PlexusIoXZResourceCollection extends PlexusIoCompressedFileResource
     @Override
     protected InputStream getInputStream(File file) throws IOException {
         FileInputStream fileIs = new FileInputStream(file);
-
-        return XZUnArchiver.getXZInputStream(fileIs);
-
+        try {
+            final InputStream result = XZUnArchiver.getXZInputStream( fileIs );
+            fileIs = null;
+            return result;
+        }
+        finally {
+            IOUtil.close(fileIs);
+        }
     }
 }
