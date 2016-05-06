@@ -94,10 +94,13 @@ public abstract class Compressor
     protected void compress( PlexusIoResource resource, OutputStream zOut )
         throws IOException
     {
-        InputStream in = Streams.bufferedInputStream( resource.getContents() );
+        InputStream in = null;
         try
         {
+            in = Streams.bufferedInputStream( resource.getContents() );
             compressFile( in, zOut );
+            in.close();
+            in = null;
         }
         finally
         {
@@ -118,5 +121,6 @@ public abstract class Compressor
      * 
      * this is public so the process of compression and closing can be dealt with separately.
      */
-    public abstract void close();
+    public abstract void close()
+        throws ArchiverException;
 }

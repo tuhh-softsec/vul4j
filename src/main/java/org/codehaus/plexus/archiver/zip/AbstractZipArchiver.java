@@ -669,6 +669,8 @@ public abstract class AbstractZipArchiver
             empty[3] = 6;
             // remainder zeros
             os.write( empty );
+            os.close();
+            os = null;
         }
         catch ( IOException ioe )
         {

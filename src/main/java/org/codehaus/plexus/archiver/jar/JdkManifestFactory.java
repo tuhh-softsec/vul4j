@@ -32,31 +32,32 @@ class JdkManifestFactory
     public static java.util.jar.Manifest getDefaultManifest()
         throws ArchiverException
     {
+        InputStream in = null;
+        final String defManifest = "/org/codehaus/plexus/archiver/jar/defaultManifest.mf";
         try
         {
-            String defManifest = "/org/codehaus/plexus/archiver/jar/defaultManifest.mf";
-            InputStream in = JdkManifestFactory.class.getResourceAsStream( defManifest );
+            in = JdkManifestFactory.class.getResourceAsStream( defManifest );
             if ( in == null )
             {
                 throw new ArchiverException( "Could not find default manifest: " + defManifest );
             }
-            try
-            {
-                java.util.jar.Manifest defaultManifest = new java.util.jar.Manifest( in );
+            java.util.jar.Manifest defaultManifest = new java.util.jar.Manifest( in );
 
-                defaultManifest.getMainAttributes().putValue( "Created-By",
-                                                              System.getProperty( "java.vm.version" ) + " ("
-                                                                  + System.getProperty( "java.vm.vendor" ) + ")" );
-                return defaultManifest;
-            }
-            finally
-            {
-                IOUtil.close( in );
-            }
+            in.close();
+            in = null;
+
+            defaultManifest.getMainAttributes().putValue( "Created-By",
+                                                          System.getProperty( "java.vm.version" ) + " ("
+                                                              + System.getProperty( "java.vm.vendor" ) + ")" );
+            return defaultManifest;
         }
         catch ( IOException e )
         {
             throw new ArchiverException( "Unable to read default manifest", e );
+        }
+        finally
+        {
+            IOUtil.close( in );
         }
     }
 

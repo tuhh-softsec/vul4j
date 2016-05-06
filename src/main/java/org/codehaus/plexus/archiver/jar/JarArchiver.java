@@ -204,7 +204,10 @@ public class JarArchiver
         try
         {
             in = new FileInputStream( manifestFile );
-            return getManifest( in );
+            final Manifest mf = getManifest( in );
+            in.close();
+            in = null;
+            return mf;
         }
         catch ( IOException e )
         {

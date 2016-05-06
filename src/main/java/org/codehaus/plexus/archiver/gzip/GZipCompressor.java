@@ -20,7 +20,6 @@ package org.codehaus.plexus.archiver.gzip;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.util.Compressor;
 import org.codehaus.plexus.archiver.util.Streams;
-import org.codehaus.plexus.util.IOUtil;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -55,7 +54,17 @@ public class GZipCompressor
 
     public void close()
     {
-        IOUtil.close( zOut );
-        zOut = null;
+        try
+        {
+            if ( this.zOut != null )
+            {
+                this.zOut.close();
+                zOut = null;
+            }
+        }
+        catch ( final IOException e )
+        {
+            throw new ArchiverException( "Failure closing target.", e );
+        }
     }
 }

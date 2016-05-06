@@ -88,6 +88,8 @@ public class TarFileAttributesTest
         {
             writer = new FileWriter( tempFile );
             writer.write( "This is a test file." );
+            writer.close();
+            writer = null;
         }
         finally
         {
@@ -163,6 +165,8 @@ public class TarFileAttributesTest
         {
             writer = new FileWriter( tempFile );
             writer.write( "This is a test file." );
+            writer.close();
+            writer = null;
         }
         finally
         {
@@ -232,6 +236,8 @@ public class TarFileAttributesTest
         {
             writer = new FileWriter( tempFile );
             writer.write( "This is a test file." );
+            writer.close();
+            writer = null;
         }
         finally
         {
@@ -297,6 +303,8 @@ public class TarFileAttributesTest
         {
             writer = new FileWriter( tempFile );
             writer.write( "This is a test file." );
+            writer.close();
+            writer = null;
         }
         finally
         {

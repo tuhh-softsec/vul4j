@@ -30,7 +30,6 @@ import org.apache.commons.compress.utils.IOUtils;
 import org.codehaus.plexus.archiver.AbstractUnArchiver;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
-import org.codehaus.plexus.util.IOUtil;
 
 import javax.annotation.Nonnull;
 
@@ -139,6 +138,7 @@ public abstract class AbstractZipUnArchiver
     {
         getLogger().debug( "Expanding: " + getSourceFile() + " into " + getDestDirectory() );
         org.apache.commons.compress.archivers.zip.ZipFile zf = null;
+        InputStream in = null;
         try
         {
             zf = new org.apache.commons.compress.archivers.zip.ZipFile( getSourceFile(), encoding );
@@ -149,16 +149,19 @@ public abstract class AbstractZipUnArchiver
                 final ZipEntryFileInfo fileInfo = new ZipEntryFileInfo( zf, ze );
                 if ( isSelected( ze.getName(), fileInfo ) )
                 {
-					InputStream in = zf.getInputStream( ze );
+					in = zf.getInputStream( ze );
 					extractFileIfIncluded(getSourceFile(), getDestDirectory(), in, ze.getName(),
 							new Date(ze.getTime()), ze.isDirectory(), ze.getUnixMode() != 0 ? ze.getUnixMode() : null,
                             resolveSymlink( zf, ze ) );
-					IOUtil.close(in);
+                    in.close();
+                    in = null;
 				}
 
 			}
 
             getLogger().debug( "expand complete" );
+            zf.close();
+            zf = null;
         }
         catch ( final IOException ioe )
         {
@@ -166,7 +169,8 @@ public abstract class AbstractZipUnArchiver
         }
         finally
         {
-			IOUtils.closeQuietly( zf);
+            IOUtils.closeQuietly( in );
+            IOUtils.closeQuietly( zf );
         }
     }
 
@@ -190,7 +194,7 @@ public abstract class AbstractZipUnArchiver
         throws ArchiverException
     {
         org.apache.commons.compress.archivers.zip.ZipFile zipFile = null;
-
+        InputStream in = null;
         try
         {
             zipFile = new org.apache.commons.compress.archivers.zip.ZipFile( getSourceFile(), encoding );
@@ -208,13 +212,17 @@ public abstract class AbstractZipUnArchiver
 
                 if ( ze.getName().startsWith( path ) )
                 {
-                    final InputStream inputStream = zipFile.getInputStream( ze );
-                    extractFileIfIncluded( getSourceFile(), outputDirectory, inputStream,
+                    in = zipFile.getInputStream( ze );
+                    extractFileIfIncluded( getSourceFile(), outputDirectory, in,
                                            ze.getName(), new Date( ze.getTime() ), ze.isDirectory(),
                                            ze.getUnixMode() != 0 ? ze.getUnixMode() : null, resolveSymlink( zipFile, ze ) );
-					IOUtil.close(inputStream);
+                    in.close();
+                    in = null;
                 }
             }
+
+            zipFile.close();
+            zipFile = null;
         }
         catch ( final IOException ioe )
         {
@@ -222,7 +230,8 @@ public abstract class AbstractZipUnArchiver
         }
         finally
         {
-			IOUtils.closeQuietly( zipFile);
+            IOUtils.closeQuietly( in );
+            IOUtils.closeQuietly( zipFile );
         }
     }
 }

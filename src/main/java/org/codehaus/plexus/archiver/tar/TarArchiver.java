@@ -131,31 +131,30 @@ public class TarArchiver
 
         getLogger().info( "Building tar: " + tarFile.getAbsolutePath() );
 
-        final OutputStream os = new FileOutputStream( tarFile );
-        tOut = new TarArchiveOutputStream( compress( compression, os ), "UTF8" );
-        if ( longFileMode.isTruncateMode() )
-        {
-            tOut.setLongFileMode( TarArchiveOutputStream.LONGFILE_TRUNCATE );
-        }
-        else if ( longFileMode.isPosixMode() || longFileMode.isPosixWarnMode() )
-        {
-            tOut.setLongFileMode( TarArchiveOutputStream.LONGFILE_POSIX );
-            // Todo: Patch 2.5.1   for this fix. Also make closeable fix on 2.5.1
-            tOut.setBigNumberMode( TarArchiveOutputStream.BIGNUMBER_POSIX );
-        }
-        else if ( longFileMode.isFailMode() || longFileMode.isOmitMode() )
-        {
-            tOut.setLongFileMode( TarArchiveOutputStream.LONGFILE_ERROR );
-        }
-        else
-        {
-            // warn or GNU
-            tOut.setLongFileMode( TarArchiveOutputStream.LONGFILE_GNU );
-        }
-
-        longWarningGiven = false;
         try
         {
+            tOut = new TarArchiveOutputStream( compress( compression, new FileOutputStream( tarFile ) ), "UTF8" );
+            if ( longFileMode.isTruncateMode() )
+            {
+                tOut.setLongFileMode( TarArchiveOutputStream.LONGFILE_TRUNCATE );
+            }
+            else if ( longFileMode.isPosixMode() || longFileMode.isPosixWarnMode() )
+            {
+                tOut.setLongFileMode( TarArchiveOutputStream.LONGFILE_POSIX );
+                // Todo: Patch 2.5.1   for this fix. Also make closeable fix on 2.5.1
+                tOut.setBigNumberMode( TarArchiveOutputStream.BIGNUMBER_POSIX );
+            }
+            else if ( longFileMode.isFailMode() || longFileMode.isOmitMode() )
+            {
+                tOut.setLongFileMode( TarArchiveOutputStream.LONGFILE_ERROR );
+            }
+            else
+            {
+                // warn or GNU
+                tOut.setLongFileMode( TarArchiveOutputStream.LONGFILE_GNU );
+            }
+
+            longWarningGiven = false;
             while ( iter.hasNext() )
             {
                 ArchiveEntry entry = iter.next();
@@ -169,6 +168,8 @@ public class TarArchiver
 
                 tarFile( entry, tOut, name );
             }
+
+            tOut.close();
         }
         finally
         {
@@ -496,13 +497,19 @@ public class TarArchiver
         throws IOException
     {
         super.cleanUp();
-        IOUtil.close( tOut );
+        if ( this.tOut != null )
+        {
+            this.tOut.close();
+        }
     }
 
     protected void close()
         throws IOException
     {
-        IOUtil.close( tOut );
+        if ( this.tOut != null )
+        {
+            this.tOut.close();
+        }
     }
 
     protected String getArchiveType()

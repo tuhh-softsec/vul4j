@@ -19,7 +19,6 @@ package org.codehaus.plexus.archiver.snappy;
 
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.util.Compressor;
-import org.codehaus.plexus.util.IOUtil;
 import org.iq80.snappy.SnappyOutputStream;
 
 import java.io.IOException;
@@ -53,9 +52,20 @@ public class SnappyCompressor
         }
     }
 
+    @Override
     public void close()
     {
-        IOUtil.close( zOut );
-        zOut = null;
+        try
+        {
+            if ( this.zOut != null )
+            {
+                this.zOut.close();
+                zOut = null;
+            }
+        }
+        catch ( final IOException e )
+        {
+            throw new ArchiverException( "Failure closing target.", e );
+        }
     }
 }

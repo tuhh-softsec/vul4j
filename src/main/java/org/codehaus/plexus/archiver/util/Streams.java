@@ -95,6 +95,12 @@ public class Streams
         try
         {
             copyFullyDontCloseOutput( zIn, out, gzip );
+            out.close();
+            out = null;
+        }
+        catch ( final IOException e )
+        {
+            throw new ArchiverException( "Failure copying.", e );
         }
         finally
         {
@@ -125,6 +131,8 @@ public class Streams
                 count = zIn.read( buffer, 0, buffer.length );
             }
             while ( count != -1 );
+            zIn.close();
+            zIn = null;
         }
         catch ( IOException e )
         {

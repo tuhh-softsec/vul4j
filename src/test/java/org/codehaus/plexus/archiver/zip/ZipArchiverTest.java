@@ -331,6 +331,8 @@ public class ZipArchiverTest
 
             writer = new FileWriter( file );
             writer.write( "This is a test file." );
+            writer.close();
+            writer = null;
         }
         finally
         {

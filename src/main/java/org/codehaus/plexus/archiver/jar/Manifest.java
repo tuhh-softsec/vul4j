@@ -25,7 +25,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -739,29 +738,29 @@ public class Manifest
     public static Manifest getDefaultManifest()
         throws ArchiverException
     {
+        InputStream in = null;
+        Reader reader = null;
+        final String defManifest = "/org/codehaus/plexus/archiver/jar/defaultManifest.mf";
         try
         {
-            String defManifest = "/org/codehaus/plexus/archiver/jar/defaultManifest.mf";
-            InputStream in = Manifest.class.getResourceAsStream( defManifest );
+            in = Manifest.class.getResourceAsStream( defManifest );
             if ( in == null )
             {
                 throw new ArchiverException( "Could not find default manifest: " + defManifest );
             }
-            try
-            {
-                Manifest defaultManifest = new Manifest( new InputStreamReader( in, "UTF-8" ) );
-                defaultManifest.getMainAttributes().putValue( "Created-By", System.getProperty(
-                    "java.vm.version" ) + " (" + System.getProperty( "java.vm.vendor" ) + ")" );
-                return defaultManifest;
-            }
-            catch ( UnsupportedEncodingException e )
-            {
-                return new Manifest( new InputStreamReader( in ) );
-            }
-            finally
-            {
-                IOUtil.close( in );
-            }
+            reader = new InputStreamReader( in, "UTF-8" );
+            final Manifest defaultManifest = new Manifest( reader );
+            defaultManifest.getMainAttributes().putValue( "Created-By", System.getProperty(
+                                                          "java.vm.version" ) + " (" + System.getProperty(
+                                                              "java.vm.vendor" ) + ")" );
+
+            reader.close();
+            reader = null;
+
+            in.close();
+            in = null;
+
+            return defaultManifest;
         }
         catch ( ManifestException e )
         {
@@ -770,6 +769,11 @@ public class Manifest
         catch ( IOException e )
         {
             throw new ArchiverException( "Unable to read default manifest", e );
+        }
+        finally
+        {
+            IOUtil.close( in );
+            IOUtil.close( reader );
         }
     }
 

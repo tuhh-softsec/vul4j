@@ -20,7 +20,6 @@ package org.codehaus.plexus.archiver.bzip2;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.util.Compressor;
-import org.codehaus.plexus.util.IOUtil;
 
 import java.io.IOException;
 
@@ -56,7 +55,17 @@ public class BZip2Compressor
 
     public void close()
     {
-        IOUtil.close( zOut );
-        zOut = null;
+        try
+        {
+            if ( this.zOut != null )
+            {
+                this.zOut.close();
+                zOut = null;
+            }
+        }
+        catch ( final IOException e )
+        {
+            throw new ArchiverException( "Failure closing target.", e );
+        }
     }
 }

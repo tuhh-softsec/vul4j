@@ -114,7 +114,8 @@ public class TarUnArchiver
 
             }
             getLogger().debug( "expand complete" );
-
+            tis.close();
+            tis = null;
         }
         catch ( IOException ioe )
         {

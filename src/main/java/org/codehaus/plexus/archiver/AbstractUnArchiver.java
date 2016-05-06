@@ -313,6 +313,8 @@ public abstract class AbstractUnArchiver
                     out = new FileOutputStream( f );
 
                     IOUtil.copy( compressedInputStream, out );
+                    out.close();
+                    out = null;
                 }
                 finally
                 {
