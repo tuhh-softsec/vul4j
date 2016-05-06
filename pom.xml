@@ -86,15 +86,15 @@
   <build>
     <pluginManagement>
       <plugins>
-         <plugin>
-           <groupId>org.apache.maven.plugins</groupId>
-           <artifactId>maven-site-plugin</artifactId>
-           <version>3.4</version>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.4</version>
         </plugin>
-         <plugin>
-           <groupId>org.apache.maven.plugins</groupId>
-           <artifactId>maven-gpg-plugin</artifactId>
-           <version>1.6</version>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>1.6</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -152,13 +152,13 @@
         </executions>
       </plugin>
       <plugin>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <configuration>
-                <source>1.6</source>
-                <target>1.6</target>
-            </configuration>
-        </plugin>    
-     </plugins>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 
 </project>
