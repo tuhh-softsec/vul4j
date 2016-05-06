@@ -4,6 +4,12 @@ Plexus Archiver and Plexus-IO combined release notes
 Since archiver depends on a given version of IO this list is cumulative,
 any version includes *all* changes below.
 
+## Release 3.2
+
+ * Task [#31](https://github.com/codehaus-plexus/plexus-archiver/issues/31) Upgrade of 'plexus-utils' to 3.0.23.
+ * Task [#32](https://github.com/codehaus-plexus/plexus-archiver/issues/32) Upgrade of 'commons-io' to 2.5.
+ * Fixed [#33](https://github.com/codehaus-plexus/plexus-archiver/issues/32) Exceptions are suppressed incorrectly.
+ * Pull Request [#27](https://github.com/codehaus-plexus/plexus-archiver/issues/27) Added xz compression support.
 
 ## Release 3.1.1
 

@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>plexus-archiver</artifactId>
-  <version>3.1.2-SNAPSHOT</version>
+  <version>3.2-SNAPSHOT</version>
   <name>Plexus Archiver Component</name>
 
   <scm>
