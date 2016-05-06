@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -e
 # SYNOPSIS
 # ./setup-db.sh [-c] [ROLE_NAME] [ROLE_PW] [DB_NAME]
 #   -c         clean - drop an existing database
