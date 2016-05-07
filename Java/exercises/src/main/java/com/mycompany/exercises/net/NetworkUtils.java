@@ -95,14 +95,13 @@ public final class NetworkUtils {
   }
 
   public static boolean isHostAvailable(final String host) {
-    boolean available = false;
     try (Socket socket = new Socket(host, 80)) {
-      available = true;
+      return true;
     } catch (IOException ex) {
       System.err.println("Failed to check if host " + host + " is available.");
       System.err.println("Message: " + ex.getMessage());
     }
-    return available;
+    return false;
   }
 
   public static boolean isHostContentAvailable(final String host) {
