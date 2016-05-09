@@ -201,7 +201,7 @@ public class MessprogrammKategorieService {
                 repository.entityManager("stamm"),
                 MessprogrammKategorie.class
             );
-        builder.and("ortId", kategorie.getMplId());
+        builder.and("mplId", kategorie.getMplId());
         builder.and("netzbetreiberId", kategorie.getNetzbetreiberId());
 
         List<MessprogrammKategorie> kategorien =
