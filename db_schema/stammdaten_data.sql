@@ -317,7 +317,7 @@ COPY auth (id, ldap_group, netzbetreiber_id, mst_id, labor_mst_id, funktion_id) 
 -- Name: auth_id_seq; Type: SEQUENCE SET; Schema: stammdaten; Owner: lada
 --
 
-SELECT pg_catalog.setval('auth_id_seq', 1, false);
+SELECT pg_catalog.setval('auth_id_seq', 24);
 
 
 --
@@ -925,8 +925,8 @@ SELECT pg_catalog.setval('datenbasis_id_seq', 14, true);
 --
 
 COPY datensatz_erzeuger (id, netzbetreiber_id, da_erzeuger_id, mst_id, bezeichnung, letzte_aenderung) FROM stdin;
-453	06	KS	06010	Messstelle HLUG Kassel	2000-01-01 00:00:00
-553	06	DA	06060	Messstelle HLUG Darmstadt	2000-01-01 00:00:00
+1	06	KS	06010	Messstelle HLUG Kassel	2000-01-01 00:00:00
+2	06	DA	06060	Messstelle HLUG Darmstadt	2000-01-01 00:00:00
 \.
 
 
@@ -936,7 +936,7 @@ COPY datensatz_erzeuger (id, netzbetreiber_id, da_erzeuger_id, mst_id, bezeichnu
 -- Name: datensatz_erzeuger_id_seq; Type: SEQUENCE SET; Schema: stammdaten; Owner: lada
 --
 
-SELECT pg_catalog.setval('datensatz_erzeuger_id_seq', 5, true);
+SELECT pg_catalog.setval('datensatz_erzeuger_id_seq', 2);
 
 
 --
@@ -22010,7 +22010,7 @@ COPY query (id, name, type, sql, description) FROM stdin;
 --
 
 COPY favorite (id, user_id, query_id) FROM stdin;
-11	1	2
+1	1	2
 \.
 
 
@@ -22020,7 +22020,7 @@ COPY favorite (id, user_id, query_id) FROM stdin;
 -- Name: favorite_id_seq; Type: SEQUENCE SET; Schema: stammdaten; Owner: lada
 --
 
-SELECT pg_catalog.setval('favorite_id_seq', 13, true);
+SELECT pg_catalog.setval('favorite_id_seq', 1);
 
 
 --
@@ -22066,7 +22066,7 @@ COPY filter_value (id, user_id, filter_id, value) FROM stdin;
 -- Name: filter_value_id_seq; Type: SEQUENCE SET; Schema: stammdaten; Owner: lada
 --
 
-SELECT pg_catalog.setval('filter_value_id_seq', 15, true);
+SELECT pg_catalog.setval('filter_value_id_seq', 1, false);
 
 
 --
@@ -23189,7 +23189,7 @@ COPY messprogramm_kategorie (id, netzbetreiber_id, mpl_id, bezeichnung, letzte_a
 -- Name: messprogramm_kategorie_id_seq; Type: SEQUENCE SET; Schema: stammdaten; Owner: lada
 --
 
-SELECT pg_catalog.setval('messprogramm_kategorie_id_seq', 5, true);
+SELECT pg_catalog.setval('messprogramm_kategorie_id_seq', 968, true);
 
 
 --
@@ -36834,7 +36834,7 @@ COPY probenehmer (id, netzbetreiber_id, prn_id, bearbeiter, bemerkung, betrieb, 
 -- Name: probenehmer_id_seq; Type: SEQUENCE SET; Schema: stammdaten; Owner: lada
 --
 
-SELECT pg_catalog.setval('probenehmer_id_seq', 5, true);
+SELECT pg_catalog.setval('probenehmer_id_seq', 1859, true);
 
 
 --
