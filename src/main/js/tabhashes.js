@@ -15,6 +15,7 @@
  */
 
 var $ = require('bootstrap-detached').getBootstrap();
+"use strict";
 
 var hash = window.location.hash;
 if (hash) {

@@ -23,6 +23,7 @@ require('lightbox2');
 require('./jquery.gridster')(window, $);
 
 $(document).ready(function () {
+    "use strict";
     var grid = [];
     $.fn.dataTableExt.sErrMode = 'none';
 
@@ -50,8 +51,16 @@ $(document).ready(function () {
                     $.each(data.responseObject(), function (val, text) {
                         $("#measure", page).append($('<option></option>').val(val).html(text));
                     });
+                    $("#measure", page).trigger("change");
                 });
             }
+        });
+
+        $("#measure", this).change(function () {
+            projectAction.getAggregationFromMeasure($(page).attr('id'), $("#measureGroup", page).children(":selected").text(),
+                $(this).children(":selected").text(), function (data) {
+                    $("#aggregation", page).val(data.responseObject());
+                });
         });
 
         $("#editbutton", this).click(function () {

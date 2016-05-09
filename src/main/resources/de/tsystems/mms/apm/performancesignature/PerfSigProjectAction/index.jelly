@@ -98,6 +98,16 @@
                                             <label for="measure">select measure:</label>
                                             <select class="form-control" id="measure"/>
                                         </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="aggregation">select aggregation:</label>
+                                            <select class="form-control" id="aggregation">
+                                                <option>Minimum</option>
+                                                <option>Maximum</option>
+                                                <option>Average</option>
+                                                <option>Sum</option>
+                                                <option>Count</option>
+                                            </select>
+                                        </div>
                                         <div class="form-group col-md-4">
                                             <label for="measurename">custom measure name</label>
                                             <input type="text" class="form-control" id="customName" placeholder="measure name"/>

@@ -19,6 +19,7 @@ require('./prototypecompat.js');
 require('./tabhashes.js');
 
 $(document).ready(function () {
+    "use strict";
     $('.carousel').each(function (carouselIndex, carousel) {
         var testCase = $(carousel).attr('id').substring(9);
 

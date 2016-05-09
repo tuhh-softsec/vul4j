@@ -15,6 +15,7 @@
  */
 
 var $ = require('bootstrap-detached').getBootstrap();
+"use strict";
 
 if (Prototype.BrowserFeatures.ElementExtensions) {
     // Fix incompatibilities between BootStrap and Prototype

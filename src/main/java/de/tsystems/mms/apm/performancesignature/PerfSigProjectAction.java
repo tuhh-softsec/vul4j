@@ -482,20 +482,34 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     @JavaScriptMethod
     public Map<String, String> getAvailableMeasures(final String dashboard, final String dashlet) throws IOException {
         final Map<String, String> availableMeasures = new HashMap<String, String>();
-        if (StringUtils.isNotBlank(dashlet)) {
-            for (DashboardReport dashboardReport : getLastDashboardReports()) {
-                if (dashboardReport.getName().equals(dashboard)) {
-                    for (ChartDashlet chartDashlet : dashboardReport.getChartDashlets()) {
-                        if (chartDashlet.getName().equals(dashlet)) {
-                            for (Measure measure : chartDashlet.getMeasures())
-                                availableMeasures.put(DigestUtils.md5Hex(dashboardReport.getName() + chartDashlet.getName() + measure.getName()), measure.getName());
-                            return availableMeasures;
-                        }
+        for (DashboardReport dashboardReport : getLastDashboardReports()) {
+            if (dashboardReport.getName().equals(dashboard)) {
+                for (ChartDashlet chartDashlet : dashboardReport.getChartDashlets()) {
+                    if (chartDashlet.getName().equals(dashlet)) {
+                        for (Measure measure : chartDashlet.getMeasures())
+                            availableMeasures.put(DigestUtils.md5Hex(dashboardReport.getName() + chartDashlet.getName() + measure.getName()), measure.getName());
+                        return availableMeasures;
                     }
                 }
             }
         }
         return availableMeasures;
+    }
+
+    @JavaScriptMethod
+    public String getAggregationFromMeasure(final String dashboard, final String dashlet, final String measure) throws IOException {
+        for (DashboardReport dashboardReport : getLastDashboardReports()) {
+            if (dashboardReport.getName().equals(dashboard)) {
+                for (ChartDashlet chartDashlet : dashboardReport.getChartDashlets()) {
+                    if (chartDashlet.getName().equals(dashlet)) {
+                        for (Measure m : chartDashlet.getMeasures())
+                            if (m.getName().equals(measure))
+                                return m.getAggregation();
+                    }
+                }
+            }
+        }
+        return "";
     }
 
     public List<ChartDashlet> getFilteredChartDashlets(final DashboardReport dashboardReport) throws IOException, InterruptedException {

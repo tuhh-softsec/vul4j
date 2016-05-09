@@ -19,6 +19,7 @@ require('./prototypecompat.js');
 require('./tabhashes.js');
 
 $(document).ready(function () {
+    "use strict";
     $('.panel-body').each(function () {  // for many elements
         if (!/[\S]/.test($(this).html())) {
             $(this).html('no PDF reports available!');
