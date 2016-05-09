@@ -41,7 +41,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
-    private static final int reanalyzeSessionTimeout = 60000; //==1 minute
+    private static final int reanalyzeSessionTimeout = 5 * 60000; //==1 minute
     private static final int reanalyzeSessionPollingInterval = 5000; //==5 seconds
     private final String dynatraceProfile;
     private boolean reanalyzeSession;
