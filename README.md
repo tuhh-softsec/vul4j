@@ -1,3 +1,13 @@
 # Performance Signature with Dynatrace for Jenkins
 
-[https://community.dynatrace.com/community/display/DL/Performance+Signature+Plugin](https://community.dynatrace.com/community/display/DL/Performance+Signature+Plugin)
+Jenkins plugin which evaluates aggregated load and performance data from Dynatrace after each build.
+
+Links
+-------
+* [Documentation](https://community.dynatrace.com/community/display/DL/Performance+Signature+Plugin)
+* [Wiki-page](https://wiki.jenkins-ci.org/display/JENKINS/Performance+Signature+with+Dynatrace+Plugin)
+* [Open issues](https://issues.jenkins-ci.org/issues/?jql=project%20%3D%20JENKINS%20AND%20status%20in%20(Open%2C%20%22In%20Progress%22%2C%20Reopened)%20AND%20component%20%3D%20%27performance-signature-dynatrace-plugin%27)
+
+Continuous builds
+----------------
+* Cloudbees: [![Build Status](https://jenkins.ci.cloudbees.com/job/plugins/job/performance-signature-dynatrace-plugin//badge/icon)](https://jenkins.ci.cloudbees.com/job/plugins/job/performance-signature-dynatrace-plugin/)
