@@ -428,7 +428,12 @@ public class StatusService {
         statusNew.setDatum(new Timestamp(new Date().getTime()));
         statusNew.setErzeuger(status.getErzeuger());
         statusNew.setMessungsId(status.getMessungsId());
-        statusNew.setStatusStufe(status.getStatusStufe());
+        if (status.getStatusStufe() == null) {
+            statusNew.setStatusStufe(currentStatus.getStatusStufe());
+        }
+        else {
+            statusNew.setStatusStufe(status.getStatusStufe());
+        }
         statusNew.setStatusWert(8);
         statusNew.setText("Reset");
 
