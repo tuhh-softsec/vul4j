@@ -229,21 +229,7 @@ public class DatensatzErzeugerService {
         ) {
             return new Response(false, 699, datensatzerzeuger);
         }
-        QueryBuilder<DatensatzErzeuger> builder =
-            new QueryBuilder<DatensatzErzeuger>(
-                repository.entityManager("stamm"),
-                DatensatzErzeuger.class
-            );
-        builder.and("daErzeugerId", datensatzerzeuger.getDaErzeugerId());
-        builder.and("netzbetreiberId", datensatzerzeuger.getNetzbetreiberId());
-
-        List<DatensatzErzeuger> erzeuger =
-            repository.filterPlain(builder.getQuery(), "stamm");
-        if (erzeuger.isEmpty() ||
-            erzeuger.get(0).getId() == datensatzerzeuger.getId()) {
-            return repository.update(datensatzerzeuger, "stamm");
-        }
-        return new Response(false, 672, null);
+        return repository.update(datensatzerzeuger, "stamm");
     }
 
     @DELETE

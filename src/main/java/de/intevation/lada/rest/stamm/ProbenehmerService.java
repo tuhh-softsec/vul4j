@@ -224,21 +224,8 @@ public class ProbenehmerService {
         ) {
             return new Response(false, 699, probenehmer);
         }
-        QueryBuilder<Probenehmer> builder =
-            new QueryBuilder<Probenehmer>(
-                repository.entityManager("stamm"),
-                Probenehmer.class
-            );
-        builder.and("prnId", probenehmer.getPrnId());
-        builder.and("netzbetreiberId", probenehmer.getNetzbetreiberId());
 
-        List<Probenehmer> nehmer=
-            repository.filterPlain(builder.getQuery(), "stamm");
-        if (nehmer.isEmpty() ||
-            nehmer.get(0).getId() == probenehmer.getId()) {
-            return repository.update(probenehmer, "stamm");
-        }
-        return new Response(false, 672, null);
+        return repository.update(probenehmer, "stamm");
     }
 
     @DELETE

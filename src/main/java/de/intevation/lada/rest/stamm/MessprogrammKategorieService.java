@@ -228,21 +228,7 @@ public class MessprogrammKategorieService {
         ) {
             return new Response(false, 699, kategorie);
         }
-        QueryBuilder<MessprogrammKategorie> builder =
-            new QueryBuilder<MessprogrammKategorie>(
-                repository.entityManager("stamm"),
-                MessprogrammKategorie.class
-            );
-        builder.and("ortId", kategorie.getMplId());
-        builder.and("netzbetreiberId", kategorie.getNetzbetreiberId());
-
-        List<MessprogrammKategorie> kategorien =
-            repository.filterPlain(builder.getQuery(), "stamm");
-        if (kategorien.isEmpty() ||
-            kategorien.get(0).getId() == kategorie.getId()) {
-            return repository.update(kategorie, "stamm");
-        }
-        return new Response(false, 672, null);
+        return repository.update(kategorie, "stamm");
     }
 
     @DELETE
