@@ -21974,10 +21974,6 @@ SELECT pg_catalog.setval('deskriptoren_id_seq', 18935, true);
 --
 
 COPY lada_user (id, name) FROM stdin;
-1	testeins
-3	testdrei
-4	testvier
-5	testzwei
 \.
 
 
@@ -21999,7 +21995,8 @@ COPY query (id, name, type, sql, description) FROM stdin;
 4	MST und UMW	probe	SELECT probe.id AS id, probe.hauptproben_nr AS hpNr, datenbasis.datenbasis AS dBasis, probe.netzbetreiber_id AS netzId, probe.mst_id AS mstId, probe.umw_id AS umwId, probenart.probenart AS pArt, to_char(probe.probeentnahme_beginn, 'dd.mm.YYYY hh24:MI') AS peBegin, to_char(probe.probeentnahme_ende, 'dd.mm.YYYY hh24:MI') AS peEnd, ort.ort_id AS ortId, ort.gem_id AS eGemId, verwaltungseinheit.bezeichnung AS eGem, probe_translation.probe_id_alt AS probeId FROM land.probe LEFT JOIN stammdaten.datenbasis ON (probe.datenbasis_id = datenbasis.id) LEFT JOIN stammdaten.probenart ON (probe.probenart_id = probenart.id) LEFT OUTER JOIN land.ortszuordnung ON ( probe.id = ortszuordnung.probe_id AND ortszuordnung.ortszuordnung_typ = 'E' ) LEFT OUTER JOIN stammdaten.ort ON (ortszuordnung.ort_id = ort.id) LEFT OUTER JOIN stammdaten.verwaltungseinheit ON (ort.gem_id = verwaltungseinheit.id) LEFT OUTER JOIN land.probe_translation ON (probe.id = probe_translation.probe_id)WHERE (probe.mst_id = :mstIdFilter OR '' = :mstIdFilter) AND (probe.umw_id = :umwIdFilter OR '' = :umwIdFilter)	Abfrage der Proben gefiltert nach Messtellen ID und ID des Umweltbereichs
 5	Proben pro Land	probe	SELECT probe.id AS id, probe.hauptproben_nr AS hpNr, datenbasis.datenbasis AS dBasis, probe.netzbetreiber_id AS netzId, probe.mst_id AS mstId, probe.umw_id AS umwId, probenart.probenart AS pArt, to_char(probe.probeentnahme_beginn, 'dd.mm.YYYY hh24:MI') AS peBegin, to_char(probe.probeentnahme_ende, 'dd.mm.YYYY hh24:MI') AS peEnd, ort.ort_id AS ortId, ort.gem_id AS eGemId, verwaltungseinheit.bezeichnung AS eGem, probe_translation.probe_id_alt AS probeId FROM land.probe LEFT JOIN stammdaten.datenbasis ON (probe.datenbasis_id = datenbasis.id) LEFT JOIN stammdaten.probenart ON (probe.probenart_id = probenart.id) LEFT OUTER JOIN land.ortszuordnung ON ( probe.id = ortszuordnung.probe_id AND ortszuordnung.ortszuordnung_typ = 'E' ) LEFT OUTER JOIN stammdaten.ort ON (ortszuordnung.ort_id = ort.id) LEFT OUTER JOIN stammdaten.verwaltungseinheit ON (ort.gem_id = verwaltungseinheit.id) LEFT OUTER JOIN land.probe_translation ON (probe.id = probe_translation.probe_id) WHERE (probe.netzbetreiber_id = :netzIdFilter OR '' = :netzIdFilter)	Proben gefiltert nach Ländern
 7	Proben pro Land und UMW (Multiselect)	probe	SELECT probe.id AS id, probe.hauptproben_nr AS hpNr, datenbasis.datenbasis AS dBasis, probe.netzbetreiber_id AS netzId, probe.mst_id AS mstId, probe.umw_id AS umwId, probenart.probenart AS pArt, to_char(probe.probeentnahme_beginn, 'dd.mm.YYYY hh24:MI') AS peBegin, to_char(probe.probeentnahme_ende, 'dd.mm.YYYY hh24:MI') AS peEnd, ort.ort_id AS ortId, ort.gem_id AS eGemId, verwaltungseinheit.bezeichnung AS eGem, probe_translation.probe_id_alt AS probeId FROM land.probe LEFT JOIN stammdaten.datenbasis ON (probe.datenbasis_id = datenbasis.id) LEFT JOIN stammdaten.probenart ON (probe.probenart_id = probenart.id) LEFT OUTER JOIN land.ortszuordnung ON ( probe.id = ortszuordnung.probe_id AND ortszuordnung.ortszuordnung_typ = 'E' ) LEFT OUTER JOIN stammdaten.ort ON (ortszuordnung.ort_id = ort.id) LEFT OUTER JOIN stammdaten.verwaltungseinheit ON (ort.gem_id = verwaltungseinheit.id) LEFT OUTER JOIN land.probe_translation ON (probe.id = probe_translation.probe_id) WHERE (probe.netzbetreiber_id = :netzIdFilter OR '' =:netzIdFilter) AND (probe.umw_id similar to (:umwIdFilter) OR '' = :umwIdFilter)	Abfrage aller Proben gefiltert pro Land und Umweltbereich (mit Mehrfachauswahl)
-15	kein Filter	messung	SELECT m.id, p.id as probe_id, p.hauptproben_nr as hauptprobenNr, m.nebenproben_nr as nebenprobenNr, sw.wert as statusWert, st.stufe as statusStufe, nb.netzbetreiber from land.probe p join land.messung m on p.id = m.probe_id join land.status_protokoll s on m.status = s.id join stammdaten.status_stufe st on st.id = s.status_stufe join stammdaten.status_wert sw on sw.id = s.status_wert join stammdaten.netz_betreiber nb on nb.id = p.netzbetreiber_id	kein Filter
+15	kein Filter	messung	SELECT messung.id, probe.hauptproben_nr AS hpNr, messung.nebenproben_nr AS npNr, to_char(status_protokoll.datum, 'dd.mm.YYYY hh24:MI') AS statusD, status_stufe.stufe AS statusSt, status_wert.wert AS statusW, datenbasis.datenbasis AS dBasis, probe.netzbetreiber_id AS netzId, probe.mst_id AS mstId, probe.umw_id AS umwId, probenart.probenart AS pArt, to_char(probe.probeentnahme_beginn, 'dd.mm.YYYY hh24:MI') AS peBegin, to_char(probe.probeentnahme_ende, 'dd.mm.YYYY hh24:MI') AS peEnd, ort.ort_id AS ortId, ort.gem_id AS eGemId, verwaltungseinheit.bezeichnung AS eGem FROM land.probe INNER JOIN land.messung ON probe.id = messung.probe_id INNER JOIN land.status_protokoll ON messung.STATUS = status_protokoll.id LEFT JOIN stammdaten.status_stufe ON status_protokoll.status_stufe = status_stufe.id LEFT JOIN stammdaten.status_wert ON status_protokoll.status_wert = status_wert.id LEFT JOIN stammdaten.datenbasis ON (probe.datenbasis_id = datenbasis.id) LEFT JOIN stammdaten.probenart ON (probe.probenart_id = probenart.id) LEFT JOIN land.ortszuordnung ON ( probe.id = ortszuordnung.probe_id AND ortszuordnung.ortszuordnung_typ = 'E' ) LEFT JOIN stammdaten.ort ON (ortszuordnung.ort_id = ort.id) LEFT JOIN stammdaten.verwaltungseinheit ON (ort.gem_id = verwaltungseinheit.id) 	kein Filter
+13	nach Status	messung	SELECT messung.id, probe.hauptproben_nr AS hpNr, messung.nebenproben_nr AS npNr, to_char(status_protokoll.datum, 'dd.mm.YYYY hh24:MI') AS statusD, status_stufe.stufe AS statusSt, status_wert.wert AS statusW, datenbasis.datenbasis AS dBasis, probe.netzbetreiber_id AS netzId, probe.mst_id AS mstId, probe.umw_id AS umwId, probenart.probenart AS pArt, to_char(probe.probeentnahme_beginn, 'dd.mm.YYYY hh24:MI') AS peBegin, to_char(probe.probeentnahme_ende, 'dd.mm.YYYY hh24:MI') AS peEnd, ort.ort_id AS ortId, ort.gem_id AS eGemId, verwaltungseinheit.bezeichnung AS eGem FROM land.probe INNER JOIN land.messung ON probe.id = messung.probe_id INNER JOIN land.status_protokoll ON messung.STATUS = status_protokoll.id LEFT JOIN stammdaten.status_stufe ON status_protokoll.status_stufe = status_stufe.id LEFT JOIN stammdaten.status_wert ON status_protokoll.status_wert = status_wert.id LEFT JOIN stammdaten.datenbasis ON (probe.datenbasis_id = datenbasis.id) LEFT JOIN stammdaten.probenart ON (probe.probenart_id = probenart.id) LEFT JOIN land.ortszuordnung ON ( probe.id = ortszuordnung.probe_id AND ortszuordnung.ortszuordnung_typ = 'E' ) LEFT JOIN stammdaten.ort ON (ortszuordnung.ort_id = ort.id) LEFT JOIN stammdaten.verwaltungseinheit ON (ort.gem_id = verwaltungseinheit.id) WHERE (status_protokoll.status_wert = :statusFilter OR '' = :statusFilter)'	Messungen nach Staus
 \.
 
 
@@ -22010,7 +22007,6 @@ COPY query (id, name, type, sql, description) FROM stdin;
 --
 
 COPY favorite (id, user_id, query_id) FROM stdin;
-1	1	2
 \.
 
 
@@ -22038,6 +22034,7 @@ COPY filter (id, query_id, data_index, type, label, multiselect) FROM stdin;
 9	7	netzIdFilter	listnetz	Land	f
 10	7	umwIdFilter	listumw	Umweltbereich	t
 14	14	netzbetreiberId	listnetz	Land	t
+15	13	statusFilter	liststatus	Status	t
 \.
 
 
@@ -36853,106 +36850,132 @@ SELECT pg_catalog.setval('query_id_seq', 14, true);
 --
 
 COPY result (id, query_id, data_index, header, width, flex, index) FROM stdin;
-37	7	probeId	Probe Id	100	f	0
-38	7	netzbetreiberId	Land	50	f	1
-39	7	mstId	MST	60	f	2
-40	7	entnahmeVon	Entnahme von	120	f	3
-41	7	entnahmeBis	Entnahme bis	120	f	4
-42	7	umwId	Umweltbereich	100	f	5
-43	7	hauptprobenNr	Proben Nr	100	f	6
-45	7	ortsTyp	Ortstyp	50	f	7
-46	7	gemId	Gemeinde Id	100	f	8
-30	1	probeId	Probe_Id	100	f	11
-47	7	bezeichnung	Gemeinde	400	t	9
-95	4	hpNr	Proben-Nr	100	f	0
-96	4	dBasis	DB	50	f	1
-97	4	netzId	Land	50	f	2
-32	1	mstId	MST	60	f	3
-98	4	mstId	MST	60	f	3
-99	4	umwId	Umw-ID	55	f	4
-100	4	pArt	PA	50	f	5
-101	4	peBegin	Entnahme_von	120	f	6
-34	1	hpNr	Proben-Nr	100	f	0
-102	4	peEnd	Enfnahme_bis	120	f	7
-103	4	ortId	Ort_id	100	f	8
-104	4	eGemId	E-Gem Id	80	f	9
-105	4	eGem	E-Gemeinde	200	f	10
-106	4	probeId	Probe Id	100	f	11
-107	5	hpNr	Proben-Nr	100	f	0
-31	1	netzId	Land	50	f	2
-108	5	dBasis	DB	50	f	1
-109	5	netzId	Land	50	f	2
-62	1	ortId	Ort_id	100	f	8
-35	1	eGemId	E-Gem Id	80	f	9
-36	1	eGem	E-Gemeinde	200	f	10
-110	5	mstId	MST	60	f	3
-111	5	umwId	Umw-ID	55	f	4
-112	5	pArt	PA	50	f	5
-113	5	peBegin	Entnahme_von	120	f	6
-114	5	peEnd	Enfnahme_bis	120	f	7
-115	5	ortId	Ort_id	100	f	8
-116	5	eGemId	E-Gem Id	80	f	9
-117	5	eGem	E-Gemeinde	200	f	10
-70	1	pArt	PA	50	f	5
-63	1	dBasis	DB	50	f	1
-65	1	peBegin	Entnahme_von	120	f	6
-67	1	peEnd	Enfnahme_bis	120	f	7
-118	5	probeId	Probe Id	100	f	11
-33	1	umwId	Umw-ID	55	f	4
-71	2	hpNr	Proben-Nr	100	f	0
-72	2	dBasis	DB	50	f	1
-73	2	netzId	Land	50	f	2
-74	2	mstId	MST	60	f	3
-75	2	umwId	Umw-ID	55	f	4
-76	2	pArt	PA	50	f	5
-77	2	peBegin	Entnahme_von	120	f	6
-78	2	peEnd	Enfnahme_bis	120	f	7
-79	2	ortId	Ort_id	100	f	8
-80	2	eGemId	E-Gem Id	80	f	9
-81	2	eGem	E-Gemeinde	200	f	10
-82	2	probeId	Probe Id	100	f	11
-83	3	hpNr	Proben-Nr	100	f	0
-84	3	dBasis	DB	50	f	1
-85	3	netzId	Land	50	f	2
-86	3	mstId	MST	60	f	3
-87	3	umwId	Umw-ID	55	f	4
-88	3	pArt	PA	50	f	5
-89	3	peBegin	Entnahme_von	120	f	6
-90	3	peEnd	Enfnahme_bis	120	f	7
-91	3	ortId	Ort_id	100	f	8
-92	3	eGemId	E-Gem Id	80	f	9
-93	3	eGem	E-Gemeinde	200	f	10
-94	3	probeId	Probe Id	100	f	11
-131	7	hpNr	Proben-Nr	100	f	0
-132	7	dBasis	DB	50	f	1
-133	7	netzId	Land	50	f	2
-134	7	mstId	MST	60	f	3
-135	7	umwId	Umw-ID	55	f	4
-136	7	pArt	PA	50	f	5
-137	7	peBegin	Entnahme_von	120	f	6
-138	7	peEnd	Enfnahme_bis	120	f	7
-139	7	ortId	Ort_id	100	f	8
-140	7	eGemId	E-Gem Id	80	f	9
-141	7	eGem	E-Gemeinde	200	f	10
-142	7	probeId	Probe Id	100	f	11
-59	9	mprId	MPR-Id	100	f	0
-60	9	netzId	Land	100	f	1
-61	9	mstLaborId	MST/Labor	80	f	2
-64	9	dBasis	DB	50	f	3
-66	9	messRegime	MR	50	f	4
-68	9	pArt	PA	50	f	5
-69	9	umwId	Umw-ID	50	f	6
-1	9	deskriptoren	Deskriptoren	120	f	7
-2	9	intervall	PI	50	f	8
-3	9	ortId	Ort-Id	100	f	9
-5	9	eGem	Gemeinde	200	f	11
-4	9	eGemId	Gem-Id	80	f	10
-143	15	nebenprobenNr	Nebenproben Nr	100	FALSE	2
-144	15	statusWert	Status	100	FALSE	3
-145	15	statusStufe	Stufe	100	FALSE	4
-146	15	probeId	Id	100	FALSE	0
-147	15	hauptprobenNr	Hauptproben Nr	100	FALSE	1
-148	15	netzbetreiber	Netzbetreiber	100	FALSE	5
+1	1	hpNr	Proben-Nr	100	f	0
+2	1	dBasis	DB	50	f	1
+3	1	netzId	Land	50	f	2
+4	1	mstId	MST	60	f	3
+5	1	umwId	Umw-ID	55	f	4
+6	1	pArt	PA	50	f	5
+7	1	peBegin	Entnahme_von	120	f	6
+8	1	peEnd	Enfnahme_bis	120	f	7
+9	1	ortId	Ort_id	100	f	8
+10	1	eGemId	E-Gem Id	80	f	9
+11	1	eGem	E-Gemeinde	200	f	10
+12	1	probeId	Probe_Id	100	f	11
+13	2	hpNr	Proben-Nr	100	f	0
+14	2	dBasis	DB	50	f	1
+15	2	netzId	Land	50	f	2
+16	2	mstId	MST	60	f	3
+17	2	umwId	Umw-ID	55	f	4
+18	2	pArt	PA	50	f	5
+19	2	peBegin	Entnahme_von	120	f	6
+20	2	peEnd	Enfnahme_bis	120	f	7
+21	2	ortId	Ort_id	100	f	8
+22	2	eGemId	E-Gem Id	80	f	9
+23	2	eGem	E-Gemeinde	200	f	10
+24	2	probeId	Probe Id	100	f	11
+25	3	hpNr	Proben-Nr	100	f	0
+26	3	dBasis	DB	50	f	1
+27	3	netzId	Land	50	f	2
+28	3	mstId	MST	60	f	3
+29	3	umwId	Umw-ID	55	f	4
+30	3	pArt	PA	50	f	5
+31	3	peBegin	Entnahme_von	120	f	6
+32	3	peEnd	Enfnahme_bis	120	f	7
+33	3	ortId	Ort_id	100	f	8
+34	3	eGemId	E-Gem Id	80	f	9
+35	3	eGem	E-Gemeinde	200	f	10
+36	3	probeId	Probe Id	100	f	11
+37	4	hpNr	Proben-Nr	100	f	0
+38	4	dBasis	DB	50	f	1
+39	4	netzId	Land	50	f	2
+40	4	mstId	MST	60	f	3
+41	4	umwId	Umw-ID	55	f	4
+42	4	pArt	PA	50	f	5
+43	4	peBegin	Entnahme_von	120	f	6
+44	4	peEnd	Enfnahme_bis	120	f	7
+45	4	ortId	Ort_id	100	f	8
+46	4	eGemId	E-Gem Id	80	f	9
+47	4	eGem	E-Gemeinde	200	f	10
+48	4	probeId	Probe Id	100	f	11
+49	5	hpNr	Proben-Nr	100	f	0
+50	5	dBasis	DB	50	f	1
+51	5	netzId	Land	50	f	2
+52	5	mstId	MST	60	f	3
+53	5	umwId	Umw-ID	55	f	4
+54	5	pArt	PA	50	f	5
+55	5	peBegin	Entnahme_von	120	f	6
+56	5	peEnd	Enfnahme_bis	120	f	7
+57	5	ortId	Ort_id	100	f	8
+58	5	eGemId	E-Gem Id	80	f	9
+59	5	eGem	E-Gemeinde	200	f	10
+60	5	probeId	Probe Id	100	f	11
+61	7	hpNr	Proben-Nr	100	f	0
+62	7	probeId	Probe Id	100	f	0
+63	7	netzbetreiberId	Land	50	f	1
+64	7	dBasis	DB	50	f	1
+65	7	mstId	MST	60	f	2
+66	7	netzId	Land	50	f	2
+67	7	mstId	MST	60	f	3
+68	7	entnahmeVon	Entnahme von	120	f	3
+69	7	entnahmeBis	Entnahme bis	120	f	4
+70	7	umwId	Umw-ID	55	f	4
+71	7	pArt	PA	50	f	5
+72	7	umwId	Umweltbereich	100	f	5
+73	7	peBegin	Entnahme_von	120	f	6
+74	7	hauptprobenNr	Proben Nr	100	f	6
+75	7	ortsTyp	Ortstyp	50	f	7
+76	7	peEnd	Enfnahme_bis	120	f	7
+77	7	ortId	Ort_id	100	f	8
+78	7	gemId	Gemeinde Id	100	f	8
+79	7	bezeichnung	Gemeinde	400	t	9
+80	7	eGemId	E-Gem Id	80	f	9
+81	7	eGem	E-Gemeinde	200	f	10
+82	7	probeId	Probe Id	100	f	11
+83	9	mprId	MPR-Id	100	f	0
+84	9	netzId	Land	100	f	1
+85	9	mstLaborId	MST/Labor	80	f	2
+86	9	dBasis	DB	50	f	3
+87	9	messRegime	MR	50	f	4
+88	9	pArt	PA	50	f	5
+89	9	umwId	Umw-ID	50	f	6
+90	9	deskriptoren	Deskriptoren	120	f	7
+91	9	intervall	PI	50	f	8
+92	9	ortId	Ort-Id	100	f	9
+93	9	eGemId	Gem-Id	80	f	10
+94	9	eGem	Gemeinde	200	f	11
+95	13	hpNr	Proben-Nr	100	f	0
+96	13	npNr	NP-Nr	50	f	1
+97	13	statusD	Status-Zeit	120	f	2
+98	13	statusSt	Stufe	40	f	3
+99	13	statusW	Status	100	f	4
+100	13	dBasis	DB	50	f	5
+101	13	netzId	Land	50	f	6
+102	13	mstId	MST	60	f	7
+103	13	umwId	Umw-ID	55	f	8
+104	13	pArt	PA	50	f	9
+105	13	peBegin	Entnahme_von	120	f	10
+106	13	peEnd	Enfnahme_bis	120	f	11
+107	13	ortId	Ort_id	100	f	12
+108	13	eGemId	E-Gem Id	80	f	13
+109	13	eGem	E-Gemeinde	200	f	14
+110	13	probeId	Probe_Id	100	f	15
+111	15	hpNr	Proben-Nr	100	f	0
+112	15	npNr	NP-Nr	50	f	1
+113	15	statusD	Status-Zeit	120	f	2
+114	15	statusSt	Stufe	40	f	3
+115	15	statusW	Status	100	f	4
+116	15	dBasis	DB	50	f	5
+117	15	netzId	Land	50	f	6
+118	15	mstId	MST	60	f	7
+119	15	umwId	Umw-ID	55	f	8
+120	15	pArt	PA	50	f	9
+121	15	peBegin	Entnahme_von	120	f	10
+122	15	peEnd	Enfnahme_bis	120	f	11
+123	15	ortId	Ort_id	100	f	12
+124	15	eGemId	E-Gem Id	80	f	13
+125	15	eGem	E-Gemeinde	200	f	14
+126	15	probeId	Probe_Id	100	f	15
 \.
 
 
