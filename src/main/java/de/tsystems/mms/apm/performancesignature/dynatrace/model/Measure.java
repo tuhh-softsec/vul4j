@@ -98,28 +98,32 @@ public class Measure {
         return StringUtils.isNotBlank(this.getAggregation()) && this.getAggregation().equalsIgnoreCase("percentiles");
     }
 
+    public double getMetricValue() {
+        return getMetricValue(this.getAggregation());
+    }
+
     /**
      * get the avg value of a metric
      * in case of a percentile measure return the 95th percentile value
      *
      * @return metric Value
      */
-    public double getMetricValue() {
+    public double getMetricValue(final String aggregation) {
         if (this.isPercentile()) {
             List<Measurement> measurements = this.getMeasurements();
             if (measurements == null) return 0;
             Measurement measurement95th = measurements.get(95);
             if (measurement95th == null) return 0;
             return measurement95th.getAvg();
-        } else if (this.getAggregation().equalsIgnoreCase("count"))
+        } else if (aggregation.equalsIgnoreCase("count"))
             return this.getCount();
-        else if (this.getAggregation().equalsIgnoreCase("average") || this.getAggregation().equalsIgnoreCase("last"))
+        else if (aggregation.equalsIgnoreCase("average") || aggregation.equalsIgnoreCase("last"))
             return this.getAvg().doubleValue();
-        else if (this.getAggregation().equalsIgnoreCase("sum"))
+        else if (aggregation.equalsIgnoreCase("sum"))
             return this.getSum();
-        else if (this.getAggregation().equalsIgnoreCase("maximum"))
+        else if (aggregation.equalsIgnoreCase("maximum"))
             return this.getMax().doubleValue();
-        else if (this.getAggregation().equalsIgnoreCase("minimum"))
+        else if (aggregation.equalsIgnoreCase("minimum"))
             return this.getMin().doubleValue();
         else
             return this.getAvg().doubleValue();

@@ -24,6 +24,7 @@ require('./jquery.gridster')(window, $);
 
 $(document).ready(function () {
     "use strict";
+
     var grid = [];
     $.fn.dataTableExt.sErrMode = 'none';
 
@@ -42,12 +43,14 @@ $(document).ready(function () {
         $("#measureGroup", this).change(function () {
             if ($(this).val() === 'UnitTest overview') {
                 $("#measure", page).parent().hide();
+                $("#aggregation", page).parent().hide();
             } else {
                 projectAction.getAvailableMeasures($(page).attr('id'), $(this).val(), function (data) {
                     $("#measure", page).empty();
                     $("#customName", page).val("");
                     $("#customBuildCount", page).val("");
                     $("#measure", page).parent().show();
+                    $("#aggregation", page).parent().show();
                     $.each(data.responseObject(), function (val, text) {
                         $("#measure", page).append($('<option></option>').val(val).html(text));
                     });
@@ -79,16 +82,16 @@ $(document).ready(function () {
         });
 
         $("#addbutton", this).click(function () {
+            var request_parameter = '&amp;width=410&amp;height=300&amp;customName=' + encode($("#customName", page).val()) +
+                '&amp;customBuildCount=' + $("#customBuildCount", page).val() + '&amp;aggregation=' + $("#aggregation", page).val();
             if ($("#measureGroup", page).val() === 'UnitTest overview') {
                 grid[pageIndex].add_widget('<li><img class="img-thumbnail" height="300" width="410" ' +
-                    'src="./testRunGraph?width=410&amp;height=300&amp;id=unittest_overview&amp;customName=' + encode($("#customName", page).val()) +
-                    '&amp;customBuildCount=' + $("#customBuildCount", page).val() + '">' +
+                    'src="./testRunGraph?id=unittest_overview' + request_parameter + '">' +
                     '<span class="del_img glyphicon glyphicon-remove"></span>' +
                     '<span class="chk_show"><input type="checkbox" title="show in project overview" checked="checked"/></span></li>', 1, 1);
             } else {
                 grid[pageIndex].add_widget('<li><img class="img-thumbnail" height="300" width="410" ' +
-                    'src="./summarizerGraph?width=410&amp;height=300&amp;id=' + $("#measure", page).val() +
-                    '&amp;customName=' + encode($("#customName", page).val()) + '&amp;customBuildCount=' + $("#customBuildCount", page).val() + '">' +
+                    'src="./summarizerGraph?id=' + $("#measure", page).val() + request_parameter + '">' +
                     '<span class="del_img glyphicon glyphicon-remove"></span>' +
                     '<span class="chk_show"><input type="checkbox" title="show in project overview" checked="checked"/></span></li>', 1, 1);
             }
@@ -106,11 +109,9 @@ $(document).ready(function () {
         $('#tabList').find('a').eq(pageIndex).tab('show'); // very messy :(
         if ($(".gridster ul", page).length != 0) {
             grid[pageIndex] = $(".gridster ul", page).gridster({
-                //namespace: "#" + $(page).attr('id'),
+                namespace: "#" + $(page).attr('id'),
                 widget_base_dimensions: [364, 267],
                 widget_margins: [5, 5],
-                disableResize: true,
-                animate: true,
 
                 serialize_params: function ($w, wgd) {
                     return {
@@ -118,11 +119,12 @@ $(document).ready(function () {
                         row: wgd.row,
                         id: wurl("?id", $("img", $w).attr("src")),
                         dashboard: $(page).attr('id'),
-                        chartDashlet: $("img", $w).attr("src").indexOf("chartDashlet") > -1 ? wurl("?chartDashlet", $("img", $w).attr("src")) : "",
-                        measure: $("img", $w).attr("src").indexOf("measure") > -1 ? wurl("?measure", $("img", $w).attr("src")) : "",
-                        customName: $("img", $w).attr("src").indexOf("customName") > -1 ? wurl("?customName", $("img", $w).attr("src")) : "",
-                        customBuildCount: $("img", $w).attr("src").indexOf("customBuildCount") > -1 ? wurl("?customBuildCount", $("img", $w).attr("src")) : "",
-                        show: $("input[type='checkbox']", $w).prop('checked')
+                        chartDashlet: getURLParameter($("img", $w), "chartDashlet"),
+                        measure: getURLParameter($("img", $w), "measure"),
+                        customName: getURLParameter($("img", $w), "customName"),
+                        customBuildCount: getURLParameter($("img", $w), "customBuildCount"),
+                        show: $("input[type='checkbox']", $w).prop('checked'),
+                        aggregation: getURLParameter($("img", $w), "aggregation")
                     };
                 }
             }).data('gridster').disable();
@@ -171,6 +173,10 @@ $(document).ready(function () {
         $('html,body').scrollTop(scrollmem);
     });
 });
+
+function getURLParameter(obj, parameter) {
+    return $(obj).attr("src").indexOf(parameter) > -1 ? wurl("?" + parameter, $(obj).attr("src")) : ""
+}
 
 function sort_by_row_and_col_asc(widgets) {
     widgets = widgets.sort(function (a, b) {
