@@ -101,6 +101,8 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             for (int i = 0; i < jsonArray.size(); i++) {
                 final JSONObject obj = jsonArray.getJSONObject(i);
                 if (obj.getString("id").equals(id)) {
+                    //for json version < 2.1 put a empty aggregation value to avoid missing json object
+                    if (!obj.has("aggregation")) obj.put("aggregation", "");
                     ChartUtil.generateGraph(request, response, createChart(obj, buildDataSet(obj)), PerfSigUtils.calcDefaultSize());
                     return;
                 }
