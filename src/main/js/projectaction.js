@@ -144,7 +144,7 @@ $(document).ready(function () {
                             grid[pageIndex].add_widget('<li><a href="./summarizerGraph?width=800&amp;height=585&amp;id=' + json[index].id + '" ' +
                                 'data-lightbox="' + $(page).attr('id') + '" data-title="' + json[index].description + '">' +
                                 '<img class="img-thumbnail" height="300" width="410" src="./summarizerGraph?width=410&amp;height=300&amp;id=' + json[index].id + '' +
-                                '" title="source: ' + json[index].chartDashlet + '-' + json[index].measure + '\n' + json[index].description + '"></a>' +
+                                '" title="source: ' + json[index].chartDashlet + '-' + json[index].measure + ' (' + json[index].aggregation + ')\n' + json[index].description + '"></a>' +
                                 '<span class="del_img glyphicon glyphicon-remove"></span><span class="chk_show">' +
                                 '<input type="checkbox" title="show in project overview" ' + (json[index].show ? "checked='checked'" : "") +
                                 '/></span></li>', 1, 1, json[index].col, json[index].row);

@@ -386,14 +386,15 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     @JavaScriptMethod
     public String getDashboardConfiguration(final String dashboard) throws IOException, InterruptedException {
         final FilePath input = new FilePath(new File(getJsonConfigFilePath() + File.separator + "gridconfig-" + dashboard + ".json"));
-        if (!input.exists()) input.write(createJSONConfigString(), null);
+        if (!input.exists()) input.write(createJSONConfigString(dashboard), null);
         return input.readToString();
     }
 
-    private String createJSONConfigString() {
+    private String createJSONConfigString(final String dashboard) {
         int col = 1, row = 1;
         JSONArray array = new JSONArray();
         for (DashboardReport dashboardReport : getLastDashboardReports()) {
+            if (!dashboardReport.getName().equals(dashboard)) continue;
             if (dashboardReport.isUnitTest()) {
                 JSONObject obj = new JSONObject();
                 obj.put("id", "unittest_overview");
@@ -419,6 +420,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
                     obj.put("measure", measure.getName());
                     obj.put("description", chartDashlet.getDescription());
                     obj.put("show", true);
+                    obj.put("aggregation", measure.getAggregation());
                     obj.put("customName", "");
                     obj.put("customBuildCount", 0);
 
