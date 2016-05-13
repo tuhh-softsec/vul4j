@@ -27,16 +27,17 @@ public abstract class BaseAggregatorTest extends TestCase {
         webConversation.setExceptionsThrownOnErrorStatus(false);
     }
 
-    protected void doSimpleTest(String page) throws Exception {
+    protected WebResponse doSimpleTest(String page) throws Exception {
         // We assume the file name is the name of the resource
-        doSimpleTest(page, page);
+        return doSimpleTest(page, page);
     }
 
-    protected void doSimpleTest(String page, String resultResource) throws Exception {
+    protected WebResponse doSimpleTest(String page, String resultResource) throws Exception {
         WebRequest req = new GetMethodWebRequest(APPLICATION_PATH + page);
         WebResponse resp = webConversation.getResponse(req);
         assertEquals("Status should be 200\n" + resp.getText(), HttpServletResponse.SC_OK, resp.getResponseCode());
         assertEqualsIgnoreLineFeeds(getResource(resultResource), resp.getText());
+        return resp;
     }
 
     protected String getResource(String file) throws IOException {

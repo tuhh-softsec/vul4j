@@ -165,7 +165,7 @@ public final class HttpClientRequestExecutor implements RequestExecutor {
             }
 
             ProxyingHttpClientBuilder httpClientBuilder = new ProxyingHttpClientBuilder();
-
+            httpClientBuilder.disableContentCompression();
             httpClientBuilder.setProperties(properties);
 
             httpClientBuilder.setMaxConnPerRoute(Parameters.MAX_CONNECTIONS_PER_HOST.getValue(properties));
