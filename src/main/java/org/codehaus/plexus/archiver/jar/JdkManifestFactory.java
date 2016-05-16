@@ -16,7 +16,7 @@ package org.codehaus.plexus.archiver.jar;
  *  limitations under the License.
  */
 
-import java.io.InputStream;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
 import java.util.jar.Attributes;
@@ -33,25 +33,33 @@ class JdkManifestFactory
     public static java.util.jar.Manifest getDefaultManifest()
         throws ArchiverException
     {
-        final java.util.jar.Manifest defaultManifest = new java.util.jar.Manifest();
-        defaultManifest.getMainAttributes().putValue( "Manifest-Version", "1.0" );
-
-        String createdBy = "Plexus Archiver";
-
-        InputStream inputStream = JdkManifestFactory.class.getResourceAsStream( "/META-INF/"
-            + "maven/org.codehaus.plexus/plexus-archiver/pom.properties" );
-        Properties properties = PropertyUtils.loadProperties( inputStream );
-        if ( properties != null )
+        try
         {
-            String plexusArchiverVersion = properties.getProperty( "version" );
-            if ( plexusArchiverVersion != null )
-            {
-                createdBy += " " + plexusArchiverVersion;
-            }
-        }
-        defaultManifest.getMainAttributes().putValue( "Created-By", createdBy );
+            final java.util.jar.Manifest defaultManifest = new java.util.jar.Manifest();
+            defaultManifest.getMainAttributes().putValue( "Manifest-Version", "1.0" );
 
-        return defaultManifest;
+            String createdBy = "Plexus Archiver";
+
+            final Properties properties = PropertyUtils.loadProperties( JdkManifestFactory.class.getResourceAsStream(
+                "/META-INF/maven/org.codehaus.plexus/plexus-archiver/pom.properties" ) );
+
+            if ( properties != null )
+            {
+                String plexusArchiverVersion = properties.getProperty( "version" );
+                if ( plexusArchiverVersion != null )
+                {
+                    createdBy += " " + plexusArchiverVersion;
+                }
+            }
+
+            defaultManifest.getMainAttributes().putValue( "Created-By", createdBy );
+
+            return defaultManifest;
+        }
+        catch ( final IOException e )
+        {
+            throw new ArchiverException( "Failure reading default manifest.", e );
+        }
     }
 
     public static void merge( java.util.jar.Manifest target, java.util.jar.Manifest other, boolean overwriteMain )
