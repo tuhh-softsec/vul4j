@@ -36857,7 +36857,7 @@ COPY result (id, query_id, data_index, header, width, flex, index) FROM stdin;
 5	1	umwId	Umw-ID	55	f	4
 6	1	pArt	PA	50	f	5
 7	1	peBegin	Entnahme_von	120	f	6
-8	1	peEnd	Enfnahme_bis	120	f	7
+8	1	peEnd	Entnahme_bis	120	f	7
 9	1	ortId	Ort_id	100	f	8
 10	1	eGemId	E-Gem Id	80	f	9
 11	1	eGem	E-Gemeinde	200	f	10
@@ -36869,7 +36869,7 @@ COPY result (id, query_id, data_index, header, width, flex, index) FROM stdin;
 17	2	umwId	Umw-ID	55	f	4
 18	2	pArt	PA	50	f	5
 19	2	peBegin	Entnahme_von	120	f	6
-20	2	peEnd	Enfnahme_bis	120	f	7
+20	2	peEnd	Entnahme_bis	120	f	7
 21	2	ortId	Ort_id	100	f	8
 22	2	eGemId	E-Gem Id	80	f	9
 23	2	eGem	E-Gemeinde	200	f	10
@@ -36881,7 +36881,7 @@ COPY result (id, query_id, data_index, header, width, flex, index) FROM stdin;
 29	3	umwId	Umw-ID	55	f	4
 30	3	pArt	PA	50	f	5
 31	3	peBegin	Entnahme_von	120	f	6
-32	3	peEnd	Enfnahme_bis	120	f	7
+32	3	peEnd	Entnahme_bis	120	f	7
 33	3	ortId	Ort_id	100	f	8
 34	3	eGemId	E-Gem Id	80	f	9
 35	3	eGem	E-Gemeinde	200	f	10
@@ -36893,7 +36893,7 @@ COPY result (id, query_id, data_index, header, width, flex, index) FROM stdin;
 41	4	umwId	Umw-ID	55	f	4
 42	4	pArt	PA	50	f	5
 43	4	peBegin	Entnahme_von	120	f	6
-44	4	peEnd	Enfnahme_bis	120	f	7
+44	4	peEnd	Entnahme_bis	120	f	7
 45	4	ortId	Ort_id	100	f	8
 46	4	eGemId	E-Gem Id	80	f	9
 47	4	eGem	E-Gemeinde	200	f	10
@@ -36905,7 +36905,7 @@ COPY result (id, query_id, data_index, header, width, flex, index) FROM stdin;
 53	5	umwId	Umw-ID	55	f	4
 54	5	pArt	PA	50	f	5
 55	5	peBegin	Entnahme_von	120	f	6
-56	5	peEnd	Enfnahme_bis	120	f	7
+56	5	peEnd	Entnahme_bis	120	f	7
 57	5	ortId	Ort_id	100	f	8
 58	5	eGemId	E-Gem Id	80	f	9
 59	5	eGem	E-Gemeinde	200	f	10
@@ -36925,7 +36925,7 @@ COPY result (id, query_id, data_index, header, width, flex, index) FROM stdin;
 73	7	peBegin	Entnahme_von	120	f	6
 74	7	hauptprobenNr	Proben Nr	100	f	6
 75	7	ortsTyp	Ortstyp	50	f	7
-76	7	peEnd	Enfnahme_bis	120	f	7
+76	7	peEnd	Entnahme_bis	120	f	7
 77	7	ortId	Ort_id	100	f	8
 78	7	gemId	Gemeinde Id	100	f	8
 79	7	bezeichnung	Gemeinde	400	t	9
@@ -36955,7 +36955,7 @@ COPY result (id, query_id, data_index, header, width, flex, index) FROM stdin;
 103	13	umwId	Umw-ID	55	f	8
 104	13	pArt	PA	50	f	9
 105	13	peBegin	Entnahme_von	120	f	10
-106	13	peEnd	Enfnahme_bis	120	f	11
+106	13	peEnd	Entnahme_bis	120	f	11
 107	13	ortId	Ort_id	100	f	12
 108	13	eGemId	E-Gem Id	80	f	13
 109	13	eGem	E-Gemeinde	200	f	14
@@ -36971,7 +36971,7 @@ COPY result (id, query_id, data_index, header, width, flex, index) FROM stdin;
 119	15	umwId	Umw-ID	55	f	8
 120	15	pArt	PA	50	f	9
 121	15	peBegin	Entnahme_von	120	f	10
-122	15	peEnd	Enfnahme_bis	120	f	11
+122	15	peEnd	Entnahme_bis	120	f	11
 123	15	ortId	Ort_id	100	f	12
 124	15	eGemId	E-Gem Id	80	f	13
 125	15	eGem	E-Gemeinde	200	f	14
