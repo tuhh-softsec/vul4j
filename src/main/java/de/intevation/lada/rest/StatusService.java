@@ -428,12 +428,7 @@ public class StatusService {
         statusNew.setDatum(new Timestamp(new Date().getTime()));
         statusNew.setErzeuger(status.getErzeuger());
         statusNew.setMessungsId(status.getMessungsId());
-        if (status.getStatusStufe() == null) {
-            statusNew.setStatusStufe(currentStatus.getStatusStufe());
-        }
-        else {
-            statusNew.setStatusStufe(status.getStatusStufe());
-        }
+        statusNew.setStatusStufe(currentStatus.getStatusStufe());
         statusNew.setStatusWert(8);
         statusNew.setText("Reset");
 
@@ -457,7 +452,7 @@ public class StatusService {
                         defaultRepo.entityManager("land"),
                         LStatusProtokoll.class);
             lastFilter.and("messungsId", status.getMessungsId());
-            lastFilter.and("statusStufe", status.getStatusStufe() - 1);
+            lastFilter.and("statusStufe", currentStatus.getStatusStufe() - 1);
             lastFilter.orderBy("datum", true);
             List<LStatusProtokoll> proto =
                 defaultRepo.filterPlain(lastFilter.getQuery(), "land");
