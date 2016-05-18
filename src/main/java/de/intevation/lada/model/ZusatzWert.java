@@ -18,6 +18,8 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import de.intevation.lada.util.data.MathUtil;
+
 
 /**
  * The persistent class for the zusatz_wert database table.
@@ -87,7 +89,7 @@ public class ZusatzWert implements Serializable {
     }
 
     public void setMesswertPzs(Double messwertPzs) {
-        this.messwertPzs = messwertPzs;
+        this.messwertPzs = MathUtil.roundDoubleToThree(messwertPzs);
     }
 
     public Double getNwgZuMesswert() {
@@ -95,7 +97,7 @@ public class ZusatzWert implements Serializable {
     }
 
     public void setNwgZuMesswert(Double nwgZuMesswert) {
-        this.nwgZuMesswert = nwgZuMesswert;
+        this.nwgZuMesswert = MathUtil.roundDoubleToThree(nwgZuMesswert);
     }
 
     public Integer getProbeId() {
