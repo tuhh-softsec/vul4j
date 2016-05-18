@@ -54,7 +54,8 @@ public class AggregatorTest extends BaseAggregatorTest {
     }
 
     public void testBinaryGzip() throws Exception {
-        doSimpleTest("binary-gzip.jsp");
+        WebResponse webResponse = doSimpleTest("binary-gzip.jsp");
+        assertEquals("gzip", webResponse.getHeaderField("content-encoding"));
     }
 
     public void testBlock() throws Exception {
