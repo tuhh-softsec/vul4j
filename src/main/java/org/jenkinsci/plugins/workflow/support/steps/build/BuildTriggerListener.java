@@ -7,6 +7,7 @@ import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.model.listeners.RunListener;
+import java.util.List;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 
 import java.util.logging.Logger;
@@ -37,14 +38,17 @@ public class BuildTriggerListener extends RunListener<Run<?,?>>{
     }
 
     @Override
+    @SuppressWarnings("deprecation") // TODO Actionable offers no standard way of removing actions
     public void onCompleted(Run<?,?> run, @Nonnull TaskListener listener) {
-        for (BuildTriggerAction action : run.getActions(BuildTriggerAction.class)) {
+        List<BuildTriggerAction> actions = run.getActions(BuildTriggerAction.class);
+        for (BuildTriggerAction action : actions) {
             if (!action.isPropagate() || run.getResult() == Result.SUCCESS) {
                 action.getStepContext().onSuccess(new RunWrapper(run, false));
             } else {
                 action.getStepContext().onFailure(new AbortException(run.getFullDisplayName() + " completed with status " + run.getResult() + " (propagate: false to ignore)"));
             }
         }
+        run.getActions().removeAll(actions);
     }
 
     @Override
