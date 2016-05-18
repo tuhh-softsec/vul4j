@@ -25,8 +25,11 @@ import java.io.InputStream;
 
 public class DeferredScatterOutputStream implements ScatterGatherBackingStore
 {
-    OffloadingOutputStream dfos = new OffloadingOutputStream(100000000, "scatterzipfragment", "zip", null);
+    private final OffloadingOutputStream dfos;
 
+    public DeferredScatterOutputStream(int threshold) {
+          dfos = new OffloadingOutputStream(threshold, "scatterzipfragment", "zip", null);
+    }
 
     public InputStream getInputStream() throws IOException {
         return dfos.getInputStream();

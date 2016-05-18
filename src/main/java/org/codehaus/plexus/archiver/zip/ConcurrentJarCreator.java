@@ -17,7 +17,11 @@
  */
 package org.codehaus.plexus.archiver.zip;
 
-import org.apache.commons.compress.archivers.zip.*;
+import org.apache.commons.compress.archivers.zip.ParallelScatterZipCreator;
+import org.apache.commons.compress.archivers.zip.ScatterZipOutputStream;
+import org.apache.commons.compress.archivers.zip.StreamCompressor;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.commons.compress.parallel.InputStreamSupplier;
 import org.apache.commons.compress.parallel.ScatterGatherBackingStore;
 import org.apache.commons.compress.parallel.ScatterGatherBackingStoreSupplier;
@@ -42,10 +46,20 @@ public class ConcurrentJarCreator {
     private final ParallelScatterZipCreator parallelScatterZipCreator;
     private long zipCloseElapsed;
 
-    static class DeferredSupplier implements ScatterGatherBackingStoreSupplier
+    private static class DeferredSupplier
+        implements ScatterGatherBackingStoreSupplier
     {
-        public ScatterGatherBackingStore get() throws IOException {
-            return new DeferredScatterOutputStream();
+        private int threshold;
+
+        DeferredSupplier( int threshold )
+        {
+            this.threshold = threshold;
+        }
+
+        public ScatterGatherBackingStore get()
+            throws IOException
+        {
+            return new DeferredScatterOutputStream( threshold );
         }
     }
 
@@ -57,7 +71,7 @@ public class ConcurrentJarCreator {
     }
 
     public ConcurrentJarCreator(int nThreads) throws IOException {
-       ScatterGatherBackingStoreSupplier defaultSupplier = new DeferredSupplier();
+       ScatterGatherBackingStoreSupplier defaultSupplier = new DeferredSupplier(100000000 / nThreads);
 
         directories = createDeferred(defaultSupplier);
         manifest = createDeferred(defaultSupplier);
