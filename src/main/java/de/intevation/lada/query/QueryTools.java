@@ -173,11 +173,7 @@ public class QueryTools
         }
     }
 
-    public List<Map<String, Object>> getResultForQuery(
-        MultivaluedMap<String, String> params,
-        Integer qId,
-        String type
-    ) {
+    public List<Map<String, Object>> getResultForQuery(MultivaluedMap<String, String> params, Integer qId, String type) {
         QueryBuilder<Query> builder = new QueryBuilder<Query>(
             repository.entityManager("stamm"),
             Query.class

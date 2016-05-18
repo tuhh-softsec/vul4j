@@ -18,8 +18,6 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import de.intevation.lada.util.data.MathUtil;
-
 
 /**
  * The persistent class for the messwert database table.
@@ -128,7 +126,7 @@ public class Messwert implements Serializable {
     }
 
     public void setMesswert(Double messwert) {
-        this.messwert = MathUtil.roundDoubleToThree(messwert);
+        this.messwert = messwert;
     }
 
     public String getMesswertNwg() {
@@ -144,7 +142,7 @@ public class Messwert implements Serializable {
     }
 
     public void setNwgZuMesswert(Double nwgZuMesswert) {
-        this.nwgZuMesswert = MathUtil.roundDoubleToThree(nwgZuMesswert);
+        this.nwgZuMesswert = nwgZuMesswert;
     }
 
     public boolean isOwner() {
