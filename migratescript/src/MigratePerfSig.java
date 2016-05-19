@@ -22,9 +22,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public final class MigratePerfSig {
-    final static String SEARCHSTRING = "performance-signature";
-    final static String REPLACESTRING = SEARCHSTRING + "-dynatrace";
-    final static Charset charset = StandardCharsets.UTF_8;
+    private final static String SEARCHSTRING = "performance-signature";
+    private final static String REPLACESTRING = SEARCHSTRING + "-dynatrace";
+    private final static Charset charset = StandardCharsets.UTF_8;
 
     public static void main(final String[] args) throws IOException {
         if (args.length != 1) {
