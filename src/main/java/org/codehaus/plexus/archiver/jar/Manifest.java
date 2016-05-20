@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -299,12 +300,12 @@ public class Manifest
         }
 
         /**
-         * Write the attribute out to a print writer.
+         * Writes the attribute out to a writer.
          *
          * @param writer the Writer to which the attribute is written
          * @throws IOException if the attribute value cannot be written
          */
-        void write( PrintWriter writer )
+        void write( Writer writer )
             throws IOException
         {
             StringWriter sWriter = new StringWriter();
@@ -317,7 +318,7 @@ public class Manifest
 
             byte[] convertedToUtf8 = sWriter.toString().getBytes( "UTF-8" );
 
-            writer.print( new String( convertedToUtf8, "UTF-8" ) );
+            writer.write( new String( convertedToUtf8, "UTF-8" ) );
         }
 
         /**
@@ -327,7 +328,7 @@ public class Manifest
          * @param value  the attribute value
          * @throws IOException if the attribute value cannot be written
          */
-        private void writeValue( PrintWriter writer, String value )
+        private void writeValue( Writer writer, String value )
             throws IOException
         {
             String nameValue = name + ": " + value;
@@ -350,7 +351,7 @@ public class Manifest
          * @param line   the manifest line to be written
          * @throws java.io.IOException when Io excepts
          */
-        private void writeLine( PrintWriter writer, String line )
+        private void writeLine( Writer writer, String line )
             throws IOException
         {
             while ( line.getBytes().length > MAX_LINE_LENGTH )
@@ -367,10 +368,10 @@ public class Manifest
                 {
                     throw new IOException( "Unable to write manifest line " + line );
                 }
-                writer.print( section + EOL );
+                writer.write( section + EOL );
                 line = " " + line.substring( breakIndex );
             }
-            writer.print( line + EOL );
+            writer.write( line + EOL );
         }
     }
 
@@ -417,7 +418,7 @@ public class Manifest
             setValue( value1 );
         }
 
-        void write( PrintWriter writer )
+        void write( Writer writer )
             throws IOException
         {
             throw new UnsupportedOperationException( "Cant do this" );
@@ -845,12 +846,12 @@ public class Manifest
     }
 
     /**
-     * Write the manifest out to a print writer.
+     * Writes the manifest out to a writer.
      *
      * @param writer the Writer to which the manifest is written
      * @throws IOException if the manifest cannot be written
      */
-    public void write( PrintWriter writer )
+    public void write( Writer writer )
         throws IOException
     {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -872,7 +873,7 @@ public class Manifest
         StringWriter sw = new StringWriter();
         try
         {
-            write( new PrintWriter( sw ) );
+            write( sw );
         }
         catch ( IOException e )
         {

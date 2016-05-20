@@ -20,7 +20,6 @@ package org.codehaus.plexus.archiver.jar;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.jar.Attributes;
 import org.codehaus.plexus.PlexusTestCase;
@@ -100,7 +99,7 @@ public class ManifestTest
                 + "123456789 123456789 123456789 ";
         attr.setName( "test" );
         attr.setValue( longLineOfChars );
-        attr.write( new PrintWriter( writer ) );
+        attr.write( writer );
         writer.flush();
         assertEquals( "should be multiline",
                       "test: 123456789 123456789 123456789 123456789 123456789 123456789 1234"
@@ -168,7 +167,7 @@ public class ManifestTest
         manifest.getEntries().put( "sub", attributes );
         manifest.getSection( "sub" ).addAttributeAndCheck( new Manifest.Attribute( "attB", "caB" ) );
         StringWriter writer = new StringWriter();
-        manifest.write(  new PrintWriter( writer )  );
+        manifest.write(  writer );
         String s = writer.toString();
         assertTrue( s.contains( "mfa1: fud1" ) );
         assertTrue( s.contains( "mfa2: fud2" ) );
@@ -207,7 +206,7 @@ public class ManifestTest
         Manifest.Attribute attr = new Manifest.Attribute();
         attr.setName( "test" );
         attr.setValue( in );
-        attr.write( new PrintWriter( writer ) );
+        attr.write( writer );
         writer.flush();
 
         // Print the string with whitespace replaced with special codes
@@ -280,7 +279,7 @@ public class ManifestTest
         attributes.addConfiguredAttribute( new Manifest.Attribute( "attB", "caB" ) );
         manifest.addConfiguredSection(  attributes );
         StringWriter writer = new StringWriter();
-        manifest.write(  new PrintWriter( writer )  );
+        manifest.write(  writer );
         String s = writer.toString();
         assertTrue( s.contains( "mfa1: fud1" ) );
         assertTrue( s.contains( "mfa2: fud2" ) );
