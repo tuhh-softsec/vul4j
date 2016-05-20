@@ -191,13 +191,11 @@ public class ManifestTest
     {
         java.util.jar.Manifest mf = Manifest.getDefaultManifest();
         java.util.jar.Attributes mainAttributes = mf.getMainAttributes();
-        assertEquals( 3, mainAttributes.size() );
+        assertEquals( 2, mainAttributes.size() );
         assertTrue(
             mainAttributes.containsKey( new java.util.jar.Attributes.Name( "Manifest-Version" ) ) );
         assertTrue(
             mainAttributes.containsKey( new java.util.jar.Attributes.Name( "Created-By" ) ) );
-        assertTrue(
-            mainAttributes.containsKey( new java.util.jar.Attributes.Name( "Archiver-Version" ) ) );
     }
 
 
