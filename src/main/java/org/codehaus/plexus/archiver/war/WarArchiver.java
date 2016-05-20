@@ -60,7 +60,7 @@ public class WarArchiver
      */
     private boolean descriptorAdded;
 
-    /*
+    /**
      * @deprecated Use setExpectWebXml instead !
      * @param excpectWebXml true if web xml is *expected* from the client
      */
@@ -70,7 +70,7 @@ public class WarArchiver
         expectWebXml = excpectWebXml;
     }
 
-    /*.
+    /**
      * Indicates if the client is required to supply web.xml
      * @param excpectWebXml true if web xml is *expected* from the client
      */
