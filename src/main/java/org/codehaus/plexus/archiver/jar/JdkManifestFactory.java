@@ -16,10 +16,13 @@ package org.codehaus.plexus.archiver.jar;
  *  limitations under the License.
  */
 
+import java.io.InputStream;
 import java.util.Map;
+import java.util.Properties;
 import java.util.jar.Attributes;
 
 import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.util.PropertyUtils;
 
 /**
  * Not part of any public API
@@ -32,9 +35,21 @@ class JdkManifestFactory
     {
         final java.util.jar.Manifest defaultManifest = new java.util.jar.Manifest();
         defaultManifest.getMainAttributes().putValue( "Manifest-Version", "1.0" );
-        defaultManifest.getMainAttributes().putValue( "Created-By", System.getProperty(
-                                                      "java.vm.version" ) + " (" + System.getProperty(
-                                                          "java.vm.vendor" ) + ")" );
+
+        String createdBy = "Plexus Archiver";
+
+        InputStream inputStream = JdkManifestFactory.class.getResourceAsStream( "/META-INF/"
+            + "maven/org.codehaus.plexus/plexus-archiver/pom.properties" );
+        Properties properties = PropertyUtils.loadProperties( inputStream );
+        if ( properties != null )
+        {
+            String plexusArchiverVersion = properties.getProperty( "version" );
+            if ( plexusArchiverVersion != null )
+            {
+                createdBy += " " + plexusArchiverVersion;
+            }
+        }
+        defaultManifest.getMainAttributes().putValue( "Created-By", createdBy );
 
         return defaultManifest;
     }
