@@ -780,7 +780,10 @@ public class Manifest
      * @throws ManifestException if the manifest is not valid according
      *                           to the JAR spec
      * @throws IOException       if the manifest cannot be read from the reader.
+     * @deprecated This constructor does not properly map characters to bytes. Use
+     *            {@link #Manifest(InputStream)}. Will be removed in 4.0.
      */
+    @Deprecated
     public Manifest( Reader r )
         throws ManifestException, IOException
     {
@@ -937,6 +940,7 @@ public class Manifest
     }
 
 
+    @Deprecated
     private static InputStream getInputStream( Reader r )
         throws IOException
     {

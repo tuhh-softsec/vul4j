@@ -17,8 +17,9 @@ package org.codehaus.plexus.archiver.jar;
  *
  */
 
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.jar.Attributes;
@@ -31,7 +32,7 @@ import org.codehaus.plexus.PlexusTestCase;
 public class ManifestTest
     extends PlexusTestCase
 {
-    public void testManifestReader1()
+    public void testManifest1()
         throws Exception
     {
         Manifest manifest = getManifest( "src/test/resources/manifests/manifest1.mf" );
@@ -39,7 +40,7 @@ public class ManifestTest
         assertEquals( "Manifest was not created with correct version - ", "1.0", version );
     }
 
-    public void testManifestReader2()
+    public void testManifest2()
         throws Exception
     {
         try
@@ -52,7 +53,7 @@ public class ManifestTest
         }
     }
 
-    public void testManifestReader3()
+    public void testManifest3()
         throws Exception
     {
         try
@@ -65,7 +66,7 @@ public class ManifestTest
         }
     }
 
-    public void testManifestReader5()
+    public void testManifest5()
         throws Exception
     {
         try
@@ -321,15 +322,15 @@ public class ManifestTest
     private Manifest getManifest( String filename )
         throws IOException, ManifestException
     {
-        FileReader r = new FileReader( getTestFile( filename ) );
+        InputStream is = new FileInputStream( getTestFile( filename ) );
 
         try
         {
-            return new Manifest( r );
+            return new Manifest( is );
         }
         finally
         {
-            r.close();
+            is.close();
         }
     }
 
