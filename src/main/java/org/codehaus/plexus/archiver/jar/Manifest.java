@@ -21,7 +21,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
@@ -34,8 +33,8 @@ import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.jar.Attributes;
+
 import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.util.IOUtil;
 
 /**
  * Holds the data of a jar manifest.
@@ -388,7 +387,7 @@ public class Manifest
         {
             return getKeys(attributes).iterator();
         }
-        
+
         public void setName( String name )
         {
             throw new UnsupportedOperationException( "Cant do this" );
@@ -738,43 +737,13 @@ public class Manifest
     public static Manifest getDefaultManifest()
         throws ArchiverException
     {
-        InputStream in = null;
-        Reader reader = null;
-        final String defManifest = "/org/codehaus/plexus/archiver/jar/defaultManifest.mf";
-        try
-        {
-            in = Manifest.class.getResourceAsStream( defManifest );
-            if ( in == null )
-            {
-                throw new ArchiverException( "Could not find default manifest: " + defManifest );
-            }
-            reader = new InputStreamReader( in, "UTF-8" );
-            final Manifest defaultManifest = new Manifest( reader );
-            defaultManifest.getMainAttributes().putValue( "Created-By", System.getProperty(
-                                                          "java.vm.version" ) + " (" + System.getProperty(
-                                                              "java.vm.vendor" ) + ")" );
+        final Manifest defaultManifest = new Manifest();
+        defaultManifest.getMainAttributes().putValue( "Manifest-Version", "1.0" );
+        defaultManifest.getMainAttributes().putValue( "Created-By", System.getProperty(
+                                                      "java.vm.version" ) + " (" + System.getProperty(
+                                                          "java.vm.vendor" ) + ")" );
 
-            reader.close();
-            reader = null;
-
-            in.close();
-            in = null;
-
-            return defaultManifest;
-        }
-        catch ( ManifestException e )
-        {
-            throw new ArchiverException( "Default manifest is invalid !!", e );
-        }
-        catch ( IOException e )
-        {
-            throw new ArchiverException( "Unable to read default manifest", e );
-        }
-        finally
-        {
-            IOUtil.close( in );
-            IOUtil.close( reader );
-        }
+        return defaultManifest;
     }
 
     /**

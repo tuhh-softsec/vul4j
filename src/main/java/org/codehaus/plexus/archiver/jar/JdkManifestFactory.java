@@ -16,12 +16,10 @@ package org.codehaus.plexus.archiver.jar;
  *  limitations under the License.
  */
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Map;
 import java.util.jar.Attributes;
+
 import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.util.IOUtil;
 
 /**
  * Not part of any public API
@@ -32,33 +30,13 @@ class JdkManifestFactory
     public static java.util.jar.Manifest getDefaultManifest()
         throws ArchiverException
     {
-        InputStream in = null;
-        final String defManifest = "/org/codehaus/plexus/archiver/jar/defaultManifest.mf";
-        try
-        {
-            in = JdkManifestFactory.class.getResourceAsStream( defManifest );
-            if ( in == null )
-            {
-                throw new ArchiverException( "Could not find default manifest: " + defManifest );
-            }
-            java.util.jar.Manifest defaultManifest = new java.util.jar.Manifest( in );
+        final java.util.jar.Manifest defaultManifest = new java.util.jar.Manifest();
+        defaultManifest.getMainAttributes().putValue( "Manifest-Version", "1.0" );
+        defaultManifest.getMainAttributes().putValue( "Created-By", System.getProperty(
+                                                      "java.vm.version" ) + " (" + System.getProperty(
+                                                          "java.vm.vendor" ) + ")" );
 
-            in.close();
-            in = null;
-
-            defaultManifest.getMainAttributes().putValue( "Created-By",
-                                                          System.getProperty( "java.vm.version" ) + " ("
-                                                              + System.getProperty( "java.vm.vendor" ) + ")" );
-            return defaultManifest;
-        }
-        catch ( IOException e )
-        {
-            throw new ArchiverException( "Unable to read default manifest", e );
-        }
-        finally
-        {
-            IOUtil.close( in );
-        }
+        return defaultManifest;
     }
 
     public static void merge( java.util.jar.Manifest target, java.util.jar.Manifest other, boolean overwriteMain )
