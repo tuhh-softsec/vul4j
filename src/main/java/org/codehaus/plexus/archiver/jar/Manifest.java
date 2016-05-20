@@ -308,17 +308,10 @@ public class Manifest
         void write( Writer writer )
             throws IOException
         {
-            StringWriter sWriter = new StringWriter();
-            PrintWriter bufferWriter = new PrintWriter( sWriter );
-
             for ( String value : values )
             {
-                writeValue( bufferWriter, value );
+                writeValue( writer, value );
             }
-
-            byte[] convertedToUtf8 = sWriter.toString().getBytes( "UTF-8" );
-
-            writer.write( new String( convertedToUtf8, "UTF-8" ) );
         }
 
         /**
