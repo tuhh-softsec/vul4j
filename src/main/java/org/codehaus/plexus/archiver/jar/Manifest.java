@@ -849,10 +849,8 @@ public class Manifest
     {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         super.write( byteArrayOutputStream );
-        for ( byte b : byteArrayOutputStream.toByteArray() )
-        {
-            writer.write( (char) b );
-        }
+        // We know that UTF-8 is the encoding of the JAR file specification
+        writer.write( byteArrayOutputStream.toString( "UTF-8" ) );
     }
 
     /**
