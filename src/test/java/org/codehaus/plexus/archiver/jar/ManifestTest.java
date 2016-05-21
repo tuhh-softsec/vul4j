@@ -108,6 +108,41 @@ public class ManifestTest
                       writer.toString() );
     }
 
+    public void testAttributeLongLineWriteNonAscii()
+            throws Exception
+        {
+            StringWriter writer = new StringWriter();
+            Manifest.Attribute attr = new Manifest.Attribute();
+            String longLineOfChars =
+                "Ед докэндё форынчйбюж зкрипторэм векж, льабятюр ыкжпэтэндяз мэль ут, квюо ут модо "
+                + "либриз такематыш. Ыюм йн лаборамюз компльыктётюр, векж ыпикурэи дежпютатионй ед,"
+                + " ыам ты хабымуч мальюизчыт. Но вим алёэнюм вюльпутаты, ад нощтыр трётанё льаборэж"
+                + " вэл, кевёбюж атоморюм кончюлату векж экз. Ку щольыат вёртюты ёнэрмйщ ыюм.";
+            attr.setName( "test" );
+            attr.setValue( longLineOfChars );
+            attr.write( writer );
+            writer.flush();
+            assertEquals( "should be multiline",
+                          "test: Ед докэндё форынчйбюж зкрипторэм в"
+                              + Manifest.EOL +
+                              " екж, льабятюр ыкжпэтэндяз мэль ут, квю"
+                              + Manifest.EOL +
+                              " о ут модо либриз такематыш. Ыюм йн лаб"
+                              + Manifest.EOL +
+                              " орамюз компльыктётюр, векж ыпикурэи д"
+                              + Manifest.EOL +
+                              " ежпютатионй ед, ыам ты хабымуч мальюи"
+                              + Manifest.EOL +
+                              " зчыт. Но вим алёэнюм вюльпутаты, ад но"
+                              + Manifest.EOL +
+                              " щтыр трётанё льаборэж вэл, кевёбюж ат"
+                              + Manifest.EOL +
+                              " оморюм кончюлату векж экз. Ку щольыат "
+                              + Manifest.EOL +
+                              " вёртюты ёнэрмйщ ыюм."
+                              + Manifest.EOL,
+                          writer.toString() );
+        }
 
     public void testDualClassPath()
         throws ManifestException, IOException

@@ -47,9 +47,9 @@ import org.codehaus.plexus.util.PropertyUtils;
  * Specifically, a manifest element consists of
  * a set of attributes and sections. These sections in turn may contain
  * attributes. Note in particular that this may result in manifest lines
- * greater than 72 bytes being wrapped and continued on the next
- * line. If an application can not handle the continuation mechanism, it
- * is a defect in the application, not this task.
+ * greater than 72 bytes (including line break) being wrapped and continued
+ * on the next line. If an application can not handle the continuation
+ * mechanism, it is a defect in the application, not this task.
  *
  * @since Ant 1.4
  */
@@ -337,7 +337,7 @@ public class Manifest
         }
 
         /**
-         * Write a single Manifest line. Should handle more than 72 characters of line
+         * Write a single Manifest line. Should handle more than 72 bytes of line
          *
          * @param writer the Writer to which the attribute is written
          * @param line   the manifest line to be written
@@ -346,12 +346,15 @@ public class Manifest
         private void writeLine( Writer writer, String line )
             throws IOException
         {
-            while ( line.getBytes().length > MAX_LINE_LENGTH )
+            // Make sure we have at most 70 bytes in UTF-8 as specified excluding line break
+            while ( line.getBytes("UTF-8").length > MAX_SECTION_LENGTH )
             {
-                // try to find a MAX_LINE_LENGTH byte section
-                int breakIndex = MAX_SECTION_LENGTH;
+                // Try to find a MAX_SECTION_LENGTH
+                // Use the minimum because we operate on at most chars and not bytes here otherwise
+                // if we have more bytes than chars we will die in an IndexOutOfBoundsException.
+                int breakIndex = Math.min( line.length(), MAX_SECTION_LENGTH ) ;
                 String section = line.substring( 0, breakIndex );
-                while ( section.getBytes().length > MAX_SECTION_LENGTH && breakIndex > 0 )
+                while ( section.getBytes("UTF-8").length > MAX_SECTION_LENGTH && breakIndex > 0 )
                 {
                     breakIndex--;
                     section = line.substring( 0, breakIndex );
