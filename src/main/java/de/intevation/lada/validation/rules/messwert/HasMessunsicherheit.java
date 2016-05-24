@@ -34,7 +34,7 @@ public class HasMessunsicherheit implements Rule {
             return null;
         }
         Violation violation = new Violation();
-        violation.addWarning("messwewrt", 631);
+        violation.addWarning("messwert", 631);
         return violation;
     }
 }
