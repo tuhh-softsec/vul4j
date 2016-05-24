@@ -22001,6 +22001,15 @@ COPY query (id, name, type, sql, description) FROM stdin;
 
 
 --
+-- TOC entry 4745 (class 0 OID 0)
+-- Dependencies: 282
+-- Name: query_id_seq; Type: SEQUENCE SET; Schema: stammdaten; Owner: lada
+--
+
+SELECT pg_catalog.setval('query_id_seq', 15, true);
+
+
+--
 -- TOC entry 4681 (class 0 OID 535715)
 -- Dependencies: 246
 -- Data for Name: favorite; Type: TABLE DATA; Schema: stammdaten; Owner: lada
@@ -36832,15 +36841,6 @@ COPY probenehmer (id, netzbetreiber_id, prn_id, bearbeiter, bemerkung, betrieb, 
 --
 
 SELECT pg_catalog.setval('probenehmer_id_seq', 1859, true);
-
-
---
--- TOC entry 4745 (class 0 OID 0)
--- Dependencies: 282
--- Name: query_id_seq; Type: SEQUENCE SET; Schema: stammdaten; Owner: lada
---
-
-SELECT pg_catalog.setval('query_id_seq', 14, true);
 
 
 --
