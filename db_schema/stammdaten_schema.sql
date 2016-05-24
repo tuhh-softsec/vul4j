@@ -301,6 +301,39 @@ CREATE TABLE deskriptoren (
 ALTER SEQUENCE deskriptoren_id_seq OWNED BY deskriptoren.id;
 
 
+CREATE SEQUENCE lada_user_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+CREATE TABLE lada_user (
+    id integer PRIMARY KEY DEFAULT nextval('lada_user_id_seq'::regclass),
+    name character varying(80) NOT NULL
+);
+
+ALTER SEQUENCE lada_user_id_seq OWNED BY lada_user.id;
+
+
+CREATE SEQUENCE query_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+CREATE TABLE query (
+    id integer PRIMARY KEY DEFAULT nextval('query_id_seq'::regclass),
+    name character varying(80) NOT NULL,
+    type character varying(30) NOT NULL,
+    sql character varying(1500) NOT NULL,
+    description character varying(100)
+);
+
+ALTER SEQUENCE query_id_seq OWNED BY query.id;
+
+
 CREATE SEQUENCE favorite_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -310,8 +343,8 @@ CREATE SEQUENCE favorite_id_seq
 
 CREATE TABLE favorite (
     id integer PRIMARY KEY DEFAULT nextval('favorite_id_seq'::regclass),
-    user_id integer NOT NULL,
-    query_id integer NOT NULL
+    user_id integer NOT NULL REFERENCES lada_user,
+    query_id integer NOT NULL REFERENCES query ON DELETE CASCADE
 );
 
 ALTER SEQUENCE favorite_id_seq OWNED BY favorite.id;
@@ -326,7 +359,7 @@ CREATE SEQUENCE filter_id_seq
 
 CREATE TABLE filter (
     id integer PRIMARY KEY DEFAULT nextval('filter_id_seq'::regclass),
-    query_id integer NOT NULL,
+    query_id integer NOT NULL REFERENCES query ON DELETE CASCADE,
     data_index character varying(50) NOT NULL,
     type character varying(10) NOT NULL,
     label character varying(50) NOT NULL,
@@ -345,8 +378,8 @@ CREATE SEQUENCE filter_value_id_seq
 
 CREATE TABLE filter_value (
     id integer PRIMARY KEY DEFAULT nextval('filter_value_id_seq'::regclass),
-    user_id integer NOT NULL,
-    filter_id integer NOT NULL,
+    user_id integer NOT NULL REFERENCES lada_user,
+    filter_id integer NOT NULL REFERENCES filter ON DELETE CASCADE,
     value text
 );
 
@@ -367,21 +400,6 @@ CREATE TABLE koordinaten_art (
 );
 
 ALTER SEQUENCE koordinaten_art_id_seq OWNED BY koordinaten_art.id;
-
-
-CREATE SEQUENCE lada_user_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-CREATE TABLE lada_user (
-    id integer PRIMARY KEY DEFAULT nextval('lada_user_id_seq'::regclass),
-    name character varying(80) NOT NULL
-);
-
-ALTER SEQUENCE lada_user_id_seq OWNED BY lada_user.id;
 
 
 CREATE SEQUENCE mess_einheit_id_seq
@@ -624,24 +642,6 @@ CREATE TRIGGER letzte_aenderung_probenehmer BEFORE UPDATE ON probenehmer FOR EAC
 ALTER SEQUENCE probenehmer_id_seq OWNED BY probenehmer.id;
 
 
-CREATE SEQUENCE query_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-CREATE TABLE query (
-    id integer PRIMARY KEY DEFAULT nextval('query_id_seq'::regclass),
-    name character varying(80) NOT NULL,
-    type character varying(30) NOT NULL,
-    sql character varying(1500) NOT NULL,
-    description character varying(100)
-);
-
-ALTER SEQUENCE query_id_seq OWNED BY query.id;
-
-
 CREATE SEQUENCE result_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -651,7 +651,7 @@ CREATE SEQUENCE result_id_seq
 
 CREATE TABLE result (
     id integer PRIMARY KEY DEFAULT nextval('result_id_seq'::regclass),
-    query_id integer NOT NULL,
+    query_id integer NOT NULL REFERENCES query ON DELETE CASCADE,
     data_index character varying(50) NOT NULL,
     header character varying(50) NOT NULL,
     width integer,
@@ -845,31 +845,6 @@ ALTER TABLE ONLY auth
 
 
 
-ALTER TABLE ONLY favorite
-    ADD CONSTRAINT favorite_query_id_fkey FOREIGN KEY (query_id) REFERENCES query(id);
-
-
-
-ALTER TABLE ONLY favorite
-    ADD CONSTRAINT favorite_user_id_fkey FOREIGN KEY (user_id) REFERENCES lada_user(id);
-
-
-
-ALTER TABLE ONLY filter
-    ADD CONSTRAINT filter_query_id_fkey FOREIGN KEY (query_id) REFERENCES query(id);
-
-
-
-ALTER TABLE ONLY filter_value
-    ADD CONSTRAINT filter_value_filter_id_fkey FOREIGN KEY (filter_id) REFERENCES filter(id);
-
-
-
-ALTER TABLE ONLY filter_value
-    ADD CONSTRAINT filter_value_user_id_fkey FOREIGN KEY (user_id) REFERENCES lada_user(id);
-
-
-
 ALTER TABLE ONLY deskriptoren
     ADD CONSTRAINT fk_deskriptoren_vorgaenger FOREIGN KEY (vorgaenger) REFERENCES deskriptoren(id);
 
@@ -892,11 +867,6 @@ ALTER TABLE ONLY pflicht_messgroesse
 
 ALTER TABLE ONLY proben_zusatz
     ADD CONSTRAINT proben_zusatz_meh_id_fkey FOREIGN KEY (meh_id) REFERENCES mess_einheit(id);
-
-
-
-ALTER TABLE ONLY result
-    ADD CONSTRAINT result_query_id_fkey FOREIGN KEY (query_id) REFERENCES query(id);
 
 
 
