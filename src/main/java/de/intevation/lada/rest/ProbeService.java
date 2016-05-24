@@ -446,6 +446,9 @@ public class ProbeService {
             factory.findUmweltId(probe);
         }
         Response response = repository.update(probe, "land");
+        if (!response.getSuccess()) {
+            return response;
+        }
         Response updated = repository.getById(
             LProbe.class,
             ((LProbe)response.getData()).getId(), "land");

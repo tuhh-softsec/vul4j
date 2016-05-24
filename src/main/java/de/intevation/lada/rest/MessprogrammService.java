@@ -298,6 +298,9 @@ public class MessprogrammService {
             messprogramm = factory.findUmweltId(messprogramm);
         }
         Response response = defaultRepo.update(messprogramm, "land");
+        if (!response.getSuccess()) {
+            return response;
+        }
         Response updated = defaultRepo.getById(
             Messprogramm.class,
             ((Messprogramm)response.getData()).getId(), "land");

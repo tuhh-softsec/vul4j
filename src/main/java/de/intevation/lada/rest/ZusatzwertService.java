@@ -247,6 +247,9 @@ public class ZusatzwertService {
             return new Response(false, 697, null);
         }
         Response response = defaultRepo.update(zusatzwert, "land");
+        if (!response.getSuccess()) {
+            return response;
+        }
         Response updated = defaultRepo.getById(
             LZusatzWert.class,
             ((LZusatzWert)response.getData()).getId(), "land");
