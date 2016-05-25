@@ -128,8 +128,12 @@ public class DefaultRepository extends ReadOnlyRepository {
         catch (TransactionRequiredException tre) {
             return new Response(false, 603, object);
         }
+        catch (EJBTransactionRolledbackException ete) {
+            return new Response(false, 696, object);
+        }
         return response;
     }
+
     /**
      * Get objects from database using the given filter.
      *
