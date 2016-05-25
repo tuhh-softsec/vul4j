@@ -288,6 +288,9 @@ public class OrtService {
 
         ort.setLetzteAenderung(new Timestamp(new Date().getTime()));
         Response response = defaultRepo.update(ort, "land");
+        if (!response.getSuccess()) {
+            return response;
+        }
         Response updated = defaultRepo.getById(
             LOrtszuordnung.class,
             ((LOrtszuordnung)response.getData()).getId(), "land");

@@ -332,6 +332,9 @@ public class MesswertService {
         }
 
         Response response = defaultRepo.update(messwert, "land");
+        if (!response.getSuccess()) {
+            return response;
+        }
         Response updated = defaultRepo.getById(
             LMesswert.class,
             ((LMesswert)response.getData()).getId(), "land");

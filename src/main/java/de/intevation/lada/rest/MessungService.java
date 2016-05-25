@@ -378,6 +378,9 @@ public class MessungService {
             return response;
         }
         Response response = repository.update(messung, "land");
+        if (!response.getSuccess()) {
+            return response;
+        }
         Response updated = repository.getById(
             LMessung.class,
             ((LMessung)response.getData()).getId(), "land");
