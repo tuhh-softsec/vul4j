@@ -40,7 +40,8 @@ public class NetzbetreiberAuthorizer extends BaseAuthorizer {
         return (method == RequestMethod.POST ||
             method == RequestMethod.PUT ||
             method == RequestMethod.DELETE) &&
-            userInfo.getFunktionenForNetzbetreiber(id).contains(4);
+            (userInfo.getFunktionenForNetzbetreiber(id).contains(4) ||
+             clazz.getName().equals("de.intevation.lada.model.stamm.Ort"));
     }
 
     @Override
