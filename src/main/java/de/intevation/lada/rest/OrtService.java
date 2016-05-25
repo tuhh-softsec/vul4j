@@ -321,7 +321,6 @@ public class OrtService {
         @Context HttpServletRequest request,
         @PathParam("id") String id
     ) {
-        /* Get the messwert object by id*/
         Response object =
             defaultRepo.getById(LOrtszuordnung.class, Integer.valueOf(id), "land");
         LOrtszuordnung ortObj = (LOrtszuordnung)object.getData();
@@ -335,7 +334,7 @@ public class OrtService {
         if (lock.isLocked(ortObj)) {
             return new Response(false, 697, null);
         }
-        /* Delete the messwert object*/
+
         return defaultRepo.delete(ortObj, "land");
     }
 }

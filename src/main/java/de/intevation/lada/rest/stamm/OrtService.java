@@ -345,9 +345,12 @@ public class OrtService {
         @Context HttpServletRequest request,
         @PathParam("id") String id
     ) {
-        /* Get the object by id*/
-        Ort ort =
-            repository.getByIdPlain(Ort.class, Integer.valueOf(id), "stamm");
+        Response response =
+            repository.getById(Ort.class, Integer.valueOf(id), "stamm");
+        if (!response.getSuccess()) {
+            return response;
+        }
+        Ort ort = (Ort)response.getData();
         if (!authorization.isAuthorized(
             request,
             ort,
@@ -356,7 +359,7 @@ public class OrtService {
         ) {
             return new Response(false, 699, ort);
         }
-        /* Delete the object*/
+
         return repository.delete(ort, "stamm");
     }
 }
