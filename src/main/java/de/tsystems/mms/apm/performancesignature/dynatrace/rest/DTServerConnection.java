@@ -39,6 +39,7 @@ import hudson.ProxyConfiguration;
 import jenkins.model.Jenkins;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -56,11 +57,13 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
 public class DTServerConnection {
+    private static final Logger LOGGER = Logger.getLogger(DTServerConnection.class.getName());
     private final String address;
     private final boolean verifyCertificate;
     private final UsernamePasswordCredentials credentials;
@@ -85,7 +88,10 @@ public class DTServerConnection {
 
         // Install the all-trusting trust manager
         try {
-            sc = SSLContext.getInstance("TLSv1.2");
+            if (SystemUtils.IS_JAVA_1_6)
+                sc = SSLContext.getInstance("TLSv1");
+            else
+                sc = SSLContext.getInstance("TLSv1.2");
             TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
                 public X509Certificate[] getAcceptedIssuers() {
                     return null;
@@ -102,7 +108,7 @@ public class DTServerConnection {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (KeyManagementException e) {
-            e.printStackTrace();
+            LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
         }
 
         if (customProxy != null) {
@@ -305,6 +311,7 @@ public class DTServerConnection {
             getServerVersion();
             return true;
         } catch (CommandExecutionException e) {
+            LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
             return false;
         }
     }
