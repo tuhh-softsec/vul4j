@@ -22,6 +22,7 @@ import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.commons.compress.archivers.zip.ZipEncoding;
 import org.apache.commons.compress.archivers.zip.ZipEncodingHelper;
 import org.apache.commons.compress.parallel.InputStreamSupplier;
+import org.apache.commons.compress.utils.Charsets;
 import org.codehaus.plexus.archiver.AbstractArchiver;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.Archiver;
@@ -41,6 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.SequenceInputStream;
+import java.nio.charset.Charset;
 import java.util.Hashtable;
 import java.util.Stack;
 import java.util.concurrent.ExecutionException;
@@ -208,7 +210,6 @@ public abstract class AbstractZipArchiver
         return doFilesonly;
     }
 
-
     protected void execute()
         throws ArchiverException, IOException
     {
@@ -315,8 +316,7 @@ public abstract class AbstractZipArchiver
             zipArchiveOutputStream =
                 new ZipArchiveOutputStream( bufferedOutputStream( fileOutputStream( zipFile, "zip" ) ) );
             zipArchiveOutputStream.setEncoding( encoding );
-            zipArchiveOutputStream.setCreateUnicodeExtraFields(
-                ZipArchiveOutputStream.UnicodeExtraFieldPolicy.NOT_ENCODEABLE );
+            zipArchiveOutputStream.setCreateUnicodeExtraFields( this.getUnicodeExtraFieldPolicy() );
             zipArchiveOutputStream.setMethod(
                 doCompress ? ZipArchiveOutputStream.DEFLATED : ZipArchiveOutputStream.STORED );
 
@@ -337,6 +337,45 @@ public abstract class AbstractZipArchiver
             }
         }
         success = true;
+    }
+
+    /**
+     * Gets the {@code UnicodeExtraFieldPolicy} to apply.
+     *
+     * @return {@link ZipArchiveOutputStream.UnicodeExtraFieldPolicy.NOT_ENCODEABLE}, if the effective encoding is
+     * UTF-8; {@link ZipArchiveOutputStream.UnicodeExtraFieldPolicy.ALWAYS}, if the effective encoding is not
+     * UTF-8.
+     *
+     * @see #getEncoding()
+     */
+    private ZipArchiveOutputStream.UnicodeExtraFieldPolicy getUnicodeExtraFieldPolicy()
+    {
+        // Copied from ZipEncodingHelper.isUTF8()
+        String effectiveEncoding = this.getEncoding();
+
+        if ( effectiveEncoding == null )
+        {
+            effectiveEncoding = Charset.defaultCharset().name();
+        }
+
+        boolean utf8 = Charsets.UTF_8.name().equalsIgnoreCase( effectiveEncoding );
+
+        if ( !utf8 )
+        {
+            for ( String alias : Charsets.UTF_8.aliases() )
+            {
+                if ( alias.equalsIgnoreCase( effectiveEncoding ) )
+                {
+                    utf8 = true;
+                    break;
+                }
+            }
+        }
+
+        return utf8
+                   ? ZipArchiveOutputStream.UnicodeExtraFieldPolicy.NOT_ENCODEABLE
+                   : ZipArchiveOutputStream.UnicodeExtraFieldPolicy.ALWAYS;
+
     }
 
     /**

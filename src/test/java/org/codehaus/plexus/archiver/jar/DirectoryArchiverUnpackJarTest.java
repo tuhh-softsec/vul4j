@@ -3,7 +3,6 @@ package org.codehaus.plexus.archiver.jar;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.util.DefaultArchivedFileSet;
-import org.codehaus.plexus.components.io.attributes.Java7AttributeUtils;
 import org.codehaus.plexus.components.io.functions.InputStreamTransformer;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 
@@ -12,6 +11,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import org.codehaus.plexus.archiver.util.ArchiveEntryUtils;
+import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.logging.console.ConsoleLogger;
 
 public class DirectoryArchiverUnpackJarTest
     extends PlexusTestCase
@@ -52,12 +54,13 @@ public class DirectoryArchiverUnpackJarTest
         archiver.createArchive();
         assertTrue( new File( "target/depset_unpack/child-1/META-INF/MANIFEST.MF" ).exists() );
 
+        final Logger logger = new ConsoleLogger( Logger.LEVEL_DEBUG, this.getClass().getName() );
 
         // make them writeable or mvn clean will fail
-        Java7AttributeUtils.chmod( new File("target/depset_unpack/child-1/META-INF"), 0777);
-        Java7AttributeUtils.chmod( new File("target/depset_unpack/child-1/META-INF/maven"), 0777);
-        Java7AttributeUtils.chmod( new File("target/depset_unpack/child-1/META-INF/maven/test"), 0777);
-        Java7AttributeUtils.chmod( new File("target/depset_unpack/child-1/META-INF/maven/test/child1"), 0777);
-        Java7AttributeUtils.chmod( new File("target/depset_unpack/child-1/assembly-resources"), 0777);
+        ArchiveEntryUtils.chmod( new File( "target/depset_unpack/child-1/META-INF" ), 0777, logger );
+        ArchiveEntryUtils.chmod( new File( "target/depset_unpack/child-1/META-INF/maven" ), 0777, logger );
+        ArchiveEntryUtils.chmod( new File( "target/depset_unpack/child-1/META-INF/maven/test" ), 0777, logger );
+        ArchiveEntryUtils.chmod( new File( "target/depset_unpack/child-1/META-INF/maven/test/child1" ), 0777, logger );
+        ArchiveEntryUtils.chmod( new File( "target/depset_unpack/child-1/assembly-resources" ), 0777, logger );
     }
 }

@@ -20,18 +20,20 @@ package org.codehaus.plexus.archiver.zip;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.Date;
 import java.util.Enumeration;
+import javax.annotation.Nonnull;
 
+import org.apache.commons.compress.archivers.zip.UnicodePathExtraField;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.compress.utils.IOUtils;
+
 import org.codehaus.plexus.archiver.AbstractUnArchiver;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author <a href="mailto:evenisse@codehaus.org">Emmanuel Venisse</a>
@@ -84,7 +86,20 @@ public abstract class AbstractZipUnArchiver
 
         public String getName()
         {
-            return zipEntry.getName();
+            try
+            {
+                final UnicodePathExtraField unicodePath =
+                    (UnicodePathExtraField) zipEntry.getExtraField( UnicodePathExtraField.UPATH_ID );
+
+                return unicodePath != null
+                           ? new String( unicodePath.getUnicodeName(), "UTF-8" )
+                           : zipEntry.getName();
+
+            }
+            catch ( final UnsupportedEncodingException e )
+            {
+                throw new AssertionError( e );
+            }
         }
 
         public boolean isDirectory()
@@ -141,27 +156,30 @@ public abstract class AbstractZipUnArchiver
         InputStream in = null;
         try
         {
-            zf = new org.apache.commons.compress.archivers.zip.ZipFile( getSourceFile(), encoding );
-            final Enumeration e = zf.getEntries();
+            zf = new org.apache.commons.compress.archivers.zip.ZipFile( getSourceFile(), encoding, true );
+            final Enumeration e = zf.getEntriesInPhysicalOrder();
             while ( e.hasMoreElements() )
             {
                 final ZipArchiveEntry ze = (ZipArchiveEntry) e.nextElement();
                 final ZipEntryFileInfo fileInfo = new ZipEntryFileInfo( zf, ze );
-                if ( isSelected( ze.getName(), fileInfo ) )
+                if ( isSelected( fileInfo.getName(), fileInfo ) )
                 {
-					in = zf.getInputStream( ze );
-					extractFileIfIncluded(getSourceFile(), getDestDirectory(), in, ze.getName(),
-							new Date(ze.getTime()), ze.isDirectory(), ze.getUnixMode() != 0 ? ze.getUnixMode() : null,
-                            resolveSymlink( zf, ze ) );
+                    in = zf.getInputStream( ze );
+
+                    extractFileIfIncluded( getSourceFile(), getDestDirectory(), in, fileInfo.getName(),
+                                           new Date( ze.getTime() ), ze.isDirectory(),
+                                           ze.getUnixMode() != 0 ? ze.getUnixMode() : null,
+                                           resolveSymlink( zf, ze ) );
+
                     in.close();
                     in = null;
-				}
+                }
+            }
 
-			}
-
-            getLogger().debug( "expand complete" );
             zf.close();
             zf = null;
+
+            getLogger().debug( "expand complete" );
         }
         catch ( final IOException ioe )
         {
@@ -197,9 +215,9 @@ public abstract class AbstractZipUnArchiver
         InputStream in = null;
         try
         {
-            zipFile = new org.apache.commons.compress.archivers.zip.ZipFile( getSourceFile(), encoding );
+            zipFile = new org.apache.commons.compress.archivers.zip.ZipFile( getSourceFile(), encoding, true );
 
-            final Enumeration e = zipFile.getEntries();
+            final Enumeration e = zipFile.getEntriesInPhysicalOrder();
 
             while ( e.hasMoreElements() )
             {
@@ -213,9 +231,12 @@ public abstract class AbstractZipUnArchiver
                 if ( ze.getName().startsWith( path ) )
                 {
                     in = zipFile.getInputStream( ze );
+
                     extractFileIfIncluded( getSourceFile(), outputDirectory, in,
                                            ze.getName(), new Date( ze.getTime() ), ze.isDirectory(),
-                                           ze.getUnixMode() != 0 ? ze.getUnixMode() : null, resolveSymlink( zipFile, ze ) );
+                                           ze.getUnixMode() != 0 ? ze.getUnixMode() : null,
+                                           resolveSymlink( zipFile, ze ) );
+
                     in.close();
                     in = null;
                 }
