@@ -12,7 +12,6 @@ import java.lang.reflect.Method;
 
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
-import de.intevation.lada.model.stamm.Ort;
 
 public class NetzbetreiberAuthorizer extends BaseAuthorizer {
 
@@ -45,8 +44,7 @@ public class NetzbetreiberAuthorizer extends BaseAuthorizer {
             // XXX: this currently allows any user, regardless of function,
             // to manipulate and delete any ort of his own netzbetreiber!
              clazz.getName().equals("de.intevation.lada.model.stamm.Ort") &&
-             userInfo.getNetzbetreiber().contains(
-                 ((Ort)data).getNetzbetreiberId()));
+             userInfo.getNetzbetreiber().contains(id));
     }
 
     @Override
