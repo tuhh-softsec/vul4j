@@ -342,7 +342,7 @@ public abstract class AbstractZipArchiver
     /**
      * Gets the {@code UnicodeExtraFieldPolicy} to apply.
      *
-     * @return {@link ZipArchiveOutputStream.UnicodeExtraFieldPolicy.NOT_ENCODEABLE}, if the effective encoding is
+     * @return {@link ZipArchiveOutputStream.UnicodeExtraFieldPolicy.NEVER}, if the effective encoding is
      * UTF-8; {@link ZipArchiveOutputStream.UnicodeExtraFieldPolicy.ALWAYS}, if the effective encoding is not
      * UTF-8.
      *
@@ -372,8 +372,12 @@ public abstract class AbstractZipArchiver
             }
         }
 
+        // Using ZipArchiveOutputStream.UnicodeExtraFieldPolicy.NOT_ENCODEABLE as a fallback makes no sense here.
+        // If the encoding is UTF-8 and a name is not encodeable using UTF-8, the Info-ZIP Unicode Path extra field
+        // is not encodeable as well. If the effective encoding is not UTF-8, we always add the extra field. If it is
+        // UTF-8, we never add the extra field.
         return utf8
-                   ? ZipArchiveOutputStream.UnicodeExtraFieldPolicy.NOT_ENCODEABLE
+                   ? ZipArchiveOutputStream.UnicodeExtraFieldPolicy.NEVER
                    : ZipArchiveOutputStream.UnicodeExtraFieldPolicy.ALWAYS;
 
     }
