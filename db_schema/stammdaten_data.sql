@@ -296,12 +296,12 @@ COPY auth (id, ldap_group, netzbetreiber_id, mst_id, labor_mst_id, funktion_id) 
 3	mst_06060	06	06060	06060	0
 4	mst_11010	11	11010	11010	0
 5	mst_12010	12	12010	12010	0
-6	mst_12010	12	12020	12020	0
+6	mst_12020	12	12020	12020	0
 7	mst_06_status	06	06010	06010	1
 8	mst_06-status	06	06060	06060	1
 9	mst_11010_status	11	11010	11010	1
 10	mst_12010_status	12	12010	12010	1
-11	mst_12010_status	12	12020	12020	1
+11	mst_12020_status	12	12020	12020	1
 16	land_06_status	06	06112	\N	2
 17	land_11_status	11	11042	\N	2
 21	land_12_status	12	12032	\N	2
