@@ -103,8 +103,10 @@ public class MessungAuthorizer extends BaseAuthorizer {
                 LStatusProtokoll.class,
                 messung.getStatus(),
                 "land");
-            messung.setReadonly(
-                status.getStatusWert() != 0 && status.getStatusWert() != 4);
+            int stufe = status.getStatusStufe();
+            int wert  = status.getStatusWert();
+
+            messung.setReadonly(wert != 0 && wert != 4);
 
             boolean statusEdit = false;
             if (userInfo.getFunktionen().contains(3)) {
@@ -116,23 +118,25 @@ public class MessungAuthorizer extends BaseAuthorizer {
                     repository.filterPlain(lstFilter.getQuery(), "stamm");
                 for (int i = 0; i < lsts.size(); i++) {
                     if (lsts.get(i).getUmwId().equals(probe.getUmwId())
-                        && (status.getStatusStufe() == 2
-                        || status.getStatusStufe() == 3)
+                        && (stufe == 2 || stufe == 3)
                     ) {
                         statusEdit = true;
                     }
                 }
             }
-            if (userInfo.getFunktionenForNetzbetreiber(probe.getNetzbetreiberId()).contains(2) &&
-                userInfo.getNetzbetreiber().contains(probe.getNetzbetreiberId()) &&
-                (status.getStatusStufe() == 1 || status.getStatusStufe() == 2) &&
-                status.getStatusWert() >= 1
+            if (userInfo.getFunktionenForNetzbetreiber(
+                    probe.getNetzbetreiberId()).contains(2)
+                && userInfo.getNetzbetreiber().contains(
+                    probe.getNetzbetreiberId())
+                && (stufe == 1 || stufe == 2)
+                && wert >= 1
             ) {
                 statusEdit = true;
             }
-            if (userInfo.getFunktionenForMst(probe.getMstId()).contains(1) &&
-                userInfo.belongsTo(probe.getMstId(), probe.getLaborMstId()) &&
-                (status.getStatusStufe() <= 1 || status.getStatusWert() == 4)
+            if (userInfo.getFunktionenForMst(probe.getMstId()).contains(1)
+                && userInfo.belongsTo(probe.getMstId(),
+                    probe.getLaborMstId())
+                && (stufe <= 1 || wert == 4)
             ) {
                 statusEdit = true;
             }
