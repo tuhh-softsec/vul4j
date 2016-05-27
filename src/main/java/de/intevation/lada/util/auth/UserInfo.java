@@ -10,6 +10,10 @@ package de.intevation.lada.util.auth;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import org.apache.log4j.Logger;
+
 import de.intevation.lada.model.stamm.Auth;
 
 /**
@@ -18,6 +22,8 @@ import de.intevation.lada.model.stamm.Auth;
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
 public class UserInfo {
+    private Logger logger = Logger.getLogger(UserInfo.class);
+
     private String name;
     private Integer userId;
     private List<String> messstellen;
@@ -109,10 +115,10 @@ public class UserInfo {
             if (a.getMstId() == null) {
                 continue;
             }
-            if (a.getMstId().contains(messstelle) &&
-                a.getLaborMstId() != null &&
+            if (a.getMstId().contains(messstelle) ||
+                (a.getLaborMstId() != null &&
                 labor != null &&
-                a.getLaborMstId().contains(labor)) {
+                a.getLaborMstId().contains(labor))) {
                 return true;
             }
         }

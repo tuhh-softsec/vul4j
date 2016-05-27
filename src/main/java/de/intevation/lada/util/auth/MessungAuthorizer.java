@@ -116,22 +116,21 @@ public class MessungAuthorizer extends BaseAuthorizer {
                     repository.filterPlain(lstFilter.getQuery(), "stamm");
                 for (int i = 0; i < lsts.size(); i++) {
                     if (lsts.get(i).getUmwId().equals(probe.getUmwId())
-                        && status.getStatusStufe() == 2
-                        && status.getStatusWert() != 4
-                        || status.getStatusStufe() == 3
+                        && (status.getStatusStufe() == 2
+                        || status.getStatusStufe() == 3)
                     ) {
                         statusEdit = true;
                     }
                 }
             }
-            else if (userInfo.getFunktionen().contains(2) &&
+            if (userInfo.getFunktionenForNetzbetreiber(probe.getNetzbetreiberId()).contains(2) &&
                 userInfo.getNetzbetreiber().contains(probe.getNetzbetreiberId()) &&
                 (status.getStatusStufe() == 1 || status.getStatusStufe() == 2) &&
                 status.getStatusWert() >= 1
             ) {
                 statusEdit = true;
             }
-            else if (userInfo.getFunktionen().contains(1) &&
+            if (userInfo.getFunktionenForMst(probe.getMstId()).contains(1) &&
                 userInfo.belongsTo(probe.getMstId(), probe.getLaborMstId()) &&
                 (status.getStatusStufe() <= 1 || status.getStatusWert() == 4)
             ) {
