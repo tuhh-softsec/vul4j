@@ -33,33 +33,42 @@ class JdkManifestFactory
     public static java.util.jar.Manifest getDefaultManifest()
         throws ArchiverException
     {
+        final java.util.jar.Manifest defaultManifest = new java.util.jar.Manifest();
+        defaultManifest.getMainAttributes().putValue( "Manifest-Version", "1.0" );
+
+        String createdBy = "Plexus Archiver";
+
+        final String plexusArchiverVersion = getArchiverVersion();
+
+        if ( plexusArchiverVersion != null )
+        {
+            createdBy += " " + plexusArchiverVersion;
+        }
+
+        defaultManifest.getMainAttributes().putValue( "Created-By", createdBy );
+        return defaultManifest;
+    }
+
+    private static String getArchiverVersion()
+    {
+        String version = null;
+
         try
         {
-            final java.util.jar.Manifest defaultManifest = new java.util.jar.Manifest();
-            defaultManifest.getMainAttributes().putValue( "Manifest-Version", "1.0" );
-
-            String createdBy = "Plexus Archiver";
-
             final Properties properties = PropertyUtils.loadProperties( JdkManifestFactory.class.getResourceAsStream(
                 "/META-INF/maven/org.codehaus.plexus/plexus-archiver/pom.properties" ) );
 
             if ( properties != null )
             {
-                String plexusArchiverVersion = properties.getProperty( "version" );
-                if ( plexusArchiverVersion != null )
-                {
-                    createdBy += " " + plexusArchiverVersion;
-                }
+                version = properties.getProperty( "version" );
             }
-
-            defaultManifest.getMainAttributes().putValue( "Created-By", createdBy );
-
-            return defaultManifest;
         }
         catch ( final IOException e )
         {
-            throw new ArchiverException( "Failure reading default manifest.", e );
+            version = null;
         }
+
+        return version;
     }
 
     public static void merge( java.util.jar.Manifest target, java.util.jar.Manifest other, boolean overwriteMain )
@@ -112,6 +121,5 @@ class JdkManifestFactory
             target.put( key, value );
         }
     }
-
 
 }

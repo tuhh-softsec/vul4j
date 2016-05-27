@@ -735,32 +735,43 @@ public class Manifest
     public static Manifest getDefaultManifest()
         throws ArchiverException
     {
+        final Manifest defaultManifest = new Manifest();
+        defaultManifest.getMainAttributes().putValue( "Manifest-Version", "1.0" );
+
+        String createdBy = "Plexus Archiver";
+
+        final String plexusArchiverVersion = getArchiverVersion();
+
+        if ( plexusArchiverVersion != null )
+        {
+            createdBy += " " + plexusArchiverVersion;
+        }
+
+        defaultManifest.getMainAttributes().putValue( "Created-By", createdBy );
+
+        return defaultManifest;
+    }
+
+    private static String getArchiverVersion()
+    {
+        String version = null;
+
         try
         {
-            final Manifest defaultManifest = new Manifest();
-            defaultManifest.getMainAttributes().putValue( "Manifest-Version", "1.0" );
-
-            String createdBy = "Plexus Archiver";
-
-            final Properties properties = PropertyUtils.loadProperties( Manifest.class.getResourceAsStream(
+            final Properties properties = PropertyUtils.loadProperties( JdkManifestFactory.class.getResourceAsStream(
                 "/META-INF/maven/org.codehaus.plexus/plexus-archiver/pom.properties" ) );
 
             if ( properties != null )
             {
-                String plexusArchiverVersion = properties.getProperty( "version" );
-                if ( plexusArchiverVersion != null )
-                {
-                    createdBy += " " + plexusArchiverVersion;
-                }
+                version = properties.getProperty( "version" );
             }
-            defaultManifest.getMainAttributes().putValue( "Created-By", createdBy );
-
-            return defaultManifest;
         }
         catch ( final IOException e )
         {
-            throw new ArchiverException( "Failure reading default manifest.", e );
+            version = null;
         }
+
+        return version;
     }
 
     /**
