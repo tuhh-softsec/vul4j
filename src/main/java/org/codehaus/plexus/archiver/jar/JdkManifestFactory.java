@@ -49,26 +49,22 @@ class JdkManifestFactory
         return defaultManifest;
     }
 
-    private static String getArchiverVersion()
+    static String getArchiverVersion()
     {
-        String version = null;
-
         try
         {
             final Properties properties = PropertyUtils.loadProperties( JdkManifestFactory.class.getResourceAsStream(
                 "/META-INF/maven/org.codehaus.plexus/plexus-archiver/pom.properties" ) );
 
-            if ( properties != null )
-            {
-                version = properties.getProperty( "version" );
-            }
+            return properties != null
+                       ? properties.getProperty( "version" )
+                       : null;
+
         }
         catch ( final IOException e )
         {
-            version = null;
+            throw new AssertionError( e );
         }
-
-        return version;
     }
 
     public static void merge( java.util.jar.Manifest target, java.util.jar.Manifest other, boolean overwriteMain )

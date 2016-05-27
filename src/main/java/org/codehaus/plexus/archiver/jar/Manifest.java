@@ -30,13 +30,11 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Locale;
-import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.jar.Attributes;
 
 import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.util.PropertyUtils;
 
 /**
  * Holds the data of a jar manifest.
@@ -740,7 +738,7 @@ public class Manifest
 
         String createdBy = "Plexus Archiver";
 
-        final String plexusArchiverVersion = getArchiverVersion();
+        final String plexusArchiverVersion = JdkManifestFactory.getArchiverVersion();
 
         if ( plexusArchiverVersion != null )
         {
@@ -750,28 +748,6 @@ public class Manifest
         defaultManifest.getMainAttributes().putValue( "Created-By", createdBy );
 
         return defaultManifest;
-    }
-
-    private static String getArchiverVersion()
-    {
-        String version = null;
-
-        try
-        {
-            final Properties properties = PropertyUtils.loadProperties( JdkManifestFactory.class.getResourceAsStream(
-                "/META-INF/maven/org.codehaus.plexus/plexus-archiver/pom.properties" ) );
-
-            if ( properties != null )
-            {
-                version = properties.getProperty( "version" );
-            }
-        }
-        catch ( final IOException e )
-        {
-            version = null;
-        }
-
-        return version;
     }
 
     /**
