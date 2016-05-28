@@ -34,6 +34,7 @@ import org.codehaus.plexus.util.IOUtil;
 /**
  *
  * @author philip.lourandos
+ * @since 3.3
  */
 public class XzArchiverTest extends BasePlexusArchiverTest 
 {

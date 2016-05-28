@@ -20,6 +20,7 @@ import java.io.File;
 /**
  *
  * @author philip.lourandos
+ * @since 3.3
  */
 public class PlexusIoTarXZFileResourceCollection extends
         PlexusIoTarFileResourceCollection

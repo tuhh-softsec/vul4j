@@ -28,6 +28,7 @@ import org.codehaus.plexus.util.IOUtil;
 /**
  *
  * @author lore
+ * @since 3.3
  */
 public class PlexusIoXZResourceCollection extends PlexusIoCompressedFileResourceCollection {
 

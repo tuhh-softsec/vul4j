@@ -26,6 +26,7 @@ import static org.codehaus.plexus.archiver.util.Streams.fileOutputStream;
 /**
  *
  * @author philip.lourandos
+ * @since 3.3
  */
 public class XZCompressor extends Compressor 
 {

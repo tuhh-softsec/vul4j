@@ -24,6 +24,7 @@ import org.codehaus.plexus.archiver.ResourceIterator;
 /**
  *
  * @author philiplourandos
+ * @since 3.3
  */
 public class XZArchiver extends AbstractArchiver {
 
