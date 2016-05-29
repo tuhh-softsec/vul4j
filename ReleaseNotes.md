@@ -7,57 +7,57 @@ any version includes *all* changes below.
 ## Release 3.3
 
  * [Fixed #43][issue-43]
-   o Updated to stop failing creating 'Created-by' manifest entries, when the version 
-     of the archiver cannot be determined.
+   Updated to stop failing creating 'Created-by' manifest entries, when the version 
+   of the archiver cannot be determined.
 
  * [Fixed #42][issue-42]
-   o No need to fallback to unicode path extra field policy NOT_ENCODEABLE.
+   No need to fallback to unicode path extra field policy NOT_ENCODEABLE.
 
  * [Fixed #40][issue-40]
-   o Updated to upgrade 'plexus-utils' to latest patch release.
+   Updated to upgrade 'plexus-utils' to latest patch release.
 
  * [Fixed #39][issue-39]
-   o Updated to stop falling back to the unicode path extra field policy
-     NOT_ENCODEABLE. If a name is not encodeable in UTF-8, it also is not
-     encodeable in the extra field.
+   Updated to stop falling back to the unicode path extra field policy
+   NOT_ENCODEABLE. If a name is not encodeable in UTF-8, it also is not
+   encodeable in the extra field.
 
-    Updated to always add the Info-ZIP Unicode Path Extra Field when creating an
-    archive using an encoding different from UTF-8 instead of only when a name is
-    not encodeable. Additionally support that extra field when unarchiving.
+   Updated to always add the Info-ZIP Unicode Path Extra Field when creating an
+   archive using an encoding different from UTF-8 instead of only when a name is
+   not encodeable. Additionally support that extra field when unarchiving.
 
  * [Fixed #38][issue-38]
-   o Downgrade PrintWriter to Writer in Manifest
+   Downgrade PrintWriter to Writer in Manifest
 
  * [Fixed #37][issue-37]
-   o Deprecate Manifest(Reader) and update all related Implemenation does not properly 
-     map characters to map and makes assumptions about character encoding which might 
-     lead to failures. Deprecate and rely on Java Manifest reader to do the right thing.
+   Deprecate Manifest(Reader) and update all related Implemenation does not properly 
+   map characters to map and makes assumptions about character encoding which might 
+   lead to failures. Deprecate and rely on Java Manifest reader to do the right thing.
 
  * [Fixed #36][issue-36]
-   o Created-by entry does not reflect who created the JAR
+   Created-by entry does not reflect who created the JAR
 
  * [Fixed #35][issue-35]
-    o Replace defaultManifest.mf with inline code
+   Replace defaultManifest.mf with inline code
 
  * [Fixed #20][issue-20]
-    o Manifest#write blindly casts bytes to chars
+   Manifest#write blindly casts bytes to chars
 
  * [Fixed #18][issue-18]
-    o Manifest#Attribute#writeLine does not properly calculate max line length
+   Manifest#Attribute#writeLine does not properly calculate max line length
 
  * [Fixed #17][issue-17]
-    o Remove unnecessary conversion in Manifest#Attribute#write
+   Remove unnecessary conversion in Manifest#Attribute#write
 
  * [Fixed #16][issue-16]
-   o Manifest entry "Archiver-Version" is incomplete/wrong
-     Entry does not reflect the archiver version. Remove since it 
-     adds not information it pretends to add.
+   Manifest entry "Archiver-Version" is incomplete/wrong
+   Entry does not reflect the archiver version. Remove since it 
+   adds not information it pretends to add.
 
  * [Fixed #5][issue-5]
-    o Added proper bound on memory usage, patch by Björn Eickvonder
+   Added proper bound on memory usage, patch by Björn Eickvonder
 
  * [Pull Request #41][pr-41]
-   o Support the Info-ZIP Unicode Path Extra Field.
+   Support the Info-ZIP Unicode Path Extra Field.
 
 ## Release 3.2
 
