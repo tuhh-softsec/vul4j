@@ -115,10 +115,9 @@ public class UserInfo {
             if (a.getMstId() == null) {
                 continue;
             }
-            if (a.getMstId().contains(messstelle) ||
-                (a.getLaborMstId() != null &&
-                labor != null &&
-                a.getLaborMstId().contains(labor))) {
+            if (a.getMstId().equals(messstelle)
+                || (a.getLaborMstId() != null
+                    && a.getLaborMstId().equals(labor))) {
                 return true;
             }
         }
