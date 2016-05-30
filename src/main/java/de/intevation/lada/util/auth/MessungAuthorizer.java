@@ -109,6 +109,9 @@ public class MessungAuthorizer extends BaseAuthorizer {
             messung.setReadonly(wert != 0 && wert != 4);
 
             boolean statusEdit = false;
+
+            /* Does the user belong to an appropriate 'Leitstelle' to
+               edit status? */
             if (userInfo.getFunktionen().contains(3)) {
                 QueryBuilder<AuthLstUmw> lstFilter = new QueryBuilder<AuthLstUmw>(
                     repository.entityManager("stamm"),
@@ -124,22 +127,23 @@ public class MessungAuthorizer extends BaseAuthorizer {
                     }
                 }
             }
+
+            // Has the user the right to edit status for the 'Netzbetreiber'?
             if (userInfo.getFunktionenForNetzbetreiber(
                     probe.getNetzbetreiberId()).contains(2)
-                && userInfo.getNetzbetreiber().contains(
-                    probe.getNetzbetreiberId())
                 && (stufe == 1 || stufe == 2)
                 && wert >= 1
             ) {
                 statusEdit = true;
             }
+
+            // Has the user the right to edit status for the 'Messstelle'?
             if (userInfo.getFunktionenForMst(probe.getMstId()).contains(1)
-                && userInfo.belongsTo(probe.getMstId(),
-                    probe.getLaborMstId())
                 && (stufe <= 1 || wert == 4)
             ) {
                 statusEdit = true;
             }
+
             messung.setStatusEdit(statusEdit);
 
         }
