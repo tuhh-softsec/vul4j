@@ -69,9 +69,15 @@ public class BuildTriggerStepRestartTest extends Assert {
                               WorkflowRun r2 = foo.getLastBuild();
                               assertNotNull(r2);
                               story.j.assertBuildStatusSuccess(r2);
-                          }
-                      }
-        );
+            }
+        });
+
+        story.addStep(new Statement() {
+            @Override
+            public void evaluate() throws Throwable {
+                story.j.jenkins.getItemByFullName("test1", FreeStyleProject.class).getBuildByNumber(1).delete();
+            }
+        });
     }
 
     private void assertFreeStyleProjectsInQueue(int count) {

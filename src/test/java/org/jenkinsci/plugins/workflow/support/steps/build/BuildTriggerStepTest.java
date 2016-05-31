@@ -39,12 +39,15 @@ public class BuildTriggerStepTest {
 
     @Issue("JENKINS-25851")
     @Test public void buildTopLevelProject() throws Exception {
-        j.createFreeStyleProject("ds");
+        FreeStyleProject ds = j.createFreeStyleProject("ds");
         WorkflowJob us = j.jenkins.createProject(WorkflowJob.class, "us");
         us.setDefinition(new CpsFlowDefinition(
             "def ds = build 'ds'\n" +
             "echo \"ds.result=${ds.result} ds.number=${ds.number}\"", true));
         j.assertLogContains("ds.result=SUCCESS ds.number=1", j.assertBuildStatusSuccess(us.scheduleBuild2(0)));
+        // TODO JENKINS-28673 assert no warnings, as in StartupTest.noWarnings
+        // (but first need to deal with `WARNING: Failed to instantiate optional component org.jenkinsci.plugins.workflow.steps.scm.SubversionStep$DescriptorImpl; skipping`)
+        ds.getBuildByNumber(1).delete();
     }
 
     @Issue("JENKINS-25851")
@@ -254,10 +257,12 @@ public class BuildTriggerStepTest {
 
     @Issue("JENKINS-29169")
     @Test public void buildVariablesWorkflow() throws Exception {
-        j.jenkins.createProject(WorkflowJob.class, "ds").setDefinition(new CpsFlowDefinition("env.RESULT = \"ds-${env.BUILD_NUMBER}\"", true));
+        WorkflowJob ds = j.jenkins.createProject(WorkflowJob.class, "ds");
+        ds.setDefinition(new CpsFlowDefinition("env.RESULT = \"ds-${env.BUILD_NUMBER}\"", true));
         WorkflowJob us = j.jenkins.createProject(WorkflowJob.class, "us");
         us.setDefinition(new CpsFlowDefinition("def vars = build('ds').buildVariables; echo \"received RESULT=${vars.RESULT} vs. BUILD_NUMBER=${vars.BUILD_NUMBER}\"", true));
         j.assertLogContains("received RESULT=ds-1 vs. BUILD_NUMBER=null", j.assertBuildStatusSuccess(us.scheduleBuild2(0)));
+        ds.getBuildByNumber(1).delete();
     }
 
     @Issue("JENKINS-28063")
