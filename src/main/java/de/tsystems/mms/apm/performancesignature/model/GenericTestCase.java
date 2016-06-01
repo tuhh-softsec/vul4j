@@ -30,7 +30,7 @@ public class GenericTestCase extends ConfigurationTestCase {
     }
 
     @DataBoundSetter
-    public void setClientDashboard(String clientDashboard) {
+    public void setClientDashboard(final String clientDashboard) {
         super.setClientDashboard(clientDashboard);
     }
 
