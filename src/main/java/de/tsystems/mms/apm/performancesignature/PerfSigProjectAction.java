@@ -235,7 +235,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
                     return;
                 }
             }
-        } else { //generate test run graph with get parameters
+        } else { //generate test run graph with GET parameters
             ChartUtil.generateGraph(request, response, createTestRunChart(buildTestRunDataSet(request.getParameter("customBuildCount")),
                     request.getParameter("customName")), PerfSigUtils.calcDefaultSize());
         }
@@ -528,6 +528,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         return "";
     }
 
+    //ToDo: provide fix to handle new, renamed or deleted measures
     public List<ChartDashlet> getFilteredChartDashlets(final DashboardReport dashboardReport) throws IOException, InterruptedException {
         final List<ChartDashlet> chartDashlets = new ArrayList<ChartDashlet>();
         final String json = getDashboardConfiguration(dashboardReport.getName());
@@ -536,8 +537,8 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
 
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject obj = jsonArray.getJSONObject(i);
-            String measure = obj.getString("measure");
             String chartDashlet = obj.getString("chartDashlet");
+            String measure = obj.getString("measure");
 
             for (ChartDashlet dashlet : dashboardReport.getChartDashlets()) {
                 if (dashlet.getName().equals(chartDashlet)) {

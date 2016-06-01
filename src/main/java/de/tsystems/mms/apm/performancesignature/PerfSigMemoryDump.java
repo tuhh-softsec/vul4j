@@ -81,7 +81,7 @@ public class PerfSigMemoryDump extends Builder implements SimpleBuildStep {
                 String memoryDump = connection.memoryDump(agent.getName(), agent.getHost(), agent.getProcessId(), getType(),
                         this.lockSession, this.captureStrings, this.capturePrimitives, this.autoPostProcess, this.dogc);
                 if (StringUtils.isBlank(memoryDump))
-                    throw new RESTErrorException("memory dump wasnt taken");
+                    throw new RESTErrorException("memory dump wasn't taken");
                 int timeout = waitForDumpTimeout;
                 boolean dumpFinished = connection.memoryDumpStatus(memoryDump).isResultValueTrue();
                 while ((!dumpFinished) && (timeout > 0)) {

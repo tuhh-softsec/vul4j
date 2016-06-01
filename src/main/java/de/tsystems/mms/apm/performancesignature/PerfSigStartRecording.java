@@ -80,7 +80,7 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
         for (BaseConfiguration profile : connection.getSystemProfiles()) {
             SystemProfile systemProfile = (SystemProfile) profile;
             if (pair.getProfile().equals(systemProfile.getId()) && systemProfile.isRecording()) {
-                logger.println("another sesssion is still recording, trying to stop recording");
+                logger.println("another session is still recording, trying to stop recording");
                 PerfSigStopRecording stopRecording = new PerfSigStopRecording(dynatraceProfile);
                 stopRecording.perform(run, workspace, launcher, listener);
                 break;
