@@ -88,12 +88,14 @@ public class MessungAuthorizer extends BaseAuthorizer {
             messung.setStatusEdit(false);
             return messung;
         }
+
         if (userInfo.belongsTo(probe.getMstId(), probe.getLaborMstId())) {
             messung.setOwner(true);
         }
         else {
             messung.setOwner(false);
         }
+
         if (messung.getStatus() == null) {
             messung.setReadonly(false);
             messung.setStatusEdit(false);

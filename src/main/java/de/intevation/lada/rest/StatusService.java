@@ -35,6 +35,7 @@ import de.intevation.lada.lock.ObjectLocker;
 import de.intevation.lada.model.land.LMessung;
 import de.intevation.lada.model.land.LProbe;
 import de.intevation.lada.model.land.LStatusProtokoll;
+import de.intevation.lada.model.stamm.MessStelle;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -237,6 +238,7 @@ public class StatusService {
             return new Response(false, 697, null);
         }
 
+        // Is user authorized to edit status at all?
         Response r = authorization.filter(
             request,
             new Response(true, 200, messung),
@@ -245,8 +247,7 @@ public class StatusService {
         if (filteredMessung.getStatusEdit() == false) {
             return new Response(false, 699, null);
         }
-        boolean next = false;
-        boolean change = false;
+
         if (messung.getStatus() == null) {
             status.setStatusStufe(1);
         }
@@ -254,11 +255,12 @@ public class StatusService {
             LStatusProtokoll currentStatus = defaultRepo.getByIdPlain(
                 LStatusProtokoll.class, messung.getStatus(), "land");
 
+            String probeMstId = defaultRepo.getByIdPlain(
+                LProbe.class,
+                messung.getProbeId(),
+                "land").getMstId();
+
             if (currentStatus.getStatusWert() == 4) {
-                LProbe probe = defaultRepo.getByIdPlain(
-                    LProbe.class,
-                    messung.getProbeId(),
-                    "land");
                 if (status.getStatusWert() == 4
                     && userInfo.getMessstellen().contains(
                         currentStatus.getErzeuger())
@@ -269,9 +271,9 @@ public class StatusService {
                     status.setStatusStufe(currentStatus.getStatusStufe());
                 }
                 else if (
-                    userInfo.getFunktionenForMst(probe.getMstId())
+                    userInfo.getFunktionenForMst(probeMstId)
                         .contains(1)
-                    && probe.getMstId().equals(status.getErzeuger())
+                    && probeMstId.equals(status.getErzeuger())
                 ) {
                     status.setStatusStufe(1);
                 }
@@ -280,23 +282,52 @@ public class StatusService {
                 }
             }
             else {
-                for (int i = 0;
-                    i < userInfo.getFunktionenForMst(status.getErzeuger()).size();
-                    i++
+                boolean next = false; // Do we advance to next 'stufe'?
+                boolean change = false; // Do we change status on same 'stufe'?
+
+                // XXX: It's assumed here, that MessStelle:function is a
+                // 1:1-relationship, which is not enforced by the model
+                // (there is no such constraint in stammdaten.auth).
+                // Thus, next and change will be set based
+                // on whichever function is the first match, which is
+                // not necessary the users intention, if he has more than
+                // one function for the matching Messstelle.
+
+                // XXX: It's assumed here, that an 'Erzeuger' is an instance
+                // of 'Messstelle', but the model does not enforce it!
+                for (Integer function :
+                         userInfo.getFunktionenForMst(status.getErzeuger())
                 ) {
-                    if (userInfo.getFunktionenForMst(status.getErzeuger())
-                            .get(i).equals(currentStatus.getStatusStufe() + 1)
-                        && currentStatus.getStatusWert() != 0
-                    ) {
+                    if (function.equals(currentStatus.getStatusStufe() + 1)
+                        && currentStatus.getStatusWert() != 0) {
                         next = true;
                     }
-                    else if (userInfo.getFunktionenForMst(
-                        status.getErzeuger()).get(i) ==
-                            currentStatus.getStatusStufe()
-                    ) {
+                    else if (function == currentStatus.getStatusStufe()) {
+                        if (currentStatus.getStatusStufe() == 1
+                            && !status.getErzeuger().equals(probeMstId)) {
+                            logger.debug(
+                                "Messstelle does not match for change");
+                            return new Response(false, 699, null);
+                        }
+
+                        String pNetzbetreiber = defaultRepo.getByIdPlain(
+                            LProbe.class,
+                            messung.getProbeId(),
+                            "land").getNetzbetreiberId();
+                        String sNetzbetreiber = defaultRepo.getByIdPlain(
+                            MessStelle.class,
+                            status.getErzeuger(),
+                            "stamm").getNetzbetreiberId();
+                        if (currentStatus.getStatusStufe() == 2
+                            && !pNetzbetreiber.equals(sNetzbetreiber)){
+                            logger.debug(
+                                "Netzbetreiber does not match for change");
+                            return new Response(false, 699, null);
+                        }
                         change = true;
                     }
                 }
+
                 if (change &&
                     status.getStatusWert() == 4 &&
                     status.getStatusStufe() > 1
