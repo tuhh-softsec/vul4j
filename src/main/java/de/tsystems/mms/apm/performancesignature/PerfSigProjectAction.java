@@ -166,11 +166,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             if (dr.getName().equals(testCase)) {
                 final Measure m = dr.getMeasure(chartDashlet, measure);
                 if (m != null) {
-                    if (StringUtils.isBlank(aggregation) || m.getAggregation().equalsIgnoreCase(aggregation)) {
-                        unit = m.getUnit();
-                    } else {
-                        unit = aggregation.equalsIgnoreCase("Count") ? "num" : "ms";
-                    }
+                    unit = aggregation.equalsIgnoreCase("Count") ? "num" : m.getUnit();
                     color = URLDecoder.decode(m.getColor(), "UTF-8");
                 }
                 break;
