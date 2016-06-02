@@ -4,8 +4,6 @@
  */
 package com.mycompany.collections.comparator;
 
-import com.mycompany.collections.comparator.MyComparator;
-import com.mycompany.collections.comparator.Person;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;

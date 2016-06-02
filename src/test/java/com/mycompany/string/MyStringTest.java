@@ -4,7 +4,6 @@
  */
 package com.mycompany.string;
 
-import com.mycompany.string.MyString;
 import org.junit.Test;
 
 public class MyStringTest {

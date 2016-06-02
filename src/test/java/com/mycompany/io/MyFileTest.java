@@ -4,7 +4,6 @@
  */
 package com.mycompany.io;
 
-import com.mycompany.io.MyFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;

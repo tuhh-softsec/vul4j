@@ -4,7 +4,6 @@
  */
 package com.mycompany.collections;
 
-import com.mycompany.collections.MyCollection;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Function;

@@ -17,9 +17,12 @@ import java.util.stream.IntStream;
  * 
  * source: https://www.youtube.com/watch?v=Ee5t_EGjv0A
  */
-public class Sample {
+public final class Sample {
 
   private static final long ONE_SECOND = 1_000;
+
+  private Sample() {
+  }
 
   public static void main(final String[] args) {
     System.out.println("1 is prime: " + isPrime(1));
