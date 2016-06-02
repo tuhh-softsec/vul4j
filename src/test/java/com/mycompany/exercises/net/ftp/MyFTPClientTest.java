@@ -56,7 +56,7 @@ public class MyFTPClientTest {
     List<FTPFile> ftpFiles = ftpClient.obtainListOfFileInformationAnonymous(ftpProperties);
 
     String currentDate = getCurrentDate();
-    assertEquals(3, ftpFiles.size());
+    assertEquals(2, ftpFiles.size());
     assertEquals("drwxrwxrwx  1 none     none                   0 " + currentDate + " main",
         ftpFiles.get(1).toString());
     assertEquals("-rwxrwxrwx  1 none     none                1072 " + currentDate + " Release",
