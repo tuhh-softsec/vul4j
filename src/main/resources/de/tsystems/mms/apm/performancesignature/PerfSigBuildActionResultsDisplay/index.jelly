@@ -50,7 +50,7 @@
                                         <h3>${%Test case:} ${dashboardReport.name}</h3>
                                     </div>
                                     <j:set var="sessionFiles" value="${it.PerfSigUtils.getDownloadFiles('.*' + dashboardReport.name + '.dts',it.build)}"/>
-                                    <j:if test="${!sessionFiles.isEmtpy()}">
+                                    <j:if test="${sessionFiles.isEmtpy()==false}">
                                         <div class="col-md-4 pull-right">
                                             <a target="_blank" href="${dashboardReport.getClientLink().generateLink()}">
                                                 <button style="margin-top: 5px; margin-bottom: 10px;" type="button"
@@ -99,7 +99,7 @@
                                                 <h4 class="panel-title">${%Dynatrace sessions}</h4>
                                             </div>
                                             <div class="panel-body">
-                                                <j:if test="${!sessionFiles.isEmtpy()}">
+                                                <j:if test="${sessionFiles.isEmtpy()==false}">
                                                     <a href="./getSession?testCase=${dashboardReport.name}" target="_blank">
                                                         <img src="${resURL}/plugin/performance-signature-dynatrace/images/dtsession.png"/>
                                                         ${it.PerfSigUtils.removeExtension(sessionFiles.get(0).name)}
