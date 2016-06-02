@@ -4,8 +4,6 @@
  */
 package com.mycompany.net.ftp;
 
-import com.mycompany.net.ftp.MyFTPClient;
-import com.mycompany.net.ftp.FTPConnectionProperties;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
