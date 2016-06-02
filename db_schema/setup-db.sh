@@ -1,7 +1,8 @@
 #!/bin/sh -e
 # SYNOPSIS
-# ./setup-db.sh [-c] [ROLE_NAME] [ROLE_PW] [DB_NAME]
+# ./setup-db.sh [-cn] [ROLE_NAME] [ROLE_PW] [DB_NAME]
 #   -c         clean - drop an existing database
+#   -n         no data - do not import example data
 #   ROLE_NAME  name of db user (default = lada)
 #   ROLE_PW    login password  (default = ROLE_NAME)
 #   DB_NAME    name of the databaes (default = ROLE_NAME)
@@ -11,10 +12,13 @@
 
 DIR=`dirname $0`
 
-while getopts "c" opt; do
+while getopts "cn" opt; do
     case "$opt" in
         c)
             DROP_DB="true"
+            ;;
+        n)
+            NO_DATA="true"
             ;;
     esac
 done
@@ -67,8 +71,10 @@ psql $DB_CONNECT_STRING -d $DB_NAME --command \
       GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES
             ON ALL TABLES IN SCHEMA stammdaten, bund, land TO $ROLE_NAME;"
 
-echo import stammdaten
-psql $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_data.sql
+if [ "$NO_DATA" != "true" ]; then
+    echo import stammdaten
+    psql $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_data.sql
 
-echo import lada test data
-psql $DB_CONNECT_STRING -d $DB_NAME -f $DIR/lada_data.sql
+    echo import lada test data
+    psql $DB_CONNECT_STRING -d $DB_NAME -f $DIR/lada_data.sql
+fi
