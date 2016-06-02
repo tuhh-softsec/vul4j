@@ -34,7 +34,14 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
-                <version>3.5</version>
+                <version>3.6</version>
+                <!-- Removed once the plugin uses PMD 5.4.0 https://sourceforge.net/p/pmd/bugs/1420/ -->
+                <configuration>
+                  <excludes>
+                    <exclude>com/mycompany/collections/comparator/Person.java</exclude>
+                    <exclude>**/generated/*.java</exclude>
+                  </excludes>
+                </configuration>
                 <executions>
                     <execution>
                         <phase>test</phase> 
@@ -120,5 +127,11 @@
             <version>2.6</version>
             <scope>test</scope>
   	</dependency>
+   <dependency>
+     <groupId>org.projectlombok</groupId>
+     <artifactId>lombok</artifactId>
+     <version>1.16.8</version>
+     <type>jar</type>
+   </dependency>
     </dependencies>
 </project>
