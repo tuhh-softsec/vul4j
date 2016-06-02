@@ -1,6 +1,6 @@
 # You can use a Docker image from Docker Hub or your own container
 # registry for your build environment.
-image: maven:3.3.3
+image: maven:3.3.9
 
 pipelines:
   default:
