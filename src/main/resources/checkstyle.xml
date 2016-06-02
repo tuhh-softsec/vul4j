@@ -119,7 +119,7 @@
         </module>
         <module name="LocalFinalVariableName"/>
         <module name="LocalVariableName"/>
-        <module name="MagicNumber"/>
+        <!-- <module name="MagicNumber"/> -->
         <module name="MemberName"/>
         <module name="MethodCount"/>
         <module name="MethodLength"/>
