@@ -140,7 +140,7 @@ CREATE TABLE netz_betreiber (
 
 CREATE TABLE mess_stelle (
     id character varying(5) PRIMARY KEY,
-    netzbetreiber_id character varying(2) NOT NULL,
+    netzbetreiber_id character varying(2) NOT NULL REFERENCES netz_betreiber,
     beschreibung character varying(300),
     mess_stelle character varying(60),
     mst_typ character varying(1),

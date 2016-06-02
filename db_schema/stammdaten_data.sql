@@ -19,6 +19,53 @@ SET client_min_messages = warning;
 SET search_path = stammdaten, pg_catalog;
 
 --
+-- TOC entry 4703 (class 0 OID 535781)
+-- Dependencies: 269
+-- Data for Name: netz_betreiber; Type: TABLE DATA; Schema: stammdaten; Owner: lada
+--
+
+COPY netz_betreiber (id, netzbetreiber, idf_netzbetreiber, is_bmn, mailverteiler, aktiv, zust_mst_id) FROM stdin;
+X	ausländ. Messnetze	\N	t	X	t	\N
+PA	Park	R	t	PA	t	\N
+A	BfS (Spuren)	A	t	A	t	\N
+B	vTI	\N	t	B	t	\N
+D	BfS/ZdB	D	t	D	t	\N
+E	BfE	\N	t	E	t	\N
+F	FhG	\N	t	F	f	\N
+G	BfG	\N	t	G	t	\N
+H	BSH	\N	t	H	t	\N
+I	BfS (LSt. AB)	\N	t	I	t	\N
+L	BfS (LSt. TW ...)	\N	t	L	t	\N
+M	BMU	\N	t	M	t	\N
+N	MRI	\N	t	N	t	\N
+S	Sonstige	\N	t	S	t	\N
+T	PTB	\N	t	T	t	\N
+U	BfS (ABI)	U	t	U	t	\N
+W	DWD	W	t	W	t	\N
+Z	BfS (ODL)	Z	t	Z	t	\N
+01	Schleswig-Holstein	a	f	01	t	\N
+02	Hamburg	b	f	02	t	\N
+03	Niedersachsen	c	f	03	t	\N
+04	Bremen	d	f	04	t	\N
+05	Nordrhein-Westfalen	e	f	05	t	\N
+06	Hessen	f	f	06	t	\N
+07	Rheinland-Pfalz	g	f	07	t	\N
+08	Baden-Württemberg	h	f	08	t	\N
+09	Bayern	i	f	09	t	\N
+10	Saarland	j	f	10	t	\N
+11	Berlin	k	f	11	t	\N
+12	Brandenburg	l	f	12	t	\N
+13	Mecklenburg-Vorpommern	m	f	13	t	\N
+14	Sachsen	n	f	14	t	\N
+15	Sachsen-Anhalt	o	f	15	t	\N
+16	Thüringen	p	f	16	t	\N
+18	Endlager (Bundesaufsicht)	r	f	18	t	\N
+19	ZdB-Testnetz	s	f	19	t	\N
+17	Bundeswehr	q	f	17	t	\N
+\.
+
+
+--
 -- TOC entry 4694 (class 0 OID 535751)
 -- Dependencies: 259
 -- Data for Name: mess_stelle; Type: TABLE DATA; Schema: stammdaten; Owner: lada
@@ -234,53 +281,6 @@ M0603	06	Messfahrzeug / mobiles Messsystem 3 Hessen	Mobiles Messsystem 3 HE	B	\N
 20030	H	Bundesamt für Seeschiffahrt und Hydrographie, Bernhard-Nocht-Str. 78, 20359 Hamburg	BSH	M	\N
 20120	A	Bundesamt für Strahlenschutz (BfS), Spurenmessstelle Freiburg, Rosastr. 9, 79078 Freiburg	BfS - Spurenmessstelle Freiburg	M	\N
 20090	Z	Bundesamt für Strahlenschutz (BfS), Fachbereich SW 2, Rosastr. 9, 79078 Freiburg	BfS ODL	M	\N
-\.
-
-
---
--- TOC entry 4703 (class 0 OID 535781)
--- Dependencies: 269
--- Data for Name: netz_betreiber; Type: TABLE DATA; Schema: stammdaten; Owner: lada
---
-
-COPY netz_betreiber (id, netzbetreiber, idf_netzbetreiber, is_bmn, mailverteiler, aktiv, zust_mst_id) FROM stdin;
-X	ausländ. Messnetze	\N	t	X	t	\N
-PA	Park	R	t	PA	t	\N
-A	BfS (Spuren)	A	t	A	t	\N
-B	vTI	\N	t	B	t	\N
-D	BfS/ZdB	D	t	D	t	\N
-E	BfE	\N	t	E	t	\N
-F	FhG	\N	t	F	f	\N
-G	BfG	\N	t	G	t	\N
-H	BSH	\N	t	H	t	\N
-I	BfS (LSt. AB)	\N	t	I	t	\N
-L	BfS (LSt. TW ...)	\N	t	L	t	\N
-M	BMU	\N	t	M	t	\N
-N	MRI	\N	t	N	t	\N
-S	Sonstige	\N	t	S	t	\N
-T	PTB	\N	t	T	t	\N
-U	BfS (ABI)	U	t	U	t	\N
-W	DWD	W	t	W	t	\N
-Z	BfS (ODL)	Z	t	Z	t	\N
-01	Schleswig-Holstein	a	f	01	t	\N
-02	Hamburg	b	f	02	t	\N
-03	Niedersachsen	c	f	03	t	\N
-04	Bremen	d	f	04	t	\N
-05	Nordrhein-Westfalen	e	f	05	t	\N
-06	Hessen	f	f	06	t	\N
-07	Rheinland-Pfalz	g	f	07	t	\N
-08	Baden-Württemberg	h	f	08	t	\N
-09	Bayern	i	f	09	t	\N
-10	Saarland	j	f	10	t	\N
-11	Berlin	k	f	11	t	\N
-12	Brandenburg	l	f	12	t	\N
-13	Mecklenburg-Vorpommern	m	f	13	t	\N
-14	Sachsen	n	f	14	t	\N
-15	Sachsen-Anhalt	o	f	15	t	\N
-16	Thüringen	p	f	16	t	\N
-18	Endlager (Bundesaufsicht)	r	f	18	t	\N
-19	ZdB-Testnetz	s	f	19	t	\N
-17	Bundeswehr	q	f	17	t	\N
 \.
 
 
