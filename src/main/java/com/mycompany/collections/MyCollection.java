@@ -162,4 +162,5 @@ public class MyCollection {
       .map(String::toUpperCase)
       .collect(joining(", "));
   }
+
 }
