@@ -3,8 +3,11 @@ package net.fs.utils;
 
 
 public class ByteIntConvert {
-    
-    public static int toInt(byte[] b,int offset) { 
+
+    private ByteIntConvert() {
+    }
+
+    public static int toInt(byte[] b, int offset) { 
     	return b[offset + 3] & 0xff | (b[offset + 2] & 0xff) << 8
         | (b[offset + 1] & 0xff) << 16 | (b[offset] & 0xff) << 24;
     }
