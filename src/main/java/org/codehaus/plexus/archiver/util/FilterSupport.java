@@ -12,6 +12,7 @@ import org.codehaus.plexus.logging.Logger;
 /**
  * @deprecated Use {@link FileSelector} and {@link Archiver#addFileSet}.
  */
+@Deprecated
 public class FilterSupport
 {
 

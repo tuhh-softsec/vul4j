@@ -25,15 +25,6 @@ public class GZipTarFile
     protected InputStream getInputStream( File file )
         throws IOException
     {
-        final InputStream inputStream = super.getInputStream( file );
-        return Streams.bufferedInputStream( new GZIPInputStream( inputStream )
-        {
-            public void close()
-                throws IOException
-            {
-                super.close();
-                inputStream.close();
-            }
-        } );
+        return Streams.bufferedInputStream( new GZIPInputStream( super.getInputStream( file ) ) );
     }
 }

@@ -35,12 +35,18 @@ public class Streams
 
     public static BufferedInputStream bufferedInputStream( InputStream is )
     {
-        return new BufferedInputStream( is, 65536 );
+        return is instanceof BufferedInputStream
+                   ? (BufferedInputStream) is
+                   : new BufferedInputStream( is, 65536 );
+
     }
 
     public static BufferedOutputStream bufferedOutputStream( OutputStream os )
     {
-        return new BufferedOutputStream( os, 65536 );
+        return os instanceof BufferedOutputStream
+                   ? (BufferedOutputStream) os
+                   : new BufferedOutputStream( os, 65536 );
+
     }
 
     public static byte[] cacheBuffer()

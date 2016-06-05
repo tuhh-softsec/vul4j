@@ -113,6 +113,7 @@ public class ArchiveEntry
      *             by files, but by instances of {@link PlexusIoResource}.
      *             Consequently, you should use {@link #getInputStream()}-
      */
+    @Deprecated
     public File getFile()
     {
         if ( resource instanceof PlexusIoFileResource )

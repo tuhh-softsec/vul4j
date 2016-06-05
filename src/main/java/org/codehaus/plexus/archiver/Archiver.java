@@ -78,6 +78,7 @@ public interface Archiver
      * Obsolete, use {@link #addFileSet(FileSet)}.
      * You can use "inline" of this method in your
      * IDE to get the proper implementation for this release.
+     * @deprecated  Will go away in next major version
      */
     @Deprecated
     void addDirectory( @Nonnull File directory )
@@ -87,6 +88,7 @@ public interface Archiver
      * Obsolete, use {@link #addFileSet(FileSet)}.
      * You can use "inline" of this method in your
      * IDE to get the proper implementation for this release.
+     * @deprecated  Will go away in next major version
      */
     @Deprecated
     void addDirectory( @Nonnull File directory, String prefix )
@@ -95,6 +97,7 @@ public interface Archiver
     /**
      * Obsolete, use {@link #addFileSet(FileSet)}.You can use "inline" of this method in your
      * IDE to get the proper implementation for this release.
+     * @deprecated  Will go away in next major version
      */
     @Deprecated
     void addDirectory( @Nonnull File directory, String[] includes, String[] excludes )
@@ -104,7 +107,9 @@ public interface Archiver
      * Obsolete, use {@link #addFileSet(FileSet)}.
      * You can use "inline" of this method in your
      * IDE to get the proper implementation for this release.
+     * @deprecated  Will go away in next major version
      */
+    @Deprecated
     void addDirectory( @Nonnull File directory, String prefix, String[] includes, String[] excludes )
         throws ArchiverException;
 
@@ -154,6 +159,7 @@ public interface Archiver
      * IDE to get the proper implementation for this release.
      * @deprecated  Will go away in next major version
      */
+    @Deprecated
     void addArchivedFileSet( File archiveFile, String[] includes, String[] excludes )
         throws ArchiverException;
 
@@ -162,6 +168,7 @@ public interface Archiver
      * IDE to get the proper implementation for this release.
      * @deprecated  Will go away in next major version
      */
+    @Deprecated
     void addArchivedFileSet( @Nonnull File archiveFile, String prefix, String[] includes, String[] excludes )
         throws ArchiverException;
 
