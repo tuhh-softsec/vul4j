@@ -100,17 +100,20 @@ public class DefaultArchiverManager
         String path = file.getAbsolutePath();
         
         String archiveExt = FileUtils.getExtension( path ).toLowerCase( Locale.ENGLISH );
-        
-        if ( "gz".equals( archiveExt ) || "bz2".equals( archiveExt ) )
+
+        if ( "gz".equals( archiveExt )
+                 || "bz2".equals( archiveExt )
+                 || "xz".equals( archiveExt )
+                 || "snappy".equals( archiveExt ) )
         {
-            String [] tokens = StringUtils.split( path, "." );
-            
-            if ( tokens.length > 2  && "tar".equals( tokens[tokens.length -2].toLowerCase( Locale.ENGLISH ) ) )
+            String[] tokens = StringUtils.split( path, "." );
+
+            if ( tokens.length > 2 && "tar".equals( tokens[tokens.length - 2].toLowerCase( Locale.ENGLISH ) ) )
             {
                 archiveExt = "tar." + archiveExt;
             }
         }
-        
+
         return archiveExt;
         
     }
