@@ -36944,8 +36944,8 @@ COPY result (id, query_id, data_index, header, width, flex, index) FROM stdin;
 92	9	ortId	Ort-Id	100	f	9
 93	9	eGemId	Gem-Id	80	f	10
 94	9	eGem	Gemeinde	200	f	11
-95	13	hpNr	Proben-Nr	100	f	1
-96	13	npNr	NP-Nr	50	f	2
+95	13	hauptprobenNr	Proben-Nr	100	f	1
+96	13	nebenprobenNr	NP-Nr	50	f	2
 97	13	statusD	Status-Zeit	120	f	3
 98	13	statusSt	Stufe	40	f	4
 99	13	statusW	Status	100	f	5
@@ -36960,8 +36960,8 @@ COPY result (id, query_id, data_index, header, width, flex, index) FROM stdin;
 108	13	eGemId	E-Gem Id	80	f	14
 109	13	eGem	E-Gemeinde	200	f	15
 110	13	probeId	Probe_Id	100	f	0
-111	15	hpNr	Proben-Nr	100	f	1
-112	15	npNr	NP-Nr	50	f	2
+111	15	hauptprobenNr	Proben-Nr	100	f	1
+112	15	nebenprobenNr	NP-Nr	50	f	2
 113	15	statusD	Status-Zeit	120	f	3
 114	15	statusSt	Stufe	40	f	4
 115	15	statusW	Status	100	f	5
