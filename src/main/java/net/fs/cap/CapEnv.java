@@ -444,7 +444,7 @@ public class CapEnv {
 	
 	
 	public static String printHexString(byte[] b) {
-		StringBuffer sb=new StringBuffer();
+		StringBuilder sb=new StringBuilder();
         for (int i = 0; i < b.length; i++)
         {
             String hex = Integer.toHexString(b[i] & 0xFF);

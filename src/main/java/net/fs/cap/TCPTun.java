@@ -359,7 +359,7 @@ public class TCPTun {
 	}
 	
 	public static byte[] getSimResponeHead(){
-		StringBuffer sb=new StringBuffer();
+		StringBuilder sb=new StringBuilder();
 		
 		sb.append("HTTP/1.1 200 OK"+"\r\n");
 		sb.append("Server: Apache/2.2.15 (CentOS)"+"\r\n");
@@ -375,7 +375,7 @@ public class TCPTun {
 	}
 	
 	public static byte[] getSimRequestHead(int port){
-		StringBuffer sb=new StringBuffer();
+		StringBuilder sb=new StringBuilder();
 		String domainName=getRandomString(5+random.nextInt(10))+".com";				
 		sb.append("GET /"+getRandomString(8+random.nextInt(10))+"."+getRandomString(2+random.nextInt(5))+" HTTP/1.1"+"\r\n");
 		sb.append("Accept: application/x-ms-application, image/jpeg, application/xaml+xml, image/gif, image/pjpeg, application/x-ms-xbap, */*"+"\r\n");
@@ -393,7 +393,7 @@ public class TCPTun {
 	public static String getRandomString(int length) { //length表示生成字符串的长度  
 	    String base = "abcdefghkmnopqrstuvwxyz";     
 	    Random random = new Random();     
-	    StringBuffer sb = new StringBuffer();     
+	    StringBuilder sb = new StringBuilder();     
 	    for (int i = 0; i < length; i++) {     
 	        int number = random.nextInt(base.length());     
 	        sb.append(base.charAt(number));     
