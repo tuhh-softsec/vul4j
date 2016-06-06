@@ -240,6 +240,7 @@ public final class CustomTcpSackOption implements TcpOption {
 
   @Override
   public boolean equals(Object obj) {
+    if (obj == null) { return false; }
     if (obj == this) { return true; }
     if (!this.getClass().isInstance(obj)) { return false; }
 
@@ -365,6 +366,7 @@ public final class CustomTcpSackOption implements TcpOption {
 
     @Override
     public boolean equals(Object obj) {
+      if (obj == null) { return false; }
       if (obj == this) { return true; }
       if (!this.getClass().isInstance(obj)) { return false; }
 
