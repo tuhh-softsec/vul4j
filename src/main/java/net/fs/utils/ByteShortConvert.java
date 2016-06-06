@@ -2,8 +2,11 @@
 package net.fs.utils;
 
 public final class ByteShortConvert {
-   
-    public static byte[] toByteArray(short i,byte[] b,int offset) {
+
+    private ByteShortConvert() {
+    }
+
+    public static byte[] toByteArray(short i, byte[] b, int offset) {
     	 b[offset] = (byte) (i >> 8);
     	   b[offset + 1] = (byte) (i >> 0);
         return b; 

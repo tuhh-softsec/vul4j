@@ -92,4 +92,6 @@ public class MessageType {
 	public static short sType_PingMessager=321;
 	public static short sType_PingMessager2=322;
 
+	private MessageType() {
+	}
 }

@@ -54,8 +54,11 @@ public class PacketUtils {
 	public static boolean ppp=false;
 	
 	public static byte[] pppHead_static={0x11,0x00,0x44,0x44,0x00,0x44,0x00,0x21};
-	
-	
+
+	private PacketUtils() {
+	}
+
+
 	public static Packet buildIpV4(
 			MacAddress srcAddress_mac,
 			MacAddress dstAddrress_mac,

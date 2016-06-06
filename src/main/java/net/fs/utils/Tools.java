@@ -11,6 +11,9 @@ import javax.net.ssl.SSLSession;
 
 public class Tools {
 
+	private Tools() {
+	}
+
 	public static HttpURLConnection getConnection(String urlString) throws Exception{
 		URL url = new URL(urlString);
 		HttpURLConnection conn = null;
