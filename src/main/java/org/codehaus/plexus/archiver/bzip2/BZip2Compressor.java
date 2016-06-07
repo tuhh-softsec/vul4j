@@ -17,12 +17,10 @@ package org.codehaus.plexus.archiver.bzip2;
  *  limitations under the License.
  */
 
+import java.io.IOException;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.util.Compressor;
-
-import java.io.IOException;
-
 import static org.codehaus.plexus.archiver.util.Streams.bufferedOutputStream;
 import static org.codehaus.plexus.archiver.util.Streams.fileOutputStream;
 

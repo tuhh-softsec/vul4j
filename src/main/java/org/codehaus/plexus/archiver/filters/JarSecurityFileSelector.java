@@ -14,12 +14,10 @@ package org.codehaus.plexus.archiver.filters;
  * the License.
  */
 import java.io.IOException;
-
+import javax.annotation.Nonnull;
 import org.codehaus.plexus.components.io.fileselectors.FileInfo;
 import org.codehaus.plexus.components.io.fileselectors.FileSelector;
 import org.codehaus.plexus.util.SelectorUtils;
-
-import javax.annotation.Nonnull;
 
 /**
  * @version $Id$

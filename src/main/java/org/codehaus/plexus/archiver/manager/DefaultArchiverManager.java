@@ -20,9 +20,7 @@ package org.codehaus.plexus.archiver.manager;
 
 import java.io.File;
 import java.util.Locale;
-
 import javax.annotation.Nonnull;
-
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.archiver.Archiver;

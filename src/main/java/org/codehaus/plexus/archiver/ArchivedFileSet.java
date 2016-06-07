@@ -1,7 +1,6 @@
 package org.codehaus.plexus.archiver;
 
 import java.io.File;
-
 import javax.annotation.CheckForNull;
 
 

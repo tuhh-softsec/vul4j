@@ -17,12 +17,11 @@ package org.codehaus.plexus.archiver.gzip;
  *  limitations under the License.
  */
 
+import java.io.IOException;
 import org.codehaus.plexus.archiver.AbstractArchiver;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.ResourceIterator;
-
-import java.io.IOException;
 
 /**
  * @version $Revision$ $Date$

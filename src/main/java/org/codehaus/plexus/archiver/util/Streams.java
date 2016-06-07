@@ -1,10 +1,5 @@
 package org.codehaus.plexus.archiver.util;
 
-import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.util.IOUtil;
-
-import javax.annotation.WillClose;
-import javax.annotation.WillNotClose;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -14,6 +9,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import javax.annotation.WillClose;
+import javax.annotation.WillNotClose;
+import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.util.IOUtil;
 
 /*
  * Copyright 2014 The Codehaus Foundation.

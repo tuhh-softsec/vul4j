@@ -15,10 +15,9 @@ package org.codehaus.plexus.archiver.tar;
  * limitations under the License.
  */
 
+import java.io.IOException;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.codehaus.plexus.components.io.functions.SymlinkDestinationSupplier;
-
-import java.io.IOException;
 
 /**
  * A {@link TarResource} that represents symbolic link.

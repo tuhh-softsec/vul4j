@@ -1,11 +1,10 @@
 package org.codehaus.plexus.archiver.tar;
 
-import org.codehaus.plexus.archiver.util.Streams;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
+import org.codehaus.plexus.archiver.util.Streams;
 
 
 /**

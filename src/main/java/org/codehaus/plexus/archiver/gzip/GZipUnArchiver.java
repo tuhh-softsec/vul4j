@@ -17,16 +17,14 @@ package org.codehaus.plexus.archiver.gzip;
  *  limitations under the License.
  */
 
-import org.codehaus.plexus.archiver.AbstractUnArchiver;
-import org.codehaus.plexus.archiver.ArchiverException;
-import org.codehaus.plexus.archiver.util.Streams;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
-
+import org.codehaus.plexus.archiver.AbstractUnArchiver;
+import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.archiver.util.Streams;
 import static org.codehaus.plexus.archiver.util.Streams.copyFully;
 import static org.codehaus.plexus.archiver.util.Streams.fileInputStream;
 import static org.codehaus.plexus.archiver.util.Streams.fileOutputStream;

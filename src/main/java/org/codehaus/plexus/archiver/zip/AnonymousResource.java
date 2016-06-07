@@ -4,10 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-
-import org.codehaus.plexus.components.io.resources.AbstractPlexusIoResource;
-
 import javax.annotation.Nonnull;
+import org.codehaus.plexus.components.io.resources.AbstractPlexusIoResource;
 
 public class AnonymousResource extends AbstractPlexusIoResource {
 

@@ -15,12 +15,11 @@ package org.codehaus.plexus.archiver.zip;
  * limitations under the License.
  */
 
+import java.io.IOException;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.codehaus.plexus.components.io.functions.InputStreamTransformer;
 import org.codehaus.plexus.components.io.functions.SymlinkDestinationSupplier;
-
-import java.io.IOException;
 
 /**
  * A {@link ZipResource} that represents symbolic link.

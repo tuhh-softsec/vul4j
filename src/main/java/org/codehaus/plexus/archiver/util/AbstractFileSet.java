@@ -15,11 +15,10 @@ package org.codehaus.plexus.archiver.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import javax.annotation.Nonnull;
 import org.codehaus.plexus.archiver.BaseFileSet;
 import org.codehaus.plexus.components.io.fileselectors.FileSelector;
 import org.codehaus.plexus.components.io.functions.InputStreamTransformer;
-
-import javax.annotation.Nonnull;
 
 
 /**

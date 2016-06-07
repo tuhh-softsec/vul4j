@@ -3,7 +3,6 @@ package org.codehaus.plexus.archiver.tar;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.codehaus.plexus.archiver.bzip2.BZip2UnArchiver;
 
 

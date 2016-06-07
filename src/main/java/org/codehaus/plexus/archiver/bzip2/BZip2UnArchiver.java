@@ -17,15 +17,13 @@ package org.codehaus.plexus.archiver.bzip2;
  *  limitations under the License.
  */
 
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
-import org.codehaus.plexus.archiver.AbstractUnArchiver;
-import org.codehaus.plexus.archiver.ArchiverException;
-
-import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-
+import javax.annotation.Nonnull;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
+import org.codehaus.plexus.archiver.AbstractUnArchiver;
+import org.codehaus.plexus.archiver.ArchiverException;
 import static org.codehaus.plexus.archiver.util.Streams.bufferedInputStream;
 import static org.codehaus.plexus.archiver.util.Streams.bufferedOutputStream;
 import static org.codehaus.plexus.archiver.util.Streams.copyFully;

@@ -1,9 +1,5 @@
 package org.codehaus.plexus.archiver.tar;
 
-import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
-import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
-import org.codehaus.plexus.archiver.ArchiveFile;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilterInputStream;
@@ -12,7 +8,9 @@ import java.io.InputStream;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
-
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.codehaus.plexus.archiver.ArchiveFile;
 import static org.codehaus.plexus.archiver.util.Streams.bufferedInputStream;
 
 

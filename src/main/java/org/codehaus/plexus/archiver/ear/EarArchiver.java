@@ -17,14 +17,13 @@ package org.codehaus.plexus.archiver.ear;
  *
  */
 
+import java.io.File;
+import java.io.IOException;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.codehaus.plexus.archiver.util.ResourceUtils;
 import org.codehaus.plexus.archiver.zip.ConcurrentJarCreator;
-
-import java.io.File;
-import java.io.IOException;
 
 /**
  * Creates a EAR archive. Based on WAR task

@@ -2,7 +2,6 @@ package org.codehaus.plexus.archiver.util;
 
 import java.io.InputStream;
 import java.util.List;
-
 import org.codehaus.plexus.archiver.ArchiveFileFilter;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.components.io.fileselectors.FileSelector;

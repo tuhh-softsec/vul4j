@@ -18,7 +18,6 @@ package org.codehaus.plexus.archiver.bzip2;
  */
 
 import java.io.IOException;
-
 import org.codehaus.plexus.archiver.AbstractArchiver;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;

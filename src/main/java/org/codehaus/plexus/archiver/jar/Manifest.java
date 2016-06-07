@@ -33,7 +33,6 @@ import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.jar.Attributes;
-
 import org.codehaus.plexus.archiver.ArchiverException;
 
 /**

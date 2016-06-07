@@ -18,7 +18,6 @@ package org.codehaus.plexus.archiver.resources;
 
 import java.io.File;
 import java.io.IOException;
-
 import org.codehaus.plexus.components.io.attributes.SymlinkUtils;
 import org.codehaus.plexus.components.io.functions.SymlinkDestinationSupplier;
 

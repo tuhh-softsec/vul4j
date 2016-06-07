@@ -19,6 +19,10 @@ package org.codehaus.plexus.archiver.diags;
  * under the License.
  */
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import javax.annotation.Nonnull;
 import org.codehaus.plexus.archiver.ArchivedFileSet;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.ArchiverException;
@@ -26,11 +30,6 @@ import org.codehaus.plexus.archiver.FileSet;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
 import org.codehaus.plexus.logging.Logger;
-
-import javax.annotation.Nonnull;
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
 
 /**
  * A dry run archiver that does nothing. Some methods fall through to the underlying

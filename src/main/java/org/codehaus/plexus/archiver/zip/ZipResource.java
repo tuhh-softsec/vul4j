@@ -3,7 +3,7 @@ package org.codehaus.plexus.archiver.zip;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-
+import javax.annotation.Nonnull;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.codehaus.plexus.archiver.UnixStat;
@@ -14,8 +14,6 @@ import org.codehaus.plexus.components.io.functions.ResourceAttributeSupplier;
 import org.codehaus.plexus.components.io.resources.AbstractPlexusIoResource;
 import org.codehaus.plexus.components.io.resources.ClosingInputStream;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
-
-import javax.annotation.Nonnull;
 
 public class ZipResource extends AbstractPlexusIoResource
     implements ResourceAttributeSupplier

@@ -3,15 +3,13 @@ package org.codehaus.plexus.archiver.tar;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-
+import javax.annotation.Nonnull;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.attributes.SimpleResourceAttributes;
 import org.codehaus.plexus.components.io.functions.ResourceAttributeSupplier;
 import org.codehaus.plexus.components.io.resources.AbstractPlexusIoResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
-
-import javax.annotation.Nonnull;
 
 public class TarResource
     extends AbstractPlexusIoResource

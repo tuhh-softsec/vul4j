@@ -19,9 +19,7 @@ package org.codehaus.plexus.archiver.manager;
 
 
 import java.io.File;
-
 import javax.annotation.Nonnull;
-
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;

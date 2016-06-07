@@ -1,7 +1,6 @@
 package org.codehaus.plexus.archiver;
 
 import javax.annotation.CheckForNull;
-
 import org.codehaus.plexus.components.io.fileselectors.FileSelector;
 import org.codehaus.plexus.components.io.functions.InputStreamTransformer;
 

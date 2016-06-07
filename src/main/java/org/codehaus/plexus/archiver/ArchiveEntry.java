@@ -17,21 +17,17 @@ package org.codehaus.plexus.archiver;
  *  limitations under the License.
  */
 
-import org.codehaus.plexus.archiver.resources.PlexusIoVirtualSymlinkResource;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-
 import javax.annotation.Nonnull;
-
+import org.codehaus.plexus.archiver.resources.PlexusIoVirtualSymlinkResource;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.functions.ResourceAttributeSupplier;
 import org.codehaus.plexus.components.io.resources.PlexusIoFileResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
 import org.codehaus.plexus.components.io.resources.ResourceFactory;
-
 import static org.codehaus.plexus.components.io.resources.ResourceFactory.createResource;
 
 /**

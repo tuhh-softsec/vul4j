@@ -16,14 +16,6 @@ package org.codehaus.plexus.archiver.zip;
  * limitations under the License.
  */
 
-import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
-import org.apache.commons.compress.archivers.zip.ZipFile;
-import org.codehaus.plexus.components.io.functions.SymlinkDestinationSupplier;
-import org.codehaus.plexus.components.io.resources.AbstractPlexusIoArchiveResourceCollection;
-import org.codehaus.plexus.components.io.resources.EncodingSupported;
-import org.codehaus.plexus.components.io.resources.PlexusIoResource;
-import org.codehaus.plexus.components.io.resources.PlexusIoURLResource;
-
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +24,13 @@ import java.net.URLClassLoader;
 import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.Iterator;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipFile;
+import org.codehaus.plexus.components.io.functions.SymlinkDestinationSupplier;
+import org.codehaus.plexus.components.io.resources.AbstractPlexusIoArchiveResourceCollection;
+import org.codehaus.plexus.components.io.resources.EncodingSupported;
+import org.codehaus.plexus.components.io.resources.PlexusIoResource;
+import org.codehaus.plexus.components.io.resources.PlexusIoURLResource;
 
 
 public class PlexusIoZipFileResourceCollection

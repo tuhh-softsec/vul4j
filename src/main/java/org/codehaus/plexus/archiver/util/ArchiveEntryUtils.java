@@ -15,6 +15,9 @@ package org.codehaus.plexus.archiver.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.components.io.attributes.Java7AttributeUtils;
 import org.codehaus.plexus.components.io.attributes.Java7Reflector;
@@ -23,10 +26,6 @@ import org.codehaus.plexus.util.Os;
 import org.codehaus.plexus.util.cli.CommandLineException;
 import org.codehaus.plexus.util.cli.CommandLineUtils;
 import org.codehaus.plexus.util.cli.Commandline;
-
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Method;
 
 @SuppressWarnings("JavaDoc")
 public final class ArchiveEntryUtils
