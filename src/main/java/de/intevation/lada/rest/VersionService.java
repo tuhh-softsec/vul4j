@@ -7,6 +7,10 @@
  */
 package de.intevation.lada.rest;
 
+import java.util.ResourceBundle;
+import java.util.MissingResourceException;
+
+import javax.inject.Inject;
 import javax.enterprise.context.RequestScoped;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
@@ -16,6 +20,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
+
+import org.apache.log4j.Logger;
 
 import de.intevation.lada.util.rest.Response;
 
@@ -46,7 +52,8 @@ import de.intevation.lada.util.rest.Response;
 @RequestScoped
 public class VersionService {
 
-    private static final String VERSION = "2.2.0";
+    @Inject
+    private Logger logger;
 
     /**
      * Get server Version.
@@ -63,6 +70,14 @@ public class VersionService {
         @Context HttpServletRequest request,
         @Context UriInfo info
     ) {
-        return new Response(true, 200, VERSION);
+        String version = "unknown";
+        try {
+            version = ResourceBundle.getBundle("lada").getString("version");
+            return new Response(true, 200, version);
+        }
+        catch (MissingResourceException mre) {
+            logger.error(mre);
+        }
+        return new Response(false, 200, version);
     }
 }
