@@ -34,9 +34,11 @@ public class JarSecurityFileSelector
         "META-INF/*.RSA",
         "META-INF/*.DSA",
         "META-INF/*.SF",
+        "META-INF/*.EC",
         "META-INF/*.rsa",
         "META-INF/*.dsa",
-        "META-INF/*.sf" };
+        "META-INF/*.sf",
+        "META-INF/*.ec" };
 
     public boolean isSelected( @Nonnull FileInfo fileInfo )
         throws IOException
