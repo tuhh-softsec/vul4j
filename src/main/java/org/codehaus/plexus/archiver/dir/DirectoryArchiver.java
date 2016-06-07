@@ -46,6 +46,7 @@ public class DirectoryArchiver
         cleanUp();
     }
 
+    @Override
     public void execute()
         throws ArchiverException, IOException
     {
@@ -197,6 +198,7 @@ public class DirectoryArchiver
                                      : inLastModified );
     }
 
+    @Override
     protected void cleanUp()
         throws IOException
     {
@@ -205,11 +207,13 @@ public class DirectoryArchiver
         setIncludeEmptyDirs( true );
     }
 
+    @Override
     protected void close()
         throws IOException
     {
     }
 
+    @Override
     protected String getArchiveType()
     {
         return "directory";

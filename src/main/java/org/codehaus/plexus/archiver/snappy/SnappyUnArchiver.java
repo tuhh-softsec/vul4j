@@ -49,6 +49,7 @@ public class SnappyUnArchiver
         super( sourceFile );
     }
 
+    @Override
     protected void execute()
         throws ArchiverException
     {
@@ -77,6 +78,7 @@ public class SnappyUnArchiver
         }
     }
 
+    @Override
     protected void execute( String path, File outputDirectory )
     {
         throw new UnsupportedOperationException( "Targeted extraction not supported in Snappy format." );

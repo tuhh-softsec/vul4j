@@ -37,6 +37,7 @@ public class BZip2Compressor
     /**
      * perform the BZip2 compression operation.
      */
+    @Override
     public void compress()
         throws ArchiverException
     {
@@ -53,6 +54,7 @@ public class BZip2Compressor
         }
     }
 
+    @Override
     public void close()
     {
         try

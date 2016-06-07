@@ -50,6 +50,7 @@ public class GZipUnArchiver
         super( sourceFile );
     }
 
+    @Override
     protected void execute()
         throws ArchiverException
     {
@@ -76,6 +77,7 @@ public class GZipUnArchiver
         }
     }
 
+    @Override
     protected void execute( String path, File outputDirectory )
     {
         throw new UnsupportedOperationException( "Targeted extraction not supported in GZIP format." );

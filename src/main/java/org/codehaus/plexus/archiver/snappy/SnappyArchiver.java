@@ -32,6 +32,7 @@ public class SnappyArchiver
 {
     private SnappyCompressor compressor = new SnappyCompressor();
     
+    @Override
     public void execute()
         throws ArchiverException, IOException
     {
@@ -51,16 +52,19 @@ public class SnappyArchiver
         compressor.compress();
     }
 
+    @Override
     public boolean isSupportingForced()
     {
         return true;
     }
 
+    @Override
     protected void close()
     {
         compressor.close();
     }
 
+    @Override
     protected String getArchiveType()
     {
         return "snappy";

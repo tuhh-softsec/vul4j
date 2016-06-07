@@ -22,6 +22,7 @@ public class GZipTarFile
         super( file );
     }
 
+    @Override
     protected InputStream getInputStream( File file )
         throws IOException
     {

@@ -37,6 +37,7 @@ public class GZipCompressor
     /**
      * perform the GZip compression operation.
      */
+    @Override
     public void compress()
         throws ArchiverException
     {
@@ -52,6 +53,7 @@ public class GZipCompressor
         }
     }
 
+    @Override
     public void close()
     {
         try

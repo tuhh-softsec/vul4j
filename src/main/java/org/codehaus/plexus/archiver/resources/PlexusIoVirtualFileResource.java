@@ -58,6 +58,7 @@ public class PlexusIoVirtualFileResource
     }
 
     @Nonnull
+    @Override
     public InputStream getContents()
         throws IOException
     {
@@ -65,37 +66,44 @@ public class PlexusIoVirtualFileResource
         //return new FileInputStream( getFile() );
     }
 
+    @Override
     public URL getURL()
         throws IOException
     {
         return getFile().toURI().toURL();
     }
 
+    @Override
     public long getSize()
     {
         return getFile().length();
     }
 
+    @Override
     public boolean isDirectory()
     {
         return getFile().isDirectory();
     }
 
+    @Override
     public boolean isExisting()
     {
         return getFile().exists();
     }
 
+    @Override
     public boolean isFile()
     {
         return getFile().isFile();
     }
 
+    @Override
     public PlexusIoResourceAttributes getAttributes()
     {
         return null;
     }
 
+    @Override
     public long getLastModified()
     {
 		if (file.exists()) {

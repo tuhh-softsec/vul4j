@@ -79,6 +79,7 @@ public class EarArchiver
         addDirectory( directoryName, "/", includes, excludes );
     }
 
+    @Override
     protected void initZipOutputStream( ConcurrentJarCreator zOut )
         throws ArchiverException, IOException
     {
@@ -128,6 +129,7 @@ public class EarArchiver
      * Make sure we don't think we already have a application.xml next
      * time this task gets executed.
      */
+    @Override
     protected void cleanUp()
         throws IOException
     {

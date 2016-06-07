@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
-
 /**
  * Implementation of {@link org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection} for
  * snappy compressed files.
@@ -21,15 +20,18 @@ import java.util.HashMap;
 public class PlexusIoSnappyResourceCollection
     extends PlexusIoCompressedFileResourceCollection
 {
+
     @Nonnull
-    protected @WillNotClose InputStream getInputStream( File file )
+    @Override
+    protected @WillNotClose
+    InputStream getInputStream( File file )
         throws IOException
     {
         InputStream fis = new FileInputStream( file );
         try
         {
             final InputStream result = SnappyUnArchiver.getSnappyInputStream( fis );
-			fis = null;
+            fis = null;
             return result;
         }
         finally
@@ -38,13 +40,15 @@ public class PlexusIoSnappyResourceCollection
         }
     }
 
+    @Override protected PlexusIoResourceAttributes getAttributes( File file ) throws IOException
+    {
+        return new Java7FileAttributes( file, new HashMap<Integer, String>(), new HashMap<Integer, String>() );
+    }
 
-	@Override protected PlexusIoResourceAttributes getAttributes(File file) throws IOException {
-        return new Java7FileAttributes(file, new HashMap<Integer, String>(), new HashMap<Integer, String>());
-	}
-
-	protected String getDefaultExtension()
+    @Override
+    protected String getDefaultExtension()
     {
         return ".snappy";
     }
+
 }

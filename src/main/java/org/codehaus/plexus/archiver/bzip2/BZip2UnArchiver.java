@@ -50,6 +50,7 @@ public class BZip2UnArchiver
         super( sourceFile );
     }
 
+    @Override
     protected void execute()
         throws ArchiverException
     {
@@ -79,6 +80,7 @@ public class BZip2UnArchiver
         }
     }
 
+    @Override
     protected void execute( String path, File outputDirectory )
     {
         throw new UnsupportedOperationException( "Targeted extraction not supported in BZIP2 format." );

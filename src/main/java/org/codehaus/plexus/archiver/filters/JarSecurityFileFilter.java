@@ -14,6 +14,7 @@ public class JarSecurityFileFilter
 {
     public static final String[] SECURITY_FILE_PATTERNS = JarSecurityFileSelector.SECURITY_FILE_PATTERNS;
 
+    @Override
     public boolean include( InputStream dataStream, String entryName )
     {
 		for (String pattern : SECURITY_FILE_PATTERNS) {

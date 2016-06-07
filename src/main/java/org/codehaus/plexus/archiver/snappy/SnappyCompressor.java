@@ -37,6 +37,7 @@ public class SnappyCompressor
     /**
      * perform the Snappy compression operation.
      */
+    @Override
     public void compress()
         throws ArchiverException
     {

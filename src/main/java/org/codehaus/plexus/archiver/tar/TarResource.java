@@ -36,6 +36,7 @@ public class TarResource
         return l == -1 ? PlexusIoResource.UNKNOWN_MODIFICATION_DATE : l;
     }
 
+    @Override
     public synchronized PlexusIoResourceAttributes getAttributes()
     {
         if ( attributes == null )
@@ -51,6 +52,7 @@ public class TarResource
         this.attributes = attributes;
     }
 
+    @Override
     public URL getURL()
         throws IOException
     {
@@ -58,6 +60,7 @@ public class TarResource
     }
 
     @Nonnull
+    @Override
     public InputStream getContents()
         throws IOException
     {

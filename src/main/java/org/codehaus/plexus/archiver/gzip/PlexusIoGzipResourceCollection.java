@@ -22,12 +22,14 @@ import java.util.zip.GZIPInputStream;
 public class PlexusIoGzipResourceCollection
     extends PlexusIoCompressedFileResourceCollection
 {
+    @Override
     protected String getDefaultExtension()
     {
         return ".gz";
     }
 
     @Nonnull
+    @Override
     protected InputStream getInputStream( File file )
         throws IOException
     {

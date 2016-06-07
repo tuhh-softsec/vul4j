@@ -62,6 +62,7 @@ public class PlexusIoZipFileResourceCollection
         return false;
     }
 
+    @Override
     protected Iterator<PlexusIoResource> getEntries()
         throws IOException
     {
@@ -72,6 +73,7 @@ public class PlexusIoZipFileResourceCollection
         }
         final URLClassLoader urlClassLoader = new URLClassLoader( new URL[]{ f.toURI().toURL() }, null )
         {
+            @Override
             public URL getResource( String name )
             {
                 return findResource( name );
@@ -97,6 +99,7 @@ public class PlexusIoZipFileResourceCollection
                     !entry.isDirectory(), entry.isDirectory(), true );
             }
 
+            @Override
             public URL getURL()
                 throws IOException
             {
@@ -156,11 +159,13 @@ public class PlexusIoZipFileResourceCollection
             this.urlClassLoader = urlClassLoader;
         }
 
+        @Override
         public boolean hasNext()
         {
             return en.hasMoreElements();
         }
 
+        @Override
         public PlexusIoResource next()
         {
             final ZipArchiveEntry entry = en.nextElement();
@@ -170,11 +175,13 @@ public class PlexusIoZipFileResourceCollection
                 : new ZipFileResource( entry );
         }
 
+        @Override
         public void remove()
         {
             throw new UnsupportedOperationException( "Removing isn't implemented." );
         }
 
+        @Override
         public void close()
             throws IOException
         {
@@ -182,6 +189,7 @@ public class PlexusIoZipFileResourceCollection
         }
     }
 
+    @Override
     public void setEncoding( Charset charset )
     {
         this.charset = charset;

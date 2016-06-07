@@ -24,14 +24,16 @@ public class PlexusIoBzip2ResourceCollection
     extends PlexusIoCompressedFileResourceCollection
 {
     @Nonnull
-    protected @WillNotClose InputStream getInputStream( File file )
+    @Override
+    protected @WillNotClose
+    InputStream getInputStream( File file )
         throws IOException
     {
         InputStream fis = new FileInputStream( file );
         try
         {
             final InputStream result = BZip2UnArchiver.getBZip2InputStream( fis );
-			fis = null;
+            fis = null;
             return result;
         }
         finally
@@ -45,6 +47,7 @@ public class PlexusIoBzip2ResourceCollection
         return new Java7FileAttributes(file, new HashMap<Integer, String>(), new HashMap<Integer, String>());
 	}
 
+    @Override
 	protected String getDefaultExtension()
     {
         return ".bz2";

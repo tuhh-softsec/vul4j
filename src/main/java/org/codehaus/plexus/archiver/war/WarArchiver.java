@@ -154,6 +154,7 @@ public class WarArchiver
      * before initializing the output stream.
 	 * @param zOut
 	 */
+    @Override
     protected void initZipOutputStream( ConcurrentJarCreator zOut )
         throws ArchiverException, IOException
     {
@@ -168,6 +169,7 @@ public class WarArchiver
     /**
      * Overridden from ZipArchiver class to deal with web.xml
      */
+    @Override
     protected void zipFile( ArchiveEntry entry, ConcurrentJarCreator zOut, String vPath )
         throws IOException, ArchiverException
     {
@@ -202,6 +204,7 @@ public class WarArchiver
      * Make sure we don't think we already have a web.xml next time this task
      * gets executed.
      */
+    @Override
     protected void cleanUp()
         throws IOException
     {

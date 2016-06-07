@@ -40,6 +40,7 @@ public class JarSecurityFileSelector
         "META-INF/*.sf",
         "META-INF/*.ec" };
 
+    @Override
     public boolean isSelected( @Nonnull FileInfo fileInfo )
         throws IOException
     {

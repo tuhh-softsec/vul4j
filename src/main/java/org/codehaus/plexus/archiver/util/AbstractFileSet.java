@@ -56,6 +56,7 @@ public abstract class AbstractFileSet<T extends AbstractFileSet>
         this.excludes = excludes;
     }
 
+    @Override
     public String[] getExcludes()
     {
         return excludes;
@@ -70,6 +71,7 @@ public abstract class AbstractFileSet<T extends AbstractFileSet>
         this.fileSelectors = fileSelectors;
     }
 
+    @Override
     public FileSelector[] getFileSelectors()
     {
         return fileSelectors;
@@ -84,6 +86,7 @@ public abstract class AbstractFileSet<T extends AbstractFileSet>
         this.includes = includes;
     }
 
+    @Override
     public String[] getIncludes()
     {
         return includes;
@@ -98,6 +101,7 @@ public abstract class AbstractFileSet<T extends AbstractFileSet>
         this.prefix = prefix;
     }
 
+    @Override
     public String getPrefix()
     {
         return prefix;
@@ -112,6 +116,7 @@ public abstract class AbstractFileSet<T extends AbstractFileSet>
         this.caseSensitive = caseSensitive;
     }
 
+    @Override
     public boolean isCaseSensitive()
     {
         return caseSensitive;
@@ -126,6 +131,7 @@ public abstract class AbstractFileSet<T extends AbstractFileSet>
         this.usingDefaultExcludes = usingDefaultExcludes;
     }
 
+    @Override
     public boolean isUsingDefaultExcludes()
     {
         return usingDefaultExcludes;
@@ -140,6 +146,7 @@ public abstract class AbstractFileSet<T extends AbstractFileSet>
         this.includingEmptyDirectories = includingEmptyDirectories;
     }
 
+    @Override
     public boolean isIncludingEmptyDirectories()
     {
         return includingEmptyDirectories;
@@ -174,6 +181,7 @@ public abstract class AbstractFileSet<T extends AbstractFileSet>
         this.streamTransformer = streamTransformer;
     }
 
+    @Override
     public InputStreamTransformer getStreamTransformer()
     {
         return streamTransformer;

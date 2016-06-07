@@ -32,6 +32,7 @@ public class BZip2Archiver
 {
     private BZip2Compressor compressor = new BZip2Compressor();
     
+    @Override
     public void execute()
         throws ArchiverException, IOException
     {
@@ -51,16 +52,19 @@ public class BZip2Archiver
         compressor.compress();
     }
 
+    @Override
     public boolean isSupportingForced()
     {
         return true;
     }
 
+    @Override
     protected void close()
     {
         compressor.close();
     }
 
+    @Override
     protected String getArchiveType()
     {
         return "bzip2";

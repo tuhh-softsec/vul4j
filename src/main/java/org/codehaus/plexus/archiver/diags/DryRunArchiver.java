@@ -54,6 +54,7 @@ public class DryRunArchiver
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addArchivedFileSet( final @Nonnull File archiveFile, final String prefix, final String[] includes,
                                     final String[] excludes )
     {
@@ -72,6 +73,7 @@ public class DryRunArchiver
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addArchivedFileSet( final @Nonnull File archiveFile, final String prefix )
         throws ArchiverException
     {
@@ -81,6 +83,7 @@ public class DryRunArchiver
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addArchivedFileSet( final File archiveFile, final String[] includes, final String[] excludes )
         throws ArchiverException
     {
@@ -90,6 +93,7 @@ public class DryRunArchiver
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addArchivedFileSet( final @Nonnull File archiveFile )
         throws ArchiverException
     {
@@ -99,6 +103,7 @@ public class DryRunArchiver
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addDirectory( final @Nonnull File directory, final String prefix, final String[] includes,
                               final String[] excludes )
         throws ArchiverException
@@ -110,6 +115,7 @@ public class DryRunArchiver
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addSymlink( String symlinkName, String symlinkDestination )
         throws ArchiverException
     {
@@ -119,6 +125,7 @@ public class DryRunArchiver
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addSymlink( String symlinkName, int permissions, String symlinkDestination )
         throws ArchiverException
     {
@@ -128,6 +135,7 @@ public class DryRunArchiver
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addDirectory( final @Nonnull File directory, final String prefix )
         throws ArchiverException
     {
@@ -137,6 +145,7 @@ public class DryRunArchiver
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addDirectory( final @Nonnull File directory, final String[] includes, final String[] excludes )
         throws ArchiverException
     {
@@ -146,6 +155,7 @@ public class DryRunArchiver
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addDirectory( final @Nonnull File directory )
         throws ArchiverException
     {
@@ -155,6 +165,7 @@ public class DryRunArchiver
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addFile( final @Nonnull File inputFile, final @Nonnull String destFileName, final int permissions )
         throws ArchiverException
     {
@@ -164,6 +175,7 @@ public class DryRunArchiver
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addFile( final @Nonnull File inputFile, final @Nonnull String destFileName )
         throws ArchiverException
     {
@@ -173,6 +185,7 @@ public class DryRunArchiver
     /**
      * {@inheritDoc}
      */
+    @Override
     public void createArchive()
         throws ArchiverException, IOException
     {
@@ -182,6 +195,7 @@ public class DryRunArchiver
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setDotFileDirectory( final File dotFileDirectory )
     {
         throw new UnsupportedOperationException(
@@ -191,6 +205,7 @@ public class DryRunArchiver
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addArchivedFileSet( final ArchivedFileSet fileSet )
         throws ArchiverException
     {
@@ -208,6 +223,7 @@ public class DryRunArchiver
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addFileSet( final @Nonnull FileSet fileSet )
         throws ArchiverException
     {

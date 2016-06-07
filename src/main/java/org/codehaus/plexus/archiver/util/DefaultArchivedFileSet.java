@@ -22,6 +22,7 @@ public class DefaultArchivedFileSet
 	}
 
 
+    @Override
     public File getArchive()
     {
         return archive;

@@ -101,6 +101,7 @@ public class TarArchiver
         this.compression = mode;
     }
 
+    @Override
     protected void execute()
         throws ArchiverException, IOException
     {
@@ -495,11 +496,13 @@ public class TarArchiver
         return ostream;
     }
 
+    @Override
     public boolean isSupportingForced()
     {
         return true;
     }
 
+    @Override
     protected void cleanUp()
         throws IOException
     {
@@ -510,6 +513,7 @@ public class TarArchiver
         }
     }
 
+    @Override
     protected void close()
         throws IOException
     {
@@ -519,6 +523,7 @@ public class TarArchiver
         }
     }
 
+    @Override
     protected String getArchiveType()
     {
         return "TAR";

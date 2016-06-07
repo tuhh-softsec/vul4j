@@ -63,6 +63,16 @@ public interface UnArchiver
     void setSourceFile( File sourceFile );
 
     /**
+     * Gets a flag indicating destination files are always overwritten.
+     *
+     * @return {@code true}, if destination files are overwritten, even if they are newer than the corresponding entrie
+     * in the archive.
+     *
+     * @since 3.4
+     */
+    boolean isOverwrite();
+
+    /**
      * Should we overwrite files in dest, even if they are newer than the corresponding entries in the archive?
      */
     void setOverwrite( boolean b );

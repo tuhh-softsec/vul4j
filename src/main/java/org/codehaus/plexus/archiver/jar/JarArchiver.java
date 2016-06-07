@@ -271,6 +271,7 @@ public class JarArchiver
         indexJars.add( indexJar.getAbsolutePath() );
     }
 
+    @Override
     protected void initZipOutputStream( ConcurrentJarCreator zOut )
         throws ArchiverException, IOException
     {
@@ -281,6 +282,7 @@ public class JarArchiver
         }
     }
 
+    @Override
     protected boolean hasVirtualFiles()
     {
         getLogger().debug( "\n\n\nChecking for jar manifest virtual files...\n\n\n" );
@@ -340,6 +342,7 @@ public class JarArchiver
         super.initZipOutputStream( zOut );
     }
 
+    @Override
     protected void finalizeZipOutputStream( ConcurrentJarCreator zOut )
         throws IOException, ArchiverException
     {
@@ -444,6 +447,7 @@ public class JarArchiver
     /**
      * Overridden from Zip class to deal with manifests and index lists.
      */
+    @Override
     protected void zipFile( InputStreamSupplier is, ConcurrentJarCreator zOut, String vPath,
                             long lastModified, File fromArchive,
                             int mode, String symlinkDestination, boolean addInParallel )
@@ -516,6 +520,7 @@ public class JarArchiver
 
     /**
      */
+    @Override
     protected boolean createEmptyZip( File zipFile )
         throws ArchiverException
     {
@@ -562,6 +567,7 @@ public class JarArchiver
      *
      * @see ZipArchiver#cleanUp
      */
+    @Override
     protected void cleanUp()
         throws IOException
     {
@@ -583,6 +589,7 @@ public class JarArchiver
      *
      * @see ZipArchiver#reset
      */
+    @Override
     public void reset()
     {
         super.reset();
@@ -615,11 +622,8 @@ public class JarArchiver
         // hashtable by the classloader, but we'll do so anyway.
         Collections.sort( dirs );
         Collections.sort( files );
-        Iterator iter = dirs.iterator();
-        while ( iter.hasNext() )
+        for ( String dir : dirs )
         {
-            String dir = (String) iter.next();
-
             // try to be smart, not to be fooled by a weird directory name
             dir = dir.replace( '\\', '/' );
             if ( dir.startsWith( "./" ) )
@@ -640,10 +644,9 @@ public class JarArchiver
             writer.println( dir );
         }
 
-        iter = files.iterator();
-        while ( iter.hasNext() )
+        for ( String file : files )
         {
-            writer.println( iter.next() );
+            writer.println( file );
         }
     }
 
@@ -676,6 +679,7 @@ public class JarArchiver
         SortedMap<String, String> matches = new TreeMap<String, String>( new Comparator<String>()
         {
             // longest match comes first
+            @Override
             public int compare( String o1, String o2 )
             {
                 if ( ( o1 != null ) && ( o2 != null ) )

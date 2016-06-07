@@ -41,6 +41,7 @@ public class PlexusIoTarFileResourceCollection
 
     TarFile tarFile = null;
 
+    @Override
     public void close()
         throws IOException
     {
@@ -54,6 +55,7 @@ public class PlexusIoTarFileResourceCollection
         return false;
     }
 
+    @Override
     protected Iterator<PlexusIoResource> getEntries()
         throws IOException
     {
@@ -67,11 +69,13 @@ public class PlexusIoTarFileResourceCollection
         final Enumeration en = tarFile.getEntries();
         return new Iterator<PlexusIoResource>()
         {
+            @Override
             public boolean hasNext()
             {
                 return en.hasMoreElements();
             }
 
+            @Override
             public PlexusIoResource next()
             {
                 final TarArchiveEntry entry = (TarArchiveEntry) en.nextElement();
@@ -80,6 +84,7 @@ public class PlexusIoTarFileResourceCollection
                     : new TarResource( tarFile, entry );
             }
 
+            @Override
             public void remove()
             {
                 throw new UnsupportedOperationException( "Removing isn't implemented." );

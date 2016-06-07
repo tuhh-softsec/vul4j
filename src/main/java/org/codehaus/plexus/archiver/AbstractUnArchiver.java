@@ -73,46 +73,55 @@ public abstract class AbstractUnArchiver
         this.sourceFile = sourceFile;
     }
 
+    @Override
     public File getDestDirectory()
     {
         return destDirectory;
     }
 
+    @Override
     public void setDestDirectory( final File destDirectory )
     {
         this.destDirectory = destDirectory;
     }
 
+    @Override
     public File getDestFile()
     {
         return destFile;
     }
 
+    @Override
     public void setDestFile( final File destFile )
     {
         this.destFile = destFile;
     }
 
+    @Override
     public File getSourceFile()
     {
         return sourceFile;
     }
 
+    @Override
     public void setSourceFile( final File sourceFile )
     {
         this.sourceFile = sourceFile;
     }
 
+    @Override
     public boolean isOverwrite()
     {
         return overwrite;
     }
 
+    @Override
     public void setOverwrite( final boolean b )
     {
         overwrite = b;
     }
 
+    @Override
     public final void extract()
         throws ArchiverException
     {
@@ -121,6 +130,7 @@ public abstract class AbstractUnArchiver
         runArchiveFinalizers();
     }
 
+    @Override
     public final void extract( final String path, final File outputDirectory )
         throws ArchiverException
     {
@@ -129,6 +139,7 @@ public abstract class AbstractUnArchiver
         runArchiveFinalizers();
     }
 
+    @Override
     public void addArchiveFinalizer( final ArchiveFinalizer finalizer )
     {
         if ( finalizers == null )
@@ -139,6 +150,7 @@ public abstract class AbstractUnArchiver
         finalizers.add( finalizer );
     }
 
+    @Override
     public void setArchiveFinalizers( final List archiveFinalizers )
     {
         finalizers = archiveFinalizers;
@@ -202,11 +214,13 @@ public abstract class AbstractUnArchiver
         }
     }
 
+    @Override
     public void setFileSelectors( final FileSelector[] fileSelectors )
     {
         this.fileSelectors = fileSelectors;
     }
 
+    @Override
     public FileSelector[] getFileSelectors()
     {
         return fileSelectors;
@@ -246,6 +260,7 @@ public abstract class AbstractUnArchiver
     /**
      * @since 1.1
      */
+    @Override
     public boolean isUseJvmChmod()
     {
         return useJvmChmod;
@@ -255,6 +270,7 @@ public abstract class AbstractUnArchiver
      * <b>jvm chmod won't set group level permissions !</b>
      * @since 1.1
      */
+    @Override
     public void setUseJvmChmod( final boolean useJvmChmod )
     {
         this.useJvmChmod = useJvmChmod;
@@ -263,6 +279,7 @@ public abstract class AbstractUnArchiver
     /**
      * @since 1.1
      */
+    @Override
     public boolean isIgnorePermissions()
     {
         return ignorePermissions;
@@ -271,6 +288,7 @@ public abstract class AbstractUnArchiver
     /**
      * @since 1.1
      */
+    @Override
     public void setIgnorePermissions( final boolean ignorePermissions )
     {
         this.ignorePermissions = ignorePermissions;

@@ -379,31 +379,37 @@ public class Manifest
             this.name = name;
         }
 
+        @Override
         public Iterator<String> iterator()
         {
             return getKeys(attributes).iterator();
         }
 
+        @Override
         public void setName( String name )
         {
             throw new UnsupportedOperationException( "Cant do this" );
         }
 
+        @Override
         public String getKey()
         {
             return name;
         }
 
+        @Override
         public void setValue( String value )
         {
             attributes.putValue( name, value );
         }
 
+        @Override
         public String getValue()
         {
             return attributes.getValue( name );
         }
 
+        @Override
         public void addValue( String value )
         {
             String value1 = getValue();
@@ -411,6 +417,7 @@ public class Manifest
             setValue( value1 );
         }
 
+        @Override
         void write( Writer writer )
             throws IOException
         {
@@ -475,6 +482,7 @@ public class Manifest
         }
 
 
+        @Override
         public Iterator<String> iterator()
         {
             return attributes.keySet().iterator();
@@ -610,6 +618,7 @@ public class Manifest
         /**
          * @see java.lang.Object#hashCode
          */
+        @Override
         public int hashCode()
         {
             int hashCode = 0;
@@ -626,6 +635,7 @@ public class Manifest
         /**
          * @see java.lang.Object#equals
          */
+        @Override
         public boolean equals( Object rhs )
         {
             if ( rhs == null || rhs.getClass() != getClass() )
@@ -657,6 +667,7 @@ public class Manifest
         }
 
 
+        @Override
         public Iterator<String> iterator()
         {
             return getKeys( backingAttributes ).iterator();
@@ -697,11 +708,13 @@ public class Manifest
             return remap( backingAttributes, attribute );
         }
 
+        @Override
         public int hashCode()
         {
             return backingAttributes.hashCode();
         }
 
+        @Override
         public boolean equals( Object rhs )
         {
             return rhs instanceof ExistingSection && backingAttributes.equals(
@@ -712,6 +725,7 @@ public class Manifest
     }
 
 
+    @Override
     public Iterator<String> iterator()
     {
         return getEntries().keySet().iterator();
@@ -855,6 +869,7 @@ public class Manifest
      * @return a multiline string with the Manifest as it
      *         appears in a Manifest file.
      */
+    @Override
     public String toString()
     {
         StringWriter sw = new StringWriter();

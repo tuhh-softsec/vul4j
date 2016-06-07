@@ -102,52 +102,61 @@ public abstract class AbstractZipUnArchiver
             }
         }
 
+        @Override
         public boolean isDirectory()
         {
             return zipEntry.isDirectory();
         }
 
+        @Override
         public boolean isFile()
         {
             return !zipEntry.isDirectory() && !zipEntry.isUnixSymlink();
         }
 
+        @Override
         public boolean isSymbolicLink()
         {
             return zipEntry.isUnixSymlink();
         }
 
         @Nonnull
+        @Override
         public InputStream getContents()
             throws IOException
         {
             return zipFile.getInputStream( zipEntry );
         }
 
+        @Override
         public long getLastModified()
         {
             final long l = zipEntry.getTime();
             return l == 0 ? PlexusIoResource.UNKNOWN_MODIFICATION_DATE : l;
         }
 
+        @Override
         public long getSize()
         {
             final long l = zipEntry.getSize();
             return l == -1 ? PlexusIoResource.UNKNOWN_RESOURCE_SIZE : l;
         }
 
+        @Override
         public URL getURL()
             throws IOException
         {
             return null;
         }
 
+        @Override
         public boolean isExisting()
         {
             return true;
         }
     }
 
+    @Override
     protected void execute()
         throws ArchiverException
     {
@@ -208,6 +217,7 @@ public abstract class AbstractZipUnArchiver
           extractFile( sourceFile, destDirectory, inputStream, name, time, isDirectory, mode, symlinkDestination );
     }
 
+    @Override
     protected void execute( final String path, final File outputDirectory )
         throws ArchiverException
     {

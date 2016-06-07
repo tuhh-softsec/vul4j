@@ -20,6 +20,7 @@ public class BZip2TarFile extends TarFile
         super( file );
     }
 
+    @Override
     protected InputStream getInputStream( File file )
         throws IOException
     {

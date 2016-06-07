@@ -55,6 +55,7 @@ public class TarFile
      * If an input stream is opened for any other entry than the enumerations
      * current entry, then entries may be skipped.
      */
+    @Override
     public Enumeration<org.apache.commons.compress.archivers.ArchiveEntry> getEntries()
         throws IOException
     {
@@ -67,6 +68,7 @@ public class TarFile
         {
             boolean currentEntryValid;
 
+            @Override
             public boolean hasMoreElements()
             {
                 if ( !currentEntryValid )
@@ -83,6 +85,7 @@ public class TarFile
                 return currentEntry != null;
             }
 
+            @Override
             public org.apache.commons.compress.archivers.ArchiveEntry nextElement()
             {
                 if ( currentEntry == null )
@@ -105,6 +108,7 @@ public class TarFile
         }
     }
 
+    @Override
     public InputStream getInputStream( org.apache.commons.compress.archivers.ArchiveEntry entry )
         throws IOException
     {

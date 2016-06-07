@@ -149,11 +149,13 @@ public abstract class AbstractArchiver
      */
     private boolean ignorePermissions = false;
 
+    @Override
     public String getDuplicateBehavior()
     {
         return duplicateBehavior;
     }
 
+    @Override
     public void setDuplicateBehavior( final String duplicate )
     {
         if ( !Archiver.DUPLICATES_VALID_BEHAVIORS.contains( duplicate ) )
@@ -166,6 +168,7 @@ public abstract class AbstractArchiver
         duplicateBehavior = duplicate;
     }
 
+    @Override
     public final void setFileMode( final int mode )
     {
         if ( mode >= 0 )
@@ -178,16 +181,19 @@ public abstract class AbstractArchiver
         }
     }
 
+    @Override
     public final void setDefaultFileMode( final int mode )
     {
         defaultFileMode = ( mode & UnixStat.PERM_MASK ) | UnixStat.FILE_FLAG;
     }
 
+    @Override
     public final int getOverrideFileMode()
     {
         return forcedFileMode;
     }
 
+    @Override
     public final int getFileMode()
     {
         if ( forcedFileMode < 0 )
@@ -203,6 +209,7 @@ public abstract class AbstractArchiver
         return forcedFileMode;
     }
 
+    @Override
     public final int getDefaultFileMode()
     {
         return defaultFileMode;
@@ -211,11 +218,13 @@ public abstract class AbstractArchiver
     /**
      * @deprecated Use {@link Archiver#getDefaultFileMode()}.
      */
+    @Deprecated
     public final int getRawDefaultFileMode()
     {
         return getDefaultFileMode();
     }
 
+    @Override
     public final void setDirectoryMode( final int mode )
     {
         if ( mode >= 0 )
@@ -228,16 +237,19 @@ public abstract class AbstractArchiver
         }
     }
 
+    @Override
     public final void setDefaultDirectoryMode( final int mode )
     {
         defaultDirectoryMode = ( mode & UnixStat.PERM_MASK ) | UnixStat.DIR_FLAG;
     }
 
+    @Override
     public final int getOverrideDirectoryMode()
     {
         return forcedDirectoryMode;
     }
 
+    @Override
     public final int getDirectoryMode()
     {
         if ( forcedDirectoryMode < 0 )
@@ -253,6 +265,7 @@ public abstract class AbstractArchiver
         return forcedDirectoryMode;
     }
 
+    @Override
     public final int getDefaultDirectoryMode()
     {
         if ( defaultDirectoryMode < 0 )
@@ -265,16 +278,19 @@ public abstract class AbstractArchiver
         }
     }
 
+    @Override
     public boolean getIncludeEmptyDirs()
     {
         return includeEmptyDirs;
     }
 
+    @Override
     public void setIncludeEmptyDirs( final boolean includeEmptyDirs )
     {
         this.includeEmptyDirs = includeEmptyDirs;
     }
 
+    @Override
     public void addDirectory( @Nonnull final File directory )
         throws ArchiverException
     {
@@ -282,6 +298,7 @@ public abstract class AbstractArchiver
             fileSet( directory ).prefixed( "" ).includeExclude( null, null ).includeEmptyDirs( includeEmptyDirs ) );
     }
 
+    @Override
     public void addDirectory( @Nonnull final File directory, final String prefix )
         throws ArchiverException
     {
@@ -289,6 +306,7 @@ public abstract class AbstractArchiver
             fileSet( directory ).prefixed( prefix ).includeExclude( null, null ).includeEmptyDirs( includeEmptyDirs ) );
     }
 
+    @Override
     public void addDirectory( @Nonnull final File directory, final String[] includes, final String[] excludes )
         throws ArchiverException
     {
@@ -296,6 +314,7 @@ public abstract class AbstractArchiver
             includeEmptyDirs ) );
     }
 
+    @Override
     public void addDirectory( @Nonnull final File directory, final String prefix, final String[] includes,
                               final String[] excludes )
         throws ArchiverException
@@ -304,6 +323,7 @@ public abstract class AbstractArchiver
             includeEmptyDirs ) );
     }
 
+    @Override
     public void addFileSet( @Nonnull final FileSet fileSet )
         throws ArchiverException
     {
@@ -351,6 +371,7 @@ public abstract class AbstractArchiver
         return Os.isFamily( Os.FAMILY_UNIX ) && Java7Reflector.isAtLeastJava7();
     }
 
+    @Override
     public void addFile( @Nonnull final File inputFile, @Nonnull final String destFileName )
         throws ArchiverException
     {
@@ -359,6 +380,7 @@ public abstract class AbstractArchiver
         addFile( inputFile, destFileName, fileMode );
     }
 
+    @Override
     public void addSymlink( String symlinkName, String symlinkDestination )
         throws ArchiverException
     {
@@ -367,6 +389,7 @@ public abstract class AbstractArchiver
         addSymlink( symlinkName, fileMode, symlinkDestination );
     }
 
+    @Override
     public void addSymlink( String symlinkName, int permissions, String symlinkDestination )
         throws ArchiverException
     {
@@ -393,19 +416,6 @@ public abstract class AbstractArchiver
         }
     }
 
-    private int maybeOverridden( int suggestedMode, boolean isDir )
-    {
-        if ( isDir )
-        {
-            return forcedDirectoryMode >= 0 ? forcedDirectoryMode : suggestedMode;
-        }
-        else
-        {
-            return forcedFileMode >= 0 ? forcedFileMode : suggestedMode;
-
-        }
-    }
-
     private ArchiveEntry asArchiveEntry( final AddedResourceCollection collection, final PlexusIoResource resource )
         throws ArchiverException
     {
@@ -428,12 +438,14 @@ public abstract class AbstractArchiver
     }
 
 
+    @Override
     public void addResource( final PlexusIoResource resource, final String destFileName, final int permissions )
         throws ArchiverException
     {
         doAddResource( asArchiveEntry( resource, destFileName, permissions, null ) );
     }
 
+    @Override
     public void addFile( @Nonnull final File inputFile, @Nonnull String destFileName, int permissions )
         throws ArchiverException
     {
@@ -465,6 +477,7 @@ public abstract class AbstractArchiver
     }
 
     @Nonnull
+    @Override
     public ResourceIterator getResources()
         throws ArchiverException
     {
@@ -480,6 +493,7 @@ public abstract class AbstractArchiver
 
             private final Set<String> seenEntries = new HashSet<String>();
 
+            @Override
             public boolean hasNext()
             {
                 do
@@ -576,6 +590,7 @@ public abstract class AbstractArchiver
                         + getClass().getName() );
             }
 
+            @Override
             public ArchiveEntry next()
             {
                 if ( !hasNext() )
@@ -591,6 +606,7 @@ public abstract class AbstractArchiver
                 return next;
             }
 
+            @Override
             public void remove()
             {
                 throw new UnsupportedOperationException( "Does not support iterator" );
@@ -632,6 +648,7 @@ public abstract class AbstractArchiver
     }
 
 
+    @Override
     public Map<String, ArchiveEntry> getFiles()
     {
         try
@@ -653,11 +670,13 @@ public abstract class AbstractArchiver
         }
     }
 
+    @Override
     public File getDestFile()
     {
         return destFile;
     }
 
+    @Override
     public void setDestFile( final File destFile )
     {
         this.destFile = destFile;
@@ -668,6 +687,7 @@ public abstract class AbstractArchiver
         }
     }
 
+    @Override
     protected Logger getLogger()
     {
         if ( logger == null )
@@ -747,6 +767,7 @@ public abstract class AbstractArchiver
     /**
      * Adds a resource collection to the archive.
      */
+    @Override
     public void addResources( final PlexusIoResourceCollection collection )
         throws ArchiverException
     {
@@ -758,6 +779,7 @@ public abstract class AbstractArchiver
         resources.add( item );
     }
 
+    @Override
     public void addArchivedFileSet( final ArchivedFileSet fileSet )
         throws ArchiverException
     {
@@ -765,6 +787,7 @@ public abstract class AbstractArchiver
         addResources( resourceCollection );
     }
 
+    @Override
     public void addArchivedFileSet( final ArchivedFileSet fileSet, Charset charset )
         throws ArchiverException
     {
@@ -775,6 +798,7 @@ public abstract class AbstractArchiver
     /**
      * @since 1.0-alpha-7
      */
+    @Override
     public void addArchivedFileSet( @Nonnull final File archiveFile, final String prefix, final String[] includes,
                                     final String[] excludes )
         throws ArchiverException
@@ -787,6 +811,7 @@ public abstract class AbstractArchiver
     /**
      * @since 1.0-alpha-7
      */
+    @Override
     public void addArchivedFileSet( @Nonnull final File archiveFile, final String prefix )
         throws ArchiverException
     {
@@ -796,6 +821,7 @@ public abstract class AbstractArchiver
     /**
      * @since 1.0-alpha-7
      */
+    @Override
     public void addArchivedFileSet( @Nonnull final File archiveFile, final String[] includes, final String[] excludes )
         throws ArchiverException
     {
@@ -806,6 +832,7 @@ public abstract class AbstractArchiver
     /**
      * @since 1.0-alpha-7
      */
+    @Override
     public void addArchivedFileSet( @Nonnull final File archiveFile )
         throws ArchiverException
     {
@@ -816,6 +843,7 @@ public abstract class AbstractArchiver
      * Allows us to pull the ArchiverManager instance out of the container without causing a chicken-and-egg
      * instantiation/composition problem.
      */
+    @Override
     public void contextualize( final Context context )
         throws ContextException
     {
@@ -831,16 +859,19 @@ public abstract class AbstractArchiver
         }
     }
 
+    @Override
     public boolean isForced()
     {
         return forced;
     }
 
+    @Override
     public void setForced( final boolean forced )
     {
         this.forced = forced;
     }
 
+    @Override
     public void addArchiveFinalizer( final ArchiveFinalizer finalizer )
     {
         if ( finalizers == null )
@@ -851,11 +882,13 @@ public abstract class AbstractArchiver
         finalizers.add( finalizer );
     }
 
+    @Override
     public void setArchiveFinalizers( final List<ArchiveFinalizer> archiveFinalizers )
     {
         finalizers = archiveFinalizers;
     }
 
+    @Override
     public void setDotFileDirectory( final File dotFileDirectory )
     {
         this.dotFileDirectory = dotFileDirectory;
@@ -930,6 +963,7 @@ public abstract class AbstractArchiver
         return true;
     }
 
+    @Override
     public boolean isSupportingForced()
     {
         return false;
@@ -947,6 +981,7 @@ public abstract class AbstractArchiver
         }
     }
 
+    @Override
     public final void createArchive()
         throws ArchiverException, IOException
     {
@@ -1061,6 +1096,7 @@ public abstract class AbstractArchiver
     /**
      * @since 1.1
      */
+    @Override
     public boolean isUseJvmChmod()
     {
         return useJvmChmod;
@@ -1069,6 +1105,7 @@ public abstract class AbstractArchiver
     /**
      * @since 1.1
      */
+    @Override
     public void setUseJvmChmod( final boolean useJvmChmod )
     {
         this.useJvmChmod = useJvmChmod;
@@ -1077,6 +1114,7 @@ public abstract class AbstractArchiver
     /**
      * @since 1.1
      */
+    @Override
     public boolean isIgnorePermissions()
     {
         return ignorePermissions;
@@ -1085,6 +1123,7 @@ public abstract class AbstractArchiver
     /**
      * @since 1.1
      */
+    @Override
     public void setIgnorePermissions( final boolean ignorePermissions )
     {
         this.ignorePermissions = ignorePermissions;

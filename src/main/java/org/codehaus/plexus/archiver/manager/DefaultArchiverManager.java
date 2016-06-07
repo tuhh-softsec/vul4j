@@ -49,12 +49,14 @@ public class DefaultArchiverManager
     // Component Lifecycle
     // ----------------------------------------------------------------------
 
+    @Override
     public void contextualize( Context context )
         throws ContextException
     {
         container = (PlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
     }
 
+    @Override
     @Nonnull public Archiver getArchiver( @Nonnull String archiverName )
         throws NoSuchArchiverException
     {
@@ -68,6 +70,7 @@ public class DefaultArchiverManager
         }
     }
 
+    @Override
     @Nonnull public UnArchiver getUnArchiver( @Nonnull String unArchiverName )
         throws NoSuchArchiverException
     {
@@ -81,7 +84,7 @@ public class DefaultArchiverManager
         }
     }
 
-
+    @Override
     public @Nonnull PlexusIoResourceCollection getResourceCollection( String resourceCollectionName )
         throws NoSuchArchiverException
     {
@@ -117,18 +120,21 @@ public class DefaultArchiverManager
         return archiveExt;
         
     }
+    @Override
     @Nonnull public Archiver getArchiver( @Nonnull File file )
         throws NoSuchArchiverException
     {
         return getArchiver( getFileExtention( file ) );
     }
     
+    @Override
     @Nonnull public UnArchiver getUnArchiver( @Nonnull File file )
         throws NoSuchArchiverException
     {        
         return getUnArchiver( getFileExtention( file ) );
     }
 
+    @Override
     @Nonnull public PlexusIoResourceCollection getResourceCollection( @Nonnull File file )
         throws NoSuchArchiverException
     {

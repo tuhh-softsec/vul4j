@@ -48,29 +48,34 @@ public class TrackingArchiver
 
     private boolean ignorePermissions;
 
+    @Override
     public void createArchive()
         throws ArchiverException, IOException
     {
     }
 
+    @Override
     public void addDirectory( final @Nonnull File directory )
         throws ArchiverException
     {
         added.add( new Addition( directory, null, null, null, PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
     }
 
+    @Override
     public void addDirectory( final @Nonnull File directory, final String prefix )
         throws ArchiverException
     {
         added.add( new Addition( directory, prefix, null, null, PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
     }
 
+    @Override
     public void addDirectory( final @Nonnull File directory, final String[] includes, final String[] excludes )
         throws ArchiverException
     {
         added.add( new Addition( directory, null, includes, excludes, PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
     }
 
+    @Override
     public void addDirectory( final @Nonnull File directory, final String prefix, final String[] includes,
                               final String[] excludes )
         throws ArchiverException
@@ -79,42 +84,49 @@ public class TrackingArchiver
             PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
     }
 
+    @Override
     public void addFileSet( final @Nonnull FileSet fileSet )
         throws ArchiverException
     {
         added.add( new Addition( fileSet, null, null, null, PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
     }
 
+    @Override
     public void addFile( final @Nonnull File inputFile, final @Nonnull String destFileName )
         throws ArchiverException
     {
         added.add( new Addition( inputFile, destFileName, null, null, PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
     }
 
+    @Override
     public void addFile( final @Nonnull File inputFile, final @Nonnull String destFileName, final int permissions )
         throws ArchiverException
     {
         added.add( new Addition( inputFile, destFileName, null, null, permissions ) );
     }
 
+    @Override
     public void addArchivedFileSet( final @Nonnull File archiveFile )
         throws ArchiverException
     {
         added.add( new Addition( archiveFile, null, null, null, PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
     }
 
+    @Override
     public void addArchivedFileSet( final @Nonnull File archiveFile, final String prefix )
         throws ArchiverException
     {
         added.add( new Addition( archiveFile, prefix, null, null, PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
     }
 
+    @Override
     public void addSymlink( String s, String s2 )
         throws ArchiverException
     {
         added.add( new Addition( s, null, null, null, PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
     }
 
+    @Override
     public void addSymlink( String s, int i, String s2 )
         throws ArchiverException
     {
@@ -122,6 +134,7 @@ public class TrackingArchiver
 
     }
 
+    @Override
     public void addArchivedFileSet( final File archiveFile, final String[] includes, final String[] excludes )
         throws ArchiverException
     {
@@ -129,6 +142,7 @@ public class TrackingArchiver
             PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
     }
 
+    @Override
     public void addArchivedFileSet( final @Nonnull File archiveFile, final String prefix, final String[] includes,
                                     final String[] excludes )
         throws ArchiverException
@@ -137,101 +151,121 @@ public class TrackingArchiver
             PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
     }
 
+    @Override
     public void addArchivedFileSet( final ArchivedFileSet fileSet )
         throws ArchiverException
     {
         added.add( new Addition( fileSet, null, null, null, PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
     }
 
+    @Override
     public void addArchivedFileSet( final ArchivedFileSet fileSet, Charset charset )
         throws ArchiverException
     {
         added.add( new Addition( fileSet, null, null, null, PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
     }
 
+    @Override
     public void addResource( final PlexusIoResource resource, final String destFileName, final int permissions )
         throws ArchiverException
     {
         added.add( new Addition( resource, destFileName, null, null, permissions ) );
     }
 
+    @Override
     public void addResources( final PlexusIoResourceCollection resources )
         throws ArchiverException
     {
         added.add( new Addition( resources, null, null, null, PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
     }
 
+    @Override
     public File getDestFile()
     {
         return destFile;
     }
 
+    @Override
     public void setDestFile( final File destFile )
     {
         this.destFile = destFile;
     }
 
+    @Override
     public void setFileMode( final int mode )
     {
     }
 
+    @Override
     public int getFileMode()
     {
         return Integer.parseInt( "0644", 8 );
     }
 
+    @Override
     public int getOverrideFileMode()
     {
         return Integer.parseInt( "0644", 8 );
     }
 
+    @Override
     public void setDefaultFileMode( final int mode )
     {
     }
 
+    @Override
     public int getDefaultFileMode()
     {
         return Integer.parseInt( "0644", 8 );
     }
 
+    @Override
     public void setDirectoryMode( final int mode )
     {
     }
 
+    @Override
     public int getDirectoryMode()
     {
         return Integer.parseInt( "0755", 8 );
     }
 
+    @Override
     public int getOverrideDirectoryMode()
     {
         return Integer.parseInt( "0755", 8 );
     }
 
+    @Override
     public void setDefaultDirectoryMode( final int mode )
     {
     }
 
+    @Override
     public int getDefaultDirectoryMode()
     {
         return Integer.parseInt( "0755", 8 );
     }
 
+    @Override
     public boolean getIncludeEmptyDirs()
     {
         return false;
     }
 
+    @Override
     public void setIncludeEmptyDirs( final boolean includeEmptyDirs )
     {
     }
 
+    @Override
     public void setDotFileDirectory( final File dotFileDirectory )
     {
     }
 
     public
     @Nonnull
+    @Override
     ResourceIterator getResources()
         throws ArchiverException
     {
@@ -239,30 +273,36 @@ public class TrackingArchiver
     }
 
     @SuppressWarnings( "rawtypes" )
+    @Override
     public Map<String, ArchiveEntry> getFiles()
     {
         return new HashMap<String, ArchiveEntry>();
     }
 
+    @Override
     public boolean isForced()
     {
         return false;
     }
 
+    @Override
     public void setForced( final boolean forced )
     {
     }
 
+    @Override
     public boolean isSupportingForced()
     {
         return true;
     }
 
+    @Override
     public String getDuplicateBehavior()
     {
         return null;
     }
 
+    @Override
     public void setDuplicateBehavior( final String duplicate )
     {
     }
@@ -329,21 +369,25 @@ public class TrackingArchiver
         }
     }
 
+    @Override
     public boolean isUseJvmChmod()
     {
         return useJvmChmod;
     }
 
+    @Override
     public void setUseJvmChmod( final boolean useJvmChmod )
     {
         this.useJvmChmod = useJvmChmod;
     }
 
+    @Override
     public boolean isIgnorePermissions()
     {
         return ignorePermissions;
     }
 
+    @Override
     public void setIgnorePermissions( final boolean ignorePermissions )
     {
         this.ignorePermissions = ignorePermissions;

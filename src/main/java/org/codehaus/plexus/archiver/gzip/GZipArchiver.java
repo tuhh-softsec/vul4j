@@ -32,6 +32,7 @@ public class GZipArchiver
 {
     final GZipCompressor compressor = new GZipCompressor();
     
+    @Override
     protected void execute()
         throws ArchiverException, IOException
     {
@@ -51,16 +52,19 @@ public class GZipArchiver
         compressor.compress();
     }
 
+    @Override
     public boolean isSupportingForced()
     {
         return true;
     }
 
+    @Override
     protected void close()
     {
         compressor.close();
     }
 
+    @Override
     protected String getArchiveType()
     {
         return "gzip";

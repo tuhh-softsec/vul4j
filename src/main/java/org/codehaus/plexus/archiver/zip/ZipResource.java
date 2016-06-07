@@ -43,6 +43,7 @@ public class ZipResource extends AbstractPlexusIoResource
         return l == -1 ? PlexusIoResource.UNKNOWN_MODIFICATION_DATE : l;
     }
 
+    @Override
     public synchronized PlexusIoResourceAttributes getAttributes()
     {
         int mode = PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE;
@@ -69,6 +70,7 @@ public class ZipResource extends AbstractPlexusIoResource
         this.attributes = attributes;
     }
 
+    @Override
     public URL getURL()
         throws IOException
     {
@@ -76,6 +78,7 @@ public class ZipResource extends AbstractPlexusIoResource
     }
 
     @Nonnull
+    @Override
     public InputStream getContents()
         throws IOException
     {

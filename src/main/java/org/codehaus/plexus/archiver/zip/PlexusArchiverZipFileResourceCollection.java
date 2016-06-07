@@ -24,6 +24,7 @@ public class PlexusArchiverZipFileResourceCollection
 
     private Charset charset = Charset.forName( "UTF-8" );
 
+    @Override
     protected Iterator<PlexusIoResource> getEntries()
         throws IOException
     {
@@ -56,10 +57,12 @@ public class PlexusArchiverZipFileResourceCollection
             this.zipFile = zipFile;
         }
 
+        @Override
         public boolean hasNext ( ) {
             return en.hasMoreElements();
         }
 
+        @Override
         public PlexusIoResource next()
         {
             final ZipArchiveEntry entry = (ZipArchiveEntry) en.nextElement();
@@ -69,11 +72,13 @@ public class PlexusArchiverZipFileResourceCollection
                 : new ZipResource( zipFile, entry, getStreamTransformer() );
         }
 
+        @Override
         public void remove()
         {
             throw new UnsupportedOperationException( "Removing isn't implemented." );
         }
 
+        @Override
         public void close()
             throws IOException
         {
@@ -81,6 +86,7 @@ public class PlexusArchiverZipFileResourceCollection
         }
     }
 
+    @Override
     public void setEncoding( Charset charset )
     {
        this.charset = charset;

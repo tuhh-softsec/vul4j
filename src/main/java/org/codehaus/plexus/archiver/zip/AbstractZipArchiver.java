@@ -210,6 +210,7 @@ public abstract class AbstractZipArchiver
         return doFilesonly;
     }
 
+    @Override
     protected void execute()
         throws ArchiverException, IOException
     {
@@ -649,6 +650,7 @@ public abstract class AbstractZipArchiver
 
         return new InputStreamSupplier()
         {
+            @Override
             public InputStream get()
             {
                 InputStream is = other.get();
@@ -679,6 +681,7 @@ public abstract class AbstractZipArchiver
     {
         return new InputStreamSupplier()
         {
+            @Override
             public InputStream get()
             {
                 return inputStream;
@@ -740,6 +743,7 @@ public abstract class AbstractZipArchiver
      *
      * @see #reset
      */
+    @Override
     protected void cleanUp()
         throws IOException
     {
@@ -784,11 +788,13 @@ public abstract class AbstractZipArchiver
     /**
      * method for subclasses to override
      */
+    @Override
     public boolean isSupportingForced()
     {
         return true;
     }
 
+    @Override
     protected boolean revert( StringBuffer messageBuffer )
     {
         int initLength = messageBuffer.length();
@@ -816,6 +822,7 @@ public abstract class AbstractZipArchiver
         return messageBuffer.length() == initLength;
     }
 
+    @Override
     protected void close()
         throws IOException
     {
@@ -861,6 +868,7 @@ public abstract class AbstractZipArchiver
         }
     }
 
+    @Override
     protected String getArchiveType()
     {
         return archiveType;

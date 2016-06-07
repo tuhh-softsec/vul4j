@@ -40,6 +40,7 @@ public class DotDirectiveArchiveFinalizer
         this.dotFilePrefix = dotFilePrefix;
     }
 
+    @Override
     public void finalizeArchiveCreation( Archiver archiver )
         throws ArchiverException
     {
@@ -97,6 +98,7 @@ public class DotDirectiveArchiveFinalizer
         }
     }
 
+    @Override
     public List getVirtualFiles()
     {
         return Collections.EMPTY_LIST;

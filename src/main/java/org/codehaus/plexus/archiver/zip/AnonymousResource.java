@@ -25,6 +25,7 @@ public class AnonymousResource extends AbstractPlexusIoResource {
 	}
 
 	@Nonnull
+    @Override
 	public InputStream getContents()
 			throws IOException
 	{
@@ -33,6 +34,7 @@ public class AnonymousResource extends AbstractPlexusIoResource {
 		//return new FileInputStream( file );
 	}
 
+    @Override
 	public URL getURL()
 			throws IOException
 	{
