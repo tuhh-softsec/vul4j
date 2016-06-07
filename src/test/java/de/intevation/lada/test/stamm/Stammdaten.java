@@ -256,7 +256,8 @@ public class Stammdaten {
                 Json.createReader(new StringReader(entity));
             JsonObject content = fromServiceReader.readObject();
             /* Verify the response*/
-            Assert.assertTrue(content.getBoolean("success"));
+            Assert.assertTrue("Unsuccessful response object:\n" + content,
+                content.getBoolean("success"));
             prot.addInfo("success", content.getBoolean("success"));
             Assert.assertEquals("200", content.getString("message"));
             prot.addInfo("message", content.getString("message"));
