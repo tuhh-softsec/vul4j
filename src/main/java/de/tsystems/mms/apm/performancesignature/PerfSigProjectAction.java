@@ -454,7 +454,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
                 final JSONObject obj = gridConfiguration.getJSONObject(i);
                 final MeasureNameHelper tmp = map.get(obj.getString("id"));
                 if (tmp != null) { //item needs some more information
-                    obj.put("id", DigestUtils.md5Hex(dashboard + tmp.getChartDashlet() + tmp.getMeasure() + obj.getString("customName")));
+                    obj.put("id", DigestUtils.md5Hex(dashboard + tmp.getChartDashlet() + tmp.getMeasure() + obj.getString("customName") + obj.getString("aggregation")));
                     obj.put("chartDashlet", tmp.getChartDashlet());
                     obj.put("measure", tmp.getMeasure());
                     obj.put("description", tmp.getDescription());
