@@ -76,6 +76,23 @@ public class ManagementURLBuilder {
         return null;
     }
 
+
+    public URL storePurePathsURL(final String profileName, final String sessionName, final String timeframeStart, final String timeframeEnd,
+                                 String recordingOption, final boolean sessionLocked, final boolean appendTimestamp) {
+        if (StringUtils.isBlank(recordingOption)) {
+            recordingOption = "all";
+        }
+        try {
+            return new URL(String.format("%1$s/rest/management/profiles/%2$s/storepurepaths?storedSessionName=%3$s&timeframeStart=%4$s&timeframeEnd=%5$s&" +
+                            "recordingOption=%4$s&isSessionLocked=%5$s&appendTimestamp=%6$s",
+                    this.serverAddress, PerfSigUtils.encodeString(profileName), PerfSigUtils.encodeString(sessionName), timeframeStart, timeframeEnd,
+                    recordingOption, sessionLocked, appendTimestamp));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public URL startRecordingURL(final String profileName, final String sessionName, final String description,
                                  String recordingOption, final boolean sessionLocked, final boolean isNoTimestamp) {
         if (StringUtils.isBlank(recordingOption)) {
@@ -83,7 +100,7 @@ public class ManagementURLBuilder {
         }
         try {
             this.parameters = String.format("recordingOption=%1$s&isSessionLocked=%2$s&isTimeStampAllowed=%3$s&description=%4$s&presentableName=%5$s",
-                    recordingOption, sessionLocked, isNoTimestamp, description == null ? "" : PerfSigUtils.encodeString(description),
+                    recordingOption, sessionLocked, isNoTimestamp, StringUtils.isBlank(description) ? "" : PerfSigUtils.encodeString(description),
                     StringUtils.isBlank(sessionName) ? PerfSigUtils.encodeString(profileName) : PerfSigUtils.encodeString(sessionName));
             final String url = String.format("%1$s/rest/management/profiles/%2$s/startrecording", this.serverAddress,
                     PerfSigUtils.encodeString(profileName));

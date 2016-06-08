@@ -55,7 +55,10 @@ import java.net.*;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
@@ -357,6 +360,24 @@ public class DTServerConnection {
             return handler.isResultTrue();
         } catch (Exception ex) {
             throw new CommandExecutionException("error reanalyzing session: " + ex.getMessage(), ex);
+        }
+    }
+
+    public String storePurePaths(final String sessionName, final Date timeframeStart, final Date timeframeEnd, final String recordingOption,
+                                 final boolean sessionLocked, final boolean appendTimestamp) {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S");
+        try {
+            ManagementURLBuilder builder = new ManagementURLBuilder();
+            builder.setServerAddress(this.address);
+            URL commandURL = builder.storePurePathsURL(systemProfile, sessionName, df.format(timeframeStart), df.format(timeframeEnd), recordingOption,
+                    sessionLocked, appendTimestamp);
+            URLConnection conn = commandURL.openConnection(proxy);
+            addAuthenticationHeader(conn);
+
+            RESTResultXMLHandler handler = getResultXMLHandler(conn);
+            return handler.getResultString();
+        } catch (Exception ex) {
+            throw new CommandExecutionException("error storing purepaths: " + ex.getMessage(), ex);
         }
     }
 
