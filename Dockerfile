@@ -9,7 +9,7 @@
 # The linked container may be created from db_schema/Dockerfile.
 #
 # The LADA-server will be available under
-# http://yourdockerhost:8181/lada-server-2.2.0
+# http://yourdockerhost:8181/lada-server-$LADA_VERSION
 #
 
 FROM java:7-jdk
@@ -73,9 +73,10 @@ RUN rm $JBOSS_HOME/standalone/configuration/standalone_xml_history/current/*
 #
 # Build and deploy LADA-server
 #
+ENV LADA_VERSION 2.3.0
 RUN mvn clean compile package javadoc:javadoc
-RUN mv target/lada-server-2.2.0.war $JBOSS_HOME/standalone/deployments
-RUN touch $JBOSS_HOME/standalone/deployments/lada-server-2.2.0.war.dodeploy
+RUN mv target/lada-server-$LADA_VERSION.war $JBOSS_HOME/standalone/deployments
+RUN touch $JBOSS_HOME/standalone/deployments/lada-server-$LADA_VERSION.war.dodeploy
 
 ##configure lighttpd for apidoc
 RUN sed -i 's|server.document-root        = "/var/www/html"|server.document-root        = "/usr/src/lada-server/target/site/apidocs"|' /etc/lighttpd/lighttpd.conf
