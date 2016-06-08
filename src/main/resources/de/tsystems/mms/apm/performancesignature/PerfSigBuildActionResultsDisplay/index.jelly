@@ -99,7 +99,7 @@
                                                 <h4 class="panel-title">${%Dynatrace sessions}</h4>
                                             </div>
                                             <div class="panel-body">
-                                                <j:if test="${sessionFiles.isEmtpy()==false}">
+                                                <j:if test="${sessionFiles.isEmpty()==false}">
                                                     <a href="./getSession?testCase=${dashboardReport.name}" target="_blank">
                                                         <img src="${resURL}/plugin/performance-signature-dynatrace/images/dtsession.png"/>
                                                         ${it.PerfSigUtils.removeExtension(sessionFiles.get(0).name)}
