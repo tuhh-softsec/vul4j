@@ -84,7 +84,7 @@ public class ManagementURLBuilder {
         }
         try {
             return new URL(String.format("%1$s/rest/management/profiles/%2$s/storepurepaths?storedSessionName=%3$s&timeframeStart=%4$s&timeframeEnd=%5$s&" +
-                            "recordingOption=%4$s&isSessionLocked=%5$s&appendTimestamp=%6$s",
+                            "recordingOption=%6$s&isSessionLocked=%7$s&appendTimestamp=%8$s",
                     this.serverAddress, PerfSigUtils.encodeString(profileName), PerfSigUtils.encodeString(sessionName), timeframeStart, timeframeEnd,
                     recordingOption, sessionLocked, appendTimestamp));
         } catch (MalformedURLException e) {
