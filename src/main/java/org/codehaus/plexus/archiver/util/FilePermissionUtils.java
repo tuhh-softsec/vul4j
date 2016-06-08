@@ -1,5 +1,3 @@
-package org.codehaus.plexus.archiver.util;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,28 +16,28 @@ package org.codehaus.plexus.archiver.util;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.codehaus.plexus.archiver.util;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
 
-
-
 /**
  * @author Olivier Lamy
  * @since 1.0.1
- *
  */
 public class FilePermissionUtils
 {
+
     private FilePermissionUtils()
     {
         // no op
     }
-    
+
     /**
      * @param mode file mode "a la" unix ie 664, 440, etc
+     *
      * @return FilePermission associated to the mode (group permission are ignored here)
      */
     public static FilePermission getFilePermissionFromMode( String mode, Logger logger )
@@ -54,10 +52,8 @@ public class FilePermissionUtils
             throw new IllegalArgumentException( " file mode must be 3 or 4 characters" );
         }
 
-        
-        
-        List<String> modes = new ArrayList<String>(mode.length());
-        for (int i = 0,size = mode.length();i<size;i++)
+        List<String> modes = new ArrayList<String>( mode.length() );
+        for ( int i = 0, size = mode.length(); i < size; i++ )
         {
             modes.add( String.valueOf( mode.charAt( i ) ) );
         }
@@ -68,11 +64,11 @@ public class FilePermissionUtils
         // handle user perm
         try
         {
-            int userMode = Integer.valueOf(modes.get(mode.length() == 4 ? 1 : 0));
+            int userMode = Integer.valueOf( modes.get( mode.length() == 4 ? 1 : 0 ) );
             switch ( userMode )
             {
-                case 0 :
-                    break;                
+                case 0:
+                    break;
                 case 1:
                     executable = true;
                     break;
@@ -82,14 +78,14 @@ public class FilePermissionUtils
                 case 3:
                     writable = true;
                     executable = true;
-                    break;                    
+                    break;
                 case 4:
                     readable = true;
                     break;
                 case 5:
                     readable = true;
                     executable = true;
-                    break;                    
+                    break;
                 case 6:
                     readable = true;
                     writable = true;
@@ -107,16 +103,15 @@ public class FilePermissionUtils
         {
             throw new IllegalArgumentException( " file mode must contains only number " + mode );
         }
-        
-        
+
         // handle all perm
         try
         {
-            int allMode = Integer.valueOf(modes.get(mode.length() == 4 ? 3 : 2));
+            int allMode = Integer.valueOf( modes.get( mode.length() == 4 ? 3 : 2 ) );
             switch ( allMode )
             {
-                case 0 :
-                    break;                
+                case 0:
+                    break;
                 case 1:
                     executable = true;
                     ownerOnlyExecutable = false;
@@ -130,7 +125,7 @@ public class FilePermissionUtils
                     executable = true;
                     ownerOnlyExecutable = false;
                     ownerOnlyWritable = false;
-                    break;                    
+                    break;
                 case 4:
                     readable = true;
                     ownerOnlyReadable = false;
@@ -140,19 +135,19 @@ public class FilePermissionUtils
                     executable = true;
                     ownerOnlyReadable = false;
                     ownerOnlyExecutable = false;
-                    break;                    
+                    break;
                 case 6:
                     readable = true;
                     ownerOnlyReadable = false;
                     writable = true;
-                    ownerOnlyWritable = false;                    
+                    ownerOnlyWritable = false;
                     break;
                 case 7:
                     writable = true;
                     readable = true;
                     executable = true;
                     ownerOnlyReadable = false;
-                    ownerOnlyExecutable = false;   
+                    ownerOnlyExecutable = false;
                     ownerOnlyWritable = false;
                     break;
                 default:
@@ -162,10 +157,11 @@ public class FilePermissionUtils
         catch ( NumberFormatException e )
         {
             throw new IllegalArgumentException( " file mode must contains only number " + mode );
-        }        
-        
+        }
+
         return new FilePermission( executable, ownerOnlyExecutable, ownerOnlyReadable, readable, ownerOnlyWritable,
                                    writable );
+
     }
 
 }

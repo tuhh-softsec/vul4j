@@ -24,30 +24,40 @@ import org.apache.commons.compress.parallel.ScatterGatherBackingStore;
 
 public class DeferredScatterOutputStream implements ScatterGatherBackingStore
 {
+
     private final OffloadingOutputStream dfos;
 
-    public DeferredScatterOutputStream(int threshold) {
-          dfos = new OffloadingOutputStream(threshold, "scatterzipfragment", "zip", null);
+    public DeferredScatterOutputStream( int threshold )
+    {
+        dfos = new OffloadingOutputStream( threshold, "scatterzipfragment", "zip", null );
     }
 
     @Override
-    public InputStream getInputStream() throws IOException {
+    public InputStream getInputStream() throws IOException
+    {
         return dfos.getInputStream();
     }
 
     @Override
-    public void writeOut(byte[] data, int offset, int length) throws IOException {
-        dfos.write(data, offset, length);
+    public void writeOut( byte[] data, int offset, int length ) throws IOException
+    {
+        dfos.write( data, offset, length );
     }
 
     @Override
-    public void closeForWriting() throws IOException {
+    public void closeForWriting() throws IOException
+    {
         dfos.close();
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() throws IOException
+    {
         File file = dfos.getFile();
-        if (file != null) file.delete();
+        if ( file != null )
+        {
+            file.delete();
+        }
     }
+
 }

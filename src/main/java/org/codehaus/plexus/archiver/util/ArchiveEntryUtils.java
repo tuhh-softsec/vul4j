@@ -1,5 +1,3 @@
-package org.codehaus.plexus.archiver.util;
-
 /*
  * Copyright 2014 The Codehaus Foundation.
  *
@@ -15,6 +13,8 @@ package org.codehaus.plexus.archiver.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.codehaus.plexus.archiver.util;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -27,7 +27,7 @@ import org.codehaus.plexus.util.cli.CommandLineException;
 import org.codehaus.plexus.util.cli.CommandLineUtils;
 import org.codehaus.plexus.util.cli.Commandline;
 
-@SuppressWarnings("JavaDoc")
+@SuppressWarnings( "JavaDoc" )
 public final class ArchiveEntryUtils
 {
 
@@ -37,7 +37,7 @@ public final class ArchiveEntryUtils
     {
         try
         {
-            jvmFilePermAvailable = File.class.getMethod( "setReadable", Boolean.TYPE) != null;
+            jvmFilePermAvailable = File.class.getMethod( "setReadable", Boolean.TYPE ) != null;
         }
         catch ( final Exception e )
         {
@@ -56,7 +56,8 @@ public final class ArchiveEntryUtils
      * @param mode
      * @param logger
      * @param useJvmChmod
-     *            will use jvm file permissions <b>not available for group level</b>
+     * will use jvm file permissions <b>not available for group level</b>
+     *
      * @throws ArchiverException
      */
     public static void chmod( final File file, final int mode, final Logger logger, boolean useJvmChmod )
@@ -67,17 +68,18 @@ public final class ArchiveEntryUtils
             return;
         }
 
-		if (Java7Reflector.isAtLeastJava7())
-		{
-			try
-			{
-				Java7AttributeUtils.chmod(file, mode);
-				return;
-			} catch (IOException e)
-			{
-				throw new ArchiverException("Failed setting file attributes with java7+", e);
-			}
-		}
+        if ( Java7Reflector.isAtLeastJava7() )
+        {
+            try
+            {
+                Java7AttributeUtils.chmod( file, mode );
+                return;
+            }
+            catch ( IOException e )
+            {
+                throw new ArchiverException( "Failed setting file attributes with java7+", e );
+            }
+        }
 
         final String m = Integer.toOctalString( mode & 0xfff );
 
@@ -86,7 +88,7 @@ public final class ArchiveEntryUtils
             useJvmChmod = false;
         }
 
-        if (useJvmChmod)
+        if ( useJvmChmod )
         {
             applyPermissionsWithJvm( file, m, logger );
             return;
@@ -114,7 +116,6 @@ public final class ArchiveEntryUtils
             // commenting this debug statement, since it can produce VERY verbose output...
             // this method is called often during archive creation.
             // logger.debug( "Executing:\n\n" + commandline.toString() + "\n\n" );
-
             final CommandLineUtils.StringStreamConsumer stderr = new CommandLineUtils.StringStreamConsumer();
 
             final CommandLineUtils.StringStreamConsumer stdout = new CommandLineUtils.StringStreamConsumer();
@@ -145,10 +146,11 @@ public final class ArchiveEntryUtils
 
     /**
      * <b>jvm chmod will be used only if System property <code>useJvmChmod</code> set to true</b>
-     * 
+     *
      * @param file
      * @param mode
      * @param logger
+     *
      * @throws ArchiverException
      */
     public static void chmod( final File file, final int mode, final Logger logger )
@@ -163,30 +165,33 @@ public final class ArchiveEntryUtils
         final FilePermission filePermission;
         try
         {
-             filePermission = FilePermissionUtils.getFilePermissionFromMode(mode, logger);
-        } catch (IllegalArgumentException e)
+            filePermission = FilePermissionUtils.getFilePermissionFromMode( mode, logger );
+        }
+        catch ( IllegalArgumentException e )
         {
-            throw new ArchiverException("Problem getting permission from mode for " + file.getPath(), e);
+            throw new ArchiverException( "Problem getting permission from mode for " + file.getPath(), e );
         }
 
         Method method;
         try
         {
-            method = File.class.getMethod( "setReadable", Boolean.TYPE, Boolean.TYPE);
+            method = File.class.getMethod( "setReadable", Boolean.TYPE, Boolean.TYPE );
 
             method.invoke( file,
-					filePermission.isReadable(),
-					filePermission.isOwnerOnlyReadable());
+                           filePermission.isReadable(),
+                           filePermission.isOwnerOnlyReadable() );
 
-            method = File.class.getMethod( "setExecutable", Boolean.TYPE, Boolean.TYPE);
-            method.invoke( file,
-					filePermission.isExecutable(),
-					filePermission.isOwnerOnlyExecutable());
+            method = File.class.getMethod( "setExecutable", Boolean.TYPE, Boolean.TYPE );
 
-            method = File.class.getMethod( "setWritable", Boolean.TYPE, Boolean.TYPE);
             method.invoke( file,
-					filePermission.isWritable(),
-					filePermission.isOwnerOnlyWritable());
+                           filePermission.isExecutable(),
+                           filePermission.isOwnerOnlyExecutable() );
+
+            method = File.class.getMethod( "setWritable", Boolean.TYPE, Boolean.TYPE );
+
+            method.invoke( file,
+                           filePermission.isWritable(),
+                           filePermission.isOwnerOnlyWritable() );
         }
         catch ( final Exception e )
         {

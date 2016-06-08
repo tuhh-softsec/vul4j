@@ -1,21 +1,20 @@
-package org.codehaus.plexus.archiver.util;
-
 /**
  *
  * Copyright 2004 The Apache Software Foundation
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+package org.codehaus.plexus.archiver.util;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,16 +25,14 @@ import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.util.IOUtil;
 
-/**
- * @version $Revision$ $Date$
- */
 public abstract class Compressor
     extends AbstractLogEnabled
 {
+
     private File destFile;
 
     private PlexusIoResource source;
-    
+
     /**
      * the required destination file.
      *
@@ -72,12 +69,13 @@ public abstract class Compressor
      *
      * @param in
      * @param zOut
+     *
      * @throws IOException
      */
     private void compressFile( InputStream in, OutputStream zOut )
         throws IOException
     {
-        byte[] buffer = new byte[8 * 1024];
+        byte[] buffer = new byte[ 8 * 1024 ];
         int count = 0;
         do
         {
@@ -109,17 +107,18 @@ public abstract class Compressor
 
     /**
      * subclasses must implement this method to do their compression
-     * 
+     *
      * this is public so the process of compression and closing can be dealt with separately.
      */
     public abstract void compress()
         throws ArchiverException;
-    
+
     /**
      * subclasses must implement this method to cleanup after compression
-     * 
+     *
      * this is public so the process of compression and closing can be dealt with separately.
      */
     public abstract void close()
         throws ArchiverException;
+
 }

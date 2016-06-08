@@ -6,13 +6,13 @@ import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
 import org.codehaus.plexus.archiver.util.Streams;
 
-
 /**
  * Extension of {@link TarFile} for gzip compressed files.
  */
 public class GZipTarFile
     extends TarFile
 {
+
     /**
      * Creates a new instance with the given file.
      */
@@ -27,4 +27,5 @@ public class GZipTarFile
     {
         return Streams.bufferedInputStream( new GZIPInputStream( super.getInputStream( file ) ) );
     }
+
 }

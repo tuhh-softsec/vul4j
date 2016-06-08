@@ -1,5 +1,3 @@
-package org.codehaus.plexus.archiver.diags;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.codehaus.plexus.archiver.diags;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.codehaus.plexus.archiver.diags;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,6 +43,7 @@ import org.codehaus.plexus.util.StringUtils;
 public class TrackingArchiver
     implements Archiver
 {
+
     private File destFile;
 
     public final List<Addition> added = new ArrayList<Addition>();
@@ -85,7 +85,8 @@ public class TrackingArchiver
         throws ArchiverException
     {
         added.add( new Addition( directory, prefix, includes, excludes,
-            PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
+                                 PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
+
     }
 
     @Override
@@ -143,7 +144,8 @@ public class TrackingArchiver
         throws ArchiverException
     {
         added.add( new Addition( archiveFile, null, includes, excludes,
-            PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
+                                 PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
+
     }
 
     @Override
@@ -152,7 +154,8 @@ public class TrackingArchiver
         throws ArchiverException
     {
         added.add( new Addition( archiveFile, prefix, includes, excludes,
-            PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
+                                 PlexusIoResourceAttributes.UNKNOWN_OCTAL_MODE ) );
+
     }
 
     @Override
@@ -267,13 +270,12 @@ public class TrackingArchiver
     {
     }
 
-    public
-    @Nonnull
+    public @Nonnull
     @Override
     ResourceIterator getResources()
         throws ArchiverException
     {
-        throw new RuntimeException("Not implemented");
+        throw new RuntimeException( "Not implemented" );
     }
 
     @SuppressWarnings( "rawtypes" )
@@ -313,6 +315,7 @@ public class TrackingArchiver
 
     public class Addition
     {
+
         /**
          * {@inheritDoc}
          *
@@ -322,11 +325,11 @@ public class TrackingArchiver
         public String toString()
         {
             return "Addition (\n    resource= " + resource + "\n    directory= " + directory + "\n    destination= "
-                + destination + "\n    permissions= " + permissions + "\n    includes= " + ( includes == null
-                ? "-none-"
-                : StringUtils.join( includes, ", " ) ) + "\n    excludes= " + ( excludes == null
-                ? "-none-"
-                : StringUtils.join( excludes, ", " ) ) + "\n)";
+                       + destination + "\n    permissions= " + permissions + "\n    includes= "
+                       + ( includes == null ? "-none-" : StringUtils.join( includes, ", " ) )
+                       + "\n    excludes= "
+                       + ( excludes == null ? "-none-" : StringUtils.join( excludes, ", " ) ) + "\n)";
+
         }
 
         public final Object resource;
@@ -345,7 +348,7 @@ public class TrackingArchiver
                          final String[] excludes, final int permissions )
         {
             this.resource = resource;
-            if ( resource instanceof FileSet)
+            if ( resource instanceof FileSet )
             {
                 final FileSet fs = (FileSet) resource;
                 directory = fs.getDirectory();
@@ -371,6 +374,7 @@ public class TrackingArchiver
                 this.permissions = permissions;
             }
         }
+
     }
 
     @Override
@@ -396,4 +400,5 @@ public class TrackingArchiver
     {
         this.ignorePermissions = ignorePermissions;
     }
+
 }

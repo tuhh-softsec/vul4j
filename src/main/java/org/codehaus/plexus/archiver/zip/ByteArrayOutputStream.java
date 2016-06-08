@@ -28,7 +28,6 @@ import java.util.Collections;
 import java.util.List;
 import org.apache.commons.io.input.ClosedInputStream;
 
-
 /**
  * This class implements an output stream in which the data is
  * written into a byte array. The buffer automatically grows as data
@@ -49,49 +48,71 @@ import org.apache.commons.io.input.ClosedInputStream;
  * the contents don't have to be copied to the new buffer. This class is
  * designed to behave exactly like the original. The only exception is the
  * deprecated toString(int) method that has been ignored.
- *
- * @version $Id$
  */
-public class ByteArrayOutputStream extends OutputStream {
+public class ByteArrayOutputStream extends OutputStream
+{
 
-    /** A singleton empty byte array. */
-    private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
+    /**
+     * A singleton empty byte array.
+     */
+    private static final byte[] EMPTY_BYTE_ARRAY = new byte[ 0 ];
 
-    /** The list of buffers, which grows and never reduces. */
+    /**
+     * The list of buffers, which grows and never reduces.
+     */
     private final List<byte[]> buffers = new ArrayList<byte[]>();
-    /** The index of the current buffer. */
+
+    /**
+     * The index of the current buffer.
+     */
     private int currentBufferIndex;
-    /** The total count of bytes in all the filled buffers. */
+
+    /**
+     * The total count of bytes in all the filled buffers.
+     */
     private int filledBufferSum;
-    /** The current buffer. */
+
+    /**
+     * The current buffer.
+     */
     private byte[] currentBuffer;
-    /** The total count of bytes written. */
+
+    /**
+     * The total count of bytes written.
+     */
     private int count;
-    /** Flag to indicate if the buffers can be reused after reset */
+
+    /**
+     * Flag to indicate if the buffers can be reused after reset
+     */
     private boolean reuseBuffers = true;
 
     /**
      * Creates a new byte array output stream. The buffer capacity is
      * initially 1024 bytes, though its size increases if necessary.
      */
-    public ByteArrayOutputStream() {
-        this(1024);
+    public ByteArrayOutputStream()
+    {
+        this( 1024 );
     }
 
     /**
      * Creates a new byte array output stream, with a buffer capacity of
      * the specified size, in bytes.
      *
-     * @param size  the initial size
+     * @param size the initial size
+     *
      * @throws IllegalArgumentException if size is negative
      */
-    public ByteArrayOutputStream(final int size) {
-        if (size < 0) {
-            throw new IllegalArgumentException(
-                "Negative initial size: " + size);
+    public ByteArrayOutputStream( final int size )
+    {
+        if ( size < 0 )
+        {
+            throw new IllegalArgumentException( "Negative initial size: " + size );
         }
-        synchronized (this) {
-            needNewBuffer(size);
+        synchronized ( this )
+        {
+            needNewBuffer( size );
         }
     }
 
@@ -99,61 +120,76 @@ public class ByteArrayOutputStream extends OutputStream {
      * Makes a new buffer available either by allocating
      * a new one or re-cycling an existing one.
      *
-     * @param newcount  the size of the buffer if one is created
+     * @param newcount the size of the buffer if one is created
      */
-    private void needNewBuffer(final int newcount) {
-        if (currentBufferIndex < buffers.size() - 1) {
+    private void needNewBuffer( final int newcount )
+    {
+        if ( currentBufferIndex < buffers.size() - 1 )
+        {
             //Recycling old buffer
             filledBufferSum += currentBuffer.length;
 
             currentBufferIndex++;
-            currentBuffer = buffers.get(currentBufferIndex);
-        } else {
+            currentBuffer = buffers.get( currentBufferIndex );
+        }
+        else
+        {
             //Creating new buffer
             int newBufferSize;
-            if (currentBuffer == null) {
+            if ( currentBuffer == null )
+            {
                 newBufferSize = newcount;
                 filledBufferSum = 0;
-            } else {
+            }
+            else
+            {
                 newBufferSize = Math.max(
                     currentBuffer.length << 1,
-                    newcount - filledBufferSum);
+                    newcount - filledBufferSum );
                 filledBufferSum += currentBuffer.length;
             }
 
             currentBufferIndex++;
-            currentBuffer = new byte[newBufferSize];
-            buffers.add(currentBuffer);
+            currentBuffer = new byte[ newBufferSize ];
+            buffers.add( currentBuffer );
         }
     }
 
     /**
      * Write the bytes to byte array.
+     *
      * @param b the bytes to write
      * @param off The start offset
      * @param len The number of bytes to write
      */
     @Override
-    public void write(final byte[] b, final int off, final int len) {
-        if ((off < 0)
-                || (off > b.length)
-                || (len < 0)
-                || ((off + len) > b.length)
-                || ((off + len) < 0)) {
+    public void write( final byte[] b, final int off, final int len )
+    {
+        if ( ( off < 0 )
+                 || ( off > b.length )
+                 || ( len < 0 )
+                 || ( ( off + len ) > b.length )
+                 || ( ( off + len ) < 0 ) )
+        {
             throw new IndexOutOfBoundsException();
-        } else if (len == 0) {
+        }
+        else if ( len == 0 )
+        {
             return;
         }
-        synchronized (this) {
+        synchronized ( this )
+        {
             final int newcount = count + len;
             int remaining = len;
             int inBufferPos = count - filledBufferSum;
-            while (remaining > 0) {
-                final int part = Math.min(remaining, currentBuffer.length - inBufferPos);
-                System.arraycopy(b, off + len - remaining, currentBuffer, inBufferPos, part);
+            while ( remaining > 0 )
+            {
+                final int part = Math.min( remaining, currentBuffer.length - inBufferPos );
+                System.arraycopy( b, off + len - remaining, currentBuffer, inBufferPos, part );
                 remaining -= part;
-                if (remaining > 0) {
-                    needNewBuffer(newcount);
+                if ( remaining > 0 )
+                {
+                    needNewBuffer( newcount );
                     inBufferPos = 0;
                 }
             }
@@ -163,13 +199,16 @@ public class ByteArrayOutputStream extends OutputStream {
 
     /**
      * Write a byte to byte array.
+     *
      * @param b the byte to write
      */
     @Override
-    public synchronized void write(final int b) {
+    public synchronized void write( final int b )
+    {
         int inBufferPos = count - filledBufferSum;
-        if (inBufferPos == currentBuffer.length) {
-            needNewBuffer(count + 1);
+        if ( inBufferPos == currentBuffer.length )
+        {
+            needNewBuffer( count + 1 );
             inBufferPos = 0;
         }
         currentBuffer[inBufferPos] = (byte) b;
@@ -182,33 +221,40 @@ public class ByteArrayOutputStream extends OutputStream {
      * internal buffers of this streams.
      *
      * @param in the input stream to read from
+     *
      * @return total number of bytes read from the input stream
-     *         (and written to this stream)
+     * (and written to this stream)
+     *
      * @throws java.io.IOException if an I/O error occurs while reading the input stream
      * @since 1.4
      */
-    public synchronized int write(final InputStream in) throws IOException {
+    public synchronized int write( final InputStream in ) throws IOException
+    {
         int readCount = 0;
         int inBufferPos = count - filledBufferSum;
-        int n = in.read(currentBuffer, inBufferPos, currentBuffer.length - inBufferPos);
-        while (n != -1) {
+        int n = in.read( currentBuffer, inBufferPos, currentBuffer.length - inBufferPos );
+        while ( n != -1 )
+        {
             readCount += n;
             inBufferPos += n;
             count += n;
-            if (inBufferPos == currentBuffer.length) {
-                needNewBuffer(currentBuffer.length);
+            if ( inBufferPos == currentBuffer.length )
+            {
+                needNewBuffer( currentBuffer.length );
                 inBufferPos = 0;
             }
-            n = in.read(currentBuffer, inBufferPos, currentBuffer.length - inBufferPos);
+            n = in.read( currentBuffer, inBufferPos, currentBuffer.length - inBufferPos );
         }
         return readCount;
     }
 
     /**
      * Return the current size of the byte array.
+     *
      * @return the current size of the byte array
      */
-    public synchronized int size() {
+    public synchronized int size()
+    {
         return count;
     }
 
@@ -221,25 +267,30 @@ public class ByteArrayOutputStream extends OutputStream {
      * but it has to now due to backwards compatibility)
      */
     @Override
-    public void close() throws IOException {
+    public void close() throws IOException
+    {
         //nop
     }
 
     /**
      * @see java.io.ByteArrayOutputStream#reset()
      */
-    public synchronized void reset() {
+    public synchronized void reset()
+    {
         count = 0;
         filledBufferSum = 0;
         currentBufferIndex = 0;
-        if (reuseBuffers) {
-            currentBuffer = buffers.get(currentBufferIndex);
-        } else {
+        if ( reuseBuffers )
+        {
+            currentBuffer = buffers.get( currentBufferIndex );
+        }
+        else
+        {
             //Throw away old buffers
             currentBuffer = null;
-            int size = buffers.get(0).length;
+            int size = buffers.get( 0 ).length;
             buffers.clear();
-            needNewBuffer(size);
+            needNewBuffer( size );
             reuseBuffers = true;
         }
     }
@@ -248,17 +299,21 @@ public class ByteArrayOutputStream extends OutputStream {
      * Writes the entire contents of this byte stream to the
      * specified output stream.
      *
-     * @param out  the output stream to write to
+     * @param out the output stream to write to
+     *
      * @throws java.io.IOException if an I/O error occurs, such as if the stream is closed
      * @see java.io.ByteArrayOutputStream#writeTo(java.io.OutputStream)
      */
-    public synchronized void writeTo(final OutputStream out) throws IOException {
+    public synchronized void writeTo( final OutputStream out ) throws IOException
+    {
         int remaining = count;
-        for (final byte[] buf : buffers) {
-            final int c = Math.min(buf.length, remaining);
-            out.write(buf, 0, c);
+        for ( final byte[] buf : buffers )
+        {
+            final int c = Math.min( buf.length, remaining );
+            out.write( buf, 0, c );
             remaining -= c;
-            if (remaining == 0) {
+            if ( remaining == 0 )
+            {
                 break;
             }
         }
@@ -281,13 +336,16 @@ public class ByteArrayOutputStream extends OutputStream {
      * <code>BufferedInputStream</code>.
      *
      * @param input Stream to be fully buffered.
+     *
      * @return A fully buffered stream.
+     *
      * @throws java.io.IOException if an I/O error occurs
      * @since 2.0
      */
-    public static InputStream toBufferedInputStream(final InputStream input)
-            throws IOException {
-        return toBufferedInputStream(input, 1024);
+    public static InputStream toBufferedInputStream( final InputStream input )
+        throws IOException
+    {
+        return toBufferedInputStream( input, 1024 );
     }
 
     /**
@@ -308,16 +366,19 @@ public class ByteArrayOutputStream extends OutputStream {
      *
      * @param input Stream to be fully buffered.
      * @param size the initial buffer size
+     *
      * @return A fully buffered stream.
+     *
      * @throws java.io.IOException if an I/O error occurs
      * @since 2.5
      */
-    public static InputStream toBufferedInputStream(final InputStream input, int size)
-            throws IOException {
+    public static InputStream toBufferedInputStream( final InputStream input, int size )
+        throws IOException
+    {
         // It does not matter if a ByteArrayOutputStream is not closed as close() is a no-op
-        @SuppressWarnings("resource")
-        final ByteArrayOutputStream output = new ByteArrayOutputStream(size);
-        output.write(input);
+        @SuppressWarnings( "resource" )
+        final ByteArrayOutputStream output = new ByteArrayOutputStream( size );
+        output.write( input );
         return output.toInputStream();
     }
 
@@ -327,26 +388,31 @@ public class ByteArrayOutputStream extends OutputStream {
      * avoiding memory allocation and copy, thus saving space and time.<br>
      *
      * @return the current contents of this output stream.
+     *
      * @see java.io.ByteArrayOutputStream#toByteArray()
      * @see #reset()
      * @since 2.5
      */
-    public synchronized InputStream toInputStream() {
+    public synchronized InputStream toInputStream()
+    {
         int remaining = count;
-        if (remaining == 0) {
+        if ( remaining == 0 )
+        {
             return new ClosedInputStream();
         }
-        final List<ByteArrayInputStream> list = new ArrayList<ByteArrayInputStream>(buffers.size());
-        for (final byte[] buf : buffers) {
-            final int c = Math.min(buf.length, remaining);
-            list.add(new ByteArrayInputStream(buf, 0, c));
+        final List<ByteArrayInputStream> list = new ArrayList<ByteArrayInputStream>( buffers.size() );
+        for ( final byte[] buf : buffers )
+        {
+            final int c = Math.min( buf.length, remaining );
+            list.add( new ByteArrayInputStream( buf, 0, c ) );
             remaining -= c;
-            if (remaining == 0) {
+            if ( remaining == 0 )
+            {
                 break;
             }
         }
         reuseBuffers = false;
-        return new SequenceInputStream(Collections.enumeration(list));
+        return new SequenceInputStream( Collections.enumeration( list ) );
     }
 
     /**
@@ -354,21 +420,26 @@ public class ByteArrayOutputStream extends OutputStream {
      * The result is independent of this stream.
      *
      * @return the current contents of this output stream, as a byte array
+     *
      * @see java.io.ByteArrayOutputStream#toByteArray()
      */
-    public synchronized byte[] toByteArray() {
+    public synchronized byte[] toByteArray()
+    {
         int remaining = count;
-        if (remaining == 0) {
+        if ( remaining == 0 )
+        {
             return EMPTY_BYTE_ARRAY;
         }
-        final byte newbuf[] = new byte[remaining];
+        final byte newbuf[] = new byte[ remaining ];
         int pos = 0;
-        for (final byte[] buf : buffers) {
-            final int c = Math.min(buf.length, remaining);
-            System.arraycopy(buf, 0, newbuf, pos, c);
+        for ( final byte[] buf : buffers )
+        {
+            final int c = Math.min( buf.length, remaining );
+            System.arraycopy( buf, 0, newbuf, pos, c );
             pos += c;
             remaining -= c;
-            if (remaining == 0) {
+            if ( remaining == 0 )
+            {
                 break;
             }
         }
@@ -378,41 +449,50 @@ public class ByteArrayOutputStream extends OutputStream {
     /**
      * Gets the curent contents of this byte stream as a string
      * using the platform default charset.
+     *
      * @return the contents of the byte array as a String
+     *
      * @see java.io.ByteArrayOutputStream#toString()
      * @deprecated 2.5 use {@link #toString(String)} instead
      */
     @Override
     @Deprecated
-    public String toString() {
+    public String toString()
+    {
         // make explicit the use of the default charset
-        return new String(toByteArray(), Charset.defaultCharset());
+        return new String( toByteArray(), Charset.defaultCharset() );
     }
 
     /**
      * Gets the curent contents of this byte stream as a string
      * using the specified encoding.
      *
-     * @param enc  the name of the character encoding
+     * @param enc the name of the character encoding
+     *
      * @return the string converted from the byte array
+     *
      * @throws java.io.UnsupportedEncodingException if the encoding is not supported
      * @see java.io.ByteArrayOutputStream#toString(String)
      */
-    public String toString(final String enc) throws UnsupportedEncodingException {
-        return new String(toByteArray(), enc);
+    public String toString( final String enc ) throws UnsupportedEncodingException
+    {
+        return new String( toByteArray(), enc );
     }
 
     /**
      * Gets the curent contents of this byte stream as a string
      * using the specified encoding.
      *
-     * @param charset  the character encoding
+     * @param charset the character encoding
+     *
      * @return the string converted from the byte array
+     *
      * @see java.io.ByteArrayOutputStream#toString(String)
      * @since 2.5
      */
-    public String toString(final Charset charset) {
-        return new String(toByteArray(), charset);
+    public String toString( final Charset charset )
+    {
+        return new String( toByteArray(), charset );
     }
 
 }

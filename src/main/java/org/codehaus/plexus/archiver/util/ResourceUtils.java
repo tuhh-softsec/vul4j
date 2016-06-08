@@ -14,6 +14,7 @@ import org.codehaus.plexus.util.IOUtil;
  */
 public class ResourceUtils
 {
+
     /**
      * Private constructor, to prevent accidental implementation.
      */
@@ -125,7 +126,7 @@ public class ResourceUtils
     {
         if ( resource instanceof FileSupplier )
         {
-            File resourceFile = ((FileSupplier) resource).getFile();
+            File resourceFile = ( (FileSupplier) resource ).getFile();
             return file.equals( resourceFile );
         }
         return false;
@@ -139,11 +140,12 @@ public class ResourceUtils
     public static boolean isCanonicalizedSame( PlexusIoResource resource, File file )
         throws IOException
     {
-        if ( resource instanceof FileSupplier)
+        if ( resource instanceof FileSupplier )
         {
-            File resourceFile = ((FileSupplier) resource).getFile();
+            File resourceFile = ( (FileSupplier) resource ).getFile();
             return file.getCanonicalFile().equals( resourceFile.getCanonicalFile() );
         }
         return false;
     }
+
 }

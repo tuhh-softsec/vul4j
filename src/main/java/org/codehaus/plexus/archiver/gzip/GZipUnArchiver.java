@@ -1,21 +1,20 @@
-package org.codehaus.plexus.archiver.gzip;
-
 /**
  *
  * Copyright 2004 The Apache Software Foundation
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+package org.codehaus.plexus.archiver.gzip;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,13 +30,12 @@ import static org.codehaus.plexus.archiver.util.Streams.fileOutputStream;
 
 /**
  * @author <a href="mailto:evenisse@codehaus.org">Emmanuel Venisse</a>
- * @version $Revision$ $Date$
  */
 public class GZipUnArchiver
     extends AbstractUnArchiver
 {
-    private static final String OPERATION_GZIP = "gzip";
 
+    private static final String OPERATION_GZIP = "gzip";
 
     public GZipUnArchiver()
     {
@@ -54,8 +52,8 @@ public class GZipUnArchiver
     {
         if ( getSourceFile().lastModified() > getDestFile().lastModified() )
         {
-            getLogger().info(
-                "Expanding " + getSourceFile().getAbsolutePath() + " to " + getDestFile().getAbsolutePath() );
+            getLogger().info( "Expanding " + getSourceFile().getAbsolutePath() + " to "
+                                  + getDestFile().getAbsolutePath() );
 
             copyFully( getGzipInputStream( fileInputStream( getSourceFile(), OPERATION_GZIP ) ),
                        fileOutputStream( getDestFile(), OPERATION_GZIP ), OPERATION_GZIP );
@@ -80,4 +78,5 @@ public class GZipUnArchiver
     {
         throw new UnsupportedOperationException( "Targeted extraction not supported in GZIP format." );
     }
+
 }

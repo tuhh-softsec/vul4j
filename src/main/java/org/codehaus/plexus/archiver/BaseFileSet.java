@@ -4,33 +4,34 @@ import javax.annotation.CheckForNull;
 import org.codehaus.plexus.components.io.fileselectors.FileSelector;
 import org.codehaus.plexus.components.io.functions.InputStreamTransformer;
 
-
 /**
  * A file set is a set of files, which may be added to an
  * archive.
+ *
  * @since 1.0-alpha-9
  */
 public interface BaseFileSet
 {
+
     /**
      * Returns the prefix, which the file sets contents shall
      * have.
      */
-	@CheckForNull
-	String getPrefix();
+    @CheckForNull
+    String getPrefix();
 
     /**
      * Returns a string of patterns, which included files
      * should match.
      */
-	@CheckForNull
+    @CheckForNull
     String[] getIncludes();
 
     /**
      * Returns a string of patterns, which excluded files
      * should match.
      */
-	@CheckForNull
+    @CheckForNull
     String[] getExcludes();
 
     /**
@@ -54,15 +55,14 @@ public interface BaseFileSet
      * Returns a set of file selectors, which should be used
      * to select the included files.
      */
-	@CheckForNull
+    @CheckForNull
     FileSelector[] getFileSelectors();
 
     /**
      * Returns the InputStreamTransformers that can be applied to this fileset
+     *
      * @return The transformers.
      */
-
     InputStreamTransformer getStreamTransformer();
-
 
 }

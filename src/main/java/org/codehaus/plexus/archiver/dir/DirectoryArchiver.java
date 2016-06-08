@@ -1,5 +1,3 @@
-package org.codehaus.plexus.archiver.dir;
-
 /*
  * Copyright 2001-2005 The Apache Software Foundation.
  *
@@ -15,6 +13,7 @@ package org.codehaus.plexus.archiver.dir;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.codehaus.plexus.archiver.dir;
 
 import java.io.File;
 import java.io.IOException;
@@ -115,11 +114,11 @@ public class DirectoryArchiver
     /**
      * Copies the specified file to the specified path, creating any ancestor directory structure as necessary.
      *
-     * @param entry the entry top copy
-     *              The file to copy (IOException will be thrown if this does not exist)
+     * @param entry The file to copy (IOException will be thrown if this does not exist)
      * @param vPath The fully qualified path to copy the file to.
+     *
      * @throws ArchiverException If there is a problem creating the directory structure
-     * @throws IOException       If there is a problem copying the file
+     * @throws IOException If there is a problem copying the file
      */
     protected void copyFile( final ArchiveEntry entry, final String vPath )
         throws ArchiverException, IOException
@@ -175,11 +174,13 @@ public class DirectoryArchiver
 
             directoryChmods.add( new Runnable()
             {
+
                 @Override
                 public void run()
                 {
                     setFileModes( entry, outFile, inLastModified );
                 }
+
             } );
         }
 
@@ -217,4 +218,5 @@ public class DirectoryArchiver
     {
         return "directory";
     }
+
 }

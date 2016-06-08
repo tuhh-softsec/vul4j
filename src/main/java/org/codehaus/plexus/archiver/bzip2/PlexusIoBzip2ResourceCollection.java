@@ -13,7 +13,6 @@ import org.codehaus.plexus.components.io.resources.PlexusIoCompressedFileResourc
 import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
 import org.codehaus.plexus.util.IOUtil;
 
-
 /**
  * Implementation of {@link PlexusIoResourceCollection} for
  * bzip2 compressed files.
@@ -21,6 +20,7 @@ import org.codehaus.plexus.util.IOUtil;
 public class PlexusIoBzip2ResourceCollection
     extends PlexusIoCompressedFileResourceCollection
 {
+
     @Nonnull
     @Override
     protected @WillNotClose
@@ -40,14 +40,15 @@ public class PlexusIoBzip2ResourceCollection
         }
     }
 
-
-	@Override protected PlexusIoResourceAttributes getAttributes(File file) throws IOException {
-        return new Java7FileAttributes(file, new HashMap<Integer, String>(), new HashMap<Integer, String>());
-	}
+    @Override protected PlexusIoResourceAttributes getAttributes( File file ) throws IOException
+    {
+        return new Java7FileAttributes( file, new HashMap<Integer, String>(), new HashMap<Integer, String>() );
+    }
 
     @Override
-	protected String getDefaultExtension()
+    protected String getDefaultExtension()
     {
         return ".bz2";
     }
+
 }

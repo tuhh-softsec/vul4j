@@ -32,7 +32,7 @@ public class PlexusArchiverZipFileResourceCollection
         {
             throw new IOException( "The tar archive file has not been set." );
         }
-        final ZipFile zipFile = new ZipFile( f, charset != null ? charset.name() : "UTF8");
+        final ZipFile zipFile = new ZipFile( f, charset != null ? charset.name() : "UTF8" );
         return new CloseableIterator( zipFile );
     }
 
@@ -46,6 +46,7 @@ public class PlexusArchiverZipFileResourceCollection
     class CloseableIterator
         implements Iterator<PlexusIoResource>, Closeable
     {
+
         final Enumeration en;
 
         private final ZipFile zipFile;
@@ -57,7 +58,8 @@ public class PlexusArchiverZipFileResourceCollection
         }
 
         @Override
-        public boolean hasNext ( ) {
+        public boolean hasNext()
+        {
             return en.hasMoreElements();
         }
 
@@ -65,10 +67,10 @@ public class PlexusArchiverZipFileResourceCollection
         public PlexusIoResource next()
         {
             final ZipArchiveEntry entry = (ZipArchiveEntry) en.nextElement();
-
             return entry.isUnixSymlink()
-                ? new ZipSymlinkResource( zipFile, entry, getStreamTransformer() )
-                : new ZipResource( zipFile, entry, getStreamTransformer() );
+                       ? new ZipSymlinkResource( zipFile, entry, getStreamTransformer() )
+                       : new ZipResource( zipFile, entry, getStreamTransformer() );
+
         }
 
         @Override
@@ -83,11 +85,13 @@ public class PlexusArchiverZipFileResourceCollection
         {
             zipFile.close();
         }
+
     }
 
     @Override
     public void setEncoding( Charset charset )
     {
-       this.charset = charset;
+        this.charset = charset;
     }
+
 }

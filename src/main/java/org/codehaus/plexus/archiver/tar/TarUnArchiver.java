@@ -1,21 +1,20 @@
-package org.codehaus.plexus.archiver.tar;
-
 /**
  *
  * Copyright 2004 The Apache Software Foundation
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+package org.codehaus.plexus.archiver.tar;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -35,11 +34,11 @@ import org.iq80.snappy.SnappyInputStream;
 
 /**
  * @author <a href="mailto:evenisse@codehaus.org">Emmanuel Venisse</a>
- * @version $Revision$ $Date$
  */
 public class TarUnArchiver
     extends AbstractUnArchiver
 {
+
     public TarUnArchiver()
     {
     }
@@ -113,8 +112,8 @@ public class TarUnArchiver
                     final String symlinkDestination = te.isSymbolicLink() ? te.getLinkName() : null;
                     extractFile( sourceFile, destDirectory, tis, te.getName(), te.getModTime(), te.isDirectory(),
                                  te.getMode() != 0 ? te.getMode() : null, symlinkDestination );
-                }
 
+                }
             }
             getLogger().debug( "expand complete" );
             tis.close();
@@ -134,9 +133,11 @@ public class TarUnArchiver
      * This method wraps the input stream with the
      * corresponding decompression method
      *
-     * @param file    provides location information for BuildException
+     * @param file provides location information for BuildException
      * @param istream input stream
+     *
      * @return input stream with on-the-fly decompression
+     *
      * @throws IOException thrown by GZIPInputStream constructor
      */
     private InputStream decompress( UntarCompressionMethod compression, final File file, final InputStream istream )
@@ -153,10 +154,10 @@ public class TarUnArchiver
         else if ( compression == UntarCompressionMethod.SNAPPY )
         {
             return new SnappyInputStream( istream, true );
-        } 
-        else if (compression == UntarCompressionMethod.XZ) 
+        }
+        else if ( compression == UntarCompressionMethod.XZ )
         {
-            return new XZCompressorInputStream(istream);
+            return new XZCompressorInputStream( istream );
         }
         return istream;
     }
@@ -166,11 +167,12 @@ public class TarUnArchiver
      */
     public static enum UntarCompressionMethod
     {
+
         NONE( "none" ),
         GZIP( "gzip" ),
         BZIP2( "bzip2" ),
         SNAPPY( "snappy" ),
-        XZ("xz");
+        XZ( "xz" );
 
         final String value;
 
@@ -183,4 +185,5 @@ public class TarUnArchiver
         }
 
     }
+
 }

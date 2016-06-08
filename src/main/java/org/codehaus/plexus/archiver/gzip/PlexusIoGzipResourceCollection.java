@@ -13,7 +13,6 @@ import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.resources.PlexusIoCompressedFileResourceCollection;
 import org.codehaus.plexus.util.IOUtil;
 
-
 /**
  * Abstract base class for compressed files, aka singleton
  * resource collections.
@@ -21,6 +20,7 @@ import org.codehaus.plexus.util.IOUtil;
 public class PlexusIoGzipResourceCollection
     extends PlexusIoCompressedFileResourceCollection
 {
+
     @Override
     protected String getDefaultExtension()
     {
@@ -51,4 +51,5 @@ public class PlexusIoGzipResourceCollection
     {
         return new Java7FileAttributes( file, new HashMap<Integer, String>(), new HashMap<Integer, String>() );
     }
+
 }

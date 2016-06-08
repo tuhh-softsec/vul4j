@@ -8,6 +8,7 @@ import java.io.InputStream;
 @Deprecated
 public interface ArchiveFileFilter
 {
+
     boolean include( InputStream dataStream, String entryName );
 
 }

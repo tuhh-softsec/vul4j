@@ -1,4 +1,3 @@
-package org.codehaus.plexus.archiver.tar;
 /*
  * Copyright 2010-2015 The plexus developers.
  *
@@ -14,6 +13,7 @@ package org.codehaus.plexus.archiver.tar;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.codehaus.plexus.archiver.tar;
 
 import java.io.Closeable;
 import java.io.File;
@@ -24,10 +24,10 @@ import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.codehaus.plexus.components.io.resources.AbstractPlexusIoArchiveResourceCollection;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 
-
 public class PlexusIoTarFileResourceCollection
     extends AbstractPlexusIoArchiveResourceCollection implements Closeable
 {
+
     /**
      * The zip file resource collections role hint.
      */
@@ -44,8 +44,10 @@ public class PlexusIoTarFileResourceCollection
     public void close()
         throws IOException
     {
-        if (tarFile != null) tarFile.close();
-
+        if ( tarFile != null )
+        {
+            tarFile.close();
+        }
     }
 
     @Override
@@ -63,11 +65,14 @@ public class PlexusIoTarFileResourceCollection
         {
             throw new IOException( "The tar archive file has not been set." );
         }
-        if (tarFile == null)
-          tarFile = newTarFile( f );
+        if ( tarFile == null )
+        {
+            tarFile = newTarFile( f );
+        }
         final Enumeration en = tarFile.getEntries();
         return new Iterator<PlexusIoResource>()
         {
+
             @Override
             public boolean hasNext()
             {
@@ -79,8 +84,8 @@ public class PlexusIoTarFileResourceCollection
             {
                 final TarArchiveEntry entry = (TarArchiveEntry) en.nextElement();
                 return entry.isSymbolicLink()
-                    ? new TarSymlinkResource( tarFile, entry )
-                    : new TarResource( tarFile, entry );
+                           ? new TarSymlinkResource( tarFile, entry )
+                           : new TarResource( tarFile, entry );
             }
 
             @Override
@@ -88,6 +93,8 @@ public class PlexusIoTarFileResourceCollection
             {
                 throw new UnsupportedOperationException( "Removing isn't implemented." );
             }
+
         };
     }
+
 }

@@ -1,5 +1,3 @@
-package org.codehaus.plexus.archiver.manager;
-
 /*
  * Copyright  2001,2004 The Apache Software Foundation
  *
@@ -16,7 +14,7 @@ package org.codehaus.plexus.archiver.manager;
  *  limitations under the License.
  *
  */
-
+package org.codehaus.plexus.archiver.manager;
 
 import java.io.File;
 import java.util.Locale;
@@ -35,12 +33,11 @@ import org.codehaus.plexus.util.StringUtils;
 
 /**
  * @author dantran
- * @version $Revision:
  */
-
 public class DefaultArchiverManager
     implements ArchiverManager, Contextualizable
 {
+
     private PlexusContainer container;
 
     // ----------------------------------------------------------------------
@@ -83,23 +80,26 @@ public class DefaultArchiverManager
     }
 
     @Override
-    public @Nonnull PlexusIoResourceCollection getResourceCollection( String resourceCollectionName )
+    public @Nonnull
+    PlexusIoResourceCollection getResourceCollection( String resourceCollectionName )
         throws NoSuchArchiverException
     {
         try
         {
-            return (PlexusIoResourceCollection) container.lookup( PlexusIoResourceCollection.ROLE, resourceCollectionName );
+            return (PlexusIoResourceCollection) container.lookup( PlexusIoResourceCollection.ROLE,
+                                                                  resourceCollectionName );
         }
         catch ( ComponentLookupException e )
         {
             throw new NoSuchArchiverException( resourceCollectionName );
         }
-    }    
+    }
 
-    private static @Nonnull String getFileExtention ( @Nonnull File file )
+    private static @Nonnull
+    String getFileExtention( @Nonnull File file )
     {
         String path = file.getAbsolutePath();
-        
+
         String archiveExt = FileUtils.getExtension( path ).toLowerCase( Locale.ENGLISH );
 
         if ( "gz".equals( archiveExt )
@@ -116,19 +116,20 @@ public class DefaultArchiverManager
         }
 
         return archiveExt;
-        
+
     }
+
     @Override
     @Nonnull public Archiver getArchiver( @Nonnull File file )
         throws NoSuchArchiverException
     {
         return getArchiver( getFileExtention( file ) );
     }
-    
+
     @Override
     @Nonnull public UnArchiver getUnArchiver( @Nonnull File file )
         throws NoSuchArchiverException
-    {        
+    {
         return getUnArchiver( getFileExtention( file ) );
     }
 
@@ -138,4 +139,5 @@ public class DefaultArchiverManager
     {
         return getResourceCollection( getFileExtention( file ) );
     }
+
 }

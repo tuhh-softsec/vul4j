@@ -1,5 +1,3 @@
-package org.codehaus.plexus.archiver.diags;
-
 /*
  * Copyright 2014 The Codehaus Foundation.
  *
@@ -15,6 +13,7 @@ package org.codehaus.plexus.archiver.diags;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.codehaus.plexus.archiver.diags;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,9 +29,13 @@ import org.codehaus.plexus.archiver.ResourceIterator;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
 
-@SuppressWarnings( { "UnusedDeclaration", "deprecation" } )
+@SuppressWarnings(
+{
+    "UnusedDeclaration", "deprecation"
+} )
 public class DelgatingArchiver implements Archiver
 {
+
     private final Archiver target;
 
     public DelgatingArchiver( Archiver target )
@@ -327,4 +330,5 @@ public class DelgatingArchiver implements Archiver
     {
         target.setIgnorePermissions( ignorePermissions );
     }
+
 }

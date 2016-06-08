@@ -17,13 +17,17 @@ public class TarResource
 {
 
     private final TarFile tarFile;
+
     private final TarArchiveEntry entry;
+
     private PlexusIoResourceAttributes attributes;
 
     public TarResource( TarFile tarFile, TarArchiveEntry entry )
     {
-        super(entry.getName(), getLastModifiedTime( entry ),  entry.isDirectory() ? PlexusIoResource.UNKNOWN_RESOURCE_SIZE : entry.getSize(),
-              !entry.isDirectory(), entry.isDirectory(), true);
+        super( entry.getName(), getLastModifiedTime( entry ),
+               entry.isDirectory() ? PlexusIoResource.UNKNOWN_RESOURCE_SIZE : entry.getSize(), !entry.isDirectory(),
+               entry.isDirectory(), true );
+
         this.tarFile = tarFile;
         this.entry = entry;
     }
@@ -39,7 +43,9 @@ public class TarResource
     {
         if ( attributes == null )
         {
-            attributes = new SimpleResourceAttributes(entry.getUserId(), entry.getUserName(), entry.getGroupId(), entry.getGroupName(), entry.getMode());
+            attributes = new SimpleResourceAttributes( entry.getUserId(), entry.getUserName(), entry.getGroupId(),
+                                                       entry.getGroupName(), entry.getMode() );
+
         }
 
         return attributes;
@@ -64,4 +70,5 @@ public class TarResource
     {
         return tarFile.getInputStream( entry );
     }
+
 }

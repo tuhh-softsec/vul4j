@@ -22,8 +22,7 @@ import java.io.File;
  * @author philip.lourandos
  * @since 3.3
  */
-public class PlexusIoTarXZFileResourceCollection extends
-        PlexusIoTarFileResourceCollection
+public class PlexusIoTarXZFileResourceCollection extends PlexusIoTarFileResourceCollection
 {
 
     public PlexusIoTarXZFileResourceCollection()
@@ -31,8 +30,9 @@ public class PlexusIoTarXZFileResourceCollection extends
     }
 
     @Override
-    protected TarFile newTarFile(File file)
+    protected TarFile newTarFile( File file )
     {
         return new XZTarFile( file );
     }
+
 }

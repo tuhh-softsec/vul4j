@@ -3,7 +3,7 @@ package org.codehaus.plexus.archiver;
 public abstract class AbstractArchiveFinalizer
     implements ArchiveFinalizer
 {
-    
+
     protected AbstractArchiveFinalizer()
     {
     }

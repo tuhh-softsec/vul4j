@@ -1,5 +1,3 @@
-package org.codehaus.plexus.archiver.tar;
-
 /*
  * Copyright  2000-2004 The Apache Software Foundation
  *
@@ -16,27 +14,28 @@ package org.codehaus.plexus.archiver.tar;
  *  limitations under the License.
  *
  */
+package org.codehaus.plexus.archiver.tar;
 
 /**
  * Set of options for long file handling in the task.
  */
 public enum TarLongFileMode
 {
-        warn,
-        fail,
-        truncate,
-        gnu,
-        omit,
-        posix,
-        posix_warn;
 
+    warn,
+    fail,
+    truncate,
+    gnu,
+    omit,
+    posix,
+    posix_warn;
 
     /**
      * @return true if value is "truncate".
      */
     public boolean isTruncateMode()
     {
-        return truncate.equals(this);
+        return truncate.equals( this );
     }
 
     /**
@@ -44,7 +43,7 @@ public enum TarLongFileMode
      */
     public boolean isWarnMode()
     {
-        return warn.equals(this);
+        return warn.equals( this );
     }
 
     /**
@@ -52,7 +51,7 @@ public enum TarLongFileMode
      */
     public boolean isGnuMode()
     {
-        return gnu.equals(this);
+        return gnu.equals( this );
     }
 
     /**
@@ -60,7 +59,7 @@ public enum TarLongFileMode
      */
     public boolean isFailMode()
     {
-        return fail.equals(this);
+        return fail.equals( this );
     }
 
     /**
@@ -68,7 +67,7 @@ public enum TarLongFileMode
      */
     public boolean isOmitMode()
     {
-        return omit.equals(this);
+        return omit.equals( this );
     }
 
     /**
@@ -76,7 +75,7 @@ public enum TarLongFileMode
      */
     public boolean isPosixMode()
     {
-        return posix.equals(this);
+        return posix.equals( this );
     }
 
     /**
@@ -86,4 +85,5 @@ public enum TarLongFileMode
     {
         return posix_warn.equals( this );
     }
+
 }

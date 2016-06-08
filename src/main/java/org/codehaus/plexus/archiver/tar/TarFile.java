@@ -13,10 +13,11 @@ import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.codehaus.plexus.archiver.ArchiveFile;
 import static org.codehaus.plexus.archiver.util.Streams.bufferedInputStream;
 
-
 /**
- * <p>Implementation of {@link ArchiveFile} for tar files.</p>
- * <p>Compared to
+ * <p>
+ * Implementation of {@link ArchiveFile} for tar files.</p>
+ * <p>
+ * Compared to
  * {@link org.apache.commons.compress.archivers.zip.ZipFile}, this one should be used with some care, due to the
  * nature of a tar file: While a zip file contains a catalog, a tar
  * file does not. In other words, the only way to read a tar file in
@@ -24,18 +25,23 @@ import static org.codehaus.plexus.archiver.util.Streams.bufferedInputStream;
  * the end. If you try to open another entry than the "next" entry,
  * then you force to skip entries, until the requested entry is found.
  * This may require to reread the entire file!</p>
- * <p>In other words, the recommended use of this class is to use
+ * <p>
+ * In other words, the recommended use of this class is to use
  * {@link #getEntries()} and invoke {@link #getInputStream(TarArchiveEntry)}
  * only for the current entry. Basically, this is to handle it like
  * {@link TarArchiveInputStream}.</p>
- * <p>The advantage of this class is that you may write code for the
+ * <p>
+ * The advantage of this class is that you may write code for the
  * {@link ArchiveFile}, which is valid for both tar files and zip files.</p>
  */
 public class TarFile
     implements ArchiveFile
 {
+
     private final java.io.File file;
+
     private TarArchiveInputStream inputStream;
+
     private TarArchiveEntry currentEntry;
 
     /**
@@ -64,6 +70,7 @@ public class TarFile
         open();
         return new Enumeration<org.apache.commons.compress.archivers.ArchiveEntry>()
         {
+
             boolean currentEntryValid;
 
             @Override
@@ -75,7 +82,7 @@ public class TarFile
                     {
                         currentEntry = inputStream.getNextTarEntry();
                     }
-                    catch ( IOException  e )
+                    catch ( IOException e )
                     {
                         throw new UndeclaredThrowableException( e );
                     }
@@ -93,6 +100,7 @@ public class TarFile
                 currentEntryValid = false;
                 return currentEntry;
             }
+
         };
     }
 
@@ -110,7 +118,7 @@ public class TarFile
     public InputStream getInputStream( org.apache.commons.compress.archivers.ArchiveEntry entry )
         throws IOException
     {
-        return getInputStream(new TarArchiveEntry(entry.getName()));
+        return getInputStream( new TarArchiveEntry( entry.getName() ) );
     }
 
     /**
@@ -122,15 +130,17 @@ public class TarFile
     public InputStream getInputStream( TarArchiveEntry entry )
         throws IOException
     {
-        if ( entry.equals( (Object) currentEntry )  &&  inputStream != null )
+        if ( entry.equals( (Object) currentEntry ) && inputStream != null )
         {
             return new FilterInputStream( inputStream )
             {
+
                 public void close()
                     throws IOException
                 {
                     // Does nothing.
                 }
+
             };
         }
         return getInputStream( entry, currentEntry );
@@ -141,11 +151,11 @@ public class TarFile
     {
         return new FileInputStream( file );
     }
-    
+
     private InputStream getInputStream( TarArchiveEntry entry, TarArchiveEntry currentEntry )
         throws IOException
     {
-        if ( currentEntry == null  ||  inputStream == null )
+        if ( currentEntry == null || inputStream == null )
         {
             // Search for the entry from the beginning of the file to the end.
             if ( inputStream != null )
@@ -181,14 +191,14 @@ public class TarFile
         inputStream = new TarArchiveInputStream( bufferedInputStream( getInputStream( file ) ), "UTF8" );
     }
 
-    private boolean findEntry( TarArchiveEntry entry, TarArchiveEntry currentEntry)
+    private boolean findEntry( TarArchiveEntry entry, TarArchiveEntry currentEntry )
         throws IOException
     {
-        for (;;)
+        for ( ;; )
         {
             this.currentEntry = inputStream.getNextTarEntry();
             if ( this.currentEntry == null
-                    ||  (currentEntry != null  &&  this.currentEntry.equals( currentEntry ) ) )
+                     || ( currentEntry != null && this.currentEntry.equals( currentEntry ) ) )
             {
                 return false;
             }
@@ -198,4 +208,5 @@ public class TarFile
             }
         }
     }
+
 }

@@ -24,18 +24,22 @@ import java.io.File;
  */
 public class TarXZUnArchiver extends TarUnArchiver
 {
-    public TarXZUnArchiver() {
+
+    public TarXZUnArchiver()
+    {
         setupCompressionMethod();
     }
 
-    public TarXZUnArchiver(File sourceFile) {
-        super(sourceFile);
-        
+    public TarXZUnArchiver( File sourceFile )
+    {
+        super( sourceFile );
+
         setupCompressionMethod();
     }
-    
-    private final void setupCompressionMethod() 
+
+    private final void setupCompressionMethod()
     {
-        setCompression(TarUnArchiver.UntarCompressionMethod.XZ);
+        setCompression( TarUnArchiver.UntarCompressionMethod.XZ );
     }
+
 }

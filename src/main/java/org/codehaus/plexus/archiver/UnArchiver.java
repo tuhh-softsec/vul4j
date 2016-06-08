@@ -1,35 +1,32 @@
-package org.codehaus.plexus.archiver;
-
 /**
  *
  * Copyright 2004 The Apache Software Foundation
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+package org.codehaus.plexus.archiver;
 
 import java.io.File;
 import org.codehaus.plexus.components.io.fileselectors.FileSelector;
 
-/**
- * @version $Revision$ $Date$
- */
 public interface UnArchiver
 {
+
     String ROLE = UnArchiver.class.getName();
 
     /**
      * Extract the archive.
-     * 
+     *
      * @throws ArchiverException
      */
     void extract()
@@ -37,11 +34,10 @@ public interface UnArchiver
 
     /**
      * Take a patch into the archive and extract it to the specified directory.
-     * 
-     * @param path
-     *            Path inside the archive to be extracted.
-     * @param outputDirectory
-     *            Directory to extract to.
+     *
+     * @param path Path inside the archive to be extracted.
+     * @param outputDirectory Directory to extract to.
+     *
      * @throws ArchiverException
      */
     void extract( String path, File outputDirectory )
@@ -64,7 +60,7 @@ public interface UnArchiver
     /**
      * Gets a flag indicating destination files are always overwritten.
      *
-     * @return {@code true}, if destination files are overwritten, even if they are newer than the corresponding entrie
+     * @return {@code true}, if destination files are overwritten, even if they are newer than the corresponding entry
      * in the archive.
      *
      * @since 3.4
@@ -90,7 +86,7 @@ public interface UnArchiver
 
     /**
      * to use or not the jvm method for file permissions : user all <b>not active for group permissions</b>
-     * 
+     *
      * @since 1.1
      * @param useJvmChmod
      */
@@ -111,4 +107,5 @@ public interface UnArchiver
      * @since 1.1
      */
     void setIgnorePermissions( final boolean ignorePermissions );
+
 }

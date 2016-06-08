@@ -29,18 +29,18 @@ import static org.codehaus.plexus.archiver.util.Streams.fileInputStream;
 import static org.codehaus.plexus.archiver.util.Streams.fileOutputStream;
 
 /**
- *
  * @author philip.lourandos
  * @since 3.3
  */
-public class XZUnArchiver extends AbstractUnArchiver 
+public class XZUnArchiver extends AbstractUnArchiver
 {
+
     private static final String OPERATION_XZ = "xz";
 
     public XZUnArchiver()
     {
     }
-    
+
     public XZUnArchiver( File source )
     {
         super( source );
@@ -51,30 +51,34 @@ public class XZUnArchiver extends AbstractUnArchiver
     {
         if ( getSourceFile().lastModified() > getDestFile().lastModified() )
         {
-            getLogger().info( "Expanding " + getSourceFile().getAbsolutePath() + " to " 
-                + getDestFile().getAbsolutePath() );
-            
-            copyFully( getXZInputStream( bufferedInputStream( fileInputStream( getSourceFile(), OPERATION_XZ) ) ),
-                    bufferedOutputStream( fileOutputStream( getDestFile(), OPERATION_XZ) ), OPERATION_XZ );
+            getLogger().info( "Expanding " + getSourceFile().getAbsolutePath() + " to "
+                                  + getDestFile().getAbsolutePath() );
+
+            copyFully( getXZInputStream( bufferedInputStream( fileInputStream( getSourceFile(), OPERATION_XZ ) ) ),
+                       bufferedOutputStream( fileOutputStream( getDestFile(), OPERATION_XZ ) ), OPERATION_XZ );
+
         }
     }
 
-    public static @Nonnull XZCompressorInputStream getXZInputStream( InputStream in )
-            throws ArchiverException
+    public static @Nonnull
+    XZCompressorInputStream getXZInputStream( InputStream in )
+        throws ArchiverException
     {
-        try 
+        try
         {
-            return new XZCompressorInputStream(in);
+            return new XZCompressorInputStream( in );
         }
-        catch (IOException ioe) 
+        catch ( IOException ioe )
         {
             throw new ArchiverException( "Trouble creating BZIP2 compressor, invalid file ?", ioe );
         }
     }
-    
+
     @Override
-    protected void execute(String path, File outputDirectory) throws ArchiverException {
-        throw new UnsupportedOperationException("Targeted execution not supported in xz format");
-        
+    protected void execute( String path, File outputDirectory ) throws ArchiverException
+    {
+        throw new UnsupportedOperationException( "Targeted execution not supported in xz format" );
+
     }
+
 }

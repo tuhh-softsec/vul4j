@@ -1,5 +1,3 @@
-package org.codehaus.plexus.archiver.diags;
-
 /*
  * Copyright 2014 The Codehaus Foundation.
  *
@@ -15,6 +13,7 @@ package org.codehaus.plexus.archiver.diags;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.codehaus.plexus.archiver.diags;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +36,9 @@ import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
 @SuppressWarnings( "UnusedDeclaration" )
 public class NoOpArchiver implements Archiver
 {
+
     boolean useJvmChmod;
+
     private boolean ignorePermissions;
 
     @Override
@@ -344,4 +345,5 @@ public class NoOpArchiver implements Archiver
     {
         this.ignorePermissions = ignorePermissions;
     }
+
 }

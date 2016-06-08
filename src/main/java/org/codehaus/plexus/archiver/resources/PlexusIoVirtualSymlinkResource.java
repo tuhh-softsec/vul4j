@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.codehaus.plexus.archiver.resources;
 
 import java.io.File;
@@ -24,25 +23,31 @@ import org.codehaus.plexus.components.io.functions.SymlinkDestinationSupplier;
 /**
  * A symlink that does not necessarily exist (anywhere).
  */
-
 public class PlexusIoVirtualSymlinkResource extends PlexusIoVirtualFileResource
-	implements SymlinkDestinationSupplier {
-		private final String symnlinkDestination;
+    implements SymlinkDestinationSupplier
+{
 
-		public PlexusIoVirtualSymlinkResource(File symlinkFile, String symnlinkDestination)
-		{
-			super( symlinkFile, getName(symlinkFile) );
-			this.symnlinkDestination = symnlinkDestination;
-		}
+    private final String symnlinkDestination;
+
+    public PlexusIoVirtualSymlinkResource( File symlinkFile, String symnlinkDestination )
+    {
+        super( symlinkFile, getName( symlinkFile ) );
+        this.symnlinkDestination = symnlinkDestination;
+    }
 
     @Override
-	public String getSymlinkDestination()
-			throws IOException
-	{
-		return symnlinkDestination == null ? SymlinkUtils.readSymbolicLink(getFile()).toString() : symnlinkDestination;
-	}
+    public String getSymlinkDestination()
+        throws IOException
+    {
+        return symnlinkDestination == null
+                   ? SymlinkUtils.readSymbolicLink( getFile() ).toString()
+                   : symnlinkDestination;
 
-	@Override public boolean isSymbolicLink() {
-		return true;
-	}
+    }
+
+    @Override public boolean isSymbolicLink()
+    {
+        return true;
+    }
+
 }

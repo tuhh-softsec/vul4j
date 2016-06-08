@@ -25,12 +25,12 @@ import org.codehaus.plexus.archiver.xz.XZUnArchiver;
  * @author philip.lourandos
  * @since 3.3
  */
-public class XZTarFile extends TarFile 
+public class XZTarFile extends TarFile
 {
 
-    public XZTarFile ( File file ) 
+    public XZTarFile( File file )
     {
-        super(file);
+        super( file );
     }
 
     @Override
@@ -38,4 +38,5 @@ public class XZTarFile extends TarFile
     {
         return XZUnArchiver.getXZInputStream( super.getInputStream( file ) );
     }
+
 }

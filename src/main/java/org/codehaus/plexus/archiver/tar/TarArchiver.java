@@ -1,21 +1,20 @@
-package org.codehaus.plexus.archiver.tar;
-
 /**
  *
  * Copyright 2004 The Apache Software Foundation
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+package org.codehaus.plexus.archiver.tar;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -43,11 +42,11 @@ import static org.codehaus.plexus.archiver.util.Streams.bufferedOutputStream;
 
 /**
  * @author <a href="mailto:evenisse@codehaus.org">Emmanuel Venisse</a>
- * @version $Revision$ $Date$
  */
 public class TarArchiver
     extends AbstractArchiver
 {
+
     /**
      * Indicates whether the user has been warned about long files already.
      */
@@ -67,13 +66,13 @@ public class TarArchiver
      * <p/>
      * Allowable values are
      * <ul>
-     * <li>  truncate - paths are truncated to the maximum length
-     * <li>  fail - paths greater than the maximum cause a build exception
-     * <li>  warn - paths greater than the maximum cause a warning and GNU is used
-     * <li>  gnu - GNU extensions are used for any paths greater than the maximum.
-     * <li>  posix - posix extensions are used for any paths greater than the maximum.
-     * <li>  posixwarn - posix extensions are used (with warning) for any paths greater than the maximum.
-     * <li>  omit - paths greater than the maximum are omitted from the archive
+     * <li> truncate - paths are truncated to the maximum length
+     * <li> fail - paths greater than the maximum cause a build exception
+     * <li> warn - paths greater than the maximum cause a warning and GNU is used
+     * <li> gnu - GNU extensions are used for any paths greater than the maximum.
+     * <li> posix - posix extensions are used for any paths greater than the maximum.
+     * <li> posixwarn - posix extensions are used (with warning) for any paths greater than the maximum.
+     * <li> omit - paths greater than the maximum are omitted from the archive
      * </ul>
      *
      * @param mode the mode to handle long file names.
@@ -87,9 +86,9 @@ public class TarArchiver
      * Set compression method.
      * Allowable values are
      * <ul>
-     * <li>  none - no compression
-     * <li>  gzip - Gzip compression
-     * <li>  bzip2 - Bzip2 compression
+     * <li> none - no compression
+     * <li> gzip - Gzip compression
+     * <li> bzip2 - Bzip2 compression
      * </ul>
      *
      * @param mode the compression method.
@@ -181,8 +180,9 @@ public class TarArchiver
      * tar a file
      *
      * @param entry the file to tar
-     * @param tOut  the output stream
+     * @param tOut the output stream
      * @param vPath the path name of the file to tar
+     *
      * @throws IOException on error
      */
     protected void tarFile( ArchiveEntry entry, TarArchiveOutputStream tOut, String vPath )
@@ -218,10 +218,10 @@ public class TarArchiver
         {
             TarArchiveEntry te;
             if ( !longFileMode.isGnuMode()
-                && pathLength >= org.apache.commons.compress.archivers.tar.TarConstants.NAMELEN )
+                     && pathLength >= org.apache.commons.compress.archivers.tar.TarConstants.NAMELEN )
             {
                 int maxPosixPathLen = org.apache.commons.compress.archivers.tar.TarConstants.NAMELEN
-                    + org.apache.commons.compress.archivers.tar.TarConstants.PREFIXLEN;
+                                          + org.apache.commons.compress.archivers.tar.TarConstants.PREFIXLEN;
                 if ( longFileMode.isPosixMode() )
                 {
                 }
@@ -271,6 +271,7 @@ public class TarArchiver
             {
                 final SymlinkDestinationSupplier plexusIoSymlinkResource =
                     (SymlinkDestinationSupplier) entry.getResource();
+
                 te = new TarArchiveEntry( vPath, TarArchiveEntry.LF_SYMLINK );
                 te.setLinkName( plexusIoSymlinkResource.getSymlinkDestination() );
             }
@@ -351,6 +352,7 @@ public class TarArchiver
      */
     public class TarOptions
     {
+
         private String userName = "";
 
         private String groupName = "";
@@ -456,6 +458,7 @@ public class TarArchiver
         {
             this.preserveLeadingSlashes = preserveLeadingSlashes;
         }
+
     }
 
     /**
@@ -463,6 +466,7 @@ public class TarArchiver
      */
     public static enum TarCompressionMethod
     {
+
         none,
         gzip,
         bzip2,
@@ -486,7 +490,7 @@ public class TarArchiver
         {
             return new SnappyOutputStream( bufferedOutputStream( ostream ) );
         }
-        else if (TarCompressionMethod.xz.equals( tarCompressionMethod ) ) 
+        else if ( TarCompressionMethod.xz.equals( tarCompressionMethod ) )
         {
             return new XZCompressorOutputStream( bufferedOutputStream( ostream ) );
         }
@@ -526,4 +530,5 @@ public class TarArchiver
     {
         return "TAR";
     }
+
 }

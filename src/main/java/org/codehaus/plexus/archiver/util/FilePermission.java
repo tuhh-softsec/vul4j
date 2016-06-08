@@ -1,5 +1,3 @@
-package org.codehaus.plexus.archiver.util;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,7 @@ package org.codehaus.plexus.archiver.util;
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.codehaus.plexus.archiver.util;
 
 /**
  * @author Olivier Lamy
@@ -26,17 +25,17 @@ package org.codehaus.plexus.archiver.util;
  */
 public class FilePermission
 {
-    
+
     private boolean executable;
-    
+
     private boolean ownerOnlyExecutable;
-    
+
     private boolean ownerOnlyReadable;
-    
+
     private boolean readable;
-    
+
     private boolean ownerOnlyWritable;
-    
+
     private boolean writable;
 
     public FilePermission( boolean executable, boolean ownerOnlyExecutable, boolean ownerOnlyReadable,
@@ -84,8 +83,9 @@ public class FilePermission
     public String toString()
     {
         return "FilePermission [executable=" + executable + ", ownerOnlyExecutable=" + ownerOnlyExecutable
-            + ", ownerOnlyReadable=" + ownerOnlyReadable + ", readable=" + readable + ", ownerOnlyWritable="
-            + ownerOnlyWritable + ", writable=" + writable + "]";
+                   + ", ownerOnlyReadable=" + ownerOnlyReadable + ", readable=" + readable + ", ownerOnlyWritable="
+                   + ownerOnlyWritable + ", writable=" + writable + "]";
+
     }
-    
+
 }

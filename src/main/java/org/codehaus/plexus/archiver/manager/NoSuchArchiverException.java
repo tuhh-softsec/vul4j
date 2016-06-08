@@ -1,5 +1,3 @@
-package org.codehaus.plexus.archiver.manager;
-
 /*
  * Copyright  2001,2004 The Apache Software Foundation
  *
@@ -16,15 +14,15 @@ package org.codehaus.plexus.archiver.manager;
  *  limitations under the License.
  *
  */
+package org.codehaus.plexus.archiver.manager;
 
 /**
  * @author dantran
- * @version $Revision:
  */
-
 public class NoSuchArchiverException
     extends Exception
 {
+
     private String archiverName;
 
     public NoSuchArchiverException( String archiverName )

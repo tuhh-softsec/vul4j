@@ -22,26 +22,26 @@ import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.ResourceIterator;
 
 /**
- *
  * @author philiplourandos
  * @since 3.3
  */
-public class XZArchiver extends AbstractArchiver {
+public class XZArchiver extends AbstractArchiver
+{
 
     private final XZCompressor compressor = new XZCompressor();
-    
-    public XZArchiver() 
+
+    public XZArchiver()
     {
     }
 
     @Override
-    protected void execute() throws ArchiverException, IOException 
+    protected void execute() throws ArchiverException, IOException
     {
-        if ( !checkForced()) 
+        if ( !checkForced() )
         {
             return;
         }
-        
+
         ResourceIterator iter = getResources();
         ArchiveEntry entry = iter.next();
         if ( iter.hasNext() )
@@ -54,20 +54,21 @@ public class XZArchiver extends AbstractArchiver {
     }
 
     @Override
-    public boolean isSupportingForced() 
+    public boolean isSupportingForced()
     {
         return true;
     }
 
     @Override
-    protected void close() throws IOException 
+    protected void close() throws IOException
     {
         compressor.close();
     }
 
     @Override
-    protected String getArchiveType() 
+    protected String getArchiveType()
     {
         return "xz";
     }
+
 }

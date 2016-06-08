@@ -1,21 +1,20 @@
-package org.codehaus.plexus.archiver.snappy;
-
 /**
  *
  * Copyright 2004 The Apache Software Foundation
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+package org.codehaus.plexus.archiver.snappy;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,13 +35,14 @@ import static org.codehaus.plexus.archiver.util.Streams.fileOutputStream;
 public class SnappyUnArchiver
     extends AbstractUnArchiver
 {
+
     private final static String OPERATION_SNAPPY = "snappy";
 
     public SnappyUnArchiver()
     {
     }
 
-    public SnappyUnArchiver(File sourceFile)
+    public SnappyUnArchiver( File sourceFile )
     {
         super( sourceFile );
     }
@@ -56,13 +56,14 @@ public class SnappyUnArchiver
             getLogger().info(
                 "Expanding " + getSourceFile().getAbsolutePath() + " to " + getDestFile().getAbsolutePath() );
 
-            copyFully( getSnappyInputStream(bufferedInputStream(fileInputStream(getSourceFile(), OPERATION_SNAPPY))),
-                       bufferedOutputStream( fileOutputStream( getDestFile(), OPERATION_SNAPPY) ), OPERATION_SNAPPY);
+            copyFully(
+                getSnappyInputStream( bufferedInputStream( fileInputStream( getSourceFile(), OPERATION_SNAPPY ) ) ),
+                bufferedOutputStream( fileOutputStream( getDestFile(), OPERATION_SNAPPY ) ), OPERATION_SNAPPY );
+
         }
     }
 
-    public static
-    @Nonnull
+    public static @Nonnull
     SnappyInputStream getSnappyInputStream( InputStream bis )
         throws ArchiverException
     {
@@ -81,4 +82,5 @@ public class SnappyUnArchiver
     {
         throw new UnsupportedOperationException( "Targeted extraction not supported in Snappy format." );
     }
+
 }

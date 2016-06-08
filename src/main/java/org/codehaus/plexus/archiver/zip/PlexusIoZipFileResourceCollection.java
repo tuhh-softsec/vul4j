@@ -1,5 +1,3 @@
-package org.codehaus.plexus.archiver.zip;
-
 /*
  * Copyright 2007 The Codehaus Foundation.
  *
@@ -15,6 +13,7 @@ package org.codehaus.plexus.archiver.zip;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.codehaus.plexus.archiver.zip;
 
 import java.io.Closeable;
 import java.io.File;
@@ -32,11 +31,11 @@ import org.codehaus.plexus.components.io.resources.EncodingSupported;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.components.io.resources.PlexusIoURLResource;
 
-
 public class PlexusIoZipFileResourceCollection
     extends AbstractPlexusIoArchiveResourceCollection
     implements EncodingSupported
 {
+
     /**
      * The zip file resource collections role hint.
      */
@@ -47,7 +46,7 @@ public class PlexusIoZipFileResourceCollection
      */
     public static final String JAR_ROLE_HINT = "jarFile";
 
-    private Charset charset = Charset.forName("UTF-8");
+    private Charset charset = Charset.forName( "UTF-8" );
 
     public PlexusIoZipFileResourceCollection()
     {
@@ -70,17 +69,22 @@ public class PlexusIoZipFileResourceCollection
         {
             throw new IOException( "The zip file has not been set." );
         }
-        final URLClassLoader urlClassLoader = new URLClassLoader( new URL[]{ f.toURI().toURL() }, null )
+        final URLClassLoader urlClassLoader = new URLClassLoader( new URL[]
         {
+            f.toURI().toURL()
+        }, null )
+        {
+
             @Override
             public URL getResource( String name )
             {
                 return findResource( name );
             }
+
         };
 
         final URL url = new URL( "jar:" + f.toURI().toURL() + "!/" );
-        final ZipFile zipFile = new ZipFile( f, charset != null ? charset.name() : "UTF8");
+        final ZipFile zipFile = new ZipFile( f, charset != null ? charset.name() : "UTF8" );
         final Enumeration<ZipArchiveEntry> en = zipFile.getEntriesInPhysicalOrder();
         return new ZipFileResourceIterator( en, url, zipFile, urlClassLoader );
     }
@@ -88,14 +92,18 @@ public class PlexusIoZipFileResourceCollection
     private static class ZipFileResourceIterator
         implements Iterator<PlexusIoResource>, Closeable
     {
+
         private class ZipFileResource
             extends PlexusIoURLResource
         {
+
             private ZipFileResource( ZipArchiveEntry entry )
             {
-                super( entry.getName(), entry.getTime() == -1 ? PlexusIoResource.UNKNOWN_MODIFICATION_DATE : entry.getTime(),
-                    entry.isDirectory() ? PlexusIoResource.UNKNOWN_RESOURCE_SIZE : entry.getSize(),
-                    !entry.isDirectory(), entry.isDirectory(), true );
+                super( entry.getName(),
+                       entry.getTime() == -1 ? PlexusIoResource.UNKNOWN_MODIFICATION_DATE : entry.getTime(),
+                       entry.isDirectory() ? PlexusIoResource.UNKNOWN_RESOURCE_SIZE : entry.getSize(),
+                       !entry.isDirectory(), entry.isDirectory(), true );
+
             }
 
             @Override
@@ -113,12 +121,14 @@ public class PlexusIoZipFileResourceCollection
                 }
                 return urlClassLoader.getResource( spec );
             }
+
         }
 
         private class ZipFileSymlinkResource
             extends ZipFileResource
             implements SymlinkDestinationSupplier
         {
+
             private final ZipArchiveEntry entry;
 
             private ZipFileSymlinkResource( ZipArchiveEntry entry )
@@ -140,7 +150,8 @@ public class PlexusIoZipFileResourceCollection
             {
                 return true;
             }
-       }
+
+        }
 
         private final Enumeration<ZipArchiveEntry> en;
 
@@ -150,7 +161,8 @@ public class PlexusIoZipFileResourceCollection
 
         private final URLClassLoader urlClassLoader;
 
-        public ZipFileResourceIterator( Enumeration<ZipArchiveEntry> en, URL url, ZipFile zipFile, URLClassLoader urlClassLoader )
+        public ZipFileResourceIterator( Enumeration<ZipArchiveEntry> en, URL url, ZipFile zipFile,
+                                        URLClassLoader urlClassLoader )
         {
             this.en = en;
             this.url = url;
@@ -168,10 +180,10 @@ public class PlexusIoZipFileResourceCollection
         public PlexusIoResource next()
         {
             final ZipArchiveEntry entry = en.nextElement();
-
             return entry.isUnixSymlink()
-                ? new ZipFileSymlinkResource( entry )
-                : new ZipFileResource( entry );
+                       ? new ZipFileSymlinkResource( entry )
+                       : new ZipFileResource( entry );
+
         }
 
         @Override
@@ -186,6 +198,7 @@ public class PlexusIoZipFileResourceCollection
         {
             zipFile.close();
         }
+
     }
 
     @Override
@@ -193,4 +206,5 @@ public class PlexusIoZipFileResourceCollection
     {
         this.charset = charset;
     }
+
 }

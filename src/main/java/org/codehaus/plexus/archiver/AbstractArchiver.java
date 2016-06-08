@@ -1,21 +1,20 @@
-package org.codehaus.plexus.archiver;
-
 /**
  *
  * Copyright 2004 The Apache Software Foundation
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+package org.codehaus.plexus.archiver;
 
 import java.io.Closeable;
 import java.io.File;
@@ -56,9 +55,6 @@ import org.codehaus.plexus.util.Os;
 import static org.codehaus.plexus.archiver.util.DefaultArchivedFileSet.archivedFileSet;
 import static org.codehaus.plexus.archiver.util.DefaultFileSet.fileSet;
 
-/**
- * @version $Id$
- */
 public abstract class AbstractArchiver
     extends AbstractLogEnabled
     implements Archiver, Contextualizable, FinalizerEnabled
@@ -114,6 +110,7 @@ public abstract class AbstractArchiver
 
     private static class AddedResourceCollection
     {
+
         private final PlexusIoResourceCollection resources;
 
         private final int forcedFileMode;
@@ -435,7 +432,6 @@ public abstract class AbstractArchiver
                                collection.resources );
     }
 
-
     @Override
     public void addResource( final PlexusIoResource resource, final String destFileName, final int permissions )
         throws ArchiverException
@@ -465,8 +461,7 @@ public abstract class AbstractArchiver
         try
         {
             // do a null check here, to avoid creating a file stream if there are no filters...
-                doAddResource(
-                    ArchiveEntry.createFileEntry( destFileName, inputFile, permissions, getDirectoryMode() ) );
+            doAddResource( ArchiveEntry.createFileEntry( destFileName, inputFile, permissions, getDirectoryMode() ) );
         }
         catch ( final IOException e )
         {
@@ -481,6 +476,7 @@ public abstract class AbstractArchiver
     {
         return new ResourceIterator()
         {
+
             private final Iterator addedResourceIter = resources.iterator();
 
             private AddedResourceCollection currentResourceCollection;
@@ -555,7 +551,7 @@ public abstract class AbstractArchiver
                         final String path = nextEntry.getName();
 
                         if ( Archiver.DUPLICATES_PRESERVE.equals( duplicateBehavior )
-                            || Archiver.DUPLICATES_SKIP.equals( duplicateBehavior ) )
+                                 || Archiver.DUPLICATES_SKIP.equals( duplicateBehavior ) )
                         {
                             if ( nextEntry.getType() == ArchiveEntry.FILE )
                             {
@@ -644,7 +640,6 @@ public abstract class AbstractArchiver
             throw new RuntimeException( e );
         }
     }
-
 
     @Override
     public Map<String, ArchiveEntry> getFiles()
@@ -1086,7 +1081,6 @@ public abstract class AbstractArchiver
         }
         resources.clear();
     }
-
 
     protected abstract void execute()
         throws ArchiverException, IOException;

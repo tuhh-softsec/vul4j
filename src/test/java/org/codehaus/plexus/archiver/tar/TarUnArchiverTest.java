@@ -10,7 +10,6 @@ import java.io.File;
 
 /**
  * @author <a href="mailto:viktor@jv-ration.com">Viktor Sadovnikov</a>
- * @version $Revision$ $Date$
  */
 public class TarUnArchiverTest extends PlexusTestCase
 {

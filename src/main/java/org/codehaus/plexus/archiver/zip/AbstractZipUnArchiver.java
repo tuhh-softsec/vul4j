@@ -1,21 +1,20 @@
-package org.codehaus.plexus.archiver.zip;
-
 /**
  *
  * Copyright 2004 The Apache Software Foundation
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+package org.codehaus.plexus.archiver.zip;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,11 +34,11 @@ import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 
 /**
  * @author <a href="mailto:evenisse@codehaus.org">Emmanuel Venisse</a>
- * @version $Id$
  */
 public abstract class AbstractZipUnArchiver
     extends AbstractUnArchiver
 {
+
     private static final String NATIVE_ENCODING = "native-encoding";
 
     private String encoding = "UTF8";
@@ -72,11 +71,13 @@ public abstract class AbstractZipUnArchiver
     private static class ZipEntryFileInfo
         implements PlexusIoResource
     {
-        private final org.apache.commons.compress.archivers.zip.ZipFile  zipFile;
+
+        private final org.apache.commons.compress.archivers.zip.ZipFile zipFile;
 
         private final ZipArchiveEntry zipEntry;
 
-        ZipEntryFileInfo( final org.apache.commons.compress.archivers.zip.ZipFile zipFile, final ZipArchiveEntry zipEntry )
+        ZipEntryFileInfo( final org.apache.commons.compress.archivers.zip.ZipFile zipFile,
+                          final ZipArchiveEntry zipEntry )
         {
             this.zipFile = zipFile;
             this.zipEntry = zipEntry;
@@ -152,6 +153,7 @@ public abstract class AbstractZipUnArchiver
         {
             return true;
         }
+
     }
 
     @Override
@@ -202,9 +204,14 @@ public abstract class AbstractZipUnArchiver
     private String resolveSymlink( ZipFile zf, ZipArchiveEntry ze )
         throws IOException
     {
-        if  (ze.isUnixSymlink())
+        if ( ze.isUnixSymlink() )
+        {
             return zf.getUnixSymlink( ze );
-        else return null;
+        }
+        else
+        {
+            return null;
+        }
     }
 
     private void extractFileIfIncluded( final File sourceFile, final File destDirectory, final InputStream inputStream,
@@ -212,7 +219,7 @@ public abstract class AbstractZipUnArchiver
                                         final Integer mode, String symlinkDestination )
         throws IOException, ArchiverException
     {
-          extractFile( sourceFile, destDirectory, inputStream, name, time, isDirectory, mode, symlinkDestination );
+        extractFile( sourceFile, destDirectory, inputStream, name, time, isDirectory, mode, symlinkDestination );
     }
 
     @Override
@@ -263,4 +270,5 @@ public abstract class AbstractZipUnArchiver
             IOUtils.closeQuietly( zipFile );
         }
     }
+
 }

@@ -1,5 +1,3 @@
-package org.codehaus.plexus.archiver;
-
 /*
  * Copyright  2001,2004 The Apache Software Foundation
  *
@@ -16,12 +14,12 @@ package org.codehaus.plexus.archiver;
  *  limitations under the License.
  *
  */
+package org.codehaus.plexus.archiver;
 
 /**
  * Constants from stat.h on Unix systems.
  *
- * @version $Revision$ $Date$
- *          from org.apache.ant.tools.zip.UnixStat v1.9
+ * from org.apache.ant.tools.zip.UnixStat v1.9
  */
 public interface UnixStat
 {
@@ -58,7 +56,6 @@ public interface UnixStat
     // somewhat arbitrary choices that are quite common for shared
     // installations
     // -----------------------------------------------------------
-
     /**
      * Default permissions for symbolic links.
      *
@@ -79,4 +76,5 @@ public interface UnixStat
      * @since 1.1
      */
     int DEFAULT_FILE_PERM = 0644;
+
 }

@@ -1,5 +1,3 @@
-package org.codehaus.plexus.archiver.ear;
-
 /*
  * Copyright  2001-2004 The Apache Software Foundation
  *
@@ -16,6 +14,7 @@ package org.codehaus.plexus.archiver.ear;
  *  limitations under the License.
  *
  */
+package org.codehaus.plexus.archiver.ear;
 
 import java.io.File;
 import java.io.IOException;
@@ -66,7 +65,12 @@ public class EarArchiver
     public void addArchive( File fileName )
         throws ArchiverException
     {
-        addDirectory( fileName.getParentFile(), "/", new String[]{fileName.getName()}, null );
+        addDirectory( fileName.getParentFile(), "/",
+                      new String[]
+                      {
+                          fileName.getName()
+                      }, null );
+
     }
 
     /**
@@ -105,8 +109,8 @@ public class EarArchiver
         if ( vPath.equalsIgnoreCase( "META-INF/application.xml" ) )
         {
             if ( deploymentDescriptor == null
-                 || !ResourceUtils.isCanonicalizedSame( entry.getResource(), deploymentDescriptor )
-                 || descriptorAdded )
+                     || !ResourceUtils.isCanonicalizedSame( entry.getResource(), deploymentDescriptor )
+                     || descriptorAdded )
             {
                 getLogger().warn( "Warning: selected " + archiveType
                                       + " files include a META-INF/application.xml which will be ignored "
@@ -135,4 +139,5 @@ public class EarArchiver
         descriptorAdded = false;
         super.cleanUp();
     }
+
 }

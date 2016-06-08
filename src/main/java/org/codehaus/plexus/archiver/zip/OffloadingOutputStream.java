@@ -28,11 +28,11 @@ import org.apache.commons.io.output.ThresholdingOutputStream;
 
 /**
  * Offloads to disk when a given memory consumption has been reacehd
-*/
-class OffloadingOutputStream extends ThresholdingOutputStream {
+ */
+class OffloadingOutputStream extends ThresholdingOutputStream
+{
 
     // ----------------------------------------------------------- Data members
-
 
     /**
      * The output stream to which data will be written prior to the theshold
@@ -40,14 +40,12 @@ class OffloadingOutputStream extends ThresholdingOutputStream {
      */
     private ByteArrayOutputStream memoryOutputStream;
 
-
     /**
      * The output stream to which data will be written at any given time. This
      * will always be one of <code>memoryOutputStream</code> or
      * <code>diskOutputStream</code>.
      */
     private OutputStream currentOutputStream;
-
 
     /**
      * The file to which output will be directed if the threshold is exceeded.
@@ -69,7 +67,6 @@ class OffloadingOutputStream extends ThresholdingOutputStream {
      */
     private final File directory;
 
-
     /**
      * True when close() has been called successfully.
      */
@@ -77,23 +74,23 @@ class OffloadingOutputStream extends ThresholdingOutputStream {
 
     // ----------------------------------------------------------- Constructors
 
-
     /**
      * Constructs an instance of this class which will trigger an event at the
      * specified threshold, and save data to a temporary file beyond that point.
      *
-     * @param threshold  The number of bytes at which to trigger an event.
+     * @param threshold The number of bytes at which to trigger an event.
      * @param prefix Prefix to use for the temporary file.
      * @param suffix Suffix to use for the temporary file.
      * @param directory Temporary file directory.
      *
      * @since 1.4
      */
-    public OffloadingOutputStream(int threshold, String prefix, String suffix, File directory)
+    public OffloadingOutputStream( int threshold, String prefix, String suffix, File directory )
     {
-        this(threshold, null, prefix, suffix, directory);
-        if (prefix == null) {
-            throw new IllegalArgumentException("Temporary file prefix is missing");
+        this( threshold, null, prefix, suffix, directory );
+        if ( prefix == null )
+        {
+            throw new IllegalArgumentException( "Temporary file prefix is missing" );
         }
     }
 
@@ -101,26 +98,25 @@ class OffloadingOutputStream extends ThresholdingOutputStream {
      * Constructs an instance of this class which will trigger an event at the
      * specified threshold, and save data either to a file beyond that point.
      *
-     * @param threshold  The number of bytes at which to trigger an event.
+     * @param threshold The number of bytes at which to trigger an event.
      * @param outputFile The file to which data is saved beyond the threshold.
      * @param prefix Prefix to use for the temporary file.
      * @param suffix Suffix to use for the temporary file.
      * @param directory Temporary file directory.
      */
-    private OffloadingOutputStream(int threshold, File outputFile, String prefix, String suffix, File directory) {
-        super(threshold);
+    private OffloadingOutputStream( int threshold, File outputFile, String prefix, String suffix, File directory )
+    {
+        super( threshold );
         this.outputFile = outputFile;
 
-        memoryOutputStream = new ByteArrayOutputStream(threshold/10);
+        memoryOutputStream = new ByteArrayOutputStream( threshold / 10 );
         currentOutputStream = memoryOutputStream;
         this.prefix = prefix;
         this.suffix = suffix;
         this.directory = directory;
     }
 
-
     // --------------------------------------- ThresholdingOutputStream methods
-
 
     /**
      * Returns the current output stream. This may be memory based or disk
@@ -136,7 +132,6 @@ class OffloadingOutputStream extends ThresholdingOutputStream {
         return currentOutputStream;
     }
 
-
     /**
      * Switches the underlying output stream from a memory based stream to one
      * that is backed by disk. This is the point at which we realise that too
@@ -148,23 +143,25 @@ class OffloadingOutputStream extends ThresholdingOutputStream {
     @Override
     protected void thresholdReached() throws IOException
     {
-        if (prefix != null) {
-            outputFile = File.createTempFile(prefix, suffix, directory);
+        if ( prefix != null )
+        {
+            outputFile = File.createTempFile( prefix, suffix, directory );
         }
-        currentOutputStream = new FileOutputStream(outputFile);
+        currentOutputStream = new FileOutputStream( outputFile );
     }
 
-
-    public InputStream getInputStream() throws IOException {
+    public InputStream getInputStream() throws IOException
+    {
 
         InputStream memoryAsInput = memoryOutputStream.toInputStream();
-        if (outputFile == null) {
+        if ( outputFile == null )
+        {
             return memoryAsInput;
         }
-        return new SequenceInputStream(memoryAsInput, new FileInputStream(outputFile));
+        return new SequenceInputStream( memoryAsInput, new FileInputStream( outputFile ) );
     }
-    // --------------------------------------------------------- Public methods
 
+    // --------------------------------------------------------- Public methods
 
     /**
      * Returns the data for this output stream as an array of bytes, assuming
@@ -172,17 +169,16 @@ class OffloadingOutputStream extends ThresholdingOutputStream {
      * disk, this method returns <code>null</code>.
      *
      * @return The data for this output stream, or <code>null</code> if no such
-     *         data is available.
+     * data is available.
      */
     public byte[] getData()
     {
-        if (memoryOutputStream != null)
+        if ( memoryOutputStream != null )
         {
             return memoryOutputStream.toByteArray();
         }
         return null;
     }
-
 
     /**
      * Returns either the output file specified in the constructor or
@@ -196,13 +192,12 @@ class OffloadingOutputStream extends ThresholdingOutputStream {
      * If the threshold was not reached then <code>null</code> is returned.
      *
      * @return The file for this output stream, or <code>null</code> if no such
-     *         file exists.
+     * file exists.
      */
     public File getFile()
     {
         return outputFile;
     }
-
 
     /**
      * Closes underlying output stream, and mark this as closed
@@ -216,4 +211,5 @@ class OffloadingOutputStream extends ThresholdingOutputStream {
         closed = true;
         currentOutputStream.close();
     }
+
 }

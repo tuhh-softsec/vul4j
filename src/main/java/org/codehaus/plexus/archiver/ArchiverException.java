@@ -1,5 +1,3 @@
-package org.codehaus.plexus.archiver;
-
 /**
  * Copyright 2004 The Apache Software Foundation
  * <p/>
@@ -15,10 +13,12 @@ package org.codehaus.plexus.archiver;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.codehaus.plexus.archiver;
 
 public class ArchiverException
     extends RuntimeException
 {
+
     public ArchiverException( String message )
     {
         super( message );
@@ -28,4 +28,5 @@ public class ArchiverException
     {
         super( message, cause );
     }
+
 }

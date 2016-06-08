@@ -1,5 +1,3 @@
-package org.codehaus.plexus.archiver.manager;
-
 /*
  * Copyright  2001,2004 The Apache Software Foundation
  *
@@ -16,7 +14,7 @@ package org.codehaus.plexus.archiver.manager;
  *  limitations under the License.
  *
  */
-
+package org.codehaus.plexus.archiver.manager;
 
 import java.io.File;
 import javax.annotation.Nonnull;
@@ -26,28 +24,34 @@ import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
 
 /**
  * @author dantran
- * @version $Revision:
  */
 public interface ArchiverManager
 {
+
     String ROLE = ArchiverManager.class.getName();
 
-	@Nonnull Archiver getArchiver( @Nonnull String archiverName )
+    @Nonnull
+    Archiver getArchiver( @Nonnull String archiverName )
         throws NoSuchArchiverException;
 
-	@Nonnull Archiver getArchiver( @Nonnull File file )
-      throws NoSuchArchiverException;
-    
-    @Nonnull UnArchiver getUnArchiver( @Nonnull String unArchiverName )
+    @Nonnull
+    Archiver getArchiver( @Nonnull File file )
         throws NoSuchArchiverException;
 
-	@Nonnull UnArchiver getUnArchiver(  @Nonnull File file )
-        throws NoSuchArchiverException;    
-
-    @Nonnull PlexusIoResourceCollection getResourceCollection( @Nonnull File file )
+    @Nonnull
+    UnArchiver getUnArchiver( @Nonnull String unArchiverName )
         throws NoSuchArchiverException;
 
-	@Nonnull
+    @Nonnull
+    UnArchiver getUnArchiver( @Nonnull File file )
+        throws NoSuchArchiverException;
+
+    @Nonnull
+    PlexusIoResourceCollection getResourceCollection( @Nonnull File file )
+        throws NoSuchArchiverException;
+
+    @Nonnull
     PlexusIoResourceCollection getResourceCollection( String unArchiverName )
         throws NoSuchArchiverException;
+
 }

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
 
-
 /**
  * Interface of a zip, or tar file.
  */
@@ -23,6 +22,7 @@ public interface ArchiveFile
      * Returns an {@link InputStream} with the given entries contents.
      * org.apache.commons.compress.archivers.ArchiveEntry
      */
-    InputStream getInputStream(org.apache.commons.compress.archivers.ArchiveEntry entry )
+    InputStream getInputStream( org.apache.commons.compress.archivers.ArchiveEntry entry )
         throws IOException;
+
 }

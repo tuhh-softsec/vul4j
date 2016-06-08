@@ -23,35 +23,34 @@ import static org.codehaus.plexus.archiver.util.Streams.bufferedOutputStream;
 import static org.codehaus.plexus.archiver.util.Streams.fileOutputStream;
 
 /**
- *
  * @author philip.lourandos
  * @since 3.3
  */
-public class XZCompressor extends Compressor 
+public class XZCompressor extends Compressor
 {
+
     private XZCompressorOutputStream xzOut;
-    
-    public XZCompressor() 
+
+    public XZCompressor()
     {
     }
 
     @Override
-    public void compress() throws ArchiverException 
+    public void compress() throws ArchiverException
     {
         try
         {
             xzOut = new XZCompressorOutputStream( bufferedOutputStream( fileOutputStream( getDestFile() ) ) );
-
-            compress( getSource(), xzOut);
+            compress( getSource(), xzOut );
         }
-        catch ( IOException ioe ) 
+        catch ( IOException ioe )
         {
-            throw new ArchiverException( "Problem creating xz " + ioe.getMessage(), ioe);
+            throw new ArchiverException( "Problem creating xz " + ioe.getMessage(), ioe );
         }
     }
 
     @Override
-    public void close() 
+    public void close()
     {
         try
         {
@@ -66,4 +65,5 @@ public class XZCompressor extends Compressor
             throw new ArchiverException( "Failure closing target.", e );
         }
     }
+
 }
