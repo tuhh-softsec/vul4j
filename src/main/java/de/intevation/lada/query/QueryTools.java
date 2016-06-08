@@ -232,7 +232,9 @@ public class QueryTools
             List<String> clean = new ArrayList<String>();
             for(String p : param) {
                 p = p.trim();
-                clean.add(p.replace(" ", "|"));
+                // replace multiSelect-delimiter set by ExtJS with
+                // alternation metacharacter for PostgreSQL SIMILAR TO
+                clean.add(p.replace(",", "|"));
             }
             query.setParameter(filter.getDataIndex(), clean);
         }
