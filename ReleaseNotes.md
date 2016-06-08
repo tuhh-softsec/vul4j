@@ -4,10 +4,18 @@ Plexus Archiver and Plexus-IO combined release notes
 Since archiver depends on a given version of IO this list is cumulative,
 any version includes *all* changes below.
 
+## Release 3.4
+
+ * [Fixed #45][issue-45]
+   Default 'ArchiveManager' does not support 'tar.xz' and 'tar.snappy' file extensions.
+
+ * [Fixed #46][issue-46]
+   'JarSecurityFileSelector' needs to support signature files ending in '.EC' or '.ec'.
+
 ## Release 3.3
 
  * [Fixed #43][issue-43]
-   Updated to stop failing creating 'Created-by' manifest entries, when the version 
+   Updated to stop failing creating 'Created-by' manifest entries, when the version
    of the archiver cannot be determined.
 
  * [Fixed #42][issue-42]
@@ -29,8 +37,8 @@ any version includes *all* changes below.
    Downgrade PrintWriter to Writer in Manifest
 
  * [Fixed #37][issue-37]
-   Deprecate Manifest(Reader) and update all related Implemenation does not properly 
-   map characters to map and makes assumptions about character encoding which might 
+   Deprecate Manifest(Reader) and update all related Implemenation does not properly
+   map characters to map and makes assumptions about character encoding which might
    lead to failures. Deprecate and rely on Java Manifest reader to do the right thing.
 
  * [Fixed #36][issue-36]
@@ -50,7 +58,7 @@ any version includes *all* changes below.
 
  * [Fixed #16][issue-16]
    Manifest entry "Archiver-Version" is incomplete/wrong
-   Entry does not reflect the archiver version. Remove since it 
+   Entry does not reflect the archiver version. Remove since it
    adds not information it pretends to add.
 
  * [Fixed #5][issue-5]
