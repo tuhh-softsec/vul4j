@@ -59,7 +59,7 @@ import static org.codehaus.plexus.components.io.resources.ResourceFactory.create
 
 /**
  * @author Emmanuel Venisse
- * @version $Id$
+ *
  */
 public class TarArchiverTest
     extends PlexusTestCase

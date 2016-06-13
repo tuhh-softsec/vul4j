@@ -27,7 +27,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
- * @version $Id$
+ *
  *          from org.apache.ant.tools.tar.TarRoundTripTest v1.6
  */
 public class TarRoundTripTest

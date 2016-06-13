@@ -40,7 +40,7 @@ import org.codehaus.plexus.util.IOUtil;
 
 /**
  * @author Emmanuel Venisse
- * @version $Id$
+ *
  */
 public class BZip2ArchiverTest
     extends BasePlexusArchiverTest

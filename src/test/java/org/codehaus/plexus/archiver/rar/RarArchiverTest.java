@@ -25,7 +25,7 @@ import org.codehaus.plexus.util.FileUtils;
 /**
  * @author <a href="mailto:olamy@codehaus.org">olamy</a>
  * @since 13 mars 07
- * @version $Id$
+ *
  */
 public class RarArchiverTest
     extends BasePlexusArchiverTest

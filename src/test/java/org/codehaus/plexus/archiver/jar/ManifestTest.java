@@ -26,7 +26,7 @@ import org.codehaus.plexus.PlexusTestCase;
 
 /**
  * @author Emmanuel Venisse
- * @version $Id$
+ *
  */
 public class ManifestTest
     extends PlexusTestCase

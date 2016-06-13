@@ -27,7 +27,7 @@ import static org.codehaus.plexus.archiver.util.Streams.bufferedInputStream;
 
 /**
  * @author Richard van der Hoff <richardv@mxtelecom.com>
- * @version $Id$
+ *
  */
 public class IndexTest extends PlexusTestCase {
     public void testCreateArchiveWithIndexedJars()

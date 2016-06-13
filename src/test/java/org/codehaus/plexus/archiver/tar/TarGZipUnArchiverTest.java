@@ -33,7 +33,7 @@ import org.codehaus.plexus.archiver.gzip.GZipArchiver;
 
 /**
  * @author Dan Tran
- * @version $Id$
+ *
  */
 public class TarGZipUnArchiverTest
     extends PlexusTestCase

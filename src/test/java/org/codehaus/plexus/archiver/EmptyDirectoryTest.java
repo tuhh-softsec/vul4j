@@ -32,7 +32,7 @@ import java.io.File;
 
 /**
  * @author Daniel Krisher
- * @version $Id$
+ *
  */
 public class EmptyDirectoryTest
     extends PlexusTestCase

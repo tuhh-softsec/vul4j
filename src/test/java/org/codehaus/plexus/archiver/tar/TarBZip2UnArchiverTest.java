@@ -33,7 +33,7 @@ import org.codehaus.plexus.archiver.bzip2.BZip2Archiver;
 
 /**
  * @author Dan Tran
- * @version $Id$
+ *
  */
 public class TarBZip2UnArchiverTest
     extends PlexusTestCase
