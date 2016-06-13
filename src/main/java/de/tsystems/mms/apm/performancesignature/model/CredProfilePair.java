@@ -16,10 +16,8 @@
 
 package de.tsystems.mms.apm.performancesignature.model;
 
-import com.cloudbees.plugins.credentials.CredentialsProvider;
-import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
-import com.cloudbees.plugins.credentials.common.StandardUsernameCredentials;
-import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
+import com.cloudbees.plugins.credentials.CredentialsMatchers;
+import com.cloudbees.plugins.credentials.common.*;
 import com.cloudbees.plugins.credentials.domains.DomainRequirement;
 import de.tsystems.mms.apm.performancesignature.Messages;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionException;
@@ -29,18 +27,16 @@ import hudson.Extension;
 import hudson.RelativePath;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
-import hudson.model.Project;
 import hudson.security.ACL;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
+import jenkins.model.Jenkins;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
 import java.util.Collections;
-
-import static com.cloudbees.plugins.credentials.CredentialsMatchers.instanceOf;
 
 public class CredProfilePair extends AbstractDescribableImpl<CredProfilePair> {
     private final String profile, credentialsId;
@@ -70,12 +66,18 @@ public class CredProfilePair extends AbstractDescribableImpl<CredProfilePair> {
             return "";
         }
 
-        public ListBoxModel doFillCredentialsIdItems(@AncestorInPath final Project project) {
-            return new StandardListBoxModel()
-                    .withEmptySelection()
-                    .withMatching(instanceOf(UsernamePasswordCredentials.class),
-                            CredentialsProvider.lookupCredentials(
-                                    StandardUsernameCredentials.class, project, ACL.SYSTEM, Collections.<DomainRequirement>emptyList()));
+        public ListBoxModel doFillCredentialsIdItems(@AncestorInPath Jenkins context, @QueryParameter String credentialsId) {
+            if (!context.hasPermission(Jenkins.ADMINISTER)) {
+                return new StandardListBoxModel().includeCurrentValue(credentialsId);
+            }
+            return new StandardUsernameListBoxModel()
+                    .includeEmptyValue()
+                    .includeMatchingAs(ACL.SYSTEM,
+                            context,
+                            StandardUsernameCredentials.class,
+                            Collections.<DomainRequirement>emptyList(),
+                            CredentialsMatchers.instanceOf(StandardUsernamePasswordCredentials.class))
+                    .includeCurrentValue(credentialsId);
         }
 
         public ListBoxModel doFillProfileItems(@RelativePath("..") @QueryParameter final String protocol, @RelativePath("..") @QueryParameter final String host,

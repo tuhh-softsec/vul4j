@@ -16,8 +16,8 @@
 
 package de.tsystems.mms.apm.performancesignature.util;
 
+import com.cloudbees.plugins.credentials.CredentialsMatchers;
 import com.cloudbees.plugins.credentials.CredentialsProvider;
-import com.cloudbees.plugins.credentials.common.StandardUsernameCredentials;
 import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
 import com.cloudbees.plugins.credentials.domains.DomainRequirement;
 import de.tsystems.mms.apm.performancesignature.PerfSigRecorder;
@@ -28,7 +28,6 @@ import de.tsystems.mms.apm.performancesignature.model.CredProfilePair;
 import de.tsystems.mms.apm.performancesignature.model.DynatraceServerConfiguration;
 import hudson.FilePath;
 import hudson.Functions;
-import hudson.model.Item;
 import hudson.model.Run;
 import hudson.security.ACL;
 import hudson.util.Area;
@@ -145,13 +144,8 @@ public final class PerfSigUtils {
     }
 
     public static UsernamePasswordCredentials getCredentials(final String credsId) {
-        List<StandardUsernameCredentials> credentialsList = CredentialsProvider.lookupCredentials(
-                StandardUsernameCredentials.class, (Item) null, ACL.SYSTEM, Collections.<DomainRequirement>emptyList());
-        for (StandardUsernameCredentials c : credentialsList) {
-            if (credsId.equals(c.getId())) {
-                return (UsernamePasswordCredentials) c;
-            }
-        }
-        return null;
+        return (credsId == null) ? null : CredentialsMatchers.firstOrNull(
+                CredentialsProvider.lookupCredentials(UsernamePasswordCredentials.class, Jenkins.getActiveInstance(), ACL.SYSTEM,
+                        Collections.<DomainRequirement>emptyList()), CredentialsMatchers.withId(credsId));
     }
 }
