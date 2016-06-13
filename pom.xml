@@ -4,9 +4,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>plexus</artifactId>
     <groupId>org.codehaus.plexus</groupId>
-    <version>3.2</version>
+    <artifactId>plexus</artifactId>
+    <version>4.0</version>
   </parent>
 
   <artifactId>plexus-archiver</artifactId>

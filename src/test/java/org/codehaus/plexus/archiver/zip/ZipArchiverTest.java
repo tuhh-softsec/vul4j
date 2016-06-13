@@ -71,7 +71,7 @@ import java.util.zip.ZipOutputStream;
 
 /**
  * @author Emmanuel Venisse
- * 
+ *
  */
 @SuppressWarnings( "OctalInteger" )
 public class ZipArchiverTest
