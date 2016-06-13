@@ -17,6 +17,7 @@
 package de.tsystems.mms.apm.performancesignature.model;
 
 import com.cloudbees.plugins.credentials.CredentialsMatchers;
+import com.cloudbees.plugins.credentials.CredentialsProvider;
 import com.cloudbees.plugins.credentials.common.*;
 import com.cloudbees.plugins.credentials.domains.DomainRequirement;
 import de.tsystems.mms.apm.performancesignature.Messages;
@@ -78,6 +79,20 @@ public class CredProfilePair extends AbstractDescribableImpl<CredProfilePair> {
                             Collections.<DomainRequirement>emptyList(),
                             CredentialsMatchers.instanceOf(StandardUsernamePasswordCredentials.class))
                     .includeCurrentValue(credentialsId);
+        }
+
+        public FormValidation doCheckCredentialsId(@AncestorInPath Jenkins context, @QueryParameter String value) {
+            if (!context.hasPermission(Jenkins.ADMINISTER)) {
+                return FormValidation.ok();
+            }
+            for (ListBoxModel.Option o : CredentialsProvider.listCredentials(StandardUsernameCredentials.class, context, ACL.SYSTEM,
+                    Collections.<DomainRequirement>emptyList(),
+                    CredentialsMatchers.instanceOf(StandardUsernamePasswordCredentials.class))) {
+                if (StringUtils.equals(value, o.value)) {
+                    return FormValidation.ok();
+                }
+            }
+            return FormValidation.error("The selected credentials cannot be found");
         }
 
         public ListBoxModel doFillProfileItems(@RelativePath("..") @QueryParameter final String protocol, @RelativePath("..") @QueryParameter final String host,
