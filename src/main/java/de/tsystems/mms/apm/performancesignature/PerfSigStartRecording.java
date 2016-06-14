@@ -52,7 +52,7 @@ import java.util.Date;
 public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
     private final String dynatraceProfile, testCase;
     private String recordingOption;
-    private boolean lockSession, continuousSessionRecording;
+    private boolean lockSession;
 
     @DataBoundConstructor
     public PerfSigStartRecording(final String dynatraceProfile, final String testCase) {
@@ -149,19 +149,9 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
         return dynatraceProfile;
     }
 
-    public boolean isContinuousSessionRecording() {
-        return continuousSessionRecording;
-    }
-
-    @DataBoundSetter
-    public void setContinuousSessionRecording(final boolean continuousSessionRecording) {
-        this.continuousSessionRecording = continuousSessionRecording;
-    }
-
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
         public static final boolean defaultLockSession = false;
-        public static final boolean defaultContinuousSessionRecording = false;
         public static final String defaultRecordingOption = "all";
 
         public ListBoxModel doFillRecordingOptionItems() {

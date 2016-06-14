@@ -39,7 +39,7 @@ public class TestResult implements Serializable {
     }
 
     public Date getExectime() {
-        return new Date(exectime.getTime());
+        return (Date) exectime.clone();
     }
 
     public String getPackageName() {
