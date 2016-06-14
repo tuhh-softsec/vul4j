@@ -24,6 +24,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 
 import de.intevation.lada.test.validator.Messung;
@@ -33,6 +34,8 @@ import de.intevation.lada.validation.Validator;
 import de.intevation.lada.validation.annotation.ValidationConfig;
 
 @RunWith(Arquillian.class)
+@Ignore
+// TODO: make tests independent of test data which do not exist anymore
 public class ValidatorTest {
 
     private static Logger logger = Logger.getLogger(StammdatenTest.class);
