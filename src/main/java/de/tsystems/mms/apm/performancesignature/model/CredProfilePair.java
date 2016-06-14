@@ -18,7 +18,10 @@ package de.tsystems.mms.apm.performancesignature.model;
 
 import com.cloudbees.plugins.credentials.CredentialsMatchers;
 import com.cloudbees.plugins.credentials.CredentialsProvider;
-import com.cloudbees.plugins.credentials.common.*;
+import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
+import com.cloudbees.plugins.credentials.common.StandardUsernameListBoxModel;
+import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials;
+import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
 import com.cloudbees.plugins.credentials.domains.DomainRequirement;
 import de.tsystems.mms.apm.performancesignature.Messages;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionException;
@@ -28,6 +31,9 @@ import hudson.Extension;
 import hudson.RelativePath;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
+import hudson.model.Item;
+import hudson.model.Queue;
+import hudson.model.queue.Tasks;
 import hudson.security.ACL;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
@@ -36,6 +42,7 @@ import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.Stapler;
 
 import java.util.Collections;
 
@@ -53,7 +60,7 @@ public class CredProfilePair extends AbstractDescribableImpl<CredProfilePair> {
     }
 
     public UsernamePasswordCredentials getCredentials() {
-        return PerfSigUtils.getCredentials(credentialsId);
+        return PerfSigUtils.getCredentials(credentialsId, Stapler.getCurrentRequest().findAncestorObject(Item.class));
     }
 
     public String getProfile() {
@@ -68,26 +75,27 @@ public class CredProfilePair extends AbstractDescribableImpl<CredProfilePair> {
         }
 
         public ListBoxModel doFillCredentialsIdItems(@AncestorInPath Jenkins context, @QueryParameter String credentialsId) {
-            if (!context.hasPermission(Jenkins.ADMINISTER)) {
+            if (context == null || !context.hasPermission(Jenkins.ADMINISTER)) {
                 return new StandardListBoxModel().includeCurrentValue(credentialsId);
             }
             return new StandardUsernameListBoxModel()
                     .includeEmptyValue()
-                    .includeMatchingAs(ACL.SYSTEM,
+                    .includeMatchingAs(context instanceof Queue.Task ? Tasks.getDefaultAuthenticationOf((Queue.Task) context) : ACL.SYSTEM,
                             context,
-                            StandardUsernameCredentials.class,
+                            StandardUsernamePasswordCredentials.class,
                             Collections.<DomainRequirement>emptyList(),
-                            CredentialsMatchers.instanceOf(StandardUsernamePasswordCredentials.class))
+                            CredentialsMatchers.always())
                     .includeCurrentValue(credentialsId);
         }
 
         public FormValidation doCheckCredentialsId(@AncestorInPath Jenkins context, @QueryParameter String value) {
-            if (!context.hasPermission(Jenkins.ADMINISTER)) {
+            if (context == null || !context.hasPermission(Jenkins.ADMINISTER)) {
                 return FormValidation.ok();
             }
-            for (ListBoxModel.Option o : CredentialsProvider.listCredentials(StandardUsernameCredentials.class, context, ACL.SYSTEM,
+            for (ListBoxModel.Option o : CredentialsProvider.listCredentials(StandardUsernamePasswordCredentials.class, context,
+                    context instanceof Queue.Task ? Tasks.getDefaultAuthenticationOf((Queue.Task) context) : ACL.SYSTEM,
                     Collections.<DomainRequirement>emptyList(),
-                    CredentialsMatchers.instanceOf(StandardUsernamePasswordCredentials.class))) {
+                    CredentialsMatchers.always())) {
                 if (StringUtils.equals(value, o.value)) {
                     return FormValidation.ok();
                 }

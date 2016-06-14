@@ -36,11 +36,13 @@ import de.tsystems.mms.apm.performancesignature.model.DynatraceServerConfigurati
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.FilePath;
 import hudson.ProxyConfiguration;
+import hudson.model.Item;
 import jenkins.model.Jenkins;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.kohsuke.stapler.Stapler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -84,7 +86,7 @@ public class DTServerConnection {
     public DTServerConnection(final String protocol, final String host, final int port, final CredProfilePair pair,
                               final boolean verifyCertificate, final CustomProxy customProxy) {
         this.address = protocol + "://" + host + ":" + port;
-        this.credentials = PerfSigUtils.getCredentials(pair.getCredentialsId());
+        this.credentials = PerfSigUtils.getCredentials(pair.getCredentialsId(), Stapler.getCurrentRequest().findAncestorObject(Item.class));
         this.verifyCertificate = verifyCertificate;
         this.proxy = Proxy.NO_PROXY;
         this.systemProfile = pair.getProfile();

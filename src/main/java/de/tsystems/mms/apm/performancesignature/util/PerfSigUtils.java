@@ -28,6 +28,7 @@ import de.tsystems.mms.apm.performancesignature.model.CredProfilePair;
 import de.tsystems.mms.apm.performancesignature.model.DynatraceServerConfiguration;
 import hudson.FilePath;
 import hudson.Functions;
+import hudson.model.Item;
 import hudson.model.Run;
 import hudson.security.ACL;
 import hudson.util.Area;
@@ -143,9 +144,9 @@ public final class PerfSigUtils {
             return new Area(500, 200);
     }
 
-    public static UsernamePasswordCredentials getCredentials(final String credsId) {
+    public static UsernamePasswordCredentials getCredentials(final String credsId, final Item item) {
         return (credsId == null) ? null : CredentialsMatchers.firstOrNull(
-                CredentialsProvider.lookupCredentials(UsernamePasswordCredentials.class, Jenkins.getActiveInstance(), ACL.SYSTEM,
+                CredentialsProvider.lookupCredentials(UsernamePasswordCredentials.class, item, ACL.SYSTEM,
                         Collections.<DomainRequirement>emptyList()), CredentialsMatchers.withId(credsId));
     }
 }
