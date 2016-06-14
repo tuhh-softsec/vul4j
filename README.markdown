@@ -74,6 +74,12 @@ Das Ausführen der Tests erfolgt durch das Kommando
 
  $ mvn -Premote-test clean test
 
+und benötigt eine leere Datenbank, die z.B. mit
+
+ $ ./setup-db.sh -cn
+
+angelegt werden kann.
+
 Dokumenation
 ------------
 Die Entwicklerdokumentation (Javadoc) kann mit dem folgenden Befehl im

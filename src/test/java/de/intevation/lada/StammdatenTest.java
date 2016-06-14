@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
+import org.jboss.arquillian.persistence.ApplyScriptBefore;
 import org.jboss.arquillian.persistence.Cleanup;
 import org.jboss.arquillian.persistence.DataSource;
 import org.jboss.arquillian.persistence.TestExecutionPhase;
@@ -47,6 +48,7 @@ import de.intevation.lada.test.stamm.Stammdaten;
  */
 @RunWith(Arquillian.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@ApplyScriptBefore("datasets/clean_and_seed.sql")
 public class StammdatenTest extends BaseTest {
 
     private static Logger logger = Logger.getLogger(StammdatenTest.class);
@@ -316,7 +318,7 @@ public class StammdatenTest extends BaseTest {
     @Test
     @RunAsClient
     public final void testKoordinatenartById(@ArquillianResource URL baseUrl) {
-        stammdatenTest.getById(baseUrl, "koordinatenart", 2, testProtocol);
+        stammdatenTest.getById(baseUrl, "koordinatenart", 5, testProtocol);
     }
 
     @Test
@@ -328,7 +330,7 @@ public class StammdatenTest extends BaseTest {
     @Test
     @RunAsClient
     public final void testStaatById(@ArquillianResource URL baseUrl) {
-        stammdatenTest.getById(baseUrl, "staat", 322, testProtocol);
+        stammdatenTest.getById(baseUrl, "staat", 0, testProtocol);
     }
 
     @Test
@@ -352,6 +354,7 @@ public class StammdatenTest extends BaseTest {
     @Test
     @RunAsClient
     public final void testVerwaltungseinheitById(@ArquillianResource URL baseUrl) {
-        stammdatenTest.getById(baseUrl, "verwaltungseinheit", "09575134", testProtocol);
+        stammdatenTest.getById(baseUrl, "verwaltungseinheit",
+            "11000000", testProtocol);
     }
 }
