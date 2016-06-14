@@ -31,18 +31,13 @@ import hudson.Extension;
 import hudson.RelativePath;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
-import hudson.model.Item;
-import hudson.model.Queue;
-import hudson.model.queue.Tasks;
 import hudson.security.ACL;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import jenkins.model.Jenkins;
 import org.apache.commons.lang.StringUtils;
-import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.Stapler;
 
 import java.util.Collections;
 
@@ -60,7 +55,7 @@ public class CredProfilePair extends AbstractDescribableImpl<CredProfilePair> {
     }
 
     public UsernamePasswordCredentials getCredentials() {
-        return PerfSigUtils.getCredentials(credentialsId, Stapler.getCurrentRequest().findAncestorObject(Item.class));
+        return PerfSigUtils.getCredentials(credentialsId);
     }
 
     public String getProfile() {
@@ -74,26 +69,27 @@ public class CredProfilePair extends AbstractDescribableImpl<CredProfilePair> {
             return "";
         }
 
-        public ListBoxModel doFillCredentialsIdItems(@AncestorInPath Jenkins context, @QueryParameter String credentialsId) {
-            if (context == null || !context.hasPermission(Jenkins.ADMINISTER)) {
+        public ListBoxModel doFillCredentialsIdItems(@QueryParameter String credentialsId) {
+            if (!Jenkins.getActiveInstance().hasPermission(Jenkins.ADMINISTER)) {
                 return new StandardListBoxModel().includeCurrentValue(credentialsId);
             }
             return new StandardUsernameListBoxModel()
                     .includeEmptyValue()
-                    .includeMatchingAs(context instanceof Queue.Task ? Tasks.getDefaultAuthenticationOf((Queue.Task) context) : ACL.SYSTEM,
-                            context,
+                    .includeMatchingAs(ACL.SYSTEM,
+                            Jenkins.getActiveInstance(),
                             StandardUsernamePasswordCredentials.class,
                             Collections.<DomainRequirement>emptyList(),
                             CredentialsMatchers.always())
                     .includeCurrentValue(credentialsId);
         }
 
-        public FormValidation doCheckCredentialsId(@AncestorInPath Jenkins context, @QueryParameter String value) {
-            if (context == null || !context.hasPermission(Jenkins.ADMINISTER)) {
+        public FormValidation doCheckCredentialsId(@QueryParameter String value) {
+            if (!Jenkins.getActiveInstance().hasPermission(Jenkins.ADMINISTER)) {
                 return FormValidation.ok();
             }
-            for (ListBoxModel.Option o : CredentialsProvider.listCredentials(StandardUsernamePasswordCredentials.class, context,
-                    context instanceof Queue.Task ? Tasks.getDefaultAuthenticationOf((Queue.Task) context) : ACL.SYSTEM,
+            for (ListBoxModel.Option o : CredentialsProvider.listCredentials(StandardUsernamePasswordCredentials.class,
+                    Jenkins.getActiveInstance(),
+                    ACL.SYSTEM,
                     Collections.<DomainRequirement>emptyList(),
                     CredentialsMatchers.always())) {
                 if (StringUtils.equals(value, o.value)) {
