@@ -18,11 +18,15 @@ package de.tsystems.mms.apm.performancesignature;
 
 import hudson.model.InvisibleAction;
 
+import java.util.Date;
+
 public class PerfSigEnvInvisAction extends InvisibleAction {
     private final String sessionName, testRunID, testCase;
+    private final Date timeframeStart;
 
-    public PerfSigEnvInvisAction(final String sessionName, final String testCase, final String testRunID) {
+    public PerfSigEnvInvisAction(final String sessionName, final Date timeframeStart, final String testCase, final String testRunID) {
         this.sessionName = sessionName;
+        this.timeframeStart = timeframeStart;
         this.testCase = testCase;
         this.testRunID = testRunID;
     }
@@ -37,5 +41,9 @@ public class PerfSigEnvInvisAction extends InvisibleAction {
 
     public String getTestCase() {
         return testCase;
+    }
+
+    public Date getTimeframeStart() {
+        return timeframeStart;
     }
 }
