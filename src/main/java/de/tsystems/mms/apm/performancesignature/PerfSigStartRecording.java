@@ -18,6 +18,7 @@ package de.tsystems.mms.apm.performancesignature;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.BaseConfiguration;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.SystemProfile;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionException;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
 import de.tsystems.mms.apm.performancesignature.model.CredProfilePair;
@@ -46,6 +47,7 @@ import org.kohsuke.stapler.QueryParameter;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Date;
 
 public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
     private final String dynatraceProfile, testCase;
@@ -77,6 +79,10 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
             throw new RESTErrorException(Messages.PerfSigRecorder_DTConnectionError());
         }
 
+        final String testCase = run.getEnvironment(listener).expand(this.testCase);
+        String sessionName = pair.getProfile() + "_" + run.getParent().getName() + "_Build-" + run.getNumber() + "_" + testCase;
+        sessionName = sessionName.replace("/", "_");
+
         for (BaseConfiguration profile : connection.getSystemProfiles()) {
             SystemProfile systemProfile = (SystemProfile) profile;
             if (pair.getProfile().equals(systemProfile.getId()) && systemProfile.isRecording()) {
@@ -85,6 +91,22 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
                 stopRecording.perform(run, workspace, launcher, listener);
                 break;
             }
+        }
+
+        String result = null;
+        Date timeframeStart = null;
+
+        try {
+            result = connection.startRecording(sessionName, "This session is triggered by Jenkins", getRecordingOption(), lockSession, false);
+        } catch (CommandExecutionException e) {
+            if (e.getMessage().contains("continuous")) {
+                timeframeStart = new Date();
+            } else throw e;
+        }
+        if ((result != null && result.equals(sessionName)) || timeframeStart != null) {
+            logger.println(String.format(Messages.PerfSigStartRecording_StartedSessionRecording(), pair.getProfile(), sessionName));
+        } else {
+            throw new RESTErrorException(String.format(Messages.PerfSigStartRecording_SessionRecordingError(), pair.getProfile()));
         }
 
         logger.println("registering new TestRun");
@@ -98,17 +120,7 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
             logger.println("warning: could not register TestRun");
         }
 
-        final String testCase = run.getEnvironment(listener).expand(this.testCase);
-        String sessionName = pair.getProfile() + "_" + run.getParent().getName() + "_Build-" + run.getNumber() + "_" + testCase;
-        sessionName = sessionName.replace("/", "_");
-
-        final String result = connection.startRecording(sessionName, "This session is triggered by Jenkins", getRecordingOption(), lockSession, false);
-        if (result != null && result.equals(sessionName)) {
-            logger.println(String.format(Messages.PerfSigStartRecording_StartedSessionRecording(), pair.getProfile(), result));
-            run.addAction(new PerfSigEnvInvisAction(sessionName, testCase, testRunId));
-        } else {
-            throw new RESTErrorException(String.format(Messages.PerfSigStartRecording_SessionRecordingError(), pair.getProfile()));
-        }
+        run.addAction(new PerfSigEnvInvisAction(sessionName, timeframeStart, testCase, testRunId));
     }
 
     public String getTestCase() {
@@ -124,7 +136,7 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
         this.recordingOption = recordingOption;
     }
 
-    public boolean getLockSession() {
+    public boolean isLockSession() {
         return lockSession;
     }
 

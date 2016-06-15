@@ -39,6 +39,8 @@ import org.kohsuke.stapler.DataBoundSetter;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Date;
+import java.util.List;
 
 public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
     private static final int reanalyzeSessionTimeout = 5 * 60000; //==1 minute
@@ -67,7 +69,24 @@ public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
 
         final DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
 
-        String sessionName = connection.stopRecording();
+        final List<PerfSigEnvInvisAction> envVars = run.getActions(PerfSigEnvInvisAction.class);
+        PerfSigEnvInvisAction buildEnvVars = null;
+        Date timeframeStart = null;
+        if (!envVars.isEmpty()) {
+            buildEnvVars = envVars.get(envVars.size() - 1);
+            timeframeStart = buildEnvVars.getTimeframeStart();
+        }
+
+        String sessionName;
+        if (timeframeStart != null) {
+            logger.println("timeframe start: " + timeframeStart);
+            logger.println("timeframe stop: " + new Date());
+            sessionName = connection.storePurePaths(buildEnvVars.getSessionName(), timeframeStart, new Date(),
+                    PerfSigStartRecording.DescriptorImpl.defaultRecordingOption, PerfSigStartRecording.DescriptorImpl.defaultLockSession, false);
+        } else {
+            sessionName = connection.stopRecording();
+        }
+
         if (StringUtils.isBlank(sessionName))
             throw new RESTErrorException(Messages.PerfSigStopRecording_InternalError());
         logger.println(String.format("stopped recording on %s with SessionName %s", pair.getProfile(), sessionName));

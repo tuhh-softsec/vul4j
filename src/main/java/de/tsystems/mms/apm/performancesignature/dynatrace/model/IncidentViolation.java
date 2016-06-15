@@ -21,7 +21,6 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.xml.sax.Attributes;
 
-import javax.xml.bind.DatatypeConverter;
 import java.util.Date;
 
 public class IncidentViolation {
@@ -34,9 +33,9 @@ public class IncidentViolation {
         this.rule = AttributeUtils.getStringAttribute("rule", attr);
         this.severity = Severity.fromString(AttributeUtils.getStringAttribute("severity", attr));
         if (StringUtils.isNotBlank(attr.getValue("start")))
-            this.start = DatatypeConverter.parseDateTime(attr.getValue("start")).getTime();
+            this.start = AttributeUtils.getDateAttribute("start", attr);
         if (StringUtils.isNotBlank(attr.getValue("end")))
-            this.end = DatatypeConverter.parseDateTime(attr.getValue("end")).getTime();
+            this.end = AttributeUtils.getDateAttribute("end", attr);
         this.duration = AttributeUtils.getLongAttribute("duration", attr);
         this.description = AttributeUtils.getStringAttribute("description", attr);
     }
@@ -50,11 +49,11 @@ public class IncidentViolation {
     }
 
     public Date getStart() {
-        return new Date(start.getTime());
+        return (Date) start.clone();
     }
 
     public Date getEnd() {
-        return new Date(end.getTime());
+        return (Date) end.clone();
     }
 
     public long getDuration() {

@@ -128,7 +128,7 @@ public class TestRun implements Serializable {
     }
 
     public Date getTimestamp() {
-        return new Date(this.timestamp.getTime());
+        return (Date) timestamp.clone();
     }
 
     public List<TestResult> getTestResults() {
