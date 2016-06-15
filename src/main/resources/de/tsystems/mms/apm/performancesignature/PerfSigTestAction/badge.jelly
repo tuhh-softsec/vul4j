@@ -19,10 +19,8 @@
     <j:set var="testRun" value="${it.matchingTestRun}"/>
     <j:set var="testResult" value="${it.matchingTestResult}"/>
     <j:if test="${testResult!=null}">
-        <j:if test="${!it.resourcesLoaded}">
-            <st:adjunct includes="org.jenkins.ui.jsmodules.css.bootstrapprefix"/>
-            <st:adjunct includes="org.jenkins.ui.jsmodules.performance_signature_dynatrace.buildactionresultsdisplay"/>
-        </j:if>
+        <st:adjunct includes="org.jenkins.ui.jsmodules.css.bootstrapprefix"/>
+        <st:adjunct includes="org.jenkins.ui.jsmodules.performance_signature_dynatrace.buildactionresultsdisplay"/>
         <div class="tw-bs" style="display: inline;">
             <j:new var="h" className="hudson.Functions"/>
             <j:set var="id" value="collapse${h.generateId()}"/>
