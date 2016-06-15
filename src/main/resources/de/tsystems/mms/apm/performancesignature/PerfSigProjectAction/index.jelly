@@ -52,6 +52,8 @@
                 <div class="tab-content">
                     <j:forEach var="lastDashboardReport" items="${it.lastDashboardReports}">
                         <j:set var="isUnitTest" value="${lastDashboardReport.isUnitTest() and tr.previousResult!=null}"/>
+                        <!--trigger filteredChartDashlets-->
+                        <j:set var="tmp" value="${it.getFilteredChartDashlets(lastDashboardReport)}"/>
                         <div role="tabpanel fade" class="tab-pane" id="${lastDashboardReport.name}">
                             <div class="container-fluid">
                                 <div class="row" style="height: 50px;">
@@ -145,9 +147,9 @@
                                                 <th class="text-center">${%volatile #}</th>
                                                 <th class="text-center">${%skipped #}</th>
                                                 <th class="text-center">${%improved #}</th>
-                                                <th class="text-center">${%passed #}<br/>functional
+                                                <th class="text-center">${%passed #}<br/>${%functional}
                                                 </th>
-                                                <th class="text-center">${%passed #}<br/>non-functional
+                                                <th class="text-center">${%passed #}<br/>${%non-functional}
                                                 </th>
                                                 <th class="text-center">${%sum #}</th>
                                             </j:if>
