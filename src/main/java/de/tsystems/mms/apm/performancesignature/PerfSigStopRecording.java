@@ -70,10 +70,12 @@ public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
         final DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
 
         final List<PerfSigEnvInvisAction> envVars = run.getActions(PerfSigEnvInvisAction.class);
-        if (envVars.isEmpty())
-            throw new AbortException("failed to lookup session name");
-        PerfSigEnvInvisAction buildEnvVars = envVars.get(envVars.size() - 1);
-        Date timeframeStart = buildEnvVars.getTimeframeStart();
+        PerfSigEnvInvisAction buildEnvVars = null;
+        Date timeframeStart = null;
+        if (!envVars.isEmpty()) {
+            buildEnvVars = envVars.get(envVars.size() - 1);
+            timeframeStart = buildEnvVars.getTimeframeStart();
+        }
 
         String sessionName;
         if (timeframeStart != null) {
