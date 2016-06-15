@@ -1,6 +1,6 @@
 SET search_path TO stammdaten;
 
--- minimal master data to make interface tests runnable
+-- cleanup
 DELETE FROM auth;
 DELETE FROM ort;
 DELETE FROM ort_typ;
