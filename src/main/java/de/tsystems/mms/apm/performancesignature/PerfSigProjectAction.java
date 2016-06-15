@@ -524,35 +524,46 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         return "";
     }
 
-    //ToDo: provide fix to handle new, renamed or deleted measures
     public List<ChartDashlet> getFilteredChartDashlets(final DashboardReport dashboardReport) throws IOException, InterruptedException {
-        final List<ChartDashlet> chartDashlets = new ArrayList<ChartDashlet>();
+        final List<ChartDashlet> filteredChartDashlets = new ArrayList<ChartDashlet>();
         final String json = getDashboardConfiguration(dashboardReport.getName());
-        if (StringUtils.isBlank(json) || dashboardReport.getChartDashlets() == null) return chartDashlets;
-        final JSONArray jsonArray = JSONArray.fromObject(json);
+        if (StringUtils.isBlank(json) || dashboardReport.getChartDashlets() == null) return filteredChartDashlets;
+        final JSONArray storedJSON = JSONArray.fromObject(json);
+        boolean jsonChanged = false;
 
-        for (int i = 0; i < jsonArray.size(); i++) {
-            JSONObject obj = jsonArray.getJSONObject(i);
-            String chartDashlet = obj.getString("chartDashlet");
-            String measure = obj.getString("measure");
+        for (int i = 0; i < storedJSON.size(); i++) {
+            JSONObject obj = storedJSON.getJSONObject(i);
+            String storedChartDashlet = obj.getString("chartDashlet");
+            String storedMeasure = obj.getString("measure");
+            boolean chartDashletFound = false;
 
             for (ChartDashlet dashlet : dashboardReport.getChartDashlets()) {
-                if (dashlet.getName().equals(chartDashlet)) {
+                if (dashlet.getName().equals(storedChartDashlet)) {
                     for (Measure m : dashlet.getMeasures()) {
-                        if (m.getName().equals(measure)) {
+                        if (m.getName().equals(storedMeasure)) {
                             ChartDashlet d;
                             if (StringUtils.isBlank(obj.getString("customName")))
                                 d = new ChartDashlet(PerfSigUtils.generateTitle(m.getName(), dashlet.getName()));
                             else
                                 d = new ChartDashlet(obj.getString("customName"));
                             d.addMeasure(m);
-                            chartDashlets.add(d);
+                            filteredChartDashlets.add(d);
+                            chartDashletFound = true;
                             break;
                         }
                     }
                 }
             }
+            if (!chartDashletFound) {
+                storedJSON.remove(obj); //delete dashlets, which are not found in current dashlet list
+                jsonChanged = true;
+            }
         }
-        return chartDashlets;
+
+        if (jsonChanged) { //write changes to disk
+            FilePath output = new FilePath(new File(getJsonConfigFilePath() + File.separator + "gridconfig-" + dashboardReport.getName() + ".json"));
+            output.write(storedJSON.toString(), null);
+        }
+        return filteredChartDashlets;
     }
 }
