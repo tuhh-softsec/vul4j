@@ -17,11 +17,15 @@
 package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
+import hudson.model.Api;
+import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.export.ExportedBean;
 import org.xml.sax.Attributes;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@ExportedBean
 public class IncidentChart {
     private final String rule;
     private final Severity severity;
@@ -32,14 +36,24 @@ public class IncidentChart {
         this.severity = Severity.fromString(AttributeUtils.getStringAttribute("severity", attr));
     }
 
+    /**
+     * Exposes this object to the remote API.
+     */
+    public Api getApi() {
+        return new Api(this);
+    }
+
+    @Exported(visibility = 999)
     public String getRule() {
         return rule;
     }
 
+    @Exported(visibility = 999)
     public Severity getSeverity() {
         return severity;
     }
 
+    @Exported(visibility = 999)
     public List<IncidentViolation> getViolations() {
         return violations;
     }
@@ -50,6 +64,7 @@ public class IncidentChart {
         this.violations.add(incidentViolation);
     }
 
+    @ExportedBean
     public enum Severity {
         SEVERE, WARNING, INFORMATIONAL;
 

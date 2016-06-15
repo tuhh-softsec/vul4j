@@ -17,9 +17,13 @@
 package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
 import de.tsystems.mms.apm.performancesignature.model.ClientLinkGenerator;
+import hudson.model.Api;
+import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.export.ExportedBean;
 
 import java.util.List;
 
+@ExportedBean
 public class DashboardReport {
     private final String name;
     private List<ChartDashlet> chartDashlets;
@@ -31,6 +35,14 @@ public class DashboardReport {
         this.name = testCaseName;
     }
 
+    /**
+     * Exposes this object to the remote API.
+     */
+    public Api getApi() {
+        return new Api(this);
+    }
+
+    @Exported(visibility = 999)
     public List<IncidentChart> getIncidents() {
         return incidents;
     }
@@ -39,6 +51,7 @@ public class DashboardReport {
         this.incidents = incidents;
     }
 
+    @Exported(visibility = 999)
     public List<ChartDashlet> getChartDashlets() {
         return chartDashlets;
     }
@@ -47,10 +60,12 @@ public class DashboardReport {
         this.chartDashlets = chartDashlets;
     }
 
+    @Exported(visibility = 999)
     public String getName() {
         return name;
     }
 
+    @Exported(visibility = 999)
     public boolean isUnitTest() {
         return unitTest;
     }

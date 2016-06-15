@@ -18,11 +18,15 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
+import hudson.model.Api;
+import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.export.ExportedBean;
 import org.xml.sax.Attributes;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@ExportedBean
 public class ChartDashlet {
     private final String name;
     private final List<Measure> measures;
@@ -42,14 +46,24 @@ public class ChartDashlet {
         return PerfSigUtils.encodeString(string);
     }
 
+    /**
+     * Exposes this object to the remote API.
+     */
+    public Api getApi() {
+        return new Api(this);
+    }
+
+    @Exported(visibility = 999)
     public String getName() {
         return name;
     }
 
+    @Exported(visibility = 999)
     public String getDescription() {
         return description;
     }
 
+    @Exported(visibility = 999)
     public List<Measure> getMeasures() {
         return measures;
     }

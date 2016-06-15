@@ -18,13 +18,17 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
+import hudson.model.Api;
 import org.apache.commons.lang.StringUtils;
+import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.export.ExportedBean;
 import org.xml.sax.Attributes;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+@ExportedBean
 public class Measure {
     private String name, color, unit, aggregation;
     private double max, avg, min, sum;
@@ -47,6 +51,14 @@ public class Measure {
         this.aggregation = AttributeUtils.getStringAttribute(Messages.Measure_AttrAggregation(), attr);
     }
 
+    /**
+     * Exposes this object to the remote API.
+     */
+    public Api getApi() {
+        return new Api(this);
+    }
+
+    @Exported(visibility = 999)
     public List<Measurement> getMeasurements() {
         return measurements;
     }
@@ -57,18 +69,22 @@ public class Measure {
         this.measurements.add(tm);
     }
 
+    @Exported(visibility = 999)
     public double getSum() {
         return this.sum;
     }
 
+    @Exported(visibility = 999)
     public int getCount() {
         return count;
     }
 
+    @Exported(visibility = 999)
     public String getName() {
         return this.name;
     }
 
+    @Exported(visibility = 999)
     public String getColor() {
         return PerfSigUtils.encodeString(this.color);
     }
@@ -81,6 +97,7 @@ public class Measure {
         return PerfSigUtils.round(this.min, 2);
     }
 
+    @Exported(visibility = 999)
     public String getUnit() {
         if (this.aggregation != null && this.aggregation.equalsIgnoreCase("count")) return "num";
         return PerfSigUtils.encodeString(this.unit);
@@ -90,6 +107,27 @@ public class Measure {
         return PerfSigUtils.round(this.max, 2);
     }
 
+    @Exported(visibility = 999)
+    public Double getDoubleMin() {
+        return this.min;
+    }
+
+    @Exported(visibility = 999)
+    public Double getDoubleMax() {
+        return this.max;
+    }
+
+    @Exported(visibility = 999)
+    public Double getDoubleAvg() {
+        return this.avg;
+    }
+
+    @Exported(visibility = 999)
+    public Double getDoubleSum() {
+        return this.sum;
+    }
+
+    @Exported(visibility = 999)
     public String getAggregation() {
         return aggregation;
     }

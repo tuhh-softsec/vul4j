@@ -18,11 +18,15 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.IncidentChart.Severity;
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
+import hudson.model.Api;
 import org.apache.commons.lang.StringUtils;
+import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.export.ExportedBean;
 import org.xml.sax.Attributes;
 
 import java.util.Date;
 
+@ExportedBean
 public class IncidentViolation {
     private final String rule, description;
     private final Severity severity;
@@ -40,26 +44,39 @@ public class IncidentViolation {
         this.description = AttributeUtils.getStringAttribute("description", attr);
     }
 
+    /**
+     * Exposes this object to the remote API.
+     */
+    public Api getApi() {
+        return new Api(this);
+    }
+
+    @Exported(visibility = 999)
     public String getRule() {
         return rule;
     }
 
+    @Exported(visibility = 999)
     public Severity getSeverity() {
         return severity;
     }
 
+    @Exported(visibility = 999)
     public Date getStart() {
         return (Date) start.clone();
     }
 
+    @Exported(visibility = 999)
     public Date getEnd() {
         return (Date) end.clone();
     }
 
+    @Exported(visibility = 999)
     public long getDuration() {
         return duration;
     }
 
+    @Exported(visibility = 999)
     public String getDescription() {
         return description;
     }
