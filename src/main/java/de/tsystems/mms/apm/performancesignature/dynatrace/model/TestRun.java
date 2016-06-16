@@ -19,6 +19,7 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
 import org.xml.sax.Attributes;
 
+import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -131,6 +132,7 @@ public class TestRun implements Serializable {
         return (Date) timestamp.clone();
     }
 
+    @Nonnull
     public List<TestResult> getTestResults() {
         if (testResults != null)
             return testResults;

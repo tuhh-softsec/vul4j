@@ -19,6 +19,7 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
 import org.xml.sax.Attributes;
 
+import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -58,6 +59,7 @@ public class TestResult implements Serializable {
         return null;
     }
 
+    @Nonnull
     public List<TestRunMeasure> getTestRunMeasures() {
         if (measures != null)
             return measures;

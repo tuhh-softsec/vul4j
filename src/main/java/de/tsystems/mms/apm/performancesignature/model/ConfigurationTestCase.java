@@ -18,7 +18,6 @@ package de.tsystems.mms.apm.performancesignature.model;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.DescriptorExtensionList;
 import hudson.RelativePath;
 import hudson.model.AbstractProject;
@@ -29,6 +28,7 @@ import jenkins.model.Jenkins;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.QueryParameter;
 
+import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -67,14 +67,14 @@ public abstract class ConfigurationTestCase implements Describable<Configuration
         this.clientDashboard = StringUtils.isBlank(clientDashboard) ? ConfigurationTestCaseDescriptor.defaultClientDashboard : clientDashboard;
     }
 
-    @NonNull
+    @Nonnull
     public List<Dashboard> getSingleDashboards() {
         if (singleDashboards == null)
             return new ArrayList<Dashboard>();
         return singleDashboards;
     }
 
-    @NonNull
+    @Nonnull
     public List<Dashboard> getComparisonDashboards() {
         if (comparisonDashboards == null)
             return new ArrayList<Dashboard>();
