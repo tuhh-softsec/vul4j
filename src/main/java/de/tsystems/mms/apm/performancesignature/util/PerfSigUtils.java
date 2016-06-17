@@ -37,6 +37,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -147,5 +148,13 @@ public final class PerfSigUtils {
         return (credsId == null) ? null : CredentialsMatchers.firstOrNull(
                 CredentialsProvider.lookupCredentials(UsernamePasswordCredentials.class, Jenkins.getActiveInstance(), ACL.SYSTEM,
                         Collections.<DomainRequirement>emptyList()), CredentialsMatchers.withId(credsId));
+    }
+
+    public static boolean checkNotNullOrEmpty(final String string) {
+        return StringUtils.isNotBlank(string);
+    }
+
+    public static boolean checkNotEmptyAndIsNumber(final String number) {
+        return StringUtils.isNotBlank(number) && NumberUtils.isNumber(number);
     }
 }

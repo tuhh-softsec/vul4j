@@ -17,13 +17,12 @@
 package de.tsystems.mms.apm.performancesignature.model;
 
 import de.tsystems.mms.apm.performancesignature.Messages;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.Extension;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
@@ -109,14 +108,6 @@ public class DynatraceServerConfiguration extends AbstractDescribableImpl<Dynatr
         public static final int defaultRetryCount = 5;
         public static final boolean defaultVerifyCertificate = false;
 
-        private static boolean checkNotNullOrEmpty(final String string) {
-            return StringUtils.isNotBlank(string);
-        }
-
-        private static boolean checkNotEmptyAndIsNumber(final String number) {
-            return StringUtils.isNotBlank(number) && NumberUtils.isNumber(number);
-        }
-
         @Override
         public String getDisplayName() {
             return "";
@@ -128,7 +119,7 @@ public class DynatraceServerConfiguration extends AbstractDescribableImpl<Dynatr
 
         public FormValidation doCheckHost(@QueryParameter final String host) {
             FormValidation validationResult;
-            if (checkNotNullOrEmpty(host)) {
+            if (PerfSigUtils.checkNotNullOrEmpty(host)) {
                 validationResult = FormValidation.ok();
             } else {
                 validationResult = FormValidation.error(Messages.PerfSigRecorder_DTHostNotValid());
@@ -138,7 +129,7 @@ public class DynatraceServerConfiguration extends AbstractDescribableImpl<Dynatr
 
         public FormValidation doCheckPort(@QueryParameter final String port) {
             FormValidation validationResult;
-            if (checkNotEmptyAndIsNumber(port)) {
+            if (PerfSigUtils.checkNotEmptyAndIsNumber(port)) {
                 validationResult = FormValidation.ok();
             } else {
                 validationResult = FormValidation.error(Messages.PerfSigRecorder_DTPortNotValid());
@@ -146,29 +137,9 @@ public class DynatraceServerConfiguration extends AbstractDescribableImpl<Dynatr
             return validationResult;
         }
 
-        public FormValidation doCheckCredentialsId(@QueryParameter final String credentialsId) {
-            FormValidation validationResult;
-            if (checkNotNullOrEmpty(credentialsId)) {
-                validationResult = FormValidation.ok();
-            } else {
-                validationResult = FormValidation.error(Messages.PerfSigRecorder_DTUserEmpty());
-            }
-            return validationResult;
-        }
-
-        public FormValidation doCheckProfile(@QueryParameter final String profile) {
-            FormValidation validationResult;
-            if (checkNotNullOrEmpty(profile)) {
-                validationResult = FormValidation.ok();
-            } else {
-                validationResult = FormValidation.error(Messages.PerfSigRecorder_DTProfileNotValid());
-            }
-            return validationResult;
-        }
-
         public FormValidation doCheckDelay(@QueryParameter final String delay) {
             FormValidation validationResult;
-            if (checkNotEmptyAndIsNumber(delay)) {
+            if (PerfSigUtils.checkNotEmptyAndIsNumber(delay)) {
                 validationResult = FormValidation.ok();
             } else {
                 validationResult = FormValidation.error(Messages.PerfSigRecorder_DelayNotValid());
@@ -178,7 +149,7 @@ public class DynatraceServerConfiguration extends AbstractDescribableImpl<Dynatr
 
         public FormValidation doCheckRetryCount(@QueryParameter final String retryCount) {
             FormValidation validationResult;
-            if (checkNotEmptyAndIsNumber(retryCount)) {
+            if (PerfSigUtils.checkNotEmptyAndIsNumber(retryCount)) {
                 validationResult = FormValidation.ok();
             } else {
                 validationResult = FormValidation.error(Messages.PerfSigRecorder_RetryCountNotValid());

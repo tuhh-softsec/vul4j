@@ -118,6 +118,16 @@ public class CredProfilePair extends AbstractDescribableImpl<CredProfilePair> {
             }
         }
 
+        public FormValidation doCheckProfile(@QueryParameter final String profile) {
+            FormValidation validationResult;
+            if (PerfSigUtils.checkNotNullOrEmpty(profile)) {
+                validationResult = FormValidation.ok();
+            } else {
+                validationResult = FormValidation.error(Messages.PerfSigRecorder_DTProfileNotValid());
+            }
+            return validationResult;
+        }
+
         public FormValidation doTestDynaTraceConnection(@QueryParameter final String protocol, @QueryParameter final String host,
                                                         @QueryParameter final int port, @QueryParameter final String credentialsId,
                                                         @QueryParameter final boolean verifyCertificate, @QueryParameter final boolean proxy,
