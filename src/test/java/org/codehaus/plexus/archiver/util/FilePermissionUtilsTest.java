@@ -1,5 +1,3 @@
-package org.codehaus.plexus.archiver.util;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,25 +16,25 @@ package org.codehaus.plexus.archiver.util;
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import junit.framework.TestCase;
+package org.codehaus.plexus.archiver.util;
 
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
+import junit.framework.TestCase;
 
 /**
  * @author Olivier Lamy
- *
  */
 public class FilePermissionUtilsTest
     extends TestCase
 {
+
     Logger getLogger()
     {
         return new ConsoleLogger( Logger.LEVEL_DEBUG, "foo" );
-        
+
     }
-    
+
     public void testOnlyWritableOnlyUser() throws Exception
     {
         FilePermission fp = FilePermissionUtils.getFilePermissionFromMode( "200", getLogger() );
@@ -46,7 +44,7 @@ public class FilePermissionUtilsTest
         assertTrue( fp.isOwnerOnlyExecutable() );
         assertFalse( fp.isReadable() );
     }
-    
+
     public void testExecAndRead()
     {
         FilePermission fp = FilePermissionUtils.getFilePermissionFromMode( "500", getLogger() );
@@ -55,8 +53,8 @@ public class FilePermissionUtilsTest
         assertTrue( fp.isExecutable() );
         assertTrue( fp.isOwnerOnlyExecutable() );
         assertTrue( fp.isReadable() );
-    }    
-    
+    }
+
     public void testAllUser()
     {
         FilePermission fp = FilePermissionUtils.getFilePermissionFromMode( "700", getLogger() );
@@ -65,8 +63,8 @@ public class FilePermissionUtilsTest
         assertTrue( fp.isExecutable() );
         assertTrue( fp.isOwnerOnlyExecutable() );
         assertTrue( fp.isReadable() );
-    }    
-    
+    }
+
     public void testAllAllUser()
     {
         FilePermission fp = FilePermissionUtils.getFilePermissionFromMode( "707", getLogger() );
@@ -76,6 +74,6 @@ public class FilePermissionUtilsTest
         assertFalse( fp.isOwnerOnlyExecutable() );
         assertTrue( fp.isReadable() );
         assertFalse( fp.isOwnerOnlyReadable() );
-    }    
-   
+    }
+
 }

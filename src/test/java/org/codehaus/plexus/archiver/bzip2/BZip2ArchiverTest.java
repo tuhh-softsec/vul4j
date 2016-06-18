@@ -1,5 +1,3 @@
-package org.codehaus.plexus.archiver.bzip2;
-
 /*
  * The MIT License
  *
@@ -23,6 +21,7 @@ package org.codehaus.plexus.archiver.bzip2;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.codehaus.plexus.archiver.bzip2;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,21 +29,19 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.BasePlexusArchiverTest;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 
-
 /**
  * @author Emmanuel Venisse
- *
  */
 public class BZip2ArchiverTest
     extends BasePlexusArchiverTest
 {
+
     public void testCreateArchive()
         throws Exception
     {
@@ -54,7 +51,7 @@ public class BZip2ArchiverTest
         zipArchiver.createArchive();
         BZip2Archiver archiver = (BZip2Archiver) lookup( Archiver.ROLE, "bzip2" );
         String[] inputFiles = new String[ 1 ];
-        inputFiles[ 0 ] = "archiveForbz2.zip";
+        inputFiles[0] = "archiveForbz2.zip";
         archiver.addDirectory( getTestFile( "target/output" ), inputFiles, null );
         archiver.setDestFile( getTestFile( "target/output/archive.bz2" ) );
         archiver.createArchive();
@@ -63,14 +60,14 @@ public class BZip2ArchiverTest
     public void testCreateResourceCollection()
         throws Exception
     {
-        final File pomFile = new File("pom.xml");
+        final File pomFile = new File( "pom.xml" );
         final File bz2File = new File( "target/output/pom.xml.bz2" );
         BZip2Archiver bzip2Archiver = (BZip2Archiver) lookup( Archiver.ROLE, "bzip2" );
         bzip2Archiver.setDestFile( bz2File );
         bzip2Archiver.addFile( pomFile, "pom.xml" );
         FileUtils.removePath( bz2File.getPath() );
         bzip2Archiver.createArchive();
-        
+
         System.out.println( "Created: " + bz2File.getAbsolutePath() );
 
         final File zipFile = new File( "target/output/pom.zip" );
@@ -84,46 +81,47 @@ public class BZip2ArchiverTest
         final ZipEntry zipEntry = juZipFile.getEntry( "prfx/target/output/pom.xml" );
         final InputStream archivePom = juZipFile.getInputStream( zipEntry );
         final InputStream pom = new FileInputStream( pomFile );
-        
+
         assertTrue( Arrays.equals( IOUtil.toByteArray( pom ), IOUtil.toByteArray( archivePom ) ) );
         archivePom.close();
         pom.close();
         juZipFile.close();
     }
-    
+
     /**
      * Tests the .bzip2 archiver is forced set to true, and after that
      * tests the behavior when the forced is set to false.
-     * 
+     *
      * @throws Exception
      */
     public void testBz2IsForcedBehaviour() throws Exception
     {
         BZip2Archiver bZip2Archiver = (BZip2Archiver) createArchiver( "bzip2" );
-        
+
         assertTrue( bZip2Archiver.isSupportingForced() );
         bZip2Archiver.createArchive();
-        
+
         final long creationTime = bZip2Archiver.getDestFile().lastModified();
-        
+
         waitUntilNewTimestamp( bZip2Archiver.getDestFile(), creationTime );
-       
+
         bZip2Archiver = (BZip2Archiver) createArchiver( "bzip2" );
 
         bZip2Archiver.setForced( true );
         bZip2Archiver.createArchive();
-        
+
         final long firstRunTime = bZip2Archiver.getDestFile().lastModified();
 
-        assertFalse( creationTime==firstRunTime );
-        
+        assertFalse( creationTime == firstRunTime );
+
         bZip2Archiver = (BZip2Archiver) createArchiver( "bzip2" );
 
         bZip2Archiver.setForced( false );
         bZip2Archiver.createArchive();
-        
+
         final long secondRunTime = bZip2Archiver.getDestFile().lastModified();
-        
-        assertEquals( firstRunTime,secondRunTime );
+
+        assertEquals( firstRunTime, secondRunTime );
     }
+
 }

@@ -1,5 +1,10 @@
 package org.codehaus.plexus.archiver.zip;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import org.apache.commons.compress.archivers.zip.UnixStat;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
@@ -9,95 +14,110 @@ import org.codehaus.plexus.util.DirectoryScanner;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.io.*;
-
-@SuppressWarnings("ResultOfMethodCallIgnored")
+@SuppressWarnings( "ResultOfMethodCallIgnored" )
 @Ignore
-public class ConcurrentJarCreatorTest {
+public class ConcurrentJarCreatorTest
+{
+
     @Test
     public void concurrent()
-            throws Exception {
-        File home = new File(System.getProperty("user.home"));
-        File result = new File(home, "multiStream2-parallel.zip");
-        ConcurrentJarCreator zipCreator = new ConcurrentJarCreator(Runtime.getRuntime().availableProcessors());
+        throws Exception
+    {
+        File home = new File( System.getProperty( "user.home" ) );
+        File result = new File( home, "multiStream2-parallel.zip" );
+        ConcurrentJarCreator zipCreator = new ConcurrentJarCreator( Runtime.getRuntime().availableProcessors() );
 
-        final File file1 = new File(home, "lsrc/plexus");
-        doAddAll(file1.getPath(), zipCreator);
+        final File file1 = new File( home, "lsrc/plexus" );
+        doAddAll( file1.getPath(), zipCreator );
 
-        ZipArchiveOutputStream zos = createZipARchiveOutputStream(result);
-        zipCreator.writeTo(zos);
+        ZipArchiveOutputStream zos = createZipARchiveOutputStream( result );
+        zipCreator.writeTo( zos );
         zos.close();
-        System.out.println("Concurrent:" + zipCreator.getStatisticsMessage());
+        System.out.println( "Concurrent:" + zipCreator.getStatisticsMessage() );
     }
-
 
     @Test
-    public void concurrent2() throws Exception {
+    public void concurrent2() throws Exception
+    {
         concurrent();
     }
-
 
     @Test
     @Ignore
     public void classic()
-            throws Exception {
+        throws Exception
+    {
         long startAt = System.currentTimeMillis();
-        File home = new File(System.getProperty("user.home"));
-        File result = new File(home, "multiStream2-classic.zip");
+        File home = new File( System.getProperty( "user.home" ) );
+        File result = new File( home, "multiStream2-classic.zip" );
 
-        final File file1 = new File(home, "lsrc/plexus");
-        ZipArchiveOutputStream zos = createZipARchiveOutputStream(result);
-        doAddAll(file1.getPath(), zos);
+        final File file1 = new File( home, "lsrc/plexus" );
+        ZipArchiveOutputStream zos = createZipARchiveOutputStream( result );
+        doAddAll( file1.getPath(), zos );
         zos.close();
-        System.out.println("linear:" + (System.currentTimeMillis() - startAt) + "ms");
+        System.out.println( "linear:" + ( System.currentTimeMillis() - startAt ) + "ms" );
 
     }
 
-    private ZipArchiveOutputStream createZipARchiveOutputStream(File result) throws IOException {
-        ZipArchiveOutputStream zos = new ZipArchiveOutputStream(result);
-        zos.setEncoding("UTF-8");
+    private ZipArchiveOutputStream createZipARchiveOutputStream( File result ) throws IOException
+    {
+        ZipArchiveOutputStream zos = new ZipArchiveOutputStream( result );
+        zos.setEncoding( "UTF-8" );
         return zos;
     }
 
-    private void doAddAll(String base, ConcurrentJarCreator mos) throws IOException {
+    private void doAddAll( String base, ConcurrentJarCreator mos ) throws IOException
+    {
 
-        DirectoryScanner ds = getIncludedFiles(base);
+        DirectoryScanner ds = getIncludedFiles( base );
 
-        for (String fileName : ds.getIncludedFiles()) {
-            final File file = new File(base, fileName);
-            ZipArchiveEntry za = createZipArchiveEntry(file, fileName);
+        for ( String fileName : ds.getIncludedFiles() )
+        {
+            final File file = new File( base, fileName );
+            ZipArchiveEntry za = createZipArchiveEntry( file, fileName );
 
-            mos.addArchiveEntry(za, new InputStreamSupplier() {
-                public InputStream get() {
-                    try {
-                        return file.isFile() ? new FileInputStream(file) : null;
-                    } catch (FileNotFoundException e) {
-                        throw new RuntimeException(e);
+            mos.addArchiveEntry( za, new InputStreamSupplier()
+            {
+
+                public InputStream get()
+                {
+                    try
+                    {
+                        return file.isFile() ? new FileInputStream( file ) : null;
+                    }
+                    catch ( FileNotFoundException e )
+                    {
+                        throw new RuntimeException( e );
                     }
                 }
-            }, true);
+
+            }, true );
         }
 
     }
 
-    private DirectoryScanner getIncludedFiles(String base) {
+    private DirectoryScanner getIncludedFiles( String base )
+    {
         DirectoryScanner ds = new DirectoryScanner();
-        ds.setBasedir(base);
+        ds.setBasedir( base );
         ds.scan();
         return ds;
     }
 
-    private void doAddAll(String base, ZipArchiveOutputStream mos) throws IOException {
-        DirectoryScanner ds = getIncludedFiles(base);
+    private void doAddAll( String base, ZipArchiveOutputStream mos ) throws IOException
+    {
+        DirectoryScanner ds = getIncludedFiles( base );
 
-        for (String fileName : ds.getIncludedFiles()) {
-            final File file = new File(base, fileName);
-            ZipArchiveEntry za = createZipArchiveEntry(file, fileName);
+        for ( String fileName : ds.getIncludedFiles() )
+        {
+            final File file = new File( base, fileName );
+            ZipArchiveEntry za = createZipArchiveEntry( file, fileName );
 
-            mos.putArchiveEntry(za);
-            if (file.isFile()) {
-                FileInputStream input = new FileInputStream(file);
-                IOUtils.copy(input, mos);
+            mos.putArchiveEntry( za );
+            if ( file.isFile() )
+            {
+                FileInputStream input = new FileInputStream( file );
+                IOUtils.copy( input, mos );
                 input.close();
             }
             mos.closeArchiveEntry();
@@ -105,21 +125,24 @@ public class ConcurrentJarCreatorTest {
 
     }
 
-    @SuppressWarnings("OctalInteger")
-    private ZipArchiveEntry createZipArchiveEntry(File file, String name) {
-        ZipArchiveEntry za = new ZipArchiveEntry(file, name);
-        if (file.isDirectory()) {
-            za.setMethod(ZipArchiveEntry.STORED);
-            za.setSize(0);
-            za.setUnixMode(UnixStat.DIR_FLAG | 0664);
-        } else {
-            za.setMethod(ZipArchiveEntry.DEFLATED);
-            za.setSize(file.length());
-            za.setUnixMode(UnixStat.FILE_FLAG | 0664);
+    @SuppressWarnings( "OctalInteger" )
+    private ZipArchiveEntry createZipArchiveEntry( File file, String name )
+    {
+        ZipArchiveEntry za = new ZipArchiveEntry( file, name );
+        if ( file.isDirectory() )
+        {
+            za.setMethod( ZipArchiveEntry.STORED );
+            za.setSize( 0 );
+            za.setUnixMode( UnixStat.DIR_FLAG | 0664 );
         }
-        za.setTime(file.lastModified());
+        else
+        {
+            za.setMethod( ZipArchiveEntry.DEFLATED );
+            za.setSize( file.length() );
+            za.setUnixMode( UnixStat.FILE_FLAG | 0664 );
+        }
+        za.setTime( file.lastModified() );
         return za;
     }
-
 
 }

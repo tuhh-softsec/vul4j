@@ -1,5 +1,3 @@
-package org.codehaus.plexus.archiver.zip;
-
 /*
  * The MIT License
  *
@@ -23,7 +21,22 @@ package org.codehaus.plexus.archiver.zip;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.codehaus.plexus.archiver.zip;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
+import javax.annotation.Nonnull;
 import org.apache.commons.compress.archivers.zip.ExtraFieldUtils;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipExtraField;
@@ -54,24 +67,8 @@ import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.Os;
 
-import javax.annotation.Nonnull;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
-
 /**
  * @author Emmanuel Venisse
- *
  */
 @SuppressWarnings( "OctalInteger" )
 public class ZipArchiverTest
@@ -118,7 +115,6 @@ public class ZipArchiverTest
         assertEquals( 0100111, pam.getUnixMode() );
     }
 
-
     public void testOverddidenPermissions()
         throws IOException
     {
@@ -139,17 +135,24 @@ public class ZipArchiverTest
         assertTrue( symR.isUnixSymlink() );
     }
 
-
-
     public void testCreateArchiveWithDetectedModes()
         throws Exception
     {
 
-        String[] executablePaths = { "path/to/executable", "path/to/executable.bat" };
+        String[] executablePaths =
+        {
+            "path/to/executable", "path/to/executable.bat"
+        };
 
-        String[] confPaths = { "path/to/etc/file", "path/to/etc/file2" };
+        String[] confPaths =
+        {
+            "path/to/etc/file", "path/to/etc/file2"
+        };
 
-        String[] logPaths = { "path/to/logs/log.txt" };
+        String[] logPaths =
+        {
+            "path/to/logs/log.txt"
+        };
 
         int exeMode = 0777;
         int confMode = 0600;
@@ -359,12 +362,14 @@ public class ZipArchiverTest
         final ZipArchiver zipArchiver = getZipArchiver( zipFIle );
         InputStreamTransformer is = new InputStreamTransformer()
         {
+
             @Nonnull
             public InputStream transform( @Nonnull PlexusIoResource resource, @Nonnull InputStream inputStream )
                 throws IOException
             {
                 return new BoundedInputStream( inputStream, 3 );
             }
+
         };
         sfd.setStreamTransformer( is );
         zipArchiver.addArchivedFileSet( sfd );
@@ -386,12 +391,15 @@ public class ZipArchiverTest
     {
         InputStreamTransformer is = new InputStreamTransformer()
         {
+
             @Nonnull
+            @Override
             public InputStream transform( @Nonnull PlexusIoResource resource, @Nonnull InputStream inputStream )
                 throws IOException
             {
                 return new BoundedInputStream( inputStream, 3 );
             }
+
         };
 
         final ZipArchiver zipArchiver = getZipArchiver( getTestFile( "target/output/all3bytes.zip" ) );
@@ -413,7 +421,6 @@ public class ZipArchiverTest
         zipArchiver.addResources( files );
 
         zipArchiver.createArchive();
-
 
     }
 
@@ -441,9 +448,11 @@ public class ZipArchiverTest
         return archiver;
     }
 
-    private void fileModeAssert(int expected, int actual){
-        assertEquals( Integer.toString( expected, 8 ), Integer.toString( actual, 8 ));
+    private void fileModeAssert( int expected, int actual )
+    {
+        assertEquals( Integer.toString( expected, 8 ), Integer.toString( actual, 8 ) );
     }
+
     private void createArchive( ZipArchiver archiver )
         throws ArchiverException, IOException
     {
@@ -515,7 +524,6 @@ public class ZipArchiverTest
         assertTrue( fa.isSymbolicLink() );
     }
 
-
     @SuppressWarnings( "ResultOfMethodCallIgnored" )
     public void testSymlinkFileSet()
         throws Exception
@@ -553,7 +561,6 @@ public class ZipArchiverTest
 
     /*
      */
-
     public void testForced()
         throws Exception
     {
@@ -637,12 +644,14 @@ public class ZipArchiverTest
         System.out.println( "evenEntry.getTime() = " + new Date( evenEntry.getTime() ).toString() );
     }
 
-
     public void notestJustThatOne()
         throws Exception
     {
         final File srcDir = new File( "src" );
-        String[] inc = { "test/java/org/codehaus/plexus/archiver/zip/ZipShortTest.java" };
+        String[] inc =
+        {
+            "test/java/org/codehaus/plexus/archiver/zip/ZipShortTest.java"
+        };
         final File zipFile = new File( "target/output/zz1.zip" );
 
         final File zipFile2 = new File( "target/output/zz2.zip" );
@@ -686,13 +695,13 @@ public class ZipArchiverTest
         TarArchiver tarArchiver = (TarArchiver) lookup( Archiver.ROLE, "tar" );
         tarArchiver.setDestFile( tarFile );
         // We're testing concurrency issue so we need large amount of files
-        for (int i = 0; i < 100; i++)
+        for ( int i = 0; i < 100; i++ )
         {
             tarArchiver.addFile( getTestFile( "src/test/resources/manifests/manifest1.mf" ),
-                "manifest1.mf" + i );
+                                 "manifest1.mf" + i );
             // Directories are added separately so let's test them too
             tarArchiver.addFile( getTestFile( "src/test/resources/manifests/manifest2.mf" ),
-                "subdir" + i + "/manifest2.mf" );
+                                 "subdir" + i + "/manifest2.mf" );
         }
         tarArchiver.createArchive();
 
@@ -787,4 +796,5 @@ public class ZipArchiverTest
             zf.close();
         }
     }
+
 }

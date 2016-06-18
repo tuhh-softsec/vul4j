@@ -1,5 +1,3 @@
-package org.codehaus.plexus.archiver.manager;
-
 /*
  * The MIT License
  *
@@ -23,20 +21,20 @@ package org.codehaus.plexus.archiver.manager;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.codehaus.plexus.archiver.manager;
 
+import java.io.File;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.UnArchiver;
 
-import java.io.File;
-
 /**
  * @author Dan T. Tran
- * @version $Id: ArchiverManagerTest.java$
  */
 public class ArchiverManagerTest
     extends PlexusTestCase
 {
+
     public void testLookupArchiver()
         throws Exception
     {
@@ -99,7 +97,7 @@ public class ArchiverManagerTest
         {
         }
     }
-    
+
     public void testLookupUnArchiverUsingFile()
         throws Exception
     {
@@ -107,24 +105,24 @@ public class ArchiverManagerTest
 
         UnArchiver unarchiver = manager.getUnArchiver( new File( "test.tar.gz" ) );
         assertNotNull( unarchiver );
-        
+
         unarchiver = manager.getUnArchiver( new File( "test.tar.bz2" ) );
         assertNotNull( unarchiver );
-      
+
         unarchiver = manager.getUnArchiver( new File( "test.tgz" ) );
         assertNotNull( unarchiver );
 
         unarchiver = manager.getUnArchiver( new File( "test.tbz2" ) );
         assertNotNull( unarchiver );
-        
+
         unarchiver = manager.getUnArchiver( new File( "test.bzip2" ) );
         assertNotNull( unarchiver );
 
         unarchiver = manager.getUnArchiver( new File( "test.tar" ) );
         assertNotNull( unarchiver );
-        
-    }    
-    
+
+    }
+
     public void testLookupArchiverUsingFile()
         throws Exception
     {
@@ -139,56 +137,56 @@ public class ArchiverManagerTest
         archiver = manager.getArchiver( new File( "test.tar" ) );
         assertNotNull( archiver );
 
-    }        
+    }
 
     public void testUnspportedLookupArchiverUsingFile()
         throws Exception
     {
         ArchiverManager manager = (ArchiverManager) lookup( ArchiverManager.ROLE );
 
-        try 
+        try
         {
             manager.getArchiver( new File( "test.tbz2" ) );
             //until we support this type, this must fail
-            fail ( "Please remove this test." );
+            fail( "Please remove this test." );
         }
         catch ( NoSuchArchiverException ignore )
         {
-            
+
         }
 
-        try 
+        try
         {
             manager.getArchiver( new File( "test.tgz" ) );
             //until we support this type, this must fail
-            fail ( "Please remove this test." );
+            fail( "Please remove this test." );
         }
         catch ( NoSuchArchiverException ignore )
         {
-            
+
         }
-        
-        try 
+
+        try
         {
             manager.getArchiver( new File( "test.tar.gz" ) );
             //until we support this type, this must fail
-            fail ( "Please remove this test." );
+            fail( "Please remove this test." );
         }
         catch ( NoSuchArchiverException ignore )
         {
-            
-        }     
-        
-        try 
+
+        }
+
+        try
         {
             manager.getArchiver( new File( "test.tar.bz2" ) );
             //until we support this type, this must fail
-            fail ( "Please remove this test." );
+            fail( "Please remove this test." );
         }
         catch ( NoSuchArchiverException ignore )
         {
-            
-        }        
+
+        }
     }
-    
+
 }

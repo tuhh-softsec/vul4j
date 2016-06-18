@@ -1,9 +1,3 @@
-package org.codehaus.plexus.archiver.sar;
-
-import org.codehaus.plexus.archiver.BasePlexusArchiverTest;
-import org.codehaus.plexus.archiver.manager.ArchiverManager;
-import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
-
 /*
  * Copyright 2007 The Codehaus Foundation.
  *
@@ -19,21 +13,26 @@ import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.codehaus.plexus.archiver.sar;
+
+import org.codehaus.plexus.archiver.BasePlexusArchiverTest;
+import org.codehaus.plexus.archiver.manager.ArchiverManager;
+import org.codehaus.plexus.components.io.resources.PlexusIoResourceCollection;
 
 public class SarArchiverTest
     extends BasePlexusArchiverTest
 {
-
 
     public void testLookup()
         throws Exception
     {
         ArchiverManager dam = (ArchiverManager) lookup( ArchiverManager.ROLE );
         PlexusIoResourceCollection sar = dam.getResourceCollection( "sar" );
-        assertNotNull(sar);
-        PlexusIoResourceCollection archiver = (PlexusIoResourceCollection) lookup( PlexusIoResourceCollection.ROLE, "sar" );
-        assertNotNull( archiver);
-    }
+        assertNotNull( sar );
+        PlexusIoResourceCollection archiver =
+            (PlexusIoResourceCollection) lookup( PlexusIoResourceCollection.ROLE, "sar" );
 
+        assertNotNull( archiver );
+    }
 
 }

@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Enumeration;
-
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
@@ -15,9 +14,7 @@ import org.codehaus.plexus.archiver.gzip.GZipCompressor;
 import org.codehaus.plexus.archiver.util.Compressor;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
-
 import static org.codehaus.plexus.components.io.resources.ResourceFactory.createResource;
-
 
 /**
  * Test case for {@link TarFile}.
@@ -25,9 +22,12 @@ import static org.codehaus.plexus.components.io.resources.ResourceFactory.create
 public class TarFileTest
     extends PlexusTestCase
 {
+
     private interface TarFileCreator
     {
+
         TarFile newTarFile( File file ) throws IOException;
+
     }
 
     /**
@@ -35,12 +35,16 @@ public class TarFileTest
      */
     public void testTarFile() throws Exception
     {
-        testTarFile( null, null, new TarFileCreator(){
+        testTarFile( null, null, new TarFileCreator()
+        {
+
+            @Override
             public TarFile newTarFile( File file )
                 throws IOException
             {
                 return new TarFile( file );
             }
+
         } );
     }
 
@@ -50,12 +54,16 @@ public class TarFileTest
     public void testGZipTarFile() throws Exception
     {
         final GZipCompressor compressor = new GZipCompressor();
-        testTarFile( compressor, ".gz", new TarFileCreator(){
+        testTarFile( compressor, ".gz", new TarFileCreator()
+        {
+
+            @Override
             public TarFile newTarFile( File file )
                 throws IOException
             {
                 return new GZipTarFile( file );
             }
+
         } );
     }
 
@@ -65,12 +73,16 @@ public class TarFileTest
     public void testBZip2TarFile() throws Exception
     {
         final BZip2Compressor compressor = new BZip2Compressor();
-        testTarFile( compressor, ".bz2", new TarFileCreator(){
+        testTarFile( compressor, ".bz2", new TarFileCreator()
+        {
+
+            @Override
             public TarFile newTarFile( File file )
                 throws IOException
             {
                 return new BZip2TarFile( file );
             }
+
         } );
     }
 
@@ -80,7 +92,7 @@ public class TarFileTest
     {
         File file = new File( "target/output/TarFileTest.tar" );
         final TarArchiver archiver = (TarArchiver) lookup( Archiver.ROLE, "tar" );
-		archiver.setLongfile(TarLongFileMode.posix );
+        archiver.setLongfile( TarLongFileMode.posix );
         archiver.setDestFile( file );
         archiver.addDirectory( new File( "src" ) );
         FileUtils.removePath( file.getPath() );
@@ -88,7 +100,7 @@ public class TarFileTest
         if ( compressor != null )
         {
             final File compressedFile = new File( file.getPath() + extension );
-			compressor.setSource( createResource( file, file.getName() ) );
+            compressor.setSource( createResource( file, file.getName() ) );
             compressor.setDestFile( compressedFile );
             compressor.compress();
             compressor.close();
@@ -96,10 +108,10 @@ public class TarFileTest
         }
         final TarFile tarFile = tarFileCreator.newTarFile( file );
 
-        for ( Enumeration en = tarFile.getEntries();  en.hasMoreElements();  )
+        for ( Enumeration en = tarFile.getEntries(); en.hasMoreElements(); )
         {
             final TarArchiveEntry te = (TarArchiveEntry) en.nextElement();
-            if ( te.isDirectory() || te.isSymbolicLink())
+            if ( te.isDirectory() || te.isSymbolicLink() )
             {
                 continue;
             }
@@ -110,7 +122,8 @@ public class TarFileTest
             teStream.close();
             fileStream.close();
         }
-        
+
         tarFile.close();
     }
+
 }

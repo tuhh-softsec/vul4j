@@ -21,23 +21,23 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertTrue;
-import static org.codehaus.plexus.PlexusTestCase.getTestFile;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.BasePlexusArchiverTest;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
+import static org.codehaus.plexus.PlexusTestCase.getTestFile;
 
 /**
- *
  * @author philip.lourandos
  * @since 3.3
  */
-public class XzArchiverTest extends BasePlexusArchiverTest 
+public class XzArchiverTest extends BasePlexusArchiverTest
 {
+
     public void testCreateArchive()
         throws Exception
     {
@@ -45,31 +45,31 @@ public class XzArchiverTest extends BasePlexusArchiverTest
         zipArchiver.addDirectory( getTestFile( "src" ) );
         zipArchiver.setDestFile( getTestFile( "target/output/archiveForxz.zip" ) );
         zipArchiver.createArchive();
-        
+
         XZArchiver archiver = (XZArchiver) lookup( Archiver.ROLE, "xz" );
         String[] inputFiles = new String[ 1 ];
-        inputFiles[ 0 ] = "archiveForxz.zip";
-        
+        inputFiles[0] = "archiveForxz.zip";
+
         File targetOutputFile = getTestFile( "target/output/archive.xz" );
         assertFalse( targetOutputFile.exists() );
-        
+
         archiver.addDirectory( getTestFile( "target/output" ), inputFiles, null );
         archiver.setDestFile( targetOutputFile );
         archiver.createArchive();
-        
+
         assertTrue( targetOutputFile.exists() );
     }
 
     public void testCreateResourceCollection() throws Exception
     {
-        final File pomFile = new File("pom.xml");
+        final File pomFile = new File( "pom.xml" );
         final File xzFile = new File( "target/output/pom.xml.xz" );
         XZArchiver xzArchiver = (XZArchiver) lookup( Archiver.ROLE, "xz" );
         xzArchiver.setDestFile( xzFile );
         xzArchiver.addFile( pomFile, "pom.xml" );
         FileUtils.removePath( xzFile.getPath() );
         xzArchiver.createArchive();
-        
+
         System.out.println( "Created: " + xzFile.getAbsolutePath() );
 
         final File zipFile = new File( "target/output/pomxz.zip" );
@@ -83,46 +83,47 @@ public class XzArchiverTest extends BasePlexusArchiverTest
         final ZipEntry zipEntry = juZipFile.getEntry( "prfx/target/output/pom.xml" );
         final InputStream archivePom = juZipFile.getInputStream( zipEntry );
         final InputStream pom = new FileInputStream( pomFile );
-        
+
         assertTrue( Arrays.equals( IOUtil.toByteArray( pom ), IOUtil.toByteArray( archivePom ) ) );
         archivePom.close();
         pom.close();
         juZipFile.close();
     }
-    
+
     /**
      * Tests the .xz archiver is forced set to true, and after that
      * tests the behavior when the forced is set to false.
-     * 
+     *
      * @throws Exception
      */
     public void testXzIsForcedBehaviour() throws Exception
     {
         XZArchiver xzArchiver = (XZArchiver) createArchiver( "xz" );
-        
+
         assertTrue( xzArchiver.isSupportingForced() );
         xzArchiver.createArchive();
-        
+
         final long creationTime = xzArchiver.getDestFile().lastModified();
-        
+
         waitUntilNewTimestamp( xzArchiver.getDestFile(), creationTime );
-       
+
         xzArchiver = (XZArchiver) createArchiver( "xz" );
 
         xzArchiver.setForced( true );
         xzArchiver.createArchive();
-        
+
         final long firstRunTime = xzArchiver.getDestFile().lastModified();
 
-        assertFalse( creationTime==firstRunTime );
-        
+        assertFalse( creationTime == firstRunTime );
+
         xzArchiver = (XZArchiver) createArchiver( "xz" );
 
         xzArchiver.setForced( false );
         xzArchiver.createArchive();
-        
+
         final long secondRunTime = xzArchiver.getDestFile().lastModified();
-        
-        assertEquals( firstRunTime,secondRunTime );
+
+        assertEquals( firstRunTime, secondRunTime );
     }
+
 }

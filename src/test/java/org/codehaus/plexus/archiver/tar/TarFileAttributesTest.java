@@ -5,7 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.UnArchiver;
@@ -17,13 +16,14 @@ import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.Os;
 
-@SuppressWarnings("ResultOfMethodCallIgnored")
+@SuppressWarnings( "ResultOfMethodCallIgnored" )
 public class TarFileAttributesTest
     extends PlexusTestCase
 {
 
     private final List<File> toDelete = new ArrayList<File>();
 
+    @Override
     public void setUp()
         throws Exception
     {
@@ -34,6 +34,7 @@ public class TarFileAttributesTest
         System.out.println( "Octal 0440 is decimal " + 0440 );
     }
 
+    @Override
     public void tearDown()
         throws Exception
     {
@@ -99,8 +100,7 @@ public class TarFileAttributesTest
         int result = Runtime.getRuntime().exec( "chmod 440 " + tempFile.getAbsolutePath() ).waitFor();
         assertEquals( 0, result );
 
-		TarArchiver tarArchiver = getPosixCompliantTarArchiver();
-
+        TarArchiver tarArchiver = getPosixCompliantTarArchiver();
 
         File tempTarFile = File.createTempFile( "tar-file.", ".tar" );
         toDelete.add( tempTarFile );
@@ -110,20 +110,20 @@ public class TarFileAttributesTest
 
         tarArchiver.createArchive();
 
-		TarArchiver tarArchiver2 = getPosixCompliantTarArchiver();
+        TarArchiver tarArchiver2 = getPosixCompliantTarArchiver();
 
         File tempTarFile2 = File.createTempFile( "tar-file.", ".tar" );
         toDelete.add( tempTarFile2 );
 
         tarArchiver2.setDestFile( tempTarFile2 );
-        
-        DefaultArchivedFileSet afs = new DefaultArchivedFileSet(tempTarFile);
+
+        DefaultArchivedFileSet afs = new DefaultArchivedFileSet( tempTarFile );
 
         System.out.println( "Adding tar archive to new archiver: " + tempTarFile );
         tarArchiver2.addArchivedFileSet( afs );
 
         tarArchiver2.createArchive();
-        
+
         // Cut from here, and feed it into a new tar archiver...then unarchive THAT.
         TarUnArchiver tarUnArchiver = (TarUnArchiver) lookup( UnArchiver.ROLE, "tar" );
 
@@ -141,10 +141,11 @@ public class TarFileAttributesTest
         PlexusIoResourceAttributes fileAttributes =
             PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
 
-		final int expected = Java7Reflector.isAtLeastJava7() ? 0660 : 0644;
+        final int expected = Java7Reflector.isAtLeastJava7() ? 0660 : 0644;
 
-		assertEquals( "This test will fail if your umask is not X2X (or more)",
-				expected, fileAttributes.getOctalMode() );
+        assertEquals( "This test will fail if your umask is not X2X (or more)",
+                      expected, fileAttributes.getOctalMode() );
+
     }
 
     public void testUseDetectedFileAttributes()
@@ -206,22 +207,23 @@ public class TarFileAttributesTest
 
         fileAttributes = PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
 
-		final int expected = Java7Reflector.isAtLeastJava7() ? 0440 : 0444;
+        final int expected = Java7Reflector.isAtLeastJava7() ? 0440 : 0444;
 
-		assertEquals( "This test will fail if your umask is not X2X (or more)",
-				expected, fileAttributes.getOctalMode() );
+        assertEquals( "This test will fail if your umask is not X2X (or more)",
+                      expected, fileAttributes.getOctalMode() );
+
     }
 
     private boolean checkForWindows()
     {
-		return Os.isFamily(Os.FAMILY_WINDOWS);
-
-	}
+        return Os.isFamily( Os.FAMILY_WINDOWS );
+    }
 
     public void testOverrideDetectedFileAttributes()
         throws Exception
     {
         printTestHeader();
+
         if ( checkForWindows() )
         {
             System.out.println( "This test cannot run on windows. Aborting." );
@@ -247,7 +249,7 @@ public class TarFileAttributesTest
         int result = Runtime.getRuntime().exec( "chmod 440 " + tempFile.getAbsolutePath() ).waitFor();
         assertEquals( 0, result );
 
-		TarArchiver tarArchiver = getPosixCompliantTarArchiver();
+        TarArchiver tarArchiver = getPosixCompliantTarArchiver();
 
         File tempTarFile = File.createTempFile( "tar-file.", ".tar" );
         toDelete.add( tempTarFile );
@@ -273,19 +275,21 @@ public class TarFileAttributesTest
         PlexusIoResourceAttributes fileAttributes =
             PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
 
-		final int expected = Java7Reflector.isAtLeastJava7() ? 0660 : 0644;
+        final int expected = Java7Reflector.isAtLeastJava7() ? 0660 : 0644;
 
-		assertEquals( "This test will fail if your umask is not X2X (or more)",
-				expected, fileAttributes.getOctalMode() );
+        assertEquals( "This test will fail if your umask is not X2X (or more)",
+                      expected, fileAttributes.getOctalMode() );
+
     }
 
-	private TarArchiver getPosixCompliantTarArchiver() throws Exception {
-		TarArchiver tarArchiver = (TarArchiver) lookup( Archiver.ROLE, "tar" );
-		tarArchiver.setLongfile(TarLongFileMode.posix );
-		return tarArchiver;
-	}
+    private TarArchiver getPosixCompliantTarArchiver() throws Exception
+    {
+        TarArchiver tarArchiver = (TarArchiver) lookup( Archiver.ROLE, "tar" );
+        tarArchiver.setLongfile( TarLongFileMode.posix );
+        return tarArchiver;
+    }
 
-	public void testOverrideDetectedFileAttributesUsingFileMode()
+    public void testOverrideDetectedFileAttributesUsingFileMode()
         throws Exception
     {
         printTestHeader();
@@ -314,7 +318,7 @@ public class TarFileAttributesTest
         int result = Runtime.getRuntime().exec( "chmod 440 " + tempFile.getAbsolutePath() ).waitFor();
         assertEquals( 0, result );
 
-		TarArchiver tarArchiver = getPosixCompliantTarArchiver();
+        TarArchiver tarArchiver = getPosixCompliantTarArchiver();
 
         File tempTarFile = File.createTempFile( "tar-file.", ".tar" );
         toDelete.add( tempTarFile );
@@ -341,9 +345,10 @@ public class TarFileAttributesTest
         PlexusIoResourceAttributes fileAttributes =
             PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
 
-		final int expected = Java7Reflector.isAtLeastJava7() ? 0660 : 0644;
-		assertEquals( "This test will fail if your umask is not X2X (or more)",
-				expected, fileAttributes.getOctalMode() );
+        final int expected = Java7Reflector.isAtLeastJava7() ? 0660 : 0644;
+        assertEquals( "This test will fail if your umask is not X2X (or more)",
+                      expected, fileAttributes.getOctalMode() );
+
     }
 
 }

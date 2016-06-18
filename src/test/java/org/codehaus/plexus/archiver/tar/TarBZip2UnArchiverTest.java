@@ -1,5 +1,3 @@
-package org.codehaus.plexus.archiver.tar;
-
 /*
  * The MIT License
  *
@@ -23,9 +21,9 @@ package org.codehaus.plexus.archiver.tar;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.codehaus.plexus.archiver.tar;
 
 import java.io.File;
-
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.UnArchiver;
@@ -33,16 +31,16 @@ import org.codehaus.plexus.archiver.bzip2.BZip2Archiver;
 
 /**
  * @author Dan Tran
- *
  */
 public class TarBZip2UnArchiverTest
     extends PlexusTestCase
 {
+
     public void testExtract()
         throws Exception
     {
         TarArchiver tarArchiver = (TarArchiver) lookup( Archiver.ROLE, "tar" );
-		tarArchiver.setLongfile(TarLongFileMode.posix );
+        tarArchiver.setLongfile( TarLongFileMode.posix );
 
         String fileName1 = "TarBZip2UnArchiverTest1.txt";
         String fileName2 = "TarBZip2UnArchiverTest2.txt";

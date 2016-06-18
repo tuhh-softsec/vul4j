@@ -1,7 +1,6 @@
 package org.codehaus.plexus.archiver.war;
 
 import java.io.File;
-
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.Archiver;
@@ -24,12 +23,12 @@ public class WarArchiverTest
         archiver.setDestFile( new File( getTargetRarFolder(), "test.war" ) );
 
         File dummyContent = getTestFile( "src/test/resources/folders" );
-        archiver.addDirectory(  dummyContent );
+        archiver.addDirectory( dummyContent );
 
         assertEquals( expected, count( archiver.getResources() ) ); // I wonder what the first entry is
-        
+
         File file = getTestFile( "src/test/resources/folders/WEB-INF/web.xml" );
-        archiver.setWebxml(  file);
+        archiver.setWebxml( file );
 
         assertEquals( expected, count( archiver.getResources() ) ); // I wonder what the first entry is
 
@@ -44,10 +43,10 @@ public class WarArchiverTest
         archiver.setDestFile( new File( getTargetRarFolder(), "test.war" ) );
 
         // Easy to produce infinite recursion if you just add existing files again and again
-
         File dummyContent = getTestFile( "src/test/resources/folders", "File.txt" );
         final int INFINITY = 10;
-        for (int i = 0; i < INFINITY; i++){
+        for ( int i = 0; i < INFINITY; i++ )
+        {
             archiver.addFile( dummyContent, "testZ" );
         }
         assertEquals( 1, count( archiver.getResources() ) ); // I wonder what the first entry is
@@ -58,6 +57,7 @@ public class WarArchiverTest
         return new File( getBasedir(), "/target/wartest/" );
     }
 
+    @Override
     protected void setUp()
         throws Exception
     {
@@ -68,10 +68,12 @@ public class WarArchiverTest
             FileUtils.deleteDirectory( getTargetRarFolder() );
         }
     }
-    
-    private int count(ResourceIterator resourceIterator){
+
+    private int count( ResourceIterator resourceIterator )
+    {
         int i = 0;
-        while (resourceIterator.hasNext()){
+        while ( resourceIterator.hasNext() )
+        {
             i++;
             ArchiveEntry next = resourceIterator.next();
             System.out.print( next.getMode() );
@@ -79,6 +81,5 @@ public class WarArchiverTest
         }
         return i;
     }
-
 
 }

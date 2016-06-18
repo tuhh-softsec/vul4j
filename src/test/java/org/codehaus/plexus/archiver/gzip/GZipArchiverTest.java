@@ -1,5 +1,3 @@
-package org.codehaus.plexus.archiver.gzip;
-
 /*
  * The MIT License
  *
@@ -23,6 +21,7 @@ package org.codehaus.plexus.archiver.gzip;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.codehaus.plexus.archiver.gzip;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,21 +29,19 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.BasePlexusArchiverTest;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 
-
 /**
  * @author Emmanuel Venisse
- *
  */
 public class GZipArchiverTest
     extends BasePlexusArchiverTest
 {
+
     public void testCreateArchive()
         throws Exception
     {
@@ -54,7 +51,7 @@ public class GZipArchiverTest
         zipArchiver.createArchive();
         GZipArchiver archiver = (GZipArchiver) lookup( Archiver.ROLE, "gzip" );
         String[] inputFiles = new String[ 1 ];
-        inputFiles[ 0 ] = "archiveForGzip.zip";
+        inputFiles[0] = "archiveForGzip.zip";
         archiver.addDirectory( getTestFile( "target/output" ), inputFiles, null );
         archiver.setDestFile( getTestFile( "target/output/archive.gzip" ) );
         archiver.createArchive();
@@ -63,7 +60,7 @@ public class GZipArchiverTest
     public void testCreateResourceCollection()
         throws Exception
     {
-        final File pomFile = new File("pom.xml");
+        final File pomFile = new File( "pom.xml" );
         final File gzFile = new File( "target/output/pom.xml.gz" );
         GZipArchiver gzipArchiver = (GZipArchiver) lookup( Archiver.ROLE, "gzip" );
         gzipArchiver.setDestFile( gzFile );
@@ -87,40 +84,41 @@ public class GZipArchiverTest
         pom.close();
         juZipFile.close();
     }
-    
+
     /**
      * Tests the .gzip archiver is forced set to true, and after that
      * tests the behavior when the forced is set to false.
-     * 
+     *
      * @throws Exception
      */
     public void testTarGzIsForcedBehaviour() throws Exception
     {
         GZipArchiver gZipArchiver = (GZipArchiver) createArchiver( "gzip" );
-        
+
         assertTrue( gZipArchiver.isSupportingForced() );
         gZipArchiver.createArchive();
-        
+
         final long creationTime = gZipArchiver.getDestFile().lastModified();
-        
+
         waitUntilNewTimestamp( gZipArchiver.getDestFile(), creationTime );
-       
+
         gZipArchiver = (GZipArchiver) createArchiver( "gzip" );
 
         gZipArchiver.setForced( true );
         gZipArchiver.createArchive();
-        
+
         final long firstRunTime = gZipArchiver.getDestFile().lastModified();
 
-        assertFalse( creationTime==firstRunTime );
-        
+        assertFalse( creationTime == firstRunTime );
+
         gZipArchiver = (GZipArchiver) createArchiver( "gzip" );
 
         gZipArchiver.setForced( false );
         gZipArchiver.createArchive();
-        
+
         final long secondRunTime = gZipArchiver.getDestFile().lastModified();
-        
-        assertEquals( firstRunTime,secondRunTime );
+
+        assertEquals( firstRunTime, secondRunTime );
     }
+
 }

@@ -26,7 +26,7 @@ public class ZipUnArchiverTest
 
         FileUtils.deleteDirectory( outputDirectory );
 
-        ZipUnArchiver zu = getZipUnArchiver(testZip);
+        ZipUnArchiver zu = getZipUnArchiver( testZip );
         zu.extract( "", outputDirectory );
         File testScript = new File( outputDirectory, "test.sh" );
 
@@ -52,10 +52,9 @@ public class ZipUnArchiverTest
 
         FileUtils.deleteDirectory( outputDirectory );
 
-        ZipUnArchiver zu = getZipUnArchiver(testZip);
+        ZipUnArchiver zu = getZipUnArchiver( testZip );
         zu.setIgnorePermissions( false );
         zu.extract( "", outputDirectory );
-
 
         File testScript = new File( outputDirectory, "foo.txt" );
 
@@ -74,19 +73,19 @@ public class ZipUnArchiverTest
     public void testUnarchiveUtf8()
         throws Exception
     {
-        File dest = new File("target/output/unzip/utf8");
+        File dest = new File( "target/output/unzip/utf8" );
         dest.mkdirs();
 
         final File zipFile = new File( "target/output/unzip/utf8-default.zip" );
         final ZipArchiver zipArchiver = getZipArchiver( zipFile );
         zipArchiver.addDirectory( new File( "src/test/resources/miscUtf8" ) );
         zipArchiver.createArchive();
-        final ZipUnArchiver unarchiver = getZipUnArchiver(zipFile);
+        final ZipUnArchiver unarchiver = getZipUnArchiver( zipFile );
         unarchiver.setDestFile( dest );
         unarchiver.extract();
         assertTrue( new File( dest, "aPi\u00F1ata.txt" ).exists() );
-        assertTrue( new File( dest, "an\u00FCmlaut.txt").exists());
-        assertTrue( new File( dest, "\u20acuro.txt").exists());
+        assertTrue( new File( dest, "an\u00FCmlaut.txt" ).exists() );
+        assertTrue( new File( dest, "\u20acuro.txt" ).exists() );
     }
 
     private void runUnarchiver( String path, FileSelector[] selectors, boolean[] results )
@@ -98,7 +97,7 @@ public class ZipUnArchiverTest
 
         File outputDirectory = new File( getBasedir(), s );
 
-        ZipUnArchiver zu = getZipUnArchiver(testJar);
+        ZipUnArchiver zu = getZipUnArchiver( testJar );
         zu.setFileSelectors( selectors );
 
         FileUtils.deleteDirectory( outputDirectory );
@@ -118,7 +117,8 @@ public class ZipUnArchiverTest
         assertEquals( results[2], f2.exists() );
     }
 
-    private ZipUnArchiver getZipUnArchiver(File testJar) throws Exception {
+    private ZipUnArchiver getZipUnArchiver( File testJar ) throws Exception
+    {
         ZipUnArchiver zu = (ZipUnArchiver) lookup( UnArchiver.ROLE, "zip" );
         zu.setSourceFile( testJar );
         return zu;
@@ -127,22 +127,67 @@ public class ZipUnArchiverTest
     public void testExtractingADirectoryFromAJarFile()
         throws Exception
     {
-        runUnarchiver( "resources/artifactId", null, new boolean[]{ true, true, false } );
-        runUnarchiver( "", null, new boolean[]{ true, true, true } );
+        runUnarchiver( "resources/artifactId", null,
+                       new boolean[]
+                       {
+                           true, true, false
+                       } );
+        runUnarchiver( "", null,
+                       new boolean[]
+                       {
+                           true, true, true
+                       } );
     }
 
     public void testSelectors()
         throws Exception
     {
         IncludeExcludeFileSelector fileSelector = new IncludeExcludeFileSelector();
-        runUnarchiver( "", new FileSelector[]{ fileSelector }, new boolean[]{ true, true, true } );
-        fileSelector.setExcludes( new String[]{ "**/test.properties" } );
-        runUnarchiver( "", new FileSelector[]{ fileSelector }, new boolean[]{ false, false, true } );
-        fileSelector.setIncludes( new String[]{ "**/test.properties" } );
+        runUnarchiver( "", new FileSelector[]
+                   {
+                       fileSelector
+        },
+                       new boolean[]
+                       {
+                           true, true, true
+                       } );
+        fileSelector.setExcludes( new String[]
+        {
+            "**/test.properties"
+        } );
+        runUnarchiver( "", new FileSelector[]
+                   {
+                       fileSelector
+        },
+                       new boolean[]
+                       {
+                           false, false, true
+                       } );
+        fileSelector.setIncludes( new String[]
+        {
+            "**/test.properties"
+        } );
         fileSelector.setExcludes( null );
-        runUnarchiver( "", new FileSelector[]{ fileSelector }, new boolean[]{ true, true, false } );
-        fileSelector.setExcludes( new String[]{ "resources/artifactId/directory/test.properties" } );
-        runUnarchiver( "", new FileSelector[]{ fileSelector }, new boolean[]{ true, false, false } );
+        runUnarchiver( "", new FileSelector[]
+                   {
+                       fileSelector
+        },
+                       new boolean[]
+                       {
+                           true, true, false
+                       } );
+        fileSelector.setExcludes( new String[]
+        {
+            "resources/artifactId/directory/test.properties"
+        } );
+        runUnarchiver( "", new FileSelector[]
+                   {
+                       fileSelector
+        },
+                       new boolean[]
+                       {
+                           true, false, false
+                       } );
     }
 
     private ZipArchiver getZipArchiver()
@@ -150,18 +195,6 @@ public class ZipUnArchiverTest
         try
         {
             return (ZipArchiver) lookup( Archiver.ROLE, "zip" );
-        }
-        catch ( Exception e )
-        {
-            throw new RuntimeException( e );
-        }
-    }
-
-    private ZipArchiver getZipUnArchiver()
-    {
-        try
-        {
-            return (ZipArchiver) lookup( UnArchiver.ROLE, "zip" );
         }
         catch ( Exception e )
         {

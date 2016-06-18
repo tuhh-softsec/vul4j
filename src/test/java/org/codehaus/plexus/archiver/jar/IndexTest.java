@@ -1,5 +1,3 @@
-package org.codehaus.plexus.archiver.jar;
-
 /*
  * Copyright  2006 The Apache Software Foundation
  *
@@ -16,22 +14,22 @@ package org.codehaus.plexus.archiver.jar;
  *  limitations under the License.
  *
  */
+package org.codehaus.plexus.archiver.jar;
 
 import java.io.InputStream;
-
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
-
 import static org.codehaus.plexus.archiver.util.Streams.bufferedInputStream;
 
 /**
  * @author Richard van der Hoff <richardv@mxtelecom.com>
- *
  */
-public class IndexTest extends PlexusTestCase {
+public class IndexTest extends PlexusTestCase
+{
+
     public void testCreateArchiveWithIndexedJars()
-    throws Exception
+        throws Exception
     {
         /* create a dummy jar */
         JarArchiver archiver1 = (JarArchiver) lookup( Archiver.ROLE, "jar" );
@@ -47,31 +45,34 @@ public class IndexTest extends PlexusTestCase {
 
         JarArchiver archiver2 = (JarArchiver) lookup( Archiver.ROLE, "jar" );
         archiver2.addFile( getTestFile( "src/test/resources/manifests/manifest2.mf" ), "two.txt" );
-        archiver2.setIndex(true);
-        archiver2.addConfiguredIndexJars(archiver1.getDestFile());
+        archiver2.setIndex( true );
+        archiver2.addConfiguredIndexJars( archiver1.getDestFile() );
         archiver2.setDestFile( getTestFile( "target/output/archive2.jar" ) );
-        archiver2.addConfiguredManifest(m);
+        archiver2.addConfiguredManifest( m );
         archiver2.createArchive();
 
         // read the index file back and check it looks like it ought to
-        org.apache.commons.compress.archivers.zip.ZipFile zf = new org.apache.commons.compress.archivers.zip.ZipFile( archiver2.getDestFile() );
-        ZipArchiveEntry indexEntry = zf.getEntry("META-INF/INDEX.LIST");
-        assertNotNull(indexEntry);
+        org.apache.commons.compress.archivers.zip.ZipFile zf =
+            new org.apache.commons.compress.archivers.zip.ZipFile( archiver2.getDestFile() );
+
+        ZipArchiveEntry indexEntry = zf.getEntry( "META-INF/INDEX.LIST" );
+        assertNotNull( indexEntry );
         InputStream bis = bufferedInputStream( zf.getInputStream( indexEntry ) );
 
-        byte buf[] = new byte[1024];
-        int i = bis.read(buf);
-        String res = new String(buf,0,i);
-        assertEquals("JarIndex-Version: 1.0\n\narchive2.jar\ntwo.txt\n\narchive1.jar\none.txt\n\n", res.replaceAll("\r\n", "\n"));
+        byte buf[] = new byte[ 1024 ];
+        int i = bis.read( buf );
+        String res = new String( buf, 0, i );
+        assertEquals( "JarIndex-Version: 1.0\n\narchive2.jar\ntwo.txt\n\narchive1.jar\none.txt\n\n",
+                      res.replaceAll( "\r\n", "\n" ) );
+
     }
-    
-    
+
     /**
      * this is pretty much a duplicate of testCreateArchiveWithIndexedJars(), but adds some extra
      * tests for files in META-INF
      */
     public void testCreateArchiveWithIndexedJarsAndMetaInf()
-    throws Exception
+        throws Exception
     {
         /* create a dummy jar */
         JarArchiver archiver1 = (JarArchiver) lookup( Archiver.ROLE, "jar" );
@@ -97,24 +98,28 @@ public class IndexTest extends PlexusTestCase {
 
         JarArchiver archiver2 = (JarArchiver) lookup( Archiver.ROLE, "jar" );
         archiver2.addFile( getTestFile( "src/test/resources/manifests/manifest2.mf" ), "two.txt" );
-        archiver2.setIndex(true);
-        archiver2.addConfiguredIndexJars(archiver1.getDestFile());
-        archiver2.addConfiguredIndexJars(archiver3.getDestFile());
+        archiver2.setIndex( true );
+        archiver2.addConfiguredIndexJars( archiver1.getDestFile() );
+        archiver2.addConfiguredIndexJars( archiver3.getDestFile() );
         archiver2.setDestFile( getTestFile( "target/output/archive2.jar" ) );
-        archiver2.addConfiguredManifest(m);
+        archiver2.addConfiguredManifest( m );
         archiver2.createArchive();
 
         // read the index file back and check it looks like it ought to
-        org.apache.commons.compress.archivers.zip.ZipFile zf = new org.apache.commons.compress.archivers.zip.ZipFile( archiver2.getDestFile() );
-        ZipArchiveEntry indexEntry = zf.getEntry("META-INF/INDEX.LIST");
-        assertNotNull(indexEntry);
+        org.apache.commons.compress.archivers.zip.ZipFile zf =
+            new org.apache.commons.compress.archivers.zip.ZipFile( archiver2.getDestFile() );
+
+        ZipArchiveEntry indexEntry = zf.getEntry( "META-INF/INDEX.LIST" );
+        assertNotNull( indexEntry );
         InputStream bis = bufferedInputStream( zf.getInputStream( indexEntry ) );
 
-        byte buf[] = new byte[1024];
-        int i = bis.read(buf);
-        String res = new String(buf,0,i);
+        byte buf[] = new byte[ 1024 ];
+        int i = bis.read( buf );
+        String res = new String( buf, 0, i );
         //System.out.println(res);
 
-		assertEquals("JarIndex-Version: 1.0\n\n" + "archive2.jar\ntwo.txt\n\n" + "archive1.jar\nMETA-INF\none.txt\n\n" + "archive3.jar\norg\norg/apache\norg/apache/maven\n\n", res.replaceAll("\r\n", "\n"));
+        assertEquals( "JarIndex-Version: 1.0\n\n" + "archive2.jar\ntwo.txt\n\n" + "archive1.jar\nMETA-INF\none.txt\n\n"
+                          + "archive3.jar\norg\norg/apache\norg/apache/maven\n\n", res.replaceAll( "\r\n", "\n" ) );
     }
+
 }

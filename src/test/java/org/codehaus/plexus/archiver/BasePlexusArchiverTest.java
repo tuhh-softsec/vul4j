@@ -1,5 +1,3 @@
-package org.codehaus.plexus.archiver;
-
 /*
  * The MIT License
  *
@@ -23,28 +21,29 @@ package org.codehaus.plexus.archiver;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.codehaus.plexus.archiver;
 
 import java.io.File;
-
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.util.FileUtils;
+
 /**
- * Base abstract class that all the test-cases for different archivers 
+ * Base abstract class that all the test-cases for different archivers
  * extend so that they can use its helpful methids.
- * 
- *
  */
 public abstract class BasePlexusArchiverTest extends PlexusTestCase
 {
+
     /**
      * Ensure that when a new file is created at the specified location that the timestamp of
      * that file will be greater than the one specified as a reference.
-     * 
+     *
      * Warning: Runs in a busy loop creating a file until the output file is newer than the reference timestamp.
      * This should be better than sleeping for a race condition time out value.
-     * 
+     *
      * @param outputFile the file to be created
      * @param timestampReference the created file will have a newer timestamp than this reference timestamp.
+     *
      * @throws Exception failures
      */
     protected void waitUntilNewTimestamp( File outputFile, long timestampReference ) throws Exception
@@ -52,33 +51,37 @@ public abstract class BasePlexusArchiverTest extends PlexusTestCase
         File tmpFile = File.createTempFile( "ZipArchiverTest.waitUntilNewTimestamp", null );
         // slurp the file into a temp file and then copy the temp back over the top until it is newer.
         FileUtils.copyFile( outputFile, tmpFile );
-        
-        FileUtils.copyFile( tmpFile, outputFile );       
+
+        FileUtils.copyFile( tmpFile, outputFile );
         while ( timestampReference >= outputFile.lastModified() )
         {
             FileUtils.copyFile( tmpFile, outputFile );
             Thread.yield();
         }
-        
+
         tmpFile.delete();
     }
-    
+
     /**
      * Base method for all the Archivers to create an archiver.
-     * 
+     *
      * @param format
+     *
      * @return
+     *
      * @throws Exception
      */
-    protected Archiver createArchiver(String format) throws Exception {
-        
-        final File pomFile = new File("pom.xml");
-        final File rarFile = new File( "target/output/pom.xml."+format );
-        
+    protected Archiver createArchiver( String format ) throws Exception
+    {
+
+        final File pomFile = new File( "pom.xml" );
+        final File rarFile = new File( "target/output/pom.xml." + format );
+
         Archiver archiver = (Archiver) lookup( Archiver.ROLE, format );
         archiver.setDestFile( rarFile );
         archiver.addFile( pomFile, "pom.xml" );
 
         return archiver;
     }
+
 }

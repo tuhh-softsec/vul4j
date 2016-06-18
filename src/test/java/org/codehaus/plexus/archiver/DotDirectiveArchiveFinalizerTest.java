@@ -1,15 +1,17 @@
 package org.codehaus.plexus.archiver;
 
+import java.io.File;
+import java.util.jar.JarFile;
 import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
 
-import java.io.File;
-import java.util.jar.JarFile;
-
-/** @author Jason van Zyl */
+/**
+ * @author Jason van Zyl
+ */
 public class DotDirectiveArchiveFinalizerTest
     extends PlexusTestCase
 {
+
     public void testDotDirectiveArchiveFinalizer()
         throws Exception
     {

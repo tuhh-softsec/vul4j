@@ -1,5 +1,3 @@
-package org.codehaus.plexus.archiver.tar;
-
 /*
  * Copyright  2003-2004 The Apache Software Foundation
  *
@@ -16,26 +14,26 @@ package org.codehaus.plexus.archiver.tar;
  *  limitations under the License.
  *
  */
-
-import junit.framework.TestCase;
-import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
-import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
-import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
+package org.codehaus.plexus.archiver.tar;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
+import junit.framework.TestCase;
 
 /**
- *
- *          from org.apache.ant.tools.tar.TarRoundTripTest v1.6
+ * from org.apache.ant.tools.tar.TarRoundTripTest v1.6
  */
 public class TarRoundTripTest
     extends TestCase
 {
-    private static final String LONG_NAME
-        = "this/path/name/contains/more/than/one/hundred/characters/in/order/"
-          + "to/test/the/GNU/long/file/name/capability/round/tripped";
+
+    private static final String LONG_NAME =
+        "this/path/name/contains/more/than/one/hundred/characters/in/order/"
+            + "to/test/the/GNU/long/file/name/capability/round/tripped";
 
     /**
      * test round-tripping long (GNU) entries
@@ -50,7 +48,7 @@ public class TarRoundTripTest
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         TarArchiveOutputStream tos = new TarArchiveOutputStream( buff );
         tos.setLongFileMode( TarArchiveOutputStream.LONGFILE_GNU );
-        tos.putArchiveEntry(original);
+        tos.putArchiveEntry( original );
         tos.closeArchiveEntry();
         tos.close();
 
@@ -60,4 +58,5 @@ public class TarRoundTripTest
         assertNull( "no more entries", tis.getNextEntry() );
         tis.close();
     }
+
 }

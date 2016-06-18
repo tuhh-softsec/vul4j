@@ -1,17 +1,16 @@
 package org.codehaus.plexus.archiver.jar;
 
-import org.codehaus.plexus.PlexusTestCase;
-import org.codehaus.plexus.archiver.Archiver;
-import org.codehaus.plexus.archiver.util.DefaultArchivedFileSet;
-import org.codehaus.plexus.components.io.functions.InputStreamTransformer;
-import org.codehaus.plexus.components.io.resources.PlexusIoResource;
-
-import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import javax.annotation.Nonnull;
+import org.codehaus.plexus.PlexusTestCase;
+import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.util.ArchiveEntryUtils;
+import org.codehaus.plexus.archiver.util.DefaultArchivedFileSet;
+import org.codehaus.plexus.components.io.functions.InputStreamTransformer;
+import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 
@@ -19,21 +18,27 @@ public class DirectoryArchiverUnpackJarTest
     extends PlexusTestCase
 {
 
-    public static final String[] DEFAULT_INCLUDES_ARRAY = { "**/*" };
+    public static final String[] DEFAULT_INCLUDES_ARRAY =
+    {
+        "**/*"
+    };
 
     static class IdentityTransformer
         implements InputStreamTransformer
     {
+
         IdentityTransformer()
         {
         }
 
         @Nonnull
+        @Override
         public InputStream transform( @Nonnull PlexusIoResource resource, @Nonnull InputStream inputStream )
             throws IOException
         {
             return inputStream;
         }
+
     }
 
     public void test_dependency_sets_depSet_unpacked_rdonly()
@@ -63,4 +68,5 @@ public class DirectoryArchiverUnpackJarTest
         ArchiveEntryUtils.chmod( new File( "target/depset_unpack/child-1/META-INF/maven/test/child1" ), 0777, logger );
         ArchiveEntryUtils.chmod( new File( "target/depset_unpack/child-1/assembly-resources" ), 0777, logger );
     }
+
 }

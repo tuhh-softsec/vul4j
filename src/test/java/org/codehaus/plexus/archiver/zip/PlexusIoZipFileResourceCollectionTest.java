@@ -1,10 +1,5 @@
 package org.codehaus.plexus.archiver.zip;
 
-import org.apache.commons.io.IOUtils;
-import org.codehaus.plexus.PlexusTestCase;
-import org.codehaus.plexus.components.io.functions.SymlinkDestinationSupplier;
-import org.codehaus.plexus.components.io.resources.*;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
@@ -15,6 +10,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.io.IOUtils;
+import org.codehaus.plexus.PlexusTestCase;
+import org.codehaus.plexus.components.io.functions.SymlinkDestinationSupplier;
+import org.codehaus.plexus.components.io.resources.PlexusIoResource;
+import org.codehaus.plexus.components.io.resources.PlexusIoURLResource;
 
 public class PlexusIoZipFileResourceCollectionTest
     extends PlexusTestCase
@@ -49,8 +49,7 @@ public class PlexusIoZipFileResourceCollectionTest
         throws Exception
     {
         File testZip = new File( getBasedir(), "src/test/resources/bogusManifest.zip" );
-       PlexusIoZipFileResourceCollection
-            prc = new PlexusIoZipFileResourceCollection();
+        PlexusIoZipFileResourceCollection prc = new PlexusIoZipFileResourceCollection();
         prc.setFile( testZip );
         final Iterator<PlexusIoResource> entries = prc.getEntries();
         while ( entries.hasNext() )
@@ -76,8 +75,7 @@ public class PlexusIoZipFileResourceCollectionTest
         seen.add( "Afile&lt;Yo&gt;.txt" );
         seen.add( "File With Space.txt" );
         seen.add( "FileWith%.txt" );
-        PlexusIoZipFileResourceCollection
-            prc = new PlexusIoZipFileResourceCollection();
+        PlexusIoZipFileResourceCollection prc = new PlexusIoZipFileResourceCollection();
         prc.setFile( testZip );
         final Iterator<PlexusIoResource> entries = prc.getEntries();
         while ( entries.hasNext() )
@@ -101,8 +99,7 @@ public class PlexusIoZipFileResourceCollectionTest
         symLinks.put( "symR", "fileR.txt" );
         symLinks.put( "symW", "fileW.txt" );
         symLinks.put( "symX", "fileX.txt" );
-        PlexusIoZipFileResourceCollection
-            prc = new PlexusIoZipFileResourceCollection();
+        PlexusIoZipFileResourceCollection prc = new PlexusIoZipFileResourceCollection();
         prc.setFile( testZip );
         final Iterator<PlexusIoResource> entries = prc.getEntries();
         while ( entries.hasNext() )
@@ -114,7 +111,7 @@ public class PlexusIoZipFileResourceCollectionTest
                 assertTrue( next.getName() + " must be symlink", next.isSymbolicLink() );
                 assertTrue( next instanceof SymlinkDestinationSupplier );
                 assertEquals( symLinkTarget,
-                    ( (SymlinkDestinationSupplier) next ).getSymlinkDestination() );
+                              ( (SymlinkDestinationSupplier) next ).getSymlinkDestination() );
             }
             else
             {

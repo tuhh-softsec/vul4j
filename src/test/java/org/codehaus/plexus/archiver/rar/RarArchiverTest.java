@@ -1,12 +1,3 @@
-package org.codehaus.plexus.archiver.rar;
-
-import java.io.File;
-
-import org.codehaus.plexus.archiver.Archiver;
-import org.codehaus.plexus.archiver.BasePlexusArchiverTest;
-import org.codehaus.plexus.archiver.UnArchiver;
-import org.codehaus.plexus.util.FileUtils;
-
 /*
  * Copyright 2007 The Codehaus Foundation.
  *
@@ -22,10 +13,17 @@ import org.codehaus.plexus.util.FileUtils;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.codehaus.plexus.archiver.rar;
+
+import java.io.File;
+import org.codehaus.plexus.archiver.Archiver;
+import org.codehaus.plexus.archiver.BasePlexusArchiverTest;
+import org.codehaus.plexus.archiver.UnArchiver;
+import org.codehaus.plexus.util.FileUtils;
+
 /**
  * @author <a href="mailto:olamy@codehaus.org">olamy</a>
  * @since 13 mars 07
- *
  */
 public class RarArchiverTest
     extends BasePlexusArchiverTest
@@ -36,6 +34,7 @@ public class RarArchiverTest
         return new File( getBasedir(), "/target/rartest/" );
     }
 
+    @Override
     protected void setUp()
         throws Exception
     {
@@ -86,23 +85,23 @@ public class RarArchiverTest
         assertTrue( dirExtract.isDirectory() );
 
     }
-    
+
     /**
      * Tests the .rar archiver is forced set to true, and after that
      * tests the behavior when the forced is set to false.
-     * 
+     *
      * @throws Exception
      */
     public void testRarIsForcedBehaviour() throws Exception
     {
         Archiver rarArvhiver = createArchiver( "rar" );
-        
+
         assertTrue( rarArvhiver.isSupportingForced() );
 
         rarArvhiver.createArchive();
-        
+
         final long creationTime = rarArvhiver.getDestFile().lastModified();
-        
+
         rarArvhiver = createArchiver( "rar" );
 
         assertTrue( rarArvhiver.isSupportingForced() );
@@ -111,19 +110,19 @@ public class RarArchiverTest
 
         waitUntilNewTimestamp( rarArvhiver.getDestFile(), creationTime );
         rarArvhiver.createArchive();
-        
+
         final long firstRunTime = rarArvhiver.getDestFile().lastModified();
-        assertFalse( creationTime==firstRunTime );
-        
+        assertFalse( creationTime == firstRunTime );
+
         //waitUntilNewTimestamp( rarArvhiver.getDestFile(), firstRunTime );
-        
         rarArvhiver = createArchiver( "rar" );
 
         rarArvhiver.setForced( false );
         rarArvhiver.createArchive();
-        
+
         final long secondRunTime = rarArvhiver.getDestFile().lastModified();
-        
-        assertEquals( secondRunTime,firstRunTime );
+
+        assertEquals( secondRunTime, firstRunTime );
     }
+
 }
