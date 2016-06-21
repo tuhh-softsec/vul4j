@@ -24,6 +24,7 @@ import de.tsystems.mms.apm.performancesignature.PerfSigRecorder;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.Agent;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.BaseConfiguration;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionException;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.model.CredProfilePair;
 import de.tsystems.mms.apm.performancesignature.model.DynatraceServerConfiguration;
 import hudson.FilePath;
@@ -156,5 +157,34 @@ public final class PerfSigUtils {
 
     public static boolean checkNotEmptyAndIsNumber(final String number) {
         return StringUtils.isNotBlank(number) && NumberUtils.isNumber(number);
+    }
+
+    public static ListBoxModel fillAgentItems(final String dynatraceProfile) {
+        DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
+        if (serverConfiguration != null) {
+            CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
+            if (pair != null) {
+                DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
+                return PerfSigUtils.listToListBoxModel(connection.getAgents());
+            }
+        }
+        return null;
+    }
+
+    public static ListBoxModel fillHostItems(final String dynatraceProfile, final String agent) {
+        DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
+        if (serverConfiguration != null) {
+            CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
+            if (pair != null) {
+                DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
+                List<Agent> agents = connection.getAgents();
+                ListBoxModel hosts = new ListBoxModel();
+                for (Agent a : agents)
+                    if (a.getName().equals(agent))
+                        hosts.add(a.getHost());
+                return hosts;
+            }
+        }
+        return null;
     }
 }
