@@ -282,7 +282,7 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
         }
         InputStream inStream = requestedFile.read();
         // gets MIME type of the file
-        String mimeType = requestedFile.getName().contains("pdf") ? "application/pdf" : "application/octet-stream";// set to binary type if MIME mapping not found
+        String mimeType = extension.equals("pdf") ? "application/pdf" : "application/octet-stream";// set to binary type if MIME mapping not found
 
         try {
             // forces download

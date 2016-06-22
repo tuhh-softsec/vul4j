@@ -29,11 +29,12 @@ import java.util.List;
 public class IncidentChart {
     private final String rule;
     private final Severity severity;
-    private List<IncidentViolation> violations;
+    private final List<IncidentViolation> violations;
 
     public IncidentChart(final Attributes attr) {
         this.rule = AttributeUtils.getStringAttribute("rule", attr);
         this.severity = Severity.fromString(AttributeUtils.getStringAttribute("severity", attr));
+        this.violations = new ArrayList<IncidentViolation>();
     }
 
     /**
@@ -59,8 +60,6 @@ public class IncidentChart {
     }
 
     public void add(final IncidentViolation incidentViolation) {
-        if (this.violations == null)
-            this.violations = new ArrayList<IncidentViolation>();
         this.violations.add(incidentViolation);
     }
 
