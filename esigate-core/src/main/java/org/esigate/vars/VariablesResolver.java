@@ -59,6 +59,9 @@ public final class VariablesResolver {
 
     /**
      * Loads variables from properties.
+     * 
+     * @param props
+     *            properties
      */
     public static void configure(Properties props) {
         properties = props;

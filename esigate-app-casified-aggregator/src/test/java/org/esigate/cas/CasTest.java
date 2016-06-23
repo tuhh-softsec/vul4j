@@ -1,12 +1,8 @@
 package org.esigate.cas;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 
 import javax.servlet.http.HttpServletResponse;
-
-import junit.framework.TestCase;
-import junitx.framework.StringAssert;
 
 import org.xml.sax.SAXException;
 
@@ -16,6 +12,9 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebForm;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
+
+import junit.framework.TestCase;
+import junitx.framework.StringAssert;
 
 public class CasTest extends TestCase {
     private WebConversation webConversation;

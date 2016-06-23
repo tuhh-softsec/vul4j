@@ -18,16 +18,15 @@ package org.esigate;
 import java.io.IOException;
 import java.util.Properties;
 
-import junit.framework.Assert;
-
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.cookie.ClientCookie;
 import org.esigate.http.IncomingRequest;
 import org.esigate.test.TestUtils;
 import org.esigate.test.conn.IResponseHandler;
 import org.esigate.test.driver.AbstractDriverTestCase;
+
+import junit.framework.Assert;
 
 /**
  * Tests for Cookie behavior.

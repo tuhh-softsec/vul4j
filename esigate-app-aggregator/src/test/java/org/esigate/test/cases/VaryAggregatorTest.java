@@ -3,8 +3,6 @@ package org.esigate.test.cases;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
-import junit.framework.TestCase;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.CookieSpecs;
@@ -16,6 +14,8 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.esigate.http.HttpResponseUtils;
 import org.xml.sax.SAXException;
+
+import junit.framework.TestCase;
 
 /**
  * "Vary" header testing
@@ -38,7 +38,7 @@ public class VaryAggregatorTest extends TestCase {
      * @throws SAXException
      */
     private String doRequestWithHeader(String headerValue, boolean forceRefresh) throws Exception {
-        RequestConfig requestConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY).build();
+        RequestConfig requestConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).build();
         HttpClient client = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig).build();
         HttpClientContext context = new HttpClientContext();
         context.setCookieStore(new BasicCookieStore());

@@ -15,8 +15,6 @@
 
 package org.esigate.impl;
 
-import java.util.Properties;
-
 import junit.framework.TestCase;
 
 /**
@@ -44,7 +42,6 @@ public class UrlRewriterTest extends TestCase {
     }
 
     private void createUrlRewriter() {
-        Properties properties = new Properties();
         urlRewriter = new UrlRewriter();
     }
 
