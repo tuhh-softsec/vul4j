@@ -133,4 +133,26 @@ public class ChooseElementTest extends AbstractElementTest {
         assertEquals("logged in", result.trim());
     }
 
+    /**
+     * @see <a href="https://github.com/esigate/esigate/issues/152">NullPointerException on Nested Choose/when/otherwise
+     *      tags #152</a>
+     * @throws Exception
+     */
+    public void testNestedChoose() throws Exception {
+        String page =
+                "<esi:choose>\n" + "<esi:when test=\"$exists($(HTTP_COOKIE{'FIRST_COOKIE'}))\">\n" + "<esi:choose>\n"
+                        + "<esi:when test=\"$exists($(HTTP_COOKIE{'SECOND_COOKIE'}))\">\n" + "HAS SECOND COOKIE\n"
+                        + "</esi:when>\n" + "<esi:otherwise>\n" + "NO SECOND COOKIE\n" + "</esi:otherwise>\n"
+                        + "</esi:choose>\n" + "</esi:when>\n" + "<esi:otherwise>\n" + "NO FIRST COOKIE\n"
+                        + "</esi:otherwise>\n" + "</esi:choose>";
+        String result = render(page);
+        assertEquals("NO FIRST COOKIE", result.trim());
+        getRequestBuilder().addCookie(new BasicClientCookie("FIRST_COOKIE", "value"));
+        result = render(page);
+        assertEquals("NO SECOND COOKIE", result.trim());
+        getRequestBuilder().addCookie(new BasicClientCookie("SECOND_COOKIE", "value"));
+        result = render(page);
+        assertEquals("HAS SECOND COOKIE", result.trim());
+    }
+
 }

@@ -14,6 +14,13 @@
  */
 package org.esigate.extension.http;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Properties;
+
 import org.apache.http.HttpHost;
 import org.apache.http.conn.DnsResolver;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -26,18 +33,10 @@ import org.esigate.events.IEventListener;
 import org.esigate.events.impl.HttpClientBuilderEvent;
 import org.esigate.extension.Extension;
 import org.esigate.util.Parameter;
-import org.esigate.util.ParameterArray;
 import org.esigate.util.ParameterCollection;
 import org.esigate.util.UriUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Properties;
 
 /**
  * DNS extension that allow to associates IP addresses to the given host in a DNS overrider. The IP addresses are

@@ -35,7 +35,7 @@ import org.apache.http.cookie.CookieOrigin;
 import org.apache.http.cookie.CookieSpec;
 import org.apache.http.cookie.MalformedCookieException;
 import org.apache.http.entity.ContentType;
-import org.apache.http.impl.cookie.BrowserCompatSpec;
+import org.apache.http.impl.cookie.DefaultCookieSpec;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.Args;
 import org.apache.http.util.EntityUtils;
@@ -106,7 +106,7 @@ public final class HttpResponseUtils {
      * @return uri, without jsession
      */
     public static String removeSessionId(String uri, HttpResponse httpResponse) {
-        CookieSpec cookieSpec = new BrowserCompatSpec();
+        CookieSpec cookieSpec = new DefaultCookieSpec();
         // Dummy origin, used only by CookieSpec for setting the domain for the
         // cookie but we don't need it
         CookieOrigin cookieOrigin = new CookieOrigin("dummy", Http.DEFAULT_HTTP_PORT, "/", false);

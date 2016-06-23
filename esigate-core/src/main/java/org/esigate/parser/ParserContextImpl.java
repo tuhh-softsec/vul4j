@@ -80,8 +80,9 @@ class ParserContextImpl implements ParserContext {
             // Inherit from parent
             skipContent = stack.peek().skipContent;
         }
+        boolean elementDoesNotSkipContent = element.onTagStart(tag, this);
         if (!skipContent) {
-            skipContent = !element.onTagStart(tag, this);
+            skipContent = !elementDoesNotSkipContent;
         }
         stack.push(new ElementInfo(type, element, skipContent));
     }
