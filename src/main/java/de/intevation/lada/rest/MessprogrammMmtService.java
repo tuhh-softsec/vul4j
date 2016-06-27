@@ -217,7 +217,7 @@ public class MessprogrammMmtService {
         ) {
             return new Response(false, 699, null);
         }
-        messprogrammmmt.setLetzteAenderung(new Timestamp(new Date().getTime()));
+
         Response response = defaultRepo.update(messprogrammmmt, "land");
         if (!response.getSuccess()) {
             return response;

@@ -286,7 +286,6 @@ public class OrtService {
             return response;
         }
 
-        ort.setLetzteAenderung(new Timestamp(new Date().getTime()));
         Response response = defaultRepo.update(ort, "land");
         if (!response.getSuccess()) {
             return response;

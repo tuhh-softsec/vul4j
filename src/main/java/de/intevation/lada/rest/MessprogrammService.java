@@ -320,7 +320,6 @@ public class MessprogrammService {
             return response;
         }
 
-        messprogramm.setLetzteAenderung(new Timestamp(new Date().getTime()));
         if (messprogramm.getUmwId() == null || messprogramm.getUmwId().equals("")) {
             messprogramm = factory.findUmweltId(messprogramm);
         }
