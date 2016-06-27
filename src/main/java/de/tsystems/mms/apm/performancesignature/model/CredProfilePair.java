@@ -16,9 +16,11 @@
 
 package de.tsystems.mms.apm.performancesignature.model;
 
+import com.cloudbees.plugins.credentials.CredentialsMatchers;
 import com.cloudbees.plugins.credentials.CredentialsProvider;
 import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
-import com.cloudbees.plugins.credentials.common.StandardUsernameCredentials;
+import com.cloudbees.plugins.credentials.common.StandardUsernameListBoxModel;
+import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials;
 import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
 import com.cloudbees.plugins.credentials.domains.DomainRequirement;
 import de.tsystems.mms.apm.performancesignature.Messages;
@@ -29,18 +31,15 @@ import hudson.Extension;
 import hudson.RelativePath;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
-import hudson.model.Project;
 import hudson.security.ACL;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
+import jenkins.model.Jenkins;
 import org.apache.commons.lang.StringUtils;
-import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
 import java.util.Collections;
-
-import static com.cloudbees.plugins.credentials.CredentialsMatchers.instanceOf;
 
 public class CredProfilePair extends AbstractDescribableImpl<CredProfilePair> {
     private final String profile, credentialsId;
@@ -70,12 +69,34 @@ public class CredProfilePair extends AbstractDescribableImpl<CredProfilePair> {
             return "";
         }
 
-        public ListBoxModel doFillCredentialsIdItems(@AncestorInPath final Project project) {
-            return new StandardListBoxModel()
-                    .withEmptySelection()
-                    .withMatching(instanceOf(UsernamePasswordCredentials.class),
-                            CredentialsProvider.lookupCredentials(
-                                    StandardUsernameCredentials.class, project, ACL.SYSTEM, Collections.<DomainRequirement>emptyList()));
+        public ListBoxModel doFillCredentialsIdItems(@QueryParameter String credentialsId) {
+            if (!Jenkins.getActiveInstance().hasPermission(Jenkins.ADMINISTER)) {
+                return new StandardListBoxModel().includeCurrentValue(credentialsId);
+            }
+            return new StandardUsernameListBoxModel()
+                    .includeEmptyValue()
+                    .includeMatchingAs(ACL.SYSTEM,
+                            Jenkins.getActiveInstance(),
+                            StandardUsernamePasswordCredentials.class,
+                            Collections.<DomainRequirement>emptyList(),
+                            CredentialsMatchers.always())
+                    .includeCurrentValue(credentialsId);
+        }
+
+        public FormValidation doCheckCredentialsId(@QueryParameter String value) {
+            if (!Jenkins.getActiveInstance().hasPermission(Jenkins.ADMINISTER)) {
+                return FormValidation.ok();
+            }
+            for (ListBoxModel.Option o : CredentialsProvider.listCredentials(StandardUsernamePasswordCredentials.class,
+                    Jenkins.getActiveInstance(),
+                    ACL.SYSTEM,
+                    Collections.<DomainRequirement>emptyList(),
+                    CredentialsMatchers.always())) {
+                if (StringUtils.equals(value, o.value)) {
+                    return FormValidation.ok();
+                }
+            }
+            return FormValidation.error("The selected credentials cannot be found");
         }
 
         public ListBoxModel doFillProfileItems(@RelativePath("..") @QueryParameter final String protocol, @RelativePath("..") @QueryParameter final String host,
@@ -95,6 +116,16 @@ public class CredProfilePair extends AbstractDescribableImpl<CredProfilePair> {
             } catch (CommandExecutionException ignored) {
                 return null;
             }
+        }
+
+        public FormValidation doCheckProfile(@QueryParameter final String profile) {
+            FormValidation validationResult;
+            if (PerfSigUtils.checkNotNullOrEmpty(profile)) {
+                validationResult = FormValidation.ok();
+            } else {
+                validationResult = FormValidation.error(Messages.PerfSigRecorder_DTProfileNotValid());
+            }
+            return validationResult;
         }
 
         public FormValidation doTestDynaTraceConnection(@QueryParameter final String protocol, @QueryParameter final String host,

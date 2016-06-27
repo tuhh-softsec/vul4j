@@ -18,10 +18,14 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
+import hudson.model.Api;
+import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.export.ExportedBean;
 import org.xml.sax.Attributes;
 
 import java.math.BigDecimal;
 
+@ExportedBean
 public class Measurement {
     private double avg, min, max, sum;
     private long timestamp;
@@ -36,14 +40,24 @@ public class Measurement {
         this.timestamp = AttributeUtils.getLongAttribute(Messages.Measurement_AttrTimestamp(), attr);
     }
 
+    /**
+     * Exposes this object to the remote API.
+     */
+    public Api getApi() {
+        return new Api(this);
+    }
+
+    @Exported(visibility = 999)
     public double getSum() {
         return sum;
     }
 
+    @Exported(visibility = 999)
     public int getCount() {
         return count;
     }
 
+    @Exported(visibility = 999)
     public double getAvg() {
         return this.avg;
     }
@@ -52,14 +66,17 @@ public class Measurement {
         return PerfSigUtils.round(this.avg, 2);
     }
 
+    @Exported(visibility = 999)
     public double getMin() {
         return this.min;
     }
 
+    @Exported(visibility = 999)
     public long getTimestamp() {
         return this.timestamp;
     }
 
+    @Exported(visibility = 999)
     public double getMax() {
         return this.max;
     }

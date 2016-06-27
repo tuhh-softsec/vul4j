@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 
-var $ = require('bootstrap-detached').getBootstrap();
+require('bootstrap-detached').getBootstrap();
 require('./prototypecompat.js');
 require('./tabhashes.js');

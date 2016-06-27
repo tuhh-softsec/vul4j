@@ -16,19 +16,19 @@
 
 package de.tsystems.mms.apm.performancesignature.util;
 
+import com.cloudbees.plugins.credentials.CredentialsMatchers;
 import com.cloudbees.plugins.credentials.CredentialsProvider;
-import com.cloudbees.plugins.credentials.common.StandardUsernameCredentials;
 import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
 import com.cloudbees.plugins.credentials.domains.DomainRequirement;
 import de.tsystems.mms.apm.performancesignature.PerfSigRecorder;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.Agent;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.BaseConfiguration;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionException;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.model.CredProfilePair;
 import de.tsystems.mms.apm.performancesignature.model.DynatraceServerConfiguration;
 import hudson.FilePath;
 import hudson.Functions;
-import hudson.model.Item;
 import hudson.model.Run;
 import hudson.security.ACL;
 import hudson.util.Area;
@@ -38,6 +38,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -145,11 +146,43 @@ public final class PerfSigUtils {
     }
 
     public static UsernamePasswordCredentials getCredentials(final String credsId) {
-        List<StandardUsernameCredentials> credentialsList = CredentialsProvider.lookupCredentials(
-                StandardUsernameCredentials.class, (Item) null, ACL.SYSTEM, Collections.<DomainRequirement>emptyList());
-        for (StandardUsernameCredentials c : credentialsList) {
-            if (credsId.equals(c.getId())) {
-                return (UsernamePasswordCredentials) c;
+        return (credsId == null) ? null : CredentialsMatchers.firstOrNull(
+                CredentialsProvider.lookupCredentials(UsernamePasswordCredentials.class, Jenkins.getActiveInstance(), ACL.SYSTEM,
+                        Collections.<DomainRequirement>emptyList()), CredentialsMatchers.withId(credsId));
+    }
+
+    public static boolean checkNotNullOrEmpty(final String string) {
+        return StringUtils.isNotBlank(string);
+    }
+
+    public static boolean checkNotEmptyAndIsNumber(final String number) {
+        return StringUtils.isNotBlank(number) && NumberUtils.isNumber(number);
+    }
+
+    public static ListBoxModel fillAgentItems(final String dynatraceProfile) {
+        DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
+        if (serverConfiguration != null) {
+            CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
+            if (pair != null) {
+                DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
+                return PerfSigUtils.listToListBoxModel(connection.getAgents());
+            }
+        }
+        return null;
+    }
+
+    public static ListBoxModel fillHostItems(final String dynatraceProfile, final String agent) {
+        DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
+        if (serverConfiguration != null) {
+            CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
+            if (pair != null) {
+                DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
+                List<Agent> agents = connection.getAgents();
+                ListBoxModel hosts = new ListBoxModel();
+                for (Agent a : agents)
+                    if (a.getName().equals(agent))
+                        hosts.add(a.getHost());
+                return hosts;
             }
         }
         return null;

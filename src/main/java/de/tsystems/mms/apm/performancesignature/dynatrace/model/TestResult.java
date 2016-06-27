@@ -26,20 +26,21 @@ import java.util.List;
 
 public class TestResult implements Serializable {
     private static final long serialVersionUID = 1L;
-    private Date exectime;
-    private String name, packageName;
-    private TestResultStatus status;
-    private List<TestRunMeasure> measures;
+    private final Date exectime;
+    private final String name, packageName;
+    private final TestResultStatus status;
+    private final List<TestRunMeasure> measures;
 
     public TestResult(final Attributes attr) {
         this.exectime = AttributeUtils.getDateAttribute("exectime", attr);
         this.name = AttributeUtils.getStringAttribute("name", attr);
         this.packageName = AttributeUtils.getStringAttribute("package", attr);
         this.status = TestResultStatus.fromString(AttributeUtils.getStringAttribute("status", attr));
+        this.measures = new ArrayList<TestRunMeasure>();
     }
 
     public Date getExectime() {
-        return new Date(exectime.getTime());
+        return (Date) exectime.clone();
     }
 
     public String getPackageName() {
@@ -59,15 +60,10 @@ public class TestResult implements Serializable {
     }
 
     public List<TestRunMeasure> getTestRunMeasures() {
-        if (measures != null)
-            return measures;
-        return new ArrayList<TestRunMeasure>();
+        return measures;
     }
 
     public void addTestRunMeasure(final TestRunMeasure measure) {
-        if (measures == null) {
-            measures = new ArrayList<TestRunMeasure>();
-        }
         measures.add(measure);
     }
 

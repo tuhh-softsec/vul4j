@@ -26,12 +26,10 @@ import java.util.List;
 
 public class TestRun implements Serializable {
     private static final long serialVersionUID = 1L;
-    private String category, versionMilestone, versionBuild, versionMajor, versionMinor, versionRevision;
-    private String testRunID, marker;
+    private final List<TestResult> testResults;
+    private String category, versionMilestone, versionBuild, versionMajor, versionMinor, versionRevision, testRunID, marker;
     private int numPassed, numFailed, numVolatile, numImproved, numDegraded, numInvalidated;
     private Date timestamp;
-
-    private List<TestResult> testResults;
 
     public TestRun(final Attributes attr) {
         this.category = AttributeUtils.getStringAttribute("category", attr);
@@ -49,6 +47,7 @@ public class TestRun implements Serializable {
         this.numDegraded = AttributeUtils.getIntAttribute("numDegraded", attr);
         this.numInvalidated = AttributeUtils.getIntAttribute("numInvalidated", attr);
         this.marker = AttributeUtils.getStringAttribute("marker", attr);
+        this.testResults = new ArrayList<TestResult>();
     }
 
     public TestRun() {
@@ -128,19 +127,14 @@ public class TestRun implements Serializable {
     }
 
     public Date getTimestamp() {
-        return new Date(this.timestamp.getTime());
+        return (Date) timestamp.clone();
     }
 
     public List<TestResult> getTestResults() {
-        if (testResults != null)
-            return testResults;
-        return new ArrayList<TestResult>();
+        return testResults;
     }
 
     public void addTestResults(final TestResult testResult) {
-        if (testResults == null) {
-            testResults = new ArrayList<TestResult>();
-        }
         testResults.add(testResult);
     }
 }

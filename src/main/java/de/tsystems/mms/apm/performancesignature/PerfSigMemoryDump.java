@@ -204,32 +204,11 @@ public class PerfSigMemoryDump extends Builder implements SimpleBuildStep {
         }
 
         public ListBoxModel doFillAgentItems(@QueryParameter final String dynatraceProfile) {
-            DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
-            if (serverConfiguration != null) {
-                CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
-                if (pair != null) {
-                    DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
-                    return PerfSigUtils.listToListBoxModel(connection.getAgents());
-                }
-            }
-            return null;
+            return PerfSigUtils.fillAgentItems(dynatraceProfile);
         }
 
         public ListBoxModel doFillHostItems(@QueryParameter final String dynatraceProfile, @QueryParameter final String agent) {
-            DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
-            if (serverConfiguration != null) {
-                CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
-                if (pair != null) {
-                    DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
-                    List<Agent> agents = connection.getAgents();
-                    ListBoxModel hosts = new ListBoxModel();
-                    for (Agent a : agents)
-                        if (a.getName().equals(agent))
-                            hosts.add(a.getHost());
-                    return hosts;
-                }
-            }
-            return null;
+            return PerfSigUtils.fillHostItems(dynatraceProfile, agent);
         }
 
         public boolean isApplicable(final Class<? extends AbstractProject> aClass) {

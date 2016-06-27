@@ -26,7 +26,6 @@ import hudson.model.Run;
 import hudson.util.ChartUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.RegexFileFilter;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -200,25 +199,23 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
         else
             URLDecoder.decode(req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamColor()), "UTF-8");
 
-        String[] timeUnits = {"ns", "ms", "s", "min", "h"};
         JFreeChart chart;
-
-        if (ArrayUtils.contains(timeUnits, unit)) {
-            chart = ChartFactory.createTimeSeriesChart(PerfSigUtils.generateTitle(measure, chartDashlet), // title
-                    "time", // domain axis label
-                    unit,
-                    dataset, // data
-                    false, // include legend
-                    false, // tooltips
-                    false // urls
-            );
-        } else {
+        if (unit.equalsIgnoreCase("num")) {
             chart = ChartFactory.createXYBarChart(PerfSigUtils.generateTitle(measure, chartDashlet), // title
                     "time", // domain axis label
                     true,
                     unit,
                     (IntervalXYDataset) dataset, // data
                     PlotOrientation.VERTICAL, // orientation
+                    false, // include legend
+                    false, // tooltips
+                    false // urls
+            );
+        } else {
+            chart = ChartFactory.createTimeSeriesChart(PerfSigUtils.generateTitle(measure, chartDashlet), // title
+                    "time", // domain axis label
+                    unit,
+                    dataset, // data
                     false, // include legend
                     false, // tooltips
                     false // urls
@@ -285,7 +282,7 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
         }
         InputStream inStream = requestedFile.read();
         // gets MIME type of the file
-        String mimeType = requestedFile.getName().contains("pdf") ? "application/pdf" : "application/octet-stream";// set to binary type if MIME mapping not found
+        String mimeType = extension.equals("pdf") ? "application/pdf" : "application/octet-stream";// set to binary type if MIME mapping not found
 
         try {
             // forces download

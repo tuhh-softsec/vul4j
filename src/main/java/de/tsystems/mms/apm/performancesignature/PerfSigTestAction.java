@@ -21,10 +21,7 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRun;
 import de.tsystems.mms.apm.performancesignature.model.PerfSigTestData;
 import hudson.tasks.junit.TestAction;
 
-import java.util.Date;
-
 public class PerfSigTestAction extends TestAction {
-    private static long timestamp;
     private final PerfSigTestData testData;
     private TestRun matchingTestRun;
     private TestResult matchingTestResult;
@@ -40,15 +37,6 @@ public class PerfSigTestAction extends TestAction {
                 }
             }
         }
-    }
-
-    public static boolean getResourcesLoaded() {
-        long tmp = new Date().getTime();
-        if (timestamp + 2000 < tmp) {
-            timestamp = tmp;
-            return false;
-        }
-        return true;
     }
 
     public TestResult getPreviousTestResult() {
