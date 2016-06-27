@@ -38,6 +38,9 @@ import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
+import de.intevation.lada.validation.Validator;
+import de.intevation.lada.validation.Violation;
+import de.intevation.lada.validation.annotation.ValidationConfig;
 
 /**
  * REST service for Messprogramm objects.
@@ -101,6 +104,13 @@ public class MessprogrammService {
     @Inject
     @AuthorizationConfig(type=AuthorizationType.HEADER)
     private Authorization authorization;
+
+    /**
+     * The validator used for Messprogramm objects.
+     */
+    @Inject
+    @ValidationConfig(type="Messprogramm")
+    private Validator validator;
 
     @Inject
     private ProbeFactory factory;
@@ -232,6 +242,14 @@ public class MessprogrammService {
             return new Response(false, 699, null);
         }
 
+        Violation violation = validator.validate(messprogramm);
+        if (violation.hasErrors()) {
+            Response response = new Response(false, 604, messprogramm);
+            response.setErrors(violation.getErrors());
+            response.setWarnings(violation.getWarnings());
+            return response;
+        }
+
         if (messprogramm.getUmwId() == null || messprogramm.getUmwId().length() == 0) {
             messprogramm = factory.findUmweltId(messprogramm);
         }
@@ -293,6 +311,15 @@ public class MessprogrammService {
         ) {
             return new Response(false, 699, null);
         }
+
+        Violation violation = validator.validate(messprogramm);
+        if (violation.hasErrors()) {
+            Response response = new Response(false, 604, messprogramm);
+            response.setErrors(violation.getErrors());
+            response.setWarnings(violation.getWarnings());
+            return response;
+        }
+
         messprogramm.setLetzteAenderung(new Timestamp(new Date().getTime()));
         if (messprogramm.getUmwId() == null || messprogramm.getUmwId().equals("")) {
             messprogramm = factory.findUmweltId(messprogramm);
