@@ -17,12 +17,12 @@ limitations under the License.
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
          xmlns:t="/lib/hudson" xmlns:f="/lib/form">
     <j:if test="${it.isPassed}">
-        <img src="${rootURL}${it.getSmallImagePath(100)}"/> <span>  No flake or failure </span>
+        <img src="${rootURL}${it.getSmallImagePath(100)}"/> <span style="float:right">  No flake or failure </span>
     </j:if>
     <j:if test="${it.isFailed}">
-        <img src="${rootURL}${it.getSmallImagePath(0)}"/> <span>  Failed with ${it.flakyRuns.size()} retries </span>
+        <img src="${rootURL}${it.getSmallImagePath(0)}"/> <span style="float:right">  Failed with ${it.flakyRuns.size()} retries </span>
     </j:if>
     <j:if test="${it.isFlaked}">
-        <img src="${rootURL}${it.getSmallImagePath(80)}"/> <span>  Flaked with ${it.flakyRuns.size()} failures </span>
+        <img src="${rootURL}${it.getSmallImagePath(80)}"/> <span style="float:right">  Flaked with ${it.flakyRuns.size()} failures </span>
     </j:if>
 </j:jelly>
