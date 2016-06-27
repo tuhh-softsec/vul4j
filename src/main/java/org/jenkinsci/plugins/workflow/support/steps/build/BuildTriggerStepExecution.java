@@ -22,6 +22,8 @@ import hudson.model.TaskListener;
 import hudson.model.queue.QueueTaskFuture;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import jenkins.model.Jenkins;
 import jenkins.model.ParameterizedJobMixIn;
 import org.jenkinsci.plugins.workflow.actions.LabelAction;
@@ -149,6 +151,44 @@ public class BuildTriggerStepExecution extends AbstractStepExecutionImpl {
                 }
             }
         }
+    }
+
+    @Override public String toString() {
+        for (Queue.Item i : Queue.getInstance().getItems()) {
+            for (BuildTriggerAction bta : i.getActions(BuildTriggerAction.class)) {
+                if (bta.getStepContext().equals(getContext())) {
+                    return "waiting to schedule " + i.task.getFullDisplayName() + "; blocked: " + i.getWhy();
+                }
+            }
+        }
+        for (Computer c : Jenkins.getActiveInstance().getComputers()) {
+            for (Executor e : c.getExecutors()) {
+                String r = running(e);
+                if (r != null) {
+                    return r;
+                }
+            }
+            for (Executor e : c.getOneOffExecutors()) {
+                String r = running(e);
+                if (r != null) {
+                    return r;
+                }
+            }
+        }
+        // TODO QueueTaskFuture does not allow us to record the queue item ID
+        return "unsure what happened to downstream build";
+    }
+    private @CheckForNull String running(@Nonnull Executor e) {
+        Queue.Executable exec = e.getCurrentExecutable();
+        if (exec instanceof Run) {
+            Run<?,?> run = (Run) exec;
+            for (BuildTriggerAction bta : run.getActions(BuildTriggerAction.class)) {
+                if (bta.getStepContext().equals(getContext())) {
+                    return "running " + run;
+                }
+            }
+        }
+        return null;
     }
 
     private static final long serialVersionUID = 1L;
