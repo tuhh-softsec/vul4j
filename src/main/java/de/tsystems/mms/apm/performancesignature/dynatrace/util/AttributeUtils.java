@@ -28,8 +28,10 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace.util;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.xml.sax.Attributes;
 
+import javax.xml.bind.DatatypeConverter;
 import java.util.Date;
 
 public final class AttributeUtils {
@@ -71,6 +73,13 @@ public final class AttributeUtils {
     }
 
     public static Date getDateAttribute(final String attributeName, final Attributes attr) {
-        return new Date(Long.parseLong(attr.getValue(attributeName)));
+        String value = attr.getValue(attributeName);
+        if(value != null) {
+            if (NumberUtils.isNumber(value))
+                return new Date(getLongAttribute(attributeName, attr));
+            else
+                return DatatypeConverter.parseDateTime(value).getTime();
+        }
+        return new Date();
     }
 }

@@ -8,6 +8,6 @@ pom.xml.next
 release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
-performance-signature-jenkins.iml
 node_modules
 node
+performance-signature-dynatrace.iml
