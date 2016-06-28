@@ -153,7 +153,7 @@ public class BuildTriggerStepExecution extends AbstractStepExecutionImpl {
         }
     }
 
-    @Override public String toString() {
+    @Override public String getStatus() {
         for (Queue.Item i : Queue.getInstance().getItems()) {
             for (BuildTriggerAction bta : i.getActions(BuildTriggerAction.class)) {
                 if (bta.getStepContext().equals(getContext())) {
