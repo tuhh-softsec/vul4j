@@ -3,29 +3,21 @@
     In that case the return value of the step is an object on which you can obtain the following read-only properties:
     so you can inspect its <code>result</code> and so on.
 </p>
-<ul>
-    <li><code>number</code></li>
-    <li><code>result</code> (typically <code>SUCCESS</code>, <code>UNSTABLE</code>, or <code>FAILED</code>)</li>
-    <li><code>displayName</code></li>
-    <li><code>description</code></li>
-    <li><code>id</code></li>
-    <li><code>timeInMillis</code></li>
-    <li><code>startTimeInMillis</code></li>
-    <li><code>duration</code></li>
-    <li><code>building</code></li>
-    <li><code>inProgress</code></li>
-    <li><code>previousBuild</code> (another similar object)</li>
-    <li><code>nextBuild</code></li>
-    <li><code>absoluteUrl</code></li>
-</ul>
-<p>
-    For a non-Pipeline downstream build, the <code>buildVariables</code> property offers access to a map of defined build variables.
-    For a Pipeline downstream build, this property gives access to any variables set globally on <code>env</code>.
-</p>
-<p>
-    Administrator-approved scripts outside the sandbox can use the <code>rawBuild</code> property to get access to a <code>hudson.model.Run</code> with further APIs.
-    You will generally need to do so inside a method marked <code>@NonCPS</code> to avoid storing intermediate values.
-</p>
+<dl>
+    <dt><code>number</code></dt><dd>build number (integer)</dd>
+    <dt><code>result</code></dt><dd>typically <code>SUCCESS</code>, <code>UNSTABLE</code>, or <code>FAILED</code> (<em>may</em> be null for an ongoing build)</dd>
+    <dt><code>displayName</code></dt><dd>normally <code>#123</code> but sometimes set to, e.g., an SCM commit identifier</dd>
+    <dt><code>description</code></dt><dd>additional information about the build</dd>
+    <dt><code>id</code></dt><dd>normally <code>number</code> as a string</dd>
+    <dt><code>timeInMillis</code></dt><dd>time since the epoch when the build was scheduled</dd>
+    <dt><code>startTimeInMillis</code></dt><dd>time since the epoch when the build started running</dd>
+    <dt><code>previousBuild</code></dt><dd>another similar object, or null</dd>
+    <dt><code>nextBuild</code></dt><dd>similarly</dd>
+    <dt><code>absoluteUrl</code></dt><dd>URL of build index page</dd>
+    <dt><code>buildVariables</code></dt><dd>for a non-Pipeline downstream build, offers access to a map of defined build variables; for a Pipeline downstream build, any variables set globally on <code>env</code></dd>
+    <dt><code>changeSets</code></dt><dd>a list of <a href="http://javadoc.jenkins-ci.org/hudson/scm/ChangeLogSet.html" target="_blank">changesets</a> coming from distinct SCM checkouts; each has a <code>kind</code> and is a list of commits; each commit has a <code>commitId</code>, <code>timestamp</code>, <code>msg</code>, <code>author</code>, and <code>affectedFiles</code> each of which has an <code>editType</code> and <code>path</code>; easiest to use this inside a method marked <code>@NonCPS</code> to avoid storing intermediate values</dd>
+    <dt><code>rawBuild</code></dt><dd>a <code>hudson.model.Run</code> with <a href="http://javadoc.jenkins-ci.org/hudson/model/Run.html" target="_blank">further APIs</a>, only for administrator-approved scripts outside the sandbox; you will generally need to use this inside a method marked <code>@NonCPS</code> to avoid storing intermediate values</dd>
+</dl>
 <p>
     If you do not wait, this step succeeds so long as the downstream build can be added to the queue (it will not even have been started).
     In that case there is currently no return value.
