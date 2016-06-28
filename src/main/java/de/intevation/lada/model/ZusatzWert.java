@@ -72,10 +72,6 @@ public class ZusatzWert implements Serializable {
         return this.letzteAenderung;
     }
 
-    public void setLetzteAenderung(Timestamp letzteAenderung) {
-        this.letzteAenderung = letzteAenderung;
-    }
-
     public Float getMessfehler() {
         return this.messfehler;
     }

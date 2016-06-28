@@ -101,10 +101,6 @@ public class Probe implements Serializable {
         return this.letzteAenderung;
     }
 
-    public void setLetzteAenderung(Timestamp letzteAenderung) {
-        this.letzteAenderung = letzteAenderung;
-    }
-
     public String getMedia() {
         return this.media;
     }

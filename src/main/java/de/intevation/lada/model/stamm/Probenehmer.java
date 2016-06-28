@@ -121,10 +121,6 @@ public class Probenehmer implements Serializable {
         return this.letzteAenderung;
     }
 
-    public void setLetzteAenderung(Timestamp letzteAenderung) {
-        this.letzteAenderung = letzteAenderung;
-    }
-
     public String getNetzbetreiberId() {
         return this.netzbetreiberId;
     }

@@ -74,10 +74,6 @@ public class List implements Serializable {
         return this.letzteAenderung;
     }
 
-    public void setLetzteAenderung(Timestamp letzteAenderung) {
-        this.letzteAenderung = letzteAenderung;
-    }
-
     public String getTyp() {
         return this.typ;
     }

@@ -67,10 +67,6 @@ public class Ortszuordnung implements Serializable {
         return this.letzteAenderung;
     }
 
-    public void setLetzteAenderung(Timestamp letzteAenderung) {
-        this.letzteAenderung = letzteAenderung;
-    }
-
     public Long getOrtId() {
         return this.ortId;
     }

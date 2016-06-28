@@ -81,10 +81,6 @@ public class DatensatzErzeuger implements Serializable {
         return this.letzteAenderung;
     }
 
-    public void setLetzteAenderung(Timestamp letzteAenderung) {
-        this.letzteAenderung = letzteAenderung;
-    }
-
     public String getMstId() {
         return this.mstId;
     }
