@@ -74,7 +74,7 @@ public final class AttributeUtils {
 
     public static Date getDateAttribute(final String attributeName, final Attributes attr) {
         String value = attr.getValue(attributeName);
-        if(value != null) {
+        if (value != null) {
             if (NumberUtils.isNumber(value))
                 return new Date(getLongAttribute(attributeName, attr));
             else

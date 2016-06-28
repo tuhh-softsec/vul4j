@@ -63,7 +63,6 @@ public class IncidentChart {
         this.violations.add(incidentViolation);
     }
 
-    @ExportedBean
     public enum Severity {
         SEVERE, WARNING, INFORMATIONAL;
 

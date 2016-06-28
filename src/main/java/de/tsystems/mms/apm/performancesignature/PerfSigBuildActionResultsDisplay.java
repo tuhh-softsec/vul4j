@@ -258,21 +258,21 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
 
     private void serveFile(final String type, final StaplerRequest request, final StaplerResponse response) throws IOException, InterruptedException {
         String testCase = request.getParameter("testCase");
+        if (StringUtils.isBlank(testCase)) testCase = "";
+
         String numberString = request.getParameter("number");
         int number = 0;
+        try {
+            number = Integer.parseInt(numberString);
+        } catch (NumberFormatException ignored) {
+        }
 
         FilePath filePath = new FilePath(PerfSigUtils.getReportDirectory(getBuild()));
-        if (StringUtils.isBlank(testCase)) testCase = "";
         String extension = StringUtils.isBlank(type) ? ".dts" : ".pdf";
         List<FilePath> files = filePath.list(new RegexFileFilter(type + ".*" + testCase + ".*" + extension));
         if (files.isEmpty()) {
             response.sendError(404, "requested resource not found");
             return;
-        }
-
-        try {
-            number = Integer.parseInt(numberString);
-        } catch (NumberFormatException ignored) {
         }
 
         FilePath requestedFile = number > 0 ? files.get(number) : files.get(0);
