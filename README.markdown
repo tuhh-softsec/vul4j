@@ -129,7 +129,9 @@ erstellen sind die folgenden Schritte erforderlich:
   Dieses wird in der Oberfläche nicht angezeigt.
 * Bei Queries vom Typ `messung` muss das erste selektierte Feld `messung.id` und
   das Zweite `probe.id AS probeId` sein. Diese werden in der Oberfläche nicht
-  angezeigt.
+  angezeigt. Um im Client die Funktionalität zu erhalten, sollten Messungsfilter
+  die beiden Felder `probe.hauptproben_nr AS hauptprobenNr` und
+  `messung.nebenproben_nr AS nebenprobenNr` enthalten.
 * Bei Queries vom Typ `messprogramm` muss das erste selektierte Feld
   `messprogramm.id` sein. Dieses wird in der Oberfläche nicht angezeigt.
 * Selektierte Felder müssen als `feld.bezeichner AS data_index` angegeben
@@ -166,7 +168,7 @@ erstellen sind die folgenden Schritte erforderlich:
         index: 2
     ....
 ```
-* Filter für Stammdaten werden gesondert behandlet und beinhalten keine
+* Filter für Stammdaten werden gesondert behandelt und beinhalten keine
   SQL-Statements. Dementsprechend können auch keine Einträge für Ergebnisse in
   der Tabelle `stammdaten.result` gemacht werden. Filter können allerdings,
   unter der Bedingung, dass `data_index` auf einen in vorhandenes und in
