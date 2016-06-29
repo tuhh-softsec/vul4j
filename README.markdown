@@ -89,3 +89,90 @@ Verzeichnis der Serveranwendung erzeugt werden:
 
 Der Ordner 'target' enthält dann die Dokumentation im HTML-Format in dem
 Verzeichnis 'site/apidocs'.
+
+Erstellen von Filtern
+---------------------
+Um neue Filter für die Suche von Proben, Messungen und Messprogrammen zu
+erstellen sind die folgenden Schritte erforderlich:
+
+1. In der Tabelle 'stammdaten.query' einen neuen Eintrag erzeugen.
+   * id: Primary-Key (wird generiert)
+   * name: Der Name des Filters
+   * type: Der Datentyp der gefiltert werden soll.
+     (mögliche Werte: 'probe', 'messung', 'messprogramm')
+   * sql: Das auszuführende SQL-Statement (siehe #Regeln für die Syntax)
+   * description: Ein beschreibender Text
+
+2. In der Tabelle 'stammdaten.result' für die anzuzeigenden Felder je einen
+   Eintrag erzeugen:
+   * id: Primary-Key (wird generiert)
+   * query_id: ID der zugehörigen und in Schritt 1. erzeugten Query
+   * data_index: Name des Feldes zur Übertragung an den Client (in CamelCase)
+   * header: Der Titel der Spalte für diesen Eintrag
+   * width: Die Spaltenbreite (in Pixel)
+   * flex: Dynamische Spaltenbreite (true/false)
+   * index: Der Datenindex
+
+3. In der Tabelle 'stammdaten.filter' für jedes 'WHERE'-Statement in der Query
+   einen Eintrag erzeugen:
+   * id: Primary-Key (wird generiert)
+   * query_id: ID der zugehörigen und in Schritt 1. erzeugten Query
+   * data_index: Der Name der Variablen, die in dem 'WHERE'-Statement ersetzt
+     werden soll
+   * type: Datenbasis, die im Client als Eingabe genutzt werden soll
+   * label: Der angezeigte Name des Filters
+   * multiselect: Mehrfachangabe von Werten für diesen Filter (true/false)
+
+### Regeln
+
+* Bei Queries vom Typ `probe` muss das erste selektierte Feld `probe.id` sein.
+  Dieses wird in der Oberfläche nicht angezeigt.
+* Bei Queries vom Typ `messung` muss das erste selektierte Feld `messung.id` und
+  das Zweite `probe.id AS probeId` sein. Diese werden in der Oberfläche nicht
+  angezeigt.
+* Bei Queries vom Typ `messprogramm` muss das erste selektierte Feld
+  `messprogramm.id` sein. Dieses wird in der Oberfläche nicht angezeigt.
+* Selektierte Felder müssen als `feld.bezeichner AS data_index` angegeben
+  werden, wobei `data_index` dem Eintrag `data_index` in der Tabelle
+  `data_index` entspricht.
+* Im `WHERE`-Statement genutzte Variablen müssen in der Form `:variablenName`
+  angegeben werden und dem Feld `data_index` im zugehörigen Filter entsprechen.
+* Um auch leere Filterangaben zu erlauben, sollte im `WHERE`-Statement ein
+  Element wie folgt aussehen:  
+  ... WHERE (tabelle.feld = :variablenName OR '' = :variablenName) ...
+* Wenn ein Filter mit `multiselect = true` angegeben wird, so wird in dem
+  `WHERE`-Statement ein `SIMILAR TO` erwartet.
+* Das Feld `index` in der Tabelle `stammdaten.result` dient zur Zuordnung des
+  selektierten Datenfeldes zu dem Entsprechenden Eintrag in der Tabelle
+  `stammdaten.result`. Beispiel:
+```
+    'SELECT probe.id, probe.mst_id AS mstId, probe.hauptproben_nr AS hpNr, ...'
+                      |----- index 1 -----|  |--------- index 2 --------|
+    Wird in der Tabelle 'stammdaten.result' zu:
+    Result 1:
+    ...
+        data_index: mstId
+        header: Messstelle
+        width: 100
+        flex: false
+        index: 1
+    ...
+    Result 2:
+    ...
+        data_index: hpNr
+        header: Hauptproben Nr
+        width: 150
+        flex: false
+        index: 2
+    ....
+```
+* Filter für Stammdaten werden gesondert behandlet und beinhalten keine
+  SQL-Statements. Dementsprechend können auch keine Einträge für Ergebnisse in
+  der Tabelle `stammdaten.result` gemacht werden. Filter können allerdings,
+  unter der Bedingung, dass `data_index` auf einen in vorhandenes und in
+  CamelCase geschriebenes Datenfeld zeigt, angelegt werden.
+  Momentan sind Filter für die folgenden Stammdaten möglich:
+   * Orte
+   * Probennehmer
+   * Datensatzerzeuger
+   * Messprogrammkategorien
