@@ -658,6 +658,7 @@ CREATE TABLE result (
     flex boolean,
     index integer
 );
+ALTER TABLE result ADD CONSTRAINT data_index_query_id UNIQUE (query_id, data_index)
 
 ALTER SEQUENCE result_id_seq OWNED BY result.id;
 

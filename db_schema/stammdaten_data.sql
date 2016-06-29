@@ -36911,24 +36911,14 @@ COPY result (id, query_id, data_index, header, width, flex, index) FROM stdin;
 59	5	eGem	E-Gemeinde	200	f	10
 60	5	probeId	Probe Id	100	f	11
 61	7	hpNr	Proben-Nr	100	f	0
-62	7	probeId	Probe Id	100	f	0
-63	7	netzbetreiberId	Land	50	f	1
 64	7	dBasis	DB	50	f	1
-65	7	mstId	MST	60	f	2
 66	7	netzId	Land	50	f	2
 67	7	mstId	MST	60	f	3
-68	7	entnahmeVon	Entnahme von	120	f	3
-69	7	entnahmeBis	Entnahme bis	120	f	4
 70	7	umwId	Umw-ID	55	f	4
 71	7	pArt	PA	50	f	5
-72	7	umwId	Umweltbereich	100	f	5
 73	7	peBegin	Entnahme_von	120	f	6
-74	7	hauptprobenNr	Proben Nr	100	f	6
-75	7	ortsTyp	Ortstyp	50	f	7
 76	7	peEnd	Entnahme_bis	120	f	7
 77	7	ortId	Ort_id	100	f	8
-78	7	gemId	Gemeinde Id	100	f	8
-79	7	bezeichnung	Gemeinde	400	t	9
 80	7	eGemId	E-Gem Id	80	f	9
 81	7	eGem	E-Gemeinde	200	f	10
 82	7	probeId	Probe Id	100	f	11
