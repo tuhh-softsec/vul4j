@@ -656,9 +656,9 @@ CREATE TABLE result (
     header character varying(50) NOT NULL,
     width integer,
     flex boolean,
-    index integer
+    index integer,
+    UNIQUE (query_id, data_index)
 );
-ALTER TABLE result ADD CONSTRAINT data_index_query_id UNIQUE (query_id, data_index)
 
 ALTER SEQUENCE result_id_seq OWNED BY result.id;
 
