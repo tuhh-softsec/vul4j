@@ -391,7 +391,7 @@ CREATE TABLE probe (
         REFERENCES stammdaten.mess_stelle,
     hauptproben_nr character varying(20),
     datenbasis_id smallint REFERENCES stammdaten.datenbasis,
-    ba_id character varying(1),
+    ba_id integer,
     probenart_id smallint NOT NULL REFERENCES stammdaten.probenart,
     media_desk character varying(100),
     media character varying(100),
@@ -573,7 +573,7 @@ CREATE TABLE messprogramm (
     labor_mst_id character varying(5) NOT NULL
         REFERENCES stammdaten.mess_stelle,
     datenbasis_id integer NOT NULL REFERENCES stammdaten.datenbasis,
-    ba_id character varying(1),
+    ba_id integer,
     gem_id character varying(8),
     ort_id integer NOT NULL REFERENCES stammdaten.ort,
     media_desk character varying(100),

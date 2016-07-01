@@ -129,7 +129,7 @@ public class AttributeMapper
         }
 
         if ("messprogramm_s".equals(key) && probe.getBaId() == null) {
-            probe.setBaId(value.toString());
+            probe.setBaId(Integer.valueOf(value.toString()));
         }
         else if ("messprogramm_s".equals(key) && probe.getBaId() != null){
             this.warnings.add(new ReportItem(key, value.toString(), 672));

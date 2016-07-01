@@ -32,7 +32,7 @@ public class Messprogramm implements Serializable {
     private Integer id;
 
     @Column(name="ba_id")
-    private String baId;
+    private Integer baId;
 
     @Column(name="datenbasis_id")
     private Integer datenbasisId;
@@ -102,11 +102,11 @@ public class Messprogramm implements Serializable {
         this.id = id;
     }
 
-    public String getBaId() {
+    public Integer getBaId() {
         return this.baId;
     }
 
-    public void setBaId(String baId) {
+    public void setBaId(Integer baId) {
         this.baId = baId;
     }
 
