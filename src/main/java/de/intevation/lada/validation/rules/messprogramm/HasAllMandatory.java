@@ -42,6 +42,25 @@ public class HasAllMandatory implements Rule {
         if (messprogramm.getProbenartId() == null) {
             violation.addError("probenartId", 631);
         }
+        if (messprogramm.getProbenintervall() == null
+            | "".equals(messprogramm.getProbenintervall())) {
+            violation.addError("probenintervall", 631);
+        }
+        if (messprogramm.getTeilintervallVon() == null) {
+            violation.addError("teilintervallVon", 631);
+        }
+        if (messprogramm.getTeilintervallBis() == null) {
+            violation.addError("teilintervallBis", 631);
+        }
+        if (messprogramm.getGueltigVon() == null) {
+            violation.addError("gueltigVon", 631);
+        }
+        if (messprogramm.getGueltigBis() == null) {
+            violation.addError("gueltigBis", 631);
+        }
+        if (messprogramm.getOrtId() == null) {
+            violation.addError("ortId", 631);
+        }
 
         return violation.hasErrors()
             ? violation
