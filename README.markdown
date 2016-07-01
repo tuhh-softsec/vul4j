@@ -99,7 +99,8 @@ erstellen sind die folgenden Schritte erforderlich:
    * id: Primary-Key (wird generiert)
    * name: Der Name des Filters
    * type: Der Datentyp der gefiltert werden soll.
-     (mögliche Werte: 'probe', 'messung', 'messprogramm')
+     (mögliche Werte: 'probe', 'messung', 'messprogramm', 'ort', 'probenehmer',
+     'datensatzerzeuger', 'messprogrammkategorie')
    * sql: Das auszuführende SQL-Statement (siehe #Regeln für die Syntax)
    * description: Ein beschreibender Text
 
@@ -134,9 +135,6 @@ erstellen sind die folgenden Schritte erforderlich:
   `messung.nebenproben_nr AS nebenprobenNr` enthalten.
 * Bei Queries vom Typ `messprogramm` muss das erste selektierte Feld
   `messprogramm.id` sein. Dieses wird in der Oberfläche nicht angezeigt.
-* Selektierte Felder müssen als `feld.bezeichner AS data_index` angegeben
-  werden, wobei `data_index` dem Eintrag `data_index` in der Tabelle
-  `data_index` entspricht.
 * Im `WHERE`-Statement genutzte Variablen müssen in der Form `:variablenName`
   angegeben werden und dem Feld `data_index` im zugehörigen Filter entsprechen.
 * Um auch leere Filterangaben zu erlauben, sollte im `WHERE`-Statement ein
@@ -168,12 +166,12 @@ erstellen sind die folgenden Schritte erforderlich:
         index: 2
     ....
 ```
-* Filter für Stammdaten werden gesondert behandelt und beinhalten keine
+* Queries für Stammdaten werden gesondert behandelt und beinhalten keine
   SQL-Statements. Dementsprechend können auch keine Einträge für Ergebnisse in
   der Tabelle `stammdaten.result` gemacht werden. Filter können allerdings,
-  unter der Bedingung, dass `data_index` auf einen in vorhandenes und in
-  CamelCase geschriebenes Datenfeld zeigt, angelegt werden.
-  Momentan sind Filter für die folgenden Stammdaten möglich:
+  unter der Bedingung, dass `data_index` auf einen in dem Datentyp vorhandenes
+  und in CamelCase geschriebenes Datenfeld zeigt, angelegt werden.
+  Momentan sind Queries für die folgenden Stammdaten möglich:
    * Orte
    * Probennehmer
    * Datensatzerzeuger
