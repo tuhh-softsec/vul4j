@@ -6,5 +6,6 @@ pipelines:
   default:
     - step:
         script: # Modify the commands below to build your repository.
+          - java -version       
           - mvn --version
           - mvn clean install
