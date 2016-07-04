@@ -45,7 +45,7 @@ public class FtpServerMock {
     }
   }
 
-  private void addFile(final FileSystem fileSystem, final File file) {
+  private void addFile2(final FileSystem fileSystem, final File file) {
     try {
       fileSystem.add(new FileEntry(file.getAbsolutePath(), readFileToString(file)));
     } catch (IOException e) {
