@@ -7,6 +7,7 @@ package com.mycompany.net.ftp;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import static java.util.stream.Collectors.joining;
 
 import org.mockftpserver.fake.FakeFtpServer;
 import org.mockftpserver.fake.UserAccount;
