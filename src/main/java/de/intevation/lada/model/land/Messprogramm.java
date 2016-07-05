@@ -16,6 +16,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.PrePersist;
 
 
 /**
@@ -25,6 +26,14 @@ import javax.persistence.Table;
 @Table(name="messprogramm")
 public class Messprogramm implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    // Has to be kept in sync with database schema
+    @PrePersist
+    void setDefaults() {
+        if (baId == null) {
+            baId = 1;
+        }
+    }
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)

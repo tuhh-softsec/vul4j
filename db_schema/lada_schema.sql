@@ -573,7 +573,7 @@ CREATE TABLE messprogramm (
     labor_mst_id character varying(5) NOT NULL
         REFERENCES stammdaten.mess_stelle,
     datenbasis_id integer NOT NULL REFERENCES stammdaten.datenbasis,
-    ba_id integer,
+    ba_id integer DEFAULT 1,
     gem_id character varying(8),
     ort_id integer NOT NULL REFERENCES stammdaten.ort,
     media_desk character varying(100),
