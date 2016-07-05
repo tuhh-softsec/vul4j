@@ -44,7 +44,7 @@ public class BuildTriggerStepTest {
         us.setDefinition(new CpsFlowDefinition(
             "def ds = build 'ds'\n" +
             "echo \"ds.result=${ds.result} ds.number=${ds.number}\"", true));
-        j.assertLogContains("ds.result=SUCCESS ds.number=1", j.assertBuildStatusSuccess(us.scheduleBuild2(0)));
+        j.assertLogContains("ds.result=SUCCESS ds.number=1", j.buildAndAssertSuccess(us));
         // TODO JENKINS-28673 assert no warnings, as in StartupTest.noWarnings
         // (but first need to deal with `WARNING: Failed to instantiate optional component org.jenkinsci.plugins.workflow.steps.scm.SubversionStep$DescriptorImpl; skipping`)
         ds.getBuildByNumber(1).delete();
@@ -55,9 +55,9 @@ public class BuildTriggerStepTest {
         j.createFreeStyleProject("ds").getBuildersList().add(new FailureBuilder());
         WorkflowJob us = j.jenkins.createProject(WorkflowJob.class, "us");
         us.setDefinition(new CpsFlowDefinition("build 'ds'", true));
-        j.assertBuildStatus(Result.FAILURE, us.scheduleBuild2(0).get());
+        j.assertBuildStatus(Result.FAILURE, us.scheduleBuild2(0));
         us.setDefinition(new CpsFlowDefinition("echo \"ds.result=${build(job: 'ds', propagate: false).result}\"", true));
-        j.assertLogContains("ds.result=FAILURE", j.assertBuildStatusSuccess(us.scheduleBuild2(0)));
+        j.assertLogContains("ds.result=FAILURE", j.buildAndAssertSuccess(us));
     }
 
     @SuppressWarnings("deprecation")
@@ -71,8 +71,7 @@ public class BuildTriggerStepTest {
         WorkflowJob upstream = dir2.createProject(WorkflowJob.class, "upstream");
         upstream.setDefinition(new CpsFlowDefinition("build '../dir1/downstream'"));
 
-        QueueTaskFuture<WorkflowRun> q = upstream.scheduleBuild2(0);
-        j.assertBuildStatusSuccess(q);
+        j.buildAndAssertSuccess(upstream);
         assertEquals(1, downstream.getBuilds().size());
     }
 
@@ -95,8 +94,7 @@ public class BuildTriggerStepTest {
                 "          build('test2');\n" +
                 "        })"), "\n"), true));
 
-        QueueTaskFuture<WorkflowRun> q = foo.scheduleBuild2(0);
-        j.assertBuildStatusSuccess(q);
+        j.buildAndAssertSuccess(foo);
     }
 
 
@@ -201,7 +199,7 @@ public class BuildTriggerStepTest {
         us.setDefinition(new CpsFlowDefinition("build 'ds'"));
         WorkflowJob ds = j.jenkins.createProject(WorkflowJob.class, "ds");
         ds.setDefinition(new CpsFlowDefinition("echo 'OK'"));
-        j.assertBuildStatusSuccess(us.scheduleBuild2(0));
+        j.buildAndAssertSuccess(us);
         assertEquals(1, ds.getBuilds().size());
     }
 
@@ -211,18 +209,18 @@ public class BuildTriggerStepTest {
         ds.addProperty(new ParametersDefinitionProperty(new StringParameterDefinition("branch", "master"), new BooleanParameterDefinition("extra", false, null)));
         ds.getBuildersList().add(new Shell("echo branch=$branch extra=$extra"));
         us.setDefinition(new CpsFlowDefinition("build 'ds'"));
-        WorkflowRun us1 = j.assertBuildStatusSuccess(us.scheduleBuild2(0));
+        WorkflowRun us1 = j.buildAndAssertSuccess(us);
         FreeStyleBuild ds1 = ds.getBuildByNumber(1);
         j.assertLogContains("branch=master extra=false", ds1);
         Cause.UpstreamCause cause = ds1.getCause(Cause.UpstreamCause.class);
         assertNotNull(cause);
         assertEquals(us1, cause.getUpstreamRun());
         us.setDefinition(new CpsFlowDefinition("build job: 'ds', parameters: [[$class: 'StringParameterValue', name: 'branch', value: 'release']]", true));
-        j.assertBuildStatusSuccess(us.scheduleBuild2(0));
+        j.buildAndAssertSuccess(us);
         // TODO JENKINS-13768 proposes automatic filling in of default parameter values; should that be used, or is BuildTriggerStepExecution responsible, or ParameterizedJobMixIn.scheduleBuild2?
         j.assertLogContains("branch=release extra=", ds.getBuildByNumber(2));
         us.setDefinition(new CpsFlowDefinition("build job: 'ds', parameters: [[$class: 'StringParameterValue', name: 'branch', value: 'release'], [$class: 'BooleanParameterValue', name: 'extra', value: true]]", true));
-        j.assertBuildStatusSuccess(us.scheduleBuild2(0));
+        j.buildAndAssertSuccess(us);
         j.assertLogContains("branch=release extra=true", ds.getBuildByNumber(3));
     }
 
@@ -231,7 +229,7 @@ public class BuildTriggerStepTest {
         j.createFreeStyleProject("ds").setAssignedLabel(Label.get("nonexistent"));
         WorkflowJob us = j.jenkins.createProject(WorkflowJob.class, "us");
         us.setDefinition(new CpsFlowDefinition("build job: 'ds', wait: false"));
-        j.assertBuildStatusSuccess(us.scheduleBuild2(0));
+        j.buildAndAssertSuccess(us);
     }
 
     @Test public void rejectedStart() throws Exception {
@@ -239,7 +237,7 @@ public class BuildTriggerStepTest {
         WorkflowJob us = j.jenkins.createProject(WorkflowJob.class, "us");
         // wait: true also fails as expected w/o fix, just more slowly (test timeout):
         us.setDefinition(new CpsFlowDefinition("build job: 'ds', wait: false"));
-        j.assertLogContains("Failed to trigger build of ds", j.assertBuildStatus(Result.FAILURE, us.scheduleBuild2(0).get()));
+        j.assertLogContains("Failed to trigger build of ds", j.assertBuildStatus(Result.FAILURE, us.scheduleBuild2(0)));
     }
     @TestExtension("rejectedStart") public static final class QDH extends Queue.QueueDecisionHandler {
         @Override public boolean shouldSchedule(Queue.Task p, List<Action> actions) {
@@ -252,7 +250,7 @@ public class BuildTriggerStepTest {
         j.createFreeStyleProject("ds").addProperty(new ParametersDefinitionProperty(new StringParameterDefinition("param", "default")));
         WorkflowJob us = j.jenkins.createProject(WorkflowJob.class, "us");
         us.setDefinition(new CpsFlowDefinition("echo \"build var: ${build(job: 'ds', parameters: [[$class: 'StringParameterValue', name: 'param', value: 'override']]).buildVariables.param}\"", true));
-        j.assertLogContains("build var: override", j.assertBuildStatusSuccess(us.scheduleBuild2(0)));
+        j.assertLogContains("build var: override", j.buildAndAssertSuccess(us));
     }
 
     @Issue("JENKINS-29169")
@@ -261,7 +259,7 @@ public class BuildTriggerStepTest {
         ds.setDefinition(new CpsFlowDefinition("env.RESULT = \"ds-${env.BUILD_NUMBER}\"", true));
         WorkflowJob us = j.jenkins.createProject(WorkflowJob.class, "us");
         us.setDefinition(new CpsFlowDefinition("def vars = build('ds').buildVariables; echo \"received RESULT=${vars.RESULT} vs. BUILD_NUMBER=${vars.BUILD_NUMBER}\"", true));
-        j.assertLogContains("received RESULT=ds-1 vs. BUILD_NUMBER=null", j.assertBuildStatusSuccess(us.scheduleBuild2(0)));
+        j.assertLogContains("received RESULT=ds-1 vs. BUILD_NUMBER=null", j.buildAndAssertSuccess(us));
         ds.getBuildByNumber(1).delete();
     }
 
@@ -303,7 +301,7 @@ public class BuildTriggerStepTest {
             "  }\n" +
             "}\n" +
             "parallel branches", true));
-        j.assertBuildStatusSuccess(us.scheduleBuild2(0));
+        j.buildAndAssertSuccess(us);
         FreeStyleBuild ds1 = ds.getLastBuild();
         assertEquals(5, ds1.getNumber());
     }
@@ -315,7 +313,7 @@ public class BuildTriggerStepTest {
         WorkflowJob ds = j.jenkins.createProject(WorkflowJob.class, "ds");
         ds.addProperty(new ParametersDefinitionProperty(new StringParameterDefinition("PARAM1", "p1"), new StringParameterDefinition("PARAM2", "p2")));
         ds.setDefinition(new CpsFlowDefinition("echo \"${PARAM1} - ${PARAM2}\""));
-        j.assertBuildStatusSuccess(us.scheduleBuild2(0));
+        j.buildAndAssertSuccess(us);
         j.assertLogContains("first - p2", ds.getLastBuild());
     }
 
