@@ -35,10 +35,14 @@ $(document).ready(function () {
     });
 
     $(".tab-pane").each(function (pageIndex, page) {
-        $(".table", this).has("tbody").dataTable({
-            "stateSave": false,
-            "order": [0, 'desc']
-        });
+        try {
+            $(".table", this).has("tbody").dataTable({
+                "stateSave": false,
+                "order": [0, 'desc']
+            });
+        } catch (e) {
+            console.log(e);
+        }
 
         $("#measureGroup", this).change(function () {
             if ($(this).val() === 'UnitTest overview') {
