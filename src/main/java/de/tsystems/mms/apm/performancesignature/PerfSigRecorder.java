@@ -84,7 +84,6 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
             logger.println(Messages.PerfSigRecorder_SleepingDelay() + " " + serverConfiguration.getDelay() + " sec");
             Thread.sleep(serverConfiguration.getDelay() * 1000);
         }
-        logger.println(Messages.PerfSigRecorder_ReportDirectory() + " " + PerfSigUtils.getReportDirectory(run));
 
         for (BaseConfiguration profile : connection.getSystemProfiles()) {
             SystemProfile systemProfile = (SystemProfile) profile;
@@ -151,7 +150,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
             }
 
             for (Dashboard singleDashboard : configurationTestCase.getSingleDashboards()) {
-                singleFilename = "Singlereport_" + sessionName + "_" + singleDashboard.getName() + ".pdf";
+                singleFilename = "Singlereport_" + sessionName + ".pdf";
                 logger.println(Messages.PerfSigRecorder_GettingPDFReport() + " " + singleFilename);
                 boolean singleResult = connection.getPDFReport(sessionName, null, singleDashboard.getName(),
                         new File(PerfSigUtils.getReportDirectory(run), File.separator + singleFilename));
@@ -162,7 +161,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
             for (Dashboard comparisonDashboard : configurationTestCase.getComparisonDashboards()) {
                 if (comparisonBuildNumber != 0 && comparisonSessionName != null) {
                     comparisonFilename = "Comparisonreport_" + comparisonSessionName.replace(comparisonBuildNumber + "_",
-                            buildNumber + "_" + comparisonBuildNumber + "_") + "_" + comparisonDashboard.getName() + ".pdf";
+                            buildNumber + "_" + comparisonBuildNumber + "_") + ".pdf";
                     logger.println(Messages.PerfSigRecorder_GettingPDFReport() + " " + comparisonFilename);
                     boolean comparisonResult = connection.getPDFReport(sessionName, comparisonSessionName, comparisonDashboard.getName(),
                             new File(PerfSigUtils.getReportDirectory(run), File.separator + comparisonFilename));
