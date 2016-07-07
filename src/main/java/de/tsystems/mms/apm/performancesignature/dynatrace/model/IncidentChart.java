@@ -49,9 +49,13 @@ public class IncidentChart {
         return rule;
     }
 
-    @Exported(visibility = 999)
     public Severity getSeverity() {
         return severity;
+    }
+
+    @Exported(visibility = 999)
+    public String getSeverityString() {
+        return severity.toString();
     }
 
     @Exported(visibility = 999)
