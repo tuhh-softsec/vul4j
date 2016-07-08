@@ -119,7 +119,7 @@ public class DTServerConnection {
             if (customProxy.isUseJenkinsProxy() && jenkins.proxy != null) {
                 final ProxyConfiguration proxyConfiguration = jenkins.proxy;
                 if (StringUtils.isNotBlank(proxyConfiguration.name) && proxyConfiguration.port > 0) {
-                    this.proxy = new java.net.Proxy(java.net.Proxy.Type.HTTP, new InetSocketAddress(proxyConfiguration.name, proxyConfiguration.port));
+                    this.proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyConfiguration.name, proxyConfiguration.port));
                     if (StringUtils.isNotBlank(proxyConfiguration.getUserName())) {
                         Authenticator authenticator = new Authenticator() {
                             public PasswordAuthentication getPasswordAuthentication() {
@@ -131,7 +131,7 @@ public class DTServerConnection {
                 }
             } else {
                 if (StringUtils.isNotBlank(customProxy.getProxyServer()) && customProxy.getProxyPort() > 0) {
-                    this.proxy = new java.net.Proxy(java.net.Proxy.Type.HTTP, new InetSocketAddress(customProxy.getProxyServer(), customProxy.getProxyPort()));
+                    this.proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(customProxy.getProxyServer(), customProxy.getProxyPort()));
                     if (StringUtils.isNotBlank(customProxy.getProxyUser())) {
                         Authenticator authenticator = new Authenticator() {
                             public PasswordAuthentication getPasswordAuthentication() {
