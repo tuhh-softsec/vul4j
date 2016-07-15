@@ -26,34 +26,37 @@
  * DAMAGE.
  */
 
-package de.tsystems.mms.apm.performancesignature.dynatrace.rest;
+package de.tsystems.mms.apm.performancesignature.dynatrace.rest.model;
 
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.BaseConfiguration;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.Configuration;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.SystemProfile;
-import org.xml.sax.Attributes;
-import org.xml.sax.helpers.DefaultHandler;
+public class Collector {
+    private boolean connected, embedded;
+    private String host, name;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ProfileXMLHandler extends DefaultHandler {
-    private final List<BaseConfiguration> configObjects;
-
-    public ProfileXMLHandler() {
-        configObjects = new ArrayList<BaseConfiguration>();
+    public void setValue(final String property, final String value) {
+        if (property.equalsIgnoreCase(Messages.Collector_PropHost())) {
+            this.host = value;
+        } else if (property.equalsIgnoreCase(Messages.Collector_PropName())) {
+            this.name = value;
+        } else if (property.equalsIgnoreCase(Messages.Collector_PropConnected())) {
+            this.connected = Boolean.valueOf(value);
+        } else if (property.equalsIgnoreCase(Messages.Collector_PropEmbedded())) {
+            this.embedded = Boolean.valueOf(value);
+        }
     }
 
-    public List<BaseConfiguration> getConfigurationObjects() {
-        return this.configObjects;
+    public boolean isConnected() {
+        return this.connected;
     }
 
-    public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attr) {
-        if (localName.equals(Messages.ProfileXMLHandler_AttrSystemProfile())) {
-            this.configObjects.add(new SystemProfile(attr));
-        }
-        if (localName.equals(Messages.ProfileXMLHandler_AttrConfiguration())) {
-            this.configObjects.add(new Configuration(attr));
-        }
+    public boolean isEmbedded() {
+        return this.embedded;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getHost() {
+        return this.host;
     }
 }

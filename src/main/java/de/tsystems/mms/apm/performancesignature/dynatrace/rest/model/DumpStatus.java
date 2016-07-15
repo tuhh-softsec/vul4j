@@ -26,34 +26,41 @@
  * DAMAGE.
  */
 
-package de.tsystems.mms.apm.performancesignature.dynatrace.rest;
+package de.tsystems.mms.apm.performancesignature.dynatrace.rest.model;
 
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.BaseConfiguration;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.Configuration;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.SystemProfile;
-import org.xml.sax.Attributes;
-import org.xml.sax.helpers.DefaultHandler;
+public class DumpStatus {
+    private String result = null;
+    private String success = null;
+    private String messageText = null;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ProfileXMLHandler extends DefaultHandler {
-    private final List<BaseConfiguration> configObjects;
-
-    public ProfileXMLHandler() {
-        configObjects = new ArrayList<BaseConfiguration>();
+    public String getResultValue() {
+        return this.result;
     }
 
-    public List<BaseConfiguration> getConfigurationObjects() {
-        return this.configObjects;
+    public boolean isResultValueTrue() {
+        return (this.result != null) && (this.result.equalsIgnoreCase("true"));
     }
 
-    public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attr) {
-        if (localName.equals(Messages.ProfileXMLHandler_AttrSystemProfile())) {
-            this.configObjects.add(new SystemProfile(attr));
-        }
-        if (localName.equals(Messages.ProfileXMLHandler_AttrConfiguration())) {
-            this.configObjects.add(new Configuration(attr));
+    public String getSuccess() {
+        return this.success;
+    }
+
+    public boolean isSuccessTrue() {
+        return (this.success != null) && (this.success.equalsIgnoreCase("true"));
+    }
+
+    public String getMessageText() {
+        return this.messageText;
+    }
+
+    public void setValue(final String property, final String prevProperty, final String value) {
+        if (property.equalsIgnoreCase("result")) {
+            this.result = value;
+        } else if (property.equalsIgnoreCase("success")) {
+            this.success = value;
+        } else if ((prevProperty.equalsIgnoreCase("message")) && (property.equalsIgnoreCase("text"))) {
+            this.messageText = value;
         }
     }
 }
+

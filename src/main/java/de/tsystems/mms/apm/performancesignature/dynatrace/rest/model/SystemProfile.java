@@ -26,34 +26,20 @@
  * DAMAGE.
  */
 
-package de.tsystems.mms.apm.performancesignature.dynatrace.rest;
+package de.tsystems.mms.apm.performancesignature.dynatrace.rest.model;
 
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.BaseConfiguration;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.Configuration;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.SystemProfile;
+import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
 import org.xml.sax.Attributes;
-import org.xml.sax.helpers.DefaultHandler;
 
-import java.util.ArrayList;
-import java.util.List;
+public class SystemProfile extends BaseConfiguration {
+    private final boolean isRecording;
 
-public class ProfileXMLHandler extends DefaultHandler {
-    private final List<BaseConfiguration> configObjects;
-
-    public ProfileXMLHandler() {
-        configObjects = new ArrayList<BaseConfiguration>();
+    public SystemProfile(final Attributes attr) {
+        super(attr);
+        this.isRecording = Boolean.valueOf(AttributeUtils.getStringAttribute(Messages.SystemProfile_IsRecording(), attr));
     }
 
-    public List<BaseConfiguration> getConfigurationObjects() {
-        return this.configObjects;
-    }
-
-    public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attr) {
-        if (localName.equals(Messages.ProfileXMLHandler_AttrSystemProfile())) {
-            this.configObjects.add(new SystemProfile(attr));
-        }
-        if (localName.equals(Messages.ProfileXMLHandler_AttrConfiguration())) {
-            this.configObjects.add(new Configuration(attr));
-        }
+    public boolean isRecording() {
+        return this.isRecording;
     }
 }

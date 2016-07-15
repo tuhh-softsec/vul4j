@@ -26,34 +26,12 @@
  * DAMAGE.
  */
 
-package de.tsystems.mms.apm.performancesignature.dynatrace.rest;
+package de.tsystems.mms.apm.performancesignature.dynatrace.rest.model;
 
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.BaseConfiguration;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.Configuration;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.SystemProfile;
 import org.xml.sax.Attributes;
-import org.xml.sax.helpers.DefaultHandler;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ProfileXMLHandler extends DefaultHandler {
-    private final List<BaseConfiguration> configObjects;
-
-    public ProfileXMLHandler() {
-        configObjects = new ArrayList<BaseConfiguration>();
-    }
-
-    public List<BaseConfiguration> getConfigurationObjects() {
-        return this.configObjects;
-    }
-
-    public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attr) {
-        if (localName.equals(Messages.ProfileXMLHandler_AttrSystemProfile())) {
-            this.configObjects.add(new SystemProfile(attr));
-        }
-        if (localName.equals(Messages.ProfileXMLHandler_AttrConfiguration())) {
-            this.configObjects.add(new Configuration(attr));
-        }
+public class Configuration extends BaseConfiguration {
+    public Configuration(final Attributes attr) {
+        super(attr);
     }
 }

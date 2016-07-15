@@ -29,10 +29,17 @@
 package de.tsystems.mms.apm.performancesignature.dynatrace.rest;
 
 import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
-import de.tsystems.mms.apm.performancesignature.dynatrace.model.*;
-import de.tsystems.mms.apm.performancesignature.model.CredProfilePair;
-import de.tsystems.mms.apm.performancesignature.model.CustomProxy;
-import de.tsystems.mms.apm.performancesignature.model.DynatraceServerConfiguration;
+import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.CredProfilePair;
+import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.CustomProxy;
+import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.DynatraceServerConfiguration;
+import de.tsystems.mms.apm.performancesignature.dynatrace.model.ChartDashlet;
+import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
+import de.tsystems.mms.apm.performancesignature.dynatrace.model.IncidentChart;
+import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRun;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.Agent;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.BaseConfiguration;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.DumpStatus;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.RegisterTestRunRequest;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.FilePath;
 import hudson.ProxyConfiguration;

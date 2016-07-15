@@ -20,14 +20,12 @@ import com.cloudbees.plugins.credentials.CredentialsMatchers;
 import com.cloudbees.plugins.credentials.CredentialsProvider;
 import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
 import com.cloudbees.plugins.credentials.domains.DomainRequirement;
-import de.tsystems.mms.apm.performancesignature.PerfSigRecorder;
-import de.tsystems.mms.apm.performancesignature.dynatrace.model.Agent;
-import de.tsystems.mms.apm.performancesignature.dynatrace.model.BaseConfiguration;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionException;
+import de.tsystems.mms.apm.performancesignature.dynatrace.PerfSigRecorder;
+import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.CredProfilePair;
+import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.DynatraceServerConfiguration;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
-import de.tsystems.mms.apm.performancesignature.model.CredProfilePair;
-import de.tsystems.mms.apm.performancesignature.model.DynatraceServerConfiguration;
-import hudson.model.Run;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.Agent;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.BaseConfiguration;
 import hudson.security.ACL;
 import hudson.util.ListBoxModel;
 import jenkins.model.Jenkins;
@@ -35,10 +33,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.List;
 
@@ -67,14 +61,6 @@ public final class PerfSigUtils {
         return listBoxModel;
     }
 
-    public static File getReportDirectory(final Run<?, ?> run) throws IOException {
-        File reportDirectory = new File(run.getRootDir(), Messages.PerfSigUtils_ReportDirectory());
-        if (!reportDirectory.exists()) {
-            if (!reportDirectory.mkdirs()) throw new IOException("failed to create report directory");
-        }
-        return reportDirectory;
-    }
-
     public static List<DynatraceServerConfiguration> getDTConfigurations() {
         return Jenkins.getActiveInstance().getDescriptorByType(PerfSigRecorder.DescriptorImpl.class).getConfigurations();
     }
@@ -87,15 +73,6 @@ public final class PerfSigUtils {
             }
         }
         return null;
-    }
-
-    public static String encodeString(final String value) {
-        if (StringUtils.isBlank(value)) return "";
-        try {
-            return URLEncoder.encode(value, "UTF-8").replaceAll("\\+", "%20");
-        } catch (UnsupportedEncodingException e) {
-            throw new CommandExecutionException(Messages.PerfSigUtils_EncodingFailure(), e);
-        }
     }
 
     public static UsernamePasswordCredentials getCredentials(final String credsId) {

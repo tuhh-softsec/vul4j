@@ -16,7 +16,7 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace.rest;
 
-import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -37,12 +37,12 @@ public class ReportURLBuilder {
     }
 
     public ReportURLBuilder setSource(final String source) {
-        parameter.add("source=stored:" + PerfSigUtils.encodeString(source));
+        parameter.add("source=stored:" + PerfSigUIUtils.encodeString(source));
         return this;
     }
 
     public ReportURLBuilder setComparison(final String comparison) {
-        parameter.add("compare=stored:" + PerfSigUtils.encodeString(comparison));
+        parameter.add("compare=stored:" + PerfSigUIUtils.encodeString(comparison));
         return this;
     }
 

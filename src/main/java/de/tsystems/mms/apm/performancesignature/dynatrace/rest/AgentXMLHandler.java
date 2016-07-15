@@ -28,8 +28,8 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace.rest;
 
-import de.tsystems.mms.apm.performancesignature.dynatrace.model.Agent;
-import de.tsystems.mms.apm.performancesignature.dynatrace.model.Collector;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.Agent;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.Collector;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;

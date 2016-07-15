@@ -28,7 +28,7 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace.rest;
 
-import de.tsystems.mms.apm.performancesignature.dynatrace.model.DumpStatus;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.DumpStatus;
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
