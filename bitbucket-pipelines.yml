@@ -7,4 +7,4 @@ pipelines:
     - step:
         script: # Modify the commands below to build your repository.     
           - mvn --version
-          - mvn -T 1C clean install
+          - mvn -T 1C -B clean install
