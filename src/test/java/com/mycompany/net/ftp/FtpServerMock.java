@@ -6,8 +6,9 @@ package com.mycompany.net.ftp;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import static java.util.stream.Collectors.joining;
 
-import org.apache.commons.io.FileUtils;
 import org.mockftpserver.fake.FakeFtpServer;
 import org.mockftpserver.fake.UserAccount;
 import org.mockftpserver.fake.filesystem.DirectoryEntry;
@@ -44,12 +45,16 @@ public class FtpServerMock {
     }
   }
 
-  private void addFile(final FileSystem fileSystem, final File file) {
+  private void addFile2(final FileSystem fileSystem, final File file) {
     try {
-      fileSystem.add(new FileEntry(file.getAbsolutePath(), FileUtils.readFileToString(file)));
+      fileSystem.add(new FileEntry(file.getAbsolutePath(), readFileToString(file)));
     } catch (IOException e) {
       e.printStackTrace();
     }
+  }
+
+  private String readFileToString(final File file) throws IOException {
+    return Files.lines(file.toPath()).collect(joining());
   }
 
   public void startServer() {

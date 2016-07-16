@@ -5,6 +5,6 @@ image: maven:3.3.9
 pipelines:
   default:
     - step:
-        script: # Modify the commands below to build your repository.
+        script: # Modify the commands below to build your repository.     
           - mvn --version
           - mvn clean install
