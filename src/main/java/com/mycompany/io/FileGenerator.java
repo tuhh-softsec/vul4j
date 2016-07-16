@@ -6,7 +6,6 @@ package com.mycompany.io;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -30,7 +29,7 @@ public class FileGenerator {
   };
 
   public void generateFile(final Path file) {
-    try (BufferedWriter writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
+    try (BufferedWriter writer = Files.newBufferedWriter(file)) {
       for (int i = 0; i <= NUMBER_OF_LINES; i++) {
         String s = getRandomString();
         writer.write(s, 0, s.length());
