@@ -1,3 +1,7 @@
+/**
+ * Copyright (c) 2016 Company.
+ * All rights reserved.
+ */
 package com.mycompany.io;
 
 import java.io.BufferedOutputStream;

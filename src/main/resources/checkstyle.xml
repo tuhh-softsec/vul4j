@@ -41,7 +41,7 @@
     <!-- Checks the header of the source against a fixed header file. -->
     <module name="Header">
         <property name="header"
-              value="/**\n * Copyright (c) 2015 Company.\n * All rights reserved.\n */\n"/>
+              value="/**\n * Copyright (c) 2016 Company.\n * All rights reserved.\n */\n"/>
         <property name="fileExtensions" value="java"/>
     </module>
     <!-- Checks that there is a newline at the end of each file. -->
