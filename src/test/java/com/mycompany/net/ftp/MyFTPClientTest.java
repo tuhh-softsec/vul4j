@@ -37,9 +37,9 @@ public class MyFTPClientTest {
   public TemporaryFolder tempFolder = new TemporaryFolder();
 
   @Before
-  public void setUp() {
-    serverMock = new FtpServerMock(PORT, USERNAME, PASSWORD, FTP_DIRECTORY.toFile());
-    serverMock.addDirectoryAndAllFilesRecursively(FTP_DIRECTORY.toFile());
+  public void setUp() throws IOException {
+    serverMock = new FtpServerMock(PORT, USERNAME, PASSWORD, FTP_DIRECTORY);
+    serverMock.addDirectoryAndAllFilesRecursively(FTP_DIRECTORY);
     serverMock.startServer();
     ftpClient = new MyFTPClient();
     ftpProperties =
