@@ -4,7 +4,6 @@
  */
 package com.mycompany.io;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -20,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import static java.util.stream.Collectors.toList;
 import java.util.stream.Stream;
+import javaslang.control.Try;
 
 public final class MyFile {
 
@@ -98,20 +98,24 @@ public final class MyFile {
     return files;
   }
 
-  public static List<File> listHiddenFilesInDirectory(final Path directory) {
-    return Stream.of(new File(directory.toString())
-      .listFiles(File::isHidden))
-      .collect(toList());
+  /**
+   * The listing is not recursive.
+   */
+  public static Stream<Path> listHiddenFilesInDirectory(final Path directory) throws IOException {
+    return Files.list(directory)
+            .filter(path -> Try.of(() -> Files.isHidden(path)).getOrElse(false));
   }
 
   /**
    * List the immediate (one level deep) subdirectories in a given directory.
    */
-  public static List<File> listImmediateSubdirectoriesInDirectory(final Path directory) {
-    return Stream.of(new File(directory.toString())
-      .listFiles())
-      .flatMap(file -> file.listFiles() == null ? Stream.of(file) : Stream.of(file.listFiles()))
-      .collect(toList());
+  public static Stream<Path> listImmediateSubdirectoriesInDirectory(final Path directory) throws IOException {
+    return Files.list(directory)
+            .flatMap(path -> Files.isDirectory(path) ? listOfEntriesInDirectory(path) : Stream.of(path));
+  }
+
+  private static Stream<Path> listOfEntriesInDirectory(final Path path) {
+    return Try.of(() -> Files.list(path)).getOrElse(Stream.empty());
   }
 
   // TODO

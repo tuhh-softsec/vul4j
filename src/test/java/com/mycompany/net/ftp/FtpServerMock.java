@@ -4,8 +4,9 @@
  */
 package com.mycompany.net.ftp;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import org.apache.commons.io.FileUtils;
 
 import org.mockftpserver.fake.FakeFtpServer;
@@ -17,43 +18,39 @@ import org.mockftpserver.fake.filesystem.UnixFakeFileSystem;
 
 public class FtpServerMock {
 
-  private FakeFtpServer fakeFtpServer;
+  private final FakeFtpServer fakeFtpServer;
 
   public FtpServerMock(final int port, final String userName, final String password,
-      final File homeDirectory) {
+          final Path homeDirectory) {
     fakeFtpServer = new FakeFtpServer();
     fakeFtpServer.setServerControlPort(port);
     fakeFtpServer.addUserAccount(new UserAccount(userName, password, homeDirectory
-        .getAbsolutePath()));
+            .toAbsolutePath().toString()));
   }
 
-  public void addDirectoryAndAllFilesRecursively(final File directory) {
+  public void addDirectoryAndAllFilesRecursively(final Path directory) throws IOException {
     FileSystem fileSystem = new UnixFakeFileSystem();
-    fileSystem.add(new DirectoryEntry(directory.getAbsolutePath()));
+    fileSystem.add(new DirectoryEntry(directory.toAbsolutePath().toString()));
     addDirectory(fileSystem, directory);
     fakeFtpServer.setFileSystem(fileSystem);
   }
 
-  private void addDirectory(final FileSystem fileSystem, final File directory) {
-    for (File file : directory.listFiles()) {
-      if (file.isFile()) {
-        addFile(fileSystem, file);
-      } else if (file.isDirectory()) {
-        addDirectory(fileSystem, file);
-      }
-    }
+  private void addDirectory(final FileSystem fileSystem, final Path directory) throws IOException {
+    Files.walk(directory)
+            .filter(Files::isRegularFile)
+            .forEach(file -> addFile(fileSystem, file));
   }
 
-  private void addFile(final FileSystem fileSystem, final File file) {
+  private void addFile(final FileSystem fileSystem, final Path file) {
     try {
-      fileSystem.add(new FileEntry(file.getAbsolutePath(), readFileToStringIncludingNewlineCharacter(file)));
+      fileSystem.add(new FileEntry(file.toAbsolutePath().toString(), readFileToStringIncludingNewlineCharacter(file)));
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
 
-  private String readFileToStringIncludingNewlineCharacter(final File file) throws IOException {
-    return FileUtils.readFileToString(file);
+  private String readFileToStringIncludingNewlineCharacter(final Path path) throws IOException {
+    return FileUtils.readFileToString(path.toFile());
   }
 
   public void startServer() {

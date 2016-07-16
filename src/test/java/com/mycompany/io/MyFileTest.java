@@ -4,12 +4,12 @@
  */
 package com.mycompany.io;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
@@ -64,17 +64,19 @@ public class MyFileTest {
   }
 
   @Test
-  public void testListAllHiddenFilesInDirectory() {
-    List<File> files = MyFile.listHiddenFilesInDirectory(Paths.get("."));
-    System.out.println("The names of all hidden files in the directory: ");
-    files.stream().forEach(System.out::println);
+  public void testListAllHiddenFilesInDirectory() throws IOException {
+    try (Stream<Path> files = MyFile.listHiddenFilesInDirectory(Paths.get("."))) {
+      System.out.println("The names of all hidden files in the directory: ");
+      files.forEach(System.out::println);
+    }
   }
 
   @Test
-  public void testListImmediateSubdirectoriesInDirectory() {
-    List<File> files = MyFile.listImmediateSubdirectoriesInDirectory(Paths.get("."));
-    System.out.println("List the immediate (one level deep) subdirectories in the directory: ");
-    files.stream().forEach(System.out::println);
+  public void testListImmediateSubdirectoriesInDirectory() throws IOException {
+    try (Stream<Path> files = MyFile.listImmediateSubdirectoriesInDirectory(Paths.get("."))) {
+      System.out.println("List the immediate (one level deep) subdirectories in the directory: ");
+      files.forEach(System.out::println);
+    }
   }
 
   // Manual test - refactor!

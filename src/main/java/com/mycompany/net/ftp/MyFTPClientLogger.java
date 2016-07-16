@@ -4,9 +4,10 @@
  */
 package com.mycompany.net.ftp;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import javaslang.control.Try;
 
 public final class MyFTPClientLogger {
 
@@ -68,7 +69,7 @@ public final class MyFTPClientLogger {
   public static void logFileDownloadedSuccessfully(final String remoteFile, final Path localFile) {
     System.out.println("Downloaded \"" + remoteFile + "\" from FTP server into \"" + localFile
         + "\".");
-    System.out.println("Size: " + getFileSizeInKilobytes(localFile.toFile()) + "KB.");
+    System.out.println("Size: " + getFileSizeInKilobytes(localFile) + "KB.");
   }
 
   public static void logFileDownloadFailed(final String remoteFile) {
@@ -76,8 +77,8 @@ public final class MyFTPClientLogger {
   }
 
   // TODO to be moved into a new file project
-  private static long getFileSizeInKilobytes(final File file) {
-    long bytes = file.length();
+  private static long getFileSizeInKilobytes(final Path file) {
+    long bytes = Try.of(() -> Files.size(file)).getOrElse(0L);
     return bytes / 1024;
   }
 
