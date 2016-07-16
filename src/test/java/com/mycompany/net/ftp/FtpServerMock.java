@@ -6,6 +6,7 @@ package com.mycompany.net.ftp;
 
 import java.io.File;
 import java.io.IOException;
+import static java.lang.System.lineSeparator;
 import java.nio.file.Files;
 import static java.util.stream.Collectors.joining;
 
@@ -54,7 +55,7 @@ public class FtpServerMock {
   }
 
   private String readFileToString(final File file) throws IOException {
-    return Files.lines(file.toPath()).collect(joining());
+    return Files.lines(file.toPath()).collect(joining(lineSeparator()));
   }
 
   public void startServer() {
