@@ -77,7 +77,7 @@
                                             </div>
                                             <div class="panel-body">
                                                 <j:set var="pdfFiles"
-                                                       value="${it.PerfSigUtils.getDownloadFiles('Single.*' + dashboardReport.name + '_.*pdf',it.build)}"/>
+                                                       value="${it.PerfSigUtils.getDownloadFiles('Single.*' + dashboardReport.name + '.*pdf',it.build)}"/>
                                                 <j:forEach var="pdfFile" items="${pdfFiles}">
                                                     <a href="./getSingleReport?testCase=${dashboardReport.name}&amp;number=${pdfFiles.indexOf(pdfFile)}"
                                                        target="_blank">

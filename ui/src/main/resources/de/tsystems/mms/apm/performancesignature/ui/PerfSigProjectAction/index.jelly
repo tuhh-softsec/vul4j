@@ -172,7 +172,7 @@
                                                 </td>
                                                 <td>
                                                     <j:set var="files"
-                                                           value="${it.PerfSigUtils.getDownloadFiles('Comparison.*' + lastDashboardReport.name + '_.*pdf',dashboardReport.key)}"/>
+                                                           value="${it.PerfSigUtils.getDownloadFiles('Comparison.*' + lastDashboardReport.name + '.*pdf',dashboardReport.key)}"/>
                                                     <j:forEach var="file" items="${files}">
                                                         <a href="../${dashboardReport.key.number}/performance-signature/getComparisonReport?testCase=${lastDashboardReport.name}&amp;number=${files.indexOf(file)}"
                                                            target="_blank">
