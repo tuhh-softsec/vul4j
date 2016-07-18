@@ -79,9 +79,13 @@ public class Measure {
         return count;
     }
 
-    @Exported(visibility = 999)
     public String getName() {
         return this.name;
+    }
+
+    @Exported(visibility = 999)
+    public String getMeasure() {
+        return getName();
     }
 
     @Exported(visibility = 999)
@@ -89,42 +93,25 @@ public class Measure {
         return PerfSigUIUtils.encodeString(this.color);
     }
 
-    public BigDecimal getAvg() {
-        return PerfSigUIUtils.round(this.avg, 2);
+    @Exported(visibility = 999)
+    public double getAvg() {
+        return this.avg;
     }
 
-    public BigDecimal getMin() {
-        return PerfSigUIUtils.round(this.min, 2);
+    @Exported(visibility = 999)
+    public double getMin() {
+        return this.min;
+    }
+
+    @Exported(visibility = 999)
+    public double getMax() {
+        return this.max;
     }
 
     @Exported(visibility = 999)
     public String getUnit() {
         if (this.aggregation != null && this.aggregation.equalsIgnoreCase("count")) return "num";
         return PerfSigUIUtils.encodeString(this.unit);
-    }
-
-    public BigDecimal getMax() {
-        return PerfSigUIUtils.round(this.max, 2);
-    }
-
-    @Exported(visibility = 999)
-    public Double getDoubleMin() {
-        return this.min;
-    }
-
-    @Exported(visibility = 999)
-    public Double getDoubleMax() {
-        return this.max;
-    }
-
-    @Exported(visibility = 999)
-    public Double getDoubleAvg() {
-        return this.avg;
-    }
-
-    @Exported(visibility = 999)
-    public Double getDoubleSum() {
-        return this.sum;
     }
 
     @Exported(visibility = 999)
@@ -156,15 +143,15 @@ public class Measure {
         } else if (aggregation.equalsIgnoreCase("count"))
             return this.getCount();
         else if (aggregation.equalsIgnoreCase("average") || aggregation.equalsIgnoreCase("last"))
-            return this.getAvg().doubleValue();
+            return this.getAvg();
         else if (aggregation.equalsIgnoreCase("sum"))
             return this.getSum();
         else if (aggregation.equalsIgnoreCase("maximum"))
-            return this.getMax().doubleValue();
+            return this.getMax();
         else if (aggregation.equalsIgnoreCase("minimum"))
-            return this.getMin().doubleValue();
+            return this.getMin();
         else
-            return this.getAvg().doubleValue();
+            return this.getAvg();
     }
 
     public BigDecimal getStrMetricValue() {
