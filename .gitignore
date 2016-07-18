@@ -10,4 +10,4 @@ dependency-reduced-pom.xml
 buildNumber.properties
 node_modules
 node
-performance-signature-dynatrace.iml
+*.iml

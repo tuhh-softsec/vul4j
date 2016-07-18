@@ -1,0 +1,75 @@
+<?jelly escape-by-default='true'?>
+<!--
+  ~ Copyright (c) 2014 T-Systems Multimedia Solutions GmbH
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:c="/lib/credentials">
+    <f:section title="${%Performance Signature Viewer}">
+        <f:entry title="${%Remote Jenkins server configurations}">
+            <f:repeatable field="configurations" header="${%Remote Jenkins}" add="${%add remote Jenkins}">
+                <table width="100%">
+                    <br/>
+                    <f:entry field="name" title="${%Name}">
+                        <f:textbox clazz="required"/>
+                    </f:entry>
+                    <f:entry field="protocol" title="${%HTTP/HTTPS}" description="${%Specify the protocol to use}">
+                        <f:select default="${descriptor.defaultProtocol}"/>
+                    </f:entry>
+                    <f:entry title="${%Jenkins REST Host}" field="host" description="${%Jenkins Server hostname}">
+                        <f:textbox default="${descriptor.defaultHost}"/>
+                    </f:entry>
+                    <f:entry title="${%Jenkins REST Port}" field="port"
+                             description="${%Jenkins REST Interface port} (${%default: 8080 for HTTP})">
+                        <f:number default="${descriptor.defaultPort}"/>
+                    </f:entry>
+
+                    <f:advanced>
+                        <f:entry title="${%verify Certificate}" field="verifyCertificate"
+                                 description="${%Verify or ignore the Jenkins Server Certificate?}">
+                            <f:checkbox default="${descriptor.defaultVerifyCertificate}"/>
+                        </f:entry>
+                    </f:advanced>
+
+                    <f:entry title="${%Credentials/Job pairs}">
+                        <f:repeatable field="credJobPairs" header="${%Credentials/job pair}" add="${%Add credentials/Job pair}">
+                            <table width="100%">
+                                <br/>
+                                <f:entry title="Jenkins job name" field="jenkinsJob">
+                                    <f:textbox/>
+                                </f:entry>
+                                <f:entry title="${%Jenkins REST credentials}" field="credentialsId">
+                                    <c:select/>
+                                </f:entry>
+                                <f:validateButton title="${%Test connection}" progress="${%Testing...}"
+                                                  method="testDynaTraceConnection"
+                                                  with="protocol,host,port,jenkinsJob,credentialsId"/>
+                                <f:entry title="">
+                                    <div align="right">
+                                        <f:repeatableDeleteButton value="${%Remove credentials/job pair}"/>
+                                    </div>
+                                </f:entry>
+                            </table>
+                        </f:repeatable>
+                    </f:entry>
+
+                    <f:entry title="">
+                        <div align="right">
+                            <f:repeatableDeleteButton value="${%Remove Jenkins server}"/>
+                        </div>
+                    </f:entry>
+                </table>
+            </f:repeatable>
+        </f:entry>
+    </f:section>
+</j:jelly>
