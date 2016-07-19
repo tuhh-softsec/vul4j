@@ -72,7 +72,6 @@
         <module name="ClassDataAbstractionCoupling"/>
         <module name="ClassFanOutComplexity"/>
         <module name="LocalVariableName">
-            <property name="format" value="^e[a-zA-Z0-9]*$"/>
             <property name="tokens" value="VARIABLE_DEF"/>
             <property name="allowOneCharVarInForLoop" value="true"/>
         </module>
