@@ -131,14 +131,8 @@
                                     </div>
                                 </j:if>
                                 <j:forEach var="chartDashlet" items="${dashboardReport.chartDashlets}">
-                                    <j:if test="${chartDashlet.name.contains('Percentile')}">
-                                        <jm:chartDashletTablePercentile it="${chartDashlet}" build="${it.build}" dashboardReport="${dashboardReport}"
-                                                                        previousDashboardReport="${previousTestCase}"/>
-                                    </j:if>
-                                    <j:if test="${!chartDashlet.name.contains('Percentile')}">
-                                        <jm:chartDashletTable it="${chartDashlet}" build="${it.build}" dashboardReport="${dashboardReport}"
-                                                              previousDashboardReport="${previousTestCase}"/>
-                                    </j:if>
+                                    <jm:chartDashletTable it="${chartDashlet}" build="${it.build}" dashboardReport="${dashboardReport}"
+                                                          previousDashboardReport="${previousTestCase}"/>
                                 </j:forEach>
                             </div>
                         </div>

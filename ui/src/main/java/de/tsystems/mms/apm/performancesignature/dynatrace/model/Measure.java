@@ -26,21 +26,24 @@ import org.kohsuke.stapler.export.ExportedBean;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 @ExportedBean
 public class Measure {
+    private static final Logger LOGGER = Logger.getLogger(Measure.class.getName());
     private final String name;
+    private final List<Measurement> measurements;
     private String color, unit, aggregation;
     private double max, avg, min, sum;
-    private List<Measurement> measurements;
     private int count;
 
     public Measure(final String name) {
         this.name = name;
+        this.measurements = new ArrayList<Measurement>();
     }
 
     public Measure(final Object attr) {
-        this.name = AttributeUtils.getStringAttribute(Messages.Measure_AttrMeasure(), attr);
+        this(AttributeUtils.getStringAttribute(Messages.Measure_AttrMeasure(), attr));
         this.avg = AttributeUtils.getDoubleAttribute(Messages.Measure_AttrAvg(), attr);
         this.max = AttributeUtils.getDoubleAttribute(Messages.Measure_AttrMax(), attr);
         this.min = AttributeUtils.getDoubleAttribute(Messages.Measure_AttrMin(), attr);
@@ -49,6 +52,8 @@ public class Measure {
         this.unit = AttributeUtils.getStringAttribute(Messages.Measure_AttrUnit(), attr);
         this.sum = AttributeUtils.getDoubleAttribute(Messages.Measure_AttrSum(), attr);
         this.aggregation = AttributeUtils.getStringAttribute(Messages.Measure_AttrAggregation(), attr);
+
+        if (this.isPercentile()) LOGGER.warning("percentile aggregation is not supported in stored sessions");
     }
 
     /**
@@ -64,8 +69,6 @@ public class Measure {
     }
 
     public void addMeasurement(final Measurement tm) {
-        if (this.measurements == null)
-            this.measurements = new ArrayList<Measurement>();
         this.measurements.add(tm);
     }
 
@@ -134,13 +137,7 @@ public class Measure {
      * @return metric Value
      */
     public double getMetricValue(final String aggregation) {
-        if (this.isPercentile()) {
-            List<Measurement> measurements = this.getMeasurements();
-            if (measurements == null) return 0;
-            Measurement measurement95th = measurements.get(95);
-            if (measurement95th == null) return 0;
-            return measurement95th.getAvg();
-        } else if (aggregation.equalsIgnoreCase("count"))
+        if (aggregation.equalsIgnoreCase("count"))
             return this.getCount();
         else if (aggregation.equalsIgnoreCase("average") || aggregation.equalsIgnoreCase("last"))
             return this.getAvg();

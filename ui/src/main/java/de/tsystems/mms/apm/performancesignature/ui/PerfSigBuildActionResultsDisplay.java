@@ -40,8 +40,6 @@ import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYDataset;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
@@ -112,31 +110,7 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
         if (getBuild() != null && request.checkIfModified(getBuild().getTimestamp(), response))
             return;
 
-        final String chartDashlet = request.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamChartDashlet());
-        final boolean percentile = chartDashlet.contains(Messages.PerfSigBuildActionResultsDisplay_Percentile());
-
-        if (percentile) {
-            ChartUtil.generateGraph(request, response, createXYLineChart(request, buildXYDataSet(request)), PerfSigUIUtils.calcDefaultSize());
-        } else {
-            ChartUtil.generateGraph(request, response, createTimeSeriesChart(request, buildTimeSeriesDataSet(request)), PerfSigUIUtils.calcDefaultSize());
-        }
-    }
-
-    private XYDataset buildXYDataSet(final StaplerRequest request) {
-        final String measure = request.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamMeasure());
-        final String chartDashlet = request.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamChartDashlet());
-        final String testCase = request.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamTestCase());
-        final XYSeries xySeries = new XYSeries(chartDashlet);
-
-        final DashboardReport dashboardReport = getDashBoardReport(testCase);
-        final Measure m = dashboardReport.getMeasure(chartDashlet, measure);
-        if (m == null || m.getMeasurements() == null) return null;
-
-        for (Measurement measurement : m.getMeasurements()) {
-            xySeries.add(measurement.getTimestamp(), measurement.getAvg());
-        }
-
-        return new XYSeriesCollection(xySeries);
+        ChartUtil.generateGraph(request, response, createTimeSeriesChart(request, buildTimeSeriesDataSet(request)), PerfSigUIUtils.calcDefaultSize());
     }
 
     private XYDataset buildTimeSeriesDataSet(final StaplerRequest request) {
@@ -153,40 +127,6 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
             timeSeries.add(new Second(new Date(measurement.getTimestamp())), measurement.getMetricValue(m.getAggregation()));
         }
         return new TimeSeriesCollection(timeSeries);
-    }
-
-    private JFreeChart createXYLineChart(final StaplerRequest req, final XYDataset dataset) throws UnsupportedEncodingException {
-        final String chartDashlet = req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamChartDashlet());
-        final String measure = req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamMeasure());
-        final String unit = req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamUnit());
-        String color = req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamColor());
-        if (StringUtils.isBlank(color))
-            color = Messages.PerfSigBuildActionResultsDisplay_DefaultColor();
-        else
-            URLDecoder.decode(req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamColor()), "UTF-8");
-
-        final JFreeChart chart = ChartFactory.createXYLineChart(
-                PerfSigUIUtils.generateTitle(measure, chartDashlet).replaceAll("\\d+\\w", ""), // title
-                "%", // category axis label
-                unit, // value axis label
-                dataset, // data
-                PlotOrientation.VERTICAL, // orientation
-                false, // include legend
-                true, // tooltips
-                false // urls
-        );
-        final XYPlot xyPlot = chart.getXYPlot();
-        xyPlot.setForegroundAlpha(0.8f);
-        xyPlot.setRangeGridlinesVisible(true);
-        xyPlot.setRangeGridlinePaint(Color.black);
-        xyPlot.setOutlinePaint(null);
-
-        final XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) xyPlot.getRenderer();
-        renderer.setSeriesPaint(0, Color.decode(color));
-        renderer.setSeriesStroke(0, new BasicStroke(2));
-
-        chart.setBackgroundPaint(Color.white);
-        return chart;
     }
 
     private JFreeChart createTimeSeriesChart(final StaplerRequest req, final XYDataset dataset) throws UnsupportedEncodingException {

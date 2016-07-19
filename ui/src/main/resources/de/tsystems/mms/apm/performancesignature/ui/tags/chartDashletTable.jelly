@@ -55,8 +55,7 @@
                 </td>
                 <jm:summaryTable it="${measure}"/>
                 <j:if test="${previousDashboardReport!=null}">
-                    <jm:summaryTable
-                            it="${previousDashboardReport.getMeasure(it.name,measure.name)}"/>
+                    <jm:summaryTable it="${previousDashboardReport.getMeasure(it.name,measure.name)}"/>
                 </j:if>
             </tr>
         </j:forEach>
