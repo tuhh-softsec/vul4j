@@ -17,6 +17,6 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core">
     <td>${it.strMetricValue}</td>
-    <td>${it.min}</td>
-    <td>${it.max}</td>
+    <td>${utils.round(it.min,2)}</td>
+    <td>${utils.round(it.max,2)}</td>
 </j:jelly>

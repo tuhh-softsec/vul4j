@@ -30,6 +30,7 @@
             </style>
         </l:header>
         <st:include it="${it.job}" page="sidepanel.jelly"/>
+        <j:set var="utils" value="${it.PerfSigUtils}"/>
         <j:set var="trpa" value="${it.testResultProjectAction}"/>
         <j:set var="tr" value="${trpa.lastTestResultAction}"/>
         <l:main-panel>
@@ -172,7 +173,7 @@
                                                 </td>
                                                 <td>
                                                     <j:set var="files"
-                                                           value="${it.PerfSigUtils.getDownloadFiles('Comparison.*' + lastDashboardReport.name + '.*pdf',dashboardReport.key)}"/>
+                                                           value="${utils.getDownloadFiles('Comparison.*' + lastDashboardReport.name + '.*pdf',dashboardReport.key)}"/>
                                                     <j:forEach var="file" items="${files}">
                                                         <a href="../${dashboardReport.key.number}/performance-signature/getComparisonReport?testCase=${lastDashboardReport.name}&amp;number=${files.indexOf(file)}"
                                                            target="_blank">
@@ -187,7 +188,7 @@
                                                 <j:if test="${isUnitTest}">
                                                     <j:set var="testRun" value="${it.getTestRun(dashboardReport.key)}"/>
                                                     <j:set var="testResult" value="${it.getTestAction(dashboardReport.key)}"/>
-                                                    <td class="nowrap">${it.PerfSigUtils.getDurationString(testResult.duration)}</td>
+                                                    <td class="nowrap">${utils.getDurationString(testResult.duration)}</td>
                                                     <td>${testResult.failCount}</td>
                                                     <td>${testRun.numFailed}</td>
                                                     <td>${testRun.numDegraded}</td>

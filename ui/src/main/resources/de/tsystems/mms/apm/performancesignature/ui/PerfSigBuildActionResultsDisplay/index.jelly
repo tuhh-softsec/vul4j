@@ -24,6 +24,7 @@
             </style>
         </l:header>
         <st:include it="${it.build}" page="sidepanel.jelly"/>
+        <j:set var="utils" value="${it.PerfSigUtils}"/>
         <l:main-panel>
             <div class="tw-bs">
                 <div class="container-fluid" style="height: 170px;">
@@ -49,7 +50,7 @@
                                     <div class="col-md-6">
                                         <h3>${%Test case:} ${dashboardReport.name}</h3>
                                     </div>
-                                    <j:set var="sessionFiles" value="${it.PerfSigUtils.getDownloadFiles('.*' + dashboardReport.name + '.dts',it.build)}"/>
+                                    <j:set var="sessionFiles" value="${utils.getDownloadFiles('.*' + dashboardReport.name + '.dts',it.build)}"/>
                                     <j:if test="${sessionFiles.isEmtpy()==false}">
                                         <div class="col-md-4 pull-right">
                                             <a target="_blank" href="${dashboardReport.getClientLink().generateLink()}">
@@ -77,12 +78,12 @@
                                             </div>
                                             <div class="panel-body">
                                                 <j:set var="pdfFiles"
-                                                       value="${it.PerfSigUtils.getDownloadFiles('Single.*' + dashboardReport.name + '.*pdf',it.build)}"/>
+                                                       value="${utils.getDownloadFiles('Single.*' + dashboardReport.name + '.*pdf',it.build)}"/>
                                                 <j:forEach var="pdfFile" items="${pdfFiles}">
                                                     <a href="./getSingleReport?testCase=${dashboardReport.name}&amp;number=${pdfFiles.indexOf(pdfFile)}"
                                                        target="_blank">
                                                         <img src="${resURL}/plugin/performance-signature-ui/images/pdficon_small.png"/>
-                                                        ${it.PerfSigUtils.removeExtension(pdfFile.name)}
+                                                        ${utils.removeExtension(pdfFile.name)}
                                                     </a>
                                                     <br/>
                                                 </j:forEach>
@@ -102,7 +103,7 @@
                                                 <j:if test="${!sessionFiles.isEmpty()}">
                                                     <a href="./getSession?testCase=${dashboardReport.name}" target="_blank">
                                                         <img src="${resURL}/plugin/performance-signature-ui/images/dtsession.png"/>
-                                                        ${it.PerfSigUtils.removeExtension(sessionFiles.get(0).name)}
+                                                        ${utils.removeExtension(sessionFiles.get(0).name)}
                                                     </a>
                                                 </j:if>
                                                 <j:if test="${sessionFiles.isEmpty()}">
