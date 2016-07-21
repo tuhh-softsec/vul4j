@@ -71,7 +71,7 @@
     <modules>
         <module>ui</module>
         <module>dynatrace</module>
-        <module>viewer</module>
+        <!--<module>viewer</module>--> <!-- uncomment if ready to publish -->
     </modules>
 
     <properties>
