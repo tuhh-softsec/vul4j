@@ -57,6 +57,7 @@ import org.esigate.test.TestUtils;
 import org.esigate.test.conn.IResponseHandler;
 import org.esigate.test.conn.MockConnectionManager;
 import org.esigate.test.http.HttpResponseBuilder;
+import org.esigate.util.UriUtils;
 
 public class DriverTest extends TestCase {
     private IncomingRequest.Builder request;
@@ -325,7 +326,7 @@ public class DriverTest extends TestCase {
 
             @Override
             public HttpResponse execute(final HttpRequest httpRequest) throws IOException {
-                switch (httpRequest.getRequestLine().getUri()) {
+                switch (UriUtils.getPath(httpRequest.getRequestLine().getUri())) {
 
                     case "/redirect":
                         InputStream in = new ByteArrayInputStream("found".getBytes()) {
@@ -368,7 +369,7 @@ public class DriverTest extends TestCase {
 
             @Override
             public HttpResponse execute(final HttpRequest httpRequest) throws IOException {
-                switch (httpRequest.getRequestLine().getUri()) {
+                switch (UriUtils.getPath(httpRequest.getRequestLine().getUri())) {
 
                     case "/redirect":
                         InputStream in = new ByteArrayInputStream("found".getBytes()) {
@@ -390,7 +391,7 @@ public class DriverTest extends TestCase {
         });
         Driver driver = createMockDriver(properties, mockConnectionManager);
 
-        int requestCount = 100;
+        int requestCount = 2;
         for (int i = 0; i < requestCount; i++) {
             IncomingRequest request1 = TestUtils.createIncomingRequest("http://www.foo.com/page").build();
             CloseableHttpResponse driverResponse = driver.proxy("/page", request1);

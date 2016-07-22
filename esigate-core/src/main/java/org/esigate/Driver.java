@@ -32,6 +32,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultRedirectStrategy;
 import org.apache.http.message.BasicHttpResponse;
+import org.apache.http.util.EntityUtils;
 import org.esigate.RequestExecutor.RequestExecutorBuilder;
 import org.esigate.events.EventManager;
 import org.esigate.events.impl.ProxyEvent;
@@ -178,7 +179,10 @@ public final class Driver {
             try {
                 while (redirects > 0
                         && redirectStrategy.isRedirected(outgoingRequest, response, outgoingRequest.getContext())) {
-                    HttpResponseUtils.toString(response);
+
+                    // Must consume the entity 
+                    EntityUtils.consumeQuietly(response.getEntity());
+
                     redirects--;
                     outgoingRequest =
                             requestExecutor.createOutgoingRequest(
