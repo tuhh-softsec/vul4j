@@ -314,6 +314,13 @@ public class DriverTest extends TestCase {
         assertEquals("http://www.foo.com", driverResponse.getFirstHeader("Location").getValue());
     }
 
+    /**
+     * Test for "Consumes http entity on redirection" https://github.com/esigate/esigate/pull/154
+     * (no cache)
+     * 
+     * @throws IOException
+     * @throws HttpErrorPage
+     */
     public void testRedirectDoesNotLeakConnection() throws IOException, HttpErrorPage {
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE, "http://127.0.0.1");
@@ -358,6 +365,14 @@ public class DriverTest extends TestCase {
         assertFalse("All the connections should have been closed", mockConnectionManager.isOpen());
     }
 
+    
+    /**
+     * Test for "Consumes http entity on redirection" https://github.com/esigate/esigate/pull/154
+     * (with cache actived)
+     * 
+     * @throws IOException
+     * @throws HttpErrorPage
+     */
     public void testRedirectDoesNotLeakConnectionWithCacheEnable() throws IOException, HttpErrorPage {
         Properties properties = new Properties();
         properties.put(Parameters.REMOTE_URL_BASE, "http://127.0.0.1");
@@ -391,7 +406,7 @@ public class DriverTest extends TestCase {
         });
         Driver driver = createMockDriver(properties, mockConnectionManager);
 
-        int requestCount = 2;
+        int requestCount = 100;
         for (int i = 0; i < requestCount; i++) {
             IncomingRequest request1 = TestUtils.createIncomingRequest("http://www.foo.com/page").build();
             CloseableHttpResponse driverResponse = driver.proxy("/page", request1);
