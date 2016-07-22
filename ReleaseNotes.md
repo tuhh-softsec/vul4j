@@ -382,4 +382,6 @@ Older history in JIRA at http://jira.codehaus.org/browse/PLXCOMP
 [issue-40]: https://github.com/codehaus-plexus/plexus-archiver/issues/40
 [issue-42]: https://github.com/codehaus-plexus/plexus-archiver/issues/42
 [issue-43]: https://github.com/codehaus-plexus/plexus-archiver/issues/43
+[issue-45]: https://github.com/codehaus-plexus/plexus-archiver/issues/45
+[issue-46]: https://github.com/codehaus-plexus/plexus-archiver/issues/46
 [pr-41]: https://github.com/codehaus-plexus/plexus-archiver/pull/41
