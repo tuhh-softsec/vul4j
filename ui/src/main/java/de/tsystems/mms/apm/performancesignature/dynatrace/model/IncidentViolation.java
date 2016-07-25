@@ -30,15 +30,23 @@ public class IncidentViolation {
     private final String rule, description;
     private final Severity severity;
     private final long duration;
-    private Date start, end;
+    private final Date start, end;
 
     public IncidentViolation(final Object attr) {
         this.rule = AttributeUtils.getStringAttribute("rule", attr);
         this.severity = Severity.fromString(AttributeUtils.getStringAttribute("severity", attr));
-        if (StringUtils.isEmpty(AttributeUtils.getStringAttribute("start", attr)))
+
+        if (StringUtils.isEmpty(AttributeUtils.getStringAttribute("start", attr))) {
             this.start = AttributeUtils.getDateAttribute("start", attr);
-        if (StringUtils.isEmpty(AttributeUtils.getStringAttribute("end", attr)))
+        } else {
+            this.start = new Date();
+        }
+        if (StringUtils.isEmpty(AttributeUtils.getStringAttribute("end", attr))) {
             this.end = AttributeUtils.getDateAttribute("end", attr);
+        } else {
+            this.end = new Date();
+        }
+
         this.duration = AttributeUtils.getLongAttribute("duration", attr);
         this.description = AttributeUtils.getStringAttribute("description", attr);
     }
