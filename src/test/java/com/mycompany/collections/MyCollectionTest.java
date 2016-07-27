@@ -21,7 +21,7 @@ public class MyCollectionTest {
   }
   
   private final Function<String, Predicate<String>> startsWithLetter =
-          letter -> element -> element.startsWith(letter);
+    letter -> element -> element.startsWith(letter);
 
   @Before
   public void setUp() {
