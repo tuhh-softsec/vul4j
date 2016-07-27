@@ -31,7 +31,7 @@ public class ZipArchive {
 
   private void writeDataToZipFile(final Path file, final ZipOutputStream out) {
     try {
-      ZipEntry entry = new ZipEntry(file.getFileName().toString());
+      ZipEntry entry = new ZipEntry(String.valueOf(file.getFileName()));
       out.putNextEntry(entry);
       byte[] bytes = Files.readAllBytes(file);
       out.write(bytes);
