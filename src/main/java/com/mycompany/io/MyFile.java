@@ -77,7 +77,7 @@ public final class MyFile {
         .collect(toList());
     } catch (IOException ex) {
       System.err.println("Failed to list the names of all the subdirectories in " + directory + ": "
-        + ex.getMessage());
+          + ex.getMessage());
     }
     return Collections.emptyList();
   }
@@ -93,7 +93,7 @@ public final class MyFile {
       Files.newDirectoryStream(directory, filter).forEach(path -> files.add(path));
     } catch (IOException ex) {
       System.err.println("Failed to list the names of *" + suffix + " files in " + directory + ": "
-        + ex.getMessage());
+          + ex.getMessage());
     }
     return files;
   }
