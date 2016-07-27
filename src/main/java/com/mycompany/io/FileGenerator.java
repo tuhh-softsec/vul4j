@@ -10,7 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.security.SecureRandom;
 
 public class FileGenerator {
 
@@ -41,8 +41,8 @@ public class FileGenerator {
   }
 
   private String getRandomString() {
-    Random rand = new Random();
-    int value = rand.nextInt(EXAMPLE_LINES.size());
+    SecureRandom secRandom = new SecureRandom();
+    int value = secRandom.nextInt(EXAMPLE_LINES.size());
     return EXAMPLE_LINES.get(value);
   }
 
