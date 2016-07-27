@@ -21,7 +21,7 @@ public class MyCollectionTest {
   }
   
   private final Function<String, Predicate<String>> startsWithLetter =
-    letter -> element -> element.startsWith(letter);
+      letter -> element -> element.startsWith(letter);
 
   @Before
   public void setUp() {
@@ -130,7 +130,7 @@ public class MyCollectionTest {
   @Test
   public void testCollectTransformedElementsIntoStringConcatenatedWithCommas() {
     assertEquals("BRIAN, NATE, NEAL, RAJU, SARA, SCOTT",
-      collection.collectTransformedElementsIntoStringConcatenatedWithCommas());
+        collection.collectTransformedElementsIntoStringConcatenatedWithCommas());
   }
 
 }
