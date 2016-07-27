@@ -104,7 +104,8 @@
         <module name="IllegalTokenText"/>
         <module name="Indentation">
             <property name="basicOffset" value="2"/>
-            <property name="lineWrappingIndentation" value="2"/>      
+            <property name="throwsIndent" value="4"/>
+            <property name="lineWrappingIndentation" value="4"/>      
         </module>
         <module name="InnerAssignment"/>
         <module name="InterfaceIsType"/>
