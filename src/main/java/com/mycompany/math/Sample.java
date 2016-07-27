@@ -51,11 +51,11 @@ public final class Sample {
     Function<Integer, Integer> doubleValue = number -> number * 2;
 
     Integer result = values.stream()
-      .filter(isEven)
-      .filter(isGreaterThan(3))
-      .map(doubleValue)
-      .findFirst()
-      .get();
+        .filter(isEven)
+        .filter(isGreaterThan(3))
+        .map(doubleValue)
+        .findFirst()
+        .get();
     return result;
   }
 
