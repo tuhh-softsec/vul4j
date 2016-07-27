@@ -19,6 +19,7 @@
                 <configuration>
                     <onlyAnalyze>com.mycompany.exercises.*</onlyAnalyze>
                     <effort>Max</effort>
+                    <failOnError>true</failOnError>
                     <plugins>
                         <plugin>
                             <groupId>com.h3xstream.findsecbugs</groupId>
