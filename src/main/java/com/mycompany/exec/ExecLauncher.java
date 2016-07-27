@@ -21,8 +21,8 @@ public final class ExecLauncher {
     executor.executeScript(parameters);
     System.out.println("Script execute output: ");
     executor.getExecuteOutput().stream().forEach((line) -> {
-        System.out.println(line);
-      });
+      System.out.println(line);
+    });
   }
 
 }
