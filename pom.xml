@@ -17,7 +17,6 @@
                 <artifactId>findbugs-maven-plugin</artifactId>
                 <version>3.0.4</version>
                 <configuration>
-                    <onlyAnalyze>com.mycompany.exercises.*</onlyAnalyze>
                     <effort>Max</effort>
                     <failOnError>true</failOnError>
                     <plugins>
