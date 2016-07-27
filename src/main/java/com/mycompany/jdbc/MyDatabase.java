@@ -389,9 +389,8 @@ public class MyDatabase {
 
   public void demonstrateTransaction() {
     try (Connection conn = pool.getDatabaseConnection()) {
-      conn.setAutoCommit(false);
-      Statement stmt = conn.createStatement();
-      try {
+      conn.setAutoCommit(false);      
+      try (Statement stmt = conn.createStatement()) {
         stmt.executeUpdate("INSERT INTO Discount_Code VALUES ('O', 1.00)");
         stmt.executeUpdate("INSERT INTO Discount_Code VALUES ('P', 2.00)");
         stmt.executeUpdate("INSERT INTO Discount_Code VALUES ('Q', 3.00)");
