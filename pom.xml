@@ -19,6 +19,13 @@
                 <configuration>
                     <onlyAnalyze>com.mycompany.exercises.*</onlyAnalyze>
                     <effort>Max</effort>
+                    <plugins>
+                        <plugin>
+                            <groupId>com.h3xstream.findsecbugs</groupId>
+                            <artifactId>findsecbugs-plugin</artifactId>
+                            <version>LATEST</version> <!-- Auto-update to the latest stable -->
+                        </plugin>
+                    </plugins>
                 </configuration>
                 <executions>
                     <execution>
