@@ -21,9 +21,9 @@ public final class MyFileExecutor {
       FileWriterEAM.use("eam.txt", writerEAM -> writerEAM.writeStuff("sweet"));
 
       FileWriterEAM.use("eam2.txt", writerEAM -> {
-          writerEAM.writeStuff("how");
-          writerEAM.writeStuff("sweet");
-        });
+        writerEAM.writeStuff("how");
+        writerEAM.writeStuff("sweet");
+      });
     } catch (IOException ex) {
       System.err.println("ERROR! Failed to write files.");
     }
