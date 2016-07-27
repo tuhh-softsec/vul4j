@@ -366,8 +366,9 @@ public class MyDatabase {
         PreparedStatement pstmt = conn.prepareStatement(pQuery)) {
       // Substitute this String for the first parameter (?)
       pstmt.setString(1, "%New York%");
-      ResultSet rs = pstmt.executeQuery();
-      processResultSet(rs);
+      try (ResultSet rs = pstmt.executeQuery()) {
+        processResultSet(rs);
+      }
     } catch (SQLException ex) {
       logSQLException(ex);
     }
