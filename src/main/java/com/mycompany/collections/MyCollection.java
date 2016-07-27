@@ -69,7 +69,7 @@ public class MyCollection {
 
   public List<String> pickElementsThatStartWithN() {
     final List<String> startsWithN = 
-      collection.stream()
+        collection.stream()
         .filter(element -> element.startsWith("N"))
         .collect(toList());
     System.out.print(String.format("Found %d elements: ", startsWithN.size()));
@@ -96,7 +96,7 @@ public class MyCollection {
             .filter(element -> element.startsWith(startingLetter))
             .findFirst();
     System.out.println(String.format("An element starting with %s: %s", startingLetter,
-      foundElement.orElse("No element found")));
+        foundElement.orElse("No element found")));
     foundElement.ifPresent(element -> System.out.println("Hello " + element));
     return foundElement.orElse("No element found");
   }
@@ -134,8 +134,8 @@ public class MyCollection {
    */
   public Optional<String> getLongestElement() {
     final Optional<String> aLongElement =
-      collection.stream()
-      .reduce((element1, element2) -> element1.length() >= element2.length() ? element1 : element2);
+        collection.stream()
+        .reduce((element1, element2) -> element1.length() >= element2.length() ? element1 : element2);
     aLongElement.ifPresent(element -> System.out.println(String.format("A longest element: %s", element)));
     return aLongElement;
   }
