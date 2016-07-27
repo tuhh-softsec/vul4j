@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.net.ssl.SSLSocketFactory;
 
 public final class NetworkUtils {
 
@@ -95,7 +96,7 @@ public final class NetworkUtils {
   }
 
   public static boolean isHostAvailable(final String host) {
-    try (Socket socket = new Socket(host, 80)) {
+    try (Socket socket = SSLSocketFactory.getDefault().createSocket(host, 443)) {
       return true;
     } catch (IOException ex) {
       System.err.println("Failed to check if host " + host + " is available.");
