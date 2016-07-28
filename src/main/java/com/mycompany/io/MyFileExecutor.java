@@ -13,7 +13,7 @@ public final class MyFileExecutor {
   private MyFileExecutor() {}
 
   public static void main(final String[] args) {
-    Path file = Paths.get("/", "home", "bredkins", "Desktop", "test.txt");
+    Path file = Paths.get("test.txt");
     new FileGenerator().generateFile(file);
     MyFile.processStringsFromFile(file);
 
