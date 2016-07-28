@@ -16,6 +16,7 @@ public final class FTPLauncher {
             Paths.get("third-party")).build();
     MyFTPClient ftpClient = new MyFTPClient();
 
+    System.out.println("Files on ftp.gnu.org FTP server, third-party directory:");
     ftpClient.obtainListOfFileInformationAnonymous(ftpProperties).stream()
             .forEach(file -> System.out.println(String.valueOf(file)));
   }
