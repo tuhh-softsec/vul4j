@@ -93,7 +93,7 @@ public class Measure {
 
     @Exported(visibility = 999)
     public String getColor() {
-        return PerfSigUIUtils.encodeString(this.color);
+        return this.color;
     }
 
     @Exported(visibility = 999)
