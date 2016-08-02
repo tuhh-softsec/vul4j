@@ -19,8 +19,6 @@ package de.tsystems.mms.apm.performancesignature.dynatrace;
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.*;
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.ConfigurationTestCase.ConfigurationTestCaseDescriptor;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
-import de.tsystems.mms.apm.performancesignature.dynatrace.model.IncidentChart;
-import de.tsystems.mms.apm.performancesignature.dynatrace.model.IncidentViolation;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.BaseConfiguration;
@@ -188,56 +186,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
                 dashboardReport.setClientLink(clientLink);
                 dashboardReports.add(dashboardReport);
 
-                List<IncidentChart> incidents = dashboardReport.getIncidents();
-                int numWarning = 0, numSevere = 0;
-                if (incidents != null && incidents.size() > 0) {
-                    logger.println("following incidents occured:");
-                    for (IncidentChart incident : incidents) {
-                        for (IncidentViolation violation : incident.getViolations()) {
-                            switch (violation.getSeverity()) {
-                                case SEVERE:
-                                    logger.println("severe incident:     " + incident.getRule() + " " + violation.getRule() + " " + violation.getDescription());
-                                    numSevere++;
-                                    break;
-                                case WARNING:
-                                    logger.println("warning incident:    " + incident.getRule() + " " + violation.getRule() + " " + violation.getDescription());
-                                    numWarning++;
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                    }
-
-                    switch (nonFunctionalFailure) {
-                        case 1:
-                            if (numSevere > 0) {
-                                logger.println("build's status was set to 'failed' due to severe incidents");
-                                run.setResult(Result.FAILURE);
-                            }
-                            break;
-                        case 2:
-                            if (numSevere > 0 || numWarning > 0) {
-                                logger.println("build's status was set to 'failed' due to warning/severe incidents");
-                                run.setResult(Result.FAILURE);
-                            }
-                            break;
-                        case 3:
-                            if (numSevere > 0) {
-                                logger.println("build's status was set to 'unstable' due to severe incidents");
-                                run.setResult(Result.UNSTABLE);
-                            }
-                            break;
-                        case 4:
-                            if (numSevere > 0 || numWarning > 0) {
-                                logger.println("build's status was set to 'unstable' due to warning/severe incidents");
-                                run.setResult(Result.UNSTABLE);
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                }
+                PerfSigUIUtils.handleIncidents(run, dashboardReport.getIncidents(), logger, nonFunctionalFailure);
             }
 
             if (exportSessions) {

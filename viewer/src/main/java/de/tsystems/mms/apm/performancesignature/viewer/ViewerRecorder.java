@@ -17,9 +17,8 @@
 package de.tsystems.mms.apm.performancesignature.viewer;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
-import de.tsystems.mms.apm.performancesignature.dynatrace.model.IncidentChart;
-import de.tsystems.mms.apm.performancesignature.dynatrace.model.IncidentViolation;
 import de.tsystems.mms.apm.performancesignature.ui.PerfSigBuildAction;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import de.tsystems.mms.apm.performancesignature.viewer.model.CredJobPair;
 import de.tsystems.mms.apm.performancesignature.viewer.model.JenkinsServerConfiguration;
 import de.tsystems.mms.apm.performancesignature.viewer.rest.RESTErrorException;
@@ -30,7 +29,6 @@ import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.AbstractProject;
-import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
@@ -84,57 +82,6 @@ public class ViewerRecorder extends Recorder implements SimpleBuildStep {
             throw new RESTErrorException(Messages.PerfSigRecorder_XMLReportError());
 
         for (DashboardReport dashboardReport : dashboardReports) {
-            List<IncidentChart> incidents = dashboardReport.getIncidents();
-            int numWarning = 0, numSevere = 0;
-            if (incidents != null && incidents.size() > 0) {
-                logger.println("following incidents occured:");
-                for (IncidentChart incident : incidents) {
-                    for (IncidentViolation violation : incident.getViolations()) {
-                        switch (violation.getSeverity()) {
-                            case SEVERE:
-                                logger.println("severe incident:     " + incident.getRule() + " " + violation.getRule() + " " + violation.getDescription());
-                                numSevere++;
-                                break;
-                            case WARNING:
-                                logger.println("warning incident:    " + incident.getRule() + " " + violation.getRule() + " " + violation.getDescription());
-                                numWarning++;
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                }
-            }
-
-            switch (nonFunctionalFailure) {
-                case 1:
-                    if (numSevere > 0) {
-                        logger.println("build's status was set to 'failed' due to severe incidents");
-                        run.setResult(Result.FAILURE);
-                    }
-                    break;
-                case 2:
-                    if (numSevere > 0 || numWarning > 0) {
-                        logger.println("build's status was set to 'failed' due to warning/severe incidents");
-                        run.setResult(Result.FAILURE);
-                    }
-                    break;
-                case 3:
-                    if (numSevere > 0) {
-                        logger.println("build's status was set to 'unstable' due to severe incidents");
-                        run.setResult(Result.UNSTABLE);
-                    }
-                    break;
-                case 4:
-                    if (numSevere > 0 || numWarning > 0) {
-                        logger.println("build's status was set to 'unstable' due to warning/severe incidents");
-                        run.setResult(Result.UNSTABLE);
-                    }
-                    break;
-                default:
-                    break;
-            }
-
             boolean exportedPDFReports = serverConnection.downloadPDFReports(ViewerUtils.getReportDirectory(run), dashboardReport.getName());
             if (!exportedPDFReports) {
                 throw new RESTErrorException("failed to download Dynatrace PDF report, build status set to failed");
@@ -148,6 +95,8 @@ public class ViewerRecorder extends Recorder implements SimpleBuildStep {
             } else {
                 logger.println(Messages.PerfSigRecorder_SessionDownloadSuccessful());
             }
+
+            PerfSigUIUtils.handleIncidents(run, dashboardReport.getIncidents(), logger, nonFunctionalFailure);
         }
 
         PerfSigBuildAction action = new PerfSigBuildAction(dashboardReports);
