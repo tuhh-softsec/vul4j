@@ -157,7 +157,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
             }
 
             for (Dashboard singleDashboard : configurationTestCase.getSingleDashboards()) {
-                singleFilename = "Singlereport_" + sessionName + ".pdf";
+                singleFilename = "Singlereport_" + sessionName + "_" + singleDashboard.getName() + ".pdf";
                 logger.println(Messages.PerfSigRecorder_GettingPDFReport() + " " + singleFilename);
                 boolean singleResult = connection.getPDFReport(sessionName, null, singleDashboard.getName(),
                         new File(PerfSigUIUtils.getReportDirectory(run), File.separator + singleFilename));
@@ -168,7 +168,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
             for (Dashboard comparisonDashboard : configurationTestCase.getComparisonDashboards()) {
                 if (comparisonBuildNumber != 0 && comparisonSessionName != null) {
                     comparisonFilename = "Comparisonreport_" + comparisonSessionName.replace(comparisonBuildNumber + "_",
-                            buildNumber + "_" + comparisonBuildNumber + "_") + ".pdf";
+                            buildNumber + "_" + comparisonBuildNumber + "_") + "_" + comparisonDashboard.getName() + ".pdf";
                     logger.println(Messages.PerfSigRecorder_GettingPDFReport() + " " + comparisonFilename);
                     boolean comparisonResult = connection.getPDFReport(sessionName, comparisonSessionName, comparisonDashboard.getName(),
                             new File(PerfSigUIUtils.getReportDirectory(run), File.separator + comparisonFilename));

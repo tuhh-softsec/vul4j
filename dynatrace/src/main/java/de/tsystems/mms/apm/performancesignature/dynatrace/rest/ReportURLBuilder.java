@@ -70,7 +70,7 @@ public class ReportURLBuilder {
             } else {
                 sb.append(RESTPATH_DASHBOARDS);
             }
-            sb.append(dashboardName);
+            sb.append(PerfSigUIUtils.encodeString(dashboardName));
             if (!parameter.isEmpty()) sb.append("?");
             for (String param : parameter) {
                 if (parameter.indexOf(param) != 0) sb.append("&");
