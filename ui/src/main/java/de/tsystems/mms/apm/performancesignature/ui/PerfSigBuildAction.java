@@ -75,7 +75,7 @@ public class PerfSigBuildAction extends PerfSigBaseAction implements SimpleBuild
         return new Api(this);
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public List<DashboardReport> getDashboardReports() {
         return this.dashboardReports;
     }

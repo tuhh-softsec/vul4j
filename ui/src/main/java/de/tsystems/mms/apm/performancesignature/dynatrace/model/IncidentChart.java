@@ -43,7 +43,7 @@ public class IncidentChart {
         return new Api(this);
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public String getRule() {
         return rule;
     }
@@ -52,12 +52,12 @@ public class IncidentChart {
         return severity;
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public String getSeverityString() {
         return severity.toString();
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public List<IncidentViolation> getViolations() {
         return violations;
     }

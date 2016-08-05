@@ -45,7 +45,7 @@ public class DashboardReport {
         return new Api(this);
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public List<IncidentChart> getIncidents() {
         return incidents;
     }
@@ -54,7 +54,7 @@ public class DashboardReport {
         this.incidents.add(incident);
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public List<ChartDashlet> getChartDashlets() {
         return chartDashlets;
     }
@@ -63,12 +63,12 @@ public class DashboardReport {
         this.chartDashlets.add(chartDashlet);
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public String getName() {
         return name;
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public boolean isUnitTest() {
         return unitTest;
     }

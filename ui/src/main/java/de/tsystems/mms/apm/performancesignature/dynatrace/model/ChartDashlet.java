@@ -47,17 +47,17 @@ public class ChartDashlet {
         return new Api(this);
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public String getName() {
         return name;
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public String getDescription() {
         return description;
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public List<Measure> getMeasures() {
         return measures;
     }

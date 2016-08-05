@@ -46,17 +46,17 @@ public class Measurement {
         return new Api(this);
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public double getSum() {
         return sum;
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public int getCount() {
         return count;
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public double getAvg() {
         return this.avg;
     }
@@ -65,17 +65,17 @@ public class Measurement {
         return PerfSigUIUtils.round(this.avg, 2);
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public double getMin() {
         return this.min;
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public long getTimestamp() {
         return this.timestamp;
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public double getMax() {
         return this.max;
     }

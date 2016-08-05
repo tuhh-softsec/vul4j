@@ -72,7 +72,7 @@ public class ServerConnection {
     }
 
     public List<DashboardReport> getDashboardReportsFromXML() throws IOException {
-        URL url = new URL(getJenkinsJob().details().getLastSuccessfulBuild().getUrl() + "api/xml");
+        URL url = new URL(getJenkinsJob().details().getLastSuccessfulBuild().getUrl() + "api/xml?depth=10");
         String xml = getJenkinsJob().getClient().get(url.toString());
         try {
             DashboardXMLReader reader = new DashboardXMLReader();

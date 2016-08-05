@@ -58,7 +58,7 @@ public class IncidentViolation {
         return new Api(this);
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public String getRule() {
         return rule;
     }
@@ -67,27 +67,27 @@ public class IncidentViolation {
         return severity;
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public String getSeverityString() {
         return severity.toString();
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public Date getStart() {
         return (Date) start.clone();
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public Date getEnd() {
         return (Date) end.clone();
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public long getDuration() {
         return duration;
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public String getDescription() {
         return description;
     }

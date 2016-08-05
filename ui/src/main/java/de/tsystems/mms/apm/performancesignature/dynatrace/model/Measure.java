@@ -63,7 +63,7 @@ public class Measure {
         return new Api(this);
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public List<Measurement> getMeasurements() {
         return measurements;
     }
@@ -72,12 +72,12 @@ public class Measure {
         this.measurements.add(tm);
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public double getSum() {
         return this.sum;
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public int getCount() {
         return count;
     }
@@ -86,38 +86,38 @@ public class Measure {
         return this.name;
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public String getMeasure() {
         return getName();
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public String getColor() {
         return this.color;
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public double getAvg() {
         return this.avg;
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public double getMin() {
         return this.min;
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public double getMax() {
         return this.max;
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public String getUnit() {
         if (this.aggregation != null && this.aggregation.equalsIgnoreCase("count")) return "num";
         return PerfSigUIUtils.encodeString(this.unit);
     }
 
-    @Exported(visibility = 999)
+    @Exported
     public String getAggregation() {
         return aggregation;
     }
