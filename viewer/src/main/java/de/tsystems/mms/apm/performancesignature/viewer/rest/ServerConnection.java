@@ -40,13 +40,12 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import javax.mail.internet.ContentDisposition;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.Inflater;
-import java.util.zip.InflaterInputStream;
 
 public class ServerConnection {
     private static final Logger LOGGER = Logger.getLogger(ServerConnection.class.getName());
@@ -72,7 +71,7 @@ public class ServerConnection {
     }
 
     public List<DashboardReport> getDashboardReportsFromXML() throws IOException {
-        URL url = new URL(getJenkinsJob().details().getLastSuccessfulBuild().getUrl() + "api/xml?depth=10");
+        URL url = new URL(getJenkinsJob().details().getLastBuild().getUrl() + "api/xml?depth=10");
         String xml = getJenkinsJob().getClient().get(url.toString());
         try {
             DashboardXMLReader reader = new DashboardXMLReader();
@@ -81,19 +80,6 @@ public class ServerConnection {
         } catch (Exception ex) {
             throw new ContentRetrievalException(ExceptionUtils.getStackTrace(ex) + "could not retrieve records from remote Jenkins: " + xml, ex);
         }
-    }
-
-    private InputStream handleInputStream(final HttpURLConnection conn) throws IOException {
-        InputStream resultingInputStream;
-        String encoding = conn.getContentEncoding();
-        if (encoding != null && encoding.equalsIgnoreCase("gzip")) {
-            resultingInputStream = new GZIPInputStream(conn.getInputStream());
-        } else if (encoding != null && encoding.equalsIgnoreCase("deflate")) {
-            resultingInputStream = new InflaterInputStream(conn.getInputStream(), new Inflater(true));
-        } else {
-            resultingInputStream = conn.getInputStream();
-        }
-        return resultingInputStream;
     }
 
     public boolean validateConnection() throws IOException {
@@ -108,10 +94,10 @@ public class ServerConnection {
     //ToDo: iterate through reports
     public boolean downloadPDFReports(final File dir, final String testCase) {
         try {
-            URL url = new URL(getJenkinsJob().details().getLastSuccessfulBuild().getUrl() + "performance-signature/getSingleReport?testCase=" + testCase + "&number=0");
+            URL url = new URL(getJenkinsJob().details().getLastBuild().getUrl() + "performance-signature/getSingleReport?testCase=" + testCase + "&number=0");
             downloadArtifact(dir, url);
 
-            url = new URL(getJenkinsJob().details().getLastSuccessfulBuild().getUrl() + "performance-signature/getComparisonReport?testCase=" + testCase + "&number=0");
+            url = new URL(getJenkinsJob().details().getLastBuild().getUrl() + "performance-signature/getComparisonReport?testCase=" + testCase + "&number=0");
             downloadArtifact(dir, url);
             return true;
         } catch (Exception ex) {
@@ -121,7 +107,7 @@ public class ServerConnection {
 
     public boolean downloadSessions(final File dir, final String testCase) {
         try {
-            URL url = new URL(getJenkinsJob().details().getLastSuccessfulBuild().getUrl() + "performance-signature/getSession?testCase=" + testCase + "&number=0");
+            URL url = new URL(getJenkinsJob().details().getLastBuild().getUrl() + "performance-signature/getSession?testCase=" + testCase + "&number=0");
             return downloadArtifact(dir, url);
         } catch (IOException e) {
             e.printStackTrace();
@@ -136,7 +122,7 @@ public class ServerConnection {
             String fileName = dir + File.separator + cd.getParameter("filename");
 
             final FilePath out = new FilePath(new File(fileName));
-            out.copyFrom(handleInputStream((HttpURLConnection) conn));
+            out.copyFrom(conn.getInputStream());
             return true;
         } catch (Exception ex) {
             throw new CommandExecutionException("error downloading session: " + ex.getMessage(), ex);
@@ -145,9 +131,5 @@ public class ServerConnection {
 
     public Job getJenkinsJob() throws IOException {
         return jenkinsServer.getJob(this.jenkinsJob);
-    }
-
-    public JenkinsServer getJenkinsServer() {
-        return jenkinsServer;
     }
 }

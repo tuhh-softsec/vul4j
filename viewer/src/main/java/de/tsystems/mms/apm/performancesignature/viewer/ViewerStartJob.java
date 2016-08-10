@@ -17,6 +17,7 @@
 package de.tsystems.mms.apm.performancesignature.viewer;
 
 import com.offbytwo.jenkins.model.Build;
+import com.offbytwo.jenkins.model.BuildResult;
 import com.offbytwo.jenkins.model.Job;
 import de.tsystems.mms.apm.performancesignature.viewer.model.CredJobPair;
 import de.tsystems.mms.apm.performancesignature.viewer.model.JenkinsServerConfiguration;
@@ -34,6 +35,7 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.ListBoxModel;
 import jenkins.tasks.SimpleBuildStep;
+import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import javax.annotation.Nonnull;
@@ -55,18 +57,18 @@ public class ViewerStartJob extends Builder implements SimpleBuildStep {
 
         JenkinsServerConfiguration serverConfiguration = ViewerUtils.getServerConfiguration(jenkinsJob);
         if (serverConfiguration == null)
-            throw new AbortException("failed to lookup Dynatrace server configuration");
+            throw new AbortException("failed to lookup Jenkins server configuration");
 
         CredJobPair pair = serverConfiguration.getCredJobPair(jenkinsJob);
         if (pair == null)
-            throw new AbortException("failed to lookup Dynatrace server profile");
+            throw new AbortException("failed to lookup Jenkins job");
 
-        logger.println("triggering Jenkins job " + pair.getJenkinsJob() + " ...");
         ServerConnection serverConnection = new ServerConnection(serverConfiguration, pair);
         if (!serverConnection.validateConnection()) {
             throw new RESTErrorException(Messages.PerfSigRecorder_DTConnectionError());
         }
 
+        logger.println("triggering Jenkins job " + pair.getJenkinsJob() + " ...");
         Job perfSigJob = serverConnection.getJenkinsJob();
         perfSigJob.build(true);
         logger.println("Jenkins job " + perfSigJob.getName() + " started");
@@ -88,8 +90,15 @@ public class ViewerStartJob extends Builder implements SimpleBuildStep {
                 buildFinished = build.details().isBuilding();
             }
         }
+        logger.println("Jenkins job finished ...");
+        BuildResult buildResult = build.details().getResult();
 
-        logger.println("jenkins job finished ...");
+        logger.println("Jenkins job status: " + buildResult);
+        if (!buildResult.equals(BuildResult.SUCCESS) && !buildResult.equals(BuildResult.UNSTABLE)) {
+            String output = build.details().getConsoleOutputText();
+            logger.println(output.substring(StringUtils.lastOrdinalIndexOf(output, "\n", 5) + 1)); //get the last 5 lines of console output
+            throw new AbortException("jenkins job failed");
+        }
     }
 
     public String getJenkinsJob() {
