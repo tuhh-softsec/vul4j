@@ -104,7 +104,7 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
                 timeframeStart = new Date();
             } else throw e;
         }
-        if ((result != null && result.equals(sessionName)) || timeframeStart != null) {
+        if ((result != null && result.contains(sessionName)) || timeframeStart != null) {
             logger.println(String.format(Messages.PerfSigStartRecording_StartedSessionRecording(), pair.getProfile(), sessionName));
         } else {
             throw new RESTErrorException(String.format(Messages.PerfSigStartRecording_SessionRecordingError(), pair.getProfile()));
@@ -121,7 +121,7 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
             logger.println("warning: could not register TestRun");
         }
 
-        run.addAction(new PerfSigEnvInvisAction(sessionName, timeframeStart, testCase, testRunId));
+        run.addAction(new PerfSigEnvInvisAction(result, timeframeStart, testCase, testRunId));
     }
 
     public String getTestCase() {
