@@ -60,7 +60,6 @@ public class DashboardXMLReader {
             List<Element> dashboardReportElements = actionElement.getChildren("dashboardReport");
             for (Element dashBoardReportElement : dashboardReportElements) {
                 DashboardReport dashboardReport = new DashboardReport(dashBoardReportElement.getChildText("name"));
-                dashboardReport.setUnitTest(Boolean.parseBoolean(dashBoardReportElement.getChildText("unitTest")));
 
                 List<Element> chartDashletElements = dashBoardReportElement.getChildren("chartDashlet");
                 for (Element chartDashletElement : chartDashletElements) {

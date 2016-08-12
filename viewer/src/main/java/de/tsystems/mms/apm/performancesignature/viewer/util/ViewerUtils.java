@@ -23,6 +23,7 @@ import com.cloudbees.plugins.credentials.domains.DomainRequirement;
 import de.tsystems.mms.apm.performancesignature.viewer.ViewerRecorder;
 import de.tsystems.mms.apm.performancesignature.viewer.model.CredJobPair;
 import de.tsystems.mms.apm.performancesignature.viewer.model.JenkinsServerConfiguration;
+import hudson.FilePath;
 import hudson.model.Run;
 import hudson.security.ACL;
 import hudson.util.ListBoxModel;
@@ -58,12 +59,12 @@ public final class ViewerUtils {
         return listBoxModel;
     }
 
-    public static File getReportDirectory(final Run<?, ?> run) throws IOException {
+    public static FilePath getReportDirectory(final Run<?, ?> run) throws IOException {
         File reportDirectory = new File(run.getRootDir(), Messages.PerfSigUtils_ReportDirectory());
         if (!reportDirectory.exists()) {
             if (!reportDirectory.mkdirs()) throw new IOException("failed to create report directory");
         }
-        return reportDirectory;
+        return new FilePath(reportDirectory);
     }
 
     public static List<JenkinsServerConfiguration> getJenkinsConfigurations() {

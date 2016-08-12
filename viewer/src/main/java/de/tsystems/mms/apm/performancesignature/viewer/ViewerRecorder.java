@@ -82,14 +82,14 @@ public class ViewerRecorder extends Recorder implements SimpleBuildStep {
             throw new RESTErrorException(Messages.PerfSigRecorder_XMLReportError());
 
         for (DashboardReport dashboardReport : dashboardReports) {
-            boolean exportedPDFReports = serverConnection.downloadPDFReports(ViewerUtils.getReportDirectory(run), dashboardReport.getName());
+            boolean exportedPDFReports = serverConnection.downloadPDFReports(run, dashboardReport.getName());
             if (!exportedPDFReports) {
                 throw new RESTErrorException("failed to download Dynatrace PDF report, build status set to failed");
             } else {
                 logger.println("PDF Report successfully downloaded");
             }
 
-            boolean exportedSession = serverConnection.downloadSessions(ViewerUtils.getReportDirectory(run), dashboardReport.getName());
+            boolean exportedSession = serverConnection.downloadSession(run, dashboardReport.getName());
             if (!exportedSession) {
                 throw new RESTErrorException(Messages.PerfSigRecorder_SessionDownloadError());
             } else {
