@@ -53,8 +53,8 @@
                 <div class="tab-content">
                     <j:forEach var="lastDashboardReport" items="${it.lastDashboardReports}">
                         <j:set var="isUnitTest" value="${lastDashboardReport.isUnitTest() and tr.previousResult!=null}"/>
-                        <!--trigger filteredChartDashlets-->
-                        <j:set var="tmp" value="${it.getFilteredChartDashlets(lastDashboardReport)}"/>
+                        <!--trigger filteredChartDashlets
+                        <j:set var="tmp" value="${it.getFilteredChartDashlets(lastDashboardReport)}"/>-->
                         <div role="tabpanel fade" class="tab-pane" id="${lastDashboardReport.name}">
                             <div class="container-fluid">
                                 <div class="row" style="height: 50px;">

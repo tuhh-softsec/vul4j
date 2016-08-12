@@ -363,12 +363,14 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         return dashboardReports;
     }
 
+    //ToDo: rewrite
     private FilePath getJsonConfigFilePath() {
         final FilePath configPath = new FilePath(job.getConfigFile().getFile());
         return configPath.getParent();
     }
 
-    private String getDashboardConfiguration() throws IOException, InterruptedException {
+    //ToDo: rewrite
+    private synchronized String getDashboardConfiguration() throws IOException, InterruptedException {
         final List<FilePath> fileList = getJsonConfigFilePath().list(new RegexFileFilter("gridconfig-.*.json"));
         final StringBuilder sb = new StringBuilder("[");
         for (FilePath file : fileList) {
@@ -381,13 +383,14 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     }
 
     @JavaScriptMethod
-    public String getDashboardConfiguration(final String dashboard) throws IOException, InterruptedException {
+    //ToDo: rewrite
+    public synchronized String getDashboardConfiguration(final String dashboard) throws IOException, InterruptedException {
         final FilePath input = new FilePath(new File(getJsonConfigFilePath() + File.separator + "gridconfig-" + dashboard + ".json"));
-        if (!input.exists()) input.write(createJSONConfigString(dashboard), null);
+        if (!input.exists()) writeConfiguration(dashboard, createJSONConfiguration(dashboard));
         return input.readToString();
     }
 
-    private String createJSONConfigString(final String dashboard) {
+    private JSONArray createJSONConfiguration(final String dashboard) {
         int col = 1, row = 1;
         JSONArray array = new JSONArray();
         for (DashboardReport dashboardReport : getLastDashboardReports()) {
@@ -430,10 +433,11 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
                 }
             }
         }
-        return array.toString();
+        return array;
     }
 
     @JavaScriptMethod
+    //ToDo: rewrite
     public void setDashboardConfiguration(final String dashboard, final String data) {
         final Map<String, MeasureNameHelper> map = new HashMap<String, MeasureNameHelper>();
         //generate a map to link between id and chartname
@@ -481,8 +485,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
                 }
             }
 
-            FilePath output = new FilePath(new File(getJsonConfigFilePath() + File.separator + "gridconfig-" + dashboard + ".json"));
-            output.write(gridConfiguration.toString(), null);
+            writeConfiguration(dashboard, gridConfiguration);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -493,6 +496,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     }
 
     @JavaScriptMethod
+    //ToDo: rewrite
     public Map<String, String> getAvailableMeasures(final String dashboard, final String dashlet) throws IOException {
         final Map<String, String> availableMeasures = new HashMap<String, String>();
         for (DashboardReport dashboardReport : getLastDashboardReports()) {
@@ -510,6 +514,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     }
 
     @JavaScriptMethod
+    //ToDo: rewrite
     public String getAggregationFromMeasure(final String dashboard, final String dashlet, final String measure) throws IOException {
         for (DashboardReport dashboardReport : getLastDashboardReports()) {
             if (dashboardReport.getName().equals(dashboard)) {
@@ -525,6 +530,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         return "";
     }
 
+    //ToDo: rewrite
     public List<ChartDashlet> getFilteredChartDashlets(final DashboardReport dashboardReport) throws IOException, InterruptedException {
         final List<ChartDashlet> filteredChartDashlets = new ArrayList<ChartDashlet>();
         final String json = getDashboardConfiguration(dashboardReport.getName());
@@ -562,9 +568,13 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         }
 
         if (jsonChanged) { //write changes to disk
-            FilePath output = new FilePath(new File(getJsonConfigFilePath() + File.separator + "gridconfig-" + dashboardReport.getName() + ".json"));
-            output.write(storedJSON.toString(), null);
+            writeConfiguration(dashboardReport.getName(), storedJSON);
         }
         return filteredChartDashlets;
+    }
+
+    private synchronized void writeConfiguration(final String dashboardName, final JSONArray json) throws IOException, InterruptedException {
+        FilePath filePath = new FilePath(new File(getJsonConfigFilePath() + File.separator + "gridconfig-" + dashboardName + ".json"));
+        filePath.write(json.toString(), null);
     }
 }
