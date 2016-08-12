@@ -131,7 +131,7 @@ public class ServerConnection {
                 }
             }
             return true;
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             throw new CommandExecutionException("error downloading PDF Report: " + ex.getMessage(), ex);
         }
     }
