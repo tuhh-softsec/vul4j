@@ -58,7 +58,6 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -167,8 +166,8 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             if (dr.getName().equals(testCase)) {
                 final Measure m = dr.getMeasure(chartDashlet, measure);
                 if (m != null) {
-                    unit = aggregation.equalsIgnoreCase("Count") ? "num" : m.getUnit();
-                    color = URLDecoder.decode(m.getColor(), "UTF-8");
+                    unit = aggregation.equalsIgnoreCase("Count") ? "num" : PerfSigUIUtils.decodeString(m.getUnit());
+                    color = PerfSigUIUtils.decodeString(m.getColor());
                 }
                 break;
             }

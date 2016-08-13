@@ -23,7 +23,7 @@
     <br/>
     <j:forEach var="measure" items="${it.measures}">
         <img style="margin: 3px;" class="img-thumbnail"
-             src="./summarizerGraph?width=410&amp;height=300&amp;measure=${utils.encodeString(measure.name)}&amp;testcase=${utils.encodeString(dashboardReport.name)}&amp;chartdashlet=${utils.encodeString(it.name)}&amp;unit=${utils.encodeString(measure.unit)}&amp;color=${utils.encodeString(measure.color)}"
+             src="./summarizerGraph?width=410&amp;height=300&amp;measure=${utils.encodeString(measure.name)}&amp;testcase=${utils.encodeString(dashboardReport.name)}&amp;chartdashlet=${utils.encodeString(it.name)}"
              width="410" height="300"/>
     </j:forEach>
     <br/>
