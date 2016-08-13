@@ -26,6 +26,7 @@ import hudson.util.Area;
 import jenkins.model.Jenkins;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.RegexFileFilter;
+import org.apache.commons.lang.CharEncoding;
 import org.apache.commons.lang.StringUtils;
 
 import javax.annotation.Nonnull;
@@ -80,7 +81,7 @@ public final class PerfSigUIUtils {
     public static String encodeString(final String value) {
         if (StringUtils.isBlank(value)) return "";
         try {
-            return URLEncoder.encode(value, "UTF-8").replaceAll("\\+", "%20");
+            return URLEncoder.encode(value, CharEncoding.UTF_8).replaceAll("\\+", "%20");
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(Messages.PerfSigUtils_EncodingFailure(), e);
         }
@@ -89,7 +90,7 @@ public final class PerfSigUIUtils {
     public static String decodeString(final String value) {
         if (StringUtils.isBlank(value)) return "";
         try {
-            return URLDecoder.decode(value, "UTF-8");
+            return URLDecoder.decode(value, CharEncoding.UTF_8);
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(Messages.PerfSigUtils_DecodingFailure(), e);
         }
