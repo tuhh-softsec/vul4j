@@ -68,11 +68,11 @@ public class ViewerStartJob extends Builder implements SimpleBuildStep {
         logger.println("triggering Jenkins job " + pair.getJenkinsJob() + " ...");
         Job perfSigJob = serverConnection.getJenkinsJob();
         perfSigJob.build(true);
+        Thread.sleep(20000);
+
         int buildNumber = perfSigJob.details().getLastBuild().getNumber();
         run.addAction(new ViewerEnvInvisAction(buildNumber));
         logger.println("Jenkins job " + perfSigJob.getName() + " #" + buildNumber + " started");
-
-        Thread.sleep(30000);
     }
 
     public String getJenkinsJob() {
