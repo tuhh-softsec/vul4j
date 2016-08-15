@@ -20,11 +20,11 @@ import hudson.model.InvisibleAction;
 
 import java.util.Date;
 
-public class PerfSigEnvInvisAction extends InvisibleAction {
+class PerfSigEnvInvisAction extends InvisibleAction {
     private final String sessionName, testRunID, testCase;
     private final Date timeframeStart;
 
-    public PerfSigEnvInvisAction(final String sessionName, final Date timeframeStart, final String testCase, final String testRunID) {
+    PerfSigEnvInvisAction(final String sessionName, final Date timeframeStart, final String testCase, final String testRunID) {
         this.sessionName = sessionName;
         this.timeframeStart = timeframeStart != null ? (Date) timeframeStart.clone() : null;
         this.testCase = testCase;

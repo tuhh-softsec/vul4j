@@ -76,24 +76,32 @@ public class ViewerRecorder extends Recorder implements SimpleBuildStep {
             throw new RESTErrorException(Messages.PerfSigRecorder_DTConnectionError());
         }
 
-        logger.println(Messages.PerfSigRecorder_ParseXMLReport());
-        final List<DashboardReport> dashboardReports = serverConnection.getDashboardReportsFromXML();
+        ViewerEnvInvisAction envInvisAction = run.getAction(ViewerEnvInvisAction.class);
+        int buildNumber;
+        if (envInvisAction != null) {
+            buildNumber = envInvisAction.getCurrentBuild();
+        } else {
+            buildNumber = serverConnection.getJenkinsJob().details().getLastBuild().getNumber();
+        }
+
+        logger.println("parsing xml data from job " + serverConnection.getJenkinsJob().getName() + " #" + buildNumber);
+        final List<DashboardReport> dashboardReports = serverConnection.getDashboardReportsFromXML(buildNumber);
         if (dashboardReports == null)
             throw new RESTErrorException(Messages.PerfSigRecorder_XMLReportError());
 
         for (DashboardReport dashboardReport : dashboardReports) {
-            boolean exportedPDFReports = serverConnection.downloadPDFReports(ViewerUtils.getReportDirectory(run), dashboardReport.getName());
+            boolean exportedPDFReports = serverConnection.downloadPDFReports(buildNumber, ViewerUtils.getReportDirectory(run), dashboardReport.getName(), logger);
             if (!exportedPDFReports) {
-                throw new RESTErrorException("failed to download Dynatrace PDF report, build status set to failed");
+                logger.println("failed to download Dynatrace PDF report for testCase: " + dashboardReport.getName());
             } else {
-                logger.println("PDF Report successfully downloaded");
+                logger.println("PDF Report for testcase " + dashboardReport.getName() + " successfully downloaded");
             }
 
-            boolean exportedSession = serverConnection.downloadSessions(ViewerUtils.getReportDirectory(run), dashboardReport.getName());
+            boolean exportedSession = serverConnection.downloadSession(buildNumber, ViewerUtils.getReportDirectory(run), dashboardReport.getName(), logger);
             if (!exportedSession) {
-                throw new RESTErrorException(Messages.PerfSigRecorder_SessionDownloadError());
+                logger.println(Messages.PerfSigRecorder_SessionDownloadError() + "for testcase: " + dashboardReport.getName());
             } else {
-                logger.println(Messages.PerfSigRecorder_SessionDownloadSuccessful());
+                logger.println(Messages.PerfSigRecorder_SessionDownloadSuccessful() + " for testcase " + dashboardReport.getName());
             }
 
             PerfSigUIUtils.handleIncidents(run, dashboardReport.getIncidents(), logger, nonFunctionalFailure);
