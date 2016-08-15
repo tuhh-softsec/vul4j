@@ -1,21 +1,7 @@
-/*
- * Copyright (c) 2014 T-Systems Multimedia Solutions GmbH
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package de.tsystems.mms.apm.performancesignature.viewer;
 
+import com.offbytwo.jenkins.model.Build;
+import com.offbytwo.jenkins.model.BuildResult;
 import com.offbytwo.jenkins.model.Job;
 import de.tsystems.mms.apm.performancesignature.viewer.model.CredJobPair;
 import de.tsystems.mms.apm.performancesignature.viewer.model.JenkinsServerConfiguration;
@@ -33,23 +19,23 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.ListBoxModel;
 import jenkins.tasks.SimpleBuildStep;
+import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.PrintStream;
 
-public class ViewerStartJob extends Builder implements SimpleBuildStep {
+public class ViewerWaitForJob extends Builder implements SimpleBuildStep {
     private final String jenkinsJob;
 
     @DataBoundConstructor
-    public ViewerStartJob(final String jenkinsJob) {
+    public ViewerWaitForJob(final String jenkinsJob) {
         this.jenkinsJob = jenkinsJob;
     }
 
     @Override
-    public void perform(@Nonnull final Run<?, ?> run, @Nonnull final FilePath workspace, @Nonnull final Launcher launcher, @Nonnull final TaskListener listener)
-            throws InterruptedException, IOException {
+    public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath workspace, @Nonnull Launcher launcher, @Nonnull TaskListener listener) throws InterruptedException, IOException {
         final PrintStream logger = listener.getLogger();
 
         JenkinsServerConfiguration serverConfiguration = ViewerUtils.getServerConfiguration(jenkinsJob);
@@ -65,14 +51,42 @@ public class ViewerStartJob extends Builder implements SimpleBuildStep {
             throw new RESTErrorException(Messages.PerfSigRecorder_DTConnectionError());
         }
 
-        logger.println("triggering Jenkins job " + pair.getJenkinsJob() + " ...");
-        Job perfSigJob = serverConnection.getJenkinsJob();
-        perfSigJob.build(true);
-        int buildNumber = perfSigJob.details().getLastBuild().getNumber();
-        run.addAction(new ViewerEnvInvisAction(buildNumber));
-        logger.println("Jenkins job " + perfSigJob.getName() + " #" + buildNumber + " started");
+        final int waitForPollingInterval = 5000;
 
-        Thread.sleep(30000);
+        Job perfSigJob = serverConnection.getJenkinsJob();
+        boolean buildInQueue = perfSigJob.details().isInQueue();
+        while (buildInQueue) {
+            Thread.sleep(waitForPollingInterval);
+            buildInQueue = perfSigJob.details().isInQueue();
+        }
+
+        ViewerEnvInvisAction envInvisAction = run.getAction(ViewerEnvInvisAction.class);
+        int buildNumber;
+        if (envInvisAction != null) {
+            buildNumber = envInvisAction.getCurrentBuild();
+        } else {
+            buildNumber = perfSigJob.details().getLastBuild().getNumber();
+        }
+
+        Build build = perfSigJob.details().getBuildByNumber(buildNumber);
+        logger.println("waiting for job " + perfSigJob.getName() + " #" + build.getNumber() + " to finish ...");
+
+        if (build.details().isBuilding()) {
+            boolean buildFinished = build.details().isBuilding();
+            while (buildFinished) {
+                Thread.sleep(waitForPollingInterval);
+                buildFinished = build.details().isBuilding();
+            }
+        }
+        logger.println("Jenkins job finished ...");
+        BuildResult buildResult = build.details().getResult();
+
+        logger.println("Jenkins job status: " + buildResult);
+        if (!buildResult.equals(BuildResult.SUCCESS) && !buildResult.equals(BuildResult.UNSTABLE)) {
+            String output = build.details().getConsoleOutputText();
+            logger.println(output.substring(StringUtils.lastOrdinalIndexOf(output, "\n", 5) + 1)); //get the last 5 lines of console output
+            throw new AbortException("jenkins job failed");
+        }
     }
 
     public String getJenkinsJob() {
@@ -90,7 +104,7 @@ public class ViewerStartJob extends Builder implements SimpleBuildStep {
         }
 
         public String getDisplayName() {
-            return "Trigger Jenkins job";
+            return "Wait for Jenkins Job till finished";
         }
     }
 }

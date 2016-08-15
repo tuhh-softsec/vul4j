@@ -76,20 +76,28 @@ public class ViewerRecorder extends Recorder implements SimpleBuildStep {
             throw new RESTErrorException(Messages.PerfSigRecorder_DTConnectionError());
         }
 
-        logger.println(Messages.PerfSigRecorder_ParseXMLReport());
-        final List<DashboardReport> dashboardReports = serverConnection.getDashboardReportsFromXML();
+        ViewerEnvInvisAction envInvisAction = run.getAction(ViewerEnvInvisAction.class);
+        int buildNumber;
+        if (envInvisAction != null) {
+            buildNumber = envInvisAction.getCurrentBuild();
+        } else {
+            buildNumber = serverConnection.getJenkinsJob().details().getLastBuild().getNumber();
+        }
+
+        logger.println("parsing xml data from job " + serverConnection.getJenkinsJob().getName() + " #" + buildNumber);
+        final List<DashboardReport> dashboardReports = serverConnection.getDashboardReportsFromXML(buildNumber);
         if (dashboardReports == null)
             throw new RESTErrorException(Messages.PerfSigRecorder_XMLReportError());
 
         for (DashboardReport dashboardReport : dashboardReports) {
-            boolean exportedPDFReports = serverConnection.downloadPDFReports(run, dashboardReport.getName());
+            boolean exportedPDFReports = serverConnection.downloadPDFReports(buildNumber, run, dashboardReport.getName());
             if (!exportedPDFReports) {
                 throw new RESTErrorException("failed to download Dynatrace PDF report, build status set to failed");
             } else {
                 logger.println("PDF Report successfully downloaded");
             }
 
-            boolean exportedSession = serverConnection.downloadSession(run, dashboardReport.getName());
+            boolean exportedSession = serverConnection.downloadSession(buildNumber, run, dashboardReport.getName());
             if (!exportedSession) {
                 throw new RESTErrorException(Messages.PerfSigRecorder_SessionDownloadError());
             } else {

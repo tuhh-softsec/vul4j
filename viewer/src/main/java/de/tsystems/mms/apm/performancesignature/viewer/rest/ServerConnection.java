@@ -39,6 +39,7 @@ import hudson.FilePath;
 import hudson.model.Run;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.jdom2.JDOMException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -72,15 +73,15 @@ public class ServerConnection {
         this(config.getProtocol(), config.getHost(), config.getPort(), pair);
     }
 
-    public List<DashboardReport> getDashboardReportsFromXML() throws IOException {
-        URL url = new URL(getJenkinsJob().details().getLastBuild().getUrl() + "api/xml?depth=10");
+    public List<DashboardReport> getDashboardReportsFromXML(int buildNumber) throws IOException {
+        URL url = new URL(getJenkinsJob().getUrl() + "/" + buildNumber + "/api/xml?depth=10");
         String xml = getJenkinsJob().getClient().get(url.toString());
         try {
             DashboardXMLReader reader = new DashboardXMLReader();
             reader.parseXML(xml);
             return reader.getParsedObjects();
-        } catch (Exception ex) {
-            throw new ContentRetrievalException(ExceptionUtils.getStackTrace(ex) + "could not retrieve records from remote Jenkins: " + xml, ex);
+        } catch (JDOMException e) {
+            throw new ContentRetrievalException(ExceptionUtils.getStackTrace(e) + "could not retrieve records from remote Jenkins: " + xml, e);
         }
     }
 
@@ -100,19 +101,19 @@ public class ServerConnection {
             JobConfigurationReader reader = new JobConfigurationReader();
             reader.parseXML(jobConfiguration);
             return reader.getParsedObjects();
-        } catch (Exception ex) {
-            throw new ContentRetrievalException(ExceptionUtils.getStackTrace(ex) + "could not retrieve records from remote Jenkins: " + jobConfiguration, ex);
+        } catch (IOException | JDOMException e) {
+            throw new ContentRetrievalException(ExceptionUtils.getStackTrace(e) + "could not retrieve records from remote Jenkins: " + jobConfiguration, e);
         }
     }
 
-    public boolean downloadPDFReports(final Run<?, ?> run, final String testCase) {
+    public boolean downloadPDFReports(int buildNumber, final Run<?, ?> run, final String testCase) {
         try {
             for (ConfigurationTestCase configurationTestCase : getDashboardConfiguration()) {
                 if (configurationTestCase.getName().equals(testCase)) {
                     List<String> singleDashboards = configurationTestCase.getSingleDashboards();
                     Collections.sort(singleDashboards);
                     for (int i = 0; i < singleDashboards.size(); i++) {
-                        URL url = new URL(getJenkinsJob().details().getLastCompletedBuild().getUrl() + "performance-signature/getSingleReport?testCase="
+                        URL url = new URL(getJenkinsJob().getUrl() + "/" + buildNumber + "/performance-signature/getSingleReport?testCase="
                                 + testCase + "&number=" + i);
                         String reportFilename = "Singlereport_" + getJenkinsJob().getName() + "_Build-" + run.getNumber() +
                                 "_" + testCase + "_" + singleDashboards.get(i) + ".pdf";
@@ -122,7 +123,7 @@ public class ServerConnection {
                     List<String> comparisonDashboards = configurationTestCase.getComparisonDashboards();
                     Collections.sort(comparisonDashboards);
                     for (int i = 0; i < comparisonDashboards.size(); i++) {
-                        URL url = new URL(getJenkinsJob().details().getLastBuild().getUrl() + "performance-signature/getComparisonReport?testCase="
+                        URL url = new URL(getJenkinsJob().getUrl() + "/" + buildNumber + "/performance-signature/getComparisonReport?testCase="
                                 + testCase + "&number=" + i);
                         String reportFilename = "Comparisonreport_" + getJenkinsJob().getName() + "_Build-" + run.getNumber() +
                                 "_" + testCase + "_" + comparisonDashboards.get(i) + ".pdf";
@@ -131,20 +132,19 @@ public class ServerConnection {
                 }
             }
             return true;
-        } catch (IOException ex) {
-            throw new CommandExecutionException("error downloading PDF Report: " + ex.getMessage(), ex);
+        } catch (IOException e) {
+            throw new CommandExecutionException("error downloading PDF Reports: " + e.getMessage(), e);
         }
     }
 
-    public boolean downloadSession(final Run<?, ?> run, final String testCase) {
+    public boolean downloadSession(int buildNumber, final Run<?, ?> run, final String testCase) {
         try {
-            URL url = new URL(getJenkinsJob().details().getLastCompletedBuild().getUrl() + "performance-signature/getSession?testCase=" + testCase);
+            URL url = new URL(getJenkinsJob().getUrl() + "/" + buildNumber + "/performance-signature/getSession?testCase=" + testCase);
             String sessionFileName = getJenkinsJob().getName() + "_Build_" + run.getNumber() + "_" + testCase + ".dts";
             return downloadArtifact(new FilePath(ViewerUtils.getReportDirectory(run), sessionFileName), url);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new CommandExecutionException("error downloading sessions: " + e.getMessage(), e);
         }
-        return false;
     }
 
     private boolean downloadArtifact(final FilePath file, final URL url) {
@@ -152,12 +152,21 @@ public class ServerConnection {
             InputStream inputStream = getJenkinsJob().getClient().getFile(url.toURI());
             file.copyFrom(inputStream);
             return true;
-        } catch (Exception ex) {
-            throw new CommandExecutionException("error downloading session: " + ex.getMessage(), ex);
+        } catch (IOException | InterruptedException | URISyntaxException e) {
+            throw new CommandExecutionException("error downloading artifact: " + e.getMessage(), e);
         }
     }
 
     public Job getJenkinsJob() throws IOException {
         return jenkinsServer.getJob(this.jenkinsJob);
+    }
+
+    public void triggerInputStep(final int buildNumber, final String triggerId) {
+        try {
+            String url = getJenkinsJob().getUrl() + "/" + buildNumber + "/input/" + triggerId + "/proceedEmpty";
+            getJenkinsJob().getClient().post(url, true);
+        } catch (IOException e) {
+            throw new CommandExecutionException("error triggering input step: " + e.getMessage(), e);
+        }
     }
 }
