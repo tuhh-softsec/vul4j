@@ -153,7 +153,6 @@ public class ServerConnection {
             file.copyFrom(inputStream);
             return true;
         } catch (IOException | InterruptedException | URISyntaxException e) {
-            FilenameUtils.getBaseName(url.toString());
             logger.println("Could not download artifact: " + FilenameUtils.getBaseName(url.toString()));
             return false;
         }
