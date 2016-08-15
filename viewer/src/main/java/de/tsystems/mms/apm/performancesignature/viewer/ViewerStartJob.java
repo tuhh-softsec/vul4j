@@ -68,6 +68,12 @@ public class ViewerStartJob extends Builder implements SimpleBuildStep {
         logger.println("triggering Jenkins job " + pair.getJenkinsJob() + " ...");
         Job perfSigJob = serverConnection.getJenkinsJob();
         perfSigJob.build(true);
+
+        boolean buildInQueue = perfSigJob.details().isInQueue();
+        while (buildInQueue) {
+            Thread.sleep(ViewerWaitForJob.waitForPollingInterval);
+            buildInQueue = perfSigJob.details().isInQueue();
+        }
         Thread.sleep(20000);
 
         int buildNumber = perfSigJob.details().getLastBuild().getNumber();

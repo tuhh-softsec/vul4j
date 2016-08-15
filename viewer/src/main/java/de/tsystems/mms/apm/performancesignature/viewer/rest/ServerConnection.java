@@ -34,15 +34,15 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import de.tsystems.mms.apm.performancesignature.viewer.model.CredJobPair;
 import de.tsystems.mms.apm.performancesignature.viewer.model.JenkinsServerConfiguration;
 import de.tsystems.mms.apm.performancesignature.viewer.rest.model.ConfigurationTestCase;
-import de.tsystems.mms.apm.performancesignature.viewer.util.ViewerUtils;
 import hudson.FilePath;
-import hudson.model.Run;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.jdom2.JDOMException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -74,7 +74,7 @@ public class ServerConnection {
     }
 
     public List<DashboardReport> getDashboardReportsFromXML(int buildNumber) throws IOException {
-        URL url = new URL(getJenkinsJob().getUrl() + "/" + buildNumber + "/api/xml?depth=10");
+        URL url = new URL(getJenkinsJob().getUrl() + buildNumber + "/api/xml?depth=10");
         String xml = getJenkinsJob().getClient().get(url.toString());
         try {
             DashboardXMLReader reader = new DashboardXMLReader();
@@ -106,28 +106,28 @@ public class ServerConnection {
         }
     }
 
-    public boolean downloadPDFReports(int buildNumber, final Run<?, ?> run, final String testCase) {
+    public boolean downloadPDFReports(int buildNumber, final FilePath dir, final String testCase, final PrintStream logger) {
         try {
             for (ConfigurationTestCase configurationTestCase : getDashboardConfiguration()) {
                 if (configurationTestCase.getName().equals(testCase)) {
                     List<String> singleDashboards = configurationTestCase.getSingleDashboards();
                     Collections.sort(singleDashboards);
                     for (int i = 0; i < singleDashboards.size(); i++) {
-                        URL url = new URL(getJenkinsJob().getUrl() + "/" + buildNumber + "/performance-signature/getSingleReport?testCase="
+                        URL url = new URL(getJenkinsJob().getUrl() + buildNumber + "/performance-signature/getSingleReport?testCase="
                                 + testCase + "&number=" + i);
-                        String reportFilename = "Singlereport_" + getJenkinsJob().getName() + "_Build-" + run.getNumber() +
+                        String reportFilename = "Singlereport_" + getJenkinsJob().getName() + "_Build-" + buildNumber +
                                 "_" + testCase + "_" + singleDashboards.get(i) + ".pdf";
-                        downloadArtifact(new FilePath(ViewerUtils.getReportDirectory(run), reportFilename), url);
+                        downloadArtifact(new FilePath(dir, reportFilename), url, logger);
                     }
 
                     List<String> comparisonDashboards = configurationTestCase.getComparisonDashboards();
                     Collections.sort(comparisonDashboards);
                     for (int i = 0; i < comparisonDashboards.size(); i++) {
-                        URL url = new URL(getJenkinsJob().getUrl() + "/" + buildNumber + "/performance-signature/getComparisonReport?testCase="
+                        URL url = new URL(getJenkinsJob().getUrl() + buildNumber + "/performance-signature/getComparisonReport?testCase="
                                 + testCase + "&number=" + i);
-                        String reportFilename = "Comparisonreport_" + getJenkinsJob().getName() + "_Build-" + run.getNumber() +
+                        String reportFilename = "Comparisonreport_" + getJenkinsJob().getName() + "_Build-" + buildNumber +
                                 "_" + testCase + "_" + comparisonDashboards.get(i) + ".pdf";
-                        downloadArtifact(new FilePath(ViewerUtils.getReportDirectory(run), reportFilename), url);
+                        downloadArtifact(new FilePath(dir, reportFilename), url, logger);
                     }
                 }
             }
@@ -137,23 +137,25 @@ public class ServerConnection {
         }
     }
 
-    public boolean downloadSession(int buildNumber, final Run<?, ?> run, final String testCase) {
+    public boolean downloadSession(int buildNumber, final FilePath dir, final String testCase, final PrintStream logger) {
         try {
             URL url = new URL(getJenkinsJob().getUrl() + "/" + buildNumber + "/performance-signature/getSession?testCase=" + testCase);
-            String sessionFileName = getJenkinsJob().getName() + "_Build_" + run.getNumber() + "_" + testCase + ".dts";
-            return downloadArtifact(new FilePath(ViewerUtils.getReportDirectory(run), sessionFileName), url);
+            String sessionFileName = getJenkinsJob().getName() + "_Build_" + buildNumber + "_" + testCase + ".dts";
+            return downloadArtifact(new FilePath(dir, sessionFileName), url, logger);
         } catch (IOException e) {
             throw new CommandExecutionException("error downloading sessions: " + e.getMessage(), e);
         }
     }
 
-    private boolean downloadArtifact(final FilePath file, final URL url) {
+    private boolean downloadArtifact(final FilePath file, final URL url, final PrintStream logger) {
         try {
             InputStream inputStream = getJenkinsJob().getClient().getFile(url.toURI());
             file.copyFrom(inputStream);
             return true;
         } catch (IOException | InterruptedException | URISyntaxException e) {
-            throw new CommandExecutionException("error downloading artifact: " + e.getMessage(), e);
+            FilenameUtils.getBaseName(url.toString());
+            logger.println("Could not download artifact: " + FilenameUtils.getBaseName(url.toString()));
+            return false;
         }
     }
 
@@ -163,7 +165,7 @@ public class ServerConnection {
 
     public void triggerInputStep(final int buildNumber, final String triggerId) {
         try {
-            String url = getJenkinsJob().getUrl() + "/" + buildNumber + "/input/" + triggerId + "/proceedEmpty";
+            String url = getJenkinsJob().getUrl() + buildNumber + "/input/" + triggerId + "/proceedEmpty";
             getJenkinsJob().getClient().post(url, true);
         } catch (IOException e) {
             throw new CommandExecutionException("error triggering input step: " + e.getMessage(), e);

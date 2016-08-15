@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 public class ViewerWaitForJob extends Builder implements SimpleBuildStep {
+    static final int waitForPollingInterval = 5000;
     private final String jenkinsJob;
 
     @DataBoundConstructor
@@ -50,8 +51,6 @@ public class ViewerWaitForJob extends Builder implements SimpleBuildStep {
         if (!serverConnection.validateConnection()) {
             throw new RESTErrorException(Messages.PerfSigRecorder_DTConnectionError());
         }
-
-        final int waitForPollingInterval = 5000;
 
         Job perfSigJob = serverConnection.getJenkinsJob();
         boolean buildInQueue = perfSigJob.details().isInQueue();
