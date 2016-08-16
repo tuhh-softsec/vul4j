@@ -30,6 +30,7 @@ package de.tsystems.mms.apm.performancesignature.viewer.rest;
 
 import com.offbytwo.jenkins.JenkinsServer;
 import com.offbytwo.jenkins.model.Job;
+import com.offbytwo.jenkins.model.JobWithDetails;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import de.tsystems.mms.apm.performancesignature.viewer.model.CredJobPair;
 import de.tsystems.mms.apm.performancesignature.viewer.model.JenkinsServerConfiguration;
@@ -52,21 +53,21 @@ import java.util.logging.Logger;
 
 public class ServerConnection {
     private static final Logger LOGGER = Logger.getLogger(ServerConnection.class.getName());
-    private final String jenkinsJob;
-    private JenkinsServer jenkinsServer = null;
+    private JobWithDetails jenkinsJob;
+    private JenkinsServer jenkinsServer;
 
     public ServerConnection(final String protocol, final String host, final int port, final CredJobPair pair) {
-        URI uri = URI.create("");
         try {
-            uri = new URI(protocol + "://" + host + ":" + port);
-        } catch (URISyntaxException e) {
+            URI uri = new URI(protocol + "://" + host + ":" + port);
+            if (StringUtils.isBlank(pair.getCredentialsId())) {
+                this.jenkinsServer = new JenkinsServer(uri);
+            } else {
+                this.jenkinsServer = new JenkinsServer(uri, pair.getCredentials().getUsername(), pair.getCredentials().getPassword().getPlainText());
+            }
+            this.jenkinsJob = jenkinsServer.getJob(pair.getJenkinsJob());
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
-        if (StringUtils.isBlank(pair.getCredentialsId()))
-            this.jenkinsServer = new JenkinsServer(uri);
-        else
-            this.jenkinsServer = new JenkinsServer(uri, pair.getCredentials().getUsername(), pair.getCredentials().getPassword().getPlainText());
-        this.jenkinsJob = pair.getJenkinsJob();
     }
 
     public ServerConnection(final JenkinsServerConfiguration config, final CredJobPair pair) throws IOException {
@@ -159,7 +160,7 @@ public class ServerConnection {
     }
 
     public Job getJenkinsJob() throws IOException {
-        return jenkinsServer.getJob(this.jenkinsJob);
+        return this.jenkinsJob;
     }
 
     public void triggerInputStep(final int buildNumber, final String triggerId) {
