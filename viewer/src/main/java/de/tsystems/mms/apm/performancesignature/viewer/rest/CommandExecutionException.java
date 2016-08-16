@@ -29,8 +29,6 @@
 package de.tsystems.mms.apm.performancesignature.viewer.rest;
 
 public class CommandExecutionException extends RuntimeException {
-    private static final long serialVersionUID = 1L;
-
     public CommandExecutionException(final String reason, final Exception ex) {
         super(reason, ex);
     }

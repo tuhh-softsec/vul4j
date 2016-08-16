@@ -1,29 +1,17 @@
 /*
- * Copyright (c) 2008-2015, DYNATRACE LLC
- * All rights reserved.
+ * Copyright (c) 2014 T-Systems Multimedia Solutions GmbH
  *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *     * Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright notice,
- *       this list of conditions and the following disclaimer in the documentation
- *       and/or other materials provided with the distribution.
- *     * Neither the name of the dynaTrace software nor the names of its contributors
- *       may be used to endorse or promote products derived from this software without
- *       specific prior written permission.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
- * SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
- * TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
- * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
- * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
- * DAMAGE.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package de.tsystems.mms.apm.performancesignature.viewer.rest;
@@ -44,6 +32,7 @@ import org.jdom2.JDOMException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -70,7 +59,7 @@ public class ServerConnection {
         }
     }
 
-    public ServerConnection(final JenkinsServerConfiguration config, final CredJobPair pair) throws IOException {
+    public ServerConnection(final JenkinsServerConfiguration config, final CredJobPair pair) {
         this(config.getProtocol(), config.getHost(), config.getPort(), pair);
     }
 
@@ -86,7 +75,7 @@ public class ServerConnection {
         }
     }
 
-    public boolean validateConnection() throws IOException {
+    public boolean validateConnection() {
         try {
             return jenkinsServer.isRunning() && getJenkinsJob() != null;
         } catch (CommandExecutionException e) {
@@ -108,6 +97,7 @@ public class ServerConnection {
     }
 
     public boolean downloadPDFReports(int buildNumber, final FilePath dir, final String testCase, final PrintStream logger) {
+        boolean result = true;
         try {
             for (ConfigurationTestCase configurationTestCase : getDashboardConfiguration()) {
                 if (configurationTestCase.getName().equals(testCase)) {
@@ -118,7 +108,7 @@ public class ServerConnection {
                                 + testCase + "&number=" + i);
                         String reportFilename = "Singlereport_" + getJenkinsJob().getName() + "_Build-" + buildNumber +
                                 "_" + testCase + "_" + singleDashboards.get(i) + ".pdf";
-                        downloadArtifact(new FilePath(dir, reportFilename), url, logger);
+                        result = result & downloadArtifact(new FilePath(dir, reportFilename), url, logger);
                     }
 
                     List<String> comparisonDashboards = configurationTestCase.getComparisonDashboards();
@@ -128,12 +118,12 @@ public class ServerConnection {
                                 + testCase + "&number=" + i);
                         String reportFilename = "Comparisonreport_" + getJenkinsJob().getName() + "_Build-" + buildNumber +
                                 "_" + testCase + "_" + comparisonDashboards.get(i) + ".pdf";
-                        downloadArtifact(new FilePath(dir, reportFilename), url, logger);
+                        result = result & downloadArtifact(new FilePath(dir, reportFilename), url, logger);
                     }
                 }
             }
-            return true;
-        } catch (IOException e) {
+            return result;
+        } catch (MalformedURLException e) {
             throw new CommandExecutionException("error downloading PDF Reports: " + e.getMessage(), e);
         }
     }
@@ -159,7 +149,7 @@ public class ServerConnection {
         }
     }
 
-    public Job getJenkinsJob() throws IOException {
+    public Job getJenkinsJob() {
         return this.jenkinsJob;
     }
 
