@@ -95,7 +95,7 @@ public class ViewerRecorder extends Recorder implements SimpleBuildStep {
             if (!exportedPDFReports) {
                 logger.println("failed to download Dynatrace PDF report for testCase: " + dashboardReport.getName());
             } else {
-                logger.println("PDF Report for testcase " + dashboardReport.getName() + " successfully downloaded");
+                logger.println("PDF Reports for testcase " + dashboardReport.getName() + " successfully downloaded");
             }
 
             boolean exportedSession = serverConnection.downloadSession(buildNumber, ViewerUtils.getReportDirectory(run), dashboardReport.getName(), logger);

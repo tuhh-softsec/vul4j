@@ -47,13 +47,12 @@ class JobConfigurationReader {
                 .getChild("configurationTestCases");
         for(Element testCase : testCases.getChildren()) {
             ConfigurationTestCase configurationTestCase = new ConfigurationTestCase(testCase.getChildText("name"));
-            for(Element dashboard : testCase.getChildren("singleDashboards")) {
-                configurationTestCase.addSingleDashboard(dashboard
-                        .getChild("de.tsystems.mms.apm.performancesignature.dynatrace.configuration.Dashboard").getChildText("name"));
+            for (Element dashboard : testCase.getChild("singleDashboards").getChildren()) {
+                configurationTestCase.addSingleDashboard(dashboard.getChildText("name"));
             }
-            for(Element dashboard : testCase.getChildren("comparisonDashboards")) {
-                configurationTestCase.addComparisonDashboard(dashboard
-                        .getChild("de.tsystems.mms.apm.performancesignature.dynatrace.configuration.Dashboard").getChildText("name"));
+            List<Element> comparisonDashboards = testCase.getChild("comparisonDashboards").getChildren();
+            for (Element dashboard : comparisonDashboards) {
+                configurationTestCase.addComparisonDashboard(dashboard.getChildText("name"));
             }
             configurationTestCases.add(configurationTestCase);
         }
