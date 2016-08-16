@@ -35,6 +35,7 @@ import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import jenkins.tasks.SimpleBuildStep;
 import org.apache.commons.lang.StringUtils;
+import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
@@ -92,6 +93,7 @@ public class PerfSigActivateConfiguration extends Builder implements SimpleBuild
         return configuration;
     }
 
+    @Symbol("activateDTConfiguration")
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
         public FormValidation doCheckConfiguration(@QueryParameter final String configuration) {

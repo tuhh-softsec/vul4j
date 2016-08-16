@@ -35,6 +35,7 @@ import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import jenkins.tasks.SimpleBuildStep;
 import org.apache.commons.lang.StringUtils;
+import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
@@ -119,6 +120,7 @@ public class PerfSigThreadDump extends Builder implements SimpleBuildStep {
         this.lockSession = lockSession;
     }
 
+    @Symbol("createThreadDump")
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
         public static final boolean defaultLockSession = false;

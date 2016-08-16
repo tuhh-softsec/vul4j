@@ -40,6 +40,7 @@ import hudson.util.ListBoxModel;
 import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildStep;
 import org.apache.commons.lang.StringUtils;
+import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
@@ -149,6 +150,7 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
         return dynatraceProfile;
     }
 
+    @Symbol("startSession")
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
         public static final boolean defaultLockSession = false;

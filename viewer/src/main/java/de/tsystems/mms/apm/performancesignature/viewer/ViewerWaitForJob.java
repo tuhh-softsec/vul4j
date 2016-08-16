@@ -36,6 +36,7 @@ import hudson.tasks.Builder;
 import hudson.util.ListBoxModel;
 import jenkins.tasks.SimpleBuildStep;
 import org.apache.commons.lang.StringUtils;
+import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import javax.annotation.Nonnull;
@@ -108,6 +109,7 @@ public class ViewerWaitForJob extends Builder implements SimpleBuildStep {
         return jenkinsJob;
     }
 
+    @Symbol("waitForJob")
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
         public ListBoxModel doFillJenkinsJobItems() {

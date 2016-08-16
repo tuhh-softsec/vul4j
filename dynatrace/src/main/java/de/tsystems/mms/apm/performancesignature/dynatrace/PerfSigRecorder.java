@@ -36,6 +36,7 @@ import hudson.tasks.Recorder;
 import hudson.util.ListBoxModel;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
+import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -246,6 +247,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
         return dynatraceProfile;
     }
 
+    @Symbol("perfSigReports")
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
         public static final boolean defaultExportSessions = true;

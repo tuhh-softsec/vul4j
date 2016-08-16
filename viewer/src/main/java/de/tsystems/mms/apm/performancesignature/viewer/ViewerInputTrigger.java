@@ -33,6 +33,7 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.ListBoxModel;
 import jenkins.tasks.SimpleBuildStep;
+import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import javax.annotation.Nonnull;
@@ -88,6 +89,7 @@ public class ViewerInputTrigger extends Builder implements SimpleBuildStep {
         return triggerId;
     }
 
+    @Symbol("triggerInputStep")
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
         public ListBoxModel doFillJenkinsJobItems() {

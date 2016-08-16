@@ -33,6 +33,7 @@ import hudson.tasks.Builder;
 import hudson.util.ListBoxModel;
 import jenkins.tasks.SimpleBuildStep;
 import org.apache.commons.lang.StringUtils;
+import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
@@ -127,6 +128,7 @@ public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
         this.reanalyzeSession = reanalyzeSession;
     }
 
+    @Symbol("stopSession")
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
         public static final boolean defaultReanalyzeSession = false;
