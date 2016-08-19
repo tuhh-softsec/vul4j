@@ -20,6 +20,7 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.model.ChartDashlet;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.Measure;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRun;
+import de.tsystems.mms.apm.performancesignature.model.JSONDashlet;
 import de.tsystems.mms.apm.performancesignature.model.MeasureNameHelper;
 import de.tsystems.mms.apm.performancesignature.model.PerfSigTestDataWrapper;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
@@ -65,6 +66,7 @@ import java.util.Map;
 
 public class PerfSigProjectAction extends PerfSigBaseAction implements ProminentProjectAction {
     private final Job<?, ?> job;
+    private Map<String, JSONDashlet> jsonDashletMap;
 
     public PerfSigProjectAction(final Job<?, ?> job) {
         this.job = job;
@@ -83,7 +85,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         return job.getAction(TestResultProjectAction.class);
     }
 
-    public Class getPerfSigUtils() {
+    public Class getPerfSigUIUtils() {
         return PerfSigUIUtils.class;
     }
 
@@ -362,6 +364,17 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         return dashboardReports;
     }
 
+    public Map<String, JSONDashlet> getJsonDashletMap() throws IOException, InterruptedException {
+        if (jsonDashletMap != null) {
+            return jsonDashletMap;
+        } else if (getJsonConfigFilePath().exists()) {
+            jsonDashletMap = getJsonConfigFilePath().readToString();
+        } else {
+            createJSONConfiguration("");
+        }
+        return jsonDashletMap;
+    }
+
     //ToDo: rewrite
     private FilePath getJsonConfigFilePath() {
         final FilePath configPath = new FilePath(job.getConfigFile().getFile());
@@ -513,7 +526,6 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     }
 
     @JavaScriptMethod
-    //ToDo: rewrite
     public String getAggregationFromMeasure(final String dashboard, final String dashlet, final String measure) throws IOException {
         for (DashboardReport dashboardReport : getLastDashboardReports()) {
             if (dashboardReport.getName().equals(dashboard)) {
@@ -535,13 +547,11 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         final String json = getDashboardConfiguration(dashboardReport.getName());
         if (StringUtils.isBlank(json) || dashboardReport.getChartDashlets() == null) return filteredChartDashlets;
         final JSONArray storedJSON = JSONArray.fromObject(json);
-        boolean jsonChanged = false;
 
         for (int i = 0; i < storedJSON.size(); i++) {
             JSONObject obj = storedJSON.getJSONObject(i);
             String storedChartDashlet = obj.getString("chartDashlet");
             String storedMeasure = obj.getString("measure");
-            boolean chartDashletFound = false;
 
             for (ChartDashlet dashlet : dashboardReport.getChartDashlets()) {
                 if (dashlet.getName().equals(storedChartDashlet)) {
@@ -554,20 +564,11 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
                                 d = new ChartDashlet(obj.getString("customName"));
                             d.addMeasure(m);
                             filteredChartDashlets.add(d);
-                            chartDashletFound = true;
                             break;
                         }
                     }
                 }
             }
-            if (!chartDashletFound) {
-                storedJSON.remove(obj); //delete dashlets, which are not found in current dashlet list
-                jsonChanged = true;
-            }
-        }
-
-        if (jsonChanged) { //write changes to disk
-            writeConfiguration(dashboardReport.getName(), storedJSON);
         }
         return filteredChartDashlets;
     }

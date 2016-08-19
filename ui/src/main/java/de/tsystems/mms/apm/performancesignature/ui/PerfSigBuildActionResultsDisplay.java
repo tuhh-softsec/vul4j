@@ -158,7 +158,7 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
 
         final DashboardReport dashboardReport = getDashBoardReport(testCase);
         final Measure m = dashboardReport.getMeasure(chartDashlet, measure);
-        if (m == null || m.getMeasurements() == null) return null;
+        if (m == null) return null;
 
         String color = PerfSigUIUtils.decodeString(m.getColor());
         String unit = PerfSigUIUtils.decodeString(m.getUnit());
