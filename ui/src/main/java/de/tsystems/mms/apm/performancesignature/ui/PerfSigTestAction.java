@@ -19,6 +19,7 @@ package de.tsystems.mms.apm.performancesignature.ui;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestResult;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRun;
 import de.tsystems.mms.apm.performancesignature.model.PerfSigTestData;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import hudson.tasks.junit.TestAction;
 
 public class PerfSigTestAction extends TestAction {
@@ -51,6 +52,10 @@ public class PerfSigTestAction extends TestAction {
             }
         }
         return null;
+    }
+
+    public Class getPerfSigUtils() {
+        return PerfSigUIUtils.class;
     }
 
     public PerfSigTestData getTestData() {

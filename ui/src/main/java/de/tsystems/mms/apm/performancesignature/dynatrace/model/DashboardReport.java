@@ -17,7 +17,6 @@
 package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
 import de.tsystems.mms.apm.performancesignature.model.ClientLinkGenerator;
-import hudson.model.Api;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
@@ -36,13 +35,6 @@ public class DashboardReport {
         this.name = testCaseName;
         this.chartDashlets = new ArrayList<ChartDashlet>();
         this.incidents = new ArrayList<IncidentChart>();
-    }
-
-    /**
-     * Exposes this object to the remote API.
-     */
-    public Api getApi() {
-        return new Api(this);
     }
 
     @Exported

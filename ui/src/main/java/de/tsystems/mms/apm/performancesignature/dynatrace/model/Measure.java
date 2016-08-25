@@ -18,7 +18,6 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
-import hudson.model.Api;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
@@ -46,13 +45,6 @@ public class Measure extends MeasureBaseModel {
         if (this.isPercentile()) LOGGER.warning("percentile aggregation is not supported in stored sessions");
     }
 
-    /**
-     * Exposes this object to the remote API.
-     */
-    public Api getApi() {
-        return new Api(this);
-    }
-
     @Exported
     public List<Measurement> getMeasurements() {
         return measurements;
@@ -62,13 +54,9 @@ public class Measure extends MeasureBaseModel {
         this.measurements.add(tm);
     }
 
+    @Exported(name = "measure")
     public String getName() {
         return this.name;
-    }
-
-    @Exported
-    public String getMeasure() {
-        return getName();
     }
 
     @Exported

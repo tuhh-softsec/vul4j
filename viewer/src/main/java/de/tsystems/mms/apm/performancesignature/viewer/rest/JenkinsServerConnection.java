@@ -64,7 +64,7 @@ public class JenkinsServerConnection {
     }
 
     public List<DashboardReport> getDashboardReportsFromXML(int buildNumber) throws IOException {
-        URL url = new URL(getJenkinsJob().getUrl() + buildNumber + "/api/xml?depth=10");
+        URL url = new URL(getJenkinsJob().getUrl() + buildNumber + "/performance-signature/api/xml?depth=10");
         String xml = getJenkinsJob().getClient().get(url.toString());
         try {
             DashboardXMLReader reader = new DashboardXMLReader();

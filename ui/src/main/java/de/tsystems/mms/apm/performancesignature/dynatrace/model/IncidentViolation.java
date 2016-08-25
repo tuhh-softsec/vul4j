@@ -18,7 +18,6 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.IncidentChart.Severity;
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
-import hudson.model.Api;
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
@@ -49,13 +48,6 @@ public class IncidentViolation {
 
         this.duration = AttributeUtils.getLongAttribute("duration", attr);
         this.description = AttributeUtils.getStringAttribute("description", attr);
-    }
-
-    /**
-     * Exposes this object to the remote API.
-     */
-    public Api getApi() {
-        return new Api(this);
     }
 
     @Exported

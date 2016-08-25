@@ -43,8 +43,8 @@ class DashboardXMLReader {
     void parseXML(final String xml) throws IOException, JDOMException {
         Document jdomDoc = useSAXParser(xml);
         Element root = jdomDoc.getRootElement();
-        List<Element> actions = root.getChildren("action");
-        for (Element actionElement : actions) {
+        List<Element> xmlDashboardReports = root.getChildren("dashboardReport");
+        for (Element actionElement : xmlDashboardReports) {
             List<Element> dashboardReportElements = actionElement.getChildren("dashboardReport");
             for (Element dashBoardReportElement : dashboardReportElements) {
                 DashboardReport dashboardReport = new DashboardReport(dashBoardReportElement.getChildText("name"));

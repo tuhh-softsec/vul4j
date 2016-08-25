@@ -18,12 +18,10 @@ package de.tsystems.mms.apm.performancesignature.ui;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import hudson.model.Action;
-import hudson.model.Api;
 import hudson.model.Run;
 import jenkins.model.RunAction2;
 import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.StaplerProxy;
-import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
 import java.lang.ref.WeakReference;
@@ -68,14 +66,6 @@ public class PerfSigBuildAction extends PerfSigBaseAction implements SimpleBuild
         return this.build;
     }
 
-    /**
-     * Exposes this object to the remote API.
-     */
-    public Api getApi() {
-        return new Api(this);
-    }
-
-    @Exported
     public List<DashboardReport> getDashboardReports() {
         return this.dashboardReports;
     }

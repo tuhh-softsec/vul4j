@@ -17,7 +17,6 @@
 package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
-import hudson.model.Api;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
@@ -28,13 +27,6 @@ public class Measurement extends MeasureBaseModel {
     public Measurement(final Object attr) {
         super(attr);
         this.timestamp = AttributeUtils.getLongAttribute(Messages.Measurement_AttrTimestamp(), attr);
-    }
-
-    /**
-     * Exposes this object to the remote API.
-     */
-    public Api getApi() {
-        return new Api(this);
     }
 
     @Exported

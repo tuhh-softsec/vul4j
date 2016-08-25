@@ -22,6 +22,7 @@
         <st:adjunct includes="org.jenkins.ui.jsmodules.css.bootstrapprefix"/>
         <st:adjunct includes="org.jenkins.ui.jsmodules.performance_signature_ui.buildactionresultsdisplay"/>
         <div class="tw-bs" style="display: inline;">
+            <j:set var="utils" value="${it.PerfSigUtils}"/>
             <j:new var="h" className="hudson.Functions"/>
             <j:set var="id" value="collapse${h.generateId()}"/>
             <a data-toggle="collapse" href="#${id}" aria-expanded="false" aria-controls="${id}">

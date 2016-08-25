@@ -17,12 +17,15 @@
 package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
+import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.export.ExportedBean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@ExportedBean
 public class TestResult implements Serializable {
     private static final long serialVersionUID = 1L;
     private final Date exectime;
@@ -38,14 +41,17 @@ public class TestResult implements Serializable {
         this.measures = new ArrayList<TestRunMeasure>();
     }
 
+    @Exported
     public Date getExectime() {
         return (Date) exectime.clone();
     }
 
+    @Exported
     public String getPackageName() {
         return packageName;
     }
 
+    @Exported
     public String getName() {
         return name;
     }
@@ -58,6 +64,7 @@ public class TestResult implements Serializable {
         return null;
     }
 
+    @Exported
     public List<TestRunMeasure> getTestRunMeasures() {
         return measures;
     }
@@ -100,6 +107,7 @@ public class TestResult implements Serializable {
         }
     }
 
+    @Exported
     public TestResultStatus getStatus() {
         return status;
     }

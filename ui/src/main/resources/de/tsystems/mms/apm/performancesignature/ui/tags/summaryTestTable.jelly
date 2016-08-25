@@ -16,7 +16,7 @@
 
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core">
-    <td>${it.value}</td>
-    <td>${it.expectedMin}</td>
-    <td>${it.expectedMax}</td>
+    <td>${utils.round(it.value,2)}</td>
+    <td>${utils.round(it.expectedMin,2)}</td>
+    <td>${utils.round(it.expectedMax,2)}</td>
 </j:jelly>

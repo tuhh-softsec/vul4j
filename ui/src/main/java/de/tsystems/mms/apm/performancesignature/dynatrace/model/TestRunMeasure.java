@@ -17,11 +17,12 @@
 package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
-import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
+import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.export.ExportedBean;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
+@ExportedBean
 public class TestRunMeasure implements Serializable {
     private static final long serialVersionUID = 1L;
     private final String metricGroup, name, unit;
@@ -42,46 +43,57 @@ public class TestRunMeasure implements Serializable {
         this.violationPercentage = AttributeUtils.getDoubleAttribute("violationPercentage", attr);
     }
 
-    public BigDecimal getExpectedMax() {
-        return PerfSigUIUtils.round(this.expectedMax, 2);
+    @Exported
+    public double getExpectedMax() {
+        return this.expectedMax;
     }
 
-    public BigDecimal getExpectedMin() {
-        return PerfSigUIUtils.round(this.expectedMin, 2);
+    @Exported
+    public double getExpectedMin() {
+        return this.expectedMin;
     }
 
-    public BigDecimal getValue() {
-        return PerfSigUIUtils.round(this.value, 2);
+    @Exported
+    public double getValue() {
+        return this.value;
     }
 
+    @Exported
     public double getViolationPercentage() {
         return violationPercentage;
     }
 
+    @Exported
     public String getMetricGroup() {
         return metricGroup;
     }
 
+    @Exported
     public String getName() {
         return name;
     }
 
+    @Exported
     public String getUnit() {
         return unit;
     }
 
+    @Exported
     public int getNumDegradedRuns() {
         return numDegradedRuns;
     }
 
+    @Exported
     public int getNumFailingOrInvalidatedRuns() {
         return numFailingOrInvalidatedRuns;
     }
 
+    @Exported
     public int getNumImprovedRuns() {
         return numImprovedRuns;
     }
 
+    @Exported
     public int getNumValidRuns() {
         return numValidRuns;
     }

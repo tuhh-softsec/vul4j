@@ -17,12 +17,15 @@
 package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
+import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.export.ExportedBean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@ExportedBean
 public class TestRun implements Serializable {
     private static final long serialVersionUID = 1L;
     private final List<TestResult> testResults;
@@ -69,66 +72,82 @@ public class TestRun implements Serializable {
         return newTestRun;
     }
 
+    @Exported
     public String getCategory() {
         return category;
     }
 
+    @Exported
     public String getVersionMilestone() {
         return versionMilestone;
     }
 
+    @Exported
     public String getVersionBuild() {
         return versionBuild;
     }
 
+    @Exported
     public String getVersionMajor() {
         return versionMajor;
     }
 
+    @Exported
     public String getVersionMinor() {
         return versionMinor;
     }
 
+    @Exported
     public String getVersionRevision() {
         return versionRevision;
     }
 
+    @Exported
     public String getTestRunID() {
         return testRunID;
     }
 
+    @Exported
     public String getMarker() {
         return marker;
     }
 
+    @Exported
     public int getNumPassed() {
         return numPassed;
     }
 
+    @Exported
     public int getNumFailed() {
         return numFailed;
     }
 
+    @Exported
     public int getNumVolatile() {
         return numVolatile;
     }
 
+    @Exported
     public int getNumImproved() {
         return numImproved;
     }
 
+    @Exported
     public int getNumDegraded() {
         return numDegraded;
     }
 
+    @Exported
     public int getNumInvalidated() {
         return numInvalidated;
     }
 
+    @Exported
     public Date getTimestamp() {
         return (Date) timestamp.clone();
     }
 
+    @Exported
     public List<TestResult> getTestResults() {
         return testResults;
     }
