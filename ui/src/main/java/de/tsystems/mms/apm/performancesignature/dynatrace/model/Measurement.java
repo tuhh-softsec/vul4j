@@ -17,25 +17,16 @@
 package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
-import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import hudson.model.Api;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
-import java.math.BigDecimal;
-
 @ExportedBean
-public class Measurement {
-    private final double avg, min, max, sum;
+public class Measurement extends MeasureBaseModel {
     private final long timestamp;
-    private final int count;
 
     public Measurement(final Object attr) {
-        this.avg = AttributeUtils.getDoubleAttribute(Messages.Measurement_AttrAvg(), attr);
-        this.max = AttributeUtils.getDoubleAttribute(Messages.Measurement_AttrMax(), attr);
-        this.min = AttributeUtils.getDoubleAttribute(Messages.Measurement_AttrMin(), attr);
-        this.count = AttributeUtils.getIntAttribute(Messages.Measurement_AttrCount(), attr);
-        this.sum = AttributeUtils.getDoubleAttribute(Messages.Measurement_AttrSum(), attr);
+        super(attr);
         this.timestamp = AttributeUtils.getLongAttribute(Messages.Measurement_AttrTimestamp(), attr);
     }
 
@@ -47,55 +38,7 @@ public class Measurement {
     }
 
     @Exported
-    public double getSum() {
-        return sum;
-    }
-
-    @Exported
-    public int getCount() {
-        return count;
-    }
-
-    @Exported
-    public double getAvg() {
-        return this.avg;
-    }
-
-    public BigDecimal getStrAvg() {
-        return PerfSigUIUtils.round(this.avg, 2);
-    }
-
-    @Exported
-    public double getMin() {
-        return this.min;
-    }
-
-    @Exported
     public long getTimestamp() {
         return this.timestamp;
-    }
-
-    @Exported
-    public double getMax() {
-        return this.max;
-    }
-
-    /**
-     * used by PerfSigBuildActionResultsDisplay
-     * get the avg value of a metric
-     */
-    public double getMetricValue(final String aggregation) {
-        if (aggregation.equalsIgnoreCase("count"))
-            return this.getCount();
-        else if (aggregation.equalsIgnoreCase("average"))
-            return this.getAvg();
-        else if (aggregation.equalsIgnoreCase("sum"))
-            return this.getSum();
-        else if (aggregation.equalsIgnoreCase("maximum"))
-            return this.getMax();
-        else if (aggregation.equalsIgnoreCase("minimum"))
-            return this.getMin();
-        else
-            return this.getAvg();
     }
 }

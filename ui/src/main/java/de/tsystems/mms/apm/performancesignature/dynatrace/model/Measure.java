@@ -29,28 +29,18 @@ import java.util.List;
 import java.util.logging.Logger;
 
 @ExportedBean
-public class Measure {
+public class Measure extends MeasureBaseModel {
     private static final Logger LOGGER = Logger.getLogger(Measure.class.getName());
     private final String name;
     private final List<Measurement> measurements;
     private String color, unit, aggregation;
-    private double max, avg, min, sum;
-    private int count;
-
-    public Measure(final String name) {
-        this.name = name;
-        this.measurements = new ArrayList<Measurement>();
-    }
 
     public Measure(final Object attr) {
-        this(AttributeUtils.getStringAttribute(Messages.Measure_AttrMeasure(), attr));
-        this.avg = AttributeUtils.getDoubleAttribute(Messages.Measure_AttrAvg(), attr);
-        this.max = AttributeUtils.getDoubleAttribute(Messages.Measure_AttrMax(), attr);
-        this.min = AttributeUtils.getDoubleAttribute(Messages.Measure_AttrMin(), attr);
+        super(attr);
+        this.measurements = new ArrayList<Measurement>();
+        this.name = AttributeUtils.getStringAttribute(Messages.Measure_AttrMeasure(), attr);
         this.color = AttributeUtils.getStringAttribute(Messages.Measure_AttrColor(), attr);
-        this.count = AttributeUtils.getIntAttribute(Messages.Measure_AttrCount(), attr);
         this.unit = AttributeUtils.getStringAttribute(Messages.Measure_AttrUnit(), attr);
-        this.sum = AttributeUtils.getDoubleAttribute(Messages.Measure_AttrSum(), attr);
         this.aggregation = AttributeUtils.getStringAttribute(Messages.Measure_AttrAggregation(), attr);
 
         if (this.isPercentile()) LOGGER.warning("percentile aggregation is not supported in stored sessions");
@@ -72,16 +62,6 @@ public class Measure {
         this.measurements.add(tm);
     }
 
-    @Exported
-    public double getSum() {
-        return this.sum;
-    }
-
-    @Exported
-    public int getCount() {
-        return count;
-    }
-
     public String getName() {
         return this.name;
     }
@@ -97,21 +77,6 @@ public class Measure {
     }
 
     @Exported
-    public double getAvg() {
-        return this.avg;
-    }
-
-    @Exported
-    public double getMin() {
-        return this.min;
-    }
-
-    @Exported
-    public double getMax() {
-        return this.max;
-    }
-
-    @Exported
     public String getUnit() {
         if (this.aggregation != null && this.aggregation.equalsIgnoreCase("count")) return "num";
         return PerfSigUIUtils.encodeString(this.unit);
@@ -123,32 +88,11 @@ public class Measure {
     }
 
     public boolean isPercentile() {
-        return StringUtils.isNotBlank(this.getAggregation()) && this.getAggregation().equalsIgnoreCase("percentiles");
+        return StringUtils.isNotBlank(this.aggregation) && this.aggregation.equalsIgnoreCase("percentiles");
     }
 
     public double getMetricValue() {
         return getMetricValue(this.getAggregation());
-    }
-
-    /**
-     * get the avg value of a metric
-     * in case of a percentile measure return the 95th percentile value
-     *
-     * @return metric Value
-     */
-    public double getMetricValue(final String aggregation) {
-        if (aggregation.equalsIgnoreCase("count"))
-            return this.getCount();
-        else if (aggregation.equalsIgnoreCase("average") || aggregation.equalsIgnoreCase("last"))
-            return this.getAvg();
-        else if (aggregation.equalsIgnoreCase("sum"))
-            return this.getSum();
-        else if (aggregation.equalsIgnoreCase("maximum"))
-            return this.getMax();
-        else if (aggregation.equalsIgnoreCase("minimum"))
-            return this.getMin();
-        else
-            return this.getAvg();
     }
 
     public BigDecimal getStrMetricValue() {

@@ -21,6 +21,7 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.model.Measure;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.Measurement;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import hudson.FilePath;
+import hudson.model.Api;
 import hudson.model.ModelObject;
 import hudson.model.Run;
 import hudson.util.ChartUtil;
@@ -42,6 +43,8 @@ import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYDataset;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.export.ExportedBean;
 
 import javax.servlet.ServletException;
 import java.awt.*;
@@ -53,6 +56,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+@ExportedBean
 public class PerfSigBuildActionResultsDisplay implements ModelObject {
     private final transient PerfSigBuildAction buildAction;
     private final transient List<DashboardReport> currentDashboardReports;
@@ -74,6 +78,14 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
         return this.buildAction.getBuild();
     }
 
+    /**
+     * Exposes this object to the remote API.
+     */
+    public Api getApi() {
+        return new Api(this);
+    }
+
+    @Exported
     public List<DashboardReport> getCurrentDashboardReports() {
         return this.currentDashboardReports;
     }
