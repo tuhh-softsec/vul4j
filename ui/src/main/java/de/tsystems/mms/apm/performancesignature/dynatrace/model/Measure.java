@@ -79,7 +79,7 @@ public class Measure extends MeasureBaseModel {
     @Exported
     public String getUnit() {
         if (this.aggregation != null && this.aggregation.equalsIgnoreCase("count")) return "num";
-        return PerfSigUIUtils.encodeString(this.unit);
+        return this.unit;
     }
 
     @Exported
