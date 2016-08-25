@@ -19,8 +19,8 @@ package de.tsystems.mms.apm.performancesignature.viewer;
 import com.offbytwo.jenkins.model.Job;
 import de.tsystems.mms.apm.performancesignature.viewer.model.CredJobPair;
 import de.tsystems.mms.apm.performancesignature.viewer.model.JenkinsServerConfiguration;
+import de.tsystems.mms.apm.performancesignature.viewer.rest.JenkinsServerConnection;
 import de.tsystems.mms.apm.performancesignature.viewer.rest.RESTErrorException;
-import de.tsystems.mms.apm.performancesignature.viewer.rest.ServerConnection;
 import de.tsystems.mms.apm.performancesignature.viewer.util.ViewerUtils;
 import hudson.AbortException;
 import hudson.Extension;
@@ -62,7 +62,7 @@ public class ViewerInputTrigger extends Builder implements SimpleBuildStep {
         if (pair == null)
             throw new AbortException("failed to lookup Jenkins job");
 
-        ServerConnection serverConnection = new ServerConnection(serverConfiguration, pair);
+        JenkinsServerConnection serverConnection = new JenkinsServerConnection(serverConfiguration, pair);
         if (!serverConnection.validateConnection()) {
             throw new RESTErrorException(Messages.PerfSigRecorder_DTConnectionError());
         }

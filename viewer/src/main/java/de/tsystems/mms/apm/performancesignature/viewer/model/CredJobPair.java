@@ -23,7 +23,7 @@ import com.cloudbees.plugins.credentials.common.StandardUsernameListBoxModel;
 import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials;
 import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
 import com.cloudbees.plugins.credentials.domains.DomainRequirement;
-import de.tsystems.mms.apm.performancesignature.viewer.rest.ServerConnection;
+import de.tsystems.mms.apm.performancesignature.viewer.rest.JenkinsServerConnection;
 import de.tsystems.mms.apm.performancesignature.viewer.util.ViewerUtils;
 import hudson.Extension;
 import hudson.model.AbstractDescribableImpl;
@@ -112,7 +112,7 @@ public class CredJobPair extends AbstractDescribableImpl<CredJobPair> {
                                                         @QueryParameter final int port, @QueryParameter final String credentialsId,
                                                         @QueryParameter final String jenkinsJob) throws IOException {
             CredJobPair pair = new CredJobPair(jenkinsJob, credentialsId);
-            final ServerConnection connection = new ServerConnection(protocol, host, port, pair);
+            final JenkinsServerConnection connection = new JenkinsServerConnection(protocol, host, port, pair);
 
             if (connection.validateConnection()) {
                 return FormValidation.ok(Messages.PerfSigRecorder_TestConnectionSuccessful());

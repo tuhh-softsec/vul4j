@@ -40,12 +40,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class ServerConnection {
-    private static final Logger LOGGER = Logger.getLogger(ServerConnection.class.getName());
+public class JenkinsServerConnection {
+    private static final Logger LOGGER = Logger.getLogger(JenkinsServerConnection.class.getName());
     private JobWithDetails jenkinsJob;
     private JenkinsServer jenkinsServer;
 
-    public ServerConnection(final String protocol, final String host, final int port, final CredJobPair pair) {
+    public JenkinsServerConnection(final String protocol, final String host, final int port, final CredJobPair pair) {
         try {
             URI uri = new URI(protocol + "://" + host + ":" + port);
             if (StringUtils.isBlank(pair.getCredentialsId())) {
@@ -59,7 +59,7 @@ public class ServerConnection {
         }
     }
 
-    public ServerConnection(final JenkinsServerConfiguration config, final CredJobPair pair) {
+    public JenkinsServerConnection(final JenkinsServerConfiguration config, final CredJobPair pair) {
         this(config.getProtocol(), config.getHost(), config.getPort(), pair);
     }
 
@@ -157,6 +157,7 @@ public class ServerConnection {
         try {
             String url = getJenkinsJob().getUrl() + buildNumber + "/input/" + triggerId + "/proceedEmpty";
             getJenkinsJob().getClient().post(url, true);
+            getJenkinsJob().getClient().get("url");
         } catch (IOException e) {
             throw new CommandExecutionException("error triggering input step: " + e.getMessage(), e);
         }
