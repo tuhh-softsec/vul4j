@@ -24,7 +24,7 @@
             </style>
         </l:header>
         <st:include it="${it.build}" page="sidepanel.jelly"/>
-        <j:set var="utils" value="${it.PerfSigUtils}"/>
+        <j:set var="utils" value="${it.PerfSigUIUtils}"/>
         <l:main-panel>
             <div class="tw-bs">
                 <div class="container-fluid" style="height: 170px;">

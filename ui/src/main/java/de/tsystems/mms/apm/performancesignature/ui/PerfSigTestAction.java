@@ -21,7 +21,10 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRun;
 import de.tsystems.mms.apm.performancesignature.model.PerfSigTestData;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import hudson.tasks.junit.TestAction;
+import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.export.ExportedBean;
 
+@ExportedBean
 public class PerfSigTestAction extends TestAction {
     private final PerfSigTestData testData;
     private TestRun matchingTestRun;
@@ -66,6 +69,7 @@ public class PerfSigTestAction extends TestAction {
         return matchingTestRun;
     }
 
+    @Exported(name = "testResult")
     public TestResult getMatchingTestResult() {
         return matchingTestResult;
     }

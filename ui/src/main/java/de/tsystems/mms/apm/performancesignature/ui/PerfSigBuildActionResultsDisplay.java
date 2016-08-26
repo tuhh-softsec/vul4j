@@ -73,7 +73,7 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
         return Messages.PerfSigBuildActionResultsDisplay_DisplayName();
     }
 
-    public Class getPerfSigUtils() {
+    public Class getPerfSigUIUtils() {
         return PerfSigUIUtils.class;
     }
 
@@ -96,11 +96,7 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
     @Exported
     public List<TestRun> getTestRuns() {
         PerfSigTestDataWrapper wrapper = getBuild().getAction(PerfSigTestDataWrapper.class);
-        if (wrapper != null) {
-            return wrapper.getTestRuns();
-        } else {
-            return Collections.emptyList();
-        }
+        return wrapper != null ? wrapper.getTestRuns() : Collections.<TestRun>emptyList();
     }
 
     public DashboardReport getPreviousDashboardReport(final String dashboard) {
