@@ -47,10 +47,7 @@ public class DynatraceServerConfiguration extends AbstractDescribableImpl<Dynatr
         this.verifyCertificate = verifyCertificate;
         this.delay = delay;
         this.retryCount = retryCount;
-        if (proxy) {
-            this.customProxy = new CustomProxy(proxyServer, proxyPort, proxyUser, proxyPassword, proxySource);
-        } else
-            this.customProxy = null;
+        this.customProxy = proxy ? new CustomProxy(proxyServer, proxyPort, proxyUser, proxyPassword, proxySource) : null;
     }
 
     public String getName() {

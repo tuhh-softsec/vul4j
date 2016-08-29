@@ -55,6 +55,14 @@
         </license>
     </licenses>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>structs</artifactId>
+            <version>1.2</version>
+        </dependency>
+    </dependencies>
+
     <repositories>
         <repository>
             <id>repo.jenkins-ci.org</id>
