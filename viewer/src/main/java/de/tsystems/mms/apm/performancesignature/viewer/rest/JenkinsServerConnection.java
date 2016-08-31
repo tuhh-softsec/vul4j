@@ -101,7 +101,7 @@ public class JenkinsServerConnection {
     private List<ConfigurationTestCase> getDashboardConfiguration() {
         String jobConfiguration = "";
         try {
-            jobConfiguration = getJenkinsJob().getClient().get(getJenkinsJob().getUrl() + "/config.xml");
+            jobConfiguration = jenkinsServer.getJobXml(getJenkinsJob().getName());
             JobConfigurationReader reader = new JobConfigurationReader();
             reader.parseXML(jobConfiguration);
             return reader.getParsedObjects();
