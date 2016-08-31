@@ -16,7 +16,9 @@
 
 package de.tsystems.mms.apm.performancesignature.viewer.rest;
 
+import com.google.common.base.Optional;
 import com.offbytwo.jenkins.JenkinsServer;
+import com.offbytwo.jenkins.model.FolderJob;
 import com.offbytwo.jenkins.model.Job;
 import com.offbytwo.jenkins.model.JobWithDetails;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
@@ -53,7 +55,19 @@ public class JenkinsServerConnection {
             } else {
                 this.jenkinsServer = new JenkinsServer(uri, pair.getCredentials().getUsername(), pair.getCredentials().getPassword().getPlainText());
             }
-            this.jenkinsJob = jenkinsServer.getJob(pair.getJenkinsJob());
+            String job = pair.getJenkinsJob();
+            if (job.contains("/")) {
+                String[] parts = job.split("/");
+                Job folderJob = jenkinsServer.getJob(parts[0]);
+                Optional<FolderJob> folder = jenkinsServer.getFolderJob(folderJob);
+                if (folder.isPresent()) {
+                    this.jenkinsJob = folder.get().getJob(parts[1]).details();
+                } else {
+                    throw new CommandExecutionException("the given folder/job name does not match");
+                }
+            } else {
+                this.jenkinsJob = jenkinsServer.getJob(pair.getJenkinsJob());
+            }
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
