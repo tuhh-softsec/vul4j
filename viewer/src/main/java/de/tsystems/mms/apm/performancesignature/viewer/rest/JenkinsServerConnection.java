@@ -24,8 +24,8 @@ import com.offbytwo.jenkins.model.JobWithDetails;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import de.tsystems.mms.apm.performancesignature.viewer.model.CredJobPair;
 import de.tsystems.mms.apm.performancesignature.viewer.model.JenkinsServerConfiguration;
-import de.tsystems.mms.apm.performancesignature.viewer.rest.model.ConfigurationTestCase;
 import hudson.FilePath;
+import hudson.util.XStream2;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -34,7 +34,6 @@ import org.jdom2.JDOMException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -77,15 +76,15 @@ public class JenkinsServerConnection {
         this(config.getProtocol(), config.getHost(), config.getPort(), pair);
     }
 
-    public List<DashboardReport> getDashboardReportsFromXML(int buildNumber) throws IOException {
-        URL url = new URL(getJenkinsJob().getUrl() + buildNumber + "/performance-signature/api/xml?depth=10");
-        String xml = getJenkinsJob().getClient().get(url.toString());
+    public List<DashboardReport> getDashboardReportsFromXML(int buildNumber) {
         try {
+            URL url = new URL(getJenkinsJob().getUrl() + buildNumber + "/performance-signature/api/xml?depth=10");
+            String xml = getJenkinsJob().getClient().get(url.toString());
             DashboardXMLReader reader = new DashboardXMLReader();
             reader.parseXML(xml);
             return reader.getParsedObjects();
-        } catch (JDOMException e) {
-            throw new ContentRetrievalException(ExceptionUtils.getStackTrace(e) + "could not retrieve records from remote Jenkins: " + xml, e);
+        } catch (IOException | JDOMException e) {
+            throw new ContentRetrievalException(ExceptionUtils.getStackTrace(e) + "could not retrieve records from remote Jenkins: ", e);
         }
     }
 
@@ -98,51 +97,33 @@ public class JenkinsServerConnection {
         }
     }
 
-    private List<ConfigurationTestCase> getDashboardConfiguration() {
-        String jobConfiguration = "";
-        try {
-            jobConfiguration = jenkinsServer.getJobXml(getJenkinsJob().getName());
-            JobConfigurationReader reader = new JobConfigurationReader();
-            reader.parseXML(jobConfiguration);
-            return reader.getParsedObjects();
-        } catch (IOException | JDOMException e) {
-            throw new ContentRetrievalException(ExceptionUtils.getStackTrace(e) + "could not retrieve records from remote Jenkins: " + jobConfiguration, e);
-        }
+    private List getReportList(final ReportType type, final int buildNumber) throws IOException {
+        URL url = new URL(getJenkinsJob().getUrl() + buildNumber + "/performance-signature/get" + type + "ReportList");
+        String xml = getJenkinsJob().getClient().get(url.toString());
+        XStream2 xStream = new XStream2();
+        List obj = (List) xStream.fromXML(xml);
+        return obj != null ? obj : Collections.emptyList();
     }
 
-    public boolean downloadPDFReports(int buildNumber, final FilePath dir, final String testCase, final PrintStream logger) {
+    public boolean downloadPDFReports(final int buildNumber, final FilePath dir, final PrintStream logger) {
         boolean result = true;
         try {
-            for (ConfigurationTestCase configurationTestCase : getDashboardConfiguration()) {
-                if (configurationTestCase.getName().equals(testCase)) {
-                    List<String> singleDashboards = configurationTestCase.getSingleDashboards();
-                    Collections.sort(singleDashboards);
-                    for (int i = 0; i < singleDashboards.size(); i++) {
-                        URL url = new URL(getJenkinsJob().getUrl() + buildNumber + "/performance-signature/getSingleReport?testCase="
-                                + testCase + "&number=" + i);
-                        String reportFilename = "Singlereport_" + getJenkinsJob().getName() + "_Build-" + buildNumber +
-                                "_" + testCase + "_" + singleDashboards.get(i) + ".pdf";
-                        result = result & downloadArtifact(new FilePath(dir, reportFilename), url, logger);
-                    }
-
-                    List<String> comparisonDashboards = configurationTestCase.getComparisonDashboards();
-                    Collections.sort(comparisonDashboards);
-                    for (int i = 0; i < comparisonDashboards.size(); i++) {
-                        URL url = new URL(getJenkinsJob().getUrl() + buildNumber + "/performance-signature/getComparisonReport?testCase="
-                                + testCase + "&number=" + i);
-                        String reportFilename = "Comparisonreport_" + getJenkinsJob().getName() + "_Build-" + buildNumber +
-                                "_" + testCase + "_" + comparisonDashboards.get(i) + ".pdf";
-                        result = result & downloadArtifact(new FilePath(dir, reportFilename), url, logger);
-                    }
+            for (ReportType reportType : ReportType.values()) {
+                List reportlist = getReportList(reportType, buildNumber);
+                for (Object report : reportlist) {
+                    URL url = new URL(getJenkinsJob().getUrl() + buildNumber + "/performance-signature/get" + reportType + "Report?number="
+                            + reportlist.indexOf(report));
+                    result = result & downloadArtifact(new FilePath(dir, report + ".pdf"), url, logger);
+                    if (result) logger.println("downloaded PDF report: " + report);
                 }
             }
             return result;
-        } catch (MalformedURLException e) {
+        } catch (IOException e) {
             throw new CommandExecutionException("error downloading PDF Reports: " + e.getMessage(), e);
         }
     }
 
-    public boolean downloadSession(int buildNumber, final FilePath dir, final String testCase, final PrintStream logger) {
+    public boolean downloadSession(final int buildNumber, final FilePath dir, final String testCase, final PrintStream logger) {
         try {
             URL url = new URL(getJenkinsJob().getUrl() + "/" + buildNumber + "/performance-signature/getSession?testCase=" + testCase);
             String sessionFileName = getJenkinsJob().getName() + "_Build_" + buildNumber + "_" + testCase + ".dts";
@@ -175,5 +156,9 @@ public class JenkinsServerConnection {
         } catch (IOException e) {
             throw new CommandExecutionException("error triggering input step: " + e.getMessage(), e);
         }
+    }
+
+    private enum ReportType {
+        Single, Comparison
     }
 }

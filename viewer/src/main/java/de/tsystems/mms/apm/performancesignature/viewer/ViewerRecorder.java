@@ -87,17 +87,11 @@ public class ViewerRecorder extends Recorder implements SimpleBuildStep {
 
         logger.println("parsing xml data from job " + serverConnection.getJenkinsJob().getName() + " #" + buildNumber);
         final List<DashboardReport> dashboardReports = serverConnection.getDashboardReportsFromXML(buildNumber);
-        if (dashboardReports == null)
+        if (dashboardReports == null) {
             throw new RESTErrorException(Messages.PerfSigRecorder_XMLReportError());
+        }
 
         for (DashboardReport dashboardReport : dashboardReports) {
-            boolean exportedPDFReports = serverConnection.downloadPDFReports(buildNumber, ViewerUtils.getReportDirectory(run), dashboardReport.getName(), logger);
-            if (!exportedPDFReports) {
-                logger.println("failed to download Dynatrace PDF report for testCase: " + dashboardReport.getName());
-            } else {
-                logger.println("PDF Reports for testcase " + dashboardReport.getName() + " successfully downloaded");
-            }
-
             boolean exportedSession = serverConnection.downloadSession(buildNumber, ViewerUtils.getReportDirectory(run), dashboardReport.getName(), logger);
             if (!exportedSession) {
                 logger.println(Messages.PerfSigRecorder_SessionDownloadError() + "for testcase: " + dashboardReport.getName());
@@ -106,6 +100,13 @@ public class ViewerRecorder extends Recorder implements SimpleBuildStep {
             }
 
             PerfSigUIUtils.handleIncidents(run, dashboardReport.getIncidents(), logger, nonFunctionalFailure);
+        }
+
+        boolean exportedPDFReports = serverConnection.downloadPDFReports(buildNumber, ViewerUtils.getReportDirectory(run), logger);
+        if (!exportedPDFReports) {
+            logger.println("failed to download Dynatrace PDF reports");
+        } else {
+            logger.println("PDF Reports successfully downloaded");
         }
 
         PerfSigBuildAction action = new PerfSigBuildAction(dashboardReports);

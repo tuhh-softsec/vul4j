@@ -44,43 +44,39 @@ class DashboardXMLReader {
         Document jdomDoc = useSAXParser(xml);
         Element root = jdomDoc.getRootElement();
         List<Element> xmlDashboardReports = root.getChildren("dashboardReport");
-        for (Element actionElement : xmlDashboardReports) {
-            List<Element> dashboardReportElements = actionElement.getChildren("dashboardReport");
-            for (Element dashBoardReportElement : dashboardReportElements) {
-                DashboardReport dashboardReport = new DashboardReport(dashBoardReportElement.getChildText("name"));
+        for (Element xmlDashboardReport : xmlDashboardReports) {
+            DashboardReport dashboardReport = new DashboardReport(xmlDashboardReport.getChildText("name"));
+            List<Element> chartDashletElements = xmlDashboardReport.getChildren("chartDashlet");
+            for (Element chartDashletElement : chartDashletElements) {
+                ChartDashlet chartDashlet = new ChartDashlet(chartDashletElement);
 
-                List<Element> chartDashletElements = dashBoardReportElement.getChildren("chartDashlet");
-                for (Element chartDashletElement : chartDashletElements) {
-                    ChartDashlet chartDashlet = new ChartDashlet(chartDashletElement);
+                List<Element> measureElements = chartDashletElement.getChildren("measure");
+                for (Element measureElement : measureElements) {
+                    Measure measure = new Measure(measureElement);
 
-                    List<Element> measureElements = chartDashletElement.getChildren("measure");
-                    for (Element measureElement : measureElements) {
-                        Measure measure = new Measure(measureElement);
-
-                        List<Element> measurementElements = measureElement.getChildren("measurement");
-                        for (Element mearsurementElement : measurementElements) {
-                            Measurement measurement = new Measurement(mearsurementElement);
-                            measure.addMeasurement(measurement);
-                        }
-                        chartDashlet.addMeasure(measure);
+                    List<Element> measurementElements = measureElement.getChildren("measurement");
+                    for (Element mearsurementElement : measurementElements) {
+                        Measurement measurement = new Measurement(mearsurementElement);
+                        measure.addMeasurement(measurement);
                     }
-                    dashboardReport.addChartDashlet(chartDashlet);
+                    chartDashlet.addMeasure(measure);
                 }
-
-                List<Element> incidentElements = dashBoardReportElement.getChildren("incident");
-                for (Element incidentElement : incidentElements) {
-                    IncidentChart incidentChart = new IncidentChart(incidentElement);
-
-                    List<Element> violationElements = incidentElement.getChildren("violation");
-                    for (Element violationElement : violationElements) {
-                        IncidentViolation incidentViolation = new IncidentViolation(violationElement);
-                        incidentChart.add(incidentViolation);
-                    }
-                    dashboardReport.addIncident(incidentChart);
-                }
-
-                dashboardReports.add(dashboardReport);
+                dashboardReport.addChartDashlet(chartDashlet);
             }
+
+            List<Element> incidentElements = xmlDashboardReport.getChildren("incident");
+            for (Element incidentElement : incidentElements) {
+                IncidentChart incidentChart = new IncidentChart(incidentElement);
+
+                List<Element> violationElements = incidentElement.getChildren("violation");
+                for (Element violationElement : violationElements) {
+                    IncidentViolation incidentViolation = new IncidentViolation(violationElement);
+                    incidentChart.add(incidentViolation);
+                }
+                dashboardReport.addIncident(incidentChart);
+            }
+
+            dashboardReports.add(dashboardReport);
         }
     }
 

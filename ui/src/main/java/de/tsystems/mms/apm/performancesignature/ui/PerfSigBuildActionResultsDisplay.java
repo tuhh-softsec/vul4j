@@ -27,6 +27,7 @@ import hudson.model.Api;
 import hudson.model.ModelObject;
 import hudson.model.Run;
 import hudson.util.ChartUtil;
+import hudson.util.XStream2;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.commons.lang.StringUtils;
@@ -55,6 +56,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -215,6 +217,28 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
 
     public void doGetSession(final StaplerRequest request, final StaplerResponse response) throws IOException, InterruptedException {
         serveFile("", request, response);
+    }
+
+    public void doGetSingleReportList(final StaplerRequest request, final StaplerResponse response) throws IOException, InterruptedException {
+        getReportList("Singlereport", request, response);
+    }
+
+    public void doGetComparisonReportList(final StaplerRequest request, final StaplerResponse response) throws IOException, InterruptedException {
+        getReportList("Comparisonreport", request, response);
+    }
+
+    private void getReportList(final String type, final StaplerRequest request, final StaplerResponse response) throws IOException, InterruptedException {
+        String testCase = request.getParameter("testCase");
+        if (StringUtils.isBlank(testCase)) testCase = "";
+
+        FilePath reportDir = new FilePath(PerfSigUIUtils.getReportDirectory(getBuild()));
+        List<FilePath> files = reportDir.list(new RegexFileFilter(type + ".*" + testCase + ".*.pdf"));
+        List<String> fileNames = new ArrayList<String>();
+        for (FilePath fp : files) {
+            fileNames.add(PerfSigUIUtils.removeExtension(fp.getName()));
+        }
+        XStream2 xstream = new XStream2();
+        xstream.toXMLUTF8(fileNames, response.getOutputStream());
     }
 
     private void serveFile(final String type, final StaplerRequest request, final StaplerResponse response) throws IOException, InterruptedException {

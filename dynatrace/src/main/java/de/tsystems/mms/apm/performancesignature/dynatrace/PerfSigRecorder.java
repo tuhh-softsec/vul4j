@@ -69,12 +69,14 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
         PrintStream logger = listener.getLogger();
 
         DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
-        if (serverConfiguration == null)
+        if (serverConfiguration == null) {
             throw new AbortException("failed to lookup Dynatrace server configuration");
+        }
 
         CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
-        if (pair == null)
+        if (pair == null) {
             throw new AbortException("failed to lookup Dynatrace server profile");
+        }
 
         if (configurationTestCases == null) {
             throw new AbortException(Messages.PerfSigRecorder_MissingTestCases());
