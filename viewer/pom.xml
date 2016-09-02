@@ -33,6 +33,11 @@
     <dependencies>
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>structs</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>credentials</artifactId>
             <version>2.1.0</version>
         </dependency>
