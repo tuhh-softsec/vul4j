@@ -39,50 +39,60 @@ public class JSONDashlet {
     @Expose
     private String description;
 
+    /**
+     * @param aggregation
+     * @param id
+     * @param chartDashlet
+     * @param col
+     * @param measure
+     * @param description
+     * @param dashboard
+     * @param row
+     */
     public JSONDashlet(final int col, final int row, final String id, final String dashboard, final String chartDashlet, final String measure,
-                       final String customName, final int customBuildCount, final boolean show, final String aggregation, final String description) {
+                       final String aggregation, final String description) {
         this.col = col;
         this.row = row;
         this.id = id;
         this.dashboard = dashboard;
         this.chartDashlet = chartDashlet;
         this.measure = measure;
-        this.customName = customName;
-        this.customBuildCount = customBuildCount;
-        this.show = show;
+        this.customName = "";
+        this.customBuildCount = 0;
+        this.show = true;
         this.aggregation = aggregation;
         this.description = description;
     }
 
     public JSONDashlet(final int col, final int row, final String id, final String dashboard) {
-        this(col, row, id, dashboard, "", "", "", 0, true, "", "");
+        this(col, row, id, dashboard, "", "", "", "");
     }
 
     /**
      * @return The col
      */
-    public Integer getCol() {
+    public int getCol() {
         return col;
     }
 
     /**
      * @param col The col
      */
-    public void setCol(Integer col) {
+    public void setCol(final int col) {
         this.col = col;
     }
 
     /**
      * @return The row
      */
-    public Integer getRow() {
+    public int getRow() {
         return row;
     }
 
     /**
      * @param row The row
      */
-    public void setRow(Integer row) {
+    public void setRow(final int row) {
         this.row = row;
     }
 
@@ -96,7 +106,7 @@ public class JSONDashlet {
     /**
      * @param id The id
      */
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
@@ -110,7 +120,7 @@ public class JSONDashlet {
     /**
      * @param dashboard The dashboard
      */
-    public void setDashboard(String dashboard) {
+    public void setDashboard(final String dashboard) {
         this.dashboard = dashboard;
     }
 
@@ -124,7 +134,7 @@ public class JSONDashlet {
     /**
      * @param chartDashlet The chartDashlet
      */
-    public void setChartDashlet(String chartDashlet) {
+    public void setChartDashlet(final String chartDashlet) {
         this.chartDashlet = chartDashlet;
     }
 
@@ -138,7 +148,7 @@ public class JSONDashlet {
     /**
      * @param measure The measure
      */
-    public void setMeasure(String measure) {
+    public void setMeasure(final String measure) {
         this.measure = measure;
     }
 
@@ -152,7 +162,7 @@ public class JSONDashlet {
     /**
      * @param customName The customName
      */
-    public void setCustomName(String customName) {
+    public void setCustomName(final String customName) {
         this.customName = customName;
     }
 
@@ -166,21 +176,21 @@ public class JSONDashlet {
     /**
      * @param customBuildCount The customBuildCount
      */
-    public void setCustomBuildCount(int customBuildCount) {
+    public void setCustomBuildCount(final int customBuildCount) {
         this.customBuildCount = customBuildCount;
     }
 
     /**
      * @return The show
      */
-    public Boolean getShow() {
+    public boolean isShow() {
         return show;
     }
 
     /**
      * @param show The show
      */
-    public void setShow(Boolean show) {
+    public void setShow(final boolean show) {
         this.show = show;
     }
 
@@ -194,7 +204,7 @@ public class JSONDashlet {
     /**
      * @param aggregation The aggregation
      */
-    public void setAggregation(String aggregation) {
+    public void setAggregation(final String aggregation) {
         this.aggregation = aggregation;
     }
 
@@ -208,8 +218,7 @@ public class JSONDashlet {
     /**
      * @param description The description
      */
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
-
 }

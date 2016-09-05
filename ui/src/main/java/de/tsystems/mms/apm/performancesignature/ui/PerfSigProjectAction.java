@@ -379,7 +379,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             for (ChartDashlet chartDashlet : dashboardReport.getChartDashlets()) {
                 for (Measure measure : chartDashlet.getMeasures()) {
                     String id = DigestUtils.md5Hex(dashboardReport.getName() + chartDashlet.getName() + measure.getName());
-                    JSONDashlet dashlet = new JSONDashlet(col++, row, id, dashboardReport.getName(), chartDashlet.getName(), measure.getName(), "", 0, true,
+                    JSONDashlet dashlet = new JSONDashlet(col++, row, id, dashboardReport.getName(), chartDashlet.getName(), measure.getName(),
                             measure.getAggregation(), chartDashlet.getDescription());
 
                     jsonDashletMap.put(id, dashlet);
@@ -395,7 +395,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     }
 
     @JavaScriptMethod
-    //ToDo: rewrite
+    //ToDo: rewrite setDashboardConfiguration
     public void setDashboardConfiguration(final String dashboard, final String data) {
         final Map<String, MeasureNameHelper> map = new HashMap<String, MeasureNameHelper>();
         //generate a map to link between id and chartname
@@ -491,6 +491,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
 
         for (JSONDashlet jsonDashlet : getJsonDashletMap().values()) {
             if (!jsonDashlet.getDashboard().equals(dashboardReport.getName())) continue;
+            boolean chartDashletFound = false;
 
             for (ChartDashlet dashlet : dashboardReport.getChartDashlets()) {
                 if (dashlet.getName().equals(jsonDashlet.getChartDashlet())) {
@@ -505,10 +506,16 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
                             }
                             d.addMeasure(m);
                             filteredChartDashlets.add(d);
+                            chartDashletFound = true;
                             break;
                         }
                     }
                 }
+            }
+            if (!chartDashletFound) {
+                ChartDashlet d = new ChartDashlet(jsonDashlet.getChartDashlet());
+                d.addMeasure(new Measure(null));
+                filteredChartDashlets.add(d);
             }
         }
         return filteredChartDashlets;
