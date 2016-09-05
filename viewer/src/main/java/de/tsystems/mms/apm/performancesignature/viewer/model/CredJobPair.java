@@ -36,7 +36,6 @@ import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
-import java.io.IOException;
 import java.util.Collections;
 
 public class CredJobPair extends AbstractDescribableImpl<CredJobPair> {
@@ -110,9 +109,17 @@ public class CredJobPair extends AbstractDescribableImpl<CredJobPair> {
 
         public FormValidation doTestDynaTraceConnection(@QueryParameter final String protocol, @QueryParameter final String host,
                                                         @QueryParameter final int port, @QueryParameter final String credentialsId,
-                                                        @QueryParameter final String jenkinsJob) throws IOException {
+                                                        @QueryParameter final String jenkinsJob, @QueryParameter boolean verifyCertificate,
+                                                        @QueryParameter final boolean proxy, @QueryParameter final String proxyServer,
+                                                        @QueryParameter final int proxyPort, @QueryParameter final String proxyUser,
+                                                        @QueryParameter final String proxyPassword) {
+
+            CustomProxy customProxyServer = null;
+            if (proxy) {
+                customProxyServer = new CustomProxy(proxyServer, proxyPort, proxyUser, proxyPassword, StringUtils.isBlank(proxyServer));
+            }
             CredJobPair pair = new CredJobPair(jenkinsJob, credentialsId);
-            final JenkinsServerConnection connection = new JenkinsServerConnection(protocol, host, port, pair);
+            final JenkinsServerConnection connection = new JenkinsServerConnection(protocol, host, port, pair, verifyCertificate, customProxyServer);
 
             if (connection.validateConnection()) {
                 return FormValidation.ok(Messages.PerfSigRecorder_TestConnectionSuccessful());

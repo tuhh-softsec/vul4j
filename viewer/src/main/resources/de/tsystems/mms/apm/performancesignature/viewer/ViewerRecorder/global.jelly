@@ -40,6 +40,25 @@
                                  description="${%Verify or ignore the Jenkins Server Certificate?}">
                             <f:checkbox default="${descriptor.defaultVerifyCertificate}"/>
                         </f:entry>
+                        <f:optionalBlock inline="true" name="proxy" title="${%use Proxy Server}" checked="${instance.customProxy != null}">
+                            <f:radioBlock inline="true" name="proxySource" title="${%use proxy server configured in Jenkins}" value="0"
+                                          checked="${instance.customProxy.useJenkinsProxy}"/>
+                            <f:radioBlock inline="true" name="proxySource" title="use custom Proxy Server" value="1"
+                                          checked="${!instance.customProxy.useJenkinsProxy}">
+                                <f:entry title="${%Server}" field="proxyServer">
+                                    <f:textbox value="${instance.customProxy.proxyServer}"/>
+                                </f:entry>
+                                <f:entry title="${%Port}" field="proxyPort">
+                                    <f:number value="${instance.customProxy.proxyPort}"/>
+                                </f:entry>
+                                <f:entry title="${%User}" field="proxyUser">
+                                    <f:textbox value="${instance.customProxy.proxyUser}"/>
+                                </f:entry>
+                                <f:entry title="${%Password}" field="proxyPassword">
+                                    <f:password value="${instance.customProxy.proxyPassword}"/>
+                                </f:entry>
+                            </f:radioBlock>
+                        </f:optionalBlock>
                     </f:advanced>
 
                     <f:entry title="${%Credentials/Job pairs}">

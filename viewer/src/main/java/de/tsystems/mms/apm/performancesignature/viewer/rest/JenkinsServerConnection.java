@@ -18,16 +18,18 @@ package de.tsystems.mms.apm.performancesignature.viewer.rest;
 
 import com.google.common.base.Optional;
 import com.offbytwo.jenkins.JenkinsServer;
+import com.offbytwo.jenkins.client.JenkinsHttpClient;
 import com.offbytwo.jenkins.model.FolderJob;
 import com.offbytwo.jenkins.model.Job;
 import com.offbytwo.jenkins.model.JobWithDetails;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import de.tsystems.mms.apm.performancesignature.viewer.model.CredJobPair;
+import de.tsystems.mms.apm.performancesignature.viewer.model.CustomProxy;
 import de.tsystems.mms.apm.performancesignature.viewer.model.JenkinsServerConfiguration;
+import de.tsystems.mms.apm.performancesignature.viewer.rest.model.CustomJenkinsHttpClient;
 import hudson.FilePath;
 import hudson.util.XStream2;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.jdom2.JDOMException;
 
@@ -46,15 +48,20 @@ public class JenkinsServerConnection {
     private JobWithDetails jenkinsJob;
     private JenkinsServer jenkinsServer;
 
-    public JenkinsServerConnection(final String protocol, final String host, final int port, final CredJobPair pair) {
+    public JenkinsServerConnection(final String protocol, final String host, final int port, final CredJobPair pair, final boolean verifyCertificate,
+                                   final CustomProxy customProxyServer) {
         try {
             URI uri = new URI(protocol + "://" + host + ":" + port);
-            if (StringUtils.isBlank(pair.getCredentialsId())) {
-                this.jenkinsServer = new JenkinsServer(uri);
+            JenkinsHttpClient client;
+            if (pair.getCredentials() == null) {
+                client = new CustomJenkinsHttpClient(uri, null, null, verifyCertificate, customProxyServer);
             } else {
-                this.jenkinsServer = new JenkinsServer(uri, pair.getCredentials().getUsername(), pair.getCredentials().getPassword().getPlainText());
+                client = new CustomJenkinsHttpClient(uri, pair.getCredentials().getUsername(), pair.getCredentials().getPassword().getPlainText(),
+                        verifyCertificate, customProxyServer);
             }
+            this.jenkinsServer = new JenkinsServer(client);
             String job = pair.getJenkinsJob();
+
             if (job.contains("/")) {
                 String[] parts = job.split("/");
                 Job folderJob = jenkinsServer.getJob(parts[0]);
@@ -73,7 +80,7 @@ public class JenkinsServerConnection {
     }
 
     public JenkinsServerConnection(final JenkinsServerConfiguration config, final CredJobPair pair) {
-        this(config.getProtocol(), config.getHost(), config.getPort(), pair);
+        this(config.getProtocol(), config.getHost(), config.getPort(), pair, config.isVerifyCertificate(), config.getCustomProxy());
     }
 
     public List<DashboardReport> getDashboardReportsFromXML(int buildNumber) {

@@ -32,16 +32,20 @@ public class JenkinsServerConfiguration extends AbstractDescribableImpl<JenkinsS
     private final int port;
     private final boolean verifyCertificate;
     private final List<CredJobPair> credJobPairs;
+    private final CustomProxy customProxy;
 
     @DataBoundConstructor
     public JenkinsServerConfiguration(final String name, final String protocol, final String host, final int port, final List<CredJobPair> credJobPairs,
-                                      final boolean verifyCertificate) {
+                                      final boolean verifyCertificate, final boolean proxy, final int proxySource, final String proxyServer,
+                                      final int proxyPort, final String proxyUser, final String proxyPassword) {
         this.name = name;
         this.protocol = protocol;
         this.host = host;
         this.port = port;
         this.credJobPairs = credJobPairs;
         this.verifyCertificate = verifyCertificate;
+
+        this.customProxy = proxy ? new CustomProxy(proxyServer, proxyPort, proxyUser, proxyPassword, proxySource) : null;
     }
 
     public String getName() {
@@ -75,6 +79,10 @@ public class JenkinsServerConfiguration extends AbstractDescribableImpl<JenkinsS
 
     public boolean isVerifyCertificate() {
         return verifyCertificate;
+    }
+
+    public CustomProxy getCustomProxy() {
+        return customProxy;
     }
 
     @Extension
