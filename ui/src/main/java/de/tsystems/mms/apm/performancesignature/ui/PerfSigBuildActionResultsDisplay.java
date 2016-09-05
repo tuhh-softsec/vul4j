@@ -160,8 +160,8 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
         final Measure m = dashboardReport.getMeasure(chartDashlet, measure);
         if (m == null) return null;
 
-        String color = PerfSigUIUtils.decodeString(m.getColor());
-        String unit = PerfSigUIUtils.decodeString(m.getUnit());
+        String color = m.getColor();
+        String unit = m.getUnit();
 
         JFreeChart chart;
         if (unit.equalsIgnoreCase("num")) {

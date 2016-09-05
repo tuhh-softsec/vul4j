@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.List;
 
@@ -84,15 +83,6 @@ public final class PerfSigUIUtils {
             return URLEncoder.encode(value, CharEncoding.UTF_8).replaceAll("\\+", "%20");
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(Messages.PerfSigUtils_EncodingFailure(), e);
-        }
-    }
-
-    public static String decodeString(final String value) {
-        if (StringUtils.isBlank(value)) return "";
-        try {
-            return URLDecoder.decode(value, CharEncoding.UTF_8);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(Messages.PerfSigUtils_DecodingFailure(), e);
         }
     }
 
