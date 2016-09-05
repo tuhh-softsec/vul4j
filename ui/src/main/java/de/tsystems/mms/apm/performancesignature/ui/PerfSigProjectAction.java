@@ -23,7 +23,6 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.Measure;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRun;
 import de.tsystems.mms.apm.performancesignature.model.JSONDashlet;
-import de.tsystems.mms.apm.performancesignature.model.MeasureNameHelper;
 import de.tsystems.mms.apm.performancesignature.model.PerfSigTestDataWrapper;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import hudson.FilePath;
@@ -37,8 +36,6 @@ import hudson.util.ChartUtil;
 import hudson.util.ColorPalette;
 import hudson.util.DataSetBuilder;
 import hudson.util.ShiftedCategoryAxis;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -67,16 +64,32 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class PerfSigProjectAction extends PerfSigBaseAction implements ProminentProjectAction {
-    private final static String JSON_FILENAME = "gridconfig.json";
+    private final static String JSON_FILENAME = "igridconfig.json";
     private final Job<?, ?> job;
     private final FilePath jsonConfigFile;
-    private Map<String, JSONDashlet> jsonDashletMap;
+    private final Map<String, JSONDashlet> jsonDashletMap;
 
     public PerfSigProjectAction(final Job<?, ?> job) {
         this.job = job;
         this.jsonDashletMap = new ConcurrentHashMap<String, JSONDashlet>();
         FilePath configPath = new FilePath(job.getConfigFile().getFile());
         this.jsonConfigFile = new FilePath(configPath.getParent(), JSON_FILENAME);
+
+        try {
+            if (jsonConfigFile.exists()) {
+                Type type = new TypeToken<Map<String, JSONDashlet>>() {
+                }.getType();
+                Map<String, JSONDashlet> dashlets = new Gson().fromJson(jsonConfigFile.readToString(), type);
+                jsonDashletMap.putAll(dashlets);
+            } else {
+                jsonDashletMap.putAll(createJSONConfiguration());
+                writeConfiguration(jsonDashletMap);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -106,7 +119,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         String id = request.getParameter("id");
 
         if (request.getParameter("customName") == null && request.getParameter("customBuildCount") == null) { //dashlet from stored configuration
-            JSONDashlet jsonDashlet = getJsonDashletMap().get(id);
+            JSONDashlet jsonDashlet = jsonDashletMap.get(id);
             ChartUtil.generateGraph(request, response, createChart(jsonDashlet, buildDataSet(jsonDashlet)), PerfSigUIUtils.calcDefaultSize());
         } else { //new dashlet
             JSONDashlet jsonDashlet = createJSONConfiguration().get(id);
@@ -118,9 +131,11 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         String dashboard = jsonDashlet.getDashboard();
         String chartDashlet = jsonDashlet.getChartDashlet();
         String measure = jsonDashlet.getMeasure();
-        int customBuildCount = jsonDashlet.getCustomBuildCount();
+        String buildCount = jsonDashlet.getCustomBuildCount();
         String aggregation = jsonDashlet.getAggregation();
-        int i = 0;
+        int customBuildCount = 0, i = 0;
+
+        if (StringUtils.isNotBlank(buildCount)) customBuildCount = Integer.parseInt(buildCount);
 
         Map<Run<?, ?>, DashboardReport> dashboardReports = getDashboardReports(dashboard);
         DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dsb = new DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel>();
@@ -205,7 +220,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
 
         //get customName and customBuildCount from persisted json
         if (request.getParameter("customName") == null && request.getParameter("customBuildCount") == null) {
-            JSONDashlet jsonDashlet = getJsonDashletMap().get("unittest_overview");
+            JSONDashlet jsonDashlet = jsonDashletMap.get("unittest_overview");
             if (jsonDashlet != null) {
                 ChartUtil.generateGraph(request, response, createTestRunChart(buildTestRunDataSet(String.valueOf(jsonDashlet.getCustomBuildCount())),
                         jsonDashlet.getCustomName()), PerfSigUIUtils.calcDefaultSize());
@@ -338,23 +353,10 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         return dashboardReports;
     }
 
-    private Map<String, JSONDashlet> getJsonDashletMap() throws IOException, InterruptedException {
-        if (jsonDashletMap.isEmpty() && jsonConfigFile.exists()) {
-            Type type = new TypeToken<Map<String, JSONDashlet>>() {
-            }.getType();
-            Map<String, JSONDashlet> dashlets = new Gson().fromJson(jsonConfigFile.readToString(), type);
-            jsonDashletMap.putAll(dashlets);
-        } else if (jsonDashletMap.isEmpty() && !jsonConfigFile.exists()) {
-            jsonDashletMap.putAll(createJSONConfiguration());
-            writeConfiguration(jsonDashletMap);
-        }
-        return jsonDashletMap;
-    }
-
     @JavaScriptMethod
     public String getDashboardConfiguration(final String dashboard) throws IOException, InterruptedException {
         List<JSONDashlet> jsonDashletList = new ArrayList<JSONDashlet>();
-        for (JSONDashlet jsonDashlet : getJsonDashletMap().values()) {
+        for (JSONDashlet jsonDashlet : jsonDashletMap.values()) {
             if (jsonDashlet.getDashboard().equals(dashboard)) {
                 jsonDashletList.add(jsonDashlet);
             }
@@ -393,74 +395,54 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     @JavaScriptMethod
     //ToDo: rewrite setDashboardConfiguration
     public void setDashboardConfiguration(final String dashboard, final String data) {
-        final Map<String, MeasureNameHelper> map = new HashMap<String, MeasureNameHelper>();
-        //generate a map to link between id and chartname
-        for (DashboardReport dashboardReport : getLastDashboardReports())
-            if (dashboardReport.getName().equals(dashboard))
-                for (ChartDashlet chartDashlet : dashboardReport.getChartDashlets())
-                    for (Measure measure : chartDashlet.getMeasures())
-                        map.put(DigestUtils.md5Hex(dashboardReport.getName() + chartDashlet.getName() + measure.getName()),
-                                new MeasureNameHelper(chartDashlet.getName(), measure.getName(), chartDashlet.getDescription()));
+        Map<String, JSONDashlet> dashletsFromJSON = new HashMap<String, JSONDashlet>();
 
         String json = StringEscapeUtils.unescapeJava(data);
         if (!json.startsWith("[")) json = json.substring(1, json.length() - 1);
 
+        Type type = new TypeToken<List<JSONDashlet>>() {
+        }.getType();
+        List<JSONDashlet> tmp = new Gson().fromJson(json, type);
+        for (JSONDashlet jsonDashlet : tmp) {
+            dashletsFromJSON.put(jsonDashlet.getId(), jsonDashlet);
+        }
+
         try {
-            final JSONArray gridConfiguration = JSONArray.fromObject(json);
-            final JSONArray dashboardConfiguration = JSONArray.fromObject(getDashboardConfiguration(dashboard));
-            //go through all configured grid items
-            for (int i = 0; i < gridConfiguration.size(); i++) {
-                final JSONObject obj = gridConfiguration.getJSONObject(i);
-                final MeasureNameHelper tmp = map.get(obj.getString("id"));
-                if (tmp != null) { //item needs some more information
-                    obj.put("id", DigestUtils.md5Hex(dashboard + tmp.getChartDashlet() + tmp.getMeasure() + obj.getString("customName") + obj.getString("aggregation")));
-                    obj.put("chartDashlet", tmp.getChartDashlet());
-                    obj.put("measure", tmp.getMeasure());
-                    obj.put("description", tmp.getDescription());
-                } else {
-                    //items with custom names need some more information
-                    for (int j = 0; j < dashboardConfiguration.size(); j++) {
-                        final JSONObject jsonObject = dashboardConfiguration.getJSONObject(j);
-                        if (jsonObject.get("id").equals(obj.get("id"))) {
-                            if (!obj.get("id").equals("unittest_overview")) {
-                                obj.put("dashboard", jsonObject.get("dashboard"));
-                                obj.put("chartDashlet", jsonObject.get("chartDashlet"));
-                                obj.put("measure", jsonObject.get("measure"));
-                                obj.put("description", jsonObject.get("description"));
-                                obj.put("aggregation", jsonObject.get("aggregation"));
-                            }
-                            if (StringUtils.isNotBlank(jsonObject.getString("customName")))
-                                obj.put("customName", jsonObject.get("customName"));
-                            if (StringUtils.isNotBlank(jsonObject.getString("customBuildCount")))
-                                obj.put("customBuildCount", jsonObject.get("customBuildCount"));
-                            break;
-                        }
+            for (JSONDashlet jsonDashlet : jsonDashletMap.values()) {
+                if (!jsonDashlet.getDashboard().equals(dashboard)) continue; //filter out dashlets from other dashboards
+                if (!dashletsFromJSON.containsKey(jsonDashlet.getId())) { //remove dashlet, if it's not present in gridConfiguration
+                    jsonDashletMap.remove(jsonDashlet.getId());
+                } else { //check if we got custom name or build count and update jsonDashletMap
+                    JSONDashlet modifiedDashlet = dashletsFromJSON.get(jsonDashlet.getId());
+
+                    jsonDashlet.setCol(modifiedDashlet.getCol()); //update position in grid
+                    jsonDashlet.setRow(modifiedDashlet.getRow());
+
+                    if (StringUtils.isNotBlank(modifiedDashlet.getCustomBuildCount()) || StringUtils.isNotBlank(modifiedDashlet.getCustomName())) {
+                        jsonDashlet.setId(DigestUtils.md5Hex(dashboard + jsonDashlet.getChartDashlet() + jsonDashlet.getMeasure() +
+                                modifiedDashlet.getCustomName() + modifiedDashlet.getCustomBuildCount() + jsonDashlet.getAggregation()));
+                        jsonDashlet.setCustomBuildCount(modifiedDashlet.getCustomBuildCount());
+                        jsonDashlet.setCustomName(modifiedDashlet.getCustomName());
+                        jsonDashletMap.remove(modifiedDashlet.getId());
                     }
+
+                    jsonDashletMap.put(jsonDashlet.getId(), jsonDashlet);
+                    writeConfiguration(jsonDashletMap);
                 }
             }
-
-            //writeConfiguration(dashboard, gridConfiguration);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @JavaScriptMethod
     public Map<String, String> getAvailableMeasures(final String dashboard, final String dashlet) throws IOException {
-        final Map<String, String> availableMeasures = new HashMap<String, String>();
-        for (DashboardReport dashboardReport : getLastDashboardReports()) {
-            if (dashboardReport.getName().equals(dashboard)) {
-                for (ChartDashlet chartDashlet : dashboardReport.getChartDashlets()) {
-                    if (chartDashlet.getName().equals(dashlet)) {
-                        for (Measure measure : chartDashlet.getMeasures())
-                            availableMeasures.put(DigestUtils.md5Hex(dashboardReport.getName() + chartDashlet.getName() + measure.getName()), measure.getName());
-                        return availableMeasures;
-                    }
-                }
+        Map<String, String> availableMeasures = new HashMap<String, String>();
+        for (JSONDashlet jsonDashlet : createJSONConfiguration().values()) {
+            if (jsonDashlet.getDashboard().equals(dashboard) && jsonDashlet.getChartDashlet().equals(dashlet)) {
+                availableMeasures.put(jsonDashlet.getId(), jsonDashlet.getMeasure());
             }
         }
         return availableMeasures;
@@ -485,7 +467,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             return filteredChartDashlets;
         }
 
-        for (JSONDashlet jsonDashlet : getJsonDashletMap().values()) {
+        for (JSONDashlet jsonDashlet : jsonDashletMap.values()) {
             if (!jsonDashlet.getDashboard().equals(dashboardReport.getName())) continue;
             boolean chartDashletFound = false;
 

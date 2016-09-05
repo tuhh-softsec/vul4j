@@ -28,7 +28,7 @@ public class JSONDashlet {
     private String customName;
     @SerializedName("customBuildCount")
     @Expose
-    private int customBuildCount;
+    private String customBuildCount;
     @SerializedName("show")
     @Expose
     private boolean show;
@@ -58,7 +58,7 @@ public class JSONDashlet {
         this.chartDashlet = chartDashlet;
         this.measure = measure;
         this.customName = "";
-        this.customBuildCount = 0;
+        this.customBuildCount = "0";
         this.show = true;
         this.aggregation = aggregation;
         this.description = description;
@@ -169,14 +169,14 @@ public class JSONDashlet {
     /**
      * @return The customBuildCount
      */
-    public int getCustomBuildCount() {
+    public String getCustomBuildCount() {
         return customBuildCount;
     }
 
     /**
      * @param customBuildCount The customBuildCount
      */
-    public void setCustomBuildCount(final int customBuildCount) {
+    public void setCustomBuildCount(final String customBuildCount) {
         this.customBuildCount = customBuildCount;
     }
 
