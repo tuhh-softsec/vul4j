@@ -121,7 +121,7 @@ $(document).ready(function () {
                     return {
                         col: wgd.col,
                         row: wgd.row,
-                        id: wurl("?id", $("img", $w).attr("src")),
+                        id: getURLParameter($("img", $w), "id"),
                         dashboard: $(page).attr('id'),
                         chartDashlet: getURLParameter($("img", $w), "chartDashlet"),
                         measure: getURLParameter($("img", $w), "measure"),

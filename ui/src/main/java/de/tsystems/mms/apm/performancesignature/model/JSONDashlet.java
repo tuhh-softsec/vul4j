@@ -7,10 +7,10 @@ public class JSONDashlet {
 
     @SerializedName("col")
     @Expose
-    private Integer col;
+    private int col;
     @SerializedName("row")
     @Expose
-    private Integer row;
+    private int row;
     @SerializedName("id")
     @Expose
     private String id;
@@ -28,16 +28,35 @@ public class JSONDashlet {
     private String customName;
     @SerializedName("customBuildCount")
     @Expose
-    private String customBuildCount;
+    private int customBuildCount;
     @SerializedName("show")
     @Expose
-    private Boolean show;
+    private boolean show;
     @SerializedName("aggregation")
     @Expose
     private String aggregation;
     @SerializedName("description")
     @Expose
     private String description;
+
+    public JSONDashlet(final int col, final int row, final String id, final String dashboard, final String chartDashlet, final String measure,
+                       final String customName, final int customBuildCount, final boolean show, final String aggregation, final String description) {
+        this.col = col;
+        this.row = row;
+        this.id = id;
+        this.dashboard = dashboard;
+        this.chartDashlet = chartDashlet;
+        this.measure = measure;
+        this.customName = customName;
+        this.customBuildCount = customBuildCount;
+        this.show = show;
+        this.aggregation = aggregation;
+        this.description = description;
+    }
+
+    public JSONDashlet(final int col, final int row, final String id, final String dashboard) {
+        this(col, row, id, dashboard, "", "", "", 0, true, "", "");
+    }
 
     /**
      * @return The col
@@ -140,14 +159,14 @@ public class JSONDashlet {
     /**
      * @return The customBuildCount
      */
-    public String getCustomBuildCount() {
+    public int getCustomBuildCount() {
         return customBuildCount;
     }
 
     /**
      * @param customBuildCount The customBuildCount
      */
-    public void setCustomBuildCount(String customBuildCount) {
+    public void setCustomBuildCount(int customBuildCount) {
         this.customBuildCount = customBuildCount;
     }
 
