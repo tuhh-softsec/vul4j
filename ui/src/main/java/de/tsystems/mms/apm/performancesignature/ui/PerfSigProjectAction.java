@@ -57,7 +57,6 @@ import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.bind.JavaScriptMethod;
 
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
@@ -70,11 +69,14 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PerfSigProjectAction extends PerfSigBaseAction implements ProminentProjectAction {
     private final static String JSON_FILENAME = "gridconfig.json";
     private final Job<?, ?> job;
+    private final FilePath jsonConfigFile;
     private Map<String, JSONDashlet> jsonDashletMap;
 
     public PerfSigProjectAction(final Job<?, ?> job) {
         this.job = job;
         this.jsonDashletMap = new ConcurrentHashMap<String, JSONDashlet>();
+        FilePath configPath = new FilePath(job.getConfigFile().getFile());
+        this.jsonConfigFile = new FilePath(configPath.getParent(), JSON_FILENAME);
     }
 
     @Override
@@ -336,27 +338,21 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         return dashboardReports;
     }
 
-    public Map<String, JSONDashlet> getJsonDashletMap() throws IOException, InterruptedException {
-        FilePath input = new FilePath(new File(getJsonConfigFilePath() + File.separator + JSON_FILENAME));
-        if (jsonDashletMap.isEmpty() && input.exists()) {
+    private Map<String, JSONDashlet> getJsonDashletMap() throws IOException, InterruptedException {
+        if (jsonDashletMap.isEmpty() && jsonConfigFile.exists()) {
             Type type = new TypeToken<Map<String, JSONDashlet>>() {
             }.getType();
-            Map<String, JSONDashlet> dashlets = new Gson().fromJson(input.readToString(), type);
+            Map<String, JSONDashlet> dashlets = new Gson().fromJson(jsonConfigFile.readToString(), type);
             jsonDashletMap.putAll(dashlets);
-        } else if (jsonDashletMap.isEmpty() && !input.exists()) {
+        } else if (jsonDashletMap.isEmpty() && !jsonConfigFile.exists()) {
             jsonDashletMap.putAll(createJSONConfiguration());
             writeConfiguration(jsonDashletMap);
         }
         return jsonDashletMap;
     }
 
-    private FilePath getJsonConfigFilePath() {
-        final FilePath configPath = new FilePath(job.getConfigFile().getFile());
-        return configPath.getParent();
-    }
-
     @JavaScriptMethod
-    public synchronized String getDashboardConfiguration(final String dashboard) throws IOException, InterruptedException {
+    public String getDashboardConfiguration(final String dashboard) throws IOException, InterruptedException {
         List<JSONDashlet> jsonDashletList = new ArrayList<JSONDashlet>();
         for (JSONDashlet jsonDashlet : getJsonDashletMap().values()) {
             if (jsonDashlet.getDashboard().equals(dashboard)) {
@@ -522,7 +518,6 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     }
 
     private synchronized void writeConfiguration(final Map<String, JSONDashlet> jsonDashletMap) throws IOException, InterruptedException {
-        FilePath filePath = new FilePath(new File(getJsonConfigFilePath() + File.separator + JSON_FILENAME));
-        filePath.write(new Gson().toJson(jsonDashletMap), null);
+        jsonConfigFile.write(new Gson().toJson(jsonDashletMap), null);
     }
 }

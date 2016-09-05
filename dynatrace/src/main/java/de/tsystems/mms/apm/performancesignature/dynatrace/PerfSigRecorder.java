@@ -204,9 +204,6 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
 
         PerfSigBuildAction action = new PerfSigBuildAction(dashboardReports);
         run.addAction(action);
-
-        //update chart configuration
-        //new PerfSigProjectAction(run.getParent()).updateConfiguration(); uncomment if ready to use
     }
 
     private PerfSigEnvInvisAction getBuildEnvVars(final Run<?, ?> build, final String testCase) {
