@@ -42,14 +42,12 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-import static org.apache.commons.lang.StringUtils.isNotBlank;
-
 public class CustomJenkinsHttpClient extends JenkinsHttpClient {
 
     public CustomJenkinsHttpClient(final URI uri, final String username, final String password, final boolean verifyCertificate, final CustomProxy customProxy) {
 
         super(uri, addAuthentication(createHttpClientBuilder(verifyCertificate, customProxy), uri, username, password));
-        if (isNotBlank(username)) {
+        if (StringUtils.isNotBlank(username)) {
             BasicHttpContext httpContext = new BasicHttpContext();
             httpContext.setAttribute("preemptive-auth", new BasicScheme());
             super.setLocalContext(httpContext);
@@ -60,7 +58,7 @@ public class CustomJenkinsHttpClient extends JenkinsHttpClient {
 
         HttpClientBuilder httpClientBuilder = HttpClients.custom();
         httpClientBuilder.useSystemProperties();
-        if (verifyCertificate) {
+        if (!verifyCertificate) {
             SSLContextBuilder builder = new SSLContextBuilder();
             try {
                 builder.loadTrustMaterial(null, new TrustStrategy() {
@@ -89,14 +87,15 @@ public class CustomJenkinsHttpClient extends JenkinsHttpClient {
                         httpClientBuilder.setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy());
                     }
                 }
-            }
-            httpClientBuilder.setProxy(new HttpHost(customProxy.getProxyServer(), customProxy.getProxyPort()));
-            if (StringUtils.isNotBlank(customProxy.getProxyUser()) && StringUtils.isNotBlank(customProxy.getProxyPassword())) {
-                CredentialsProvider credsProvider = new BasicCredentialsProvider();
-                UsernamePasswordCredentials usernamePasswordCredentials = new UsernamePasswordCredentials(customProxy.getProxyUser(), customProxy.getProxyPassword());
-                credsProvider.setCredentials(new AuthScope(customProxy.getProxyServer(), customProxy.getProxyPort()), usernamePasswordCredentials);
-                httpClientBuilder.setDefaultCredentialsProvider(credsProvider);
-                httpClientBuilder.setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy());
+            } else {
+                httpClientBuilder.setProxy(new HttpHost(customProxy.getProxyServer(), customProxy.getProxyPort()));
+                if (StringUtils.isNotBlank(customProxy.getProxyUser()) && StringUtils.isNotBlank(customProxy.getProxyPassword())) {
+                    CredentialsProvider credsProvider = new BasicCredentialsProvider();
+                    UsernamePasswordCredentials usernamePasswordCredentials = new UsernamePasswordCredentials(customProxy.getProxyUser(), customProxy.getProxyPassword());
+                    credsProvider.setCredentials(new AuthScope(customProxy.getProxyServer(), customProxy.getProxyPort()), usernamePasswordCredentials);
+                    httpClientBuilder.setDefaultCredentialsProvider(credsProvider);
+                    httpClientBuilder.setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy());
+                }
             }
         }
         return httpClientBuilder;
