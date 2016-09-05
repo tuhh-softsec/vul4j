@@ -154,14 +154,14 @@
                                             <j:forEach var="chartDashlet" items="${it.getFilteredChartDashlets(lastDashboardReport)}">
                                                 <j:forEach var="measure" items="${chartDashlet.measures}">
                                                     <th class="text-center">
-                                                        ${chartDashlet.name}<br/>(${utils.decodeString(measure.unit)})
+                                                        ${chartDashlet.name}<br/>(${measure.unit})
                                                     </th>
                                                 </j:forEach>
                                             </j:forEach>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <j:forEach var="dashboardReport" items="${it.getDashBoardReports(lastDashboardReport.name)}">
+                                        <j:forEach var="dashboardReport" items="${it.getDashboardReports(lastDashboardReport.name)}">
                                             <tr>
                                                 <td>
                                                     <a href="../${dashboardReport.key.number}/${it.urlName}/#${lastDashboardReport.name}">

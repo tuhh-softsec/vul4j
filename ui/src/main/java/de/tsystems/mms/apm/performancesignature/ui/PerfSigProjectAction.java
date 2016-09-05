@@ -341,10 +341,11 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         if (jsonDashletMap.isEmpty() && input.exists()) {
             Type type = new TypeToken<Map<String, JSONDashlet>>() {
             }.getType();
-            ConcurrentHashMap<String, JSONDashlet> dashlets = new Gson().fromJson(input.readToString(), type);
+            Map<String, JSONDashlet> dashlets = new Gson().fromJson(input.readToString(), type);
             jsonDashletMap.putAll(dashlets);
         } else if (jsonDashletMap.isEmpty() && !input.exists()) {
             jsonDashletMap.putAll(createJSONConfiguration());
+            writeConfiguration(jsonDashletMap);
         }
         return jsonDashletMap;
     }
@@ -453,7 +454,6 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     }
 
     @JavaScriptMethod
-    //ToDo: rewrite
     public Map<String, String> getAvailableMeasures(final String dashboard, final String dashlet) throws IOException {
         final Map<String, String> availableMeasures = new HashMap<String, String>();
         for (DashboardReport dashboardReport : getLastDashboardReports()) {
@@ -474,12 +474,9 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     public String getAggregationFromMeasure(final String dashboard, final String dashlet, final String measure) throws IOException {
         for (DashboardReport dashboardReport : getLastDashboardReports()) {
             if (dashboardReport.getName().equals(dashboard)) {
-                for (ChartDashlet chartDashlet : dashboardReport.getChartDashlets()) {
-                    if (chartDashlet.getName().equals(dashlet)) {
-                        for (Measure m : chartDashlet.getMeasures())
-                            if (m.getName().equals(measure))
-                                return m.getAggregation();
-                    }
+                Measure m = dashboardReport.getMeasure(dashlet, measure);
+                if (m != null) {
+                    return m.getAggregation();
                 }
             }
         }
