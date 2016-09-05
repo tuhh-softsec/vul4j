@@ -483,27 +483,26 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         return "";
     }
 
-    //ToDo: rewrite
     public List<ChartDashlet> getFilteredChartDashlets(final DashboardReport dashboardReport) throws IOException, InterruptedException {
         final List<ChartDashlet> filteredChartDashlets = new ArrayList<ChartDashlet>();
-        final String json = getDashboardConfiguration(dashboardReport.getName());
-        if (StringUtils.isBlank(json) || dashboardReport.getChartDashlets() == null) return filteredChartDashlets;
-        final JSONArray storedJSON = JSONArray.fromObject(json);
+        if (dashboardReport.getChartDashlets() == null) {
+            return filteredChartDashlets;
+        }
 
-        for (int i = 0; i < storedJSON.size(); i++) {
-            JSONObject obj = storedJSON.getJSONObject(i);
-            String storedChartDashlet = obj.getString("chartDashlet");
-            String storedMeasure = obj.getString("measure");
+        for (JSONDashlet jsonDashlet : getJsonDashletMap().values()) {
+            if (!jsonDashlet.getDashboard().equals(dashboardReport.getName())) continue;
 
             for (ChartDashlet dashlet : dashboardReport.getChartDashlets()) {
-                if (dashlet.getName().equals(storedChartDashlet)) {
+                if (dashlet.getName().equals(jsonDashlet.getChartDashlet())) {
                     for (Measure m : dashlet.getMeasures()) {
-                        if (m.getName().equals(storedMeasure)) {
+                        if (m.getName().equals(jsonDashlet.getMeasure())) {
                             ChartDashlet d;
-                            if (StringUtils.isBlank(obj.getString("customName")))
+                            String customName = jsonDashlet.getCustomName();
+                            if (StringUtils.isBlank(customName)) {
                                 d = new ChartDashlet(PerfSigUIUtils.generateTitle(m.getName(), dashlet.getName()));
-                            else
-                                d = new ChartDashlet(obj.getString("customName"));
+                            } else {
+                                d = new ChartDashlet(customName);
+                            }
                             d.addMeasure(m);
                             filteredChartDashlets.add(d);
                             break;
