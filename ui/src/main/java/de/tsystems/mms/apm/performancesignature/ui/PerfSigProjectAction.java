@@ -64,7 +64,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class PerfSigProjectAction extends PerfSigBaseAction implements ProminentProjectAction {
-    private final static String JSON_FILENAME = "igridconfig.json";
+    private static final String JSON_FILENAME = "gridconfig.json";
     private final Job<?, ?> job;
     private final FilePath jsonConfigFile;
     private final Map<String, JSONDashlet> jsonDashletMap;
@@ -118,11 +118,15 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
 
         String id = request.getParameter("id");
 
-        if (request.getParameter("customName") == null && request.getParameter("customBuildCount") == null) { //dashlet from stored configuration
+        if (request.getParameter("customName") == null && request.getParameter("customBuildCount") == null
+                && request.getParameter("aggregation") == null) { //dashlet from stored configuration
             JSONDashlet jsonDashlet = jsonDashletMap.get(id);
             ChartUtil.generateGraph(request, response, createChart(jsonDashlet, buildDataSet(jsonDashlet)), PerfSigUIUtils.calcDefaultSize());
         } else { //new dashlet
             JSONDashlet jsonDashlet = createJSONConfiguration().get(id);
+            jsonDashlet.setAggregation(request.getParameter("aggregation"));
+            jsonDashlet.setCustomName(request.getParameter("customName"));
+            jsonDashlet.setCustomBuildCount(request.getParameter("customBuildCount"));
             ChartUtil.generateGraph(request, response, createChart(jsonDashlet, buildDataSet(jsonDashlet)), PerfSigUIUtils.calcDefaultSize());
         }
     }
@@ -395,6 +399,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     @JavaScriptMethod
     //ToDo: rewrite setDashboardConfiguration
     public void setDashboardConfiguration(final String dashboard, final String data) {
+        Map<String, JSONDashlet> defaultConfiguration = createJSONConfiguration();
         Map<String, JSONDashlet> dashletsFromJSON = new HashMap<String, JSONDashlet>();
 
         String json = StringEscapeUtils.unescapeJava(data);
@@ -402,8 +407,8 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
 
         Type type = new TypeToken<List<JSONDashlet>>() {
         }.getType();
-        List<JSONDashlet> tmp = new Gson().fromJson(json, type);
-        for (JSONDashlet jsonDashlet : tmp) {
+        List<JSONDashlet> jsonDashletList = new Gson().fromJson(json, type);
+        for (JSONDashlet jsonDashlet : jsonDashletList) {
             dashletsFromJSON.put(jsonDashlet.getId(), jsonDashlet);
         }
 
@@ -412,24 +417,35 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
                 if (!jsonDashlet.getDashboard().equals(dashboard)) continue; //filter out dashlets from other dashboards
                 if (!dashletsFromJSON.containsKey(jsonDashlet.getId())) { //remove dashlet, if it's not present in gridConfiguration
                     jsonDashletMap.remove(jsonDashlet.getId());
-                } else { //check if we got custom name or build count and update jsonDashletMap
-                    JSONDashlet modifiedDashlet = dashletsFromJSON.get(jsonDashlet.getId());
-
-                    jsonDashlet.setCol(modifiedDashlet.getCol()); //update position in grid
-                    jsonDashlet.setRow(modifiedDashlet.getRow());
-
-                    if (StringUtils.isNotBlank(modifiedDashlet.getCustomBuildCount()) || StringUtils.isNotBlank(modifiedDashlet.getCustomName())) {
-                        jsonDashlet.setId(DigestUtils.md5Hex(dashboard + jsonDashlet.getChartDashlet() + jsonDashlet.getMeasure() +
-                                modifiedDashlet.getCustomName() + modifiedDashlet.getCustomBuildCount() + jsonDashlet.getAggregation()));
-                        jsonDashlet.setCustomBuildCount(modifiedDashlet.getCustomBuildCount());
-                        jsonDashlet.setCustomName(modifiedDashlet.getCustomName());
-                        jsonDashletMap.remove(modifiedDashlet.getId());
-                    }
-
-                    jsonDashletMap.put(jsonDashlet.getId(), jsonDashlet);
-                    writeConfiguration(jsonDashletMap);
                 }
             }
+
+            for (JSONDashlet modifiedDashlet : dashletsFromJSON.values()) {
+                JSONDashlet unmodifiedDashlet = defaultConfiguration.get(modifiedDashlet.getId());
+                JSONDashlet originalDashlet = jsonDashletMap.get(modifiedDashlet.getId());
+                if (unmodifiedDashlet != null) { //newly added dashlets
+                    modifiedDashlet.setDashboard(unmodifiedDashlet.getDashboard());
+                    modifiedDashlet.setChartDashlet(unmodifiedDashlet.getChartDashlet());
+                    modifiedDashlet.setMeasure(unmodifiedDashlet.getMeasure());
+                    modifiedDashlet.setDescription(unmodifiedDashlet.getDescription());
+                    modifiedDashlet.setId(modifiedDashlet.generateID());
+
+                    jsonDashletMap.put(modifiedDashlet.getId(), modifiedDashlet);
+                } else if (originalDashlet != null) { //old dashlets
+                    modifiedDashlet.setDashboard(originalDashlet.getDashboard());
+                    modifiedDashlet.setChartDashlet(originalDashlet.getChartDashlet());
+                    modifiedDashlet.setMeasure(originalDashlet.getMeasure());
+                    modifiedDashlet.setDescription(originalDashlet.getDescription());
+                    modifiedDashlet.setAggregation(originalDashlet.getAggregation());
+                    modifiedDashlet.setCustomBuildCount(originalDashlet.getCustomBuildCount());
+                    modifiedDashlet.setCustomName(originalDashlet.getCustomName());
+
+                    modifiedDashlet.setId(modifiedDashlet.generateID());
+                    jsonDashletMap.remove(originalDashlet.getId());
+                    jsonDashletMap.put(modifiedDashlet.getId(), modifiedDashlet);
+                }
+            }
+            writeConfiguration(jsonDashletMap);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (IOException e) {
