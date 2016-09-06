@@ -167,7 +167,7 @@ public class zOSJobSubmitter extends Builder {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         // Submit the job.
-        boolean result = zFTPConnector.submit(inputStream,this.wait,this.waitTime,outputStream,this.deleteJobFromSpool);
+        boolean result = zFTPConnector.submit(inputStream,this.wait,this.waitTime,outputStream,this.deleteJobFromSpool, listener);
 
         // Get CC.
         String printableCC = zFTPConnector.getJobCC();
@@ -178,8 +178,13 @@ public class zOSJobSubmitter extends Builder {
 
         // Print the info about the job
 	    logger.info("Job [" + zFTPConnector.getJobID() + "] processing finished.");
+	    listener.getLogger().println(
+	    	"Job ["
+			    + zFTPConnector.getJobID()
+			    + "] processing finished. Captured RC = ["
+	            + printableCC + "]");
 
-        // If wait was requested try to save the job log.
+	    // If wait was requested try to save the job log.
         if(this.wait) {
             // Save the log.
             try
@@ -209,7 +214,7 @@ public class zOSJobSubmitter extends Builder {
         }
 
         // Return whether the job succeeded or not.
-	    // If JESINTERFACELEVEL is configured, no real R is provided.
+	    // If JESINTERFACELEVEL is configured, no real RC is provided.
         return result && (this.JESINTERFACELEVEL1 || (_MaxCC.compareTo(printableCC) >= 0));
     }
 
