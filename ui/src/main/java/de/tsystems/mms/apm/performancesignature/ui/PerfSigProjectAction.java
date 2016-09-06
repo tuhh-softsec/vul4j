@@ -36,7 +36,6 @@ import hudson.util.ChartUtil;
 import hudson.util.ColorPalette;
 import hudson.util.DataSetBuilder;
 import hudson.util.ShiftedCategoryAxis;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jfree.chart.ChartFactory;
@@ -80,7 +79,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
                 Map<String, JSONDashlet> dashlets = new Gson().fromJson(jsonConfigFile.readToString(), type);
                 jsonDashletMap.putAll(dashlets);
             } else {
-                jsonDashletMap.putAll(createJSONConfiguration());
+                jsonDashletMap.putAll(createJSONConfiguration(true));
                 writeConfiguration(jsonDashletMap);
             }
         } catch (IOException e) {
@@ -121,7 +120,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             JSONDashlet jsonDashlet = jsonDashletMap.get(id);
             ChartUtil.generateGraph(request, response, createChart(jsonDashlet, buildDataSet(jsonDashlet)), PerfSigUIUtils.calcDefaultSize());
         } else { //new dashlet
-            JSONDashlet jsonDashlet = createJSONConfiguration().get(id);
+            JSONDashlet jsonDashlet = createJSONConfiguration(false).get(id);
             jsonDashlet.setAggregation(request.getParameter("aggregation"));
             jsonDashlet.setCustomName(request.getParameter("customName"));
             jsonDashlet.setCustomBuildCount(request.getParameter("customBuildCount"));
@@ -367,7 +366,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         return new Gson().toJson(jsonDashletList);
     }
 
-    private Map<String, JSONDashlet> createJSONConfiguration() {
+    private Map<String, JSONDashlet> createJSONConfiguration(final boolean useRandomId) {
         int col = 1, row = 1;
         Map<String, JSONDashlet> jsonDashletMap = new HashMap<String, JSONDashlet>();
         for (DashboardReport dashboardReport : getLastDashboardReports()) {
@@ -377,11 +376,13 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             }
             for (ChartDashlet chartDashlet : dashboardReport.getChartDashlets()) {
                 for (Measure measure : chartDashlet.getMeasures()) {
-                    String id = DigestUtils.md5Hex(dashboardReport.getName() + chartDashlet.getName() + measure.getName());
-                    JSONDashlet dashlet = new JSONDashlet(col++, row, id, dashboardReport.getName(), chartDashlet.getName(), measure.getName(),
+                    JSONDashlet dashlet = new JSONDashlet(col++, row, dashboardReport.getName(), chartDashlet.getName(), measure.getName(),
                             measure.getAggregation(), chartDashlet.getDescription());
+                    if (useRandomId) {
+                        dashlet.setId(dashlet.generateID());
+                    }
 
-                    jsonDashletMap.put(id, dashlet);
+                    jsonDashletMap.put(dashlet.getId(), dashlet);
 
                     if (col > 3) {
                         col = 1;
@@ -395,7 +396,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
 
     @JavaScriptMethod
     public void setDashboardConfiguration(final String dashboard, final String data) {
-        Map<String, JSONDashlet> defaultConfiguration = createJSONConfiguration();
+        Map<String, JSONDashlet> defaultConfiguration = createJSONConfiguration(false);
         Map<String, JSONDashlet> dashletsFromJSON = new HashMap<String, JSONDashlet>();
 
         String json = StringEscapeUtils.unescapeJava(data);
@@ -458,7 +459,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     @JavaScriptMethod
     public Map<String, String> getAvailableMeasures(final String dashboard, final String dashlet) throws IOException {
         Map<String, String> availableMeasures = new HashMap<String, String>();
-        for (JSONDashlet jsonDashlet : createJSONConfiguration().values()) {
+        for (JSONDashlet jsonDashlet : createJSONConfiguration(false).values()) {
             if (jsonDashlet.getDashboard().equals(dashboard) && jsonDashlet.getChartDashlet().equals(dashlet)) {
                 availableMeasures.put(jsonDashlet.getId(), jsonDashlet.getMeasure());
             }

@@ -43,7 +43,6 @@ public class JSONDashlet {
 
     /**
      * @param aggregation
-     * @param id
      * @param chartDashlet
      * @param col
      * @param measure
@@ -51,11 +50,10 @@ public class JSONDashlet {
      * @param dashboard
      * @param row
      */
-    public JSONDashlet(final int col, final int row, final String id, final String dashboard, final String chartDashlet, final String measure,
+    public JSONDashlet(final int col, final int row, final String dashboard, final String chartDashlet, final String measure,
                        final String aggregation, final String description) {
         this.col = col;
         this.row = row;
-        this.id = id;
         this.dashboard = dashboard;
         this.chartDashlet = chartDashlet;
         this.measure = measure;
@@ -64,10 +62,12 @@ public class JSONDashlet {
         this.show = true;
         this.aggregation = aggregation;
         this.description = description;
+        this.id = DigestUtils.md5Hex(this.dashboard + this.chartDashlet + this.measure);
     }
 
     public JSONDashlet(final int col, final int row, final String id, final String dashboard) {
-        this(col, row, id, dashboard, "", "", "", "");
+        this(col, row, dashboard, "", "", "", "");
+        this.id = id;
     }
 
     /**
