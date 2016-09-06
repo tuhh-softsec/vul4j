@@ -57,10 +57,8 @@ import java.awt.*;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class PerfSigProjectAction extends PerfSigBaseAction implements ProminentProjectAction {
@@ -374,7 +372,6 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         Map<String, JSONDashlet> jsonDashletMap = new HashMap<String, JSONDashlet>();
         for (DashboardReport dashboardReport : getLastDashboardReports()) {
             if (dashboardReport.isUnitTest()) {
-                //ToDo: use measure name instead of id
                 JSONDashlet dashlet = new JSONDashlet(col++, row, "unittest_overview", dashboardReport.getName());
                 jsonDashletMap.put("unittest_overview", dashlet);
             }
@@ -397,7 +394,6 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     }
 
     @JavaScriptMethod
-    //ToDo: rewrite setDashboardConfiguration
     public void setDashboardConfiguration(final String dashboard, final String data) {
         Map<String, JSONDashlet> defaultConfiguration = createJSONConfiguration();
         Map<String, JSONDashlet> dashletsFromJSON = new HashMap<String, JSONDashlet>();
@@ -423,7 +419,13 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             for (JSONDashlet modifiedDashlet : dashletsFromJSON.values()) {
                 JSONDashlet unmodifiedDashlet = defaultConfiguration.get(modifiedDashlet.getId());
                 JSONDashlet originalDashlet = jsonDashletMap.get(modifiedDashlet.getId());
-                if (unmodifiedDashlet != null) { //newly added dashlets
+                if (modifiedDashlet.getId().equals("unittest_overview")) {
+                    if (originalDashlet != null) {
+                        modifiedDashlet.setCustomBuildCount(originalDashlet.getCustomBuildCount());
+                        modifiedDashlet.setCustomName(originalDashlet.getCustomName());
+                    }
+                    jsonDashletMap.put(modifiedDashlet.getId(), modifiedDashlet);
+                } else if (unmodifiedDashlet != null) { //newly added dashlets
                     modifiedDashlet.setDashboard(unmodifiedDashlet.getDashboard());
                     modifiedDashlet.setChartDashlet(unmodifiedDashlet.getChartDashlet());
                     modifiedDashlet.setMeasure(unmodifiedDashlet.getMeasure());
@@ -487,7 +489,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             if (!jsonDashlet.getDashboard().equals(dashboardReport.getName())) continue;
             boolean chartDashletFound = false;
 
-            for (ChartDashlet dashlet : dashboardReport.getChartDashlets()) {
+            for (ChartDashlet dashlet : Collections.unmodifiableList(dashboardReport.getChartDashlets())) {
                 if (dashlet.getName().equals(jsonDashlet.getChartDashlet())) {
                     for (Measure m : dashlet.getMeasures()) {
                         if (m.getName().equals(jsonDashlet.getMeasure())) {
@@ -498,6 +500,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
                             } else {
                                 d = new ChartDashlet(customName);
                             }
+                            m.setAggregation(jsonDashlet.getAggregation());
                             d.addMeasure(m);
                             filteredChartDashlets.add(d);
                             chartDashletFound = true;
