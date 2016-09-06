@@ -38,6 +38,7 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.Agent;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.BaseConfiguration;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.DumpStatus;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.RegisterTestRunRequest;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.FilePath;
 import hudson.ProxyConfiguration;
@@ -121,7 +122,7 @@ public class DTServerConnection {
         }
 
         if (customProxy != null) {
-            Jenkins jenkins = Jenkins.getInstance();
+            Jenkins jenkins = PerfSigUIUtils.getInstance();
             if (customProxy.isUseJenkinsProxy() && jenkins.proxy != null) {
                 final ProxyConfiguration proxyConfiguration = jenkins.proxy;
                 if (StringUtils.isNotBlank(proxyConfiguration.name) && proxyConfiguration.port > 0) {

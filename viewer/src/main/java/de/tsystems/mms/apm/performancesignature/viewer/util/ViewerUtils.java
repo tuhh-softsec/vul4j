@@ -20,6 +20,7 @@ import com.cloudbees.plugins.credentials.CredentialsMatchers;
 import com.cloudbees.plugins.credentials.CredentialsProvider;
 import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
 import com.cloudbees.plugins.credentials.domains.DomainRequirement;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import de.tsystems.mms.apm.performancesignature.viewer.ViewerRecorder;
 import de.tsystems.mms.apm.performancesignature.viewer.model.CredJobPair;
 import de.tsystems.mms.apm.performancesignature.viewer.model.JenkinsServerConfiguration;
@@ -27,7 +28,6 @@ import hudson.FilePath;
 import hudson.model.Run;
 import hudson.security.ACL;
 import hudson.util.ListBoxModel;
-import jenkins.model.Jenkins;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -68,7 +68,7 @@ public final class ViewerUtils {
     }
 
     public static List<JenkinsServerConfiguration> getJenkinsConfigurations() {
-        return Jenkins.getInstance().getDescriptorByType(ViewerRecorder.DescriptorImpl.class).getConfigurations();
+        return PerfSigUIUtils.getInstance().getDescriptorByType(ViewerRecorder.DescriptorImpl.class).getConfigurations();
     }
 
     public static JenkinsServerConfiguration getServerConfiguration(final String jenkinsServer) {
@@ -83,7 +83,7 @@ public final class ViewerUtils {
 
     public static UsernamePasswordCredentials getCredentials(final String credsId) {
         return (credsId == null) ? null : CredentialsMatchers.firstOrNull(
-                CredentialsProvider.lookupCredentials(UsernamePasswordCredentials.class, Jenkins.getInstance(), ACL.SYSTEM,
+                CredentialsProvider.lookupCredentials(UsernamePasswordCredentials.class, PerfSigUIUtils.getInstance(), ACL.SYSTEM,
                         Collections.<DomainRequirement>emptyList()), CredentialsMatchers.withId(credsId));
     }
 

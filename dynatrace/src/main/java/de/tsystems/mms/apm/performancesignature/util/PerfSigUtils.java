@@ -28,7 +28,6 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.Agent;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.BaseConfiguration;
 import hudson.security.ACL;
 import hudson.util.ListBoxModel;
-import jenkins.model.Jenkins;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -62,7 +61,7 @@ public final class PerfSigUtils {
     }
 
     public static List<DynatraceServerConfiguration> getDTConfigurations() {
-        return Jenkins.getInstance().getDescriptorByType(PerfSigRecorder.DescriptorImpl.class).getConfigurations();
+        return PerfSigUIUtils.getInstance().getDescriptorByType(PerfSigRecorder.DescriptorImpl.class).getConfigurations();
     }
 
     public static DynatraceServerConfiguration getServerConfiguration(final String dynatraceServer) {
@@ -77,7 +76,7 @@ public final class PerfSigUtils {
 
     public static UsernamePasswordCredentials getCredentials(final String credsId) {
         return (credsId == null) ? null : CredentialsMatchers.firstOrNull(
-                CredentialsProvider.lookupCredentials(UsernamePasswordCredentials.class, Jenkins.getInstance(), ACL.SYSTEM,
+                CredentialsProvider.lookupCredentials(UsernamePasswordCredentials.class, PerfSigUIUtils.getInstance(), ACL.SYSTEM,
                         Collections.<DomainRequirement>emptyList()), CredentialsMatchers.withId(credsId));
     }
 

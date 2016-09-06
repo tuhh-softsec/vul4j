@@ -25,6 +25,7 @@ import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
 import com.cloudbees.plugins.credentials.domains.DomainRequirement;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionException;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.Extension;
 import hudson.RelativePath;
@@ -69,13 +70,13 @@ public class CredProfilePair extends AbstractDescribableImpl<CredProfilePair> {
         }
 
         public ListBoxModel doFillCredentialsIdItems(@QueryParameter String credentialsId) {
-            if (!Jenkins.getInstance().hasPermission(Jenkins.ADMINISTER)) {
+            if (!PerfSigUIUtils.getInstance().hasPermission(Jenkins.ADMINISTER)) {
                 return new StandardListBoxModel().includeCurrentValue(credentialsId);
             }
             return new StandardUsernameListBoxModel()
                     .includeEmptyValue()
                     .includeMatchingAs(ACL.SYSTEM,
-                            Jenkins.getInstance(),
+                            PerfSigUIUtils.getInstance(),
                             StandardUsernamePasswordCredentials.class,
                             Collections.<DomainRequirement>emptyList(),
                             CredentialsMatchers.always())
@@ -83,7 +84,7 @@ public class CredProfilePair extends AbstractDescribableImpl<CredProfilePair> {
         }
 
         public FormValidation doCheckCredentialsId(@QueryParameter String value) {
-            if (!Jenkins.getInstance().hasPermission(Jenkins.ADMINISTER)) {
+            if (!PerfSigUIUtils.getInstance().hasPermission(Jenkins.ADMINISTER)) {
                 return FormValidation.ok();
             }
             for (ListBoxModel.Option o : CredentialsProvider.listCredentials(StandardUsernamePasswordCredentials.class,

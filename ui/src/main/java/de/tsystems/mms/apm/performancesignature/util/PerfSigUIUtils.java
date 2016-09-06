@@ -23,11 +23,13 @@ import hudson.Functions;
 import hudson.model.Result;
 import hudson.model.Run;
 import hudson.util.Area;
+import jenkins.model.Jenkins;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.commons.lang.CharEncoding;
 import org.apache.commons.lang.StringUtils;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -96,6 +98,19 @@ public final class PerfSigUIUtils {
             return new Area(250, 100);
         else
             return new Area(500, 200);
+    }
+
+    /**
+     * gets removed if jenkins.version hits 1.653
+     */
+    @Nonnull
+    public static Jenkins getInstance() throws IllegalStateException {
+        Jenkins instance = Jenkins.getInstance();
+        if (instance == null) {
+            throw new IllegalStateException("Jenkins has not been started, or was already shut down");
+        } else {
+            return instance;
+        }
     }
 
     public static void handleIncidents(final Run<?, ?> run, final List<IncidentChart> incidents, final PrintStream logger, final int nonFunctionalFailure) {
