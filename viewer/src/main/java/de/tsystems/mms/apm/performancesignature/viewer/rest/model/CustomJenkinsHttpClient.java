@@ -73,7 +73,7 @@ public class CustomJenkinsHttpClient extends JenkinsHttpClient {
 
         }
         if (customProxy != null) {
-            Jenkins jenkins = Jenkins.getActiveInstance();
+            Jenkins jenkins = Jenkins.getInstance();
             if (customProxy.isUseJenkinsProxy() && jenkins.proxy != null) {
                 final ProxyConfiguration proxyConfiguration = jenkins.proxy;
                 if (StringUtils.isNotBlank(proxyConfiguration.name) && proxyConfiguration.port > 0) {

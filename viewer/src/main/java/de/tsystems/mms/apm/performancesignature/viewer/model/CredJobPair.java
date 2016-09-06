@@ -68,13 +68,13 @@ public class CredJobPair extends AbstractDescribableImpl<CredJobPair> {
         }
 
         public ListBoxModel doFillCredentialsIdItems(@QueryParameter String credentialsId) {
-            if (!Jenkins.getActiveInstance().hasPermission(Jenkins.ADMINISTER)) {
+            if (!Jenkins.getInstance().hasPermission(Jenkins.ADMINISTER)) {
                 return new StandardListBoxModel().includeCurrentValue(credentialsId);
             }
             return new StandardUsernameListBoxModel()
                     .includeEmptyValue()
                     .includeMatchingAs(ACL.SYSTEM,
-                            Jenkins.getActiveInstance(),
+                            Jenkins.getInstance(),
                             StandardUsernamePasswordCredentials.class,
                             Collections.<DomainRequirement>emptyList(),
                             CredentialsMatchers.always())
@@ -82,11 +82,11 @@ public class CredJobPair extends AbstractDescribableImpl<CredJobPair> {
         }
 
         public FormValidation doCheckCredentialsId(@QueryParameter String value) {
-            if (!Jenkins.getActiveInstance().hasPermission(Jenkins.ADMINISTER)) {
+            if (!Jenkins.getInstance().hasPermission(Jenkins.ADMINISTER)) {
                 return FormValidation.ok();
             }
             for (ListBoxModel.Option o : CredentialsProvider.listCredentials(StandardUsernamePasswordCredentials.class,
-                    Jenkins.getActiveInstance(),
+                    Jenkins.getInstance(),
                     ACL.SYSTEM,
                     Collections.<DomainRequirement>emptyList(),
                     CredentialsMatchers.always())) {

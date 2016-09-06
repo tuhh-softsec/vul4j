@@ -62,7 +62,7 @@ public final class PerfSigUtils {
     }
 
     public static List<DynatraceServerConfiguration> getDTConfigurations() {
-        return Jenkins.getActiveInstance().getDescriptorByType(PerfSigRecorder.DescriptorImpl.class).getConfigurations();
+        return Jenkins.getInstance().getDescriptorByType(PerfSigRecorder.DescriptorImpl.class).getConfigurations();
     }
 
     public static DynatraceServerConfiguration getServerConfiguration(final String dynatraceServer) {
@@ -77,7 +77,7 @@ public final class PerfSigUtils {
 
     public static UsernamePasswordCredentials getCredentials(final String credsId) {
         return (credsId == null) ? null : CredentialsMatchers.firstOrNull(
-                CredentialsProvider.lookupCredentials(UsernamePasswordCredentials.class, Jenkins.getActiveInstance(), ACL.SYSTEM,
+                CredentialsProvider.lookupCredentials(UsernamePasswordCredentials.class, Jenkins.getInstance(), ACL.SYSTEM,
                         Collections.<DomainRequirement>emptyList()), CredentialsMatchers.withId(credsId));
     }
 

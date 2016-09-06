@@ -68,7 +68,7 @@ public final class ViewerUtils {
     }
 
     public static List<JenkinsServerConfiguration> getJenkinsConfigurations() {
-        return Jenkins.getActiveInstance().getDescriptorByType(ViewerRecorder.DescriptorImpl.class).getConfigurations();
+        return Jenkins.getInstance().getDescriptorByType(ViewerRecorder.DescriptorImpl.class).getConfigurations();
     }
 
     public static JenkinsServerConfiguration getServerConfiguration(final String jenkinsServer) {

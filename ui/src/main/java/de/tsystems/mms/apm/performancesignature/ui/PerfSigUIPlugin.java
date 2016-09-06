@@ -19,12 +19,12 @@ package de.tsystems.mms.apm.performancesignature.ui;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.*;
 import de.tsystems.mms.apm.performancesignature.model.PerfSigTestData;
 import de.tsystems.mms.apm.performancesignature.model.PerfSigTestDataWrapper;
-import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import hudson.FilePath;
 import hudson.Plugin;
 import hudson.init.Initializer;
 import hudson.model.Job;
 import hudson.model.Run;
+import jenkins.model.Jenkins;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 
 import java.io.IOException;
@@ -61,7 +61,7 @@ public class PerfSigUIPlugin extends Plugin {
     @Initializer(after = JOB_LOADED)
     public static void init1() throws IOException, InterruptedException {
         // Check for old dashboard configurations
-        for (Job<?, ?> job : PerfSigUIUtils.getActiveInstance().getAllItems(Job.class)) {
+        for (Job<?, ?> job : Jenkins.getInstance().getAllItems(Job.class)) {
             FilePath jobPath = new FilePath(job.getConfigFile().getFile()).getParent();
             if (jobPath == null) continue;
             List<FilePath> files = jobPath.list(new RegexFileFilter(".*-config.json"));
