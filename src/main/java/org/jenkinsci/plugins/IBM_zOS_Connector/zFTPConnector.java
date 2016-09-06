@@ -2,6 +2,8 @@ package org.jenkinsci.plugins.IBM_zOS_Connector;
 
 import org.apache.commons.net.PrintCommandListener;
 import org.apache.commons.net.ftp.*;
+import hudson.model.BuildListener;
+
 import java.io.*;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -17,73 +19,76 @@ import java.util.regex.Pattern;
  *
  * @version 1.0
  */
-public class zFTPConnector
+class zFTPConnector
 {
     // Server info.
     /**
      * LPAR name or IP to connect to.
      */
-    protected String server;
+    private String server;
     /**
      * FTP port for connection
      */
-    protected int port;
+    private int port;
 
     // Credentials.
     /**
      * UserID.
      */
-    protected String userID;
+    private String userID;
     /**
      * User password.
      */
-    protected String password;
+    private String password;
 
     // Wait parameters.
     /**
      * Time to wait before giving up in milliseconds. If set to <code>0</code> will wait forever.
      */
-    protected long waitTime;
+    private long waitTime;
 
     // Job info from JES-like system.
     /**
      * JobID in JES.
      */
-    protected String jobID;
+    private String jobID;
     /**
      * Jobname in JES.
      */
-    protected String jobName;
+    private String jobName;
     /**
      * Job's MaxCC.
      */
-    protected String jobCC;
+    private String jobCC;
 
     // JESINTERFACELEVEL=1
-	protected boolean JESINTERFACELEVEL1;
+    private boolean JESINTERFACELEVEL1;
 
     // Work elements.
     /**
      * Will ask LPAR once in 10 seconds.
      */
-    protected static final long waitInterval = 10*1000;
+    private static final long waitInterval = 10*1000;
     /**
      * FTPClient from <i>Apache Commons-Net</i>. Used for FTP communication.
      */
-    protected FTPClient FTPClient;
+    private FTPClient FTPClient;
 	/**
 	 * Log prefix (default: "zFTPConnector")
 	 */
-	protected String logPrefix;
+	private String logPrefix;
     /**
      * Pattern for search of jobName
      */
-    protected static final Pattern JesJobName = Pattern.compile("250-It is known to JES as (.*)");
+    private static final Pattern JesJobName = Pattern.compile("250-It is known to JES as (.*)");
 	/**
 	 * Simple logger.
 	 */
-	protected static final Logger logger = Logger.getLogger(zFTPConnector.class.getName());
-
+	private static final Logger logger = Logger.getLogger(zFTPConnector.class.getName());
+	/**
+	 * Build listener (if provided).
+	 */
+	private BuildListener listener;
 
     /**
      * Basic constructor with minimal parameters required.
@@ -95,7 +100,7 @@ public class zFTPConnector
      * @param JESINTERFACELEVEL1 Is FTP server configured for JESINTERFACELEVEL=1?
      * @param logPrefix Log prefix.
      */
-    public zFTPConnector (String server, int port, String userID, String password, boolean JESINTERFACELEVEL1, String logPrefix)
+    public zFTPConnector(String server, int port, String userID, String password, boolean JESINTERFACELEVEL1, String logPrefix)
     {
         // Copy values
         this.server = server;
@@ -112,7 +117,9 @@ public class zFTPConnector
 	    this.logPrefix = "";
 	    if (logPrefix != null)
 		    this.logPrefix = logPrefix;
-	    logger.info(logPrefix + "created zFTPConnector");
+	    this.log("Created zFTPConnector");
+
+	    this.listener = null;
     }
 
     /**
@@ -121,7 +128,7 @@ public class zFTPConnector
      * @return Whether the connection was established using the parameters passed to the constructor.
      * @see zFTPConnector#zFTPConnector(String, int, String, String, boolean, String)
      */
-    protected boolean connect()
+    private boolean connect()
     {
         // Perform the connection.
         try
@@ -137,10 +144,10 @@ public class zFTPConnector
             {
                 // Bad reply code.
                 this.FTPClient.disconnect(); // Disconnect from LPAR.
-                logger.severe(logPrefix + "FTP server refused connection."); // Print error.
+                this.err("FTP server refused connection."); // Print error.
                 return false; // Finish with failure.
             }
-	        logger.info(logPrefix + "FTP: connected to " + server + ":" + port);
+	        this.log("FTP: connected to " + server + ":" + port);
         }
         // IOException handling
         catch (IOException e)
@@ -157,7 +164,7 @@ public class zFTPConnector
                     // Do nothing
                 }
             }
-            logger.severe(logPrefix + "Could not connect to server.");
+            this.err("Could not connect to server.");
             e.printStackTrace();
             return false;
         }
@@ -174,7 +181,7 @@ public class zFTPConnector
      * @see zFTPConnector#zFTPConnector(String, int, String, String, boolean, String)
      * @see zFTPConnector#connect()
      */
-    protected boolean logon()
+    private boolean logon()
     {
         // Check whether we are already connected. If not, try to reconnect.
         if (!this.FTPClient.isConnected())
@@ -198,7 +205,7 @@ public class zFTPConnector
             reply = this.FTPClient.getReplyCode();
             if (!FTPReply.isPositiveCompletion(reply)) {
                 this.FTPClient.disconnect();
-                logger.severe(logPrefix + "FTP server refused to change FileType and JESJobName.");
+                this.err("FTP server refused to change FileType and JESJobName.");
                 return false;
             }
         } catch (IOException e) {
@@ -209,13 +216,19 @@ public class zFTPConnector
                     // do nothing
                 }
             }
-            logger.severe(logPrefix + "Could not connect to server.");
+            this.err("Could not connect to server.");
             e.printStackTrace();
             return false;
         }
 
         // If go here, everything went fine.
         return true;
+    }
+
+    boolean  submit(InputStream inputStream, boolean wait, int waitTime, OutputStream outputStream, boolean deleteLogFromSpool, BuildListener buildListener)
+    {
+    	this.listener = buildListener;
+	    return this.submit(inputStream, wait, waitTime, outputStream, deleteLogFromSpool);
     }
 
     /**
@@ -235,7 +248,7 @@ public class zFTPConnector
      * @see zFTPConnector#waitForCompletion(OutputStream)
      * @see zFTPConnector#deleteJobLog()
      */
-    public boolean submit(InputStream inputStream, boolean wait, int waitTime, OutputStream outputStream, boolean deleteLogFromSpool)
+    boolean submit(InputStream inputStream, boolean wait, int waitTime, OutputStream outputStream, boolean deleteLogFromSpool)
     {
         this.waitTime = ((long)waitTime) * 60 * 1000; // Minutes to milliseconds.
 
@@ -269,12 +282,12 @@ public class zFTPConnector
                     break;
                 }
             }
-	        logger.info(logPrefix + "submitted job [" + this.jobID + "]");
-            inputStream.close();
+	        this.log("Submitted job [" + this.jobID + "]");
+	        inputStream.close();
         }
         catch (FTPConnectionClosedException e)
         {
-            logger.severe(logPrefix + "Server closed connection.");
+            this.err("Server closed connection.");
             e.printStackTrace();
             this.jobCC = "SERVER_CLOSED_CONNECTION";
             return false;
@@ -318,7 +331,7 @@ public class zFTPConnector
      * @see zFTPConnector#submit(InputStream, boolean, int, OutputStream, boolean)
      * @see zFTPConnector#fetchJobLog(OutputStream)
      */
-    protected boolean waitForCompletion(OutputStream outputStream)
+    private boolean waitForCompletion(OutputStream outputStream)
     {
         // Initialize current time and estimated time.
         long curr = System.currentTimeMillis();
@@ -334,7 +347,7 @@ public class zFTPConnector
 		        Thread.sleep(waitInterval);
 		        curr = System.currentTimeMillis();
 	        } catch (InterruptedException e) {
-		        logger.severe(logPrefix + "Interrupted.");
+		        this.err("Interrupted.");
 		        this.jobCC = "WAIT_INTERRUPTED";
 		        return false;
 	        }
@@ -358,7 +371,7 @@ public class zFTPConnector
     /**
      * @return true if job can be listed through FTP.
      */
-    protected boolean checkJobAvailability ()
+    private boolean checkJobAvailability()
     {
         // Verify connection.
         if(!this.FTPClient.isConnected())
@@ -378,7 +391,7 @@ public class zFTPConnector
 		            // Found our jobId
 		            return true;
 	            }
-            logger.severe(this.logPrefix + "Job [" + this.jobID + "] cannot be found in JES");
+            this.err("Job [" + this.jobID + "] cannot be found in JES");
             this.jobCC = "JOB_NOT_FOUND_IN_JES";
             return false;
         }
@@ -397,7 +410,7 @@ public class zFTPConnector
      *
      * @see zFTPConnector#waitForCompletion(OutputStream)
      */
-    protected boolean fetchJobLog(OutputStream outputStream)
+    private boolean fetchJobLog(OutputStream outputStream)
     {
         // Verify connection.
         if(!this.FTPClient.isConnected())
@@ -431,7 +444,7 @@ public class zFTPConnector
     /**
      * @return Whether job RC was correctly obtained or not.
      */
-    protected boolean obtainJobRC()
+    private boolean obtainJobRC()
     {
 
 	    if (this.JESINTERFACELEVEL1) {
@@ -503,7 +516,7 @@ public class zFTPConnector
      *
      * @see zFTPConnector#submit(InputStream, boolean, int, OutputStream, boolean)
      */
-    protected void deleteJobLog ()
+    private void deleteJobLog()
     {
         // Verify connection.
         if(!this.FTPClient.isConnected())
@@ -530,7 +543,7 @@ public class zFTPConnector
      *
      * @return Current <b><code>jobID</code></b>.
      */
-    public String getJobID() {
+    String getJobID() {
         return this.jobID;
     }
 	/**
@@ -538,7 +551,7 @@ public class zFTPConnector
 	 *
 	 * @return Current <b><code>jobName</code></b>.
 	 */
-	public String getJobName() {
+	String getJobName() {
 		return this.jobName;
 	}
     /**
@@ -546,7 +559,28 @@ public class zFTPConnector
      *
      * @return Current <b><code>jobCC</code></b>.
      */
-    public String getJobCC() {
+    String getJobCC() {
         return this.jobCC;
     }
+
+	/**
+	 * Log information into logger.info and listener logger
+	 * @param text Text for logging.
+	 */
+	private void log(String text) {
+	    logger.info(logPrefix + text);
+        System.out.println(text);
+        if (listener != null)
+    		listener.getLogger().println(text);
+    }
+	/**
+	 * Log information into logger.severe and listener error logger
+	 * @param text Text for logging.
+	 */
+	private void err(String text) {
+		logger.severe(logPrefix + text);
+        System.err.println(text);
+        if (listener != null)
+    		listener.error(text);
+	}
 }
