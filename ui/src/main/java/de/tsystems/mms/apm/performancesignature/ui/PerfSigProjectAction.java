@@ -62,6 +62,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class PerfSigProjectAction extends PerfSigBaseAction implements ProminentProjectAction {
     private static final String JSON_FILENAME = "gridconfig.json";
+    private static final String UNITTEST_DASHLETNAME = "unittest_overview";
     private final Job<?, ?> job;
     private final FilePath jsonConfigFile;
     private final Map<String, JSONDashlet> jsonDashletMap;
@@ -221,7 +222,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
 
         //get customName and customBuildCount from persisted json
         if (request.getParameter("customName") == null && request.getParameter("customBuildCount") == null) {
-            JSONDashlet jsonDashlet = jsonDashletMap.get("unittest_overview");
+            JSONDashlet jsonDashlet = jsonDashletMap.get(UNITTEST_DASHLETNAME);
             if (jsonDashlet != null) {
                 ChartUtil.generateGraph(request, response, createTestRunChart(buildTestRunDataSet(String.valueOf(jsonDashlet.getCustomBuildCount())),
                         jsonDashlet.getCustomName()), PerfSigUIUtils.calcDefaultSize());
@@ -371,8 +372,8 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         Map<String, JSONDashlet> jsonDashletMap = new HashMap<String, JSONDashlet>();
         for (DashboardReport dashboardReport : getLastDashboardReports()) {
             if (dashboardReport.isUnitTest()) {
-                JSONDashlet dashlet = new JSONDashlet(col++, row, "unittest_overview", dashboardReport.getName());
-                jsonDashletMap.put("unittest_overview", dashlet);
+                JSONDashlet dashlet = new JSONDashlet(col++, row, UNITTEST_DASHLETNAME, dashboardReport.getName());
+                jsonDashletMap.put(UNITTEST_DASHLETNAME, dashlet);
             }
             for (ChartDashlet chartDashlet : dashboardReport.getChartDashlets()) {
                 for (Measure measure : chartDashlet.getMeasures()) {
@@ -420,7 +421,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             for (JSONDashlet modifiedDashlet : dashletsFromJSON.values()) {
                 JSONDashlet unmodifiedDashlet = defaultConfiguration.get(modifiedDashlet.getId());
                 JSONDashlet originalDashlet = jsonDashletMap.get(modifiedDashlet.getId());
-                if (modifiedDashlet.getId().equals("unittest_overview")) {
+                if (modifiedDashlet.getId().equals(UNITTEST_DASHLETNAME)) {
                     if (originalDashlet != null) {
                         modifiedDashlet.setCustomBuildCount(originalDashlet.getCustomBuildCount());
                         modifiedDashlet.setCustomName(originalDashlet.getCustomName());
@@ -510,7 +511,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
                     }
                 }
             }
-            if (!chartDashletFound) {
+            if (!chartDashletFound && !jsonDashlet.getId().equals(UNITTEST_DASHLETNAME)) {
                 ChartDashlet d = new ChartDashlet(jsonDashlet.getChartDashlet());
                 d.addMeasure(new Measure(null));
                 filteredChartDashlets.add(d);
