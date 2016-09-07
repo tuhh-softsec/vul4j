@@ -587,7 +587,8 @@ CREATE TABLE messprogramm (
     gueltig_bis integer NOT NULL,
     probe_nehmer_id integer,
     probe_kommentar character varying(80),
-    letzte_aenderung timestamp without time zone DEFAULT now() NOT NULL
+    letzte_aenderung timestamp without time zone DEFAULT now() NOT NULL,
+    CHECK (gueltig_von <= gueltig_bis)
 );
 CREATE TRIGGER letzte_aenderung_messprogramm BEFORE UPDATE ON messprogramm FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 

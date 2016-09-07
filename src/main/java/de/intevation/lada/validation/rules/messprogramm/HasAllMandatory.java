@@ -14,7 +14,7 @@ import de.intevation.lada.validation.rules.Rule;
 
 /**
  * Validation rule for Messprogramm.
- * Validates if the Messprogramm has Datenbasis.
+ * Validates if the Messprogramm has all mandatory fields set.
  */
 @ValidationRule("Messprogramm")
 public class HasAllMandatory implements Rule {
