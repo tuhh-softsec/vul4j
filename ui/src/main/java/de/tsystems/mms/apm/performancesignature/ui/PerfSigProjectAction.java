@@ -18,6 +18,7 @@ package de.tsystems.mms.apm.performancesignature.ui;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.thoughtworks.xstream.XStream;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.ChartDashlet;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.Measure;
@@ -25,17 +26,15 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRun;
 import de.tsystems.mms.apm.performancesignature.model.JSONDashlet;
 import de.tsystems.mms.apm.performancesignature.model.PerfSigTestDataWrapper;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
-import hudson.FilePath;
+import hudson.XmlFile;
 import hudson.model.Job;
+import hudson.model.PermalinkProjectAction;
 import hudson.model.ProminentProjectAction;
 import hudson.model.Run;
 import hudson.tasks.junit.TestResult;
 import hudson.tasks.junit.TestResultAction;
 import hudson.tasks.test.TestResultProjectAction;
-import hudson.util.ChartUtil;
-import hudson.util.ColorPalette;
-import hudson.util.DataSetBuilder;
-import hudson.util.ShiftedCategoryAxis;
+import hudson.util.*;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jfree.chart.ChartFactory;
@@ -53,41 +52,28 @@ import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.bind.JavaScriptMethod;
 
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class PerfSigProjectAction extends PerfSigBaseAction implements ProminentProjectAction {
-    private static final String JSON_FILENAME = "gridconfig.json";
+    private static final String JSON_FILENAME = "gridconfig.xml";
     private static final String UNITTEST_DASHLETNAME = "unittest_overview";
+    private static final XStream XSTREAM = new XStream2();
+    private static final Logger logger = Logger.getLogger(PermalinkProjectAction.class.getName());
     private final Job<?, ?> job;
-    private final FilePath jsonConfigFile;
     private final Map<String, JSONDashlet> jsonDashletMap;
 
     public PerfSigProjectAction(final Job<?, ?> job) {
         this.job = job;
         this.jsonDashletMap = new ConcurrentHashMap<String, JSONDashlet>();
-        FilePath configPath = new FilePath(job.getConfigFile().getFile());
-        this.jsonConfigFile = new FilePath(configPath.getParent(), JSON_FILENAME);
-
-        try {
-            if (jsonConfigFile.exists()) {
-                Type type = new TypeToken<Map<String, JSONDashlet>>() {
-                }.getType();
-                Map<String, JSONDashlet> dashlets = new Gson().fromJson(jsonConfigFile.readToString(), type);
-                jsonDashletMap.putAll(dashlets);
-            } else {
-                jsonDashletMap.putAll(createJSONConfiguration(true));
-                writeConfiguration(jsonDashletMap);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        this.jsonDashletMap.putAll(getJsonDashletMap());
     }
 
     @Override
@@ -103,8 +89,26 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         return job.getAction(TestResultProjectAction.class);
     }
 
-    public Class getPerfSigUIUtils() {
+    public Class<PerfSigUIUtils> getPerfSigUIUtils() {
         return PerfSigUIUtils.class;
+    }
+
+    public synchronized Map<String, JSONDashlet> getJsonDashletMap() {
+        File jsonConfigFile = new File(job.getConfigFile().getFile().getParent(), JSON_FILENAME);
+        try {
+            if (jsonConfigFile.exists()) {
+                return (Map<String, JSONDashlet>) getConfigFile().read();
+            } else {
+                Map<String, JSONDashlet> newConfiguration = createJSONConfiguration(true);
+                writeConfiguration(newConfiguration);
+                return newConfiguration;
+            }
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "Failed to load " + getConfigFile(), e);
+        } catch (InterruptedException e) {
+            logger.log(Level.SEVERE, "Failed to load " + getConfigFile(), e);
+        }
+        return new HashMap<String, JSONDashlet>();
     }
 
     public void doSummarizerGraph(final StaplerRequest request, final StaplerResponse response) throws IOException, InterruptedException {
@@ -520,7 +524,15 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         return filteredChartDashlets;
     }
 
+    private XmlFile getConfigFile() {
+        return new XmlFile(XSTREAM, new File(job.getConfigFile().getFile().getParent(), JSON_FILENAME));
+    }
+
     private synchronized void writeConfiguration(final Map<String, JSONDashlet> jsonDashletMap) throws IOException, InterruptedException {
-        jsonConfigFile.write(new Gson().toJson(jsonDashletMap), null);
+        try {
+            getConfigFile().write(jsonDashletMap);
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "Failed to save the grid configuration", e);
+        }
     }
 }
