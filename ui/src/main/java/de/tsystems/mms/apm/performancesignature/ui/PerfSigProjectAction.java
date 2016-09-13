@@ -93,6 +93,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         return PerfSigUIUtils.class;
     }
 
+    @SuppressWarnings("unchecked")
     public synchronized Map<String, JSONDashlet> getJsonDashletMap() {
         File jsonConfigFile = new File(job.getConfigFile().getFile().getParent(), JSON_FILENAME);
         try {
@@ -455,9 +456,9 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             }
             writeConfiguration(jsonDashletMap);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "could not save grid configuration", e);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "could not save grid configuration", e);
         }
     }
 
