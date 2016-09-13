@@ -402,7 +402,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     @JavaScriptMethod
     public void setDashboardConfiguration(final String dashboard, final String data) {
         Map<String, JSONDashlet> defaultConfiguration = createJSONConfiguration(false);
-        Map<String, JSONDashlet> dashletsFromJSON = new HashMap<String, JSONDashlet>();
+        List<String> idsFromJson = new ArrayList<String>();
 
         String json = StringEscapeUtils.unescapeJava(data);
         if (!json.startsWith("[")) json = json.substring(1, json.length() - 1);
@@ -411,18 +411,18 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         }.getType();
         List<JSONDashlet> jsonDashletList = new Gson().fromJson(json, type);
         for (JSONDashlet jsonDashlet : jsonDashletList) {
-            dashletsFromJSON.put(jsonDashlet.getId(), jsonDashlet);
+            idsFromJson.add(jsonDashlet.getId());
         }
 
         try {
             for (JSONDashlet jsonDashlet : jsonDashletMap.values()) {
                 if (!jsonDashlet.getDashboard().equals(dashboard)) continue; //filter out dashlets from other dashboards
-                if (!dashletsFromJSON.containsKey(jsonDashlet.getId())) { //remove dashlet, if it's not present in gridConfiguration
+                if (!idsFromJson.contains(jsonDashlet.getId())) { //remove dashlet, if it's not present in gridConfiguration
                     jsonDashletMap.remove(jsonDashlet.getId());
                 }
             }
 
-            for (JSONDashlet modifiedDashlet : dashletsFromJSON.values()) {
+            for (JSONDashlet modifiedDashlet : jsonDashletList) {
                 JSONDashlet unmodifiedDashlet = defaultConfiguration.get(modifiedDashlet.getId());
                 JSONDashlet originalDashlet = jsonDashletMap.get(modifiedDashlet.getId());
                 if (modifiedDashlet.getId().equals(UNITTEST_DASHLETNAME)) {
