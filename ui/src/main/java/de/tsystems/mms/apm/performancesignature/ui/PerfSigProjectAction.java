@@ -55,9 +55,10 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -408,9 +409,8 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         String json = StringEscapeUtils.unescapeJava(data);
         if (!json.startsWith("[")) json = json.substring(1, json.length() - 1);
 
-        Type type = new TypeToken<List<JSONDashlet>>() {
-        }.getType();
-        List<JSONDashlet> jsonDashletList = new Gson().fromJson(json, type);
+        List<JSONDashlet> jsonDashletList = new Gson().fromJson(json, new TypeToken<List<JSONDashlet>>() {
+        }.getType());
         for (JSONDashlet jsonDashlet : jsonDashletList) {
             idsFromJson.add(jsonDashlet.getId());
         }
@@ -496,7 +496,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             if (!jsonDashlet.getDashboard().equals(dashboardReport.getName())) continue;
             boolean chartDashletFound = false;
 
-            for (ChartDashlet dashlet : Collections.unmodifiableList(dashboardReport.getChartDashlets())) {
+            for (ChartDashlet dashlet : dashboardReport.getChartDashlets()) {
                 if (dashlet.getName().equals(jsonDashlet.getChartDashlet())) {
                     for (Measure m : dashlet.getMeasures()) {
                         if (m.getName().equals(jsonDashlet.getMeasure())) {
@@ -507,8 +507,10 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
                             } else {
                                 d = new ChartDashlet(customName);
                             }
-                            m.setAggregation(jsonDashlet.getAggregation());
-                            d.addMeasure(m);
+                            //workaround to clone m (heavy)
+                            Measure modifiedMeasure = (Measure) XSTREAM.fromXML(XSTREAM.toXML(m));
+                            modifiedMeasure.setAggregation(jsonDashlet.getAggregation());
+                            d.addMeasure(modifiedMeasure);
                             filteredChartDashlets.add(d);
                             chartDashletFound = true;
                             break;
