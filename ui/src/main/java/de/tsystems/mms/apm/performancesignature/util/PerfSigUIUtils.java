@@ -26,6 +26,7 @@ import hudson.util.Area;
 import jenkins.model.Jenkins;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.RegexFileFilter;
+import org.apache.commons.lang.CharEncoding;
 import org.apache.commons.lang.StringUtils;
 
 import javax.annotation.Nonnull;
@@ -79,7 +80,7 @@ public final class PerfSigUIUtils {
     public static String encodeString(final String value) {
         if (StringUtils.isBlank(value)) return "";
         try {
-            return URLEncoder.encode(value, "UTF-8").replaceAll("\\+", "%20");
+            return URLEncoder.encode(value, CharEncoding.UTF_8).replaceAll("\\+", "%20");
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(Messages.PerfSigUtils_EncodingFailure(), e);
         }
@@ -99,8 +100,11 @@ public final class PerfSigUIUtils {
             return new Area(500, 200);
     }
 
+    /**
+     * gets removed if jenkins.version hits 1.653
+     */
     @Nonnull
-    public static Jenkins getActiveInstance() throws IllegalStateException {
+    public static Jenkins getInstance() throws IllegalStateException {
         Jenkins instance = Jenkins.getInstance();
         if (instance == null) {
             throw new IllegalStateException("Jenkins has not been started, or was already shut down");

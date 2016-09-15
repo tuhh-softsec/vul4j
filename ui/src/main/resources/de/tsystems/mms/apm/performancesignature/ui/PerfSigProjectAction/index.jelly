@@ -30,7 +30,7 @@
             </style>
         </l:header>
         <st:include it="${it.job}" page="sidepanel.jelly"/>
-        <j:set var="utils" value="${it.PerfSigUtils}"/>
+        <j:set var="utils" value="${it.PerfSigUIUtils}"/>
         <j:set var="trpa" value="${it.testResultProjectAction}"/>
         <j:set var="tr" value="${trpa.lastTestResultAction}"/>
         <l:main-panel>
@@ -41,8 +41,7 @@
                         <ul class="nav nav-tabs" role="tablist" id="tabList">
                             <j:forEach var="lastDashboardReport" items="${it.lastDashboardReports}">
                                 <li role="presentation">
-                                    <a href="#${lastDashboardReport.name}" aria-controls="${lastDashboardReport.name}" data-toggle="tab"
-                                       role="tab">
+                                    <a href="#${lastDashboardReport.name}" aria-controls="${lastDashboardReport.name}" data-toggle="tab" role="tab">
                                         <h3>${lastDashboardReport.name}</h3>
                                     </a>
                                 </li>
@@ -53,8 +52,6 @@
                 <div class="tab-content">
                     <j:forEach var="lastDashboardReport" items="${it.lastDashboardReports}">
                         <j:set var="isUnitTest" value="${lastDashboardReport.isUnitTest() and tr.previousResult!=null}"/>
-                        <!--trigger filteredChartDashlets-->
-                        <j:set var="tmp" value="${it.getFilteredChartDashlets(lastDashboardReport)}"/>
                         <div role="tabpanel fade" class="tab-pane" id="${lastDashboardReport.name}">
                             <div class="container-fluid">
                                 <div class="row" style="height: 50px;">
@@ -164,7 +161,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <j:forEach var="dashboardReport" items="${it.getDashBoardReports(lastDashboardReport.name)}">
+                                        <j:forEach var="dashboardReport" items="${it.getDashboardReports(lastDashboardReport.name)}">
                                             <tr>
                                                 <td>
                                                     <a href="../${dashboardReport.key.number}/${it.urlName}/#${lastDashboardReport.name}">

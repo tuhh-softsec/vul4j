@@ -8,7 +8,7 @@
     "minifyify": "^7.3.3"
   },
   "dependencies": {
-    "@jenkins-cd/js-modules": "latest",
+    "@jenkins-cd/js-modules": "0.0.5",
     "bootstrap-detached": "^3.3.5-v1",
     "datatables.net": "^1.10.12",
     "datatables.net-bs": "^1.10.12",

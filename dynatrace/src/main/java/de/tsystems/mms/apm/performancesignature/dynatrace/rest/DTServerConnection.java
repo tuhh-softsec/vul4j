@@ -38,10 +38,12 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.Agent;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.BaseConfiguration;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.DumpStatus;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.RegisterTestRunRequest;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.FilePath;
 import hudson.ProxyConfiguration;
 import jenkins.model.Jenkins;
+import org.apache.commons.codec.CharEncoding;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
@@ -120,7 +122,7 @@ public class DTServerConnection {
         }
 
         if (customProxy != null) {
-            Jenkins jenkins = Jenkins.getActiveInstance();
+            Jenkins jenkins = PerfSigUIUtils.getInstance();
             if (customProxy.isUseJenkinsProxy() && jenkins.proxy != null) {
                 final ProxyConfiguration proxyConfiguration = jenkins.proxy;
                 if (StringUtils.isNotBlank(proxyConfiguration.name) && proxyConfiguration.port > 0) {
@@ -192,7 +194,7 @@ public class DTServerConnection {
 
     private void addAuthenticationHeader(final URLConnection conn) throws UnsupportedEncodingException {
         String userPassword = this.credentials.getUsername() + Messages.DTServerConnection_SEPARATORColon() + this.credentials.getPassword().getPlainText();
-        String token = DatatypeConverter.printBase64Binary(userPassword.getBytes("UTF-8"));
+        String token = DatatypeConverter.printBase64Binary(userPassword.getBytes(CharEncoding.UTF_8));
         conn.setRequestProperty(Messages.DTServerConnection_PROPERTYAuthorization(), Messages.DTServerConnection_PROPERTYBasic() + " " + token);
         conn.setUseCaches(false);
         conn.setRequestProperty("Accept-Encoding", "gzip, deflate");

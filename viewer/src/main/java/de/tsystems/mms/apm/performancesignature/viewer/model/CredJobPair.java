@@ -23,6 +23,7 @@ import com.cloudbees.plugins.credentials.common.StandardUsernameListBoxModel;
 import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials;
 import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
 import com.cloudbees.plugins.credentials.domains.DomainRequirement;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import de.tsystems.mms.apm.performancesignature.viewer.rest.JenkinsServerConnection;
 import de.tsystems.mms.apm.performancesignature.viewer.util.ViewerUtils;
 import hudson.Extension;
@@ -68,13 +69,13 @@ public class CredJobPair extends AbstractDescribableImpl<CredJobPair> {
         }
 
         public ListBoxModel doFillCredentialsIdItems(@QueryParameter String credentialsId) {
-            if (!Jenkins.getActiveInstance().hasPermission(Jenkins.ADMINISTER)) {
+            if (!PerfSigUIUtils.getInstance().hasPermission(Jenkins.ADMINISTER)) {
                 return new StandardListBoxModel().includeCurrentValue(credentialsId);
             }
             return new StandardUsernameListBoxModel()
                     .includeEmptyValue()
                     .includeMatchingAs(ACL.SYSTEM,
-                            Jenkins.getActiveInstance(),
+                            PerfSigUIUtils.getInstance(),
                             StandardUsernamePasswordCredentials.class,
                             Collections.<DomainRequirement>emptyList(),
                             CredentialsMatchers.always())
@@ -82,11 +83,11 @@ public class CredJobPair extends AbstractDescribableImpl<CredJobPair> {
         }
 
         public FormValidation doCheckCredentialsId(@QueryParameter String value) {
-            if (!Jenkins.getActiveInstance().hasPermission(Jenkins.ADMINISTER)) {
+            if (!PerfSigUIUtils.getInstance().hasPermission(Jenkins.ADMINISTER)) {
                 return FormValidation.ok();
             }
             for (ListBoxModel.Option o : CredentialsProvider.listCredentials(StandardUsernamePasswordCredentials.class,
-                    Jenkins.getActiveInstance(),
+                    Jenkins.getInstance(),
                     ACL.SYSTEM,
                     Collections.<DomainRequirement>emptyList(),
                     CredentialsMatchers.always())) {

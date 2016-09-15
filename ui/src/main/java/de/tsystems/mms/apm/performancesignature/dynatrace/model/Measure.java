@@ -75,7 +75,11 @@ public class Measure extends MeasureBaseModel {
         return aggregation;
     }
 
-    public boolean isPercentile() {
+    public void setAggregation(final String aggregation) {
+        this.aggregation = aggregation;
+    }
+
+    private boolean isPercentile() {
         return StringUtils.isNotBlank(this.aggregation) && this.aggregation.equalsIgnoreCase("percentiles");
     }
 

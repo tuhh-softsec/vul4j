@@ -54,7 +54,6 @@ import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -114,10 +113,10 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
         return previousBuildActionResults.getDashBoardReport(dashboard);
     }
 
-    public DashboardReport getDashBoardReport(final String report) {
+    public DashboardReport getDashBoardReport(final String reportName) {
         if (currentDashboardReports == null) return null;
         for (DashboardReport dashboardReport : currentDashboardReports) {
-            if (dashboardReport.getName().equals(report))
+            if (dashboardReport.getName().equals(reportName))
                 return dashboardReport;
         }
         return null;
@@ -137,13 +136,13 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
     }
 
     private XYDataset buildTimeSeriesDataSet(final StaplerRequest request) {
-        final String measure = request.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamMeasure());
-        final String chartDashlet = request.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamChartDashlet());
-        final String testCase = request.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamTestCase());
-        final TimeSeries timeSeries = new TimeSeries(chartDashlet, Second.class);
+        String measure = request.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamMeasure());
+        String chartDashlet = request.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamChartDashlet());
+        String testCase = request.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamTestCase());
+        TimeSeries timeSeries = new TimeSeries(chartDashlet, Second.class);
 
-        final DashboardReport dashboardReport = getDashBoardReport(testCase);
-        final Measure m = dashboardReport.getMeasure(chartDashlet, measure);
+        DashboardReport dashboardReport = getDashBoardReport(testCase);
+        Measure m = dashboardReport.getMeasure(chartDashlet, measure);
         if (m == null || m.getMeasurements() == null) return null;
 
         for (Measurement measurement : m.getMeasurements()) {
@@ -155,12 +154,14 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
     private JFreeChart createTimeSeriesChart(final StaplerRequest req, final XYDataset dataset) throws UnsupportedEncodingException {
         String chartDashlet = req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamChartDashlet());
         String measure = req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamMeasure());
-        String unit = req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamUnit());
-        String color = req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamColor());
-        if (StringUtils.isBlank(color))
-            color = Messages.PerfSigBuildActionResultsDisplay_DefaultColor();
-        else
-            URLDecoder.decode(req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamColor()), "UTF-8");
+        String testCase = req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamTestCase());
+
+        final DashboardReport dashboardReport = getDashBoardReport(testCase);
+        final Measure m = dashboardReport.getMeasure(chartDashlet, measure);
+        if (m == null) return null;
+
+        String color = m.getColor();
+        String unit = m.getUnit();
 
         JFreeChart chart;
         if (unit.equalsIgnoreCase("num")) {
