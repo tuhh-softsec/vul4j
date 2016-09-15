@@ -55,10 +55,8 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -404,7 +402,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     @JavaScriptMethod
     public void setDashboardConfiguration(final String dashboard, final String data) {
         Map<String, JSONDashlet> defaultConfiguration = createJSONConfiguration(false);
-        List<String> idsFromJson = new ArrayList<String>();
+        HashSet<String> idsFromJson = new HashSet<String>();
 
         String json = StringEscapeUtils.unescapeJava(data);
         if (!json.startsWith("[")) json = json.substring(1, json.length() - 1);
