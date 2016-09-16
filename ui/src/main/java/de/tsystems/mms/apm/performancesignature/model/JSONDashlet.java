@@ -2,8 +2,10 @@ package de.tsystems.mms.apm.performancesignature.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringUtils;
 
 public class JSONDashlet {
 
@@ -227,5 +229,13 @@ public class JSONDashlet {
     public String generateID() {
         return DigestUtils.md5Hex(dashboard + chartDashlet + measure + customName + customBuildCount + aggregation + show
                 + RandomStringUtils.randomAscii(16));
+    }
+
+    public String generateDashletName() {
+        if (StringUtils.isBlank(customName)) {
+            return PerfSigUIUtils.generateTitle(measure, chartDashlet);
+        } else {
+            return customName;
+        }
     }
 }

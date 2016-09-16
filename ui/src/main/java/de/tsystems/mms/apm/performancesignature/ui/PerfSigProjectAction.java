@@ -484,8 +484,17 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         return "";
     }
 
-    public List<ChartDashlet> getFilteredChartDashlets(final DashboardReport dashboardReport) throws IOException, InterruptedException {
-        final List<ChartDashlet> filteredChartDashlets = new ArrayList<ChartDashlet>();
+    public Map<JSONDashlet, Measure> getFilteredChartDashlets(final DashboardReport dashboardReport) throws IOException, InterruptedException {
+        Map<JSONDashlet, Measure> filteredChartDashlets = new TreeMap<JSONDashlet, Measure>(new Comparator<JSONDashlet>() {
+            @Override
+            public int compare(final JSONDashlet o1, final JSONDashlet o2) {
+                if (o1.getRow() > o2.getRow() || o1.getRow() == o2.getRow() && o1.getCol() > o2.getCol()) {
+                    return 1;
+                }
+                return -1;
+            }
+        });
+
         if (dashboardReport.getChartDashlets() == null) {
             return filteredChartDashlets;
         }
@@ -498,18 +507,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
                 if (dashlet.getName().equals(jsonDashlet.getChartDashlet())) {
                     for (Measure m : dashlet.getMeasures()) {
                         if (m.getName().equals(jsonDashlet.getMeasure())) {
-                            ChartDashlet d;
-                            String customName = jsonDashlet.getCustomName();
-                            if (StringUtils.isBlank(customName)) {
-                                d = new ChartDashlet(PerfSigUIUtils.generateTitle(m.getName(), dashlet.getName()));
-                            } else {
-                                d = new ChartDashlet(customName);
-                            }
-                            //workaround to clone m (heavy)
-                            Measure modifiedMeasure = (Measure) XSTREAM.fromXML(XSTREAM.toXML(m));
-                            modifiedMeasure.setAggregation(jsonDashlet.getAggregation());
-                            d.addMeasure(modifiedMeasure);
-                            filteredChartDashlets.add(d);
+                            filteredChartDashlets.put(jsonDashlet, m);
                             chartDashletFound = true;
                             break;
                         }
@@ -517,9 +515,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
                 }
             }
             if (!chartDashletFound && !jsonDashlet.getId().equals(UNITTEST_DASHLETNAME)) {
-                ChartDashlet d = new ChartDashlet(jsonDashlet.getChartDashlet());
-                d.addMeasure(new Measure(null));
-                filteredChartDashlets.add(d);
+                filteredChartDashlets.put(jsonDashlet, new Measure(null));
             }
         }
         return filteredChartDashlets;

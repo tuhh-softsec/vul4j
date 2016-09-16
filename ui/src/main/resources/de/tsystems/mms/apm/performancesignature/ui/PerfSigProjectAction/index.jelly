@@ -151,12 +151,10 @@
                                                 </th>
                                                 <th class="text-center">${%sum #}</th>
                                             </j:if>
-                                            <j:forEach var="chartDashlet" items="${it.getFilteredChartDashlets(lastDashboardReport)}">
-                                                <j:forEach var="measure" items="${chartDashlet.measures}">
-                                                    <th class="text-center">
-                                                        ${chartDashlet.name}<br/>(${measure.unit})
-                                                    </th>
-                                                </j:forEach>
+                                            <j:forEach var="dashlet" items="${it.getFilteredChartDashlets(lastDashboardReport)}">
+                                                <th class="text-center">
+                                                    ${dashlet.key.generateDashletName()}<br/>(${dashlet.value.getUnit(dashlet.key.aggregation)})
+                                                </th>
                                             </j:forEach>
                                         </tr>
                                     </thead>
@@ -196,10 +194,8 @@
                                                     <td>${testRun.numPassed}</td>
                                                     <td>${testResult.totalCount}</td>
                                                 </j:if>
-                                                <j:forEach var="chartDashlet" items="${it.getFilteredChartDashlets(dashboardReport.value)}">
-                                                    <j:forEach var="measure" items="${chartDashlet.measures}">
-                                                        <td>${measure.strMetricValue}</td>
-                                                    </j:forEach>
+                                                <j:forEach var="dashlet" items="${it.getFilteredChartDashlets(dashboardReport.value)}">
+                                                    <td>${utils.round(dashlet.value.getMetricValue(dashlet.key.aggregation), 2)}</td>
                                                 </j:forEach>
                                             </tr>
                                         </j:forEach>
