@@ -104,8 +104,7 @@ $(document).ready(function () {
             });
         });
         $("#donebutton", this).click(function () {
-            var serialize = sort_by_row_and_col_asc(grid[pageIndex].serialize());
-            projectAction.setDashboardConfiguration($(page).attr('id'), JSON.stringify(serialize), function () {
+            projectAction.setDashboardConfiguration($(page).attr('id'), JSON.stringify(grid[pageIndex].serialize()), function () {
                 location.reload(true);
             });
         });
@@ -180,16 +179,6 @@ $(document).ready(function () {
 
 function getURLParameter(obj, parameter) {
     return $(obj).attr("src").indexOf(parameter) > -1 ? wurl("?" + parameter, $(obj).attr("src")) : ""
-}
-
-function sort_by_row_and_col_asc(widgets) {
-    widgets = widgets.sort(function (a, b) {
-        if (a.row > b.row || a.row === b.row && a.col > b.col) {
-            return 1;
-        }
-        return -1;
-    });
-    return widgets;
 }
 
 function encode(toEncode) {
