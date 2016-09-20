@@ -262,8 +262,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
 
         @Override
         public boolean configure(final StaplerRequest req, final JSONObject formData) throws FormException {
-            configurations = req.bindJSONToList(DynatraceServerConfiguration.class, formData.get("configurations"));
-            save();
+            setConfigurations(req.bindJSONToList(DynatraceServerConfiguration.class, formData.get("configurations")));
             return false;
         }
 
@@ -273,6 +272,11 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
 
         public List<DynatraceServerConfiguration> getConfigurations() {
             return configurations;
+        }
+
+        public void setConfigurations(final List<DynatraceServerConfiguration> configurations) {
+            this.configurations = configurations;
+            save();
         }
 
         public boolean isApplicable(final Class<? extends AbstractProject> aClass) {

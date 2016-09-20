@@ -142,8 +142,7 @@ public class ViewerRecorder extends Recorder implements SimpleBuildStep {
 
         @Override
         public boolean configure(final StaplerRequest req, final JSONObject formData) throws FormException {
-            configurations = req.bindJSONToList(JenkinsServerConfiguration.class, formData.get("configurations"));
-            save();
+            setConfigurations(req.bindJSONToList(JenkinsServerConfiguration.class, formData.get("configurations")));
             return false;
         }
 
@@ -153,6 +152,11 @@ public class ViewerRecorder extends Recorder implements SimpleBuildStep {
 
         public List<JenkinsServerConfiguration> getConfigurations() {
             return configurations;
+        }
+
+        public void setConfigurations(final List<JenkinsServerConfiguration> configurations) {
+            this.configurations = configurations;
+            save();
         }
 
         public boolean isApplicable(final Class<? extends AbstractProject> aClass) {
