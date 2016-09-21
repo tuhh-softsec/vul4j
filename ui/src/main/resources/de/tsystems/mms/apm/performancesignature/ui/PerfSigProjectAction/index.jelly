@@ -87,7 +87,7 @@
                                                 </j:if>
                                                 <j:forEach var="dr" items="${it.lastDashboardReports}">
                                                     <j:if test="${dr.name.equals(lastDashboardReport.name)}">
-                                                        <j:forEach var="chartDashlet" items="${dr.chartDashlets}">
+                                                        <j:forEach var="chartDashlet" items="${utils.sortChartDashletList(dr.chartDashlets)}">
                                                             <option>${chartDashlet.name}</option>
                                                         </j:forEach>
                                                     </j:if>

@@ -16,6 +16,7 @@
 
 package de.tsystems.mms.apm.performancesignature.util;
 
+import de.tsystems.mms.apm.performancesignature.dynatrace.model.ChartDashlet;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.IncidentChart;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.IncidentViolation;
 import hudson.FilePath;
@@ -36,6 +37,8 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public final class PerfSigUIUtils {
@@ -75,6 +78,16 @@ public final class PerfSigUIUtils {
             return chartDashlet;
         else
             return chartDashlet + " - " + measure;
+    }
+
+    public static List<ChartDashlet> sortChartDashletList(final List<ChartDashlet> list) {
+        Collections.sort(list, new Comparator<ChartDashlet>() {
+            @Override
+            public int compare(final ChartDashlet o1, final ChartDashlet o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+        return list;
     }
 
     public static String encodeString(final String value) {
