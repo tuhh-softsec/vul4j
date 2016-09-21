@@ -462,8 +462,15 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
 
     @JavaScriptMethod
     public Map<String, String> getAvailableMeasures(final String dashboard, final String dashlet) throws IOException {
-        Map<String, String> availableMeasures = new HashMap<String, String>();
-        for (JSONDashlet jsonDashlet : createJSONConfiguration(false).values()) {
+        Map<String, String> availableMeasures = new LinkedHashMap<String, String>();
+        List<JSONDashlet> jsonDashlets = new ArrayList<JSONDashlet>(createJSONConfiguration(false).values());
+        Collections.sort(jsonDashlets, new Comparator<JSONDashlet>() {
+            @Override
+            public int compare(final JSONDashlet o1, final JSONDashlet o2) {
+                return o1.getMeasure().compareTo(o2.getMeasure());
+            }
+        });
+        for (JSONDashlet jsonDashlet : jsonDashlets) {
             if (jsonDashlet.getDashboard().equals(dashboard) && jsonDashlet.getChartDashlet().equals(dashlet)) {
                 availableMeasures.put(jsonDashlet.getId(), jsonDashlet.getMeasure());
             }
