@@ -24,7 +24,9 @@ public class ValidFromTo implements Rule {
         Messprogramm messprogramm = (Messprogramm)object;
         Violation violation = new Violation();
 
-        if (messprogramm.getGueltigVon() > messprogramm.getGueltigBis()) {
+        if (messprogramm.getGueltigVon() != null
+            && messprogramm.getGueltigBis() != null
+            && messprogramm.getGueltigVon() > messprogramm.getGueltigBis()) {
             violation.addError("gueltigVon", 662);
             violation.addError("gueltigBis", 662);
         }

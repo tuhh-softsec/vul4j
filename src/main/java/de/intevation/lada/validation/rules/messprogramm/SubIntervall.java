@@ -24,7 +24,9 @@ public class SubIntervall implements Rule {
         Messprogramm messprogramm = (Messprogramm)object;
         Violation violation = new Violation();
 
-        if (messprogramm.getTeilintervallVon()
+        if (messprogramm.getTeilintervallBis() != null
+            && messprogramm.getTeilintervallVon() != null
+            && messprogramm.getTeilintervallVon()
             > messprogramm.getTeilintervallBis()) {
             violation.addError("teilintervallVon", 662);
             violation.addError("teilintervallBis", 662);
