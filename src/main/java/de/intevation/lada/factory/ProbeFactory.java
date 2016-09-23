@@ -85,15 +85,15 @@ public class ProbeFactory {
 
         if ("M".equals(messprogramm.getProbenintervall())) {
             Calendar realStart = getStart ("M", start);
-            proben.addAll(generateMonth(messprogramm, realStart, end, "M"));
+            proben.addAll(generateMonth(messprogramm, realStart, end));
         }
         else if ("Q".equals(messprogramm.getProbenintervall())) {
             Calendar realStart = getStart ("Q", start);
-            proben.addAll(generateQuarter(messprogramm, realStart, end, "Q"));
+            proben.addAll(generateQuarter(messprogramm, realStart, end));
         }
         else if ("H".equals(messprogramm.getProbenintervall())) {
             Calendar realStart = getStart ("H", start);
-            proben.addAll(generateHalf(messprogramm, realStart, end, "H"));
+            proben.addAll(generateHalf(messprogramm, realStart, end));
         }
         else {
             Date[][] intervals = calculateIntervals(start, end, messprogramm);
@@ -159,8 +159,7 @@ public class ProbeFactory {
     private List<LProbe> generateMonth(
         Messprogramm messprogramm,
         Calendar start,
-        Calendar end,
-        String interval
+        Calendar end
     ) {
         int offset = messprogramm.getIntervallOffset() == null ?
             0 : messprogramm.getIntervallOffset();
@@ -205,8 +204,7 @@ public class ProbeFactory {
     private List<LProbe> generateQuarter(
         Messprogramm messprogramm,
         Calendar start,
-        Calendar end,
-        String interval
+        Calendar end
     ) {
         int offset = messprogramm.getIntervallOffset() == null ?
             0 : messprogramm.getIntervallOffset();
@@ -251,8 +249,7 @@ public class ProbeFactory {
     private List<LProbe> generateHalf(
         Messprogramm messprogramm,
         Calendar start,
-        Calendar end,
-        String interval
+        Calendar end
     ) {
         int offset = messprogramm.getIntervallOffset() == null ?
             0 : messprogramm.getIntervallOffset();
