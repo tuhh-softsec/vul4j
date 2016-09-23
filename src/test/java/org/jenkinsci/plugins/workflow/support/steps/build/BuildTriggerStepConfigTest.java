@@ -24,10 +24,12 @@
 
 package org.jenkinsci.plugins.workflow.support.steps.build;
 
+import java.util.concurrent.Callable;
+import static org.hamcrest.Matchers.containsString;
 import org.jenkinsci.plugins.workflow.steps.StepConfigTester;
-import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Rule;
+import org.junit.Test;
 import org.jvnet.hudson.test.Issue;
 import org.jvnet.hudson.test.JenkinsRule;
 
@@ -49,6 +51,15 @@ public class BuildTriggerStepConfigTest {
         s.setQuietPeriod(0);
         s = new StepConfigTester(r).configRoundTrip(s);
         assertEquals(Integer.valueOf(0), s.getQuietPeriod());
+    }
+
+    @Issue("JENKINS-38114")
+    @Test public void helpWait() throws Exception {
+        assertThat(r.createWebClient().goTo(r.executeOnServer(new Callable<String>() {
+            @Override public String call() throws Exception {
+                return r.jenkins.getDescriptorByType(BuildTriggerStep.DescriptorImpl.class).getHelpFile("wait");
+            }
+        }).replaceFirst("^/", ""), /* TODO why is no content type set? */null).getWebResponse().getContentAsString(), containsString("<dt><code>buildVariables</code></dt>"));
     }
 
 }
