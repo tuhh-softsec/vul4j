@@ -163,10 +163,8 @@ public class ProbeFactory {
     ) {
         int offset = messprogramm.getIntervallOffset() == null ?
             0 : messprogramm.getIntervallOffset();
-        int teilVon = messprogramm.getTeilintervallVon() == null ?
-            0 : messprogramm.getTeilintervallVon() - 1;
-        int teilBis = messprogramm.getTeilintervallBis() == null ?
-            0 : messprogramm.getTeilintervallBis();
+        int teilVon = messprogramm.getTeilintervallVon() - 1;
+        int teilBis = messprogramm.getTeilintervallBis();
         int manualDuration = teilBis - teilVon;
 
         List<LProbe> proben = new ArrayList<LProbe>();
@@ -208,10 +206,8 @@ public class ProbeFactory {
     ) {
         int offset = messprogramm.getIntervallOffset() == null ?
             0 : messprogramm.getIntervallOffset();
-        int teilVon = messprogramm.getTeilintervallVon() == null ?
-            0 : messprogramm.getTeilintervallVon() - 1;
-        int teilBis = messprogramm.getTeilintervallBis() == null ?
-            0 : messprogramm.getTeilintervallBis();
+        int teilVon = messprogramm.getTeilintervallVon() - 1;
+        int teilBis = messprogramm.getTeilintervallBis();
         int manualDuration = teilBis - teilVon;
 
         List<LProbe> proben = new ArrayList<LProbe>();
@@ -253,10 +249,8 @@ public class ProbeFactory {
     ) {
         int offset = messprogramm.getIntervallOffset() == null ?
             0 : messprogramm.getIntervallOffset();
-        int teilVon = messprogramm.getTeilintervallVon() == null ?
-            0 : messprogramm.getTeilintervallVon() - 1;
-        int teilBis = messprogramm.getTeilintervallBis() == null ?
-            0 : messprogramm.getTeilintervallBis();
+        int teilVon = messprogramm.getTeilintervallVon() - 1;
+        int teilBis = messprogramm.getTeilintervallBis();
         int manualDuration = teilBis - teilVon;
 
         List<LProbe> proben = new ArrayList<LProbe>();
@@ -569,10 +563,8 @@ public class ProbeFactory {
         for (int i = 0; i < years; i++) {
             Calendar cStart = Calendar.getInstance();
             cStart.set(startYear + i, start.get(Calendar.MONTH), start.get(Calendar.DAY_OF_MONTH));
-            if (messprogramm.getGueltigVon() == null ||
-                messprogramm.getGueltigVon() <= 0 ||
-                (realStart > messprogramm.getGueltigVon() &&
-                 i == 0)
+            if (messprogramm.getGueltigVon() <= 0
+                || (realStart > messprogramm.getGueltigVon() && i == 0)
             ) {
                 intervals[0][0] = start.getTime();
             }
@@ -584,10 +576,8 @@ public class ProbeFactory {
 
             Calendar cEnd = Calendar.getInstance();
             cEnd.set(startYear + i, end.get(Calendar.MONTH), end.get(Calendar.DAY_OF_MONTH));
-            if (messprogramm.getGueltigBis() == null ||
-                messprogramm.getGueltigBis() <= 0 ||
-                (realEnd < messprogramm.getGueltigBis() &&
-                 i == years - 1)
+            if (messprogramm.getGueltigBis() <= 0
+                || (realEnd < messprogramm.getGueltigBis() && i == years - 1)
             ) {
                 intervals[i][1] = cEnd.getTime();
             }
