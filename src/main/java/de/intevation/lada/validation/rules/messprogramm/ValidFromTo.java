@@ -19,17 +19,27 @@ import de.intevation.lada.validation.rules.Rule;
 @ValidationRule("Messprogramm")
 public class ValidFromTo implements Rule {
 
+    private static final int DOY_MIN = 0;
+
+    // Leap years should be handled in generation of Probe objects
+    private static final int DOY_MAX = 364;
+
     @Override
     public Violation execute(Object object) {
         Messprogramm messprogramm = (Messprogramm)object;
         Violation violation = new Violation();
 
         if (messprogramm.getGueltigVon() != null
-            && messprogramm.getGueltigBis() != null
-            && messprogramm.getGueltigVon() > messprogramm.getGueltigBis()) {
-            violation.addError("gueltigVon", 662);
-            violation.addError("gueltigBis", 662);
-        }
+            && (messprogramm.getGueltigVon() < DOY_MIN
+                || messprogramm.getGueltigVon() > DOY_MAX)) {
+                violation.addError("gueltigVon", 612);
+            }
+
+        if (messprogramm.getGueltigBis() != null
+            && (messprogramm.getGueltigBis() < DOY_MIN
+                || messprogramm.getGueltigBis() > DOY_MAX)) {
+                violation.addError("gueltigBis", 612);
+            }
 
         return violation.hasErrors()
             ? violation
