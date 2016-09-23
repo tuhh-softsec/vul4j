@@ -109,8 +109,8 @@ public class ProbeFactory {
      *
      * @param   interval        The time interval for probe objects.
      * @param   messprogramm    The messprogramm containing details.
-     * @param   proben          An (empty) list for probe objects filled by this
-     *                          method
+     * @param   proben          An (empty) list for probe objects
+     *                          filled by this method
      * @return
      */
     private void createProben(
@@ -141,18 +141,23 @@ public class ProbeFactory {
             Calendar realStart = getMonday(start);
             proben.addAll(generate(messprogramm, realStart, end, 28));
         }
-        else if ("J".equals(messprogramm.getProbenintervall()) &&
-            messprogramm.getTeilintervallVon() >= startDay + messprogramm.getIntervallOffset() &&
-            messprogramm.getTeilintervallBis() <= endDay + messprogramm.getIntervallOffset()) {
-            start.add(Calendar.DATE, messprogramm.getTeilintervallVon() - startDay + messprogramm.getIntervallOffset());
-            Date startDate = start.getTime();
-            end.add(Calendar.DATE, messprogramm.getTeilintervallBis() - endDay + messprogramm.getIntervallOffset());
-            Date endDate = end.getTime();
-            LProbe probe = createObjects(messprogramm, startDate, endDate);
-            if (probe != null) {
-                proben.add(probe);
+        else if ("J".equals(messprogramm.getProbenintervall())) {
+            int offset = messprogramm.getIntervallOffset();
+            int teilVon = messprogramm.getTeilintervallVon();
+            int teilBis = messprogramm.getTeilintervallBis();
+
+            if (teilVon >= startDay + offset
+                && teilBis <= endDay + offset
+            ) {
+                start.add(Calendar.DATE, teilVon - startDay + offset);
+                Date startDate = start.getTime();
+                end.add(Calendar.DATE, teilBis - endDay + offset);
+                Date endDate = end.getTime();
+                LProbe probe = createObjects(messprogramm, startDate, endDate);
+                if (probe != null) {
+                    proben.add(probe);
+                }
             }
-            return;
         }
     }
 
@@ -178,9 +183,11 @@ public class ProbeFactory {
         monthEnd.setTime(start.getTime());
         monthEnd.add(Calendar.DAY_OF_YEAR, currentLength - 1);
         for (;monthStart.before(end);) {
-            if (monthStart.get(Calendar.DAY_OF_YEAR) > messprogramm.getGueltigVon() &&
-                monthStart.get(Calendar.DAY_OF_YEAR) < messprogramm.getGueltigBis()) {
-                LProbe probe = createObjects(messprogramm, monthStart.getTime(), monthEnd.getTime());
+            int startDOY = monthStart.get(Calendar.DAY_OF_YEAR);
+            if (startDOY > messprogramm.getGueltigVon()
+                && startDOY < messprogramm.getGueltigBis()) {
+                LProbe probe = createObjects(
+                    messprogramm, monthStart.getTime(), monthEnd.getTime());
                 if (probe != null) {
                     proben.add(probe);
                 }
@@ -220,9 +227,14 @@ public class ProbeFactory {
         quarterEnd.setTime(start.getTime());
         quarterEnd.add(Calendar.DAY_OF_YEAR, currentLength);
         for (;quarterStart.before(end);) {
-            if (quarterStart.get(Calendar.DAY_OF_YEAR) > messprogramm.getGueltigVon() &&
-                quarterStart.get(Calendar.DAY_OF_YEAR) < messprogramm.getGueltigBis()) {
-                LProbe probe = createObjects(messprogramm, quarterStart.getTime(), quarterEnd.getTime());
+            int startDOY = quarterStart.get(Calendar.DAY_OF_YEAR);
+            if (startDOY > messprogramm.getGueltigVon()
+                && startDOY < messprogramm.getGueltigBis()) {
+                LProbe probe = createObjects(
+                    messprogramm,
+                    quarterStart.getTime(),
+                    quarterEnd.getTime()
+                );
                 if (probe != null) {
                     proben.add(probe);
                 }
@@ -262,9 +274,11 @@ public class ProbeFactory {
         halfEnd.setTime(halfStart.getTime());
         halfEnd.add(Calendar.DAY_OF_YEAR, currentLength);
         for (;halfStart.before(end);) {
-            if (halfStart.get(Calendar.DAY_OF_YEAR) > messprogramm.getGueltigVon() &&
-                halfStart.get(Calendar.DAY_OF_YEAR) < messprogramm.getGueltigBis()) {
-                LProbe probe = createObjects(messprogramm, halfStart.getTime(), halfEnd.getTime());
+            int startDOY = halfStart.get(Calendar.DAY_OF_YEAR);
+            if (startDOY > messprogramm.getGueltigVon()
+                && startDOY < messprogramm.getGueltigBis()) {
+                LProbe probe = createObjects(
+                    messprogramm, halfStart.getTime(), halfEnd.getTime());
                 if (probe != null) {
                     proben.add(probe);
                 }
@@ -293,9 +307,6 @@ public class ProbeFactory {
             messprogramm.getTeilintervallVon() - 1 + offset;
         int endDay = end.get(Calendar.DAY_OF_YEAR);
 
-
-        //int teilStart = messprogramm.getTeilintervallVon() + startDay;
-        //int teilEnd = messprogramm.getTeilintervallBis() + startDay;
         List<LProbe> proben = new ArrayList<LProbe>();
         int duration = messprogramm.getTeilintervallBis() -
             messprogramm.getTeilintervallVon();
@@ -308,7 +319,8 @@ public class ProbeFactory {
             end.set(Calendar.DAY_OF_YEAR, startDay + duration);
             logger.debug("from: " + start.getTime() + " to " + end.getTime());
             startDay += days;
-            LProbe probe = createObjects(messprogramm, start.getTime(), end.getTime());
+            LProbe probe = createObjects(
+                messprogramm, start.getTime(), end.getTime());
             if (probe != null) {
                 proben.add(probe);
             }
@@ -409,7 +421,8 @@ public class ProbeFactory {
 
     private Calendar getMonday(Calendar week) {
         if (week.get(Calendar.DAY_OF_WEEK) > 1) {
-            week.set(Calendar.WEEK_OF_YEAR, week.get(Calendar.WEEK_OF_YEAR) + 1);
+            week.set(Calendar.WEEK_OF_YEAR,
+                week.get(Calendar.WEEK_OF_YEAR) + 1);
         }
         week.set(Calendar.DAY_OF_WEEK, week.getFirstDayOfWeek());
         return week;
@@ -521,7 +534,8 @@ public class ProbeFactory {
             QueryBuilder<Ort> ortBuilder = new QueryBuilder<Ort>(
                 repository.entityManager("stamm"), Ort.class);
             ortBuilder.and("id", messprogramm.getOrtId());
-            Response ortResponse = repository.filter(ortBuilder.getQuery(), "stamm");
+            Response ortResponse = repository.filter(
+                ortBuilder.getQuery(), "stamm");
             @SuppressWarnings("unchecked")
             List<Ort> orte = (List<Ort>) ortResponse.getData();
             if (orte != null && !orte.isEmpty()) {
@@ -530,8 +544,8 @@ public class ProbeFactory {
             repository.create(ort, "land");
         }
         // Reolad the probe to have the old id
-        probe =
-            (LProbe)repository.getById(LProbe.class, probe.getId(), "land").getData();
+        probe = (LProbe)repository.getById(
+            LProbe.class, probe.getId(), "land").getData();
         return probe;
     }
 
@@ -558,27 +572,37 @@ public class ProbeFactory {
         Date[][] intervals = new Date[years][2];
         for (int i = 0; i < years; i++) {
             Calendar cStart = Calendar.getInstance();
-            cStart.set(startYear + i, start.get(Calendar.MONTH), start.get(Calendar.DAY_OF_MONTH));
+            cStart.set(
+                startYear + i,
+                start.get(Calendar.MONTH),
+                start.get(Calendar.DAY_OF_MONTH)
+            );
             if (messprogramm.getGueltigVon() <= 0
                 || (realStart > messprogramm.getGueltigVon() && i == 0)
             ) {
                 intervals[0][0] = start.getTime();
             }
             else {
-                start.add(Calendar.DATE, messprogramm.getGueltigVon() - realStart);
+                start.add(Calendar.DATE,
+                    messprogramm.getGueltigVon() - realStart);
                 Date startDate = start.getTime();
                 intervals[i][0] = startDate;
             }
 
             Calendar cEnd = Calendar.getInstance();
-            cEnd.set(startYear + i, end.get(Calendar.MONTH), end.get(Calendar.DAY_OF_MONTH));
+            cEnd.set(
+                startYear + i,
+                end.get(Calendar.MONTH),
+                end.get(Calendar.DAY_OF_MONTH)
+            );
             if (messprogramm.getGueltigBis() <= 0
                 || (realEnd < messprogramm.getGueltigBis() && i == years - 1)
             ) {
                 intervals[i][1] = cEnd.getTime();
             }
             else {
-                cEnd.add(Calendar.DATE, messprogramm.getGueltigBis() - realEnd);
+                cEnd.add(Calendar.DATE,
+                    messprogramm.getGueltigBis() - realEnd);
                 Date endDate = cEnd.getTime();
                 intervals[i][1] = endDate;
             }
