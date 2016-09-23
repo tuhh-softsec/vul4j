@@ -161,8 +161,7 @@ public class ProbeFactory {
         Calendar start,
         Calendar end
     ) {
-        int offset = messprogramm.getIntervallOffset() == null ?
-            0 : messprogramm.getIntervallOffset();
+        int offset = messprogramm.getIntervallOffset();
         int teilVon = messprogramm.getTeilintervallVon() - 1;
         int teilBis = messprogramm.getTeilintervallBis();
         int manualDuration = teilBis - teilVon;
@@ -204,8 +203,7 @@ public class ProbeFactory {
         Calendar start,
         Calendar end
     ) {
-        int offset = messprogramm.getIntervallOffset() == null ?
-            0 : messprogramm.getIntervallOffset();
+        int offset = messprogramm.getIntervallOffset();
         int teilVon = messprogramm.getTeilintervallVon() - 1;
         int teilBis = messprogramm.getTeilintervallBis();
         int manualDuration = teilBis - teilVon;
@@ -247,8 +245,7 @@ public class ProbeFactory {
         Calendar start,
         Calendar end
     ) {
-        int offset = messprogramm.getIntervallOffset() == null ?
-            0 : messprogramm.getIntervallOffset();
+        int offset = messprogramm.getIntervallOffset();
         int teilVon = messprogramm.getTeilintervallVon() - 1;
         int teilBis = messprogramm.getTeilintervallBis();
         int manualDuration = teilBis - teilVon;
@@ -291,8 +288,7 @@ public class ProbeFactory {
         Calendar end,
         int days
     ) {
-        int offset = messprogramm.getIntervallOffset() == null ?
-            0 : messprogramm.getIntervallOffset();
+        int offset = messprogramm.getIntervallOffset();
         int startDay = start.get(Calendar.DAY_OF_YEAR) +
             messprogramm.getTeilintervallVon() - 1 + offset;
         int endDay = end.get(Calendar.DAY_OF_YEAR);

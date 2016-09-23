@@ -582,7 +582,7 @@ CREATE TABLE messprogramm (
     probenintervall character varying(2) NOT NULL,
     teilintervall_von integer NOT NULL,
     teilintervall_bis integer NOT NULL,
-    intervall_offset integer,
+    intervall_offset integer NOT NULL DEFAULT 0,
     gueltig_von integer NOT NULL CHECK(gueltig_von BETWEEN 0 AND 364),
     gueltig_bis integer NOT NULL CHECK(gueltig_bis BETWEEN 0 AND 364),
     probe_nehmer_id integer,

@@ -33,6 +33,9 @@ public class Messprogramm implements Serializable {
         if (baId == null) {
             baId = 1;
         }
+        if (intervallOffset == null) {
+            intervallOffset = 0;
+        }
     }
 
     @Id
