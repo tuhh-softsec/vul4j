@@ -588,6 +588,39 @@ CREATE TABLE messprogramm (
     probe_nehmer_id integer,
     probe_kommentar character varying(80),
     letzte_aenderung timestamp without time zone DEFAULT now() NOT NULL,
+    CHECK (probenintervall = 'J'
+               AND teilintervall_von BETWEEN 1 AND 365
+               AND teilintervall_bis BETWEEN 1 AND 365
+               AND intervall_offset BETWEEN 0 AND 364
+           OR probenintervall = 'H'
+               AND teilintervall_von BETWEEN 1 AND 183
+               AND teilintervall_bis BETWEEN 1 AND 183
+               AND intervall_offset BETWEEN 0 AND 182
+           OR probenintervall = 'Q'
+               AND teilintervall_von BETWEEN 1 AND 91
+               AND teilintervall_bis BETWEEN 1 AND 91
+               AND intervall_offset BETWEEN 0 AND 90
+           OR probenintervall = 'M'
+               AND teilintervall_von BETWEEN 1 AND 31
+               AND teilintervall_bis BETWEEN 1 AND 31
+               AND intervall_offset BETWEEN 0 AND 30
+           OR probenintervall = 'W4'
+               AND teilintervall_von BETWEEN 1 AND 28
+               AND teilintervall_bis BETWEEN 1 AND 28
+               AND intervall_offset BETWEEN 0 AND 27
+           OR probenintervall = 'W2'
+               AND teilintervall_von BETWEEN 1 AND 14
+               AND teilintervall_bis BETWEEN 1 AND 14
+               AND intervall_offset BETWEEN 0 AND 13
+           OR probenintervall = 'W'
+               AND teilintervall_von BETWEEN 1 AND 7
+               AND teilintervall_bis BETWEEN 1 AND 7
+               AND intervall_offset BETWEEN 0 AND 6
+           OR probenintervall = 'T'
+               AND teilintervall_von = 1
+               AND teilintervall_bis = 1
+               AND intervall_offset = 0
+           ),
     CHECK (teilintervall_von <= teilintervall_bis)
 );
 CREATE TRIGGER letzte_aenderung_messprogramm BEFORE UPDATE ON messprogramm FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
