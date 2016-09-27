@@ -77,9 +77,9 @@ public class ProbeFactory {
         }
         Messprogramm messprogramm = messprogramme.get(0);
         Calendar start = Calendar.getInstance();
-        start.setTime(new Date(from));
+        start.setTimeInMillis(from);
         Calendar end = Calendar.getInstance();
-        end.setTime(new Date (to));
+        end.setTimeInMillis(to);
         List<LProbe> proben = new ArrayList<LProbe>();
 
 
