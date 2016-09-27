@@ -166,40 +166,80 @@ public class ProbeFactory {
         Calendar start,
         Calendar end
     ) {
+        int gueltigVon = messprogramm.getGueltigVon();
+        int gueltigBis = messprogramm.getGueltigBis();
+
         int offset = messprogramm.getIntervallOffset();
-        int teilVon = messprogramm.getTeilintervallVon() - 1;
+        int teilVon = messprogramm.getTeilintervallVon();
         int teilBis = messprogramm.getTeilintervallBis();
-        int manualDuration = teilBis - teilVon;
 
         List<LProbe> proben = new ArrayList<LProbe>();
 
-        int currentLength = getDurationMonth(start);
-        if (manualDuration > 0) {
-            currentLength = manualDuration;
-        }
-        Calendar monthStart = (Calendar)start.clone();
-        Calendar monthEnd = Calendar.getInstance();
-        monthStart.add(Calendar.DAY_OF_YEAR, offset + teilVon);
-        monthEnd.setTime(start.getTime());
-        monthEnd.add(Calendar.DAY_OF_YEAR, currentLength - 1);
-        for (;monthStart.before(end);) {
-            int startDOY = monthStart.get(Calendar.DAY_OF_YEAR);
-            if (startDOY > messprogramm.getGueltigVon()
-                && startDOY < messprogramm.getGueltigBis()) {
+        // Create template Calendars to be recomputed/adapted to actual
+        // maxima/minima of fields.
+        Calendar initSolldatumBeginn = (Calendar)start.clone();
+        initSolldatumBeginn.set(Calendar.DAY_OF_MONTH, offset + teilVon);
+        Calendar initSolldatumEnde = (Calendar)start.clone();
+        initSolldatumEnde.set(Calendar.DAY_OF_MONTH, offset + teilBis);
+
+        // Initialize solldatum values for Probe objects, i.e. trigger
+        // recomputation of Calendar fields.
+        Calendar solldatumBeginn = (Calendar)initSolldatumBeginn.clone();
+        Calendar solldatumEnde = (Calendar)initSolldatumEnde.clone();
+        solldatumBeginn.add(Calendar.MONTH, 0);
+        solldatumEnde.add(Calendar.MONTH, 0);
+
+        for (int monthCount = 1; solldatumBeginn.before(end); monthCount++) {
+            /* Leap year adaption of validity period.
+             * It is assumed here (and should be enforced by the data model)
+             * that gueltigVon and gueltigBis are always given relative to
+             * a non-leap year. E.g. a value of 59 is assumed to denote
+             * March 1 and thus has to be adapted in a leap year. */
+            int leapDay =
+                solldatumBeginn.getActualMaximum(Calendar.DAY_OF_YEAR) > 364
+                ? 1
+                : 0;
+            int actualGueltigVon =
+                gueltigVon > 58
+                ? gueltigVon + leapDay
+                : gueltigVon;
+            int actualGueltigBis =
+                gueltigBis > 58
+                ? gueltigBis + leapDay
+                : gueltigBis;
+
+            int solldatumBeginnDOY = solldatumBeginn.get(Calendar.DAY_OF_YEAR);
+
+            if ((
+                    // Validity within one year
+                    actualGueltigVon < actualGueltigBis
+                    && solldatumBeginnDOY >= actualGueltigVon
+                    && solldatumBeginnDOY <= actualGueltigBis
+                ) || (
+                    // Validity over turn of the year
+                    actualGueltigVon > actualGueltigBis
+                    && (solldatumBeginnDOY >= actualGueltigVon
+                        || solldatumBeginnDOY <= actualGueltigBis)
+                )
+            ) {
                 LProbe probe = createObjects(
-                    messprogramm, monthStart.getTime(), monthEnd.getTime());
+                    messprogramm,
+                    solldatumBeginn.getTime(),
+                    solldatumEnde.getTime()
+                );
                 if (probe != null) {
                     proben.add(probe);
                 }
             }
-            monthStart.set(Calendar.DAY_OF_MONTH, 2);
-            monthStart = getStart("M", monthStart);
-            monthStart.add(Calendar.DAY_OF_YEAR, offset + teilVon);
-            if (manualDuration <= 0) {
-                currentLength = getDurationMonth(monthStart);
-            }
-            monthEnd.setTime(monthStart.getTime());
-            monthEnd.add(Calendar.DAY_OF_YEAR, currentLength - 1);
+
+            // Reset solldatumBeginn to align DAY_OF_MONTH with initial value
+            solldatumBeginn = (Calendar)initSolldatumBeginn.clone();
+            solldatumEnde = (Calendar)initSolldatumEnde.clone();
+
+            // Move to next month.
+            // This may change DAY_OF_MONTH due to actual maximum.
+            solldatumBeginn.add(Calendar.MONTH, monthCount);
+            solldatumEnde.add(Calendar.MONTH, monthCount);
         }
 
         return proben;
