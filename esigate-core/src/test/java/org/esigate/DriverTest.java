@@ -257,10 +257,10 @@ public class DriverTest extends TestCase {
      * 0000174: Redirect location with default port specified are incorrectly rewritten when preserveHost=true
      * <p>
      * http://www.esigate.org/mantisbt/view.php?id=174
-     *
+     * 
      * <p>
      * Issue with default ports, which results in invalid url creation.
-     *
+     * 
      * @throws Exception
      */
     public void testRewriteRedirectResponseWithDefaultPortSpecifiedInLocation() throws Exception {
@@ -286,7 +286,7 @@ public class DriverTest extends TestCase {
 
     /**
      * Ensure default ports are not added by esigate.
-     *
+     * 
      * @throws Exception
      */
     public void testRewriteRedirectResponseWithLocation() throws Exception {
@@ -315,8 +315,7 @@ public class DriverTest extends TestCase {
     }
 
     /**
-     * Test for "Consumes http entity on redirection" https://github.com/esigate/esigate/pull/154
-     * (no cache)
+     * Test for "Consumes http entity on redirection" https://github.com/esigate/esigate/pull/154 (no cache)
      * 
      * @throws IOException
      * @throws HttpErrorPage
@@ -327,7 +326,7 @@ public class DriverTest extends TestCase {
         properties.put(Parameters.PRESERVE_HOST, "true");
         properties.put(Parameters.USE_CACHE, "false");
 
-        final AtomicInteger closeCount= new AtomicInteger();
+        final AtomicInteger closeCount = new AtomicInteger();
 
         mockConnectionManager.setResponseHandler(new IResponseHandler() {
 
@@ -335,21 +334,21 @@ public class DriverTest extends TestCase {
             public HttpResponse execute(final HttpRequest httpRequest) throws IOException {
                 switch (UriUtils.getPath(httpRequest.getRequestLine().getUri())) {
 
-                    case "/redirect":
-                        InputStream in = new ByteArrayInputStream("found".getBytes()) {
-                            @Override
-                            public void close() throws IOException {
-                               closeCount.incrementAndGet();
-                            }
-                        };
-                        return new HttpResponseBuilder().status(HttpStatus.SC_MOVED_TEMPORARILY).entity(new InputStreamEntity(in)).header("Location", "http://www.foo.com/content")
-                                .build();
-                    case "/content":
-                        return new HttpResponseBuilder().status(HttpStatus.SC_OK).entity("some content")
-                                .build();
-                    default:
-                        return new HttpResponseBuilder().status(HttpStatus.SC_OK).entity("<html><body><esi:include src='$(PROVIDER{tested})/redirect' /></body></html>")
-                                .header("Content-Type", "text/html").build();
+                case "/redirect":
+                    InputStream in = new ByteArrayInputStream("found".getBytes()) {
+                        @Override
+                        public void close() throws IOException {
+                            closeCount.incrementAndGet();
+                        }
+                    };
+                    return new HttpResponseBuilder().status(HttpStatus.SC_MOVED_TEMPORARILY)
+                            .entity(new InputStreamEntity(in)).header("Location", "http://www.foo.com/content").build();
+                case "/content":
+                    return new HttpResponseBuilder().status(HttpStatus.SC_OK).entity("some content").build();
+                default:
+                    return new HttpResponseBuilder().status(HttpStatus.SC_OK)
+                            .entity("<html><body><esi:include src='$(PROVIDER{tested})/redirect' /></body></html>")
+                            .header("Content-Type", "text/html").build();
                 }
             }
         });
@@ -361,14 +360,12 @@ public class DriverTest extends TestCase {
             CloseableHttpResponse driverResponse = driver.proxy("/page", request1);
             assertEquals("<html><body>some content</body></html>", EntityUtils.toString(driverResponse.getEntity()));
         }
-        assertEquals(requestCount,closeCount.get());
+        assertEquals(requestCount, closeCount.get());
         assertFalse("All the connections should have been closed", mockConnectionManager.isOpen());
     }
 
-    
     /**
-     * Test for "Consumes http entity on redirection" https://github.com/esigate/esigate/pull/154
-     * (with cache actived)
+     * Test for "Consumes http entity on redirection" https://github.com/esigate/esigate/pull/154 (with cache actived)
      * 
      * @throws IOException
      * @throws HttpErrorPage
@@ -378,7 +375,7 @@ public class DriverTest extends TestCase {
         properties.put(Parameters.REMOTE_URL_BASE, "http://127.0.0.1");
         properties.put(Parameters.PRESERVE_HOST, "true");
 
-        final AtomicInteger closeCount= new AtomicInteger();
+        final AtomicInteger closeCount = new AtomicInteger();
 
         mockConnectionManager.setResponseHandler(new IResponseHandler() {
 
@@ -386,21 +383,21 @@ public class DriverTest extends TestCase {
             public HttpResponse execute(final HttpRequest httpRequest) throws IOException {
                 switch (UriUtils.getPath(httpRequest.getRequestLine().getUri())) {
 
-                    case "/redirect":
-                        InputStream in = new ByteArrayInputStream("found".getBytes()) {
-                            @Override
-                            public void close() throws IOException {
-                                closeCount.incrementAndGet();
-                            }
-                        };
-                        return new HttpResponseBuilder().status(HttpStatus.SC_MOVED_TEMPORARILY).entity(new InputStreamEntity(in)).header("Location", "http://www.foo.com/content")
-                                .build();
-                    case "/content":
-                        return new HttpResponseBuilder().status(HttpStatus.SC_OK).entity("some content")
-                                .build();
-                    default:
-                        return new HttpResponseBuilder().status(HttpStatus.SC_OK).entity("<html><body><esi:include src='$(PROVIDER{tested})/redirect' /></body></html>")
-                                .header("Content-Type", "text/html").build();
+                case "/redirect":
+                    InputStream in = new ByteArrayInputStream("found".getBytes()) {
+                        @Override
+                        public void close() throws IOException {
+                            closeCount.incrementAndGet();
+                        }
+                    };
+                    return new HttpResponseBuilder().status(HttpStatus.SC_MOVED_TEMPORARILY)
+                            .entity(new InputStreamEntity(in)).header("Location", "http://www.foo.com/content").build();
+                case "/content":
+                    return new HttpResponseBuilder().status(HttpStatus.SC_OK).entity("some content").build();
+                default:
+                    return new HttpResponseBuilder().status(HttpStatus.SC_OK)
+                            .entity("<html><body><esi:include src='$(PROVIDER{tested})/redirect' /></body></html>")
+                            .header("Content-Type", "text/html").build();
                 }
             }
         });
@@ -412,7 +409,7 @@ public class DriverTest extends TestCase {
             CloseableHttpResponse driverResponse = driver.proxy("/page", request1);
             assertEquals("<html><body>some content</body></html>", EntityUtils.toString(driverResponse.getEntity()));
         }
-        assertEquals(requestCount,closeCount.get());
+        assertEquals(requestCount, closeCount.get());
         assertFalse("All the connections should have been closed", mockConnectionManager.isOpen());
     }
 
@@ -425,7 +422,7 @@ public class DriverTest extends TestCase {
      * NPE in Apache HTTP CLient cache
      * <p>
      * See :http://www.esigate.org/mantisbt/view.php?id=142
-     *
+     * 
      * @throws Exception
      */
     public void testBug142() throws Exception {
@@ -471,7 +468,7 @@ public class DriverTest extends TestCase {
      * NPE in Apache HTTP CLient cache
      * <p>
      * See http://www.esigate.org/mantisbt/view.php?id=142
-     *
+     * 
      * @throws Exception
      */
     public void testBug142SecondCase() throws Exception {
@@ -506,7 +503,7 @@ public class DriverTest extends TestCase {
      * When requesting a full response, a full response must be sent even if the cache has cached a 304 response.
      * <p>
      * See http://www.esigate.org/mantisbt/view.php?id=155
-     *
+     * 
      * @throws Exception
      */
     public void testBug155() throws Exception {
@@ -560,7 +557,7 @@ public class DriverTest extends TestCase {
      * 0000162: Cookie forwarding (Browser->Server) does not work with preserveHost
      * <p>
      * This test is to ensure behavior with preserve host off (already working as of bug 162).
-     *
+     * 
      * @throws Exception
      * @see <a href="http://www.esigate.org/mantisbt/view.php?id=162">0000162</a>
      */
@@ -595,7 +592,7 @@ public class DriverTest extends TestCase {
      * DefaultCookieManager#rewriteForServer().
      * <p>
      * Warning: HttpClient is not using Host header to validate cookies.
-     *
+     * 
      * @throws Exception
      * @see <a href="http://www.esigate.org/mantisbt/view.php?id=162">0000162</a>
      */
@@ -629,7 +626,7 @@ public class DriverTest extends TestCase {
      * This test ensure Fetch events are fired when cache is disabled.
      * <p>
      * It uses {@link DefaultCharset} extension which processes the Contet-Type header on post-fetch events.
-     *
+     * 
      * @throws Exception
      */
     public void testBug185() throws Exception {
@@ -668,7 +665,7 @@ public class DriverTest extends TestCase {
 
     /**
      * 0000135: Special characters are lost when including a fragment with no charset specified into UTF-8 page.
-     *
+     * 
      * @throws Exception
      * @see <a href="http://www.esigate.org/mantisbt/view.php?id=135">0000135</a>
      */
@@ -705,9 +702,9 @@ public class DriverTest extends TestCase {
 
     /**
      * 0000161: Cookie domain validation too strict with preserveHost.
-     *
+     * 
      * @see <a href="http://www.esigate.org/mantisbt/view.php?id=161">0000161</a>
-     *
+     * 
      * @throws Exception
      */
     public void testBug161SetCookie() throws Exception {
@@ -751,9 +748,9 @@ public class DriverTest extends TestCase {
     /**
      * 0000141: Socket read timeout causes a stacktrace and may leak connection
      * http://www.esigate.org/mantisbt/view.php?id=141
-     *
+     * 
      * The warning will not be fixed in HttpClient but the leak is fixed.
-     *
+     * 
      * @throws Exception
      */
     public void testSocketReadTimeoutWithCacheAndGzipDoesNotLeak() throws Exception {
@@ -836,7 +833,7 @@ public class DriverTest extends TestCase {
 
     /**
      * Cookies from external URLs calls should also be forwarded.
-     *
+     * 
      * @see <a href="http://www.esigate.org/mantisbt/view.php?id=255">0000255: forwardCookies does not work with
      *      esi:include if not using a provider variable</a>
      * @throws Exception
@@ -927,9 +924,9 @@ public class DriverTest extends TestCase {
 
     /**
      * 0000231: ESIgate should be enable to mashup elements for an error/404 page.
-     *
+     * 
      * @see "http://www.esigate.org/mantisbt/view.php?id=231"
-     *
+     * 
      * @throws Exception
      */
     public void testBug231RenderingOnProxyError() throws Exception {
@@ -983,9 +980,9 @@ public class DriverTest extends TestCase {
     /**
      * FetchEvent#getHttpResponse().getStatusLine().getUri() is not the same as
      * FetchEvent#getHttpRequest().getOriginal().getRequestLine().getUri() #23
-     *
+     * 
      * @see <a href="https://github.com/esigate/esigate/issues/23">https://github.com/esigate/esigate/issues/23</a>
-     *
+     * 
      * @throws Exception
      */
     public void testPreserveHostInUriInOutgoingRequest() throws Exception {
