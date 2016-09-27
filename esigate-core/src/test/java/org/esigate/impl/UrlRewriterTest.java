@@ -476,6 +476,17 @@ public class UrlRewriterTest extends TestCase {
         assertRewritesHtml(html, rewrittenHtml);
     }
 
+    public void testHtmlRewriteInvalidEscapeSequence() {
+        baseUrl = "http://backend";
+        visibleUrlBase = "http://visible/context/";
+        requestUrl = "/";
+        absolute = true;
+
+        String html = "<a href='http://backend?%20%az%'>";
+        String rewrittenHtml = "<a href='http://visible/context/?%20%25az%25'>";
+        assertRewritesHtml(html, rewrittenHtml);
+    }
+
     /**
      * Issue https://github.com/esigate/esigate/issues/139. Url rewriting prevents using $(PROVIDER{}) in a html link
      */
