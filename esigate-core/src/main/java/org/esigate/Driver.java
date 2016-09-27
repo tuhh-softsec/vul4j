@@ -180,7 +180,7 @@ public final class Driver {
                 while (redirects > 0
                         && redirectStrategy.isRedirected(outgoingRequest, response, outgoingRequest.getContext())) {
 
-                    // Must consume the entity 
+                    // Must consume the entity
                     EntityUtils.consumeQuietly(response.getEntity());
 
                     redirects--;

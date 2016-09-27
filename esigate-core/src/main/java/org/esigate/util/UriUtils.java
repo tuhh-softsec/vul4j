@@ -38,6 +38,7 @@ public final class UriUtils {
     private static final int CONVERSION_TABLE_SIZE = 128;
     private static final String RESERVED_CHARACTERS = ":/?&=#%";
     private static final String[] CONVERSION_TABLE = new String[CONVERSION_TABLE_SIZE];
+
     static {
         for (int i = 0; i < CONVERSION_TABLE_SIZE; i++) {
             char character = (char) i;
@@ -74,16 +75,34 @@ public final class UriUtils {
      */
     public static String encodeIllegalCharacters(String uri) {
         StringBuilder result = new StringBuilder();
-        for (int i = 0; i < uri.length(); i++) {
+        int length = uri.length();
+        for (int i = 0; i < length; i++) {
             char character = uri.charAt(i);
-            int j = (int) character;
-            if (j >= CONVERSION_TABLE_SIZE || j < 0) {
-                result.append(encode(character));
+            if (character == '%') {
+                // Encode invalid escape sequences
+                if (i >= length - 2 || !isHex(uri.charAt(i + 1)) || !isHex(uri.charAt(i + 2))) {
+                    result.append("%25");
+                } else {
+                    result.append('%');
+                }
             } else {
-                result.append(CONVERSION_TABLE[j]);
+                int j = (int) character;
+                if (j >= CONVERSION_TABLE_SIZE || j < 0) {
+                    result.append(encode(character));
+                } else {
+                    result.append(CONVERSION_TABLE[j]);
+                }
             }
         }
         return result.toString();
+    }
+
+    private static boolean isHex(char character) {
+        return character == '0' || character == '1' || character == '2' || character == '3' || character == '4'
+                || character == '5' || character == '6' || character == '7' || character == '8' || character == '9'
+                || character == 'a' || character == 'b' || character == 'c' || character == 'd' || character == 'e'
+                || character == 'f' || character == 'A' || character == 'B' || character == 'C' || character == 'D'
+                || character == 'E' || character == 'F';
     }
 
     private static final class InvalidUriException extends RuntimeException {
