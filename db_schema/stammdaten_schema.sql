@@ -231,37 +231,6 @@ CREATE TRIGGER letzte_aenderung_datensatz_erzeuger BEFORE UPDATE ON datensatz_er
 
 ALTER SEQUENCE datensatz_erzeuger_id_seq OWNED BY datensatz_erzeuger.id;
 
-
-CREATE SEQUENCE de_vg_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-CREATE TABLE de_vg (
-    id integer PRIMARY KEY DEFAULT nextval('de_vg_id_seq'::regclass),
-    use double precision,
-    rs character varying(12),
-    gf double precision,
-    rau_rs character varying(12),
-    gen character varying(50),
-    des character varying(75),
-    isn double precision,
-    bemerk character varying(75),
-    nambild character varying(16),
-    ags character varying(12),
-    rs_alt character varying(20),
-    wirksamkei date,
-    debkg_id character varying(16),
-    length numeric,
-    shape_area numeric,
-    geom public.geometry(MultiPolygon,4326)
-);
-
-ALTER SEQUENCE de_vg_id_seq OWNED BY de_vg.id;
-
-
 CREATE TABLE deskriptor_umwelt (
     id integer PRIMARY KEY,
     s00 integer NOT NULL,
@@ -807,9 +776,6 @@ ALTER TABLE ONLY proben_zusatz
 
 ALTER TABLE ONLY umwelt
     ADD CONSTRAINT umwelt_umwelt_bereich_key UNIQUE (umwelt_bereich);
-
-
-CREATE INDEX de_vg_geom_gist ON de_vg USING gist (geom);
 
 
 CREATE INDEX fts_stauts_kooin10001 ON staat USING btree (kda_id);

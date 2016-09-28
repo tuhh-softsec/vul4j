@@ -25,7 +25,7 @@ ENV LC_ALL en_US.UTF-8
 # Install packages
 #
 RUN apt-get update && \
-    apt-get install -y postgresql-9.4-postgis-2.1 postgis
+    apt-get install -y postgresql-9.4-postgis-2.1 postgis curl unzip
 
 #
 # Use user postgres to run the next commands
