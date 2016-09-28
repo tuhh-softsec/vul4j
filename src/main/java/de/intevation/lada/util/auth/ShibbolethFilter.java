@@ -1,24 +1,20 @@
 /* Copyright (C) 2015 by Bundesamt fuer Strahlenschutz
  * Software engineering by Intevation GmbH
  *
- * This file is Free Software under the GNU GPL (v>=3) 
- * and comes with ABSOLUTELY NO WARRANTY! Check out 
- * the documentation coming with IMIS-Labordaten-Application for details. 
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
  */
 
 package de.intevation.lada.util.auth;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Properties;
 
 import javax.inject.Inject;
-import javax.naming.InvalidNameException;
-import javax.naming.ldap.LdapName;
-import javax.naming.ldap.Rdn;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -104,9 +100,8 @@ public class ShibbolethFilter implements Filter {
                 return;
         }
 
-        List<String> rolesValue = extractRoles(roles);
-        if (roles == null || "".equals(roles) ||
-            rolesValue == null || rolesValue.isEmpty()) {
+        Set<String> rolesValue = extractRoles(roles);
+        if (rolesValue == null || rolesValue.isEmpty()) {
                 httpResponse.reset();
                 httpResponse.setStatus(401);
                 httpResponse.getOutputStream().print("{\"success\":false,\"message\":\"698\",\"data\":" +
@@ -133,30 +128,18 @@ public class ShibbolethFilter implements Filter {
 
     }
 
-    private List<String> extractRoles(String roles) {
-        LdapName ldap;
-        try {
-            ldap = new LdapName("");
+    private Set<String> extractRoles(String roles) {
+        Set<String> groups = new HashSet<>();
+        if (roles == null || "".equals(roles) || "(null)".equals(roles)) {
+            return groups;
+        } else {
             String[] groupStrings = roles.split(";");
+            String item;
             for (int i = 0; i < groupStrings.length; i++) {
-                String[] items = groupStrings[i].trim().split(",");
-                for (int j = 0; j < items.length; j++) {
-                    ldap.add(items[j]);
-                }
-            }
-            List<Rdn> rdns = ldap.getRdns();
-            List<String> groups = new ArrayList<String>();
-            for (Rdn rdn: rdns) {
-               String value = (String)rdn.getValue();
-               if (rdn.getType().equals("cn") &&
-                   !"groups".equals(rdn.getValue().toString())) {
-                   groups.add(value);
-               }
+                item = groupStrings[i].replaceAll(",.*", "").replace("cn=", "");
+                groups.add(item);
             }
             return groups;
-        } catch (InvalidNameException e) {
-            logger.debug("ShibbolethFilter failed!", e);
-            return null;
         }
     }
 
