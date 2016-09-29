@@ -28,8 +28,8 @@ public class SubIntervall implements Rule {
         this.intervallMax = new Hashtable<String, Integer>();
 
         this.intervallMax.put("J",  365);
-        this.intervallMax.put("H",  183);
-        this.intervallMax.put("Q",  91);
+        this.intervallMax.put("H",  184);
+        this.intervallMax.put("Q",  92);
         this.intervallMax.put("M",  31);
         this.intervallMax.put("W4", 28);
         this.intervallMax.put("W2", 14);

@@ -593,13 +593,13 @@ CREATE TABLE messprogramm (
                AND teilintervall_bis BETWEEN 1 AND 365
                AND intervall_offset BETWEEN 0 AND 364
            OR probenintervall = 'H'
-               AND teilintervall_von BETWEEN 1 AND 183
-               AND teilintervall_bis BETWEEN 1 AND 183
-               AND intervall_offset BETWEEN 0 AND 182
+               AND teilintervall_von BETWEEN 1 AND 184
+               AND teilintervall_bis BETWEEN 1 AND 184
+               AND intervall_offset BETWEEN 0 AND 183
            OR probenintervall = 'Q'
-               AND teilintervall_von BETWEEN 1 AND 91
-               AND teilintervall_bis BETWEEN 1 AND 91
-               AND intervall_offset BETWEEN 0 AND 90
+               AND teilintervall_von BETWEEN 1 AND 92
+               AND teilintervall_bis BETWEEN 1 AND 92
+               AND intervall_offset BETWEEN 0 AND 91
            OR probenintervall = 'M'
                AND teilintervall_von BETWEEN 1 AND 31
                AND teilintervall_bis BETWEEN 1 AND 31
