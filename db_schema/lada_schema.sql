@@ -745,7 +745,8 @@ CREATE TABLE probe (
     mpr_id integer,
     solldatum_beginn timestamp without time zone,
     solldatum_ende timestamp without time zone,
-    tree_modified timestamp without time zone DEFAULT now()
+    tree_modified timestamp without time zone DEFAULT now(),
+    CHECK(solldatum_beginn <= solldatum_ende)
 )
 INHERITS (bund.probe);
 
