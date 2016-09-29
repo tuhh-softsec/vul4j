@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Hashtable;
 
 import javax.inject.Inject;
 
@@ -43,6 +44,143 @@ import de.intevation.lada.util.rest.Response;
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
 public class ProbeFactory {
+
+    private static Hashtable<String, int[]> fieldsTable;
+
+    public ProbeFactory() {
+        int[] M = { Calendar.MONTH, Calendar.DAY_OF_MONTH, 1 };
+        int[] Q = { Calendar.MONTH, Calendar.DAY_OF_MONTH, 3 };
+        int[] H = { Calendar.MONTH, Calendar.DAY_OF_MONTH, 6 };
+
+        this.fieldsTable = new Hashtable<String, int[]>();
+
+        this.fieldsTable.put("M", M);
+        this.fieldsTable.put("Q", Q);
+        this.fieldsTable.put("H", H);
+    }
+
+    private class Intervall {
+        private int teilVon;
+        private int teilBis;
+        private int offset;
+
+        private int intervallField;
+        private int subIntField;
+        private int intervallFactor;
+
+        private Calendar from;
+
+        public Intervall(
+            Messprogramm messprogramm,
+            Calendar start
+        ) {
+            this.teilVon = messprogramm.getTeilintervallVon();
+            this.teilBis = messprogramm.getTeilintervallBis();
+            this.offset = messprogramm.getIntervallOffset();
+
+            this.intervallField = fieldsTable
+                .get(messprogramm.getProbenintervall())[0];
+            this.subIntField = fieldsTable
+                .get(messprogramm.getProbenintervall())[1];
+            this.intervallFactor = fieldsTable
+                .get(messprogramm.getProbenintervall())[2];
+
+            /* Align with beginning of next interval
+             * like first day of next quarter.*/
+            // TODO: Avoid overflow e.g. into next quarter, if e.g. teilBis
+            // greater than sum of actual maxima of months in quarter.
+            int startIntField = start.get(intervallField);
+            this.from = (Calendar)start.clone();
+            from.set(
+                intervallField,
+                startIntField + startIntField % intervallFactor
+            );
+            from = adjustSubIntField(from, teilVon);
+            if (start.after(from)) {
+                // to next intervall if start not at first day of intervall
+                this.roll();
+            }
+        }
+
+       /**
+        * Return given calendar adjusted to start of intervall (e.g. first
+        * day in quarter) plus offset and given amount of days.
+        *
+        * @param cal Calendar to be adjusted
+        * @param int amount of days to be added (plus offset)
+        *
+        * @return the adjusted Calendar object.
+        */
+        private Calendar adjustSubIntField(Calendar cal, int teil) {
+            int intField = cal.get(intervallField);
+            cal.set(
+                intervallField,
+                intField - intField % intervallFactor
+            );
+            cal.set(subIntField, offset + Math.min(teil, getDuration()));
+            return cal;
+        }
+
+        /**
+         * Get sum of actual maxima for given field from actual field value
+         * for the next factor values of iterField.
+         *
+         * @param calendar  Time to start from
+         *
+         * @return the sum of maxima for the field values specified with
+         *         field and factor.
+         */
+        private int getDuration() {
+            logger.debug("## calculate maximum ##");
+            int duration = 0;
+            Calendar tmp = (Calendar)from.clone();
+            /* reset to beginning of intervall, e.g. first day of quarter
+             * to compensate possible overflow if
+             * teilVon > maximum of intervallField: */
+            int fromIntField = from.get(intervallField);
+            tmp.set(
+                intervallField,
+                fromIntField - fromIntField % intervallFactor
+            );
+            tmp.set(subIntField, tmp.getActualMinimum(subIntField));
+            logger.debug(tmp);
+            for (int i = 0; i < intervallFactor; i++) {
+                logger.debug(tmp.getActualMaximum(subIntField));
+                duration += tmp.getActualMaximum(subIntField);
+                tmp.add(intervallField, 1);
+            }
+            logger.debug(duration);
+            return duration;
+        }
+
+        public Date getFrom() {
+            logger.debug("getFrom() from: " + from);
+            return from.getTime();
+        }
+
+        public Date getTo() {
+            logger.debug("getTo() from: " + from);
+            Calendar to = (Calendar)from.clone();
+            to = adjustSubIntField(to, teilBis);
+            return to.getTime();
+        }
+
+        public boolean startInLeapYear() {
+            return from.getActualMaximum(Calendar.DAY_OF_YEAR) > 364;
+        }
+
+        public int getStartDOY() {
+            return from.get(Calendar.DAY_OF_YEAR);
+        }
+
+        public void roll() {
+            from.add(intervallField, intervallFactor);
+            from = adjustSubIntField(from, teilVon);
+        }
+
+    }
+    // end Intervall class
+
 
     @Inject Logger logger;
 
@@ -80,20 +218,11 @@ public class ProbeFactory {
         start.setTimeInMillis(from);
         Calendar end = Calendar.getInstance();
         end.setTimeInMillis(to);
+
         List<LProbe> proben = new ArrayList<LProbe>();
 
-
-        if ("M".equals(messprogramm.getProbenintervall())) {
-            Calendar realStart = getStart ("M", start);
-            proben.addAll(generateMonth(messprogramm, realStart, end));
-        }
-        else if ("Q".equals(messprogramm.getProbenintervall())) {
-            Calendar realStart = getStart ("Q", start);
-            proben.addAll(generateQuarter(messprogramm, realStart, end));
-        }
-        else if ("H".equals(messprogramm.getProbenintervall())) {
-            Calendar realStart = getStart ("H", start);
-            proben.addAll(generateHalf(messprogramm, realStart, end));
+        if (fieldsTable.keySet().contains(messprogramm.getProbenintervall())) {
+            proben.addAll(generateMonthly(messprogramm, start, end));
         }
         else {
             Date[][] intervals = calculateIntervals(start, end, messprogramm);
@@ -161,44 +290,28 @@ public class ProbeFactory {
         }
     }
 
-    private List<LProbe> generateMonth(
+    private List<LProbe> generateMonthly(
         Messprogramm messprogramm,
         Calendar start,
         Calendar end
     ) {
+        logger.debug("start: " + start);
+
         int gueltigVon = messprogramm.getGueltigVon();
         int gueltigBis = messprogramm.getGueltigBis();
 
-        int offset = messprogramm.getIntervallOffset();
-        int teilVon = messprogramm.getTeilintervallVon();
-        int teilBis = messprogramm.getTeilintervallBis();
-
         List<LProbe> proben = new ArrayList<LProbe>();
 
-        // Create template Calendars to be recomputed/adapted to actual
-        // maxima/minima of fields.
-        Calendar initSolldatumBeginn = (Calendar)start.clone();
-        initSolldatumBeginn.set(Calendar.DAY_OF_MONTH, offset + teilVon);
-        Calendar initSolldatumEnde = (Calendar)start.clone();
-        initSolldatumEnde.set(Calendar.DAY_OF_MONTH, offset + teilBis);
-
-        // Initialize solldatum values for Probe objects, i.e. trigger
-        // recomputation of Calendar fields.
-        Calendar solldatumBeginn = (Calendar)initSolldatumBeginn.clone();
-        Calendar solldatumEnde = (Calendar)initSolldatumEnde.clone();
-        solldatumBeginn.add(Calendar.MONTH, 0);
-        solldatumEnde.add(Calendar.MONTH, 0);
-
-        for (int monthCount = 1; solldatumBeginn.before(end); monthCount++) {
+        for (Intervall intervall = new Intervall(messprogramm, start);
+             intervall.getFrom().before(end.getTime());
+             intervall.roll()
+        ) {
             /* Leap year adaption of validity period.
              * It is assumed here (and should be enforced by the data model)
              * that gueltigVon and gueltigBis are always given relative to
              * a non-leap year. E.g. a value of 59 is assumed to denote
              * March 1 and thus has to be adapted in a leap year. */
-            int leapDay =
-                solldatumBeginn.getActualMaximum(Calendar.DAY_OF_YEAR) > 364
-                ? 1
-                : 0;
+            int leapDay = intervall.startInLeapYear() ? 1 : 0;
             int actualGueltigVon =
                 gueltigVon > 58
                 ? gueltigVon + leapDay
@@ -208,7 +321,7 @@ public class ProbeFactory {
                 ? gueltigBis + leapDay
                 : gueltigBis;
 
-            int solldatumBeginnDOY = solldatumBeginn.get(Calendar.DAY_OF_YEAR);
+            int solldatumBeginnDOY = intervall.getStartDOY();
 
             if ((
                     // Validity within one year
@@ -224,113 +337,16 @@ public class ProbeFactory {
             ) {
                 LProbe probe = createObjects(
                     messprogramm,
-                    solldatumBeginn.getTime(),
-                    solldatumEnde.getTime()
+                    intervall.getFrom(),
+                    intervall.getTo()
                 );
                 if (probe != null) {
                     proben.add(probe);
                 }
+            } else {
+                logger.debug(solldatumBeginnDOY + " not within validity "
+                + actualGueltigVon + " to " + actualGueltigBis);
             }
-
-            // Reset solldatumBeginn to align DAY_OF_MONTH with initial value
-            solldatumBeginn = (Calendar)initSolldatumBeginn.clone();
-            solldatumEnde = (Calendar)initSolldatumEnde.clone();
-
-            // Move to next month.
-            // This may change DAY_OF_MONTH due to actual maximum.
-            solldatumBeginn.add(Calendar.MONTH, monthCount);
-            solldatumEnde.add(Calendar.MONTH, monthCount);
-        }
-
-        return proben;
-    }
-
-    private List<LProbe> generateQuarter(
-        Messprogramm messprogramm,
-        Calendar start,
-        Calendar end
-    ) {
-        int offset = messprogramm.getIntervallOffset();
-        int teilVon = messprogramm.getTeilintervallVon() - 1;
-        int teilBis = messprogramm.getTeilintervallBis();
-        int manualDuration = teilBis - teilVon;
-
-        List<LProbe> proben = new ArrayList<LProbe>();
-
-        int currentLength = getDurationQuarter(start);
-        if (manualDuration > 0) {
-            currentLength = manualDuration;
-        }
-        Calendar quarterStart = (Calendar)start.clone();
-        Calendar quarterEnd = Calendar.getInstance();
-        quarterStart.add(Calendar.DAY_OF_YEAR, offset + teilVon);
-        quarterEnd.setTime(start.getTime());
-        quarterEnd.add(Calendar.DAY_OF_YEAR, currentLength);
-        for (;quarterStart.before(end);) {
-            int startDOY = quarterStart.get(Calendar.DAY_OF_YEAR);
-            if (startDOY > messprogramm.getGueltigVon()
-                && startDOY < messprogramm.getGueltigBis()) {
-                LProbe probe = createObjects(
-                    messprogramm,
-                    quarterStart.getTime(),
-                    quarterEnd.getTime()
-                );
-                if (probe != null) {
-                    proben.add(probe);
-                }
-            }
-            quarterStart.set(Calendar.DAY_OF_MONTH, 2);
-            quarterStart = getStart("Q", quarterStart);
-            quarterStart.add(Calendar.DAY_OF_YEAR, offset + teilVon);
-            if (manualDuration <= 0) {
-                currentLength = getDurationQuarter(quarterStart);
-            }
-            quarterEnd.setTime(quarterStart.getTime());
-            quarterEnd.add(Calendar.DAY_OF_YEAR, currentLength);
-        }
-
-        return proben;
-    }
-
-    private List<LProbe> generateHalf(
-        Messprogramm messprogramm,
-        Calendar start,
-        Calendar end
-    ) {
-        int offset = messprogramm.getIntervallOffset();
-        int teilVon = messprogramm.getTeilintervallVon() - 1;
-        int teilBis = messprogramm.getTeilintervallBis();
-        int manualDuration = teilBis - teilVon;
-
-        List<LProbe> proben = new ArrayList<LProbe>();
-
-        int currentLength = getDurationHalf(start);
-        if (manualDuration > 0) {
-            currentLength = manualDuration;
-        }
-        Calendar halfStart = (Calendar)start.clone();
-        Calendar halfEnd = Calendar.getInstance();
-        halfStart.add(Calendar.DAY_OF_YEAR, offset + teilVon);
-        halfEnd.setTime(halfStart.getTime());
-        halfEnd.add(Calendar.DAY_OF_YEAR, currentLength);
-        for (;halfStart.before(end);) {
-            int startDOY = halfStart.get(Calendar.DAY_OF_YEAR);
-            if (startDOY > messprogramm.getGueltigVon()
-                && startDOY < messprogramm.getGueltigBis()) {
-                LProbe probe = createObjects(
-                    messprogramm, halfStart.getTime(), halfEnd.getTime());
-                if (probe != null) {
-                    proben.add(probe);
-                }
-            }
-            halfStart.set(Calendar.DAY_OF_MONTH, 2);
-            halfStart = getStart("H", halfStart);
-            halfStart.add(Calendar.DAY_OF_YEAR, offset + teilVon);
-            if (manualDuration <= 0) {
-                currentLength = getDurationHalf(halfStart);
-            }
-            halfEnd.setTime(halfStart.getTime());
-            halfEnd.add(Calendar.DAY_OF_YEAR, currentLength);
         }
 
         return proben;
@@ -366,97 +382,6 @@ public class ProbeFactory {
             }
         }
         return proben;
-    }
-
-    private int getDurationMonth(Calendar month) {
-        return month.getActualMaximum(Calendar.DAY_OF_MONTH);
-    }
-
-    private int getDurationQuarter(Calendar month) {
-        if ((month.get(Calendar.MONTH)) % 3 != 0) {
-            logger.debug("not a valid month!");
-            return 91; // Fallback to not generate to much probe objects.
-        }
-        int duration = 0;
-        Calendar tmp = (Calendar)month.clone();
-        for (int i = 0; i < 3; i++) {
-            duration += tmp.getActualMaximum(Calendar.DAY_OF_MONTH);
-            tmp.set(Calendar.MONTH, tmp.get(Calendar.MONTH) + 1);
-        }
-        return duration;
-    }
-
-    private int getDurationHalf(Calendar month) {
-        if ((month.get(Calendar.MONTH)) % 6 != 0) {
-            logger.debug("not a valid month!");
-            return 183; // Fallback to not generate to much probe objects.
-        }
-        int duration = 0;
-        Calendar tmp = (Calendar)month.clone();
-        for (int i = 0; i < 6; i++) {
-            duration += tmp.getActualMaximum(Calendar.DAY_OF_MONTH);
-            tmp.set(Calendar.MONTH, tmp.get(Calendar.MONTH) + 1);
-        }
-        return duration - 1;
-    }
-
-    private Calendar getStart(String interval, Calendar date) {
-        Calendar start = Calendar.getInstance();
-        start.setTime(date.getTime());
-        if ("M".equals(interval)) {
-            if (start.get(Calendar.DAY_OF_MONTH) > 1) {
-                int month = start.get(Calendar.MONTH) + 1;
-                start.set(Calendar.MONTH, month);
-                start.set(Calendar.DAY_OF_MONTH, 1);
-            }
-        }
-        else if ("Q".equals(interval)) {
-            int month = start.get(Calendar.MONTH); /* 0 through 11 */
-            int quarter = (month / 3) + 1;
-            Calendar tmp = (Calendar)start.clone();
-            logger.debug("in " + quarter + ". quarter");
-
-            tmp.set(Calendar.MONTH, (quarter * 3));
-            logger.debug("its the " + tmp.get(Calendar.MONTH) + ". month");
-            tmp.set(Calendar.DAY_OF_MONTH, 1);
-            int firstDayOfQuarter = tmp.get(Calendar.DAY_OF_YEAR);
-            if (start.get(Calendar.DAY_OF_YEAR) > firstDayOfQuarter) {
-                if (quarter < 4) {
-                    start.set(Calendar.MONTH, (quarter + 1) * 3 - 2);
-                    start.set(Calendar.DAY_OF_MONTH, 1);
-                }
-                else {
-                    // Next year...
-                    start.set(Calendar.MONTH, 0);
-                    start.set(Calendar.YEAR, start.get(Calendar.YEAR) + 1);
-                    start.set(Calendar.DAY_OF_MONTH, 1);
-                }
-            }
-            else {
-                start = (Calendar)tmp.clone();
-            }
-        }
-        else if ("H".equals(interval)) {
-            int month = start.get(Calendar.MONTH);
-            int half = (month / 6) + 1;
-            Calendar tmp = (Calendar)start.clone();
-            tmp.set(Calendar.MONTH, half * 6 - 6);
-            tmp.set(Calendar.DAY_OF_MONTH, 1);
-            int firstDayOfHalf = tmp.get(Calendar.DAY_OF_YEAR);
-            if (start.get(Calendar.DAY_OF_YEAR) > firstDayOfHalf) {
-                if (half == 1) {
-                    start.set(Calendar.MONTH, (half + 1) * 6 - 6);
-                    start.set(Calendar.DAY_OF_MONTH, 1);
-                }
-                else {
-                    // Next year...
-                    start.set(Calendar.MONTH, 0);
-                    start.set(Calendar.YEAR, start.get(Calendar.YEAR) + 1);
-                    start.set(Calendar.DAY_OF_MONTH, 1);
-                }
-            }
-        }
-        return start;
     }
 
     private Calendar getMonday(Calendar week) {
@@ -651,43 +576,6 @@ public class ProbeFactory {
         return intervals;
     }
 
-    /**
-     * Parse an interval string.
-     * Posible values are: J, H, Q, M, W4, W2, W, T
-     *
-     * @param   interval    the interval string.
-     *
-     * @return the amount of days for the given interval.
-     */
-    private int parseInterval(String interval) {
-        if ("J".equals(interval)) {
-            return 365;
-        }
-        else if ("H".equals(interval)) {
-            return 183;
-        }
-        else if ("Q".equals(interval)) {
-            return 91;
-        }
-        else if ("M".equals(interval)) {
-            return 30;
-        }
-        else if ("W4".equals(interval)) {
-            return 28;
-        }
-        else if ("W2".equals(interval)) {
-            return 14;
-        }
-        else if ("W".equals(interval)) {
-            return 7;
-        }
-        else if ("T".equals(interval)) {
-            return 1;
-        }
-        else {
-            return 0;
-        }
-    }
 
     /**
      * Search for the umwelt id using the 'deskriptor'.
@@ -736,6 +624,7 @@ public class ProbeFactory {
         messprogramm.setUmwId(findUmwelt(mediaDesk));
         return messprogramm;
     }
+
 
     /**
      * Find the umwelt id for a given deskriptor.
