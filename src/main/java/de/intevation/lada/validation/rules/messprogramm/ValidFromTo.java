@@ -19,10 +19,10 @@ import de.intevation.lada.validation.rules.Rule;
 @ValidationRule("Messprogramm")
 public class ValidFromTo implements Rule {
 
-    private static final int DOY_MIN = 0;
+    private static final int DOY_MIN = 1;
 
     // Leap years should be handled in generation of Probe objects
-    private static final int DOY_MAX = 364;
+    private static final int DOY_MAX = 365;
 
     @Override
     public Violation execute(Object object) {

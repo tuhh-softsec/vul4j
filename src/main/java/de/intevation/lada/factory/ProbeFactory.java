@@ -168,7 +168,7 @@ public class ProbeFactory {
         }
 
         public boolean startInLeapYear() {
-            return from.getActualMaximum(Calendar.DAY_OF_YEAR) > 364;
+            return from.getActualMaximum(Calendar.DAY_OF_YEAR) > 365;
         }
 
         public int getStartDOY() {
