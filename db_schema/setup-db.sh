@@ -81,12 +81,15 @@ if [ "$NO_DATA" != "true" ]; then
     echo create user $ROLE_NAME
     psql $DB_CONNECT_STRING -d $DB_NAME --command "CREATE SCHEMA geo AUTHORIZATION $ROLE_NAME"
 
-    TS="0101" 
+    TS="0101"
     cd /tmp
-    curl -O http://sg.geodatenzentrum.de/web_download/vg/vg250_${TS}/utm32s/shape/vg250_${TS}.utm32s.shape.ebenen.zip && \
+    if [ ! -f vg250_${TS}.utm32s.shape.ebenen.zip ]; then
+        curl -O \
+            http://sg.geodatenzentrum.de/web_download/vg/vg250_${TS}/utm32s/shape/vg250_${TS}.utm32s.shape.ebenen.zip
+    fi
     unzip vg250_${TS}.utm32s.shape.ebenen.zip "*VG250_GEM*"
     cd vg250_${TS}.utm32s.shape.ebenen/vg250_ebenen/
     shp2pgsql VG250_GEM geo.gem_utm | psql $DB_CONNECT_STRING -d $DB_NAME
     cd /tmp
-    rm -rf vg250_${TS}.utm32s.shape.ebenen*
+    rm -rf vg250_${TS}.utm32s.shape.ebenen
 fi
