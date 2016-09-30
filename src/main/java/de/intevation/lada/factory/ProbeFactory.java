@@ -133,7 +133,6 @@ public class ProbeFactory {
             if (subIntField == intervallField) {
                 return intervallFactor;
             }
-            logger.debug("## calculate maximum ##");
             int duration = 0;
             Calendar tmp = (Calendar)from.clone();
             /* reset to beginning of intervall, e.g. first day of quarter
@@ -145,23 +144,18 @@ public class ProbeFactory {
                 intValue - intValue % intervallFactor
             );
             tmp.set(subIntField, tmp.getActualMinimum(subIntField));
-            logger.debug(tmp);
             for (int i = 0; i < intervallFactor; i++) {
-                logger.debug(tmp.getActualMaximum(subIntField));
                 duration += tmp.getActualMaximum(subIntField);
                 tmp.add(intervallField, 1);
             }
-            logger.debug(duration);
             return duration;
         }
 
         public Date getFrom() {
-            logger.debug("getFrom() from: " + from);
             return from.getTime();
         }
 
         public Date getTo() {
-            logger.debug("getTo() from: " + from);
             Calendar to = (Calendar)from.clone();
             to = adjustSubIntField(to, teilBis);
             return to.getTime();
@@ -335,9 +329,6 @@ public class ProbeFactory {
                 if (probe != null) {
                     proben.add(probe);
                 }
-            } else {
-                logger.debug(solldatumBeginnDOY + " not within validity "
-                + actualGueltigVon + " to " + actualGueltigBis);
             }
         }
 
