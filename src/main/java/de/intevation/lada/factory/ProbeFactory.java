@@ -201,8 +201,14 @@ public class ProbeFactory {
     public List<LProbe> create(Messprogramm messprogramm, Long from, Long to) {
         Calendar start = Calendar.getInstance();
         start.setTimeInMillis(from);
+
         Calendar end = Calendar.getInstance();
         end.setTimeInMillis(to);
+        /* Adjust to end of the day as we want to generate Probe objects
+         * before or at this day. */
+        end.set(Calendar.HOUR_OF_DAY, 23);
+        end.set(Calendar.MINUTE, 59);
+        end.set(Calendar.SECOND, 59);
 
         List<LProbe> proben = new ArrayList<LProbe>();
 
