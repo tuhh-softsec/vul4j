@@ -48,12 +48,15 @@ public class ProbeFactory {
     private static Hashtable<String, int[]> fieldsTable;
 
     public ProbeFactory() {
+        int[] T = { Calendar.DAY_OF_YEAR, Calendar.DAY_OF_YEAR, 1 };
+
         int[] M = { Calendar.MONTH, Calendar.DAY_OF_MONTH, 1 };
         int[] Q = { Calendar.MONTH, Calendar.DAY_OF_MONTH, 3 };
         int[] H = { Calendar.MONTH, Calendar.DAY_OF_MONTH, 6 };
 
         this.fieldsTable = new Hashtable<String, int[]>();
 
+        this.fieldsTable.put("T", T);
         this.fieldsTable.put("M", M);
         this.fieldsTable.put("Q", Q);
         this.fieldsTable.put("H", H);
@@ -110,35 +113,36 @@ public class ProbeFactory {
         * @return the adjusted Calendar object.
         */
         private Calendar adjustSubIntField(Calendar cal, int teil) {
-            int intField = cal.get(intervallField);
-            cal.set(
-                intervallField,
-                intField - intField % intervallFactor
-            );
-            cal.set(subIntField, offset + Math.min(teil, getDuration()));
+            int intValue = cal.get(intervallField);
+            intValue = intValue - intValue % intervallFactor;
+            cal.set(intervallField, intValue);
+
+            int subIntValue = intervallField == subIntField ? intValue : 0
+                + offset + Math.min(teil, getDuration());
+            cal.set(subIntField, subIntValue);
+
             return cal;
         }
 
         /**
-         * Get sum of actual maxima for given field from actual field value
-         * for the next factor values of iterField.
-         *
-         * @param calendar  Time to start from
-         *
-         * @return the sum of maxima for the field values specified with
-         *         field and factor.
+         * @return sum of actual maxima for subIntField from beginning of
+         * actual intervall for the next intervallFactor values intervallField
+         * or just intervallFactor, if subIntField == intervallField.
          */
         private int getDuration() {
+            if (subIntField == intervallField) {
+                return intervallFactor;
+            }
             logger.debug("## calculate maximum ##");
             int duration = 0;
             Calendar tmp = (Calendar)from.clone();
             /* reset to beginning of intervall, e.g. first day of quarter
              * to compensate possible overflow if
              * teilVon > maximum of intervallField: */
-            int fromIntField = from.get(intervallField);
+            int intValue = from.get(intervallField);
             tmp.set(
                 intervallField,
-                fromIntField - fromIntField % intervallFactor
+                intValue - intValue % intervallFactor
             );
             tmp.set(subIntField, tmp.getActualMinimum(subIntField));
             logger.debug(tmp);
@@ -245,11 +249,8 @@ public class ProbeFactory {
         end.setTime(interval[1]);
         int endDay = end.get(Calendar.DAY_OF_YEAR);
 
-        // If fixed interval (T, W, W2, W4)
-        if ("T".equals(messprogramm.getProbenintervall())) {
-            proben.addAll(generate(messprogramm, start, end, 1));
-        }
-        else if ("W".equals(messprogramm.getProbenintervall())) {
+        // If fixed interval (W, W2, W4)
+        if ("W".equals(messprogramm.getProbenintervall())) {
             Calendar realStart = getMonday(start);
             proben.addAll(generate(messprogramm, realStart, end, 7));
         }
