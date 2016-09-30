@@ -39,6 +39,7 @@ import de.intevation.lada.lock.LockType;
 import de.intevation.lada.lock.ObjectLocker;
 import de.intevation.lada.model.land.LProbe;
 import de.intevation.lada.model.land.ProbeTranslation;
+import de.intevation.lada.model.land.Messprogramm;
 import de.intevation.lada.query.QueryTools;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
@@ -366,7 +367,24 @@ public class ProbeService {
         @Context HttpServletRequest request,
         JsonObject object
     ) {
-        String id = object.get("id").toString();
+        int id = object.getInt("id");
+        Messprogramm messprogramm = repository.getByIdPlain(
+            Messprogramm.class, id, "land");
+        if (messprogramm == null) {
+            return new Response(false, 600, null);
+        }
+
+        /* Allow generation of Probe objects only for a Messprogramm
+         * that would be allowed to be changed. */
+        if (!authorization.isAuthorized(
+                request,
+                messprogramm,
+                RequestMethod.PUT,
+                Messprogramm.class)
+        ) {
+            return new Response(false, 699, null);
+        }
+
         long start = 0;
         long end = 0;
         try {
@@ -380,7 +398,7 @@ public class ProbeService {
             return new Response(false, 662, null);
         }
         List<LProbe> proben = factory.create(
-            id,
+            messprogramm,
             start,
             end);
         return new Response(true, 200, proben);

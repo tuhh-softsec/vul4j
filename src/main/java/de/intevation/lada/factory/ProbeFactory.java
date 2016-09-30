@@ -200,20 +200,7 @@ public class ProbeFactory {
      *
      * @return List of probe objects.
      */
-    public List<LProbe> create(String id, Long from, Long to) {
-        QueryBuilder<Messprogramm> builder =
-            new QueryBuilder<Messprogramm>(
-                    repository.entityManager("land"),
-                    Messprogramm.class);
-        builder.and("id", id);
-        Response response = repository.filter(builder.getQuery(), "land");
-        @SuppressWarnings("unchecked")
-        List<Messprogramm> messprogramme =
-            (List<Messprogramm>)response.getData();
-        if (messprogramme == null || messprogramme.isEmpty()) {
-            return null;
-        }
-        Messprogramm messprogramm = messprogramme.get(0);
+    public List<LProbe> create(Messprogramm messprogramm, Long from, Long to) {
         Calendar start = Calendar.getInstance();
         start.setTimeInMillis(from);
         Calendar end = Calendar.getInstance();
