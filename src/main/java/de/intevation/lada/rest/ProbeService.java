@@ -367,8 +367,15 @@ public class ProbeService {
         JsonObject object
     ) {
         String id = object.get("id").toString();
-        long start = object.getJsonNumber("start").longValue();
-        long end = object.getJsonNumber("end").longValue();
+        long start = 0;
+        long end = 0;
+        try {
+            start = object.getJsonNumber("start").longValue();
+            end = object.getJsonNumber("end").longValue();
+        } catch (ClassCastException e) {
+            // Catch invalid (i.e. too high) time values
+            return new Response(false, 612, null);
+        }
         if (start > end) {
             return new Response(false, 662, null);
         }
