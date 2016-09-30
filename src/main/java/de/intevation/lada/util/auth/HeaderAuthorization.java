@@ -164,9 +164,9 @@ public class HeaderAuthorization implements Authorization {
             return false;
         }
         Authorizer authorizer = authorizers.get(clazz);
-        //This is a hack... Allows wildcard for unknown classes.
+        // Do not authorize anything unknown
         if (authorizer == null) {
-            return true;
+            return false;
         }
         return authorizer.isAuthorized(data, method, userInfo, clazz);
     }
