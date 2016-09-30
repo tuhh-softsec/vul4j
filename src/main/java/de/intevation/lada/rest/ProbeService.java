@@ -369,6 +369,9 @@ public class ProbeService {
         String id = object.get("id").toString();
         long start = object.getJsonNumber("start").longValue();
         long end = object.getJsonNumber("end").longValue();
+        if (start > end) {
+            return new Response(false, 662, null);
+        }
         List<LProbe> proben = factory.create(
             id,
             start,
