@@ -87,8 +87,6 @@ public class ProbeFactory {
 
             /* Align with beginning of next interval
              * like first day of next quarter.*/
-            // TODO: Avoid overflow e.g. into next quarter, if e.g. teilBis
-            // greater than sum of actual maxima of months in quarter.
             int startIntField = start.get(intervallField);
             this.from = (Calendar)start.clone();
             from.set(
