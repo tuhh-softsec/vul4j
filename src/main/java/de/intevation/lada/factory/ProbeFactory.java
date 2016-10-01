@@ -48,7 +48,10 @@ public class ProbeFactory {
     private static Hashtable<String, int[]> fieldsTable;
 
     public ProbeFactory() {
-        int[] T = { Calendar.DAY_OF_YEAR, Calendar.DAY_OF_YEAR, 1 };
+        int[] T  = { Calendar.DAY_OF_YEAR, Calendar.DAY_OF_YEAR, 1 };
+        int[] W  = { Calendar.DAY_OF_YEAR, Calendar.DAY_OF_YEAR, 7 };
+        int[] W2 = { Calendar.DAY_OF_YEAR, Calendar.DAY_OF_YEAR, 14 };
+        int[] W4 = { Calendar.DAY_OF_YEAR, Calendar.DAY_OF_YEAR, 28 };
 
         int[] M = { Calendar.MONTH, Calendar.DAY_OF_MONTH, 1 };
         int[] Q = { Calendar.MONTH, Calendar.DAY_OF_MONTH, 3 };
@@ -57,19 +60,22 @@ public class ProbeFactory {
         this.fieldsTable = new Hashtable<String, int[]>();
 
         this.fieldsTable.put("T", T);
+        this.fieldsTable.put("W", W);
+        this.fieldsTable.put("W2", W2);
+        this.fieldsTable.put("W4", W4);
         this.fieldsTable.put("M", M);
         this.fieldsTable.put("Q", Q);
         this.fieldsTable.put("H", H);
     }
 
     private class Intervall {
-        private int teilVon;
-        private int teilBis;
-        private int offset;
+        private final int teilVon;
+        private final int teilBis;
+        private final int offset;
 
-        private int intervallField;
-        private int subIntField;
-        private int intervallFactor;
+        private final int intervallField;
+        private final int subIntField;
+        private final int intervallFactor;
 
         private Calendar from;
 
@@ -88,14 +94,24 @@ public class ProbeFactory {
             this.intervallFactor = fieldsTable
                 .get(messprogramm.getProbenintervall())[2];
 
-            /* Align with beginning of next interval
-             * like first day of next quarter.*/
-            int startIntField = start.get(intervallField);
             this.from = (Calendar)start.clone();
-            from.set(
-                intervallField,
-                startIntField + startIntField % intervallFactor
-            );
+
+            /* Align with beginning of next interval
+             * like first day of next quarter or Monday of next week.*/
+            if (intervallField == Calendar.DAY_OF_YEAR
+                && intervallFactor % 7 == 0
+            ) {
+                if (from.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
+                    from.add(Calendar.WEEK_OF_YEAR, 1);
+                    from.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+                }
+            } else {
+                int startIntField = start.get(intervallField);
+                from.set(
+                    intervallField,
+                    startIntField + startIntField % intervallFactor
+                );
+            }
             from = adjustSubIntField(from, teilVon);
             if (start.after(from)) {
                 // to next intervall if start not at first day of intervall
@@ -114,11 +130,16 @@ public class ProbeFactory {
         */
         private Calendar adjustSubIntField(Calendar cal, int teil) {
             int intValue = cal.get(intervallField);
-            intValue = intValue - intValue % intervallFactor;
-            cal.set(intervallField, intValue);
+            int adjust = offset;
 
-            int subIntValue = intervallField == subIntField ? intValue : 0
-                + offset + Math.min(teil, getDuration());
+            if (intervallField != subIntField) {
+                intValue = intValue - intValue % intervallFactor;
+                cal.set(intervallField, intValue);
+            } else {
+                adjust += intValue - 1;
+            }
+
+            int subIntValue = adjust + Math.min(teil, getDuration());
             cal.set(subIntField, subIntValue);
 
             return cal;
@@ -211,7 +232,7 @@ public class ProbeFactory {
         List<LProbe> proben = new ArrayList<LProbe>();
 
         if (fieldsTable.keySet().contains(messprogramm.getProbenintervall())) {
-            proben.addAll(generateMonthly(messprogramm, start, end));
+            proben.addAll(generateIntervall(messprogramm, start, end));
         }
         else {
             Date[][] intervals = calculateIntervals(start, end, messprogramm);
@@ -243,20 +264,7 @@ public class ProbeFactory {
         end.setTime(interval[1]);
         int endDay = end.get(Calendar.DAY_OF_YEAR);
 
-        // If fixed interval (W, W2, W4)
-        if ("W".equals(messprogramm.getProbenintervall())) {
-            Calendar realStart = getMonday(start);
-            proben.addAll(generate(messprogramm, realStart, end, 7));
-        }
-        else if ("W2".equals(messprogramm.getProbenintervall())) {
-            Calendar realStart = getMonday(start);
-            proben.addAll(generate(messprogramm, realStart, end, 14));
-        }
-        else if ("W4".equals(messprogramm.getProbenintervall())) {
-            Calendar realStart = getMonday(start);
-            proben.addAll(generate(messprogramm, realStart, end, 28));
-        }
-        else if ("J".equals(messprogramm.getProbenintervall())) {
+        if ("J".equals(messprogramm.getProbenintervall())) {
             int offset = messprogramm.getIntervallOffset();
             int teilVon = messprogramm.getTeilintervallVon();
             int teilBis = messprogramm.getTeilintervallBis();
@@ -276,7 +284,7 @@ public class ProbeFactory {
         }
     }
 
-    private List<LProbe> generateMonthly(
+    private List<LProbe> generateIntervall(
         Messprogramm messprogramm,
         Calendar start,
         Calendar end
