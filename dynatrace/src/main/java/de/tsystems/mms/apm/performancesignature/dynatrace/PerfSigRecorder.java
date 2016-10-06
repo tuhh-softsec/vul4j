@@ -35,11 +35,9 @@ import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
 import hudson.util.ListBoxModel;
 import jenkins.tasks.SimpleBuildStep;
-import net.sf.json.JSONObject;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
-import org.kohsuke.stapler.StaplerRequest;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -254,29 +252,21 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
     public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
         public static final boolean defaultExportSessions = true;
         public static final int defaultNonFunctionalFailure = 0;
+        @Deprecated
         private List<DynatraceServerConfiguration> configurations = new ArrayList<DynatraceServerConfiguration>();
 
+        @SuppressWarnings("deprecation")
         public DescriptorImpl() {
             load();
-        }
-
-        @Override
-        public boolean configure(final StaplerRequest req, final JSONObject formData) throws FormException {
-            setConfigurations(req.bindJSONToList(DynatraceServerConfiguration.class, formData.get("configurations")));
-            return false;
+            //Put all configurations into the global configuration
+            if (!configurations.isEmpty()) {
+                PerfSigUtils.getDTConfigurations().addAll(configurations);
+                configurations.clear();
+            }
         }
 
         public ListBoxModel doFillDynatraceProfileItems() {
             return PerfSigUtils.listToListBoxModel(PerfSigUtils.getDTConfigurations());
-        }
-
-        public List<DynatraceServerConfiguration> getConfigurations() {
-            return configurations;
-        }
-
-        public void setConfigurations(final List<DynatraceServerConfiguration> configurations) {
-            this.configurations = configurations;
-            save();
         }
 
         public boolean isApplicable(final Class<? extends AbstractProject> aClass) {

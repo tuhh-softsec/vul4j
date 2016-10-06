@@ -20,7 +20,7 @@ import com.cloudbees.plugins.credentials.CredentialsMatchers;
 import com.cloudbees.plugins.credentials.CredentialsProvider;
 import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
 import com.cloudbees.plugins.credentials.domains.DomainRequirement;
-import de.tsystems.mms.apm.performancesignature.dynatrace.PerfSigRecorder;
+import de.tsystems.mms.apm.performancesignature.dynatrace.PerfSigGlobalConfiguration;
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.CredProfilePair;
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.DynatraceServerConfiguration;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
@@ -61,7 +61,7 @@ public final class PerfSigUtils {
     }
 
     public static List<DynatraceServerConfiguration> getDTConfigurations() {
-        return PerfSigUIUtils.getInstance().getDescriptorByType(PerfSigRecorder.DescriptorImpl.class).getConfigurations();
+        return PerfSigGlobalConfiguration.get().getConfigurations();
     }
 
     public static DynatraceServerConfiguration getServerConfiguration(final String dynatraceServer) {
