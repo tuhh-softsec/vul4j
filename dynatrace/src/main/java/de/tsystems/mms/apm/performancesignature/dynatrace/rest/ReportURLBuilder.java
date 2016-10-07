@@ -80,8 +80,8 @@ public class ReportURLBuilder {
         } catch (Exception e) {
             throw new ContentRetrievalException("failed to build URL", e);
         }
-        if (logger.isLoggable(Level.INFO)) {
-            logger.info("built URL: " + dashboardURL.toExternalForm());
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("built URL: " + dashboardURL.toExternalForm());
         }
         return dashboardURL;
     }
