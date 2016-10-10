@@ -46,45 +46,64 @@ public class SubIntervall implements Rule {
         Integer teilVon = messprogramm.getTeilintervallVon();
         Integer teilBis = messprogramm.getTeilintervallBis();
         Integer offset = messprogramm.getIntervallOffset();
+        Integer gueltigVon = messprogramm.getGueltigVon();
+        Integer gueltigBis = messprogramm.getGueltigBis();
 
-        // skip this validation if mandatory fields not given
+        // skip this validation if relevant mandatory fields not given
         if (probenintervall != null
             && teilVon != null
             && teilBis != null
         ) {
-            // lower limits are independent of intervall type
-            if (teilVon < 1) {
-                violation.addError("teilintervallVon", 612);
+            if ("J".equals(probenintervall)) {
+                if (gueltigVon != null && gueltigBis != null) {
+                    if (teilVon < gueltigVon || teilVon > gueltigBis) {
+                        violation.addError("teilintervallVon", 612);
+                    }
+                    if (teilBis < gueltigVon || teilBis > gueltigBis) {
+                        violation.addError("teilintervallBis", 612);
+                    }
+                    if (offset != null
+                        && offset > intervallMax.get("J") - 1) {
+                        violation.addError("intervallOffset", 612);
+                    }
+                }
             }
-            if (teilBis < 1) {
-                violation.addError("teilintervallBis", 612);
-            }
-            if (offset != null && offset < 0) {
-                violation.addError("intervallOffset", 612);
-            }
+            else {
+                // lower limits are independent of intervall type
+                if (teilVon < 1) {
+                    violation.addError("teilintervallVon", 612);
+                }
+                if (teilBis < 1) {
+                    violation.addError("teilintervallBis", 612);
+                }
+                if (offset != null && offset < 0) {
+                    violation.addError("intervallOffset", 612);
+                }
 
-            // upper limits depend on (valid) intervall type
-            Set<String> probenintervallSet = intervallMax.keySet();
-            if (!probenintervallSet.contains(probenintervall)) {
-                violation.addError("probenintervall", 612);
-            } else {
-                for (String intervallKey : probenintervallSet) {
-                    if (intervallKey.equals(probenintervall)) {
-                        if (teilVon > intervallMax.get(intervallKey)) {
-                            violation.addError("teilintervallVon", 612);
-                        }
-                        if (teilBis > intervallMax.get(intervallKey)) {
-                            violation.addError("teilintervallBis", 612);
-                        }
-                        if (offset != null
-                            && offset > intervallMax.get(intervallKey) - 1) {
-                            violation.addError("intervallOffset", 612);
+                // upper limits depend on (valid) intervall type
+                Set<String> probenintervallSet = intervallMax.keySet();
+                if (!probenintervallSet.contains(probenintervall)) {
+                    violation.addError("probenintervall", 612);
+                } else {
+                    for (String intervallKey : probenintervallSet) {
+                        if (intervallKey.equals(probenintervall)) {
+                            if (teilVon > intervallMax.get(intervallKey)) {
+                                violation.addError("teilintervallVon", 612);
+                            }
+                            if (teilBis > intervallMax.get(intervallKey)) {
+                                violation.addError("teilintervallBis", 612);
+                            }
+                            if (offset != null
+                                && offset
+                                > intervallMax.get(intervallKey) - 1) {
+                                violation.addError("intervallOffset", 612);
+                            }
                         }
                     }
                 }
             }
 
-            // lower limit has to be less than upper limit
+            // lower limit has to be less than or equal to upper limit
             if (teilVon > teilBis) {
                 violation.addError("teilintervallVon", 662);
                 violation.addError("teilintervallBis", 662);

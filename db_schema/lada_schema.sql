@@ -589,8 +589,8 @@ CREATE TABLE messprogramm (
     probe_kommentar character varying(80),
     letzte_aenderung timestamp without time zone DEFAULT now() NOT NULL,
     CHECK (probenintervall = 'J'
-               AND teilintervall_von BETWEEN 1 AND 365
-               AND teilintervall_bis BETWEEN 1 AND 365
+               AND teilintervall_von BETWEEN gueltig_von AND gueltig_bis
+               AND teilintervall_bis BETWEEN gueltig_von AND gueltig_bis
                AND intervall_offset BETWEEN 0 AND 364
            OR probenintervall = 'H'
                AND teilintervall_von BETWEEN 1 AND 184
