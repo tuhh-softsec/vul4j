@@ -343,47 +343,6 @@ public class ProbeFactory {
         return proben;
     }
 
-    private List<LProbe> generate(
-        Messprogramm messprogramm,
-        Calendar start,
-        Calendar end,
-        int days
-    ) {
-        int offset = messprogramm.getIntervallOffset();
-        int startDay = start.get(Calendar.DAY_OF_YEAR) +
-            messprogramm.getTeilintervallVon() - 1 + offset;
-        int endDay = end.get(Calendar.DAY_OF_YEAR);
-
-        List<LProbe> proben = new ArrayList<LProbe>();
-        int duration = messprogramm.getTeilintervallBis() -
-            messprogramm.getTeilintervallVon();
-
-        logger.debug("real start day: " + startDay);
-        logger.debug("real end day" + endDay);
-        for (;startDay <= endDay;) {
-            logger.debug("generate from " + startDay);
-            start.set(Calendar.DAY_OF_YEAR, startDay);
-            end.set(Calendar.DAY_OF_YEAR, startDay + duration);
-            logger.debug("from: " + start.getTime() + " to " + end.getTime());
-            startDay += days;
-            LProbe probe = createObjects(
-                messprogramm, start.getTime(), end.getTime());
-            if (probe != null) {
-                proben.add(probe);
-            }
-        }
-        return proben;
-    }
-
-    private Calendar getMonday(Calendar week) {
-        if (week.get(Calendar.DAY_OF_WEEK) > 1) {
-            week.set(Calendar.WEEK_OF_YEAR,
-                week.get(Calendar.WEEK_OF_YEAR) + 1);
-        }
-        week.set(Calendar.DAY_OF_WEEK, week.getFirstDayOfWeek());
-        return week;
-    }
-
     /**
      * Create a single probe object.
      *
