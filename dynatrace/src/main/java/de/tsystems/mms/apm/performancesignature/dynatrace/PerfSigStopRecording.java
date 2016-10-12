@@ -61,12 +61,14 @@ public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
 
         logger.println(Messages.PerfSigStopRecording_StopSessionRecording());
         DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
-        if (serverConfiguration == null)
+        if (serverConfiguration == null) {
             throw new AbortException("failed to lookup Dynatrace server configuration");
+        }
 
         CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
-        if (pair == null)
+        if (pair == null) {
             throw new AbortException("failed to lookup Dynatrace server profile");
+        }
 
         final DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
 
@@ -88,8 +90,9 @@ public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
             sessionName = connection.stopRecording();
         }
 
-        if (StringUtils.isBlank(sessionName))
+        if (StringUtils.isBlank(sessionName)) {
             throw new RESTErrorException(Messages.PerfSigStopRecording_InternalError());
+        }
         logger.println(String.format("stopped recording on %s with SessionName %s", pair.getProfile(), sessionName));
 
         if (getReanalyzeSession()) {

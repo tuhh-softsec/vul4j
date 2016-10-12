@@ -67,12 +67,14 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
         final PrintStream logger = listener.getLogger();
 
         DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
-        if (serverConfiguration == null)
+        if (serverConfiguration == null) {
             throw new AbortException("failed to lookup Dynatrace server configuration");
+        }
 
         CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
-        if (pair == null)
+        if (pair == null) {
             throw new AbortException("failed to lookup Dynatrace server profile");
+        }
 
         logger.println("starting session recording ...");
         final DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
