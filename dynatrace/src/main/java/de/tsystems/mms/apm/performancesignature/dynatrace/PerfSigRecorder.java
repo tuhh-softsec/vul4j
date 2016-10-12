@@ -255,18 +255,17 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
         @Deprecated
         private List<DynatraceServerConfiguration> configurations = new ArrayList<DynatraceServerConfiguration>();
 
-        @SuppressWarnings("deprecation")
         public DescriptorImpl() {
             load();
-            //Put all configurations into the global configuration
-            if (!configurations.isEmpty()) {
-                PerfSigUtils.getDTConfigurations().addAll(configurations);
-                configurations.clear();
-            }
         }
 
         public ListBoxModel doFillDynatraceProfileItems() {
             return PerfSigUtils.listToListBoxModel(PerfSigUtils.getDTConfigurations());
+        }
+
+        @Deprecated
+        public List<DynatraceServerConfiguration> getConfigurations() {
+            return configurations;
         }
 
         public boolean isApplicable(final Class<? extends AbstractProject> aClass) {
