@@ -104,9 +104,10 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
         } catch (CommandExecutionException e) {
             if (e.getMessage().contains("continuous")) {
                 timeframeStart = new Date();
+                result = sessionName; //pass sessionName to buildVars
             } else throw e;
         }
-        if ((result != null && result.contains(sessionName)) || timeframeStart != null) {
+        if (result != null && result.contains(sessionName)) {
             logger.println(String.format(Messages.PerfSigStartRecording_StartedSessionRecording(), pair.getProfile(), sessionName));
         } else {
             throw new RESTErrorException(String.format(Messages.PerfSigStartRecording_SessionRecordingError(), pair.getProfile()));
