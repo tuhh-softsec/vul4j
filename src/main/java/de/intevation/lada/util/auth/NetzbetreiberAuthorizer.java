@@ -37,14 +37,16 @@ public class NetzbetreiberAuthorizer extends BaseAuthorizer {
         ) {
             return false;
         }
-        return (method == RequestMethod.POST ||
-            method == RequestMethod.PUT ||
-            method == RequestMethod.DELETE) &&
-            (userInfo.getFunktionenForNetzbetreiber(id).contains(4) ||
+        return (method == RequestMethod.POST
+            || method == RequestMethod.PUT
+            || method == RequestMethod.DELETE
+        ) && (
+            userInfo.getFunktionenForNetzbetreiber(id).contains(4)
             // XXX: this currently allows any user, regardless of function,
             // to manipulate and delete any ort of his own netzbetreiber!
-             clazz.getName().equals("de.intevation.lada.model.stamm.Ort") &&
-             userInfo.getNetzbetreiber().contains(id));
+            || clazz.getName().equals("de.intevation.lada.model.stamm.Ort")
+            && userInfo.getNetzbetreiber().contains(id)
+        );
     }
 
     @Override
