@@ -136,8 +136,10 @@ public class ShibbolethFilter implements Filter {
             String[] groupStrings = roles.split(";");
             String item;
             for (int i = 0; i < groupStrings.length; i++) {
-                item = groupStrings[i].replaceAll(",.*", "").replace("cn=", "");
-                groups.add(item);
+                String[] items = groupStrings[i].trim().split(",");
+                for (int j = 0; j < items.length; j++) {
+                    groups.add(items[j].replace("cn=", "").trim());
+                }
             }
             return groups;
         }
