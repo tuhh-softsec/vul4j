@@ -47,8 +47,6 @@ import de.intevation.lada.test.stamm.Stammdaten;
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
 @RunWith(Arquillian.class)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@ApplyScriptBefore("datasets/clean_and_seed.sql")
 public class StammdatenTest extends BaseTest {
 
     private static Logger logger = Logger.getLogger(StammdatenTest.class);
@@ -82,6 +80,7 @@ public class StammdatenTest extends BaseTest {
      */
     @Test
     @InSequence(1)
+    @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @UsingDataSet("datasets/dbUnit_datensatzerzeuger.json")
     @DataSource("java:jboss/lada-stamm")
     @Cleanup(phase=TestExecutionPhase.NONE)
@@ -202,156 +201,182 @@ public class StammdatenTest extends BaseTest {
     }
 
     @Test
+    @InSequence(9)
     @RunAsClient
     public final void testDatenbasisAll(@ArquillianResource URL baseUrl) {
         stammdatenTest.getAll(baseUrl, "datenbasis", testProtocol);
     }
 
     @Test
+    @InSequence(10)
     @RunAsClient
     public final void testDatenbasisById(@ArquillianResource URL baseUrl) {
         stammdatenTest.getById(baseUrl, "datenbasis", 9, testProtocol);
     }
 
     @Test
+    @InSequence(11)
     @RunAsClient
     public final void testMesseinheitAll(@ArquillianResource URL baseUrl) {
         stammdatenTest.getAll(baseUrl, "messeinheit", testProtocol);
     }
 
     @Test
+    @InSequence(12)
     @RunAsClient
     public final void testMesseinheitById(@ArquillianResource URL baseUrl) {
         stammdatenTest.getById(baseUrl, "messeinheit", 207, testProtocol);
     }
 
     @Test
+    @InSequence(13)
     @RunAsClient
     public final void testMessgroesseAll(@ArquillianResource URL baseUrl) {
         stammdatenTest.getAll(baseUrl, "messgroesse", testProtocol);
     }
 
     @Test
+    @InSequence(14)
     @RunAsClient
     public final void testMessgroesseById(@ArquillianResource URL baseUrl) {
         stammdatenTest.getById(baseUrl, "messgroesse", 56, testProtocol);
     }
 
     @Test
+    @InSequence(15)
     @RunAsClient
     public final void testMessmethodeAll(@ArquillianResource URL baseUrl) {
         stammdatenTest.getAll(baseUrl, "messmethode", testProtocol);
     }
 
     @Test
+    @InSequence(16)
     @RunAsClient
     public final void testMessmethodeById(@ArquillianResource URL baseUrl) {
         stammdatenTest.getById(baseUrl, "messmethode", "GI", testProtocol);
     }
 
     @Test
+    @InSequence(17)
     @RunAsClient
     public final void testMessstelleAll(@ArquillianResource URL baseUrl) {
         stammdatenTest.getAll(baseUrl, "messstelle", testProtocol);
     }
 
     @Test
+    @InSequence(18)
     @RunAsClient
     public final void testMessstelleById(@ArquillianResource URL baseUrl) {
         stammdatenTest.getById(baseUrl, "messstelle", "06010", testProtocol);
     }
 
     @Test
+    @InSequence(19)
     @RunAsClient
     public final void testNetzbetreiberAll(@ArquillianResource URL baseUrl) {
         stammdatenTest.getAll(baseUrl, "netzbetreiber", testProtocol);
     }
 
     @Test
+    @InSequence(20)
     @RunAsClient
     public final void testNetzbetreiberById(@ArquillianResource URL baseUrl) {
         stammdatenTest.getById(baseUrl, "netzbetreiber", "06", testProtocol);
     }
 
     @Test
+    @InSequence(21)
     @RunAsClient
     public final void testPflichtmessgroesseAll(@ArquillianResource URL baseUrl) {
         stammdatenTest.getAll(baseUrl, "pflichtmessgroesse", testProtocol);
     }
 
     @Test
+    @InSequence(22)
     @RunAsClient
     public final void testPflichtmessgroesseById(@ArquillianResource URL baseUrl) {
         stammdatenTest.getById(baseUrl, "pflichtmessgroesse", 33, testProtocol);
     }
 
     @Test
+    @InSequence(23)
     @RunAsClient
     public final void testProbenartAll(@ArquillianResource URL baseUrl) {
         stammdatenTest.getAll(baseUrl, "probenart", testProtocol);
     }
 
     @Test
+    @InSequence(24)
     @RunAsClient
     public final void testProbenartById(@ArquillianResource URL baseUrl) {
         stammdatenTest.getById(baseUrl, "probenart", 1, testProtocol);
     }
 
     @Test
+    @InSequence(25)
     @RunAsClient
     public final void testProbenzusatzAll(@ArquillianResource URL baseUrl) {
         stammdatenTest.getAll(baseUrl, "probenzusatz", testProtocol);
     }
 
     @Test
+    @InSequence(26)
     @RunAsClient
     public final void testProbenzusatzById(@ArquillianResource URL baseUrl) {
         stammdatenTest.getById(baseUrl, "probenzusatz", "A74", testProtocol);
     }
 
     @Test
+    @InSequence(27)
     @RunAsClient
     public final void testKoordinatenartAll(@ArquillianResource URL baseUrl) {
         stammdatenTest.getAll(baseUrl, "koordinatenart", testProtocol);
     }
 
     @Test
+    @InSequence(28)
     @RunAsClient
     public final void testKoordinatenartById(@ArquillianResource URL baseUrl) {
         stammdatenTest.getById(baseUrl, "koordinatenart", 5, testProtocol);
     }
 
     @Test
+    @InSequence(29)
     @RunAsClient
     public final void testStaatAll(@ArquillianResource URL baseUrl) {
         stammdatenTest.getAll(baseUrl, "staat", testProtocol);
     }
 
     @Test
+    @InSequence(30)
     @RunAsClient
     public final void testStaatById(@ArquillianResource URL baseUrl) {
         stammdatenTest.getById(baseUrl, "staat", 0, testProtocol);
     }
 
     @Test
+    @InSequence(31)
     @RunAsClient
     public final void testUmweltAll(@ArquillianResource URL baseUrl) {
         stammdatenTest.getAll(baseUrl, "umwelt", testProtocol);
     }
 
     @Test
+    @InSequence(32)
     @RunAsClient
     public final void testUmweltById(@ArquillianResource URL baseUrl) {
         stammdatenTest.getById(baseUrl, "umwelt", "L6", testProtocol);
     }
 
     @Test
+    @InSequence(33)
     @RunAsClient
     public final void testVerwaltungseinheitAll(@ArquillianResource URL baseUrl) {
         stammdatenTest.getAll(baseUrl, "verwaltungseinheit", testProtocol);
     }
 
     @Test
+    @InSequence(34)
     @RunAsClient
     public final void testVerwaltungseinheitById(@ArquillianResource URL baseUrl) {
         stammdatenTest.getById(baseUrl, "verwaltungseinheit",
