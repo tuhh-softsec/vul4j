@@ -76,8 +76,6 @@ public class ValidatorTest {
             .addPackages(true, Package.getPackage("de.intevation.lada"))
             .addAsResource("log4j.properties", "log4j.properties")
             .addAsResource("shibboleth.properties", "shibboleth.properties")
-            .addAsResource("probequery.json", "probequery.json")
-            .addAsResource("messprogrammquery.json", "messprogrammquery.json")
             .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
             .addAsResource("META-INF/test-persistence.xml",
                 "META-INF/persistence.xml");
