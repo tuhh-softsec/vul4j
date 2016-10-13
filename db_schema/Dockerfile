@@ -4,6 +4,9 @@
 # then run with e.g.
 # `docker run --name lada_db -dp 2345:5432 koala/lada_db:latest'
 #
+# For easier testing of schema or example data changes, it can be useful to add
+# `-v $PWD:/opt/lada_sql/' and run setup-db.sh within the container.
+#
 
 FROM debian:jessie
 MAINTAINER tom.gottfried@intevation.de
@@ -57,6 +60,7 @@ EXPOSE 5432
 # It's because of the -w
 #
 ADD . /opt/lada_sql/
+WORKDIR /opt/lada_sql/
 
 RUN /usr/lib/postgresql/9.4/bin/pg_ctl start -wD /etc/postgresql/9.4/main/ && \
     /opt/lada_sql/setup-db.sh
