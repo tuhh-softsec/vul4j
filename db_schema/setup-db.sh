@@ -59,10 +59,10 @@ psql $DB_CONNECT_STRING -d $DB_NAME  --command  \
      "CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public"
 
 echo create stammdaten schema
-psql $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_schema.sql
+psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_schema.sql
 
 echo create lada schema
-psql $DB_CONNECT_STRING -d $DB_NAME -f $DIR/lada_schema.sql
+psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/lada_schema.sql
 echo set grants
 psql $DB_CONNECT_STRING -d $DB_NAME --command \
      "GRANT USAGE ON SCHEMA stammdaten, bund, land TO $ROLE_NAME;
@@ -73,10 +73,10 @@ psql $DB_CONNECT_STRING -d $DB_NAME --command \
 
 if [ "$NO_DATA" != "true" ]; then
     echo import stammdaten
-    psql $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_data.sql
+    psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_data.sql
 
     echo import lada test data
-    psql $DB_CONNECT_STRING -d $DB_NAME -f $DIR/lada_data.sql
+    psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/lada_data.sql
 
     echo create user $ROLE_NAME
     psql $DB_CONNECT_STRING -d $DB_NAME --command "CREATE SCHEMA geo AUTHORIZATION $ROLE_NAME"
@@ -89,7 +89,7 @@ if [ "$NO_DATA" != "true" ]; then
     fi
     unzip vg250_${TS}.utm32s.shape.ebenen.zip "*VG250_GEM*"
     cd vg250_${TS}.utm32s.shape.ebenen/vg250_ebenen/
-    shp2pgsql VG250_GEM geo.gem_utm | psql $DB_CONNECT_STRING -d $DB_NAME
+    shp2pgsql VG250_GEM geo.gem_utm | psql -q $DB_CONNECT_STRING -d $DB_NAME
     cd /tmp
     rm -rf vg250_${TS}.utm32s.shape.ebenen
 fi
