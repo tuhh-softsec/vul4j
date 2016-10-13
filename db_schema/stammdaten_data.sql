@@ -22035,15 +22035,15 @@ SELECT pg_catalog.setval('favorite_id_seq', 1);
 --
 
 COPY filter (id, query_id, data_index, type, label, multiselect) FROM stdin;
-2	2	hpNrFilter	text	Probe_id-Filter	f
-3	3	probeIdFilter	text	Probe_id-Filter	f
-5	4	mstIdFilter	listmst	Messstelle	f
-6	4	umwIdFilter	listumw	Umweltbereich	f
-7	5	netzIdFilter	listnetz	Land	f
-9	7	netzIdFilter	listnetz	Land	f
-10	7	umwIdFilter	listumw	Umweltbereich	t
-14	14	netzbetreiberId	listnetz	Land	t
-15	13	statusFilter	liststatus	Status	t
+1	2	hpNrFilter	text	Probe_id-Filter	f
+2	3	probeIdFilter	text	Probe_id-Filter	f
+3	4	mstIdFilter	listmst	Messstelle	f
+4	4	umwIdFilter	listumw	Umweltbereich	f
+5	5	netzIdFilter	listnetz	Land	f
+6	7	netzIdFilter	listnetz	Land	f
+7	7	umwIdFilter	listumw	Umweltbereich	t
+8	14	netzbetreiberId	listnetz	Land	t
+9	13	statusFilter	liststatus	Status	t
 \.
 
 
@@ -22053,7 +22053,7 @@ COPY filter (id, query_id, data_index, type, label, multiselect) FROM stdin;
 -- Name: filter_id_seq; Type: SEQUENCE SET; Schema: stammdaten; Owner: lada
 --
 
-SELECT pg_catalog.setval('filter_id_seq', 14, true);
+SELECT pg_catalog.setval('filter_id_seq', 9, true);
 
 
 --
