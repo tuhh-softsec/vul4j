@@ -11,6 +11,7 @@ syntax: glob
 *.swp
 *.swo
 *~
+TAGS
 
 # intellij support - ignore *.iml, .idea
 .idea
