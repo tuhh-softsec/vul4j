@@ -90,17 +90,20 @@ Verzeichnis der Serveranwendung erzeugt werden:
 Der Ordner 'target' enthält dann die Dokumentation im HTML-Format in dem
 Verzeichnis 'site/apidocs'.
 
-Erstellen von Filtern
+Erstellen von Queries
 ---------------------
-Um neue Filter für die Suche von Proben, Messungen und Messprogrammen zu
+Queries können als SQL-Statement in der Tabelle stammdaten.queries definiert
+werden. Eine Filterung kann über Variablen erfolgen, die in stammdaten.filter
+definiert werden müssen und mittels SQL-Interpolation im SQL-Statement
+verwendet werden können.
+Um neue Queries für die Suche von Proben, Messungen und Messprogrammen zu
 erstellen sind die folgenden Schritte erforderlich:
 
 1. In der Tabelle 'stammdaten.query' einen neuen Eintrag erzeugen.
    * id: Primary-Key (wird generiert)
-   * name: Der Name des Filters
+   * name: Der Name der Query
    * type: Der Datentyp der gefiltert werden soll.
-     (mögliche Werte: 'probe', 'messung', 'messprogramm', 'ort', 'probenehmer',
-     'datensatzerzeuger', 'messprogrammkategorie')
+     (mögliche Werte siehe Datenbank-Schema-Definition)
    * sql: Das auszuführende SQL-Statement (siehe #Regeln für die Syntax)
    * description: Ein beschreibender Text
 
@@ -114,13 +117,14 @@ erstellen sind die folgenden Schritte erforderlich:
    * flex: Dynamische Spaltenbreite (true/false)
    * index: Der Datenindex
 
-3. In der Tabelle 'stammdaten.filter' für jedes 'WHERE'-Statement in der Query
-   einen Eintrag erzeugen:
+3. In der Tabelle 'stammdaten.filter' für jeden Parameter in der 'WHERE'-Clause
+   der Query einen Eintrag erzeugen:
    * id: Primary-Key (wird generiert)
    * query_id: ID der zugehörigen und in Schritt 1. erzeugten Query
    * data_index: Der Name der Variablen, die in dem 'WHERE'-Statement ersetzt
      werden soll
    * type: Datenbasis, die im Client als Eingabe genutzt werden soll
+     (mögliche Werte siehe Datenbank-Schema-Definition)
    * label: Der angezeigte Name des Filters
    * multiselect: Mehrfachangabe von Werten für diesen Filter (true/false)
 
@@ -128,20 +132,24 @@ erstellen sind die folgenden Schritte erforderlich:
 
 * Bei Queries vom Typ `probe` muss das erste selektierte Feld `probe.id` sein.
   Dieses wird in der Oberfläche nicht angezeigt.
-* Bei Queries vom Typ `messung` muss das erste selektierte Feld `messung.id` und
-  das Zweite `probe.id AS probeId` sein. Diese werden in der Oberfläche nicht
-  angezeigt. Um im Client die Funktionalität zu erhalten, sollten Messungsfilter
-  die beiden Felder `probe.hauptproben_nr AS hauptprobenNr` und
-  `messung.nebenproben_nr AS nebenprobenNr` enthalten.
+* Bei Queries vom Typ `messung` muss das erste selektierte Feld `messung.id`
+  und das zweite `probe.id` sein. Diese werden in der Oberfläche nicht
+  angezeigt. Für `probe.id` muss in stammdaten.result ein Eintrag mit
+  `data_index = 'probeId'` angelegt werden (obwohl diese Spalte nicht angezeigt
+  wird). Um im Client die Funktionalität zu erhalten, sollten Messungsfilter
+  die beiden Felder `probe.hauptproben_nr` und `messung.nebenproben_nr`
+  enthalten.
 * Bei Queries vom Typ `messprogramm` muss das erste selektierte Feld
   `messprogramm.id` sein. Dieses wird in der Oberfläche nicht angezeigt.
+* Werden bei einem JOIN Spalten gleichen Namens aus verschiedenen Tabellen
+  in der SELECT-Clause verwendet, so müssen diese mit einem expliziten Alias
+  versehen werden, um eine
+  org.hibernate.loader.custom.NonUniqueDiscoveredSqlAliasException zu
+  vermeiden.
 * Im `WHERE`-Statement genutzte Variablen müssen in der Form `:variablenName`
   angegeben werden und dem Feld `data_index` im zugehörigen Filter entsprechen.
-* Um auch leere Filterangaben zu erlauben, sollte im `WHERE`-Statement ein
-  Element wie folgt aussehen:  
-  ... WHERE (tabelle.feld = :variablenName OR '' = :variablenName) ...
-* Wenn ein Filter mit `multiselect = true` angegeben wird, so wird in dem
-  `WHERE`-Statement ein `SIMILAR TO` erwartet.
+* Wenn ein Filter mit `multiselect = true` angegeben wird, so wird in der
+  `WHERE`-Clause ein `SIMILAR TO` erwartet.
 * Das Feld `index` in der Tabelle `stammdaten.result` dient zur Zuordnung des
   selektierten Datenfeldes zu dem Entsprechenden Eintrag in der Tabelle
   `stammdaten.result`. Beispiel:

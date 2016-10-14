@@ -295,9 +295,12 @@ CREATE SEQUENCE query_id_seq
 CREATE TABLE query (
     id integer PRIMARY KEY DEFAULT nextval('query_id_seq'::regclass),
     name character varying(80) NOT NULL,
-    type character varying(30) NOT NULL,
+    type character varying(30) NOT NULL
+        CHECK(type IN('probe', 'messung', 'messprogramm', 'ort',
+            'probenehmer', 'datensatzerzeuger', 'messprogrammkategorie')),
     sql character varying(1500) NOT NULL,
-    description character varying(100)
+    description character varying(100),
+    UNIQUE (name, type)
 );
 
 ALTER SEQUENCE query_id_seq OWNED BY query.id;
@@ -330,7 +333,8 @@ CREATE TABLE filter (
     id integer PRIMARY KEY DEFAULT nextval('filter_id_seq'::regclass),
     query_id integer NOT NULL REFERENCES query ON DELETE CASCADE,
     data_index character varying(50) NOT NULL,
-    type character varying(10) NOT NULL,
+    type character varying(10) NOT NULL
+        CHECK(type IN('liststatus', 'listmst', 'listnetz', 'listumw', 'text')),
     label character varying(50) NOT NULL,
     multiselect boolean
 );
@@ -625,7 +629,8 @@ CREATE TABLE result (
     header character varying(50) NOT NULL,
     width integer,
     flex boolean,
-    index integer,
+    index integer NOT NULL,
+    UNIQUE (query_id, index),
     UNIQUE (query_id, data_index)
 );
 
