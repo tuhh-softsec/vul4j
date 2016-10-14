@@ -31,10 +31,9 @@ import javax.ws.rs.core.UriInfo;
 import de.intevation.lada.lock.LockConfig;
 import de.intevation.lada.lock.LockType;
 import de.intevation.lada.lock.ObjectLocker;
-import de.intevation.lada.model.land.LMessung;
-import de.intevation.lada.model.land.LProbe;
-import de.intevation.lada.model.land.LStatusProtokoll;
-import de.intevation.lada.model.land.MessungTranslation;
+import de.intevation.lada.model.land.Messung;
+import de.intevation.lada.model.land.Probe;
+import de.intevation.lada.model.land.StatusProtokoll;
 import de.intevation.lada.query.QueryTools;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
@@ -140,19 +139,19 @@ public class MessungService {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() ||
             (!params.containsKey("probeId") && !params.containsKey("qid"))) {
-            return repository.getAll(LMessung.class, "land");
+            return repository.getAll(Messung.class, "land");
         }
         if (params.containsKey("probeId")) {
             String probeId = params.getFirst("probeId");
-            QueryBuilder<LMessung> builder =
-                new QueryBuilder<LMessung>(
+            QueryBuilder<Messung> builder =
+                new QueryBuilder<Messung>(
                     repository.entityManager("land"),
-                    LMessung.class);
+                    Messung.class);
             builder.and("probeId", probeId);
             return authorization.filter(
                 request,
                 repository.filter(builder.getQuery(), "land"),
-                LMessung.class);
+                Messung.class);
         }
         else if (params.containsKey("qid")) {
             Integer id = null;
@@ -176,14 +175,15 @@ public class MessungService {
                 result = result.subList(start, end);
             }
 
-            QueryBuilder<LMessung> pBuilder = new QueryBuilder<LMessung>(
-                repository.entityManager("land"), LMessung.class);
+            QueryBuilder<Messung> pBuilder = new QueryBuilder<Messung>(
+                repository.entityManager("land"), Messung.class);
             for (Map<String, Object> entry: result) {
                 pBuilder.or("id", (Integer)entry.get("id"));
             }
             Response r = repository.filter(pBuilder.getQuery(), "land");
-            r = authorization.filter(request, r, LMessung.class);
-            List<LMessung> messungen= (List<LMessung>)r.getData();
+            r = authorization.filter(request, r, Messung.class);
+            @SuppressWarnings("unchecked")
+            List<Messung> messungen= (List<Messung>)r.getData();
             for (Map<String, Object> entry: result) {
                 Integer pId = Integer.valueOf(entry.get("id").toString());
                 setAuthData(messungen, entry, pId);
@@ -194,7 +194,7 @@ public class MessungService {
     }
 
     private void setAuthData(
-        List<LMessung> messungen,
+        List<Messung> messungen,
         Map<String, Object> entry,
         Integer id
     ) {
@@ -227,8 +227,8 @@ public class MessungService {
         @PathParam("id") String id
     ) {
         Response response =
-            repository.getById(LMessung.class, Integer.valueOf(id), "land");
-        LMessung messung = (LMessung)response.getData();
+            repository.getById(Messung.class, Integer.valueOf(id), "land");
+        Messung messung = (Messung)response.getData();
         Violation violation = validator.validate(messung);
         if (violation.hasErrors() || violation.hasWarnings()) {
             response.setErrors(violation.getErrors());
@@ -237,7 +237,7 @@ public class MessungService {
         return authorization.filter(
             request,
             response,
-            LMessung.class);
+            Messung.class);
     }
 
     /**
@@ -272,13 +272,13 @@ public class MessungService {
     public Response create(
         @Context HttpHeaders headers,
         @Context HttpServletRequest request,
-        LMessung messung
+        Messung messung
     ) {
         if (!authorization.isAuthorized(
                 request,
                 messung,
                 RequestMethod.POST,
-                LMessung.class)
+                Messung.class)
         ) {
             return new Response(false, 699, null);
         }
@@ -293,36 +293,29 @@ public class MessungService {
 
         /* Persist the new messung object*/
         Response response = repository.create(messung, "land");
-        LMessung ret = (LMessung)response.getData();
-        /* Create and persist a new probe translation object*/
-        MessungTranslation trans = new MessungTranslation();
-        trans.setMessungsId(ret);
-        repository.create(trans, "land");
-        /* Get and return the new probe object*/
-        Response created =
-            repository.getById(LMessung.class, ret.getId(), "land");
+        Messung ret = (Messung)response.getData();
+        Messung refreshed = repository.getByIdPlain(Messung.class, ret.getId(), "land");
         if(violation.hasWarnings()) {
-            created.setWarnings(violation.getWarnings());
+            response.setWarnings(violation.getWarnings());
         }
 
-        LStatusProtokoll status = new LStatusProtokoll();
+        StatusProtokoll status = new StatusProtokoll();
         status.setDatum(new Timestamp(new Date().getTime()));
-        status.setMessungsId(((LMessung)created.getData()).getId());
-        LProbe probe =
-            repository.getByIdPlain(LProbe.class, ret.getProbeId(), "land");
-        status.setErzeuger(probe.getMstId());
-        status.setStatusStufe(1);
-        status.setStatusWert(0);
+        status.setMessungsId((ret.getId()));
+        Probe probe =
+            repository.getByIdPlain(Probe.class, ret.getProbeId(), "land");
+        status.setMstId(probe.getMstId());
+        status.setStatusKombi(1);
         repository.create(status, "land");
-        ret.setStatus(status.getId());
-        repository.update(ret, "land");
+        refreshed.setStatus(status.getId());
+        repository.update(refreshed, "land");
         Response updated=
-            repository.getById(LMessung.class, ret.getId(), "land");
+            repository.getById(Messung.class, refreshed.getId(), "land");
 
         return authorization.filter(
             request,
             updated,
-            LMessung.class);
+            Messung.class);
     }
 
     /**
@@ -357,13 +350,14 @@ public class MessungService {
     public Response update(
         @Context HttpHeaders headers,
         @Context HttpServletRequest request,
-        LMessung messung
+        @PathParam("id") String id,
+        Messung messung
     ) {
         if (!authorization.isAuthorized(
                 request,
                 messung,
                 RequestMethod.PUT,
-                LMessung.class)
+                Messung.class)
         ) {
             return new Response(false, 699, null);
         }
@@ -382,15 +376,15 @@ public class MessungService {
             return response;
         }
         Response updated = repository.getById(
-            LMessung.class,
-            ((LMessung)response.getData()).getId(), "land");
+            Messung.class,
+            ((Messung)response.getData()).getId(), "land");
         if(violation.hasWarnings()) {
             updated.setWarnings(violation.getWarnings());
         }
         return authorization.filter(
             request,
             updated,
-            LMessung.class);
+            Messung.class);
     }
 
     /**
@@ -412,13 +406,13 @@ public class MessungService {
     ) {
         /* Get the messung object by id*/
         Response messung =
-            repository.getById(LMessung.class, Integer.valueOf(id), "land");
-        LMessung messungObj = (LMessung)messung.getData();
+            repository.getById(Messung.class, Integer.valueOf(id), "land");
+        Messung messungObj = (Messung)messung.getData();
         if (!authorization.isAuthorized(
                 request,
                 messungObj,
                 RequestMethod.DELETE,
-                LMessung.class)
+                Messung.class)
         ) {
             return new Response(false, 699, null);
         }

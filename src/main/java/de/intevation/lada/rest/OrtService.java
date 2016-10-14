@@ -7,9 +7,6 @@
  */
 package de.intevation.lada.rest;
 
-import java.sql.Timestamp;
-import java.util.Date;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -31,7 +28,7 @@ import org.apache.log4j.Logger;
 import de.intevation.lada.lock.LockConfig;
 import de.intevation.lada.lock.LockType;
 import de.intevation.lada.lock.ObjectLocker;
-import de.intevation.lada.model.land.LOrtszuordnung;
+import de.intevation.lada.model.land.Ortszuordnung;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -136,18 +133,18 @@ public class OrtService {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() || !params.containsKey("probeId")) {
             logger.debug("get all");
-            return defaultRepo.getAll(LOrtszuordnung.class, "land");
+            return defaultRepo.getAll(Ortszuordnung.class, "land");
         }
         String probeId = params.getFirst("probeId");
-        QueryBuilder<LOrtszuordnung> builder =
-            new QueryBuilder<LOrtszuordnung>(
+        QueryBuilder<Ortszuordnung> builder =
+            new QueryBuilder<Ortszuordnung>(
                 defaultRepo.entityManager("land"),
-                LOrtszuordnung.class);
+                Ortszuordnung.class);
         builder.and("probeId", probeId);
         return authorization.filter(
             request,
             defaultRepo.filter(builder.getQuery(), "land"),
-            LOrtszuordnung.class);
+            Ortszuordnung.class);
     }
 
     /**
@@ -168,8 +165,8 @@ public class OrtService {
         @PathParam("id") String id
     ) {
         Response response =
-            defaultRepo.getById(LOrtszuordnung.class, Integer.valueOf(id), "land");
-        LOrtszuordnung ort = (LOrtszuordnung)response.getData();
+            defaultRepo.getById(Ortszuordnung.class, Integer.valueOf(id), "land");
+        Ortszuordnung ort = (Ortszuordnung)response.getData();
         Violation violation = validator.validate(ort);
         if (violation.hasErrors() || violation.hasWarnings()) {
             response.setErrors(violation.getErrors());
@@ -178,7 +175,7 @@ public class OrtService {
         return authorization.filter(
             request,
             response,
-            LOrtszuordnung.class);
+            Ortszuordnung.class);
     }
 
     /**
@@ -209,13 +206,13 @@ public class OrtService {
     public Response create(
         @Context HttpHeaders headers,
         @Context HttpServletRequest request,
-        LOrtszuordnung ort
+        Ortszuordnung ort
     ) {
         if (!authorization.isAuthorized(
                 request,
                 ort,
                 RequestMethod.POST,
-                LOrtszuordnung.class)) {
+                Ortszuordnung.class)) {
             return new Response(false, 699, null);
         }
         Violation violation = validator.validate(ort);
@@ -235,7 +232,7 @@ public class OrtService {
         return authorization.filter(
             request,
             response,
-            LOrtszuordnung.class);
+            Ortszuordnung.class);
     }
 
     /**
@@ -266,13 +263,14 @@ public class OrtService {
     public Response update(
         @Context HttpHeaders headers,
         @Context HttpServletRequest request,
-        LOrtszuordnung ort
+        @PathParam("id") String id,
+        Ortszuordnung ort
     ) {
         if (!authorization.isAuthorized(
                 request,
                 ort,
                 RequestMethod.PUT,
-                LOrtszuordnung.class)) {
+                Ortszuordnung.class)) {
             return new Response(false, 699, null);
         }
         if (lock.isLocked(ort)) {
@@ -291,8 +289,8 @@ public class OrtService {
             return response;
         }
         Response updated = defaultRepo.getById(
-            LOrtszuordnung.class,
-            ((LOrtszuordnung)response.getData()).getId(), "land");
+            Ortszuordnung.class,
+            ((Ortszuordnung)response.getData()).getId(), "land");
         if(violation.hasWarnings()) {
             updated.setWarnings(violation.getWarnings());
         }
@@ -300,7 +298,7 @@ public class OrtService {
         return authorization.filter(
             request,
             updated,
-            LOrtszuordnung.class);
+            Ortszuordnung.class);
     }
 
     /**
@@ -321,13 +319,13 @@ public class OrtService {
         @PathParam("id") String id
     ) {
         Response object =
-            defaultRepo.getById(LOrtszuordnung.class, Integer.valueOf(id), "land");
-        LOrtszuordnung ortObj = (LOrtszuordnung)object.getData();
+            defaultRepo.getById(Ortszuordnung.class, Integer.valueOf(id), "land");
+        Ortszuordnung ortObj = (Ortszuordnung)object.getData();
         if (!authorization.isAuthorized(
                 request,
                 ortObj,
                 RequestMethod.PUT,
-                LOrtszuordnung.class)) {
+                Ortszuordnung.class)) {
             return new Response(false, 699, null);
         }
         if (lock.isLocked(ortObj)) {

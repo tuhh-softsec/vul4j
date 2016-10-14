@@ -15,19 +15,18 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import de.intevation.lada.exporter.Creator;
-import de.intevation.lada.model.land.LKommentarM;
-import de.intevation.lada.model.land.LKommentarP;
-import de.intevation.lada.model.land.LMessung;
-import de.intevation.lada.model.land.LMesswert;
-import de.intevation.lada.model.land.LOrtszuordnung;
-import de.intevation.lada.model.land.LProbe;
-import de.intevation.lada.model.land.LZusatzWert;
-import de.intevation.lada.model.land.ProbeTranslation;
-import de.intevation.lada.model.stamm.MessEinheit;
-import de.intevation.lada.model.stamm.Messgroesse;
-import de.intevation.lada.model.stamm.ProbenZusatz;
-import de.intevation.lada.model.stamm.Probenart;
-import de.intevation.lada.model.stamm.Ort;
+import de.intevation.lada.model.land.KommentarM;
+import de.intevation.lada.model.land.KommentarP;
+import de.intevation.lada.model.land.Messung;
+import de.intevation.lada.model.land.Messwert;
+import de.intevation.lada.model.land.Ortszuordnung;
+import de.intevation.lada.model.land.Probe;
+import de.intevation.lada.model.land.ZusatzWert;
+import de.intevation.lada.model.stammdaten.MessEinheit;
+import de.intevation.lada.model.stammdaten.Messgroesse;
+import de.intevation.lada.model.stammdaten.ProbenZusatz;
+import de.intevation.lada.model.stammdaten.Probenart;
+import de.intevation.lada.model.stammdaten.Ort;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
@@ -70,11 +69,11 @@ implements Creator
      * @return LAF conform string.
      */
     private String probeToLAF(String probeId) {
-        Response found = repository.getById(LProbe.class, Integer.valueOf(probeId), "land");
+        Response found = repository.getById(Probe.class, Integer.valueOf(probeId), "land");
         if (found.getData() == null) {
             return null;
         }
-        LProbe aProbe = (LProbe)found.getData();
+        Probe aProbe = (Probe)found.getData();
         String lafProbe = writeAttributes(aProbe);
         return lafProbe;
     }
@@ -86,14 +85,14 @@ implements Creator
      * @return LAF conform string.
      */
     @SuppressWarnings("unchecked")
-    private String writeAttributes(LProbe probe) {
+    private String writeAttributes(Probe probe) {
         DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
-        QueryBuilder<LKommentarP> kommBuilder =
-            new QueryBuilder<LKommentarP>(
-                repository.entityManager("land"), LKommentarP.class);
+        QueryBuilder<KommentarP> kommBuilder =
+            new QueryBuilder<KommentarP>(
+                repository.entityManager("land"), KommentarP.class);
         kommBuilder.and("probeId", probe.getId());
         Response kommentar = repository.filter(kommBuilder.getQuery(), "land");
-        List<LKommentarP> kommentare = (List<LKommentarP>)kommentar.getData();
+        List<KommentarP> kommentare = (List<KommentarP>)kommentar.getData();
 
         QueryBuilder<Probenart> builder =
             new QueryBuilder<Probenart>(
@@ -106,27 +105,21 @@ implements Creator
                 "stamm").getData();
         String probenart = probenarten.get(0).getProbenart();
 
-        QueryBuilder<LZusatzWert> zusatzBuilder =
-            new QueryBuilder<LZusatzWert>(
-                repository.entityManager("land"), LZusatzWert.class);
+        QueryBuilder<ZusatzWert> zusatzBuilder =
+            new QueryBuilder<ZusatzWert>(
+                repository.entityManager("land"), ZusatzWert.class);
         zusatzBuilder.and("probeId", probe.getId());
         Response zusatz = repository.filter(zusatzBuilder.getQuery(), "land");
-        List<LZusatzWert> zusatzwerte = (List<LZusatzWert>)zusatz.getData();
+        List<ZusatzWert> zusatzwerte = (List<ZusatzWert>)zusatz.getData();
 
-        QueryBuilder<ProbeTranslation> transBuilder =
-            new QueryBuilder<ProbeTranslation>(
-                repository.entityManager("land"), ProbeTranslation.class);
-        transBuilder.and("probe", probe.getId());
-        Response trans = repository.filter(transBuilder.getQuery(), "land");
-        List<ProbeTranslation> translation = (List<ProbeTranslation>)trans.getData();
         String laf = "";
         laf += probe.getDatenbasisId() == null ?
             "": lafLine("DATENBASIS_S", probe.getDatenbasisId().toString());
-        laf += probe.getNetzbetreiberId() == null ?
-            "" : lafLine("NETZKENNUNG", probe.getNetzbetreiberId());
+        //laf += probe.getNetzbetreiberId() == null ?
+        //    "" : lafLine("NETZKENNUNG", probe.getNetzbetreiberId());
         laf += probe.getMstId() == null ?
             "" : lafLine("MESSSTELLE", probe.getMstId());
-        laf += lafLine("PROBE_ID", translation.get(0).getProbeIdAlt());
+        laf += lafLine("PROBE_ID", probe.getIdAlt());
         laf += lafLine("HAUPTPROBENNUMMER", probe.getHauptprobenNr());
         laf += probe.getBaId() == null ?
             "" : lafLine("MESSPROGRAMM_S", "\"" + probe.getBaId() + "\"");
@@ -153,10 +146,10 @@ implements Creator
             "" : lafLine("DESKRIPTOREN", "\"" + probe.getMediaDesk() + "\"");
         laf += probe.getTest() == Boolean.TRUE ?
             lafLine("TESTDATEN", "1") : lafLine("TESTDATEN", "0");
-        for (LZusatzWert zw : zusatzwerte) {
+        for (ZusatzWert zw : zusatzwerte) {
             laf += writeZusatzwert(zw);
         }
-        for (LKommentarP kp : kommentare) {
+        for (KommentarP kp : kommentare) {
             laf += writeKommentar(kp);
         }
         laf += writeMessung(probe);
@@ -171,7 +164,7 @@ implements Creator
      * @return Single LAF line.
      */
     @SuppressWarnings("unchecked")
-    private String writeZusatzwert(LZusatzWert zw) {
+    private String writeZusatzwert(ZusatzWert zw) {
         QueryBuilder<ProbenZusatz> builder =
             new QueryBuilder<ProbenZusatz>(
                 repository.entityManager("stamm"),
@@ -184,7 +177,7 @@ implements Creator
 
         String value = "\"" + zusatz.get(0).getBeschreibung() + "\"";
         value += " " + zw.getMesswertPzs();
-        value += " " + zusatz.get(0).getMehId();
+        value += " " + zusatz.get(0).getMessEinheitId();
         value += " " + zw.getMessfehler();
         return lafLine("PZB_S", value);
     }
@@ -196,18 +189,18 @@ implements Creator
      * @return LAF conform string
      */
     @SuppressWarnings("unchecked")
-    private String writeOrt(LProbe probe) {
-        QueryBuilder<LOrtszuordnung> builder =
-            new QueryBuilder<LOrtszuordnung>(
+    private String writeOrt(Probe probe) {
+        QueryBuilder<Ortszuordnung> builder =
+            new QueryBuilder<Ortszuordnung>(
                 repository.entityManager("land"),
-                LOrtszuordnung.class);
+                Ortszuordnung.class);
         builder.and("probeId", probe.getId());
         Response objects = repository.filter(builder.getQuery(), "land");
-        List<LOrtszuordnung> orte =
-            (List<LOrtszuordnung>)objects.getData();
+        List<Ortszuordnung> orte =
+            (List<Ortszuordnung>)objects.getData();
 
         String laf = "";
-        for(LOrtszuordnung o : orte) {
+        for(Ortszuordnung o : orte) {
             laf += "%ORT%\n";
             QueryBuilder<Ort> oBuilder =
                 new QueryBuilder<Ort>(
@@ -242,9 +235,9 @@ implements Creator
      * @param kp    The {@link LKommentarP} object.
      * @return Single LAF line.
      */
-    private String writeKommentar(LKommentarP kp) {
+    private String writeKommentar(KommentarP kp) {
         DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
-        String value = "\"" + kp.getErzeuger() + "\" " +
+        String value = "\"" + kp.getMstId() + "\" " +
             format.format(kp.getDatum()) + " " +
             "\"" + kp.getText() + "\"";
         return lafLine("PROBENKOMMENTAR", value);
@@ -257,32 +250,32 @@ implements Creator
      * @return LAF conform string.
      */
     @SuppressWarnings("unchecked")
-    private String writeMessung(LProbe probe) {
+    private String writeMessung(Probe probe) {
         DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
         // Get all messungen
-        QueryBuilder<LMessung> builder =
-            new QueryBuilder<LMessung>(
+        QueryBuilder<Messung> builder =
+            new QueryBuilder<Messung>(
                 repository.entityManager("land"),
-                LMessung.class);
+                Messung.class);
         builder.and("probeId", probe.getId());
         Response objects = repository.filter(builder.getQuery(), "land");
-        List<LMessung> mess = (List<LMessung>)objects.getData();
+        List<Messung> mess = (List<Messung>)objects.getData();
 
         String laf = "";
-        for(LMessung m : mess) {
+        for(Messung m : mess) {
             laf += "%MESSUNG%\n";
-            QueryBuilder<LMesswert> wertBuilder =
-                new QueryBuilder<LMesswert>(
-                    repository.entityManager("land"), LMesswert.class);
+            QueryBuilder<Messwert> wertBuilder =
+                new QueryBuilder<Messwert>(
+                    repository.entityManager("land"), Messwert.class);
             wertBuilder.and("messungsId", m.getId());
             Response messw = repository.filter(wertBuilder.getQuery(), "land");
-            List<LMesswert> werte = (List<LMesswert>)messw.getData();
-            QueryBuilder<LKommentarM> kommBuilder =
-                new QueryBuilder<LKommentarM>(
-                    repository.entityManager("land"), LKommentarM.class);
+            List<Messwert> werte = (List<Messwert>)messw.getData();
+            QueryBuilder<KommentarM> kommBuilder =
+                new QueryBuilder<KommentarM>(
+                    repository.entityManager("land"), KommentarM.class);
             kommBuilder.and("messungsId", m.getId());
             Response kommentar = repository.filter(kommBuilder.getQuery(), "land");
-            List<LKommentarM> kommentare = (List<LKommentarM>)kommentar.getData();
+            List<KommentarM> kommentare = (List<KommentarM>)kommentar.getData();
             laf += lafLine("MESSUNGS_ID", m.getId().toString());
             laf += lafLine("NEBENPROBENNUMMER", m.getNebenprobenNr());
             laf += m.getMesszeitpunkt() == null ?
@@ -293,10 +286,10 @@ implements Creator
                 "" : lafLine("MESSZEIT_SEKUNDEN", m.getMessdauer().toString());
             laf += m.getMmtId() == null ?
                 "" : lafLine("MESSMETHODE_S", m.getMmtId());
-            for (LMesswert mw : werte) {
+            for (Messwert mw : werte) {
                 laf += writeMesswert(mw);
             }
-            for (LKommentarM mk: kommentare) {
+            for (KommentarM mk: kommentare) {
                 laf += writeKommentar(mk);
             }
         }
@@ -308,9 +301,9 @@ implements Creator
      * @param mk    The {@link LKommentarM} object.
      * @return Single LAF line.
      */
-    private String writeKommentar(LKommentarM mk) {
+    private String writeKommentar(KommentarM mk) {
         DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
-        String value = "\"" + mk.getErzeuger() + "\" " +
+        String value = "\"" + mk.getMstId() + "\" " +
             format.format(mk.getDatum()) + " " +
             "\"" + mk.getText() + "\"";
         return lafLine("KOMMENTAR", value);
@@ -322,7 +315,7 @@ implements Creator
      * @return Single LAF line.
      */
     @SuppressWarnings("unchecked")
-    private String writeMesswert(LMesswert mw) {
+    private String writeMesswert(Messwert mw) {
         QueryBuilder<Messgroesse> builder =
             new QueryBuilder<Messgroesse>(
                 repository.entityManager("stamm"),

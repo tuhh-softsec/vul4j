@@ -25,9 +25,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-import de.intevation.lada.model.stamm.DatensatzErzeuger;
-import de.intevation.lada.model.stamm.Filter;
-import de.intevation.lada.model.stamm.MessprogrammKategorie;
+import de.intevation.lada.model.stammdaten.DatensatzErzeuger;
+import de.intevation.lada.model.stammdaten.Filter;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -203,7 +202,7 @@ public class DatensatzErzeugerService {
                 repository.entityManager("stamm"),
                 DatensatzErzeuger.class
             );
-        builder.and("daErzeugerId", datensatzerzeuger.getDaErzeugerId());
+        builder.and("datensatzErzeugerId", datensatzerzeuger.getDatensatzErzeugerId());
         builder.and("netzbetreiberId", datensatzerzeuger.getNetzbetreiberId());
 
         List<DatensatzErzeuger> erzeuger =
@@ -219,6 +218,7 @@ public class DatensatzErzeugerService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response update(
         @Context HttpServletRequest request,
+        @PathParam("id") String id,
         DatensatzErzeuger datensatzerzeuger
     ) {
         if (!authorization.isAuthorized(

@@ -11,7 +11,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import de.intevation.lada.model.land.LMessung;
+import de.intevation.lada.model.land.Messung;
 import de.intevation.lada.validation.annotation.ValidationConfig;
 import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
@@ -35,7 +35,7 @@ public class MessungValidator implements Validator {
     @Override
     public Violation validate(Object object) {
         Violation violations = new Violation();
-        if (!(object instanceof LMessung)) {
+        if (!(object instanceof Messung)) {
             violations.addError("messung", 602);
             return violations;
         }

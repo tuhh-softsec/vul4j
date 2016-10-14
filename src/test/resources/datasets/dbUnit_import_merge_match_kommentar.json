@@ -1,0 +1,15 @@
+{
+    "land.kommentar_p": [{
+        "id": 1000,
+        "probe_id": 1000,
+        "datum": "2012-05-08 12:00:00",
+        "mst_id": "06010",
+        "text": "Testtext"
+    }, {
+        "id": 1001,
+        "probe_id": 1000,
+        "datum": "2012-04-08 12:00:00",
+        "mst_id": "06010",
+        "text": "Testtext3"
+    }]
+}

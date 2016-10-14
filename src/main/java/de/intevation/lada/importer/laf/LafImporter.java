@@ -1,18 +1,20 @@
-/* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
- * Software engineering by Intevation GmbH
- *
- * This file is Free Software under the GNU GPL (v>=3)
- * and comes with ABSOLUTELY NO WARRANTY! Check out
- * the documentation coming with IMIS-Labordaten-Application for details.
- */
 package de.intevation.lada.importer.laf;
 
-import java.util.ArrayList;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.apache.log4j.Logger;
 
 import de.intevation.lada.importer.ImportConfig;
 import de.intevation.lada.importer.ImportFormat;
@@ -20,79 +22,56 @@ import de.intevation.lada.importer.Importer;
 import de.intevation.lada.importer.ReportItem;
 import de.intevation.lada.util.auth.UserInfo;
 
-/**
- * LAF importer implements Importer to read LAF formatted files.
- * The importer parses the files and extracts probe objects and their children
- * and persists them in the database.
- *
- * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
- */
 @ImportConfig(format=ImportFormat.LAF)
-public class LafImporter implements Importer {
+public class LafImporter implements Importer{
 
-    /**
-     * The parser used for this importer.
-     */
     @Inject
-    private LafParser parser;
+    private Logger logger;
 
-    private Map<String, List<ReportItem>> warnings;
-    private Map<String, List<ReportItem>> errors;
+    @Inject
+    private LafObjectMapper mapper;
 
-    /**
-     * Default constructor.
-     */
-    public LafImporter() {
-        warnings = new HashMap<String, List<ReportItem>>();
+    private Map<String, List<ReportItem>> errors = new HashMap<String, List<ReportItem>>();
+    private Map<String, List<ReportItem>> warnings = new HashMap<String, List<ReportItem>>();
+
+    public void doImport(String lafString, UserInfo userInfo) {
         errors = new HashMap<String, List<ReportItem>>();
+        warnings = new HashMap<String, List<ReportItem>>();
+
+        InputStream is = new ByteArrayInputStream(lafString.getBytes(StandardCharsets.UTF_8));
+        try {
+            ANTLRInputStream ais = new ANTLRInputStream(is);
+            LafLexer lexer = new LafLexer(ais);
+            CommonTokenStream cts = new CommonTokenStream(lexer);
+            LafParser parser = new LafParser(cts);
+            LafErrorListener errorListener = LafErrorListener.INSTANCE;
+            parser.addErrorListener(errorListener);
+            ParseTree tree = parser.probendatei();
+            LafObjectListener listener = new LafObjectListener();
+            ParseTreeWalker walker = new ParseTreeWalker();
+            walker.walk(listener, tree);
+            logger.debug("Parsed Proben: " + listener.getData().count());
+            errors.put("parser", errorListener.getErrors());
+            errors.putAll(listener.getErrors());
+            mapper.mapObjects(listener.getData());
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
-    /**
-     * @return the warnings
-     */
-    @Override
-    public Map<String, List<ReportItem>> getWarnings() {
-        return warnings;
-    }
-
-    /**
-     * @return the errors
-     */
-    @Override
-    public Map<String, List<ReportItem>> getErrors() {
-        return errors;
-    }
-
-    /**
-     * Reset the errors and warnings. Use this before calling doImport()
-     * to have a clean error and warning report.
-     */
     @Override
     public void reset() {
-        parser.reset();
-        warnings = new HashMap<String, List<ReportItem>>();
-        errors = new HashMap<String, List<ReportItem>>();
+
     }
 
-    /**
-     * Start the import.
-     *
-     * @param content   The laf data as string.
-     * @param userInfo  The user information.
-     */
     @Override
-    public void doImport(String content, UserInfo userInfo) {
-        this.warnings.clear();
-        this.errors.clear();
-        this.parser.reset();
-        boolean success = parser.parse(userInfo, content);
-        if (!success) {
-                List<ReportItem> report = new ArrayList<ReportItem>();
-                report.add(new ReportItem("parser", "no success", 660));
-                errors.put("parser", report);
-                warnings.put("parser", new ArrayList<ReportItem>());
-        }
-        this.warnings.putAll(this.parser.getWarnings());
-        this.errors.putAll(this.parser.getErrors());
+    public Map<String, List<ReportItem>> getWarnings() {
+        return this.errors;
+    }
+
+    @Override
+    public Map<String, List<ReportItem>> getErrors() {
+        return this.warnings;
     }
 }

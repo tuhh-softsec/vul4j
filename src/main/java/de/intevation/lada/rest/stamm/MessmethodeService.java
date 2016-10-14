@@ -18,7 +18,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 
-import de.intevation.lada.model.stamm.MessMethode;
+import de.intevation.lada.model.stammdaten.MessMethode;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;

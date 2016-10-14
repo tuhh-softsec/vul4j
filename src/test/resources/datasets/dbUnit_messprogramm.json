@@ -3,7 +3,6 @@
         "id": 1000,
         "name": "testprogramm",
         "test": false,
-        "netzbetreiber_id": "06",
         "mst_id": "06010",
         "labor_mst_id": "06010",
         "datenbasis_id": 2,

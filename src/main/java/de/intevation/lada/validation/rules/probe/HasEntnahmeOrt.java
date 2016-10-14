@@ -11,8 +11,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import de.intevation.lada.model.land.LOrtszuordnung;
-import de.intevation.lada.model.land.LProbe;
+import de.intevation.lada.model.land.Ortszuordnung;
+import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
@@ -37,21 +37,21 @@ public class HasEntnahmeOrt implements Rule {
 
     @Override
     public Violation execute(Object object) {
-        LProbe probe = (LProbe)object;
+        Probe probe = (Probe)object;
         Integer id = probe.getId();
         if (id == null) {
             Violation violation = new Violation();
             violation.addWarning("entnahmeOrt", 631);
             return violation;
         }
-        QueryBuilder<LOrtszuordnung> builder =
-            new QueryBuilder<LOrtszuordnung>(
-                repo.entityManager("land"), LOrtszuordnung.class);
+        QueryBuilder<Ortszuordnung> builder =
+            new QueryBuilder<Ortszuordnung>(
+                repo.entityManager("land"), Ortszuordnung.class);
         builder.and("probeId", id);
         Response response = repo.filter(builder.getQuery(), "land");
         @SuppressWarnings("unchecked")
-        List<LOrtszuordnung> orte = (List<LOrtszuordnung>)response.getData();
-        for (LOrtszuordnung ort: orte) {
+        List<Ortszuordnung> orte = (List<Ortszuordnung>)response.getData();
+        for (Ortszuordnung ort: orte) {
             if ("E".equals(ort.getOrtszuordnungTyp())) {
                 return null;
             }

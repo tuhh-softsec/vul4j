@@ -12,8 +12,8 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import de.intevation.lada.model.land.LMessung;
-import de.intevation.lada.model.land.LProbe;
+import de.intevation.lada.model.land.Messung;
+import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
@@ -38,10 +38,10 @@ public class Date implements Rule {
 
     @Override
     public Violation execute(Object object) {
-        LMessung messung = (LMessung)object;
+        Messung messung = (Messung)object;
         Integer probeId = messung.getProbeId();
-        Response response = repository.getById(LProbe.class, probeId, "land");
-        LProbe probe = (LProbe) response.getData();
+        Response response = repository.getById(Probe.class, probeId, "land");
+        Probe probe = (Probe) response.getData();
         if (probe == null) {
             Map<String, Integer> errors = new HashMap<String, Integer>();
             errors.put("lprobe", 604);

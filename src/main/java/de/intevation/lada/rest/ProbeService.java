@@ -7,8 +7,6 @@
  */
 package de.intevation.lada.rest;
 
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -31,15 +29,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.log4j.Logger;
-
 import de.intevation.lada.factory.ProbeFactory;
 import de.intevation.lada.lock.LockConfig;
 import de.intevation.lada.lock.LockType;
 import de.intevation.lada.lock.ObjectLocker;
-import de.intevation.lada.model.land.LProbe;
-import de.intevation.lada.model.land.ProbeTranslation;
 import de.intevation.lada.model.land.Messprogramm;
+import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.query.QueryTools;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
@@ -109,12 +104,6 @@ import de.intevation.lada.validation.annotation.ValidationConfig;
 public class ProbeService {
 
     /**
-     * The logger used in this class.
-     */
-    @Inject
-    private Logger logger;
-
-    /**
      * The data repository granting read/write access.
      */
     @Inject
@@ -182,7 +171,7 @@ public class ProbeService {
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() || !params.containsKey("qid")) {
-            return repository.getAll(LProbe.class, "land");
+            return repository.getAll(Probe.class, "land");
         }
         Integer id = null;
         try {
@@ -205,14 +194,14 @@ public class ProbeService {
             result = result.subList(start, end);
         }
 
-        QueryBuilder<LProbe> pBuilder = new QueryBuilder<LProbe>(
-            repository.entityManager("land"), LProbe.class);
+        QueryBuilder<Probe> pBuilder = new QueryBuilder<Probe>(
+            repository.entityManager("land"), Probe.class);
         for (Map<String, Object> entry: result) {
             pBuilder.or("id", (Integer)entry.get("id"));
         }
         Response r = repository.filter(pBuilder.getQuery(), "land");
-        r = authorization.filter(request, r, LProbe.class);
-        List<LProbe> proben = (List<LProbe>)r.getData();
+        r = authorization.filter(request, r, Probe.class);
+        List<Probe> proben = (List<Probe>)r.getData();
         for (Map<String, Object> entry: result) {
             Integer pId = Integer.valueOf(entry.get("id").toString());
             setAuthData(proben, entry, pId);
@@ -221,14 +210,14 @@ public class ProbeService {
     }
 
     private void setAuthData(
-        List<LProbe> proben,
+        List<Probe> proben,
         Map<String, Object> entry,
         Integer id
     ) {
         for (int i = 0; i < proben.size(); i++) {
             if (id.equals(proben.get(i).getId())) {
-                entry.put("readonly", proben.get(i).getReadonly());
-                entry.put("owner", proben.get(i).getOwner());
+                entry.put("readonly", proben.get(i).isReadonly());
+                entry.put("owner", proben.get(i).isOwner());
                 return;
             }
         }
@@ -252,12 +241,12 @@ public class ProbeService {
         @Context HttpServletRequest request
     ) {
         Response response =
-            repository.getById(LProbe.class, Integer.valueOf(id), "land");
+            repository.getById(Probe.class, Integer.valueOf(id), "land");
         Violation violation = validator.validate(response.getData());
         if (violation.hasWarnings()) {
             response.setWarnings(violation.getWarnings());
         }
-        return this.authorization.filter(request, response, LProbe.class);
+        return this.authorization.filter(request, response, Probe.class);
     }
 
     /**
@@ -303,13 +292,13 @@ public class ProbeService {
     public Response create(
         @Context HttpHeaders headers,
         @Context HttpServletRequest request,
-        LProbe probe
+        Probe probe
     ) {
         if (!authorization.isAuthorized(
                 request,
                 probe,
                 RequestMethod.POST,
-                LProbe.class)
+                Probe.class)
         ) {
             return new Response(false, 699, null);
         }
@@ -326,21 +315,20 @@ public class ProbeService {
         probe = factory.findMediaDesk(probe);
         /* Persist the new probe object*/
         Response newProbe = repository.create(probe, "land");
-        LProbe ret = (LProbe)newProbe.getData();
+        Probe ret = (Probe)newProbe.getData();
+        // Refreshing the probe object is necessary because probe objects use
+        // dynamic-insert, meaning null values are not written to the db and not
+        // updated after insert.
+        Response refreshed =
+            repository.getById(Probe.class, ret.getId(), "land");
         /* Create and persist a new probe translation object*/
-        ProbeTranslation trans = new ProbeTranslation();
-        trans.setProbeId(ret);
-        repository.create(trans, "land");
-        /* Get and return the new probe object*/
-        Response response =
-            repository.getById(LProbe.class, ret.getId(), "land");
         if(violation.hasWarnings()) {
-            response.setWarnings(violation.getWarnings());
+            refreshed.setWarnings(violation.getWarnings());
         }
         return authorization.filter(
             request,
-            response,
-            LProbe.class);
+            refreshed,
+            Probe.class);
     }
 
     /**
@@ -397,7 +385,7 @@ public class ProbeService {
         if (start > end) {
             return new Response(false, 662, null);
         }
-        List<LProbe> proben = factory.create(
+        List<Probe> proben = factory.create(
             messprogramm,
             start,
             end);
@@ -447,13 +435,14 @@ public class ProbeService {
     public Response update(
         @Context HttpHeaders headers,
         @Context HttpServletRequest request,
-        LProbe probe
+        @PathParam("id") String id,
+        Probe probe
     ) {
         if (!authorization.isAuthorized(
                 request,
                 probe,
                 RequestMethod.PUT,
-                LProbe.class)
+                Probe.class)
         ) {
             return new Response(false, 699, null);
         }
@@ -478,15 +467,15 @@ public class ProbeService {
             return response;
         }
         Response updated = repository.getById(
-            LProbe.class,
-            ((LProbe)response.getData()).getId(), "land");
+            Probe.class,
+            ((Probe)response.getData()).getId(), "land");
         if (violation.hasWarnings()) {
             updated.setWarnings(violation.getWarnings());
         }
         return authorization.filter(
             request,
             updated,
-            LProbe.class);
+            Probe.class);
     }
 
     /**
@@ -508,13 +497,13 @@ public class ProbeService {
     ) {
         /* Get the probe object by id*/
         Response probe =
-            repository.getById(LProbe.class, Integer.valueOf(id), "land");
-        LProbe probeObj = (LProbe)probe.getData();
+            repository.getById(Probe.class, Integer.valueOf(id), "land");
+        Probe probeObj = (Probe)probe.getData();
         if (!authorization.isAuthorized(
                 request,
                 probeObj,
                 RequestMethod.DELETE,
-                LProbe.class)
+                Probe.class)
         ) {
             return new Response(false, 699, null);
         }

@@ -25,7 +25,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.log4j.Logger;
 
-import de.intevation.lada.model.land.LKommentarP;
+import de.intevation.lada.model.land.KommentarP;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -111,18 +111,18 @@ public class KommentarPService {
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() || !params.containsKey("probeId")) {
-            return defaultRepo.getAll(LKommentarP.class, "land");
+            return defaultRepo.getAll(KommentarP.class, "land");
         }
         String probeId = params.getFirst("probeId");
-        QueryBuilder<LKommentarP> builder =
-            new QueryBuilder<LKommentarP>(
+        QueryBuilder<KommentarP> builder =
+            new QueryBuilder<KommentarP>(
                 defaultRepo.entityManager("land"),
-                LKommentarP.class);
+                KommentarP.class);
         builder.and("probeId", probeId);
         return authorization.filter(
             request,
             defaultRepo.filter(builder.getQuery(), "land"),
-            LKommentarP.class);
+            KommentarP.class);
     }
 
     /**
@@ -144,8 +144,8 @@ public class KommentarPService {
     ) {
         return authorization.filter(
             request,
-            defaultRepo.getById(LKommentarP.class,Integer.valueOf(id), "land"),
-            LKommentarP.class);
+            defaultRepo.getById(KommentarP.class,Integer.valueOf(id), "land"),
+            KommentarP.class);
     }
 
     /**
@@ -173,13 +173,13 @@ public class KommentarPService {
     public Response create(
         @Context HttpHeaders headers,
         @Context HttpServletRequest request,
-        LKommentarP kommentar
+        KommentarP kommentar
     ) {
         if (!authorization.isAuthorized(
                 request,
                 kommentar,
                 RequestMethod.POST,
-                LKommentarP.class)
+                KommentarP.class)
         ) {
             return new Response(false, 699, null);
         }
@@ -187,7 +187,7 @@ public class KommentarPService {
         return authorization.filter(
             request,
             defaultRepo.create(kommentar, "land"),
-            LKommentarP.class);
+            KommentarP.class);
     }
 
     /**
@@ -215,13 +215,14 @@ public class KommentarPService {
     public Response update(
         @Context HttpHeaders headers,
         @Context HttpServletRequest request,
-        LKommentarP kommentar
+        @PathParam("id") String id,
+        KommentarP kommentar
     ) {
         if (!authorization.isAuthorized(
                 request,
                 kommentar,
                 RequestMethod.PUT,
-                LKommentarP.class)
+                KommentarP.class)
         ) {
             logger.debug("User is not authorized!");
             return new Response(false, 699, null);
@@ -229,7 +230,7 @@ public class KommentarPService {
         return authorization.filter(
             request,
             defaultRepo.update(kommentar, "land"),
-            LKommentarP.class);
+            KommentarP.class);
     }
 
     /**
@@ -251,13 +252,13 @@ public class KommentarPService {
     ) {
         /* Get the object by id*/
         Response kommentar =
-            defaultRepo.getById(LKommentarP.class, Integer.valueOf(id), "land");
-        LKommentarP kommentarObj = (LKommentarP)kommentar.getData();
+            defaultRepo.getById(KommentarP.class, Integer.valueOf(id), "land");
+        KommentarP kommentarObj = (KommentarP)kommentar.getData();
         if (!authorization.isAuthorized(
                 request,
                 kommentarObj,
                 RequestMethod.DELETE,
-                LKommentarP.class)
+                KommentarP.class)
         ) {
             logger.debug("User is not authorized!");
             return new Response(false, 699, null);

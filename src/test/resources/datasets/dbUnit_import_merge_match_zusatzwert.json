@@ -1,0 +1,30 @@
+{
+    "land.zusatz_wert": [{
+        "id": 1000,
+        "probe_id": 1000,
+        "pzs_id": "A74",
+        "messwert_pzs": 5.8,
+        "messfehler": 1.2,
+        "nwg_zu_messwert": 1.3,
+        "letzte_aenderung": "2012-05-08 12:00:00",
+        "tree_modified": "2012-05-09 12:00:00"
+    }, {
+        "id": 1001,
+        "probe_id": 1000,
+        "pzs_id": "A75",
+        "messwert_pzs": 1.8,
+        "messfehler": 0.2,
+        "nwg_zu_messwert": 0.3,
+        "letzte_aenderung": "2012-05-08 12:00:00",
+        "tree_modified": "2012-05-09 12:00:00"
+    }, {
+        "id": 1002,
+        "probe_id": 1000,
+        "pzs_id": "A76",
+        "messwert_pzs": 1.8,
+        "messfehler": 0.2,
+        "nwg_zu_messwert": 0.3,
+        "letzte_aenderung": "2012-05-08 12:00:00",
+        "tree_modified": "2012-05-09 12:00:00"
+    }]
+}

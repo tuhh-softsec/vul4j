@@ -87,8 +87,7 @@ public class Stammdaten {
                 "idfNetzbetreiber",
                 "isBmn",
                 "mailverteiler",
-                "netzbetreiber",
-                "zustMstId"
+                "netzbetreiber"
             )
         );
 
@@ -97,8 +96,8 @@ public class Stammdaten {
                 "id",
                 "messgroesseId",
                 "datenbasisId",
-                "mmtId",
-                "umweltId"
+                "messMethodeId",
+                "umwId"
             )
         );
 
@@ -117,7 +116,7 @@ public class Stammdaten {
                 "beschreibung",
                 "eudfKeyword",
                 "zusatzwert",
-                "mehId"
+                "messEinheitId"
             )
         );
 
@@ -156,7 +155,7 @@ public class Stammdaten {
                 "staat",
                 "staatIso",
                 "staatKurz",
-                "koordinatenartId"
+                "kdaId"
             )
         );
 
@@ -181,7 +180,7 @@ public class Stammdaten {
                 "nuts",
                 "plz",
                 "regbezirk",
-                "koordinatenartId"
+                "kdaId"
             )
         );
     }

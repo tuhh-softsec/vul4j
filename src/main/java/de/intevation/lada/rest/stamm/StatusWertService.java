@@ -23,14 +23,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.log4j.Logger;
-
-import de.intevation.lada.model.bund.StatusProtokoll;
-import de.intevation.lada.model.land.LMessung;
-import de.intevation.lada.model.stamm.StatusErreichbar;
-import de.intevation.lada.model.stamm.StatusKombi;
-import de.intevation.lada.model.stamm.StatusReihenfolge;
-import de.intevation.lada.model.stamm.StatusWert;
+import de.intevation.lada.model.land.Messung;
+import de.intevation.lada.model.land.StatusProtokoll;
+import de.intevation.lada.model.stammdaten.StatusErreichbar;
+import de.intevation.lada.model.stammdaten.StatusKombi;
+import de.intevation.lada.model.stammdaten.StatusWert;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -69,8 +66,6 @@ import de.intevation.lada.util.rest.Response;
 @RequestScoped
 public class StatusWertService {
 
-    @Inject
-    private Logger logger = Logger.getLogger(StatusWertService.class);
     /**
      * The data repository granting read access.
      */
@@ -132,8 +127,8 @@ public class StatusWertService {
 
     private List<StatusWert> getReachable(int messungsId, UserInfo user) {
         List<StatusWert> list = new ArrayList<StatusWert>();
-        LMessung messung =
-            defaultRepo.getByIdPlain(LMessung.class, messungsId, "land");
+        Messung messung =
+            defaultRepo.getByIdPlain(Messung.class, messungsId, "land");
         if (messung.getStatus() == null) {
             return defaultRepo.getAllPlain(StatusWert.class, "stamm");
         }
@@ -146,9 +141,10 @@ public class StatusWertService {
             new QueryBuilder<StatusErreichbar>(
                 defaultRepo.entityManager("stamm"),
                 StatusErreichbar.class);
+        StatusKombi kombi = defaultRepo.getByIdPlain(StatusKombi.class, status.getStatusKombi(), "stamm");
         errFilter.andIn("stufeId", user.getFunktionen());
-        errFilter.and("curStufe", status.getStatusStufe());
-        errFilter.and("curWert", status.getStatusWert());
+        errFilter.and("curStufe", kombi.getStatusStufe().getId());
+        errFilter.and("curWert", kombi.getStatusWert().getId());
         List<StatusErreichbar> erreichbare = defaultRepo.filterPlain(
             errFilter.getQuery(), "stamm");
         QueryBuilder<StatusWert> werteFilter =

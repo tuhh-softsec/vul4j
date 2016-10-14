@@ -7,9 +7,6 @@
  */
 package de.intevation.lada.rest;
 
-import java.sql.Timestamp;
-import java.util.Date;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +26,7 @@ import javax.ws.rs.core.UriInfo;
 import de.intevation.lada.lock.LockConfig;
 import de.intevation.lada.lock.LockType;
 import de.intevation.lada.lock.ObjectLocker;
-import de.intevation.lada.model.land.LZusatzWert;
+import de.intevation.lada.model.land.ZusatzWert;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -121,18 +118,18 @@ public class ZusatzwertService {
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() || !params.containsKey("probeId")) {
-            return defaultRepo.getAll(LZusatzWert.class, "land");
+            return defaultRepo.getAll(ZusatzWert.class, "land");
         }
         String probeId = params.getFirst("probeId");
-        QueryBuilder<LZusatzWert> builder =
-            new QueryBuilder<LZusatzWert>(
+        QueryBuilder<ZusatzWert> builder =
+            new QueryBuilder<ZusatzWert>(
                 defaultRepo.entityManager("land"),
-                LZusatzWert.class);
+                ZusatzWert.class);
         builder.and("probeId", probeId);
         return authorization.filter(
             request,
             defaultRepo.filter(builder.getQuery(), "land"),
-            LZusatzWert.class);
+            ZusatzWert.class);
     }
 
     /**
@@ -154,8 +151,8 @@ public class ZusatzwertService {
     ) {
         return authorization.filter(
             request,
-            defaultRepo.getById(LZusatzWert.class, Integer.valueOf(id), "land"),
-            LZusatzWert.class);
+            defaultRepo.getById(ZusatzWert.class, Integer.valueOf(id), "land"),
+            ZusatzWert.class);
     }
 
     /**
@@ -187,13 +184,13 @@ public class ZusatzwertService {
     public Response create(
         @Context HttpHeaders headers,
         @Context HttpServletRequest request,
-        LZusatzWert zusatzwert
+        ZusatzWert zusatzwert
     ) {
         if (!authorization.isAuthorized(
                 request,
                 zusatzwert,
                 RequestMethod.POST,
-                LZusatzWert.class)
+                ZusatzWert.class)
         ) {
             return new Response(false, 699, null);
         }
@@ -201,7 +198,7 @@ public class ZusatzwertService {
         return authorization.filter(
             request,
             defaultRepo.create(zusatzwert, "land"),
-            LZusatzWert.class);
+            ZusatzWert.class);
     }
 
     /**
@@ -233,13 +230,14 @@ public class ZusatzwertService {
     public Response update(
         @Context HttpHeaders headers,
         @Context HttpServletRequest request,
-        LZusatzWert zusatzwert
+        @PathParam("id") String id,
+        ZusatzWert zusatzwert
     ) {
         if (!authorization.isAuthorized(
                 request,
                 zusatzwert,
                 RequestMethod.PUT,
-                LZusatzWert.class)
+                ZusatzWert.class)
         ) {
             return new Response(false, 699, null);
         }
@@ -251,12 +249,12 @@ public class ZusatzwertService {
             return response;
         }
         Response updated = defaultRepo.getById(
-            LZusatzWert.class,
-            ((LZusatzWert)response.getData()).getId(), "land");
+            ZusatzWert.class,
+            ((ZusatzWert)response.getData()).getId(), "land");
         return authorization.filter(
             request,
             updated,
-            LZusatzWert.class);
+            ZusatzWert.class);
     }
 
     /**
@@ -278,13 +276,13 @@ public class ZusatzwertService {
     ) {
         /* Get the object by id*/
         Response object =
-            defaultRepo.getById(LZusatzWert.class, Integer.valueOf(id), "land");
-        LZusatzWert obj = (LZusatzWert)object.getData();
+            defaultRepo.getById(ZusatzWert.class, Integer.valueOf(id), "land");
+        ZusatzWert obj = (ZusatzWert)object.getData();
         if (!authorization.isAuthorized(
                 request,
                 obj,
                 RequestMethod.DELETE,
-                LZusatzWert.class)
+                ZusatzWert.class)
         ) {
             return new Response(false, 699, null);
         }

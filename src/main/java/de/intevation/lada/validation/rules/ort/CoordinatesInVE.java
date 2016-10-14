@@ -16,10 +16,10 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
 
-import de.intevation.lada.model.land.LOrtszuordnung;
-import de.intevation.lada.model.stamm.DeVg;
-import de.intevation.lada.model.stamm.Ort;
-import de.intevation.lada.model.stamm.Verwaltungseinheit;
+import de.intevation.lada.model.land.Ortszuordnung;
+import de.intevation.lada.model.stammdaten.DeVg;
+import de.intevation.lada.model.stammdaten.Ort;
+import de.intevation.lada.model.stammdaten.Verwaltungseinheit;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
@@ -45,7 +45,7 @@ public class CoordinatesInVE implements Rule {
     @SuppressWarnings("unchecked")
     @Override
     public Violation execute(Object object) {
-        LOrtszuordnung ort = (LOrtszuordnung)object;
+        Ortszuordnung ort = (Ortszuordnung)object;
         if (!"E".equals(ort.getOrtszuordnungTyp())) {
             return null;
         }

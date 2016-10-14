@@ -1,0 +1,15 @@
+{
+    "land.kommentar_m": [{
+        "id": 1000,
+        "messungs_id": 1200,
+        "datum": "2012-05-08 12:00:00",
+        "mst_id": "06010",
+        "text": "Testtext"
+    }, {
+        "id": 1001,
+        "messungs_id": 1200,
+        "datum": "2012-03-08 12:00:00",
+        "mst_id": "06010",
+        "text": "Testtext3"
+    }]
+}

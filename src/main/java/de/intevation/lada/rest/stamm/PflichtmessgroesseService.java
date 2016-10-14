@@ -7,6 +7,8 @@
  */
 package de.intevation.lada.rest.stamm;
 
+import java.util.List;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -18,8 +20,9 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 
-import de.intevation.lada.model.stamm.PflichtMessgroesse;
+import de.intevation.lada.model.stammdaten.PflichtMessgroesse;
 import de.intevation.lada.util.annotation.RepositoryConfig;
+import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.Response;
@@ -95,9 +98,17 @@ public class PflichtmessgroesseService {
         @Context HttpHeaders headers,
         @PathParam("id") String id
     ) {
-        return defaultRepo.getById(
-            PflichtMessgroesse.class,
-            Integer.valueOf(id),
-            "stamm");
+        QueryBuilder<PflichtMessgroesse> builder =
+            new QueryBuilder<PflichtMessgroesse>(
+                defaultRepo.entityManager("stamm"),
+                PflichtMessgroesse.class
+            );
+        builder.and("messMethodeId", id);
+        List<PflichtMessgroesse> result =
+            defaultRepo.filterPlain(builder.getQuery(), "stamm");
+        if (!result.isEmpty()) {
+            return new Response(true, 200, result.get(0));
+        }
+        return new Response(false, 600, null);
     }
 }

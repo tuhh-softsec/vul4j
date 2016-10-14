@@ -34,7 +34,7 @@ import de.intevation.lada.util.rest.Response;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@Path("data/laf/import")
+@Path("data/import")
 @RequestScoped
 public class LafImportService {
 
@@ -65,7 +65,8 @@ public class LafImportService {
     @Consumes(MediaType.TEXT_PLAIN)
     public Response upload(
         String content,
-        @Context HttpServletRequest request) {
+        @Context HttpServletRequest request
+    ) {
         UserInfo userInfo = authorization.getInfo(request);
 
         importer.doImport(content, userInfo);

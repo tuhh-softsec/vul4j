@@ -17,7 +17,6 @@ import javax.inject.Inject;
 import de.intevation.lada.exporter.ExportConfig;
 import de.intevation.lada.exporter.ExportFormat;
 import de.intevation.lada.exporter.Exporter;
-import de.intevation.lada.model.land.LProbe;
 import de.intevation.lada.util.auth.UserInfo;
 
 /**

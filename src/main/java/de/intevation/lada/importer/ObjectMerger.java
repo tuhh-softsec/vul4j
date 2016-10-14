@@ -1,0 +1,220 @@
+/* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3) 
+ * and comes with ABSOLUTELY NO WARRANTY! Check out 
+ * the documentation coming with IMIS-Labordaten-Application for details. 
+ */
+package de.intevation.lada.importer;
+
+import java.util.List;
+
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
+
+import org.apache.log4j.Logger;
+
+import de.intevation.lada.model.land.KommentarM;
+import de.intevation.lada.model.land.KommentarP;
+import de.intevation.lada.model.land.Messung;
+import de.intevation.lada.model.land.Messwert;
+import de.intevation.lada.model.land.Ortszuordnung;
+import de.intevation.lada.model.land.Probe;
+import de.intevation.lada.model.land.ZusatzWert;
+import de.intevation.lada.util.annotation.RepositoryConfig;
+import de.intevation.lada.util.data.QueryBuilder;
+import de.intevation.lada.util.data.Repository;
+import de.intevation.lada.util.data.RepositoryType;
+
+public class ObjectMerger {
+
+    @Inject
+    Logger logger;
+
+    @Inject
+    @RepositoryConfig(type=RepositoryType.RW)
+    private Repository repository;
+
+//    @Inject
+//    private UserTransaction userTransaction;
+//    @Resource
+//    private TransactionManager transactionManager;
+    //@PersistenceContext(unitName="land")
+    //private EntityManager entityManager;
+
+    public ObjectMerger merge(Probe target, Probe src) {
+        target.setBaId(src.getBaId());
+        target.setDatenbasisId(src.getDatenbasisId());
+        target.setErzeugerId(src.getErzeugerId());
+        if (!src.getHauptprobenNr().isEmpty()) {
+            target.setHauptprobenNr(src.getHauptprobenNr());
+        }
+        target.setLaborMstId(src.getLaborMstId());
+        target.setMedia(src.getMedia());
+        target.setMediaDesk(src.getMediaDesk());
+        target.setMittelungsdauer(src.getMittelungsdauer());
+        target.setMplId(src.getMplId());
+        target.setMprId(src.getMprId());
+        target.setProbeentnahmeBeginn(src.getProbeentnahmeBeginn());
+        target.setProbeentnahmeEnde(src.getProbeentnahmeEnde());
+        target.setProbenartId(src.getProbenartId());
+        target.setProbeNehmerId(src.getProbeNehmerId());
+        target.setSolldatumBeginn(src.getSolldatumBeginn());
+        target.setSolldatumEnde(src.getSolldatumEnde());
+        target.setTest(src.getTest());
+        target.setUmwId(src.getUmwId());
+        repository.update(target, "land");
+        return this;
+    }
+
+    public ObjectMerger mergeMessung(Messung target, Messung src) {
+        if (target.getNebenprobenNr().isEmpty()) {
+            target.setNebenprobenNr(src.getNebenprobenNr());
+        }
+        target.setFertig(src.getFertig());
+        target.setGeplant(src.getGeplant());
+        target.setMessdauer(src.getMessdauer());
+        target.setMesszeitpunkt(src.getMesszeitpunkt());
+        target.setMmtId(src.getMmtId());
+        target.setStatus(src.getStatus());
+        repository.update(target, "land");
+        return this;
+    }
+
+    public ObjectMerger mergeZusatzwerte(
+        Probe target,
+        List<ZusatzWert> zusatzwerte
+    ) {
+        QueryBuilder<ZusatzWert> builder = new QueryBuilder<ZusatzWert>(
+            repository.entityManager("land"),
+            ZusatzWert.class);
+        for (int i = 0; i < zusatzwerte.size(); i++) {
+            builder.and("probeId", target.getId());
+            builder.and("pzsId", zusatzwerte.get(i).getPzsId());
+            List<ZusatzWert> found =
+                repository.filterPlain(builder.getQuery(), "land");
+            if (found.isEmpty()) {
+                repository.create(zusatzwerte.get(i), "land");
+                continue;
+            }
+            else if (found.size() > 1) {
+                // something is wrong (probeId and pzsId should be unique).
+                // Continue and skip this zusatzwert.
+                continue;
+            }
+            // Update the objects.
+            // direktly update the db or update the list!?
+            // Updating the list could be a problem. List objects are detatched.
+            //
+            // Current solution:
+            // Remove all db objects to be able to create new ones.
+            found.get(0).setMessfehler(zusatzwerte.get(i).getMessfehler());
+            found.get(0).setMesswertPzs(zusatzwerte.get(i).getMesswertPzs());
+            found.get(0).setNwgZuMesswert(zusatzwerte.get(i).getNwgZuMesswert());
+            repository.update(found.get(0), "land");
+        }
+        return this;
+    }
+
+    public ObjectMerger mergeKommentare(
+        Probe target,
+        List<KommentarP> kommentare
+    ) {
+        QueryBuilder<KommentarP> builder = new QueryBuilder<KommentarP>(
+            repository.entityManager("land"),
+            KommentarP.class);
+        for (int i = 0; i < kommentare.size(); i++) {
+            builder.and("probeId", target.getId());
+            builder.and("mstId", kommentare.get(i).getMstId());
+            builder.and("datum", kommentare.get(i).getDatum());
+            List<KommentarP> found =
+                repository.filterPlain(builder.getQuery(), "land");
+            if (found.isEmpty()) {
+                repository.create(kommentare.get(i), "land");
+                continue;
+            }
+            else if (found.size() > 1) {
+                // something is wrong (probeId and mstId and datum should be unique).
+                // Continue and skip this zusatzwert.
+                continue;
+            }
+        }
+        return this;
+    }
+
+    public ObjectMerger mergeOrte(Probe target, List<Ortszuordnung> orte) {
+        // TODO implement me
+        return this;
+    }
+
+    public ObjectMerger mergeKommentare(
+        Messung target,
+        List<KommentarM> kommentare
+    ) {
+        QueryBuilder<KommentarM> builder = new QueryBuilder<KommentarM>(
+            repository.entityManager("land"),
+            KommentarM.class);
+        for (int i = 0; i < kommentare.size(); i++) {
+            builder.and("messungsId", target.getId());
+            builder.and("mstId", kommentare.get(i).getMstId());
+            builder.and("datum", kommentare.get(i).getDatum());
+            List<KommentarM> found =
+                repository.filterPlain(builder.getQuery(), "land");
+            if (found.isEmpty()) {
+                repository.create(kommentare.get(i), "land");
+                continue;
+            }
+            else if (found.size() > 1) {
+                // something is wrong (probeId and mstId and datum should be unique).
+                // Continue and skip this zusatzwert.
+                continue;
+            }
+        }
+        return this;
+    }
+
+    public ObjectMerger mergeMesswerte(
+        Messung target,
+        List<Messwert> messwerte
+    ) {
+        QueryBuilder<Messwert> builder = new QueryBuilder<Messwert>(
+            repository.entityManager("land"),
+            Messwert.class);
+        builder.and("messungsId", target.getId());
+        List<Messwert> found =
+            repository.filterPlain(builder.getQuery(), "land");
+        if (found.isEmpty()) {
+            return this;
+        }
+        try {
+            for (int i = 0; i < found.size(); i++) {
+                repository.delete(found.get(i), "land");
+            }
+            repository.entityManager("land").flush();
+            for (int i = 0; i < messwerte.size(); i++) {
+                repository.create(messwerte.get(i), "land");
+            }
+        } catch (SecurityException |
+            IllegalStateException |
+            PersistenceException e
+        ) {
+            // Restore messwerte.
+            logger.debug("exception: ", e);
+            for (int i = 0; i < found.size(); i++) {
+                repository.create(found.get(i), "land");
+            }
+        }
+        return this;
+    }
+}

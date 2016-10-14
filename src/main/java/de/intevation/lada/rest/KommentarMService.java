@@ -23,8 +23,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-import de.intevation.lada.model.land.LKommentarM;
-import de.intevation.lada.model.land.LMessung;
+import de.intevation.lada.model.land.KommentarM;
+import de.intevation.lada.model.land.Messung;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -116,23 +116,23 @@ public class KommentarMService {
         catch(NumberFormatException nfe) {
             return new Response(false, 699, null);
         }
-        LMessung messung = defaultRepo.getByIdPlain(
-            LMessung.class,
+        Messung messung = defaultRepo.getByIdPlain(
+            Messung.class,
             id,
             "land");
-        if (!authorization.isAuthorized(request, messung, RequestMethod.GET, LMessung.class)) {
+        if (!authorization.isAuthorized(request, messung, RequestMethod.GET, Messung.class)) {
             return new Response(false, 699, null);
         }
 
-        QueryBuilder<LKommentarM> builder =
-            new QueryBuilder<LKommentarM>(
+        QueryBuilder<KommentarM> builder =
+            new QueryBuilder<KommentarM>(
                 defaultRepo.entityManager("land"),
-                LKommentarM.class);
+                KommentarM.class);
         builder.and("messungsId", messungId);
         return authorization.filter(
             request,
             defaultRepo.filter(builder.getQuery(), "land"),
-            LKommentarM.class);
+            KommentarM.class);
     }
 
     /**
@@ -153,20 +153,20 @@ public class KommentarMService {
         @PathParam("id") String id
     ) {
         Response response =
-            defaultRepo.getById(LKommentarM.class, Integer.valueOf(id), "land");
-        LKommentarM kommentar = (LKommentarM)response.getData();
-        LMessung messung = defaultRepo.getByIdPlain(
-            LMessung.class,
+            defaultRepo.getById(KommentarM.class, Integer.valueOf(id), "land");
+        KommentarM kommentar = (KommentarM)response.getData();
+        Messung messung = defaultRepo.getByIdPlain(
+            Messung.class,
             kommentar.getMessungsId(),
             "land");
-        if (!authorization.isAuthorized(request, messung, RequestMethod.GET, LMessung.class)) {
+        if (!authorization.isAuthorized(request, messung, RequestMethod.GET, Messung.class)) {
             return new Response(false, 699, null);
         }
 
         return authorization.filter(
             request,
             response,
-            LKommentarM.class);
+            KommentarM.class);
     }
 
     /**
@@ -193,13 +193,13 @@ public class KommentarMService {
     public Response create(
         @Context HttpHeaders headers,
         @Context HttpServletRequest request,
-        LKommentarM kommentar
+        KommentarM kommentar
     ) {
         if (!authorization.isAuthorized(
                 request,
                 kommentar,
                 RequestMethod.POST,
-                LKommentarM.class)
+                KommentarM.class)
         ) {
             return new Response(false, 699, null);
         }
@@ -207,7 +207,7 @@ public class KommentarMService {
         return authorization.filter(
             request,
             defaultRepo.create(kommentar, "land"),
-            LKommentarM.class);
+            KommentarM.class);
     }
 
     /**
@@ -235,20 +235,21 @@ public class KommentarMService {
     public Response update(
         @Context HttpHeaders headers,
         @Context HttpServletRequest request,
-        LKommentarM kommentar
+        @PathParam("id") String id,
+        KommentarM kommentar
     ) {
         if (!authorization.isAuthorized(
                 request,
                 kommentar,
                 RequestMethod.PUT,
-                LKommentarM.class)
+                KommentarM.class)
         ) {
             return new Response(false, 699, null);
         }
         return authorization.filter(
             request,
             defaultRepo.update(kommentar, "land"),
-            LKommentarM.class);
+            KommentarM.class);
     }
 
     /**
@@ -270,13 +271,13 @@ public class KommentarMService {
     ) {
         /* Get the object by id*/
         Response kommentar =
-            defaultRepo.getById(LKommentarM.class, Integer.valueOf(id), "land");
-        LKommentarM kommentarObj = (LKommentarM)kommentar.getData();
+            defaultRepo.getById(KommentarM.class, Integer.valueOf(id), "land");
+        KommentarM kommentarObj = (KommentarM)kommentar.getData();
         if (!authorization.isAuthorized(
                 request,
                 kommentarObj,
                 RequestMethod.DELETE,
-                LKommentarM.class)
+                KommentarM.class)
         ) {
             return new Response(false, 699, null);
         }

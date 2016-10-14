@@ -12,9 +12,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import de.intevation.lada.model.land.LProbe;
-import de.intevation.lada.model.stamm.DeskriptorUmwelt;
-import de.intevation.lada.model.stamm.Deskriptoren;
+import de.intevation.lada.model.land.Probe;
+import de.intevation.lada.model.stammdaten.DeskriptorUmwelt;
+import de.intevation.lada.model.stammdaten.Deskriptoren;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
@@ -39,7 +39,7 @@ public class DeskriptorToUmwelt implements Rule {
 
     @Override
     public Violation execute(Object object) {
-        LProbe probe = (LProbe)object;
+        Probe probe = (Probe)object;
         if (probe.getMediaDesk() == null || probe.getMediaDesk().equals("")) {
             return null;
         }
@@ -200,12 +200,6 @@ public class DeskriptorToUmwelt implements Rule {
                                 break;
                         case 11: if (data.get(i).getS11() == null ||
                                      data.get(i).getS11().equals(media.get(11)))
-                                    found = true;
-                                else
-                                    found = false;
-                                break;
-                        case 12: if (data.get(i).getS12() == null ||
-                                     data.get(i).getS12().equals(media.get(12)))
                                     found = true;
                                 else
                                     found = false;

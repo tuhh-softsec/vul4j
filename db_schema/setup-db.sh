@@ -65,11 +65,11 @@ echo create lada schema
 psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/lada_schema.sql
 echo set grants
 psql $DB_CONNECT_STRING -d $DB_NAME --command \
-     "GRANT USAGE ON SCHEMA stammdaten, bund, land TO $ROLE_NAME;
+     "GRANT USAGE ON SCHEMA stammdaten, land TO $ROLE_NAME;
       GRANT USAGE
-            ON ALL SEQUENCES IN SCHEMA stammdaten, bund, land TO $ROLE_NAME;
+            ON ALL SEQUENCES IN SCHEMA stammdaten, land TO $ROLE_NAME;
       GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES
-            ON ALL TABLES IN SCHEMA stammdaten, bund, land TO $ROLE_NAME;"
+            ON ALL TABLES IN SCHEMA stammdaten, land TO $ROLE_NAME;"
 
 if [ "$NO_DATA" != "true" ]; then
     echo import stammdaten

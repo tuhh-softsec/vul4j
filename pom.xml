@@ -70,6 +70,16 @@
             <version>2.5.1</version>
         </dependency>
         <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.5</version>
+        </dependency>
+        <dependency>
             <groupId>org.opensaml</groupId>
             <artifactId>opensaml</artifactId>
             <version>2.6.4</version>
@@ -110,6 +120,12 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-spatial</artifactId>
             <version>4.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+            <version>4.5</version>
         </dependency>
 
         <!-- Logging -->
@@ -155,11 +171,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-    		<groupId>org.jboss.arquillian.extension</groupId>
-    		<artifactId>arquillian-persistence-dbunit</artifactId>
-    		<version>1.0.0.Alpha7</version>
-    		<scope>test</scope>
-		</dependency>
+            <groupId>org.jboss.arquillian.extension</groupId>
+            <artifactId>arquillian-persistence-dbunit</artifactId>
+            <version>1.0.0.Alpha7</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <profiles>
@@ -193,6 +209,21 @@
                                 <target>1.7</target>
                             </compilerArguments>
                         </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.antlr</groupId>
+                        <artifactId>antlr4-maven-plugin</artifactId>
+                        <version>4.5</version>
+                        <configuration>
+                            <outputDirectory>${basedir}/src/main/java</outputDirectory>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>antlr4</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>

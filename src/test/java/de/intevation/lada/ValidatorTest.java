@@ -23,13 +23,13 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import de.intevation.lada.test.validator.Messung;
-import de.intevation.lada.test.validator.Probe;
-import de.intevation.lada.test.validator.Status;
+import de.intevation.lada.test.validator.MessungTest;
+import de.intevation.lada.test.validator.ProbeTest;
+import de.intevation.lada.test.validator.StatusTest;
 import de.intevation.lada.validation.Validator;
 import de.intevation.lada.validation.annotation.ValidationConfig;
 
@@ -47,23 +47,23 @@ public class ValidatorTest {
     @Inject
     @ValidationConfig(type="Probe")
     private Validator probeValidator;
-    private Probe probeTest;
+    private ProbeTest probeTest;
 
     @Inject
     @ValidationConfig(type="Messung")
     private Validator messungValidator;
-    private Messung messungTest;
+    private MessungTest messungTest;
 
     @Inject
     @ValidationConfig(type="Status")
     private Validator statusValidator;
-    private Status statusTest;
+    private StatusTest statusTest;
 
 
     public ValidatorTest() {
-        probeTest = new Probe();
-        messungTest = new Messung();
-        statusTest = new Status();
+        probeTest = new ProbeTest();
+        messungTest = new MessungTest();
+        statusTest = new StatusTest();
         testProtocol = new ArrayList<Protocol>();
     }
 

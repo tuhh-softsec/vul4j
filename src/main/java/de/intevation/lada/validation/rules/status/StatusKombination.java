@@ -11,8 +11,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import de.intevation.lada.model.land.LStatusProtokoll;
-import de.intevation.lada.model.stamm.StatusKombi;
+import org.apache.log4j.Logger;
+
+import de.intevation.lada.model.land.StatusProtokoll;
+import de.intevation.lada.model.stammdaten.StatusKombi;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
@@ -29,18 +31,19 @@ import de.intevation.lada.validation.rules.Rule;
 @ValidationRule("Status")
 public class StatusKombination implements Rule {
 
+    @Inject Logger logger;
+
     @Inject
     @RepositoryConfig(type=RepositoryType.RO)
     private Repository repository;
 
     @Override
     public Violation execute(Object object) {
-        LStatusProtokoll status = (LStatusProtokoll)object;
+        StatusProtokoll status = (StatusProtokoll)object;
         QueryBuilder<StatusKombi> kombi = new QueryBuilder<StatusKombi>(
             repository.entityManager("stamm"),
             StatusKombi.class);
-        kombi.and("stufeId", status.getStatusStufe());
-        kombi.and("wertId", status.getStatusWert());
+        kombi.and("id", status.getStatusKombi());
         List<StatusKombi> result =
             repository.filterPlain(kombi.getQuery(), "stamm");
         if (result.isEmpty()) {

@@ -21,9 +21,9 @@ import javax.persistence.PrePersist;
 
 /**
  * The persistent class for the messprogramm database table.
+ * 
  */
 @Entity
-@Table(name="messprogramm")
 public class Messprogramm implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -31,7 +31,7 @@ public class Messprogramm implements Serializable {
     @PrePersist
     void setDefaults() {
         if (baId == null) {
-            baId = 1;
+            baId = 0;
         }
         if (intervallOffset == null) {
             intervallOffset = 0;
@@ -40,7 +40,6 @@ public class Messprogramm implements Serializable {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name="id", unique=true, nullable=false)
     private Integer id;
 
     @Column(name="ba_id")
@@ -61,6 +60,11 @@ public class Messprogramm implements Serializable {
     @Column(name="intervall_offset")
     private Integer intervallOffset;
 
+    private String kommentar;
+
+    @Column(name="labor_mst_id")
+    private String laborMstId;
+
     @Column(name="letzte_aenderung")
     private Timestamp letzteAenderung;
 
@@ -69,14 +73,6 @@ public class Messprogramm implements Serializable {
 
     @Column(name="mst_id")
     private String mstId;
-
-    @Column(name="labor_mst_id")
-    private String laborMstId;
-
-    private String name;
-
-    @Column(name="netzbetreiber_id")
-    private String netzbetreiberId;
 
     @Column(name="ort_id")
     private Integer ortId;
@@ -162,8 +158,28 @@ public class Messprogramm implements Serializable {
         this.intervallOffset = intervallOffset;
     }
 
+    public String getKommentar() {
+        return this.kommentar;
+    }
+
+    public void setKommentar(String kommentar) {
+        this.kommentar = kommentar;
+    }
+
+    public String getLaborMstId() {
+        return this.laborMstId;
+    }
+
+    public void setLaborMstId(String laborMstId) {
+        this.laborMstId = laborMstId;
+    }
+
     public Timestamp getLetzteAenderung() {
         return this.letzteAenderung;
+    }
+
+    public void setLetzteAenderung(Timestamp letzteAenderung) {
+        this.letzteAenderung = letzteAenderung;
     }
 
     public String getMediaDesk() {
@@ -180,30 +196,6 @@ public class Messprogramm implements Serializable {
 
     public void setMstId(String mstId) {
         this.mstId = mstId;
-    }
-
-    public String getLaborMstId() {
-        return laborMstId;
-    }
-
-    public void setLaborMstId(String laborMstId) {
-        this.laborMstId = laborMstId;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getNetzbetreiberId() {
-        return this.netzbetreiberId;
-    }
-
-    public void setNetzbetreiberId(String netzbetreiberId) {
-        this.netzbetreiberId = netzbetreiberId;
     }
 
     public Integer getOrtId() {
@@ -277,4 +269,5 @@ public class Messprogramm implements Serializable {
     public void setUmwId(String umwId) {
         this.umwId = umwId;
     }
+
 }

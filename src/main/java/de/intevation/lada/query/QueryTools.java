@@ -26,14 +26,13 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import org.apache.log4j.Logger;
 
-import de.intevation.lada.model.stamm.Filter;
-import de.intevation.lada.model.stamm.Query;
-import de.intevation.lada.model.stamm.Result;
+import de.intevation.lada.model.stammdaten.Filter;
+import de.intevation.lada.model.stammdaten.Query;
+import de.intevation.lada.model.stammdaten.Result;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
-import de.intevation.lada.util.rest.Response;
 
 
 /**
@@ -173,7 +172,12 @@ public class QueryTools
         }
     }
 
-    public List<Map<String, Object>> getResultForQuery(MultivaluedMap<String, String> params, Integer qId, String type) {
+    @SuppressWarnings("unchecked")
+    public List<Map<String, Object>> getResultForQuery(
+        MultivaluedMap<String, String> params,
+        Integer qId,
+        String type
+    ) {
         QueryBuilder<Query> builder = new QueryBuilder<Query>(
             repository.entityManager("stamm"),
             Query.class
@@ -212,7 +216,7 @@ public class QueryTools
             params,
             repository.entityManager("land"));
         if (q == null) {
-            return new ArrayList();
+            return new ArrayList<Map<String, Object>>();
         }
         return prepareResult(q.getResultList(), results);
     }

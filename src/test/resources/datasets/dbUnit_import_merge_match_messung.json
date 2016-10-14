@@ -1,0 +1,15 @@
+{
+    "land.messung": [{
+        "id": 1200,
+        "probe_id": 1000,
+        "nebenproben_nr": "06A0",
+        "id_alt": 1,
+        "mmt_id": "A3",
+        "messdauer": 1000,
+        "messzeitpunkt": "2012-05-06 14:00:00",
+        "fertig": false,
+        "letzte_aenderung": "2012-05-08 12:00:00",
+        "geplant": true,
+        "tree_modified": "2012-05-09 12:00:00"
+    }]
+}

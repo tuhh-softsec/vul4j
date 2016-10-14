@@ -20,8 +20,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import de.intevation.lada.model.stamm.Filter;
-import de.intevation.lada.model.stamm.FilterValue;
+import de.intevation.lada.model.stammdaten.Filter;
+import de.intevation.lada.model.stammdaten.FilterValue;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;

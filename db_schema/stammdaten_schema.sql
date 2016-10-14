@@ -85,15 +85,41 @@ end;
 $$;
 
 
-CREATE SEQUENCE staat_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
+CREATE TABLE koordinaten_art (
+    id serial PRIMARY KEY,
+    koordinatenart character varying(50),
+    idf_geo_key character varying(1)
+);
+
+
+CREATE TABLE mess_einheit (
+    id serial PRIMARY KEY,
+    beschreibung character varying(50),
+    einheit character varying(12),
+    eudf_messeinheit_id character varying(8),
+    umrechnungs_faktor_eudf bigint
+);
+
+
+CREATE TABLE umwelt (
+    id character varying(3) PRIMARY KEY,
+    beschreibung character varying(300),
+    umwelt_bereich character varying(80) NOT NULL,
+    meh_id integer REFERENCES mess_einheit,
+    UNIQUE (umwelt_bereich)
+);
+
+
+CREATE TABLE betriebsart (
+    id serial PRIMARY KEY,
+    name character varying(30) NOT NULL
+);
+INSERT INTO betriebsart VALUES(0, 'Normal-/Routinebetrieb');
+INSERT INTO betriebsart VALUES(1, 'Störfall-/Intensivbetrieb');
+
 
 CREATE TABLE staat (
-    id integer PRIMARY KEY DEFAULT nextval('staat_id_seq'::regclass),
+    id serial PRIMARY KEY,
     staat character varying(50) NOT NULL,
     hkl_id smallint NOT NULL,
     staat_iso character varying(2) NOT NULL,
@@ -101,16 +127,14 @@ CREATE TABLE staat (
     eu character(1) DEFAULT NULL::bpchar,
     koord_x_extern character varying(22),
     koord_y_extern character varying(22),
-    kda_id integer
+    kda_id integer REFERENCES koordinaten_art
 );
-
-ALTER SEQUENCE staat_id_seq OWNED BY staat.id;
 
 
 CREATE TABLE verwaltungseinheit (
     id character varying(8) PRIMARY KEY,
     bundesland character varying(8) NOT NULL,
-    kda_id integer,
+    kda_id integer REFERENCES koordinaten_art,
     kreis character varying(8),
     nuts character varying(10),
     regbezirk character varying(8),
@@ -133,8 +157,7 @@ CREATE TABLE netz_betreiber (
     idf_netzbetreiber character varying(1),
     is_bmn boolean DEFAULT false,
     mailverteiler character varying(512),
-    aktiv boolean DEFAULT false,
-    zust_mst_id character varying(5)
+    aktiv boolean DEFAULT false
 );
 
 
@@ -148,25 +171,6 @@ CREATE TABLE mess_stelle (
 );
 
 
-CREATE SEQUENCE auth_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-CREATE TABLE auth (
-    id integer PRIMARY KEY DEFAULT nextval('auth_id_seq'::regclass),
-    ldap_group character varying(40) NOT NULL,
-    netzbetreiber_id character varying(2),
-    mst_id character varying(5),
-    labor_mst_id character varying(5),
-    funktion_id smallint
-);
-
-ALTER SEQUENCE auth_id_seq OWNED BY auth.id;
-
-
 CREATE TABLE auth_funktion (
     id smallint PRIMARY KEY,
     funktion character varying(40) UNIQUE NOT NULL
@@ -178,61 +182,64 @@ INSERT INTO auth_funktion VALUES (3, 'Status-Leitstelle');
 INSERT INTO auth_funktion VALUES (4, 'Stammdatenpflege-Land');
 
 
-CREATE SEQUENCE auth_lst_umw_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-CREATE TABLE auth_lst_umw (
-    id integer PRIMARY KEY DEFAULT nextval('auth_lst_umw_id_seq'::regclass),
-    lst_id character varying(5),
-    umw_id character varying(3)
+CREATE TABLE auth (
+    id serial PRIMARY KEY,
+    ldap_group character varying(40) NOT NULL,
+    netzbetreiber_id character varying(2) REFERENCES netz_betreiber,
+    mst_id character varying(5) REFERENCES mess_stelle,
+    labor_mst_id character varying(5) REFERENCES mess_stelle,
+    funktion_id smallint REFERENCES auth_funktion
 );
 
-ALTER SEQUENCE auth_lst_umw_id_seq OWNED BY auth_lst_umw.id;
 
+CREATE TABLE auth_lst_umw (
+    id serial PRIMARY KEY,
+    mst_id character varying(5) REFERENCES mess_stelle,
+    umw_id character varying(3) REFERENCES umwelt
+);
 
-CREATE SEQUENCE datenbasis_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
 
 CREATE TABLE datenbasis (
-    id integer PRIMARY KEY DEFAULT nextval('datenbasis_id_seq'::regclass),
+    id serial PRIMARY KEY,
     beschreibung character varying(30),
     datenbasis character varying(6)
 );
 
-ALTER SEQUENCE datenbasis_id_seq OWNED BY datenbasis.id;
-
-
-CREATE SEQUENCE datensatz_erzeuger_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
 
 CREATE TABLE datensatz_erzeuger (
-    id integer PRIMARY KEY
-        DEFAULT nextval('datensatz_erzeuger_id_seq'::regclass),
+    id serial PRIMARY KEY,
     netzbetreiber_id character varying(2) NOT NULL REFERENCES netz_betreiber,
-    da_erzeuger_id character varying(2) NOT NULL,
+    datensatz_erzeuger_id character varying(2) NOT NULL,
     mst_id character varying(5) NOT NULL REFERENCES mess_stelle,
     bezeichnung character varying(120) NOT NULL,
     letzte_aenderung timestamp without time zone,
-    UNIQUE(da_erzeuger_id, netzbetreiber_id)
+    UNIQUE(datensatz_erzeuger_id, netzbetreiber_id)
 );
 CREATE TRIGGER letzte_aenderung_datensatz_erzeuger BEFORE UPDATE ON datensatz_erzeuger FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 
-ALTER SEQUENCE datensatz_erzeuger_id_seq OWNED BY datensatz_erzeuger.id;
+CREATE TABLE de_vg (
+    id serial PRIMARY KEY,
+    use double precision,
+    rs character varying(12),
+    gf double precision,
+    rau_rs character varying(12),
+    gen character varying(50),
+    des character varying(75),
+    isn double precision,
+    bemerk character varying(75),
+    nambild character varying(16),
+    ags character varying(12),
+    rs_alt character varying(20),
+    wirksamkei date,
+    debkg_id character varying(16),
+    length numeric,
+    shape_area numeric,
+    geom public.geometry(MultiPolygon,4326)
+);
+
 
 CREATE TABLE deskriptor_umwelt (
-    id integer PRIMARY KEY,
+    id serial PRIMARY KEY,
     s00 integer NOT NULL,
     s01 integer NOT NULL,
     s02 integer,
@@ -246,20 +253,13 @@ CREATE TABLE deskriptor_umwelt (
     s10 integer,
     s11 integer,
     s12 integer,
-    umw_id character varying(3) NOT NULL
+    umw_id character varying(3) NOT NULL REFERENCES umwelt
 );
 
 
-CREATE SEQUENCE deskriptoren_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
 CREATE TABLE deskriptoren (
-    id integer PRIMARY KEY DEFAULT nextval('deskriptoren_id_seq'::regclass),
-    vorgaenger integer,
+    id serial PRIMARY KEY,
+    vorgaenger integer REFERENCES deskriptoren,
     ebene smallint,
     s_xx integer,
     sn smallint,
@@ -267,130 +267,72 @@ CREATE TABLE deskriptoren (
     bedeutung character varying(300)
 );
 
-ALTER SEQUENCE deskriptoren_id_seq OWNED BY deskriptoren.id;
-
-
-CREATE SEQUENCE lada_user_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
 
 CREATE TABLE lada_user (
-    id integer PRIMARY KEY DEFAULT nextval('lada_user_id_seq'::regclass),
-    name character varying(80) NOT NULL
+    id serial PRIMARY KEY,
+    name character varying(80) NOT NULL,
+    UNIQUE (name)
 );
 
-ALTER SEQUENCE lada_user_id_seq OWNED BY lada_user.id;
 
+CREATE TABLE query_type (
+    id serial PRIMARY KEY,
+    type character varying(30) NOT NULL
+);
+INSERT INTO query_type VALUES(0, 'probe');
+INSERT INTO query_type VALUES(1, 'messung');
+INSERT INTO query_type VALUES(2, 'messprogramm');
+INSERT INTO query_type VALUES(3, 'ort');
+INSERT INTO query_type VALUES(4, 'probenehmer');
+INSERT INTO query_type VALUES(5, 'datensatzerzeuger');
+INSERT INTO query_type VALUES(6, 'messprogrammkategorie');
 
-CREATE SEQUENCE query_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
 
 CREATE TABLE query (
-    id integer PRIMARY KEY DEFAULT nextval('query_id_seq'::regclass),
+    id serial PRIMARY KEY,
     name character varying(80) NOT NULL,
-    type character varying(30) NOT NULL
-        CHECK(type IN('probe', 'messung', 'messprogramm', 'ort',
-            'probenehmer', 'datensatzerzeuger', 'messprogrammkategorie')),
-    sql character varying(1500) NOT NULL,
+    type integer NOT NULL REFERENCES query_type,
+    sql character varying(2500) NOT NULL,
     description character varying(100),
     UNIQUE (name, type)
 );
 
-ALTER SEQUENCE query_id_seq OWNED BY query.id;
-
-
-CREATE SEQUENCE favorite_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
 
 CREATE TABLE favorite (
-    id integer PRIMARY KEY DEFAULT nextval('favorite_id_seq'::regclass),
+    id serial PRIMARY KEY,
     user_id integer NOT NULL REFERENCES lada_user,
     query_id integer NOT NULL REFERENCES query ON DELETE CASCADE
 );
 
-ALTER SEQUENCE favorite_id_seq OWNED BY favorite.id;
 
+CREATE TABLE filter_type (
+    id serial PRIMARY KEY,
+    type character varying(10) NOT NULL
+);
+INSERT INTO filter_type VALUES(0, 'text');
+INSERT INTO filter_type VALUES(1, 'listmst');
+INSERT INTO filter_type VALUES(2, 'listnetz');
+INSERT INTO filter_type VALUES(3, 'listumw');
+INSERT INTO filter_type VALUES(4, 'liststatus');
+INSERT INTO filter_type VALUES(5, 'number');
 
-CREATE SEQUENCE filter_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
 
 CREATE TABLE filter (
-    id integer PRIMARY KEY DEFAULT nextval('filter_id_seq'::regclass),
+    id serial PRIMARY KEY,
     query_id integer NOT NULL REFERENCES query ON DELETE CASCADE,
     data_index character varying(50) NOT NULL,
-    type character varying(10) NOT NULL
-        CHECK(type IN('liststatus', 'listmst', 'listnetz', 'listumw', 'text')),
+    type integer NOT NULL REFERENCES filter_type,
     label character varying(50) NOT NULL,
     multiselect boolean
 );
 
-ALTER SEQUENCE filter_id_seq OWNED BY filter.id;
-
-
-CREATE SEQUENCE filter_value_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
 
 CREATE TABLE filter_value (
-    id integer PRIMARY KEY DEFAULT nextval('filter_value_id_seq'::regclass),
+    id serial PRIMARY KEY,
     user_id integer NOT NULL REFERENCES lada_user,
     filter_id integer NOT NULL REFERENCES filter ON DELETE CASCADE,
     value text
 );
-
-ALTER SEQUENCE filter_value_id_seq OWNED BY filter_value.id;
-
-
-CREATE SEQUENCE koordinaten_art_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-CREATE TABLE koordinaten_art (
-    id integer PRIMARY KEY DEFAULT nextval('koordinaten_art_id_seq'::regclass),
-    koordinatenart character varying(50),
-    idf_geo_key character varying(1)
-);
-
-ALTER SEQUENCE koordinaten_art_id_seq OWNED BY koordinaten_art.id;
-
-
-CREATE SEQUENCE mess_einheit_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-CREATE TABLE mess_einheit (
-    id integer PRIMARY KEY DEFAULT nextval('mess_einheit_id_seq'::regclass),
-    beschreibung character varying(50),
-    einheit character varying(12),
-    eudf_messeinheit_id character varying(8),
-    umrechnungs_faktor_eudf bigint
-);
-
-ALTER SEQUENCE mess_einheit_id_seq OWNED BY mess_einheit.id;
 
 
 CREATE TABLE mess_methode (
@@ -400,15 +342,8 @@ CREATE TABLE mess_methode (
 );
 
 
-CREATE SEQUENCE messgroesse_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
 CREATE TABLE messgroesse (
-    id integer PRIMARY KEY DEFAULT nextval('messgroesse_id_seq'::regclass),
+    id serial PRIMARY KEY,
     beschreibung character varying(300),
     messgroesse character varying(50) NOT NULL,
     default_farbe character varying(9),
@@ -418,58 +353,41 @@ CREATE TABLE messgroesse (
     kennung_bvl character varying(7)
 );
 
-ALTER SEQUENCE messgroesse_id_seq OWNED BY messgroesse.id;
-
-
-CREATE SEQUENCE messgroessen_gruppe_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
 
 CREATE TABLE messgroessen_gruppe (
-    id integer PRIMARY KEY
-        DEFAULT nextval('messgroessen_gruppe_id_seq'::regclass),
+    id serial PRIMARY KEY,
     bezeichnung character varying(80),
     ist_leitnuklidgruppe character(1) DEFAULT NULL::bpchar
 );
 
-ALTER SEQUENCE messgroessen_gruppe_id_seq OWNED BY messgroessen_gruppe.id;
-
-
-CREATE SEQUENCE messprogramm_kategorie_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
 
 CREATE TABLE messprogramm_kategorie (
-    id integer PRIMARY KEY
-        DEFAULT nextval('messprogramm_kategorie_id_seq'::regclass),
+    id serial PRIMARY KEY,
     netzbetreiber_id character varying(2) NOT NULL REFERENCES netz_betreiber,
-    mpl_id character varying(3) NOT NULL,
+    code character varying(3) NOT NULL,
     bezeichnung character varying(120) NOT NULL,
     letzte_aenderung timestamp without time zone,
-    UNIQUE(mpl_id, netzbetreiber_id)
+    UNIQUE(code, netzbetreiber_id)
 );
 CREATE TRIGGER letzte_aenderung_messprogramm_kategorie BEFORE UPDATE ON messprogramm_kategorie FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 
-ALTER SEQUENCE messprogramm_kategorie_id_seq
-    OWNED BY messprogramm_kategorie.id;
-
 
 CREATE TABLE mg_grp (
-    messgroessengruppe_id integer NOT NULL,
-    messgroesse_id integer NOT NULL
+    messgroessengruppe_id integer NOT NULL REFERENCES messgroessen_gruppe,
+    messgroesse_id integer NOT NULL REFERENCES messgroesse
 );
+ALTER TABLE ONLY mg_grp
+    ADD CONSTRAINT mg_grp_pkey PRIMARY KEY (messgroessengruppe_id, messgroesse_id);
 
 
 CREATE TABLE mmt_messgroesse_grp (
-    messgroessengruppe_id integer NOT NULL,
-    mmt_id character varying(2) NOT NULL
+    messgroessengruppe_id integer NOT NULL REFERENCES messgroessen_gruppe,
+    mmt_id character varying(2) NOT NULL REFERENCES mess_methode
 );
+ALTER TABLE ONLY mmt_messgroesse_grp
+    ADD CONSTRAINT mmt_messgroesse_grp_pkey PRIMARY KEY (messgroessengruppe_id, mmt_id);
+
+
 
 
 CREATE VIEW mmt_messgroesse AS
@@ -485,16 +403,24 @@ CREATE TABLE ort_typ (
     ort_typ character varying(60)
 );
 
+CREATE TABLE kta (
+  id serial NOT NULL,
+  code character varying(7),
+  bezeichnung character varying(80),
+  CONSTRAINT kta_pkey PRIMARY KEY (id)
+);
+COMMENT ON TABLE kta
+  IS 'kernteschnische Anlagen';
 
-CREATE SEQUENCE ort_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
+CREATE TABLE ortszusatz (
+  id serial NOT NULL,
+  code character varying(7),
+  bezeichnung character varying(80),
+  CONSTRAINT ortszusatz_pkey PRIMARY KEY (id)
+);
 
 CREATE TABLE ort (
-    id integer PRIMARY KEY DEFAULT nextval('ort_id_seq'::regclass),
+    id serial PRIMARY KEY,
     netzbetreiber_id character varying(2) NOT NULL REFERENCES netz_betreiber,
     ort_id character varying(10) NOT NULL,
     langtext character varying(100) NOT NULL,
@@ -521,17 +447,17 @@ CREATE TABLE ort (
     aktiv character(1),
     anlage_id integer,
     oz_id integer,
+    hoehe_ueber_nn real,
     UNIQUE(ort_id, netzbetreiber_id)
 );
+
 CREATE TRIGGER letzte_aenderung_ort BEFORE UPDATE ON ort FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 
 ALTER TABLE ONLY ort
-    ADD CONSTRAINT ort_anlage_fkey FOREIGN KEY (anlage_id) REFERENCES ort(id);
+    ADD CONSTRAINT ort_kta_fkey FOREIGN KEY (anlage_id) REFERENCES kta(id);
 
 ALTER TABLE ONLY ort
     ADD CONSTRAINT ort_oz_fkey FOREIGN KEY (oz_id) REFERENCES ort(id);
-
-ALTER SEQUENCE ort_id_seq OWNED BY ort.id;
 
 
 CREATE TABLE ortszuordnung_typ (
@@ -540,60 +466,35 @@ CREATE TABLE ortszuordnung_typ (
 );
 
 
-CREATE SEQUENCE pflicht_messgroesse_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
 CREATE TABLE pflicht_messgroesse (
-    id integer PRIMARY KEY
-        DEFAULT nextval('pflicht_messgroesse_id_seq'::regclass),
+    id serial PRIMARY KEY,
     messgroesse_id integer,
-    mmt_id character varying(2),
-    umw_id character varying(3),
-    datenbasis_id smallint NOT NULL
+    mmt_id character varying(2) REFERENCES mess_methode,
+    umw_id character varying(3) REFERENCES umwelt,
+    datenbasis_id smallint NOT NULL REFERENCES datenbasis
 );
-
-ALTER SEQUENCE pflicht_messgroesse_id_seq OWNED BY pflicht_messgroesse.id;
 
 
 CREATE TABLE proben_zusatz (
     id character varying(3) PRIMARY KEY,
-    meh_id integer,
+    meh_id integer REFERENCES mess_einheit,
     beschreibung character varying(50) NOT NULL,
     zusatzwert character varying(7) NOT NULL,
-    eudf_keyword character varying(40)
+    eudf_keyword character varying(40),
+    UNIQUE (eudf_keyword)
 );
 
 
-CREATE SEQUENCE probenart_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
 CREATE TABLE probenart (
-    id integer PRIMARY KEY DEFAULT nextval('probenart_id_seq'::regclass),
+    id serial PRIMARY KEY,
     beschreibung character varying(30),
     probenart character varying(5) NOT NULL,
     probenart_eudf_id character varying(1) NOT NULL
 );
 
-ALTER SEQUENCE probenart_id_seq OWNED BY probenart.id;
-
-
-CREATE SEQUENCE probenehmer_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
 
 CREATE TABLE probenehmer (
-    id integer PRIMARY KEY DEFAULT nextval('probenehmer_id_seq'::regclass),
+    id serial PRIMARY KEY,
     netzbetreiber_id character varying(2) NOT NULL REFERENCES netz_betreiber,
     prn_id character varying(9) NOT NULL,
     bearbeiter character varying(25),
@@ -612,18 +513,9 @@ CREATE TABLE probenehmer (
 );
 CREATE TRIGGER letzte_aenderung_probenehmer BEFORE UPDATE ON probenehmer FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 
-ALTER SEQUENCE probenehmer_id_seq OWNED BY probenehmer.id;
-
-
-CREATE SEQUENCE result_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
 
 CREATE TABLE result (
-    id integer PRIMARY KEY DEFAULT nextval('result_id_seq'::regclass),
+    id serial PRIMARY KEY,
     query_id integer NOT NULL REFERENCES query ON DELETE CASCADE,
     data_index character varying(50) NOT NULL,
     header character varying(50) NOT NULL,
@@ -633,9 +525,6 @@ CREATE TABLE result (
     UNIQUE (query_id, index),
     UNIQUE (query_id, data_index)
 );
-
-ALTER SEQUENCE result_id_seq OWNED BY result.id;
-
 
 
 -- Status workflow
@@ -683,9 +572,8 @@ INSERT INTO status_kombi VALUES (12, 3, 3);
 INSERT INTO status_kombi VALUES (13, 3, 4);
 
 
-CREATE SEQUENCE status_reihenfolge_id_seq;
 CREATE TABLE status_reihenfolge (
-    id integer PRIMARY KEY DEFAULT nextval('status_reihenfolge_id_seq'),
+    id serial PRIMARY KEY,
     von_id integer REFERENCES status_kombi NOT NULL,
     zu_id integer REFERENCES status_kombi NOT NULL,
     UNIQUE(von_id, zu_id)
@@ -752,110 +640,20 @@ CREATE VIEW status_erreichbar AS (
 );
 -- Status workflow
 
+-- Mappings for import
 
-CREATE TABLE umwelt (
-    id character varying(3) PRIMARY KEY,
-    beschreibung character varying(300),
-    umwelt_bereich character varying(80) NOT NULL,
-    meh_id integer
+CREATE TABLE messprogramm_transfer (
+    id serial PRIMARY KEY,
+    messprogramm_s character varying(1) NOT NULL,
+    messprogramm_c character varying(100) NOT NULL,
+    ba_id integer NOT NULL REFERENCES betriebsart,
+    datenbasis_id integer NOT NULL REFERENCES datenbasis,
+    UNIQUE (messprogramm_s)
 );
 
-
-
-
-ALTER TABLE ONLY lada_user
-    ADD CONSTRAINT lada_user_name_key UNIQUE (name);
-
-
-ALTER TABLE ONLY mg_grp
-    ADD CONSTRAINT mg_grp_pkey PRIMARY KEY (messgroessengruppe_id, messgroesse_id);
-
-
-ALTER TABLE ONLY mmt_messgroesse_grp
-    ADD CONSTRAINT mmt_messgroesse_grp_pkey PRIMARY KEY (messgroessengruppe_id, mmt_id);
-
-
-ALTER TABLE ONLY proben_zusatz
-    ADD CONSTRAINT proben_zusatz_eudf_keyword_key UNIQUE (eudf_keyword);
-
-
-ALTER TABLE ONLY umwelt
-    ADD CONSTRAINT umwelt_umwelt_bereich_key UNIQUE (umwelt_bereich);
-
+-- Mappings for import
 
 CREATE INDEX fts_stauts_kooin10001 ON staat USING btree (kda_id);
-
-
-
-ALTER TABLE ONLY auth
-    ADD CONSTRAINT auth_funktion_fkey FOREIGN KEY (funktion_id) REFERENCES auth_funktion(id);
-
-
-
-ALTER TABLE ONLY auth
-    ADD CONSTRAINT auth_labor_fkey FOREIGN KEY (labor_mst_id) REFERENCES mess_stelle(id);
-
-
-
-ALTER TABLE ONLY auth_lst_umw
-    ADD CONSTRAINT auth_lst_umw_lst_fkey FOREIGN KEY (lst_id) REFERENCES mess_stelle(id);
-
-
-
-ALTER TABLE ONLY auth_lst_umw
-    ADD CONSTRAINT auth_lst_umw_umw_fkey FOREIGN KEY (umw_id) REFERENCES umwelt(id);
-
-
-
-ALTER TABLE ONLY auth
-    ADD CONSTRAINT auth_mst_id_fkey FOREIGN KEY (mst_id) REFERENCES mess_stelle(id);
-
-
-
-ALTER TABLE ONLY auth
-    ADD CONSTRAINT auth_netzbetreiber_id_fkey FOREIGN KEY (netzbetreiber_id) REFERENCES netz_betreiber(id);
-
-
-
-ALTER TABLE ONLY deskriptoren
-    ADD CONSTRAINT fk_deskriptoren_vorgaenger FOREIGN KEY (vorgaenger) REFERENCES deskriptoren(id);
-
-
-
-ALTER TABLE ONLY pflicht_messgroesse
-    ADD CONSTRAINT pflicht_messgroesse_datenbasis_id_fkey FOREIGN KEY (datenbasis_id) REFERENCES datenbasis(id);
-
-
-
-ALTER TABLE ONLY pflicht_messgroesse
-    ADD CONSTRAINT pflicht_messgroesse_mmt_id_fkey FOREIGN KEY (mmt_id) REFERENCES mess_methode(id);
-
-
-
-ALTER TABLE ONLY pflicht_messgroesse
-    ADD CONSTRAINT pflicht_messgroesse_umw_id_fkey FOREIGN KEY (umw_id) REFERENCES umwelt(id);
-
-
-
-ALTER TABLE ONLY proben_zusatz
-    ADD CONSTRAINT proben_zusatz_meh_id_fkey FOREIGN KEY (meh_id) REFERENCES mess_einheit(id);
-
-
-
-ALTER TABLE ONLY staat
-    ADD CONSTRAINT staat_kda_id_fkey FOREIGN KEY (kda_id) REFERENCES koordinaten_art(id);
-
-
-
-
-
-ALTER TABLE ONLY umwelt
-    ADD CONSTRAINT umwelt_meh_id_fkey FOREIGN KEY (meh_id) REFERENCES mess_einheit(id);
-
-
-
-ALTER TABLE ONLY verwaltungseinheit
-    ADD CONSTRAINT verwaltungseinheit_kda_id_fkey FOREIGN KEY (kda_id) REFERENCES koordinaten_art(id);
 
 
 COMMIT;

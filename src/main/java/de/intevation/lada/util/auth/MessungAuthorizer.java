@@ -10,10 +10,12 @@ package de.intevation.lada.util.auth;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.intevation.lada.model.land.LMessung;
-import de.intevation.lada.model.land.LProbe;
-import de.intevation.lada.model.land.LStatusProtokoll;
-import de.intevation.lada.model.stamm.AuthLstUmw;
+import de.intevation.lada.model.land.Messung;
+import de.intevation.lada.model.land.Probe;
+import de.intevation.lada.model.land.StatusProtokoll;
+import de.intevation.lada.model.stammdaten.AuthLstUmw;
+import de.intevation.lada.model.stammdaten.MessStelle;
+import de.intevation.lada.model.stammdaten.StatusKombi;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
@@ -27,10 +29,10 @@ public class MessungAuthorizer extends BaseAuthorizer {
         UserInfo userInfo,
         Class<T> clazz
     ) {
-        LMessung messung = (LMessung)data;
+        Messung messung = (Messung)data;
         Response response =
-            repository.getById(LProbe.class, messung.getProbeId(), "land");
-        LProbe probe = (LProbe)response.getData();
+            repository.getById(Probe.class, messung.getProbeId(), "land");
+        Probe probe = (Probe)response.getData();
         if (method == RequestMethod.PUT ||
             method == RequestMethod.DELETE) {
             return !this.isMessungReadOnly(messung.getId()) &&
@@ -39,11 +41,16 @@ public class MessungAuthorizer extends BaseAuthorizer {
         if (method == RequestMethod.POST) {
             return getAuthorization(userInfo, probe);
         }
-        LStatusProtokoll status = repository.getByIdPlain(
-            LStatusProtokoll.class,
+        StatusProtokoll status = repository.getByIdPlain(
+            StatusProtokoll.class,
             messung.getStatus(),
             "land");
-        return status.getStatusWert() > 0 || getAuthorization(userInfo, probe);
+        StatusKombi kombi = repository.getByIdPlain(
+            StatusKombi.class,
+            status.getStatusKombi(),
+            "stamm");
+        return kombi.getStatusWert().getId() > 0 ||
+            getAuthorization(userInfo, probe);
     }
 
     @SuppressWarnings("unchecked")
@@ -54,14 +61,14 @@ public class MessungAuthorizer extends BaseAuthorizer {
         Class<T> clazz
     ) {
         if (data.getData() instanceof List<?>) {
-            List<LMessung> messungen = new ArrayList<LMessung>();
-            for (LMessung messung :(List<LMessung>)data.getData()) {
+            List<Messung> messungen = new ArrayList<Messung>();
+            for (Messung messung :(List<Messung>)data.getData()) {
                 messungen.add(setAuthData(userInfo, messung));
             }
             data.setData(messungen);
         }
-        else if (data.getData() instanceof LMessung) {
-            LMessung messung = (LMessung)data.getData();
+        else if (data.getData() instanceof Messung) {
+            Messung messung = (Messung)data.getData();
             data.setData(setAuthData(userInfo, messung));
         }
         return data;
@@ -74,14 +81,15 @@ public class MessungAuthorizer extends BaseAuthorizer {
      * @param messung     The messung object.
      * @return The messung.
      */
-    private LMessung setAuthData(
+    private Messung setAuthData(
         UserInfo userInfo,
-        LMessung messung
+        Messung messung
     ) {
-        LProbe probe =
-            (LProbe)repository.getById(
-                LProbe.class, messung.getProbeId(), "land").getData();
-        if (!userInfo.getNetzbetreiber().contains(probe.getNetzbetreiberId()) &&
+        Probe probe =
+            (Probe)repository.getById(
+                Probe.class, messung.getProbeId(), "land").getData();
+        MessStelle mst = repository.getByIdPlain(MessStelle.class, probe.getMstId(), "stamm");
+        if (!userInfo.getNetzbetreiber().contains(mst.getNetzbetreiberId()) &&
             !userInfo.getFunktionen().contains(3)) {
             messung.setOwner(false);
             messung.setReadonly(true);
@@ -101,12 +109,14 @@ public class MessungAuthorizer extends BaseAuthorizer {
             messung.setStatusEdit(false);
         }
         else {
-            LStatusProtokoll status = repository.getByIdPlain(
-                LStatusProtokoll.class,
+            StatusProtokoll status = repository.getByIdPlain(
+                StatusProtokoll.class,
                 messung.getStatus(),
                 "land");
-            int stufe = status.getStatusStufe();
-            int wert  = status.getStatusWert();
+            StatusKombi kombi = repository.getByIdPlain(
+                StatusKombi.class, status.getStatusKombi(), "stamm");
+            int stufe = kombi.getStatusStufe().getId();
+            int wert  = kombi.getStatusWert().getId();
 
             messung.setReadonly(wert != 0 && wert != 4);
 
@@ -118,7 +128,7 @@ public class MessungAuthorizer extends BaseAuthorizer {
                 QueryBuilder<AuthLstUmw> lstFilter = new QueryBuilder<AuthLstUmw>(
                     repository.entityManager("stamm"),
                     AuthLstUmw.class);
-                lstFilter.or("lstId", userInfo.getMessstellen());
+                lstFilter.or("mstId", userInfo.getMessstellen());
                 List<AuthLstUmw> lsts =
                     repository.filterPlain(lstFilter.getQuery(), "stamm");
                 for (int i = 0; i < lsts.size(); i++) {
@@ -132,7 +142,7 @@ public class MessungAuthorizer extends BaseAuthorizer {
 
             // Has the user the right to edit status for the 'Netzbetreiber'?
             if (userInfo.getFunktionenForNetzbetreiber(
-                    probe.getNetzbetreiberId()).contains(2)
+                    mst.getNetzbetreiberId()).contains(2)
                 && (stufe == 1 || stufe == 2)
                 && wert >= 1
             ) {

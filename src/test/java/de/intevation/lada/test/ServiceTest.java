@@ -164,7 +164,8 @@ public class ServiceTest {
             JsonObject object = content.getJsonObject("data");
             for (Entry<String, JsonValue> entry : expected.entrySet()) {
                 if (entry.getKey().equals("parentModified") ||
-                    entry.getKey().equals("treeModified")) {
+                    entry.getKey().equals("treeModified") ||
+                    entry.getKey().equals("letzteAenderung")) {
                     continue;
                 }
                 Assert.assertEquals(entry.getValue(), object.get(entry.getKey()));

@@ -12,9 +12,10 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
-import de.intevation.lada.model.land.LMessung;
-import de.intevation.lada.model.land.LProbe;
-import de.intevation.lada.model.land.LStatusProtokoll;
+import de.intevation.lada.model.land.Messung;
+import de.intevation.lada.model.land.Probe;
+import de.intevation.lada.model.land.StatusProtokoll;
+import de.intevation.lada.model.stammdaten.StatusKombi;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
@@ -36,7 +37,7 @@ public abstract class BaseAuthorizer implements Authorizer {
      * @param userInfo  The user information.
      * @param probe     The probe to authorize.
      */
-    protected boolean getAuthorization(UserInfo userInfo, LProbe probe) {
+    protected boolean getAuthorization(UserInfo userInfo, Probe probe) {
         if (userInfo.getMessstellen().contains(probe.getMstId())) {
             return true;
         }
@@ -53,21 +54,24 @@ public abstract class BaseAuthorizer implements Authorizer {
      */
     public boolean isProbeReadOnly(Integer probeId) {
         EntityManager manager = repository.entityManager("land");
-        QueryBuilder<LMessung> builder =
-            new QueryBuilder<LMessung>(
+        QueryBuilder<Messung> builder =
+            new QueryBuilder<Messung>(
                 manager,
-                LMessung.class);
+                Messung.class);
         builder.and("probeId", probeId);
         Response response = repository.filter(builder.getQuery(), "land");
         @SuppressWarnings("unchecked")
-        List<LMessung> messungen = (List<LMessung>) response.getData();
+        List<Messung> messungen = (List<Messung>) response.getData();
         for (int i = 0; i < messungen.size(); i++) {
             if (messungen.get(i).getStatus() == null) {
                 continue;
             }
-            LStatusProtokoll status = repository.getByIdPlain(
-                LStatusProtokoll.class, messungen.get(i).getStatus(), "land");
-            if (status.getStatusWert() != 0 && status.getStatusWert() != 4) {
+            StatusProtokoll status = repository.getByIdPlain(
+                StatusProtokoll.class, messungen.get(i).getStatus(), "land");
+            StatusKombi kombi = repository.getByIdPlain(
+                StatusKombi.class, status.getStatusKombi(), "stamm");
+            if (kombi.getStatusWert().getId() != 0 &&
+                kombi.getStatusWert().getId() != 4) {
                 return true;
             }
         }
@@ -75,16 +79,19 @@ public abstract class BaseAuthorizer implements Authorizer {
     }
 
     public boolean isMessungReadOnly(Integer messungsId) {
-        LMessung messung =
-            repository.getByIdPlain(LMessung.class, messungsId, "land");
+        Messung messung =
+            repository.getByIdPlain(Messung.class, messungsId, "land");
         if (messung.getStatus() == null) {
             return false;
         }
-        LStatusProtokoll status = repository.getByIdPlain(
-            LStatusProtokoll.class,
+        StatusProtokoll status = repository.getByIdPlain(
+            StatusProtokoll.class,
             messung.getStatus(),
             "land");
-        return (status.getStatusWert() != 0 && status.getStatusWert() != 4);
+        StatusKombi kombi = repository.getByIdPlain(
+            StatusKombi.class, status.getStatusKombi(), "stamm");
+        return (kombi.getStatusWert().getId() != 0 &&
+                kombi.getStatusWert().getId() != 4);
     }
 
 }

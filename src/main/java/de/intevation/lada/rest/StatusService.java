@@ -27,15 +27,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.log4j.Logger;
-
 import de.intevation.lada.lock.LockConfig;
 import de.intevation.lada.lock.LockType;
 import de.intevation.lada.lock.ObjectLocker;
-import de.intevation.lada.model.land.LMessung;
-import de.intevation.lada.model.land.LProbe;
-import de.intevation.lada.model.land.LStatusProtokoll;
-import de.intevation.lada.model.stamm.MessStelle;
+import de.intevation.lada.model.land.Messung;
+import de.intevation.lada.model.land.StatusProtokoll;
+import de.intevation.lada.model.stammdaten.StatusKombi;
+import de.intevation.lada.model.stammdaten.StatusReihenfolge;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -87,9 +85,6 @@ import de.intevation.lada.validation.annotation.ValidationConfig;
 @Path("rest/status")
 @RequestScoped
 public class StatusService {
-
-    @Inject
-    private Logger logger = Logger.getLogger(StatusService.class);
 
     /**
      * The data repository granting read/write access.
@@ -149,15 +144,15 @@ public class StatusService {
             return new Response(false, 698, null);
         }
 
-        QueryBuilder<LStatusProtokoll> builder =
-            new QueryBuilder<LStatusProtokoll>(
+        QueryBuilder<StatusProtokoll> builder =
+            new QueryBuilder<StatusProtokoll>(
                 defaultRepo.entityManager("land"),
-                LStatusProtokoll.class);
+                StatusProtokoll.class);
         builder.and("messungsId", id);
         return authorization.filter(
             request,
             defaultRepo.filter(builder.getQuery(), "land"),
-            LStatusProtokoll.class);
+            StatusProtokoll.class);
     }
 
     /**
@@ -178,10 +173,10 @@ public class StatusService {
         @PathParam("id") String id
     ) {
         Response response = defaultRepo.getById(
-            LStatusProtokoll.class,
+            StatusProtokoll.class,
             Integer.valueOf(id),
             "land");
-        LStatusProtokoll status = (LStatusProtokoll)response.getData();
+        StatusProtokoll status = (StatusProtokoll)response.getData();
         Violation violation = validator.validate(status);
         if (violation.hasErrors() || violation.hasWarnings()) {
             response.setErrors(violation.getErrors());
@@ -191,7 +186,7 @@ public class StatusService {
         return authorization.filter(
             request,
             response,
-            LStatusProtokoll.class);
+            StatusProtokoll.class);
     }
 
     /**
@@ -222,18 +217,17 @@ public class StatusService {
     public Response create(
         @Context HttpHeaders headers,
         @Context HttpServletRequest request,
-        LStatusProtokoll status
+        StatusProtokoll status
     ) {
         if (status.getMessungsId() == null
-            || status.getErzeuger() == null
-            || status.getStatusWert() == null
+            || status.getMstId() == null
         ) {
             return new Response(false, 631, null);
         }
 
         UserInfo userInfo = authorization.getInfo(request);
-        LMessung messung = defaultRepo.getByIdPlain(
-            LMessung.class, status.getMessungsId(), "land");
+        Messung messung = defaultRepo.getByIdPlain(
+            Messung.class, status.getMessungsId(), "land");
         if (lock.isLocked(messung)) {
             return new Response(false, 697, null);
         }
@@ -242,126 +236,88 @@ public class StatusService {
         Response r = authorization.filter(
             request,
             new Response(true, 200, messung),
-            LMessung.class);
-        LMessung filteredMessung = (LMessung)r.getData();
+            Messung.class);
+        Messung filteredMessung = (Messung)r.getData();
         if (filteredMessung.getStatusEdit() == false) {
             return new Response(false, 699, null);
         }
 
         if (messung.getStatus() == null) {
-            status.setStatusStufe(1);
+            // set the first status as default
+            status.setStatusKombi(1);
         }
         else {
-            LStatusProtokoll currentStatus = defaultRepo.getByIdPlain(
-                LStatusProtokoll.class, messung.getStatus(), "land");
+            StatusProtokoll oldStatus = defaultRepo.getByIdPlain(
+                StatusProtokoll.class, messung.getStatus(), "land");
 
-            String probeMstId = defaultRepo.getByIdPlain(
-                LProbe.class,
-                messung.getProbeId(),
-                "land").getMstId();
+            StatusKombi oldKombi = defaultRepo.getByIdPlain(StatusKombi.class, oldStatus.getStatusKombi(), "stamm");
+            StatusKombi newKombi = defaultRepo.getByIdPlain(StatusKombi.class, status.getStatusKombi(), "stamm");
 
-            if (currentStatus.getStatusWert() == 4) {
-                if (status.getStatusWert() == 4
-                    && userInfo.getMessstellen().contains(
-                        currentStatus.getErzeuger())
-                    && status.getErzeuger().equals(
-                        currentStatus.getErzeuger())
-                ) {
-                    // 'edit' currentStatus
-                    status.setStatusStufe(currentStatus.getStatusStufe());
+            // Check if changing to the requested status_kombi is allowed.
+            QueryBuilder<StatusReihenfolge> builder = new QueryBuilder<StatusReihenfolge>(defaultRepo.entityManager("stamm"), StatusReihenfolge.class);
+            builder.and("vonId", oldStatus.getStatusKombi());
+            List<StatusReihenfolge> reachable = defaultRepo.filterPlain(builder.getQuery(), "stamm");
+            boolean allowed = false;
+            for (int i = 0; i < reachable.size(); i++) {
+                if (reachable.get(i).getZuId() == status.getStatusKombi()) {
+                    allowed = true;
                 }
-                else if (
-                    userInfo.getFunktionenForMst(probeMstId)
-                        .contains(1)
-                    && probeMstId.equals(status.getErzeuger())
-                ) {
-                    status.setStatusStufe(1);
+            }
+            if (!allowed) {
+                return new Response(false, 604, null);
+            }
+
+            // Check if the user is allowed to change to the requested
+            // status_kombi
+            // 1. The old 'status_wert' is 'rückfrage'
+            //    User has 'funktion' 1 for the given mstId
+            if (oldKombi.getStatusWert().getId() == 4) {
+                if (userInfo.getFunktionenForMst(status.getMstId()).contains(1)) {
+                    // Set the new status.
+                    return setNewStatus(status, newKombi, messung, request);
                 }
                 else {
+                    // Not allowed.
                     return new Response(false, 699, null);
                 }
             }
-            else {
-                boolean next = false; // Do we advance to next 'stufe'?
-                boolean change = false; // Do we change status on same 'stufe'?
-
-                // XXX: It's assumed here, that MessStelle:function is a
-                // 1:1-relationship, which is not enforced by the model
-                // (there is no such constraint in stammdaten.auth).
-                // Thus, next and change will be set based
-                // on whichever function is the first match, which is
-                // not necessary the users intention, if he has more than
-                // one function for the matching Messstelle.
-
-                // XXX: It's assumed here, that an 'Erzeuger' is an instance
-                // of 'Messstelle', but the model does not enforce it!
-                for (Integer function :
-                         userInfo.getFunktionenForMst(status.getErzeuger())
-                ) {
-                    if (function.equals(currentStatus.getStatusStufe() + 1)
-                        && currentStatus.getStatusWert() != 0) {
-                        next = true;
-                    }
-                    else if (function == currentStatus.getStatusStufe()) {
-                        if (currentStatus.getStatusStufe() == 1
-                            && !status.getErzeuger().equals(probeMstId)) {
-                            logger.debug(
-                                "Messstelle does not match for change");
-                            return new Response(false, 699, null);
-                        }
-
-                        String pNetzbetreiber = defaultRepo.getByIdPlain(
-                            LProbe.class,
-                            messung.getProbeId(),
-                            "land").getNetzbetreiberId();
-                        String sNetzbetreiber = defaultRepo.getByIdPlain(
-                            MessStelle.class,
-                            status.getErzeuger(),
-                            "stamm").getNetzbetreiberId();
-                        if (currentStatus.getStatusStufe() == 2
-                            && !pNetzbetreiber.equals(sNetzbetreiber)){
-                            logger.debug(
-                                "Netzbetreiber does not match for change");
-                            return new Response(false, 699, null);
-                        }
-                        change = true;
-                    }
-                }
-
-                if (change &&
-                    status.getStatusWert() == 4 &&
-                    status.getStatusStufe() > 1
-                ) {
-                    status.setStatusStufe(currentStatus.getStatusStufe());
-                }
-                else if (change && status.getStatusWert() == 8) {
+            // 2. user wants to edit the status (stufe stays the same.)
+            //    Users mstId equals the mstId of the old status.
+            else if (oldKombi.getStatusStufe().getStufe().equals(
+                        newKombi.getStatusStufe().getStufe()) &&
+                userInfo.getMessstellen().contains(oldStatus.getMstId()) &&
+                status.getMstId().equals(oldStatus.getMstId())
+            ) {
+                // a) user wants to reset the current status
+                //    'status wert' == 8
+                if (newKombi.getStatusWert().getId() == 8) {
                     return authorization.filter(
                         request,
-                        resetStatus(status, currentStatus, messung),
-                        LStatusProtokoll.class);
+                        resetStatus(status, oldStatus, messung),
+                        StatusProtokoll.class);
                 }
-                else if (change && status.getStatusWert() != 0) {
-                    status.setStatusStufe(currentStatus.getStatusStufe());
-                }
-                else if (next &&
-                    (status.getStatusWert() > 0 &&
-                     status.getStatusWert() <= 4 ||
-                     status.getStatusWert() == 7)) {
-                    status.setStatusStufe(currentStatus.getStatusStufe() + 1);
-                }
-                else {
-                    return new Response(false, 699, null);
-                }
+                // b) update the status by the setting the new one.
+                return setNewStatus(status, newKombi, messung, request);
             }
-
-            // auto-set 'fertig'-flag
-            if (status.getStatusStufe() == 1) {
-                messung.setFertig(true);
-            }
-            else if (status.getStatusWert() == 4) {
-                messung.setFertig(false);
+            // 3. user wants to advance to the next 'status_stufe'
+            //    Users 'funktion' equals old 'stufe' + 1
+            else if (userInfo.getFunktionenForMst(status.getMstId()).contains(
+                oldKombi.getStatusStufe().getId() + 1) &&
+                newKombi.getStatusStufe().getId() ==
+                    oldKombi.getStatusStufe().getId() + 1) {
+                // Set the next status
+                return setNewStatus(status, newKombi, messung, request);
             }
         }
+        return new Response(false, 699, null);
+    }
+
+    private Response setNewStatus(
+        StatusProtokoll status,
+        StatusKombi newKombi,
+        Messung messung,
+        HttpServletRequest request
+    ) {
         Violation violation = validator.validate(status);
         if (violation.hasErrors()) {
             Response response = new Response(false, 604, status);
@@ -369,15 +325,20 @@ public class StatusService {
             response.setWarnings(violation.getWarnings());
             return response;
         }
+        if (newKombi.getStatusStufe().getId() == 1) {
+            messung.setFertig(true);
+        }
+        else if (newKombi.getStatusWert().getId() == 4) {
+            messung.setFertig(false);
+        }
         Response response = defaultRepo.create(status, "land");
-        LStatusProtokoll created = (LStatusProtokoll)response.getData();
+        StatusProtokoll created = (StatusProtokoll)response.getData();
         messung.setStatus(created.getId());
         defaultRepo.update(messung, "land");
-        /* Persist the new object*/
         return authorization.filter(
             request,
             response,
-            LStatusProtokoll.class);
+            StatusProtokoll.class);
     }
 
     /**
@@ -408,7 +369,8 @@ public class StatusService {
     public Response update(
         @Context HttpHeaders headers,
         @Context HttpServletRequest request,
-        LStatusProtokoll status
+        @PathParam("id") String id,
+        StatusProtokoll status
     ) {
         return new Response(false, 699, null);
     }
@@ -432,13 +394,13 @@ public class StatusService {
     ) {
         /* Get the object by id*/
         Response object =
-            defaultRepo.getById(LStatusProtokoll.class, Integer.valueOf(id), "land");
-        LStatusProtokoll obj = (LStatusProtokoll)object.getData();
+            defaultRepo.getById(StatusProtokoll.class, Integer.valueOf(id), "land");
+        StatusProtokoll obj = (StatusProtokoll)object.getData();
         if (!authorization.isAuthorized(
                 request,
                 obj,
                 RequestMethod.DELETE,
-                LStatusProtokoll.class)
+                StatusProtokoll.class)
         ) {
             return new Response(false, 699, null);
         }
@@ -450,53 +412,76 @@ public class StatusService {
     }
 
     private Response resetStatus(
-        LStatusProtokoll status,
-        LStatusProtokoll currentStatus,
-        LMessung messung
+        StatusProtokoll newStatus,
+        StatusProtokoll oldStatus,
+        Messung messung
     ) {
         // Create a new Status with value = 8.
-        LStatusProtokoll statusNew = new LStatusProtokoll();
+        QueryBuilder<StatusKombi> kombiFilter =
+            new QueryBuilder<StatusKombi>(
+                    defaultRepo.entityManager("stamm"),
+                    StatusKombi.class);
+        StatusKombi oldKombi = defaultRepo.getByIdPlain(StatusKombi.class, oldStatus.getStatusKombi(), "stamm");
+
+        kombiFilter.and("statusStufe", oldKombi.getStatusStufe().getId());
+        kombiFilter.and("statusWert", 8);
+        List<StatusKombi> newKombi = defaultRepo.filterPlain(kombiFilter.getQuery(), "stamm");
+        StatusProtokoll statusNew = new StatusProtokoll();
         statusNew.setDatum(new Timestamp(new Date().getTime()));
-        statusNew.setErzeuger(status.getErzeuger());
-        statusNew.setMessungsId(status.getMessungsId());
-        statusNew.setStatusStufe(currentStatus.getStatusStufe());
-        statusNew.setStatusWert(8);
-        statusNew.setText("Reset");
+        statusNew.setMstId(newStatus.getMstId());
+        statusNew.setMessungsId(newStatus.getMessungsId());
+        statusNew.setStatusKombi(newKombi.get(0).getId());
+        statusNew.setText(newStatus.getText());
 
         defaultRepo.create(statusNew, "land");
 
         Response retValue;
-        if (currentStatus.getStatusStufe() == 1) {
-            LStatusProtokoll nV = new LStatusProtokoll();
+        StatusKombi kombi = defaultRepo.getByIdPlain(
+            StatusKombi.class,
+            oldStatus.getStatusKombi(),
+            "stamm");
+        if (kombi.getStatusStufe().getId() == 1) {
+            StatusProtokoll nV = new StatusProtokoll();
             nV.setDatum(new Timestamp(new Date().getTime()));
-            nV.setErzeuger(status.getErzeuger());
-            nV.setMessungsId(status.getMessungsId());
-            nV.setStatusStufe(1);
-            nV.setStatusWert(0);
+            nV.setMstId(newStatus.getMstId());
+            nV.setMessungsId(newStatus.getMessungsId());
+            nV.setStatusKombi(1);
             nV.setText("");
             retValue = defaultRepo.create(nV, "land");
-            messung.setStatus(((LStatusProtokoll)retValue.getData()).getId());
+            messung.setStatus(((StatusProtokoll)retValue.getData()).getId());
+            messung.setFertig(false);
         }
         else {
-            QueryBuilder<LStatusProtokoll> lastFilter =
-                new QueryBuilder<LStatusProtokoll>(
+            QueryBuilder<StatusProtokoll> lastFilter =
+                new QueryBuilder<StatusProtokoll>(
                         defaultRepo.entityManager("land"),
-                        LStatusProtokoll.class);
-            lastFilter.and("messungsId", status.getMessungsId());
-            lastFilter.and("statusStufe", currentStatus.getStatusStufe() - 1);
+                        StatusProtokoll.class);
+            lastFilter.and("messungsId", newStatus.getMessungsId());
             lastFilter.orderBy("datum", true);
-            List<LStatusProtokoll> proto =
+            List<StatusProtokoll> proto =
                 defaultRepo.filterPlain(lastFilter.getQuery(), "land");
-            LStatusProtokoll copy = new LStatusProtokoll();
-            LStatusProtokoll orig = proto.get(proto.size() - 1);
+            // Find a status that has "status_stufe" = "old status_stufe - 1"
+            int ndx = -1;
+            for (int i = proto.size() - 1; i >= 0; i--) {
+                int curKom = proto.get(i).getStatusKombi();
+                StatusKombi sk =
+                    defaultRepo.getByIdPlain(StatusKombi.class, curKom, "stamm");
+                if (sk.getStatusStufe().getId() ==
+                        kombi.getStatusStufe().getId() -1
+                ) {
+                    ndx = i;
+                    break;
+                }
+            }
+            StatusProtokoll copy = new StatusProtokoll();
+            StatusProtokoll orig = proto.get(ndx);
             copy.setDatum(new Timestamp(new Date().getTime()));
-            copy.setErzeuger(orig.getErzeuger());
+            copy.setMstId(orig.getMstId());
             copy.setMessungsId(orig.getMessungsId());
-            copy.setStatusStufe(orig.getStatusStufe());
-            copy.setStatusWert(orig.getStatusWert());
+            copy.setStatusKombi(orig.getStatusKombi());
             copy.setText("");
             retValue = defaultRepo.create(copy, "land");
-            LStatusProtokoll createdCopy = (LStatusProtokoll)retValue.getData();
+            StatusProtokoll createdCopy = (StatusProtokoll)retValue.getData();
             messung.setStatus(createdCopy.getId());
         }
         defaultRepo.update(messung, "land");

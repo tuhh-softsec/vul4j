@@ -25,8 +25,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-import de.intevation.lada.model.stamm.Filter;
-import de.intevation.lada.model.stamm.MessprogrammKategorie;
+import de.intevation.lada.model.stammdaten.Filter;
+import de.intevation.lada.model.stammdaten.MessprogrammKategorie;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -201,7 +201,7 @@ public class MessprogrammKategorieService {
                 repository.entityManager("stamm"),
                 MessprogrammKategorie.class
             );
-        builder.and("mplId", kategorie.getMplId());
+        builder.and("code", kategorie.getCode());
         builder.and("netzbetreiberId", kategorie.getNetzbetreiberId());
 
         List<MessprogrammKategorie> kategorien =
@@ -218,6 +218,7 @@ public class MessprogrammKategorieService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response update(
         @Context HttpServletRequest request,
+        @PathParam("id") String id,
         MessprogrammKategorie kategorie
     ) {
         if (!authorization.isAuthorized(

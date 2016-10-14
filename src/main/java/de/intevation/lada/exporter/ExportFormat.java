@@ -13,5 +13,6 @@ package de.intevation.lada.exporter;
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
 public enum ExportFormat {
-    LAF
+    LAF,
+    JSON
 }

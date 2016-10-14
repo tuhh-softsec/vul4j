@@ -30,13 +30,13 @@ import org.junit.Test;
 import org.junit.Ignore;
 import org.junit.runner.RunWith;
 
-import de.intevation.lada.model.land.LKommentarM;
-import de.intevation.lada.model.land.LKommentarP;
-import de.intevation.lada.model.land.LMessung;
-import de.intevation.lada.model.land.LMesswert;
-import de.intevation.lada.model.land.LOrtszuordnung;
-import de.intevation.lada.model.land.LProbe;
-import de.intevation.lada.model.land.LZusatzWert;
+import de.intevation.lada.model.land.KommentarM;
+import de.intevation.lada.model.land.KommentarP;
+import de.intevation.lada.model.land.Messung;
+import de.intevation.lada.model.land.Messwert;
+import de.intevation.lada.model.land.Ortszuordnung;
+import de.intevation.lada.model.land.Probe;
+import de.intevation.lada.model.land.ZusatzWert;
 import de.intevation.lada.model.land.Messprogramm;
 import de.intevation.lada.test.land.KommentarMTest;
 import de.intevation.lada.test.land.KommentarPTest;
@@ -224,7 +224,7 @@ public class LandTest extends BaseTest {
         protocol.setType("insert probe");
         protocol.addInfo("database", "Insert Probe into database");
         testProtocol.add(protocol);
-        LProbe probe = em.find(LProbe.class, 1000);
+        Probe probe = em.find(Probe.class, 1000);
         Assert.assertNotNull(probe);
         protocol.setPassed(true);
     }
@@ -243,7 +243,7 @@ public class LandTest extends BaseTest {
         protocol.setType("insert kommentar_p");
         protocol.addInfo("database", "Insert KommentarP into database");
         testProtocol.add(protocol);
-        LKommentarP kommentar = em.find(LKommentarP.class, 1000);
+        KommentarP kommentar = em.find(KommentarP.class, 1000);
         Assert.assertNotNull(kommentar);
         protocol.setPassed(true);
     }
@@ -262,7 +262,7 @@ public class LandTest extends BaseTest {
         protocol.setType("insert ortszuordnung");
         protocol.addInfo("database", "Insert Ortszuordnung into database");
         testProtocol.add(protocol);
-        LOrtszuordnung ortszuordnung = em.find(LOrtszuordnung.class, 1000);
+        Ortszuordnung ortszuordnung = em.find(Ortszuordnung.class, 1000);
         Assert.assertNotNull(ortszuordnung);
         protocol.setPassed(true);
     }
@@ -281,7 +281,7 @@ public class LandTest extends BaseTest {
         protocol.setType("insert zusatzwert");
         protocol.addInfo("database", "Insert Zusatzwert into database");
         testProtocol.add(protocol);
-        LZusatzWert zusatzwert = em.find(LZusatzWert.class, 1000);
+        ZusatzWert zusatzwert = em.find(ZusatzWert.class, 1000);
         Assert.assertNotNull(zusatzwert);
         protocol.setPassed(true);
     }
@@ -300,7 +300,7 @@ public class LandTest extends BaseTest {
         protocol.setType("insert messung");
         protocol.addInfo("database", "Insert Messung into database");
         testProtocol.add(protocol);
-        LMessung messung = em.find(LMessung.class, 1200);
+        Messung messung = em.find(Messung.class, 1200);
         messung.setStatus(1000);
         em.merge(messung);
         Assert.assertNotNull(messung);
@@ -321,7 +321,7 @@ public class LandTest extends BaseTest {
         protocol.setType("insert kommentar_m");
         protocol.addInfo("database", "Insert KommentarM into database");
         testProtocol.add(protocol);
-        LKommentarM kommentar = em.find(LKommentarM.class, 1000);
+        KommentarM kommentar = em.find(KommentarM.class, 1000);
         Assert.assertNotNull(kommentar);
         protocol.setPassed(true);
     }
@@ -340,7 +340,7 @@ public class LandTest extends BaseTest {
         protocol.setType("insert messwert");
         protocol.addInfo("database", "Insert Messwert into database");
         testProtocol.add(protocol);
-        LMesswert messwert = em.find(LMesswert.class, 10000);
+        Messwert messwert = em.find(Messwert.class, 10000);
         Assert.assertNotNull(messwert);
         protocol.setPassed(true);
     }

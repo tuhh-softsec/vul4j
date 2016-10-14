@@ -7,9 +7,6 @@
  */
 package de.intevation.lada.rest;
 
-import java.sql.Timestamp;
-import java.util.Date;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -207,6 +204,7 @@ public class MessprogrammMmtService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response update(
         @Context HttpServletRequest request,
+        @PathParam("id") String id,
         MessprogrammMmt messprogrammmmt
     ) {
         if (!authorization.isAuthorized(

@@ -11,8 +11,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import de.intevation.lada.model.land.LProbe;
-import de.intevation.lada.model.stamm.Deskriptoren;
+import de.intevation.lada.model.land.Probe;
+import de.intevation.lada.model.stammdaten.Deskriptoren;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
@@ -37,7 +37,7 @@ public class Deskriptor implements Rule {
 
     @Override
     public Violation execute(Object object) {
-        LProbe probe = (LProbe)object;
+        Probe probe = (Probe)object;
         if (probe.getMediaDesk() == null || probe.getMediaDesk().equals("")) {
             return null;
         }

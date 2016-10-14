@@ -12,9 +12,11 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.intevation.lada.model.land.LMessung;
-import de.intevation.lada.model.land.LProbe;
-import de.intevation.lada.model.land.LStatusProtokoll;
+import de.intevation.lada.model.land.Messung;
+import de.intevation.lada.model.land.Probe;
+import de.intevation.lada.model.land.StatusProtokoll;
+import de.intevation.lada.model.stammdaten.MessStelle;
+import de.intevation.lada.model.stammdaten.StatusKombi;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 
@@ -42,22 +44,26 @@ public class MessungIdAuthorizer extends BaseAuthorizer {
         ) {
             return false;
         }
-        LMessung messung = repository.getByIdPlain(LMessung.class, id, "land");
-        LProbe probe = repository.getByIdPlain(
-            LProbe.class,
+        Messung messung = repository.getByIdPlain(Messung.class, id, "land");
+        Probe probe = repository.getByIdPlain(
+            Probe.class,
             messung.getProbeId(),
             "land");
         if (messung.getStatus() == null) {
             return false;
         }
-        LStatusProtokoll status = repository.getByIdPlain(
-            LStatusProtokoll.class,
+        StatusProtokoll status = repository.getByIdPlain(
+            StatusProtokoll.class,
             messung.getStatus(),
             "land");
+        StatusKombi kombi = repository.getByIdPlain(
+            StatusKombi.class,
+            status.getStatusKombi(),
+            "stamm");
         return (method == RequestMethod.POST ||
                 method == RequestMethod.PUT ||
                 method == RequestMethod.DELETE ||
-                status.getStatusWert() != 0) &&
+                kombi.getStatusWert().getId() != 0) &&
             getAuthorization(userInfo, probe);
     }
 
@@ -98,19 +104,20 @@ public class MessungIdAuthorizer extends BaseAuthorizer {
         try {
             Method getMessungsId = clazz.getMethod("getMessungsId");
             Integer id = (Integer)getMessungsId.invoke(data);
-            LMessung messung = repository.getByIdPlain(
-                LMessung.class,
+            Messung messung = repository.getByIdPlain(
+                Messung.class,
                 id,
                 "land");
-            LProbe probe = repository.getByIdPlain(
-                LProbe.class,
+            Probe probe = repository.getByIdPlain(
+                Probe.class,
                 messung.getProbeId(),
                 "land");
 
             boolean readOnly = true;
             boolean owner = false;
+            MessStelle mst = repository.getByIdPlain(MessStelle.class, probe.getMstId(), "stamm");
             if (!userInfo.getNetzbetreiber().contains(
-                    probe.getNetzbetreiberId())) {
+                    mst.getNetzbetreiberId())) {
                 owner = false;
                 readOnly = true;
             }

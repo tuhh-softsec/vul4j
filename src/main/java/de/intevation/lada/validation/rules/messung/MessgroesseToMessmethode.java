@@ -14,9 +14,9 @@ import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 
-import de.intevation.lada.model.land.LMessung;
-import de.intevation.lada.model.land.LMesswert;
-import de.intevation.lada.model.stamm.MmtMessgroesse;
+import de.intevation.lada.model.land.Messung;
+import de.intevation.lada.model.land.Messwert;
+import de.intevation.lada.model.stammdaten.MmtMessgroesse;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
@@ -44,15 +44,15 @@ public class MessgroesseToMessmethode implements Rule {
 
     @Override
     public Violation execute(Object object) {
-        LMessung messung = (LMessung)object;
+        Messung messung = (Messung)object;
         String mmt = messung.getMmtId();
-        QueryBuilder<LMesswert> builder =
-            new QueryBuilder<LMesswert>(
-                repository.entityManager("land"), LMesswert.class);
+        QueryBuilder<Messwert> builder =
+            new QueryBuilder<Messwert>(
+                repository.entityManager("land"), Messwert.class);
         builder.and("messungsId", messung.getId());
         Response response = repository.filter(builder.getQuery(), "land");
         @SuppressWarnings("unchecked")
-        List<LMesswert> messwerte = (List<LMesswert>)response.getData();
+        List<Messwert> messwerte = (List<Messwert>)response.getData();
 
         QueryBuilder<MmtMessgroesse> mmtBuilder =
             new QueryBuilder<MmtMessgroesse>(
@@ -65,20 +65,18 @@ public class MessgroesseToMessmethode implements Rule {
             (List<MmtMessgroesse>)results.getData();
         List<MmtMessgroesse> found = new ArrayList<MmtMessgroesse>();
         for (MmtMessgroesse mg: messgroessen) {
-            if (mg.getMmtMessgroessePK() != null &&
-                mg.getMmtMessgroessePK().getMmtId().equals(mmt)) {
+            if (mg.getMmtId().equals(mmt)) {
                 found.add(mg);
             }
         }
         Violation violation = new Violation();
-        for(LMesswert messwert: messwerte) {
+        for(Messwert messwert: messwerte) {
             boolean hit = false;
             for (MmtMessgroesse messgroesse: found) {
                 logger.trace("###### mmt: " + messwert.getMessgroesseId()
-                    + " mmtmg: " + messgroesse.getMmtMessgroessePK()
-                    .getMessgroessengruppeId());
+                    + " mmtmg: " + messgroesse.getMmtId());
                 if (messwert.getMessgroesseId().equals(
-                        messgroesse.getMmtMessgroessePK().getMessgroessengruppeId())) {
+                        messgroesse.getMmtId())) {
                     hit = true;
                 }
             }

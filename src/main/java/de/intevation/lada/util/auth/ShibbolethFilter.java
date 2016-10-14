@@ -33,9 +33,6 @@ public class ShibbolethFilter implements Filter {
 
     private static final String CONFIG_FILE = "/shibboleth.properties";
 
-    private String applicationId = "default";
-
-
     @Inject
     private Logger logger = Logger.getLogger(ShibbolethFilter.class);
 

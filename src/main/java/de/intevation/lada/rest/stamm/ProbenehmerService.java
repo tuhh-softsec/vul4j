@@ -25,9 +25,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-import de.intevation.lada.model.stamm.DatensatzErzeuger;
-import de.intevation.lada.model.stamm.Filter;
-import de.intevation.lada.model.stamm.Probenehmer;
+import de.intevation.lada.model.stammdaten.Filter;
+import de.intevation.lada.model.stammdaten.Probenehmer;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -214,6 +213,7 @@ public class ProbenehmerService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response update(
         @Context HttpServletRequest request,
+        @PathParam("id") String id,
         Probenehmer probenehmer
     ) {
         if (!authorization.isAuthorized(

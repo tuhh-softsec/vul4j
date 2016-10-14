@@ -24,10 +24,6 @@ public class HasAllMandatory implements Rule {
         Messprogramm messprogramm = (Messprogramm)object;
         Violation violation = new Violation();
 
-        if (messprogramm.getNetzbetreiberId() == null
-            | "".equals(messprogramm.getNetzbetreiberId())) {
-            violation.addError("netzbetreiberId", 631);
-        }
         if (messprogramm.getMstId() == null
             | "".equals(messprogramm.getMstId())) {
             violation.addError("mstlabor", 631);

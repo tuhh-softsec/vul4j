@@ -15,8 +15,8 @@ import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 
-import de.intevation.lada.model.land.LMessung;
-import de.intevation.lada.model.land.LProbe;
+import de.intevation.lada.model.land.Messung;
+import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
@@ -51,10 +51,10 @@ public class TimestampLocker implements ObjectLocker {
      */
     @Override
     public boolean isLocked(Object o) {
-        if (o instanceof LProbe) {
-            LProbe newProbe = (LProbe)o;
-            LProbe oldProbe = (LProbe)repository.getById(
-                LProbe.class,
+        if (o instanceof Probe) {
+            Probe newProbe = (Probe)o;
+            Probe oldProbe = (Probe)repository.getById(
+                Probe.class,
                 newProbe.getId(),
                 "land").getData();
             logger.debug("old: " + oldProbe.getTreeModified().getTime());
@@ -76,8 +76,8 @@ public class TimestampLocker implements ObjectLocker {
                         return true;
                     }
                     Response response =
-                        repository.getById(LProbe.class, id, "land");
-                    LProbe probe = (LProbe)response.getData();
+                        repository.getById(Probe.class, id, "land");
+                    Probe probe = (Probe)response.getData();
                     return isNewer(o, probe.getTreeModified());
                 }
                 if (m.getName().equals("getMessungsId")) {
@@ -89,8 +89,8 @@ public class TimestampLocker implements ObjectLocker {
                         return true;
                     }
                     Response mResponse =
-                        repository.getById(LMessung.class, id, "land");
-                    LMessung messung = (LMessung)mResponse.getData();
+                        repository.getById(Messung.class, id, "land");
+                    Messung messung = (Messung)mResponse.getData();
                     boolean newerMessung = isNewer(o, messung.getTreeModified());
                     return newerMessung;
                 }

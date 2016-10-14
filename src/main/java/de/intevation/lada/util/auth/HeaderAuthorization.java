@@ -19,21 +19,22 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
-import de.intevation.lada.model.land.LKommentarM;
-import de.intevation.lada.model.land.LKommentarP;
-import de.intevation.lada.model.land.LMessung;
-import de.intevation.lada.model.land.LMesswert;
-import de.intevation.lada.model.land.LOrtszuordnung;
-import de.intevation.lada.model.land.LProbe;
-import de.intevation.lada.model.land.LStatusProtokoll;
-import de.intevation.lada.model.land.LZusatzWert;
+import de.intevation.lada.model.land.KommentarM;
+import de.intevation.lada.model.land.KommentarP;
+import de.intevation.lada.model.land.Messung;
+import de.intevation.lada.model.land.Messwert;
+import de.intevation.lada.model.land.Ortszuordnung;
+import de.intevation.lada.model.land.Probe;
+import de.intevation.lada.model.land.StatusProtokoll;
+import de.intevation.lada.model.land.ZusatzWert;
 import de.intevation.lada.model.land.Messprogramm;
-import de.intevation.lada.model.stamm.Auth;
-import de.intevation.lada.model.stamm.DatensatzErzeuger;
-import de.intevation.lada.model.stamm.LadaUser;
-import de.intevation.lada.model.stamm.MessprogrammKategorie;
-import de.intevation.lada.model.stamm.Ort;
-import de.intevation.lada.model.stamm.Probenehmer;
+import de.intevation.lada.model.stammdaten.Auth;
+import de.intevation.lada.model.stammdaten.DatensatzErzeuger;
+import de.intevation.lada.model.stammdaten.LadaUser;
+import de.intevation.lada.model.stammdaten.MessprogrammKategorie;
+import de.intevation.lada.model.stammdaten.Ort;
+import de.intevation.lada.model.stammdaten.Probenehmer;
+import de.intevation.lada.model.stammdaten.StatusKombi;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
@@ -49,9 +50,6 @@ import de.intevation.lada.util.rest.Response;
  */
 @AuthorizationConfig(type=AuthorizationType.HEADER)
 public class HeaderAuthorization implements Authorization {
-
-    @Inject
-    private Logger logger;
 
     /**
      * The Repository used to read from Database.
@@ -73,14 +71,14 @@ public class HeaderAuthorization implements Authorization {
     @PostConstruct
     public void init() {
         authorizers = new HashMap<Class, Authorizer>();
-        authorizers.put(LProbe.class, probeAuthorizer);
-        authorizers.put(LMessung.class, messungAuthorizer);
-        authorizers.put(LOrtszuordnung.class, pIdAuthorizer);
-        authorizers.put(LKommentarP.class, pIdAuthorizer);
-        authorizers.put(LZusatzWert.class, pIdAuthorizer);
-        authorizers.put(LKommentarM.class, mIdAuthorizer);
-        authorizers.put(LMesswert.class, mIdAuthorizer);
-        authorizers.put(LStatusProtokoll.class, mIdAuthorizer);
+        authorizers.put(Probe.class, probeAuthorizer);
+        authorizers.put(Messung.class, messungAuthorizer);
+        authorizers.put(Ortszuordnung.class, pIdAuthorizer);
+        authorizers.put(KommentarP.class, pIdAuthorizer);
+        authorizers.put(ZusatzWert.class, pIdAuthorizer);
+        authorizers.put(KommentarM.class, mIdAuthorizer);
+        authorizers.put(Messwert.class, mIdAuthorizer);
+        authorizers.put(StatusProtokoll.class, mIdAuthorizer);
         authorizers.put(Probenehmer.class, netzAuthorizer);
         authorizers.put(DatensatzErzeuger.class, netzAuthorizer);
         authorizers.put(MessprogrammKategorie.class, netzAuthorizer);
@@ -203,21 +201,24 @@ public class HeaderAuthorization implements Authorization {
     @Override
     public boolean isReadOnly(Integer probeId) {
         EntityManager manager = repository.entityManager("land");
-        QueryBuilder<LMessung> builder =
-            new QueryBuilder<LMessung>(
+        QueryBuilder<Messung> builder =
+            new QueryBuilder<Messung>(
                 manager,
-                LMessung.class);
+                Messung.class);
         builder.and("probeId", probeId);
         Response response = repository.filter(builder.getQuery(), "land");
         @SuppressWarnings("unchecked")
-        List<LMessung> messungen = (List<LMessung>) response.getData();
+        List<Messung> messungen = (List<Messung>) response.getData();
         for (int i = 0; i < messungen.size(); i++) {
             if (messungen.get(i).getStatus() == null) {
                 continue;
             }
-            LStatusProtokoll status = repository.getByIdPlain(
-                LStatusProtokoll.class, messungen.get(i).getStatus(), "land");
-            if (status.getStatusWert() != 0 && status.getStatusWert() != 4) {
+            StatusProtokoll status = repository.getByIdPlain(
+                StatusProtokoll.class, messungen.get(i).getStatus(), "land");
+            StatusKombi kombi = repository.getByIdPlain(
+                StatusKombi.class, status.getStatusKombi(), "stamm");
+            if (kombi.getStatusWert().getId() != 0 &&
+                kombi.getStatusWert().getId() != 4) {
                 return true;
             }
         }

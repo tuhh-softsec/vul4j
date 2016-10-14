@@ -11,9 +11,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import de.intevation.lada.model.land.LMessung;
-import de.intevation.lada.model.land.LMesswert;
-import de.intevation.lada.model.stamm.PflichtMessgroesse;
+import de.intevation.lada.model.land.Messung;
+import de.intevation.lada.model.land.Messwert;
+import de.intevation.lada.model.stammdaten.PflichtMessgroesse;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
@@ -38,29 +38,29 @@ public class HasPflichtmessgroessen implements Rule {
 
     @Override
     public Violation execute(Object object) {
-        LMessung messung = (LMessung)object;
+        Messung messung = (Messung)object;
         QueryBuilder<PflichtMessgroesse> builder =
             new QueryBuilder<PflichtMessgroesse>(
                 repository.entityManager("stamm"),
                 PflichtMessgroesse.class);
-        builder.and("mmtId", messung.getMmtId());
+        builder.and("messMethodeId", messung.getMmtId());
         Response response = repository.filter(builder.getQuery(), "stamm");
         @SuppressWarnings("unchecked")
         List<PflichtMessgroesse> pflicht =
             (List<PflichtMessgroesse>)response.getData();
 
-        QueryBuilder<LMesswert> wertBuilder =
-            new QueryBuilder<LMesswert>(
-                repository.entityManager("land"), LMesswert.class);
+        QueryBuilder<Messwert> wertBuilder =
+            new QueryBuilder<Messwert>(
+                repository.entityManager("land"), Messwert.class);
         wertBuilder.and("messungsId", messung.getId());
         Response wertResponse =
             repository.filter(wertBuilder.getQuery(), "land");
         @SuppressWarnings("unchecked")
-        List<LMesswert> messwerte = (List<LMesswert>)wertResponse.getData();
+        List<Messwert> messwerte = (List<Messwert>)wertResponse.getData();
         Violation violation = new Violation();
         boolean missing = false;
         for (PflichtMessgroesse p : pflicht) {
-            for (LMesswert wert : messwerte) {
+            for (Messwert wert : messwerte) {
                 if (!p.getMessgroesseId().equals(wert.getMessgroesseId())) {
                     missing = true;
                 }

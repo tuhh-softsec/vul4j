@@ -26,22 +26,33 @@ DELETE FROM verwaltungseinheit;
 INSERT INTO ort_typ (id) VALUES (1);
 INSERT INTO datenbasis (id) VALUES (9);
 INSERT INTO mess_einheit (id) VALUES (207);
+INSERT INTO mess_einheit (id) VALUES (208);
 INSERT INTO messgroesse (id, messgroesse) VALUES (56, 'Mangan');
-INSERT INTO mess_methode (id) VALUES ('GI');
+INSERT INTO messgroesse (id, messgroesse) VALUES (57, 'Mangan');
+INSERT INTO mess_methode (id) VALUES ('A3');
 INSERT INTO netz_betreiber (id) VALUES ('06');
 INSERT INTO mess_stelle (id, netzbetreiber_id) VALUES ('06010', '06');
-INSERT INTO pflicht_messgroesse (id, datenbasis_id) VALUES (33, 9);
+INSERT INTO pflicht_messgroesse (id, mmt_id, datenbasis_id) VALUES (33, 'A3', 9);
 INSERT INTO probenart (id, probenart, probenart_eudf_id) VALUES (1, 'E', 'A');
+INSERT INTO probenart (id, probenart, probenart_eudf_id) VALUES (2, 'S', 'B');
 INSERT INTO proben_zusatz (id, beschreibung, zusatzwert)
        VALUES ('A74', 'Volumenstrom', 'VOLSTR');
+INSERT INTO proben_zusatz (id, beschreibung, zusatzwert)
+       VALUES ('A75', 'Volumenstrom', 'VOLSTR');
+INSERT INTO proben_zusatz (id, beschreibung, zusatzwert)
+       VALUES ('A76', 'Volumenstrom', 'VOLSTR');
 INSERT INTO koordinaten_art (id) VALUES (5);
 INSERT INTO staat (id, staat, hkl_id, staat_iso)
        VALUES (0, 'Deutschland', 0, 'DE');
 INSERT INTO umwelt (id, umwelt_bereich) VALUES ('L6', 'Spurenmessung Luft');
+INSERT INTO umwelt (id, umwelt_bereich) VALUES ('A6', 'Umweltbereich für test');
 INSERT INTO verwaltungseinheit (
             id, bundesland, bezeichnung,
             is_bundesland, is_gemeinde, is_landkreis, is_regbezirk)
        VALUES ('11000000', '11000000', 'Berlin', 1, 1, 1, 0);
+INSERT INTO probenehmer (
+			id, netzbetreiber_id, prn_id, bezeichnung, kurz_bezeichnung)
+		VALUES (726, '06', 'prn', 'test', 'test');
 
 -- authorization data needed for tests
 INSERT INTO auth (ldap_group, netzbetreiber_id, mst_id, funktion_id)

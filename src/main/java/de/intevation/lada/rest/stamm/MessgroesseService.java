@@ -7,7 +7,6 @@
  */
 package de.intevation.lada.rest.stamm;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
@@ -25,8 +24,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.log4j.Logger;
 
-import de.intevation.lada.model.stamm.Messgroesse;
-import de.intevation.lada.model.stamm.MmtMessgroesse;
+import de.intevation.lada.model.stammdaten.Messgroesse;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
@@ -105,6 +103,7 @@ public class MessgroesseService {
             defaultRepo.queryFromString(
                 "select messgroesse_id from mmt_messgroesse where mmt_id = '"
                 + mmtId + "'", "stamm");
+        @SuppressWarnings("unchecked")
         List<Integer> ids = query.getResultList();
         QueryBuilder<Messgroesse> builder2 =
             new QueryBuilder<Messgroesse>(

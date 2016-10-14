@@ -10,11 +10,7 @@ package de.intevation.lada.util.auth;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
-import org.apache.log4j.Logger;
-
-import de.intevation.lada.model.stamm.Auth;
+import de.intevation.lada.model.stammdaten.Auth;
 
 /**
  * Container for user specific information.
@@ -22,12 +18,8 @@ import de.intevation.lada.model.stamm.Auth;
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
 public class UserInfo {
-    private Logger logger = Logger.getLogger(UserInfo.class);
-
     private String name;
     private Integer userId;
-    private List<String> messstellen;
-    private List<String> netzbetreiber;
     private List<Integer> funktionen;
     private List<Auth> auth;
 
@@ -62,11 +54,6 @@ public class UserInfo {
         public void setLabor(String labor) {
             this.labor = labor;
         }
-    }
-
-    public UserInfo() {
-        messstellen = new ArrayList<String>();
-        netzbetreiber = new ArrayList<String>();
     }
 
     /**

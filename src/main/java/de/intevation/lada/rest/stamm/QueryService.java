@@ -17,10 +17,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 
-import de.intevation.lada.model.stamm.Favorite;
-import de.intevation.lada.model.stamm.Filter;
-import de.intevation.lada.model.stamm.FilterValue;
-import de.intevation.lada.model.stamm.Query;
+import de.intevation.lada.model.stammdaten.Favorite;
+import de.intevation.lada.model.stammdaten.Filter;
+import de.intevation.lada.model.stammdaten.FilterValue;
+import de.intevation.lada.model.stammdaten.Query;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -88,7 +88,7 @@ public class QueryService {
             repository.entityManager("stamm"),
             Query.class
         );
-        builder.and("type", "probe");
+        builder.and("typeId", 0);
         List<Query> queries = repository.filterPlain(builder.getQuery(), "stamm");
 
         markFavorites(queries, userInfo);
@@ -113,7 +113,7 @@ public class QueryService {
             repository.entityManager("stamm"),
             Query.class
         );
-        builder.and("type", "messung");
+        builder.and("typeId", 1);
         List<Query> queries = repository.filterPlain(builder.getQuery(), "stamm");
 
         markFavorites(queries, userInfo);
@@ -138,7 +138,7 @@ public class QueryService {
             repository.entityManager("stamm"),
             Query.class
         );
-        builder.and("type", "messprogramm");
+        builder.and("typeId", 2);
         List<Query> queries = repository.filterPlain(builder.getQuery(), "stamm");
 
         markFavorites(queries, userInfo);
@@ -160,10 +160,10 @@ public class QueryService {
             repository.entityManager("stamm"),
             Query.class
         );
-        builder.or("type", "ort");
-        builder.or("type", "probenehmer");
-        builder.or("type", "datensatzerzeuger");
-        builder.or("type", "messprogrammkategorie");
+        builder.or("typeId", 3);
+        builder.or("typeId", 4);
+        builder.or("typeId", 5);
+        builder.or("typeId", 6);
         List<Query> queries = repository.filterPlain(builder.getQuery(), "stamm");
 
         markFavorites(queries, userInfo);

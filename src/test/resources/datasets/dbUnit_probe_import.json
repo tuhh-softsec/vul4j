@@ -1,0 +1,41 @@
+{
+    "land.messprogramm": [{
+        "id": 1000,
+        "test": false,
+        "mst_id": "06010",
+        "labor_mst_id": "06010",
+        "datenbasis_id": 9,
+        "gem_id": "11000000",
+        "media_desk": "D: 50 90 01 06 02 05 00 00 00 00 00 00",
+        "umw_id": "L6",
+        "ort_id": 1000,
+        "probenart_id": 1,
+        "probenintervall": "M",
+        "gueltig_von": 1,
+        "gueltig_bis": 100,
+        "teilintervall_von": 1,
+        "teilintervall_bis": 30,
+        "letzte_aenderung": "2015-03-01 12:00:00"
+    }],
+    "land.probe": [{
+        "id": 1000,
+        "id_alt": "T001",
+        "ba_id": "1",
+        "datenbasis_id": 9,
+        "letzte_aenderung": "2012-05-05 11:12:00",
+        "media": "Trinkwasser Zentralversorgung Oberflächenwasser aufbereitet",
+        "media_desk": "D: 59 04 01 00 05 05 01 02 00 00 00 00",
+        "mst_id": "06010",
+        "labor_mst_id": "06010",
+        "probeentnahme_beginn": "2012-05-03 13:07:00",
+        "probenart_id": 1,
+        "test": false,
+        "umw_id":"L6",
+        "hauptproben_nr": "120510002",
+        "mpr_id": 1000,
+        "probe_nehmer_id": 726,
+        "solldatum_beginn": "2012-05-01 16:00:00",
+        "solldatum_ende": "2012-05-05 16:00:00",
+        "tree_modified": "2012-05-08 10:00:00"
+    }]
+}

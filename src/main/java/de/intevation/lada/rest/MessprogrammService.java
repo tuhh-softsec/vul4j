@@ -7,8 +7,6 @@
  */
 package de.intevation.lada.rest;
 
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -301,6 +299,7 @@ public class MessprogrammService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response update(
         @Context HttpServletRequest request,
+        @PathParam("id") String id,
         Messprogramm messprogramm
     ) {
         if (!authorization.isAuthorized(

@@ -11,7 +11,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import de.intevation.lada.model.land.LProbe;
+import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
@@ -37,14 +37,14 @@ public class UniqueHauptprobenNr implements Rule {
     @SuppressWarnings("unchecked")
     @Override
     public Violation execute(Object object) {
-        LProbe probe = (LProbe)object;
-        QueryBuilder<LProbe> builder = new QueryBuilder<LProbe>(
+        Probe probe = (Probe)object;
+        QueryBuilder<Probe> builder = new QueryBuilder<Probe>(
             repo.entityManager("land"),
-            LProbe.class);
+            Probe.class);
         builder.and("hauptprobenNr", probe.getHauptprobenNr());
         Response response = repo.filter(builder.getQuery(), "land");
-        if (!((List<LProbe>)response.getData()).isEmpty()) {
-            LProbe found = ((List<LProbe>)response.getData()).get(0);
+        if (!((List<Probe>)response.getData()).isEmpty()) {
+            Probe found = ((List<Probe>)response.getData()).get(0);
             // The probe found in the db equals the new probe. (Update)
             if (probe.getId() != null && probe.getId().equals(found.getId())) {
                 return null;

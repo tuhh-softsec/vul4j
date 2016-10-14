@@ -18,19 +18,17 @@ import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 
-import de.intevation.lada.model.land.LKommentarP;
-import de.intevation.lada.model.land.LMessung;
-import de.intevation.lada.model.land.LMesswert;
-import de.intevation.lada.model.land.LOrtszuordnung;
-import de.intevation.lada.model.land.LProbe;
-import de.intevation.lada.model.land.LStatusProtokoll;
+import de.intevation.lada.model.land.KommentarP;
 import de.intevation.lada.model.land.Messprogramm;
 import de.intevation.lada.model.land.MessprogrammMmt;
-import de.intevation.lada.model.land.MessungTranslation;
-import de.intevation.lada.model.land.ProbeTranslation;
-import de.intevation.lada.model.stamm.DeskriptorUmwelt;
-import de.intevation.lada.model.stamm.Deskriptoren;
-import de.intevation.lada.model.stamm.Ort;
+import de.intevation.lada.model.land.Probe;
+import de.intevation.lada.model.land.Messung;
+import de.intevation.lada.model.land.Messwert;
+import de.intevation.lada.model.land.Ortszuordnung;
+import de.intevation.lada.model.land.StatusProtokoll;
+import de.intevation.lada.model.stammdaten.DeskriptorUmwelt;
+import de.intevation.lada.model.stammdaten.Deskriptoren;
+import de.intevation.lada.model.stammdaten.Ort;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
@@ -232,7 +230,7 @@ public class ProbeFactory {
      *
      * @return List of probe objects.
      */
-    public List<LProbe> create(Messprogramm messprogramm, Long from, Long to) {
+    public List<Probe> create(Messprogramm messprogramm, Long from, Long to) {
         Calendar start = Calendar.getInstance();
         start.setTimeInMillis(from);
 
@@ -247,7 +245,7 @@ public class ProbeFactory {
         int gueltigVon = messprogramm.getGueltigVon();
         int gueltigBis = messprogramm.getGueltigBis();
 
-        List<LProbe> proben = new ArrayList<LProbe>();
+        List<Probe> proben = new ArrayList<Probe>();
 
         for (Intervall intervall = new Intervall(messprogramm, start);
              intervall.getFrom().before(end.getTime());
@@ -282,7 +280,7 @@ public class ProbeFactory {
                         || solldatumBeginnDOY <= actualGueltigBis)
                 )
             ) {
-                LProbe probe = createObjects(
+                Probe probe = createObjects(
                     messprogramm,
                     intervall.getFrom(),
                     intervall.getTo()
@@ -305,32 +303,31 @@ public class ProbeFactory {
      *
      * @return The new probe object.
      */
-    private LProbe createObjects(
+    private Probe createObjects(
         Messprogramm messprogramm,
         Date startDate,
         Date endDate
     ) {
-        QueryBuilder<LProbe> builderProbe =
-            new QueryBuilder<LProbe>(
+        QueryBuilder<Probe> builderProbe =
+            new QueryBuilder<Probe>(
                 repository.entityManager("land"),
-                LProbe.class);
+                Probe.class);
         builderProbe.and("mprId", messprogramm.getId());
         builderProbe.and("solldatumBeginn", startDate);
         builderProbe.and("solldatumEnde", endDate);
 
-        List<LProbe> proben =
+        List<Probe> proben =
             repository.filterPlain(builderProbe.getQuery(), "land");
 
         if (!proben.isEmpty()) {
             return null;
         }
-        LProbe probe = new LProbe();
+        Probe probe = new Probe();
         probe.setBaId(messprogramm.getBaId());
         probe.setDatenbasisId(messprogramm.getDatenbasisId());
         probe.setMediaDesk(messprogramm.getMediaDesk());
         probe.setMstId(messprogramm.getMstId());
         probe.setLaborMstId(messprogramm.getLaborMstId());
-        probe.setNetzbetreiberId(messprogramm.getNetzbetreiberId());
         probe.setProbenartId(messprogramm.getProbenartId());
         probe.setProbeNehmerId(messprogramm.getProbeNehmerId());
         probe.setSolldatumBeginn(new Timestamp(startDate.getTime()));
@@ -339,17 +336,14 @@ public class ProbeFactory {
         probe.setUmwId(messprogramm.getUmwId());
         probe.setMprId(messprogramm.getId());
         repository.create(probe, "land");
-        ProbeTranslation translation = new ProbeTranslation();
-        translation.setProbeId(probe);
-        repository.create(translation, "land");
 
         if (messprogramm.getProbeKommentar() != null &&
             !messprogramm.getProbeKommentar().equals("")) {
-            LKommentarP kommentar = new LKommentarP();
+            KommentarP kommentar = new KommentarP();
             kommentar.setDatum(new Timestamp(new Date().getTime()));
             kommentar.setProbeId(probe.getId());
             kommentar.setText(messprogramm.getProbeKommentar());
-            kommentar.setErzeuger(messprogramm.getMstId());
+            kommentar.setMstId(messprogramm.getMstId());
 
             repository.create(kommentar, "land");
         }
@@ -363,30 +357,26 @@ public class ProbeFactory {
         @SuppressWarnings("unchecked")
         List<MessprogrammMmt> mmts = (List<MessprogrammMmt>)response.getData();
         for (MessprogrammMmt mmt : mmts) {
-            LMessung messung = new LMessung();
+            Messung messung = new Messung();
             messung.setFertig(false);
             messung.setGeplant(true);
             messung.setMmtId(mmt.getMmtId());
             messung.setNebenprobenNr(
-                messprogramm.getNetzbetreiberId() + mmt.getMmtId());
+                messprogramm.getMstId() + mmt.getMmtId());
             messung.setProbeId(probe.getId());
             repository.create(messung, "land");
-            MessungTranslation mTranslation = new MessungTranslation();
-            mTranslation.setMessungsId(messung);
-            repository.create(mTranslation, "land");
 
-            LStatusProtokoll status = new LStatusProtokoll();
+            StatusProtokoll status = new StatusProtokoll();
             status.setDatum(new Timestamp(new Date().getTime()));
             status.setMessungsId(messung.getId());
-            status.setErzeuger(probe.getMstId());
-            status.setStatusStufe(1);
-            status.setStatusWert(0);
+            status.setMstId(probe.getMstId());
+            status.setStatusKombi(1);
             repository.create(status, "land");
             messung.setStatus(status.getId());
             repository.update(messung, "land");
 
             for (int mw : mmt.getMessgroessen()) {
-                LMesswert wert = new LMesswert();
+                Messwert wert = new Messwert();
                 wert.setMessgroesseId(mw);
                 wert.setMessungsId(messung.getId());
                 wert.setMesswert(0d);
@@ -396,7 +386,7 @@ public class ProbeFactory {
         }
         if (messprogramm.getOrtId() != null &&
             !messprogramm.getOrtId().equals("")) {
-            LOrtszuordnung ort = new LOrtszuordnung();
+            Ortszuordnung ort = new Ortszuordnung();
             ort.setOrtszuordnungTyp("E");
             ort.setProbeId(probe.getId());
             QueryBuilder<Ort> ortBuilder = new QueryBuilder<Ort>(
@@ -412,8 +402,8 @@ public class ProbeFactory {
             repository.create(ort, "land");
         }
         // Reolad the probe to have the old id
-        probe = (LProbe)repository.getById(
-            LProbe.class, probe.getId(), "land").getData();
+        probe = (Probe)repository.getById(
+            Probe.class, probe.getId(), "land").getData();
         return probe;
     }
 
@@ -424,7 +414,7 @@ public class ProbeFactory {
      *
      * @return The updated probe object.
      */
-    public LProbe findUmweltId(LProbe probe) {
+    public Probe findUmweltId(Probe probe) {
         String[] mediaDesk = probe.getMediaDesk().split(" ");
         if (mediaDesk.length <= 1) {
             return probe;
@@ -440,7 +430,7 @@ public class ProbeFactory {
      *
      * @return The updated probe object.
      */
-    public LProbe findMediaDesk(LProbe probe) {
+    public Probe findMediaDesk(Probe probe) {
         Object result = repository.queryFromString(
                 "SELECT get_media_from_media_desk( :mediaDesk );", "stamm")
             .setParameter("mediaDesk", probe.getMediaDesk())
@@ -589,9 +579,6 @@ public class ProbeFactory {
                                     matches += 1;
                                 break;
                         case 11: if (media.get(11).equals(data.get(i).getS11()))
-                                    matches += 1;
-                                break;
-                        case 12: if (media.get(12).equals(data.get(i).getS12()))
                                     matches += 1;
                                 break;
                     }

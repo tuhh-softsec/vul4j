@@ -11,8 +11,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import de.intevation.lada.model.land.LMessung;
-import de.intevation.lada.model.land.LMesswert;
+import de.intevation.lada.model.land.Messung;
+import de.intevation.lada.model.land.Messwert;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
@@ -37,14 +37,14 @@ public class HasMesswert implements Rule {
 
     @Override
     public Violation execute(Object object) {
-        LMessung messung = (LMessung)object;
-        QueryBuilder<LMesswert> builder =
-            new QueryBuilder<LMesswert>(
-                repo.entityManager("land"), LMesswert.class);
+        Messung messung = (Messung)object;
+        QueryBuilder<Messwert> builder =
+            new QueryBuilder<Messwert>(
+                repo.entityManager("land"), Messwert.class);
         builder.and("messungsId", messung.getId());
         Response response = repo.filter(builder.getQuery(), "land");
         @SuppressWarnings("unchecked")
-        List<LMesswert> messwerte = (List<LMesswert>)response.getData();
+        List<Messwert> messwerte = (List<Messwert>)response.getData();
         if (messwerte == null || messwerte.isEmpty()) {
             Violation violation = new Violation();
             violation.addWarning("messwert", 631);

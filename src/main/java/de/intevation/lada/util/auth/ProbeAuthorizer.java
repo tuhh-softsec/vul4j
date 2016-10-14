@@ -10,7 +10,8 @@ package de.intevation.lada.util.auth;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.intevation.lada.model.land.LProbe;
+import de.intevation.lada.model.land.Probe;
+import de.intevation.lada.model.stammdaten.MessStelle;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 
@@ -23,7 +24,7 @@ public class ProbeAuthorizer extends BaseAuthorizer {
         UserInfo userInfo,
         Class<T> clazz
     ) {
-        LProbe probe = (LProbe)data;
+        Probe probe = (Probe)data;
         if (method == RequestMethod.PUT ||
             method == RequestMethod.DELETE) {
             return !isProbeReadOnly(probe.getId());
@@ -39,14 +40,14 @@ public class ProbeAuthorizer extends BaseAuthorizer {
         Class<T> clazz
     ) {
         if (data.getData() instanceof List<?>) {
-            List<LProbe> proben = new ArrayList<LProbe>();
-            for (LProbe probe :(List<LProbe>)data.getData()) {
+            List<Probe> proben = new ArrayList<Probe>();
+            for (Probe probe :(List<Probe>)data.getData()) {
                 proben.add(setAuthData(userInfo, probe));
             }
             data.setData(proben);
         }
-        else if (data.getData() instanceof LProbe) {
-            LProbe probe = (LProbe)data.getData();
+        else if (data.getData() instanceof Probe) {
+            Probe probe = (Probe)data.getData();
             data.setData(setAuthData(userInfo, probe));
         }
         return data;
@@ -59,8 +60,9 @@ public class ProbeAuthorizer extends BaseAuthorizer {
      * @param probe     The probe object.
      * @return The probe.
      */
-    private LProbe setAuthData(UserInfo userInfo, LProbe probe) {
-        if (!userInfo.getNetzbetreiber().contains(probe.getNetzbetreiberId())) {
+    private Probe setAuthData(UserInfo userInfo, Probe probe) {
+        MessStelle mst = repository.getByIdPlain(MessStelle.class, probe.getMstId(), "stamm");
+        if (!userInfo.getNetzbetreiber().contains(mst.getNetzbetreiberId())) {
             probe.setOwner(false);
             probe.setReadonly(true);
             return probe;

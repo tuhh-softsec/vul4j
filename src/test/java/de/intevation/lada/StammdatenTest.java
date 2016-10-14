@@ -30,10 +30,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
-import de.intevation.lada.model.stamm.DatensatzErzeuger;
-import de.intevation.lada.model.stamm.MessprogrammKategorie;
-import de.intevation.lada.model.stamm.Ort;
-import de.intevation.lada.model.stamm.Probenehmer;
+import de.intevation.lada.model.stammdaten.DatensatzErzeuger;
+import de.intevation.lada.model.stammdaten.MessprogrammKategorie;
+import de.intevation.lada.model.stammdaten.Ort;
+import de.intevation.lada.model.stammdaten.Probenehmer;
 import de.intevation.lada.test.stamm.DatensatzErzeugerTest;
 import de.intevation.lada.test.stamm.MessprogrammKategorieTest;
 import de.intevation.lada.test.stamm.OrtTest;
@@ -253,7 +253,7 @@ public class StammdatenTest extends BaseTest {
     @InSequence(16)
     @RunAsClient
     public final void testMessmethodeById(@ArquillianResource URL baseUrl) {
-        stammdatenTest.getById(baseUrl, "messmethode", "GI", testProtocol);
+        stammdatenTest.getById(baseUrl, "messmethode", "A3", testProtocol);
     }
 
     @Test
@@ -295,7 +295,7 @@ public class StammdatenTest extends BaseTest {
     @InSequence(22)
     @RunAsClient
     public final void testPflichtmessgroesseById(@ArquillianResource URL baseUrl) {
-        stammdatenTest.getById(baseUrl, "pflichtmessgroesse", 33, testProtocol);
+        stammdatenTest.getById(baseUrl, "pflichtmessgroesse", "A3", testProtocol);
     }
 
     @Test
