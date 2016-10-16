@@ -40,6 +40,7 @@ import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.ResourceIterator;
 import org.codehaus.plexus.archiver.UnixStat;
+import org.codehaus.plexus.archiver.exceptions.EmptyArchiveException;
 import org.codehaus.plexus.archiver.util.ResourceUtils;
 import org.codehaus.plexus.components.io.functions.SymlinkDestinationSupplier;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
@@ -254,7 +255,7 @@ public abstract class AbstractZipArchiver
         ResourceIterator iter = getResources();
         if ( !iter.hasNext() && !hasVirtualFiles() )
         {
-            throw new ArchiverException( "You must set at least one file." );
+            throw new EmptyArchiveException( "You must set at least one file." );
         }
 
         zipFile = getDestFile();

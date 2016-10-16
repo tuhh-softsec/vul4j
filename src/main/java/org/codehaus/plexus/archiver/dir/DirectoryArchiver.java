@@ -23,6 +23,7 @@ import org.codehaus.plexus.archiver.AbstractArchiver;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.ResourceIterator;
+import org.codehaus.plexus.archiver.exceptions.EmptyArchiveException;
 import org.codehaus.plexus.archiver.util.ArchiveEntryUtils;
 import org.codehaus.plexus.archiver.util.ResourceUtils;
 import org.codehaus.plexus.components.io.attributes.SymlinkUtils;
@@ -53,7 +54,7 @@ public class DirectoryArchiver
         final ResourceIterator iter = getResources();
         if ( !iter.hasNext() )
         {
-            throw new ArchiverException( "You must set at least one file." );
+            throw new EmptyArchiveException( "You must set at least one file." );
         }
 
         final File destDirectory = getDestFile();

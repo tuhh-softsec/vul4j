@@ -30,6 +30,7 @@ import org.codehaus.plexus.archiver.AbstractArchiver;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.ResourceIterator;
+import org.codehaus.plexus.archiver.exceptions.EmptyArchiveException;
 import org.codehaus.plexus.archiver.util.ResourceUtils;
 import org.codehaus.plexus.archiver.util.Streams;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
@@ -110,7 +111,7 @@ public class TarArchiver
         ResourceIterator iter = getResources();
         if ( !iter.hasNext() )
         {
-            throw new ArchiverException( "You must set at least one file." );
+            throw new EmptyArchiveException( "You must set at least one file." );
         }
 
         File tarFile = getDestFile();
