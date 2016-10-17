@@ -178,11 +178,22 @@ public class zOSJobSubmitter extends Builder {
 
         // Print the info about the job
 	    logger.info("Job [" + zFTPConnector.getJobID() + "] processing finished.");
-	    listener.getLogger().println(
-	    	"Job ["
-			    + zFTPConnector.getJobID()
-			    + "] processing finished. Captured RC = ["
-	            + printableCC + "]");
+	    StringBuilder reportBuilder = new StringBuilder();
+	    reportBuilder.append("Job [");
+	    reportBuilder.append(zFTPConnector.getJobID());
+	    reportBuilder.append("] processing ");
+	    if (!printableCC.matches("\\d+")) {
+		    if (printableCC.startsWith("ABEND")) {
+			    reportBuilder.append("ABnormally ENDed. ABEND code = [");
+		    } else {
+			    reportBuilder.append("failed. Reason: [");
+		    }
+	    } else {
+		    reportBuilder.append("finished. Captured RC = [");
+	    }
+	    reportBuilder.append(printableCC);
+	    reportBuilder.append("]");
+	    listener.getLogger().println(reportBuilder.toString());
 
 	    // If wait was requested try to save the job log.
         if(this.wait) {
