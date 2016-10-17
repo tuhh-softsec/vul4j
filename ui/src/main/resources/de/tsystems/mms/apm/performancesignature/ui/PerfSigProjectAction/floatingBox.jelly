@@ -63,5 +63,5 @@
     </j:if>
     <st:bind var="projectAction" value="${from}"/>
     <st:adjunct includes="org.jenkins.ui.jsmodules.css.bootstrapprefix"/>
-    <st:adjunct includes="org.jenkins.ui.jsmodules.performance_signature_ui.floatingBox"/>
+    <st:adjunct includes="org.jenkins.ui.jsmodules.performance-signature-ui.floatingBox"/>
 </j:jelly>

@@ -140,7 +140,7 @@
             </div>
             <br style="clear:both;"/>
             <st:adjunct includes="org.jenkins.ui.jsmodules.css.bootstrapprefix"/>
-            <st:adjunct includes="org.jenkins.ui.jsmodules.performance_signature_ui.buildactionresultsdisplay"/>
+            <st:adjunct includes="org.jenkins.ui.jsmodules.performance-signature-ui.buildactionresultsdisplay"/>
         </l:main-panel>
     </l:layout>
 </j:jelly>

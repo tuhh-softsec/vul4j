@@ -96,7 +96,7 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
             }
         }
 
-        String result = null;
+        String result;
         Date timeframeStart = null;
 
         try {

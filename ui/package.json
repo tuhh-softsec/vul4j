@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@jenkins-cd/js-builder": "0.0.35",
+    "@jenkins-cd/js-builder": "latest",
     "gulp": "^3.9.1",
     "minifyify": "^7.3.3"
   },
   "dependencies": {
-    "@jenkins-cd/js-modules": "0.0.5",
+    "@jenkins-cd/js-modules": "latest",
     "bootstrap-detached": "^3.3.5-v1",
     "datatables.net": "^1.10.12",
     "datatables.net-bs": "^1.10.12",
@@ -17,7 +17,7 @@
     "wurl": "^2.1.0"
   },
   "jenkinscd": {
-    "extDependencies": [
+    "import": [
       "bootstrap-detached"
     ]
   }

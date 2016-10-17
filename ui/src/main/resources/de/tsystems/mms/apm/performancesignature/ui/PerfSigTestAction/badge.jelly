@@ -20,7 +20,7 @@
     <j:set var="testResult" value="${it.matchingTestResult}"/>
     <j:if test="${testResult!=null}">
         <st:adjunct includes="org.jenkins.ui.jsmodules.css.bootstrapprefix"/>
-        <st:adjunct includes="org.jenkins.ui.jsmodules.performance_signature_ui.buildactionresultsdisplay"/>
+        <st:adjunct includes="org.jenkins.ui.jsmodules.performance-signature-ui.buildactionresultsdisplay"/>
         <div class="tw-bs" style="display: inline;">
             <j:set var="utils" value="${it.PerfSigUtils}"/>
             <j:new var="h" className="hudson.Functions"/>

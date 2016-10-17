@@ -207,7 +207,7 @@
                 </div>
             </div>
             <st:adjunct includes="org.jenkins.ui.jsmodules.css.bootstrapprefix"/>
-            <st:adjunct includes="org.jenkins.ui.jsmodules.performance_signature_ui.projectaction"/>
+            <st:adjunct includes="org.jenkins.ui.jsmodules.performance-signature-ui.projectaction"/>
             <st:bind var="projectAction" value="${it}"/>
         </l:main-panel>
     </l:layout>
