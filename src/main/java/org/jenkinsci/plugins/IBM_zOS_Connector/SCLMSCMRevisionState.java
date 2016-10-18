@@ -36,7 +36,7 @@ public class SCLMSCMRevisionState extends SCMRevisionState{
     /**
      * Date format of DBUTIL date and time records.
      */
-    public final static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    public final static String dateFormat = "yyyy/MM/dd HH:mm:ss";
 
 
     /**
@@ -164,7 +164,7 @@ public class SCLMSCMRevisionState extends SCMRevisionState{
                 f.editType = EditType.DELETE;
             this.files.addAll(deleted);
         }
-        Collections.sort(this.files, SCLMFileState.ChangeComparator);
+        Collections.sort(this.files, SCLMFileState.changeComparator);
     }
 
     /**
@@ -254,7 +254,8 @@ public class SCLMSCMRevisionState extends SCMRevisionState{
                         String changeGroup = matcher.group(1);
                         String type = matcher.group(2);
                         String member = matcher.group(3);
-                        Date date = SCLMSCMRevisionState.dateFormat.parse(matcher.group(4));
+                        SimpleDateFormat df = new SimpleDateFormat(dateFormat);
+                        Date date = df.parse(matcher.group(4));
                         String userID = matcher.group(5);
                         long version =  Long.parseLong(matcher.group(6));
                         SCLMFileState file = new SCLMFileState(project,
@@ -282,7 +283,7 @@ public class SCLMSCMRevisionState extends SCMRevisionState{
         }
 
         // Sort result and return it.
-        Collections.sort(res,SCLMFileState.ChangeComparator);
+        Collections.sort(res,SCLMFileState.changeComparator);
         return res;
     }
 
