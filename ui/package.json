@@ -2,6 +2,17 @@
   "name": "perfsig-jenkins",
   "version": "1.0.0",
   "license": "Apache-2.0",
+  "scripts": {
+    "lint": "gulp lint",
+    "lint:fix": "gulp lint --fixLint",
+    "lint:watch": "gulp lint:watch --continueOnLint",
+    "test": "gulp test",
+    "test:watch": "gulp test:watch",
+    "bundle": "gulp bundle",
+    "bundle:watch": "gulp bundle:watch",
+    "mvnbuild": "gulp bundle",
+    "mvntest": "gulp test lint"
+  },
   "devDependencies": {
     "@jenkins-cd/js-builder": "latest",
     "gulp": "^3.9.1",
