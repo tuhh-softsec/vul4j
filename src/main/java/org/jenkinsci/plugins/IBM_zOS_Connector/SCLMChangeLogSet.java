@@ -87,7 +87,7 @@ public class SCLMChangeLogSet extends ChangeLogSet<SCLMChangeLogSet.Entry> {
      * @return Iterator for entries (most recent come first).
      */
     public Iterator iterator() {
-        Collections.sort(this.items, Entry.EntryComparator);
+        Collections.sort(this.items, Entry.entryComparator);
         return this.items.iterator();
     }
 
@@ -268,7 +268,7 @@ public class SCLMChangeLogSet extends ChangeLogSet<SCLMChangeLogSet.Entry> {
         /**
          * Comparator for Entries. Based on SCLMFileState comparator.
          */
-        public static final Comparator<Entry> EntryComparator = new Comparator<Entry>() {
+        public static final Comparator<Entry> entryComparator = new Comparator<Entry>() {
             @Override
             public int compare(Entry o1, Entry o2) {
                 return SCLMAffectedFile.affectedFilesComparator.compare(o1.affectedFile, o2.affectedFile);
@@ -338,7 +338,7 @@ public class SCLMChangeLogSet extends ChangeLogSet<SCLMChangeLogSet.Entry> {
         public static final Comparator<SCLMAffectedFile> affectedFilesComparator = new Comparator<SCLMAffectedFile>() {
             @Override
             public int compare(SCLMAffectedFile o1, SCLMAffectedFile o2) {
-                return SCLMFileState.ChangeComparator.compare(o1.file, o2.file);
+                return SCLMFileState.changeComparator.compare(o1.file, o2.file);
             }
         };
     }
