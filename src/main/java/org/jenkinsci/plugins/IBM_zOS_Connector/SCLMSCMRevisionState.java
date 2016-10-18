@@ -107,7 +107,7 @@ public class SCLMSCMRevisionState extends SCMRevisionState{
 
         // Submit the job for the DBUTIL report and build remote file list.
         if(ZFTPConnector.submit(inputStream,true,0,outputStream,true)) {
-            String out = null;
+            String out = "";
             try {
                 out = outputStream.toString("UTF-8");
             } catch (UnsupportedEncodingException e) {

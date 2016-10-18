@@ -545,8 +545,9 @@ public class SCLMSCM  extends SCM {
          */
         public String getSCLMJobHeader() {
             if (SCLMJobHeader.isEmpty())
-                SCLMJobHeader = SCLMSCMDescriptor.DefaultSCLMJobHeader;
-            return SCLMJobHeader;
+                return SCLMSCMDescriptor.DefaultSCLMJobHeader;
+	        else
+	            return SCLMJobHeader;
         }
 
         /**
@@ -557,8 +558,9 @@ public class SCLMSCM  extends SCM {
         public String getSCLMJobStep()
         {
             if(SCLMJobStep.isEmpty())
-                SCLMJobStep = SCLMSCMDescriptor.DefaultSCLMJobStep;
-            return SCLMJobStep;
+                return SCLMSCMDescriptor.DefaultSCLMJobStep;
+            else
+                return SCLMJobStep;
         }
 
         /**
