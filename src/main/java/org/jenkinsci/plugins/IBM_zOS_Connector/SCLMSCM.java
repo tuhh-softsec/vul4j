@@ -390,8 +390,7 @@ public class SCLMSCM  extends SCM {
             if (!temp.isEmpty())
             {
                 Collections.sort(temp, SCLMFileState.ChangeComparator);
-
-                PrintWriter writer = new PrintWriter(new FileWriter(changelogFile));
+                PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(changelogFile), "UTF-8"));
                 writer.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
                 writer.println("<changelog>");
                 for (SCLMFileState file : temp) {

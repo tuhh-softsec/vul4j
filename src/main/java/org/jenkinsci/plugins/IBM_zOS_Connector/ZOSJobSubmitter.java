@@ -18,6 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.logging.Logger;
 
 /**
@@ -160,7 +161,7 @@ public class ZOSJobSubmitter extends Builder {
 			this.JESINTERFACELEVEL1,
 			logPrefix);
 		// Read the JCL.
-		InputStream inputStream = new ByteArrayInputStream(_job.getBytes());
+		InputStream inputStream = new ByteArrayInputStream(_job.getBytes(Charset.defaultCharset()));
 		// Prepare the output stream.
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
@@ -316,8 +317,8 @@ public class ZOSJobSubmitter extends Builder {
 	 * @return descriptor for this class.
 	 */
 	@Override
-	public zOSJobSubmitterDescriptor getDescriptor() {
-		return (zOSJobSubmitterDescriptor) super.getDescriptor();
+	public ZOSJobSubmitterDescriptor getDescriptor() {
+		return (ZOSJobSubmitterDescriptor) super.getDescriptor();
 	}
 
 	/**
@@ -328,11 +329,11 @@ public class ZOSJobSubmitter extends Builder {
 	 * @version 1.0
 	 */
 	@Extension
-	public static final class zOSJobSubmitterDescriptor extends BuildStepDescriptor<Builder> {
+	public static final class ZOSJobSubmitterDescriptor extends BuildStepDescriptor<Builder> {
 		/**
 		 * Primitive constructor.
 		 */
-		public zOSJobSubmitterDescriptor() {
+		public ZOSJobSubmitterDescriptor() {
 			load();
 		}
 

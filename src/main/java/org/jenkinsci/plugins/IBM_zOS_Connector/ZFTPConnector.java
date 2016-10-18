@@ -7,10 +7,7 @@ import org.apache.commons.net.ftp.FTPConnectionClosedException;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -114,7 +111,11 @@ class ZFTPConnector {
 		// Create FTPClient
 		this.FTPClient = new FTPClient();
 		// Make password invisible from log
-		this.FTPClient.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out), true));
+		try {
+			this.FTPClient.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(new OutputStreamWriter(System.out, "UTF-8")), true));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 
 		this.logPrefix = "";
 		if (logPrefix != null)

@@ -8,9 +8,7 @@ import hudson.util.Digester2;
 import org.apache.commons.digester.Digester;
 import org.xml.sax.SAXException;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * <h1>SCLMChangeLogParser</h1>
@@ -64,7 +62,7 @@ public class SCLMChangeLogParser extends ChangeLogParser {
         digester.addSetNext("*/changelog/entry", "addEntry");
 
         // Do the actual parsing
-        FileReader reader = new FileReader(changelogFile);
+        InputStreamReader reader = new InputStreamReader(new FileInputStream(changelogFile), "UTF-8");
         LogSet temp = (LogSet)digester.parse(reader);
         reader.close();
 

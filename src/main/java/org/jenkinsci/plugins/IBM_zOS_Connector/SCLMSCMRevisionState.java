@@ -6,6 +6,8 @@ import hudson.scm.SCMRevisionState;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -100,12 +102,17 @@ public class SCLMSCMRevisionState extends SCMRevisionState{
 
         // Create temp variables.
         LinkedList<SCLMFileState> remote = new LinkedList<SCLMFileState>();
-        InputStream inputStream = new ByteArrayInputStream(actualJob.getBytes());
+        InputStream inputStream = new ByteArrayInputStream(actualJob.getBytes(Charset.defaultCharset()));
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         // Submit the job for the DBUTIL report and build remote file list.
         if(ZFTPConnector.submit(inputStream,true,0,outputStream,true)) {
-            String out = outputStream.toString();
+            String out = null;
+            try {
+                out = outputStream.toString("UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
             String[] outParts = out.split("!! END OF JES SPOOL FILE !!(\\r\\n|\\r|\\n)");
             for (String spool : outParts) {
                 if (this.isChangeLog(spool)) {
