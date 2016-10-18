@@ -1,41 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>2.11</version>
+    <version>2.9</version>
     <relativePath/>
   </parent>
 
   <artifactId>zos-connector</artifactId>
-  <name>IBM z/OS Connector</name>
   <version>1.2.4-SNAPSHOT</version>
   <packaging>hpi</packaging>
-
-  <properties>
-    <!-- Baseline Jenkins version you use to build the plugin. Users must have this version or newer to run. -->
-    <jenkins.version>1.625.3</jenkins.version>
-    <!-- Java Level to use. Java 7 required when using core >= 1.612 -->
-    <java.level>7</java.level>
-    <!-- Jenkins Test Harness version you use to test the plugin. -->
-    <!-- For Jenkins version >= 1.580.1 use JTH 2.x or higher. -->
-    <jenkins-test-harness.version>2.13</jenkins-test-harness.version>
-    <!-- Other properties you may want to use:
-         ~ hpi-plugin.version: The HPI Maven Plugin version used by the plugin..
-         ~ stapler-plugin.version: The Stapler Maven plugin version required by the plugin.
-    -->
-  </properties>
-
+  <name>IBM z/OS Connector</name>
   <description>IBM z/OS FTP Connector - bunch of tools for integration with IBM z/OS</description>
   <url>https://wiki.jenkins-ci.org/display/JENKINS/IBM+zOS+Connector</url>
+
+  <properties>
+    <jenkins.version>1.625.3</jenkins.version>
+  </properties>
+
   <licenses>
     <license>
       <name>MIT License</name>
       <url>http://opensource.org/licenses/MIT</url>
     </license>
   </licenses>
+
   <developers>
     <developer>
       <id>CandidusLynx</id>
@@ -44,15 +36,18 @@
     </developer>
   </developers>
   <scm>
-    <connection>scm:git:https://github.com/jenkinsci/zos-connector-plugin.git</connection>
-    <developerConnection>scm:git:https://github.com/jenkinsci/${project.artifactId}-plugin.git</developerConnection>
+    <connection>scm:git:git://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
     <url>http://github.com/jenkinsci/${project.artifactId}-plugin</url>
-    <tag>HEAD</tag>
+    <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
   </scm>
   <repositories>
     <repository>
       <id>repo.jenkins-ci.org</id>
       <url>https://repo.jenkins-ci.org/public/</url>
+    </repository>
+    <repository>
+      <id>central.maven.org</id>
+      <url>http://central.maven.org/maven2/</url>
     </repository>
   </repositories>
   <pluginRepositories>
@@ -61,15 +56,6 @@
       <url>https://repo.jenkins-ci.org/public/</url>
     </pluginRepository>
   </pluginRepositories>
-  <!-- If you want to depend on other plugins:
-  <dependencies>
-    <dependency>
-      <groupId>org.jenkins-ci.plugins</groupId>
-      <artifactId>credentials</artifactId>
-      <version>1.9.4</version>
-    </dependency>
-  </dependencies>
-  -->
 
   <dependencies>
     <dependency>
@@ -79,12 +65,11 @@
     </dependency>
   </dependencies>
 
-  <!-- Old release management
   <distributionManagement>
     <repository>
       <id>maven.jenkins-ci.org</id>
-      <url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
+      <url>https://repo.jenkins-ci.org/releases/</url>
     </repository>
   </distributionManagement>
-  -->
+
 </project>
