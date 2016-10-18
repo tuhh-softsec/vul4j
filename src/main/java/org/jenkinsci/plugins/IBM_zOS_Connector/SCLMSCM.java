@@ -389,7 +389,7 @@ public class SCLMSCM  extends SCM {
             List<SCLMFileState> temp = this.currentRevision.getChangedOnly();
             if (!temp.isEmpty())
             {
-                Collections.sort(temp, SCLMFileState.ChangeComparator);
+                Collections.sort(temp, SCLMFileState.changeComparator);
                 PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(changelogFile), "UTF-8"));
                 writer.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
                 writer.println("<changelog>");
