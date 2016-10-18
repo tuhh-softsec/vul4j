@@ -252,7 +252,7 @@ public class SCLMChangeLogSet extends ChangeLogSet<SCLMChangeLogSet.Entry> {
          * @return Date of change in AffectedFile.
          */
         public String getDate() {
-            return SCLMFileState.DateFormat.format(this.affectedFile.file.changeDate);
+            return SCLMFileState.dateToString(this.affectedFile.file.changeDate);
         }
 
         /**

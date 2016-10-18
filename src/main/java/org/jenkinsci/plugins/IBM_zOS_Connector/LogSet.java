@@ -86,7 +86,7 @@ public class LogSet {
          * @throws ParseException
          */
         public void setChangeDate(String changeDate) throws ParseException {
-            this.affectedFile.file.changeDate = SCLMFileState.DateFormat.parse(changeDate);
+            this.affectedFile.file.changeDate = SCLMFileState.parseDate(changeDate);
         }
 
         /**

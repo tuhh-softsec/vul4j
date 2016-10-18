@@ -2,6 +2,7 @@ package org.jenkinsci.plugins.IBM_zOS_Connector;
 
 import hudson.scm.EditType;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
@@ -65,7 +66,7 @@ public class SCLMFileState {
     /**
      * Format for date printing.
      */
-    public final static SimpleDateFormat DateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    private final static String dateFormat = "yyyy/MM/dd HH:mm:ss";
 
     /**
      * Dummy constructor.
@@ -109,6 +110,29 @@ public class SCLMFileState {
         this.changeDate = changeDate;
         this.changeUserID = changeUserID;
         this.changeGroup = changeGroup;
+    }
+
+	/**
+	 * @param input String to convert into Date
+	 * @return Date from input
+	 */
+	public static Date parseDate(String input) {
+        SimpleDateFormat df = new SimpleDateFormat(dateFormat);
+        try {
+            return df.parse(input);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+	/**
+	 * @param input Date to make printable
+	 * @return printable date
+	 */
+	public static String dateToString (Date input) {
+	    SimpleDateFormat df = new SimpleDateFormat(dateFormat);
+	    return df.format(input);
     }
 
     /**
@@ -229,6 +253,7 @@ public class SCLMFileState {
     public String toString()
     {
         String eType;
+        SimpleDateFormat df = new SimpleDateFormat(dateFormat);
         if(this.editType == EditType.EDIT) {
             eType = "EDIT";
         } else {
@@ -242,7 +267,7 @@ public class SCLMFileState {
                 }
             }
         }
-        return eType + ": [" + this.getPath() + "] " + this.changeGroup + " <" + SCLMFileState.DateFormat.format(this.changeDate) + "> | " + this.changeUserID + ", ver.:" + this.version;
+        return eType + ": [" + this.getPath() + "] " + this.changeGroup + " <" + df.format(this.changeDate) + "> | " + this.changeUserID + ", ver.:" + this.version;
     }
 
     /**
@@ -262,13 +287,7 @@ public class SCLMFileState {
      * @return Whether the files are at the same location.
      */
     @Override
-    public boolean equals(Object o)
-    {
-        if ( ! (o instanceof SCLMFileState) )
-        {
-            return false;
-        } else {
-            return this.getPath().compareTo(((SCLMFileState)o).getPath()) == 0;
-        }
+    public boolean equals(Object o) {
+        return o instanceof SCLMFileState && this.getPath().compareTo(((SCLMFileState) o).getPath()) == 0;
     }
 }

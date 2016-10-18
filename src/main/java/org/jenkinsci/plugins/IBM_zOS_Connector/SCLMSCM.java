@@ -410,7 +410,7 @@ public class SCLMSCM  extends SCM {
                         }
                     }
                     writer.println("\t<entry>");
-                    writer.println(String.format("\t\t<date>%s</date>", SCLMFileState.DateFormat.format(file.changeDate)));
+                    writer.println(String.format("\t\t<date>%s</date>", SCLMFileState.dateToString(file.changeDate)));
                     writer.println(String.format("\t\t<project>%s</project>", file.project));
                     writer.println(String.format("\t\t<alternate>%s</alternate>", file.alternate));
                     writer.println(String.format("\t\t<group>%s</group>", file.group));
