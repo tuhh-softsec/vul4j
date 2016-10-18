@@ -296,13 +296,13 @@ public class SCLMSCM  extends SCM {
      *
      * @return New remote revision.
      *
-     * @see zFTPConnector
+     * @see ZFTPConnector
      */
     private SCLMSCMRevisionState getNewRevision(SCLMSCMRevisionState baseline)
     {
 	    logger.info(logPrefix + "Will get new Revision State.");
         // Construct connector.
-        zFTPConnector zFTPConnector = new zFTPConnector(this.server,this.port,this.userID,this.password, this.JESINTERFACELEVEL1, logPrefix);
+        ZFTPConnector zFTPConnector = new ZFTPConnector(this.server,this.port,this.userID,this.password, this.JESINTERFACELEVEL1, logPrefix);
 
         // Fetch revision.
         return new SCLMSCMRevisionState(this.project, this.alternate, this.group,this.types,this.JobHeader + "\n" + this.JobStep, zFTPConnector, baseline);

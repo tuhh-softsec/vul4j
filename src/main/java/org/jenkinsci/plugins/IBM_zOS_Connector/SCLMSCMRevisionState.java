@@ -1,6 +1,5 @@
 package org.jenkinsci.plugins.IBM_zOS_Connector;
 
-import hudson.model.TaskListener;
 import hudson.scm.EditType;
 import hudson.scm.SCMRevisionState;
 
@@ -75,12 +74,12 @@ public class SCLMSCMRevisionState extends SCMRevisionState{
      * @param group SCLM Group.
      * @param types List of types under interest.
      * @param SCLMJob Prefix pf job to be invoked for DBUTIL report.
-     * @param zFTPConnector Connector initialized with basic information like server and user.
+     * @param ZFTPConnector Connector initialized with basic information like server and user.
      * @param baseline Previous revision state.
      *
-     * @see zFTPConnector
+     * @see ZFTPConnector
      */
-    public SCLMSCMRevisionState(String project, String alternate, String group, LinkedList<String> types, String SCLMJob, zFTPConnector zFTPConnector, SCLMSCMRevisionState baseline) {
+    public SCLMSCMRevisionState(String project, String alternate, String group, LinkedList<String> types, String SCLMJob, ZFTPConnector ZFTPConnector, SCLMSCMRevisionState baseline) {
         // Copy types.
         this.types = types;
 
@@ -105,7 +104,7 @@ public class SCLMSCMRevisionState extends SCMRevisionState{
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         // Submit the job for the DBUTIL report and build remote file list.
-        if(zFTPConnector.submit(inputStream,true,0,outputStream,true)) {
+        if(ZFTPConnector.submit(inputStream,true,0,outputStream,true)) {
             String out = outputStream.toString();
             String[] outParts = out.split("!! END OF JES SPOOL FILE !!(\\r\\n|\\r|\\n)");
             for (String spool : outParts) {
