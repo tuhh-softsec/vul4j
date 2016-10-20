@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package de.tsystems.mms.apm.performancesignature.dynatrace;
+package de.tsystems.mms.apm.performancesignature.viewer;
 
-import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.DynatraceServerConfiguration;
+import de.tsystems.mms.apm.performancesignature.viewer.model.JenkinsServerConfiguration;
 import hudson.Extension;
 import jenkins.model.GlobalConfiguration;
 import net.sf.json.JSONObject;
@@ -26,28 +26,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Extension
-public class PerfSigGlobalConfiguration extends GlobalConfiguration {
-    private List<DynatraceServerConfiguration> configurations = new ArrayList<DynatraceServerConfiguration>();
+public class ViewerGlobalConfiguration extends GlobalConfiguration {
+    private List<JenkinsServerConfiguration> configurations = new ArrayList<JenkinsServerConfiguration>();
 
-    public PerfSigGlobalConfiguration() {
+    public ViewerGlobalConfiguration() {
         load();
     }
 
-    public static PerfSigGlobalConfiguration get() {
-        return GlobalConfiguration.all().get(PerfSigGlobalConfiguration.class);
+    public static ViewerGlobalConfiguration get() {
+        return GlobalConfiguration.all().get(ViewerGlobalConfiguration.class);
     }
 
     @Override
     public boolean configure(final StaplerRequest req, final JSONObject formData) throws FormException {
-        setConfigurations(req.bindJSONToList(DynatraceServerConfiguration.class, formData.get("configurations")));
+        setConfigurations(req.bindJSONToList(JenkinsServerConfiguration.class, formData.get("configurations")));
         return false;
     }
 
-    public List<DynatraceServerConfiguration> getConfigurations() {
+    public List<JenkinsServerConfiguration> getConfigurations() {
         return configurations;
     }
 
-    public void setConfigurations(final List<DynatraceServerConfiguration> configurations) {
+    public void setConfigurations(final List<JenkinsServerConfiguration> configurations) {
         this.configurations = configurations;
         save();
     }

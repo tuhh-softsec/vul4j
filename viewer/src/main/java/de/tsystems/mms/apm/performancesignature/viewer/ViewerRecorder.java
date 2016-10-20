@@ -37,16 +37,13 @@ import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
 import hudson.util.ListBoxModel;
 import jenkins.tasks.SimpleBuildStep;
-import net.sf.json.JSONObject;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
-import org.kohsuke.stapler.StaplerRequest;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ViewerRecorder extends Recorder implements SimpleBuildStep {
@@ -134,29 +131,9 @@ public class ViewerRecorder extends Recorder implements SimpleBuildStep {
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
         public static final int defaultNonFunctionalFailure = 0;
-        private List<JenkinsServerConfiguration> configurations = new ArrayList<JenkinsServerConfiguration>();
-
-        public DescriptorImpl() {
-            load();
-        }
-
-        @Override
-        public boolean configure(final StaplerRequest req, final JSONObject formData) throws FormException {
-            setConfigurations(req.bindJSONToList(JenkinsServerConfiguration.class, formData.get("configurations")));
-            return false;
-        }
 
         public ListBoxModel doFillJenkinsJobItems() {
             return ViewerUtils.listToListBoxModel(ViewerUtils.getJenkinsConfigurations());
-        }
-
-        public List<JenkinsServerConfiguration> getConfigurations() {
-            return configurations;
-        }
-
-        public void setConfigurations(final List<JenkinsServerConfiguration> configurations) {
-            this.configurations = configurations;
-            save();
         }
 
         public boolean isApplicable(final Class<? extends AbstractProject> aClass) {

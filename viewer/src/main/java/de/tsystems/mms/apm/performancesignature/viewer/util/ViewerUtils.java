@@ -21,7 +21,7 @@ import com.cloudbees.plugins.credentials.CredentialsProvider;
 import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
 import com.cloudbees.plugins.credentials.domains.DomainRequirement;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
-import de.tsystems.mms.apm.performancesignature.viewer.ViewerRecorder;
+import de.tsystems.mms.apm.performancesignature.viewer.ViewerGlobalConfiguration;
 import de.tsystems.mms.apm.performancesignature.viewer.model.CredJobPair;
 import de.tsystems.mms.apm.performancesignature.viewer.model.JenkinsServerConfiguration;
 import hudson.FilePath;
@@ -68,7 +68,7 @@ public final class ViewerUtils {
     }
 
     public static List<JenkinsServerConfiguration> getJenkinsConfigurations() {
-        return PerfSigUIUtils.getInstance().getDescriptorByType(ViewerRecorder.DescriptorImpl.class).getConfigurations();
+        return ViewerGlobalConfiguration.get().getConfigurations();
     }
 
     public static JenkinsServerConfiguration getServerConfiguration(final String jenkinsServer) {
