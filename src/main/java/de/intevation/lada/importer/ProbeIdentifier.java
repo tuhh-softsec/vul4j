@@ -25,10 +25,13 @@ public class ProbeIdentifier implements Identifier {
     @RepositoryConfig(type=RepositoryType.RO)
     private Repository repository;
 
+    private Probe found;
+
     @Override
     public Identified find(Object object)
     throws InvalidTargetObjectTypeException
     {
+        found = null;
         if (!(object instanceof Probe)) {
             throw new InvalidTargetObjectTypeException(
                 "Object is not of type Probe");
@@ -55,6 +58,7 @@ public class ProbeIdentifier implements Identifier {
             if (proben.isEmpty()) {
                 return Identified.NEW;
             }
+            found = proben.get(0);
             return Identified.UPDATE;
         }
         else if (probe.getIdAlt() != null &&
@@ -71,6 +75,7 @@ public class ProbeIdentifier implements Identifier {
             if (proben.isEmpty()) {
                 return Identified.NEW;
             }
+            found = proben.get(0);
             return Identified.UPDATE;
         }
         else {
@@ -89,11 +94,19 @@ public class ProbeIdentifier implements Identifier {
                 probe.getHauptprobenNr().isEmpty() ||
                 proben.get(0).getHauptprobenNr().isEmpty()
             ) {
+                found = proben.get(0);
                 return Identified.UPDATE;
             }
             else {
                 return Identified.REJECT;
             }
         }
+    }
+
+    /**
+     * @return the found probe
+     */
+    public Object getExisting() {
+        return found;
     }
 }

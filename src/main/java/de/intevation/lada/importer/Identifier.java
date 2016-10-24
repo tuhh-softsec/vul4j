@@ -14,4 +14,5 @@ public interface Identifier {
     public Identified find(Object object)
         throws InvalidTargetObjectTypeException;
 
+    public Object getExisting();
 }

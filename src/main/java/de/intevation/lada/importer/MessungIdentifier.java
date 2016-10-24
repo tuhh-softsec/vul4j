@@ -25,10 +25,13 @@ public class MessungIdentifier implements Identifier {
     @RepositoryConfig(type=RepositoryType.RO)
     private Repository repository;
 
+    private Messung found;
+
     @Override
     public Identified find(Object object)
     throws InvalidTargetObjectTypeException
     {
+        found = null;
         if (!(object instanceof Messung)) {
             throw new InvalidTargetObjectTypeException(
                 "Object is not of type Messung");
@@ -55,6 +58,7 @@ public class MessungIdentifier implements Identifier {
             if (messungen.isEmpty()) {
                 return Identified.NEW;
             }
+            found = messungen.get(0);
             return Identified.UPDATE;
         }
         else if (messung.getIdAlt() != null &&
@@ -71,6 +75,7 @@ public class MessungIdentifier implements Identifier {
             if (messungen.isEmpty()) {
                 return Identified.NEW;
             }
+            found = messungen.get(0);
             return Identified.UPDATE;
         }
         else {
@@ -90,11 +95,17 @@ public class MessungIdentifier implements Identifier {
                 messung.getNebenprobenNr().isEmpty() ||
                 messungen.get(0).getNebenprobenNr().isEmpty()
             ) {
+                found = messungen.get(0);
                 return Identified.UPDATE;
             }
             else {
                 return Identified.REJECT;
             }
         }
+    }
+
+    @Override
+    public Object getExisting() {
+        return found;
     }
 }
