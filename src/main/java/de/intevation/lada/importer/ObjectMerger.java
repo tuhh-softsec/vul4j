@@ -9,19 +9,8 @@ package de.intevation.lada.importer;
 
 import java.util.List;
 
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.NotSupportedException;
-import javax.transaction.RollbackException;
-import javax.transaction.SystemException;
-import javax.transaction.UserTransaction;
 
 import org.apache.log4j.Logger;
 
@@ -36,6 +25,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.rest.Response;
 
 public class ObjectMerger {
 
@@ -83,12 +73,12 @@ public class ObjectMerger {
             target.setNebenprobenNr(src.getNebenprobenNr());
         }
         target.setFertig(src.getFertig());
-        target.setGeplant(src.getGeplant());
+        target.setGeplant(src.getGeplant() == null ? false : src.getGeplant());
         target.setMessdauer(src.getMessdauer());
         target.setMesszeitpunkt(src.getMesszeitpunkt());
         target.setMmtId(src.getMmtId());
-        target.setStatus(src.getStatus());
-        repository.update(target, "land");
+        Response r = repository.update(target, "land");
+        target = (Messung)r.getData();
         return this;
     }
 
@@ -123,6 +113,7 @@ public class ObjectMerger {
             found.get(0).setMesswertPzs(zusatzwerte.get(i).getMesswertPzs());
             found.get(0).setNwgZuMesswert(zusatzwerte.get(i).getNwgZuMesswert());
             repository.update(found.get(0), "land");
+            builder = builder.getEmptyBuilder();
         }
         return this;
     }
@@ -146,9 +137,10 @@ public class ObjectMerger {
             }
             else if (found.size() > 1) {
                 // something is wrong (probeId and mstId and datum should be unique).
-                // Continue and skip this zusatzwert.
+                // Continue and skip this kommentar.
                 continue;
             }
+            builder = builder.getEmptyBuilder();
         }
         return this;
     }
@@ -158,7 +150,7 @@ public class ObjectMerger {
         return this;
     }
 
-    public ObjectMerger mergeKommentare(
+    public ObjectMerger mergeMessungKommentare(
         Messung target,
         List<KommentarM> kommentare
     ) {
@@ -180,6 +172,7 @@ public class ObjectMerger {
                 // Continue and skip this zusatzwert.
                 continue;
             }
+            builder = builder.getEmptyBuilder();
         }
         return this;
     }
@@ -195,13 +188,15 @@ public class ObjectMerger {
         List<Messwert> found =
             repository.filterPlain(builder.getQuery(), "land");
         if (found.isEmpty()) {
+            for (int i = 0; i < messwerte.size(); i++) {
+                repository.create(messwerte.get(i), "land");
+            }
             return this;
         }
         try {
             for (int i = 0; i < found.size(); i++) {
                 repository.delete(found.get(i), "land");
             }
-            repository.entityManager("land").flush();
             for (int i = 0; i < messwerte.size(); i++) {
                 repository.create(messwerte.get(i), "land");
             }
@@ -212,7 +207,7 @@ public class ObjectMerger {
             // Restore messwerte.
             logger.debug("exception: ", e);
             for (int i = 0; i < found.size(); i++) {
-                repository.create(found.get(i), "land");
+                repository.update(found.get(i), "land");
             }
         }
         return this;
