@@ -245,4 +245,25 @@ public class HeaderAuthorization implements Authorization {
         }
         return authorizer.isAuthorized(data, RequestMethod.GET, userInfo, clazz);
     }
+
+    /**
+     * Check whether a user is authorized to operate on the given probe.
+     *
+     * @param userInfo  The user information.
+     * @param data      The probe data to test.
+     * @return True if the user is authorized else returns false.
+     */
+    @Override
+    public <T> boolean isAuthorizedOnNew(
+        UserInfo userInfo,
+        Object data,
+        Class<T> clazz
+    ) {
+        Authorizer authorizer = authorizers.get(clazz);
+        //This is a hack... Allows wildcard for unknown classes.
+        if (authorizer == null) {
+            return true;
+        }
+        return authorizer.isAuthorized(data, RequestMethod.POST, userInfo, clazz);
+    }
 }

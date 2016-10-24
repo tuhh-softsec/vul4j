@@ -64,6 +64,11 @@ public class TestAuthorization implements Authorization {
     }
 
     @Override
+    public <T> boolean isAuthorizedOnNew(UserInfo userInfo, Object data, Class<T> clazz) {
+        return true;
+    }
+
+    @Override
     public boolean isReadOnly(Integer probeId) {
         return false;
     }

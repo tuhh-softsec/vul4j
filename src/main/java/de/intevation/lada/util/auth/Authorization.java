@@ -22,5 +22,6 @@ public interface Authorization {
         Object source, Object data, RequestMethod method, Class<T> clazz);
     //public <T> boolean isAuthorized(int id, Class<T> clazz);
     public <T> boolean isAuthorized(UserInfo userInfo, Object data, Class<T> clazz);
+    public <T> boolean isAuthorizedOnNew(UserInfo userInfo, Object data, Class<T> clazz);
     boolean isReadOnly(Integer probeId);
 }

@@ -90,4 +90,19 @@ public class DefaultAuthorization implements Authorization {
         return true;
     }
 
+    /**
+     * Get the authorization status.
+     *
+     * @param   userInfo    The user information
+     * @param   data        The response data object.
+     *
+     * @return true
+     */
+    @Override
+    public <T> boolean isAuthorizedOnNew(
+        UserInfo userInfo,
+        Object data,
+        Class<T> clazz) {
+        return true;
+    }
 }
