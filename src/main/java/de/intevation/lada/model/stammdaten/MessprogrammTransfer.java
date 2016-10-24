@@ -14,6 +14,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 
 /**
@@ -21,6 +22,7 @@ import javax.persistence.Id;
  * 
  */
 @Entity
+@Table(name="messprogramm_transfer")
 public class MessprogrammTransfer implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -30,9 +32,6 @@ public class MessprogrammTransfer implements Serializable {
 
     @Column(name="ba_id")
     private Integer baId;
-
-    @Column(name="datenbasis_id")
-    private Integer datenbasisId;
 
     @Column(name="messprogramm_c")
     private String messprogrammC;
@@ -57,14 +56,6 @@ public class MessprogrammTransfer implements Serializable {
 
     public void setBaId(Integer baId) {
         this.baId = baId;
-    }
-
-    public Integer getDatenbasisId() {
-        return this.datenbasisId;
-    }
-
-    public void setDatenbasisId(Integer datenbasisId) {
-        this.datenbasisId = datenbasisId;
     }
 
     public String getMessprogrammC() {

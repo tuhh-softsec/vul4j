@@ -36345,38 +36345,38 @@ COPY result (id, query_id, data_index, header, width, flex, index) FROM stdin;
 126	15	probeId	Probe_Id	100	f	0
 \.
 
-COPY messprogramm_transfer (messprogramm_s, messprogramm_c, ba_id, datenbasis_id) FROM stdin;
-1	Routinemessprogramm,	0	2
-2	Intensiv- bzw. sektororientiertes Intensivmessprogramm	1	2
-4	REI, bestimmungsgemäßer Betrieb	0	4
-5	REI, Störfall/Unfall	1	4
-6	REI, Übung zum Störfall	0	4
-A	Landesmessprogramm -A-	0	7
-B	Landesmessprogramm -B-	0	7
-C	Landesmessprogramm -C-	0	7
-D	Landesmessprogramm -D-	0	7
-E	Landesmessprogramm -E-	0	7
-F	Landesmessprogramm -F-	0	7
-G	Landesmessprogramm -G-	0	7
-H	Landesmessprogramm -H-	0	7
-I	Landesmessprogramm -I-	0	7
-J	Landesmessprogramm -J-	0	7
-K	Landesmessprogramm -K-	0	7
-L	Landesmessprogramm -L-	0	7
-M	Landesmessprogramm -M-	0	7
-N	Landesmessprogramm -N-	0	7
-O	Landesmessprogramm -O-	0	7
-P	Landesmessprogramm -P-	0	7
-Q	Landesmessprogramm -Q-	0	7
-R	Landesmessprogramm -R-	0	7
-S	Landesmessprogramm -S-	0	7
-T	Landesmessprogramm -T-	0	7
-U	Landesmessprogramm -U-	0	7
-V	Landesmessprogramm -V-	0	7
-W	Landesmessprogramm -W-	0	7
-X	Landesmessprogramm -X-	0	7
-Y	Landesmessprogramm -Y-	0	7
-Z	Landesmessprogramm -Z-	0	7
+COPY messprogramm_transfer (messprogramm_s, messprogramm_c, ba_id) FROM stdin;
+1	Routinemessprogramm,	0
+2	Intensiv- bzw. sektororientiertes Intensivmessprogramm	1
+4	REI, bestimmungsgemäßer Betrieb	0
+5	REI, Störfall/Unfall	1
+6	REI, Übung zum Störfall	0
+A	Landesmessprogramm -A-	0
+B	Landesmessprogramm -B-	0
+C	Landesmessprogramm -C-	0
+D	Landesmessprogramm -D-	0
+E	Landesmessprogramm -E-	0
+F	Landesmessprogramm -F-	0
+G	Landesmessprogramm -G-	0
+H	Landesmessprogramm -H-	0
+I	Landesmessprogramm -I-	0
+J	Landesmessprogramm -J-	0
+K	Landesmessprogramm -K-	0
+L	Landesmessprogramm -L-	0
+M	Landesmessprogramm -M-	0
+N	Landesmessprogramm -N-	0
+O	Landesmessprogramm -O-	0
+P	Landesmessprogramm -P-	0
+Q	Landesmessprogramm -Q-	0
+R	Landesmessprogramm -R-	0
+S	Landesmessprogramm -S-	0
+T	Landesmessprogramm -T-	0
+U	Landesmessprogramm -U-	0
+V	Landesmessprogramm -V-	0
+W	Landesmessprogramm -W-	0
+X	Landesmessprogramm -X-	0
+Y	Landesmessprogramm -Y-	0
+Z	Landesmessprogramm -Z-	0
 \.
 
 --

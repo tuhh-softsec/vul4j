@@ -647,7 +647,6 @@ CREATE TABLE messprogramm_transfer (
     messprogramm_s character varying(1) NOT NULL,
     messprogramm_c character varying(100) NOT NULL,
     ba_id integer NOT NULL REFERENCES betriebsart,
-    datenbasis_id integer NOT NULL REFERENCES datenbasis,
     UNIQUE (messprogramm_s)
 );
 
