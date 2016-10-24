@@ -8,7 +8,9 @@
 package de.intevation.lada.rest.importer;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -20,9 +22,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.log4j.Logger;
+
 import de.intevation.lada.importer.ImportConfig;
 import de.intevation.lada.importer.ImportFormat;
 import de.intevation.lada.importer.Importer;
+import de.intevation.lada.importer.ReportItem;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
@@ -37,6 +42,9 @@ import de.intevation.lada.util.rest.Response;
 @Path("data/import")
 @RequestScoped
 public class LafImportService {
+
+    @Inject
+    private Logger logger;
 
     /**
      * The importer
@@ -71,11 +79,22 @@ public class LafImportService {
 
         importer.doImport(content, userInfo);
         Map<String, Object> respData = new HashMap<String,Object>();
-        respData.put("errors", importer.getErrors());
-        respData.put("warnings", importer.getWarnings());
+        if (!importer.getErrors().isEmpty()) {
+            logger.debug("errs: " + importer.getErrors().size());
+            for (Entry<String, List<ReportItem>> entry : importer.getErrors().entrySet()) {
+                logger.debug(entry.getKey());
+                for (ReportItem item : entry.getValue()) {
+                    logger.debug(item.getKey() + " - " + item.getValue() + ": " + item.getCode());
+                }
+            }
+            respData.put("errors", importer.getErrors());
+        }
+        if (!importer.getWarnings().isEmpty()) {
+            logger.debug("warns: " + importer.getWarnings().size());
+            respData.put("warnings", importer.getWarnings());
+        }
         int code = 200;
         Response response = new Response(importer.getErrors().isEmpty(), code, respData);
-        importer.reset();
         return response;
     }
 }

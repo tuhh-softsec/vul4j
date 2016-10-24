@@ -532,7 +532,7 @@ public class ImporterTest extends BaseTest{
         kommentare.add(komm1);
         kommentare.add(komm2);
 
-        merger.mergeKommentare(messung, kommentare);
+        merger.mergeMessungKommentare(messung, kommentare);
         Assert.assertEquals(2, kommentare.size());
 
         protocol.setPassed(true);

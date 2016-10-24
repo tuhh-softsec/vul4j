@@ -32,6 +32,7 @@ probedaten: db
   | testdaten
   | szenario
   | sek_datenbasis
+  | sek_datenbasis_s
   | us
   | ph
   | pg
@@ -65,7 +66,7 @@ messungdaten: messungs_id
   | bearbeitungsstatus
   | pep_flag
   | erfassung_abgeschlossen
-  | messwert
+  | mw
   | mess_kommentar
 ;
 
@@ -222,7 +223,7 @@ u_koordinaten : U_KOORDINATEN (STRING_ESC | STRING) (' ')* (STRING_ESC | STRING)
 u_koordinaten_s : U_KOORDINATEN_S STRING (' ')* (STRING_ESC | STRING) (' ')* (STRING_ESC | STRING) ; // SI2 C22 C22
 u_orts_zusatzcode : U_ORTS_ZUSATZCODE (STRING_ESC | STRING) ; // C8
 u_orts_zusatztext : U_ORTS_ZUSATZTEXT (STRING_ESC | STRING) ; // MC50
-u_nuts_code : U_NUTS_CODE STRING ; // I10
+u_nuts_code : U_NUTS_CODE (STRING_ESC | STRING) ; // C10
 p_herkunftsland_lang : P_HERKUNFTSLAND_LANG (STRING_ESC | STRING) ; //C50*
 p_herkunftsland_kurz : P_HERKUNFTSLAND_KURZ (STRING_ESC | STRING) ; // C5
 p_herkunftsland_s : P_HERKUNFTSLAND_S STRING ; // SI8
@@ -233,7 +234,7 @@ p_koordinaten : P_KOORDINATEN (STRING_ESC | STRING) (' ')* (STRING_ESC | STRING)
 p_koordinaten_s : P_KOORDINATEN_S STRING (' ')* (STRING_ESC | STRING) (' ')* (STRING_ESC | STRING) ; // SI2 C22 C22
 p_orts_zusatzcode : P_ORTS_ZUSATZCODE (STRING_ESC | STRING) ; // C8
 p_orts_zusatztext : P_ORTS_ZUSATZTEXT (STRING_ESC | STRING) ; // MC50
-p_nuts_code : P_NUTS_CODE STRING ; // I10
+p_nuts_code : P_NUTS_CODE (STRING_ESC | STRING) ; // C10
 p_site_id : P_SITE_ID (STRING_ESC | STRING) ; // C8
 p_site_name : P_SITE_NAME (STRING_ESC | STRING) ; // C50*
 p_hoehe_nn : P_HOEHE_NN STRING ; // F10

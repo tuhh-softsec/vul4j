@@ -19,6 +19,14 @@ public class LafObjectListener extends LafBaseListener {
     Map<String, List<ReportItem>> errors;
     List<ReportItem> currentErrors;
 
+    private boolean hasDatenbasis = false;
+    private boolean hasMessprogramm = false;
+    private boolean hasUmwelt = false;
+    private boolean hasZeitbasis = false;
+    private boolean hasUebertragungsformat = false;
+    private boolean hasVersion = false;
+
+
     public LafObjectListener() {
         data = new LafRawData();
         errors = new HashMap<String, List<ReportItem>>();
@@ -37,12 +45,26 @@ public class LafObjectListener extends LafBaseListener {
     }
 
     /**
+     * @return the hasUebertragungsformat
+     */
+    public boolean hasUebertragungsformat() {
+        return hasUebertragungsformat;
+    }
+
+    /**
+     * @return the hasVersion
+     */
+    public boolean hasVersion() {
+        return hasVersion;
+    }
+
+    /**
      * {@inheritDoc}
      *
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterProbendatei(LafParser.ProbendateiContext ctx) {
-        System.out.println("entering probe-datei");
+        System.out.println("start building raw data");
     }
 
     /**
@@ -51,6 +73,8 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void exitProbendatei(LafParser.ProbendateiContext ctx) {
+        System.out.println("finished.");
+        System.out.println("build " + data.count() + " proben.");
     }
 
     /**
@@ -61,12 +85,19 @@ public class LafObjectListener extends LafBaseListener {
     @Override public void enterEnd(LafParser.EndContext ctx) {
         if (currentProbe != null) {
             data.addProbe(currentProbe);
-            String identifier = currentProbe.getAttributes().get("PROBE_ID");
-            identifier = identifier == null ? currentProbe.getAttributes().get("PROBEN_NR") : null;
-            identifier = identifier == null ? currentProbe.getAttributes().get("HAUPTPROBEN_NR") : "not identified";
-            errors.put(identifier, currentErrors);
+            if (!currentErrors.isEmpty()) {
+                String identifier = currentProbe.getAttributes().get("PROBE_ID");
+                identifier = identifier == null ? currentProbe.getAttributes().get("PROBEN_NR") : null;
+                identifier = identifier == null ? currentProbe.getAttributes().get("HAUPTPROBEN_NR") : "not identified";
+                System.out.println("exit: " + identifier);
+                errors.put(identifier, currentErrors);
+            }
             currentErrors.clear();
             currentProbe = null;
+            hasDatenbasis = false;
+            hasMessprogramm = false;
+            hasUmwelt = false;
+            hasZeitbasis = false;
         }
     }
 
@@ -90,12 +121,23 @@ public class LafObjectListener extends LafBaseListener {
      */
     @Override public void exitProbe(LafParser.ProbeContext ctx) {
         data.addProbe(currentProbe);
-        String identifier = currentProbe.getAttributes().get("PROBE_ID");
-        identifier = identifier == null ? currentProbe.getAttributes().get("PROBEN_NR") : null;
-        identifier = identifier == null ? currentProbe.getAttributes().get("HAUPTPROBEN_NR") : "not identified";
-        errors.put(identifier, currentErrors);
+        if (!currentErrors.isEmpty()) {
+            for (ReportItem item : currentErrors) {
+                System.out.println("item: " + item.getKey());
+            }
+            String identifier = currentProbe.getAttributes().get("PROBE_ID");
+            identifier = identifier == null ? currentProbe.getAttributes().get("PROBEN_NR") : null;
+            identifier = identifier == null ? currentProbe.getAttributes().get("HAUPTPROBEN_NR") : null;
+            identifier = identifier == null ? "not identified" : identifier;
+            System.out.println("exit probe: " + identifier);
+            errors.put(identifier, currentErrors);
+        }
         currentErrors.clear();
         currentProbe = null;
+        hasDatenbasis = false;
+        hasMessprogramm = false;
+        hasUmwelt = false;
+        hasZeitbasis = false;
     }
 
     /**
@@ -286,7 +328,7 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterUebertragungsformat(LafParser.UebertragungsformatContext ctx) {
-        System.out.println(ctx.getChild(0) + ": " + ctx.getChild(1));
+        hasUebertragungsformat = true;
     }
 
     /**
@@ -295,7 +337,7 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterVersion(LafParser.VersionContext ctx) {
-        System.out.println(ctx.getChild(0) + ": " + ctx.getChild(1));
+        hasVersion = true;
     }
 
     /**
@@ -304,6 +346,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterDatenbasis(LafParser.DatenbasisContext ctx) {
+        if (this.hasDatenbasis) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         // Trim double qoutes.
         value = value.replaceAll("\"", "");
@@ -316,7 +361,7 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
+        this.hasDatenbasis = true;
     }
 
     /**
@@ -325,6 +370,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterDatenbasis_s(LafParser.Datenbasis_sContext ctx) {
+        if (this.hasDatenbasis) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.SI2)) {
@@ -336,7 +384,7 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
+        this.hasDatenbasis = true;
     }
 
     /**
@@ -356,7 +404,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -376,7 +423,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -396,7 +442,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -416,7 +461,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -436,7 +480,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -456,7 +499,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -476,7 +518,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -496,7 +537,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -519,7 +559,6 @@ public class LafObjectListener extends LafBaseListener {
             currentMessung = data.new Messung();
         }
         currentMessung.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -539,7 +578,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -559,7 +597,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -582,7 +619,6 @@ public class LafObjectListener extends LafBaseListener {
             currentMessung = data.new Messung();
         }
         currentMessung.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -591,6 +627,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterMessprogramm_c(LafParser.Messprogramm_cContext ctx) {
+        if (this.hasMessprogramm) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C_STAR)) {
@@ -602,7 +641,7 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
+        this.hasMessprogramm = true;
     }
 
     /**
@@ -611,6 +650,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterMessprogramm_s(LafParser.Messprogramm_sContext ctx) {
+        if (this.hasMessprogramm) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.SC1)) {
@@ -622,7 +664,7 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
+        this.hasMessprogramm = true;
     }
 
     /**
@@ -642,7 +684,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -662,7 +703,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -682,7 +722,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -691,6 +730,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterZeitbasis(LafParser.ZeitbasisContext ctx) {
+        if (this.hasZeitbasis) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C_STAR)) {
@@ -702,7 +744,7 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
+        this.hasZeitbasis = true;
     }
 
     /**
@@ -711,6 +753,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterZeitbasis_s(LafParser.Zeitbasis_sContext ctx) {
+        if (this.hasZeitbasis) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.SI1)) {
@@ -722,7 +767,7 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
+        this.hasZeitbasis = true;
     }
 
     /**
@@ -752,7 +797,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), date + ' ' + time);
-        System.out.println(ctx.getChild(0) + ": " + date + ' ' + time);
     }
 
     /**
@@ -782,7 +826,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), date + ' ' + time);
-        System.out.println(ctx.getChild(0) + ": " + date + ' ' + time);
     }
 
     /**
@@ -812,7 +855,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), date + ' ' + time);
-        System.out.println(ctx.getChild(0) + ": " + date + ' ' + time);
     }
 
     /**
@@ -842,7 +884,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), date + ' ' + time);
-        System.out.println(ctx.getChild(0) + ": " + date + ' ' + time);
     }
 
     /**
@@ -872,7 +913,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), date + ' ' + time);
-        System.out.println(ctx.getChild(0) + ": " + date + ' ' + time);
     }
 
     /**
@@ -881,6 +921,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterUmweltbereich_c(LafParser.Umweltbereich_cContext ctx) {
+        if (this.hasUmwelt) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C_STAR)) {
@@ -892,7 +935,7 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
+        this.hasUmwelt = true;
     }
 
     /**
@@ -901,6 +944,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterUmweltbereich_s(LafParser.Umweltbereich_sContext ctx) {
+        if (this.hasUmwelt) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.SC3)) {
@@ -912,7 +958,7 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
+        this.hasUmwelt = true;
     }
 
     /**
@@ -932,7 +978,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -952,7 +997,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -972,7 +1016,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1002,7 +1045,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), date + ' ' + time);
-        System.out.println(ctx.getChild(0) + ": " + date + ' ' + time);
     }
 
     /**
@@ -1022,7 +1064,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1042,7 +1083,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1062,7 +1102,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1082,7 +1121,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1103,7 +1141,6 @@ public class LafObjectListener extends LafBaseListener {
         }
         // TODO: Add to "ursprungsort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1124,7 +1161,6 @@ public class LafObjectListener extends LafBaseListener {
         }
         // TODO: Add to "ursprungsort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1145,7 +1181,6 @@ public class LafObjectListener extends LafBaseListener {
         }
         // TODO: Add to "ursprungsort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1166,7 +1201,6 @@ public class LafObjectListener extends LafBaseListener {
         }
         // TODO: Add to "ursprungsort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1187,7 +1221,6 @@ public class LafObjectListener extends LafBaseListener {
         }
         // TODO: Add to "ursprungsort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1208,7 +1241,6 @@ public class LafObjectListener extends LafBaseListener {
         }
         // TODO: Add to "ursprungsort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1249,7 +1281,6 @@ public class LafObjectListener extends LafBaseListener {
         }
         // TODO: Add to "ursprungsort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + art + " " + koord1 + " " + koord2);
     }
 
     /**
@@ -1290,7 +1321,6 @@ public class LafObjectListener extends LafBaseListener {
         }
         // TODO: Add to "ursprungsort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + art + " " + koord1 + " " + koord2);
     }
 
     /**
@@ -1311,7 +1341,6 @@ public class LafObjectListener extends LafBaseListener {
         }
         // TODO: Add to "ursprungsort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1332,7 +1361,6 @@ public class LafObjectListener extends LafBaseListener {
         }
         // TODO: Add to "ursprungsort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1341,10 +1369,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterU_nuts_code(LafParser.U_nuts_codeContext ctx) {
-        System.out.println(ctx.exception.getMessage());
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
-        if (!value.matches(LafDataTypes.I10)) {
+        if (!value.matches(LafDataTypes.C10)) {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
@@ -1354,7 +1381,6 @@ public class LafObjectListener extends LafBaseListener {
         }
         // TODO: Add to "ursprungsort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1375,7 +1401,6 @@ public class LafObjectListener extends LafBaseListener {
         }
         // TODO: Add to "entnahmeort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1396,7 +1421,6 @@ public class LafObjectListener extends LafBaseListener {
         }
         // TODO: Add to "entnahmeort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1417,7 +1441,6 @@ public class LafObjectListener extends LafBaseListener {
         }
         // TODO: Add to "entnahmeort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1438,7 +1461,6 @@ public class LafObjectListener extends LafBaseListener {
         }
         // TODO: Add to "entnahmeort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1459,7 +1481,6 @@ public class LafObjectListener extends LafBaseListener {
         }
         // TODO: Add to "entnahmeort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1480,7 +1501,6 @@ public class LafObjectListener extends LafBaseListener {
         }
         // TODO: Add to "entnahmeort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1521,7 +1541,6 @@ public class LafObjectListener extends LafBaseListener {
         }
         // TODO: Add to "entnahmeort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + art + " " + koord1 + " " + koord2);
     }
 
     /**
@@ -1562,7 +1581,6 @@ public class LafObjectListener extends LafBaseListener {
         }
         // TODO: Add to "entnahmeort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + art + " " + koord1 + " " + koord2);
     }
 
     /**
@@ -1583,7 +1601,6 @@ public class LafObjectListener extends LafBaseListener {
         }
         // TODO: Add to "entnahmeort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1604,7 +1621,6 @@ public class LafObjectListener extends LafBaseListener {
         }
         // TODO: Add to "entnahmeort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1615,7 +1631,7 @@ public class LafObjectListener extends LafBaseListener {
     @Override public void enterP_nuts_code(LafParser.P_nuts_codeContext ctx) {
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
-        if (!value.matches(LafDataTypes.I10)) {
+        if (!value.matches(LafDataTypes.C10)) {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
@@ -1625,7 +1641,6 @@ public class LafObjectListener extends LafBaseListener {
         }
         // TODO: Add to "entnahmeort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1646,7 +1661,6 @@ public class LafObjectListener extends LafBaseListener {
         }
         // TODO: Add to "entnahmeort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1667,7 +1681,6 @@ public class LafObjectListener extends LafBaseListener {
         }
         // TODO: Add to "entnahmeort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1679,7 +1692,6 @@ public class LafObjectListener extends LafBaseListener {
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.F10)) {
-            System.out.println("F10 does not match in hoehe_nn");
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
@@ -1689,7 +1701,6 @@ public class LafObjectListener extends LafBaseListener {
         }
         // TODO: Add to "entnahmeort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1701,7 +1712,6 @@ public class LafObjectListener extends LafBaseListener {
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.F10)) {
-            System.out.println("F10 does not match in hoehe_land");
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
@@ -1711,7 +1721,6 @@ public class LafObjectListener extends LafBaseListener {
         }
         // TODO: Add to "entnahmeort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1731,7 +1740,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1764,7 +1772,6 @@ public class LafObjectListener extends LafBaseListener {
             currentMessung = data.new Messung();
         }
         currentMessung.addAttribute(ctx.getChild(0).toString().toUpperCase(), date + ' ' + time);
-        System.out.println(ctx.getChild(0) + ": " + date + ' ' + time);
     }
 
     /**
@@ -1787,7 +1794,6 @@ public class LafObjectListener extends LafBaseListener {
             currentMessung = data.new Messung();
         }
         currentMessung.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1810,7 +1816,6 @@ public class LafObjectListener extends LafBaseListener {
             currentMessung = data.new Messung();
         }
         currentMessung.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1833,7 +1838,6 @@ public class LafObjectListener extends LafBaseListener {
             currentMessung = data.new Messung();
         }
         currentMessung.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1856,7 +1860,6 @@ public class LafObjectListener extends LafBaseListener {
             currentMessung = data.new Messung();
         }
         currentMessung.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1879,7 +1882,6 @@ public class LafObjectListener extends LafBaseListener {
             currentMessung = data.new Messung();
         }
         currentMessung.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1902,7 +1904,6 @@ public class LafObjectListener extends LafBaseListener {
             currentMessung = data.new Messung();
         }
         currentMessung.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
-        System.out.println(ctx.getChild(0) + ": " + value);
     }
 
     /**
@@ -1958,7 +1959,6 @@ public class LafObjectListener extends LafBaseListener {
         zusatzwert.put("EINHEIT", einheit);
         zusatzwert.put("MESSFEHLER", fehler);
         currentProbe.addZusatzwert(zusatzwert);
-        System.out.println("PZS: " + groesse + " MW: " + wert);
     }
 
     /**
@@ -2014,7 +2014,6 @@ public class LafObjectListener extends LafBaseListener {
         zusatzwert.put("EINHEIT_ID", einheit);
         zusatzwert.put("MESSFEHLER", fehler);
         currentProbe.addZusatzwert(zusatzwert);
-        System.out.println("PZS: " + groesse + " MW: " + wert);
     }
 
     /**
@@ -2033,7 +2032,6 @@ public class LafObjectListener extends LafBaseListener {
         String groesse = children.get(1);
         groesse = groesse.replaceAll("\"", "");
         if (!groesse.matches(LafDataTypes.C_STAR)) {
-            System.out.println("mw - groesse: " + groesse);
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
@@ -2043,9 +2041,7 @@ public class LafObjectListener extends LafBaseListener {
         }
         String wert = children.get(2);
         wert = wert.replaceAll("\"", "");
-        System.out.println(wert);
         if (!wert.matches(LafDataTypes.F12)) {
-            System.out.println("mw: wert");
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
@@ -2056,7 +2052,6 @@ public class LafObjectListener extends LafBaseListener {
         String einheit = children.get(3);
         einheit = einheit.replaceAll("\"", "");
         if (!einheit.matches(LafDataTypes.C9)) {
-            System.out.println("mw: einheit");
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
@@ -2065,11 +2060,10 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         String fehler = null;
-        if (ctx.getChildCount() >= 8) {
+        if (ctx.getChildCount() >= 5) {
             fehler = children.get(4);
             fehler = fehler.replaceAll("\"", "");
             if (!fehler.matches(LafDataTypes.F9)) {
-            System.out.println("mw: fehler");
                 ReportItem err = new ReportItem();
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
@@ -2087,7 +2081,6 @@ public class LafObjectListener extends LafBaseListener {
             currentMessung = data.new Messung();
         }
         currentMessung.addMesswert(messwert);
-        System.out.println("GROESSE: " + groesse + " MW: " + wert);
     }
 
     /**
@@ -2155,7 +2148,6 @@ public class LafObjectListener extends LafBaseListener {
             currentMessung = data.new Messung();
         }
         currentMessung.addMesswert(messwert);
-        System.out.println("GROESSE: " + groesse + " MW: " + wert);
     }
 
     /**
@@ -2224,7 +2216,6 @@ public class LafObjectListener extends LafBaseListener {
             currentMessung = data.new Messung();
         }
         currentMessung.addMesswert(messwert);
-        System.out.println("GROESSE: " + groesse + " MW: " + wert);
     }
 
     /**
@@ -2293,7 +2284,6 @@ public class LafObjectListener extends LafBaseListener {
             currentMessung = data.new Messung();
         }
         currentMessung.addMesswert(messwert);
-        System.out.println("GROESSE: " + groesse + " MW: " + wert);
     }
 
     /**
@@ -2303,7 +2293,72 @@ public class LafObjectListener extends LafBaseListener {
      */
     @Override public void enterMesswert_nwg(LafParser.Messwert_nwgContext ctx) {
         // C50* f12 c9 f9** f12
-        // TODO
+        List<String> children = new ArrayList<String>();
+        for (int i = 0; i < ctx.getChildCount(); i++) {
+            if (!ctx.getChild(i).toString().startsWith(" ")) {
+                children.add(ctx.getChild(i).toString());
+            }
+        }
+        String groesse = children.get(1);
+        groesse = groesse.replaceAll("\"", "");
+        if (!groesse.matches(LafDataTypes.C_STAR)) {
+            ReportItem err = new ReportItem();
+            err.setKey(ctx.getChild(0).toString());
+            err.setValue(groesse);
+            err.setCode(670);
+            currentErrors.add(err);;
+            return;
+        }
+        String wert = children.get(2);
+        wert = wert.replaceAll("\"", "");
+        if (!wert.matches(LafDataTypes.F12)) {
+            ReportItem err = new ReportItem();
+            err.setKey(ctx.getChild(0).toString());
+            err.setValue(wert);
+            err.setCode(670);
+            currentErrors.add(err);;
+            return;
+        }
+        String einheit = children.get(3);
+        einheit = einheit.replaceAll("\"", "");
+        if (!einheit.matches(LafDataTypes.C9)) {
+            ReportItem err = new ReportItem();
+            err.setKey(ctx.getChild(0).toString());
+            err.setValue(einheit);
+            err.setCode(670);
+            currentErrors.add(err);;
+            return;
+        }
+        String fehler = children.get(4);
+        fehler = fehler.replaceAll("\"", "");
+        if (!fehler.matches(LafDataTypes.F9)) {
+            ReportItem err = new ReportItem();
+            err.setKey(ctx.getChild(0).toString());
+            err.setValue(fehler);
+            err.setCode(670);
+            currentErrors.add(err);;
+            return;
+        }
+        String nwg = children.get(5);
+        nwg = nwg.replaceAll("\"", "");
+        if (!nwg.matches(LafDataTypes.F12)) {
+            ReportItem err = new ReportItem();
+            err.setKey(ctx.getChild(0).toString());
+            err.setValue(nwg);
+            err.setCode(670);
+            currentErrors.add(err);;
+            return;
+        }
+        Map<String, String> messwert = new HashMap<String, String>();
+        messwert.put("MESSGROESSE", groesse);
+        messwert.put("MESSWERT", wert);
+        messwert.put("MEH", einheit);
+        messwert.put("MESSFEHLER", fehler);
+        messwert.put("NWG", nwg);
+        if (currentMessung == null) {
+            currentMessung = data.new Messung();
+        }
+        currentMessung.addMesswert(messwert);
     }
 
     /**
@@ -2312,7 +2367,73 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterMesswert_nwg_s(LafParser.Messwert_nwg_sContext ctx) {
-        // TODO
+        List<String> children = new ArrayList<String>();
+        for (int i = 0; i < ctx.getChildCount(); i++) {
+            if (!ctx.getChild(i).toString().startsWith(" ")) {
+                children.add(ctx.getChild(i).toString());
+            }
+        }
+        String groesse = children.get(1);
+        groesse = groesse.replaceAll("\"", "");
+        if (!groesse.matches(LafDataTypes.SI8)) {
+            ReportItem err = new ReportItem();
+            err.setKey(ctx.getChild(0).toString());
+            err.setValue(groesse);
+            err.setCode(670);
+            currentErrors.add(err);;
+            return;
+        }
+        String wert = children.get(2);
+        wert = wert.replaceAll("\"", "");
+        if (!wert.matches(LafDataTypes.F12)) {
+            ReportItem err = new ReportItem();
+            err.setKey(ctx.getChild(0).toString());
+            err.setValue(wert);
+            err.setCode(670);
+            currentErrors.add(err);;
+            return;
+        }
+        String einheit = children.get(3);
+        einheit = einheit.replaceAll("\"", "");
+        if (!einheit.matches(LafDataTypes.SI3)) {
+            ReportItem err = new ReportItem();
+            err.setKey(ctx.getChild(0).toString());
+            err.setValue(einheit);
+            err.setCode(670);
+            currentErrors.add(err);;
+            return;
+        }
+        String fehler = children.get(4);
+        fehler = fehler.replaceAll("\"", "");
+        if (!fehler.matches(LafDataTypes.F9)) {
+            ReportItem err = new ReportItem();
+            err.setKey(ctx.getChild(0).toString());
+            err.setValue(fehler);
+            err.setCode(670);
+            currentErrors.add(err);;
+            return;
+        }
+        String nwg = children.get(5);
+        nwg = nwg.replaceAll("\"", "");
+        if (!nwg.matches(LafDataTypes.F12)) {
+            ReportItem err = new ReportItem();
+            err.setKey(ctx.getChild(0).toString());
+            err.setValue(nwg);
+            err.setCode(670);
+            currentErrors.add(err);;
+            return;
+        }
+        // TODO: handle all values
+        Map<String, String> messwert = new HashMap<String, String>();
+        messwert.put("MESSGROESSE_ID", groesse);
+        messwert.put("MESSWERT", wert);
+        messwert.put("MEH_ID", einheit);
+        messwert.put("MESSFEHLER", fehler);
+        messwert.put("NWG", nwg);
+        if (currentMessung == null) {
+            currentMessung = data.new Messung();
+        }
+        currentMessung.addMesswert(messwert);
     }
 
     /**
@@ -2321,7 +2442,73 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterMesswert_nwg_i(LafParser.Messwert_nwg_iContext ctx) {
-        // TODO
+        List<String> children = new ArrayList<String>();
+        for (int i = 0; i < ctx.getChildCount(); i++) {
+            if (!ctx.getChild(i).toString().startsWith(" ")) {
+                children.add(ctx.getChild(i).toString());
+            }
+        }
+        String groesse = children.get(1);
+        groesse = groesse.replaceAll("\"", "");
+        if (!groesse.matches(LafDataTypes.C_STAR)) {
+            ReportItem err = new ReportItem();
+            err.setKey(ctx.getChild(0).toString());
+            err.setValue(groesse);
+            err.setCode(670);
+            currentErrors.add(err);;
+            return;
+        }
+        String wert = children.get(2);
+        wert = wert.replaceAll("\"", "");
+        if (!wert.matches(LafDataTypes.F12)) {
+            ReportItem err = new ReportItem();
+            err.setKey(ctx.getChild(0).toString());
+            err.setValue(wert);
+            err.setCode(670);
+            currentErrors.add(err);;
+            return;
+        }
+        String einheit = children.get(3);
+        einheit = einheit.replaceAll("\"", "");
+        if (!einheit.matches(LafDataTypes.C9)) {
+            ReportItem err = new ReportItem();
+            err.setKey(ctx.getChild(0).toString());
+            err.setValue(einheit);
+            err.setCode(670);
+            currentErrors.add(err);;
+            return;
+        }
+        String fehler = children.get(4);
+        fehler = fehler.replaceAll("\"", "");
+        if (!fehler.matches(LafDataTypes.F9)) {
+            ReportItem err = new ReportItem();
+            err.setKey(ctx.getChild(0).toString());
+            err.setValue(fehler);
+            err.setCode(670);
+            currentErrors.add(err);;
+            return;
+        }
+        String nwg = children.get(5);
+        nwg = nwg.replaceAll("\"", "");
+        if (!nwg.matches(LafDataTypes.F12)) {
+            ReportItem err = new ReportItem();
+            err.setKey(ctx.getChild(0).toString());
+            err.setValue(nwg);
+            err.setCode(670);
+            currentErrors.add(err);;
+            return;
+        }
+        // TODO: handle all values
+        Map<String, String> messwert = new HashMap<String, String>();
+        messwert.put("MESSGROESSE", groesse);
+        messwert.put("MESSWERT", wert);
+        messwert.put("MEH", einheit);
+        messwert.put("MESSFEHLER", fehler);
+        messwert.put("NWG", nwg);
+        if (currentMessung == null) {
+            currentMessung = data.new Messung();
+        }
+        currentMessung.addMesswert(messwert);
     }
 
     /**
@@ -2331,6 +2518,84 @@ public class LafObjectListener extends LafBaseListener {
      */
     @Override public void enterMesswert_nwg_g(LafParser.Messwert_nwg_gContext ctx) {
         // TODO
+        List<String> children = new ArrayList<String>();
+        for (int i = 0; i < ctx.getChildCount(); i++) {
+            if (!ctx.getChild(i).toString().startsWith(" ")) {
+                children.add(ctx.getChild(i).toString());
+            }
+        }
+        String groesse = children.get(1);
+        groesse = groesse.replaceAll("\"", "");
+        if (!groesse.matches(LafDataTypes.C_STAR)) {
+            ReportItem err = new ReportItem();
+            err.setKey(ctx.getChild(0).toString());
+            err.setValue(groesse);
+            err.setCode(670);
+            currentErrors.add(err);;
+            return;
+        }
+        String wert = children.get(2);
+        wert = wert.replaceAll("\"", "");
+        if (!wert.matches(LafDataTypes.F12)) {
+            ReportItem err = new ReportItem();
+            err.setKey(ctx.getChild(0).toString());
+            err.setValue(wert);
+            err.setCode(670);
+            currentErrors.add(err);;
+            return;
+        }
+        String einheit = children.get(3);
+        einheit = einheit.replaceAll("\"", "");
+        if (!einheit.matches(LafDataTypes.C9)) {
+            ReportItem err = new ReportItem();
+            err.setKey(ctx.getChild(0).toString());
+            err.setValue(einheit);
+            err.setCode(670);
+            currentErrors.add(err);;
+            return;
+        }
+        String fehler = children.get(4);
+        fehler = fehler.replaceAll("\"", "");
+        if (!fehler.matches(LafDataTypes.F9)) {
+            ReportItem err = new ReportItem();
+            err.setKey(ctx.getChild(0).toString());
+            err.setValue(fehler);
+            err.setCode(670);
+            currentErrors.add(err);;
+            return;
+        }
+        String nwg = children.get(5);
+        nwg = nwg.replaceAll("\"", "");
+        if (!nwg.matches(LafDataTypes.F12)) {
+            ReportItem err = new ReportItem();
+            err.setKey(ctx.getChild(0).toString());
+            err.setValue(nwg);
+            err.setCode(670);
+            currentErrors.add(err);;
+            return;
+        }
+        String gw = children.get(8);
+        gw = gw.replaceAll("\"", "");
+        if (!gw.matches(LafDataTypes.F12)) {
+            ReportItem err = new ReportItem();
+            err.setKey(ctx.getChild(0).toString());
+            err.setValue(gw);
+            err.setCode(670);
+            currentErrors.add(err);;
+            return;
+        }
+        // TODO: handle all values
+        Map<String, String> messwert = new HashMap<String, String>();
+        messwert.put("MESSGROESSE", groesse);
+        messwert.put("MESSWERT", wert);
+        messwert.put("MEH", einheit);
+        messwert.put("MESSFEHLER", fehler);
+        messwert.put("NWG", nwg);
+        messwert.put("GRENZWERT", gw);
+        if (currentMessung == null) {
+            currentMessung = data.new Messung();
+        }
+        currentMessung.addMesswert(messwert);
     }
 
     /**
@@ -2389,7 +2654,6 @@ public class LafObjectListener extends LafBaseListener {
             currentMessung = data.new Messung();
         }
         currentMessung.addKommentar(kommentar);
-        System.out.println("KOMMENTAR: " + text);
     }
 
     /**
@@ -2414,7 +2678,6 @@ public class LafObjectListener extends LafBaseListener {
             currentMessung = data.new Messung();
         }
         currentMessung.addKommentar(kommentar);
-        System.out.println("KOMMENTAR: " + text);
     }
 
     /**
@@ -2470,7 +2733,6 @@ public class LafObjectListener extends LafBaseListener {
         kommentar.put("TIME", time);
         kommentar.put("TEXT", text);
         currentProbe.addKommentar(kommentar);
-        System.out.println("KOMMENTAR: " + text);
     }
 
     /**
@@ -2492,7 +2754,6 @@ public class LafObjectListener extends LafBaseListener {
         Map<String, String> kommentar = new HashMap<String, String>();
         kommentar.put("TEXT", text);
         currentProbe.addKommentar(kommentar);
-        System.out.println("KOMMENTAR: " + text);
     }
 
     /**

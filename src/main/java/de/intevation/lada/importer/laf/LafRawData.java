@@ -99,6 +99,10 @@ public class LafRawData {
         public void addKommentar(Map<String, String> kommentar) {
             this.kommentar.add(kommentar);
         }
+
+        public List<Map<String, String>> getKommentare() {
+            return this.kommentar;
+        }
     }
 
     public void addProbe(LafRawData.Probe probe) {

@@ -91,6 +91,7 @@ public class DataTransaction
         em.remove(
             em.contains(object) ?
                 object : em.merge(object));
+        em.flush();
     }
 
     public Query queryFromString(String sql, String dataSource) {
