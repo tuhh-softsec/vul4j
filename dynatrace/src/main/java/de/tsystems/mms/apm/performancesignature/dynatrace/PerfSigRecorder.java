@@ -253,19 +253,22 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
         public static final boolean defaultExportSessions = true;
         public static final int defaultNonFunctionalFailure = 0;
         @Deprecated
-        private List<DynatraceServerConfiguration> configurations = new ArrayList<DynatraceServerConfiguration>();
+        private transient List<DynatraceServerConfiguration> configurations = new ArrayList<DynatraceServerConfiguration>();
 
         public DescriptorImpl() {
             load();
         }
 
-        public ListBoxModel doFillDynatraceProfileItems() {
-            return PerfSigUtils.listToListBoxModel(PerfSigUtils.getDTConfigurations());
+        @SuppressWarnings("deprecation")
+        protected Object readResolve() {
+            if (configurations != null && !configurations.isEmpty()) {
+                PerfSigUtils.getDTConfigurations().addAll(configurations);
+            }
+            return this;
         }
 
-        @Deprecated
-        public List<DynatraceServerConfiguration> getConfigurations() {
-            return configurations;
+        public ListBoxModel doFillDynatraceProfileItems() {
+            return PerfSigUtils.listToListBoxModel(PerfSigUtils.getDTConfigurations());
         }
 
         public boolean isApplicable(final Class<? extends AbstractProject> aClass) {

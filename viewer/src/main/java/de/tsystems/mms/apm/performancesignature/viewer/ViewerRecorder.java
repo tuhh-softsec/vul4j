@@ -44,6 +44,7 @@ import org.kohsuke.stapler.DataBoundSetter;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ViewerRecorder extends Recorder implements SimpleBuildStep {
@@ -131,6 +132,20 @@ public class ViewerRecorder extends Recorder implements SimpleBuildStep {
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
         public static final int defaultNonFunctionalFailure = 0;
+        @Deprecated
+        private transient List<JenkinsServerConfiguration> configurations = new ArrayList<JenkinsServerConfiguration>();
+
+        public DescriptorImpl() {
+            load();
+        }
+
+        @SuppressWarnings("deprecation")
+        protected Object readResolve() {
+            if (configurations != null && !configurations.isEmpty()) {
+                ViewerUtils.getJenkinsConfigurations().addAll(configurations);
+            }
+            return this;
+        }
 
         public ListBoxModel doFillJenkinsJobItems() {
             return ViewerUtils.listToListBoxModel(ViewerUtils.getJenkinsConfigurations());

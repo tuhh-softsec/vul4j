@@ -17,14 +17,10 @@
 package de.tsystems.mms.apm.performancesignature.dynatrace;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.*;
-import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
-import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.Plugin;
 import hudson.init.Initializer;
 import hudson.model.Items;
 import hudson.model.Run;
-
-import java.util.List;
 
 import static hudson.init.InitMilestone.PLUGINS_STARTED;
 
@@ -51,13 +47,5 @@ public class PerfSigDynatracePlugin extends Plugin {
         Items.XSTREAM2.addCompatibilityAlias("de.tsystems.mms.apm.performancesignature.PerfSigStopRecording", PerfSigStopRecording.class);
         Items.XSTREAM2.addCompatibilityAlias("de.tsystems.mms.apm.performancesignature.PerfSigTestDataPublisher", PerfSigTestDataPublisher.class);
         Items.XSTREAM2.addCompatibilityAlias("de.tsystems.mms.apm.performancesignature.PerfSigThreadDump", PerfSigThreadDump.class);
-
-        //Put all configurations into the global configuration
-        PerfSigRecorder.DescriptorImpl descriptor = PerfSigUIUtils.getInstance().getDescriptorByType(PerfSigRecorder.DescriptorImpl.class);
-        if (descriptor != null) {
-            List<DynatraceServerConfiguration> oldInstances = descriptor.getConfigurations();
-            PerfSigUtils.getDTConfigurations().addAll(oldInstances);
-            oldInstances.clear();
-        }
     }
 }
