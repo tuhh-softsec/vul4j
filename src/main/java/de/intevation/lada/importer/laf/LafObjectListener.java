@@ -86,9 +86,17 @@ public class LafObjectListener extends LafBaseListener {
         if (currentProbe != null) {
             data.addProbe(currentProbe);
             if (!currentErrors.isEmpty()) {
-                String identifier = currentProbe.getAttributes().get("PROBE_ID");
-                identifier = identifier == null ? currentProbe.getAttributes().get("PROBEN_NR") : null;
-                identifier = identifier == null ? currentProbe.getAttributes().get("HAUPTPROBEN_NR") : "not identified";
+                String identifier = currentProbe.getAttributes()
+                    .get("PROBE_ID");
+                identifier = identifier == null
+                    ? currentProbe.getAttributes().get("PROBEN_NR")
+                    : identifier;
+                identifier = identifier == null
+                    ? currentProbe.getAttributes().get("HAUPTPROBENNUMMER")
+                    : identifier;
+                identifier = identifier == null
+                    ? "not identified"
+                    : identifier;
                 System.out.println("exit: " + identifier);
                 errors.put(identifier, currentErrors);
             }
@@ -126,8 +134,12 @@ public class LafObjectListener extends LafBaseListener {
                 System.out.println("item: " + item.getKey());
             }
             String identifier = currentProbe.getAttributes().get("PROBE_ID");
-            identifier = identifier == null ? currentProbe.getAttributes().get("PROBEN_NR") : null;
-            identifier = identifier == null ? currentProbe.getAttributes().get("HAUPTPROBEN_NR") : null;
+            identifier = identifier == null
+                ? currentProbe.getAttributes().get("PROBEN_NR")
+                : identifier;
+            identifier = identifier == null
+                ? currentProbe.getAttributes().get("HAUPTPROBENNUMMER")
+                : identifier;
             identifier = identifier == null ? "not identified" : identifier;
             System.out.println("exit probe: " + identifier);
             errors.put(identifier, currentErrors);
