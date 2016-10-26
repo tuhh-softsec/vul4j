@@ -47,6 +47,7 @@ public class LafImporter implements Importer{
             CommonTokenStream cts = new CommonTokenStream(lexer);
             LafParser parser = new LafParser(cts);
             LafErrorListener errorListener = LafErrorListener.INSTANCE;
+            errorListener.reset();
             parser.addErrorListener(errorListener);
             ParseTree tree = parser.probendatei();
             LafObjectListener listener = new LafObjectListener();

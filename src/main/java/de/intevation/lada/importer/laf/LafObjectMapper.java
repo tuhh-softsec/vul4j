@@ -122,9 +122,17 @@ public class LafObjectMapper {
         if (!isAuthorized) {
             ReportItem err = new ReportItem();
             err.setCode(699);
-            err.setKey("auth");
-            err.setValue("not authorized");
+            err.setKey(userInfo.getName());
+            err.setValue(probe.getMstId());
             currentErrors.add(err);
+            if (currentErrors.size() > 0) {
+                List<ReportItem> copyErr = new ArrayList<ReportItem>(currentErrors);
+                errors.put(probe.getIdAlt(), copyErr);
+            }
+            if (currentWarnings.size() > 0) {
+                List<ReportItem> copyWarn = new ArrayList<ReportItem>(currentWarnings);
+                warnings.put(probe.getIdAlt(), copyWarn);
+            }
             return;
         }
 
@@ -153,6 +161,14 @@ public class LafObjectMapper {
                 err.setKey("duplicate");
                 err.setValue("");
                 currentErrors.add(err);
+                if (currentErrors.size() > 0) {
+                    List<ReportItem> copyErr = new ArrayList<ReportItem>(currentErrors);
+                    errors.put(probe.getIdAlt(), copyErr);
+                }
+                if (currentWarnings.size() > 0) {
+                    List<ReportItem> copyWarn = new ArrayList<ReportItem>(currentWarnings);
+                    warnings.put(probe.getIdAlt(), copyWarn);
+                }
                 return;
             }
             // It is a brand new probe!
@@ -177,6 +193,14 @@ public class LafObjectMapper {
             err.setKey("not known");
             err.setValue("No valid Probe Object");
             currentErrors.add(err);
+            if (currentErrors.size() > 0) {
+                List<ReportItem> copyErr = new ArrayList<ReportItem>(currentErrors);
+                errors.put(probe.getIdAlt(), copyErr);
+            }
+            if (currentWarnings.size() > 0) {
+                List<ReportItem> copyWarn = new ArrayList<ReportItem>(currentWarnings);
+                warnings.put(probe.getIdAlt(), copyWarn);
+            }
             return;
         }
         if (newProbe == null) {
@@ -211,17 +235,12 @@ public class LafObjectMapper {
         }
         if (currentErrors.size() > 0) {
             List<ReportItem> copyErr = new ArrayList<ReportItem>(currentErrors);
-            System.out.println("errs for probe: " + probe.getIdAlt());
             errors.put(probe.getIdAlt(), copyErr);
         }
         if (currentWarnings.size() > 0) {
             List<ReportItem> copyWarn = new ArrayList<ReportItem>(currentWarnings);
             warnings.put(probe.getIdAlt(), copyWarn);
-            System.out.println("warn: " + warnings.size());
         }
-        currentErrors.clear();
-        currentWarnings.clear();
-        logger.debug("probe written to database.");
     }
 
     private void create(LafRawData.Messung object, int probeId, String mstId) {
@@ -237,7 +256,7 @@ public class LafObjectMapper {
         if (!authorizer.isAuthorizedOnNew(userInfo, messung, Messung.class)) {
             ReportItem warn = new ReportItem();
             warn.setCode(699);
-            warn.setKey("auth");
+            warn.setKey(userInfo.getName());
             warn.setValue("Messung: " + messung.getNebenprobenNr());
             currentErrors.add(warn);
             return;
@@ -342,8 +361,8 @@ public class LafObjectMapper {
         if (!userInfo.getMessstellen().contains(kommentar.getMstId())) {
             ReportItem warn = new ReportItem();
             warn.setCode(699);
-            warn.setKey("auth");
-            warn.setValue(kommentar.getMstId());
+            warn.setKey(userInfo.getName());
+            warn.setValue("Kommentar: " + kommentar.getMstId());
             currentWarnings.add(warn);
             return null;
         }
@@ -870,10 +889,9 @@ public class LafObjectMapper {
     }
 
     /**
-     * @return the warnings
+     * @return the errors
      */
     public Map<String, List<ReportItem>> getWarnings() {
-        System.out.println(warnings.size());
         return warnings;
     }
 

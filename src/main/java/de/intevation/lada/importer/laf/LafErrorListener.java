@@ -20,16 +20,24 @@ public class LafErrorListener extends BaseErrorListener {
                             int line, int charPositionInLine,
                             String msg, RecognitionException e)
     {
-    	String sourceName = "Parser";
-    	if (e != null && e.getCtx() != null) {
-    	    sourceName = e.getCtx().getText();
-    	}
+        String sourceName = "Parser";
+        if (e != null && e.getCtx() != null) {
+            sourceName = e.getCtx().getText();
+        }
+        String token = "Token";
+        if (e != null && e.getOffendingToken() != null) {
+            e.getOffendingToken().getText();
+        }
         ReportItem err = new ReportItem();
         err.setKey(sourceName);
-        err.setValue(line + ":" + charPositionInLine + " - " + e.getOffendingToken().getText());
+        err.setValue(line + ":" + charPositionInLine + " - " + token);
         err.setCode(670);
         this.errors.add(err);
         System.err.println(err.getKey() + " - " +err.getValue() + " - " + err.getCode());
+    }
+
+    public void reset() {
+        this.errors.clear();
     }
 
     public List<ReportItem> getErrors() {
