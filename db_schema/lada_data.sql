@@ -90,6 +90,10 @@ COPY probe (id, id_alt, test, mst_id, labor_mst_id, hauptproben_nr, datenbasis_i
 
 ALTER TABLE probe ENABLE TRIGGER ALL;
 
+SELECT setval(pg_get_serial_sequence('probe', 'id'),
+    (SELECT max(id) FROM probe));
+
+
 --
 -- TOC entry 4687 (class 0 OID 1170823)
 -- Dependencies: 289
@@ -186,6 +190,10 @@ COPY messung (id, id_alt, probe_id, nebenproben_nr, mmt_id, messdauer, messzeitp
 
 ALTER TABLE messung ENABLE TRIGGER ALL;
 
+SELECT setval(pg_get_serial_sequence('messung', 'id'),
+    (SELECT max(id) FROM messung));
+
+
 --
 -- TOC entry 4681 (class 0 OID 1170751)
 -- Dependencies: 283
@@ -201,6 +209,10 @@ COPY kommentar_m (id, mst_id, datum, text, messungs_id) FROM stdin;
 
 
 ALTER TABLE kommentar_m ENABLE TRIGGER ALL;
+
+SELECT setval(pg_get_serial_sequence('kommentar_m', 'id'),
+    (SELECT max(id) FROM kommentar_m));
+
 
 --
 -- TOC entry 4682 (class 0 OID 1170759)
@@ -225,6 +237,10 @@ COPY kommentar_p (id, mst_id, datum, text, probe_id) FROM stdin;
 
 
 ALTER TABLE kommentar_p ENABLE TRIGGER ALL;
+
+SELECT setval(pg_get_serial_sequence('kommentar_p', 'id'),
+    (SELECT max(id) FROM kommentar_p));
+
 
 --
 -- TOC entry 4684 (class 0 OID 1170769)
@@ -801,6 +817,10 @@ COPY messwert (id, messungs_id, messgroesse_id, messwert_nwg, messwert, messfehl
 
 ALTER TABLE messwert ENABLE TRIGGER ALL;
 
+SELECT setval(pg_get_serial_sequence('messwert', 'id'),
+    (SELECT max(id) FROM messwert));
+
+
 --
 -- TOC entry 4691 (class 0 OID 1170844)
 -- Dependencies: 293
@@ -890,6 +910,10 @@ COPY ortszuordnung (id, probe_id, ort_id, ortszuordnung_typ, ortszusatztext, let
 
 
 ALTER TABLE ortszuordnung ENABLE TRIGGER ALL;
+
+SELECT setval(pg_get_serial_sequence('ortszuordnung', 'id'),
+    (SELECT max(id) FROM ortszuordnung));
+
 
 --
 -- TOC entry 4695 (class 0 OID 1170895)
@@ -987,6 +1011,10 @@ COPY status_protokoll (id, mst_id, datum, text, messungs_id, status_kombi, tree_
 
 ALTER TABLE status_protokoll ENABLE TRIGGER ALL;
 
+SELECT setval(pg_get_serial_sequence('status_protokoll', 'id'),
+    (SELECT max(id) FROM status_protokoll));
+
+
 --
 -- TOC entry 4696 (class 0 OID 1170904)
 -- Dependencies: 298
@@ -1003,6 +1031,9 @@ COPY zusatz_wert (id, probe_id, pzs_id, messwert_pzs, messfehler, letzte_aenderu
 
 
 ALTER TABLE zusatz_wert ENABLE TRIGGER ALL;
+
+SELECT setval(pg_get_serial_sequence('zusatz_wert', 'id'),
+    (SELECT max(id) FROM zusatz_wert));
 
 --
 -- PostgreSQL database dump complete
