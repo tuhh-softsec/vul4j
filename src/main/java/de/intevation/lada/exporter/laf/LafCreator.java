@@ -14,6 +14,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.log4j.Logger;
+
 import de.intevation.lada.exporter.Creator;
 import de.intevation.lada.model.land.KommentarM;
 import de.intevation.lada.model.land.KommentarP;
@@ -23,10 +25,11 @@ import de.intevation.lada.model.land.Ortszuordnung;
 import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.model.land.ZusatzWert;
 import de.intevation.lada.model.stammdaten.MessEinheit;
+import de.intevation.lada.model.stammdaten.MessStelle;
 import de.intevation.lada.model.stammdaten.Messgroesse;
+import de.intevation.lada.model.stammdaten.Ort;
 import de.intevation.lada.model.stammdaten.ProbenZusatz;
 import de.intevation.lada.model.stammdaten.Probenart;
-import de.intevation.lada.model.stammdaten.Ort;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
@@ -44,6 +47,8 @@ import de.intevation.lada.util.rest.Response;
 public class LafCreator
 implements Creator
 {
+    @Inject
+    private Logger logger;
     /**
      * The repository used to read data.
      */
@@ -59,6 +64,8 @@ implements Creator
     @Override
     public String create(String probeId) {
         String lafProbe = "%PROBE%\n";
+        lafProbe += "UEBERTRAGUNGSFORMAT           7\n";
+        lafProbe += "VERSION                       0084\n";
         lafProbe += probeToLAF(probeId);
         return lafProbe;
     }
@@ -105,6 +112,9 @@ implements Creator
                 "stamm").getData();
         String probenart = probenarten.get(0).getProbenart();
 
+        MessStelle messstelle =
+            repository.getByIdPlain(MessStelle.class, probe.getMstId(), "stamm");
+
         QueryBuilder<ZusatzWert> zusatzBuilder =
             new QueryBuilder<ZusatzWert>(
                 repository.entityManager("land"), ZusatzWert.class);
@@ -114,9 +124,10 @@ implements Creator
 
         String laf = "";
         laf += probe.getDatenbasisId() == null ?
-            "": lafLine("DATENBASIS_S", probe.getDatenbasisId().toString());
-        //laf += probe.getNetzbetreiberId() == null ?
-        //    "" : lafLine("NETZKENNUNG", probe.getNetzbetreiberId());
+            "": lafLine("DATENBASIS_S",
+                String.format("%02d", probe.getDatenbasisId()));
+        laf += messstelle == null ?
+            "" : lafLine("NETZKENNUNG", messstelle.getNetzbetreiberId());
         laf += probe.getMstId() == null ?
             "" : lafLine("MESSSTELLE", probe.getMstId());
         laf += lafLine("PROBE_ID", probe.getIdAlt());
@@ -140,10 +151,9 @@ implements Creator
                 format.format(probe.getProbeentnahmeEnde()));
         laf += probe.getUmwId() == null ?
             "" : lafLine("UMWELTBEREICH_S", probe.getUmwId());
-        laf += probe.getMedia() == null ?
-            "" : lafLine("MEDIUM", "\"" + probe.getMedia() + "\"");
         laf += probe.getMediaDesk() == null ?
-            "" : lafLine("DESKRIPTOREN", "\"" + probe.getMediaDesk() + "\"");
+            "" : lafLine("DESKRIPTOREN", "\"" +
+                probe.getMediaDesk().replaceAll(" ", "").substring(2) + "\"");
         laf += probe.getTest() == Boolean.TRUE ?
             lafLine("TESTDATEN", "1") : lafLine("TESTDATEN", "0");
         for (ZusatzWert zw : zusatzwerte) {
@@ -153,7 +163,7 @@ implements Creator
             laf += writeKommentar(kp);
         }
         laf += writeMessung(probe);
-        laf += writeOrt(probe);
+        //laf += writeOrt(probe);
         return laf;
     }
 
@@ -276,7 +286,7 @@ implements Creator
             kommBuilder.and("messungsId", m.getId());
             Response kommentar = repository.filter(kommBuilder.getQuery(), "land");
             List<KommentarM> kommentare = (List<KommentarM>)kommentar.getData();
-            laf += lafLine("MESSUNGS_ID", m.getId().toString());
+            laf += lafLine("MESSUNGS_ID", m.getIdAlt().toString());
             laf += lafLine("NEBENPROBENNUMMER", m.getNebenprobenNr());
             laf += m.getMesszeitpunkt() == null ?
                 "" : lafLine(
@@ -286,6 +296,7 @@ implements Creator
                 "" : lafLine("MESSZEIT_SEKUNDEN", m.getMessdauer().toString());
             laf += m.getMmtId() == null ?
                 "" : lafLine("MESSMETHODE_S", m.getMmtId());
+            laf += lafLine("ERFASSUNG_ABGESCHLOSSEN", (m.getFertig() ? "1" : "0"));
             for (Messwert mw : werte) {
                 laf += writeMesswert(mw);
             }
@@ -336,21 +347,27 @@ implements Creator
                 eBuilder.getQuery(),
                 "stamm").getData();
 
+        String tag = "MESSWERT";
         String value = "\"" + groessen.get(0).getMessgroesse() + "\"";
-        if (mw.getGrenzwertueberschreitung() != null &&
-            !mw.getGrenzwertueberschreitung()) {
-            value += " <";
-        }
-        else {
-            value += " ";
-        }
+        value += " ";
+        value += mw.getMesswertNwg() == null ? " " : mw.getMesswertNwg();
         value += mw.getMesswert();
         value += " \"" + einheiten.get(0).getEinheit() + "\"";
-        value += mw.getMessfehler() == null ? " NULL" : " " + mw.getMessfehler();
-        value += mw.getNwgZuMesswert() == null ? " NULL" : " " + mw.getNwgZuMesswert();
-        value += mw.getGrenzwertueberschreitung() == null ? " N" :
-            mw.getGrenzwertueberschreitung() ? " Y" : " N";
-        return lafLine("MESSWERT", value);
+        value += mw.getMessfehler() == null ? " 0.0" : " " + mw.getMessfehler();
+        if (mw.getGrenzwertueberschreitung() == null ||
+            !mw.getGrenzwertueberschreitung()) {
+            if (mw.getNwgZuMesswert() != null) {
+                tag += "_NWG";
+                value += " " + mw.getNwgZuMesswert();
+            }
+        }
+        else {
+            tag += "_NWG_G";
+            value += " " + mw.getNwgZuMesswert() == null ? "0.0": mw.getNwgZuMesswert();
+            value += " " + mw.getGrenzwertueberschreitung() == null ? " N" :
+                mw.getGrenzwertueberschreitung() ? " J" : " N";
+        }
+        return lafLine(tag, value);
     }
 
     /**
