@@ -10,6 +10,5 @@ builder.bundle('src/main/js/projectaction.js').minify();
 
 builder.bundle('src/main/css/bootstrapprefix.less');
 
-builder.defineTasks(['test', 'bundle']);
 builder.defineTask('lint', function () {
 });

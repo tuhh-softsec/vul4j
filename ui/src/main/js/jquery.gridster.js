@@ -2351,17 +2351,24 @@
             this.placeholder_grid_data.el.coords().grid.row !== this.placeholder_grid_data.row) {
             this.update_widget_position(this.placeholder_grid_data.el.coords().grid, false);
 
-            // move the cells down if there is an overlap and we are in static mode
-            if (this.options.collision.wait_for_mouseup) {
-                this.for_each_cell_occupied(this.placeholder_grid_data, function (tcol, trow) {
-                    if (this.is_widget(tcol, trow)) {
-                        // get number of cells to move
-                        var destinyRow = this.placeholder_grid_data.row + this.placeholder_grid_data.size_y;
-                        var currentOverlappedRow = parseInt(this.gridmap[tcol][trow][0].getAttribute('data-row'));
-                        var cellsToMove = destinyRow - currentOverlappedRow;
-                        this.move_widget_down(this.is_widget(tcol, trow), cellsToMove);
-                    }
-                });
+            var grid = this.placeholder_grid_data.el.coords().grid;
+
+            // update cells previously occupied by dragging cell if only it is still occupied by dragging cell
+            if (this.is_widget(grid.col, grid.row) && this.is_player(grid.col, grid.row)) {
+                this.update_widget_position(this.placeholder_grid_data.el.coords().grid, false);
+
+                // move the cells down if there is an overlap and we are in static mode
+                if (this.options.collision.wait_for_mouseup) {
+                    this.for_each_cell_occupied(this.placeholder_grid_data, function (tcol, trow) {
+                        if (this.is_widget(tcol, trow)) {
+                            // get number of cells to move
+                            var destinyRow = this.placeholder_grid_data.row + this.placeholder_grid_data.size_y;
+                            var currentOverlappedRow = parseInt(this.gridmap[tcol][trow][0].getAttribute('data-row'));
+                            var cellsToMove = destinyRow - currentOverlappedRow;
+                            this.move_widget_down(this.is_widget(tcol, trow), cellsToMove);
+                        }
+                    });
+                }
             }
         }
 
@@ -3189,6 +3196,11 @@
      */
     Gridster.prototype.is_occupied = function (col, row) {
         if (!this.gridmap[col]) {
+            return false;
+        }
+
+        // Consider player cell as not occupied (i.e. awailable for swap) if it is occupied by player
+        if (this.is_player(col, row)) {
             return false;
         }
 
