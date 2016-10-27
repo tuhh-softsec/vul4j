@@ -247,25 +247,19 @@ public class StatusService {
             status.setStatusKombi(1);
         }
         else {
+            Violation violation = validator.validate(status);
+            if (violation.hasErrors()) {
+                Response response = new Response(false, 604, status);
+                response.setErrors(violation.getErrors());
+                response.setWarnings(violation.getWarnings());
+                return response;
+            }
+
             StatusProtokoll oldStatus = defaultRepo.getByIdPlain(
                 StatusProtokoll.class, messung.getStatus(), "land");
 
             StatusKombi oldKombi = defaultRepo.getByIdPlain(StatusKombi.class, oldStatus.getStatusKombi(), "stamm");
             StatusKombi newKombi = defaultRepo.getByIdPlain(StatusKombi.class, status.getStatusKombi(), "stamm");
-
-            // Check if changing to the requested status_kombi is allowed.
-            QueryBuilder<StatusReihenfolge> builder = new QueryBuilder<StatusReihenfolge>(defaultRepo.entityManager("stamm"), StatusReihenfolge.class);
-            builder.and("vonId", oldStatus.getStatusKombi());
-            List<StatusReihenfolge> reachable = defaultRepo.filterPlain(builder.getQuery(), "stamm");
-            boolean allowed = false;
-            for (int i = 0; i < reachable.size(); i++) {
-                if (reachable.get(i).getZuId() == status.getStatusKombi()) {
-                    allowed = true;
-                }
-            }
-            if (!allowed) {
-                return new Response(false, 604, null);
-            }
 
             // Check if the user is allowed to change to the requested
             // status_kombi
