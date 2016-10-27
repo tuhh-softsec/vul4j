@@ -7,13 +7,16 @@
  */
 package de.intevation.lada;
 
+import java.io.File;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.After;
 import org.junit.AfterClass;
 
@@ -41,11 +44,21 @@ public class BaseTest {
      */
     @Deployment(testable=true)
     public static WebArchive createDeployment() throws Exception {
+        File[] files = Maven.resolver().loadPomFromFile("pom.xml")
+            .importRuntimeAndTestDependencies().resolve().withTransitivity().asFile();
+        File antlr = null;
+        for (File f : files) {
+            logger.debug(f.getName());
+            if (f.getName().contains("antlr4")) {
+                antlr = f;
+            }
+        }
         WebArchive archive = ShrinkWrap.create(WebArchive.class, ARCHIVE_NAME)
             .addPackages(true, Package.getPackage("de.intevation.lada"))
             .addAsResource("log4j.properties", "log4j.properties")
             .addAsResource("shibboleth.properties", "shibboleth.properties")
             .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
+            .addAsLibrary(antlr)
             .addAsResource("META-INF/test-persistence.xml",
                 "META-INF/persistence.xml");
         return archive;
