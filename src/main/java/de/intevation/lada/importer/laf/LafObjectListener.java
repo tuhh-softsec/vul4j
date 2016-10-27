@@ -361,6 +361,9 @@ public class LafObjectListener extends LafBaseListener {
         if (this.hasDatenbasis) {
             return;
         }
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         // Trim double qoutes.
         value = value.replaceAll("\"", "");
@@ -385,6 +388,9 @@ public class LafObjectListener extends LafBaseListener {
         if (this.hasDatenbasis) {
             return;
         }
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.SI2)) {
@@ -405,6 +411,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterNetzkennung(LafParser.NetzkennungContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C2)) {
@@ -424,6 +433,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterErzeuger(LafParser.ErzeugerContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C2)) {
@@ -443,6 +455,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterStaat_der_messstelle_lang(LafParser.Staat_der_messstelle_langContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C_STAR)) {
@@ -462,6 +477,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterStaat_der_messstelle_kurz(LafParser.Staat_der_messstelle_kurzContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C5)) {
@@ -481,6 +499,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterStaat_der_messstelle_s(LafParser.Staat_der_messstelle_sContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.SI8)) {
@@ -500,6 +521,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterMessstelle(LafParser.MessstelleContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.SC5)) {
@@ -519,6 +543,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterMesslabor(LafParser.MesslaborContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.SC5)) {
@@ -538,6 +565,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterProbe_id(LafParser.Probe_idContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C16)) {
@@ -557,6 +587,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterMessungs_id(LafParser.Messungs_idContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.I2)) {
@@ -579,6 +612,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterProben_nr(LafParser.Proben_nrContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.I2)) {
@@ -598,6 +634,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterHauptprobennummer(LafParser.HauptprobennummerContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C20)) {
@@ -617,6 +656,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterNebenprobennummer(LafParser.NebenprobennummerContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C4)) {
@@ -642,6 +684,9 @@ public class LafObjectListener extends LafBaseListener {
         if (this.hasMessprogramm) {
             return;
         }
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C_STAR)) {
@@ -665,6 +710,9 @@ public class LafObjectListener extends LafBaseListener {
         if (this.hasMessprogramm) {
             return;
         }
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.SC1)) {
@@ -685,6 +733,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterMessprogramm_land(LafParser.Messprogramm_landContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C3)) {
@@ -704,6 +755,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterProbenahmeinstitution(LafParser.ProbenahmeinstitutionContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C9)) {
@@ -723,6 +777,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterProbenart(LafParser.ProbenartContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C1)) {
@@ -743,6 +800,9 @@ public class LafObjectListener extends LafBaseListener {
      */
     @Override public void enterZeitbasis(LafParser.ZeitbasisContext ctx) {
         if (this.hasZeitbasis) {
+            return;
+        }
+        if (ctx.getChildCount() < 2) {
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -768,6 +828,9 @@ public class LafObjectListener extends LafBaseListener {
         if (this.hasZeitbasis) {
             return;
         }
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.SI1)) {
@@ -788,6 +851,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterSoll_datum_uhrzeit_a(LafParser.Soll_datum_uhrzeit_aContext ctx) {
+        if (ctx.getChildCount() < 4) {
+            return;
+        }
         String date = ctx.getChild(1).toString();
         date = date.replaceAll("\"", "");
         if (!date.matches(LafDataTypes.D8)) {
@@ -817,6 +883,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterSoll_datum_uhrzeit_e(LafParser.Soll_datum_uhrzeit_eContext ctx) {
+        if (ctx.getChildCount() < 4) {
+            return;
+        }
         String date = ctx.getChild(1).toString();
         date = date.replaceAll("\"", "");
         if (!date.matches(LafDataTypes.D8)) {
@@ -846,6 +915,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterUrsprungs_datum_uhrzeit(LafParser.Ursprungs_datum_uhrzeitContext ctx) {
+        if (ctx.getChildCount() < 4) {
+            return;
+        }
         String date = ctx.getChild(1).toString();
         date = date.replaceAll("\"", "");
         if (!date.matches(LafDataTypes.D8)) {
@@ -875,6 +947,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterProbenahme_datum_uhrzeit_a(LafParser.Probenahme_datum_uhrzeit_aContext ctx) {
+        if (ctx.getChildCount() < 4) {
+            return;
+        }
         String date = ctx.getChild(1).toString();
         date = date.replaceAll("\"", "");
         if (!date.matches(LafDataTypes.D8)) {
@@ -904,6 +979,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterProbenahme_datum_uhrzeit_e(LafParser.Probenahme_datum_uhrzeit_eContext ctx) {
+        if (ctx.getChildCount() < 4) {
+            return;
+        }
         String date = ctx.getChild(1).toString();
         date = date.replaceAll("\"", "");
         if (!date.matches(LafDataTypes.D8)) {
@@ -936,6 +1014,9 @@ public class LafObjectListener extends LafBaseListener {
         if (this.hasUmwelt) {
             return;
         }
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C_STAR)) {
@@ -959,6 +1040,9 @@ public class LafObjectListener extends LafBaseListener {
         if (this.hasUmwelt) {
             return;
         }
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.SC3)) {
@@ -979,6 +1063,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterDeskriptoren(LafParser.DeskriptorenContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C26)) {
@@ -998,6 +1085,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterRei_programmpunkt(LafParser.Rei_programmpunktContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C10)) {
@@ -1017,6 +1107,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterRei_programmpunktgruppe(LafParser.Rei_programmpunktgruppeContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C21)) {
@@ -1036,6 +1129,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterReferenz_datum_uhrzeit(LafParser.Referenz_datum_uhrzeitContext ctx) {
+        if (ctx.getChildCount() < 4) {
+            return;
+        }
         String date = ctx.getChild(1).toString();
         date = date.replaceAll("\"", "");
         if (!date.matches(LafDataTypes.D8)) {
@@ -1065,6 +1161,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterTestdaten(LafParser.TestdatenContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.BOOL)) {
@@ -1084,6 +1183,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterSzenario(LafParser.SzenarioContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C20)) {
@@ -1103,6 +1205,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterSek_datenbasis(LafParser.Sek_datenbasisContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C_STAR)) {
@@ -1122,6 +1227,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterSek_datenbasis_s(LafParser.Sek_datenbasis_sContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.SI2)) {
@@ -1141,6 +1249,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterU_herkunftsland_lang(LafParser.U_herkunftsland_langContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C_STAR)) {
@@ -1161,6 +1272,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterU_herkunftsland_kurz(LafParser.U_herkunftsland_kurzContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C5)) {
@@ -1181,6 +1295,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterU_herkunftsland_s(LafParser.U_herkunftsland_sContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.SI8)) {
@@ -1201,6 +1318,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterU_gemeindeschluessel(LafParser.U_gemeindeschluesselContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.I8)) {
@@ -1221,6 +1341,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterU_gemeindename(LafParser.U_gemeindenameContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C_STAR)) {
@@ -1241,6 +1364,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterU_orts_zusatzkennzahl(LafParser.U_orts_zusatzkennzahlContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.I3)) {
@@ -1261,6 +1387,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterU_koordinaten(LafParser.U_koordinatenContext ctx) {
+        if (ctx.getChildCount() < 6) {
+            return;
+        }
         String art = ctx.getChild(1).toString();
         art = art.replaceAll("\"", "");
         if (!art.matches(LafDataTypes.C_STAR)) {
@@ -1301,6 +1430,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterU_koordinaten_s(LafParser.U_koordinaten_sContext ctx) {
+        if (ctx.getChildCount() < 6) {
+            return;
+        }
         String art = ctx.getChild(1).toString();
         art = art.replaceAll("\"", "");
         if (!art.matches(LafDataTypes.SI2)) {
@@ -1341,6 +1473,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterU_orts_zusatzcode(LafParser.U_orts_zusatzcodeContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C8)) {
@@ -1361,6 +1496,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterU_orts_zusatztext(LafParser.U_orts_zusatztextContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.MC50)) {
@@ -1381,6 +1519,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterU_nuts_code(LafParser.U_nuts_codeContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C10)) {
@@ -1401,6 +1542,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_herkunftsland_lang(LafParser.P_herkunftsland_langContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C_STAR)) {
@@ -1421,6 +1565,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_herkunftsland_kurz(LafParser.P_herkunftsland_kurzContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C5)) {
@@ -1441,6 +1588,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_herkunftsland_s(LafParser.P_herkunftsland_sContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.SI8)) {
@@ -1461,6 +1611,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_gemeindeschluessel(LafParser.P_gemeindeschluesselContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.I8)) {
@@ -1481,6 +1634,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_gemeindename(LafParser.P_gemeindenameContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C_STAR)) {
@@ -1501,6 +1657,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_orts_zusatzkennzahl(LafParser.P_orts_zusatzkennzahlContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.I3)) {
@@ -1521,6 +1680,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_koordinaten(LafParser.P_koordinatenContext ctx) {
+        if (ctx.getChildCount() < 6) {
+            return;
+        }
         String art = ctx.getChild(1).toString();
         art = art.replaceAll("\"", "");
         if (!art.matches(LafDataTypes.C_STAR)) {
@@ -1561,6 +1723,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_koordinaten_s(LafParser.P_koordinaten_sContext ctx) {
+        if (ctx.getChildCount() < 6) {
+            return;
+        }
         String art = ctx.getChild(1).toString();
         art = art.replaceAll("\"", "");
         if (!art.matches(LafDataTypes.SI2)) {
@@ -1601,6 +1766,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_orts_zusatzcode(LafParser.P_orts_zusatzcodeContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C8)) {
@@ -1621,6 +1789,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_orts_zusatztext(LafParser.P_orts_zusatztextContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.MC50)) {
@@ -1641,6 +1812,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_nuts_code(LafParser.P_nuts_codeContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C10)) {
@@ -1661,6 +1835,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_site_id(LafParser.P_site_idContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C8)) {
@@ -1681,6 +1858,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_site_name(LafParser.P_site_nameContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C_STAR)) {
@@ -1701,6 +1881,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_hoehe_nn(LafParser.P_hoehe_nnContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.F10)) {
@@ -1721,6 +1904,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_hoehe_land(LafParser.P_hoehe_landContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.F10)) {
@@ -1741,6 +1927,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterMehrzweckfeld(LafParser.MehrzweckfeldContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.MC300)) {
@@ -1760,6 +1949,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterMess_datum_uhrzeit(LafParser.Mess_datum_uhrzeitContext ctx) {
+        if (ctx.getChildCount() < 4) {
+            return;
+        }
         String date = ctx.getChild(1).toString();
         date = date.replaceAll("\"", "");
         if (!date.matches(LafDataTypes.D8)) {
@@ -1792,6 +1984,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterMesszeit_sekunden(LafParser.Messzeit_sekundenContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.I8)) {
@@ -1814,6 +2009,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterMessmethode_c(LafParser.Messmethode_cContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C_STAR)) {
@@ -1836,6 +2034,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterMessmethode_s(LafParser.Messmethode_sContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.SC2)) {
@@ -1858,6 +2059,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterBearbeitungsstatus(LafParser.BearbeitungsstatusContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.C4)) {
@@ -1880,6 +2084,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterPep_flag(LafParser.Pep_flagContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.BOOL)) {
@@ -1902,6 +2109,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterErfassung_abgeschlossen(LafParser.Erfassung_abgeschlossenContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
         if (!value.matches(LafDataTypes.BOOL)) {
@@ -1925,6 +2135,9 @@ public class LafObjectListener extends LafBaseListener {
      */
     @Override public void enterProbenzusatzbeschreibung(LafParser.ProbenzusatzbeschreibungContext ctx) {
         // c7* f12 c9 f9
+        if (ctx.getChildCount() < 8) {
+            return;
+        }
         String groesse = ctx.getChild(1).toString();
         groesse = groesse.replaceAll("\"", "");
         if (!groesse.matches(LafDataTypes.C_STAR)) {
@@ -1980,6 +2193,9 @@ public class LafObjectListener extends LafBaseListener {
      */
     @Override public void enterPzb_s(LafParser.Pzb_sContext ctx) {
         // sc8* f12 si3 f9
+        if (ctx.getChildCount() < 8) {
+            return;
+        }
         String groesse = ctx.getChild(1).toString();
         groesse = groesse.replaceAll("\"", "");
         if (!groesse.matches(LafDataTypes.SC8)) {
@@ -2040,6 +2256,9 @@ public class LafObjectListener extends LafBaseListener {
             if (!ctx.getChild(i).toString().startsWith(" ")) {
                 children.add(ctx.getChild(i).toString());
             }
+        }
+        if (children.size() < 5) {
+            return;
         }
         String groesse = children.get(1);
         groesse = groesse.replaceAll("\"", "");
@@ -2108,6 +2327,9 @@ public class LafObjectListener extends LafBaseListener {
                 children.add(ctx.getChild(i).toString());
             }
         }
+        if (children.size() < 5) {
+            return;
+        }
         String groesse = children.get(1);
         groesse = groesse.replaceAll("\"", "");
         if (!groesse.matches(LafDataTypes.SI8)) {
@@ -2138,18 +2360,15 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String fehler = null;
-        if (ctx.getChildCount() >= 8) {
-            fehler = children.get(4);
-            fehler = fehler.replaceAll("\"", "");
-            if (!fehler.matches(LafDataTypes.F9)) {
-                ReportItem err = new ReportItem();
-                err.setKey(ctx.getChild(0).toString());
-                err.setValue(fehler);
-                err.setCode(670);
-                currentErrors.add(err);;
-                return;
-            }
+        String fehler = children.get(4);
+        fehler = fehler.replaceAll("\"", "");
+        if (!fehler.matches(LafDataTypes.F9)) {
+            ReportItem err = new ReportItem();
+            err.setKey(ctx.getChild(0).toString());
+            err.setValue(fehler);
+            err.setCode(670);
+            currentErrors.add(err);;
+            return;
         }
         Map<String, String> messwert = new HashMap<String, String>();
         messwert.put("MESSGROESSE_ID", groesse);
@@ -2174,6 +2393,9 @@ public class LafObjectListener extends LafBaseListener {
             if (!ctx.getChild(i).toString().startsWith(" ")) {
                 children.add(ctx.getChild(i).toString());
             }
+        }
+        if (children.size() < 8) {
+            return;
         }
         String groesse = children.get(1);
         groesse = groesse.replaceAll("\"", "");
@@ -2205,18 +2427,15 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String fehler = null;
-        if (ctx.getChildCount() >= 8) {
-            fehler = children.get(4);
-            fehler = fehler.replaceAll("\"", "");
-            if (!fehler.matches(LafDataTypes.F9)) {
-                ReportItem err = new ReportItem();
-                err.setKey(ctx.getChild(0).toString());
-                err.setValue(fehler);
-                err.setCode(670);
-                currentErrors.add(err);;
-                return;
-            }
+        String fehler = children.get(4);
+        fehler = fehler.replaceAll("\"", "");
+        if (!fehler.matches(LafDataTypes.F9)) {
+            ReportItem err = new ReportItem();
+            err.setKey(ctx.getChild(0).toString());
+            err.setValue(fehler);
+            err.setCode(670);
+            currentErrors.add(err);;
+            return;
         }
         // TODO: handle all values
         Map<String, String> messwert = new HashMap<String, String>();
@@ -2242,6 +2461,9 @@ public class LafObjectListener extends LafBaseListener {
             if (!ctx.getChild(i).toString().startsWith(" ")) {
                 children.add(ctx.getChild(i).toString());
             }
+        }
+        if (children.size() < 8) {
+            return;
         }
         String groesse = children.get(1);
         groesse = groesse.replaceAll("\"", "");
@@ -2310,6 +2532,9 @@ public class LafObjectListener extends LafBaseListener {
             if (!ctx.getChild(i).toString().startsWith(" ")) {
                 children.add(ctx.getChild(i).toString());
             }
+        }
+        if (children.size() < 6) {
+            return;
         }
         String groesse = children.get(1);
         groesse = groesse.replaceAll("\"", "");
@@ -2384,6 +2609,9 @@ public class LafObjectListener extends LafBaseListener {
             if (!ctx.getChild(i).toString().startsWith(" ")) {
                 children.add(ctx.getChild(i).toString());
             }
+        }
+        if (children.size() < 6) {
+            return;
         }
         String groesse = children.get(1);
         groesse = groesse.replaceAll("\"", "");
@@ -2460,6 +2688,9 @@ public class LafObjectListener extends LafBaseListener {
                 children.add(ctx.getChild(i).toString());
             }
         }
+        if (children.size() < 8) {
+            return;
+        }
         String groesse = children.get(1);
         groesse = groesse.replaceAll("\"", "");
         if (!groesse.matches(LafDataTypes.C_STAR)) {
@@ -2535,6 +2766,9 @@ public class LafObjectListener extends LafBaseListener {
             if (!ctx.getChild(i).toString().startsWith(" ")) {
                 children.add(ctx.getChild(i).toString());
             }
+        }
+        if (children.size() < 8) {
+            return;
         }
         String groesse = children.get(1);
         groesse = groesse.replaceAll("\"", "");
@@ -2617,6 +2851,9 @@ public class LafObjectListener extends LafBaseListener {
      */
     @Override public void enterKommentar(LafParser.KommentarContext ctx) {
         // c5 d8 t4 mc300
+        if (ctx.getChildCount() < 8) {
+            return;
+        }
         String mst = ctx.getChild(1).toString();
         mst = mst.replaceAll("\"", "");
         if (!mst.matches(LafDataTypes.C5)) {
@@ -2674,6 +2911,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterKommentar_t(LafParser.Kommentar_tContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String text = ctx.getChild(1).toString();
         text = text.replaceAll("\"", "");
         if (!text.matches(LafDataTypes.MC300)) {
@@ -2699,6 +2939,9 @@ public class LafObjectListener extends LafBaseListener {
      */
     @Override public void enterProbenkommentar(LafParser.ProbenkommentarContext ctx) {
         // c5 d8 t4 mc300
+        if (ctx.getChildCount() < 8) {
+            return;
+        }
         String mst = ctx.getChild(1).toString();
         mst = mst.replaceAll("\"", "");
         if (!mst.matches(LafDataTypes.C5)) {
@@ -2753,6 +2996,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterProbenkommentar_t(LafParser.Probenkommentar_tContext ctx) {
+        if (ctx.getChildCount() < 2) {
+            return;
+        }
         String text = ctx.getChild(1).toString();
         text = text.replaceAll("\"", "");
         if (!text.matches(LafDataTypes.MC300)) {
