@@ -64,7 +64,6 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterProbendatei(LafParser.ProbendateiContext ctx) {
-        System.out.println("start building raw data");
     }
 
     /**
@@ -73,8 +72,6 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void exitProbendatei(LafParser.ProbendateiContext ctx) {
-        System.out.println("finished.");
-        System.out.println("build " + data.count() + " proben.");
     }
 
     /**
@@ -97,7 +94,6 @@ public class LafObjectListener extends LafBaseListener {
                 identifier = identifier == null
                     ? "not identified"
                     : identifier;
-                System.out.println("exit: " + identifier);
                 errors.put(identifier, currentErrors);
             }
             currentErrors.clear();
@@ -130,9 +126,6 @@ public class LafObjectListener extends LafBaseListener {
     @Override public void exitProbe(LafParser.ProbeContext ctx) {
         data.addProbe(currentProbe);
         if (!currentErrors.isEmpty()) {
-            for (ReportItem item : currentErrors) {
-                System.out.println("item: " + item.getKey());
-            }
             String identifier = currentProbe.getAttributes().get("PROBE_ID");
             identifier = identifier == null
                 ? currentProbe.getAttributes().get("PROBEN_NR")
@@ -141,7 +134,6 @@ public class LafObjectListener extends LafBaseListener {
                 ? currentProbe.getAttributes().get("HAUPTPROBENNUMMER")
                 : identifier;
             identifier = identifier == null ? "not identified" : identifier;
-            System.out.println("exit probe: " + identifier);
             errors.put(identifier, currentErrors);
         }
         currentErrors.clear();
