@@ -111,11 +111,11 @@ CREATE TABLE umwelt (
 
 
 CREATE TABLE betriebsart (
-    id serial PRIMARY KEY,
+    id smallint PRIMARY KEY,
     name character varying(30) NOT NULL
 );
-INSERT INTO betriebsart VALUES(0, 'Normal-/Routinebetrieb');
-INSERT INTO betriebsart VALUES(1, 'Störfall-/Intensivbetrieb');
+INSERT INTO betriebsart VALUES(1, 'Normal-/Routinebetrieb');
+INSERT INTO betriebsart VALUES(2, 'Störfall-/Intensivbetrieb');
 
 
 CREATE TABLE staat (

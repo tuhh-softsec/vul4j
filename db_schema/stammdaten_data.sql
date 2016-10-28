@@ -36346,37 +36346,37 @@ COPY result (id, query_id, data_index, header, width, flex, index) FROM stdin;
 \.
 
 COPY messprogramm_transfer (messprogramm_s, messprogramm_c, ba_id) FROM stdin;
-1	Routinemessprogramm,	0
-2	Intensiv- bzw. sektororientiertes Intensivmessprogramm	1
-4	REI, bestimmungsgemäßer Betrieb	0
-5	REI, Störfall/Unfall	1
-6	REI, Übung zum Störfall	0
-A	Landesmessprogramm -A-	0
-B	Landesmessprogramm -B-	0
-C	Landesmessprogramm -C-	0
-D	Landesmessprogramm -D-	0
-E	Landesmessprogramm -E-	0
-F	Landesmessprogramm -F-	0
-G	Landesmessprogramm -G-	0
-H	Landesmessprogramm -H-	0
-I	Landesmessprogramm -I-	0
-J	Landesmessprogramm -J-	0
-K	Landesmessprogramm -K-	0
-L	Landesmessprogramm -L-	0
-M	Landesmessprogramm -M-	0
-N	Landesmessprogramm -N-	0
-O	Landesmessprogramm -O-	0
-P	Landesmessprogramm -P-	0
-Q	Landesmessprogramm -Q-	0
-R	Landesmessprogramm -R-	0
-S	Landesmessprogramm -S-	0
-T	Landesmessprogramm -T-	0
-U	Landesmessprogramm -U-	0
-V	Landesmessprogramm -V-	0
-W	Landesmessprogramm -W-	0
-X	Landesmessprogramm -X-	0
-Y	Landesmessprogramm -Y-	0
-Z	Landesmessprogramm -Z-	0
+1	Routinemessprogramm,	1
+2	Intensiv- bzw. sektororientiertes Intensivmessprogramm	2
+4	REI, bestimmungsgemäßer Betrieb	1
+5	REI, Störfall/Unfall	2
+6	REI, Übung zum Störfall	1
+A	Landesmessprogramm -A-	1
+B	Landesmessprogramm -B-	1
+C	Landesmessprogramm -C-	1
+D	Landesmessprogramm -D-	1
+E	Landesmessprogramm -E-	1
+F	Landesmessprogramm -F-	1
+G	Landesmessprogramm -G-	1
+H	Landesmessprogramm -H-	1
+I	Landesmessprogramm -I-	1
+J	Landesmessprogramm -J-	1
+K	Landesmessprogramm -K-	1
+L	Landesmessprogramm -L-	1
+M	Landesmessprogramm -M-	1
+N	Landesmessprogramm -N-	1
+O	Landesmessprogramm -O-	1
+P	Landesmessprogramm -P-	1
+Q	Landesmessprogramm -Q-	1
+R	Landesmessprogramm -R-	1
+S	Landesmessprogramm -S-	1
+T	Landesmessprogramm -T-	1
+U	Landesmessprogramm -U-	1
+V	Landesmessprogramm -V-	1
+W	Landesmessprogramm -W-	1
+X	Landesmessprogramm -X-	1
+Y	Landesmessprogramm -Y-	1
+Z	Landesmessprogramm -Z-	1
 \.
 
 --
