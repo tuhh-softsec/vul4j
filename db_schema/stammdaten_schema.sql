@@ -556,7 +556,6 @@ CREATE TABLE status_kombi (
     wert_id integer REFERENCES status_wert NOT NULL,
     UNIQUE(stufe_id, wert_id)
 );
--- 'zurückgesetzt' is left out here deliberately!
 INSERT INTO status_kombi VALUES (1, 1, 0);
 INSERT INTO status_kombi VALUES (2, 1, 1);
 INSERT INTO status_kombi VALUES (3, 1, 2);
@@ -570,6 +569,9 @@ INSERT INTO status_kombi VALUES (10, 3, 1);
 INSERT INTO status_kombi VALUES (11, 3, 2);
 INSERT INTO status_kombi VALUES (12, 3, 3);
 INSERT INTO status_kombi VALUES (13, 3, 4);
+INSERT INTO status_kombi VALUES (14, 1, 8);
+INSERT INTO status_kombi VALUES (15, 2, 8);
+INSERT INTO status_kombi VALUES (16, 3, 8);
 
 
 CREATE TABLE status_reihenfolge (
@@ -602,15 +604,28 @@ FOR kombi_from IN SELECT * FROM status_kombi LOOP
            INSERT INTO status_reihenfolge (von_id, zu_id)
                   VALUES (kombi_from.id, kombi_to.id);
 
-        ELSEIF s_to = s_from + 1 AND w_from <> 0 AND w_from <> 4 THEN
+        ELSEIF s_to = s_from + 1
+               AND w_from <> 0 AND w_from <> 4
+               AND w_from <> 8 AND w_to <> 8 THEN
            -- Going to the next 'stufe' all available status_kombi are allowed
-           -- in case current wert is not 'nicht vergeben' or 'Rückfrage'
+           -- in case current wert is not 'nicht vergeben', 'Rückfrage' or
+           -- 'zurückgesetzt' and we are not trying to set 'zurückgesetzt'
            INSERT INTO status_reihenfolge (von_id, zu_id)
                   VALUES (kombi_from.id, kombi_to.id);
 
         ELSEIF w_from = 4 AND s_to = 1 AND w_to >= 1 AND w_to <= 3 THEN
            -- After 'Rückfrage' follows 'MST' with
            -- 'plausibel', 'nicht plausibel' or 'nicht repräsentativ'
+           INSERT INTO status_reihenfolge (von_id, zu_id)
+                  VALUES (kombi_from.id, kombi_to.id);
+
+        ELSEIF w_to = 8 AND s_from = s_to THEN
+           -- 'zurückgesetzt' can only be set on the same 'stufe'
+           INSERT INTO status_reihenfolge (von_id, zu_id)
+                  VALUES (kombi_from.id, kombi_to.id);
+
+        ELSEIF w_from = 8 AND s_to = s_from - 1 THEN
+           -- after 'zurückgesetzt' always follows the next lower 'stufe'
            INSERT INTO status_reihenfolge (von_id, zu_id)
                   VALUES (kombi_from.id, kombi_to.id);
 

@@ -17,7 +17,7 @@ public class LafObjectListener extends LafBaseListener {
     LafRawData.Probe currentProbe;
     LafRawData.Messung currentMessung;
     Map<String, List<ReportItem>> errors;
-    List<ReportItem> currentErrors;
+    ArrayList<ReportItem> currentErrors;
 
     private boolean hasDatenbasis = false;
     private boolean hasMessprogramm = false;
@@ -94,8 +94,9 @@ public class LafObjectListener extends LafBaseListener {
                 identifier = identifier == null
                     ? "not identified"
                     : identifier;
-                errors.put(identifier, currentErrors);
+                errors.put(identifier, (ArrayList)currentErrors.clone());
             }
+
             currentErrors.clear();
             currentProbe = null;
             hasDatenbasis = false;
@@ -134,7 +135,7 @@ public class LafObjectListener extends LafBaseListener {
                 ? currentProbe.getAttributes().get("HAUPTPROBENNUMMER")
                 : identifier;
             identifier = identifier == null ? "not identified" : identifier;
-            errors.put(identifier, currentErrors);
+            errors.put(identifier, (ArrayList)currentErrors.clone());
         }
         currentErrors.clear();
         currentProbe = null;
@@ -1475,7 +1476,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         // TODO: Add to "ursprungsort"
