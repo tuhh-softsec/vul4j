@@ -38,7 +38,7 @@ public class Deskriptor implements Rule {
     @Override
     public Violation execute(Object object) {
         Probe probe = (Probe)object;
-        if (probe.getMediaDesk() == null || probe.getMediaDesk().equals("")) {
+        if (probe.getMediaDesk() == null) {
             return null;
         }
         String[] mediaDesk = probe.getMediaDesk().split(" ");

@@ -415,11 +415,14 @@ public class ProbeFactory {
      * @return The updated probe object.
      */
     public Probe findUmweltId(Probe probe) {
-        String[] mediaDesk = probe.getMediaDesk().split(" ");
-        if (mediaDesk.length <= 1) {
-            return probe;
+        String mediaDesk = probe.getMediaDesk();
+        if (mediaDesk != null) {
+            String[] mediaDeskParts = mediaDesk.split(" ");
+            if (mediaDeskParts.length <= 1) {
+                return probe;
+            }
+            probe.setUmwId(findUmwelt(mediaDeskParts));
         }
-        probe.setUmwId(findUmwelt(mediaDesk));
         return probe;
     }
 
@@ -431,11 +434,14 @@ public class ProbeFactory {
      * @return The updated probe object.
      */
     public Probe findMediaDesk(Probe probe) {
-        Object result = repository.queryFromString(
+        String mediaDesk = probe.getMediaDesk();
+        if (mediaDesk != null) {
+            Object result = repository.queryFromString(
                 "SELECT get_media_from_media_desk( :mediaDesk );", "stamm")
-            .setParameter("mediaDesk", probe.getMediaDesk())
-            .getSingleResult();
-        probe.setMedia(result != null ? result.toString() : "");
+                .setParameter("mediaDesk", mediaDesk)
+                .getSingleResult();
+            probe.setMedia(result != null ? result.toString() : "");
+        }
         return probe;
     }
 
@@ -447,11 +453,14 @@ public class ProbeFactory {
      * @return The updated messprogramm.
      */
     public Messprogramm findUmweltId(Messprogramm messprogramm) {
-        String[] mediaDesk = messprogramm.getMediaDesk().split(" ");
-        if (mediaDesk.length <= 1) {
-            return messprogramm;
+        String mediaDesk = messprogramm.getMediaDesk();
+        if (mediaDesk != null) {
+            String[] mediaDeskParts = mediaDesk.split(" ");
+            if (mediaDeskParts.length <= 1) {
+                return messprogramm;
+            }
+            messprogramm.setUmwId(findUmwelt(mediaDeskParts));
         }
-        messprogramm.setUmwId(findUmwelt(mediaDesk));
         return messprogramm;
     }
 
