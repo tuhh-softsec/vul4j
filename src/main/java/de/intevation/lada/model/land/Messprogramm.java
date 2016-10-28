@@ -31,7 +31,7 @@ public class Messprogramm implements Serializable {
     @PrePersist
     void setDefaults() {
         if (baId == null) {
-            baId = 0;
+            baId = 1;
         }
         if (intervallOffset == null) {
             intervallOffset = 0;

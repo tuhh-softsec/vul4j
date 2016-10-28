@@ -119,7 +119,7 @@ CREATE TABLE messprogramm (
     mst_id character varying(5) NOT NULL REFERENCES stammdaten.mess_stelle,
     labor_mst_id character varying(5) NOT NULL REFERENCES stammdaten.mess_stelle,
     datenbasis_id integer NOT NULL REFERENCES stammdaten.datenbasis,
-    ba_id integer DEFAULT 0 REFERENCES stammdaten.betriebsart,
+    ba_id integer DEFAULT 1 REFERENCES stammdaten.betriebsart,
     gem_id character varying(8) REFERENCES stammdaten.verwaltungseinheit,
     ort_id integer NOT NULL REFERENCES stammdaten.ort,
     media_desk character varying(100),
