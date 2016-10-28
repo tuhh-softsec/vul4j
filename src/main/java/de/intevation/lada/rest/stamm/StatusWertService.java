@@ -96,9 +96,17 @@ public class StatusWertService {
         if (params.isEmpty() || !params.containsKey("messungsId")) {
             return defaultRepo.getAll(StatusWert.class, "stamm");
         }
-        int messungsId = Integer.valueOf(params.getFirst("messungsId"));
+
+        List<Integer> mIds = new ArrayList<Integer>();
+        for (String messId : params.getFirst("messungsId").split(",")) {
+            try {
+                mIds.add(Integer.valueOf(messId));
+            } catch (NumberFormatException nfe) {
+                return new Response(false, 612, null);
+            }
+        }
         UserInfo user = authorization.getInfo(request);
-        List<StatusWert> werte = getReachable(messungsId, user);
+        List<StatusWert> werte = getReachable(mIds, user);
         Response response = new Response(true, 200, werte);
         return response;
     }
@@ -125,28 +133,43 @@ public class StatusWertService {
             "stamm");
     }
 
-    private List<StatusWert> getReachable(int messungsId, UserInfo user) {
+    /**
+     * Get the list of possible status values following the actual status
+     * values of the Messungen represented by the given IDs.
+     *
+     * @return Disjunction of possible status values for all Messungen
+     */
+    private List<StatusWert> getReachable(
+        List<Integer> messIds,
+        UserInfo user
+    ) {
         List<StatusWert> list = new ArrayList<StatusWert>();
-        Messung messung =
-            defaultRepo.getByIdPlain(Messung.class, messungsId, "land");
-        if (messung.getStatus() == null) {
-            return defaultRepo.getAllPlain(StatusWert.class, "stamm");
-        }
-        StatusProtokoll status = defaultRepo.getByIdPlain(
-            StatusProtokoll.class,
-            messung.getStatus(),
-            "land");
 
-        QueryBuilder<StatusErreichbar> errFilter =
-            new QueryBuilder<StatusErreichbar>(
-                defaultRepo.entityManager("stamm"),
-                StatusErreichbar.class);
-        StatusKombi kombi = defaultRepo.getByIdPlain(StatusKombi.class, status.getStatusKombi(), "stamm");
-        errFilter.andIn("stufeId", user.getFunktionen());
-        errFilter.and("curStufe", kombi.getStatusStufe().getId());
-        errFilter.and("curWert", kombi.getStatusWert().getId());
-        List<StatusErreichbar> erreichbare = defaultRepo.filterPlain(
-            errFilter.getQuery(), "stamm");
+        QueryBuilder<Messung> messungQuery = new QueryBuilder<Messung>(
+            defaultRepo.entityManager("land"),
+            Messung.class);
+        messungQuery.orIn("id", messIds);
+        List<Messung> messungen = defaultRepo.filterPlain(
+            messungQuery.getQuery(), "land");
+
+        List<StatusErreichbar> erreichbare = new ArrayList<StatusErreichbar>();
+        for (Messung messung : messungen) {
+            StatusProtokoll status = defaultRepo.getByIdPlain(
+                StatusProtokoll.class, messung.getStatus(), "land");
+            StatusKombi kombi = defaultRepo.getByIdPlain(
+                StatusKombi.class, status.getStatusKombi(), "stamm");
+
+            QueryBuilder<StatusErreichbar> errFilter =
+                new QueryBuilder<StatusErreichbar>(
+                    defaultRepo.entityManager("stamm"),
+                    StatusErreichbar.class);
+            errFilter.andIn("stufeId", user.getFunktionen());
+            errFilter.and("curStufe", kombi.getStatusStufe().getId());
+            errFilter.and("curWert", kombi.getStatusWert().getId());
+            erreichbare.addAll(defaultRepo.filterPlain(
+                    errFilter.getQuery(), "stamm"));
+        }
+
         QueryBuilder<StatusWert> werteFilter =
             new QueryBuilder<StatusWert>(
                 defaultRepo.entityManager("stamm"),
