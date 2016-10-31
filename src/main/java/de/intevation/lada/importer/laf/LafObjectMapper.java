@@ -184,8 +184,10 @@ public class LafObjectMapper {
                         currentWarnings.add(new ReportItem("validation", warn.getKey(), code));
                     }
                 }
-                Response created = repository.create(probe, "land");
-                newProbe = ((Probe)created.getData());
+                if (!violation.hasErrors()) {
+                    Response created = repository.create(probe, "land");
+                    newProbe = ((Probe)created.getData());
+                }
             }
         } catch (InvalidTargetObjectTypeException e) {
             ReportItem err = new ReportItem();
@@ -203,36 +205,37 @@ public class LafObjectMapper {
             }
             return;
         }
-        if (newProbe == null) {
-            // Only occurs if object type is not probe
-            return;
-        }
-        // Create kommentar objects
-        List<KommentarP> kommentare = new ArrayList<KommentarP>();
-        for (int i = 0; i < object.getKommentare().size(); i++) {
-            KommentarP tmp = createProbeKommentar(object.getKommentare().get(i), newProbe.getId());
-            if (tmp != null) {
-                kommentare.add(tmp);
+        if (newProbe != null) {
+            // Create kommentar objects
+            List<KommentarP> kommentare = new ArrayList<KommentarP>();
+            for (int i = 0; i < object.getKommentare().size(); i++) {
+                KommentarP tmp = createProbeKommentar(
+                    object.getKommentare().get(i), newProbe.getId());
+                if (tmp != null) {
+                    kommentare.add(tmp);
+                }
+            }
+            // Persist kommentar objects
+            merger.mergeKommentare(newProbe, kommentare);
+
+            // Create zusatzwert objects
+            List<ZusatzWert> zusatzwerte = new ArrayList<ZusatzWert>();
+            for (int i = 0; i < object.getZusatzwerte().size(); i++) {
+                ZusatzWert tmp = createZusatzwert(
+                    object.getZusatzwerte().get(i), newProbe.getId());
+                if (tmp != null) {
+                    zusatzwerte.add(tmp);
+                }
+            }
+            // Persist zusatzwert objects
+            merger.mergeZusatzwerte(newProbe, zusatzwerte);
+
+            // Create messung objects
+            for (LafRawData.Messung messung : object.getMessungen()) {
+                create(messung, newProbe.getId(), newProbe.getMstId());
             }
         }
-        // Persist kommentar objects
-        merger.mergeKommentare(newProbe, kommentare);
 
-        // Create zusatzwert objects
-        List<ZusatzWert> zusatzwerte = new ArrayList<ZusatzWert>();
-        for (int i = 0; i < object.getZusatzwerte().size(); i++) {
-            ZusatzWert tmp = createZusatzwert(object.getZusatzwerte().get(i), newProbe.getId());
-            if (tmp != null) {
-                zusatzwerte.add(tmp);
-            }
-        }
-        // Persist zusatzwert objects
-        merger.mergeZusatzwerte(newProbe, zusatzwerte);
-
-        // Create messung objects
-        for (int i = 0; i < object.getMessungen().size(); i++) {
-            create(object.getMessungen().get(i), newProbe.getId(), newProbe.getMstId());
-        }
         if (currentErrors.size() > 0) {
             List<ReportItem> copyErr = new ArrayList<ReportItem>(currentErrors);
             errors.put(probe.getIdAlt(), copyErr);
