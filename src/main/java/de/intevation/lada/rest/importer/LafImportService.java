@@ -93,8 +93,7 @@ public class LafImportService {
             logger.debug("warns: " + importer.getWarnings().size());
             respData.put("warnings", importer.getWarnings());
         }
-        int code = 200;
-        Response response = new Response(importer.getErrors().isEmpty(), code, respData);
-        return response;
+
+        return new Response(true, 200, respData);
     }
 }
