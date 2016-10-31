@@ -652,6 +652,12 @@ public class LafObjectMapper {
 
         if ("MESSSTELLE".equals(key)) {
             probe.setMstId(value.toString());
+
+            /* MESSLABOR is optional in LAF but probe.labor_mst_id is
+             * NOT NULL in the LADA database */
+            if (probe.getLaborMstId() == null) {
+                probe.setLaborMstId(value.toString());
+            }
         }
 
         if ("MESSLABOR".equals(key)) {
