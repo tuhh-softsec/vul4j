@@ -42,6 +42,7 @@ public class UniqueHauptprobenNr implements Rule {
             repo.entityManager("land"),
             Probe.class);
         builder.and("hauptprobenNr", probe.getHauptprobenNr());
+        builder.and("mstId", probe.getMstId());
         Response response = repo.filter(builder.getQuery(), "land");
         if (!((List<Probe>)response.getData()).isEmpty()) {
             Probe found = ((List<Probe>)response.getData()).get(0);

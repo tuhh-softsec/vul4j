@@ -192,7 +192,10 @@ CREATE TRIGGER letzte_aenderung_messprogramm_mmt BEFORE UPDATE ON messprogramm_m
 
 CREATE TABLE probe (
     id serial PRIMARY KEY,
-    id_alt character varying(20) DEFAULT (('sss'::text || lpad(((nextval('land.probe_probe_id_seq'::regclass))::character varying)::text, 12, '0'::text)) || 'Y'::text) NOT NULL,
+    id_alt character varying(20) UNIQUE NOT NULL
+        DEFAULT 'sss'
+            || lpad(nextval('land.probe_probe_id_seq')::varchar, 12, '0')
+            || 'Y',
     test boolean DEFAULT false NOT NULL,
     mst_id character varying(5) NOT NULL REFERENCES stammdaten.mess_stelle,
     labor_mst_id character varying(5) NOT NULL REFERENCES stammdaten.mess_stelle,
@@ -214,7 +217,7 @@ CREATE TABLE probe (
     solldatum_beginn timestamp without time zone,
     solldatum_ende timestamp without time zone,
     tree_modified timestamp without time zone DEFAULT now(),
-    UNIQUE (mst_id, hauptproben_nr, id_alt),
+    UNIQUE (mst_id, hauptproben_nr),
     CHECK(solldatum_beginn <= solldatum_ende)
 );
 CREATE TRIGGER letzte_aenderung_probe BEFORE UPDATE ON probe FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
