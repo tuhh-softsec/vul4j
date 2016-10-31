@@ -498,6 +498,9 @@ public class ProbeService {
         /* Get the probe object by id*/
         Response probe =
             repository.getById(Probe.class, Integer.valueOf(id), "land");
+        if (!probe.getSuccess()) {
+            return probe;
+        }
         Probe probeObj = (Probe)probe.getData();
         if (!authorization.isAuthorized(
                 request,
