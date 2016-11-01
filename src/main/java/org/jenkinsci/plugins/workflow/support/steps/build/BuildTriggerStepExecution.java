@@ -20,8 +20,11 @@ import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.model.queue.QueueTaskFuture;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import jenkins.model.Jenkins;
@@ -35,6 +38,9 @@ import org.jenkinsci.plugins.workflow.steps.StepContextParameter;
  * @author Vivek Pandey
  */
 public class BuildTriggerStepExecution extends AbstractStepExecutionImpl {
+
+    private static final Logger LOGGER = Logger.getLogger(BuildTriggerStepExecution.class.getName());
+
     @StepContextParameter
     private transient TaskListener listener;
     @StepContextParameter private transient Run<?,?> invokingRun;
@@ -148,6 +154,12 @@ public class BuildTriggerStepExecution extends AbstractStepExecutionImpl {
             for (BuildTriggerAction bta : ((Run) exec).getActions(BuildTriggerAction.class)) {
                 if (bta.getStepContext().equals(getContext())) {
                     e.interrupt(Result.ABORTED, new BuildTriggerCancelledCause(cause));
+                    bta.interruption = cause;
+                    try {
+                        ((Run) exec).save();
+                    } catch (IOException x) {
+                        LOGGER.log(Level.WARNING, "failed to save interrupt cause on " + exec, x);
+                    }
                 }
             }
         }

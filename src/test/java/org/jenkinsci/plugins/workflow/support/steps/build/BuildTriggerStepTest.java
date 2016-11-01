@@ -193,6 +193,21 @@ public class BuildTriggerStepTest {
         j.assertBuildStatus(Result.ABORTED, j.waitForCompletion(dsb));
     }
 
+    @Test public void interruptFlowNonPropagate() throws Exception {
+        WorkflowJob ds = j.jenkins.createProject(WorkflowJob.class, "ds");
+        ds.setDefinition(new CpsFlowDefinition("semaphore 'ds'", true));
+        WorkflowJob us = j.jenkins.createProject(WorkflowJob.class, "us");
+        us.setDefinition(new CpsFlowDefinition("while (true) {build job: 'ds', propagate: false}", true));
+        WorkflowRun usb = us.scheduleBuild2(0).getStartCondition().get();
+        assertEquals(1, usb.getNumber());
+        SemaphoreStep.waitForStart("ds/1", null);
+        WorkflowRun dsb = ds.getLastBuild();
+        assertEquals(1, dsb.getNumber());
+        usb.doStop();
+        j.assertBuildStatus(Result.ABORTED, j.waitForCompletion(usb));
+        j.assertBuildStatus(Result.ABORTED, j.waitForCompletion(dsb));
+    }
+
     @SuppressWarnings("deprecation")
     @Test public void triggerWorkflow() throws Exception {
         WorkflowJob us = j.jenkins.createProject(WorkflowJob.class, "us");

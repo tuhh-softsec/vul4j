@@ -5,12 +5,15 @@ import hudson.model.InvisibleAction;
 import hudson.model.Queue;
 import hudson.model.queue.FoldableAction;
 import java.util.List;
+import javax.annotation.CheckForNull;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 
 public class BuildTriggerAction extends InvisibleAction implements FoldableAction {
 
     private final StepContext context;
     private final Boolean propagate;
+    /** Record of cancellation cause passed to {@link BuildTriggerStepExecution#stop}, if any. */
+    @CheckForNull Throwable interruption;
 
     public BuildTriggerAction(StepContext context, boolean propagate) {
         this.context = context;

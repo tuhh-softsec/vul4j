@@ -43,7 +43,11 @@ public class BuildTriggerListener extends RunListener<Run<?,?>>{
         List<BuildTriggerAction> actions = run.getActions(BuildTriggerAction.class);
         for (BuildTriggerAction action : actions) {
             if (!action.isPropagate() || run.getResult() == Result.SUCCESS) {
-                action.getStepContext().onSuccess(new RunWrapper(run, false));
+                if (action.interruption == null) {
+                    action.getStepContext().onSuccess(new RunWrapper(run, false));
+                } else {
+                    action.getStepContext().onFailure(action.interruption);
+                }
             } else {
                 action.getStepContext().onFailure(new AbortException(run.getFullDisplayName() + " completed with status " + run.getResult() + " (propagate: false to ignore)"));
             }
