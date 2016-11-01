@@ -62,6 +62,7 @@ public class LafImporter implements Importer{
             }
             if (!errorListener.getErrors().isEmpty()) {
                 errors.put("parser", errorListener.getErrors());
+                return;
             }
             errors.putAll(listener.getErrors());
             mapper.setUserInfo(userInfo);
