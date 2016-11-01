@@ -73,7 +73,7 @@ RUN rm $JBOSS_HOME/standalone/configuration/standalone_xml_history/current/*
 #
 # Build and deploy LADA-server
 #
-ENV LADA_VERSION 2.4.0dev
+ENV LADA_VERSION 2.4.0
 RUN mvn clean compile package javadoc:javadoc
 RUN mv target/lada-server-$LADA_VERSION.war $JBOSS_HOME/standalone/deployments
 RUN touch $JBOSS_HOME/standalone/deployments/lada-server-$LADA_VERSION.war.dodeploy
