@@ -123,7 +123,7 @@ public class LafObjectMapper {
             ReportItem err = new ReportItem();
             err.setCode(699);
             err.setKey(userInfo.getName());
-            err.setValue(probe.getMstId());
+            err.setValue("Messstelle " + probe.getMstId());
             currentErrors.add(err);
             if (currentErrors.size() > 0) {
                 List<ReportItem> copyErr = new ArrayList<ReportItem>(currentErrors);
