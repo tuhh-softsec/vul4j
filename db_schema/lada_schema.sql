@@ -192,7 +192,7 @@ CREATE TRIGGER letzte_aenderung_messprogramm_mmt BEFORE UPDATE ON messprogramm_m
 
 CREATE TABLE probe (
     id serial PRIMARY KEY,
-    id_alt character varying(20) UNIQUE NOT NULL
+    id_alt character varying(16) UNIQUE NOT NULL
         DEFAULT 'sss'
             || lpad(nextval('land.probe_probe_id_seq')::varchar, 12, '0')
             || 'Y',
