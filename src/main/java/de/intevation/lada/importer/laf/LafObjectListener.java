@@ -83,18 +83,8 @@ public class LafObjectListener extends LafBaseListener {
         if (currentProbe != null) {
             data.addProbe(currentProbe);
             if (!currentErrors.isEmpty()) {
-                String identifier = currentProbe.getAttributes()
-                    .get("PROBE_ID");
-                identifier = identifier == null
-                    ? currentProbe.getAttributes().get("PROBEN_NR")
-                    : identifier;
-                identifier = identifier == null
-                    ? currentProbe.getAttributes().get("HAUPTPROBENNUMMER")
-                    : identifier;
-                identifier = identifier == null
-                    ? "not identified"
-                    : identifier;
-                errors.put(identifier, (ArrayList)currentErrors.clone());
+                errors.put(currentProbe.getIdentifier(),
+                    (ArrayList)currentErrors.clone());
             }
 
             currentErrors.clear();
@@ -127,15 +117,8 @@ public class LafObjectListener extends LafBaseListener {
     @Override public void exitProbe(LafParser.ProbeContext ctx) {
         data.addProbe(currentProbe);
         if (!currentErrors.isEmpty()) {
-            String identifier = currentProbe.getAttributes().get("PROBE_ID");
-            identifier = identifier == null
-                ? currentProbe.getAttributes().get("PROBEN_NR")
-                : identifier;
-            identifier = identifier == null
-                ? currentProbe.getAttributes().get("HAUPTPROBENNUMMER")
-                : identifier;
-            identifier = identifier == null ? "not identified" : identifier;
-            errors.put(identifier, (ArrayList)currentErrors.clone());
+            errors.put(currentProbe.getIdentifier(),
+                (ArrayList)currentErrors.clone());
         }
         currentErrors.clear();
         currentProbe = null;

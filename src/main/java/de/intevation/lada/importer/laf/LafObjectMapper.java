@@ -123,15 +123,14 @@ public class LafObjectMapper {
             ReportItem err = new ReportItem();
             err.setCode(699);
             err.setKey(userInfo.getName());
-            err.setValue(probe.getMstId());
+            err.setValue("Messstelle " + probe.getMstId());
             currentErrors.add(err);
-            if (currentErrors.size() > 0) {
-                List<ReportItem> copyErr = new ArrayList<ReportItem>(currentErrors);
-                errors.put(probe.getIdAlt(), copyErr);
-            }
+            errors.put(object.getIdentifier(),
+                new ArrayList<ReportItem>(currentErrors));
+
             if (currentWarnings.size() > 0) {
-                List<ReportItem> copyWarn = new ArrayList<ReportItem>(currentWarnings);
-                warnings.put(probe.getIdAlt(), copyWarn);
+                warnings.put(object.getIdentifier(),
+                    new ArrayList<ReportItem>(currentWarnings));
             }
             return;
         }
@@ -162,12 +161,12 @@ public class LafObjectMapper {
                 err.setValue("");
                 currentErrors.add(err);
                 if (currentErrors.size() > 0) {
-                    List<ReportItem> copyErr = new ArrayList<ReportItem>(currentErrors);
-                    errors.put(probe.getIdAlt(), copyErr);
+                    errors.put(object.getIdentifier(),
+                        new ArrayList<ReportItem>(currentErrors));
                 }
                 if (currentWarnings.size() > 0) {
-                    List<ReportItem> copyWarn = new ArrayList<ReportItem>(currentWarnings);
-                    warnings.put(probe.getIdAlt(), copyWarn);
+                    warnings.put(object.getIdentifier(),
+                        new ArrayList<ReportItem>(currentWarnings));
                 }
                 return;
             }
@@ -196,12 +195,12 @@ public class LafObjectMapper {
             err.setValue("No valid Probe Object");
             currentErrors.add(err);
             if (currentErrors.size() > 0) {
-                List<ReportItem> copyErr = new ArrayList<ReportItem>(currentErrors);
-                errors.put(probe.getIdAlt(), copyErr);
+                errors.put(object.getIdentifier(),
+                    new ArrayList<ReportItem>(currentErrors));
             }
             if (currentWarnings.size() > 0) {
-                List<ReportItem> copyWarn = new ArrayList<ReportItem>(currentWarnings);
-                warnings.put(probe.getIdAlt(), copyWarn);
+                warnings.put(object.getIdentifier(),
+                    new ArrayList<ReportItem>(currentWarnings));
             }
             return;
         }
@@ -237,12 +236,12 @@ public class LafObjectMapper {
         }
 
         if (currentErrors.size() > 0) {
-            List<ReportItem> copyErr = new ArrayList<ReportItem>(currentErrors);
-            errors.put(probe.getIdAlt(), copyErr);
+            errors.put(object.getIdentifier(),
+                new ArrayList<ReportItem>(currentErrors));
         }
         if (currentWarnings.size() > 0) {
-            List<ReportItem> copyWarn = new ArrayList<ReportItem>(currentWarnings);
-            warnings.put(probe.getIdAlt(), copyWarn);
+            warnings.put(object.getIdentifier(),
+                new ArrayList<ReportItem>(currentWarnings));
         }
     }
 
@@ -264,7 +263,6 @@ public class LafObjectMapper {
             currentErrors.add(warn);
             return;
         }
-
 
         // Compare with messung objects in the db
         Messung newMessung = null;

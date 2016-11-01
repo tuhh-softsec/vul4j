@@ -67,6 +67,22 @@ public class LafRawData {
         public List<Map<String, String>> getOrte() {
             return this.ort;
         }
+
+        // helper method to get identifying attribute
+        public String getIdentifier() {
+            String identifier = this.getAttributes().get("PROBE_ID");
+            identifier = identifier == null
+                ? this.getAttributes().get("PROBEN_NR")
+                : identifier;
+            identifier = identifier == null
+                ? this.getAttributes().get("HAUPTPROBENNUMMER")
+                : identifier;
+            identifier = identifier == null
+                ? "not identified"
+                : identifier;
+            return identifier;
+        }
+
     };
 
     public class Messung {

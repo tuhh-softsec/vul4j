@@ -80,17 +80,9 @@ public class LafImportService {
         importer.doImport(content, userInfo);
         Map<String, Object> respData = new HashMap<String,Object>();
         if (!importer.getErrors().isEmpty()) {
-            logger.debug("errs: " + importer.getErrors().size());
-            for (Entry<String, List<ReportItem>> entry : importer.getErrors().entrySet()) {
-                logger.debug(entry.getKey());
-                for (ReportItem item : entry.getValue()) {
-                    logger.debug(item.getKey() + " - " + item.getValue() + ": " + item.getCode());
-                }
-            }
             respData.put("errors", importer.getErrors());
         }
         if (!importer.getWarnings().isEmpty()) {
-            logger.debug("warns: " + importer.getWarnings().size());
             respData.put("warnings", importer.getWarnings());
         }
 
