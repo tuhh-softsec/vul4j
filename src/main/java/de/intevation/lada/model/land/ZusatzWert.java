@@ -44,7 +44,7 @@ public class ZusatzWert implements Serializable {
     @Column(name="pzs_id")
     private String pzsId;
 
-    @Column(name="tree_modified")
+    @Column(name="tree_modified", insertable=false, updatable=false)
     private Timestamp treeModified;
 
     @OneToOne

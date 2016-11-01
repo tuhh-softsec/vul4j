@@ -60,7 +60,7 @@ public class Messung implements Serializable {
 
     private Integer status;
 
-    @Column(name="tree_modified")
+    @Column(name="tree_modified", insertable=false, updatable=false)
     private Timestamp treeModified;
 
     @Transient

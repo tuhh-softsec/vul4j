@@ -83,7 +83,7 @@ public class Probe implements Serializable {
 
     private Boolean test;
 
-    @Column(name="tree_modified")
+    @Column(name="tree_modified", insertable=false, updatable=false)
     private Timestamp treeModified;
 
     @Column(name="umw_id")

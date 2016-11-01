@@ -39,7 +39,7 @@ public class Ortszuordnung implements Serializable {
     @Column(name="probe_id")
     private Integer probeId;
 
-    @Column(name="tree_modified")
+    @Column(name="tree_modified", insertable=false, updatable=false)
     private Timestamp treeModified;
 
     @OneToOne
