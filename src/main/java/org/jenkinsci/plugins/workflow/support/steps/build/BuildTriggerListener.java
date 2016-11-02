@@ -8,6 +8,7 @@ import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.model.listeners.RunListener;
 import java.util.List;
+import java.util.logging.Level;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 
 import java.util.logging.Logger;
@@ -21,11 +22,10 @@ public class BuildTriggerListener extends RunListener<Run<?,?>>{
 
     @Override
     public void onStarted(Run<?, ?> run, TaskListener listener) {
-        BuildTriggerAction buildTriggerAction = run.getAction(BuildTriggerAction.class);
-
-        if (buildTriggerAction != null) {
+        for (BuildTriggerAction buildTriggerAction : run.getActions(BuildTriggerAction.class)) {
             StepContext stepContext = buildTriggerAction.getStepContext();
             if (stepContext != null && stepContext.isReady()) {
+                LOGGER.log(Level.FINE, "started building {0} from #{1} in {2}", new Object[] {run, run.getQueueId(), stepContext});
                 try {
                     TaskListener taskListener = stepContext.get(TaskListener.class);
                     // encodeTo(Run) calls getDisplayName, which does not include the project name.
@@ -33,6 +33,8 @@ public class BuildTriggerListener extends RunListener<Run<?,?>>{
                 } catch (Exception e) {
                     LOGGER.log(WARNING, null, e);
                 }
+            } else {
+                LOGGER.log(Level.FINE, "{0} unavailable in {1}", new Object[] {stepContext, run});
             }
         }
     }
@@ -42,6 +44,7 @@ public class BuildTriggerListener extends RunListener<Run<?,?>>{
     public void onCompleted(Run<?,?> run, @Nonnull TaskListener listener) {
         List<BuildTriggerAction> actions = run.getActions(BuildTriggerAction.class);
         for (BuildTriggerAction action : actions) {
+            LOGGER.fine("completing " + run + " for " + action.getStepContext());
             if (!action.isPropagate() || run.getResult() == Result.SUCCESS) {
                 if (action.interruption == null) {
                     action.getStepContext().onSuccess(new RunWrapper(run, false));

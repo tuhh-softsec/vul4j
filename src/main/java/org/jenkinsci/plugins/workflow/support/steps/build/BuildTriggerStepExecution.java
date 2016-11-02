@@ -62,7 +62,9 @@ public class BuildTriggerStepExecution extends AbstractStepExecutionImpl {
         node.addAction(new LabelAction(Messages.BuildTriggerStepExecution_building_(project.getFullDisplayName())));
         List<Action> actions = new ArrayList<Action>();
         if (step.getWait()) {
-            actions.add(new BuildTriggerAction(getContext(), step.isPropagate()));
+            StepContext context = getContext();
+            actions.add(new BuildTriggerAction(context, step.isPropagate()));
+            LOGGER.log(Level.FINER, "scheduling a build of {0} from {1}", new Object[] {project, context});
         }
         actions.add(new CauseAction(new Cause.UpstreamCause(invokingRun)));
         List<ParameterValue> parameters = step.getParameters();
