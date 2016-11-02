@@ -32,6 +32,7 @@ import jenkins.model.ParameterizedJobMixIn;
 import org.jenkinsci.plugins.workflow.actions.LabelAction;
 import org.jenkinsci.plugins.workflow.graph.FlowNode;
 import org.jenkinsci.plugins.workflow.steps.AbstractStepExecutionImpl;
+import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepContextParameter;
 
 /**
@@ -116,22 +117,26 @@ public class BuildTriggerStepExecution extends AbstractStepExecutionImpl {
 
     @Override
     public void stop(Throwable cause) {
+        StepContext context = getContext();
         Jenkins jenkins = Jenkins.getInstance();
         if (jenkins == null) {
+            context.onFailure(cause);
             return;
         }
 
-        Queue q = jenkins.getQueue();
+        boolean interrupted = false;
 
+        Queue q = jenkins.getQueue();
         // if the build is still in the queue, abort it.
         // BuildQueueListener will report the failure, so this method shouldn't call getContext().onFailure()
         for (Queue.Item i : q.getItems()) {
             for (BuildTriggerAction bta : i.getActions(BuildTriggerAction.class)) {
-                if (bta.getStepContext().equals(getContext())) {
+                if (bta.getStepContext().equals(context)) {
                     // Note that it is a little questionable to cancel the queue item in case it has other causes,
                     // but in the common case that this is the only cause, it is most intuitive to do so.
                     // The same applies to aborting the actual build once started.
                     q.cancel(i);
+                    interrupted = true;
                 }
             }
         }
@@ -141,18 +146,23 @@ public class BuildTriggerStepExecution extends AbstractStepExecutionImpl {
         // so this method shouldn't call getContext().onFailure()
         for (Computer c : jenkins.getComputers()) {
             for (Executor e : c.getExecutors()) {
-                maybeInterrupt(e, cause);
+                interrupted |= maybeInterrupt(e, cause, context);
             }
             for (Executor e : c.getOneOffExecutors()) {
-                maybeInterrupt(e, cause);
+                interrupted |= maybeInterrupt(e, cause, context);
             }
         }
+
+        if (!interrupted) {
+            context.onFailure(cause);
+        }
     }
-    private void maybeInterrupt(Executor e, Throwable cause) {
+    private static boolean maybeInterrupt(Executor e, Throwable cause, StepContext context) {
+        boolean interrupted = false;
         Queue.Executable exec = e.getCurrentExecutable();
         if (exec instanceof Run) {
             for (BuildTriggerAction bta : ((Run) exec).getActions(BuildTriggerAction.class)) {
-                if (bta.getStepContext().equals(getContext())) {
+                if (bta.getStepContext().equals(context)) {
                     e.interrupt(Result.ABORTED, new BuildTriggerCancelledCause(cause));
                     bta.interruption = cause;
                     try {
@@ -160,9 +170,11 @@ public class BuildTriggerStepExecution extends AbstractStepExecutionImpl {
                     } catch (IOException x) {
                         LOGGER.log(Level.WARNING, "failed to save interrupt cause on " + exec, x);
                     }
+                    interrupted = true;
                 }
             }
         }
+        return interrupted;
     }
 
     @Override public String getStatus() {
