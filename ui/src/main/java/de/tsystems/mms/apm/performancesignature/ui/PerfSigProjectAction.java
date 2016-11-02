@@ -28,7 +28,6 @@ import de.tsystems.mms.apm.performancesignature.model.PerfSigTestDataWrapper;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import hudson.XmlFile;
 import hudson.model.Job;
-import hudson.model.PermalinkProjectAction;
 import hudson.model.ProminentProjectAction;
 import hudson.model.Run;
 import hudson.tasks.junit.TestResult;
@@ -65,14 +64,14 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     private static final String JSON_FILENAME = "gridconfig.xml";
     private static final String UNITTEST_DASHLETNAME = "unittest_overview";
     private static final XStream XSTREAM = new XStream2();
-    private static final Logger logger = Logger.getLogger(PermalinkProjectAction.class.getName());
+    private static final Logger logger = Logger.getLogger(PerfSigProjectAction.class.getName());
     private final Job<?, ?> job;
-    private final Map<String, JSONDashlet> jsonDashletMap;
+    private final transient Map<String, JSONDashlet> jsonDashletMap;
 
     public PerfSigProjectAction(final Job<?, ?> job) {
         this.job = job;
         this.jsonDashletMap = new ConcurrentHashMap<String, JSONDashlet>();
-        this.jsonDashletMap.putAll(getJsonDashletMap());
+        this.jsonDashletMap.putAll(readConfiguration());
     }
 
     @Override
@@ -90,25 +89,6 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
 
     public Class<PerfSigUIUtils> getPerfSigUIUtils() {
         return PerfSigUIUtils.class;
-    }
-
-    @SuppressWarnings("unchecked")
-    public synchronized Map<String, JSONDashlet> getJsonDashletMap() {
-        File jsonConfigFile = new File(job.getConfigFile().getFile().getParent(), JSON_FILENAME);
-        try {
-            if (jsonConfigFile.exists()) {
-                return (Map<String, JSONDashlet>) getConfigFile().read();
-            } else {
-                Map<String, JSONDashlet> newConfiguration = createJSONConfiguration(true);
-                writeConfiguration(newConfiguration);
-                return newConfiguration;
-            }
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, "Failed to load " + getConfigFile(), e);
-        } catch (InterruptedException e) {
-            logger.log(Level.SEVERE, "Failed to load " + getConfigFile(), e);
-        }
-        return new HashMap<String, JSONDashlet>();
     }
 
     public void doSummarizerGraph(final StaplerRequest request, final StaplerResponse response) throws IOException, InterruptedException {
@@ -224,7 +204,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             return;
         }
 
-        //get customName and customBuildCount from persisted json
+        //get customName and customBuildCount from persisted xml
         if (request.getParameter("customName") == null && request.getParameter("customBuildCount") == null) {
             JSONDashlet jsonDashlet = jsonDashletMap.get(UNITTEST_DASHLETNAME);
             if (jsonDashlet != null) {
@@ -373,6 +353,8 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
 
     private Map<String, JSONDashlet> createJSONConfiguration(final boolean useRandomId) {
         int col = 1, row = 1;
+
+        logger.fine("grid configuration generation started");
         Map<String, JSONDashlet> jsonDashletMap = new HashMap<String, JSONDashlet>();
         for (DashboardReport dashboardReport : getLastDashboardReports()) {
             if (dashboardReport.isUnitTest()) {
@@ -396,6 +378,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
                 }
             }
         }
+        logger.fine("grid configuration generation finished");
         return jsonDashletMap;
     }
 
@@ -532,9 +515,32 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         return new XmlFile(XSTREAM, new File(job.getConfigFile().getFile().getParent(), JSON_FILENAME));
     }
 
+    @SuppressWarnings("unchecked")
+    private synchronized Map<String, JSONDashlet> readConfiguration() {
+        logger.fine("grid configuration read started");
+        File jsonConfigFile = new File(job.getConfigFile().getFile().getParent(), JSON_FILENAME);
+        try {
+            if (jsonConfigFile.exists()) {
+                return (Map<String, JSONDashlet>) getConfigFile().read();
+            } else {
+                Map<String, JSONDashlet> newConfiguration = createJSONConfiguration(true);
+                writeConfiguration(newConfiguration);
+                return newConfiguration;
+            }
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "Failed to load " + getConfigFile(), e);
+        } catch (InterruptedException e) {
+            logger.log(Level.SEVERE, "Failed to load " + getConfigFile(), e);
+        }
+        logger.fine("grid configuration read finished");
+        return new HashMap<String, JSONDashlet>();
+    }
+
     private synchronized void writeConfiguration(final Map<String, JSONDashlet> jsonDashletMap) throws IOException, InterruptedException {
         try {
+            logger.fine("grid configuration write started");
             getConfigFile().write(jsonDashletMap);
+            logger.fine("grid configuration write finished");
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Failed to save the grid configuration", e);
         }
