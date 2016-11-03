@@ -44,7 +44,7 @@ public class NetzbetreiberAuthorizer extends BaseAuthorizer {
             userInfo.getFunktionenForNetzbetreiber(id).contains(4)
             // XXX: this currently allows any user, regardless of function,
             // to manipulate and delete any ort of his own netzbetreiber!
-            || clazz.getName().equals("de.intevation.lada.model.stamm.Ort")
+            || clazz.getName().equals("de.intevation.lada.model.stammdaten.Ort")
             && userInfo.getNetzbetreiber().contains(id)
         );
     }
