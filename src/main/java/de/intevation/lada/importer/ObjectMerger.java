@@ -145,11 +145,6 @@ public class ObjectMerger {
         return this;
     }
 
-    public ObjectMerger mergeOrte(Probe target, List<Ortszuordnung> orte) {
-        // TODO implement me
-        return this;
-    }
-
     public ObjectMerger mergeMessungKommentare(
         Messung target,
         List<KommentarM> kommentare
@@ -209,6 +204,60 @@ public class ObjectMerger {
             for (int i = 0; i < found.size(); i++) {
                 repository.update(found.get(i), "land");
             }
+        }
+        return this;
+    }
+
+    public ObjectMerger mergeEntnahmeOrt(
+        int probeId,
+        Ortszuordnung ort
+    ) {
+        QueryBuilder<Ortszuordnung> builder = new QueryBuilder<Ortszuordnung>(
+            repository.entityManager("land"),
+            Ortszuordnung.class);
+        builder.and("probeId", probeId);
+        builder.and("ortszuordnungTyp", "E");
+        List<Ortszuordnung> found =
+            repository.filterPlain(builder.getQuery(), "land");
+        if (found.isEmpty()) {
+            repository.create(ort, "land");
+            return this;
+        }
+        try {
+            for (int i = 0; i < found.size(); i++) {
+                repository.delete(found.get(i), "land");
+            }
+            repository.create(ort, "land");
+        } catch (SecurityException |
+            IllegalStateException |
+            PersistenceException e
+        ) {
+            // Restore orte.
+            logger.debug("exception: ", e);
+            for (int i = 0; i < found.size(); i++) {
+                repository.update(found.get(i), "land");
+            }
+        }
+        return this;
+    }
+
+    public ObjectMerger mergeUrsprungsOrte(
+        int probeId,
+        List<Ortszuordnung> orte
+    ) {
+        QueryBuilder<Ortszuordnung> builder = new QueryBuilder<Ortszuordnung>(
+            repository.entityManager("land"),
+            Ortszuordnung.class);
+        for (int i = 0; i < orte.size(); i++) {
+            builder.and("probeId", probeId);
+            builder.and("ortszuordnungTyp", "U");
+            builder.and("ortId", orte.get(i).getOrtId());
+            List<Ortszuordnung> found =
+                repository.filterPlain(builder.getQuery(), "land");
+            if (found.isEmpty()) {
+                repository.create(orte.get(i), "land");
+            }
+            builder = builder.getEmptyBuilder();
         }
         return this;
     }
