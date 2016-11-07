@@ -35,8 +35,8 @@ public class Ort implements Serializable {
     @Column(name="gem_id")
     private String gemId;
 
-    @Column(name="hoehe_land")
-    private Float hoeheLand;
+    @Column(name="hoehe_ueber_nn")
+    private Float hoeheUeberNn;
 
     @Column(name="koord_x_extern")
     private String koordXExtern;
@@ -133,12 +133,12 @@ public class Ort implements Serializable {
         this.gemId = gemId;
     }
 
-    public Float getHoeheLand() {
-        return this.hoeheLand;
+    public Float getHoeheUeberNn() {
+        return this.hoeheUeberNn;
     }
 
-    public void setHoeheLand(Float hoeheLand) {
-        this.hoeheLand = hoeheLand;
+    public void setHoeheUeberNn(Float hoeheUeberNn) {
+        this.hoeheUeberNn = hoeheUeberNn;
     }
 
     public String getKoordXExtern() {
