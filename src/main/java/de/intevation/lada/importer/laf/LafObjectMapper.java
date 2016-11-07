@@ -152,12 +152,6 @@ public class LafObjectMapper {
             if(i == Identified.UPDATE) {
                 merger.merge(old, probe);
                 newProbe = old;
-                Violation violation = probeValidator.validate(newProbe);
-                for (Entry<String, List<Integer>> warn : violation.getWarnings().entrySet()) {
-                    for (Integer code : warn.getValue()) {
-                        currentWarnings.add(new ReportItem("validation", warn.getKey(), code));
-                    }
-                }
             }
             // Probe was found but some data does not match
             else if(i == Identified.REJECT){
@@ -179,15 +173,13 @@ public class LafObjectMapper {
             // It is a brand new probe!
             else if(i == Identified.NEW){
                 Violation violation = probeValidator.validate(probe);
-                for (Entry<String, List<Integer>> err : violation.getErrors().entrySet()) {
-                    for (Integer code : err.getValue()) {
-                        currentErrors.add(new ReportItem("validation", err.getKey(), code));
+                if (violation.hasErrors()) {
+                    for (Entry<String, List<Integer>> err : violation.getErrors().entrySet()) {
+                        for (Integer code : err.getValue()) {
+                            currentErrors.add(new ReportItem("validation", err.getKey(), code));
+                        }
                     }
-                }
-                for (Entry<String, List<Integer>> warn : violation.getWarnings().entrySet()) {
-                    for (Integer code : warn.getValue()) {
-                        currentWarnings.add(new ReportItem("validation", warn.getKey(), code));
-                    }
+                    return;
                 }
                 Response created = repository.create(probe, "land");
                 newProbe = ((Probe)created.getData());
@@ -251,6 +243,12 @@ public class LafObjectMapper {
         // Create messung objects
         for (int i = 0; i < object.getMessungen().size(); i++) {
             create(object.getMessungen().get(i), newProbe.getId(), newProbe.getMstId());
+        }
+        Violation violation = probeValidator.validate(newProbe);
+        for (Entry<String, List<Integer>> warn : violation.getWarnings().entrySet()) {
+            for (Integer code : warn.getValue()) {
+                currentWarnings.add(new ReportItem("validation", warn.getKey(), code));
+            }
         }
         if (currentErrors.size() > 0) {
             errors.put(object.getIdentifier(),
