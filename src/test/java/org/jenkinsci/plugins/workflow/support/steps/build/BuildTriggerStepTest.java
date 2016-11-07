@@ -24,7 +24,6 @@ import org.jenkinsci.plugins.workflow.job.WorkflowRun;
 import org.jenkinsci.plugins.workflow.test.steps.SemaphoreStep;
 import static org.junit.Assert.*;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.BuildWatcher;
@@ -327,7 +326,6 @@ public class BuildTriggerStepTest {
         assertEquals(5, ds1.getNumber());
     }
 
-    @Ignore("TODO pending https://github.com/jenkinsci/jenkins/pull/2609")
     @Issue("JENKINS-39454")
     @Test public void raceCondition() throws Exception {
         logging.record(BuildTriggerStepExecution.class.getPackage().getName(), Level.FINE).record(Queue.class, Level.FINE).record(Executor.class, Level.FINE);

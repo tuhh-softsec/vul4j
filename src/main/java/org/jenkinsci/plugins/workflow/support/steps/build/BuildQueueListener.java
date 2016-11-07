@@ -13,8 +13,8 @@ public class BuildQueueListener extends QueueListener {
     @Override
     public void onLeft(Queue.LeftItem li) {
         if(li.isCancelled()){
-            for (BuildTriggerAction action : li.getActions(BuildTriggerAction.class)) {
-                action.getStepContext().onFailure(new AbortException("Build of " + li.task.getFullDisplayName() + " was cancelled"));
+            for (BuildTriggerAction.Trigger trigger : BuildTriggerAction.triggersFor(li)) {
+                trigger.context.onFailure(new AbortException("Build of " + li.task.getFullDisplayName() + " was cancelled"));
             }
         }
     }

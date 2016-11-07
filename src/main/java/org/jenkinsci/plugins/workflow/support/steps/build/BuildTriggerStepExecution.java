@@ -60,7 +60,7 @@ public class BuildTriggerStepExecution extends AbstractStepExecutionImpl {
         listener.getLogger().println("Scheduling project: " + ModelHyperlinkNote.encodeTo(project));
 
         node.addAction(new LabelAction(Messages.BuildTriggerStepExecution_building_(project.getFullDisplayName())));
-        List<Action> actions = new ArrayList<Action>();
+        List<Action> actions = new ArrayList<>();
         if (step.getWait()) {
             StepContext context = getContext();
             actions.add(new BuildTriggerAction(context, step.isPropagate()));
@@ -132,8 +132,8 @@ public class BuildTriggerStepExecution extends AbstractStepExecutionImpl {
         // if the build is still in the queue, abort it.
         // BuildQueueListener will report the failure, so this method shouldn't call getContext().onFailure()
         for (Queue.Item i : q.getItems()) {
-            for (BuildTriggerAction bta : i.getActions(BuildTriggerAction.class)) {
-                if (bta.getStepContext().equals(context)) {
+            for (BuildTriggerAction.Trigger trigger : BuildTriggerAction.triggersFor(i)) {
+                if (trigger.context.equals(context)) {
                     // Note that it is a little questionable to cancel the queue item in case it has other causes,
                     // but in the common case that this is the only cause, it is most intuitive to do so.
                     // The same applies to aborting the actual build once started.
@@ -163,10 +163,10 @@ public class BuildTriggerStepExecution extends AbstractStepExecutionImpl {
         boolean interrupted = false;
         Queue.Executable exec = e.getCurrentExecutable();
         if (exec instanceof Run) {
-            for (BuildTriggerAction bta : ((Run) exec).getActions(BuildTriggerAction.class)) {
-                if (bta.getStepContext().equals(context)) {
+            for (BuildTriggerAction.Trigger trigger : BuildTriggerAction.triggersFor((Run) exec)) {
+                if (trigger.context.equals(context)) {
                     e.interrupt(Result.ABORTED, new BuildTriggerCancelledCause(cause));
-                    bta.interruption = cause;
+                    trigger.interruption = cause;
                     try {
                         ((Run) exec).save();
                     } catch (IOException x) {
@@ -181,8 +181,8 @@ public class BuildTriggerStepExecution extends AbstractStepExecutionImpl {
 
     @Override public String getStatus() {
         for (Queue.Item i : Queue.getInstance().getItems()) {
-            for (BuildTriggerAction bta : i.getActions(BuildTriggerAction.class)) {
-                if (bta.getStepContext().equals(getContext())) {
+            for (BuildTriggerAction.Trigger trigger : BuildTriggerAction.triggersFor(i)) {
+                if (trigger.context.equals(getContext())) {
                     return "waiting to schedule " + i.task.getFullDisplayName() + "; blocked: " + i.getWhy();
                 }
             }
@@ -208,8 +208,8 @@ public class BuildTriggerStepExecution extends AbstractStepExecutionImpl {
         Queue.Executable exec = e.getCurrentExecutable();
         if (exec instanceof Run) {
             Run<?,?> run = (Run) exec;
-            for (BuildTriggerAction bta : run.getActions(BuildTriggerAction.class)) {
-                if (bta.getStepContext().equals(getContext())) {
+            for (BuildTriggerAction.Trigger trigger : BuildTriggerAction.triggersFor(run)) {
+                if (trigger.context.equals(getContext())) {
                     return "running " + run;
                 }
             }
