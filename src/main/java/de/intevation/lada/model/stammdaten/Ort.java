@@ -71,7 +71,7 @@ public class Ort implements Serializable {
     private Integer ortTyp;
 
     @Column(name="oz_id")
-    private Integer ozId;
+    private String ozId;
 
     private String sektor;
 
@@ -237,11 +237,11 @@ public class Ort implements Serializable {
         this.ortTyp = ortTyp;
     }
 
-    public Integer getOzId() {
+    public String getOzId() {
         return this.ozId;
     }
 
-    public void setOzId(Integer ozId) {
+    public void setOzId(String ozId) {
         this.ozId = ozId;
     }
 
