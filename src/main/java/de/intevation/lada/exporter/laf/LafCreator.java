@@ -156,6 +156,7 @@ implements Creator
                 probe.getMediaDesk().replaceAll(" ", "").substring(2) + "\"");
         laf += probe.getTest() == Boolean.TRUE ?
             lafLine("TESTDATEN", "1") : lafLine("TESTDATEN", "0");
+        laf += writeOrt(probe);
         for (ZusatzWert zw : zusatzwerte) {
             laf += writeZusatzwert(zw);
         }
@@ -163,7 +164,6 @@ implements Creator
             laf += writeKommentar(kp);
         }
         laf += writeMessung(probe);
-        //laf += writeOrt(probe);
         return laf;
     }
 
@@ -211,7 +211,18 @@ implements Creator
 
         String laf = "";
         for(Ortszuordnung o : orte) {
-            laf += "%ORT%\n";
+            String type = "";
+            if ("E".equals(o.getOrtszuordnungTyp())) {
+                type = "P_";
+            }
+            else if ("U".equals(o.getOrtszuordnungTyp())) {
+                type = "U_";
+                laf += "%URSPRUNGSORT%\n";
+            }
+            if (o.getOrtszusatztext() != null &&
+                o.getOrtszusatztext().length() > 0) {
+                laf += lafLine(type + "ORT_ZUSATZTEXT", o.getOrtszusatztext());
+            }
             QueryBuilder<Ort> oBuilder =
                 new QueryBuilder<Ort>(
                     repository.entityManager("stamm"),
@@ -222,19 +233,28 @@ implements Creator
                     oBuilder.getQuery(),
                     "stamm").getData();
 
-            laf += lafLine("ORT_CODE",
-                "\"" + sOrte.get(0).getAnlageId() + "\"");
-            laf += lafLine("ORT_TYP", "\"" + o.getOrtszuordnungTyp() + "\"");
-            laf += o.getOrtszusatztext() == null ? "":
-                lafLine("ORT_ZUSATZTEXT", "\"" + o.getOrtszusatztext() + "\"");
-            laf += lafLine("ORT_LAND_S", String.valueOf(sOrte.get(0).getStaatId()));
-            String koord = "";
-            koord += "05 ";
-            koord += sOrte.get(0).getLongitude() + " ";
-            koord += sOrte.get(0).getLatitude();
-            //TODO: use table koordinatenart and koord*extern!
-            laf += lafLine("ORT_KOORDINATEN_S", koord);
-            laf += lafLine("ORT_GEMEINDESCHLUESSEL", sOrte.get(0).getOrtId());
+            laf += lafLine(type + "HERKUNFTSLAND_S",
+                String.format("%08d", sOrte.get(0).getStaatId()));
+            if (sOrte.get(0).getGemId() != null &&
+                sOrte.get(0).getGemId().length() > 0) {
+                laf += lafLine(type + "GEMEINDESCHLUESSEL",
+                    sOrte.get(0).getGemId());
+            }
+
+            String koord = String.format("%02d", sOrte.get(0).getKdaId());
+            koord += " ";
+            koord += sOrte.get(0).getKoordXExtern() + " ";
+            koord += sOrte.get(0).getKoordYExtern();
+            laf += lafLine(type + "KOORDINATEN_S", koord);
+
+            if (sOrte.get(0).getOzId() != null &&
+                sOrte.get(0).getOzId().length() > 0) {
+                laf += lafLine(type + "ORT_ZUSATZCODE", sOrte.get(0).getOzId());
+            }
+            if (sOrte.get(0).getHoeheUeberNn() != null) {
+                laf += lafLine(type + "HOEHE_NN",
+                    String.format("%f", sOrte.get(0).getHoeheUeberNn()));
+            }
         }
         return laf;
     }
