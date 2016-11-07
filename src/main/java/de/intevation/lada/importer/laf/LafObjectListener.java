@@ -16,6 +16,8 @@ public class LafObjectListener extends LafBaseListener {
     LafRawData data;
     LafRawData.Probe currentProbe;
     LafRawData.Messung currentMessung;
+    Map<String, String> currentUOrt;
+    Map<String, String> currentEOrt;
     Map<String, List<ReportItem>> errors;
     ArrayList<ReportItem> currentErrors;
 
@@ -25,12 +27,18 @@ public class LafObjectListener extends LafBaseListener {
     private boolean hasZeitbasis = false;
     private boolean hasUebertragungsformat = false;
     private boolean hasVersion = false;
-
+    private boolean hasEHerkunfstland = false;
+    private boolean hasEGemeinde = false;
+    private boolean hasEKoordinaten = false;
+    private boolean hasUHerkunfstland = false;
+    private boolean hasUGemeinde = false;
+    private boolean hasUKoordinaten = false;
 
     public LafObjectListener() {
         data = new LafRawData();
         errors = new HashMap<String, List<ReportItem>>();
         currentErrors = new ArrayList<ReportItem>();
+        currentUOrt = new HashMap<String, String>();
     }
 
     public LafRawData getData() {
@@ -106,6 +114,15 @@ public class LafObjectListener extends LafBaseListener {
             currentProbe.addMessung(currentMessung);
             currentMessung = null;
         }
+        if (currentUOrt != null && !currentUOrt.isEmpty()) {
+            currentProbe.addUrsprungsOrt(currentUOrt);
+            currentUOrt.clear();
+        }
+        if (currentEOrt != null && !currentEOrt.isEmpty()) {
+            currentProbe.addEntnahmeOrt(currentEOrt);
+            currentEOrt.clear();
+        }
+        currentEOrt = new HashMap<String, String>();
         currentProbe = data.new Probe();
     }
 
@@ -134,14 +151,6 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterDb(LafParser.DbContext ctx) {
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The default implementation does nothing.</p>
-     */
-    @Override public void enterUs(LafParser.UsContext ctx) {
     }
 
     /**
@@ -273,6 +282,14 @@ public class LafObjectListener extends LafBaseListener {
         if (currentMessung != null) {
             currentProbe.addMessung(currentMessung);
         }
+        if (currentUOrt != null && !currentUOrt.isEmpty()) {
+            currentProbe.addUrsprungsOrt(currentUOrt);
+            currentUOrt.clear();
+        }
+        if (currentEOrt != null && !currentEOrt.isEmpty()) {
+            currentProbe.addEntnahmeOrt(currentEOrt);
+            currentEOrt.clear();
+        }
         currentMessung = data.new Messung();
     }
 
@@ -285,6 +302,35 @@ public class LafObjectListener extends LafBaseListener {
         currentProbe.addMessung(currentMessung);
         currentMessung = null;
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override public void enterUrsprungsort(LafParser.UrsprungsortContext ctx) {
+        if (currentMessung != null) {
+            currentProbe.addMessung(currentMessung);
+            currentMessung = data.new Messung();
+        }
+        if (currentUOrt != null && !currentUOrt.isEmpty()) {
+            currentProbe.addUrsprungsOrt(currentUOrt);
+        }
+        if (currentEOrt != null && !currentEOrt.isEmpty()) {
+            currentProbe.addEntnahmeOrt(currentEOrt);
+            currentEOrt.clear();
+        }
+        currentUOrt.clear();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation does nothing.</p>
+     */
+    @Override public void exitUrsprungsort(LafParser.UrsprungsortContext ctx) {
+    }
+
 
     /**
      * {@inheritDoc}
@@ -1238,6 +1284,8 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
+        currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
+        hasUHerkunfstland = true;
         // TODO: Add to "ursprungsort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1261,6 +1309,8 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
+        currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
+        hasUHerkunfstland = true;
         // TODO: Add to "ursprungsort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1284,6 +1334,8 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
+        currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
+        hasUHerkunfstland = true;
         // TODO: Add to "ursprungsort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1307,6 +1359,8 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
+        currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
+        hasUGemeinde= true;
         // TODO: Add to "ursprungsort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1330,6 +1384,8 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
+        currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
+        hasUGemeinde= true;
         // TODO: Add to "ursprungsort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1353,6 +1409,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
+        currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
         // TODO: Add to "ursprungsort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1396,6 +1453,10 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
+        currentUOrt.put("U_KOORDINATEN_X", koord1);
+        currentUOrt.put("U_KOORDINATEN_Y", koord2);
+        currentUOrt.put("U_KOORDINATEN_ART", art);
+        hasUKoordinaten = true;
         // TODO: Add to "ursprungsort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1406,6 +1467,7 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterU_koordinaten_s(LafParser.U_koordinaten_sContext ctx) {
+        System.out.println("koordinaten");
         if (ctx.getChildCount() < 6) {
             return;
         }
@@ -1439,6 +1501,11 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
+        System.out.println("add");
+        currentUOrt.put("U_KOORDINATEN_X", koord1);
+        currentUOrt.put("U_KOORDINATEN_Y", koord2);
+        currentUOrt.put("U_KOORDINATEN_ART_S", art);
+        hasUKoordinaten = true;
         // TODO: Add to "ursprungsort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1462,6 +1529,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);
             return;
         }
+        currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
         // TODO: Add to "ursprungsort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1485,6 +1553,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
+        currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
         // TODO: Add to "ursprungsort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1508,6 +1577,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
+        currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
         // TODO: Add to "ursprungsort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1518,6 +1588,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_herkunftsland_lang(LafParser.P_herkunftsland_langContext ctx) {
+        if (hasEHerkunfstland) {
+            return;
+        }
         if (ctx.getChildCount() < 2) {
             return;
         }
@@ -1531,6 +1604,8 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
+        currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
+        hasEHerkunfstland = true;
         // TODO: Add to "entnahmeort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1541,6 +1616,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_herkunftsland_kurz(LafParser.P_herkunftsland_kurzContext ctx) {
+        if (hasEHerkunfstland) {
+            return;
+        }
         if (ctx.getChildCount() < 2) {
             return;
         }
@@ -1554,6 +1632,8 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
+        currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
+        hasEHerkunfstland = true;
         // TODO: Add to "entnahmeort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1564,6 +1644,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_herkunftsland_s(LafParser.P_herkunftsland_sContext ctx) {
+        if (hasEHerkunfstland) {
+            return;
+        }
         if (ctx.getChildCount() < 2) {
             return;
         }
@@ -1577,6 +1660,8 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
+        currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
+        hasEHerkunfstland = true;
         // TODO: Add to "entnahmeort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1587,6 +1672,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_gemeindeschluessel(LafParser.P_gemeindeschluesselContext ctx) {
+        if (hasEGemeinde) {
+            return;
+        }
         if (ctx.getChildCount() < 2) {
             return;
         }
@@ -1600,6 +1688,8 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
+        currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
+        hasEGemeinde = true;
         // TODO: Add to "entnahmeort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1610,6 +1700,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_gemeindename(LafParser.P_gemeindenameContext ctx) {
+        if (hasEGemeinde) {
+            return;
+        }
         if (ctx.getChildCount() < 2) {
             return;
         }
@@ -1623,6 +1716,8 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
+        currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
+        hasEGemeinde = true;
         // TODO: Add to "entnahmeort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1646,6 +1741,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
+        currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
         // TODO: Add to "entnahmeort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1656,6 +1752,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_koordinaten(LafParser.P_koordinatenContext ctx) {
+        if (hasEKoordinaten) {
+            return;
+        }
         if (ctx.getChildCount() < 6) {
             return;
         }
@@ -1689,6 +1788,10 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
+        currentEOrt.put("P_KOORDINATEN_X", koord1);
+        currentEOrt.put("P_KOORDINATEN_Y", koord2);
+        currentEOrt.put("P_KOORDINATEN_ART", art);
+        hasEKoordinaten = true;
         // TODO: Add to "entnahmeort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1699,6 +1802,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_koordinaten_s(LafParser.P_koordinaten_sContext ctx) {
+        if (hasEKoordinaten) {
+            return;
+        }
         if (ctx.getChildCount() < 6) {
             return;
         }
@@ -1732,6 +1838,10 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
+        currentEOrt.put("P_KOORDINATEN_X", koord1);
+        currentEOrt.put("P_KOORDINATEN_Y", koord2);
+        currentEOrt.put("P_KOORDINATEN_ART_S", art);
+        hasEKoordinaten = true;
         // TODO: Add to "entnahmeort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1755,6 +1865,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
+        currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
         // TODO: Add to "entnahmeort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1778,6 +1889,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
+        currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
         // TODO: Add to "entnahmeort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1801,6 +1913,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
+        currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
         // TODO: Add to "entnahmeort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1824,6 +1937,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
+        currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
         // TODO: Add to "entnahmeort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1847,6 +1961,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
+        currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
         // TODO: Add to "entnahmeort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1870,6 +1985,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
+        currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
         // TODO: Add to "entnahmeort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1893,6 +2009,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
+        currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
         // TODO: Add to "entnahmeort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }

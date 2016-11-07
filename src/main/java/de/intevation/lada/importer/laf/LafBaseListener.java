@@ -149,6 +149,18 @@ public class LafBaseListener implements LafListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterEntnahmeort(LafParser.EntnahmeortContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitEntnahmeort(LafParser.EntnahmeortContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterPh(LafParser.PhContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -293,13 +305,25 @@ public class LafBaseListener implements LafListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterUs(LafParser.UsContext ctx) { }
+	@Override public void enterUrsprungsort(LafParser.UrsprungsortContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitUs(LafParser.UsContext ctx) { }
+	@Override public void exitUrsprungsort(LafParser.UrsprungsortContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterUrsprungsort_header(LafParser.Ursprungsort_headerContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitUrsprungsort_header(LafParser.Ursprungsort_headerContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

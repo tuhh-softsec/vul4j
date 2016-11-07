@@ -27,19 +27,25 @@ import de.intevation.lada.model.land.KommentarM;
 import de.intevation.lada.model.land.KommentarP;
 import de.intevation.lada.model.land.Messung;
 import de.intevation.lada.model.land.Messwert;
+import de.intevation.lada.model.land.Ortszuordnung;
 import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.model.land.StatusProtokoll;
 import de.intevation.lada.model.land.ZusatzWert;
 import de.intevation.lada.model.stammdaten.Datenbasis;
+import de.intevation.lada.model.stammdaten.KoordinatenArt;
 import de.intevation.lada.model.stammdaten.MessEinheit;
 import de.intevation.lada.model.stammdaten.MessStelle;
 import de.intevation.lada.model.stammdaten.Messgroesse;
 import de.intevation.lada.model.stammdaten.MessprogrammKategorie;
 import de.intevation.lada.model.stammdaten.MessprogrammTransfer;
+import de.intevation.lada.model.stammdaten.Ort;
+import de.intevation.lada.model.stammdaten.Ortszusatz;
 import de.intevation.lada.model.stammdaten.ProbenZusatz;
 import de.intevation.lada.model.stammdaten.Probenart;
+import de.intevation.lada.model.stammdaten.Staat;
 import de.intevation.lada.model.stammdaten.StatusKombi;
 import de.intevation.lada.model.stammdaten.Umwelt;
+import de.intevation.lada.model.stammdaten.Verwaltungseinheit;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -183,10 +189,8 @@ public class LafObjectMapper {
                         currentWarnings.add(new ReportItem("validation", warn.getKey(), code));
                     }
                 }
-                if (!violation.hasErrors()) {
-                    Response created = repository.create(probe, "land");
-                    newProbe = ((Probe)created.getData());
-                }
+                Response created = repository.create(probe, "land");
+                newProbe = ((Probe)created.getData());
             }
         } catch (InvalidTargetObjectTypeException e) {
             ReportItem err = new ReportItem();
@@ -204,37 +208,50 @@ public class LafObjectMapper {
             }
             return;
         }
-        if (newProbe != null) {
-            // Create kommentar objects
-            List<KommentarP> kommentare = new ArrayList<KommentarP>();
-            for (int i = 0; i < object.getKommentare().size(); i++) {
-                KommentarP tmp = createProbeKommentar(
-                    object.getKommentare().get(i), newProbe.getId());
-                if (tmp != null) {
-                    kommentare.add(tmp);
-                }
-            }
-            // Persist kommentar objects
-            merger.mergeKommentare(newProbe, kommentare);
-
-            // Create zusatzwert objects
-            List<ZusatzWert> zusatzwerte = new ArrayList<ZusatzWert>();
-            for (int i = 0; i < object.getZusatzwerte().size(); i++) {
-                ZusatzWert tmp = createZusatzwert(
-                    object.getZusatzwerte().get(i), newProbe.getId());
-                if (tmp != null) {
-                    zusatzwerte.add(tmp);
-                }
-            }
-            // Persist zusatzwert objects
-            merger.mergeZusatzwerte(newProbe, zusatzwerte);
-
-            // Create messung objects
-            for (LafRawData.Messung messung : object.getMessungen()) {
-                create(messung, newProbe.getId(), newProbe.getMstId());
+        if (newProbe == null) {
+            // Only occurs if object type is not probe
+            return;
+        }
+        // Create kommentar objects
+        List<KommentarP> kommentare = new ArrayList<KommentarP>();
+        for (int i = 0; i < object.getKommentare().size(); i++) {
+            KommentarP tmp = createProbeKommentar(object.getKommentare().get(i), newProbe.getId());
+            if (tmp != null) {
+                kommentare.add(tmp);
             }
         }
+        // Persist kommentar objects
+        merger.mergeKommentare(newProbe, kommentare);
 
+        // Create zusatzwert objects
+        List<ZusatzWert> zusatzwerte = new ArrayList<ZusatzWert>();
+        for (int i = 0; i < object.getZusatzwerte().size(); i++) {
+            ZusatzWert tmp = createZusatzwert(object.getZusatzwerte().get(i), newProbe.getId());
+            if (tmp != null) {
+                zusatzwerte.add(tmp);
+            }
+        }
+        // Persist zusatzwert objects
+        merger.mergeZusatzwerte(newProbe, zusatzwerte);
+
+        // Merge entnahmeOrt
+        createEntnahmeOrt(object.getEntnahmeOrt(), newProbe.getId());
+
+        // Create ursprungsOrte
+        List<Ortszuordnung> uOrte = new ArrayList<Ortszuordnung>();
+        for (int i = 0; i < object.getUrsprungsOrte().size(); i++) {
+            Ortszuordnung tmp = createUrsprungsOrt(object.getUrsprungsOrte().get(i), newProbe.getId());
+            if (tmp != null) {
+                uOrte.add(tmp);
+            }
+        }
+        // Persist ursprungsOrte
+        merger.mergeUrsprungsOrte(newProbe.getId(), uOrte);
+
+        // Create messung objects
+        for (int i = 0; i < object.getMessungen().size(); i++) {
+            create(object.getMessungen().get(i), newProbe.getId(), newProbe.getMstId());
+        }
         if (currentErrors.size() > 0) {
             errors.put(object.getIdentifier(),
                 new ArrayList<ReportItem>(currentErrors));
@@ -575,6 +592,204 @@ public class LafObjectMapper {
         }
     }
 
+    private Ortszuordnung createUrsprungsOrt(
+        Map<String, String> ursprungsOrt,
+        Integer id
+    ) {
+        Ortszuordnung ort = new Ortszuordnung();
+        ort.setOrtszuordnungTyp("U");
+        ort.setProbeId(id);
+
+        Ort o = findOrCreateOrt(ursprungsOrt, "U_");
+        if (o == null) {
+            return null;
+        }
+        ort.setOrtId(Long.valueOf(o.getId()));
+        if (ursprungsOrt.containsKey("U_ORTS_ZUSATZTEXT")) {
+            ort.setOrtszusatztext(ursprungsOrt.get("U_ORTS_ZUSATZTEXT"));
+        }
+        if (ursprungsOrt.containsKey("U_ORTS_ZUSATZCODE")) {
+            Ortszusatz zusatz = repository.getByIdPlain(
+                Ortszusatz.class,
+                ursprungsOrt.get("U_ORTS_ZUSATZCODE"),
+                "stamm");
+            if (zusatz != null) {
+                o.setOzId(zusatz.getOzsId());
+                repository.update(o, "stamm");
+            }
+        }
+        return ort;
+    }
+
+    private void createEntnahmeOrt(
+        Map<String, String> entnahmeOrt,
+        Integer id
+    ) {
+        Ortszuordnung ort = new Ortszuordnung();
+        ort.setOrtszuordnungTyp("E");
+        ort.setProbeId(id);
+
+        Ort o = findOrCreateOrt(entnahmeOrt, "P_");
+        if (o == null) {
+            return;
+        }
+        ort.setOrtId(Long.valueOf(o.getId()));
+        if (entnahmeOrt.containsKey("P_ORTS_ZUSATZTEXT")) {
+            ort.setOrtszusatztext(entnahmeOrt.get("P_ORTS_ZUSATZTEXT"));
+        }
+        merger.mergeEntnahmeOrt(id, ort);
+    }
+
+    private Ort findOrCreateOrt(Map<String, String> attributes, String type) {
+        // If laf contains coordinates, find a ort with matching coordinates or
+        // create one.
+        for (Entry<String, String> entry : attributes.entrySet()) {
+            logger.debug(entry.getKey() + ": " + entry.getValue());
+        }
+        if ((attributes.get(type + "KOORDINATEN_ART") != null ||
+             attributes.get(type + "KOORDINATEN_ART_S") != null) &&
+            attributes.get(type + "KOORDINATEN_X") != null &&
+            attributes.get(type + "KOORDINATEN_Y") != null
+        ) {
+            QueryBuilder<Ort> builder =
+                new QueryBuilder<Ort>(
+                    repository.entityManager("stamm"),
+                    Ort.class);
+            if (attributes.get(type + "KOORDINATEN_ART_S") != null) {
+                builder.and("kdaId", Integer.valueOf(attributes.get(type + "KOORDINATEN_ART_S")));
+            }
+            else {
+                QueryBuilder<KoordinatenArt> kdaBuilder =
+                    new QueryBuilder<KoordinatenArt>(
+                        repository.entityManager("stamm"),
+                        KoordinatenArt.class);
+                kdaBuilder.and("koordinatenart", attributes.get(type + "KOORDINATEN_ART"));
+                List<KoordinatenArt> arten = repository.filterPlain(kdaBuilder.getQuery(), "stamm");
+                if (arten == null || arten.isEmpty()) {
+                    ReportItem err = new ReportItem();
+                    err.setCode(632);
+                    err.setKey("KoordinatenArt");
+                    err.setValue("Not found");
+                    currentErrors.add(err);
+                    return null;
+                }
+                logger.debug("kda: " + arten.get(0).getId());
+                builder.and("kdaId", arten.get(0).getId());
+            }
+            builder.and("koordXExtern", attributes.get(type + "KOORDINATEN_X"));
+            builder.and("koordYExtern", attributes.get(type + "KOORDINATEN_Y"));
+            List<Ort> orte = repository.filterPlain(builder.getQuery(), "stamm");
+            logger.debug(attributes.get(type + "KOORDINATEN_ART_S"));
+            logger.debug(attributes.get(type + "KOORDINATEN_X"));
+            logger.debug(attributes.get(type + "KOORDINATEN_Y"));
+            logger.debug(orte.size());
+            if (orte != null && orte.size() > 0) {
+                return orte.get(0);
+            }
+            else {
+                return createNewOrt(attributes, type);
+            }
+        }
+        // If laf contains gemeinde attributes, find a ort with matching gemId
+        // or create one.
+        String gemId = null;
+        if (attributes.get(type + "GEMEINDENAME") != null) {
+            QueryBuilder<Verwaltungseinheit> builder =
+                new QueryBuilder<Verwaltungseinheit>(
+                    repository.entityManager("stamm"),
+                    Verwaltungseinheit.class);
+            builder.and("bezeichnung", attributes.get(type + "GEMEINDENAME"));
+            List<Verwaltungseinheit> ves =
+                repository.filterPlain(builder.getQuery(), "stamm");
+            if (ves != null && ves.size() > 0) {
+                gemId = ves.get(0).getId();
+            }
+        }
+        else if (attributes.get(type + "GEMEINDESCHLUESSEL") != null) {
+            gemId = attributes.get(type + "GEMEINDESCHLUESSEL");
+        }
+        if (gemId != null) {
+            QueryBuilder<Ort> builder =
+                new QueryBuilder<Ort>(
+                    repository.entityManager("stamm"),
+                    Ort.class);
+            builder.and("gemId", gemId);
+            List<Ort> orte = repository.filterPlain(builder.getQuery(), "stamm");
+            if (orte != null && orte.size() > 0) {
+                return orte.get(0);
+            }
+            else {
+                return createNewOrt(attributes, type);
+            }
+        }
+        else {
+            // Create a new ort.
+        }
+        return createNewOrt(attributes, type);
+    }
+
+    private Ort createNewOrt(Map<String, String> attributes, String type) {
+        Ort ort = new Ort();
+        ort.setOrtTyp(1);
+        String hLand = "";
+        String staatFilter = "";
+        if (attributes.get(type + "HERKUNFTSLAND_S") != null) {
+            staatFilter = "staatIso";
+            hLand = attributes.get(type + "HERKUNFTSLAND_S");
+        }
+        else if (attributes.get(type + "HERKUNFTSLAND_KURZ") != null) {
+            staatFilter = "staatKurz";
+            hLand = attributes.get(type + "HERKUNFTSLAND_KURZ");
+        }
+        else if (attributes.get(type + "HERKUNFTSLAND_LANG") != null) {
+            staatFilter = "staat";
+            hLand = attributes.get(type + "HERKUNFTSLAND_LANG");
+        }
+        QueryBuilder<Staat> builderStaat =
+            new QueryBuilder<Staat>(
+                repository.entityManager("stamm"),
+                Staat.class);
+        if (staatFilter.length() > 0) {
+            builderStaat.and(staatFilter, hLand);
+            List<Staat> staat =
+                repository.filterPlain(builderStaat.getQuery(), "stamm");
+            if (staat != null && staat.size() > 0) {
+                ort.setStaatId(staat.get(0).getId());
+            }
+        }
+
+        String gemId = null;
+        if (attributes.get(type + "GEMEINDENAME") != null) {
+            QueryBuilder<Verwaltungseinheit> builder =
+                new QueryBuilder<Verwaltungseinheit>(
+                    repository.entityManager("stamm"),
+                    Verwaltungseinheit.class);
+            builder.and("bezeichnung", attributes.get(type + "GEMEINDENAME"));
+            List<Verwaltungseinheit> ves =
+                repository.filterPlain(builder.getQuery(), "stamm");
+            if (ves != null && ves.size() > 0) {
+                gemId = ves.get(0).getId();
+            }
+        }
+        else if (attributes.get(type + "GEMEINDESCHLUESSEL") != null) {
+            gemId = attributes.get(type + "GEMEINDESCHLUESSEL");
+        }
+        if (gemId != null) {
+            ort.setGemId(gemId);
+        }
+        if ((attributes.get(type + "KOORDINATEN_ART") != null ||
+             attributes.get(type + "KOORDINATEN_ART_S") != null) &&
+            attributes.get(type + "KOORDINATEN_X") != null &&
+            attributes.get(type + "KOORDINATEN_Y") != null
+        ) {
+            if (attributes.get(type + "KOORDINATEN_ART_S") != null) {
+            }
+        }
+//        repository.create(ort, "stamm");
+//        return ort;
+        return null;
+    }
+
     private void logProbe(Probe probe) {
         logger.debug("%PROBE%");
         logger.debug("datenbasis: " + probe.getDatenbasisId());
@@ -653,12 +868,6 @@ public class LafObjectMapper {
 
         if ("MESSSTELLE".equals(key)) {
             probe.setMstId(value.toString());
-
-            /* MESSLABOR is optional in LAF but probe.labor_mst_id is
-             * NOT NULL in the LADA database */
-            if (probe.getLaborMstId() == null) {
-                probe.setLaborMstId(value.toString());
-            }
         }
 
         if ("MESSLABOR".equals(key)) {

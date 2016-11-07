@@ -33,18 +33,8 @@ probedaten: db
   | szenario
   | sek_datenbasis
   | sek_datenbasis_s
-  | us
-  | ph
-  | pg
-  | p_orts_zusatzkennzahl
-  | pk
-  | p_orts_zusatzcode
-  | p_orts_zusatztext
-  | p_nuts_code
-  | p_site_id
-  | p_site_name
-  | p_hoehe_nn
-  | p_hoehe_land
+  | ursprungsort
+  | entnahmeort
   | mehrzweckfeld
   | messung
   | pzb
@@ -86,6 +76,19 @@ ub : umweltbereich_c
 rei : rei_programmpunkt
     | rei_programmpunktgruppe
     ;
+
+entnahmeort: ph
+  | pg
+  | p_orts_zusatzkennzahl
+  | pk
+  | p_orts_zusatzcode
+  | p_orts_zusatztext
+  | p_nuts_code
+  | p_site_id
+  | p_site_name
+  | p_hoehe_nn
+  | p_hoehe_land
+  ;
 
 ph : p_herkunftsland_lang
    | p_herkunftsland_kurz
@@ -145,9 +148,12 @@ pn : proben_nr
    ;
 
 // URSPRUNGSORT
-us : '%URSPRUNGSORT%'
-  ursprungsortdaten*
-   ;
+ursprungsort:
+  (ursprungsort_header |
+  ursprungsortdaten+)
+;
+
+ursprungsort_header : '%URSPRUNGSORT%' ;
 
 ursprungsortdaten : uh
   | ug

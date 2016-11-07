@@ -18,11 +18,13 @@ public class LafRawData {
         private List<LafRawData.Messung> messung;
         private List<Map<String, String>> kommentar;
         private List<Map<String, String>> zusatzwert;
-        private List<Map<String, String>> ort;
+        private Map<String, String> eOrt;
+        private List<Map<String, String>> uOrt;
 
         public Probe() {
             this.attributes = new HashMap<String, String>();
-            this.ort = new ArrayList<Map<String, String>>();
+            this.eOrt = new HashMap<String, String>();
+            this.uOrt = new ArrayList<Map<String, String>>();
             this.kommentar = new ArrayList<Map<String, String>>();
             this.zusatzwert = new ArrayList<Map<String, String>>();
             this.messung = new ArrayList<LafRawData.Messung>();
@@ -60,12 +62,20 @@ public class LafRawData {
             return this.zusatzwert;
         }
 
-        public void addOrt(Map<String, String> ort) {
-            this.ort.add(ort);
+        public void addEntnahmeOrt(Map<String, String> ort) {
+            this.eOrt.putAll(ort);
         }
 
-        public List<Map<String, String>> getOrte() {
-            return this.ort;
+        public Map<String, String> getEntnahmeOrt() {
+            return this.eOrt;
+        }
+
+        public void addUrsprungsOrt(Map<String, String> ort) {
+            this.uOrt.add(new HashMap<String, String>(ort));
+        }
+
+        public List<Map<String, String>> getUrsprungsOrte() {
+            return this.uOrt;
         }
 
         // helper method to get identifying attribute

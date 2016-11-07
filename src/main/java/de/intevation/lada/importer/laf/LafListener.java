@@ -119,6 +119,16 @@ public interface LafListener extends ParseTreeListener {
 	 */
 	void exitRei(LafParser.ReiContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link LafParser#entnahmeort}.
+	 * @param ctx the parse tree
+	 */
+	void enterEntnahmeort(LafParser.EntnahmeortContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LafParser#entnahmeort}.
+	 * @param ctx the parse tree
+	 */
+	void exitEntnahmeort(LafParser.EntnahmeortContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link LafParser#ph}.
 	 * @param ctx the parse tree
 	 */
@@ -239,15 +249,25 @@ public interface LafListener extends ParseTreeListener {
 	 */
 	void exitPn(LafParser.PnContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link LafParser#us}.
+	 * Enter a parse tree produced by {@link LafParser#ursprungsort}.
 	 * @param ctx the parse tree
 	 */
-	void enterUs(LafParser.UsContext ctx);
+	void enterUrsprungsort(LafParser.UrsprungsortContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link LafParser#us}.
+	 * Exit a parse tree produced by {@link LafParser#ursprungsort}.
 	 * @param ctx the parse tree
 	 */
-	void exitUs(LafParser.UsContext ctx);
+	void exitUrsprungsort(LafParser.UrsprungsortContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link LafParser#ursprungsort_header}.
+	 * @param ctx the parse tree
+	 */
+	void enterUrsprungsort_header(LafParser.Ursprungsort_headerContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LafParser#ursprungsort_header}.
+	 * @param ctx the parse tree
+	 */
+	void exitUrsprungsort_header(LafParser.Ursprungsort_headerContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link LafParser#ursprungsortdaten}.
 	 * @param ctx the parse tree
