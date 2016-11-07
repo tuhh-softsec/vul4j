@@ -413,10 +413,8 @@ COMMENT ON TABLE kta
   IS 'kernteschnische Anlagen';
 
 CREATE TABLE ortszusatz (
-  id serial NOT NULL,
-  code character varying(7),
-  bezeichnung character varying(80),
-  CONSTRAINT ortszusatz_pkey PRIMARY KEY (id)
+    ozs_id character varying(7) PRIMARY KEY,
+    ortszusatz character varying(80) NOT NULL
 );
 
 CREATE TABLE ort (
@@ -446,7 +444,7 @@ CREATE TABLE ort (
     mp_art character varying(10),
     aktiv character(1),
     anlage_id integer,
-    oz_id integer,
+    oz_id character varying(7) REFERENCES ortszusatz(ozs_id),
     hoehe_ueber_nn real,
     UNIQUE(ort_id, netzbetreiber_id)
 );
@@ -455,9 +453,6 @@ CREATE TRIGGER letzte_aenderung_ort BEFORE UPDATE ON ort FOR EACH ROW EXECUTE PR
 
 ALTER TABLE ONLY ort
     ADD CONSTRAINT ort_kta_fkey FOREIGN KEY (anlage_id) REFERENCES kta(id);
-
-ALTER TABLE ONLY ort
-    ADD CONSTRAINT ort_oz_fkey FOREIGN KEY (oz_id) REFERENCES ort(id);
 
 
 CREATE TABLE ortszuordnung_typ (
