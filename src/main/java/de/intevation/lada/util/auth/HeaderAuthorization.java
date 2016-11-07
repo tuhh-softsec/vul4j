@@ -17,17 +17,16 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Logger;
-
 import de.intevation.lada.model.land.KommentarM;
 import de.intevation.lada.model.land.KommentarP;
+import de.intevation.lada.model.land.Messprogramm;
+import de.intevation.lada.model.land.MessprogrammMmt;
 import de.intevation.lada.model.land.Messung;
 import de.intevation.lada.model.land.Messwert;
 import de.intevation.lada.model.land.Ortszuordnung;
 import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.model.land.StatusProtokoll;
 import de.intevation.lada.model.land.ZusatzWert;
-import de.intevation.lada.model.land.Messprogramm;
 import de.intevation.lada.model.stammdaten.Auth;
 import de.intevation.lada.model.stammdaten.DatensatzErzeuger;
 import de.intevation.lada.model.stammdaten.LadaUser;
@@ -84,6 +83,7 @@ public class HeaderAuthorization implements Authorization {
         authorizers.put(MessprogrammKategorie.class, netzAuthorizer);
         authorizers.put(Ort.class, netzAuthorizer);
         authorizers.put(Messprogramm.class, messprogrammAuthorizer);
+        authorizers.put(MessprogrammMmt.class, messprogrammAuthorizer);
     }
 
     /**

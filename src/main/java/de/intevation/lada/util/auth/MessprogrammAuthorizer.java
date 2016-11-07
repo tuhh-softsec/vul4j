@@ -7,14 +7,21 @@
  */
 package de.intevation.lada.util.auth;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.inject.Inject;
 
 import de.intevation.lada.model.land.Messprogramm;
+import de.intevation.lada.model.land.MessprogrammMmt;
+import de.intevation.lada.util.annotation.RepositoryConfig;
+import de.intevation.lada.util.data.Repository;
+import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 
 public class MessprogrammAuthorizer implements Authorizer {
+
+    @Inject
+    @RepositoryConfig(type=RepositoryType.RO)
+    private Repository repository;
 
     @Override
     public <T> boolean isAuthorized(
@@ -27,7 +34,16 @@ public class MessprogrammAuthorizer implements Authorizer {
             // Allow read access to everybody
             return true;
         }
-        Messprogramm messprogramm = (Messprogramm)data;
+        Messprogramm messprogramm = null;
+        if (data instanceof Messprogramm) {
+            messprogramm = (Messprogramm)data;
+        }
+        else if (data instanceof MessprogrammMmt) {
+            messprogramm = repository.getByIdPlain(
+                Messprogramm.class,
+                ((MessprogrammMmt)data).getMessprogrammId(),
+                "land");
+        }
         if (userInfo.getMessstellen().contains(messprogramm.getMstId())) {
             return true;
         }
