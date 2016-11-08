@@ -247,21 +247,32 @@ public class JsonExporter implements Exporter {
             );
         int vorgaenger = 0;
         ObjectNode node = new ObjectNode(JsonNodeFactory.instance);
+        boolean isZebs = Integer.parseInt(parts[1]) == 1;
+        int hdV = 0;
+        int ndV = 0;
         for (int i = 0; i < parts.length - 1; i++) {
-            logger.debug("ebene: "  + i);
-            logger.debug("sn: " + Integer.parseInt(parts[i+1]));
             String beschreibung = "";
             if (Integer.parseInt(parts[i+1]) != 0) {
                 builder.and("ebene", i);
                 builder.and("sn", Integer.parseInt(parts[i+1]));
-                logger.debug(vorgaenger);
                 if (vorgaenger != 0) {
                     builder.and("vorgaenger", vorgaenger);
                 }
                 List<Deskriptoren> found = repository.filterPlain(builder.getQuery(), "stamm");
                 if (found.size() > 0) {
                     beschreibung = found.get(0).getBeschreibung();
-                    vorgaenger = found.get(0).getId();
+                    if (isZebs && i < 4) {
+                        vorgaenger = hdV;
+                    }
+                    else if (!isZebs && i < 2) {
+                        vorgaenger = hdV;
+                    }
+                    else {
+                        vorgaenger = ndV;
+                    }
+                    if (i == 1) {
+                        ndV = found.get(0).getId();
+                    }
                 }
             }
             node.put("S" + i, beschreibung);
