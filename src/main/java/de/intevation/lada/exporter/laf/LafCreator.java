@@ -133,7 +133,8 @@ implements Creator
         laf += probe.getLaborMstId() == null ?
             "" : lafLine("MESSLABOR", probe.getLaborMstId());
         laf += lafLine("PROBE_ID", probe.getIdAlt());
-        laf += lafLine("HAUPTPROBENNUMMER", probe.getHauptprobenNr());
+        laf += probe.getHauptprobenNr() == null ?
+            "" : lafLine("HAUPTPROBENNUMMER", probe.getHauptprobenNr());
         laf += probe.getBaId() == null ?
             "" : lafLine("MESSPROGRAMM_S", "\"" + probe.getBaId() + "\"");
         laf += probe.getProbenartId() == null ?
