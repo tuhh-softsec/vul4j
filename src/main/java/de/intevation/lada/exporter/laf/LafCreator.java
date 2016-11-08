@@ -221,6 +221,9 @@ implements Creator
                 type = "U_";
                 laf += "%URSPRUNGSORT%\n";
             }
+            else {
+                continue;
+            }
             if (o.getOrtszusatztext() != null &&
                 o.getOrtszusatztext().length() > 0) {
                 laf += lafLine(type + "ORT_ZUSATZTEXT", o.getOrtszusatztext());
