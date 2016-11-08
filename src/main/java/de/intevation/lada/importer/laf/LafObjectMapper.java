@@ -119,6 +119,9 @@ public class LafObjectMapper {
         for (Entry<String, String> attribute : object.getAttributes().entrySet()) {
             addProbeAttribute(attribute, probe);
         }
+        if (probe.getLaborMstId() == null) {
+            probe.setLaborMstId(probe.getMstId());
+        }
         // Use the deskriptor string to find the medium
         probe = factory.findMediaDesk(probe);
         //logProbe(probe);
