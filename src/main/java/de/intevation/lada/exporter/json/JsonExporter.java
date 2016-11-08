@@ -240,6 +240,9 @@ public class JsonExporter implements Exporter {
     private void addDeskriptoren(JsonNode probe) {
         String desk = probe.get("mediaDesk").asText();
         String[] parts = desk.split(" ");
+        if (parts.length <= 1) {
+            return;
+        }
 
         QueryBuilder<Deskriptoren> builder = new QueryBuilder<Deskriptoren>(
                 repository.entityManager("stamm"),
