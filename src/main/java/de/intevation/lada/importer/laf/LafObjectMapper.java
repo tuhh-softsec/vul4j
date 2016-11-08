@@ -153,8 +153,18 @@ public class LafObjectMapper {
             Probe old = (Probe)probeIdentifier.getExisting();
             // Matching probe was found in the db. Update it!
             if(i == Identified.UPDATE) {
-                merger.merge(old, probe);
-                newProbe = old;
+                Violation violation = probeValidator.validate(probe);
+                if (violation.hasErrors()) {
+                    for (Entry<String, List<Integer>> err : violation.getErrors().entrySet()) {
+                        for (Integer code : err.getValue()) {
+                            currentErrors.add(new ReportItem("validation", err.getKey(), code));
+                        }
+                    }
+                }
+                else {
+                    merger.merge(old, probe);
+                    newProbe = old;
+                }
             }
             // Probe was found but some data does not match
             else if(i == Identified.REJECT){
@@ -171,7 +181,6 @@ public class LafObjectMapper {
                     warnings.put(object.getIdentifier(),
                         new ArrayList<ReportItem>(currentWarnings));
                 }
-                return;
             }
             // It is a brand new probe!
             else if(i == Identified.NEW){
@@ -182,10 +191,11 @@ public class LafObjectMapper {
                             currentErrors.add(new ReportItem("validation", err.getKey(), code));
                         }
                     }
-                    return;
                 }
-                Response created = repository.create(probe, "land");
-                newProbe = ((Probe)created.getData());
+                else {
+                    Response created = repository.create(probe, "land");
+                    newProbe = ((Probe)created.getData());
+                }
             }
         } catch (InvalidTargetObjectTypeException e) {
             ReportItem err = new ReportItem();
@@ -203,49 +213,48 @@ public class LafObjectMapper {
             }
             return;
         }
-        if (newProbe == null) {
-            // Only occurs if object type is not probe
-            return;
-        }
-        // Create kommentar objects
-        List<KommentarP> kommentare = new ArrayList<KommentarP>();
-        for (int i = 0; i < object.getKommentare().size(); i++) {
-            KommentarP tmp = createProbeKommentar(object.getKommentare().get(i), newProbe.getId());
-            if (tmp != null) {
-                kommentare.add(tmp);
+
+        if (newProbe != null) {
+            // Create kommentar objects
+            List<KommentarP> kommentare = new ArrayList<KommentarP>();
+            for (int i = 0; i < object.getKommentare().size(); i++) {
+                KommentarP tmp = createProbeKommentar(object.getKommentare().get(i), newProbe.getId());
+                if (tmp != null) {
+                    kommentare.add(tmp);
+                }
             }
-        }
-        // Persist kommentar objects
-        merger.mergeKommentare(newProbe, kommentare);
+            // Persist kommentar objects
+            merger.mergeKommentare(newProbe, kommentare);
 
-        // Create zusatzwert objects
-        List<ZusatzWert> zusatzwerte = new ArrayList<ZusatzWert>();
-        for (int i = 0; i < object.getZusatzwerte().size(); i++) {
-            ZusatzWert tmp = createZusatzwert(object.getZusatzwerte().get(i), newProbe.getId());
-            if (tmp != null) {
-                zusatzwerte.add(tmp);
+            // Create zusatzwert objects
+            List<ZusatzWert> zusatzwerte = new ArrayList<ZusatzWert>();
+            for (int i = 0; i < object.getZusatzwerte().size(); i++) {
+                ZusatzWert tmp = createZusatzwert(object.getZusatzwerte().get(i), newProbe.getId());
+                if (tmp != null) {
+                    zusatzwerte.add(tmp);
+                }
             }
-        }
-        // Persist zusatzwert objects
-        merger.mergeZusatzwerte(newProbe, zusatzwerte);
+            // Persist zusatzwert objects
+            merger.mergeZusatzwerte(newProbe, zusatzwerte);
 
-        // Merge entnahmeOrt
-        createEntnahmeOrt(object.getEntnahmeOrt(), newProbe.getId());
+            // Merge entnahmeOrt
+            createEntnahmeOrt(object.getEntnahmeOrt(), newProbe.getId());
 
-        // Create ursprungsOrte
-        List<Ortszuordnung> uOrte = new ArrayList<Ortszuordnung>();
-        for (int i = 0; i < object.getUrsprungsOrte().size(); i++) {
-            Ortszuordnung tmp = createUrsprungsOrt(object.getUrsprungsOrte().get(i), newProbe.getId());
-            if (tmp != null) {
-                uOrte.add(tmp);
+            // Create ursprungsOrte
+            List<Ortszuordnung> uOrte = new ArrayList<Ortszuordnung>();
+            for (int i = 0; i < object.getUrsprungsOrte().size(); i++) {
+                Ortszuordnung tmp = createUrsprungsOrt(object.getUrsprungsOrte().get(i), newProbe.getId());
+                if (tmp != null) {
+                    uOrte.add(tmp);
+                }
             }
-        }
-        // Persist ursprungsOrte
-        merger.mergeUrsprungsOrte(newProbe.getId(), uOrte);
+            // Persist ursprungsOrte
+            merger.mergeUrsprungsOrte(newProbe.getId(), uOrte);
 
-        // Create messung objects
-        for (int i = 0; i < object.getMessungen().size(); i++) {
-            create(object.getMessungen().get(i), newProbe.getId(), newProbe.getMstId());
+            // Create messung objects
+            for (int i = 0; i < object.getMessungen().size(); i++) {
+                create(object.getMessungen().get(i), newProbe.getId(), newProbe.getMstId());
+            }
         }
         Violation violation = probeValidator.validate(newProbe);
         for (Entry<String, List<Integer>> warn : violation.getWarnings().entrySet()) {
