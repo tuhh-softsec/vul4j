@@ -130,6 +130,8 @@ implements Creator
             "" : lafLine("NETZKENNUNG", messstelle.getNetzbetreiberId());
         laf += probe.getMstId() == null ?
             "" : lafLine("MESSSTELLE", probe.getMstId());
+        laf += probe.getLaborMstId() == null ?
+            "" : lafLine("MESSLABOR", probe.getLaborMstId());
         laf += lafLine("PROBE_ID", probe.getIdAlt());
         laf += lafLine("HAUPTPROBENNUMMER", probe.getHauptprobenNr());
         laf += probe.getBaId() == null ?
