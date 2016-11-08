@@ -41,8 +41,10 @@ RUN apt-get update && \
 #
 USER postgres
 
-RUN /etc/init.d/postgresql start && \
-    psql --command "CREATE USER admin WITH SUPERUSER PASSWORD 'secret';"
+# XXX: Seems to fail on initdb issued by package installation
+# (due to /usr/sbin/policy-rc.d ?).
+# See also https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=739276
+RUN mkdir /var/run/postgresql/9.5-main.pg_stat_tmp
 
 #
 # Adjust PostgreSQL configuration so that remote connections to the
