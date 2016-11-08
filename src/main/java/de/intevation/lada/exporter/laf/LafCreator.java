@@ -226,7 +226,7 @@ implements Creator
             }
             if (o.getOrtszusatztext() != null &&
                 o.getOrtszusatztext().length() > 0) {
-                laf += lafLine(type + "ORT_ZUSATZTEXT", o.getOrtszusatztext());
+                laf += lafLine(type + "ORTS_ZUSATZTEXT", o.getOrtszusatztext());
             }
             QueryBuilder<Ort> oBuilder =
                 new QueryBuilder<Ort>(
@@ -254,7 +254,7 @@ implements Creator
 
             if (sOrte.get(0).getOzId() != null &&
                 sOrte.get(0).getOzId().length() > 0) {
-                laf += lafLine(type + "ORT_ZUSATZCODE", sOrte.get(0).getOzId());
+                laf += lafLine(type + "ORTS_ZUSATZCODE", sOrte.get(0).getOzId());
             }
             if (sOrte.get(0).getHoeheUeberNn() != null) {
                 laf += lafLine(type + "HOEHE_NN",
