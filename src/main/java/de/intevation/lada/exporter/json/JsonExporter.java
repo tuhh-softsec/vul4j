@@ -32,10 +32,19 @@ import de.intevation.lada.model.land.Ortszuordnung;
 import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.model.land.StatusProtokoll;
 import de.intevation.lada.model.land.ZusatzWert;
+import de.intevation.lada.model.stammdaten.Datenbasis;
 import de.intevation.lada.model.stammdaten.Deskriptoren;
+import de.intevation.lada.model.stammdaten.MessEinheit;
+import de.intevation.lada.model.stammdaten.MessMethode;
 import de.intevation.lada.model.stammdaten.MessStelle;
+import de.intevation.lada.model.stammdaten.Messgroesse;
+import de.intevation.lada.model.stammdaten.MessprogrammKategorie;
 import de.intevation.lada.model.stammdaten.Ort;
+import de.intevation.lada.model.stammdaten.Probenart;
+import de.intevation.lada.model.stammdaten.Staat;
 import de.intevation.lada.model.stammdaten.StatusKombi;
+import de.intevation.lada.model.stammdaten.Umwelt;
+import de.intevation.lada.model.stammdaten.Verwaltungseinheit;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.QueryBuilder;
@@ -96,6 +105,29 @@ public class JsonExporter implements Exporter {
 
     private JsonNode addSubObjects(JsonNode proben) {
         for (int i = 0; i < proben.size(); i++) {
+            ObjectNode probe = (ObjectNode)proben.get(i);
+            Probenart art = repository.getByIdPlain(
+                Probenart.class,
+                probe.get("probenartId").asInt(),
+                "stamm");
+            Datenbasis datenbasis = repository.getByIdPlain(
+                Datenbasis.class,
+                probe.get("datenbasisId").asInt(),
+                "stamm");
+            MessprogrammKategorie mpl = repository.getByIdPlain(
+                MessprogrammKategorie.class,
+                probe.get("mplId").asInt(),
+                "stamm");
+            Umwelt umw = repository.getByIdPlain(
+                Umwelt.class,
+                probe.get("umwId").asText(),
+                "stamm");
+            probe.put("probenart",
+                art == null ? "" : art.getProbenart());
+            probe.put("datenbasis",
+                datenbasis == null ? "" : datenbasis.getDatenbasis());
+            probe.put("mpl", mpl == null ? "" : mpl.getCode());
+            probe.put("umw", umw == null ? "" : umw.getUmweltBereich());
             addMessungen(proben.get(i));
             addKommentare(proben.get(i));
             addZusatzwerte(proben.get(i));
@@ -111,11 +143,18 @@ public class JsonExporter implements Exporter {
             MessStelle.class,
             node.get("mstId").asText(),
             "stamm");
+        MessStelle laborMessstelle = repository.getByIdPlain(
+            MessStelle.class,
+            node.get("laborMstId").asText(),
+            "stamm");
         final ObjectMapper mapper = new ObjectMapper();
         try {
             String tmp = mapper.writeValueAsString(messstelle);
+            String tmp2 = mapper.writeValueAsString(laborMessstelle);
             JsonNode nodes = mapper.readTree(tmp);
+            JsonNode nodes2 = mapper.readTree(tmp2);
             ((ObjectNode)node).set("messstelle", nodes);
+            ((ObjectNode)node).set("labormessstelle", nodes2);
         } catch (IOException e) {
             logger.debug("Could not export Messstelle for Probe "
                 + node.get("idAlt").asText());
@@ -134,6 +173,12 @@ public class JsonExporter implements Exporter {
             String tmp = mapper.writeValueAsString(messungen);
             JsonNode nodes = mapper.readTree(tmp);
             for (int i = 0; i < nodes.size(); i++) {
+                MessMethode mmt = repository.getByIdPlain(
+                    MessMethode.class,
+                    nodes.get(i).get("mmtId").asText(),
+                    "stamm");
+                ((ObjectNode)nodes.get(i)).put("mmt",
+                    mmt == null ? "" : mmt.getMessmethode());
                 addMesswerte(nodes.get(i));
                 addMessungsKommentare(nodes.get(i));
                 addStatusProtokoll(nodes.get(i));
@@ -157,6 +202,15 @@ public class JsonExporter implements Exporter {
         try {
             String tmp = mapper.writeValueAsString(kommentare);
             JsonNode nodes = mapper.readTree(tmp);
+            for (int i = 0; i < nodes.size(); i++) {
+                MessStelle mst = repository.getByIdPlain(
+                    MessStelle.class,
+                    nodes.get(i).get("mstId").asText(),
+                    "stamm");
+                ((ObjectNode)nodes.get(i)).put(
+                    "mst",
+                    mst.getMessStelle());
+            }
             ((ObjectNode)probe).set("kommentare", nodes);
         } catch (IOException e) {
             logger.debug("Could not export Kommentare for Probe "
@@ -228,6 +282,20 @@ public class JsonExporter implements Exporter {
         try {
             String tmp = mapper.writeValueAsString(messwerte);
             JsonNode nodes = mapper.readTree(tmp);
+            for (int i = 0; i < nodes.size(); i++) {
+                MessEinheit meh = repository.getByIdPlain(
+                    MessEinheit.class,
+                    nodes.get(i).get("mehId").asInt(),
+                    "stamm");
+                ((ObjectNode)nodes.get(i)).put("meh",
+                    meh == null ? "" : meh.getEinheit());
+                Messgroesse mg = repository.getByIdPlain(
+                    Messgroesse.class,
+                    nodes.get(i).get("messgroesseId").asInt(),
+                    "stamm");
+                ((ObjectNode)nodes.get(i)).put("messgroesse",
+                    mg == null ? "" : mg.getMessgroesse());
+            }
             ((ObjectNode)node).set("messwerte", nodes);
         } catch (IOException e) {
             logger.debug("Could not export Messwerte for Messung "
@@ -247,6 +315,15 @@ public class JsonExporter implements Exporter {
         try {
             String tmp = mapper.writeValueAsString(kommentare);
             JsonNode nodes = mapper.readTree(tmp);
+            for (int i = 0; i < nodes.size(); i++) {
+                MessStelle mst = repository.getByIdPlain(
+                    MessStelle.class,
+                    nodes.get(i).get("mstId").asText(),
+                    "stamm");
+                ((ObjectNode)nodes.get(i)).put(
+                    "mst",
+                    mst.getMessStelle());
+            }
             ((ObjectNode)node).set("kommentare", nodes);
         } catch (IOException e) {
             logger.debug("Could not export Kommentare for Messung "
@@ -277,6 +354,13 @@ public class JsonExporter implements Exporter {
                 ((ObjectNode)nodes.get(i)).put(
                     "statusWert",
                     kombi.getStatusWert().getWert());
+                MessStelle mst = repository.getByIdPlain(
+                    MessStelle.class,
+                    nodes.get(i).get("mstId").asText(),
+                    "stamm");
+                ((ObjectNode)nodes.get(i)).put(
+                    "mst",
+                    mst.getMessStelle());
             }
             ((ObjectNode)node).set("statusprotokoll", nodes);
         } catch (IOException e) {
@@ -308,18 +392,27 @@ public class JsonExporter implements Exporter {
     }
 
     private void addOrt(JsonNode node) {
-        QueryBuilder<Ort> builder = new QueryBuilder<Ort>(
-                repository.entityManager("stamm"),
-                Ort.class
-            );
-        builder.and("id", node.get("ortId").asInt());
-        List<Ort> ort=
-            repository.filterPlain(builder.getQuery(), "stamm");
+        Ort ort = repository.getByIdPlain(
+            Ort.class,
+            node.get("ortId").asInt(),
+            "stamm");
         final ObjectMapper mapper = new ObjectMapper();
         try {
             String tmp = mapper.writeValueAsString(ort);
-            JsonNode nodes = mapper.readTree(tmp);
-            ((ObjectNode)node).set("ort", nodes);
+            JsonNode oNode = mapper.readTree(tmp);
+            Verwaltungseinheit ve = repository.getByIdPlain(
+                Verwaltungseinheit.class,
+                oNode.get("gemId").asText(),
+                "stamm");
+            ((ObjectNode)oNode).put("gem",
+                ve == null ? "" : ve.getBezeichnung());
+            Staat staat = repository.getByIdPlain(
+                Staat.class,
+                oNode.get("staatId").asInt(),
+                "stamm");
+            ((ObjectNode)oNode).put("staat",
+                staat == null ? "" : staat.getStaat());
+            ((ObjectNode)node).set("ort", oNode);
         } catch (IOException e) {
             logger.debug("Could not export Ort for Ortszuordnung "
                 + node.get("id").asText());
