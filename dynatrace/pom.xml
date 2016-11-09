@@ -20,12 +20,12 @@
     <parent>
         <groupId>de.tsystems.mms.apm</groupId>
         <artifactId>performance-signature-parent-pom</artifactId>
-        <version>2.3.2-SNAPSHOT</version>
+        <version>2.3.2</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>performance-signature-dynatrace</artifactId>
-    <version>2.3.2-SNAPSHOT</version>
+    <version>2.3.2</version>
     <packaging>hpi</packaging>
     <name>Performance Signature with Dynatrace</name>
     <url>https://wiki.jenkins-ci.org/display/JENKINS/Performance+Signature+with+Dynatrace+Plugin</url>
