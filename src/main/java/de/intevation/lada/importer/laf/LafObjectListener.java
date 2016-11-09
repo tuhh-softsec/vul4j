@@ -133,6 +133,20 @@ public class LafObjectListener extends LafBaseListener {
      */
     @Override public void exitProbe(LafParser.ProbeContext ctx) {
         data.addProbe(currentProbe);
+        if (currentMessung != null) {
+            currentProbe.addMessung(currentMessung);
+            currentMessung = null;
+        }
+        if (currentUOrt != null && !currentUOrt.isEmpty()) {
+            currentProbe.addUrsprungsOrt(currentUOrt);
+            currentUOrt.clear();
+        }
+        if (currentEOrt != null && !currentEOrt.isEmpty()) {
+            currentProbe.addEntnahmeOrt(currentEOrt);
+            currentEOrt.clear();
+        }
+        currentEOrt = new HashMap<String, String>();
+        currentProbe = data.new Probe();
         if (!currentErrors.isEmpty()) {
             errors.put(currentProbe.getIdentifier(),
                 (ArrayList)currentErrors.clone());
