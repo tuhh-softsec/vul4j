@@ -54,6 +54,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -354,7 +355,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     private Map<String, JSONDashlet> createJSONConfiguration(final boolean useRandomId) {
         int col = 1, row = 1;
 
-        logger.fine("grid configuration generation started");
+        logger.fine(addTimeStampToLog("grid configuration generation started"));
         Map<String, JSONDashlet> jsonDashletMap = new HashMap<String, JSONDashlet>();
         for (DashboardReport dashboardReport : getLastDashboardReports()) {
             if (dashboardReport.isUnitTest()) {
@@ -378,8 +379,13 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
                 }
             }
         }
-        logger.fine("grid configuration generation finished");
+        logger.fine(addTimeStampToLog("grid configuration generation finished"));
         return jsonDashletMap;
+    }
+
+    private String addTimeStampToLog(final String message) {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss.SSS");
+        return sdf.format(new Date()) + ": " + this.getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this)) + " " + message;
     }
 
     @JavaScriptMethod
@@ -511,20 +517,22 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         return filteredChartDashlets;
     }
 
-    private XmlFile getConfigFile() {
+    private synchronized XmlFile getConfigFile() {
         return new XmlFile(XSTREAM, new File(job.getConfigFile().getFile().getParent(), JSON_FILENAME));
     }
 
     @SuppressWarnings("unchecked")
-    private synchronized Map<String, JSONDashlet> readConfiguration() {
-        logger.fine("grid configuration read started");
-        File jsonConfigFile = new File(job.getConfigFile().getFile().getParent(), JSON_FILENAME);
+    private Map<String, JSONDashlet> readConfiguration() {
+        logger.fine(addTimeStampToLog("grid configuration read started"));
         try {
-            if (jsonConfigFile.exists()) {
-                return (Map<String, JSONDashlet>) getConfigFile().read();
+            if (getConfigFile().exists()) {
+                Map<String, JSONDashlet> configuration = (Map<String, JSONDashlet>) getConfigFile().read();
+                logger.fine(addTimeStampToLog("grid configuration read finished (config file exists)"));
+                return configuration;
             } else {
                 Map<String, JSONDashlet> newConfiguration = createJSONConfiguration(true);
                 writeConfiguration(newConfiguration);
+                logger.fine(addTimeStampToLog("grid configuration read finished (config file created)"));
                 return newConfiguration;
             }
         } catch (IOException e) {
@@ -532,15 +540,14 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         } catch (InterruptedException e) {
             logger.log(Level.SEVERE, "Failed to load " + getConfigFile(), e);
         }
-        logger.fine("grid configuration read finished");
         return new HashMap<String, JSONDashlet>();
     }
 
-    private synchronized void writeConfiguration(final Map<String, JSONDashlet> jsonDashletMap) throws IOException, InterruptedException {
+    private void writeConfiguration(final Map<String, JSONDashlet> jsonDashletMap) throws IOException, InterruptedException {
         try {
-            logger.fine("grid configuration write started");
+            logger.fine(addTimeStampToLog("grid configuration write started"));
             getConfigFile().write(jsonDashletMap);
-            logger.fine("grid configuration write finished");
+            logger.fine(addTimeStampToLog("grid configuration write finished"));
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Failed to save the grid configuration", e);
         }
