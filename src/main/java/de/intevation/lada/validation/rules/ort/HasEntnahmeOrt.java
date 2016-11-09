@@ -42,7 +42,9 @@ public class HasEntnahmeOrt implements Rule {
             builder.getQuery(),
             "land");
         for (Ortszuordnung o : orte) {
-            if ("E".equals(o.getOrtszuordnungTyp())) {
+            if ("E".equals(o.getOrtszuordnungTyp()) &&
+                o.getId().equals(ort.getId())
+            ) {
                 Violation violation = new Violation();
                 violation.addError("ortszuordnungsTyp", 611);
                 return violation;
