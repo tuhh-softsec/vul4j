@@ -278,7 +278,8 @@ CREATE TABLE ortszuordnung (
     ortszuordnung_typ character varying(1) REFERENCES stammdaten.ortszuordnung_typ,
     ortszusatztext character varying(100),
     letzte_aenderung timestamp without time zone DEFAULT now(),
-    tree_modified timestamp without time zone DEFAULT now()
+    tree_modified timestamp without time zone DEFAULT now(),
+    EXCLUDE (probe_id WITH =) WHERE (ortszuordnung_typ = 'E')
 );
 CREATE TRIGGER letzte_aenderung_ortszuordnung BEFORE UPDATE ON ortszuordnung FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 CREATE TRIGGER tree_modified_ortszuordnung BEFORE UPDATE ON ortszuordnung FOR EACH ROW EXECUTE PROCEDURE update_tree_modified();
