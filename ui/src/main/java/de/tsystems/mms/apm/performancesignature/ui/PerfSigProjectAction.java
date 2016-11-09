@@ -67,12 +67,10 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     private static final XStream XSTREAM = new XStream2();
     private static final Logger logger = Logger.getLogger(PerfSigProjectAction.class.getName());
     private final Job<?, ?> job;
-    private final transient Map<String, JSONDashlet> jsonDashletMap;
+    private transient Map<String, JSONDashlet> jsonDashletMap;
 
     public PerfSigProjectAction(final Job<?, ?> job) {
         this.job = job;
-        this.jsonDashletMap = new ConcurrentHashMap<String, JSONDashlet>();
-        this.jsonDashletMap.putAll(readConfiguration());
     }
 
     @Override
@@ -92,6 +90,14 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         return PerfSigUIUtils.class;
     }
 
+    private Map<String, JSONDashlet> getJsonDashletMap() {
+        if (jsonDashletMap == null) {
+            this.jsonDashletMap = new ConcurrentHashMap<String, JSONDashlet>();
+            this.jsonDashletMap.putAll(readConfiguration());
+        }
+        return jsonDashletMap;
+    }
+
     public void doSummarizerGraph(final StaplerRequest request, final StaplerResponse response) throws IOException, InterruptedException {
         if (ChartUtil.awtProblemCause != null) {
             // not available. send out error message
@@ -103,7 +109,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
 
         if (request.getParameter("customName") == null && request.getParameter("customBuildCount") == null
                 && request.getParameter("aggregation") == null) { //dashlet from stored configuration
-            JSONDashlet jsonDashlet = jsonDashletMap.get(id);
+            JSONDashlet jsonDashlet = getJsonDashletMap().get(id);
             ChartUtil.generateGraph(request, response, createChart(jsonDashlet, buildDataSet(jsonDashlet)), PerfSigUIUtils.calcDefaultSize());
         } else { //new dashlet
             JSONDashlet jsonDashlet = createJSONConfiguration(false).get(id);
@@ -207,7 +213,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
 
         //get customName and customBuildCount from persisted xml
         if (request.getParameter("customName") == null && request.getParameter("customBuildCount") == null) {
-            JSONDashlet jsonDashlet = jsonDashletMap.get(UNITTEST_DASHLETNAME);
+            JSONDashlet jsonDashlet = getJsonDashletMap().get(UNITTEST_DASHLETNAME);
             if (jsonDashlet != null) {
                 ChartUtil.generateGraph(request, response, createTestRunChart(buildTestRunDataSet(String.valueOf(jsonDashlet.getCustomBuildCount())),
                         jsonDashlet.getCustomName()), PerfSigUIUtils.calcDefaultSize());
@@ -343,7 +349,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     @JavaScriptMethod
     public String getDashboardConfiguration(final String dashboard) throws IOException, InterruptedException {
         List<JSONDashlet> jsonDashletList = new ArrayList<JSONDashlet>();
-        for (JSONDashlet jsonDashlet : jsonDashletMap.values()) {
+        for (JSONDashlet jsonDashlet : getJsonDashletMap().values()) {
             if (jsonDashlet.getDashboard().equals(dashboard)) {
                 jsonDashletList.add(jsonDashlet);
             }
@@ -403,22 +409,22 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         }
 
         try {
-            for (JSONDashlet jsonDashlet : jsonDashletMap.values()) {
+            for (JSONDashlet jsonDashlet : getJsonDashletMap().values()) {
                 if (!jsonDashlet.getDashboard().equals(dashboard)) continue; //filter out dashlets from other dashboards
                 if (!idsFromJson.contains(jsonDashlet.getId())) { //remove dashlet, if it's not present in gridConfiguration
-                    jsonDashletMap.remove(jsonDashlet.getId());
+                    getJsonDashletMap().remove(jsonDashlet.getId());
                 }
             }
 
             for (JSONDashlet modifiedDashlet : jsonDashletList) {
                 JSONDashlet unmodifiedDashlet = defaultConfiguration.get(modifiedDashlet.getId());
-                JSONDashlet originalDashlet = jsonDashletMap.get(modifiedDashlet.getId());
+                JSONDashlet originalDashlet = getJsonDashletMap().get(modifiedDashlet.getId());
                 if (modifiedDashlet.getId().equals(UNITTEST_DASHLETNAME)) {
                     if (originalDashlet != null) {
                         modifiedDashlet.setCustomBuildCount(originalDashlet.getCustomBuildCount());
                         modifiedDashlet.setCustomName(originalDashlet.getCustomName());
                     }
-                    jsonDashletMap.put(modifiedDashlet.getId(), modifiedDashlet);
+                    getJsonDashletMap().put(modifiedDashlet.getId(), modifiedDashlet);
                 } else if (unmodifiedDashlet != null) { //newly added dashlets
                     modifiedDashlet.setDashboard(unmodifiedDashlet.getDashboard());
                     modifiedDashlet.setChartDashlet(unmodifiedDashlet.getChartDashlet());
@@ -426,7 +432,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
                     modifiedDashlet.setDescription(unmodifiedDashlet.getDescription());
                     modifiedDashlet.setId(modifiedDashlet.generateID());
 
-                    jsonDashletMap.put(modifiedDashlet.getId(), modifiedDashlet);
+                    getJsonDashletMap().put(modifiedDashlet.getId(), modifiedDashlet);
                 } else if (originalDashlet != null) { //old dashlets
                     modifiedDashlet.setDashboard(originalDashlet.getDashboard());
                     modifiedDashlet.setChartDashlet(originalDashlet.getChartDashlet());
@@ -437,11 +443,11 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
                     modifiedDashlet.setCustomName(originalDashlet.getCustomName());
 
                     modifiedDashlet.setId(modifiedDashlet.generateID());
-                    jsonDashletMap.remove(originalDashlet.getId());
-                    jsonDashletMap.put(modifiedDashlet.getId(), modifiedDashlet);
+                    getJsonDashletMap().remove(originalDashlet.getId());
+                    getJsonDashletMap().put(modifiedDashlet.getId(), modifiedDashlet);
                 }
             }
-            writeConfiguration(jsonDashletMap);
+            writeConfiguration(getJsonDashletMap());
         } catch (InterruptedException e) {
             logger.log(Level.SEVERE, "could not save grid configuration", e);
         } catch (IOException e) {
@@ -495,7 +501,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             return filteredChartDashlets;
         }
 
-        for (JSONDashlet jsonDashlet : jsonDashletMap.values()) {
+        for (JSONDashlet jsonDashlet : getJsonDashletMap().values()) {
             if (!jsonDashlet.getDashboard().equals(dashboardReport.getName())) continue;
             boolean chartDashletFound = false;
 
