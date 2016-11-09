@@ -293,28 +293,13 @@ public class MessungService {
 
         /* Persist the new messung object*/
         Response response = repository.create(messung, "land");
-        Messung ret = (Messung)response.getData();
-        Messung refreshed = repository.getByIdPlain(Messung.class, ret.getId(), "land");
         if(violation.hasWarnings()) {
             response.setWarnings(violation.getWarnings());
         }
 
-        StatusProtokoll status = new StatusProtokoll();
-        status.setDatum(new Timestamp(new Date().getTime()));
-        status.setMessungsId((ret.getId()));
-        Probe probe =
-            repository.getByIdPlain(Probe.class, ret.getProbeId(), "land");
-        status.setMstId(probe.getMstId());
-        status.setStatusKombi(1);
-        repository.create(status, "land");
-        refreshed.setStatus(status.getId());
-        repository.update(refreshed, "land");
-        Response updated=
-            repository.getById(Messung.class, refreshed.getId(), "land");
-
         return authorization.filter(
             request,
-            updated,
+            response,
             Messung.class);
     }
 

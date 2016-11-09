@@ -18,6 +18,36 @@ CREATE SCHEMA land;
 
 SET search_path = land, pg_catalog;
 
+CREATE FUNCTION set_messung_id_alt() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+    BEGIN
+        IF NEW.id_alt IS NULL THEN
+            NEW.id_alt = (
+                SELECT count(*)
+                   FROM land.messung
+                   WHERE probe_id = NEW.probe_id) + 1;
+        END IF;
+        RETURN NEW;
+    END;
+$$;
+
+CREATE FUNCTION set_messung_status() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+    DECLARE status_id integer;
+    BEGIN
+        INSERT INTO land.status_protokoll
+            (mst_id, datum, text, messungs_id, status_kombi)
+        VALUES ((SELECT mst_id
+                     FROM land.probe
+                     WHERE id = NEW.probe_id),
+                now(), '', NEW.id, 1)
+        RETURNING id into status_id;
+        UPDATE land.messung SET status = status_id where id = NEW.id;
+        RETURN NEW;
+    END;
+$$;
 
 CREATE FUNCTION update_letzte_aenderung() RETURNS trigger
     LANGUAGE plpgsql
@@ -279,7 +309,7 @@ CREATE TRIGGER tree_modified_zusatzwert BEFORE UPDATE ON zusatz_wert FOR EACH RO
 
 CREATE TABLE messung (
     id serial PRIMARY KEY,
-    id_alt integer DEFAULT nextval('land.messung_messung_id_alt_seq'::regclass) NOT NULL,
+    id_alt integer NOT NULL,
     probe_id integer NOT NULL REFERENCES probe ON DELETE CASCADE,
     nebenproben_nr character varying(10),
     mmt_id character varying(2) NOT NULL REFERENCES stammdaten.mess_methode ON DELETE CASCADE,
@@ -293,7 +323,8 @@ CREATE TABLE messung (
 );
 CREATE TRIGGER letzte_aenderung_messung BEFORE UPDATE ON messung FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 CREATE TRIGGER tree_modified_messung BEFORE UPDATE ON messung FOR EACH ROW EXECUTE PROCEDURE update_tree_modified_messung();
-
+CREATE TRIGGER id_alt_messung BEFORE INSERT ON land.messung FOR EACH ROW EXECUTE PROCEDURE set_messung_id_alt();
+CREATE TRIGGER status_messung AFTER INSERT ON land.messung FOR EACH ROW EXECUTE PROCEDURE set_messung_status();
 
 --
 -- Name: kommentar_m; Type: TABLE; Schema: land; Owner: -; Tablespace:

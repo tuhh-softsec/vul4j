@@ -366,15 +366,6 @@ public class ProbeFactory {
             messung.setProbeId(probe.getId());
             repository.create(messung, "land");
 
-            StatusProtokoll status = new StatusProtokoll();
-            status.setDatum(new Timestamp(new Date().getTime()));
-            status.setMessungsId(messung.getId());
-            status.setMstId(probe.getMstId());
-            status.setStatusKombi(1);
-            repository.create(status, "land");
-            messung.setStatus(status.getId());
-            repository.update(messung, "land");
-
             for (int mw : mmt.getMessgroessen()) {
                 Messwert wert = new Messwert();
                 wert.setMessgroesseId(mw);

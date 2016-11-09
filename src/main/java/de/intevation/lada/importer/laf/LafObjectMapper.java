@@ -316,14 +316,6 @@ public class LafObjectMapper {
                 newMessung = ((Messung)created.getData());
                 created = repository.getById(Messung.class, newMessung.getId(), "land");
                 newMessung = ((Messung)created.getData());
-                StatusProtokoll status = new StatusProtokoll();
-                status.setDatum(new Timestamp(new Date().getTime()));
-                status.setMessungsId(newMessung.getId());
-                status.setMstId(mstId);
-                status.setStatusKombi(1);
-                Response st = repository.create(status, "land");
-                newMessung.setStatus(((StatusProtokoll)st.getData()).getId());
-                repository.update(newMessung, "land");
                 if (object.getAttributes().containsKey("BEARBEITUNGSSTATUS")) {
                     createStatusProtokoll(object.getAttributes().get("BEARBEITUNGSSTATUS"), newMessung, mstId);
                 }
