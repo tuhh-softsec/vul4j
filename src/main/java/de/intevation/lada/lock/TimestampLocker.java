@@ -111,6 +111,9 @@ public class TimestampLocker implements ObjectLocker {
         try {
             m = o.getClass().getMethod("getParentModified");
             Timestamp ot = (Timestamp)m.invoke(o);
+            if (ot == null) {
+                return true;
+            }
             return t.getTime() > ot.getTime();
         } catch (NoSuchMethodException | SecurityException |
                  IllegalAccessException | IllegalArgumentException|
