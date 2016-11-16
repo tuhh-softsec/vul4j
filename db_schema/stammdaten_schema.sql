@@ -17,6 +17,7 @@ SET search_path = stammdaten, pg_catalog;
 CREATE FUNCTION set_ort_id() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
+    DECLARE value text;
     BEGIN
         value = '#'::text || lpad((NEW.id::character varying)::text, 9, '0'::text);
         IF NEW.ort_id IS NULL THEN
