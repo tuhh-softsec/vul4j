@@ -153,18 +153,8 @@ public class LafObjectMapper {
             Probe old = (Probe)probeIdentifier.getExisting();
             // Matching probe was found in the db. Update it!
             if(i == Identified.UPDATE) {
-                Violation violation = probeValidator.validate(probe);
-                if (violation.hasErrors()) {
-                    for (Entry<String, List<Integer>> err : violation.getErrors().entrySet()) {
-                        for (Integer code : err.getValue()) {
-                            currentErrors.add(new ReportItem("validation", err.getKey(), code));
-                        }
-                    }
-                }
-                else {
-                    merger.merge(old, probe);
-                    newProbe = old;
-                }
+                merger.merge(old, probe);
+                newProbe = old;
             }
             // Probe was found but some data does not match
             else if(i == Identified.REJECT){
@@ -185,14 +175,7 @@ public class LafObjectMapper {
             // It is a brand new probe!
             else if(i == Identified.NEW){
                 Violation violation = probeValidator.validate(probe);
-                if (violation.hasErrors()) {
-                    for (Entry<String, List<Integer>> err : violation.getErrors().entrySet()) {
-                        for (Integer code : err.getValue()) {
-                            currentErrors.add(new ReportItem("validation", err.getKey(), code));
-                        }
-                    }
-                }
-                else {
+                if (!violation.hasErrors()) {
                     Response created = repository.create(probe, "land");
                     newProbe = ((Probe)created.getData());
                 }
@@ -257,6 +240,11 @@ public class LafObjectMapper {
             }
         }
         Violation violation = probeValidator.validate(newProbe);
+        for (Entry<String, List<Integer>> err : violation.getErrors().entrySet()) {
+            for (Integer code : err.getValue()) {
+                currentErrors.add(new ReportItem("validation", err.getKey(), code));
+            }
+        }
         for (Entry<String, List<Integer>> warn : violation.getWarnings().entrySet()) {
             for (Integer code : warn.getValue()) {
                 currentWarnings.add(new ReportItem("validation", warn.getKey(), code));
