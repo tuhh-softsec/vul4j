@@ -238,12 +238,12 @@ public class LafObjectMapper {
             merger.mergeZusatzwerte(newProbe, zusatzwerte);
 
             // Merge entnahmeOrt
-            createEntnahmeOrt(object.getEntnahmeOrt(), newProbe.getId());
+            createEntnahmeOrt(object.getEntnahmeOrt(), newProbe);
 
             // Create ursprungsOrte
             List<Ortszuordnung> uOrte = new ArrayList<Ortszuordnung>();
             for (int i = 0; i < object.getUrsprungsOrte().size(); i++) {
-                Ortszuordnung tmp = createUrsprungsOrt(object.getUrsprungsOrte().get(i), newProbe.getId());
+                Ortszuordnung tmp = createUrsprungsOrt(object.getUrsprungsOrte().get(i), newProbe);
                 if (tmp != null) {
                     uOrte.add(tmp);
                 }
@@ -596,13 +596,13 @@ public class LafObjectMapper {
 
     private Ortszuordnung createUrsprungsOrt(
         Map<String, String> ursprungsOrt,
-        Integer id
+        Probe probe
     ) {
         Ortszuordnung ort = new Ortszuordnung();
         ort.setOrtszuordnungTyp("U");
-        ort.setProbeId(id);
+        ort.setProbeId(probe.getId());
 
-        Ort o = findOrCreateOrt(ursprungsOrt, "U_");
+        Ort o = findOrCreateOrt(ursprungsOrt, "U_", probe);
         if (o == null) {
             return null;
         }
@@ -625,13 +625,13 @@ public class LafObjectMapper {
 
     private void createEntnahmeOrt(
         Map<String, String> entnahmeOrt,
-        Integer id
+        Probe probe
     ) {
         Ortszuordnung ort = new Ortszuordnung();
         ort.setOrtszuordnungTyp("E");
-        ort.setProbeId(id);
+        ort.setProbeId(probe.getId());
 
-        Ort o = findOrCreateOrt(entnahmeOrt, "P_");
+        Ort o = findOrCreateOrt(entnahmeOrt, "P_", probe);
         if (o == null) {
             return;
         }
@@ -639,10 +639,10 @@ public class LafObjectMapper {
         if (entnahmeOrt.containsKey("P_ORTS_ZUSATZTEXT")) {
             ort.setOrtszusatztext(entnahmeOrt.get("P_ORTS_ZUSATZTEXT"));
         }
-        merger.mergeEntnahmeOrt(id, ort);
+        merger.mergeEntnahmeOrt(probe.getId(), ort);
     }
 
-    private Ort findOrCreateOrt(Map<String, String> attributes, String type) {
+    private Ort findOrCreateOrt(Map<String, String> attributes, String type, Probe probe) {
         // If laf contains coordinates, find a ort with matching coordinates or
         // create one.
         for (Entry<String, String> entry : attributes.entrySet()) {
@@ -689,7 +689,7 @@ public class LafObjectMapper {
                 return orte.get(0);
             }
             else {
-                return createNewOrt(attributes, type);
+                return createNewOrt(attributes, type, probe);
             }
         }
         // If laf contains gemeinde attributes, find a ort with matching gemId
@@ -720,47 +720,48 @@ public class LafObjectMapper {
             if (orte != null && orte.size() > 0) {
                 return orte.get(0);
             }
-            else {
-                return createNewOrt(attributes, type);
-            }
         }
-        else {
-            // Create a new ort.
-        }
-        return createNewOrt(attributes, type);
+        return createNewOrt(attributes, type, probe);
     }
 
-    private Ort createNewOrt(Map<String, String> attributes, String type) {
+    private Ort createNewOrt(Map<String, String> attributes, String type, Probe probe) {
         Ort ort = new Ort();
         ort.setOrtTyp(1);
-        String hLand = "";
-        String staatFilter = "";
-        if (attributes.get(type + "HERKUNFTSLAND_S") != null) {
-            staatFilter = "staatIso";
-            hLand = attributes.get(type + "HERKUNFTSLAND_S");
-        }
-        else if (attributes.get(type + "HERKUNFTSLAND_KURZ") != null) {
-            staatFilter = "staatKurz";
-            hLand = attributes.get(type + "HERKUNFTSLAND_KURZ");
-        }
-        else if (attributes.get(type + "HERKUNFTSLAND_LANG") != null) {
-            staatFilter = "staat";
-            hLand = attributes.get(type + "HERKUNFTSLAND_LANG");
-        }
-        QueryBuilder<Staat> builderStaat =
-            new QueryBuilder<Staat>(
-                repository.entityManager("stamm"),
-                Staat.class);
-        if (staatFilter.length() > 0) {
-            builderStaat.and(staatFilter, hLand);
-            List<Staat> staat =
-                repository.filterPlain(builderStaat.getQuery(), "stamm");
-            if (staat != null && staat.size() > 0) {
-                ort.setStaatId(staat.get(0).getId());
+        String gemId = null;
+        MessStelle mst = repository.getByIdPlain(MessStelle.class, probe.getMstId(), "stamm");
+        ort.setNetzbetreiberId(mst.getNetzbetreiberId());
+        boolean hasKoord = false;
+        boolean hasGem = false;
+        boolean hasStaat = false;
+
+        if ((attributes.get(type + "KOORDINATEN_ART") != null ||
+             attributes.get(type + "KOORDINATEN_ART_S") != null) &&
+            attributes.get(type + "KOORDINATEN_X") != null &&
+            attributes.get(type + "KOORDINATEN_Y") != null
+        ) {
+            if (attributes.get(type + "KOORDINATEN_ART_S") != null) {
+                ort.setKdaId(Integer.valueOf(attributes.get(type + "KOORDINATEN_ART_S")));
             }
+            else {
+                QueryBuilder<KoordinatenArt> builder =
+                    new QueryBuilder<KoordinatenArt>(
+                        repository.entityManager("stamm"),
+                        KoordinatenArt.class);
+                builder.and("koordinatenart", attributes.get(type + "KOORDINATEN_ART"));
+                List<KoordinatenArt> art = repository.filterPlain(builder.getQuery(), "stamm");
+                if (art == null || art.isEmpty()) {
+
+                }
+                else {
+                    ort.setKdaId(art.get(0).getId());
+                }
+            }
+            ort.setKoordXExtern(attributes.get(type + "KOORDINATEN_X"));
+            ort.setKoordYExtern(attributes.get(type + "KOORDINATEN_Y"));
+            ort.setMpArt("D");
+            hasKoord = true;
         }
 
-        String gemId = null;
         if (attributes.get(type + "GEMEINDENAME") != null) {
             QueryBuilder<Verwaltungseinheit> builder =
                 new QueryBuilder<Verwaltungseinheit>(
@@ -778,18 +779,72 @@ public class LafObjectMapper {
         }
         if (gemId != null) {
             ort.setGemId(gemId);
+            hasGem = true;
+            Verwaltungseinheit v = repository.getByIdPlain(Verwaltungseinheit.class, gemId, "stamm");
+            if (v == null) {
+                ReportItem err = new ReportItem();
+                err.setCode(673);
+                err.setKey("ort");
+                err.setValue(gemId);
+                currentErrors.add(err);
+                return null;
+            }
+            if (!hasKoord) {
+                ort.setMpArt("V");
+                ort.setKdaId(v.getKdaId());
+                ort.setKoordYExtern(v.getKoordYExtern());
+                ort.setKoordXExtern(v.getKoordXExtern());
+            }
+            ort.setKurztext(v.getBezeichnung());
+            ort.setLangtext(v.getBezeichnung());
+            ort.setOrtId(gemId);
+            ort.setBerichtstext(v.getBezeichnung());
         }
-        if ((attributes.get(type + "KOORDINATEN_ART") != null ||
-             attributes.get(type + "KOORDINATEN_ART_S") != null) &&
-            attributes.get(type + "KOORDINATEN_X") != null &&
-            attributes.get(type + "KOORDINATEN_Y") != null
-        ) {
-            if (attributes.get(type + "KOORDINATEN_ART_S") != null) {
+
+        String hLand = "";
+        String staatFilter = "";
+        if (attributes.get(type + "HERKUNFTSLAND_S") != null) {
+            staatFilter = "id";
+            hLand = attributes.get(type + "HERKUNFTSLAND_S");
+        }
+        else if (attributes.get(type + "HERKUNFTSLAND_KURZ") != null) {
+            staatFilter = "staatKurz";
+            hLand = attributes.get(type + "HERKUNFTSLAND_KURZ");
+        }
+        else if (attributes.get(type + "HERKUNFTSLAND_LANG") != null) {
+            staatFilter = "staat";
+            hLand = attributes.get(type + "HERKUNFTSLAND_LANG");
+        }
+
+        if (staatFilter.length() > 0) {
+            QueryBuilder<Staat> builderStaat =
+                new QueryBuilder<Staat>(
+                    repository.entityManager("stamm"),
+                    Staat.class);
+            builderStaat.and(staatFilter, hLand);
+            List<Staat> staat =
+                repository.filterPlain(builderStaat.getQuery(), "stamm");
+            if (staat != null && staat.size() > 0) {
+                ort.setStaatId(staat.get(0).getId());
+                hasStaat = true;
+                Staat s = staat.get(0);
+                if (!hasGem && !hasKoord) {
+                    ort.setMpArt("S");
+                    ort.setKdaId(s.getKdaId());
+                    ort.setKoordYExtern(s.getKoordYExtern());
+                    ort.setKoordXExtern(s.getKoordXExtern());
+                }
+                if (hasKoord && !hasGem) {
+                    ort.setKurztext(s.getStaat());
+                    ort.setLangtext(s.getStaat());
+                    ort.setOrtId("Staat_" + s.getStaatIso());
+                    ort.setBerichtstext(s.getStaat());
+                }
             }
         }
-//        repository.create(ort, "stamm");
-//        return ort;
-        return null;
+
+        repository.create(ort, "stamm");
+        return ort;
     }
 
     private void logProbe(Probe probe) {
