@@ -98,10 +98,11 @@ public class DTServerConnection {
 
         // Install the all-trusting trust manager
         try {
-            if (SystemUtils.IS_JAVA_1_6)
+            if (SystemUtils.IS_JAVA_1_6) {
                 sc = SSLContext.getInstance("TLSv1");
-            else
+            } else {
                 sc = SSLContext.getInstance("TLSv1.2");
+            }
             TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
                 public X509Certificate[] getAcceptedIssuers() {
                     return null;

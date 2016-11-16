@@ -90,12 +90,12 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         return PerfSigUIUtils.class;
     }
 
-    private Map<String, JSONDashlet> getJsonDashletMap() {
-        if (jsonDashletMap == null) {
+    private synchronized Map<String, JSONDashlet> getJsonDashletMap() {
+        if (this.jsonDashletMap == null) {
             this.jsonDashletMap = new ConcurrentHashMap<String, JSONDashlet>();
             this.jsonDashletMap.putAll(readConfiguration());
         }
-        return jsonDashletMap;
+        return this.jsonDashletMap;
     }
 
     public void doSummarizerGraph(final StaplerRequest request, final StaplerResponse response) throws IOException, InterruptedException {
@@ -300,9 +300,12 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         Run<?, ?> b = job.getLastBuild();
         while (b != null) {
             PerfSigBuildAction a = b.getAction(PerfSigBuildAction.class);
-            if (a != null && (!b.isBuilding())) return a.getDashboardReports();
-            if (b == tb)
+            if (a != null && (!b.isBuilding())) {
+                return a.getDashboardReports();
+            }
+            if (b == tb) {
                 return new ArrayList<DashboardReport>();
+            }
             b = b.getPreviousBuild();
         }
         return new ArrayList<DashboardReport>();
@@ -391,7 +394,8 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
 
     private String addTimeStampToLog(final String message) {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss.SSS");
-        return sdf.format(new Date()) + ": " + this.getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this)) + " " + message;
+        return sdf.format(new Date()) + ": " + this.getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this)) +
+                ", threadId:" + Thread.currentThread().getId() + " " + message;
     }
 
     @JavaScriptMethod

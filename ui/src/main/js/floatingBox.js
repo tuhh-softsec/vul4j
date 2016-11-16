@@ -26,7 +26,7 @@ $(document).ready(function () {
         projectAction.getDashboardConfiguration(testCase, function (data) {
             var json = JSON.parse(data.responseObject());
             $.each(json, function (index) {
-                if (json[index].show && json[index].dashboard === testCase) {
+                if (json[index].show) {
                     if (json[index].id === 'unittest_overview') {
                         $('.carousel-inner', carousel).append('<div class="item">' +
                             '<img class="img-thumbnail" height="300" width="410" ' +
