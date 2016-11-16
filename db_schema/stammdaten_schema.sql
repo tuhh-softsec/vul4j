@@ -440,7 +440,7 @@ CREATE TABLE ort (
     netzbetreiber_id character varying(2) NOT NULL REFERENCES netz_betreiber,
     ort_id character varying(10) NOT NULL,
     langtext character varying(100) NOT NULL,
-    staat_id smallint NOT NULL REFERENCES staat,
+    staat_id smallint REFERENCES staat,
     gem_id character varying(8) REFERENCES verwaltungseinheit,
     unscharf character(1) DEFAULT NULL::bpchar,
     nuts_code character varying(10),
