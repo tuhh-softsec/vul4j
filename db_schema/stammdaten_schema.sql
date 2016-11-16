@@ -14,6 +14,24 @@ CREATE SCHEMA stammdaten;
 
 SET search_path = stammdaten, pg_catalog;
 
+CREATE FUNCTION set_ort_id() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+    BEGIN
+        value = '#'::text || lpad((NEW.id::character varying)::text, 9, '0'::text);
+        IF NEW.ort_id IS NULL THEN
+            NEW.ort_id = value;
+        END IF;
+        IF NEW.langtext IS NULL THEN
+            NEW.langtext = value;
+        END IF;
+        IF NEW.kurztext IS NULL THEN
+            NEW.kurztext = value;
+        END IF;
+        RETURN NEW;
+    END;
+$$;
+
 CREATE FUNCTION update_letzte_aenderung() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -450,6 +468,7 @@ CREATE TABLE ort (
 );
 
 CREATE TRIGGER letzte_aenderung_ort BEFORE UPDATE ON ort FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
+CREATE TRIGGER set_ort_id_ort BEFORE INSERT ON ort FOR EACH ROW EXECUTE PROCEDURE set_ort_id();
 
 ALTER TABLE ONLY ort
     ADD CONSTRAINT ort_kta_fkey FOREIGN KEY (anlage_id) REFERENCES kta(id);
