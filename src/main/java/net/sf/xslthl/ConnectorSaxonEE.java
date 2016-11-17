@@ -1,5 +1,5 @@
 /*
- * xslthl - XSLT Syntax Highlighting
+ * xslthl - XSLT Syntax Highlighting 
  * https://sourceforge.net/projects/xslthl/
  * Copyright (C) 2005-2008 Michal Molhanec, Jirka Kosek, Michiel Hendriks
  * 
