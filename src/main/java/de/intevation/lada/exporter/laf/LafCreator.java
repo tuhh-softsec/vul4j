@@ -47,6 +47,11 @@ import de.intevation.lada.util.rest.Response;
 public class LafCreator
 implements Creator
 {
+    // Some format strings corresponding to LAF notation
+    private static final String KEY_FORMAT = "%-30s";
+    private static final String DEFAULT_FORMAT = "%s";
+    private static final String CN = "\"%s\""; // cn, mcn, scn
+
     @Inject
     private Logger logger;
     /**
@@ -64,8 +69,8 @@ implements Creator
     @Override
     public String create(String probeId) {
         String lafProbe = "%PROBE%\n";
-        lafProbe += "UEBERTRAGUNGSFORMAT           7\n";
-        lafProbe += "VERSION                       0084\n";
+        lafProbe += lafLine("UEBERTRAGUNGSFORMAT", "7", CN);
+        lafProbe += lafLine("VERSION", "0084", CN);
         lafProbe += probeToLAF(probeId);
         return lafProbe;
     }
@@ -127,19 +132,18 @@ implements Creator
             "": lafLine("DATENBASIS_S",
                 String.format("%02d", probe.getDatenbasisId()));
         laf += messstelle == null ?
-            "" : lafLine("NETZKENNUNG", messstelle.getNetzbetreiberId());
+            "" : lafLine("NETZKENNUNG", messstelle.getNetzbetreiberId(), CN);
         laf += probe.getMstId() == null ?
-            "" : lafLine("MESSSTELLE", probe.getMstId());
+            "" : lafLine("MESSSTELLE", probe.getMstId(), CN);
         laf += probe.getLaborMstId() == null ?
-            "" : lafLine("MESSLABOR", probe.getLaborMstId());
-        laf += lafLine("PROBE_ID", probe.getIdAlt());
+            "" : lafLine("MESSLABOR", probe.getLaborMstId(), CN);
+        laf += lafLine("PROBE_ID", probe.getIdAlt(), CN);
         laf += probe.getHauptprobenNr() == null ?
-            "" : lafLine("HAUPTPROBENNUMMER", probe.getHauptprobenNr());
+            "" : lafLine("HAUPTPROBENNUMMER", probe.getHauptprobenNr(), CN);
         laf += probe.getBaId() == null ?
-            "" : lafLine("MESSPROGRAMM_S", "\"" + probe.getBaId() + "\"");
+            "" : lafLine("MESSPROGRAMM_S", probe.getBaId(), CN);
         laf += probe.getProbenartId() == null ?
-            "" : lafLine("PROBENART",
-                "\"" + probenart + "\"");
+            "" : lafLine("PROBENART", probenart, CN);
         laf += probe.getSolldatumBeginn() == null ?
             "" : lafLine("SOLL_DATUM_UHRZEIT_A",
                 format.format(probe.getSolldatumBeginn()));
@@ -153,10 +157,10 @@ implements Creator
             "" : lafLine("PROBENAHME_DATUM_UHRZEIT_E",
                 format.format(probe.getProbeentnahmeEnde()));
         laf += probe.getUmwId() == null ?
-            "" : lafLine("UMWELTBEREICH_S", probe.getUmwId());
+            "" : lafLine("UMWELTBEREICH_S", probe.getUmwId(), CN);
         laf += probe.getMediaDesk() == null ?
-            "" : lafLine("DESKRIPTOREN", "\"" +
-                probe.getMediaDesk().replaceAll(" ", "").substring(2) + "\"");
+            "" : lafLine("DESKRIPTOREN",
+                probe.getMediaDesk().replaceAll(" ", "").substring(2), CN);
         laf += probe.getTest() == Boolean.TRUE ?
             lafLine("TESTDATEN", "1") : lafLine("TESTDATEN", "0");
         laf += writeOrt(probe);
@@ -227,7 +231,8 @@ implements Creator
             }
             if (o.getOrtszusatztext() != null &&
                 o.getOrtszusatztext().length() > 0) {
-                laf += lafLine(type + "ORTS_ZUSATZTEXT", o.getOrtszusatztext());
+                laf += lafLine(type + "ORTS_ZUSATZTEXT",
+                    o.getOrtszusatztext(), CN);
             }
             QueryBuilder<Ort> oBuilder =
                 new QueryBuilder<Ort>(
@@ -251,14 +256,15 @@ implements Creator
             }
 
             String koord = String.format("%02d", sOrte.get(0).getKdaId());
-            koord += " ";
-            koord += sOrte.get(0).getKoordXExtern() + " ";
-            koord += sOrte.get(0).getKoordYExtern();
+            koord += " \"";
+            koord += sOrte.get(0).getKoordXExtern() + "\" \"";
+            koord += sOrte.get(0).getKoordYExtern() + "\"";
             laf += lafLine(type + "KOORDINATEN_S", koord);
 
             if (sOrte.get(0).getOzId() != null &&
                 sOrte.get(0).getOzId().length() > 0) {
-                laf += lafLine(type + "ORTS_ZUSATZCODE", sOrte.get(0).getOzId());
+                laf += lafLine(type + "ORTS_ZUSATZCODE",
+                    sOrte.get(0).getOzId(), CN);
             }
             if (sOrte.get(0).getHoeheUeberNn() != null) {
                 laf += lafLine(type + "HOEHE_NN",
@@ -316,7 +322,7 @@ implements Creator
             Response kommentar = repository.filter(kommBuilder.getQuery(), "land");
             List<KommentarM> kommentare = (List<KommentarM>)kommentar.getData();
             laf += lafLine("MESSUNGS_ID", m.getIdAlt().toString());
-            laf += lafLine("NEBENPROBENNUMMER", m.getNebenprobenNr());
+            laf += lafLine("NEBENPROBENNUMMER", m.getNebenprobenNr(), CN);
             laf += m.getMesszeitpunkt() == null ?
                 "" : lafLine(
                     "MESS_DATUM_UHRZEIT",
@@ -324,7 +330,7 @@ implements Creator
             laf += m.getMessdauer() == null ?
                 "" : lafLine("MESSZEIT_SEKUNDEN", m.getMessdauer().toString());
             laf += m.getMmtId() == null ?
-                "" : lafLine("MESSMETHODE_S", m.getMmtId());
+                "" : lafLine("MESSMETHODE_S", m.getMmtId(), CN);
             laf += lafLine("ERFASSUNG_ABGESCHLOSSEN", (m.getFertig() ? "1" : "0"));
             for (Messwert mw : werte) {
                 laf += writeMesswert(mw);
@@ -407,9 +413,21 @@ implements Creator
      * @return LAF conform line.
      */
     private String lafLine(String key, String value) {
-        for (int i = key.length(); i < 30; i++) {
-            key += " ";
-        }
-        return key + value + "\n";
+        return lafLine(key, value, DEFAULT_FORMAT);
     }
+
+    /**
+     * Write a single LAF conform line from key and value.
+     *
+     * @param key    The key.
+     * @param value  The value.
+     * @param format A format string for the value
+     * @return LAF conform line.
+     */
+    private String lafLine(String key, Object value, String format) {
+        return String.format(KEY_FORMAT, key)
+            + String.format(format, value)
+            + "\n";
+    }
+
 }
