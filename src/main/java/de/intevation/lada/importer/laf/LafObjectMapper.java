@@ -586,6 +586,9 @@ public class LafObjectMapper {
         Map<String, String> ursprungsOrt,
         Probe probe
     ) {
+        if (ursprungsOrt.isEmpty()) {
+            return null;
+        }
         Ortszuordnung ort = new Ortszuordnung();
         ort.setOrtszuordnungTyp("U");
         ort.setProbeId(probe.getId());
@@ -615,6 +618,9 @@ public class LafObjectMapper {
         Map<String, String> entnahmeOrt,
         Probe probe
     ) {
+        if (entnahmeOrt.isEmpty()) {
+            return;
+        }
         Ortszuordnung ort = new Ortszuordnung();
         ort.setOrtszuordnungTyp("E");
         ort.setProbeId(probe.getId());
