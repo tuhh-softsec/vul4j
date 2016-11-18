@@ -32,8 +32,8 @@ import java.util.List;
 
 import net.sf.saxon.event.Builder;
 import net.sf.saxon.expr.XPathContext;
+import net.sf.saxon.expr.parser.Location;
 import net.sf.saxon.om.Item;
-import net.sf.saxon.om.NamePool;
 import net.sf.saxon.om.NodeInfo;
 import net.sf.saxon.om.SequenceIterator;
 import net.sf.saxon.type.AnyType;
@@ -52,7 +52,7 @@ public class ConnectorSaxonEE {
 			// int elemId = pool.allocate(config.prefix, config.uri,
 			// ((StyledBlock) b).getStyle());
 
-			// new FingerprintedQName(config.prefix, config.uri, ((StyledBlock)
+// new FingerprintedQName(config.prefix, config.uri, ((StyledBlock)
 			// b).getStyle())
 			Class fpQnameClazz = Class
 			        .forName("net.sf.saxon.om.FingerprintedQName");
@@ -60,22 +60,77 @@ public class ConnectorSaxonEE {
 			        String.class, String.class, String.class });
 			Object fpQname = constructor.newInstance(new Object[] {
 			        config.prefix, config.uri, ((StyledBlock) b).getStyle() });
-
-			// builder.startElement(fpQname, AnyType.getInstance(), 0, 0);
-			Method startElement = builder.getClass().getMethod(
-			        "startElement",
-			        new Class[] { Class.forName("net.sf.saxon.om.NodeName"),
-			                net.sf.saxon.type.SchemaType.class, int.class,
-			                int.class });
-			startElement.invoke(builder,
-			        new Object[] { fpQname, AnyType.getInstance(), 0, 0 });
-			builder.characters(b.getText(), 0, b.getText().length());
+			startElement(builder, fpQname);
+			outputCharacters(builder, b.getText());
 			builder.endElement();
 		} else {
-			builder.characters(b.getText(), 0, b.getText().length());
+			outputCharacters(builder, b.getText());
 		}
 	}
 
+	/**
+	 * A fake location
+	 */
+	private static Location fakeLocation = new Location() {
+		@Override
+		public Location saveLocation() {
+			return this;
+		}
+		
+		@Override
+		public String getSystemId() {
+			return null;
+		}
+		
+		@Override
+		public String getPublicId() {
+			return null;
+		}
+		@Override
+		public int getLineNumber() {
+			return 0;
+		}
+		@Override
+		public int getColumnNumber() {
+			return 0;
+		}
+	};
+	
+	private static void startElement(Builder builder, Object fpQname) throws Exception{
+		try{
+			// builder.startElement(fpQname, AnyType.getInstance(), 0, 0);
+			Method startElement = builder.getClass().getMethod(
+					"startElement",
+					new Class[] { Class.forName("net.sf.saxon.om.NodeName"),
+							net.sf.saxon.type.SchemaType.class, int.class,
+							int.class });
+			startElement.invoke(builder,
+					new Object[] { fpQname, AnyType.getInstance(), 0, 0 });
+		} catch(Exception ex){
+			//Maybe Saxon 9.7.11 or newer
+			//public void startElement(/*@NotNull*/ NodeName elemName, SchemaType type, Location location, int properties) throws XPathException {
+			Method startElement = builder.getClass().getMethod(
+					"startElement",
+					new Class[] { Class.forName("net.sf.saxon.om.NodeName"),
+							net.sf.saxon.type.SchemaType.class, Class.forName("net.sf.saxon.expr.parser.Location"),
+							int.class });
+			startElement.invoke(builder,
+					new Object[] { fpQname, AnyType.getInstance(), fakeLocation, 0 });
+		}
+	}
+	
+	private static void outputCharacters(Builder builder, String text) throws Exception{
+		Method characters = null;
+		try{
+			characters = builder.getClass().getMethod("characters", new Class[]{String.class, int.class, int.class});
+			characters.invoke(builder, new Object[]{text, 0, 0});
+		} catch(Exception ex){
+			//Maybe Saxon 9.7.11 or newer
+			characters = builder.getClass().getMethod("characters", new Class[]{CharSequence.class, Class.forName("net.sf.saxon.expr.parser.Location"), int.class});
+			characters.invoke(builder, new Object[]{text, fakeLocation, 0});
+		}
+	}
+	
 	/**
 	 * Highlight the nodes using the standard configuration file
 	 * 
