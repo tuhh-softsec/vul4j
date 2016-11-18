@@ -239,8 +239,11 @@ implements Creator
                     oBuilder.getQuery(),
                     "stamm").getData();
 
-            laf += lafLine(type + "HERKUNFTSLAND_S",
-                String.format("%08d", sOrte.get(0).getStaatId()));
+            if (sOrte.get(0).getStaatId() != null) {
+                laf += lafLine(type + "HERKUNFTSLAND_S",
+                    String.format("%08d", sOrte.get(0).getStaatId()));
+            }
+
             if (sOrte.get(0).getGemId() != null &&
                 sOrte.get(0).getGemId().length() > 0) {
                 laf += lafLine(type + "GEMEINDESCHLUESSEL",
