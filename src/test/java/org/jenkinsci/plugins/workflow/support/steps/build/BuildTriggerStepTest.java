@@ -3,6 +3,7 @@ package org.jenkinsci.plugins.workflow.support.steps.build;
 import hudson.model.Action;
 import hudson.model.BooleanParameterDefinition;
 import hudson.model.Cause;
+import hudson.model.Executor;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Label;
@@ -14,6 +15,7 @@ import hudson.model.queue.QueueTaskFuture;
 import hudson.tasks.Shell;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowExecution;
@@ -28,14 +30,17 @@ import org.jvnet.hudson.test.BuildWatcher;
 import org.jvnet.hudson.test.FailureBuilder;
 import org.jvnet.hudson.test.Issue;
 import org.jvnet.hudson.test.JenkinsRule;
+import org.jvnet.hudson.test.LoggerRule;
 import org.jvnet.hudson.test.MockFolder;
 import org.jvnet.hudson.test.SleepBuilder;
 import org.jvnet.hudson.test.TestExtension;
+import org.jvnet.hudson.test.recipes.LocalData;
 
 public class BuildTriggerStepTest {
     
     @ClassRule public static BuildWatcher buildWatcher = new BuildWatcher();
     @Rule public JenkinsRule j = new JenkinsRule();
+    @Rule public LoggerRule logging = new LoggerRule();
 
     @Issue("JENKINS-25851")
     @Test public void buildTopLevelProject() throws Exception {
@@ -193,6 +198,21 @@ public class BuildTriggerStepTest {
         j.assertBuildStatus(Result.ABORTED, j.waitForCompletion(dsb));
     }
 
+    @Test public void interruptFlowNonPropagate() throws Exception {
+        WorkflowJob ds = j.jenkins.createProject(WorkflowJob.class, "ds");
+        ds.setDefinition(new CpsFlowDefinition("semaphore 'ds'", true));
+        WorkflowJob us = j.jenkins.createProject(WorkflowJob.class, "us");
+        us.setDefinition(new CpsFlowDefinition("while (true) {build job: 'ds', propagate: false}", true));
+        WorkflowRun usb = us.scheduleBuild2(0).getStartCondition().get();
+        assertEquals(1, usb.getNumber());
+        SemaphoreStep.waitForStart("ds/1", null);
+        WorkflowRun dsb = ds.getLastBuild();
+        assertEquals(1, dsb.getNumber());
+        usb.doStop();
+        j.assertBuildStatus(Result.ABORTED, j.waitForCompletion(usb));
+        j.assertBuildStatus(Result.ABORTED, j.waitForCompletion(dsb));
+    }
+
     @SuppressWarnings("deprecation")
     @Test public void triggerWorkflow() throws Exception {
         WorkflowJob us = j.jenkins.createProject(WorkflowJob.class, "us");
@@ -306,6 +326,17 @@ public class BuildTriggerStepTest {
         assertEquals(5, ds1.getNumber());
     }
 
+    @Issue("JENKINS-39454")
+    @Test public void raceCondition() throws Exception {
+        logging.record(BuildTriggerStepExecution.class.getPackage().getName(), Level.FINE).record(Queue.class, Level.FINE).record(Executor.class, Level.FINE);
+        j.jenkins.setQuietPeriod(0);
+        WorkflowJob ds = j.jenkins.createProject(WorkflowJob.class, "ds");
+        ds.setDefinition(new CpsFlowDefinition("sleep 1", true));
+        WorkflowJob us = j.jenkins.createProject(WorkflowJob.class, "us");
+        us.setDefinition(new CpsFlowDefinition("def rebuild() {for (int i = 0; i < 20; i++) {build 'ds'}}; parallel A: {rebuild()}, B: {rebuild()}, C: {rebuild()}", true));
+        j.buildAndAssertSuccess(us);
+    }
+
     @Issue("JENKINS-31897")
     @Test public void defaultParameters() throws Exception {
         WorkflowJob us = j.jenkins.createProject(WorkflowJob.class, "us");
@@ -315,6 +346,17 @@ public class BuildTriggerStepTest {
         ds.setDefinition(new CpsFlowDefinition("echo \"${PARAM1} - ${PARAM2}\""));
         j.buildAndAssertSuccess(us);
         j.assertLogContains("first - p2", ds.getLastBuild());
+    }
+
+    @LocalData
+    @Test public void storedForm() throws Exception {
+        WorkflowJob us = j.jenkins.getItemByFullName("us", WorkflowJob.class);
+        WorkflowRun us1 = us.getBuildByNumber(1);
+        WorkflowJob ds = j.jenkins.getItemByFullName("ds", WorkflowJob.class);
+        WorkflowRun ds1 = ds.getBuildByNumber(1);
+        ds1.setDescription("something");
+        j.assertBuildStatusSuccess(j.waitForCompletion(ds1));
+        j.assertBuildStatusSuccess(j.waitForCompletion(us1));
     }
 
 }
