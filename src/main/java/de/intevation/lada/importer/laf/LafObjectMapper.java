@@ -601,16 +601,6 @@ public class LafObjectMapper {
         if (ursprungsOrt.containsKey("U_ORTS_ZUSATZTEXT")) {
             ort.setOrtszusatztext(ursprungsOrt.get("U_ORTS_ZUSATZTEXT"));
         }
-        if (ursprungsOrt.containsKey("U_ORTS_ZUSATZCODE")) {
-            Ortszusatz zusatz = repository.getByIdPlain(
-                Ortszusatz.class,
-                ursprungsOrt.get("U_ORTS_ZUSATZCODE"),
-                "stamm");
-            if (zusatz != null) {
-                o.setOzId(zusatz.getOzsId());
-                repository.update(o, "stamm");
-            }
-        }
         return ort;
     }
 
@@ -834,6 +824,19 @@ public class LafObjectMapper {
                     ort.setOrtId("Staat_" + s.getStaatIso());
                     ort.setBerichtstext(s.getStaat());
                 }
+            }
+        }
+
+        if (attributes.containsKey(type + "HOEHE_NN")) {
+            ort.setHoeheUeberNn(Float.valueOf(attributes.get(type + "HOEHE_NN")));
+        }
+        if (attributes.containsKey(type + "ORTS_ZUSATZCODE")) {
+            Ortszusatz zusatz = repository.getByIdPlain(
+                Ortszusatz.class,
+                attributes.get(type + "ORTS_ZUSATZCODE"),
+                "stamm");
+            if (zusatz != null) {
+                ort.setOzId(zusatz.getOzsId());
             }
         }
 
