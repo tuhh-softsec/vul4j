@@ -14,6 +14,8 @@ import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.json.JsonArray;
+import javax.json.JsonValue;
+import javax.json.JsonNumber;
 import javax.json.JsonObject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -24,10 +26,15 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.exporter.ExportConfig;
 import de.intevation.lada.exporter.ExportFormat;
 import de.intevation.lada.exporter.Exporter;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
+import de.intevation.lada.util.annotation.RepositoryConfig;
+import de.intevation.lada.util.data.QueryBuilder;
+import de.intevation.lada.util.data.Repository;
+import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.auth.UserInfo;
@@ -50,6 +57,13 @@ import de.intevation.lada.util.auth.UserInfo;
 @Path("data/export")
 @RequestScoped
 public class LafExportService {
+
+    /**
+     * The data repository granting read-only access.
+     */
+    @Inject
+    @RepositoryConfig(type=RepositoryType.RO)
+    private Repository repository;
 
     /**
      * The exporter.
@@ -84,21 +98,34 @@ public class LafExportService {
         JsonObject proben,
         @Context HttpServletRequest request
     ) {
-        JsonArray array = proben.getJsonArray("proben");
-        List<Integer> probeIds = new ArrayList<Integer>();
-        String fileName = "export.laf";
-        UserInfo userInfo = authorization.getInfo(request);
-        for (int i = 0; i < array.size(); i++) {
-            Integer probeId = array.getInt(i);
-            //if (authorization.isAuthorized(userInfo, probeId)) {
-                probeIds.add(probeId);
-            //}
+        List<Integer> providedIds = new ArrayList<Integer>();
+        for (JsonValue id : proben.getJsonArray("proben")) {
+            if (id instanceof JsonNumber) {
+                providedIds.add(((JsonNumber)id).intValue());
+            }
         }
+
+        QueryBuilder<Probe> pBuilder = new QueryBuilder<Probe>(
+            repository.entityManager("land"), Probe.class);
+        pBuilder.andIn("id", providedIds);
+        List<Probe> pObjects = repository.filterPlain(
+            pBuilder.getQuery(), "land");
+
+        if (pObjects.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        List<Integer> probeIds = new ArrayList<Integer>();
+        for (Probe p : pObjects) {
+            probeIds.add(p.getId());
+        }
+        UserInfo userInfo = authorization.getInfo(request);
         InputStream exported = exporter.export(probeIds, userInfo);
+
         ResponseBuilder response = Response.ok((Object)exported);
         response.header(
             "Content-Disposition",
-            "attachment; filename=\"" + fileName + "\"");
+            "attachment; filename=\"export.laf\"");
         return response.build();
     }
 }
