@@ -68,12 +68,12 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
 
         DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
         if (serverConfiguration == null) {
-            throw new AbortException("failed to lookup Dynatrace server configuration");
+            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupServer());
         }
 
         CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
         if (pair == null) {
-            throw new AbortException("failed to lookup Dynatrace server profile");
+            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupProfile());
         }
 
         if (configurationTestCases == null) {
@@ -87,14 +87,14 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
         }
 
         if (serverConfiguration.getDelay() != 0) {
-            logger.println(Messages.PerfSigRecorder_SleepingDelay() + " " + serverConfiguration.getDelay() + " sec");
+            logger.println(String.format(Messages.PerfSigRecorder_SleepingDelay(), serverConfiguration.getDelay()));
             Thread.sleep(serverConfiguration.getDelay() * 1000);
         }
 
         for (BaseConfiguration profile : connection.getSystemProfiles()) {
             SystemProfile systemProfile = (SystemProfile) profile;
             if (pair.getProfile().equals(systemProfile.getId()) && systemProfile.isRecording()) {
-                logger.println("session is still recording, trying to stop recording");
+                logger.println(Messages.PerfSigRecorder_SessionStillRecording());
                 PerfSigStopRecording stopRecording = new PerfSigStopRecording(dynatraceProfile);
                 stopRecording.perform(run, workspace, launcher, listener);
                 break;
@@ -114,9 +114,9 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
                 previousRun = previousCompletedRun;
             }
             comparisonBuildNumber = previousRun.getNumber();
-            logger.println(Messages.PerfSigRecorder_LastSuccessfulBuild() + " #" + comparisonBuildNumber);
+            logger.println(String.format(Messages.PerfSigRecorder_LastSuccessfulBuild(), comparisonBuildNumber));
         } else {
-            logger.println("no previous build found, no comparison possible!");
+            logger.println(Messages.PerfSigRecorder_NoComparisonPossible());
         }
 
         for (ConfigurationTestCase configurationTestCase : getConfigurationTestCases()) {
@@ -129,7 +129,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
             if (buildEnvVars != null) {
                 sessionName = buildEnvVars.getSessionName();
             } else {
-                throw new RESTErrorException("no sessionname found, aborting ...");
+                throw new RESTErrorException(Messages.PerfSigRecorder_NoSessionNameFound());
             }
 
             if (comparisonBuildNumber != 0) {

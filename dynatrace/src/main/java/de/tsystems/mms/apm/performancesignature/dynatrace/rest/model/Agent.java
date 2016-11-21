@@ -38,51 +38,51 @@ public class Agent {
     private Collector collector;
 
     public void setValue(final String property, final String parentProperty, final String value) {
-        if (property.equalsIgnoreCase(Messages.Agent_PropAgentId())) {
-            if (Messages.Agent_PropAgentInformation().equalsIgnoreCase(parentProperty)) {
+        if (property.equalsIgnoreCase("agentid")) {
+            if (parentProperty.equalsIgnoreCase("agentinformation")) {
                 this.agentId = Integer.parseInt(value);
             }
-        } else if (property.equalsIgnoreCase(Messages.Agent_PropAgentGroup())) {
+        } else if (property.equalsIgnoreCase("agentgroup")) {
             this.agentGroup = value;
-        } else if (property.equalsIgnoreCase(Messages.Agent_PropCapture())) {
+        } else if (property.equalsIgnoreCase("capture")) {
             this.capture = Boolean.parseBoolean(value);
-        } else if (property.equalsIgnoreCase(Messages.Agent_PropClassLoadCount())) {
+        } else if (property.equalsIgnoreCase("classloadcount")) {
             this.classLoadCount = Integer.parseInt(value);
-        } else if (property.equalsIgnoreCase(Messages.Agent_PropConfiguration())) {
+        } else if (property.equalsIgnoreCase("configuration")) {
             this.configuration = value;
-        } else if (property.equalsIgnoreCase(Messages.Agent_PropConnected())) {
+        } else if (property.equalsIgnoreCase("connected")) {
             this.connected = Boolean.parseBoolean(value);
-        } else if (property.equalsIgnoreCase(Messages.Agent_PropEventCount())) {
+        } else if (property.equalsIgnoreCase("eventcount")) {
             this.eventCount = Integer.parseInt(value);
-        } else if (property.equalsIgnoreCase(Messages.Agent_PropHost())) {
+        } else if (property.equalsIgnoreCase("host")) {
             this.host = value;
-        } else if (property.equalsIgnoreCase(Messages.Agent_PropLicenseInformation())) {
+        } else if (property.equalsIgnoreCase("licenseinformation")) {
             this.licenseInformation = value;
-        } else if (property.equalsIgnoreCase(Messages.Agent_PropLicenseOk())) {
+        } else if (property.equalsIgnoreCase("licenseok")) {
             this.licenseOk = value;
-        } else if (property.equalsIgnoreCase(Messages.Agent_PropName())) {
+        } else if (property.equalsIgnoreCase("name")) {
             this.name = value;
-        } else if (property.equalsIgnoreCase(Messages.Agent_PropProcessId())) {
+        } else if (property.equalsIgnoreCase("processid")) {
             this.processId = Integer.parseInt(value);
-        } else if (property.equalsIgnoreCase(Messages.Agent_PropSkippedEvents())) {
+        } else if (property.equalsIgnoreCase("skippedevents")) {
             this.skippedEvents = Integer.parseInt(value);
-        } else if (property.equalsIgnoreCase(Messages.Agent_PropSkippedPurePaths())) {
+        } else if (property.equalsIgnoreCase("skippedpurepaths")) {
             this.skippedPurePaths = Integer.parseInt(value);
-        } else if (property.equalsIgnoreCase(Messages.Agent_PropStartupTimeUtc())) {
+        } else if (property.equalsIgnoreCase("startuptimeutc")) {
             this.startupTimeUTC = value;
-        } else if (property.equalsIgnoreCase(Messages.Agent_PropSupportsHotSensorPlacement())) {
+        } else if (property.equalsIgnoreCase("hotUpdateable")) {
             this.supportsHotsensorPlacement = Boolean.parseBoolean(value);
-        } else if (property.equalsIgnoreCase(Messages.Agent_PropSystemProfile())) {
+        } else if (property.equalsIgnoreCase("systemProfile")) {
             this.systemProfile = value;
-        } else if (property.equalsIgnoreCase(Messages.Agent_PropTechnologyType())) {
+        } else if (property.equalsIgnoreCase("technologyType")) {
             this.technologyType = value;
-        } else if (property.equalsIgnoreCase(Messages.Agent_PropTotalClassLoadCount())) {
+        } else if (property.equalsIgnoreCase("totalClassLoadCount")) {
             this.totalClassLoadCount = Integer.parseInt(value);
-        } else if (property.equalsIgnoreCase(Messages.Agent_PropTotalCpuTime())) {
+        } else if (property.equalsIgnoreCase("totalCpuTime")) {
             this.totalCpuTime = Double.parseDouble(value);
-        } else if (property.equalsIgnoreCase(Messages.Agent_PropTotalExecutionTime())) {
+        } else if (property.equalsIgnoreCase("totalExecutionTime")) {
             this.totalExecutionTime = Double.parseDouble(value);
-        } else if (property.equalsIgnoreCase(Messages.Agent_PropTotalPurePathCount())) {
+        } else if (property.equalsIgnoreCase("totalPurePathCount")) {
             this.totalPurePathCount = Integer.parseInt(value);
         }
     }

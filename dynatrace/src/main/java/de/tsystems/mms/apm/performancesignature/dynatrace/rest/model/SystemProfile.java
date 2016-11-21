@@ -36,7 +36,7 @@ public class SystemProfile extends BaseConfiguration {
 
     public SystemProfile(final Attributes attr) {
         super(attr);
-        this.isRecording = Boolean.valueOf(AttributeUtils.getStringAttribute(Messages.SystemProfile_IsRecording(), attr));
+        this.isRecording = Boolean.parseBoolean(AttributeUtils.getStringAttribute("isrecording", attr));
     }
 
     public boolean isRecording() {

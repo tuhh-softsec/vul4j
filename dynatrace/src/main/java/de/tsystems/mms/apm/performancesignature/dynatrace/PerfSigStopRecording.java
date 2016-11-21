@@ -59,18 +59,21 @@ public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
             throws InterruptedException, IOException {
         final PrintStream logger = listener.getLogger();
 
-        logger.println(Messages.PerfSigStopRecording_StopSessionRecording());
         DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
         if (serverConfiguration == null) {
-            throw new AbortException("failed to lookup Dynatrace server configuration");
+            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupServer());
         }
 
         CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
         if (pair == null) {
-            throw new AbortException("failed to lookup Dynatrace server profile");
+            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupProfile());
         }
 
+        logger.println(Messages.PerfSigStopRecording_StoppingSessionRecording());
         final DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
+        if (!connection.validateConnection()) {
+            throw new RESTErrorException(Messages.PerfSigRecorder_DTConnectionError());
+        }
 
         final List<PerfSigEnvInvisAction> envVars = run.getActions(PerfSigEnvInvisAction.class);
         PerfSigEnvInvisAction buildEnvVars = null;
@@ -82,9 +85,10 @@ public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
 
         String sessionName;
         if (timeframeStart != null) {
-            logger.println("timeframe start: " + timeframeStart);
-            logger.println("timeframe stop: " + new Date());
-            sessionName = connection.storePurePaths(buildEnvVars.getSessionName(), timeframeStart, new Date(),
+            Date timeframeStop = new Date();
+            logger.println(Messages.PerfSigStopRecording_TimeframeStart() + timeframeStart);
+            logger.println(Messages.PerfSigStopRecording_TimeframeStop() + timeframeStop);
+            sessionName = connection.storePurePaths(buildEnvVars.getSessionName(), timeframeStart, timeframeStop,
                     PerfSigStartRecording.DescriptorImpl.defaultRecordingOption, PerfSigStartRecording.DescriptorImpl.defaultLockSession, false);
         } else {
             sessionName = connection.stopRecording();
@@ -93,15 +97,15 @@ public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
         if (StringUtils.isBlank(sessionName)) {
             throw new RESTErrorException(Messages.PerfSigStopRecording_InternalError());
         }
-        logger.println(String.format("stopped recording on %s with SessionName %s", pair.getProfile(), sessionName));
+        logger.println(String.format(Messages.PerfSigStopRecording_StoppedSessionRecording(), pair.getProfile(), sessionName));
 
         if (getReanalyzeSession()) {
-            logger.println("reanalyze session ...");
+            logger.println(Messages.PerfSigStopRecording_ReanalyzeSession());
             boolean reanalyzeFinished = connection.reanalyzeSessionStatus(sessionName);
             if (connection.reanalyzeSession(sessionName)) {
                 int timeout = reanalyzeSessionTimeout;
                 while ((!reanalyzeFinished) && (timeout > 0)) {
-                    logger.println("querying session analysis status");
+                    logger.println(Messages.PerfSigStopRecording_QueryingSession());
                     try {
                         Thread.sleep(reanalyzeSessionPollingInterval);
                         timeout -= reanalyzeSessionPollingInterval;
@@ -110,9 +114,9 @@ public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
                     reanalyzeFinished = connection.reanalyzeSessionStatus(sessionName);
                 }
                 if (reanalyzeFinished) {
-                    logger.println("session reanalysis finished");
+                    logger.println(Messages.PerfSigStopRecording_SessionReanalysisFinished());
                 } else {
-                    throw new RESTErrorException("Timeout raised");
+                    throw new RESTErrorException(Messages.PerfSigStopRecording_TimeoutRaised());
                 }
             }
         }

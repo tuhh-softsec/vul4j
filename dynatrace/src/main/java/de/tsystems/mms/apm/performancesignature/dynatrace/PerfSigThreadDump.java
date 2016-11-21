@@ -64,23 +64,30 @@ public class PerfSigThreadDump extends Builder implements SimpleBuildStep {
         PrintStream logger = listener.getLogger();
 
         DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
-        if (serverConfiguration == null)
-            throw new AbortException("failed to lookup Dynatrace server configuration");
+        if (serverConfiguration == null) {
+            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupServer());
+        }
 
         CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
-        if (pair == null)
-            throw new AbortException("failed to lookup Dynatrace server profile");
+        if (pair == null) {
+            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupProfile());
+        }
 
+        logger.println(Messages.PerfSigStartRecording_StartingSession());
         final DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
-        List<Agent> agents = connection.getAgents();
+        if (!connection.validateConnection()) {
+            throw new RESTErrorException(Messages.PerfSigRecorder_DTConnectionError());
+        }
 
+        List<Agent> agents = connection.getAgents();
         for (Agent agent : agents) {
             if (agent.getName().equals(this.agent) && agent.getSystemProfile().equals(pair.getProfile()) && agent.getHost().equals(this.host)) {
-                logger.println("creating thread dump for " + agent.getSystemProfile() + "-" + agent.getName() + "-" + agent.getHost() + "-" + agent.getProcessId());
+                logger.println(String.format(Messages.PerfSigThreadDump_CreatingThreadDump(), agent.getSystemProfile(), agent.getName(), agent.getHost(), agent.getProcessId()));
 
                 String threadDump = connection.threadDump(agent.getName(), agent.getHost(), agent.getProcessId(), getLockSession());
-                if (StringUtils.isBlank(threadDump))
-                    throw new RESTErrorException("thread dump wasn't taken");
+                if (StringUtils.isBlank(threadDump)) {
+                    throw new RESTErrorException(Messages.PerfSigThreadDump_ThreadDumpWasntTaken());
+                }
                 int timeout = waitForDumpTimeout;
                 boolean dumpFinished = connection.threadDumpStatus(threadDump).isResultValueTrue();
                 while ((!dumpFinished) && (timeout > 0)) {
@@ -92,7 +99,7 @@ public class PerfSigThreadDump extends Builder implements SimpleBuildStep {
                     logger.println(Messages.PerfSigThreadDump_SuccessfullyCreatedThreadDump() + agent.getName());
                     return;
                 } else {
-                    throw new RESTErrorException("timeout is raised");
+                    throw new RESTErrorException(Messages.PerfSigStopRecording_TimeoutRaised());
                 }
             }
         }

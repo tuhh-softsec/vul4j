@@ -59,13 +59,13 @@ public class AgentXMLHandler extends DefaultHandler {
     }
 
     public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attr) {
-        if (localName.equals(Messages.AgentXMLHandler_AttrAgentInformation())) {
+        if (localName.equals("agentinformation")) {
             this.parentElement = localName;
             this.currentAgent = new Agent();
             this.agents.add(this.currentAgent);
-        } else if (localName.equals(Messages.AgentXMLHandler_AttrAgentProperties())) {
+        } else if (localName.equals("agentProperties")) {
             this.parentElement = localName;
-        } else if (localName.equals(Messages.AgentXMLHandler_AttrCollectorInformation())) {
+        } else if (localName.equals("collectorinformation")) {
             this.parentElement = localName;
             this.currentCollector = new Collector();
             this.collectors.add(this.currentCollector);
@@ -77,7 +77,7 @@ public class AgentXMLHandler extends DefaultHandler {
     }
 
     public void endElement(final String uri, final String localName, final String qName) {
-        if (localName.equals(Messages.AgentXMLHandler_AttrCollectorInformation())) {
+        if (localName.equals("collectorinformation")) {
             this.currentCollector = null;
         }
     }

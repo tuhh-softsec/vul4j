@@ -35,8 +35,8 @@ public abstract class BaseConfiguration {
     private String id, href;
 
     public BaseConfiguration(final Attributes attr) {
-        this.id = AttributeUtils.getStringAttribute(Messages.BaseConfiguration_AttrId(), attr);
-        this.href = AttributeUtils.getStringAttribute(Messages.BaseConfiguration_AttrHref(), attr);
+        this.id = AttributeUtils.getStringAttribute("id", attr);
+        this.href = AttributeUtils.getStringAttribute("href", attr);
     }
 
     public String getId() {

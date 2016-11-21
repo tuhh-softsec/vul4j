@@ -194,9 +194,9 @@ public class DTServerConnection {
     }
 
     private void addAuthenticationHeader(final URLConnection conn) throws UnsupportedEncodingException {
-        String userPassword = this.credentials.getUsername() + Messages.DTServerConnection_SEPARATORColon() + this.credentials.getPassword().getPlainText();
+        String userPassword = this.credentials.getUsername() + ":" + this.credentials.getPassword().getPlainText();
         String token = DatatypeConverter.printBase64Binary(userPassword.getBytes(CharEncoding.UTF_8));
-        conn.setRequestProperty(Messages.DTServerConnection_PROPERTYAuthorization(), Messages.DTServerConnection_PROPERTYBasic() + " " + token);
+        conn.setRequestProperty("Authorization", "Basic" + " " + token);
         conn.setUseCaches(false);
         conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
 
