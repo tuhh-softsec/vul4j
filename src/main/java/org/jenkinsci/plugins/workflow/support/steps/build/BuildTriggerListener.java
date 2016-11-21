@@ -39,7 +39,7 @@ public class BuildTriggerListener extends RunListener<Run<?,?>>{
     }
 
     @Override
-    @SuppressWarnings("deprecation") // TODO JENKINS-39404 Actionable offers no standard way of removing actions
+    @SuppressWarnings("deprecation") // TODO 2.30+ use removeAction
     public void onCompleted(Run<?,?> run, @Nonnull TaskListener listener) {
         for (BuildTriggerAction.Trigger trigger : BuildTriggerAction.triggersFor(run)) {
             LOGGER.log(Level.FINE, "completing {0} for {1}", new Object[] {run, trigger.context});
