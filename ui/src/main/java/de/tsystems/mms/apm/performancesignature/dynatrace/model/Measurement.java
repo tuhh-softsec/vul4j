@@ -26,7 +26,7 @@ public class Measurement extends MeasureBaseModel {
 
     public Measurement(final Object attr) {
         super(attr);
-        this.timestamp = AttributeUtils.getLongAttribute(Messages.Measurement_AttrTimestamp(), attr);
+        this.timestamp = AttributeUtils.getLongAttribute("timestamp", attr);
     }
 
     @Exported

@@ -71,7 +71,7 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
     }
 
     public String getDisplayName() {
-        return Messages.PerfSigBuildActionResultsDisplay_DisplayName();
+        return "Performance Signature results";
     }
 
     public Class getPerfSigUIUtils() {
@@ -136,9 +136,9 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
     }
 
     private XYDataset buildTimeSeriesDataSet(final StaplerRequest request) {
-        String measure = request.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamMeasure());
-        String chartDashlet = request.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamChartDashlet());
-        String testCase = request.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamTestCase());
+        String measure = request.getParameter("measure");
+        String chartDashlet = request.getParameter("chartdashlet");
+        String testCase = request.getParameter("testcase");
         TimeSeries timeSeries = new TimeSeries(chartDashlet, Second.class);
 
         DashboardReport dashboardReport = getDashBoardReport(testCase);
@@ -151,10 +151,10 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
         return new TimeSeriesCollection(timeSeries);
     }
 
-    private JFreeChart createTimeSeriesChart(final StaplerRequest req, final XYDataset dataset) throws UnsupportedEncodingException {
-        String chartDashlet = req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamChartDashlet());
-        String measure = req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamMeasure());
-        String testCase = req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamTestCase());
+    private JFreeChart createTimeSeriesChart(final StaplerRequest request, final XYDataset dataset) throws UnsupportedEncodingException {
+        String measure = request.getParameter("measure");
+        String chartDashlet = request.getParameter("chartdashlet");
+        String testCase = request.getParameter("testcase");
 
         final DashboardReport dashboardReport = getDashBoardReport(testCase);
         final Measure m = dashboardReport.getMeasure(chartDashlet, measure);

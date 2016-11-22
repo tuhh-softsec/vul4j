@@ -53,9 +53,11 @@ public final class PerfSigUIUtils {
     }
 
     public static File getReportDirectory(final Run<?, ?> run) throws IOException {
-        File reportDirectory = new File(run.getRootDir(), Messages.PerfSigUtils_ReportDirectory());
+        File reportDirectory = new File(run.getRootDir(), "performance-signature");
         if (!reportDirectory.exists()) {
-            if (!reportDirectory.mkdirs()) throw new IOException("failed to create report directory");
+            if (!reportDirectory.mkdirs()) {
+                throw new IOException(Messages.PerfSigUIUtils_FailedToCreateReportDir());
+            }
         }
         return reportDirectory;
     }
@@ -95,7 +97,7 @@ public final class PerfSigUIUtils {
         try {
             return URLEncoder.encode(value, CharEncoding.UTF_8).replaceAll("\\+", "%20");
         } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(Messages.PerfSigUtils_EncodingFailure(), e);
+            throw new RuntimeException(Messages.PerfSigUIUtils_EncodingFailure(), e);
         }
     }
 
@@ -129,16 +131,16 @@ public final class PerfSigUIUtils {
     public static void handleIncidents(final Run<?, ?> run, final List<IncidentChart> incidents, final PrintStream logger, final int nonFunctionalFailure) {
         int numWarning = 0, numSevere = 0;
         if (incidents != null && incidents.size() > 0) {
-            logger.println("following incidents occured:");
+            logger.println(Messages.PerfSigUIUtils_FollowingIncidents());
             for (IncidentChart incident : incidents) {
                 for (IncidentViolation violation : incident.getViolations()) {
                     switch (violation.getSeverity()) {
                         case SEVERE:
-                            logger.println("severe incident:     " + incident.getRule() + " " + violation.getRule() + " " + violation.getDescription());
+                            logger.println(Messages.PerfSigUIUtils_SevereIncident(incident.getRule(), violation.getRule(), violation.getDescription()));
                             numSevere++;
                             break;
                         case WARNING:
-                            logger.println("warning incident:    " + incident.getRule() + " " + violation.getRule() + " " + violation.getDescription());
+                            logger.println(Messages.PerfSigUIUtils_WarningIncident(incident.getRule(), violation.getRule(), violation.getDescription()));
                             numWarning++;
                             break;
                         default:
@@ -150,25 +152,25 @@ public final class PerfSigUIUtils {
             switch (nonFunctionalFailure) {
                 case 1:
                     if (numSevere > 0) {
-                        logger.println("build's status was set to 'failed' due to severe incidents");
+                        logger.println(Messages.PerfSigUIUtils_BuildsStatusSevereIncidentsFailed());
                         run.setResult(Result.FAILURE);
                     }
                     break;
                 case 2:
                     if (numSevere > 0 || numWarning > 0) {
-                        logger.println("build's status was set to 'failed' due to warning/severe incidents");
+                        logger.println(Messages.PerfSigUIUtils_BuildsStatusWarningIncidentsFailed());
                         run.setResult(Result.FAILURE);
                     }
                     break;
                 case 3:
                     if (numSevere > 0) {
-                        logger.println("build's status was set to 'unstable' due to severe incidents");
+                        logger.println(Messages.PerfSigUIUtils_BuildsStatusSevereIncidentsUnstable());
                         run.setResult(Result.UNSTABLE);
                     }
                     break;
                 case 4:
                     if (numSevere > 0 || numWarning > 0) {
-                        logger.println("build's status was set to 'unstable' due to warning/severe incidents");
+                        logger.println(Messages.PerfSigUIUtils_BuildsStatusWarningIncidentsUnstable());
                         run.setResult(Result.UNSTABLE);
                     }
                     break;

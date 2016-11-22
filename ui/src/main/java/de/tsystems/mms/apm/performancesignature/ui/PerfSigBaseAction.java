@@ -20,11 +20,11 @@ import hudson.model.Action;
 
 abstract class PerfSigBaseAction implements Action {
     public String getUrlName() {
-        return Messages.PerfSigBaseAction_UrlName();
+        return "performance-signature";
     }
 
     public String getDisplayName() {
-        return Messages.PerfSigBuildAction_DisplayName();
+        return "Performance Signature";
     }
 
     public String getIconFileName() {
