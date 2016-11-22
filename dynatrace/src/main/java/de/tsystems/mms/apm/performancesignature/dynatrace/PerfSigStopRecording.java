@@ -97,7 +97,7 @@ public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
         if (StringUtils.isBlank(sessionName)) {
             throw new RESTErrorException(Messages.PerfSigStopRecording_InternalError());
         }
-        logger.println(String.format(Messages.PerfSigStopRecording_StoppedSessionRecording(), pair.getProfile(), sessionName));
+        logger.println(Messages.PerfSigStopRecording_StoppedSessionRecording(pair.getProfile(), sessionName));
 
         if (getReanalyzeSession()) {
             logger.println(Messages.PerfSigStopRecording_ReanalyzeSession());

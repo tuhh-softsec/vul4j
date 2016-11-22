@@ -82,7 +82,7 @@ public class PerfSigThreadDump extends Builder implements SimpleBuildStep {
         List<Agent> agents = connection.getAgents();
         for (Agent agent : agents) {
             if (agent.getName().equals(this.agent) && agent.getSystemProfile().equals(pair.getProfile()) && agent.getHost().equals(this.host)) {
-                logger.println(String.format(Messages.PerfSigThreadDump_CreatingThreadDump(), agent.getSystemProfile(), agent.getName(), agent.getHost(), agent.getProcessId()));
+                logger.println(Messages.PerfSigThreadDump_CreatingThreadDump(agent.getSystemProfile(), agent.getName(), agent.getHost(), agent.getProcessId()));
 
                 String threadDump = connection.threadDump(agent.getName(), agent.getHost(), agent.getProcessId(), getLockSession());
                 if (StringUtils.isBlank(threadDump)) {
@@ -103,7 +103,7 @@ public class PerfSigThreadDump extends Builder implements SimpleBuildStep {
                 }
             }
         }
-        throw new AbortException(String.format(Messages.PerfSigThreadDump_AgentNotConnected(), agent));
+        throw new AbortException(Messages.PerfSigThreadDump_AgentNotConnected(agent));
     }
 
     public String getDynatraceProfile() {

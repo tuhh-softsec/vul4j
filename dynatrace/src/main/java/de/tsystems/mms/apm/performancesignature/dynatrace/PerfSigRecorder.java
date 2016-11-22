@@ -87,7 +87,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
         }
 
         if (serverConfiguration.getDelay() != 0) {
-            logger.println(String.format(Messages.PerfSigRecorder_SleepingDelay(), serverConfiguration.getDelay()));
+            logger.println(Messages.PerfSigRecorder_SleepingDelay(serverConfiguration.getDelay()));
             Thread.sleep(serverConfiguration.getDelay() * 1000);
         }
 
@@ -114,7 +114,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
                 previousRun = previousCompletedRun;
             }
             comparisonBuildNumber = previousRun.getNumber();
-            logger.println(String.format(Messages.PerfSigRecorder_LastSuccessfulBuild(), comparisonBuildNumber));
+            logger.println(Messages.PerfSigRecorder_LastSuccessfulBuild(comparisonBuildNumber));
         } else {
             logger.println(Messages.PerfSigRecorder_NoComparisonPossible());
         }
@@ -123,7 +123,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
             if (!configurationTestCase.validate()) {
                 throw new AbortException(Messages.PerfSigRecorder_TestCaseValidationError());
             }
-            logger.println(String.format(Messages.PerfSigRecorder_ConnectionSuccessful(), configurationTestCase.getName()));
+            logger.println(Messages.PerfSigRecorder_ConnectionSuccessful(configurationTestCase.getName()));
 
             final PerfSigEnvInvisAction buildEnvVars = getBuildEnvVars(run, configurationTestCase.getName());
             if (buildEnvVars != null) {
@@ -144,15 +144,15 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
             while ((!validateSessionName(sessionName)) && (retryCount < serverConfiguration.getRetryCount())) {
                 retryCount++;
                 availableSessions = connection.getSessions();
-                logger.println(String.format(Messages.PerfSigRecorder_WaitingForSession(), retryCount, serverConfiguration.getRetryCount()));
+                logger.println(Messages.PerfSigRecorder_WaitingForSession(retryCount, serverConfiguration.getRetryCount()));
                 Thread.sleep(10000);
             }
 
             if (!validateSessionName(sessionName)) {
-                throw new RESTErrorException(String.format(Messages.PerfSigRecorder_SessionNotAvailable(), sessionName));
+                throw new RESTErrorException(Messages.PerfSigRecorder_SessionNotAvailable(sessionName));
             }
             if (comparisonBuildNumber != 0 && !validateSessionName(comparisonSessionName)) {
-                logger.println(String.format(Messages.PerfSigRecorder_ComparisonNotPossible(), comparisonSessionName));
+                logger.println(Messages.PerfSigRecorder_ComparisonNotPossible(comparisonSessionName));
             }
 
             for (Dashboard singleDashboard : configurationTestCase.getSingleDashboards()) {

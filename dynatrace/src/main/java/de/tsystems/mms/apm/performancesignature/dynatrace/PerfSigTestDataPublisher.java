@@ -82,7 +82,7 @@ public class PerfSigTestDataPublisher extends TestDataPublisher {
                     throw new RESTErrorException(Messages.PerfSigRecorder_XMLReportError());
                 } else {
                     testRuns.add(testRun);
-                    logger.println(String.format(Messages.PerfSigRecorder_XMLReportResults(), testRun.getTestResults().size(), " " + testRun.getTestRunID()));
+                    logger.println(Messages.PerfSigTestDataPublisher_XMLReportResults(testRun.getTestResults().size(), " " + testRun.getTestRunID()));
                 }
             }
         }

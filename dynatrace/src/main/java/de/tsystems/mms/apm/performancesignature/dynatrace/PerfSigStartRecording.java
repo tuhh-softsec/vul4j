@@ -108,17 +108,16 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
             } else throw e;
         }
         if (result != null && result.contains(sessionName)) {
-            logger.println(String.format(Messages.PerfSigStartRecording_StartedSessionRecording(), pair.getProfile(), sessionName));
+            logger.println(Messages.PerfSigStartRecording_StartedSessionRecording(pair.getProfile(), sessionName));
         } else {
-            throw new RESTErrorException(String.format(Messages.PerfSigStartRecording_SessionRecordingError(), pair.getProfile()));
+            throw new RESTErrorException(Messages.PerfSigStartRecording_SessionRecordingError(pair.getProfile()));
         }
 
         logger.println(Messages.PerfSigStartRecording_RegisteringTestRun());
         String testRunId = connection.registerTestRun(run.getNumber());
         if (testRunId != null) {
-            logger.println(String.format(Messages.PerfSigStartRecording_StartedTestRun(), pair.getProfile(), testRunId));
-            logger.println(String.format(Messages.PerfSigStartRecording_RegisteredTestRunId(),
-                    testRunId, PerfSigEnvContributor.TESTRUN_ID_KEY, PerfSigEnvContributor.SESSIONCOUNT));
+            logger.println(Messages.PerfSigStartRecording_StartedTestRun(pair.getProfile(), testRunId));
+            logger.println(Messages.PerfSigStartRecording_RegisteredTestRunId(testRunId, PerfSigEnvContributor.TESTRUN_ID_KEY, PerfSigEnvContributor.SESSIONCOUNT));
         } else {
             logger.println(Messages.PerfSigStartRecording_CouldNotRegisterTestRun());
         }

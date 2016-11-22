@@ -79,7 +79,7 @@ public class PerfSigMemoryDump extends Builder implements SimpleBuildStep {
 
         for (Agent agent : agents) {
             if (agent.getName().equals(this.agent) && agent.getSystemProfile().equals(pair.getProfile()) && agent.getHost().equals(this.host)) {
-                logger.println(String.format(Messages.PerfSigMemoryDump_CreatingMemoryDump(), agent.getSystemProfile(), agent.getName(), agent.getHost(), agent.getProcessId()));
+                logger.println(Messages.PerfSigMemoryDump_CreatingMemoryDump(agent.getSystemProfile(), agent.getName(), agent.getHost(), agent.getProcessId()));
 
                 String memoryDump = connection.memoryDump(agent.getName(), agent.getHost(), agent.getProcessId(), getType(),
                         this.lockSession, this.captureStrings, this.capturePrimitives, this.autoPostProcess, this.dogc);
@@ -94,14 +94,14 @@ public class PerfSigMemoryDump extends Builder implements SimpleBuildStep {
                     dumpFinished = connection.memoryDumpStatus(memoryDump).isResultValueTrue();
                 }
                 if (dumpFinished) {
-                    logger.println(String.format(Messages.PerfSigMemoryDump_SuccessfullyCreatedMemoryDump(), agent.getName()));
+                    logger.println(Messages.PerfSigMemoryDump_SuccessfullyCreatedMemoryDump(agent.getName()));
                     return;
                 } else {
-                    throw new RESTErrorException("timeout raised");
+                    throw new RESTErrorException(Messages.PerfSigStopRecording_TimeoutRaised());
                 }
             }
         }
-        throw new AbortException(String.format(Messages.PerfSigMemoryDump_AgentNotConnected(), agent));
+        throw new AbortException(Messages.PerfSigMemoryDump_AgentNotConnected(agent));
     }
 
     public String getDynatraceProfile() {
