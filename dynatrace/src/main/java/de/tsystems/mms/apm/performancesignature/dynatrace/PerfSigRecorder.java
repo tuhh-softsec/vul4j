@@ -159,7 +159,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
                 singleFilename = "Singlereport_" + sessionName + "_" + singleDashboard.getName() + ".pdf";
                 logger.println(Messages.PerfSigRecorder_GettingPDFReport() + " " + singleFilename);
                 boolean singleResult = connection.getPDFReport(sessionName, null, singleDashboard.getName(),
-                        new File(PerfSigUIUtils.getReportDirectory(run), File.separator + singleFilename));
+                        new FilePath(PerfSigUIUtils.getReportDirectory(run), File.separator + singleFilename));
                 if (!singleResult) {
                     throw new RESTErrorException(Messages.PerfSigRecorder_SingleReportError());
                 }
@@ -170,7 +170,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
                             buildNumber + "_" + comparisonBuildNumber + "_") + "_" + comparisonDashboard.getName() + ".pdf";
                     logger.println(Messages.PerfSigRecorder_GettingPDFReport() + " " + comparisonFilename);
                     boolean comparisonResult = connection.getPDFReport(sessionName, comparisonSessionName, comparisonDashboard.getName(),
-                            new File(PerfSigUIUtils.getReportDirectory(run), File.separator + comparisonFilename));
+                            new FilePath(PerfSigUIUtils.getReportDirectory(run), File.separator + comparisonFilename));
                     if (!comparisonResult) {
                         throw new RESTErrorException(Messages.PerfSigRecorder_ComparisonReportError());
                     }
@@ -191,7 +191,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
             }
 
             if (exportSessions) {
-                boolean exportedSession = connection.downloadSession(sessionName, new File(PerfSigUIUtils.getReportDirectory(run) + File.separator + sessionName + ".dts"));
+                boolean exportedSession = connection.downloadSession(sessionName, new FilePath(PerfSigUIUtils.getReportDirectory(run), sessionName + ".dts"));
                 if (!exportedSession) {
                     throw new RESTErrorException(Messages.PerfSigRecorder_SessionDownloadError());
                 } else {

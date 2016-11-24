@@ -29,6 +29,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.commons.lang.CharEncoding;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -52,18 +53,16 @@ public final class PerfSigUIUtils {
         return bd;
     }
 
-    public static File getReportDirectory(final Run<?, ?> run) throws IOException {
-        File reportDirectory = new File(run.getRootDir(), "performance-signature");
+    public static FilePath getReportDirectory(final Run<?, ?> run) throws IOException, InterruptedException {
+        FilePath reportDirectory = new FilePath(new File(run.getRootDir(), "performance-signature"));
         if (!reportDirectory.exists()) {
-            if (!reportDirectory.mkdirs()) {
-                throw new IOException(Messages.PerfSigUIUtils_FailedToCreateReportDir());
-            }
+            reportDirectory.mkdirs();
         }
         return reportDirectory;
     }
 
     public static List<FilePath> getDownloadFiles(final String testCase, final Run<?, ?> build) throws IOException, InterruptedException {
-        FilePath filePath = new FilePath(PerfSigUIUtils.getReportDirectory(build));
+        FilePath filePath = PerfSigUIUtils.getReportDirectory(build);
         return filePath.list(new RegexFileFilter(testCase));
     }
 
@@ -178,5 +177,13 @@ public final class PerfSigUIUtils {
                     break;
             }
         }
+    }
+
+    public static boolean checkNotNullOrEmpty(final String string) {
+        return StringUtils.isNotBlank(string);
+    }
+
+    public static boolean checkNotEmptyAndIsNumber(final String number) {
+        return StringUtils.isNotBlank(number) && NumberUtils.isNumber(number);
     }
 }

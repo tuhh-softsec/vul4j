@@ -24,16 +24,10 @@ import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import de.tsystems.mms.apm.performancesignature.viewer.ViewerGlobalConfiguration;
 import de.tsystems.mms.apm.performancesignature.viewer.model.CredJobPair;
 import de.tsystems.mms.apm.performancesignature.viewer.model.JenkinsServerConfiguration;
-import hudson.FilePath;
-import hudson.model.Run;
 import hudson.security.ACL;
 import hudson.util.ListBoxModel;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -59,14 +53,6 @@ public final class ViewerUtils {
         return listBoxModel;
     }
 
-    public static FilePath getReportDirectory(final Run<?, ?> run) throws IOException {
-        File reportDirectory = new File(run.getRootDir(), Messages.PerfSigUtils_ReportDirectory());
-        if (!reportDirectory.exists()) {
-            if (!reportDirectory.mkdirs()) throw new IOException("failed to create report directory");
-        }
-        return new FilePath(reportDirectory);
-    }
-
     public static List<JenkinsServerConfiguration> getJenkinsConfigurations() {
         return ViewerGlobalConfiguration.get().getConfigurations();
     }
@@ -81,17 +67,10 @@ public final class ViewerUtils {
         return null;
     }
 
+    //duplicated method @PerfSigUtils
     public static UsernamePasswordCredentials getCredentials(final String credsId) {
         return (credsId == null) ? null : CredentialsMatchers.firstOrNull(
                 CredentialsProvider.lookupCredentials(UsernamePasswordCredentials.class, PerfSigUIUtils.getInstance(), ACL.SYSTEM,
                         Collections.<DomainRequirement>emptyList()), CredentialsMatchers.withId(credsId));
-    }
-
-    public static boolean checkNotNullOrEmpty(final String string) {
-        return StringUtils.isNotBlank(string);
-    }
-
-    public static boolean checkNotEmptyAndIsNumber(final String number) {
-        return StringUtils.isNotBlank(number) && NumberUtils.isNumber(number);
     }
 }

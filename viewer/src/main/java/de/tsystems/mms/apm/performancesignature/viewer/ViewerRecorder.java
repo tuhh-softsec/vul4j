@@ -63,12 +63,14 @@ public class ViewerRecorder extends Recorder implements SimpleBuildStep {
         PrintStream logger = listener.getLogger();
 
         JenkinsServerConfiguration serverConfiguration = ViewerUtils.getServerConfiguration(jenkinsJob);
-        if (serverConfiguration == null)
+        if (serverConfiguration == null) {
             throw new AbortException("failed to lookup Jenkins server configuration");
+        }
 
         CredJobPair pair = serverConfiguration.getCredJobPair(jenkinsJob);
-        if (pair == null)
+        if (pair == null) {
             throw new AbortException("failed to lookup Jenkins job");
+        }
 
         JenkinsServerConnection serverConnection = new JenkinsServerConnection(serverConfiguration, pair);
         if (!serverConnection.validateConnection()) {
@@ -90,7 +92,7 @@ public class ViewerRecorder extends Recorder implements SimpleBuildStep {
         }
 
         for (DashboardReport dashboardReport : dashboardReports) {
-            boolean exportedSession = serverConnection.downloadSession(buildNumber, ViewerUtils.getReportDirectory(run), dashboardReport.getName(), logger);
+            boolean exportedSession = serverConnection.downloadSession(buildNumber, PerfSigUIUtils.getReportDirectory(run), dashboardReport.getName(), logger);
             if (!exportedSession) {
                 logger.println(Messages.PerfSigRecorder_SessionDownloadError() + "for testcase: " + dashboardReport.getName());
             } else {
@@ -100,7 +102,7 @@ public class ViewerRecorder extends Recorder implements SimpleBuildStep {
             PerfSigUIUtils.handleIncidents(run, dashboardReport.getIncidents(), logger, nonFunctionalFailure);
         }
 
-        boolean exportedPDFReports = serverConnection.downloadPDFReports(buildNumber, ViewerUtils.getReportDirectory(run), logger);
+        boolean exportedPDFReports = serverConnection.downloadPDFReports(buildNumber, PerfSigUIUtils.getReportDirectory(run), logger);
         if (!exportedPDFReports) {
             logger.println("failed to download Dynatrace PDF reports");
         } else {

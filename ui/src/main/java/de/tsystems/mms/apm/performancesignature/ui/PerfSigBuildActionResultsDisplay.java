@@ -232,7 +232,7 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
         String testCase = request.getParameter("testCase");
         if (StringUtils.isBlank(testCase)) testCase = "";
 
-        FilePath reportDir = new FilePath(PerfSigUIUtils.getReportDirectory(getBuild()));
+        FilePath reportDir = PerfSigUIUtils.getReportDirectory(getBuild());
         List<FilePath> files = reportDir.list(new RegexFileFilter(type + ".*" + testCase + ".*.pdf"));
         List<String> fileNames = new ArrayList<String>();
         for (FilePath fp : files) {
@@ -253,7 +253,7 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
         } catch (NumberFormatException ignored) {
         }
 
-        FilePath filePath = new FilePath(PerfSigUIUtils.getReportDirectory(getBuild()));
+        FilePath filePath = PerfSigUIUtils.getReportDirectory(getBuild());
         String extension = StringUtils.isBlank(type) ? ".dts" : ".pdf";
         List<FilePath> files = filePath.list(new RegexFileFilter(type + ".*" + testCase + ".*" + extension));
         if (files.isEmpty()) {

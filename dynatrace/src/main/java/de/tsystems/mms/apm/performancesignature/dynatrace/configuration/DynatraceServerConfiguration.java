@@ -16,7 +16,7 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace.configuration;
 
-import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import hudson.Extension;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
@@ -115,7 +115,7 @@ public class DynatraceServerConfiguration extends AbstractDescribableImpl<Dynatr
 
         public FormValidation doCheckHost(@QueryParameter final String host) {
             FormValidation validationResult;
-            if (PerfSigUtils.checkNotNullOrEmpty(host)) {
+            if (PerfSigUIUtils.checkNotNullOrEmpty(host)) {
                 validationResult = FormValidation.ok();
             } else {
                 validationResult = FormValidation.error(Messages.PerfSigRecorder_DTHostNotValid());
@@ -125,7 +125,7 @@ public class DynatraceServerConfiguration extends AbstractDescribableImpl<Dynatr
 
         public FormValidation doCheckPort(@QueryParameter final String port) {
             FormValidation validationResult;
-            if (PerfSigUtils.checkNotEmptyAndIsNumber(port)) {
+            if (PerfSigUIUtils.checkNotEmptyAndIsNumber(port)) {
                 validationResult = FormValidation.ok();
             } else {
                 validationResult = FormValidation.error(Messages.PerfSigRecorder_DTPortNotValid());
@@ -135,7 +135,7 @@ public class DynatraceServerConfiguration extends AbstractDescribableImpl<Dynatr
 
         public FormValidation doCheckDelay(@QueryParameter final String delay) {
             FormValidation validationResult;
-            if (PerfSigUtils.checkNotEmptyAndIsNumber(delay)) {
+            if (PerfSigUIUtils.checkNotEmptyAndIsNumber(delay)) {
                 validationResult = FormValidation.ok();
             } else {
                 validationResult = FormValidation.error(Messages.PerfSigRecorder_DelayNotValid());
@@ -145,7 +145,7 @@ public class DynatraceServerConfiguration extends AbstractDescribableImpl<Dynatr
 
         public FormValidation doCheckRetryCount(@QueryParameter final String retryCount) {
             FormValidation validationResult;
-            if (PerfSigUtils.checkNotEmptyAndIsNumber(retryCount)) {
+            if (PerfSigUIUtils.checkNotEmptyAndIsNumber(retryCount)) {
                 validationResult = FormValidation.ok();
             } else {
                 validationResult = FormValidation.error(Messages.PerfSigRecorder_RetryCountNotValid());
