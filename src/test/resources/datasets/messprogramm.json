@@ -10,6 +10,7 @@
     "mstId": "06010",
     "laborMstId": "06010",
     "name": "Test 1",
+    "mplId": null,
     "ortId": null,
     "probeKommentar": null,
     "probeNehmerId": null,
