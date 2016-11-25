@@ -64,17 +64,17 @@ public class ViewerRecorder extends Recorder implements SimpleBuildStep {
 
         JenkinsServerConfiguration serverConfiguration = ViewerUtils.getServerConfiguration(jenkinsJob);
         if (serverConfiguration == null) {
-            throw new AbortException("failed to lookup Jenkins server configuration");
+            throw new AbortException(Messages.ViewerRecorder_FailedToLookupServer());
         }
 
         CredJobPair pair = serverConfiguration.getCredJobPair(jenkinsJob);
         if (pair == null) {
-            throw new AbortException("failed to lookup Jenkins job");
+            throw new AbortException(Messages.ViewerRecorder_FailedToLookupJob());
         }
 
         JenkinsServerConnection serverConnection = new JenkinsServerConnection(serverConfiguration, pair);
         if (!serverConnection.validateConnection()) {
-            throw new RESTErrorException(Messages.PerfSigRecorder_DTConnectionError());
+            throw new RESTErrorException(Messages.ViewerRecorder_ConnectionError());
         }
 
         ViewerEnvInvisAction envInvisAction = run.getAction(ViewerEnvInvisAction.class);
@@ -88,15 +88,15 @@ public class ViewerRecorder extends Recorder implements SimpleBuildStep {
         logger.println("parsing xml data from job " + serverConnection.getJenkinsJob().getName() + " #" + buildNumber);
         final List<DashboardReport> dashboardReports = serverConnection.getDashboardReportsFromXML(buildNumber);
         if (dashboardReports == null) {
-            throw new RESTErrorException(Messages.PerfSigRecorder_XMLReportError());
+            throw new RESTErrorException(Messages.ViewerRecorder_XMLReportError());
         }
 
         for (DashboardReport dashboardReport : dashboardReports) {
             boolean exportedSession = serverConnection.downloadSession(buildNumber, PerfSigUIUtils.getReportDirectory(run), dashboardReport.getName(), logger);
             if (!exportedSession) {
-                logger.println(Messages.PerfSigRecorder_SessionDownloadError() + "for testcase: " + dashboardReport.getName());
+                logger.println(Messages.ViewerRecorder_SessionDownloadError(dashboardReport.getName()));
             } else {
-                logger.println(Messages.PerfSigRecorder_SessionDownloadSuccessful() + " for testcase " + dashboardReport.getName());
+                logger.println(Messages.ViewerRecorder_SessionDownloadSuccessful(dashboardReport.getName()));
             }
 
             PerfSigUIUtils.handleIncidents(run, dashboardReport.getIncidents(), logger, nonFunctionalFailure);
@@ -104,9 +104,9 @@ public class ViewerRecorder extends Recorder implements SimpleBuildStep {
 
         boolean exportedPDFReports = serverConnection.downloadPDFReports(buildNumber, PerfSigUIUtils.getReportDirectory(run), logger);
         if (!exportedPDFReports) {
-            logger.println("failed to download Dynatrace PDF reports");
+            logger.println(Messages.ViewerRecorder_ReportDownloadError());
         } else {
-            logger.println("PDF Reports successfully downloaded");
+            logger.println(Messages.ViewerRecorder_ReportDownloadSuccessful());
         }
 
         PerfSigBuildAction action = new PerfSigBuildAction(dashboardReports);
@@ -158,7 +158,7 @@ public class ViewerRecorder extends Recorder implements SimpleBuildStep {
         }
 
         public String getDisplayName() {
-            return Messages.PerfSigRecorder_DisplayName();
+            return Messages.ViewerRecorder_DisplayName();
         }
     }
 }

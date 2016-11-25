@@ -57,16 +57,18 @@ public class ViewerWaitForJob extends Builder implements SimpleBuildStep {
         final PrintStream logger = listener.getLogger();
 
         JenkinsServerConfiguration serverConfiguration = ViewerUtils.getServerConfiguration(jenkinsJob);
-        if (serverConfiguration == null)
-            throw new AbortException("failed to lookup Jenkins server configuration");
+        if (serverConfiguration == null) {
+            throw new AbortException(Messages.ViewerRecorder_FailedToLookupServer());
+        }
 
         CredJobPair pair = serverConfiguration.getCredJobPair(jenkinsJob);
-        if (pair == null)
-            throw new AbortException("failed to lookup Jenkins job");
+        if (pair == null) {
+            throw new AbortException(Messages.ViewerRecorder_FailedToLookupJob());
+        }
 
         JenkinsServerConnection serverConnection = new JenkinsServerConnection(serverConfiguration, pair);
         if (!serverConnection.validateConnection()) {
-            throw new RESTErrorException(Messages.PerfSigRecorder_DTConnectionError());
+            throw new RESTErrorException(Messages.ViewerRecorder_ConnectionError());
         }
 
         Job perfSigJob = serverConnection.getJenkinsJob();
@@ -85,7 +87,7 @@ public class ViewerWaitForJob extends Builder implements SimpleBuildStep {
         }
 
         Build build = perfSigJob.details().getBuildByNumber(buildNumber);
-        logger.println("waiting for job " + perfSigJob.getName() + " #" + build.getNumber() + " to finish ...");
+        logger.println(Messages.ViewerWaitForJob_WaitingForJob(perfSigJob.getName(), build.getNumber()));
 
         if (build.details().isBuilding()) {
             boolean buildFinished = build.details().isBuilding();
@@ -94,14 +96,14 @@ public class ViewerWaitForJob extends Builder implements SimpleBuildStep {
                 buildFinished = build.details().isBuilding();
             }
         }
-        logger.println("Jenkins job finished ...");
+        logger.println(Messages.ViewerWaitForJob_JenkinsJobFinished());
         BuildResult buildResult = build.details().getResult();
 
-        logger.println("Jenkins job status: " + buildResult);
+        logger.println(Messages.ViewerWaitForJob_JenkinsJobStatus(buildResult));
         if (!buildResult.equals(BuildResult.SUCCESS) && !buildResult.equals(BuildResult.UNSTABLE)) {
             String output = build.details().getConsoleOutputText();
             logger.println(output.substring(StringUtils.lastOrdinalIndexOf(output, "\n", 5) + 1)); //get the last 5 lines of console output
-            throw new AbortException("jenkins job failed");
+            throw new AbortException(Messages.ViewerWaitForJob_JenkinsJobFailed());
         }
     }
 
@@ -121,7 +123,7 @@ public class ViewerWaitForJob extends Builder implements SimpleBuildStep {
         }
 
         public String getDisplayName() {
-            return "Wait for Jenkins Job till finished";
+            return Messages.ViewerWaitForJob_DisplayName();
         }
     }
 }
