@@ -71,7 +71,7 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
     }
 
     public String getDisplayName() {
-        return "Performance Signature results";
+        return Messages.PerfSigBuildActionResultsDisplay_DisplayName();
     }
 
     public Class getPerfSigUIUtils() {

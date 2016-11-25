@@ -86,8 +86,8 @@ public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
         String sessionName;
         if (timeframeStart != null) {
             Date timeframeStop = new Date();
-            logger.println(Messages.PerfSigStopRecording_TimeframeStart() + timeframeStart);
-            logger.println(Messages.PerfSigStopRecording_TimeframeStop() + timeframeStop);
+            logger.println(Messages.PerfSigStopRecording_TimeframeStart(timeframeStart));
+            logger.println(Messages.PerfSigStopRecording_TimeframeStop(timeframeStop));
             sessionName = connection.storePurePaths(buildEnvVars.getSessionName(), timeframeStart, timeframeStop,
                     PerfSigStartRecording.DescriptorImpl.defaultRecordingOption, PerfSigStartRecording.DescriptorImpl.defaultLockSession, false);
         } else {

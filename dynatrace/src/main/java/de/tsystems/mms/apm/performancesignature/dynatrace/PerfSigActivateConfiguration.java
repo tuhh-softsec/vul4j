@@ -74,15 +74,15 @@ public class PerfSigActivateConfiguration extends Builder implements SimpleBuild
         if (!result) {
             throw new CommandExecutionException(Messages.PerfSigActivateConfiguration_InternalError());
         }
-        logger.println(Messages.PerfSigActivateConfiguration_SuccessfullyActivated() + pair.getProfile());
+        logger.println(Messages.PerfSigActivateConfiguration_SuccessfullyActivated(pair.getProfile()));
 
         for (Agent agent : connection.getAgents()) {
             if (agent.getSystemProfile().equalsIgnoreCase(pair.getProfile())) {
                 boolean hotSensorPlacement = connection.hotSensorPlacement(agent.getAgentId());
                 if (hotSensorPlacement) {
-                    logger.println(Messages.PerfSigActivateConfiguration_HotSensorPlacementDone() + " " + agent.getName());
+                    logger.println(Messages.PerfSigActivateConfiguration_HotSensorPlacementDone(agent.getName()));
                 } else {
-                    logger.println(Messages.PerfSigActivateConfiguration_FailureActivation() + " " + agent.getName());
+                    logger.println(Messages.PerfSigActivateConfiguration_FailureActivation(agent.getName()));
                 }
             }
         }

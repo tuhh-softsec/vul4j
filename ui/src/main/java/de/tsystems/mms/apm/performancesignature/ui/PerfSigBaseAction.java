@@ -24,7 +24,7 @@ abstract class PerfSigBaseAction implements Action {
     }
 
     public String getDisplayName() {
-        return "Performance Signature";
+        return Messages.PerfSigBaseAction_DisplayName();
     }
 
     public String getIconFileName() {

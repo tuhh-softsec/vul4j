@@ -40,7 +40,6 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
 import javax.annotation.Nonnull;
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -159,7 +158,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
                 singleFilename = "Singlereport_" + sessionName + "_" + singleDashboard.getName() + ".pdf";
                 logger.println(Messages.PerfSigRecorder_GettingPDFReport() + " " + singleFilename);
                 boolean singleResult = connection.getPDFReport(sessionName, null, singleDashboard.getName(),
-                        new FilePath(PerfSigUIUtils.getReportDirectory(run), File.separator + singleFilename));
+                        new FilePath(PerfSigUIUtils.getReportDirectory(run), singleFilename));
                 if (!singleResult) {
                     throw new RESTErrorException(Messages.PerfSigRecorder_SingleReportError());
                 }
@@ -170,7 +169,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
                             buildNumber + "_" + comparisonBuildNumber + "_") + "_" + comparisonDashboard.getName() + ".pdf";
                     logger.println(Messages.PerfSigRecorder_GettingPDFReport() + " " + comparisonFilename);
                     boolean comparisonResult = connection.getPDFReport(sessionName, comparisonSessionName, comparisonDashboard.getName(),
-                            new FilePath(PerfSigUIUtils.getReportDirectory(run), File.separator + comparisonFilename));
+                            new FilePath(PerfSigUIUtils.getReportDirectory(run), comparisonFilename));
                     if (!comparisonResult) {
                         throw new RESTErrorException(Messages.PerfSigRecorder_ComparisonReportError());
                     }
