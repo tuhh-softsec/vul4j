@@ -149,26 +149,26 @@ CREATE TABLE staat (
     kda_id integer REFERENCES koordinaten_art
 );
 
-
 CREATE TABLE verwaltungseinheit (
-    id character varying(8) PRIMARY KEY,
-    bundesland character varying(8) NOT NULL,
-    kda_id integer REFERENCES koordinaten_art,
-    kreis character varying(8),
-    nuts character varying(10),
-    regbezirk character varying(8),
+    id character varying(8) NOT NULL PRIMARY KEY,
     bezeichnung character varying(80) NOT NULL,
-    is_bundesland character(1) NOT NULL,
-    is_gemeinde character(1) NOT NULL,
-    is_landkreis character(1) NOT NULL,
-    is_regbezirk character(1) NOT NULL,
-    koord_x_extern character varying(22),
-    koord_y_extern character varying(22),
+    regbezirk character varying(8),
+    kreis character varying(8),
+    bundesland character varying(8) NOT NULL,
+    is_gemeinde boolean DEFAULT false NOT NULL,
+    is_landkreis boolean DEFAULT false NOT NULL,
+    is_regbezirk boolean DEFAULT false NOT NULL,
+    is_bundesland boolean DEFAULT false NOT NULL,
     plz character varying(6),
-    longitude double precision,
-    latitude double precision
+    nuts character varying(10),
+    mittelpunkt public.geometry(Point)
 );
 
+CREATE TABLE verwaltungsgrenze (
+    id serial PRIMARY KEY,
+    gem_id character varying(8) NOT NULL,
+    shape public.geometry(MultiPolygon)
+);
 
 CREATE TABLE netz_betreiber (
     id character varying(2) PRIMARY KEY,
