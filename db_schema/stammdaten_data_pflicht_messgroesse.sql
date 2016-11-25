@@ -1,0 +1,159 @@
+\set ON_ERROR_STOP on
+
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.5.1
+-- Dumped by pg_dump version 9.5.0
+
+-- Started on 2016-03-31 11:38:13
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+SET search_path = stammdaten, pg_catalog;
+
+--
+-- TOC entry 4708 (class 0 OID 535805)
+-- Dependencies: 274
+-- Data for Name: pflicht_messgroesse; Type: TABLE DATA; Schema: stammdaten; Owner: lada
+--
+
+COPY pflicht_messgroesse (id, messgroesse_id, mmt_id, umw_id, datenbasis_id) FROM stdin;
+102	404	G1	A	2
+103	369	G1	A	2
+104	340	G1	A	2
+105	220	G1	A	2
+110	404	G1	F	2
+111	369	G1	F	2
+112	340	G1	F	2
+113	220	G1	F	2
+114	404	G1	G	2
+115	369	G1	G	2
+116	340	G1	G	2
+117	220	G1	G	2
+122	404	G1	L5	2
+123	369	G1	L5	2
+124	340	G1	L5	2
+125	220	G1	L5	2
+126	404	G1	N	2
+127	369	G1	N	2
+128	340	G1	N	2
+129	220	G1	N	2
+130	404	G1	Z	2
+131	369	G1	Z	2
+132	340	G1	Z	2
+133	220	G1	Z	2
+32	904	A2	A13	4
+33	904	A3	B2	4
+34	902	B3	B2	4
+35	68	G1	B3	4
+36	68	G1	F1	4
+37	1	BH	F1	4
+38	5	BC	F11	4
+59	68	G1	G4	4
+60	904	A2	G4	4
+61	1	BH	G4	4
+62	165	BS	G4	4
+39	68	G1	F2	4
+40	5	BC	F2	4
+41	68	G1	F3	4
+42	5	BC	F3	4
+43	1	BH	F3	4
+44	68	G1	F4	4
+45	165	BS	F4	4
+46	68	G1	F5	4
+47	5	BC	F51	4
+48	1	BH	F51	4
+49	5	BC	F52	4
+50	1	BH	F52	4
+51	165	BS	F5Z	4
+52	68	G1	G1	4
+53	904	A2	G11	4
+54	1	BH	G11	4
+55	68	G1	G21	4
+56	904	A2	G21	4
+57	1	BH	G21	4
+58	68	G1	G23	4
+63	68	G1	G5	4
+64	1	BH	G5	4
+65	165	BS	G5	4
+66	904	A2	G51	4
+67	904	A2	G53	4
+68	68	G1	GZ	4
+69	904	A2	GZ	4
+70	1	BH	GZ	4
+80	930	O2	L22	4
+83	68	G1	N11	4
+84	340	GI	N11	4
+85	165	BS	N11	4
+86	68	G1	N12	4
+87	340	GI	N12	4
+88	165	BS	N12	4
+89	68	G1	N2	4
+90	165	BS	N2	4
+91	68	G1	N31	4
+92	165	BS	N31	4
+93	68	G1	N4	4
+94	165	BS	N4	4
+95	68	G1	N55	4
+96	373	G1	N55	4
+97	68	G1	N61	4
+98	68	G1	N62	4
+99	68	G1	N7	4
+100	1	BH	N7	4
+101	165	BS	N7	4
+71	68	G1	I13	4
+72	5	BC	I13	4
+73	1	BH	I13	4
+76	928	D2	L21	4
+77	68	G1	L31	4
+78	904	A2	L31	4
+79	340	GI	L41	4
+81	68	G1	L5	4
+82	904	A2	L5	4
+1	28	G1	A	2
+2	68	G1	A	2
+3	373	G1	A	2
+4	28	G1	B	2
+5	68	G1	B	2
+6	373	G1	B	2
+7	28	G1	F	2
+8	68	G1	F	2
+9	373	G1	F	2
+10	28	G1	G	2
+11	68	G1	G	2
+12	373	G1	G	2
+13	28	G1	I	2
+14	68	G1	I	2
+15	373	G1	I	2
+16	2	G1	L3	2
+17	68	G1	L3	2
+18	373	G1	L3	2
+19	340	G1	L41	2
+20	28	G1	L5	2
+21	68	G1	L5	2
+22	373	G1	L5	2
+23	28	G1	N	2
+24	68	G1	N	2
+25	373	G1	N	2
+26	28	G1	Z	2
+27	68	G1	Z	2
+28	373	G1	Z	2
+29	369	G1	L3	2
+30	672	G1	L3	2
+31	673	G1	L3	2
+106	404	G1	B	2
+107	369	G1	B	2
+108	340	G1	B	2
+109	220	G1	B	2
+118	404	G1	I	2
+119	369	G1	I	2
+120	340	G1	I	2
+121	220	G1	I	2
+\.
