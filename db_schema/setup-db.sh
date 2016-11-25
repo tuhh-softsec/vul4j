@@ -72,6 +72,9 @@ psql $DB_CONNECT_STRING -d $DB_NAME --command \
             ON ALL TABLES IN SCHEMA stammdaten, land TO $ROLE_NAME;"
 
 if [ "$NO_DATA" != "true" ]; then
+    echo import stammdaten.verwaltungseinheit
+    psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_data_verwaltungseinheit.sql
+
     echo import stammdaten
     psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_data.sql
 
@@ -81,15 +84,22 @@ if [ "$NO_DATA" != "true" ]; then
     echo create user $ROLE_NAME
     psql $DB_CONNECT_STRING -d $DB_NAME --command "CREATE SCHEMA geo AUTHORIZATION $ROLE_NAME"
 
+    echo downlaod and import german administrative borders
     TS="0101"
-    cd /tmp
     if [ ! -f vg250_${TS}.utm32s.shape.ebenen.zip ]; then
         curl -O \
             http://sg.geodatenzentrum.de/web_download/vg/vg250_${TS}/utm32s/shape/vg250_${TS}.utm32s.shape.ebenen.zip
     fi
-    unzip vg250_${TS}.utm32s.shape.ebenen.zip "*VG250_GEM*"
-    cd vg250_${TS}.utm32s.shape.ebenen/vg250_ebenen/
-    shp2pgsql VG250_GEM geo.gem_utm | psql -q $DB_CONNECT_STRING -d $DB_NAME
-    cd /tmp
-    rm -rf vg250_${TS}.utm32s.shape.ebenen
+    unzip -u vg250_${TS}.utm32s.shape.ebenen.zip "*VG250_GEM*"
+#    cd vg250_${TS}.utm32s.shape.ebenen/vg250_ebenen/
+    shp2pgsql vg250_${TS}.utm32s.shape.ebenen/vg250_ebenen/VG250_GEM geo.gem_utm | psql -q $DB_CONNECT_STRING -d $DB_NAME
+#   rm -rf vg250_${TS}.utm32s.shape.ebenen
+
+    echo fille stammdaten.verwaltungsgrenze
+    psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_fill_verwaltungsgrenze.sql
+
+    if [ -f $DIR/lada_auth.sql ]; then
+        echo load private auth configuration
+        psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/lada_auth.sql
+    fi
 fi
