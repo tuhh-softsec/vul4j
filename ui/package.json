@@ -7,7 +7,7 @@
     "mvntest": "gulp test lint"
   },
   "devDependencies": {
-    "@jenkins-cd/js-builder": "latest",
+    "@jenkins-cd/js-builder": "0.0.48",
     "gulp": "^3.9.1",
     "minifyify": "^7.3.3"
   },
