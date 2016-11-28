@@ -79,7 +79,8 @@ public class PerfSigMemoryDump extends Builder implements SimpleBuildStep {
 
         for (Agent agent : agents) {
             if (agent.getName().equals(this.agent) && agent.getSystemProfile().equals(pair.getProfile()) && agent.getHost().equals(this.host)) {
-                logger.println(Messages.PerfSigMemoryDump_CreatingMemoryDump(agent.getSystemProfile(), agent.getName(), agent.getHost(), agent.getProcessId()));
+                logger.println(Messages.PerfSigMemoryDump_CreatingMemoryDump(agent.getSystemProfile(), agent.getName(), agent.getHost(),
+                        String.valueOf(agent.getProcessId())));
 
                 String memoryDump = connection.memoryDump(agent.getName(), agent.getHost(), agent.getProcessId(), getType(),
                         this.lockSession, this.captureStrings, this.capturePrimitives, this.autoPostProcess, this.dogc);
@@ -199,7 +200,7 @@ public class PerfSigMemoryDump extends Builder implements SimpleBuildStep {
             if (StringUtils.isNotBlank(host)) {
                 validationResult = FormValidation.ok();
             } else {
-                validationResult = FormValidation.error(Messages.PerfSigMemoryDump_AgentNotValid());
+                validationResult = FormValidation.error(Messages.PerfSigMemoryDump_HostNotValid());
             }
             return validationResult;
         }

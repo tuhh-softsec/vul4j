@@ -82,7 +82,8 @@ public class PerfSigThreadDump extends Builder implements SimpleBuildStep {
         List<Agent> agents = connection.getAgents();
         for (Agent agent : agents) {
             if (agent.getName().equals(this.agent) && agent.getSystemProfile().equals(pair.getProfile()) && agent.getHost().equals(this.host)) {
-                logger.println(Messages.PerfSigThreadDump_CreatingThreadDump(agent.getSystemProfile(), agent.getName(), agent.getHost(), agent.getProcessId()));
+                logger.println(Messages.PerfSigThreadDump_CreatingThreadDump(agent.getSystemProfile(), agent.getName(), agent.getHost(),
+                        String.valueOf(agent.getProcessId())));
 
                 String threadDump = connection.threadDump(agent.getName(), agent.getHost(), agent.getProcessId(), getLockSession());
                 if (StringUtils.isBlank(threadDump)) {
@@ -96,7 +97,7 @@ public class PerfSigThreadDump extends Builder implements SimpleBuildStep {
                     dumpFinished = connection.threadDumpStatus(threadDump).isResultValueTrue();
                 }
                 if (dumpFinished) {
-                    logger.println(Messages.PerfSigThreadDump_SuccessfullyCreatedThreadDump() + agent.getName());
+                    logger.println(Messages.PerfSigThreadDump_SuccessfullyCreatedThreadDump(agent.getName()));
                     return;
                 } else {
                     throw new RESTErrorException(Messages.PerfSigStopRecording_TimeoutRaised());
@@ -147,7 +148,7 @@ public class PerfSigThreadDump extends Builder implements SimpleBuildStep {
             if (StringUtils.isNotBlank(host)) {
                 validationResult = FormValidation.ok();
             } else {
-                validationResult = FormValidation.error(Messages.PerfSigThreadDump_AgentNotValid());
+                validationResult = FormValidation.error(Messages.PerfSigThreadDump_HostNotValid());
             }
             return validationResult;
         }

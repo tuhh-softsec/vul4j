@@ -81,7 +81,7 @@ public class ViewerStartJob extends Builder implements SimpleBuildStep {
 
         int buildNumber = perfSigJob.details().getLastBuild().getNumber();
         run.addAction(new ViewerEnvInvisAction(buildNumber));
-        logger.println(Messages.ViewerStartJob_JenkinsJobStarted(perfSigJob.getName(), buildNumber));
+        logger.println(Messages.ViewerStartJob_JenkinsJobStarted(perfSigJob.getName(), String.valueOf(buildNumber)));
     }
 
     public String getJenkinsJob() {

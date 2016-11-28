@@ -87,7 +87,7 @@ public class ViewerWaitForJob extends Builder implements SimpleBuildStep {
         }
 
         Build build = perfSigJob.details().getBuildByNumber(buildNumber);
-        logger.println(Messages.ViewerWaitForJob_WaitingForJob(perfSigJob.getName(), build.getNumber()));
+        logger.println(Messages.ViewerWaitForJob_WaitingForJob(perfSigJob.getName(), String.valueOf(build.getNumber())));
 
         if (build.details().isBuilding()) {
             boolean buildFinished = build.details().isBuilding();

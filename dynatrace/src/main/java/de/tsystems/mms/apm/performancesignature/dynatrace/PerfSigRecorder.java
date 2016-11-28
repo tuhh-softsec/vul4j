@@ -113,7 +113,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
                 previousRun = previousCompletedRun;
             }
             comparisonBuildNumber = previousRun.getNumber();
-            logger.println(Messages.PerfSigRecorder_LastSuccessfulBuild(comparisonBuildNumber));
+            logger.println(Messages.PerfSigRecorder_LastSuccessfulBuild(String.valueOf(comparisonBuildNumber)));
         } else {
             logger.println(Messages.PerfSigRecorder_NoComparisonPossible());
         }
