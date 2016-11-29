@@ -76,12 +76,47 @@ if [ "$NO_DATA" != "true" ]; then
     psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_data_verwaltungseinheit.sql
 
     echo import stammdaten
-    psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_data.sql
+    for file in \
+        stammdaten_data_netzbetreiber.sql \
+        stammdaten_data_mess_stelle.sql \
+        stammdaten_data_auth.sql \
+        stammdaten_data_mess_einheit.sql \
+        stammdaten_data_umwelt.sql \
+        stammdaten_data_auth_lst_umw.sql \
+        stammdaten_data_datenbasis.sql \
+        stammdaten_data_datensatz_erzeuger.sql \
+        stammdaten_data_deskriptor_umwelt.sql \
+        stammdaten_data_deskriptoren.sql \
+        stammdaten_data_koordinaten_art.sql \
+        stammdaten_data_messmethode.sql \
+        stammdaten_data_messgroesse.sql \
+        stammdaten_data_messgroessen_gruppe.sql \
+        stammdaten_data_ort_typ.sql \
+        stammdaten_data_staat.sql \
+        stammdaten_data_kta.sql \
+        stammdaten_data_ortszuordnung_typ.sql \
+        stammdaten_data_pflicht_messgroesse.sql \
+        stammdaten_data_proben_zusatz.sql \
+        stammdaten_data_probenart.sql \
+        stammdaten_data_messprogramm_transfer.sql \
+        stammdaten_data_ortszusatz.sql \
+        stammdaten_data_messprogramm_kategorie.sql \
+        stammdaten_data_ort.sql \
+        stammdaten_data_probenehmer.sql \
+        stammdaten_data_query.sql \
+        stammdaten_data_user_context.sql
+    do
+        echo ${file%.sql}
+        psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/$file
+    done
+
+    echo init sequences
+    psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_init_sequences.sql
 
     echo import lada test data
     psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/lada_data.sql
 
-    echo create user $ROLE_NAME
+    echo create schema geo
     psql $DB_CONNECT_STRING -d $DB_NAME --command "CREATE SCHEMA geo AUTHORIZATION $ROLE_NAME"
 
     echo downlaod and import german administrative borders

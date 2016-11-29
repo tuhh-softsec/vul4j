@@ -77,6 +77,9 @@ public class Messprogramm implements Serializable {
     @Column(name="ort_id")
     private Integer ortId;
 
+    @Column(name="mpl_id")
+    private Integer mplId;
+
     @Column(name="probe_kommentar")
     private String probeKommentar;
 
@@ -204,6 +207,14 @@ public class Messprogramm implements Serializable {
 
     public void setOrtId(Integer ortId) {
         this.ortId = ortId;
+    }
+
+    public Integer getMplId() {
+        return this.mplId;
+    }
+
+    public void setMplId(Integer mplId) {
+        this.mplId = mplId;
     }
 
     public String getProbeKommentar() {

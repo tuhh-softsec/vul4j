@@ -162,6 +162,7 @@ CREATE TABLE messprogramm (
     gueltig_von integer NOT NULL CHECK(gueltig_von BETWEEN 1 AND 365),
     gueltig_bis integer NOT NULL CHECK(gueltig_bis BETWEEN 1 AND 365),
     probe_nehmer_id integer REFERENCES stammdaten.probenehmer,
+    mpl_id integer REFERENCES stammdaten.messprogramm_kategorie,
     probe_kommentar character varying(80),
     letzte_aenderung timestamp without time zone DEFAULT now() NOT NULL,
     CHECK (probenintervall = 'J'
