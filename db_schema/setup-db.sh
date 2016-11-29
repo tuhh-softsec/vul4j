@@ -86,6 +86,7 @@ if [ "$NO_DATA" != "true" ]; then
 
     echo downlaod and import german administrative borders
     TS="0101"
+    cd /tmp
     if [ ! -f vg250_${TS}.utm32s.shape.ebenen.zip ]; then
         curl -O \
             http://sg.geodatenzentrum.de/web_download/vg/vg250_${TS}/utm32s/shape/vg250_${TS}.utm32s.shape.ebenen.zip
