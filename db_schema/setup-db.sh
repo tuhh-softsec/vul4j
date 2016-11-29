@@ -93,7 +93,7 @@ if [ "$NO_DATA" != "true" ]; then
     fi
     unzip -u vg250_${TS}.utm32s.shape.ebenen.zip "*VG250_GEM*"
 #    cd vg250_${TS}.utm32s.shape.ebenen/vg250_ebenen/
-    shp2pgsql vg250_${TS}.utm32s.shape.ebenen/vg250_ebenen/VG250_GEM geo.gem_utm | psql -q $DB_CONNECT_STRING -d $DB_NAME
+    shp2pgsql -s 25832:4326 vg250_${TS}.utm32s.shape.ebenen/vg250_ebenen/VG250_GEM geo.gem_utm | psql -q $DB_CONNECT_STRING -d $DB_NAME
 #   rm -rf vg250_${TS}.utm32s.shape.ebenen
 
     echo fille stammdaten.verwaltungsgrenze
@@ -104,3 +104,5 @@ if [ "$NO_DATA" != "true" ]; then
         psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/lada_auth.sql
     fi
 fi
+
+exec /opt/lada_sql/alter_owner.sh
