@@ -167,7 +167,7 @@ CREATE TABLE verwaltungseinheit (
 CREATE TABLE verwaltungsgrenze (
     id serial PRIMARY KEY,
     gem_id character varying(8) NOT NULL,
-    shape public.geometry(MultiPolygon)
+    shape public.geometry(MultiPolygon, 4326)
 );
 
 CREATE TABLE netz_betreiber (
@@ -235,26 +235,6 @@ CREATE TABLE datensatz_erzeuger (
     UNIQUE(datensatz_erzeuger_id, netzbetreiber_id)
 );
 CREATE TRIGGER letzte_aenderung_datensatz_erzeuger BEFORE UPDATE ON datensatz_erzeuger FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
-
-CREATE TABLE de_vg (
-    id serial PRIMARY KEY,
-    use double precision,
-    rs character varying(12),
-    gf double precision,
-    rau_rs character varying(12),
-    gen character varying(50),
-    des character varying(75),
-    isn double precision,
-    bemerk character varying(75),
-    nambild character varying(16),
-    ags character varying(12),
-    rs_alt character varying(20),
-    wirksamkei date,
-    debkg_id character varying(16),
-    length numeric,
-    shape_area numeric,
-    geom public.geometry(MultiPolygon,4326)
-);
 
 
 CREATE TABLE deskriptor_umwelt (

@@ -17,9 +17,9 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
 
 import de.intevation.lada.model.land.Ortszuordnung;
-import de.intevation.lada.model.stammdaten.DeVg;
 import de.intevation.lada.model.stammdaten.Ort;
 import de.intevation.lada.model.stammdaten.Verwaltungseinheit;
+import de.intevation.lada.model.stammdaten.Verwaltungsgrenze;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
@@ -65,11 +65,11 @@ public class CoordinatesInVE implements Rule {
             return violation;
         }
         Verwaltungseinheit ve = ((List<Verwaltungseinheit>)ver.getData()).get(0);
-        QueryBuilder<DeVg> vg =
-            new QueryBuilder<DeVg>(repository.entityManager("stamm"), DeVg.class);
+        QueryBuilder<Verwaltungsgrenze> vg =
+            new QueryBuilder<Verwaltungsgrenze>(repository.entityManager("stamm"), Verwaltungsgrenze.class);
         vg.and("ags", ve.getId());
         Response rvg = repository.filter(vg.getQuery(), "stamm");
-        List<DeVg> vgs = (List<DeVg>)rvg.getData();
+        List<Verwaltungsgrenze> vgs = (List<Verwaltungsgrenze>)rvg.getData();
         if (vgs == null || vgs.isEmpty()) {
             Violation violation = new Violation();
             violation.addWarning("verwaltungseinheit", 653);
@@ -81,8 +81,8 @@ public class CoordinatesInVE implements Rule {
         GeometryFactory gf = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), 4326);
         Point p = gf.createPoint(c);
         boolean hit = false;
-        for (DeVg singlevg : vgs) {
-            if(singlevg.getGeom().contains(p)) {
+        for (Verwaltungsgrenze singlevg : vgs) {
+            if(singlevg.getShape().contains(p)) {
                 hit = true;
             }
         }
