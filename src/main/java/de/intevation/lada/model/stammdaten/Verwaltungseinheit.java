@@ -6,6 +6,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import org.hibernate.annotations.Type;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vividsolutions.jts.geom.Point;
+
 
 /**
  * The persistent class for the verwaltungseinheit database table.
@@ -23,37 +28,28 @@ public class Verwaltungseinheit implements Serializable {
     private String bundesland;
 
     @Column(name="is_bundesland")
-    private String isBundesland;
+    private Boolean isBundesland;
 
     @Column(name="is_gemeinde")
-    private String isGemeinde;
+    private Boolean isGemeinde;
 
     @Column(name="is_landkreis")
-    private String isLandkreis;
+    private Boolean isLandkreis;
 
     @Column(name="is_regbezirk")
-    private String isRegbezirk;
-
-    @Column(name="kda_id")
-    private Integer kdaId;
-
-    @Column(name="koord_x_extern")
-    private String koordXExtern;
-
-    @Column(name="koord_y_extern")
-    private String koordYExtern;
+    private Boolean isRegbezirk;
 
     private String kreis;
-
-    private Double latitude;
-
-    private Double longitude;
 
     private String nuts;
 
     private String plz;
 
     private String regbezirk;
+
+    @Column(columnDefinition="geometry(Point, 4326)")
+    @Type(type = "org.hibernate.spatial.GeometryType")
+    private Point mittelpunkt;
 
     public Verwaltungseinheit() {
     }
@@ -82,60 +78,36 @@ public class Verwaltungseinheit implements Serializable {
         this.bundesland = bundesland;
     }
 
-    public String getIsBundesland() {
+    public Boolean getIsBundesland() {
         return this.isBundesland;
     }
 
-    public void setIsBundesland(String isBundesland) {
+    public void setIsBundesland(Boolean isBundesland) {
         this.isBundesland = isBundesland;
     }
 
-    public String getIsGemeinde() {
+    public Boolean getIsGemeinde() {
         return this.isGemeinde;
     }
 
-    public void setIsGemeinde(String isGemeinde) {
+    public void setIsGemeinde(Boolean isGemeinde) {
         this.isGemeinde = isGemeinde;
     }
 
-    public String getIsLandkreis() {
+    public Boolean getIsLandkreis() {
         return this.isLandkreis;
     }
 
-    public void setIsLandkreis(String isLandkreis) {
+    public void setIsLandkreis(Boolean isLandkreis) {
         this.isLandkreis = isLandkreis;
     }
 
-    public String getIsRegbezirk() {
+    public Boolean getIsRegbezirk() {
         return this.isRegbezirk;
     }
 
-    public void setIsRegbezirk(String isRegbezirk) {
+    public void setIsRegbezirk(Boolean isRegbezirk) {
         this.isRegbezirk = isRegbezirk;
-    }
-
-    public Integer getKdaId() {
-        return this.kdaId;
-    }
-
-    public void setKdaId(Integer kdaId) {
-        this.kdaId = kdaId;
-    }
-
-    public String getKoordXExtern() {
-        return this.koordXExtern;
-    }
-
-    public void setKoordXExtern(String koordXExtern) {
-        this.koordXExtern = koordXExtern;
-    }
-
-    public String getKoordYExtern() {
-        return this.koordYExtern;
-    }
-
-    public void setKoordYExtern(String koordYExtern) {
-        this.koordYExtern = koordYExtern;
     }
 
     public String getKreis() {
@@ -147,19 +119,11 @@ public class Verwaltungseinheit implements Serializable {
     }
 
     public Double getLatitude() {
-        return this.latitude;
-    }
-
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
+        return this.mittelpunkt.getY();
     }
 
     public Double getLongitude() {
-        return this.longitude;
-    }
-
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
+        return this.mittelpunkt.getX();
     }
 
     public String getNuts() {
@@ -184,6 +148,16 @@ public class Verwaltungseinheit implements Serializable {
 
     public void setRegbezirk(String regbezirk) {
         this.regbezirk = regbezirk;
+    }
+
+    @JsonIgnore
+    public Point getMittelpunkt() {
+        return mittelpunkt;
+    }
+
+    @JsonIgnore
+    public void setMittelpunkt(Point mittelpunkt) {
+        this.mittelpunkt = mittelpunkt;
     }
 
 }

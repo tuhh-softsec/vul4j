@@ -17,6 +17,7 @@ import javax.management.modelmbean.InvalidTargetObjectTypeException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import de.intevation.lada.factory.OrtFactory;
 import de.intevation.lada.factory.ProbeFactory;
 import de.intevation.lada.importer.Identified;
 import de.intevation.lada.importer.Identifier;
@@ -93,6 +94,8 @@ public class LafObjectMapper {
 
     @Inject
     private ProbeFactory factory;
+
+    @Inject OrtFactory ortFactory;
 
     private Map<String, List<ReportItem>> errors;
     private Map<String, List<ReportItem>> warnings;
@@ -629,9 +632,6 @@ public class LafObjectMapper {
     private Ort findOrCreateOrt(Map<String, String> attributes, String type, Probe probe) {
         // If laf contains coordinates, find a ort with matching coordinates or
         // create one.
-        for (Entry<String, String> entry : attributes.entrySet()) {
-            logger.debug(entry.getKey() + ": " + entry.getValue());
-        }
         if ((attributes.get(type + "KOORDINATEN_ART") != null ||
              attributes.get(type + "KOORDINATEN_ART_S") != null) &&
             attributes.get(type + "KOORDINATEN_X") != null &&
@@ -659,16 +659,11 @@ public class LafObjectMapper {
                     currentErrors.add(err);
                     return null;
                 }
-                logger.debug("kda: " + arten.get(0).getId());
                 builder.and("kdaId", arten.get(0).getId());
             }
             builder.and("koordXExtern", attributes.get(type + "KOORDINATEN_X"));
             builder.and("koordYExtern", attributes.get(type + "KOORDINATEN_Y"));
             List<Ort> orte = repository.filterPlain(builder.getQuery(), "stamm");
-            logger.debug(attributes.get(type + "KOORDINATEN_ART_S"));
-            logger.debug(attributes.get(type + "KOORDINATEN_X"));
-            logger.debug(attributes.get(type + "KOORDINATEN_Y"));
-            logger.debug(orte.size());
             if (orte != null && orte.size() > 0) {
                 return orte.get(0);
             }
@@ -761,6 +756,7 @@ public class LafObjectMapper {
         else if (attributes.get(type + "GEMEINDESCHLUESSEL") != null) {
             gemId = attributes.get(type + "GEMEINDESCHLUESSEL");
         }
+
         if (gemId != null) {
             ort.setGemId(gemId);
             hasGem = true;
@@ -775,9 +771,9 @@ public class LafObjectMapper {
             }
             if (!hasKoord) {
                 ort.setMpArt("V");
-                ort.setKdaId(v.getKdaId());
-                ort.setKoordYExtern(v.getKoordYExtern());
-                ort.setKoordXExtern(v.getKoordXExtern());
+                ort.setKdaId(4);
+                ort.setKoordYExtern(String.valueOf(v.getMittelpunkt().getY()));
+                ort.setKoordXExtern(String.valueOf(v.getMittelpunkt().getX()));
             }
             ort.setKurztext(v.getBezeichnung());
             ort.setLangtext(v.getBezeichnung());
@@ -838,6 +834,14 @@ public class LafObjectMapper {
             if (zusatz != null) {
                 ort.setOzId(zusatz.getOzsId());
             }
+        }
+        ortFactory.transformCoordinates(ort);
+        if (hasKoord && !hasGem) {
+            logger.debug("find Verwaltungseinheit");
+            ortFactory.findVerwaltungseinheit(ort);
+        }
+        if (ortFactory.hasErrors()) {
+            currentErrors.addAll(ortFactory.getErrors());
         }
 
         repository.create(ort, "stamm");

@@ -8,8 +8,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import org.hibernate.annotations.Type;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vividsolutions.jts.geom.Point;
+
 
 
 /**
@@ -17,7 +23,7 @@ import javax.persistence.Transient;
  * 
  */
 @Entity
-@NamedQuery(name="Ort.findAll", query="SELECT o FROM Ort o")
+@Table(name="ort")
 public class Ort implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -51,12 +57,8 @@ public class Ort implements Serializable {
 
     private String langtext;
 
-    private Double latitude;
-
     @Column(name="letzte_aenderung")
     private Timestamp letzteAenderung;
-
-    private Double longitude;
 
     @Column(name="mp_art")
     private String mpArt;
@@ -89,6 +91,10 @@ public class Ort implements Serializable {
 
     @Column(name="kda_id")
     private Integer kdaId;
+
+    @Column(columnDefinition="geometry(Point, 4326)")
+    @Type(type = "org.hibernate.spatial.GeometryType")
+    private Point geom;
 
     @Transient
     private boolean readonly;
@@ -185,11 +191,7 @@ public class Ort implements Serializable {
     }
 
     public Double getLatitude() {
-        return this.latitude;
-    }
-
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
+        return this.geom.getY();
     }
 
     public Timestamp getLetzteAenderung() {
@@ -201,11 +203,7 @@ public class Ort implements Serializable {
     }
 
     public Double getLongitude() {
-        return this.longitude;
-    }
-
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
+        return this.geom.getX();
     }
 
     public String getMpArt() {
@@ -302,6 +300,16 @@ public class Ort implements Serializable {
 
     public void setKdaId(Integer kdaId) {
         this.kdaId = kdaId;
+    }
+
+    @JsonIgnore
+    public Point getGeom() {
+        return geom;
+    }
+
+    @JsonIgnore
+    public void setGeom(Point geom) {
+        this.geom = geom;
     }
 
     public boolean isReadonly() {
