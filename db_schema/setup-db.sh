@@ -139,5 +139,3 @@ if [ "$NO_DATA" != "true" ]; then
         psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/lada_auth.sql
     fi
 fi
-
-exec /opt/lada_sql/alter_owner.sh
