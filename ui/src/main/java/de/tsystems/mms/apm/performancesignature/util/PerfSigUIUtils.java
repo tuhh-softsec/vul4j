@@ -74,11 +74,14 @@ public final class PerfSigUIUtils {
     Change this in case of new Dashboardstuff
     Used for rewriting diagram titles from Time to WebService-Time etc.
     */
-    public static String generateTitle(final String measure, final String chartDashlet) {
-        if (StringUtils.deleteWhitespace(measure).equalsIgnoreCase(StringUtils.deleteWhitespace(chartDashlet)))
-            return chartDashlet;
-        else
-            return chartDashlet + " - " + measure;
+    public static String generateTitle(final String measure, final String chartDashlet, String aggregation) {
+        String chartDashletName;
+        if (StringUtils.deleteWhitespace(measure).equalsIgnoreCase(StringUtils.deleteWhitespace(chartDashlet))) {
+            chartDashletName = chartDashlet;
+        } else {
+            chartDashletName = chartDashlet + " - " + measure;
+        }
+        return chartDashletName + " (" + aggregation + ")";
     }
 
     public static List<ChartDashlet> sortChartDashletList(final List<ChartDashlet> list) {

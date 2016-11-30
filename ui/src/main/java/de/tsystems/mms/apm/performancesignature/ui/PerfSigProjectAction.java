@@ -166,7 +166,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             }
         }
 
-        String title = StringUtils.isBlank(customMeasureName) ? PerfSigUIUtils.generateTitle(measure, chartDashlet) : customMeasureName;
+        String title = StringUtils.isBlank(customMeasureName) ? PerfSigUIUtils.generateTitle(measure, chartDashlet, aggregation) : customMeasureName;
 
         final JFreeChart chart = ChartFactory.createBarChart(title, // title
                 Messages.PerfSigProjectAction_Build(), // category axis label

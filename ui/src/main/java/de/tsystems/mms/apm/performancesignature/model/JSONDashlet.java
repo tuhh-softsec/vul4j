@@ -233,7 +233,7 @@ public class JSONDashlet {
 
     public String generateDashletName() {
         if (StringUtils.isBlank(customName)) {
-            return PerfSigUIUtils.generateTitle(measure, chartDashlet);
+            return PerfSigUIUtils.generateTitle(measure, chartDashlet, aggregation);
         } else {
             return customName;
         }

@@ -165,7 +165,7 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
 
         JFreeChart chart;
         if (unit.equalsIgnoreCase("num")) {
-            chart = ChartFactory.createXYBarChart(PerfSigUIUtils.generateTitle(measure, chartDashlet), // title
+            chart = ChartFactory.createXYBarChart(PerfSigUIUtils.generateTitle(measure, chartDashlet, m.getAggregation()), // title
                     "time", // domain axis label
                     true,
                     unit,
@@ -176,7 +176,7 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
                     false // urls
             );
         } else {
-            chart = ChartFactory.createTimeSeriesChart(PerfSigUIUtils.generateTitle(measure, chartDashlet), // title
+            chart = ChartFactory.createTimeSeriesChart(PerfSigUIUtils.generateTitle(measure, chartDashlet, m.getAggregation()), // title
                     "time", // domain axis label
                     unit,
                     dataset, // data
