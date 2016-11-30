@@ -1,3 +1,5 @@
+SET search_path TO stammdaten;
+
 SELECT pg_catalog.setval('auth_id_seq', (SELECT max(id) FROM stammdaten.auth), true);
 
 SELECT pg_catalog.setval('auth_lst_umw_id_seq', (SELECT max(id) FROM auth_lst_umw) , true);
@@ -26,7 +28,7 @@ SELECT pg_catalog.setval('mess_einheit_id_seq', (SELECT max(id) FROM mess_einhei
 
 SELECT pg_catalog.setval('messgroesse_id_seq', (SELECT max(id) FROM messgroesse), true);
 
-SELECT pg_catalog.setval('messgroessen_gruppe_id_seq', (SELECT max(id) FROM messgreossen_gruppe), true);
+SELECT pg_catalog.setval('messgroessen_gruppe_id_seq', (SELECT max(id) FROM messgroessen_gruppe), true);
 
 SELECT pg_catalog.setval('messprogramm_kategorie_id_seq', (SELECT max(id) FROM messprogramm_kategorie), true);
 
@@ -38,7 +40,7 @@ SELECT pg_catalog.setval('probenart_id_seq', (SELECT max(id) FROM probenart), tr
 
 SELECT pg_catalog.setval('probenehmer_id_seq', (SELECT max(id) FROM probenehmer), true);
 
-SELECT pg_catalog.setval('query_id_seq', SELECT max(id) FROM query), true);
+SELECT pg_catalog.setval('query_id_seq', (SELECT max(id) FROM query), true);
 
 SELECT pg_catalog.setval('result_id_seq', (SELECT max(id) FROM result), true);
 
