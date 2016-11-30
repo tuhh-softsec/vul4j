@@ -65,24 +65,28 @@ public class PerfSigMemoryDump extends Builder implements SimpleBuildStep {
         PrintStream logger = listener.getLogger();
 
         DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
-        if (serverConfiguration == null)
-            throw new AbortException("failed to lookup Dynatrace server configuration");
+        if (serverConfiguration == null) {
+            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupServer());
+        }
 
         CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
-        if (pair == null)
-            throw new AbortException("failed to lookup Dynatrace server profile");
+        if (pair == null) {
+            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupProfile());
+        }
 
         final DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
         List<Agent> agents = connection.getAgents();
 
         for (Agent agent : agents) {
             if (agent.getName().equals(this.agent) && agent.getSystemProfile().equals(pair.getProfile()) && agent.getHost().equals(this.host)) {
-                logger.println("Creating Memory Dump for " + agent.getSystemProfile() + "-" + agent.getName() + "-" + agent.getHost() + "-" + agent.getProcessId());
+                logger.println(Messages.PerfSigMemoryDump_CreatingMemoryDump(agent.getSystemProfile(), agent.getName(), agent.getHost(),
+                        String.valueOf(agent.getProcessId())));
 
                 String memoryDump = connection.memoryDump(agent.getName(), agent.getHost(), agent.getProcessId(), getType(),
                         this.lockSession, this.captureStrings, this.capturePrimitives, this.autoPostProcess, this.dogc);
-                if (StringUtils.isBlank(memoryDump))
-                    throw new RESTErrorException("memory dump wasn't taken");
+                if (StringUtils.isBlank(memoryDump)) {
+                    throw new RESTErrorException(Messages.PerfSigMemoryDump_MemoryDumpWasntTaken());
+                }
                 int timeout = waitForDumpTimeout;
                 boolean dumpFinished = connection.memoryDumpStatus(memoryDump).isResultValueTrue();
                 while ((!dumpFinished) && (timeout > 0)) {
@@ -91,14 +95,14 @@ public class PerfSigMemoryDump extends Builder implements SimpleBuildStep {
                     dumpFinished = connection.memoryDumpStatus(memoryDump).isResultValueTrue();
                 }
                 if (dumpFinished) {
-                    logger.println(String.format(Messages.PerfSigMemoryDump_SuccessfullyCreatedMemoryDump(), agent.getName()));
+                    logger.println(Messages.PerfSigMemoryDump_SuccessfullyCreatedMemoryDump(agent.getName()));
                     return;
                 } else {
-                    throw new RESTErrorException("timeout raised");
+                    throw new RESTErrorException(Messages.PerfSigStopRecording_TimeoutRaised());
                 }
             }
         }
-        throw new AbortException(String.format(Messages.PerfSigMemoryDump_AgentNotConnected(), agent));
+        throw new AbortException(Messages.PerfSigMemoryDump_AgentNotConnected(agent));
     }
 
     public String getDynatraceProfile() {
@@ -196,7 +200,7 @@ public class PerfSigMemoryDump extends Builder implements SimpleBuildStep {
             if (StringUtils.isNotBlank(host)) {
                 validationResult = FormValidation.ok();
             } else {
-                validationResult = FormValidation.error(Messages.PerfSigMemoryDump_AgentNotValid());
+                validationResult = FormValidation.error(Messages.PerfSigMemoryDump_HostNotValid());
             }
             return validationResult;
         }

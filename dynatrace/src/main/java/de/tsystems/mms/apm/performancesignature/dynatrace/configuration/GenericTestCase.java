@@ -38,7 +38,7 @@ public class GenericTestCase extends ConfigurationTestCase {
     public static final class DescriptorImpl extends ConfigurationTestCaseDescriptor {
         @Override
         public String getDisplayName() {
-            return "Generic test case";
+            return Messages.GenericTestCase_DisplayName();
         }
     }
 }

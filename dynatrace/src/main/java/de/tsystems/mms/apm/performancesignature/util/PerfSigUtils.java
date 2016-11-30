@@ -29,8 +29,6 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.BaseConfigu
 import hudson.security.ACL;
 import hudson.util.ListBoxModel;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -78,14 +76,6 @@ public final class PerfSigUtils {
         return (credsId == null) ? null : CredentialsMatchers.firstOrNull(
                 CredentialsProvider.lookupCredentials(UsernamePasswordCredentials.class, PerfSigUIUtils.getInstance(), ACL.SYSTEM,
                         Collections.<DomainRequirement>emptyList()), CredentialsMatchers.withId(credsId));
-    }
-
-    public static boolean checkNotNullOrEmpty(final String string) {
-        return StringUtils.isNotBlank(string);
-    }
-
-    public static boolean checkNotEmptyAndIsNumber(final String number) {
-        return StringUtils.isNotBlank(number) && NumberUtils.isNumber(number);
     }
 
     public static ListBoxModel fillAgentItems(final String dynatraceProfile) {

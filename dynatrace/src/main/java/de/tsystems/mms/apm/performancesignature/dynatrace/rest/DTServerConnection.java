@@ -57,7 +57,10 @@ import javax.net.ssl.*;
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.*;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -194,9 +197,9 @@ public class DTServerConnection {
     }
 
     private void addAuthenticationHeader(final URLConnection conn) throws UnsupportedEncodingException {
-        String userPassword = this.credentials.getUsername() + Messages.DTServerConnection_SEPARATORColon() + this.credentials.getPassword().getPlainText();
+        String userPassword = this.credentials.getUsername() + ":" + this.credentials.getPassword().getPlainText();
         String token = DatatypeConverter.printBase64Binary(userPassword.getBytes(CharEncoding.UTF_8));
-        conn.setRequestProperty(Messages.DTServerConnection_PROPERTYAuthorization(), Messages.DTServerConnection_PROPERTYBasic() + " " + token);
+        conn.setRequestProperty("Authorization", "Basic" + " " + token);
         conn.setUseCaches(false);
         conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
 
@@ -528,7 +531,7 @@ public class DTServerConnection {
         }
     }
 
-    public boolean getPDFReport(final String sessionName, final String comparedSessionName, final String dashboard, final File file) {
+    public boolean getPDFReport(final String sessionName, final String comparedSessionName, final String dashboard, final FilePath file) {
         try {
             ReportURLBuilder builder = new ReportURLBuilder();
             builder.setServerAddress(this.address)
@@ -536,21 +539,19 @@ public class DTServerConnection {
                     .setSource(sessionName)
                     .setType("PDF");
             if (comparedSessionName != null) builder.setComparison(comparedSessionName);
-            final FilePath out = new FilePath(file);
-            out.copyFrom(getInputStream(builder.buildURL(true)));
+            file.copyFrom(getInputStream(builder.buildURL(true)));
             return true;
         } catch (Exception ex) {
             throw new CommandExecutionException("error downloading PDF Report: " + ex.getMessage(), ex);
         }
     }
 
-    public boolean downloadSession(final String sessionName, final File outputFile) {
+    public boolean downloadSession(final String sessionName, final FilePath outputFile) {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(this.address);
 
-            final FilePath out = new FilePath(outputFile);
-            out.copyFrom(getInputStream(builder.downloadSessionURL(sessionName)));
+            outputFile.copyFrom(getInputStream(builder.downloadSessionURL(sessionName)));
             return true;
         } catch (Exception ex) {
             throw new CommandExecutionException("error downloading session: " + ex.getMessage(), ex);

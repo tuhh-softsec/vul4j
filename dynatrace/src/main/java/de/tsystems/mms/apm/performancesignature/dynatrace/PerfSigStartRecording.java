@@ -68,15 +68,15 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
 
         DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
         if (serverConfiguration == null) {
-            throw new AbortException("failed to lookup Dynatrace server configuration");
+            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupServer());
         }
 
         CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
         if (pair == null) {
-            throw new AbortException("failed to lookup Dynatrace server profile");
+            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupProfile());
         }
 
-        logger.println("starting session recording ...");
+        logger.println(Messages.PerfSigStartRecording_StartingSession());
         final DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
         if (!connection.validateConnection()) {
             throw new RESTErrorException(Messages.PerfSigRecorder_DTConnectionError());
@@ -89,7 +89,7 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
         for (BaseConfiguration profile : connection.getSystemProfiles()) {
             SystemProfile systemProfile = (SystemProfile) profile;
             if (pair.getProfile().equals(systemProfile.getId()) && systemProfile.isRecording()) {
-                logger.println("another session is still recording, trying to stop recording");
+                logger.println(Messages.PerfSigStartRecording_AnotherSessionStillRecording());
                 PerfSigStopRecording stopRecording = new PerfSigStopRecording(dynatraceProfile);
                 stopRecording.perform(run, workspace, launcher, listener);
                 break;
@@ -100,7 +100,7 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
         Date timeframeStart = null;
 
         try {
-            result = connection.startRecording(sessionName, "This session is triggered by Jenkins", getRecordingOption(), lockSession, false);
+            result = connection.startRecording(sessionName, Messages.PerfSigStartRecording_SessionTriggered(), getRecordingOption(), lockSession, false);
         } catch (CommandExecutionException e) {
             if (e.getMessage().contains("continuous")) {
                 timeframeStart = new Date();
@@ -108,20 +108,18 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
             } else throw e;
         }
         if (result != null && result.contains(sessionName)) {
-            logger.println(String.format(Messages.PerfSigStartRecording_StartedSessionRecording(), pair.getProfile(), sessionName));
+            logger.println(Messages.PerfSigStartRecording_StartedSessionRecording(pair.getProfile(), sessionName));
         } else {
-            throw new RESTErrorException(String.format(Messages.PerfSigStartRecording_SessionRecordingError(), pair.getProfile()));
+            throw new RESTErrorException(Messages.PerfSigStartRecording_SessionRecordingError(pair.getProfile()));
         }
 
-        logger.println("registering new TestRun");
+        logger.println(Messages.PerfSigStartRecording_RegisteringTestRun());
         String testRunId = connection.registerTestRun(run.getNumber());
         if (testRunId != null) {
-            logger.println(String.format(Messages.PerfSigStartRecording_StartedTestRun(), pair.getProfile(), testRunId));
-            logger.println("Dynatrace: registered test run " + testRunId + "" +
-                    " (available as environment variables " + PerfSigEnvContributor.TESTRUN_ID_KEY +
-                    " and " + PerfSigEnvContributor.SESSIONCOUNT + ")");
+            logger.println(Messages.PerfSigStartRecording_StartedTestRun(pair.getProfile(), testRunId));
+            logger.println(Messages.PerfSigStartRecording_RegisteredTestRunId(testRunId, PerfSigEnvContributor.TESTRUN_ID_KEY, PerfSigEnvContributor.SESSIONCOUNT));
         } else {
-            logger.println("warning: could not register TestRun");
+            logger.println(Messages.PerfSigStartRecording_CouldNotRegisterTestRun());
         }
 
         run.addAction(new PerfSigEnvInvisAction(result, timeframeStart, testCase, testRunId));

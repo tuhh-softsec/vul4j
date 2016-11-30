@@ -120,7 +120,7 @@ public class CredProfilePair extends AbstractDescribableImpl<CredProfilePair> {
 
         public FormValidation doCheckProfile(@QueryParameter final String profile) {
             FormValidation validationResult;
-            if (PerfSigUtils.checkNotNullOrEmpty(profile)) {
+            if (PerfSigUIUtils.checkNotNullOrEmpty(profile)) {
                 validationResult = FormValidation.ok();
             } else {
                 validationResult = FormValidation.error(Messages.PerfSigRecorder_DTProfileNotValid());

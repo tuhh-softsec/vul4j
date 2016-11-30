@@ -32,10 +32,10 @@ public class RESTStringArrayXMLHandler extends DefaultHandler {
     }
 
     public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attr) {
-        if (localName.equals(Messages.RESTStringArrayXMLHandler_AttrSession())) {
+        if (localName.equals("sessionid")) {
             this.objects.add(contents.toString());
         }
-        if (localName.equals(Messages.RESTStringArrayXMLHandler_AttrDashboard())) {
+        if (localName.equals("dashboard")) {
             this.objects.add(attr.getValue("id"));
         }
         this.contents.reset();

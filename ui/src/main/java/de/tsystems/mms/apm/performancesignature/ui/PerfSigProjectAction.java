@@ -153,7 +153,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         final String customMeasureName = jsonDashlet.getCustomName();
         final String aggregation = jsonDashlet.getAggregation();
 
-        String unit = "", color = Messages.PerfSigProjectAction_DefaultColor();
+        String unit = "", color = "#FF5555";
 
         for (DashboardReport dr : getLastDashboardReports()) {
             if (dr.getName().equals(dashboard)) {
@@ -169,7 +169,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         String title = StringUtils.isBlank(customMeasureName) ? PerfSigUIUtils.generateTitle(measure, chartDashlet) : customMeasureName;
 
         final JFreeChart chart = ChartFactory.createBarChart(title, // title
-                "build", // category axis label
+                Messages.PerfSigProjectAction_Build(), // category axis label
                 unit, // value axis label
                 dataset, // data
                 PlotOrientation.VERTICAL, // orientation
@@ -392,6 +392,9 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         return jsonDashletMap;
     }
 
+    /*
+    only for debug purposes
+     */
     private String addTimeStampToLog(final String message) {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss.SSS");
         return sdf.format(new Date()) + ": " + this.getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this)) +
@@ -453,9 +456,9 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             }
             writeConfiguration(getJsonDashletMap());
         } catch (InterruptedException e) {
-            logger.log(Level.SEVERE, "could not save grid configuration", e);
+            logger.log(Level.SEVERE, Messages.PerfSigProjectAction_FailedToSaveGrid(), e);
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "could not save grid configuration", e);
+            logger.log(Level.SEVERE, Messages.PerfSigProjectAction_FailedToSaveGrid(), e);
         }
     }
 
@@ -546,9 +549,9 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
                 return newConfiguration;
             }
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Failed to load " + getConfigFile(), e);
+            logger.log(Level.SEVERE, Messages.PerfSigProjectAction_FailedToLoadConfigFile(getConfigFile()), e);
         } catch (InterruptedException e) {
-            logger.log(Level.SEVERE, "Failed to load " + getConfigFile(), e);
+            logger.log(Level.SEVERE, Messages.PerfSigProjectAction_FailedToLoadConfigFile(getConfigFile()), e);
         }
         return new HashMap<String, JSONDashlet>();
     }
@@ -559,7 +562,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             getConfigFile().write(jsonDashletMap);
             logger.fine(addTimeStampToLog("grid configuration write finished"));
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Failed to save the grid configuration", e);
+            logger.log(Level.SEVERE, Messages.PerfSigProjectAction_FailedToSaveGrid(), e);
         }
     }
 }

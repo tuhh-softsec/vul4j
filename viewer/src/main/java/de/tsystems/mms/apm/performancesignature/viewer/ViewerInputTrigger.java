@@ -55,16 +55,18 @@ public class ViewerInputTrigger extends Builder implements SimpleBuildStep {
         final PrintStream logger = listener.getLogger();
 
         JenkinsServerConfiguration serverConfiguration = ViewerUtils.getServerConfiguration(jenkinsJob);
-        if (serverConfiguration == null)
-            throw new AbortException("failed to lookup Jenkins server configuration");
+        if (serverConfiguration == null) {
+            throw new AbortException(Messages.ViewerRecorder_FailedToLookupServer());
+        }
 
         CredJobPair pair = serverConfiguration.getCredJobPair(jenkinsJob);
-        if (pair == null)
-            throw new AbortException("failed to lookup Jenkins job");
+        if (pair == null) {
+            throw new AbortException(Messages.ViewerRecorder_FailedToLookupJob());
+        }
 
         JenkinsServerConnection serverConnection = new JenkinsServerConnection(serverConfiguration, pair);
         if (!serverConnection.validateConnection()) {
-            throw new RESTErrorException(Messages.PerfSigRecorder_DTConnectionError());
+            throw new RESTErrorException(Messages.ViewerRecorder_ConnectionError());
         }
 
         Job perfSigJob = serverConnection.getJenkinsJob();
@@ -76,9 +78,9 @@ public class ViewerInputTrigger extends Builder implements SimpleBuildStep {
             buildNumber = perfSigJob.details().getLastBuild().getNumber();
         }
 
-        logger.println("trigger input step for job " + perfSigJob.getName() + " #" + buildNumber);
+        logger.println(Messages.ViewerInputTrigger_TriggerInputStep(perfSigJob.getName(), buildNumber));
         serverConnection.triggerInputStep(buildNumber, getTriggerId());
-        logger.println("triggered input step for job " + perfSigJob.getName() + " #" + buildNumber);
+        logger.println(Messages.ViewerInputTrigger_TriggeredInputStep(perfSigJob.getName(), buildNumber));
     }
 
     public String getJenkinsJob() {
@@ -101,7 +103,7 @@ public class ViewerInputTrigger extends Builder implements SimpleBuildStep {
         }
 
         public String getDisplayName() {
-            return "trigger input step remotely";
+            return Messages.ViewerInputTrigger_DisplayName();
         }
     }
 }

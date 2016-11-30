@@ -38,7 +38,7 @@ public class UnitTestCase extends ConfigurationTestCase {
     public static final class DescriptorImpl extends ConfigurationTestCaseDescriptor {
         @Override
         public String getDisplayName() {
-            return "UnitTest test case";
+            return Messages.UnitTestCase_DisplayName();
         }
     }
 

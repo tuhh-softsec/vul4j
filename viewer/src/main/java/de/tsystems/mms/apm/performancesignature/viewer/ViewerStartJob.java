@@ -54,19 +54,21 @@ public class ViewerStartJob extends Builder implements SimpleBuildStep {
         final PrintStream logger = listener.getLogger();
 
         JenkinsServerConfiguration serverConfiguration = ViewerUtils.getServerConfiguration(jenkinsJob);
-        if (serverConfiguration == null)
-            throw new AbortException("failed to lookup Jenkins server configuration");
+        if (serverConfiguration == null) {
+            throw new AbortException(Messages.ViewerRecorder_FailedToLookupServer());
+        }
 
         CredJobPair pair = serverConfiguration.getCredJobPair(jenkinsJob);
-        if (pair == null)
-            throw new AbortException("failed to lookup Jenkins job");
+        if (pair == null) {
+            throw new AbortException(Messages.ViewerRecorder_FailedToLookupJob());
+        }
 
         JenkinsServerConnection serverConnection = new JenkinsServerConnection(serverConfiguration, pair);
         if (!serverConnection.validateConnection()) {
-            throw new RESTErrorException(Messages.PerfSigRecorder_DTConnectionError());
+            throw new RESTErrorException(Messages.ViewerRecorder_ConnectionError());
         }
 
-        logger.println("triggering Jenkins job " + pair.getJenkinsJob() + " ...");
+        logger.println(Messages.ViewerStartJob_TriggeringJenkinsJob(pair.getJenkinsJob()));
         Job perfSigJob = serverConnection.getJenkinsJob();
         perfSigJob.build(true);
 
@@ -79,7 +81,7 @@ public class ViewerStartJob extends Builder implements SimpleBuildStep {
 
         int buildNumber = perfSigJob.details().getLastBuild().getNumber();
         run.addAction(new ViewerEnvInvisAction(buildNumber));
-        logger.println("Jenkins job " + perfSigJob.getName() + " #" + buildNumber + " started");
+        logger.println(Messages.ViewerStartJob_JenkinsJobStarted(perfSigJob.getName(), String.valueOf(buildNumber)));
     }
 
     public String getJenkinsJob() {
@@ -98,7 +100,7 @@ public class ViewerStartJob extends Builder implements SimpleBuildStep {
         }
 
         public String getDisplayName() {
-            return "Trigger Jenkins job";
+            return Messages.ViewerStartJob_DisplayName();
         }
     }
 }

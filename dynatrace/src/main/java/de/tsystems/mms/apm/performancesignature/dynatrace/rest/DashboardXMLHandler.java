@@ -47,11 +47,11 @@ public class DashboardXMLHandler extends DefaultHandler {
             incidentChart = new IncidentChart(attr);
         } else if (localName.equals("incidentchart") && attr.getLength() > 3) {
             incidentChart.add(new IncidentViolation(attr));
-        } else if (localName.equals(Messages.DashboardXMLHandler_AttrChartDashlet())) {
+        } else if (localName.equals("chartdashlet")) {
             chartDashlet = new ChartDashlet(attr);
-        } else if (localName.equals(Messages.DashboardXMLHandler_AttrMeasure())) {
+        } else if (localName.equals("measure")) {
             measure = new Measure(attr);
-        } else if (localName.equals(Messages.DashboardXMLHandler_AttrMeasurement())) {
+        } else if (localName.equals("measurement")) {
             measure.addMeasurement(new Measurement(attr));
         }
     }
@@ -59,9 +59,9 @@ public class DashboardXMLHandler extends DefaultHandler {
     public void endElement(final String uri, final String localName, final String qName) {
         if (localName.equals("incidentchart") && incidentChart != null && incidentChart.getViolations() != null) {
             dashboardReport.addIncident(incidentChart);
-        } else if (localName.equals(Messages.DashboardXMLHandler_AttrChartDashlet())) {
+        } else if (localName.equals("chartdashlet")) {
             dashboardReport.addChartDashlet(chartDashlet);
-        } else if (localName.equals(Messages.DashboardXMLHandler_AttrMeasure())) {
+        } else if (localName.equals("measure")) {
             chartDashlet.addMeasure(measure);
         }
     }

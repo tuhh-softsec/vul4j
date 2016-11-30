@@ -57,12 +57,14 @@ public class PerfSigTestDataPublisher extends TestDataPublisher {
         PrintStream logger = listener.getLogger();
 
         DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
-        if (serverConfiguration == null)
-            throw new AbortException("failed to lookup Dynatrace server configuration");
+        if (serverConfiguration == null) {
+            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupServer());
+        }
 
         CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
-        if (pair == null)
-            throw new AbortException("failed to lookup Dynatrace server profile");
+        if (pair == null) {
+            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupProfile());
+        }
 
         final DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
 
@@ -80,7 +82,7 @@ public class PerfSigTestDataPublisher extends TestDataPublisher {
                     throw new RESTErrorException(Messages.PerfSigRecorder_XMLReportError());
                 } else {
                     testRuns.add(testRun);
-                    logger.println(String.format(Messages.PerfSigRecorder_XMLReportResults(), testRun.getTestResults().size(), " " + testRun.getTestRunID()));
+                    logger.println(Messages.PerfSigTestDataPublisher_XMLReportResults(testRun.getTestResults().size(), " " + testRun.getTestRunID()));
                 }
             }
         }
@@ -103,7 +105,7 @@ public class PerfSigTestDataPublisher extends TestDataPublisher {
 
         @Override
         public String getDisplayName() {
-            return "Add Dynatrace performance data to each test result";
+            return Messages.PerfSigTestDataPublisher_DisplayName();
         }
     }
 

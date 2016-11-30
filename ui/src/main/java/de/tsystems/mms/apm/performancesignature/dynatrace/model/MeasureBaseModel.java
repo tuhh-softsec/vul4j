@@ -30,11 +30,11 @@ public abstract class MeasureBaseModel {
     private final int count;
 
     MeasureBaseModel(final Object attr) {
-        this.avg = AttributeUtils.getDoubleAttribute(Messages.Measurement_AttrAvg(), attr);
-        this.max = AttributeUtils.getDoubleAttribute(Messages.Measurement_AttrMax(), attr);
-        this.min = AttributeUtils.getDoubleAttribute(Messages.Measurement_AttrMin(), attr);
-        this.count = AttributeUtils.getIntAttribute(Messages.Measurement_AttrCount(), attr);
-        this.sum = AttributeUtils.getDoubleAttribute(Messages.Measurement_AttrSum(), attr);
+        this.avg = AttributeUtils.getDoubleAttribute("avg", attr);
+        this.max = AttributeUtils.getDoubleAttribute("max", attr);
+        this.min = AttributeUtils.getDoubleAttribute("min", attr);
+        this.count = AttributeUtils.getIntAttribute("count", attr);
+        this.sum = AttributeUtils.getDoubleAttribute("sum", attr);
     }
 
     /**

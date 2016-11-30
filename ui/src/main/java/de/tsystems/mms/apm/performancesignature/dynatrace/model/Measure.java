@@ -37,12 +37,14 @@ public class Measure extends MeasureBaseModel {
     public Measure(final Object attr) {
         super(attr);
         this.measurements = new ArrayList<Measurement>();
-        this.name = AttributeUtils.getStringAttribute(Messages.Measure_AttrMeasure(), attr);
-        this.color = AttributeUtils.getStringAttribute(Messages.Measure_AttrColor(), attr);
-        this.unit = AttributeUtils.getStringAttribute(Messages.Measure_AttrUnit(), attr);
-        this.aggregation = AttributeUtils.getStringAttribute(Messages.Measure_AttrAggregation(), attr);
+        this.name = AttributeUtils.getStringAttribute("measure", attr);
+        this.color = AttributeUtils.getStringAttribute("color", attr);
+        this.unit = AttributeUtils.getStringAttribute("unit", attr);
+        this.aggregation = AttributeUtils.getStringAttribute("aggregation", attr);
 
-        if (this.isPercentile()) LOGGER.warning("percentile aggregation is not supported in stored sessions");
+        if (this.isPercentile()) {
+            LOGGER.warning(Messages.Measure_PercentileNotSupported(this.name));
+        }
     }
 
     @Exported

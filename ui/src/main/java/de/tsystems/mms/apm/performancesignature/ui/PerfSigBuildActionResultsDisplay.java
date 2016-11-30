@@ -136,9 +136,9 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
     }
 
     private XYDataset buildTimeSeriesDataSet(final StaplerRequest request) {
-        String measure = request.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamMeasure());
-        String chartDashlet = request.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamChartDashlet());
-        String testCase = request.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamTestCase());
+        String measure = request.getParameter("measure");
+        String chartDashlet = request.getParameter("chartdashlet");
+        String testCase = request.getParameter("testcase");
         TimeSeries timeSeries = new TimeSeries(chartDashlet, Second.class);
 
         DashboardReport dashboardReport = getDashBoardReport(testCase);
@@ -151,10 +151,10 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
         return new TimeSeriesCollection(timeSeries);
     }
 
-    private JFreeChart createTimeSeriesChart(final StaplerRequest req, final XYDataset dataset) throws UnsupportedEncodingException {
-        String chartDashlet = req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamChartDashlet());
-        String measure = req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamMeasure());
-        String testCase = req.getParameter(Messages.PerfSigBuildActionResultsDisplay_ReqParamTestCase());
+    private JFreeChart createTimeSeriesChart(final StaplerRequest request, final XYDataset dataset) throws UnsupportedEncodingException {
+        String measure = request.getParameter("measure");
+        String chartDashlet = request.getParameter("chartdashlet");
+        String testCase = request.getParameter("testcase");
 
         final DashboardReport dashboardReport = getDashBoardReport(testCase);
         final Measure m = dashboardReport.getMeasure(chartDashlet, measure);
@@ -232,7 +232,7 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
         String testCase = request.getParameter("testCase");
         if (StringUtils.isBlank(testCase)) testCase = "";
 
-        FilePath reportDir = new FilePath(PerfSigUIUtils.getReportDirectory(getBuild()));
+        FilePath reportDir = PerfSigUIUtils.getReportDirectory(getBuild());
         List<FilePath> files = reportDir.list(new RegexFileFilter(type + ".*" + testCase + ".*.pdf"));
         List<String> fileNames = new ArrayList<String>();
         for (FilePath fp : files) {
@@ -253,7 +253,7 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
         } catch (NumberFormatException ignored) {
         }
 
-        FilePath filePath = new FilePath(PerfSigUIUtils.getReportDirectory(getBuild()));
+        FilePath filePath = PerfSigUIUtils.getReportDirectory(getBuild());
         String extension = StringUtils.isBlank(type) ? ".dts" : ".pdf";
         List<FilePath> files = filePath.list(new RegexFileFilter(type + ".*" + testCase + ".*" + extension));
         if (files.isEmpty()) {

@@ -100,10 +100,10 @@ public class CredJobPair extends AbstractDescribableImpl<CredJobPair> {
 
         public FormValidation doCheckJenkinsJob(@QueryParameter final String jenkinsJob) {
             FormValidation validationResult;
-            if (ViewerUtils.checkNotNullOrEmpty(jenkinsJob)) {
+            if (PerfSigUIUtils.checkNotNullOrEmpty(jenkinsJob)) {
                 validationResult = FormValidation.ok();
             } else {
-                validationResult = FormValidation.error(Messages.PerfSigRecorder_DTProfileNotValid());
+                validationResult = FormValidation.error(Messages.CredJobPair_JenkinsJobNotValid());
             }
             return validationResult;
         }
@@ -123,9 +123,9 @@ public class CredJobPair extends AbstractDescribableImpl<CredJobPair> {
             final JenkinsServerConnection connection = new JenkinsServerConnection(protocol, host, port, pair, verifyCertificate, customProxyServer);
 
             if (connection.validateConnection()) {
-                return FormValidation.ok(Messages.PerfSigRecorder_TestConnectionSuccessful());
+                return FormValidation.ok(Messages.CredJobPair_TestConnectionSuccessful());
             } else {
-                return FormValidation.warning(Messages.PerfSigRecorder_TestConnectionNotSuccessful());
+                return FormValidation.warning(Messages.CredJobPair_TestConnectionNotSuccessful());
             }
         }
     }

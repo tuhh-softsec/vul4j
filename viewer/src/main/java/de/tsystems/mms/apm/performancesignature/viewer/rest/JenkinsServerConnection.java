@@ -62,6 +62,7 @@ public class JenkinsServerConnection {
             this.jenkinsServer = new JenkinsServer(client);
             String job = pair.getJenkinsJob();
 
+            //handle folders wait for https://github.com/jenkinsci/java-client-api/pull/205
             if (job.contains("/")) {
                 String[] parts = job.split("/");
                 Job folderJob = jenkinsServer.getJob(parts[0]);
@@ -120,8 +121,7 @@ public class JenkinsServerConnection {
                 for (Object report : reportlist) {
                     URL url = new URL(getJenkinsJob().getUrl() + buildNumber + "/performance-signature/get" + reportType + "Report?number="
                             + reportlist.indexOf(report));
-                    result = result & downloadArtifact(new FilePath(dir, report + ".pdf"), url, logger);
-                    if (result) logger.println("downloaded PDF report: " + report);
+                    result &= downloadArtifact(new FilePath(dir, report + ".pdf"), url, logger);
                 }
             }
             return result;

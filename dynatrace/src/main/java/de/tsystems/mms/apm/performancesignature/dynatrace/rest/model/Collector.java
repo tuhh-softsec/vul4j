@@ -33,14 +33,14 @@ public class Collector {
     private String host, name;
 
     public void setValue(final String property, final String value) {
-        if (property.equalsIgnoreCase(Messages.Collector_PropHost())) {
+        if (property.equalsIgnoreCase("host")) {
             this.host = value;
-        } else if (property.equalsIgnoreCase(Messages.Collector_PropName())) {
+        } else if (property.equalsIgnoreCase("name")) {
             this.name = value;
-        } else if (property.equalsIgnoreCase(Messages.Collector_PropConnected())) {
-            this.connected = Boolean.valueOf(value);
-        } else if (property.equalsIgnoreCase(Messages.Collector_PropEmbedded())) {
-            this.embedded = Boolean.valueOf(value);
+        } else if (property.equalsIgnoreCase("connected")) {
+            this.connected = Boolean.parseBoolean(value);
+        } else if (property.equalsIgnoreCase("embedded")) {
+            this.embedded = Boolean.parseBoolean(value);
         }
     }
 

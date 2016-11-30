@@ -43,7 +43,9 @@ public final class AttributeUtils {
         double val = 0.0D;
         final String strgVal = getStringAttribute(attributeName, attr);
         if (strgVal != null) {
-            if (strgVal.equals("INF")) return Double.POSITIVE_INFINITY;
+            if (strgVal.equals("INF")) {
+                return Double.POSITIVE_INFINITY;
+            }
             val = Double.parseDouble(strgVal);
         }
         return val;
@@ -52,12 +54,14 @@ public final class AttributeUtils {
     public static String getStringAttribute(final String attributeName, final Object attr) {
         if (attr instanceof Attributes) {
             Attributes attributes = (Attributes) attr;
-            if (attributes.getValue(attributeName) != null)
+            if (attributes.getValue(attributeName) != null) {
                 return attributes.getValue(attributeName);
+            }
         } else if (attr instanceof Element) {
             Element element = (Element) attr;
-            if (element.getChildText(attributeName) != null)
+            if (element.getChildText(attributeName) != null) {
                 return element.getChildText(attributeName);
+            }
         }
         return null;
     }
@@ -83,10 +87,11 @@ public final class AttributeUtils {
     public static Date getDateAttribute(final String attributeName, final Object attr) {
         String value = getStringAttribute(attributeName, attr);
         if (value != null) {
-            if (NumberUtils.isNumber(value))
+            if (NumberUtils.isNumber(value)) {
                 return new Date(getLongAttribute(attributeName, attr));
-            else
+            } else {
                 return DatatypeConverter.parseDateTime(value).getTime();
+            }
         }
         return new Date();
     }

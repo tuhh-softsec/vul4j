@@ -38,7 +38,7 @@ public class DumpStatus {
     }
 
     public boolean isResultValueTrue() {
-        return (this.result != null) && (this.result.equalsIgnoreCase("true"));
+        return this.result != null && this.result.equalsIgnoreCase("true");
     }
 
     public String getSuccess() {

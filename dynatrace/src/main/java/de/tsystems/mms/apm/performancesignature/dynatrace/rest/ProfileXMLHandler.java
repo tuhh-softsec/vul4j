@@ -49,10 +49,10 @@ public class ProfileXMLHandler extends DefaultHandler {
     }
 
     public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attr) {
-        if (localName.equals(Messages.ProfileXMLHandler_AttrSystemProfile())) {
+        if (localName.equals("systemprofile")) {
             this.configObjects.add(new SystemProfile(attr));
         }
-        if (localName.equals(Messages.ProfileXMLHandler_AttrConfiguration())) {
+        if (localName.equals("configuration")) {
             this.configObjects.add(new Configuration(attr));
         }
     }

@@ -58,28 +58,31 @@ public class PerfSigActivateConfiguration extends Builder implements SimpleBuild
         PrintStream logger = listener.getLogger();
 
         DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
-        if (serverConfiguration == null)
-            throw new AbortException("failed to lookup Dynatrace server configuration");
+        if (serverConfiguration == null) {
+            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupServer());
+        }
 
         CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
-        if (pair == null)
-            throw new AbortException("failed to lookup Dynatrace server profile");
+        if (pair == null) {
+            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupProfile());
+        }
 
         logger.println(Messages.PerfSigActivateConfiguration_ActivatingProfileConfiguration());
         final DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
 
         boolean result = connection.activateConfiguration(this.configuration);
-        if (!result)
+        if (!result) {
             throw new CommandExecutionException(Messages.PerfSigActivateConfiguration_InternalError());
-        logger.println(Messages.PerfSigActivateConfiguration_SuccessfullyActivated() + pair.getProfile());
+        }
+        logger.println(Messages.PerfSigActivateConfiguration_SuccessfullyActivated(pair.getProfile()));
 
         for (Agent agent : connection.getAgents()) {
             if (agent.getSystemProfile().equalsIgnoreCase(pair.getProfile())) {
                 boolean hotSensorPlacement = connection.hotSensorPlacement(agent.getAgentId());
                 if (hotSensorPlacement) {
-                    logger.println(Messages.PerfSigActivateConfiguration_HotSensorPlacementDone() + " " + agent.getName());
+                    logger.println(Messages.PerfSigActivateConfiguration_HotSensorPlacementDone(agent.getName()));
                 } else {
-                    logger.println(Messages.PerfSigActivateConfiguration_FailureActivation() + " " + agent.getName());
+                    logger.println(Messages.PerfSigActivateConfiguration_FailureActivation(agent.getName()));
                 }
             }
         }

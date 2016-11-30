@@ -16,7 +16,7 @@
 
 package de.tsystems.mms.apm.performancesignature.viewer.model;
 
-import de.tsystems.mms.apm.performancesignature.viewer.util.ViewerUtils;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import hudson.Extension;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
@@ -103,20 +103,20 @@ public class JenkinsServerConfiguration extends AbstractDescribableImpl<JenkinsS
 
         public FormValidation doCheckHost(@QueryParameter final String host) {
             FormValidation validationResult;
-            if (ViewerUtils.checkNotNullOrEmpty(host)) {
+            if (PerfSigUIUtils.checkNotNullOrEmpty(host)) {
                 validationResult = FormValidation.ok();
             } else {
-                validationResult = FormValidation.error(Messages.PerfSigRecorder_DTHostNotValid());
+                validationResult = FormValidation.error(Messages.JenkinsServerConfiguration_ServerNotValid());
             }
             return validationResult;
         }
 
         public FormValidation doCheckPort(@QueryParameter final String port) {
             FormValidation validationResult;
-            if (ViewerUtils.checkNotEmptyAndIsNumber(port)) {
+            if (PerfSigUIUtils.checkNotEmptyAndIsNumber(port)) {
                 validationResult = FormValidation.ok();
             } else {
-                validationResult = FormValidation.error(Messages.PerfSigRecorder_DTPortNotValid());
+                validationResult = FormValidation.error(Messages.JenkinsServerConfiguration_PortNotValid());
             }
             return validationResult;
         }

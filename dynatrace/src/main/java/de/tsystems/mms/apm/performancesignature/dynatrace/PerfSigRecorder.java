@@ -40,7 +40,6 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
 import javax.annotation.Nonnull;
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -68,12 +67,12 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
 
         DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
         if (serverConfiguration == null) {
-            throw new AbortException("failed to lookup Dynatrace server configuration");
+            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupServer());
         }
 
         CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
         if (pair == null) {
-            throw new AbortException("failed to lookup Dynatrace server profile");
+            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupProfile());
         }
 
         if (configurationTestCases == null) {
@@ -87,14 +86,14 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
         }
 
         if (serverConfiguration.getDelay() != 0) {
-            logger.println(Messages.PerfSigRecorder_SleepingDelay() + " " + serverConfiguration.getDelay() + " sec");
+            logger.println(Messages.PerfSigRecorder_SleepingDelay(serverConfiguration.getDelay()));
             Thread.sleep(serverConfiguration.getDelay() * 1000);
         }
 
         for (BaseConfiguration profile : connection.getSystemProfiles()) {
             SystemProfile systemProfile = (SystemProfile) profile;
             if (pair.getProfile().equals(systemProfile.getId()) && systemProfile.isRecording()) {
-                logger.println("session is still recording, trying to stop recording");
+                logger.println(Messages.PerfSigRecorder_SessionStillRecording());
                 PerfSigStopRecording stopRecording = new PerfSigStopRecording(dynatraceProfile);
                 stopRecording.perform(run, workspace, launcher, listener);
                 break;
@@ -114,22 +113,22 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
                 previousRun = previousCompletedRun;
             }
             comparisonBuildNumber = previousRun.getNumber();
-            logger.println(Messages.PerfSigRecorder_LastSuccessfulBuild() + " #" + comparisonBuildNumber);
+            logger.println(Messages.PerfSigRecorder_LastSuccessfulBuild(String.valueOf(comparisonBuildNumber)));
         } else {
-            logger.println("no previous build found, no comparison possible!");
+            logger.println(Messages.PerfSigRecorder_NoComparisonPossible());
         }
 
         for (ConfigurationTestCase configurationTestCase : getConfigurationTestCases()) {
             if (!configurationTestCase.validate()) {
                 throw new AbortException(Messages.PerfSigRecorder_TestCaseValidationError());
             }
-            logger.println(String.format(Messages.PerfSigRecorder_ConnectionSuccessful(), configurationTestCase.getName()));
+            logger.println(Messages.PerfSigRecorder_ConnectionSuccessful(configurationTestCase.getName()));
 
             final PerfSigEnvInvisAction buildEnvVars = getBuildEnvVars(run, configurationTestCase.getName());
             if (buildEnvVars != null) {
                 sessionName = buildEnvVars.getSessionName();
             } else {
-                throw new RESTErrorException("no sessionname found, aborting ...");
+                throw new RESTErrorException(Messages.PerfSigRecorder_NoSessionNameFound());
             }
 
             if (comparisonBuildNumber != 0) {
@@ -144,22 +143,22 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
             while ((!validateSessionName(sessionName)) && (retryCount < serverConfiguration.getRetryCount())) {
                 retryCount++;
                 availableSessions = connection.getSessions();
-                logger.println(String.format(Messages.PerfSigRecorder_WaitingForSession(), retryCount, serverConfiguration.getRetryCount()));
+                logger.println(Messages.PerfSigRecorder_WaitingForSession(retryCount, serverConfiguration.getRetryCount()));
                 Thread.sleep(10000);
             }
 
             if (!validateSessionName(sessionName)) {
-                throw new RESTErrorException(String.format(Messages.PerfSigRecorder_SessionNotAvailable(), sessionName));
+                throw new RESTErrorException(Messages.PerfSigRecorder_SessionNotAvailable(sessionName));
             }
             if (comparisonBuildNumber != 0 && !validateSessionName(comparisonSessionName)) {
-                logger.println(String.format(Messages.PerfSigRecorder_ComparisonNotPossible(), comparisonSessionName));
+                logger.println(Messages.PerfSigRecorder_ComparisonNotPossible(comparisonSessionName));
             }
 
             for (Dashboard singleDashboard : configurationTestCase.getSingleDashboards()) {
                 singleFilename = "Singlereport_" + sessionName + "_" + singleDashboard.getName() + ".pdf";
                 logger.println(Messages.PerfSigRecorder_GettingPDFReport() + " " + singleFilename);
                 boolean singleResult = connection.getPDFReport(sessionName, null, singleDashboard.getName(),
-                        new File(PerfSigUIUtils.getReportDirectory(run), File.separator + singleFilename));
+                        new FilePath(PerfSigUIUtils.getReportDirectory(run), singleFilename));
                 if (!singleResult) {
                     throw new RESTErrorException(Messages.PerfSigRecorder_SingleReportError());
                 }
@@ -170,7 +169,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
                             buildNumber + "_" + comparisonBuildNumber + "_") + "_" + comparisonDashboard.getName() + ".pdf";
                     logger.println(Messages.PerfSigRecorder_GettingPDFReport() + " " + comparisonFilename);
                     boolean comparisonResult = connection.getPDFReport(sessionName, comparisonSessionName, comparisonDashboard.getName(),
-                            new File(PerfSigUIUtils.getReportDirectory(run), File.separator + comparisonFilename));
+                            new FilePath(PerfSigUIUtils.getReportDirectory(run), comparisonFilename));
                     if (!comparisonResult) {
                         throw new RESTErrorException(Messages.PerfSigRecorder_ComparisonReportError());
                     }
@@ -191,7 +190,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
             }
 
             if (exportSessions) {
-                boolean exportedSession = connection.downloadSession(sessionName, new File(PerfSigUIUtils.getReportDirectory(run) + File.separator + sessionName + ".dts"));
+                boolean exportedSession = connection.downloadSession(sessionName, new FilePath(PerfSigUIUtils.getReportDirectory(run), sessionName + ".dts"));
                 if (!exportedSession) {
                     throw new RESTErrorException(Messages.PerfSigRecorder_SessionDownloadError());
                 } else {
