@@ -10,7 +10,7 @@
 # There will be used a remote database server if there exists the
 # enviroment variable DB_SRV and optional DB_PORT
 
-DIR=`dirname $0`
+DIR=$(readlink -f $(dirname $0))
 
 while getopts "cn" opt; do
     case "$opt" in
