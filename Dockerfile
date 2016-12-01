@@ -74,11 +74,13 @@ RUN rm $JBOSS_HOME/standalone/configuration/standalone_xml_history/current/*
 # Build and deploy LADA-server
 #
 ENV LADA_VERSION 2.4.1-SNAPSHOT
-RUN mvn clean compile package javadoc:javadoc
-RUN mv target/lada-server-$LADA_VERSION.war $JBOSS_HOME/standalone/deployments
-RUN touch $JBOSS_HOME/standalone/deployments/lada-server-$LADA_VERSION.war.dodeploy
+RUN mvn clean compile package && \
+    mv target/lada-server-$LADA_VERSION.war \
+       $JBOSS_HOME/standalone/deployments && \
+    touch $JBOSS_HOME/standalone/deployments/lada-server-$LADA_VERSION.war.dodeploy
 
 ##configure lighttpd for apidoc
+RUN mvn javadoc:javadoc
 RUN sed -i 's|server.document-root        = "/var/www/html"|server.document-root        = "/usr/src/lada-server/target/site/apidocs"|' /etc/lighttpd/lighttpd.conf
 
 ## Start the webserver manually, when the container is started
