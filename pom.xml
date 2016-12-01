@@ -131,19 +131,19 @@
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-referencing</artifactId>
-            <version>15.1</version>
+            <version>14.5</version>
         </dependency>
 
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-epsg-hsql</artifactId>
-            <version>15.1</version>
+            <version>14.5</version>
         </dependency>
 
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-main</artifactId>
-            <version>15.1</version>
+            <version>14.5</version>
         </dependency>
 
         <!-- Logging -->
