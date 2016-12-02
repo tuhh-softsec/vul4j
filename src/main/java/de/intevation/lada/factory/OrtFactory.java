@@ -90,8 +90,8 @@ public class OrtFactory {
             return;
         }
         Query q = repository.entityManager("stamm")
-            .createQuery("SELECT vg.gemId" +
-                         "FROM Verwaltungsgrenze vg" +
+            .createQuery("SELECT vg.gemId " +
+                         "FROM Verwaltungsgrenze vg " +
                          "WHERE contains(vg.shape, :geom) = TRUE");
         q.setParameter("geom", ort.getGeom());
         List<Object> ret = q.getResultList();
