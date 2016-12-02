@@ -1,6 +1,5 @@
 batch
 /subsystem=datasources/jdbc-driver=postgres:add(driver-name="postgres",driver-module-name="org.postgres",driver-class-name=org.postgis.DriverWrapper)
-data-source add --jndi-name=java:/jboss/lada-bund --name=lada-bund --connection-url=jdbc:postgresql_postGIS://lada_db:5432/lada?currentSchema=bund --driver-name=postgres --user-name=lada --password=lada
-data-source add --jndi-name=java:/jboss/lada-land --name=lada-land --connection-url=jdbc:postgresql_postGIS://lada_db:5432/lada?currentSchema=land --driver-name=postgres --user-name=lada --password=lada
-data-source add --jndi-name=java:/jboss/lada-stamm --name=lada-stamm --connection-url=jdbc:postgresql_postGIS://lada_db:5432/lada?currentSchema=stammdaten --driver-name=postgres --user-name=lada --password=lada
+data-source add --jndi-name=java:/jboss/lada-land --name=lada-land --connection-url=jdbc:postgresql_postGIS://lada_db:5432/lada?currentSchema=land,public --driver-name=postgres --user-name=lada --password=lada
+data-source add --jndi-name=java:/jboss/lada-stamm --name=lada-stamm --connection-url=jdbc:postgresql_postGIS://lada_db:5432/lada?currentSchema=stammdaten,public --driver-name=postgres --user-name=lada --password=lada
 run-batch
