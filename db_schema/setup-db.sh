@@ -121,12 +121,15 @@ if [ "$NO_DATA" != "true" ]; then
 
     echo downlaod and import german administrative borders
     TS="0101"
+    cd /tmp
     if [ ! -f vg250_${TS}.utm32s.shape.ebenen.zip ]; then
         curl -O \
             http://sg.geodatenzentrum.de/web_download/vg/vg250_${TS}/utm32s/shape/vg250_${TS}.utm32s.shape.ebenen.zip
     fi
     unzip -u vg250_${TS}.utm32s.shape.ebenen.zip "*VG250_GEM*"
+#    cd vg250_${TS}.utm32s.shape.ebenen/vg250_ebenen/
     shp2pgsql -s 25832:4326 vg250_${TS}.utm32s.shape.ebenen/vg250_ebenen/VG250_GEM geo.gem_utm | psql -q $DB_CONNECT_STRING -d $DB_NAME
+#   rm -rf vg250_${TS}.utm32s.shape.ebenen
 
     echo fille stammdaten.verwaltungsgrenze
     psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_fill_verwaltungsgrenze.sql
