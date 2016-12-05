@@ -166,7 +166,7 @@ CREATE TABLE verwaltungseinheit (
 
 CREATE TABLE verwaltungsgrenze (
     id serial PRIMARY KEY,
-    gem_id character varying(8) NOT NULL,
+    gem_id character varying(8) NOT NULL REFERENCES verwaltungseinheit,
     shape public.geometry(MultiPolygon, 4326)
 );
 
