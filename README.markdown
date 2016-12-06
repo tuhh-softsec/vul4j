@@ -64,6 +64,43 @@ eingerichtet werden.
 Details zur Installation können den Dateien `Dockerfile` und
 `db_schema/Dockerfile` entnommen werden.
 
+Docker
+------
+Um schnell und automatisiert ein Entwicklungs-Setup für LADA aufsetzen zu
+können, werden Dockerfiles mitgeliefert. Voraussetzung für die Anwendung ist
+eine Docker-Installation. Folgendes Vorgehen führt zu einem
+Vollständigen Setup inklusive LADA-Client, in dem jeweils der auf dem Host
+vorhandene Quellcode in die Container gemounted wird, so dass auf dem Host
+durchgeführte Änderungen leicht innerhalb der Container getestet werden können.
+
+Bauen der Images:
+ $ cd ./db_schema
+ $ docker build -t koala/lada_db .
+ $ cd ..
+ $ docker build -t koala/lada_wildfly .
+ $ cd your/repo/of/lada-client
+ $ docker build -t koala/lada_client .
+
+Aufbau eines Netzwerks für die LADA-Komponenten:
+ $ docker network create lada_network
+
+Starten der Container:
+ $ cd db_schema
+ $ docker run --name your_lada_db --net=lada_network -v $PWD:/opt/lada_sql/ \
+          -d koala/lada_db:latest
+ $ cd ..
+ $ docker run --name lada_wildfly --net=lada_network \
+          --link your_lada_db:lada_db -v $PWD:/usr/src/lada-server \
+          -d koala/lada_wildfly
+ $ cd your/repo/of/lada-client
+ $ docker run --name lada_client --net=lada_network \
+              -v $PWD:/var/www/html/ \
+              --link lada_wildfly:lada-server \
+              -p 8180-8184:80-84 -d koala/lada_client
+
+Die LADA-Anwendung kann dann unter den angegebenen Ports mit verschiedenen
+Rollen im Browser ausgeführt werden.
+
 Tests
 -----
 Die auf Arquillian basierenden Tests erfordern einen vollständig konfigurierten
