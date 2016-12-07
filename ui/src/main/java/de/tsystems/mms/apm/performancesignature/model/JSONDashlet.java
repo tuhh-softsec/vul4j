@@ -59,17 +59,19 @@ public class JSONDashlet {
         this.dashboard = dashboard;
         this.chartDashlet = chartDashlet;
         this.measure = measure;
-        this.customName = "";
-        this.customBuildCount = "0";
         this.show = true;
         this.aggregation = aggregation;
         this.description = description;
         this.id = DigestUtils.md5Hex(this.dashboard + this.chartDashlet + this.measure);
+        this.customName = generateDashletName();
+        this.customBuildCount = "0";
     }
 
+    //gets called only if test case is a unit test
     public JSONDashlet(final int col, final int row, final String id, final String dashboard) {
         this(col, row, dashboard, "", "", "", "");
         this.id = id;
+        this.customName = "";
     }
 
     /**

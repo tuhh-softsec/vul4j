@@ -48,6 +48,7 @@ $(document).ready(function () {
             if ($(this).val() === 'UnitTest overview') {
                 $("#measure", page).parent().hide();
                 $("#aggregation", page).parent().hide();
+                $("#customName", page).val('');
             } else {
                 projectAction.getAvailableMeasures($(page).attr('id'), $(this).val(), function (data) {
                     $("#measure", page).empty();
@@ -67,7 +68,13 @@ $(document).ready(function () {
             projectAction.getAggregationFromMeasure($(page).attr('id'), $("#measureGroup", page).children(":selected").text(),
                 $(this).children(":selected").text(), function (data) {
                     $("#aggregation", page).val(data.responseObject());
+                    $("#aggregation", page).trigger("change");
                 });
+        });
+
+        $("#aggregation", this).change(function () {
+            $("#customName", page).val(generateTitle($("#measure").children(":selected").text(), $("#measureGroup", page).children(":selected").text(),
+                $(this).children(":selected").text()));
         });
 
         $("#editbutton", this).click(function () {
@@ -176,6 +183,11 @@ $(document).ready(function () {
         $('html,body').scrollTop(scrollmem);
     });
 });
+
+function generateTitle(measure, chartDashlet, aggregation) {
+    var chartDashletName = measure.replace(/\s/g, '') === chartDashlet.replace(/\s/g, '') ? chartDashlet : chartDashlet + ' - ' + measure;
+    return chartDashletName + ' (' + aggregation + ')';
+}
 
 function getURLParameter(obj, parameter) {
     return $(obj).attr("src").indexOf(parameter) > -1 ? wurl("?" + parameter, $(obj).attr("src")) : ""
