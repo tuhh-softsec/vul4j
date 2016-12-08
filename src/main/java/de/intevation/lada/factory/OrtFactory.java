@@ -59,7 +59,12 @@ public class OrtFactory {
                         ort.getKoordXExtern().substring(2, 8);
                     yCoord = ort.getKoordYExtern();
                     break;
-            default: break;
+            default: ReportItem err = new ReportItem();
+                err.setCode(612);
+                err.setKey("kdaId");
+                err.setValue(ort.getKdaId().toString());
+                errors.add(err);
+                return;
         }
         try {
             CoordinateReferenceSystem src = CRS.decode(epsg);
