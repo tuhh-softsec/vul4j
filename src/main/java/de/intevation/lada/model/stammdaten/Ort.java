@@ -99,6 +99,12 @@ public class Ort implements Serializable {
     @Transient
     private boolean readonly;
 
+    @Transient
+    private Double longitude;
+
+    @Transient
+    private Double latitude;
+
     public Ort() {
     }
 
