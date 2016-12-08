@@ -431,8 +431,6 @@ CREATE TABLE ort (
     koord_y_extern character varying(22) NOT NULL,
     hoehe_land real,
     letzte_aenderung timestamp without time zone DEFAULT now(),
-    latitude double precision,
-    longitude double precision,
     geom public.geometry(Point,4326),
     shape public.geometry(MultiPolygon,4326),
     ort_typ smallint REFERENCES ort_typ,
