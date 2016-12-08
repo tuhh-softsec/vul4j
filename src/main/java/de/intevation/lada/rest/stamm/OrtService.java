@@ -8,6 +8,7 @@
 package de.intevation.lada.rest.stamm;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -112,7 +113,6 @@ public class OrtService {
         @Context UriInfo info
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
-        List<Ort> orte = repository.getAllPlain(Ort.class, "stamm");
         if (params.containsKey("ortId")) {
             Integer id;
             try {
@@ -131,6 +131,8 @@ public class OrtService {
                     Ort.class));
             return new Response(true, 200, o);
         }
+
+        List<Ort> orte = new ArrayList<Ort>();
         if (params.containsKey("qid")) {
             Integer id = null;
             try {
@@ -168,6 +170,9 @@ public class OrtService {
             }
 
             orte = repository.filterPlain(builder.getQuery(), "stamm");
+        }
+        else {
+            orte = repository.getAllPlain(Ort.class, "stamm");
         }
 
         int size = orte.size();
