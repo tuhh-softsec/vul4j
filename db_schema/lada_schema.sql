@@ -275,7 +275,7 @@ CREATE TABLE kommentar_p (
 CREATE TABLE ortszuordnung (
     id serial PRIMARY KEY,
     probe_id integer NOT NULL REFERENCES probe ON DELETE CASCADE,
-    ort_id bigint NOT NULL REFERENCES stammdaten.ort,
+    ort_id integer NOT NULL REFERENCES stammdaten.ort,
     ortszuordnung_typ character varying(1) REFERENCES stammdaten.ortszuordnung_typ,
     ortszusatztext character varying(100),
     letzte_aenderung timestamp without time zone DEFAULT now(),

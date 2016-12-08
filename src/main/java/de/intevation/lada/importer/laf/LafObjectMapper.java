@@ -600,7 +600,7 @@ public class LafObjectMapper {
         if (o == null) {
             return null;
         }
-        ort.setOrtId(Long.valueOf(o.getId()));
+        ort.setOrtId(o.getId());
         if (ursprungsOrt.containsKey("U_ORTS_ZUSATZTEXT")) {
             ort.setOrtszusatztext(ursprungsOrt.get("U_ORTS_ZUSATZTEXT"));
         }
@@ -622,7 +622,7 @@ public class LafObjectMapper {
         if (o == null) {
             return;
         }
-        ort.setOrtId(Long.valueOf(o.getId()));
+        ort.setOrtId(o.getId());
         if (entnahmeOrt.containsKey("P_ORTS_ZUSATZTEXT")) {
             ort.setOrtszusatztext(entnahmeOrt.get("P_ORTS_ZUSATZTEXT"));
         }

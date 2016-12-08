@@ -388,7 +388,7 @@ public class ProbeFactory {
             @SuppressWarnings("unchecked")
             List<Ort> orte = (List<Ort>) ortResponse.getData();
             if (orte != null && !orte.isEmpty()) {
-                ort.setOrtId(Long.valueOf(orte.get(0).getId()));
+                ort.setOrtId(orte.get(0).getId());
             }
             repository.create(ort, "land");
         }

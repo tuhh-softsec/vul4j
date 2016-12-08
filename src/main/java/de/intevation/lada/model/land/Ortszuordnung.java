@@ -29,7 +29,7 @@ public class Ortszuordnung implements Serializable {
     private Timestamp letzteAenderung;
 
     @Column(name="ort_id")
-    private Long ortId;
+    private Integer ortId;
 
     @Column(name="ortszuordnung_typ")
     private String ortszuordnungTyp;
@@ -74,11 +74,11 @@ public class Ortszuordnung implements Serializable {
         this.letzteAenderung = letzteAenderung;
     }
 
-    public Long getOrtId() {
+    public Integer getOrtId() {
         return this.ortId;
     }
 
-    public void setOrtId(Long ortId) {
+    public void setOrtId(Integer ortId) {
         this.ortId = ortId;
     }
 
