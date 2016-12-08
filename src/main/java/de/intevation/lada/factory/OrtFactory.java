@@ -50,8 +50,11 @@ public class OrtFactory {
         String yCoord = null;
         switch(kda) {
             case 4: epsg = "EPSG:4326";
-                    xCoord = ort.getKoordXExtern();
-                    yCoord = ort.getKoordYExtern();
+                    /* EPSG:4326 defines the order of latitude and longitude
+                     * the other way round than IMIS coordinates specification.
+                     */
+                    xCoord = ort.getKoordYExtern();
+                    yCoord = ort.getKoordXExtern();
                     break;
             case 5: epsg = getEpsgForWgsUtm(ort.getKoordXExtern());
                     xCoord = ort.getKoordXExtern().length() == 7 ?
