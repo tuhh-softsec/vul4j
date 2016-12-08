@@ -25,6 +25,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
+import de.intevation.lada.factory.OrtFactory;
 import de.intevation.lada.model.stammdaten.Filter;
 import de.intevation.lada.model.stammdaten.Ort;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
@@ -89,6 +90,9 @@ public class OrtService {
     @Inject
     @AuthorizationConfig(type=AuthorizationType.HEADER)
     private Authorization authorization;
+
+    @Inject
+    private OrtFactory ortFactory;
 
     /**
      * Get all SOrt objects.
@@ -265,6 +269,7 @@ public class OrtService {
             repository.filterPlain(builder.getQuery(), "stamm");
         if (orte.isEmpty() ||
             orte.get(0).getId() == ort.getId()) {
+            ortFactory.transformCoordinates(ort);
             return repository.create(ort, "stamm");
         }
         return new Response(false, 672, null);
