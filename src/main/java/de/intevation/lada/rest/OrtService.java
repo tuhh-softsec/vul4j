@@ -108,7 +108,7 @@ public class OrtService {
     private Authorization authorization;
 
     @Inject
-    @ValidationConfig(type="Ort")
+    @ValidationConfig(type="Ortszuordnung")
     private Validator validator;
 
     /**

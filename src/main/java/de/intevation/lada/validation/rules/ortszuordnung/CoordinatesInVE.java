@@ -31,7 +31,7 @@ import de.intevation.lada.validation.rules.Rule;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@ValidationRule("Ort")
+@ValidationRule("Ortszuordnung")
 public class CoordinatesInVE implements Rule {
 
     @Inject
