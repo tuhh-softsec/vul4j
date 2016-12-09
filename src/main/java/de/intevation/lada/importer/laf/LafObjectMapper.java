@@ -854,7 +854,8 @@ public class LafObjectMapper {
             for (Entry<String, List<Integer>> err :
                      violation.getErrors().entrySet()) {
                 for (Integer code : err.getValue()) {
-                    currentErrors.add(
+                    // Add to warnings because Probe object might be imported
+                    currentWarnings.add(
                         new ReportItem("validation", err.getKey(), code));
                 }
             }
@@ -867,7 +868,8 @@ public class LafObjectMapper {
             ortFactory.findVerwaltungseinheit(ort);
         }
         if (ortFactory.hasErrors()) {
-            currentErrors.addAll(ortFactory.getErrors());
+            // Add to warnings because Probe object might be imported
+            currentWarnings.addAll(ortFactory.getErrors());
             return null;
         }
 
