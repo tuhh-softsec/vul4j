@@ -18,7 +18,7 @@ public class Staat implements Serializable {
     @Id
     private Integer id;
 
-    private String eu;
+    private Boolean eu;
 
     @Column(name="hkl_id")
     private Integer hklId;
@@ -51,11 +51,11 @@ public class Staat implements Serializable {
         this.id = id;
     }
 
-    public String getEu() {
+    public Boolean getEu() {
         return this.eu;
     }
 
-    public void setEu(String eu) {
+    public void setEu(Boolean eu) {
         this.eu = eu;
     }
 

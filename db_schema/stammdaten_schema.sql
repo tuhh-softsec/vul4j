@@ -143,7 +143,7 @@ CREATE TABLE staat (
     hkl_id smallint NOT NULL,
     staat_iso character varying(2),
     staat_kurz character varying(5),
-    eu character(1) DEFAULT NULL::bpchar,
+    eu boolean,
     koord_x_extern character varying(22),
     koord_y_extern character varying(22),
     kda_id integer REFERENCES koordinaten_art
