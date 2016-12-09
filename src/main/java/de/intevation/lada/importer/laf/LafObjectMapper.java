@@ -78,6 +78,10 @@ public class LafObjectMapper {
     private Validator messungValidator;
 
     @Inject
+    @ValidationConfig(type="Ort")
+    private Validator ortValidator;
+
+    @Inject
     @IdentifierConfig(type="Probe")
     private Identifier probeIdentifier;
 
@@ -837,6 +841,26 @@ public class LafObjectMapper {
                 ort.setOzId(zusatz.getOzsId());
             }
         }
+
+        Violation violation = ortValidator.validate(ort);
+        for (Entry<String, List<Integer>> warn :
+                 violation.getWarnings().entrySet()) {
+            for (Integer code : warn.getValue()) {
+                currentWarnings.add(
+                    new ReportItem("validation", warn.getKey(), code));
+            }
+        }
+        if (violation.hasErrors()) {
+            for (Entry<String, List<Integer>> err :
+                     violation.getErrors().entrySet()) {
+                for (Integer code : err.getValue()) {
+                    currentErrors.add(
+                        new ReportItem("validation", err.getKey(), code));
+                }
+            }
+            return null;
+        }
+
         ortFactory.transformCoordinates(ort);
         if (hasKoord && !hasGem) {
             logger.debug("find Verwaltungseinheit");
