@@ -842,6 +842,7 @@ public class LafObjectMapper {
         }
         if (ortFactory.hasErrors()) {
             currentErrors.addAll(ortFactory.getErrors());
+            return null;
         }
 
         repository.create(ort, "stamm");
