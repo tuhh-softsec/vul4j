@@ -141,7 +141,7 @@ CREATE TABLE staat (
     id serial PRIMARY KEY,
     staat character varying(50) NOT NULL,
     hkl_id smallint NOT NULL,
-    staat_iso character varying(2) NOT NULL,
+    staat_iso character varying(2),
     staat_kurz character varying(5),
     eu character(1) DEFAULT NULL::bpchar,
     koord_x_extern character varying(22),

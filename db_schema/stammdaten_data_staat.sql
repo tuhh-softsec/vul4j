@@ -45,18 +45,18 @@ COPY staat (id, staat, hkl_id, staat_iso, staat_kurz, eu, koord_x_extern, koord_
 158	Schweiz	158	CH	CH	0	7,445736	46,948208	4
 161	Spanien	161	ES	E	1	-3,690969	40,442219	4
 167	Vatikanstadt	167	VA	V	0	12,52	41,880001	4
-195	Britisch abhängige Gebiete in Europa	195	-	-	0	0	0	4
-199	übriges Europa	199	-	-	0	0	0	4
+195	Britisch abhängige Gebiete in Europa	195	\N	\N	0	0	0	4
+199	übriges Europa	199	\N	\N	0	0	0	4
 221	Algerien	221	DZ	DZ	0	2,993693	36,596493	4
 229	Benin	229	BJ	BJ	0	2,632503	6,601096	4
 122	Bosnien und Herzegowina	122	BA	BIH	0	18,43	43,869999	4
 224	Eritrea	224	ER	ER	0	38,970001	15,33	4
 422	Armenien	422	AM	ARM	0	44,532669	40,208023	4
 450	Kirgisistan	450	KG	KS	0	74,566667	42,866667	4
-527	Cookinseln	527	CK	-	0	-161	-15	4
+527	Cookinseln	527	CK	\N	0	-161	-15	4
 537	Palau	537	PW	PAL	0	134,634167	7,493333	4
 545	Mikronesien	545	FM	FSM	0	158,158333	6,917778	4
-661	Niue	533	NU	-	0	-169,869722	-19,063333	4
+661	Niue	533	NU	\N	0	-169,869722	-19,063333	4
 680	Kosovo	133	XK	KOS	0	20,835278	42,551944	4
 681	Montenegro	170	ME	MNE	0	19,216667	42,766667	4
 682	Serbien	171	RS	SB	0	20,933333	43,95	4
@@ -150,14 +150,14 @@ COPY staat (id, staat, hkl_id, staat_iso, staat_kurz, eu, koord_x_extern, koord_
 432	Vietnam	432	VN	VN	0	105,819908	21,031948	4
 436	Indien	436	IN	IND	0	77,216751	28,568726	4
 439	Iran, Islamische Republik	439	IR	IR	0	51,447651	35,774475	4
-660	Timor-Leste	483	TL	-	0	125,75	-8,966667	4
+660	Timor-Leste	483	TL	\N	0	125,75	-8,966667	4
 446	Kambodscha	446	KH	K	0	104,913193	11,564736	4
 448	Kuwait	448	KW	KWT	0	48,002777	29,19499	4
 454	Malediven	454	MV	MV	0	73,509444	4,174444	4
 457	Mongolei	457	MN	MGL	0	106,912354	47,928596	4
 462	Philippinen	462	PH	RP	0	121,173409	14,55	4
 476	Thailand	476	TH	T	0	100,552666	13,745571	4
-595	Britisch abhängige Gebiete in Australien/Ozeanien	595	-	-	0	0	0	4
+595	Britisch abhängige Gebiete in Australien/Ozeanien	595	\N	\N	0	0	0	4
 368	Vereinigte Staaten	368	US	USA	0	-76,953835	38,890911	4
 257	Sambia	257	ZM	Z	0	28,17	-15,43	4
 263	Südafrika	263	ZA	ZA	0	28,218372	-25,731346	4
@@ -185,7 +185,7 @@ COPY staat (id, staat, hkl_id, staat_iso, staat_kurz, eu, koord_x_extern, koord_
 471	Turkmenistan	471	TM	TM	0	58,390133	37,95042	4
 640	Serbien und Montenegro	132	CS	SCG	0	20,412556	44,799683	4
 169	Slowakei	155	SK	SK	1	17,269806	48,274509	4
-499	Übriges Asien	499	-	-	0	0	0	4
+499	Übriges Asien	499	\N	\N	0	0	0	4
 524	Salomonen	524	SB	SOL	0	159,95	-9,433333	4
 530	Kiribati	530	KI	KIR	0	172,971111	1,4075	4
 531	Nauru	531	NR	NAU	0	166,919608	-0,543425	4
@@ -193,12 +193,12 @@ COPY staat (id, staat, hkl_id, staat_iso, staat_kurz, eu, koord_x_extern, koord_
 540	Tuvalu	540	TV	TUV	0	179,123056	-8,504167	4
 249	Madagaskar	249	MG	RM	0	47,5	-18,870001	4
 359	Paraguay	359	PY	PY	0	-57,669998	-25,219999	4
-996	unbekanntes Ausland	996	-	-	0	0	0	4
-998	ungeklärt	998	-	-	0	0	0	4
-999	ohne Angabe	999	-	-	0	0	0	4
+996	unbekanntes Ausland	996	\N	\N	0	0	0	4
+998	ungeklärt	998	\N	\N	0	0	0	4
+999	ohne Angabe	999	\N	\N	0	0	0	4
 370	St. Kitts und Nevis	370	KN	KAN	0	-62,734167	17,298333	4
-395	Britisch abhängige Gebiete in Amerika	395	-	-	0	0	0	4
-399	übriges Amerika (Grönland, Guadeloupe, Martinique)	399	-	-	0	0	0	4
+395	Britisch abhängige Gebiete in Amerika	395	\N	\N	0	0	0	4
+399	übriges Amerika (Grönland, Guadeloupe, Martinique)	399	\N	\N	0	0	0	4
 421	Jemen	421	YE	YEM	0	44,209503	15,361444	4
 424	Bahrain	424	BH	BRN	0	50,583056	26,236111	4
 426	Bhutan	426	BT	BHT	0	89,667328	27,442606	4
@@ -217,8 +217,8 @@ COPY staat (id, staat, hkl_id, staat_iso, staat_kurz, eu, koord_x_extern, koord_
 282	Tansania	282	TZ	EAT	0	39,253349	-6,817359	4
 223	Angola	223	AO	ANG	0	13,461779	-9	4
 287	Ägypten	287	EG	ET	0	31,250797	30,077911	4
-295	Britisch abhängige Gebiete in Afrika	295	-	-	0	0	0	4
-299	übriges Afrika (Mayotte, Reunion)	299	-	-	0	0	0	4
+295	Britisch abhängige Gebiete in Afrika	295	\N	\N	0	0	0	4
+299	übriges Afrika (Mayotte, Reunion)	299	\N	\N	0	0	0	4
 322	Barbados	322	BB	BDS	0	-59,583333	13,2	4
 327	Brasilien	327	BR	BR	0	-47,897747	-15,792109	4
 333	Dominica	333	DM	WD	0	-61,391111	15,298333	4
@@ -229,9 +229,9 @@ COPY staat (id, staat, hkl_id, staat_iso, staat_kurz, eu, koord_x_extern, koord_
 469	Vereinigte Arabische Emirate	469	AE	UAE	0	54,61927	24,236008	4
 474	Singapur	474	SG	SGP	0	104,177116	1,229794	4
 482	Malaysia	482	MY	MAL	0	101,707672	3,15021	4
-495	Britisch abhängige Gebiete in Asien	495	-	-	0	0	0	4
-599	übriges Ozeanien	599	-	-	0	0	0	4
-994	von/nach See	994	-	-	0	0	0	4
+495	Britisch abhängige Gebiete in Asien	495	\N	\N	0	0	0	4
+599	übriges Ozeanien	599	\N	\N	0	0	0	4
+994	von/nach See	994	\N	\N	0	0	0	4
 366	St. Lucia	366	LC	WL	0	-60,977222	14,025278	4
 252	Marokko	252	MA	MA	0	-6,748041	33,920197	4
 254	Mosambik	254	MZ	MOC	0	32,573692	-25,962154	4

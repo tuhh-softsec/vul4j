@@ -817,7 +817,9 @@ public class LafObjectMapper {
                 if (hasKoord && !hasGem) {
                     ort.setKurztext(s.getStaat());
                     ort.setLangtext(s.getStaat());
-                    ort.setOrtId("Staat_" + s.getStaatIso());
+                    if (s.getStaatIso() != null) {
+                        ort.setOrtId("Staat_" + s.getStaatIso());
+                    }
                     ort.setBerichtstext(s.getStaat());
                 }
             }
