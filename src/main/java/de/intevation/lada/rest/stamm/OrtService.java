@@ -330,21 +330,22 @@ public class OrtService {
         ) {
             return new Response(false, 699, ort);
         }
-        QueryBuilder<Ort> builder =
-            new QueryBuilder<Ort>(
-                repository.entityManager("stamm"),
-                Ort.class
-            );
-        builder.and("ortId", ort.getOrtId());
-        builder.and("netzbetreiberId", ort.getNetzbetreiberId());
 
-        List<Ort> orte =
-            repository.filterPlain(builder.getQuery(), "stamm");
-        if (orte.isEmpty() ||
-            orte.get(0).getId() == ort.getId()) {
-            return repository.update(ort, "stamm");
+        Violation violation = validator.validate(ort);
+        if (violation.hasErrors()) {
+            Response response = new Response(false, 604, ort);
+            response.setErrors(violation.getErrors());
+            response.setWarnings(violation.getWarnings());
+            return response;
         }
-        return new Response(false, 672, null);
+
+        ortFactory.transformCoordinates(ort);
+        Response response = repository.update(ort, "stamm");
+        if(violation.hasWarnings()) {
+            response.setWarnings(violation.getWarnings());
+        }
+
+        return response;
     }
 
     /**
