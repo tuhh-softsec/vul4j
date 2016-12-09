@@ -17,10 +17,10 @@ import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
 
 /**
- * Validation for ort objects.
+ * Validation for Ortszuordnung objects.
  *
- * Instantiates the set of rules for ort objects and uses these rules to
- * validate the object.
+ * Instantiates the set of rules for Ortszuordnung objects and uses these
+ * rules to validate the object.
  *
  * @author <a href="mailto:raimund.renkert@intevation.de">Raimund Renkert</a>
  */
