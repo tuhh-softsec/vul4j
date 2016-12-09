@@ -7,12 +7,14 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 import com.vividsolutions.jts.geom.MultiPolygon;
 
 
 /**
  * The persistent class for the verwaltungsgrenze database table.
- * 
+ *
  */
 @Entity
 @Table(name="verwaltungsgrenze")
@@ -25,6 +27,8 @@ public class Verwaltungsgrenze implements Serializable {
 	@Column(name="gem_id")
 	private String gemId;
 
+	@Column(columnDefinition="geometry(MultiPolygon, 4326)")
+	@Type(type = "org.hibernate.spatial.GeometryType")
 	private MultiPolygon shape;
 
 	public Verwaltungsgrenze() {
