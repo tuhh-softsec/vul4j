@@ -139,10 +139,10 @@ INSERT INTO betriebsart VALUES(2, 'Störfall-/Intensivbetrieb');
 
 CREATE TABLE staat (
     id serial PRIMARY KEY,
-    staat character varying(50) NOT NULL,
-    hkl_id smallint NOT NULL,
-    staat_iso character varying(2),
-    staat_kurz character varying(5),
+    staat character varying(50) NOT NULL UNIQUE,
+    hkl_id smallint NOT NULL UNIQUE,
+    staat_iso character varying(2) UNIQUE,
+    staat_kurz character varying(5) UNIQUE,
     eu boolean,
     koord_x_extern character varying(22),
     koord_y_extern character varying(22),

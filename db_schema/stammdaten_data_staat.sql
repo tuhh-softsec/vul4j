@@ -61,7 +61,7 @@ COPY staat (id, staat, hkl_id, staat_iso, staat_kurz, eu, koord_x_extern, koord_
 681	Montenegro	170	ME	MNE	0	19,216667	42,766667	4
 682	Serbien	171	RS	SB	0	20,933333	43,95	4
 461	Pakistan	461	PK	PK	0	73,060547	33,718151	4
-465	Taiwan	465	TW	RC	0	121,506729	25,035091	4
+465	Taiwan	465	TW	TW	0	121,506729	25,035091	4
 467	Korea, Republik	467	KR	ROK	0	126,935249	37,542351	4
 472	Saudi-Arabien	472	SA	KSA	0	46,77	24,65	4
 475	Syrien	475	SY	SYR	0	36,313454	33,519302	4
