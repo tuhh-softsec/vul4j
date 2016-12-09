@@ -11,10 +11,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.PrecisionModel;
 
 import de.intevation.lada.model.land.Ortszuordnung;
 import de.intevation.lada.model.stammdaten.Ort;
@@ -24,7 +21,6 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
-import de.intevation.lada.util.rest.Response;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
@@ -45,41 +41,32 @@ public class CoordinatesInVE implements Rule {
     @SuppressWarnings("unchecked")
     @Override
     public Violation execute(Object object) {
-        Ortszuordnung ort = (Ortszuordnung)object;
-        if (!"E".equals(ort.getOrtszuordnungTyp())) {
+        Ortszuordnung oz = (Ortszuordnung)object;
+        if (!"E".equals(oz.getOrtszuordnungTyp())) {
             return null;
         }
-        QueryBuilder<Ort> ortBuilder =
-            new QueryBuilder<Ort>(repository.entityManager("stamm"), Ort.class);
-        ortBuilder.and("id", ort.getOrtId());
-        Response response = repository.filter(ortBuilder.getQuery(), "stamm");
-        List<Ort> orte = (List<Ort>)response.getData();
-        QueryBuilder<Verwaltungseinheit> veBuilder =
-            new QueryBuilder<Verwaltungseinheit>(
-                repository.entityManager("stamm"), Verwaltungseinheit.class);
-        veBuilder.and("id", orte.get(0).getGemId());
-        Response ver = repository.filter(veBuilder.getQuery(), "stamm");
-        if (((List<Verwaltungseinheit>)ver.getData()).isEmpty()) {
+
+        Ort ort = repository.getByIdPlain(Ort.class, oz.getOrtId(), "stamm");
+        String gemId = ort.getGemId();
+        if (gemId == null) {
             Violation violation = new Violation();
-            violation.addWarning("verwaltungseinheit", 653);
+            violation.addWarning("gemId", 631);
             return violation;
         }
-        Verwaltungseinheit ve = ((List<Verwaltungseinheit>)ver.getData()).get(0);
+
         QueryBuilder<Verwaltungsgrenze> vg =
-            new QueryBuilder<Verwaltungsgrenze>(repository.entityManager("stamm"), Verwaltungsgrenze.class);
-        vg.and("ags", ve.getId());
-        Response rvg = repository.filter(vg.getQuery(), "stamm");
-        List<Verwaltungsgrenze> vgs = (List<Verwaltungsgrenze>)rvg.getData();
+            new QueryBuilder<Verwaltungsgrenze>(
+                repository.entityManager("stamm"), Verwaltungsgrenze.class);
+        vg.and("gemId", gemId);
+        List<Verwaltungsgrenze> vgs = repository.filterPlain(
+            vg.getQuery(), "stamm");
         if (vgs == null || vgs.isEmpty()) {
             Violation violation = new Violation();
-            violation.addWarning("verwaltungseinheit", 653);
+            violation.addWarning("verwaltungsgrenze", 600);
             return violation;
         }
-        double y = orte.get(0).getLatitude();
-        double x = orte.get(0).getLongitude();
-        Coordinate c = new Coordinate(x, y);
-        GeometryFactory gf = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), 4326);
-        Point p = gf.createPoint(c);
+
+        Point p = ort.getGeom();
         boolean hit = false;
         for (Verwaltungsgrenze singlevg : vgs) {
             if(singlevg.getShape().contains(p)) {
@@ -88,7 +75,7 @@ public class CoordinatesInVE implements Rule {
         }
         if (!hit) {
             Violation violation = new Violation();
-            violation.addWarning("verwaltungseinheit", 651);
+            violation.addWarning("verwaltungsgrenze", 651);
             return violation;
         }
         return null;
