@@ -38,6 +38,9 @@ import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
+import de.intevation.lada.validation.Validator;
+import de.intevation.lada.validation.Violation;
+import de.intevation.lada.validation.annotation.ValidationConfig;
 
 /**
  * REST service for SOrt objects.
@@ -94,6 +97,10 @@ public class OrtService {
 
     @Inject
     private OrtFactory ortFactory;
+
+    @Inject
+    @ValidationConfig(type="Ort")
+    private Validator validator;
 
     /**
      * Get all SOrt objects.
@@ -262,22 +269,22 @@ public class OrtService {
         ) {
             return new Response(false, 699, ort);
         }
-        QueryBuilder<Ort> builder =
-            new QueryBuilder<Ort>(
-                repository.entityManager("stamm"),
-                Ort.class
-            );
-        builder.and("ortId", ort.getOrtId());
-        builder.and("netzbetreiberId", ort.getNetzbetreiberId());
 
-        List<Ort> orte =
-            repository.filterPlain(builder.getQuery(), "stamm");
-        if (orte.isEmpty() ||
-            orte.get(0).getId() == ort.getId()) {
-            ortFactory.transformCoordinates(ort);
-            return repository.create(ort, "stamm");
+        Violation violation = validator.validate(ort);
+        if (violation.hasErrors()) {
+            Response response = new Response(false, 604, ort);
+            response.setErrors(violation.getErrors());
+            response.setWarnings(violation.getWarnings());
+            return response;
         }
-        return new Response(false, 672, null);
+
+        ortFactory.transformCoordinates(ort);
+        Response response = repository.create(ort, "stamm");
+        if(violation.hasWarnings()) {
+            response.setWarnings(violation.getWarnings());
+        }
+
+        return response;
     }
 
     /**
