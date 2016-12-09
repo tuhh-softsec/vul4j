@@ -197,7 +197,10 @@ public class Ort implements Serializable {
     }
 
     public Double getLatitude() {
-        return this.geom.getY();
+        // We might want to serialize an object without geom
+        return this.geom != null
+            ? this.geom.getY()
+            : null;
     }
 
     public Timestamp getLetzteAenderung() {
@@ -209,7 +212,10 @@ public class Ort implements Serializable {
     }
 
     public Double getLongitude() {
-        return this.geom.getX();
+        // We might want to serialize an object without geom
+        return this.geom != null
+            ? this.geom.getX()
+            : null;
     }
 
     public String getMpArt() {
