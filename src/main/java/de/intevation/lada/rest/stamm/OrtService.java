@@ -26,6 +26,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
+import de.intevation.lada.importer.ReportItem;
 import de.intevation.lada.factory.OrtFactory;
 import de.intevation.lada.model.stammdaten.Filter;
 import de.intevation.lada.model.stammdaten.Ort;
@@ -279,6 +280,15 @@ public class OrtService {
         }
 
         ortFactory.transformCoordinates(ort);
+        if (ortFactory.hasErrors()) {
+            Violation factoryErrs = new Violation();
+            for (ReportItem err : ortFactory.getErrors()) {
+                factoryErrs.addError(err.getKey(), err.getCode());
+            }
+            Response response = new Response(false, 604, ort);
+            response.setErrors(factoryErrs.getErrors());
+            return response;
+        }
         Response response = repository.create(ort, "stamm");
         if(violation.hasWarnings()) {
             response.setWarnings(violation.getWarnings());
@@ -340,6 +350,15 @@ public class OrtService {
         }
 
         ortFactory.transformCoordinates(ort);
+        if (ortFactory.hasErrors()) {
+            Violation factoryErrs = new Violation();
+            for (ReportItem err : ortFactory.getErrors()) {
+                factoryErrs.addError(err.getKey(), err.getCode());
+            }
+            Response response = new Response(false, 604, ort);
+            response.setErrors(factoryErrs.getErrors());
+            return response;
+        }
         Response response = repository.update(ort, "stamm");
         if(violation.hasWarnings()) {
             response.setWarnings(violation.getWarnings());
