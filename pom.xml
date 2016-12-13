@@ -133,16 +133,19 @@
             <artifactId>gt-referencing</artifactId>
             <version>14.5</version>
         </dependency>
-
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-epsg-hsql</artifactId>
             <version>14.5</version>
         </dependency>
-
         <dependency>
             <groupId>org.geotools</groupId>
-            <artifactId>gt-main</artifactId>
+            <artifactId>gt-api</artifactId>
+            <version>14.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-opengis</artifactId>
             <version>14.5</version>
         </dependency>
 

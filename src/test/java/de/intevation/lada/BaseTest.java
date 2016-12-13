@@ -46,21 +46,21 @@ public class BaseTest {
     public static WebArchive createDeployment() throws Exception {
         File[] files = Maven.resolver().loadPomFromFile("pom.xml")
             .importRuntimeAndTestDependencies().resolve().withTransitivity().asFile();
-        File antlr = null;
-        for (File f : files) {
-            logger.debug(f.getName());
-            if (f.getName().contains("antlr4")) {
-                antlr = f;
-            }
-        }
+
         WebArchive archive = ShrinkWrap.create(WebArchive.class, ARCHIVE_NAME)
             .addPackages(true, Package.getPackage("de.intevation.lada"))
             .addAsResource("log4j.properties", "log4j.properties")
             .addAsResource("shibboleth.properties", "shibboleth.properties")
             .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
-            .addAsLibrary(antlr)
             .addAsResource("META-INF/test-persistence.xml",
                 "META-INF/persistence.xml");
+        for (File f : files) {
+            if (f.getName().contains("antlr4")
+                || f.getName().contains("gt-opengis")
+            ) {
+                archive.addAsLibrary(f);
+            }
+        }
         return archive;
     }
 
