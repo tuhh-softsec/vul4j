@@ -83,6 +83,7 @@ public class OrtFactory {
             ort.setGeom(generateGeom(targetCoord.y, targetCoord.x));
         } catch (FactoryException |
                 TransformException e) {
+            logger.error(e.getMessage());
             ReportItem err = new ReportItem();
             err.setCode(672);
             err.setKey("coordinates");
