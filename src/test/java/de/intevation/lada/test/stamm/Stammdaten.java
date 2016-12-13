@@ -173,6 +173,8 @@ public class Stammdaten {
                 "isLandkreis",
                 "isRegbezirk",
                 "kreis",
+                "latitude",
+                "longitude",
                 "nuts",
                 "plz",
                 "regbezirk"
