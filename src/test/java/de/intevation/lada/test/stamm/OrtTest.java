@@ -40,6 +40,10 @@ public class OrtTest extends ServiceTest {
         timestampAttributes = Arrays.asList(new String[]{
             "letzteAenderung"
         });
+        // Attributes with point geometries
+        geomPointAttributes = Arrays.asList(new String[]{
+                "geom"
+        });
 
         // Prepare expected object
         JsonObject content = readJsonResource("/datasets/dbUnit_ort.json");

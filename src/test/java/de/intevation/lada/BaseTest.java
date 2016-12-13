@@ -56,7 +56,10 @@ public class BaseTest {
                 "META-INF/persistence.xml");
         for (File f : files) {
             if (f.getName().contains("antlr4")
+                || f.getName().contains("gt-metadata")
                 || f.getName().contains("gt-opengis")
+                || f.getName().contains("gt-referencing")
+                //TODO: still something missing. One test will fail.
             ) {
                 archive.addAsLibrary(f);
             }

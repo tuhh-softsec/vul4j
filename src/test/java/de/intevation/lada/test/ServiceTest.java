@@ -12,6 +12,7 @@ import java.io.StringReader;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map.Entry;
 import java.util.Scanner;
 
@@ -31,15 +32,24 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.lang.WordUtils;
 import org.junit.Assert;
 
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Point;
+
 import de.intevation.lada.BaseTest;
 import de.intevation.lada.Protocol;
 import de.intevation.lada.test.land.ProbeTest;
 
 public class ServiceTest {
 
+    private static final String LAT_KEY = "latitude";
+    private static final String LONG_KEY = "longitude";
+
     protected List<Protocol> protocol;
 
     protected List<String> timestampAttributes;
+    protected List<String> geomPointAttributes = new ArrayList<String>();
 
     protected URL baseUrl;
 
@@ -73,10 +83,33 @@ public class ServiceTest {
         for (Entry<String, JsonValue> entry : object.entrySet()) {
             String key = WordUtils.capitalize(
                 entry.getKey(), new char[]{'_'}).replaceAll("_","");
-            key = key.replaceFirst(key.substring(0, 1), key.substring(0, 1).toLowerCase());
+            key = key.replaceFirst(
+                key.substring(0, 1), key.substring(0, 1).toLowerCase());
             if (timestampAttributes.contains(key)) {
-                Timestamp timestamp = Timestamp.valueOf(entry.getValue().toString().replaceAll("\"", ""));
+                Timestamp timestamp = Timestamp.valueOf(
+                    entry.getValue().toString().replaceAll("\"", ""));
                 builder.add(key, timestamp.getTime());
+            }
+            else if (geomPointAttributes.contains(key)) {
+                // Convert EWKT to latitude and longitude
+                String wkt = entry.getValue().toString().split(";")[1];
+                try {
+                    Geometry geom = new WKTReader().read(wkt);
+                    if (!(geom instanceof Point)) {
+                        throw new IllegalArgumentException(
+                            "WKT does not represent a point");
+                    }
+                    Point point = (Point)geom;
+                    builder.add(LONG_KEY, point.getX());
+                    builder.add(LAT_KEY, point.getY());
+                } catch (ParseException | IllegalArgumentException e) {
+                    Protocol prot = new Protocol();
+                    prot.addInfo("exception", e.getMessage());
+                    protocol.add(prot);
+                    Assert.fail("Exception while parsing WKT '"
+                        + wkt + "':\n"
+                        + e.getMessage());
+                }
             }
             else {
                 builder.add(key, entry.getValue());
