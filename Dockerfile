@@ -64,6 +64,9 @@ RUN ln -s $PWD/wildfly/postgres-module.xml \
        $JBOSS_HOME/modules/org/postgres/main/module.xml
 RUN ln -fs $PWD/wildfly/hibernate-module.xml \
        $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/module.xml
+# The jdbcadapters need to know the postgres module to cope with PGeometry
+RUN sed -i '/<\/dependencies>/i         <module name="org.postgres"/>' \
+    $JBOSS_HOME/modules/system/layers/base/org/jboss/ironjacamar/jdbcadapters/main/module.xml
 RUN ln -fs $PWD/wildfly/standalone.conf $JBOSS_HOME/bin/
 
 RUN wildfly/execute.sh

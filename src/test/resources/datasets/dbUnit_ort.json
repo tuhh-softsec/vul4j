@@ -12,8 +12,7 @@
         "koord_x_extern": "32487017",
         "koord_y_extern": "5519769",
         "letzte_aenderung": "2015-03-01 12:00:00",
-        "latitude": 49.83021,
-        "longitude": 8.81948,
+        "geom": "SRID=4326;POINT(49.83021 8.81948)",
         "ort_typ": 1,
         "kurztext": "kurz",
         "berichtstext": "bericht"

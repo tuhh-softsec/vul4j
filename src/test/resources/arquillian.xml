@@ -41,6 +41,7 @@
     </extension>
     <extension qualifier="persistence-dbunit">
       <property name="qualifiedTableNames">true</property>
+      <property name="datatypeFactory">org.dbunit.ext.postgresql.PostgresqlDataTypeFactory</property>
     </extension>
     <extension qualifier="persistence-script">
       <property name="showSql">true</property>
