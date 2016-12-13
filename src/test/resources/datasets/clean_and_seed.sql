@@ -49,7 +49,7 @@ INSERT INTO umwelt (id, umwelt_bereich) VALUES ('A6', 'Umweltbereich für test')
 INSERT INTO verwaltungseinheit (
             id, bundesland, bezeichnung,
             is_bundesland, is_gemeinde, is_landkreis, is_regbezirk)
-       VALUES ('11000000', '11000000', 'Berlin', 1, 1, 1, 0);
+       VALUES ('11000000', '11000000', 'Berlin', true, true, true, false);
 INSERT INTO probenehmer (
 			id, netzbetreiber_id, prn_id, bezeichnung, kurz_bezeichnung)
 		VALUES (726, '06', 'prn', 'test', 'test');

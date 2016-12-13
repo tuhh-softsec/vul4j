@@ -172,15 +172,10 @@ public class Stammdaten {
                 "isGemeinde",
                 "isLandkreis",
                 "isRegbezirk",
-                "koordXExtern",
-                "koordYExtern",
                 "kreis",
-                "latitude",
-                "longitude",
                 "nuts",
                 "plz",
-                "regbezirk",
-                "kdaId"
+                "regbezirk"
             )
         );
     }
