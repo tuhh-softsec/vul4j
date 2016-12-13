@@ -119,11 +119,15 @@ public class Verwaltungseinheit implements Serializable {
     }
 
     public Double getLatitude() {
-        return this.mittelpunkt.getY();
+        return this.mittelpunkt != null
+            ? this.mittelpunkt.getY()
+            : null;
     }
 
     public Double getLongitude() {
-        return this.mittelpunkt.getX();
+        return this.mittelpunkt != null
+            ? this.mittelpunkt.getX()
+            : null;
     }
 
     public String getNuts() {
