@@ -73,7 +73,7 @@ $(document).ready(function () {
         });
 
         $("#aggregation", this).change(function () {
-            $("#customName", page).val(generateTitle($("#measure").children(":selected").text(), $("#measureGroup", page).children(":selected").text(),
+            $("#customName", page).val(generateTitle($("#measure", page).children(":selected").text(), $("#measureGroup", page).children(":selected").text(),
                 $(this).children(":selected").text()));
         });
 
