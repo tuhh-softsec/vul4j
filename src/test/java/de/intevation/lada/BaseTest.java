@@ -44,26 +44,23 @@ public class BaseTest {
      */
     @Deployment(testable=true)
     public static WebArchive createDeployment() throws Exception {
-        File[] files = Maven.resolver().loadPomFromFile("pom.xml")
-            .importRuntimeAndTestDependencies().resolve().withTransitivity().asFile();
+        File antlr = Maven.resolver().loadPomFromFile("pom.xml")
+            .resolve("org.antlr:antlr4-runtime")
+            .withoutTransitivity().asSingleFile();
 
         WebArchive archive = ShrinkWrap.create(WebArchive.class, ARCHIVE_NAME)
             .addPackages(true, Package.getPackage("de.intevation.lada"))
             .addAsResource("log4j.properties", "log4j.properties")
             .addAsResource("shibboleth.properties", "shibboleth.properties")
             .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
+            .addAsLibrary(antlr)
             .addAsResource("META-INF/test-persistence.xml",
                 "META-INF/persistence.xml");
-        for (File f : files) {
-            if (f.getName().contains("antlr4")
-                || f.getName().contains("gt-metadata")
-                || f.getName().contains("gt-opengis")
-                || f.getName().contains("gt-referencing")
-                //TODO: still something missing. One test will fail.
-            ) {
-                archive.addAsLibrary(f);
-            }
-        }
+        addWithDependencies("org.geotools:gt-api", archive);
+        addWithDependencies("org.geotools:gt-referencing", archive);
+        addWithDependencies("org.geotools:gt-epsg-hsql", archive);
+        addWithDependencies("org.geotools:gt-opengis", archive);
+
         return archive;
     }
 
@@ -77,5 +74,13 @@ public class BaseTest {
     @AfterClass
     public static final void afterTests() {
         System.out.println("");
+    }
+
+    private static void addWithDependencies(String coordinate, WebArchive archive) {
+        File[] files = Maven.resolver().loadPomFromFile("pom.xml")
+            .resolve(coordinate).withTransitivity().asFile();
+        for (File f : files) {
+            archive.addAsLibrary(f);
+        }
     }
 }
