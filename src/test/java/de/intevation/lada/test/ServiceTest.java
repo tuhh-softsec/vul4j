@@ -48,7 +48,7 @@ public class ServiceTest {
 
     protected List<Protocol> protocol;
 
-    protected List<String> timestampAttributes;
+    protected List<String> timestampAttributes = new ArrayList<String>();
     protected List<String> geomPointAttributes = new ArrayList<String>();
 
     protected URL baseUrl;
