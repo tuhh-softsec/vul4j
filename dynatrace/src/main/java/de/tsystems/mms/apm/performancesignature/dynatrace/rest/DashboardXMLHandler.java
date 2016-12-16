@@ -43,9 +43,10 @@ public class DashboardXMLHandler extends DefaultHandler {
     }
 
     public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attr) {
-        if (localName.equals("incidentchart") && attr.getLength() == 3) {
+        //Dynatrace 6.3.x: incidentchart >Dynatrace 6.5.x: incidentchartrecord
+        if (localName.matches("incidentchart|incidentchartrecord") && attr.getLength() == 3) {
             incidentChart = new IncidentChart(attr);
-        } else if (localName.equals("incidentchart") && attr.getLength() > 3) {
+        } else if (localName.matches("incidentchart|incidentchartrecord") && attr.getLength() > 3) {
             incidentChart.add(new IncidentViolation(attr));
         } else if (localName.equals("chartdashlet")) {
             chartDashlet = new ChartDashlet(attr);
@@ -57,7 +58,8 @@ public class DashboardXMLHandler extends DefaultHandler {
     }
 
     public void endElement(final String uri, final String localName, final String qName) {
-        if (localName.equals("incidentchart") && incidentChart != null && incidentChart.getViolations() != null) {
+        if (localName.matches("incidentchart|incidentchartrecord") && incidentChart != null && incidentChart.getViolations() != null
+                && !dashboardReport.getIncidents().contains(incidentChart)) {
             dashboardReport.addIncident(incidentChart);
         } else if (localName.equals("chartdashlet")) {
             dashboardReport.addChartDashlet(chartDashlet);
