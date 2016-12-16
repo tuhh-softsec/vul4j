@@ -167,7 +167,7 @@ CREATE TABLE verwaltungseinheit (
 CREATE TABLE verwaltungsgrenze (
     id serial PRIMARY KEY,
     gem_id character varying(8) NOT NULL REFERENCES verwaltungseinheit,
-    shape public.geometry(MultiPolygon, 4326)
+    shape public.geometry(MultiPolygon, 4326) NOT NULL
 );
 CREATE INDEX verwaltungsgrenze_sp_idx ON verwaltungsgrenze USING gist (shape);
 
