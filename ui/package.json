@@ -9,13 +9,13 @@
   "devDependencies": {
     "@jenkins-cd/js-builder": "0.0.48",
     "gulp": "^3.9.1",
-    "minifyify": "^7.3.3"
+    "minifyify": "^7.3.4"
   },
   "dependencies": {
     "@jenkins-cd/js-modules": "latest",
     "bootstrap-detached": "^3.3.5-v1",
-    "datatables.net": "^1.10.12",
-    "datatables.net-bs": "^1.10.12",
+    "datatables.net": "^1.10.13",
+    "datatables.net-bs": "^1.10.13",
     "lightbox2": "^2.9.0",
     "jquery": "latest",
     "wurl": "^2.1.0"
