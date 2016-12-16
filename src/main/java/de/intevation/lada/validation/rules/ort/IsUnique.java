@@ -31,12 +31,12 @@ public class IsUnique implements Rule {
 
         QueryBuilder<Ort> builder = new QueryBuilder<Ort>(
             repository.entityManager("stamm"), Ort.class);
-        builder.and("netzbetreiberId", ort.getNetzbetreiberId());
-        builder.and("ortId", ort.getOrtId());
         if (ort.getId() != null) {
             // Consider UPDATE
-            builder.andNot("id", ort.getId());
+            builder.and("id", ort.getId()).not();
         }
+        builder.and("netzbetreiberId", ort.getNetzbetreiberId());
+        builder.and("ortId", ort.getOrtId());
         if (!repository.filterPlain(builder.getQuery(), "stamm").isEmpty()) {
             Violation violation = new Violation();
             violation.addError("ortId", 672);

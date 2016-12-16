@@ -104,7 +104,7 @@ public class DeskriptorService {
         QueryBuilder<Deskriptoren> builder = new QueryBuilder<Deskriptoren>(
             repository.entityManager("stamm"),
             Deskriptoren.class);
-        builder.andNot("sn", 0);
+        builder.and("sn", 0).not();
         if (params.containsKey("layer") &&
             !params.containsKey("parents")) {
             String layer = params.getFirst("layer");
