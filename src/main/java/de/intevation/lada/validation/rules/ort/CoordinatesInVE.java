@@ -13,7 +13,8 @@ import javax.inject.Inject;
 
 import com.vividsolutions.jts.geom.Point;
 
-import de.intevation.lada.model.land.Ortszuordnung;
+import org.apache.log4j.Logger;
+
 import de.intevation.lada.model.stammdaten.Ort;
 import de.intevation.lada.model.stammdaten.Verwaltungseinheit;
 import de.intevation.lada.model.stammdaten.Verwaltungsgrenze;
@@ -31,8 +32,11 @@ import de.intevation.lada.validation.rules.Rule;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@ValidationRule("Ortszuordnung")
+@ValidationRule("Ort")
 public class CoordinatesInVE implements Rule {
+
+    @Inject
+    private Logger logger;
 
     @Inject
     @RepositoryConfig(type=RepositoryType.RO)
@@ -41,43 +45,43 @@ public class CoordinatesInVE implements Rule {
     @SuppressWarnings("unchecked")
     @Override
     public Violation execute(Object object) {
-        Ortszuordnung oz = (Ortszuordnung)object;
-        if (!"E".equals(oz.getOrtszuordnungTyp())) {
-            return null;
-        }
+        Ort ort = (Ort)object;
 
-        Ort ort = repository.getByIdPlain(Ort.class, oz.getOrtId(), "stamm");
-        String gemId = ort.getGemId();
-        if (gemId == null) {
-            Violation violation = new Violation();
-            violation.addWarning("gemId", 631);
-            return violation;
-        }
+        String gemId = "".equals(ort.getGemId())
+            ? null
+            : ort.getGemId();
 
-        QueryBuilder<Verwaltungsgrenze> vg =
-            new QueryBuilder<Verwaltungsgrenze>(
-                repository.entityManager("stamm"), Verwaltungsgrenze.class);
-        vg.and("gemId", gemId);
-        List<Verwaltungsgrenze> vgs = repository.filterPlain(
-            vg.getQuery(), "stamm");
-        if (vgs == null || vgs.isEmpty()) {
-            Violation violation = new Violation();
-            violation.addWarning("verwaltungsgrenze", 600);
-            return violation;
-        }
+        if (gemId != null) {
 
-        Point p = ort.getGeom();
-        boolean hit = false;
-        for (Verwaltungsgrenze singlevg : vgs) {
-            if(singlevg.getShape().contains(p)) {
-                hit = true;
+            QueryBuilder<Verwaltungsgrenze> vg =
+                new QueryBuilder<Verwaltungsgrenze>(
+                    repository.entityManager("stamm"),
+                    Verwaltungsgrenze.class);
+            vg.and("gemId", gemId);
+            List<Verwaltungsgrenze> vgs = repository.filterPlain(
+                vg.getQuery(), "stamm");
+            if (vgs == null || vgs.isEmpty()) {
+                Violation violation = new Violation();
+                violation.addWarning("verwaltungsgrenze", 600);
+                return violation;
             }
-        }
-        if (!hit) {
+
+            Point p = ort.getGeom();
+            if (p == null) {
+                logger.error("geom is null. "
+                    + "Probably OrtFactory.transformCoordinates() has not "
+                    + "been called on this ort.");
+            }
+            for (Verwaltungsgrenze singlevg : vgs) {
+                if(singlevg.getShape().contains(p)) {
+                    return null;
+                }
+            }
             Violation violation = new Violation();
             violation.addWarning("verwaltungsgrenze", 651);
             return violation;
         }
+
         return null;
     }
 
