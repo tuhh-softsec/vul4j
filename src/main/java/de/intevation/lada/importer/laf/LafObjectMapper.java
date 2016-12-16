@@ -842,6 +842,16 @@ public class LafObjectMapper {
             }
         }
 
+        ortFactory.transformCoordinates(ort);
+        if (hasKoord && !hasGem) {
+            ortFactory.findVerwaltungseinheit(ort);
+        }
+        if (ortFactory.hasErrors()) {
+            // Add to warnings because Probe object might be imported
+            currentWarnings.addAll(ortFactory.getErrors());
+            return null;
+        }
+
         Violation violation = ortValidator.validate(ort);
         for (Entry<String, List<Integer>> warn :
                  violation.getWarnings().entrySet()) {
@@ -859,17 +869,6 @@ public class LafObjectMapper {
                         new ReportItem("validation", err.getKey(), code));
                 }
             }
-            return null;
-        }
-
-        ortFactory.transformCoordinates(ort);
-        if (hasKoord && !hasGem) {
-            logger.debug("find Verwaltungseinheit");
-            ortFactory.findVerwaltungseinheit(ort);
-        }
-        if (ortFactory.hasErrors()) {
-            // Add to warnings because Probe object might be imported
-            currentWarnings.addAll(ortFactory.getErrors());
             return null;
         }
 
