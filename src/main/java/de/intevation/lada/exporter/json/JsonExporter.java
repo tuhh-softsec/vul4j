@@ -32,6 +32,7 @@ import de.intevation.lada.model.land.Ortszuordnung;
 import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.model.land.StatusProtokoll;
 import de.intevation.lada.model.land.ZusatzWert;
+import de.intevation.lada.model.stammdaten.Betriebsart;
 import de.intevation.lada.model.stammdaten.Datenbasis;
 import de.intevation.lada.model.stammdaten.Deskriptoren;
 import de.intevation.lada.model.stammdaten.MessEinheit;
@@ -40,6 +41,7 @@ import de.intevation.lada.model.stammdaten.MessStelle;
 import de.intevation.lada.model.stammdaten.Messgroesse;
 import de.intevation.lada.model.stammdaten.MessprogrammKategorie;
 import de.intevation.lada.model.stammdaten.Ort;
+import de.intevation.lada.model.stammdaten.ProbenZusatz;
 import de.intevation.lada.model.stammdaten.Probenart;
 import de.intevation.lada.model.stammdaten.Staat;
 import de.intevation.lada.model.stammdaten.StatusKombi;
@@ -128,6 +130,11 @@ public class JsonExporter implements Exporter {
                 datenbasis == null ? "" : datenbasis.getDatenbasis());
             probe.put("mpl", mpl == null ? "" : mpl.getCode());
             probe.put("umw", umw == null ? "" : umw.getUmweltBereich());
+            Betriebsart ba = repository.getByIdPlain(
+                Betriebsart.class,
+                probe.get("baId").asInt(),
+                "stamm");
+            probe.put("messregime", ba.getName());
             addMessungen(proben.get(i));
             addKommentare(proben.get(i));
             addZusatzwerte(proben.get(i));
@@ -230,6 +237,21 @@ public class JsonExporter implements Exporter {
         try {
             String tmp = mapper.writeValueAsString(zusatzwerte);
             JsonNode nodes = mapper.readTree(tmp);
+            for (int i = 0; i < nodes.size(); i++) {
+                ProbenZusatz pz = repository.getByIdPlain(
+                    ProbenZusatz.class,
+                    nodes.get(i).get("pzsId").asText(),
+                    "stamm");
+                ((ObjectNode)nodes.get(i)).put(
+                    "pzwGroesse", pz.getBeschreibung());
+                Integer mehId = pz.getMessEinheitId();
+                MessEinheit meh = repository.getByIdPlain(
+                    MessEinheit.class,
+                    mehId,
+                    "stamm");
+                ((ObjectNode)nodes.get(i)).put(
+                    "meh", meh.getEinheit());
+            }
             ((ObjectNode)probe).set("zusatzwerte", nodes);
         } catch (IOException e) {
             logger.debug("Could not export Zusatzwerte for Probe "
