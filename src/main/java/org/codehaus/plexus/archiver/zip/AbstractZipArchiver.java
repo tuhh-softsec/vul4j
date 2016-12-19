@@ -322,7 +322,7 @@ public abstract class AbstractZipArchiver
             zipArchiveOutputStream.setMethod(
                 doCompress ? ZipArchiveOutputStream.DEFLATED : ZipArchiveOutputStream.STORED );
 
-            zOut = new ConcurrentJarCreator( Runtime.getRuntime().availableProcessors() );
+            zOut = new ConcurrentJarCreator( recompressAddedZips, Runtime.getRuntime().availableProcessors() );
         }
         initZipOutputStream( zOut );
 
@@ -508,19 +508,9 @@ public abstract class AbstractZipArchiver
             }
             else
             {
-                zOut.addArchiveEntry( ze, wrappedRecompressor( ze, in ), addInParallel );
+                zOut.addArchiveEntry( ze, in, addInParallel );
             }
         }
-    }
-
-    private InputStream maybeSequence( byte[] header, int hdrBytes, InputStream in )
-    {
-        return hdrBytes > 0 ? new SequenceInputStream( new ByteArrayInputStream( header, 0, hdrBytes ), in ) : in;
-    }
-
-    private boolean isZipHeader( byte[] header )
-    {
-        return header[0] == 0x50 && header[1] == 0x4b && header[2] == 3 && header[3] == 4;
     }
 
     /**
@@ -659,40 +649,6 @@ public abstract class AbstractZipArchiver
                 zOut.addArchiveEntry( ze, createInputStreamSupplier( new ByteArrayInputStream( bytes ) ), true );
             }
         }
-    }
-
-    private InputStreamSupplier wrappedRecompressor( final ZipArchiveEntry ze, final InputStreamSupplier other )
-    {
-
-        return new InputStreamSupplier()
-        {
-
-            @Override
-            public InputStream get()
-            {
-                InputStream is = other.get();
-                byte[] header = new byte[ 4 ];
-                try
-                {
-                    int read = is.read( header );
-                    boolean compressThis = doCompress;
-                    if ( !recompressAddedZips && isZipHeader( header ) )
-                    {
-                        compressThis = false;
-                    }
-
-                    ze.setMethod( compressThis ? ZipArchiveEntry.DEFLATED : ZipArchiveEntry.STORED );
-
-                    return maybeSequence( header, read, is );
-                }
-                catch ( IOException e )
-                {
-                    throw new RuntimeException( e );
-                }
-
-            }
-
-        };
     }
 
     protected InputStreamSupplier createInputStreamSupplier( final InputStream inputStream )

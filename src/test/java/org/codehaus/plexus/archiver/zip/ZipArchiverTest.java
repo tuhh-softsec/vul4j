@@ -26,6 +26,7 @@ package org.codehaus.plexus.archiver.zip;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -339,6 +340,54 @@ public class ZipArchiverTest
         ZipArchiver archiver = newArchiver( "archive1.zip" );
 
         createArchive( archiver );
+    }
+
+    public void testRecompressAddedZips() throws Exception
+    {
+        // check that by default the zip archives are re-compressed
+
+        final File zipFileRecompress = getTestFile( "target/output/recompress-added-zips.zip" );
+        final ZipArchiver zipArchiverRecompress = getZipArchiver( zipFileRecompress );
+        zipArchiverRecompress.addDirectory( getTestFile( "src/test/jars" ) );
+        FileUtils.removePath( zipFileRecompress.getPath() );
+        zipArchiverRecompress.createArchive();
+
+        final ZipFile zfRecompress = new ZipFile( zipFileRecompress );
+        assertEquals( ZipEntry.DEFLATED, zfRecompress.getEntry( "test.zip" ).getMethod() );
+        assertEquals( ZipEntry.DEFLATED, zfRecompress.getEntry( "test.jar" ).getMethod() );
+        assertEquals( ZipEntry.DEFLATED, zfRecompress.getEntry( "test.rar" ).getMethod() );
+        assertEquals( ZipEntry.DEFLATED, zfRecompress.getEntry( "test.tar.gz" ).getMethod() );
+        zfRecompress.close();
+
+        // make sure the zip files are not re-compressed when recompressAddedZips is set to false
+
+        final File zipFileDontRecompress = getTestFile( "target/output/dont-recompress-added-zips.zip" );
+        ZipArchiver zipArchiver = getZipArchiver( zipFileDontRecompress );
+        zipArchiver.addDirectory( getTestFile( "src/test/jars" ) );
+        zipArchiver.setRecompressAddedZips( false );
+        FileUtils.removePath( zipFileDontRecompress.getPath() );
+        zipArchiver.createArchive();
+
+        final ZipFile zfDontRecompress = new ZipFile( zipFileDontRecompress );
+        final ZipArchiveEntry zipEntry = zfDontRecompress.getEntry( "test.zip" );
+        final ZipArchiveEntry jarEntry = zfDontRecompress.getEntry( "test.jar" );
+        final ZipArchiveEntry rarEntry = zfDontRecompress.getEntry( "test.rar" );
+        final ZipArchiveEntry tarEntry = zfDontRecompress.getEntry( "test.tar.gz" );
+        // check if only zip files are not compressed...
+        assertEquals( ZipEntry.STORED, zipEntry.getMethod() );
+        assertEquals( ZipEntry.STORED, jarEntry.getMethod() );
+        assertEquals( ZipEntry.STORED, rarEntry.getMethod() );
+        assertEquals( ZipEntry.DEFLATED, tarEntry.getMethod() );
+        // ...and no file is corrupted in the process
+        assertTrue( IOUtil.contentEquals( new FileInputStream( getTestFile( "src/test/jars/test.zip" ) ),
+                    zfDontRecompress.getInputStream( zipEntry ) ) );
+        assertTrue( IOUtil.contentEquals( new FileInputStream( getTestFile( "src/test/jars/test.jar" ) ),
+                zfDontRecompress.getInputStream( jarEntry ) ) );
+        assertTrue( IOUtil.contentEquals( new FileInputStream( getTestFile( "src/test/jars/test.rar" ) ),
+                zfDontRecompress.getInputStream( rarEntry ) ) );
+        assertTrue( IOUtil.contentEquals( new FileInputStream( getTestFile( "src/test/jars/test.tar.gz" ) ),
+                zfDontRecompress.getInputStream( tarEntry ) ) );
+        zfDontRecompress.close();
     }
 
     public void testAddArchivedFileSet()

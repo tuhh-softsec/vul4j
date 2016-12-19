@@ -569,7 +569,8 @@ public class JarArchiver
             {
                 zipArchiveOutputStream.setMethod( ZipArchiveOutputStream.STORED );
             }
-            ConcurrentJarCreator ps = new ConcurrentJarCreator( Runtime.getRuntime().availableProcessors() );
+            ConcurrentJarCreator ps =
+                new ConcurrentJarCreator( isRecompressAddedZips(), Runtime.getRuntime().availableProcessors() );
             initZipOutputStream( ps );
             finalizeZipOutputStream( ps );
         }
