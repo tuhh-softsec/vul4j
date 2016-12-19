@@ -177,8 +177,8 @@ public class DTServerConnection {
 
     public DashboardReport getDashboardReportFromXML(final String dashBoardName, final String sessionName, final String testCaseName) {
         ReportURLBuilder builder = new ReportURLBuilder();
-        builder.setServerAddress(this.address).setDashboardName(dashBoardName).setSource(sessionName);
-        URL url = builder.buildURL(false);
+        builder.setServerAddress(this.address).setDashboardName(dashBoardName).setSource(sessionName).setXMLReport(true);
+        URL url = builder.buildURL();
         try {
             XMLReader xr = XMLReaderFactory.createXMLReader();
             DashboardXMLHandler handler = new DashboardXMLHandler(testCaseName);
@@ -539,7 +539,7 @@ public class DTServerConnection {
                     .setSource(sessionName)
                     .setType("PDF");
             if (comparedSessionName != null) builder.setComparison(comparedSessionName);
-            file.copyFrom(getInputStream(builder.buildURL(true)));
+            file.copyFrom(getInputStream(builder.buildURL()));
             return true;
         } catch (Exception ex) {
             throw new CommandExecutionException("error downloading PDF Report: " + ex.getMessage(), ex);

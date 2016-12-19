@@ -29,11 +29,12 @@ public class ReportURLBuilder {
     private static final String RESTPATH_DASHBOARDS = "/rest/management/dashboard/";
     private static final Logger logger = Logger.getLogger(ReportURLBuilder.class.getName());
     private final List<String> parameter;
-    private String dashboardName;
-    private String serverAddress;
+    private String dashboardName, serverAddress;
+    private boolean xmlReport;
 
     public ReportURLBuilder() {
         parameter = new ArrayList<String>();
+        xmlReport = false;
     }
 
     public ReportURLBuilder setSource(final String source) {
@@ -61,14 +62,19 @@ public class ReportURLBuilder {
         return this;
     }
 
-    public URL buildURL(final boolean reportSwitch) {
+    public ReportURLBuilder setXMLReport(final boolean xmlReport) {
+        this.xmlReport = xmlReport;
+        return this;
+    }
+
+    public URL buildURL() {
         URL dashboardURL;
         try {
             final StringBuilder sb = new StringBuilder(this.serverAddress);
-            if (reportSwitch) {
-                sb.append(RESTPATH_REPORTS);
-            } else {
+            if (xmlReport) {
                 sb.append(RESTPATH_DASHBOARDS);
+            } else {
+                sb.append(RESTPATH_REPORTS);
             }
             sb.append(PerfSigUIUtils.encodeString(dashboardName));
             if (!parameter.isEmpty()) sb.append("?");
