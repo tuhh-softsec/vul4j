@@ -48,7 +48,7 @@ public class ServiceTest {
 
     protected List<Protocol> protocol;
 
-    protected List<String> timestampAttributes;
+    protected List<String> timestampAttributes = new ArrayList<String>();
     protected List<String> geomPointAttributes = new ArrayList<String>();
 
     protected URL baseUrl;
@@ -159,7 +159,6 @@ public class ServiceTest {
     /**
      * Test the GET Service by requesting a single object by id.
      *
-     * @param baseUrl The url pointing to the test deployment.
      */
     public JsonObject getById(
         String name,
@@ -218,7 +217,6 @@ public class ServiceTest {
     /**
      * Test the GET service using filters.
      *
-     * @param baseUrl The url poining to the test deployment.
      */
     public JsonObject filter(String name, String parameter) {
         System.out.print(".");
@@ -230,8 +228,8 @@ public class ServiceTest {
         /* Create a client*/
         Client client = ClientBuilder.newClient();
         WebTarget target =
-            client.target(baseUrl + parameter);//"probe?qid=2&mst_id=11010&umw_id=N24");
-        prot.addInfo("filter", parameter);//"qid=2&mst_id=11010&umw_id=N24");
+            client.target(baseUrl + parameter);
+        prot.addInfo("filter", parameter);
         /* Request the objects using the filter*/
         Response response = target.request()
             .header("X-SHIB-user", BaseTest.TEST_USER)
@@ -264,7 +262,6 @@ public class ServiceTest {
     /**
      * Test the CREATE Service.
      *
-     * @param baseUrl The url pointing to the test deployment.
      */
     public JsonObject create(String name, String parameter, JsonObject create) {
         System.out.print(".");
@@ -276,7 +273,7 @@ public class ServiceTest {
         /* Create a client*/
         Client client = ClientBuilder.newClient();
         WebTarget target = client.target(baseUrl + parameter);
-        /* Send a post request containing a new probe*/
+        /* Send a post request containing a new object*/
         Response response = target.request()
             .header("X-SHIB-user", BaseTest.TEST_USER)
             .header("X-SHIB-roles", BaseTest.TEST_ROLES)
@@ -305,9 +302,8 @@ public class ServiceTest {
     }
 
     /**
-     * Test the probe update service.
+     * Test an update service.
      *
-     * @param baseUrl The url pointing to the test deployment.
      */
     public JsonObject update(
         String name,
@@ -326,7 +322,7 @@ public class ServiceTest {
             /* Create a client*/
             Client client = ClientBuilder.newClient();
             WebTarget target = client.target(baseUrl + parameter);
-            /* Request a with the saved id*/
+            /* Request object corresponding to id in URL */
             Response response = target.request()
                 .header("X-SHIB-user", BaseTest.TEST_USER)
                 .header("X-SHIB-roles", BaseTest.TEST_ROLES)
@@ -335,18 +331,21 @@ public class ServiceTest {
             /* Try to parse the response*/
             JsonReader reader = Json.createReader(new StringReader(entity));
             JsonObject oldObject = reader.readObject().getJsonObject("data");
-            /* Change the hauptprobenNr*/
+
+            /* Value replacement */
             String updatedEntity =
                 oldObject.toString().replace(oldValue, newValue);
             prot.addInfo("updated datafield", updateAttribute);
             prot.addInfo("updated value", oldValue);
             prot.addInfo("updated to", newValue);
-            /* Send the updated probe via put request*/
+
+            /* Send modified object via put request*/
             WebTarget putTarget = client.target(baseUrl + parameter);
             Response updated = putTarget.request()
                 .header("X-SHIB-user", BaseTest.TEST_USER)
                 .header("X-SHIB-roles", BaseTest.TEST_ROLES)
                 .put(Entity.entity(updatedEntity, MediaType.APPLICATION_JSON));
+
             /* Try to parse the response*/
             JsonReader updatedReader = Json.createReader(
                 new StringReader(updated.readEntity(String.class)));
@@ -373,7 +372,6 @@ public class ServiceTest {
     /**
      * Test the DELETE Service.
      *
-     * @param baseUrl The url pointing to the test deployment.
      */
     public JsonObject delete(String name, String parameter) {
         System.out.print(".");
@@ -387,7 +385,7 @@ public class ServiceTest {
         WebTarget target =
             client.target(baseUrl + parameter);
         prot.addInfo("parameter", parameter);
-        /* Delete a probe with the id saved when created a probe*/
+        /* Delete object with ID given in URL */
         Response response = target.request()
             .header("X-SHIB-user", BaseTest.TEST_USER)
             .header("X-SHIB-roles", BaseTest.TEST_ROLES)

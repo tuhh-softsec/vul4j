@@ -20,6 +20,7 @@ DELETE FROM koordinaten_art;
 DELETE FROM staat;
 DELETE FROM umwelt;
 DELETE FROM verwaltungseinheit;
+DELETE FROM deskriptoren;
 
 -- seed
 -- minimal master data to make interface tests runnable

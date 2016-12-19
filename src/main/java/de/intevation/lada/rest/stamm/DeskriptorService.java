@@ -104,20 +104,20 @@ public class DeskriptorService {
         QueryBuilder<Deskriptoren> builder = new QueryBuilder<Deskriptoren>(
             repository.entityManager("stamm"),
             Deskriptoren.class);
-        builder.andNot("sn", 0);
-        if (params.containsKey("layer") &&
-            !params.containsKey("parents")) {
-            String layer = params.getFirst("layer");
-            builder.and("ebene", layer);
-        }
-        else {
-            String layer = params.getFirst("layer");
-            String parents = params.getFirst("parents");
-            builder.and("ebene", layer);
-            List<String> parentList = new ArrayList<String>();
-            String[] parentArray = parents.split(", ");
-            parentList = Arrays.asList(parentArray);
-            builder.andIn("vorgaenger", parentList);
+        builder.and("sn", 0).not();
+        try {
+            builder.and("ebene",
+                Integer.valueOf(params.getFirst("layer")));
+            builder.and("ebene", params.getFirst("layer"));
+            if (params.containsKey("parents")) {
+                String parents = params.getFirst("parents");
+                List<String> parentList = new ArrayList<String>();
+                String[] parentArray = parents.split(", ");
+                parentList = Arrays.asList(parentArray);
+                builder.andIn("vorgaenger", parentList);
+            }
+        } catch (NumberFormatException nfe) {
+            return new Response(false, 612, null);
         }
         return repository.filter(builder.getQuery(), "stamm");
     }

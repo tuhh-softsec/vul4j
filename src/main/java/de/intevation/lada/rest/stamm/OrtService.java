@@ -271,14 +271,6 @@ public class OrtService {
             return new Response(false, 699, ort);
         }
 
-        Violation violation = validator.validate(ort);
-        if (violation.hasErrors()) {
-            Response response = new Response(false, 604, ort);
-            response.setErrors(violation.getErrors());
-            response.setWarnings(violation.getWarnings());
-            return response;
-        }
-
         ortFactory.transformCoordinates(ort);
         if (ortFactory.hasErrors()) {
             Violation factoryErrs = new Violation();
@@ -289,6 +281,15 @@ public class OrtService {
             response.setErrors(factoryErrs.getErrors());
             return response;
         }
+
+        Violation violation = validator.validate(ort);
+        if (violation.hasErrors()) {
+            Response response = new Response(false, 604, ort);
+            response.setErrors(violation.getErrors());
+            response.setWarnings(violation.getWarnings());
+            return response;
+        }
+
         Response response = repository.create(ort, "stamm");
         if(violation.hasWarnings()) {
             response.setWarnings(violation.getWarnings());
@@ -341,14 +342,6 @@ public class OrtService {
             return new Response(false, 699, ort);
         }
 
-        Violation violation = validator.validate(ort);
-        if (violation.hasErrors()) {
-            Response response = new Response(false, 604, ort);
-            response.setErrors(violation.getErrors());
-            response.setWarnings(violation.getWarnings());
-            return response;
-        }
-
         ortFactory.transformCoordinates(ort);
         if (ortFactory.hasErrors()) {
             Violation factoryErrs = new Violation();
@@ -359,6 +352,15 @@ public class OrtService {
             response.setErrors(factoryErrs.getErrors());
             return response;
         }
+
+        Violation violation = validator.validate(ort);
+        if (violation.hasErrors()) {
+            Response response = new Response(false, 604, ort);
+            response.setErrors(violation.getErrors());
+            response.setWarnings(violation.getWarnings());
+            return response;
+        }
+
         Response response = repository.update(ort, "stamm");
         if(violation.hasWarnings()) {
             response.setWarnings(violation.getWarnings());

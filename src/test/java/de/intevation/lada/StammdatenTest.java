@@ -34,10 +34,12 @@ import de.intevation.lada.model.stammdaten.DatensatzErzeuger;
 import de.intevation.lada.model.stammdaten.MessprogrammKategorie;
 import de.intevation.lada.model.stammdaten.Ort;
 import de.intevation.lada.model.stammdaten.Probenehmer;
+import de.intevation.lada.model.stammdaten.Deskriptoren;
 import de.intevation.lada.test.stamm.DatensatzErzeugerTest;
 import de.intevation.lada.test.stamm.MessprogrammKategorieTest;
 import de.intevation.lada.test.stamm.OrtTest;
 import de.intevation.lada.test.stamm.ProbenehmerTest;
+import de.intevation.lada.test.stamm.DeskriptorenTest;
 import de.intevation.lada.test.stamm.Stammdaten;
 
 
@@ -59,6 +61,7 @@ public class StammdatenTest extends BaseTest {
     private ProbenehmerTest probenehmerTest;
     private MessprogrammKategorieTest messprogrammkategorieTest;
     private OrtTest ortTest;
+    private DeskriptorenTest deskriptorenTest;
 
     public StammdatenTest () {
         stammdatenTest = new Stammdaten();
@@ -66,6 +69,7 @@ public class StammdatenTest extends BaseTest {
         probenehmerTest = new ProbenehmerTest();
         messprogrammkategorieTest = new MessprogrammKategorieTest();
         ortTest = new OrtTest();
+        deskriptorenTest = new DeskriptorenTest();
         testProtocol = new ArrayList<Protocol>();
         verboseLogging = false;
     }
@@ -382,4 +386,36 @@ public class StammdatenTest extends BaseTest {
         stammdatenTest.getById(baseUrl, "verwaltungseinheit",
             "11000000", testProtocol);
     }
+
+    /**
+     * Insert deskriptoren into the database.
+     */
+    @Test
+    @InSequence(35)
+    @UsingDataSet("datasets/dbUnit_deskriptor.json")
+    @DataSource("java:jboss/lada-stamm")
+    @Cleanup(phase=TestExecutionPhase.NONE)
+    public final void prepareDatabaseDeskriptoren() throws Exception {
+        Protocol protocol = new Protocol();
+        protocol.setName("database");
+        protocol.setType("insert deskriptor");
+        protocol.addInfo("database", "Insert deskriptor into database");
+        testProtocol.add(protocol);
+        Deskriptoren deskriptor = em.find(Deskriptoren.class, 1000);
+        Assert.assertNotNull(deskriptor);
+        protocol.setPassed(true);
+    }
+
+    /**
+     * Tests deskriptoren service
+     */
+    @Test
+    @InSequence(36)
+    @RunAsClient
+    public final void testDeskriptoren(@ArquillianResource URL baseUrl)
+    throws Exception {
+        deskriptorenTest.init(baseUrl, testProtocol);
+        deskriptorenTest.execute();
+    }
+
 }
