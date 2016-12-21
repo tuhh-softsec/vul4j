@@ -1,0 +1,1428 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dashboardreport name="PerformanceSignature_xml" version="6.3.3.1502" reportdate="2016-12-16T11:57:07.184+01:00" description="">
+    <source name="PerfSig_Demo" filtersummary="last 72 hours"></source>
+  <reportheader>
+    <reportdetails>
+      <user>admin</user>
+    </reportdetails>
+  </reportheader>
+  <data>
+    <incidentchartdashlet name="Incident Chart" description="">
+        <incidentcharts>
+            <incidentchart rule="Application Process Unavailable (unexpected)" systemprofile="PerfSig_Demo"></incidentchart>
+            <incidentchart rule="Agent Instrumentation Disabled" systemprofile="PerfSig_Demo"></incidentchart>
+            <incidentchart rule="Application Process Out-of-Memory" systemprofile="PerfSig_Demo"></incidentchart>
+            <incidentchart rule="Application Process Unhealthy" systemprofile="PerfSig_Demo"></incidentchart>
+            <incidentchart rule="Application Process Shutdown" systemprofile="PerfSig_Demo"></incidentchart>
+            <incidentchart rule="High GC Activity for Application Process" systemprofile="PerfSig_Demo"></incidentchart>
+            <incidentchart rule="High CPU Usage for Application Process" systemprofile="PerfSig_Demo"></incidentchart>
+            <incidentchart rule="High Memory Usage for Application Process" systemprofile="PerfSig_Demo"></incidentchart>
+            <incidentchart rule="Host Disk Unhealthy" systemprofile="PerfSig_Demo"></incidentchart>
+            <incidentchart rule="Host CPU Unhealthy" systemprofile="PerfSig_Demo"></incidentchart>
+            <incidentchart rule="Failure rate too high" systemprofile="PerfSig_Demo"></incidentchart>
+            <incidentchart rule="High Overall Failed Page Action Rate" systemprofile="PerfSig_Demo"></incidentchart>
+            <incidentchart rule="Host Memory Unhealthy" systemprofile="PerfSig_Demo"></incidentchart>
+            <incidentchart rule="High Overall Failed Transaction Rate" systemprofile="PerfSig_Demo"></incidentchart>
+            <incidentchart rule="Host Network Unhealthy" systemprofile="PerfSig_Demo"></incidentchart>
+            <incidentchart rule="Response time degraded" systemprofile="PerfSig_Demo"></incidentchart>
+            <incidentchart rule="Truncated PurePath(s)" systemprofile="PerfSig_Demo"></incidentchart>
+            <incidentchart rule="Timed Out PurePath(s)" severity="Warning" systemprofile="PerfSig_Demo">
+                <incidentchart rule="11 timed out PurePaths detected" severity="Warning" start="2016-12-13T22:17:49.030+01:00"
+                               end="2016-12-13T23:17:53.536+01:00" duration="3604506" systemprofile="PerfSig_Demo"
+                               description="Timed Out PurePaths indicate that either a transaction is stuck or exceeds the PurePath completion timeout. This incident is closed after there are no timed out PurePaths for a certain timeframe (default is 1h)."></incidentchart>
+            </incidentchart>
+            <incidentchart rule="Corrupted PurePath(s)" severity="Warning" systemprofile="PerfSig_Demo">
+                <incidentchart rule="1 corrupted PurePath detected" severity="Warning" start="2016-12-15T11:47:23.465+01:00" end="2016-12-15T12:47:32.433+01:00"
+                               duration="3608968" systemprofile="PerfSig_Demo"
+                               description="Indicates a problem in the system configuration as corrupted PurePaths have been detected. This incident is closed after there are no corrupted PurePaths for a certain timeframe (default is 1 hour)."></incidentchart>
+            </incidentchart>
+        </incidentcharts>
+    </incidentchartdashlet>
+    <chartdashlet name="WebRequestTime" description="Durchschnittliche Antwortzeiten der Webseiten Aufrufe in ms." showabsolutevalues="false">
+        <measures>
+            <measure measure="Time" color="#c00080" aggregation="Average" avg="49.96631659749272" unit="ms" min="0.8475877998637602" max="177.07110842716585"
+                     sum="3597.574795019476" count="1703532">
+                <measurement timestamp="1481626800000" avg="40.51511371586698" min="0.13654762506484985" max="22572.017578125" sum="363582.6304861903"
+                             count="8974"></measurement>
+                <measurement timestamp="1481630400000" avg="55.28182342112282" min="0.14657926559448242" max="7536.76318359375" sum="528770.6410230398"
+                             count="9565"></measurement>
+                <measurement timestamp="1481634000000" avg="47.096584371611954" min="0.1326259970664978" max="7666.6513671875" sum="500071.5328577757"
+                             count="10618"></measurement>
+                <measurement timestamp="1481637600000" avg="35.3333716508258" min="0.07812300324440002" max="10065.7919921875" sum="331533.02619969845"
+                             count="9383"></measurement>
+                <measurement timestamp="1481641200000" avg="74.77258879004746" min="0.07289300113916397" max="16296.8916015625" sum="709218.0046736002"
+                             count="9485"></measurement>
+                <measurement timestamp="1481644800000" avg="42.04935225688191" min="0.05436500161886215" max="12925.5205078125" sum="478185.2338652611"
+                             count="11372"></measurement>
+                <measurement timestamp="1481648400000" avg="58.08589882762853" min="0.07638199627399445" max="18864.544921875" sum="503198.141543746"
+                             count="8663"></measurement>
+                <measurement timestamp="1481652000000" avg="71.82946397099934" min="0.0995669960975647" max="15081.1787109375" sum="648189.0828742981"
+                             count="9024"></measurement>
+                <measurement timestamp="1481655600000" avg="28.596479559868538" min="0.06425099819898605" max="18464.357421875" sum="218448.50735783577"
+                             count="7639"></measurement>
+                <measurement timestamp="1481659200000" avg="26.219084968103036" min="0.15741854906082153" max="2668.49169921875" sum="58756.969413518906"
+                             count="2241"></measurement>
+                <measurement timestamp="1481662800000" avg="177.07110842716585" min="0.12344235181808472" max="602870.75" sum="3.371221419123125E7"
+                             count="190388"></measurement>
+                <measurement timestamp="1481666400000" avg="116.55586746710803" min="0.14740538597106934" max="7728.8896484375" sum="3010754.6125428677"
+                             count="25831"></measurement>
+                <measurement timestamp="1481670000000" avg="11.38748111846633" min="0.19075167179107666" max="1109.950439453125" sum="22182.81321877241"
+                             count="1948"></measurement>
+                <measurement timestamp="1481673600000" avg="3.7343410086717657" min="0.13518774509429932" max="1975.5367431640625" sum="26954.473400592804"
+                             count="7218"></measurement>
+                <measurement timestamp="1481677200000" avg="13.26955757325322" min="0.14343637228012085" max="1204.949951171875" sum="30055.54790341854"
+                             count="2265"></measurement>
+                <measurement timestamp="1481680800000" avg="12.65521576711652" min="0.19802498817443848" max="2465.3330078125" sum="26234.262285232544"
+                             count="2073"></measurement>
+                <measurement timestamp="1481684400000" avg="11.131396979072003" min="0.1981157660484314" max="1178.0347900390625" sum="30789.44404411316"
+                             count="2766"></measurement>
+                <measurement timestamp="1481688000000" avg="13.462255678762016" min="0.15217578411102295" max="2563.8798828125" sum="36038.45845204592"
+                             count="2677"></measurement>
+                <measurement timestamp="1481691600000" avg="16.679519179588528" min="0.15488481521606445" max="4688.14892578125" sum="42899.723329901695"
+                             count="2572"></measurement>
+                <measurement timestamp="1481695200000" avg="18.996574253052138" min="0.12590527534484863" max="5521.43505859375" sum="62517.725866794586"
+                             count="3291"></measurement>
+                <measurement timestamp="1481698800000" avg="80.85763109172544" min="0.14851146936416626" max="26870.05078125" sum="451185.58149182796"
+                             count="5580"></measurement>
+                <measurement timestamp="1481702400000" avg="85.80591673743609" min="0.12712907791137695" max="25684.724609375" sum="624752.8797652721"
+                             count="7281"></measurement>
+                <measurement timestamp="1481706000000" avg="47.22984219256116" min="0.13502734899520874" max="14170.1865234375" sum="595757.2294169664"
+                             count="12614"></measurement>
+                <measurement timestamp="1481709600000" avg="46.51049194092354" min="0.14092886447906494" max="20689.583984375" sum="635519.3618807793"
+                             count="13664"></measurement>
+                <measurement timestamp="1481713200000" avg="42.65449716907233" min="0.1579154133796692" max="21401.794921875" sum="442711.02611780167"
+                             count="10379"></measurement>
+                <measurement timestamp="1481716800000" avg="95.38485112766736" min="0.13839828968048096" max="97856.2734375" sum="668647.8064049482"
+                             count="7010"></measurement>
+                <measurement timestamp="1481720400000" avg="78.31194499613454" min="0.13953351974487305" max="29675.513671875" sum="1032699.6186640263"
+                             count="13187"></measurement>
+                <measurement timestamp="1481724000000" avg="61.53336950932179" min="0.15060287714004517" max="27898.001953125" sum="546354.7878732681"
+                             count="8879"></measurement>
+                <measurement timestamp="1481727600000" avg="42.09615263397058" min="0.1207883358001709" max="21432.673828125" sum="307849.16421222687"
+                             count="7313"></measurement>
+                <measurement timestamp="1481731200000" avg="56.64206336916667" min="0.12758779525756836" max="10966.2548828125" sum="647135.5739927292"
+                             count="11425"></measurement>
+                <measurement timestamp="1481734800000" avg="64.126604547268" min="0.09607400000095367" max="25578.59375" sum="591567.9269485474"
+                             count="9225"></measurement>
+                <measurement timestamp="1481738400000" avg="47.47682521166046" min="0.13059687614440918" max="14674.4833984375" sum="651619.4260300398"
+                             count="13725"></measurement>
+                <measurement timestamp="1481742000000" avg="36.96603337529079" min="0.15058356523513794" max="17336.56640625" sum="207712.14153575897"
+                             count="5619"></measurement>
+                <measurement timestamp="1481745600000" avg="39.61027309140732" min="0.13406968116760254" max="21521.98828125" sum="120454.84047096968"
+                             count="3041"></measurement>
+                <measurement timestamp="1481749200000" avg="131.24454283164815" min="0.10152113437652588" max="26028.5859375" sum="2.5359858033188045E7"
+                             count="193226"></measurement>
+                <measurement timestamp="1481752800000" avg="105.92775686971794" min="0.12966042757034302" max="13887.7177734375" sum="4040614.2857953906"
+                             count="38145"></measurement>
+                <measurement timestamp="1481756400000" avg="83.38959743518683" min="0.14140427112579346" max="180938.9375" sum="664948.6499481797"
+                             count="7974"></measurement>
+                <measurement timestamp="1481760000000" avg="17.779522850283925" min="0.14477938413619995" max="11007.478515625" sum="123549.904286623"
+                             count="6949"></measurement>
+                <measurement timestamp="1481763600000" avg="25.38517359548427" min="0.12747710943222046" max="12722.697265625" sum="183509.4199217558"
+                             count="7229"></measurement>
+                <measurement timestamp="1481767200000" avg="66.83009831937383" min="0.15073126554489136" max="49040.82421875" sum="343373.04516494274"
+                             count="5138"></measurement>
+                <measurement timestamp="1481770800000" avg="47.03740414341552" min="0.15094047784805298" max="31909.77734375" sum="235798.50697094202"
+                             count="5013"></measurement>
+                <measurement timestamp="1481774400000" avg="34.25418895721612" min="0.15397101640701294" max="12632.662109375" sum="231044.50451642275"
+                             count="6745"></measurement>
+                <measurement timestamp="1481778000000" avg="40.82226412011305" min="0.14557623863220215" max="38807.9375" sum="238034.6220843792"
+                             count="5831"></measurement>
+                <measurement timestamp="1481781600000" avg="41.09234112692238" min="0.15453720092773438" max="9626.27734375" sum="207639.59971433878"
+                             count="5053"></measurement>
+                <measurement timestamp="1481785200000" avg="56.667447857322024" min="0.1286035180091858" max="18388.7890625" sum="599314.9285390377"
+                             count="10576"></measurement>
+                <measurement timestamp="1481788800000" avg="47.07532549484605" min="0.12762439250946045" max="13460.041015625" sum="274213.77100747824"
+                             count="5825"></measurement>
+                <measurement timestamp="1481792400000" avg="67.03151830846808" min="0.11851191520690918" max="22659.15234375" sum="678425.9968000054"
+                             count="10121"></measurement>
+                <measurement timestamp="1481796000000" avg="14.344092047202798" min="0.13679683208465576" max="23170.42578125" sum="1241122.564384222"
+                             count="86525"></measurement>
+                <measurement timestamp="1481799600000" avg="0.8475877998637602" min="0.11550754308700562" max="6835.35546875" sum="371877.4520146251"
+                             count="438748"></measurement>
+                <measurement timestamp="1481803200000" avg="19.858594966353355" min="0.13536310195922852" max="9878.0859375" sum="741976.6837278605"
+                             count="37363"></measurement>
+                <measurement timestamp="1481806800000" avg="67.00342767216158" min="0.11697322130203247" max="34634.00390625" sum="675729.5680737495"
+                             count="10085"></measurement>
+                <measurement timestamp="1481810400000" avg="58.04853403511357" min="0.12791812419891357" max="22848.958984375" sum="936264.8054523468"
+                             count="16129"></measurement>
+                <measurement timestamp="1481814000000" avg="41.660395689007686" min="0.12667644023895264" max="15905.5654296875" sum="609533.2493258715"
+                             count="14631"></measurement>
+                <measurement timestamp="1481817600000" avg="72.93857105717629" min="0.11496376991271973" max="22470.11328125" sum="599263.2998057604"
+                             count="8216"></measurement>
+                <measurement timestamp="1481821200000" avg="84.54325940690903" min="0.11676967144012451" max="171678.8125" sum="482234.7516570091"
+                             count="5704"></measurement>
+                <measurement timestamp="1481824800000" avg="77.94595380615891" min="0.12791824340820312" max="23250.125" sum="262989.6481419802"
+                             count="3374"></measurement>
+                <measurement timestamp="1481828400000" avg="47.360056454445704" min="0.11762619018554688" max="11321.6220703125" sum="286528.3415493965"
+                             count="6050"></measurement>
+                <measurement timestamp="1481832000000" avg="27.53868577049238" min="0.13426315784454346" max="3254.150634765625" sum="113927.54303252697"
+                             count="4137"></measurement>
+                <measurement timestamp="1481835600000" avg="124.98050893071617" min="0.1264948844909668" max="20179.146484375" sum="2.5577886055215716E7"
+                             count="204655"></measurement>
+                <measurement timestamp="1481839200000" avg="105.53765347037694" min="0.1412811279296875" max="10227.2998046875" sum="3317048.448573947"
+                             count="31430"></measurement>
+                <measurement timestamp="1481842800000" avg="33.041422521590654" min="0.13417935371398926" max="5357.953125" sum="117990.91982460022"
+                             count="3571"></measurement>
+                <measurement timestamp="1481846400000" avg="10.92155454931564" min="0.19355297088623047" max="556.42529296875" sum="30056.118119716644"
+                             count="2752"></measurement>
+                <measurement timestamp="1481850000000" avg="24.882899321135014" min="0.14692389965057373" max="4183.0302734375" sum="111077.2625695467"
+                             count="4464"></measurement>
+                <measurement timestamp="1481853600000" avg="13.424971667775804" min="0.2208617925643921" max="1317.2969970703125" sum="25655.12085711956"
+                             count="1911"></measurement>
+                <measurement timestamp="1481857200000" avg="11.80179599103898" min="0.1623750925064087" max="483.01776123046875" sum="22730.259078741074"
+                             count="1926"></measurement>
+                <measurement timestamp="1481860800000" avg="58.55469539902624" min="0.14212417602539062" max="31163.513671875" sum="258518.98018670082"
+                             count="4415"></measurement>
+                <measurement timestamp="1481864400000" avg="10.793839788610375" min="0.18493664264678955" max="558.5899047851562" sum="20767.34775328636"
+                             count="1924"></measurement>
+                <measurement timestamp="1481868000000" avg="8.646779665378197" min="0.09497344493865967" max="9778.79296875" sum="65170.778337955475"
+                             count="7537"></measurement>
+                <measurement timestamp="1481871600000" avg="58.467980874294355" min="0.13916587829589844" max="27753.298828125" sum="303507.288718462"
+                             count="5191"></measurement>
+                <measurement timestamp="1481875200000" avg="33.52630557300256" min="0.13250327110290527" max="14415.826171875" sum="330636.42556095123"
+                             count="9862"></measurement>
+                <measurement timestamp="1481878800000" avg="50.60114496999894" min="0.1201026439666748" max="18645.64453125" sum="782749.1115409136"
+                             count="15469"></measurement>
+                <measurement timestamp="1481882400000" avg="75.8373257035131" min="0.12824785709381104" max="19729.1171875" sum="963361.548411727"
+                             count="12703"></measurement>
+        </measure>
+            <measure measure="Number of Requests" color="#004000" aggregation="Count" avg="23660.166666666668" unit="num" min="1911.0" max="438748.0"
+                     sum="1703532.0" count="1703532">
+                <measurement timestamp="1481626800000" avg="1.0" min="1.0" max="1.0" sum="8974.0" count="8974"></measurement>
+                <measurement timestamp="1481630400000" avg="1.0" min="1.0" max="1.0" sum="9565.0" count="9565"></measurement>
+                <measurement timestamp="1481634000000" avg="1.0" min="1.0" max="1.0" sum="10618.0" count="10618"></measurement>
+                <measurement timestamp="1481637600000" avg="1.0" min="1.0" max="1.0" sum="9383.0" count="9383"></measurement>
+                <measurement timestamp="1481641200000" avg="1.0" min="1.0" max="1.0" sum="9485.0" count="9485"></measurement>
+                <measurement timestamp="1481644800000" avg="1.0" min="1.0" max="1.0" sum="11372.0" count="11372"></measurement>
+                <measurement timestamp="1481648400000" avg="1.0" min="1.0" max="1.0" sum="8663.0" count="8663"></measurement>
+                <measurement timestamp="1481652000000" avg="1.0" min="1.0" max="1.0" sum="9024.0" count="9024"></measurement>
+                <measurement timestamp="1481655600000" avg="1.0" min="1.0" max="1.0" sum="7639.0" count="7639"></measurement>
+                <measurement timestamp="1481659200000" avg="1.0" min="1.0" max="1.0" sum="2241.0" count="2241"></measurement>
+                <measurement timestamp="1481662800000" avg="1.0" min="1.0" max="1.0" sum="190388.0" count="190388"></measurement>
+                <measurement timestamp="1481666400000" avg="1.0" min="1.0" max="1.0" sum="25831.0" count="25831"></measurement>
+                <measurement timestamp="1481670000000" avg="1.0" min="1.0" max="1.0" sum="1948.0" count="1948"></measurement>
+                <measurement timestamp="1481673600000" avg="1.0" min="1.0" max="1.0" sum="7218.0" count="7218"></measurement>
+                <measurement timestamp="1481677200000" avg="1.0" min="1.0" max="1.0" sum="2265.0" count="2265"></measurement>
+                <measurement timestamp="1481680800000" avg="1.0" min="1.0" max="1.0" sum="2073.0" count="2073"></measurement>
+                <measurement timestamp="1481684400000" avg="1.0" min="1.0" max="1.0" sum="2766.0" count="2766"></measurement>
+                <measurement timestamp="1481688000000" avg="1.0" min="1.0" max="1.0" sum="2677.0" count="2677"></measurement>
+                <measurement timestamp="1481691600000" avg="1.0" min="1.0" max="1.0" sum="2572.0" count="2572"></measurement>
+                <measurement timestamp="1481695200000" avg="1.0" min="1.0" max="1.0" sum="3291.0" count="3291"></measurement>
+                <measurement timestamp="1481698800000" avg="1.0" min="1.0" max="1.0" sum="5580.0" count="5580"></measurement>
+                <measurement timestamp="1481702400000" avg="1.0" min="1.0" max="1.0" sum="7281.0" count="7281"></measurement>
+                <measurement timestamp="1481706000000" avg="1.0" min="1.0" max="1.0" sum="12614.0" count="12614"></measurement>
+                <measurement timestamp="1481709600000" avg="1.0" min="1.0" max="1.0" sum="13664.0" count="13664"></measurement>
+                <measurement timestamp="1481713200000" avg="1.0" min="1.0" max="1.0" sum="10379.0" count="10379"></measurement>
+                <measurement timestamp="1481716800000" avg="1.0" min="1.0" max="1.0" sum="7010.0" count="7010"></measurement>
+                <measurement timestamp="1481720400000" avg="1.0" min="1.0" max="1.0" sum="13187.0" count="13187"></measurement>
+                <measurement timestamp="1481724000000" avg="1.0" min="1.0" max="1.0" sum="8879.0" count="8879"></measurement>
+                <measurement timestamp="1481727600000" avg="1.0" min="1.0" max="1.0" sum="7313.0" count="7313"></measurement>
+                <measurement timestamp="1481731200000" avg="1.0" min="1.0" max="1.0" sum="11425.0" count="11425"></measurement>
+                <measurement timestamp="1481734800000" avg="1.0" min="1.0" max="1.0" sum="9225.0" count="9225"></measurement>
+                <measurement timestamp="1481738400000" avg="1.0" min="1.0" max="1.0" sum="13725.0" count="13725"></measurement>
+                <measurement timestamp="1481742000000" avg="1.0" min="1.0" max="1.0" sum="5619.0" count="5619"></measurement>
+                <measurement timestamp="1481745600000" avg="1.0" min="1.0" max="1.0" sum="3041.0" count="3041"></measurement>
+                <measurement timestamp="1481749200000" avg="1.0" min="1.0" max="1.0" sum="193226.0" count="193226"></measurement>
+                <measurement timestamp="1481752800000" avg="1.0" min="1.0" max="1.0" sum="38145.0" count="38145"></measurement>
+                <measurement timestamp="1481756400000" avg="1.0" min="1.0" max="1.0" sum="7974.0" count="7974"></measurement>
+                <measurement timestamp="1481760000000" avg="1.0" min="1.0" max="1.0" sum="6949.0" count="6949"></measurement>
+                <measurement timestamp="1481763600000" avg="1.0" min="1.0" max="1.0" sum="7229.0" count="7229"></measurement>
+                <measurement timestamp="1481767200000" avg="1.0" min="1.0" max="1.0" sum="5138.0" count="5138"></measurement>
+                <measurement timestamp="1481770800000" avg="1.0" min="1.0" max="1.0" sum="5013.0" count="5013"></measurement>
+                <measurement timestamp="1481774400000" avg="1.0" min="1.0" max="1.0" sum="6745.0" count="6745"></measurement>
+                <measurement timestamp="1481778000000" avg="1.0" min="1.0" max="1.0" sum="5831.0" count="5831"></measurement>
+                <measurement timestamp="1481781600000" avg="1.0" min="1.0" max="1.0" sum="5053.0" count="5053"></measurement>
+                <measurement timestamp="1481785200000" avg="1.0" min="1.0" max="1.0" sum="10576.0" count="10576"></measurement>
+                <measurement timestamp="1481788800000" avg="1.0" min="1.0" max="1.0" sum="5825.0" count="5825"></measurement>
+                <measurement timestamp="1481792400000" avg="1.0" min="1.0" max="1.0" sum="10121.0" count="10121"></measurement>
+                <measurement timestamp="1481796000000" avg="1.0" min="1.0" max="1.0" sum="86525.0" count="86525"></measurement>
+                <measurement timestamp="1481799600000" avg="1.0" min="1.0" max="1.0" sum="438748.0" count="438748"></measurement>
+                <measurement timestamp="1481803200000" avg="1.0" min="1.0" max="1.0" sum="37363.0" count="37363"></measurement>
+                <measurement timestamp="1481806800000" avg="1.0" min="1.0" max="1.0" sum="10085.0" count="10085"></measurement>
+                <measurement timestamp="1481810400000" avg="1.0" min="1.0" max="1.0" sum="16129.0" count="16129"></measurement>
+                <measurement timestamp="1481814000000" avg="1.0" min="1.0" max="1.0" sum="14631.0" count="14631"></measurement>
+                <measurement timestamp="1481817600000" avg="1.0" min="1.0" max="1.0" sum="8216.0" count="8216"></measurement>
+                <measurement timestamp="1481821200000" avg="1.0" min="1.0" max="1.0" sum="5704.0" count="5704"></measurement>
+                <measurement timestamp="1481824800000" avg="1.0" min="1.0" max="1.0" sum="3374.0" count="3374"></measurement>
+                <measurement timestamp="1481828400000" avg="1.0" min="1.0" max="1.0" sum="6050.0" count="6050"></measurement>
+                <measurement timestamp="1481832000000" avg="1.0" min="1.0" max="1.0" sum="4137.0" count="4137"></measurement>
+                <measurement timestamp="1481835600000" avg="1.0" min="1.0" max="1.0" sum="204655.0" count="204655"></measurement>
+                <measurement timestamp="1481839200000" avg="1.0" min="1.0" max="1.0" sum="31430.0" count="31430"></measurement>
+                <measurement timestamp="1481842800000" avg="1.0" min="1.0" max="1.0" sum="3571.0" count="3571"></measurement>
+                <measurement timestamp="1481846400000" avg="1.0" min="1.0" max="1.0" sum="2752.0" count="2752"></measurement>
+                <measurement timestamp="1481850000000" avg="1.0" min="1.0" max="1.0" sum="4464.0" count="4464"></measurement>
+                <measurement timestamp="1481853600000" avg="1.0" min="1.0" max="1.0" sum="1911.0" count="1911"></measurement>
+                <measurement timestamp="1481857200000" avg="1.0" min="1.0" max="1.0" sum="1926.0" count="1926"></measurement>
+                <measurement timestamp="1481860800000" avg="1.0" min="1.0" max="1.0" sum="4415.0" count="4415"></measurement>
+                <measurement timestamp="1481864400000" avg="1.0" min="1.0" max="1.0" sum="1924.0" count="1924"></measurement>
+                <measurement timestamp="1481868000000" avg="1.0" min="1.0" max="1.0" sum="7537.0" count="7537"></measurement>
+                <measurement timestamp="1481871600000" avg="1.0" min="1.0" max="1.0" sum="5191.0" count="5191"></measurement>
+                <measurement timestamp="1481875200000" avg="1.0" min="1.0" max="1.0" sum="9862.0" count="9862"></measurement>
+                <measurement timestamp="1481878800000" avg="1.0" min="1.0" max="1.0" sum="15469.0" count="15469"></measurement>
+                <measurement timestamp="1481882400000" avg="1.0" min="1.0" max="1.0" sum="12703.0" count="12703"></measurement>
+        </measure>
+      </measures>
+    </chartdashlet>
+    <chartdashlet name="WebServiceTime" description="Durchschnittliche Antwortzeit der Web Service Aufrufe in ms." showabsolutevalues="false">
+        <measures>
+            <measure measure="Time" color="#b14ecf" aggregation="Average" avg="116.73990577115475" unit="ms" min="17.067092895507812" max="2109.61240485767"
+                     sum="8405.273215523142" count="151688">
+                <measurement timestamp="1481626800000" avg="212.82816549161586" min="0.10539299994707108" max="21221.658203125" sum="87259.5478515625"
+                             count="410"></measurement>
+                <measurement timestamp="1481630400000" avg="185.594165577608" min="0.09525000303983688" max="6532.4775390625" sum="100963.22607421875"
+                             count="544"></measurement>
+                <measurement timestamp="1481634000000" avg="163.1380335383945" min="0.08900799602270126" max="6078.34375" sum="117459.38414764404"
+                             count="720"></measurement>
+                <measurement timestamp="1481637600000" avg="47.491958711016736" min="0.09170900285243988" max="2437.35595703125" sum="187308.28515625"
+                             count="3944"></measurement>
+                <measurement timestamp="1481641200000" avg="112.28947828181838" min="0.07883100211620331" max="14127.14453125" sum="84890.84558105469"
+                             count="756"></measurement>
+                <measurement timestamp="1481644800000" avg="230.3343534437709" min="0.09605299681425095" max="12742.787109375" sum="137739.943359375"
+                             count="598"></measurement>
+                <measurement timestamp="1481648400000" avg="45.68684296263126" min="0.09079500287771225" max="3515.232177734375" sum="183204.24028015137"
+                             count="4010"></measurement>
+                <measurement timestamp="1481652000000" avg="136.78261264534885" min="0.0921730026602745" max="6893.751953125" sum="94106.4375"
+                             count="688"></measurement>
+                <measurement timestamp="1481655600000" avg="174.1796142578125" min="0.09199599921703339" max="17363.5" sum="55737.4765625"
+                             count="320"></measurement>
+                <measurement timestamp="1481659200000" avg="35.96426840828269" min="0.10481999814510345" max="584.4923095703125" sum="132420.43627929688"
+                             count="3682"></measurement>
+                <measurement timestamp="1481662800000" avg="51.43598067506121" min="0.07173299789428711" max="7740.830078125" sum="882332.8125"
+                             count="17154"></measurement>
+                <measurement timestamp="1481666400000" avg="32.7443450011374" min="0.07667200267314911" max="3581.963623046875" sum="71972.0703125"
+                             count="2198"></measurement>
+                <measurement timestamp="1481670000000" avg="21.447669982910156" min="0.14415299892425537" max="74.04339599609375" sum="257.3720397949219"
+                             count="12"></measurement>
+                <measurement timestamp="1481673600000" avg="21.71832784016927" min="0.18238800764083862" max="70.25117492675781" sum="260.61993408203125"
+                             count="12"></measurement>
+                <measurement timestamp="1481677200000" avg="19.270790100097656" min="0.18946899473667145" max="105.1673812866211" sum="385.4158020019531"
+                             count="20"></measurement>
+                <measurement timestamp="1481680800000" avg="22.504714965820312" min="0.1269029974937439" max="73.29081726074219" sum="315.0660095214844"
+                             count="14"></measurement>
+                <measurement timestamp="1481684400000" avg="22.225239562988282" min="0.1740889996290207" max="63.840599060058594" sum="444.5047912597656"
+                             count="20"></measurement>
+                <measurement timestamp="1481688000000" avg="17.067092895507812" min="0.2286819964647293" max="72.3747787475586" sum="341.34185791015625"
+                             count="20"></measurement>
+                <measurement timestamp="1481691600000" avg="19.241573333740234" min="0.11713799834251404" max="104.48770141601562" sum="1231.460693359375"
+                             count="64"></measurement>
+                <measurement timestamp="1481695200000" avg="23.274813616717303" min="0.11330600082874298" max="229.68899536132812" sum="1256.8399353027344"
+                             count="54"></measurement>
+                <measurement timestamp="1481698800000" avg="52.51710853121351" min="0.09786800295114517" max="6498.1455078125" sum="202400.93627929688"
+                             count="3854"></measurement>
+                <measurement timestamp="1481702400000" avg="65.75362287035907" min="0.095271997153759" max="24061.89453125" sum="269195.33203125"
+                             count="4094"></measurement>
+                <measurement timestamp="1481706000000" avg="108.24617630215833" min="0.0864109992980957" max="9423.3564453125" sum="93957.68103027344"
+                             count="868"></measurement>
+                <measurement timestamp="1481709600000" avg="58.886802041218985" min="0.0830560028553009" max="20586.921875" sum="132907.51220703125"
+                             count="2257"></measurement>
+                <measurement timestamp="1481713200000" avg="141.91192025198063" min="0.08649200201034546" max="21196.947265625" sum="80605.970703125"
+                             count="568"></measurement>
+                <measurement timestamp="1481716800000" avg="50.21515218196054" min="0.07635100185871124" max="14213.7998046875" sum="294612.2978515625"
+                             count="5867"></measurement>
+                <measurement timestamp="1481720400000" avg="68.86936107486449" min="0.08798199892044067" max="14608.7265625" sum="160396.74194335938"
+                             count="2329"></measurement>
+                <measurement timestamp="1481724000000" avg="47.96653042218543" min="0.07809700071811676" max="9812.923828125" sum="144858.921875"
+                             count="3020"></measurement>
+                <measurement timestamp="1481727600000" avg="309.2996878487723" min="0.12135100364685059" max="20272.21875" sum="75778.42352294922"
+                             count="245"></measurement>
+                <measurement timestamp="1481731200000" avg="114.32552434299191" min="0.09188200533390045" max="7811.14599609375" sum="84829.5390625"
+                             count="742"></measurement>
+                <measurement timestamp="1481734800000" avg="38.199308947132316" min="0.08659200370311737" max="4657.3447265625" sum="282063.697265625"
+                             count="7384"></measurement>
+                <measurement timestamp="1481738400000" avg="194.02115344684384" min="0.10191900283098221" max="14360.173828125" sum="116800.734375"
+                             count="602"></measurement>
+                <measurement timestamp="1481742000000" avg="318.5943359375" min="0.10322099924087524" max="11862.9345703125" sum="63718.8671875"
+                             count="200"></measurement>
+                <measurement timestamp="1481745600000" avg="46.24089492626405" min="0.12177000194787979" max="20605.322265625" sum="164617.5859375"
+                             count="3560"></measurement>
+                <measurement timestamp="1481749200000" avg="53.794620319719385" min="0.07887499779462814" max="15127.3115234375" sum="972176.3784179688"
+                             count="18072"></measurement>
+                <measurement timestamp="1481752800000" avg="54.45207339614185" min="0.08968599885702133" max="13705.498046875" sum="175117.8680419922"
+                             count="3216"></measurement>
+                <measurement timestamp="1481756400000" avg="2109.61240485767" min="0.12024500221014023" max="180852.265625" sum="468333.9538784027"
+                             count="222"></measurement>
+                <measurement timestamp="1481760000000" avg="110.87757055810157" min="0.11315599828958511" max="10904.9404296875" sum="20844.983264923096"
+                             count="188"></measurement>
+                <measurement timestamp="1481763600000" avg="36.0616814189487" min="0.11436299979686737" max="771.0240478515625" sum="6491.102655410767"
+                             count="180"></measurement>
+                <measurement timestamp="1481767200000" avg="40.78304538726807" min="0.13799700140953064" max="1156.40673828125" sum="3262.6436309814453"
+                             count="80"></measurement>
+                <measurement timestamp="1481770800000" avg="21.757324536641438" min="0.1788959950208664" max="67.58300018310547" sum="522.1757888793945"
+                             count="24"></measurement>
+                <measurement timestamp="1481774400000" avg="20.1765349706014" min="0.13819600641727448" max="61.49824142456055" sum="242.1184196472168"
+                             count="12"></measurement>
+                <measurement timestamp="1481778000000" avg="21.16011969248454" min="0.17620499432086945" max="62.8264045715332" sum="253.92143630981445"
+                             count="12"></measurement>
+                <measurement timestamp="1481781600000" avg="20.40030002593994" min="0.11540599912405014" max="247.1271514892578" sum="1142.4168014526367"
+                             count="56"></measurement>
+                <measurement timestamp="1481785200000" avg="40.92549234716887" min="0.09380699694156647" max="4014.619140625" sum="154862.063041687"
+                             count="3784"></measurement>
+                <measurement timestamp="1481788800000" avg="40.62726676464081" min="0.09835100173950195" max="4620.15478515625" sum="11050.6165599823"
+                             count="272"></measurement>
+                <measurement timestamp="1481792400000" avg="49.1567651670273" min="0.09080900251865387" max="3669.64599609375" sum="28707.550857543945"
+                             count="584"></measurement>
+                <measurement timestamp="1481796000000" avg="43.609181252101926" min="0.0892769992351532" max="4193.94580078125" sum="207928.57621002197"
+                             count="4768"></measurement>
+                <measurement timestamp="1481799600000" avg="35.47121313902048" min="0.09517399966716766" max="1136.42431640625" sum="7378.01233291626"
+                             count="208"></measurement>
+                <measurement timestamp="1481803200000" avg="61.12868531450673" min="0.09428299963474274" max="2883.053466796875" sum="41200.73390197754"
+                             count="674"></measurement>
+                <measurement timestamp="1481806800000" avg="36.100657848279866" min="0.08761399984359741" max="1901.605712890625" sum="154799.62085342407"
+                             count="4288"></measurement>
+                <measurement timestamp="1481810400000" avg="100.326310695746" min="0.10384999960660934" max="10348.0927734375" sum="101730.87904548645"
+                             count="1014"></measurement>
+                <measurement timestamp="1481814000000" avg="191.4457191009759" min="0.10504700243473053" max="9726.12109375" sum="122908.15166282654"
+                             count="642"></measurement>
+                <measurement timestamp="1481817600000" avg="49.142706568493985" min="0.07435400038957596" max="10511.9521484375" sum="207578.7925453186"
+                             count="4224"></measurement>
+                <measurement timestamp="1481821200000" avg="125.80353672273698" min="0.0948529988527298" max="6820.6845703125" sum="23399.457830429077"
+                             count="186"></measurement>
+                <measurement timestamp="1481824800000" avg="39.548279141654625" min="0.10911999642848969" max="3265.009521484375" sum="150837.13664627075"
+                             count="3814"></measurement>
+                <measurement timestamp="1481828400000" avg="233.62694906507218" min="0.12151999771595001" max="10457.451171875" sum="49061.65930366516"
+                             count="210"></measurement>
+                <measurement timestamp="1481832000000" avg="35.490952956967234" min="0.1690790057182312" max="913.2405395507812" sum="128051.3582687378"
+                             count="3608"></measurement>
+                <measurement timestamp="1481835600000" avg="50.09196063679789" min="0.07309500128030777" max="8843.939453125" sum="892538.5546264648"
+                             count="17818"></measurement>
+                <measurement timestamp="1481839200000" avg="44.56565435145929" min="0.07381699979305267" max="7394.9267578125" sum="109631.50970458984"
+                             count="2460"></measurement>
+                <measurement timestamp="1481842800000" avg="34.652527202259414" min="0.11049599945545197" max="577.6229248046875" sum="3811.777992248535"
+                             count="110"></measurement>
+                <measurement timestamp="1481846400000" avg="23.564146041870117" min="0.12291699647903442" max="116.11697387695312" sum="565.5395050048828"
+                             count="24"></measurement>
+                <measurement timestamp="1481850000000" avg="29.037136414471796" min="0.09214000403881073" max="519.9777221679688" sum="2961.787914276123"
+                             count="102"></measurement>
+                <measurement timestamp="1481853600000" avg="22.170632044474285" min="0.26620399951934814" max="62.34893798828125" sum="266.0475845336914"
+                             count="12"></measurement>
+                <measurement timestamp="1481857200000" avg="20.66078281402588" min="0.1414799988269806" max="62.86203384399414" sum="247.92939376831055"
+                             count="12"></measurement>
+                <measurement timestamp="1481860800000" avg="1091.4276752471924" min="0.1269499957561493" max="31102.90625" sum="141885.597782135"
+                             count="130"></measurement>
+                <measurement timestamp="1481864400000" avg="23.745933373769123" min="0.1218630000948906" max="98.6868667602539" sum="284.9512004852295"
+                             count="12"></measurement>
+                <measurement timestamp="1481868000000" avg="29.13170367793033" min="0.1238279938697815" max="270.7647705078125" sum="1107.0047397613525"
+                             count="38"></measurement>
+                <measurement timestamp="1481871600000" avg="41.14650565561866" min="0.08706299960613251" max="5847.58935546875" sum="156027.54944610596"
+                             count="3792"></measurement>
+                <measurement timestamp="1481875200000" avg="55.03460394084783" min="0.09656699746847153" max="1591.98193359375" sum="19922.526626586914"
+                             count="362"></measurement>
+                <measurement timestamp="1481878800000" avg="125.65890679460891" min="0.09330599755048752" max="7433.607421875" sum="118119.37238693237"
+                             count="940"></measurement>
+                <measurement timestamp="1481882400000" avg="32.63803566201015" min="0.07841099798679352" max="2822.978759765625" sum="153659.87189674377"
+                             count="4708"></measurement>
+        </measure>
+            <measure measure="Time" color="#47d1c1" aggregation="Count" avg="2106.777777777778" unit="num" min="12.0" max="18072.0" sum="151688.0"
+                     count="151688">
+                <measurement timestamp="1481626800000" avg="212.82816549161586" min="0.10539299994707108" max="21221.658203125" sum="87259.5478515625"
+                             count="410"></measurement>
+                <measurement timestamp="1481630400000" avg="185.594165577608" min="0.09525000303983688" max="6532.4775390625" sum="100963.22607421875"
+                             count="544"></measurement>
+                <measurement timestamp="1481634000000" avg="163.1380335383945" min="0.08900799602270126" max="6078.34375" sum="117459.38414764404"
+                             count="720"></measurement>
+                <measurement timestamp="1481637600000" avg="47.491958711016736" min="0.09170900285243988" max="2437.35595703125" sum="187308.28515625"
+                             count="3944"></measurement>
+                <measurement timestamp="1481641200000" avg="112.28947828181838" min="0.07883100211620331" max="14127.14453125" sum="84890.84558105469"
+                             count="756"></measurement>
+                <measurement timestamp="1481644800000" avg="230.3343534437709" min="0.09605299681425095" max="12742.787109375" sum="137739.943359375"
+                             count="598"></measurement>
+                <measurement timestamp="1481648400000" avg="45.68684296263126" min="0.09079500287771225" max="3515.232177734375" sum="183204.24028015137"
+                             count="4010"></measurement>
+                <measurement timestamp="1481652000000" avg="136.78261264534885" min="0.0921730026602745" max="6893.751953125" sum="94106.4375"
+                             count="688"></measurement>
+                <measurement timestamp="1481655600000" avg="174.1796142578125" min="0.09199599921703339" max="17363.5" sum="55737.4765625"
+                             count="320"></measurement>
+                <measurement timestamp="1481659200000" avg="35.96426840828269" min="0.10481999814510345" max="584.4923095703125" sum="132420.43627929688"
+                             count="3682"></measurement>
+                <measurement timestamp="1481662800000" avg="51.43598067506121" min="0.07173299789428711" max="7740.830078125" sum="882332.8125"
+                             count="17154"></measurement>
+                <measurement timestamp="1481666400000" avg="32.7443450011374" min="0.07667200267314911" max="3581.963623046875" sum="71972.0703125"
+                             count="2198"></measurement>
+                <measurement timestamp="1481670000000" avg="21.447669982910156" min="0.14415299892425537" max="74.04339599609375" sum="257.3720397949219"
+                             count="12"></measurement>
+                <measurement timestamp="1481673600000" avg="21.71832784016927" min="0.18238800764083862" max="70.25117492675781" sum="260.61993408203125"
+                             count="12"></measurement>
+                <measurement timestamp="1481677200000" avg="19.270790100097656" min="0.18946899473667145" max="105.1673812866211" sum="385.4158020019531"
+                             count="20"></measurement>
+                <measurement timestamp="1481680800000" avg="22.504714965820312" min="0.1269029974937439" max="73.29081726074219" sum="315.0660095214844"
+                             count="14"></measurement>
+                <measurement timestamp="1481684400000" avg="22.225239562988282" min="0.1740889996290207" max="63.840599060058594" sum="444.5047912597656"
+                             count="20"></measurement>
+                <measurement timestamp="1481688000000" avg="17.067092895507812" min="0.2286819964647293" max="72.3747787475586" sum="341.34185791015625"
+                             count="20"></measurement>
+                <measurement timestamp="1481691600000" avg="19.241573333740234" min="0.11713799834251404" max="104.48770141601562" sum="1231.460693359375"
+                             count="64"></measurement>
+                <measurement timestamp="1481695200000" avg="23.274813616717303" min="0.11330600082874298" max="229.68899536132812" sum="1256.8399353027344"
+                             count="54"></measurement>
+                <measurement timestamp="1481698800000" avg="52.51710853121351" min="0.09786800295114517" max="6498.1455078125" sum="202400.93627929688"
+                             count="3854"></measurement>
+                <measurement timestamp="1481702400000" avg="65.75362287035907" min="0.095271997153759" max="24061.89453125" sum="269195.33203125"
+                             count="4094"></measurement>
+                <measurement timestamp="1481706000000" avg="108.24617630215833" min="0.0864109992980957" max="9423.3564453125" sum="93957.68103027344"
+                             count="868"></measurement>
+                <measurement timestamp="1481709600000" avg="58.886802041218985" min="0.0830560028553009" max="20586.921875" sum="132907.51220703125"
+                             count="2257"></measurement>
+                <measurement timestamp="1481713200000" avg="141.91192025198063" min="0.08649200201034546" max="21196.947265625" sum="80605.970703125"
+                             count="568"></measurement>
+                <measurement timestamp="1481716800000" avg="50.21515218196054" min="0.07635100185871124" max="14213.7998046875" sum="294612.2978515625"
+                             count="5867"></measurement>
+                <measurement timestamp="1481720400000" avg="68.86936107486449" min="0.08798199892044067" max="14608.7265625" sum="160396.74194335938"
+                             count="2329"></measurement>
+                <measurement timestamp="1481724000000" avg="47.96653042218543" min="0.07809700071811676" max="9812.923828125" sum="144858.921875"
+                             count="3020"></measurement>
+                <measurement timestamp="1481727600000" avg="309.2996878487723" min="0.12135100364685059" max="20272.21875" sum="75778.42352294922"
+                             count="245"></measurement>
+                <measurement timestamp="1481731200000" avg="114.32552434299191" min="0.09188200533390045" max="7811.14599609375" sum="84829.5390625"
+                             count="742"></measurement>
+                <measurement timestamp="1481734800000" avg="38.199308947132316" min="0.08659200370311737" max="4657.3447265625" sum="282063.697265625"
+                             count="7384"></measurement>
+                <measurement timestamp="1481738400000" avg="194.02115344684384" min="0.10191900283098221" max="14360.173828125" sum="116800.734375"
+                             count="602"></measurement>
+                <measurement timestamp="1481742000000" avg="318.5943359375" min="0.10322099924087524" max="11862.9345703125" sum="63718.8671875"
+                             count="200"></measurement>
+                <measurement timestamp="1481745600000" avg="46.24089492626405" min="0.12177000194787979" max="20605.322265625" sum="164617.5859375"
+                             count="3560"></measurement>
+                <measurement timestamp="1481749200000" avg="53.794620319719385" min="0.07887499779462814" max="15127.3115234375" sum="972176.3784179688"
+                             count="18072"></measurement>
+                <measurement timestamp="1481752800000" avg="54.45207339614185" min="0.08968599885702133" max="13705.498046875" sum="175117.8680419922"
+                             count="3216"></measurement>
+                <measurement timestamp="1481756400000" avg="2109.61240485767" min="0.12024500221014023" max="180852.265625" sum="468333.9538784027"
+                             count="222"></measurement>
+                <measurement timestamp="1481760000000" avg="110.87757055810157" min="0.11315599828958511" max="10904.9404296875" sum="20844.983264923096"
+                             count="188"></measurement>
+                <measurement timestamp="1481763600000" avg="36.0616814189487" min="0.11436299979686737" max="771.0240478515625" sum="6491.102655410767"
+                             count="180"></measurement>
+                <measurement timestamp="1481767200000" avg="40.78304538726807" min="0.13799700140953064" max="1156.40673828125" sum="3262.6436309814453"
+                             count="80"></measurement>
+                <measurement timestamp="1481770800000" avg="21.757324536641438" min="0.1788959950208664" max="67.58300018310547" sum="522.1757888793945"
+                             count="24"></measurement>
+                <measurement timestamp="1481774400000" avg="20.1765349706014" min="0.13819600641727448" max="61.49824142456055" sum="242.1184196472168"
+                             count="12"></measurement>
+                <measurement timestamp="1481778000000" avg="21.16011969248454" min="0.17620499432086945" max="62.8264045715332" sum="253.92143630981445"
+                             count="12"></measurement>
+                <measurement timestamp="1481781600000" avg="20.40030002593994" min="0.11540599912405014" max="247.1271514892578" sum="1142.4168014526367"
+                             count="56"></measurement>
+                <measurement timestamp="1481785200000" avg="40.92549234716887" min="0.09380699694156647" max="4014.619140625" sum="154862.063041687"
+                             count="3784"></measurement>
+                <measurement timestamp="1481788800000" avg="40.62726676464081" min="0.09835100173950195" max="4620.15478515625" sum="11050.6165599823"
+                             count="272"></measurement>
+                <measurement timestamp="1481792400000" avg="49.1567651670273" min="0.09080900251865387" max="3669.64599609375" sum="28707.550857543945"
+                             count="584"></measurement>
+                <measurement timestamp="1481796000000" avg="43.609181252101926" min="0.0892769992351532" max="4193.94580078125" sum="207928.57621002197"
+                             count="4768"></measurement>
+                <measurement timestamp="1481799600000" avg="35.47121313902048" min="0.09517399966716766" max="1136.42431640625" sum="7378.01233291626"
+                             count="208"></measurement>
+                <measurement timestamp="1481803200000" avg="61.12868531450673" min="0.09428299963474274" max="2883.053466796875" sum="41200.73390197754"
+                             count="674"></measurement>
+                <measurement timestamp="1481806800000" avg="36.100657848279866" min="0.08761399984359741" max="1901.605712890625" sum="154799.62085342407"
+                             count="4288"></measurement>
+                <measurement timestamp="1481810400000" avg="100.326310695746" min="0.10384999960660934" max="10348.0927734375" sum="101730.87904548645"
+                             count="1014"></measurement>
+                <measurement timestamp="1481814000000" avg="191.4457191009759" min="0.10504700243473053" max="9726.12109375" sum="122908.15166282654"
+                             count="642"></measurement>
+                <measurement timestamp="1481817600000" avg="49.142706568493985" min="0.07435400038957596" max="10511.9521484375" sum="207578.7925453186"
+                             count="4224"></measurement>
+                <measurement timestamp="1481821200000" avg="125.80353672273698" min="0.0948529988527298" max="6820.6845703125" sum="23399.457830429077"
+                             count="186"></measurement>
+                <measurement timestamp="1481824800000" avg="39.548279141654625" min="0.10911999642848969" max="3265.009521484375" sum="150837.13664627075"
+                             count="3814"></measurement>
+                <measurement timestamp="1481828400000" avg="233.62694906507218" min="0.12151999771595001" max="10457.451171875" sum="49061.65930366516"
+                             count="210"></measurement>
+                <measurement timestamp="1481832000000" avg="35.490952956967234" min="0.1690790057182312" max="913.2405395507812" sum="128051.3582687378"
+                             count="3608"></measurement>
+                <measurement timestamp="1481835600000" avg="50.09196063679789" min="0.07309500128030777" max="8843.939453125" sum="892538.5546264648"
+                             count="17818"></measurement>
+                <measurement timestamp="1481839200000" avg="44.56565435145929" min="0.07381699979305267" max="7394.9267578125" sum="109631.50970458984"
+                             count="2460"></measurement>
+                <measurement timestamp="1481842800000" avg="34.652527202259414" min="0.11049599945545197" max="577.6229248046875" sum="3811.777992248535"
+                             count="110"></measurement>
+                <measurement timestamp="1481846400000" avg="23.564146041870117" min="0.12291699647903442" max="116.11697387695312" sum="565.5395050048828"
+                             count="24"></measurement>
+                <measurement timestamp="1481850000000" avg="29.037136414471796" min="0.09214000403881073" max="519.9777221679688" sum="2961.787914276123"
+                             count="102"></measurement>
+                <measurement timestamp="1481853600000" avg="22.170632044474285" min="0.26620399951934814" max="62.34893798828125" sum="266.0475845336914"
+                             count="12"></measurement>
+                <measurement timestamp="1481857200000" avg="20.66078281402588" min="0.1414799988269806" max="62.86203384399414" sum="247.92939376831055"
+                             count="12"></measurement>
+                <measurement timestamp="1481860800000" avg="1091.4276752471924" min="0.1269499957561493" max="31102.90625" sum="141885.597782135"
+                             count="130"></measurement>
+                <measurement timestamp="1481864400000" avg="23.745933373769123" min="0.1218630000948906" max="98.6868667602539" sum="284.9512004852295"
+                             count="12"></measurement>
+                <measurement timestamp="1481868000000" avg="29.13170367793033" min="0.1238279938697815" max="270.7647705078125" sum="1107.0047397613525"
+                             count="38"></measurement>
+                <measurement timestamp="1481871600000" avg="41.14650565561866" min="0.08706299960613251" max="5847.58935546875" sum="156027.54944610596"
+                             count="3792"></measurement>
+                <measurement timestamp="1481875200000" avg="55.03460394084783" min="0.09656699746847153" max="1591.98193359375" sum="19922.526626586914"
+                             count="362"></measurement>
+                <measurement timestamp="1481878800000" avg="125.65890679460891" min="0.09330599755048752" max="7433.607421875" sum="118119.37238693237"
+                             count="940"></measurement>
+                <measurement timestamp="1481882400000" avg="32.63803566201015" min="0.07841099798679352" max="2822.978759765625" sum="153659.87189674377"
+                             count="4708"></measurement>
+        </measure>
+      </measures>
+    </chartdashlet>
+    <chartdashlet name="Synthetic WebRequest Time" description="" showabsolutevalues="false">
+        <measures>
+            <measure measure="Synthetic Web Requests by Timer Name - PurePath Response Time" color="#c0c000" aggregation="Average" avg="176.3483625585197"
+                     unit="ms" min="157.2475137701852" max="203.30930176880307" sum="1058.0901753511182" count="348238" drawingorder="1">
+                <measurement timestamp="1481662800000" avg="203.30930176880307" min="0.4510950446128845" max="35592.421875" sum="2.021016445162964E7"
+                             count="99406"></measurement>
+                <measurement timestamp="1481666400000" avg="160.49668414328494" min="0.505115270614624" max="6156.412109375" sum="2062061.3978729248"
+                             count="12848"></measurement>
+                <measurement timestamp="1481749200000" avg="191.72453454129484" min="0.47219938039779663" max="23331.015625" sum="1.908464361730957E7"
+                             count="99542"></measurement>
+                <measurement timestamp="1481752800000" avg="166.29703051590747" min="0.49056315422058105" max="13887.7177734375" sum="2727105.0034303665"
+                             count="16399"></measurement>
+                <measurement timestamp="1481835600000" avg="179.01511061164268" min="0.4698314666748047" max="20179.146484375" sum="1.8846173799861908E7"
+                             count="105277"></measurement>
+                <measurement timestamp="1481839200000" avg="157.2475137701852" min="0.48222601413726807" max="9898.4892578125" sum="2321916.788330555"
+                             count="14766"></measurement>
+            </measure>
+            <measure measure="Synthetic Web Requests by Timer Name - PurePath Response Time" color="#c0c000" aggregation="Count" avg="58039.666666666664"
+                     unit="num" min="12848.0" max="105277.0" sum="348238.0" count="348238" drawingorder="2">
+                <measurement timestamp="1481662800000" avg="203.30930176880307" min="0.4510950446128845" max="35592.421875" sum="2.021016445162964E7"
+                             count="99406"></measurement>
+                <measurement timestamp="1481666400000" avg="160.49668414328494" min="0.505115270614624" max="6156.412109375" sum="2062061.3978729248"
+                             count="12848"></measurement>
+                <measurement timestamp="1481749200000" avg="191.72453454129484" min="0.47219938039779663" max="23331.015625" sum="1.908464361730957E7"
+                             count="99542"></measurement>
+                <measurement timestamp="1481752800000" avg="166.29703051590747" min="0.49056315422058105" max="13887.7177734375" sum="2727105.0034303665"
+                             count="16399"></measurement>
+                <measurement timestamp="1481835600000" avg="179.01511061164268" min="0.4698314666748047" max="20179.146484375" sum="1.8846173799861908E7"
+                             count="105277"></measurement>
+                <measurement timestamp="1481839200000" avg="157.2475137701852" min="0.48222601413726807" max="9898.4892578125" sum="2321916.788330555"
+                             count="14766"></measurement>
+            </measure>
+      </measures>
+    </chartdashlet>
+    <chartdashlet name="Database" description="Durchschnittliche Laufzeit der Datenbank-Statements in ms" showabsolutevalues="false">
+        <measures>
+            <measure measure="Response Time - Asynchronous_Write" color="#008000" aggregation="Average" avg="146.8985404457202" unit="ms" min="123.748583984375"
+                     max="233.26414324442547" sum="10576.694912091853" count="4312">
+                <measurement timestamp="1481626800000" avg="151.07190755208333" min="96.73361206054688" max="419.2823486328125" sum="9064.314453125"
+                             count="60"></measurement>
+                <measurement timestamp="1481630400000" avg="160.00955403645833" min="106.24720764160156" max="216.4359893798828" sum="9600.5732421875"
+                             count="60"></measurement>
+                <measurement timestamp="1481634000000" avg="153.451318359375" min="96.8061752319336" max="219.15609741210938" sum="9207.0791015625"
+                             count="60"></measurement>
+                <measurement timestamp="1481637600000" avg="136.131005859375" min="95.28852844238281" max="283.8507080078125" sum="8167.8603515625"
+                             count="60"></measurement>
+                <measurement timestamp="1481641200000" avg="148.59306640625" min="95.37421417236328" max="213.61053466796875" sum="8915.583984375"
+                             count="60"></measurement>
+                <measurement timestamp="1481644800000" avg="153.91324869791666" min="94.98621368408203" max="217.6239471435547" sum="9234.794921875"
+                             count="60"></measurement>
+                <measurement timestamp="1481648400000" avg="156.92662760416667" min="96.02494812011719" max="215.92926025390625" sum="9415.59765625"
+                             count="60"></measurement>
+                <measurement timestamp="1481652000000" avg="143.72939453125" min="94.27333068847656" max="212.0296173095703" sum="8623.763671875"
+                             count="60"></measurement>
+                <measurement timestamp="1481655600000" avg="140.04207356770834" min="94.60237884521484" max="212.36550903320312" sum="8402.5244140625"
+                             count="60"></measurement>
+                <measurement timestamp="1481659200000" avg="133.16146647135417" min="95.886962890625" max="210.2393798828125" sum="7989.68798828125"
+                             count="60"></measurement>
+                <measurement timestamp="1481662800000" avg="128.96029459635417" min="95.15042114257812" max="208.6885223388672" sum="7737.61767578125"
+                             count="60"></measurement>
+                <measurement timestamp="1481666400000" avg="134.58556315104167" min="94.70878601074219" max="214.79518127441406" sum="8075.1337890625"
+                             count="60"></measurement>
+                <measurement timestamp="1481670000000" avg="143.79892578125" min="104.91650390625" max="212.37779235839844" sum="8627.935546875"
+                             count="60"></measurement>
+                <measurement timestamp="1481673600000" avg="136.669140625" min="95.58745574951172" max="219.7306365966797" sum="8200.1484375"
+                             count="60"></measurement>
+                <measurement timestamp="1481677200000" avg="153.29864908854168" min="96.50552368164062" max="314.8662109375" sum="9197.9189453125"
+                             count="60"></measurement>
+                <measurement timestamp="1481680800000" avg="151.558642578125" min="101.7165756225586" max="240.6603240966797" sum="9093.5185546875"
+                             count="60"></measurement>
+                <measurement timestamp="1481684400000" avg="140.7634765625" min="107.06066131591797" max="218.0086212158203" sum="8445.80859375"
+                             count="60"></measurement>
+                <measurement timestamp="1481688000000" avg="151.59599609375" min="96.83208465576172" max="217.0898895263672" sum="9095.759765625"
+                             count="60"></measurement>
+                <measurement timestamp="1481691600000" avg="147.27947591145832" min="105.2350845336914" max="216.73281860351562" sum="8836.7685546875"
+                             count="60"></measurement>
+                <measurement timestamp="1481695200000" avg="152.57029622395834" min="105.28721618652344" max="212.94674682617188" sum="9154.2177734375"
+                             count="60"></measurement>
+                <measurement timestamp="1481698800000" avg="138.13626302083333" min="96.35868835449219" max="214.55470275878906" sum="8288.17578125"
+                             count="60"></measurement>
+                <measurement timestamp="1481702400000" avg="143.38556315104168" min="95.9020004272461" max="216.5655517578125" sum="8603.1337890625"
+                             count="60"></measurement>
+                <measurement timestamp="1481706000000" avg="158.32247721354167" min="105.8128662109375" max="321.04339599609375" sum="9499.3486328125"
+                             count="60"></measurement>
+                <measurement timestamp="1481709600000" avg="148.0435546875" min="104.86157989501953" max="212.32974243164062" sum="8882.61328125"
+                             count="60"></measurement>
+                <measurement timestamp="1481713200000" avg="151.48297526041668" min="105.16158294677734" max="214.00230407714844" sum="9088.978515625"
+                             count="60"></measurement>
+                <measurement timestamp="1481716800000" avg="139.99982096354168" min="96.35199737548828" max="217.0058135986328" sum="8399.9892578125"
+                             count="60"></measurement>
+                <measurement timestamp="1481720400000" avg="156.807080078125" min="105.58447265625" max="212.60279846191406" sum="9408.4248046875"
+                             count="60"></measurement>
+                <measurement timestamp="1481724000000" avg="140.52366832386363" min="96.40251922607422" max="248.45864868164062" sum="7728.8017578125"
+                             count="55"></measurement>
+                <measurement timestamp="1481727600000" avg="144.78489583333334" min="95.98443603515625" max="272.49359130859375" sum="8687.09375"
+                             count="60"></measurement>
+                <measurement timestamp="1481731200000" avg="123.748583984375" min="93.90623474121094" max="213.6182098388672" sum="7424.9150390625"
+                             count="60"></measurement>
+                <measurement timestamp="1481734800000" avg="137.755615234375" min="94.41787719726562" max="209.8372039794922" sum="8265.3369140625"
+                             count="60"></measurement>
+                <measurement timestamp="1481738400000" avg="137.61339518229167" min="94.45947265625" max="219.01849365234375" sum="8256.8037109375"
+                             count="60"></measurement>
+                <measurement timestamp="1481742000000" avg="138.73626302083332" min="94.39679718017578" max="199.98114013671875" sum="8324.17578125"
+                             count="60"></measurement>
+                <measurement timestamp="1481745600000" avg="138.4486328125" min="94.19181823730469" max="208.48391723632812" sum="8306.91796875"
+                             count="60"></measurement>
+                <measurement timestamp="1481749200000" avg="136.4035888671875" min="94.51683807373047" max="213.34463500976562" sum="8184.21533203125"
+                             count="60"></measurement>
+                <measurement timestamp="1481752800000" avg="140.16991628011067" min="99.35143280029297" max="212.7306365966797" sum="8410.19497680664"
+                             count="60"></measurement>
+                <measurement timestamp="1481756400000" avg="154.2637087504069" min="104.9444808959961" max="216.0413360595703" sum="9255.822525024414"
+                             count="60"></measurement>
+                <measurement timestamp="1481760000000" avg="146.98893953959148" min="105.72765350341797" max="213.36184692382812" sum="8819.336372375488"
+                             count="60"></measurement>
+                <measurement timestamp="1481763600000" avg="151.6313034057617" min="94.44379425048828" max="349.31103515625" sum="9097.878204345703"
+                             count="60"></measurement>
+                <measurement timestamp="1481767200000" avg="145.8056218465169" min="107.90314483642578" max="214.8960418701172" sum="8748.337310791016"
+                             count="60"></measurement>
+                <measurement timestamp="1481770800000" avg="160.99698397318522" min="107.2298812866211" max="223.22186279296875" sum="9659.819038391113"
+                             count="60"></measurement>
+                <measurement timestamp="1481774400000" avg="156.1324612935384" min="106.13680267333984" max="236.27749633789062" sum="9367.947677612305"
+                             count="60"></measurement>
+                <measurement timestamp="1481778000000" avg="139.94506505330403" min="105.7135238647461" max="211.32151794433594" sum="8396.703903198242"
+                             count="60"></measurement>
+                <measurement timestamp="1481781600000" avg="148.28997815450032" min="105.7318344116211" max="312.97906494140625" sum="8897.39868927002"
+                             count="60"></measurement>
+                <measurement timestamp="1481785200000" avg="137.18134625752768" min="95.0778579711914" max="211.29153442382812" sum="8230.88077545166"
+                             count="60"></measurement>
+                <measurement timestamp="1481788800000" avg="145.3150104522705" min="100.77583312988281" max="218.33670043945312" sum="8718.90062713623"
+                             count="60"></measurement>
+                <measurement timestamp="1481792400000" avg="146.79837023417156" min="104.90015411376953" max="213.54676818847656" sum="8807.902214050293"
+                             count="60"></measurement>
+                <measurement timestamp="1481796000000" avg="149.01353136698404" min="94.41533660888672" max="232.64794921875" sum="8940.811882019043"
+                             count="60"></measurement>
+                <measurement timestamp="1481799600000" avg="131.24152615865071" min="93.88895416259766" max="212.63670349121094" sum="7874.491569519043"
+                             count="60"></measurement>
+                <measurement timestamp="1481803200000" avg="142.9415761311849" min="95.181396484375" max="208.16017150878906" sum="8576.494567871094"
+                             count="60"></measurement>
+                <measurement timestamp="1481806800000" avg="147.07957547505697" min="95.23172760009766" max="215.21475219726562" sum="8824.774528503418"
+                             count="60"></measurement>
+                <measurement timestamp="1481810400000" avg="144.38785565694172" min="94.72911834716797" max="212.4802703857422" sum="8663.271339416504"
+                             count="60"></measurement>
+                <measurement timestamp="1481814000000" avg="134.33616434733074" min="96.10581970214844" max="211.46690368652344" sum="8060.169860839844"
+                             count="60"></measurement>
+                <measurement timestamp="1481817600000" avg="148.57903747558595" min="95.05648803710938" max="412.2058410644531" sum="8914.742248535156"
+                             count="60"></measurement>
+                <measurement timestamp="1481821200000" avg="233.26414324442547" min="95.06019592285156" max="5625.0849609375" sum="13995.848594665527"
+                             count="60"></measurement>
+                <measurement timestamp="1481824800000" avg="141.85525983174642" min="93.67277526855469" max="215.55177307128906" sum="8511.315589904785"
+                             count="60"></measurement>
+                <measurement timestamp="1481828400000" avg="140.29153226216633" min="96.75855255126953" max="212.02513122558594" sum="8417.49193572998"
+                             count="60"></measurement>
+                <measurement timestamp="1481832000000" avg="144.3828203837077" min="95.69947814941406" max="208.03387451171875" sum="8662.969223022461"
+                             count="60"></measurement>
+                <measurement timestamp="1481835600000" avg="134.05280901590984" min="94.63188934326172" max="420.53131103515625" sum="8043.16854095459"
+                             count="60"></measurement>
+                <measurement timestamp="1481839200000" avg="151.64236081441243" min="94.41398620605469" max="219.53317260742188" sum="9098.541648864746"
+                             count="60"></measurement>
+                <measurement timestamp="1481842800000" avg="144.6389247894287" min="104.68570709228516" max="214.21836853027344" sum="8678.335487365723"
+                             count="60"></measurement>
+                <measurement timestamp="1481846400000" avg="152.6676108042399" min="104.92382049560547" max="279.635498046875" sum="9160.056648254395"
+                             count="60"></measurement>
+                <measurement timestamp="1481850000000" avg="162.22601623535155" min="97.42135620117188" max="470.4442443847656" sum="9733.560974121094"
+                             count="60"></measurement>
+                <measurement timestamp="1481853600000" avg="152.41731325785318" min="94.0376205444336" max="215.1603240966797" sum="9145.038795471191"
+                             count="60"></measurement>
+                <measurement timestamp="1481857200000" avg="158.88897514343262" min="104.05722045898438" max="216.03965759277344" sum="9533.338508605957"
+                             count="60"></measurement>
+                <measurement timestamp="1481860800000" avg="152.7492265065511" min="106.32109069824219" max="216.218505859375" sum="9164.953590393066"
+                             count="60"></measurement>
+                <measurement timestamp="1481864400000" avg="147.7715296427409" min="104.3321533203125" max="214.75167846679688" sum="8866.291778564453"
+                             count="60"></measurement>
+                <measurement timestamp="1481868000000" avg="152.09760309855145" min="105.47639465332031" max="213.77528381347656" sum="9125.856185913086"
+                             count="60"></measurement>
+                <measurement timestamp="1481871600000" avg="148.6401335398356" min="105.19680786132812" max="212.5897216796875" sum="8918.408012390137"
+                             count="60"></measurement>
+                <measurement timestamp="1481875200000" avg="148.73183466593426" min="96.2805404663086" max="215.8461151123047" sum="8923.910079956055"
+                             count="60"></measurement>
+                <measurement timestamp="1481878800000" avg="132.52085863749187" min="98.058837890625" max="209.4330291748047" sum="7951.251518249512"
+                             count="60"></measurement>
+                <measurement timestamp="1481882400000" avg="154.45548703377708" min="95.22483825683594" max="212.48974609375" sum="8803.962760925293"
+                             count="57"></measurement>
+        </measure>
+            <measure measure="Response Time - Synchronous_Read" color="#ff8080" aggregation="Average" avg="148.02691869374905" unit="ms"
+                     min="124.78375651041667" max="231.28748830159506" sum="10657.938145949933" count="4312">
+                <measurement timestamp="1481626800000" avg="147.42203776041666" min="96.02832794189453" max="212.32337951660156" sum="8845.322265625"
+                             count="60"></measurement>
+                <measurement timestamp="1481630400000" avg="139.0166015625" min="104.79967498779297" max="211.56797790527344" sum="8340.99609375"
+                             count="60"></measurement>
+                <measurement timestamp="1481634000000" avg="144.36588541666666" min="105.3949966430664" max="212.79388427734375" sum="8661.953125"
+                             count="60"></measurement>
+                <measurement timestamp="1481637600000" avg="140.12039388020833" min="95.2801513671875" max="286.17510986328125" sum="8407.2236328125"
+                             count="60"></measurement>
+                <measurement timestamp="1481641200000" avg="139.26901041666667" min="95.28736877441406" max="208.9670867919922" sum="8356.140625"
+                             count="60"></measurement>
+                <measurement timestamp="1481644800000" avg="141.48435872395834" min="95.34197998046875" max="212.42230224609375" sum="8489.0615234375"
+                             count="60"></measurement>
+                <measurement timestamp="1481648400000" avg="146.23050130208333" min="96.81462860107422" max="215.95436096191406" sum="8773.830078125"
+                             count="60"></measurement>
+                <measurement timestamp="1481652000000" avg="131.05441080729167" min="94.42539978027344" max="211.16748046875" sum="7863.2646484375"
+                             count="60"></measurement>
+                <measurement timestamp="1481655600000" avg="133.71612141927082" min="94.04692840576172" max="238.96873474121094" sum="8022.96728515625"
+                             count="60"></measurement>
+                <measurement timestamp="1481659200000" avg="138.18151041666667" min="95.2447280883789" max="214.71722412109375" sum="8290.890625"
+                             count="60"></measurement>
+                <measurement timestamp="1481662800000" avg="149.52001953125" min="95.16098022460938" max="220.79165649414062" sum="8971.201171875"
+                             count="60"></measurement>
+                <measurement timestamp="1481666400000" avg="145.21985677083333" min="94.19401550292969" max="219.1884307861328" sum="8713.19140625"
+                             count="60"></measurement>
+                <measurement timestamp="1481670000000" avg="145.63232421875" min="96.98622131347656" max="213.32138061523438" sum="8737.939453125"
+                             count="60"></measurement>
+                <measurement timestamp="1481673600000" avg="156.63538411458333" min="104.27574920654297" max="215.96937561035156" sum="9398.123046875"
+                             count="60"></measurement>
+                <measurement timestamp="1481677200000" avg="160.116650390625" min="103.28704833984375" max="404.5648193359375" sum="9606.9990234375"
+                             count="60"></measurement>
+                <measurement timestamp="1481680800000" avg="151.0591796875" min="107.20736694335938" max="338.5673522949219" sum="9063.55078125"
+                             count="60"></measurement>
+                <measurement timestamp="1481684400000" avg="156.222802734375" min="105.7065200805664" max="227.72479248046875" sum="9373.3681640625"
+                             count="60"></measurement>
+                <measurement timestamp="1481688000000" avg="144.27317708333334" min="95.90792083740234" max="214.3788604736328" sum="8656.390625"
+                             count="60"></measurement>
+                <measurement timestamp="1481691600000" avg="144.34622395833333" min="105.75779724121094" max="333.03973388671875" sum="8660.7734375"
+                             count="60"></measurement>
+                <measurement timestamp="1481695200000" avg="156.43009440104166" min="104.44047546386719" max="235.3067626953125" sum="9385.8056640625"
+                             count="60"></measurement>
+                <measurement timestamp="1481698800000" avg="144.54462890625" min="99.01889038085938" max="212.27203369140625" sum="8672.677734375"
+                             count="60"></measurement>
+                <measurement timestamp="1481702400000" avg="150.66181640625" min="94.40082550048828" max="212.06993103027344" sum="9039.708984375"
+                             count="60"></measurement>
+                <measurement timestamp="1481706000000" avg="149.02194010416667" min="105.88436889648438" max="215.76712036132812" sum="8941.31640625"
+                             count="60"></measurement>
+                <measurement timestamp="1481709600000" avg="150.28330078125" min="103.27581787109375" max="212.92945861816406" sum="9016.998046875"
+                             count="60"></measurement>
+                <measurement timestamp="1481713200000" avg="149.59881184895832" min="103.577392578125" max="212.2672882080078" sum="8975.9287109375"
+                             count="60"></measurement>
+                <measurement timestamp="1481716800000" avg="141.22550455729166" min="104.52165222167969" max="221.1343994140625" sum="8473.5302734375"
+                             count="60"></measurement>
+                <measurement timestamp="1481720400000" avg="144.899609375" min="100.59712219238281" max="213.54200744628906" sum="8693.9765625"
+                             count="60"></measurement>
+                <measurement timestamp="1481724000000" avg="152.81800426136363" min="95.2695083618164" max="212.3251190185547" sum="8404.990234375"
+                             count="55"></measurement>
+                <measurement timestamp="1481727600000" avg="149.704345703125" min="95.6187744140625" max="216.633056640625" sum="8982.2607421875"
+                             count="60"></measurement>
+                <measurement timestamp="1481731200000" avg="146.12347005208332" min="94.76577758789062" max="210.85659790039062" sum="8767.408203125"
+                             count="60"></measurement>
+                <measurement timestamp="1481734800000" avg="136.38336588541668" min="94.12432098388672" max="219.161865234375" sum="8183.001953125"
+                             count="60"></measurement>
+                <measurement timestamp="1481738400000" avg="143.88391927083333" min="94.82488250732422" max="392.2816467285156" sum="8633.03515625"
+                             count="60"></measurement>
+                <measurement timestamp="1481742000000" avg="130.26378580729167" min="94.02485656738281" max="206.60646057128906" sum="7815.8271484375"
+                             count="60"></measurement>
+                <measurement timestamp="1481745600000" avg="145.78798828125" min="93.90646362304688" max="210.3937225341797" sum="8747.279296875"
+                             count="60"></measurement>
+                <measurement timestamp="1481749200000" avg="124.78375651041667" min="94.93590545654297" max="209.8987579345703" sum="7487.025390625"
+                             count="60"></measurement>
+                <measurement timestamp="1481752800000" avg="144.73378588358563" min="99.45623779296875" max="212.77239990234375" sum="8684.027153015137"
+                             count="60"></measurement>
+                <measurement timestamp="1481756400000" avg="143.8957202911377" min="103.82129669189453" max="279.25775146484375" sum="8633.743217468262"
+                             count="60"></measurement>
+                <measurement timestamp="1481760000000" avg="150.12889455159504" min="105.98037719726562" max="218.9145965576172" sum="9007.733673095703"
+                             count="60"></measurement>
+                <measurement timestamp="1481763600000" avg="167.1925188700358" min="99.02069091796875" max="383.10052490234375" sum="10031.551132202148"
+                             count="60"></measurement>
+                <measurement timestamp="1481767200000" avg="152.16649843851727" min="105.0810317993164" max="215.14788818359375" sum="9129.989906311035"
+                             count="60"></measurement>
+                <measurement timestamp="1481770800000" avg="144.2146479288737" min="105.18614196777344" max="212.8712158203125" sum="8652.878875732422"
+                             count="60"></measurement>
+                <measurement timestamp="1481774400000" avg="149.48935101826984" min="104.42960357666016" max="230.21987915039062" sum="8969.361061096191"
+                             count="60"></measurement>
+                <measurement timestamp="1481778000000" avg="152.69543533325196" min="106.04645538330078" max="219.76531982421875" sum="9161.726119995117"
+                             count="60"></measurement>
+                <measurement timestamp="1481781600000" avg="151.2125097910563" min="105.20234680175781" max="214.24667358398438" sum="9072.750587463379"
+                             count="60"></measurement>
+                <measurement timestamp="1481785200000" avg="137.29420725504556" min="95.2028579711914" max="212.39773559570312" sum="8237.652435302734"
+                             count="60"></measurement>
+                <measurement timestamp="1481788800000" avg="143.22725537618" min="94.81746673583984" max="317.15240478515625" sum="8593.6353225708"
+                             count="60"></measurement>
+                <measurement timestamp="1481792400000" avg="149.56079788208007" min="95.6126480102539" max="257.7183837890625" sum="8973.647872924805"
+                             count="60"></measurement>
+                <measurement timestamp="1481796000000" avg="149.30816103617352" min="96.01192474365234" max="215.89430236816406" sum="8958.48966217041"
+                             count="60"></measurement>
+                <measurement timestamp="1481799600000" avg="134.32935651143393" min="93.5335464477539" max="217.57872009277344" sum="8059.761390686035"
+                             count="60"></measurement>
+                <measurement timestamp="1481803200000" avg="147.6752259572347" min="93.42637634277344" max="224.98031616210938" sum="8860.513557434082"
+                             count="60"></measurement>
+                <measurement timestamp="1481806800000" avg="141.80633761088055" min="95.32073211669922" max="212.83140563964844" sum="8508.380256652832"
+                             count="60"></measurement>
+                <measurement timestamp="1481810400000" avg="152.00108731587727" min="96.1370849609375" max="240.23753356933594" sum="9120.065238952637"
+                             count="60"></measurement>
+                <measurement timestamp="1481814000000" avg="139.0810525258382" min="95.76942443847656" max="211.2222442626953" sum="8344.863151550293"
+                             count="60"></measurement>
+                <measurement timestamp="1481817600000" avg="149.29498875935872" min="95.72323608398438" max="231.687255859375" sum="8957.699325561523"
+                             count="60"></measurement>
+                <measurement timestamp="1481821200000" avg="231.28748830159506" min="96.80451202392578" max="5625.47265625" sum="13877.249298095703"
+                             count="60"></measurement>
+                <measurement timestamp="1481824800000" avg="146.1936321258545" min="96.3882064819336" max="213.44027709960938" sum="8771.61792755127"
+                             count="60"></measurement>
+                <measurement timestamp="1481828400000" avg="147.64686342875163" min="95.14845275878906" max="219.49432373046875" sum="8858.811805725098"
+                             count="60"></measurement>
+                <measurement timestamp="1481832000000" avg="147.10478426615398" min="95.1374740600586" max="211.94241333007812" sum="8826.287055969238"
+                             count="60"></measurement>
+                <measurement timestamp="1481835600000" avg="146.06421394348143" min="93.7867660522461" max="413.1986999511719" sum="8763.852836608887"
+                             count="60"></measurement>
+                <measurement timestamp="1481839200000" avg="143.31096496582032" min="95.87256622314453" max="230.09735107421875" sum="8598.657897949219"
+                             count="60"></measurement>
+                <measurement timestamp="1481842800000" avg="148.05005989074706" min="104.03047943115234" max="217.6837158203125" sum="8883.003593444824"
+                             count="60"></measurement>
+                <measurement timestamp="1481846400000" avg="160.9802505493164" min="104.87940979003906" max="214.22531127929688" sum="9658.815032958984"
+                             count="60"></measurement>
+                <measurement timestamp="1481850000000" avg="168.54927177429198" min="97.10506439208984" max="361.9754943847656" sum="10112.95630645752"
+                             count="60"></measurement>
+                <measurement timestamp="1481853600000" avg="152.26871592203776" min="106.16082763671875" max="215.80442810058594" sum="9136.122955322266"
+                             count="60"></measurement>
+                <measurement timestamp="1481857200000" avg="154.38610699971517" min="106.8257064819336" max="219.79364013671875" sum="9263.16641998291"
+                             count="60"></measurement>
+                <measurement timestamp="1481860800000" avg="149.53757705688477" min="104.63627624511719" max="220.3913116455078" sum="8972.254623413086"
+                             count="60"></measurement>
+                <measurement timestamp="1481864400000" avg="142.71344184875488" min="103.97483825683594" max="214.66131591796875" sum="8562.806510925293"
+                             count="60"></measurement>
+                <measurement timestamp="1481868000000" avg="147.52830085754394" min="104.71116638183594" max="213.63941955566406" sum="8851.698051452637"
+                             count="60"></measurement>
+                <measurement timestamp="1481871600000" avg="155.26045888264974" min="94.5552978515625" max="213.95423889160156" sum="9315.627532958984"
+                             count="60"></measurement>
+                <measurement timestamp="1481875200000" avg="144.88259099324543" min="95.83856201171875" max="210.20399475097656" sum="8692.955459594727"
+                             count="60"></measurement>
+                <measurement timestamp="1481878800000" avg="152.2212994893392" min="95.6891098022461" max="211.32412719726562" sum="9133.277969360352"
+                             count="60"></measurement>
+                <measurement timestamp="1481882400000" avg="150.34349997001783" min="96.14305877685547" max="213.9364013671875" sum="8569.579498291016"
+                             count="57"></measurement>
+            </measure>
+            <measure measure="DB Time" color="#004080" aggregation="Average" avg="1.4403976107668859" unit="ms" min="0.6965201643767925" max="3.706285863046663"
+                     sum="103.70862797521579" count="6750202">
+                <measurement timestamp="1481626800000" avg="0.9102320072836576" min="0.3789690136909485" max="61.081993103027344" sum="35042.11181640625"
+                             count="38498"></measurement>
+                <measurement timestamp="1481630400000" avg="0.9831966241404565" min="0.3950539827346802" max="68.07459259033203" sum="42174.21919250488"
+                             count="42895"></measurement>
+                <measurement timestamp="1481634000000" avg="0.8587825867212336" min="0.38734200596809387" max="85.09297180175781" sum="48917.97370481491"
+                             count="56962"></measurement>
+                <measurement timestamp="1481637600000" avg="0.9481175419858574" min="0.3803830146789551" max="315.5494079589844" sum="24134.33203125"
+                             count="25455"></measurement>
+                <measurement timestamp="1481641200000" avg="1.4356500381132906" min="0.35815098881721497" max="663.1138916015625" sum="85135.48291015625"
+                             count="59301"></measurement>
+                <measurement timestamp="1481644800000" avg="0.7665924421771532" min="0.3846780061721802" max="42.466365814208984" sum="38086.6123046875"
+                             count="49683"></measurement>
+                <measurement timestamp="1481648400000" avg="1.0167260219442114" min="0.35978299379348755" max="284.0863952636719" sum="44208.26416015625"
+                             count="43481"></measurement>
+                <measurement timestamp="1481652000000" avg="1.2206643413547553" min="0.3459889888763428" max="618.2945556640625" sum="68910.1640625"
+                             count="56453"></measurement>
+                <measurement timestamp="1481655600000" avg="0.6965201643767925" min="0.3791010081768036" max="37.33185577392578" sum="17971.61328125"
+                             count="25802"></measurement>
+                <measurement timestamp="1481659200000" avg="2.9687336147231544" min="0.37001699209213257" max="205.9379119873047" sum="6192.7783203125"
+                             count="2086"></measurement>
+                <measurement timestamp="1481662800000" avg="3.17970805266957" min="0.3538709878921509" max="1185.7965087890625" sum="4647350.0"
+                             count="1461565"></measurement>
+                <measurement timestamp="1481666400000" avg="2.1755240635078144" min="0.36772099137306213" max="352.1684265136719" sum="394629.1875"
+                             count="181395"></measurement>
+                <measurement timestamp="1481670000000" avg="1.217115781476778" min="0.43424901366233826" max="52.39368438720703" sum="1677.185546875"
+                             count="1378"></measurement>
+                <measurement timestamp="1481673600000" avg="0.9828699911794355" min="0.3796759843826294" max="38.47182083129883" sum="1218.7587890625"
+                             count="1240"></measurement>
+                <measurement timestamp="1481677200000" avg="2.404267681162075" min="0.3799239993095398" max="530.20166015625" sum="4101.6806640625"
+                             count="1706"></measurement>
+                <measurement timestamp="1481680800000" avg="0.9514273218361728" min="0.4191479980945587" max="13.71589183807373" sum="1263.4954833984375"
+                             count="1328"></measurement>
+                <measurement timestamp="1481684400000" avg="0.8121500127696275" min="0.4669789969921112" max="10.477487564086914" sum="1515.471923828125"
+                             count="1866"></measurement>
+                <measurement timestamp="1481688000000" avg="0.8562615912919688" min="0.4347139894962311" max="68.31645202636719" sum="1358.0308837890625"
+                             count="1586"></measurement>
+                <measurement timestamp="1481691600000" avg="1.8007342305909644" min="0.453341007232666" max="154.6392822265625" sum="6100.8875732421875"
+                             count="3388"></measurement>
+                <measurement timestamp="1481695200000" avg="1.258123643057687" min="0.4517599940299988" max="59.677101135253906" sum="4227.295440673828"
+                             count="3360"></measurement>
+                <measurement timestamp="1481698800000" avg="1.1324196214946487" min="0.3800159990787506" max="328.863037109375" sum="33885.392333984375"
+                             count="29923"></measurement>
+                <measurement timestamp="1481702400000" avg="1.221856706658634" min="0.37173500657081604" max="529.6387939453125" sum="67183.791015625"
+                             count="54985"></measurement>
+                <measurement timestamp="1481706000000" avg="1.129303794174915" min="0.38293400406837463" max="143.91954040527344" sum="53195.855224609375"
+                             count="47105"></measurement>
+                <measurement timestamp="1481709600000" avg="0.9858389544620566" min="0.39222800731658936" max="205.1179656982422" sum="44521.47302246094"
+                             count="45161"></measurement>
+                <measurement timestamp="1481713200000" avg="1.1810443843467033" min="0.39129701256752014" max="1039.714111328125" sum="54650.466796875"
+                             count="46273"></measurement>
+                <measurement timestamp="1481716800000" avg="1.1178039684149117" min="0.37581101059913635" max="168.65151977539062" sum="43066.75129508972"
+                             count="38528"></measurement>
+                <measurement timestamp="1481720400000" avg="0.9984522098363193" min="0.3643830120563507" max="220.34063720703125" sum="54629.314208984375"
+                             count="54714"></measurement>
+                <measurement timestamp="1481724000000" avg="1.2546652562400353" min="0.3845529854297638" max="183.26722717285156" sum="29117.0166015625"
+                             count="23207"></measurement>
+                <measurement timestamp="1481727600000" avg="0.9257071543169092" min="0.3891119956970215" max="39.14907455444336" sum="22110.515380859375"
+                             count="23885"></measurement>
+                <measurement timestamp="1481731200000" avg="1.0975169240755636" min="0.37441399693489075" max="507.97515869140625" sum="38895.999789237976"
+                             count="35440"></measurement>
+                <measurement timestamp="1481734800000" avg="2.4828092235036965" min="0.3674190044403076" max="1261.6910400390625" sum="34928.16015625"
+                             count="14068"></measurement>
+                <measurement timestamp="1481738400000" avg="1.08390480205952" min="0.3718540072441101" max="537.133544921875" sum="53102.6640625"
+                             count="48992"></measurement>
+                <measurement timestamp="1481742000000" avg="1.2697958199989507" min="0.36779698729515076" max="1728.153076171875" sum="24203.578125"
+                             count="19061"></measurement>
+                <measurement timestamp="1481745600000" avg="1.107051850684438" min="0.3788689970970154" max="1042.2379150390625" sum="9603.6748046875"
+                             count="8675"></measurement>
+                <measurement timestamp="1481749200000" avg="3.706285863046663" min="0.3778980076313019" max="1251.1087646484375" sum="5495399.0"
+                             count="1482724"></measurement>
+                <measurement timestamp="1481752800000" avg="2.3224506268774063" min="0.38790300488471985" max="374.0452575683594" sum="601496.1327562332"
+                             count="258992"></measurement>
+                <measurement timestamp="1481756400000" avg="1.177024525019272" min="0.39404699206352234" max="102.534423828125" sum="21427.731477975845"
+                             count="18205"></measurement>
+                <measurement timestamp="1481760000000" avg="0.9122944821299571" min="0.41077399253845215" max="70.3419189453125" sum="12536.75077342987"
+                             count="13742"></measurement>
+                <measurement timestamp="1481763600000" avg="3.053329801823641" min="0.39532598853111267" max="915.2615966796875" sum="47393.785183906555"
+                             count="15522"></measurement>
+                <measurement timestamp="1481767200000" avg="1.4115523103376133" min="0.4307740032672882" max="56.22693634033203" sum="7259.613532066345"
+                             count="5143"></measurement>
+                <measurement timestamp="1481770800000" avg="0.8440898045037029" min="0.4327319860458374" max="9.56177043914795" sum="1564.0984077453613"
+                             count="1853"></measurement>
+                <measurement timestamp="1481774400000" avg="0.8785713026083262" min="0.43909499049186707" max="5.656607151031494" sum="1698.2783279418945"
+                             count="1933"></measurement>
+                <measurement timestamp="1481778000000" avg="0.8315414093812961" min="0.42494699358940125" max="6.43426513671875" sum="1212.3873748779297"
+                             count="1458"></measurement>
+                <measurement timestamp="1481781600000" avg="1.9870059283655421" min="0.41755399107933044" max="65.24054718017578" sum="5068.852123260498"
+                             count="2551"></measurement>
+                <measurement timestamp="1481785200000" avg="1.6305845875312979" min="0.3859519958496094" max="174.76617431640625" sum="31951.30499267578"
+                             count="19595"></measurement>
+                <measurement timestamp="1481788800000" avg="2.535655448245306" min="0.38316500186920166" max="1059.2158203125" sum="34738.47964096069"
+                             count="13700"></measurement>
+                <measurement timestamp="1481792400000" avg="2.2590968601365953" min="0.39281100034713745" max="4940.96484375" sum="89525.74947035313"
+                             count="39629"></measurement>
+                <measurement timestamp="1481796000000" avg="1.615946583183146" min="0.3633579909801483" max="471.5325927734375" sum="129925.33718109131"
+                             count="80402"></measurement>
+                <measurement timestamp="1481799600000" avg="2.1028079791414953" min="0.37824898958206177" max="410.9365234375" sum="23942.571650505066"
+                             count="11386"></measurement>
+                <measurement timestamp="1481803200000" avg="3.2680287348592403" min="0.37552300095558167" max="768.0621337890625" sum="144005.68620157242"
+                             count="44065"></measurement>
+                <measurement timestamp="1481806800000" avg="2.199763393093037" min="0.37421199679374695" max="427.3224182128906" sum="72629.58794975281"
+                             count="33017"></measurement>
+                <measurement timestamp="1481810400000" avg="1.3791880584649137" min="0.38161399960517883" max="203.32070922851562" sum="93895.12302029133"
+                             count="68080"></measurement>
+                <measurement timestamp="1481814000000" avg="1.3231554303465956" min="0.3839679956436157" max="418.03045654296875" sum="68450.79987812042"
+                             count="51733"></measurement>
+                <measurement timestamp="1481817600000" avg="1.2382106231106738" min="0.37292298674583435" max="238.2270965576172" sum="58374.2016159296"
+                             count="47144"></measurement>
+                <measurement timestamp="1481821200000" avg="0.950496127472098" min="0.3730489909648895" max="114.0591812133789" sum="17488.17824935913"
+                             count="18399"></measurement>
+                <measurement timestamp="1481824800000" avg="1.0368606686327886" min="0.37365400791168213" max="103.8485107421875" sum="20583.75799369812"
+                             count="19852"></measurement>
+                <measurement timestamp="1481828400000" avg="0.9483419378207046" min="0.3816930055618286" max="59.81174087524414" sum="24160.907549858093"
+                             count="25477"></measurement>
+                <measurement timestamp="1481832000000" avg="0.8968775953893139" min="0.42361700534820557" max="27.000934600830078" sum="1863.7116432189941"
+                             count="2078"></measurement>
+                <measurement timestamp="1481835600000" avg="3.1543581478974816" min="0.3648430109024048" max="890.1145629882812" sum="4847560.8232421875"
+                             count="1536782"></measurement>
+                <measurement timestamp="1481839200000" avg="2.2079168113124705" min="0.377362996339798" max="195.33294677734375" sum="454259.012676239"
+                             count="205741"></measurement>
+                <measurement timestamp="1481842800000" avg="1.3270257116928892" min="0.4078969955444336" max="53.66498947143555" sum="10614.87866783142"
+                             count="7999"></measurement>
+                <measurement timestamp="1481846400000" avg="0.9009549373056183" min="0.46462300419807434" max="101.305908203125" sum="1843.353801727295"
+                             count="2046"></measurement>
+                <measurement timestamp="1481850000000" avg="1.832767429403778" min="0.40051600337028503" max="497.85906982421875" sum="14125.138578414917"
+                             count="7707"></measurement>
+                <measurement timestamp="1481853600000" avg="0.851606973404747" min="0.4037109911441803" max="5.250161170959473" sum="1241.642967224121"
+                             count="1458"></measurement>
+                <measurement timestamp="1481857200000" avg="0.8163893245577324" min="0.4737989902496338" max="7.986995220184326" sum="1196.8267498016357"
+                             count="1466"></measurement>
+                <measurement timestamp="1481860800000" avg="1.0091290120166398" min="0.3996170163154602" max="119.52291870117188" sum="11479.851640701294"
+                             count="11376"></measurement>
+                <measurement timestamp="1481864400000" avg="0.7467162536852288" min="0.41388198733329773" max="4.6636199951171875" sum="985.665454864502"
+                             count="1320"></measurement>
+                <measurement timestamp="1481868000000" avg="1.5010944917787148" min="0.4027329981327057" max="198.33541870117188" sum="6158.990699768066"
+                             count="4103"></measurement>
+                <measurement timestamp="1481871600000" avg="1.1554950776942392" min="0.38137200474739075" max="68.408203125" sum="27430.297649383545"
+                             count="23739"></measurement>
+                <measurement timestamp="1481875200000" avg="0.9347655580974884" min="0.3771840035915375" max="68.57176208496094" sum="24079.5607765913"
+                             count="25760"></measurement>
+                <measurement timestamp="1481878800000" avg="1.0615993579801803" min="0.3793489933013916" max="150.61863708496094" sum="65364.795669555664"
+                             count="61572"></measurement>
+                <measurement timestamp="1481882400000" avg="1.2680803842380304" min="0.37419000267982483" max="97.83604431152344" sum="41856.797322928905"
+                             count="33008"></measurement>
+            </measure>
+            <measure measure="DB Count" color="#c08080" aggregation="Count" avg="93752.80555555556" unit="num" min="1240.0" max="1536782.0" sum="6750202.0"
+                     count="6750202">
+                <measurement timestamp="1481626800000" avg="1.0" min="1.0" max="1.0" sum="38498.0" count="38498"></measurement>
+                <measurement timestamp="1481630400000" avg="1.0" min="1.0" max="1.0" sum="42895.0" count="42895"></measurement>
+                <measurement timestamp="1481634000000" avg="1.0" min="1.0" max="1.0" sum="56962.0" count="56962"></measurement>
+                <measurement timestamp="1481637600000" avg="1.0" min="1.0" max="1.0" sum="25455.0" count="25455"></measurement>
+                <measurement timestamp="1481641200000" avg="1.0" min="1.0" max="1.0" sum="59301.0" count="59301"></measurement>
+                <measurement timestamp="1481644800000" avg="1.0" min="1.0" max="1.0" sum="49683.0" count="49683"></measurement>
+                <measurement timestamp="1481648400000" avg="1.0" min="1.0" max="1.0" sum="43481.0" count="43481"></measurement>
+                <measurement timestamp="1481652000000" avg="1.0" min="1.0" max="1.0" sum="56453.0" count="56453"></measurement>
+                <measurement timestamp="1481655600000" avg="1.0" min="1.0" max="1.0" sum="25802.0" count="25802"></measurement>
+                <measurement timestamp="1481659200000" avg="1.0" min="1.0" max="1.0" sum="2086.0" count="2086"></measurement>
+                <measurement timestamp="1481662800000" avg="1.0" min="1.0" max="1.0" sum="1461565.0" count="1461565"></measurement>
+                <measurement timestamp="1481666400000" avg="1.0" min="1.0" max="1.0" sum="181395.0" count="181395"></measurement>
+                <measurement timestamp="1481670000000" avg="1.0" min="1.0" max="1.0" sum="1378.0" count="1378"></measurement>
+                <measurement timestamp="1481673600000" avg="1.0" min="1.0" max="1.0" sum="1240.0" count="1240"></measurement>
+                <measurement timestamp="1481677200000" avg="1.0" min="1.0" max="1.0" sum="1706.0" count="1706"></measurement>
+                <measurement timestamp="1481680800000" avg="1.0" min="1.0" max="1.0" sum="1328.0" count="1328"></measurement>
+                <measurement timestamp="1481684400000" avg="1.0" min="1.0" max="1.0" sum="1866.0" count="1866"></measurement>
+                <measurement timestamp="1481688000000" avg="1.0" min="1.0" max="1.0" sum="1586.0" count="1586"></measurement>
+                <measurement timestamp="1481691600000" avg="1.0" min="1.0" max="1.0" sum="3388.0" count="3388"></measurement>
+                <measurement timestamp="1481695200000" avg="1.0" min="1.0" max="1.0" sum="3360.0" count="3360"></measurement>
+                <measurement timestamp="1481698800000" avg="1.0" min="1.0" max="1.0" sum="29923.0" count="29923"></measurement>
+                <measurement timestamp="1481702400000" avg="1.0" min="1.0" max="1.0" sum="54985.0" count="54985"></measurement>
+                <measurement timestamp="1481706000000" avg="1.0" min="1.0" max="1.0" sum="47105.0" count="47105"></measurement>
+                <measurement timestamp="1481709600000" avg="1.0" min="1.0" max="1.0" sum="45161.0" count="45161"></measurement>
+                <measurement timestamp="1481713200000" avg="1.0" min="1.0" max="1.0" sum="46273.0" count="46273"></measurement>
+                <measurement timestamp="1481716800000" avg="1.0" min="1.0" max="1.0" sum="38528.0" count="38528"></measurement>
+                <measurement timestamp="1481720400000" avg="1.0" min="1.0" max="1.0" sum="54714.0" count="54714"></measurement>
+                <measurement timestamp="1481724000000" avg="1.0" min="1.0" max="1.0" sum="23207.0" count="23207"></measurement>
+                <measurement timestamp="1481727600000" avg="1.0" min="1.0" max="1.0" sum="23885.0" count="23885"></measurement>
+                <measurement timestamp="1481731200000" avg="1.0" min="1.0" max="1.0" sum="35440.0" count="35440"></measurement>
+                <measurement timestamp="1481734800000" avg="1.0" min="1.0" max="1.0" sum="14068.0" count="14068"></measurement>
+                <measurement timestamp="1481738400000" avg="1.0" min="1.0" max="1.0" sum="48992.0" count="48992"></measurement>
+                <measurement timestamp="1481742000000" avg="1.0" min="1.0" max="1.0" sum="19061.0" count="19061"></measurement>
+                <measurement timestamp="1481745600000" avg="1.0" min="1.0" max="1.0" sum="8675.0" count="8675"></measurement>
+                <measurement timestamp="1481749200000" avg="1.0" min="1.0" max="1.0" sum="1482724.0" count="1482724"></measurement>
+                <measurement timestamp="1481752800000" avg="1.0" min="1.0" max="1.0" sum="258992.0" count="258992"></measurement>
+                <measurement timestamp="1481756400000" avg="1.0" min="1.0" max="1.0" sum="18205.0" count="18205"></measurement>
+                <measurement timestamp="1481760000000" avg="1.0" min="1.0" max="1.0" sum="13742.0" count="13742"></measurement>
+                <measurement timestamp="1481763600000" avg="1.0" min="1.0" max="1.0" sum="15522.0" count="15522"></measurement>
+                <measurement timestamp="1481767200000" avg="1.0" min="1.0" max="1.0" sum="5143.0" count="5143"></measurement>
+                <measurement timestamp="1481770800000" avg="1.0" min="1.0" max="1.0" sum="1853.0" count="1853"></measurement>
+                <measurement timestamp="1481774400000" avg="1.0" min="1.0" max="1.0" sum="1933.0" count="1933"></measurement>
+                <measurement timestamp="1481778000000" avg="1.0" min="1.0" max="1.0" sum="1458.0" count="1458"></measurement>
+                <measurement timestamp="1481781600000" avg="1.0" min="1.0" max="1.0" sum="2551.0" count="2551"></measurement>
+                <measurement timestamp="1481785200000" avg="1.0" min="1.0" max="1.0" sum="19595.0" count="19595"></measurement>
+                <measurement timestamp="1481788800000" avg="1.0" min="1.0" max="1.0" sum="13700.0" count="13700"></measurement>
+                <measurement timestamp="1481792400000" avg="1.0" min="1.0" max="1.0" sum="39629.0" count="39629"></measurement>
+                <measurement timestamp="1481796000000" avg="1.0" min="1.0" max="1.0" sum="80402.0" count="80402"></measurement>
+                <measurement timestamp="1481799600000" avg="1.0" min="1.0" max="1.0" sum="11386.0" count="11386"></measurement>
+                <measurement timestamp="1481803200000" avg="1.0" min="1.0" max="1.0" sum="44065.0" count="44065"></measurement>
+                <measurement timestamp="1481806800000" avg="1.0" min="1.0" max="1.0" sum="33017.0" count="33017"></measurement>
+                <measurement timestamp="1481810400000" avg="1.0" min="1.0" max="1.0" sum="68080.0" count="68080"></measurement>
+                <measurement timestamp="1481814000000" avg="1.0" min="1.0" max="1.0" sum="51733.0" count="51733"></measurement>
+                <measurement timestamp="1481817600000" avg="1.0" min="1.0" max="1.0" sum="47144.0" count="47144"></measurement>
+                <measurement timestamp="1481821200000" avg="1.0" min="1.0" max="1.0" sum="18399.0" count="18399"></measurement>
+                <measurement timestamp="1481824800000" avg="1.0" min="1.0" max="1.0" sum="19852.0" count="19852"></measurement>
+                <measurement timestamp="1481828400000" avg="1.0" min="1.0" max="1.0" sum="25477.0" count="25477"></measurement>
+                <measurement timestamp="1481832000000" avg="1.0" min="1.0" max="1.0" sum="2078.0" count="2078"></measurement>
+                <measurement timestamp="1481835600000" avg="1.0" min="1.0" max="1.0" sum="1536782.0" count="1536782"></measurement>
+                <measurement timestamp="1481839200000" avg="1.0" min="1.0" max="1.0" sum="205741.0" count="205741"></measurement>
+                <measurement timestamp="1481842800000" avg="1.0" min="1.0" max="1.0" sum="7999.0" count="7999"></measurement>
+                <measurement timestamp="1481846400000" avg="1.0" min="1.0" max="1.0" sum="2046.0" count="2046"></measurement>
+                <measurement timestamp="1481850000000" avg="1.0" min="1.0" max="1.0" sum="7707.0" count="7707"></measurement>
+                <measurement timestamp="1481853600000" avg="1.0" min="1.0" max="1.0" sum="1458.0" count="1458"></measurement>
+                <measurement timestamp="1481857200000" avg="1.0" min="1.0" max="1.0" sum="1466.0" count="1466"></measurement>
+                <measurement timestamp="1481860800000" avg="1.0" min="1.0" max="1.0" sum="11376.0" count="11376"></measurement>
+                <measurement timestamp="1481864400000" avg="1.0" min="1.0" max="1.0" sum="1320.0" count="1320"></measurement>
+                <measurement timestamp="1481868000000" avg="1.0" min="1.0" max="1.0" sum="4103.0" count="4103"></measurement>
+                <measurement timestamp="1481871600000" avg="1.0" min="1.0" max="1.0" sum="23739.0" count="23739"></measurement>
+                <measurement timestamp="1481875200000" avg="1.0" min="1.0" max="1.0" sum="25760.0" count="25760"></measurement>
+                <measurement timestamp="1481878800000" avg="1.0" min="1.0" max="1.0" sum="61572.0" count="61572"></measurement>
+                <measurement timestamp="1481882400000" avg="1.0" min="1.0" max="1.0" sum="33008.0" count="33008"></measurement>
+        </measure>
+      </measures>
+    </chartdashlet>
+    <chartdashlet name="Errors" description="Festgestellte Fehler." showabsolutevalues="false">
+        <measures>
+            <measure measure="Failed Transaction Count" color="#cd1919" aggregation="Sum" avg="7437.597222222223" unit="num" min="5.0" max="432232.0"
+                     sum="535507.0" count="1772626">
+                <measurement timestamp="1481626800000" avg="0.0109204368174727" min="0.0" max="1.0" sum="98.0" count="8974"></measurement>
+                <measurement timestamp="1481630400000" avg="0.003031887088342917" min="0.0" max="1.0" sum="29.0" count="9565"></measurement>
+                <measurement timestamp="1481634000000" avg="0.0032021096251648143" min="0.0" max="1.0" sum="34.0" count="10618"></measurement>
+                <measurement timestamp="1481637600000" avg="0.005243272418844938" min="0.0" max="1.0" sum="68.0" count="12969"></measurement>
+                <measurement timestamp="1481641200000" avg="0.0027411702688455455" min="0.0" max="1.0" sum="26.0" count="9485"></measurement>
+                <measurement timestamp="1481644800000" avg="0.0014069644741470278" min="0.0" max="1.0" sum="16.0" count="11372"></measurement>
+                <measurement timestamp="1481648400000" avg="0.002204261572373255" min="0.0" max="1.0" sum="27.0" count="12249"></measurement>
+                <measurement timestamp="1481652000000" avg="0.0021054964539007092" min="0.0" max="1.0" sum="19.0" count="9024"></measurement>
+                <measurement timestamp="1481655600000" avg="0.002487236549286556" min="0.0" max="1.0" sum="19.0" count="7639"></measurement>
+                <measurement timestamp="1481659200000" avg="0.0020593787540758536" min="0.0" max="1.0" sum="12.0" count="5827"></measurement>
+                <measurement timestamp="1481662800000" avg="5.72515074479484E-4" min="0.0" max="1.0" sum="109.0" count="190388"></measurement>
+                <measurement timestamp="1481666400000" avg="0.001083968874608029" min="0.0" max="1.0" sum="28.0" count="25831"></measurement>
+                <measurement timestamp="1481670000000" avg="0.002566735112936345" min="0.0" max="1.0" sum="5.0" count="1948"></measurement>
+                <measurement timestamp="1481673600000" avg="0.0042948185092823495" min="0.0" max="1.0" sum="31.0" count="7218"></measurement>
+                <measurement timestamp="1481677200000" avg="0.006622516556291391" min="0.0" max="1.0" sum="15.0" count="2265"></measurement>
+                <measurement timestamp="1481680800000" avg="0.00241196333815726" min="0.0" max="1.0" sum="5.0" count="2073"></measurement>
+                <measurement timestamp="1481684400000" avg="0.0032537960954446853" min="0.0" max="1.0" sum="9.0" count="2766"></measurement>
+                <measurement timestamp="1481688000000" avg="0.005976839745984311" min="0.0" max="1.0" sum="16.0" count="2677"></measurement>
+                <measurement timestamp="1481691600000" avg="0.0019440124416796269" min="0.0" max="1.0" sum="5.0" count="2572"></measurement>
+                <measurement timestamp="1481695200000" avg="0.0015192950470981465" min="0.0" max="1.0" sum="5.0" count="3291"></measurement>
+                <measurement timestamp="1481698800000" avg="0.005782238708269692" min="0.0" max="1.0" sum="53.0" count="9166"></measurement>
+                <measurement timestamp="1481702400000" avg="0.011502714640655195" min="0.0" max="1.0" sum="125.0" count="10867"></measurement>
+                <measurement timestamp="1481706000000" avg="0.006025051530045981" min="0.0" max="1.0" sum="76.0" count="12614"></measurement>
+                <measurement timestamp="1481709600000" avg="0.004205214465937763" min="0.0" max="1.0" sum="65.0" count="15457"></measurement>
+                <measurement timestamp="1481713200000" avg="0.0038539358319683976" min="0.0" max="1.0" sum="40.0" count="10379"></measurement>
+                <measurement timestamp="1481716800000" avg="0.007668092662846073" min="0.0" max="1.0" sum="95.0" count="12389"></measurement>
+                <measurement timestamp="1481720400000" avg="0.0030707610146862483" min="0.0" max="1.0" sum="46.0" count="14980"></measurement>
+                <measurement timestamp="1481724000000" avg="0.0035314384151593453" min="0.0" max="1.0" sum="41.0" count="11610"></measurement>
+                <measurement timestamp="1481727600000" avg="0.0025981129495419118" min="0.0" max="1.0" sum="19.0" count="7313"></measurement>
+                <measurement timestamp="1481731200000" avg="0.001137855579868709" min="0.0" max="1.0" sum="13.0" count="11425"></measurement>
+                <measurement timestamp="1481734800000" avg="0.002988351527718485" min="0.0" max="1.0" sum="49.0" count="16397"></measurement>
+                <measurement timestamp="1481738400000" avg="0.001238615664845173" min="0.0" max="1.0" sum="17.0" count="13725"></measurement>
+                <measurement timestamp="1481742000000" avg="0.0024915465385299874" min="0.0" max="1.0" sum="14.0" count="5619"></measurement>
+                <measurement timestamp="1481745600000" avg="0.001686857843888974" min="0.0" max="1.0" sum="11.0" count="6521"></measurement>
+                <measurement timestamp="1481749200000" avg="6.051765874247408E-4" min="0.0" max="1.0" sum="117.0" count="193332"></measurement>
+                <measurement timestamp="1481752800000" avg="6.291781360597719E-4" min="0.0" max="1.0" sum="24.0" count="38145"></measurement>
+                <measurement timestamp="1481756400000" avg="0.002131928768497617" min="0.0" max="1.0" sum="17.0" count="7974"></measurement>
+                <measurement timestamp="1481760000000" avg="8.634335875665563E-4" min="0.0" max="1.0" sum="6.0" count="6949"></measurement>
+                <measurement timestamp="1481763600000" avg="0.001659980633559275" min="0.0" max="1.0" sum="12.0" count="7229"></measurement>
+                <measurement timestamp="1481767200000" avg="0.0027247956403269754" min="0.0" max="1.0" sum="14.0" count="5138"></measurement>
+                <measurement timestamp="1481770800000" avg="0.001994813484939158" min="0.0" max="1.0" sum="10.0" count="5013"></measurement>
+                <measurement timestamp="1481774400000" avg="0.0020756115641215717" min="0.0" max="1.0" sum="14.0" count="6745"></measurement>
+                <measurement timestamp="1481778000000" avg="8.574858514834505E-4" min="0.0" max="1.0" sum="5.0" count="5831"></measurement>
+                <measurement timestamp="1481781600000" avg="0.004353849198495943" min="0.0" max="1.0" sum="22.0" count="5053"></measurement>
+                <measurement timestamp="1481785200000" avg="0.005790142635221014" min="0.0" max="1.0" sum="82.0" count="14162"></measurement>
+                <measurement timestamp="1481788800000" avg="0.007553648068669528" min="0.0" max="1.0" sum="44.0" count="5825"></measurement>
+                <measurement timestamp="1481792400000" avg="0.008595988538681949" min="0.0" max="1.0" sum="87.0" count="10121"></measurement>
+                <measurement timestamp="1481796000000" avg="0.83867674312792" min="0.0" max="1.0" sum="75574.0" count="90111"></measurement>
+                <measurement timestamp="1481799600000" avg="0.9851486502502576" min="0.0" max="1.0" sum="432232.0" count="438748"></measurement>
+                <measurement timestamp="1481803200000" avg="0.6752134464577255" min="0.0" max="1.0" sum="25228.0" count="37363"></measurement>
+                <measurement timestamp="1481806800000" avg="0.007680491551459293" min="0.0" max="1.0" sum="105.0" count="13671"></measurement>
+                <measurement timestamp="1481810400000" avg="0.002046004092008184" min="0.0" max="1.0" sum="33.0" count="16129"></measurement>
+                <measurement timestamp="1481814000000" avg="0.004510969858519582" min="0.0" max="1.0" sum="66.0" count="14631"></measurement>
+                <measurement timestamp="1481817600000" avg="0.0036434502626673444" min="0.0" max="1.0" sum="43.0" count="11802"></measurement>
+                <measurement timestamp="1481821200000" avg="0.001402524544179523" min="0.0" max="1.0" sum="8.0" count="5704"></measurement>
+                <measurement timestamp="1481824800000" avg="0.0033045977011494252" min="0.0" max="1.0" sum="23.0" count="6960"></measurement>
+                <measurement timestamp="1481828400000" avg="0.001652892561983471" min="0.0" max="1.0" sum="10.0" count="6050"></measurement>
+                <measurement timestamp="1481832000000" avg="0.0012948336138806163" min="0.0" max="1.0" sum="10.0" count="7723"></measurement>
+                <measurement timestamp="1481835600000" avg="0.001050548484034106" min="0.0" max="1.0" sum="215.0" count="204655"></measurement>
+                <measurement timestamp="1481839200000" avg="8.908685968819599E-4" min="0.0" max="1.0" sum="28.0" count="31430"></measurement>
+                <measurement timestamp="1481842800000" avg="0.0016802016241949033" min="0.0" max="1.0" sum="6.0" count="3571"></measurement>
+                <measurement timestamp="1481846400000" avg="0.002543604651162791" min="0.0" max="1.0" sum="7.0" count="2752"></measurement>
+                <measurement timestamp="1481850000000" avg="0.0020161290322580645" min="0.0" max="1.0" sum="9.0" count="4464"></measurement>
+                <measurement timestamp="1481853600000" avg="0.0026164311878597592" min="0.0" max="1.0" sum="5.0" count="1911"></measurement>
+                <measurement timestamp="1481857200000" avg="0.002596053997923157" min="0.0" max="1.0" sum="5.0" count="1926"></measurement>
+                <measurement timestamp="1481860800000" avg="0.0015855039637599094" min="0.0" max="1.0" sum="7.0" count="4415"></measurement>
+                <measurement timestamp="1481864400000" avg="0.002598752598752599" min="0.0" max="1.0" sum="5.0" count="1924"></measurement>
+                <measurement timestamp="1481868000000" avg="0.004113042324532307" min="0.0" max="1.0" sum="31.0" count="7537"></measurement>
+                <measurement timestamp="1481871600000" avg="0.0028483536515893815" min="0.0" max="1.0" sum="25.0" count="8777"></measurement>
+                <measurement timestamp="1481875200000" avg="0.0022307848306631515" min="0.0" max="1.0" sum="22.0" count="9862"></measurement>
+                <measurement timestamp="1481878800000" avg="0.002715107634624087" min="0.0" max="1.0" sum="42.0" count="15469"></measurement>
+                <measurement timestamp="1481882400000" avg="0.004536815645883146" min="0.0" max="1.0" sum="74.0" count="16311"></measurement>
+        </measure>
+      </measures>
+    </chartdashlet>
+    <chartdashlet name="GC Utilization" description="" showabsolutevalues="false">
+        <measures>
+            <measure measure="Total GC Utilization" color="#40c080" aggregation="Average" avg="17.629937580567574" unit="%" min="2.7777777777777777"
+                     max="90.55555555555556" sum="1269.3555058008653" count="25549">
+                <measurement timestamp="1481626800000" avg="13.806940375434028" min="0.0" max="100.0" sum="4970.49853515625" count="360"></measurement>
+                <measurement timestamp="1481630400000" avg="13.262154134114583" min="0.0" max="100.0" sum="4774.37548828125" count="360"></measurement>
+                <measurement timestamp="1481634000000" avg="17.370024956597224" min="0.0" max="100.0" sum="6253.208984375" count="360"></measurement>
+                <measurement timestamp="1481637600000" avg="16.634265888471408" min="0.0" max="100.0" sum="5672.28466796875" count="341"></measurement>
+                <measurement timestamp="1481641200000" avg="26.60531955295139" min="0.0" max="100.0" sum="9577.9150390625" count="360"></measurement>
+                <measurement timestamp="1481644800000" avg="15.102232530381944" min="0.0" max="100.0" sum="5436.8037109375" count="360"></measurement>
+                <measurement timestamp="1481648400000" avg="25.763350150327987" min="0.0" max="100.0" sum="8836.8291015625" count="343"></measurement>
+                <measurement timestamp="1481652000000" avg="28.14994845920139" min="0.0" max="100.0" sum="10133.9814453125" count="360"></measurement>
+                <measurement timestamp="1481655600000" avg="9.685760498046875" min="0.0" max="100.0" sum="3486.873779296875" count="360"></measurement>
+                <measurement timestamp="1481659200000" avg="10.204081632653061" min="0.0" max="100.0" sum="3500.0" count="343"></measurement>
+                <measurement timestamp="1481662800000" avg="88.88888888888889" min="0.0" max="100.0" sum="32000.0" count="360"></measurement>
+                <measurement timestamp="1481666400000" avg="18.055555555555557" min="0.0" max="100.0" sum="6500.0" count="360"></measurement>
+                <measurement timestamp="1481670000000" avg="2.808988764044944" min="0.0" max="100.0" sum="1000.0" count="356"></measurement>
+                <measurement timestamp="1481673600000" avg="3.0555555555555554" min="0.0" max="100.0" sum="1100.0" count="360"></measurement>
+                <measurement timestamp="1481677200000" avg="3.0555555555555554" min="0.0" max="100.0" sum="1100.0" count="360"></measurement>
+                <measurement timestamp="1481680800000" avg="3.0555555555555554" min="0.0" max="100.0" sum="1100.0" count="360"></measurement>
+                <measurement timestamp="1481684400000" avg="3.3333333333333335" min="0.0" max="100.0" sum="1200.0" count="360"></measurement>
+                <measurement timestamp="1481688000000" avg="3.0555555555555554" min="0.0" max="100.0" sum="1100.0" count="360"></measurement>
+                <measurement timestamp="1481691600000" avg="3.888888888888889" min="0.0" max="100.0" sum="1400.0" count="360"></measurement>
+                <measurement timestamp="1481695200000" avg="4.166666666666667" min="0.0" max="100.0" sum="1500.0" count="360"></measurement>
+                <measurement timestamp="1481698800000" avg="22.275440449617346" min="0.0" max="100.0" sum="7640.47607421875" count="343"></measurement>
+                <measurement timestamp="1481702400000" avg="24.60598541969477" min="0.0" max="100.0" sum="8464.458984375" count="344"></measurement>
+                <measurement timestamp="1481706000000" avg="23.031822374131945" min="0.0" max="100.0" sum="8291.4560546875" count="360"></measurement>
+                <measurement timestamp="1481709600000" avg="17.08846435546875" min="0.0" max="100.0" sum="6151.84716796875" count="360"></measurement>
+                <measurement timestamp="1481713200000" avg="16.360169813368056" min="0.0" max="100.0" sum="5889.6611328125" count="360"></measurement>
+                <measurement timestamp="1481716800000" avg="29.93577648344494" min="0.0" max="100.0" sum="10058.4208984375" count="336"></measurement>
+                <measurement timestamp="1481720400000" avg="26.77649758078835" min="0.0" max="100.0" sum="9425.3271484375" count="352"></measurement>
+                <measurement timestamp="1481724000000" avg="22.71293375394322" min="0.0" max="100.0" sum="7200.0" count="317"></measurement>
+                <measurement timestamp="1481727600000" avg="12.390059407552084" min="0.0" max="100.0" sum="4460.42138671875" count="360"></measurement>
+                <measurement timestamp="1481731200000" avg="16.606099446614582" min="0.0" max="100.0" sum="5978.19580078125" count="360"></measurement>
+                <measurement timestamp="1481734800000" avg="26.452925519245426" min="0.0" max="100.0" sum="8676.5595703125" count="328"></measurement>
+                <measurement timestamp="1481738400000" avg="21.596598307291668" min="0.0" max="100.0" sum="7774.775390625" count="360"></measurement>
+                <measurement timestamp="1481742000000" avg="7.329931640625" min="0.0" max="100.0" sum="2638.775390625" count="360"></measurement>
+                <measurement timestamp="1481745600000" avg="9.824264747509059" min="0.0" max="100.0" sum="3389.371337890625" count="345"></measurement>
+                <measurement timestamp="1481749200000" avg="90.55555555555556" min="0.0" max="100.0" sum="32600.0" count="360"></measurement>
+                <measurement timestamp="1481752800000" avg="25.036069107055663" min="0.0" max="100.0" sum="9012.984878540039" count="360"></measurement>
+                <measurement timestamp="1481756400000" avg="10.593419410813024" min="0.0" max="100.0" sum="3760.663890838623" count="355"></measurement>
+                <measurement timestamp="1481760000000" avg="6.111111111111111" min="0.0" max="100.0" sum="2200.0" count="360"></measurement>
+                <measurement timestamp="1481763600000" avg="7.777777777777778" min="0.0" max="100.0" sum="2800.0" count="360"></measurement>
+                <measurement timestamp="1481767200000" avg="5.555555555555555" min="0.0" max="100.0" sum="2000.0" count="360"></measurement>
+                <measurement timestamp="1481770800000" avg="3.3333333333333335" min="0.0" max="100.0" sum="1200.0" count="360"></measurement>
+                <measurement timestamp="1481774400000" avg="3.0555555555555554" min="0.0" max="100.0" sum="1100.0" count="360"></measurement>
+                <measurement timestamp="1481778000000" avg="2.7777777777777777" min="0.0" max="100.0" sum="1000.0" count="360"></measurement>
+                <measurement timestamp="1481781600000" avg="3.8879853990342883" min="0.0" max="100.0" sum="1399.6747436523438" count="360"></measurement>
+                <measurement timestamp="1481785200000" avg="18.13570293160372" min="0.0" max="100.0" sum="6238.68180847168" count="344"></measurement>
+                <measurement timestamp="1481788800000" avg="11.666666666666666" min="0.0" max="100.0" sum="4200.0" count="360"></measurement>
+                <measurement timestamp="1481792400000" avg="24.953890058729385" min="0.0" max="100.0" sum="8983.400421142578" count="360"></measurement>
+                <measurement timestamp="1481796000000" avg="44.477830892401606" min="0.0" max="100.0" sum="15255.89599609375" count="343"></measurement>
+                <measurement timestamp="1481799600000" avg="8.88888888888889" min="0.0" max="100.0" sum="3200.0" count="360"></measurement>
+                <measurement timestamp="1481803200000" avg="27.073995123969183" min="0.0" max="100.0" sum="9746.638244628906" count="360"></measurement>
+                <measurement timestamp="1481806800000" avg="29.36046511627907" min="0.0" max="100.0" sum="10100.0" count="344"></measurement>
+                <measurement timestamp="1481810400000" avg="39.95057584974501" min="0.0" max="100.0" sum="14382.207305908203" count="360"></measurement>
+                <measurement timestamp="1481814000000" avg="19.86711450152927" min="0.0" max="100.0" sum="7152.161220550537" count="360"></measurement>
+                <measurement timestamp="1481817600000" avg="26.69846664295252" min="0.0" max="100.0" sum="9157.574058532715" count="343"></measurement>
+                <measurement timestamp="1481821200000" avg="8.61111111111111" min="0.0" max="100.0" sum="3100.0" count="360"></measurement>
+                <measurement timestamp="1481824800000" avg="15.601534288983013" min="0.0" max="100.0" sum="5366.927795410156" count="344"></measurement>
+                <measurement timestamp="1481828400000" avg="13.202255376180013" min="0.0" max="100.0" sum="4752.811935424805" count="360"></measurement>
+                <measurement timestamp="1481832000000" avg="8.13953488372093" min="0.0" max="100.0" sum="2800.0" count="344"></measurement>
+                <measurement timestamp="1481835600000" avg="89.59803297254774" min="0.0" max="100.0" sum="32255.291870117188" count="360"></measurement>
+                <measurement timestamp="1481839200000" avg="16.38888888888889" min="0.0" max="100.0" sum="5900.0" count="360"></measurement>
+                <measurement timestamp="1481842800000" avg="7.1032265676579005" min="0.0" max="100.0" sum="2521.6454315185547" count="355"></measurement>
+                <measurement timestamp="1481846400000" avg="3.611111111111111" min="0.0" max="100.0" sum="1300.0" count="360"></measurement>
+                <measurement timestamp="1481850000000" avg="5.107071261935764" min="0.0" max="100.0" sum="1838.545654296875" count="360"></measurement>
+                <measurement timestamp="1481853600000" avg="3.0555555555555554" min="0.0" max="100.0" sum="1100.0" count="360"></measurement>
+                <measurement timestamp="1481857200000" avg="3.0555555555555554" min="0.0" max="100.0" sum="1100.0" count="360"></measurement>
+                <measurement timestamp="1481860800000" avg="6.770056576199002" min="0.0" max="100.0" sum="2437.2203674316406" count="360"></measurement>
+                <measurement timestamp="1481864400000" avg="3.0555555555555554" min="0.0" max="100.0" sum="1100.0" count="360"></measurement>
+                <measurement timestamp="1481868000000" avg="4.166666666666667" min="0.0" max="100.0" sum="1500.0" count="360"></measurement>
+                <measurement timestamp="1481871600000" avg="19.765938806116754" min="0.0" max="100.0" sum="6779.717010498047" count="343"></measurement>
+                <measurement timestamp="1481875200000" avg="11.031580543518066" min="0.0" max="100.0" sum="3971.368995666504" count="360"></measurement>
+                <measurement timestamp="1481878800000" avg="24.950648265414767" min="0.0" max="100.0" sum="8982.233375549316" count="360"></measurement>
+                <measurement timestamp="1481882400000" avg="29.447852760736197" min="0.0" max="100.0" sum="9600.0" count="326"></measurement>
+            </measure>
+        </measures>
+    </chartdashlet>
+      <chartdashlet name="CPU Load" description="" showabsolutevalues="false">
+          <measures>
+              <measure measure="Current CPU load" color="#404000" aggregation="Average" avg="1.582741819544891" unit="%" min="0.1815618004245258"
+                       max="23.37853480995529" sum="113.95741100723215" count="61398">
+                  <measurement timestamp="1481626800000" avg="0.4009009149339464" min="0.0" max="10.864999771118164" sum="432.9729881286621"
+                               count="1080"></measurement>
+                  <measurement timestamp="1481630400000" avg="0.4709657492461028" min="0.0" max="16.586999893188477" sum="508.643009185791"
+                               count="1080"></measurement>
+                  <measurement timestamp="1481634000000" avg="0.49440369076199003" min="0.0" max="10.616000175476074" sum="533.9559860229492"
+                               count="1080"></measurement>
+                  <measurement timestamp="1481637600000" avg="0.6092275019442097" min="0.0" max="29.034000396728516" sum="650.654972076416"
+                               count="1068"></measurement>
+                  <measurement timestamp="1481641200000" avg="0.890373166402181" min="0.0" max="26.676000595092773" sum="961.6030197143555"
+                               count="1080"></measurement>
+                  <measurement timestamp="1481644800000" avg="0.5346073892381457" min="0.0" max="9.583000183105469" sum="577.3759803771973"
+                               count="1080"></measurement>
+                  <measurement timestamp="1481648400000" avg="0.9810560743385386" min="0.0" max="36.981998443603516" sum="1049.7299995422363"
+                               count="1070"></measurement>
+                  <measurement timestamp="1481652000000" avg="0.7549305315370913" min="0.0" max="17.367000579833984" sum="815.3249740600586"
+                               count="1080"></measurement>
+                  <measurement timestamp="1481655600000" avg="0.29652685589260525" min="0.0" max="10.282999992370605" sum="320.2490043640137"
+                               count="1080"></measurement>
+                  <measurement timestamp="1481659200000" avg="0.4319280374830014" min="0.0" max="30.648000717163086" sum="462.1630001068115"
+                               count="1070"></measurement>
+                  <measurement timestamp="1481662800000" avg="15.39448760703758" min="0.0" max="82.2040023803711" sum="16626.046615600586"
+                               count="1080"></measurement>
+                  <measurement timestamp="1481666400000" avg="2.0978444028783727" min="0.0" max="66.63300323486328" sum="2265.6719551086426"
+                               count="1080"></measurement>
+                  <measurement timestamp="1481670000000" avg="0.1815618004245258" min="0.0" max="1.6829999685287476" sum="193.90800285339355"
+                               count="1068"></measurement>
+                  <measurement timestamp="1481673600000" avg="0.19452037104853878" min="0.0" max="1.8990000486373901" sum="210.08200073242188"
+                               count="1080"></measurement>
+                  <measurement timestamp="1481677200000" avg="0.20370278535065828" min="0.0" max="1.5490000247955322" sum="219.99900817871094"
+                               count="1080"></measurement>
+                  <measurement timestamp="1481680800000" avg="0.18699537206579137" min="0.0" max="1.715999960899353" sum="201.9550018310547"
+                               count="1080"></measurement>
+                  <measurement timestamp="1481684400000" avg="0.2007037021495678" min="0.0" max="2.4489998817443848" sum="216.7599983215332"
+                               count="1080"></measurement>
+                  <measurement timestamp="1481688000000" avg="0.19645832732871726" min="0.0" max="1.8830000162124634" sum="212.17499351501465"
+                               count="1080"></measurement>
+                  <measurement timestamp="1481691600000" avg="0.20528981067516186" min="0.0" max="4.500999927520752" sum="221.7129955291748"
+                               count="1080"></measurement>
+                  <measurement timestamp="1481695200000" avg="0.20282406277126735" min="0.0" max="6.864999771118164" sum="219.04998779296875"
+                               count="1080"></measurement>
+                  <measurement timestamp="1481698800000" avg="0.9410448805194035" min="0.0" max="36.435001373291016" sum="1006.9180221557617"
+                               count="1070"></measurement>
+                  <measurement timestamp="1481702400000" avg="1.2414155333736612" min="0.0" max="31.43400001525879" sum="1338.2459449768066"
+                               count="1078"></measurement>
+                  <measurement timestamp="1481706000000" avg="0.6368787129720052" min="0.0" max="15.649999618530273" sum="687.8290100097656"
+                               count="1080"></measurement>
+                  <measurement timestamp="1481709600000" avg="0.516045383170799" min="0.0" max="16.38599967956543" sum="557.3290138244629"
+                               count="1080"></measurement>
+                  <measurement timestamp="1481713200000" avg="0.47062500141285085" min="0.0" max="9.616000175476074" sum="508.2750015258789"
+                               count="1080"></measurement>
+                  <measurement timestamp="1481716800000" avg="1.344281316026349" min="0.0" max="33.28200149536133" sum="1438.3810081481934"
+                               count="1070"></measurement>
+                  <measurement timestamp="1481720400000" avg="0.9922604317793259" min="0.0" max="25.972999572753906" sum="1070.6490058898926"
+                               count="1079"></measurement>
+                  <measurement timestamp="1481724000000" avg="1.1133622733914121" min="0.0" max="30.96500015258789" sum="872.8760223388672"
+                               count="784"></measurement>
+                  <measurement timestamp="1481727600000" avg="0.58364028400845" min="0.0" max="14.02299976348877" sum="420.221004486084"
+                               count="720"></measurement>
+                  <measurement timestamp="1481731200000" avg="0.6283902804056803" min="0.0" max="16.58300018310547" sum="452.44100189208984"
+                               count="720"></measurement>
+                  <measurement timestamp="1481734800000" avg="1.6820085232074444" min="0.0" max="27.364999771118164" sum="1180.769983291626"
+                               count="702"></measurement>
+                  <measurement timestamp="1481738400000" avg="0.885029157002767" min="0.0" max="12.199000358581543" sum="637.2209930419922"
+                               count="720"></measurement>
+                  <measurement timestamp="1481742000000" avg="0.36773195266723635" min="0.0" max="10.434000015258789" sum="264.76700592041016"
+                               count="720"></measurement>
+                  <measurement timestamp="1481745600000" avg="0.6940969242138809" min="0.0" max="29.158000946044922" sum="494.1970100402832"
+                               count="712"></measurement>
+                  <measurement timestamp="1481749200000" avg="22.0529026667277" min="0.0" max="74.1780014038086" sum="15878.089920043945"
+                               count="720"></measurement>
+                  <measurement timestamp="1481752800000" avg="4.1873348152058" min="0.0" max="70.77400207519531" sum="3014.8810669481754"
+                               count="720"></measurement>
+                  <measurement timestamp="1481756400000" avg="0.48795909581677027" min="0.0" max="11.798999786376953" sum="345.96299893409014"
+                               count="709"></measurement>
+                  <measurement timestamp="1481760000000" avg="0.3361666648648679" min="0.0" max="6.132999897003174" sum="242.0399987027049"
+                               count="720"></measurement>
+                  <measurement timestamp="1481763600000" avg="0.3726333338974251" min="0.0" max="23.1560001373291" sum="268.29600040614605"
+                               count="720"></measurement>
+                  <measurement timestamp="1481767200000" avg="0.28953333159701694" min="0.0" max="5.548999786376953" sum="208.46399874985218"
+                               count="720"></measurement>
+                  <measurement timestamp="1481770800000" avg="0.2442291653715074" min="0.0" max="1.1160000562667847" sum="175.84499906748533"
+                               count="720"></measurement>
+                  <measurement timestamp="1481774400000" avg="0.24500972082217534" min="0.0" max="1.5329999923706055" sum="176.40699899196625"
+                               count="720"></measurement>
+                  <measurement timestamp="1481778000000" avg="0.24193194200181298" min="0.0" max="1.7660000324249268" sum="174.19099824130535"
+                               count="720"></measurement>
+                  <measurement timestamp="1481781600000" avg="0.23639860812367663" min="0.0" max="4.197999954223633" sum="170.20699784904718"
+                               count="720"></measurement>
+                  <measurement timestamp="1481785200000" avg="1.3028241948194477" min="0.0" max="37.87200164794922" sum="926.3080025166273"
+                               count="711"></measurement>
+                  <measurement timestamp="1481788800000" avg="0.4779833342259129" min="0.0" max="11.586999893188477" sum="344.1480006426573"
+                               count="720"></measurement>
+                  <measurement timestamp="1481792400000" avg="0.9524055498341719" min="0.0" max="20.540000915527344" sum="685.7319958806038"
+                               count="720"></measurement>
+                  <measurement timestamp="1481796000000" avg="2.2944056097260663" min="0.0" max="41.76499938964844" sum="1629.027982905507"
+                               count="710"></measurement>
+                  <measurement timestamp="1481799600000" avg="0.7062611083189646" min="0.2160000056028366" max="12.166000366210938" sum="508.50799798965454"
+                               count="720"></measurement>
+                  <measurement timestamp="1481803200000" avg="0.945138888205919" min="0.0" max="15.717000007629395" sum="680.4999995082617"
+                               count="720"></measurement>
+                  <measurement timestamp="1481806800000" avg="1.3702995739091297" min="0.0" max="32.03499984741211" sum="974.2829970493913"
+                               count="711"></measurement>
+                  <measurement timestamp="1481810400000" avg="1.6539986214186582" min="0.0" max="21.947999954223633" sum="1190.879007421434"
+                               count="720"></measurement>
+                  <measurement timestamp="1481814000000" avg="0.8131166664262612" min="0.0" max="11.24899959564209" sum="585.4439998269081"
+                               count="720"></measurement>
+                  <measurement timestamp="1481817600000" avg="1.6721901328735789" min="0.0" max="30.136999130249023" sum="1187.254994340241"
+                               count="710"></measurement>
+                  <measurement timestamp="1481821200000" avg="0.35152638836039435" min="0.0" max="8.25100040435791" sum="253.09899961948395"
+                               count="720"></measurement>
+                  <measurement timestamp="1481824800000" avg="1.1588101283176875" min="0.0" max="36.41600036621094" sum="823.9140012338758"
+                               count="711"></measurement>
+                  <measurement timestamp="1481828400000" avg="0.6369791679394742" min="0.0" max="15.954000473022461" sum="458.6250009164214"
+                               count="720"></measurement>
+                  <measurement timestamp="1481832000000" avg="0.6259085810972501" min="0.0" max="28.18899917602539" sum="445.0210011601448"
+                               count="711"></measurement>
+                  <measurement timestamp="1481835600000" avg="23.37853480995529" min="0.0" max="80.7020034790039" sum="16832.54506316781"
+                               count="720"></measurement>
+                  <measurement timestamp="1481839200000" avg="3.4667848053491777" min="0.0" max="70.13300323486328" sum="2496.085059851408"
+                               count="720"></measurement>
+                  <measurement timestamp="1481842800000" avg="0.3788519058014005" min="0.0" max="10.45300006866455" sum="268.60600121319294"
+                               count="709"></measurement>
+                  <measurement timestamp="1481846400000" avg="0.26397916401425997" min="0.0" max="1.3609999418258667" sum="190.06499809026718"
+                               count="720"></measurement>
+                  <measurement timestamp="1481850000000" avg="0.32045694042204154" min="0.0" max="9.734999656677246" sum="230.72899710386992"
+                               count="720"></measurement>
+                  <measurement timestamp="1481853600000" avg="0.24139305535289976" min="0.0" max="1.1660000085830688" sum="173.80299985408783"
+                               count="720"></measurement>
+                  <measurement timestamp="1481857200000" avg="0.2441958305839863" min="0.0" max="1.2829999923706055" sum="175.82099802047014"
+                               count="720"></measurement>
+                  <measurement timestamp="1481860800000" avg="0.4192791620683339" min="0.0" max="10.767999649047852" sum="301.8809966892004"
+                               count="720"></measurement>
+                  <measurement timestamp="1481864400000" avg="0.24896110939896768" min="0.0" max="1.2829999923706055" sum="179.25199876725674"
+                               count="720"></measurement>
+                  <measurement timestamp="1481868000000" avg="0.2698972213288976" min="0.0" max="12.269000053405762" sum="194.32599935680628"
+                               count="720"></measurement>
+                  <measurement timestamp="1481871600000" avg="1.1885197108900043" min="0.0" max="26.5" sum="843.8489947319031" count="710"></measurement>
+                  <measurement timestamp="1481875200000" avg="0.49595693591982126" min="0.0" max="10.961999893188477" sum="357.0889938622713"
+                               count="720"></measurement>
+                  <measurement timestamp="1481878800000" avg="0.9775861110331283" min="0.0" max="13.236000061035156" sum="703.8619999438524"
+                               count="720"></measurement>
+                  <measurement timestamp="1481882400000" avg="1.3809481475529848" min="0.0" max="37.279998779296875" sum="932.1399995982647"
+                               count="675"></measurement>
+              </measure>
+      </measures>
+    </chartdashlet>
+  </data>
+</dashboardreport>

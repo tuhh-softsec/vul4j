@@ -94,13 +94,13 @@ public class ManagementURLBuilder {
     }
 
     public URL startRecordingURL(final String profileName, final String sessionName, final String description,
-                                 String recordingOption, final boolean sessionLocked, final boolean isNoTimestamp) {
+                                 String recordingOption, final boolean sessionLocked, final boolean isTimeStampAllowed) {
         if (StringUtils.isBlank(recordingOption)) {
             recordingOption = "all";
         }
         try {
             this.parameters = String.format("recordingOption=%1$s&isSessionLocked=%2$s&isTimeStampAllowed=%3$s&description=%4$s&presentableName=%5$s",
-                    recordingOption, sessionLocked, isNoTimestamp, StringUtils.isBlank(description) ? "" : PerfSigUIUtils.encodeString(description),
+                    recordingOption, sessionLocked, isTimeStampAllowed, StringUtils.isBlank(description) ? "" : PerfSigUIUtils.encodeString(description),
                     StringUtils.isBlank(sessionName) ? PerfSigUIUtils.encodeString(profileName) : PerfSigUIUtils.encodeString(sessionName));
             final String url = String.format("%1$s/rest/management/profiles/%2$s/startrecording", this.serverAddress,
                     PerfSigUIUtils.encodeString(profileName));

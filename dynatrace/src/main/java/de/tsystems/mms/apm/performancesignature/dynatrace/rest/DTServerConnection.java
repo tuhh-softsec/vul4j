@@ -385,11 +385,11 @@ public class DTServerConnection {
     }
 
     public String startRecording(final String sessionName, final String description, final String recordingOption,
-                                 final boolean sessionLocked, final boolean isNoTimestamp) throws RESTErrorException {
+                                 final boolean sessionLocked, final boolean isTimeStampAllowed) throws RESTErrorException {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(this.address);
-            URL commandURL = builder.startRecordingURL(systemProfile, sessionName, description, recordingOption, sessionLocked, isNoTimestamp);
+            URL commandURL = builder.startRecordingURL(systemProfile, sessionName, description, recordingOption, sessionLocked, isTimeStampAllowed);
             URLConnection conn = commandURL.openConnection(proxy);
             addAuthenticationHeader(conn);
             addPostHeaders(conn, builder.getPostParameters());
