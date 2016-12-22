@@ -37,11 +37,11 @@ public class HttpServletRequestEntity extends AbstractHttpEntity {
         } else {
             length = -1;
         }
-        String contentTypeHeader = request.getContentType();
+        String contentTypeHeader = request.getHeader(HttpHeaders.CONTENT_TYPE);
         if (contentTypeHeader != null) {
             this.setContentType(contentTypeHeader);
         }
-        String contentEncodingHeader = request.getCharacterEncoding();
+        String contentEncodingHeader = request.getHeader(HttpHeaders.CONTENT_ENCODING);
         if (contentEncodingHeader != null) {
             this.setContentEncoding(contentEncodingHeader);
         }

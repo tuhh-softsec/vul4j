@@ -1,4 +1,4 @@
-/* 
+/*
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,8 +15,7 @@
 
 package org.esigate.test.cases;
 
-import junit.framework.TestCase;
-
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
@@ -28,6 +27,8 @@ import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
+
+import junit.framework.TestCase;
 
 /**
  * Request headers forwarding or discarding tests. Standard HTTP headers are defined in:
@@ -103,6 +104,21 @@ public class RequestHeadersTest extends TestCase {
         String resp = sendRequestWithHeader("Content-Encoding", "gzip");
         assertEquals("Content-Encoding request header should be forwarded", "content-encoding: gzip",
                 resp.toLowerCase());
+    }
+
+    /**
+     * Bug fix: Content-type Header value placed in Content-Encoding Header.
+     * https://github.com/esigate/esigate/issues/159
+     * 
+     * @throws Exception
+     */
+    public void testContentEncodingWithContentType() throws Exception {
+        WebConversation webConversation = new WebConversation();
+        PostMethodWebRequest req =
+                new PostMethodWebRequest(APPLICATION_PATH + "nocache/ag1/request-headers.jsp?name=Content-Encoding",
+                        IOUtils.toInputStream("test"), "text/html; charset=utf-8");
+        String resp = webConversation.getResponse(req).getText();
+        assertEquals("Content-Encoding request header should be empty", "", resp.toLowerCase());
     }
 
     /**
@@ -279,8 +295,8 @@ public class RequestHeadersTest extends TestCase {
     /**
      * It looks like servers like Tomcat will decode the stream so we should not forward it. It is not described in
      * servlet API specification but according to RFC 2616 it is mandatory for servers: "All HTTP/1.1 applications MUST
-     * be able to receive and decode the chunked transfer-coding" (<a
-     * href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.6.1">RFC 2616 sec 3.6.1</a>)
+     * be able to receive and decode the chunked transfer-coding" (<a href=
+     * "http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.6.1">RFC 2616 sec 3.6.1</a>)
      * 
      * In this test, we send a POST request with a chunked body. The application server will decode it and the target
      * server will receive the data unchunked. If EsiGate was forwarding the "Transfer-Encoding" header, it would break
