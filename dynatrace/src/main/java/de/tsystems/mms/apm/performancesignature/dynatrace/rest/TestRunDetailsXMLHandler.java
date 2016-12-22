@@ -31,7 +31,9 @@ public class TestRunDetailsXMLHandler extends DefaultHandler {
     private String errorMsg;
 
     public TestRun getParsedObjects() throws RESTErrorException {
-        if (StringUtils.isNotBlank(errorMsg)) throw new RESTErrorException(errorMsg);
+        if (StringUtils.isNotBlank(errorMsg)) {
+            throw new RESTErrorException(errorMsg);
+        }
         return this.testRun;
     }
 
