@@ -98,9 +98,11 @@ public final class PerfSigUtils {
                 DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
                 List<Agent> agents = connection.getAgents();
                 ListBoxModel hosts = new ListBoxModel();
-                for (Agent a : agents)
-                    if (a.getName().equals(agent))
+                for (Agent a : agents) {
+                    if (a.getName().equals(agent)) {
                         hosts.add(a.getHost());
+                    }
+                }
                 return hosts;
             }
         }

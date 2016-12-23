@@ -16,29 +16,19 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace;
 
-import com.cloudbees.plugins.credentials.CredentialsScope;
-import com.cloudbees.plugins.credentials.SystemCredentialsProvider;
-import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl;
-import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.CredProfilePair;
-import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.DynatraceServerConfiguration;
-import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.DynatraceServerConfiguration.DescriptorImpl;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionException;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.TestUtils;
-import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
 import hudson.util.ListBoxModel;
-import jenkins.model.Jenkins;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import static org.junit.Assert.*;
@@ -51,31 +41,7 @@ public class StartRecordingTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        List<DynatraceServerConfiguration> configurations = PerfSigUtils.getDTConfigurations();
-        SystemCredentialsProvider.getInstance().getCredentials().add(new UsernamePasswordCredentialsImpl(CredentialsScope.GLOBAL,
-                "myCreds", null, "admin", "admin"));
-        SystemCredentialsProvider.getInstance().save();
-        CredProfilePair credProfilePair = new CredProfilePair("easy Travel", "myCreds");
-        List<CredProfilePair> credProfilePairs = new ArrayList<CredProfilePair>();
-        credProfilePairs.add(credProfilePair);
-
-        configurations.add(new DynatraceServerConfiguration("PoC PerfSig", "https", "192.168.192.202", 8021, credProfilePairs,
-                false, DescriptorImpl.defaultDelay, DescriptorImpl.defaultRetryCount,
-                false, 0, null, 0, null, null));
-
-        configurations.add(new DynatraceServerConfiguration("PoC mobile Apps", "https", "192.168.194.209", 8021, credProfilePairs,
-                false, DescriptorImpl.defaultDelay, DescriptorImpl.defaultRetryCount,
-                false, 0, null, 0, null, null));
-
-        Jenkins.getInstance().save();
-
-        for (ListBoxModel.Option option : PerfSigUtils.listToListBoxModel(PerfSigUtils.getDTConfigurations())) {
-            System.out.println(option.name);
-        }
-
-        assertEquals(PerfSigUtils.getDTConfigurations().size(), 2);
-        dynatraceConfigurations = PerfSigUtils.listToListBoxModel(PerfSigUtils.getDTConfigurations());
-        assertEquals(dynatraceConfigurations.get(0).name, "easy Travel (admin) @ PoC PerfSig");
+        dynatraceConfigurations = TestUtils.prepareDTConfigurations();
     }
 
     @Test

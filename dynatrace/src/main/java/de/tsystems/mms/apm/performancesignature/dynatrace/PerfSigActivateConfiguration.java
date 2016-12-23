@@ -57,6 +57,7 @@ public class PerfSigActivateConfiguration extends Builder implements SimpleBuild
             throws InterruptedException, IOException {
         PrintStream logger = listener.getLogger();
 
+        //ToDo: refactor DTServerConnection
         DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
         if (serverConfiguration == null) {
             throw new AbortException(Messages.PerfSigRecorder_FailedToLookupServer());
