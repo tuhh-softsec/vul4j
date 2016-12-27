@@ -67,4 +67,13 @@ public class TestUtils {
 
         return dynatraceConfigurations;
     }
+
+    public static boolean containsOption(ListBoxModel listBoxModel, String search) {
+        for (ListBoxModel.Option option : listBoxModel) {
+            if (option.name.equals(search)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

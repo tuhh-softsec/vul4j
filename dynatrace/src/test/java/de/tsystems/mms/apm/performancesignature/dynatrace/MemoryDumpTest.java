@@ -33,7 +33,7 @@ import java.util.concurrent.ExecutionException;
 
 import static org.junit.Assert.*;
 
-public class ActivateConfigurationTest {
+public class MemoryDumpTest {
 
     @ClassRule
     public static JenkinsRule j = new JenkinsRule();
@@ -47,30 +47,48 @@ public class ActivateConfigurationTest {
     @Test
     public void testJenkinsConfiguration() throws IOException, ExecutionException, InterruptedException {
         FreeStyleProject project = j.createFreeStyleProject();
-        project.getBuildersList().add(new PerfSigActivateConfiguration(dynatraceConfigurations.get(0).name, "ActivateConfigurationTest"));
+        PerfSigMemoryDump memoryDump = new PerfSigMemoryDump(dynatraceConfigurations.get(0).name, "CustomerFrontend_easyTravel_8080", "wum192202");
+        memoryDump.setType("extended");
+        project.getBuildersList().add(memoryDump);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
 
         String s = FileUtils.readFileToString(build.getLogFile());
-        assertTrue(s.contains("activated configuration successfully on easy Travel"));
+        assertTrue(s.contains("successfully created memory dump on"));
         assertEquals(build.getResult(), Result.SUCCESS);
     }
 
     @Test
-    public void testFillConfigurationItems() {
-        PerfSigActivateConfiguration.DescriptorImpl descriptor = new PerfSigActivateConfiguration.DescriptorImpl();
-        ListBoxModel listBoxModel = descriptor.doFillConfigurationItems(dynatraceConfigurations.get(0).name);
+    public void testFillAgentItems() {
+        PerfSigMemoryDump.DescriptorImpl descriptor = new PerfSigMemoryDump.DescriptorImpl();
+        ListBoxModel listBoxModel = descriptor.doFillAgentItems(dynatraceConfigurations.get(0).name);
 
-        assertNotNull(listBoxModel);
         assertFalse(listBoxModel.isEmpty());
-        assertTrue(TestUtils.containsOption(listBoxModel, "Default"));
-        assertTrue(TestUtils.containsOption(listBoxModel, "ActivateConfigurationTest"));
+        assertTrue(TestUtils.containsOption(listBoxModel, "BusinessBackend_easyTravel"));
+        assertTrue(TestUtils.containsOption(listBoxModel, "CreditCardAuthorization_easyTravel"));
     }
 
     @Test
-    public void testCheckConfiguration() {
-        PerfSigActivateConfiguration.DescriptorImpl descriptor = new PerfSigActivateConfiguration.DescriptorImpl();
+    public void testFillHostItems() {
+        PerfSigMemoryDump.DescriptorImpl descriptor = new PerfSigMemoryDump.DescriptorImpl();
+        ListBoxModel listBoxModel = descriptor.doFillHostItems(dynatraceConfigurations.get(0).name, "CreditCardAuthorization_easyTravel");
 
-        assertEquals(descriptor.doCheckConfiguration("Default"), (FormValidation.ok()));
-        assertEquals(descriptor.doCheckConfiguration("ActivateConfigurationTest"), (FormValidation.ok()));
+        assertFalse(listBoxModel.isEmpty());
+        assertTrue(TestUtils.containsOption(listBoxModel, "wum192202"));
+    }
+
+    @Test
+    public void testCheckAgent() {
+        PerfSigMemoryDump.DescriptorImpl descriptor = new PerfSigMemoryDump.DescriptorImpl();
+
+        assertEquals(descriptor.doCheckAgent("BusinessBackend_easyTravel"), (FormValidation.ok()));
+        assertNotEquals(descriptor.doCheckHost(""), FormValidation.ok());
+    }
+
+    @Test
+    public void testCheckHost() {
+        PerfSigMemoryDump.DescriptorImpl descriptor = new PerfSigMemoryDump.DescriptorImpl();
+
+        assertEquals(descriptor.doCheckHost("wum192202"), (FormValidation.ok()));
+        assertNotEquals(descriptor.doCheckHost(""), FormValidation.ok());
     }
 }
