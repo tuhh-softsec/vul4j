@@ -19,12 +19,10 @@ package de.tsystems.mms.apm.performancesignature.viewer;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import de.tsystems.mms.apm.performancesignature.ui.PerfSigBuildAction;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
-import de.tsystems.mms.apm.performancesignature.viewer.model.CredJobPair;
 import de.tsystems.mms.apm.performancesignature.viewer.model.JenkinsServerConfiguration;
 import de.tsystems.mms.apm.performancesignature.viewer.rest.JenkinsServerConnection;
 import de.tsystems.mms.apm.performancesignature.viewer.rest.RESTErrorException;
 import de.tsystems.mms.apm.performancesignature.viewer.util.ViewerUtils;
-import hudson.AbortException;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -59,23 +57,8 @@ public class ViewerRecorder extends Recorder implements SimpleBuildStep {
     @Override
     public void perform(@Nonnull final Run<?, ?> run, @Nonnull final FilePath workspace, @Nonnull final Launcher launcher, @Nonnull final TaskListener listener)
             throws InterruptedException, IOException {
-
         PrintStream logger = listener.getLogger();
-
-        JenkinsServerConfiguration serverConfiguration = ViewerUtils.getServerConfiguration(jenkinsJob);
-        if (serverConfiguration == null) {
-            throw new AbortException(Messages.ViewerRecorder_FailedToLookupServer());
-        }
-
-        CredJobPair pair = serverConfiguration.getCredJobPair(jenkinsJob);
-        if (pair == null) {
-            throw new AbortException(Messages.ViewerRecorder_FailedToLookupJob());
-        }
-
-        JenkinsServerConnection serverConnection = new JenkinsServerConnection(serverConfiguration, pair);
-        if (!serverConnection.validateConnection()) {
-            throw new RESTErrorException(Messages.ViewerRecorder_ConnectionError());
-        }
+        JenkinsServerConnection serverConnection = ViewerUtils.createJenkinsServerConnection(jenkinsJob);
 
         ViewerEnvInvisAction envInvisAction = run.getAction(ViewerEnvInvisAction.class);
         int buildNumber;

@@ -19,10 +19,7 @@ package de.tsystems.mms.apm.performancesignature.viewer;
 import com.offbytwo.jenkins.model.Build;
 import com.offbytwo.jenkins.model.BuildResult;
 import com.offbytwo.jenkins.model.Job;
-import de.tsystems.mms.apm.performancesignature.viewer.model.CredJobPair;
-import de.tsystems.mms.apm.performancesignature.viewer.model.JenkinsServerConfiguration;
 import de.tsystems.mms.apm.performancesignature.viewer.rest.JenkinsServerConnection;
-import de.tsystems.mms.apm.performancesignature.viewer.rest.RESTErrorException;
 import de.tsystems.mms.apm.performancesignature.viewer.util.ViewerUtils;
 import hudson.AbortException;
 import hudson.Extension;
@@ -54,22 +51,8 @@ public class ViewerWaitForJob extends Builder implements SimpleBuildStep {
 
     @Override
     public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath workspace, @Nonnull Launcher launcher, @Nonnull TaskListener listener) throws InterruptedException, IOException {
-        final PrintStream logger = listener.getLogger();
-
-        JenkinsServerConfiguration serverConfiguration = ViewerUtils.getServerConfiguration(jenkinsJob);
-        if (serverConfiguration == null) {
-            throw new AbortException(Messages.ViewerRecorder_FailedToLookupServer());
-        }
-
-        CredJobPair pair = serverConfiguration.getCredJobPair(jenkinsJob);
-        if (pair == null) {
-            throw new AbortException(Messages.ViewerRecorder_FailedToLookupJob());
-        }
-
-        JenkinsServerConnection serverConnection = new JenkinsServerConnection(serverConfiguration, pair);
-        if (!serverConnection.validateConnection()) {
-            throw new RESTErrorException(Messages.ViewerRecorder_ConnectionError());
-        }
+        PrintStream logger = listener.getLogger();
+        JenkinsServerConnection serverConnection = ViewerUtils.createJenkinsServerConnection(jenkinsJob);
 
         Job perfSigJob = serverConnection.getJenkinsJob();
         boolean buildInQueue = perfSigJob.details().isInQueue();

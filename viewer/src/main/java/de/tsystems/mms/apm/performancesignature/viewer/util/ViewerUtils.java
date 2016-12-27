@@ -21,9 +21,13 @@ import com.cloudbees.plugins.credentials.CredentialsProvider;
 import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
 import com.cloudbees.plugins.credentials.domains.DomainRequirement;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
+import de.tsystems.mms.apm.performancesignature.viewer.Messages;
 import de.tsystems.mms.apm.performancesignature.viewer.ViewerGlobalConfiguration;
 import de.tsystems.mms.apm.performancesignature.viewer.model.CredJobPair;
 import de.tsystems.mms.apm.performancesignature.viewer.model.JenkinsServerConfiguration;
+import de.tsystems.mms.apm.performancesignature.viewer.rest.JenkinsServerConnection;
+import de.tsystems.mms.apm.performancesignature.viewer.rest.RESTErrorException;
+import hudson.AbortException;
 import hudson.security.ACL;
 import hudson.util.ListBoxModel;
 import org.apache.commons.collections.CollectionUtils;
@@ -72,5 +76,23 @@ public final class ViewerUtils {
         return (credsId == null) ? null : CredentialsMatchers.firstOrNull(
                 CredentialsProvider.lookupCredentials(UsernamePasswordCredentials.class, PerfSigUIUtils.getInstance(), ACL.SYSTEM,
                         Collections.<DomainRequirement>emptyList()), CredentialsMatchers.withId(credsId));
+    }
+
+    public static JenkinsServerConnection createJenkinsServerConnection(final String jenkinsJob) throws AbortException, RESTErrorException {
+        JenkinsServerConfiguration serverConfiguration = ViewerUtils.getServerConfiguration(jenkinsJob);
+        if (serverConfiguration == null) {
+            throw new AbortException(Messages.ViewerRecorder_FailedToLookupServer());
+        }
+
+        CredJobPair pair = serverConfiguration.getCredJobPair(jenkinsJob);
+        if (pair == null) {
+            throw new AbortException(Messages.ViewerRecorder_FailedToLookupJob());
+        }
+
+        JenkinsServerConnection serverConnection = new JenkinsServerConnection(serverConfiguration, pair);
+        if (!serverConnection.validateConnection()) {
+            throw new RESTErrorException(Messages.ViewerRecorder_ConnectionError());
+        }
+        return serverConnection;
     }
 }
