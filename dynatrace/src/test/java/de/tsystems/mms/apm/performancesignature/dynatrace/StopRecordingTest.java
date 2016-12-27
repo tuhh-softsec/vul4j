@@ -19,6 +19,7 @@ package de.tsystems.mms.apm.performancesignature.dynatrace;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionException;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.TestUtils;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
@@ -52,7 +53,7 @@ public class StopRecordingTest {
 
     @Test
     public void testStopContinuousSessionRecording() throws IOException {
-        DTServerConnection connection = TestUtils.createDTServerConnection(dynatraceConfigurations.get(0).name);
+        DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceConfigurations.get(0).name);
 
         exception.expect(CommandExecutionException.class);
         exception.expectMessage("error stop recording session:");
@@ -61,7 +62,7 @@ public class StopRecordingTest {
 
     @Test
     public void testStopDisabledContinuousSessionRecording1() throws IOException {
-        DTServerConnection connection = TestUtils.createDTServerConnection(dynatraceConfigurations.get(1).name);
+        DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceConfigurations.get(1).name);
 
         exception.expect(CommandExecutionException.class);
         exception.expectMessage("error stop recording session: Failed to stop session recording");
@@ -70,7 +71,7 @@ public class StopRecordingTest {
 
     @Test
     public void testStopDisabledContinuousSessionRecording2() throws IOException {
-        DTServerConnection connection = TestUtils.createDTServerConnection(dynatraceConfigurations.get(1).name);
+        DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceConfigurations.get(1).name);
 
         String result = connection.startRecording("testDisabledContinuousSessionRecording", "triggered by UnitTest",
                 PerfSigStartRecording.DescriptorImpl.defaultRecordingOption, false, true);
@@ -105,7 +106,7 @@ public class StopRecordingTest {
         assertFalse(invisAction.getTestRunID().isEmpty());
         assertTrue(invisAction.getTimeframeStart() != null);
 
-        DTServerConnection connection = TestUtils.createDTServerConnection(dynatraceConfigurations.get(0).name);
+        DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceConfigurations.get(0).name);
         assertTrue(connection.getSessions().contains(invisAction.getSessionName()));
     }
 

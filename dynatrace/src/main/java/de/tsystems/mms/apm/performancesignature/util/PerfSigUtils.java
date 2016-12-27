@@ -24,8 +24,10 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.PerfSigGlobalConfigura
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.CredProfilePair;
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.DynatraceServerConfiguration;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.Agent;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.BaseConfiguration;
+import hudson.AbortException;
 import hudson.security.ACL;
 import hudson.util.ListBoxModel;
 import org.apache.commons.collections.CollectionUtils;
@@ -107,5 +109,21 @@ public final class PerfSigUtils {
             }
         }
         return null;
+    }
+
+    public static DTServerConnection createDTServerConnection(final String dynatraceConfiguration) throws AbortException, RESTErrorException {
+        DynatraceServerConfiguration serverConfiguration = getServerConfiguration(dynatraceConfiguration);
+        if (serverConfiguration == null) {
+            throw new AbortException(de.tsystems.mms.apm.performancesignature.dynatrace.Messages.PerfSigRecorder_FailedToLookupServer());
+        }
+        CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceConfiguration);
+        if (pair == null) {
+            throw new AbortException(de.tsystems.mms.apm.performancesignature.dynatrace.Messages.PerfSigRecorder_FailedToLookupProfile());
+        }
+        DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
+        if (!connection.validateConnection()) {
+            throw new RESTErrorException(de.tsystems.mms.apm.performancesignature.dynatrace.Messages.PerfSigRecorder_DTConnectionError());
+        }
+        return connection;
     }
 }

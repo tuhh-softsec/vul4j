@@ -16,12 +16,9 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace;
 
-import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.CredProfilePair;
-import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.DynatraceServerConfiguration;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
-import hudson.AbortException;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -57,24 +54,10 @@ public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
     @Override
     public void perform(@Nonnull final Run<?, ?> run, @Nonnull final FilePath workspace, @Nonnull final Launcher launcher, @Nonnull final TaskListener listener)
             throws InterruptedException, IOException {
-        final PrintStream logger = listener.getLogger();
-
-        DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
-        if (serverConfiguration == null) {
-            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupServer());
-        }
-
-        CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
-        if (pair == null) {
-            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupProfile());
-        }
+        PrintStream logger = listener.getLogger();
+        DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceProfile);
 
         logger.println(Messages.PerfSigStopRecording_StoppingSessionRecording());
-        final DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
-        if (!connection.validateConnection()) {
-            throw new RESTErrorException(Messages.PerfSigRecorder_DTConnectionError());
-        }
-
         final List<PerfSigEnvInvisAction> envVars = run.getActions(PerfSigEnvInvisAction.class);
         PerfSigEnvInvisAction buildEnvVars = null;
         Date timeframeStart = null;
@@ -97,7 +80,7 @@ public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
         if (StringUtils.isBlank(sessionName)) {
             throw new RESTErrorException(Messages.PerfSigStopRecording_InternalError());
         }
-        logger.println(Messages.PerfSigStopRecording_StoppedSessionRecording(pair.getProfile(), sessionName));
+        logger.println(Messages.PerfSigStopRecording_StoppedSessionRecording(connection.getCredProfilePair().getProfile(), sessionName));
 
         if (getReanalyzeSession()) {
             logger.println(Messages.PerfSigStopRecording_ReanalyzeSession());

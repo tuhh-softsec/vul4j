@@ -60,6 +60,16 @@ public class ActivateConfigurationTest {
         ListBoxModel listBoxModel = descriptor.doFillConfigurationItems(dynatraceConfigurations.get(0).name);
 
         assertNotNull(listBoxModel);
-        assertEquals(listBoxModel.size(), 2);
+        assertTrue(containsOption(listBoxModel, "Default"));
+        assertTrue(containsOption(listBoxModel, "ActivateConfigurationTest"));
+    }
+
+    private boolean containsOption(ListBoxModel listBoxModel, String search) {
+        for (ListBoxModel.Option option : listBoxModel) {
+            if (option.name.equals(search)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

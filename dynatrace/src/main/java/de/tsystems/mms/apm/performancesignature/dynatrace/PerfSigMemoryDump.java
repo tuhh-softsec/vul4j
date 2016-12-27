@@ -16,8 +16,6 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace;
 
-import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.CredProfilePair;
-import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.DynatraceServerConfiguration;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.Agent;
@@ -43,7 +41,6 @@ import org.kohsuke.stapler.QueryParameter;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.List;
 
 public class PerfSigMemoryDump extends Builder implements SimpleBuildStep {
     private static final int waitForDumpTimeout = 60000;
@@ -63,22 +60,11 @@ public class PerfSigMemoryDump extends Builder implements SimpleBuildStep {
     public void perform(@Nonnull final Run<?, ?> run, @Nonnull final FilePath workspace, @Nonnull final Launcher launcher, @Nonnull final TaskListener listener)
             throws InterruptedException, IOException {
         PrintStream logger = listener.getLogger();
+        DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceProfile);
 
-        DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
-        if (serverConfiguration == null) {
-            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupServer());
-        }
-
-        CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
-        if (pair == null) {
-            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupProfile());
-        }
-
-        final DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
-        List<Agent> agents = connection.getAgents();
-
-        for (Agent agent : agents) {
-            if (agent.getName().equals(this.agent) && agent.getSystemProfile().equals(pair.getProfile()) && agent.getHost().equals(this.host)) {
+        for (Agent agent : connection.getAgents()) {
+            if (agent.getName().equals(this.agent) && agent.getSystemProfile().equals(connection.getCredProfilePair().getProfile()) &&
+                    agent.getHost().equals(this.host)) {
                 logger.println(Messages.PerfSigMemoryDump_CreatingMemoryDump(agent.getSystemProfile(), agent.getName(), agent.getHost(),
                         String.valueOf(agent.getProcessId())));
 

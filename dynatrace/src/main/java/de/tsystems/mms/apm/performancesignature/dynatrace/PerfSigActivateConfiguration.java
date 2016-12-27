@@ -22,7 +22,6 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionE
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.Agent;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
-import hudson.AbortException;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -56,29 +55,17 @@ public class PerfSigActivateConfiguration extends Builder implements SimpleBuild
     public void perform(@Nonnull final Run<?, ?> run, @Nonnull final FilePath workspace, @Nonnull final Launcher launcher, @Nonnull final TaskListener listener)
             throws InterruptedException, IOException {
         PrintStream logger = listener.getLogger();
-
-        //ToDo: refactor DTServerConnection
-        DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
-        if (serverConfiguration == null) {
-            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupServer());
-        }
-
-        CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
-        if (pair == null) {
-            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupProfile());
-        }
+        DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceProfile);
 
         logger.println(Messages.PerfSigActivateConfiguration_ActivatingProfileConfiguration());
-        final DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
-
-        boolean result = connection.activateConfiguration(this.configuration);
+        boolean result = connection.activateConfiguration(configuration);
         if (!result) {
             throw new CommandExecutionException(Messages.PerfSigActivateConfiguration_InternalError());
         }
-        logger.println(Messages.PerfSigActivateConfiguration_SuccessfullyActivated(pair.getProfile()));
+        logger.println(Messages.PerfSigActivateConfiguration_SuccessfullyActivated(connection.getCredProfilePair().getProfile()));
 
         for (Agent agent : connection.getAgents()) {
-            if (agent.getSystemProfile().equalsIgnoreCase(pair.getProfile())) {
+            if (agent.getSystemProfile().equalsIgnoreCase(connection.getCredProfilePair().getProfile())) {
                 boolean hotSensorPlacement = connection.hotSensorPlacement(agent.getAgentId());
                 if (hotSensorPlacement) {
                     logger.println(Messages.PerfSigActivateConfiguration_HotSensorPlacementDone(agent.getName()));

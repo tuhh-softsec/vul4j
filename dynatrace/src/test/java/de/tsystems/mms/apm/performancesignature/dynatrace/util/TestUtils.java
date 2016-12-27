@@ -19,13 +19,10 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.util;
 import com.cloudbees.plugins.credentials.CredentialsScope;
 import com.cloudbees.plugins.credentials.SystemCredentialsProvider;
 import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl;
-import de.tsystems.mms.apm.performancesignature.dynatrace.Messages;
+import de.tsystems.mms.apm.performancesignature.dynatrace.PerfSigGlobalConfiguration;
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.CredProfilePair;
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.DynatraceServerConfiguration;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
-import hudson.AbortException;
 import hudson.util.ListBoxModel;
 import jenkins.model.Jenkins;
 
@@ -40,24 +37,8 @@ public class TestUtils {
     private TestUtils() {
     }
 
-    public static DTServerConnection createDTServerConnection(String dynatraceConfiguration) throws AbortException, RESTErrorException {
-        DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceConfiguration);
-        if (serverConfiguration == null) {
-            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupServer());
-        }
-        CredProfilePair pair = serverConfiguration.getCredProfilePair("easy Travel");
-        if (pair == null) {
-            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupProfile());
-        }
-        DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
-        if (!connection.validateConnection()) {
-            throw new RESTErrorException(Messages.PerfSigRecorder_DTConnectionError());
-        }
-        return connection;
-    }
-
     public static ListBoxModel prepareDTConfigurations() throws IOException {
-        List<DynatraceServerConfiguration> configurations = PerfSigUtils.getDTConfigurations();
+        List<DynatraceServerConfiguration> configurations = new ArrayList<DynatraceServerConfiguration>();
         SystemCredentialsProvider.getInstance().getCredentials().add(new UsernamePasswordCredentialsImpl(CredentialsScope.GLOBAL,
                 "myCreds", null, "admin", "admin"));
         SystemCredentialsProvider.getInstance().save();
@@ -73,6 +54,7 @@ public class TestUtils {
                 false, DynatraceServerConfiguration.DescriptorImpl.defaultDelay, DynatraceServerConfiguration.DescriptorImpl.defaultRetryCount,
                 false, 0, null, 0, null, null));
 
+        PerfSigGlobalConfiguration.get().setConfigurations(configurations);
         Jenkins.getInstance().save();
 
         for (ListBoxModel.Option option : PerfSigUtils.listToListBoxModel(PerfSigUtils.getDTConfigurations())) {

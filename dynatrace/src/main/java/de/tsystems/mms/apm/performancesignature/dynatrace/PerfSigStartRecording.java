@@ -17,7 +17,6 @@
 package de.tsystems.mms.apm.performancesignature.dynatrace;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.CredProfilePair;
-import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.DynatraceServerConfiguration;
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.GenericTestCase;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionException;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
@@ -25,7 +24,6 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorExceptio
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.BaseConfiguration;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.SystemProfile;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
-import hudson.AbortException;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -64,24 +62,11 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
     @Override
     public void perform(@Nonnull final Run<?, ?> run, @Nonnull final FilePath workspace, @Nonnull final Launcher launcher, @Nonnull final TaskListener listener)
             throws InterruptedException, IOException {
-        final PrintStream logger = listener.getLogger();
-
-        DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
-        if (serverConfiguration == null) {
-            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupServer());
-        }
-
-        CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
-        if (pair == null) {
-            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupProfile());
-        }
+        PrintStream logger = listener.getLogger();
+        DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceProfile);
+        CredProfilePair pair = connection.getCredProfilePair();
 
         logger.println(Messages.PerfSigStartRecording_StartingSession());
-        final DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
-        if (!connection.validateConnection()) {
-            throw new RESTErrorException(Messages.PerfSigRecorder_DTConnectionError());
-        }
-
         final String testCase = run.getEnvironment(listener).expand(this.testCase);
         String sessionName = pair.getProfile() + "_" + run.getParent().getName() + "_Build-" + run.getNumber() + "_" + testCase;
         sessionName = sessionName.replace("/", "_");

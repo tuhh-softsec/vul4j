@@ -16,8 +16,11 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace;
 
-import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.*;
+import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.ConfigurationTestCase;
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.ConfigurationTestCase.ConfigurationTestCaseDescriptor;
+import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.Dashboard;
+import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.DynatraceServerConfiguration;
+import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.UnitTestCase;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
@@ -62,27 +65,15 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
     @Override
     public void perform(@Nonnull final Run<?, ?> run, @Nonnull final FilePath workspace, @Nonnull final Launcher launcher, @Nonnull final TaskListener listener)
             throws InterruptedException, IOException {
-
         PrintStream logger = listener.getLogger();
-
-        DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
+        DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceProfile);
+        DynatraceServerConfiguration serverConfiguration = connection.getConfiguration();
         if (serverConfiguration == null) {
             throw new AbortException(Messages.PerfSigRecorder_FailedToLookupServer());
         }
 
-        CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
-        if (pair == null) {
-            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupProfile());
-        }
-
         if (configurationTestCases == null) {
             throw new AbortException(Messages.PerfSigRecorder_MissingTestCases());
-        }
-
-        DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
-        logger.println(Messages.PerfSigRecorder_VerifyDTConnection());
-        if (!connection.validateConnection()) {
-            throw new RESTErrorException(Messages.PerfSigRecorder_DTConnectionError());
         }
 
         if (serverConfiguration.getDelay() != 0) {
@@ -92,7 +83,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
 
         for (BaseConfiguration profile : connection.getSystemProfiles()) {
             SystemProfile systemProfile = (SystemProfile) profile;
-            if (pair.getProfile().equals(systemProfile.getId()) && systemProfile.isRecording()) {
+            if (connection.getCredProfilePair().getProfile().equals(systemProfile.getId()) && systemProfile.isRecording()) {
                 logger.println(Messages.PerfSigRecorder_SessionStillRecording());
                 PerfSigStopRecording stopRecording = new PerfSigStopRecording(dynatraceProfile);
                 stopRecording.perform(run, workspace, launcher, listener);

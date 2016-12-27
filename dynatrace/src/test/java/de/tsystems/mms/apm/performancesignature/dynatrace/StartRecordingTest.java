@@ -19,6 +19,7 @@ package de.tsystems.mms.apm.performancesignature.dynatrace;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionException;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.TestUtils;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
@@ -46,7 +47,7 @@ public class StartRecordingTest {
 
     @Test
     public void testContinuousSessionRecording() throws IOException {
-        DTServerConnection connection = TestUtils.createDTServerConnection(dynatraceConfigurations.get(0).name);
+        DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceConfigurations.get(0).name);
 
         String result = null;
         try {
@@ -61,13 +62,16 @@ public class StartRecordingTest {
 
     @Test
     public void testDisabledContinuousSessionRecording() throws IOException {
-        DTServerConnection connection = TestUtils.createDTServerConnection(dynatraceConfigurations.get(1).name);
+        DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceConfigurations.get(1).name);
 
-        String result = connection.startRecording("testDisabledContinuousSessionRecording", "triggered by UnitTest",
-                PerfSigStartRecording.DescriptorImpl.defaultRecordingOption, false, true);
+        try {
+            String result = connection.startRecording("testDisabledContinuousSessionRecording", "triggered by UnitTest",
+                    PerfSigStartRecording.DescriptorImpl.defaultRecordingOption, false, true);
 
-        assertTrue(result.contains("testDisabledContinuousSessionRecording"));
-        assertFalse(connection.stopRecording().isEmpty());
+            assertTrue(result.contains("testDisabledContinuousSessionRecording"));
+        } finally {
+            connection.stopRecording();
+        }
     }
 
     @Test
