@@ -22,7 +22,6 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.util.TestUtils;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
-import hudson.model.Result;
 import hudson.tasks.BatchFile;
 import hudson.tasks.Shell;
 import hudson.util.ListBoxModel;
@@ -34,7 +33,6 @@ import org.junit.rules.ExpectedException;
 import org.jvnet.hudson.test.JenkinsRule;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 import static org.junit.Assert.*;
 
@@ -83,23 +81,22 @@ public class StopRecordingTest {
     }
 
     @Test
-    public void testJenkinsConfiguration() throws IOException, ExecutionException, InterruptedException {
+    public void testJenkinsConfiguration() throws Exception {
         final String testCase = "unittest";
 
         FreeStyleProject project = j.createFreeStyleProject();
         project.getBuildersList().add(new PerfSigStartRecording(dynatraceConfigurations.get(0).name, testCase));
         //wait some time to get some data into the session
-        if (isWindows()) {
+        if (TestUtils.isWindows()) {
             project.getBuildersList().add(new BatchFile("ping -n 10 127.0.0.1 > NUL"));
         } else {
             project.getBuildersList().add(new Shell("sleep 10"));
         }
         project.getBuildersList().add(new PerfSigStopRecording(dynatraceConfigurations.get(0).name));
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        FreeStyleBuild build = j.assertBuildStatusSuccess(project.scheduleBuild2(0));
 
         PerfSigEnvInvisAction invisAction = build.getAction(PerfSigEnvInvisAction.class);
 
-        assertEquals(build.getResult(), Result.SUCCESS);
         assertTrue(invisAction != null);
         assertTrue(invisAction.getSessionName().matches("easy Travel_test0_Build-\\d+_unittest"));
         assertTrue(invisAction.getTestCase().equals(testCase));
@@ -110,7 +107,4 @@ public class StopRecordingTest {
         assertTrue(connection.getSessions().contains(invisAction.getSessionName()));
     }
 
-    private boolean isWindows() {
-        return System.getProperty("os.name").startsWith("Windows");
-    }
 }

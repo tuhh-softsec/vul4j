@@ -22,7 +22,6 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.util.TestUtils;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
-import hudson.model.Result;
 import hudson.util.ListBoxModel;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -30,9 +29,9 @@ import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class StartRecordingTest {
 
@@ -75,16 +74,15 @@ public class StartRecordingTest {
     }
 
     @Test
-    public void testJenkinsConfiguration() throws IOException, ExecutionException, InterruptedException {
+    public void testJenkinsConfiguration() throws Exception {
         final String testCase = "unittest";
 
         FreeStyleProject project = j.createFreeStyleProject();
         project.getBuildersList().add(new PerfSigStartRecording(dynatraceConfigurations.get(0).name, testCase));
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        FreeStyleBuild build = j.assertBuildStatusSuccess(project.scheduleBuild2(0));
 
         PerfSigEnvInvisAction invisAction = build.getAction(PerfSigEnvInvisAction.class);
 
-        assertEquals(build.getResult(), Result.SUCCESS);
         assertTrue(invisAction != null);
         assertTrue(invisAction.getSessionName().matches("easy Travel_test0_Build-\\d+_unittest"));
         assertTrue(invisAction.getTestCase().equals(testCase));

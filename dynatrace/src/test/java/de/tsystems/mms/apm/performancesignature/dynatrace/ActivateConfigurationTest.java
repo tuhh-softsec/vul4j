@@ -19,7 +19,6 @@ package de.tsystems.mms.apm.performancesignature.dynatrace;
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.TestUtils;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
-import hudson.model.Result;
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
 import org.apache.commons.io.FileUtils;
@@ -27,9 +26,6 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
-
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 import static org.junit.Assert.*;
 
@@ -45,14 +41,13 @@ public class ActivateConfigurationTest {
     }
 
     @Test
-    public void testJenkinsConfiguration() throws IOException, ExecutionException, InterruptedException {
+    public void testJenkinsConfiguration() throws Exception {
         FreeStyleProject project = j.createFreeStyleProject();
         project.getBuildersList().add(new PerfSigActivateConfiguration(dynatraceConfigurations.get(0).name, "ActivateConfigurationTest"));
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        FreeStyleBuild build = j.assertBuildStatusSuccess(project.scheduleBuild2(0));
 
         String s = FileUtils.readFileToString(build.getLogFile());
         assertTrue(s.contains("activated configuration successfully on easy Travel"));
-        assertEquals(build.getResult(), Result.SUCCESS);
     }
 
     @Test
