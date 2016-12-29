@@ -59,7 +59,7 @@
     </modules>
 
     <properties>
-        <jenkins.version>1.609.3</jenkins.version>
+        <jenkins.version>1.609.1</jenkins.version>
         <java.level>6</java.level>
         <node.version>6.8.1</node.version>
         <npm.version>3.10.9</npm.version>

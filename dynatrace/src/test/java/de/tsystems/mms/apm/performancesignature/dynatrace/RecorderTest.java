@@ -19,7 +19,9 @@ package de.tsystems.mms.apm.performancesignature.dynatrace;
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.ConfigurationTestCase;
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.Dashboard;
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.GenericTestCase;
+import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.TestUtils;
+import de.tsystems.mms.apm.performancesignature.ui.PerfSigBuildAction;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
@@ -34,7 +36,7 @@ import org.jvnet.hudson.test.JenkinsRule;
 
 import java.util.Collections;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class RecorderTest {
 
@@ -95,6 +97,14 @@ public class RecorderTest {
         assertTrue(s.contains("getting PDF report: Singlereport")); //no Comparisonreport available
         assertTrue(s.contains("parsing XML report"));
         assertTrue(s.contains("session successfully downloaded"));
+
+        PerfSigBuildAction buildAction = build.getAction(PerfSigBuildAction.class);
+        assertNotNull(buildAction);
+        assertNotNull(buildAction.getDashboardReports());
+        DashboardReport dashboardReport = buildAction.getDashboardReports().get(0);
+        assertNotNull(dashboardReport);
+        assertNotNull(dashboardReport.getChartDashlets());
+        assertEquals(10, dashboardReport.getChartDashlets().size());
     }
 
     @Test
