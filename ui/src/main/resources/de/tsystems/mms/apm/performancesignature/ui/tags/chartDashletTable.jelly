@@ -16,11 +16,11 @@
 
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:jm="/de/tsystems/mms/apm/performancesignature/ui/tags">
+    <br/>
     <h3>${it.name}</h3>
     <p>
         ${it.description}
     </p>
-    <br/>
     <j:forEach var="measure" items="${it.measures}">
         <img style="margin: 3px;" class="img-thumbnail"
              src="./summarizerGraph?width=410&amp;height=300&amp;measure=${utils.encodeString(measure.name)}&amp;testcase=${utils.encodeString(dashboardReport.name)}&amp;chartdashlet=${utils.encodeString(it.name)}"
