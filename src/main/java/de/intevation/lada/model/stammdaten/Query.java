@@ -80,7 +80,8 @@ public class Query implements Serializable {
     }
 
     public String getSql() {
-        return this.sql;
+        // remove \r and \n from sql text
+        return this.sql.replaceAll("(\r\n|\n)", " ");
     }
 
     public void setSql(String sql) {
