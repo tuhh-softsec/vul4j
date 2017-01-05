@@ -94,7 +94,7 @@ $(document).ready(function () {
 
         $("#addbutton", this).click(function () {
             var request_parameter = '&amp;width=410&amp;height=300&amp;customName=' + encode($("#customName", page).val()) +
-                '&amp;customBuildCount=' + $("#customBuildCount", page).val() + '&amp;aggregation=' + $("#aggregation", page).val();
+                '&amp;customBuildCount=' + $("#customBuildCount", page).val();
             if ($("#measureGroup", page).val() === 'UnitTest overview') {
                 grid[pageIndex].add_widget('<li><img class="img-thumbnail" height="300" width="410" ' +
                     'src="./testRunGraph?id=unittest_overview' + request_parameter + '">' +
@@ -102,7 +102,7 @@ $(document).ready(function () {
                     '<span class="chk_show"><input type="checkbox" title="show in project overview" checked="checked"/></span></li>', 1, 1);
             } else {
                 grid[pageIndex].add_widget('<li><img class="img-thumbnail" height="300" width="410" ' +
-                    'src="./summarizerGraph?id=' + $("#measure", page).val() + request_parameter + '">' +
+                    'src="./summarizerGraph?id=' + $("#measure", page).val() + request_parameter + '&amp;aggregation=' + $("#aggregation", page).val() + '">' +
                     '<span class="del_img glyphicon glyphicon-remove"></span>' +
                     '<span class="chk_show"><input type="checkbox" title="show in project overview" checked="checked"/></span></li>', 1, 1);
             }

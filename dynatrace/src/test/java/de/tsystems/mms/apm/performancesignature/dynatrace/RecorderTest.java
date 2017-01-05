@@ -104,7 +104,7 @@ public class RecorderTest {
         DashboardReport dashboardReport = buildAction.getDashboardReports().get(0);
         assertNotNull(dashboardReport);
         assertNotNull(dashboardReport.getChartDashlets());
-        assertEquals(10, dashboardReport.getChartDashlets().size());
+        assertEquals(7, dashboardReport.getChartDashlets().size());
     }
 
     @Test

@@ -25,6 +25,7 @@ import de.tsystems.mms.apm.performancesignature.model.JSONDashlet;
 import de.tsystems.mms.apm.performancesignature.ui.util.TestUtils;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import hudson.model.Project;
+import hudson.model.Run;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -51,7 +52,8 @@ public class PerfSigProjectActionTest {
 
         HtmlPage projectPage = wc.getPage(proj);
         j.assertAllImageLoadSuccessfully(projectPage);
-        assertEquals(projectPage.getByXPath("//*[@id=\"tabList\"]/li/a").size(), 2); //no JS available :(
+        Thread.sleep(100000);
+        assertEquals(projectPage.getByXPath("//*[@id=\"tabList\"]/li/a").size(), 2); //no AJAX available :(
 
         PerfSigProjectAction projectAction = new PerfSigProjectAction(proj);
         List<JSONDashlet> configuration = new Gson().fromJson(projectAction.getDashboardConfiguration("PerfTest"), new TypeToken<List<JSONDashlet>>() {
@@ -63,7 +65,7 @@ public class PerfSigProjectActionTest {
 
     @LocalData
     @Test
-    public void testProjectActionCharts() throws Exception {
+    public void testProjectActionDataTable() throws Exception {
         Project proj = (Project) j.jenkins.getItem(TEST_PROJECT_WITH_HISTORY);
         assertNotNull("We should have a project named " + TEST_PROJECT_WITH_HISTORY, proj);
 
@@ -71,11 +73,14 @@ public class PerfSigProjectActionTest {
         HtmlPage projectPage = wc.getPage(proj, "performance-signature");
 
         j.assertAllImageLoadSuccessfully(projectPage);
-        assertEquals(projectPage.getByXPath("//*[@id=\"gridster-UnitTest\"]/ul/li/a/img").size(), 10);
-        assertEquals(projectPage.getByXPath("//*[@id=\"gridster-PerfTest\"]/ul/li/a/img").size(), 10);
-        List<?> list = projectPage.getByXPath("//*[@id=\"DataTables_Table_1\"]/thead/tr/th/text()");
-        assertTrue(TestUtils.containsMeasure(list, "Total GC Utilization (Average) (%)"));
-        assertTrue(TestUtils.containsMeasure(list, "WebService Count (Count) (num)"));
+        List<?> list = projectPage.getByXPath("//*[@id=\"PerfTest\"]/div/table/thead/tr/th/text()[1]");
+        assertTrue(TestUtils.containsMeasure(list, "GC Utilization - Total GC Utilization (Average)"));
+        assertTrue(TestUtils.containsMeasure(list, "WebServiceTime - WebService Count (Count)"));
+        j.assertXPath(projectPage, "//*[@id=\"UnitTest\"]/div/table/tbody/tr[1]/td[2]/a/img"); //PDF symbol should be visible
+        Run<?, ?> build = proj.getBuildByNumber(11157);
+        Page comparisonReportDownload = wc.goTo(build.getUrl() + "/performance-signature/" +
+                "getComparisonReport?testCase=UnitTest&number=0", "application/octet-stream");
+        j.assertGoodStatus(comparisonReportDownload);
     }
 
     @LocalData
@@ -84,10 +89,24 @@ public class PerfSigProjectActionTest {
         Project proj = (Project) j.jenkins.getItem(TEST_PROJECT_WITH_HISTORY);
         assertNotNull("We should have a project named " + TEST_PROJECT_WITH_HISTORY, proj);
 
-        JenkinsRule.WebClient wc = j.createWebClient();
+        PerfSigProjectAction projectAction = new PerfSigProjectAction(proj);
+        List<JSONDashlet> configuration = new Gson().fromJson(projectAction.getDashboardConfiguration("PerfTest"), new TypeToken<List<JSONDashlet>>() {
+        }.getType());
+        List<JSONDashlet> configuration2 = new Gson().fromJson(projectAction.getDashboardConfiguration("UnitTest"), new TypeToken<List<JSONDashlet>>() {
+        }.getType());
+        configuration.addAll(configuration2);
 
-        Page trendGraphPage = wc.goTo(proj.getUrl() + "/performance-signature/summarizerGraph?id=19571aabda401cc01546d7ebd62e0e58", "image/png");
-        j.assertGoodStatus(trendGraphPage);
+        JenkinsRule.WebClient wc = j.createWebClient();
+        for (JSONDashlet dashlet : configuration) {
+            System.out.println(dashlet.generateDashletName() + " : " + dashlet.getId());
+            Page graph;
+            if (dashlet.getId().equals(PerfSigProjectAction.UNITTEST_DASHLETNAME)) {
+                graph = wc.goTo(proj.getUrl() + "/performance-signature/testRunGraph?id=" + dashlet.getId(), "image/png");
+            } else {
+                graph = wc.goTo(proj.getUrl() + "/performance-signature/summarizerGraph?id=" + dashlet.getId(), "image/png");
+            }
+            j.assertGoodStatus(graph);
+        }
 
         exception.expect(FailingHttpStatusCodeException.class);
         wc.goTo(proj.getUrl() + "/performance-signature/summarizerGraph?id=20571aabda401cc01546d7ebd62e0e58", "image/png");

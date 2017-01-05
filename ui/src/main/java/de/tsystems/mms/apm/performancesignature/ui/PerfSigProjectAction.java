@@ -62,8 +62,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class PerfSigProjectAction extends PerfSigBaseAction implements ProminentProjectAction {
+    static final String UNITTEST_DASHLETNAME = "unittest_overview";
     private static final String JSON_FILENAME = "gridconfig.xml";
-    private static final String UNITTEST_DASHLETNAME = "unittest_overview";
     private static final XStream XSTREAM = new XStream2();
     private static final Logger logger = Logger.getLogger(PerfSigProjectAction.class.getName());
     private final Job<?, ?> job;

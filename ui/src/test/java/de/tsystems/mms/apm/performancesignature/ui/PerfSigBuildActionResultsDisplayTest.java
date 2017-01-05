@@ -95,7 +95,7 @@ public class PerfSigBuildActionResultsDisplayTest {
         j.assertGoodStatus(webRequestTime2);
 
         exception.expect(FailingHttpStatusCodeException.class);
-        Page failedRequest = wc.goTo(proj.getUrl() + "/lastBuild/performance-signature/" +
+        wc.goTo(proj.getUrl() + "/lastBuild/performance-signature/" +
                 "summarizerGraph?measure=Time&testcase=TestNotFound&chartdashlet=WebRequestTime", "image/png");
     }
 

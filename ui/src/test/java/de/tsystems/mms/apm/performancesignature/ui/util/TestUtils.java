@@ -27,7 +27,7 @@ public class TestUtils {
 
     public static boolean containsMeasure(List<?> list, String search) {
         for (Object text : list) {
-            if (((DomText) text).getWholeText().equals(search)) {
+            if (((DomText) text).getWholeText().trim().equals(search)) {
                 return true;
             }
         }
