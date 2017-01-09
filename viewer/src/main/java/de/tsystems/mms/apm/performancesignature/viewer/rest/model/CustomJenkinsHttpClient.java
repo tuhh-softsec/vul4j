@@ -22,6 +22,7 @@ import de.tsystems.mms.apm.performancesignature.viewer.model.CustomProxy;
 import hudson.ProxyConfiguration;
 import jenkins.model.Jenkins;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -42,8 +43,10 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.logging.Logger;
 
 public class CustomJenkinsHttpClient extends JenkinsHttpClient {
+    private static final Logger LOGGER = Logger.getLogger(CustomJenkinsHttpClient.class.getName());
 
     public CustomJenkinsHttpClient(final URI uri, final String username, final String password, final boolean verifyCertificate, final CustomProxy customProxy) {
 
@@ -69,7 +72,7 @@ public class CustomJenkinsHttpClient extends JenkinsHttpClient {
                 });
                 httpClientBuilder.setSSLSocketFactory(new SSLConnectionSocketFactory(builder.build()));
             } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
-                e.printStackTrace();
+                LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
             }
 
         }

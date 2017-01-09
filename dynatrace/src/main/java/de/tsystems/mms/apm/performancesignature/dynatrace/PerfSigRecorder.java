@@ -78,7 +78,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
 
         if (serverConfiguration.getDelay() != 0) {
             logger.println(Messages.PerfSigRecorder_SleepingDelay(serverConfiguration.getDelay()));
-            Thread.sleep(serverConfiguration.getDelay() * 1000);
+            Thread.sleep(serverConfiguration.getDelay() * 1000L);
         }
 
         for (BaseConfiguration profile : connection.getSystemProfiles()) {
@@ -135,7 +135,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
                 retryCount++;
                 availableSessions = connection.getSessions();
                 logger.println(Messages.PerfSigRecorder_WaitingForSession(retryCount, serverConfiguration.getRetryCount()));
-                Thread.sleep(10000);
+                Thread.sleep(10000L);
             }
 
             if (!validateSessionName(sessionName)) {

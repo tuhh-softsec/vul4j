@@ -30,11 +30,14 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.rest;
 
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.logging.Logger;
 
 public class ManagementURLBuilder {
+    private static final Logger LOGGER = Logger.getLogger(ManagementURLBuilder.class.getName());
     private String serverAddress;
     private String parameters;
 
@@ -51,7 +54,7 @@ public class ManagementURLBuilder {
             final String s = String.format("%1$s/rest/management/version", this.serverAddress);
             return new URL(s);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
         }
         return null;
     }
@@ -61,7 +64,7 @@ public class ManagementURLBuilder {
             return new URL(String.format("%1$s/rest/management/sessions/%2$s/reanalyze", this.serverAddress,
                     PerfSigUIUtils.encodeString(sessionName)));
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
         }
         return null;
     }
@@ -71,7 +74,7 @@ public class ManagementURLBuilder {
             return new URL(String.format("%1$s/rest/management/sessions/%2$s/reanalyze/finished", this.serverAddress,
                     PerfSigUIUtils.encodeString(sessionName)));
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
         }
         return null;
     }
@@ -88,7 +91,7 @@ public class ManagementURLBuilder {
                     this.serverAddress, PerfSigUIUtils.encodeString(profileName), PerfSigUIUtils.encodeString(sessionName), timeframeStart, timeframeEnd,
                     recordingOption, sessionLocked, appendTimestamp));
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
         }
         return null;
     }
@@ -106,7 +109,7 @@ public class ManagementURLBuilder {
                     PerfSigUIUtils.encodeString(profileName));
             return new URL(url);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
         }
         return null;
     }
@@ -117,7 +120,7 @@ public class ManagementURLBuilder {
                     PerfSigUIUtils.encodeString(profileName));
             return new URL(s);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
         }
         return null;
     }
@@ -127,7 +130,7 @@ public class ManagementURLBuilder {
             final String s = String.format("%1$s/rest/management/profiles/", this.serverAddress);
             return new URL(s);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
         }
         return null;
     }
@@ -138,7 +141,7 @@ public class ManagementURLBuilder {
                     PerfSigUIUtils.encodeString(profileName));
             return new URL(s);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
         }
         return null;
     }
@@ -149,7 +152,7 @@ public class ManagementURLBuilder {
                     PerfSigUIUtils.encodeString(profileName), PerfSigUIUtils.encodeString(configuration));
             return new URL(s);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
         }
         return null;
     }
@@ -159,7 +162,7 @@ public class ManagementURLBuilder {
             final String s = String.format("%1$s/rest/management/agents", this.serverAddress);
             return new URL(s);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
         }
         return null;
     }
@@ -170,7 +173,7 @@ public class ManagementURLBuilder {
                     PerfSigUIUtils.encodeString(String.valueOf(agentId)));
             return new URL(s);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
         }
         return null;
     }
@@ -180,7 +183,7 @@ public class ManagementURLBuilder {
             final String s = String.format("%1$s/rest/management/sessions?type=purepath", this.serverAddress);
             return new URL(s);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
         }
         return null;
     }
@@ -190,7 +193,7 @@ public class ManagementURLBuilder {
             final String s = String.format("%1$s/rest/management/dashboards", this.serverAddress);
             return new URL(s);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
         }
         return null;
     }
@@ -200,7 +203,7 @@ public class ManagementURLBuilder {
             final String s = String.format("%1$s/rest/management/sessions/%2$s/export", this.serverAddress, PerfSigUIUtils.encodeString(sessionName));
             return new URL(s);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
         }
         return null;
     }
@@ -218,7 +221,7 @@ public class ManagementURLBuilder {
             return new URL(String.format("%1$s/rest/management/profiles/%2$s/memorydumpcreated/%3$s", this.serverAddress,
                     PerfSigUIUtils.encodeString(profileName), PerfSigUIUtils.encodeString(memoryDumpName)));
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
         }
         return null;
     }
@@ -242,7 +245,7 @@ public class ManagementURLBuilder {
             return new URL(String.format("%1$s/rest/management/profiles/%2$s/memorydump",
                     this.serverAddress, PerfSigUIUtils.encodeString(profileName)));
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
         }
         return null;
     }
@@ -252,7 +255,7 @@ public class ManagementURLBuilder {
             return new URL(String.format("%1$s/rest/management/profiles/%2$s/threaddumpcreated/%3$s", this.serverAddress,
                     PerfSigUIUtils.encodeString(profileName), PerfSigUIUtils.encodeString(threadDumpName)));
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
         }
         return null;
     }
@@ -262,7 +265,7 @@ public class ManagementURLBuilder {
             this.parameters = String.format("agentName=%1$s&isSessionLocked=%2$s&hostName=%3$s&processId=%4$s", agentName, sessionLocked, hostName, processId);
             return new URL(String.format("%1$s/rest/management/profiles/%2$s/threaddump", this.serverAddress, PerfSigUIUtils.encodeString(profileName)));
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
         }
         return null;
     }
@@ -271,7 +274,7 @@ public class ManagementURLBuilder {
         try {
             return new URL(String.format("%1$s/rest/management/profiles/%2$s/testruns", this.serverAddress, PerfSigUIUtils.encodeString(profileName)));
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
         }
         return null;
     }
@@ -281,7 +284,7 @@ public class ManagementURLBuilder {
             return new URL(String.format("%1$s/rest/management/profiles/%2$s/testruns/%3$s.xml", this.serverAddress,
                     PerfSigUIUtils.encodeString(profileName), testRunID));
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
         }
         return null;
     }

@@ -31,6 +31,7 @@ import hudson.util.XStream2;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
@@ -59,9 +60,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 @ExportedBean
 public class PerfSigBuildActionResultsDisplay implements ModelObject {
+    private static final Logger LOGGER = Logger.getLogger(PerfSigBuildActionResultsDisplay.class.getName());
     private final transient PerfSigBuildAction buildAction;
     private final transient List<DashboardReport> currentDashboardReports;
 
@@ -114,10 +117,13 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
     }
 
     public DashboardReport getDashBoardReport(final String reportName) {
-        if (currentDashboardReports == null) return null;
+        if (currentDashboardReports == null) {
+            return null;
+        }
         for (DashboardReport dashboardReport : currentDashboardReports) {
-            if (dashboardReport.getName().equals(reportName))
+            if (dashboardReport.getName().equals(reportName)) {
                 return dashboardReport;
+            }
         }
         return null;
     }
@@ -129,8 +135,9 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
             return;
         }
 
-        if (getBuild() != null && request.checkIfModified(getBuild().getTimestamp(), response))
+        if (getBuild() != null && request.checkIfModified(getBuild().getTimestamp(), response)) {
             return;
+        }
 
         ChartUtil.generateGraph(request, response, createTimeSeriesChart(request, buildTimeSeriesDataSet(request)), PerfSigUIUtils.calcDefaultSize());
     }
@@ -143,7 +150,9 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
 
         DashboardReport dashboardReport = getDashBoardReport(testCase);
         Measure m = dashboardReport.getMeasure(chartDashlet, measure);
-        if (m == null || m.getMeasurements() == null) return null;
+        if (m == null || m.getMeasurements() == null) {
+            return null;
+        }
 
         for (Measurement measurement : m.getMeasurements()) {
             timeSeries.add(new Second(new Date(measurement.getTimestamp())), measurement.getMetricValue(m.getAggregation()));
@@ -158,7 +167,9 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
 
         final DashboardReport dashboardReport = getDashBoardReport(testCase);
         final Measure m = dashboardReport.getMeasure(chartDashlet, measure);
-        if (m == null) return null;
+        if (m == null) {
+            return null;
+        }
 
         String color = m.getColor();
         String unit = m.getUnit();
@@ -230,7 +241,9 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
 
     private void getReportList(final String type, final StaplerRequest request, final StaplerResponse response) throws IOException, InterruptedException {
         String testCase = request.getParameter("testCase");
-        if (StringUtils.isBlank(testCase)) testCase = "";
+        if (StringUtils.isBlank(testCase)) {
+            testCase = "";
+        }
 
         FilePath reportDir = PerfSigUIUtils.getReportDirectory(getBuild());
         List<FilePath> files = reportDir.list(new RegexFileFilter(type + ".*" + testCase + ".*.pdf"));
@@ -244,7 +257,9 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
 
     private void serveFile(final String type, final StaplerRequest request, final StaplerResponse response) throws IOException, InterruptedException {
         String testCase = request.getParameter("testCase");
-        if (StringUtils.isBlank(testCase)) testCase = "";
+        if (StringUtils.isBlank(testCase)) {
+            testCase = "";
+        }
 
         String numberString = request.getParameter("number");
         int number = 0;
@@ -277,7 +292,7 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
             response.setHeader(headerKey, headerValue);
             response.serveFile(request, inStream, requestedFile.lastModified(), requestedFile.length(), "mime-type:" + mimeType);
         } catch (ServletException e) {
-            e.printStackTrace();
+            LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
         } finally {
             IOUtils.closeQuietly(inStream);
         }

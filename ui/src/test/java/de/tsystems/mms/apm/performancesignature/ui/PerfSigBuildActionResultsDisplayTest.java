@@ -117,6 +117,12 @@ public class PerfSigBuildActionResultsDisplayTest {
         assertNotNull(previousDashboardReport);
         assertNotNull(previousDashboardReport.getMeasure("GC Utilization", "Total GC Utilization"));
         assertNotNull(previousDashboardReport.getMeasure("WebServiceTime", "WebService Count"));
+
+        Run<?, ?> previousBuild = proj.getBuildByNumber(11155);
+        PerfSigBuildAction previousAction = previousBuild.getAction(PerfSigBuildAction.class);
+        PerfSigBuildActionResultsDisplay previousBuildActionResultsDisplay = new PerfSigBuildActionResultsDisplay(previousAction);
+        assertNotNull(previousBuildActionResultsDisplay);
+        assertNull(previousBuildActionResultsDisplay.getPreviousDashboardReport("PerfTest"));
     }
 
     @LocalData
@@ -132,6 +138,11 @@ public class PerfSigBuildActionResultsDisplayTest {
         j.assertXPathValue(xmlProjectPage, "/perfSigBuildActionResultsDisplay/dashboardReport/chartDashlet/measure/measure/text()", "Number of Requests");
         j.assertXPathValue(xmlProjectPage, "/perfSigBuildActionResultsDisplay/dashboardReport/chartDashlet/measure/count", "1485");
         assertEquals(14.0, xmlProjectPage.getFirstByXPath("count(/perfSigBuildActionResultsDisplay/dashboardReport/chartDashlet)"));
+
+        Run<?, ?> build = proj.getBuildByNumber(11157);
+        exception.expect(FailingHttpStatusCodeException.class);
+        wc.goTo(build.getUrl() + "/performance-signature/" +
+                "getSingleReport?testCase=nothing&number=0", "application/octet-stream");
     }
 
     @LocalData
@@ -150,5 +161,9 @@ public class PerfSigBuildActionResultsDisplayTest {
                 "getSession?testCase=PerfTest", "application/octet-stream");
         j.assertGoodStatus(singleReportDownload);
         j.assertGoodStatus(sessionDownload);
+
+        exception.expect(FailingHttpStatusCodeException.class);
+        wc.goTo(build.getUrl() + "/performance-signature/" +
+                "getSingleReport?testCase=UnitTest&number=1", "application/octet-stream");
     }
 }

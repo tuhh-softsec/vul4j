@@ -128,7 +128,9 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         String aggregation = jsonDashlet.getAggregation();
         int customBuildCount = 0, i = 0;
 
-        if (StringUtils.isNotBlank(buildCount)) customBuildCount = Integer.parseInt(buildCount);
+        if (StringUtils.isNotBlank(buildCount)) {
+            customBuildCount = Integer.parseInt(buildCount);
+        }
 
         Map<Run<?, ?>, DashboardReport> dashboardReports = getDashboardReports(dashboard);
         DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dsb = new DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel>();

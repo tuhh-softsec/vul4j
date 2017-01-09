@@ -63,7 +63,9 @@ public class PerfSigUIPlugin extends Plugin {
         // Check for old dashboard configurations
         for (Job<?, ?> job : PerfSigUIUtils.getInstance().getAllItems(Job.class)) {
             FilePath jobPath = new FilePath(job.getConfigFile().getFile()).getParent();
-            if (jobPath == null) continue;
+            if (jobPath == null) {
+                continue;
+            }
             List<FilePath> files = jobPath.list(new RegexFileFilter(".*-config.json"));
             files.addAll(jobPath.list(new RegexFileFilter("gridconfig.*.json")));
             for (FilePath file : files) {

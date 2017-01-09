@@ -43,8 +43,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 public class PerfSigMemoryDump extends Builder implements SimpleBuildStep {
-    private static final int waitForDumpTimeout = 60000;
-    private static final int waitForDumpPollingInterval = 5000;
+    private static final long waitForDumpTimeout = 60000L;
+    private static final long waitForDumpPollingInterval = 5000L;
     private final String dynatraceProfile, agent, host;
     private String type;
     private boolean lockSession, captureStrings, capturePrimitives, autoPostProcess, dogc;
@@ -73,7 +73,7 @@ public class PerfSigMemoryDump extends Builder implements SimpleBuildStep {
                 if (StringUtils.isBlank(memoryDump)) {
                     throw new RESTErrorException(Messages.PerfSigMemoryDump_MemoryDumpWasntTaken());
                 }
-                int timeout = waitForDumpTimeout;
+                long timeout = waitForDumpTimeout;
                 boolean dumpFinished = connection.memoryDumpStatus(memoryDump).isResultValueTrue();
                 while ((!dumpFinished) && (timeout > 0)) {
                     Thread.sleep(waitForDumpPollingInterval);

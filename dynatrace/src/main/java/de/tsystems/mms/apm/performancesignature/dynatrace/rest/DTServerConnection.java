@@ -121,7 +121,7 @@ public class DTServerConnection {
             };
             sc.init(null, trustAllCerts, new java.security.SecureRandom());
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
         } catch (KeyManagementException e) {
             LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
         }
