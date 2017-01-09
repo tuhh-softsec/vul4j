@@ -81,15 +81,12 @@ public class ManagementURLBuilder {
 
 
     public URL storePurePathsURL(final String profileName, final String sessionName, final String timeframeStart, final String timeframeEnd,
-                                 String recordingOption, final boolean sessionLocked, final boolean appendTimestamp) {
-        if (StringUtils.isBlank(recordingOption)) {
-            recordingOption = "all";
-        }
+                                 final String recordingOption, final boolean sessionLocked, final boolean appendTimestamp) {
         try {
             return new URL(String.format("%1$s/rest/management/profiles/%2$s/storepurepaths?storedSessionName=%3$s&timeframeStart=%4$s&timeframeEnd=%5$s&" +
                             "recordingOption=%6$s&isSessionLocked=%7$s&appendTimestamp=%8$s",
                     this.serverAddress, PerfSigUIUtils.encodeString(profileName), PerfSigUIUtils.encodeString(sessionName), timeframeStart, timeframeEnd,
-                    recordingOption, sessionLocked, appendTimestamp));
+                    StringUtils.isBlank(recordingOption) ? "all" : recordingOption, sessionLocked, appendTimestamp));
         } catch (MalformedURLException e) {
             LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
         }

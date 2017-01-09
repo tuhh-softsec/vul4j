@@ -77,9 +77,13 @@ public class ReportURLBuilder {
                 sb.append(RESTPATH_REPORTS);
             }
             sb.append(PerfSigUIUtils.encodeString(dashboardName));
-            if (!parameter.isEmpty()) sb.append("?");
+            if (!parameter.isEmpty()) {
+                sb.append("?");
+            }
             for (String param : parameter) {
-                if (parameter.indexOf(param) != 0) sb.append("&");
+                if (parameter.indexOf(param) != 0) {
+                    sb.append("&");
+                }
                 sb.append(param);
             }
             dashboardURL = new URL(sb.toString());

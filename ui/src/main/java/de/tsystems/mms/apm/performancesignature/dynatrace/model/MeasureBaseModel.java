@@ -78,20 +78,17 @@ public abstract class MeasureBaseModel {
      * get the avg value of a metric
      */
     public double getMetricValue(final String aggregation) {
-        if (aggregation == null) {
+        if (aggregation == null || aggregation.equalsIgnoreCase("average")) {
             return this.getAvg();
         } else if (aggregation.equalsIgnoreCase("count")) {
             return this.getCount();
-        } else if (aggregation.equalsIgnoreCase("average")) {
-            return this.getAvg();
         } else if (aggregation.equalsIgnoreCase("sum")) {
             return this.getSum();
         } else if (aggregation.equalsIgnoreCase("maximum")) {
             return this.getMax();
         } else if (aggregation.equalsIgnoreCase("minimum")) {
             return this.getMin();
-        } else {
-            return this.getAvg();
         }
+        return 0;
     }
 }

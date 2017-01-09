@@ -52,7 +52,6 @@ public class PerfSigProjectActionTest {
 
         HtmlPage projectPage = wc.getPage(proj);
         j.assertAllImageLoadSuccessfully(projectPage);
-        Thread.sleep(100000);
         assertEquals(projectPage.getByXPath("//*[@id=\"tabList\"]/li/a").size(), 2); //no AJAX available :(
 
         PerfSigProjectAction projectAction = new PerfSigProjectAction(proj);

@@ -47,8 +47,10 @@ public final class PerfSigUIUtils {
     }
 
     public static BigDecimal round(final double d, final int decimalPlace) {
-        if (d == 0) return BigDecimal.valueOf(0);
-        BigDecimal bd = new BigDecimal(d);
+        if (d == 0) {
+            return BigDecimal.ZERO;
+        }
+        BigDecimal bd = BigDecimal.valueOf(d);
         bd = bd.setScale(d % 1 == 0 ? 0 : decimalPlace, BigDecimal.ROUND_HALF_UP);
         return bd;
     }
@@ -95,7 +97,9 @@ public final class PerfSigUIUtils {
     }
 
     public static String encodeString(final String value) {
-        if (StringUtils.isBlank(value)) return "";
+        if (StringUtils.isBlank(value)) {
+            return "";
+        }
         try {
             return URLEncoder.encode(value, CharEncoding.UTF_8).replaceAll("\\+", "%20");
         } catch (UnsupportedEncodingException e) {
@@ -111,14 +115,15 @@ public final class PerfSigUIUtils {
 
     public static Area calcDefaultSize() {
         Area res = Functions.getScreenResolution();
-        if (res != null && res.width <= 800)
+        if (res != null && res.width <= 800) {
             return new Area(250, 100);
-        else
+        } else {
             return new Area(500, 200);
+        }
     }
 
     /**
-     * gets removed if jenkins.version hits 1.653
+     * gets removed if jenkins version hits 1.653
      */
     @Nonnull
     public static Jenkins getInstance() throws IllegalStateException {
@@ -132,7 +137,7 @@ public final class PerfSigUIUtils {
 
     public static void handleIncidents(final Run<?, ?> run, final List<IncidentChart> incidents, final PrintStream logger, final int nonFunctionalFailure) {
         int numWarning = 0, numSevere = 0;
-        if (incidents != null && incidents.size() > 0) {
+        if (incidents != null && !incidents.isEmpty()) {
             logger.println(Messages.PerfSigUIUtils_FollowingIncidents());
             for (IncidentChart incident : incidents) {
                 for (IncidentViolation violation : incident.getViolations()) {

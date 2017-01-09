@@ -139,11 +139,15 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             double metricValue = 0;
             if (dashboardReport.getValue().getChartDashlets() != null) {
                 Measure m = dashboardReport.getValue().getMeasure(chartDashlet, measure);
-                if (m != null) metricValue = StringUtils.isBlank(aggregation) ? m.getMetricValue() : m.getMetricValue(aggregation);
+                if (m != null) {
+                    metricValue = StringUtils.isBlank(aggregation) ? m.getMetricValue() : m.getMetricValue(aggregation);
+                }
             }
             i++;
             dsb.add(metricValue, chartDashlet, new ChartUtil.NumberOnlyBuildLabel(dashboardReport.getKey()));
-            if (customBuildCount != 0 && i == customBuildCount) break;
+            if (customBuildCount != 0 && i == customBuildCount) {
+                break;
+            }
         }
         return dsb.build();
     }
@@ -246,7 +250,9 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
                 }
             }
             i++;
-            if (buildCount != 0 && i == buildCount) break;
+            if (buildCount != 0 && i == buildCount) {
+                break;
+            }
         }
         return dsb.build();
     }
@@ -409,7 +415,9 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         HashSet<String> idsFromJson = new HashSet<String>();
 
         String json = StringEscapeUtils.unescapeJava(data);
-        if (!json.startsWith("[")) json = json.substring(1, json.length() - 1);
+        if (!json.startsWith("[")) {
+            json = json.substring(1, json.length() - 1);
+        }
 
         List<JSONDashlet> jsonDashletList = new Gson().fromJson(json, new TypeToken<List<JSONDashlet>>() {
         }.getType());
@@ -419,7 +427,9 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
 
         try {
             for (JSONDashlet jsonDashlet : getJsonDashletMap().values()) {
-                if (!jsonDashlet.getDashboard().equals(dashboard)) continue; //filter out dashlets from other dashboards
+                if (!jsonDashlet.getDashboard().equals(dashboard)) { //filter out dashlets from other dashboards
+                    continue;
+                }
                 if (!idsFromJson.contains(jsonDashlet.getId())) { //remove dashlet, if it's not present in gridConfiguration
                     getJsonDashletMap().remove(jsonDashlet.getId());
                 }
@@ -511,7 +521,9 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         }
 
         for (JSONDashlet jsonDashlet : getJsonDashletMap().values()) {
-            if (!jsonDashlet.getDashboard().equals(dashboardReport.getName())) continue;
+            if (!jsonDashlet.getDashboard().equals(dashboardReport.getName())) {
+                continue;
+            }
             boolean chartDashletFound = false;
 
             for (ChartDashlet dashlet : dashboardReport.getChartDashlets()) {

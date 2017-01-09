@@ -93,15 +93,15 @@ public class TestResult implements Serializable {
     public String getStatusColor() {
         switch (status) {
             case PASSED:
-                return "#00FF00";
+                return "#2AB06F";
             case FAILED:
-                return "#FF0000";
+                return "#DC172A";
             case IMPROVED:
-                return "#00FF00";
+                return "#2AB6F4";
             case DEGRADED:
-                return "#FF0000";
+                return "#EF651F";
             case VOLATILE:
-                return "#FFFF00";
+                return "#FFE11C";
             default:
                 return "";
         }

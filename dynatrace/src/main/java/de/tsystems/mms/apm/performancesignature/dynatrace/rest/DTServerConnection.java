@@ -543,7 +543,9 @@ public class DTServerConnection {
                     .setDashboardName(dashboard)
                     .setSource(sessionName)
                     .setType("PDF");
-            if (comparedSessionName != null) builder.setComparison(comparedSessionName);
+            if (comparedSessionName != null) {
+                builder.setComparison(comparedSessionName);
+            }
             file.copyFrom(getInputStream(builder.buildURL()));
             return true;
         } catch (Exception ex) {
