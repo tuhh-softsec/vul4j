@@ -67,8 +67,8 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
         CredProfilePair pair = connection.getCredProfilePair();
 
         logger.println(Messages.PerfSigStartRecording_StartingSession());
-        final String testCase = run.getEnvironment(listener).expand(this.testCase);
-        String sessionName = pair.getProfile() + "_" + run.getParent().getName() + "_Build-" + run.getNumber() + "_" + testCase;
+        String extTestCase = run.getEnvironment(listener).expand(this.testCase);
+        String sessionName = pair.getProfile() + "_" + run.getParent().getName() + "_Build-" + run.getNumber() + "_" + extTestCase;
         sessionName = sessionName.replace("/", "_");
 
         for (BaseConfiguration profile : connection.getSystemProfiles()) {
@@ -107,7 +107,7 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
             logger.println(Messages.PerfSigStartRecording_CouldNotRegisterTestRun());
         }
 
-        run.addAction(new PerfSigEnvInvisAction(result, timeframeStart, testCase, testRunId));
+        run.addAction(new PerfSigEnvInvisAction(result, timeframeStart, extTestCase, testRunId));
     }
 
     public String getTestCase() {

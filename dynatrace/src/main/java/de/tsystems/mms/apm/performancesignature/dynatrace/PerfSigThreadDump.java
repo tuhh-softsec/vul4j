@@ -61,13 +61,13 @@ public class PerfSigThreadDump extends Builder implements SimpleBuildStep {
         PrintStream logger = listener.getLogger();
         DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceProfile);
 
-        for (Agent agent : connection.getAgents()) {
-            if (agent.getName().equals(this.agent) && agent.getSystemProfile().equals(connection.getCredProfilePair().getProfile()) &&
-                    agent.getHost().equals(this.host)) {
-                logger.println(Messages.PerfSigThreadDump_CreatingThreadDump(agent.getSystemProfile(), agent.getName(), agent.getHost(),
-                        String.valueOf(agent.getProcessId())));
+        for (Agent availAgent : connection.getAgents()) {
+            if (availAgent.getName().equals(this.agent) && availAgent.getSystemProfile().equals(connection.getCredProfilePair().getProfile()) &&
+                    availAgent.getHost().equals(this.host)) {
+                logger.println(Messages.PerfSigThreadDump_CreatingThreadDump(availAgent.getSystemProfile(), availAgent.getName(), availAgent.getHost(),
+                        String.valueOf(availAgent.getProcessId())));
 
-                String threadDump = connection.threadDump(agent.getName(), agent.getHost(), agent.getProcessId(), getLockSession());
+                String threadDump = connection.threadDump(availAgent.getName(), availAgent.getHost(), availAgent.getProcessId(), getLockSession());
                 if (StringUtils.isBlank(threadDump)) {
                     throw new RESTErrorException(Messages.PerfSigThreadDump_ThreadDumpWasntTaken());
                 }
@@ -79,7 +79,7 @@ public class PerfSigThreadDump extends Builder implements SimpleBuildStep {
                     dumpFinished = connection.threadDumpStatus(threadDump).isResultValueTrue();
                 }
                 if (dumpFinished) {
-                    logger.println(Messages.PerfSigThreadDump_SuccessfullyCreatedThreadDump(agent.getName()));
+                    logger.println(Messages.PerfSigThreadDump_SuccessfullyCreatedThreadDump(availAgent.getName()));
                     return;
                 } else {
                     throw new RESTErrorException(Messages.PerfSigStopRecording_TimeoutRaised());

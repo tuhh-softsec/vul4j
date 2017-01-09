@@ -106,17 +106,20 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         }
 
         String id = request.getParameter("id");
+        JSONDashlet knownJsonDashlet = getJsonDashletMap().get(id);
 
-        if (request.getParameter("customName") == null && request.getParameter("customBuildCount") == null
-                && request.getParameter("aggregation") == null) { //dashlet from stored configuration
-            JSONDashlet jsonDashlet = getJsonDashletMap().get(id);
-            ChartUtil.generateGraph(request, response, createChart(jsonDashlet, buildDataSet(jsonDashlet)), PerfSigUIUtils.calcDefaultSize());
-        } else { //new dashlet
-            JSONDashlet jsonDashlet = createJSONConfiguration(false).get(id);
-            jsonDashlet.setAggregation(request.getParameter("aggregation"));
-            jsonDashlet.setCustomName(request.getParameter("customName"));
-            jsonDashlet.setCustomBuildCount(request.getParameter("customBuildCount"));
-            ChartUtil.generateGraph(request, response, createChart(jsonDashlet, buildDataSet(jsonDashlet)), PerfSigUIUtils.calcDefaultSize());
+        if (knownJsonDashlet != null) { //dashlet from stored configuration
+            ChartUtil.generateGraph(request, response, createChart(knownJsonDashlet, buildDataSet(knownJsonDashlet)), PerfSigUIUtils.calcDefaultSize());
+        } else {
+            JSONDashlet newJsonDashlet = createJSONConfiguration(false).get(id);
+            if (newJsonDashlet != null) { //new dashlet
+                if (StringUtils.isNotBlank(request.getParameter("aggregation"))) {
+                    newJsonDashlet.setAggregation(request.getParameter("aggregation"));
+                }
+                newJsonDashlet.setCustomName(request.getParameter("customName"));
+                newJsonDashlet.setCustomBuildCount(request.getParameter("customBuildCount"));
+                ChartUtil.generateGraph(request, response, createChart(newJsonDashlet, buildDataSet(newJsonDashlet)), PerfSigUIUtils.calcDefaultSize());
+            }
         }
     }
 
@@ -165,7 +168,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             if (dr.getName().equals(dashboard)) {
                 final Measure m = dr.getMeasure(chartDashlet, measure);
                 if (m != null) {
-                    unit = aggregation.equalsIgnoreCase("Count") ? "num" : m.getUnit();
+                    unit = "Count".equalsIgnoreCase(aggregation) ? "num" : m.getUnit();
                     color = m.getColor();
                 }
                 break;
@@ -373,11 +376,11 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         int col = 1, row = 1;
 
         logger.fine(addTimeStampToLog("grid configuration generation started"));
-        Map<String, JSONDashlet> jsonDashletMap = new HashMap<String, JSONDashlet>();
+        Map<String, JSONDashlet> newJsonDashletMap = new HashMap<String, JSONDashlet>();
         for (DashboardReport dashboardReport : getLastDashboardReports()) {
             if (dashboardReport.isUnitTest()) {
                 JSONDashlet dashlet = new JSONDashlet(col++, row, UNITTEST_DASHLETNAME, dashboardReport.getName());
-                jsonDashletMap.put(UNITTEST_DASHLETNAME, dashlet);
+                newJsonDashletMap.put(UNITTEST_DASHLETNAME, dashlet);
             }
             for (ChartDashlet chartDashlet : dashboardReport.getChartDashlets()) {
                 for (Measure measure : chartDashlet.getMeasures()) {
@@ -387,7 +390,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
                         dashlet.setId(dashlet.generateID());
                     }
 
-                    jsonDashletMap.put(dashlet.getId(), dashlet);
+                    newJsonDashletMap.put(dashlet.getId(), dashlet);
 
                     if (col > 3) {
                         col = 1;
@@ -397,7 +400,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             }
         }
         logger.fine(addTimeStampToLog("grid configuration generation finished"));
-        return jsonDashletMap;
+        return newJsonDashletMap;
     }
 
     /*

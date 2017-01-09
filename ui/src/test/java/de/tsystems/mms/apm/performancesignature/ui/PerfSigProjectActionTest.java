@@ -33,6 +33,7 @@ import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.recipes.LocalData;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -116,16 +117,30 @@ public class PerfSigProjectActionTest {
     public void testWebMethods() throws Exception {
         Project proj = (Project) j.jenkins.getItem(TEST_PROJECT_WITH_HISTORY);
         JenkinsRule.WebClient wc = j.createWebClient();
+        HtmlPage projectPage = wc.getPage(proj, "performance-signature");
 
         PerfSigProjectAction projectAction = new PerfSigProjectAction(proj);
         assertEquals(PerfSigUIUtils.class, projectAction.getPerfSigUIUtils());
-        /*projectAction.getFilteredChartDashlets();
-        projectAction.getAggregationFromMeasure();
-        projectAction.getAvailableMeasures();
-        projectAction.getDashboardReports();
-        projectAction.getLastDashboardReports();*/
+
+        j.assertXPathValue(projectPage, "//*[@id=\"measureGroup\"]/option[1]", "UnitTest overview");
+        j.assertXPathValue(projectPage, "//*[@id=\"measureGroup\"]/option[6]", "Synthetic WebRequest Time");
+
+        Map<String, String> jsonDashletIDs = projectAction.getAvailableMeasures("PerfTest", "Errors");
+        assertTrue(jsonDashletIDs.containsKey("f1cb5c773c9c5cf98d81827513ad9e46"));
+        assertEquals("Failed Transaction Count", jsonDashletIDs.get("f1cb5c773c9c5cf98d81827513ad9e46"));
+
+        jsonDashletIDs.putAll(projectAction.getAvailableMeasures("UnitTest", "WebRequestTime"));
+        for (Map.Entry<String, String> id : jsonDashletIDs.entrySet()) {
+            Page graph = wc.goTo(proj.getUrl() + "/performance-signature/summarizerGraph?id=" + id.getKey() + "customName=" + id.getValue(), "image/png");
+            j.assertGoodStatus(graph);
+        }
+
+        assertEquals("Count", projectAction.getAggregationFromMeasure("PerfTest", "Database", "DB Count"));
+        assertEquals("Average", projectAction.getAggregationFromMeasure("PerfTest", "Synthetic WebRequest Time", "Synthetic Web Requests by Timer Name - PurePath Response Time"));
+        assertEquals("", projectAction.getAggregationFromMeasure("PerfTest", "Synthetic WebRequest Time", "empty"));
     }
 
+    //ToDo
     public void testGridConfiguration() {
 
     }

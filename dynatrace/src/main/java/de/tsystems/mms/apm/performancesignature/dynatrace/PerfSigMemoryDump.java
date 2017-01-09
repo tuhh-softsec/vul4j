@@ -62,13 +62,13 @@ public class PerfSigMemoryDump extends Builder implements SimpleBuildStep {
         PrintStream logger = listener.getLogger();
         DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceProfile);
 
-        for (Agent agent : connection.getAgents()) {
-            if (agent.getName().equals(this.agent) && agent.getSystemProfile().equals(connection.getCredProfilePair().getProfile()) &&
-                    agent.getHost().equals(this.host)) {
-                logger.println(Messages.PerfSigMemoryDump_CreatingMemoryDump(agent.getSystemProfile(), agent.getName(), agent.getHost(),
-                        String.valueOf(agent.getProcessId())));
+        for (Agent availAgent : connection.getAgents()) {
+            if (availAgent.getName().equals(this.agent) && availAgent.getSystemProfile().equals(connection.getCredProfilePair().getProfile()) &&
+                    availAgent.getHost().equals(this.host)) {
+                logger.println(Messages.PerfSigMemoryDump_CreatingMemoryDump(availAgent.getSystemProfile(), availAgent.getName(), availAgent.getHost(),
+                        String.valueOf(availAgent.getProcessId())));
 
-                String memoryDump = connection.memoryDump(agent.getName(), agent.getHost(), agent.getProcessId(), getType(),
+                String memoryDump = connection.memoryDump(availAgent.getName(), availAgent.getHost(), availAgent.getProcessId(), getType(),
                         this.lockSession, this.captureStrings, this.capturePrimitives, this.autoPostProcess, this.dogc);
                 if (StringUtils.isBlank(memoryDump)) {
                     throw new RESTErrorException(Messages.PerfSigMemoryDump_MemoryDumpWasntTaken());
@@ -81,7 +81,7 @@ public class PerfSigMemoryDump extends Builder implements SimpleBuildStep {
                     dumpFinished = connection.memoryDumpStatus(memoryDump).isResultValueTrue();
                 }
                 if (dumpFinished) {
-                    logger.println(Messages.PerfSigMemoryDump_SuccessfullyCreatedMemoryDump(agent.getName()));
+                    logger.println(Messages.PerfSigMemoryDump_SuccessfullyCreatedMemoryDump(availAgent.getName()));
                     return;
                 } else {
                     throw new RESTErrorException(Messages.PerfSigStopRecording_TimeoutRaised());
