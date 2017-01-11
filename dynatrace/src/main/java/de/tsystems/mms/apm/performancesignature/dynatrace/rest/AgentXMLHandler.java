@@ -40,6 +40,7 @@ import java.util.List;
 public class AgentXMLHandler extends DefaultHandler {
     private final List<Agent> agents;
     private final List<Collector> collectors;
+    private final StringBuilder chars = new StringBuilder();
     private Agent currentAgent;
     private Collector currentCollector;
     private String currentElement;
@@ -74,19 +75,21 @@ public class AgentXMLHandler extends DefaultHandler {
             }
         }
         this.currentElement = localName;
+        this.chars.setLength(0);
     }
 
     public void endElement(final String uri, final String localName, final String qName) {
         if (localName.equals("collectorinformation")) {
             this.currentCollector = null;
         }
+        if (this.currentCollector != null) {
+            this.currentCollector.setValue(this.currentElement, this.chars.toString());
+        } else if (this.currentAgent != null) {
+            this.currentAgent.setValue(this.currentElement, this.parentElement, this.chars.toString());
+        }
     }
 
     public void characters(final char[] ch, final int start, final int length) throws SAXException {
-        if (this.currentCollector != null) {
-            this.currentCollector.setValue(this.currentElement, String.copyValueOf(ch, start, length));
-        } else if (this.currentAgent != null) {
-            this.currentAgent.setValue(this.currentElement, this.parentElement, String.copyValueOf(ch, start, length));
-        }
+        this.chars.append(ch, start, length);
     }
 }
