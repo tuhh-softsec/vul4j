@@ -32,6 +32,7 @@ import org.junit.rules.ExpectedException;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.recipes.LocalData;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -98,15 +99,15 @@ public class PerfSigProjectActionTest {
             System.out.println(dashlet.generateDashletName() + " : " + dashlet.getId());
             Page graph;
             if (dashlet.getId().equals(PerfSigProjectAction.UNITTEST_DASHLETNAME)) {
-                graph = wc.goTo(proj.getUrl() + "/performance-signature/testRunGraph?id=" + dashlet.getId(), "image/png");
+                graph = wc.goTo(proj.getUrl() + "performance-signature/testRunGraph?id=" + dashlet.getId(), "image/png");
             } else {
-                graph = wc.goTo(proj.getUrl() + "/performance-signature/summarizerGraph?id=" + dashlet.getId(), "image/png");
+                graph = wc.goTo(proj.getUrl() + "performance-signature/summarizerGraph?id=" + dashlet.getId(), "image/png");
             }
             j.assertGoodStatus(graph);
         }
 
         exception.expect(FailingHttpStatusCodeException.class);
-        wc.goTo(proj.getUrl() + "/performance-signature/summarizerGraph?id=20571aabda401cc01546d7ebd62e0e58", "");
+        wc.goTo(proj.getUrl() + "performance-signature/summarizerGraph?id=20571aabda401cc01546d7ebd62e0e58", "");
     }
 
     @LocalData
@@ -128,7 +129,7 @@ public class PerfSigProjectActionTest {
 
         jsonDashletIDs.putAll(projectAction.getAvailableMeasures("UnitTest", "WebRequestTime"));
         for (Map.Entry<String, String> id : jsonDashletIDs.entrySet()) {
-            Page graph = wc.goTo(proj.getUrl() + "/performance-signature/summarizerGraph?id=" + id.getKey() + "customName=" + id.getValue(), "image/png");
+            Page graph = wc.goTo(proj.getUrl() + "performance-signature/summarizerGraph?id=" + id.getKey() + "&customName=" + id.getValue(), "image/png");
             j.assertGoodStatus(graph);
         }
 
@@ -137,9 +138,21 @@ public class PerfSigProjectActionTest {
         assertEquals("", projectAction.getAggregationFromMeasure("PerfTest", "Synthetic WebRequest Time", "empty"));
     }
 
-    //ToDo
-    public void testGridConfiguration() {
+    @LocalData
+    @Test
+    public void testGridConfiguration() throws IOException, InterruptedException {
+        Project proj = (Project) j.jenkins.getItem(TEST_PROJECT_WITH_HISTORY);
 
+        PerfSigProjectAction projectAction = new PerfSigProjectAction(proj);
+        String json = projectAction.getDashboardConfiguration("PerfTest");
+
+        assertNotNull(json);
+        List<JSONDashlet> jsonDashletList = new Gson().fromJson(json, new TypeToken<List<JSONDashlet>>() {
+        }.getType());
+        assertEquals(11, jsonDashletList.size());
+
+        projectAction.setDashboardConfiguration("PerfTest", json);
+        assertEquals(11, jsonDashletList.size());
     }
 
     private boolean containsDashlet(List<JSONDashlet> list, String search) {
