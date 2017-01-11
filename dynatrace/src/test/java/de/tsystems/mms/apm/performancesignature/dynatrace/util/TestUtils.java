@@ -70,7 +70,7 @@ public class TestUtils {
 
     public static boolean containsOption(ListBoxModel listBoxModel, String search) {
         for (ListBoxModel.Option option : listBoxModel) {
-            if (option.name.equals(search)) {
+            if (option.name.equalsIgnoreCase(search)) {
                 return true;
             }
         }

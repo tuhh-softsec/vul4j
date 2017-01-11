@@ -36,6 +36,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 public class RESTDumpStatusXMLHandler extends DefaultHandler {
     private final DumpStatus dumpStatus;
+    private final StringBuilder chars = new StringBuilder();
     private String prevElement;
     private String currentElement;
 
@@ -53,9 +54,14 @@ public class RESTDumpStatusXMLHandler extends DefaultHandler {
         }
         this.prevElement = this.currentElement;
         this.currentElement = localName;
+        chars.setLength(0);
+    }
+
+    public void endElement(final String uri, final String localName, final String qName) {
+        this.dumpStatus.setValue(this.currentElement, this.prevElement, this.chars.toString());
     }
 
     public void characters(final char[] ch, final int start, final int length) throws SAXException {
-        this.dumpStatus.setValue(this.currentElement, this.prevElement, String.copyValueOf(ch, start, length));
+        this.chars.append(ch, start, length);
     }
 }
