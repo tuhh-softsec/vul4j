@@ -92,9 +92,6 @@ public class PerfSigProjectActionTest {
         PerfSigProjectAction projectAction = new PerfSigProjectAction(proj);
         List<JSONDashlet> configuration = new Gson().fromJson(projectAction.getDashboardConfiguration("PerfTest"), new TypeToken<List<JSONDashlet>>() {
         }.getType());
-        List<JSONDashlet> configuration2 = new Gson().fromJson(projectAction.getDashboardConfiguration("UnitTest"), new TypeToken<List<JSONDashlet>>() {
-        }.getType());
-        configuration.addAll(configuration2);
 
         JenkinsRule.WebClient wc = j.createWebClient();
         for (JSONDashlet dashlet : configuration) {
@@ -109,7 +106,7 @@ public class PerfSigProjectActionTest {
         }
 
         exception.expect(FailingHttpStatusCodeException.class);
-        wc.goTo(proj.getUrl() + "/performance-signature/summarizerGraph?id=20571aabda401cc01546d7ebd62e0e58", "image/png");
+        wc.goTo(proj.getUrl() + "/performance-signature/summarizerGraph?id=20571aabda401cc01546d7ebd62e0e58", "");
     }
 
     @LocalData

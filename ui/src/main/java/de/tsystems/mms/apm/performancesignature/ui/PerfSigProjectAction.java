@@ -114,6 +114,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
 
                 jsonDashletToRender = newJsonDashlet;
             } else {
+                response.sendError(404, "no chartdashlet found for id " + id);
                 return;
             }
         }
