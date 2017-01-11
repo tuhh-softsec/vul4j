@@ -45,7 +45,6 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.StackedBarRenderer;
-import org.jfree.data.category.CategoryDataset;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.bind.JavaScriptMethod;
@@ -53,7 +52,6 @@ import org.kohsuke.stapler.bind.JavaScriptMethod;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
@@ -98,18 +96,13 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         return this.jsonDashletMap;
     }
 
-    public void doSummarizerGraph(final StaplerRequest request, final StaplerResponse response) throws IOException, InterruptedException {
-        if (ChartUtil.awtProblemCause != null) {
-            // not available. send out error message
-            response.sendRedirect2(request.getContextPath() + "/images/headless.png");
-            return;
-        }
-
+    public void doSummarizerGraph(final StaplerRequest request, final StaplerResponse response) throws IOException {
         String id = request.getParameter("id");
         JSONDashlet knownJsonDashlet = getJsonDashletMap().get(id);
+        final JSONDashlet jsonDashletToRender;
 
         if (knownJsonDashlet != null) { //dashlet from stored configuration
-            ChartUtil.generateGraph(request, response, createChart(knownJsonDashlet, buildDataSet(knownJsonDashlet)), PerfSigUIUtils.calcDefaultSize());
+            jsonDashletToRender = knownJsonDashlet;
         } else {
             JSONDashlet newJsonDashlet = createJSONConfiguration(false).get(id);
             if (newJsonDashlet != null) { //new dashlet
@@ -118,191 +111,93 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
                 }
                 newJsonDashlet.setCustomName(request.getParameter("customName"));
                 newJsonDashlet.setCustomBuildCount(request.getParameter("customBuildCount"));
-                ChartUtil.generateGraph(request, response, createChart(newJsonDashlet, buildDataSet(newJsonDashlet)), PerfSigUIUtils.calcDefaultSize());
+
+                jsonDashletToRender = newJsonDashlet;
+            } else {
+                return;
             }
         }
-    }
 
-    private CategoryDataset buildDataSet(final JSONDashlet jsonDashlet) throws IOException {
-        String dashboard = jsonDashlet.getDashboard();
-        String chartDashlet = jsonDashlet.getChartDashlet();
-        String measure = jsonDashlet.getMeasure();
-        String buildCount = jsonDashlet.getCustomBuildCount();
-        String aggregation = jsonDashlet.getAggregation();
-        int customBuildCount = 0, i = 0;
+        final Graph graph = new PerfGraphImpl(jsonDashletToRender) {
+            @Override
+            protected DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> createDataSet() {
+                String dashboard = jsonDashletToRender.getDashboard();
+                String chartDashlet = jsonDashletToRender.getChartDashlet();
+                String measure = jsonDashletToRender.getMeasure();
+                String buildCount = jsonDashletToRender.getCustomBuildCount();
+                String aggregation = jsonDashletToRender.getAggregation();
+                int customBuildCount = 0, i = 0;
 
-        if (StringUtils.isNotBlank(buildCount)) {
-            customBuildCount = Integer.parseInt(buildCount);
-        }
-
-        Map<Run<?, ?>, DashboardReport> dashboardReports = getDashboardReports(dashboard);
-        DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dsb = new DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel>();
-
-        for (Map.Entry<Run<?, ?>, DashboardReport> dashboardReport : dashboardReports.entrySet()) {
-            double metricValue = 0;
-            if (dashboardReport.getValue().getChartDashlets() != null) {
-                Measure m = dashboardReport.getValue().getMeasure(chartDashlet, measure);
-                if (m != null) {
-                    metricValue = StringUtils.isBlank(aggregation) ? m.getMetricValue() : m.getMetricValue(aggregation);
+                if (StringUtils.isNotBlank(buildCount)) {
+                    customBuildCount = Integer.parseInt(buildCount);
                 }
-            }
-            i++;
-            dsb.add(metricValue, chartDashlet, new ChartUtil.NumberOnlyBuildLabel(dashboardReport.getKey()));
-            if (customBuildCount != 0 && i == customBuildCount) {
-                break;
-            }
-        }
-        return dsb.build();
-    }
 
-    private JFreeChart createChart(final JSONDashlet jsonDashlet, final CategoryDataset dataset) throws UnsupportedEncodingException {
-        final String measure = jsonDashlet.getMeasure();
-        final String chartDashlet = jsonDashlet.getChartDashlet();
-        final String dashboard = jsonDashlet.getDashboard();
-        final String customMeasureName = jsonDashlet.getCustomName();
-        final String aggregation = jsonDashlet.getAggregation();
+                Map<Run<?, ?>, DashboardReport> dashboardReports = getDashboardReports(dashboard);
+                DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dsb = new DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel>();
 
-        String unit = "", color = "#FF5555";
-
-        for (DashboardReport dr : getLastDashboardReports()) {
-            if (dr.getName().equals(dashboard)) {
-                final Measure m = dr.getMeasure(chartDashlet, measure);
-                if (m != null) {
-                    unit = "Count".equalsIgnoreCase(aggregation) ? "num" : m.getUnit();
-                    color = m.getColor();
+                for (Map.Entry<Run<?, ?>, DashboardReport> dashboardReport : dashboardReports.entrySet()) {
+                    double metricValue = 0;
+                    if (dashboardReport.getValue().getChartDashlets() != null) {
+                        Measure m = dashboardReport.getValue().getMeasure(chartDashlet, measure);
+                        if (m != null) {
+                            metricValue = StringUtils.isBlank(aggregation) ? m.getMetricValue() : m.getMetricValue(aggregation);
+                        }
+                    }
+                    i++;
+                    dsb.add(metricValue, chartDashlet, new ChartUtil.NumberOnlyBuildLabel(dashboardReport.getKey()));
+                    if (customBuildCount != 0 && i == customBuildCount) {
+                        break;
+                    }
                 }
-                break;
+                return dsb;
             }
-        }
-
-        String title = StringUtils.isBlank(customMeasureName) ? PerfSigUIUtils.generateTitle(measure, chartDashlet, aggregation) : customMeasureName;
-
-        final JFreeChart chart = ChartFactory.createBarChart(title, // title
-                Messages.PerfSigProjectAction_Build(), // category axis label
-                unit, // value axis label
-                dataset, // data
-                PlotOrientation.VERTICAL, // orientation
-                false, // include legend
-                false, // tooltips
-                false // urls
-        );
-
-        chart.setBackgroundPaint(Color.white);
-
-        final CategoryPlot plot = chart.getCategoryPlot();
-
-        plot.setBackgroundPaint(Color.WHITE);
-        plot.setOutlinePaint(null);
-        plot.setForegroundAlpha(0.8f);
-        plot.setRangeGridlinesVisible(true);
-        plot.setRangeGridlinePaint(Color.black);
-
-        final CategoryAxis domainAxis = new ShiftedCategoryAxis(null);
-        plot.setDomainAxis(domainAxis);
-        domainAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_90);
-        //domainAxis.setLowerMargin(0.0);
-        //domainAxis.setUpperMargin(0.0);
-        //domainAxis.setCategoryMargin(0.0);
-
-        final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-        rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-
-        final BarRenderer renderer = (BarRenderer) chart.getCategoryPlot().getRenderer();
-        renderer.setSeriesPaint(0, Color.decode(color));
-
-        return chart;
+        };
+        graph.doPng(request, response);
     }
 
-    public void doTestRunGraph(final StaplerRequest request, final StaplerResponse response) throws IOException, InterruptedException {
-        if (ChartUtil.awtProblemCause != null) {
-            // not available. send out error message
-            response.sendRedirect2(request.getContextPath() + "/images/headless.png");
-            return;
-        }
+    public void doTestRunGraph(final StaplerRequest request, final StaplerResponse response) throws IOException {
+        final String customName, customBuildCount;
 
-        //get customName and customBuildCount from persisted xml
-        if (request.getParameter("customName") == null && request.getParameter("customBuildCount") == null) {
-            JSONDashlet jsonDashlet = getJsonDashletMap().get(UNITTEST_DASHLETNAME);
-            if (jsonDashlet != null) {
-                ChartUtil.generateGraph(request, response, createTestRunChart(buildTestRunDataSet(String.valueOf(jsonDashlet.getCustomBuildCount())),
-                        jsonDashlet.getCustomName()), PerfSigUIUtils.calcDefaultSize());
-            }
+        JSONDashlet jsonDashlet = getJsonDashletMap().get(UNITTEST_DASHLETNAME);
+        if (jsonDashlet != null) {
+            customName = jsonDashlet.getCustomName();
+            customBuildCount = String.valueOf(jsonDashlet.getCustomBuildCount());
         } else { //generate test run graph with GET parameters
-            ChartUtil.generateGraph(request, response, createTestRunChart(buildTestRunDataSet(request.getParameter("customBuildCount")),
-                    request.getParameter("customName")), PerfSigUIUtils.calcDefaultSize());
+            customName = request.getParameter("customName");
+            customBuildCount = request.getParameter("customBuildCount");
         }
-    }
 
-    private CategoryDataset buildTestRunDataSet(final String customBuildCount) {
-        final DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dsb = new DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel>();
-        int buildCount = 0, i = 0;
-        if (StringUtils.isNotBlank(customBuildCount))
-            buildCount = Integer.parseInt(customBuildCount);
-
-        for (Run<?, ?> run : job.getBuilds()) {
-            PerfSigTestDataWrapper testDataWrapper = run.getAction(PerfSigTestDataWrapper.class);
-            if (testDataWrapper != null && testDataWrapper.getTestRuns() != null) {
-                TestRun testRun = TestRun.mergeTestRuns(testDataWrapper.getTestRuns());
-                if (testRun != null) {
-                    dsb.add(testRun.getNumFailed(), "failed", new ChartUtil.NumberOnlyBuildLabel(run));
-                    dsb.add(testRun.getNumDegraded(), "degraded", new ChartUtil.NumberOnlyBuildLabel(run));
-                    dsb.add(testRun.getNumImproved(), "improved", new ChartUtil.NumberOnlyBuildLabel(run));
-                    dsb.add(testRun.getNumPassed(), "passed", new ChartUtil.NumberOnlyBuildLabel(run));
-                    dsb.add(testRun.getNumVolatile(), "volatile", new ChartUtil.NumberOnlyBuildLabel(run));
-                    dsb.add(testRun.getNumInvalidated(), "invalidated", new ChartUtil.NumberOnlyBuildLabel(run));
+        final Graph graph = new TestRunGraphImpl(customName) {
+            @Override
+            protected DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> createDataSet() {
+                final DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dsb = new DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel>();
+                int buildCount = 0, i = 0;
+                if (StringUtils.isNotBlank(customBuildCount)) {
+                    buildCount = Integer.parseInt(customBuildCount);
                 }
+
+                for (Run<?, ?> run : job.getBuilds()) {
+                    PerfSigTestDataWrapper testDataWrapper = run.getAction(PerfSigTestDataWrapper.class);
+                    if (testDataWrapper != null && testDataWrapper.getTestRuns() != null) {
+                        TestRun testRun = TestRun.mergeTestRuns(testDataWrapper.getTestRuns());
+                        if (testRun != null) {
+                            dsb.add(testRun.getNumFailed(), "failed", new ChartUtil.NumberOnlyBuildLabel(run));
+                            dsb.add(testRun.getNumDegraded(), "degraded", new ChartUtil.NumberOnlyBuildLabel(run));
+                            dsb.add(testRun.getNumImproved(), "improved", new ChartUtil.NumberOnlyBuildLabel(run));
+                            dsb.add(testRun.getNumPassed(), "passed", new ChartUtil.NumberOnlyBuildLabel(run));
+                            dsb.add(testRun.getNumVolatile(), "volatile", new ChartUtil.NumberOnlyBuildLabel(run));
+                            dsb.add(testRun.getNumInvalidated(), "invalidated", new ChartUtil.NumberOnlyBuildLabel(run));
+                        }
+                    }
+                    i++;
+                    if (buildCount != 0 && i == buildCount) {
+                        break;
+                    }
+                }
+                return dsb;
             }
-            i++;
-            if (buildCount != 0 && i == buildCount) {
-                break;
-            }
-        }
-        return dsb.build();
-    }
-
-    private JFreeChart createTestRunChart(final CategoryDataset dataset, final String customName) {
-        String title = StringUtils.isNotBlank(customName) ? customName : "UnitTest overview";
-
-        final JFreeChart chart = ChartFactory.createBarChart(title, // title
-                "build", // category axis label
-                "num", // value axis label
-                dataset, // data
-                PlotOrientation.VERTICAL, // orientation
-                true, // include legend
-                true, // tooltips
-                false // urls
-        );
-
-        chart.setBackgroundPaint(Color.white);
-
-        final CategoryPlot plot = chart.getCategoryPlot();
-
-        plot.setBackgroundPaint(Color.WHITE);
-        plot.setOutlinePaint(null);
-        plot.setForegroundAlpha(0.8f);
-        plot.setRangeGridlinesVisible(true);
-        plot.setRangeGridlinePaint(Color.black);
-
-        final CategoryAxis domainAxis = new ShiftedCategoryAxis(null);
-        plot.setDomainAxis(domainAxis);
-        domainAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_90);
-        //domainAxis.setLowerMargin(0.0);
-        //domainAxis.setUpperMargin(0.0);
-        //domainAxis.setCategoryMargin(0.0);
-
-        final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-        rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-
-        final StackedBarRenderer br = new StackedBarRenderer();
-        plot.setRenderer(br);
-        br.setSeriesPaint(0, new Color(0xFF, 0x99, 0x99)); // degraded
-        br.setSeriesPaint(1, ColorPalette.RED); // failed
-        br.setSeriesPaint(2, new Color(0x00, 0xFF, 0x00)); // improved
-        br.setSeriesPaint(3, ColorPalette.GREY); // invalidated
-        br.setSeriesPaint(4, ColorPalette.BLUE); // passed
-        br.setSeriesPaint(5, ColorPalette.YELLOW); // volatile
-
-        return chart;
+        };
+        graph.doPng(request, response);
     }
 
     public List<DashboardReport> getLastDashboardReports() {
@@ -580,6 +475,131 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             logger.fine(addTimeStampToLog("grid configuration write finished"));
         } catch (IOException e) {
             logger.log(Level.SEVERE, Messages.PerfSigProjectAction_FailedToSaveGrid(), e);
+        }
+    }
+
+    private abstract class PerfGraphImpl extends Graph {
+        private final JSONDashlet jsonDashlet;
+
+        protected PerfGraphImpl(final JSONDashlet jsonDashlet) {
+            super(-1, 600, 300);
+            this.jsonDashlet = jsonDashlet;
+        }
+
+        protected abstract DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> createDataSet();
+
+        protected JFreeChart createGraph() {
+            final String measure = jsonDashlet.getMeasure();
+            final String chartDashlet = jsonDashlet.getChartDashlet();
+            final String dashboard = jsonDashlet.getDashboard();
+            final String customMeasureName = jsonDashlet.getCustomName();
+            final String aggregation = jsonDashlet.getAggregation();
+
+            String unit = "", color = "#FF5555";
+
+            for (DashboardReport dr : getLastDashboardReports()) {
+                if (dr.getName().equals(dashboard)) {
+                    final Measure m = dr.getMeasure(chartDashlet, measure);
+                    if (m != null) {
+                        unit = "Count".equalsIgnoreCase(aggregation) ? "num" : m.getUnit();
+                        color = m.getColor();
+                    }
+                    break;
+                }
+            }
+
+            String title = StringUtils.isBlank(customMeasureName) ? PerfSigUIUtils.generateTitle(measure, chartDashlet, aggregation) : customMeasureName;
+
+            final JFreeChart chart = ChartFactory.createBarChart(title, // title
+                    Messages.PerfSigProjectAction_Build(), // category axis label
+                    unit, // value axis label
+                    createDataSet().build(), // data
+                    PlotOrientation.VERTICAL, // orientation
+                    false, // include legend
+                    false, // tooltips
+                    false // urls
+            );
+
+            chart.setBackgroundPaint(Color.white);
+
+            final CategoryPlot plot = chart.getCategoryPlot();
+
+            plot.setBackgroundPaint(Color.WHITE);
+            plot.setOutlinePaint(null);
+            plot.setForegroundAlpha(0.8f);
+            plot.setRangeGridlinesVisible(true);
+            plot.setRangeGridlinePaint(Color.black);
+
+            final CategoryAxis domainAxis = new ShiftedCategoryAxis(null);
+            plot.setDomainAxis(domainAxis);
+            domainAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_90);
+            //domainAxis.setLowerMargin(0.0);
+            //domainAxis.setUpperMargin(0.0);
+            //domainAxis.setCategoryMargin(0.0);
+
+            final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+            rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+
+            final BarRenderer renderer = (BarRenderer) chart.getCategoryPlot().getRenderer();
+            renderer.setSeriesPaint(0, Color.decode(color));
+
+            return chart;
+        }
+    }
+
+    private abstract class TestRunGraphImpl extends Graph {
+        private final String customName;
+
+        protected TestRunGraphImpl(final String customName) {
+            super(-1, 600, 300);
+            this.customName = customName;
+        }
+
+        protected abstract DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> createDataSet();
+
+        protected JFreeChart createGraph() {
+            String title = StringUtils.isNotBlank(customName) ? customName : "UnitTest overview";
+
+            final JFreeChart chart = ChartFactory.createBarChart(title, // title
+                    "build", // category axis label
+                    "num", // value axis label
+                    createDataSet().build(), // data
+                    PlotOrientation.VERTICAL, // orientation
+                    true, // include legend
+                    true, // tooltips
+                    false // urls
+            );
+
+            chart.setBackgroundPaint(Color.white);
+
+            final CategoryPlot plot = chart.getCategoryPlot();
+
+            plot.setBackgroundPaint(Color.WHITE);
+            plot.setOutlinePaint(null);
+            plot.setForegroundAlpha(0.8f);
+            plot.setRangeGridlinesVisible(true);
+            plot.setRangeGridlinePaint(Color.black);
+
+            final CategoryAxis domainAxis = new ShiftedCategoryAxis(null);
+            plot.setDomainAxis(domainAxis);
+            domainAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_90);
+            //domainAxis.setLowerMargin(0.0);
+            //domainAxis.setUpperMargin(0.0);
+            //domainAxis.setCategoryMargin(0.0);
+
+            final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+            rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+
+            final StackedBarRenderer br = new StackedBarRenderer();
+            plot.setRenderer(br);
+            br.setSeriesPaint(0, new Color(0xFF, 0x99, 0x99)); // degraded
+            br.setSeriesPaint(1, ColorPalette.RED); // failed
+            br.setSeriesPaint(2, new Color(0x00, 0xFF, 0x00)); // improved
+            br.setSeriesPaint(3, ColorPalette.GREY); // invalidated
+            br.setSeriesPaint(4, ColorPalette.BLUE); // passed
+            br.setSeriesPaint(5, ColorPalette.YELLOW); // volatile
+
+            return chart;
         }
     }
 }

@@ -26,7 +26,7 @@ import hudson.FilePath;
 import hudson.model.Api;
 import hudson.model.ModelObject;
 import hudson.model.Run;
-import hudson.util.ChartUtil;
+import hudson.util.Graph;
 import hudson.util.XStream2;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.RegexFileFilter;
@@ -43,8 +43,6 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.time.Second;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
-import org.jfree.data.xy.IntervalXYDataset;
-import org.jfree.data.xy.XYDataset;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.export.Exported;
@@ -54,7 +52,6 @@ import javax.servlet.ServletException;
 import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -129,94 +126,27 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
     }
 
     public void doSummarizerGraph(final StaplerRequest request, final StaplerResponse response) throws IOException {
-        if (ChartUtil.awtProblemCause != null) {
-            // not available. send out error message
-            response.sendRedirect2(request.getContextPath() + "/images/headless.png");
-            return;
-        }
+        final Graph graph = new GraphImpl(request, getBuild().getTimestamp().getTimeInMillis()) {
+            @Override
+            protected TimeSeriesCollection createDataSet() {
+                String measure = request.getParameter("measure");
+                String chartDashlet = request.getParameter("chartdashlet");
+                String testCase = request.getParameter("testcase");
+                TimeSeries timeSeries = new TimeSeries(chartDashlet, Second.class);
 
-        if (getBuild() != null && request.checkIfModified(getBuild().getTimestamp(), response)) {
-            return;
-        }
+                DashboardReport dashboardReport = getDashBoardReport(testCase);
+                Measure m = dashboardReport.getMeasure(chartDashlet, measure);
+                if (m == null || m.getMeasurements() == null) {
+                    return null;
+                }
 
-        ChartUtil.generateGraph(request, response, createTimeSeriesChart(request, buildTimeSeriesDataSet(request)), PerfSigUIUtils.calcDefaultSize());
-    }
-
-    private XYDataset buildTimeSeriesDataSet(final StaplerRequest request) {
-        String measure = request.getParameter("measure");
-        String chartDashlet = request.getParameter("chartdashlet");
-        String testCase = request.getParameter("testcase");
-        TimeSeries timeSeries = new TimeSeries(chartDashlet, Second.class);
-
-        DashboardReport dashboardReport = getDashBoardReport(testCase);
-        Measure m = dashboardReport.getMeasure(chartDashlet, measure);
-        if (m == null || m.getMeasurements() == null) {
-            return null;
-        }
-
-        for (Measurement measurement : m.getMeasurements()) {
-            timeSeries.add(new Second(new Date(measurement.getTimestamp())), measurement.getMetricValue(m.getAggregation()));
-        }
-        return new TimeSeriesCollection(timeSeries);
-    }
-
-    private JFreeChart createTimeSeriesChart(final StaplerRequest request, final XYDataset dataset) throws UnsupportedEncodingException {
-        String measure = request.getParameter("measure");
-        String chartDashlet = request.getParameter("chartdashlet");
-        String testCase = request.getParameter("testcase");
-
-        final DashboardReport dashboardReport = getDashBoardReport(testCase);
-        final Measure m = dashboardReport.getMeasure(chartDashlet, measure);
-        if (m == null) {
-            return null;
-        }
-
-        String color = m.getColor();
-        String unit = m.getUnit();
-
-        JFreeChart chart;
-        if (unit.equalsIgnoreCase("num")) {
-            chart = ChartFactory.createXYBarChart(PerfSigUIUtils.generateTitle(measure, chartDashlet, m.getAggregation()), // title
-                    "time", // domain axis label
-                    true,
-                    unit,
-                    (IntervalXYDataset) dataset, // data
-                    PlotOrientation.VERTICAL, // orientation
-                    false, // include legend
-                    false, // tooltips
-                    false // urls
-            );
-        } else {
-            chart = ChartFactory.createTimeSeriesChart(PerfSigUIUtils.generateTitle(measure, chartDashlet, m.getAggregation()), // title
-                    "time", // domain axis label
-                    unit,
-                    dataset, // data
-                    false, // include legend
-                    false, // tooltips
-                    false // urls
-            );
-        }
-
-        XYPlot xyPlot = chart.getXYPlot();
-        xyPlot.setForegroundAlpha(0.8f);
-        xyPlot.setRangeGridlinesVisible(true);
-        xyPlot.setRangeGridlinePaint(Color.black);
-        xyPlot.setOutlinePaint(null);
-
-        XYItemRenderer xyitemrenderer = xyPlot.getRenderer();
-        if (xyitemrenderer instanceof XYLineAndShapeRenderer) {
-            XYLineAndShapeRenderer xylineandshaperenderer = (XYLineAndShapeRenderer) xyitemrenderer;
-            xylineandshaperenderer.setBaseShapesVisible(true);
-            xylineandshaperenderer.setBaseShapesFilled(true);
-        }
-        DateAxis dateAxis = (DateAxis) xyPlot.getDomainAxis();
-        dateAxis.setTickMarkPosition(DateTickMarkPosition.MIDDLE);
-        dateAxis.setDateFormatOverride(new SimpleDateFormat("HH:mm:ss"));
-        xyitemrenderer.setSeriesPaint(0, Color.decode(color));
-        xyitemrenderer.setSeriesStroke(0, new BasicStroke(2));
-
-        chart.setBackgroundPaint(Color.white);
-        return chart;
+                for (Measurement measurement : m.getMeasurements()) {
+                    timeSeries.add(new Second(new Date(measurement.getTimestamp())), measurement.getMetricValue(m.getAggregation()));
+                }
+                return new TimeSeriesCollection(timeSeries);
+            }
+        };
+        graph.doPng(request, response);
     }
 
     public void doGetSingleReport(final StaplerRequest request, final StaplerResponse response) throws IOException, InterruptedException {
@@ -295,6 +225,76 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
             LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
         } finally {
             IOUtils.closeQuietly(inStream);
+        }
+    }
+
+    private abstract class GraphImpl extends Graph {
+        private final StaplerRequest request;
+
+        protected GraphImpl(final StaplerRequest request, final long timestamp) {
+            super(timestamp, 600, 300);
+            this.request = request;
+        }
+
+        protected abstract TimeSeriesCollection createDataSet();
+
+        protected JFreeChart createGraph() {
+            String measure = request.getParameter("measure");
+            String chartDashlet = request.getParameter("chartdashlet");
+            String testCase = request.getParameter("testcase");
+
+            final DashboardReport dashboardReport = getDashBoardReport(testCase);
+            final Measure m = dashboardReport.getMeasure(chartDashlet, measure);
+            if (m == null) {
+                return null;
+            }
+
+            String color = m.getColor();
+            String unit = m.getUnit();
+
+            JFreeChart chart;
+            if (unit.equalsIgnoreCase("num")) {
+                chart = ChartFactory.createXYBarChart(PerfSigUIUtils.generateTitle(measure, chartDashlet, m.getAggregation()), // title
+                        "time", // domain axis label
+                        true,
+                        unit,
+                        createDataSet(), // data
+                        PlotOrientation.VERTICAL, // orientation
+                        false, // include legend
+                        false, // tooltips
+                        false // urls
+                );
+            } else {
+                chart = ChartFactory.createTimeSeriesChart(PerfSigUIUtils.generateTitle(measure, chartDashlet, m.getAggregation()), // title
+                        "time", // domain axis label
+                        unit,
+                        createDataSet(), // data
+                        false, // include legend
+                        false, // tooltips
+                        false // urls
+                );
+            }
+
+            XYPlot xyPlot = chart.getXYPlot();
+            xyPlot.setForegroundAlpha(0.8f);
+            xyPlot.setRangeGridlinesVisible(true);
+            xyPlot.setRangeGridlinePaint(Color.black);
+            xyPlot.setOutlinePaint(null);
+
+            XYItemRenderer xyitemrenderer = xyPlot.getRenderer();
+            if (xyitemrenderer instanceof XYLineAndShapeRenderer) {
+                XYLineAndShapeRenderer xylineandshaperenderer = (XYLineAndShapeRenderer) xyitemrenderer;
+                xylineandshaperenderer.setBaseShapesVisible(true);
+                xylineandshaperenderer.setBaseShapesFilled(true);
+            }
+            DateAxis dateAxis = (DateAxis) xyPlot.getDomainAxis();
+            dateAxis.setTickMarkPosition(DateTickMarkPosition.MIDDLE);
+            dateAxis.setDateFormatOverride(new SimpleDateFormat("HH:mm:ss"));
+            xyitemrenderer.setSeriesPaint(0, Color.decode(color));
+            xyitemrenderer.setSeriesStroke(0, new BasicStroke(2));
+
+            chart.setBackgroundPaint(Color.white);
+            return chart;
         }
     }
 }

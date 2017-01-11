@@ -20,10 +20,8 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.model.ChartDashlet;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.IncidentChart;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.IncidentViolation;
 import hudson.FilePath;
-import hudson.Functions;
 import hudson.model.Result;
 import hudson.model.Run;
-import hudson.util.Area;
 import jenkins.model.Jenkins;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.RegexFileFilter;
@@ -111,15 +109,6 @@ public final class PerfSigUIUtils {
         int minutes = (int) ((seconds % 3600) / 60);
         float rest = seconds % 60;
         return minutes + " min " + (int) rest + " s";
-    }
-
-    public static Area calcDefaultSize() {
-        Area res = Functions.getScreenResolution();
-        if (res != null && res.width <= 800) {
-            return new Area(250, 100);
-        } else {
-            return new Area(500, 200);
-        }
     }
 
     /**
