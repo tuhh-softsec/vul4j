@@ -19,11 +19,12 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.rest;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
+import java.io.CharArrayWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class RESTStringArrayXMLHandler extends DefaultHandler {
-    private final StringBuilder chars = new StringBuilder();
+    private final CharArrayWriter contents = new CharArrayWriter();
     private final List<String> objects = new ArrayList<String>();
 
     public List<String> getObjects() {
@@ -31,16 +32,16 @@ public class RESTStringArrayXMLHandler extends DefaultHandler {
     }
 
     public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attr) {
+        this.contents.reset();
         if (localName.equals("sessionid")) {
-            this.objects.add(chars.toString());
+            this.objects.add(this.contents.toString());
         }
         if (localName.equals("dashboard")) {
             this.objects.add(attr.getValue("id"));
         }
-        this.chars.setLength(0);
     }
 
     public void characters(final char[] ch, final int start, final int length) {
-        this.chars.append(ch, start, length);
+        this.contents.write(ch, start, length);
     }
 }
