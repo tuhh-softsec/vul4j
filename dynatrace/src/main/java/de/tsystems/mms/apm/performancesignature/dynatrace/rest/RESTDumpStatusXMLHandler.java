@@ -34,9 +34,11 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import java.io.CharArrayWriter;
+
 public class RESTDumpStatusXMLHandler extends DefaultHandler {
     private final DumpStatus dumpStatus;
-    private final StringBuilder chars = new StringBuilder();
+    private final CharArrayWriter contents = new CharArrayWriter();
     private String prevElement;
     private String currentElement;
 
@@ -49,19 +51,19 @@ public class RESTDumpStatusXMLHandler extends DefaultHandler {
     }
 
     public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attr) {
+        this.contents.reset();
         if (localName.equals("result")) {
             this.dumpStatus.setValue(localName, this.prevElement, AttributeUtils.getStringAttribute("value", attr));
         }
         this.prevElement = this.currentElement;
         this.currentElement = localName;
-        chars.setLength(0);
     }
 
     public void endElement(final String uri, final String localName, final String qName) {
-        this.dumpStatus.setValue(this.currentElement, this.prevElement, this.chars.toString());
+        this.dumpStatus.setValue(this.currentElement, this.prevElement, this.contents.toString());
     }
 
     public void characters(final char[] ch, final int start, final int length) throws SAXException {
-        this.chars.append(ch, start, length);
+        this.contents.write(ch, start, length);
     }
 }

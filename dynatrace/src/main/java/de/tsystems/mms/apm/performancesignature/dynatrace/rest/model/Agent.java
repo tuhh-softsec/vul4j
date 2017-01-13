@@ -54,7 +54,7 @@ public class Agent {
             this.connected = Boolean.parseBoolean(value);
         } else if (property.equalsIgnoreCase("eventcount")) {
             this.eventCount = Integer.parseInt(value);
-        } else if (property.equalsIgnoreCase("agentHost")) {
+        } else if (property.equalsIgnoreCase("host")) {
             this.host = value;
         } else if (property.equalsIgnoreCase("licenseinformation")) {
             this.licenseInformation = value;

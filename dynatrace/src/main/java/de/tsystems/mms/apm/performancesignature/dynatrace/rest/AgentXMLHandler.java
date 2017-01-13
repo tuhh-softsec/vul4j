@@ -34,13 +34,14 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import java.io.CharArrayWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AgentXMLHandler extends DefaultHandler {
     private final List<Agent> agents;
     private final List<Collector> collectors;
-    private final StringBuilder chars = new StringBuilder();
+    private final CharArrayWriter contents = new CharArrayWriter();
     private Agent currentAgent;
     private Collector currentCollector;
     private String currentElement;
@@ -60,6 +61,7 @@ public class AgentXMLHandler extends DefaultHandler {
     }
 
     public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attr) {
+        this.contents.reset();
         if (localName.equals("agentinformation")) {
             this.parentElement = localName;
             this.currentAgent = new Agent();
@@ -75,7 +77,6 @@ public class AgentXMLHandler extends DefaultHandler {
             }
         }
         this.currentElement = localName;
-        this.chars.setLength(0);
     }
 
     public void endElement(final String uri, final String localName, final String qName) {
@@ -83,13 +84,13 @@ public class AgentXMLHandler extends DefaultHandler {
             this.currentCollector = null;
         }
         if (this.currentCollector != null) {
-            this.currentCollector.setValue(this.currentElement, this.chars.toString());
+            this.currentCollector.setValue(this.currentElement, this.contents.toString());
         } else if (this.currentAgent != null) {
-            this.currentAgent.setValue(this.currentElement, this.parentElement, this.chars.toString());
+            this.currentAgent.setValue(this.currentElement, this.parentElement, this.contents.toString());
         }
     }
 
     public void characters(final char[] ch, final int start, final int length) throws SAXException {
-        this.chars.append(ch, start, length);
+        this.contents.write(ch, start, length);
     }
 }
