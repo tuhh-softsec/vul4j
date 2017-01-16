@@ -59,11 +59,8 @@ public class RESTDumpStatusXMLHandler extends DefaultHandler {
         this.currentElement = localName;
     }
 
-    public void endElement(final String uri, final String localName, final String qName) {
-        this.dumpStatus.setValue(this.currentElement, this.prevElement, this.contents.toString());
-    }
-
     public void characters(final char[] ch, final int start, final int length) throws SAXException {
         this.contents.write(ch, start, length);
+        this.dumpStatus.setValue(this.currentElement, this.prevElement, this.contents.toString());
     }
 }
