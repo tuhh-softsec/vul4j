@@ -98,7 +98,7 @@ public class StopRecordingTest {
         PerfSigEnvInvisAction invisAction = build.getAction(PerfSigEnvInvisAction.class);
 
         assertTrue(invisAction != null);
-        assertTrue(invisAction.getSessionName().matches("easy Travel_test0_Build-\\d+_unittest"));
+        assertTrue(invisAction.getSessionName().matches("easy Travel_test0_Build-\\d+_unittest.*"));
         assertTrue(invisAction.getTestCase().equals(testCase));
         assertFalse(invisAction.getTestRunID().isEmpty());
         assertTrue(invisAction.getTimeframeStart() != null);

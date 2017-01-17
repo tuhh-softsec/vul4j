@@ -33,11 +33,14 @@ public class RESTStringArrayXMLHandler extends DefaultHandler {
 
     public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attr) {
         this.contents.reset();
-        if (localName.equals("sessionid")) {
-            this.objects.add(this.contents.toString());
-        }
         if (localName.equals("dashboard")) {
             this.objects.add(attr.getValue("id"));
+        }
+    }
+
+    public void endElement(final String uri, final String localName, final String qName) {
+        if (localName.equals("sessionid")) {
+            this.objects.add(this.contents.toString());
         }
     }
 
