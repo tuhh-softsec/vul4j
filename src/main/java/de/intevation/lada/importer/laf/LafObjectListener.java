@@ -39,6 +39,7 @@ public class LafObjectListener extends LafBaseListener {
         errors = new HashMap<String, List<ReportItem>>();
         currentErrors = new ArrayList<ReportItem>();
         currentUOrt = new HashMap<String, String>();
+        currentEOrt = new HashMap<String, String>();
     }
 
     public LafRawData getData() {
@@ -122,8 +123,10 @@ public class LafObjectListener extends LafBaseListener {
             currentProbe.addEntnahmeOrt(currentEOrt);
             currentEOrt.clear();
         }
-        currentEOrt = new HashMap<String, String>();
         currentProbe = data.new Probe();
+        hasEKoordinaten = false;
+        hasEGemeinde = false;
+        hasEHerkunfstland = false;
     }
 
     /**
@@ -145,7 +148,6 @@ public class LafObjectListener extends LafBaseListener {
             currentProbe.addEntnahmeOrt(currentEOrt);
             currentEOrt.clear();
         }
-        currentEOrt = new HashMap<String, String>();
         currentProbe = data.new Probe();
         if (!currentErrors.isEmpty()) {
             errors.put(currentProbe.getIdentifier(),
@@ -153,6 +155,9 @@ public class LafObjectListener extends LafBaseListener {
         }
         currentErrors.clear();
         currentProbe = null;
+        hasEKoordinaten = false;
+        hasEGemeinde = false;
+        hasEHerkunfstland = false;
         hasDatenbasis = false;
         hasMessprogramm = false;
         hasUmwelt = false;
