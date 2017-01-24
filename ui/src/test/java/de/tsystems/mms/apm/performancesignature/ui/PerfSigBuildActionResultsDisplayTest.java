@@ -25,6 +25,7 @@ import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import hudson.model.AbstractBuild;
 import hudson.model.Project;
 import hudson.model.Run;
+import hudson.util.XStream2;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -33,6 +34,7 @@ import org.jvnet.hudson.test.recipes.LocalData;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
 import static de.tsystems.mms.apm.performancesignature.ui.util.TestUtils.containsMeasure;
@@ -165,5 +167,27 @@ public class PerfSigBuildActionResultsDisplayTest {
         exception.expect(FailingHttpStatusCodeException.class);
         wc.goTo(build.getUrl() + "/performance-signature/" +
                 "getSingleReport?testCase=UnitTest&number=1", "application/octet-stream");
+    }
+
+    @LocalData
+    @Test
+    public void testGetReportList() throws IOException, SAXException, InterruptedException {
+        Project proj = (Project) j.jenkins.getItem(TEST_PROJECT_WITH_HISTORY);
+        Run<?, ?> build = proj.getBuildByNumber(11157);
+
+        JenkinsRule.WebClient wc = j.createWebClient();
+        HtmlPage buildPage = wc.getPage(build);
+        XStream2 xStream = new XStream2();
+
+        for (ReportType type : ReportType.values()) {
+            URL url = new URL(buildPage.getUrl() + "performance-signature/get" + type + "ReportList");
+            List obj = (List) xStream.fromXML(org.apache.commons.io.IOUtils.toString(url));
+            assertTrue(!obj.isEmpty());
+            assertEquals(obj.size(), 2);
+        }
+    }
+
+    private enum ReportType {
+        Single, Comparison
     }
 }
