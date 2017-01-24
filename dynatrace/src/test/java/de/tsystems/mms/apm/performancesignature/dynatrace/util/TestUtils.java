@@ -22,6 +22,7 @@ import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl;
 import de.tsystems.mms.apm.performancesignature.dynatrace.PerfSigGlobalConfiguration;
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.CredProfilePair;
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.DynatraceServerConfiguration;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.util.ListBoxModel;
 import jenkins.model.Jenkins;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeTrue;
 
 public class TestUtils {
 
@@ -64,6 +66,8 @@ public class TestUtils {
         assertEquals(PerfSigUtils.getDTConfigurations().size(), 2);
         ListBoxModel dynatraceConfigurations = PerfSigUtils.listToListBoxModel(PerfSigUtils.getDTConfigurations());
         assertEquals(dynatraceConfigurations.get(0).name, "easy Travel (admin) @ PoC PerfSig");
+        DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceConfigurations.get(0).name);
+        assumeTrue("assume that the server is reachable", connection.validateConnection());
 
         return dynatraceConfigurations;
     }
