@@ -148,7 +148,7 @@ public class DTServerConnection {
             if (StringUtils.isNotBlank(proxyUser)) {
                 Authenticator authenticator = new Authenticator() {
                     public PasswordAuthentication getPasswordAuthentication() {
-                        return (new PasswordAuthentication(proxyUser, proxyPassword.toCharArray()));
+                        return new PasswordAuthentication(proxyUser, proxyPassword.toCharArray());
                     }
                 };
                 Authenticator.setDefault(authenticator);
