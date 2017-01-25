@@ -251,7 +251,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
 
         @SuppressWarnings("deprecation")
         protected Object readResolve() {
-            if (configurations != null && !configurations.isEmpty()) {
+            if (configurations != null) {
                 PerfSigUtils.getDTConfigurations().addAll(configurations);
             }
             return this;

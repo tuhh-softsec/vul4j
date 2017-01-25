@@ -44,13 +44,16 @@ public final class PerfSigUIUtils {
     private PerfSigUIUtils() {
     }
 
-    public static BigDecimal round(final double d, final int decimalPlace) {
-        if (d == 0) {
-            return BigDecimal.ZERO;
+    public static BigDecimal round(final double d, final int scale) {
+        try {
+            return BigDecimal.valueOf(d).setScale(d % 1 == 0 ? 0 : scale, BigDecimal.ROUND_HALF_UP);
+        } catch (NumberFormatException ex) {
+            if (Double.isInfinite(d)) {
+                return BigDecimal.valueOf(d);
+            } else {
+                return BigDecimal.ZERO;
+            }
         }
-        BigDecimal bd = BigDecimal.valueOf(d);
-        bd = bd.setScale(d % 1 == 0 ? 0 : decimalPlace, BigDecimal.ROUND_HALF_UP);
-        return bd;
     }
 
     public static FilePath getReportDirectory(final Run<?, ?> run) throws IOException, InterruptedException {
