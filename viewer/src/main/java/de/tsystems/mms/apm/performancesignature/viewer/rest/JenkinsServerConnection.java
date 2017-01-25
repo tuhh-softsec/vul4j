@@ -21,7 +21,6 @@ import com.offbytwo.jenkins.JenkinsServer;
 import com.offbytwo.jenkins.client.JenkinsHttpClient;
 import com.offbytwo.jenkins.model.FolderJob;
 import com.offbytwo.jenkins.model.Job;
-import com.offbytwo.jenkins.model.JobWithDetails;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import de.tsystems.mms.apm.performancesignature.viewer.model.CredJobPair;
 import de.tsystems.mms.apm.performancesignature.viewer.model.CustomProxy;
@@ -45,7 +44,7 @@ import java.util.logging.Logger;
 
 public class JenkinsServerConnection {
     private static final Logger LOGGER = Logger.getLogger(JenkinsServerConnection.class.getName());
-    private JobWithDetails jenkinsJob;
+    private Job jenkinsJob;
     private JenkinsServer jenkinsServer;
 
     public JenkinsServerConnection(final String protocol, final String host, final int port, final CredJobPair pair, final boolean verifyCertificate,
@@ -68,7 +67,7 @@ public class JenkinsServerConnection {
                 Job folderJob = jenkinsServer.getJob(parts[0]);
                 Optional<FolderJob> folder = jenkinsServer.getFolderJob(folderJob);
                 if (folder.isPresent()) {
-                    this.jenkinsJob = folder.get().getJob(parts[1]).details();
+                    this.jenkinsJob = folder.get().getJob(parts[1]);
                 } else {
                     throw new CommandExecutionException("the given folder/job name does not match");
                 }
@@ -151,7 +150,7 @@ public class JenkinsServerConnection {
         }
     }
 
-    public JobWithDetails getJenkinsJob() {
+    public Job getJenkinsJob() {
         return this.jenkinsJob;
     }
 

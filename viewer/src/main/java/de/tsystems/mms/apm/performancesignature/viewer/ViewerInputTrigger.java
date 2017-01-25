@@ -16,7 +16,7 @@
 
 package de.tsystems.mms.apm.performancesignature.viewer;
 
-import com.offbytwo.jenkins.model.Job;
+import com.offbytwo.jenkins.model.JobWithDetails;
 import de.tsystems.mms.apm.performancesignature.viewer.rest.JenkinsServerConnection;
 import de.tsystems.mms.apm.performancesignature.viewer.util.ViewerUtils;
 import hudson.Extension;
@@ -51,13 +51,13 @@ public class ViewerInputTrigger extends Builder implements SimpleBuildStep {
         PrintStream logger = listener.getLogger();
         JenkinsServerConnection serverConnection = ViewerUtils.createJenkinsServerConnection(jenkinsJob);
 
-        Job perfSigJob = serverConnection.getJenkinsJob();
+        JobWithDetails perfSigJob = serverConnection.getJenkinsJob().details();
         ViewerEnvInvisAction envInvisAction = run.getAction(ViewerEnvInvisAction.class);
         int buildNumber;
         if (envInvisAction != null) {
             buildNumber = envInvisAction.getCurrentBuild();
         } else {
-            buildNumber = perfSigJob.details().getLastBuild().getNumber();
+            buildNumber = perfSigJob.getLastBuild().getNumber();
         }
 
         logger.println(Messages.ViewerInputTrigger_TriggerInputStep(perfSigJob.getName(), buildNumber));
