@@ -37,7 +37,7 @@ public class PerfSigEnvContributor extends EnvironmentContributor {
             throws IOException, InterruptedException {
 
         List<PerfSigEnvInvisAction> envActions = r.getActions(PerfSigEnvInvisAction.class);
-        if (envActions.size() == 0) {
+        if (envActions.isEmpty()) {
             return;
         }
 

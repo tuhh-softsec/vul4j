@@ -72,7 +72,9 @@ public class Measure extends MeasureBaseModel {
     }
 
     public String getUnit(final String aggregation) {
-        if (StringUtils.isNotBlank(aggregation) && aggregation.equalsIgnoreCase("count")) return "num";
+        if (StringUtils.isNotBlank(aggregation) && aggregation.equalsIgnoreCase("count")) {
+            return "num";
+        }
         return this.unit;
     }
 

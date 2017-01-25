@@ -17,12 +17,8 @@
 package de.tsystems.mms.apm.performancesignature.viewer;
 
 import com.offbytwo.jenkins.model.Job;
-import de.tsystems.mms.apm.performancesignature.viewer.model.CredJobPair;
-import de.tsystems.mms.apm.performancesignature.viewer.model.JenkinsServerConfiguration;
 import de.tsystems.mms.apm.performancesignature.viewer.rest.JenkinsServerConnection;
-import de.tsystems.mms.apm.performancesignature.viewer.rest.RESTErrorException;
 import de.tsystems.mms.apm.performancesignature.viewer.util.ViewerUtils;
-import hudson.AbortException;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -51,24 +47,10 @@ public class ViewerStartJob extends Builder implements SimpleBuildStep {
     @Override
     public void perform(@Nonnull final Run<?, ?> run, @Nonnull final FilePath workspace, @Nonnull final Launcher launcher, @Nonnull final TaskListener listener)
             throws InterruptedException, IOException {
-        final PrintStream logger = listener.getLogger();
+        PrintStream logger = listener.getLogger();
+        JenkinsServerConnection serverConnection = ViewerUtils.createJenkinsServerConnection(jenkinsJob);
 
-        JenkinsServerConfiguration serverConfiguration = ViewerUtils.getServerConfiguration(jenkinsJob);
-        if (serverConfiguration == null) {
-            throw new AbortException(Messages.ViewerRecorder_FailedToLookupServer());
-        }
-
-        CredJobPair pair = serverConfiguration.getCredJobPair(jenkinsJob);
-        if (pair == null) {
-            throw new AbortException(Messages.ViewerRecorder_FailedToLookupJob());
-        }
-
-        JenkinsServerConnection serverConnection = new JenkinsServerConnection(serverConfiguration, pair);
-        if (!serverConnection.validateConnection()) {
-            throw new RESTErrorException(Messages.ViewerRecorder_ConnectionError());
-        }
-
-        logger.println(Messages.ViewerStartJob_TriggeringJenkinsJob(pair.getJenkinsJob()));
+        logger.println(Messages.ViewerStartJob_TriggeringJenkinsJob(serverConnection.getJenkinsJob().getName()));
         Job perfSigJob = serverConnection.getJenkinsJob();
         perfSigJob.build(true);
 

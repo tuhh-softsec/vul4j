@@ -16,8 +16,6 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace;
 
-import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.CredProfilePair;
-import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.DynatraceServerConfiguration;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRun;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
@@ -55,26 +53,10 @@ public class PerfSigTestDataPublisher extends TestDataPublisher {
     public TestResultAction.Data contributeTestData(final Run<?, ?> run, @Nonnull final FilePath workspace, final Launcher launcher,
                                                     final TaskListener listener, final TestResult testResult) throws AbortException, RESTErrorException {
         PrintStream logger = listener.getLogger();
+        DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceProfile);
 
-        DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
-        if (serverConfiguration == null) {
-            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupServer());
-        }
-
-        CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
-        if (pair == null) {
-            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupProfile());
-        }
-
-        final DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
-
-        logger.println(Messages.PerfSigRecorder_VerifyDTConnection());
-        if (!connection.validateConnection()) {
-            throw new RESTErrorException(Messages.PerfSigRecorder_DTConnectionError());
-        }
-
-        final List<TestRun> testRuns = new ArrayList<TestRun>();
-        final List<PerfSigEnvInvisAction> envVars = run.getActions(PerfSigEnvInvisAction.class);
+        List<TestRun> testRuns = new ArrayList<TestRun>();
+        List<PerfSigEnvInvisAction> envVars = run.getActions(PerfSigEnvInvisAction.class);
         for (PerfSigEnvInvisAction registerEnvVars : envVars) {
             if (StringUtils.isNotBlank(registerEnvVars.getTestRunID())) {
                 TestRun testRun = connection.getTestRunFromXML(registerEnvVars.getTestRunID());

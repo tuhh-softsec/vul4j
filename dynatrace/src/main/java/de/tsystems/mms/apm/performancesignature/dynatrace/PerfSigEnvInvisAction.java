@@ -20,9 +20,11 @@ import hudson.model.InvisibleAction;
 
 import java.util.Date;
 
-class PerfSigEnvInvisAction extends InvisibleAction {
-    private final String sessionName, testRunID, testCase;
+public class PerfSigEnvInvisAction extends InvisibleAction {
+    private final String testRunID;
+    private final String testCase;
     private final Date timeframeStart;
+    private String sessionName;
 
     PerfSigEnvInvisAction(final String sessionName, final Date timeframeStart, final String testCase, final String testRunID) {
         this.sessionName = sessionName;
@@ -33,6 +35,10 @@ class PerfSigEnvInvisAction extends InvisibleAction {
 
     public String getSessionName() {
         return sessionName;
+    }
+
+    void setSessionName(final String sessionName) {
+        this.sessionName = sessionName;
     }
 
     public String getTestRunID() {

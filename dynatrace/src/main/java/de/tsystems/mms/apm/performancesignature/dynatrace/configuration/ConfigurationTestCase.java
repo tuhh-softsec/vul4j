@@ -70,15 +70,17 @@ public abstract class ConfigurationTestCase implements Describable<Configuration
 
     @Nonnull
     public List<Dashboard> getSingleDashboards() {
-        if (singleDashboards == null)
+        if (singleDashboards == null) {
             return new ArrayList<Dashboard>();
+        }
         return singleDashboards;
     }
 
     @Nonnull
     public List<Dashboard> getComparisonDashboards() {
-        if (comparisonDashboards == null)
+        if (comparisonDashboards == null) {
             return new ArrayList<Dashboard>();
+        }
         return comparisonDashboards;
     }
 
@@ -95,7 +97,9 @@ public abstract class ConfigurationTestCase implements Describable<Configuration
         private static final Set<String> testCases = new LinkedHashSet<String>(); //avoid duplicates
 
         public static void addTestCases(final String testCase) {
-            if (StringUtils.isNotBlank(testCase)) testCases.add(testCase);
+            if (StringUtils.isNotBlank(testCase)) {
+                testCases.add(testCase);
+            }
         }
 
         public static DescriptorExtensionList<ConfigurationTestCase, Descriptor<ConfigurationTestCase>> all() {
@@ -108,8 +112,9 @@ public abstract class ConfigurationTestCase implements Describable<Configuration
 
         public ListBoxModel doFillNameItems() {
             final ListBoxModel out = new ListBoxModel();
-            for (String s : testCases)
+            for (String s : testCases) {
                 out.add(s);
+            }
             return out;
         }
 

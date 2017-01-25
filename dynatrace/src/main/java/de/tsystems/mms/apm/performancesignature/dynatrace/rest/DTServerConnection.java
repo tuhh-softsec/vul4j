@@ -79,7 +79,7 @@ public class DTServerConnection {
     private static final Logger LOGGER = Logger.getLogger(DTServerConnection.class.getName());
     private final String address;
     private final boolean verifyCertificate;
-    private final UsernamePasswordCredentials credentials;
+    private final CredProfilePair credProfilePair;
     /* Dynatrace is unable to provide proper Certs to trust by default
      Create a trust manager that does not validate certificate chains */
     private final HostnameVerifier allHostsValid = new HostnameVerifier() {
@@ -88,13 +88,14 @@ public class DTServerConnection {
         }
     };
     private final String systemProfile;
+    private DynatraceServerConfiguration configuration;
     private Proxy proxy;
     private SSLContext sc;
 
     public DTServerConnection(final String protocol, final String host, final int port, final CredProfilePair pair,
                               final boolean verifyCertificate, final CustomProxy customProxy) {
         this.address = protocol + "://" + host + ":" + port;
-        this.credentials = PerfSigUtils.getCredentials(pair.getCredentialsId());
+        this.credProfilePair = pair;
         this.verifyCertificate = verifyCertificate;
         this.proxy = Proxy.NO_PROXY;
         this.systemProfile = pair.getProfile();
@@ -120,44 +121,47 @@ public class DTServerConnection {
             };
             sc.init(null, trustAllCerts, new java.security.SecureRandom());
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
         } catch (KeyManagementException e) {
             LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
         }
 
         if (customProxy != null) {
             Jenkins jenkins = PerfSigUIUtils.getInstance();
-            if (customProxy.isUseJenkinsProxy() && jenkins.proxy != null) {
-                final ProxyConfiguration proxyConfiguration = jenkins.proxy;
-                if (StringUtils.isNotBlank(proxyConfiguration.name) && proxyConfiguration.port > 0) {
-                    this.proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyConfiguration.name, proxyConfiguration.port));
-                    if (StringUtils.isNotBlank(proxyConfiguration.getUserName())) {
-                        Authenticator authenticator = new Authenticator() {
-                            public PasswordAuthentication getPasswordAuthentication() {
-                                return (new PasswordAuthentication(proxyConfiguration.getUserName(), proxyConfiguration.getPassword().toCharArray()));
-                            }
-                        };
-                        Authenticator.setDefault(authenticator);
-                    }
-                }
+            ProxyConfiguration proxyConfiguration = jenkins.proxy;
+            if (customProxy.isUseJenkinsProxy() && proxyConfiguration != null) {
+                setProxy(proxyConfiguration.name, proxyConfiguration.port, proxyConfiguration.getUserName(), proxyConfiguration.getPassword());
             } else {
-                if (StringUtils.isNotBlank(customProxy.getProxyServer()) && customProxy.getProxyPort() > 0) {
-                    this.proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(customProxy.getProxyServer(), customProxy.getProxyPort()));
-                    if (StringUtils.isNotBlank(customProxy.getProxyUser())) {
-                        Authenticator authenticator = new Authenticator() {
-                            public PasswordAuthentication getPasswordAuthentication() {
-                                return (new PasswordAuthentication(customProxy.getProxyUser(), customProxy.getProxyPassword().toCharArray()));
-                            }
-                        };
-                        Authenticator.setDefault(authenticator);
-                    }
-                }
+                setProxy(customProxy.getProxyServer(), customProxy.getProxyPort(), customProxy.getProxyUser(), customProxy.getProxyPassword());
             }
         }
     }
 
     public DTServerConnection(final DynatraceServerConfiguration config, final CredProfilePair pair) {
         this(config.getProtocol(), config.getHost(), config.getPort(), pair, config.isVerifyCertificate(), config.getCustomProxy());
+        this.configuration = config;
+    }
+
+    private void setProxy(String host, int port, final String proxyUser, final String proxyPassword) {
+        if (StringUtils.isNotBlank(host) && port > 0) {
+            this.proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, port));
+            if (StringUtils.isNotBlank(proxyUser)) {
+                Authenticator authenticator = new Authenticator() {
+                    public PasswordAuthentication getPasswordAuthentication() {
+                        return (new PasswordAuthentication(proxyUser, proxyPassword.toCharArray()));
+                    }
+                };
+                Authenticator.setDefault(authenticator);
+            }
+        }
+    }
+
+    public CredProfilePair getCredProfilePair() {
+        return credProfilePair;
+    }
+
+    public DynatraceServerConfiguration getConfiguration() {
+        return configuration;
     }
 
     public TestRun getTestRunFromXML(final String uuid) {
@@ -197,7 +201,8 @@ public class DTServerConnection {
     }
 
     private void addAuthenticationHeader(final URLConnection conn) throws UnsupportedEncodingException {
-        String userPassword = this.credentials.getUsername() + ":" + this.credentials.getPassword().getPlainText();
+        UsernamePasswordCredentials credentials = PerfSigUtils.getCredentials(credProfilePair.getCredentialsId());
+        String userPassword = credentials.getUsername() + ":" + credentials.getPassword().getPlainText();
         String token = DatatypeConverter.printBase64Binary(userPassword.getBytes(CharEncoding.UTF_8));
         conn.setRequestProperty("Authorization", "Basic" + " " + token);
         conn.setUseCaches(false);
@@ -385,11 +390,11 @@ public class DTServerConnection {
     }
 
     public String startRecording(final String sessionName, final String description, final String recordingOption,
-                                 final boolean sessionLocked, final boolean isNoTimestamp) throws RESTErrorException {
+                                 final boolean sessionLocked, final boolean isTimeStampAllowed) throws RESTErrorException {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(this.address);
-            URL commandURL = builder.startRecordingURL(systemProfile, sessionName, description, recordingOption, sessionLocked, isNoTimestamp);
+            URL commandURL = builder.startRecordingURL(systemProfile, sessionName, description, recordingOption, sessionLocked, isTimeStampAllowed);
             URLConnection conn = commandURL.openConnection(proxy);
             addAuthenticationHeader(conn);
             addPostHeaders(conn, builder.getPostParameters());
@@ -538,7 +543,9 @@ public class DTServerConnection {
                     .setDashboardName(dashboard)
                     .setSource(sessionName)
                     .setType("PDF");
-            if (comparedSessionName != null) builder.setComparison(comparedSessionName);
+            if (comparedSessionName != null) {
+                builder.setComparison(comparedSessionName);
+            }
             file.copyFrom(getInputStream(builder.buildURL()));
             return true;
         } catch (Exception ex) {

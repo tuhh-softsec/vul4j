@@ -76,7 +76,7 @@ public class JenkinsServerConnection {
                 this.jenkinsJob = jenkinsServer.getJob(pair.getJenkinsJob());
             }
         } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
+            LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
         }
     }
 

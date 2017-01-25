@@ -31,14 +31,18 @@ public class TestRunDetailsXMLHandler extends DefaultHandler {
     private String errorMsg;
 
     public TestRun getParsedObjects() throws RESTErrorException {
-        if (StringUtils.isNotBlank(errorMsg)) throw new RESTErrorException(errorMsg);
+        if (StringUtils.isNotBlank(errorMsg)) {
+            throw new RESTErrorException(errorMsg);
+        }
         return this.testRun;
     }
 
     public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attr) {
         if (localName.equals("testRun")) {
             errorMsg = AttributeUtils.getStringAttribute("message", attr);
-            if (StringUtils.isBlank(errorMsg)) testRun = new TestRun(attr);
+            if (StringUtils.isBlank(errorMsg)) {
+                testRun = new TestRun(attr);
+            }
         } else if (localName.equals("testResult")) {
             testResult = new TestResult(attr);
         } else if (localName.equals("measure")) {

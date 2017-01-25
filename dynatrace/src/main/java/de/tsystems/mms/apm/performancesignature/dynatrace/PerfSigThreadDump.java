@@ -16,8 +16,6 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace;
 
-import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.CredProfilePair;
-import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.DynatraceServerConfiguration;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.Agent;
@@ -43,7 +41,6 @@ import org.kohsuke.stapler.QueryParameter;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.List;
 
 public class PerfSigThreadDump extends Builder implements SimpleBuildStep {
     private static final int waitForDumpTimeout = 60000;
@@ -62,30 +59,15 @@ public class PerfSigThreadDump extends Builder implements SimpleBuildStep {
     public void perform(@Nonnull final Run<?, ?> run, @Nonnull final FilePath workspace, @Nonnull final Launcher launcher, @Nonnull final TaskListener listener)
             throws InterruptedException, IOException {
         PrintStream logger = listener.getLogger();
+        DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceProfile);
 
-        DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
-        if (serverConfiguration == null) {
-            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupServer());
-        }
+        for (Agent availAgent : connection.getAgents()) {
+            if (availAgent.getName().equals(this.agent) && availAgent.getSystemProfile().equals(connection.getCredProfilePair().getProfile()) &&
+                    availAgent.getHost().equals(this.host)) {
+                logger.println(Messages.PerfSigThreadDump_CreatingThreadDump(availAgent.getSystemProfile(), availAgent.getName(), availAgent.getHost(),
+                        String.valueOf(availAgent.getProcessId())));
 
-        CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
-        if (pair == null) {
-            throw new AbortException(Messages.PerfSigRecorder_FailedToLookupProfile());
-        }
-
-        logger.println(Messages.PerfSigStartRecording_StartingSession());
-        final DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
-        if (!connection.validateConnection()) {
-            throw new RESTErrorException(Messages.PerfSigRecorder_DTConnectionError());
-        }
-
-        List<Agent> agents = connection.getAgents();
-        for (Agent agent : agents) {
-            if (agent.getName().equals(this.agent) && agent.getSystemProfile().equals(pair.getProfile()) && agent.getHost().equals(this.host)) {
-                logger.println(Messages.PerfSigThreadDump_CreatingThreadDump(agent.getSystemProfile(), agent.getName(), agent.getHost(),
-                        String.valueOf(agent.getProcessId())));
-
-                String threadDump = connection.threadDump(agent.getName(), agent.getHost(), agent.getProcessId(), getLockSession());
+                String threadDump = connection.threadDump(availAgent.getName(), availAgent.getHost(), availAgent.getProcessId(), getLockSession());
                 if (StringUtils.isBlank(threadDump)) {
                     throw new RESTErrorException(Messages.PerfSigThreadDump_ThreadDumpWasntTaken());
                 }
@@ -97,7 +79,7 @@ public class PerfSigThreadDump extends Builder implements SimpleBuildStep {
                     dumpFinished = connection.threadDumpStatus(threadDump).isResultValueTrue();
                 }
                 if (dumpFinished) {
-                    logger.println(Messages.PerfSigThreadDump_SuccessfullyCreatedThreadDump(agent.getName()));
+                    logger.println(Messages.PerfSigThreadDump_SuccessfullyCreatedThreadDump(availAgent.getName()));
                     return;
                 } else {
                     throw new RESTErrorException(Messages.PerfSigStopRecording_TimeoutRaised());
