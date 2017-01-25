@@ -94,13 +94,11 @@ public class ManagementURLBuilder {
     }
 
     public URL startRecordingURL(final String profileName, final String sessionName, final String description,
-                                 String recordingOption, final boolean sessionLocked, final boolean isTimeStampAllowed) {
-        if (StringUtils.isBlank(recordingOption)) {
-            recordingOption = "all";
-        }
+                                 final String recordingOption, final boolean sessionLocked, final boolean isTimeStampAllowed) {
         try {
             this.parameters = String.format("recordingOption=%1$s&isSessionLocked=%2$s&isTimeStampAllowed=%3$s&description=%4$s&presentableName=%5$s",
-                    recordingOption, sessionLocked, isTimeStampAllowed, StringUtils.isBlank(description) ? "" : PerfSigUIUtils.encodeString(description),
+                    StringUtils.isBlank(recordingOption) ? "all" : recordingOption, sessionLocked, isTimeStampAllowed,
+                    StringUtils.isBlank(description) ? "" : PerfSigUIUtils.encodeString(description),
                     StringUtils.isBlank(sessionName) ? PerfSigUIUtils.encodeString(profileName) : PerfSigUIUtils.encodeString(sessionName));
             final String url = String.format("%1$s/rest/management/profiles/%2$s/startrecording", this.serverAddress,
                     PerfSigUIUtils.encodeString(profileName));
@@ -224,14 +222,11 @@ public class ManagementURLBuilder {
     }
 
     public URL memoryDumpURL(final String profileName, final String agentName, final String hostName, final int processId,
-                             String dumpType, final boolean sessionLocked, final boolean captureStrings, final boolean capturePrimitives,
+                             final String dumpType, final boolean sessionLocked, final boolean captureStrings, final boolean capturePrimitives,
                              final boolean autoPostProcess, final boolean dogc) {
-        if (StringUtils.isBlank(dumpType)) {
-            dumpType = "simple";
-        }
         try {
             StringBuilder builder = resourceDumpURL(agentName, hostName, processId, sessionLocked);
-            builder.append("&type=").append(dumpType);
+            builder.append("&type=").append(StringUtils.isBlank(dumpType) ? "simple" : dumpType);
             builder.append(captureStrings ? "&capturestrings=true" : "");
             builder.append(capturePrimitives ? "&captureprimitives=true" : "");
             builder.append(autoPostProcess ? "&autopostprocess=true" : "");

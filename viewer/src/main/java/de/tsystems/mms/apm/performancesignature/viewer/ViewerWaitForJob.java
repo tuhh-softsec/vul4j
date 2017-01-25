@@ -55,12 +55,6 @@ public class ViewerWaitForJob extends Builder implements SimpleBuildStep {
         JenkinsServerConnection serverConnection = ViewerUtils.createJenkinsServerConnection(jenkinsJob);
 
         Job perfSigJob = serverConnection.getJenkinsJob();
-        boolean buildInQueue = perfSigJob.details().isInQueue();
-        while (buildInQueue) {
-            Thread.sleep(waitForPollingInterval);
-            buildInQueue = perfSigJob.details().isInQueue();
-        }
-
         ViewerEnvInvisAction envInvisAction = run.getAction(ViewerEnvInvisAction.class);
         int buildNumber;
         if (envInvisAction != null) {

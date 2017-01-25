@@ -26,7 +26,7 @@ public class CustomProxy {
 
     @DataBoundConstructor
     public CustomProxy(final String proxyServer, final int proxyPort, final String proxyUser, final String proxyPassword, final int value) {
-        this.useJenkinsProxy = (value == 0);
+        this.useJenkinsProxy = value == 0;
         if (useJenkinsProxy) {
             this.proxyServer = null;
             this.proxyPort = 0;

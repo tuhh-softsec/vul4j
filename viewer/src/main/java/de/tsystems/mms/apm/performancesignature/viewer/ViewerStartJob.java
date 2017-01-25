@@ -16,13 +16,17 @@
 
 package de.tsystems.mms.apm.performancesignature.viewer;
 
-import com.offbytwo.jenkins.model.Job;
+import com.offbytwo.jenkins.JenkinsServer;
+import com.offbytwo.jenkins.model.JobWithDetails;
+import com.offbytwo.jenkins.model.QueueItem;
+import com.offbytwo.jenkins.model.QueueReference;
 import de.tsystems.mms.apm.performancesignature.viewer.rest.JenkinsServerConnection;
 import de.tsystems.mms.apm.performancesignature.viewer.util.ViewerUtils;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.AbstractProject;
+import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
@@ -51,15 +55,23 @@ public class ViewerStartJob extends Builder implements SimpleBuildStep {
         JenkinsServerConnection serverConnection = ViewerUtils.createJenkinsServerConnection(jenkinsJob);
 
         logger.println(Messages.ViewerStartJob_TriggeringJenkinsJob(serverConnection.getJenkinsJob().getName()));
-        Job perfSigJob = serverConnection.getJenkinsJob();
-        perfSigJob.build(true);
+        JobWithDetails perfSigJob = serverConnection.getJenkinsJob();
+        JenkinsServer server = serverConnection.getJenkinsServer();
 
-        boolean buildInQueue = perfSigJob.details().isInQueue();
-        while (buildInQueue) {
-            Thread.sleep(ViewerWaitForJob.waitForPollingInterval);
-            buildInQueue = perfSigJob.details().isInQueue();
+        QueueReference queueRef = perfSigJob.build(true);
+        QueueItem queueItem = server.getQueueItem(queueRef);
+
+        while (!queueItem.isCancelled() && perfSigJob.isInQueue()) {
+            Thread.sleep(ViewerWaitForJob.waitForPollingInterval / 10);
+            perfSigJob = server.getJob(jenkinsJob);
+            queueItem = server.getQueueItem(queueRef);
         }
-        Thread.sleep(20000);
+
+        if (queueItem.isCancelled()) {
+            logger.println(Messages.ViewerStartJob_RemoteBuildCancelled());
+            run.setResult(Result.ABORTED);
+            return;
+        }
 
         int buildNumber = perfSigJob.details().getLastBuild().getNumber();
         run.addAction(new ViewerEnvInvisAction(buildNumber));

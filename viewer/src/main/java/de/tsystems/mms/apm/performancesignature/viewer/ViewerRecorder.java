@@ -126,7 +126,7 @@ public class ViewerRecorder extends Recorder implements SimpleBuildStep {
 
         @SuppressWarnings("deprecation")
         protected Object readResolve() {
-            if (configurations != null && !configurations.isEmpty()) {
+            if (configurations != null) {
                 ViewerUtils.getJenkinsConfigurations().addAll(configurations);
             }
             return this;

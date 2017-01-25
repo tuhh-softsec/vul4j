@@ -151,8 +151,12 @@ public class JenkinsServerConnection {
         }
     }
 
-    public Job getJenkinsJob() {
+    public JobWithDetails getJenkinsJob() {
         return this.jenkinsJob;
+    }
+
+    public JenkinsServer getJenkinsServer() {
+        return this.jenkinsServer;
     }
 
     public void triggerInputStep(final int buildNumber, final String triggerId) {
