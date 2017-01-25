@@ -88,7 +88,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         return PerfSigUIUtils.class;
     }
 
-    private synchronized Map<String, JSONDashlet> getJsonDashletMap() {
+    private synchronized Map<String, JSONDashlet> getJsonDashletMap() throws InterruptedException {
         if (this.jsonDashletMap == null) {
             this.jsonDashletMap = new ConcurrentHashMap<String, JSONDashlet>();
             this.jsonDashletMap.putAll(readConfiguration());
@@ -96,7 +96,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         return this.jsonDashletMap;
     }
 
-    public void doSummarizerGraph(final StaplerRequest request, final StaplerResponse response) throws IOException {
+    public void doSummarizerGraph(final StaplerRequest request, final StaplerResponse response) throws IOException, InterruptedException {
         String id = request.getParameter("id");
         JSONDashlet knownJsonDashlet = getJsonDashletMap().get(id);
         final JSONDashlet jsonDashletToRender;
@@ -156,7 +156,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         graph.doPng(request, response);
     }
 
-    public void doTestRunGraph(final StaplerRequest request, final StaplerResponse response) throws IOException {
+    public void doTestRunGraph(final StaplerRequest request, final StaplerResponse response) throws InterruptedException, IOException {
         final String customName, customBuildCount;
 
         JSONDashlet jsonDashlet = getJsonDashletMap().get(UNITTEST_DASHLETNAME);
@@ -309,7 +309,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     }
 
     @JavaScriptMethod
-    public void setDashboardConfiguration(final String dashboard, final String data) {
+    public void setDashboardConfiguration(final String dashboard, final String data) throws InterruptedException {
         Map<String, JSONDashlet> defaultConfiguration = createJSONConfiguration(false);
         HashSet<String> idsFromJson = new HashSet<String>();
 
@@ -368,6 +368,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             writeConfiguration(getJsonDashletMap());
         } catch (InterruptedException e) {
             logger.log(Level.SEVERE, Messages.PerfSigProjectAction_FailedToSaveGrid(), e);
+            throw e;
         } catch (IOException e) {
             logger.log(Level.SEVERE, Messages.PerfSigProjectAction_FailedToSaveGrid(), e);
         }
@@ -448,7 +449,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     }
 
     @SuppressWarnings("unchecked")
-    private Map<String, JSONDashlet> readConfiguration() {
+    private Map<String, JSONDashlet> readConfiguration() throws InterruptedException {
         logger.fine(addTimeStampToLog("grid configuration read started"));
         try {
             if (getConfigFile().exists()) {
@@ -465,6 +466,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             logger.log(Level.SEVERE, Messages.PerfSigProjectAction_FailedToLoadConfigFile(getConfigFile()), e);
         } catch (InterruptedException e) {
             logger.log(Level.SEVERE, Messages.PerfSigProjectAction_FailedToLoadConfigFile(getConfigFile()), e);
+            throw e;
         }
         return new HashMap<String, JSONDashlet>();
     }

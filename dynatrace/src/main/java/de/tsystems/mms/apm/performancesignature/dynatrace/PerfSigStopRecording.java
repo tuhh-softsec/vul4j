@@ -92,11 +92,8 @@ public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
                 int timeout = reanalyzeSessionTimeout;
                 while ((!reanalyzeFinished) && (timeout > 0)) {
                     logger.println(Messages.PerfSigStopRecording_QueryingSession());
-                    try {
-                        Thread.sleep(reanalyzeSessionPollingInterval);
-                        timeout -= reanalyzeSessionPollingInterval;
-                    } catch (InterruptedException ignored) {
-                    }
+                    Thread.sleep(reanalyzeSessionPollingInterval);
+                    timeout -= reanalyzeSessionPollingInterval;
                     reanalyzeFinished = connection.reanalyzeSessionStatus(sessionName);
                 }
                 if (reanalyzeFinished) {
