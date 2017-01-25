@@ -400,7 +400,8 @@ CREATE VIEW mmt_messgroesse AS
 
 CREATE TABLE ort_typ (
     id smallint PRIMARY KEY,
-    ort_typ character varying(60)
+    ort_typ character varying(60),
+    code character varying(3)
 );
 
 CREATE TABLE kta (

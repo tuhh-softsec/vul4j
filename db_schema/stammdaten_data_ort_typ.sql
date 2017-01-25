@@ -26,16 +26,19 @@ SET search_path = stammdaten, pg_catalog;
 --
 
 COPY ort_typ (id, ort_typ) FROM stdin;
-1	dynamischer Messpunkt (nicht vordefiniert)
-2	vordefinierter Messpunkt
-3	REI-Messpunkit
-4	Fluss
-5	See
-6	Wasserwerk
-7	Kläranlage
-8	Deponie
-9	Müllverbrennungsanlage
-10	Messstation
-11	KTA
+COPY ort_typ (id, ort_typ, code) FROM stdin;
+1	dynamischer Messpunkt (nicht vordefiniert)	DYN
+2	vordefinierter Messpunkt	GP
+3	REI-Messpunkit	REI
+4	Verwaltungseinheit	VE
+5	Staat	ST
+6	Fluss	FL
+7	See	SEE
+8	Wasserwerk	WW
+9	Kläranlage	KA
+10	Deponie	DEP
+11	Müllverbrennungsanlage	MVA
+12	Messstation	MST
+13	KTA	KTA
 \.
 
