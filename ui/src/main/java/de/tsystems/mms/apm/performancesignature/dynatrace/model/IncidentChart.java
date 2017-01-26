@@ -40,13 +40,9 @@ public class IncidentChart {
         return rule;
     }
 
+    @Exported
     public Severity getSeverity() {
         return severity;
-    }
-
-    @Exported
-    public String getSeverityString() {
-        return severity.toString();
     }
 
     @Exported

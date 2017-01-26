@@ -65,7 +65,7 @@ public class StartRecordingTest {
 
         try {
             String result = connection.startRecording("testDisabledContinuousSessionRecording", "triggered by UnitTest",
-                    PerfSigStartRecording.DescriptorImpl.defaultRecordingOption, false, true);
+                    "", true, true);
 
             assertTrue(result.contains("testDisabledContinuousSessionRecording"));
         } finally {

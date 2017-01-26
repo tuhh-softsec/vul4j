@@ -73,7 +73,7 @@ public class ViewerWaitForJob extends Builder implements SimpleBuildStep {
         }
 
         logger.println(Messages.ViewerWaitForJob_JenkinsJobFinished());
-        BuildResult buildResult = build.getResult();
+        BuildResult buildResult = build.details().getResult();
 
         logger.println(Messages.ViewerWaitForJob_JenkinsJobStatus(buildResult));
         if (!buildResult.equals(BuildResult.SUCCESS) && !buildResult.equals(BuildResult.UNSTABLE)) {
