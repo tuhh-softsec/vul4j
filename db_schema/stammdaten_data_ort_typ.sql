@@ -25,7 +25,6 @@ SET search_path = stammdaten, pg_catalog;
 -- Data for Name: ort_typ; Type: TABLE DATA; Schema: stammdaten; Owner: lada
 --
 
-COPY ort_typ (id, ort_typ) FROM stdin;
 COPY ort_typ (id, ort_typ, code) FROM stdin;
 1	dynamischer Messpunkt (nicht vordefiniert)	DYN
 2	vordefinierter Messpunkt	GP
