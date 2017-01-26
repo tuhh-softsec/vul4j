@@ -9,7 +9,7 @@
 
     <groupId>de.tsystems.mms.apm</groupId>
     <artifactId>performance-signature-parent-pom</artifactId>
-    <version>2.4.1</version>
+    <version>2.4.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Performance Signature Plugin: Parent Pom</name>
     <url>https://wiki.jenkins-ci.org/display/JENKINS/Performance+Signature+with+Dynatrace+Plugin</url>
@@ -18,7 +18,7 @@
         <connection>scm:git:git@github.com:jenkinsci/performance-signature-dynatrace-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:jenkinsci/performance-signature-dynatrace-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/performance-signature-dynatrace-plugin</url>
-        <tag>performance-signature-dynatrace-2.4.1</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <developers>
