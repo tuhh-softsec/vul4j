@@ -1,3 +1,10 @@
+/* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.model.stammdaten;
 
 import java.io.Serializable;
@@ -23,6 +30,9 @@ public class OrtTyp implements Serializable {
     @Column(name="ort_typ")
     private String ortTyp;
 
+    @Column(name="code")
+    private String code;
+
     public OrtTyp() {
     }
 
@@ -42,4 +52,11 @@ public class OrtTyp implements Serializable {
         this.ortTyp = ortTyp;
     }
 
+    public String getCode() {
+        return this.code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 }
