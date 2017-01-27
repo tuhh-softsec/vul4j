@@ -15,7 +15,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
 import javax.persistence.PrePersist;
 
 
@@ -73,9 +72,6 @@ public class Messprogramm implements Serializable {
 
     @Column(name="mst_id")
     private String mstId;
-
-    @Column(name="ort_id")
-    private Integer ortId;
 
     @Column(name="mpl_id")
     private Integer mplId;
@@ -199,14 +195,6 @@ public class Messprogramm implements Serializable {
 
     public void setMstId(String mstId) {
         this.mstId = mstId;
-    }
-
-    public Integer getOrtId() {
-        return this.ortId;
-    }
-
-    public void setOrtId(Integer ortId) {
-        this.ortId = ortId;
     }
 
     public Integer getMplId() {

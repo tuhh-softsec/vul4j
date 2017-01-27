@@ -24,6 +24,7 @@ import de.intevation.lada.model.land.MessprogrammMmt;
 import de.intevation.lada.model.land.Messung;
 import de.intevation.lada.model.land.Messwert;
 import de.intevation.lada.model.land.Ortszuordnung;
+import de.intevation.lada.model.land.OrtszuordnungMp;
 import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.model.land.StatusProtokoll;
 import de.intevation.lada.model.land.ZusatzWert;
@@ -65,6 +66,7 @@ public class HeaderAuthorization implements Authorization {
     @Inject MessungIdAuthorizer mIdAuthorizer;
     @Inject NetzbetreiberAuthorizer netzAuthorizer;
     @Inject MessprogrammAuthorizer messprogrammAuthorizer;
+    @Inject MessprogrammIdAuthorizer mpIdAuthorizer;
 
     @SuppressWarnings("rawtypes")
     @PostConstruct
@@ -84,6 +86,7 @@ public class HeaderAuthorization implements Authorization {
         authorizers.put(Ort.class, netzAuthorizer);
         authorizers.put(Messprogramm.class, messprogrammAuthorizer);
         authorizers.put(MessprogrammMmt.class, messprogrammAuthorizer);
+        authorizers.put(OrtszuordnungMp.class, mpIdAuthorizer);
     }
 
     /**
