@@ -634,6 +634,11 @@ public class LafObjectMapper {
     }
 
     private Ort findOrCreateOrt(Map<String, String> attributes, String type, Probe probe) {
+        Integer kda = null;
+        Integer x = null;
+        Integer y = null;
+        String gemId = null;
+        Ort o = new Ort();
         // If laf contains coordinates, find a ort with matching coordinates or
         // create one.
         if ((attributes.get(type + "KOORDINATEN_ART") != null ||
@@ -641,12 +646,8 @@ public class LafObjectMapper {
             attributes.get(type + "KOORDINATEN_X") != null &&
             attributes.get(type + "KOORDINATEN_Y") != null
         ) {
-            QueryBuilder<Ort> builder =
-                new QueryBuilder<Ort>(
-                    repository.entityManager("stamm"),
-                    Ort.class);
             if (attributes.get(type + "KOORDINATEN_ART_S") != null) {
-                builder.and("kdaId", Integer.valueOf(attributes.get(type + "KOORDINATEN_ART_S")));
+                o.setKdaId(Integer.valueOf(attributes.get(type + "KOORDINATEN_ART_S")));
             }
             else {
                 QueryBuilder<KoordinatenArt> kdaBuilder =
@@ -663,21 +664,13 @@ public class LafObjectMapper {
                     currentErrors.add(err);
                     return null;
                 }
-                builder.and("kdaId", arten.get(0).getId());
+                o.setKdaId(arten.get(0).getId());
             }
-            builder.and("koordXExtern", attributes.get(type + "KOORDINATEN_X"));
-            builder.and("koordYExtern", attributes.get(type + "KOORDINATEN_Y"));
-            List<Ort> orte = repository.filterPlain(builder.getQuery(), "stamm");
-            if (orte != null && orte.size() > 0) {
-                return orte.get(0);
-            }
-            else {
-                return createNewOrt(attributes, type, probe);
-            }
+            o.setKoordXExtern(attributes.get(type + "KOORDINATEN_X"));
+            o.setKoordYExtern(attributes.get(type + "KOORDINATEN_Y"));
         }
         // If laf contains gemeinde attributes, find a ort with matching gemId
         // or create one.
-        String gemId = null;
         if (attributes.get(type + "GEMEINDENAME") != null) {
             QueryBuilder<Verwaltungseinheit> builder =
                 new QueryBuilder<Verwaltungseinheit>(
@@ -687,24 +680,78 @@ public class LafObjectMapper {
             List<Verwaltungseinheit> ves =
                 repository.filterPlain(builder.getQuery(), "stamm");
             if (ves != null && ves.size() > 0) {
-                gemId = ves.get(0).getId();
+                o.setGemId(ves.get(0).getId());
             }
         }
         else if (attributes.get(type + "GEMEINDESCHLUESSEL") != null) {
-            gemId = attributes.get(type + "GEMEINDESCHLUESSEL");
+            o.setGemId(attributes.get(type + "GEMEINDESCHLUESSEL"));
         }
-        if (gemId != null) {
-            QueryBuilder<Ort> builder =
-                new QueryBuilder<Ort>(
+        String hLand = "";
+        String staatFilter = "";
+        if (attributes.get(type + "HERKUNFTSLAND_S") != null) {
+            staatFilter = "id";
+            hLand = attributes.get(type + "HERKUNFTSLAND_S");
+        }
+        else if (attributes.get(type + "HERKUNFTSLAND_KURZ") != null) {
+            staatFilter = "staatKurz";
+            hLand = attributes.get(type + "HERKUNFTSLAND_KURZ");
+        }
+        else if (attributes.get(type + "HERKUNFTSLAND_LANG") != null) {
+            staatFilter = "staat";
+            hLand = attributes.get(type + "HERKUNFTSLAND_LANG");
+        }
+
+        if (staatFilter.length() > 0) {
+            QueryBuilder<Staat> builderStaat =
+                new QueryBuilder<Staat>(
                     repository.entityManager("stamm"),
-                    Ort.class);
-            builder.and("gemId", gemId);
-            List<Ort> orte = repository.filterPlain(builder.getQuery(), "stamm");
-            if (orte != null && orte.size() > 0) {
-                return orte.get(0);
+                    Staat.class);
+            builderStaat.and(staatFilter, hLand);
+            List<Staat> staat =
+                repository.filterPlain(builderStaat.getQuery(), "stamm");
+            if (staat != null && staat.size() > 0) {
+                o.setStaatId(staat.get(0).getId());
             }
         }
-        return createNewOrt(attributes, type, probe);
+        if (attributes.containsKey(type + "HOEHE_NN")) {
+            o.setHoeheUeberNn(Float.valueOf(attributes.get(type + "HOEHE_NN")));
+        }
+        if (attributes.containsKey(type + "ORTS_ZUSATZCODE")) {
+            Ortszusatz zusatz = repository.getByIdPlain(
+                Ortszusatz.class,
+                attributes.get(type + "ORTS_ZUSATZCODE"),
+                "stamm");
+            if (zusatz != null) {
+                o.setOzId(zusatz.getOzsId());
+            }
+        }
+        MessStelle mst = repository.getByIdPlain(MessStelle.class, probe.getMstId(), "stamm");
+        o.setNetzbetreiberId(mst.getNetzbetreiberId());
+        o = ortFactory.completeOrt(o);
+        if (o == null) {
+            return null;
+        }
+        Violation violation = ortValidator.validate(o);
+        for (Entry<String, List<Integer>> warn :
+                 violation.getWarnings().entrySet()) {
+            for (Integer code : warn.getValue()) {
+                currentWarnings.add(
+                    new ReportItem("validation", warn.getKey(), code));
+            }
+        }
+        if (violation.hasErrors()) {
+            for (Entry<String, List<Integer>> err :
+                     violation.getErrors().entrySet()) {
+                for (Integer code : err.getValue()) {
+                    // Add to warnings because Probe object might be imported
+                    currentWarnings.add(
+                        new ReportItem("validation", err.getKey(), code));
+                }
+            }
+            return null;
+        }
+        repository.create(o, "stamm");
+        return o;
     }
 
     private Ort createNewOrt(Map<String, String> attributes, String type, Probe probe) {

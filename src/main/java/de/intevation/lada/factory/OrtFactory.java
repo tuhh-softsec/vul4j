@@ -27,7 +27,10 @@ import com.vividsolutions.jts.geom.Point;
 
 import de.intevation.lada.importer.ReportItem;
 import de.intevation.lada.model.stammdaten.Ort;
+import de.intevation.lada.model.stammdaten.Staat;
+import de.intevation.lada.model.stammdaten.Verwaltungseinheit;
 import de.intevation.lada.util.annotation.RepositoryConfig;
+import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 
@@ -44,7 +47,7 @@ public class OrtFactory {
 
     public void transformCoordinates(Ort ort) {
         errors = new ArrayList<ReportItem>();
-        int kda = ort.getKdaId();
+        Integer kda = ort.getKdaId();
         String epsg = null;
         String xCoord = null;
         String yCoord = null;
@@ -94,6 +97,141 @@ public class OrtFactory {
         }
     }
 
+    /**
+     * Use given attribute to try to add other attributes.
+     * To set futher attributes at least one of the following attribute set
+     * need to be present:
+     * - kda, x, y
+     * - gemId
+     * - staat
+     *
+     * @param kda   The koordinatenart
+     * @param x     The x coordinate
+     * @param y     The y coordinate
+     * @param gemId The gemeinde id
+     * @param staat The staat id
+     */
+    public Ort completeOrt(Ort ort) {
+        QueryBuilder<Ort> builder =
+            new QueryBuilder<Ort>(
+                repository.entityManager("stamm"),
+                Ort.class);
+        logger.debug("try to make a complete ort");
+        if (ort.getKdaId() != null &&
+            ort.getKoordXExtern() != null &&
+            ort.getKoordYExtern() != null
+        ) {
+            logger.debug("has koordinates");
+            builder.and("kdaId", ort.getKdaId());
+            builder.and("koordXExtern", ort.getKoordXExtern());
+            builder.and("koordYExtern", ort.getKoordYExtern());
+            builder.and("ozId", ort.getOzId());
+            builder.and("netzbetreiberId", ort.getNetzbetreiberId());
+            List<Ort> orte = repository.filterPlain(builder.getQuery(), "stamm");
+            if (orte != null && orte.size() > 0) {
+                return orte.get(0);
+            }
+        }
+        else if (ort.getGemId() != null) {
+            logger.debug("has gemid");
+            builder.and("gemId", ort.getGemId());
+            builder.and("ozId", ort.getOzId());
+            builder.and("netzbetreiberId", ort.getNetzbetreiberId());
+            List<Ort> orte = repository.filterPlain(builder.getQuery(), "stamm");
+            if (orte != null && orte.size() > 0) {
+                logger.debug("found ort: " + orte.get(0).getId());
+                return orte.get(0);
+            }
+        }
+        else  if (ort.getStaatId() != null &&
+            ort.getStaatId() != 0
+        ) {
+            logger.debug("has staat");
+            builder.and("staatId", ort.getGemId());
+            builder.and("ozId", ort.getOzId());
+            builder.and("netzbetreiberId", ort.getNetzbetreiberId());
+            List<Ort> orte = repository.filterPlain(builder.getQuery(), "stamm");
+            if (orte != null && orte.size() > 0) {
+                return orte.get(0);
+            }
+        }
+
+        logger.debug("no ort found");
+        return createOrt(ort);
+    }
+
+    private Ort createOrt(Ort ort) {
+        boolean hasKoord = false;
+        boolean hasGem = false;
+        boolean hasStaat = false;
+        if (ort.getKdaId() != null &&
+            ort.getKoordXExtern() != null &&
+            ort.getKoordYExtern() != null
+        ) {
+            logger.debug("transformCoordinates");
+            transformCoordinates(ort);
+            hasKoord = true;
+        }
+        if (ort.getGemId() == null && hasKoord) {
+            logger.debug("findVerwaltungseinheit");
+            findVerwaltungseinheit(ort);
+        }
+        if (ort.getGemId() != null){
+            if (ort.getStaatId() == null) {
+                ort.setStaatId(0);
+            }
+            Verwaltungseinheit v = repository.getByIdPlain(
+                Verwaltungseinheit.class,
+                ort.getGemId(),
+                "stamm");
+            if (!hasKoord) {
+                logger.debug("add coordinates");
+                ort.setMpArt("V");
+                ort.setKdaId(4);
+                ort.setKoordYExtern(String.valueOf(v.getMittelpunkt().getY()));
+                ort.setKoordXExtern(String.valueOf(v.getMittelpunkt().getX()));
+            }
+            if (ort.getKurztext() == null) {
+                ort.setKurztext(v.getBezeichnung());
+            }
+            if (ort.getLangtext() == null) {
+                ort.setLangtext(v.getBezeichnung());
+            }
+            if (ort.getBerichtstext() == null) {
+                ort.setBerichtstext(v.getBezeichnung());
+            }
+            transformCoordinates(ort);
+            hasGem = true;
+        }
+        if (ort.getStaatId() != null &&
+            ort.getStaatId() != 0 &&
+            !hasKoord &&
+            !hasGem
+        ) {
+            Staat staat =
+                repository.getByIdPlain(Staat.class, ort.getStaatId(), "stamm");
+            ort.setKdaId(staat.getKdaId());
+            ort.setKoordXExtern(staat.getKoordXExtern());
+            ort.setKoordYExtern(staat.getKoordYExtern());
+            ort.setKurztext(staat.getStaat());
+            ort.setLangtext(staat.getStaat());
+            if (staat.getStaatIso() != null) {
+                ort.setOrtId("Staat_" + staat.getStaatIso());
+            }
+            ort.setBerichtstext(staat.getStaat());
+            transformCoordinates(ort);
+            hasStaat = true;
+        }
+        return ort;
+    }
+
+    /**
+     * Use the geom of an ort object to determine the verwaltungseinheit.
+     * If verwaltungseinheit was found the gemId is used as reference in the ort
+     * object.
+     *
+     * @param ort   The ort object
+     */
     public void findVerwaltungseinheit(Ort ort) {
         if (ort.getGeom() == null) {
             return;
@@ -132,6 +270,6 @@ public class OrtFactory {
     }
 
     public boolean hasErrors() {
-        return !errors.isEmpty();
+        return !(errors == null) && !errors.isEmpty();
     }
 }
