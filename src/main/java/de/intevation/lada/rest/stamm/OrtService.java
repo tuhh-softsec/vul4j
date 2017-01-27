@@ -34,6 +34,7 @@ import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
+import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
@@ -180,7 +181,16 @@ public class OrtService {
             orte = repository.filterPlain(builder.getQuery(), "stamm");
         }
         else {
-            orte = repository.getAllPlain(Ort.class, "stamm");
+            UserInfo user = authorization.getInfo(request);
+            QueryBuilder<Ort> builder =
+                new QueryBuilder<Ort>(
+                    repository.entityManager("stamm"),
+                    Ort.class
+                );
+            for (String nb : user.getNetzbetreiber()) {
+               builder.or("netzbetreiberId", nb);
+            }
+            orte = repository.filterPlain(builder.getQuery(), "stamm");
         }
 
         int size = orte.size();
