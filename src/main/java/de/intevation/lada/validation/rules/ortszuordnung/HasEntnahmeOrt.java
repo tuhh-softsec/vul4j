@@ -46,7 +46,7 @@ public class HasEntnahmeOrt implements Rule {
                 !o.getId().equals(ort.getId())
             ) {
                 Violation violation = new Violation();
-                violation.addError("ortszuordnungsTyp", 611);
+                violation.addError("ortszuordnungTyp", 611);
                 return violation;
             }
         }
