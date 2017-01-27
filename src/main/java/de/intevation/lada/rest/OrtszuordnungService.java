@@ -78,7 +78,7 @@ import de.intevation.lada.validation.annotation.ValidationConfig;
  */
 @Path("rest/ortszuordnung")
 @RequestScoped
-public class OrtService {
+public class OrtszuordnungService {
 
     /**
      * The logger used in this class.
