@@ -68,7 +68,13 @@ public class QueryBuilder<T> {
      * @return The builder itself.
      */
     public QueryBuilder<T> and(String id, Object value) {
-        Predicate p = this.builder.equal(this.root.get(id), value);
+        Predicate p;
+        if (value == null) {
+            p = this.builder.isNull(this.root.get(id));
+        }
+        else {
+            p = this.builder.equal(this.root.get(id), value);
+        }
         if (this.filter != null) {
             this.filter = this.builder.and(this.filter, p);
         }
@@ -117,7 +123,13 @@ public class QueryBuilder<T> {
      * @return The builder itself.
      */
     public QueryBuilder<T> or(String id, Object value) {
-        Predicate p = this.builder.equal(this.root.get(id), value);
+        Predicate p;
+        if (value == null) {
+            p = this.builder.isNull(this.root.get(id));
+        }
+        else {
+            p = this.builder.equal(this.root.get(id), value);
+        }
         if (this.filter != null) {
             this.filter = this.builder.or(this.filter, p);
         }
