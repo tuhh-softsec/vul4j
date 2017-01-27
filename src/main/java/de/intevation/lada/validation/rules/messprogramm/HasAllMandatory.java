@@ -54,9 +54,6 @@ public class HasAllMandatory implements Rule {
         if (messprogramm.getGueltigBis() == null) {
             violation.addError("gueltigBis", 631);
         }
-        if (messprogramm.getOrtId() == null) {
-            violation.addError("ortId", 631);
-        }
 
         return violation.hasErrors()
             ? violation
