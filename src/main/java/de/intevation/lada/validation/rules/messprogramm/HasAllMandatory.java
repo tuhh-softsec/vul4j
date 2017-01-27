@@ -7,7 +7,16 @@
  */
 package de.intevation.lada.validation.rules.messprogramm;
 
+import java.util.List;
+
+import javax.inject.Inject;
+
 import de.intevation.lada.model.land.Messprogramm;
+import de.intevation.lada.model.land.OrtszuordnungMp;
+import de.intevation.lada.util.annotation.RepositoryConfig;
+import de.intevation.lada.util.data.QueryBuilder;
+import de.intevation.lada.util.data.Repository;
+import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
@@ -18,6 +27,10 @@ import de.intevation.lada.validation.rules.Rule;
  */
 @ValidationRule("Messprogramm")
 public class HasAllMandatory implements Rule {
+
+    @Inject
+    @RepositoryConfig(type=RepositoryType.RO)
+    Repository repository;
 
     @Override
     public Violation execute(Object object) {
@@ -53,6 +66,21 @@ public class HasAllMandatory implements Rule {
         }
         if (messprogramm.getGueltigBis() == null) {
             violation.addError("gueltigBis", 631);
+        }
+        QueryBuilder<OrtszuordnungMp> builder =
+            new QueryBuilder<OrtszuordnungMp>(
+                repository.entityManager("land"),
+                OrtszuordnungMp.class);
+        List<OrtszuordnungMp> orte = repository.filterPlain(
+            builder.getQuery(), "land");
+        boolean found = false;
+        for (OrtszuordnungMp ort : orte) {
+            if ("E".equals(ort.getOrtszuordnungTyp())) {
+                found = true;
+            }
+        }
+        if (!found) {
+            violation.addError("entnahmeOrt", 631);
         }
 
         return violation.hasErrors()
