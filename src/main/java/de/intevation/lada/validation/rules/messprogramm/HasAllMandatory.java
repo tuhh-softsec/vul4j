@@ -67,21 +67,6 @@ public class HasAllMandatory implements Rule {
         if (messprogramm.getGueltigBis() == null) {
             violation.addError("gueltigBis", 631);
         }
-        QueryBuilder<OrtszuordnungMp> builder =
-            new QueryBuilder<OrtszuordnungMp>(
-                repository.entityManager("land"),
-                OrtszuordnungMp.class);
-        List<OrtszuordnungMp> orte = repository.filterPlain(
-            builder.getQuery(), "land");
-        boolean found = false;
-        for (OrtszuordnungMp ort : orte) {
-            if ("E".equals(ort.getOrtszuordnungTyp())) {
-                found = true;
-            }
-        }
-        if (!found) {
-            violation.addError("entnahmeOrt", 631);
-        }
 
         return violation.hasErrors()
             ? violation
