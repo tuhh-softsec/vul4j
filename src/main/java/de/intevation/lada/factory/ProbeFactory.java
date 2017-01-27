@@ -25,6 +25,7 @@ import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.model.land.Messung;
 import de.intevation.lada.model.land.Messwert;
 import de.intevation.lada.model.land.Ortszuordnung;
+import de.intevation.lada.model.land.OrtszuordnungMp;
 import de.intevation.lada.model.land.StatusProtokoll;
 import de.intevation.lada.model.stammdaten.DeskriptorUmwelt;
 import de.intevation.lada.model.stammdaten.Deskriptoren;
@@ -60,16 +61,16 @@ public class ProbeFactory {
 
         int[] J = { Calendar.YEAR, Calendar.DAY_OF_YEAR, 1 };
 
-        this.fieldsTable = new Hashtable<String, int[]>();
+        fieldsTable = new Hashtable<String, int[]>();
 
-        this.fieldsTable.put("T", T);
-        this.fieldsTable.put("W", W);
-        this.fieldsTable.put("W2", W2);
-        this.fieldsTable.put("W4", W4);
-        this.fieldsTable.put("M", M);
-        this.fieldsTable.put("Q", Q);
-        this.fieldsTable.put("H", H);
-        this.fieldsTable.put("J", J);
+        fieldsTable.put("T", T);
+        fieldsTable.put("W", W);
+        fieldsTable.put("W2", W2);
+        fieldsTable.put("W4", W4);
+        fieldsTable.put("M", M);
+        fieldsTable.put("Q", Q);
+        fieldsTable.put("H", H);
+        fieldsTable.put("J", J);
     }
 
     private class Intervall {
@@ -356,7 +357,8 @@ public class ProbeFactory {
         Response response = repository.filter(builder.getQuery(), "land");
         @SuppressWarnings("unchecked")
         List<MessprogrammMmt> mmts = (List<MessprogrammMmt>)response.getData();
-        for (MessprogrammMmt mmt : mmts) {
+        for (int i = 0; i < mmts.size(); i++) {
+            MessprogrammMmt mmt = mmts.get(i);
             Messung messung = new Messung();
             messung.setFertig(false);
             messung.setGeplant(true);
@@ -375,22 +377,19 @@ public class ProbeFactory {
                 repository.create(wert, "land");
             }
         }
-        if (messprogramm.getOrtId() != null &&
-            !messprogramm.getOrtId().equals("")) {
-            Ortszuordnung ort = new Ortszuordnung();
-            ort.setOrtszuordnungTyp("E");
-            ort.setProbeId(probe.getId());
-            QueryBuilder<Ort> ortBuilder = new QueryBuilder<Ort>(
-                repository.entityManager("stamm"), Ort.class);
-            ortBuilder.and("id", messprogramm.getOrtId());
-            Response ortResponse = repository.filter(
-                ortBuilder.getQuery(), "stamm");
-            @SuppressWarnings("unchecked")
-            List<Ort> orte = (List<Ort>) ortResponse.getData();
-            if (orte != null && !orte.isEmpty()) {
-                ort.setOrtId(orte.get(0).getId());
-            }
-            repository.create(ort, "land");
+        QueryBuilder<OrtszuordnungMp> builderOrt =
+            new QueryBuilder<OrtszuordnungMp>(
+                repository.entityManager("land"),
+                OrtszuordnungMp.class);
+        List<OrtszuordnungMp> orte =
+            repository.filterPlain(builderOrt.getQuery(), "land");
+        for (OrtszuordnungMp ort : orte) {
+            Ortszuordnung ortP = new Ortszuordnung();
+            ortP.setOrtszuordnungTyp(ort.getOrtszuordnungTyp());
+            ortP.setProbeId(probe.getId());
+            ortP.setOrtId(ort.getOrtId());
+            ortP.setOrtszusatztext(ort.getOrtszusatztext());
+            repository.create(ortP, "land");
         }
         // Reolad the probe to have the old id
         probe = (Probe)repository.getById(

@@ -271,7 +271,7 @@ public class OrtService {
             return new Response(false, 699, ort);
         }
 
-        ortFactory.transformCoordinates(ort);
+        ort = ortFactory.completeOrt(ort);
         if (ortFactory.hasErrors()) {
             Violation factoryErrs = new Violation();
             for (ReportItem err : ortFactory.getErrors()) {
@@ -290,7 +290,10 @@ public class OrtService {
             return response;
         }
 
-        Response response = repository.create(ort, "stamm");
+        Response response = new Response(true, 201, ort);
+        if (ort.getId() == null) {
+            response = repository.create(ort, "stamm");
+        }
         if(violation.hasWarnings()) {
             response.setWarnings(violation.getWarnings());
         }

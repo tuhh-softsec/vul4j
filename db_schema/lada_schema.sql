@@ -151,7 +151,6 @@ CREATE TABLE messprogramm (
     datenbasis_id integer NOT NULL REFERENCES stammdaten.datenbasis,
     ba_id integer DEFAULT 1 REFERENCES stammdaten.betriebsart,
     gem_id character varying(8) REFERENCES stammdaten.verwaltungseinheit,
-    ort_id integer NOT NULL REFERENCES stammdaten.ort,
     media_desk character varying(100) CHECK(media_desk LIKE '% %'),
     umw_id character varying(3) REFERENCES stammdaten.umwelt,
     probenart_id integer NOT NULL REFERENCES stammdaten.probenart,
@@ -285,6 +284,21 @@ CREATE TABLE ortszuordnung (
 CREATE TRIGGER letzte_aenderung_ortszuordnung BEFORE UPDATE ON ortszuordnung FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 CREATE TRIGGER tree_modified_ortszuordnung BEFORE UPDATE ON ortszuordnung FOR EACH ROW EXECUTE PROCEDURE update_tree_modified();
 
+--
+-- Name: ortszuordnung_mp; Type: TABLE; Schema: land; Owner: -; Tablespace:
+--
+
+CREATE TABLE ortszuordnung_mp (
+    id serial PRIMARY KEY,
+    messprogramm_id integer NOT NULL REFERENCES messprogramm ON DELETE CASCADE,
+    ort_id integer NOT NULL REFERENCES stammdaten.ort,
+    ortszuordnung_typ character varying(1) REFERENCES stammdaten.ortszuordnung_typ,
+    ortszusatztext character varying(100),
+    letzte_aenderung timestamp without time zone DEFAULT now(),
+    tree_modified timestamp without time zone DEFAULT now(),
+    EXCLUDE (messprogramm_id WITH =) WHERE (ortszuordnung_typ = 'E')
+);
+CREATE TRIGGER letzte_aenderung_ortszuordnung_mp BEFORE UPDATE ON ortszuordnung_mp FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 
 --
 -- Name: zusatz_wert; Type: TABLE; Schema: land; Owner: -; Tablespace:
@@ -361,7 +375,6 @@ CREATE TABLE messwert (
 );
 CREATE TRIGGER letzte_aenderung_messwert BEFORE UPDATE ON messwert FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 CREATE TRIGGER tree_modified_messwert BEFORE UPDATE ON messwert FOR EACH ROW EXECUTE PROCEDURE update_tree_modified();
-
 
 --
 -- Name: status_protokoll; Type: TABLE; Schema: land; Owner: -; Tablespace:
