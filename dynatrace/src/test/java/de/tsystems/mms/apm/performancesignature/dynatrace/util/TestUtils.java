@@ -66,7 +66,7 @@ public class TestUtils {
         assertEquals(PerfSigUtils.getDTConfigurations().size(), 2);
         ListBoxModel dynatraceConfigurations = PerfSigUtils.listToListBoxModel(PerfSigUtils.getDTConfigurations());
         assertEquals(dynatraceConfigurations.get(0).name, "easy Travel (admin) @ PoC PerfSig");
-        DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceConfigurations.get(0).name);
+        DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceConfigurations.get(0).name, false);
         assumeTrue("assume that the server is reachable", connection.validateConnection());
 
         return dynatraceConfigurations;

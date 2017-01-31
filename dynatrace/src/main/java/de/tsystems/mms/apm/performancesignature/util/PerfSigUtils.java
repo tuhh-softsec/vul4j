@@ -112,6 +112,10 @@ public final class PerfSigUtils {
     }
 
     public static DTServerConnection createDTServerConnection(final String dynatraceConfiguration) throws AbortException, RESTErrorException {
+        return createDTServerConnection(dynatraceConfiguration, true);
+    }
+
+    public static DTServerConnection createDTServerConnection(final String dynatraceConfiguration, final boolean validateConnection) throws AbortException, RESTErrorException {
         DynatraceServerConfiguration serverConfiguration = getServerConfiguration(dynatraceConfiguration);
         if (serverConfiguration == null) {
             throw new AbortException(de.tsystems.mms.apm.performancesignature.dynatrace.Messages.PerfSigRecorder_FailedToLookupServer());
@@ -121,7 +125,7 @@ public final class PerfSigUtils {
             throw new AbortException(de.tsystems.mms.apm.performancesignature.dynatrace.Messages.PerfSigRecorder_FailedToLookupProfile());
         }
         DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
-        if (!connection.validateConnection()) {
+        if (validateConnection && !connection.validateConnection()) {
             throw new RESTErrorException(de.tsystems.mms.apm.performancesignature.dynatrace.Messages.PerfSigRecorder_DTConnectionError());
         }
         return connection;
