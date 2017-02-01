@@ -18,8 +18,14 @@ CREATE FUNCTION set_ort_id() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
     DECLARE value text;
+    DECLARE id_value text;
     BEGIN
-        value = '#'::text || lpad((NEW.id::character varying)::text, 9, '0'::text);
+        IF NEW.gem_id IS NULL THEN
+            id_value = NEW.id;
+        ELSE
+            id_value = NEW.gem_id;
+        END IF;
+        value = '#'::text || lpad(id_value, 9, '0'::text);
         IF NEW.ort_id IS NULL THEN
             NEW.ort_id = value;
         END IF;
