@@ -78,8 +78,8 @@ public class OrtFactory {
 
             MathTransform transform = CRS.findMathTransform(src, target);
             Coordinate srcCoord = new Coordinate();
-            srcCoord.x = Double.valueOf(xCoord);
-            srcCoord.y = Double.valueOf(yCoord);
+            srcCoord.x = Double.valueOf(xCoord.replace(",", "."));
+            srcCoord.y = Double.valueOf(yCoord.replace(",", "."));
             Coordinate targetCoord = new Coordinate();
             JTS.transform(srcCoord, targetCoord, transform);
 
