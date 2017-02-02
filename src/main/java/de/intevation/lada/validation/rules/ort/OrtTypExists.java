@@ -37,17 +37,19 @@ public class OrtTypExists implements Rule {
     public Violation execute(Object object) {
         Ort ort = (Ort)object;
 
-        QueryBuilder<OrtTyp> builder =
-            new QueryBuilder<OrtTyp>(
-                repository.entityManager("stamm"),
-                OrtTyp.class);
-        builder.and("id", ort.getOrtTyp());
-        List<OrtTyp> ots = repository.filterPlain(
-            builder.getQuery(), "stamm");
-        if (ots == null || ots.isEmpty()) {
-            Violation violation = new Violation();
-            violation.addError("ortTyp", 612);
-            return violation;
+        if (ort.getOrtTyp() != null) {
+            QueryBuilder<OrtTyp> builder =
+                new QueryBuilder<OrtTyp>(
+                    repository.entityManager("stamm"),
+                    OrtTyp.class);
+            builder.and("id", ort.getOrtTyp());
+            List<OrtTyp> ots = repository.filterPlain(
+                builder.getQuery(), "stamm");
+            if (ots == null || ots.isEmpty()) {
+                Violation violation = new Violation();
+                violation.addError("ortTyp", 612);
+                return violation;
+            }
         }
 
         return null;
