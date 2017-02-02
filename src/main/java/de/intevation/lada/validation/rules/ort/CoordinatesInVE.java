@@ -78,7 +78,8 @@ public class CoordinatesInVE implements Rule {
                 }
             }
             Violation violation = new Violation();
-            violation.addWarning("verwaltungsgrenze", 651);
+            violation.addWarning("koordXExtern", 651);
+            violation.addWarning("koordYExtern", 651);
             return violation;
         }
 
