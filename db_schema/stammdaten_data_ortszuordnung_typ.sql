@@ -28,5 +28,5 @@ COPY ortszuordnung_typ (id, ortstyp) FROM stdin;
 U	Ursprungsort
 A	Kerntechnische Anlage
 Z	Ortszusatz
-E	Entnahmeport
+E	Entnahmeort
 \.
