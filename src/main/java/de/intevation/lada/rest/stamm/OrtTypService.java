@@ -37,7 +37,7 @@ import de.intevation.lada.util.rest.Response;
  *  "data":[{
  *      "id": [number],
  *      "ortTyp": [string],
- *      "Code": [string]
+ *      "code": [string]
  *  }],
  *  "errors": [object],
  *  "warnings": [object],
