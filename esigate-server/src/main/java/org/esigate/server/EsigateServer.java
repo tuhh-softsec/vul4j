@@ -24,6 +24,7 @@ import java.security.ProtectionDomain;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
@@ -31,6 +32,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.session.HashSessionManager;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.esigate.server.metrics.InstrumentedServerConnector;
@@ -65,6 +67,7 @@ public final class EsigateServer {
     private static int minThreads = 0;
     private static int outputBufferSize = 0;
     private static int port;
+    private static String sessionCookieName;
     private static final int PROPERTY_DEFAULT_CONTROL_PORT = 8081;
     private static final int PROPERTY_DEFAULT_HTTP_PORT = 8080;
     private static final String PROPERTY_PREFIX = "server.";
@@ -155,6 +158,7 @@ public final class EsigateServer {
         EsigateServer.minThreads = getProperty(PROPERTY_PREFIX, "minThreads", 40);
         EsigateServer.outputBufferSize = getProperty(PROPERTY_PREFIX, "outputBufferSize", 8 * 1024);
         EsigateServer.idleTimeout = getProperty(PROPERTY_PREFIX, "idleTimeout", 30 * 1000);
+        EsigateServer.sessionCookieName = getProperty(PROPERTY_PREFIX, "sessionCookieName", null);
     }
 
     /**
@@ -271,7 +275,11 @@ public final class EsigateServer {
             WebAppContext context = new WebAppContext(warFile, EsigateServer.contextPath);
             context.setServer(srv);
             context.setTempDirectory(workDir);
-
+            if (StringUtils.isNoneEmpty(sessionCookieName)) {
+                HashSessionManager hashSessionManager = new HashSessionManager();
+                hashSessionManager.setSessionCookie(sessionCookieName);
+                context.getSessionHandler().setSessionManager(hashSessionManager);
+            }
             // Add extra classpath (allows to add extensions).
             if (EsigateServer.extraClasspath != null) {
                 context.setExtraClasspath(EsigateServer.extraClasspath);
