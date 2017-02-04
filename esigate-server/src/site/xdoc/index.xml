@@ -100,7 +100,7 @@ java -Dserver.extraClasspath=./ -Desigate.config=<config file> -Dserver.port=838
 					<tr>
 					<td>server.sessionCookieName</td>
 					<td>
-						Overrude the esigate session cookie name in order to avoid conflict with remote application
+						Override the esigate session cookie name in order to avoid conflict with remote application
 					</td>
 					<td>Jetty default (JSESSIONID)</td>
 				</tr>
