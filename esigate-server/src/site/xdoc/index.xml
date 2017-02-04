@@ -8,15 +8,106 @@
 				line:
 			</p>
 			<source><![CDATA[
-java -jar esigate-server-<version>.jar -Desigate.config=<config file>
+java -Dserver.extraClasspath=./conf -Desigate.config=<config file> -Dserver.port=8383  -jar esigate-server-<version>.jar start
 			]]></source>
-			<p>The configuration file must define the base url of the application
+			<p> Config file should be located in extraClasspath folder (conf folder).<br/>
+
+				The configuration file must define the base url of the application
 				you want to
 				do ESI transformation. For example:
 			</p>
 			<source><![CDATA[
 esigate.remoteUrlBase=http://localhost:8080/
 			]]></source>
+		</section>
+		<section name="Configuration">
+			<p>
+				Server configuration (http port, ...) can be done with system property
+			</p>
+			<source><![CDATA[
+java -Dserver.extraClasspath=./ -Desigate.config=<config file> -Dserver.port=8383  -jar esigate-server-<version>.jar start
+			]]></source>
+			<p>
+				<table>
+				<tr>
+					<th>Property</th>
+					<th>Usage</th>
+					<th>Default value</th>
+				</tr>
+				<tr>
+					<td>server.port</td>
+					<td>
+						HTTP Port
+					</td>
+					<td>8080</td>
+				</tr>
+					<tr>
+						<td>server.port</td>
+						<td>
+							HTTP Port
+						</td>
+						<td>8080</td>
+					</tr>
+					<tr>
+						<td>server.controlPort</td>
+						<td>
+							Jetty Controle Port
+						</td>
+						<td>8081</td>
+					</tr>
+					<tr>
+						<td>server.contextPath</td>
+						<td>
+							Esigate webapp context path
+						</td>
+						<td>/</td>
+					</tr>
+					<tr>
+						<td>server.extraClasspath</td>
+						<td>
+							Additionnal classpath
+						</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>server.minThreads</td>
+						<td>
+							Min threads number
+						</td>
+						<td>500</td>
+					</tr>
+					<tr>
+						<td>server.maxThreads</td>
+						<td>
+							Max threads number
+						</td>
+						<td>500</td>
+					</tr>
+					<tr>
+						<td>server.outputBufferSize</td>
+						<td>
+							Output buffer size in octets
+						</td>
+						<td>8 * 1024</td>
+					</tr>
+					<tr>
+						<td>server.idleTimeout</td>
+						<td>
+							Idle timeout in milliseconds
+						</td>
+						<td>30000</td>
+					</tr>
+					<tr>
+					<td>server.sessionCookieName</td>
+					<td>
+						Override the esigate session cookie name in order to avoid conflict with remote application
+					</td>
+					<td>Jetty default (JSESSIONID)</td>
+				</tr>
+
+				</table>
+			</p>
+
 		</section>
 	</body>
 </document>
