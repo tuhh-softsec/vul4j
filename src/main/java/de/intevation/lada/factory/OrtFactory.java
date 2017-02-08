@@ -147,7 +147,7 @@ public class OrtFactory {
             ort.getStaatId() != 0
         ) {
             logger.debug("has staat");
-            builder.and("staatId", ort.getGemId());
+            builder.and("staatId", ort.getStaatId());
             builder.and("ozId", ort.getOzId());
             builder.and("netzbetreiberId", ort.getNetzbetreiberId());
             List<Ort> orte = repository.filterPlain(builder.getQuery(), "stamm");
