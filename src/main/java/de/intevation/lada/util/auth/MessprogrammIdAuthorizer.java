@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.intevation.lada.model.land.Messprogramm;
-import de.intevation.lada.model.stammdaten.MessStelle;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 
@@ -91,26 +90,17 @@ public class MessprogrammIdAuthorizer extends BaseAuthorizer {
             else {
                 return null;
             }
-            Messprogramm messprogramm =
-                (Messprogramm)repository.getById(Messprogramm.class, id, "land").getData();
+            Messprogramm messprogramm = repository.getByIdPlain(
+                Messprogramm.class, id, "land");
 
-            boolean readOnly = true;
             boolean owner = false;
-            MessStelle mst = repository.getByIdPlain(MessStelle.class, messprogramm.getMstId(), "stamm");
-            if (!userInfo.getNetzbetreiber().contains(
-                    mst.getNetzbetreiberId())) {
-                owner = false;
-                readOnly = true;
+            if (userInfo.belongsTo(
+                    messprogramm.getMstId(),
+                    messprogramm.getLaborMstId())
+            ) {
+                owner = true;
             }
-            else {
-                if (userInfo.belongsTo(messprogramm.getMstId(), messprogramm.getLaborMstId())) {
-                    owner = true;
-                }
-                else {
-                    owner = false;
-                }
-                readOnly = owner;
-            }
+            boolean readOnly = !owner;
 
             Method setOwner = clazz.getMethod("setOwner", boolean.class);
             Method setReadonly = clazz.getMethod("setReadonly", boolean.class);
