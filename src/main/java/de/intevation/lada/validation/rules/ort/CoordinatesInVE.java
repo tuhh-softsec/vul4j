@@ -62,7 +62,7 @@ public class CoordinatesInVE implements Rule {
                 vg.getQuery(), "stamm");
             if (vgs == null || vgs.isEmpty()) {
                 Violation violation = new Violation();
-                violation.addWarning("verwaltungsgrenze", 600);
+                violation.addWarning("gemId", 650);
                 return violation;
             }
 
