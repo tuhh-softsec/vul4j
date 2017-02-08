@@ -185,8 +185,6 @@ public class OrtFactory {
                 ort.getGemId(),
                 "stamm");
             if (!hasKoord) {
-                logger.debug("add coordinates");
-                ort.setMpArt("V");
                 ort.setKdaId(4);
                 ort.setKoordYExtern(String.valueOf(v.getMittelpunkt().getY()));
                 ort.setKoordXExtern(String.valueOf(v.getMittelpunkt().getX()));
