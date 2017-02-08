@@ -313,21 +313,16 @@ public class ProbeService {
             probe = factory.findUmweltId(probe);
         }
         probe = factory.findMediaDesk(probe);
+
         /* Persist the new probe object*/
         Response newProbe = repository.create(probe, "land");
-        Probe ret = (Probe)newProbe.getData();
-        // Refreshing the probe object is necessary because probe objects use
-        // dynamic-insert, meaning null values are not written to the db and not
-        // updated after insert.
-        Response refreshed =
-            repository.getById(Probe.class, ret.getId(), "land");
-        /* Create and persist a new probe translation object*/
+
         if(violation.hasWarnings()) {
-            refreshed.setWarnings(violation.getWarnings());
+            newProbe.setWarnings(violation.getWarnings());
         }
         return authorization.filter(
             request,
-            refreshed,
+            newProbe,
             Probe.class);
     }
 

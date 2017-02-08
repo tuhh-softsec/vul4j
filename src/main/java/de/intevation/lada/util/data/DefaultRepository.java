@@ -44,7 +44,8 @@ public class DefaultRepository extends ReadOnlyRepository {
      * @param object The new object.
      * @param dataSource The datasource.
      *
-     * @return Response object containing the new object.
+     * @return Response object containing the new object, potentially
+     *         modified by the database.
      */
     @Override
     public Response create(Object object, String dataSource) {

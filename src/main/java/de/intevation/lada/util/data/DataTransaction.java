@@ -48,7 +48,14 @@ public class DataTransaction
         EJBTransactionRolledbackException,
         TransactionRequiredException
     {
-        emp.entityManager(dataSource).persist(object);
+        EntityManager manager = emp.entityManager(dataSource);
+        manager.persist(object);
+
+        /* Refreshing the object is necessary because some objects use
+           dynamic-insert, meaning null-valued columns are not INSERTed
+           to the DB to take advantage of DB DEFAULT values, or triggers
+           modify the object during INSERT. */
+        manager.refresh(object);
     }
 
     /**
