@@ -16,6 +16,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 
 /**
@@ -45,8 +46,14 @@ public class OrtszuordnungMp implements Serializable {
 
     private String ortszusatztext;
 
-    @Column(name="tree_modified")
+    @Column(name="tree_modified", insertable=false, updatable=false)
     private Timestamp treeModified;
+
+    @Transient
+    private boolean owner;
+
+    @Transient
+    private boolean readonly;
 
     public OrtszuordnungMp() {
     }
@@ -107,4 +114,31 @@ public class OrtszuordnungMp implements Serializable {
         this.treeModified = treeModified;
     }
 
+    /**
+     * @return the owner
+     */
+    public boolean isOwner() {
+        return owner;
+    }
+
+    /**
+     * @param owner the owner to set
+     */
+    public void setOwner(boolean owner) {
+        this.owner = owner;
+    }
+
+    /**
+     * @return the readonly
+     */
+    public boolean isReadonly() {
+        return readonly;
+    }
+
+    /**
+     * @param readonly the readonly to set
+     */
+    public void setReadonly(boolean readonly) {
+        this.readonly = readonly;
+    }
 }

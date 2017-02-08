@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.intevation.lada.model.land.Messprogramm;
-import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.model.stammdaten.MessStelle;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
@@ -84,33 +83,33 @@ public class MessprogrammIdAuthorizer extends BaseAuthorizer {
         Class<T> clazz
     ) {
         try {
-            Method getProbeId = clazz.getMethod("getProbeId");
+            Method getMessprogrammId = clazz.getMethod("getMessprogrammId");
             Integer id = null;
-            if (getProbeId != null) {
-                id = (Integer) getProbeId.invoke(data);
+            if (getMessprogrammId != null) {
+                id = (Integer) getMessprogrammId.invoke(data);
             }
             else {
                 return null;
             }
-            Probe probe =
-                (Probe)repository.getById(Probe.class, id, "land").getData();
+            Messprogramm messprogramm =
+                (Messprogramm)repository.getById(Messprogramm.class, id, "land").getData();
 
             boolean readOnly = true;
             boolean owner = false;
-            MessStelle mst = repository.getByIdPlain(MessStelle.class, probe.getMstId(), "stamm");
+            MessStelle mst = repository.getByIdPlain(MessStelle.class, messprogramm.getMstId(), "stamm");
             if (!userInfo.getNetzbetreiber().contains(
                     mst.getNetzbetreiberId())) {
                 owner = false;
                 readOnly = true;
             }
             else {
-                if (userInfo.belongsTo(probe.getMstId(), probe.getLaborMstId())) {
+                if (userInfo.belongsTo(messprogramm.getMstId(), messprogramm.getLaborMstId())) {
                     owner = true;
                 }
                 else {
                     owner = false;
                 }
-                readOnly = this.isProbeReadOnly(id);
+                readOnly = owner;
             }
 
             Method setOwner = clazz.getMethod("setOwner", boolean.class);
