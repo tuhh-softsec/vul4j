@@ -25,6 +25,6 @@ SET search_path = stammdaten, pg_catalog;
 --
 
 COPY datensatz_erzeuger (id, netzbetreiber_id, datensatz_erzeuger_id, mst_id, bezeichnung, letzte_aenderung) FROM stdin;
-1	06	KS	06010	Messstelle HLUG Kassel	2000-01-01 00:00:00
-2	06	DA	06060	Messstelle HLUG Darmstadt	2000-01-01 00:00:00
+453	06	KS	06010	Messstelle HLUG Kassel	2000-01-01 00:00:00
+553	06	DA	06060	Messstelle HLUG Darmstadt	2000-01-01 00:00:00
 \.
