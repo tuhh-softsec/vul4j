@@ -26,6 +26,7 @@ $(document).ready(function () {
     "use strict";
 
     var grid = [];
+    var randomParam = '&_=' + $.now();
     $.fn.dataTableExt.sErrMode = 'none';
 
     $('.panel-body').each(function () {
@@ -97,12 +98,12 @@ $(document).ready(function () {
                 '&amp;customBuildCount=' + $("#customBuildCount", page).val();
             if ($("#measureGroup", page).val() === 'UnitTest overview') {
                 grid[pageIndex].add_widget('<li><img class="img-thumbnail" height="300" width="410" ' +
-                    'src="testRunGraph?id=unittest_overview' + request_parameter + '">' +
+                    'src="testRunGraph?id=unittest_overview' + request_parameter + randomParam + '">' +
                     '<span class="del_img glyphicon glyphicon-remove"></span>' +
                     '<span class="chk_show"><input type="checkbox" title="show in project overview" checked="checked"/></span></li>', 1, 1);
             } else {
                 grid[pageIndex].add_widget('<li><img class="img-thumbnail" height="300" width="410" ' +
-                    'src="summarizerGraph?id=' + $("#measure", page).val() + request_parameter + '&amp;aggregation=' + $("#aggregation", page).val() + '">' +
+                    'src="summarizerGraph?id=' + $("#measure", page).val() + request_parameter + '&amp;aggregation=' + $("#aggregation", page).val() + randomParam + '">' +
                     '<span class="del_img glyphicon glyphicon-remove"></span>' +
                     '<span class="chk_show"><input type="checkbox" title="show in project overview" checked="checked"/></span></li>', 1, 1);
             }
@@ -144,16 +145,17 @@ $(document).ready(function () {
                 $.each(json, function (index) {
                     if (json[index].dashboard == $(page).attr('id')) {
                         if (json[index].id === 'unittest_overview') {
-                            grid[pageIndex].add_widget('<li><a href="./testRunGraph?width=800&amp;height=585&amp;id=unittest_overview" ' +
+                            grid[pageIndex].add_widget('<li><a href="./testRunGraph?width=800&amp;height=585&amp;id=unittest_overview' + randomParam + '" ' +
                                 'data-lightbox="' + $(page).attr('id') + '"><img class="img-thumbnail" height="300" width="410" ' +
-                                'src="./testRunGraph?width=410&amp;height=300&amp;id=unittest_overview"></a>' +
+                                'src="./testRunGraph?width=410&amp;height=300&amp;id=unittest_overview' + randomParam + '"></a>' +
                                 '<span class="del_img glyphicon glyphicon-remove"></span>' +
                                 '<span class="chk_show"><input type="checkbox" title="show in project overview" checked="checked"/></span></li>', 1, 1,
                                 json[index].col, json[index].row);
                         } else {
-                            grid[pageIndex].add_widget('<li><a href="./summarizerGraph?width=800&amp;height=585&amp;id=' + json[index].id + '" ' +
+                            grid[pageIndex].add_widget('<li><a href="./summarizerGraph?width=800&amp;height=585&amp;id=' + json[index].id + randomParam + '" ' +
                                 'data-lightbox="' + $(page).attr('id') + '" data-title="' + json[index].description + '">' +
-                                '<img class="img-thumbnail" height="300" width="410" src="./summarizerGraph?width=410&amp;height=300&amp;id=' + json[index].id + '' +
+                                '<img class="img-thumbnail" height="300" width="410" ' +
+                                'src="./summarizerGraph?width=410&amp;height=300&amp;id=' + json[index].id + randomParam +
                                 '" title="source: ' + json[index].chartDashlet + '-' + json[index].measure + ' (' + json[index].aggregation + ')\n' + json[index].description + '"></a>' +
                                 '<span class="del_img glyphicon glyphicon-remove"></span><span class="chk_show">' +
                                 '<input type="checkbox" title="show in project overview" ' + (json[index].show ? "checked='checked'" : "") +

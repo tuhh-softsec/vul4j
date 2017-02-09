@@ -20,6 +20,8 @@ require('./tabhashes.js');
 
 $(document).ready(function () {
     "use strict";
+
+    var randomParam = '&_=' + $.now();
     $('.carousel').each(function (carouselIndex, carousel) {
         var testCase = $(carousel).attr('id').substring(9);
 
@@ -30,11 +32,11 @@ $(document).ready(function () {
                     if (json[index].id === 'unittest_overview') {
                         $('.carousel-inner', carousel).append('<div class="item">' +
                             '<img class="img-thumbnail" height="300" width="410" ' +
-                            'src="performance-signature/testRunGraph?width=410&amp;height=300"></div>\n');
+                            'src="performance-signature/testRunGraph?width=410&amp;height=300"' + randomParam + '></div>\n');
                     } else {
                         $('.carousel-inner', carousel).append('<div class="item">' +
                             '<img class="img-thumbnail" height="300" width="410" ' +
-                            'src="performance-signature/summarizerGraph?width=410&amp;height=300&amp;id=' + json[index].id + '"></div>\n');
+                            'src="performance-signature/summarizerGraph?width=410&amp;height=300&amp;id=' + json[index].id + randomParam + '"></div>\n');
                     }
                 }
             });
