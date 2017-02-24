@@ -23,5 +23,6 @@ public class LadaPostgisDialect extends PostgisDialect {
     public LadaPostgisDialect() {
         super();
         this.registerColumnType(Types.ARRAY, "integer[]");
+        this.registerColumnType(Types.JAVA_OBJECT, "json");
     }
 }
