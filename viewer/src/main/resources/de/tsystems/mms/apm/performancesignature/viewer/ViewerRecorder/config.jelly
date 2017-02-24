@@ -30,7 +30,7 @@
                      title="set build result to failed in case of severe incidents"/>
             <br/>
             <f:radio name="nonFunctionalFailure" value="2" checked="${instance.nonFunctionalFailure == 2}"
-                     title="set build result to failed in case of servere/warning incidents"/>
+                     title="set build result to failed in case of severe/warning incidents"/>
             <br/>
             <f:radio name="nonFunctionalFailure" value="3" checked="${instance.nonFunctionalFailure == 3}"
                      title="set build result to unstable in case of severe incidents"/>
