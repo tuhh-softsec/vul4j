@@ -63,6 +63,10 @@ psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_schema.sql
 
 echo create lada schema
 psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/lada_schema.sql
+
+echo create audit-trail table/trigger/views
+psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/audit.sql
+
 echo set grants
 psql $DB_CONNECT_STRING -d $DB_NAME --command \
      "GRANT USAGE ON SCHEMA stammdaten, land TO $ROLE_NAME;
