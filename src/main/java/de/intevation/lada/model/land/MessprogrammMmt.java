@@ -29,7 +29,7 @@ public class MessprogrammMmt implements Serializable {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name="letzte_aenderung")
+    @Column(name="letzte_aenderung", insertable=false)
     private Timestamp letzteAenderung;
 
     @Type(type="IntegerArray")

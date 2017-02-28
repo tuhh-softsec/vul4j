@@ -27,7 +27,7 @@ public class Messwert implements Serializable {
 
     private Boolean grenzwertueberschreitung;
 
-    @Column(name="letzte_aenderung")
+    @Column(name="letzte_aenderung", insertable=false)
     private Timestamp letzteAenderung;
 
     @Column(name="meh_id")

@@ -38,7 +38,7 @@ public class Messung implements Serializable {
     @Column(name="id_alt")
     private Integer idAlt;
 
-    @Column(name="letzte_aenderung")
+    @Column(name="letzte_aenderung", insertable=false)
     private Timestamp letzteAenderung;
 
     private Integer messdauer;

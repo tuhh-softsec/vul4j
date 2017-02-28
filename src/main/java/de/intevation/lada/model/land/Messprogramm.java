@@ -64,7 +64,7 @@ public class Messprogramm implements Serializable {
     @Column(name="labor_mst_id")
     private String laborMstId;
 
-    @Column(name="letzte_aenderung")
+    @Column(name="letzte_aenderung", insertable=false)
     private Timestamp letzteAenderung;
 
     @Column(name="media_desk")

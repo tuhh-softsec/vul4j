@@ -25,7 +25,7 @@ public class Ortszuordnung implements Serializable {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name="letzte_aenderung")
+    @Column(name="letzte_aenderung", insertable=false)
     private Timestamp letzteAenderung;
 
     @Column(name="ort_id")
