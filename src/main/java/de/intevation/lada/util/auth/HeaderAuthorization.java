@@ -137,9 +137,8 @@ public class HeaderAuthorization implements Authorization {
             return data;
         }
         Authorizer authorizer = authorizers.get(clazz);
-        //This is a hack... Allows wildcard for unknown classes.
         if (authorizer == null) {
-            return data;
+            return new Response(false, 699, null);
         }
         return authorizer.filter(data, userInfo, clazz);
     }
@@ -244,7 +243,7 @@ public class HeaderAuthorization implements Authorization {
         Authorizer authorizer = authorizers.get(clazz);
         //This is a hack... Allows wildcard for unknown classes.
         if (authorizer == null) {
-            return true;
+            return false;
         }
         return authorizer.isAuthorized(data, RequestMethod.GET, userInfo, clazz);
     }
@@ -263,9 +262,8 @@ public class HeaderAuthorization implements Authorization {
         Class<T> clazz
     ) {
         Authorizer authorizer = authorizers.get(clazz);
-        //This is a hack... Allows wildcard for unknown classes.
         if (authorizer == null) {
-            return true;
+            return false;
         }
         return authorizer.isAuthorized(data, RequestMethod.POST, userInfo, clazz);
     }
