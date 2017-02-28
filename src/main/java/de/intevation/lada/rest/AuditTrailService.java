@@ -203,7 +203,7 @@ public class AuditTrailService {
         if ("zusatz_wert".equals(audit.getTableName())) {
             node.put("identifier", audit.getRowData().get("pzs_id").toString());
         }
-        if ("ortszuordung".equals(audit.getTableName())) {
+        if ("ortszuordnung".equals(audit.getTableName())) {
             String value = translateId(
                 "ort",
                 "ort_id",
