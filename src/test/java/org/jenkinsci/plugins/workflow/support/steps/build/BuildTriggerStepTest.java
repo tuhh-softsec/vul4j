@@ -1,27 +1,43 @@
 package org.jenkinsci.plugins.workflow.support.steps.build;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.model.Action;
 import hudson.model.BooleanParameterDefinition;
 import hudson.model.Cause;
 import hudson.model.Executor;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
+import hudson.model.ItemGroup;
 import hudson.model.Label;
 import hudson.model.ParametersDefinitionProperty;
 import hudson.model.Queue;
 import hudson.model.Result;
 import hudson.model.StringParameterDefinition;
+import hudson.model.TaskListener;
 import hudson.model.queue.QueueTaskFuture;
 import hudson.tasks.Shell;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
+import jenkins.branch.MultiBranchProjectFactory;
+import jenkins.branch.MultiBranchProjectFactoryDescriptor;
+import jenkins.branch.OrganizationFolder;
+import jenkins.scm.api.SCMHeadEvent;
+import jenkins.scm.api.SCMSource;
+import jenkins.scm.impl.mock.MockSCMController;
+import jenkins.scm.impl.mock.MockSCMNavigator;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowExecution;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
 import org.jenkinsci.plugins.workflow.test.steps.SemaphoreStep;
+
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.*;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -359,4 +375,42 @@ public class BuildTriggerStepTest {
         j.assertBuildStatusSuccess(j.waitForCompletion(us1));
     }
 
+    @SuppressWarnings("deprecation")
+    @Test
+    @Issue("JENKINS-38887")
+    public void triggerOrgFolder() throws Exception {
+        try (MockSCMController c = MockSCMController.create()) {
+            c.createRepository("foo");
+            WorkflowJob us = j.jenkins.createProject(WorkflowJob.class, "us");
+            us.setDefinition(new CpsFlowDefinition("build job:'ds', wait:false"));
+            OrganizationFolder ds = j.jenkins.createProject(OrganizationFolder.class, "ds");
+            ds.getSCMNavigators().add(new MockSCMNavigator(c, true, false, false));
+            ds.getProjectFactories().add(new DummyMultiBranchProjectFactory());
+            j.waitUntilNoActivity();
+            assertThat(ds.getComputation().getResult(), nullValue());
+            j.buildAndAssertSuccess(us);
+            j.waitUntilNoActivity();
+            assertThat(ds.getComputation().getResult(), notNullValue());
+        }
+    }
+
+    public static class DummyMultiBranchProjectFactory extends MultiBranchProjectFactory {
+        @Override
+        public boolean recognizes(@NonNull ItemGroup<?> parent, @NonNull String name,
+                                  @NonNull List<? extends SCMSource> scmSources,
+                                  @NonNull Map<String, Object> attributes,
+                                  @CheckForNull SCMHeadEvent<?> event, @NonNull TaskListener listener)
+                throws IOException, InterruptedException {
+            return false;
+        }
+
+        @TestExtension
+        public static class DescriptorImpl extends MultiBranchProjectFactoryDescriptor {
+
+            @Override
+            public MultiBranchProjectFactory newInstance() {
+                return new DummyMultiBranchProjectFactory();
+            }
+        }
+    }
 }
