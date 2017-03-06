@@ -124,13 +124,10 @@ public class BuildTriggerStepExecution extends AbstractStepExecutionImpl {
             if (quietPeriod == null) {
                 quietPeriod = Jenkins.getActiveInstance().getQuietPeriod();
             }
-            ScheduleResult scheduleResult = Jenkins.getInstance().getQueue().schedule2(task, quietPeriod, actions);
-            if (scheduleResult.isRefused()) {
+            ScheduleResult scheduleResult = Jenkins.getActiveInstance().getQueue().schedule2(task, quietPeriod, actions);
+            if (scheduleResult.isRefused() || scheduleResult.getItem() == null) {
                 throw new AbortException("Failed to trigger build of " + item.getFullName());
             }
-            QueueTaskFuture<?> f =
-                    scheduleResult.getItem().getFuture();
-
         } else {
             throw new AbortException("The item named " + job + " is a "
                     + (item instanceof Describable
