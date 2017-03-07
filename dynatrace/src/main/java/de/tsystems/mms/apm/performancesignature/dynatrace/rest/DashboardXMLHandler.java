@@ -63,7 +63,7 @@ public class DashboardXMLHandler extends DefaultHandler {
             dashboardReport.addIncident(incidentChart);
         } else if (localName.equals("chartdashlet")) {
             dashboardReport.addChartDashlet(chartDashlet);
-        } else if (localName.equals("measure")) {
+        } else if (localName.equals("measure") && !chartDashlet.getMeasures().contains(measure)) { //avoid measure duplicates (Application Splitting)
             chartDashlet.addMeasure(measure);
         }
     }
