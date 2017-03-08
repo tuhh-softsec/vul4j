@@ -404,7 +404,7 @@ public class BuildTriggerStepTest {
             return false;
         }
 
-        @TestExtension
+        @TestExtension("triggerOrgFolder")
         public static class DescriptorImpl extends MultiBranchProjectFactoryDescriptor {
 
             @Override

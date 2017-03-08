@@ -7,8 +7,8 @@ l.ajax {
         // Cf. BuildTriggerStepExecution:
         def contextName = request.getParameter('context')
         def context = contextName != null ? app.getItemByFullName(contextName) : null
-        def job = app.getItem(jobName, (hudson.model.Item) context, jenkins.model.ParameterizedJobMixIn.ParameterizedJob)
-        if (job != null) {
+        def job = app.getItem(jobName, (hudson.model.Item) context, hudson.model.Item)
+        if (job instanceof jenkins.model.ParameterizedJobMixIn.ParameterizedJob) {
             def pdp = job.getProperty(hudson.model.ParametersDefinitionProperty)
             if (pdp != null) {
                 // Cf. ParametersDefinitionProperty/index.jelly:
@@ -23,6 +23,10 @@ l.ajax {
             } else {
                 text("${job.fullDisplayName} is not parameterized")
             }
+        } else if (job instanceof hudson.model.Queue.Task) {
+            text("${job.fullDisplayName} is not parameterized")
+        } else if (job != null) {
+            text("${job.fullDisplayName} is not buildable")
         } else {
             text("no such job ${jobName}")
         }
