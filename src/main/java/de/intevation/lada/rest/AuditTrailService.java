@@ -7,6 +7,10 @@
  */
 package de.intevation.lada.rest;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -127,6 +131,10 @@ public class AuditTrailService {
             new TableMapper("probenart", "probenart"));
         mappings.put("probe_nehmer_id",
             new TableMapper("probenehmer", "prn_id"));
+        mappings.put("probeentnahme_beginn",
+            new TableMapper("date", "dd.MM.yy HH:mm"));
+        mappings.put("probeentnahme_ende",
+            new TableMapper("date", "dd.MM.yy HH:mm"));
     }
 
     /**
@@ -196,7 +204,7 @@ public class AuditTrailService {
         node.put("type", audit.getTableName());
         node.put("action", audit.getAction());
         ObjectNode data = (ObjectNode)audit.getChangedFields();
-        data = translateIds(data);
+        data = translateValues(data);
         node.putPOJO("changedFields", data);
         if ("kommentar_p".equals(audit.getTableName())) {
             node.put("identifier", audit.getRowData().get("datum").toString());
@@ -338,20 +346,38 @@ public class AuditTrailService {
         return result.get(0);
     }
 
+    private String formatDate(String format, String date) {
+        DateFormat inFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssXXX");
+        DateFormat outFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm");
+        Date input;
+        try {
+            input = inFormat.parse(date);
+        } catch (ParseException e) {
+            return date;
+        }
+        return outFormat.format(input);
+    }
+
     /**
      * Translate all known foreign keys
      */
-    private ObjectNode translateIds(ObjectNode node) {
+    private ObjectNode translateValues(ObjectNode node) {
         for (Iterator<String> i = node.fieldNames(); i.hasNext();) {
             String key = i.next();
             if (mappings.containsKey(key)) {
                 TableMapper m = mappings.get(key);
-                String value = translateId(
+                String value = "";
+                if (m.mappingTable.equals("date")) {
+                    value = formatDate(m.valueField, node.get(key).asText());
+                }
+                else {
+                    value = translateId(
                     m.mappingTable,
                     m.valueField,
                     node.get(key).asText(),
                     "id",
                     "stamm");
+                }
                 node.put(key, value);
             }
         }
