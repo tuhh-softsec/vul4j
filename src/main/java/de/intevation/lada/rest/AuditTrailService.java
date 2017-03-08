@@ -194,6 +194,7 @@ public class AuditTrailService {
         ObjectNode node = mapper.createObjectNode();
         node.put("timestamp", audit.getTstamp().getTime());
         node.put("type", audit.getTableName());
+        node.put("action", audit.getAction());
         ObjectNode data = (ObjectNode)audit.getChangedFields();
         data = translateIds(data);
         node.putPOJO("changedFields", data);
@@ -301,6 +302,7 @@ public class AuditTrailService {
         ObjectNode node = mapper.createObjectNode();
         node.put("timestamp", audit.getTstamp().getTime());
         node.put("type", audit.getTableName());
+        node.put("action", audit.getAction());
         ObjectNode data = (ObjectNode)audit.getChangedFields();
         node.putPOJO("changedFields", data);
         if ("kommentar_m".equals(audit.getTableName())) {

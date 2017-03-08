@@ -41,6 +41,9 @@ public class AuditTrailProbe implements Serializable {
     @Column(name="tstamp")
     private Timestamp tstamp;
 
+    @Column(name="action")
+    private String action;
+
     @Column(name="messungs_id")
     private Integer messungsId;
 
@@ -78,6 +81,14 @@ public class AuditTrailProbe implements Serializable {
 
     public void setTstamp(Timestamp tstamp) {
         this.tstamp = tstamp;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
     }
 
     public Integer getMessungsId() {
