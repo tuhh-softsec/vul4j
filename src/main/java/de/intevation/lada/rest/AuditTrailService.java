@@ -346,16 +346,13 @@ public class AuditTrailService {
         return result.get(0);
     }
 
-    private String formatDate(String format, String date) {
+    private Long formatDate(String format, String date) {
         DateFormat inFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssXXX");
-        DateFormat outFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm");
-        Date input;
         try {
-            input = inFormat.parse(date);
+            return inFormat.parse(date).getTime();
         } catch (ParseException e) {
-            return date;
+            return 0L;
         }
-        return outFormat.format(input);
     }
 
     /**
@@ -366,19 +363,19 @@ public class AuditTrailService {
             String key = i.next();
             if (mappings.containsKey(key)) {
                 TableMapper m = mappings.get(key);
-                String value = "";
                 if (m.mappingTable.equals("date")) {
-                    value = formatDate(m.valueField, node.get(key).asText());
+                    Long value = formatDate(m.valueField, node.get(key).asText());
+                    node.put(key, value);
                 }
                 else {
-                    value = translateId(
-                    m.mappingTable,
-                    m.valueField,
-                    node.get(key).asText(),
-                    "id",
-                    "stamm");
+                    String value = translateId(
+                        m.mappingTable,
+                        m.valueField,
+                        node.get(key).asText(),
+                        "id",
+                        "stamm");
+                    node.put(key, value);
                 }
-                node.put(key, value);
             }
         }
         return node;
