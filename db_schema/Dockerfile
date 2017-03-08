@@ -1,4 +1,4 @@
-# Docker file for postgresql 9.4 on debain
+# Docker file for postgresql 9.5 on debain
 #
 # build with e.g. `docker build --force-rm=true -t koala/lada_db .',
 # then run with e.g.
@@ -28,7 +28,13 @@ ENV LC_ALL en_US.UTF-8
 # Install packages
 #
 RUN apt-get update && \
-    apt-get install -y postgresql-9.4-postgis-2.1 postgis curl unzip
+    apt-get install -y curl unzip make gcc
+RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main" \
+    >> /etc/apt/sources.list
+RUN curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+            postgresql-9.5-postgis-2.3 postgresql-9.5-postgis-scripts postgis
 
 #
 # Use user postgres to run the next commands
@@ -43,9 +49,9 @@ RUN /etc/init.d/postgresql start && \
 # database are possible.
 #
 RUN echo "host all  all    0.0.0.0/0  md5" >> \
-    /etc/postgresql/9.4/main/pg_hba.conf
+    /etc/postgresql/9.5/main/pg_hba.conf
 
-RUN echo "listen_addresses='*'" >> /etc/postgresql/9.4/main/postgresql.conf
+RUN echo "listen_addresses='*'" >> /etc/postgresql/9.5/main/postgresql.conf
 
 #
 # Expose the PostgreSQL port
@@ -62,12 +68,12 @@ EXPOSE 5432
 ADD . /opt/lada_sql/
 WORKDIR /opt/lada_sql/
 
-RUN /usr/lib/postgresql/9.4/bin/pg_ctl start -wD /etc/postgresql/9.4/main/ && \
+RUN /usr/lib/postgresql/9.5/bin/pg_ctl start -wD /etc/postgresql/9.5/main/ && \
     /opt/lada_sql/setup-db.sh
 
 #
 # Set the default command to run when starting the container
 #
-CMD ["/usr/lib/postgresql/9.4/bin/postgres", "-D", \
-     "/var/lib/postgresql/9.4/main", "-c", \
-     "config_file=/etc/postgresql/9.4/main/postgresql.conf"]
+CMD ["/usr/lib/postgresql/9.5/bin/postgres", "-D", \
+     "/var/lib/postgresql/9.5/main", "-c", \
+     "config_file=/etc/postgresql/9.5/main/postgresql.conf"]
