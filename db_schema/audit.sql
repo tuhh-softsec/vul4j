@@ -81,8 +81,8 @@ BEGIN
         RAISE EXCEPTION 'land.if_modified_func() may only run as an AFTER trigger';
     END IF;
 
-    -- Do nothing on insert and delete.
-    IF (TG_OP = 'INSERT' OR TG_OP = 'DELETE') THEN
+    -- Do nothing on delete.
+    IF (TG_OP = 'DELETE') THEN
         RETURN NULL;
     END IF;
 
@@ -91,7 +91,7 @@ BEGIN
         TG_TABLE_NAME::varchar,             -- table_name
         current_timestamp,                  -- tstamp
         substring(TG_OP,1,1),               -- action
-        OLD.id,                             -- object_id
+        NEW.id,                             -- object_id
         NULL, NULL                          -- row_data, changed_fields
         );
 
@@ -106,6 +106,9 @@ BEGIN
             -- All changed fields are ignored. Skip this update.
             RETURN NULL;
         END IF;
+    ELSIF (TG_OP = 'INSERT' AND TG_LEVEL = 'ROW') THEN
+        audit_row.row_data = row_to_json(NEW)::JSONB - excluded_cols;
+        audit_row.changed_fields = jsonb_strip_nulls(row_to_json(NEW)::JSONB - excluded_cols);
     ELSE
         RAISE EXCEPTION '[land.if_modified_func] - Trigger func added as trigger for unhandled case: %, %',TG_OP, TG_LEVEL;
         RETURN NULL;
@@ -186,6 +189,7 @@ CREATE OR REPLACE VIEW audit_trail_probe AS
 SELECT
     id,
     table_name,
+    action,
     object_id,
     tstamp,
     cast(row_data ->> 'messungs_id' AS integer) AS messungs_id,
@@ -210,12 +214,12 @@ SELECT audit_trail.id,
 FROM audit_trail;
 
 
-SELECT audit_table('probe', true, false, '{tree_modified, letzte_aenderung}'::text[]);
-SELECT audit_table('messung', true, false, '{tree_modified, letzte_aenderung, status}'::text[]);
-SELECT audit_table('messwert', true, false, '{tree_modified, letzte_aenderung}'::text[]);
-SELECT audit_table('kommentar_p', true, false, '{tree_modified, letzte_aenderung}'::text[]);
-SELECT audit_table('kommentar_m', true, false, '{tree_modified, letzte_aenderung}'::text[]);
-SELECT audit_table('zusatz_wert', true, false, '{tree_modified, letzte_aenderung}'::text[]);
-SELECT audit_table('ortszuordnung', true, false, '{tree_modified, letzte_aenderung}'::text[]);
+SELECT audit_table('probe', true, false, '{id, tree_modified, letzte_aenderung}'::text[]);
+SELECT audit_table('messung', true, false, '{id,, tree_modified, letzte_aenderung, status}'::text[]);
+SELECT audit_table('messwert', true, false, '{id, tree_modified, letzte_aenderung}'::text[]);
+SELECT audit_table('kommentar_p', true, false, '{id, tree_modified, letzte_aenderung}'::text[]);
+SELECT audit_table('kommentar_m', true, false, '{id, tree_modified, letzte_aenderung}'::text[]);
+SELECT audit_table('zusatz_wert', true, false, '{id, tree_modified, letzte_aenderung}'::text[]);
+SELECT audit_table('ortszuordnung', true, false, '{id, tree_modified, letzte_aenderung}'::text[]);
 
 SET search_path TO public;
