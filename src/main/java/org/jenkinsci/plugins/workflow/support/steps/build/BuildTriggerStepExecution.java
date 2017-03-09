@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -105,6 +104,13 @@ public class BuildTriggerStepExecution extends AbstractStepExecutionImpl {
             Queue.Task task = (Queue.Task) item;
             listener.getLogger().println("Scheduling item: " + ModelHyperlinkNote.encodeTo(item));
             node.addAction(new LabelAction(Messages.BuildTriggerStepExecution_building_(task.getFullDisplayName())));
+            List<Action> actions = new ArrayList<>();
+            if (step.getWait()) {
+                StepContext context = getContext();
+                actions.add(new BuildTriggerAction(context, step.isPropagate()));
+                LOGGER.log(Level.FINER, "scheduling a build of {0} from {1}", new Object[]{task, context});
+            }
+            actions.add(new CauseAction(new Cause.UpstreamCause(invokingRun)));
             Integer quietPeriod = step.getQuietPeriod();
             if (quietPeriod == null) {
                 try {
@@ -121,9 +127,8 @@ public class BuildTriggerStepExecution extends AbstractStepExecutionImpl {
             if (quietPeriod == null) {
                 quietPeriod = Jenkins.getActiveInstance().getQuietPeriod();
             }
-            ScheduleResult scheduleResult = Jenkins.getActiveInstance().getQueue().schedule2(task, quietPeriod,
-                    Collections.<Action>singletonList(new CauseAction(new Cause.UpstreamCause(invokingRun))));
-            if (scheduleResult.isRefused() || scheduleResult.getItem() == null) {
+            ScheduleResult scheduleResult = Jenkins.getActiveInstance().getQueue().schedule2(task, quietPeriod,actions);
+            if (scheduleResult.isRefused()) {
                 throw new AbortException("Failed to trigger build of " + item.getFullName());
             }
         } else {
