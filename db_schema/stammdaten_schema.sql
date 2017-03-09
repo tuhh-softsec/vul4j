@@ -258,7 +258,6 @@ CREATE TABLE deskriptor_umwelt (
     s09 integer,
     s10 integer,
     s11 integer,
-    s12 integer,
     umw_id character varying(3) NOT NULL REFERENCES umwelt
 );
 

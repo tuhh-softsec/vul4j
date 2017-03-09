@@ -4,24 +4,22 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.5.1
--- Dumped by pg_dump version 9.5.0
-
--- Started on 2016-03-31 11:38:13
+-- Dumped from database version 9.6.2
+-- Dumped by pg_dump version 9.6.2
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
+SET row_security = off;
 
 SET search_path = stammdaten, pg_catalog;
 
 --
--- TOC entry 4694 (class 0 OID 535751)
--- Dependencies: 259
--- Data for Name: mess_stelle; Type: TABLE DATA; Schema: stammdaten; Owner: lada
+-- Data for Name: mess_stelle; Type: TABLE DATA; Schema: stammdaten; Owner: postgres
 --
 
 COPY mess_stelle (id, netzbetreiber_id, beschreibung, mess_stelle, mst_typ, amtskennung) FROM stdin;
@@ -43,10 +41,7 @@ M1602	16	Messfahrzeug / mobiles Messsystem 2 Thüringen	Mobiles Messsystem 2 TH	
 04002	04	Senator für Bau, Umwelt und Verkehr, Immissionsschutzreferat, Ansgaritorstraße 2, 28195 Bremen	04-Min	M	\N
 03132	03	Niedersächsisches Ministerium für Umwelt, Energie und Klimaschutz, Archivstr. 2, 30169 Hannover	03-Min MU	M	\N
 03141	03	Kernkraftwerk Lingen GmbH, Schüttorfer Str. 100, 49808 Lingen	KKW - KWL	M	\N
-03151	03	E.ON Kernkraftwerk Stade GmbH & Co oHG, 21657 Stade	KKW - KKS	M	\N
-03161	03	E.ON Kernkraftwerk Unterweser GmbH, TST / Strahlenschutz, Dedesdorfer Str. 2, 26935 Stadland	KKW - KKU	M	\N
 03181	03	Forschungsbergwerk Asse, Institut für Tiefenlagerung, Postfach 1461, 38248 Remlingen	(KTA - Asse)	M	\N
-03191	03	Kernkraftwerke Lippe-Ems GmbH, Am Hilgenberg, 49811 Lingen	KKW - KKE	M	\N
 03201	03	GNS-Werk Gorleben, Gesellschaft für Nuklear-Service mbH, Lüchower Str. 8, 29475 Gorleben	KTA - PKA	M	\N
 03221	03	Advanced Nuclear Fuels GmbH, Am Seitenkanal 1, 49811 Lingen	KTA - ANF	M	\N
 04020	04	Landesmessstelle für Radioaktivität, Universität Bremen / FB Physik/Elektrotechnik, Otto-Hahn-Allee 1 (NW 1), 28359 Bremen	brlm11	M	\N
@@ -79,6 +74,8 @@ M1602	16	Messfahrzeug / mobiles Messsystem 2 Thüringen	Mobiles Messsystem 2 TH	
 06020	06	Staatliches Medizinal-, Lebensmittel- und, Veterinäruntersuchungsamt Südhessen, Postfach 55 45, 65045 Wiesbaden	(helm41)-MLVA-Wiesbaden	M	\N
 06040	06	Staatliches Medizinal-, Lebensmittel- und, Veterinäruntersuchungsamt Mittelhessen, Marburger Str. 54, 35396 Gießen	(helm61)-MLVA-Gießen	M	\N
 06050	06	Hessische Landwirtschaftliche Versuchsanstalt, Am Versuchsfeld 13, 34128 Kassel	(helm71)-HLVA-Kassel	M	\N
+11031	11	\N	\N	M	\N
+03151	03	PreussenElektra GmbH, Kernkraftwerk Stade, Postfach 17 80, 21657 Stade	KKW - KKS	M	\N
 06060	06	Hessisches Landesamt für Umwelt und Geologie, Dienststelle Darmstadt - Dez. I5 -, Kasinostr. 60, 64293 Darmstadt	helm31-HLUG-Darmstadt	M	\N
 06112	06	Hessisches Landesamt für Umwelt und Geologie, Dienststelle Kassel - LDZ StrVG, Ludwig-Mond-Str. 33, 34121 Kassel	heldz1	M	\N
 05010	05	Landesbetrieb Mess- und Eichwesen Nordrhein-Westfalen, Betriebsstelle für Sonderaufgaben, Eichamt Dortmund, Marsbruchstr. 186, 44287 Dortmund	nwlm31	M	\N
@@ -131,7 +128,6 @@ M1602	16	Messfahrzeug / mobiles Messsystem 2 Thüringen	Mobiles Messsystem 2 TH	
 09020	09	Bayerisches Landesamt für Umwelt, Bürgermeister-Ulrich-Str. 160, 86179 Augsburg	(bylm21)	M	\N
 09030	09	Bayerisches Landesamt für Umwelt, Bürgermeister-Ulrich-Str. 160, 86179 Augsburg	bylm31	M	091800
 06122	06	Hessisches Ministerium für Umwelt, Klimaschutz, Landwirtschaft und Verbraucherschutz, Mainzer Straße 80, 65189 Wiesbaden	HE REI-AB	M	\N
-11031	11	\N	\N	M	\N
 09131	09	Kernkraftwerk Grafenrheinfeld (KKG), Postfach 7, 97506 Grafenrheinfeld	KKW - KKG	M	\N
 09040	09	Bayerisches Landesamt für Gesundheit und Lebensmittelsicherheit, Veterinärstr. 2, 85764 Oberschleißheim	(bylm61)	M	\N
 08061	08	Staatliche milchwirtschaftliche Lehr- und Forschungsanstalt, , 88239 Wangen im Allgäu	MLF	M	\N
@@ -165,10 +161,7 @@ M1602	16	Messfahrzeug / mobiles Messsystem 2 Thüringen	Mobiles Messsystem 2 TH	
 15020	15	Landesamt für Umweltschutz Sachsen-Anhalt, Fachbereich Medienübergreifender Umweltschutz, Fachgebiet Umweltradioaktivität, Ballerstedter Str. 11, 39606 Osterburg	salm21	M	\N
 09011	09	Bayerisches Landesamt für Umwelt, Dienststelle Kulmbach, Schloss Steinenhausen, 95326 Kulmbach	bylm71	M	091801
 14020	14	Staatliche Betriebsgesellschaft für Umwelt und Landwirtschaft (BfUL), Dresdner Str. 183, 09131 Chemnitz	snlm21-BfUL	M	\N
-13031	13	Energiewerke Nord GmbH - Kernkraftwerk Lubmin/Greifswald, Latzower Str. 1, 17509 Lubmin	KKW	M	\N
-13033	13	Energiewerke Nord GmbH - Zwischenlager Nord, Postfach 1125, 17507 Lubmin	KTA	M	\N
 03122	03	Niedersächsisches Landesamt für Verbraucherschutz und Lebensmittelsicherheit, Lebensmittelinstitut Braunschweig (Messstellen-Zentrale), Postfach 45 18, 38035 Braunschweig	MStZ	M	\N
-03171	03	E.ON Kernkraft GmbH, Gemeinschaftskernkraftwerk Grohnde, 31860 Emmerthal	KKW - KWG	M	\N
 03211	03	Konrad Schacht II, Eschestr. 55, 31224 Peine	KTA - Konrad	M	\N
 03231	03	Standortzwischenlager Lingen, Am Hilgenberg, 49811 Lingen	SZL	M	\N
 14041	14	Forschungszentrum Rossendorf e.V., Postfach 510119, 01314 Dresden	KTA	M	\N
@@ -239,6 +232,16 @@ M1202	12	Messfahrzeug / mobiles Messsystem 2 Brandenburg	Mobiles Messsystem 2 BB
 18001	18	Endlager für radioaktive Abfälle Morsleben (ERAM)	KTA - ERAM	M	\N
 08083	08	Umweltministerium  Baden-Württemberg, Postfach 10 34 39, 70029 Stuttgart	BW REI-AB	M	\N
 17002	17	Zentrales Institut des Sanitätsdienstes der Bundeswehr Kiel, Laborabteilung III, Lebensmittelchemie/Ökochemie, Kopperpahler Allee 120, 24119 Kronshagen	ZinstSanBw - KIEL	M	013002
+03161	03	PreussenElektra GmbH, Kernkraftwerk Unterweser, TST / Strahlenschutz, Dedesdorfer Str. 2, 26935 Stadland	KKW - KKU	M	\N
+03191	03	Kernkraftwerke Lippe-Ems GmbH, Kernkraftwerk Emsland, Am Hilgenberg 2, 49811 Lingen	KKW - KKE	M	\N
+13031	13	EWN Entsorgungswerk für Nuklearanlagen GmbH, Latzower Str. 1, 17509 Rubenow	KKW	M	\N
+13033	13	EWN Entsorgungswerk für Nuklearanlagen GmbH - Zwischenlager Nord, Postfach 1125, 17507 Lubmin	KTA	M	\N
+03171	03	PreussenElektra GmbH, Gemeinschaftskernkraftwerk Grohnde, Kraftwerksgelände, 31860 Emmerthal	KKW - KWG	M	\N
+M1801	18	Messfahrzeug / mobiles Messsystem 1 ASSE	Mobiles Messsystem 1 ASSE	B	\N
 \.
 
+
+--
+-- PostgreSQL database dump complete
+--
 

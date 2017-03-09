@@ -4,24 +4,22 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.5.1
--- Dumped by pg_dump version 9.5.0
-
--- Started on 2016-03-31 11:38:13
+-- Dumped from database version 9.6.2
+-- Dumped by pg_dump version 9.6.2
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
+SET row_security = off;
 
 SET search_path = stammdaten, pg_catalog;
 
 --
--- TOC entry 4695 (class 0 OID 535754)
--- Dependencies: 260
--- Data for Name: messgroesse; Type: TABLE DATA; Schema: stammdaten; Owner: lada
+-- Data for Name: messgroesse; Type: TABLE DATA; Schema: stammdaten; Owner: postgres
 --
 
 COPY messgroesse (id, beschreibung, messgroesse, default_farbe, idf_nuklid_key, ist_leitnuklid, eudf_nuklid_id, kennung_bvl) FROM stdin;
@@ -908,4 +906,20 @@ COPY messgroesse (id, beschreibung, messgroesse, default_farbe, idf_nuklid_key, 
 1039	Gesamt-Radon-Aktivität	Rn-Gesamt	\N	\N	f	\N	\N
 1040	Nullmessung (QS bei LIMS)	Nullmessung	\N	\N	f	\N	\N
 1041	Temperatur	Temperatur	\N	\N	f	\N	\N
+890	Iod, elementar und organisch gebunden	I 131GO	\N	I131GO	f	\N	\N
+891	Iod, elementar und organisch gebunden	I 133GO	\N	I133GO	f	\N	\N
+892	Iod, elementar und organisch gebunden	I 135GO	\N	I135GO	f	\N	\N
 \.
+
+
+--
+-- Name: messgroesse_id_seq; Type: SEQUENCE SET; Schema: stammdaten; Owner: postgres
+--
+
+SELECT pg_catalog.setval('messgroesse_id_seq', 1041, true);
+
+
+--
+-- PostgreSQL database dump complete
+--
+

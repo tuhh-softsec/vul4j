@@ -4,19 +4,23 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.5.1
--- Dumped by pg_dump version 9.5.0
-
--- Started on 2016-03-31 11:38:13
+-- Dumped from database version 9.6.2
+-- Dumped by pg_dump version 9.6.2
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
+SET row_security = off;
 
 SET search_path = stammdaten, pg_catalog;
+
+--
+-- Data for Name: ortszusatz; Type: TABLE DATA; Schema: stammdaten; Owner: postgres
+--
 
 COPY ortszusatz (ozs_id, ortszusatz) FROM stdin;
 FNE1291	Neckar (Einlaufkanal GKN), ca. bei km 129,1; Neckarwestheim
@@ -1693,5 +1697,78 @@ SBR1201	Brieskower See; Brieskow-Finkenheerd
 SSC1201	Stechlinsee; Neuglobsow; PE-Stelle bei Fischerei
 SNE1201	Nehmitzsee; Rheinsberg; KKR Kühlwassereinlaufkanal aus dem Nehmitzsee
 SBC1201	Bückwitzer See; Bückwitz
+STW0600	Twistetalsperre
+FEL6180	Elbe km 618,00; Billwerder Bucht
+SSA1600	Talsperre Scheibe-Alsbach
+FGL0149	Glan km 14,9; Odenbach
+FSB0101	Schwarzbach/Rheinland-Pfalz km 10,1; Contwig
+SHZ0100	HZG-Teich
+STW0601	Twistetalsperre; Naturschutzgebiet
+M020001	MVR Hamburg
+FRU0142	Ruhr km 14,16; Mülheim an der Ruhr
+SOT1300	Orthsee
+SOT1301	Orthsee; Hohen Wangelin
+UELM	Endlager für radioaktive Abfälle Morsleben (ERAM)
+U09K	Forschungsneutronenquelle Heinz Maier-Leibnitz
+UELA	Endlager für radioaktive Abfälle Asse
+U05G	AVR-Versuchskernkraftwerk Jülich
+U08K	Karlsruher Institut für Technologie - Campus Nord (Einrichtungen am Standort)
+U08O	EnKK Obrigheim
+U08N	EnKK Neckarwestheim
+U08P	EnKK Philippsburg
+U08H	DKFZ Heidelberg
+U08W	KKW Wyhl
+U08M	Abraumhalde Menz.
+U09A	KKW Isar 1+2
+U09B	KKW Isar1
+U09C	KKW Isar2
+U09D	KKW Grafenrheinfeld
+U09E	KKW Gundremmingen Block B/C
+U09F	Versuchs-AKW Kahl a.M.
+U09G	Forschungsreaktor München
+U09H	Siemens Brennelementewerk Hanau, Standort Karlstein
+U09I	Siemens AG, Karlstein
+U09J	AREVA GmbH, Forschungszentrum Erlangen-Süd (FZE)
+U11B	Experimentierreakt. II Berlin
+U12R	KKW Rheinsberg
+U06B	KKW Biblis und BE-Zwischenlager
+U03F	Forschungsbergwerk Asse
+U13A	KKW Lubmin/Greifswald
+U13B	Zwischenlager Nord
+U03S	KKW Stade
+U03U	KKW Unterweser
+U03G	KKW Grohnde
+U03E	KKW Emsland
+U03B	Brennelementefertigungsanl. Lingen
+U03P	GNS - Werk Gorleben -
+U03K	Endlager Konrad
+U05K	KKW Würgassen
+U05T	Thorium-Hochtemp.reakt. Hamm-Uentrop
+U05F	Forschungszentrum Jülich
+U05B	Brennelement-Zwischenl. Ahaus
+U05U	Urananreicherungsanlage Gronau
+U07M	KKW Mülheim-Kärlich
+U07U	Uni Mainz
+U15M	nicht benutzen, jetzt UELM, Endlager für radioaktive Abfälle Morsleben (ERAM)
+U14R	Forschungszentrum Rossendorf
+U01A	Helmholtz-Zentrum Geesthacht
+U01B	KKW Krümmel
+U01C	KKW Brunsbüttel
+U01D	KKW Brokdorf
+UCHL	KTA Leibstadt mit Beznau und Villigen
+U03L	KKW Lingen
+UFRC	KKW Cattenom
+UFRF	KKW Fessenheim
+U03Z	Standortzwischenlager Lingen
+U01I	Interimslager Krümmel
+U01K	Standortzwischenlager Krümmel
+U01L	Standortzwischenlager Brunsbüttel
+U01M	Standortzwischenlager Brokdorf
+U03A	Standortzwischenlager Grohnde
+U03C	Standortzwischenlager Unterweser
 \.
 
+
+--
+-- PostgreSQL database dump complete
+--
