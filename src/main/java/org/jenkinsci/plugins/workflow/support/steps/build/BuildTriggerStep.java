@@ -224,9 +224,6 @@ public class BuildTriggerStep extends AbstractStepImpl {
             if (item == null) {
                 return FormValidation.error(Messages.BuildTriggerStep_cannot_find(value));
             }
-            if (item instanceof Job) {
-                return FormValidation.ok();
-            }
             if (item instanceof Queue.Task) {
                 return FormValidation.ok();
             }
