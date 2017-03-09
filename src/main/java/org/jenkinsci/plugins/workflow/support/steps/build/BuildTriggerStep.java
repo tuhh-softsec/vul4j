@@ -133,7 +133,7 @@ public class BuildTriggerStep extends AbstractStepImpl {
         }
 
         public AutoCompletionCandidates doAutoCompleteJob(@AncestorInPath ItemGroup<?> container, @QueryParameter final String value) {
-            // TODO remove code copy&pasted from AutoCompletionCandidates.ofJobNames when it supports union of classes
+            // TODO remove code copy&pasted from AutoCompletionCandidates.ofJobNames when it supports testing outside Item bound
             final AutoCompletionCandidates candidates = new AutoCompletionCandidates();
             class Visitor extends ItemVisitor {
                 String prefix;
@@ -154,7 +154,7 @@ public class BuildTriggerStep extends AbstractStepImpl {
                             && i.hasPermission(Item.READ)
                         // and read permission required
                             ) {
-                        if ((i instanceof ParameterizedJobMixIn.ParameterizedJob || i instanceof Queue.Task) && n.startsWith(value))
+                        if (i instanceof Queue.Task && n.startsWith(value))
                             candidates.add(n);
 
                         // recurse
@@ -218,7 +218,7 @@ public class BuildTriggerStep extends AbstractStepImpl {
 
         public FormValidation doCheckJob(@AncestorInPath ItemGroup<?> context, @QueryParameter String value) {
             if (StringUtils.isBlank(value)) {
-                return FormValidation.ok();
+                return FormValidation.warning(Messages.BuildTriggerStep_no_job_configured());
             }
             Item item = Jenkins.getActiveInstance().getItem(value, context, Item.class);
             if (item == null) {
