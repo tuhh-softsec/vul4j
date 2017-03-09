@@ -180,9 +180,9 @@ public class BuildTriggerStep extends AbstractStepImpl {
                 if (value.startsWith("/"))
                     new Visitor("/").onItemGroup(Jenkins.getInstance());
 
-                for (String p = "../"; value.startsWith(p); p += "../") {
+                for (StringBuilder p = new StringBuilder("../"); value.startsWith(p.toString()); p .append("../")) {
                     container = ((Item) container).getParent();
-                    new Visitor(p).onItemGroup(container);
+                    new Visitor(p.toString()).onItemGroup(container);
                 }
             }
             return candidates;
