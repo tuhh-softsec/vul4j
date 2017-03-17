@@ -121,7 +121,13 @@ LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = land, public;
 
-CREATE OR REPLACE FUNCTION audit_table(target_table regclass, audit_rows boolean, audit_query_text boolean, ignored_cols text[]) RETURNS void AS $body$
+CREATE OR REPLACE FUNCTION audit_table(
+    target_table regclass,
+    audit_rows boolean,
+    audit_query_text boolean,
+    ignored_cols text[]
+) RETURNS void AS
+$body$
 DECLARE
   stm_targets text = 'INSERT OR UPDATE OR DELETE OR TRUNCATE';
   _q_txt text;
@@ -215,7 +221,8 @@ FROM audit_trail;
 
 
 SELECT audit_table('probe', true, false, '{id, tree_modified, letzte_aenderung}'::text[]);
-SELECT audit_table('messung', true, false, '{id,, tree_modified, letzte_aenderung, status}'::text[]);
+SELECT audit_table('messung', true, false,
+    '{id, tree_modified, letzte_aenderung, status}'::text[]);
 SELECT audit_table('messwert', true, false, '{id, tree_modified, letzte_aenderung}'::text[]);
 SELECT audit_table('kommentar_p', true, false, '{id, tree_modified, letzte_aenderung}'::text[]);
 SELECT audit_table('kommentar_m', true, false, '{id, tree_modified, letzte_aenderung}'::text[]);
