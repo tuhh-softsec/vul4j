@@ -32,6 +32,9 @@ echo "ROLE_PW = $ROLE_PW"
 DB_NAME=${3:-$ROLE_NAME}
 echo "DB_NAME = $DB_NAME"
 
+# Stop on error any execution of SQL via psql
+DB_CONNECT_STRING="-v ON_ERROR_STOP=on "
+
 # if variable DB_SRV and otional DB_PORT is set a remote database connection will be used
 if [ -n "$DB_SRV" ] ; then DB_CONNECT_STRING="-h $DB_SRV" ; fi
 if [ -n "$DB_SRV" -a -n "$DB_PORT"  ] ; then
