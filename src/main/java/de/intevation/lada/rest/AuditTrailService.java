@@ -152,13 +152,19 @@ public class AuditTrailService {
                 "\"message\":698,\"data\":null}";
             return ret;
         }
+
         Integer pId = null;
+        String ret = "{\"success\": false," +
+            "\"message\":600,\"data\":null}";
         try {
             pId = Integer.valueOf(id);
         }
         catch(NumberFormatException nfe) {
-            String ret = "{\"success\": false," +
-                "\"message\":600,\"data\":null}";
+            return ret;
+        }
+        // Get the plain probe object to have the hauptproben_nr.
+        Probe probe = repository.getByIdPlain(Probe.class, pId, "land");
+        if (probe == null) {
             return ret;
         }
 
@@ -174,9 +180,6 @@ public class AuditTrailService {
         List<AuditTrailProbe> audit =
             repository.filterPlain(builder.getQuery(), "land");
 
-        // Get the plain probe object to have the hauptproben_nr.
-        // If only subobjects 
-        Probe probe = repository.getByIdPlain(Probe.class, pId, "land");
         // Create an empty JsonObject
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode responseNode = mapper.createObjectNode();
@@ -264,15 +267,21 @@ public class AuditTrailService {
                 "\"message\":698,\"data\":null}";
             return ret;
         }
+
         Integer mId = null;
+        String ret = "{\"success\": false," +
+            "\"message\":600,\"data\":null}";
         try {
             mId = Integer.valueOf(id);
         }
         catch(NumberFormatException nfe) {
-            String ret = "{\"success\": false," +
-                "\"message\":600,\"data\":null}";
             return ret;
         }
+        Messung messung = repository.getByIdPlain(Messung.class, mId, "land");
+        if (messung == null) {
+            return ret;
+        }
+
         QueryBuilder<AuditTrailMessung> builder =
             new QueryBuilder<AuditTrailMessung>(
                 repository.entityManager("land"),
@@ -284,7 +293,6 @@ public class AuditTrailService {
         List<AuditTrailMessung> audit =
             repository.filterPlain(builder.getQuery(), "land");
 
-        Messung messung = repository.getByIdPlain(Messung.class, mId, "land");
         // Create an empty JsonObject
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode responseNode = mapper.createObjectNode();
