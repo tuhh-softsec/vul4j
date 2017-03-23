@@ -72,11 +72,6 @@ psql $DB_CONNECT_STRING -d $DB_NAME --command \
             ON ALL TABLES IN SCHEMA stammdaten, land TO $ROLE_NAME;"
 
 if [ "$NO_DATA" != "true" ]; then
-    if [ -f $DIR/lada_private_data.zip ]; then
-        echo inclue private data
-        unzip -o lada_private_data.zip
-    fi
-
     echo import stammdaten.verwaltungseinheit
     psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_data_verwaltungseinheit.sql
 
