@@ -1,28 +1,23 @@
-\set ON_ERROR_STOP on
-
---
+\set ON_ERROR_STOP on--
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.5.1
--- Dumped by pg_dump version 9.5.0
-
--- Started on 2016-03-31 11:38:13
+-- Dumped from database version 9.6.2
+-- Dumped by pg_dump version 9.6.2
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
+SET row_security = off;
 
 SET search_path = stammdaten, pg_catalog;
 
-
 --
--- TOC entry 4715 (class 0 OID 535823)
--- Dependencies: 281
--- Data for Name: query; Type: TABLE DATA; Schema: stammdaten; Owner: lada
+-- Data for Name: query; Type: TABLE DATA; Schema: stammdaten; Owner: postgres
 --
 
 COPY query (id, name, type, sql, description) FROM stdin;
@@ -43,9 +38,7 @@ COPY query (id, name, type, sql, description) FROM stdin;
 
 
 --
--- TOC entry 4683 (class 0 OID 535720)
--- Dependencies: 248
--- Data for Name: filter; Type: TABLE DATA; Schema: stammdaten; Owner: lada
+-- Data for Name: filter; Type: TABLE DATA; Schema: stammdaten; Owner: postgres
 --
 
 COPY filter (id, query_id, data_index, type, label, multiselect) FROM stdin;
@@ -66,9 +59,21 @@ COPY filter (id, query_id, data_index, type, label, multiselect) FROM stdin;
 
 
 --
--- TOC entry 4717 (class 0 OID 535831)
--- Dependencies: 283
--- Data for Name: result; Type: TABLE DATA; Schema: stammdaten; Owner: lada
+-- Name: filter_id_seq; Type: SEQUENCE SET; Schema: stammdaten; Owner: postgres
+--
+
+SELECT pg_catalog.setval('filter_id_seq', 18, true);
+
+
+--
+-- Name: query_id_seq; Type: SEQUENCE SET; Schema: stammdaten; Owner: postgres
+--
+
+SELECT pg_catalog.setval('query_id_seq', 15, true);
+
+
+--
+-- Data for Name: result; Type: TABLE DATA; Schema: stammdaten; Owner: postgres
 --
 
 COPY result (id, query_id, data_index, header, width, flex, index) FROM stdin;
@@ -188,4 +193,16 @@ COPY result (id, query_id, data_index, header, width, flex, index) FROM stdin;
 125	15	eGem	E-Gemeinde	200	f	15
 126	15	probeId	Probe_Id	100	f	0
 \.
+
+
+--
+-- Name: result_id_seq; Type: SEQUENCE SET; Schema: stammdaten; Owner: postgres
+--
+
+SELECT pg_catalog.setval('result_id_seq', 126, true);
+
+
+--
+-- PostgreSQL database dump complete
+--
 

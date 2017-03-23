@@ -40,7 +40,7 @@ fi
 DB_CONNECT_STRING="$DB_CONNECT_STRING -U postgres"
 echo "DB_CONNECT_STRING = $DB_CONNECT_STRING"
 
-if [ `psql $DB_CONNECT_STRING -t --command "SELECT count(*) FROM pg_catalog.pg_user WHERE usename = '$ROLE_NAME'"` -eq 0 ] ; then
+if [ `psql $DB_CONNECT_STRING -t --quiet --command "SELECT count(*) FROM pg_catalog.pg_user WHERE usename = '$ROLE_NAME'"` -eq 0 ] ; then
   echo create user $ROLE_NAME
   psql $DB_CONNECT_STRING --command "CREATE USER $ROLE_NAME PASSWORD '$ROLE_PW';"
 fi
@@ -72,6 +72,11 @@ psql $DB_CONNECT_STRING -d $DB_NAME --command \
             ON ALL TABLES IN SCHEMA stammdaten, land TO $ROLE_NAME;"
 
 if [ "$NO_DATA" != "true" ]; then
+    if [ -f $DIR/lada_private_data.zip ]; then
+        echo inclue private data
+        unzip -o lada_private_data.zip
+    fi
+
     echo import stammdaten.verwaltungseinheit
     psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_data_verwaltungseinheit.sql
 
@@ -127,9 +132,8 @@ if [ "$NO_DATA" != "true" ]; then
             http://sg.geodatenzentrum.de/web_download/vg/vg250_${TS}/utm32s/shape/vg250_${TS}.utm32s.shape.ebenen.zip
     fi
     unzip -u vg250_${TS}.utm32s.shape.ebenen.zip "*VG250_GEM*"
-#    cd vg250_${TS}.utm32s.shape.ebenen/vg250_ebenen/
+
     shp2pgsql -s 25832:4326 vg250_${TS}.utm32s.shape.ebenen/vg250_ebenen/VG250_GEM geo.gem_utm | psql -q $DB_CONNECT_STRING -d $DB_NAME
-#   rm -rf vg250_${TS}.utm32s.shape.ebenen
 
     echo fille stammdaten.verwaltungsgrenze
     psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_fill_verwaltungsgrenze.sql
