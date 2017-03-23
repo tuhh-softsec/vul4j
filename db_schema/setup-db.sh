@@ -121,6 +121,9 @@ if [ "$NO_DATA" != "true" ]; then
     echo import lada test data
     psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/lada_data.sql
 
+    echo import lada messprogramm
+    psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/lada_messprogramm.sql
+
     echo create schema geo
     psql $DB_CONNECT_STRING -d $DB_NAME --command "CREATE SCHEMA geo AUTHORIZATION $ROLE_NAME"
 
