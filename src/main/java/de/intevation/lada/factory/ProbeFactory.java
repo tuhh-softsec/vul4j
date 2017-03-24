@@ -381,6 +381,7 @@ public class ProbeFactory {
             new QueryBuilder<OrtszuordnungMp>(
                 repository.entityManager("land"),
                 OrtszuordnungMp.class);
+        builderOrt.and("messprogrammId", messprogramm.getId());
         List<OrtszuordnungMp> orte =
             repository.filterPlain(builderOrt.getQuery(), "land");
         for (OrtszuordnungMp ort : orte) {
