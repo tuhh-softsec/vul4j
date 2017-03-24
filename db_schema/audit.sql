@@ -89,7 +89,7 @@ BEGIN
             RETURN NULL;
         END IF;
     ELSIF (TG_OP = 'INSERT' AND TG_LEVEL = 'ROW') THEN
-        audit_row.row_data = row_to_json(NEW)::JSONB - excluded_cols;
+        audit_row.row_data = row_to_json(NEW)::JSONB;
         audit_row.changed_fields = jsonb_strip_nulls(row_to_json(NEW)::JSONB - excluded_cols);
     ELSE
         RAISE EXCEPTION '[land.if_modified_func] - Trigger func added as trigger for unhandled case: %, %',TG_OP, TG_LEVEL;
@@ -203,12 +203,11 @@ FROM audit_trail;
 
 
 SELECT audit_table('probe', true, false, '{id, tree_modified, letzte_aenderung}'::text[]);
-SELECT audit_table('messung', true, false,
-    '{id, tree_modified, letzte_aenderung, status}'::text[]);
-SELECT audit_table('messwert', true, false, '{id, tree_modified, letzte_aenderung}'::text[]);
-SELECT audit_table('kommentar_p', true, false, '{id, tree_modified, letzte_aenderung}'::text[]);
-SELECT audit_table('kommentar_m', true, false, '{id, tree_modified, letzte_aenderung}'::text[]);
-SELECT audit_table('zusatz_wert', true, false, '{id, tree_modified, letzte_aenderung}'::text[]);
-SELECT audit_table('ortszuordnung', true, false, '{id, tree_modified, letzte_aenderung}'::text[]);
+SELECT audit_table('messung', true, false, '{id, probe_id, tree_modified, letzte_aenderung, status}'::text[]);
+SELECT audit_table('messwert', true, false, '{id, messungs_id, tree_modified, letzte_aenderung}'::text[]);
+SELECT audit_table('kommentar_p', true, false, '{id, probe_id, tree_modified, letzte_aenderung}'::text[]);
+SELECT audit_table('kommentar_m', true, false, '{id, messungs_id, tree_modified, letzte_aenderung}'::text[]);
+SELECT audit_table('zusatz_wert', true, false, '{id, probe_id, tree_modified, letzte_aenderung}'::text[]);
+SELECT audit_table('ortszuordnung', true, false, '{id, probe_id, tree_modified, letzte_aenderung}'::text[]);
 
 SET search_path TO public;
