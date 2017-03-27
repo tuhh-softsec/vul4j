@@ -1,13 +1,10 @@
 \set ON_ERROR_STOP on
-
 --
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.5.1
--- Dumped by pg_dump version 9.5.0
-
--- Started on 2016-03-31 11:38:13
+-- Dumped from database version 9.6.2
+-- Dumped by pg_dump version 9.6.2
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -18,11 +15,8 @@ SET client_min_messages = warning;
 
 SET search_path = stammdaten, pg_catalog;
 
-
 --
--- TOC entry 4715 (class 0 OID 535823)
--- Dependencies: 281
--- Data for Name: query; Type: TABLE DATA; Schema: stammdaten; Owner: lada
+-- Data for Name: query; Type: TABLE DATA; Schema: stammdaten; Owner: postgres
 --
 
 COPY query (id, name, type, sql, description) FROM stdin;
@@ -30,44 +24,52 @@ COPY query (id, name, type, sql, description) FROM stdin;
 11	Probenehmer	4		Abfrage der Probenehmer
 12	Datensatzerzeuger	5		Abfrage der Datensatzerzeuger
 14	Messprogrammkategorie	6		Abfrage der Messprogrammkategorien
-9	kein Filter	2	SELECT messprogramm.id, stammdaten.mess_stelle.netzbetreiber_id AS netzId, CASE WHEN messprogramm.mst_id = messprogramm.labor_mst_id THEN messprogramm.mst_id ELSE messprogramm.mst_id || '-' || messprogramm.labor_mst_id END AS mstLaborId, datenbasis.datenbasis AS dBasis, CASE WHEN messprogramm.ba_id = '1' THEN 'RB' ELSE 'IB' END AS messRegime, probenart.probenart AS pArt, messprogramm.umw_id AS umwId, messprogramm.media_desk AS deskriptoren, messprogramm.probenintervall AS intervall, ort.ort_id AS ortId, ort.gem_id AS eGemId, verwaltungseinheit.bezeichnung AS eGem FROM land.messprogramm LEFT JOIN stammdaten.mess_stelle ON (messprogramm.mst_id = stammdaten.mess_stelle.id) LEFT JOIN stammdaten.datenbasis ON (messprogramm.datenbasis_id = datenbasis.id) LEFT JOIN stammdaten.probenart ON (messprogramm.probenart_id = probenart.id) LEFT OUTER JOIN land.ortszuordnung_mp ON ( messprogramm.id = ortszuordnung_mp.messprogramm_id AND ortszuordnung_mp.ortszuordnung_typ = 'E' ) LEFT OUTER JOIN stammdaten.ort ON (ortszuordnung_mp.ort_id = ort.id) LEFT OUTER JOIN stammdaten.verwaltungseinheit ON (ort.gem_id = verwaltungseinheit.id) 	Abfrage der Messprogramme ohne Filter
-1	kein Filter	0	SELECT probe.id AS id, probe.hauptproben_nr AS hpNr, datenbasis.datenbasis AS dBasis, stammdaten.mess_stelle.netzbetreiber_id AS netzId, probe.mst_id AS mstId, probe.umw_id AS umwId, probenart.probenart AS pArt, to_char(probe.probeentnahme_beginn, 'dd.mm.YYYY hh24:MI') AS peBegin, to_char(probe.probeentnahme_ende, 'dd.mm.YYYY hh24:MI') AS peEnd, ort.ort_id AS ortId, ort.gem_id AS eGemId, verwaltungseinheit.bezeichnung AS eGem, probe.id_alt AS probeId FROM land.probe LEFT JOIN stammdaten.mess_stelle ON (probe.mst_id = stammdaten.mess_stelle.id) LEFT JOIN stammdaten.datenbasis ON (probe.datenbasis_id = datenbasis.id) LEFT JOIN stammdaten.probenart ON (probe.probenart_id = probenart.id) LEFT OUTER JOIN land.ortszuordnung ON ( probe.id = ortszuordnung.probe_id AND ortszuordnung.ortszuordnung_typ = 'E' ) LEFT OUTER JOIN stammdaten.ort ON (ortszuordnung.ort_id = ort.id) LEFT OUTER JOIN stammdaten.verwaltungseinheit ON (ort.gem_id = verwaltungseinheit.id)	Abfrage aller  Proben ohne Filter
-2	HP-Nr-Filter	0	SELECT probe.id AS id, probe.hauptproben_nr AS hpNr, datenbasis.datenbasis AS dBasis, stammdaten.mess_stelle.netzbetreiber_id AS netzId, probe.mst_id AS mstId, probe.umw_id AS umwId, probenart.probenart AS pArt, to_char(probe.probeentnahme_beginn, 'dd.mm.YYYY hh24:MI') AS peBegin, to_char(probe.probeentnahme_ende, 'dd.mm.YYYY hh24:MI') AS peEnd, ort.ort_id AS ortId, ort.gem_id AS eGemId, verwaltungseinheit.bezeichnung AS eGem, probe.id_alt AS probeId FROM land.probe LEFT JOIN stammdaten.mess_stelle ON (probe.mst_id = stammdaten.mess_stelle.id) LEFT JOIN stammdaten.datenbasis ON (probe.datenbasis_id = datenbasis.id) LEFT JOIN stammdaten.probenart ON (probe.probenart_id = probenart.id) LEFT OUTER JOIN land.ortszuordnung ON ( probe.id = ortszuordnung.probe_id AND ortszuordnung.ortszuordnung_typ = 'E' ) LEFT OUTER JOIN stammdaten.ort ON (ortszuordnung.ort_id = ort.id) LEFT OUTER JOIN stammdaten.verwaltungseinheit ON (ort.gem_id = verwaltungseinheit.id) WHERE (probe.hauptproben_nr LIKE CASE WHEN :hpNrFilter = '' THEN '%' ELSE :hpNrFilter END)	Abfrage der Proben mit Wildcardfilter für die Hauptproben-Nr.
-3	Probe-ID-Filter	0	SELECT probe.id AS id, probe.hauptproben_nr AS hpNr, datenbasis.datenbasis AS dBasis, stammdaten.mess_stelle.netzbetreiber_id AS netzId, probe.mst_id AS mstId, probe.umw_id AS umwId, probenart.probenart AS pArt, to_char(probe.probeentnahme_beginn, 'dd.mm.YYYY hh24:MI') AS peBegin, to_char(probe.probeentnahme_ende, 'dd.mm.YYYY hh24:MI') AS peEnd, ort.ort_id AS ortId, ort.gem_id AS eGemId, verwaltungseinheit.bezeichnung AS eGem, probe.id_alt AS probeId FROM land.probe LEFT JOIN stammdaten.datenbasis ON (probe.datenbasis_id = datenbasis.id) LEFT JOIN stammdaten.probenart ON (probe.probenart_id = probenart.id) LEFT JOIN stammdaten.mess_stelle ON (probe.mst_id = stammdaten.mess_stelle.id) LEFT OUTER JOIN land.ortszuordnung ON ( probe.id = ortszuordnung.probe_id AND ortszuordnung.ortszuordnung_typ = 'E' ) LEFT OUTER JOIN stammdaten.ort ON (ortszuordnung.ort_id = ort.id) LEFT OUTER JOIN stammdaten.verwaltungseinheit ON (ort.gem_id = verwaltungseinheit.id) WHERE (probe.id_alt LIKE CASE WHEN :probeIdFilter = '' THEN '%' ELSE :probeIdFilter END)	Abfrage der Proben mit Wildcardfilter für die Probe_id
-4	MST und UMW	0	SELECT probe.id AS id, probe.hauptproben_nr AS hpNr, datenbasis.datenbasis AS dBasis, stammdaten.mess_stelle.netzbetreiber_id AS netzId, probe.mst_id AS mstId, probe.umw_id AS umwId, probenart.probenart AS pArt, to_char(probe.probeentnahme_beginn, 'dd.mm.YYYY hh24:MI') AS peBegin, to_char(probe.probeentnahme_ende, 'dd.mm.YYYY hh24:MI') AS peEnd, ort.ort_id AS ortId, ort.gem_id AS eGemId, verwaltungseinheit.bezeichnung AS eGem, probe.id_alt AS probeId FROM land.probe LEFT JOIN stammdaten.mess_stelle ON (probe.mst_id = stammdaten.mess_stelle.id) LEFT JOIN stammdaten.datenbasis ON (probe.datenbasis_id = datenbasis.id) LEFT JOIN stammdaten.probenart ON (probe.probenart_id = probenart.id) LEFT OUTER JOIN land.ortszuordnung ON ( probe.id = ortszuordnung.probe_id AND ortszuordnung.ortszuordnung_typ = 'E' ) LEFT OUTER JOIN stammdaten.ort ON (ortszuordnung.ort_id = ort.id) LEFT OUTER JOIN stammdaten.verwaltungseinheit ON (ort.gem_id = verwaltungseinheit.id) WHERE (probe.mst_id = :mstIdFilter OR '' = :mstIdFilter) AND (probe.umw_id = :umwIdFilter OR '' = :umwIdFilter)	Abfrage der Proben gefiltert nach Messtellen ID und ID des Umweltbereichs
-5	Proben pro Land	0	SELECT probe.id AS id, probe.hauptproben_nr AS hpNr, datenbasis.datenbasis AS dBasis, stammdaten.mess_stelle.netzbetreiber_id AS netzId, probe.mst_id AS mstId, probe.umw_id AS umwId, probenart.probenart AS pArt, to_char(probe.probeentnahme_beginn, 'dd.mm.YYYY hh24:MI') AS peBegin, to_char(probe.probeentnahme_ende, 'dd.mm.YYYY hh24:MI') AS peEnd, ort.ort_id AS ortId, ort.gem_id AS eGemId, verwaltungseinheit.bezeichnung AS eGem, probe.id_alt AS probeId FROM land.probe LEFT JOIN stammdaten.mess_stelle ON (probe.mst_id = stammdaten.mess_stelle.id) LEFT JOIN stammdaten.datenbasis ON (probe.datenbasis_id = datenbasis.id) LEFT JOIN stammdaten.probenart ON (probe.probenart_id = probenart.id) LEFT OUTER JOIN land.ortszuordnung ON ( probe.id = ortszuordnung.probe_id AND ortszuordnung.ortszuordnung_typ = 'E' ) LEFT OUTER JOIN stammdaten.ort ON (ortszuordnung.ort_id = ort.id) LEFT OUTER JOIN stammdaten.verwaltungseinheit ON (ort.gem_id = verwaltungseinheit.id) WHERE (stammdaten.mess_stelle.netzbetreiber_id = :netzIdFilter OR '' = :netzIdFilter)	Proben gefiltert nach Ländern
 7	Proben pro Land und UMW (Multiselect)	0	SELECT probe.id AS id, probe.hauptproben_nr AS hpNr, datenbasis.datenbasis AS dBasis, stammdaten.mess_stelle.netzbetreiber_id AS netzId, probe.mst_id AS mstId, probe.umw_id AS umwId, probenart.probenart AS pArt, to_char(probe.probeentnahme_beginn, 'dd.mm.YYYY hh24:MI') AS peBegin, to_char(probe.probeentnahme_ende, 'dd.mm.YYYY hh24:MI') AS peEnd, ort.ort_id AS ortId, ort.gem_id AS eGemId, verwaltungseinheit.bezeichnung AS eGem, probe.id_alt AS probeId FROM land.probe LEFT JOIN stammdaten.mess_stelle ON (probe.mst_id = stammdaten.mess_stelle.id) LEFT JOIN stammdaten.datenbasis ON (probe.datenbasis_id = datenbasis.id) LEFT JOIN stammdaten.probenart ON (probe.probenart_id = probenart.id) LEFT OUTER JOIN land.ortszuordnung ON ( probe.id = ortszuordnung.probe_id AND ortszuordnung.ortszuordnung_typ = 'E' ) LEFT OUTER JOIN stammdaten.ort ON (ortszuordnung.ort_id = ort.id) LEFT OUTER JOIN stammdaten.verwaltungseinheit ON (ort.gem_id = verwaltungseinheit.id) WHERE (stammdaten.mess_stelle.netzbetreiber_id = :netzIdFilter OR '' =:netzIdFilter) AND (probe.umw_id SIMILAR TO (:umwIdFilter) OR '' = :umwIdFilter)	Abfrage aller Proben gefiltert pro Land und Umweltbereich (mit Mehrfachauswahl)
 15	kein Filter	1	SELECT messung.id, probe.id AS probeId, probe.hauptproben_nr AS hpNr, messung.nebenproben_nr AS npNr, to_char(status_protokoll.datum, 'dd.mm.YYYY hh24:MI') AS statusD, stammdaten.status_stufe.stufe AS statusSt, stammdaten.status_wert.wert AS statusW, datenbasis.datenbasis AS dBasis, stammdaten.mess_stelle.netzbetreiber_id AS netzId, probe.mst_id AS mstId, probe.umw_id AS umwId, probenart.probenart AS pArt, to_char(probe.probeentnahme_beginn, 'dd.mm.YYYY hh24:MI') AS peBegin, to_char(probe.probeentnahme_ende, 'dd.mm.YYYY hh24:MI') AS peEnd, ort.ort_id AS ortId, ort.gem_id AS eGemId, verwaltungseinheit.bezeichnung AS eGem FROM land.probe LEFT JOIN stammdaten.mess_stelle ON (probe.mst_id = stammdaten.mess_stelle.id) INNER JOIN land.messung ON probe.id = messung.probe_id INNER JOIN land.status_protokoll ON messung.STATUS = status_protokoll.id LEFT JOIN stammdaten.status_kombi ON status_protokoll.status_kombi = stammdaten.status_kombi.id LEFT JOIN stammdaten.status_wert ON stammdaten.status_wert.id = stammdaten.status_kombi.wert_id LEFT JOIN stammdaten.status_stufe ON stammdaten.status_stufe.id = stammdaten.status_kombi.stufe_id LEFT JOIN stammdaten.datenbasis ON (probe.datenbasis_id = datenbasis.id) LEFT JOIN stammdaten.probenart ON (probe.probenart_id = probenart.id) LEFT JOIN land.ortszuordnung ON ( probe.id = ortszuordnung.probe_id AND ortszuordnung.ortszuordnung_typ = 'E' ) LEFT JOIN stammdaten.ort ON (ortszuordnung.ort_id = ort.id) LEFT JOIN stammdaten.verwaltungseinheit ON (ort.gem_id = verwaltungseinheit.id) 	kein Filter
 13	nach Status	1	SELECT messung.id, probe.id AS probeId, probe.hauptproben_nr AS hpNr, messung.nebenproben_nr AS npNr, to_char(status_protokoll.datum, 'dd.mm.YYYY hh24:MI') AS statusD, stammdaten.status_stufe.stufe AS statusSt, stammdaten.status_wert.wert AS statusW, datenbasis.datenbasis AS dBasis, stammdaten.mess_stelle.netzbetreiber_id AS netzId, probe.mst_id AS mstId, probe.umw_id AS umwId, probenart.probenart AS pArt, to_char(probe.probeentnahme_beginn, 'dd.mm.YYYY hh24:MI') AS peBegin, to_char(probe.probeentnahme_ende, 'dd.mm.YYYY hh24:MI') AS peEnd, ort.ort_id AS ortId, ort.gem_id AS eGemId, verwaltungseinheit.bezeichnung AS eGem FROM land.probe LEFT JOIN stammdaten.mess_stelle ON (probe.mst_id = stammdaten.mess_stelle.id) INNER JOIN land.messung ON probe.id = messung.probe_id INNER JOIN land.status_protokoll ON messung.STATUS = status_protokoll.id LEFT JOIN stammdaten.status_kombi ON status_protokoll.status_kombi = stammdaten.status_kombi.id LEFT JOIN stammdaten.status_wert ON stammdaten.status_wert.id = stammdaten.status_kombi.wert_id LEFT JOIN stammdaten.status_stufe ON stammdaten.status_stufe.id = stammdaten.status_kombi.stufe_id LEFT JOIN stammdaten.datenbasis ON (probe.datenbasis_id = datenbasis.id) LEFT JOIN stammdaten.probenart ON (probe.probenart_id = probenart.id) LEFT JOIN land.ortszuordnung ON ( probe.id = ortszuordnung.probe_id AND ortszuordnung.ortszuordnung_typ = 'E' ) LEFT JOIN stammdaten.ort ON (ortszuordnung.ort_id = ort.id) LEFT JOIN stammdaten.verwaltungseinheit ON (ort.gem_id = verwaltungseinheit.id) WHERE CAST(stammdaten.status_wert.id AS text) SIMILAR TO CASE WHEN :statusFilter = '' THEN '%' ELSE :statusFilter END	Messungen nach Status
+1	Proben	0	SELECT probe.id AS id,\n  probe.hauptproben_nr AS hpNr,\n  datenbasis.datenbasis AS dBasis,\n  stammdaten.mess_stelle.netzbetreiber_id AS netzId,\n  probe.mst_id AS mstId,\n  probe.umw_id AS umwId,\n  probenart.probenart AS pArt,\n  to_char(probe.probeentnahme_beginn, 'dd.mm.YYYY hh24:MI') AS peBegin,\n  to_char(probe.probeentnahme_ende, 'dd.mm.YYYY hh24:MI') AS peEnd,\n  ort.ort_id AS ortId,\n  ort.gem_id AS eGemId,\n  verwaltungseinheit.bezeichnung AS eGem,\n  probe.id_alt AS probeId\nFROM land.probe\nLEFT JOIN stammdaten.mess_stelle\n  ON (probe.mst_id = stammdaten.mess_stelle.id)\nLEFT JOIN stammdaten.datenbasis\n  ON (probe.datenbasis_id = datenbasis.id)\nLEFT JOIN stammdaten.probenart\n  ON (probe.probenart_id = probenart.id)\nLEFT JOIN land.ortszuordnung\n  ON (\n      probe.id = ortszuordnung.probe_id\n      AND ortszuordnung.ortszuordnung_typ = 'E'\n      )\nLEFT JOIN stammdaten.ort\n  ON (ortszuordnung.ort_id = ort.id)\nLEFT JOIN stammdaten.verwaltungseinheit\n  ON (ort.gem_id = verwaltungseinheit.id)\nWHERE (\n    probe.id_alt LIKE CASE \n      WHEN :probeIdFilter = ''\n        THEN '%'\n      ELSE :probeIdFilter\n      END\n    )\n  AND (\n    probe.hauptproben_nr LIKE CASE \n      WHEN :hpNrFilter = ''\n        THEN '%'\n      ELSE :hpNrFilter\n      END\n    )\n  AND (\n    stammdaten.mess_stelle.netzbetreiber_id = :netzIdFilter\n    OR '' = :netzIdFilter\n    )\n  AND (\n    probe.mst_id = :mstIdFilter\n    OR '' = :mstIdFilter\n    )\n  AND (\n    probe.umw_id = :umwIdFilter\n    OR '' = :umwIdFilter\n    )\n	Abfrage aller  Proben ohne Filter
+9	Messprogramm pro Land	2	SELECT messprogramm.id,\n  messprogramm.id AS mpNr,\n  stammdaten.mess_stelle.netzbetreiber_id AS netzId,\n  CASE \n    WHEN messprogramm.mst_id = messprogramm.labor_mst_id\n      THEN messprogramm.mst_id\n    ELSE messprogramm.mst_id || '-' || messprogramm.labor_mst_id\n    END AS mstLaborId,\n  datenbasis.datenbasis AS dBasis,\n  CASE \n    WHEN messprogramm.ba_id = '1'\n      THEN 'RB'\n    ELSE 'IB'\n    END AS messRegime,\n  probenart.probenart AS pArt,\n  messprogramm.umw_id AS umwId,\n  messprogramm.media_desk AS deskriptoren,\n  messprogramm.probenintervall AS intervall,\n  ort.ort_id AS ortId,\n  ort.gem_id AS eGemId,\n  verwaltungseinheit.bezeichnung AS eGem\nFROM land.messprogramm\nLEFT JOIN stammdaten.mess_stelle\n  ON (messprogramm.mst_id = stammdaten.mess_stelle.id)\nLEFT JOIN stammdaten.datenbasis\n  ON (messprogramm.datenbasis_id = datenbasis.id)\nLEFT JOIN stammdaten.probenart\n  ON (messprogramm.probenart_id = probenart.id)\nLEFT JOIN land.ortszuordnung_mp\n  ON (\n      messprogramm.id = ortszuordnung_mp.messprogramm_id\n      AND ortszuordnung_mp.ortszuordnung_typ = 'E'\n      )\nLEFT JOIN stammdaten.ort\n  ON (ortszuordnung_mp.ort_id = ort.id)\nLEFT JOIN stammdaten.verwaltungseinheit\n  ON (ort.gem_id = verwaltungseinheit.id)\nWHERE (\n    mess_stelle.netzbetreiber_id = :netzIdFilter\n    OR '' = :netzIdFilter\n    )\n  AND (\n    messprogramm.umw_id SIMILAR TO (:umwIdFilter)\n    OR '' = :umwIdFilter\n    )	Abfrage der Messprogramme ohne Filter
 \.
 
 
 --
--- TOC entry 4683 (class 0 OID 535720)
--- Dependencies: 248
--- Data for Name: filter; Type: TABLE DATA; Schema: stammdaten; Owner: lada
+-- Data for Name: filter; Type: TABLE DATA; Schema: stammdaten; Owner: postgres
 --
 
 COPY filter (id, query_id, data_index, type, label, multiselect) FROM stdin;
-2	2	hpNrFilter	0	HP-Nr-Filter	f
-3	3	probeIdFilter	0	Probe_id-Filter	f
-5	4	mstIdFilter	1	Messstelle	f
-6	4	umwIdFilter	3	Umweltbereich	f
-7	5	netzIdFilter	2	Land	f
-9	7	netzIdFilter	2	Land	f
-10	7	umwIdFilter	3	Umweltbereich	t
+8	7	netzIdFilter	2	Land	f
+9	7	umwIdFilter	3	Umweltbereich	t
+10	9	netzIdFilter	2	Land	f
 14	14	netzbetreiberId	2	Land	t
 15	13	statusFilter	4	Status	t
 16	10	netzbetreiberId	2	Land	f
 17	11	netzbetreiberId	2	Land	f
 18	12	netzbetreiberId	2	Land	f
+2	1	hpNrFilter	0	HP-Nr-Filter	f
+1	1	probeIdFilter	0	Probe_id-Filter	f
+3	1	netzIdFilter	2	Land	f
+4	1	mstIdFilter	1	Messstelle	f
+5	1	umwIdFilter	3	Umweltbereich	f
+11	9	umwIdFilter	3	Umweltbereich	t
 \.
 
 
 --
--- TOC entry 4717 (class 0 OID 535831)
--- Dependencies: 283
--- Data for Name: result; Type: TABLE DATA; Schema: stammdaten; Owner: lada
+-- Name: filter_id_seq; Type: SEQUENCE SET; Schema: stammdaten; Owner: postgres
+--
+
+SELECT pg_catalog.setval('filter_id_seq', 19, true);
+
+
+--
+-- Name: query_id_seq; Type: SEQUENCE SET; Schema: stammdaten; Owner: postgres
+--
+
+SELECT pg_catalog.setval('query_id_seq', 15, true);
+
+
+--
+-- Data for Name: result; Type: TABLE DATA; Schema: stammdaten; Owner: postgres
 --
 
 COPY result (id, query_id, data_index, header, width, flex, index) FROM stdin;
@@ -83,54 +85,9 @@ COPY result (id, query_id, data_index, header, width, flex, index) FROM stdin;
 10	1	eGemId	E-Gem Id	80	f	9
 11	1	eGem	E-Gemeinde	200	f	10
 12	1	probeId	Probe_Id	100	f	11
-13	2	hpNr	Proben-Nr	100	f	0
-14	2	dBasis	DB	50	f	1
-15	2	netzId	Land	50	f	2
-16	2	mstId	MST	60	f	3
-17	2	umwId	Umw-ID	55	f	4
-18	2	pArt	PA	50	f	5
-19	2	peBegin	Entnahme_von	120	f	6
-20	2	peEnd	Entnahme_bis	120	f	7
-21	2	ortId	Ort_id	100	f	8
-22	2	eGemId	E-Gem Id	80	f	9
-23	2	eGem	E-Gemeinde	200	f	10
-24	2	probeId	Probe Id	100	f	11
-25	3	hpNr	Proben-Nr	100	f	0
-26	3	dBasis	DB	50	f	1
-27	3	netzId	Land	50	f	2
-28	3	mstId	MST	60	f	3
-29	3	umwId	Umw-ID	55	f	4
-30	3	pArt	PA	50	f	5
-31	3	peBegin	Entnahme_von	120	f	6
-32	3	peEnd	Entnahme_bis	120	f	7
-33	3	ortId	Ort_id	100	f	8
-34	3	eGemId	E-Gem Id	80	f	9
-35	3	eGem	E-Gemeinde	200	f	10
-36	3	probeId	Probe Id	100	f	11
-37	4	hpNr	Proben-Nr	100	f	0
-38	4	dBasis	DB	50	f	1
-39	4	netzId	Land	50	f	2
-40	4	mstId	MST	60	f	3
-41	4	umwId	Umw-ID	55	f	4
-42	4	pArt	PA	50	f	5
-43	4	peBegin	Entnahme_von	120	f	6
-44	4	peEnd	Entnahme_bis	120	f	7
-45	4	ortId	Ort_id	100	f	8
-46	4	eGemId	E-Gem Id	80	f	9
-47	4	eGem	E-Gemeinde	200	f	10
-48	4	probeId	Probe Id	100	f	11
-49	5	hpNr	Proben-Nr	100	f	0
-50	5	dBasis	DB	50	f	1
-51	5	netzId	Land	50	f	2
-52	5	mstId	MST	60	f	3
-53	5	umwId	Umw-ID	55	f	4
-54	5	pArt	PA	50	f	5
-55	5	peBegin	Entnahme_von	120	f	6
-56	5	peEnd	Entnahme_bis	120	f	7
-57	5	ortId	Ort_id	100	f	8
-58	5	eGemId	E-Gem Id	80	f	9
-59	5	eGem	E-Gemeinde	200	f	10
-60	5	probeId	Probe Id	100	f	11
+128	9	mpNr	MPR-ID	70	f	0
+90	9	deskriptoren	Deskriptoren	220	f	7
+84	9	netzId	Land	50	f	1
 61	7	hpNr	Proben-Nr	100	f	0
 64	7	dBasis	DB	50	f	1
 66	7	netzId	Land	50	f	2
@@ -143,13 +100,11 @@ COPY result (id, query_id, data_index, header, width, flex, index) FROM stdin;
 80	7	eGemId	E-Gem Id	80	f	9
 81	7	eGem	E-Gemeinde	200	f	10
 82	7	probeId	Probe Id	100	f	11
-84	9	netzId	Land	100	f	1
 85	9	mstLaborId	MST/Labor	80	f	2
 86	9	dBasis	DB	50	f	3
 87	9	messRegime	MR	50	f	4
 88	9	pArt	PA	50	f	5
 89	9	umwId	Umw-ID	50	f	6
-90	9	deskriptoren	Deskriptoren	120	f	7
 91	9	intervall	PI	50	f	8
 92	9	ortId	Ort_id	100	f	9
 93	9	eGemId	Gem-Id	80	f	10
@@ -187,4 +142,16 @@ COPY result (id, query_id, data_index, header, width, flex, index) FROM stdin;
 125	15	eGem	E-Gemeinde	200	f	15
 126	15	probeId	Probe_Id	100	f	0
 \.
+
+
+--
+-- Name: result_id_seq; Type: SEQUENCE SET; Schema: stammdaten; Owner: postgres
+--
+
+SELECT pg_catalog.setval('result_id_seq', 128, true);
+
+
+--
+-- PostgreSQL database dump complete
+--
 

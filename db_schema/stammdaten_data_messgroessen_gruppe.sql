@@ -511,6 +511,7 @@ COPY mg_grp (messgroessengruppe_id, messgroesse_id) FROM stdin;
 118	769
 118	770
 119	900
+13	11
 \.
 
 

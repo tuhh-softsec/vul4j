@@ -46,11 +46,13 @@ public class Date implements Rule {
             Map<String, Integer> errors = new HashMap<String, Integer>();
             errors.put("lprobe", 604);
         }
-        if (probe.getProbeentnahmeEnde() == null ||
-            probe.getProbeentnahmeEnde().after(messung.getMesszeitpunkt())) {
-            Violation violation = new Violation();
-            violation.addWarning("messzeitpunkt", 632);
-            return violation;
+        if (messung.getMesszeitpunkt() != null) {
+            if (probe.getProbeentnahmeEnde() == null ||
+                probe.getProbeentnahmeEnde().after(messung.getMesszeitpunkt())) {
+                Violation violation = new Violation();
+                violation.addWarning("messzeitpunkt", 632);
+                return violation;
+            }
         }
         return null;
     }

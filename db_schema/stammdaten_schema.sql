@@ -239,7 +239,8 @@ CREATE TABLE datensatz_erzeuger (
     mst_id character varying(5) NOT NULL REFERENCES mess_stelle,
     bezeichnung character varying(120) NOT NULL,
     letzte_aenderung timestamp without time zone,
-    UNIQUE(datensatz_erzeuger_id, netzbetreiber_id)
+    UNIQUE(datensatz_erzeuger_id, netzbetreiber_id, mst_id)
+
 );
 CREATE TRIGGER letzte_aenderung_datensatz_erzeuger BEFORE UPDATE ON datensatz_erzeuger FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 
@@ -258,7 +259,6 @@ CREATE TABLE deskriptor_umwelt (
     s09 integer,
     s10 integer,
     s11 integer,
-    s12 integer,
     umw_id character varying(3) NOT NULL REFERENCES umwelt
 );
 

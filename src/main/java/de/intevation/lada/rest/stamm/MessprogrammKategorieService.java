@@ -138,14 +138,16 @@ public class MessprogrammKategorieService {
             kategorie = repository.getAllPlain(MessprogrammKategorie.class, "stamm");
         }
         int size = kategorie.size();
-        if (params.containsKey("start") && params.containsKey("limit")) {
-            int start = Integer.valueOf(params.getFirst("start"));
-            int limit = Integer.valueOf(params.getFirst("limit"));
-            int end = limit + start;
-            if (start + limit > kategorie.size()) {
-                end = kategorie.size();
+        if (params.containsKey("qid")) {
+            if (params.containsKey("start") && params.containsKey("limit")) {
+                int start = Integer.valueOf(params.getFirst("start"));
+                int limit = Integer.valueOf(params.getFirst("limit"));
+                int end = limit + start;
+                if (start + limit > kategorie.size()) {
+                    end = kategorie.size();
+                }
+                kategorie = kategorie.subList(start, end);
             }
-            kategorie = kategorie.subList(start, end);
         }
 
         for (MessprogrammKategorie mk : kategorie) {

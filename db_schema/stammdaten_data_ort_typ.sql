@@ -39,5 +39,9 @@ COPY ort_typ (id, ort_typ, code) FROM stdin;
 11	Müllverbrennungsanlage	MVA
 12	Messstation	MST
 13	KTA	KTA
+14	Fanggebiet	FG
+15	Sonstiger Ortszusatz	So
 \.
-
+--
+-- PostgreSQL database dump complete
+--
