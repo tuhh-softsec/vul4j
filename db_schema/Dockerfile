@@ -1,4 +1,4 @@
-# Docker file for postgresql 9.5 on debain
+# Docker file for the LADA database on Debian
 #
 # build with e.g. `docker build --force-rm=true -t koala/lada_db .',
 # then run with e.g.
@@ -37,6 +37,18 @@ RUN apt-get update && \
             postgresql-9.5-postgis-2.3 postgresql-9.5-postgis-scripts postgis
 
 #
+# Add context as working directory
+#
+ADD . /opt/lada_sql/
+WORKDIR /opt/lada_sql/
+
+#
+# Set environment variables
+#
+ENV PGCONF /etc/postgresql/9.5/main/postgresql.conf
+ENV PGDATA /var/lib/postgresql/9.5/main
+
+#
 # Use user postgres to run the next commands
 #
 USER postgres
@@ -52,8 +64,16 @@ RUN mkdir /var/run/postgresql/9.5-main.pg_stat_tmp
 #
 RUN echo "host all  all    0.0.0.0/0  md5" >> \
     /etc/postgresql/9.5/main/pg_hba.conf
+RUN echo "listen_addresses='*'" >> $PGCONF
 
-RUN echo "listen_addresses='*'" >> /etc/postgresql/9.5/main/postgresql.conf
+#
+# Configure logging collector
+# (because we use postgres directly in CMD,
+# the usual collection from stderr does not work)
+#
+RUN echo "logging_collector = on" >> $PGCONF
+RUN echo "log_directory = '/var/log/postgresql'" >> $PGCONF
+RUN echo "log_filename = 'postgresql-9.5-main.log'" >> $PGCONF
 
 #
 # Expose the PostgreSQL port
@@ -67,15 +87,12 @@ EXPOSE 5432
 # 'FATAL: the database system is starting up'.
 # It's because of the -w
 #
-ADD . /opt/lada_sql/
-WORKDIR /opt/lada_sql/
-
-RUN /usr/lib/postgresql/9.5/bin/pg_ctl start -wD /etc/postgresql/9.5/main/ && \
-    /opt/lada_sql/setup-db.sh
+RUN /usr/lib/postgresql/9.5/bin/pg_ctl start -wo "--config_file=$PGCONF" && \
+    /opt/lada_sql/setup-db.sh && \
+    /usr/lib/postgresql/9.5/bin/pg_ctl stop
 
 #
 # Set the default command to run when starting the container
 #
-CMD ["/usr/lib/postgresql/9.5/bin/postgres", "-D", \
-     "/var/lib/postgresql/9.5/main", "-c", \
-     "config_file=/etc/postgresql/9.5/main/postgresql.conf"]
+CMD ["/usr/lib/postgresql/9.5/bin/postgres", \
+     "--config_file=/etc/postgresql/9.5/main/postgresql.conf"]
