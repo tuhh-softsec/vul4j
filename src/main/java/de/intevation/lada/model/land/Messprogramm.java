@@ -16,6 +16,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
+import javax.persistence.Transient;
 
 
 /**
@@ -97,6 +98,9 @@ public class Messprogramm implements Serializable {
 
     @Column(name="umw_id")
     private String umwId;
+
+    @Transient
+    private boolean readonly;
 
     public Messprogramm() {
     }
@@ -267,6 +271,14 @@ public class Messprogramm implements Serializable {
 
     public void setUmwId(String umwId) {
         this.umwId = umwId;
+    }
+
+    public boolean isReadonly() {
+        return readonly;
+    }
+
+    public void setReadonly(boolean readonly) {
+        this.readonly = readonly;
     }
 
 }

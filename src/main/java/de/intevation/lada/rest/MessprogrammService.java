@@ -32,6 +32,7 @@ import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
+import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.RequestMethod;
@@ -95,7 +96,7 @@ public class MessprogrammService {
      */
     @Inject
     @RepositoryConfig(type=RepositoryType.RW)
-    private Repository defaultRepo;
+    private Repository repository;
 
     /**
      * The authorization module.
@@ -145,7 +146,7 @@ public class MessprogrammService {
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() || !params.containsKey("qid")) {
-            return defaultRepo.getAll(Messprogramm.class, "land");
+            return repository.getAll(Messprogramm.class, "land");
         }
         Integer id = null;
         try {
@@ -168,7 +169,33 @@ public class MessprogrammService {
             }
             result = result.subList(start, end);
         }
+        QueryBuilder<Messprogramm> mBuilder = new QueryBuilder<Messprogramm>(
+            repository.entityManager("land"), Messprogramm.class);
+        for (Map<String, Object> entry: result) {
+            mBuilder.or("id", (Integer)entry.get("id"));
+        }
+        Response r = repository.filter(mBuilder.getQuery(), "land");
+        r = authorization.filter(request, r, Messprogramm.class);
+        List<Messprogramm> messprogramme = (List<Messprogramm>)r.getData();
+        for (Map<String, Object> entry: result) {
+            Integer mId = Integer.valueOf(entry.get("id").toString());
+            setAuthData(messprogramme, entry, mId);
+        }
+
         return new Response(true, 200, result, size);
+    }
+
+    private void setAuthData(
+        List<Messprogramm> messprogamme,
+        Map<String, Object> entry,
+        Integer id
+    ) {
+        for (int i = 0; i < messprogamme.size(); i++) {
+            if (id.equals(messprogamme.get(i).getId())) {
+                entry.put("readonly", messprogamme.get(i).isReadonly());
+                return;
+            }
+        }
     }
 
     /**
@@ -189,7 +216,7 @@ public class MessprogrammService {
     ) {
         return authorization.filter(
             request,
-            defaultRepo.getById(Messprogramm.class, Integer.valueOf(id), "land"),
+            repository.getById(Messprogramm.class, Integer.valueOf(id), "land"),
             Messprogramm.class);
     }
 
@@ -254,10 +281,10 @@ public class MessprogrammService {
             messprogramm = factory.findUmweltId(messprogramm);
         }
         /* Persist the new messprogramm object*/
-        Response response = defaultRepo.create(messprogramm, "land");
+        Response response = repository.create(messprogramm, "land");
         Messprogramm ret = (Messprogramm)response.getData();
         Response created =
-            defaultRepo.getById(Messprogramm.class, ret.getId(), "land");
+            repository.getById(Messprogramm.class, ret.getId(), "land");
         return authorization.filter(
             request,
             new Response(true, 200, created.getData()),
@@ -325,11 +352,11 @@ public class MessprogrammService {
         if (messprogramm.getUmwId() == null || messprogramm.getUmwId().equals("")) {
             messprogramm = factory.findUmweltId(messprogramm);
         }
-        Response response = defaultRepo.update(messprogramm, "land");
+        Response response = repository.update(messprogramm, "land");
         if (!response.getSuccess()) {
             return response;
         }
-        Response updated = defaultRepo.getById(
+        Response updated = repository.getById(
             Messprogramm.class,
             ((Messprogramm)response.getData()).getId(), "land");
         return authorization.filter(
@@ -354,9 +381,9 @@ public class MessprogrammService {
         @Context HttpServletRequest request,
         @PathParam("id") String id
     ) {
-        /* Get the messung object by id*/
+        /* Get the messprogamm object by id*/
         Response messprogramm =
-            defaultRepo.getById(Messprogramm.class, Integer.valueOf(id), "land");
+            repository.getById(Messprogramm.class, Integer.valueOf(id), "land");
         Messprogramm messprogrammObj = (Messprogramm)messprogramm.getData();
         if (!authorization.isAuthorized(
                 request,
@@ -367,7 +394,7 @@ public class MessprogrammService {
             return new Response(false, 699, null);
         }
         /* Delete the messprogramm object*/
-        Response response = defaultRepo.delete(messprogrammObj, "land");
+        Response response = repository.delete(messprogrammObj, "land");
         return response;
     }
 }

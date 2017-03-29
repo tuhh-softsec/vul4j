@@ -7,10 +7,14 @@
  */
 package de.intevation.lada.util.auth;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import de.intevation.lada.model.land.Messprogramm;
 import de.intevation.lada.model.land.MessprogrammMmt;
+import de.intevation.lada.model.stammdaten.MessStelle;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
@@ -44,7 +48,10 @@ public class MessprogrammAuthorizer implements Authorizer {
                 ((MessprogrammMmt)data).getMessprogrammId(),
                 "land");
         }
-        if (userInfo.getMessstellen().contains(messprogramm.getMstId())) {
+        MessStelle mst = repository.getByIdPlain(
+            MessStelle.class, messprogramm.getMstId(), "stamm");
+        if (userInfo.getFunktionenForNetzbetreiber(
+                mst.getNetzbetreiberId()).contains(4)) {
             return true;
         }
         return false;
@@ -56,7 +63,38 @@ public class MessprogrammAuthorizer implements Authorizer {
         UserInfo userInfo,
         Class<T> clazz
     ) {
-        // Allow read access to everybody
+        if (data.getData() instanceof List<?> &&
+            !clazz.getSimpleName().equals("MessprogrammMmt")) {
+            List<Messprogramm> messprogramme = new ArrayList<Messprogramm>();
+            for (Messprogramm messprogramm :(List<Messprogramm>)data.getData()) {
+                messprogramme.add(setAuthData(userInfo, messprogramm));
+            }
+            data.setData(messprogramme);
+        }
+        else if (data.getData() instanceof Messprogramm) {
+            Messprogramm messprogramm = (Messprogramm)data.getData();
+            data.setData(setAuthData(userInfo, messprogramm));
+        }
         return data;
+    }
+
+    /**
+     * Set authorization data for the current probe object.
+     *
+     * @param userInfo  The user information.
+     * @param probe     The probe object.
+     * @return The probe.
+     */
+    private Messprogramm setAuthData(UserInfo userInfo, Messprogramm messprogramm) {
+        MessStelle mst = repository.getByIdPlain(MessStelle.class, messprogramm.getMstId(), "stamm");
+        if (userInfo.getFunktionenForNetzbetreiber(
+                mst.getNetzbetreiberId()).contains(4)) {
+            messprogramm.setReadonly(false);
+            return messprogramm;
+        }
+        else {
+            messprogramm.setReadonly(true);
+        }
+        return messprogramm;
     }
 }

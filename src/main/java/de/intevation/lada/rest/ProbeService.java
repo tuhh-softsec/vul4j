@@ -356,14 +356,15 @@ public class ProbeService {
         if (messprogramm == null) {
             return new Response(false, 600, null);
         }
-
-        /* Allow generation of Probe objects only for a Messprogramm
-         * that would be allowed to be changed. */
+        // Use a dummy probe with same mstId as the messprogramm to authorize
+        // the user to create probe objects.
+        Probe testProbe = new Probe();
+        testProbe.setMstId(messprogramm.getMstId());
         if (!authorization.isAuthorized(
                 request,
-                messprogramm,
-                RequestMethod.PUT,
-                Messprogramm.class)
+                testProbe,
+                RequestMethod.POST,
+                Probe.class)
         ) {
             return new Response(false, 699, null);
         }
