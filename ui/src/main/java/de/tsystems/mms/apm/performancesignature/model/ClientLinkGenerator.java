@@ -44,7 +44,8 @@ public class ClientLinkGenerator {
                 return String.format(clientRESTTemplate, "PurePaths", server, sessionName);
             case LOADTEST_OVERVIEW:
                 return String.format(clientRESTTemplate, "LoadTest%20Overview", server, sessionName);
+            default:
+                return "";
         }
-        return "";
     }
 }

@@ -27,11 +27,13 @@ pipeline {
                         ' sonar:sonar -Dsonar.host.url=https://sonarqube.com -Dsonar.login=2d490959a4bfab63bd2b7f41d43347955ebfe939'
             }
             post {
+                always {
+                    step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: 'raphael.pionke@t-systems.com', sendToIndividuals: false])
+                }
                 success {
                     junit '**/surefire-reports/TEST-*.xml'
                     step([$class: 'CheckStylePublisher', canComputeNew: false, defaultEncoding: '', healthy: '', pattern: '', unHealthy: ''])
                     step([$class: 'FindBugsPublisher', canComputeNew: false, defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', pattern: '', unHealthy: ''])
-                    step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: 'raphael.pionke@t-systems.com', sendToIndividuals: false])
                     step([$class: 'JacocoPublisher'])
                     archiveArtifacts '**/target/*.hpi'
                 }
