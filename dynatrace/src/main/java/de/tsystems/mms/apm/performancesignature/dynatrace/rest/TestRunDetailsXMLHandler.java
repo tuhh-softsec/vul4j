@@ -51,6 +51,8 @@ public class TestRunDetailsXMLHandler extends DefaultHandler {
             case "measure":
                 measure = new TestRunMeasure(attr);
                 break;
+            default:
+                break;
         }
     }
 

@@ -79,6 +79,8 @@ public class AgentXMLHandler extends DefaultHandler {
                     this.currentAgent.setCollector(this.currentCollector);
                 }
                 break;
+            default:
+                break;
         }
         this.currentElement = localName;
     }
