@@ -90,7 +90,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
 
     private synchronized Map<String, JSONDashlet> getJsonDashletMap() throws InterruptedException {
         if (this.jsonDashletMap == null) {
-            this.jsonDashletMap = new ConcurrentHashMap<String, JSONDashlet>();
+            this.jsonDashletMap = new ConcurrentHashMap<>();
             this.jsonDashletMap.putAll(readConfiguration());
         }
         return this.jsonDashletMap;
@@ -134,7 +134,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
                 }
 
                 Map<Run<?, ?>, DashboardReport> dashboardReports = getDashboardReports(dashboard);
-                DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dsb = new DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel>();
+                DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dsb = new DataSetBuilder<>();
 
                 for (Map.Entry<Run<?, ?>, DashboardReport> dashboardReport : dashboardReports.entrySet()) {
                     double metricValue = 0;
@@ -171,7 +171,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         final Graph graph = new TestRunGraphImpl(customName) {
             @Override
             protected DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> createDataSet() {
-                final DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dsb = new DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel>();
+                final DataSetBuilder<String, ChartUtil.NumberOnlyBuildLabel> dsb = new DataSetBuilder<>();
                 int buildCount = 0, i = 0;
                 if (StringUtils.isNotBlank(customBuildCount)) {
                     buildCount = Integer.parseInt(customBuildCount);
@@ -211,11 +211,11 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
                 return a.getDashboardReports();
             }
             if (b == tb) {
-                return new ArrayList<DashboardReport>();
+                return new ArrayList<>();
             }
             b = b.getPreviousBuild();
         }
-        return new ArrayList<DashboardReport>();
+        return new ArrayList<>();
     }
 
     public TestRun getTestRun(final Run<?, ?> run) {
@@ -239,7 +239,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     }
 
     public Map<Run<?, ?>, DashboardReport> getDashboardReports(final String name) {
-        final Map<Run<?, ?>, DashboardReport> dashboardReports = new HashMap<Run<?, ?>, DashboardReport>();
+        final Map<Run<?, ?>, DashboardReport> dashboardReports = new HashMap<>();
         if (job == null) {
             return dashboardReports;
         }
@@ -258,7 +258,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
 
     @JavaScriptMethod
     public String getDashboardConfiguration(final String dashboard) throws IOException, InterruptedException {
-        List<JSONDashlet> jsonDashletList = new ArrayList<JSONDashlet>();
+        List<JSONDashlet> jsonDashletList = new ArrayList<>();
         for (JSONDashlet jsonDashlet : getJsonDashletMap().values()) {
             if (jsonDashlet.getDashboard().equals(dashboard)) {
                 jsonDashletList.add(jsonDashlet);
@@ -272,7 +272,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         int col = 1, row = 1;
 
         logger.fine(addTimeStampToLog("grid configuration generation started"));
-        Map<String, JSONDashlet> newJsonDashletMap = new HashMap<String, JSONDashlet>();
+        Map<String, JSONDashlet> newJsonDashletMap = new HashMap<>();
         for (DashboardReport dashboardReport : getLastDashboardReports()) {
             if (dashboardReport.isUnitTest()) {
                 JSONDashlet dashlet = new JSONDashlet(col++, row, UNITTEST_DASHLETNAME, dashboardReport.getName());
@@ -311,7 +311,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     @JavaScriptMethod
     public void setDashboardConfiguration(final String dashboard, final String data) throws InterruptedException {
         Map<String, JSONDashlet> defaultConfiguration = createJSONConfiguration(false);
-        HashSet<String> idsFromJson = new HashSet<String>();
+        HashSet<String> idsFromJson = new HashSet<>();
 
         String json = StringEscapeUtils.unescapeJava(data);
         if (!json.startsWith("[")) {
@@ -376,8 +376,8 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
 
     @JavaScriptMethod
     public Map<String, String> getAvailableMeasures(final String dashboard, final String dashlet) throws IOException {
-        Map<String, String> availableMeasures = new LinkedHashMap<String, String>();
-        List<JSONDashlet> jsonDashlets = new ArrayList<JSONDashlet>(createJSONConfiguration(false).values());
+        Map<String, String> availableMeasures = new LinkedHashMap<>();
+        List<JSONDashlet> jsonDashlets = new ArrayList<>(createJSONConfiguration(false).values());
         Collections.sort(jsonDashlets, new Comparator<JSONDashlet>() {
             @Override
             public int compare(final JSONDashlet o1, final JSONDashlet o2) {
@@ -406,7 +406,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     }
 
     public Map<JSONDashlet, Measure> getFilteredChartDashlets(final DashboardReport dashboardReport) throws IOException, InterruptedException {
-        Map<JSONDashlet, Measure> filteredChartDashlets = new TreeMap<JSONDashlet, Measure>(new Comparator<JSONDashlet>() {
+        Map<JSONDashlet, Measure> filteredChartDashlets = new TreeMap<>(new Comparator<JSONDashlet>() {
             @Override
             public int compare(final JSONDashlet o1, final JSONDashlet o2) {
                 if (o1.getRow() > o2.getRow() || o1.getRow() == o2.getRow() && o1.getCol() > o2.getCol()) {
@@ -468,7 +468,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             logger.log(Level.SEVERE, Messages.PerfSigProjectAction_FailedToLoadConfigFile(getConfigFile()), e);
             throw e;
         }
-        return new HashMap<String, JSONDashlet>();
+        return new HashMap<>();
     }
 
     private void writeConfiguration(final Map<String, JSONDashlet> jsonDashletMap) throws IOException, InterruptedException {

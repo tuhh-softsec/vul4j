@@ -94,7 +94,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
         String sessionName, comparisonSessionName = null, singleFilename, comparisonFilename;
         int comparisonBuildNumber = 0;
         final int buildNumber = run.getNumber();
-        final List<DashboardReport> dashboardReports = new ArrayList<DashboardReport>();
+        final List<DashboardReport> dashboardReports = new ArrayList<>();
 
         Run<?, ?> previousRun = run.getPreviousNotFailedBuild();
         if (previousRun != null) {

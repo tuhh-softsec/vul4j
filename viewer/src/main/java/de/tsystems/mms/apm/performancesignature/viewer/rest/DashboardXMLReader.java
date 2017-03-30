@@ -31,7 +31,7 @@ class DashboardXMLReader {
     private final List<DashboardReport> dashboardReports;
 
     DashboardXMLReader() {
-        dashboardReports = new ArrayList<DashboardReport>();
+        dashboardReports = new ArrayList<>();
     }
 
     //Get JDOM document from SAX Parser

@@ -31,7 +31,7 @@ public class ChartDashlet {
 
     public ChartDashlet(final String name) {
         this.name = name;
-        this.measures = new ArrayList<Measure>();
+        this.measures = new ArrayList<>();
     }
 
     public ChartDashlet(final Object attr) {

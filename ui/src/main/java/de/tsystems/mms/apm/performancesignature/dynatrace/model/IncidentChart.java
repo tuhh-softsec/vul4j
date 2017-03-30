@@ -32,7 +32,7 @@ public class IncidentChart {
     public IncidentChart(final Object attr) {
         this.rule = AttributeUtils.getStringAttribute("rule", attr);
         this.severity = Severity.fromString(AttributeUtils.getStringAttribute("severity", attr));
-        this.violations = new ArrayList<IncidentViolation>();
+        this.violations = new ArrayList<>();
     }
 
     @Exported

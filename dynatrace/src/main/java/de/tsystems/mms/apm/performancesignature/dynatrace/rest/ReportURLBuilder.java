@@ -33,7 +33,7 @@ public class ReportURLBuilder {
     private boolean xmlReport;
 
     public ReportURLBuilder() {
-        parameter = new ArrayList<String>();
+        parameter = new ArrayList<>();
         xmlReport = false;
     }
 

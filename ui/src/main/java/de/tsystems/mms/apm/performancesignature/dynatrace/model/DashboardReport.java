@@ -33,8 +33,8 @@ public class DashboardReport {
 
     public DashboardReport(final String testCaseName) {
         this.name = testCaseName;
-        this.chartDashlets = new ArrayList<ChartDashlet>();
-        this.incidents = new ArrayList<IncidentChart>();
+        this.chartDashlets = new ArrayList<>();
+        this.incidents = new ArrayList<>();
     }
 
     @Exported

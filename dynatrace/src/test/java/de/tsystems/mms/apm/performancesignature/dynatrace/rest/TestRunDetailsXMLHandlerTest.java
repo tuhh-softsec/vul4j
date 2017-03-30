@@ -26,7 +26,11 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
 
 import static org.junit.Assert.*;
 
@@ -51,7 +55,7 @@ public class TestRunDetailsXMLHandlerTest {
         xr.setContentHandler(handler);
 
         File file = new File("src/test/resources/TestRunDetailsXMLHandlerTest1.xml");
-        InputStream inputStream = new FileInputStream(file);
+        InputStream inputStream = Files.newInputStream(file.toPath());
         xr.parse(new InputSource(new InputStreamReader(inputStream, "UTF-8")));
         TestRun testRun = handler.getParsedObjects();
 
@@ -75,7 +79,7 @@ public class TestRunDetailsXMLHandlerTest {
         xr.setContentHandler(handler);
 
         File file = new File("src/test/resources/TestRunDetailsXMLHandlerTest2.xml");
-        InputStream inputStream = new FileInputStream(file);
+        InputStream inputStream = Files.newInputStream(file.toPath());
         xr.parse(new InputSource(new InputStreamReader(inputStream, "UTF-8")));
 
         exception.expect(RESTErrorException.class);

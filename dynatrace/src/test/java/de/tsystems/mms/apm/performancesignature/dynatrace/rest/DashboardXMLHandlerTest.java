@@ -24,7 +24,11 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -50,7 +54,7 @@ public class DashboardXMLHandlerTest {
         xr.setContentHandler(handler);
 
         File file = new File("src/test/resources/dashboardXMLHandler63Test.xml");
-        InputStream inputStream = new FileInputStream(file);
+        InputStream inputStream = Files.newInputStream(file.toPath());
         xr.parse(new InputSource(new InputStreamReader(inputStream, "UTF-8")));
 
         assertEquals(handler.getParsedObjects().getIncidents().size(), 2);
@@ -67,7 +71,7 @@ public class DashboardXMLHandlerTest {
         xr.setContentHandler(handler);
 
         File file = new File("src/test/resources/dashboardXMLHandler65Test.xml");
-        InputStream inputStream = new FileInputStream(file);
+        InputStream inputStream = Files.newInputStream(file.toPath());
         xr.parse(new InputSource(new InputStreamReader(inputStream, "UTF-8")));
 
         assertEquals(handler.getParsedObjects().getIncidents().size(), 2);

@@ -49,7 +49,7 @@ public class PerfSigBuildAction extends PerfSigBaseAction implements SimpleBuild
             }
         }
         buildDisplay = new PerfSigBuildActionResultsDisplay(this);
-        this.buildActionResultsDisplay = new WeakReference<PerfSigBuildActionResultsDisplay>(buildDisplay);
+        this.buildActionResultsDisplay = new WeakReference<>(buildDisplay);
         return buildDisplay;
     }
 

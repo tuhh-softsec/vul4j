@@ -27,7 +27,7 @@ import java.util.List;
 
 @Extension
 public class PerfSigGlobalConfiguration extends GlobalConfiguration {
-    private List<DynatraceServerConfiguration> configurations = new ArrayList<DynatraceServerConfiguration>();
+    private List<DynatraceServerConfiguration> configurations = new ArrayList<>();
 
     public PerfSigGlobalConfiguration() {
         load();

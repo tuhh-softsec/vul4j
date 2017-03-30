@@ -38,7 +38,7 @@ public class TestResult implements Serializable {
         this.name = AttributeUtils.getStringAttribute("name", attr);
         this.packageName = AttributeUtils.getStringAttribute("package", attr);
         this.status = TestResultStatus.fromString(AttributeUtils.getStringAttribute("status", attr));
-        this.measures = new ArrayList<TestRunMeasure>();
+        this.measures = new ArrayList<>();
     }
 
     @Exported

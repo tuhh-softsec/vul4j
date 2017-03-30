@@ -118,7 +118,7 @@ $(document).ready(function () {
         });
 
         $('#tabList').find('a').eq(pageIndex).tab('show'); // very messy :(
-        if ($(".gridster ul", page).length != 0) {
+        if ($(".gridster ul", page).length !== 0) {
             grid[pageIndex] = $(".gridster ul", page).gridster({
                 namespace: "#" + $(page).attr('id'),
                 widget_base_dimensions: [364, 267],
@@ -143,7 +143,7 @@ $(document).ready(function () {
             projectAction.getDashboardConfiguration($(page).attr('id'), function (data) {
                 var json = JSON.parse(data.responseObject());
                 $.each(json, function (index) {
-                    if (json[index].dashboard == $(page).attr('id')) {
+                    if (json[index].dashboard === $(page).attr('id')) {
                         if (json[index].id === 'unittest_overview') {
                             grid[pageIndex].add_widget('<li><a href="./testRunGraph?width=800&amp;height=585&amp;id=unittest_overview' + randomParam + '" ' +
                                 'data-lightbox="' + $(page).attr('id') + '"><img class="img-thumbnail" height="300" width="410" ' +

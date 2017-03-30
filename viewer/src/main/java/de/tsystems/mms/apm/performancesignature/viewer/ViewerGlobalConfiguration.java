@@ -27,7 +27,7 @@ import java.util.List;
 
 @Extension
 public class ViewerGlobalConfiguration extends GlobalConfiguration {
-    private List<JenkinsServerConfiguration> configurations = new ArrayList<JenkinsServerConfiguration>();
+    private List<JenkinsServerConfiguration> configurations = new ArrayList<>();
 
     public ViewerGlobalConfiguration() {
         load();

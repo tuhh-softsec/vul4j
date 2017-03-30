@@ -120,9 +120,7 @@ public class DTServerConnection {
             }
             };
             sc.init(null, trustAllCerts, new java.security.SecureRandom());
-        } catch (NoSuchAlgorithmException e) {
-            LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
-        } catch (KeyManagementException e) {
+        } catch (NoSuchAlgorithmException | KeyManagementException e) {
             LOGGER.severe(ExceptionUtils.getFullStackTrace(e));
         }
 
@@ -513,7 +511,7 @@ public class DTServerConnection {
 
     public List<Agent> getAgents() {
         List<Agent> agents = getAllAgents();
-        List<Agent> filteredAgents = new ArrayList<Agent>();
+        List<Agent> filteredAgents = new ArrayList<>();
         for (Agent agent : agents) {
             if (agent.getSystemProfile().equals(systemProfile))
                 filteredAgents.add(agent);

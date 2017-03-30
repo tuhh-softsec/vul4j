@@ -25,7 +25,7 @@ import java.util.List;
 
 public class RESTStringArrayXMLHandler extends DefaultHandler {
     private final CharArrayWriter contents = new CharArrayWriter();
-    private final List<String> objects = new ArrayList<String>();
+    private final List<String> objects = new ArrayList<>();
 
     public List<String> getObjects() {
         return this.objects;

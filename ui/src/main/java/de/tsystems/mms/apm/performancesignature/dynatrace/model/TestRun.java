@@ -49,11 +49,11 @@ public class TestRun implements Serializable {
         this.numDegraded = AttributeUtils.getIntAttribute("numDegraded", attr);
         this.numInvalidated = AttributeUtils.getIntAttribute("numInvalidated", attr);
         this.marker = AttributeUtils.getStringAttribute("marker", attr);
-        this.testResults = new ArrayList<TestResult>();
+        this.testResults = new ArrayList<>();
     }
 
     public TestRun() {
-        testResults = new ArrayList<TestResult>();
+        testResults = new ArrayList<>();
     }
 
     public static TestRun mergeTestRuns(final List<TestRun> testRuns) {

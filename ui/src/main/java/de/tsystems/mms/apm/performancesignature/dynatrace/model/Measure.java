@@ -36,7 +36,7 @@ public class Measure extends MeasureBaseModel {
 
     public Measure(final Object attr) {
         super(attr);
-        this.measurements = new ArrayList<Measurement>();
+        this.measurements = new ArrayList<>();
         this.name = AttributeUtils.getStringAttribute("measure", attr);
         this.color = AttributeUtils.getStringAttribute("color", attr);
         this.unit = AttributeUtils.getStringAttribute("unit", attr);

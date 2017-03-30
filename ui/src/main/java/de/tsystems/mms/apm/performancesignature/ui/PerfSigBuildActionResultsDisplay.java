@@ -177,7 +177,7 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
 
         FilePath reportDir = PerfSigUIUtils.getReportDirectory(getBuild());
         List<FilePath> files = reportDir.list(new RegexFileFilter(type + ".*" + testCase + ".*.pdf"));
-        List<String> fileNames = new ArrayList<String>();
+        List<String> fileNames = new ArrayList<>();
         for (FilePath fp : files) {
             fileNames.add(PerfSigUIUtils.removeExtension(fp.getName()));
         }

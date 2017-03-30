@@ -38,15 +38,19 @@ public class TestRunDetailsXMLHandler extends DefaultHandler {
     }
 
     public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attr) {
-        if (localName.equals("testRun")) {
-            errorMsg = AttributeUtils.getStringAttribute("message", attr);
-            if (StringUtils.isBlank(errorMsg)) {
-                testRun = new TestRun(attr);
-            }
-        } else if (localName.equals("testResult")) {
-            testResult = new TestResult(attr);
-        } else if (localName.equals("measure")) {
-            measure = new TestRunMeasure(attr);
+        switch (localName) {
+            case "testRun":
+                errorMsg = AttributeUtils.getStringAttribute("message", attr);
+                if (StringUtils.isBlank(errorMsg)) {
+                    testRun = new TestRun(attr);
+                }
+                break;
+            case "testResult":
+                testResult = new TestResult(attr);
+                break;
+            case "measure":
+                measure = new TestRunMeasure(attr);
+                break;
         }
     }
 

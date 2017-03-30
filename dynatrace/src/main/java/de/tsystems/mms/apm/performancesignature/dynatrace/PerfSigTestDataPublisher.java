@@ -55,7 +55,7 @@ public class PerfSigTestDataPublisher extends TestDataPublisher {
         PrintStream logger = listener.getLogger();
         DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceProfile);
 
-        List<TestRun> testRuns = new ArrayList<TestRun>();
+        List<TestRun> testRuns = new ArrayList<>();
         List<PerfSigEnvInvisAction> envVars = run.getActions(PerfSigEnvInvisAction.class);
         for (PerfSigEnvInvisAction registerEnvVars : envVars) {
             if (StringUtils.isNotBlank(registerEnvVars.getTestRunID())) {

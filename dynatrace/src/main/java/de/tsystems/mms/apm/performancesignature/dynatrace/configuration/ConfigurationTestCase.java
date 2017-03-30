@@ -71,7 +71,7 @@ public abstract class ConfigurationTestCase implements Describable<Configuration
     @Nonnull
     public List<Dashboard> getSingleDashboards() {
         if (singleDashboards == null) {
-            return new ArrayList<Dashboard>();
+            return new ArrayList<>();
         }
         return singleDashboards;
     }
@@ -79,7 +79,7 @@ public abstract class ConfigurationTestCase implements Describable<Configuration
     @Nonnull
     public List<Dashboard> getComparisonDashboards() {
         if (comparisonDashboards == null) {
-            return new ArrayList<Dashboard>();
+            return new ArrayList<>();
         }
         return comparisonDashboards;
     }
@@ -94,7 +94,7 @@ public abstract class ConfigurationTestCase implements Describable<Configuration
 
     public abstract static class ConfigurationTestCaseDescriptor extends Descriptor<ConfigurationTestCase> {
         public static final String defaultClientDashboard = ClientLinkGenerator.WEBSTART;
-        private static final Set<String> testCases = new LinkedHashSet<String>(); //avoid duplicates
+        private static final Set<String> testCases = new LinkedHashSet<>(); //avoid duplicates
 
         public static void addTestCases(final String testCase) {
             if (StringUtils.isNotBlank(testCase)) {

@@ -37,12 +37,13 @@ public class ClientLinkGenerator {
     public String generateLink() {
         String webstartTemplate = "%s://%s:%d/webstart/Client/client.jnlp?argument=-reuse&argument=-dashboard&argument=online://%s/%s?source=%s";
         String clientRESTTemplate = "http://localhost:8030/rest/integration/opendashboard?dashboardname=%s&server=%s&secure=true&source=stored:%s";
-        if (target.equals(WEBSTART)) {
-            return String.format(webstartTemplate, protocol, server, port, server, dashboardName, sessionName);
-        } else if (target.equals(PUREPATH_OVERVIEW)) {
-            return String.format(clientRESTTemplate, "PurePaths", server, sessionName);
-        } else if (target.equals(LOADTEST_OVERVIEW)) {
-            return String.format(clientRESTTemplate, "LoadTest%20Overview", server, sessionName);
+        switch (target) {
+            case WEBSTART:
+                return String.format(webstartTemplate, protocol, server, port, server, dashboardName, sessionName);
+            case PUREPATH_OVERVIEW:
+                return String.format(clientRESTTemplate, "PurePaths", server, sessionName);
+            case LOADTEST_OVERVIEW:
+                return String.format(clientRESTTemplate, "LoadTest%20Overview", server, sessionName);
         }
         return "";
     }

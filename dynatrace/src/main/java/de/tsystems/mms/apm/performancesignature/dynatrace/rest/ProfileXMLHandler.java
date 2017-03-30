@@ -41,7 +41,7 @@ public class ProfileXMLHandler extends DefaultHandler {
     private final List<BaseConfiguration> configObjects;
 
     public ProfileXMLHandler() {
-        configObjects = new ArrayList<BaseConfiguration>();
+        configObjects = new ArrayList<>();
     }
 
     public List<BaseConfiguration> getConfigurationObjects() {

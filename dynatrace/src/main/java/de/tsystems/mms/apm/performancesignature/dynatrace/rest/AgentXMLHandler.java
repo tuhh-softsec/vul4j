@@ -48,8 +48,8 @@ public class AgentXMLHandler extends DefaultHandler {
     private String parentElement;
 
     public AgentXMLHandler() {
-        collectors = new ArrayList<Collector>();
-        agents = new ArrayList<Agent>();
+        collectors = new ArrayList<>();
+        agents = new ArrayList<>();
     }
 
     public List<Agent> getAgents() {
@@ -62,19 +62,23 @@ public class AgentXMLHandler extends DefaultHandler {
 
     public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attr) {
         this.contents.reset();
-        if (localName.equals("agentinformation")) {
-            this.parentElement = localName;
-            this.currentAgent = new Agent();
-            this.agents.add(this.currentAgent);
-        } else if (localName.equals("agentProperties")) {
-            this.parentElement = localName;
-        } else if (localName.equals("collectorinformation")) {
-            this.parentElement = localName;
-            this.currentCollector = new Collector();
-            this.collectors.add(this.currentCollector);
-            if (this.currentAgent != null) {
-                this.currentAgent.setCollector(this.currentCollector);
-            }
+        switch (localName) {
+            case "agentinformation":
+                this.parentElement = localName;
+                this.currentAgent = new Agent();
+                this.agents.add(this.currentAgent);
+                break;
+            case "agentProperties":
+                this.parentElement = localName;
+                break;
+            case "collectorinformation":
+                this.parentElement = localName;
+                this.currentCollector = new Collector();
+                this.collectors.add(this.currentCollector);
+                if (this.currentAgent != null) {
+                    this.currentAgent.setCollector(this.currentCollector);
+                }
+                break;
         }
         this.currentElement = localName;
     }
