@@ -205,8 +205,6 @@ public class DTServerConnection {
         conn.setRequestProperty("Authorization", "Basic" + " " + token);
         conn.setUseCaches(false);
         conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
-
-        conn.setConnectTimeout(60 * 1000);
         conn.setReadTimeout(120 * 1000);
 
         if (conn instanceof HttpsURLConnection && !verifyCertificate) {

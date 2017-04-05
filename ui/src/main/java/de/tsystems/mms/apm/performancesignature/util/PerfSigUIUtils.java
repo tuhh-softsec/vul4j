@@ -37,7 +37,6 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public final class PerfSigUIUtils {
@@ -88,12 +87,7 @@ public final class PerfSigUIUtils {
     }
 
     public static List<ChartDashlet> sortChartDashletList(final List<ChartDashlet> list) {
-        Collections.sort(list, new Comparator<ChartDashlet>() {
-            @Override
-            public int compare(final ChartDashlet o1, final ChartDashlet o2) {
-                return o1.getName().compareToIgnoreCase(o2.getName());
-            }
-        });
+        Collections.sort(list);
         return list;
     }
 

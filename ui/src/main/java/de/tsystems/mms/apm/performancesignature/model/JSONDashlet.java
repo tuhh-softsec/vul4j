@@ -7,7 +7,9 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 
-public class JSONDashlet {
+import javax.annotation.Nonnull;
+
+public class JSONDashlet implements Comparable<JSONDashlet> {
 
     @SerializedName("col")
     @Expose
@@ -239,5 +241,31 @@ public class JSONDashlet {
         } else {
             return customName;
         }
+    }
+
+    public int compareTo(@Nonnull final JSONDashlet that) {
+        if (this == that) {
+            return 0;
+        }
+        int r = this.generateDashletName().compareToIgnoreCase(that.generateDashletName());
+        if (r != 0) {
+            return r;
+        }
+        // Only equals is exact reference
+        return System.identityHashCode(this) >= System.identityHashCode(that) ? 1 : -1;
+    }
+
+    // Method overridden to provide explicit declaration of the equivalence relation used
+    // as Comparable is also implemented
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj;
+    }
+
+    // Method overridden to provide explicit declaration of the equivalence relation used
+    // as Comparable is also implemented
+    @Override
+    public int hashCode() {
+        return System.identityHashCode(this);
     }
 }

@@ -20,11 +20,12 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 @ExportedBean
-public class ChartDashlet {
+public class ChartDashlet implements Comparable<ChartDashlet> {
     private final String name;
     private final List<Measure> measures;
     private String description;
@@ -56,5 +57,31 @@ public class ChartDashlet {
 
     public void addMeasure(final Measure tm) {
         this.measures.add(tm);
+    }
+
+    public int compareTo(@Nonnull final ChartDashlet that) {
+        if (this == that) {
+            return 0;
+        }
+        int r = this.getName().compareToIgnoreCase(that.getName());
+        if (r != 0) {
+            return r;
+        }
+        // Only equals is exact reference
+        return System.identityHashCode(this) >= System.identityHashCode(that) ? 1 : -1;
+    }
+
+    // Method overridden to provide explicit declaration of the equivalence relation used
+    // as Comparable is also implemented
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj;
+    }
+
+    // Method overridden to provide explicit declaration of the equivalence relation used
+    // as Comparable is also implemented
+    @Override
+    public int hashCode() {
+        return System.identityHashCode(this);
     }
 }
