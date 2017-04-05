@@ -91,7 +91,7 @@ public final class PerfSigUIUtils {
         Collections.sort(list, new Comparator<ChartDashlet>() {
             @Override
             public int compare(final ChartDashlet o1, final ChartDashlet o2) {
-                return o1.getName().compareTo(o2.getName());
+                return o1.getName().compareToIgnoreCase(o2.getName());
             }
         });
         return list;

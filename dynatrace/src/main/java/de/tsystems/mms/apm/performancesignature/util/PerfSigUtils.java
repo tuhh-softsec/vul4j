@@ -33,6 +33,7 @@ import hudson.util.ListBoxModel;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public final class PerfSigUtils {
@@ -57,7 +58,17 @@ public final class PerfSigUtils {
             } else if (item instanceof BaseConfiguration)
                 listBoxModel.add(((BaseConfiguration) item).getId());
         }
-        return listBoxModel;
+        return sortListBoxModel(listBoxModel);
+    }
+
+    private static ListBoxModel sortListBoxModel(final ListBoxModel list) {
+        Collections.sort(list, new Comparator<ListBoxModel.Option>() {
+            @Override
+            public int compare(final ListBoxModel.Option o1, final ListBoxModel.Option o2) {
+                return o1.name.compareToIgnoreCase(o2.name);
+            }
+        });
+        return list;
     }
 
     public static List<DynatraceServerConfiguration> getDTConfigurations() {

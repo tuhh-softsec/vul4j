@@ -381,7 +381,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         Collections.sort(jsonDashlets, new Comparator<JSONDashlet>() {
             @Override
             public int compare(final JSONDashlet o1, final JSONDashlet o2) {
-                return o1.getMeasure().compareTo(o2.getMeasure());
+                return o1.generateDashletName().compareToIgnoreCase(o2.generateDashletName());
             }
         });
         for (JSONDashlet jsonDashlet : jsonDashlets) {
