@@ -87,6 +87,10 @@ public class MessgroesseToMessmethode implements Rule {
                 violation.addWarning("messgroesse#" + mg.getMessgroesse(), 632);
             }
         }
-        return violation.hasWarnings() ? violation : null;
+        if (violation.hasWarnings()) {
+            violation.addWarning("mmtId", 632);
+            return violation;
+        }
+        return null;
     }
 }
