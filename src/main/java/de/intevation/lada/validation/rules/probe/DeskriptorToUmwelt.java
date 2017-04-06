@@ -104,7 +104,7 @@ public class DeskriptorToUmwelt implements Rule {
 
         if (media.size() == 0) {
             Violation violation = new Violation();
-            violation.addWarning("umwId", 632);
+            violation.addWarning("umwId#" + umwId, 632);
             return violation;
         }
 
@@ -121,7 +121,7 @@ public class DeskriptorToUmwelt implements Rule {
         List<DeskriptorUmwelt> data = (List<DeskriptorUmwelt>)response.getData();
         if (data.isEmpty()) {
             Violation violation = new Violation();
-            violation.addWarning("umwId", 632);
+            violation.addWarning("umwId#" + umwId, 632);
             return violation;
         }
 
@@ -131,12 +131,12 @@ public class DeskriptorToUmwelt implements Rule {
         }
         else if (unique && !umwId.equals(data.get(0).getUmwId())) {
             Violation violation = new Violation();
-            violation.addWarning("umwId", 632);
+            violation.addWarning("umwId#" + umwId, 632);
             return violation;
         }
         else {
             Violation violation = new Violation();
-            violation.addWarning("umwId", 632);
+            violation.addWarning("umwId#" + umwId, 632);
             boolean found = false;
             for (int i = 0; i < data.size(); i++) {
                 if (!data.get(i).getUmwId().equals(umwId)) {

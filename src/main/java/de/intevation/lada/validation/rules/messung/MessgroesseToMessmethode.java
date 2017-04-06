@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 
 import de.intevation.lada.model.land.Messung;
 import de.intevation.lada.model.land.Messwert;
+import de.intevation.lada.model.stammdaten.Messgroesse;
 import de.intevation.lada.model.stammdaten.MmtMessgroesse;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
@@ -73,15 +74,17 @@ public class MessgroesseToMessmethode implements Rule {
         for(Messwert messwert: messwerte) {
             boolean hit = false;
             for (MmtMessgroesse messgroesse: found) {
-                logger.trace("###### mmt: " + messwert.getMessgroesseId()
-                    + " mmtmg: " + messgroesse.getMmtId());
                 if (messwert.getMessgroesseId().equals(
-                        messgroesse.getMmtId())) {
+                        messgroesse.getMessgroesseId())) {
                     hit = true;
                 }
             }
             if (!hit) {
-                violation.addWarning("messgroesse", 632);
+                Messgroesse mg = repository.getByIdPlain(
+                    Messgroesse.class,
+                    messwert.getMessgroesseId(),
+                    "stamm");
+                violation.addWarning("messgroesse#" + mg.getMessgroesse(), 632);
             }
         }
         return violation.hasWarnings() ? violation : null;

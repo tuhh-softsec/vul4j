@@ -7,12 +7,15 @@
  */
 package de.intevation.lada.validation.rules.messung;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import de.intevation.lada.model.land.Messung;
 import de.intevation.lada.model.land.Messwert;
+import de.intevation.lada.model.land.Probe;
+import de.intevation.lada.model.stammdaten.Messgroesse;
 import de.intevation.lada.model.stammdaten.PflichtMessgroesse;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
@@ -39,11 +42,14 @@ public class HasPflichtmessgroessen implements Rule {
     @Override
     public Violation execute(Object object) {
         Messung messung = (Messung)object;
+        Probe probe = repository.getByIdPlain(Probe.class, messung.getProbeId(), "land");
+
         QueryBuilder<PflichtMessgroesse> builder =
             new QueryBuilder<PflichtMessgroesse>(
                 repository.entityManager("stamm"),
                 PflichtMessgroesse.class);
         builder.and("messMethodeId", messung.getMmtId());
+        builder.and("umwId", probe.getUmwId());
         Response response = repository.filter(builder.getQuery(), "stamm");
         @SuppressWarnings("unchecked")
         List<PflichtMessgroesse> pflicht =
@@ -58,16 +64,20 @@ public class HasPflichtmessgroessen implements Rule {
         @SuppressWarnings("unchecked")
         List<Messwert> messwerte = (List<Messwert>)wertResponse.getData();
         Violation violation = new Violation();
-        boolean missing = false;
-        for (PflichtMessgroesse p : pflicht) {
-            for (Messwert wert : messwerte) {
-                if (!p.getMessgroesseId().equals(wert.getMessgroesseId())) {
-                    missing = true;
+        List<PflichtMessgroesse> tmp = new ArrayList<PflichtMessgroesse>();
+        for (Messwert wert : messwerte) {
+            for (PflichtMessgroesse p : pflicht) {
+                if (p.getMessgroesseId().equals(wert.getMessgroesseId())) {
+                    tmp.add(p);
                 }
             }
         }
-        if (missing) {
-            violation.addWarning("pflichtmessgroesse", 631);
+        pflicht.removeAll(tmp);
+        if (!pflicht.isEmpty()) {
+            for (PflichtMessgroesse p : pflicht) {
+                Messgroesse mg = repository.getByIdPlain(Messgroesse.class, p.getMessgroesseId(), "stamm");
+                violation.addWarning("pflichtmessgroesse#" + mg.getMessgroesse(), 631);
+            }
         }
         return violation.hasWarnings() ? violation : null;
     }

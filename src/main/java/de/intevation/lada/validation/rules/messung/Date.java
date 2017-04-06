@@ -50,7 +50,9 @@ public class Date implements Rule {
             if (probe.getProbeentnahmeEnde() == null ||
                 probe.getProbeentnahmeEnde().after(messung.getMesszeitpunkt())) {
                 Violation violation = new Violation();
-                violation.addWarning("messzeitpunkt", 632);
+                violation.addWarning(
+                    "messzeitpunkt#" + messung.getNebenprobenNr(),
+                    632);
                 return violation;
             }
         }
