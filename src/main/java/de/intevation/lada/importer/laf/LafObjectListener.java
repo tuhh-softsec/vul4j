@@ -1086,7 +1086,7 @@ public class LafObjectListener extends LafBaseListener {
         }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
-        if (!value.matches(LafDataTypes.SC3)) {
+        if (!value.matches(LafDataTypes.C3)) {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
