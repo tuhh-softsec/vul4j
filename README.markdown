@@ -27,7 +27,7 @@ Quelltext
 ---------
 Die Quelldateien lassen sich wie folgt auschecken:
 ```
-hg clone https://scm.wald.intevation.org/hg/lada/lada-server
+git clone https://github.com/OpenBfS/lada-server.git
 ```
 
 Entwicklung
