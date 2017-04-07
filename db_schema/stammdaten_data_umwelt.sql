@@ -131,6 +131,7 @@ F12	\N	Grünfutterpflanzen (außer Weide- u. Wiesenbewuchs)	65
 F51	\N	Heu	65
 F52	\N	Stroh, Cobs, Trockenmehle	65
 F62	\N	Schrote	65
+91	\N	PARK Modellbereiche	\N
 A1	\N	Kläranlage	\N
 A2	\N	Verbrennungsanlage	\N
 A3	\N	Mülldeponie	\N
@@ -172,6 +173,7 @@ NZ	\N	Sonstige Nahrungsmittel	67
 Z1	\N	Baustoffe	64
 Z2	\N	Bodenschätze	62
 Z3	\N	Bedarfsgegenstände und Kosmetische Mittel	64
+9	\N	PARK	\N
 A	\N	Abwasser, Reststoffe  und Abfälle	\N
 B	\N	Boden	\N
 F	\N	Futtermittel	\N
