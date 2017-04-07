@@ -166,7 +166,7 @@ public class LafObjectMapper {
             // Probe was found but some data does not match
             else if(i == Identified.REJECT){
                 ReportItem err = new ReportItem();
-                err.setCode(631);
+                err.setCode(671);
                 err.setKey("duplicate");
                 err.setValue("");
                 currentErrors.add(err);
@@ -178,6 +178,7 @@ public class LafObjectMapper {
                     warnings.put(object.getIdentifier(),
                         new ArrayList<ReportItem>(currentWarnings));
                 }
+                return;
             }
             // It is a brand new probe!
             else if(i == Identified.NEW){
