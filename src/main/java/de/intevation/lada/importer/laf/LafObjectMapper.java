@@ -750,6 +750,9 @@ public class LafObjectMapper {
             }
             return null;
         }
+        if (o.getId() != null) {
+            return o;
+        }
         repository.create(o, "stamm");
         return o;
     }
