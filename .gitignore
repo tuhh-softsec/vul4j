@@ -1,9 +1,7 @@
 *.class
 *.orig
 .classpath
-.gitignore
 .factorypath
-.gitignore
 .project
 *.swp
 *.swo
@@ -13,6 +11,5 @@ TAGS
 .idea
 *.iml
 
-# switch to regexp syntax.
 target/
 .settings
