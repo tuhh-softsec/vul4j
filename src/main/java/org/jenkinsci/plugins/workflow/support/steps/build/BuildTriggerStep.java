@@ -11,12 +11,10 @@ import hudson.model.ParameterDefinition;
 import hudson.model.ParameterValue;
 import hudson.model.ParametersDefinitionProperty;
 import hudson.model.Queue;
-import hudson.model.TopLevelItem;
 import hudson.util.FormValidation;
 import java.util.ArrayList;
 import java.util.List;
 import jenkins.model.Jenkins;
-import jenkins.model.ParameterizedJobMixIn;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
@@ -94,9 +92,8 @@ public class BuildTriggerStep extends AbstractStepImpl {
             Object parameter = formData.get("parameter");
             JSONArray params = parameter != null ? JSONArray.fromObject(parameter) : null;
             if (params != null) {
-                Jenkins jenkins = Jenkins.getInstance();
                 Job<?,?> context = StaplerReferer.findItemFromRequest(Job.class);
-                Job<?,?> job = jenkins != null ? jenkins.getItem(step.getJob(), context, Job.class) : null;
+                Job<?,?> job = Jenkins.getActiveInstance().getItem(step.getJob(), context, Job.class);
                 if (job != null) {
                     ParametersDefinitionProperty pdp = job.getProperty(ParametersDefinitionProperty.class);
                     if (pdp != null) {
