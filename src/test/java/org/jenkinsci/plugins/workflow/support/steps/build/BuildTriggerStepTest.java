@@ -16,7 +16,6 @@ import hudson.model.Result;
 import hudson.model.StringParameterDefinition;
 import hudson.model.TaskListener;
 import hudson.model.queue.QueueTaskFuture;
-import hudson.tasks.Shell;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -30,19 +29,20 @@ import jenkins.scm.api.SCMSource;
 import jenkins.scm.impl.mock.MockSCMController;
 import jenkins.scm.impl.mock.MockSCMNavigator;
 import org.apache.commons.lang.StringUtils;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowExecution;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
 import org.jenkinsci.plugins.workflow.test.steps.SemaphoreStep;
-
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.*;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.BuildWatcher;
+import org.jvnet.hudson.test.CaptureEnvironmentBuilder;
 import org.jvnet.hudson.test.FailureBuilder;
 import org.jvnet.hudson.test.Issue;
 import org.jvnet.hudson.test.JenkinsRule;
@@ -57,6 +57,10 @@ public class BuildTriggerStepTest {
     @ClassRule public static BuildWatcher buildWatcher = new BuildWatcher();
     @Rule public JenkinsRule j = new JenkinsRule();
     @Rule public LoggerRule logging = new LoggerRule();
+
+    @Before public void runQuickly() throws IOException {
+        j.jenkins.setQuietPeriod(0);
+    }
 
     @Issue("JENKINS-25851")
     @Test public void buildTopLevelProject() throws Exception {
@@ -86,7 +90,7 @@ public class BuildTriggerStepTest {
     public void buildFolderProject() throws Exception {
         MockFolder dir1 = j.createFolder("dir1");
         FreeStyleProject downstream = dir1.createProject(FreeStyleProject.class, "downstream");
-        downstream.getBuildersList().add(new Shell("echo 'Hello World'"));
+        downstream.getBuildersList().add(new SleepBuilder(1));
 
         MockFolder dir2 = j.createFolder("dir2");
         WorkflowJob upstream = dir2.createProject(WorkflowJob.class, "upstream");
@@ -96,17 +100,13 @@ public class BuildTriggerStepTest {
         assertEquals(1, downstream.getBuilds().size());
     }
 
-
     @Test
     public void buildParallelTests() throws Exception {
         FreeStyleProject p1 = j.createFreeStyleProject("test1");
-        p1.getBuildersList().add(new Shell("echo 'Hello World'"));
+        p1.getBuildersList().add(new SleepBuilder(1));
 
         FreeStyleProject p2 = j.createFreeStyleProject("test2");
-        p2.getBuildersList().add(new Shell("echo 'Hello World'"));
-
-
-
+        p2.getBuildersList().add(new SleepBuilder(1));
 
         WorkflowJob foo = j.jenkins.createProject(WorkflowJob.class, "foo");
         foo.setDefinition(new CpsFlowDefinition(StringUtils.join(Arrays.asList("parallel(test1: {\n" +
@@ -122,7 +122,7 @@ public class BuildTriggerStepTest {
     @Test
     public void abortBuild() throws Exception {
         FreeStyleProject p = j.createFreeStyleProject("test1");
-        p.getBuildersList().add(new Shell("sleep 6000"));
+        p.getBuildersList().add(new SleepBuilder(Long.MAX_VALUE));
 
         WorkflowJob foo = j.jenkins.createProject(WorkflowJob.class, "foo");
         foo.setDefinition(new CpsFlowDefinition(StringUtils.join(Arrays.asList("build('test1');"), "\n")));
@@ -147,7 +147,7 @@ public class BuildTriggerStepTest {
     @Test
     public void cancelBuildQueue() throws Exception {
         FreeStyleProject p = j.createFreeStyleProject("test1");
-        p.getBuildersList().add(new Shell("sleep 6000"));
+        p.getBuildersList().add(new SleepBuilder(Long.MAX_VALUE));
 
         WorkflowJob foo = j.jenkins.createProject(WorkflowJob.class, "foo");
         foo.setDefinition(new CpsFlowDefinition(StringUtils.join(Arrays.asList("build('test1');"), "\n")));
@@ -239,25 +239,31 @@ public class BuildTriggerStepTest {
         assertEquals(1, ds.getBuilds().size());
     }
 
+    @Issue("JENKINS-31897")
     @Test public void parameters() throws Exception {
         WorkflowJob us = j.jenkins.createProject(WorkflowJob.class, "us");
         FreeStyleProject ds = j.jenkins.createProject(FreeStyleProject.class, "ds");
         ds.addProperty(new ParametersDefinitionProperty(new StringParameterDefinition("branch", "master"), new BooleanParameterDefinition("extra", false, null)));
-        ds.getBuildersList().add(new Shell("echo branch=$branch extra=$extra"));
+        CaptureEnvironmentBuilder env = new CaptureEnvironmentBuilder();
+        ds.getBuildersList().add(env);
         us.setDefinition(new CpsFlowDefinition("build 'ds'"));
         WorkflowRun us1 = j.buildAndAssertSuccess(us);
-        FreeStyleBuild ds1 = ds.getBuildByNumber(1);
-        j.assertLogContains("branch=master extra=false", ds1);
-        Cause.UpstreamCause cause = ds1.getCause(Cause.UpstreamCause.class);
+        assertEquals("1", env.getEnvVars().get("BUILD_NUMBER"));
+        assertEquals("master", env.getEnvVars().get("branch"));
+        assertEquals("false", env.getEnvVars().get("extra"));
+        Cause.UpstreamCause cause = ds.getBuildByNumber(1).getCause(Cause.UpstreamCause.class);
         assertNotNull(cause);
         assertEquals(us1, cause.getUpstreamRun());
         us.setDefinition(new CpsFlowDefinition("build job: 'ds', parameters: [[$class: 'StringParameterValue', name: 'branch', value: 'release']]", true));
         j.buildAndAssertSuccess(us);
-        // TODO JENKINS-13768 proposes automatic filling in of default parameter values; should that be used, or is BuildTriggerStepExecution responsible, or ParameterizedJobMixIn.scheduleBuild2?
-        j.assertLogContains("branch=release extra=", ds.getBuildByNumber(2));
+        assertEquals("2", env.getEnvVars().get("BUILD_NUMBER"));
+        assertEquals("release", env.getEnvVars().get("branch"));
+        assertEquals("false", env.getEnvVars().get("extra")); //
         us.setDefinition(new CpsFlowDefinition("build job: 'ds', parameters: [[$class: 'StringParameterValue', name: 'branch', value: 'release'], [$class: 'BooleanParameterValue', name: 'extra', value: true]]", true));
         j.buildAndAssertSuccess(us);
-        j.assertLogContains("branch=release extra=true", ds.getBuildByNumber(3));
+        assertEquals("3", env.getEnvVars().get("BUILD_NUMBER"));
+        assertEquals("release", env.getEnvVars().get("branch"));
+        assertEquals("true", env.getEnvVars().get("extra"));
     }
 
     @Issue("JENKINS-26123")
@@ -359,6 +365,7 @@ public class BuildTriggerStepTest {
         us.setDefinition(new CpsFlowDefinition("build job: 'ds', parameters: [[$class: 'StringParameterValue', name: 'PARAM1', value: 'first']] "));
         WorkflowJob ds = j.jenkins.createProject(WorkflowJob.class, "ds");
         ds.addProperty(new ParametersDefinitionProperty(new StringParameterDefinition("PARAM1", "p1"), new StringParameterDefinition("PARAM2", "p2")));
+        // TODO use params when updating workflow-cps/workflow-job
         ds.setDefinition(new CpsFlowDefinition("echo \"${PARAM1} - ${PARAM2}\""));
         j.buildAndAssertSuccess(us);
         j.assertLogContains("first - p2", ds.getLastBuild());
