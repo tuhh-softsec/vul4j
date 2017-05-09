@@ -61,8 +61,6 @@ import org.codehaus.plexus.components.io.functions.InputStreamTransformer;
 import org.codehaus.plexus.components.io.resources.PlexusIoFileResourceCollection;
 import org.codehaus.plexus.components.io.resources.PlexusIoResource;
 import org.codehaus.plexus.components.io.resources.ResourceFactory;
-import org.codehaus.plexus.logging.Logger;
-import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.Os;
@@ -74,16 +72,6 @@ import org.codehaus.plexus.util.Os;
 public class ZipArchiverTest
     extends BasePlexusArchiverTest
 {
-
-    private Logger logger;
-
-    public void setUp()
-        throws Exception
-    {
-        super.setUp();
-
-        logger = new ConsoleLogger( Logger.LEVEL_DEBUG, "test" );
-    }
 
     public void testImplicitPermissions()
         throws IOException
@@ -342,7 +330,7 @@ public class ZipArchiverTest
             IOUtil.close( writer );
         }
 
-        ArchiveEntryUtils.chmod( file, mode, logger, false );
+        ArchiveEntryUtils.chmod( file, mode );
     }
 
     public void testCreateArchive()

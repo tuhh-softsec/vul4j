@@ -190,7 +190,7 @@ public class DirectoryArchiver
     {
         if ( !isIgnorePermissions() )
         {
-            ArchiveEntryUtils.chmod( outFile, entry.getMode(), getLogger(), isUseJvmChmod() );
+            ArchiveEntryUtils.chmod( outFile, entry.getMode() );
         }
 
         outFile.setLastModified( inLastModified == PlexusIoResource.UNKNOWN_MODIFICATION_DATE

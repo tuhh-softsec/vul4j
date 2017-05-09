@@ -24,10 +24,6 @@
     <url>https://github.com/codehaus-plexus/plexus-archiver/issues</url>
   </issueManagement>
 
-  <properties>
-    <useJvmChmod>true</useJvmChmod>
-  </properties>
-
   <contributors>
     <contributor>
       <name>Dan Tran</name>
@@ -108,11 +104,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <systemPropertyVariables>
-            <useJvmChmod>${useJvmChmod}</useJvmChmod>
-          </systemPropertyVariables>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

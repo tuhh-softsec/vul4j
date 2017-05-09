@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import org.codehaus.plexus.components.io.attributes.FileAttributes;
-import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.util.Os;
 import junit.framework.TestCase;
 
@@ -19,8 +18,7 @@ public class ArchiveEntryUtilsTest extends TestCase
             return;
         }
         File temp = File.createTempFile( "A$A", "BB$" );
-        ArchiveEntryUtils.chmod( temp, 0770, new ConsoleLogger( org.codehaus.plexus.logging.Logger.LEVEL_DEBUG, "foo" ),
-                                 false );
+        ArchiveEntryUtils.chmod( temp, 0770 );
         assert0770( temp );
     }
 
@@ -32,8 +30,7 @@ public class ArchiveEntryUtilsTest extends TestCase
         }
 
         File temp = File.createTempFile( "D$D", "BB$" );
-        ArchiveEntryUtils.
-            chmod( temp, 0770, new ConsoleLogger( org.codehaus.plexus.logging.Logger.LEVEL_DEBUG, "foo" ) );
+        ArchiveEntryUtils.chmod( temp, 0770 );
         assert0770( temp );
     }
 

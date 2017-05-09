@@ -351,7 +351,7 @@ public abstract class AbstractUnArchiver
 
             if ( !isIgnorePermissions() && mode != null && !isDirectory )
             {
-                ArchiveEntryUtils.chmod( f, mode, getLogger(), isUseJvmChmod() );
+                ArchiveEntryUtils.chmod( f, mode );
             }
         }
         catch ( final FileNotFoundException ex )

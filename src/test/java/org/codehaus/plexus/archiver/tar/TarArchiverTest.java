@@ -45,8 +45,6 @@ import org.codehaus.plexus.archiver.util.DefaultArchivedFileSet;
 import org.codehaus.plexus.archiver.zip.ArchiveFileComparator;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributeUtils;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
-import org.codehaus.plexus.logging.Logger;
-import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.Os;
@@ -60,17 +58,6 @@ import static org.codehaus.plexus.components.io.resources.ResourceFactory.create
 public class TarArchiverTest
     extends PlexusTestCase
 {
-
-    private Logger logger;
-
-    @Override
-    public void setUp()
-        throws Exception
-    {
-        super.setUp();
-
-        logger = new ConsoleLogger( Logger.LEVEL_DEBUG, "test" );
-    }
 
     public void testCreateArchiveWithDetectedModes()
         throws Exception
@@ -275,7 +262,7 @@ public class TarArchiverTest
             IOUtil.close( writer );
         }
 
-        ArchiveEntryUtils.chmod( file, mode, logger, false );
+        ArchiveEntryUtils.chmod( file, mode );
     }
 
     public void testCreateArchive()

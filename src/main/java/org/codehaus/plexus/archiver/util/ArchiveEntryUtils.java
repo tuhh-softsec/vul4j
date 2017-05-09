@@ -26,36 +26,41 @@ import org.codehaus.plexus.util.Os;
 public final class ArchiveEntryUtils
 {
 
-    public static boolean jvmFilePermAvailable;
-
-    static
-    {
-        try
-        {
-            jvmFilePermAvailable = File.class.getMethod( "setReadable", Boolean.TYPE ) != null;
-        }
-        catch ( final Exception e )
-        {
-            // ignore exception log this ?
-        }
-    }
-
     private ArchiveEntryUtils()
     {
         // no op
     }
 
     /**
-     * @since 1.1
-     * @param file
-     * @param mode
-     * @param logger
-     * @param useJvmChmod
-     * will use jvm file permissions <b>not available for group level</b>
+     * This method is now deprecated.
      *
-     * @throws ArchiverException
+     * The {@code useJvmChmod} flag is ignored as the JVM is always used.
+     * The {@code logger} provided is no longer used.
+     *
+     * @deprecated Use {@link #chmod(File, int)}
      */
+    @Deprecated
     public static void chmod( final File file, final int mode, final Logger logger, boolean useJvmChmod )
+        throws ArchiverException
+    {
+        chmod( file, mode );
+    }
+
+    /**
+     * This method is now deprecated.
+     *
+     * The {@code logger} provided is no longer used.
+     *
+     * @deprecated Use {@link #chmod(File, int)}
+     */
+    @Deprecated
+    public static void chmod( final File file, final int mode, final Logger logger )
+        throws ArchiverException
+    {
+        chmod( file, mode );
+    }
+
+    public static void chmod( final File file, final int mode )
         throws ArchiverException
     {
         if ( !Os.isFamily( Os.FAMILY_UNIX ) )
@@ -71,21 +76,6 @@ public final class ArchiveEntryUtils
         {
             throw new ArchiverException( "Failed setting file attributes", e );
         }
-    }
-
-    /**
-     * <b>jvm chmod will be used only if System property <code>useJvmChmod</code> set to true</b>
-     *
-     * @param file
-     * @param mode
-     * @param logger
-     *
-     * @throws ArchiverException
-     */
-    public static void chmod( final File file, final int mode, final Logger logger )
-        throws ArchiverException
-    {
-        chmod( file, mode, logger, Boolean.getBoolean( "useJvmChmod" ) && jvmFilePermAvailable );
     }
 
 }

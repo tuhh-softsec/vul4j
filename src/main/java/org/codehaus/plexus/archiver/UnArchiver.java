@@ -89,13 +89,17 @@ public interface UnArchiver
      *
      * @since 1.1
      * @param useJvmChmod
+     * @deprecated this setting is now ignored. The jvm is always used.
      */
+    @Deprecated
     void setUseJvmChmod( boolean useJvmChmod );
 
     /**
      * @since 1.1
      * @return
+     * @deprecated this setting is now ignored. The jvm is always used.
      */
+    @Deprecated
     boolean isUseJvmChmod();
 
     /**
