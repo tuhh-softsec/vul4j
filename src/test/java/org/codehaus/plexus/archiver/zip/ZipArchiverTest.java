@@ -53,7 +53,7 @@ import org.codehaus.plexus.archiver.util.ArchiveEntryUtils;
 import org.codehaus.plexus.archiver.util.DefaultArchivedFileSet;
 import org.codehaus.plexus.archiver.util.DefaultFileSet;
 import org.codehaus.plexus.archiver.util.Streams;
-import org.codehaus.plexus.components.io.attributes.Java7FileAttributes;
+import org.codehaus.plexus.components.io.attributes.FileAttributes;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributeUtils;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.attributes.SimpleResourceAttributes;
@@ -520,7 +520,7 @@ public class ZipArchiverTest
         zipUnArchiver.setDestFile( output );
         zipUnArchiver.extract();
         File symDir = new File( "target/output/unzipped/plexus/src/symDir" );
-        PlexusIoResourceAttributes fa = Java7FileAttributes.uncached( symDir );
+        PlexusIoResourceAttributes fa = FileAttributes.uncached( symDir );
         assertTrue( fa.isSymbolicLink() );
     }
 
@@ -541,7 +541,7 @@ public class ZipArchiverTest
         zipUnArchiver.setDestFile( output );
         zipUnArchiver.extract();
         File symDir = new File( output, "bzz/symDir" );
-        PlexusIoResourceAttributes fa = Java7FileAttributes.uncached( symDir );
+        PlexusIoResourceAttributes fa = FileAttributes.uncached( symDir );
         assertTrue( fa.isSymbolicLink() );
     }
 

@@ -7,7 +7,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import javax.annotation.Nonnull;
 import javax.annotation.WillNotClose;
-import org.codehaus.plexus.components.io.attributes.Java7FileAttributes;
+import org.codehaus.plexus.components.io.attributes.FileAttributes;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.resources.PlexusIoCompressedFileResourceCollection;
 import org.codehaus.plexus.util.IOUtil;
@@ -41,7 +41,7 @@ public class PlexusIoSnappyResourceCollection
 
     @Override protected PlexusIoResourceAttributes getAttributes( File file ) throws IOException
     {
-        return new Java7FileAttributes( file, new HashMap<Integer, String>(), new HashMap<Integer, String>() );
+        return new FileAttributes( file, new HashMap<Integer, String>(), new HashMap<Integer, String>() );
     }
 
     @Override

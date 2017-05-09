@@ -35,7 +35,6 @@ import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
 import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.components.io.attributes.Java7Reflector;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.functions.ResourceAttributeSupplier;
 import org.codehaus.plexus.components.io.resources.AbstractPlexusIoResourceCollection;
@@ -363,7 +362,7 @@ public abstract class AbstractArchiver
 
     private boolean isSymlinkSupported()
     {
-        return Os.isFamily( Os.FAMILY_UNIX ) && Java7Reflector.isAtLeastJava7();
+        return Os.isFamily( Os.FAMILY_UNIX );
     }
 
     @Override

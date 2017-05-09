@@ -20,8 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import javax.annotation.Nonnull;
-import org.codehaus.plexus.components.io.attributes.Java7AttributeUtils;
-import org.codehaus.plexus.components.io.attributes.Java7Reflector;
+import org.codehaus.plexus.components.io.attributes.AttributeUtils;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.components.io.functions.ResourceAttributeSupplier;
 import org.codehaus.plexus.components.io.resources.AbstractPlexusIoResource;
@@ -106,14 +105,7 @@ public class PlexusIoVirtualFileResource
     {
         if ( file.exists() )
         {
-            if ( Java7Reflector.isAtLeastJava7() )
-            {
-                return Java7AttributeUtils.getLastModified( getFile() );
-            }
-            else
-            {
-                return getFile().lastModified();
-            }
+            return AttributeUtils.getLastModified( getFile() );
         }
         else
         {

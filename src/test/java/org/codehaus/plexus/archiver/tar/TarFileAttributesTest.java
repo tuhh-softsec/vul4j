@@ -9,7 +9,6 @@ import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.util.DefaultArchivedFileSet;
-import org.codehaus.plexus.components.io.attributes.Java7Reflector;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributeUtils;
 import org.codehaus.plexus.components.io.attributes.PlexusIoResourceAttributes;
 import org.codehaus.plexus.util.FileUtils;
@@ -141,10 +140,7 @@ public class TarFileAttributesTest
         PlexusIoResourceAttributes fileAttributes =
             PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
 
-        final int expected = Java7Reflector.isAtLeastJava7() ? 0660 : 0644;
-
-        assertEquals( "This test will fail if your umask is not X2X (or more)",
-                      expected, fileAttributes.getOctalMode() );
+        assertEquals( 0660, fileAttributes.getOctalMode() );
 
     }
 
@@ -207,10 +203,7 @@ public class TarFileAttributesTest
 
         fileAttributes = PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
 
-        final int expected = Java7Reflector.isAtLeastJava7() ? 0440 : 0444;
-
-        assertEquals( "This test will fail if your umask is not X2X (or more)",
-                      expected, fileAttributes.getOctalMode() );
+        assertEquals( 0440, fileAttributes.getOctalMode() );
 
     }
 
@@ -275,10 +268,7 @@ public class TarFileAttributesTest
         PlexusIoResourceAttributes fileAttributes =
             PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
 
-        final int expected = Java7Reflector.isAtLeastJava7() ? 0660 : 0644;
-
-        assertEquals( "This test will fail if your umask is not X2X (or more)",
-                      expected, fileAttributes.getOctalMode() );
+        assertEquals( 0660, fileAttributes.getOctalMode() );
 
     }
 
@@ -345,9 +335,7 @@ public class TarFileAttributesTest
         PlexusIoResourceAttributes fileAttributes =
             PlexusIoResourceAttributeUtils.getFileAttributes( new File( tempTarDir, tempFile.getName() ) );
 
-        final int expected = Java7Reflector.isAtLeastJava7() ? 0660 : 0644;
-        assertEquals( "This test will fail if your umask is not X2X (or more)",
-                      expected, fileAttributes.getOctalMode() );
+        assertEquals( 0660, fileAttributes.getOctalMode() );
 
     }
 
