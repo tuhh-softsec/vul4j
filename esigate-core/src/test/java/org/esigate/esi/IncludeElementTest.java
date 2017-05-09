@@ -19,6 +19,7 @@ import java.util.Date;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.impl.cookie.BasicClientCookie;
+import org.esigate.ConfigurationException;
 import org.esigate.HttpErrorPage;
 
 public class IncludeElementTest extends AbstractElementTest {
@@ -338,5 +339,47 @@ public class IncludeElementTest extends AbstractElementTest {
         result = render(page);
         expected = "code fragment";
         assertEquals(expected, result);
+    }
+
+    public void testIncludeProviderWithUnknownProvider() throws IOException, HttpErrorPage {
+
+        // Test unknownProvider => error
+        try {
+            String page = "Before <esi:include src=\"$(PROVIDER{unknown})/test\" /> After";
+            render(page);
+            fail("Should have ConfigurationException");
+        } catch (ConfigurationException e) {
+            assertEquals("No configuration properties found for factory : unknown", e.getMessage());
+        }
+
+        // Test unknownProvider => with onerror="continue
+        String page = "Before <esi:include src=\"$(PROVIDER{unknown})/test\" onerror=\"continue\"/> After";
+        String result = render(page);
+        String expected = "Before  After";
+        assertEquals(expected, result);
+
+        // Test unknownProvider => with alt
+        page = "Before <esi:include src=\"$(PROVIDER{unknown})/test\" alt=\"http://www.foo.com/test\" /> After";
+        result = render(page);
+        expected = "Before test After";
+        assertEquals(expected, result);
+
+        // Test unknownProvider => with alt with unknowProvider
+        try {
+            page = "Before <esi:include src=\"$(PROVIDER{unknown})/test\" alt=\"$(PROVIDER{unknown2})/test2\" /> After";
+            render(page);
+            fail("Should have ConfigurationException");
+        } catch (ConfigurationException e) {
+            assertEquals("No configuration properties found for factory : unknown2", e.getMessage());
+        }
+
+        // Test unknownProvider => with alt with unknowProvider an
+        // onerror=continue
+        page =
+                "Before <esi:include src=\"$(PROVIDER{unknown})/test\" alt=\"$(PROVIDER{unknown2})/test2\" onerror=\"continue\"/> After";
+        result = render(page);
+        expected = "Before  After";
+        assertEquals(expected, result);
+
     }
 }

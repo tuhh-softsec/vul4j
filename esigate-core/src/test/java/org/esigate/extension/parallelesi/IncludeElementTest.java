@@ -16,9 +16,11 @@ package org.esigate.extension.parallelesi;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.impl.cookie.BasicClientCookie;
+import org.esigate.ConfigurationException;
 import org.esigate.HttpErrorPage;
 
 public class IncludeElementTest extends AbstractElementTest {
@@ -123,7 +125,8 @@ public class IncludeElementTest extends AbstractElementTest {
         assertEquals("", result);
         result = render(page);
         assertEquals("before ---inline cache item--- after", result);
-        // Note: inline and include in the same page may produce unpredictable results
+        // Note: inline and include in the same page may produce unpredictable
+        // results
         // because of parallel execution
     }
 
@@ -327,6 +330,52 @@ public class IncludeElementTest extends AbstractElementTest {
         result = render(page);
         expected = "code fragment";
         assertEquals(expected, result);
+    }
+
+    public void testIncludeProviderWithUnknownProvider() throws IOException, HttpErrorPage {
+
+        // Test unknownProvider => error
+        try {
+            String page = "Before <esi:include src=\"$(PROVIDER{unknown})/test\" /> After";
+            render(page);
+            fail("Should have ConfigurationException");
+        } catch (IOException e) {
+            ExecutionException cause = (ExecutionException) e.getCause();
+            ConfigurationException causeOrigine = (ConfigurationException) cause.getCause();
+            assertEquals("No configuration properties found for factory : unknown", causeOrigine.getMessage());
+        }
+
+        // Test unknownProvider => with onerror="continue
+        String page = "Before <esi:include src=\"$(PROVIDER{unknown})/test\" onerror=\"continue\"/> After";
+        String result = render(page);
+        String expected = "Before  After";
+        assertEquals(expected, result);
+
+        // Test unknownProvider => with alt
+        page = "Before <esi:include src=\"$(PROVIDER{unknown})/test\" alt=\"http://www.foo.com/test\" /> After";
+        result = render(page);
+        expected = "Before test After";
+        assertEquals(expected, result);
+
+        // Test unknownProvider => with alt with unknowProvider
+        try {
+            page = "Before <esi:include src=\"$(PROVIDER{unknown})/test\" alt=\"$(PROVIDER{unknown2})/test2\" /> After";
+            render(page);
+            fail("Should have ConfigurationException");
+        } catch (IOException e) {
+            ExecutionException cause = (ExecutionException) e.getCause();
+            ConfigurationException causeOrigine = (ConfigurationException) cause.getCause();
+            assertEquals("No configuration properties found for factory : unknown2", causeOrigine.getMessage());
+        }
+
+        // Test unknownProvider => with alt with unknowProvider an
+        // onerror=continue
+        page =
+                "Before <esi:include src=\"$(PROVIDER{unknown})/test\" alt=\"$(PROVIDER{unknown2})/test2\" onerror=\"continue\"/> After";
+        result = render(page);
+        expected = "Before  After";
+        assertEquals(expected, result);
+
     }
 
 }

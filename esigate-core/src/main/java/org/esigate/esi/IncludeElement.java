@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.esigate.ConfigurationException;
 import org.esigate.Driver;
 import org.esigate.DriverFactory;
 import org.esigate.HttpErrorPage;
@@ -81,6 +82,10 @@ class IncludeElement extends BaseElement {
             processPage(src, includeTag, ctx);
         } catch (IOException | HttpErrorPage e) {
             currentException = e;
+        } catch (ConfigurationException e) {
+            // case uknown provider : log error
+            currentException = e;
+            LOG.error("Esi Include Tag with unknown Provider :" + e.getMessage());
         }
 
         // Handle Alt
@@ -91,6 +96,10 @@ class IncludeElement extends BaseElement {
                 processPage(alt, includeTag, ctx);
             } catch (IOException | HttpErrorPage e) {
                 currentException = e;
+            } catch (ConfigurationException e) {
+                // case uknown provider : log error
+                currentException = e;
+                LOG.error("Esi Include Tag with unknown Provider :" + e.getMessage());
             }
         }
 
@@ -100,9 +109,11 @@ class IncludeElement extends BaseElement {
                 throw (IOException) currentException;
             } else if (currentException instanceof HttpErrorPage) {
                 throw (HttpErrorPage) currentException;
+            } else if (currentException instanceof ConfigurationException) {
+                throw (ConfigurationException) currentException;
             }
             throw new IllegalStateException(
-                    "This type of exception is unexpected here. Should be IOException or HttpErrorPageException.",
+                    "This type of exception is unexpected here. Should be IOException or HttpErrorPageException or ConfigurationException.",
                     currentException);
 
         }
