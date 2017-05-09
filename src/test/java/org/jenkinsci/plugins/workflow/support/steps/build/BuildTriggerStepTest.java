@@ -5,9 +5,11 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.model.Action;
 import hudson.model.BooleanParameterDefinition;
 import hudson.model.Cause;
+import hudson.model.Computer;
 import hudson.model.Executor;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
+import hudson.model.Item;
 import hudson.model.ItemGroup;
 import hudson.model.Label;
 import hudson.model.ParametersDefinitionProperty;
@@ -15,19 +17,24 @@ import hudson.model.Queue;
 import hudson.model.Result;
 import hudson.model.StringParameterDefinition;
 import hudson.model.TaskListener;
+import hudson.model.User;
 import hudson.model.queue.QueueTaskFuture;
+import hudson.security.AuthorizationStrategy;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import jenkins.branch.MultiBranchProjectFactory;
 import jenkins.branch.MultiBranchProjectFactoryDescriptor;
 import jenkins.branch.OrganizationFolder;
+import jenkins.model.Jenkins;
 import jenkins.scm.api.SCMHeadEvent;
 import jenkins.scm.api.SCMSource;
 import jenkins.scm.impl.mock.MockSCMController;
 import jenkins.scm.impl.mock.MockSCMNavigator;
+import jenkins.security.QueueItemAuthenticatorConfiguration;
 import org.apache.commons.lang.StringUtils;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
@@ -47,7 +54,9 @@ import org.jvnet.hudson.test.FailureBuilder;
 import org.jvnet.hudson.test.Issue;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.LoggerRule;
+import org.jvnet.hudson.test.MockAuthorizationStrategy;
 import org.jvnet.hudson.test.MockFolder;
+import org.jvnet.hudson.test.MockQueueItemAuthenticator;
 import org.jvnet.hudson.test.SleepBuilder;
 import org.jvnet.hudson.test.TestExtension;
 import org.jvnet.hudson.test.recipes.LocalData;
@@ -420,4 +429,27 @@ public class BuildTriggerStepTest {
             }
         }
     }
+
+    @Issue("SECURITY-433")
+    @Test public void permissions() throws Exception {
+        WorkflowJob us = j.jenkins.createProject(WorkflowJob.class, "us");
+        us.setDefinition(new CpsFlowDefinition("build 'ds'", true));
+        WorkflowJob ds = j.jenkins.createProject(WorkflowJob.class, "ds");
+        ds.setDefinition(new CpsFlowDefinition("", true));
+        j.jenkins.setSecurityRealm(j.createDummySecurityRealm());
+        QueueItemAuthenticatorConfiguration.get().getAuthenticators().add(new MockQueueItemAuthenticator(Collections.singletonMap("us", User.get("dev").impersonate())));
+        // Control case: dev can do anything to ds.
+        j.jenkins.setAuthorizationStrategy(new MockAuthorizationStrategy().grant(Jenkins.ADMINISTER).everywhere().to("dev"));
+        j.buildAndAssertSuccess(us);
+        // Main test case: dev can see ds but not build it.
+        j.jenkins.setAuthorizationStrategy(new MockAuthorizationStrategy().grant(Jenkins.READ, Computer.BUILD).everywhere().to("dev").grant(Item.READ).onItems(ds).to("dev"));
+        j.assertLogContains("dev is missing the Job/Build permission", j.assertBuildStatus(Result.FAILURE, us.scheduleBuild2(0)));
+        // Aux test case: dev cannot see ds.
+        j.jenkins.setAuthorizationStrategy(new MockAuthorizationStrategy().grant(Jenkins.READ, Computer.BUILD).everywhere().to("dev"));
+        j.assertLogContains("No item named ds found", j.assertBuildStatus(Result.FAILURE, us.scheduleBuild2(0)));
+        // Aux test case: dev can learn of the existence of ds but no more.
+        j.jenkins.setAuthorizationStrategy(new MockAuthorizationStrategy().grant(Jenkins.READ, Computer.BUILD).everywhere().to("dev").grant(Item.DISCOVER).onItems(ds).to("dev"));
+        j.assertLogContains("Please login to access job ds", j.assertBuildStatus(Result.FAILURE, us.scheduleBuild2(0)));
+    }
+
 }

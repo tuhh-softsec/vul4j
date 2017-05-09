@@ -41,9 +41,6 @@ import org.jenkinsci.plugins.workflow.steps.AbstractStepExecutionImpl;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepContextParameter;
 
-/**
- * @author Vivek Pandey
- */
 public class BuildTriggerStepExecution extends AbstractStepExecutionImpl {
 
     private static final Logger LOGGER = Logger.getLogger(BuildTriggerStepExecution.class.getName());
@@ -63,6 +60,7 @@ public class BuildTriggerStepExecution extends AbstractStepExecutionImpl {
         if (item == null) {
             throw new AbortException("No item named " + job + " found");
         }
+        item.checkPermission(Item.BUILD);
         if (step.getWait() && !(item instanceof Job)) {
             // TODO find some way of allowing ComputedFolders to hook into the listener code
             throw new AbortException("Waiting for non-job items is not supported");
