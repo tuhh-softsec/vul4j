@@ -46,7 +46,6 @@ import jenkins.model.Jenkins;
 import org.apache.commons.codec.CharEncoding;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -102,11 +101,7 @@ public class DTServerConnection {
 
         // Install the all-trusting trust manager
         try {
-            if (SystemUtils.IS_JAVA_1_6) {
-                sc = SSLContext.getInstance("TLSv1");
-            } else {
-                sc = SSLContext.getInstance("TLSv1.2");
-            }
+            sc = SSLContext.getInstance("TLSv1.2");
             TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
                 public X509Certificate[] getAcceptedIssuers() {
                     return null;
