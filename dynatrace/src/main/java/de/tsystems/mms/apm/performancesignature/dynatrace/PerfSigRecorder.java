@@ -242,19 +242,9 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
     public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
         public static final boolean defaultExportSessions = true;
         public static final int defaultNonFunctionalFailure = 0;
-        @Deprecated
-        private transient List<DynatraceServerConfiguration> configurations;
 
         public DescriptorImpl() {
             load();
-        }
-
-        @SuppressWarnings("deprecation")
-        protected Object readResolve() {
-            if (configurations != null && PerfSigUtils.getDTConfigurations().isEmpty()) {
-                PerfSigUtils.getDTConfigurations().addAll(configurations);
-            }
-            return this;
         }
 
         public ListBoxModel doFillDynatraceProfileItems() {

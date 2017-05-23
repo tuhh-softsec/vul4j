@@ -19,7 +19,6 @@ package de.tsystems.mms.apm.performancesignature.viewer;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import de.tsystems.mms.apm.performancesignature.ui.PerfSigBuildAction;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
-import de.tsystems.mms.apm.performancesignature.viewer.model.JenkinsServerConfiguration;
 import de.tsystems.mms.apm.performancesignature.viewer.rest.JenkinsServerConnection;
 import de.tsystems.mms.apm.performancesignature.viewer.rest.RESTErrorException;
 import de.tsystems.mms.apm.performancesignature.viewer.util.ViewerUtils;
@@ -116,19 +115,9 @@ public class ViewerRecorder extends Recorder implements SimpleBuildStep {
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
         public static final int defaultNonFunctionalFailure = 0;
-        @Deprecated
-        private transient List<JenkinsServerConfiguration> configurations;
 
         public DescriptorImpl() {
             load();
-        }
-
-        @SuppressWarnings("deprecation")
-        protected Object readResolve() {
-            if (configurations != null && ViewerUtils.getJenkinsConfigurations().isEmpty()) {
-                ViewerUtils.getJenkinsConfigurations().addAll(configurations);
-            }
-            return this;
         }
 
         public ListBoxModel doFillJenkinsJobItems() {
