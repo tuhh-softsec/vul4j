@@ -60,8 +60,12 @@ public class ViewerStartJob extends Builder implements SimpleBuildStep {
         logger.println(Messages.ViewerStartJob_TriggeringJenkinsJob(perfSigJob.getName()));
 
         QueueReference queueRef = perfSigJob.build(true);
-        perfSigJob = perfSigJob.details();
         QueueItem queueItem = server.getQueueItem(queueRef);
+        while (queueItem.getExecutable() == null) {
+            Thread.sleep(ViewerWaitForJob.waitForPollingInterval / 10);
+            queueItem = server.getQueueItem(queueRef);
+        }
+        perfSigJob = perfSigJob.details();
 
         while (!queueItem.isCancelled() && perfSigJob.isInQueue()) {
             Thread.sleep(ViewerWaitForJob.waitForPollingInterval / 10);
