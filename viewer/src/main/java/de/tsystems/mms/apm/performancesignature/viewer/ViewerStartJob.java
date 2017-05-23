@@ -17,6 +17,7 @@
 package de.tsystems.mms.apm.performancesignature.viewer;
 
 import com.offbytwo.jenkins.JenkinsServer;
+import com.offbytwo.jenkins.model.Build;
 import com.offbytwo.jenkins.model.JobWithDetails;
 import com.offbytwo.jenkins.model.QueueItem;
 import com.offbytwo.jenkins.model.QueueReference;
@@ -53,10 +54,10 @@ public class ViewerStartJob extends Builder implements SimpleBuildStep {
             throws InterruptedException, IOException {
         PrintStream logger = listener.getLogger();
         JenkinsServerConnection serverConnection = ViewerUtils.createJenkinsServerConnection(jenkinsJob);
-
-        logger.println(Messages.ViewerStartJob_TriggeringJenkinsJob(serverConnection.getJenkinsJob().getName()));
         JobWithDetails perfSigJob = serverConnection.getJenkinsJob().details();
         JenkinsServer server = serverConnection.getJenkinsServer();
+
+        logger.println(Messages.ViewerStartJob_TriggeringJenkinsJob(perfSigJob.getName()));
 
         QueueReference queueRef = perfSigJob.build(true);
         perfSigJob = perfSigJob.details();
@@ -68,15 +69,15 @@ public class ViewerStartJob extends Builder implements SimpleBuildStep {
             queueItem = server.getQueueItem(queueRef);
         }
 
+        Build build = server.getBuild(queueItem);
         if (queueItem.isCancelled()) {
             logger.println(Messages.ViewerStartJob_RemoteBuildCancelled());
             run.setResult(Result.ABORTED);
             return;
         }
 
-        int buildNumber = perfSigJob.details().getLastBuild().getNumber();
-        run.addAction(new ViewerEnvInvisAction(buildNumber));
-        logger.println(Messages.ViewerStartJob_JenkinsJobStarted(perfSigJob.getName(), String.valueOf(buildNumber)));
+        run.addAction(new ViewerEnvInvisAction(queueItem));
+        logger.println(Messages.ViewerStartJob_JenkinsJobStarted(perfSigJob.getName(), String.valueOf(build.getNumber())));
     }
 
     public String getJenkinsJob() {

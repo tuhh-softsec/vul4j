@@ -55,7 +55,7 @@ public class ViewerInputTrigger extends Builder implements SimpleBuildStep {
         ViewerEnvInvisAction envInvisAction = run.getAction(ViewerEnvInvisAction.class);
         int buildNumber;
         if (envInvisAction != null) {
-            buildNumber = envInvisAction.getCurrentBuild();
+            buildNumber = serverConnection.getJenkinsServer().getBuild(envInvisAction.getQueueItem()).getNumber();
         } else {
             buildNumber = perfSigJob.getLastBuild().getNumber();
         }
