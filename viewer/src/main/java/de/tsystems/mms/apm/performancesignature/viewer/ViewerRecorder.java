@@ -61,7 +61,7 @@ public class ViewerRecorder extends Recorder implements SimpleBuildStep {
         ViewerEnvInvisAction envInvisAction = run.getAction(ViewerEnvInvisAction.class);
         int buildNumber;
         if (envInvisAction != null) {
-            buildNumber = serverConnection.getJenkinsServer().getBuild(envInvisAction.getQueueItem()).getNumber();
+            buildNumber = envInvisAction.getCurrentBuild();
         } else {
             buildNumber = serverConnection.getJenkinsJob().details().getLastBuild().getNumber();
         }

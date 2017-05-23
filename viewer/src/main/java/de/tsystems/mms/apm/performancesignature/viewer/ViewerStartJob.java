@@ -54,22 +54,21 @@ public class ViewerStartJob extends Builder implements SimpleBuildStep {
             throws InterruptedException, IOException {
         PrintStream logger = listener.getLogger();
         JenkinsServerConnection serverConnection = ViewerUtils.createJenkinsServerConnection(jenkinsJob);
-        JobWithDetails perfSigJob = serverConnection.getJenkinsJob().details();
+        JobWithDetails job = serverConnection.getJenkinsJob().details();
         JenkinsServer server = serverConnection.getJenkinsServer();
+        logger.println(Messages.ViewerStartJob_TriggeringJenkinsJob(job.getName()));
 
-        logger.println(Messages.ViewerStartJob_TriggeringJenkinsJob(perfSigJob.getName()));
-
-        QueueReference queueRef = perfSigJob.build(true);
+        QueueReference queueRef = job.build(true);
         QueueItem queueItem = server.getQueueItem(queueRef);
         while (queueItem.getExecutable() == null) {
             Thread.sleep(ViewerWaitForJob.waitForPollingInterval / 10);
             queueItem = server.getQueueItem(queueRef);
         }
-        perfSigJob = perfSigJob.details();
+        job = job.details();
 
-        while (!queueItem.isCancelled() && perfSigJob.isInQueue()) {
+        while (!queueItem.isCancelled() && job.isInQueue()) {
             Thread.sleep(ViewerWaitForJob.waitForPollingInterval / 10);
-            perfSigJob = perfSigJob.details();
+            job = job.details();
             queueItem = server.getQueueItem(queueRef);
         }
 
@@ -80,8 +79,8 @@ public class ViewerStartJob extends Builder implements SimpleBuildStep {
             return;
         }
 
-        run.addAction(new ViewerEnvInvisAction(queueItem));
-        logger.println(Messages.ViewerStartJob_JenkinsJobStarted(perfSigJob.getName(), String.valueOf(build.getNumber())));
+        run.addAction(new ViewerEnvInvisAction(build.getNumber()));
+        logger.println(Messages.ViewerStartJob_JenkinsJobStarted(job.getName(), String.valueOf(build.getNumber())));
     }
 
     public String getJenkinsJob() {

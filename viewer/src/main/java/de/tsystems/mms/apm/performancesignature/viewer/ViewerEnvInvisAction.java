@@ -16,17 +16,16 @@
 
 package de.tsystems.mms.apm.performancesignature.viewer;
 
-import com.offbytwo.jenkins.model.QueueItem;
 import hudson.model.InvisibleAction;
 
 class ViewerEnvInvisAction extends InvisibleAction {
-    private final QueueItem queueItem;
+    private final int currentBuild;
 
-    ViewerEnvInvisAction(final QueueItem queueItem) {
-        this.queueItem = queueItem;
+    ViewerEnvInvisAction(final int currentBuild) {
+        this.currentBuild = currentBuild;
     }
 
-    public QueueItem getQueueItem() {
-        return queueItem;
+    public int getCurrentBuild() {
+        return currentBuild;
     }
 }
