@@ -93,20 +93,23 @@ public class SymlinkTest
     public void testSymlinkDirArchiver()
         throws Exception
     {
-        DirectoryArchiver archiver = (DirectoryArchiver) lookup( Archiver.ROLE, "dir" );
+        if ( !Os.isFamily( Os.FAMILY_WINDOWS ) )
+        {
+            DirectoryArchiver archiver = (DirectoryArchiver) lookup( Archiver.ROLE, "dir" );
 
-        File dummyContent = getTestFile( "src/test/resources/symlinks/src" );
-        archiver.addDirectory( dummyContent );
-        final File archiveFile = new File( "target/output/dirarchiver-symlink" );
-        archiveFile.mkdirs();
-        archiver.setDestFile( archiveFile );
-        archiver.createArchive();
+            File dummyContent = getTestFile( "src/test/resources/symlinks/src" );
+            archiver.addDirectory( dummyContent );
+            final File archiveFile = new File( "target/output/dirarchiver-symlink" );
+            archiveFile.mkdirs();
+            archiver.setDestFile( archiveFile );
+            archiver.createArchive();
 
-        File symbolicLink = new File( "target/output/dirarchiver-symlink/symR" );
-        assertTrue( Files.isSymbolicLink( symbolicLink.toPath() ) );
+            File symbolicLink = new File( "target/output/dirarchiver-symlink/symR" );
+            assertTrue( Files.isSymbolicLink( symbolicLink.toPath() ) );
 
-        symbolicLink = new File( "target/output/dirarchiver-symlink/aDirWithALink/backOutsideToFileX" );
-        assertTrue( Files.isSymbolicLink( symbolicLink.toPath() ) );
+            symbolicLink = new File( "target/output/dirarchiver-symlink/aDirWithALink/backOutsideToFileX" );
+            assertTrue( Files.isSymbolicLink( symbolicLink.toPath() ) );
+        }
     }
 
 }
