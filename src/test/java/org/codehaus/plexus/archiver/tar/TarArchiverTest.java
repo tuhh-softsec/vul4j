@@ -38,6 +38,7 @@ import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.UnixStat;
 import org.codehaus.plexus.archiver.bzip2.BZip2Compressor;
+import org.codehaus.plexus.archiver.exceptions.EmptyArchiveException;
 import org.codehaus.plexus.archiver.gzip.GZipCompressor;
 import org.codehaus.plexus.archiver.util.ArchiveEntryUtils;
 import org.codehaus.plexus.archiver.util.Compressor;
@@ -224,6 +225,22 @@ public class TarArchiverTest
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    public void testCreateEmptyArchive()
+        throws Exception
+    {
+        TarArchiver archiver = getPosixTarArchiver();
+        archiver.setDestFile( getTestFile( "target/output/empty.tar" ) );
+        try
+        {
+            archiver.createArchive();
+
+            fail( "Creating empty archive should throw EmptyArchiveException" );
+        }
+        catch ( EmptyArchiveException ignore )
+        {
         }
     }
 

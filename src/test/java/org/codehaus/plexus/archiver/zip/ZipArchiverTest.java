@@ -48,6 +48,7 @@ import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.BasePlexusArchiverTest;
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.UnixStat;
+import org.codehaus.plexus.archiver.exceptions.EmptyArchiveException;
 import org.codehaus.plexus.archiver.tar.TarArchiver;
 import org.codehaus.plexus.archiver.tar.TarFile;
 import org.codehaus.plexus.archiver.util.ArchiveEntryUtils;
@@ -281,6 +282,22 @@ public class ZipArchiverTest
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    public void testCreateEmptyArchive()
+        throws Exception
+    {
+        ZipArchiver archiver = getZipArchiver();
+        archiver.setDestFile( getTestFile( "target/output/empty.zip" ) );
+        try
+        {
+            archiver.createArchive();
+
+            fail( "Creating empty archive should throw EmptyArchiveException" );
+        }
+        catch ( EmptyArchiveException ignore )
+        {
         }
     }
 
