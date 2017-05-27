@@ -20,6 +20,7 @@ import org.codehaus.plexus.PlexusTestCase;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.xz.XZArchiver;
+import org.codehaus.plexus.util.FileUtils;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static org.codehaus.plexus.PlexusTestCase.getTestFile;
@@ -48,6 +49,10 @@ public class TarXzUnArchiverTest extends PlexusTestCase
         assertFalse( file2InTar.exists() );
 
         File testXZFile = getTestFile( "target/output/archive.tar.xz" );
+        if ( testXZFile.exists() )
+        {
+            FileUtils.fileDelete( testXZFile.getPath() );
+        }
         assertFalse( testXZFile.exists() );
 
         tarArchiver.addFile( getTestFile( "src/test/resources/manifests/manifest1.mf" ), fileName1 );

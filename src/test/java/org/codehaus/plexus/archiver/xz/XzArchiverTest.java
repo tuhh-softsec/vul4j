@@ -51,6 +51,10 @@ public class XzArchiverTest extends BasePlexusArchiverTest
         inputFiles[0] = "archiveForxz.zip";
 
         File targetOutputFile = getTestFile( "target/output/archive.xz" );
+        if ( targetOutputFile.exists() )
+        {
+            FileUtils.fileDelete( targetOutputFile.getPath() );
+        }
         assertFalse( targetOutputFile.exists() );
 
         archiver.addDirectory( getTestFile( "target/output" ), inputFiles, null );
