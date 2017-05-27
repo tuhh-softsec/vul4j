@@ -31,6 +31,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.BasePlexusArchiverTest;
+import org.codehaus.plexus.archiver.exceptions.EmptyArchiveException;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
@@ -55,6 +56,22 @@ public class BZip2ArchiverTest
         archiver.addDirectory( getTestFile( "target/output" ), inputFiles, null );
         archiver.setDestFile( getTestFile( "target/output/archive.bz2" ) );
         archiver.createArchive();
+    }
+
+    public void testCreateEmptyArchive()
+        throws Exception
+    {
+        BZip2Archiver archiver = (BZip2Archiver) lookup( Archiver.ROLE, "bzip2" );
+        archiver.setDestFile( getTestFile( "target/output/empty.bz2" ) );
+        try
+        {
+            archiver.createArchive();
+
+            fail( "Creating empty archive should throw EmptyArchiveException" );
+        }
+        catch ( EmptyArchiveException ignore )
+        {
+        }
     }
 
     public void testCreateResourceCollection()

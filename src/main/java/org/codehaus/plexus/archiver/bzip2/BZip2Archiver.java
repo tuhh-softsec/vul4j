@@ -21,6 +21,7 @@ import org.codehaus.plexus.archiver.AbstractArchiver;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.ResourceIterator;
+import org.codehaus.plexus.archiver.exceptions.EmptyArchiveException;
 
 public class BZip2Archiver
     extends AbstractArchiver
@@ -38,6 +39,10 @@ public class BZip2Archiver
         }
 
         ResourceIterator iter = getResources();
+        if ( !iter.hasNext() )
+        {
+            throw new EmptyArchiveException( "archive cannot be empty" );
+        }
         ArchiveEntry entry = iter.next();
         if ( iter.hasNext() )
         {

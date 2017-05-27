@@ -23,6 +23,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.BasePlexusArchiverTest;
+import org.codehaus.plexus.archiver.exceptions.EmptyArchiveException;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
@@ -62,6 +63,22 @@ public class XzArchiverTest extends BasePlexusArchiverTest
         archiver.createArchive();
 
         assertTrue( targetOutputFile.exists() );
+    }
+
+    public void testCreateEmptyArchive()
+        throws Exception
+    {
+        XZArchiver archiver = (XZArchiver) lookup( Archiver.ROLE, "xz" );
+        archiver.setDestFile( getTestFile( "target/output/empty.xz" ) );
+        try
+        {
+            archiver.createArchive();
+
+            fail( "Creating empty archive should throw EmptyArchiveException" );
+        }
+        catch ( EmptyArchiveException ignore )
+        {
+        }
     }
 
     public void testCreateResourceCollection() throws Exception

@@ -255,7 +255,7 @@ public abstract class AbstractZipArchiver
         ResourceIterator iter = getResources();
         if ( !iter.hasNext() && !hasVirtualFiles() )
         {
-            throw new EmptyArchiveException( "You must set at least one file." );
+            throw new EmptyArchiveException( "archive cannot be empty" );
         }
 
         zipFile = getDestFile();

@@ -111,7 +111,7 @@ public class TarArchiver
         ResourceIterator iter = getResources();
         if ( !iter.hasNext() )
         {
-            throw new EmptyArchiveException( "You must set at least one file." );
+            throw new EmptyArchiveException( "archive cannot be empty" );
         }
 
         File tarFile = getDestFile();

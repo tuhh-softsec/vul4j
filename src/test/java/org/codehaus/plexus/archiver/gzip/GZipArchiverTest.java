@@ -31,6 +31,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.BasePlexusArchiverTest;
+import org.codehaus.plexus.archiver.exceptions.EmptyArchiveException;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
@@ -55,6 +56,23 @@ public class GZipArchiverTest
         archiver.addDirectory( getTestFile( "target/output" ), inputFiles, null );
         archiver.setDestFile( getTestFile( "target/output/archive.gzip" ) );
         archiver.createArchive();
+    }
+
+
+    public void testCreateEmptyArchive()
+        throws Exception
+    {
+        GZipArchiver archiver = (GZipArchiver) lookup( Archiver.ROLE, "gzip" );
+        archiver.setDestFile( getTestFile( "target/output/empty.gz" ) );
+        try
+        {
+            archiver.createArchive();
+
+            fail( "Creating empty archive should throw EmptyArchiveException" );
+        }
+        catch ( EmptyArchiveException ignore )
+        {
+        }
     }
 
     public void testCreateResourceCollection()
