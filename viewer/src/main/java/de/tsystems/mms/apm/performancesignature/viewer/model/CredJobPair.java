@@ -74,7 +74,8 @@ public class CredJobPair extends AbstractDescribableImpl<CredJobPair> {
             }
             return new StandardUsernameListBoxModel()
                     .includeEmptyValue()
-                    .includeMatchingAs(ACL.SYSTEM,
+                    .includeMatchingAs(
+                            ACL.SYSTEM,
                             PerfSigUIUtils.getInstance(),
                             StandardUsernamePasswordCredentials.class,
                             Collections.<DomainRequirement>emptyList(),

@@ -75,7 +75,8 @@ public class CredProfilePair extends AbstractDescribableImpl<CredProfilePair> {
             }
             return new StandardUsernameListBoxModel()
                     .includeEmptyValue()
-                    .includeMatchingAs(ACL.SYSTEM,
+                    .includeMatchingAs(
+                            ACL.SYSTEM,
                             PerfSigUIUtils.getInstance(),
                             StandardUsernamePasswordCredentials.class,
                             Collections.<DomainRequirement>emptyList(),
@@ -114,7 +115,7 @@ public class CredProfilePair extends AbstractDescribableImpl<CredProfilePair> {
                 final DTServerConnection connection = new DTServerConnection(protocol, host, port, pair, verifyCertificate, customProxyServer);
                 return PerfSigUtils.listToListBoxModel(connection.getSystemProfiles());
             } catch (CommandExecutionException ignored) {
-                return null;
+                return new StandardListBoxModel().includeEmptyValue();
             }
         }
 

@@ -1,0 +1,77 @@
+<?jelly escape-by-default='true'?>
+<!--
+  ~ Copyright (c) 2014 T-Systems Multimedia Solutions GmbH
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:st="jelly:stapler">
+    <table width="100%">
+        <br/>
+        <f:entry field="name" title="${%Name}">
+            <f:textbox/>
+        </f:entry>
+        <f:entry field="protocol" title="${%HTTP/HTTPS}" description="${%Specify the protocol to use}">
+            <f:select default="${descriptor.defaultProtocol}"/>
+        </f:entry>
+        <f:entry title="${%Dynatrace REST Host}" field="host" description="${%Dynatrace Server Host}">
+            <f:textbox default="${descriptor.defaultHost}"/>
+        </f:entry>
+        <f:entry title="${%Dynatrace REST Port}" field="port"
+                 description="${%Dynatrace Server REST Interface port} (${%default: 8020 for HTTP, 8021 for HTTPS})">
+            <f:number default="${descriptor.defaultPort}"/>
+        </f:entry>
+
+        <f:advanced>
+            <f:entry title="${%verify Certificate}" field="verifyCertificate"
+                     description="${%Verify or ignore the Dynatrace Server Certificate?}">
+                <f:checkbox default="${descriptor.defaultVerifyCertificate}"/>
+            </f:entry>
+            <f:entry title="${%Delay}" field="delay"
+                     description="${%Time to wait until requesting the build results to ensure all data has been processed by the Dynatrace Server}">
+                <f:number default="${descriptor.defaultDelay}"/>
+            </f:entry>
+            <f:entry title="${%Retry Count}" field="retryCount"
+                     description="${%The Dynatrace Server might take a while to fully process the data collected during the test run. By default, the plugin will try get data 5 times, 10 seconds apart.}">
+                <f:number default="${descriptor.defaultRetryCount}"/>
+            </f:entry>
+
+            <f:optionalBlock inline="true" name="proxy" title="${%use Proxy Server}" checked="${instance.customProxy != null}">
+                <f:radioBlock inline="true" name="proxySource" title="${%use proxy server configured in Jenkins}" value="0"
+                              checked="${instance.customProxy.useJenkinsProxy}"/>
+                <f:radioBlock inline="true" name="proxySource" title="use custom Proxy Server" value="1"
+                              checked="${!instance.customProxy.useJenkinsProxy}">
+                    <f:entry title="${%Server}" field="proxyServer">
+                        <f:textbox value="${instance.customProxy.proxyServer}"/>
+                    </f:entry>
+                    <f:entry title="${%Port}" field="proxyPort">
+                        <f:number value="${instance.customProxy.proxyPort}"/>
+                    </f:entry>
+                    <f:entry title="${%User}" field="proxyUser">
+                        <f:textbox value="${instance.customProxy.proxyUser}"/>
+                    </f:entry>
+                    <f:entry title="${%Password}" field="proxyPassword">
+                        <f:password value="${instance.customProxy.proxyPassword}"/>
+                    </f:entry>
+                </f:radioBlock>
+            </f:optionalBlock>
+        </f:advanced>
+        <f:entry title="${%Credentials/profiles pairs}">
+            <f:repeatable field="credProfilePairs" header="${%Credentials/profile pair}" add="${%Add credentials/profile pair}">
+                <st:include page="config.jelly" class="${descriptor.clazz}"/>
+                <div align="right">
+                    <f:repeatableDeleteButton value="${%Remove credentials/profile pair}"/>
+                </div>
+            </f:repeatable>
+        </f:entry>
+    </table>
+</j:jelly>
