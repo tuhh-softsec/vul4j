@@ -47,7 +47,7 @@ public class ActivateConfigurationTest {
         FreeStyleBuild build = j.assertBuildStatusSuccess(project.scheduleBuild2(0));
 
         String s = FileUtils.readFileToString(build.getLogFile());
-        assertTrue(s.contains("activated configuration successfully on easy Travel"));
+        assertTrue(s.contains("activated configuration successfully on"));
     }
 
     @Test

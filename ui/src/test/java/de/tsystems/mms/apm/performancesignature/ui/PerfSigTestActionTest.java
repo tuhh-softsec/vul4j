@@ -48,7 +48,7 @@ public class PerfSigTestActionTest {
         JenkinsRule.WebClient wc = j.createWebClient();
         HtmlPage testReport = wc.getPage(build, "testReport");
 
-        assertEquals(testReport.getByXPath("//*[@id=\"main-panel-content\"]/table[2]/tbody/tr/td[1]/div[1]/a").size(), 11);
+        assertEquals(testReport.getByXPath("//*[@id=\"main-panel\"]/table[2]/tbody/tr/td[1]/div[1]/a").size(), 11);
         j.assertXPath(testReport, "//*[contains(@id,\"collapseid\")]/div/table/tbody/tr[1]/td[1]/b");
         j.assertXPathValue(testReport, "//*[contains(@id,\"collapseid\")]/div/table/tbody/tr[1]/td[1]/b/text()", "PurePaths - PurePath CPU Duration (ms)");
         j.assertXPath(testReport, "//*[contains(@id,\"collapseid\")]/div/p/text()[2]");
@@ -68,10 +68,10 @@ public class PerfSigTestActionTest {
         JenkinsRule.WebClient wc = j.createWebClient();
         HtmlPage testReport = wc.getPage(build, "testReport/com.dynatrace.easytravel.util/ZipUtilsTest/testZipSrcDirExclude/");
 
-        j.assertXPath(testReport, "//*[@id=\"main-panel-content\"]/table/tbody/tr/td/div/table/tbody/tr[1]/td[2]");
-        j.assertXPathValue(testReport, "//*[@id=\"main-panel-content\"]/table/tbody/tr/td/div/table/tbody/tr[1]/td[2]/text()", "0.22");
-        j.assertXPath(testReport, "//*[@id=\"main-panel-content\"]/table/tbody/tr/td/div/p/text()[2]");
-        assertEquals(StringUtils.trim(((DomText) testReport.getByXPath("//*[@id=\"main-panel-content\"]/table/tbody/tr/td/div/p/text()[2]").get(0))
+        j.assertXPath(testReport, "//*[@id=\"main-panel\"]/table/tbody/tr/td/div/table/tbody/tr[1]/td[2]");
+        j.assertXPathValue(testReport, "//*[@id=\"main-panel\"]/table/tbody/tr/td/div/table/tbody/tr[1]/td[2]/text()", "0.22");
+        j.assertXPath(testReport, "//*[@id=\"main-panel\"]/table/tbody/tr/td/div/p/text()[2]");
+        assertEquals(StringUtils.trim(((DomText) testReport.getByXPath("//*[@id=\"main-panel\"]/table/tbody/tr/td/div/p/text()[2]").get(0))
                 .getWholeText()), "Status: Failed\n" +
                 "         ");
     }

@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
 public class TestUtils {
@@ -40,19 +41,21 @@ public class TestUtils {
     }
 
     public static ListBoxModel prepareDTConfigurations() throws IOException {
-        List<DynatraceServerConfiguration> configurations = new ArrayList<DynatraceServerConfiguration>();
+        List<DynatraceServerConfiguration> configurations = new ArrayList<>();
         SystemCredentialsProvider.getInstance().getCredentials().add(new UsernamePasswordCredentialsImpl(CredentialsScope.GLOBAL,
                 "myCreds", null, "admin", "admin"));
         SystemCredentialsProvider.getInstance().save();
-        CredProfilePair credProfilePair = new CredProfilePair("easy Travel", "myCreds");
-        List<CredProfilePair> credProfilePairs = new ArrayList<CredProfilePair>();
-        credProfilePairs.add(credProfilePair);
+        List<CredProfilePair> credProfilePairs = new ArrayList<>();
+        credProfilePairs.add(new CredProfilePair("easy Travel", "myCreds"));
 
         configurations.add(new DynatraceServerConfiguration("PoC PerfSig", "https", "192.168.192.202", 8021, credProfilePairs,
                 false, DynatraceServerConfiguration.DescriptorImpl.defaultDelay, DynatraceServerConfiguration.DescriptorImpl.defaultRetryCount,
                 false, 0, null, 0, null, null));
 
-        configurations.add(new DynatraceServerConfiguration("PoC mobile Apps", "https", "192.168.194.209", 8021, credProfilePairs,
+        List<CredProfilePair> credProfilePairs2 = new ArrayList<>();
+        credProfilePairs2.add(new CredProfilePair("easyTravel", "myCreds"));
+
+        configurations.add(new DynatraceServerConfiguration("DT DMZ Demo", "https", "192.168.96.184", 8021, credProfilePairs2,
                 false, DynatraceServerConfiguration.DescriptorImpl.defaultDelay, DynatraceServerConfiguration.DescriptorImpl.defaultRetryCount,
                 false, 0, null, 0, null, null));
 
@@ -65,7 +68,7 @@ public class TestUtils {
 
         assertEquals(PerfSigUtils.getDTConfigurations().size(), 2);
         ListBoxModel dynatraceConfigurations = PerfSigUtils.listToListBoxModel(PerfSigUtils.getDTConfigurations());
-        assertEquals(dynatraceConfigurations.get(0).name, "easy Travel (admin) @ PoC PerfSig");
+        assertTrue(containsOption(dynatraceConfigurations, "easy Travel (admin) @ PoC PerfSig"));
         DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceConfigurations.get(0).name, false);
         assumeTrue("assume that the server is reachable", connection.validateConnection());
 
