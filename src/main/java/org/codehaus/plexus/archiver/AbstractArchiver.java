@@ -335,7 +335,7 @@ public abstract class AbstractArchiver
         // The PlexusIoFileResourceCollection contains platform-specific File.separatorChar which
         // is an interesting cause of grief, see PLXCOMP-192
         final PlexusIoFileResourceCollection collection = new PlexusIoFileResourceCollection();
-        collection.setFollowingSymLinks( !isSymlinkSupported() );
+        collection.setFollowingSymLinks( false );
 
         collection.setIncludes( fileSet.getIncludes() );
         collection.setExcludes( fileSet.getExcludes() );
@@ -358,11 +358,6 @@ public abstract class AbstractArchiver
         }
 
         addResources( collection );
-    }
-
-    private boolean isSymlinkSupported()
-    {
-        return Os.isFamily( Os.FAMILY_UNIX );
     }
 
     @Override
