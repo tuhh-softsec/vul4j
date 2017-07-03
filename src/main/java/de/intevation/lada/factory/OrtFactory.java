@@ -9,11 +9,12 @@ package de.intevation.lada.factory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 import javax.persistence.Query;
 
-import org.apache.log4j.Logger;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;
@@ -37,9 +38,6 @@ import de.intevation.lada.util.data.RepositoryType;
 public class OrtFactory {
 
     @Inject
-    private Logger logger;
-
-    @Inject
     @RepositoryConfig(type=RepositoryType.RO)
     private Repository repository;
 
@@ -52,26 +50,42 @@ public class OrtFactory {
         String xCoord = null;
         String yCoord = null;
         switch(kda) {
-            case 4: epsg = "EPSG:4326";
-                    /* EPSG:4326 defines the order of latitude and longitude
-                     * the other way round than IMIS coordinates specification.
-                     */
-                    xCoord = ort.getKoordYExtern();
-                    yCoord = ort.getKoordXExtern();
-                    break;
-            case 5: epsg = getEpsgForWgsUtm(ort.getKoordXExtern());
-                    xCoord = ort.getKoordXExtern().length() == 7 ?
-                        ort.getKoordXExtern().substring(1, 7) :
-                        ort.getKoordXExtern().substring(2, 8);
-                    yCoord = ort.getKoordYExtern();
-                    break;
-            default: ReportItem err = new ReportItem();
-                err.setCode(612);
-                err.setKey("kdaId");
-                err.setValue(ort.getKdaId().toString());
-                errors.add(err);
-                return;
+        case 1:
+            epsg = getEpsgForGK(ort.getKoordXExtern());
+            xCoord = ort.getKoordYExtern();
+            yCoord = ort.getKoordXExtern();
+            jtsTransform(epsg, xCoord, yCoord, ort);
+            break;
+        case 2:
+            degreeTransform(ort);
+            break;
+        case 4:
+            epsg = "EPSG:4326";
+            /* EPSG:4326 defines the order of latitude and longitude
+             * the other way round than IMIS coordinates specification.
+             */
+            xCoord = ort.getKoordYExtern();
+            yCoord = ort.getKoordXExtern();
+            jtsTransform(epsg, xCoord, yCoord, ort);
+            break;
+        case 5:
+            epsg = getEpsgForWgsUtm(ort.getKoordXExtern());
+            xCoord = ort.getKoordXExtern().length() == 7 ? ort.getKoordXExtern().substring(1, 7)
+                    : ort.getKoordXExtern().substring(2, 8);
+            yCoord = ort.getKoordYExtern();
+            jtsTransform(epsg, xCoord, yCoord, ort);
+            break;
+        default:
+            ReportItem err = new ReportItem();
+            err.setCode(612);
+            err.setKey("kdaId");
+            err.setValue(ort.getKdaId().toString());
+            errors.add(err);
+            return;
         }
+    }
+
+    private void jtsTransform(String epsg, String xCoord, String yCoord, Ort ort) {
         try {
             CoordinateReferenceSystem src = CRS.decode(epsg);
             CoordinateReferenceSystem target = CRS.decode("EPSG:4326");
@@ -84,17 +98,83 @@ public class OrtFactory {
             JTS.transform(srcCoord, targetCoord, transform);
 
             ort.setGeom(generateGeom(targetCoord.y, targetCoord.x));
-        } catch (FactoryException |
-                TransformException e) {
-            logger.error(e.getMessage());
+        } catch (FactoryException | TransformException e) {
             ReportItem err = new ReportItem();
             err.setCode(672);
             err.setKey("coordinates");
-            err.setValue(ort.getKdaId() + " " +
-                ort.getKoordXExtern() + " " + ort.getKoordYExtern());
+            err.setValue(ort.getKdaId() + " " + ort.getKoordXExtern() + " " + ort.getKoordYExtern());
             errors.add(err);
             return;
         }
+    }
+
+    private void degreeTransform(Ort ort) {
+        String xCoord = ort.getKoordXExtern();
+        String yCoord = ort.getKoordYExtern();
+        int xDegree = 0;
+        int xMin = 0;
+        int yDegree = 0;
+        int yMin = 0;
+        double xSec = 0;
+        double ySec = 0;
+        String xPrefix = "";
+        String xSuffix = "";
+        String yPrefix = "";
+        String ySuffix = "";
+        if (xCoord.contains(",")) {
+            // with decimal separator
+            Pattern p = Pattern.compile("([+|-|W|E]?)(\\d{1,3})(\\d{2})(\\d{2}),(\\d{1,5})([W|E]?)");
+            Matcher m = p.matcher(xCoord);
+            m.matches();
+            xPrefix = m.group(1);
+            xDegree = Integer.valueOf(m.group(2));
+            xMin = Integer.valueOf(m.group(3));
+            xSec = Double.valueOf(m.group(4) + "." + m.group(5));
+            xSuffix = m.group(6);
+        }
+        else {
+            Pattern p = Pattern.compile("([+|-|W|E]?)(\\d{3})(\\d{0,2})(\\d{0,2})([W|E]?)");
+            Matcher m = p.matcher(xCoord);
+            m.matches();
+            xPrefix = m.group(1);
+            xDegree = Integer.valueOf(m.group(2));
+            xMin = Integer.valueOf(m.group(3));
+            xSec = Double.valueOf(m.group(4));
+            xSuffix = m.group(5);
+        }
+        if(yCoord.contains(",")) {
+            Pattern p = Pattern.compile("([+|-|N|S]?)(\\d{1,2})(\\d{2})(\\d{2}),(\\d{1,5})([N|S]?)");
+            Matcher m = p.matcher(yCoord);
+            m.matches();
+            yPrefix = m.group(1);
+            yDegree = Integer.valueOf(m.group(2));
+            yMin = Integer.valueOf(m.group(3));
+            ySec = Double.valueOf(m.group(4) + "." + m.group(5));
+            ySuffix = m.group(6);
+        }
+        else {
+            Pattern p = Pattern.compile("([+|-|N|S]?)(\\d{2})(\\d{0,2})(\\d{0,2})([N|S]?)");
+            Matcher m = p.matcher(yCoord);
+            m.matches();
+            yPrefix = m.group(1);
+            yDegree = Integer.valueOf(m.group(2));
+            yMin = Integer.valueOf(m.group(3));
+            ySec = Double.valueOf(m.group(4));
+            ySuffix = m.group(5);
+        }
+
+        double ddX = xDegree + ((xMin/60d) + (xSec/3600d));
+        double ddY = yDegree + ((yMin/60d) + (ySec/3600d));
+
+        if ((xPrefix != null && (xPrefix.equals("-") || xPrefix.equals("W"))) ||
+            (xSuffix != null && xSuffix.equals("W"))) {
+            ddX = ddX * -1;
+        }
+        if ((yPrefix != null && (yPrefix.equals("-") || yPrefix.equals("S"))) ||
+            (ySuffix != null && (ySuffix.equals("S")))) {
+            ddY = ddY * -1;
+        }
+        ort.setGeom(generateGeom(ddX, ddY));
     }
 
     /**
@@ -116,12 +196,10 @@ public class OrtFactory {
             new QueryBuilder<Ort>(
                 repository.entityManager("stamm"),
                 Ort.class);
-        logger.debug("try to make a complete ort");
         if (ort.getKdaId() != null &&
             ort.getKoordXExtern() != null &&
             ort.getKoordYExtern() != null
         ) {
-            logger.debug("has koordinates");
             builder.and("kdaId", ort.getKdaId());
             builder.and("koordXExtern", ort.getKoordXExtern());
             builder.and("koordYExtern", ort.getKoordYExtern());
@@ -133,20 +211,17 @@ public class OrtFactory {
             }
         }
         else if (ort.getGemId() != null) {
-            logger.debug("has gemid");
             builder.and("gemId", ort.getGemId());
             builder.and("ozId", ort.getOzId());
             builder.and("netzbetreiberId", ort.getNetzbetreiberId());
             List<Ort> orte = repository.filterPlain(builder.getQuery(), "stamm");
             if (orte != null && orte.size() > 0) {
-                logger.debug("found ort: " + orte.get(0).getId());
                 return orte.get(0);
             }
         }
         else  if (ort.getStaatId() != null &&
             ort.getStaatId() != 0
         ) {
-            logger.debug("has staat");
             builder.and("staatId", ort.getStaatId());
             builder.and("ozId", ort.getOzId());
             builder.and("netzbetreiberId", ort.getNetzbetreiberId());
@@ -156,7 +231,6 @@ public class OrtFactory {
             }
         }
 
-        logger.debug("no ort found");
         return createOrt(ort);
     }
 
@@ -168,12 +242,10 @@ public class OrtFactory {
             ort.getKoordXExtern() != null &&
             ort.getKoordYExtern() != null
         ) {
-            logger.debug("transformCoordinates");
             transformCoordinates(ort);
             hasKoord = true;
         }
         if (ort.getGemId() == null && hasKoord) {
-            logger.debug("findVerwaltungseinheit");
             findVerwaltungseinheit(ort);
         }
         if (ort.getGemId() != null){
@@ -261,6 +333,23 @@ public class OrtFactory {
         String zone = part.length() == 7 ? ("0" + part.substring(0, 1)) :
             part.substring(0, 2);
         return epsg + zone;
+    }
+
+    private String getEpsgForGK(String koordXExtern) {
+        String part = koordXExtern.split(",")[0];
+        String zone = part.length() == 7 ? (part.substring(0, 1)) : null;
+        if (zone == null) {
+            return "";
+        }
+        Integer iZone = Integer.valueOf(zone);
+        String epsg = "EPSG:3146";
+        switch(iZone) {
+            case 2: return epsg + "6";
+            case 3: return epsg + "7";
+            case 4: return epsg + "8";
+            case 5: return epsg + "9";
+        }
+        return "";
     }
 
     public List<ReportItem> getErrors() {

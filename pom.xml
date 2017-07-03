@@ -220,6 +220,58 @@
                 </resources>
                 <plugins>
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                          <artifactId>maven-resources-plugin</artifactId>
+                          <version>3.0.2</version>
+                          <executions>
+                            <execution>
+                                  <!-- Turn off default resource copying -->
+                                  <id>default-resources</id>
+                                  <phase />
+                            </execution>
+                            <execution>
+                                  <!-- Filter gsb files. -->
+                                  <id>filter-gsb-files</id>
+                                  <phase>process-resources</phase>
+                                  <goals>
+                                    <goal>copy-resources</goal>
+                                  </goals>
+                                  <configuration>
+                                    <encoding>ISO-8859-1</encoding>
+                                    <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                                    <resources>
+                                          <resource>
+                                            <directory>src/main/resources</directory>
+                                            <filtering>true</filtering>
+                                            <includes>
+                                                  <include>**/*.gsb</include>
+                                            </includes>
+                                          </resource>
+                                    </resources>
+                                  </configuration>
+                            </execution>
+                            <execution>
+                                  <id>copy-other-resources</id>
+                                  <phase>process-resources</phase>
+                                  <goals>
+                                    <goal>copy-resources</goal>
+                                  </goals>
+                                  <configuration>
+                                    <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                                    <resources>
+                                          <resource>
+                                            <directory>src/main/resources</directory>
+                                            <filtering>false</filtering>
+                                            <excludes>
+                                                  <exclude>**/*.gsb</exclude>
+                                            </excludes>
+                                          </resource>
+                                    </resources>
+                                  </configuration>
+                            </execution>
+                          </executions>
+                    </plugin>
+                    <plugin>
                         <artifactId>maven-surefire-plugin</artifactId>
                          <configuration>
                              <skip>true</skip>
