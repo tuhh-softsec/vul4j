@@ -132,12 +132,12 @@ public class MockConnectionManager implements HttpClientConnectionManager {
 
     @Override
     public ConnectionRequest requestConnection(HttpRoute route, Object state) {
-        return connectionRequest;
+        return this.connectionRequest;
     }
 
     @Override
     public void releaseConnection(HttpClientConnection conn, Object newState, long validDuration, TimeUnit timeUnit) {
-        open.set(false);
+        this.open.set(false);
     }
 
     @Override
@@ -191,12 +191,14 @@ public class MockConnectionManager implements HttpClientConnectionManager {
     }
 
     public final boolean isOpen() {
-        return open.get();
+        return this.open.get();
     }
 
     @Override
     public void connect(HttpClientConnection conn, HttpRoute route, int connectTimeout, HttpContext context) {
-        // Nothing to do
+        if (this.responseHandler instanceof IResponseHandler2) {
+            ((IResponseHandler2) this.responseHandler).connect(conn, route, connectTimeout, context);
+        }
     }
 
     @Override
