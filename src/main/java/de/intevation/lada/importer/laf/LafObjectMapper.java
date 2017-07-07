@@ -729,7 +729,8 @@ public class LafObjectMapper {
         MessStelle mst = repository.getByIdPlain(MessStelle.class, probe.getMstId(), "stamm");
         o.setNetzbetreiberId(mst.getNetzbetreiberId());
         o = ortFactory.completeOrt(o);
-        if (o == null) {
+        if (o == null || o.getGeom() == null) {
+            currentWarnings.addAll(ortFactory.getErrors());
             return null;
         }
         Violation violation = ortValidator.validate(o);

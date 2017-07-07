@@ -98,9 +98,9 @@ public class OrtFactory {
             JTS.transform(srcCoord, targetCoord, transform);
 
             ort.setGeom(generateGeom(targetCoord.y, targetCoord.x));
-        } catch (FactoryException | TransformException e) {
+        } catch (NumberFormatException | FactoryException | TransformException e) {
             ReportItem err = new ReportItem();
-            err.setCode(672);
+            err.setCode(670);
             err.setKey("coordinates");
             err.setValue(ort.getKdaId() + " " + ort.getKoordXExtern() + " " + ort.getKoordYExtern());
             errors.add(err);
@@ -121,46 +121,58 @@ public class OrtFactory {
         String xSuffix = "";
         String yPrefix = "";
         String ySuffix = "";
-        if (xCoord.contains(",")) {
-            // with decimal separator
-            Pattern p = Pattern.compile("([+|-|W|E]?)(\\d{1,3})(\\d{2})(\\d{2}),(\\d{1,5})([W|E]?)");
-            Matcher m = p.matcher(xCoord);
-            m.matches();
-            xPrefix = m.group(1);
-            xDegree = Integer.valueOf(m.group(2));
-            xMin = Integer.valueOf(m.group(3));
-            xSec = Double.valueOf(m.group(4) + "." + m.group(5));
-            xSuffix = m.group(6);
+        try {
+            if (xCoord.contains(",")) {
+                // with decimal separator
+                Pattern p = Pattern.compile("([+|-|W|E]?)(\\d{1,3})(\\d{2})(\\d{2}),(\\d{1,5})([W|E]?)");
+                Matcher m = p.matcher(xCoord);
+                m.matches();
+                xPrefix = m.group(1);
+                xDegree = Integer.valueOf(m.group(2));
+                xMin = Integer.valueOf(m.group(3));
+                xSec = Double.valueOf(m.group(4) + "." + m.group(5));
+                xSuffix = m.group(6);
+            }
+            else {
+                Pattern p = Pattern.compile("([+|-|W|E]?)(\\d{3})(\\d{0,2})(\\d{0,2})([W|E]?)");
+                Matcher m = p.matcher(xCoord);
+                m.matches();
+                xPrefix = m.group(1);
+                xDegree = Integer.valueOf(m.group(2));
+                xMin = Integer.valueOf(m.group(3));
+                xSec = Double.valueOf(m.group(4));
+                xSuffix = m.group(5);
+            }
+            if(yCoord.contains(",")) {
+                Pattern p = Pattern.compile("([+|-|N|S]?)(\\d{1,2})(\\d{2})(\\d{2}),(\\d{1,5})([N|S]?)");
+                Matcher m = p.matcher(yCoord);
+                m.matches();
+                yPrefix = m.group(1);
+                yDegree = Integer.valueOf(m.group(2));
+                yMin = Integer.valueOf(m.group(3));
+                ySec = Double.valueOf(m.group(4) + "." + m.group(5));
+                ySuffix = m.group(6);
+            }
+            else {
+                Pattern p = Pattern.compile("([+|-|N|S]?)(\\d{2})(\\d{0,2})(\\d{0,2})([N|S]?)");
+                Matcher m = p.matcher(yCoord);
+                m.matches();
+                yPrefix = m.group(1);
+                yDegree = Integer.valueOf(m.group(2));
+                yMin = Integer.valueOf(m.group(3));
+                ySec = Double.valueOf(m.group(4));
+                ySuffix = m.group(5);
+            }
         }
-        else {
-            Pattern p = Pattern.compile("([+|-|W|E]?)(\\d{3})(\\d{0,2})(\\d{0,2})([W|E]?)");
-            Matcher m = p.matcher(xCoord);
-            m.matches();
-            xPrefix = m.group(1);
-            xDegree = Integer.valueOf(m.group(2));
-            xMin = Integer.valueOf(m.group(3));
-            xSec = Double.valueOf(m.group(4));
-            xSuffix = m.group(5);
-        }
-        if(yCoord.contains(",")) {
-            Pattern p = Pattern.compile("([+|-|N|S]?)(\\d{1,2})(\\d{2})(\\d{2}),(\\d{1,5})([N|S]?)");
-            Matcher m = p.matcher(yCoord);
-            m.matches();
-            yPrefix = m.group(1);
-            yDegree = Integer.valueOf(m.group(2));
-            yMin = Integer.valueOf(m.group(3));
-            ySec = Double.valueOf(m.group(4) + "." + m.group(5));
-            ySuffix = m.group(6);
-        }
-        else {
-            Pattern p = Pattern.compile("([+|-|N|S]?)(\\d{2})(\\d{0,2})(\\d{0,2})([N|S]?)");
-            Matcher m = p.matcher(yCoord);
-            m.matches();
-            yPrefix = m.group(1);
-            yDegree = Integer.valueOf(m.group(2));
-            yMin = Integer.valueOf(m.group(3));
-            ySec = Double.valueOf(m.group(4));
-            ySuffix = m.group(5);
+        catch(IllegalStateException e) {
+            ReportItem err = new ReportItem();
+            err.setCode(652);
+            err.setKey("koord_extern");
+            err.setValue(ort.getKdaId().toString() +
+                " \"" + ort.getKoordXExtern() + "\" \"" +
+                ort.getKoordYExtern() + "\"");
+            errors.add(err);
+            return;
         }
 
         double ddX = xDegree + ((xMin/60d) + (xSec/3600d));
