@@ -52,6 +52,14 @@ public class OrtFactory {
         switch(kda) {
         case 1:
             epsg = getEpsgForGK(ort.getKoordXExtern());
+            if ("".equals(epsg)) {
+                ReportItem err = new ReportItem();
+                err.setCode(670);
+                err.setKey("coordinates");
+                err.setValue(ort.getKdaId() + " " + ort.getKoordXExtern() + " " + ort.getKoordYExtern());
+                errors.add(err);
+                return;
+            }
             xCoord = ort.getKoordYExtern();
             yCoord = ort.getKoordXExtern();
             jtsTransform(epsg, xCoord, yCoord, ort);
@@ -353,15 +361,20 @@ public class OrtFactory {
         if (zone == null) {
             return "";
         }
-        Integer iZone = Integer.valueOf(zone);
-        String epsg = "EPSG:3146";
-        switch(iZone) {
-            case 2: return epsg + "6";
-            case 3: return epsg + "7";
-            case 4: return epsg + "8";
-            case 5: return epsg + "9";
+        try {
+            Integer iZone = Integer.valueOf(zone);
+            String epsg = "EPSG:3146";
+            switch(iZone) {
+                case 2: return epsg + "6";
+                case 3: return epsg + "7";
+                case 4: return epsg + "8";
+                case 5: return epsg + "9";
+                default: return "";
+            }
         }
-        return "";
+        catch (NumberFormatException e) {
+            return "";
+        }
     }
 
     public List<ReportItem> getErrors() {
