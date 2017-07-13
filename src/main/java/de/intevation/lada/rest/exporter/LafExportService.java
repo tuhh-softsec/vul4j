@@ -126,6 +126,7 @@ public class LafExportService {
         response.header(
             "Content-Disposition",
             "attachment; filename=\"export.laf\"");
+        response.header("Content-Type", "text/plain; charset=iso-8859-15");
         return response.build();
     }
 }

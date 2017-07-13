@@ -10,6 +10,7 @@ package de.intevation.lada.exporter.laf;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -52,13 +53,15 @@ implements Exporter
             laf += creator.create(probeId.toString());
         }
         laf += "%ENDE%";
-        InputStream in = new ByteArrayInputStream(laf.getBytes());
+        InputStream in;
         try {
+            in = new ByteArrayInputStream(laf.getBytes("ISO-8859-15"));
             in.close();
+            return in;
+        } catch (IOException e) {
+            String resp = "Error - Problem while creating the response";
+            InputStream is = new ByteArrayInputStream(resp.getBytes());
+            return is;
         }
-        catch (IOException e) {
-            //TODO Exception handling.
-        }
-        return in;
     }
 }
