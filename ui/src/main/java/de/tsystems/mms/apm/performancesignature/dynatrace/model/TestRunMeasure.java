@@ -27,7 +27,7 @@ public class TestRunMeasure implements Serializable {
     private static final long serialVersionUID = 1L;
     private final String metricGroup, name, unit;
     private final int numDegradedRuns, numFailingOrInvalidatedRuns, numImprovedRuns, numValidRuns;
-    private double expectedMax, expectedMin, value, violationPercentage;
+    private final double expectedMax, expectedMin, value, violationPercentage;
 
     public TestRunMeasure(final Object attr) {
         this.expectedMax = AttributeUtils.getDoubleAttribute("expectedMax", attr);

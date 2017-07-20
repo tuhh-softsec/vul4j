@@ -30,9 +30,9 @@ import java.util.logging.Logger;
 @ExportedBean
 public class Measure extends MeasureBaseModel {
     private static final Logger LOGGER = Logger.getLogger(Measure.class.getName());
-    private final String name;
+    private final String name, color, unit;
     private final List<Measurement> measurements;
-    private String color, unit, aggregation;
+    private String aggregation;
 
     public Measure(final Object attr) {
         super(attr);
@@ -71,6 +71,7 @@ public class Measure extends MeasureBaseModel {
         return getUnit(aggregation);
     }
 
+    @SuppressWarnings("WeakerAccess")
     public String getUnit(final String aggregation) {
         if (StringUtils.isNotBlank(aggregation) && aggregation.equalsIgnoreCase("count")) {
             return "num";

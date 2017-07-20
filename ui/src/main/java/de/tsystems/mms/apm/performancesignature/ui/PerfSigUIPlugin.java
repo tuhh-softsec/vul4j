@@ -33,6 +33,7 @@ import java.util.List;
 import static hudson.init.InitMilestone.JOB_LOADED;
 import static hudson.init.InitMilestone.PLUGINS_STARTED;
 
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class PerfSigUIPlugin extends Plugin {
 
     @Initializer(before = PLUGINS_STARTED)

@@ -84,6 +84,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         return job.getAction(TestResultProjectAction.class);
     }
 
+    @SuppressWarnings("WeakerAccess")
     public Class<PerfSigUIUtils> getPerfSigUIUtils() {
         return PerfSigUIUtils.class;
     }
@@ -201,6 +202,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         graph.doPng(request, response);
     }
 
+    @SuppressWarnings("WeakerAccess")
     public List<DashboardReport> getLastDashboardReports() {
         final Run<?, ?> tb = job.getLastSuccessfulBuild();
 
@@ -238,6 +240,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         return null;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public Map<Run<?, ?>, DashboardReport> getDashboardReports(final String name) {
         final Map<Run<?, ?>, DashboardReport> dashboardReports = new HashMap<>();
         if (job == null) {
@@ -257,7 +260,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     }
 
     @JavaScriptMethod
-    public String getDashboardConfiguration(final String dashboard) throws IOException, InterruptedException {
+    public String getDashboardConfiguration(final String dashboard) throws InterruptedException {
         List<JSONDashlet> jsonDashletList = new ArrayList<>();
         for (JSONDashlet jsonDashlet : getJsonDashletMap().values()) {
             if (jsonDashlet.getDashboard().equals(dashboard)) {
@@ -308,6 +311,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
                 ", threadId:" + Thread.currentThread().getId() + " " + message;
     }
 
+    @SuppressWarnings("WeakerAccess")
     @JavaScriptMethod
     public void setDashboardConfiguration(final String dashboard, final String data) throws InterruptedException {
         Map<String, JSONDashlet> defaultConfiguration = createJSONConfiguration(false);
@@ -369,13 +373,12 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         } catch (InterruptedException e) {
             logger.log(Level.SEVERE, Messages.PerfSigProjectAction_FailedToSaveGrid(), e);
             throw e;
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, Messages.PerfSigProjectAction_FailedToSaveGrid(), e);
         }
     }
 
+    @SuppressWarnings("WeakerAccess")
     @JavaScriptMethod
-    public Map<String, String> getAvailableMeasures(final String dashboard, final String dashlet) throws IOException {
+    public Map<String, String> getAvailableMeasures(final String dashboard, final String dashlet) {
         Map<String, String> availableMeasures = new LinkedHashMap<>();
         List<JSONDashlet> jsonDashlets = new ArrayList<>(createJSONConfiguration(false).values());
         Collections.sort(jsonDashlets);
@@ -387,8 +390,9 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         return availableMeasures;
     }
 
+    @SuppressWarnings("WeakerAccess")
     @JavaScriptMethod
-    public String getAggregationFromMeasure(final String dashboard, final String dashlet, final String measure) throws IOException {
+    public String getAggregationFromMeasure(final String dashboard, final String dashlet, final String measure) {
         for (DashboardReport dashboardReport : getLastDashboardReports()) {
             if (dashboardReport.getName().equals(dashboard)) {
                 Measure m = dashboardReport.getMeasure(dashlet, measure);
@@ -400,7 +404,8 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
         return "";
     }
 
-    public Map<JSONDashlet, Measure> getFilteredChartDashlets(final DashboardReport dashboardReport) throws IOException, InterruptedException {
+    @SuppressWarnings("unused")
+    public Map<JSONDashlet, Measure> getFilteredChartDashlets(final DashboardReport dashboardReport) throws InterruptedException {
         Map<JSONDashlet, Measure> filteredChartDashlets = new TreeMap<>(new Comparator<JSONDashlet>() {
             @Override
             public int compare(final JSONDashlet o1, final JSONDashlet o2) {
@@ -459,14 +464,11 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             }
         } catch (IOException e) {
             logger.log(Level.SEVERE, Messages.PerfSigProjectAction_FailedToLoadConfigFile(getConfigFile()), e);
-        } catch (InterruptedException e) {
-            logger.log(Level.SEVERE, Messages.PerfSigProjectAction_FailedToLoadConfigFile(getConfigFile()), e);
-            throw e;
         }
         return new HashMap<>();
     }
 
-    private void writeConfiguration(final Map<String, JSONDashlet> jsonDashletMap) throws IOException, InterruptedException {
+    private void writeConfiguration(final Map<String, JSONDashlet> jsonDashletMap) {
         try {
             logger.fine(addTimeStampToLog("grid configuration write started"));
             getConfigFile().write(jsonDashletMap);
@@ -479,7 +481,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     private abstract class PerfGraphImpl extends Graph {
         private final JSONDashlet jsonDashlet;
 
-        protected PerfGraphImpl(final JSONDashlet jsonDashlet) {
+        PerfGraphImpl(final JSONDashlet jsonDashlet) {
             super(-1, 600, 300);
             this.jsonDashlet = jsonDashlet;
         }
@@ -548,7 +550,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     private abstract class TestRunGraphImpl extends Graph {
         private final String customName;
 
-        protected TestRunGraphImpl(final String customName) {
+        TestRunGraphImpl(final String customName) {
             super(-1, 600, 300);
             this.customName = customName;
         }

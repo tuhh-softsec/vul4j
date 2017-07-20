@@ -115,6 +115,7 @@ public class PerfSigProjectActionTest {
     public void testWebMethods() throws Exception {
         Project proj = (Project) j.jenkins.getItem(TEST_PROJECT_WITH_HISTORY);
         JenkinsRule.WebClient wc = j.createWebClient();
+        assert proj != null;
         HtmlPage projectPage = wc.getPage(proj, "performance-signature");
 
         PerfSigProjectAction projectAction = new PerfSigProjectAction(proj);

@@ -44,16 +44,19 @@ public abstract class MeasureBaseModel {
         return new Api(this);
     }
 
+    @SuppressWarnings("WeakerAccess")
     @Exported
     public double getSum() {
         return sum;
     }
 
+    @SuppressWarnings("WeakerAccess")
     @Exported
     public int getCount() {
         return count;
     }
 
+    @SuppressWarnings("WeakerAccess")
     @Exported
     public double getAvg() {
         return this.avg;
@@ -63,11 +66,13 @@ public abstract class MeasureBaseModel {
         return PerfSigUIUtils.round(this.avg, 2);
     }
 
+    @SuppressWarnings("WeakerAccess")
     @Exported
     public double getMin() {
         return this.min;
     }
 
+    @SuppressWarnings("WeakerAccess")
     @Exported
     public double getMax() {
         return this.max;

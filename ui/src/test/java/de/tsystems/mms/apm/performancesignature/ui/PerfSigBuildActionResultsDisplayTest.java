@@ -73,6 +73,7 @@ public class PerfSigBuildActionResultsDisplayTest {
     @Test
     public void testSummerizerGraph() throws SAXException, IOException {
         Project proj = (Project) j.jenkins.getItem(TEST_PROJECT_WITH_HISTORY);
+        assert proj != null;
         AbstractBuild<?, ?> build = proj.getBuildByNumber(11156);
         JenkinsRule.WebClient wc = j.createWebClient();
 
@@ -105,6 +106,7 @@ public class PerfSigBuildActionResultsDisplayTest {
     @Test
     public void testPreviousDashboardReport() {
         Project proj = (Project) j.jenkins.getItem(TEST_PROJECT_WITH_HISTORY);
+        assert proj != null;
         Run<?, ?> build = proj.getBuildByNumber(11156);
 
         PerfSigBuildAction action = build.getAction(PerfSigBuildAction.class);
@@ -133,6 +135,7 @@ public class PerfSigBuildActionResultsDisplayTest {
         Project proj = (Project) j.jenkins.getItem(TEST_PROJECT_WITH_HISTORY);
         JenkinsRule.WebClient wc = j.createWebClient();
 
+        assert proj != null;
         XmlPage xmlProjectPage = wc.goToXml(proj.getUrl() + "/lastBuild/performance-signature/api/xml?depth=10");
         j.assertXPath(xmlProjectPage, "/perfSigBuildActionResultsDisplay");
         j.assertXPath(xmlProjectPage, "/perfSigBuildActionResultsDisplay/dashboardReport");
@@ -151,6 +154,7 @@ public class PerfSigBuildActionResultsDisplayTest {
     @Test
     public void testDownloadMethods() throws IOException, SAXException {
         Project proj = (Project) j.jenkins.getItem(TEST_PROJECT_WITH_HISTORY);
+        assert proj != null;
         Run<?, ?> build = proj.getBuildByNumber(11157);
 
         JenkinsRule.WebClient wc = j.createWebClient();
@@ -173,6 +177,7 @@ public class PerfSigBuildActionResultsDisplayTest {
     @Test
     public void testGetReportList() throws IOException, SAXException, InterruptedException {
         Project proj = (Project) j.jenkins.getItem(TEST_PROJECT_WITH_HISTORY);
+        assert proj != null;
         Run<?, ?> build = proj.getBuildByNumber(11157);
 
         JenkinsRule.WebClient wc = j.createWebClient();

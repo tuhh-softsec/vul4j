@@ -74,10 +74,12 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
         return Messages.PerfSigBuildActionResultsDisplay_DisplayName();
     }
 
+    @SuppressWarnings("WeakerAccess")
     public Class getPerfSigUIUtils() {
         return PerfSigUIUtils.class;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public Run<?, ?> getBuild() {
         return this.buildAction.getBuild();
     }
@@ -89,6 +91,7 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
         return new Api(this);
     }
 
+    @SuppressWarnings("WeakerAccess")
     @Exported(name = "dashboardReports")
     public List<DashboardReport> getCurrentDashboardReports() {
         return this.currentDashboardReports;
@@ -100,6 +103,7 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
         return wrapper != null ? wrapper.getTestRuns() : Collections.<TestRun>emptyList();
     }
 
+    @SuppressWarnings("WeakerAccess")
     public DashboardReport getPreviousDashboardReport(final String dashboard) {
         Run<?, ?> previousBuild = getBuild().getPreviousNotFailedBuild();
         if (previousBuild == null) {
@@ -113,6 +117,7 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
         return previousBuildActionResults.getDashBoardReport(dashboard);
     }
 
+    @SuppressWarnings("WeakerAccess")
     public DashboardReport getDashBoardReport(final String reportName) {
         if (currentDashboardReports == null) {
             return null;
@@ -231,7 +236,7 @@ public class PerfSigBuildActionResultsDisplay implements ModelObject {
     private abstract class GraphImpl extends Graph {
         private final StaplerRequest request;
 
-        protected GraphImpl(final StaplerRequest request, final long timestamp) {
+        GraphImpl(final StaplerRequest request, final long timestamp) {
             super(timestamp, 600, 300);
             this.request = request;
         }
