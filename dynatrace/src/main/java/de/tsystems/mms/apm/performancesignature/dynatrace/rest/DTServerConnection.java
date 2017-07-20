@@ -381,7 +381,7 @@ public class DTServerConnection {
     }
 
     public String startRecording(final String sessionName, final String description, final String recordingOption,
-                                 final boolean sessionLocked, final boolean isTimeStampAllowed) throws RESTErrorException {
+                                 final boolean sessionLocked, final boolean isTimeStampAllowed) {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(this.address);
@@ -397,7 +397,7 @@ public class DTServerConnection {
         }
     }
 
-    public String stopRecording() throws RESTErrorException {
+    public String stopRecording() {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(this.address);

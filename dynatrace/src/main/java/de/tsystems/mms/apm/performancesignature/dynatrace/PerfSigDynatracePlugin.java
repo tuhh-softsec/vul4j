@@ -24,6 +24,7 @@ import hudson.model.Run;
 
 import static hudson.init.InitMilestone.PLUGINS_STARTED;
 
+@SuppressWarnings("unused")
 public class PerfSigDynatracePlugin extends Plugin {
 
     @Initializer(before = PLUGINS_STARTED)

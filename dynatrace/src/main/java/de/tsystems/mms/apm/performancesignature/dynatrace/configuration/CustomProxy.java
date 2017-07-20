@@ -19,10 +19,11 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.configuration;
 import hudson.util.Scrambler;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+@SuppressWarnings("WeakerAccess")
 public class CustomProxy {
     private final String proxyServer, proxyUser, proxyPassword;
     private final int proxyPort;
-    private boolean useJenkinsProxy;
+    private final boolean useJenkinsProxy;
 
     @DataBoundConstructor
     public CustomProxy(final String proxyServer, final int proxyPort, final String proxyUser, final String proxyPassword, final int value) {

@@ -32,7 +32,7 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
 import org.xml.sax.Attributes;
 
 public abstract class BaseConfiguration {
-    private String id, href;
+    private final String id, href;
 
     public BaseConfiguration(final Attributes attr) {
         this.id = AttributeUtils.getStringAttribute("id", attr);
