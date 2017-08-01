@@ -4,7 +4,7 @@ pipeline {
     agent any
 
     tools {
-        maven 'autoMaven'
+        maven 'maven'
         jdk 'JDK8'
     }
 
@@ -24,7 +24,7 @@ pipeline {
 
         stage ('Build') {
             steps {
-                withMaven(maven: 'autoMaven') {
+                withMaven(maven: 'maven') {
                     sh 'mvn -Penable-jacoco -Dmaven.test.failure.ignore=true checkstyle:checkstyle install -e' +
                             ' sonar:sonar -Dsonar.host.url=https://sonarqube.com -Dsonar.login=2d490959a4bfab63bd2b7f41d43347955ebfe939'
                 }

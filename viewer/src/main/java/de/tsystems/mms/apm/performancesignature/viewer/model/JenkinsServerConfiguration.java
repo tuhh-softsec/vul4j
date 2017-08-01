@@ -21,27 +21,23 @@ import hudson.Extension;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
 import hudson.util.FormValidation;
-import hudson.util.ListBoxModel;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
 import java.util.List;
 
 public class JenkinsServerConfiguration extends AbstractDescribableImpl<JenkinsServerConfiguration> {
-    private final String name, protocol, host;
-    private final int port;
+    private final String name, serverUrl;
     private final boolean verifyCertificate;
     private final List<CredJobPair> credJobPairs;
     private final CustomProxy customProxy;
 
     @DataBoundConstructor
-    public JenkinsServerConfiguration(final String name, final String protocol, final String host, final int port, final List<CredJobPair> credJobPairs,
+    public JenkinsServerConfiguration(final String name, final String serverUrl, final List<CredJobPair> credJobPairs,
                                       final boolean verifyCertificate, final boolean proxy, final int proxySource, final String proxyServer,
                                       final int proxyPort, final String proxyUser, final String proxyPassword) {
         this.name = name;
-        this.protocol = protocol;
-        this.host = host;
-        this.port = port;
+        this.serverUrl = serverUrl;
         this.credJobPairs = credJobPairs;
         this.verifyCertificate = verifyCertificate;
 
@@ -52,12 +48,8 @@ public class JenkinsServerConfiguration extends AbstractDescribableImpl<JenkinsS
         return name;
     }
 
-    public String getProtocol() {
-        return protocol;
-    }
-
-    public String getHost() {
-        return host;
+    public String getServerUrl() {
+        return serverUrl;
     }
 
     public CredJobPair getCredJobPair(final String job) {
@@ -67,10 +59,6 @@ public class JenkinsServerConfiguration extends AbstractDescribableImpl<JenkinsS
                 return pair;
         }
         return null;
-    }
-
-    public int getPort() {
-        return port;
     }
 
     public List<CredJobPair> getCredJobPairs() {
@@ -87,9 +75,7 @@ public class JenkinsServerConfiguration extends AbstractDescribableImpl<JenkinsS
 
     @Extension
     public static final class DescriptorImpl extends Descriptor<JenkinsServerConfiguration> {
-        public static final String defaultProtocol = "https";
-        public static final String defaultHost = "localhost";
-        public static final int defaultPort = 8080;
+        public static final String defaultServerUrl = "https://myjenkins.com/";
         public static final boolean defaultVerifyCertificate = false;
 
         @Override
@@ -97,28 +83,12 @@ public class JenkinsServerConfiguration extends AbstractDescribableImpl<JenkinsS
             return "";
         }
 
-        public ListBoxModel doFillProtocolItems() {
-            return new ListBoxModel(new ListBoxModel.Option("http"), new ListBoxModel.Option("https"));
-        }
-
-        public FormValidation doCheckHost(@QueryParameter final String host) {
-            FormValidation validationResult;
-            if (PerfSigUIUtils.checkNotNullOrEmpty(host)) {
-                validationResult = FormValidation.ok();
+        public FormValidation doCheckServerUrl(@QueryParameter final String serverUrl) {
+            if (PerfSigUIUtils.checkNotNullOrEmpty(serverUrl)) {
+                return FormValidation.ok();
             } else {
-                validationResult = FormValidation.error(Messages.JenkinsServerConfiguration_ServerNotValid());
+                return FormValidation.error(Messages.JenkinsServerConfiguration_ServerNotValid());
             }
-            return validationResult;
-        }
-
-        public FormValidation doCheckPort(@QueryParameter final String port) {
-            FormValidation validationResult;
-            if (PerfSigUIUtils.checkNotEmptyAndIsNumber(port)) {
-                validationResult = FormValidation.ok();
-            } else {
-                validationResult = FormValidation.error(Messages.JenkinsServerConfiguration_PortNotValid());
-            }
-            return validationResult;
         }
     }
 }

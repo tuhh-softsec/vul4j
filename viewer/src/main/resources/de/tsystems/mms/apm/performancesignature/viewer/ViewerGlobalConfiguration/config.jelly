@@ -24,15 +24,8 @@
                     <f:entry field="name" title="${%Name}">
                         <f:textbox clazz="required"/>
                     </f:entry>
-                    <f:entry field="protocol" title="${%HTTP/HTTPS}" description="${%Specify the protocol to use}">
-                        <f:select default="${descriptor.defaultProtocol}"/>
-                    </f:entry>
-                    <f:entry title="${%Jenkins REST Host}" field="host" description="${%Jenkins Server hostname}">
-                        <f:textbox default="${descriptor.defaultHost}"/>
-                    </f:entry>
-                    <f:entry title="${%Jenkins REST Port}" field="port"
-                             description="${%Jenkins REST Interface port} (${%default: 8080 for HTTP})">
-                        <f:number default="${descriptor.defaultPort}"/>
+                    <f:entry field="serverUrl" title="${%Performance Signature Server URL}" description="${%Specify the url to use}">
+                        <f:textbox default="${descriptor.defaultServerUrl}"/>
                     </f:entry>
 
                     <f:advanced>
@@ -72,8 +65,8 @@
                                     <c:select/>
                                 </f:entry>
                                 <f:validateButton title="${%Test connection}" progress="${%Testing...}"
-                                                  method="testDynaTraceConnection"
-                                                  with="protocol,host,port,jenkinsJob,credentialsId"/>
+                                                  method="testServerConnection"
+                                                  with="serverUrl,verifyCertificate,jenkinsJob,credentialsId"/>
                                 <f:entry title="">
                                     <div align="right">
                                         <f:repeatableDeleteButton value="${%Remove credentials/job pair}"/>

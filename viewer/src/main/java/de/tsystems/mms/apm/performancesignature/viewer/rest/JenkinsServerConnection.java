@@ -47,10 +47,10 @@ public class JenkinsServerConnection {
     private Job jenkinsJob;
     private JenkinsServer jenkinsServer;
 
-    public JenkinsServerConnection(final String protocol, final String host, final int port, final CredJobPair pair, final boolean verifyCertificate,
+    public JenkinsServerConnection(final String serverUrl, final CredJobPair pair, final boolean verifyCertificate,
                                    final CustomProxy customProxyServer) {
         try {
-            URI uri = new URI(protocol + "://" + host + ":" + port);
+            URI uri = new URI(serverUrl);
             JenkinsHttpClient client;
             if (pair.getCredentials() == null) {
                 client = new CustomJenkinsHttpClient(uri, null, null, verifyCertificate, customProxyServer);
@@ -61,7 +61,7 @@ public class JenkinsServerConnection {
             this.jenkinsServer = new JenkinsServer(client);
             String job = pair.getJenkinsJob();
 
-            //handle folders wait for https://github.com/jenkinsci/java-client-api/pull/205
+            //handle folders wait for https://github.com/jenkinsci/java-client-api/pull/267
             if (job.contains("/")) {
                 String[] parts = job.split("/");
                 Job folderJob = jenkinsServer.getJob(parts[0]);
@@ -80,7 +80,7 @@ public class JenkinsServerConnection {
     }
 
     public JenkinsServerConnection(final JenkinsServerConfiguration config, final CredJobPair pair) {
-        this(config.getProtocol(), config.getHost(), config.getPort(), pair, config.isVerifyCertificate(), config.getCustomProxy());
+        this(config.getServerUrl(), pair, config.isVerifyCertificate(), config.getCustomProxy());
     }
 
     public List<DashboardReport> getDashboardReportsFromXML(int buildNumber) {

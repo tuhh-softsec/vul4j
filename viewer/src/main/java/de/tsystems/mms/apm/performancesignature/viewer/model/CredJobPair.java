@@ -109,19 +109,18 @@ public class CredJobPair extends AbstractDescribableImpl<CredJobPair> {
             return validationResult;
         }
 
-        public FormValidation doTestDynaTraceConnection(@QueryParameter final String protocol, @QueryParameter final String host,
-                                                        @QueryParameter final int port, @QueryParameter final String credentialsId,
-                                                        @QueryParameter final String jenkinsJob, @QueryParameter boolean verifyCertificate,
-                                                        @QueryParameter final boolean proxy, @QueryParameter final String proxyServer,
-                                                        @QueryParameter final int proxyPort, @QueryParameter final String proxyUser,
-                                                        @QueryParameter final String proxyPassword) {
+        public FormValidation doTestServerConnection(@QueryParameter final String serverUrl, @QueryParameter final String credentialsId,
+                                                     @QueryParameter final String jenkinsJob, @QueryParameter boolean verifyCertificate,
+                                                     @QueryParameter final boolean proxy, @QueryParameter final String proxyServer,
+                                                     @QueryParameter final int proxyPort, @QueryParameter final String proxyUser,
+                                                     @QueryParameter final String proxyPassword) {
 
             CustomProxy customProxyServer = null;
             if (proxy) {
                 customProxyServer = new CustomProxy(proxyServer, proxyPort, proxyUser, proxyPassword, StringUtils.isBlank(proxyServer));
             }
             CredJobPair pair = new CredJobPair(jenkinsJob, credentialsId);
-            final JenkinsServerConnection connection = new JenkinsServerConnection(protocol, host, port, pair, verifyCertificate, customProxyServer);
+            final JenkinsServerConnection connection = new JenkinsServerConnection(serverUrl, pair, verifyCertificate, customProxyServer);
 
             if (connection.validateConnection()) {
                 return FormValidation.ok(Messages.CredJobPair_TestConnectionSuccessful());
