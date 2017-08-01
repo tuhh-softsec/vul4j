@@ -19,7 +19,7 @@
     <j:if test="${from.lastDashboardReports != null}">
         <br/>
         <div class="tw-bs">
-            <div class="pull-right">
+            <div class="pull-right" style="position:relative; z-index:1">
                 <div class="alert alert-success" role="alert">
                     <font size="3">${from.displayName}</font>
                 </div>
