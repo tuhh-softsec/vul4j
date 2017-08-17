@@ -65,23 +65,26 @@ public class LafImporter implements Importer{
                 return;
             }
             errors.putAll(listener.getErrors());
+            warnings.putAll(listener.getWarnings());
             mapper.setUserInfo(userInfo);
             mapper.mapObjects(listener.getData());
-            logger.debug("listener errors: " + listener.getErrors().size());
-            logger.debug("import mapper errors: " + mapper.getErrors().size());
             for (Entry<String, List<ReportItem>> entry : mapper.getErrors().entrySet()) {
-                logger.debug("add for key: "+ entry.getKey());
                 if (errors.containsKey(entry.getKey())) {
                     errors.get(entry.getKey()).addAll(entry.getValue());
-                    logger.debug("done");
                 }
                 else {
                     errors.put(entry.getKey(), entry.getValue());
-                    logger.debug("done2");
                 }
             }
-            warnings.putAll(mapper.getWarnings());
-            logger.debug("import warnings: " + warnings.size());
+
+            for (Entry<String, List<ReportItem>> entry : mapper.getWarnings().entrySet()) {
+                if (warnings.containsKey(entry.getKey())) {
+                    warnings.get(entry.getKey()).addAll(entry.getValue());
+                }
+                else {
+                    warnings.putAll(mapper.getWarnings());
+                }
+            }
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

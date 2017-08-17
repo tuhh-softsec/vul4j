@@ -19,7 +19,9 @@ public class LafObjectListener extends LafBaseListener {
     Map<String, String> currentUOrt;
     Map<String, String> currentEOrt;
     Map<String, List<ReportItem>> errors;
+    Map<String, List<ReportItem>> warnings;
     ArrayList<ReportItem> currentErrors;
+    ArrayList<ReportItem> currentWarnings;
 
     private boolean hasDatenbasis = false;
     private boolean hasMessprogramm = false;
@@ -37,7 +39,9 @@ public class LafObjectListener extends LafBaseListener {
     public LafObjectListener() {
         data = new LafRawData();
         errors = new HashMap<String, List<ReportItem>>();
+        warnings = new HashMap<String, List<ReportItem>>();
         currentErrors = new ArrayList<ReportItem>();
+        currentWarnings = new ArrayList<ReportItem>();
         currentUOrt = new HashMap<String, String>();
         currentEOrt = new HashMap<String, String>();
     }
@@ -51,6 +55,13 @@ public class LafObjectListener extends LafBaseListener {
      */
     public Map<String, List<ReportItem>> getErrors() {
         return errors;
+    }
+
+    /**
+     * @return the warnings
+     */
+    public Map<String, List<ReportItem>> getWarnings() {
+        return warnings;
     }
 
     /**
@@ -95,8 +106,13 @@ public class LafObjectListener extends LafBaseListener {
                 errors.put(currentProbe.getIdentifier(),
                     (ArrayList)currentErrors.clone());
             }
+            if (!currentWarnings.isEmpty()) {
+                warnings.put(currentProbe.getIdentifier(),
+                    (ArrayList)currentWarnings.clone());
+            }
 
             currentErrors.clear();
+            currentWarnings.clear();
             currentProbe = null;
             hasDatenbasis = false;
             hasMessprogramm = false;
@@ -148,12 +164,27 @@ public class LafObjectListener extends LafBaseListener {
             currentProbe.addEntnahmeOrt(currentEOrt);
             currentEOrt.clear();
         }
-        currentProbe = data.new Probe();
         if (!currentErrors.isEmpty()) {
-            errors.put(currentProbe.getIdentifier(),
-                (ArrayList)currentErrors.clone());
+            if (errors.containsKey(currentProbe.getIdentifier())) {
+                errors.get(currentProbe.getIdentifier()).addAll((ArrayList)currentErrors.clone());
+            }
+            else {
+                errors.put(currentProbe.getIdentifier(),
+                    (ArrayList)currentErrors.clone());
+            }
         }
+        if (!currentWarnings.isEmpty()) {
+            if (warnings.containsKey(currentProbe.getIdentifier())) {
+                warnings.get(currentProbe.getIdentifier()).addAll((ArrayList)currentWarnings.clone());
+            }
+            else {
+                warnings.put(currentProbe.getIdentifier(),
+                    (ArrayList)currentWarnings.clone());
+            }
+        }
+        currentProbe = data.new Probe();
         currentErrors.clear();
+        currentWarnings.clear();
         currentProbe = null;
         hasEKoordinaten = false;
         hasEGemeinde = false;
@@ -402,7 +433,12 @@ public class LafObjectListener extends LafBaseListener {
         if (this.hasDatenbasis) {
             return;
         }
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -429,7 +465,12 @@ public class LafObjectListener extends LafBaseListener {
         if (this.hasDatenbasis) {
             return;
         }
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -452,7 +493,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterNetzkennung(LafParser.NetzkennungContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -474,7 +520,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterErzeuger(LafParser.ErzeugerContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -496,7 +547,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterStaat_der_messstelle_lang(LafParser.Staat_der_messstelle_langContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -518,7 +574,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterStaat_der_messstelle_kurz(LafParser.Staat_der_messstelle_kurzContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -540,7 +601,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterStaat_der_messstelle_s(LafParser.Staat_der_messstelle_sContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -562,7 +628,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterMessstelle(LafParser.MessstelleContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -584,7 +655,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterMesslabor(LafParser.MesslaborContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -606,7 +682,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterProbe_id(LafParser.Probe_idContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -628,7 +709,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterMessungs_id(LafParser.Messungs_idContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -653,7 +739,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterProben_nr(LafParser.Proben_nrContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -675,7 +766,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterHauptprobennummer(LafParser.HauptprobennummerContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -697,7 +793,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterNebenprobennummer(LafParser.NebenprobennummerContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -725,7 +826,12 @@ public class LafObjectListener extends LafBaseListener {
         if (this.hasMessprogramm) {
             return;
         }
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -751,7 +857,12 @@ public class LafObjectListener extends LafBaseListener {
         if (this.hasMessprogramm) {
             return;
         }
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -774,7 +885,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterMessprogramm_land(LafParser.Messprogramm_landContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -796,7 +912,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterProbenahmeinstitution(LafParser.ProbenahmeinstitutionContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -818,7 +939,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterProbenart(LafParser.ProbenartContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -843,7 +969,12 @@ public class LafObjectListener extends LafBaseListener {
         if (this.hasZeitbasis) {
             return;
         }
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -869,7 +1000,12 @@ public class LafObjectListener extends LafBaseListener {
         if (this.hasZeitbasis) {
             return;
         }
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -892,6 +1028,14 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterSoll_datum_uhrzeit_a(LafParser.Soll_datum_uhrzeit_aContext ctx) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
+            return;
+        }
         if (ctx.getChildCount() < 4) {
             return;
         }
@@ -924,6 +1068,14 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterSoll_datum_uhrzeit_e(LafParser.Soll_datum_uhrzeit_eContext ctx) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
+            return;
+        }
         if (ctx.getChildCount() < 4) {
             return;
         }
@@ -956,6 +1108,14 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterUrsprungs_datum_uhrzeit(LafParser.Ursprungs_datum_uhrzeitContext ctx) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
+            return;
+        }
         if (ctx.getChildCount() < 4) {
             return;
         }
@@ -988,6 +1148,14 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterProbenahme_datum_uhrzeit_a(LafParser.Probenahme_datum_uhrzeit_aContext ctx) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
+            return;
+        }
         if (ctx.getChildCount() < 4) {
             return;
         }
@@ -1020,6 +1188,14 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterProbenahme_datum_uhrzeit_e(LafParser.Probenahme_datum_uhrzeit_eContext ctx) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
+            return;
+        }
         if (ctx.getChildCount() < 4) {
             return;
         }
@@ -1055,7 +1231,12 @@ public class LafObjectListener extends LafBaseListener {
         if (this.hasUmwelt) {
             return;
         }
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1081,7 +1262,12 @@ public class LafObjectListener extends LafBaseListener {
         if (this.hasUmwelt) {
             return;
         }
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1104,7 +1290,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterDeskriptoren(LafParser.DeskriptorenContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1126,7 +1317,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterRei_programmpunkt(LafParser.Rei_programmpunktContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1148,7 +1344,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterRei_programmpunktgruppe(LafParser.Rei_programmpunktgruppeContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1170,6 +1371,14 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterReferenz_datum_uhrzeit(LafParser.Referenz_datum_uhrzeitContext ctx) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
+            return;
+        }
         if (ctx.getChildCount() < 4) {
             return;
         }
@@ -1202,7 +1411,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterTestdaten(LafParser.TestdatenContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1224,7 +1438,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterSzenario(LafParser.SzenarioContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1246,7 +1465,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterSek_datenbasis(LafParser.Sek_datenbasisContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1268,7 +1492,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterSek_datenbasis_s(LafParser.Sek_datenbasis_sContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1290,7 +1519,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterU_herkunftsland_lang(LafParser.U_herkunftsland_langContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1315,7 +1549,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterU_herkunftsland_kurz(LafParser.U_herkunftsland_kurzContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1340,7 +1579,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterU_herkunftsland_s(LafParser.U_herkunftsland_sContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);;
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1365,7 +1609,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterU_gemeindeschluessel(LafParser.U_gemeindeschluesselContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1390,7 +1639,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterU_gemeindename(LafParser.U_gemeindenameContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1415,7 +1669,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterU_orts_zusatzkennzahl(LafParser.U_orts_zusatzkennzahlContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1535,7 +1794,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterU_orts_zusatzcode(LafParser.U_orts_zusatzcodeContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1559,7 +1823,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterU_orts_zusatztext(LafParser.U_orts_zusatztextContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1583,7 +1852,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterU_nuts_code(LafParser.U_nuts_codeContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1610,7 +1884,12 @@ public class LafObjectListener extends LafBaseListener {
         if (hasEHerkunfstland) {
             return;
         }
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1638,7 +1917,12 @@ public class LafObjectListener extends LafBaseListener {
         if (hasEHerkunfstland) {
             return;
         }
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1666,7 +1950,12 @@ public class LafObjectListener extends LafBaseListener {
         if (hasEHerkunfstland) {
             return;
         }
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1694,7 +1983,12 @@ public class LafObjectListener extends LafBaseListener {
         if (hasEGemeinde) {
             return;
         }
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1722,7 +2016,12 @@ public class LafObjectListener extends LafBaseListener {
         if (hasEGemeinde) {
             return;
         }
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1747,7 +2046,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_orts_zusatzkennzahl(LafParser.P_orts_zusatzkennzahlContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1871,7 +2175,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_orts_zusatzcode(LafParser.P_orts_zusatzcodeContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1895,7 +2204,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_orts_zusatztext(LafParser.P_orts_zusatztextContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1919,7 +2233,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_nuts_code(LafParser.P_nuts_codeContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1943,7 +2262,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_site_id(LafParser.P_site_idContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1967,7 +2291,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_site_name(LafParser.P_site_nameContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1991,7 +2320,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_hoehe_nn(LafParser.P_hoehe_nnContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -2015,7 +2349,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_hoehe_land(LafParser.P_hoehe_landContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -2039,7 +2378,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterMehrzweckfeld(LafParser.MehrzweckfeldContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -2096,7 +2440,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterMesszeit_sekunden(LafParser.Messzeit_sekundenContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -2121,7 +2470,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterMessmethode_c(LafParser.Messmethode_cContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -2146,7 +2500,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterMessmethode_s(LafParser.Messmethode_sContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -2171,7 +2530,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterBearbeitungsstatus(LafParser.BearbeitungsstatusContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -2196,7 +2560,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterPep_flag(LafParser.Pep_flagContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -2221,7 +2590,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterErfassung_abgeschlossen(LafParser.Erfassung_abgeschlossenContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -3023,7 +3397,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterKommentar_t(LafParser.Kommentar_tContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);
             return;
         }
         String text = ctx.getChild(1).toString();
@@ -3108,7 +3487,12 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterProbenkommentar_t(LafParser.Probenkommentar_tContext ctx) {
-        if (ctx.getChildCount() < 2) {
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);
             return;
         }
         String text = ctx.getChild(1).toString();

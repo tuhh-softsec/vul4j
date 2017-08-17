@@ -160,8 +160,23 @@ public class LafObjectMapper {
             Probe old = (Probe)probeIdentifier.getExisting();
             // Matching probe was found in the db. Update it!
             if(i == Identified.UPDATE) {
-                merger.merge(old, probe);
-                newProbe = old;
+                Violation violation = probeValidator.validate(probe);
+                if (!violation.hasErrors()) {
+                    merger.merge(old, probe);
+                    newProbe = old;
+                }
+                else {
+                    for (Entry<String, List<Integer>> err : violation.getErrors().entrySet()) {
+                        for (Integer code : err.getValue()) {
+                            currentErrors.add(new ReportItem("validation", err.getKey(), code));
+                        }
+                    }
+                    for (Entry<String, List<Integer>> warn : violation.getWarnings().entrySet()) {
+                        for (Integer code : warn.getValue()) {
+                            currentWarnings.add(new ReportItem("validation", warn.getKey(), code));
+                        }
+                    }
+                }
             }
             // Probe was found but some data does not match
             else if(i == Identified.REJECT){
@@ -187,6 +202,18 @@ public class LafObjectMapper {
                     Response created = repository.create(probe, "land");
                     newProbe = ((Probe)created.getData());
                 }
+                else {
+                    for (Entry<String, List<Integer>> err : violation.getErrors().entrySet()) {
+                        for (Integer code : err.getValue()) {
+                            currentErrors.add(new ReportItem("validation", err.getKey(), code));
+                        }
+                    }
+                    for (Entry<String, List<Integer>> warn : violation.getWarnings().entrySet()) {
+                        for (Integer code : warn.getValue()) {
+                            currentWarnings.add(new ReportItem("validation", warn.getKey(), code));
+                        }
+                    }
+                }
             }
         } catch (InvalidTargetObjectTypeException e) {
             ReportItem err = new ReportItem();
@@ -209,7 +236,7 @@ public class LafObjectMapper {
             // Create kommentar objects
             List<KommentarP> kommentare = new ArrayList<KommentarP>();
             for (int i = 0; i < object.getKommentare().size(); i++) {
-                KommentarP tmp = createProbeKommentar(object.getKommentare().get(i), newProbe.getId());
+                KommentarP tmp = createProbeKommentar(object.getKommentare().get(i), newProbe);
                 if (tmp != null) {
                     kommentare.add(tmp);
                 }
@@ -246,16 +273,16 @@ public class LafObjectMapper {
             for (int i = 0; i < object.getMessungen().size(); i++) {
                 create(object.getMessungen().get(i), newProbe.getId(), newProbe.getMstId());
             }
-        }
-        Violation violation = probeValidator.validate(newProbe);
-        for (Entry<String, List<Integer>> err : violation.getErrors().entrySet()) {
-            for (Integer code : err.getValue()) {
-                currentErrors.add(new ReportItem("validation", err.getKey(), code));
+            Violation violation = probeValidator.validate(newProbe);
+            for (Entry<String, List<Integer>> err : violation.getErrors().entrySet()) {
+                for (Integer code : err.getValue()) {
+                    currentErrors.add(new ReportItem("validation", err.getKey(), code));
+                }
             }
-        }
-        for (Entry<String, List<Integer>> warn : violation.getWarnings().entrySet()) {
-            for (Integer code : warn.getValue()) {
-                currentWarnings.add(new ReportItem("validation", warn.getKey(), code));
+            for (Entry<String, List<Integer>> warn : violation.getWarnings().entrySet()) {
+                for (Integer code : warn.getValue()) {
+                    currentWarnings.add(new ReportItem("validation", warn.getKey(), code));
+                }
             }
         }
         if (currentErrors.size() > 0) {
@@ -355,24 +382,33 @@ public class LafObjectMapper {
         }
     }
 
-    private KommentarP createProbeKommentar(Map<String, String> attributes, int probeId) {
+    private KommentarP createProbeKommentar(Map<String, String> attributes, Probe probe) {
         KommentarP kommentar = new KommentarP();
-        kommentar.setProbeId(probeId);
-        kommentar.setMstId(attributes.get("MST_ID"));
+        kommentar.setProbeId(probe.getId());
         kommentar.setText(attributes.get("TEXT"));
-        DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
-        String date = attributes.get("DATE") + " " + attributes.get("TIME");
-        Date d;
-        try {
-            d = format.parse(date);
-            kommentar.setDatum(new Timestamp(d.getTime()));
+        if (attributes.containsKey("MST_ID")) {
+            kommentar.setMstId(attributes.get("MST_ID"));
         }
-        catch (ParseException e) {
-            ReportItem warn = new ReportItem();
-            warn.setCode(674);
-            warn.setKey("not valid");
-            warn.setValue("Date: " + date);
-            currentWarnings.add(warn);
+        else {
+            kommentar.setMstId(probe.getMstId());
+        }
+        DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
+        if (attributes.containsKey("DATE")) {
+            String date = attributes.get("DATE") + " " + attributes.get("TIME");
+            try {
+                Date d = format.parse(date);
+                kommentar.setDatum(new Timestamp(d.getTime()));
+            }
+            catch (ParseException e) {
+                ReportItem warn = new ReportItem();
+                warn.setCode(674);
+                warn.setKey("not valid");
+                warn.setValue("Date: " + date);
+                currentWarnings.add(warn);
+            }
+        }
+        else {
+            kommentar.setDatum(new Timestamp(new Date().getTime()));
         }
         if (!userInfo.getMessstellen().contains(kommentar.getMstId())) {
             ReportItem warn = new ReportItem();
