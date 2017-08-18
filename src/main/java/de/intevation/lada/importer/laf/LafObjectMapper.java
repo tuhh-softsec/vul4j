@@ -1207,10 +1207,15 @@ public class LafObjectMapper {
         }
 
         if ("DESKRIPTOREN".equals(key)) {
+            if (value.length() < 26) {
+                for (int i = value.length(); i <= 26 ; i++) {
+                    value += " ";
+                }
+            }
             value = value.replace(" ", "0");
             List<String> tmp = new ArrayList<String>();
             tmp.add("D:");
-            for (int i =  0; i < value.length() - 2; i += 2) {
+            for (int i =  0; i < value.length() - 4; i += 2) {
                 tmp.add(value.substring(i, i+2));
             }
             probe.setMediaDesk(StringUtils.join(tmp.toArray(), " "));
