@@ -7,8 +7,9 @@
  */
 package de.intevation.lada.exporter.laf;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.sql.Timestamp;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -98,7 +99,6 @@ implements Creator
      */
     @SuppressWarnings("unchecked")
     private String writeAttributes(Probe probe) {
-        DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
         QueryBuilder<KommentarP> kommBuilder =
             new QueryBuilder<KommentarP>(
                 repository.entityManager("land"), KommentarP.class);
@@ -146,16 +146,16 @@ implements Creator
             "" : lafLine("PROBENART", probenart, CN);
         laf += probe.getSolldatumBeginn() == null ?
             "" : lafLine("SOLL_DATUM_UHRZEIT_A",
-                format.format(probe.getSolldatumBeginn()));
+                toUTCString(probe.getSolldatumBeginn()));
         laf += probe.getSolldatumEnde() == null ?
             "" : lafLine("SOLL_DATUM_UHRZEIT_E",
-                format.format(probe.getSolldatumEnde()));
+                toUTCString(probe.getSolldatumEnde()));
         laf += probe.getProbeentnahmeBeginn() == null ?
             "" : lafLine("PROBENAHME_DATUM_UHRZEIT_A",
-                format.format(probe.getProbeentnahmeBeginn()));
+                toUTCString(probe.getProbeentnahmeBeginn()));
         laf += probe.getProbeentnahmeEnde() == null ?
             "" : lafLine("PROBENAHME_DATUM_UHRZEIT_E",
-                format.format(probe.getProbeentnahmeEnde()));
+                toUTCString(probe.getProbeentnahmeEnde()));
         laf += probe.getUmwId() == null ?
             "" : lafLine("UMWELTBEREICH_S", probe.getUmwId(), CN);
         laf += probe.getMediaDesk() == null ?
@@ -163,6 +163,7 @@ implements Creator
                 probe.getMediaDesk().replaceAll(" ", "").substring(2), CN);
         laf += probe.getTest() == Boolean.TRUE ?
             lafLine("TESTDATEN", "1") : lafLine("TESTDATEN", "0");
+        laf += lafLine("ZEITBASIS_S", "2");
         laf += writeOrt(probe);
         for (ZusatzWert zw : zusatzwerte) {
             laf += writeZusatzwert(zw);
@@ -281,9 +282,8 @@ implements Creator
      * @return Single LAF line.
      */
     private String writeKommentar(KommentarP kp) {
-        DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
         String value = "\"" + kp.getMstId() + "\" " +
-            format.format(kp.getDatum()) + " " +
+            toUTCString(kp.getDatum()) + " " +
             "\"" + kp.getText() + "\"";
         return lafLine("PROBENKOMMENTAR", value);
     }
@@ -296,7 +296,6 @@ implements Creator
      */
     @SuppressWarnings("unchecked")
     private String writeMessung(Probe probe) {
-        DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
         // Get all messungen
         QueryBuilder<Messung> builder =
             new QueryBuilder<Messung>(
@@ -326,7 +325,7 @@ implements Creator
             laf += m.getMesszeitpunkt() == null ?
                 "" : lafLine(
                     "MESS_DATUM_UHRZEIT",
-                    format.format(m.getMesszeitpunkt()));
+                    toUTCString(m.getMesszeitpunkt()));
             laf += m.getMessdauer() == null ?
                 "" : lafLine("MESSZEIT_SEKUNDEN", m.getMessdauer().toString());
             laf += m.getMmtId() == null ?
@@ -348,9 +347,8 @@ implements Creator
      * @return Single LAF line.
      */
     private String writeKommentar(KommentarM mk) {
-        DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
         String value = "\"" + mk.getMstId() + "\" " +
-            format.format(mk.getDatum()) + " " +
+            toUTCString(mk.getDatum()) + " " +
             "\"" + mk.getText() + "\"";
         return lafLine("KOMMENTAR", value);
     }
@@ -430,4 +428,8 @@ implements Creator
             + "\n";
     }
 
+    private String toUTCString(Timestamp timestamp) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HHmm");
+        return formatter.format(timestamp.toInstant().atZone(ZoneOffset.UTC));
+    }
 }

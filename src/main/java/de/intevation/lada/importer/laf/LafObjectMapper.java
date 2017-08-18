@@ -4,6 +4,12 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -47,6 +53,7 @@ import de.intevation.lada.model.stammdaten.Staat;
 import de.intevation.lada.model.stammdaten.StatusKombi;
 import de.intevation.lada.model.stammdaten.Umwelt;
 import de.intevation.lada.model.stammdaten.Verwaltungseinheit;
+import de.intevation.lada.model.stammdaten.Zeitbasis;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -106,6 +113,8 @@ public class LafObjectMapper {
     private List<ReportItem> currentErrors;
     private List<ReportItem> currentWarnings;
 
+    private int currentZeitbasis;
+
 
     private UserInfo userInfo;
 
@@ -121,6 +130,40 @@ public class LafObjectMapper {
         currentWarnings = new ArrayList<ReportItem>();
         currentErrors = new ArrayList<ReportItem>();
         Probe probe = new Probe();
+        if (object.getAttributes().containsKey("ZEITBASIS")) {
+            QueryBuilder<Zeitbasis> builder =
+                new QueryBuilder<Zeitbasis>(
+                    repository.entityManager("stamm"),
+                    Zeitbasis.class);
+            builder.and("beschreibung", object.getAttributes().get("ZEITBASIS"));
+            List<Zeitbasis> zb=
+                (List<Zeitbasis>)repository.filter(
+                    builder.getQuery(),
+                    "stamm").getData();
+            if (zb == null || zb.isEmpty()) {
+                ReportItem warn = new ReportItem();
+                warn.setCode(673);
+                warn.setKey("zeitbasis");
+                warn.setValue(object.getAttributes().get("ZEITBASIS"));
+                currentWarnings.add(warn);
+            }
+            else {
+                currentZeitbasis = zb.get(0).getId();
+            }
+        }
+        else if (object.getAttributes().containsKey("ZEITBASIS_S")) {
+            try {
+                currentZeitbasis = Integer.valueOf(object.getAttributes().get("ZEITBASIS_S"));
+            }
+            catch (NumberFormatException e) {
+                currentZeitbasis = 2;
+                ReportItem warn = new ReportItem();
+                warn.setCode(604);
+                warn.setKey("not valid");
+                warn.setValue("No valid Zeitbasis");
+                currentWarnings.add(warn);
+            }
+        }
 
         // Fill the object with data
         for (Entry<String, String> attribute : object.getAttributes().entrySet()) {
@@ -271,7 +314,7 @@ public class LafObjectMapper {
 
             // Create messung objects
             for (int i = 0; i < object.getMessungen().size(); i++) {
-                create(object.getMessungen().get(i), newProbe.getId(), newProbe.getMstId());
+                create(object.getMessungen().get(i), newProbe, newProbe.getMstId());
             }
             Violation violation = probeValidator.validate(newProbe);
             for (Entry<String, List<Integer>> err : violation.getErrors().entrySet()) {
@@ -295,9 +338,9 @@ public class LafObjectMapper {
         }
     }
 
-    private void create(LafRawData.Messung object, int probeId, String mstId) {
+    private void create(LafRawData.Messung object, Probe probe, String mstId) {
         Messung messung = new Messung();
-        messung.setProbeId(probeId);
+        messung.setProbeId(probe.getId());
 
         // Fill the new messung with data
         for (Entry<String, String> attribute : object.getAttributes().entrySet()) {
@@ -354,7 +397,7 @@ public class LafObjectMapper {
         }
         List<KommentarM> kommentare = new ArrayList<KommentarM>();
         for (int i = 0; i < object.getKommentare().size(); i++) {
-            KommentarM tmp = createMessungKommentar(object.getKommentare().get(i), newMessung.getId());
+            KommentarM tmp = createMessungKommentar(object.getKommentare().get(i), newMessung.getId(), probe);
             if (tmp != null) {
                 kommentare.add(tmp);
             }
@@ -392,23 +435,12 @@ public class LafObjectMapper {
         else {
             kommentar.setMstId(probe.getMstId());
         }
-        DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
         if (attributes.containsKey("DATE")) {
             String date = attributes.get("DATE") + " " + attributes.get("TIME");
-            try {
-                Date d = format.parse(date);
-                kommentar.setDatum(new Timestamp(d.getTime()));
-            }
-            catch (ParseException e) {
-                ReportItem warn = new ReportItem();
-                warn.setCode(674);
-                warn.setKey("not valid");
-                warn.setValue("Date: " + date);
-                currentWarnings.add(warn);
-            }
+            kommentar.setDatum(getDate(date));
         }
         else {
-            kommentar.setDatum(new Timestamp(new Date().getTime()));
+            kommentar.setDatum(Timestamp.from(Instant.now().atZone(ZoneOffset.UTC).toInstant()));
         }
         if (!userInfo.getMessstellen().contains(kommentar.getMstId())) {
             ReportItem warn = new ReportItem();
@@ -516,26 +548,29 @@ public class LafObjectMapper {
         return messwert;
     }
 
-    private KommentarM createMessungKommentar(Map<String, String> attributes, int messungsId) {
+    private KommentarM createMessungKommentar(Map<String, String> attributes, int messungsId, Probe probe) {
         KommentarM kommentar = new KommentarM();
         kommentar.setMessungsId(messungsId);
-        kommentar.setMstId(attributes.get("MST_ID"));
+        if (attributes.containsKey("MST_ID")) {
+            kommentar.setMstId(attributes.get("MST_ID"));
+        }
+        else {
+            kommentar.setMstId(probe.getMstId());
+        }
+        if (attributes.containsKey("DATE")) {
+            String date = attributes.get("DATE") + " " + attributes.get("TIME");
+            kommentar.setDatum(getDate(date));
+        }
+        else {
+            kommentar.setDatum(Timestamp.from(Instant.now().atZone(ZoneOffset.UTC).toInstant()));
+        }
         kommentar.setText(attributes.get("TEXT"));
-        DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
-        String date = attributes.get("DATE") + " " + attributes.get("TIME");
-        Date d;
-        try {
-            d = format.parse(date);
-            kommentar.setDatum(new Timestamp(d.getTime()));
-        }
-        catch (ParseException e) {
-            ReportItem warn = new ReportItem();
-            warn.setCode(674);
-            warn.setKey("kommentar");
-            warn.setValue("Date: " + date);
-            currentWarnings.add(warn);
-        }
         if (!userInfo.getMessstellen().contains(kommentar.getMstId())) {
+            ReportItem warn = new ReportItem();
+            warn.setCode(699);
+            warn.setKey(userInfo.getName());
+            warn.setValue("Messungs Kommentar: " + kommentar.getMstId());
+            currentWarnings.add(warn);
             return null;
         }
         return kommentar;
@@ -964,6 +999,23 @@ public class LafObjectMapper {
         return ort;
     }
 
+    private Timestamp getDate(String date) {
+        ZoneId fromLaf = ZoneId.of("UTC");
+        switch (currentZeitbasis) {
+            case 1: fromLaf = ZoneId.of("UTC+2");
+                    break;
+            case 3: fromLaf = ZoneId.of("UTC+1");
+                    break;
+            case 4: fromLaf = ZoneId.of("CET");
+                    break;
+            default: break;
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HHmm").withZone(fromLaf);
+        ZonedDateTime orig = ZonedDateTime.parse(date, formatter);
+        ZonedDateTime utc = orig.withZoneSameInstant(ZoneOffset.UTC);
+        return Timestamp.from(utc.toInstant());
+    }
+
     private void logProbe(Probe probe) {
         logger.debug("%PROBE%");
         logger.debug("datenbasis: " + probe.getDatenbasisId());
@@ -992,7 +1044,6 @@ public class LafObjectMapper {
         String key = attribute.getKey();
         String value = attribute.getValue();
 
-        DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
         if ("DATENBASIS_S".equals(key) && probe.getDatenbasisId() == null) {
             Integer v = Integer.valueOf(value.toString());
             probe.setDatenbasisId(v);
@@ -1112,40 +1163,16 @@ public class LafObjectMapper {
         }
 
         if ("SOLL_DATUM_UHRZEIT_A".equals(key)) {
-            try {
-                Date d = format.parse(value.toString());
-                probe.setSolldatumBeginn(new Timestamp(d.getTime()));
-            }
-            catch (ParseException e) {
-                currentWarnings.add(new ReportItem(key, value.toString(), 674));
-            }
+            probe.setSolldatumBeginn(getDate(value.toString()));
         }
         if ("SOLL_DATUM_UHRZEIT_E".equals(key)) {
-            try {
-                Date d = format.parse(value.toString());
-                probe.setSolldatumEnde(new Timestamp(d.getTime()));
-            }
-            catch (ParseException e) {
-                currentWarnings.add(new ReportItem(key, value.toString(), 674));
-            }
+            probe.setSolldatumEnde(getDate(value.toString()));
         }
         if ("PROBENAHME_DATUM_UHRZEIT_A".equals(key)) {
-            try {
-                Date d = format.parse(value.toString());
-                probe.setProbeentnahmeBeginn(new Timestamp(d.getTime()));
-            }
-            catch (ParseException e) {
-                currentWarnings.add(new ReportItem(key, value.toString(), 674));
-            }
+            probe.setProbeentnahmeBeginn(getDate(value.toString()));
         }
         if ("PROBENAHME_DATUM_UHRZEIT_E".equals(key)) {
-            try {
-                Date d = format.parse(value.toString());
-                probe.setProbeentnahmeEnde(new Timestamp(d.getTime()));
-            }
-            catch (ParseException e) {
-                currentWarnings.add(new ReportItem(key, value.toString(), 674));
-            }
+            probe.setProbeentnahmeEnde(getDate(value.toString()));
         }
 
         if ("UMWELTBEREICH_S".equals(key) && probe.getUmwId() == null) {
@@ -1237,7 +1264,6 @@ public class LafObjectMapper {
     ) {
         String key = attribute.getKey();
         String value = attribute.getValue();
-        DateFormat format = new SimpleDateFormat("yyyyMMdd HHmm");
         if ("MESSUNGS_ID".equals(key)) {
             messung.setIdAlt(Integer.valueOf(value));
         }
@@ -1245,13 +1271,7 @@ public class LafObjectMapper {
             messung.setNebenprobenNr(value.toString());
         }
         else if ("MESS_DATUM_UHRZEIT".equals(key)) {
-            try {
-                Date d = format.parse(value.toString());
-                messung.setMesszeitpunkt(new Timestamp(d.getTime()));
-            }
-            catch (ParseException e) {
-                currentWarnings.add(new ReportItem(key, value.toString(), 674));
-            }
+            messung.setMesszeitpunkt(getDate(value.toString()));
         }
         else if ("MESSZEIT_SEKUNDEN".equals(key)) {
             Integer i = Integer.valueOf(value.toString());
