@@ -670,5 +670,9 @@ CREATE TABLE messprogramm_transfer (
 
 CREATE INDEX fts_stauts_kooin10001 ON staat USING btree (kda_id);
 
+CREATE TABLE zeitbasis (
+    id  integer PRIMARY KEY,
+    bezeichnung character varying(20) NOT NULL
+);
 
 COMMIT;
