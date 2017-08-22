@@ -204,11 +204,11 @@ probenahmeinstitution : PROBENAHMEINSTITUTION (STRING_ESC | STRING)? NEWLINE ; /
 probenart : PROBENART (STRING_ESC | STRING)? NEWLINE ; // C1
 zeitbasis : ZEITBASIS (STRING_ESC | STRING)? NEWLINE ; // C30
 zeitbasis_s : ZEITBASIS_S (STRING_ESC | STRING)? NEWLINE ; // SI1
-soll_datum_uhrzeit_a : SOLL_DATUM_UHRZEIT_A (STRING (' ')* STRING)? NEWLINE ; // D8 T4
-soll_datum_uhrzeit_e : SOLL_DATUM_UHRZEIT_E (STRING (' ')* STRING)? NEWLINE ; // D8 T4
-ursprungs_datum_uhrzeit : URSPRUNGS_DATUM_UHRZEIT (STRING (' ')* STRING)? NEWLINE ; // D8 T4
-probenahme_datum_uhrzeit_a : PROBENAHME_DATUM_UHRZEIT_A (STRING (' ')* STRING)? NEWLINE; // D8 T4
-probenahme_datum_uhrzeit_e : PROBENAHME_DATUM_UHRZEIT_E (STRING (' ')* STRING)? NEWLINE; // D8 T4
+soll_datum_uhrzeit_a : SOLL_DATUM_UHRZEIT_A ((STRING_ESC | STRING) (' ')* (STRING_ESC | STRING))? NEWLINE ; // D8 T4
+soll_datum_uhrzeit_e : SOLL_DATUM_UHRZEIT_E ((STRING_ESC | STRING) (' ')* (STRING_ESC | STRING))? NEWLINE ; // D8 T4
+ursprungs_datum_uhrzeit : URSPRUNGS_DATUM_UHRZEIT ((STRING_ESC | STRING) (' ')* (STRING_ESC | STRING))? NEWLINE ; // D8 T4
+probenahme_datum_uhrzeit_a : PROBENAHME_DATUM_UHRZEIT_A ((STRING_ESC | STRING) (' ')* (STRING_ESC | STRING))? NEWLINE; // D8 T4
+probenahme_datum_uhrzeit_e : PROBENAHME_DATUM_UHRZEIT_E ((STRING_ESC | STRING) (' ')* (STRING_ESC | STRING))? NEWLINE; // D8 T4
 umweltbereich_c : UMWELTBEREICH_C (STRING_ESC | STRING)? NEWLINE ; // C80
 umweltbereich_s : UMWELTBEREICH_S (STRING_ESC | STRING)? NEWLINE ; // SC3
 deskriptoren : DESKRIPTOREN (STRING_ESC | STRING)? NEWLINE ; // C26
@@ -226,7 +226,7 @@ u_gemeindeschluessel : U_GEMEINDESCHLUESSEL (STRING_ESC | STRING)? NEWLINE ; // 
 u_gemeindename : U_GEMEINDENAME (STRING_ESC | STRING)? NEWLINE ; // C80*
 u_orts_zusatzkennzahl : U_ORTS_ZUSATZKENNZAHL (STRING_ESC | STRING)? NEWLINE ; // I3
 u_koordinaten : U_KOORDINATEN ((STRING_ESC | STRING) (' ')* (STRING_ESC | STRING) (' ')* (STRING_ESC | STRING))? NEWLINE ; // C50 C22 C22
-u_koordinaten_s : U_KOORDINATEN_S (STRING (' ')* (STRING_ESC | STRING) (' ')* (STRING_ESC | STRING))? NEWLINE ; // SI2 C22 C22
+u_koordinaten_s : U_KOORDINATEN_S ((STRING_ESC | STRING) (' ')* (STRING_ESC | STRING) (' ')* (STRING_ESC | STRING))? NEWLINE ; // SI2 C22 C22
 u_orts_zusatzcode : U_ORTS_ZUSATZCODE (STRING_ESC | STRING)? NEWLINE ; // C8
 u_orts_zusatztext : U_ORTS_ZUSATZTEXT (STRING_ESC | STRING)? NEWLINE ; // MC50
 u_nuts_code : U_NUTS_CODE (STRING_ESC | STRING)? NEWLINE ; // C10
@@ -237,7 +237,7 @@ p_gemeindeschluessel : P_GEMEINDESCHLUESSEL (STRING_ESC | STRING)? NEWLINE ; // 
 p_gemeindename : P_GEMEINDENAME (STRING_ESC | STRING)? NEWLINE ; // C80*
 p_orts_zusatzkennzahl : P_ORTS_ZUSATZKENNZAHL (STRING_ESC | STRING)? NEWLINE ; // I3
 p_koordinaten : P_KOORDINATEN ((STRING_ESC | STRING) (' ')* (STRING_ESC | STRING) (' ')* (STRING_ESC | STRING))? NEWLINE ; // C50* C22 C22
-p_koordinaten_s : P_KOORDINATEN_S (STRING (' ')* (STRING_ESC | STRING) (' ')* (STRING_ESC | STRING))? NEWLINE ; // SI2 C22 C22
+p_koordinaten_s : P_KOORDINATEN_S ((STRING_ESC | STRING) (' ')* (STRING_ESC | STRING) (' ')* (STRING_ESC | STRING))? NEWLINE ; // SI2 C22 C22
 p_orts_zusatzcode : P_ORTS_ZUSATZCODE (STRING_ESC | STRING)? NEWLINE ; // C8
 p_orts_zusatztext : P_ORTS_ZUSATZTEXT (STRING_ESC | STRING)? NEWLINE ; // MC50
 p_nuts_code : P_NUTS_CODE (STRING_ESC | STRING)? NEWLINE ; // C10
@@ -246,26 +246,26 @@ p_site_name : P_SITE_NAME (STRING_ESC | STRING)? NEWLINE ; // C50*
 p_hoehe_nn : P_HOEHE_NN (STRING_ESC | STRING)? NEWLINE ; // F10
 p_hoehe_land : P_HOEHE_LAND (STRING_ESC | STRING)? NEWLINE ; // F10
 mehrzweckfeld : MEHRZWECKFELD (STRING_ESC | STRING)? NEWLINE ; // MC300
-mess_datum_uhrzeit : MESS_DATUM_UHRZEIT (STRING (' ')* STRING)? NEWLINE ; // D8 T4
+mess_datum_uhrzeit : MESS_DATUM_UHRZEIT ((STRING_ESC | STRING) (' ')* (STRING_ESC | STRING))? NEWLINE ; // D8 T4
 messzeit_sekunden : MESSZEIT_SEKUNDEN (STRING_ESC | STRING)? NEWLINE ; // I8
 messmethode_c : MESSMETHODE_C (STRING_ESC | STRING)? NEWLINE ; // C50*
 messmethode_s : MESSMETHODE_S (STRING_ESC | STRING)? NEWLINE ; // SC2
 bearbeitungsstatus : BEARBEITUNGSSTATUS (STRING_ESC | STRING)? NEWLINE ; // C4
 pep_flag : PEP_FLAG (STRING_ESC | STRING)? NEWLINE ; // I1
 erfassung_abgeschlossen : ERFASSUNG_ABGESCHLOSSEN (STRING_ESC | STRING)? NEWLINE ; // I1
-probenzusatzbeschreibung : PROBENZUSATZBESCHREIBUNG ((STRING_ESC | STRING) (' ')* STRING (' ')* (STRING_ESC | STRING) (' ')* STRING)? NEWLINE ; // C7* F12 C9 F9
-pzb_s : PZB_S ((STRING_ESC | STRING) (' ')* STRING (' ')* STRING (' ')* STRING)? NEWLINE ; // SC8 F12 SI3 F9
-messwert : MESSWERT ((STRING_ESC | STRING) (' ')* STRING (' ')* (STRING_ESC | STRING) (' ')* (STRING)?)? NEWLINE ; // C50* F12 C9 F9**
-messwert_s : MESSWERT_S (STRING (' ')* STRING (' ')* STRING (' ')* (STRING)?)? NEWLINE ; // SI8 F12 SI3 F9**
-messwert_i : MESSWERT_I ((STRING_ESC | STRING) (' ')* STRING (' ')* (STRING_ESC | STRING) (' ')* (STRING (' ')*)? (STRING (' ')*)? (STRING (' ')*)? (STRING_ESC | STRING)?)? NEWLINE ; // C50* F12 C9 F9** F9** F9** C50*
-messwert_g : MESSWERT_G ((STRING_ESC | STRING) (' ')* STRING (' ')* (STRING_ESC | STRING) (' ')* (STRING (' ')*)? (STRING (' ')*)? (STRING (' ')*)? (STRING_ESC | STRING)?)? NEWLINE ; // C50* F12 C9 F9** F9** F9** C1
-messwert_nwg : MESSWERT_NWG ((STRING_ESC | STRING) (' ')* STRING (' ')* (STRING_ESC | STRING) (' ')* (STRING (' ')*)? (STRING)?)? NEWLINE ; // C50* F12 C9 F9** F12
-messwert_nwg_s : MESSWERT_NWG_S (STRING (' ')* STRING (' ')* STRING (' ')* (STRING (' ')*)? (STRING)?)? NEWLINE ; // SI8 F12 SI3 F9** F12
-messwert_nwg_i : MESSWERT_NWG_I ((STRING_ESC | STRING) (' ')* STRING (' ')* (STRING_ESC | STRING) (' ')* (STRING (' ')*)? (STRING (' ')*)? (STRING (' ')*)? (STRING (' ')*)? (STRING_ESC | STRING))? NEWLINE ; // C50* F12 C9 F9** F12 F9** F9** C50
-messwert_nwg_g : MESSWERT_NWG_G ((STRING_ESC | STRING) (' ')* STRING (' ')* (STRING_ESC | STRING) (' ')* (STRING (' ')*)? STRING (' ')* (STRING (' ')*)? (STRING (' ')*)? (STRING_ESC | STRING)?)? NEWLINE ; // C50* F12 C9 F9** F12 F9** F9** C1
-kommentar : KOMMENTAR ((STRING_ESC | STRING) (' ')* STRING (' ')* STRING (' ')* (STRING_ESC | STRING))? NEWLINE ; // C5 D8 T4 MC300
+probenzusatzbeschreibung : PROBENZUSATZBESCHREIBUNG ((STRING_ESC | STRING) (' ')* (STRING_ESC | STRING) (' ')* (STRING_ESC | STRING) (' ')* (STRING_ESC | STRING))? NEWLINE ; // C7* F12 C9 F9
+pzb_s : PZB_S ((STRING_ESC | STRING) (' ')* (STRING_ESC | STRING) (' ')* (STRING_ESC | STRING) (' ')* (STRING_ESC | STRING))? NEWLINE ; // SC8 F12 SI3 F9
+messwert : MESSWERT ((STRING_ESC | STRING) (' ')* (STRING_ESC | STRING) (' ')* (STRING_ESC | STRING) (' ')* (STRING_ESC | STRING)?)? NEWLINE ; // C50* F12 C9 F9**
+messwert_s : MESSWERT_S ((STRING_ESC | STRING) (' ')* (STRING_ESC | STRING) (' ')* (STRING_ESC | STRING) (' ')* (STRING_ESC | STRING)?)? NEWLINE ; // SI8 F12 SI3 F9**
+messwert_i : MESSWERT_I ((STRING_ESC | STRING) (' ')* (STRING_ESC | STRING) (' ')* (STRING_ESC | STRING) (' ')* ((STRING_ESC | STRING) (' ')*)? ((STRING_ESC | STRING) (' ')*)? ((STRING_ESC | STRING) (' ')*)? (STRING_ESC | STRING)?)? NEWLINE ; // C50* F12 C9 F9** F9** F9** C50*
+messwert_g : MESSWERT_G ((STRING_ESC | STRING) (' ')* (STRING_ESC | STRING) (' ')* (STRING_ESC | STRING) (' ')* ((STRING_ESC | STRING) (' ')*)? ((STRING_ESC | STRING) (' ')*)? ((STRING_ESC | STRING) (' ')*)? (STRING_ESC | STRING)?)? NEWLINE ; // C50* F12 C9 F9** F9** F9** C1
+messwert_nwg : MESSWERT_NWG (STRING_ESC | STRING) (' ')* (STRING_ESC | STRING) (' ')* (STRING_ESC | STRING) (' ')* ((STRING_ESC | STRING) (' ')*)? ((STRING_ESC | STRING)?)? NEWLINE ; // C50* F12 C9 F9** F12
+messwert_nwg_s : MESSWERT_NWG_S ((STRING_ESC | STRING) (' ')* (STRING_ESC | STRING) (' ')* (STRING_ESC | STRING) (' ')* ((STRING_ESC | STRING) (' ')*)? (STRING_ESC | STRING)?)? NEWLINE ; // SI8 F12 SI3 F9** F12
+messwert_nwg_i : MESSWERT_NWG_I ((STRING_ESC | STRING) (' ')* (STRING_ESC | STRING) (' ')* (STRING_ESC | STRING) (' ')* ((STRING_ESC | STRING) (' ')*)? ((STRING_ESC | STRING) (' ')*)? ((STRING_ESC | STRING) (' ')*)? ((STRING_ESC | STRING) (' ')*)? (STRING_ESC | STRING))? NEWLINE ; // C50* F12 C9 F9** F12 F9** F9** C50
+messwert_nwg_g : MESSWERT_NWG_G ((STRING_ESC | STRING) (' ')* (STRING_ESC | STRING) (' ')* (STRING_ESC | STRING) (' ')* ((STRING_ESC | STRING) (' ')*)? ((STRING_ESC | STRING) (' ')*)? ((STRING_ESC | STRING) (' ')*)? ((STRING_ESC | STRING) (' ')*)? (STRING_ESC | STRING)?)? NEWLINE ; // C50* F12 C9 F9** F12 F9** F9** C1
+kommentar : KOMMENTAR ((STRING_ESC | STRING) (' ')* (STRING_ESC | STRING) (' ')* (STRING_ESC | STRING) (' ')* (STRING_ESC | STRING))? NEWLINE ; // C5 D8 T4 MC300
 kommentar_t : KOMMENTAR_T (STRING_ESC | STRING)? NEWLINE ; // MC300
-probenkommentar : PROBENKOMMENTAR ((STRING_ESC | STRING) (' ')* STRING (' ')* STRING (' ')* (STRING_ESC | STRING))? NEWLINE ; // C5 D8 T4 MC300
+probenkommentar : PROBENKOMMENTAR ((STRING_ESC | STRING) (' ')* (STRING_ESC | STRING) (' ')* (STRING_ESC | STRING) (' ')* (STRING_ESC | STRING))? NEWLINE ; // C5 D8 T4 MC300
 probenkommentar_t : PROBENKOMMENTAR_T (STRING_ESC | STRING)? NEWLINE ; // MC300
 
 VERSION : ('V'|'v')('E'|'e')('R'|'r')('S'|'s')('I'|'i')('O'|'o')('N'|'n') ;
