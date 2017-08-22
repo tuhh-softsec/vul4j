@@ -12,7 +12,7 @@
 # http://yourdockerhost:8181/lada-server
 #
 
-FROM java:7-jdk
+FROM java:8-jdk
 MAINTAINER raimund.renkert@intevation.de
 
 #
