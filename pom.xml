@@ -225,11 +225,6 @@
                           <version>3.0.2</version>
                           <executions>
                             <execution>
-                                  <!-- Turn off default resource copying -->
-                                  <id>default-resources</id>
-                                  <phase />
-                            </execution>
-                            <execution>
                                   <!-- Filter gsb files. -->
                                   <id>filter-gsb-files</id>
                                   <phase>process-resources</phase>
