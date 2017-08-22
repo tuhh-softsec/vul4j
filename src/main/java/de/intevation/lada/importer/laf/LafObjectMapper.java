@@ -135,7 +135,7 @@ public class LafObjectMapper {
                 new QueryBuilder<Zeitbasis>(
                     repository.entityManager("stamm"),
                     Zeitbasis.class);
-            builder.and("beschreibung", object.getAttributes().get("ZEITBASIS"));
+            builder.and("bezeichnung", object.getAttributes().get("ZEITBASIS"));
             List<Zeitbasis> zb=
                 (List<Zeitbasis>)repository.filter(
                     builder.getQuery(),
