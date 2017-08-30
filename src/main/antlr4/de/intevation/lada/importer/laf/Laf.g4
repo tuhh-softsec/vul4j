@@ -357,8 +357,8 @@ PROBENKOMMENTAR_T : ('P'|'p')('R'|'r')('O'|'o')('B'|'b')('E'|'e')('N'|'n')('K'|'
 
 
 WS : (' ')+ -> skip;
-NEWLINE : ['\r' '\n' | '\r' | '\n'] ;
-STRING_ESC : '"' (C | [ \r\n])* '"' ;
+NEWLINE : ('\r' '\n' | '\r' | '\n') ;
+STRING_ESC : '"' (C | [ ('\r\n' | '\r' | '\n')])* '"' ;
 STRING : C+ ;
 C : CHAR ;
 fragment CHAR : ~[ "\r\n] ;
