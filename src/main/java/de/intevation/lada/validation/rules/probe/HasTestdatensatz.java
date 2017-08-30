@@ -18,7 +18,6 @@ import de.intevation.lada.validation.rules.Rule;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@ValidationRule("Probe")
 public class HasTestdatensatz implements Rule {
 
     @Override
