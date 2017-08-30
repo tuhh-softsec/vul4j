@@ -475,7 +475,7 @@ public class LafObjectListener extends LafBaseListener {
         }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
-        if (!value.matches(LafDataTypes.SI2)) {
+        if (!value.matches(LafDataTypes.I2)) {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
@@ -611,7 +611,7 @@ public class LafObjectListener extends LafBaseListener {
         }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
-        if (!value.matches(LafDataTypes.SI8)) {
+        if (!value.matches(LafDataTypes.I8)) {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
@@ -638,7 +638,7 @@ public class LafObjectListener extends LafBaseListener {
         }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
-        if (!value.matches(LafDataTypes.SC5)) {
+        if (!value.matches(LafDataTypes.C5)) {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
@@ -665,7 +665,7 @@ public class LafObjectListener extends LafBaseListener {
         }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
-        if (!value.matches(LafDataTypes.SC5)) {
+        if (!value.matches(LafDataTypes.C5)) {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
@@ -867,7 +867,7 @@ public class LafObjectListener extends LafBaseListener {
         }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
-        if (!value.matches(LafDataTypes.SC1)) {
+        if (!value.matches(LafDataTypes.C1)) {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
@@ -1010,7 +1010,7 @@ public class LafObjectListener extends LafBaseListener {
         }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
-        if (!value.matches(LafDataTypes.SI1)) {
+        if (!value.matches(LafDataTypes.I1)) {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
@@ -1502,7 +1502,7 @@ public class LafObjectListener extends LafBaseListener {
         }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
-        if (!value.matches(LafDataTypes.SI2)) {
+        if (!value.matches(LafDataTypes.I2)) {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
@@ -1589,7 +1589,7 @@ public class LafObjectListener extends LafBaseListener {
         }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
-        if (!value.matches(LafDataTypes.SI8)) {
+        if (!value.matches(LafDataTypes.I8)) {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
@@ -1751,7 +1751,7 @@ public class LafObjectListener extends LafBaseListener {
         }
         String art = ctx.getChild(1).toString();
         art = art.replaceAll("\"", "");
-        if (!art.matches(LafDataTypes.SI2)) {
+        if (!art.matches(LafDataTypes.I2)) {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(art);
@@ -1960,7 +1960,7 @@ public class LafObjectListener extends LafBaseListener {
         }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
-        if (!value.matches(LafDataTypes.SI8)) {
+        if (!value.matches(LafDataTypes.I8)) {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
@@ -2133,7 +2133,7 @@ public class LafObjectListener extends LafBaseListener {
         }
         String art = ctx.getChild(1).toString();
         art = art.replaceAll("\"", "");
-        if (!art.matches(LafDataTypes.SI2)) {
+        if (!art.matches(LafDataTypes.I2)) {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(art);
@@ -2510,7 +2510,7 @@ public class LafObjectListener extends LafBaseListener {
         }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
-        if (!value.matches(LafDataTypes.SC2)) {
+        if (!value.matches(LafDataTypes.C2)) {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
@@ -2684,7 +2684,7 @@ public class LafObjectListener extends LafBaseListener {
         }
         String groesse = ctx.getChild(1).toString();
         groesse = groesse.replaceAll("\"", "");
-        if (!groesse.matches(LafDataTypes.SC8)) {
+        if (!groesse.matches(LafDataTypes.C8)) {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
@@ -2704,7 +2704,7 @@ public class LafObjectListener extends LafBaseListener {
         }
         String einheit = ctx.getChild(5).toString();
         einheit = einheit.replaceAll("\"", "");
-        if (!einheit.matches(LafDataTypes.SI3)) {
+        if (!einheit.matches(LafDataTypes.I3)) {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
@@ -2818,7 +2818,7 @@ public class LafObjectListener extends LafBaseListener {
         }
         String groesse = children.get(1);
         groesse = groesse.replaceAll("\"", "");
-        if (!groesse.matches(LafDataTypes.SI8)) {
+        if (!groesse.matches(LafDataTypes.I8)) {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
@@ -2838,7 +2838,7 @@ public class LafObjectListener extends LafBaseListener {
         }
         String einheit = children.get(3);
         einheit = einheit.replaceAll("\"", "");
-        if (!einheit.matches(LafDataTypes.SI3)) {
+        if (!einheit.matches(LafDataTypes.I3)) {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
@@ -3101,7 +3101,7 @@ public class LafObjectListener extends LafBaseListener {
         }
         String groesse = children.get(1);
         groesse = groesse.replaceAll("\"", "");
-        if (!groesse.matches(LafDataTypes.SI8)) {
+        if (!groesse.matches(LafDataTypes.I8)) {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
@@ -3121,7 +3121,7 @@ public class LafObjectListener extends LafBaseListener {
         }
         String einheit = children.get(3);
         einheit = einheit.replaceAll("\"", "");
-        if (!einheit.matches(LafDataTypes.SI3)) {
+        if (!einheit.matches(LafDataTypes.I3)) {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
