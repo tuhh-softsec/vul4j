@@ -21,28 +21,37 @@ import hudson.Extension;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
 import hudson.util.FormValidation;
-import hudson.util.ListBoxModel;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
 import java.util.List;
 
 public class DynatraceServerConfiguration extends AbstractDescribableImpl<DynatraceServerConfiguration> {
-    private final String name, protocol, host;
-    private final int port;
+    private final String name;
+    private String serverUrl;
+    @Deprecated
+    private transient String protocol, host;
+    @Deprecated
+    private transient int port;
     private final boolean verifyCertificate;
     private final int delay, retryCount;
     private final CustomProxy customProxy;
     private final List<CredProfilePair> credProfilePairs;
 
-    @DataBoundConstructor
+    @Deprecated
     public DynatraceServerConfiguration(final String name, final String protocol, final String host, final int port, final List<CredProfilePair> credProfilePairs,
                                         final boolean verifyCertificate, final int delay, final int retryCount, final boolean proxy, final int proxySource,
                                         final String proxyServer, final int proxyPort, final String proxyUser, final String proxyPassword) {
+        this(name, protocol + "://" + host + ":" + port, credProfilePairs, verifyCertificate, delay, retryCount, proxy, proxySource,
+                proxyServer, proxyPort, proxyUser, proxyPassword);
+    }
+
+    @DataBoundConstructor
+    public DynatraceServerConfiguration(final String name, final String serverUrl, final List<CredProfilePair> credProfilePairs,
+                                        final boolean verifyCertificate, final int delay, final int retryCount, final boolean proxy, final int proxySource,
+                                        final String proxyServer, final int proxyPort, final String proxyUser, final String proxyPassword) {
         this.name = name;
-        this.protocol = protocol;
-        this.host = host;
-        this.port = port;
+        this.serverUrl = serverUrl;
         this.credProfilePairs = credProfilePairs;
         this.verifyCertificate = verifyCertificate;
         this.delay = delay;
@@ -54,12 +63,8 @@ public class DynatraceServerConfiguration extends AbstractDescribableImpl<Dynatr
         return name;
     }
 
-    public String getProtocol() {
-        return protocol;
-    }
-
-    public String getHost() {
-        return host;
+    public String getServerUrl() {
+        return serverUrl;
     }
 
     public CredProfilePair getCredProfilePair(final String profile) {
@@ -69,10 +74,6 @@ public class DynatraceServerConfiguration extends AbstractDescribableImpl<Dynatr
                 return pair;
         }
         return null;
-    }
-
-    public int getPort() {
-        return port;
     }
 
     public List<CredProfilePair> getCredProfilePairs() {
@@ -95,11 +96,20 @@ public class DynatraceServerConfiguration extends AbstractDescribableImpl<Dynatr
         return customProxy;
     }
 
+    @SuppressWarnings("deprecation")
+    protected Object readResolve() {
+        if (protocol != null && host != null && port != 0 && serverUrl == null) {
+            serverUrl = protocol + "://" + host + ":" + port;
+            protocol = null;
+            host = null;
+            port = 0;
+        }
+        return this;
+    }
+
     @Extension
     public static final class DescriptorImpl extends Descriptor<DynatraceServerConfiguration> {
-        public static final String defaultProtocol = "https";
-        public static final String defaultHost = "localhost";
-        public static final int defaultPort = 8021;
+        public static final String defaultServerUrl = "https://dynatrace.server:8021/";
         public static final int defaultDelay = 10;
         public static final int defaultRetryCount = 5;
         public static final boolean defaultVerifyCertificate = false;
@@ -109,48 +119,28 @@ public class DynatraceServerConfiguration extends AbstractDescribableImpl<Dynatr
             return "";
         }
 
-        public ListBoxModel doFillProtocolItems() {
-            return new ListBoxModel(new ListBoxModel.Option("http"), new ListBoxModel.Option("https"));
-        }
-
-        public FormValidation doCheckHost(@QueryParameter final String host) {
-            FormValidation validationResult;
-            if (PerfSigUIUtils.checkNotNullOrEmpty(host)) {
-                validationResult = FormValidation.ok();
+        public FormValidation doCheckServerUrl(@QueryParameter final String serverUrl) {
+            if (PerfSigUIUtils.checkNotNullOrEmpty(serverUrl)) {
+                return FormValidation.ok();
             } else {
-                validationResult = FormValidation.error(Messages.PerfSigRecorder_DTHostNotValid());
+                return FormValidation.error(Messages.PerfSigRecorder_DTServerUrlNotValid());
             }
-            return validationResult;
-        }
-
-        public FormValidation doCheckPort(@QueryParameter final String port) {
-            FormValidation validationResult;
-            if (PerfSigUIUtils.checkNotEmptyAndIsNumber(port)) {
-                validationResult = FormValidation.ok();
-            } else {
-                validationResult = FormValidation.error(Messages.PerfSigRecorder_DTPortNotValid());
-            }
-            return validationResult;
         }
 
         public FormValidation doCheckDelay(@QueryParameter final String delay) {
-            FormValidation validationResult;
             if (PerfSigUIUtils.checkNotEmptyAndIsNumber(delay)) {
-                validationResult = FormValidation.ok();
+                return FormValidation.ok();
             } else {
-                validationResult = FormValidation.error(Messages.PerfSigRecorder_DelayNotValid());
+                return FormValidation.error(Messages.PerfSigRecorder_DelayNotValid());
             }
-            return validationResult;
         }
 
         public FormValidation doCheckRetryCount(@QueryParameter final String retryCount) {
-            FormValidation validationResult;
             if (PerfSigUIUtils.checkNotEmptyAndIsNumber(retryCount)) {
-                validationResult = FormValidation.ok();
+                return FormValidation.ok();
             } else {
-                validationResult = FormValidation.error(Messages.PerfSigRecorder_RetryCountNotValid());
+                return FormValidation.error(Messages.PerfSigRecorder_RetryCountNotValid());
             }
-            return validationResult;
         }
     }
 }

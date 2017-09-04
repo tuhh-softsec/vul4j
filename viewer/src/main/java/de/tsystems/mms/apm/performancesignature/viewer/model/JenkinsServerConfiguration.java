@@ -27,7 +27,12 @@ import org.kohsuke.stapler.QueryParameter;
 import java.util.List;
 
 public class JenkinsServerConfiguration extends AbstractDescribableImpl<JenkinsServerConfiguration> {
-    private final String name, serverUrl;
+    private final String name;
+    private String serverUrl;
+    @Deprecated
+    private transient String protocol, host;
+    @Deprecated
+    private transient int port;
     private final boolean verifyCertificate;
     private final List<CredJobPair> credJobPairs;
     private final CustomProxy customProxy;
@@ -42,6 +47,17 @@ public class JenkinsServerConfiguration extends AbstractDescribableImpl<JenkinsS
         this.verifyCertificate = verifyCertificate;
 
         this.customProxy = proxy ? new CustomProxy(proxyServer, proxyPort, proxyUser, proxyPassword, proxySource) : null;
+    }
+
+    @SuppressWarnings("deprecation")
+    protected Object readResolve() {
+        if (protocol != null && host != null && port != 0 && serverUrl == null) {
+            serverUrl = protocol + "://" + host + ":" + port;
+            protocol = null;
+            host = null;
+            port = 0;
+        }
+        return this;
     }
 
     public String getName() {

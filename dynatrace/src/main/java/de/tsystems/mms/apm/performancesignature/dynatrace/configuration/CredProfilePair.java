@@ -100,8 +100,7 @@ public class CredProfilePair extends AbstractDescribableImpl<CredProfilePair> {
             return FormValidation.error("The selected credentials cannot be found");
         }
 
-        public ListBoxModel doFillProfileItems(@RelativePath("..") @QueryParameter final String protocol, @RelativePath("..") @QueryParameter final String host,
-                                               @RelativePath("..") @QueryParameter final int port, @QueryParameter final String credentialsId,
+        public ListBoxModel doFillProfileItems(@RelativePath("..") @QueryParameter final String serverUrl, @QueryParameter final String credentialsId,
                                                @RelativePath("..") @QueryParameter final boolean verifyCertificate, @RelativePath("..") @QueryParameter final boolean proxy,
                                                @RelativePath("..") @QueryParameter final String proxyServer, @RelativePath("..") @QueryParameter final int proxyPort,
                                                @RelativePath("..") @QueryParameter final String proxyUser, @RelativePath("..") @QueryParameter final String proxyPassword) {
@@ -112,7 +111,7 @@ public class CredProfilePair extends AbstractDescribableImpl<CredProfilePair> {
             }
             try {
                 CredProfilePair pair = new CredProfilePair("", credentialsId);
-                final DTServerConnection connection = new DTServerConnection(protocol, host, port, pair, verifyCertificate, customProxyServer);
+                final DTServerConnection connection = new DTServerConnection(serverUrl, pair, verifyCertificate, customProxyServer);
                 return PerfSigUtils.listToListBoxModel(connection.getSystemProfiles());
             } catch (CommandExecutionException ignored) {
                 return new StandardListBoxModel().includeEmptyValue();
@@ -129,8 +128,7 @@ public class CredProfilePair extends AbstractDescribableImpl<CredProfilePair> {
             return validationResult;
         }
 
-        public FormValidation doTestDynaTraceConnection(@QueryParameter final String protocol, @QueryParameter final String host,
-                                                        @QueryParameter final int port, @QueryParameter final String credentialsId,
+        public FormValidation doTestDynaTraceConnection(@QueryParameter final String serverUrl, @QueryParameter final String credentialsId,
                                                         @QueryParameter final boolean verifyCertificate, @QueryParameter final boolean proxy,
                                                         @QueryParameter final String proxyServer, @QueryParameter final int proxyPort,
                                                         @QueryParameter final String proxyUser, @QueryParameter final String proxyPassword) {
@@ -140,7 +138,7 @@ public class CredProfilePair extends AbstractDescribableImpl<CredProfilePair> {
                 customProxyServer = new CustomProxy(proxyServer, proxyPort, proxyUser, proxyPassword, StringUtils.isBlank(proxyServer));
             }
             CredProfilePair pair = new CredProfilePair("", credentialsId);
-            final DTServerConnection connection = new DTServerConnection(protocol, host, port, pair, verifyCertificate, customProxyServer);
+            final DTServerConnection connection = new DTServerConnection(serverUrl, pair, verifyCertificate, customProxyServer);
 
             if (connection.validateConnection()) {
                 return FormValidation.ok(Messages.PerfSigRecorder_TestConnectionSuccessful());

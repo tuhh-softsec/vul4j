@@ -25,7 +25,7 @@
         </f:entry>
         <f:validateButton title="${%Test connection}" progress="${%Testing...}"
                           method="testDynaTraceConnection"
-                          with="protocol,host,port,credentialsId,verifyCertificate,proxy,proxyServer,proxyPort,proxyUser,proxyPassword"/>
+                          with="serverUrl,credentialsId,verifyCertificate,proxy,proxyServer,proxyPort,proxyUser,proxyPassword"/>
 
     </table>
 </j:jelly>

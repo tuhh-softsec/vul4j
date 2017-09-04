@@ -20,15 +20,8 @@
         <f:entry field="name" title="${%Name}">
             <f:textbox/>
         </f:entry>
-        <f:entry field="protocol" title="${%HTTP/HTTPS}" description="${%Specify the protocol to use}">
-            <f:select default="${descriptor.defaultProtocol}"/>
-        </f:entry>
-        <f:entry title="${%Dynatrace REST Host}" field="host" description="${%Dynatrace Server Host}">
-            <f:textbox default="${descriptor.defaultHost}"/>
-        </f:entry>
-        <f:entry title="${%Dynatrace REST Port}" field="port"
-                 description="${%Dynatrace Server REST Interface port} (${%default: 8020 for HTTP, 8021 for HTTPS})">
-            <f:number default="${descriptor.defaultPort}"/>
+        <f:entry field="serverUrl" title="${%Dynatrace AppMon REST Endpoint}" description="${%Specify the url to use}">
+            <f:textbox default="${descriptor.defaultServerUrl}"/>
         </f:entry>
 
         <f:advanced>

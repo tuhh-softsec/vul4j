@@ -16,36 +16,53 @@
 
 package de.tsystems.mms.apm.performancesignature.model;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public class ClientLinkGenerator {
     public static final String LOADTEST_OVERVIEW = "LoadTest Overview";
     public static final String PUREPATH_OVERVIEW = "PurePath Overview";
     public static final String WEBSTART = "open Webstart client";
-    private final int port;
-    private final String protocol, server, dashboardName, sessionName;
+    private final String dashboardName;
+    private final String sessionName;
+    @Deprecated
+    private transient int port;
+    @Deprecated
+    private transient String protocol, server;
+    private String serverUrl;
     private final String target;
 
-    public ClientLinkGenerator(final int port, final String protocol, final String server, final String dashboardName, final String sessionName,
-                               final String target) {
-        this.port = port;
-        this.protocol = protocol;
-        this.server = server;
+    public ClientLinkGenerator(final String serverUrl, final String dashboardName, final String sessionName, final String target) {
+        this.serverUrl = serverUrl;
         this.dashboardName = dashboardName;
         this.sessionName = sessionName;
         this.target = target;
     }
 
-    public String generateLink() {
-        String webstartTemplate = "%s://%s:%d/webstart/Client/client.jnlp?argument=-reuse&argument=-dashboard&argument=online://%s/%s?source=%s";
+    public String generateLink() throws MalformedURLException {
+        String webstartTemplate = "%s/webstart/Client/client.jnlp?argument=-reuse&argument=-dashboard&argument=online://%s/%s?source=%s";
         String clientRESTTemplate = "http://localhost:8030/rest/integration/opendashboard?dashboardname=%s&server=%s&secure=true&source=stored:%s";
+        String host = new URL(serverUrl).getHost();
         switch (target) {
             case WEBSTART:
-                return String.format(webstartTemplate, protocol, server, port, server, dashboardName, sessionName);
+                return String.format(webstartTemplate, serverUrl, host, dashboardName, sessionName);
             case PUREPATH_OVERVIEW:
-                return String.format(clientRESTTemplate, "PurePaths", server, sessionName);
+                return String.format(clientRESTTemplate, "PurePaths", host, sessionName);
             case LOADTEST_OVERVIEW:
-                return String.format(clientRESTTemplate, "LoadTest%20Overview", server, sessionName);
+                return String.format(clientRESTTemplate, "LoadTest%20Overview", host, sessionName);
             default:
                 return "";
         }
+    }
+
+    @SuppressWarnings("deprecation")
+    protected Object readResolve() {
+        if (protocol != null && server != null && port != 0 && serverUrl == null) {
+            serverUrl = protocol + "://" + server + ":" + port;
+            protocol = null;
+            server = null;
+            port = 0;
+        }
+        return this;
     }
 }

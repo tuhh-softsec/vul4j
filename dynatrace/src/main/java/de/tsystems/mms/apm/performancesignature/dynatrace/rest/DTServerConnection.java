@@ -76,7 +76,7 @@ import java.util.zip.InflaterInputStream;
 
 public class DTServerConnection {
     private static final Logger LOGGER = Logger.getLogger(DTServerConnection.class.getName());
-    private final String address;
+    private final String serverUrl;
     private final boolean verifyCertificate;
     private final CredProfilePair credProfilePair;
     /* Dynatrace is unable to provide proper Certs to trust by default
@@ -91,9 +91,9 @@ public class DTServerConnection {
     private Proxy proxy;
     private SSLContext sc;
 
-    public DTServerConnection(final String protocol, final String host, final int port, final CredProfilePair pair,
+    public DTServerConnection(final String serverUrl, final CredProfilePair pair,
                               final boolean verifyCertificate, final CustomProxy customProxy) {
-        this.address = protocol + "://" + host + ":" + port;
+        this.serverUrl = serverUrl;
         this.credProfilePair = pair;
         this.verifyCertificate = verifyCertificate;
         this.proxy = Proxy.NO_PROXY;
@@ -131,7 +131,7 @@ public class DTServerConnection {
     }
 
     public DTServerConnection(final DynatraceServerConfiguration config, final CredProfilePair pair) {
-        this(config.getProtocol(), config.getHost(), config.getPort(), pair, config.isVerifyCertificate(), config.getCustomProxy());
+        this(config.getServerUrl(), pair, config.isVerifyCertificate(), config.getCustomProxy());
         this.configuration = config;
     }
 
@@ -159,7 +159,7 @@ public class DTServerConnection {
 
     public TestRun getTestRunFromXML(final String uuid) {
         ManagementURLBuilder builder = new ManagementURLBuilder();
-        builder.setServerAddress(this.address);
+        builder.setServerAddress(serverUrl);
         URL url = builder.testRunDetailsURL(systemProfile, uuid);
         try {
             XMLReader xr = XMLReaderFactory.createXMLReader();
@@ -174,7 +174,7 @@ public class DTServerConnection {
 
     public DashboardReport getDashboardReportFromXML(final String dashBoardName, final String sessionName, final String testCaseName) {
         ReportURLBuilder builder = new ReportURLBuilder();
-        builder.setServerAddress(this.address).setDashboardName(dashBoardName).setSource(sessionName).setXMLReport(true);
+        builder.setServerAddress(serverUrl).setDashboardName(dashBoardName).setSource(sessionName).setXMLReport(true);
         URL url = builder.buildURL();
         try {
             XMLReader xr = XMLReaderFactory.createXMLReader();
@@ -321,7 +321,7 @@ public class DTServerConnection {
     public String getServerVersion() throws CommandExecutionException {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
-            builder.setServerAddress(this.address);
+            builder.setServerAddress(serverUrl);
             URL commandURL = builder.serverVersionURL();
             URLConnection conn = commandURL.openConnection(proxy);
             addAuthenticationHeader(conn);
@@ -336,7 +336,7 @@ public class DTServerConnection {
     public boolean reanalyzeSession(final String sessionName) {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
-            builder.setServerAddress(this.address);
+            builder.setServerAddress(serverUrl);
             URL commandURL = builder.reanalyzeSessionURL(sessionName);
             URLConnection conn = commandURL.openConnection(proxy);
             addAuthenticationHeader(conn);
@@ -350,7 +350,7 @@ public class DTServerConnection {
     public boolean reanalyzeSessionStatus(final String sessionName) {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
-            builder.setServerAddress(this.address);
+            builder.setServerAddress(serverUrl);
             URL commandURL = builder.reanalyzeSessionStatusURL(sessionName);
             URLConnection conn = commandURL.openConnection(proxy);
             addAuthenticationHeader(conn);
@@ -367,7 +367,7 @@ public class DTServerConnection {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S");
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
-            builder.setServerAddress(this.address);
+            builder.setServerAddress(serverUrl);
             URL commandURL = builder.storePurePathsURL(systemProfile, sessionName, df.format(timeframeStart), df.format(timeframeEnd), recordingOption,
                     sessionLocked, appendTimestamp);
             URLConnection conn = commandURL.openConnection(proxy);
@@ -384,7 +384,7 @@ public class DTServerConnection {
                                  final boolean sessionLocked, final boolean isTimeStampAllowed) {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
-            builder.setServerAddress(this.address);
+            builder.setServerAddress(serverUrl);
             URL commandURL = builder.startRecordingURL(systemProfile, sessionName, description, recordingOption, sessionLocked, isTimeStampAllowed);
             URLConnection conn = commandURL.openConnection(proxy);
             addAuthenticationHeader(conn);
@@ -400,7 +400,7 @@ public class DTServerConnection {
     public String stopRecording() {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
-            builder.setServerAddress(this.address);
+            builder.setServerAddress(serverUrl);
             URL commandURL = builder.stopRecordingURL(systemProfile);
             URLConnection conn = commandURL.openConnection(proxy);
             addAuthenticationHeader(conn);
@@ -415,7 +415,7 @@ public class DTServerConnection {
     public List<String> getSessions() {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
-            builder.setServerAddress(this.address);
+            builder.setServerAddress(serverUrl);
             URL commandURL = builder.listSessionsURL();
             URLConnection conn = commandURL.openConnection(proxy);
             addAuthenticationHeader(conn);
@@ -430,7 +430,7 @@ public class DTServerConnection {
     public List<String> getDashboards() {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
-            builder.setServerAddress(this.address);
+            builder.setServerAddress(serverUrl);
             URL commandURL = builder.listDashboardsURL();
             URLConnection conn = commandURL.openConnection(proxy);
             addAuthenticationHeader(conn);
@@ -445,7 +445,7 @@ public class DTServerConnection {
     public List<BaseConfiguration> getSystemProfiles() {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
-            builder.setServerAddress(this.address);
+            builder.setServerAddress(serverUrl);
             URL commandURL = builder.listProfilesURL();
             URLConnection conn = commandURL.openConnection(proxy);
             addAuthenticationHeader(conn);
@@ -460,7 +460,7 @@ public class DTServerConnection {
     public List<BaseConfiguration> getProfileConfigurations() {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
-            builder.setServerAddress(this.address);
+            builder.setServerAddress(serverUrl);
             URL commandURL = builder.listConfigurationsURL(systemProfile);
             URLConnection conn = commandURL.openConnection(proxy);
             addAuthenticationHeader(conn);
@@ -475,7 +475,7 @@ public class DTServerConnection {
     public boolean activateConfiguration(final String configuration) {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
-            builder.setServerAddress(this.address);
+            builder.setServerAddress(serverUrl);
             URL commandURL = builder.activateConfigurationURL(systemProfile, configuration);
             URLConnection conn = commandURL.openConnection(proxy);
             addAuthenticationHeader(conn);
@@ -490,7 +490,7 @@ public class DTServerConnection {
     public List<Agent> getAllAgents() {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
-            builder.setServerAddress(this.address);
+            builder.setServerAddress(serverUrl);
             URL commandURL = builder.listAgentsURL();
             URLConnection conn = commandURL.openConnection(proxy);
             addAuthenticationHeader(conn);
@@ -515,7 +515,7 @@ public class DTServerConnection {
     public boolean hotSensorPlacement(final int agentId) {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
-            builder.setServerAddress(this.address);
+            builder.setServerAddress(serverUrl);
             URL commandURL = builder.hotSensorPlacementURL(agentId);
             URLConnection conn = commandURL.openConnection(proxy);
             addAuthenticationHeader(conn);
@@ -530,7 +530,7 @@ public class DTServerConnection {
     public boolean getPDFReport(final String sessionName, final String comparedSessionName, final String dashboard, final FilePath file) {
         try {
             ReportURLBuilder builder = new ReportURLBuilder();
-            builder.setServerAddress(this.address)
+            builder.setServerAddress(serverUrl)
                     .setDashboardName(dashboard)
                     .setSource(sessionName)
                     .setType("PDF");
@@ -547,7 +547,7 @@ public class DTServerConnection {
     public boolean downloadSession(final String sessionName, final FilePath outputFile) {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
-            builder.setServerAddress(this.address);
+            builder.setServerAddress(serverUrl);
 
             outputFile.copyFrom(getInputStream(builder.downloadSessionURL(sessionName)));
             return true;
@@ -559,7 +559,7 @@ public class DTServerConnection {
     public String threadDump(final String agentName, final String hostName, final int processId, final boolean sessionLocked) {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
-            builder.setServerAddress(this.address);
+            builder.setServerAddress(serverUrl);
             URL commandURL = builder.threadDumpURL(systemProfile, agentName, hostName, processId, sessionLocked);
             URLConnection conn = commandURL.openConnection(proxy);
             addAuthenticationHeader(conn);
@@ -575,7 +575,7 @@ public class DTServerConnection {
     public DumpStatus threadDumpStatus(final String threadDump) {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
-            builder.setServerAddress(this.address);
+            builder.setServerAddress(serverUrl);
             URL commandURL = builder.threadDumpStatusURL(systemProfile, threadDump);
             URLConnection conn = commandURL.openConnection(proxy);
             addAuthenticationHeader(conn);
@@ -591,7 +591,7 @@ public class DTServerConnection {
                              final boolean sessionLocked, final boolean captureStrings, final boolean capturePrimitives, final boolean autoPostProcess, final boolean dogC) {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
-            builder.setServerAddress(this.address);
+            builder.setServerAddress(serverUrl);
             URL commandURL = builder.memoryDumpURL(systemProfile, agentName, hostName, processId, dumpType, sessionLocked, captureStrings, capturePrimitives, autoPostProcess, dogC);
             URLConnection conn = commandURL.openConnection(proxy);
             addAuthenticationHeader(conn);
@@ -607,7 +607,7 @@ public class DTServerConnection {
     public DumpStatus memoryDumpStatus(final String memoryDump) {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
-            builder.setServerAddress(this.address);
+            builder.setServerAddress(serverUrl);
             URL commandURL = builder.memoryDumpStatusURL(systemProfile, memoryDump);
             URLConnection conn = commandURL.openConnection(proxy);
             addAuthenticationHeader(conn);
@@ -638,7 +638,7 @@ public class DTServerConnection {
             String testMetaDataPostXml = writer.toString();
 
             ManagementURLBuilder builder = new ManagementURLBuilder();
-            builder.setServerAddress(this.address);
+            builder.setServerAddress(serverUrl);
             URL commandURL = builder.registerTestRunURL(systemProfile);
             HttpURLConnection conn = (HttpURLConnection) commandURL.openConnection(proxy);
             conn.setRequestMethod("POST");

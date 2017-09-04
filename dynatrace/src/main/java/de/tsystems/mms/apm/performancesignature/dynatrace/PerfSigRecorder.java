@@ -172,8 +172,8 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
                 throw new RESTErrorException(Messages.PerfSigRecorder_XMLReportError());
             } else {
                 dashboardReport.setUnitTest(configurationTestCase instanceof UnitTestCase);
-                ClientLinkGenerator clientLink = new ClientLinkGenerator(serverConfiguration.getPort(), serverConfiguration.getProtocol(),
-                        serverConfiguration.getHost(), configurationTestCase.getXmlDashboard(), sessionName, configurationTestCase.getClientDashboard());
+                ClientLinkGenerator clientLink = new ClientLinkGenerator(serverConfiguration.getServerUrl(), configurationTestCase.getXmlDashboard(),
+                        sessionName, configurationTestCase.getClientDashboard());
                 dashboardReport.setClientLink(clientLink);
                 dashboardReports.add(dashboardReport);
 
