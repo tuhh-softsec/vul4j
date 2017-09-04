@@ -48,14 +48,14 @@ public class TestUtils {
         List<CredProfilePair> credProfilePairs = new ArrayList<>();
         credProfilePairs.add(new CredProfilePair("easy Travel", "myCreds"));
 
-        configurations.add(new DynatraceServerConfiguration("PoC PerfSig", "https", "192.168.192.202", 8021, credProfilePairs,
+        configurations.add(new DynatraceServerConfiguration("PoC PerfSig", "https://192.168.192.202:8021", credProfilePairs,
                 false, DynatraceServerConfiguration.DescriptorImpl.defaultDelay, DynatraceServerConfiguration.DescriptorImpl.defaultRetryCount,
                 false, 0, null, 0, null, null));
 
         List<CredProfilePair> credProfilePairs2 = new ArrayList<>();
         credProfilePairs2.add(new CredProfilePair("easyTravel", "myCreds"));
 
-        configurations.add(new DynatraceServerConfiguration("DT DMZ Demo", "https", "192.168.96.184", 8021, credProfilePairs2,
+        configurations.add(new DynatraceServerConfiguration("DT DMZ Demo", "https://192.168.96.184:8021", credProfilePairs2,
                 false, DynatraceServerConfiguration.DescriptorImpl.defaultDelay, DynatraceServerConfiguration.DescriptorImpl.defaultRetryCount,
                 false, 0, null, 0, null, null));
 

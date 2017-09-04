@@ -49,26 +49,6 @@ public class RecorderTest {
         dynatraceConfigurations = TestUtils.prepareDTConfigurations();
     }
 
-    /*@Test
-    public void testPipelineCode() throws Exception {
-        WorkflowJob p = j.createProject(WorkflowJob.class, "demo");
-        j.createOnlineSlave(Label.get("remote"));
-        p.setDefinition(new CpsFlowDefinition(
-                "node('remote') {\n" +
-                        "    startSession dynatraceProfile: 'easy Travel (admin) @ PoC PerfSig', testCase: 'workflowTest'\n" +
-                        "    sleep 60\n" +
-                        "    stopSession 'easy Travel (admin) @ PoC PerfSig'\n" +
-                        "    perfSigReports configurationTestCases: [[$class: 'GenericTestCase', clientDashboard: 'open Webstart client', comparisonDashboards: [[dashboard: 'PerformanceSignature_comparisonreport']], name: 'workflowTest', singleDashboards: [[dashboard: 'PerformanceSignature_singlereport']], xmlDashboard: 'PerformanceSignature_xml']], dynatraceProfile: 'easy Travel (fn_perfsig) @ PoC PerfSig', exportSessions: true\n" +
-                        "}"));
-        WorkflowRun build = j.assertBuildStatusSuccess(p.scheduleBuild2(0)); //j.assertBuildStatusSuccess
-        Thread.sleep(100000);
-
-        PerfSigEnvInvisAction invisAction = build.getAction(PerfSigEnvInvisAction.class);
-        assertNotNull(invisAction);
-        PerfSigBuildAction buildAction = build.getAction(PerfSigBuildAction.class);
-        assertNotNull(buildAction);
-    }*/
-
     @Test
     public void testJenkinsConfiguration() throws Exception {
         String testCase = "RecorderTest";
