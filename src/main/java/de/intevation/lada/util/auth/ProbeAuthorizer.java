@@ -27,7 +27,8 @@ public class ProbeAuthorizer extends BaseAuthorizer {
         Probe probe = (Probe)data;
         if (method == RequestMethod.PUT ||
             method == RequestMethod.DELETE) {
-            return !isProbeReadOnly(probe.getId());
+            return !isProbeReadOnly(probe.getId()) &&
+                getAuthorization(userInfo, probe);
         }
         return getAuthorization(userInfo, probe);
     }
