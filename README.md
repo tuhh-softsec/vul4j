@@ -10,4 +10,4 @@ Links
 
 Continuous builds
 ----------------
-* Cloudbees: [![Build Status](https://jenkins.ci.cloudbees.com/job/plugins/job/performance-signature-dynatrace-plugin//badge/icon)](https://jenkins.ci.cloudbees.com/job/plugins/job/performance-signature-dynatrace-plugin/)
+* ci.jenkins.io: [![Build Status](https://ci.jenkins.io/job/Plugins/job/performance-signature-dynatrace-plugin/job/master/badge/icon)](https://ci.jenkins.io/job/Plugins/job/performance-signature-dynatrace-plugin/job/master/)
