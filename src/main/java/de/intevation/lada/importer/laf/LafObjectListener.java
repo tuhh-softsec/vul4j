@@ -1049,7 +1049,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String time = ctx.getChild(3).toString();
+        String time = ctx.getChild(2).toString();
         time = time.replaceAll("\"", "");
         if (!time.matches(LafDataTypes.T4)) {
             ReportItem err = new ReportItem();
@@ -1089,7 +1089,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String time = ctx.getChild(3).toString();
+        String time = ctx.getChild(2).toString();
         time = time.replaceAll("\"", "");
         if (!time.matches(LafDataTypes.T4)) {
             ReportItem err = new ReportItem();
@@ -1129,7 +1129,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String time = ctx.getChild(3).toString();
+        String time = ctx.getChild(2).toString();
         time = time.replaceAll("\"", "");
         if (!time.matches(LafDataTypes.T4)) {
             ReportItem err = new ReportItem();
@@ -1169,7 +1169,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String time = ctx.getChild(3).toString();
+        String time = ctx.getChild(2).toString();
         time = time.replaceAll("\"", "");
         if (!time.matches(LafDataTypes.T4)) {
             ReportItem err = new ReportItem();
@@ -1209,7 +1209,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String time = ctx.getChild(3).toString();
+        String time = ctx.getChild(2).toString();
         time = time.replaceAll("\"", "");
         if (!time.matches(LafDataTypes.T4)) {
             ReportItem err = new ReportItem();
@@ -1392,7 +1392,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String time = ctx.getChild(3).toString();
+        String time = ctx.getChild(2).toString();
         time = time.replaceAll("\"", "");
         if (!time.matches(LafDataTypes.T4)) {
             ReportItem err = new ReportItem();
@@ -1745,7 +1745,6 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterU_koordinaten_s(LafParser.U_koordinaten_sContext ctx) {
-        System.out.println("koordinaten");
         if (ctx.getChildCount() < 6) {
             return;
         }
@@ -1779,7 +1778,6 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        System.out.println("add");
         currentUOrt.put("U_KOORDINATEN_X", koord1);
         currentUOrt.put("U_KOORDINATEN_Y", koord2);
         currentUOrt.put("U_KOORDINATEN_ART_S", art);
@@ -2418,7 +2416,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String time = ctx.getChild(3).toString();
+        String time = ctx.getChild(2).toString();
         time = time.replaceAll("\"", "");
         if (!time.matches(LafDataTypes.T4)) {
             ReportItem err = new ReportItem();

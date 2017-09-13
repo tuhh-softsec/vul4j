@@ -43,7 +43,7 @@ public class ObjectMerger {
     //@PersistenceContext(unitName="land")
     //private EntityManager entityManager;
 
-    public ObjectMerger merge(Probe target, Probe src) {
+    public boolean merge(Probe target, Probe src) {
         target.setBaId(src.getBaId());
         target.setDatenbasisId(src.getDatenbasisId());
         target.setErzeugerId(src.getErzeugerId());
@@ -64,8 +64,8 @@ public class ObjectMerger {
         target.setSolldatumEnde(src.getSolldatumEnde());
         target.setTest(src.getTest());
         target.setUmwId(src.getUmwId());
-        repository.update(target, "land");
-        return this;
+        Response r = repository.update(target, "land");
+        return r.getSuccess();
     }
 
     public ObjectMerger mergeMessung(Messung target, Messung src) {

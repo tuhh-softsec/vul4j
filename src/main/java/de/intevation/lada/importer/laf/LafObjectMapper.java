@@ -203,8 +203,25 @@ public class LafObjectMapper {
             Probe old = (Probe)probeIdentifier.getExisting();
             // Matching probe was found in the db. Update it!
             if(i == Identified.UPDATE) {
-                merger.merge(old, probe);
-                newProbe = old;
+                if(merger.merge(old, probe)) {
+                    newProbe = old;
+                }
+                else {
+                    ReportItem err = new ReportItem();
+                    err.setCode(604);
+                    err.setKey("Database error");
+                    err.setValue("");
+                    currentErrors.add(err);
+                    if (currentErrors.size() > 0) {
+                        errors.put(object.getIdentifier(),
+                            new ArrayList<ReportItem>(currentErrors));
+                    }
+                    if (currentWarnings.size() > 0) {
+                        warnings.put(object.getIdentifier(),
+                            new ArrayList<ReportItem>(currentWarnings));
+                    }
+                    return;
+                }
             }
             // Probe was found but some data does not match
             else if(i == Identified.REJECT){

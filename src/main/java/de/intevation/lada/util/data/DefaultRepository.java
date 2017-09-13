@@ -18,6 +18,7 @@ import javax.persistence.TransactionRequiredException;
 import javax.persistence.criteria.CriteriaQuery;
 
 import org.apache.log4j.Logger;
+import org.hibernate.TransactionException;
 
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.rest.Response;
@@ -104,6 +105,9 @@ public class DefaultRepository extends ReadOnlyRepository {
             return new Response(false, 603, object);
         }
         catch (EJBTransactionRolledbackException ete) {
+            return new Response(false, 604, object);
+        }
+        catch (TransactionException te) {
             return new Response(false, 604, object);
         }
         return response;
