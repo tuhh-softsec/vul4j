@@ -27,11 +27,15 @@ import org.apache.log4j.Logger;
 import de.intevation.lada.importer.ImportConfig;
 import de.intevation.lada.importer.ImportFormat;
 import de.intevation.lada.importer.Importer;
-import de.intevation.lada.importer.ReportItem;
+import de.intevation.lada.model.stammdaten.ImporterConfig;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
+import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.auth.UserInfo;
+import de.intevation.lada.util.data.QueryBuilder;
+import de.intevation.lada.util.data.Repository;
+import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.Response;
 
 /**
@@ -52,6 +56,10 @@ public class LafImportService {
     @Inject
     @ImportConfig(format=ImportFormat.LAF)
     private Importer importer;
+
+    @Inject
+    @RepositoryConfig(type=RepositoryType.RO)
+    private Repository repository;
 
     /**
      * The authorization module.
@@ -77,7 +85,17 @@ public class LafImportService {
     ) {
         UserInfo userInfo = authorization.getInfo(request);
 
-        importer.doImport(content, userInfo);
+        String mstId = request.getHeader("X-LADA-MST");
+        if (mstId == null) {
+            return new Response(false, 699, "Missing header for messtelle.");
+        }
+        QueryBuilder<ImporterConfig> builder =
+            new QueryBuilder<ImporterConfig>(
+                repository.entityManager("stamm"),
+                ImporterConfig.class);
+        builder.and("mstId", mstId);
+        List<ImporterConfig> config = (List<ImporterConfig>) repository.filterPlain(builder.getQuery(), "stamm");
+        importer.doImport(content, userInfo, config);
         Map<String, Object> respData = new HashMap<String,Object>();
         if (!importer.getErrors().isEmpty()) {
             respData.put("errors", importer.getErrors());

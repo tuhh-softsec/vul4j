@@ -22,6 +22,7 @@ import de.intevation.lada.importer.ImportConfig;
 import de.intevation.lada.importer.ImportFormat;
 import de.intevation.lada.importer.Importer;
 import de.intevation.lada.importer.ReportItem;
+import de.intevation.lada.model.stammdaten.ImporterConfig;
 import de.intevation.lada.util.auth.UserInfo;
 
 @ImportConfig(format=ImportFormat.LAF)
@@ -36,7 +37,7 @@ public class LafImporter implements Importer{
     private Map<String, List<ReportItem>> errors = new HashMap<String, List<ReportItem>>();
     private Map<String, List<ReportItem>> warnings = new HashMap<String, List<ReportItem>>();
 
-    public void doImport(String lafString, UserInfo userInfo) {
+    public void doImport(String lafString, UserInfo userInfo, List<ImporterConfig> config) {
         errors = new HashMap<String, List<ReportItem>>();
         warnings = new HashMap<String, List<ReportItem>>();
 
@@ -67,6 +68,7 @@ public class LafImporter implements Importer{
             errors.putAll(listener.getErrors());
             warnings.putAll(listener.getWarnings());
             mapper.setUserInfo(userInfo);
+            mapper.setConfig(config);
             mapper.mapObjects(listener.getData());
             for (Entry<String, List<ReportItem>> entry : mapper.getErrors().entrySet()) {
                 if (errors.containsKey(entry.getKey())) {
