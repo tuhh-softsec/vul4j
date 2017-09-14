@@ -676,7 +676,7 @@ CREATE TABLE zeitbasis (
 );
 
 CREATE TABLE importer_config (
-    id  integer PRIMARY KEY,
+    id serial PRIMARY KEY,
     tablename character varying(30) NOT NULL,
     attribute character varying(30) NOT NULL,
     mst_id character varying(5) NOT NULL REFERENCES mess_stelle,
