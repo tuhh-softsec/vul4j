@@ -139,6 +139,13 @@ public class LafObjectMapper {
         currentWarnings = new ArrayList<ReportItem>();
         currentErrors = new ArrayList<ReportItem>();
         Probe probe = new Probe();
+        Iterator<ImporterConfig> importerConfig = config.iterator();
+        while (importerConfig.hasNext()) {
+            ImporterConfig current = importerConfig.next();
+            if ("zeitbasis".equals(current.getName())) {
+                currentZeitbasis = Integer.valueOf(current.getToValue());
+            }
+        }
         if (object.getAttributes().containsKey("ZEITBASIS")) {
             QueryBuilder<Zeitbasis> builder =
                 new QueryBuilder<Zeitbasis>(
