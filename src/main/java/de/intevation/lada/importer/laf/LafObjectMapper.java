@@ -202,14 +202,9 @@ public class LafObjectMapper {
             err.setCode(699);
             err.setKey(userInfo.getName());
             err.setValue("Messstelle " + probe.getMstId());
+            currentWarnings.clear();
             currentErrors.add(err);
-            errors.put(object.getIdentifier(),
-                new ArrayList<ReportItem>(currentErrors));
-
-            if (currentWarnings.size() > 0) {
-                warnings.put(object.getIdentifier(),
-                    new ArrayList<ReportItem>(currentWarnings));
-            }
+            errors.put(object.getIdentifier(), new ArrayList<ReportItem>(currentErrors));
             return;
         }
 
