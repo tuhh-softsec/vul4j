@@ -232,3 +232,35 @@ erstellen sind die folgenden Schritte erforderlich:
    * Probennehmer
    * Datensatzerzeuger
    * Messprogrammkategorien
+
+
+Erstellen von Importerkonfigurationen
+-------------------------------------
+
+Konfigurationen für den Importer enthalten drei Typen von Aktionen, die auf die
+zu importierenden Daten angewendet werden, bevor die Daten in die Datenabnk
+geschrieben werden:
+1. "default": Standardwerte, die leere oder fehlende Angaben ergänzen
+2. "convert": Datenumwandlungen, die einen Ersatz von vorhandenen Daten
+   darstellen
+3. "transform": Zeichenumwandlung, die einzelne Zeichen eines Wertes ändern
+
+Eine Konfiguration wird in der Datenbanktabelle 'importer_config' im Schema
+"stammdaten" angelegt und hat die folgenden Felder:
+
+* id (serial): Primary Key
+* name (character varying(30)): Name des Objekts, z.B. bei einer Probe "probe",
+  die Zeitbasis hat den namen "zeitbasis"
+* attribute (character varying(30)): Name des Attributes das bearbeitet werden
+  soll in CamelCase schreibweise. (Zeitbasis hat hier einen "dummy"-Eintrag)
+* mst_id (Foreign Key auf mess_stelle): Enthält die Messstelle, für die diese
+  Konfiguration gültig ist.
+* from_value (character varying(100)): Für "default" bleibt diese Spalte leer,
+  für "convert" und "transform" enthält diese Spalte den Ursprungswert.
+* to_value (character varying(100)): Enthält den Zielwert der Konfiguration
+* action (character varying(20)): Enthält eine der drei Aktionen als Text:
+  "default", "convert" oder "transform"
+
+Die Transformation im speziellen enthält in "from_value" und "to_value" die
+hexadezimale Darstellung eines Zeichen in Unicode. Also z.B. für "+" ist der
+Wert "2b", für "#" ist der Wert "23".
