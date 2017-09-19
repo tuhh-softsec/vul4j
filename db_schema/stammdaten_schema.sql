@@ -682,7 +682,10 @@ CREATE TABLE importer_config (
     mst_id character varying(5) NOT NULL REFERENCES mess_stelle,
     from_value character varying(100),
     to_value character varying(100),
-    action character varying(10)
+    action character varying(10),
+    CHECK (action = 'default' OR
+        action = 'convert' OR
+        action = 'transform')
 );
 
 COMMIT;
