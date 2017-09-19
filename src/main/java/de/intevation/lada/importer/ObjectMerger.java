@@ -62,7 +62,8 @@ public class ObjectMerger {
         target.setProbeNehmerId(src.getProbeNehmerId());
         target.setSolldatumBeginn(src.getSolldatumBeginn());
         target.setSolldatumEnde(src.getSolldatumEnde());
-        target.setTest(src.getTest());
+        // Set explicit to false, if is null in src to not violate constraints
+        target.setTest(src.getTest() == null ? false : src.getTest());
         target.setUmwId(src.getUmwId());
         Response r = repository.update(target, "land");
         return r.getSuccess();
@@ -72,7 +73,7 @@ public class ObjectMerger {
         if (target.getNebenprobenNr().isEmpty()) {
             target.setNebenprobenNr(src.getNebenprobenNr());
         }
-        target.setFertig(src.getFertig());
+        target.setFertig(src.getFertig() == null ? false : src.getFertig());
         target.setGeplant(src.getGeplant() == null ? false : src.getGeplant());
         target.setMessdauer(src.getMessdauer());
         target.setMesszeitpunkt(src.getMesszeitpunkt());

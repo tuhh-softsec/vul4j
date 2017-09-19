@@ -1308,7 +1308,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString(), value);
+        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
 
     /**
@@ -1698,7 +1698,7 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterU_koordinaten(LafParser.U_koordinatenContext ctx) {
-        if (ctx.getChildCount() < 6) {
+        if (ctx.getChildCount() < 4) {
             return;
         }
         String art = ctx.getChild(1).toString();
@@ -1711,7 +1711,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String koord1 = ctx.getChild(3).toString();
+        String koord1 = ctx.getChild(2).toString();
         koord1 = koord1.replaceAll("\"", "");
         if (!koord1.matches(LafDataTypes.C22)) {
             ReportItem err = new ReportItem();
@@ -1721,7 +1721,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String koord2 = ctx.getChild(5).toString();
+        String koord2 = ctx.getChild(3).toString();
         koord2 = koord2.replaceAll("\"", "");
         if (!koord2.matches(LafDataTypes.C22)) {
             ReportItem err = new ReportItem();
@@ -1745,7 +1745,7 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterU_koordinaten_s(LafParser.U_koordinaten_sContext ctx) {
-        if (ctx.getChildCount() < 6) {
+        if (ctx.getChildCount() < 4) {
             return;
         }
         String art = ctx.getChild(1).toString();
@@ -1758,7 +1758,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String koord1 = ctx.getChild(3).toString();
+        String koord1 = ctx.getChild(2).toString();
         koord1 = koord1.replaceAll("\"", "");
         if (!koord1.matches(LafDataTypes.C22)) {
             ReportItem err = new ReportItem();
@@ -1768,7 +1768,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String koord2 = ctx.getChild(5).toString();
+        String koord2 = ctx.getChild(3).toString();
         koord2 = koord2.replaceAll("\"", "");
         if (!koord2.matches(LafDataTypes.C22)) {
             ReportItem err = new ReportItem();
@@ -2076,7 +2076,7 @@ public class LafObjectListener extends LafBaseListener {
         if (hasEKoordinaten) {
             return;
         }
-        if (ctx.getChildCount() < 6) {
+        if (ctx.getChildCount() < 4) {
             return;
         }
         String art = ctx.getChild(1).toString();
@@ -2089,7 +2089,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String koord1 = ctx.getChild(3).toString();
+        String koord1 = ctx.getChild(2).toString();
         koord1 = koord1.replaceAll("\"", "");
         if (!koord1.matches(LafDataTypes.C22)) {
             ReportItem err = new ReportItem();
@@ -2099,7 +2099,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String koord2 = ctx.getChild(5).toString();
+        String koord2 = ctx.getChild(3).toString();
         koord2 = koord2.replaceAll("\"", "");
         if (!koord2.matches(LafDataTypes.C22)) {
             ReportItem err = new ReportItem();
@@ -2123,10 +2123,13 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_koordinaten_s(LafParser.P_koordinaten_sContext ctx) {
+        System.out.println("koordinaten:");
+        System.out.println(ctx.getText());
+        System.out.println(ctx.getChildCount());
         if (hasEKoordinaten) {
             return;
         }
-        if (ctx.getChildCount() < 6) {
+        if (ctx.getChildCount() < 4) {
             return;
         }
         String art = ctx.getChild(1).toString();
@@ -2139,7 +2142,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String koord1 = ctx.getChild(3).toString();
+        String koord1 = ctx.getChild(2).toString();
         koord1 = koord1.replaceAll("\"", "");
         if (!koord1.matches(LafDataTypes.C22)) {
             ReportItem err = new ReportItem();
@@ -2149,7 +2152,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String koord2 = ctx.getChild(5).toString();
+        String koord2 = ctx.getChild(3).toString();
         koord2 = koord2.replaceAll("\"", "");
         if (!koord2.matches(LafDataTypes.C22)) {
             ReportItem err = new ReportItem();
