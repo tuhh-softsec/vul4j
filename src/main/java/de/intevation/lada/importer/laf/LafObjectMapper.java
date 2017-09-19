@@ -187,7 +187,7 @@ public class LafObjectMapper {
         }
         doDefaults(probe);
         doConverts(probe);
-        //doTransformations(probe);
+        doTransforms(probe);
         if (probe.getLaborMstId() == null) {
             probe.setLaborMstId(probe.getMstId());
         }
@@ -367,12 +367,20 @@ public class LafObjectMapper {
         doConverts(probe, Probe.class, "probe");
     }
 
+    private void doTransforms(Probe probe) {
+        doTransformations(probe, Probe.class, "probe");
+    }
+
     private void doDefaults(Messung messung) {
         doDefaults(messung, Messung.class, "messung");
     }
 
     private void doConverts(Messung messung) {
         doConverts(messung, Messung.class, "messung");
+    }
+
+    private void doTransforms(Messung messung) {
+        doTransformations(messung, Messung.class, "messung");
     }
 
     private void doDefaults(Messwert messwert) {
@@ -383,12 +391,20 @@ public class LafObjectMapper {
         doConverts(messwert, Messwert.class, "messwert");
     }
 
+    private void doTransforms(Messwert messwert) {
+        doTransformations(messwert, Messwert.class, "messwert");
+    }
+
     private void doDefaults(ZusatzWert zusatzwert) {
         doDefaults(zusatzwert, ZusatzWert.class, "zusatwert");
     }
 
     private void doConverts(ZusatzWert zusatzwert) {
         doConverts(zusatzwert, ZusatzWert.class, "zusatzwert");
+    }
+
+    private void doTransforms(ZusatzWert zusatzwert) {
+        doTransformations(zusatzwert, ZusatzWert.class, "zusatwert");
     }
 
     private void doDefaults(KommentarM kommentar) {
@@ -399,6 +415,10 @@ public class LafObjectMapper {
         doConverts(kommentar, KommentarM.class, "kommentarm");
     }
 
+    private void doTransforms(KommentarM kommentar) {
+        doTransformations(kommentar, KommentarM.class, "kommentarm");
+    }
+
     private void doDefaults(KommentarP kommentar) {
         doDefaults(kommentar, KommentarP.class, "kommentarp");
     }
@@ -407,12 +427,20 @@ public class LafObjectMapper {
         doConverts(kommentar, KommentarP.class, "kommentarp");
     }
 
+    private void doTransforms(KommentarP kommentar) {
+        doTransformations(kommentar, KommentarP.class, "kommentarp");
+    }
+
     private void doDefaults(Ortszuordnung ort) {
         doDefaults(ort, Ortszuordnung.class, "ortszuordnung");
     }
 
     private void doConverts(Ortszuordnung ort) {
         doDefaults(ort, Ortszuordnung.class, "ortszuordnung");
+    }
+
+    private void doTransforms(Ortszuordnung ort) {
+        doTransformations(ort, Ortszuordnung.class, "ortszuordnung");
     }
 
     private <T> void doDefaults(Object object, Class<T> clazz, String table) {
@@ -455,7 +483,6 @@ public class LafObjectMapper {
                     IllegalArgumentException |
                     InvocationTargetException e
                 ) {
-                    logger.debug(e);
                     logger.debug("Could not set attribute " + attribute);
                     return;
                 }
@@ -495,11 +522,9 @@ public class LafObjectMapper {
                 }
                 try {
                     Object value = getter.invoke(object);
-                    logger.debug("setting " + value + " to object");
                     if (value.equals(current.getFromValue()) &&
                         setter != null
                     ) {
-                        logger.debug("invoke with " + current.getToValue());
                         setter.invoke(object, current.getToValue());
                     }
                 }
@@ -546,19 +571,16 @@ public class LafObjectMapper {
                 }
                 try {
                     Object value = getter.invoke(object);
-                    logger.debug("setting " + value + " to object");
-                    if (value.equals(current.getFromValue()) &&
-                        setter != null
-                    ) {
-                        logger.debug("invoke with " + current.getToValue());
-                        setter.invoke(object, current.getToValue());
-                    }
+                    char from = (char) Integer.parseInt(current.getFromValue(), 16);
+                    char to = (char) Integer.parseInt(current.getToValue(), 16);
+                    value = value.toString().replaceAll("[" + String.valueOf(from) + "]", String.valueOf(to));
+                    setter.invoke(object, value);
                 }
                 catch(IllegalAccessException |
                     IllegalArgumentException |
                     InvocationTargetException e
                 ) {
-                    logger.warn("Could not convert attribute " + attribute);
+                    logger.warn("Could not transform attribute " + attribute);
                     return;
                 }
             }
@@ -575,6 +597,7 @@ public class LafObjectMapper {
         }
         doDefaults(messung);
         doConverts(messung);
+        doTransforms(messung);
         // Check if the user is authorized to create the object
         if (!authorizer.isAuthorizedOnNew(userInfo, messung, Messung.class)) {
             ReportItem warn = new ReportItem();
@@ -670,6 +693,9 @@ public class LafObjectMapper {
         else {
             kommentar.setDatum(Timestamp.from(Instant.now().atZone(ZoneOffset.UTC).toInstant()));
         }
+        doDefaults(kommentar);
+        doConverts(kommentar);
+        doTransforms(kommentar);
         if (!userInfo.getMessstellen().contains(kommentar.getMstId())) {
             ReportItem warn = new ReportItem();
             warn.setCode(699);
@@ -697,6 +723,8 @@ public class LafObjectMapper {
                 "stamm").getData();
 
         doDefaults(zusatzwert);
+        doConverts(zusatzwert);
+        doTransforms(zusatzwert);
         if (zusatz == null || zusatz.isEmpty()) {
             ReportItem warn = new ReportItem();
             warn.setCode(673);
@@ -775,6 +803,8 @@ public class LafObjectMapper {
             messwert.setGrenzwertueberschreitung(attributes.get("GRENZWERT").toUpperCase() == "J" ? true : false);
         }
         doDefaults(messwert);
+        doConverts(messwert);
+        doTransforms(messwert);
         return messwert;
     }
 
@@ -796,6 +826,8 @@ public class LafObjectMapper {
         }
         kommentar.setText(attributes.get("TEXT"));
         doDefaults(kommentar);
+        doConverts(kommentar);
+        doTransforms(kommentar);
         if (!userInfo.getMessstellen().contains(kommentar.getMstId())) {
             ReportItem warn = new ReportItem();
             warn.setCode(699);
@@ -912,6 +944,8 @@ public class LafObjectMapper {
             ort.setOrtszusatztext(ursprungsOrt.get("U_ORTS_ZUSATZTEXT"));
         }
         doDefaults(ort);
+        doConverts(ort);
+        doTransforms(ort);
         return ort;
     }
 
@@ -935,6 +969,8 @@ public class LafObjectMapper {
             ort.setOrtszusatztext(entnahmeOrt.get("P_ORTS_ZUSATZTEXT"));
         }
         doDefaults(ort);
+        doConverts(ort);
+        doTransforms(ort);
         merger.mergeEntnahmeOrt(probe.getId(), ort);
     }
 
