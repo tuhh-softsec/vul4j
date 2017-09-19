@@ -239,10 +239,9 @@ public class OrtFactory {
                 return orte.get(0);
             }
         }
-        else  if (ort.getStaatId() != null &&
-            ort.getStaatId() != 0
-        ) {
+        else  if (ort.getStaatId() != null) {
             builder.and("staatId", ort.getStaatId());
+            builder.and("ortTyp", 5);
             builder.and("ozId", ort.getOzId());
             builder.and("netzbetreiberId", ort.getNetzbetreiberId());
             List<Ort> orte = repository.filterPlain(builder.getQuery(), "stamm");
@@ -294,7 +293,6 @@ public class OrtFactory {
             hasGem = true;
         }
         if (ort.getStaatId() != null &&
-            ort.getStaatId() != 0 &&
             !hasKoord &&
             !hasGem
         ) {
@@ -305,6 +303,7 @@ public class OrtFactory {
             ort.setKoordYExtern(staat.getKoordYExtern());
             ort.setKurztext(staat.getStaat());
             ort.setLangtext(staat.getStaat());
+            ort.setOrtTyp(5);
             if (staat.getStaatIso() != null) {
                 ort.setOrtId("Staat_" + staat.getStaatIso());
             }
