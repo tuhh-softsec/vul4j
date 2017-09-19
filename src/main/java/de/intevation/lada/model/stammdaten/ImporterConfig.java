@@ -26,7 +26,7 @@ public class ImporterConfig implements Serializable {
     @Column(name="mst_id")
     private String mstId;
 
-    private String tablename;
+    private String name;
 
     @Column(name="to_value")
     private String toValue;
@@ -74,12 +74,12 @@ public class ImporterConfig implements Serializable {
         this.mstId = mstId;
     }
 
-    public String getTablename() {
-        return this.tablename;
+    public String getName() {
+        return this.name;
     }
 
-    public void setTablename(String tablename) {
-        this.tablename = tablename;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getToValue() {

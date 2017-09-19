@@ -412,7 +412,7 @@ public class LafObjectMapper {
         Iterator<ImporterConfig> i = config.iterator();
         while (i.hasNext()) {
             ImporterConfig current = i.next();
-            if (table.equals(current.getTablename()) &&
+            if (table.equals(current.getName()) &&
                 "default".equals(current.getAction())
                 ) {
                 String attribute = current.getAttribute();
@@ -460,7 +460,7 @@ public class LafObjectMapper {
         Iterator<ImporterConfig> i = config.iterator();
         while (i.hasNext()) {
             ImporterConfig current = i.next();
-            if (table.equals(current.getTablename()) &&
+            if (table.equals(current.getName()) &&
                 "convert".equals(current.getAction())
                 ) {
                 String attribute = current.getAttribute();
@@ -511,7 +511,7 @@ public class LafObjectMapper {
         Iterator<ImporterConfig> i = config.iterator();
         while (i.hasNext()) {
             ImporterConfig current = i.next();
-            if (table.equals(current.getTablename()) &&
+            if (table.equals(current.getName()) &&
                 "transform".equals(current.getAction())
                 ) {
                 String attribute = current.getAttribute();
