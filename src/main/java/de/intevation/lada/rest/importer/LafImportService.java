@@ -7,10 +7,10 @@
  */
 package de.intevation.lada.rest.importer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -89,15 +89,19 @@ public class LafImportService {
         if (mstId == null) {
             return new Response(false, 699, "Missing header for messtelle.");
         }
-        QueryBuilder<ImporterConfig> builder =
-            new QueryBuilder<ImporterConfig>(
-                repository.entityManager("stamm"),
-                ImporterConfig.class);
-        builder.and("mstId", mstId);
-        List<ImporterConfig> config = (List<ImporterConfig>) repository.filterPlain(builder.getQuery(), "stamm");
+        List<ImporterConfig> config = new ArrayList<ImporterConfig>();
+        if (!"".equals(mstId)) {
+            QueryBuilder<ImporterConfig> builder =
+                new QueryBuilder<ImporterConfig>(
+                    repository.entityManager("stamm"),
+                    ImporterConfig.class);
+            builder.and("mstId", mstId);
+            config = (List<ImporterConfig>) repository.filterPlain(builder.getQuery(), "stamm");
+        }
         importer.doImport(content, userInfo, config);
         Map<String, Object> respData = new HashMap<String,Object>();
         if (!importer.getErrors().isEmpty()) {
+            logger.debug("errors");
             respData.put("errors", importer.getErrors());
         }
         if (!importer.getWarnings().isEmpty()) {
