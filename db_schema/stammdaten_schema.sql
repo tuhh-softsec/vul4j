@@ -141,6 +141,7 @@ CREATE TABLE betriebsart (
 );
 INSERT INTO betriebsart VALUES(1, 'Normal-/Routinebetrieb');
 INSERT INTO betriebsart VALUES(2, 'Störfall-/Intensivbetrieb');
+INSERT INTO betriebsart VALUES(3, 'Übung zum Störfall');
 
 
 CREATE TABLE staat (
@@ -419,6 +420,20 @@ CREATE TABLE kta (
 COMMENT ON TABLE kta
   IS 'kernteschnische Anlagen';
 
+CREATE TABLE kta_gruppe
+(
+    id serial PRIMARY KEY,
+    kta_gruppe character varying(7) NOT NULL,
+    beschreibung character varying(120)
+);
+
+CREATE TABLE kta_grp_zuord
+(
+    id serial PRIMARY KEY,
+    kta_grp_id integer REFERENCES kta_gruppe,
+    kta_id integer REFERENCES kta
+);
+
 CREATE TABLE ortszusatz (
     ozs_id character varying(7) PRIMARY KEY,
     ortszusatz character varying(80) NOT NULL
@@ -448,7 +463,7 @@ CREATE TABLE ort (
     zustaendigkeit character varying(10),
     mp_art character varying(10),
     aktiv character(1),
-    anlage_id integer,
+    anlage_id integer REFERENCES kta_gruppe,
     oz_id character varying(7) REFERENCES ortszusatz(ozs_id),
     hoehe_ueber_nn real,
     UNIQUE(ort_id, netzbetreiber_id)
@@ -654,7 +669,6 @@ CREATE VIEW status_erreichbar AS (
         JOIN stammdaten.status_kombi zu
             ON zu.id = r.zu_id
 );
--- Status workflow
 
 -- Mappings for import
 
@@ -686,6 +700,36 @@ CREATE TABLE importer_config (
     CHECK (action = 'default' OR
         action = 'convert' OR
         action = 'transform')
+);
+
+-- Mappings for REI extension
+
+CREATE TABLE rei_progpunkt
+(
+    id serial PRIMARY KEY,
+    reiid character varying(10) NOT NULL,
+    rei_prog_punkt character varying(120)
+);
+
+CREATE TABLE rei_progpunkt_gruppe
+(
+    id serial PRIMARY KEY,
+    rei_prog_punkt_gruppe character varying(30),
+    beschreibung character varying(120)
+);
+
+CREATE TABLE rei_progpunkt_grp_zuord
+(
+    id serial PRIMARY KEY,
+    rei_progpunkt_grp_id integer REFERENCES rei_progpunkt_gruppe,
+    rei_progpunkt_id integer REFERENCES rei_progpunkt
+);
+
+CREATE TABLE rei_progpunkt_grp_umw_zuord
+(
+    id serial PRIMARY KEY,
+    rei_progpunkt_grp_id integer REFERENCES rei_progpunkt_gruppe,
+    umw_id character varying(3) REFERENCES umwelt
 );
 
 COMMIT;

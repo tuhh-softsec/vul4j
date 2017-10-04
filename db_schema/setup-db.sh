@@ -112,7 +112,8 @@ if [ "$NO_DATA" != "true" ]; then
         stammdaten_data_probenehmer.sql \
         stammdaten_data_zeitbasis.sql \
         stammdaten_data_query.sql \
-        stammdaten_data_user_context.sql
+        stammdaten_data_user_context.sql \
+        stammdaten_data_rei.sql
     do
         echo ${file%.sql}
         psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/$file
