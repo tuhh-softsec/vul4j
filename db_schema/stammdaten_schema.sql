@@ -442,7 +442,7 @@ CREATE TABLE ortszusatz (
 CREATE TABLE ort (
     id serial PRIMARY KEY,
     netzbetreiber_id character varying(2) NOT NULL REFERENCES netz_betreiber,
-    ort_id character varying(10) NOT NULL,
+    ort_id character varying(12) NOT NULL,
     langtext character varying(100) NOT NULL,
     staat_id smallint REFERENCES staat,
     gem_id character varying(8) REFERENCES verwaltungseinheit,
