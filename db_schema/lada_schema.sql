@@ -249,6 +249,8 @@ CREATE TABLE probe (
     solldatum_beginn timestamp without time zone,
     solldatum_ende timestamp without time zone,
     tree_modified timestamp without time zone DEFAULT now(),
+    rei_progpunkt_grp_id integer REFERENCES stammdaten.rei_progpunkt_gruppe,
+    kta_grupee_id integer REFERENCES stammdaten.kta_gruppe,
     UNIQUE (mst_id, hauptproben_nr),
     CHECK(solldatum_beginn <= solldatum_ende)
 );

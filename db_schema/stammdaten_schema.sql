@@ -463,7 +463,7 @@ CREATE TABLE ort (
     zustaendigkeit character varying(10),
     mp_art character varying(10),
     aktiv character(1),
-    anlage_id integer REFERENCES kta_gruppe,
+    kta_grupee_id integer REFERENCES kta_gruppe,
     oz_id character varying(7) REFERENCES ortszusatz(ozs_id),
     hoehe_ueber_nn real,
     UNIQUE(ort_id, netzbetreiber_id)
@@ -471,10 +471,6 @@ CREATE TABLE ort (
 
 CREATE TRIGGER letzte_aenderung_ort BEFORE UPDATE ON ort FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 CREATE TRIGGER set_ort_id_ort BEFORE INSERT ON ort FOR EACH ROW EXECUTE PROCEDURE set_ort_id();
-
-ALTER TABLE ONLY ort
-    ADD CONSTRAINT ort_kta_fkey FOREIGN KEY (anlage_id) REFERENCES kta(id);
-
 
 CREATE TABLE ortszuordnung_typ (
     id character(1) PRIMARY KEY,
