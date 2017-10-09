@@ -164,7 +164,7 @@ CREATE TABLE messprogramm (
     mpl_id integer REFERENCES stammdaten.messprogramm_kategorie,
     probe_kommentar character varying(80),
     rei_progpunkt_grp_id integer REFERENCES stammdaten.rei_progpunkt_gruppe,
-    kta_grupee_id integer REFERENCES stammdaten.kta_gruppe,
+    kta_gruppe_id integer REFERENCES stammdaten.kta_gruppe,
     letzte_aenderung timestamp without time zone DEFAULT now() NOT NULL,
     CHECK (probenintervall = 'J'
                AND teilintervall_von BETWEEN gueltig_von AND gueltig_bis
@@ -250,7 +250,7 @@ CREATE TABLE probe (
     solldatum_ende timestamp without time zone,
     tree_modified timestamp without time zone DEFAULT now(),
     rei_progpunkt_grp_id integer REFERENCES stammdaten.rei_progpunkt_gruppe,
-    kta_grupee_id integer REFERENCES stammdaten.kta_gruppe,
+    kta_gruppe_id integer REFERENCES stammdaten.kta_gruppe,
     UNIQUE (mst_id, hauptproben_nr),
     CHECK(solldatum_beginn <= solldatum_ende)
 );

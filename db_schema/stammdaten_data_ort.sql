@@ -25,7 +25,7 @@ SET search_path = stammdaten, pg_catalog;
 -- Data for Name: ort; Type: TABLE DATA; Schema: stammdaten; Owner: lada
 --
 
-COPY ort (id, netzbetreiber_id, ort_id, langtext, staat_id, gem_id, unscharf, nuts_code, kda_id, koord_x_extern, koord_y_extern, hoehe_land, letzte_aenderung, geom, shape, ort_typ, kurztext, berichtstext, zone, sektor, zustaendigkeit, mp_art, aktiv, kta_grupee_id, oz_id) FROM stdin;
+COPY ort (id, netzbetreiber_id, ort_id, langtext, staat_id, gem_id, unscharf, nuts_code, kda_id, koord_x_extern, koord_y_extern, hoehe_land, letzte_aenderung, geom, shape, ort_typ, kurztext, berichtstext, zone, sektor, zustaendigkeit, mp_art, aktiv, kta_gruppe_id, oz_id) FROM stdin;
 19	D	T060014	WW  Kassel	0	06611000	0	DE731	5	32531152	5684269	\N	2013-08-12 07:57:26.332873	0101000020E6100000DB334B02D4E42240BA313D6189A74940	\N	1	T060014	\N	\N	\N	\N	\N	\N	\N	\N
 33	D	T110001	WW  Beelitzhof, Berlin	0	11000000	0	DE300	5	33390988	5821608	\N	2013-08-12 07:57:26.332873	0101000020E61000000C1F115322C92A4031EBC5504E444A40	\N	1	T110001	\N	\N	\N	\N	\N	\N	\N	\N
 51	D	T060005	WW  Eschollbruecken	0	06432018	0	DE716	5	32470178	5516260	\N	2013-08-12 07:57:26.332873	0101000020E6100000CF6BEC12D52B214052499D8026E64840	\N	1	T060005	\N	\N	\N	\N	\N	\N	\N	\N

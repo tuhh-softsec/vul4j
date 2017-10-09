@@ -463,7 +463,7 @@ CREATE TABLE ort (
     zustaendigkeit character varying(10),
     mp_art character varying(10),
     aktiv character(1),
-    kta_grupee_id integer REFERENCES kta_gruppe,
+    kta_gruppe_id integer REFERENCES kta_gruppe,
     oz_id character varying(7) REFERENCES ortszusatz(ozs_id),
     hoehe_ueber_nn real,
     UNIQUE(ort_id, netzbetreiber_id)
