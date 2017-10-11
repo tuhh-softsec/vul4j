@@ -1129,7 +1129,8 @@ public class DriverTest extends TestCase {
 
                 case 2:
                     // ESI fragment issuing redirect.
-                    Assert.assertEquals("http://externalhost:8180/account/my-bookings", request.getRequestLine().getUri());
+                    Assert.assertEquals("http://externalhost:8180/account/my-bookings", request.getRequestLine()
+                            .getUri());
 
                     response =
                             new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_MOVED_PERMANENTLY,
@@ -1167,8 +1168,7 @@ public class DriverTest extends TestCase {
         // Ensure correct result.
         Assert.assertEquals("Entity content should be OK", "OK", EntityUtils.toString(response.getEntity()));
     }
-    
-    
+
     /**
      * This test ensure that redirects encountered while fetching fragments, generates new requests to the provider with
      * its internal uri, and not with the external uri as returned by the provider.

@@ -31,10 +31,10 @@ import org.apache.http.ProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultRedirectStrategy;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.esigate.RequestExecutor.RequestExecutorBuilder;
+import org.esigate.api.RedirectStrategy2;
 import org.esigate.events.EventManager;
 import org.esigate.events.impl.ProxyEvent;
 import org.esigate.events.impl.RenderEvent;
@@ -48,8 +48,8 @@ import org.esigate.http.IncomingRequest;
 import org.esigate.http.OutgoingRequest;
 import org.esigate.http.ResourceUtils;
 import org.esigate.impl.DriverRequest;
+import org.esigate.impl.FragmentRedirectStrategy;
 import org.esigate.impl.UrlRewriter;
-import org.esigate.util.UriUtils;
 import org.esigate.vars.VariablesResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +73,7 @@ public final class Driver {
     private ContentTypeHelper contentTypeHelper;
     private UrlRewriter urlRewriter;
     private HeaderManager headerManager;
-    private final DefaultRedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+    private final RedirectStrategy2 redirectStrategy = new FragmentRedirectStrategy();
 
     public static class DriverBuilder {
         private Driver driver = new Driver();
@@ -189,18 +189,12 @@ public final class Driver {
 
                     redirects--;
 
-                    // Pick the location header. 
-                    resultingPageUrl = 
-                            this.redirectStrategy.getLocationURI(outgoingRequest, response, outgoingRequest.getContext())
-                                    .toString();
-                    // Remove context if present
-                    if( StringUtils.startsWith(resultingPageUrl, driverRequest.getVisibleBaseUrl())){
-                        resultingPageUrl = "/"+StringUtils.stripStart(StringUtils.replace(resultingPageUrl, driverRequest.getVisibleBaseUrl(), ""), "/");
-                    }
-                    targetUrl = ResourceUtils.getHttpUrlWithQueryString(resultingPageUrl, driverRequest, false);
-
                     // Perform new request
-                    outgoingRequest = this.requestExecutor.createOutgoingRequest(driverRequest, targetUrl, false);
+                    outgoingRequest =
+                            this.requestExecutor.createOutgoingRequest(
+                                    driverRequest,
+                                    this.redirectStrategy.getLocationURI(outgoingRequest, response,
+                                            outgoingRequest.getContext()).toString(), false);
                     this.headerManager.copyHeaders(driverRequest, outgoingRequest);
                     response = requestExecutor.execute(outgoingRequest);
                 }
