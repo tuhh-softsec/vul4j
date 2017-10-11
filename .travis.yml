@@ -4,7 +4,8 @@ addons:
 language: java
 jdk:
   - oraclejdk8
-  - oraclejdk7
+  - oraclejdk9
   - openjdk7
+  - openjdk8
 notifications:
   slack: esigate:UgRe31idARp4sQmoz3huPGJU
