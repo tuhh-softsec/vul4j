@@ -187,8 +187,13 @@ public class OrtService {
                     repository.entityManager("stamm"),
                     Ort.class
                 );
-            for (String nb : user.getNetzbetreiber()) {
-               builder.or("netzbetreiberId", nb);
+            if (params.containsKey("netzbetreiberId")) {
+                builder.and("netzbetreiberId", params.getFirst("netzbetreiberId"));
+            }
+            else {
+                for (String nb : user.getNetzbetreiber()) {
+                    builder.or("netzbetreiberId", nb);
+                }
             }
             if (params.containsKey("filter")) {
                 QueryBuilder<Ort> filter = builder.getEmptyBuilder();
