@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.io.output.StringBuilderWriter;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.http.HttpEntity;
@@ -30,10 +31,10 @@ import org.apache.http.ProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultRedirectStrategy;
 import org.apache.http.message.BasicHttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.esigate.RequestExecutor.RequestExecutorBuilder;
+import org.esigate.api.RedirectStrategy2;
 import org.esigate.events.EventManager;
 import org.esigate.events.impl.ProxyEvent;
 import org.esigate.events.impl.RenderEvent;
@@ -47,6 +48,7 @@ import org.esigate.http.IncomingRequest;
 import org.esigate.http.OutgoingRequest;
 import org.esigate.http.ResourceUtils;
 import org.esigate.impl.DriverRequest;
+import org.esigate.impl.FragmentRedirectStrategy;
 import org.esigate.impl.UrlRewriter;
 import org.esigate.vars.VariablesResolver;
 import org.slf4j.Logger;
@@ -71,7 +73,7 @@ public final class Driver {
     private ContentTypeHelper contentTypeHelper;
     private UrlRewriter urlRewriter;
     private HeaderManager headerManager;
-    private final DefaultRedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+    private final RedirectStrategy2 redirectStrategy = new FragmentRedirectStrategy();
 
     public static class DriverBuilder {
         private Driver driver = new Driver();
@@ -100,6 +102,7 @@ public final class Driver {
                             .setProperties(properties).setContentTypeHelper(driver.contentTypeHelper).build();
             driver.urlRewriter = urlRewriter;
             driver.headerManager = new HeaderManager(urlRewriter);
+
             return driver;
         }
 
@@ -170,6 +173,7 @@ public final class Driver {
 
         String cacheKey = CACHE_RESPONSE_PREFIX + targetUrl;
         Pair<String, CloseableHttpResponse> cachedValue = incomingRequest.getAttribute(cacheKey);
+
         // content and response were not in cache
         if (cachedValue == null) {
             OutgoingRequest outgoingRequest = requestExecutor.createOutgoingRequest(driverRequest, targetUrl, false);
@@ -178,24 +182,26 @@ public final class Driver {
             int redirects = MAX_REDIRECTS;
             try {
                 while (redirects > 0
-                        && redirectStrategy.isRedirected(outgoingRequest, response, outgoingRequest.getContext())) {
+                        && this.redirectStrategy.isRedirected(outgoingRequest, response, outgoingRequest.getContext())) {
 
                     // Must consume the entity
                     EntityUtils.consumeQuietly(response.getEntity());
 
                     redirects--;
+
+                    // Perform new request
                     outgoingRequest =
-                            requestExecutor.createOutgoingRequest(
+                            this.requestExecutor.createOutgoingRequest(
                                     driverRequest,
-                                    redirectStrategy.getLocationURI(outgoingRequest, response,
+                                    this.redirectStrategy.getLocationURI(outgoingRequest, response,
                                             outgoingRequest.getContext()).toString(), false);
-                    headerManager.copyHeaders(driverRequest, outgoingRequest);
+                    this.headerManager.copyHeaders(driverRequest, outgoingRequest);
                     response = requestExecutor.execute(outgoingRequest);
                 }
             } catch (ProtocolException e) {
                 throw new HttpErrorPage(HttpStatus.SC_BAD_GATEWAY, "Invalid response from server", e);
             }
-            response = headerManager.copyHeaders(outgoingRequest, incomingRequest, response);
+            response = this.headerManager.copyHeaders(outgoingRequest, incomingRequest, response);
             currentValue = HttpResponseUtils.toString(response, this.eventManager);
             // Cache
             cachedValue = new ImmutablePair<>(currentValue, response);

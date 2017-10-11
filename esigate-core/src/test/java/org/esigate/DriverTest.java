@@ -25,6 +25,7 @@ import java.util.zip.GZIPOutputStream;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.http.HttpClientConnection;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
@@ -32,6 +33,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.conn.HttpClientConnectionManager;
+import org.apache.http.conn.routing.HttpRoute;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.InputStreamEntity;
@@ -39,6 +41,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicHttpResponse;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.esigate.esi.EsiRenderer;
 import org.esigate.events.Event;
@@ -55,6 +58,7 @@ import org.esigate.tags.BlockRenderer;
 import org.esigate.tags.TemplateRenderer;
 import org.esigate.test.TestUtils;
 import org.esigate.test.conn.IResponseHandler;
+import org.esigate.test.conn.IResponseHandler2;
 import org.esigate.test.conn.MockConnectionManager;
 import org.esigate.test.http.HttpResponseBuilder;
 import org.esigate.util.UriUtils;
@@ -1001,8 +1005,9 @@ public class DriverTest extends TestCase {
                 FetchEvent fetchEvent = (FetchEvent) event;
                 // uri of the incoming request
                 assertEquals("http://foo.com/test", fetchEvent.getHttpRequest().getOriginal().getRequestLine().getUri());
+
                 // uri of the outgoing request
-                // FIXME
+                // FIXME This assertion is disabled see https://github.com/esigate/esigate/issues/23
                 // assertEquals("http://foo.com/test", fetchEvent.getHttpRequest().getRequestLine().getUri());
                 return false;
             }
@@ -1015,4 +1020,228 @@ public class DriverTest extends TestCase {
         driver.proxy("/test", incomingRequest);
     }
 
+    /**
+     * This test ensure that redirects encountered while fetching fragments, generates new requests to the provider with
+     * its internal uri, and not with the external uri as returned by the provider.
+     * 
+     * Without visible url configured in provider
+     * 
+     * @see https://github.com/esigate/esigate/issues/169 Redirect handling for fragments is using the public host
+     *      instead of the configured provider
+     */
+    public void testRedirectFragmentWithExternalHost() throws Exception {
+        Properties properties = new Properties();
+        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost");
+        properties.put(Parameters.PRESERVE_HOST, "true");
+
+        mockConnectionManager = new MockConnectionManager();
+        mockConnectionManager.setResponseHandler(new IResponseHandler2() {
+
+            int nb = 0; // Count requests
+
+            @Override
+            public HttpResponse execute(HttpRequest request) throws IOException {
+                nb++;
+
+                switch (nb) {
+                case 1:
+                    // The main page with ESI instructions
+                    Assert.assertEquals("/account/bookings", request.getRequestLine().getUri());
+
+                    BasicHttpResponse response =
+                            new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK,
+                                    "<esi:include src=\"$(PROVIDER{tested})/account/my-bookings\"></esi:include>");
+                    response.addHeader("Content-type", "text/html");
+                    return response;
+
+                case 2:
+                    // ESI fragment issuing redirect.
+                    response =
+                            new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_MOVED_PERMANENTLY,
+                                    "Found");
+                    response.addHeader("Location", "http://externalhost:8180/account/my-bookings/");
+                    return response;
+
+                case 3:
+                    // Final result
+                    Assert.assertEquals("/account/my-bookings/", request.getRequestLine().getUri());
+                    response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "OK");
+                    return response;
+
+                }
+                Assert.fail("It should not take more than 3 requests");
+                return null;
+            }
+
+            @Override
+            public void connect(HttpClientConnection conn, HttpRoute route, int connectTimeout, HttpContext context) {
+                // All connections should be made to provider (http://localhost)
+                Assert.assertEquals("Requests must go to the provider host", "localhost", route.getTargetHost()
+                        .getHostName());
+                Assert.assertEquals("Requests must use the provider port", 80, route.getTargetHost().getPort());
+            }
+        });
+
+        Driver driver = createMockDriver(properties, mockConnectionManager);
+
+        // Request
+        IncomingRequest incomingRequest =
+                TestUtils.createIncomingRequest("http://externalhost:8180/account/bookings").build();
+
+        CloseableHttpResponse response = driver.proxy("/account/bookings", incomingRequest);
+
+        // Ensure correct result.
+        Assert.assertEquals("Entity content should be OK", "OK", EntityUtils.toString(response.getEntity()));
+    }
+
+    /**
+     * This test ensure that redirects encountered while fetching fragments, generates new requests to the provider with
+     * its internal uri, and not with the external uri as returned by the provider.
+     * 
+     * With visible url configured in provider
+     * 
+     * @see https://github.com/esigate/esigate/issues/169 Redirect handling for fragments is using the public host
+     *      instead of the configured provider
+     */
+    public void testRedirectFragmentWithExternalHostAndVisibleUrl() throws Exception {
+        Properties properties = new Properties();
+        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost");
+        properties.put(Parameters.PRESERVE_HOST, "true");
+        properties.put(Parameters.VISIBLE_URL_BASE, "http://externalhost");
+
+        mockConnectionManager = new MockConnectionManager();
+        mockConnectionManager.setResponseHandler(new IResponseHandler2() {
+
+            int nb = 0; // Count requests
+
+            @Override
+            public HttpResponse execute(HttpRequest request) throws IOException {
+                nb++;
+
+                switch (nb) {
+                case 1:
+                    // The main page with ESI instructions
+                    BasicHttpResponse response =
+                            new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK,
+                                    "<esi:include src=\"$(PROVIDER{tested})/account/my-bookings\"></esi:include>");
+                    response.addHeader("Content-type", "text/html");
+                    return response;
+
+                case 2:
+                    // ESI fragment issuing redirect.
+                    Assert.assertEquals("http://externalhost:8180/account/my-bookings", request.getRequestLine()
+                            .getUri());
+
+                    response =
+                            new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_MOVED_PERMANENTLY,
+                                    "Found");
+                    response.addHeader("Location", "http://externalhost:8180/account/my-bookings/");
+                    return response;
+
+                case 3:
+                    // Final result
+                    response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "OK");
+                    return response;
+
+                }
+                Assert.fail("It should not take more than 3 requests");
+                return null;
+            }
+
+            @Override
+            public void connect(HttpClientConnection conn, HttpRoute route, int connectTimeout, HttpContext context) {
+                // All connections should be made to provider (http://localhost)
+                Assert.assertEquals("Requests must go to the provider host", "localhost", route.getTargetHost()
+                        .getHostName());
+                Assert.assertEquals("Requests must use the provider port", 80, route.getTargetHost().getPort());
+            }
+        });
+
+        Driver driver = createMockDriver(properties, mockConnectionManager);
+
+        // Request
+        IncomingRequest incomingRequest =
+                TestUtils.createIncomingRequest("http://externalhost:8180/account/my-bookings").build();
+
+        CloseableHttpResponse response = driver.proxy("/account/my-bookings", incomingRequest);
+
+        // Ensure correct result.
+        Assert.assertEquals("Entity content should be OK", "OK", EntityUtils.toString(response.getEntity()));
+    }
+
+    /**
+     * This test ensure that redirects encountered while fetching fragments, generates new requests to the provider with
+     * its internal uri, and not with the external uri as returned by the provider.
+     * 
+     * Test with base url context in uri
+     * 
+     * @see https://github.com/esigate/esigate/issues/169 Redirect handling for fragments is using the public host
+     *      instead of the configured provider
+     */
+    public void testRedirectFragmentWithExternalHostWithContext() throws Exception {
+        Properties properties = new Properties();
+        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost/test");
+        properties.put(Parameters.PRESERVE_HOST, "true");
+
+        mockConnectionManager = new MockConnectionManager();
+        mockConnectionManager.setResponseHandler(new IResponseHandler2() {
+
+            int nb = 0; // Count requests
+
+            @Override
+            public HttpResponse execute(HttpRequest request) throws IOException {
+                nb++;
+
+                switch (nb) {
+                case 1:
+                    // The main page with ESI instructions
+                    Assert.assertEquals("/test/account/bookings", request.getRequestLine().getUri());
+
+                    BasicHttpResponse response =
+                            new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK,
+                                    "<esi:include src=\"$(PROVIDER{tested})/account/my-bookings\"></esi:include>");
+                    response.addHeader("Content-type", "text/html");
+                    return response;
+
+                case 2:
+                    // ESI fragment issuing redirect.
+                    Assert.assertEquals("/test/account/my-bookings", request.getRequestLine().getUri());
+
+                    response =
+                            new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_MOVED_PERMANENTLY,
+                                    "Found");
+                    response.addHeader("Location", "http://externalhost:8180/test/account/my-bookings/");
+                    return response;
+
+                case 3:
+                    // Final result
+                    Assert.assertEquals("/test/account/my-bookings/", request.getRequestLine().getUri());
+                    response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "OK");
+                    return response;
+
+                }
+                Assert.fail("It should not take more than 3 requests");
+                return null;
+            }
+
+            @Override
+            public void connect(HttpClientConnection conn, HttpRoute route, int connectTimeout, HttpContext context) {
+                // All connections should be made to provider (http://localhost)
+                Assert.assertEquals("Requests must go to the provider host", "localhost", route.getTargetHost()
+                        .getHostName());
+                Assert.assertEquals("Requests must use the provider port", 80, route.getTargetHost().getPort());
+            }
+        });
+
+        Driver driver = createMockDriver(properties, mockConnectionManager);
+
+        // Request
+        IncomingRequest incomingRequest =
+                TestUtils.createIncomingRequest("http://externalhost:8180/account/bookings").build();
+
+        CloseableHttpResponse response = driver.proxy("/account/bookings", incomingRequest);
+
+        // Ensure correct result.
+        Assert.assertEquals("Entity content should be OK", "OK", EntityUtils.toString(response.getEntity()));
+    }
 }
