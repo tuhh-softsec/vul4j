@@ -327,7 +327,7 @@ CREATE TABLE messung (
     id serial PRIMARY KEY,
     id_alt integer NOT NULL,
     probe_id integer NOT NULL REFERENCES probe ON DELETE CASCADE,
-    nebenproben_nr character varying(10),
+    nebenproben_nr character varying(4),
     mmt_id character varying(2) NOT NULL REFERENCES stammdaten.mess_methode ON DELETE CASCADE,
     messdauer integer,
     messzeitpunkt timestamp without time zone,
