@@ -4,6 +4,63 @@ Plexus Archiver and Plexus-IO combined release notes
 Since archiver depends on a given version of IO this list is cumulative,
 any version includes *all* changes below.
 
+Plexus Archiver 3.5
+-------------------
+
+Plexus Archiver 3.5 requires Java 7. Now Plexus Archiver uses pure Java
+implementations to deal with file attributes so the `useJvmChmod` is no
+longer used and it is just ignored. `Archiver#setUseJvmChmod`,
+`Archiver#isUseJvmChmod()`, `UnArchiver#setUseJvmChmod`,
+`UnArchiver#isUseJvmChmod()`,
+`ArchiveEntryUtils#chmod( File, int, Logger, boolean )` and
+`ArchiveEntryUtils#chmod( File, int, Logger )` are deprecated and are
+subject to removal in a future version.
+
+### Improvements
+
+ * [Pull Request #51][pr-51] - More specific exception for cases when
+   there are no files to archive. Now `EmptyArchiveException` is thrown
+   when you try to create empty archive. Previously the more generic
+   `ArchiverException` was thrown.
+
+### Bugs
+
+ * [Issue #47][issue-47] - Archiver follows symlinks on Windows
+ * [Issue #53][issue-53] - `AbstractZipArchiver` no longer respects
+   `recompressAddedZips`
+ * [Issue #58][issue-58] - Creates corrupt JARs
+
+### Tasks
+
+ * [Pull Request #56][pr-56] - Upgrade the minimum required Java version to 7
+   and Plexus IO to 3.0.0
+ * [Issue #60][issue-60] - Upgrade dependencies.
+   `plexus-container-default` to `1.0-alpha-30`,
+   `commons-compress` to 1.14, `org.tukaani.xz` to 1.6 and
+   `com.google.code.findbugs.jsr305` to 3.0.2
+
+Plexus IO 3.0.0
+---------------
+
+Plexus IO 3.0.0 requires Java 7 and introduces backward incompatible changes:
+
+ * `Java7FileAttributes` is renamed to `FileAttributes`, replacing
+   the old `FileAttributes` implementation
+ * `Java7AttributeUtils` is renamed to `AttributeUtils`
+ * `PlexusIoResourceAttributeUtils#getFileAttributesByPath( File, boolean, boolean )`
+   is deleted
+
+### Improvements
+
+ * [Pull Request #5][io-pr-5] - The required Java version is upgraded to 7.
+   Classes that use native tools like `ls` are removed and the pure Java
+   implementations are used instead.
+
+### Tasks
+
+ * [Issue #8][io-issue-8] - Update of `plexus-utils` to 3.0.24 and
+   `commons-io` to 2.5
+
 Plexus Archiver 3.4
 -------------------
 
@@ -456,6 +513,15 @@ Plexus Archiver 2.4.4
 [issue-43]: https://github.com/codehaus-plexus/plexus-archiver/issues/43
 [issue-45]: https://github.com/codehaus-plexus/plexus-archiver/issues/45
 [issue-46]: https://github.com/codehaus-plexus/plexus-archiver/issues/46
+[issue-47]: https://github.com/codehaus-plexus/plexus-archiver/issues/47
+[issue-53]: https://github.com/codehaus-plexus/plexus-archiver/issues/53
+[issue-58]: https://github.com/codehaus-plexus/plexus-archiver/issues/58
+[issue-60]: https://github.com/codehaus-plexus/plexus-archiver/issues/60
 [pr-26]: https://github.com/codehaus-plexus/plexus-archiver/issues/26
 [pr-27]: https://github.com/codehaus-plexus/plexus-archiver/issues/27
 [pr-41]: https://github.com/codehaus-plexus/plexus-archiver/pull/41
+[pr-51]: https://github.com/codehaus-plexus/plexus-archiver/pull/51
+[pr-56]: https://github.com/codehaus-plexus/plexus-archiver/pull/56
+
+[io-issue-8]: https://github.com/codehaus-plexus/plexus-io/issues/8
+[io-pr-5]: https://github.com/codehaus-plexus/plexus-io/pull/5
