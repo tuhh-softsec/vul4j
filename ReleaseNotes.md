@@ -434,9 +434,6 @@ Plexus Archiver 2.4.4
  * PLXCOMP-226 - Bug in org.codehaus.plexus.archiver.zip.ZipOutputStream.closeEntry
    (ZipOutputStream.java:352)
 
-Older history in JIRA at http://jira.codehaus.org/browse/PLXCOMP
------
-
 [issue-3]: https://github.com/codehaus-plexus/plexus-archiver/issues/3
 [issue-5]: https://github.com/codehaus-plexus/plexus-archiver/issues/5
 [issue-6]: https://github.com/codehaus-plexus/plexus-archiver/issues/6
