@@ -56,12 +56,6 @@ public class Measure extends MeasureBaseModel {
     @XmlAttribute
     private String splitting;
 
-    public Measure() {
-        if (this.isPercentile()) {
-            LOGGER.warning(Messages.Measure_PercentileNotSupported(this.name));
-        }
-    }
-
     /**
      * Gets the value of the measurement property.
      * <p>
