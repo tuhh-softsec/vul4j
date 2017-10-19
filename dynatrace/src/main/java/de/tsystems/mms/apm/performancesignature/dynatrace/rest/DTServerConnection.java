@@ -34,10 +34,7 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.CustomPr
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.DynatraceServerConfiguration;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRun;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.Agent;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.BaseConfiguration;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.DumpStatus;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.RegisterTestRunRequest;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.*;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.FilePath;
@@ -158,6 +155,7 @@ public class DTServerConnection {
         return configuration;
     }
 
+    @Deprecated
     public TestRun getTestRunFromXML(final String uuid) {
         ManagementURLBuilder builder = new ManagementURLBuilder();
         builder.setServerAddress(serverUrl);
@@ -180,7 +178,9 @@ public class DTServerConnection {
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(DashboardReport.class);
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            return (DashboardReport) jaxbUnmarshaller.unmarshal(new InputSource(getInputStream(url)));
+            DashboardReport dashboardReport = (DashboardReport) jaxbUnmarshaller.unmarshal(getInputStream(url));
+            dashboardReport.setName(testCaseName);
+            return dashboardReport;
         } catch (Exception ex) {
             throw new ContentRetrievalException(ExceptionUtils.getStackTrace(ex) + "could not retrieve records from Dynatrace server: " + url.toString(), ex);
         }
@@ -229,6 +229,15 @@ public class DTServerConnection {
         return resultingInputStream;
     }
 
+    private RESTResultXMLHandler getResultXMLHandler(final URL url) throws IOException, SAXException {
+        RESTResultXMLHandler handler = new RESTResultXMLHandler();
+        XMLReader xr = XMLReaderFactory.createXMLReader();
+        xr.setContentHandler(handler);
+        xr.parse(new InputSource(getInputStream(url)));
+
+        return handler;
+    }
+
     private RESTResultXMLHandler getResultXMLHandler(final URLConnection conn) throws IOException, SAXException {
         HttpURLConnection httpURLConnection = (HttpURLConnection) conn;
         handleHTTPResponseCode(httpURLConnection);
@@ -241,50 +250,39 @@ public class DTServerConnection {
         return handler;
     }
 
-    private ProfileXMLHandler getProfileXMLHandler(final URLConnection conn) throws IOException, SAXException {
-        HttpURLConnection httpURLConnection = (HttpURLConnection) conn;
-        handleHTTPResponseCode(httpURLConnection);
-
+    private ProfileXMLHandler getProfileXMLHandler(final URL url) throws IOException, SAXException {
         ProfileXMLHandler handler = new ProfileXMLHandler();
         XMLReader xr = XMLReaderFactory.createXMLReader();
         xr.setContentHandler(handler);
-        xr.parse(new InputSource(handleInputStream(httpURLConnection)));
+        xr.parse(new InputSource(getInputStream(url)));
 
         return handler;
     }
 
-    private AgentXMLHandler getAgentXMLHandler(final URLConnection conn) throws IOException, SAXException {
-        HttpURLConnection httpURLConnection = (HttpURLConnection) conn;
-        handleHTTPResponseCode(httpURLConnection);
-
+    private AgentXMLHandler getAgentXMLHandler(final URL url) throws IOException, SAXException {
         AgentXMLHandler handler = new AgentXMLHandler();
         XMLReader xr = XMLReaderFactory.createXMLReader();
         xr.setContentHandler(handler);
-        xr.parse(new InputSource(handleInputStream(httpURLConnection)));
+        xr.parse(new InputSource(getInputStream(url)));
 
         return handler;
     }
 
-    private RESTStringArrayXMLHandler getStringArrayXMLHandler(final URLConnection conn) throws IOException, SAXException {
-        HttpURLConnection httpURLConnection = (HttpURLConnection) conn;
-        handleHTTPResponseCode(httpURLConnection);
-
+    @Deprecated
+    private RESTStringArrayXMLHandler getStringArrayXMLHandler(final URL url) throws IOException, SAXException {
         RESTStringArrayXMLHandler handler = new RESTStringArrayXMLHandler();
         XMLReader xr = XMLReaderFactory.createXMLReader();
         xr.setContentHandler(handler);
-        xr.parse(new InputSource(handleInputStream(httpURLConnection)));
+        xr.parse(new InputSource(getInputStream(url)));
 
         return handler;
     }
 
-    private RESTDumpStatusXMLHandler getDumpStatusXMLHandler(final URLConnection conn) throws IOException, SAXException {
-        HttpURLConnection httpURLConnection = (HttpURLConnection) conn;
-        handleHTTPResponseCode(httpURLConnection);
-
+    private RESTDumpStatusXMLHandler getDumpStatusXMLHandler(final URL url) throws IOException, SAXException {
         RESTDumpStatusXMLHandler handler = new RESTDumpStatusXMLHandler();
         XMLReader xr = XMLReaderFactory.createXMLReader();
         xr.setContentHandler(handler);
-        xr.parse(new InputSource(handleInputStream(httpURLConnection)));
+        xr.parse(new InputSource(getInputStream(url)));
 
         return handler;
     }
@@ -322,10 +320,8 @@ public class DTServerConnection {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(serverUrl);
             URL commandURL = builder.serverVersionURL();
-            URLConnection conn = commandURL.openConnection(proxy);
-            addAuthenticationHeader(conn);
 
-            RESTResultXMLHandler handler = getResultXMLHandler(conn);
+            RESTResultXMLHandler handler = getResultXMLHandler(commandURL);
             return handler.getResultString();
         } catch (Exception ex) {
             throw new CommandExecutionException("error getting version of server: " + ex.getMessage(), ex);
@@ -337,9 +333,8 @@ public class DTServerConnection {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(serverUrl);
             URL commandURL = builder.reanalyzeSessionURL(sessionName);
-            URLConnection conn = commandURL.openConnection(proxy);
-            addAuthenticationHeader(conn);
-            RESTResultXMLHandler handler = getResultXMLHandler(conn);
+
+            RESTResultXMLHandler handler = getResultXMLHandler(commandURL);
             return handler.isResultTrue();
         } catch (Exception ex) {
             throw new CommandExecutionException("error reanalyzing session: " + ex.getMessage(), ex);
@@ -351,10 +346,8 @@ public class DTServerConnection {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(serverUrl);
             URL commandURL = builder.reanalyzeSessionStatusURL(sessionName);
-            URLConnection conn = commandURL.openConnection(proxy);
-            addAuthenticationHeader(conn);
 
-            RESTResultXMLHandler handler = getResultXMLHandler(conn);
+            RESTResultXMLHandler handler = getResultXMLHandler(commandURL);
             return handler.isResultTrue();
         } catch (Exception ex) {
             throw new CommandExecutionException("error reanalyzing session: " + ex.getMessage(), ex);
@@ -369,10 +362,8 @@ public class DTServerConnection {
             builder.setServerAddress(serverUrl);
             URL commandURL = builder.storePurePathsURL(systemProfile, sessionName, df.format(timeframeStart), df.format(timeframeEnd), recordingOption,
                     sessionLocked, appendTimestamp);
-            URLConnection conn = commandURL.openConnection(proxy);
-            addAuthenticationHeader(conn);
 
-            RESTResultXMLHandler handler = getResultXMLHandler(conn);
+            RESTResultXMLHandler handler = getResultXMLHandler(commandURL);
             return handler.getResultString();
         } catch (Exception ex) {
             throw new CommandExecutionException("error storing purepaths: " + ex.getMessage(), ex);
@@ -401,10 +392,8 @@ public class DTServerConnection {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(serverUrl);
             URL commandURL = builder.stopRecordingURL(systemProfile);
-            URLConnection conn = commandURL.openConnection(proxy);
-            addAuthenticationHeader(conn);
 
-            RESTResultXMLHandler handler = getResultXMLHandler(conn);
+            RESTResultXMLHandler handler = getResultXMLHandler(commandURL);
             return handler.getResultString();
         } catch (Exception ex) {
             throw new CommandExecutionException("error stop recording session: " + ex.getMessage(), ex);
@@ -416,26 +405,24 @@ public class DTServerConnection {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(serverUrl);
             URL commandURL = builder.listSessionsURL();
-            URLConnection conn = commandURL.openConnection(proxy);
-            addAuthenticationHeader(conn);
 
-            RESTStringArrayXMLHandler handler = getStringArrayXMLHandler(conn);
+            RESTStringArrayXMLHandler handler = getStringArrayXMLHandler(commandURL);
             return handler.getObjects();
         } catch (Exception ex) {
             throw new CommandExecutionException("error listing sessions: " + ex.getMessage(), ex);
         }
     }
 
-    public List<String> getDashboards() {
+    public List<Dashboard> getDashboards() {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(serverUrl);
             URL commandURL = builder.listDashboardsURL();
-            URLConnection conn = commandURL.openConnection(proxy);
-            addAuthenticationHeader(conn);
 
-            RESTStringArrayXMLHandler handler = getStringArrayXMLHandler(conn);
-            return handler.getObjects();
+            JAXBContext jaxbContext = JAXBContext.newInstance(DashboardList.class);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            DashboardList dashboardList = (DashboardList) jaxbUnmarshaller.unmarshal(new InputSource(getInputStream(commandURL)));
+            return dashboardList.getDashboards();
         } catch (Exception ex) {
             throw new CommandExecutionException("error listing profiles: " + ex.getMessage(), ex);
         }
@@ -446,10 +433,8 @@ public class DTServerConnection {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(serverUrl);
             URL commandURL = builder.listProfilesURL();
-            URLConnection conn = commandURL.openConnection(proxy);
-            addAuthenticationHeader(conn);
 
-            ProfileXMLHandler handler = getProfileXMLHandler(conn);
+            ProfileXMLHandler handler = getProfileXMLHandler(commandURL);
             return handler.getConfigurationObjects();
         } catch (Exception ex) {
             throw new CommandExecutionException("error listing profiles: " + ex.getMessage(), ex);
@@ -461,10 +446,8 @@ public class DTServerConnection {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(serverUrl);
             URL commandURL = builder.listConfigurationsURL(systemProfile);
-            URLConnection conn = commandURL.openConnection(proxy);
-            addAuthenticationHeader(conn);
 
-            ProfileXMLHandler handler = getProfileXMLHandler(conn);
+            ProfileXMLHandler handler = getProfileXMLHandler(commandURL);
             return handler.getConfigurationObjects();
         } catch (Exception ex) {
             throw new CommandExecutionException("error listing configurations of profile " + systemProfile + ": " + ex.getMessage(), ex);
@@ -476,10 +459,8 @@ public class DTServerConnection {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(serverUrl);
             URL commandURL = builder.activateConfigurationURL(systemProfile, configuration);
-            URLConnection conn = commandURL.openConnection(proxy);
-            addAuthenticationHeader(conn);
 
-            RESTResultXMLHandler handler = getResultXMLHandler(conn);
+            RESTResultXMLHandler handler = getResultXMLHandler(commandURL);
             return handler.isResultTrue();
         } catch (Exception ex) {
             throw new CommandExecutionException("error activating configuration: " + ex.getMessage());
@@ -491,10 +472,8 @@ public class DTServerConnection {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(serverUrl);
             URL commandURL = builder.listAgentsURL();
-            URLConnection conn = commandURL.openConnection(proxy);
-            addAuthenticationHeader(conn);
 
-            AgentXMLHandler handler = getAgentXMLHandler(conn);
+            AgentXMLHandler handler = getAgentXMLHandler(commandURL);
             return handler.getAgents();
         } catch (Exception ex) {
             throw new CommandExecutionException("error listing agents: " + ex.getMessage(), ex);
@@ -516,10 +495,8 @@ public class DTServerConnection {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(serverUrl);
             URL commandURL = builder.hotSensorPlacementURL(agentId);
-            URLConnection conn = commandURL.openConnection(proxy);
-            addAuthenticationHeader(conn);
 
-            RESTResultXMLHandler handler = getResultXMLHandler(conn);
+            RESTResultXMLHandler handler = getResultXMLHandler(commandURL);
             return handler.isResultTrue();
         } catch (Exception ex) {
             throw new CommandExecutionException("error doing hot sensor placement: " + ex.getMessage(), ex);
@@ -576,10 +553,8 @@ public class DTServerConnection {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(serverUrl);
             URL commandURL = builder.threadDumpStatusURL(systemProfile, threadDump);
-            URLConnection conn = commandURL.openConnection(proxy);
-            addAuthenticationHeader(conn);
 
-            RESTDumpStatusXMLHandler handler = getDumpStatusXMLHandler(conn);
+            RESTDumpStatusXMLHandler handler = getDumpStatusXMLHandler(commandURL);
             return handler.getDumpStatus();
         } catch (Exception ex) {
             throw new CommandExecutionException("error with thread dump status: " + ex.getMessage(), ex);
@@ -608,10 +583,8 @@ public class DTServerConnection {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(serverUrl);
             URL commandURL = builder.memoryDumpStatusURL(systemProfile, memoryDump);
-            URLConnection conn = commandURL.openConnection(proxy);
-            addAuthenticationHeader(conn);
 
-            RESTDumpStatusXMLHandler handler = getDumpStatusXMLHandler(conn);
+            RESTDumpStatusXMLHandler handler = getDumpStatusXMLHandler(commandURL);
             return handler.getDumpStatus();
         } catch (Exception ex) {
             throw new CommandExecutionException("error with memory dump status: " + ex.getMessage(), ex);

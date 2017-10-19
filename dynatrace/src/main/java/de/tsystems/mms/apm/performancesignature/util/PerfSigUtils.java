@@ -27,6 +27,7 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnectio
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.Agent;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.BaseConfiguration;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.Dashboard;
 import hudson.AbortException;
 import hudson.security.ACL;
 import hudson.util.ListBoxModel;
@@ -43,11 +44,13 @@ public final class PerfSigUtils {
     public static ListBoxModel listToListBoxModel(final List<?> arrayList) {
         final ListBoxModel listBoxModel = new ListBoxModel();
         for (Object item : arrayList) {
-            if (item instanceof String)
+            if (item instanceof String) {
                 listBoxModel.add((String) item);
-            else if (item instanceof Agent)
+            } else if (item instanceof Dashboard) {
+                listBoxModel.add(((Dashboard) item).getId());
+            } else if (item instanceof Agent) {
                 listBoxModel.add(((Agent) item).getName());
-            else if (item instanceof DynatraceServerConfiguration) {
+            } else if (item instanceof DynatraceServerConfiguration) {
                 DynatraceServerConfiguration conf = (DynatraceServerConfiguration) item;
                 if (CollectionUtils.isNotEmpty(conf.getCredProfilePairs()))
                     for (CredProfilePair credProfilePair : conf.getCredProfilePairs()) {
@@ -55,8 +58,9 @@ public final class PerfSigUtils {
                                 conf.getName();
                         listBoxModel.add(listItem);
                     }
-            } else if (item instanceof BaseConfiguration)
+            } else if (item instanceof BaseConfiguration) {
                 listBoxModel.add(((BaseConfiguration) item).getId());
+            }
         }
         return sortListBoxModel(listBoxModel);
     }
