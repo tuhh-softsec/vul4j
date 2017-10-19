@@ -416,10 +416,6 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             }
         });
 
-        if (dashboardReport.getChartDashlets() == null) {
-            return filteredChartDashlets;
-        }
-
         for (JSONDashlet jsonDashlet : getJsonDashletMap().values()) {
             if (!jsonDashlet.getDashboard().equals(dashboardReport.getName())) {
                 continue;
