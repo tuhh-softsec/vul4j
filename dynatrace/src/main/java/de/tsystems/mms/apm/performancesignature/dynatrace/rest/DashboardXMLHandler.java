@@ -32,6 +32,7 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.model.*;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
+@Deprecated
 public class DashboardXMLHandler extends DefaultHandler {
     private final DashboardReport dashboardReport;
     private ChartDashlet chartDashlet;
@@ -49,11 +50,11 @@ public class DashboardXMLHandler extends DefaultHandler {
         } else if (localName.matches("incidentchart|incidentchartrecord") && attr.getLength() > 3) {
             incidentChart.add(new IncidentViolation(attr));
         } else if (localName.equals("chartdashlet")) {
-            chartDashlet = new ChartDashlet(attr);
+            chartDashlet = new ChartDashlet();
         } else if (localName.equals("measure")) {
-            measure = new Measure(attr);
+            measure = new Measure();
         } else if (localName.equals("measurement")) {
-            measure.addMeasurement(new Measurement(attr));
+            measure.addMeasurement(new Measurement());
         }
     }
 

@@ -32,6 +32,7 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
+@Deprecated
 public class RESTErrorXMLHandler extends DefaultHandler {
     private String errorString;
 

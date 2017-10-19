@@ -33,6 +33,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+@Deprecated
 public class TestMetaDataXMLHandler extends DefaultHandler {
     private String testMetaDataUUID;
 

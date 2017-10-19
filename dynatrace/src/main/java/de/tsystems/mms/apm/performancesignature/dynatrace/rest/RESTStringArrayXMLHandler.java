@@ -23,6 +23,7 @@ import java.io.CharArrayWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class RESTStringArrayXMLHandler extends DefaultHandler {
     private final CharArrayWriter contents = new CharArrayWriter();
     private final List<String> objects = new ArrayList<>();

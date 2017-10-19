@@ -33,6 +33,7 @@ import org.apache.commons.lang.StringUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
+@Deprecated
 public class RESTResultXMLHandler extends DefaultHandler {
     private String resultString;
 

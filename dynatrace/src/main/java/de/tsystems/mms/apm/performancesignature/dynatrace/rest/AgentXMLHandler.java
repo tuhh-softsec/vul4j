@@ -38,6 +38,7 @@ import java.io.CharArrayWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class AgentXMLHandler extends DefaultHandler {
     private final List<Agent> agents;
     private final List<Collector> collectors;

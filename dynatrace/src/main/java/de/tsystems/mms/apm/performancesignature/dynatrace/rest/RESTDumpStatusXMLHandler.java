@@ -36,6 +36,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.CharArrayWriter;
 
+@Deprecated
 public class RESTDumpStatusXMLHandler extends DefaultHandler {
     private final DumpStatus dumpStatus;
     private final CharArrayWriter contents = new CharArrayWriter();
