@@ -20,13 +20,20 @@ import de.tsystems.mms.apm.performancesignature.model.ClientLinkGenerator;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
+import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "dashboardreport")
 @ExportedBean
 public class DashboardReport {
-    private final String name;
-    private final List<ChartDashlet> chartDashlets;
+
+    @XmlElementWrapper(name = "data")
+    @XmlElement(name = "chartdashlet")
+    private List<ChartDashlet> chartDashlets;
+    @XmlAttribute
+    private String name;
     private final List<IncidentChart> incidents;
     private boolean unitTest;
     private ClientLinkGenerator clientLink;
@@ -35,6 +42,10 @@ public class DashboardReport {
         this.name = testCaseName;
         this.chartDashlets = new ArrayList<>();
         this.incidents = new ArrayList<>();
+    }
+
+    public DashboardReport() {
+        this(null);
     }
 
     @Exported
@@ -46,18 +57,57 @@ public class DashboardReport {
         this.incidents.add(incident);
     }
 
+    /**
+     * Gets the value of the chartdashlet property.
+     * <p>
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the chartdashlet property.
+     * <p>
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getChartdashlet().add(newItem);
+     * </pre>
+     * <p>
+     * <p>
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link ChartDashlet }
+     */
     @Exported
     public List<ChartDashlet> getChartDashlets() {
-        return chartDashlets;
+        if (chartDashlets == null) {
+            chartDashlets = new ArrayList<>();
+        }
+        return this.chartDashlets;
+    }
+
+    /**
+     * Ruft den Wert der name-Eigenschaft ab.
+     *
+     * @return possible object is
+     * {@link String }
+     */
+    @Exported
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Legt den Wert der name-Eigenschaft fest.
+     *
+     * @param value allowed object is
+     *              {@link String }
+     */
+    public void setName(String value) {
+        this.name = value;
     }
 
     public void addChartDashlet(final ChartDashlet chartDashlet) {
         this.chartDashlets.add(chartDashlet);
-    }
-
-    @Exported
-    public String getName() {
-        return name;
     }
 
     @Exported

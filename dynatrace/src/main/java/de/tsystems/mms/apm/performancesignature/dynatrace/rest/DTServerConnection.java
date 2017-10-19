@@ -56,6 +56,7 @@ import javax.net.ssl.*;
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -177,11 +178,9 @@ public class DTServerConnection {
         builder.setServerAddress(serverUrl).setDashboardName(dashBoardName).setSource(sessionName).setXMLReport(true);
         URL url = builder.buildURL();
         try {
-            XMLReader xr = XMLReaderFactory.createXMLReader();
-            DashboardXMLHandler handler = new DashboardXMLHandler(testCaseName);
-            xr.setContentHandler(handler);
-            xr.parse(new InputSource(getInputStream(url)));
-            return handler.getParsedObjects();
+            JAXBContext jaxbContext = JAXBContext.newInstance(DashboardReport.class);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            return (DashboardReport) jaxbUnmarshaller.unmarshal(new InputSource(getInputStream(url)));
         } catch (Exception ex) {
             throw new ContentRetrievalException(ExceptionUtils.getStackTrace(ex) + "could not retrieve records from Dynatrace server: " + url.toString(), ex);
         }

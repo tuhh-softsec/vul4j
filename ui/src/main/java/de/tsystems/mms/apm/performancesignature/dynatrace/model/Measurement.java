@@ -16,21 +16,39 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
-import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement
 @ExportedBean
 public class Measurement extends MeasureBaseModel {
-    private final long timestamp;
+    @XmlAttribute
+    private long timestamp;
 
-    public Measurement(final Object attr) {
-        super(attr);
-        this.timestamp = AttributeUtils.getLongAttribute("timestamp", attr);
-    }
-
+    /**
+     * Ruft den Wert der timestamp-Eigenschaft ab.
+     *
+     * @return possible object is
+     * {@link long }
+     */
     @Exported
     public long getTimestamp() {
-        return this.timestamp;
+        return timestamp;
+    }
+
+    /**
+     * Legt den Wert der timestamp-Eigenschaft fest.
+     *
+     * @param value allowed object is
+     *              {@link long }
+     */
+    public void setTimestamp(long value) {
+        this.timestamp = value;
     }
 }
