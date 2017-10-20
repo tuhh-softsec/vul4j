@@ -7,6 +7,7 @@
  */
 package de.intevation.lada.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -196,9 +197,11 @@ public class ProbeService {
 
         QueryBuilder<Probe> pBuilder = new QueryBuilder<Probe>(
             repository.entityManager("land"), Probe.class);
+        List<Integer> list = new ArrayList<Integer>();
         for (Map<String, Object> entry: result) {
-            pBuilder.or("id", (Integer)entry.get("id"));
+            list.add((Integer)entry.get("id"));
         }
+        pBuilder.or("id", list);
         Response r = repository.filter(pBuilder.getQuery(), "land");
         r = authorization.filter(request, r, Probe.class);
         List<Probe> proben = (List<Probe>)r.getData();
