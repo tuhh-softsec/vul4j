@@ -259,15 +259,6 @@ public class DTServerConnection {
         return handler;
     }
 
-    private AgentXMLHandler getAgentXMLHandler(final URL url) throws IOException, SAXException {
-        AgentXMLHandler handler = new AgentXMLHandler();
-        XMLReader xr = XMLReaderFactory.createXMLReader();
-        xr.setContentHandler(handler);
-        xr.parse(new InputSource(getInputStream(url)));
-
-        return handler;
-    }
-
     @Deprecated
     private RESTStringArrayXMLHandler getStringArrayXMLHandler(final URL url) throws IOException, SAXException {
         RESTStringArrayXMLHandler handler = new RESTStringArrayXMLHandler();
@@ -473,8 +464,10 @@ public class DTServerConnection {
             builder.setServerAddress(serverUrl);
             URL commandURL = builder.listAgentsURL();
 
-            AgentXMLHandler handler = getAgentXMLHandler(commandURL);
-            return handler.getAgents();
+            JAXBContext jaxbContext = JAXBContext.newInstance(AgentList.class);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            AgentList agentList = (AgentList) jaxbUnmarshaller.unmarshal(getInputStream(commandURL));
+            return agentList.getAgents();
         } catch (Exception ex) {
             throw new CommandExecutionException("error listing agents: " + ex.getMessage(), ex);
         }

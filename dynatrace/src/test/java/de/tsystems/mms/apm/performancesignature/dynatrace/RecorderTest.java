@@ -21,6 +21,7 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.Dashboar
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.GenericTestCase;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.Agent;
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.TestUtils;
 import de.tsystems.mms.apm.performancesignature.ui.PerfSigBuildAction;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
@@ -131,5 +132,12 @@ public class RecorderTest {
         DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceConfigurations.get(0).name);
         List<de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.Dashboard> dashboardList = connection.getDashboards();
         assertTrue(!dashboardList.isEmpty());
+    }
+
+    @Test
+    public void testGetAgentsViaRest() throws Exception {
+        DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceConfigurations.get(0).name);
+        List<Agent> agentList = connection.getAllAgents();
+        assertTrue(!agentList.isEmpty());
     }
 }
