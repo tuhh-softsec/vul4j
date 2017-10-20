@@ -253,6 +253,9 @@ Eine Konfiguration wird in der Datenbanktabelle 'importer_config' im Schema
   z.B. bei einer Probe "probe". Die Zeitbasis hat den Namen "zeitbasis".
 * attribute (character varying(30)): Name des Attributes das bearbeitet werden
   soll in CamelCase-Schreibweise. (Zeitbasis hat hier einen "dummy"-Eintrag)
+  Tabellenspalten, die als Foreign-Key auf andere Tabellen verweisen, werden mit
+  dem Tabellennamen referenziert und können so im Falle der Aktion 'convert' mit
+  den sprechenden Bezeichnung genutzt werden.
 * mst_id (Foreign-Key auf mess_stelle): Enthält die Messstelle, für die diese
   Konfiguration gültig ist.
 * from_value (character varying(100)): Für "default" bleibt diese Spalte leer,
