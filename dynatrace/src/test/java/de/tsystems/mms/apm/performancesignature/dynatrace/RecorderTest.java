@@ -140,4 +140,11 @@ public class RecorderTest {
         List<Agent> agentList = connection.getAllAgents();
         assertTrue(!agentList.isEmpty());
     }
+
+    @Test
+    public void testHotSensorPlacementViaRest() throws Exception {
+        DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceConfigurations.get(0).name);
+        Agent javaAgent = connection.getAllAgents().get(1);
+        assertTrue(connection.hotSensorPlacement(javaAgent.getAgentId()));
+    }
 }

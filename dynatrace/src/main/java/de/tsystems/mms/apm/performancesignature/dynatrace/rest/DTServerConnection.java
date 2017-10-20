@@ -186,10 +186,10 @@ public class DTServerConnection {
         }
     }
 
-    private InputStream getInputStream(final URL documentURL) throws IOException {
+    private InputStream getInputStream(final URL documentURL) throws IOException, SAXException {
         URLConnection conn = documentURL.openConnection(proxy);
         addAuthenticationHeader(conn);
-        return handleInputStream((HttpURLConnection) conn);
+        return handleInputStream(conn);
     }
 
     private void addAuthenticationHeader(final URLConnection conn) throws UnsupportedEncodingException {
@@ -216,7 +216,8 @@ public class DTServerConnection {
         IOUtils.write(parameters, conn.getOutputStream());
     }
 
-    private InputStream handleInputStream(final HttpURLConnection conn) throws IOException {
+    private InputStream handleInputStream(final URLConnection conn) throws IOException, SAXException {
+        handleHTTPResponseCode((HttpURLConnection) conn);
         InputStream resultingInputStream;
         String encoding = conn.getContentEncoding();
         if (encoding != null && encoding.equalsIgnoreCase("gzip")) {
@@ -239,13 +240,10 @@ public class DTServerConnection {
     }
 
     private RESTResultXMLHandler getResultXMLHandler(final URLConnection conn) throws IOException, SAXException {
-        HttpURLConnection httpURLConnection = (HttpURLConnection) conn;
-        handleHTTPResponseCode(httpURLConnection);
-
         RESTResultXMLHandler handler = new RESTResultXMLHandler();
         XMLReader xr = XMLReaderFactory.createXMLReader();
         xr.setContentHandler(handler);
-        xr.parse(new InputSource(handleInputStream(httpURLConnection)));
+        xr.parse(new InputSource(handleInputStream(conn)));
 
         return handler;
     }
@@ -489,8 +487,10 @@ public class DTServerConnection {
             builder.setServerAddress(serverUrl);
             URL commandURL = builder.hotSensorPlacementURL(agentId);
 
-            RESTResultXMLHandler handler = getResultXMLHandler(commandURL);
-            return handler.isResultTrue();
+            JAXBContext jaxbContext = JAXBContext.newInstance(Result.class);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            Result result = (Result) jaxbUnmarshaller.unmarshal(getInputStream(commandURL));
+            return result.getValue();
         } catch (Exception ex) {
             throw new CommandExecutionException("error doing hot sensor placement: " + ex.getMessage(), ex);
         }
