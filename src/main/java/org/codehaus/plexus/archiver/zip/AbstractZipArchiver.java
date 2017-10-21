@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.SequenceInputStream;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Hashtable;
 import java.util.Stack;
@@ -502,8 +503,7 @@ public abstract class AbstractZipArchiver
             InputStream payload;
             if ( ze.isUnixSymlink() )
             {
-                ZipEncoding enc = ZipEncodingHelper.getZipEncoding( getEncoding() );
-                final byte[] bytes = enc.encode( symlinkDestination ).array();
+                final byte[] bytes = encodeArchiveEntry( symlinkDestination, getEncoding() );
                 payload = new ByteArrayInputStream( bytes );
                 zOut.addArchiveEntry( ze, createInputStreamSupplier( payload ), true );
             }
@@ -644,12 +644,22 @@ public abstract class AbstractZipArchiver
             else
             {
                 String symlinkDestination = ( (SymlinkDestinationSupplier) dir ).getSymlinkDestination();
-                ZipEncoding enc = ZipEncodingHelper.getZipEncoding( encodingToUse );
-                final byte[] bytes = enc.encode( symlinkDestination ).array();
+                final byte[] bytes = encodeArchiveEntry( symlinkDestination, encodingToUse );
                 ze.setMethod( ZipArchiveEntry.DEFLATED );
                 zOut.addArchiveEntry( ze, createInputStreamSupplier( new ByteArrayInputStream( bytes ) ), true );
             }
         }
+    }
+
+    private byte[] encodeArchiveEntry( String payload, String encoding )
+        throws IOException
+    {
+        ZipEncoding enc = ZipEncodingHelper.getZipEncoding( encoding );
+        ByteBuffer encodedPayloadByteBuffer = enc.encode( payload );
+        byte[] encodedPayloadBytes = new byte[encodedPayloadByteBuffer.limit()];
+        encodedPayloadByteBuffer.get( encodedPayloadBytes );
+
+        return encodedPayloadBytes;
     }
 
     protected InputStreamSupplier createInputStreamSupplier( final InputStream inputStream )
