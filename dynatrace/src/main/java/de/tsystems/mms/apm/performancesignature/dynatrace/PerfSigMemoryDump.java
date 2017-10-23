@@ -74,11 +74,11 @@ public class PerfSigMemoryDump extends Builder implements SimpleBuildStep {
                     throw new RESTErrorException(Messages.PerfSigMemoryDump_MemoryDumpWasntTaken());
                 }
                 long timeout = waitForDumpTimeout;
-                boolean dumpFinished = connection.memoryDumpStatus(memoryDump).isResultValueTrue();
+                boolean dumpFinished = connection.memoryDumpStatus(memoryDump);
                 while ((!dumpFinished) && (timeout > 0)) {
                     Thread.sleep(waitForDumpPollingInterval);
                     timeout -= waitForDumpPollingInterval;
-                    dumpFinished = connection.memoryDumpStatus(memoryDump).isResultValueTrue();
+                    dumpFinished = connection.memoryDumpStatus(memoryDump);
                 }
                 if (dumpFinished) {
                     logger.println(Messages.PerfSigMemoryDump_SuccessfullyCreatedMemoryDump(availAgent.getName()));

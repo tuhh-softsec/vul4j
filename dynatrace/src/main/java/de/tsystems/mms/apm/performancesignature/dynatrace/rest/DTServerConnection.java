@@ -246,15 +246,6 @@ public class DTServerConnection {
         return handler;
     }
 
-    private RESTDumpStatusXMLHandler getDumpStatusXMLHandler(final URL url) throws IOException, SAXException {
-        RESTDumpStatusXMLHandler handler = new RESTDumpStatusXMLHandler();
-        XMLReader xr = XMLReaderFactory.createXMLReader();
-        xr.setContentHandler(handler);
-        xr.parse(new InputSource(getInputStream(url)));
-
-        return handler;
-    }
-
     private void handleHTTPResponseCode(final HttpURLConnection httpURLConnection) throws IOException {
         if (httpURLConnection.getResponseCode() >= 300) {
             if (httpURLConnection.getResponseCode() == 401) {
@@ -532,14 +523,14 @@ public class DTServerConnection {
         }
     }
 
-    public DumpStatus threadDumpStatus(final String threadDump) {
+    public boolean threadDumpStatus(final String threadDump) {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(serverUrl);
             URL commandURL = builder.threadDumpStatusURL(systemProfile, threadDump);
 
-            RESTDumpStatusXMLHandler handler = getDumpStatusXMLHandler(commandURL);
-            return handler.getDumpStatus();
+            Result result = getResultFromXML(commandURL);
+            return result.isResultTrue();
         } catch (Exception ex) {
             throw new CommandExecutionException("error with thread dump status: " + ex.getMessage(), ex);
         }
@@ -562,14 +553,14 @@ public class DTServerConnection {
         }
     }
 
-    public DumpStatus memoryDumpStatus(final String memoryDump) {
+    public boolean memoryDumpStatus(final String memoryDump) {
         try {
             ManagementURLBuilder builder = new ManagementURLBuilder();
             builder.setServerAddress(serverUrl);
             URL commandURL = builder.memoryDumpStatusURL(systemProfile, memoryDump);
 
-            RESTDumpStatusXMLHandler handler = getDumpStatusXMLHandler(commandURL);
-            return handler.getDumpStatus();
+            Result result = getResultFromXML(commandURL);
+            return result.isResultTrue();
         } catch (Exception ex) {
             throw new CommandExecutionException("error with memory dump status: " + ex.getMessage(), ex);
         }
