@@ -22,8 +22,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement
-public class Error {
+@XmlRootElement(name = "error")
+public class RESTXMLError {
     @XmlAttribute
     private String reason;
 

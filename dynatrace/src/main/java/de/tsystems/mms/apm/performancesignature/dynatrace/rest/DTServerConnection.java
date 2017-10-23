@@ -183,7 +183,7 @@ public class DTServerConnection {
         }
     }
 
-    private InputStream getInputStream(final URL documentURL) throws IOException, SAXException {
+    private InputStream getInputStream(final URL documentURL) throws IOException {
         URLConnection conn = documentURL.openConnection(proxy);
         addAuthenticationHeader(conn);
         return handleInputStream(conn);
@@ -213,7 +213,7 @@ public class DTServerConnection {
         IOUtils.write(parameters, conn.getOutputStream());
     }
 
-    private InputStream handleInputStream(final URLConnection conn) throws IOException, SAXException {
+    private InputStream handleInputStream(final URLConnection conn) throws IOException {
         handleHTTPResponseCode((HttpURLConnection) conn);
         InputStream resultingInputStream;
         String encoding = conn.getContentEncoding();
@@ -255,21 +255,21 @@ public class DTServerConnection {
         return handler;
     }
 
-    private void handleHTTPResponseCode(final HttpURLConnection httpURLConnection) throws IOException, SAXException {
-        XMLReader xr = XMLReaderFactory.createXMLReader();
+    private void handleHTTPResponseCode(final HttpURLConnection httpURLConnection) throws IOException {
         if (httpURLConnection.getResponseCode() >= 300) {
             if (httpURLConnection.getResponseCode() == 401) {
                 throw new RESTErrorException("invalid username/password. ResponseCode " + httpURLConnection.getResponseCode());
             }
-            RESTErrorXMLHandler handler = new RESTErrorXMLHandler();
-            xr.setContentHandler(handler);
             httpURLConnection.setReadTimeout(15000);
+            RESTXMLError error;
             try {
-                xr.parse(new InputSource(httpURLConnection.getErrorStream()));
-            } catch (RuntimeException e) {
+                JAXBContext jaxbContext = JAXBContext.newInstance(RESTXMLError.class);
+                Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+                error = (RESTXMLError) jaxbUnmarshaller.unmarshal(httpURLConnection.getErrorStream());
+            } catch (JAXBException e) {
                 throw new RESTErrorException("unexpected response code HTTP " + httpURLConnection.getResponseCode());
             }
-            throw new RESTErrorException(handler.getReasonString());
+            throw new RESTErrorException(error.getReason());
         }
     }
 
@@ -283,13 +283,13 @@ public class DTServerConnection {
         }
     }
 
-    private Result getResultFromXML(URL commandURL) throws JAXBException, IOException, SAXException {
+    private Result getResultFromXML(URL commandURL) throws JAXBException, IOException {
         JAXBContext jaxbContext = JAXBContext.newInstance(Result.class);
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
         return (Result) jaxbUnmarshaller.unmarshal(getInputStream(commandURL));
     }
 
-    private Result getResultFromXML(URLConnection conn) throws JAXBException, IOException, SAXException {
+    private Result getResultFromXML(URLConnection conn) throws JAXBException, IOException {
         JAXBContext jaxbContext = JAXBContext.newInstance(Result.class);
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
         return (Result) jaxbUnmarshaller.unmarshal(handleInputStream(conn));

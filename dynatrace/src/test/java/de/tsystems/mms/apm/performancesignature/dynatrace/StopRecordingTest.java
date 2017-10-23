@@ -64,7 +64,7 @@ public class StopRecordingTest {
 
         exception.expect(CommandExecutionException.class);
         exception.expectMessage("error stop recording session: Failed to stop session recording");
-        connection.stopRecording();
+        assertTrue(!connection.stopRecording().isEmpty());
     }
 
     @Test
