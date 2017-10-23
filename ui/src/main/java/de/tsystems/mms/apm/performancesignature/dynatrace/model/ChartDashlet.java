@@ -16,47 +16,100 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
-import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
 import javax.annotation.Nonnull;
+import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "chartdashlet")
 @ExportedBean
 public class ChartDashlet implements Comparable<ChartDashlet> {
-    private final String name;
-    private final List<Measure> measures;
+
+    @XmlAttribute
+    private String name;
+    @XmlAttribute
     private String description;
 
-    public ChartDashlet(final String name) {
-        this.name = name;
-        this.measures = new ArrayList<>();
+    @XmlElementWrapper(name = "measures")
+    @XmlElement(name = "measure")
+    private List<Measure> measures;
+
+    /**
+     * Gets the value of the measure property.
+     * <p>
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the measure property.
+     * <p>
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getMeasure().add(newItem);
+     * </pre>
+     * <p>
+     * <p>
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link Measure }
+     */
+    @Exported
+    public List<Measure> getMeasures() {
+        if (measures == null) {
+            measures = new ArrayList<>();
+        }
+        return this.measures;
     }
 
-    public ChartDashlet(final Object attr) {
-        this(AttributeUtils.getStringAttribute("name", attr));
-        this.description = AttributeUtils.getStringAttribute("description", attr);
+    public void addMeasure(final Measure tm) {
+        this.measures.add(tm);
     }
 
+    /**
+     * Ruft den Wert der name-Eigenschaft ab.
+     *
+     * @return possible object is
+     * {@link String }
+     */
     @Exported
     public String getName() {
         return name;
     }
 
+    /**
+     * Legt den Wert der name-Eigenschaft fest.
+     *
+     * @param value allowed object is
+     *              {@link String }
+     */
+    public void setName(String value) {
+        this.name = value;
+    }
+
+    /**
+     * Ruft den Wert der description-Eigenschaft ab.
+     *
+     * @return possible object is
+     * {@link String }
+     */
     @Exported
     public String getDescription() {
         return description;
     }
 
-    @Exported
-    public List<Measure> getMeasures() {
-        return measures;
-    }
-
-    public void addMeasure(final Measure tm) {
-        this.measures.add(tm);
+    /**
+     * Legt den Wert der description-Eigenschaft fest.
+     *
+     * @param value allowed object is
+     *              {@link String }
+     */
+    public void setDescription(String value) {
+        this.description = value;
     }
 
     public int compareTo(@Nonnull final ChartDashlet that) {

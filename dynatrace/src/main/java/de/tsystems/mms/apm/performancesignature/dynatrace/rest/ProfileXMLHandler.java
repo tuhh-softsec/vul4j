@@ -37,6 +37,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class ProfileXMLHandler extends DefaultHandler {
     private final List<BaseConfiguration> configObjects;
 

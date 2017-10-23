@@ -416,10 +416,6 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
             }
         });
 
-        if (dashboardReport.getChartDashlets() == null) {
-            return filteredChartDashlets;
-        }
-
         for (JSONDashlet jsonDashlet : getJsonDashletMap().values()) {
             if (!jsonDashlet.getDashboard().equals(dashboardReport.getName())) {
                 continue;
@@ -438,7 +434,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
                 }
             }
             if (!chartDashletFound && !jsonDashlet.getId().equals(UNITTEST_DASHLETNAME)) {
-                filteredChartDashlets.put(jsonDashlet, new Measure(null));
+                filteredChartDashlets.put(jsonDashlet, new Measure());
             }
         }
         return filteredChartDashlets;

@@ -28,64 +28,58 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace.rest.model;
 
-public class Agent {
-    private String agentGroup, configuration, host, licenseInformation;
-    private String licenseOk, name, startupTimeUTC, systemProfile, technologyType;
-    private boolean capture, connected, supportsHotsensorPlacement;
-    private int agentId, classLoadCount, eventCount, processId, skippedEvents;
-    private int skippedPurePaths, totalClassLoadCount, totalPurePathCount;
-    private double totalCpuTime, totalExecutionTime;
-    private Collector collector;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
-    public void setValue(final String property, final String parentProperty, final String value) {
-        if (property.equalsIgnoreCase("agentid")) {
-            if (parentProperty.equalsIgnoreCase("agentinformation")) {
-                this.agentId = Integer.parseInt(value);
-            }
-        } else if (property.equalsIgnoreCase("agentgroup")) {
-            this.agentGroup = value;
-        } else if (property.equalsIgnoreCase("capture")) {
-            this.capture = Boolean.parseBoolean(value);
-        } else if (property.equalsIgnoreCase("classloadcount")) {
-            this.classLoadCount = Integer.parseInt(value);
-        } else if (property.equalsIgnoreCase("configuration")) {
-            this.configuration = value;
-        } else if (property.equalsIgnoreCase("connected")) {
-            this.connected = Boolean.parseBoolean(value);
-        } else if (property.equalsIgnoreCase("eventcount")) {
-            this.eventCount = Integer.parseInt(value);
-        } else if (property.equalsIgnoreCase("host")) {
-            this.host = value;
-        } else if (property.equalsIgnoreCase("licenseinformation")) {
-            this.licenseInformation = value;
-        } else if (property.equalsIgnoreCase("licenseok")) {
-            this.licenseOk = value;
-        } else if (property.equalsIgnoreCase("name")) {
-            this.name = value;
-        } else if (property.equalsIgnoreCase("processid")) {
-            this.processId = Integer.parseInt(value);
-        } else if (property.equalsIgnoreCase("skippedevents")) {
-            this.skippedEvents = Integer.parseInt(value);
-        } else if (property.equalsIgnoreCase("skippedpurepaths")) {
-            this.skippedPurePaths = Integer.parseInt(value);
-        } else if (property.equalsIgnoreCase("startuptimeutc")) {
-            this.startupTimeUTC = value;
-        } else if (property.equalsIgnoreCase("hotUpdateable")) {
-            this.supportsHotsensorPlacement = Boolean.parseBoolean(value);
-        } else if (property.equalsIgnoreCase("systemProfile")) {
-            this.systemProfile = value;
-        } else if (property.equalsIgnoreCase("technologyType")) {
-            this.technologyType = value;
-        } else if (property.equalsIgnoreCase("totalClassLoadCount")) {
-            this.totalClassLoadCount = Integer.parseInt(value);
-        } else if (property.equalsIgnoreCase("totalCpuTime")) {
-            this.totalCpuTime = Double.parseDouble(value);
-        } else if (property.equalsIgnoreCase("totalExecutionTime")) {
-            this.totalExecutionTime = Double.parseDouble(value);
-        } else if (property.equalsIgnoreCase("totalPurePathCount")) {
-            this.totalPurePathCount = Integer.parseInt(value);
-        }
-    }
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "agentinformation")
+public class Agent {
+    @XmlElement
+    private String agentGroup;
+    @XmlElement
+    private String configuration;
+    @XmlElement
+    private String host;
+    @XmlElement
+    private String licenseInformation;
+    @XmlElement
+    private String licenseOk;
+    @XmlElement
+    private String name;
+    @XmlElement
+    private String startupTimeUTC;
+    @XmlElement
+    private String systemProfile;
+    @XmlElement
+    private String technologyType;
+    @XmlElement
+    private boolean capture;
+    @XmlElement
+    private boolean connected;
+    @XmlElement
+    private boolean supportsHotsensorPlacement;
+    @XmlElement
+    private int agentId;
+    @XmlElement
+    private int classLoadCount;
+    @XmlElement
+    private int eventCount;
+    @XmlElement
+    private int processId;
+    @XmlElement
+    private int skippedEvents;
+    @XmlElement
+    private int skippedPurePaths;
+    @XmlElement
+    private int totalClassLoadCount;
+    @XmlElement
+    private int totalPurePathCount;
+    @XmlElement
+    private double totalCpuTime;
+    @XmlElement
+    private double totalExecutionTime;
 
     public int getAgentId() {
         return this.agentId;
@@ -173,13 +167,5 @@ public class Agent {
 
     public String getName() {
         return this.name;
-    }
-
-    public Collector getCollector() {
-        return this.collector;
-    }
-
-    public void setCollector(Collector collector) {
-        this.collector = collector;
     }
 }

@@ -14,41 +14,26 @@
  * limitations under the License.
  */
 
-package de.tsystems.mms.apm.performancesignature.dynatrace.model;
-
-import org.kohsuke.stapler.export.Exported;
-import org.kohsuke.stapler.export.ExportedBean;
+package de.tsystems.mms.apm.performancesignature.dynatrace.rest.model;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
+import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement
-@ExportedBean
-public class Measurement extends MeasureBaseModel {
-    @XmlAttribute
-    private long timestamp;
+@XmlRootElement(name = "dashboards")
+public class DashboardList {
+    @XmlElement(name = "dashboard")
+    private List<Dashboard> dashboards;
 
-    /**
-     * Ruft den Wert der timestamp-Eigenschaft ab.
-     *
-     * @return possible object is
-     * {@link long }
-     */
-    @Exported
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    /**
-     * Legt den Wert der timestamp-Eigenschaft fest.
-     *
-     * @param value allowed object is
-     *              {@link long }
-     */
-    public void setTimestamp(long value) {
-        this.timestamp = value;
+    public List<Dashboard> getDashboards() {
+        if (dashboards == null) {
+            dashboards = new ArrayList<>();
+        }
+        return dashboards;
     }
 }
+

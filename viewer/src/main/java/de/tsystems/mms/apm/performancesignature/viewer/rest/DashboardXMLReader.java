@@ -48,15 +48,18 @@ class DashboardXMLReader {
             DashboardReport dashboardReport = new DashboardReport(xmlDashboardReport.getChildText("name"));
             List<Element> chartDashletElements = xmlDashboardReport.getChildren("chartDashlet");
             for (Element chartDashletElement : chartDashletElements) {
-                ChartDashlet chartDashlet = new ChartDashlet(chartDashletElement);
+                //ToDo: fix me!
+                ChartDashlet chartDashlet = new ChartDashlet();
 
                 List<Element> measureElements = chartDashletElement.getChildren("measure");
                 for (Element measureElement : measureElements) {
-                    Measure measure = new Measure(measureElement);
+                    //ToDo: fix me!
+                    Measure measure = new Measure();
 
                     List<Element> measurementElements = measureElement.getChildren("measurement");
                     for (Element mearsurementElement : measurementElements) {
-                        Measurement measurement = new Measurement(mearsurementElement);
+                        //ToDo: fix me!
+                        Measurement measurement = new Measurement();
                         measure.addMeasurement(measurement);
                     }
                     chartDashlet.addMeasure(measure);

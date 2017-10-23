@@ -72,11 +72,11 @@ public class PerfSigThreadDump extends Builder implements SimpleBuildStep {
                     throw new RESTErrorException(Messages.PerfSigThreadDump_ThreadDumpWasntTaken());
                 }
                 int timeout = waitForDumpTimeout;
-                boolean dumpFinished = connection.threadDumpStatus(threadDump).isResultValueTrue();
+                boolean dumpFinished = connection.threadDumpStatus(threadDump);
                 while ((!dumpFinished) && (timeout > 0)) {
                     Thread.sleep(waitForDumpPollingInterval);
                     timeout -= waitForDumpPollingInterval;
-                    dumpFinished = connection.threadDumpStatus(threadDump).isResultValueTrue();
+                    dumpFinished = connection.threadDumpStatus(threadDump);
                 }
                 if (dumpFinished) {
                     logger.println(Messages.PerfSigThreadDump_SuccessfullyCreatedThreadDump(availAgent.getName()));

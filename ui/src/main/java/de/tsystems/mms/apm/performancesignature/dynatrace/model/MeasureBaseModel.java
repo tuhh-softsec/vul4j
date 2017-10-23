@@ -16,26 +16,26 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
-import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
-import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import hudson.model.Api;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
-import java.math.BigDecimal;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlTransient;
 
+@XmlTransient
 @ExportedBean
 public abstract class MeasureBaseModel {
-    private final double avg, min, max, sum;
-    private final int count;
-
-    MeasureBaseModel(final Object attr) {
-        this.avg = AttributeUtils.getDoubleAttribute("avg", attr);
-        this.max = AttributeUtils.getDoubleAttribute("max", attr);
-        this.min = AttributeUtils.getDoubleAttribute("min", attr);
-        this.count = AttributeUtils.getIntAttribute("count", attr);
-        this.sum = AttributeUtils.getDoubleAttribute("sum", attr);
-    }
+    @XmlAttribute
+    private double avg;
+    @XmlAttribute
+    private double min;
+    @XmlAttribute
+    private double max;
+    @XmlAttribute
+    private double sum;
+    @XmlAttribute
+    private long count;
 
     /**
      * Exposes this object to the remote API.
@@ -44,38 +44,86 @@ public abstract class MeasureBaseModel {
         return new Api(this);
     }
 
-    @SuppressWarnings("WeakerAccess")
+    /**
+     * Ruft den Wert der avg-Eigenschaft ab.
+     */
+    @Exported
+    public double getAvg() {
+        return avg;
+    }
+
+    /**
+     * Legt den Wert der avg-Eigenschaft fest.
+     */
+    public void setAvg(double value) {
+        this.avg = value;
+    }
+
+    /**
+     * Ruft den Wert der min-Eigenschaft ab.
+     */
+    @Exported
+    public double getMin() {
+        return min;
+    }
+
+    /**
+     * Legt den Wert der min-Eigenschaft fest.
+     */
+    public void setMin(double value) {
+        this.min = value;
+    }
+
+    /**
+     * Ruft den Wert der max-Eigenschaft ab.
+     */
+    @Exported
+    public double getMax() {
+        return max;
+    }
+
+    /**
+     * Legt den Wert der max-Eigenschaft fest.
+     */
+    public void setMax(double value) {
+        this.max = value;
+    }
+
+    /**
+     * Ruft den Wert der sum-Eigenschaft ab.
+     */
     @Exported
     public double getSum() {
         return sum;
     }
 
-    @SuppressWarnings("WeakerAccess")
+    /**
+     * Legt den Wert der sum-Eigenschaft fest.
+     */
+    public void setSum(double value) {
+        this.sum = value;
+    }
+
+    /**
+     * Ruft den Wert der count-Eigenschaft ab.
+     *
+     * @return possible object is
+     * {@link long }
+     */
     @Exported
-    public int getCount() {
+    public long getCount() {
         return count;
     }
 
-    @SuppressWarnings("WeakerAccess")
+    /**
+     * Legt den Wert der count-Eigenschaft fest.
+     *
+     * @param value allowed object is
+     *              {@link long }
+     */
     @Exported
-    public double getAvg() {
-        return this.avg;
-    }
-
-    public BigDecimal getStrAvg() {
-        return PerfSigUIUtils.round(this.avg, 2);
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    @Exported
-    public double getMin() {
-        return this.min;
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    @Exported
-    public double getMax() {
-        return this.max;
+    public void setCount(long value) {
+        this.count = value;
     }
 
     /**

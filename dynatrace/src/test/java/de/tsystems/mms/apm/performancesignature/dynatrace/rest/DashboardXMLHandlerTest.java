@@ -17,18 +17,14 @@
 package de.tsystems.mms.apm.performancesignature.dynatrace.rest;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.ChartDashlet;
+import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.Measure;
 import org.junit.Test;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -48,36 +44,16 @@ public class DashboardXMLHandlerTest {
     }
 
     @Test
-    public void testXMLParser63() throws SAXException, IOException {
-        XMLReader xr = XMLReaderFactory.createXMLReader();
-        DashboardXMLHandler handler = new DashboardXMLHandler("test");
-        xr.setContentHandler(handler);
+    public void testXMLParser() throws JAXBException {
+        File file = new File("src/test/resources/dashboardXMLHandlerTest.xml");
+        JAXBContext jaxbContext = JAXBContext.newInstance(DashboardReport.class);
+        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+        DashboardReport dashboardReport = (DashboardReport) jaxbUnmarshaller.unmarshal(file);
 
-        File file = new File("src/test/resources/dashboardXMLHandler63Test.xml");
-        InputStream inputStream = Files.newInputStream(file.toPath());
-        xr.parse(new InputSource(new InputStreamReader(inputStream, "UTF-8")));
+        //assertEquals(dashboardReport.getIncidents().size(), 2);
+        assertEquals(dashboardReport.getChartDashlets().size(), 6);
 
-        assertEquals(handler.getParsedObjects().getIncidents().size(), 2);
-        assertEquals(handler.getParsedObjects().getChartDashlets().size(), 7);
-
-        assertTrue(containsMeasure(handler.getParsedObjects().getChartDashlets(), "Synthetic Web Requests by Timer Name - PurePath Response Time"));
-        assertTrue(containsMeasure(handler.getParsedObjects().getChartDashlets(), "Response Time - Synchronous_Read"));
-    }
-
-    @Test
-    public void testXMLParser65() throws SAXException, IOException {
-        XMLReader xr = XMLReaderFactory.createXMLReader();
-        DashboardXMLHandler handler = new DashboardXMLHandler("test");
-        xr.setContentHandler(handler);
-
-        File file = new File("src/test/resources/dashboardXMLHandler65Test.xml");
-        InputStream inputStream = Files.newInputStream(file.toPath());
-        xr.parse(new InputSource(new InputStreamReader(inputStream, "UTF-8")));
-
-        assertEquals(handler.getParsedObjects().getIncidents().size(), 2);
-        assertEquals(handler.getParsedObjects().getChartDashlets().size(), 6);
-
-        assertTrue(containsMeasure(handler.getParsedObjects().getChartDashlets(), "Synthetic Web Requests by Timer Name - PurePath Response Time"));
-        assertTrue(containsMeasure(handler.getParsedObjects().getChartDashlets(), "Total GC Utilization"));
+        assertTrue(containsMeasure(dashboardReport.getChartDashlets(), "Synthetic Web Requests by Timer Name - PurePath Response Time"));
+        assertTrue(containsMeasure(dashboardReport.getChartDashlets(), "Total GC Utilization"));
     }
 }
