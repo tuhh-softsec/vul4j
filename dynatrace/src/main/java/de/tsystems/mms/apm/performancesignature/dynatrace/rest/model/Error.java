@@ -23,15 +23,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement
-public class Result {
+public class Error {
     @XmlAttribute
-    private String value;
+    private String reason;
 
-    public String getValue() {
-        return value;
-    }
-
-    public boolean isResultTrue() {
-        return Boolean.parseBoolean(value);
+    public String getReason() {
+        return reason;
     }
 }
