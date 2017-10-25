@@ -16,7 +16,28 @@
     <name>Performance Signature with Dynatrace</name>
     <url>https://wiki.jenkins-ci.org/display/JENKINS/Performance+Signature+with+Dynatrace+Plugin</url>
 
+    <properties>
+        <swagger-core-version>1.5.15</swagger-core-version>
+        <okhttp-version>2.7.5</okhttp-version>
+        <jodatime-version>2.9.9</jodatime-version>
+    </properties>
+
     <dependencies>
+        <dependency>
+            <groupId>com.squareup.okhttp</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>${okhttp-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp</groupId>
+            <artifactId>logging-interceptor</artifactId>
+            <version>${okhttp-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>${jodatime-version}</version>
+        </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>structs</artifactId>
