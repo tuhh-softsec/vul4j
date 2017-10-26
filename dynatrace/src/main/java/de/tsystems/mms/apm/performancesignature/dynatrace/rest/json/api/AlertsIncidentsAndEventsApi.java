@@ -30,12 +30,9 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.api;
 
 import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Call;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.Response;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.*;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.*;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,12 +62,10 @@ public class AlertsIncidentsAndEventsApi {
      * Build call for createDeploymentEvent
      *
      * @param body                    Event record (required)
-     * @param progressListener        Progress listener
-     * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call createDeploymentEventCall(DeploymentEvent body, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call createDeploymentEventCall(DeploymentEvent body) throws ApiException {
         // create path and map variables
         String localVarPath = "/events/Deployment";
 
@@ -92,30 +87,18 @@ public class AlertsIncidentsAndEventsApi {
         final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
-        if (progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                            .build();
-                }
-            });
-        }
-
         String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "POST", localVarQueryParams, body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "POST", localVarQueryParams, body, localVarHeaderParams, localVarFormParams, localVarAuthNames);
     }
 
     @SuppressWarnings("rawtypes")
-    private Call createDeploymentEventValidateBeforeCall(DeploymentEvent body, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call createDeploymentEventValidateBeforeCall(DeploymentEvent body) throws ApiException {
         // verify the required parameter 'body' is set
         if (body == null) {
-            throw new ApiException("Missing the required parameter 'body' when calling createDeploymentEvent(Async)");
+            throw new ApiException("Missing the required parameter 'body' when calling createDeploymentEvent");
         }
 
-        return createDeploymentEventCall(body, progressListener, progressRequestListener);
+        return createDeploymentEventCall(body);
     }
 
     /**
@@ -138,87 +121,7 @@ public class AlertsIncidentsAndEventsApi {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<Void> createDeploymentEventWithHttpInfo(DeploymentEvent body) throws ApiException {
-        Call call = createDeploymentEventValidateBeforeCall(body, null, null);
-        return apiClient.execute(call);
-    }
-
-    /**
-     * Build call for createIncident
-     *
-     * @param body                    Alert record (required)
-     * @param progressListener        Progress listener
-     * @param progressRequestListener Progress request listener
-     * @return Call to execute
-     * @throws ApiException If fail to serialize the request body object
-     */
-    public Call createIncidentCall(Alert body, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        // create path and map variables
-        String localVarPath = "/alerts";
-
-        List<Pair> localVarQueryParams = new ArrayList<>();
-
-        Map<String, String> localVarHeaderParams = new HashMap<>();
-
-        Map<String, Object> localVarFormParams = new HashMap<>();
-
-        final String[] localVarAccepts = {
-                "application/json"
-        };
-        final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
-        if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
-
-        final String[] localVarContentTypes = {
-                "application/json"
-        };
-        final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
-        localVarHeaderParams.put("Content-Type", localVarContentType);
-
-        if (progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                            .build();
-                }
-            });
-        }
-
-        String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "POST", localVarQueryParams, body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
-    }
-
-    @SuppressWarnings("rawtypes")
-    private Call createIncidentValidateBeforeCall(Alert body, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        // verify the required parameter 'body' is set
-        if (body == null) {
-            throw new ApiException("Missing the required parameter 'body' when calling createIncident(Async)");
-        }
-        return createIncidentCall(body, progressListener, progressRequestListener);
-    }
-
-    /**
-     * Create Alert
-     * Create an alert (incident) for a System Profile and Incident Rule. The request must contain the alert as JSON representation. If the request does not contain a start and end date, the the current server time will be used. The default severity is &#39;informational&#39; and the default state is &#39;Created&#39;.  Alerts with a severity of &#39;informational&#39; are automatically set to state &#39;Confirmed&#39;. You can set such alerts to other states with a subsequent update.  It is possible to specify the start date and leave the end date unset, the end date can then be provided later with an update.  At least the JSON properties &#39;systemprofile&#39; and &#39;message&#39; have to be specified.
-     *
-     * @param body Alert record (required)
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     */
-    public void createIncident(Alert body) throws ApiException {
-        createIncidentWithHttpInfo(body);
-    }
-
-    /**
-     * Create Alert
-     * Create an alert (incident) for a System Profile and Incident Rule. The request must contain the alert as JSON representation. If the request does not contain a start and end date, the the current server time will be used. The default severity is &#39;informational&#39; and the default state is &#39;Created&#39;.  Alerts with a severity of &#39;informational&#39; are automatically set to state &#39;Confirmed&#39;. You can set such alerts to other states with a subsequent update.  It is possible to specify the start date and leave the end date unset, the end date can then be provided later with an update.  At least the JSON properties &#39;systemprofile&#39; and &#39;message&#39; have to be specified.
-     *
-     * @param body Alert record (required)
-     * @return ApiResponse&lt;Void&gt;
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     */
-    public ApiResponse<Void> createIncidentWithHttpInfo(Alert body) throws ApiException {
-        Call call = createIncidentValidateBeforeCall(body, null, null);
+        Call call = createDeploymentEventValidateBeforeCall(body);
         return apiClient.execute(call);
     }
 
@@ -226,12 +129,10 @@ public class AlertsIncidentsAndEventsApi {
      * Build call for deleteDeploymentEvent
      *
      * @param eventid                 ID of event (required)
-     * @param progressListener        Progress listener
-     * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call deleteDeploymentEventCall(String eventid, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call deleteDeploymentEventCall(String eventid) throws ApiException {
         // create path and map variables
         String localVarPath = "/events/Deployment/{eventid}"
                 .replaceAll("\\{" + "eventid" + "\\}", apiClient.escapeString(eventid));
@@ -254,30 +155,18 @@ public class AlertsIncidentsAndEventsApi {
         final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
-        if (progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                            .build();
-                }
-            });
-        }
-
         String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "DELETE", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "DELETE", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames);
     }
 
     @SuppressWarnings("rawtypes")
-    private Call deleteDeploymentEventValidateBeforeCall(String eventid, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call deleteDeploymentEventValidateBeforeCall(String eventid) throws ApiException {
         // verify the required parameter 'eventid' is set
         if (eventid == null) {
-            throw new ApiException("Missing the required parameter 'eventid' when calling deleteDeploymentEvent(Async)");
+            throw new ApiException("Missing the required parameter 'eventid' when calling deleteDeploymentEvent");
         }
 
-        return deleteDeploymentEventCall(eventid, progressListener, progressRequestListener);
+        return deleteDeploymentEventCall(eventid);
     }
 
     /**
@@ -300,7 +189,7 @@ public class AlertsIncidentsAndEventsApi {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<Void> deleteDeploymentEventWithHttpInfo(String eventid) throws ApiException {
-        Call call = deleteDeploymentEventValidateBeforeCall(eventid, null, null);
+        Call call = deleteDeploymentEventValidateBeforeCall(eventid);
         return apiClient.execute(call);
     }
 
@@ -308,12 +197,10 @@ public class AlertsIncidentsAndEventsApi {
      * Build call for deleteDowntime
      *
      * @param suppressionname         Alert Suppression name (required)
-     * @param progressListener        Progress listener
-     * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call deleteDowntimeCall(String suppressionname, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call deleteDowntimeCall(String suppressionname) throws ApiException {
         // create path and map variables
         String localVarPath = "/alertsuppression/{suppressionname}"
                 .replaceAll("\\{" + "suppressionname" + "\\}", apiClient.escapeString(suppressionname));
@@ -336,30 +223,18 @@ public class AlertsIncidentsAndEventsApi {
         final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
-        if (progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                            .build();
-                }
-            });
-        }
-
         String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "DELETE", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "DELETE", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames);
     }
 
     @SuppressWarnings("rawtypes")
-    private Call deleteDowntimeValidateBeforeCall(String suppressionname, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call deleteDowntimeValidateBeforeCall(String suppressionname) throws ApiException {
         // verify the required parameter 'suppressionname' is set
         if (suppressionname == null) {
-            throw new ApiException("Missing the required parameter 'suppressionname' when calling deleteDowntime(Async)");
+            throw new ApiException("Missing the required parameter 'suppressionname' when calling deleteDowntime");
         }
 
-        return deleteDowntimeCall(suppressionname, progressListener, progressRequestListener);
+        return deleteDowntimeCall(suppressionname);
     }
 
     /**
@@ -382,89 +257,7 @@ public class AlertsIncidentsAndEventsApi {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<Void> deleteDowntimeWithHttpInfo(String suppressionname) throws ApiException {
-        Call call = deleteDowntimeValidateBeforeCall(suppressionname, null, null);
-        return apiClient.execute(call);
-    }
-
-    /**
-     * Build call for deleteIncident
-     *
-     * @param alertid                 ID of alert (required)
-     * @param progressListener        Progress listener
-     * @param progressRequestListener Progress request listener
-     * @return Call to execute
-     * @throws ApiException If fail to serialize the request body object
-     */
-    public Call deleteIncidentCall(String alertid, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        // create path and map variables
-        String localVarPath = "/alerts/{alertid}"
-                .replaceAll("\\{" + "alertid" + "\\}", apiClient.escapeString(alertid));
-
-        List<Pair> localVarQueryParams = new ArrayList<>();
-
-        Map<String, String> localVarHeaderParams = new HashMap<>();
-
-        Map<String, Object> localVarFormParams = new HashMap<>();
-
-        final String[] localVarAccepts = {
-                "application/json"
-        };
-        final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
-        if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
-
-        final String[] localVarContentTypes = {
-
-        };
-        final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
-        localVarHeaderParams.put("Content-Type", localVarContentType);
-
-        if (progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                            .build();
-                }
-            });
-        }
-
-        String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "DELETE", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
-    }
-
-    @SuppressWarnings("rawtypes")
-    private Call deleteIncidentValidateBeforeCall(String alertid, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        // verify the required parameter 'alertid' is set
-        if (alertid == null) {
-            throw new ApiException("Missing the required parameter 'alertid' when calling deleteIncident(Async)");
-        }
-
-        return deleteIncidentCall(alertid, progressListener, progressRequestListener);
-    }
-
-    /**
-     * Delete Alert record
-     * Permanently delete an alert (incident) record.
-     *
-     * @param alertid ID of alert (required)
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     */
-    public void deleteIncident(String alertid) throws ApiException {
-        deleteIncidentWithHttpInfo(alertid);
-    }
-
-    /**
-     * Delete Alert record
-     * Permanently delete an alert (incident) record.
-     *
-     * @param alertid ID of alert (required)
-     * @return ApiResponse&lt;Void&gt;
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     */
-    public ApiResponse<Void> deleteIncidentWithHttpInfo(String alertid) throws ApiException {
-        Call call = deleteIncidentValidateBeforeCall(alertid, null, null);
+        Call call = deleteDowntimeValidateBeforeCall(suppressionname);
         return apiClient.execute(call);
     }
 
@@ -472,12 +265,10 @@ public class AlertsIncidentsAndEventsApi {
      * Build call for getDeploymentEvent
      *
      * @param eventid                 ID of event (required)
-     * @param progressListener        Progress listener
-     * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call getDeploymentEventCall(String eventid, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call getDeploymentEventCall(String eventid) throws ApiException {
         // create path and map variables
         String localVarPath = "/events/Deployment/{eventid}"
                 .replaceAll("\\{" + "eventid" + "\\}", apiClient.escapeString(eventid));
@@ -500,30 +291,18 @@ public class AlertsIncidentsAndEventsApi {
         final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
-        if (progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                            .build();
-                }
-            });
-        }
-
         String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames);
     }
 
     @SuppressWarnings("rawtypes")
-    private Call getDeploymentEventValidateBeforeCall(String eventid, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call getDeploymentEventValidateBeforeCall(String eventid) throws ApiException {
         // verify the required parameter 'eventid' is set
         if (eventid == null) {
-            throw new ApiException("Missing the required parameter 'eventid' when calling getDeploymentEvent(Async)");
+            throw new ApiException("Missing the required parameter 'eventid' when calling getDeploymentEvent");
         }
 
-        return getDeploymentEventCall(eventid, progressListener, progressRequestListener);
+        return getDeploymentEventCall(eventid);
     }
 
     /**
@@ -548,7 +327,7 @@ public class AlertsIncidentsAndEventsApi {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<DeploymentEvent> getDeploymentEventWithHttpInfo(String eventid) throws ApiException {
-        Call call = getDeploymentEventValidateBeforeCall(eventid, null, null);
+        Call call = getDeploymentEventValidateBeforeCall(eventid);
         Type localVarReturnType = new TypeToken<DeploymentEvent>() {
         }.getType();
         return apiClient.execute(call, localVarReturnType);
@@ -558,12 +337,10 @@ public class AlertsIncidentsAndEventsApi {
      * Build call for getDowntime
      *
      * @param suppressionname         Alert Suppression name (required)
-     * @param progressListener        Progress listener
-     * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call getDowntimeCall(String suppressionname, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call getDowntimeCall(String suppressionname) throws ApiException {
         // create path and map variables
         String localVarPath = "/alertsuppression/{suppressionname}"
                 .replaceAll("\\{" + "suppressionname" + "\\}", apiClient.escapeString(suppressionname));
@@ -581,35 +358,22 @@ public class AlertsIncidentsAndEventsApi {
         if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
 
         final String[] localVarContentTypes = {
-
         };
         final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
-        if (progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                            .build();
-                }
-            });
-        }
-
         String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames);
     }
 
     @SuppressWarnings("rawtypes")
-    private Call getDowntimeValidateBeforeCall(String suppressionname, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call getDowntimeValidateBeforeCall(String suppressionname) throws ApiException {
         // verify the required parameter 'suppressionname' is set
         if (suppressionname == null) {
-            throw new ApiException("Missing the required parameter 'suppressionname' when calling getDowntime(Async)");
+            throw new ApiException("Missing the required parameter 'suppressionname' when calling getDowntime");
         }
 
-        return getDowntimeCall(suppressionname, progressListener, progressRequestListener);
+        return getDowntimeCall(suppressionname);
     }
 
     /**
@@ -634,7 +398,7 @@ public class AlertsIncidentsAndEventsApi {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<AlertSuppression> getDowntimeWithHttpInfo(String suppressionname) throws ApiException {
-        Call call = getDowntimeValidateBeforeCall(suppressionname, null, null);
+        Call call = getDowntimeValidateBeforeCall(suppressionname);
         Type localVarReturnType = new TypeToken<AlertSuppression>() {
         }.getType();
         return apiClient.execute(call, localVarReturnType);
@@ -645,12 +409,10 @@ public class AlertsIncidentsAndEventsApi {
      *
      * @param systemprofile           System Profile id (optional)
      * @param incidentrule            Incident Rule name (optional)
-     * @param progressListener        Progress listener
-     * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call getDowntimesCall(String systemprofile, String incidentrule, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call getDowntimesCall(String systemprofile, String incidentrule) throws ApiException {
         // create path and map variables
         String localVarPath = "/alertsuppression";
 
@@ -676,25 +438,13 @@ public class AlertsIncidentsAndEventsApi {
         final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
-        if (progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                            .build();
-                }
-            });
-        }
-
         String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames);
     }
 
     @SuppressWarnings("rawtypes")
-    private Call getDowntimesValidateBeforeCall(String systemprofile, String incidentrule, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        return getDowntimesCall(systemprofile, incidentrule, progressListener, progressRequestListener);
+    private Call getDowntimesValidateBeforeCall(String systemprofile, String incidentrule) throws ApiException {
+        return getDowntimesCall(systemprofile, incidentrule);
     }
 
     /**
@@ -721,7 +471,7 @@ public class AlertsIncidentsAndEventsApi {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<AlertSuppressions> getDowntimesWithHttpInfo(String systemprofile, String incidentrule) throws ApiException {
-        Call call = getDowntimesValidateBeforeCall(systemprofile, incidentrule, null, null);
+        Call call = getDowntimesValidateBeforeCall(systemprofile, incidentrule);
         Type localVarReturnType = new TypeToken<AlertSuppressions>() {
         }.getType();
         return apiClient.execute(call, localVarReturnType);
@@ -731,12 +481,10 @@ public class AlertsIncidentsAndEventsApi {
      * Build call for getIncident
      *
      * @param alertid                 ID of alert (required)
-     * @param progressListener        Progress listener
-     * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call getIncidentCall(String alertid, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call getIncidentCall(String alertid) throws ApiException {
         // create path and map variables
         String localVarPath = "/alerts/{alertid}"
                 .replaceAll("\\{" + "alertid" + "\\}", apiClient.escapeString(alertid));
@@ -759,30 +507,18 @@ public class AlertsIncidentsAndEventsApi {
         final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
-        if (progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                            .build();
-                }
-            });
-        }
-
         String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames);
     }
 
     @SuppressWarnings("rawtypes")
-    private Call getIncidentValidateBeforeCall(String alertid, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call getIncidentValidateBeforeCall(String alertid) throws ApiException {
         // verify the required parameter 'alertid' is set
         if (alertid == null) {
-            throw new ApiException("Missing the required parameter 'alertid' when calling getIncident(Async)");
+            throw new ApiException("Missing the required parameter 'alertid' when calling getIncident");
         }
 
-        return getIncidentCall(alertid, progressListener, progressRequestListener);
+        return getIncidentCall(alertid);
     }
 
     /**
@@ -807,7 +543,7 @@ public class AlertsIncidentsAndEventsApi {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<Alert> getIncidentWithHttpInfo(String alertid) throws ApiException {
-        Call call = getIncidentValidateBeforeCall(alertid, null, null);
+        Call call = getIncidentValidateBeforeCall(alertid);
         Type localVarReturnType = new TypeToken<Alert>() {
         }.getType();
         return apiClient.execute(call, localVarReturnType);
@@ -821,12 +557,10 @@ public class AlertsIncidentsAndEventsApi {
      * @param state                   Alert state (optional)
      * @param from                    Minimum start date of the alert (ISO8601) (optional)
      * @param to                      Maximum end date of the alert (ISO8601) (optional)
-     * @param progressListener        Progress listener
-     * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call getIncidentsCall(String systemprofile, String incidentrule, String state, String from, String to, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call getIncidentsCall(String systemprofile, String incidentrule, String state, String from, String to) throws ApiException {
         // create path and map variables
         String localVarPath = "/alerts";
 
@@ -858,25 +592,13 @@ public class AlertsIncidentsAndEventsApi {
         final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
-        if (progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                            .build();
-                }
-            });
-        }
-
         String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames);
     }
 
     @SuppressWarnings("rawtypes")
-    private Call getIncidentsValidateBeforeCall(String systemprofile, String incidentrule, String state, String from, String to, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        return getIncidentsCall(systemprofile, incidentrule, state, from, to, progressListener, progressRequestListener);
+    private Call getIncidentsValidateBeforeCall(String systemprofile, String incidentrule, String state, String from, String to) throws ApiException {
+        return getIncidentsCall(systemprofile, incidentrule, state, from, to);
     }
 
     /**
@@ -909,7 +631,7 @@ public class AlertsIncidentsAndEventsApi {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<Alerts> getIncidentsWithHttpInfo(String systemprofile, String incidentrule, String state, String from, String to) throws ApiException {
-        Call call = getIncidentsValidateBeforeCall(systemprofile, incidentrule, state, from, to, null, null);
+        Call call = getIncidentsValidateBeforeCall(systemprofile, incidentrule, state, from, to);
         Type localVarReturnType = new TypeToken<Alerts>() {
         }.getType();
         return apiClient.execute(call, localVarReturnType);
@@ -920,12 +642,10 @@ public class AlertsIncidentsAndEventsApi {
      *
      * @param suppressionname         Alert Suppression name (required)
      * @param body                    Alert Suppression object (required)
-     * @param progressListener        Progress listener
-     * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call putDowntimeCall(String suppressionname, AlertSuppressionDefinition body, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call putDowntimeCall(String suppressionname, AlertSuppressionDefinition body) throws ApiException {
         // create path and map variables
         String localVarPath = "/alertsuppression/{suppressionname}"
                 .replaceAll("\\{" + "suppressionname" + "\\}", apiClient.escapeString(suppressionname));
@@ -948,35 +668,23 @@ public class AlertsIncidentsAndEventsApi {
         final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
-        if (progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                            .build();
-                }
-            });
-        }
-
         String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "PUT", localVarQueryParams, body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "PUT", localVarQueryParams, body, localVarHeaderParams, localVarFormParams, localVarAuthNames);
     }
 
     @SuppressWarnings("rawtypes")
-    private Call putDowntimeValidateBeforeCall(String suppressionname, AlertSuppressionDefinition body, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call putDowntimeValidateBeforeCall(String suppressionname, AlertSuppressionDefinition body) throws ApiException {
         // verify the required parameter 'suppressionname' is set
         if (suppressionname == null) {
-            throw new ApiException("Missing the required parameter 'suppressionname' when calling putDowntime(Async)");
+            throw new ApiException("Missing the required parameter 'suppressionname' when calling putDowntime");
         }
 
         // verify the required parameter 'body' is set
         if (body == null) {
-            throw new ApiException("Missing the required parameter 'body' when calling putDowntime(Async)");
+            throw new ApiException("Missing the required parameter 'body' when calling putDowntime");
         }
 
-        return putDowntimeCall(suppressionname, body, progressListener, progressRequestListener);
+        return putDowntimeCall(suppressionname, body);
     }
 
     /**
@@ -1001,7 +709,7 @@ public class AlertsIncidentsAndEventsApi {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<Void> putDowntimeWithHttpInfo(String suppressionname, AlertSuppressionDefinition body) throws ApiException {
-        Call call = putDowntimeValidateBeforeCall(suppressionname, body, null, null);
+        Call call = putDowntimeValidateBeforeCall(suppressionname, body);
         return apiClient.execute(call);
     }
 
@@ -1010,12 +718,10 @@ public class AlertsIncidentsAndEventsApi {
      *
      * @param eventid                 ID of event (required)
      * @param body                    Event record (required)
-     * @param progressListener        Progress listener
-     * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call updateDeploymentEventCall(String eventid, EventUpdate body, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call updateDeploymentEventCall(String eventid, EventUpdate body) throws ApiException {
         // create path and map variables
         String localVarPath = "/events/Deployment/{eventid}"
                 .replaceAll("\\{" + "eventid" + "\\}", apiClient.escapeString(eventid));
@@ -1038,35 +744,23 @@ public class AlertsIncidentsAndEventsApi {
         final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
-        if (progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                            .build();
-                }
-            });
-        }
-
         String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "PUT", localVarQueryParams, body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "PUT", localVarQueryParams, body, localVarHeaderParams, localVarFormParams, localVarAuthNames);
     }
 
     @SuppressWarnings("rawtypes")
-    private Call updateDeploymentEventValidateBeforeCall(String eventid, EventUpdate body, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call updateDeploymentEventValidateBeforeCall(String eventid, EventUpdate body) throws ApiException {
         // verify the required parameter 'eventid' is set
         if (eventid == null) {
-            throw new ApiException("Missing the required parameter 'eventid' when calling updateDeploymentEvent(Async)");
+            throw new ApiException("Missing the required parameter 'eventid' when calling updateDeploymentEvent");
         }
 
         // verify the required parameter 'body' is set
         if (body == null) {
-            throw new ApiException("Missing the required parameter 'body' when calling updateDeploymentEvent(Async)");
+            throw new ApiException("Missing the required parameter 'body' when calling updateDeploymentEvent");
         }
 
-        return updateDeploymentEventCall(eventid, body, progressListener, progressRequestListener);
+        return updateDeploymentEventCall(eventid, body);
     }
 
     /**
@@ -1091,97 +785,8 @@ public class AlertsIncidentsAndEventsApi {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<Void> updateDeploymentEventWithHttpInfo(String eventid, EventUpdate body) throws ApiException {
-        Call call = updateDeploymentEventValidateBeforeCall(eventid, body, null, null);
+        Call call = updateDeploymentEventValidateBeforeCall(eventid, body);
         return apiClient.execute(call);
     }
 
-    /**
-     * Build call for updateIncident
-     *
-     * @param alertid                 ID of alert (required)
-     * @param body                    Alert record (required)
-     * @param progressListener        Progress listener
-     * @param progressRequestListener Progress request listener
-     * @return Call to execute
-     * @throws ApiException If fail to serialize the request body object
-     */
-    public Call updateIncidentCall(String alertid, AlertUpdate body, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        // create path and map variables
-        String localVarPath = "/alerts/{alertid}"
-                .replaceAll("\\{" + "alertid" + "\\}", apiClient.escapeString(alertid));
-
-        List<Pair> localVarQueryParams = new ArrayList<>();
-
-        Map<String, String> localVarHeaderParams = new HashMap<>();
-
-        Map<String, Object> localVarFormParams = new HashMap<>();
-
-        final String[] localVarAccepts = {
-                "application/json"
-        };
-        final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
-        if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
-
-        final String[] localVarContentTypes = {
-                "application/json"
-        };
-        final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
-        localVarHeaderParams.put("Content-Type", localVarContentType);
-
-        if (progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                            .build();
-                }
-            });
-        }
-
-        String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "PUT", localVarQueryParams, body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
-    }
-
-    @SuppressWarnings("rawtypes")
-    private Call updateIncidentValidateBeforeCall(String alertid, AlertUpdate body, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        // verify the required parameter 'alertid' is set
-        if (alertid == null) {
-            throw new ApiException("Missing the required parameter 'alertid' when calling updateIncident(Async)");
-        }
-
-        // verify the required parameter 'body' is set
-        if (body == null) {
-            throw new ApiException("Missing the required parameter 'body' when calling updateIncident(Async)");
-        }
-
-        return updateIncidentCall(alertid, body, progressListener, progressRequestListener);
-    }
-
-    /**
-     * Update Alert record
-     * Several attributes of an alert (incident) can be modified by updating it. You can either retrieve the alert record via the GET call first and then send the modified JSON object, or you could make a partial update by providing only the properties that should get updated.
-     *
-     * @param alertid ID of alert (required)
-     * @param body    Alert record (required)
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     */
-    public void updateIncident(String alertid, AlertUpdate body) throws ApiException {
-        updateIncidentWithHttpInfo(alertid, body);
-    }
-
-    /**
-     * Update Alert record
-     * Several attributes of an alert (incident) can be modified by updating it. You can either retrieve the alert record via the GET call first and then send the modified JSON object, or you could make a partial update by providing only the properties that should get updated.
-     *
-     * @param alertid ID of alert (required)
-     * @param body    Alert record (required)
-     * @return ApiResponse&lt;Void&gt;
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     */
-    public ApiResponse<Void> updateIncidentWithHttpInfo(String alertid, AlertUpdate body) throws ApiException {
-        Call call = updateIncidentValidateBeforeCall(alertid, body, null, null);
-        return apiClient.execute(call);
-    }
 }

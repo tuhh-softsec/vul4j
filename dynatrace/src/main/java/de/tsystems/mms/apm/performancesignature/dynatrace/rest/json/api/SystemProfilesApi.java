@@ -31,15 +31,12 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.api;
 
 import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Call;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.Response;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.*;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.ActivationStatus;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.SystemProfile;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.SystemProfileConfigurations;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.SystemProfiles;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,12 +65,10 @@ public class SystemProfilesApi {
     /**
      * Build call for getProfiles
      *
-     * @param progressListener        Progress listener
-     * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call getProfilesCall(final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call getProfilesCall() throws ApiException {
         // create path and map variables
         String localVarPath = "/profiles";
 
@@ -95,25 +90,8 @@ public class SystemProfilesApi {
         final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
-        if (progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                            .build();
-                }
-            });
-        }
-
         String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
-    }
-
-    @SuppressWarnings("rawtypes")
-    private Call getProfilesValidateBeforeCall(final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        return getProfilesCall(progressListener, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames);
     }
 
     /**
@@ -136,7 +114,7 @@ public class SystemProfilesApi {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<SystemProfiles> getProfilesWithHttpInfo() throws ApiException {
-        Call call = getProfilesValidateBeforeCall(null, null);
+        Call call = getProfilesCall();
         Type localVarReturnType = new TypeToken<SystemProfiles>() {
         }.getType();
         return apiClient.execute(call, localVarReturnType);
@@ -147,12 +125,10 @@ public class SystemProfilesApi {
      *
      * @param profileid               System Profile id (required)
      * @param configname              Configuration name (required)
-     * @param progressListener        Progress listener
-     * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call getSystemProfileConfigurationStatusCall(String profileid, String configname, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call getSystemProfileConfigurationStatusCall(String profileid, String configname) throws ApiException {
         // create path and map variables
         String localVarPath = "/profiles/{profileid}/configurations/{configname}/status"
                 .replaceAll("\\{" + "profileid" + "\\}", apiClient.escapeString(profileid))
@@ -176,35 +152,23 @@ public class SystemProfilesApi {
         final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
-        if (progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                            .build();
-                }
-            });
-        }
-
         String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames);
     }
 
     @SuppressWarnings("rawtypes")
-    private Call getSystemProfileConfigurationStatusValidateBeforeCall(String profileid, String configname, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call getSystemProfileConfigurationStatusValidateBeforeCall(String profileid, String configname) throws ApiException {
         // verify the required parameter 'profileid' is set
         if (profileid == null) {
-            throw new ApiException("Missing the required parameter 'profileid' when calling getSystemProfileConfigurationStatus(Async)");
+            throw new ApiException("Missing the required parameter 'profileid' when calling getSystemProfileConfigurationStatus");
         }
 
         // verify the required parameter 'configname' is set
         if (configname == null) {
-            throw new ApiException("Missing the required parameter 'configname' when calling getSystemProfileConfigurationStatus(Async)");
+            throw new ApiException("Missing the required parameter 'configname' when calling getSystemProfileConfigurationStatus");
         }
 
-        return getSystemProfileConfigurationStatusCall(profileid, configname, progressListener, progressRequestListener);
+        return getSystemProfileConfigurationStatusCall(profileid, configname);
     }
 
     /**
@@ -231,7 +195,7 @@ public class SystemProfilesApi {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<ActivationStatus> getSystemProfileConfigurationStatusWithHttpInfo(String profileid, String configname) throws ApiException {
-        Call call = getSystemProfileConfigurationStatusValidateBeforeCall(profileid, configname, null, null);
+        Call call = getSystemProfileConfigurationStatusValidateBeforeCall(profileid, configname);
         Type localVarReturnType = new TypeToken<ActivationStatus>() {
         }.getType();
         return apiClient.execute(call, localVarReturnType);
@@ -241,12 +205,10 @@ public class SystemProfilesApi {
      * Build call for getSystemProfileConfigurations
      *
      * @param profileid               System Profile id (required)
-     * @param progressListener        Progress listener
-     * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call getSystemProfileConfigurationsCall(String profileid, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call getSystemProfileConfigurationsCall(String profileid) throws ApiException {
         // create path and map variables
         String localVarPath = "/profiles/{profileid}/configurations"
                 .replaceAll("\\{" + "profileid" + "\\}", apiClient.escapeString(profileid));
@@ -269,30 +231,18 @@ public class SystemProfilesApi {
         final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
-        if (progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                            .build();
-                }
-            });
-        }
-
         String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames);
     }
 
     @SuppressWarnings("rawtypes")
-    private Call getSystemProfileConfigurationsValidateBeforeCall(String profileid, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call getSystemProfileConfigurationsValidateBeforeCall(String profileid) throws ApiException {
         // verify the required parameter 'profileid' is set
         if (profileid == null) {
-            throw new ApiException("Missing the required parameter 'profileid' when calling getSystemProfileConfigurations(Async)");
+            throw new ApiException("Missing the required parameter 'profileid' when calling getSystemProfileConfigurations");
         }
 
-        return getSystemProfileConfigurationsCall(profileid, progressListener, progressRequestListener);
+        return getSystemProfileConfigurationsCall(profileid);
     }
 
     /**
@@ -317,7 +267,7 @@ public class SystemProfilesApi {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<SystemProfileConfigurations> getSystemProfileConfigurationsWithHttpInfo(String profileid) throws ApiException {
-        Call call = getSystemProfileConfigurationsValidateBeforeCall(profileid, null, null);
+        Call call = getSystemProfileConfigurationsValidateBeforeCall(profileid);
         Type localVarReturnType = new TypeToken<SystemProfileConfigurations>() {
         }.getType();
         return apiClient.execute(call, localVarReturnType);
@@ -327,12 +277,10 @@ public class SystemProfilesApi {
      * Build call for getSystemProfileMetaData
      *
      * @param profileid               System Profile id (required)
-     * @param progressListener        Progress listener
-     * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call getSystemProfileMetaDataCall(String profileid, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call getSystemProfileMetaDataCall(String profileid) throws ApiException {
         // create path and map variables
         String localVarPath = "/profiles/{profileid}"
                 .replaceAll("\\{" + "profileid" + "\\}", apiClient.escapeString(profileid));
@@ -355,30 +303,18 @@ public class SystemProfilesApi {
         final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
-        if (progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                            .build();
-                }
-            });
-        }
-
         String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames);
     }
 
     @SuppressWarnings("rawtypes")
-    private Call getSystemProfileMetaDataValidateBeforeCall(String profileid, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call getSystemProfileMetaDataValidateBeforeCall(String profileid) throws ApiException {
         // verify the required parameter 'profileid' is set
         if (profileid == null) {
-            throw new ApiException("Missing the required parameter 'profileid' when calling getSystemProfileMetaData(Async)");
+            throw new ApiException("Missing the required parameter 'profileid' when calling getSystemProfileMetaData");
         }
 
-        return getSystemProfileMetaDataCall(profileid, progressListener, progressRequestListener);
+        return getSystemProfileMetaDataCall(profileid);
     }
 
     /**
@@ -403,7 +339,7 @@ public class SystemProfilesApi {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<SystemProfile> getSystemProfileMetaDataWithHttpInfo(String profileid) throws ApiException {
-        Call call = getSystemProfileMetaDataValidateBeforeCall(profileid, null, null);
+        Call call = getSystemProfileMetaDataValidateBeforeCall(profileid);
         Type localVarReturnType = new TypeToken<SystemProfile>() {
         }.getType();
         return apiClient.execute(call, localVarReturnType);
@@ -413,12 +349,10 @@ public class SystemProfilesApi {
      * Build call for getSystemProfileState
      *
      * @param profileid               System Profile id (required)
-     * @param progressListener        Progress listener
-     * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call getSystemProfileStateCall(String profileid, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call getSystemProfileStateCall(String profileid) throws ApiException {
         // create path and map variables
         String localVarPath = "/profiles/{profileid}/status"
                 .replaceAll("\\{" + "profileid" + "\\}", apiClient.escapeString(profileid));
@@ -441,30 +375,18 @@ public class SystemProfilesApi {
         final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
-        if (progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                            .build();
-                }
-            });
-        }
-
         String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames);
     }
 
     @SuppressWarnings("rawtypes")
-    private Call getSystemProfileStateValidateBeforeCall(String profileid, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call getSystemProfileStateValidateBeforeCall(String profileid) throws ApiException {
         // verify the required parameter 'profileid' is set
         if (profileid == null) {
-            throw new ApiException("Missing the required parameter 'profileid' when calling getSystemProfileState(Async)");
+            throw new ApiException("Missing the required parameter 'profileid' when calling getSystemProfileState");
         }
 
-        return getSystemProfileStateCall(profileid, progressListener, progressRequestListener);
+        return getSystemProfileStateCall(profileid);
     }
 
     /**
@@ -489,7 +411,7 @@ public class SystemProfilesApi {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<ActivationStatus> getSystemProfileStateWithHttpInfo(String profileid) throws ApiException {
-        Call call = getSystemProfileStateValidateBeforeCall(profileid, null, null);
+        Call call = getSystemProfileStateValidateBeforeCall(profileid);
         Type localVarReturnType = new TypeToken<ActivationStatus>() {
         }.getType();
         return apiClient.execute(call, localVarReturnType);
@@ -501,12 +423,10 @@ public class SystemProfilesApi {
      * @param profileid               System Profile id (required)
      * @param configname              Configuration name (required)
      * @param body                    Activation state (optional)
-     * @param progressListener        Progress listener
-     * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call putSystemProfileConfigurationStatusCall(String profileid, String configname, ActivationStatus body, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call putSystemProfileConfigurationStatusCall(String profileid, String configname, ActivationStatus body) throws ApiException {
         // create path and map variables
         String localVarPath = "/profiles/{profileid}/configurations/{configname}/status"
                 .replaceAll("\\{" + "profileid" + "\\}", apiClient.escapeString(profileid))
@@ -530,35 +450,23 @@ public class SystemProfilesApi {
         final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
-        if (progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                            .build();
-                }
-            });
-        }
-
         String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "PUT", localVarQueryParams, body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "PUT", localVarQueryParams, body, localVarHeaderParams, localVarFormParams, localVarAuthNames);
     }
 
     @SuppressWarnings("rawtypes")
-    private Call putSystemProfileConfigurationStatusValidateBeforeCall(String profileid, String configname, ActivationStatus body, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call putSystemProfileConfigurationStatusValidateBeforeCall(String profileid, String configname, ActivationStatus body) throws ApiException {
         // verify the required parameter 'profileid' is set
         if (profileid == null) {
-            throw new ApiException("Missing the required parameter 'profileid' when calling putSystemProfileConfigurationStatus(Async)");
+            throw new ApiException("Missing the required parameter 'profileid' when calling putSystemProfileConfigurationStatus");
         }
 
         // verify the required parameter 'configname' is set
         if (configname == null) {
-            throw new ApiException("Missing the required parameter 'configname' when calling putSystemProfileConfigurationStatus(Async)");
+            throw new ApiException("Missing the required parameter 'configname' when calling putSystemProfileConfigurationStatus");
         }
 
-        return putSystemProfileConfigurationStatusCall(profileid, configname, body, progressListener, progressRequestListener);
+        return putSystemProfileConfigurationStatusCall(profileid, configname, body);
     }
 
     /**
@@ -585,7 +493,7 @@ public class SystemProfilesApi {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<Void> putSystemProfileConfigurationStatusWithHttpInfo(String profileid, String configname, ActivationStatus body) throws ApiException {
-        Call call = putSystemProfileConfigurationStatusValidateBeforeCall(profileid, configname, body, null, null);
+        Call call = putSystemProfileConfigurationStatusValidateBeforeCall(profileid, configname, body);
         return apiClient.execute(call);
     }
 
@@ -594,12 +502,10 @@ public class SystemProfilesApi {
      *
      * @param profileid               System Profile id (required)
      * @param body                    Activation state (optional)
-     * @param progressListener        Progress listener
-     * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call putSystemProfileStateCall(String profileid, ActivationStatus body, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call putSystemProfileStateCall(String profileid, ActivationStatus body) throws ApiException {
         // create path and map variables
         String localVarPath = "/profiles/{profileid}/status"
                 .replaceAll("\\{" + "profileid" + "\\}", apiClient.escapeString(profileid));
@@ -622,30 +528,18 @@ public class SystemProfilesApi {
         final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
-        if (progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                            .build();
-                }
-            });
-        }
-
         String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "PUT", localVarQueryParams, body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "PUT", localVarQueryParams, body, localVarHeaderParams, localVarFormParams, localVarAuthNames);
     }
 
     @SuppressWarnings("rawtypes")
-    private Call putSystemProfileStateValidateBeforeCall(String profileid, ActivationStatus body, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call putSystemProfileStateValidateBeforeCall(String profileid, ActivationStatus body) throws ApiException {
         // verify the required parameter 'profileid' is set
         if (profileid == null) {
-            throw new ApiException("Missing the required parameter 'profileid' when calling putSystemProfileState(Async)");
+            throw new ApiException("Missing the required parameter 'profileid' when calling putSystemProfileState");
         }
 
-        return putSystemProfileStateCall(profileid, body, progressListener, progressRequestListener);
+        return putSystemProfileStateCall(profileid, body);
     }
 
     /**
@@ -670,7 +564,7 @@ public class SystemProfilesApi {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<Void> putSystemProfileStateWithHttpInfo(String profileid, ActivationStatus body) throws ApiException {
-        Call call = putSystemProfileStateValidateBeforeCall(profileid, body, null, null);
+        Call call = putSystemProfileStateValidateBeforeCall(profileid, body);
         return apiClient.execute(call);
     }
 }

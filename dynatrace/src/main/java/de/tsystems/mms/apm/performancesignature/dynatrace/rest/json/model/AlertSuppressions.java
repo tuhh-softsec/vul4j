@@ -34,7 +34,6 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * AlertSuppressions
@@ -69,19 +68,6 @@ public class AlertSuppressions {
 
     public void setAlertsuppressions(List<ResponseReferenceBase> alertsuppressions) {
         this.alertsuppressions = alertsuppressions;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        AlertSuppressions alertSuppressions = (AlertSuppressions) o;
-        return Objects.equals(this.alertsuppressions, alertSuppressions.alertsuppressions);
     }
 
     /**

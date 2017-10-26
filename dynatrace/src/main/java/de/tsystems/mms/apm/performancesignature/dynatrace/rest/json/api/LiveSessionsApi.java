@@ -31,15 +31,12 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.api;
 
 import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Call;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.Response;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.*;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.RecordingStatus;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.SessionRecordingOptions;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.SessionStoringOptions;
 import org.apache.commons.io.FilenameUtils;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,12 +66,10 @@ public class LiveSessionsApi {
      * Build call for getRecording
      *
      * @param profileid               System Profile id (required)
-     * @param progressListener        Progress listener
-     * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call getRecordingCall(String profileid, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call getRecordingCall(String profileid) throws ApiException {
         // create path and map variables
         String localVarPath = "/profiles/{profileid}/session/recording/status"
                 .replaceAll("\\{" + "profileid" + "\\}", apiClient.escapeString(profileid));
@@ -97,30 +92,18 @@ public class LiveSessionsApi {
         final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
-        if (progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                            .build();
-                }
-            });
-        }
-
         String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames);
     }
 
     @SuppressWarnings("rawtypes")
-    private Call getRecordingValidateBeforeCall(String profileid, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call getRecordingValidateBeforeCall(String profileid) throws ApiException {
         // verify the required parameter 'profileid' is set
         if (profileid == null) {
-            throw new ApiException("Missing the required parameter 'profileid' when calling getRecording(Async)");
+            throw new ApiException("Missing the required parameter 'profileid' when calling getRecording");
         }
 
-        return getRecordingCall(profileid, progressListener, progressRequestListener);
+        return getRecordingCall(profileid);
     }
 
     /**
@@ -145,7 +128,7 @@ public class LiveSessionsApi {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<RecordingStatus> getRecordingWithHttpInfo(String profileid) throws ApiException {
-        Call call = getRecordingValidateBeforeCall(profileid, null, null);
+        Call call = getRecordingValidateBeforeCall(profileid);
         Type localVarReturnType = new TypeToken<RecordingStatus>() {
         }.getType();
         return apiClient.execute(call, localVarReturnType);
@@ -156,12 +139,10 @@ public class LiveSessionsApi {
      *
      * @param profileid               System Profile id (required)
      * @param body                    Session recording options (optional)
-     * @param progressListener        Progress listener
-     * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call postRecordingCall(String profileid, SessionRecordingOptions body, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call postRecordingCall(String profileid, SessionRecordingOptions body) throws ApiException {
         // create path and map variables
         String localVarPath = "/profiles/{profileid}/session/recording"
                 .replaceAll("\\{" + "profileid" + "\\}", apiClient.escapeString(profileid));
@@ -184,30 +165,18 @@ public class LiveSessionsApi {
         final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
-        if (progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                            .build();
-                }
-            });
-        }
-
         String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "POST", localVarQueryParams, body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "POST", localVarQueryParams, body, localVarHeaderParams, localVarFormParams, localVarAuthNames);
     }
 
     @SuppressWarnings("rawtypes")
-    private Call postRecordingValidateBeforeCall(String profileid, SessionRecordingOptions body, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call postRecordingValidateBeforeCall(String profileid, SessionRecordingOptions body) throws ApiException {
         // verify the required parameter 'profileid' is set
         if (profileid == null) {
-            throw new ApiException("Missing the required parameter 'profileid' when calling postRecording(Async)");
+            throw new ApiException("Missing the required parameter 'profileid' when calling postRecording");
         }
 
-        return postRecordingCall(profileid, body, progressListener, progressRequestListener);
+        return postRecordingCall(profileid, body);
     }
 
     /**
@@ -235,7 +204,7 @@ public class LiveSessionsApi {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<Void> postRecordingWithHttpInfo(String profileid, SessionRecordingOptions body) throws ApiException {
-        Call call = postRecordingValidateBeforeCall(profileid, body, null, null);
+        Call call = postRecordingValidateBeforeCall(profileid, body);
         return apiClient.execute(call);
     }
 
@@ -244,12 +213,10 @@ public class LiveSessionsApi {
      *
      * @param profileid               System Profile id (required)
      * @param body                    (optional)
-     * @param progressListener        Progress listener
-     * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call stopRecordingCall(String profileid, RecordingStatus body, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call stopRecordingCall(String profileid, RecordingStatus body) throws ApiException {
         // create path and map variables
         String localVarPath = "/profiles/{profileid}/session/recording/status"
                 .replaceAll("\\{" + "profileid" + "\\}", apiClient.escapeString(profileid));
@@ -272,30 +239,18 @@ public class LiveSessionsApi {
         final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
-        if (progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                            .build();
-                }
-            });
-        }
-
         String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "PUT", localVarQueryParams, body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "PUT", localVarQueryParams, body, localVarHeaderParams, localVarFormParams, localVarAuthNames);
     }
 
     @SuppressWarnings("rawtypes")
-    private Call stopRecordingValidateBeforeCall(String profileid, RecordingStatus body, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call stopRecordingValidateBeforeCall(String profileid, RecordingStatus body) throws ApiException {
         // verify the required parameter 'profileid' is set
         if (profileid == null) {
-            throw new ApiException("Missing the required parameter 'profileid' when calling stopRecording(Async)");
+            throw new ApiException("Missing the required parameter 'profileid' when calling stopRecording");
         }
 
-        return stopRecordingCall(profileid, body, progressListener, progressRequestListener);
+        return stopRecordingCall(profileid, body);
     }
 
     /**
@@ -323,7 +278,7 @@ public class LiveSessionsApi {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<Void> stopRecordingWithHttpInfo(String profileid, RecordingStatus body) throws ApiException {
-        Call call = stopRecordingValidateBeforeCall(profileid, body, null, null);
+        Call call = stopRecordingValidateBeforeCall(profileid, body);
         return apiClient.execute(call);
     }
 
@@ -332,12 +287,10 @@ public class LiveSessionsApi {
      *
      * @param profileid               System Profile id (required)
      * @param body                    Session storing options (optional)
-     * @param progressListener        Progress listener
-     * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call storeSessionCall(String profileid, SessionStoringOptions body, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call storeSessionCall(String profileid, SessionStoringOptions body) throws ApiException {
         // create path and map variables
         String localVarPath = "/profiles/{profileid}/session/store"
                 .replaceAll("\\{" + "profileid" + "\\}", apiClient.escapeString(profileid));
@@ -360,30 +313,18 @@ public class LiveSessionsApi {
         final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
-        if (progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                            .build();
-                }
-            });
-        }
-
         String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "POST", localVarQueryParams, body, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "POST", localVarQueryParams, body, localVarHeaderParams, localVarFormParams, localVarAuthNames);
     }
 
     @SuppressWarnings("rawtypes")
-    private Call storeSessionValidateBeforeCall(String profileid, SessionStoringOptions body, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call storeSessionValidateBeforeCall(String profileid, SessionStoringOptions body) throws ApiException {
         // verify the required parameter 'profileid' is set
         if (profileid == null) {
-            throw new ApiException("Missing the required parameter 'profileid' when calling storeSession(Async)");
+            throw new ApiException("Missing the required parameter 'profileid' when calling storeSession");
         }
 
-        return storeSessionCall(profileid, body, progressListener, progressRequestListener);
+        return storeSessionCall(profileid, body);
     }
 
     /**
@@ -411,7 +352,7 @@ public class LiveSessionsApi {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<Void> storeSessionWithHttpInfo(String profileid, SessionStoringOptions body) throws ApiException {
-        Call call = storeSessionValidateBeforeCall(profileid, body, null, null);
+        Call call = storeSessionValidateBeforeCall(profileid, body);
         return apiClient.execute(call);
     }
 }

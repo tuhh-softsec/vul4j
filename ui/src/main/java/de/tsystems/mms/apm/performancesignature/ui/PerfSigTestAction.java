@@ -35,7 +35,7 @@ public class PerfSigTestAction extends TestAction {
 
         for (TestRun testRun : testData.getTestRuns()) {
             for (TestResult testResult : testRun.getTestResults()) {
-                if (testResult.getPackageName().equalsIgnoreCase(packageName) && testResult.getName().equalsIgnoreCase(fullName)) {
+                if (testResult.getPackage().equalsIgnoreCase(packageName) && testResult.getName().equalsIgnoreCase(fullName)) {
                     this.matchingTestRun = testRun;
                     this.matchingTestResult = testResult;
                 }
@@ -48,7 +48,7 @@ public class PerfSigTestAction extends TestAction {
         if (previousData != null) {
             for (TestRun testRun : previousData.getTestRuns()) {
                 for (TestResult testResult : testRun.getTestResults()) {
-                    if (testResult.getPackageName().equals(matchingTestResult.getPackageName()) && testResult.getName().equals(matchingTestResult.getName())) {
+                    if (testResult.getPackage().equals(matchingTestResult.getPackage()) && testResult.getName().equals(matchingTestResult.getName())) {
                         return testResult;
                     }
                 }

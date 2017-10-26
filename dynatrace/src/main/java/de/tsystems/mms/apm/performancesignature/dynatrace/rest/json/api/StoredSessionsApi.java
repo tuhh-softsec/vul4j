@@ -31,15 +31,12 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.api;
 
 import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Call;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.Response;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.*;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.DeletedStoredSessions;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.SessionMetadata;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.Sessions;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,12 +66,10 @@ public class StoredSessionsApi {
      * Build call for deleteStoredSession
      *
      * @param sessionid               Unique session id (required)
-     * @param progressListener        Progress listener
-     * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call deleteStoredSessionCall(String sessionid, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call deleteStoredSessionCall(String sessionid) throws ApiException {
         // create path and map variables
         String localVarPath = "/sessions/{sessionid}"
                 .replaceAll("\\{" + "sessionid" + "\\}", apiClient.escapeString(sessionid));
@@ -97,30 +92,18 @@ public class StoredSessionsApi {
         final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
-        if (progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                            .build();
-                }
-            });
-        }
-
         String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "DELETE", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "DELETE", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames);
     }
 
     @SuppressWarnings("rawtypes")
-    private Call deleteStoredSessionValidateBeforeCall(String sessionid, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call deleteStoredSessionValidateBeforeCall(String sessionid) throws ApiException {
         // verify the required parameter 'sessionid' is set
         if (sessionid == null) {
-            throw new ApiException("Missing the required parameter 'sessionid' when calling deleteStoredSession(Async)");
+            throw new ApiException("Missing the required parameter 'sessionid' when calling deleteStoredSession");
         }
 
-        return deleteStoredSessionCall(sessionid, progressListener, progressRequestListener);
+        return deleteStoredSessionCall(sessionid);
     }
 
     /**
@@ -143,7 +126,7 @@ public class StoredSessionsApi {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<Void> deleteStoredSessionWithHttpInfo(String sessionid) throws ApiException {
-        Call call = deleteStoredSessionValidateBeforeCall(sessionid, null, null);
+        Call call = deleteStoredSessionValidateBeforeCall(sessionid);
         return apiClient.execute(call);
     }
 
@@ -153,12 +136,10 @@ public class StoredSessionsApi {
      * @param type                    Type of sessions which shall be deleted (required)
      * @param olderthanminutes        The minimum age in minutes a stored session must have to be deleted. The value 0 will delete stored sessions regardless of their age (required)
      * @param profile                 If specified, the deletion will only affect stored sessions of this System Profile. Otherwise the System Profile will be irrelevant for deletion (optional)
-     * @param progressListener        Progress listener
-     * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call deleteStoredSessionsCall(String type, String olderthanminutes, String profile, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call deleteStoredSessionsCall(String type, String olderthanminutes, String profile) throws ApiException {
         // create path and map variables
         String localVarPath = "/sessions";
 
@@ -186,35 +167,23 @@ public class StoredSessionsApi {
         final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
-        if (progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                            .build();
-                }
-            });
-        }
-
         String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "DELETE", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "DELETE", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames);
     }
 
     @SuppressWarnings("rawtypes")
-    private Call deleteStoredSessionsValidateBeforeCall(String type, String olderthanminutes, String profile, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call deleteStoredSessionsValidateBeforeCall(String type, String olderthanminutes, String profile) throws ApiException {
         // verify the required parameter 'type' is set
         if (type == null) {
-            throw new ApiException("Missing the required parameter 'type' when calling deleteStoredSessions(Async)");
+            throw new ApiException("Missing the required parameter 'type' when calling deleteStoredSessions");
         }
 
         // verify the required parameter 'olderthanminutes' is set
         if (olderthanminutes == null) {
-            throw new ApiException("Missing the required parameter 'olderthanminutes' when calling deleteStoredSessions(Async)");
+            throw new ApiException("Missing the required parameter 'olderthanminutes' when calling deleteStoredSessions");
         }
 
-        return deleteStoredSessionsCall(type, olderthanminutes, profile, progressListener, progressRequestListener);
+        return deleteStoredSessionsCall(type, olderthanminutes, profile);
     }
 
     /**
@@ -243,7 +212,7 @@ public class StoredSessionsApi {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<DeletedStoredSessions> deleteStoredSessionsWithHttpInfo(String type, String olderthanminutes, String profile) throws ApiException {
-        Call call = deleteStoredSessionsValidateBeforeCall(type, olderthanminutes, profile, null, null);
+        Call call = deleteStoredSessionsValidateBeforeCall(type, olderthanminutes, profile);
         Type localVarReturnType = new TypeToken<DeletedStoredSessions>() {
         }.getType();
         return apiClient.execute(call, localVarReturnType);
@@ -256,23 +225,24 @@ public class StoredSessionsApi {
      * @param removeconfidentialstrings true to remove confidential strings from the exported session, false to keep them included (optional, default to true)
      * @param timeframestart            Timeframe filter start time timestamp (ISO8601) (optional)
      * @param timeframeend              Timeframe filter end time timestamp (ISO8601) (optional)
-     * @param progressListener          Progress listener
-     * @param progressRequestListener   Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call getStoredSessionCall(String sessionid, Boolean removeconfidentialstrings, String timeframestart, String timeframeend, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call getStoredSessionCall(String sessionid, Boolean removeconfidentialstrings, String timeframestart, String timeframeend) throws ApiException {
         // create path and map variables
         String localVarPath = "/sessions/{sessionid}"
                 .replaceAll("\\{" + "sessionid" + "\\}", apiClient.escapeString(sessionid));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
-        if (removeconfidentialstrings != null)
+        if (removeconfidentialstrings != null) {
             localVarQueryParams.addAll(apiClient.parameterToPairs("", "removeconfidentialstrings", removeconfidentialstrings));
-        if (timeframestart != null)
+        }
+        if (timeframestart != null) {
             localVarQueryParams.addAll(apiClient.parameterToPairs("", "timeframestart", timeframestart));
-        if (timeframeend != null)
+        }
+        if (timeframeend != null) {
             localVarQueryParams.addAll(apiClient.parameterToPairs("", "timeframeend", timeframeend));
+        }
 
         Map<String, String> localVarHeaderParams = new HashMap<>();
 
@@ -290,30 +260,18 @@ public class StoredSessionsApi {
         final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
-        if (progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                            .build();
-                }
-            });
-        }
-
         String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames);
     }
 
     @SuppressWarnings("rawtypes")
-    private Call getStoredSessionValidateBeforeCall(String sessionid, Boolean removeconfidentialstrings, String timeframestart, String timeframeend, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call getStoredSessionValidateBeforeCall(String sessionid, Boolean removeconfidentialstrings, String timeframestart, String timeframeend) throws ApiException {
         // verify the required parameter 'sessionid' is set
         if (sessionid == null) {
-            throw new ApiException("Missing the required parameter 'sessionid' when calling getStoredSession(Async)");
+            throw new ApiException("Missing the required parameter 'sessionid' when calling getStoredSession");
         }
 
-        return getStoredSessionCall(sessionid, removeconfidentialstrings, timeframestart, timeframeend, progressListener, progressRequestListener);
+        return getStoredSessionCall(sessionid, removeconfidentialstrings, timeframestart, timeframeend);
     }
 
     /**
@@ -344,7 +302,7 @@ public class StoredSessionsApi {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<File> getStoredSessionWithHttpInfo(String sessionid, Boolean removeconfidentialstrings, String timeframestart, String timeframeend) throws ApiException {
-        Call call = getStoredSessionValidateBeforeCall(sessionid, removeconfidentialstrings, timeframestart, timeframeend, null, null);
+        Call call = getStoredSessionValidateBeforeCall(sessionid, removeconfidentialstrings, timeframestart, timeframeend);
         Type localVarReturnType = new TypeToken<File>() {
         }.getType();
         return apiClient.execute(call, localVarReturnType);
@@ -354,12 +312,10 @@ public class StoredSessionsApi {
      * Build call for getStoredSessionMetaData
      *
      * @param sessionid               Unique session id (required)
-     * @param progressListener        Progress listener
-     * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call getStoredSessionMetaDataCall(String sessionid, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call getStoredSessionMetaDataCall(String sessionid) throws ApiException {
         // create path and map variables
         String localVarPath = "/sessions/{sessionid}/metadata"
                 .replaceAll("\\{" + "sessionid" + "\\}", apiClient.escapeString(sessionid));
@@ -382,30 +338,18 @@ public class StoredSessionsApi {
         final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
-        if (progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                            .build();
-                }
-            });
-        }
-
         String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames);
     }
 
     @SuppressWarnings("rawtypes")
-    private Call getStoredSessionMetaDataValidateBeforeCall(String sessionid, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call getStoredSessionMetaDataValidateBeforeCall(String sessionid) throws ApiException {
         // verify the required parameter 'sessionid' is set
         if (sessionid == null) {
-            throw new ApiException("Missing the required parameter 'sessionid' when calling getStoredSessionMetaData(Async)");
+            throw new ApiException("Missing the required parameter 'sessionid' when calling getStoredSessionMetaData");
         }
 
-        return getStoredSessionMetaDataCall(sessionid, progressListener, progressRequestListener);
+        return getStoredSessionMetaDataCall(sessionid);
     }
 
     /**
@@ -430,7 +374,7 @@ public class StoredSessionsApi {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<SessionMetadata> getStoredSessionMetaDataWithHttpInfo(String sessionid) throws ApiException {
-        Call call = getStoredSessionMetaDataValidateBeforeCall(sessionid, null, null);
+        Call call = getStoredSessionMetaDataValidateBeforeCall(sessionid);
         Type localVarReturnType = new TypeToken<SessionMetadata>() {
         }.getType();
         return apiClient.execute(call, localVarReturnType);
@@ -442,12 +386,10 @@ public class StoredSessionsApi {
      * @param filename                The stored session file to upload (required)
      * @param labels                  List of labels for the imported session (optional)
      * @param locked                  true to activate deletion lock, false to deactivate it (optional, default to true)
-     * @param progressListener        Progress listener
-     * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call importStoredSessionCall(File filename, List<String> labels, Boolean locked, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call importStoredSessionCall(File filename, List<String> labels, Boolean locked) throws ApiException {
         // create path and map variables
         String localVarPath = "/sessions";
 
@@ -475,30 +417,18 @@ public class StoredSessionsApi {
         final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
-        if (progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                            .build();
-                }
-            });
-        }
-
         String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "POST", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "POST", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames);
     }
 
     @SuppressWarnings("rawtypes")
-    private Call importStoredSessionValidateBeforeCall(File filename, List<String> labels, Boolean locked, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    private Call importStoredSessionValidateBeforeCall(File filename, List<String> labels, Boolean locked) throws ApiException {
         // verify the required parameter 'filename' is set
         if (filename == null) {
-            throw new ApiException("Missing the required parameter 'filename' when calling importStoredSession(Async)");
+            throw new ApiException("Missing the required parameter 'filename' when calling importStoredSession");
         }
 
-        return importStoredSessionCall(filename, labels, locked, progressListener, progressRequestListener);
+        return importStoredSessionCall(filename, labels, locked);
     }
 
     /**
@@ -525,19 +455,17 @@ public class StoredSessionsApi {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<Void> importStoredSessionWithHttpInfo(File filename, List<String> labels, Boolean locked) throws ApiException {
-        Call call = importStoredSessionValidateBeforeCall(filename, labels, locked, null, null);
+        Call call = importStoredSessionValidateBeforeCall(filename, labels, locked);
         return apiClient.execute(call);
     }
 
     /**
      * Build call for listStoredSessions
      *
-     * @param progressListener        Progress listener
-     * @param progressRequestListener Progress request listener
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call listStoredSessionsCall(final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Call listStoredSessionsCall() throws ApiException {
         // create path and map variables
         String localVarPath = "/sessions";
 
@@ -559,25 +487,8 @@ public class StoredSessionsApi {
         final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
         localVarHeaderParams.put("Content-Type", localVarContentType);
 
-        if (progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                            .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                            .build();
-                }
-            });
-        }
-
         String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
-    }
-
-    @SuppressWarnings("rawtypes")
-    private Call listStoredSessionsValidateBeforeCall(final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        return listStoredSessionsCall(progressListener, progressRequestListener);
+        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames);
     }
 
     /**
@@ -600,7 +511,7 @@ public class StoredSessionsApi {
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
     public ApiResponse<Sessions> listStoredSessionsWithHttpInfo() throws ApiException {
-        Call call = listStoredSessionsValidateBeforeCall(null, null);
+        Call call = listStoredSessionsCall();
         Type localVarReturnType = new TypeToken<Sessions>() {
         }.getType();
         return apiClient.execute(call, localVarReturnType);

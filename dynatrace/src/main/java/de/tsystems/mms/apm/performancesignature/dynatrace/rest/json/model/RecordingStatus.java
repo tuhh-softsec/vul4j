@@ -38,7 +38,11 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class RecordingStatus {
     @SerializedName("recording")
-    private final boolean recording = false;
+    private final boolean recording;
+
+    public RecordingStatus(boolean recording) {
+        this.recording = recording;
+    }
 
     /**
      * Status of recording, true if recording is ongoing

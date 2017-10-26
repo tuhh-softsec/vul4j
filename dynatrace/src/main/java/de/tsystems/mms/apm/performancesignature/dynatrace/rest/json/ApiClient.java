@@ -37,6 +37,7 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.auth.Authent
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.auth.HttpBasicAuth;
 import okio.BufferedSink;
 import okio.Okio;
+import org.apache.commons.lang.StringUtils;
 
 import javax.net.ssl.*;
 import java.io.File;
@@ -643,7 +644,7 @@ public class ApiClient {
                 return accept;
             }
         }
-        return StringUtil.join(accepts, ",");
+        return StringUtils.join(accepts, ",");
     }
 
     /**
@@ -916,12 +917,11 @@ public class ApiClient {
      * @param headerParams            The header parameters
      * @param formParams              The form parameters
      * @param authNames               The authentications to apply
-     * @param progressRequestListener Progress request listener
      * @return The HTTP call
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call buildCall(String path, String method, List<Pair> queryParams, Object body, Map<String, String> headerParams, Map<String, Object> formParams, String[] authNames, ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Request request = buildRequest(path, method, queryParams, body, headerParams, formParams, authNames, progressRequestListener);
+    public Call buildCall(String path, String method, List<Pair> queryParams, Object body, Map<String, String> headerParams, Map<String, Object> formParams, String[] authNames) throws ApiException {
+        Request request = buildRequest(path, method, queryParams, body, headerParams, formParams, authNames);
 
         return httpClient.newCall(request);
     }
@@ -936,11 +936,10 @@ public class ApiClient {
      * @param headerParams            The header parameters
      * @param formParams              The form parameters
      * @param authNames               The authentications to apply
-     * @param progressRequestListener Progress request listener
      * @return The HTTP request
      * @throws ApiException If fail to serialize the request body object
      */
-    public Request buildRequest(String path, String method, List<Pair> queryParams, Object body, Map<String, String> headerParams, Map<String, Object> formParams, String[] authNames, ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    public Request buildRequest(String path, String method, List<Pair> queryParams, Object body, Map<String, String> headerParams, Map<String, Object> formParams, String[] authNames) throws ApiException {
         updateParamsForAuth(authNames, queryParams, headerParams);
 
         final String url = buildUrl(path, queryParams);
@@ -972,16 +971,7 @@ public class ApiClient {
             reqBody = serialize(body, contentType);
         }
 
-        Request request;
-
-        if (progressRequestListener != null && reqBody != null) {
-            ProgressRequestBody progressRequestBody = new ProgressRequestBody(reqBody, progressRequestListener);
-            request = reqBuilder.method(method, progressRequestBody).build();
-        } else {
-            request = reqBuilder.method(method, reqBody).build();
-        }
-
-        return request;
+        return reqBuilder.method(method, reqBody).build();
     }
 
     /**
