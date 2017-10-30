@@ -171,6 +171,9 @@ public class QueryService {
 
         markFavorites(queries, userInfo);
 
+        setFilterValues(queries, 0);
+        setFilterValues(queries, userInfo.getUserId());
+
         return new Response(true, 200, queries);
     }
 
