@@ -201,7 +201,7 @@ public class ProbeService {
         for (Map<String, Object> entry: result) {
             list.add((Integer)entry.get("id"));
         }
-        pBuilder.or("id", list);
+        pBuilder.orIn("id", list);
         Response r = repository.filter(pBuilder.getQuery(), "land");
         r = authorization.filter(request, r, Probe.class);
         List<Probe> proben = (List<Probe>)r.getData();
