@@ -65,16 +65,16 @@ public class TestAutomationApi {
     /**
      * Build call for finishTestRun
      *
-     * @param profileid               System profile id (required)
-     * @param testrunid               UUID of the test run (required)
+     * @param profileid System profile id (required)
+     * @param testrunid UUID of the test run (required)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call finishTestRunCall(String profileid, String testrunid) throws ApiException {
         // create path and map variables
-        String localVarPath = "/profiles/{profileid}/testruns/{testrunid}/finish"
-                .replaceAll("\\{" + "profileid" + "\\}", apiClient.escapeString(profileid))
-                .replaceAll("\\{" + "testrunid" + "\\}", apiClient.escapeString(testrunid));
+        String localVarPath = ApiClient.API_SUFFIX + "/profiles/{profileid}/testruns/{testrunid}/finish"
+                .replaceAll("\\{profileid\\}", apiClient.escapeString(profileid))
+                .replaceAll("\\{testrunid\\}", apiClient.escapeString(testrunid));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
 
@@ -146,29 +146,29 @@ public class TestAutomationApi {
     /**
      * Build call for getTestRuns
      *
-     * @param profileid               System profile id (required)
-     * @param startTime               Start time (ISO 8601) - default is 1st of January 1970 00:00 (optional)
-     * @param endTime                 End time (ISO 8601) - default is current time (optional)
-     * @param lastNTestruns           Max number of the most recent test runs to include (optional)
-     * @param lastNBuilds             Max number of the most recent builds (versionBuild) values to include (optional)
-     * @param extend                  Level of detail returned in the response: - &#39;runs&#39;: only meta data, - &#39;results&#39;: meta data and individual test results, - &#39;measures&#39;: meta data, test results and measure values (optional, default to runs)
-     * @param finished                Finished state (optional)
-     * @param status                  Filter by status (optional)
-     * @param versionMilestone        Filter by versionMilestone (optional)
-     * @param versionMajor            Filter by versionMajor (optional)
-     * @param versionMinor            Filter by versionMinor (optional)
-     * @param versionRevision         Filter by versionRevision (optional)
-     * @param versionBuild            Filter by versionBuild (optional)
-     * @param category                Filter by category (unit, uidriven, performance, webapi) (optional)
-     * @param marker                  Filter by marker (optional)
-     * @param platform                Filter by platform (optional)
+     * @param profileid        System profile id (required)
+     * @param startTime        Start time (ISO 8601) - default is 1st of January 1970 00:00 (optional)
+     * @param endTime          End time (ISO 8601) - default is current time (optional)
+     * @param lastNTestruns    Max number of the most recent test runs to include (optional)
+     * @param lastNBuilds      Max number of the most recent builds (versionBuild) values to include (optional)
+     * @param extend           Level of detail returned in the response: - &#39;runs&#39;: only meta data, - &#39;results&#39;: meta data and individual test results, - &#39;measures&#39;: meta data, test results and measure values (optional, default to runs)
+     * @param finished         Finished state (optional)
+     * @param status           Filter by status (optional)
+     * @param versionMilestone Filter by versionMilestone (optional)
+     * @param versionMajor     Filter by versionMajor (optional)
+     * @param versionMinor     Filter by versionMinor (optional)
+     * @param versionRevision  Filter by versionRevision (optional)
+     * @param versionBuild     Filter by versionBuild (optional)
+     * @param category         Filter by category (unit, uidriven, performance, webapi) (optional)
+     * @param marker           Filter by marker (optional)
+     * @param platform         Filter by platform (optional)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call getTestRunsCall(String profileid, String startTime, String endTime, Integer lastNTestruns, Integer lastNBuilds, String extend, Boolean finished, List<String> status, List<String> versionMilestone, List<String> versionMajor, List<String> versionMinor, List<String> versionRevision, List<String> versionBuild, List<String> category, List<String> marker, List<String> platform) throws ApiException {
         // create path and map variables
-        String localVarPath = "/profiles/{profileid}/testruns"
-                .replaceAll("\\{" + "profileid" + "\\}", apiClient.escapeString(profileid));
+        String localVarPath = ApiClient.API_SUFFIX + "/profiles/{profileid}/testruns"
+                .replaceAll("\\{profileid\\}", apiClient.escapeString(profileid));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
         if (startTime != null)
@@ -293,16 +293,16 @@ public class TestAutomationApi {
     /**
      * Build call for getTestrunById
      *
-     * @param profileid               System profile id (required)
-     * @param testrunid               UUID of the test run (required)
+     * @param profileid System profile id (required)
+     * @param testrunid UUID of the test run (required)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call getTestrunByIdCall(String profileid, String testrunid) throws ApiException {
         // create path and map variables
-        String localVarPath = "/profiles/{profileid}/testruns/{testrunid}"
-                .replaceAll("\\{" + "profileid" + "\\}", apiClient.escapeString(profileid))
-                .replaceAll("\\{" + "testrunid" + "\\}", apiClient.escapeString(testrunid));
+        String localVarPath = ApiClient.API_SUFFIX + "/profiles/{profileid}/testruns/{testrunid}"
+                .replaceAll("\\{profileid\\}", apiClient.escapeString(profileid))
+                .replaceAll("\\{testrunid\\}", apiClient.escapeString(testrunid));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
 
@@ -374,16 +374,16 @@ public class TestAutomationApi {
     /**
      * Build call for invalidateTestRun
      *
-     * @param profileid               System profile id (required)
-     * @param testrunid               UUID of the test run (required)
+     * @param profileid System profile id (required)
+     * @param testrunid UUID of the test run (required)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call invalidateTestRunCall(String profileid, String testrunid) throws ApiException {
         // create path and map variables
-        String localVarPath = "/profiles/{profileid}/testruns/{testrunid}/invalidate"
-                .replaceAll("\\{" + "profileid" + "\\}", apiClient.escapeString(profileid))
-                .replaceAll("\\{" + "testrunid" + "\\}", apiClient.escapeString(testrunid));
+        String localVarPath = ApiClient.API_SUFFIX + "/profiles/{profileid}/testruns/{testrunid}/invalidate"
+                .replaceAll("\\{profileid\\}", apiClient.escapeString(profileid))
+                .replaceAll("\\{testrunid\\}", apiClient.escapeString(testrunid));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
 
@@ -455,17 +455,17 @@ public class TestAutomationApi {
     /**
      * Build call for markTestExecutionAsFailed
      *
-     * @param profileid               System profile id (required)
-     * @param testrunid               UUID of the test run (required)
-     * @param testId                  Full test name including package description and class name (if applicable) (required)
+     * @param profileid System profile id (required)
+     * @param testrunid UUID of the test run (required)
+     * @param testId    Full test name including package description and class name (if applicable) (required)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call markTestExecutionAsFailedCall(String profileid, String testrunid, String testId) throws ApiException {
         // create path and map variables
-        String localVarPath = "/profiles/{profileid}/testruns/{testrunid}/markAsFailed"
-                .replaceAll("\\{" + "profileid" + "\\}", apiClient.escapeString(profileid))
-                .replaceAll("\\{" + "testrunid" + "\\}", apiClient.escapeString(testrunid));
+        String localVarPath = ApiClient.API_SUFFIX + "/profiles/{profileid}/testruns/{testrunid}/markAsFailed"
+                .replaceAll("\\{profileid\\}", apiClient.escapeString(profileid))
+                .replaceAll("\\{testrunid\\}", apiClient.escapeString(testrunid));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
         if (testId != null)
@@ -546,17 +546,17 @@ public class TestAutomationApi {
     /**
      * Build call for postExternalTestData
      *
-     * @param profileid               System profile id (required)
-     * @param testrunid               UUID of the test run (required)
-     * @param body                    Test result (required)
+     * @param profileid System profile id (required)
+     * @param testrunid UUID of the test run (required)
+     * @param body      Test result (required)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call postExternalTestDataCall(String profileid, String testrunid, ExternalTest body) throws ApiException {
         // create path and map variables
-        String localVarPath = "/profiles/{profileid}/testruns/{testrunid}"
-                .replaceAll("\\{" + "profileid" + "\\}", apiClient.escapeString(profileid))
-                .replaceAll("\\{" + "testrunid" + "\\}", apiClient.escapeString(testrunid));
+        String localVarPath = ApiClient.API_SUFFIX + "/profiles/{profileid}/testruns/{testrunid}"
+                .replaceAll("\\{profileid\\}", apiClient.escapeString(profileid))
+                .replaceAll("\\{testrunid\\}", apiClient.escapeString(testrunid));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
 
@@ -631,15 +631,15 @@ public class TestAutomationApi {
     /**
      * Build call for postTestRun
      *
-     * @param profileid               System profile id (required)
-     * @param body                    Test run parameters (required)
+     * @param profileid System profile id (required)
+     * @param body      Test run parameters (required)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call postTestRunCall(String profileid, TestRunDefinition body) throws ApiException {
         // create path and map variables
-        String localVarPath = "/profiles/{profileid}/testruns"
-                .replaceAll("\\{" + "profileid" + "\\}", apiClient.escapeString(profileid));
+        String localVarPath = ApiClient.API_SUFFIX + "/profiles/{profileid}/testruns"
+                .replaceAll("\\{profileid\\}", apiClient.escapeString(profileid));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
 
@@ -711,15 +711,15 @@ public class TestAutomationApi {
     /**
      * Build call for searchTestRuns
      *
-     * @param profileid               System profile id (required)
-     * @param body                    Test run filter (optional)
+     * @param profileid System profile id (required)
+     * @param body      Test run filter (optional)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call searchTestRunsCall(String profileid, TestRunFilter body) throws ApiException {
         // create path and map variables
-        String localVarPath = "/profiles/{profileid}/testruns/search"
-                .replaceAll("\\{" + "profileid" + "\\}", apiClient.escapeString(profileid));
+        String localVarPath = ApiClient.API_SUFFIX + "/profiles/{profileid}/testruns/search"
+                .replaceAll("\\{profileid\\}", apiClient.escapeString(profileid));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
 

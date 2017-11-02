@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package de.tsystems.mms.apm.performancesignature.dynatrace.rest.model;
+package de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml.model;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement
 public class Result {
     @XmlAttribute
     private String value;
+    @XmlElement
+    private String success;
 
     public String getValue() {
         return value;
@@ -33,5 +32,13 @@ public class Result {
 
     public boolean isResultTrue() {
         return Boolean.parseBoolean(value);
+    }
+
+    public String getSuccess() {
+        return success;
+    }
+
+    public boolean isSuccessTrue() {
+        return Boolean.parseBoolean(success);
     }
 }

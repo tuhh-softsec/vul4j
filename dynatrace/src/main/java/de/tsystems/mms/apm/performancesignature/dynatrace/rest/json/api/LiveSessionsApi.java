@@ -65,14 +65,14 @@ public class LiveSessionsApi {
     /**
      * Build call for getRecording
      *
-     * @param profileid               System Profile id (required)
+     * @param profileid System Profile id (required)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call getRecordingCall(String profileid) throws ApiException {
         // create path and map variables
-        String localVarPath = "/profiles/{profileid}/session/recording/status"
-                .replaceAll("\\{" + "profileid" + "\\}", apiClient.escapeString(profileid));
+        String localVarPath = ApiClient.API_SUFFIX + "/profiles/{profileid}/session/recording/status"
+                .replaceAll("\\{profileid\\}", apiClient.escapeString(profileid));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
 
@@ -137,15 +137,15 @@ public class LiveSessionsApi {
     /**
      * Build call for postRecording
      *
-     * @param profileid               System Profile id (required)
-     * @param body                    Session recording options (optional)
+     * @param profileid System Profile id (required)
+     * @param body      Session recording options (optional)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call postRecordingCall(String profileid, SessionRecordingOptions body) throws ApiException {
         // create path and map variables
-        String localVarPath = "/profiles/{profileid}/session/recording"
-                .replaceAll("\\{" + "profileid" + "\\}", apiClient.escapeString(profileid));
+        String localVarPath = ApiClient.API_SUFFIX + "/profiles/{profileid}/session/recording"
+                .replaceAll("\\{profileid\\}", apiClient.escapeString(profileid));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
 
@@ -211,15 +211,15 @@ public class LiveSessionsApi {
     /**
      * Build call for stopRecording
      *
-     * @param profileid               System Profile id (required)
-     * @param body                    (optional)
+     * @param profileid System Profile id (required)
+     * @param body      (optional)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call stopRecordingCall(String profileid, RecordingStatus body) throws ApiException {
         // create path and map variables
-        String localVarPath = "/profiles/{profileid}/session/recording/status"
-                .replaceAll("\\{" + "profileid" + "\\}", apiClient.escapeString(profileid));
+        String localVarPath = ApiClient.API_SUFFIX + "/profiles/{profileid}/session/recording/status"
+                .replaceAll("\\{profileid\\}", apiClient.escapeString(profileid));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
 
@@ -265,6 +265,9 @@ public class LiveSessionsApi {
     public String stopRecording(String profileid, RecordingStatus body) throws ApiException {
         ApiResponse<Void> response = stopRecordingWithHttpInfo(profileid, body);
         List<String> location = response.getHeaders().get("Location");
+        if (location.isEmpty()) {
+            return null;
+        }
         return FilenameUtils.getName(location.get(0));
     }
 
@@ -285,15 +288,15 @@ public class LiveSessionsApi {
     /**
      * Build call for storeSession
      *
-     * @param profileid               System Profile id (required)
-     * @param body                    Session storing options (optional)
+     * @param profileid System Profile id (required)
+     * @param body      Session storing options (optional)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call storeSessionCall(String profileid, SessionStoringOptions body) throws ApiException {
         // create path and map variables
-        String localVarPath = "/profiles/{profileid}/session/store"
-                .replaceAll("\\{" + "profileid" + "\\}", apiClient.escapeString(profileid));
+        String localVarPath = ApiClient.API_SUFFIX + "/profiles/{profileid}/session/store"
+                .replaceAll("\\{profileid\\}", apiClient.escapeString(profileid));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
 

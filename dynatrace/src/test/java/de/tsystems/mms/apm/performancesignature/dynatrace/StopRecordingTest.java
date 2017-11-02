@@ -16,8 +16,8 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace;
 
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionException;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml.CommandExecutionException;
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.TestUtils;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.model.FreeStyleBuild;
@@ -104,7 +104,7 @@ public class StopRecordingTest {
         assertTrue(invisAction.getTimeframeStart() != null);
 
         DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceConfigurations.get(0).name);
-        assertTrue(connection.getSessions().contains(invisAction.getSessionName()));
+        assertTrue(connection.getSessions().getSessions().contains(invisAction.getSessionName()));
     }
 
 }

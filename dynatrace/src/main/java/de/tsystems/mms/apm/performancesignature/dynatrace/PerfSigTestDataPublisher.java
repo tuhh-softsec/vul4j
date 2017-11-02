@@ -18,7 +18,7 @@ package de.tsystems.mms.apm.performancesignature.dynatrace;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRun;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml.RESTErrorException;
 import de.tsystems.mms.apm.performancesignature.model.PerfSigTestData;
 import de.tsystems.mms.apm.performancesignature.model.PerfSigTestDataWrapper;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
@@ -59,12 +59,12 @@ public class PerfSigTestDataPublisher extends TestDataPublisher {
         List<PerfSigEnvInvisAction> envVars = run.getActions(PerfSigEnvInvisAction.class);
         for (PerfSigEnvInvisAction registerEnvVars : envVars) {
             if (StringUtils.isNotBlank(registerEnvVars.getTestRunID())) {
-                TestRun testRun = connection.getTestRunFromXML(registerEnvVars.getTestRunID());
+                TestRun testRun = connection.getTestRun(registerEnvVars.getTestRunID());
                 if (testRun == null || testRun.getTestResults() == null || testRun.getTestResults().isEmpty()) {
                     throw new RESTErrorException(Messages.PerfSigRecorder_XMLReportError());
                 } else {
                     testRuns.add(testRun);
-                    logger.println(Messages.PerfSigTestDataPublisher_XMLReportResults(testRun.getTestResults().size(), " " + testRun.getTestRunID()));
+                    logger.println(Messages.PerfSigTestDataPublisher_XMLReportResults(testRun.getTestResults().size(), " " + testRun.getId()));
                 }
             }
         }

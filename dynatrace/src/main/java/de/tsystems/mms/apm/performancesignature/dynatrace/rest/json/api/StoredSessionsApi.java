@@ -65,14 +65,14 @@ public class StoredSessionsApi {
     /**
      * Build call for deleteStoredSession
      *
-     * @param sessionid               Unique session id (required)
+     * @param sessionid Unique session id (required)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call deleteStoredSessionCall(String sessionid) throws ApiException {
         // create path and map variables
-        String localVarPath = "/sessions/{sessionid}"
-                .replaceAll("\\{" + "sessionid" + "\\}", apiClient.escapeString(sessionid));
+        String localVarPath = ApiClient.API_SUFFIX + "/sessions/{sessionid}"
+                .replaceAll("\\{sessionid\\}", apiClient.escapeString(sessionid));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
 
@@ -133,15 +133,15 @@ public class StoredSessionsApi {
     /**
      * Build call for deleteStoredSessions
      *
-     * @param type                    Type of sessions which shall be deleted (required)
-     * @param olderthanminutes        The minimum age in minutes a stored session must have to be deleted. The value 0 will delete stored sessions regardless of their age (required)
-     * @param profile                 If specified, the deletion will only affect stored sessions of this System Profile. Otherwise the System Profile will be irrelevant for deletion (optional)
+     * @param type             Type of sessions which shall be deleted (required)
+     * @param olderthanminutes The minimum age in minutes a stored session must have to be deleted. The value 0 will delete stored sessions regardless of their age (required)
+     * @param profile          If specified, the deletion will only affect stored sessions of this System Profile. Otherwise the System Profile will be irrelevant for deletion (optional)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call deleteStoredSessionsCall(String type, String olderthanminutes, String profile) throws ApiException {
         // create path and map variables
-        String localVarPath = "/sessions";
+        String localVarPath = ApiClient.API_SUFFIX + "/sessions";
 
         List<Pair> localVarQueryParams = new ArrayList<>();
         if (type != null)
@@ -230,8 +230,8 @@ public class StoredSessionsApi {
      */
     public Call getStoredSessionCall(String sessionid, Boolean removeconfidentialstrings, String timeframestart, String timeframeend) throws ApiException {
         // create path and map variables
-        String localVarPath = "/sessions/{sessionid}"
-                .replaceAll("\\{" + "sessionid" + "\\}", apiClient.escapeString(sessionid));
+        String localVarPath = ApiClient.API_SUFFIX + "/sessions/{sessionid}"
+                .replaceAll("\\{sessionid\\}", apiClient.escapeString(sessionid));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
         if (removeconfidentialstrings != null) {
@@ -311,14 +311,14 @@ public class StoredSessionsApi {
     /**
      * Build call for getStoredSessionMetaData
      *
-     * @param sessionid               Unique session id (required)
+     * @param sessionid Unique session id (required)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call getStoredSessionMetaDataCall(String sessionid) throws ApiException {
         // create path and map variables
-        String localVarPath = "/sessions/{sessionid}/metadata"
-                .replaceAll("\\{" + "sessionid" + "\\}", apiClient.escapeString(sessionid));
+        String localVarPath = ApiClient.API_SUFFIX + "/sessions/{sessionid}/metadata"
+                .replaceAll("\\{sessionid\\}", apiClient.escapeString(sessionid));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
 
@@ -381,85 +381,6 @@ public class StoredSessionsApi {
     }
 
     /**
-     * Build call for importStoredSession
-     *
-     * @param filename                The stored session file to upload (required)
-     * @param labels                  List of labels for the imported session (optional)
-     * @param locked                  true to activate deletion lock, false to deactivate it (optional, default to true)
-     * @return Call to execute
-     * @throws ApiException If fail to serialize the request body object
-     */
-    public Call importStoredSessionCall(File filename, List<String> labels, Boolean locked) throws ApiException {
-        // create path and map variables
-        String localVarPath = "/sessions";
-
-        List<Pair> localVarQueryParams = new ArrayList<>();
-        if (labels != null)
-            localVarQueryParams.addAll(apiClient.parameterToPairs("multi", "labels", labels));
-        if (locked != null)
-            localVarQueryParams.addAll(apiClient.parameterToPairs("", "locked", locked));
-
-        Map<String, String> localVarHeaderParams = new HashMap<>();
-
-        Map<String, Object> localVarFormParams = new HashMap<>();
-        if (filename != null)
-            localVarFormParams.put("filename", filename);
-
-        final String[] localVarAccepts = {
-                "application/json"
-        };
-        final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
-        if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
-
-        final String[] localVarContentTypes = {
-                "multipart/form-data"
-        };
-        final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
-        localVarHeaderParams.put("Content-Type", localVarContentType);
-
-        String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "POST", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames);
-    }
-
-    @SuppressWarnings("rawtypes")
-    private Call importStoredSessionValidateBeforeCall(File filename, List<String> labels, Boolean locked) throws ApiException {
-        // verify the required parameter 'filename' is set
-        if (filename == null) {
-            throw new ApiException("Missing the required parameter 'filename' when calling importStoredSession");
-        }
-
-        return importStoredSessionCall(filename, labels, locked);
-    }
-
-    /**
-     * Import stored session through form
-     * Upload and import a session via a form. Alternatively, you can send the file as an octet-stream in the post body.
-     *
-     * @param filename The stored session file to upload (required)
-     * @param labels   List of labels for the imported session (optional)
-     * @param locked   true to activate deletion lock, false to deactivate it (optional, default to true)
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     */
-    public void importStoredSession(File filename, List<String> labels, Boolean locked) throws ApiException {
-        importStoredSessionWithHttpInfo(filename, labels, locked);
-    }
-
-    /**
-     * Import stored session through form
-     * Upload and import a session via a form. Alternatively, you can send the file as an octet-stream in the post body.
-     *
-     * @param filename The stored session file to upload (required)
-     * @param labels   List of labels for the imported session (optional)
-     * @param locked   true to activate deletion lock, false to deactivate it (optional, default to true)
-     * @return ApiResponse&lt;Void&gt;
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     */
-    public ApiResponse<Void> importStoredSessionWithHttpInfo(File filename, List<String> labels, Boolean locked) throws ApiException {
-        Call call = importStoredSessionValidateBeforeCall(filename, labels, locked);
-        return apiClient.execute(call);
-    }
-
-    /**
      * Build call for listStoredSessions
      *
      * @return Call to execute
@@ -467,7 +388,7 @@ public class StoredSessionsApi {
      */
     public Call listStoredSessionsCall() throws ApiException {
         // create path and map variables
-        String localVarPath = "/sessions";
+        String localVarPath = ApiClient.API_SUFFIX + "/sessions";
 
         List<Pair> localVarQueryParams = new ArrayList<>();
 

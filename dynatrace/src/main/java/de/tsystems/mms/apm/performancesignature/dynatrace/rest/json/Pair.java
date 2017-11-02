@@ -28,6 +28,8 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace.rest.json;
 
+import org.apache.commons.lang.StringUtils;
+
 public class Pair {
     private String name = "";
     private String value = "";
@@ -58,6 +60,6 @@ public class Pair {
     }
 
     private boolean isValidString(String arg) {
-        return arg != null && !arg.trim().isEmpty();
+        return StringUtils.isNotBlank(arg);
     }
 }

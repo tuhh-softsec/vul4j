@@ -23,8 +23,8 @@ import com.cloudbees.plugins.credentials.common.StandardUsernameListBoxModel;
 import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials;
 import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
 import com.cloudbees.plugins.credentials.domains.DomainRequirement;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionException;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml.CommandExecutionException;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.Extension;
@@ -112,7 +112,7 @@ public class CredProfilePair extends AbstractDescribableImpl<CredProfilePair> {
             try {
                 CredProfilePair pair = new CredProfilePair("", credentialsId);
                 final DTServerConnection connection = new DTServerConnection(serverUrl, pair, verifyCertificate, customProxyServer);
-                return PerfSigUtils.listToListBoxModel(connection.getSystemProfiles());
+                return PerfSigUtils.listToListBoxModel(connection.getSystemProfiles().getSystemprofiles());
             } catch (CommandExecutionException ignored) {
                 return new StandardListBoxModel().includeEmptyValue();
             }

@@ -16,10 +16,6 @@
     <name>Performance Signature: Viewer</name>
     <url>https://wiki.jenkins-ci.org/display/JENKINS/Performance+Signature+with+Dynatrace+Plugin</url>
 
-    <properties>
-        <java.level>7</java.level>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>

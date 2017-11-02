@@ -43,8 +43,6 @@ public class PerfSigUIPlugin extends Plugin {
         // Moved in 2.2.0
         Run.XSTREAM2.addCompatibilityAlias("de.tsystems.mms.apm.performancesignature.dynatrace.model.ChartDashlet", ChartDashlet.class);
         Run.XSTREAM2.addCompatibilityAlias("de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport", DashboardReport.class);
-        Run.XSTREAM2.addCompatibilityAlias("de.tsystems.mms.apm.performancesignature.dynatrace.model.IncidentChart", IncidentChart.class);
-        Run.XSTREAM2.addCompatibilityAlias("de.tsystems.mms.apm.performancesignature.dynatrace.model.IncidentViolation", IncidentViolation.class);
         Run.XSTREAM2.addCompatibilityAlias("de.tsystems.mms.apm.performancesignature.dynatrace.model.Measure", Measure.class);
         Run.XSTREAM2.addCompatibilityAlias("de.tsystems.mms.apm.performancesignature.dynatrace.model.Measurement", Measurement.class);
         Run.XSTREAM2.addCompatibilityAlias("de.tsystems.mms.apm.performancesignature.dynatrace.model.TestResult", TestResult.class);

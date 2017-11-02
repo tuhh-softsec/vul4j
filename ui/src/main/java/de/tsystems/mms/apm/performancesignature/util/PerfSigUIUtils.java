@@ -16,9 +16,8 @@
 
 package de.tsystems.mms.apm.performancesignature.util;
 
+import de.tsystems.mms.apm.performancesignature.dynatrace.model.Alert;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.ChartDashlet;
-import de.tsystems.mms.apm.performancesignature.dynatrace.model.IncidentChart;
-import de.tsystems.mms.apm.performancesignature.dynatrace.model.IncidentViolation;
 import hudson.FilePath;
 import hudson.model.Result;
 import hudson.model.Run;
@@ -121,24 +120,22 @@ public final class PerfSigUIUtils {
         }
     }
 
-    public static void handleIncidents(final Run<?, ?> run, final List<IncidentChart> incidents, final PrintStream logger, final int nonFunctionalFailure) {
+    public static void handleIncidents(final Run<?, ?> run, final List<Alert> incidents, final PrintStream logger, final int nonFunctionalFailure) {
         int numWarning = 0, numSevere = 0;
         if (incidents != null && !incidents.isEmpty()) {
             logger.println(Messages.PerfSigUIUtils_FollowingIncidents());
-            for (IncidentChart incident : incidents) {
-                for (IncidentViolation violation : incident.getViolations()) {
-                    switch (violation.getSeverity()) {
-                        case SEVERE:
-                            logger.println(Messages.PerfSigUIUtils_SevereIncident(incident.getRule(), violation.getRule(), violation.getDescription()));
-                            numSevere++;
-                            break;
-                        case WARNING:
-                            logger.println(Messages.PerfSigUIUtils_WarningIncident(incident.getRule(), violation.getRule(), violation.getDescription()));
-                            numWarning++;
-                            break;
-                        default:
-                            break;
-                    }
+            for (Alert incident : incidents) {
+                switch (incident.getSeverity()) {
+                    case SEVERE:
+                        logger.println(Messages.PerfSigUIUtils_SevereIncident(incident.getRule(), incident.getRule(), incident.getDescription()));
+                        numSevere++;
+                        break;
+                    case WARNING:
+                        logger.println(Messages.PerfSigUIUtils_WarningIncident(incident.getRule(), incident.getRule(), incident.getDescription()));
+                        numWarning++;
+                        break;
+                    default:
+                        break;
                 }
             }
 

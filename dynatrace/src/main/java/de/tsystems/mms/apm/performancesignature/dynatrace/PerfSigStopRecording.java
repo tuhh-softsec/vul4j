@@ -17,7 +17,7 @@
 package de.tsystems.mms.apm.performancesignature.dynatrace;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml.RESTErrorException;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.Extension;
 import hudson.FilePath;
@@ -41,8 +41,6 @@ import java.util.Date;
 import java.util.List;
 
 public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
-    private static final int reanalyzeSessionTimeout = 5 * 60000; //==1 minute
-    private static final int reanalyzeSessionPollingInterval = 5000; //==5 seconds
     private final String dynatraceProfile;
     private boolean reanalyzeSession;
 
@@ -84,25 +82,6 @@ public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
             buildEnvVars.setSessionName(sessionName);
         }
         logger.println(Messages.PerfSigStopRecording_StoppedSessionRecording(connection.getCredProfilePair().getProfile(), sessionName));
-
-        if (getReanalyzeSession()) {
-            logger.println(Messages.PerfSigStopRecording_ReanalyzeSession());
-            boolean reanalyzeFinished = connection.reanalyzeSessionStatus(sessionName);
-            if (connection.reanalyzeSession(sessionName)) {
-                int timeout = reanalyzeSessionTimeout;
-                while ((!reanalyzeFinished) && (timeout > 0)) {
-                    logger.println(Messages.PerfSigStopRecording_QueryingSession());
-                    Thread.sleep(reanalyzeSessionPollingInterval);
-                    timeout -= reanalyzeSessionPollingInterval;
-                    reanalyzeFinished = connection.reanalyzeSessionStatus(sessionName);
-                }
-                if (reanalyzeFinished) {
-                    logger.println(Messages.PerfSigStopRecording_SessionReanalysisFinished());
-                } else {
-                    throw new RESTErrorException(Messages.PerfSigStopRecording_TimeoutRaised());
-                }
-            }
-        }
     }
 
     public String getDynatraceProfile() {

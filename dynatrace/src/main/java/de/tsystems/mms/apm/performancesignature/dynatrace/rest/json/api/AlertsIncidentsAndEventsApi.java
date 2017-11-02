@@ -30,6 +30,7 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.api;
 
 import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Call;
+import de.tsystems.mms.apm.performancesignature.dynatrace.model.Alert;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.*;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.*;
 
@@ -61,13 +62,13 @@ public class AlertsIncidentsAndEventsApi {
     /**
      * Build call for createDeploymentEvent
      *
-     * @param body                    Event record (required)
+     * @param body Event record (required)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call createDeploymentEventCall(DeploymentEvent body) throws ApiException {
         // create path and map variables
-        String localVarPath = "/events/Deployment";
+        String localVarPath = ApiClient.API_SUFFIX + "/events/Deployment";
 
         List<Pair> localVarQueryParams = new ArrayList<>();
 
@@ -128,14 +129,14 @@ public class AlertsIncidentsAndEventsApi {
     /**
      * Build call for deleteDeploymentEvent
      *
-     * @param eventid                 ID of event (required)
+     * @param eventid ID of event (required)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call deleteDeploymentEventCall(String eventid) throws ApiException {
         // create path and map variables
-        String localVarPath = "/events/Deployment/{eventid}"
-                .replaceAll("\\{" + "eventid" + "\\}", apiClient.escapeString(eventid));
+        String localVarPath = ApiClient.API_SUFFIX + "/events/Deployment/{eventid}"
+                .replaceAll("\\{eventid\\}", apiClient.escapeString(eventid));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
 
@@ -196,14 +197,14 @@ public class AlertsIncidentsAndEventsApi {
     /**
      * Build call for deleteDowntime
      *
-     * @param suppressionname         Alert Suppression name (required)
+     * @param suppressionname Alert Suppression name (required)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call deleteDowntimeCall(String suppressionname) throws ApiException {
         // create path and map variables
-        String localVarPath = "/alertsuppression/{suppressionname}"
-                .replaceAll("\\{" + "suppressionname" + "\\}", apiClient.escapeString(suppressionname));
+        String localVarPath = ApiClient.API_SUFFIX + "/alertsuppression/{suppressionname}"
+                .replaceAll("\\{suppressionname\\}", apiClient.escapeString(suppressionname));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
 
@@ -264,14 +265,14 @@ public class AlertsIncidentsAndEventsApi {
     /**
      * Build call for getDeploymentEvent
      *
-     * @param eventid                 ID of event (required)
+     * @param eventid ID of event (required)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call getDeploymentEventCall(String eventid) throws ApiException {
         // create path and map variables
-        String localVarPath = "/events/Deployment/{eventid}"
-                .replaceAll("\\{" + "eventid" + "\\}", apiClient.escapeString(eventid));
+        String localVarPath = ApiClient.API_SUFFIX + "/events/Deployment/{eventid}"
+                .replaceAll("\\{eventid\\}", apiClient.escapeString(eventid));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
 
@@ -336,14 +337,14 @@ public class AlertsIncidentsAndEventsApi {
     /**
      * Build call for getDowntime
      *
-     * @param suppressionname         Alert Suppression name (required)
+     * @param suppressionname Alert Suppression name (required)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call getDowntimeCall(String suppressionname) throws ApiException {
         // create path and map variables
-        String localVarPath = "/alertsuppression/{suppressionname}"
-                .replaceAll("\\{" + "suppressionname" + "\\}", apiClient.escapeString(suppressionname));
+        String localVarPath = ApiClient.API_SUFFIX + "/alertsuppression/{suppressionname}"
+                .replaceAll("\\{suppressionname\\}", apiClient.escapeString(suppressionname));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
 
@@ -407,14 +408,14 @@ public class AlertsIncidentsAndEventsApi {
     /**
      * Build call for getDowntimes
      *
-     * @param systemprofile           System Profile id (optional)
-     * @param incidentrule            Incident Rule name (optional)
+     * @param systemprofile System Profile id (optional)
+     * @param incidentrule  Incident Rule name (optional)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call getDowntimesCall(String systemprofile, String incidentrule) throws ApiException {
         // create path and map variables
-        String localVarPath = "/alertsuppression";
+        String localVarPath = ApiClient.API_SUFFIX + "/alertsuppression";
 
         List<Pair> localVarQueryParams = new ArrayList<>();
         if (systemprofile != null)
@@ -480,14 +481,14 @@ public class AlertsIncidentsAndEventsApi {
     /**
      * Build call for getIncident
      *
-     * @param alertid                 ID of alert (required)
+     * @param alertid ID of alert (required)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call getIncidentCall(String alertid) throws ApiException {
         // create path and map variables
-        String localVarPath = "/alerts/{alertid}"
-                .replaceAll("\\{" + "alertid" + "\\}", apiClient.escapeString(alertid));
+        String localVarPath = ApiClient.API_SUFFIX + "/alerts/{alertid}"
+                .replaceAll("\\{alertid\\}", apiClient.escapeString(alertid));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
 
@@ -552,17 +553,17 @@ public class AlertsIncidentsAndEventsApi {
     /**
      * Build call for getIncidents
      *
-     * @param systemprofile           System Profile id (optional)
-     * @param incidentrule            Incident Rule name (optional)
-     * @param state                   Alert state (optional)
-     * @param from                    Minimum start date of the alert (ISO8601) (optional)
-     * @param to                      Maximum end date of the alert (ISO8601) (optional)
+     * @param systemprofile System Profile id (optional)
+     * @param incidentrule  Incident Rule name (optional)
+     * @param state         Alert state (optional)
+     * @param from          Minimum start date of the alert (ISO8601) (optional)
+     * @param to            Maximum end date of the alert (ISO8601) (optional)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call getIncidentsCall(String systemprofile, String incidentrule, String state, String from, String to) throws ApiException {
         // create path and map variables
-        String localVarPath = "/alerts";
+        String localVarPath = ApiClient.API_SUFFIX + "/alerts";
 
         List<Pair> localVarQueryParams = new ArrayList<>();
         if (systemprofile != null)
@@ -640,15 +641,15 @@ public class AlertsIncidentsAndEventsApi {
     /**
      * Build call for putDowntime
      *
-     * @param suppressionname         Alert Suppression name (required)
-     * @param body                    Alert Suppression object (required)
+     * @param suppressionname Alert Suppression name (required)
+     * @param body            Alert Suppression object (required)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call putDowntimeCall(String suppressionname, AlertSuppressionDefinition body) throws ApiException {
         // create path and map variables
-        String localVarPath = "/alertsuppression/{suppressionname}"
-                .replaceAll("\\{" + "suppressionname" + "\\}", apiClient.escapeString(suppressionname));
+        String localVarPath = ApiClient.API_SUFFIX + "/alertsuppression/{suppressionname}"
+                .replaceAll("\\{suppressionname\\}", apiClient.escapeString(suppressionname));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
 
@@ -716,15 +717,15 @@ public class AlertsIncidentsAndEventsApi {
     /**
      * Build call for updateDeploymentEvent
      *
-     * @param eventid                 ID of event (required)
-     * @param body                    Event record (required)
+     * @param eventid ID of event (required)
+     * @param body    Event record (required)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call updateDeploymentEventCall(String eventid, EventUpdate body) throws ApiException {
         // create path and map variables
-        String localVarPath = "/events/Deployment/{eventid}"
-                .replaceAll("\\{" + "eventid" + "\\}", apiClient.escapeString(eventid));
+        String localVarPath = ApiClient.API_SUFFIX + "/events/Deployment/{eventid}"
+                .replaceAll("\\{eventid\\}", apiClient.escapeString(eventid));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
 

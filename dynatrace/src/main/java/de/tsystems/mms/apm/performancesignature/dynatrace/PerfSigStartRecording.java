@@ -18,11 +18,10 @@ package de.tsystems.mms.apm.performancesignature.dynatrace;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.CredProfilePair;
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.GenericTestCase;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionException;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.BaseConfiguration;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.SystemProfile;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.SystemProfileReference;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml.CommandExecutionException;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml.RESTErrorException;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.Extension;
 import hudson.FilePath;
@@ -71,9 +70,8 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
         String sessionName = pair.getProfile() + "_" + run.getParent().getName() + "_Build-" + run.getNumber() + "_" + extTestCase;
         sessionName = sessionName.replace("/", "_");
 
-        for (BaseConfiguration profile : connection.getSystemProfiles()) {
-            SystemProfile systemProfile = (SystemProfile) profile;
-            if (pair.getProfile().equals(systemProfile.getId()) && systemProfile.isRecording()) {
+        for (SystemProfileReference profile : connection.getSystemProfiles().getSystemprofiles()) {
+            if (pair.getProfile().equals(profile.getId()) && profile.getIsrecording()) {
                 logger.println(Messages.PerfSigStartRecording_AnotherSessionStillRecording());
                 PerfSigStopRecording stopRecording = new PerfSigStopRecording(dynatraceProfile);
                 stopRecording.perform(run, workspace, launcher, listener);

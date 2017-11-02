@@ -26,24 +26,16 @@
  * DAMAGE.
  */
 
-package de.tsystems.mms.apm.performancesignature.dynatrace.rest.model;
+package de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml;
 
-import de.tsystems.mms.apm.performancesignature.dynatrace.util.AttributeUtils;
-import org.xml.sax.Attributes;
+public class CommandExecutionException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
 
-public abstract class BaseConfiguration {
-    private final String id, href;
-
-    public BaseConfiguration(final Attributes attr) {
-        this.id = AttributeUtils.getStringAttribute("id", attr);
-        this.href = AttributeUtils.getStringAttribute("href", attr);
+    public CommandExecutionException(final String reason, final Exception ex) {
+        super(reason, ex);
     }
 
-    public String getId() {
-        return this.id;
-    }
-
-    public String getHref() {
-        return this.href;
+    public CommandExecutionException(final String reason) {
+        super(reason);
     }
 }

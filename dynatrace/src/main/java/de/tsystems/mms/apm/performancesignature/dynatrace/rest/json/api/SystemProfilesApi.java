@@ -70,7 +70,7 @@ public class SystemProfilesApi {
      */
     public Call getProfilesCall() throws ApiException {
         // create path and map variables
-        String localVarPath = "/profiles";
+        String localVarPath = ApiClient.API_SUFFIX + "/profiles";
 
         List<Pair> localVarQueryParams = new ArrayList<>();
 
@@ -123,16 +123,16 @@ public class SystemProfilesApi {
     /**
      * Build call for getSystemProfileConfigurationStatus
      *
-     * @param profileid               System Profile id (required)
-     * @param configname              Configuration name (required)
+     * @param profileid  System Profile id (required)
+     * @param configname Configuration name (required)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call getSystemProfileConfigurationStatusCall(String profileid, String configname) throws ApiException {
         // create path and map variables
-        String localVarPath = "/profiles/{profileid}/configurations/{configname}/status"
-                .replaceAll("\\{" + "profileid" + "\\}", apiClient.escapeString(profileid))
-                .replaceAll("\\{" + "configname" + "\\}", apiClient.escapeString(configname));
+        String localVarPath = ApiClient.API_SUFFIX + "/profiles/{profileid}/configurations/{configname}/status"
+                .replaceAll("\\{profileid\\}", apiClient.escapeString(profileid))
+                .replaceAll("\\{configname\\}", apiClient.escapeString(configname));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
 
@@ -204,14 +204,14 @@ public class SystemProfilesApi {
     /**
      * Build call for getSystemProfileConfigurations
      *
-     * @param profileid               System Profile id (required)
+     * @param profileid System Profile id (required)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call getSystemProfileConfigurationsCall(String profileid) throws ApiException {
         // create path and map variables
-        String localVarPath = "/profiles/{profileid}/configurations"
-                .replaceAll("\\{" + "profileid" + "\\}", apiClient.escapeString(profileid));
+        String localVarPath = ApiClient.API_SUFFIX + "/profiles/{profileid}/configurations"
+                .replaceAll("\\{profileid\\}", apiClient.escapeString(profileid));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
 
@@ -276,14 +276,14 @@ public class SystemProfilesApi {
     /**
      * Build call for getSystemProfileMetaData
      *
-     * @param profileid               System Profile id (required)
+     * @param profileid System Profile id (required)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call getSystemProfileMetaDataCall(String profileid) throws ApiException {
         // create path and map variables
-        String localVarPath = "/profiles/{profileid}"
-                .replaceAll("\\{" + "profileid" + "\\}", apiClient.escapeString(profileid));
+        String localVarPath = ApiClient.API_SUFFIX + "/profiles/{profileid}"
+                .replaceAll("\\{profileid\\}", apiClient.escapeString(profileid));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
 
@@ -348,14 +348,14 @@ public class SystemProfilesApi {
     /**
      * Build call for getSystemProfileState
      *
-     * @param profileid               System Profile id (required)
+     * @param profileid System Profile id (required)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call getSystemProfileStateCall(String profileid) throws ApiException {
         // create path and map variables
-        String localVarPath = "/profiles/{profileid}/status"
-                .replaceAll("\\{" + "profileid" + "\\}", apiClient.escapeString(profileid));
+        String localVarPath = ApiClient.API_SUFFIX + "/profiles/{profileid}/status"
+                .replaceAll("\\{profileid\\}", apiClient.escapeString(profileid));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
 
@@ -420,17 +420,17 @@ public class SystemProfilesApi {
     /**
      * Build call for putSystemProfileConfigurationStatus
      *
-     * @param profileid               System Profile id (required)
-     * @param configname              Configuration name (required)
-     * @param body                    Activation state (optional)
+     * @param profileid  System Profile id (required)
+     * @param configname Configuration name (required)
+     * @param body       Activation state (optional)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call putSystemProfileConfigurationStatusCall(String profileid, String configname, ActivationStatus body) throws ApiException {
         // create path and map variables
-        String localVarPath = "/profiles/{profileid}/configurations/{configname}/status"
-                .replaceAll("\\{" + "profileid" + "\\}", apiClient.escapeString(profileid))
-                .replaceAll("\\{" + "configname" + "\\}", apiClient.escapeString(configname));
+        String localVarPath = ApiClient.API_SUFFIX + "/profiles/{profileid}/configurations/{configname}/status"
+                .replaceAll("\\{profileid\\}", apiClient.escapeString(profileid))
+                .replaceAll("\\{configname\\}", apiClient.escapeString(configname));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
 
@@ -500,15 +500,15 @@ public class SystemProfilesApi {
     /**
      * Build call for putSystemProfileState
      *
-     * @param profileid               System Profile id (required)
-     * @param body                    Activation state (optional)
+     * @param profileid System Profile id (required)
+     * @param body      Activation state (optional)
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
     public Call putSystemProfileStateCall(String profileid, ActivationStatus body) throws ApiException {
         // create path and map variables
-        String localVarPath = "/profiles/{profileid}/status"
-                .replaceAll("\\{" + "profileid" + "\\}", apiClient.escapeString(profileid));
+        String localVarPath = ApiClient.API_SUFFIX + "/profiles/{profileid}/status"
+                .replaceAll("\\{profileid\\}", apiClient.escapeString(profileid));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
 

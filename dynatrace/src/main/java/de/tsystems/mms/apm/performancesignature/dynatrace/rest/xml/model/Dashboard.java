@@ -14,25 +14,20 @@
  * limitations under the License.
  */
 
-package de.tsystems.mms.apm.performancesignature.dynatrace.rest.model;
+package de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml.model;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.ArrayList;
-import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "agents")
-public class AgentList {
-    @XmlElement(name = "agentinformation")
-    private List<Agent> agents;
+@XmlRootElement
+public class Dashboard {
+    @XmlAttribute
+    private String id;
 
-    public List<Agent> getAgents() {
-        if (agents == null) {
-            agents = new ArrayList<>();
-        }
-        return agents;
+    public String getId() {
+        return id;
     }
 }

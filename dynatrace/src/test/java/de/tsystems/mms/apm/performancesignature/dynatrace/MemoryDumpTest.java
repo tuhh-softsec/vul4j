@@ -45,6 +45,8 @@ public class MemoryDumpTest {
         FreeStyleProject project = j.createFreeStyleProject();
         PerfSigMemoryDump memoryDump = new PerfSigMemoryDump(dynatraceConfigurations.get(0).name, "CustomerFrontend_easyTravel_8080", "wum192202");
         memoryDump.setType("extended");
+        memoryDump.setAutoPostProcess(true);
+        memoryDump.setDogc(true);
         project.getBuildersList().add(memoryDump);
         FreeStyleBuild build = j.assertBuildStatusSuccess(project.scheduleBuild2(0));
 

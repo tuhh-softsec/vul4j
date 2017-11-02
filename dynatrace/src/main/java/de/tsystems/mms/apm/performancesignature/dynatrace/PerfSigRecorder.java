@@ -23,9 +23,9 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.Dynatrac
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.UnitTestCase;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.BaseConfiguration;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.SystemProfile;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.SessionData;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.SystemProfileReference;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml.RESTErrorException;
 import de.tsystems.mms.apm.performancesignature.model.ClientLinkGenerator;
 import de.tsystems.mms.apm.performancesignature.ui.PerfSigBuildAction;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
@@ -54,7 +54,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
     private final List<ConfigurationTestCase> configurationTestCases;
     private boolean exportSessions;
     private int nonFunctionalFailure;
-    private transient List<String> availableSessions;
+    private transient List<SessionData> availableSessions;
 
     @DataBoundConstructor
     public PerfSigRecorder(final String dynatraceProfile, final List<ConfigurationTestCase> configurationTestCases) {
@@ -81,9 +81,8 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
             Thread.sleep(serverConfiguration.getDelay() * 1000L);
         }
 
-        for (BaseConfiguration profile : connection.getSystemProfiles()) {
-            SystemProfile systemProfile = (SystemProfile) profile;
-            if (connection.getCredProfilePair().getProfile().equals(systemProfile.getId()) && systemProfile.isRecording()) {
+        for (SystemProfileReference profile : connection.getSystemProfiles().getSystemprofiles()) {
+            if (connection.getCredProfilePair().getProfile().equals(profile.getId()) && profile.getIsrecording()) {
                 logger.println(Messages.PerfSigRecorder_SessionStillRecording());
                 PerfSigStopRecording stopRecording = new PerfSigStopRecording(dynatraceProfile);
                 stopRecording.perform(run, workspace, launcher, listener);
@@ -129,11 +128,11 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
                 }
             }
 
-            availableSessions = connection.getSessions();
+            availableSessions = connection.getSessions().getSessions();
             int retryCount = 0;
             while ((!validateSessionName(sessionName)) && (retryCount < serverConfiguration.getRetryCount())) {
                 retryCount++;
-                availableSessions = connection.getSessions();
+                availableSessions = connection.getSessions().getSessions();
                 logger.println(Messages.PerfSigRecorder_WaitingForSession(retryCount, serverConfiguration.getRetryCount()));
                 Thread.sleep(10000L);
             }
@@ -204,7 +203,12 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
     }
 
     private boolean validateSessionName(final String name) {
-        return availableSessions.contains(name);
+        for (SessionData session : availableSessions) {
+            if (session.getId().equalsIgnoreCase(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public BuildStepMonitor getRequiredMonitorService() {

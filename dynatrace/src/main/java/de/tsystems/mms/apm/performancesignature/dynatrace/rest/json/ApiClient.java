@@ -63,6 +63,7 @@ public class ApiClient {
     /**
      * The datetime format to be used when <code>lenientDatetimeFormat</code> is enabled.
      */
+    public final static String API_SUFFIX = "/api/v2";
     private static final String LENIENT_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
     private final Map<String, String> defaultHeaderMap = new HashMap<>();
     private String basePath = "https://localhost/api/v2";
@@ -910,13 +911,13 @@ public class ApiClient {
     /**
      * Build HTTP call with the given options.
      *
-     * @param path                    The sub-path of the HTTP URL
-     * @param method                  The request method, one of "GET", "HEAD", "OPTIONS", "POST", "PUT", "PATCH" and "DELETE"
-     * @param queryParams             The query parameters
-     * @param body                    The request body object
-     * @param headerParams            The header parameters
-     * @param formParams              The form parameters
-     * @param authNames               The authentications to apply
+     * @param path         The sub-path of the HTTP URL
+     * @param method       The request method, one of "GET", "HEAD", "OPTIONS", "POST", "PUT", "PATCH" and "DELETE"
+     * @param queryParams  The query parameters
+     * @param body         The request body object
+     * @param headerParams The header parameters
+     * @param formParams   The form parameters
+     * @param authNames    The authentications to apply
      * @return The HTTP call
      * @throws ApiException If fail to serialize the request body object
      */
@@ -929,13 +930,13 @@ public class ApiClient {
     /**
      * Build an HTTP request with the given options.
      *
-     * @param path                    The sub-path of the HTTP URL
-     * @param method                  The request method, one of "GET", "HEAD", "OPTIONS", "POST", "PUT", "PATCH" and "DELETE"
-     * @param queryParams             The query parameters
-     * @param body                    The request body object
-     * @param headerParams            The header parameters
-     * @param formParams              The form parameters
-     * @param authNames               The authentications to apply
+     * @param path         The sub-path of the HTTP URL
+     * @param method       The request method, one of "GET", "HEAD", "OPTIONS", "POST", "PUT", "PATCH" and "DELETE"
+     * @param queryParams  The query parameters
+     * @param body         The request body object
+     * @param headerParams The header parameters
+     * @param formParams   The form parameters
+     * @param authNames    The authentications to apply
      * @return The HTTP request
      * @throws ApiException If fail to serialize the request body object
      */

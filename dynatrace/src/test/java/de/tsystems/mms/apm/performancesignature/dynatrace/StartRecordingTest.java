@@ -16,7 +16,6 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace;
 
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.CommandExecutionException;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.TestUtils;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
@@ -30,8 +29,7 @@ import org.jvnet.hudson.test.JenkinsRule;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class StartRecordingTest {
 
@@ -48,15 +46,9 @@ public class StartRecordingTest {
     public void testContinuousSessionRecording() throws IOException {
         DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceConfigurations.get(0).name);
 
-        String result = null;
-        try {
-            result = connection.startRecording("testContinuousSessionRecording", "triggered by UnitTest",
+        String result = connection.startRecording("testContinuousSessionRecording", "triggered by UnitTest",
                     PerfSigStartRecording.DescriptorImpl.defaultRecordingOption, false, false);
-        } catch (CommandExecutionException e) {
-            assertTrue(e.getMessage().contains("continuous"));
-        } finally {
-            System.out.println("Result: " + result);
-        }
+        assertNotNull(result);
     }
 
     @Test
@@ -67,7 +59,7 @@ public class StartRecordingTest {
             String result = connection.startRecording("testDisabledContinuousSessionRecording", "triggered by UnitTest",
                     "", true, true);
 
-            assertTrue(result.contains("testDisabledContinuousSessionRecording"));
+            assertTrue(result.contains("easyTravel"));
         } finally {
             connection.stopRecording();
         }

@@ -26,12 +26,12 @@
  * DAMAGE.
  */
 
-package de.tsystems.mms.apm.performancesignature.dynatrace.rest.model;
+package de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml;
 
-import org.xml.sax.Attributes;
+public class ContentRetrievalException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
 
-public class Configuration extends BaseConfiguration {
-    public Configuration(final Attributes attr) {
-        super(attr);
+    public ContentRetrievalException(final String reason, final Exception ex) {
+        super(reason, ex);
     }
 }

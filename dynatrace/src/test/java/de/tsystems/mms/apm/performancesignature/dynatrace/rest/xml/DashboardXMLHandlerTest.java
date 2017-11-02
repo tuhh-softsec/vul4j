@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.tsystems.mms.apm.performancesignature.dynatrace.rest;
+package de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.ChartDashlet;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;

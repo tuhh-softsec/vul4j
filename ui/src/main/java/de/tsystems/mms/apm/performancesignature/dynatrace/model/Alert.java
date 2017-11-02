@@ -26,8 +26,7 @@
  * Do not edit the class manually.
  */
 
-
-package de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model;
+package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.JsonAdapter;
@@ -36,6 +35,8 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.export.ExportedBean;
 
 import java.io.IOException;
 
@@ -44,6 +45,7 @@ import java.io.IOException;
  */
 @ApiModel(description = "Alert record description")
 
+@ExportedBean
 public class Alert {
     @SerializedName("severity")
     private final SeverityEnum severity = null;
@@ -67,6 +69,7 @@ public class Alert {
      *
      * @return severity
      **/
+    @Exported
     @ApiModelProperty(value = "The severity of the alert")
     public SeverityEnum getSeverity() {
         return severity;
@@ -77,6 +80,7 @@ public class Alert {
      *
      * @return state
      **/
+    @Exported
     @ApiModelProperty(value = "The state of the alert")
     public StateEnum getState() {
         return state;
@@ -87,6 +91,7 @@ public class Alert {
      *
      * @return message
      **/
+    @Exported
     @ApiModelProperty(required = true)
     public String getMessage() {
         return message;
@@ -97,6 +102,7 @@ public class Alert {
      *
      * @return description
      **/
+    @Exported
     @ApiModelProperty()
     public String getDescription() {
         return description;
@@ -107,6 +113,7 @@ public class Alert {
      *
      * @return start
      **/
+    @Exported
     @ApiModelProperty(example = "2016-05-11T11:35:31.170+02:00", value = "Start time in ISO 8601 compatible date/time of format: yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     public String getStart() {
         return start;
@@ -117,6 +124,7 @@ public class Alert {
      *
      * @return end
      **/
+    @Exported
     @ApiModelProperty(example = "2016-05-11T11:35:31.170+02:00", value = "End time in ISO 8601 compatible date/time of format: yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     public String getEnd() {
         return end;
@@ -127,6 +135,7 @@ public class Alert {
      *
      * @return rule
      **/
+    @Exported
     @ApiModelProperty(required = true, value = "Incident Rule name")
     public String getRule() {
         return rule;
@@ -177,9 +186,7 @@ public class Alert {
     @JsonAdapter(SeverityEnum.Adapter.class)
     public enum SeverityEnum {
         INFORMATIONAL("informational"),
-
         WARNING("warning"),
-
         SEVERE("severe");
 
         private final String value;
@@ -268,6 +275,4 @@ public class Alert {
             }
         }
     }
-
 }
-

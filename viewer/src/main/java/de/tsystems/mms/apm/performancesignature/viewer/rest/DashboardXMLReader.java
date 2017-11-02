@@ -16,7 +16,10 @@
 
 package de.tsystems.mms.apm.performancesignature.viewer.rest;
 
-import de.tsystems.mms.apm.performancesignature.dynatrace.model.*;
+import de.tsystems.mms.apm.performancesignature.dynatrace.model.ChartDashlet;
+import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
+import de.tsystems.mms.apm.performancesignature.dynatrace.model.Measure;
+import de.tsystems.mms.apm.performancesignature.dynatrace.model.Measurement;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -68,8 +71,8 @@ class DashboardXMLReader {
             }
 
             List<Element> incidentElements = xmlDashboardReport.getChildren("incident");
-            for (Element incidentElement : incidentElements) {
-                IncidentChart incidentChart = new IncidentChart(incidentElement);
+            /*for (Element incidentElement : incidentElements) {
+                Alert incidentChart = new Alert(incidentElement);
 
                 List<Element> violationElements = incidentElement.getChildren("violation");
                 for (Element violationElement : violationElements) {
@@ -77,7 +80,7 @@ class DashboardXMLReader {
                     incidentChart.add(incidentViolation);
                 }
                 dashboardReport.addIncident(incidentChart);
-            }
+            }*/
 
             dashboardReports.add(dashboardReport);
         }

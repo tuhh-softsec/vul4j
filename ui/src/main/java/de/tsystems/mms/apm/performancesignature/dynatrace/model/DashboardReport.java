@@ -33,7 +33,7 @@ public class DashboardReport {
     @XmlElement(name = "chartdashlet")
     private List<ChartDashlet> chartDashlets;
     private String name;
-    private final List<IncidentChart> incidents;
+    private final List<Alert> incidents;
     private boolean unitTest;
     private ClientLinkGenerator clientLink;
 
@@ -48,11 +48,11 @@ public class DashboardReport {
     }
 
     @Exported
-    public List<IncidentChart> getIncidents() {
+    public List<Alert> getIncidents() {
         return incidents;
     }
 
-    public void addIncident(final IncidentChart incident) {
+    public void addIncident(final Alert incident) {
         this.incidents.add(incident);
     }
 

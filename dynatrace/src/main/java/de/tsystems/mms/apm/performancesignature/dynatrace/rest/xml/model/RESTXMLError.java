@@ -14,26 +14,20 @@
  * limitations under the License.
  */
 
-package de.tsystems.mms.apm.performancesignature.dynatrace.rest.model;
+package de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml.model;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.ArrayList;
-import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "dashboards")
-public class DashboardList {
-    @XmlElement(name = "dashboard")
-    private List<Dashboard> dashboards;
+@XmlRootElement(name = "error")
+public class RESTXMLError {
+    @XmlAttribute
+    private String reason;
 
-    public List<Dashboard> getDashboards() {
-        if (dashboards == null) {
-            dashboards = new ArrayList<>();
-        }
-        return dashboards;
+    public String getReason() {
+        return reason;
     }
 }
-

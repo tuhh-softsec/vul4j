@@ -67,7 +67,7 @@ public class ServerManagementApi {
      */
     public Call getVersionCall() throws ApiException {
         // create path and map variables
-        String localVarPath = "/server/version";
+        String localVarPath = ApiClient.API_SUFFIX + "/server/version";
 
         List<Pair> localVarQueryParams = new ArrayList<>();
 

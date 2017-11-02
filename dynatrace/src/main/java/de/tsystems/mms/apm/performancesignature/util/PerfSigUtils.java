@@ -24,10 +24,10 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.PerfSigGlobalConfigura
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.CredProfilePair;
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.DynatraceServerConfiguration;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.RESTErrorException;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.Agent;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.BaseConfiguration;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.model.Dashboard;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.SystemProfileConfiguration;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml.RESTErrorException;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml.model.Agent;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml.model.Dashboard;
 import hudson.AbortException;
 import hudson.security.ACL;
 import hudson.util.ListBoxModel;
@@ -58,8 +58,8 @@ public final class PerfSigUtils {
                                 conf.getName();
                         listBoxModel.add(listItem);
                     }
-            } else if (item instanceof BaseConfiguration) {
-                listBoxModel.add(((BaseConfiguration) item).getId());
+            } else if (item instanceof SystemProfileConfiguration) {
+                listBoxModel.add(((SystemProfileConfiguration) item).getId());
             }
         }
         return sortListBoxModel(listBoxModel);
