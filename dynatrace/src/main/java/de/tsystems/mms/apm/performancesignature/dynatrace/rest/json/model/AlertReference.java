@@ -26,10 +26,10 @@
  * Do not edit the class manually.
  */
 
-
 package de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model;
 
 import com.google.gson.annotations.SerializedName;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -82,23 +82,11 @@ public class AlertReference {
         StringBuilder sb = new StringBuilder();
         sb.append("class AlertReference {\n");
 
-        sb.append("    id: ").append(toIndentedString(id)).append("\n");
-        sb.append("    href: ").append(toIndentedString(href)).append("\n");
-        sb.append("    rule: ").append(toIndentedString(rule)).append("\n");
+        sb.append("    id: ").append(PerfSigUIUtils.toIndentedString(id)).append("\n");
+        sb.append("    href: ").append(PerfSigUIUtils.toIndentedString(href)).append("\n");
+        sb.append("    rule: ").append(PerfSigUIUtils.toIndentedString(rule)).append("\n");
         sb.append("}");
         return sb.toString();
     }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces
-     * (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
-    }
-
 }
 

@@ -30,6 +30,7 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model;
 
 import com.google.gson.annotations.SerializedName;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRun;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
@@ -87,20 +88,9 @@ public class TestRuns {
         StringBuilder sb = new StringBuilder();
         sb.append("class TestRuns {\n");
 
-        sb.append("    testRuns: ").append(toIndentedString(testRuns)).append("\n");
-        sb.append("    message: ").append(toIndentedString(message)).append("\n");
+        sb.append("    testRuns: ").append(PerfSigUIUtils.toIndentedString(testRuns)).append("\n");
+        sb.append("    message: ").append(PerfSigUIUtils.toIndentedString(message)).append("\n");
         sb.append("}");
         return sb.toString();
-    }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces
-     * (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
     }
 }

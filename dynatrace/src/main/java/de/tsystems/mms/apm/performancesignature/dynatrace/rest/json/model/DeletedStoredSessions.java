@@ -26,10 +26,10 @@
  * Do not edit the class manually.
  */
 
-
 package de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model;
 
 import com.google.gson.annotations.SerializedName;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -120,23 +120,10 @@ public class DeletedStoredSessions {
         StringBuilder sb = new StringBuilder();
         sb.append("class DeletedStoredSessions {\n");
 
-        sb.append("    totaldeletedbytes: ").append(toIndentedString(totaldeletedbytes)).append("\n");
-        sb.append("    successfullydeleted: ").append(toIndentedString(successfullydeleted)).append("\n");
-        sb.append("    failedtodelete: ").append(toIndentedString(failedtodelete)).append("\n");
+        sb.append("    totaldeletedbytes: ").append(PerfSigUIUtils.toIndentedString(totaldeletedbytes)).append("\n");
+        sb.append("    successfullydeleted: ").append(PerfSigUIUtils.toIndentedString(successfullydeleted)).append("\n");
+        sb.append("    failedtodelete: ").append(PerfSigUIUtils.toIndentedString(failedtodelete)).append("\n");
         sb.append("}");
         return sb.toString();
     }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces
-     * (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
-    }
-
 }
-

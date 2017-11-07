@@ -26,10 +26,10 @@
  * Do not edit the class manually.
  */
 
-
 package de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model;
 
 import com.google.gson.annotations.SerializedName;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
@@ -98,23 +98,10 @@ public class ExternalTest {
         StringBuilder sb = new StringBuilder();
         sb.append("class ExternalTest {\n");
 
-        sb.append("    testName: ").append(toIndentedString(testName)).append("\n");
-        sb.append("    timestamp: ").append(toIndentedString(timestamp)).append("\n");
-        sb.append("    measures: ").append(toIndentedString(measures)).append("\n");
+        sb.append("    testName: ").append(PerfSigUIUtils.toIndentedString(testName)).append("\n");
+        sb.append("    timestamp: ").append(PerfSigUIUtils.toIndentedString(timestamp)).append("\n");
+        sb.append("    measures: ").append(PerfSigUIUtils.toIndentedString(measures)).append("\n");
         sb.append("}");
         return sb.toString();
     }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces
-     * (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
-    }
-
 }
-

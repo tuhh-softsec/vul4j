@@ -33,6 +33,7 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import io.swagger.annotations.ApiModelProperty;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
@@ -187,27 +188,15 @@ public class TestResult {
         StringBuilder sb = new StringBuilder();
         sb.append("class TestResult {\n");
 
-        sb.append("    name: ").append(toIndentedString(name)).append("\n");
-        sb.append("    status: ").append(toIndentedString(status)).append("\n");
-        sb.append("    exectime: ").append(toIndentedString(exectime)).append("\n");
-        sb.append("    _package: ").append(toIndentedString(_package)).append("\n");
-        sb.append("    platform: ").append(toIndentedString(platform)).append("\n");
-        sb.append("    measures: ").append(toIndentedString(measures)).append("\n");
+        sb.append("    name: ").append(PerfSigUIUtils.toIndentedString(name)).append("\n");
+        sb.append("    status: ").append(PerfSigUIUtils.toIndentedString(status)).append("\n");
+        sb.append("    exectime: ").append(PerfSigUIUtils.toIndentedString(exectime)).append("\n");
+        sb.append("    _package: ").append(PerfSigUIUtils.toIndentedString(_package)).append("\n");
+        sb.append("    platform: ").append(PerfSigUIUtils.toIndentedString(platform)).append("\n");
+        sb.append("    measures: ").append(PerfSigUIUtils.toIndentedString(measures)).append("\n");
         sb.append("}");
         return sb.toString();
     }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces
-     * (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
-    }
-
     /**
      * Gets or Sets category
      */

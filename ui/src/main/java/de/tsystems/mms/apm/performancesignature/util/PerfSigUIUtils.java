@@ -120,6 +120,17 @@ public final class PerfSigUIUtils {
         }
     }
 
+    /**
+     * Convert the given object to string with each line indented by 4 spaces
+     * (except the first line).
+     */
+    public static String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
+
     public static void handleIncidents(final Run<?, ?> run, final List<Alert> incidents, final PrintStream logger, final int nonFunctionalFailure) {
         int numWarning = 0, numSevere = 0;
         if (incidents != null && !incidents.isEmpty()) {

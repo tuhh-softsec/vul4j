@@ -24,6 +24,7 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.PerfSigGlobalConfigura
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.CredProfilePair;
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.DynatraceServerConfiguration;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.SystemProfileConfiguration;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.SystemProfileReference;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml.RESTErrorException;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml.model.Agent;
@@ -60,6 +61,8 @@ public final class PerfSigUtils {
                     }
             } else if (item instanceof SystemProfileReference) {
                 listBoxModel.add(((SystemProfileReference) item).getId());
+            } else if (item instanceof SystemProfileConfiguration) {
+                listBoxModel.add(((SystemProfileConfiguration) item).getId());
             }
         }
         return sortListBoxModel(listBoxModel);
@@ -96,19 +99,19 @@ public final class PerfSigUtils {
     }
 
     public static ListBoxModel fillAgentItems(final String dynatraceProfile) {
-        DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
+        DynatraceServerConfiguration serverConfiguration = getServerConfiguration(dynatraceProfile);
         if (serverConfiguration != null) {
             CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
             if (pair != null) {
                 DTServerConnection connection = new DTServerConnection(serverConfiguration, pair);
-                return PerfSigUtils.listToListBoxModel(connection.getAgents());
+                return listToListBoxModel(connection.getAgents());
             }
         }
         return null;
     }
 
     public static ListBoxModel fillHostItems(final String dynatraceProfile, final String agent) {
-        DynatraceServerConfiguration serverConfiguration = PerfSigUtils.getServerConfiguration(dynatraceProfile);
+        DynatraceServerConfiguration serverConfiguration = getServerConfiguration(dynatraceProfile);
         if (serverConfiguration != null) {
             CredProfilePair pair = serverConfiguration.getCredProfilePair(dynatraceProfile);
             if (pair != null) {

@@ -26,10 +26,10 @@
  * Do not edit the class manually.
  */
 
-
 package de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model;
 
 import com.google.gson.annotations.SerializedName;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -133,27 +133,14 @@ public class ExternalTestMeasure {
         StringBuilder sb = new StringBuilder();
         sb.append("class ExternalTestMeasure {\n");
 
-        sb.append("    name: ").append(toIndentedString(name)).append("\n");
-        sb.append("    value: ").append(toIndentedString(value)).append("\n");
-        sb.append("    timestamp: ").append(toIndentedString(timestamp)).append("\n");
-        sb.append("    unit: ").append(toIndentedString(unit)).append("\n");
-        sb.append("    minValue: ").append(toIndentedString(minValue)).append("\n");
-        sb.append("    maxValue: ").append(toIndentedString(maxValue)).append("\n");
-        sb.append("    color: ").append(toIndentedString(color)).append("\n");
+        sb.append("    name: ").append(PerfSigUIUtils.toIndentedString(name)).append("\n");
+        sb.append("    value: ").append(PerfSigUIUtils.toIndentedString(value)).append("\n");
+        sb.append("    timestamp: ").append(PerfSigUIUtils.toIndentedString(timestamp)).append("\n");
+        sb.append("    unit: ").append(PerfSigUIUtils.toIndentedString(unit)).append("\n");
+        sb.append("    minValue: ").append(PerfSigUIUtils.toIndentedString(minValue)).append("\n");
+        sb.append("    maxValue: ").append(PerfSigUIUtils.toIndentedString(maxValue)).append("\n");
+        sb.append("    color: ").append(PerfSigUIUtils.toIndentedString(color)).append("\n");
         sb.append("}");
         return sb.toString();
     }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces
-     * (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
-    }
-
 }
-

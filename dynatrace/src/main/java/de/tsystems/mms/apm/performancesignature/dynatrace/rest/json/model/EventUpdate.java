@@ -26,7 +26,6 @@
  * Do not edit the class manually.
  */
 
-
 package de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model;
 
 import com.google.gson.TypeAdapter;
@@ -34,6 +33,7 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -146,27 +146,15 @@ public class EventUpdate {
         StringBuilder sb = new StringBuilder();
         sb.append("class EventUpdate {\n");
 
-        sb.append("    severity: ").append(toIndentedString(severity)).append("\n");
-        sb.append("    state: ").append(toIndentedString(state)).append("\n");
-        sb.append("    message: ").append(toIndentedString(message)).append("\n");
-        sb.append("    description: ").append(toIndentedString(description)).append("\n");
-        sb.append("    start: ").append(toIndentedString(start)).append("\n");
-        sb.append("    end: ").append(toIndentedString(end)).append("\n");
+        sb.append("    severity: ").append(PerfSigUIUtils.toIndentedString(severity)).append("\n");
+        sb.append("    state: ").append(PerfSigUIUtils.toIndentedString(state)).append("\n");
+        sb.append("    message: ").append(PerfSigUIUtils.toIndentedString(message)).append("\n");
+        sb.append("    description: ").append(PerfSigUIUtils.toIndentedString(description)).append("\n");
+        sb.append("    start: ").append(PerfSigUIUtils.toIndentedString(start)).append("\n");
+        sb.append("    end: ").append(PerfSigUIUtils.toIndentedString(end)).append("\n");
         sb.append("}");
         return sb.toString();
     }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces
-     * (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
-    }
-
 
     /**
      * The severity of the event
@@ -265,6 +253,4 @@ public class EventUpdate {
             }
         }
     }
-
 }
-

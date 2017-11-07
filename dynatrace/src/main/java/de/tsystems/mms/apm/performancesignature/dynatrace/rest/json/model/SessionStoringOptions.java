@@ -29,6 +29,7 @@
 package de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model;
 
 import com.google.gson.annotations.SerializedName;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -136,25 +137,14 @@ public class SessionStoringOptions {
         StringBuilder sb = new StringBuilder();
         sb.append("class SessionStoringOptions {\n");
 
-        sb.append("    sessionname: ").append(toIndentedString(sessionname)).append("\n");
-        sb.append("    description: ").append(toIndentedString(description)).append("\n");
-        sb.append("    appendtimestamp: ").append(toIndentedString(appendtimestamp)).append("\n");
-        sb.append("    recordingoption: ").append(toIndentedString(recordingoption)).append("\n");
-        sb.append("    locksession: ").append(toIndentedString(locksession)).append("\n");
-        sb.append("    timeframestart: ").append(toIndentedString(timeframestart)).append("\n");
-        sb.append("    timeframeend: ").append(toIndentedString(timeframeend)).append("\n");
+        sb.append("    sessionname: ").append(PerfSigUIUtils.toIndentedString(sessionname)).append("\n");
+        sb.append("    description: ").append(PerfSigUIUtils.toIndentedString(description)).append("\n");
+        sb.append("    appendtimestamp: ").append(PerfSigUIUtils.toIndentedString(appendtimestamp)).append("\n");
+        sb.append("    recordingoption: ").append(PerfSigUIUtils.toIndentedString(recordingoption)).append("\n");
+        sb.append("    locksession: ").append(PerfSigUIUtils.toIndentedString(locksession)).append("\n");
+        sb.append("    timeframestart: ").append(PerfSigUIUtils.toIndentedString(timeframestart)).append("\n");
+        sb.append("    timeframeend: ").append(PerfSigUIUtils.toIndentedString(timeframeend)).append("\n");
         sb.append("}");
         return sb.toString();
-    }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces
-     * (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
     }
 }

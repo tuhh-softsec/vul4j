@@ -26,7 +26,6 @@
  * Do not edit the class manually.
  */
 
-
 package de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model;
 
 import com.google.gson.TypeAdapter;
@@ -34,6 +33,7 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -298,38 +298,27 @@ public class SessionMetadata {
         StringBuilder sb = new StringBuilder();
         sb.append("class SessionMetadata {\n");
 
-        sb.append("    id: ").append(toIndentedString(id)).append("\n");
-        sb.append("    storedsessiontype: ").append(toIndentedString(storedsessiontype)).append("\n");
-        sb.append("    sessiontype: ").append(toIndentedString(sessiontype)).append("\n");
-        sb.append("    systemprofile: ").append(toIndentedString(systemprofile)).append("\n");
-        sb.append("    href: ").append(toIndentedString(href)).append("\n");
-        sb.append("    name: ").append(toIndentedString(name)).append("\n");
-        sb.append("    description: ").append(toIndentedString(description)).append("\n");
-        sb.append("    size: ").append(toIndentedString(size)).append("\n");
-        sb.append("    deletionlocked: ").append(toIndentedString(deletionlocked)).append("\n");
-        sb.append("    directorypath: ").append(toIndentedString(directorypath)).append("\n");
-        sb.append("    state: ").append(toIndentedString(state)).append("\n");
-        sb.append("    capturingstart: ").append(toIndentedString(capturingstart)).append("\n");
-        sb.append("    capturingduration: ").append(toIndentedString(capturingduration)).append("\n");
-        sb.append("    version: ").append(toIndentedString(version)).append("\n");
-        sb.append("    labels: ").append(toIndentedString(labels)).append("\n");
-        sb.append("    recordingtype: ").append(toIndentedString(recordingtype)).append("\n");
-        sb.append("    agent: ").append(toIndentedString(agent)).append("\n");
-        sb.append("    numberofpurepaths: ").append(toIndentedString(numberofpurepaths)).append("\n");
-        sb.append("    continuoussession: ").append(toIndentedString(continuoussession)).append("\n");
+        sb.append("    id: ").append(PerfSigUIUtils.toIndentedString(id)).append("\n");
+        sb.append("    storedsessiontype: ").append(PerfSigUIUtils.toIndentedString(storedsessiontype)).append("\n");
+        sb.append("    sessiontype: ").append(PerfSigUIUtils.toIndentedString(sessiontype)).append("\n");
+        sb.append("    systemprofile: ").append(PerfSigUIUtils.toIndentedString(systemprofile)).append("\n");
+        sb.append("    href: ").append(PerfSigUIUtils.toIndentedString(href)).append("\n");
+        sb.append("    name: ").append(PerfSigUIUtils.toIndentedString(name)).append("\n");
+        sb.append("    description: ").append(PerfSigUIUtils.toIndentedString(description)).append("\n");
+        sb.append("    size: ").append(PerfSigUIUtils.toIndentedString(size)).append("\n");
+        sb.append("    deletionlocked: ").append(PerfSigUIUtils.toIndentedString(deletionlocked)).append("\n");
+        sb.append("    directorypath: ").append(PerfSigUIUtils.toIndentedString(directorypath)).append("\n");
+        sb.append("    state: ").append(PerfSigUIUtils.toIndentedString(state)).append("\n");
+        sb.append("    capturingstart: ").append(PerfSigUIUtils.toIndentedString(capturingstart)).append("\n");
+        sb.append("    capturingduration: ").append(PerfSigUIUtils.toIndentedString(capturingduration)).append("\n");
+        sb.append("    version: ").append(PerfSigUIUtils.toIndentedString(version)).append("\n");
+        sb.append("    labels: ").append(PerfSigUIUtils.toIndentedString(labels)).append("\n");
+        sb.append("    recordingtype: ").append(PerfSigUIUtils.toIndentedString(recordingtype)).append("\n");
+        sb.append("    agent: ").append(PerfSigUIUtils.toIndentedString(agent)).append("\n");
+        sb.append("    numberofpurepaths: ").append(PerfSigUIUtils.toIndentedString(numberofpurepaths)).append("\n");
+        sb.append("    continuoussession: ").append(PerfSigUIUtils.toIndentedString(continuoussession)).append("\n");
         sb.append("}");
         return sb.toString();
-    }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces
-     * (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
     }
 
     /**
@@ -386,7 +375,6 @@ public class SessionMetadata {
             }
         }
     }
-
 
     /**
      * Session type
@@ -489,6 +477,4 @@ public class SessionMetadata {
             }
         }
     }
-
 }
-

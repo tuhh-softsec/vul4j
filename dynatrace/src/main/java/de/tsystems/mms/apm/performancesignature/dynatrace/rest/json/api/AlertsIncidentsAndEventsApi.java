@@ -789,5 +789,4 @@ public class AlertsIncidentsAndEventsApi {
         Call call = updateDeploymentEventValidateBeforeCall(eventid, body);
         return apiClient.execute(call);
     }
-
 }

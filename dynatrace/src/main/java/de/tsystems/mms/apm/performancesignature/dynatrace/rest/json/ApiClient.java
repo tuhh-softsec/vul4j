@@ -109,9 +109,6 @@ public class ApiClient {
         // See <code>parseDatetime</code>.
         this.lenientDatetimeFormat = true;
 
-        // Set default User-Agent.
-        setUserAgent("Swagger-Codegen/1.0.0/java");
-
         // Setup authentications (key: authentication name, value: authentication).
         authentications = new HashMap<>();
         authentications.put("basicAuth", new HttpBasicAuth());

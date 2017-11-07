@@ -26,7 +26,6 @@
  * Do not edit the class manually.
  */
 
-
 package de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model;
 
 import com.google.gson.TypeAdapter;
@@ -34,6 +33,7 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.IOException;
@@ -85,22 +85,11 @@ public class DeleteDumpSessionIdentifier {
         StringBuilder sb = new StringBuilder();
         sb.append("class DeleteDumpSessionIdentifier {\n");
 
-        sb.append("    type: ").append(toIndentedString(type)).append("\n");
-        sb.append("    id: ").append(toIndentedString(id)).append("\n");
-        sb.append("    systemprofile: ").append(toIndentedString(systemprofile)).append("\n");
+        sb.append("    type: ").append(PerfSigUIUtils.toIndentedString(type)).append("\n");
+        sb.append("    id: ").append(PerfSigUIUtils.toIndentedString(id)).append("\n");
+        sb.append("    systemprofile: ").append(PerfSigUIUtils.toIndentedString(systemprofile)).append("\n");
         sb.append("}");
         return sb.toString();
-    }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces
-     * (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
     }
 
     /**
@@ -157,6 +146,4 @@ public class DeleteDumpSessionIdentifier {
             }
         }
     }
-
 }
-

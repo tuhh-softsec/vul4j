@@ -26,7 +26,6 @@
  * Do not edit the class manually.
  */
 
-
 package de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model;
 
 import com.google.gson.TypeAdapter;
@@ -34,6 +33,7 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.IOException;
@@ -385,34 +385,23 @@ public class TestRunFilter {
         StringBuilder sb = new StringBuilder();
         sb.append("class TestRunFilter {\n");
 
-        sb.append("    startTime: ").append(toIndentedString(startTime)).append("\n");
-        sb.append("    endTime: ").append(toIndentedString(endTime)).append("\n");
-        sb.append("    extend: ").append(toIndentedString(extend)).append("\n");
-        sb.append("    status: ").append(toIndentedString(status)).append("\n");
-        sb.append("    lastNTestruns: ").append(toIndentedString(lastNTestruns)).append("\n");
-        sb.append("    lastNBuilds: ").append(toIndentedString(lastNBuilds)).append("\n");
-        sb.append("    versionMajor: ").append(toIndentedString(versionMajor)).append("\n");
-        sb.append("    versionMinor: ").append(toIndentedString(versionMinor)).append("\n");
-        sb.append("    versionRevision: ").append(toIndentedString(versionRevision)).append("\n");
-        sb.append("    versionMilestone: ").append(toIndentedString(versionMilestone)).append("\n");
-        sb.append("    versionBuild: ").append(toIndentedString(versionBuild)).append("\n");
-        sb.append("    category: ").append(toIndentedString(category)).append("\n");
-        sb.append("    finished: ").append(toIndentedString(finished)).append("\n");
-        sb.append("    marker: ").append(toIndentedString(marker)).append("\n");
-        sb.append("    platform: ").append(toIndentedString(platform)).append("\n");
+        sb.append("    startTime: ").append(PerfSigUIUtils.toIndentedString(startTime)).append("\n");
+        sb.append("    endTime: ").append(PerfSigUIUtils.toIndentedString(endTime)).append("\n");
+        sb.append("    extend: ").append(PerfSigUIUtils.toIndentedString(extend)).append("\n");
+        sb.append("    status: ").append(PerfSigUIUtils.toIndentedString(status)).append("\n");
+        sb.append("    lastNTestruns: ").append(PerfSigUIUtils.toIndentedString(lastNTestruns)).append("\n");
+        sb.append("    lastNBuilds: ").append(PerfSigUIUtils.toIndentedString(lastNBuilds)).append("\n");
+        sb.append("    versionMajor: ").append(PerfSigUIUtils.toIndentedString(versionMajor)).append("\n");
+        sb.append("    versionMinor: ").append(PerfSigUIUtils.toIndentedString(versionMinor)).append("\n");
+        sb.append("    versionRevision: ").append(PerfSigUIUtils.toIndentedString(versionRevision)).append("\n");
+        sb.append("    versionMilestone: ").append(PerfSigUIUtils.toIndentedString(versionMilestone)).append("\n");
+        sb.append("    versionBuild: ").append(PerfSigUIUtils.toIndentedString(versionBuild)).append("\n");
+        sb.append("    category: ").append(PerfSigUIUtils.toIndentedString(category)).append("\n");
+        sb.append("    finished: ").append(PerfSigUIUtils.toIndentedString(finished)).append("\n");
+        sb.append("    marker: ").append(PerfSigUIUtils.toIndentedString(marker)).append("\n");
+        sb.append("    platform: ").append(PerfSigUIUtils.toIndentedString(platform)).append("\n");
         sb.append("}");
         return sb.toString();
-    }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces
-     * (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
     }
 
     /**

@@ -26,7 +26,6 @@
  * Do not edit the class manually.
  */
 
-
 package de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model;
 
 import com.google.gson.TypeAdapter;
@@ -34,6 +33,7 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -67,20 +67,9 @@ public class ActivationStatus {
         StringBuilder sb = new StringBuilder();
         sb.append("class ActivationStatus {\n");
 
-        sb.append("    status: ").append(toIndentedString(status)).append("\n");
+        sb.append("    status: ").append(PerfSigUIUtils.toIndentedString(status)).append("\n");
         sb.append("}");
         return sb.toString();
-    }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces
-     * (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
     }
 
     /**
@@ -129,6 +118,4 @@ public class ActivationStatus {
             }
         }
     }
-
 }
-

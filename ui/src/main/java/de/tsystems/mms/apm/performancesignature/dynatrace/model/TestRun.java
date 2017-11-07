@@ -33,6 +33,7 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import io.swagger.annotations.ApiModelProperty;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
@@ -382,45 +383,33 @@ public class TestRun {
         StringBuilder sb = new StringBuilder();
         sb.append("class TestRun {\n");
 
-        sb.append("    id: ").append(toIndentedString(id)).append("\n");
-        sb.append("    category: ").append(toIndentedString(category)).append("\n");
-        sb.append("    versionBuild: ").append(toIndentedString(versionBuild)).append("\n");
-        sb.append("    versionMajor: ").append(toIndentedString(versionMajor)).append("\n");
-        sb.append("    versionMilestone: ").append(toIndentedString(versionMilestone)).append("\n");
-        sb.append("    versionMinor: ").append(toIndentedString(versionMinor)).append("\n");
-        sb.append("    versionRevision: ").append(toIndentedString(versionRevision)).append("\n");
-        sb.append("    platform: ").append(toIndentedString(platform)).append("\n");
-        sb.append("    startTime: ").append(toIndentedString(startTime)).append("\n");
-        sb.append("    sessionId: ").append(toIndentedString(sessionId)).append("\n");
-        sb.append("    session: ").append(toIndentedString(session)).append("\n");
-        sb.append("    systemProfile: ").append(toIndentedString(systemProfile)).append("\n");
-        sb.append("    marker: ").append(toIndentedString(marker)).append("\n");
-        sb.append("    message: ").append(toIndentedString(message)).append("\n");
-        sb.append("    href: ").append(toIndentedString(href)).append("\n");
-        sb.append("    creationMode: ").append(toIndentedString(creationMode)).append("\n");
-        sb.append("    numDegraded: ").append(toIndentedString(numDegraded)).append("\n");
-        sb.append("    numFailed: ").append(toIndentedString(numFailed)).append("\n");
-        sb.append("    numImproved: ").append(toIndentedString(numImproved)).append("\n");
-        sb.append("    numInvalidated: ").append(toIndentedString(numInvalidated)).append("\n");
-        sb.append("    numPassed: ").append(toIndentedString(numPassed)).append("\n");
-        sb.append("    numVolatile: ").append(toIndentedString(numVolatile)).append("\n");
-        sb.append("    finished: ").append(toIndentedString(finished)).append("\n");
-        sb.append("    testResults: ").append(toIndentedString(testResults)).append("\n");
+        sb.append("    id: ").append(PerfSigUIUtils.toIndentedString(id)).append("\n");
+        sb.append("    category: ").append(PerfSigUIUtils.toIndentedString(category)).append("\n");
+        sb.append("    versionBuild: ").append(PerfSigUIUtils.toIndentedString(versionBuild)).append("\n");
+        sb.append("    versionMajor: ").append(PerfSigUIUtils.toIndentedString(versionMajor)).append("\n");
+        sb.append("    versionMilestone: ").append(PerfSigUIUtils.toIndentedString(versionMilestone)).append("\n");
+        sb.append("    versionMinor: ").append(PerfSigUIUtils.toIndentedString(versionMinor)).append("\n");
+        sb.append("    versionRevision: ").append(PerfSigUIUtils.toIndentedString(versionRevision)).append("\n");
+        sb.append("    platform: ").append(PerfSigUIUtils.toIndentedString(platform)).append("\n");
+        sb.append("    startTime: ").append(PerfSigUIUtils.toIndentedString(startTime)).append("\n");
+        sb.append("    sessionId: ").append(PerfSigUIUtils.toIndentedString(sessionId)).append("\n");
+        sb.append("    session: ").append(PerfSigUIUtils.toIndentedString(session)).append("\n");
+        sb.append("    systemProfile: ").append(PerfSigUIUtils.toIndentedString(systemProfile)).append("\n");
+        sb.append("    marker: ").append(PerfSigUIUtils.toIndentedString(marker)).append("\n");
+        sb.append("    message: ").append(PerfSigUIUtils.toIndentedString(message)).append("\n");
+        sb.append("    href: ").append(PerfSigUIUtils.toIndentedString(href)).append("\n");
+        sb.append("    creationMode: ").append(PerfSigUIUtils.toIndentedString(creationMode)).append("\n");
+        sb.append("    numDegraded: ").append(PerfSigUIUtils.toIndentedString(numDegraded)).append("\n");
+        sb.append("    numFailed: ").append(PerfSigUIUtils.toIndentedString(numFailed)).append("\n");
+        sb.append("    numImproved: ").append(PerfSigUIUtils.toIndentedString(numImproved)).append("\n");
+        sb.append("    numInvalidated: ").append(PerfSigUIUtils.toIndentedString(numInvalidated)).append("\n");
+        sb.append("    numPassed: ").append(PerfSigUIUtils.toIndentedString(numPassed)).append("\n");
+        sb.append("    numVolatile: ").append(PerfSigUIUtils.toIndentedString(numVolatile)).append("\n");
+        sb.append("    finished: ").append(PerfSigUIUtils.toIndentedString(finished)).append("\n");
+        sb.append("    testResults: ").append(PerfSigUIUtils.toIndentedString(testResults)).append("\n");
         sb.append("}");
         return sb.toString();
     }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces
-     * (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
-    }
-
     public static TestRun mergeTestRuns(final List<TestRun> testRuns) {
         TestRun newTestRun = new TestRun();
         if (testRuns != null && !testRuns.isEmpty()) {

@@ -29,6 +29,7 @@
 package de.tsystems.mms.apm.performancesignature.dynatrace.model;
 
 import com.google.gson.annotations.SerializedName;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import io.swagger.annotations.ApiModelProperty;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
@@ -229,29 +230,18 @@ public class TestMeasure {
         StringBuilder sb = new StringBuilder();
         sb.append("class TestMeasure {\n");
 
-        sb.append("    name: ").append(toIndentedString(name)).append("\n");
-        sb.append("    metricGroup: ").append(toIndentedString(metricGroup)).append("\n");
-        sb.append("    value: ").append(toIndentedString(value)).append("\n");
-        sb.append("    unit: ").append(toIndentedString(unit)).append("\n");
-        sb.append("    expectedMin: ").append(toIndentedString(expectedMin)).append("\n");
-        sb.append("    expectedMax: ").append(toIndentedString(expectedMax)).append("\n");
-        sb.append("    numFailingOrInvalidatedRuns: ").append(toIndentedString(numFailingOrInvalidatedRuns)).append("\n");
-        sb.append("    numValidRuns: ").append(toIndentedString(numValidRuns)).append("\n");
-        sb.append("    numImprovedRuns: ").append(toIndentedString(numImprovedRuns)).append("\n");
-        sb.append("    numDegradedRuns: ").append(toIndentedString(numDegradedRuns)).append("\n");
-        sb.append("    violationPercentage: ").append(toIndentedString(violationPercentage)).append("\n");
+        sb.append("    name: ").append(PerfSigUIUtils.toIndentedString(name)).append("\n");
+        sb.append("    metricGroup: ").append(PerfSigUIUtils.toIndentedString(metricGroup)).append("\n");
+        sb.append("    value: ").append(PerfSigUIUtils.toIndentedString(value)).append("\n");
+        sb.append("    unit: ").append(PerfSigUIUtils.toIndentedString(unit)).append("\n");
+        sb.append("    expectedMin: ").append(PerfSigUIUtils.toIndentedString(expectedMin)).append("\n");
+        sb.append("    expectedMax: ").append(PerfSigUIUtils.toIndentedString(expectedMax)).append("\n");
+        sb.append("    numFailingOrInvalidatedRuns: ").append(PerfSigUIUtils.toIndentedString(numFailingOrInvalidatedRuns)).append("\n");
+        sb.append("    numValidRuns: ").append(PerfSigUIUtils.toIndentedString(numValidRuns)).append("\n");
+        sb.append("    numImprovedRuns: ").append(PerfSigUIUtils.toIndentedString(numImprovedRuns)).append("\n");
+        sb.append("    numDegradedRuns: ").append(PerfSigUIUtils.toIndentedString(numDegradedRuns)).append("\n");
+        sb.append("    violationPercentage: ").append(PerfSigUIUtils.toIndentedString(violationPercentage)).append("\n");
         sb.append("}");
         return sb.toString();
-    }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces
-     * (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
     }
 }

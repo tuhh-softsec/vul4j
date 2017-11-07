@@ -26,10 +26,10 @@
  * Do not edit the class manually.
  */
 
-
 package de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model;
 
 import com.google.gson.annotations.SerializedName;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
@@ -75,21 +75,9 @@ public class SystemProfiles {
         StringBuilder sb = new StringBuilder();
         sb.append("class SystemProfiles {\n");
 
-        sb.append("    systemprofiles: ").append(toIndentedString(systemprofiles)).append("\n");
+        sb.append("    systemprofiles: ").append(PerfSigUIUtils.toIndentedString(systemprofiles)).append("\n");
         sb.append("}");
         return sb.toString();
     }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces
-     * (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
-    }
-
 }
 

@@ -26,7 +26,6 @@
  * Do not edit the class manually.
  */
 
-
 package de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model;
 
 import com.google.gson.TypeAdapter;
@@ -34,6 +33,7 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.IOException;
@@ -109,26 +109,14 @@ public class SessionData {
         StringBuilder sb = new StringBuilder();
         sb.append("class SessionData {\n");
 
-        sb.append("    id: ").append(toIndentedString(id)).append("\n");
-        sb.append("    storedsessiontype: ").append(toIndentedString(storedsessiontype)).append("\n");
-        sb.append("    sessiontype: ").append(toIndentedString(sessiontype)).append("\n");
-        sb.append("    systemprofile: ").append(toIndentedString(systemprofile)).append("\n");
-        sb.append("    href: ").append(toIndentedString(href)).append("\n");
+        sb.append("    id: ").append(PerfSigUIUtils.toIndentedString(id)).append("\n");
+        sb.append("    storedsessiontype: ").append(PerfSigUIUtils.toIndentedString(storedsessiontype)).append("\n");
+        sb.append("    sessiontype: ").append(PerfSigUIUtils.toIndentedString(sessiontype)).append("\n");
+        sb.append("    systemprofile: ").append(PerfSigUIUtils.toIndentedString(systemprofile)).append("\n");
+        sb.append("    href: ").append(PerfSigUIUtils.toIndentedString(href)).append("\n");
         sb.append("}");
         return sb.toString();
     }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces
-     * (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
-    }
-
 
     /**
      * Stored session type

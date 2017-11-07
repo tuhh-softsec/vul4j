@@ -21,6 +21,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import hudson.model.Project;
 import hudson.model.Run;
 import org.apache.commons.lang.StringUtils;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -30,6 +31,7 @@ import org.jvnet.hudson.test.recipes.LocalData;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+@Ignore
 public class PerfSigTestActionTest {
     private final String TEST_PROJECT_WITH_HISTORY = "projectAction";
     @Rule

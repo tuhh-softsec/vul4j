@@ -26,10 +26,10 @@
  * Do not edit the class manually.
  */
 
-
 package de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model;
 
 import com.google.gson.annotations.SerializedName;
+import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -159,27 +159,15 @@ public class AlertSuppressionDefinition {
         StringBuilder sb = new StringBuilder();
         sb.append("class AlertSuppressionDefinition {\n");
 
-        sb.append("    start: ").append(toIndentedString(start)).append("\n");
-        sb.append("    endby: ").append(toIndentedString(endby)).append("\n");
-        sb.append("    duration: ").append(toIndentedString(duration)).append("\n");
-        sb.append("    cron: ").append(toIndentedString(cron)).append("\n");
-        sb.append("    once: ").append(toIndentedString(once)).append("\n");
-        sb.append("    systemprofiles: ").append(toIndentedString(systemprofiles)).append("\n");
-        sb.append("    businesshours: ").append(toIndentedString(businesshours)).append("\n");
+        sb.append("    start: ").append(PerfSigUIUtils.toIndentedString(start)).append("\n");
+        sb.append("    endby: ").append(PerfSigUIUtils.toIndentedString(endby)).append("\n");
+        sb.append("    duration: ").append(PerfSigUIUtils.toIndentedString(duration)).append("\n");
+        sb.append("    cron: ").append(PerfSigUIUtils.toIndentedString(cron)).append("\n");
+        sb.append("    once: ").append(PerfSigUIUtils.toIndentedString(once)).append("\n");
+        sb.append("    systemprofiles: ").append(PerfSigUIUtils.toIndentedString(systemprofiles)).append("\n");
+        sb.append("    businesshours: ").append(PerfSigUIUtils.toIndentedString(businesshours)).append("\n");
         sb.append("}");
         return sb.toString();
     }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces
-     * (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
-    }
-
 }
 
