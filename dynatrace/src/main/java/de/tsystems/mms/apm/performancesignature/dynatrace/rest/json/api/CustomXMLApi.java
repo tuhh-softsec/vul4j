@@ -84,7 +84,7 @@ public class CustomXMLApi {
 
         String localVarPath = "/rest/management/dashboard/" + apiClient.escapeString(dashboard);
         List<Pair> localVarQueryParams = new ArrayList<>();
-        localVarQueryParams.addAll(apiClient.parameterToPairs("", "source", "stored:" + apiClient.escapeString(source)));
+        localVarQueryParams.addAll(apiClient.parameterToPairs("", "source", "stored:" + source));
 
         return getXmlCall(localVarPath, localVarQueryParams);
     }
@@ -358,9 +358,6 @@ public class CustomXMLApi {
         }
         if (sessionId == null) {
             throw new ApiException("Missing the required parameter 'sessionid' when calling getPDFReport");
-        }
-        if (comparedSessionId == null) {
-            throw new ApiException("Missing the required parameter 'comparedSessionId' when calling getPDFReport");
         }
         if (type == null) {
             throw new ApiException("Missing the required parameter 'type' when calling getPDFReport)");

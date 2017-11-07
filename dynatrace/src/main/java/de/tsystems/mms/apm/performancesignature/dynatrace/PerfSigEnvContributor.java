@@ -30,7 +30,6 @@ import java.util.List;
 @Extension
 public class PerfSigEnvContributor extends EnvironmentContributor {
     static final String TESTRUN_ID_KEY = "DYNATRACE_TESTRUN_ID";
-    static final String SESSIONCOUNT = "DYNATRACE_SESSIONCOUNT";
 
     @Override
     public void buildEnvironmentFor(@Nonnull final Run r, @Nonnull final EnvVars envs, @Nonnull final TaskListener listener)
@@ -41,11 +40,9 @@ public class PerfSigEnvContributor extends EnvironmentContributor {
             return;
         }
 
-        envs.put(SESSIONCOUNT, String.valueOf(envActions.size()));
-        int i = 1;
         for (PerfSigEnvInvisAction action : envActions) {
-            if (StringUtils.isNotBlank(action.getTestRunID())) {
-                envs.put(TESTRUN_ID_KEY + i++, action.getTestRunID());
+            if (StringUtils.isNotBlank(action.getTestRunId())) {
+                envs.put(TESTRUN_ID_KEY, action.getTestRunId());
             }
         }
     }

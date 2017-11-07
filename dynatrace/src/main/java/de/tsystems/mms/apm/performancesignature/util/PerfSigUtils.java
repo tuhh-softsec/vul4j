@@ -24,7 +24,7 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.PerfSigGlobalConfigura
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.CredProfilePair;
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.DynatraceServerConfiguration;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.SystemProfileConfiguration;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.SystemProfileReference;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml.RESTErrorException;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml.model.Agent;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml.model.Dashboard;
@@ -58,8 +58,8 @@ public final class PerfSigUtils {
                                 conf.getName();
                         listBoxModel.add(listItem);
                     }
-            } else if (item instanceof SystemProfileConfiguration) {
-                listBoxModel.add(((SystemProfileConfiguration) item).getId());
+            } else if (item instanceof SystemProfileReference) {
+                listBoxModel.add(((SystemProfileReference) item).getId());
             }
         }
         return sortListBoxModel(listBoxModel);

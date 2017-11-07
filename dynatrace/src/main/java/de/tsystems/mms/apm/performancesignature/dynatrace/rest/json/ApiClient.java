@@ -45,6 +45,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.URLConnection;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
@@ -678,6 +679,21 @@ public class ApiClient {
     public String escapeString(String str) {
         try {
             return URLEncoder.encode(str, "utf8").replaceAll("\\+", "%20");
+        } catch (UnsupportedEncodingException e) {
+            return str;
+        }
+    }
+
+    /**
+     * Unescape the given string coming from a query parameter.
+     *
+     * @param str String to be unescaped
+     * @return unescaped string
+     */
+    public String unescapeString(String str) {
+        try {
+            String decoded = URLDecoder.decode(str, "utf8");
+            return URLDecoder.decode(decoded, "utf8");
         } catch (UnsupportedEncodingException e) {
             return str;
         }

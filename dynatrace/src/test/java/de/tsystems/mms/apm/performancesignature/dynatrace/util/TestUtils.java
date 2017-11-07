@@ -28,10 +28,9 @@ import hudson.util.ListBoxModel;
 import jenkins.model.Jenkins;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
@@ -41,23 +40,14 @@ public class TestUtils {
     }
 
     public static ListBoxModel prepareDTConfigurations() throws IOException {
-        List<DynatraceServerConfiguration> configurations = new ArrayList<>();
+        List<CredProfilePair> credProfilePairs = Collections.singletonList(new CredProfilePair("easy Travel", "myCreds"));
+        List<DynatraceServerConfiguration> configurations = Collections.singletonList(new DynatraceServerConfiguration("PoC PerfSig",
+                "https://192.168.192.202:8021", credProfilePairs, false, DynatraceServerConfiguration.DescriptorImpl.defaultDelay,
+                DynatraceServerConfiguration.DescriptorImpl.defaultRetryCount,
+                false, 0, null, 0, null, null));
         SystemCredentialsProvider.getInstance().getCredentials().add(new UsernamePasswordCredentialsImpl(CredentialsScope.GLOBAL,
                 "myCreds", null, "admin", "admin"));
         SystemCredentialsProvider.getInstance().save();
-        List<CredProfilePair> credProfilePairs = new ArrayList<>();
-        credProfilePairs.add(new CredProfilePair("easy Travel", "myCreds"));
-
-        configurations.add(new DynatraceServerConfiguration("PoC PerfSig", "https://192.168.192.202:8021", credProfilePairs,
-                false, DynatraceServerConfiguration.DescriptorImpl.defaultDelay, DynatraceServerConfiguration.DescriptorImpl.defaultRetryCount,
-                false, 0, null, 0, null, null));
-
-        List<CredProfilePair> credProfilePairs2 = new ArrayList<>();
-        credProfilePairs2.add(new CredProfilePair("easyTravel", "myCreds"));
-
-        configurations.add(new DynatraceServerConfiguration("DT DMZ Demo", "https://192.168.96.184:8021", credProfilePairs2,
-                false, DynatraceServerConfiguration.DescriptorImpl.defaultDelay, DynatraceServerConfiguration.DescriptorImpl.defaultRetryCount,
-                false, 0, null, 0, null, null));
 
         PerfSigGlobalConfiguration.get().setConfigurations(configurations);
         Jenkins.getActiveInstance().save();
@@ -66,7 +56,6 @@ public class TestUtils {
             System.out.println(option.name);
         }
 
-        assertEquals(PerfSigUtils.getDTConfigurations().size(), 2);
         ListBoxModel dynatraceConfigurations = PerfSigUtils.listToListBoxModel(PerfSigUtils.getDTConfigurations());
         assertTrue(containsOption(dynatraceConfigurations, "easy Travel (admin) @ PoC PerfSig"));
         DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceConfigurations.get(0).name, false);

@@ -17,7 +17,7 @@
 package de.tsystems.mms.apm.performancesignature.dynatrace;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml.CommandExecutionException;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.SessionData;
 import de.tsystems.mms.apm.performancesignature.dynatrace.util.TestUtils;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
 import hudson.model.FreeStyleBuild;
@@ -33,6 +33,7 @@ import org.junit.rules.ExpectedException;
 import org.jvnet.hudson.test.JenkinsRule;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -50,26 +51,14 @@ public class StopRecordingTest {
     }
 
     @Test
-    public void testStopContinuousSessionRecording() throws IOException {
+    public void testStopSessionRecording() throws IOException {
         DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceConfigurations.get(0).name);
-
-        exception.expect(CommandExecutionException.class);
-        exception.expectMessage("error stop recording session:");
-        connection.stopRecording();
-    }
-
-    @Test
-    public void testStopDisabledContinuousSessionRecording1() throws IOException {
-        DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceConfigurations.get(1).name);
-
-        exception.expect(CommandExecutionException.class);
-        exception.expectMessage("error stop recording session: Failed to stop session recording");
-        assertTrue(!connection.stopRecording().isEmpty());
+        assertNull(connection.stopRecording());
     }
 
     @Test
     public void testStopDisabledContinuousSessionRecording2() throws IOException {
-        DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceConfigurations.get(1).name);
+        DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceConfigurations.get(0).name);
 
         String result = connection.startRecording("testDisabledContinuousSessionRecording", "triggered by UnitTest",
                 PerfSigStartRecording.DescriptorImpl.defaultRecordingOption, false, true);
@@ -77,7 +66,7 @@ public class StopRecordingTest {
         String result2 = connection.stopRecording();
 
         assertEquals(result, result2);
-        assertTrue(result.contains("testDisabledContinuousSessionRecording"));
+        assertTrue(result.contains("easy Travel"));
     }
 
     @Test
@@ -100,11 +89,20 @@ public class StopRecordingTest {
         assertTrue(invisAction != null);
         assertTrue(invisAction.getSessionName().matches("easy Travel_test0_Build-\\d+_unittest.*"));
         assertTrue(invisAction.getTestCase().equals(testCase));
-        assertFalse(invisAction.getTestRunID().isEmpty());
+        assertFalse(invisAction.getTestRunId().isEmpty());
         assertTrue(invisAction.getTimeframeStart() != null);
 
         DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceConfigurations.get(0).name);
-        assertTrue(connection.getSessions().getSessions().contains(invisAction.getSessionName()));
+        assertTrue(containsSession(connection.getSessions().getSessions(), invisAction.getSessionId()));
+    }
+
+    private boolean containsSession(List<SessionData> sessions, String sessionId) {
+        for (SessionData sessionData : sessions) {
+            if (sessionData.getId().equalsIgnoreCase(sessionId)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

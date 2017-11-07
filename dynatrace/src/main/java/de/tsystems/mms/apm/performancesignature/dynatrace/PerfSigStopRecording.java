@@ -32,7 +32,6 @@ import jenkins.tasks.SimpleBuildStep;
 import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.DataBoundSetter;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -42,7 +41,6 @@ import java.util.List;
 
 public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
     private final String dynatraceProfile;
-    private boolean reanalyzeSession;
 
     @DataBoundConstructor
     public PerfSigStopRecording(final String dynatraceProfile) {
@@ -58,50 +56,37 @@ public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
         logger.println(Messages.PerfSigStopRecording_StoppingSessionRecording());
         final List<PerfSigEnvInvisAction> envVars = run.getActions(PerfSigEnvInvisAction.class);
         PerfSigEnvInvisAction buildEnvVars = null;
-        Date timeframeStart = null;
+        String sessionId = null;
         if (!envVars.isEmpty()) {
             buildEnvVars = envVars.get(envVars.size() - 1);
-            timeframeStart = buildEnvVars.getTimeframeStart();
+            sessionId = buildEnvVars.getSessionId();
         }
 
-        String sessionName;
-        if (timeframeStart != null) {
+        if (buildEnvVars != null && sessionId == null) {
+            Date timeframeStart = buildEnvVars.getTimeframeStart();
             Date timeframeStop = new Date();
             logger.println(Messages.PerfSigStopRecording_TimeframeStart(timeframeStart));
             logger.println(Messages.PerfSigStopRecording_TimeframeStop(timeframeStop));
-            sessionName = connection.storePurePaths(buildEnvVars.getSessionName(), timeframeStart, timeframeStop,
+            sessionId = connection.storeSession(buildEnvVars.getSessionName(), timeframeStart, timeframeStop,
                     PerfSigStartRecording.DescriptorImpl.defaultRecordingOption, PerfSigStartRecording.DescriptorImpl.defaultLockSession, false);
+            buildEnvVars.setSessionId(sessionId);
         } else {
-            sessionName = connection.stopRecording();
+            sessionId = connection.stopRecording();
         }
 
-        if (StringUtils.isBlank(sessionName)) {
+        if (StringUtils.isBlank(sessionId)) {
             throw new RESTErrorException(Messages.PerfSigStopRecording_InternalError());
         }
-        if (buildEnvVars != null) {
-            buildEnvVars.setSessionName(sessionName);
-        }
-        logger.println(Messages.PerfSigStopRecording_StoppedSessionRecording(connection.getCredProfilePair().getProfile(), sessionName));
+        logger.println(Messages.PerfSigStopRecording_StoppedSessionRecording(connection.getCredProfilePair().getProfile(), sessionId));
     }
 
     public String getDynatraceProfile() {
         return dynatraceProfile;
     }
 
-    public boolean getReanalyzeSession() {
-        return reanalyzeSession;
-    }
-
-    @DataBoundSetter
-    public void setReanalyzeSession(final boolean reanalyzeSession) {
-        this.reanalyzeSession = reanalyzeSession;
-    }
-
     @Symbol("stopSession")
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
-        public static final boolean defaultReanalyzeSession = false;
-
         public ListBoxModel doFillDynatraceProfileItems() {
             return PerfSigUtils.listToListBoxModel(PerfSigUtils.getDTConfigurations());
         }

@@ -19,10 +19,4 @@
     <f:entry title="${%Dynatrace profile}" field="dynatraceProfile" description="${%description(rootURL)}">
         <f:select/>
     </f:entry>
-    <f:advanced>
-        <f:entry title="${%Reanalyze Session}" field="reanalyzeSession"
-                 description="${%reanalyze previous recorded session}">
-            <f:checkbox default="${descriptor.defaultReanalyzeSession}"/>
-        </f:entry>
-    </f:advanced>
 </j:jelly>

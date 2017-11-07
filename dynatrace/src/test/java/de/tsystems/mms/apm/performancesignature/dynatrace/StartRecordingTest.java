@@ -43,26 +43,12 @@ public class StartRecordingTest {
     }
 
     @Test
-    public void testContinuousSessionRecording() throws IOException {
+    public void testSessionRecording() throws IOException {
         DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceConfigurations.get(0).name);
 
         String result = connection.startRecording("testContinuousSessionRecording", "triggered by UnitTest",
                     PerfSigStartRecording.DescriptorImpl.defaultRecordingOption, false, false);
         assertNotNull(result);
-    }
-
-    @Test
-    public void testDisabledContinuousSessionRecording() throws IOException {
-        DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceConfigurations.get(1).name);
-
-        try {
-            String result = connection.startRecording("testDisabledContinuousSessionRecording", "triggered by UnitTest",
-                    "", true, true);
-
-            assertTrue(result.contains("easyTravel"));
-        } finally {
-            connection.stopRecording();
-        }
     }
 
     @Test
@@ -78,7 +64,7 @@ public class StartRecordingTest {
         assertTrue(invisAction != null);
         assertTrue(invisAction.getSessionName().matches("easy Travel_test0_Build-\\d+_unittest"));
         assertTrue(invisAction.getTestCase().equals(testCase));
-        assertFalse(invisAction.getTestRunID().isEmpty());
+        assertFalse(invisAction.getTestRunId().isEmpty());
         assertTrue(invisAction.getTimeframeStart() != null);
     }
 }

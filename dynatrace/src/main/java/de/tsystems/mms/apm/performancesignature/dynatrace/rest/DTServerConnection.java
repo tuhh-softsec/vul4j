@@ -47,6 +47,7 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public class DTServerConnection {
@@ -71,6 +72,8 @@ public class DTServerConnection {
         apiClient.setUsername(pair.getCredentials().getUsername());
         apiClient.setPassword(pair.getCredentials().getPassword().getPlainText());
         apiClient.setDebugging(true);
+        //ToDo: make this configurable
+        apiClient.getHttpClient().setReadTimeout(300, TimeUnit.SECONDS);
 
         Proxy proxy = Proxy.NO_PROXY;
         if (customProxy != null) {
@@ -162,8 +165,8 @@ public class DTServerConnection {
         }
     }
 
-    public String storePurePaths(final String sessionName, final Date timeframeStart, final Date timeframeEnd, final String recordingOption,
-                                 final boolean sessionLocked, final boolean appendTimestamp) {
+    public String storeSession(final String sessionName, final Date timeframeStart, final Date timeframeEnd, final String recordingOption,
+                               final boolean sessionLocked, final boolean appendTimestamp) {
         LiveSessionsApi api = new LiveSessionsApi(apiClient);
         try {
             SessionStoringOptions options = new SessionStoringOptions(sessionName, "Session recorded by Jenkins", appendTimestamp,
@@ -192,6 +195,15 @@ public class DTServerConnection {
             return api.stopRecording(systemProfile, new RecordingStatus(false));
         } catch (ApiException ex) {
             throw new CommandExecutionException("error stop recording session: " + ex.getMessage(), ex);
+        }
+    }
+
+    public boolean getRecordingStatus() {
+        LiveSessionsApi api = new LiveSessionsApi(apiClient);
+        try {
+            return api.getRecording(systemProfile).getRecording();
+        } catch (ApiException ex) {
+            throw new CommandExecutionException("error querying session recording status: " + ex.getMessage(), ex);
         }
     }
 
@@ -367,6 +379,15 @@ public class DTServerConnection {
             return testRun.getId();
         } catch (Exception ex) {
             throw new CommandExecutionException("error registering test run: " + ex.getMessage(), ex);
+        }
+    }
+
+    public TestRun finishTestRun(String testRunID) {
+        TestAutomationApi api = new TestAutomationApi(apiClient);
+        try {
+            return api.finishTestRun(systemProfile, testRunID);
+        } catch (Exception ex) {
+            throw new CommandExecutionException("error finishing test run: " + ex.getMessage(), ex);
         }
     }
 
