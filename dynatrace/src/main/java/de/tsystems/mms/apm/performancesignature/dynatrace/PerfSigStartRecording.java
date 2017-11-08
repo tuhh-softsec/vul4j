@@ -93,8 +93,7 @@ public class PerfSigStartRecording extends Builder implements SimpleBuildStep {
         logger.println(Messages.PerfSigStartRecording_RegisteringTestRun());
         String testRunId = connection.registerTestRun(run.getNumber());
         if (testRunId != null) {
-            logger.println(Messages.PerfSigStartRecording_StartedTestRun(pair.getProfile(), testRunId));
-            logger.println(Messages.PerfSigStartRecording_RegisteredTestRunId(testRunId, PerfSigEnvContributor.TESTRUN_ID_KEY));
+            logger.println(Messages.PerfSigStartRecording_StartedTestRun(pair.getProfile(), testRunId, PerfSigEnvContributor.TESTRUN_ID_KEY));
         } else {
             logger.println(Messages.PerfSigStartRecording_CouldNotRegisterTestRun());
         }

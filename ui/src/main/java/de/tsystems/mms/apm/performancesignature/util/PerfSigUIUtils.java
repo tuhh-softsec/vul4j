@@ -138,11 +138,11 @@ public final class PerfSigUIUtils {
             for (Alert incident : incidents) {
                 switch (incident.getSeverity()) {
                     case SEVERE:
-                        logger.println(Messages.PerfSigUIUtils_SevereIncident(incident.getRule(), incident.getRule(), incident.getDescription()));
+                        logger.println(incident.toString());
                         numSevere++;
                         break;
                     case WARNING:
-                        logger.println(Messages.PerfSigUIUtils_WarningIncident(incident.getRule(), incident.getRule(), incident.getDescription()));
+                        logger.println(incident.toString());
                         numWarning++;
                         break;
                     default:

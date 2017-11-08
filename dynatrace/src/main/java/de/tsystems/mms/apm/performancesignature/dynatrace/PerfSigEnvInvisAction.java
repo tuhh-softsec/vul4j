@@ -26,6 +26,7 @@ public class PerfSigEnvInvisAction extends InvisibleAction {
     private final Date timeframeStart;
     private final String sessionName;
     private String sessionId;
+    private Date timeframeStop;
 
     PerfSigEnvInvisAction(final String sessionId, final Date timeframeStart, final String testCase, final String testRunId, final String sessionName) {
         this.sessionId = sessionId;
@@ -57,5 +58,13 @@ public class PerfSigEnvInvisAction extends InvisibleAction {
 
     public Date getTimeframeStart() {
         return timeframeStart != null ? (Date) timeframeStart.clone() : null;
+    }
+
+    public Date getTimeframeStop() {
+        return timeframeStop != null ? (Date) timeframeStop.clone() : null;
+    }
+
+    void setTimeframeStop(Date timeframeStop) {
+        this.timeframeStop = timeframeStop;
     }
 }

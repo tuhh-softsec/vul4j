@@ -33,7 +33,7 @@ public class DashboardReport {
     @XmlElement(name = "chartdashlet")
     private List<ChartDashlet> chartDashlets;
     private String name;
-    private final List<Alert> incidents;
+    private List<Alert> incidents;
     private boolean unitTest;
     private ClientLinkGenerator clientLink;
 
@@ -78,9 +78,6 @@ public class DashboardReport {
      */
     @Exported
     public List<ChartDashlet> getChartDashlets() {
-        if (chartDashlets == null) {
-            chartDashlets = new ArrayList<>();
-        }
         return this.chartDashlets;
     }
 

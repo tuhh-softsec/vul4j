@@ -19,6 +19,7 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.rest;
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.CredProfilePair;
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.CustomProxy;
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.DynatraceServerConfiguration;
+import de.tsystems.mms.apm.performancesignature.dynatrace.model.Alert;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRun;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.ApiClient;
@@ -27,7 +28,6 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.api.*;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.*;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml.CommandExecutionException;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml.ContentRetrievalException;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml.RESTErrorException;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml.model.*;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml.model.Result;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
@@ -41,9 +41,11 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
-import java.io.IOException;
 import java.io.StringReader;
-import java.net.*;
+import java.net.Authenticator;
+import java.net.InetSocketAddress;
+import java.net.PasswordAuthentication;
+import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -112,6 +114,10 @@ public class DTServerConnection {
         return credProfilePair;
     }
 
+    public ApiClient getApiClient() {
+        return apiClient;
+    }
+
     public DashboardReport getDashboardReportFromXML(final String dashBoardName, final String sessionId, final String testCaseName) {
         CustomXMLApi api = new CustomXMLApi(apiClient);
         try {
@@ -124,25 +130,6 @@ public class DTServerConnection {
             return dashboardReport;
         } catch (Exception ex) {
             throw new ContentRetrievalException(ExceptionUtils.getStackTrace(ex) + "could not retrieve records from Dynatrace server: " + dashBoardName, ex);
-        }
-    }
-
-    //ToDo: handle XML Errors
-    private void handleHTTPResponseCode(final HttpURLConnection httpURLConnection) throws IOException {
-        if (httpURLConnection.getResponseCode() >= 300) {
-            if (httpURLConnection.getResponseCode() == 401) {
-                throw new RESTErrorException("invalid username/password. ResponseCode " + httpURLConnection.getResponseCode());
-            }
-            httpURLConnection.setReadTimeout(15000);
-            RESTXMLError error;
-            try {
-                JAXBContext jaxbContext = JAXBContext.newInstance(RESTXMLError.class);
-                Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-                error = (RESTXMLError) jaxbUnmarshaller.unmarshal(httpURLConnection.getErrorStream());
-            } catch (JAXBException e) {
-                throw new RESTErrorException("unexpected response code HTTP " + httpURLConnection.getResponseCode());
-            }
-            throw new RESTErrorException(error.getReason());
         }
     }
 
@@ -174,7 +161,7 @@ public class DTServerConnection {
 
             return api.storeSession(systemProfile, options);
         } catch (ApiException ex) {
-            throw new CommandExecutionException("error storing purepaths: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error while storing purepaths: " + ex.getMessage(), ex);
         }
     }
 
@@ -185,7 +172,7 @@ public class DTServerConnection {
             SessionRecordingOptions options = new SessionRecordingOptions(sessionName, description, appendTimestamp, recordingOption, sessionLocked);
             return api.postRecording(systemProfile, options);
         } catch (ApiException ex) {
-            throw new CommandExecutionException("error start recording session: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error while starting session recording: " + ex.getMessage(), ex);
         }
     }
 
@@ -194,7 +181,7 @@ public class DTServerConnection {
         try {
             return api.stopRecording(systemProfile, new RecordingStatus(false));
         } catch (ApiException ex) {
-            throw new CommandExecutionException("error stop recording session: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error while stopping session recording: " + ex.getMessage(), ex);
         }
     }
 
@@ -212,7 +199,7 @@ public class DTServerConnection {
         try {
             return api.listStoredSessions();
         } catch (Exception ex) {
-            throw new CommandExecutionException("error listing sessions: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error while querying sessions: " + ex.getMessage(), ex);
         }
     }
 
@@ -226,7 +213,7 @@ public class DTServerConnection {
             DashboardList dashboardList = (DashboardList) jaxbUnmarshaller.unmarshal(new StringReader(response));
             return dashboardList.getDashboards();
         } catch (Exception ex) {
-            throw new CommandExecutionException("error listing profiles: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error while querying dashboards: " + ex.getMessage(), ex);
         }
     }
 
@@ -235,7 +222,7 @@ public class DTServerConnection {
         try {
             return api.getProfiles();
         } catch (Exception ex) {
-            throw new CommandExecutionException("error listing profiles: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error while querying profiles: " + ex.getMessage(), ex);
         }
     }
 
@@ -244,7 +231,7 @@ public class DTServerConnection {
         try {
             return api.getSystemProfileConfigurations(systemProfile);
         } catch (Exception ex) {
-            throw new CommandExecutionException("error listing configurations of profile " + systemProfile + ": " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error while querying configurations of profile " + systemProfile + ": " + ex.getMessage(), ex);
         }
     }
 
@@ -253,7 +240,7 @@ public class DTServerConnection {
         try {
             api.putSystemProfileConfigurationStatus(systemProfile, configuration, new ActivationStatus("ENABLED"));
         } catch (Exception ex) {
-            throw new CommandExecutionException("error activating configuration: " + ex.getMessage());
+            throw new CommandExecutionException("error while activating configuration: " + ex.getMessage());
         }
     }
 
@@ -267,7 +254,7 @@ public class DTServerConnection {
             AgentList agentList = (AgentList) jaxbUnmarshaller.unmarshal(new StringReader(response));
             return agentList.getAgents();
         } catch (Exception ex) {
-            throw new CommandExecutionException("error listing agents: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error while querying agents: " + ex.getMessage(), ex);
         }
     }
 
@@ -288,7 +275,7 @@ public class DTServerConnection {
             Result result = getResultFromXML(response);
             return result.isResultTrue();
         } catch (Exception ex) {
-            throw new CommandExecutionException("error doing hot sensor placement: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error while doing hot sensor placement: " + ex.getMessage(), ex);
         }
     }
 
@@ -299,7 +286,7 @@ public class DTServerConnection {
             file.copyFrom(new FilePath(tmpFile));
             return true;
         } catch (Exception ex) {
-            throw new CommandExecutionException("error downloading PDF Report: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error while downloading PDF Report: " + ex.getMessage(), ex);
         }
     }
 
@@ -310,7 +297,7 @@ public class DTServerConnection {
             outputFile.copyFrom(new FilePath(tmpFile));
             return true;
         } catch (Exception ex) {
-            throw new CommandExecutionException("error downloading session: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error while downloading session: " + ex.getMessage(), ex);
         }
     }
 
@@ -328,7 +315,7 @@ public class DTServerConnection {
             Result result = getResultFromXML(response);
             return result.getValue();
         } catch (Exception ex) {
-            throw new CommandExecutionException("error with thread dump: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error while creating thread dump: " + ex.getMessage(), ex);
         }
     }
 
@@ -340,7 +327,7 @@ public class DTServerConnection {
             Result result = getResultFromXML(response);
             return result.isSuccessTrue();
         } catch (Exception ex) {
-            throw new CommandExecutionException("error with thread dump status: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error while querying thread dump status: " + ex.getMessage(), ex);
         }
     }
 
@@ -355,7 +342,7 @@ public class DTServerConnection {
             Result result = getResultFromXML(response);
             return result.getValue();
         } catch (Exception ex) {
-            throw new CommandExecutionException("error with memory dump: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error while creating memory dump: " + ex.getMessage(), ex);
         }
     }
 
@@ -367,7 +354,7 @@ public class DTServerConnection {
             Result result = getResultFromXML(response);
             return result.isSuccessTrue();
         } catch (Exception ex) {
-            throw new CommandExecutionException("error with memory dump status: " + ex.getMessage(), ex);
+            throw new CommandExecutionException("error while querying memory dump status: " + ex.getMessage(), ex);
         }
     }
 
@@ -396,7 +383,21 @@ public class DTServerConnection {
         try {
             return api.getTestrunById(systemProfile, testRunId);
         } catch (ApiException ex) {
-            throw new ContentRetrievalException(ExceptionUtils.getStackTrace(ex) + "Could not retrieve records from Dynatrace server: " + testRunId, ex);
+            throw new CommandExecutionException("error while getting test run details: " + ex.getMessage(), ex);
+        }
+    }
+
+    public List<Alert> getIncidents(Date from, Date to) throws InterruptedException {
+        AlertsIncidentsAndEventsApi api = new AlertsIncidentsAndEventsApi(apiClient);
+        try {
+            List<Alert> incidents = new ArrayList<>();
+            Alerts alerts = api.getIncidents(systemProfile, null, "Created", apiClient.formatDatetime(from), apiClient.formatDatetime(to));
+            for (AlertReference alertReference : alerts.getAlerts()) {
+                incidents.add(api.getIncident(alertReference.getId()));
+            }
+            return incidents;
+        } catch (ApiException ex) {
+            throw new CommandExecutionException("error while getting incident details: " + ex.getMessage(), ex);
         }
     }
 }

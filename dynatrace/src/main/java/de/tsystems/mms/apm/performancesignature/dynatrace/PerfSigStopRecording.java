@@ -16,6 +16,7 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace;
 
+import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRun;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml.RESTErrorException;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUtils;
@@ -50,21 +51,30 @@ public class PerfSigStopRecording extends Builder implements SimpleBuildStep {
     @Override
     public void perform(@Nonnull final Run<?, ?> run, @Nonnull final FilePath workspace, @Nonnull final Launcher launcher, @Nonnull final TaskListener listener)
             throws InterruptedException, IOException {
-        PrintStream logger = listener.getLogger();
         DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceProfile);
-
-        logger.println(Messages.PerfSigStopRecording_StoppingSessionRecording());
         final List<PerfSigEnvInvisAction> envVars = run.getActions(PerfSigEnvInvisAction.class);
+
         PerfSigEnvInvisAction buildEnvVars = null;
         String sessionId = null;
+        String testRunId = null;
+        Date timeframeStop = new Date();
+        PrintStream logger = listener.getLogger();
+
+        logger.println(Messages.PerfSigStopRecording_StoppingSessionRecording());
         if (!envVars.isEmpty()) {
             buildEnvVars = envVars.get(envVars.size() - 1);
+            buildEnvVars.setTimeframeStop(timeframeStop);
             sessionId = buildEnvVars.getSessionId();
+            testRunId = buildEnvVars.getTestRunId();
+        }
+
+        if (testRunId != null) {
+            TestRun testRun = connection.finishTestRun(testRunId);
+            logger.println("finished test run " + testRun.getId());
         }
 
         if (buildEnvVars != null && sessionId == null) {
             Date timeframeStart = buildEnvVars.getTimeframeStart();
-            Date timeframeStop = new Date();
             logger.println(Messages.PerfSigStopRecording_TimeframeStart(timeframeStart));
             logger.println(Messages.PerfSigStopRecording_TimeframeStop(timeframeStop));
             sessionId = connection.storeSession(buildEnvVars.getSessionName(), timeframeStart, timeframeStop,

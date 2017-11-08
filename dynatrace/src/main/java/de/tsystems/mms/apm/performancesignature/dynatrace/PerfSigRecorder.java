@@ -21,6 +21,7 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.Configur
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.Dashboard;
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.DynatraceServerConfiguration;
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.UnitTestCase;
+import de.tsystems.mms.apm.performancesignature.dynatrace.model.Alert;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.SessionData;
@@ -141,7 +142,7 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
             }
 
             for (Dashboard singleDashboard : configurationTestCase.getSingleDashboards()) {
-                singleFilename = "Singlereport_" + sessionId + "_" + singleDashboard.getName() + ".pdf";
+                singleFilename = "Singlereport_" + buildEnvVars.getSessionName() + "_" + singleDashboard.getName() + ".pdf";
                 logger.println(Messages.PerfSigRecorder_GettingPDFReport() + " " + singleFilename);
                 boolean singleResult = connection.getPDFReport(sessionId, null, singleDashboard.getName(),
                         new FilePath(PerfSigUIUtils.getReportDirectory(run), singleFilename));
@@ -162,10 +163,12 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
                 }
             }
             logger.println(Messages.PerfSigRecorder_ParseXMLReport());
+            final List<Alert> incidents = connection.getIncidents(buildEnvVars.getTimeframeStart(), buildEnvVars.getTimeframeStop());
             final DashboardReport dashboardReport = connection.getDashboardReportFromXML(configurationTestCase.getXmlDashboard(), sessionId, configurationTestCase.getName());
             if (dashboardReport == null || dashboardReport.getChartDashlets() == null || dashboardReport.getChartDashlets().isEmpty()) {
                 throw new RESTErrorException(Messages.PerfSigRecorder_XMLReportError());
             } else {
+                dashboardReport.getIncidents().addAll(incidents);
                 dashboardReport.setUnitTest(configurationTestCase instanceof UnitTestCase);
                 ClientLinkGenerator clientLink = new ClientLinkGenerator(serverConfiguration.getServerUrl(), configurationTestCase.getXmlDashboard(),
                         sessionId, configurationTestCase.getClientDashboard());
@@ -176,7 +179,8 @@ public class PerfSigRecorder extends Recorder implements SimpleBuildStep {
             }
 
             if (exportSessions) {
-                boolean exportedSession = connection.downloadSession(sessionId, new FilePath(PerfSigUIUtils.getReportDirectory(run), sessionId + ".dts"));
+                boolean exportedSession = connection.downloadSession(sessionId,
+                        new FilePath(PerfSigUIUtils.getReportDirectory(run), buildEnvVars.getSessionName() + ".dts"));
                 if (!exportedSession) {
                     throw new RESTErrorException(Messages.PerfSigRecorder_SessionDownloadError());
                 } else {
