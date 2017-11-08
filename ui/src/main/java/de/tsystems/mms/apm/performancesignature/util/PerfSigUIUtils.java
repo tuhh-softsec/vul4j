@@ -90,14 +90,17 @@ public final class PerfSigUIUtils {
         return list;
     }
 
-    public static String encodeString(final String value) {
-        if (StringUtils.isBlank(value)) {
-            return "";
-        }
+    /**
+     * Escape the given string to be used as URL query value.
+     *
+     * @param str String to be escaped
+     * @return Escaped string
+     */
+    public static String encodeString(final String str) {
         try {
-            return URLEncoder.encode(value, CharEncoding.UTF_8).replaceAll("\\+", "%20");
+            return URLEncoder.encode(str, CharEncoding.UTF_8).replaceAll("\\+", "%20");
         } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(Messages.PerfSigUIUtils_EncodingFailure(), e);
+            return str;
         }
     }
 
