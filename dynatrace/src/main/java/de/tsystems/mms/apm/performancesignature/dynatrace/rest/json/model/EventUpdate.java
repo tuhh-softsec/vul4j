@@ -72,7 +72,7 @@ public class EventUpdate {
      *
      * @return message
      **/
-    @ApiModelProperty()
+
     public String getMessage() {
         return message;
     }
@@ -82,7 +82,7 @@ public class EventUpdate {
      *
      * @return description
      **/
-    @ApiModelProperty()
+
     public String getDescription() {
         return description;
     }

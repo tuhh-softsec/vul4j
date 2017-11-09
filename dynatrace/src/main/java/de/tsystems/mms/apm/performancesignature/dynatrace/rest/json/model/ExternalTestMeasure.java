@@ -81,7 +81,7 @@ public class ExternalTestMeasure {
      *
      * @return unit
      **/
-    @ApiModelProperty()
+
     public String getUnit() {
         return unit;
     }
@@ -91,7 +91,7 @@ public class ExternalTestMeasure {
      *
      * @return minValue
      **/
-    @ApiModelProperty()
+
     public Double getMinValue() {
         return minValue;
     }
@@ -101,7 +101,7 @@ public class ExternalTestMeasure {
      *
      * @return maxValue
      **/
-    @ApiModelProperty()
+
     public Double getMaxValue() {
         return maxValue;
     }

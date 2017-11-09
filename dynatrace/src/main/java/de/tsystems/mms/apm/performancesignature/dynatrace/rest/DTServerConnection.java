@@ -37,11 +37,7 @@ import jenkins.model.Jenkins;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import java.io.File;
-import java.io.StringReader;
 import java.net.Authenticator;
 import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
@@ -73,7 +69,7 @@ public class DTServerConnection {
         apiClient.setBasePath(serverUrl);
         apiClient.setUsername(pair.getCredentials().getUsername());
         apiClient.setPassword(pair.getCredentials().getPassword().getPlainText());
-        apiClient.setDebugging(true);
+        //apiClient.setDebugging(true);
         //ToDo: make this configurable
         apiClient.getHttpClient().setReadTimeout(300, TimeUnit.SECONDS);
 
@@ -121,11 +117,7 @@ public class DTServerConnection {
     public DashboardReport getDashboardReportFromXML(final String dashBoardName, final String sessionId, final String testCaseName) {
         CustomXMLApi api = new CustomXMLApi(apiClient);
         try {
-            String response = api.getXMLDashboard(dashBoardName, sessionId);
-
-            JAXBContext jaxbContext = JAXBContext.newInstance(DashboardReport.class);
-            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            DashboardReport dashboardReport = (DashboardReport) jaxbUnmarshaller.unmarshal(new StringReader(response));
+            DashboardReport dashboardReport = api.getXMLDashboard(dashBoardName, sessionId);
             dashboardReport.setName(testCaseName);
             return dashboardReport;
         } catch (Exception ex) {
@@ -206,11 +198,7 @@ public class DTServerConnection {
     public List<Dashboard> getDashboards() {
         CustomXMLApi api = new CustomXMLApi(apiClient);
         try {
-            String response = api.listDashboards();
-
-            JAXBContext jaxbContext = JAXBContext.newInstance(DashboardList.class);
-            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            DashboardList dashboardList = (DashboardList) jaxbUnmarshaller.unmarshal(new StringReader(response));
+            DashboardList dashboardList = api.listDashboards();
             return dashboardList.getDashboards();
         } catch (Exception ex) {
             throw new CommandExecutionException("error while querying dashboards: " + ex.getMessage(), ex);
@@ -247,11 +235,7 @@ public class DTServerConnection {
     public List<Agent> getAllAgents() {
         CustomXMLApi api = new CustomXMLApi(apiClient);
         try {
-            String response = api.getAgents();
-
-            JAXBContext jaxbContext = JAXBContext.newInstance(AgentList.class);
-            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            AgentList agentList = (AgentList) jaxbUnmarshaller.unmarshal(new StringReader(response));
+            AgentList agentList = api.getAgents();
             return agentList.getAgents();
         } catch (Exception ex) {
             throw new CommandExecutionException("error while querying agents: " + ex.getMessage(), ex);
@@ -271,8 +255,7 @@ public class DTServerConnection {
     public boolean hotSensorPlacement(final int agentId) {
         CustomXMLApi api = new CustomXMLApi(apiClient);
         try {
-            String response = api.hotSensorPlacement(agentId);
-            Result result = getResultFromXML(response);
+            Result result = api.hotSensorPlacement(agentId);
             return result.isResultTrue();
         } catch (Exception ex) {
             throw new CommandExecutionException("error while doing hot sensor placement: " + ex.getMessage(), ex);
@@ -301,18 +284,10 @@ public class DTServerConnection {
         }
     }
 
-    private Result getResultFromXML(String response) throws JAXBException {
-        JAXBContext jaxbContext = JAXBContext.newInstance(Result.class);
-        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-        return (Result) jaxbUnmarshaller.unmarshal(new StringReader(response));
-    }
-
     public String threadDump(final String agentName, final String hostName, final int processId, final boolean sessionLocked) {
         CustomXMLApi api = new CustomXMLApi(apiClient);
         try {
-            String response = api.createThreadDump(systemProfile, agentName, hostName, processId, sessionLocked);
-
-            Result result = getResultFromXML(response);
+            Result result = api.createThreadDump(systemProfile, agentName, hostName, processId, sessionLocked);
             return result.getValue();
         } catch (Exception ex) {
             throw new CommandExecutionException("error while creating thread dump: " + ex.getMessage(), ex);
@@ -322,9 +297,7 @@ public class DTServerConnection {
     public boolean threadDumpStatus(final String threadDump) {
         CustomXMLApi api = new CustomXMLApi(apiClient);
         try {
-            String response = api.getThreadDumpStatus(systemProfile, threadDump);
-
-            Result result = getResultFromXML(response);
+            Result result = api.getThreadDumpStatus(systemProfile, threadDump);
             return result.isSuccessTrue();
         } catch (Exception ex) {
             throw new CommandExecutionException("error while querying thread dump status: " + ex.getMessage(), ex);
@@ -336,10 +309,8 @@ public class DTServerConnection {
                              final boolean doGC) {
         CustomXMLApi api = new CustomXMLApi(apiClient);
         try {
-            String response = api.createMemoryDump(systemProfile, agentName, hostName, processId, dumpType, sessionLocked, captureStrings, capturePrimitives,
+            Result result = api.createMemoryDump(systemProfile, agentName, hostName, processId, dumpType, sessionLocked, captureStrings, capturePrimitives,
                     autoPostProcess, doGC);
-
-            Result result = getResultFromXML(response);
             return result.getValue();
         } catch (Exception ex) {
             throw new CommandExecutionException("error while creating memory dump: " + ex.getMessage(), ex);
@@ -349,9 +320,7 @@ public class DTServerConnection {
     public boolean memoryDumpStatus(final String memoryDump) {
         CustomXMLApi api = new CustomXMLApi(apiClient);
         try {
-            String response = api.getMemoryDumpStatus(systemProfile, memoryDump);
-
-            Result result = getResultFromXML(response);
+            Result result = api.getMemoryDumpStatus(systemProfile, memoryDump);
             return result.isSuccessTrue();
         } catch (Exception ex) {
             throw new CommandExecutionException("error while querying memory dump status: " + ex.getMessage(), ex);

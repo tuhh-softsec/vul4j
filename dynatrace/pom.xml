@@ -17,7 +17,6 @@
     <url>https://wiki.jenkins-ci.org/display/JENKINS/Performance+Signature+with+Dynatrace+Plugin</url>
 
     <properties>
-        <swagger-core-version>1.5.15</swagger-core-version>
         <okhttp-version>2.7.5</okhttp-version>
         <jodatime-version>2.9.9</jodatime-version>
     </properties>

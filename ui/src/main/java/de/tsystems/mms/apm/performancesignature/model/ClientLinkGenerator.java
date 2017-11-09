@@ -28,7 +28,9 @@ public class ClientLinkGenerator {
     @Deprecated
     private transient int port;
     @Deprecated
-    private transient String protocol, server;
+    private transient String protocol;
+    @Deprecated
+    private transient String server;
     private String serverUrl;
     private final String target;
 

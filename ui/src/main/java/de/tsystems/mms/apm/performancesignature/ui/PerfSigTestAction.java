@@ -48,7 +48,7 @@ public class PerfSigTestAction extends TestAction {
         if (previousData != null) {
             for (TestRun testRun : previousData.getTestRuns()) {
                 for (TestResult testResult : testRun.getTestResults()) {
-                    if (testResult.getPackage().equals(matchingTestResult.getPackage()) && testResult.getName().equals(matchingTestResult.getName())) {
+                    if (matchingTestResult.getPackage().equals(testResult.getPackage()) && matchingTestResult.getName().equals(testResult.getName())) {
                         return testResult;
                     }
                 }

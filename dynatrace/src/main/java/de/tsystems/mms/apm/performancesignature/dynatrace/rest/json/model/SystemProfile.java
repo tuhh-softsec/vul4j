@@ -54,7 +54,7 @@ public class SystemProfile {
      *
      * @return description
      **/
-    @ApiModelProperty()
+
     public String getDescription() {
         return description;
     }
@@ -64,7 +64,7 @@ public class SystemProfile {
      *
      * @return enabled
      **/
-    @ApiModelProperty()
+
     public Boolean getEnabled() {
         return enabled;
     }

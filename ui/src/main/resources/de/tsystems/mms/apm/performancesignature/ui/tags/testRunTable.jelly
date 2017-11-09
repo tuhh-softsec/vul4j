@@ -15,27 +15,40 @@
   -->
 
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:fmt="jelly:fmt" xmlns:jm="/de/tsystems/mms/apm/performancesignature/ui/tags"
+<j:jelly xmlns:j="jelly:core" xmlns:jm="/de/tsystems/mms/apm/performancesignature/ui/tags"
          xmlns:st="jelly:stapler">
     <j:set var="testRun" value="${it.matchingTestRun}"/>
     <j:set var="testResult" value="${it.matchingTestResult}"/>
-    <p>Timestamp:
-        <fmt:formatDate dateStyle="medium" type="both" value="${testResult.exectime}"/>
-        <br/>
-        Status: ${testResult.status}
-        <st:nbsp/>
-        <span title="Dynatrace Performance Status" class="glyphicon ${testResult.statusIcon}"
-              style="font-size: 15px; color: ${testResult.statusColor}" aria-hidden="true"/>
-        <br/>
-        <j:set var="previousTestResult" value="${it.previousTestResult}"/>
+    <j:set var="previousTestResult" value="${it.previousTestResult}"/>
+    <table>
+        <tr>
+            <td>Timestamp:</td>
+            <!--<td><fmt:formatDate dateStyle="medium" type="both" value="${testResult.exectime}"/></td>-->
+            <td>${testResult.exectime}</td>
+        </tr>
+        <tr>
+            <td>Platform:</td>
+            <td>${testResult.platform}</td>
+        </tr>
+        <tr>
+            <td>Status:</td>
+            <td>${testResult.status}
+                <st:nbsp/>
+                <span title="Dynatrace Performance Status" class="glyphicon ${testResult.statusIcon}"
+                      style="font-size: 15px; color: ${testResult.statusColor}" aria-hidden="true"/>
+            </td>
+        </tr>
         <j:if test="${previousTestResult!=null}">
-            Previous status: ${testResult.status}
-            <st:nbsp/>
-            <span title="Dynatrace Performance Status" class="glyphicon ${previousTestResult.statusIcon}"
-                  style="font-size: 15px; color: ${previousTestResult.statusColor}" aria-hidden="true"/>
-        </j:if>
-    </p>
+            <td>Previous status:&#160;&#160;</td>
+            <td>${testResult.status}
+                <st:nbsp/>
+                <span title="Dynatrace Performance Status" class="glyphicon ${previousTestResult.statusIcon}"
+                      style="font-size: 15px; color: ${previousTestResult.statusColor}" aria-hidden="true"/>
+            </td>
 
+        </j:if>
+    </table>
+    <br/>
     <table class="table table-striped table-bordered text-center table-hover">
         <thead>
             <tr>
@@ -57,7 +70,7 @@
             </tr>
         </thead>
         <tbody>
-            <j:forEach var="measure" items="${testResult.testRunMeasures}">
+            <j:forEach var="measure" items="${testResult.measures}">
                 <tr>
                     <td class="text-left">
                         <b>${measure.metricGroup} - ${measure.name} (${measure.unit})</b>

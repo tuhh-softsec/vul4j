@@ -18,7 +18,6 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model;
 
 import com.google.gson.annotations.SerializedName;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
-import io.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +48,7 @@ public class SystemProfileConfigurations {
      *
      * @return configurations
      **/
-    @ApiModelProperty()
+
     public List<SystemProfileConfiguration> getConfigurations() {
         return configurations;
     }

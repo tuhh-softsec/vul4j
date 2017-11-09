@@ -48,6 +48,9 @@ public class TestResult {
     @SerializedName("package")
     private String _package;
 
+    @Deprecated
+    private transient String packageName;
+
     @SerializedName("platform")
     private String platform;
 
@@ -60,7 +63,6 @@ public class TestResult {
      * @return name
      **/
     @Exported
-    @ApiModelProperty()
     public String getName() {
         return name;
     }
@@ -71,7 +73,6 @@ public class TestResult {
      * @return status
      **/
     @Exported
-    @ApiModelProperty()
     public StatusEnum getStatus() {
         return status;
     }
@@ -93,7 +94,6 @@ public class TestResult {
      * @return _package
      **/
     @Exported
-    @ApiModelProperty()
     public String getPackage() {
         return _package;
     }
@@ -104,7 +104,6 @@ public class TestResult {
      * @return platform
      **/
     @Exported
-    @ApiModelProperty()
     public String getPlatform() {
         return platform;
     }
@@ -122,13 +121,20 @@ public class TestResult {
         return this;
     }
 
+    public TestMeasure getMeasure(final String metricGroup, final String metric) {
+        for (TestMeasure measure : measures) {
+            if (measure.getMetricGroup().equals(metricGroup) && measure.getName().equals(metric))
+                return measure;
+        }
+        return null;
+    }
+
     /**
      * Get measures
      *
      * @return measures
      **/
     @Exported
-    @ApiModelProperty()
     public List<TestMeasure> getMeasures() {
         return measures;
     }
@@ -169,6 +175,13 @@ public class TestResult {
             default:
                 return "";
         }
+    }
+
+    protected Object readResolve() {
+        if (packageName != null) {
+            _package = packageName;
+        }
+        return this;
     }
 
     @Override

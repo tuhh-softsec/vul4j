@@ -85,7 +85,7 @@ public class DeploymentEvent {
      *
      * @return description
      **/
-    @ApiModelProperty()
+
     public String getDescription() {
         return description;
     }

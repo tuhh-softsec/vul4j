@@ -27,8 +27,12 @@ import okio.Okio;
 import org.apache.commons.lang.StringUtils;
 
 import javax.net.ssl.*;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.URLConnection;
@@ -613,6 +617,19 @@ public class ApiClient {
     }
 
     /**
+     * Check if the given MIME is a XML MIME.
+     * XML MIME examples:
+     * text/xml
+     *
+     * @param mime MIME (Multipurpose Internet Mail Extensions)
+     * @return True if the given MIME is XML, false otherwise.
+     */
+    public boolean isXmlMime(String mime) {
+        String xmlMime = "(?i)^(text/xml)[ \t]*(;.*)?$";
+        return mime != null && (mime.matches(xmlMime));
+    }
+
+    /**
      * Select the Accept header's value from the given accepts array:
      * if JSON exists in the given array, use it;
      * otherwise use all of them (joining into a string)
@@ -733,6 +750,14 @@ public class ApiClient {
         }
         if (isJsonMime(contentType)) {
             return json.deserialize(respBody, returnType);
+        } else if (isXmlMime(contentType)) {
+            try {
+                JAXBContext jaxbContext = JAXBContext.newInstance((Class) returnType);
+                Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+                return (T) jaxbUnmarshaller.unmarshal(new StringReader(respBody));
+            } catch (JAXBException e) {
+                throw new ApiException("could not parse xml" + e.getMessage());
+            }
         } else if (returnType.equals(String.class)) {
             // Expecting string, return the raw response body.
             return (T) respBody;

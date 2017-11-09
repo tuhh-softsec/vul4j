@@ -128,10 +128,7 @@ public final class PerfSigUIUtils {
      * (except the first line).
      */
     public static String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
+        return String.valueOf(o).replace("\n", "\n    ");
     }
 
     public static void handleIncidents(final Run<?, ?> run, final List<Alert> incidents, final PrintStream logger, final int nonFunctionalFailure) {

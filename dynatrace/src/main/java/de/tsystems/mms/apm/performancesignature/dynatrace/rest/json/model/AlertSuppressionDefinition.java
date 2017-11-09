@@ -76,7 +76,7 @@ public class AlertSuppressionDefinition {
      *
      * @return duration
      **/
-    @ApiModelProperty()
+
     public Duration getDuration() {
         return duration;
     }

@@ -58,7 +58,7 @@ public class TestRunDefinition {
      *
      * @return versionBuild
      **/
-    @ApiModelProperty()
+
     public String getVersionBuild() {
         return versionBuild;
     }
@@ -68,7 +68,7 @@ public class TestRunDefinition {
      *
      * @return versionMajor
      **/
-    @ApiModelProperty()
+
     public String getVersionMajor() {
         return versionMajor;
     }
@@ -78,7 +78,6 @@ public class TestRunDefinition {
      *
      * @return versionMilestone
      **/
-    @ApiModelProperty()
     public String getVersionMilestone() {
         return versionMilestone;
     }
@@ -88,7 +87,6 @@ public class TestRunDefinition {
      *
      * @return versionMinor
      **/
-    @ApiModelProperty()
     public String getVersionMinor() {
         return versionMinor;
     }
@@ -98,7 +96,6 @@ public class TestRunDefinition {
      *
      * @return versionRevision
      **/
-    @ApiModelProperty()
     public String getVersionRevision() {
         return versionRevision;
     }
@@ -108,7 +105,6 @@ public class TestRunDefinition {
      *
      * @return marker
      **/
-    @ApiModelProperty()
     public String getMarker() {
         return marker;
     }
@@ -118,7 +114,6 @@ public class TestRunDefinition {
      *
      * @return platform
      **/
-    @ApiModelProperty()
     public String getPlatform() {
         return platform;
     }

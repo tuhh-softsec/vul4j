@@ -21,7 +21,9 @@ import hudson.model.InvisibleAction;
 import java.util.Date;
 
 public class PerfSigEnvInvisAction extends InvisibleAction {
-    private final String testRunId;
+    @Deprecated
+    private transient String testRunID;
+    private String testRunId;
     private final String testCase;
     private final Date timeframeStart;
     private final String sessionName;
@@ -66,5 +68,12 @@ public class PerfSigEnvInvisAction extends InvisibleAction {
 
     void setTimeframeStop(Date timeframeStop) {
         this.timeframeStop = timeframeStop;
+    }
+
+    protected Object readResolve() {
+        if (testRunID != null) {
+            testRunId = testRunID;
+        }
+        return this;
     }
 }

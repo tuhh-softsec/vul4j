@@ -109,7 +109,7 @@ public class DynatraceServerConfiguration extends AbstractDescribableImpl<Dynatr
 
     @Extension
     public static final class DescriptorImpl extends Descriptor<DynatraceServerConfiguration> {
-        public static final String defaultServerUrl = "https://dynatrace.server:8021/";
+        public static final String defaultServerUrl = "https://dynatrace.server:8021";
         public static final int defaultDelay = 10;
         public static final int defaultRetryCount = 5;
         public static final boolean defaultVerifyCertificate = false;
@@ -120,7 +120,7 @@ public class DynatraceServerConfiguration extends AbstractDescribableImpl<Dynatr
         }
 
         public FormValidation doCheckServerUrl(@QueryParameter final String serverUrl) {
-            if (PerfSigUIUtils.checkNotNullOrEmpty(serverUrl)) {
+            if (PerfSigUIUtils.checkNotNullOrEmpty(serverUrl) && (serverUrl.charAt(serverUrl.length() - 1) != '/')) {
                 return FormValidation.ok();
             } else {
                 return FormValidation.error(Messages.PerfSigRecorder_DTServerUrlNotValid());

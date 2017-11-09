@@ -16,8 +16,6 @@
 
 package de.tsystems.mms.apm.performancesignature.dynatrace;
 
-import de.tsystems.mms.apm.performancesignature.dynatrace.model.ChartDashlet;
-import de.tsystems.mms.apm.performancesignature.dynatrace.model.Measure;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRun;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.ApiClient;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.JSON;
@@ -26,22 +24,10 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
 public class TestDataPublisherTest {
-
-    private static boolean containsMeasure(List<ChartDashlet> chartDashlets, String searchString) {
-        for (ChartDashlet cd : chartDashlets) {
-            for (Measure m : cd.getMeasures()) {
-                if (m.getName().equalsIgnoreCase(searchString)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
     @Test
     public void testXMLParser() throws IOException, InterruptedException {
@@ -50,8 +36,5 @@ public class TestDataPublisherTest {
         TestRun testRun = json.deserialize(file.readToString(), TestRun.class);
 
         assertEquals(testRun.getTestResults().size(), 305);
-
-        //assertTrue(containsMeasure(testRun.getChartDashlets(), "Synthetic Web Requests by Timer Name - PurePath Response Time"));
-        //assertTrue(containsMeasure(dashboardReport.getChartDashlets(), "Total GC Utilization"));
     }
 }

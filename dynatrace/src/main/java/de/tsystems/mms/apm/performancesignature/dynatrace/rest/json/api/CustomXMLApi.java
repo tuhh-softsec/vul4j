@@ -18,7 +18,11 @@ package de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.api;
 
 import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Call;
+import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.*;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml.model.AgentList;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml.model.DashboardList;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml.model.Result;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -61,14 +65,14 @@ public class CustomXMLApi {
         return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames);
     }
 
-    public String listDashboards() throws ApiException {
-        ApiResponse<String> resp = listDashboardsWithHttpInfo();
+    public DashboardList listDashboards() throws ApiException {
+        ApiResponse<DashboardList> resp = listDashboardsWithHttpInfo();
         return resp.getData();
     }
 
-    public ApiResponse<String> listDashboardsWithHttpInfo() throws ApiException {
+    public ApiResponse<DashboardList> listDashboardsWithHttpInfo() throws ApiException {
         Call call = getXmlCall("/rest/management/dashboards", new ArrayList<Pair>());
-        Type localVarReturnType = new TypeToken<String>() {
+        Type localVarReturnType = new TypeToken<DashboardList>() {
         }.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -89,26 +93,26 @@ public class CustomXMLApi {
         return getXmlCall(localVarPath, localVarQueryParams);
     }
 
-    public String getXMLDashboard(String dashboard, String source) throws ApiException {
-        ApiResponse<String> resp = getXMLDashboardWithHttpInfo(dashboard, source);
+    public DashboardReport getXMLDashboard(String dashboard, String source) throws ApiException {
+        ApiResponse<DashboardReport> resp = getXMLDashboardWithHttpInfo(dashboard, source);
         return resp.getData();
     }
 
-    public ApiResponse<String> getXMLDashboardWithHttpInfo(String dashboard, String source) throws ApiException {
+    public ApiResponse<DashboardReport> getXMLDashboardWithHttpInfo(String dashboard, String source) throws ApiException {
         Call call = getXMLDashboardValidateBeforeCall(dashboard, source);
-        Type localVarReturnType = new TypeToken<String>() {
+        Type localVarReturnType = new TypeToken<DashboardReport>() {
         }.getType();
         return apiClient.execute(call, localVarReturnType);
     }
 
-    public String getAgents() throws ApiException {
-        ApiResponse<String> resp = getAgentsWithHttpInfo();
+    public AgentList getAgents() throws ApiException {
+        ApiResponse<AgentList> resp = getAgentsWithHttpInfo();
         return resp.getData();
     }
 
-    public ApiResponse<String> getAgentsWithHttpInfo() throws ApiException {
+    public ApiResponse<AgentList> getAgentsWithHttpInfo() throws ApiException {
         Call call = getXmlCall("/rest/management/agents", new ArrayList<Pair>());
-        Type localVarReturnType = new TypeToken<String>() {
+        Type localVarReturnType = new TypeToken<AgentList>() {
         }.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -123,14 +127,14 @@ public class CustomXMLApi {
         return getXmlCall(localVarPath, new ArrayList<Pair>());
     }
 
-    public String hotSensorPlacement(int agentId) throws ApiException {
-        ApiResponse<String> resp = hotSensorPlacementWithHttpInfo(agentId);
+    public Result hotSensorPlacement(int agentId) throws ApiException {
+        ApiResponse<Result> resp = hotSensorPlacementWithHttpInfo(agentId);
         return resp.getData();
     }
 
-    public ApiResponse<String> hotSensorPlacementWithHttpInfo(int agentId) throws ApiException {
+    public ApiResponse<Result> hotSensorPlacementWithHttpInfo(int agentId) throws ApiException {
         Call call = hotSensorPlacementValidateBeforeCall(agentId);
-        Type localVarReturnType = new TypeToken<String>() {
+        Type localVarReturnType = new TypeToken<Result>() {
         }.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -193,20 +197,20 @@ public class CustomXMLApi {
         return createMemoryDumpCall(systemProfile, agentName, hostName, processId, dumpType, sessionLocked, captureStrings, capturePrimitives, autoPostProcess, doGC);
     }
 
-    public String createMemoryDump(final String systemProfile, final String agentName, final String hostName, final int processId, final String dumpType,
+    public Result createMemoryDump(final String systemProfile, final String agentName, final String hostName, final int processId, final String dumpType,
                                    final boolean sessionLocked, final boolean captureStrings, final boolean capturePrimitives,
                                    final boolean autoPostProcess, final boolean doGC) throws ApiException {
-        ApiResponse<String> resp = createMemoryDumpWithHttpInfo(systemProfile, agentName, hostName, processId, dumpType, sessionLocked, captureStrings,
+        ApiResponse<Result> resp = createMemoryDumpWithHttpInfo(systemProfile, agentName, hostName, processId, dumpType, sessionLocked, captureStrings,
                 capturePrimitives, autoPostProcess, doGC);
         return resp.getData();
     }
 
-    public ApiResponse<String> createMemoryDumpWithHttpInfo(final String systemProfile, final String agentName, final String hostName, final int processId,
+    public ApiResponse<Result> createMemoryDumpWithHttpInfo(final String systemProfile, final String agentName, final String hostName, final int processId,
                                                             final String dumpType, final boolean sessionLocked, final boolean captureStrings,
                                                             final boolean capturePrimitives, final boolean autoPostProcess, final boolean doGC) throws ApiException {
         Call call = createMemoryDumpValidateBeforeCall(systemProfile, agentName, hostName, processId, dumpType, sessionLocked, captureStrings,
                 capturePrimitives, autoPostProcess, doGC);
-        Type localVarReturnType = new TypeToken<String>() {
+        Type localVarReturnType = new TypeToken<Result>() {
         }.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -225,14 +229,14 @@ public class CustomXMLApi {
         return getXmlCall(localVarPath, new ArrayList<Pair>());
     }
 
-    public String getMemoryDumpStatus(String profileName, String memoryDumpName) throws ApiException {
-        ApiResponse<String> resp = getMemoryDumpStatusWithHttpInfo(profileName, memoryDumpName);
+    public Result getMemoryDumpStatus(String profileName, String memoryDumpName) throws ApiException {
+        ApiResponse<Result> resp = getMemoryDumpStatusWithHttpInfo(profileName, memoryDumpName);
         return resp.getData();
     }
 
-    public ApiResponse<String> getMemoryDumpStatusWithHttpInfo(String profileName, String memoryDumpName) throws ApiException {
+    public ApiResponse<Result> getMemoryDumpStatusWithHttpInfo(String profileName, String memoryDumpName) throws ApiException {
         Call call = getMemoryDumpStatusValidateBeforeCall(profileName, memoryDumpName);
-        Type localVarReturnType = new TypeToken<String>() {
+        Type localVarReturnType = new TypeToken<Result>() {
         }.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -283,16 +287,16 @@ public class CustomXMLApi {
         return createThreadDumpCall(systemProfile, agentName, hostName, processId, sessionLocked);
     }
 
-    public String createThreadDump(final String systemProfile, final String agentName, final String hostName, final int processId,
+    public Result createThreadDump(final String systemProfile, final String agentName, final String hostName, final int processId,
                                    final boolean sessionLocked) throws ApiException {
-        ApiResponse<String> resp = createThreadDumpWithHttpInfo(systemProfile, agentName, hostName, processId, sessionLocked);
+        ApiResponse<Result> resp = createThreadDumpWithHttpInfo(systemProfile, agentName, hostName, processId, sessionLocked);
         return resp.getData();
     }
 
-    public ApiResponse<String> createThreadDumpWithHttpInfo(final String systemProfile, final String agentName, final String hostName, final int processId,
+    public ApiResponse<Result> createThreadDumpWithHttpInfo(final String systemProfile, final String agentName, final String hostName, final int processId,
                                                             final boolean sessionLocked) throws ApiException {
         Call call = createThreadDumpValidateBeforeCall(systemProfile, agentName, hostName, processId, sessionLocked);
-        Type localVarReturnType = new TypeToken<String>() {
+        Type localVarReturnType = new TypeToken<Result>() {
         }.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -311,14 +315,14 @@ public class CustomXMLApi {
         return getXmlCall(localVarPath, new ArrayList<Pair>());
     }
 
-    public String getThreadDumpStatus(String profileName, String threadDumpName) throws ApiException {
-        ApiResponse<String> resp = getThreadDumpStatusWithHttpInfo(profileName, threadDumpName);
+    public Result getThreadDumpStatus(String profileName, String threadDumpName) throws ApiException {
+        ApiResponse<Result> resp = getThreadDumpStatusWithHttpInfo(profileName, threadDumpName);
         return resp.getData();
     }
 
-    public ApiResponse<String> getThreadDumpStatusWithHttpInfo(String profileName, String threadDumpName) throws ApiException {
+    public ApiResponse<Result> getThreadDumpStatusWithHttpInfo(String profileName, String threadDumpName) throws ApiException {
         Call call = getThreadDumpStatusValidateBeforeCall(profileName, threadDumpName);
-        Type localVarReturnType = new TypeToken<String>() {
+        Type localVarReturnType = new TypeToken<Result>() {
         }.getType();
         return apiClient.execute(call, localVarReturnType);
     }

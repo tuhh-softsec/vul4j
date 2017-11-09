@@ -139,7 +139,7 @@ public class SessionMetadata {
      *
      * @return description
      **/
-    @ApiModelProperty()
+
     public String getDescription() {
         return description;
     }
@@ -159,7 +159,7 @@ public class SessionMetadata {
      *
      * @return deletionlocked
      **/
-    @ApiModelProperty()
+
     public Boolean getDeletionlocked() {
         return deletionlocked;
     }
@@ -169,7 +169,7 @@ public class SessionMetadata {
      *
      * @return directorypath
      **/
-    @ApiModelProperty()
+
     public String getDirectorypath() {
         return directorypath;
     }
@@ -179,7 +179,7 @@ public class SessionMetadata {
      *
      * @return state
      **/
-    @ApiModelProperty()
+
     public StateEnum getState() {
         return state;
     }
@@ -209,7 +209,7 @@ public class SessionMetadata {
      *
      * @return version
      **/
-    @ApiModelProperty()
+
     public String getVersion() {
         return version;
     }
@@ -232,7 +232,7 @@ public class SessionMetadata {
      *
      * @return labels
      **/
-    @ApiModelProperty()
+
     public List<String> getLabels() {
         return labels;
     }
@@ -246,7 +246,7 @@ public class SessionMetadata {
      *
      * @return recordingtype
      **/
-    @ApiModelProperty()
+
     public String getRecordingtype() {
         return recordingtype;
     }
@@ -256,7 +256,7 @@ public class SessionMetadata {
      *
      * @return agent
      **/
-    @ApiModelProperty()
+
     public String getAgent() {
         return agent;
     }
@@ -266,7 +266,7 @@ public class SessionMetadata {
      *
      * @return numberofpurepaths
      **/
-    @ApiModelProperty()
+
     public Integer getNumberofpurepaths() {
         return numberofpurepaths;
     }
@@ -276,7 +276,7 @@ public class SessionMetadata {
      *
      * @return continuoussession
      **/
-    @ApiModelProperty()
+
     public Boolean getContinuoussession() {
         return continuoussession;
     }

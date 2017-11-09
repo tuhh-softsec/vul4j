@@ -71,7 +71,7 @@ public class AlertUpdate {
      *
      * @return message
      **/
-    @ApiModelProperty()
+
     public String getMessage() {
         return message;
     }
@@ -81,7 +81,7 @@ public class AlertUpdate {
      *
      * @return description
      **/
-    @ApiModelProperty()
+
     public String getDescription() {
         return description;
     }

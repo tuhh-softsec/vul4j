@@ -92,7 +92,6 @@ public class Alert {
      * @return description
      **/
     @Exported
-    @ApiModelProperty()
     public String getDescription() {
         return description;
     }

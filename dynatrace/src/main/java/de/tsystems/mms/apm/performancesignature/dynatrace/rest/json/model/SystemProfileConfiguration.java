@@ -59,7 +59,7 @@ public class SystemProfileConfiguration {
      *
      * @return isactive
      **/
-    @ApiModelProperty()
+
     public Boolean getIsactive() {
         return isactive;
     }

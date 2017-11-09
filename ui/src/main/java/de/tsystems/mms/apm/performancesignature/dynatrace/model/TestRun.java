@@ -28,6 +28,7 @@ import org.kohsuke.stapler.export.ExportedBean;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -53,7 +54,7 @@ public class TestRun {
     @SerializedName("platform")
     private final String platform = null;
     @SerializedName("startTime")
-    private final String startTime = null;
+    private String startTime = null;
     @SerializedName("sessionId")
     private final String sessionId = null;
     @SerializedName("session")
@@ -85,13 +86,15 @@ public class TestRun {
     @SerializedName("testResults")
     private List<TestResult> testResults = null;
 
+    @Deprecated
+    private transient Date timestamp;
+
     /**
      * Get id
      *
      * @return id
      **/
     @Exported
-    @ApiModelProperty()
     public String getId() {
         return id;
     }
@@ -113,7 +116,6 @@ public class TestRun {
      * @return versionBuild
      **/
     @Exported
-    @ApiModelProperty()
     public String getVersionBuild() {
         return versionBuild;
     }
@@ -124,7 +126,6 @@ public class TestRun {
      * @return versionMajor
      **/
     @Exported
-    @ApiModelProperty()
     public String getVersionMajor() {
         return versionMajor;
     }
@@ -135,7 +136,6 @@ public class TestRun {
      * @return versionMilestone
      **/
     @Exported
-    @ApiModelProperty()
     public String getVersionMilestone() {
         return versionMilestone;
     }
@@ -146,7 +146,6 @@ public class TestRun {
      * @return versionMinor
      **/
     @Exported
-    @ApiModelProperty()
     public String getVersionMinor() {
         return versionMinor;
     }
@@ -157,7 +156,6 @@ public class TestRun {
      * @return versionRevision
      **/
     @Exported
-    @ApiModelProperty()
     public String getVersionRevision() {
         return versionRevision;
     }
@@ -168,7 +166,6 @@ public class TestRun {
      * @return platform
      **/
     @Exported
-    @ApiModelProperty()
     public String getPlatform() {
         return platform;
     }
@@ -190,7 +187,6 @@ public class TestRun {
      * @return sessionId
      **/
     @Exported
-    @ApiModelProperty()
     public String getSessionId() {
         return sessionId;
     }
@@ -201,7 +197,6 @@ public class TestRun {
      * @return session
      **/
     @Exported
-    @ApiModelProperty()
     public String getSession() {
         return session;
     }
@@ -212,7 +207,6 @@ public class TestRun {
      * @return systemProfile
      **/
     @Exported
-    @ApiModelProperty()
     public String getSystemProfile() {
         return systemProfile;
     }
@@ -223,7 +217,6 @@ public class TestRun {
      * @return marker
      **/
     @Exported
-    @ApiModelProperty()
     public String getMarker() {
         return marker;
     }
@@ -234,7 +227,6 @@ public class TestRun {
      * @return message
      **/
     @Exported
-    @ApiModelProperty()
     public String getMessage() {
         return message;
     }
@@ -283,7 +275,6 @@ public class TestRun {
      * @return numDegraded
      **/
     @Exported
-    @ApiModelProperty()
     public int getNumDegraded() {
         return numDegraded;
     }
@@ -294,7 +285,6 @@ public class TestRun {
      * @return numFailed
      **/
     @Exported
-    @ApiModelProperty()
     public int getNumFailed() {
         return numFailed;
     }
@@ -305,7 +295,6 @@ public class TestRun {
      * @return numImproved
      **/
     @Exported
-    @ApiModelProperty()
     public int getNumImproved() {
         return numImproved;
     }
@@ -316,7 +305,6 @@ public class TestRun {
      * @return numInvalidated
      **/
     @Exported
-    @ApiModelProperty()
     public int getNumInvalidated() {
         return numInvalidated;
     }
@@ -327,7 +315,6 @@ public class TestRun {
      * @return numPassed
      **/
     @Exported
-    @ApiModelProperty()
     public int getNumPassed() {
         return numPassed;
     }
@@ -338,7 +325,6 @@ public class TestRun {
      * @return numVolatile
      **/
     @Exported
-    @ApiModelProperty()
     public int getNumVolatile() {
         return numVolatile;
     }
@@ -362,7 +348,6 @@ public class TestRun {
      * @return finished
      **/
     @Exported
-    @ApiModelProperty()
     public boolean getFinished() {
         return finished;
     }
@@ -410,12 +395,18 @@ public class TestRun {
      * @return testResults
      **/
     @Exported
-    @ApiModelProperty()
     public List<TestResult> getTestResults() {
         if (testResults == null) {
             testResults = new ArrayList<>();
         }
         return testResults;
+    }
+
+    protected Object readResolve() {
+        if (timestamp != null) {
+            startTime = timestamp.toString();
+        }
+        return this;
     }
 
     /**
