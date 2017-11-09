@@ -31,9 +31,9 @@ public class DashboardReport {
 
     @XmlElementWrapper(name = "data")
     @XmlElement(name = "chartdashlet")
-    private List<ChartDashlet> chartDashlets;
+    private final List<ChartDashlet> chartDashlets;
     private String name;
-    private List<Alert> incidents;
+    private final List<Alert> incidents;
     private boolean unitTest;
     private ClientLinkGenerator clientLink;
 

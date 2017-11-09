@@ -38,39 +38,39 @@ import java.util.List;
 @ExportedBean
 public class TestRun {
     @SerializedName("id")
-    private final String id = null;
+    private String id;
     @SerializedName("category")
-    private final CategoryEnum category = null;
+    private CategoryEnum category;
     @SerializedName("versionBuild")
-    private final String versionBuild = null;
+    private String versionBuild;
     @SerializedName("versionMajor")
-    private final String versionMajor = null;
+    private String versionMajor;
     @SerializedName("versionMilestone")
-    private final String versionMilestone = null;
+    private String versionMilestone;
     @SerializedName("versionMinor")
-    private final String versionMinor = null;
+    private String versionMinor;
     @SerializedName("versionRevision")
-    private final String versionRevision = null;
+    private String versionRevision;
     @SerializedName("platform")
-    private final String platform = null;
+    private String platform;
     @SerializedName("startTime")
-    private String startTime = null;
+    private String startTime;
     @SerializedName("sessionId")
-    private final String sessionId = null;
+    private String sessionId;
     @SerializedName("session")
-    private final String session = null;
+    private String session;
     @SerializedName("systemProfile")
-    private final String systemProfile = null;
+    private String systemProfile;
     @SerializedName("marker")
-    private final String marker = null;
+    private String marker;
     @SerializedName("message")
-    private final String message = null;
+    private String message;
     @SerializedName("href")
-    private final String href = null;
+    private String href;
     @SerializedName("creationMode")
-    private final CreationModeEnum creationMode = null;
+    private CreationModeEnum creationMode;
     @SerializedName("finished")
-    private final boolean finished = false;
+    private boolean finished;
     @SerializedName("numDegraded")
     private int numDegraded;
     @SerializedName("numFailed")
@@ -84,7 +84,7 @@ public class TestRun {
     @SerializedName("numVolatile")
     private int numVolatile;
     @SerializedName("testResults")
-    private List<TestResult> testResults = null;
+    private List<TestResult> testResults;
 
     @Deprecated
     private transient Date timestamp;

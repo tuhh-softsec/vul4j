@@ -445,7 +445,7 @@ public class PerfSigProjectAction extends PerfSigBaseAction implements Prominent
     }
 
     @SuppressWarnings("unchecked")
-    private Map<String, JSONDashlet> readConfiguration() throws InterruptedException {
+    private Map<String, JSONDashlet> readConfiguration() {
         logger.fine(addTimeStampToLog("grid configuration read started"));
         try {
             if (getConfigFile().exists()) {

@@ -105,7 +105,7 @@ public class CredProfilePair extends AbstractDescribableImpl<CredProfilePair> {
                                                @RelativePath("..") @QueryParameter final String proxyServer, @RelativePath("..") @QueryParameter final int proxyPort,
                                                @RelativePath("..") @QueryParameter final String proxyUser, @RelativePath("..") @QueryParameter final String proxyPassword) {
 
-            if (serverUrl == null || credentialsId == null) {
+            if (StringUtils.isBlank(serverUrl) || StringUtils.isBlank(credentialsId)) {
                 return new StandardListBoxModel().includeEmptyValue();
             }
             CustomProxy customProxyServer = null;

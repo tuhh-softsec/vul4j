@@ -42,7 +42,10 @@ public final class PerfSigUIUtils {
     private PerfSigUIUtils() {
     }
 
-    public static BigDecimal round(final double d, final int scale) {
+    public static BigDecimal round(final Double d, final int scale) {
+        if (d == null) {
+            return BigDecimal.ZERO;
+        }
         try {
             return BigDecimal.valueOf(d).setScale(d % 1 == 0 ? 0 : scale, BigDecimal.ROUND_HALF_UP);
         } catch (NumberFormatException ex) {

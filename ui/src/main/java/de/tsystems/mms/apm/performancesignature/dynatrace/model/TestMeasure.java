@@ -28,22 +28,22 @@ import org.kohsuke.stapler.export.ExportedBean;
 @ExportedBean
 public class TestMeasure {
     @SerializedName("name")
-    private final String name = null;
+    private String name;
 
     @SerializedName("metricGroup")
-    private final String metricGroup = null;
+    private String metricGroup;
 
     @SerializedName("value")
-    private final Double value = null;
+    private Double value;
 
     @SerializedName("unit")
-    private final String unit = null;
+    private String unit;
 
     @SerializedName("expectedMin")
-    private final Double expectedMin = null;
+    private Double expectedMin;
 
     @SerializedName("expectedMax")
-    private final Double expectedMax = null;
+    private Double expectedMax;
 
     /**
      * Get name
