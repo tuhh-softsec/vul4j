@@ -113,5 +113,7 @@ Michiel Hendriks <elmuerte at users.sourceforge.net>
 		<keyword>void</keyword>
 		<keyword>volatile</keyword>
 		<keyword>while</keyword>
+        <keyword>enum</keyword>
+        <keyword>assert</keyword>
 	</highlighter>
 </highlighters>
