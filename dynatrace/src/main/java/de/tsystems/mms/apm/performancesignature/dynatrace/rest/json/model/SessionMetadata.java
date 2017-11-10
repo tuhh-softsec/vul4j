@@ -59,7 +59,7 @@ public class SessionMetadata {
     @SerializedName("state")
     private final StateEnum state = null;
     @SerializedName("capturingstart")
-    private final Date capturingstart = null;
+    private Date capturingstart;
     @SerializedName("capturingduration")
     private final Long capturingduration = null;
     @SerializedName("version")
@@ -192,7 +192,7 @@ public class SessionMetadata {
      **/
     @ApiModelProperty(example = "2016-05-11T11:35:31.170+02:00", value = "The start time of the session capturing in ISO8601 format")
     public Date getCapturingstart() {
-        return capturingstart;
+        return capturingstart == null ? null : (Date) capturingstart.clone();
     }
 
     /**

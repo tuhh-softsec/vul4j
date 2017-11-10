@@ -46,9 +46,9 @@ public class Alert {
     @SerializedName("description")
     private final String description = null;
     @SerializedName("start")
-    private final Date start = null;
+    private Date start;
     @SerializedName("end")
-    private final Date end = null;
+    private Date end;
     @SerializedName("rule")
     private final String rule = null;
     @SerializedName("systemprofile")
@@ -105,7 +105,7 @@ public class Alert {
     @Exported
     @ApiModelProperty(example = "2016-05-11T11:35:31.170+02:00", value = "Start time in ISO 8601 compatible date/time of format: yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     public Date getStart() {
-        return start;
+        return start == null ? null : (Date) start.clone();
     }
 
     /**
@@ -116,7 +116,7 @@ public class Alert {
     @Exported
     @ApiModelProperty(example = "2016-05-11T11:35:31.170+02:00", value = "End time in ISO 8601 compatible date/time of format: yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     public Date getEnd() {
-        return end;
+        return end == null ? null : (Date) end.clone();
     }
 
     /**
