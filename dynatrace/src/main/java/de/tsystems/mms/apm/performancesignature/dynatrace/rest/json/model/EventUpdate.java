@@ -26,7 +26,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.IOException;
-import java.util.Objects;
+import java.util.Date;
 
 /**
  * Event update description
@@ -43,9 +43,9 @@ public class EventUpdate {
     @SerializedName("description")
     private final String description = null;
     @SerializedName("start")
-    private final String start = null;
+    private final Date start = null;
     @SerializedName("end")
-    private final String end = null;
+    private final Date end = null;
 
     /**
      * The severity of the event
@@ -93,7 +93,7 @@ public class EventUpdate {
      * @return start
      **/
     @ApiModelProperty(example = "2016-05-11T11:35:31.170+02:00", value = "Start time in ISO 8601 compatible date/time of format: yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-    public String getStart() {
+    public Date getStart() {
         return start;
     }
 
@@ -103,30 +103,8 @@ public class EventUpdate {
      * @return end
      **/
     @ApiModelProperty(example = "2016-05-11T11:35:31.170+02:00", value = "End time in ISO 8601 compatible date/time of format: yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-    public String getEnd() {
+    public Date getEnd() {
         return end;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        EventUpdate eventUpdate = (EventUpdate) o;
-        return Objects.equals(this.severity, eventUpdate.severity) &&
-                Objects.equals(this.state, eventUpdate.state) &&
-                Objects.equals(this.message, eventUpdate.message) &&
-                Objects.equals(this.description, eventUpdate.description) &&
-                Objects.equals(this.start, eventUpdate.start) &&
-                Objects.equals(this.end, eventUpdate.end);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(severity, state, message, description, start, end);
     }
 
     @Override

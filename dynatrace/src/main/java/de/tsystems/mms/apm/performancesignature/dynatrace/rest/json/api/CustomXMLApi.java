@@ -88,7 +88,7 @@ public class CustomXMLApi {
 
         String localVarPath = "/rest/management/dashboard/" + apiClient.escapeString(dashboard);
         List<Pair> localVarQueryParams = new ArrayList<>();
-        localVarQueryParams.addAll(apiClient.parameterToPairs("", "source", "stored:" + source));
+        localVarQueryParams.addAll(apiClient.parameterToPair("source", "stored:" + source));
 
         return getXmlCall(localVarPath, localVarQueryParams);
     }
@@ -333,13 +333,13 @@ public class CustomXMLApi {
 
         List<Pair> localVarQueryParams = new ArrayList<>();
         if (sessionId != null) {
-            localVarQueryParams.addAll(apiClient.parameterToPairs("", "source", "stored:" + sessionId));
+            localVarQueryParams.addAll(apiClient.parameterToPair("source", "stored:" + sessionId));
         }
         if (comparedSessionId != null) {
-            localVarQueryParams.addAll(apiClient.parameterToPairs("", "compare", "stored:" + comparedSessionId));
+            localVarQueryParams.addAll(apiClient.parameterToPair("compare", "stored:" + comparedSessionId));
         }
         if (type != null) {
-            localVarQueryParams.addAll(apiClient.parameterToPairs("", "type", type));
+            localVarQueryParams.addAll(apiClient.parameterToPair("type", type));
         }
 
         Map<String, String> localVarHeaderParams = new HashMap<>();

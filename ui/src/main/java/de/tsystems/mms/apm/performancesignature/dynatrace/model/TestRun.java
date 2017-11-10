@@ -54,7 +54,7 @@ public class TestRun {
     @SerializedName("platform")
     private String platform;
     @SerializedName("startTime")
-    private String startTime;
+    private Date startTime;
     @SerializedName("sessionId")
     private String sessionId;
     @SerializedName("session")
@@ -177,7 +177,7 @@ public class TestRun {
      **/
     @Exported
     @ApiModelProperty(example = "2016-05-11T11:35:31.170+02:00", value = "Test run start time in ISO 8601 compatible date/time of format: yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-    public String getStartTime() {
+    public Date getStartTime() {
         return startTime;
     }
 
@@ -402,9 +402,10 @@ public class TestRun {
         return testResults;
     }
 
+    @SuppressWarnings("deprecation")
     protected Object readResolve() {
         if (timestamp != null) {
-            startTime = timestamp.toString();
+            startTime = timestamp;
         }
         return this;
     }

@@ -25,10 +25,7 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.Sessio
 
 import java.io.File;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class StoredSessionsApi {
     private ApiClient apiClient;
@@ -132,11 +129,11 @@ public class StoredSessionsApi {
 
         List<Pair> localVarQueryParams = new ArrayList<>();
         if (type != null)
-            localVarQueryParams.addAll(apiClient.parameterToPairs("", "type", type));
+            localVarQueryParams.addAll(apiClient.parameterToPair("type", type));
         if (olderthanminutes != null)
-            localVarQueryParams.addAll(apiClient.parameterToPairs("", "olderthanminutes", olderthanminutes));
+            localVarQueryParams.addAll(apiClient.parameterToPair("olderthanminutes", olderthanminutes));
         if (profile != null)
-            localVarQueryParams.addAll(apiClient.parameterToPairs("", "profile", profile));
+            localVarQueryParams.addAll(apiClient.parameterToPair("profile", profile));
 
         Map<String, String> localVarHeaderParams = new HashMap<>();
 
@@ -215,20 +212,20 @@ public class StoredSessionsApi {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call getStoredSessionCall(String sessionid, Boolean removeconfidentialstrings, String timeframestart, String timeframeend) throws ApiException {
+    public Call getStoredSessionCall(String sessionid, Boolean removeconfidentialstrings, Date timeframestart, Date timeframeend) throws ApiException {
         // create path and map variables
         String localVarPath = ApiClient.API_SUFFIX + "/sessions/{sessionid}"
                 .replaceAll("\\{sessionid\\}", apiClient.escapeString(sessionid));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
         if (removeconfidentialstrings != null) {
-            localVarQueryParams.addAll(apiClient.parameterToPairs("", "removeconfidentialstrings", removeconfidentialstrings));
+            localVarQueryParams.addAll(apiClient.parameterToPair("removeconfidentialstrings", removeconfidentialstrings));
         }
         if (timeframestart != null) {
-            localVarQueryParams.addAll(apiClient.parameterToPairs("", "timeframestart", timeframestart));
+            localVarQueryParams.addAll(apiClient.parameterToPair("timeframestart", timeframestart));
         }
         if (timeframeend != null) {
-            localVarQueryParams.addAll(apiClient.parameterToPairs("", "timeframeend", timeframeend));
+            localVarQueryParams.addAll(apiClient.parameterToPair("timeframeend", timeframeend));
         }
 
         Map<String, String> localVarHeaderParams = new HashMap<>();
@@ -252,7 +249,7 @@ public class StoredSessionsApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private Call getStoredSessionValidateBeforeCall(String sessionid, Boolean removeconfidentialstrings, String timeframestart, String timeframeend) throws ApiException {
+    private Call getStoredSessionValidateBeforeCall(String sessionid, Boolean removeconfidentialstrings, Date timeframestart, Date timeframeend) throws ApiException {
         // verify the required parameter 'sessionid' is set
         if (sessionid == null) {
             throw new ApiException("Missing the required parameter 'sessionid' when calling getStoredSession");
@@ -272,7 +269,7 @@ public class StoredSessionsApi {
      * @return File
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public File getStoredSession(String sessionid, Boolean removeconfidentialstrings, String timeframestart, String timeframeend) throws ApiException {
+    public File getStoredSession(String sessionid, Boolean removeconfidentialstrings, Date timeframestart, Date timeframeend) throws ApiException {
         ApiResponse<File> resp = getStoredSessionWithHttpInfo(sessionid, removeconfidentialstrings, timeframestart, timeframeend);
         return resp.getData();
     }
@@ -288,7 +285,7 @@ public class StoredSessionsApi {
      * @return ApiResponse&lt;File&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<File> getStoredSessionWithHttpInfo(String sessionid, Boolean removeconfidentialstrings, String timeframestart, String timeframeend) throws ApiException {
+    public ApiResponse<File> getStoredSessionWithHttpInfo(String sessionid, Boolean removeconfidentialstrings, Date timeframestart, Date timeframeend) throws ApiException {
         Call call = getStoredSessionValidateBeforeCall(sessionid, removeconfidentialstrings, timeframestart, timeframeend);
         Type localVarReturnType = new TypeToken<File>() {
         }.getType();

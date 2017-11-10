@@ -20,6 +20,8 @@ import com.google.gson.annotations.SerializedName;
 import de.tsystems.mms.apm.performancesignature.util.PerfSigUIUtils;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.Date;
+
 /**
  * SessionStoringOptions
  */
@@ -36,11 +38,11 @@ public class SessionStoringOptions {
     @SerializedName("locksession")
     private final boolean locksession;
     @SerializedName("timeframestart")
-    private final String timeframestart;
+    private final Date timeframestart;
     @SerializedName("timeframeend")
-    private final String timeframeend;
+    private final Date timeframeend;
 
-    public SessionStoringOptions(String sessionname, String description, boolean appendtimestamp, String recordingoption, boolean locksession, String timeframestart, String timeframeend) {
+    public SessionStoringOptions(String sessionname, String description, boolean appendtimestamp, String recordingoption, boolean locksession, Date timeframestart, Date timeframeend) {
         this.sessionname = sessionname;
         this.description = description;
         this.appendtimestamp = appendtimestamp;
@@ -106,7 +108,7 @@ public class SessionStoringOptions {
      * @return timeframestart
      **/
     @ApiModelProperty(example = "2016-05-11T11:35:31.170+02:00", value = "Start time of the interval during which the data will be stored, in ISO 8601 compatible date/time of format: yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-    public String getTimeframestart() {
+    public Date getTimeframestart() {
         return timeframestart;
     }
 
@@ -116,7 +118,7 @@ public class SessionStoringOptions {
      * @return timeframeend
      **/
     @ApiModelProperty(example = "2016-05-11T11:35:31.170+02:00", value = "End time of the interval during which the data will be stored, in ISO 8601 compatible date/time of format: yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-    public String getTimeframeend() {
+    public Date getTimeframeend() {
         return timeframeend;
     }
 

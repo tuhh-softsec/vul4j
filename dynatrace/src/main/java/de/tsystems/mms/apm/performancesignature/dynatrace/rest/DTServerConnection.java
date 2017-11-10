@@ -24,6 +24,7 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRun;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.ApiClient;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.ApiException;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.Configuration;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.api.*;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.*;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml.CommandExecutionException;
@@ -64,7 +65,7 @@ public class DTServerConnection {
         this.systemProfile = pair.getProfile();
         this.credProfilePair = pair;
 
-        this.apiClient = new ApiClient();
+        this.apiClient = Configuration.getDefaultApiClient();
         apiClient.setVerifyingSsl(verifyCertificate);
         apiClient.setBasePath(serverUrl);
         apiClient.setUsername(pair.getCredentials().getUsername());
@@ -149,7 +150,7 @@ public class DTServerConnection {
         LiveSessionsApi api = new LiveSessionsApi(apiClient);
         try {
             SessionStoringOptions options = new SessionStoringOptions(sessionName, "Session recorded by Jenkins", appendTimestamp,
-                    recordingOption, sessionLocked, apiClient.formatDatetime(timeframeStart), apiClient.formatDatetime(timeframeEnd));
+                    recordingOption, sessionLocked, timeframeStart, timeframeEnd);
 
             return api.storeSession(systemProfile, options);
         } catch (ApiException ex) {
@@ -360,7 +361,7 @@ public class DTServerConnection {
         AlertsIncidentsAndEventsApi api = new AlertsIncidentsAndEventsApi(apiClient);
         try {
             List<Alert> incidents = new ArrayList<>();
-            Alerts alerts = api.getIncidents(systemProfile, null, "Created", apiClient.formatDatetime(from), apiClient.formatDatetime(to));
+            Alerts alerts = api.getIncidents(systemProfile, null, "Created", from, to);
             for (AlertReference alertReference : alerts.getAlerts()) {
                 incidents.add(api.getIncident(alertReference.getId()));
             }

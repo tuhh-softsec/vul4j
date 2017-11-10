@@ -25,6 +25,9 @@ import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.auth.HttpBas
 import okio.BufferedSink;
 import okio.Okio;
 import org.apache.commons.lang.StringUtils;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.OffsetDateTime;
+import org.threeten.bp.format.DateTimeFormatter;
 
 import javax.net.ssl.*;
 import javax.xml.bind.JAXBContext;
@@ -43,8 +46,6 @@ import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
@@ -56,20 +57,12 @@ public class ApiClient {
      * The datetime format to be used when <code>lenientDatetimeFormat</code> is enabled.
      */
     public final static String API_SUFFIX = "/api/v2";
-    private static final String LENIENT_DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
-    private final Map<String, String> defaultHeaderMap = new HashMap<>();
     private String basePath = "https://localhost/api/v2";
-    private boolean lenientOnJson = false;
     private boolean debugging = false;
+    private Map<String, String> defaultHeaderMap = new HashMap<>();
     private String tempFolderPath = null;
 
     private Map<String, Authentication> authentications;
-
-    private DateFormat dateFormat;
-    private DateFormat datetimeFormat;
-    private boolean lenientDatetimeFormat;
-    private int dateLength;
-
     private boolean verifyingSsl;
 
     private OkHttpClient httpClient;
@@ -85,21 +78,7 @@ public class ApiClient {
 
         verifyingSsl = true;
 
-        json = new JSON(this);
-
-        /*
-         * Use RFC3339 format for date and datetime.
-         * See http://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14
-         */
-        this.dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        // Always use UTC as the default time zone when dealing with date (without time).
-        this.dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        initDatetimeFormat();
-
-        // Be lenient on datetime formats when parsing datetime from string.
-        // See <code>parseDatetime</code>.
-        this.lenientDatetimeFormat = true;
-
+        json = new JSON();
         // Setup authentications (key: authentication name, value: authentication).
         authentications = new HashMap<>();
         authentications.put("basicAuth", new HttpBasicAuth());
@@ -190,146 +169,29 @@ public class ApiClient {
         return this;
     }
 
-    public DateFormat getDateFormat() {
-        return dateFormat;
-    }
-
     public ApiClient setDateFormat(DateFormat dateFormat) {
-        this.dateFormat = dateFormat;
-        this.dateLength = this.dateFormat.format(new Date()).length();
+        this.json.setDateFormat(dateFormat);
         return this;
     }
 
-    public DateFormat getDatetimeFormat() {
-        return datetimeFormat;
-    }
-
-    public ApiClient setDatetimeFormat(DateFormat datetimeFormat) {
-        this.datetimeFormat = datetimeFormat;
+    public ApiClient setSqlDateFormat(DateFormat dateFormat) {
+        this.json.setSqlDateFormat(dateFormat);
         return this;
     }
 
-    /**
-     * Whether to allow various ISO 8601 datetime formats when parsing a datetime string.
-     *
-     * @return True if lenientDatetimeFormat flag is set to true
-     * @see #parseDatetime(String)
-     */
-    public boolean isLenientDatetimeFormat() {
-        return lenientDatetimeFormat;
-    }
-
-    public ApiClient setLenientDatetimeFormat(boolean lenientDatetimeFormat) {
-        this.lenientDatetimeFormat = lenientDatetimeFormat;
+    public ApiClient setOffsetDateTimeFormat(DateTimeFormatter dateFormat) {
+        this.json.setOffsetDateTimeFormat(dateFormat);
         return this;
     }
 
-    /**
-     * Parse the given date string into Date object.
-     * The default <code>dateFormat</code> supports these ISO 8601 date formats:
-     * 2015-08-16
-     * 2015-8-16
-     *
-     * @param str String to be parsed
-     * @return Date
-     */
-    public Date parseDate(String str) {
-        if (str == null)
-            return null;
-        try {
-            return dateFormat.parse(str);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+    public ApiClient setLocalDateFormat(DateTimeFormatter dateFormat) {
+        this.json.setLocalDateFormat(dateFormat);
+        return this;
     }
 
-    /**
-     * Parse the given datetime string into Date object.
-     * When lenientDatetimeFormat is enabled, the following ISO 8601 datetime formats are supported:
-     * 2015-08-16T08:20:05Z
-     * 2015-8-16T8:20:05Z
-     * 2015-08-16T08:20:05+00:00
-     * 2015-08-16T08:20:05+0000
-     * 2015-08-16T08:20:05.376Z
-     * 2015-08-16T08:20:05.376+00:00
-     * 2015-08-16T08:20:05.376+00
-     * Note: The 3-digit milli-seconds is optional. Time zone is required and can be in one of
-     * these formats:
-     * Z (same with +0000)
-     * +08:00 (same with +0800)
-     * -02 (same with -0200)
-     * -0200
-     *
-     * @param str Date time string to be parsed
-     * @return Date representation of the string
-     * @see <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>
-     */
-    public Date parseDatetime(String str) {
-        if (str == null)
-            return null;
-
-        DateFormat format;
-        if (lenientDatetimeFormat) {
-            /*
-             * When lenientDatetimeFormat is enabled, normalize the date string
-             * into <code>LENIENT_DATETIME_FORMAT</code> to support various formats
-             * defined by ISO 8601.
-             */
-            // normalize time zone
-            //   trailing "Z": 2015-08-16T08:20:05Z => 2015-08-16T08:20:05+0000
-            str = str.replaceAll("[zZ]\\z", "+0000");
-            //   remove colon in time zone: 2015-08-16T08:20:05+00:00 => 2015-08-16T08:20:05+0000
-            str = str.replaceAll("([+-]\\d{2}):(\\d{2})\\z", "$1$2");
-            //   expand time zone: 2015-08-16T08:20:05+00 => 2015-08-16T08:20:05+0000
-            str = str.replaceAll("([+-]\\d{2})\\z", "$100");
-            // add milliseconds when missing
-            //   2015-08-16T08:20:05+0000 => 2015-08-16T08:20:05.000+0000
-            str = str.replaceAll("(:\\d{1,2})([+-]\\d{4})\\z", "$1.000$2");
-            format = new SimpleDateFormat(LENIENT_DATETIME_FORMAT);
-        } else {
-            format = this.datetimeFormat;
-        }
-
-        try {
-            return format.parse(str);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /*
-     * Parse date or date time in string format into Date object.
-     *
-     * @param str Date time string to be parsed
-     * @return Date representation of the string
-     */
-    public Date parseDateOrDatetime(String str) {
-        if (str == null)
-            return null;
-        else if (str.length() <= dateLength)
-            return parseDate(str);
-        else
-            return parseDatetime(str);
-    }
-
-    /**
-     * Format the given Date object into string (Date format).
-     *
-     * @param date Date object
-     * @return Formatted date in string representation
-     */
-    public String formatDate(Date date) {
-        return dateFormat.format(date);
-    }
-
-    /**
-     * Format the given Date object into string (Datetime format).
-     *
-     * @param date Date object
-     * @return Formatted datetime in string representation
-     */
-    public String formatDatetime(Date date) {
-        return datetimeFormat.format(date);
+    public ApiClient setLenientOnJson(boolean lenientOnJson) {
+        this.json.setLenientOnJson(lenientOnJson);
+        return this;
     }
 
     /**
@@ -401,25 +263,6 @@ public class ApiClient {
      */
     public ApiClient addDefaultHeader(String key, String value) {
         defaultHeaderMap.put(key, value);
-        return this;
-    }
-
-    /**
-     * @return True if lenientOnJson is enabled, false otherwise.
-     * @see <a href="https://google-gson.googlecode.com/svn/trunk/gson/docs/javadocs/com/google/gson/stream/JsonReader.html#setLenient(boolean)">setLenient</a>
-     */
-    public boolean isLenientOnJson() {
-        return lenientOnJson;
-    }
-
-    /**
-     * Set LenientOnJson
-     *
-     * @param lenient True to enable lenientOnJson
-     * @return ApiClient
-     */
-    public ApiClient setLenientOnJson(boolean lenient) {
-        this.lenientOnJson = lenient;
         return this;
     }
 
@@ -506,8 +349,10 @@ public class ApiClient {
     public String parameterToString(Object param) {
         if (param == null) {
             return "";
-        } else if (param instanceof Date) {
-            return formatDatetime((Date) param);
+        } else if (param instanceof Date || param instanceof OffsetDateTime || param instanceof LocalDate) {
+            //Serialize to json string and remove the " enclosing characters
+            String jsonStr = json.serialize(param);
+            return jsonStr.substring(1, jsonStr.length() - 1);
         } else if (param instanceof Collection) {
             StringBuilder b = new StringBuilder();
             for (Object o : (Collection) param) {
@@ -523,69 +368,21 @@ public class ApiClient {
     }
 
     /**
-     * Format to {@code Pair} objects.
+     * Formats the specified query parameter to a list containing a single {@code Pair} object.
+     * <p>
+     * Note that {@code value} must not be a collection.
      *
-     * @param collectionFormat collection format (e.g. csv, tsv)
-     * @param name             Name
-     * @param value            Value
-     * @return A list of Pair objects
+     * @param name  The name of the parameter.
+     * @param value The value of the parameter.
+     * @return A list containing a single {@code Pair} object.
      */
-    public List<Pair> parameterToPairs(String collectionFormat, String name, Object value) {
+    public List<Pair> parameterToPair(String name, Object value) {
         List<Pair> params = new ArrayList<>();
 
         // preconditions
-        if (name == null || name.isEmpty() || value == null) return params;
+        if (StringUtils.isBlank(name) || value == null || value instanceof Collection) return params;
 
-        Collection valueCollection;
-        if (value instanceof Collection) {
-            valueCollection = (Collection) value;
-        } else {
-            params.add(new Pair(name, parameterToString(value)));
-            return params;
-        }
-
-        if (valueCollection.isEmpty()) {
-            return params;
-        }
-
-        // get the collection format
-        collectionFormat = (collectionFormat == null || collectionFormat.isEmpty() ? "csv" : collectionFormat); // default: csv
-
-        // create the params based on the collection format
-        if (collectionFormat.equals("multi")) {
-            for (Object item : valueCollection) {
-                params.add(new Pair(name, parameterToString(item)));
-            }
-
-            return params;
-        }
-
-        String delimiter;
-        switch (collectionFormat) {
-            case "csv":
-                delimiter = ",";
-                break;
-            case "ssv":
-                delimiter = " ";
-                break;
-            case "tsv":
-                delimiter = "\t";
-                break;
-            case "pipes":
-                delimiter = "|";
-                break;
-            default:
-                delimiter = ",";
-        }
-
-        StringBuilder sb = new StringBuilder();
-        for (Object item : valueCollection) {
-            sb.append(delimiter);
-            sb.append(parameterToString(item));
-        }
-
-        params.add(new Pair(name, sb.substring(1)));
-
+        params.add(new Pair(name, parameterToString(value)));
         return params;
     }
 
@@ -607,13 +404,14 @@ public class ApiClient {
      * application/json; charset=UTF8
      * APPLICATION/JSON
      * application/vnd.company+json
+     * "* / *" is also default to JSON
      *
      * @param mime MIME (Multipurpose Internet Mail Extensions)
      * @return True if the given MIME is JSON, false otherwise.
      */
     public boolean isJsonMime(String mime) {
         String jsonMime = "(?i)^(application/json|[^;/ \t]+/[^;/ \t]+[+]json)[ \t]*(;.*)?$";
-        return mime != null && (mime.matches(jsonMime) || mime.equalsIgnoreCase("application/json-patch+json"));
+        return mime != null && (mime.matches(jsonMime) || mime.equals("*/*"));
     }
 
     /**
@@ -657,10 +455,10 @@ public class ApiClient {
      *
      * @param contentTypes The Content-Type array to select from
      * @return The Content-Type header to use. If the given array is empty,
-     * JSON will be used.
+     * or matches "any", JSON will be used.
      */
     public String selectHeaderContentType(String[] contentTypes) {
-        if (contentTypes.length == 0) {
+        if (contentTypes.length == 0 || contentTypes[0].equals("*/*")) {
             return "application/json";
         }
         for (String contentType : contentTypes) {
@@ -1113,14 +911,6 @@ public class ApiClient {
         } else {
             return contentType;
         }
-    }
-
-    /**
-     * Initialize datetime format according to the current environment, e.g. Java 1.7 and Android.
-     */
-    private void initDatetimeFormat() {
-        String formatWithTimeZone = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
-        this.datetimeFormat = new SimpleDateFormat(formatWithTimeZone);
     }
 
     /**

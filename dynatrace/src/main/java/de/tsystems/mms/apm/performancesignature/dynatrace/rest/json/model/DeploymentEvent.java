@@ -26,6 +26,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * Deployment event record description
@@ -42,9 +43,9 @@ public class DeploymentEvent {
     @SerializedName("description")
     private final String description = null;
     @SerializedName("start")
-    private final String start = null;
+    private final Date start = null;
     @SerializedName("end")
-    private final String end = null;
+    private final Date end = null;
     @SerializedName("systemprofile")
     private final String systemprofile = null;
     @SerializedName("application")
@@ -96,7 +97,7 @@ public class DeploymentEvent {
      * @return start
      **/
     @ApiModelProperty(example = "2016-05-11T11:35:31.170+02:00", value = "Start time in ISO 8601 compatible date/time of format: yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-    public String getStart() {
+    public Date getStart() {
         return start;
     }
 
@@ -106,7 +107,7 @@ public class DeploymentEvent {
      * @return end
      **/
     @ApiModelProperty(example = "2016-05-11T11:35:31.170+02:00", value = "End time in ISO 8601 compatible date/time of format: yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-    public String getEnd() {
+    public Date getEnd() {
         return end;
     }
 

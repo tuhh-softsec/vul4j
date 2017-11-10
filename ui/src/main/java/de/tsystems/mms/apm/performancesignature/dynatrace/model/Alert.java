@@ -28,6 +28,7 @@ import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * Alert record description
@@ -45,9 +46,9 @@ public class Alert {
     @SerializedName("description")
     private final String description = null;
     @SerializedName("start")
-    private final String start = null;
+    private final Date start = null;
     @SerializedName("end")
-    private final String end = null;
+    private final Date end = null;
     @SerializedName("rule")
     private final String rule = null;
     @SerializedName("systemprofile")
@@ -103,7 +104,7 @@ public class Alert {
      **/
     @Exported
     @ApiModelProperty(example = "2016-05-11T11:35:31.170+02:00", value = "Start time in ISO 8601 compatible date/time of format: yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-    public String getStart() {
+    public Date getStart() {
         return start;
     }
 
@@ -114,7 +115,7 @@ public class Alert {
      **/
     @Exported
     @ApiModelProperty(example = "2016-05-11T11:35:31.170+02:00", value = "End time in ISO 8601 compatible date/time of format: yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-    public String getEnd() {
+    public Date getEnd() {
         return end;
     }
 

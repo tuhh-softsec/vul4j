@@ -17,7 +17,6 @@
 package de.tsystems.mms.apm.performancesignature.dynatrace;
 
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRun;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.ApiClient;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.JSON;
 import hudson.FilePath;
 import org.junit.Test;
@@ -32,7 +31,7 @@ public class TestDataPublisherTest {
     @Test
     public void testXMLParser() throws IOException, InterruptedException {
         FilePath file = new FilePath(new File("src/test/resources/sampleTestRun.json"));
-        JSON json = new JSON(new ApiClient());
+        JSON json = new JSON();
         TestRun testRun = json.deserialize(file.readToString(), TestRun.class);
 
         assertEquals(testRun.getTestResults().size(), 305);

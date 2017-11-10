@@ -20,13 +20,12 @@ import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Call;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.Alert;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.*;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.*;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.Alerts;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.DeploymentEvent;
+import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.EventUpdate;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class AlertsIncidentsAndEventsApi {
     private ApiClient apiClient;
@@ -115,142 +114,6 @@ public class AlertsIncidentsAndEventsApi {
     }
 
     /**
-     * Build call for deleteDeploymentEvent
-     *
-     * @param eventid ID of event (required)
-     * @return Call to execute
-     * @throws ApiException If fail to serialize the request body object
-     */
-    public Call deleteDeploymentEventCall(String eventid) throws ApiException {
-        // create path and map variables
-        String localVarPath = ApiClient.API_SUFFIX + "/events/Deployment/{eventid}"
-                .replaceAll("\\{eventid\\}", apiClient.escapeString(eventid));
-
-        List<Pair> localVarQueryParams = new ArrayList<>();
-
-        Map<String, String> localVarHeaderParams = new HashMap<>();
-
-        Map<String, Object> localVarFormParams = new HashMap<>();
-
-        final String[] localVarAccepts = {
-                "application/json"
-        };
-        final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
-        if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
-
-        final String[] localVarContentTypes = {
-
-        };
-        final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
-        localVarHeaderParams.put("Content-Type", localVarContentType);
-
-        String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "DELETE", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames);
-    }
-
-    @SuppressWarnings("rawtypes")
-    private Call deleteDeploymentEventValidateBeforeCall(String eventid) throws ApiException {
-        // verify the required parameter 'eventid' is set
-        if (eventid == null) {
-            throw new ApiException("Missing the required parameter 'eventid' when calling deleteDeploymentEvent");
-        }
-
-        return deleteDeploymentEventCall(eventid);
-    }
-
-    /**
-     * Delete deployment event record
-     * Permanently delete a deployment event record.
-     *
-     * @param eventid ID of event (required)
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     */
-    public void deleteDeploymentEvent(String eventid) throws ApiException {
-        deleteDeploymentEventWithHttpInfo(eventid);
-    }
-
-    /**
-     * Delete deployment event record
-     * Permanently delete a deployment event record.
-     *
-     * @param eventid ID of event (required)
-     * @return ApiResponse&lt;Void&gt;
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     */
-    public ApiResponse<Void> deleteDeploymentEventWithHttpInfo(String eventid) throws ApiException {
-        Call call = deleteDeploymentEventValidateBeforeCall(eventid);
-        return apiClient.execute(call);
-    }
-
-    /**
-     * Build call for deleteDowntime
-     *
-     * @param suppressionname Alert Suppression name (required)
-     * @return Call to execute
-     * @throws ApiException If fail to serialize the request body object
-     */
-    public Call deleteDowntimeCall(String suppressionname) throws ApiException {
-        // create path and map variables
-        String localVarPath = ApiClient.API_SUFFIX + "/alertsuppression/{suppressionname}"
-                .replaceAll("\\{suppressionname\\}", apiClient.escapeString(suppressionname));
-
-        List<Pair> localVarQueryParams = new ArrayList<>();
-
-        Map<String, String> localVarHeaderParams = new HashMap<>();
-
-        Map<String, Object> localVarFormParams = new HashMap<>();
-
-        final String[] localVarAccepts = {
-                "application/json"
-        };
-        final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
-        if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
-
-        final String[] localVarContentTypes = {
-
-        };
-        final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
-        localVarHeaderParams.put("Content-Type", localVarContentType);
-
-        String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "DELETE", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames);
-    }
-
-    @SuppressWarnings("rawtypes")
-    private Call deleteDowntimeValidateBeforeCall(String suppressionname) throws ApiException {
-        // verify the required parameter 'suppressionname' is set
-        if (suppressionname == null) {
-            throw new ApiException("Missing the required parameter 'suppressionname' when calling deleteDowntime");
-        }
-
-        return deleteDowntimeCall(suppressionname);
-    }
-
-    /**
-     * Delete Alert Suppression
-     * Deletes an existing alert suppression (incident downtime).
-     *
-     * @param suppressionname Alert Suppression name (required)
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     */
-    public void deleteDowntime(String suppressionname) throws ApiException {
-        deleteDowntimeWithHttpInfo(suppressionname);
-    }
-
-    /**
-     * Delete Alert Suppression
-     * Deletes an existing alert suppression (incident downtime).
-     *
-     * @param suppressionname Alert Suppression name (required)
-     * @return ApiResponse&lt;Void&gt;
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     */
-    public ApiResponse<Void> deleteDowntimeWithHttpInfo(String suppressionname) throws ApiException {
-        Call call = deleteDowntimeValidateBeforeCall(suppressionname);
-        return apiClient.execute(call);
-    }
-
-    /**
      * Build call for getDeploymentEvent
      *
      * @param eventid ID of event (required)
@@ -318,150 +181,6 @@ public class AlertsIncidentsAndEventsApi {
     public ApiResponse<DeploymentEvent> getDeploymentEventWithHttpInfo(String eventid) throws ApiException {
         Call call = getDeploymentEventValidateBeforeCall(eventid);
         Type localVarReturnType = new TypeToken<DeploymentEvent>() {
-        }.getType();
-        return apiClient.execute(call, localVarReturnType);
-    }
-
-    /**
-     * Build call for getDowntime
-     *
-     * @param suppressionname Alert Suppression name (required)
-     * @return Call to execute
-     * @throws ApiException If fail to serialize the request body object
-     */
-    public Call getDowntimeCall(String suppressionname) throws ApiException {
-        // create path and map variables
-        String localVarPath = ApiClient.API_SUFFIX + "/alertsuppression/{suppressionname}"
-                .replaceAll("\\{suppressionname\\}", apiClient.escapeString(suppressionname));
-
-        List<Pair> localVarQueryParams = new ArrayList<>();
-
-        Map<String, String> localVarHeaderParams = new HashMap<>();
-
-        Map<String, Object> localVarFormParams = new HashMap<>();
-
-        final String[] localVarAccepts = {
-                "application/json"
-        };
-        final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
-        if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
-
-        final String[] localVarContentTypes = {
-        };
-        final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
-        localVarHeaderParams.put("Content-Type", localVarContentType);
-
-        String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames);
-    }
-
-    @SuppressWarnings("rawtypes")
-    private Call getDowntimeValidateBeforeCall(String suppressionname) throws ApiException {
-        // verify the required parameter 'suppressionname' is set
-        if (suppressionname == null) {
-            throw new ApiException("Missing the required parameter 'suppressionname' when calling getDowntime");
-        }
-
-        return getDowntimeCall(suppressionname);
-    }
-
-    /**
-     * Get Alert Suppression
-     * Gets the JSON representation of an existing alert suppression (incident downtime).
-     *
-     * @param suppressionname Alert Suppression name (required)
-     * @return AlertSuppression
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     */
-    public AlertSuppression getDowntime(String suppressionname) throws ApiException {
-        ApiResponse<AlertSuppression> resp = getDowntimeWithHttpInfo(suppressionname);
-        return resp.getData();
-    }
-
-    /**
-     * Get Alert Suppression
-     * Gets the JSON representation of an existing alert suppression (incident downtime).
-     *
-     * @param suppressionname Alert Suppression name (required)
-     * @return ApiResponse&lt;AlertSuppression&gt;
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     */
-    public ApiResponse<AlertSuppression> getDowntimeWithHttpInfo(String suppressionname) throws ApiException {
-        Call call = getDowntimeValidateBeforeCall(suppressionname);
-        Type localVarReturnType = new TypeToken<AlertSuppression>() {
-        }.getType();
-        return apiClient.execute(call, localVarReturnType);
-    }
-
-    /**
-     * Build call for getDowntimes
-     *
-     * @param systemprofile System Profile id (optional)
-     * @param incidentrule  Incident Rule name (optional)
-     * @return Call to execute
-     * @throws ApiException If fail to serialize the request body object
-     */
-    public Call getDowntimesCall(String systemprofile, String incidentrule) throws ApiException {
-        // create path and map variables
-        String localVarPath = ApiClient.API_SUFFIX + "/alertsuppression";
-
-        List<Pair> localVarQueryParams = new ArrayList<>();
-        if (systemprofile != null)
-            localVarQueryParams.addAll(apiClient.parameterToPairs("", "systemprofile", systemprofile));
-        if (incidentrule != null)
-            localVarQueryParams.addAll(apiClient.parameterToPairs("", "incidentrule", incidentrule));
-
-        Map<String, String> localVarHeaderParams = new HashMap<>();
-
-        Map<String, Object> localVarFormParams = new HashMap<>();
-
-        final String[] localVarAccepts = {
-                "application/json"
-        };
-        final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
-        if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
-
-        final String[] localVarContentTypes = {
-
-        };
-        final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
-        localVarHeaderParams.put("Content-Type", localVarContentType);
-
-        String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames);
-    }
-
-    @SuppressWarnings("rawtypes")
-    private Call getDowntimesValidateBeforeCall(String systemprofile, String incidentrule) throws ApiException {
-        return getDowntimesCall(systemprofile, incidentrule);
-    }
-
-    /**
-     * List Alert Suppressions
-     * Get a list of all existing alert suppressions (incident downtimes). The response can optionally be filtered by either a System Profile or a combination of System Profile and Incident rule. The response contains the URL and the name of each alert suppression.
-     *
-     * @param systemprofile System Profile id (optional)
-     * @param incidentrule  Incident Rule name (optional)
-     * @return AlertSuppressions
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     */
-    public AlertSuppressions getDowntimes(String systemprofile, String incidentrule) throws ApiException {
-        ApiResponse<AlertSuppressions> resp = getDowntimesWithHttpInfo(systemprofile, incidentrule);
-        return resp.getData();
-    }
-
-    /**
-     * List Alert Suppressions
-     * Get a list of all existing alert suppressions (incident downtimes). The response can optionally be filtered by either a System Profile or a combination of System Profile and Incident rule. The response contains the URL and the name of each alert suppression.
-     *
-     * @param systemprofile System Profile id (optional)
-     * @param incidentrule  Incident Rule name (optional)
-     * @return ApiResponse&lt;AlertSuppressions&gt;
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     */
-    public ApiResponse<AlertSuppressions> getDowntimesWithHttpInfo(String systemprofile, String incidentrule) throws ApiException {
-        Call call = getDowntimesValidateBeforeCall(systemprofile, incidentrule);
-        Type localVarReturnType = new TypeToken<AlertSuppressions>() {
         }.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -549,21 +268,21 @@ public class AlertsIncidentsAndEventsApi {
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      */
-    public Call getIncidentsCall(String systemprofile, String incidentrule, String state, String from, String to) throws ApiException {
+    public Call getIncidentsCall(String systemprofile, String incidentrule, String state, Date from, Date to) throws ApiException {
         // create path and map variables
         String localVarPath = ApiClient.API_SUFFIX + "/alerts";
 
         List<Pair> localVarQueryParams = new ArrayList<>();
         if (systemprofile != null)
-            localVarQueryParams.addAll(apiClient.parameterToPairs("", "systemprofile", systemprofile));
+            localVarQueryParams.addAll(apiClient.parameterToPair("systemprofile", systemprofile));
         if (incidentrule != null)
-            localVarQueryParams.addAll(apiClient.parameterToPairs("", "incidentrule", incidentrule));
+            localVarQueryParams.addAll(apiClient.parameterToPair("incidentrule", incidentrule));
         if (state != null)
-            localVarQueryParams.addAll(apiClient.parameterToPairs("", "state", state));
+            localVarQueryParams.addAll(apiClient.parameterToPair("state", state));
         if (from != null)
-            localVarQueryParams.addAll(apiClient.parameterToPairs("", "from", from));
+            localVarQueryParams.addAll(apiClient.parameterToPair("from", from));
         if (to != null)
-            localVarQueryParams.addAll(apiClient.parameterToPairs("", "to", to));
+            localVarQueryParams.addAll(apiClient.parameterToPair("to", to));
 
         Map<String, String> localVarHeaderParams = new HashMap<>();
 
@@ -586,7 +305,7 @@ public class AlertsIncidentsAndEventsApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private Call getIncidentsValidateBeforeCall(String systemprofile, String incidentrule, String state, String from, String to) throws ApiException {
+    private Call getIncidentsValidateBeforeCall(String systemprofile, String incidentrule, String state, Date from, Date to) throws ApiException {
         return getIncidentsCall(systemprofile, incidentrule, state, from, to);
     }
 
@@ -602,7 +321,7 @@ public class AlertsIncidentsAndEventsApi {
      * @return Alerts
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public Alerts getIncidents(String systemprofile, String incidentrule, String state, String from, String to) throws ApiException {
+    public Alerts getIncidents(String systemprofile, String incidentrule, String state, Date from, Date to) throws ApiException {
         ApiResponse<Alerts> resp = getIncidentsWithHttpInfo(systemprofile, incidentrule, state, from, to);
         return resp.getData();
     }
@@ -619,87 +338,11 @@ public class AlertsIncidentsAndEventsApi {
      * @return ApiResponse&lt;Alerts&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<Alerts> getIncidentsWithHttpInfo(String systemprofile, String incidentrule, String state, String from, String to) throws ApiException {
+    public ApiResponse<Alerts> getIncidentsWithHttpInfo(String systemprofile, String incidentrule, String state, Date from, Date to) throws ApiException {
         Call call = getIncidentsValidateBeforeCall(systemprofile, incidentrule, state, from, to);
         Type localVarReturnType = new TypeToken<Alerts>() {
         }.getType();
         return apiClient.execute(call, localVarReturnType);
-    }
-
-    /**
-     * Build call for putDowntime
-     *
-     * @param suppressionname Alert Suppression name (required)
-     * @param body            Alert Suppression object (required)
-     * @return Call to execute
-     * @throws ApiException If fail to serialize the request body object
-     */
-    public Call putDowntimeCall(String suppressionname, AlertSuppressionDefinition body) throws ApiException {
-        // create path and map variables
-        String localVarPath = ApiClient.API_SUFFIX + "/alertsuppression/{suppressionname}"
-                .replaceAll("\\{suppressionname\\}", apiClient.escapeString(suppressionname));
-
-        List<Pair> localVarQueryParams = new ArrayList<>();
-
-        Map<String, String> localVarHeaderParams = new HashMap<>();
-
-        Map<String, Object> localVarFormParams = new HashMap<>();
-
-        final String[] localVarAccepts = {
-                "application/json"
-        };
-        final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
-        if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
-
-        final String[] localVarContentTypes = {
-                "application/json"
-        };
-        final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
-        localVarHeaderParams.put("Content-Type", localVarContentType);
-
-        String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "PUT", localVarQueryParams, body, localVarHeaderParams, localVarFormParams, localVarAuthNames);
-    }
-
-    @SuppressWarnings("rawtypes")
-    private Call putDowntimeValidateBeforeCall(String suppressionname, AlertSuppressionDefinition body) throws ApiException {
-        // verify the required parameter 'suppressionname' is set
-        if (suppressionname == null) {
-            throw new ApiException("Missing the required parameter 'suppressionname' when calling putDowntime");
-        }
-
-        // verify the required parameter 'body' is set
-        if (body == null) {
-            throw new ApiException("Missing the required parameter 'body' when calling putDowntime");
-        }
-
-        return putDowntimeCall(suppressionname, body);
-    }
-
-    /**
-     * Create or replace Alert Suppression
-     * Create an alert suppression (incident downtime) by sending a JSON representation as the request body. If an alert suppression with the given name already exists, it will be replaced by the newly created alert suppression.   You can either create a one-time suppression by setting the JSON property &#39;once&#39; to &#39;true&#39;, or create a repeatedly scheduled suppression by providing either a Quartz cron expression or a reference to business hours defined in the self-monitoring System Profile. Referencing business hours means the alert suppression will be active outside the defined business hours. Setting a duration will have no effect if business hours are referenced.  You can create a global alert suppression (&#x3D; affecting all existing and future System Profiles and Incident rules) by leaving System Profiles and Incident rules unspecified.
-     *
-     * @param suppressionname Alert Suppression name (required)
-     * @param body            Alert Suppression object (required)
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     */
-    public void putDowntime(String suppressionname, AlertSuppressionDefinition body) throws ApiException {
-        putDowntimeWithHttpInfo(suppressionname, body);
-    }
-
-    /**
-     * Create or replace Alert Suppression
-     * Create an alert suppression (incident downtime) by sending a JSON representation as the request body. If an alert suppression with the given name already exists, it will be replaced by the newly created alert suppression.   You can either create a one-time suppression by setting the JSON property &#39;once&#39; to &#39;true&#39;, or create a repeatedly scheduled suppression by providing either a Quartz cron expression or a reference to business hours defined in the self-monitoring System Profile. Referencing business hours means the alert suppression will be active outside the defined business hours. Setting a duration will have no effect if business hours are referenced.  You can create a global alert suppression (&#x3D; affecting all existing and future System Profiles and Incident rules) by leaving System Profiles and Incident rules unspecified.
-     *
-     * @param suppressionname Alert Suppression name (required)
-     * @param body            Alert Suppression object (required)
-     * @return ApiResponse&lt;Void&gt;
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     */
-    public ApiResponse<Void> putDowntimeWithHttpInfo(String suppressionname, AlertSuppressionDefinition body) throws ApiException {
-        Call call = putDowntimeValidateBeforeCall(suppressionname, body);
-        return apiClient.execute(call);
     }
 
     /**

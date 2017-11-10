@@ -28,6 +28,7 @@ import org.kohsuke.stapler.export.ExportedBean;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -43,7 +44,7 @@ public class TestResult {
     private StatusEnum status;
 
     @SerializedName("exectime")
-    private String exectime;
+    private Date exectime;
 
     @SerializedName("package")
     private String _package;
@@ -84,7 +85,7 @@ public class TestResult {
      **/
     @Exported
     @ApiModelProperty(example = "2016-07-18T16:44:00.055+02:00", value = "Start time of the test in ISO 8601 compatible date/time of format: yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-    public String getExectime() {
+    public Date getExectime() {
         return exectime;
     }
 
@@ -177,6 +178,7 @@ public class TestResult {
         }
     }
 
+    @SuppressWarnings("deprecation")
     protected Object readResolve() {
         if (packageName != null) {
             _package = packageName;

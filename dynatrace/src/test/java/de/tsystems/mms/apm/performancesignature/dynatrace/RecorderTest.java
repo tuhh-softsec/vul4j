@@ -19,6 +19,7 @@ package de.tsystems.mms.apm.performancesignature.dynatrace;
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.ConfigurationTestCase;
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.Dashboard;
 import de.tsystems.mms.apm.performancesignature.dynatrace.configuration.GenericTestCase;
+import de.tsystems.mms.apm.performancesignature.dynatrace.model.Alert;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.DashboardReport;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.DTServerConnection;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.xml.model.Agent;
@@ -38,6 +39,7 @@ import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -152,5 +154,15 @@ public class RecorderTest {
     public void testServerVersionViaRest() throws Exception {
         DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceConfigurations.get(0).name);
         assertNotNull(connection.getServerVersion());
+    }
+
+    @Test
+    public void testIncidentsViaRest() throws Exception {
+        DTServerConnection connection = PerfSigUtils.createDTServerConnection(dynatraceConfigurations.get(0).name);
+        Date now = new Date();
+        now.setTime(now.getTime() - 1800000);
+        List<Alert> alerts = connection.getIncidents(now, new Date());
+
+        assertNotNull(alerts);
     }
 }

@@ -32,7 +32,6 @@ import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Call;
 import de.tsystems.mms.apm.performancesignature.dynatrace.model.TestRun;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.*;
-import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.ExternalTest;
 import de.tsystems.mms.apm.performancesignature.dynatrace.rest.json.model.TestRunDefinition;
 
 import java.lang.reflect.Type;
@@ -223,87 +222,6 @@ public class TestAutomationApi {
     }
 
     /**
-     * Build call for invalidateTestRun
-     *
-     * @param profileid System profile id (required)
-     * @param testrunid UUID of the test run (required)
-     * @return Call to execute
-     * @throws ApiException If fail to serialize the request body object
-     */
-    public Call invalidateTestRunCall(String profileid, String testrunid) throws ApiException {
-        // create path and map variables
-        String localVarPath = ApiClient.API_SUFFIX + "/profiles/{profileid}/testruns/{testrunid}/invalidate"
-                .replaceAll("\\{profileid\\}", apiClient.escapeString(profileid))
-                .replaceAll("\\{testrunid\\}", apiClient.escapeString(testrunid));
-
-        List<Pair> localVarQueryParams = new ArrayList<>();
-
-        Map<String, String> localVarHeaderParams = new HashMap<>();
-
-        Map<String, Object> localVarFormParams = new HashMap<>();
-
-        final String[] localVarAccepts = {
-                "application/json"
-        };
-        final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
-        if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
-
-        final String[] localVarContentTypes = {
-
-        };
-        final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
-        localVarHeaderParams.put("Content-Type", localVarContentType);
-
-        String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "POST", localVarQueryParams, null, localVarHeaderParams, localVarFormParams, localVarAuthNames);
-    }
-
-    @SuppressWarnings("rawtypes")
-    private Call invalidateTestRunValidateBeforeCall(String profileid, String testrunid) throws ApiException {
-        // verify the required parameter 'profileid' is set
-        if (profileid == null) {
-            throw new ApiException("Missing the required parameter 'profileid' when calling invalidateTestRun");
-        }
-
-        // verify the required parameter 'testrunid' is set
-        if (testrunid == null) {
-            throw new ApiException("Missing the required parameter 'testrunid' when calling invalidateTestRun");
-        }
-
-        return invalidateTestRunCall(profileid, testrunid);
-    }
-
-    /**
-     * Mark test run as invalidated
-     * Sets the test run state to INVALIDATED either for all test executions within that test run, or only executions of tests that matches &#39;testId&#39; (which can be package, or class or a single test). Returns all test run details (including test executions) of an invalidated test run.
-     *
-     * @param profileid System profile id (required)
-     * @param testrunid UUID of the test run (required)
-     * @return TestRun
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     */
-    public TestRun invalidateTestRun(String profileid, String testrunid) throws ApiException {
-        ApiResponse<TestRun> resp = invalidateTestRunWithHttpInfo(profileid, testrunid);
-        return resp.getData();
-    }
-
-    /**
-     * Mark test run as invalidated
-     * Sets the test run state to INVALIDATED either for all test executions within that test run, or only executions of tests that matches &#39;testId&#39; (which can be package, or class or a single test). Returns all test run details (including test executions) of an invalidated test run.
-     *
-     * @param profileid System profile id (required)
-     * @param testrunid UUID of the test run (required)
-     * @return ApiResponse&lt;TestRun&gt;
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     */
-    public ApiResponse<TestRun> invalidateTestRunWithHttpInfo(String profileid, String testrunid) throws ApiException {
-        Call call = invalidateTestRunValidateBeforeCall(profileid, testrunid);
-        Type localVarReturnType = new TypeToken<TestRun>() {
-        }.getType();
-        return apiClient.execute(call, localVarReturnType);
-    }
-
-    /**
      * Build call for markTestExecutionAsFailed
      *
      * @param profileid System profile id (required)
@@ -319,8 +237,9 @@ public class TestAutomationApi {
                 .replaceAll("\\{testrunid\\}", apiClient.escapeString(testrunid));
 
         List<Pair> localVarQueryParams = new ArrayList<>();
-        if (testId != null)
-            localVarQueryParams.addAll(apiClient.parameterToPairs("", "testId", testId));
+        if (testId != null) {
+            localVarQueryParams.addAll(apiClient.parameterToPair("testId", testId));
+        }
 
         Map<String, String> localVarHeaderParams = new HashMap<>();
 
@@ -392,91 +311,6 @@ public class TestAutomationApi {
         Type localVarReturnType = new TypeToken<TestRun>() {
         }.getType();
         return apiClient.execute(call, localVarReturnType);
-    }
-
-    /**
-     * Build call for postExternalTestData
-     *
-     * @param profileid System profile id (required)
-     * @param testrunid UUID of the test run (required)
-     * @param body      Test result (required)
-     * @return Call to execute
-     * @throws ApiException If fail to serialize the request body object
-     */
-    public Call postExternalTestDataCall(String profileid, String testrunid, ExternalTest body) throws ApiException {
-        // create path and map variables
-        String localVarPath = ApiClient.API_SUFFIX + "/profiles/{profileid}/testruns/{testrunid}"
-                .replaceAll("\\{profileid\\}", apiClient.escapeString(profileid))
-                .replaceAll("\\{testrunid\\}", apiClient.escapeString(testrunid));
-
-        List<Pair> localVarQueryParams = new ArrayList<>();
-
-        Map<String, String> localVarHeaderParams = new HashMap<>();
-
-        Map<String, Object> localVarFormParams = new HashMap<>();
-
-        final String[] localVarAccepts = {
-                "application/json"
-        };
-        final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
-        if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
-
-        final String[] localVarContentTypes = {
-                "application/json"
-        };
-        final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
-        localVarHeaderParams.put("Content-Type", localVarContentType);
-
-        String[] localVarAuthNames = new String[]{"basicAuth"};
-        return apiClient.buildCall(localVarPath, "POST", localVarQueryParams, body, localVarHeaderParams, localVarFormParams, localVarAuthNames);
-    }
-
-    @SuppressWarnings("rawtypes")
-    private Call postExternalTestDataValidateBeforeCall(String profileid, String testrunid, ExternalTest body) throws ApiException {
-        // verify the required parameter 'profileid' is set
-        if (profileid == null) {
-            throw new ApiException("Missing the required parameter 'profileid' when calling postExternalTestData");
-        }
-
-        // verify the required parameter 'testrunid' is set
-        if (testrunid == null) {
-            throw new ApiException("Missing the required parameter 'testrunid' when calling postExternalTestData");
-        }
-
-        // verify the required parameter 'body' is set
-        if (body == null) {
-            throw new ApiException("Missing the required parameter 'body' when calling postExternalTestData");
-        }
-
-        return postExternalTestDataCall(profileid, testrunid, body);
-    }
-
-    /**
-     * Post test result
-     * Post a test result for a registered test run of category &#39;external&#39;.
-     *
-     * @param profileid System profile id (required)
-     * @param testrunid UUID of the test run (required)
-     * @param body      Test result (required)
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     */
-    public void postExternalTestData(String profileid, String testrunid, ExternalTest body) throws ApiException {
-        postExternalTestDataWithHttpInfo(profileid, testrunid, body);
-    }
-
-    /**
-     * Post test result
-     * Post a test result for a registered test run of category &#39;external&#39;.
-     *
-     * @param profileid System profile id (required)
-     * @param testrunid UUID of the test run (required)
-     * @param body      Test result (required)
-     * @return ApiResponse&lt;Void&gt;
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     */
-    public ApiResponse<Void> postExternalTestDataWithHttpInfo(String profileid, String testrunid, ExternalTest body) throws ApiException {
-        Call call = postExternalTestDataValidateBeforeCall(profileid, testrunid, body);
-        return apiClient.execute(call);
     }
 
     /**
