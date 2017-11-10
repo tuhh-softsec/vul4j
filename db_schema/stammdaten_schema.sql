@@ -300,7 +300,6 @@ CREATE TABLE query (
     type integer NOT NULL REFERENCES query_type,
     sql text NOT NULL,
     description text,
-    description character varying(100),
     UNIQUE (name, type)
 );
 
