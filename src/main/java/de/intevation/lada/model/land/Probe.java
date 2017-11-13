@@ -89,6 +89,12 @@ public class Probe implements Serializable {
     @Column(name="umw_id")
     private String umwId;
 
+    @Column(name="rei_progpunkt_grp_id")
+    private Integer reiProgpunktGrpId;
+
+    @Column(name="kta_gruppe_id")
+    private Integer ktaGruppeId;
+
     @Transient
     private boolean readonly;
 
@@ -280,6 +286,22 @@ public class Probe implements Serializable {
 
     public void setUmwId(String umwId) {
         this.umwId = umwId;
+    }
+
+    public Integer getReiProgpunktGrpId() {
+        return reiProgpunktGrpId;
+    }
+
+    public void setReiProgpunktGrpId(Integer reiProgpunktGrpId) {
+        this.reiProgpunktGrpId = reiProgpunktGrpId;
+    }
+
+    public Integer getKtaGruppeId() {
+        return ktaGruppeId;
+    }
+
+    public void setKtaGruppeId(Integer ktaGruppeId) {
+        this.ktaGruppeId = ktaGruppeId;
     }
 
     public boolean isReadonly() {

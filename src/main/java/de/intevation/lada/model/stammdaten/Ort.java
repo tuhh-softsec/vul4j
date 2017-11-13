@@ -33,8 +33,8 @@ public class Ort implements Serializable {
 
     private String aktiv;
 
-    @Column(name="anlage_id")
-    private Integer anlageId;
+    @Column(name="kta_gruppe_id")
+    private Integer ktaGruppeId;
 
     private String berichtstext;
 
@@ -124,12 +124,12 @@ public class Ort implements Serializable {
         this.aktiv = aktiv;
     }
 
-    public Integer getAnlageId() {
-        return this.anlageId;
+    public Integer getKtaGruppeId() {
+        return this.ktaGruppeId;
     }
 
-    public void setAnlageId(Integer anlageId) {
-        this.anlageId = anlageId;
+    public void setKtaGruppeId(Integer ktaGruppeId) {
+        this.ktaGruppeId = ktaGruppeId;
     }
 
     public String getBerichtstext() {
