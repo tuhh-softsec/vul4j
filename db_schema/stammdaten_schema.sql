@@ -299,8 +299,8 @@ CREATE TABLE query (
     id serial PRIMARY KEY,
     name character varying(80) NOT NULL,
     type integer NOT NULL REFERENCES query_type,
-    sql character varying(2500) NOT NULL,
-    description character varying(100),
+    sql text NOT NULL,
+    description text,
     UNIQUE (name, type)
 );
 
@@ -468,6 +468,8 @@ CREATE TABLE ort (
     hoehe_ueber_nn real,
     UNIQUE(ort_id, netzbetreiber_id)
 );
+
+CREATE INDEX ort_netz_id_idx ON stammdaten.ort USING btree (netzbetreiber_id);
 
 CREATE TRIGGER letzte_aenderung_ort BEFORE UPDATE ON ort FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 CREATE TRIGGER set_ort_id_ort BEFORE INSERT ON ort FOR EACH ROW EXECUTE PROCEDURE set_ort_id();

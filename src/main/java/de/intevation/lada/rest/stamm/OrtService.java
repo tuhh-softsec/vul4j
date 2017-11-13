@@ -187,12 +187,23 @@ public class OrtService {
                     repository.entityManager("stamm"),
                     Ort.class
                 );
-            for (String nb : user.getNetzbetreiber()) {
-               builder.or("netzbetreiberId", nb);
+            if (params.containsKey("netzbetreiberId")) {
+                builder.and("netzbetreiberId", params.getFirst("netzbetreiberId"));
+            }
+            else {
+                for (String nb : user.getNetzbetreiber()) {
+                    builder.or("netzbetreiberId", nb);
+                }
+            }
+            if (params.containsKey("filter")) {
+                QueryBuilder<Ort> filter = builder.getEmptyBuilder();
+                filter.orLike("ortId", "%"+params.getFirst("filter")+"%")
+                    .orLike("kurztext", "%"+params.getFirst("filter")+"%")
+                    .orLike("langtext", "%"+params.getFirst("filter")+"%");
+                builder.and(filter);
             }
             orte = repository.filterPlain(builder.getQuery(), "stamm");
         }
-
         int size = orte.size();
         if (params.containsKey("start") && params.containsKey("limit")) {
             int start = Integer.valueOf(params.getFirst("start"));

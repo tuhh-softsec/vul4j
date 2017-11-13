@@ -143,6 +143,9 @@ public class QueryService {
 
         markFavorites(queries, userInfo);
 
+        setFilterValues(queries, 0);
+        setFilterValues(queries, userInfo.getUserId());
+
         return new Response(true, 200, queries);
     }
 
@@ -167,6 +170,9 @@ public class QueryService {
         List<Query> queries = repository.filterPlain(builder.getQuery(), "stamm");
 
         markFavorites(queries, userInfo);
+
+        setFilterValues(queries, 0);
+        setFilterValues(queries, userInfo.getUserId());
 
         return new Response(true, 200, queries);
     }

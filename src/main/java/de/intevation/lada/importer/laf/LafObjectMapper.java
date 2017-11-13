@@ -147,11 +147,16 @@ public class LafObjectMapper {
             }
         }
         if (object.getAttributes().containsKey("ZEITBASIS")) {
+            ImporterConfig cfg = getImporterConfigByAttributeUpper("ZEITBASIS");
+            String attribute = object.getAttributes().get("ZEITBASIS");
+            if (cfg != null && attribute.equals(cfg.getFromValue())) {
+                attribute = cfg.getToValue();
+            }
             QueryBuilder<Zeitbasis> builder =
                 new QueryBuilder<Zeitbasis>(
                     repository.entityManager("stamm"),
                     Zeitbasis.class);
-            builder.and("bezeichnung", object.getAttributes().get("ZEITBASIS"));
+            builder.and("bezeichnung", attribute);
             List<Zeitbasis> zb=
                 (List<Zeitbasis>)repository.filter(
                     builder.getQuery(),
@@ -485,6 +490,17 @@ public class LafObjectMapper {
         }
     }
 
+    private ImporterConfig getImporterConfigByAttributeUpper(String attribute) {
+        Iterator<ImporterConfig> i = config.iterator();
+        while (i.hasNext()) {
+            ImporterConfig current = i.next();
+            if (current.getAttribute().toUpperCase().equals(attribute)) {
+                return current;
+            }
+        }
+        return null;
+    }
+
     private <T> void doConverts(Object object, Class<T> clazz, String table) {
         Iterator<ImporterConfig> i = config.iterator();
         while (i.hasNext()) {
@@ -707,11 +723,16 @@ public class LafObjectMapper {
         zusatzwert.setProbeId(probeId);
         zusatzwert.setMessfehler(Float.valueOf(attributes.get("MESSFEHLER")));
         zusatzwert.setMesswertPzs(Double.valueOf(attributes.get("MESSWERT_PZS")));
+        ImporterConfig cfg = getImporterConfigByAttributeUpper("ZUSATZWERT");
+        String attribute = attributes.get("PZS");
+        if (cfg != null && attribute.equals(cfg.getFromValue())) {
+            attribute = cfg.getToValue();
+        }
         QueryBuilder<ProbenZusatz> builder =
             new QueryBuilder<ProbenZusatz>(
                 repository.entityManager("stamm"),
                 ProbenZusatz.class);
-        builder.and("zusatzwert", attributes.get("PZS"));
+        builder.and("zusatzwert", attribute);
         List<ProbenZusatz> zusatz =
             (List<ProbenZusatz>)repository.filter(
                 builder.getQuery(),
@@ -739,11 +760,16 @@ public class LafObjectMapper {
             messwert.setMessgroesseId(Integer.valueOf(attributes.get("MESSGROESSE_ID")));
         }
         else if (attributes.containsKey("MESSGROESSE")) {
+            ImporterConfig cfg = getImporterConfigByAttributeUpper("MESSGROESSE");
+            String attribute = attributes.get("MESSGROESSE");
+            if (cfg != null && attribute.equals(cfg.getFromValue())) {
+                attribute = cfg.getToValue();
+            }
             QueryBuilder<Messgroesse> builder =
                 new QueryBuilder<Messgroesse>(
                     repository.entityManager("stamm"),
                     Messgroesse.class);
-            builder.and("messgroesse", attributes.get("MESSGROESSE"));
+            builder.and("messgroesse", attribute);
             List<Messgroesse> groesse =
                 (List<Messgroesse>)repository.filter(
                     builder.getQuery(),
@@ -759,15 +785,20 @@ public class LafObjectMapper {
             }
             messwert.setMessgroesseId(groesse.get(0).getId());
         }
-        if (attributes.containsKey("MEH_ID")) {
-            messwert.setMehId(Integer.valueOf(attributes.get("MEH_ID")));
+        if (attributes.containsKey("MESSEINHEIT_ID")) {
+            messwert.setMehId(Integer.valueOf(attributes.get("MESSEINHEIT_ID")));
         }
-        else if (attributes.containsKey("MEH")) {
+        else if (attributes.containsKey("MESSEINHEIT")) {
+            ImporterConfig cfg = getImporterConfigByAttributeUpper("MESSEINHEIT");
+            String attribute = attributes.get("MESSEINHEIT");
+            if (cfg != null && attribute.equals(cfg.getFromValue())) {
+                attribute = cfg.getToValue();
+            }
             QueryBuilder<MessEinheit> builder =
                 new QueryBuilder<MessEinheit>(
                     repository.entityManager("stamm"),
                     MessEinheit.class);
-            builder.and("einheit", attributes.get("MEH"));
+            builder.and("einheit", attribute);
             List<MessEinheit> einheit =
                 (List<MessEinheit>)repository.filter(
                     builder.getQuery(),
@@ -777,7 +808,7 @@ public class LafObjectMapper {
                 ReportItem warn = new ReportItem();
                 warn.setCode(673);
                 warn.setKey("messwert");
-                warn.setValue(attributes.get("MEH"));
+                warn.setValue(attributes.get("MESSEINHEIT"));
                 currentWarnings.add(warn);
                 return null;
             }
@@ -1318,11 +1349,16 @@ public class LafObjectMapper {
 
 
         if ("DATENBASIS".equals(key) && probe.getDatenbasisId() == null) {
+            ImporterConfig cfg = getImporterConfigByAttributeUpper("DATENBASIS");
+            String attr = value.toString();
+            if (cfg != null && attr.equals(cfg.getFromValue())) {
+                attr = cfg.getToValue();
+            }
             QueryBuilder<Datenbasis> builder =
                 new QueryBuilder<Datenbasis>(
                     repository.entityManager("stamm"),
                     Datenbasis.class);
-            builder.and("datenbasis", value.toString());
+            builder.and("datenbasis", attr);
             List<Datenbasis> datenbasis =
                 (List<Datenbasis>)repository.filter(
                     builder.getQuery(),
@@ -1499,11 +1535,16 @@ public class LafObjectMapper {
         }
 
         if ("PROBENART".equals(key)) {
+            ImporterConfig cfg = getImporterConfigByAttributeUpper("PROBENART");
+            String attr = value.toString();
+            if (cfg != null && attr.equals(cfg.getFromValue())) {
+                attr = cfg.getToValue();
+            }
             QueryBuilder<Probenart> builder =
                 new QueryBuilder<Probenart>(
                     repository.entityManager("stamm"),
                     Probenart.class);
-            builder.and("probenart", value.toString());
+            builder.and("probenart", attr);
             List<Probenart> probenart =
                 (List<Probenart>)repository.filter(
                     builder.getQuery(),

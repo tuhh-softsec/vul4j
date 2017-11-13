@@ -7,8 +7,7 @@
  */
 package de.intevation.lada.rest;
 
-import java.sql.Timestamp;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -32,8 +31,6 @@ import de.intevation.lada.lock.LockConfig;
 import de.intevation.lada.lock.LockType;
 import de.intevation.lada.lock.ObjectLocker;
 import de.intevation.lada.model.land.Messung;
-import de.intevation.lada.model.land.Probe;
-import de.intevation.lada.model.land.StatusProtokoll;
 import de.intevation.lada.query.QueryTools;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
@@ -177,9 +174,11 @@ public class MessungService {
 
             QueryBuilder<Messung> pBuilder = new QueryBuilder<Messung>(
                 repository.entityManager("land"), Messung.class);
+            List<Integer> list = new ArrayList<Integer>();
             for (Map<String, Object> entry: result) {
-                pBuilder.or("id", (Integer)entry.get("id"));
+                list.add((Integer)entry.get("id"));
             }
+            pBuilder.orIn("id", list);
             Response r = repository.filter(pBuilder.getQuery(), "land");
             r = authorization.filter(request, r, Messung.class);
             @SuppressWarnings("unchecked")

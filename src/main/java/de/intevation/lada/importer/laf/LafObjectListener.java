@@ -2793,7 +2793,7 @@ public class LafObjectListener extends LafBaseListener {
         Map<String, String> messwert = new HashMap<String, String>();
         messwert.put("MESSGROESSE", groesse);
         messwert.put("MESSWERT", wert);
-        messwert.put("MEH", einheit);
+        messwert.put("MESSEINHEIT", einheit);
         messwert.put("MESSFEHLER", fehler);
         if (currentMessung == null) {
             currentMessung = data.new Messung();
@@ -2860,7 +2860,7 @@ public class LafObjectListener extends LafBaseListener {
         Map<String, String> messwert = new HashMap<String, String>();
         messwert.put("MESSGROESSE_ID", groesse);
         messwert.put("MESSWERT", wert);
-        messwert.put("MEH_ID", einheit);
+        messwert.put("MESSEINHEIT_ID", einheit);
         messwert.put("MESSFEHLER", fehler);
         if (currentMessung == null) {
             currentMessung = data.new Messung();
@@ -2928,7 +2928,7 @@ public class LafObjectListener extends LafBaseListener {
         Map<String, String> messwert = new HashMap<String, String>();
         messwert.put("MESSGROESSE", groesse);
         messwert.put("MESSWERT", wert);
-        messwert.put("MEH", einheit);
+        messwert.put("MESSEINHEIT", einheit);
         messwert.put("MESSFEHLER", fehler);
         if (currentMessung == null) {
             currentMessung = data.new Messung();
@@ -2999,7 +2999,7 @@ public class LafObjectListener extends LafBaseListener {
         Map<String, String> messwert = new HashMap<String, String>();
         messwert.put("MESSGROESSE", groesse);
         messwert.put("MESSWERT", wert);
-        messwert.put("MEH", einheit);
+        messwert.put("MESSEINHEIT", einheit);
         messwert.put("MESSFEHLER", fehler);
         if (currentMessung == null) {
             currentMessung = data.new Messung();
@@ -3076,7 +3076,7 @@ public class LafObjectListener extends LafBaseListener {
         Map<String, String> messwert = new HashMap<String, String>();
         messwert.put("MESSGROESSE", groesse);
         messwert.put("MESSWERT", wert);
-        messwert.put("MEH", einheit);
+        messwert.put("MESSEINHEIT", einheit);
         messwert.put("MESSFEHLER", fehler);
         messwert.put("NWG", nwg);
         if (currentMessung == null) {
@@ -3154,7 +3154,7 @@ public class LafObjectListener extends LafBaseListener {
         Map<String, String> messwert = new HashMap<String, String>();
         messwert.put("MESSGROESSE_ID", groesse);
         messwert.put("MESSWERT", wert);
-        messwert.put("MEH_ID", einheit);
+        messwert.put("MESSEINHEIT_ID", einheit);
         messwert.put("MESSFEHLER", fehler);
         messwert.put("NWG", nwg);
         if (currentMessung == null) {
@@ -3232,7 +3232,7 @@ public class LafObjectListener extends LafBaseListener {
         Map<String, String> messwert = new HashMap<String, String>();
         messwert.put("MESSGROESSE", groesse);
         messwert.put("MESSWERT", wert);
-        messwert.put("MEH", einheit);
+        messwert.put("MESSEINHEIT", einheit);
         messwert.put("MESSFEHLER", fehler);
         messwert.put("NWG", nwg);
         if (currentMessung == null) {
@@ -3321,7 +3321,7 @@ public class LafObjectListener extends LafBaseListener {
         Map<String, String> messwert = new HashMap<String, String>();
         messwert.put("MESSGROESSE", groesse);
         messwert.put("MESSWERT", wert);
-        messwert.put("MEH", einheit);
+        messwert.put("MESSEINHEIT", einheit);
         messwert.put("MESSFEHLER", fehler);
         messwert.put("NWG", nwg);
         messwert.put("GRENZWERT", gw);

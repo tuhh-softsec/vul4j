@@ -7,6 +7,7 @@
  */
 package de.intevation.lada.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -171,9 +172,11 @@ public class MessprogrammService {
         }
         QueryBuilder<Messprogramm> mBuilder = new QueryBuilder<Messprogramm>(
             repository.entityManager("land"), Messprogramm.class);
+        List<Integer> list = new ArrayList<Integer>();
         for (Map<String, Object> entry: result) {
-            mBuilder.or("id", (Integer)entry.get("id"));
+            list.add((Integer)entry.get("id"));
         }
+        mBuilder.orIn("id", list);
         Response r = repository.filter(mBuilder.getQuery(), "land");
         r = authorization.filter(request, r, Messprogramm.class);
         List<Messprogramm> messprogramme = (List<Messprogramm>)r.getData();
