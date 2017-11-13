@@ -22,8 +22,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-import de.intevation.lada.model.stammdaten.ReiProgpunktGrpUmwZuord;
-import de.intevation.lada.model.stammdaten.Umwelt;
+import de.intevation.lada.model.stammdaten.Datenbasis;
+import de.intevation.lada.model.stammdaten.KtaGrpZuord;
+import de.intevation.lada.model.stammdaten.KtaGruppe;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
@@ -31,7 +32,7 @@ import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.Response;
 
 /**
- * REST service for Umwelt objects.
+ * REST service for KtaGruppe objects.
  * <p>
  * The services produce data in the application/json media type.
  * A typical response holds information about the action performed and the data.
@@ -41,10 +42,9 @@ import de.intevation.lada.util.rest.Response;
  *  "success": [boolean];
  *  "message": [string],
  *  "data":[{
- *      "id": [string],
+ *      "id": [number],
  *      "beschreibung": [string],
- *      "umweltBereich": [string],
- *      "mehId": [number]
+ *      "ktaGruppe": [string]
  *  }],
  *  "errors": [object],
  *  "warnings": [object],
@@ -56,9 +56,9 @@ import de.intevation.lada.util.rest.Response;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-@Path("rest/umwelt")
+@Path("rest/ktagruppe")
 @RequestScoped
-public class UmweltService {
+public class KtaGruppeService {
 
     /**
      * The data repository granting read access.
@@ -68,11 +68,11 @@ public class UmweltService {
     private Repository repository;
 
     /**
-     * Get all Umwelt objects.
+     * Get all KtaGruppe objects.
      * <p>
-     * Example: http://example.com/umwelt
+     * Example: http://example.com/ktagruppe
      *
-     * @return Response object containing all Umwelt objects.
+     * @return Response object containing all KtaGruppe objects.
      */
     @GET
     @Path("/")
@@ -82,48 +82,48 @@ public class UmweltService {
         @Context UriInfo info
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
-        if (params.isEmpty() || !params.containsKey("reiprogpunktgruppe")) {
-            return repository.getAll(Umwelt.class, "stamm");
+        if (params.isEmpty() || !params.containsKey("kta")) {
+            return repository.getAll(KtaGruppe.class, "stamm");
         }
         Integer id = null;
         try {
-            id = Integer.valueOf(params.getFirst("reiprogpunktgruppe"));
+            id = Integer.valueOf(params.getFirst("kta"));
         }
         catch (NumberFormatException e) {
             return new Response(false, 603, "Not a valid filter id");
         }
-        QueryBuilder<ReiProgpunktGrpUmwZuord> builder =
-            new QueryBuilder<ReiProgpunktGrpUmwZuord>(
+        QueryBuilder<KtaGrpZuord> builder =
+            new QueryBuilder<KtaGrpZuord>(
                 repository.entityManager("stamm"),
-                ReiProgpunktGrpUmwZuord.class
+                KtaGrpZuord.class
             );
-        builder.and("reiProgpunktGrpId", id);
-        List<ReiProgpunktGrpUmwZuord> zuord =
+        builder.and("ktaId", id);
+        List<KtaGrpZuord> zuord =
             repository.filterPlain(builder.getQuery(), "stamm");
         if (zuord.isEmpty()) {
             return new Response(true, 200, null);
         }
-        QueryBuilder<Umwelt> builder1 =
-            new QueryBuilder<Umwelt>(
+        QueryBuilder<KtaGruppe> builder1 =
+            new QueryBuilder<KtaGruppe>(
                 repository.entityManager("stamm"),
-                Umwelt.class
+                KtaGruppe.class
             );
-        List<String> ids = new ArrayList<String>();
+        List<Integer> ids = new ArrayList<Integer>();
         for (int i = 0; i < zuord.size(); i++) {
-            ids.add(zuord.get(i).getUmwId());
+            ids.add(zuord.get(i).getKtaGrpId());
         }
         builder1.orIn("id", ids);
         return repository.filter(builder1.getQuery(), "stamm");
     }
 
     /**
-     * Get a single Umwelt object by id.
+     * Get a single KtaGruppe object by id.
      * <p>
      * The id is appended to the URL as a path parameter.
      * <p>
-     * Example: http://example.com/umwelt/{id}
+     * Example: http://example.com/ktagruppe/{id}
      *
-     * @return Response object containing a single Umwelt.
+     * @return Response object containing a single KtaGruppe.
      */
     @GET
     @Path("/{id}")
@@ -133,8 +133,8 @@ public class UmweltService {
         @PathParam("id") String id
     ) {
         return repository.getById(
-            Umwelt.class,
-            id,
+            KtaGruppe.class,
+            Integer.valueOf(id),
             "stamm");
     }
 }

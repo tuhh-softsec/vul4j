@@ -125,7 +125,7 @@ public class OrtService {
         if (params.containsKey("ortId")) {
             Integer id;
             try {
-                id = Integer.valueOf(params.getFirst("qid"));
+                id = Integer.valueOf(params.getFirst("ortId"));
             }
             catch (NumberFormatException e) {
                 return new Response(false, 603, "Not a valid filter id");
