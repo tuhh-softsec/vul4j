@@ -56,6 +56,7 @@ import de.intevation.lada.model.stammdaten.Ort;
 import de.intevation.lada.model.stammdaten.Ortszusatz;
 import de.intevation.lada.model.stammdaten.ProbenZusatz;
 import de.intevation.lada.model.stammdaten.Probenart;
+import de.intevation.lada.model.stammdaten.ReiProgpunktGruppe;
 import de.intevation.lada.model.stammdaten.Staat;
 import de.intevation.lada.model.stammdaten.StatusKombi;
 import de.intevation.lada.model.stammdaten.Umwelt;
@@ -319,19 +320,27 @@ public class LafObjectMapper {
             // Persist zusatzwert objects
             merger.mergeZusatzwerte(newProbe, zusatzwerte);
 
-            // Merge entnahmeOrt
-            createEntnahmeOrt(object.getEntnahmeOrt(), newProbe);
-
-            // Create ursprungsOrte
-            List<Ortszuordnung> uOrte = new ArrayList<Ortszuordnung>();
-            for (int i = 0; i < object.getUrsprungsOrte().size(); i++) {
-                Ortszuordnung tmp = createUrsprungsOrt(object.getUrsprungsOrte().get(i), newProbe);
-                if (tmp != null) {
-                    uOrte.add(tmp);
-                }
+            // Special things for REI-Messpunkt
+            if (probe.getReiProgpunktGrpId() != null ||
+                probe.getDatenbasisId() == 3 ||
+                probe.getDatenbasisId() == 4) {
+                createReiMesspunkt(object, newProbe);
             }
-            // Persist ursprungsOrte
-            merger.mergeUrsprungsOrte(newProbe.getId(), uOrte);
+            else {
+                // Merge entnahmeOrt
+                createEntnahmeOrt(object.getEntnahmeOrt(), newProbe);
+
+                // Create ursprungsOrte
+                List<Ortszuordnung> uOrte = new ArrayList<Ortszuordnung>();
+                for (int i = 0; i < object.getUrsprungsOrte().size(); i++) {
+                    Ortszuordnung tmp = createUrsprungsOrt(object.getUrsprungsOrte().get(i), newProbe);
+                    if (tmp != null) {
+                        uOrte.add(tmp);
+                    }
+                }
+                // Persist ursprungsOrte
+                merger.mergeUrsprungsOrte(newProbe.getId(), uOrte);
+            }
 
             // Create messung objects
             for (int i = 0; i < object.getMessungen().size(); i++) {
@@ -725,8 +734,16 @@ public class LafObjectMapper {
         zusatzwert.setMesswertPzs(Double.valueOf(attributes.get("MESSWERT_PZS")));
         ImporterConfig cfg = getImporterConfigByAttributeUpper("ZUSATZWERT");
         String attribute = attributes.get("PZS");
-        if (cfg != null && attribute.equals(cfg.getFromValue())) {
+        if (cfg != null &&
+            cfg.getAction().equals("convert") &&
+            cfg.getFromValue().equals(attribute)
+        ) {
             attribute = cfg.getToValue();
+        }
+        if (cfg != null && cfg.getAction().equals("transform")) {
+            char from = (char) Integer.parseInt(cfg.getFromValue(), 16);
+            char to = (char) Integer.parseInt(cfg.getToValue(), 16);
+            attribute = attribute.replaceAll("[" + String.valueOf(from) + "]", String.valueOf(to));
         }
         QueryBuilder<ProbenZusatz> builder =
             new QueryBuilder<ProbenZusatz>(
@@ -762,8 +779,16 @@ public class LafObjectMapper {
         else if (attributes.containsKey("MESSGROESSE")) {
             ImporterConfig cfg = getImporterConfigByAttributeUpper("MESSGROESSE");
             String attribute = attributes.get("MESSGROESSE");
-            if (cfg != null && attribute.equals(cfg.getFromValue())) {
+            if (cfg != null &&
+                cfg.getAction().equals("convert") &&
+                cfg.getFromValue().equals(attribute)
+            ) {
                 attribute = cfg.getToValue();
+            }
+            if (cfg != null && cfg.getAction().equals("transform")) {
+                char from = (char) Integer.parseInt(cfg.getFromValue(), 16);
+                char to = (char) Integer.parseInt(cfg.getToValue(), 16);
+                attribute = attribute.replaceAll("[" + String.valueOf(from) + "]", String.valueOf(to));
             }
             QueryBuilder<Messgroesse> builder =
                 new QueryBuilder<Messgroesse>(
@@ -791,8 +816,16 @@ public class LafObjectMapper {
         else if (attributes.containsKey("MESSEINHEIT")) {
             ImporterConfig cfg = getImporterConfigByAttributeUpper("MESSEINHEIT");
             String attribute = attributes.get("MESSEINHEIT");
-            if (cfg != null && attribute.equals(cfg.getFromValue())) {
+            if (cfg != null &&
+                cfg.getAction().equals("convert") &&
+                cfg.getFromValue().equals(attribute)
+            ) {
                 attribute = cfg.getToValue();
+            }
+            if (cfg != null && cfg.getAction().equals("transform")) {
+                char from = (char) Integer.parseInt(cfg.getFromValue(), 16);
+                char to = (char) Integer.parseInt(cfg.getToValue(), 16);
+                attribute = attribute.replaceAll("[" + String.valueOf(from) + "]", String.valueOf(to));
             }
             QueryBuilder<MessEinheit> builder =
                 new QueryBuilder<MessEinheit>(
@@ -948,6 +981,74 @@ public class LafObjectMapper {
             messung.setStatus(last.getId());
             repository.update(messung, "land");
         }
+    }
+
+    private void createReiMesspunkt(LafRawData.Probe object, Probe probe) {
+
+        QueryBuilder<Ortszuordnung> builder = new QueryBuilder<Ortszuordnung>(
+            repository.entityManager("stamm"),
+            Ortszuordnung.class);
+        builder.and("probeId", probe.getId());
+        List<Ortszuordnung> zuordnungen =
+            repository.filterPlain(builder.getQuery(), "land");
+        if (!zuordnungen.isEmpty()) {
+            // Probe already has an ort.
+            return;
+        }
+
+        List<Map<String, String>> uort = object.getUrsprungsOrte();
+        if (uort.size() > 0 &&
+            uort.get(0).containsKey("U_ORTS_ZUSATZCODE")
+        ) {
+            // WE HAVE A REI-MESSPUNKT!
+            // Search for the ort in db
+            Map<String, String> uo = uort.get(0);
+            QueryBuilder<Ort> builder1 = new QueryBuilder<Ort>(
+                repository.entityManager("stamm"),
+                Ort.class);
+            builder1.and("ortId", uo.get("U_ORTS_ZUSATZCODE"));
+            List<Ort> messpunkte =
+                repository.filterPlain(builder1.getQuery(), "stamm");
+            if (messpunkte != null && messpunkte.size() > 0) {
+                Ortszuordnung ort = new Ortszuordnung();
+                ort.setOrtszuordnungTyp("R");
+                ort.setProbeId(probe.getId());
+                ort.setOrtId(messpunkte.get(0).getId());
+                if (uo.containsKey("U_ORTS_ZUSATZTEXT")) {
+                    ort.setOrtszusatztext(uo.get("U_ORTS_ZUSATZTEXT"));
+                }
+                repository.create(ort, "land");
+            }
+        }
+        else {
+            Ort o = null;
+            if (uort.size() > 0) {
+                o = createNewOrt(uort.get(0), "U_", probe);
+            }
+            if (o == null) {
+                o = createNewOrt(object.getEntnahmeOrt(), "P_", probe);
+            }
+            if (o == null) {
+                return;
+            }
+            o.setOrtTyp(3);
+            repository.update(o, "stamm");
+            Ortszuordnung ort = new Ortszuordnung();
+            ort.setOrtId(o.getId());
+            ort.setOrtszuordnungTyp("R");
+            ort.setProbeId(probe.getId());
+            if (uort.size() > 0 &&
+                uort.get(0).containsKey("U_ORTS_ZUSATZCODE")
+            ) {
+                Map<String, String> uo = uort.get(0);
+                o.setOrtId(uo.get("U_ORTS_ZUSATZCODE"));
+                if (uo.containsKey("U_ORTS_ZUSATZTEXT")) {
+                    ort.setOrtszusatztext(uo.get("U_ORTS_ZUSATZTEXT"));
+                }
+            }
+            repository.create(ort, "land");
+        }
+        return;
     }
 
     private Ortszuordnung createUrsprungsOrt(
@@ -1351,8 +1452,16 @@ public class LafObjectMapper {
         if ("DATENBASIS".equals(key) && probe.getDatenbasisId() == null) {
             ImporterConfig cfg = getImporterConfigByAttributeUpper("DATENBASIS");
             String attr = value.toString();
-            if (cfg != null && attr.equals(cfg.getFromValue())) {
+            if (cfg != null &&
+                cfg.getAction().equals("convert") &&
+                cfg.getFromValue().equals(attribute)
+            ) {
                 attr = cfg.getToValue();
+            }
+            if (cfg != null && cfg.getAction().equals("transform")) {
+                char from = (char) Integer.parseInt(cfg.getFromValue(), 16);
+                char to = (char) Integer.parseInt(cfg.getToValue(), 16);
+                attr = attr.replaceAll("[" + String.valueOf(from) + "]", String.valueOf(to));
             }
             QueryBuilder<Datenbasis> builder =
                 new QueryBuilder<Datenbasis>(
@@ -1530,6 +1639,17 @@ public class LafObjectMapper {
             }
         }
 
+        if ("REI_PROGRAMMPUNKTGRUPPE".equals(key)) {
+            QueryBuilder<ReiProgpunktGruppe> builder =
+                new QueryBuilder<ReiProgpunktGruppe>(
+                    repository.entityManager("stamm"),
+                    ReiProgpunktGruppe.class);
+            builder.and("reiProgPunktGruppe", value.toString());
+            List<ReiProgpunktGruppe> list =
+                repository.filterPlain(builder.getQuery(), "stamm");
+            probe.setReiProgpunktGrpId(list.get(0).getId());
+        }
+
         if ("MEDIUM".equals(key)) {
             probe.setMedia(value.toString());
         }
@@ -1537,8 +1657,16 @@ public class LafObjectMapper {
         if ("PROBENART".equals(key)) {
             ImporterConfig cfg = getImporterConfigByAttributeUpper("PROBENART");
             String attr = value.toString();
-            if (cfg != null && attr.equals(cfg.getFromValue())) {
+            if (cfg != null &&
+                cfg.getAction().equals("convert") &&
+                cfg.getFromValue().equals(attribute)
+            ) {
                 attr = cfg.getToValue();
+            }
+            if (cfg != null && cfg.getAction().equals("transform")) {
+                char from = (char) Integer.parseInt(cfg.getFromValue(), 16);
+                char to = (char) Integer.parseInt(cfg.getToValue(), 16);
+                attr = attr.replaceAll("[" + String.valueOf(from) + "]", String.valueOf(to));
             }
             QueryBuilder<Probenart> builder =
                 new QueryBuilder<Probenart>(
