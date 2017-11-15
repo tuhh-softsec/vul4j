@@ -363,8 +363,6 @@ public class ProbeFactory {
             messung.setFertig(false);
             messung.setGeplant(true);
             messung.setMmtId(mmt.getMmtId());
-            messung.setNebenprobenNr(
-                messprogramm.getMstId() + mmt.getMmtId());
             messung.setProbeId(probe.getId());
             repository.create(messung, "land");
 
