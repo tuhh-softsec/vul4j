@@ -216,6 +216,8 @@ CREATE TABLE auth (
     labor_mst_id character varying(5) REFERENCES mess_stelle,
     funktion_id smallint REFERENCES auth_funktion
 );
+ALTER TABLE auth
+    ADD CONSTRAINT auth_unique UNIQUE (ldap_group, netzbetreiber_id, mst_id, labor_mst_id, funktion_id);
 
 
 CREATE TABLE auth_lst_umw (
