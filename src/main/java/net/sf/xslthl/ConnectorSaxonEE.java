@@ -26,13 +26,14 @@
 package net.sf.xslthl;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.saxon.event.Builder;
 import net.sf.saxon.expr.XPathContext;
-import net.sf.saxon.expr.parser.Location;
 import net.sf.saxon.om.Item;
 import net.sf.saxon.om.NodeInfo;
 import net.sf.saxon.om.SequenceIterator;
@@ -68,34 +69,6 @@ public class ConnectorSaxonEE {
 		}
 	}
 
-	/**
-	 * A fake location
-	 */
-	private static Location fakeLocation = new Location() {
-		@Override
-		public Location saveLocation() {
-			return this;
-		}
-		
-		@Override
-		public String getSystemId() {
-			return null;
-		}
-		
-		@Override
-		public String getPublicId() {
-			return null;
-		}
-		@Override
-		public int getLineNumber() {
-			return 0;
-		}
-		@Override
-		public int getColumnNumber() {
-			return 0;
-		}
-	};
-	
 	private static void startElement(Builder builder, Object fpQname) throws Exception{
 		try{
 			// builder.startElement(fpQname, AnyType.getInstance(), 0, 0);
@@ -115,7 +88,7 @@ public class ConnectorSaxonEE {
 							net.sf.saxon.type.SchemaType.class, Class.forName("net.sf.saxon.expr.parser.Location"),
 							int.class });
 			startElement.invoke(builder,
-					new Object[] { fpQname, AnyType.getInstance(), fakeLocation, 0 });
+					new Object[] { fpQname, AnyType.getInstance(), createFakeLocation(), 0 });
 		}
 	}
 	
@@ -127,8 +100,28 @@ public class ConnectorSaxonEE {
 		} catch(Exception ex){
 			//Maybe Saxon 9.7.11 or newer
 			characters = builder.getClass().getMethod("characters", new Class[]{CharSequence.class, Class.forName("net.sf.saxon.expr.parser.Location"), int.class});
-			characters.invoke(builder, new Object[]{text, fakeLocation, 0});
+			characters.invoke(builder, new Object[]{text, createFakeLocation(), 0});
 		}
+	}
+	
+	private static Object createFakeLocation() throws IllegalArgumentException, ClassNotFoundException{
+		return Proxy.newProxyInstance(ConnectorSaxonEE.class.getClassLoader(), 
+				new Class[]{Class.forName("net.sf.saxon.expr.parser.Location")}, new InvocationHandler() {
+			@Override
+			public Object invoke(Object proxy, Method method, Object[] args)
+					throws Throwable {
+				if("saveLocation".equals(method.getName())){
+					return proxy;
+				} else if("getSystemId".equals(method.getName())
+						|| "getPublicId".equals(method.getName())){
+					return null;
+				} else if ("getLineNumber".equals(method.getName())
+						|| "getColumnNumber".equals(method.getName())){
+					return Integer.valueOf(0);
+				}
+				return null;
+			}
+		});
 	}
 	
 	/**
