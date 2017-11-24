@@ -428,5 +428,5 @@
             <url>http://www.hibernatespatial.org/repository</url>
         </repository>
     </repositories>
-    <version>2.7-SNAPSHOT</version>
+    <version>2.7.2</version>
 </project>
