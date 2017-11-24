@@ -72,11 +72,11 @@ psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/audit.sql
 
 echo set grants
 psql $DB_CONNECT_STRING -d $DB_NAME --command \
-     "GRANT USAGE ON SCHEMA stammdaten, land TO $ROLE_NAME;
+     "GRANT USAGE ON SCHEMA stamm, land TO $ROLE_NAME;
       GRANT USAGE
-            ON ALL SEQUENCES IN SCHEMA stammdaten, land TO $ROLE_NAME;
+            ON ALL SEQUENCES IN SCHEMA stamm, land TO $ROLE_NAME;
       GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES
-            ON ALL TABLES IN SCHEMA stammdaten, land TO $ROLE_NAME;"
+            ON ALL TABLES IN SCHEMA stamm, land TO $ROLE_NAME;"
 
 if [ "$NO_DATA" != "true" ]; then
     echo import stammdaten.verwaltungseinheit
@@ -140,7 +140,7 @@ if [ "$NO_DATA" != "true" ]; then
     fi
     unzip -u vg250_${TS}.utm32s.shape.ebenen.zip "*VG250_GEM*"
 
-    shp2pgsql -s 25832:4326 vg250_${TS}.utm32s.shape.ebenen/vg250_ebenen/VG250_GEM geo.gem_utm | psql -q $DB_CONNECT_STRING -d $DB_NAME
+    shp2pgsql -s 25832:4326 vg250_${TS}.utm32s.shape.ebenen/vg250_ebenen/VG250_GEM geo.vg250_gem | psql -q $DB_CONNECT_STRING -d $DB_NAME
 
     echo fille stammdaten.verwaltungsgrenze
     psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_fill_verwaltungsgrenze.sql
@@ -148,5 +148,10 @@ if [ "$NO_DATA" != "true" ]; then
     if [ -f $DIR/lada_auth.sql ]; then
         echo load private auth configuration
         psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/lada_auth.sql
+    fi
+
+    if [ -f $DIR/stammdaten_data_importer_config.sql ]; then
+        echo load private import configuration
+        psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_data_importer_config.sql
     fi
 fi
