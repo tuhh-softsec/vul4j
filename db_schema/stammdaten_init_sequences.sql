@@ -1,6 +1,6 @@
-SET search_path TO stammdaten;
+SET search_path TO stamm;
 
-SELECT pg_catalog.setval('auth_id_seq', (SELECT max(id) FROM stammdaten.auth), true);
+SELECT pg_catalog.setval('auth_id_seq', (SELECT max(id) FROM auth), true);
 
 SELECT pg_catalog.setval('auth_lst_umw_id_seq', (SELECT max(id) FROM auth_lst_umw) , true);
 
