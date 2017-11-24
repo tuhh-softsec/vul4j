@@ -10,9 +10,9 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 
 
-CREATE SCHEMA stammdaten;
+CREATE SCHEMA stamm;
 
-SET search_path = stammdaten, pg_catalog;
+SET search_path = stamm, pg_catalog;
 
 CREATE FUNCTION set_ort_id() RETURNS trigger
     LANGUAGE plpgsql
@@ -67,36 +67,36 @@ begin
       result := null;
     else
       if d01 = '00' then
-        select s00.beschreibung into result FROM stammdaten.deskriptoren s00
+        select s00.beschreibung into result FROM stamm.deskriptoren s00
         where s00.ebene = 0 and s00.sn = d00::smallint;
       else
         if d02 = '00' or d00 <> '01' then
-          select s01.beschreibung into result FROM stammdaten.deskriptoren s01
+          select s01.beschreibung into result FROM stamm.deskriptoren s01
           where s01.ebene = 1 and s01.sn = d01::smallint
             and s01.vorgaenger =
-              (select s00.id FROM stammdaten.deskriptoren s00
+              (select s00.id FROM stamm.deskriptoren s00
                where s00.ebene = 0 and s00.sn = d00::smallint);
         else
           if d03 = '00' then
-            select s02.beschreibung into result FROM stammdaten.deskriptoren s02
+            select s02.beschreibung into result FROM stamm.deskriptoren s02
             where s02.ebene = 2 and s02.sn = d02::smallint
               and s02.vorgaenger =
-                (select s01.id FROM stammdaten.deskriptoren s01
+                (select s01.id FROM stamm.deskriptoren s01
                  where s01.ebene = 1 and s01.sn = d01::smallint
                    and s01.vorgaenger =
-                     (select s00.id FROM stammdaten.deskriptoren s00
+                     (select s00.id FROM stamm.deskriptoren s00
                       where s00.ebene = 0 and s00.sn = d00::smallint));
           else
-            select s03.beschreibung into result FROM stammdaten.deskriptoren s03
+            select s03.beschreibung into result FROM stamm.deskriptoren s03
             where s03.ebene = 3 and s03.sn = d03::smallint
               and s03.vorgaenger =
-              (select s02.id FROM stammdaten.deskriptoren s02
+              (select s02.id FROM stamm.deskriptoren s02
               where s02.ebene = 2 and s02.sn = d02::smallint
                 and s02.vorgaenger =
-                  (select s01.id FROM stammdaten.deskriptoren s01
+                  (select s01.id FROM stamm.deskriptoren s01
                   where s01.ebene = 1 and s01.sn = d01::smallint
                     and s01.vorgaenger =
-                      (select s00.id FROM stammdaten.deskriptoren s00
+                      (select s00.id FROM stamm.deskriptoren s00
                       where s00.ebene = 0 and s00.sn = d00::smallint)));
           end if;
         end if;
@@ -456,7 +456,7 @@ CREATE TABLE ort (
     UNIQUE(ort_id, netzbetreiber_id)
 );
 
-CREATE INDEX ort_netz_id_idx ON stammdaten.ort USING btree (netzbetreiber_id);
+CREATE INDEX ort_netz_id_idx ON stamm.ort USING btree (netzbetreiber_id);
 
 CREATE TRIGGER letzte_aenderung_ort BEFORE UPDATE ON ort FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 CREATE TRIGGER set_ort_id_ort BEFORE INSERT ON ort FOR EACH ROW EXECUTE PROCEDURE set_ort_id();
@@ -652,10 +652,10 @@ CREATE VIEW status_erreichbar AS (
            zu.stufe_id,
            von.wert_id AS cur_wert,
            von.stufe_id AS cur_stufe
-    FROM stammdaten.status_reihenfolge r
-        JOIN stammdaten.status_kombi von
+    FROM stamm.status_reihenfolge r
+        JOIN stamm.status_kombi von
             ON von.id = r.von_id
-        JOIN stammdaten.status_kombi zu
+        JOIN stamm.status_kombi zu
             ON zu.id = r.zu_id
 );
 -- Status workflow
