@@ -11,6 +11,10 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonString;
+import javax.json.JsonValue;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
@@ -155,6 +159,26 @@ public class ReadOnlyRepository implements Repository {
     @Override
     public <T> List<T> filterPlain(CriteriaQuery<T> filter, String dataSource) {
         return transaction.entityManager(dataSource).createQuery(filter).getResultList();
+    }
+
+    @Override
+    public <T> List<T> filterPlain(QueryBuilder<T> query, JsonArray filter, String dataSource) {
+        for (JsonValue object : filter) {
+            JsonObject f = (JsonObject) object;
+            JsonString operator = f.getJsonString("operator");
+            JsonString value = f.getJsonString("value");
+            JsonString property = f.getJsonString("property");
+            if (property == null || value == null) {
+                continue;
+            }
+            if ("like".equals(operator.getString())) {
+                query.andLike(property.getString(), "%"+value.getString()+"%");
+            }
+            else if ("in".equals(operator.getString())) {
+//                query.andIn(property.getString(), value.getString());
+            }
+        }
+        return transaction.entityManager(dataSource).createQuery(query.getQuery()).getResultList();
     }
 
     @Override

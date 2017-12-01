@@ -171,11 +171,22 @@ public class MessungService {
                 }
                 result = result.subList(start, end);
             }
+            List<Map<String, Object>> filtered;
+            if (params.containsKey("filter")) {
+                filtered = queryTools.filterResult(params.getFirst("filter"), result);
+            }
+            else {
+                filtered = result;
+            }
+
+            if (filtered.isEmpty()) {
+                return new Response(true, 200, filtered, 0);
+            }
 
             QueryBuilder<Messung> pBuilder = new QueryBuilder<Messung>(
                 repository.entityManager("land"), Messung.class);
             List<Integer> list = new ArrayList<Integer>();
-            for (Map<String, Object> entry: result) {
+            for (Map<String, Object> entry: filtered) {
                 list.add((Integer)entry.get("id"));
             }
             pBuilder.orIn("id", list);
@@ -183,11 +194,11 @@ public class MessungService {
             r = authorization.filter(request, r, Messung.class);
             @SuppressWarnings("unchecked")
             List<Messung> messungen= (List<Messung>)r.getData();
-            for (Map<String, Object> entry: result) {
+            for (Map<String, Object> entry: filtered) {
                 Integer pId = Integer.valueOf(entry.get("id").toString());
                 setAuthData(messungen, entry, pId);
             }
-            return new Response(true, 200, result, size);
+            return new Response(true, 200, filtered, size);
         }
         return new Response(false, 603, "No valid paramter given.");
     }

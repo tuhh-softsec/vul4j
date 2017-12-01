@@ -7,6 +7,7 @@
  */
 package de.intevation.lada.rest;
 
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,12 @@ import java.util.Map;
 import javax.ejb.EJBTransactionRolledbackException;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.JsonString;
+import javax.json.JsonValue;
 import javax.persistence.TransactionRequiredException;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
@@ -195,21 +201,32 @@ public class ProbeService {
             result = result.subList(start, end);
         }
 
-        QueryBuilder<Probe> pBuilder = new QueryBuilder<Probe>(
+        List<Map<String, Object>> filtered;
+        if (params.containsKey("filter")) {
+            filtered = queryTools.filterResult(params.getFirst("filter"), result);
+        }
+        else {
+            filtered = result;
+        }
+
+        if (filtered.isEmpty()) {
+            return new Response(true, 200, filtered, 0);
+        }
+        QueryBuilder<Probe> pBuilder = new QueryBuilder<>(
             repository.entityManager("land"), Probe.class);
-        List<Integer> list = new ArrayList<Integer>();
-        for (Map<String, Object> entry: result) {
+        List<Integer> list = new ArrayList<>();
+        for (Map<String, Object> entry: filtered) {
             list.add((Integer)entry.get("id"));
         }
         pBuilder.orIn("id", list);
         Response r = repository.filter(pBuilder.getQuery(), "land");
         r = authorization.filter(request, r, Probe.class);
         List<Probe> proben = (List<Probe>)r.getData();
-        for (Map<String, Object> entry: result) {
+        for (Map<String, Object> entry: filtered) {
             Integer pId = Integer.valueOf(entry.get("id").toString());
             setAuthData(proben, entry, pId);
         }
-        return new Response(true, 200, result, size);
+        return new Response(true, 200, filtered, size);
     }
 
     private void setAuthData(

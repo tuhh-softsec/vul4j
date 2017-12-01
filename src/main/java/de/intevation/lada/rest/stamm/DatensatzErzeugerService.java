@@ -7,10 +7,14 @@
  */
 package de.intevation.lada.rest.stamm;
 
+import java.io.StringReader;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonReader;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -131,8 +135,16 @@ public class DatensatzErzeugerService {
                     builder.or(filter.getDataIndex(), param);
                 }
             }
-
-            erzeuger = repository.filterPlain(builder.getQuery(), "stamm");
+            if (params.containsKey("filter")) {
+                JsonReader jsonReader = Json.createReader(
+                    new StringReader(params.getFirst("filter")));
+                JsonArray f = jsonReader.readArray();
+                jsonReader.close();
+                erzeuger = repository.filterPlain(builder, f, "stamm");
+            }
+            else {
+                erzeuger = repository.filterPlain(builder.getQuery(), "stamm");
+            }
         }
         else {
             erzeuger = repository.getAllPlain(DatensatzErzeuger.class, "stamm");

@@ -7,10 +7,14 @@
  */
 package de.intevation.lada.rest.stamm;
 
+import java.io.StringReader;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonReader;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -132,7 +136,16 @@ public class MessprogrammKategorieService {
                 }
             }
 
-            kategorie = repository.filterPlain(mBuilder.getQuery(), "stamm");
+            if (params.containsKey("filter")) {
+                JsonReader jsonReader = Json.createReader(
+                    new StringReader(params.getFirst("filter")));
+                JsonArray f = jsonReader.readArray();
+                jsonReader.close();
+                kategorie = repository.filterPlain(mBuilder, f, "stamm");
+            }
+            else {
+                kategorie = repository.filterPlain(mBuilder.getQuery(), "stamm");
+            }
         }
         else {
             kategorie = repository.getAllPlain(MessprogrammKategorie.class, "stamm");

@@ -9,6 +9,7 @@ package de.intevation.lada.util.data;
 
 import java.util.List;
 
+import javax.json.JsonArray;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
@@ -32,6 +33,8 @@ public interface Repository {
     public <T> Response filter(CriteriaQuery<T> filter, String dataSource);
 
     public <T> List<T> filterPlain(CriteriaQuery<T> filter, String dataSource);
+
+    public <T> List<T> filterPlain(QueryBuilder<T> query, JsonArray filter, String dataSource);
 
     public <T> Response filter(
         CriteriaQuery<T> filter,

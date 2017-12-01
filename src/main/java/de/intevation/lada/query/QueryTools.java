@@ -21,6 +21,8 @@ import javax.json.JsonArray;
 import javax.json.JsonException;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.json.JsonString;
+import javax.json.JsonValue;
 import javax.persistence.EntityManager;
 import javax.ws.rs.core.MultivaluedMap;
 
@@ -216,11 +218,39 @@ public class QueryTools
             params,
             repository.entityManager("land"));
         if (q == null) {
-            return new ArrayList<Map<String, Object>>();
+            return new ArrayList<>();
         }
         return prepareResult(q.getResultList(), results);
     }
 
+    public List<Map<String, Object>> filterResult(
+        String filter,
+        List<Map<String, Object>> items
+    ) {
+        JsonReader jsonReader = Json.createReader(new StringReader(filter));
+        JsonArray filters = jsonReader.readArray();
+        jsonReader.close();
+        List<Map<String, Object>> filtered = new ArrayList<>();
+        for (Map<String, Object> entry : items) {
+            for (JsonValue f : filters) {
+                JsonObject o = (JsonObject)f;
+                JsonString property = o.getJsonString("property");
+                JsonString value = o.getJsonString("value");
+                if (property != null &&
+                    value != null
+                ) {
+                    String p = property.toString().replaceAll("\"", "");
+                    String v = value.toString().replaceAll("\"", "");
+                    if (entry.containsKey(p) &&
+                        entry.get(p).toString().contains(v)
+                    ) {
+                        filtered.add(entry);
+                    }
+                }
+            }
+        }
+        return filtered;
+    }
     public javax.persistence.Query prepareQuery(
         String sql,
         List<Filter> filters,

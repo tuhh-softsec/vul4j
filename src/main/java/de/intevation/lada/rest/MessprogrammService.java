@@ -170,17 +170,29 @@ public class MessprogrammService {
             }
             result = result.subList(start, end);
         }
+
+        List<Map<String, Object>> filtered;
+        if (params.containsKey("filter")) {
+            filtered = queryTools.filterResult(params.getFirst("filter"), result);
+        }
+        else {
+            filtered = result;
+        }
+
+        if (filtered.isEmpty()) {
+            return new Response(true, 200, filtered, 0);
+        }
         QueryBuilder<Messprogramm> mBuilder = new QueryBuilder<Messprogramm>(
             repository.entityManager("land"), Messprogramm.class);
         List<Integer> list = new ArrayList<Integer>();
-        for (Map<String, Object> entry: result) {
+        for (Map<String, Object> entry: filtered) {
             list.add((Integer)entry.get("id"));
         }
         mBuilder.orIn("id", list);
         Response r = repository.filter(mBuilder.getQuery(), "land");
         r = authorization.filter(request, r, Messprogramm.class);
         List<Messprogramm> messprogramme = (List<Messprogramm>)r.getData();
-        for (Map<String, Object> entry: result) {
+        for (Map<String, Object> entry: filtered) {
             Integer mId = Integer.valueOf(entry.get("id").toString());
             setAuthData(messprogramme, entry, mId);
         }
