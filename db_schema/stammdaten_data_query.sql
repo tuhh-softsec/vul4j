@@ -24,7 +24,7 @@ SET search_path = stamm, pg_catalog;
 --
 
 COPY query (id, name, type, sql, description) FROM stdin;
-10	Orte	3		Abfrage der Orte
+10	Orte	3	SELECT ort.id, ort.netzbetreiber_id AS netzbetreiberId, ort.ort_id AS ortId, ort_typ.ort_typ AS ortTyp, ort.kurztext, ort.langtext, verwaltungseinheit.bezeichnung AS verwaltungseinheit, staat.staat_iso AS staat, nuts_code AS nutsCode, oz_id AS ozId, anlage_id AS anlageId, mp_art AS mpArt, zone, sektor, zustaendigkeit, berichtstext, unscharf, koordinaten_art.koordinatenart AS koordinatenArt, ort.koord_x_extern AS koordXExtern, ort.koord_y_extern AS koordYExtern, public.ST_X(ort.geom) AS longitude, public.ST_Y(ort.geom) AS latitude, hoehe_land AS hoeheLand, letzte_aenderung AS letzteAenderung, aktiv, hoehe_ueber_nn AS hoeheUeberNn FROM stamm.ort JOIN stamm.verwaltungseinheit ON ort.gem_id = verwaltungseinheit.id JOIN stamm.staat ON stamm.staat.id = ort.staat_id JOIN stamm.koordinaten_art ON stamm.koordinaten_art.id = ort.kda_id JOIN stamm.ort_typ ON ort.ort_typ = ort_typ.id WHERE (netzbetreiber_id = :netzbetreiberId OR '' = :netzbetreiberId)	Abfrage der Orte
 11	Probenehmer	4		Abfrage der Probenehmer
 12	Datensatzerzeuger	5		Abfrage der Datensatzerzeuger
 14	Messprogrammkategorie	6		Abfrage der Messprogrammkategorien
@@ -251,6 +251,31 @@ COPY result (id, query_id, data_index, header, width, flex, index) FROM stdin;
 261	18	pd214	Pb-214	100	f	33
 262	18	bi212	Bi-212	100	f	34
 263	18	bi214	Bi-214	100	f	35
+267	10	netzbetreiberId	Netzbetreiber	100	f	0
+268	10	ortId	Ort-ID	50	f	1
+269	10	kurztext	kurztext	100	f	3
+270	10	langtext	Langtext	150	f	4
+271	10	staat	Staat	50	f	6
+272	10	verwaltungseinheit	Verwaltungseinheit	100	f	5
+273	10	unscharf	Unscharf	100	f	15
+274	10	nutsCode	NUTS-Code	50	f	7
+275	10	koordinatenArt	Koordinatenart	100	f	16
+276	10	koordXExtern	X-Koordinate	100	f	17
+277	10	koordYExtern	Y-Koordinate	100	f	18
+278	10	hoeheLand	Höhe	100	f	21
+279	10	letzteAenderung	letzte Änderung	100	f	22
+280	10	ortTyp	Ortstyp	50	f	2
+281	10	berichtstext	Berichtstext	100	f	14
+282	10	zone	Zone	100	f	11
+283	10	sektor	Sektor	100	f	12
+284	10	zustaendigkeit	Zuständigkeit	100	f	13
+285	10	mpArt	mpArt	100	f	10
+286	10	aktiv	Aktiv	50	f	23
+287	10	anlageId	Anlage	100	f	9
+288	10	ozId	OZ-ID	50	f	8
+289	10	hoeheUeberNn	Höhe über NN	100	f	24
+290	10	longitude	Geographische Länge	100	f	19
+291	10	latitude	Geographische Breite	100	f	20
 \.
 
 
