@@ -31,25 +31,6 @@ DROP OPERATOR IF EXISTS - (jsonb, jsonb);
 CREATE OPERATOR - ( PROCEDURE = jsonb_delete_left, LEFTARG = jsonb, RIGHTARG = jsonb);
 COMMENT ON OPERATOR - (jsonb, jsonb) IS 'delete matching pairs from left operand';
 
-
-CREATE OR REPLACE FUNCTION jsonb_delete_left(a jsonb, b text[])
-  RETURNS jsonb AS
-  $BODY$
-       SELECT COALESCE(
-              (
-              SELECT ('{' || string_agg(to_json(key) || ':' || value, ',') || '}')
-              FROM jsonb_each(a)
-              WHERE key <> ALL(b)
-              )
-       , '{}')::jsonb;
-       $BODY$
-LANGUAGE sql IMMUTABLE STRICT;
-COMMENT ON FUNCTION jsonb_delete_left(jsonb, text[]) IS 'delete keys in second argument from first argument';
-DROP OPERATOR IF EXISTS - (jsonb, text[]);
-CREATE OPERATOR - ( PROCEDURE = jsonb_delete_left, LEFTARG = jsonb, RIGHTARG = text[]);
-COMMENT ON OPERATOR - (jsonb, text[]) IS 'delete keys from left operand';
-
-
 CREATE OR REPLACE FUNCTION if_modified_func() RETURNS TRIGGER AS $body$
 DECLARE
     audit_row land.audit_trail;

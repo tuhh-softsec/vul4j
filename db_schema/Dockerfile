@@ -34,7 +34,7 @@ RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main" \
 RUN curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-            postgresql-9.5-postgis-2.3 postgresql-9.5-postgis-scripts postgis
+            postgresql-10-postgis-2.4 postgresql-10-postgis-scripts postgis
 
 #
 # Add context as working directory
@@ -45,8 +45,8 @@ WORKDIR /opt/lada_sql/
 #
 # Set environment variables
 #
-ENV PGCONF /etc/postgresql/9.5/main/postgresql.conf
-ENV PGDATA /var/lib/postgresql/9.5/main
+ENV PGCONF /etc/postgresql/10/main/postgresql.conf
+ENV PGDATA /var/lib/postgresql/10/main
 
 #
 # Use user postgres to run the next commands
@@ -56,14 +56,14 @@ USER postgres
 # XXX: Seems to fail on initdb issued by package installation
 # (due to /usr/sbin/policy-rc.d ?).
 # See also https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=739276
-RUN mkdir /var/run/postgresql/9.5-main.pg_stat_tmp
+RUN mkdir /var/run/postgresql/10-main.pg_stat_tmp
 
 #
 # Adjust PostgreSQL configuration so that remote connections to the
 # database are possible.
 #
 RUN echo "host all  all    0.0.0.0/0  md5" >> \
-    /etc/postgresql/9.5/main/pg_hba.conf
+    /etc/postgresql/10/main/pg_hba.conf
 RUN echo "listen_addresses='*'" >> $PGCONF
 
 #
@@ -73,7 +73,7 @@ RUN echo "listen_addresses='*'" >> $PGCONF
 #
 RUN echo "logging_collector = on" >> $PGCONF
 RUN echo "log_directory = '/var/log/postgresql'" >> $PGCONF
-RUN echo "log_filename = 'postgresql-9.5-main.log'" >> $PGCONF
+RUN echo "log_filename = 'postgresql-10-main.log'" >> $PGCONF
 
 #
 # Expose the PostgreSQL port
@@ -87,12 +87,12 @@ EXPOSE 5432
 # 'FATAL: the database system is starting up'.
 # It's because of the -w
 #
-RUN /usr/lib/postgresql/9.5/bin/pg_ctl start -wo "--config_file=$PGCONF" && \
+RUN /usr/lib/postgresql/10/bin/pg_ctl start -wo "--config_file=$PGCONF" && \
     /opt/lada_sql/setup-db.sh && \
-    /usr/lib/postgresql/9.5/bin/pg_ctl stop
+    /usr/lib/postgresql/10/bin/pg_ctl stop
 
 #
 # Set the default command to run when starting the container
 #
-CMD ["/usr/lib/postgresql/9.5/bin/postgres", \
-     "--config_file=/etc/postgresql/9.5/main/postgresql.conf"]
+CMD ["/usr/lib/postgresql/10/bin/postgres", \
+     "--config_file=/etc/postgresql/10/main/postgresql.conf"]
