@@ -79,11 +79,9 @@ psql $DB_CONNECT_STRING -d $DB_NAME --command \
             ON ALL TABLES IN SCHEMA stamm, land TO $ROLE_NAME;"
 
 if [ "$NO_DATA" != "true" ]; then
-    echo import stammdaten.verwaltungseinheit
-    psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_data_verwaltungseinheit.sql
-
-    echo import stammdaten
+    echo "load data:"
     for file in \
+        stammdaten_data_verwaltungseinheit.sql \
         stammdaten_data_netzbetreiber.sql \
         stammdaten_data_mess_stelle.sql \
         stammdaten_data_auth.sql \
@@ -112,20 +110,18 @@ if [ "$NO_DATA" != "true" ]; then
         stammdaten_data_probenehmer.sql \
         stammdaten_data_zeitbasis.sql \
         stammdaten_data_query.sql \
-        stammdaten_data_user_context.sql
+        stammdaten_data_user_context.sql \
+        stammdaten_data_importer_config.sql \
+        lada_data.sql \
+        lada_messprogramm.sql
     do
-        echo ${file%.sql}
+        [ -f private_${file} ] && file=private_${file}
+        echo "  ${file%.sql}"
         psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/$file
     done
 
     echo init sequences
     psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_init_sequences.sql
-
-    echo import lada test data
-    psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/lada_data.sql
-
-    echo import lada messprogramm
-    psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/lada_messprogramm.sql
 
     echo create schema geo
     psql $DB_CONNECT_STRING -d $DB_NAME --command "CREATE SCHEMA geo AUTHORIZATION $ROLE_NAME"
@@ -143,14 +139,4 @@ if [ "$NO_DATA" != "true" ]; then
 
     echo fille stammdaten.verwaltungsgrenze
     psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_fill_verwaltungsgrenze.sql
-
-    if [ -f $DIR/lada_auth.sql ]; then
-        echo load private auth configuration
-        psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/lada_auth.sql
-    fi
-
-    if [ -f $DIR/stammdaten_data_importer_config.sql ]; then
-        echo load private import configuration
-        psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_data_importer_config.sql
-    fi
 fi
