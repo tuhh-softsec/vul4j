@@ -13,3 +13,4 @@ TAGS
 
 target/
 .settings
+db_schema/private*
