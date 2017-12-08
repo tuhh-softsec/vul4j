@@ -232,6 +232,8 @@ public class QueryTools
         jsonReader.close();
         List<Map<String, Object>> filtered = new ArrayList<>();
         for (Map<String, Object> entry : items) {
+            int ndx = 0;
+            boolean filtermatch = false;
             for (JsonValue f : filters) {
                 JsonObject o = (JsonObject)f;
                 JsonString property = o.getJsonString("property");
@@ -242,15 +244,24 @@ public class QueryTools
                     String p = property.toString().replaceAll("\"", "");
                     String v = value.toString().replaceAll("\"", "");
                     if (entry.containsKey(p) &&
-                        entry.get(p).toString().contains(v)
+                        entry.get(p).toString().contains(v) &&
+                        (ndx == 0 || (ndx > 0 && filtermatch == true))
                     ) {
-                        filtered.add(entry);
+                        filtermatch = true;
+                    }
+                    else {
+                        filtermatch = false;
                     }
                 }
+                ndx++;
+            }
+            if (filtermatch) {
+                filtered.add(entry);
             }
         }
         return filtered;
     }
+
     public javax.persistence.Query prepareQuery(
         String sql,
         List<Filter> filters,
