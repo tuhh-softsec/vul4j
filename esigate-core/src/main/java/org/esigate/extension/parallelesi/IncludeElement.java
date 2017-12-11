@@ -25,6 +25,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.RunnableFuture;
 import java.util.regex.Pattern;
 
@@ -249,9 +250,13 @@ class IncludeElement extends BaseElement {
             result = new CharSequenceFuture(content);
         } else {
             // Start processing in a new thread.
+            try {
             RunnableFuture<CharSequence> r = new FutureTask<>(task);
             executor.execute(r);
             result = r;
+            }catch ( RejectedExecutionException e){
+                throw new HttpErrorPage(509, "Limits exceeded", e);
+            }
         }
         ctx.getCurrent().characters(result);
     }
