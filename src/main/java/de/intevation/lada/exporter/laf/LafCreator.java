@@ -31,6 +31,7 @@ import de.intevation.lada.model.stammdaten.Messgroesse;
 import de.intevation.lada.model.stammdaten.Ort;
 import de.intevation.lada.model.stammdaten.ProbenZusatz;
 import de.intevation.lada.model.stammdaten.Probenart;
+import de.intevation.lada.model.stammdaten.ReiProgpunktGruppe;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
@@ -163,9 +164,11 @@ implements Creator
                 probe.getMediaDesk().replaceAll(" ", "").substring(2), CN);
         laf += probe.getTest() == Boolean.TRUE ?
             lafLine("TESTDATEN", "1") : lafLine("TESTDATEN", "0");
-        laf += probe.getReiProgpunktGrpId() == null ?
-            "" : lafLine("REI_PROGRAMMPUNKTGRUPPE",
-                probe.getReiProgpunktGrpId(), CN);
+        if (probe.getReiProgpunktGrpId() != null) {
+            ReiProgpunktGruppe rpg = repository.getByIdPlain(
+                ReiProgpunktGruppe.class, probe.getReiProgpunktGrpId(), "stamm");
+            laf += lafLine("REI_PROGRAMMPUNKTGRUPPE", rpg.getReiProgPunktGruppe(), CN);
+        }
         laf += lafLine("ZEITBASIS_S", "2");
         laf += writeOrt(probe);
         for (ZusatzWert zw : zusatzwerte) {
