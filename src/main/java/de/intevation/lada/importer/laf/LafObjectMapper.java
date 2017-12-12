@@ -1647,7 +1647,12 @@ public class LafObjectMapper {
             builder.and("reiProgPunktGruppe", value.toString());
             List<ReiProgpunktGruppe> list =
                 repository.filterPlain(builder.getQuery(), "stamm");
-            probe.setReiProgpunktGrpId(list.get(0).getId());
+            if (!list.isEmpty()) {
+                probe.setReiProgpunktGrpId(list.get(0).getId());
+            }
+            else {
+                currentWarnings.add(new ReportItem(key, value.toString(), 632));
+            }
         }
 
         if ("MEDIUM".equals(key)) {
