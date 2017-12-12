@@ -329,7 +329,7 @@ public class OrtFactory {
             ReportItem err = new ReportItem();
             err.setCode(611);
             err.setKey("ort");
-            err.setValue("could not complete");
+            err.setValue("");
             errors.add(err);
         }
         return ort;
