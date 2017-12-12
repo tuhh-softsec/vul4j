@@ -7,18 +7,15 @@
  */
 package de.intevation.lada.query;
 
-import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonArray;
-import javax.json.JsonException;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonString;
@@ -55,124 +52,6 @@ public class QueryTools
 
     @Inject
     private Logger logger;
-
-    /**
-     * Read the config file using the system property
-     * "de.intevation.lada.sqlconfig".
-     *
-     * @return The file content.
-     */
-    public static String readConfigFile(String file) {
-        try {
-            InputStream inputStream = QueryConfig.class.getResourceAsStream(file);
-            Scanner scanner = new Scanner(inputStream, "UTF-8");
-            scanner.useDelimiter("\\A");
-            String configString = scanner.next();
-            scanner.close();
-            return configString;
-        }
-        catch (Exception ioe) {
-            ioe.printStackTrace();
-            return null;
-        }
-    }
-
-    /**
-     * Get the configuration objects.
-     * First reads the config file and creates {@link QueryConfig} objects
-     * from JSON.
-     *
-     * @return List of {@link QueryConfig} objects.
-     */
-    private static List<QueryConfig> getConfig(String file) {
-        String content = readConfigFile(file);
-        if (content == null) {
-            return null;
-        }
-        List<QueryConfig> configs = new ArrayList<QueryConfig>();
-        try {
-            JsonReader reader = Json.createReader(new StringReader(content));
-            JsonArray queries = reader.readArray();
-            for (int i = 0; i < queries.size(); i++) {
-                JsonObject query = queries.getJsonObject(i);
-                QueryConfig qConf = new QueryConfig();
-                qConf.setId(query.getString("id"));
-                qConf.setName(query.getString("name"));
-                qConf.setDescription(query.getString("description"));
-                qConf.setSql(query.getString("sql"));
-                qConf.setType(query.getString("type"));
-                JsonArray filters = query.getJsonArray("filters");
-                List<QueryFilter> qFilters = new ArrayList<QueryFilter>();
-                for (int j = 0; j < filters.size(); j++) {
-                    JsonObject filter = filters.getJsonObject(j);
-                    QueryFilter qFilter = new QueryFilter();
-                    qFilter.setDataIndex(filter.getString("dataIndex"));
-                    qFilter.setType(filter.getString("type"));
-                    qFilter.setLabel(filter.getString("label"));
-                    qFilter.setMultiSelect(filter.getBoolean("multiselect", false));
-                    qFilters.add(qFilter);
-                }
-                qConf.setFilters(qFilters);
-                JsonArray results = query.getJsonArray("result");
-                List<ResultConfig> sResults = new ArrayList<ResultConfig>();
-                for (int k = 0; k < results.size(); k++) {
-                    JsonObject result = results.getJsonObject(k);
-                    ResultConfig config = new ResultConfig();
-                    config.setDataIndex(result.getString("dataIndex"));
-                    config.setHeader(result.getString("header"));
-                    config.setWidth(result.getInt("width", 100));
-                    config.setFlex(result.getInt("flex", 0));
-                    sResults.add(config);
-                }
-                qConf.setResults(sResults);
-                configs.add(qConf);
-            }
-        }
-        catch (JsonException e) {
-            return null;
-        }
-        return configs;
-    }
-
-    public static List<QueryConfig> getProbeConfig() {
-        return getConfig(PROBE_CONFIG);
-    }
-
-    public static List<QueryConfig> getMessprogrammConfig() {
-        return getConfig(MESSPROGRAMM_CONFIG);
-    }
-
-    public static List<QueryConfig> getStammdatenConfig() {
-        return getConfig(STAMMDATEN_CONFIG);
-    }
-
-    /**
-     * Get a query by id.
-     * First reads the config file and returns the {@link QueryConfig}
-     * identified by the given id.
-     *
-     * @param id {@link QueryConfig} id.
-     * @return The query config as JSON object or null if no object was found.
-     */
-    public static JsonObject getQueryById(String id) {
-        try {
-            String content = readConfigFile(PROBE_CONFIG);
-            if (content != null) {
-                JsonReader reader = Json.createReader(new StringReader(content));
-                JsonArray queries = reader.readArray();
-                for (int i = 0; i < queries.size(); i++) {
-                    JsonObject query = queries.getJsonObject(i);
-                    if (query.getString("id").equals(id)) {
-                        return query;
-                    }
-                }
-            }
-            return null;
-        }
-        catch (JsonException e) {
-            return null;
-        }
-    }
 
     @SuppressWarnings("unchecked")
     public List<Map<String, Object>> getResultForQuery(
@@ -299,25 +178,5 @@ public class QueryTools
             ret.add(set);
         }
         return ret;
-    }
-
-    public static JsonObject getMpQueryById(String id) {
-        try {
-            String content = readConfigFile(MESSPROGRAMM_CONFIG);
-            if (content != null) {
-                JsonReader reader = Json.createReader(new StringReader(content));
-                JsonArray queries = reader.readArray();
-                for (int i = 0; i < queries.size(); i++) {
-                    JsonObject query = queries.getJsonObject(i);
-                    if (query.getString("id").equals(id)) {
-                        return query;
-                    }
-                }
-            }
-            return null;
-        }
-        catch (JsonException e) {
-            return null;
-        }
     }
 }
