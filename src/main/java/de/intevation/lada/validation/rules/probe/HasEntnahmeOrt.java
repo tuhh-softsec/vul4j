@@ -44,6 +44,11 @@ public class HasEntnahmeOrt implements Rule {
             violation.addWarning("entnahmeOrt", 631);
             return violation;
         }
+        if (probe.getReiProgpunktGrpId() != null ||
+            Integer.valueOf(3).equals(probe.getDatenbasisId()) ||
+            Integer.valueOf(4).equals(probe.getDatenbasisId())) {
+                return null;
+        }
         QueryBuilder<Ortszuordnung> builder =
             new QueryBuilder<Ortszuordnung>(
                 repo.entityManager("land"), Ortszuordnung.class);

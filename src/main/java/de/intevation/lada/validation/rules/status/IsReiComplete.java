@@ -41,8 +41,8 @@ public class IsReiComplete implements Rule {
 
         Messung messung = repository.getByIdPlain(Messung.class, status.getMessungsId(), "land");
         Probe probe = repository.getByIdPlain(Probe.class, messung.getProbeId(), "land");
-        if (probe.getDatenbasisId() != 3 &&
-            probe.getDatenbasisId() != 4) {
+        if (!Integer.valueOf(3).equals(probe.getDatenbasisId()) &&
+            !Integer.valueOf(4).equals(probe.getDatenbasisId())) {
             return null;
         }
         Violation violation = new Violation();

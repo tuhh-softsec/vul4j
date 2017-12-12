@@ -34,15 +34,16 @@ public class IsReiComplete implements Rule {
     public Violation execute(Object object) {
         Probe probe = (Probe)object;
         Violation violation = new Violation();
-        System.out.println("null? : " + probe == null);
-        if (probe.getDatenbasisId() != null &&
-            probe.getDatenbasisId() != 3 &&
+        if (probe.getDatenbasisId() == null) {
+            return null;
+        }
+        if (probe.getDatenbasisId() != 3 &&
             probe.getDatenbasisId() != 4) {
             if (probe.getReiProgpunktGrpId() != null) {
-                violation.addError("reiProgpunktGruppe", 631);
+                violation.addError("reiProgpunktGruppe", 632);
             }
             if (probe.getKtaGruppeId() != null) {
-                violation.addError("ktaGruppe", 631);
+                violation.addError("ktaGruppe", 632);
             }
             if (violation.hasErrors()) {
                 return violation;

@@ -322,8 +322,8 @@ public class LafObjectMapper {
 
             // Special things for REI-Messpunkt
             if (probe.getReiProgpunktGrpId() != null ||
-                probe.getDatenbasisId() == 3 ||
-                probe.getDatenbasisId() == 4) {
+                Integer.valueOf(3).equals(probe.getDatenbasisId()) ||
+                Integer.valueOf(4).equals(probe.getDatenbasisId())) {
                 createReiMesspunkt(object, newProbe);
             }
             else {
@@ -1009,7 +1009,7 @@ public class LafObjectMapper {
             builder1.and("ortId", uo.get("U_ORTS_ZUSATZCODE"));
             List<Ort> messpunkte =
                 repository.filterPlain(builder1.getQuery(), "stamm");
-            if (messpunkte != null && messpunkte.size() > 0) {
+            if (!messpunkte.isEmpty()) {
                 Ortszuordnung ort = new Ortszuordnung();
                 ort.setOrtszuordnungTyp("R");
                 ort.setProbeId(probe.getId());
@@ -1018,6 +1018,13 @@ public class LafObjectMapper {
                     ort.setOrtszusatztext(uo.get("U_ORTS_ZUSATZTEXT"));
                 }
                 repository.create(ort, "land");
+            }
+            else {
+                ReportItem warn = new ReportItem();
+                warn.setCode(632);
+                warn.setKey("Ort");
+                warn.setValue(uo.get("U_ORTS_ZUSATZCODE"));
+                currentWarnings.add(warn);
             }
         }
         else {
