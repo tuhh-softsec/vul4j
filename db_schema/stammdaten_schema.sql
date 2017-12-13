@@ -519,10 +519,18 @@ CREATE TABLE probenehmer (
 CREATE TRIGGER letzte_aenderung_probenehmer BEFORE UPDATE ON probenehmer FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 
 
+CREATE TABLE result_type (
+    id  serial PRIMARY KEY,
+    name character varying(10),
+    format character varying(30)
+);
+
+
 CREATE TABLE result (
     id serial PRIMARY KEY,
     query_id integer NOT NULL REFERENCES query ON DELETE CASCADE,
     data_index character varying(50) NOT NULL,
+    data_type integer REFERENCES result_type,
     header character varying(50) NOT NULL,
     width integer,
     flex boolean,
