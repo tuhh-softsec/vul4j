@@ -19,6 +19,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import org.apache.log4j.Logger;
+
 import de.intevation.lada.exporter.ExportConfig;
 import de.intevation.lada.exporter.ExportFormat;
 import de.intevation.lada.exporter.Exporter;
@@ -54,6 +56,8 @@ import de.intevation.lada.util.data.Strings;
 
 @ExportConfig(format=ExportFormat.JSON)
 public class JsonExporter implements Exporter {
+
+    @Inject private Logger logger;
 
     @Inject
     @RepositoryConfig(type=RepositoryType.RO)
