@@ -17,6 +17,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
@@ -40,11 +41,11 @@ public class OrtTypExists implements Rule {
         if (ort.getOrtTyp() != null) {
             QueryBuilder<OrtTyp> builder =
                 new QueryBuilder<OrtTyp>(
-                    repository.entityManager("stamm"),
+                    repository.entityManager(Strings.STAMM),
                     OrtTyp.class);
             builder.and("id", ort.getOrtTyp());
             List<OrtTyp> ots = repository.filterPlain(
-                builder.getQuery(), "stamm");
+                builder.getQuery(), Strings.STAMM);
             if (ots == null || ots.isEmpty()) {
                 Violation violation = new Violation();
                 violation.addError("ortTyp", 612);

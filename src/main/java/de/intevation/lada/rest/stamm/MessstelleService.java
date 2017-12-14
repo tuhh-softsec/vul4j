@@ -26,6 +26,7 @@ import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 
 /**
@@ -89,7 +90,7 @@ public class MessstelleService {
         @Context HttpServletRequest request,
         @Context UriInfo info
     ) {
-        return defaultRepo.getAll(MessStelle.class, "stamm");
+        return defaultRepo.getAll(MessStelle.class, Strings.STAMM);
     }
 
     /**
@@ -109,6 +110,6 @@ public class MessstelleService {
         @Context HttpServletRequest request,
         @PathParam("id") String id
     ) {
-        return defaultRepo.getById(MessStelle.class, id, "stamm");
+        return defaultRepo.getById(MessStelle.class, id, Strings.STAMM);
     }
 }

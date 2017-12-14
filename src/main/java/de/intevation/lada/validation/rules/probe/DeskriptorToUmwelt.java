@@ -19,6 +19,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
@@ -73,13 +74,13 @@ public class DeskriptorToUmwelt implements Rule {
                 parent = ndParent;
             }
             QueryBuilder<Deskriptoren> builder = new QueryBuilder<Deskriptoren>(
-                repository.entityManager("stamm"), Deskriptoren.class);
+                repository.entityManager(Strings.STAMM), Deskriptoren.class);
             if (parent != null) {
                 builder.and("vorgaenger", parent);
             }
             builder.and("sn", mediaDesk[i]);
             builder.and("ebene", i - 1);
-            Response response = repository.filter(builder.getQuery(), "stamm");
+            Response response = repository.filter(builder.getQuery(), Strings.STAMM);
             @SuppressWarnings("unchecked")
             List<Deskriptoren> data = (List<Deskriptoren>)response.getData();
             if (data.isEmpty()) {
@@ -100,7 +101,7 @@ public class DeskriptorToUmwelt implements Rule {
     private Violation validateUmwelt(List<Integer> media, String umwId, boolean isZebs, int ndx) {
         QueryBuilder<DeskriptorUmwelt> builder =
             new QueryBuilder<DeskriptorUmwelt>(
-                repository.entityManager("stamm"), DeskriptorUmwelt.class);
+                repository.entityManager(Strings.STAMM), DeskriptorUmwelt.class);
 
         if (media.size() == 0) {
             Violation violation = new Violation();
@@ -116,7 +117,7 @@ public class DeskriptorToUmwelt implements Rule {
             String field = "s" + (i > 9 ? i : "0" + i);
             builder.and(field, media.get(i));
         }
-        Response response = repository.filter(builder.getQuery(), "stamm");
+        Response response = repository.filter(builder.getQuery(), Strings.STAMM);
         @SuppressWarnings("unchecked")
         List<DeskriptorUmwelt> data = (List<DeskriptorUmwelt>)response.getData();
         if (data.isEmpty()) {

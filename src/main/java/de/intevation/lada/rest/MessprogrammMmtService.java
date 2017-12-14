@@ -31,6 +31,7 @@ import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 
@@ -100,17 +101,17 @@ public class MessprogrammMmtService {
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() || !params.containsKey("messprogrammId")) {
-            return defaultRepo.getAll(MessprogrammMmt.class, "land");
+            return defaultRepo.getAll(MessprogrammMmt.class, Strings.LAND);
         }
         String messprogrammId = params.getFirst("messprogrammId");
         QueryBuilder<MessprogrammMmt> builder =
             new QueryBuilder<MessprogrammMmt>(
-                defaultRepo.entityManager("land"),
+                defaultRepo.entityManager(Strings.LAND),
                 MessprogrammMmt.class);
         builder.and("messprogrammId", messprogrammId);
         return authorization.filter(
             request,
-            defaultRepo.filter(builder.getQuery(), "land"),
+            defaultRepo.filter(builder.getQuery(), Strings.LAND),
             MessprogrammMmt.class);
     }
 
@@ -132,7 +133,7 @@ public class MessprogrammMmtService {
     ) {
         return authorization.filter(
             request,
-            defaultRepo.getById(MessprogrammMmt.class, Integer.valueOf(id), "land"),
+            defaultRepo.getById(MessprogrammMmt.class, Integer.valueOf(id), Strings.LAND),
             MessprogrammMmt.class);
     }
 
@@ -171,10 +172,10 @@ public class MessprogrammMmtService {
         }
 
         /* Persist the new messprogrammmmt object*/
-        Response response = defaultRepo.create(messprogrammmmt, "land");
+        Response response = defaultRepo.create(messprogrammmmt, Strings.LAND);
         MessprogrammMmt ret = (MessprogrammMmt)response.getData();
         Response created =
-            defaultRepo.getById(MessprogrammMmt.class, ret.getId(), "land");
+            defaultRepo.getById(MessprogrammMmt.class, ret.getId(), Strings.LAND);
         return authorization.filter(
             request,
             new Response(true, 200, created.getData()),
@@ -216,13 +217,13 @@ public class MessprogrammMmtService {
             return new Response(false, 699, null);
         }
 
-        Response response = defaultRepo.update(messprogrammmmt, "land");
+        Response response = defaultRepo.update(messprogrammmmt, Strings.LAND);
         if (!response.getSuccess()) {
             return response;
         }
         Response updated = defaultRepo.getById(
             MessprogrammMmt.class,
-            ((MessprogrammMmt)response.getData()).getId(), "land");
+            ((MessprogrammMmt)response.getData()).getId(), Strings.LAND);
         return authorization.filter(
             request,
             updated,
@@ -247,7 +248,7 @@ public class MessprogrammMmtService {
     ) {
         /* Get the messprogrammmmt object by id*/
         Response messprogrammmmt =
-            defaultRepo.getById(MessprogrammMmt.class, Integer.valueOf(id), "land");
+            defaultRepo.getById(MessprogrammMmt.class, Integer.valueOf(id), Strings.LAND);
         MessprogrammMmt messprogrammmmtObj = (MessprogrammMmt)messprogrammmmt.getData();
         if (!authorization.isAuthorized(
                 request,
@@ -258,7 +259,7 @@ public class MessprogrammMmtService {
             return new Response(false, 699, null);
         }
         /* Delete the messprogrammmmt object*/
-        Response response = defaultRepo.delete(messprogrammmmtObj, "land");
+        Response response = defaultRepo.delete(messprogrammmmtObj, Strings.LAND);
         return response;
     }
 }

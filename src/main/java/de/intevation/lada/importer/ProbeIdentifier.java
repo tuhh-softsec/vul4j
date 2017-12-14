@@ -17,6 +17,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 
 @IdentifierConfig(type="Probe")
 public class ProbeIdentifier implements Identifier {
@@ -38,7 +39,7 @@ public class ProbeIdentifier implements Identifier {
         }
         Probe probe = (Probe)object;
         QueryBuilder<Probe> builder = new QueryBuilder<Probe>(
-            repository.entityManager("land"),
+            repository.entityManager(Strings.LAND),
             Probe.class
         );
 
@@ -49,7 +50,7 @@ public class ProbeIdentifier implements Identifier {
         ) {
             builder.and("mstId", probe.getMstId());
             builder.and("hauptprobenNr", probe.getHauptprobenNr());
-            List<Probe> proben = repository.filterPlain(builder.getQuery(), "land");
+            List<Probe> proben = repository.filterPlain(builder.getQuery(), Strings.LAND);
             if (proben.size() > 1) {
                 // Should never happen. DB has unique constraint for
                 // "hauptprobenNr"
@@ -67,7 +68,7 @@ public class ProbeIdentifier implements Identifier {
         ) {
             builder.and("idAlt", probe.getIdAlt());
             List<Probe> proben =
-                repository.filterPlain(builder.getQuery(), "land");
+                repository.filterPlain(builder.getQuery(), Strings.LAND);
             if (proben.size() > 1) {
                 // Should never happen. DB has unique constraint for "idAlt"
                 return Identified.REJECT;
@@ -81,7 +82,7 @@ public class ProbeIdentifier implements Identifier {
         else {
             builder.and("idAlt", probe.getIdAlt());
             List<Probe> proben =
-                repository.filterPlain(builder.getQuery(), "land");
+                repository.filterPlain(builder.getQuery(), Strings.LAND);
             if (proben.size() > 1) {
                 // Should never happen. DB has unique constraint for "idAlt"
                 return Identified.REJECT;

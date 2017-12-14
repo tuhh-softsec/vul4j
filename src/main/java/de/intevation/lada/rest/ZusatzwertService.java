@@ -34,6 +34,7 @@ import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 
@@ -118,17 +119,17 @@ public class ZusatzwertService {
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() || !params.containsKey("probeId")) {
-            return defaultRepo.getAll(ZusatzWert.class, "land");
+            return defaultRepo.getAll(ZusatzWert.class, Strings.LAND);
         }
         String probeId = params.getFirst("probeId");
         QueryBuilder<ZusatzWert> builder =
             new QueryBuilder<ZusatzWert>(
-                defaultRepo.entityManager("land"),
+                defaultRepo.entityManager(Strings.LAND),
                 ZusatzWert.class);
         builder.and("probeId", probeId);
         return authorization.filter(
             request,
-            defaultRepo.filter(builder.getQuery(), "land"),
+            defaultRepo.filter(builder.getQuery(), Strings.LAND),
             ZusatzWert.class);
     }
 
@@ -151,7 +152,7 @@ public class ZusatzwertService {
     ) {
         return authorization.filter(
             request,
-            defaultRepo.getById(ZusatzWert.class, Integer.valueOf(id), "land"),
+            defaultRepo.getById(ZusatzWert.class, Integer.valueOf(id), Strings.LAND),
             ZusatzWert.class);
     }
 
@@ -197,7 +198,7 @@ public class ZusatzwertService {
         /* Persist the new object*/
         return authorization.filter(
             request,
-            defaultRepo.create(zusatzwert, "land"),
+            defaultRepo.create(zusatzwert, Strings.LAND),
             ZusatzWert.class);
     }
 
@@ -244,13 +245,13 @@ public class ZusatzwertService {
         if (lock.isLocked(zusatzwert)) {
             return new Response(false, 697, null);
         }
-        Response response = defaultRepo.update(zusatzwert, "land");
+        Response response = defaultRepo.update(zusatzwert, Strings.LAND);
         if (!response.getSuccess()) {
             return response;
         }
         Response updated = defaultRepo.getById(
             ZusatzWert.class,
-            ((ZusatzWert)response.getData()).getId(), "land");
+            ((ZusatzWert)response.getData()).getId(), Strings.LAND);
         return authorization.filter(
             request,
             updated,
@@ -276,7 +277,7 @@ public class ZusatzwertService {
     ) {
         /* Get the object by id*/
         Response object =
-            defaultRepo.getById(ZusatzWert.class, Integer.valueOf(id), "land");
+            defaultRepo.getById(ZusatzWert.class, Integer.valueOf(id), Strings.LAND);
         ZusatzWert obj = (ZusatzWert)object.getData();
         if (!authorization.isAuthorized(
                 request,
@@ -290,6 +291,6 @@ public class ZusatzwertService {
             return new Response(false, 697, null);
         }
         /* Delete the object*/
-        return defaultRepo.delete(obj, "land");
+        return defaultRepo.delete(obj, Strings.LAND);
     }
 }

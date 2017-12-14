@@ -38,6 +38,7 @@ import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 
@@ -97,7 +98,7 @@ public class ProbenehmerService {
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         List<Probenehmer> nehmer =
-            repository.getAllPlain(Probenehmer.class, "stamm");
+            repository.getAllPlain(Probenehmer.class, Strings.STAMM);
         if (params.containsKey("qid")) {
             Integer id = null;
             try {
@@ -107,14 +108,14 @@ public class ProbenehmerService {
                 return new Response(false, 603, "Not a valid filter id");
             }
             QueryBuilder<Filter> fBuilder = new QueryBuilder<Filter>(
-                repository.entityManager("stamm"),
+                repository.entityManager(Strings.STAMM),
                 Filter.class
             );
             fBuilder.and("query", id);
-            List<Filter> filters = repository.filterPlain(fBuilder.getQuery(), "stamm");
+            List<Filter> filters = repository.filterPlain(fBuilder.getQuery(), Strings.STAMM);
             QueryBuilder<Probenehmer> builder =
                 new QueryBuilder<Probenehmer>(
-                    repository.entityManager("stamm"),
+                    repository.entityManager(Strings.STAMM),
                     Probenehmer.class
                 );
             for (Filter filter: filters) {
@@ -139,10 +140,10 @@ public class ProbenehmerService {
                     new StringReader(params.getFirst("filter")));
                 JsonArray f = jsonReader.readArray();
                 jsonReader.close();
-                nehmer = repository.filterPlain(builder, f, "stamm");
+                nehmer = repository.filterPlain(builder, f, Strings.STAMM);
             }
             else {
-                nehmer = repository.filterPlain(builder.getQuery(), "stamm");
+                nehmer = repository.filterPlain(builder.getQuery(), Strings.STAMM);
             }
         }
 
@@ -187,7 +188,7 @@ public class ProbenehmerService {
         return repository.getById(
             Probenehmer.class,
             Integer.valueOf(id),
-            "stamm");
+            Strings.STAMM);
     }
 
     @POST
@@ -207,16 +208,16 @@ public class ProbenehmerService {
         }
         QueryBuilder<Probenehmer> builder =
             new QueryBuilder<Probenehmer>(
-                repository.entityManager("stamm"),
+                repository.entityManager(Strings.STAMM),
                 Probenehmer.class
             );
         builder.and("prnId", probenehmer.getPrnId());
         builder.and("netzbetreiberId", probenehmer.getNetzbetreiberId());
 
         List<Probenehmer> nehmer=
-            repository.filterPlain(builder.getQuery(), "stamm");
+            repository.filterPlain(builder.getQuery(), Strings.STAMM);
         if (nehmer.isEmpty()) {
-            return repository.create(probenehmer, "stamm");
+            return repository.create(probenehmer, Strings.STAMM);
         }
         return new Response(false, 672, null);
     }
@@ -238,7 +239,7 @@ public class ProbenehmerService {
             return new Response(false, 699, probenehmer);
         }
 
-        return repository.update(probenehmer, "stamm");
+        return repository.update(probenehmer, Strings.STAMM);
     }
 
     @DELETE
@@ -249,7 +250,7 @@ public class ProbenehmerService {
         @PathParam("id") String id
     ) {
         Probenehmer probenehmer = repository.getByIdPlain(
-            Probenehmer.class, Integer.valueOf(id), "stamm");
+            Probenehmer.class, Integer.valueOf(id), Strings.STAMM);
         if (probenehmer == null ||
             !authorization.isAuthorized(
                 request,
@@ -260,6 +261,6 @@ public class ProbenehmerService {
         ) {
             return new Response(false, 699, null);
         }
-        return repository.delete(probenehmer, "stamm");
+        return repository.delete(probenehmer, Strings.STAMM);
     }
 }

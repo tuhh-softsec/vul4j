@@ -11,8 +11,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Hashtable;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -21,19 +21,18 @@ import org.apache.log4j.Logger;
 import de.intevation.lada.model.land.KommentarP;
 import de.intevation.lada.model.land.Messprogramm;
 import de.intevation.lada.model.land.MessprogrammMmt;
-import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.model.land.Messung;
 import de.intevation.lada.model.land.Messwert;
 import de.intevation.lada.model.land.Ortszuordnung;
 import de.intevation.lada.model.land.OrtszuordnungMp;
-import de.intevation.lada.model.land.StatusProtokoll;
+import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.model.stammdaten.DeskriptorUmwelt;
 import de.intevation.lada.model.stammdaten.Deskriptoren;
-import de.intevation.lada.model.stammdaten.Ort;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 
 /**
@@ -310,14 +309,14 @@ public class ProbeFactory {
     ) {
         QueryBuilder<Probe> builderProbe =
             new QueryBuilder<Probe>(
-                repository.entityManager("land"),
+                repository.entityManager(Strings.LAND),
                 Probe.class);
         builderProbe.and("mprId", messprogramm.getId());
         builderProbe.and("solldatumBeginn", startDate);
         builderProbe.and("solldatumEnde", endDate);
 
         List<Probe> proben =
-            repository.filterPlain(builderProbe.getQuery(), "land");
+            repository.filterPlain(builderProbe.getQuery(), Strings.LAND);
 
         if (!proben.isEmpty()) {
             return null;
@@ -335,7 +334,7 @@ public class ProbeFactory {
         probe.setTest(messprogramm.getTest());
         probe.setUmwId(messprogramm.getUmwId());
         probe.setMprId(messprogramm.getId());
-        repository.create(probe, "land");
+        repository.create(probe, Strings.LAND);
 
         if (messprogramm.getProbeKommentar() != null &&
             !messprogramm.getProbeKommentar().equals("")) {
@@ -345,15 +344,15 @@ public class ProbeFactory {
             kommentar.setText(messprogramm.getProbeKommentar());
             kommentar.setMstId(messprogramm.getMstId());
 
-            repository.create(kommentar, "land");
+            repository.create(kommentar, Strings.LAND);
         }
 
         QueryBuilder<MessprogrammMmt> builder =
             new QueryBuilder<MessprogrammMmt>(
-                    repository.entityManager("land"),
+                    repository.entityManager(Strings.LAND),
                     MessprogrammMmt.class);
         builder.and("messprogrammId", messprogramm.getId());
-        Response response = repository.filter(builder.getQuery(), "land");
+        Response response = repository.filter(builder.getQuery(), Strings.LAND);
         @SuppressWarnings("unchecked")
         List<MessprogrammMmt> mmts = (List<MessprogrammMmt>)response.getData();
         for (int i = 0; i < mmts.size(); i++) {
@@ -363,7 +362,7 @@ public class ProbeFactory {
             messung.setGeplant(true);
             messung.setMmtId(mmt.getMmtId());
             messung.setProbeId(probe.getId());
-            repository.create(messung, "land");
+            repository.create(messung, Strings.LAND);
 
             for (int mw : mmt.getMessgroessen()) {
                 Messwert wert = new Messwert();
@@ -371,27 +370,27 @@ public class ProbeFactory {
                 wert.setMessungsId(messung.getId());
                 wert.setMesswert(0d);
                 wert.setMehId(1);
-                repository.create(wert, "land");
+                repository.create(wert, Strings.LAND);
             }
         }
         QueryBuilder<OrtszuordnungMp> builderOrt =
             new QueryBuilder<OrtszuordnungMp>(
-                repository.entityManager("land"),
+                repository.entityManager(Strings.LAND),
                 OrtszuordnungMp.class);
         builderOrt.and("messprogrammId", messprogramm.getId());
         List<OrtszuordnungMp> orte =
-            repository.filterPlain(builderOrt.getQuery(), "land");
+            repository.filterPlain(builderOrt.getQuery(), Strings.LAND);
         for (OrtszuordnungMp ort : orte) {
             Ortszuordnung ortP = new Ortszuordnung();
             ortP.setOrtszuordnungTyp(ort.getOrtszuordnungTyp());
             ortP.setProbeId(probe.getId());
             ortP.setOrtId(ort.getOrtId());
             ortP.setOrtszusatztext(ort.getOrtszusatztext());
-            repository.create(ortP, "land");
+            repository.create(ortP, Strings.LAND);
         }
         // Reolad the probe to have the old id
         probe = (Probe)repository.getById(
-            Probe.class, probe.getId(), "land").getData();
+            Probe.class, probe.getId(), Strings.LAND).getData();
         return probe;
     }
 
@@ -425,7 +424,7 @@ public class ProbeFactory {
         String mediaDesk = probe.getMediaDesk();
         if (mediaDesk != null) {
             Object result = repository.queryFromString(
-                "SELECT get_media_from_media_desk( :mediaDesk );", "stamm")
+                "SELECT get_media_from_media_desk( :mediaDesk );", Strings.STAMM)
                 .setParameter("mediaDesk", mediaDesk)
                 .getSingleResult();
             probe.setMedia(result != null ? result.toString() : "");
@@ -484,13 +483,13 @@ public class ProbeFactory {
                 parent = ndParent;
             }
             QueryBuilder<Deskriptoren> builder = new QueryBuilder<Deskriptoren>(
-                repository.entityManager("stamm"), Deskriptoren.class);
+                repository.entityManager(Strings.STAMM), Deskriptoren.class);
             if (parent != null) {
                 builder.and("vorgaenger", parent);
             }
             builder.and("sn", mediaDesk[i]);
             builder.and("ebene", i - 1);
-            Response response = repository.filter(builder.getQuery(), "stamm");
+            Response response = repository.filter(builder.getQuery(), Strings.STAMM);
             @SuppressWarnings("unchecked")
             List<Deskriptoren> data = (List<Deskriptoren>)response.getData();
             if (data.isEmpty()) {
@@ -516,7 +515,7 @@ public class ProbeFactory {
     private String getUmwelt(List<Integer> media, boolean isZebs) {
         QueryBuilder<DeskriptorUmwelt> builder =
             new QueryBuilder<DeskriptorUmwelt>(
-                repository.entityManager("stamm"), DeskriptorUmwelt.class);
+                repository.entityManager(Strings.STAMM), DeskriptorUmwelt.class);
 
         if (media.size() == 0) {
             return "";
@@ -530,7 +529,7 @@ public class ProbeFactory {
             String field = "s" + (i > 9 ? i : "0" + i);
             builder.and(field, media.get(i));
         }
-        Response response = repository.filter(builder.getQuery(), "stamm");
+        Response response = repository.filter(builder.getQuery(), Strings.STAMM);
         @SuppressWarnings("unchecked")
         List<DeskriptorUmwelt> data = (List<DeskriptorUmwelt>)response.getData();
         if (data.isEmpty()) {

@@ -21,6 +21,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
@@ -42,25 +43,25 @@ public class HasPflichtmessgroessen implements Rule {
     @Override
     public Violation execute(Object object) {
         Messung messung = (Messung)object;
-        Probe probe = repository.getByIdPlain(Probe.class, messung.getProbeId(), "land");
+        Probe probe = repository.getByIdPlain(Probe.class, messung.getProbeId(), Strings.LAND);
 
         QueryBuilder<PflichtMessgroesse> builder =
             new QueryBuilder<PflichtMessgroesse>(
-                repository.entityManager("stamm"),
+                repository.entityManager(Strings.STAMM),
                 PflichtMessgroesse.class);
         builder.and("messMethodeId", messung.getMmtId());
         builder.and("umwId", probe.getUmwId());
-        Response response = repository.filter(builder.getQuery(), "stamm");
+        Response response = repository.filter(builder.getQuery(), Strings.STAMM);
         @SuppressWarnings("unchecked")
         List<PflichtMessgroesse> pflicht =
             (List<PflichtMessgroesse>)response.getData();
 
         QueryBuilder<Messwert> wertBuilder =
             new QueryBuilder<Messwert>(
-                repository.entityManager("land"), Messwert.class);
+                repository.entityManager(Strings.LAND), Messwert.class);
         wertBuilder.and("messungsId", messung.getId());
         Response wertResponse =
-            repository.filter(wertBuilder.getQuery(), "land");
+            repository.filter(wertBuilder.getQuery(), Strings.LAND);
         @SuppressWarnings("unchecked")
         List<Messwert> messwerte = (List<Messwert>)wertResponse.getData();
         Violation violation = new Violation();
@@ -75,7 +76,7 @@ public class HasPflichtmessgroessen implements Rule {
         pflicht.removeAll(tmp);
         if (!pflicht.isEmpty()) {
             for (PflichtMessgroesse p : pflicht) {
-                Messgroesse mg = repository.getByIdPlain(Messgroesse.class, p.getMessgroesseId(), "stamm");
+                Messgroesse mg = repository.getByIdPlain(Messgroesse.class, p.getMessgroesseId(), Strings.STAMM);
                 violation.addWarning("pflichtmessgroesse#" + mg.getMessgroesse(), 631);
             }
         }

@@ -29,6 +29,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 
 /**
@@ -92,7 +93,7 @@ public class MessgroesseService {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() || !params.containsKey("mmtId")) {
             logger.debug("no filter");
-            return defaultRepo.getAll(Messgroesse.class, "stamm");
+            return defaultRepo.getAll(Messgroesse.class, Strings.STAMM);
         }
         String mmtId = params.getFirst("mmtId");
         if (mmtId.length() > 3) {
@@ -102,15 +103,15 @@ public class MessgroesseService {
         Query query =
             defaultRepo.queryFromString(
                 "select messgroesse_id from mmt_messgroesse where mmt_id = '"
-                + mmtId + "'", "stamm");
+                + mmtId + "'", Strings.STAMM);
         @SuppressWarnings("unchecked")
         List<Integer> ids = query.getResultList();
         QueryBuilder<Messgroesse> builder2 =
             new QueryBuilder<Messgroesse>(
-                defaultRepo.entityManager("stamm"),
+                defaultRepo.entityManager(Strings.STAMM),
                 Messgroesse.class);
         builder2.orIntList("id", ids);
-        return defaultRepo.filter(builder2.getQuery(), "stamm");
+        return defaultRepo.filter(builder2.getQuery(), Strings.STAMM);
     }
 
     /**
@@ -132,6 +133,6 @@ public class MessgroesseService {
         return defaultRepo.getById(
             Messgroesse.class,
             Integer.valueOf(id),
-            "stamm");
+            Strings.STAMM);
     }
 }

@@ -17,6 +17,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
@@ -40,9 +41,9 @@ public class HasMesswert implements Rule {
         Messung messung = (Messung)object;
         QueryBuilder<Messwert> builder =
             new QueryBuilder<Messwert>(
-                repo.entityManager("land"), Messwert.class);
+                repo.entityManager(Strings.LAND), Messwert.class);
         builder.and("messungsId", messung.getId());
-        Response response = repo.filter(builder.getQuery(), "land");
+        Response response = repo.filter(builder.getQuery(), Strings.LAND);
         @SuppressWarnings("unchecked")
         List<Messwert> messwerte = (List<Messwert>)response.getData();
         if (messwerte == null || messwerte.isEmpty()) {

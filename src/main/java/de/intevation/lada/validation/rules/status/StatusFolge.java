@@ -19,6 +19,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
@@ -44,25 +45,25 @@ public class StatusFolge implements Rule {
         // Get the previous status
         QueryBuilder<StatusProtokoll> lastFilter =
             new QueryBuilder<StatusProtokoll>(
-                    repository.entityManager("land"),
+                    repository.entityManager(Strings.LAND),
                     StatusProtokoll.class);
 
         lastFilter.and("messungsId", status.getMessungsId());
         lastFilter.orderBy("datum", true);
         List<StatusProtokoll> protos =
-            repository.filterPlain(lastFilter.getQuery(), "land");
+            repository.filterPlain(lastFilter.getQuery(), Strings.LAND);
         if (protos.isEmpty()) {
             return null;
         }
         StatusProtokoll last = protos.get(protos.size() - 1);
         QueryBuilder<StatusReihenfolge> folgeFilter =
             new QueryBuilder<StatusReihenfolge>(
-                repository.entityManager("stamm"),
+                repository.entityManager(Strings.STAMM),
                 StatusReihenfolge.class);
         folgeFilter.and("vonId", last.getStatusKombi());
         folgeFilter.and("zuId", status.getStatusKombi());
         List<StatusReihenfolge> reihenfolge =
-            repository.filterPlain(folgeFilter.getQuery(), "stamm");
+            repository.filterPlain(folgeFilter.getQuery(), Strings.STAMM);
         if (reihenfolge.isEmpty()) {
             Violation violation = new Violation();
             violation.addError("status", 632);

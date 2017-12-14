@@ -29,6 +29,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 
 /**
@@ -99,10 +100,10 @@ public class DeskriptorService {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() ||
             !params.containsKey("layer")) {
-            return repository.getAll(Deskriptoren.class, "stamm");
+            return repository.getAll(Deskriptoren.class, Strings.STAMM);
         }
         QueryBuilder<Deskriptoren> builder = new QueryBuilder<Deskriptoren>(
-            repository.entityManager("stamm"),
+            repository.entityManager(Strings.STAMM),
             Deskriptoren.class);
         builder.and("sn", 0).not();
         try {
@@ -119,7 +120,7 @@ public class DeskriptorService {
         } catch (NumberFormatException nfe) {
             return new Response(false, 612, null);
         }
-        return repository.filter(builder.getQuery(), "stamm");
+        return repository.filter(builder.getQuery(), Strings.STAMM);
     }
 
     /**
@@ -139,6 +140,6 @@ public class DeskriptorService {
         @PathParam("id") String id,
         @Context HttpServletRequest request
     ) {
-        return repository.getById(Deskriptoren.class, Integer.valueOf(id), "stamm");
+        return repository.getById(Deskriptoren.class, Integer.valueOf(id), Strings.STAMM);
     }
 }

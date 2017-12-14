@@ -43,6 +43,7 @@ import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 import de.intevation.lada.validation.Validator;
@@ -139,7 +140,7 @@ public class OrtService {
                 return new Response(false, 603, "Not a valid filter id");
             }
 
-            Ort o = repository.getByIdPlain(Ort.class, id, "stamm");
+            Ort o = repository.getByIdPlain(Ort.class, id, Strings.STAMM);
             o.setReadonly(
                 !authorization.isAuthorized(
                     request,
@@ -184,13 +185,13 @@ public class OrtService {
                 return new Response(true, 200, filtered, 0);
             }
             QueryBuilder<Ort> pBuilder = new QueryBuilder<>(
-            repository.entityManager("stamm"), Ort.class);
+            repository.entityManager(Strings.STAMM), Ort.class);
             List<Integer> list = new ArrayList<>();
             for (Map<String, Object> entry: filtered) {
                 list.add((Integer)entry.get("id"));
             }
             pBuilder.orIn("id", list);
-            Response r = repository.filter(pBuilder.getQuery(), "stamm");
+            Response r = repository.filter(pBuilder.getQuery(), Strings.STAMM);
             List<Ort> os = (List<Ort>)r.getData();
             for (Map<String, Object> entry: filtered) {
                 Integer oid = Integer.valueOf(entry.get("id").toString());
@@ -211,7 +212,7 @@ public class OrtService {
             UserInfo user = authorization.getInfo(request);
             QueryBuilder<Ort> builder =
                 new QueryBuilder<Ort>(
-                    repository.entityManager("stamm"),
+                    repository.entityManager(Strings.STAMM),
                     Ort.class
                 );
             if (params.containsKey("netzbetreiberId")) {
@@ -228,17 +229,17 @@ public class OrtService {
                     .orLike("kurztext", "%"+params.getFirst("search")+"%")
                     .orLike("langtext", "%"+params.getFirst("search")+"%");
                 builder.and(filter);
-                orte = repository.filterPlain(builder.getQuery(), "stamm");
+                orte = repository.filterPlain(builder.getQuery(), Strings.STAMM);
             }
             else if (params.containsKey("filter")) {
                 String json = params.getFirst("filter");
                 JsonReader jsonReader = Json.createReader(new StringReader(json));
                 JsonArray filter = jsonReader.readArray();
                 jsonReader.close();
-                orte = repository.filterPlain(builder, filter, "stamm");
+                orte = repository.filterPlain(builder, filter, Strings.STAMM);
             }
             else {
-                orte = repository.filterPlain(builder.getQuery(), "stamm");
+                orte = repository.filterPlain(builder.getQuery(), Strings.STAMM);
             }
         }
         int size = orte.size();
@@ -281,7 +282,7 @@ public class OrtService {
         return repository.getById(
             Ort.class,
             Integer.valueOf(id),
-            "stamm");
+            Strings.STAMM);
     }
 
     /**
@@ -347,7 +348,7 @@ public class OrtService {
 
         Response response = new Response(true, 201, ort);
         if (ort.getId() == null) {
-            response = repository.create(ort, "stamm");
+            response = repository.create(ort, Strings.STAMM);
         }
         if(violation.hasWarnings()) {
             response.setWarnings(violation.getWarnings());
@@ -419,7 +420,7 @@ public class OrtService {
             return response;
         }
 
-        Response response = repository.update(ort, "stamm");
+        Response response = repository.update(ort, Strings.STAMM);
         if(violation.hasWarnings()) {
             response.setWarnings(violation.getWarnings());
         }
@@ -444,7 +445,7 @@ public class OrtService {
         @PathParam("id") String id
     ) {
         Response response =
-            repository.getById(Ort.class, Integer.valueOf(id), "stamm");
+            repository.getById(Ort.class, Integer.valueOf(id), Strings.STAMM);
         if (!response.getSuccess()) {
             return response;
         }
@@ -458,6 +459,6 @@ public class OrtService {
             return new Response(false, 699, ort);
         }
 
-        return repository.delete(ort, "stamm");
+        return repository.delete(ort, Strings.STAMM);
     }
 }

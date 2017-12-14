@@ -22,6 +22,7 @@ import de.intevation.lada.model.stammdaten.KoordinatenArt;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 
 /**
@@ -74,7 +75,7 @@ public class KoordinatenartService {
         @Context HttpHeaders headers,
         @Context UriInfo info
     ) {
-        return defaultRepo.getAll(KoordinatenArt.class, "stamm");
+        return defaultRepo.getAll(KoordinatenArt.class, Strings.STAMM);
     }
 
     /**
@@ -96,6 +97,6 @@ public class KoordinatenartService {
         return defaultRepo.getById(
             KoordinatenArt.class,
             Integer.valueOf(id),
-            "stamm");
+            Strings.STAMM);
     }
 }

@@ -22,6 +22,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
@@ -55,11 +56,11 @@ public class CoordinatesInVE implements Rule {
 
             QueryBuilder<Verwaltungsgrenze> vg =
                 new QueryBuilder<Verwaltungsgrenze>(
-                    repository.entityManager("stamm"),
+                    repository.entityManager(Strings.STAMM),
                     Verwaltungsgrenze.class);
             vg.and("gemId", gemId);
             List<Verwaltungsgrenze> vgs = repository.filterPlain(
-                vg.getQuery(), "stamm");
+                vg.getQuery(), Strings.STAMM);
             if (vgs == null || vgs.isEmpty()) {
                 Violation violation = new Violation();
                 violation.addWarning("gemId", 650);

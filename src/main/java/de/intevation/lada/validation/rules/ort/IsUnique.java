@@ -14,6 +14,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
@@ -30,14 +31,14 @@ public class IsUnique implements Rule {
         Ort ort = (Ort)object;
 
         QueryBuilder<Ort> builder = new QueryBuilder<Ort>(
-            repository.entityManager("stamm"), Ort.class);
+            repository.entityManager(Strings.STAMM), Ort.class);
         if (ort.getId() != null) {
             // Consider UPDATE
             builder.and("id", ort.getId()).not();
         }
         builder.and("netzbetreiberId", ort.getNetzbetreiberId());
         builder.and("ortId", ort.getOrtId());
-        if (!repository.filterPlain(builder.getQuery(), "stamm").isEmpty()) {
+        if (!repository.filterPlain(builder.getQuery(), Strings.STAMM).isEmpty()) {
             Violation violation = new Violation();
             violation.addError("ortId", 672);
             return violation;

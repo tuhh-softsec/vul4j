@@ -36,6 +36,7 @@ import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 import de.intevation.lada.validation.Validator;
@@ -133,17 +134,17 @@ public class OrtszuordnungService {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() || !params.containsKey("probeId")) {
             logger.debug("get all");
-            return defaultRepo.getAll(Ortszuordnung.class, "land");
+            return defaultRepo.getAll(Ortszuordnung.class, Strings.LAND);
         }
         String probeId = params.getFirst("probeId");
         QueryBuilder<Ortszuordnung> builder =
             new QueryBuilder<Ortszuordnung>(
-                defaultRepo.entityManager("land"),
+                defaultRepo.entityManager(Strings.LAND),
                 Ortszuordnung.class);
         builder.and("probeId", probeId);
         return authorization.filter(
             request,
-            defaultRepo.filter(builder.getQuery(), "land"),
+            defaultRepo.filter(builder.getQuery(), Strings.LAND),
             Ortszuordnung.class);
     }
 
@@ -165,7 +166,7 @@ public class OrtszuordnungService {
         @PathParam("id") String id
     ) {
         Response response =
-            defaultRepo.getById(Ortszuordnung.class, Integer.valueOf(id), "land");
+            defaultRepo.getById(Ortszuordnung.class, Integer.valueOf(id), Strings.LAND);
         Ortszuordnung ort = (Ortszuordnung)response.getData();
         Violation violation = validator.validate(ort);
         if (violation.hasErrors() || violation.hasWarnings()) {
@@ -224,7 +225,7 @@ public class OrtszuordnungService {
         }
 
         /* Persist the new object*/
-        Response response = defaultRepo.create(ort, "land");
+        Response response = defaultRepo.create(ort, Strings.LAND);
         if(violation.hasWarnings()) {
             response.setWarnings(violation.getWarnings());
         }
@@ -284,13 +285,13 @@ public class OrtszuordnungService {
             return response;
         }
 
-        Response response = defaultRepo.update(ort, "land");
+        Response response = defaultRepo.update(ort, Strings.LAND);
         if (!response.getSuccess()) {
             return response;
         }
         Response updated = defaultRepo.getById(
             Ortszuordnung.class,
-            ((Ortszuordnung)response.getData()).getId(), "land");
+            ((Ortszuordnung)response.getData()).getId(), Strings.LAND);
         if(violation.hasWarnings()) {
             updated.setWarnings(violation.getWarnings());
         }
@@ -319,7 +320,7 @@ public class OrtszuordnungService {
         @PathParam("id") String id
     ) {
         Response object =
-            defaultRepo.getById(Ortszuordnung.class, Integer.valueOf(id), "land");
+            defaultRepo.getById(Ortszuordnung.class, Integer.valueOf(id), Strings.LAND);
         Ortszuordnung ortObj = (Ortszuordnung)object.getData();
         if (!authorization.isAuthorized(
                 request,
@@ -332,6 +333,6 @@ public class OrtszuordnungService {
             return new Response(false, 697, null);
         }
 
-        return defaultRepo.delete(ortObj, "land");
+        return defaultRepo.delete(ortObj, Strings.LAND);
     }
 }

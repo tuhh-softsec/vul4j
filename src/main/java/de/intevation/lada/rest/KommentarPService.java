@@ -33,6 +33,7 @@ import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 
@@ -111,17 +112,17 @@ public class KommentarPService {
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() || !params.containsKey("probeId")) {
-            return defaultRepo.getAll(KommentarP.class, "land");
+            return defaultRepo.getAll(KommentarP.class, Strings.LAND);
         }
         String probeId = params.getFirst("probeId");
         QueryBuilder<KommentarP> builder =
             new QueryBuilder<KommentarP>(
-                defaultRepo.entityManager("land"),
+                defaultRepo.entityManager(Strings.LAND),
                 KommentarP.class);
         builder.and("probeId", probeId);
         return authorization.filter(
             request,
-            defaultRepo.filter(builder.getQuery(), "land"),
+            defaultRepo.filter(builder.getQuery(), Strings.LAND),
             KommentarP.class);
     }
 
@@ -144,7 +145,7 @@ public class KommentarPService {
     ) {
         return authorization.filter(
             request,
-            defaultRepo.getById(KommentarP.class,Integer.valueOf(id), "land"),
+            defaultRepo.getById(KommentarP.class,Integer.valueOf(id), Strings.LAND),
             KommentarP.class);
     }
 
@@ -186,7 +187,7 @@ public class KommentarPService {
         /* Persist the new object*/
         return authorization.filter(
             request,
-            defaultRepo.create(kommentar, "land"),
+            defaultRepo.create(kommentar, Strings.LAND),
             KommentarP.class);
     }
 
@@ -229,7 +230,7 @@ public class KommentarPService {
         }
         return authorization.filter(
             request,
-            defaultRepo.update(kommentar, "land"),
+            defaultRepo.update(kommentar, Strings.LAND),
             KommentarP.class);
     }
 
@@ -252,7 +253,7 @@ public class KommentarPService {
     ) {
         /* Get the object by id*/
         Response kommentar =
-            defaultRepo.getById(KommentarP.class, Integer.valueOf(id), "land");
+            defaultRepo.getById(KommentarP.class, Integer.valueOf(id), Strings.LAND);
         KommentarP kommentarObj = (KommentarP)kommentar.getData();
         if (!authorization.isAuthorized(
                 request,
@@ -263,6 +264,6 @@ public class KommentarPService {
             logger.debug("User is not authorized!");
             return new Response(false, 699, null);
         }
-        return defaultRepo.delete(kommentarObj, "land");
+        return defaultRepo.delete(kommentarObj, Strings.LAND);
     }
 }

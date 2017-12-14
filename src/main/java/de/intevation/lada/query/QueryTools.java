@@ -32,6 +32,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 
 
 /**
@@ -60,11 +61,11 @@ public class QueryTools
         String type
     ) {
         QueryBuilder<Query> builder = new QueryBuilder<Query>(
-            repository.entityManager("stamm"),
+            repository.entityManager(Strings.STAMM),
             Query.class
         );
         builder.and("id", qId);
-        Query query = repository.filterPlain(builder.getQuery(), "stamm").get(0);
+        Query query = repository.filterPlain(builder.getQuery(), Strings.STAMM).get(0);
         if (!query.getType().equals(type)) {
             return new ArrayList<>();
         }
@@ -73,12 +74,12 @@ public class QueryTools
 
         List<Filter> filters = query.getFilters();
         QueryBuilder<Result> rBuilder = new QueryBuilder<Result>(
-            repository.entityManager("stamm"),
+            repository.entityManager(Strings.STAMM),
             Result.class
         );
         rBuilder.and("query", qId);
         rBuilder.orderBy("index", true);
-        List<Result> results = repository.filterPlain(rBuilder.getQuery(), "stamm");
+        List<Result> results = repository.filterPlain(rBuilder.getQuery(), Strings.STAMM);
         Result idResult = new Result();
         idResult.setDataIndex("id");
         results.add(0, idResult);
@@ -95,7 +96,7 @@ public class QueryTools
             sql,
             filters,
             params,
-            repository.entityManager("land"));
+            repository.entityManager(Strings.LAND));
         if (q == null) {
             return new ArrayList<>();
         }

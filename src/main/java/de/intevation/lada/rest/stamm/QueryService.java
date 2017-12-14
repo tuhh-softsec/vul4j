@@ -29,6 +29,7 @@ import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 
 
@@ -85,11 +86,11 @@ public class QueryService {
     ) {
         UserInfo userInfo = authorization.getInfo(request);
         QueryBuilder<Query> builder = new QueryBuilder<Query>(
-            repository.entityManager("stamm"),
+            repository.entityManager(Strings.STAMM),
             Query.class
         );
         builder.and("typeId", 0);
-        List<Query> queries = repository.filterPlain(builder.getQuery(), "stamm");
+        List<Query> queries = repository.filterPlain(builder.getQuery(), Strings.STAMM);
 
         markFavorites(queries, userInfo);
 
@@ -110,11 +111,11 @@ public class QueryService {
     ) {
         UserInfo userInfo = authorization.getInfo(request);
         QueryBuilder<Query> builder = new QueryBuilder<Query>(
-            repository.entityManager("stamm"),
+            repository.entityManager(Strings.STAMM),
             Query.class
         );
         builder.and("typeId", 1);
-        List<Query> queries = repository.filterPlain(builder.getQuery(), "stamm");
+        List<Query> queries = repository.filterPlain(builder.getQuery(), Strings.STAMM);
 
         markFavorites(queries, userInfo);
 
@@ -135,11 +136,11 @@ public class QueryService {
     ) {
         UserInfo userInfo = authorization.getInfo(request);
         QueryBuilder<Query> builder = new QueryBuilder<Query>(
-            repository.entityManager("stamm"),
+            repository.entityManager(Strings.STAMM),
             Query.class
         );
         builder.and("typeId", 2);
-        List<Query> queries = repository.filterPlain(builder.getQuery(), "stamm");
+        List<Query> queries = repository.filterPlain(builder.getQuery(), Strings.STAMM);
 
         markFavorites(queries, userInfo);
 
@@ -160,14 +161,14 @@ public class QueryService {
     ) {
         UserInfo userInfo = authorization.getInfo(request);
         QueryBuilder<Query> builder = new QueryBuilder<Query>(
-            repository.entityManager("stamm"),
+            repository.entityManager(Strings.STAMM),
             Query.class
         );
         builder.or("typeId", 3);
         builder.or("typeId", 4);
         builder.or("typeId", 5);
         builder.or("typeId", 6);
-        List<Query> queries = repository.filterPlain(builder.getQuery(), "stamm");
+        List<Query> queries = repository.filterPlain(builder.getQuery(), Strings.STAMM);
 
         markFavorites(queries, userInfo);
 
@@ -179,11 +180,11 @@ public class QueryService {
 
     private void markFavorites(List<Query> queries, UserInfo userInfo) {
         QueryBuilder<Favorite> fBuilder = new QueryBuilder<Favorite>(
-            repository.entityManager("stamm"),
+            repository.entityManager(Strings.STAMM),
             Favorite.class
         );
         fBuilder.and("userId", userInfo.getUserId());
-        List<Favorite> favorites = repository.filterPlain(fBuilder.getQuery(), "stamm");
+        List<Favorite> favorites = repository.filterPlain(fBuilder.getQuery(), Strings.STAMM);
         for (Favorite f : favorites) {
             for (Query q : queries) {
                 if (q.getId().equals(f.getQueryId())) {
@@ -195,12 +196,12 @@ public class QueryService {
 
     private void setFilterValues(List<Query> queries, Integer userId) {
         QueryBuilder<FilterValue> builder = new QueryBuilder<FilterValue>(
-            repository.entityManager("stamm"),
+            repository.entityManager(Strings.STAMM),
             FilterValue.class
         );
         builder.and("userId", userId);
         for (Query q : queries) {
-            List<FilterValue> values = repository.filterPlain(builder.getQuery(), "stamm");
+            List<FilterValue> values = repository.filterPlain(builder.getQuery(), Strings.STAMM);
             for (Filter f : q.getFilters()) {
                 for (FilterValue fv : values) {
                     if (fv.getFilterId().equals(f.getId())) {

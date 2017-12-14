@@ -25,6 +25,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 
 /**
@@ -79,7 +80,7 @@ public class PflichtmessgroesseService {
         @Context HttpHeaders headers,
         @Context UriInfo info
     ) {
-        return defaultRepo.getAll(PflichtMessgroesse.class, "stamm");
+        return defaultRepo.getAll(PflichtMessgroesse.class, Strings.STAMM);
     }
 
     /**
@@ -100,12 +101,12 @@ public class PflichtmessgroesseService {
     ) {
         QueryBuilder<PflichtMessgroesse> builder =
             new QueryBuilder<PflichtMessgroesse>(
-                defaultRepo.entityManager("stamm"),
+                defaultRepo.entityManager(Strings.STAMM),
                 PflichtMessgroesse.class
             );
         builder.and("messMethodeId", id);
         List<PflichtMessgroesse> result =
-            defaultRepo.filterPlain(builder.getQuery(), "stamm");
+            defaultRepo.filterPlain(builder.getQuery(), Strings.STAMM);
         if (!result.isEmpty()) {
             return new Response(true, 200, result.get(0));
         }

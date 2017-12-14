@@ -18,6 +18,7 @@ import de.intevation.lada.model.stammdaten.MessStelle;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 
@@ -46,13 +47,13 @@ public class MessprogrammAuthorizer implements Authorizer {
             messprogramm = repository.getByIdPlain(
                 Messprogramm.class,
                 ((MessprogrammMmt)data).getMessprogrammId(),
-                "land");
+                Strings.LAND);
         }
         else {
             return false;
         }
         MessStelle mst = repository.getByIdPlain(
-            MessStelle.class, messprogramm.getMstId(), "stamm");
+            MessStelle.class, messprogramm.getMstId(), Strings.STAMM);
         if (userInfo.getFunktionenForNetzbetreiber(
                 mst.getNetzbetreiberId()).contains(4)) {
             return true;
@@ -89,7 +90,7 @@ public class MessprogrammAuthorizer implements Authorizer {
      * @return The probe.
      */
     private Messprogramm setAuthData(UserInfo userInfo, Messprogramm messprogramm) {
-        MessStelle mst = repository.getByIdPlain(MessStelle.class, messprogramm.getMstId(), "stamm");
+        MessStelle mst = repository.getByIdPlain(MessStelle.class, messprogramm.getMstId(), Strings.STAMM);
         if (userInfo.getFunktionenForNetzbetreiber(
                 mst.getNetzbetreiberId()).contains(4)) {
             messprogramm.setReadonly(false);

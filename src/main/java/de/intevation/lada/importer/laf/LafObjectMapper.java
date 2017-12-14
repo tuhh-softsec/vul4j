@@ -69,6 +69,7 @@ import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 import de.intevation.lada.validation.Validator;
 import de.intevation.lada.validation.Violation;
@@ -154,13 +155,13 @@ public class LafObjectMapper {
             }
             QueryBuilder<Zeitbasis> builder =
                 new QueryBuilder<Zeitbasis>(
-                    repository.entityManager("stamm"),
+                    repository.entityManager(Strings.STAMM),
                     Zeitbasis.class);
             builder.and("bezeichnung", attribute);
             List<Zeitbasis> zb=
                 (List<Zeitbasis>)repository.filter(
                     builder.getQuery(),
-                    "stamm").getData();
+                    Strings.STAMM).getData();
             if (zb == null || zb.isEmpty()) {
                 ReportItem warn = new ReportItem();
                 warn.setCode(673);
@@ -263,7 +264,7 @@ public class LafObjectMapper {
             else if(i == Identified.NEW){
                 Violation violation = probeValidator.validate(probe);
                 if (!violation.hasErrors()) {
-                    Response created = repository.create(probe, "land");
+                    Response created = repository.create(probe, Strings.LAND);
                     newProbe = ((Probe)created.getData());
                 }
                 else {
@@ -643,9 +644,9 @@ public class LafObjectMapper {
             }
             else if (i == Identified.NEW) {
                 // Create a new messung and the first status
-                Response created = repository.create(messung, "land");
+                Response created = repository.create(messung, Strings.LAND);
                 newMessung = ((Messung)created.getData());
-                created = repository.getById(Messung.class, newMessung.getId(), "land");
+                created = repository.getById(Messung.class, newMessung.getId(), Strings.LAND);
                 newMessung = ((Messung)created.getData());
                 if (object.getAttributes().containsKey("BEARBEITUNGSSTATUS")) {
                     createStatusProtokoll(object.getAttributes().get("BEARBEITUNGSSTATUS"), newMessung, mstId);
@@ -733,13 +734,13 @@ public class LafObjectMapper {
         }
         QueryBuilder<ProbenZusatz> builder =
             new QueryBuilder<ProbenZusatz>(
-                repository.entityManager("stamm"),
+                repository.entityManager(Strings.STAMM),
                 ProbenZusatz.class);
         builder.and("zusatzwert", attribute);
         List<ProbenZusatz> zusatz =
             (List<ProbenZusatz>)repository.filter(
                 builder.getQuery(),
-                "stamm").getData();
+                Strings.STAMM).getData();
 
         doDefaults(zusatzwert);
         doConverts(zusatzwert);
@@ -770,13 +771,13 @@ public class LafObjectMapper {
             }
             QueryBuilder<Messgroesse> builder =
                 new QueryBuilder<Messgroesse>(
-                    repository.entityManager("stamm"),
+                    repository.entityManager(Strings.STAMM),
                     Messgroesse.class);
             builder.and("messgroesse", attribute);
             List<Messgroesse> groesse =
                 (List<Messgroesse>)repository.filter(
                     builder.getQuery(),
-                    "stamm").getData();
+                    Strings.STAMM).getData();
 
             if (groesse == null || groesse.isEmpty()) {
                 ReportItem warn = new ReportItem();
@@ -799,13 +800,13 @@ public class LafObjectMapper {
             }
             QueryBuilder<MessEinheit> builder =
                 new QueryBuilder<MessEinheit>(
-                    repository.entityManager("stamm"),
+                    repository.entityManager(Strings.STAMM),
                     MessEinheit.class);
             builder.and("einheit", attribute);
             List<MessEinheit> einheit =
                 (List<MessEinheit>)repository.filter(
                     builder.getQuery(),
-                    "stamm").getData();
+                    Strings.STAMM).getData();
 
             if (einheit == null || einheit.isEmpty()) {
                 ReportItem warn = new ReportItem();
@@ -880,47 +881,47 @@ public class LafObjectMapper {
         if (userInfo.getFunktionenForMst(mstId).contains(1)) {
             QueryBuilder<StatusKombi> builder =
                 new QueryBuilder<StatusKombi>(
-                    repository.entityManager("stamm"),
+                    repository.entityManager(Strings.STAMM),
                     StatusKombi.class);
             builder.and("statusWert", mst);
             builder.and("statusStufe", 1);
             List<StatusKombi> kombi =
                 (List<StatusKombi>)repository.filter(
                     builder.getQuery(),
-                    "stamm").getData();
+                    Strings.STAMM).getData();
             if (kombi != null && !kombi.isEmpty()) {
                 StatusProtokoll statusMst = new StatusProtokoll();
                 statusMst.setDatum(new Timestamp(new Date().getTime()));
                 statusMst.setMessungsId(messung.getId());
                 statusMst.setMstId(mstId);
                 statusMst.setStatusKombi(kombi.get(0).getId());
-                Response r = repository.create(statusMst, "land");
+                Response r = repository.create(statusMst, Strings.LAND);
                 last = (StatusProtokoll)r.getData();
             }
             hasMst = true;
         }
-        MessStelle messStelle = repository.getByIdPlain(MessStelle.class, mstId, "stamm");
+        MessStelle messStelle = repository.getByIdPlain(MessStelle.class, mstId, Strings.STAMM);
         if (userInfo.getNetzbetreiber().contains(messStelle.getNetzbetreiberId()) &&
             userInfo.getFunktionenForNetzbetreiber(messStelle.getNetzbetreiberId()).contains(2) &&
             hasMst) {
                 // Set status for stufe land.
             QueryBuilder<StatusKombi> builder =
                 new QueryBuilder<StatusKombi>(
-                    repository.entityManager("stamm"),
+                    repository.entityManager(Strings.STAMM),
                     StatusKombi.class);
             builder.and("statusWert", land);
             builder.and("statusStufe", 2);
             List<StatusKombi> kombi =
                 (List<StatusKombi>)repository.filter(
                     builder.getQuery(),
-                    "stamm").getData();
+                    Strings.STAMM).getData();
             if (kombi != null && !kombi.isEmpty()) {
                 StatusProtokoll statusLand = new StatusProtokoll();
                 statusLand.setDatum(new Timestamp(new Date().getTime()));
                 statusLand.setMessungsId(messung.getId());
                 statusLand.setMstId(mstId);
                 statusLand.setStatusKombi(kombi.get(0).getId());
-                Response r = repository.create(statusLand, "land");
+                Response r = repository.create(statusLand, Strings.LAND);
                 last = (StatusProtokoll)r.getData();
             }
         }
@@ -929,27 +930,27 @@ public class LafObjectMapper {
             // Set status for stufe lst.
             QueryBuilder<StatusKombi> builder =
                 new QueryBuilder<StatusKombi>(
-                    repository.entityManager("stamm"),
+                    repository.entityManager(Strings.STAMM),
                     StatusKombi.class);
             builder.and("statusWert", lst);
             builder.and("statusStufe", 3);
             List<StatusKombi> kombi =
                 (List<StatusKombi>)repository.filter(
                     builder.getQuery(),
-                    "stamm").getData();
+                    Strings.STAMM).getData();
             if (kombi != null && !kombi.isEmpty()) {
                 StatusProtokoll statusLst = new StatusProtokoll();
                 statusLst.setDatum(new Timestamp(new Date().getTime()));
                 statusLst.setMessungsId(messung.getId());
                 statusLst.setMstId(mstId);
                 statusLst.setStatusKombi(kombi.get(0).getId());
-                Response r = repository.create(statusLst, "land");
+                Response r = repository.create(statusLst, Strings.LAND);
                 last = (StatusProtokoll)r.getData();
             }
         }
         if (last != null) {
             messung.setStatus(last.getId());
-            repository.update(messung, "land");
+            repository.update(messung, Strings.LAND);
         }
     }
 
@@ -1022,10 +1023,10 @@ public class LafObjectMapper {
             else {
                 QueryBuilder<KoordinatenArt> kdaBuilder =
                     new QueryBuilder<KoordinatenArt>(
-                        repository.entityManager("stamm"),
+                        repository.entityManager(Strings.STAMM),
                         KoordinatenArt.class);
                 kdaBuilder.and("koordinatenart", attributes.get(type + "KOORDINATEN_ART"));
-                List<KoordinatenArt> arten = repository.filterPlain(kdaBuilder.getQuery(), "stamm");
+                List<KoordinatenArt> arten = repository.filterPlain(kdaBuilder.getQuery(), Strings.STAMM);
                 if (arten == null || arten.isEmpty()) {
                     ReportItem err = new ReportItem();
                     err.setCode(632);
@@ -1044,11 +1045,11 @@ public class LafObjectMapper {
         if (attributes.get(type + "GEMEINDENAME") != null) {
             QueryBuilder<Verwaltungseinheit> builder =
                 new QueryBuilder<Verwaltungseinheit>(
-                    repository.entityManager("stamm"),
+                    repository.entityManager(Strings.STAMM),
                     Verwaltungseinheit.class);
             builder.and("bezeichnung", attributes.get(type + "GEMEINDENAME"));
             List<Verwaltungseinheit> ves =
-                repository.filterPlain(builder.getQuery(), "stamm");
+                repository.filterPlain(builder.getQuery(), Strings.STAMM);
             if (ves != null && ves.size() > 0) {
                 o.setGemId(ves.get(0).getId());
             }
@@ -1074,11 +1075,11 @@ public class LafObjectMapper {
         if (staatFilter.length() > 0) {
             QueryBuilder<Staat> builderStaat =
                 new QueryBuilder<Staat>(
-                    repository.entityManager("stamm"),
+                    repository.entityManager(Strings.STAMM),
                     Staat.class);
             builderStaat.and(staatFilter, hLand);
             List<Staat> staat =
-                repository.filterPlain(builderStaat.getQuery(), "stamm");
+                repository.filterPlain(builderStaat.getQuery(), Strings.STAMM);
             if (staat != null && staat.size() > 0) {
                 o.setStaatId(staat.get(0).getId());
             }
@@ -1090,12 +1091,12 @@ public class LafObjectMapper {
             Ortszusatz zusatz = repository.getByIdPlain(
                 Ortszusatz.class,
                 attributes.get(type + "ORTS_ZUSATZCODE"),
-                "stamm");
+                Strings.STAMM);
             if (zusatz != null) {
                 o.setOzId(zusatz.getOzsId());
             }
         }
-        MessStelle mst = repository.getByIdPlain(MessStelle.class, probe.getMstId(), "stamm");
+        MessStelle mst = repository.getByIdPlain(MessStelle.class, probe.getMstId(), Strings.STAMM);
         o.setNetzbetreiberId(mst.getNetzbetreiberId());
         o = ortFactory.completeOrt(o);
         if (o == null || o.getGeom() == null) {
@@ -1124,7 +1125,7 @@ public class LafObjectMapper {
         if (o.getId() != null) {
             return o;
         }
-        repository.create(o, "stamm");
+        repository.create(o, Strings.STAMM);
         return o;
     }
 
@@ -1132,7 +1133,7 @@ public class LafObjectMapper {
         Ort ort = new Ort();
         ort.setOrtTyp(1);
         String gemId = null;
-        MessStelle mst = repository.getByIdPlain(MessStelle.class, probe.getMstId(), "stamm");
+        MessStelle mst = repository.getByIdPlain(MessStelle.class, probe.getMstId(), Strings.STAMM);
         ort.setNetzbetreiberId(mst.getNetzbetreiberId());
         boolean hasKoord = false;
         boolean hasGem = false;
@@ -1149,10 +1150,10 @@ public class LafObjectMapper {
             else {
                 QueryBuilder<KoordinatenArt> builder =
                     new QueryBuilder<KoordinatenArt>(
-                        repository.entityManager("stamm"),
+                        repository.entityManager(Strings.STAMM),
                         KoordinatenArt.class);
                 builder.and("koordinatenart", attributes.get(type + "KOORDINATEN_ART"));
-                List<KoordinatenArt> art = repository.filterPlain(builder.getQuery(), "stamm");
+                List<KoordinatenArt> art = repository.filterPlain(builder.getQuery(), Strings.STAMM);
                 if (art == null || art.isEmpty()) {
 
                 }
@@ -1169,11 +1170,11 @@ public class LafObjectMapper {
         if (attributes.get(type + "GEMEINDENAME") != null) {
             QueryBuilder<Verwaltungseinheit> builder =
                 new QueryBuilder<Verwaltungseinheit>(
-                    repository.entityManager("stamm"),
+                    repository.entityManager(Strings.STAMM),
                     Verwaltungseinheit.class);
             builder.and("bezeichnung", attributes.get(type + "GEMEINDENAME"));
             List<Verwaltungseinheit> ves =
-                repository.filterPlain(builder.getQuery(), "stamm");
+                repository.filterPlain(builder.getQuery(), Strings.STAMM);
             if (ves != null && ves.size() > 0) {
                 gemId = ves.get(0).getId();
             }
@@ -1185,7 +1186,7 @@ public class LafObjectMapper {
         if (gemId != null) {
             ort.setGemId(gemId);
             hasGem = true;
-            Verwaltungseinheit v = repository.getByIdPlain(Verwaltungseinheit.class, gemId, "stamm");
+            Verwaltungseinheit v = repository.getByIdPlain(Verwaltungseinheit.class, gemId, Strings.STAMM);
             if (v == null) {
                 ReportItem err = new ReportItem();
                 err.setCode(673);
@@ -1224,11 +1225,11 @@ public class LafObjectMapper {
         if (staatFilter.length() > 0) {
             QueryBuilder<Staat> builderStaat =
                 new QueryBuilder<Staat>(
-                    repository.entityManager("stamm"),
+                    repository.entityManager(Strings.STAMM),
                     Staat.class);
             builderStaat.and(staatFilter, hLand);
             List<Staat> staat =
-                repository.filterPlain(builderStaat.getQuery(), "stamm");
+                repository.filterPlain(builderStaat.getQuery(), Strings.STAMM);
             if (staat != null && staat.size() > 0) {
                 ort.setStaatId(staat.get(0).getId());
                 hasStaat = true;
@@ -1257,7 +1258,7 @@ public class LafObjectMapper {
             Ortszusatz zusatz = repository.getByIdPlain(
                 Ortszusatz.class,
                 attributes.get(type + "ORTS_ZUSATZCODE"),
-                "stamm");
+                Strings.STAMM);
             if (zusatz != null) {
                 ort.setOzId(zusatz.getOzsId());
             }
@@ -1293,7 +1294,7 @@ public class LafObjectMapper {
             return null;
         }
 
-        repository.create(ort, "stamm");
+        repository.create(ort, Strings.STAMM);
         return ort;
     }
 
@@ -1359,13 +1360,13 @@ public class LafObjectMapper {
             }
             QueryBuilder<Datenbasis> builder =
                 new QueryBuilder<Datenbasis>(
-                    repository.entityManager("stamm"),
+                    repository.entityManager(Strings.STAMM),
                     Datenbasis.class);
             builder.and("datenbasis", attr);
             List<Datenbasis> datenbasis =
                 (List<Datenbasis>)repository.filter(
                     builder.getQuery(),
-                    "stamm").getData();
+                    Strings.STAMM).getData();
             if (datenbasis == null || datenbasis.isEmpty()) {
                 ReportItem err = new ReportItem();
                 err.setCode(673);
@@ -1405,13 +1406,13 @@ public class LafObjectMapper {
         if ("MESSPROGRAMM_S".equals(key) && probe.getBaId() == null) {
             QueryBuilder<MessprogrammTransfer> builder =
                 new QueryBuilder<MessprogrammTransfer>(
-                    repository.entityManager("stamm"),
+                    repository.entityManager(Strings.STAMM),
                     MessprogrammTransfer.class);
             builder.and("messprogrammS", value);
             List<MessprogrammTransfer> transfer=
                 (List<MessprogrammTransfer>)repository.filter(
                     builder.getQuery(),
-                    "stamm").getData();
+                    Strings.STAMM).getData();
             if (transfer == null || transfer.isEmpty()) {
                 ReportItem warn = new ReportItem();
                 warn.setCode(673);
@@ -1425,13 +1426,13 @@ public class LafObjectMapper {
         if ("MESSPROGRAMM_C".equals(key)){
             QueryBuilder<MessprogrammTransfer> builder =
                 new QueryBuilder<MessprogrammTransfer>(
-                    repository.entityManager("stamm"),
+                    repository.entityManager(Strings.STAMM),
                     MessprogrammTransfer.class);
             builder.and("messprogrammC", value);
             List<MessprogrammTransfer> transfer=
                 (List<MessprogrammTransfer>)repository.filter(
                     builder.getQuery(),
-                    "stamm").getData();
+                    Strings.STAMM).getData();
             if (transfer == null || transfer.isEmpty()) {
                 ReportItem warn = new ReportItem();
                 warn.setCode(673);
@@ -1446,14 +1447,14 @@ public class LafObjectMapper {
         if ("MESSPROGRAMM_LAND".equals(key)) {
             QueryBuilder<MessprogrammKategorie> builder =
                 new QueryBuilder<MessprogrammKategorie>(
-                    repository.entityManager("stamm"),
+                    repository.entityManager(Strings.STAMM),
                     MessprogrammKategorie.class);
             builder.or("netzbetreiberId", userInfo.getNetzbetreiber());
             builder.and("code", value);
             List<MessprogrammKategorie> kategorie =
                 (List<MessprogrammKategorie>)repository.filter(
                     builder.getQuery(),
-                    "stamm").getData();
+                    Strings.STAMM).getData();
             if (kategorie == null || kategorie.isEmpty()) {
                 ReportItem warn = new ReportItem();
                 warn.setCode(673);
@@ -1487,14 +1488,14 @@ public class LafObjectMapper {
         if ("UMWELTBEREICH_C".equals(key) && probe.getUmwId() == null) {
             QueryBuilder<Umwelt> builder =
                 new QueryBuilder<Umwelt>(
-                    repository.entityManager("stamm"),
+                    repository.entityManager(Strings.STAMM),
                     Umwelt.class);
             int length = value.toString().length() > 80 ? 80 : value.toString().length();
             builder.and("umweltBereich", value.toString().substring(0, length));
             List<Umwelt> umwelt =
                 (List<Umwelt>)repository.filter(
                     builder.getQuery(),
-                    "stamm").getData();
+                    Strings.STAMM).getData();
             if (umwelt == null || umwelt.isEmpty()) {
                 ReportItem warn = new ReportItem();
                 warn.setCode(673);
@@ -1545,13 +1546,13 @@ public class LafObjectMapper {
             }
             QueryBuilder<Probenart> builder =
                 new QueryBuilder<Probenart>(
-                    repository.entityManager("stamm"),
+                    repository.entityManager(Strings.STAMM),
                     Probenart.class);
             builder.and("probenart", attr);
             List<Probenart> probenart =
                 (List<Probenart>)repository.filter(
                     builder.getQuery(),
-                    "stamm").getData();
+                    Strings.STAMM).getData();
             if (probenart == null || probenart.isEmpty()) {
                 ReportItem warn = new ReportItem();
                 warn.setCode(673);

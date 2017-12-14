@@ -38,6 +38,7 @@ import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 
@@ -109,14 +110,14 @@ public class MessprogrammKategorieService {
                 return new Response(false, 603, "Not a valid filter id");
             }
             QueryBuilder<Filter> fBuilder = new QueryBuilder<Filter>(
-                repository.entityManager("stamm"),
+                repository.entityManager(Strings.STAMM),
                 Filter.class
             );
             fBuilder.and("query", id);
-            List<Filter> filters = repository.filterPlain(fBuilder.getQuery(), "stamm");
+            List<Filter> filters = repository.filterPlain(fBuilder.getQuery(), Strings.STAMM);
             QueryBuilder<MessprogrammKategorie> mBuilder =
                 new QueryBuilder<MessprogrammKategorie>(
-                    repository.entityManager("stamm"),
+                    repository.entityManager(Strings.STAMM),
                     MessprogrammKategorie.class
                 );
             for (Filter filter: filters) {
@@ -141,14 +142,14 @@ public class MessprogrammKategorieService {
                     new StringReader(params.getFirst("filter")));
                 JsonArray f = jsonReader.readArray();
                 jsonReader.close();
-                kategorie = repository.filterPlain(mBuilder, f, "stamm");
+                kategorie = repository.filterPlain(mBuilder, f, Strings.STAMM);
             }
             else {
-                kategorie = repository.filterPlain(mBuilder.getQuery(), "stamm");
+                kategorie = repository.filterPlain(mBuilder.getQuery(), Strings.STAMM);
             }
         }
         else {
-            kategorie = repository.getAllPlain(MessprogrammKategorie.class, "stamm");
+            kategorie = repository.getAllPlain(MessprogrammKategorie.class, Strings.STAMM);
         }
         int size = kategorie.size();
         if (params.containsKey("qid")) {
@@ -193,7 +194,7 @@ public class MessprogrammKategorieService {
         return repository.getById(
             MessprogrammKategorie.class,
             Integer.valueOf(id),
-            "stamm");
+            Strings.STAMM);
     }
 
     @POST
@@ -213,17 +214,17 @@ public class MessprogrammKategorieService {
         }
         QueryBuilder<MessprogrammKategorie> builder =
             new QueryBuilder<MessprogrammKategorie>(
-                repository.entityManager("stamm"),
+                repository.entityManager(Strings.STAMM),
                 MessprogrammKategorie.class
             );
         builder.and("code", kategorie.getCode());
         builder.and("netzbetreiberId", kategorie.getNetzbetreiberId());
 
         List<MessprogrammKategorie> kategorien =
-            repository.filterPlain(builder.getQuery(), "stamm");
+            repository.filterPlain(builder.getQuery(), Strings.STAMM);
         if (kategorien.isEmpty() ||
             kategorien.get(0).getId() == kategorie.getId()) {
-            return repository.create(kategorie, "stamm");
+            return repository.create(kategorie, Strings.STAMM);
         }
         return new Response(false, 672, null);
     }
@@ -244,7 +245,7 @@ public class MessprogrammKategorieService {
         ) {
             return new Response(false, 699, kategorie);
         }
-        return repository.update(kategorie, "stamm");
+        return repository.update(kategorie, Strings.STAMM);
     }
 
     @DELETE
@@ -255,7 +256,7 @@ public class MessprogrammKategorieService {
         @PathParam("id") String id
     ) {
         MessprogrammKategorie kategorie = repository.getByIdPlain(
-            MessprogrammKategorie.class, Integer.valueOf(id), "stamm");
+            MessprogrammKategorie.class, Integer.valueOf(id), Strings.STAMM);
         if (kategorie == null ||
             !authorization.isAuthorized(
                 request,
@@ -266,6 +267,6 @@ public class MessprogrammKategorieService {
         ) {
             return new Response(false, 699, null);
         }
-        return repository.delete(kategorie, "stamm");
+        return repository.delete(kategorie, Strings.STAMM);
     }
 }

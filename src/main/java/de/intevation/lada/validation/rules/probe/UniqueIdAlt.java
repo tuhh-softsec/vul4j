@@ -16,6 +16,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
@@ -36,10 +37,10 @@ public class UniqueIdAlt implements Rule {
     public Violation execute(Object object) {
         Probe probe = (Probe)object;
         QueryBuilder<Probe> builder = new QueryBuilder<Probe>(
-            repo.entityManager("land"),
+            repo.entityManager(Strings.LAND),
             Probe.class);
         builder.and("idAlt", probe.getIdAlt());
-        List<Probe> existing = repo.filterPlain(builder.getQuery(), "land");
+        List<Probe> existing = repo.filterPlain(builder.getQuery(), Strings.LAND);
         if (!existing.isEmpty()) {
             Probe found = existing.get(0);
             // The probe found in the db equals the new probe. (Update)

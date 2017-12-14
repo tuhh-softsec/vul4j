@@ -22,6 +22,7 @@ import de.intevation.lada.model.stammdaten.Umwelt;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 
 /**
@@ -75,7 +76,7 @@ public class UmweltService {
         @Context HttpHeaders headers,
         @Context UriInfo info
     ) {
-        return defaultRepo.getAll(Umwelt.class, "stamm");
+        return defaultRepo.getAll(Umwelt.class, Strings.STAMM);
     }
 
     /**
@@ -97,6 +98,6 @@ public class UmweltService {
         return defaultRepo.getById(
             Umwelt.class,
             id,
-            "stamm");
+            Strings.STAMM);
     }
 }
