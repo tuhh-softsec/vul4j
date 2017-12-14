@@ -220,7 +220,7 @@ public class DeskriptorToUmwelt implements Rule {
         }
         String element = list.get(0).getUmwId();
         for (int i = 1; i < list.size(); i++) {
-            if (!element.equals(list.get(i))) {
+            if (!element.equals(list.get(i).getUmwId())) {
                 return false;
             }
         }

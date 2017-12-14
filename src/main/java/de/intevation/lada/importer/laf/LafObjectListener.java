@@ -365,12 +365,12 @@ public class LafObjectListener extends LafBaseListener {
         }
         if (currentUOrt != null && !currentUOrt.isEmpty()) {
             currentProbe.addUrsprungsOrt(currentUOrt);
+            currentUOrt.clear();
         }
         if (currentEOrt != null && !currentEOrt.isEmpty()) {
             currentProbe.addEntnahmeOrt(currentEOrt);
             currentEOrt.clear();
         }
-        currentUOrt.clear();
     }
 
     /**

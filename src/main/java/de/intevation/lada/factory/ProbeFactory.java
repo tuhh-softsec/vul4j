@@ -191,8 +191,7 @@ public class ProbeFactory {
         }
 
         public Date getTo() {
-            Calendar to = (Calendar)from.clone();
-            to = adjustSubIntField(to, teilBis);
+            Calendar to = adjustSubIntField((Calendar)from.clone(), teilBis);
             return to.getTime();
         }
 
@@ -606,7 +605,7 @@ public class ProbeFactory {
         }
         String element = list.get(0).getUmwId();
         for (int i = 1; i < list.size(); i++) {
-            if (!element.equals(list.get(i))) {
+            if (!element.equals(list.get(i).getUmwId())) {
                 return false;
             }
         }

@@ -569,11 +569,14 @@ public class LafObjectMapper {
                         attribute.substring(1);
                     for (Method method : clazz.getMethods()) {
                         String name = method.getName();
-                        if (!methodName.equals(name)) {
-                            continue;
+                        if (methodName.equals(name)) {
+                            setter = method;
+                            break;
                         }
-                        setter = method;
-                        break;
+                    }
+                    if (setter == null) {
+                        logger.warn("Could not transform attribute " + attribute);
+                        return;
                     }
                 }
                 catch(NoSuchMethodException | SecurityException e) {

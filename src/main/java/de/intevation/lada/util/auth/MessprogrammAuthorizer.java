@@ -38,7 +38,7 @@ public class MessprogrammAuthorizer implements Authorizer {
             // Allow read access to everybody
             return true;
         }
-        Messprogramm messprogramm = null;
+        Messprogramm messprogramm;
         if (data instanceof Messprogramm) {
             messprogramm = (Messprogramm)data;
         }
@@ -47,6 +47,9 @@ public class MessprogrammAuthorizer implements Authorizer {
                 Messprogramm.class,
                 ((MessprogrammMmt)data).getMessprogrammId(),
                 "land");
+        }
+        else {
+            return false;
         }
         MessStelle mst = repository.getByIdPlain(
             MessStelle.class, messprogramm.getMstId(), "stamm");
@@ -64,7 +67,7 @@ public class MessprogrammAuthorizer implements Authorizer {
         Class<T> clazz
     ) {
         if (data.getData() instanceof List<?> &&
-            !clazz.getSimpleName().equals("MessprogrammMmt")) {
+            !clazz.isAssignableFrom(MessprogrammMmt.class)) {
             List<Messprogramm> messprogramme = new ArrayList<Messprogramm>();
             for (Messprogramm messprogramm :(List<Messprogramm>)data.getData()) {
                 messprogramme.add(setAuthData(userInfo, messprogramm));

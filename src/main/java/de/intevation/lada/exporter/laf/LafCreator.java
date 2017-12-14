@@ -396,9 +396,9 @@ implements Creator
         }
         else {
             tag += "_NWG_G";
-            value += " " + mw.getNwgZuMesswert() == null ? "0.0": mw.getNwgZuMesswert();
-            value += " " + mw.getGrenzwertueberschreitung() == null ? " N" :
-                mw.getGrenzwertueberschreitung() ? " J" : " N";
+            value += " " + (mw.getNwgZuMesswert() == null ? "0.0": mw.getNwgZuMesswert());
+            value += " " + (mw.getGrenzwertueberschreitung() == null ? " N" :
+                mw.getGrenzwertueberschreitung() ? " J" : " N");
         }
         return lafLine(tag, value);
     }

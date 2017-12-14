@@ -66,7 +66,7 @@ public class QueryTools
         builder.and("id", qId);
         Query query = repository.filterPlain(builder.getQuery(), "stamm").get(0);
         if (!query.getType().equals(type)) {
-            return null;
+            return new ArrayList<>();
         }
 
         String sql = query.getSql();
@@ -84,12 +84,12 @@ public class QueryTools
         results.add(0, idResult);
         if (params.containsKey("sort")) {
             String sort = params.getFirst("sort");
-            logger.debug("Sort parameter: " + sort);
-            JsonReader reader = Json.createReader(new StringReader(sort));
-            JsonObject sortProperties = reader.readArray().getJsonObject(0);
-            sql += " ORDER BY ";
-            sql += sortProperties.getJsonString("property").getString() + " ";
-            sql += sortProperties.getJsonString("direction").getString();
+            try (JsonReader reader = Json.createReader(new StringReader(sort))) {
+                JsonObject sortProperties = reader.readArray().getJsonObject(0);
+                sql += " ORDER BY ";
+                sql += sortProperties.getJsonString("property").getString() + " ";
+                sql += sortProperties.getJsonString("direction").getString();
+            }
         }
         javax.persistence.Query q = prepareQuery(
             sql,

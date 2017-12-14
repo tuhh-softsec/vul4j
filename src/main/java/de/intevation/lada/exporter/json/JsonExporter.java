@@ -280,16 +280,15 @@ public class JsonExporter implements Exporter {
             if (Integer.parseInt(parts[i+1]) != 0) {
                 builder.and("ebene", i);
                 builder.and("sn", Integer.parseInt(parts[i+1]));
-                if (vorgaenger != 0) {
+                if (i == 0) {
                     builder.and("vorgaenger", vorgaenger);
                 }
                 List<Deskriptoren> found = repository.filterPlain(builder.getQuery(), "stamm");
-                if (found.size() > 0) {
+                if (!found.isEmpty()) {
                     beschreibung = found.get(0).getBeschreibung();
-                    if (isZebs && i < 4) {
-                        vorgaenger = hdV;
-                    }
-                    else if (!isZebs && i < 2) {
+                    if ((isZebs && i < 4) ||
+                        (!isZebs && i < 2)
+                    ) {
                         vorgaenger = hdV;
                     }
                     else {

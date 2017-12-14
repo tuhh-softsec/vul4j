@@ -23,8 +23,7 @@ public class HasTestdatensatz implements Rule {
     @Override
     public Violation execute(Object object) {
         Probe probe = (Probe)object;
-        if (probe.getTest() == null ||
-            probe.getTest().equals("")) {
+        if (probe.getTest() == null) {
             Violation violation = new Violation();
             violation.addError("test", 631);
             return violation;

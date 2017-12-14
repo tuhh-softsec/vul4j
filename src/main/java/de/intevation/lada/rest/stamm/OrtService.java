@@ -246,10 +246,7 @@ public class OrtService {
             int start = Integer.valueOf(params.getFirst("start"));
             int limit = Integer.valueOf(params.getFirst("limit"));
             int end = limit + start;
-            if (limit == 0) {
-                end = orte.size();
-            }
-            else if (start + limit > orte.size()) {
+            if (limit == 0 || (start + limit > orte.size())) {
                 end = orte.size();
             }
             orte = orte.subList(start, end);

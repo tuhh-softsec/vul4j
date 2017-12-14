@@ -7,6 +7,7 @@
  */
 package de.intevation.lada.rest;
 
+import java.sql.PreparedStatement;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -206,8 +207,7 @@ public class AuditTrailService {
         node.put("timestamp", audit.getTstamp().getTime());
         node.put("type", audit.getTableName());
         node.put("action", audit.getAction());
-        ObjectNode data = (ObjectNode)audit.getChangedFields();
-        data = translateValues(data);
+        ObjectNode data = translateValues((ObjectNode)audit.getChangedFields());
         node.putPOJO("changedFields", data);
         if ("kommentar_p".equals(audit.getTableName())) {
             node.put("identifier", audit.getRowData().get("datum").toString());
@@ -347,9 +347,12 @@ public class AuditTrailService {
         String source
     ) {
         EntityManager manager = repository.entityManager(source);
-        String sql = "SELECT " + field + " FROM " + table +
-            " WHERE " + idField + " = " + id + ";";
+        String sql = "SELECT :field FROM :table WHERE :idField = :id;";
         javax.persistence.Query query = manager.createNativeQuery(sql);
+        query.setParameter("field", field);
+        query.setParameter("table", table);
+        query.setParameter("idField", idField);
+        query.setParameter("id", id);
         List<String> result = query.getResultList();
         return result.get(0);
     }
