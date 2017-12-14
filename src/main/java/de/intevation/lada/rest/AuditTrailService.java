@@ -79,8 +79,8 @@ public class AuditTrailService {
      * Class to store tablename and value field for foreign key mappings.
      */
     private class TableMapper {
-        public String mappingTable;
-        public String valueField;
+        private String mappingTable;
+        private String valueField;
 
         public TableMapper(
             String mappingTable,
@@ -88,6 +88,14 @@ public class AuditTrailService {
         ) {
             this.mappingTable = mappingTable;
             this.valueField = valueField;
+        }
+
+        public String getMappingTable() {
+            return mappingTable;
+        }
+
+        public String getValueField() {
+            return valueField;
         }
     }
 
@@ -375,14 +383,14 @@ public class AuditTrailService {
             String key = i.next();
             if (mappings.containsKey(key)) {
                 TableMapper m = mappings.get(key);
-                if (m.mappingTable.equals("date")) {
-                    Long value = formatDate(m.valueField, node.get(key).asText());
+                if (m.getMappingTable().equals("date")) {
+                    Long value = formatDate(m.getValueField(), node.get(key).asText());
                     node.put(key, value);
                 }
                 else {
                     String value = translateId(
-                        m.mappingTable,
-                        m.valueField,
+                        m.getMappingTable(),
+                        m.getValueField(),
                         node.get(key).asText(),
                         "id",
                         Strings.STAMM);

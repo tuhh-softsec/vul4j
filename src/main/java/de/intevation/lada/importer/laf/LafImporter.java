@@ -88,8 +88,7 @@ public class LafImporter implements Importer{
                 }
             }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.debug("Exception while reading LAF input", e);
         }
     }
 
