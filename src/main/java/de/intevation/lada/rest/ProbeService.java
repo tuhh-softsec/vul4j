@@ -191,17 +191,6 @@ public class ProbeService {
         List<Map<String, Object>> result =
             queryTools.getResultForQuery(params, id, "probe");
 
-        int size = result.size();
-        if (params.containsKey("start") && params.containsKey("limit")) {
-            int start = Integer.valueOf(params.getFirst("start"));
-            int limit = Integer.valueOf(params.getFirst("limit"));
-            int end = limit + start;
-            if (start + limit > result.size()) {
-                end = result.size();
-            }
-            result = result.subList(start, end);
-        }
-
         List<Map<String, Object>> filtered;
         if (params.containsKey("filter")) {
             filtered = queryTools.filterResult(params.getFirst("filter"), result);
@@ -213,6 +202,18 @@ public class ProbeService {
         if (filtered.isEmpty()) {
             return new Response(true, 200, filtered, 0);
         }
+
+        int size = filtered.size();
+        if (params.containsKey("start") && params.containsKey("limit")) {
+            int start = Integer.valueOf(params.getFirst("start"));
+            int limit = Integer.valueOf(params.getFirst("limit"));
+            int end = limit + start;
+            if (start + limit > filtered.size()) {
+                end = filtered.size();
+            }
+            filtered = filtered.subList(start, end);
+        }
+
         QueryBuilder<Probe> pBuilder = new QueryBuilder<>(
             repository.entityManager(Strings.LAND), Probe.class);
         List<Integer> list = new ArrayList<>();

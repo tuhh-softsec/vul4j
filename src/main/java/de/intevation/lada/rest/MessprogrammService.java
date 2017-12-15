@@ -161,17 +161,6 @@ public class MessprogrammService {
         List<Map<String, Object>> result =
             queryTools.getResultForQuery(params, id, "messprogramm");
 
-        int size = result.size();
-        if (params.containsKey("start") && params.containsKey("limit")) {
-            int start = Integer.valueOf(params.getFirst("start"));
-            int limit = Integer.valueOf(params.getFirst("limit"));
-            int end = limit + start;
-            if (start + limit > result.size()) {
-                end = result.size();
-            }
-            result = result.subList(start, end);
-        }
-
         List<Map<String, Object>> filtered;
         if (params.containsKey("filter")) {
             filtered = queryTools.filterResult(params.getFirst("filter"), result);
@@ -183,6 +172,18 @@ public class MessprogrammService {
         if (filtered.isEmpty()) {
             return new Response(true, 200, filtered, 0);
         }
+
+        int size = filtered.size();
+        if (params.containsKey("start") && params.containsKey("limit")) {
+            int start = Integer.valueOf(params.getFirst("start"));
+            int limit = Integer.valueOf(params.getFirst("limit"));
+            int end = limit + start;
+            if (start + limit > filtered.size()) {
+                end = filtered.size();
+            }
+            filtered = filtered.subList(start, end);
+        }
+
         QueryBuilder<Messprogramm> mBuilder = new QueryBuilder<Messprogramm>(
             repository.entityManager(Strings.LAND), Messprogramm.class);
         List<Integer> list = new ArrayList<Integer>();
@@ -198,7 +199,7 @@ public class MessprogrammService {
             setAuthData(messprogramme, entry, mId);
         }
 
-        return new Response(true, 200, result, size);
+        return new Response(true, 200, filtered, size);
     }
 
     private void setAuthData(
