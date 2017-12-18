@@ -1030,10 +1030,10 @@ public class LafObjectMapper {
         else {
             Ort o = null;
             if (uort.size() > 0) {
-                o = createNewOrt(uort.get(0), "U_", probe);
+                o = findOrCreateOrt(uort.get(0), "U_", probe);
             }
             if (o == null) {
-                o = createNewOrt(object.getEntnahmeOrt(), "P_", probe);
+                o = findOrCreateOrt(object.getEntnahmeOrt(), "P_", probe);
             }
             if (o == null) {
                 return;
