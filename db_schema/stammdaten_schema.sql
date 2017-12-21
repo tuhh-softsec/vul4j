@@ -322,6 +322,9 @@ INSERT INTO filter_type VALUES(2, 'listnetz');
 INSERT INTO filter_type VALUES(3, 'listumw');
 INSERT INTO filter_type VALUES(4, 'liststatus');
 INSERT INTO filter_type VALUES(5, 'number');
+INSERT INTO filter_type VALUES(6, 'listrei');
+INSERT INTO filter_type VALUES(7, 'listkta');
+INSERT INTO filter_type VALUES(8, 'bool');
 
 
 CREATE TABLE filter (
