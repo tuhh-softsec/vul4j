@@ -217,6 +217,19 @@ public class XSSAPIImplTest {
         String[][] testData = {
                 //         Href                                        Expected Result
                 //
+                {
+                    "/base?backHref=%26%23x6a%3b%26%23x61%3b%26%23x76%3b%26%23x61%3b%26%23x73%3b%26%23x63%3b%26%23x72%3b%26%23x69%3b%26%23x70%3b%26%23x74%3b%26%23x3a%3balert%281%29",
+                    "/base?backHref=javascript%3Aalert(1)"
+                },
+                {
+                    "%26%23x6a%3b%26%23x61%3b%26%23x76%3b%26%23x61%3b%26%23x73%3b%26%23x63%3b%26%23x72%3b%26%23x69%3b%26%23x70%3b%26%23x74%3b%26%23x3a%3balert%281%29",
+                    ""
+                },
+                {
+                    "&#x6a;&#x61;&#x76;&#x61;&#x73;&#x63;&#x72;&#x69;&#x70;&#x74;&#x3a;alert(1)",
+                    ""
+                },
+                {"%2Fscripts%2Ftest.js", "/scripts/test.js"},
                 {"/etc/commerce/collections/中文", "/etc/commerce/collections/中文"},
                 {"/etc/commerce/collections/\u09aa\u09b0\u09c0\u0995\u09cd\u09b7\u09be\u09ae\u09c2\u09b2\u0995", "/etc/commerce/collections/\u09aa\u09b0\u09c0\u0995\u09cd\u09b7\u09be\u09ae\u09c2\u09b2\u0995"},
                 {null, ""},

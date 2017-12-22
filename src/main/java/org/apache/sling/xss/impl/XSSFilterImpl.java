@@ -17,6 +17,9 @@
 package org.apache.sling.xss.impl;
 
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +29,8 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -120,6 +125,27 @@ public class XSSFilterImpl implements XSSFilter, ResourceChangeListener, Externa
 
     @Override
     public boolean isValidHref(String url) {
+        if (StringUtils.isEmpty(url)) {
+            return true;
+        }
+        try {
+            String decodedURL = URLDecoder.decode(url, StandardCharsets.UTF_8.name());
+            /*
+                StringEscapeUtils is deprecated starting with version 3.6 of commons-lang3, however the indicated replacement comes from
+                commons-text, which is not an OSGi bundle
+             */
+            String xmlDecodedURL = StringEscapeUtils.unescapeXml(decodedURL);
+            if (xmlDecodedURL.equals(url) || xmlDecodedURL.equals(decodedURL)) {
+                return runHrefValidation(url);
+            }
+            return runHrefValidation(xmlDecodedURL);
+        } catch (UnsupportedEncodingException e) {
+            logger.error("Unable to decode url: {}.", url);
+        }
+        return false;
+    }
+
+    private boolean runHrefValidation(@Nonnull String url) {
         // Same logic as in org.owasp.validator.html.scan.MagicSAXFilter.startElement()
         boolean isValid = hrefAttribute.containsAllowedValue(url.toLowerCase());
         if (!isValid) {
