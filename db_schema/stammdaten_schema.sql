@@ -325,6 +325,7 @@ INSERT INTO filter_type VALUES(5, 'number');
 INSERT INTO filter_type VALUES(6, 'listrei');
 INSERT INTO filter_type VALUES(7, 'listkta');
 INSERT INTO filter_type VALUES(8, 'bool');
+INSERT INTO filter_type VALUES(9, 'datetime')
 
 
 CREATE TABLE filter (
