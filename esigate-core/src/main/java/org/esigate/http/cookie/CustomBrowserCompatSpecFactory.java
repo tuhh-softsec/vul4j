@@ -15,7 +15,8 @@
 
 package org.esigate.http.cookie;
 
-import org.apache.http.annotation.Immutable;
+import org.apache.http.annotation.Contract;
+import org.apache.http.annotation.ThreadingBehavior;
 import org.apache.http.cookie.CookieSpec;
 import org.apache.http.cookie.CookieSpecProvider;
 import org.apache.http.impl.cookie.AbstractCookieSpec;
@@ -28,7 +29,7 @@ import org.apache.http.protocol.HttpContext;
  * 
  * @author Alexis Thaveau on 21/10/14.
  */
-@Immutable
+@Contract(threading = ThreadingBehavior.IMMUTABLE_CONDITIONAL)
 public class CustomBrowserCompatSpecFactory implements CookieSpecProvider {
 
     /**

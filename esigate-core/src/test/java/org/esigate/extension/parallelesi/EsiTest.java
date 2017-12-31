@@ -59,11 +59,13 @@ public class EsiTest extends TestCase {
             public HttpResponse execute(HttpRequest request) throws UnsupportedEncodingException {
 
                 if (request.getRequestLine().getUri().equals("/foobar/")) {
-                    return TestUtils.createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
+                    return TestUtils
+                            .createHttpResponse()
+                            .status(HttpStatus.SC_OK)
+                            .reason("OK")
                             .header("Content-Type", "text/html; charset=utf-8")
                             .entity("<esi:include src=\"http://test.mydomain.fr/esi/1\"/>"
-                                    + "<esi:include src=\"http://test.mydomain.fr/esi/2\"/>")
-                            .build();
+                                    + "<esi:include src=\"http://test.mydomain.fr/esi/2\"/>").build();
                 }
 
                 if (request.getRequestLine().getUri().equals("/esi/1")) {
@@ -108,12 +110,14 @@ public class EsiTest extends TestCase {
             public HttpResponse execute(HttpRequest request) throws UnsupportedEncodingException {
 
                 if (request.getRequestLine().getUri().equals("/foobar/")) {
-                    return TestUtils.createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
+                    return TestUtils
+                            .createHttpResponse()
+                            .status(HttpStatus.SC_OK)
+                            .reason("OK")
                             .header("Content-Type", "text/html; charset=utf-8")
                             .entity("<esi:include src=\"http://test.mydomain.fr/esi/1\"/>"
                                     + "<esi:include src=\"http://test.mydomain.fr/esi/2\"/>"
-                                    + "<esi:include src=\"http://test.mydomain.fr/esi/3\"/>")
-                            .build();
+                                    + "<esi:include src=\"http://test.mydomain.fr/esi/3\"/>").build();
                 }
 
                 if (request.getRequestLine().getUri().equals("/esi/1")) {
