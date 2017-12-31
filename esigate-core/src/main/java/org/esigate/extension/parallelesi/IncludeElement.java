@@ -251,10 +251,10 @@ class IncludeElement extends BaseElement {
         } else {
             // Start processing in a new thread.
             try {
-            RunnableFuture<CharSequence> r = new FutureTask<>(task);
-            executor.execute(r);
-            result = r;
-            }catch ( RejectedExecutionException e){
+                RunnableFuture<CharSequence> r = new FutureTask<>(task);
+                executor.execute(r);
+                result = r;
+            } catch (RejectedExecutionException e) {
                 throw new HttpErrorPage(509, "Limits exceeded", e);
             }
         }
