@@ -682,6 +682,7 @@
 			</build>
 		</profile>
 		<profile>
+			<id>jetty8x</id>
     			<activation>
 		      		<jdk>[1.6,1.8)</jdk>
 			</activation>
@@ -690,6 +691,7 @@
 			</properties>
 		</profile>
 		<profile>
+			<id>jetty9x</id>
     			<activation>
 		      		<jdk>[1.8,)</jdk>
 			</activation>
