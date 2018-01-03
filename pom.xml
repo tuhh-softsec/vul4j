@@ -200,7 +200,7 @@
 					<version>1.5.1</version>
 					<configuration>
 						<container>
-							<containerId>jetty8x</containerId>
+							<containerId>jetty9x</containerId>
 							<type>embedded</type>
 							<systemProperties>
 								<org.eclipse.jetty.LEVEL>WARN</org.eclipse.jetty.LEVEL>
