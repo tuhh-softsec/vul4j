@@ -163,5 +163,27 @@ public class StyledBlockTest {
 		        "[<p , <keyword>padding-left</keyword>, =, <string>\"20\"</string>, >....]",
 		        blocks.toString());
 	}
+	
+	/**
+	 * Test for the JSON highlighter.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testJSONHighlighter() throws Exception {
+		Config c = Config
+		        .getInstance(new File("highlighters/xslthl-config.xml").toURI()
+		                .toString());
+		MainHighlighter hl = c.getMainHighlighter("json");
+		List<Block> blocks = new ArrayList<Block>();
+		blocks = hl.highlight("{\"personnel\": {\"person\": [\n" + 
+				"    {\n" + 
+				"        \"id\": \"Big.Boss\"");
+		assertEquals(
+		        "[{, <json_key>\"personnel\"</json_key>, : {, <json_key>\"person\"</json_key>, : [\n" + 
+		        "    {\n" + 
+		        "        , <json_key>\"id\"</json_key>, : , <string>\"Big.Boss\"</string>]",
+		        blocks.toString());
+	}
 
 }

@@ -55,7 +55,7 @@ public class StringHighlighter extends Highlighter {
 	/**
 	 * The start token and the escape token.
 	 */
-	private String start, end, escape;
+	private String start, end, escape, specialCharAfterQuote, specialQSName;
 	/**
 	 * If set the double occurance of start escapes it.
 	 */
@@ -76,6 +76,8 @@ public class StringHighlighter extends Highlighter {
 		start = params.getParam("string");
 		end = params.getParam("endString", start);
 		escape = params.getParam("escape");
+		specialCharAfterQuote = params.getParam("char-after-special-quoted-string");
+		specialQSName = params.getParam("special-quoted-string-name");
 		doubleEscapes = params.isSet("doubleEscapes");
 		spansNewLines = params.isSet("spanNewLines");
 		if (start == null || start.length() == 0) {
@@ -128,7 +130,31 @@ public class StringHighlighter extends Highlighter {
 		if (!in.finished()) {
 			in.moveNext();
 		}
-		out.add(in.markedToStyledBlock(styleName));
+		boolean specialQuotedString = false;
+		try {
+			if(specialCharAfterQuote != null && specialCharAfterQuote.length() == 1) {
+				//If there is a special character after the quoted string, consider it a special styled string.
+				int pos = 0;
+				while(pos + in.getPosition() < in.getLength()) {
+					Character next = in.next(pos);
+					if(Character.isWhitespace(next)) {
+						//Skip
+					} else {
+						if(specialCharAfterQuote.charAt(0) == next) {
+							specialQuotedString = true;
+							break;
+						} else {
+							break;
+						}
+					}
+					pos ++;
+				}
+			}
+		} catch(Exception ex) {
+			//Just in case...
+			ex.printStackTrace();
+		}
+		out.add(in.markedToStyledBlock(specialQuotedString ? specialQSName: styleName));
 		return true;
 	}
 
