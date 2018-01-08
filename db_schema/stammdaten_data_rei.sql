@@ -14,7 +14,7 @@ SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 
-SET search_path = stammdaten, pg_catalog;
+SET search_path = stamm, pg_catalog;
 
 COPY rei_progpunkt (id, reiid, rei_prog_punkt) FROM stdin;
 1	A1:1.1	Luft/äußere Strahlung: KKW, best.gem. Betrieb, Gen.inhaber                                                              

@@ -138,6 +138,6 @@ if [ "$NO_DATA" != "true" ]; then
 
     shp2pgsql -s 25832:4326 vg250_${TS}.utm32s.shape.ebenen/vg250_ebenen/VG250_GEM geo.vg250_gem | psql -q $DB_CONNECT_STRING -d $DB_NAME
 
-    echo fille stammdaten.verwaltungsgrenze
+    echo fill stamm.verwaltungsgrenze
     psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_fill_verwaltungsgrenze.sql
 fi
