@@ -328,6 +328,10 @@ INSERT INTO filter_type VALUES(6, 'listrei');
 INSERT INTO filter_type VALUES(7, 'listkta');
 INSERT INTO filter_type VALUES(8, 'bool');
 INSERT INTO filter_type VALUES(9, 'datetime');
+<<<<<<< HEAD
+=======
+
+>>>>>>> 39d9883ee0c76796f00a3e71f8bd7c65eab628b9
 
 CREATE TABLE filter (
     id serial PRIMARY KEY,
