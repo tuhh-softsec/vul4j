@@ -28,7 +28,7 @@ SET search_path = stamm, pg_catalog;
 COPY ort_typ (id, ort_typ, code) FROM stdin;
 1	dynamischer Messpunkt (nicht vordefiniert)	DYN
 2	vordefinierter Messpunkt	GP
-3	REI-Messpunkit	REI
+3	REI-Messpunkt	REI
 4	Verwaltungseinheit	VE
 5	Staat	ST
 6	Fluss	FL
