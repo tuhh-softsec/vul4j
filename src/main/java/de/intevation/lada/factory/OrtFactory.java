@@ -45,7 +45,9 @@ public class OrtFactory {
     private List<ReportItem> errors;
 
     public void transformCoordinates(Ort ort) {
-        errors = new ArrayList<ReportItem>();
+        if (errors == null) {
+            errors = new ArrayList<ReportItem>();
+        }
         Integer kda = ort.getKdaId();
         String epsg = null;
         String xCoord = null;
@@ -95,6 +97,9 @@ public class OrtFactory {
     }
 
     private void jtsTransform(String epsg, String xCoord, String yCoord, Ort ort) {
+        if (errors == null) {
+            errors = new ArrayList<ReportItem>();
+        }
         try {
             CoordinateReferenceSystem src = CRS.decode(epsg);
             CoordinateReferenceSystem target = CRS.decode("EPSG:4326");
@@ -118,6 +123,9 @@ public class OrtFactory {
     }
 
     private void degreeTransform(Ort ort) {
+        if (errors == null) {
+            errors = new ArrayList<ReportItem>();
+        }
         String xCoord = ort.getKoordXExtern();
         String yCoord = ort.getKoordYExtern();
         int xDegree = 0;
@@ -213,6 +221,9 @@ public class OrtFactory {
      * @param staat The staat id
      */
     public Ort completeOrt(Ort ort) {
+        if (errors == null) {
+            errors = new ArrayList<ReportItem>();
+        }
         QueryBuilder<Ort> builder =
             new QueryBuilder<Ort>(
                 repository.entityManager(Strings.STAMM),
@@ -255,6 +266,9 @@ public class OrtFactory {
     }
 
     private Ort createOrt(Ort ort) {
+        if (errors == null) {
+            errors = new ArrayList<ReportItem>();
+        }
         boolean hasKoord = false;
         boolean hasGem = false;
         boolean hasStaat = false;
@@ -311,6 +325,13 @@ public class OrtFactory {
             ort.setBerichtstext(staat.getStaat());
             transformCoordinates(ort);
             hasStaat = true;
+        }
+        if (!hasKoord && !hasGem && !hasStaat) {
+            ReportItem err = new ReportItem();
+            err.setCode(611);
+            err.setKey("ort");
+            err.setValue("");
+            errors.add(err);
         }
         return ort;
     }

@@ -141,6 +141,7 @@ CREATE TABLE betriebsart (
 );
 INSERT INTO betriebsart VALUES(1, 'Normal-/Routinebetrieb');
 INSERT INTO betriebsart VALUES(2, 'Störfall-/Intensivbetrieb');
+INSERT INTO betriebsart VALUES(3, 'Übung zum Störfall');
 
 
 CREATE TABLE staat (
@@ -326,6 +327,7 @@ INSERT INTO filter_type VALUES(5, 'number');
 INSERT INTO filter_type VALUES(6, 'listrei');
 INSERT INTO filter_type VALUES(7, 'listkta');
 INSERT INTO filter_type VALUES(8, 'bool');
+INSERT INTO filter_type VALUES(9, 'datetime');
 
 CREATE TABLE filter (
     id serial PRIMARY KEY,
@@ -423,6 +425,20 @@ CREATE TABLE kta (
 COMMENT ON TABLE kta
   IS 'kernteschnische Anlagen';
 
+CREATE TABLE kta_gruppe
+(
+    id serial PRIMARY KEY,
+    kta_gruppe character varying(7) NOT NULL,
+    beschreibung character varying(120)
+);
+
+CREATE TABLE kta_grp_zuord
+(
+    id serial PRIMARY KEY,
+    kta_grp_id integer REFERENCES kta_gruppe,
+    kta_id integer REFERENCES kta
+);
+
 CREATE TABLE ortszusatz (
     ozs_id character varying(7) PRIMARY KEY,
     ortszusatz character varying(80) NOT NULL
@@ -431,7 +447,7 @@ CREATE TABLE ortszusatz (
 CREATE TABLE ort (
     id serial PRIMARY KEY,
     netzbetreiber_id character varying(2) NOT NULL REFERENCES netz_betreiber,
-    ort_id character varying(10) NOT NULL,
+    ort_id character varying(12) NOT NULL,
     langtext character varying(100) NOT NULL,
     staat_id smallint REFERENCES staat,
     gem_id character varying(8) REFERENCES verwaltungseinheit,
@@ -452,7 +468,7 @@ CREATE TABLE ort (
     zustaendigkeit character varying(10),
     mp_art character varying(10),
     aktiv character(1),
-    anlage_id integer,
+    kta_gruppe_id integer REFERENCES kta_gruppe,
     oz_id character varying(7) REFERENCES ortszusatz(ozs_id),
     hoehe_ueber_nn real,
     UNIQUE(ort_id, netzbetreiber_id)
@@ -462,10 +478,6 @@ CREATE INDEX ort_netz_id_idx ON stamm.ort USING btree (netzbetreiber_id);
 
 CREATE TRIGGER letzte_aenderung_ort BEFORE UPDATE ON ort FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 CREATE TRIGGER set_ort_id_ort BEFORE INSERT ON ort FOR EACH ROW EXECUTE PROCEDURE set_ort_id();
-
-ALTER TABLE ONLY ort
-    ADD CONSTRAINT ort_kta_fkey FOREIGN KEY (anlage_id) REFERENCES kta(id);
-
 
 CREATE TABLE ortszuordnung_typ (
     id character(1) PRIMARY KEY,
@@ -668,7 +680,6 @@ CREATE VIEW status_erreichbar AS (
         JOIN stamm.status_kombi zu
             ON zu.id = r.zu_id
 );
--- Status workflow
 
 -- Mappings for import
 
@@ -700,6 +711,36 @@ CREATE TABLE importer_config (
     CHECK (action = 'default' OR
         action = 'convert' OR
         action = 'transform')
+);
+
+-- Mappings for REI extension
+
+CREATE TABLE rei_progpunkt
+(
+    id serial PRIMARY KEY,
+    reiid character varying(10) NOT NULL,
+    rei_prog_punkt character varying(120)
+);
+
+CREATE TABLE rei_progpunkt_gruppe
+(
+    id serial PRIMARY KEY,
+    rei_prog_punkt_gruppe character varying(30),
+    beschreibung character varying(120)
+);
+
+CREATE TABLE rei_progpunkt_grp_zuord
+(
+    id serial PRIMARY KEY,
+    rei_progpunkt_grp_id integer REFERENCES rei_progpunkt_gruppe,
+    rei_progpunkt_id integer REFERENCES rei_progpunkt
+);
+
+CREATE TABLE rei_progpunkt_grp_umw_zuord
+(
+    id serial PRIMARY KEY,
+    rei_progpunkt_grp_id integer REFERENCES rei_progpunkt_gruppe,
+    umw_id character varying(3) REFERENCES umwelt
 );
 
 COMMIT;

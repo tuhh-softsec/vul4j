@@ -1327,12 +1327,12 @@ public class LafObjectListener extends LafBaseListener {
         }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
-        if (!value.matches(LafDataTypes.C10)) {
+        if (!value.matches(LafDataTypes.C21)) {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);

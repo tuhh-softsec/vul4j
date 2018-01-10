@@ -11,60 +11,58 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import de.intevation.lada.model.land.Ortszuordnung;
 import de.intevation.lada.model.land.Probe;
+import de.intevation.lada.model.stammdaten.ReiProgpunktGrpUmwZuord;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
-import de.intevation.lada.util.data.Strings;
-import de.intevation.lada.util.rest.Response;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
 
 /**
  * Validation rule for probe.
- * Validates if the probe has a "entnahmeort".
+ * Validates if the umwelt id fits the deskriptor string.
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
 @ValidationRule("Probe")
-public class HasEntnahmeOrt implements Rule {
+public class ReiToUmwelt implements Rule {
 
     @Inject
     @RepositoryConfig(type=RepositoryType.RO)
-    private Repository repo;
+    private Repository repository;
 
     @Override
     public Violation execute(Object object) {
         Probe probe = (Probe)object;
-        Integer id = probe.getId();
-        if (id == null) {
-            Violation violation = new Violation();
-            violation.addWarning("entnahmeOrt", 631);
-            return violation;
+        if (probe.getDatenbasisId() != null &&
+            probe.getDatenbasisId() != 3 &&
+            probe.getDatenbasisId() != 4) {
+            return null;
         }
-        if (probe.getReiProgpunktGrpId() != null ||
-            Integer.valueOf(3).equals(probe.getDatenbasisId()) ||
-            Integer.valueOf(4).equals(probe.getDatenbasisId())) {
-                return null;
+        if (probe.getUmwId() == null) {
+            return null;
         }
-        QueryBuilder<Ortszuordnung> builder =
-            new QueryBuilder<Ortszuordnung>(
-                repo.entityManager(Strings.LAND), Ortszuordnung.class);
-        builder.and("probeId", id);
-        Response response = repo.filter(builder.getQuery(), Strings.LAND);
-        @SuppressWarnings("unchecked")
-        List<Ortszuordnung> orte = (List<Ortszuordnung>)response.getData();
-        for (Ortszuordnung ort: orte) {
-            if ("E".equals(ort.getOrtszuordnungTyp())) {
+        if (probe.getReiProgpunktGrpId() == null) {
+            return null;
+        }
+        QueryBuilder<ReiProgpunktGrpUmwZuord> builder =
+            new QueryBuilder<ReiProgpunktGrpUmwZuord>(
+                repository.entityManager("stamm"),
+                ReiProgpunktGrpUmwZuord.class
+            );
+        builder.and("reiProgpunktGrpId", probe.getReiProgpunktGrpId());
+        List<ReiProgpunktGrpUmwZuord> zuord =
+            repository.filterPlain(builder.getQuery(), "stamm");
+        for (ReiProgpunktGrpUmwZuord entry : zuord) {
+            if (entry.getUmwId().equals(probe.getUmwId())) {
                 return null;
             }
         }
         Violation violation = new Violation();
-        violation.addWarning("entnahmeOrt", 631);
+        violation.addWarning("umwId", 632);
         return violation;
     }
-
 }

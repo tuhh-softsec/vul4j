@@ -31,6 +31,7 @@ import de.intevation.lada.model.stammdaten.Messgroesse;
 import de.intevation.lada.model.stammdaten.Ort;
 import de.intevation.lada.model.stammdaten.ProbenZusatz;
 import de.intevation.lada.model.stammdaten.Probenart;
+import de.intevation.lada.model.stammdaten.ReiProgpunktGruppe;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
@@ -164,6 +165,11 @@ implements Creator
                 probe.getMediaDesk().replaceAll(" ", "").substring(2), CN);
         laf += probe.getTest() == Boolean.TRUE ?
             lafLine("TESTDATEN", "1") : lafLine("TESTDATEN", "0");
+        if (probe.getReiProgpunktGrpId() != null) {
+            ReiProgpunktGruppe rpg = repository.getByIdPlain(
+                ReiProgpunktGruppe.class, probe.getReiProgpunktGrpId(), "stamm");
+            laf += lafLine("REI_PROGRAMMPUNKTGRUPPE", rpg.getReiProgPunktGruppe(), CN);
+        }
         laf += lafLine("ZEITBASIS_S", "2");
         laf += writeOrt(probe);
         for (ZusatzWert zw : zusatzwerte) {
@@ -224,7 +230,8 @@ implements Creator
             if ("E".equals(o.getOrtszuordnungTyp())) {
                 type = "P_";
             }
-            else if ("U".equals(o.getOrtszuordnungTyp())) {
+            else if ("U".equals(o.getOrtszuordnungTyp()) ||
+                "R".equals(o.getOrtszuordnungTyp())) {
                 type = "U_";
                 laf += "%URSPRUNGSORT%\n";
             }
@@ -263,7 +270,11 @@ implements Creator
             koord += sOrte.get(0).getKoordYExtern() + "\"";
             laf += lafLine(type + "KOORDINATEN_S", koord);
 
-            if (sOrte.get(0).getOzId() != null &&
+            if (probe.getReiProgpunktGrpId() != null) {
+                lafLine(type + "ORTS_ZUSATZCODE",
+                    sOrte.get(0).getKtaGruppeId() + sOrte.get(0).getGemId());
+            }
+            else if (sOrte.get(0).getOzId() != null &&
                 sOrte.get(0).getOzId().length() > 0) {
                 laf += lafLine(type + "ORTS_ZUSATZCODE",
                     sOrte.get(0).getOzId(), CN);
