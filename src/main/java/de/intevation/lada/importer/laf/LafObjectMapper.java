@@ -1558,6 +1558,7 @@ public class LafObjectMapper {
                 return;
             }
             probe.setBaId(transfer.get(0).getBaId());
+            probe.setDatenbasisId(transfer.get(0).getDatenbasisId());
         }
 
         if ("MESSPROGRAMM_LAND".equals(key)) {
