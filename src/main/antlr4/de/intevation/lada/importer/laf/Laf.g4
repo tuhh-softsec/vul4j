@@ -25,6 +25,7 @@ probedaten: db
   | probenahme_datum_uhrzeit_e
   | soll_datum_uhrzeit_a
   | soll_datum_uhrzeit_e
+  | ursprungs_datum_uhrzeit
   | ub
   | deskriptoren
   | rei
