@@ -16,6 +16,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonArray;
+import javax.json.JsonException;
 import javax.json.JsonReader;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
@@ -30,7 +31,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
-
+import org.apache.log4j.Logger;
 import de.intevation.lada.factory.OrtFactory;
 import de.intevation.lada.importer.ReportItem;
 import de.intevation.lada.model.stammdaten.Ort;
@@ -91,6 +92,9 @@ import de.intevation.lada.validation.annotation.ValidationConfig;
 @Path("rest/ort")
 @RequestScoped
 public class OrtService {
+
+    @Inject
+    private Logger logger;
 
     /**
      * The data repository granting read/write access.
@@ -231,14 +235,19 @@ public class OrtService {
                     .orLike("kurztext", "%"+params.getFirst("search")+"%")
                     .orLike("langtext", "%"+params.getFirst("search")+"%");
                 builder.and(filter);
-                orte = repository.filterPlain(builder.getQuery(), Strings.STAMM);
             }
-            else if (params.containsKey("filter")) {
+            if (params.containsKey("filter")) {
                 String json = params.getFirst("filter");
                 JsonReader jsonReader = Json.createReader(new StringReader(json));
-                JsonArray filter = jsonReader.readArray();
-                jsonReader.close();
-                orte = repository.filterPlain(builder, filter, Strings.STAMM);
+                try {
+                    JsonArray filter = jsonReader.readArray();
+                    jsonReader.close();
+                    orte = repository.filterPlain(builder, filter, Strings.STAMM);
+                }
+                catch (JsonException |
+                    IllegalStateException e) {
+                    logger.warn("Use JSON filter at this place.", e);
+                }
             }
             else {
                 orte = repository.filterPlain(builder.getQuery(), Strings.STAMM);
