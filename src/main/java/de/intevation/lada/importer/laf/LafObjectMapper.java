@@ -857,10 +857,10 @@ public class LafObjectMapper {
             wert = wert.substring(1);
             messwert.setMesswertNwg("<");
         }
-        messwert.setMesswert(Double.valueOf(wert));
-        messwert.setMessfehler(Double.valueOf(attributes.get("MESSFEHLER")).floatValue());
+        messwert.setMesswert(Double.valueOf(wert.replaceAll(",", ".")));
+        messwert.setMessfehler(Double.valueOf(attributes.get("MESSFEHLER").replaceAll(",", ".")).floatValue());
         if (attributes.containsKey("NWG")) {
-            messwert.setNwgZuMesswert(Double.valueOf(attributes.get("NWG")));
+            messwert.setNwgZuMesswert(Double.valueOf(attributes.get("NWG").replaceAll(",", ".")));
         }
         if (attributes.containsKey("GRENZWERT")) {
             messwert.setGrenzwertueberschreitung(attributes.get("GRENZWERT").toUpperCase() == "J" ? true : false);
