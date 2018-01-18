@@ -15,16 +15,16 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.persistence.Query;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
+
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
-
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
 
 import de.intevation.lada.importer.ReportItem;
 import de.intevation.lada.model.stammdaten.Ort;
@@ -34,6 +34,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 
 public class OrtFactory {
 
@@ -44,7 +45,9 @@ public class OrtFactory {
     private List<ReportItem> errors;
 
     public void transformCoordinates(Ort ort) {
-        errors = new ArrayList<ReportItem>();
+        if (errors == null) {
+            errors = new ArrayList<ReportItem>();
+        }
         Integer kda = ort.getKdaId();
         String epsg = null;
         String xCoord = null;
@@ -94,6 +97,9 @@ public class OrtFactory {
     }
 
     private void jtsTransform(String epsg, String xCoord, String yCoord, Ort ort) {
+        if (errors == null) {
+            errors = new ArrayList<ReportItem>();
+        }
         try {
             CoordinateReferenceSystem src = CRS.decode(epsg);
             CoordinateReferenceSystem target = CRS.decode("EPSG:4326");
@@ -117,6 +123,9 @@ public class OrtFactory {
     }
 
     private void degreeTransform(Ort ort) {
+        if (errors == null) {
+            errors = new ArrayList<ReportItem>();
+        }
         String xCoord = ort.getKoordXExtern();
         String yCoord = ort.getKoordYExtern();
         int xDegree = 0;
@@ -212,9 +221,12 @@ public class OrtFactory {
      * @param staat The staat id
      */
     public Ort completeOrt(Ort ort) {
+        if (errors == null) {
+            errors = new ArrayList<ReportItem>();
+        }
         QueryBuilder<Ort> builder =
             new QueryBuilder<Ort>(
-                repository.entityManager("stamm"),
+                repository.entityManager(Strings.STAMM),
                 Ort.class);
         if (ort.getKdaId() != null &&
             ort.getKoordXExtern() != null &&
@@ -225,7 +237,7 @@ public class OrtFactory {
             builder.and("koordYExtern", ort.getKoordYExtern());
             builder.and("ozId", ort.getOzId());
             builder.and("netzbetreiberId", ort.getNetzbetreiberId());
-            List<Ort> orte = repository.filterPlain(builder.getQuery(), "stamm");
+            List<Ort> orte = repository.filterPlain(builder.getQuery(), Strings.STAMM);
             if (orte != null && orte.size() > 0) {
                 return orte.get(0);
             }
@@ -234,7 +246,7 @@ public class OrtFactory {
             builder.and("gemId", ort.getGemId());
             builder.and("ozId", ort.getOzId());
             builder.and("netzbetreiberId", ort.getNetzbetreiberId());
-            List<Ort> orte = repository.filterPlain(builder.getQuery(), "stamm");
+            List<Ort> orte = repository.filterPlain(builder.getQuery(), Strings.STAMM);
             if (orte != null && orte.size() > 0) {
                 return orte.get(0);
             }
@@ -244,7 +256,7 @@ public class OrtFactory {
             builder.and("ortTyp", 5);
             builder.and("ozId", ort.getOzId());
             builder.and("netzbetreiberId", ort.getNetzbetreiberId());
-            List<Ort> orte = repository.filterPlain(builder.getQuery(), "stamm");
+            List<Ort> orte = repository.filterPlain(builder.getQuery(), Strings.STAMM);
             if (orte != null && orte.size() > 0) {
                 return orte.get(0);
             }
@@ -254,6 +266,9 @@ public class OrtFactory {
     }
 
     private Ort createOrt(Ort ort) {
+        if (errors == null) {
+            errors = new ArrayList<ReportItem>();
+        }
         boolean hasKoord = false;
         boolean hasGem = false;
         boolean hasStaat = false;
@@ -274,7 +289,7 @@ public class OrtFactory {
             Verwaltungseinheit v = repository.getByIdPlain(
                 Verwaltungseinheit.class,
                 ort.getGemId(),
-                "stamm");
+                Strings.STAMM);
             if (!hasKoord) {
                 ort.setKdaId(4);
                 ort.setKoordYExtern(String.valueOf(v.getMittelpunkt().getY()));
@@ -297,7 +312,7 @@ public class OrtFactory {
             !hasGem
         ) {
             Staat staat =
-                repository.getByIdPlain(Staat.class, ort.getStaatId(), "stamm");
+                repository.getByIdPlain(Staat.class, ort.getStaatId(), Strings.STAMM);
             ort.setKdaId(staat.getKdaId());
             ort.setKoordXExtern(staat.getKoordXExtern());
             ort.setKoordYExtern(staat.getKoordYExtern());
@@ -310,6 +325,13 @@ public class OrtFactory {
             ort.setBerichtstext(staat.getStaat());
             transformCoordinates(ort);
             hasStaat = true;
+        }
+        if (!hasKoord && !hasGem && !hasStaat) {
+            ReportItem err = new ReportItem();
+            err.setCode(611);
+            err.setKey("ort");
+            err.setValue("");
+            errors.add(err);
         }
         return ort;
     }
@@ -325,7 +347,7 @@ public class OrtFactory {
         if (ort.getGeom() == null) {
             return;
         }
-        Query q = repository.entityManager("stamm")
+        Query q = repository.entityManager(Strings.STAMM)
             .createQuery("SELECT vg.gemId " +
                          "FROM Verwaltungsgrenze vg " +
                          "WHERE contains(vg.shape, :geom) = TRUE");

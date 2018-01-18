@@ -31,10 +31,12 @@ import de.intevation.lada.model.stammdaten.Messgroesse;
 import de.intevation.lada.model.stammdaten.Ort;
 import de.intevation.lada.model.stammdaten.ProbenZusatz;
 import de.intevation.lada.model.stammdaten.Probenart;
+import de.intevation.lada.model.stammdaten.ReiProgpunktGruppe;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 
 /**
@@ -82,7 +84,7 @@ implements Creator
      * @return LAF conform string.
      */
     private String probeToLAF(String probeId) {
-        Response found = repository.getById(Probe.class, Integer.valueOf(probeId), "land");
+        Response found = repository.getById(Probe.class, Integer.valueOf(probeId), Strings.LAND);
         if (found.getData() == null) {
             return null;
         }
@@ -101,30 +103,30 @@ implements Creator
     private String writeAttributes(Probe probe) {
         QueryBuilder<KommentarP> kommBuilder =
             new QueryBuilder<KommentarP>(
-                repository.entityManager("land"), KommentarP.class);
+                repository.entityManager(Strings.LAND), KommentarP.class);
         kommBuilder.and("probeId", probe.getId());
-        Response kommentar = repository.filter(kommBuilder.getQuery(), "land");
+        Response kommentar = repository.filter(kommBuilder.getQuery(), Strings.LAND);
         List<KommentarP> kommentare = (List<KommentarP>)kommentar.getData();
 
         QueryBuilder<Probenart> builder =
             new QueryBuilder<Probenart>(
-                repository.entityManager("stamm"),
+                repository.entityManager(Strings.STAMM),
                 Probenart.class);
         builder.and("id", probe.getProbenartId());
         List<Probenart> probenarten =
             (List<Probenart>)repository.filter(
                 builder.getQuery(),
-                "stamm").getData();
+                Strings.STAMM).getData();
         String probenart = probenarten.get(0).getProbenart();
 
         MessStelle messstelle =
-            repository.getByIdPlain(MessStelle.class, probe.getMstId(), "stamm");
+            repository.getByIdPlain(MessStelle.class, probe.getMstId(), Strings.STAMM);
 
         QueryBuilder<ZusatzWert> zusatzBuilder =
             new QueryBuilder<ZusatzWert>(
-                repository.entityManager("land"), ZusatzWert.class);
+                repository.entityManager(Strings.LAND), ZusatzWert.class);
         zusatzBuilder.and("probeId", probe.getId());
-        Response zusatz = repository.filter(zusatzBuilder.getQuery(), "land");
+        Response zusatz = repository.filter(zusatzBuilder.getQuery(), Strings.LAND);
         List<ZusatzWert> zusatzwerte = (List<ZusatzWert>)zusatz.getData();
 
         String laf = "";
@@ -163,6 +165,11 @@ implements Creator
                 probe.getMediaDesk().replaceAll(" ", "").substring(2), CN);
         laf += probe.getTest() == Boolean.TRUE ?
             lafLine("TESTDATEN", "1") : lafLine("TESTDATEN", "0");
+        if (probe.getReiProgpunktGrpId() != null) {
+            ReiProgpunktGruppe rpg = repository.getByIdPlain(
+                ReiProgpunktGruppe.class, probe.getReiProgpunktGrpId(), "stamm");
+            laf += lafLine("REI_PROGRAMMPUNKTGRUPPE", rpg.getReiProgPunktGruppe(), CN);
+        }
         laf += lafLine("ZEITBASIS_S", "2");
         laf += writeOrt(probe);
         for (ZusatzWert zw : zusatzwerte) {
@@ -185,13 +192,13 @@ implements Creator
     private String writeZusatzwert(ZusatzWert zw) {
         QueryBuilder<ProbenZusatz> builder =
             new QueryBuilder<ProbenZusatz>(
-                repository.entityManager("stamm"),
+                repository.entityManager(Strings.STAMM),
                 ProbenZusatz.class);
         builder.and("id", zw.getPzsId());
         List<ProbenZusatz> zusatz =
             (List<ProbenZusatz>)repository.filter(
                 builder.getQuery(),
-                "stamm").getData();
+                Strings.STAMM).getData();
 
         String value = "\"" + zusatz.get(0).getId() + "\"";
         value += " " + zw.getMesswertPzs();
@@ -210,10 +217,10 @@ implements Creator
     private String writeOrt(Probe probe) {
         QueryBuilder<Ortszuordnung> builder =
             new QueryBuilder<Ortszuordnung>(
-                repository.entityManager("land"),
+                repository.entityManager(Strings.LAND),
                 Ortszuordnung.class);
         builder.and("probeId", probe.getId());
-        Response objects = repository.filter(builder.getQuery(), "land");
+        Response objects = repository.filter(builder.getQuery(), Strings.LAND);
         List<Ortszuordnung> orte =
             (List<Ortszuordnung>)objects.getData();
 
@@ -223,7 +230,8 @@ implements Creator
             if ("E".equals(o.getOrtszuordnungTyp())) {
                 type = "P_";
             }
-            else if ("U".equals(o.getOrtszuordnungTyp())) {
+            else if ("U".equals(o.getOrtszuordnungTyp()) ||
+                "R".equals(o.getOrtszuordnungTyp())) {
                 type = "U_";
                 laf += "%URSPRUNGSORT%\n";
             }
@@ -237,13 +245,13 @@ implements Creator
             }
             QueryBuilder<Ort> oBuilder =
                 new QueryBuilder<Ort>(
-                    repository.entityManager("stamm"),
+                    repository.entityManager(Strings.STAMM),
                     Ort.class);
             oBuilder.and("id", o.getOrtId());
             List<Ort> sOrte=
                 (List<Ort>)repository.filter(
                     oBuilder.getQuery(),
-                    "stamm").getData();
+                    Strings.STAMM).getData();
 
             if (sOrte.get(0).getStaatId() != null) {
                 laf += lafLine(type + "HERKUNFTSLAND_S",
@@ -262,7 +270,11 @@ implements Creator
             koord += sOrte.get(0).getKoordYExtern() + "\"";
             laf += lafLine(type + "KOORDINATEN_S", koord);
 
-            if (sOrte.get(0).getOzId() != null &&
+            if (probe.getReiProgpunktGrpId() != null) {
+                lafLine(type + "ORTS_ZUSATZCODE",
+                    sOrte.get(0).getKtaGruppeId() + sOrte.get(0).getGemId());
+            }
+            else if (sOrte.get(0).getOzId() != null &&
                 sOrte.get(0).getOzId().length() > 0) {
                 laf += lafLine(type + "ORTS_ZUSATZCODE",
                     sOrte.get(0).getOzId(), CN);
@@ -299,10 +311,10 @@ implements Creator
         // Get all messungen
         QueryBuilder<Messung> builder =
             new QueryBuilder<Messung>(
-                repository.entityManager("land"),
+                repository.entityManager(Strings.LAND),
                 Messung.class);
         builder.and("probeId", probe.getId());
-        Response objects = repository.filter(builder.getQuery(), "land");
+        Response objects = repository.filter(builder.getQuery(), Strings.LAND);
         List<Messung> mess = (List<Messung>)objects.getData();
 
         String laf = "";
@@ -310,15 +322,15 @@ implements Creator
             laf += "%MESSUNG%\n";
             QueryBuilder<Messwert> wertBuilder =
                 new QueryBuilder<Messwert>(
-                    repository.entityManager("land"), Messwert.class);
+                    repository.entityManager(Strings.LAND), Messwert.class);
             wertBuilder.and("messungsId", m.getId());
-            Response messw = repository.filter(wertBuilder.getQuery(), "land");
+            Response messw = repository.filter(wertBuilder.getQuery(), Strings.LAND);
             List<Messwert> werte = (List<Messwert>)messw.getData();
             QueryBuilder<KommentarM> kommBuilder =
                 new QueryBuilder<KommentarM>(
-                    repository.entityManager("land"), KommentarM.class);
+                    repository.entityManager(Strings.LAND), KommentarM.class);
             kommBuilder.and("messungsId", m.getId());
-            Response kommentar = repository.filter(kommBuilder.getQuery(), "land");
+            Response kommentar = repository.filter(kommBuilder.getQuery(), Strings.LAND);
             List<KommentarM> kommentare = (List<KommentarM>)kommentar.getData();
             laf += lafLine("MESSUNGS_ID", m.getIdAlt().toString());
             laf += lafLine("NEBENPROBENNUMMER", m.getNebenprobenNr(), CN);
@@ -362,23 +374,23 @@ implements Creator
     private String writeMesswert(Messwert mw) {
         QueryBuilder<Messgroesse> builder =
             new QueryBuilder<Messgroesse>(
-                repository.entityManager("stamm"),
+                repository.entityManager(Strings.STAMM),
                 Messgroesse.class);
         builder.and("id", mw.getMessgroesseId());
         List<Messgroesse> groessen =
             (List<Messgroesse>)repository.filter(
                 builder.getQuery(),
-                "stamm").getData();
+                Strings.STAMM).getData();
 
         QueryBuilder<MessEinheit> eBuilder =
             new QueryBuilder<MessEinheit>(
-                repository.entityManager("stamm"),
+                repository.entityManager(Strings.STAMM),
                 MessEinheit.class);
         eBuilder.and("id", mw.getMehId());
         List<MessEinheit> einheiten =
             (List<MessEinheit>)repository.filter(
                 eBuilder.getQuery(),
-                "stamm").getData();
+                Strings.STAMM).getData();
 
         String tag = "MESSWERT";
         String value = "\"" + groessen.get(0).getMessgroesse() + "\"";
@@ -396,9 +408,9 @@ implements Creator
         }
         else {
             tag += "_NWG_G";
-            value += " " + mw.getNwgZuMesswert() == null ? "0.0": mw.getNwgZuMesswert();
-            value += " " + mw.getGrenzwertueberschreitung() == null ? " N" :
-                mw.getGrenzwertueberschreitung() ? " J" : " N";
+            value += " " + (mw.getNwgZuMesswert() == null ? "0.0": mw.getNwgZuMesswert());
+            value += " " + (mw.getGrenzwertueberschreitung() == null ? " N" :
+                mw.getGrenzwertueberschreitung() ? " J" : " N");
         }
         return lafLine(tag, value);
     }

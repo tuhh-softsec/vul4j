@@ -20,6 +20,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 
 public abstract class BaseAuthorizer implements Authorizer {
@@ -54,13 +55,13 @@ public abstract class BaseAuthorizer implements Authorizer {
      * @return True if the probe is readonly.
      */
     public boolean isProbeReadOnly(Integer probeId) {
-        EntityManager manager = repository.entityManager("land");
+        EntityManager manager = repository.entityManager(Strings.LAND);
         QueryBuilder<Messung> builder =
             new QueryBuilder<Messung>(
                 manager,
                 Messung.class);
         builder.and("probeId", probeId);
-        Response response = repository.filter(builder.getQuery(), "land");
+        Response response = repository.filter(builder.getQuery(), Strings.LAND);
         @SuppressWarnings("unchecked")
         List<Messung> messungen = (List<Messung>) response.getData();
         for (int i = 0; i < messungen.size(); i++) {
@@ -68,9 +69,9 @@ public abstract class BaseAuthorizer implements Authorizer {
                 continue;
             }
             StatusProtokoll status = repository.getByIdPlain(
-                StatusProtokoll.class, messungen.get(i).getStatus(), "land");
+                StatusProtokoll.class, messungen.get(i).getStatus(), Strings.LAND);
             StatusKombi kombi = repository.getByIdPlain(
-                StatusKombi.class, status.getStatusKombi(), "stamm");
+                StatusKombi.class, status.getStatusKombi(), Strings.STAMM);
             if (kombi.getStatusWert().getId() != 0 &&
                 kombi.getStatusWert().getId() != 4) {
                 return true;
@@ -81,16 +82,16 @@ public abstract class BaseAuthorizer implements Authorizer {
 
     public boolean isMessungReadOnly(Integer messungsId) {
         Messung messung =
-            repository.getByIdPlain(Messung.class, messungsId, "land");
+            repository.getByIdPlain(Messung.class, messungsId, Strings.LAND);
         if (messung.getStatus() == null) {
             return false;
         }
         StatusProtokoll status = repository.getByIdPlain(
             StatusProtokoll.class,
             messung.getStatus(),
-            "land");
+            Strings.LAND);
         StatusKombi kombi = repository.getByIdPlain(
-            StatusKombi.class, status.getStatusKombi(), "stamm");
+            StatusKombi.class, status.getStatusKombi(), Strings.STAMM);
         return (kombi.getStatusWert().getId() != 0 &&
                 kombi.getStatusWert().getId() != 4);
     }

@@ -10,9 +10,9 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 
 
-CREATE SCHEMA stammdaten;
+CREATE SCHEMA stamm;
 
-SET search_path = stammdaten, pg_catalog;
+SET search_path = stamm, pg_catalog;
 
 CREATE FUNCTION set_ort_id() RETURNS trigger
     LANGUAGE plpgsql
@@ -67,36 +67,36 @@ begin
       result := null;
     else
       if d01 = '00' then
-        select s00.beschreibung into result FROM stammdaten.deskriptoren s00
+        select s00.beschreibung into result FROM stamm.deskriptoren s00
         where s00.ebene = 0 and s00.sn = d00::smallint;
       else
         if d02 = '00' or d00 <> '01' then
-          select s01.beschreibung into result FROM stammdaten.deskriptoren s01
+          select s01.beschreibung into result FROM stamm.deskriptoren s01
           where s01.ebene = 1 and s01.sn = d01::smallint
             and s01.vorgaenger =
-              (select s00.id FROM stammdaten.deskriptoren s00
+              (select s00.id FROM stamm.deskriptoren s00
                where s00.ebene = 0 and s00.sn = d00::smallint);
         else
           if d03 = '00' then
-            select s02.beschreibung into result FROM stammdaten.deskriptoren s02
+            select s02.beschreibung into result FROM stamm.deskriptoren s02
             where s02.ebene = 2 and s02.sn = d02::smallint
               and s02.vorgaenger =
-                (select s01.id FROM stammdaten.deskriptoren s01
+                (select s01.id FROM stamm.deskriptoren s01
                  where s01.ebene = 1 and s01.sn = d01::smallint
                    and s01.vorgaenger =
-                     (select s00.id FROM stammdaten.deskriptoren s00
+                     (select s00.id FROM stamm.deskriptoren s00
                       where s00.ebene = 0 and s00.sn = d00::smallint));
           else
-            select s03.beschreibung into result FROM stammdaten.deskriptoren s03
+            select s03.beschreibung into result FROM stamm.deskriptoren s03
             where s03.ebene = 3 and s03.sn = d03::smallint
               and s03.vorgaenger =
-              (select s02.id FROM stammdaten.deskriptoren s02
+              (select s02.id FROM stamm.deskriptoren s02
               where s02.ebene = 2 and s02.sn = d02::smallint
                 and s02.vorgaenger =
-                  (select s01.id FROM stammdaten.deskriptoren s01
+                  (select s01.id FROM stamm.deskriptoren s01
                   where s01.ebene = 1 and s01.sn = d01::smallint
                     and s01.vorgaenger =
-                      (select s00.id FROM stammdaten.deskriptoren s00
+                      (select s00.id FROM stamm.deskriptoren s00
                       where s00.ebene = 0 and s00.sn = d00::smallint)));
           end if;
         end if;
@@ -141,6 +141,7 @@ CREATE TABLE betriebsart (
 );
 INSERT INTO betriebsart VALUES(1, 'Normal-/Routinebetrieb');
 INSERT INTO betriebsart VALUES(2, 'Störfall-/Intensivbetrieb');
+INSERT INTO betriebsart VALUES(3, 'Übung zum Störfall');
 
 
 CREATE TABLE staat (
@@ -216,6 +217,8 @@ CREATE TABLE auth (
     labor_mst_id character varying(5) REFERENCES mess_stelle,
     funktion_id smallint REFERENCES auth_funktion
 );
+ALTER TABLE auth
+    ADD CONSTRAINT auth_unique UNIQUE (ldap_group, netzbetreiber_id, mst_id, labor_mst_id, funktion_id);
 
 
 CREATE TABLE auth_lst_umw (
@@ -321,7 +324,10 @@ INSERT INTO filter_type VALUES(2, 'listnetz');
 INSERT INTO filter_type VALUES(3, 'listumw');
 INSERT INTO filter_type VALUES(4, 'liststatus');
 INSERT INTO filter_type VALUES(5, 'number');
-
+INSERT INTO filter_type VALUES(6, 'listrei');
+INSERT INTO filter_type VALUES(7, 'listkta');
+INSERT INTO filter_type VALUES(8, 'bool');
+INSERT INTO filter_type VALUES(9, 'datetime');
 
 CREATE TABLE filter (
     id serial PRIMARY KEY,
@@ -419,6 +425,20 @@ CREATE TABLE kta (
 COMMENT ON TABLE kta
   IS 'kernteschnische Anlagen';
 
+CREATE TABLE kta_gruppe
+(
+    id serial PRIMARY KEY,
+    kta_gruppe character varying(7) NOT NULL,
+    beschreibung character varying(120)
+);
+
+CREATE TABLE kta_grp_zuord
+(
+    id serial PRIMARY KEY,
+    kta_grp_id integer REFERENCES kta_gruppe,
+    kta_id integer REFERENCES kta
+);
+
 CREATE TABLE ortszusatz (
     ozs_id character varying(7) PRIMARY KEY,
     ortszusatz character varying(80) NOT NULL
@@ -427,7 +447,7 @@ CREATE TABLE ortszusatz (
 CREATE TABLE ort (
     id serial PRIMARY KEY,
     netzbetreiber_id character varying(2) NOT NULL REFERENCES netz_betreiber,
-    ort_id character varying(10) NOT NULL,
+    ort_id character varying(12) NOT NULL,
     langtext character varying(100) NOT NULL,
     staat_id smallint REFERENCES staat,
     gem_id character varying(8) REFERENCES verwaltungseinheit,
@@ -448,20 +468,16 @@ CREATE TABLE ort (
     zustaendigkeit character varying(10),
     mp_art character varying(10),
     aktiv character(1),
-    anlage_id integer,
+    kta_gruppe_id integer REFERENCES kta_gruppe,
     oz_id character varying(7) REFERENCES ortszusatz(ozs_id),
     hoehe_ueber_nn real,
     UNIQUE(ort_id, netzbetreiber_id)
 );
 
-CREATE INDEX ort_netz_id_idx ON stammdaten.ort USING btree (netzbetreiber_id);
+CREATE INDEX ort_netz_id_idx ON stamm.ort USING btree (netzbetreiber_id);
 
 CREATE TRIGGER letzte_aenderung_ort BEFORE UPDATE ON ort FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 CREATE TRIGGER set_ort_id_ort BEFORE INSERT ON ort FOR EACH ROW EXECUTE PROCEDURE set_ort_id();
-
-ALTER TABLE ONLY ort
-    ADD CONSTRAINT ort_kta_fkey FOREIGN KEY (anlage_id) REFERENCES kta(id);
-
 
 CREATE TABLE ortszuordnung_typ (
     id character(1) PRIMARY KEY,
@@ -517,10 +533,18 @@ CREATE TABLE probenehmer (
 CREATE TRIGGER letzte_aenderung_probenehmer BEFORE UPDATE ON probenehmer FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 
 
+CREATE TABLE result_type (
+    id  serial PRIMARY KEY,
+    name character varying(10),
+    format character varying(30)
+);
+
+
 CREATE TABLE result (
     id serial PRIMARY KEY,
     query_id integer NOT NULL REFERENCES query ON DELETE CASCADE,
     data_index character varying(50) NOT NULL,
+    data_type integer REFERENCES result_type,
     header character varying(50) NOT NULL,
     width integer,
     flex boolean,
@@ -650,13 +674,12 @@ CREATE VIEW status_erreichbar AS (
            zu.stufe_id,
            von.wert_id AS cur_wert,
            von.stufe_id AS cur_stufe
-    FROM stammdaten.status_reihenfolge r
-        JOIN stammdaten.status_kombi von
+    FROM stamm.status_reihenfolge r
+        JOIN stamm.status_kombi von
             ON von.id = r.von_id
-        JOIN stammdaten.status_kombi zu
+        JOIN stamm.status_kombi zu
             ON zu.id = r.zu_id
 );
--- Status workflow
 
 -- Mappings for import
 
@@ -665,6 +688,7 @@ CREATE TABLE messprogramm_transfer (
     messprogramm_s character varying(1) NOT NULL,
     messprogramm_c character varying(100) NOT NULL,
     ba_id integer NOT NULL REFERENCES betriebsart,
+    datenbasis_id integer NOT NULL REFERENCES datenbasis,
     UNIQUE (messprogramm_s)
 );
 
@@ -688,6 +712,36 @@ CREATE TABLE importer_config (
     CHECK (action = 'default' OR
         action = 'convert' OR
         action = 'transform')
+);
+
+-- Mappings for REI extension
+
+CREATE TABLE rei_progpunkt
+(
+    id serial PRIMARY KEY,
+    reiid character varying(10) NOT NULL,
+    rei_prog_punkt character varying(120)
+);
+
+CREATE TABLE rei_progpunkt_gruppe
+(
+    id serial PRIMARY KEY,
+    rei_prog_punkt_gruppe character varying(30),
+    beschreibung character varying(120)
+);
+
+CREATE TABLE rei_progpunkt_grp_zuord
+(
+    id serial PRIMARY KEY,
+    rei_progpunkt_grp_id integer REFERENCES rei_progpunkt_gruppe,
+    rei_progpunkt_id integer REFERENCES rei_progpunkt
+);
+
+CREATE TABLE rei_progpunkt_grp_umw_zuord
+(
+    id serial PRIMARY KEY,
+    rei_progpunkt_grp_id integer REFERENCES rei_progpunkt_gruppe,
+    umw_id character varying(3) REFERENCES umwelt
 );
 
 COMMIT;

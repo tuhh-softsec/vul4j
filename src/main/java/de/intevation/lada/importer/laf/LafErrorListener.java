@@ -11,7 +11,7 @@ import de.intevation.lada.importer.ReportItem;
 
 public class LafErrorListener extends BaseErrorListener {
 
-    public static LafErrorListener INSTANCE =
+    public static final LafErrorListener INSTANCE =
         new LafErrorListener();
 
     private List<ReportItem> errors = new ArrayList<ReportItem>();

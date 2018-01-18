@@ -17,6 +17,7 @@ import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
@@ -40,21 +41,22 @@ public class Date implements Rule {
     public Violation execute(Object object) {
         Messung messung = (Messung)object;
         Integer probeId = messung.getProbeId();
-        Response response = repository.getById(Probe.class, probeId, "land");
+        Response response = repository.getById(Probe.class, probeId, Strings.LAND);
         Probe probe = (Probe) response.getData();
         if (probe == null) {
             Map<String, Integer> errors = new HashMap<String, Integer>();
             errors.put("lprobe", 604);
+            return null;
         }
-        if (messung.getMesszeitpunkt() != null) {
-            if (probe.getProbeentnahmeEnde() == null ||
-                probe.getProbeentnahmeEnde().after(messung.getMesszeitpunkt())) {
-                Violation violation = new Violation();
-                violation.addWarning(
-                    "messzeitpunkt#" + messung.getNebenprobenNr(),
-                    632);
-                return violation;
-            }
+        if (messung.getMesszeitpunkt() != null &&
+            (probe.getProbeentnahmeEnde() == null ||
+            probe.getProbeentnahmeEnde().after(messung.getMesszeitpunkt()))
+        ) {
+            Violation violation = new Violation();
+            violation.addWarning(
+                "messzeitpunkt#" + messung.getNebenprobenNr(),
+                632);
+            return violation;
         }
         return null;
     }

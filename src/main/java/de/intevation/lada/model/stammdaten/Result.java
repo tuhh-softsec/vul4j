@@ -4,11 +4,12 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 
 /**
  * The persistent class for the result database table.
@@ -35,6 +36,11 @@ public class Result implements Serializable {
     private Query query;
 
     private Integer width;
+
+    //bi-directional many-to-one association to ResultType
+    @ManyToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name="data_type")
+    private ResultType dataType;
 
     public Result() {
     }
@@ -95,6 +101,14 @@ public class Result implements Serializable {
 
     public void setWidth(Integer width) {
         this.width = width;
+    }
+
+    public ResultType getDataType() {
+        return this.dataType;
+    }
+
+    public void setResultType(ResultType dataType) {
+        this.dataType = dataType;
     }
 
 }

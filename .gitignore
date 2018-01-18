@@ -13,3 +13,4 @@ TAGS
 .metadata
 target/
 .settings
+db_schema/private*

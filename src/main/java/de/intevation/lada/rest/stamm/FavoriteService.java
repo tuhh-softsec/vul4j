@@ -33,6 +33,7 @@ import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 
 /**
@@ -67,14 +68,14 @@ public class FavoriteService {
         UserInfo userInfo = authorization.getInfo(request);
         favorite.setUserId(userInfo.getUserId());
         QueryBuilder<Favorite> builder = new QueryBuilder<Favorite>(
-            repository.entityManager("stamm"),
+            repository.entityManager(Strings.STAMM),
             Favorite.class
         );
         builder.and("userId", userInfo.getUserId());
         builder.and("queryId", favorite.getQueryId());
-        List<Favorite> favorites = repository.filterPlain(builder.getQuery(), "stamm");
+        List<Favorite> favorites = repository.filterPlain(builder.getQuery(), Strings.STAMM);
         if (favorites.isEmpty()) {
-            return repository.create(favorite, "stamm");
+            return repository.create(favorite, Strings.STAMM);
         }
         return new Response(false, 617, "exists");
     }
@@ -94,19 +95,19 @@ public class FavoriteService {
             return new Response(false, 618, "missing queryId parameter");
         }
         QueryBuilder<Favorite> builder = new QueryBuilder<Favorite>(
-            repository.entityManager("stamm"),
+            repository.entityManager(Strings.STAMM),
             Favorite.class
         );
         builder.and("userId", userInfo.getUserId());
         builder.and("queryId", params.getFirst("queryId"));
 
-        List<Favorite> fs = repository.filterPlain(builder.getQuery(), "stamm");
+        List<Favorite> fs = repository.filterPlain(builder.getQuery(), Strings.STAMM);
         if (fs == null || fs.isEmpty()) {
             return new Response(false, 600, "not existing");
         }
         /* Delete the object*/
         try {
-            Response response = repository.delete(fs.get(0), "stamm");
+            Response response = repository.delete(fs.get(0), Strings.STAMM);
             return response;
         }
         catch(IllegalArgumentException | EJBTransactionRolledbackException |

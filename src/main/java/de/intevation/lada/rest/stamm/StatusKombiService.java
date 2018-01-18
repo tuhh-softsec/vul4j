@@ -22,6 +22,7 @@ import de.intevation.lada.model.stammdaten.StatusKombi;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 
 /**
@@ -74,7 +75,7 @@ public class StatusKombiService {
         @Context HttpHeaders headers,
         @Context UriInfo info
     ) {
-        return repository.getAll(StatusKombi.class, "stamm");
+        return repository.getAll(StatusKombi.class, Strings.STAMM);
     }
 
     /**
@@ -96,6 +97,6 @@ public class StatusKombiService {
         return repository.getById(
             StatusKombi.class,
             Integer.valueOf(id),
-            "stamm");
+            Strings.STAMM);
     }
 }

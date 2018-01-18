@@ -11,8 +11,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-
 import de.intevation.lada.model.land.Messprogramm;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 
@@ -41,7 +41,7 @@ public class MessprogrammIdAuthorizer extends BaseAuthorizer {
             return false;
         }
         Messprogramm messprogramm =
-            repository.getByIdPlain(Messprogramm.class, id, "land");
+            repository.getByIdPlain(Messprogramm.class, id, Strings.LAND);
         if (userInfo.getMessstellen().contains(messprogramm.getMstId())) {
             return true;
         }
@@ -91,7 +91,7 @@ public class MessprogrammIdAuthorizer extends BaseAuthorizer {
                 return null;
             }
             Messprogramm messprogramm = repository.getByIdPlain(
-                Messprogramm.class, id, "land");
+                Messprogramm.class, id, Strings.LAND);
 
             boolean owner = false;
             if (userInfo.belongsTo(

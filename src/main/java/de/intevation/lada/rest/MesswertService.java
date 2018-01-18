@@ -35,6 +35,7 @@ import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 import de.intevation.lada.validation.Validator;
@@ -143,7 +144,7 @@ public class MesswertService {
         Messung messung = defaultRepo.getByIdPlain(
             Messung.class,
             id,
-            "land");
+            Strings.LAND);
         if (!authorization.isAuthorized(
                 request,
                 messung,
@@ -154,12 +155,12 @@ public class MesswertService {
         }
         QueryBuilder<Messwert> builder =
             new QueryBuilder<Messwert>(
-                defaultRepo.entityManager("land"),
+                defaultRepo.entityManager(Strings.LAND),
                 Messwert.class);
         builder.and("messungsId", messungId);
         return authorization.filter(
             request,
-            defaultRepo.filter(builder.getQuery(), "land"),
+            defaultRepo.filter(builder.getQuery(), Strings.LAND),
             Messwert.class);
     }
 
@@ -181,12 +182,12 @@ public class MesswertService {
         @PathParam("id") String id
     ) {
         Response response =
-            defaultRepo.getById(Messwert.class, Integer.valueOf(id), "land");
+            defaultRepo.getById(Messwert.class, Integer.valueOf(id), Strings.LAND);
         Messwert messwert = (Messwert)response.getData();
         Messung messung = defaultRepo.getByIdPlain(
             Messung.class,
             messwert.getMessungsId(),
-            "land");
+            Strings.LAND);
         if (!authorization.isAuthorized(
             request,
             messung,
@@ -257,7 +258,7 @@ public class MesswertService {
         }
 
         /* Persist the new messung object*/
-        Response response = defaultRepo.create(messwert, "land");
+        Response response = defaultRepo.create(messwert, Strings.LAND);
         if(violation.hasWarnings()) {
             response.setWarnings(violation.getWarnings());
         }
@@ -321,13 +322,13 @@ public class MesswertService {
             return response;
         }
 
-        Response response = defaultRepo.update(messwert, "land");
+        Response response = defaultRepo.update(messwert, Strings.LAND);
         if (!response.getSuccess()) {
             return response;
         }
         Response updated = defaultRepo.getById(
             Messwert.class,
-            ((Messwert)response.getData()).getId(), "land");
+            ((Messwert)response.getData()).getId(), Strings.LAND);
         if(violation.hasWarnings()) {
             updated.setWarnings(violation.getWarnings());
         }
@@ -357,7 +358,7 @@ public class MesswertService {
     ) {
         /* Get the messwert object by id*/
         Response messwert =
-            defaultRepo.getById(Messwert.class, Integer.valueOf(id), "land");
+            defaultRepo.getById(Messwert.class, Integer.valueOf(id), Strings.LAND);
         Messwert messwertObj = (Messwert)messwert.getData();
         if (!authorization.isAuthorized(
                 request,
@@ -371,6 +372,6 @@ public class MesswertService {
             return new Response(false, 697, null);
         }
         /* Delete the messwert object*/
-        return defaultRepo.delete(messwertObj, "land");
+        return defaultRepo.delete(messwertObj, Strings.LAND);
     }
 }

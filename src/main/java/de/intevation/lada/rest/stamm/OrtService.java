@@ -7,11 +7,17 @@
  */
 package de.intevation.lada.rest.stamm;
 
-import java.util.List;
+import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonException;
+import javax.json.JsonReader;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -25,11 +31,11 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
-
-import de.intevation.lada.importer.ReportItem;
+import org.apache.log4j.Logger;
 import de.intevation.lada.factory.OrtFactory;
-import de.intevation.lada.model.stammdaten.Filter;
+import de.intevation.lada.importer.ReportItem;
 import de.intevation.lada.model.stammdaten.Ort;
+import de.intevation.lada.query.QueryTools;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -38,6 +44,7 @@ import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 import de.intevation.lada.validation.Validator;
@@ -86,6 +93,9 @@ import de.intevation.lada.validation.annotation.ValidationConfig;
 @RequestScoped
 public class OrtService {
 
+    @Inject
+    private Logger logger;
+
     /**
      * The data repository granting read/write access.
      */
@@ -103,6 +113,9 @@ public class OrtService {
     @Inject
     @ValidationConfig(type="Ort")
     private Validator validator;
+
+    @Inject
+    private QueryTools queryTools;
 
     /**
      * Get all SOrt objects.
@@ -125,13 +138,13 @@ public class OrtService {
         if (params.containsKey("ortId")) {
             Integer id;
             try {
-                id = Integer.valueOf(params.getFirst("qid"));
+                id = Integer.valueOf(params.getFirst("ortId"));
             }
             catch (NumberFormatException e) {
                 return new Response(false, 603, "Not a valid filter id");
             }
 
-            Ort o = repository.getByIdPlain(Ort.class, id, "stamm");
+            Ort o = repository.getByIdPlain(Ort.class, id, Strings.STAMM);
             o.setReadonly(
                 !authorization.isAuthorized(
                     request,
@@ -141,7 +154,7 @@ public class OrtService {
             return new Response(true, 200, o);
         }
 
-        List<Ort> orte = new ArrayList<Ort>();
+        List<Ort> orte = new ArrayList<>();
         if (params.containsKey("qid")) {
             Integer id = null;
             try {
@@ -150,41 +163,62 @@ public class OrtService {
             catch (NumberFormatException e) {
                 return new Response(false, 603, "Not a valid filter id");
             }
-            QueryBuilder<Filter> fBuilder = new QueryBuilder<Filter>(
-                repository.entityManager("stamm"),
-                Filter.class
-            );
-            fBuilder.and("query", id);
-            List<Filter> filters = repository.filterPlain(fBuilder.getQuery(), "stamm");
-            QueryBuilder<Ort> builder =
-                new QueryBuilder<Ort>(
-                    repository.entityManager("stamm"),
-                    Ort.class
-                );
-            for (Filter filter: filters) {
-                String param = params.get(filter.getDataIndex()).get(0);
-                if (param == null || param.isEmpty()) {
-                    continue;
-                }
-                if (filter.getMultiselect()) {
-                    param = param.trim();
-                    String[] parts = param.split(",");
-                    for (String part: parts) {
-                        builder.or(filter.getDataIndex(), part);
-                    }
-                }
-                else {
-                    builder.or(filter.getDataIndex(), param);
-                }
+
+            List<Map<String, Object>> result =
+                queryTools.getResultForQuery(params, id, "ort");
+
+            List<Map<String, Object>> filtered;
+            if (params.containsKey("filter")) {
+                filtered = queryTools.filterResult(params.getFirst("filter"), result);
+            }
+            else {
+                filtered = result;
             }
 
-            orte = repository.filterPlain(builder.getQuery(), "stamm");
+            if (filtered.isEmpty()) {
+                return new Response(true, 200, filtered, 0);
+            }
+
+            int size = filtered.size();
+            if (params.containsKey("start") && params.containsKey("limit")) {
+                int start = Integer.valueOf(params.getFirst("start"));
+                int limit = Integer.valueOf(params.getFirst("limit"));
+                int end = limit + start;
+                if (start + limit > filtered.size()) {
+                    end = filtered.size();
+                }
+                filtered = filtered.subList(start, end);
+            }
+
+            QueryBuilder<Ort> pBuilder = new QueryBuilder<>(
+            repository.entityManager(Strings.STAMM), Ort.class);
+            List<Integer> list = new ArrayList<>();
+            for (Map<String, Object> entry: filtered) {
+                list.add((Integer)entry.get("id"));
+            }
+            pBuilder.orIn("id", list);
+            Response r = repository.filter(pBuilder.getQuery(), Strings.STAMM);
+            List<Ort> os = (List<Ort>)r.getData();
+            for (Map<String, Object> entry: filtered) {
+                Integer oid = Integer.valueOf(entry.get("id").toString());
+                for (Ort o : os) {
+                    if (o.getId().equals(oid)) {
+                        entry.put("readonly",
+                            !authorization.isAuthorized(
+                                request,
+                                o,
+                                RequestMethod.POST,
+                                Ort.class));
+                    }
+                }
+            }
+            return new Response(true, 200, filtered, size);
         }
         else {
             UserInfo user = authorization.getInfo(request);
             QueryBuilder<Ort> builder =
                 new QueryBuilder<Ort>(
-                    repository.entityManager("stamm"),
+                    repository.entityManager(Strings.STAMM),
                     Ort.class
                 );
             if (params.containsKey("netzbetreiberId")) {
@@ -195,24 +229,36 @@ public class OrtService {
                     builder.or("netzbetreiberId", nb);
                 }
             }
-            if (params.containsKey("filter")) {
+            if (params.containsKey("search")) {
                 QueryBuilder<Ort> filter = builder.getEmptyBuilder();
-                filter.orLike("ortId", "%"+params.getFirst("filter")+"%")
-                    .orLike("kurztext", "%"+params.getFirst("filter")+"%")
-                    .orLike("langtext", "%"+params.getFirst("filter")+"%");
+                filter.orLike("ortId", "%"+params.getFirst("search")+"%")
+                    .orLike("kurztext", "%"+params.getFirst("search")+"%")
+                    .orLike("langtext", "%"+params.getFirst("search")+"%");
                 builder.and(filter);
             }
-            orte = repository.filterPlain(builder.getQuery(), "stamm");
+            if (params.containsKey("filter")) {
+                String json = params.getFirst("filter");
+                JsonReader jsonReader = Json.createReader(new StringReader(json));
+                try {
+                    JsonArray filter = jsonReader.readArray();
+                    jsonReader.close();
+                    orte = repository.filterPlain(builder, filter, Strings.STAMM);
+                }
+                catch (JsonException |
+                    IllegalStateException e) {
+                    logger.warn("Use JSON filter at this place.", e);
+                }
+            }
+            else {
+                orte = repository.filterPlain(builder.getQuery(), Strings.STAMM);
+            }
         }
         int size = orte.size();
         if (params.containsKey("start") && params.containsKey("limit")) {
             int start = Integer.valueOf(params.getFirst("start"));
             int limit = Integer.valueOf(params.getFirst("limit"));
             int end = limit + start;
-            if (limit == 0) {
-                end = orte.size();
-            }
-            else if (start + limit > orte.size()) {
+            if (limit == 0 || (start + limit > orte.size())) {
                 end = orte.size();
             }
             orte = orte.subList(start, end);
@@ -247,7 +293,7 @@ public class OrtService {
         return repository.getById(
             Ort.class,
             Integer.valueOf(id),
-            "stamm");
+            Strings.STAMM);
     }
 
     /**
@@ -313,7 +359,7 @@ public class OrtService {
 
         Response response = new Response(true, 201, ort);
         if (ort.getId() == null) {
-            response = repository.create(ort, "stamm");
+            response = repository.create(ort, Strings.STAMM);
         }
         if(violation.hasWarnings()) {
             response.setWarnings(violation.getWarnings());
@@ -385,7 +431,7 @@ public class OrtService {
             return response;
         }
 
-        Response response = repository.update(ort, "stamm");
+        Response response = repository.update(ort, Strings.STAMM);
         if(violation.hasWarnings()) {
             response.setWarnings(violation.getWarnings());
         }
@@ -410,7 +456,7 @@ public class OrtService {
         @PathParam("id") String id
     ) {
         Response response =
-            repository.getById(Ort.class, Integer.valueOf(id), "stamm");
+            repository.getById(Ort.class, Integer.valueOf(id), Strings.STAMM);
         if (!response.getSuccess()) {
             return response;
         }
@@ -424,6 +470,6 @@ public class OrtService {
             return new Response(false, 699, ort);
         }
 
-        return repository.delete(ort, "stamm");
+        return repository.delete(ort, Strings.STAMM);
     }
 }

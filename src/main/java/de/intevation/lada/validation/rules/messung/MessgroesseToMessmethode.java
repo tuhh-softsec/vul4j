@@ -22,6 +22,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
@@ -49,18 +50,18 @@ public class MessgroesseToMessmethode implements Rule {
         String mmt = messung.getMmtId();
         QueryBuilder<Messwert> builder =
             new QueryBuilder<Messwert>(
-                repository.entityManager("land"), Messwert.class);
+                repository.entityManager(Strings.LAND), Messwert.class);
         builder.and("messungsId", messung.getId());
-        Response response = repository.filter(builder.getQuery(), "land");
+        Response response = repository.filter(builder.getQuery(), Strings.LAND);
         @SuppressWarnings("unchecked")
         List<Messwert> messwerte = (List<Messwert>)response.getData();
 
         QueryBuilder<MmtMessgroesse> mmtBuilder =
             new QueryBuilder<MmtMessgroesse>(
-                    repository.entityManager("stamm"), MmtMessgroesse.class);
+                    repository.entityManager(Strings.STAMM), MmtMessgroesse.class);
 
         Response results =
-            repository.filter(mmtBuilder.getQuery(), "stamm");
+            repository.filter(mmtBuilder.getQuery(), Strings.STAMM);
         @SuppressWarnings("unchecked")
         List<MmtMessgroesse> messgroessen =
             (List<MmtMessgroesse>)results.getData();
@@ -83,7 +84,7 @@ public class MessgroesseToMessmethode implements Rule {
                 Messgroesse mg = repository.getByIdPlain(
                     Messgroesse.class,
                     messwert.getMessgroesseId(),
-                    "stamm");
+                    Strings.STAMM);
                 violation.addWarning("messgroesse#" + mg.getMessgroesse(), 632);
             }
         }

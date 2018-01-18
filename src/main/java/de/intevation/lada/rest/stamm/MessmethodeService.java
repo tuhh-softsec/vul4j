@@ -22,6 +22,7 @@ import de.intevation.lada.model.stammdaten.MessMethode;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 
 /**
@@ -74,7 +75,7 @@ public class MessmethodeService {
         @Context HttpHeaders headers,
         @Context UriInfo info
     ) {
-        return defaultRepo.getAll(MessMethode.class, "stamm");
+        return defaultRepo.getAll(MessMethode.class, Strings.STAMM);
     }
 
     /**
@@ -96,6 +97,6 @@ public class MessmethodeService {
         return defaultRepo.getById(
             MessMethode.class,
             id,
-            "stamm");
+            Strings.STAMM);
     }
 }

@@ -17,6 +17,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 
 @IdentifierConfig(type="Messung")
 public class MessungIdentifier implements Identifier {
@@ -38,7 +39,7 @@ public class MessungIdentifier implements Identifier {
         }
         Messung messung = (Messung)object;
         QueryBuilder<Messung> builder = new QueryBuilder<Messung>(
-            repository.entityManager("land"),
+            repository.entityManager(Strings.LAND),
             Messung.class
         );
 
@@ -49,7 +50,7 @@ public class MessungIdentifier implements Identifier {
             builder.and("probeId", messung.getProbeId());
             builder.and("nebenprobenNr", messung.getNebenprobenNr());
             List<Messung> messungen =
-                repository.filterPlain(builder.getQuery(), "land");
+                repository.filterPlain(builder.getQuery(), Strings.LAND);
             if (messungen.size() > 1) {
                 // Should never happen. DB has unique constraint for
                 // "nebenprobenNr"
@@ -67,7 +68,7 @@ public class MessungIdentifier implements Identifier {
             builder.and("probeId", messung.getProbeId());
             builder.and("idAlt", messung.getIdAlt());
             List<Messung> messungen =
-                repository.filterPlain(builder.getQuery(), "land");
+                repository.filterPlain(builder.getQuery(), Strings.LAND);
             if (messungen.size() > 1) {
                 // Should never happen. DB has unique constraint for "idAlt"
                 return Identified.REJECT;
@@ -82,7 +83,7 @@ public class MessungIdentifier implements Identifier {
             builder.and("probeId", messung.getProbeId());
             builder.and("idAlt", messung.getIdAlt());
             List<Messung> messungen =
-                repository.filterPlain(builder.getQuery(), "land");
+                repository.filterPlain(builder.getQuery(), Strings.LAND);
             if (messungen.size() > 1) {
                 // Should never happen. DB has unique constraint for "idAlt"
                 return Identified.REJECT;

@@ -29,6 +29,7 @@ import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 
 /**
@@ -93,7 +94,7 @@ public class NetzbetreiberService {
         @Context HttpServletRequest request,
         @Context UriInfo info
     ) {
-        return defaultRepo.getAll(NetzBetreiber.class, "stamm");
+        return defaultRepo.getAll(NetzBetreiber.class, Strings.STAMM);
     }
 
     /**
@@ -115,7 +116,7 @@ public class NetzbetreiberService {
     ) {
         UserInfo userInfo = authorization.getInfo(request);
         if (userInfo.getNetzbetreiber().contains(id)) {
-            return defaultRepo.getById(NetzBetreiber.class, id, "stamm");
+            return defaultRepo.getById(NetzBetreiber.class, id, Strings.STAMM);
         }
         return new Response(false, 698, new ArrayList<NetzBetreiber>());
     }

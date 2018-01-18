@@ -16,13 +16,13 @@ SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 
-SET search_path = stammdaten, pg_catalog;
+SET search_path = stamm, pg_catalog;
 
 
 --
 -- TOC entry 4699 (class 0 OID 535766)
 -- Dependencies: 264
--- Data for Name: messprogramm_kategorie; Type: TABLE DATA; Schema: stammdaten; Owner: lada
+-- Data for Name: messprogramm_kategorie; Type: TABLE DATA; Schema: stamm; Owner: lada
 --
 
 COPY messprogramm_kategorie (id, netzbetreiber_id, code, bezeichnung, letzte_aenderung) FROM stdin;

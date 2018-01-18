@@ -1,7 +1,7 @@
-INSERT INTO stammdaten.verwaltungsgrenze(gem_id, shape)
+INSERT INTO stamm.verwaltungsgrenze(gem_id, shape)
 SELECT
   verwaltungseinheit.id,
-  gem_utm.geom
+  vg250_gem.geom
 FROM
-  stammdaten.verwaltungseinheit
-JOIN geo.gem_utm ON verwaltungseinheit.id = gem_utm.ags;
+  stamm.verwaltungseinheit
+JOIN geo.vg250_gem ON verwaltungseinheit.id = vg250_gem.ags;

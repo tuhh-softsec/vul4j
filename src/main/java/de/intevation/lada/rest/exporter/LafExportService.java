@@ -35,6 +35,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.auth.UserInfo;
@@ -106,10 +107,10 @@ public class LafExportService {
         }
 
         QueryBuilder<Probe> pBuilder = new QueryBuilder<Probe>(
-            repository.entityManager("land"), Probe.class);
+            repository.entityManager(Strings.LAND), Probe.class);
         pBuilder.andIn("id", providedIds);
         List<Probe> pObjects = repository.filterPlain(
-            pBuilder.getQuery(), "land");
+            pBuilder.getQuery(), Strings.LAND);
 
         if (pObjects.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).build();

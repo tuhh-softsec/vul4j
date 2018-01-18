@@ -30,6 +30,7 @@ import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 
 @Path("rest/filter")
@@ -53,27 +54,27 @@ public class FilterService {
     ) {
         UserInfo userInfo = authorization.getInfo(request);
         String value = filter.getValue();
-        Filter f = repository.getByIdPlain(Filter.class, filter.getId(), "stamm");
+        Filter f = repository.getByIdPlain(Filter.class, filter.getId(), Strings.STAMM);
         QueryBuilder<FilterValue> builder = new QueryBuilder<FilterValue>(
-            repository.entityManager("stamm"),
+            repository.entityManager(Strings.STAMM),
             FilterValue.class
         );
         builder.and("userId", userInfo.getUserId());
         builder.and("filterId", f.getId());
-        List<FilterValue> values = repository.filterPlain(builder.getQuery(), "stamm");
+        List<FilterValue> values = repository.filterPlain(builder.getQuery(), Strings.STAMM);
         if (values == null || values.isEmpty()) {
             FilterValue newValue = new FilterValue();
             newValue.setFilterId(f.getId());
             newValue.setUserId(userInfo.getUserId());
             newValue.setValue(value);
-            repository.create(newValue, "stamm");
+            repository.create(newValue, Strings.STAMM);
             f.setValue(value);
             return new Response(true, 200, f);
         }
         else {
             FilterValue fv = values.get(0);
             fv.setValue(value);
-            repository.update(fv, "stamm");
+            repository.update(fv, Strings.STAMM);
             f.setValue(value);
             return new Response(true, 200, f);
         }
@@ -88,22 +89,22 @@ public class FilterService {
     ) {
         UserInfo userInfo = authorization.getInfo(request);
         Integer fId = Integer.valueOf(id);
-        Filter f = repository.getByIdPlain(Filter.class, fId, "stamm");
+        Filter f = repository.getByIdPlain(Filter.class, fId, Strings.STAMM);
         QueryBuilder<FilterValue> builder = new QueryBuilder<FilterValue>(
-            repository.entityManager("stamm"),
+            repository.entityManager(Strings.STAMM),
             FilterValue.class
         );
         builder.and("userId", userInfo.getUserId());
         builder.and("filterId", f.getId());
-        List<FilterValue> values = repository.filterPlain(builder.getQuery(), "stamm");
+        List<FilterValue> values = repository.filterPlain(builder.getQuery(), Strings.STAMM);
         if (values == null || values.isEmpty()) {
             return new Response(false, 618, "not existing");
         }
-        repository.delete(values.get(0), "stamm");
+        repository.delete(values.get(0), Strings.STAMM);
         QueryBuilder<FilterValue> fvBuilder = builder.getEmptyBuilder();
         fvBuilder.and("userId", 0);
         fvBuilder.and("filterId", f.getId());
-        List<FilterValue> basicValues = repository.filterPlain(fvBuilder.getQuery(), "stamm");
+        List<FilterValue> basicValues = repository.filterPlain(fvBuilder.getQuery(), Strings.STAMM);
         if (basicValues == null || basicValues.isEmpty()) {
             f.setValue(null);
             return new Response(true, 200, f);

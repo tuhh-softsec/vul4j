@@ -38,11 +38,11 @@ public class HasAllMandatory implements Rule {
         Violation violation = new Violation();
 
         if (messprogramm.getMstId() == null
-            | "".equals(messprogramm.getMstId())) {
+            || "".equals(messprogramm.getMstId())) {
             violation.addError("mstlabor", 631);
         }
         if (messprogramm.getLaborMstId() == null
-            | "".equals(messprogramm.getLaborMstId())) {
+            || "".equals(messprogramm.getLaborMstId())) {
             violation.addError("mstlabor", 631);
         }
         if (messprogramm.getDatenbasisId() == null) {
@@ -52,7 +52,7 @@ public class HasAllMandatory implements Rule {
             violation.addError("probenartId", 631);
         }
         if (messprogramm.getProbenintervall() == null
-            | "".equals(messprogramm.getProbenintervall())) {
+            || "".equals(messprogramm.getProbenintervall())) {
             violation.addError("probenintervall", 631);
         }
         if (messprogramm.getTeilintervallVon() == null) {

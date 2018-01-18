@@ -24,8 +24,7 @@ public class HasProbeart implements Rule {
     @Override
     public Violation execute(Object object) {
         Probe probe = (Probe)object;
-        if (probe.getProbenartId() == null ||
-            probe.getProbenartId().equals("")) {
+        if (probe.getProbenartId() == null) {
             Violation violation = new Violation();
             violation.addError("probenartId", 631);
             return violation;

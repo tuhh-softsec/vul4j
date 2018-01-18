@@ -36,6 +36,7 @@ import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 
 /**
@@ -93,10 +94,10 @@ public class LafImportService {
         if (!"".equals(mstId)) {
             QueryBuilder<ImporterConfig> builder =
                 new QueryBuilder<ImporterConfig>(
-                    repository.entityManager("stamm"),
+                    repository.entityManager(Strings.STAMM),
                     ImporterConfig.class);
             builder.and("mstId", mstId);
-            config = (List<ImporterConfig>) repository.filterPlain(builder.getQuery(), "stamm");
+            config = (List<ImporterConfig>) repository.filterPlain(builder.getQuery(), Strings.STAMM);
         }
         importer.doImport(content, userInfo, config);
         Map<String, Object> respData = new HashMap<String,Object>();

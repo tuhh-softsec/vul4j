@@ -16,7 +16,7 @@ SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 
-SET search_path = stammdaten, pg_catalog;
+SET search_path = stamm, pg_catalog;
 
 --
 -- TOC entry 4707 (class 0 OID 535802)
@@ -26,7 +26,7 @@ SET search_path = stammdaten, pg_catalog;
 
 COPY ortszuordnung_typ (id, ortstyp) FROM stdin;
 U	Ursprungsort
-A	Kerntechnische Anlage
+R	Rei-Messpunkt
 Z	Ortszusatz
 E	Entnahmeort
 \.

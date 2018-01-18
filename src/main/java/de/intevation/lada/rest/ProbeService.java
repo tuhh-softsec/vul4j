@@ -7,6 +7,7 @@
  */
 package de.intevation.lada.rest;
 
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,12 @@ import java.util.Map;
 import javax.ejb.EJBTransactionRolledbackException;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.JsonString;
+import javax.json.JsonValue;
 import javax.persistence.TransactionRequiredException;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
@@ -44,6 +50,7 @@ import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 import de.intevation.lada.validation.Validator;
@@ -172,7 +179,7 @@ public class ProbeService {
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() || !params.containsKey("qid")) {
-            return repository.getAll(Probe.class, "land");
+            return repository.getAll(Probe.class, Strings.LAND);
         }
         Integer id = null;
         try {
@@ -184,32 +191,44 @@ public class ProbeService {
         List<Map<String, Object>> result =
             queryTools.getResultForQuery(params, id, "probe");
 
-        int size = result.size();
+        List<Map<String, Object>> filtered;
+        if (params.containsKey("filter")) {
+            filtered = queryTools.filterResult(params.getFirst("filter"), result);
+        }
+        else {
+            filtered = result;
+        }
+
+        if (filtered.isEmpty()) {
+            return new Response(true, 200, filtered, 0);
+        }
+
+        int size = filtered.size();
         if (params.containsKey("start") && params.containsKey("limit")) {
             int start = Integer.valueOf(params.getFirst("start"));
             int limit = Integer.valueOf(params.getFirst("limit"));
             int end = limit + start;
-            if (start + limit > result.size()) {
-                end = result.size();
+            if (start + limit > filtered.size()) {
+                end = filtered.size();
             }
-            result = result.subList(start, end);
+            filtered = filtered.subList(start, end);
         }
 
-        QueryBuilder<Probe> pBuilder = new QueryBuilder<Probe>(
-            repository.entityManager("land"), Probe.class);
-        List<Integer> list = new ArrayList<Integer>();
-        for (Map<String, Object> entry: result) {
+        QueryBuilder<Probe> pBuilder = new QueryBuilder<>(
+            repository.entityManager(Strings.LAND), Probe.class);
+        List<Integer> list = new ArrayList<>();
+        for (Map<String, Object> entry: filtered) {
             list.add((Integer)entry.get("id"));
         }
         pBuilder.orIn("id", list);
-        Response r = repository.filter(pBuilder.getQuery(), "land");
+        Response r = repository.filter(pBuilder.getQuery(), Strings.LAND);
         r = authorization.filter(request, r, Probe.class);
         List<Probe> proben = (List<Probe>)r.getData();
-        for (Map<String, Object> entry: result) {
+        for (Map<String, Object> entry: filtered) {
             Integer pId = Integer.valueOf(entry.get("id").toString());
             setAuthData(proben, entry, pId);
         }
-        return new Response(true, 200, result, size);
+        return new Response(true, 200, filtered, size);
     }
 
     private void setAuthData(
@@ -244,7 +263,7 @@ public class ProbeService {
         @Context HttpServletRequest request
     ) {
         Response response =
-            repository.getById(Probe.class, Integer.valueOf(id), "land");
+            repository.getById(Probe.class, Integer.valueOf(id), Strings.LAND);
         Violation violation = validator.validate(response.getData());
         if (violation.hasWarnings()) {
             response.setWarnings(violation.getWarnings());
@@ -318,7 +337,7 @@ public class ProbeService {
         probe = factory.findMediaDesk(probe);
 
         /* Persist the new probe object*/
-        Response newProbe = repository.create(probe, "land");
+        Response newProbe = repository.create(probe, Strings.LAND);
 
         if(violation.hasWarnings()) {
             newProbe.setWarnings(violation.getWarnings());
@@ -355,7 +374,7 @@ public class ProbeService {
     ) {
         int id = object.getInt("id");
         Messprogramm messprogramm = repository.getByIdPlain(
-            Messprogramm.class, id, "land");
+            Messprogramm.class, id, Strings.LAND);
         if (messprogramm == null) {
             return new Response(false, 600, null);
         }
@@ -461,13 +480,13 @@ public class ProbeService {
         if (probe.getUmwId() == null || probe.getUmwId() == "") {
             factory.findUmweltId(probe);
         }
-        Response response = repository.update(probe, "land");
+        Response response = repository.update(probe, Strings.LAND);
         if (!response.getSuccess()) {
             return response;
         }
         Response updated = repository.getById(
             Probe.class,
-            ((Probe)response.getData()).getId(), "land");
+            ((Probe)response.getData()).getId(), Strings.LAND);
         if (violation.hasWarnings()) {
             updated.setWarnings(violation.getWarnings());
         }
@@ -496,7 +515,7 @@ public class ProbeService {
     ) {
         /* Get the probe object by id*/
         Response probe =
-            repository.getById(Probe.class, Integer.valueOf(id), "land");
+            repository.getById(Probe.class, Integer.valueOf(id), Strings.LAND);
         if (!probe.getSuccess()) {
             return probe;
         }
@@ -511,7 +530,7 @@ public class ProbeService {
         }
         /* Delete the probe object*/
         try {
-            Response response = repository.delete(probeObj, "land");
+            Response response = repository.delete(probeObj, Strings.LAND);
             return response;
         }
         catch(IllegalArgumentException | EJBTransactionRolledbackException |

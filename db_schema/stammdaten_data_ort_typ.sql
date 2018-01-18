@@ -16,7 +16,7 @@ SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 
-SET search_path = stammdaten, pg_catalog;
+SET search_path = stamm, pg_catalog;
 
 
 --
@@ -28,7 +28,7 @@ SET search_path = stammdaten, pg_catalog;
 COPY ort_typ (id, ort_typ, code) FROM stdin;
 1	dynamischer Messpunkt (nicht vordefiniert)	DYN
 2	vordefinierter Messpunkt	GP
-3	REI-Messpunkit	REI
+3	REI-Messpunkt	REI
 4	Verwaltungseinheit	VE
 5	Staat	ST
 6	Fluss	FL

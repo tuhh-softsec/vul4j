@@ -13,7 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-
+import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.usertype.UserType;
@@ -27,6 +27,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
 public class JsonObjectType implements UserType {
+
+    private static final Logger logger = Logger.getLogger(JsonObjectType.class);
+
     /**
      * Reconstruct an object from the cacheable representation. At the very
      * least this method should perform a deep copy if the type is mutable.
@@ -134,7 +137,7 @@ public class JsonObjectType implements UserType {
             node = mapper.readTree(rs.getString(names[0]));
             return node;
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.debug("Exception while reading Tree", e);
         }
         return mapper.createObjectNode();
     }

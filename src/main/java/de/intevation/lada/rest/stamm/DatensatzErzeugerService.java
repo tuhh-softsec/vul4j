@@ -7,10 +7,14 @@
  */
 package de.intevation.lada.rest.stamm;
 
+import java.io.StringReader;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonReader;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -34,6 +38,7 @@ import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 
@@ -105,14 +110,14 @@ public class DatensatzErzeugerService {
                 return new Response(false, 603, "Not a valid filter id");
             }
             QueryBuilder<Filter> fBuilder = new QueryBuilder<Filter>(
-                repository.entityManager("stamm"),
+                repository.entityManager(Strings.STAMM),
                 Filter.class
             );
             fBuilder.and("query", id);
-            List<Filter> filters = repository.filterPlain(fBuilder.getQuery(), "stamm");
+            List<Filter> filters = repository.filterPlain(fBuilder.getQuery(), Strings.STAMM);
             QueryBuilder<DatensatzErzeuger> builder =
                 new QueryBuilder<DatensatzErzeuger>(
-                    repository.entityManager("stamm"),
+                    repository.entityManager(Strings.STAMM),
                     DatensatzErzeuger.class
                 );
             for (Filter filter: filters) {
@@ -131,11 +136,19 @@ public class DatensatzErzeugerService {
                     builder.or(filter.getDataIndex(), param);
                 }
             }
-
-            erzeuger = repository.filterPlain(builder.getQuery(), "stamm");
+            if (params.containsKey("filter")) {
+                JsonReader jsonReader = Json.createReader(
+                    new StringReader(params.getFirst("filter")));
+                JsonArray f = jsonReader.readArray();
+                jsonReader.close();
+                erzeuger = repository.filterPlain(builder, f, Strings.STAMM);
+            }
+            else {
+                erzeuger = repository.filterPlain(builder.getQuery(), Strings.STAMM);
+            }
         }
         else {
-            erzeuger = repository.getAllPlain(DatensatzErzeuger.class, "stamm");
+            erzeuger = repository.getAllPlain(DatensatzErzeuger.class, Strings.STAMM);
         }
 
         int size = erzeuger.size();
@@ -179,7 +192,7 @@ public class DatensatzErzeugerService {
         return repository.getById(
             DatensatzErzeuger.class,
             Integer.valueOf(id),
-            "stamm");
+            Strings.STAMM);
     }
 
     @POST
@@ -199,16 +212,16 @@ public class DatensatzErzeugerService {
         }
         QueryBuilder<DatensatzErzeuger> builder =
             new QueryBuilder<DatensatzErzeuger>(
-                repository.entityManager("stamm"),
+                repository.entityManager(Strings.STAMM),
                 DatensatzErzeuger.class
             );
         builder.and("datensatzErzeugerId", datensatzerzeuger.getDatensatzErzeugerId());
         builder.and("netzbetreiberId", datensatzerzeuger.getNetzbetreiberId());
 
         List<DatensatzErzeuger> erzeuger =
-            repository.filterPlain(builder.getQuery(), "stamm");
+            repository.filterPlain(builder.getQuery(), Strings.STAMM);
         if (erzeuger.isEmpty()) {
-            return repository.create(datensatzerzeuger, "stamm");
+            return repository.create(datensatzerzeuger, Strings.STAMM);
         }
         return new Response(false, 672, null);
     }
@@ -229,7 +242,7 @@ public class DatensatzErzeugerService {
         ) {
             return new Response(false, 699, datensatzerzeuger);
         }
-        return repository.update(datensatzerzeuger, "stamm");
+        return repository.update(datensatzerzeuger, Strings.STAMM);
     }
 
     @DELETE
@@ -240,7 +253,7 @@ public class DatensatzErzeugerService {
         @PathParam("id") String id
     ) {
         DatensatzErzeuger datensatzerzeuger = repository.getByIdPlain(
-            DatensatzErzeuger.class, Integer.valueOf(id), "stamm");
+            DatensatzErzeuger.class, Integer.valueOf(id), Strings.STAMM);
         if (datensatzerzeuger == null ||
             !authorization.isAuthorized(
                 request,
@@ -251,6 +264,6 @@ public class DatensatzErzeugerService {
         ) {
             return new Response(false, 699, null);
         }
-        return repository.delete(datensatzerzeuger, "stamm");
+        return repository.delete(datensatzerzeuger, Strings.STAMM);
     }
 }

@@ -16,13 +16,13 @@ SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 
-SET search_path = stammdaten, pg_catalog;
+SET search_path = stamm, pg_catalog;
 
 
 --
 -- TOC entry 4713 (class 0 OID 535818)
 -- Dependencies: 279
--- Data for Name: probenehmer; Type: TABLE DATA; Schema: stammdaten; Owner: lada
+-- Data for Name: probenehmer; Type: TABLE DATA; Schema: stamm; Owner: lada
 --
 
 COPY probenehmer (id, netzbetreiber_id, prn_id, bearbeiter, bemerkung, betrieb, bezeichnung, kurz_bezeichnung, ort, plz, strasse, telefon, tp, typ, letzte_aenderung) FROM stdin;
