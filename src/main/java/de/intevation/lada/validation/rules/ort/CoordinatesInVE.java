@@ -46,7 +46,6 @@ public class CoordinatesInVE implements Rule {
     @Override
     public Violation execute(Object object) {
         Ort ort = (Ort)object;
-
         String gemId = "".equals(ort.getGemId())
             ? null
             : ort.getGemId();
@@ -72,17 +71,35 @@ public class CoordinatesInVE implements Rule {
                     + "Probably OrtFactory.transformCoordinates() has not "
                     + "been called on this ort.");
             }
-            for (Verwaltungsgrenze singlevg : vgs) {
-                if(singlevg.getShape().contains(p)) {
-                    return null;
-                }
-            }
+            boolean unscharf = ort.getUnscharf();
             Violation violation = new Violation();
-            violation.addWarning("koordXExtern", 651);
-            violation.addWarning("koordYExtern", 651);
-            return violation;
-        }
+            for (Verwaltungsgrenze singlevg : vgs) {
+                if (singlevg.getShape().contains(p)) {
+                    if (!unscharf) {
+                        return null;
+                    } else {
+                        ort.setUnscharf(false);
+                        return null;
+                    }
+                } else {
+                    double dist = singlevg.getShape().distance(p) ;
+                    dist = dist * (3.1415926/180) * 6378137;
+                    if (dist < 1000) {
+                        ort.setUnscharf(true);
+                        return null;
+                    } else {
+                        ort.setUnscharf(false);
+                        violation.addWarning("koordXExtern", 651);
+                        violation.addWarning("koordYExtern", 651);
+                        return violation;
+                    }
+                }
+           }
 
+           violation.addWarning("koordXExtern", 652);
+           violation.addWarning("koordYExtern", 652);
+           return violation;
+        }
         return null;
     }
 

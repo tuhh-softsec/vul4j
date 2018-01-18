@@ -83,7 +83,7 @@ public class Ort implements Serializable {
     @Column(name="staat_id")
     private Integer staatId;
 
-    private String unscharf;
+    private boolean unscharf;
 
     private String zone;
 
@@ -282,11 +282,11 @@ public class Ort implements Serializable {
         this.staatId = staatId;
     }
 
-    public String getUnscharf() {
+    public boolean getUnscharf() {
         return this.unscharf;
     }
 
-    public void setUnscharf(String unscharf) {
+    public void setUnscharf(boolean unscharf) {
         this.unscharf = unscharf;
     }
 
