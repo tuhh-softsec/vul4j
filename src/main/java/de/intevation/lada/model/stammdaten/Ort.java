@@ -31,7 +31,7 @@ public class Ort implements Serializable {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
 
-    private String aktiv;
+    private boolean aktiv;
 
     @Column(name="kta_gruppe_id")
     private Integer ktaGruppeId;
@@ -116,11 +116,11 @@ public class Ort implements Serializable {
         this.id = id;
     }
 
-    public String getAktiv() {
+    public boolean getAktiv() {
         return this.aktiv;
     }
 
-    public void setAktiv(String aktiv) {
+    public void setAktiv(boolean aktiv) {
         this.aktiv = aktiv;
     }
 
