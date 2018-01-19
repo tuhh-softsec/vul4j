@@ -360,12 +360,22 @@ public class LafObjectMapper {
             }
         }
         if (currentErrors.size() > 0) {
-            errors.put(object.getIdentifier(),
-                new ArrayList<ReportItem>(currentErrors));
+            if (errors.containsKey(object.getIdentifier())) {
+                errors.get(object.getIdentifier()).addAll(currentErrors);
+            }
+            else {
+                errors.put(object.getIdentifier(),
+                    new ArrayList<ReportItem>(currentErrors));
+            }
         }
         if (currentWarnings.size() > 0) {
-            warnings.put(object.getIdentifier(),
-                new ArrayList<ReportItem>(currentWarnings));
+            if (warnings.containsKey(object.getIdentifier())) {
+                warnings.get(object.getIdentifier()).addAll(currentWarnings);
+            }
+            else {
+                warnings.put(object.getIdentifier(),
+                    new ArrayList<ReportItem>(currentWarnings));
+            }
         }
     }
 
