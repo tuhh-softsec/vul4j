@@ -54,12 +54,15 @@ public class LafImporter implements Importer{
             LafObjectListener listener = new LafObjectListener();
             ParseTreeWalker walker = new ParseTreeWalker();
             walker.walk(listener, tree);
-            if (!listener.hasUebertragungsformat() ||
-                !listener.hasVersion()) {
-                List<ReportItem> items = new ArrayList<ReportItem>();
+            List<ReportItem> items = new ArrayList<ReportItem>();
+            if (!listener.hasUebertragungsformat()) {
                 items.add(new ReportItem("missing header", "format", 673));
-                errors.put("parser", items);
-                return;
+            }
+            if (!listener.hasVersion()) {
+                items.add(new ReportItem("missing header", "version", 673));
+            }
+            if (!items.isEmpty()) {
+                warnings.put("parser", items);
             }
             if (!errorListener.getErrors().isEmpty()) {
                 errors.put("parser", errorListener.getErrors());
