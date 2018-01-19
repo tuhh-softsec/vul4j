@@ -40,6 +40,7 @@ probedaten: db
   | messung
   | pzb
   | pkom
+  | emptyLine
 ;
 
 messung:
@@ -59,6 +60,7 @@ messungdaten: messungs_id
   | erfassung_abgeschlossen
   | mw
   | mess_kommentar
+  | emptyLine
 ;
 
 db : datenbasis
@@ -89,6 +91,7 @@ entnahmeort: ph
   | p_site_name
   | p_hoehe_nn
   | p_hoehe_land
+  | emptyLine
   ;
 
 ph : p_herkunftsland_lang
@@ -163,6 +166,7 @@ ursprungsortdaten : uh
   | u_orts_zusatzcode
   | u_orts_zusatztext
   | u_nuts_code
+  | emptyLine
 ;
 
 uh : u_herkunftsland_lang
@@ -184,6 +188,7 @@ uk : u_koordinaten
 version : VERSION (STRING_ESC | STRING)? NEWLINE ; // C4
 uebertragungsformat : UEBERTRAGUNGSFORMAT (STRING_ESC | STRING)? NEWLINE ; // C1;
 
+emptyLine : NEWLINE ;
 datenbasis : DATENBASIS (STRING_ESC | STRING)? NEWLINE ; // C6
 datenbasis_s : DATENBASIS_S (STRING_ESC | STRING)? NEWLINE ; // SI2
 netzkennung : NETZKENNUNG (STRING_ESC | STRING)? NEWLINE ; // C2
