@@ -190,7 +190,13 @@ public class ProbeFactory {
         }
 
         public Date getTo() {
-            Calendar to = adjustSubIntField((Calendar)from.clone(), teilBis);
+            Calendar to;
+            if (intervallField == Calendar.DAY_OF_YEAR) {
+                to = adjustSubIntField((Calendar)from.clone(), teilBis - teilVon + 1);
+            }
+            else {
+                to = adjustSubIntField((Calendar)from.clone(), teilBis);
+            }
             return to.getTime();
         }
 
@@ -204,6 +210,7 @@ public class ProbeFactory {
 
         public void roll() {
             from.add(intervallField, intervallFactor);
+            from.add(Calendar.DAY_OF_YEAR, -(teilVon - 1));
             from = adjustSubIntField(from, teilVon);
         }
 
