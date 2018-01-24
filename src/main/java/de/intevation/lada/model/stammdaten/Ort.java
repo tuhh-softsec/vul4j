@@ -20,7 +20,7 @@ import com.vividsolutions.jts.geom.Point;
 
 /**
  * The persistent class for the ort database table.
- * 
+ *
  */
 @Entity
 @Table(name="ort")
@@ -31,7 +31,7 @@ public class Ort implements Serializable {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
 
-    private boolean aktiv;
+    private Boolean aktiv;
 
     @Column(name="kta_gruppe_id")
     private Integer ktaGruppeId;
@@ -83,7 +83,7 @@ public class Ort implements Serializable {
     @Column(name="staat_id")
     private Integer staatId;
 
-    private boolean unscharf;
+    private Boolean unscharf;
 
     private String zone;
 
