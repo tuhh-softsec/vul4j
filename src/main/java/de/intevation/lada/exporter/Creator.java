@@ -7,6 +7,7 @@
  */
 package de.intevation.lada.exporter;
 
+import java.util.List;
 
 /**
  * Interface for export content creator.
@@ -15,5 +16,6 @@ package de.intevation.lada.exporter;
  */
 public interface Creator
 {
-    public String create(String probeId);
+    public String createProbe(String probeId);
+    public String createMessung(String probeId, List<Integer> messungen);
 }

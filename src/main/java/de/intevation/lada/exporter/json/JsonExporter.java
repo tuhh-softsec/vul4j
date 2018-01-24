@@ -64,11 +64,13 @@ public class JsonExporter implements Exporter {
     private Repository repository;
 
     @Override
-    public InputStream export(List<Integer> proben, UserInfo userInfo) {
-        String json = "";
-
+    public InputStream export(
+        List<Integer> proben,
+        List<Integer> messungen,
+        UserInfo userInfo
+    ) {
         //Create json.
-        json = createJsonString(proben, userInfo);
+        String json = createJsonString(proben, userInfo);
         if (json == null) {
             return null;
         }
@@ -78,7 +80,7 @@ public class JsonExporter implements Exporter {
             in.close();
         }
         catch (IOException e) {
-            logger.debug("Error while closing Stream.");
+            logger.debug("Error while closing Stream.", e);
             return null;
         }
         return in;
@@ -100,7 +102,7 @@ public class JsonExporter implements Exporter {
             addSubObjects(nodes);
             return mapper.writeValueAsString(nodes);
         } catch (IOException e) {
-            logger.debug("Error parsing object structure.");
+            logger.debug("Error parsing object structure.", e);
             return null;
         }
     }

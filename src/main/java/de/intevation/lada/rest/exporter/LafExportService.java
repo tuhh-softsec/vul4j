@@ -25,7 +25,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
-
+import org.apache.log4j.Logger;
+import de.intevation.lada.model.land.Messung;
 import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.exporter.ExportConfig;
 import de.intevation.lada.exporter.ExportFormat;
@@ -96,32 +97,56 @@ public class LafExportService {
     @Consumes("application/json")
     @Produces("text/plain")
     public Response download(
-        JsonObject proben,
+        JsonObject objects,
         @Context HttpServletRequest request
     ) {
-        List<Integer> providedIds = new ArrayList<Integer>();
-        for (JsonValue id : proben.getJsonArray("proben")) {
-            if (id instanceof JsonNumber) {
-                providedIds.add(((JsonNumber)id).intValue());
+        List<Integer> probeIds = new ArrayList<Integer>();
+        List<Integer> messungIds = new ArrayList<Integer>();
+        if (objects.getJsonArray("proben") != null) {
+            for (JsonValue id : objects.getJsonArray("proben")) {
+                if (id instanceof JsonNumber) {
+                    probeIds.add(((JsonNumber)id).intValue());
+                }
+            }
+        }
+        if (objects.getJsonArray("messungen") != null) {
+            for (JsonValue id : objects.getJsonArray("messungen")) {
+                if (id instanceof JsonNumber) {
+                    messungIds.add(((JsonNumber)id).intValue());
+                }
             }
         }
 
-        QueryBuilder<Probe> pBuilder = new QueryBuilder<Probe>(
-            repository.entityManager(Strings.LAND), Probe.class);
-        pBuilder.andIn("id", providedIds);
-        List<Probe> pObjects = repository.filterPlain(
-            pBuilder.getQuery(), Strings.LAND);
+        List<Integer> pIds = new ArrayList<Integer>();
+        if (!probeIds.isEmpty()) {
+            QueryBuilder<Probe> pBuilder = new QueryBuilder<Probe>(
+                repository.entityManager(Strings.LAND), Probe.class);
+            pBuilder.andIn("id", probeIds);
+            List<Probe> pObjects = repository.filterPlain(
+                pBuilder.getQuery(), Strings.LAND);
+            for (Probe p : pObjects) {
+                pIds.add(p.getId());
+            }
+        }
+        
+        List<Integer> mIds = new ArrayList<Integer>();
+        if (!messungIds.isEmpty()) {
+            QueryBuilder<Messung> mBuilder = new QueryBuilder<Messung>(
+                repository.entityManager(Strings.LAND), Messung.class);
+            mBuilder.andIn("id", messungIds);
+            List<Messung> mObjects = repository.filterPlain(
+                mBuilder.getQuery(), Strings.LAND);
+            for (Messung m : mObjects) {
+                mIds.add(m.getId());
+            }
+        }
 
-        if (pObjects.isEmpty()) {
+        if (pIds.isEmpty() && mIds.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        List<Integer> probeIds = new ArrayList<Integer>();
-        for (Probe p : pObjects) {
-            probeIds.add(p.getId());
-        }
         UserInfo userInfo = authorization.getInfo(request);
-        InputStream exported = exporter.export(probeIds, userInfo);
+        InputStream exported = exporter.export(pIds, mIds, userInfo);
 
         ResponseBuilder response = Response.ok((Object)exported);
         response.header(
