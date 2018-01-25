@@ -28,7 +28,7 @@ ENV LC_ALL en_US.UTF-8
 # Install packages
 #
 RUN apt-get update && \
-    apt-get install -y curl unzip make gcc
+    apt-get install -y curl unzip
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main" \
     >> /etc/apt/sources.list
 RUN curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
