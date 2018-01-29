@@ -116,11 +116,11 @@ public class Ort implements Serializable {
         this.id = id;
     }
 
-    public boolean getAktiv() {
+    public Boolean getAktiv() {
         return this.aktiv;
     }
 
-    public void setAktiv(boolean aktiv) {
+    public void setAktiv(Boolean aktiv) {
         this.aktiv = aktiv;
     }
 
