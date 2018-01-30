@@ -428,5 +428,5 @@
             <url>http://www.hibernatespatial.org/repository</url>
         </repository>
     </repositories>
-    <version>3.0</version>
+    <version>3.0-EXPORTS</version>
 </project>
