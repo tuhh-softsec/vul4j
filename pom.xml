@@ -70,7 +70,7 @@
         <dependency>
             <groupId>org.jvnet.hudson.plugins</groupId>
             <artifactId>analysis-core</artifactId>
-            <version>1.74</version>
+            <version>1.94</version>
         </dependency>
         <dependency>
             <groupId>org.jvnet.hudson.plugins</groupId>
