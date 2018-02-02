@@ -90,7 +90,8 @@ public class ProbeIdentifier implements Identifier {
             if (proben.isEmpty()) {
                 return Identified.NEW;
             }
-            if (proben.get(0).getHauptprobenNr().equals(
+            if (proben.get(0).getHauptprobenNr() == null ||
+                proben.get(0).getHauptprobenNr().equals(
                     probe.getHauptprobenNr()) ||
                 probe.getHauptprobenNr().isEmpty() ||
                 proben.get(0).getHauptprobenNr().isEmpty()
