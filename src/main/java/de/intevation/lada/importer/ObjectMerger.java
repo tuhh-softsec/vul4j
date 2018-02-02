@@ -41,7 +41,8 @@ public class ObjectMerger {
         target.setBaId(src.getBaId());
         target.setDatenbasisId(src.getDatenbasisId());
         target.setErzeugerId(src.getErzeugerId());
-        if (!src.getHauptprobenNr().isEmpty()) {
+        if (src.getHauptprobenNr() != null &&
+            !src.getHauptprobenNr().isEmpty()) {
             target.setHauptprobenNr(src.getHauptprobenNr());
         }
         target.setLaborMstId(src.getLaborMstId());
