@@ -233,6 +233,30 @@ erstellen sind die folgenden Schritte erforderlich:
    * Datensatzerzeuger
    * Messprogrammkategorien
 
+* Queries, die nach Zeitstempeln gefiltert werden können, müssen in der Query
+  umgeformt (gecastet) werden, da sie zunächst als String vorliegen. Ein Vergleich zwischen Probenahme-Beginn und einem filternden Enddatum kann beispielsweise folgende Syntax haben:
+```
+  'SELECT ...
+   WHERE
+    probeentahnme_ende < TO_TIMESTAMP(
+                          CAST(
+                            :timeFilterEnd AS double precision
+                          )
+                        )'
+```
+
+### Sonderfälle in Datentypen
+
+Für einige in stamm.result_type definerten möglichen Resulttypen erwartet der
+Client spezielle Angaben:
+
+* Resultate mit Geometrien (Typ 'geom') werden als GeoJSON erwartet. Hierfür kann die postgis- Funktion 'st_asgeojson' genutzt werden:
+```
+  'SELECT ST_ASGEOJSON(geom) AS geometrie FROM stamm.ort;'
+```
+
+* Resultate für Zahlen können in E-Notation erzwungen werden, wenn im Tabelle stamm.result_type das Format auf 'e' gesetzt wird.
+
 
 Erstellen von Importerkonfigurationen
 -------------------------------------
