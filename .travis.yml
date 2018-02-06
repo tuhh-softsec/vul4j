@@ -13,8 +13,8 @@ notifications:
     on_success: never
     on_failure: never
 jdk:
-- oraclejdk7
-- openjdk7
+#- oraclejdk7
+#- openjdk7
 - oraclejdk8
 - openjdk8
 
