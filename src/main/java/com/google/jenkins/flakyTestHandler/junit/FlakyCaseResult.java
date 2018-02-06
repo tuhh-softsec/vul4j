@@ -219,6 +219,9 @@ public class FlakyCaseResult extends TestResult implements Comparable<FlakyCaseR
    * Used to create a fake failure, when Hudson fails to load data from XML files.
    *
    * Public since 1.526.
+   * @param parent suite result
+   * @param testName test name
+   * @param errorStackTrace stack trace
    */
   public FlakyCaseResult(FlakySuiteResult parent, String testName, String errorStackTrace) {
     this.className = parent == null ? "unnamed" : parent.getName();
@@ -331,6 +334,8 @@ public class FlakyCaseResult extends TestResult implements Comparable<FlakyCaseR
 
   /**
    * Gets the class name of a test class.
+   *
+   * @return class name
    */
   @Exported(visibility=9)
   public String getClassName() {
@@ -339,6 +344,8 @@ public class FlakyCaseResult extends TestResult implements Comparable<FlakyCaseR
 
   /**
    * Gets the simple (not qualified) class name.
+   *
+   * @return simple class name
    */
   public String getSimpleName() {
     int idx = className.lastIndexOf('.');
@@ -347,6 +354,8 @@ public class FlakyCaseResult extends TestResult implements Comparable<FlakyCaseR
 
   /**
    * Gets the package name of a test case
+   *
+   * @return package name
    */
   public String getPackageName() {
     int idx = className.lastIndexOf('.');
@@ -360,6 +369,7 @@ public class FlakyCaseResult extends TestResult implements Comparable<FlakyCaseR
 
   /**
    * @since 1.515
+   * @return full display name
    */
   public String getFullDisplayName() {
     return TestNameTransformer.getTransformedName(getFullName());
