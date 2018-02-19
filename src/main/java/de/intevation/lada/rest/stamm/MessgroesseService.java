@@ -22,8 +22,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.log4j.Logger;
-
 import de.intevation.lada.model.stammdaten.Messgroesse;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
@@ -66,9 +64,6 @@ import de.intevation.lada.util.rest.Response;
 @RequestScoped
 public class MessgroesseService {
 
-    @Inject
-    private Logger logger = Logger.getLogger(MessgroesseService.class);
-
     /**
      * The data repository granting read access.
      */
@@ -92,7 +87,6 @@ public class MessgroesseService {
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() || !params.containsKey("mmtId")) {
-            logger.debug("no filter");
             return defaultRepo.getAll(Messgroesse.class, Strings.STAMM);
         }
         String mmtId = params.getFirst("mmtId");

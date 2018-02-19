@@ -27,6 +27,8 @@ import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.rest.Response;
 
+import org.apache.log4j.Logger;
+
 /**
  * REST service to get login data for the Lada application.
  * <p>
@@ -56,6 +58,8 @@ import de.intevation.lada.util.rest.Response;
 @RequestScoped
 public class UserService{
 
+    @Inject
+    private Logger logger = Logger.getLogger(UserService.class);
     @Inject
     @AuthorizationConfig(type=AuthorizationType.HEADER)
     private Authorization authorization;
@@ -98,6 +102,12 @@ public class UserService{
         response.put("messstelleLabor", userInfo.getMessLaborId());
         response.put("netzbetreiber", userInfo.getNetzbetreiber());
         response.put("funktionen", userInfo.getFunktionen());
+
+        logger.debug(
+            request.getAttribute("lada.user.name") + " - " +
+            request.getAttribute("lada.user.roles")
+        );
+
         return new Response(true, 200, response);
     }
 }
