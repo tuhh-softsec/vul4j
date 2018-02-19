@@ -20,6 +20,7 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonString;
 import javax.json.JsonValue;
+import javax.json.JsonValue.ValueType;
 import javax.persistence.EntityManager;
 import javax.ws.rs.core.MultivaluedMap;
 
@@ -117,20 +118,44 @@ public class QueryTools
             for (JsonValue f : filters) {
                 JsonObject o = (JsonObject)f;
                 JsonString property = o.getJsonString("property");
-                JsonString value = o.getJsonString("value");
-                if (property != null &&
-                    value != null
-                ) {
+                ValueType type = o.get("value").getValueType();
+                if (type.equals(ValueType.ARRAY)) {
+                    // Compare with array
+                    JsonArray value = o.getJsonArray("value");
                     String p = property.toString().replaceAll("\"", "");
-                    String v = value.toString().replaceAll("\"", "");
-                    if (entry.containsKey(p) &&
-                        entry.get(p).toString().contains(v) &&
-                        (ndx == 0 || (ndx > 0 && filtermatch == true))
+                    if (value != null &&
+                        entry.containsKey(p) &&
+                        entry.get(p) != null
                     ) {
-                        filtermatch = true;
+                        for (JsonValue v : value) {
+                            String filterValue = v.toString().replaceAll("\"", "");
+                            if (entry.get(p).toString().contains(filterValue) &&
+                                (ndx == 0 || (ndx > 0 && filtermatch == true))) {
+                                filtermatch = true;
+                            }
+                            else {
+                                filtermatch = false;
+                            }
+                        }
                     }
-                    else {
-                        filtermatch = false;
+                }
+                else {
+                    JsonString value = o.getJsonString("value");
+                    if (property != null &&
+                        value != null
+                    ) {
+                        String p = property.toString().replaceAll("\"", "");
+                        String v = value.toString().replaceAll("\"", "");
+                        if (entry.containsKey(p) &&
+                            entry.get(p) != null &&
+                            entry.get(p).toString().contains(v) &&
+                            (ndx == 0 || (ndx > 0 && filtermatch == true))
+                        ) {
+                            filtermatch = true;
+                        }
+                        else {
+                            filtermatch = false;
+                        }
                     }
                 }
                 ndx++;
