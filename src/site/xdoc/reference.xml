@@ -2019,7 +2019,7 @@ discardCookies=*
 					</tr>
 					
 					<tr>
-						<td>org.esigate.authentication.RemoteUserAuthentificationHandler</td>
+						<td>org.esigate.authentication.RemoteUserAuthenticationHandler</td>
 						<td>sends current user id as an http request header (X_REMOTE_USER).</td>
 						<td>Yes</td>
 						<td>4.0</td>
