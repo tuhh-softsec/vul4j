@@ -178,6 +178,31 @@ public class QueryService {
         return new Response(true, 200, queries);
     }
 
+    /**
+     * Request all configured stammdaten queries.
+     */
+    @GET
+    @Path("/universal")
+    @Produces("application/json")
+    public Response getUniversal(
+        @Context HttpServletRequest request
+    ) {
+        UserInfo userInfo = authorization.getInfo(request);
+        QueryBuilder<Query> builder = new QueryBuilder<Query>(
+            repository.entityManager(Strings.STAMM),
+            Query.class
+        );
+        builder.or("typeId", 7);
+        List<Query> queries = repository.filterPlain(builder.getQuery(), Strings.STAMM);
+
+        markFavorites(queries, userInfo);
+
+        setFilterValues(queries, 0);
+        setFilterValues(queries, userInfo.getUserId());
+
+        return new Response(true, 200, queries);
+    }
+
     private void markFavorites(List<Query> queries, UserInfo userInfo) {
         QueryBuilder<Favorite> fBuilder = new QueryBuilder<Favorite>(
             repository.entityManager(Strings.STAMM),

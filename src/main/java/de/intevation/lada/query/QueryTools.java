@@ -81,9 +81,11 @@ public class QueryTools
         rBuilder.and("query", qId);
         rBuilder.orderBy("index", true);
         List<Result> results = repository.filterPlain(rBuilder.getQuery(), Strings.STAMM);
-        Result idResult = new Result();
-        idResult.setDataIndex("id");
-        results.add(0, idResult);
+        if (!type.equals("universal")) {
+            Result idResult = new Result();
+            idResult.setDataIndex("id");
+            results.add(0, idResult);
+        }
         if (params.containsKey("sort")) {
             String sort = params.getFirst("sort");
             try (JsonReader reader = Json.createReader(new StringReader(sort))) {
