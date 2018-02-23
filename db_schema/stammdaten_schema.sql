@@ -295,7 +295,7 @@ INSERT INTO query_type VALUES(3, 'ort');
 INSERT INTO query_type VALUES(4, 'probenehmer');
 INSERT INTO query_type VALUES(5, 'datensatzerzeuger');
 INSERT INTO query_type VALUES(6, 'messprogrammkategorie');
-
+INSERT INTO query_type VALUES(7, 'universial');
 
 CREATE TABLE query (
     id serial PRIMARY KEY,
