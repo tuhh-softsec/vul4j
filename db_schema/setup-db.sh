@@ -61,6 +61,10 @@ echo create postgis extension
 psql $DB_CONNECT_STRING -d $DB_NAME  --command  \
      "CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public"
 
+echo create postgis tablefunc
+psql $DB_CONNECT_STRING -d $DB_NAME  --command  \
+     "CREATE EXTENSION IF NOT EXISTS tablefunc WITH SCHEMA public"
+
 echo create stammdaten schema
 psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_schema.sql
 
