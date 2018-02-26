@@ -356,12 +356,15 @@ public class AuditTrailService {
         String source
     ) {
         EntityManager manager = repository.entityManager(source);
-        String sql = "SELECT :field FROM :table WHERE :idField = :id;";
+        String sql = "SELECT " + field + " FROM " + table + " WHERE " + idField +" = :id ;";
         javax.persistence.Query query = manager.createNativeQuery(sql);
-        query.setParameter("field", field);
-        query.setParameter("table", table);
-        query.setParameter("idField", idField);
-        query.setParameter("id", id);
+        try {
+            int value = Integer.parseInt(id);
+            query.setParameter("id", value);
+        }
+        catch (NumberFormatException nfe) {
+            query.setParameter("id", id);
+        }
         List<String> result = query.getResultList();
         return result.get(0);
     }
