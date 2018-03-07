@@ -137,7 +137,9 @@ public class ProbeFactory {
             int adjust = offset;
 
             if (intervallField != subIntField) {
-                intValue = intValue - intValue % intervallFactor;
+                if (!(intervallField == 2 && intValue == 11)) {
+                    intValue = intValue - intValue % intervallFactor;
+                }
                 cal.set(intervallField, intValue);
 
                 if (subIntField == Calendar.DAY_OF_YEAR) {
