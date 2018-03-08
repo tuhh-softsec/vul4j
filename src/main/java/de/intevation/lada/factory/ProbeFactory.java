@@ -212,7 +212,17 @@ public class ProbeFactory {
 
         public void roll() {
             from.add(intervallField, intervallFactor);
-            from.add(Calendar.DAY_OF_YEAR, -(teilVon - 1));
+            if (intervallField == Calendar.MONTH &&
+                (intervallFactor == 3 || intervallFactor == 6) &&
+                from.get(Calendar.MONTH)%intervallFactor == 1
+            ) {
+                from.add(Calendar.MONTH, 1);
+            }
+            int teilAdd = teilVon - 1;
+            if (startInLeapYear()) {
+                teilAdd--;
+            }
+            from.add(Calendar.DAY_OF_YEAR, -(teilAdd));
             from = adjustSubIntField(from, teilVon);
         }
 
