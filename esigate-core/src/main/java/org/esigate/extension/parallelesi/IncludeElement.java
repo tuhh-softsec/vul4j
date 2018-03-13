@@ -243,7 +243,7 @@ class IncludeElement extends BaseElement {
         Future<CharSequence> result;
         IncludeTask task =
                 new IncludeTask(includeTag, src, alt, ctx, current, ignoreError, fragmentReplacements,
-                        regexpReplacements, executor);
+                        regexpReplacements, null); // executor is null to disable parallel esi on recursive calls.
         if (executor == null) {
             // No threads.
             CharSequence content = task.call();
