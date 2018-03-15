@@ -61,7 +61,12 @@ public class ResponseSender {
         Cookie[] newCookies = httpRequest.getNewCookies();
 
         for (Cookie newCooky : newCookies) {
-            response.addHeader("Set-Cookie", CookieUtil.encodeCookie(newCooky));
+        
+            // newCooky may be null. In that case just ignore. 
+            // See https://github.com/esigate/esigate/issues/181
+            if( newCooky != null ) {
+                response.addHeader("Set-Cookie", CookieUtil.encodeCookie(newCooky));
+            }
         }
         HttpEntity httpEntity = httpResponse.getEntity();
         if (httpEntity != null) {
