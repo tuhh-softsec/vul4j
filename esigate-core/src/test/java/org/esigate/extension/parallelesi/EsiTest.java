@@ -20,6 +20,7 @@ import java.util.Properties;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.util.EntityUtils;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
@@ -63,8 +64,8 @@ public class EsiTest extends TestCase {
                             .createHttpResponse()
                             .status(HttpStatus.SC_OK)
                             .reason("OK")
-                            .header("Content-Type", "text/html; charset=utf-8")
-                            .entity("<esi:include src=\"http://test.mydomain.fr/esi/1\"/>"
+                            .header("Content-Type", "text/html; charset=utf-8")            
+                            .entity("<esi:include src=\"http://test.mydomain.fr/esi/1\"/> "
                                     + "<esi:include src=\"http://test.mydomain.fr/esi/2\"/>").build();
                 }
 
@@ -86,7 +87,7 @@ public class EsiTest extends TestCase {
         IncomingRequest requestWithSurrogate = TestUtils.createRequest("http://test.mydomain.fr/foobar/").build();
 
         HttpResponse response = TestUtils.driverProxy(driver, requestWithSurrogate);
-
+        assertEquals("Fragment 1 Fragment 2", EntityUtils.toString(response.getEntity()));
     }
 
     /**
@@ -145,4 +146,194 @@ public class EsiTest extends TestCase {
         }
 
     }
+
+    /**
+     * Ensure ESI works when max_threads = 0 (parallel mode is disabled)
+     * 
+     * @throws Exception
+     */
+    public void testNoExecutor() throws Exception {
+
+        // Conf
+        Properties properties = new Properties();
+        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://provider/");
+        properties.put(Parameters.EXTENSIONS, Esi.class.getName());
+        properties.put(Esi.MAX_THREADS, "0");
+
+        // Setup remote server (provider) response.
+
+        Driver driver = TestUtils.createMockDriver(properties, new IResponseHandler() {
+            @Override
+            public HttpResponse execute(HttpRequest request) throws UnsupportedEncodingException {
+
+                if (request.getRequestLine().getUri().equals("/foobar/")) {
+                    return TestUtils
+                            .createHttpResponse()
+                            .status(HttpStatus.SC_OK)
+                            .reason("OK")
+                            .header("Content-Type", "text/html; charset=utf-8")
+                            .entity("<esi:try><esi:attempt><esi:include src=\"http://test.mydomain.fr/esi/1\"/> "
+                                    + "<esi:include src=\"http://test.mydomain.fr/esi/2\"/></esi:attempt><esi:except></esi:except></esi:try>")
+                            .build();
+                }
+
+                if (request.getRequestLine().getUri().equals("/esi/1")) {
+                    return TestUtils.createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
+                            .header("Content-Type", "text/html; charset=utf-8").entity("Fragment 1").build();
+                }
+
+                if (request.getRequestLine().getUri().equals("/esi/2")) {
+                    return TestUtils.createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
+                            .header("Content-Type", "text/html; charset=utf-8").entity("Fragment 2").build();
+                }
+
+                throw new IllegalStateException("Unexpected request" + request.getRequestLine().getUri());
+            }
+        });
+
+        // Request
+        IncomingRequest requestWithSurrogate = TestUtils.createRequest("http://test.mydomain.fr/foobar/").build();
+
+        HttpResponse response = TestUtils.driverProxy(driver, requestWithSurrogate);
+        assertEquals("Fragment 1 Fragment 2", EntityUtils.toString(response.getEntity()));
+    }
+
+    /**
+     * This test ensure the parallel esi doesn't get locked by recursive includes.
+     * 
+     * @throws Exception
+     */
+    public void testNotEnoughThreads() throws Exception {
+
+        // Conf
+        Properties properties = new Properties();
+        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://provider/");
+        properties.put(Parameters.EXTENSIONS, Esi.class.getName());
+        properties.put(Esi.MAX_THREADS, "1");
+
+        // Setup remote server (provider) response.
+
+        Driver driver = TestUtils.createMockDriver(properties, new IResponseHandler() {
+            @Override
+            public HttpResponse execute(HttpRequest request) throws UnsupportedEncodingException {
+
+                if (request.getRequestLine().getUri().equals("/foobar/")) {
+                    return TestUtils
+                            .createHttpResponse()
+                            .status(HttpStatus.SC_OK)
+                            .reason("OK")
+                            .header("Content-Type", "text/html; charset=utf-8")
+                            .entity("<esi:try><esi:attempt><esi:include src=\"http://test.mydomain.fr/esi/1\"/> "
+                                    + "<esi:include src=\"http://test.mydomain.fr/esi/2\"/></esi:attempt><esi:except></esi:except></esi:try>")
+                            .build();
+                }
+
+                if (request.getRequestLine().getUri().equals("/esi/1")) {
+                    return TestUtils.createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
+                            .header("Content-Type", "text/html; charset=utf-8")
+                            .entity("Fragment 1 <esi:include src=\"http://test.mydomain.fr/esi/3\"/>").build();
+                }
+
+                if (request.getRequestLine().getUri().equals("/esi/2")) {
+                    return TestUtils.createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
+                            .header("Content-Type", "text/html; charset=utf-8").entity("Fragment 2").build();
+                }
+                if (request.getRequestLine().getUri().equals("/esi/3")) {
+                    return TestUtils.createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
+                            .header("Content-Type", "text/html; charset=utf-8")
+                            .entity("Fragment 3 <esi:include src=\"http://test.mydomain.fr/esi/4\"/>").build();
+                }
+
+                if (request.getRequestLine().getUri().equals("/esi/4")) {
+                    return TestUtils.createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
+                            .header("Content-Type", "text/html; charset=utf-8").entity("Fragment 4").build();
+                }
+
+                throw new IllegalStateException("Unexpected request" + request.getRequestLine().getUri());
+            }
+        });
+
+        // Request
+        IncomingRequest requestWithSurrogate = TestUtils.createRequest("http://test.mydomain.fr/foobar/").build();
+
+        HttpResponse response = TestUtils.driverProxy(driver, requestWithSurrogate);
+        assertEquals("Fragment 1 Fragment 3 Fragment 4 Fragment 2", EntityUtils.toString(response.getEntity()));
+    }
+
+    /**
+     * This test ensure the parallel esi if faster than single thread mode.
+     * 
+     * @throws Exception
+     */
+    public void testParallelPerformance() throws Exception {
+
+        // Conf
+        Properties properties = new Properties();
+        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://provider/");
+        properties.put(Parameters.EXTENSIONS, Esi.class.getName());
+        properties.put(Esi.MAX_THREADS, "10");
+        properties.put(Esi.MIN_THREADS, "10");
+
+        // Setup remote server (provider) response.
+
+        Driver driver = TestUtils.createMockDriver(properties, new IResponseHandler() {
+            @Override
+            public HttpResponse execute(HttpRequest request) throws UnsupportedEncodingException {
+                try {
+                    if (request.getRequestLine().getUri().equals("/foobar/")) {
+                        return TestUtils
+                                .createHttpResponse()
+                                .status(HttpStatus.SC_OK)
+                                .reason("OK")
+                                .header("Content-Type", "text/html; charset=utf-8")
+                                .entity("<esi:try><esi:attempt><esi:include src=\"http://test.mydomain.fr/esi/1\"/> "
+                                        + "<esi:include src=\"http://test.mydomain.fr/esi/2\"/></esi:attempt><esi:except></esi:except></esi:try>")
+                                .build();
+                    }
+
+                    if (request.getRequestLine().getUri().equals("/esi/1")) {
+
+                        Thread.sleep(200);
+
+                        return TestUtils.createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
+                                .header("Content-Type", "text/html; charset=utf-8")
+                                .entity("Fragment 1 <esi:include src=\"http://test.mydomain.fr/esi/3\"/>").build();
+                    }
+
+                    if (request.getRequestLine().getUri().equals("/esi/2")) {
+                        Thread.sleep(200);
+                        return TestUtils.createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
+                                .header("Content-Type", "text/html; charset=utf-8").entity("Fragment 2").build();
+                    }
+                    if (request.getRequestLine().getUri().equals("/esi/3")) {
+                        Thread.sleep(200);
+                        return TestUtils.createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
+                                .header("Content-Type", "text/html; charset=utf-8")
+                                .entity("Fragment 3 <esi:include src=\"http://test.mydomain.fr/esi/4\"/>").build();
+                    }
+
+                    if (request.getRequestLine().getUri().equals("/esi/4")) {
+                        Thread.sleep(200);
+                        return TestUtils.createHttpResponse().status(HttpStatus.SC_OK).reason("OK")
+                                .header("Content-Type", "text/html; charset=utf-8").entity("Fragment 4").build();
+                    }
+
+                    throw new IllegalStateException("Unexpected request" + request.getRequestLine().getUri());
+                } catch (InterruptedException e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+        });
+
+        // Request
+        IncomingRequest requestWithSurrogate = TestUtils.createRequest("http://test.mydomain.fr/foobar/").build();
+
+        long start = System.currentTimeMillis();
+        HttpResponse response = TestUtils.driverProxy(driver, requestWithSurrogate);
+        long duration = System.currentTimeMillis() - start;
+
+        assertEquals("Fragment 1 Fragment 3 Fragment 4 Fragment 2", EntityUtils.toString(response.getEntity()));
+        assertTrue(duration < 800);
+    }
+
 }

@@ -197,10 +197,10 @@
 				<plugin>
 					<groupId>org.codehaus.cargo</groupId>
 					<artifactId>cargo-maven2-plugin</artifactId>
-					<version>1.4.19</version>
+					<version>1.5.1</version>
 					<configuration>
 						<container>
-							<containerId>jetty8x</containerId>
+							<containerId>${cargo.containerId}</containerId>
 							<type>embedded</type>
 							<systemProperties>
 								<org.eclipse.jetty.LEVEL>WARN</org.eclipse.jetty.LEVEL>
@@ -680,6 +680,24 @@
 					</plugin>
 				</plugins>
 			</build>
+		</profile>
+		<profile>
+			<id>jetty8x</id>
+    			<activation>
+		      		<jdk>[1.6,1.8)</jdk>
+			</activation>
+			<properties>
+			     <cargo.containerId>jetty8x</cargo.containerId>
+			</properties>
+		</profile>
+		<profile>
+			<id>jetty9x</id>
+    			<activation>
+		      		<jdk>[1.8,)</jdk>
+			</activation>
+			<properties>
+			     <cargo.containerId>jetty9x</cargo.containerId>
+			</properties>
 		</profile>
 	</profiles>
 	<modules>

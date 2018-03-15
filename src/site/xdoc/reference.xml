@@ -2019,19 +2019,19 @@ discardCookies=*
 					</tr>
 					
 					<tr>
-						<td>org.esigate.authentication.RemoteUserAuthentificationHandler</td>
+						<td>org.esigate.authentication.RemoteUserAuthenticationHandler</td>
 						<td>sends current user id as an http request header (X_REMOTE_USER).</td>
 						<td>Yes</td>
 						<td>4.0</td>
 					</tr>
 					<tr>
-						<td>org.esigate.authentication.CasAuthentificationHandler</td>
+						<td>org.esigate.authentication.CasAuthenticationHandler</td>
 						<td>handles backends requiring authentication on CAS SSO.</td>
 						<td>No</td>
 						<td>4.0</td>
 					</tr>
 					<tr>
-						<td>org.esigate.authentication.RequestAuthentificationHandler</td>
+						<td>org.esigate.authentication.RequestAuthenticationHandler</td>
 						<td>sends selected session attributes and request attributes as http
 						request headers.</td>
 						<td>No</td>
