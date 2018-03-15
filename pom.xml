@@ -737,7 +737,7 @@
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
 		<maven.compiler.optimize>true</maven.compiler.optimize>
-		<dependency.httpclient.version>4.5.2</dependency.httpclient.version>
+		<dependency.httpclient.version>4.5.4</dependency.httpclient.version>
 		<currentVersion>${project.version}</currentVersion>
 		<esigate-tool-conf.version>1.1</esigate-tool-conf.version>
 	</properties>

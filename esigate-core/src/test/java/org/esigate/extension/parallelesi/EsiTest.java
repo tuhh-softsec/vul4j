@@ -64,7 +64,7 @@ public class EsiTest extends TestCase {
                             .createHttpResponse()
                             .status(HttpStatus.SC_OK)
                             .reason("OK")
-                            .header("Content-Type", "text/html; charset=utf-8")
+                            .header("Content-Type", "text/html; charset=utf-8")            
                             .entity("<esi:include src=\"http://test.mydomain.fr/esi/1\"/> "
                                     + "<esi:include src=\"http://test.mydomain.fr/esi/2\"/>").build();
                 }

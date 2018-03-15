@@ -15,7 +15,8 @@
 
 package org.esigate.http.cookie;
 
-import org.apache.http.annotation.Immutable;
+import org.apache.http.annotation.Contract;
+import org.apache.http.annotation.ThreadingBehavior;
 import org.apache.http.cookie.MalformedCookieException;
 import org.apache.http.cookie.SetCookie;
 import org.apache.http.impl.cookie.AbstractCookieAttributeHandler;
@@ -27,7 +28,7 @@ import org.apache.http.util.Args;
  * 
  * @author Alexis Thaveau on 20/10/14.
  */
-@Immutable
+@Contract(threading = ThreadingBehavior.IMMUTABLE_CONDITIONAL)
 public class HttpOnlyHandler extends AbstractCookieAttributeHandler {
 
     public HttpOnlyHandler() {
