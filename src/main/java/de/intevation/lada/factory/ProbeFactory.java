@@ -276,11 +276,11 @@ public class ProbeFactory {
              * March 1 and thus has to be adapted in a leap year. */
             int leapDay = intervall.startInLeapYear() ? 1 : 0;
             int actualGueltigVon =
-                gueltigVon > FEBRUARY_28
+                gueltigVon  - 1 > FEBRUARY_28
                 ? gueltigVon + leapDay
                 : gueltigVon;
             int actualGueltigBis =
-                gueltigBis > FEBRUARY_28
+                gueltigBis - 1 > FEBRUARY_28
                 ? gueltigBis + leapDay
                 : gueltigBis;
 
