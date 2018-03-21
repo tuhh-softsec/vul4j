@@ -105,9 +105,19 @@ Starten der Container:
           -d koala/lada_wildfly
  $ cd your/repo/of/lada-client
  $ docker run --name lada_client --net=lada_network \
-              -v $PWD:/var/www/html/ \
+              -v $PWD:/usr/local/apache2/htdocs \
               --link lada_wildfly:lada-server \
               -p 8180-8184:80-84 -d koala/lada_client
+
+Innerhalb des Client-Containers muss dann noch folgendes ausgeführt werden,
+wenn zum ersten mal your/repo/of/lada-client als Volume in einen Container
+eingebunden wurde:
+
+ $ ./install-sencha2opt.sh
+ $ ./install-dependencies.sh
+ $ ln -s $PWD/ext-6.2.0 ext
+ $ sencha app install --framework=ext
+ $ sencha app build development
 
 Die LADA-Anwendung kann dann unter den angegebenen Ports mit verschiedenen
 Rollen im Browser ausgeführt werden.
