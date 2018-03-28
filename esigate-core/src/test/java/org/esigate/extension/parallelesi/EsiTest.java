@@ -24,7 +24,9 @@ import org.apache.http.util.EntityUtils;
 import org.esigate.Driver;
 import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
+import org.esigate.extension.FetchLogging;
 import org.esigate.http.IncomingRequest;
+import org.esigate.test.PropertiesBuilder;
 import org.esigate.test.TestUtils;
 import org.esigate.test.conn.IResponseHandler;
 import org.junit.Assert;
@@ -47,11 +49,12 @@ public class EsiTest extends TestCase {
     public void testQueueBehaviorOK() throws Exception {
 
         // Conf
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://provider/");
-        properties.put(Parameters.EXTENSIONS, Esi.class.getName());
-        properties.put(Esi.MAX_THREADS, "1");
-        properties.put(Esi.MAX_QUEUE, "10");
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://provider/") //
+                .set(Parameters.EXTENSIONS, Esi.class) //
+                .set(Esi.MAX_THREADS, 1) //
+                .set(Esi.MAX_QUEUE, 10) //
+                .build();
 
         // Setup remote server (provider) response.
 
@@ -64,7 +67,7 @@ public class EsiTest extends TestCase {
                             .createHttpResponse()
                             .status(HttpStatus.SC_OK)
                             .reason("OK")
-                            .header("Content-Type", "text/html; charset=utf-8")            
+                            .header("Content-Type", "text/html; charset=utf-8")
                             .entity("<esi:include src=\"http://test.mydomain.fr/esi/1\"/> "
                                     + "<esi:include src=\"http://test.mydomain.fr/esi/2\"/>").build();
                 }
@@ -98,11 +101,12 @@ public class EsiTest extends TestCase {
     public void testQueueBehaviorNoRoom() throws Exception {
 
         // Conf
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://provider/");
-        properties.put(Parameters.EXTENSIONS, Esi.class.getName());
-        properties.put(Esi.MAX_THREADS, "1");
-        properties.put(Esi.MAX_QUEUE, "1");
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://provider/") //
+                .set(Parameters.EXTENSIONS, Esi.class, FetchLogging.class) //
+                .set(Esi.MAX_THREADS, 1) //
+                .set(Esi.MAX_QUEUE, 1) //
+                .build();
 
         // Setup remote server (provider) response.
 
@@ -155,10 +159,11 @@ public class EsiTest extends TestCase {
     public void testNoExecutor() throws Exception {
 
         // Conf
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://provider/");
-        properties.put(Parameters.EXTENSIONS, Esi.class.getName());
-        properties.put(Esi.MAX_THREADS, "0");
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://provider/") //
+                .set(Parameters.EXTENSIONS, Esi.class) //
+                .set(Esi.MAX_THREADS, 0) //
+                .build();
 
         // Setup remote server (provider) response.
 
@@ -206,10 +211,11 @@ public class EsiTest extends TestCase {
     public void testNotEnoughThreads() throws Exception {
 
         // Conf
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://provider/");
-        properties.put(Parameters.EXTENSIONS, Esi.class.getName());
-        properties.put(Esi.MAX_THREADS, "1");
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://provider/") //
+                .set(Parameters.EXTENSIONS, Esi.class) //
+                .set(Esi.MAX_THREADS, 1) //
+                .build();
 
         // Setup remote server (provider) response.
 
@@ -268,12 +274,13 @@ public class EsiTest extends TestCase {
     public void testParallelPerformance() throws Exception {
 
         // Conf
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://provider/");
-        properties.put(Parameters.EXTENSIONS, Esi.class.getName());
-        properties.put(Esi.MAX_THREADS, "10");
-        properties.put(Esi.MIN_THREADS, "10");
-
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://provider/") //
+                .set(Parameters.EXTENSIONS, Esi.class) //
+                .set(Esi.MAX_THREADS, 10) //
+                .set(Esi.MIN_THREADS, 10) //
+                .set(Esi.MAX_QUEUE, 10) //
+                .build();
         // Setup remote server (provider) response.
 
         Driver driver = TestUtils.createMockDriver(properties, new IResponseHandler() {
@@ -333,7 +340,9 @@ public class EsiTest extends TestCase {
         long duration = System.currentTimeMillis() - start;
 
         assertEquals("Fragment 1 Fragment 3 Fragment 4 Fragment 2", EntityUtils.toString(response.getEntity()));
+        System.out.println(duration);
         assertTrue(duration < 800);
+
     }
 
 }
