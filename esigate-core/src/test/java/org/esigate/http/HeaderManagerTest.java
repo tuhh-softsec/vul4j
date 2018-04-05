@@ -23,6 +23,7 @@ import org.esigate.Driver;
 import org.esigate.Parameters;
 import org.esigate.impl.DriverRequest;
 import org.esigate.impl.UrlRewriter;
+import org.esigate.test.PropertiesBuilder;
 import org.esigate.test.TestUtils;
 import org.mockito.Mockito;
 
@@ -81,8 +82,11 @@ public class HeaderManagerTest extends TestCase {
      * @throws Exception
      */
     public void testXForwardedProtoHeader() throws Exception {
-        Properties props = new Properties();
-        props.put(Parameters.REMOTE_URL_BASE.getName(), "http://www.foo.com/");
+
+        Properties props = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://www.foo.com/") //
+                .build();
+
         Driver driver = Driver.builder().setName("test").setProperties(props).build();
         DriverRequest driverRequest = TestUtils.createDriverRequest("https://wwww.foo.com", driver);
         OutgoingRequest outgoingRequest =

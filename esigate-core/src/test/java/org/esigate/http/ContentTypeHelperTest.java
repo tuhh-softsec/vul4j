@@ -20,13 +20,15 @@ import java.util.Properties;
 import junit.framework.TestCase;
 
 import org.esigate.Parameters;
+import org.esigate.test.PropertiesBuilder;
 
 public class ContentTypeHelperTest extends TestCase {
 
     /** Test default configuration. */
     public void testDefaultConfig() {
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost");
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://localhost") //
+                .build();
         ContentTypeHelper contentTypeHelper = new ContentTypeHelper(properties);
         // Parsable contentTypes
         assertParsableContentType(contentTypeHelper, "text/html; charset=utf-8");
@@ -46,15 +48,19 @@ public class ContentTypeHelperTest extends TestCase {
      * Test property parsableContentTypes.
      */
     public void testParsableContentTypes() {
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost");
-        properties.put(Parameters.PARSABLE_CONTENT_TYPES.getName(), "text/plain");
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://localhost") //
+                .set(Parameters.PARSABLE_CONTENT_TYPES, "text/plain") //
+                .build();
+
         ContentTypeHelper contentTypeHelper = new ContentTypeHelper(properties);
         assertParsableContentType(contentTypeHelper, "text/plain");
 
-        properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost");
-        properties.put(Parameters.PARSABLE_CONTENT_TYPES.getName(), "text/plain, text/html");
+        properties = properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://localhost") //
+                .set(Parameters.PARSABLE_CONTENT_TYPES, "text/plain, text/html") //
+                .build();
+
         contentTypeHelper = new ContentTypeHelper(properties);
         assertParsableContentType(contentTypeHelper, "text/plain");
         assertParsableContentType(contentTypeHelper, "text/html");

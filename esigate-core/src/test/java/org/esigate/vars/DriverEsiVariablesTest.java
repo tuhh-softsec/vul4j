@@ -33,6 +33,7 @@ import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
 import org.esigate.esi.EsiRenderer;
 import org.esigate.http.IncomingRequest;
+import org.esigate.test.PropertiesBuilder;
 import org.esigate.test.TestUtils;
 import org.esigate.test.conn.IResponseHandler;
 import org.esigate.test.driver.AbstractDriverTestCase;
@@ -68,8 +69,9 @@ public class DriverEsiVariablesTest extends AbstractDriverTestCase {
         DriverFactory.configure(factoryProperties);
 
         // Configuration
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost.mydomain.fr/");
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://localhost.mydomain.fr/") //
+                .build();
 
         // Test case
         IncomingRequest request =
@@ -163,8 +165,9 @@ public class DriverEsiVariablesTest extends AbstractDriverTestCase {
     @Test
     public void testEsiVariablesCase2() throws IOException, HttpErrorPage {
         // Configuration
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost.mydomain.fr/");
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://localhost.mydomain.fr/") //
+                .build();
 
         // Test case
         IncomingRequest request =

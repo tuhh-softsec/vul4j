@@ -22,21 +22,26 @@ import org.esigate.Driver;
 import org.esigate.Parameters;
 import org.esigate.http.ResourceUtils;
 import org.esigate.impl.DriverRequest;
+import org.esigate.test.PropertiesBuilder;
 import org.esigate.test.TestUtils;
 
 public class ResourceUtilsTest extends TestCase {
 
     public void testGetHttpUrlWithQueryString() throws Exception {
-        Properties props = new Properties();
-        props.put(Parameters.REMOTE_URL_BASE.getName(), "http://www.foo.com/");
+        Properties props = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://www.foo.com/") //
+                .build();
+
         Driver driver = Driver.builder().setName("test").setProperties(props).build();
         DriverRequest request = TestUtils.createDriverRequest("http://bar.com", driver);
         assertEquals("http://www.foo.com/test", ResourceUtils.getHttpUrlWithQueryString("/test", request, true));
     }
 
     public void testGetHttpUrlWithQueryStringAbsoluteurl() throws Exception {
-        Properties props = new Properties();
-        props.put(Parameters.REMOTE_URL_BASE.getName(), "http://www.foo.com/");
+        Properties props = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://www.foo.com/") //
+                .build();
+
         Driver driver = Driver.builder().setName("test").setProperties(props).build();
         DriverRequest request = TestUtils.createDriverRequest("http://bar.com", driver);
         assertEquals("http://www.bar.com/test",
