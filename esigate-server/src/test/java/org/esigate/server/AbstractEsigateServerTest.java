@@ -21,6 +21,8 @@ import java.util.concurrent.Executors;
 import org.eclipse.jetty.server.Handler;
 import org.junit.After;
 import org.junit.Before;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Starts Esigate Server in background for unit testing.
@@ -31,11 +33,13 @@ import org.junit.Before;
  * 
  */
 public class AbstractEsigateServerTest {
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractEsigateServerTest.class);
+
     private static final int DEFAULT_BACKEND_PORT = 8082;
     private static final int DEFAULT_CONTROL_PORT = 8081;
     private static final int DEFAULT_MAIN_PORT = 8080;
     static final int WAIT_RETRIES = 50;
-    static final int WAIT_SLEEP = 100;
+    static final int WAIT_SLEEP = 200;
     private ExecutorService esigateExecutor = null;
     private ExecutorService backendExecutor = null;
     private int esigatePort;
@@ -96,6 +100,9 @@ public class AbstractEsigateServerTest {
                 e.printStackTrace();
             }
         }
+        if (!EsigateServer.isStarted()) {
+            LOG.error("Esigate server failed to start");
+        }
 
         if (this.backendHandler != null) {
             this.backendServerRunnable = new BackendServerRunnable(this.backendPort, this.backendHandler);
@@ -110,6 +117,9 @@ public class AbstractEsigateServerTest {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+            }
+            if (!backendServerRunnable.isStarted()) {
+                LOG.error("Backend server failed to start");
             }
         }
     }
