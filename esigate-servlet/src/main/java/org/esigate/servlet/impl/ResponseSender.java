@@ -61,10 +61,10 @@ public class ResponseSender {
         Cookie[] newCookies = httpRequest.getNewCookies();
 
         for (Cookie newCooky : newCookies) {
-        
-            // newCooky may be null. In that case just ignore. 
+
+            // newCooky may be null. In that case just ignore.
             // See https://github.com/esigate/esigate/issues/181
-            if( newCooky != null ) {
+            if (newCooky != null) {
                 response.addHeader("Set-Cookie", CookieUtil.encodeCookie(newCooky));
             }
         }
