@@ -16,8 +16,6 @@ package org.esigate.extension.surrogate;
 
 import java.util.Properties;
 
-import junit.framework.TestCase;
-
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -27,10 +25,13 @@ import org.esigate.HttpErrorPage;
 import org.esigate.Parameters;
 import org.esigate.extension.Esi;
 import org.esigate.http.IncomingRequest;
+import org.esigate.test.PropertiesBuilder;
 import org.esigate.test.TestUtils;
 import org.esigate.test.conn.IResponseHandler;
 import org.esigate.test.conn.SequenceResponse;
 import org.junit.Assert;
+
+import junit.framework.TestCase;
 
 /**
  * Edge-Arch test cases.
@@ -52,9 +53,10 @@ public class SurrogateTest extends TestCase {
     public void testSurrogateControlWithSurrogate() throws Exception {
 
         // Conf
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://provider/");
-        properties.put(Parameters.EXTENSIONS, Esi.class.getName() + "," + Surrogate.class.getName());
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://provider/") //
+                .set(Parameters.EXTENSIONS, Esi.class, Surrogate.class) //
+                .build();
 
         // Setup remote server (provider) response.
         Driver driver =
@@ -100,9 +102,10 @@ public class SurrogateTest extends TestCase {
     public void testSurrogateControlWithNoSurrogate() throws Exception {
 
         // Conf
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://provider/");
-        properties.put(Parameters.EXTENSIONS, Esi.class.getName() + "," + Surrogate.class.getName());
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://provider/") //
+                .set(Parameters.EXTENSIONS, Esi.class, Surrogate.class) //
+                .build();
 
         // Setup remote server (provider) response.
         Driver driver =
@@ -128,9 +131,10 @@ public class SurrogateTest extends TestCase {
     public void testSurrogateCapabilities() throws Exception {
 
         // Conf
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://provider/");
-        properties.put(Parameters.EXTENSIONS, Esi.class.getName() + "," + Surrogate.class.getName());
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://provider/") //
+                .set(Parameters.EXTENSIONS, Esi.class, Surrogate.class) //
+                .build();
 
         // Setup remote server (provider) response.
         Driver driver = TestUtils.createMockDriver(properties, new IResponseHandler() {
@@ -162,9 +166,10 @@ public class SurrogateTest extends TestCase {
     public void testSurrogateCapabilitiesUniqueToken() throws Exception {
 
         // Conf
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://provider/");
-        properties.put(Parameters.EXTENSIONS, Esi.class.getName() + "," + Surrogate.class.getName());
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://provider/") //
+                .set(Parameters.EXTENSIONS, Esi.class, Surrogate.class) //
+                .build();
 
         // Setup remote server (provider) response.
         Driver driver = TestUtils.createMockDriver(properties, new IResponseHandler() {
@@ -200,9 +205,10 @@ public class SurrogateTest extends TestCase {
     public void testSurrogateControlDisableCapability() throws Exception {
 
         // Conf
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://provider/");
-        properties.put(Parameters.EXTENSIONS, Esi.class.getName() + "," + Surrogate.class.getName());
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://provider/") //
+                .set(Parameters.EXTENSIONS, Esi.class, Surrogate.class) //
+                .build();
 
         // Setup remote server (provider) response.
         Driver driver =
@@ -231,9 +237,10 @@ public class SurrogateTest extends TestCase {
      */
     public void testSurrogateControlEnable() throws Exception {
         // Conf
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://provider/");
-        properties.put(Parameters.EXTENSIONS, Esi.class.getName() + "," + Surrogate.class.getName());
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://provider/") //
+                .set(Parameters.EXTENSIONS, Esi.class, Surrogate.class) //
+                .build();
 
         // Setup remote server (provider) response.
         Driver driver =
@@ -260,10 +267,11 @@ public class SurrogateTest extends TestCase {
      */
     public void testSurrogateControlNoStore() throws Exception {
         // Conf
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://provider/");
-        properties.put(Parameters.EXTENSIONS, Esi.class.getName() + "," + Surrogate.class.getName());
-        properties.put(Parameters.X_CACHE_HEADER, "true");
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://provider/") //
+                .set(Parameters.EXTENSIONS, Esi.class, Surrogate.class) //
+                .set(Parameters.X_CACHE_HEADER, true) //
+                .build();
 
         // Setup remote server (provider) response.
         Driver driver =
@@ -309,10 +317,11 @@ public class SurrogateTest extends TestCase {
      */
     public void testSurrogateControlMaxAge() throws Exception {
         // Conf
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://provider/");
-        properties.put(Parameters.EXTENSIONS, Esi.class.getName() + "," + Surrogate.class.getName());
-        properties.put(Parameters.X_CACHE_HEADER, "true");
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://provider/") //
+                .set(Parameters.EXTENSIONS, Esi.class, Surrogate.class) //
+                .set(Parameters.X_CACHE_HEADER, true) //
+                .build();
 
         // Setup remote server (provider) response.
         Driver driver =
@@ -355,10 +364,11 @@ public class SurrogateTest extends TestCase {
      */
     public void testSurrogateControlMaxAgeExtended() throws Exception {
         // Conf
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://provider/");
-        properties.put(Parameters.EXTENSIONS, Esi.class.getName() + "," + Surrogate.class.getName());
-        properties.put(Parameters.X_CACHE_HEADER, "true");
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://provider/") //
+                .set(Parameters.EXTENSIONS, Esi.class, Surrogate.class) //
+                .set(Parameters.X_CACHE_HEADER, true) //
+                .build();
 
         // Setup remote server (provider) response.
         Driver driver =
@@ -469,9 +479,10 @@ public class SurrogateTest extends TestCase {
     public void testSurrogateControlTargeting() throws Exception {
 
         // Conf
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://provider/");
-        properties.put(Parameters.EXTENSIONS, Esi.class.getName() + "," + Surrogate.class.getName());
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://provider/") //
+                .set(Parameters.EXTENSIONS, Esi.class, Surrogate.class) //
+                .build();
 
         // Setup remote server (provider) response.
         Driver driver =
@@ -503,9 +514,10 @@ public class SurrogateTest extends TestCase {
     public void testSurrogateControlTargeting2Esigate() throws Exception {
 
         // Conf
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://provider/");
-        properties.put(Parameters.EXTENSIONS, Esi.class.getName() + "," + Surrogate.class.getName());
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://provider/") //
+                .set(Parameters.EXTENSIONS, Esi.class, Surrogate.class) //
+                .build();
 
         // Setup remote server (provider) response.
         Driver driver =
@@ -535,9 +547,10 @@ public class SurrogateTest extends TestCase {
     public void testEsigateChaining() throws Exception {
 
         // Conf
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://provider/");
-        properties.put(Parameters.EXTENSIONS, Esi.class.getName() + "," + Surrogate.class.getName());
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://provider/") //
+                .set(Parameters.EXTENSIONS, Esi.class, Surrogate.class) //
+                .build();
 
         // Setup remote server (provider) response.
         Driver driver =
@@ -578,10 +591,11 @@ public class SurrogateTest extends TestCase {
      */
     public void testSurrogateControlVarySurrogate() throws Exception {
         // Conf
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://provider/");
-        properties.put(Parameters.EXTENSIONS, Esi.class.getName() + "," + Surrogate.class.getName());
-        properties.put(Parameters.X_CACHE_HEADER, "true");
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://provider/") //
+                .set(Parameters.EXTENSIONS, Esi.class, Surrogate.class) //
+                .set(Parameters.X_CACHE_HEADER, true) //
+                .build();
 
         // Setup remote server (provider) response.
         Driver driver =

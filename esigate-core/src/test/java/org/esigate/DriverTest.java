@@ -50,12 +50,15 @@ import org.esigate.events.EventManager;
 import org.esigate.events.IEventListener;
 import org.esigate.events.impl.FetchEvent;
 import org.esigate.extension.DefaultCharset;
+import org.esigate.extension.FetchLogging;
+import org.esigate.extension.parallelesi.Esi;
 import org.esigate.http.DateUtils;
 import org.esigate.http.HttpClientRequestExecutor;
 import org.esigate.http.HttpResponseUtils;
 import org.esigate.http.IncomingRequest;
 import org.esigate.tags.BlockRenderer;
 import org.esigate.tags.TemplateRenderer;
+import org.esigate.test.PropertiesBuilder;
 import org.esigate.test.TestUtils;
 import org.esigate.test.conn.IResponseHandler;
 import org.esigate.test.conn.IResponseHandler2;
@@ -268,9 +271,12 @@ public class DriverTest extends TestCase {
      * @throws Exception
      */
     public void testRewriteRedirectResponseWithDefaultPortSpecifiedInLocation() throws Exception {
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE, "http://www.foo.com:8080");
-        properties.put(Parameters.PRESERVE_HOST, "true");
+        // Conf
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://www.foo.com:8080") //
+                .set(Parameters.PRESERVE_HOST, true) //
+                .build();
+
         HttpResponse response =
                 new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_MOVED_TEMPORARILY, "Found");
         // The backend server sets the port even if default (OK it should not
@@ -294,9 +300,12 @@ public class DriverTest extends TestCase {
      * @throws Exception
      */
     public void testRewriteRedirectResponseWithLocation() throws Exception {
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE, "http://127.0.0.1");
-        properties.put(Parameters.PRESERVE_HOST, "true");
+
+        // Conf
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://127.0.0.1") //
+                .set(Parameters.PRESERVE_HOST, true) //
+                .build();
 
         mockConnectionManager.setResponseHandler(new IResponseHandler() {
 
@@ -325,10 +334,13 @@ public class DriverTest extends TestCase {
      * @throws HttpErrorPage
      */
     public void testRedirectDoesNotLeakConnection() throws IOException, HttpErrorPage {
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE, "http://127.0.0.1");
-        properties.put(Parameters.PRESERVE_HOST, "true");
-        properties.put(Parameters.USE_CACHE, "false");
+
+        // Conf
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://127.0.0.1") //
+                .set(Parameters.PRESERVE_HOST, true) //
+                .set(Parameters.USE_CACHE, false) //
+                .build();
 
         final AtomicInteger closeCount = new AtomicInteger();
 
@@ -375,10 +387,12 @@ public class DriverTest extends TestCase {
      * @throws HttpErrorPage
      */
     public void testRedirectDoesNotLeakConnectionWithCacheEnable() throws IOException, HttpErrorPage {
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE, "http://127.0.0.1");
-        properties.put(Parameters.PRESERVE_HOST, "true");
 
+        // Conf
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://127.0.0.1") //
+                .set(Parameters.PRESERVE_HOST, true) //
+                .build();
         final AtomicInteger closeCount = new AtomicInteger();
 
         mockConnectionManager.setResponseHandler(new IResponseHandler() {
@@ -712,9 +726,11 @@ public class DriverTest extends TestCase {
      * @throws Exception
      */
     public void testBug161SetCookie() throws Exception {
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost/");
-        properties.put(Parameters.PRESERVE_HOST.getName(), "true");
+        // Conf
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://localhost/") //
+                .set(Parameters.PRESERVE_HOST, true) //
+                .build();
 
         BasicHttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "Ok");
         response.addHeader("Date", "Thu, 13 Dec 2012 08:55:37 GMT");
@@ -737,9 +753,12 @@ public class DriverTest extends TestCase {
      * 0000154: Warn on staleWhileRevalidate configuration issue. http://www.esigate.org/mantisbt/view.php?id=154
      */
     public void testConfigStaleWhileRevalidateWith0WorkerThreadsThrowsConfigurationException() {
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE, "http://localhost/");
-        properties.put(Parameters.STALE_WHILE_REVALIDATE, "600");
+
+        // Conf
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://localhost/") //
+                .set(Parameters.STALE_WHILE_REVALIDATE, 600) //
+                .build();
 
         try {
             createMockDriver(properties, mockConnectionManager);
@@ -758,9 +777,11 @@ public class DriverTest extends TestCase {
      * @throws Exception
      */
     public void testSocketReadTimeoutWithCacheAndGzipDoesNotLeak() throws Exception {
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE, "http://localhost/");
-        properties.put(Parameters.USE_CACHE, "true");
+        // Conf
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://localhost/") //
+                .set(Parameters.USE_CACHE, true) //
+                .build();
 
         BasicHttpResponse response = new BasicHttpResponse(new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "Ok");
         response.addHeader("Date", DateUtils.formatDate(new Date()));
@@ -790,9 +811,11 @@ public class DriverTest extends TestCase {
     }
 
     public void testForwardCookiesWithPortsAndPreserveHost() throws Exception {
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost:8080/");
-        properties.put(Parameters.PRESERVE_HOST.getName(), "true");
+        // Conf
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://localhost:8080/") //
+                .set(Parameters.PRESERVE_HOST, true) //
+                .build();
 
         mockConnectionManager = new MockConnectionManager() {
             @Override
@@ -813,9 +836,11 @@ public class DriverTest extends TestCase {
     }
 
     public void testForwardCookiesWithPorts() throws Exception {
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost:8080/");
-        properties.put(Parameters.PRESERVE_HOST.getName(), "false");
+        // Conf
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://localhost:8080/") //
+                .set(Parameters.PRESERVE_HOST, false) //
+                .build();
 
         mockConnectionManager = new MockConnectionManager() {
             @Override
@@ -843,9 +868,11 @@ public class DriverTest extends TestCase {
      * @throws Exception
      */
     public void testForwardCookiesExternalUrl() throws Exception {
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE, "http://localhost:8080/");
-        properties.put(Parameters.PRESERVE_HOST, "true");
+        // Conf
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://localhost:8080/") //
+                .set(Parameters.PRESERVE_HOST, true) //
+                .build();
 
         mockConnectionManager = new MockConnectionManager() {
             @Override
@@ -985,7 +1012,7 @@ public class DriverTest extends TestCase {
      * FetchEvent#getHttpResponse().getStatusLine().getUri() is not the same as
      * FetchEvent#getHttpRequest().getOriginal().getRequestLine().getUri() #23
      * 
-     * @see <a href="https://github.com/esigate/esigate/issues/23">https://github.com/esigate/esigate/issues/23</a>
+     * @see <a href= "https://github.com/esigate/esigate/issues/23">https://github.com/esigate/esigate/issues/23</a>
      * 
      * @throws Exception
      */
@@ -1007,8 +1034,10 @@ public class DriverTest extends TestCase {
                 assertEquals("http://foo.com/test", fetchEvent.getHttpRequest().getOriginal().getRequestLine().getUri());
 
                 // uri of the outgoing request
-                // FIXME This assertion is disabled see https://github.com/esigate/esigate/issues/23
-                // assertEquals("http://foo.com/test", fetchEvent.getHttpRequest().getRequestLine().getUri());
+                // FIXME This assertion is disabled see
+                // https://github.com/esigate/esigate/issues/23
+                // assertEquals("http://foo.com/test",
+                // fetchEvent.getHttpRequest().getRequestLine().getUri());
                 return false;
             }
         };
