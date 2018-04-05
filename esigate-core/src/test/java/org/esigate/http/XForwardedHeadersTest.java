@@ -24,6 +24,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.esigate.Driver;
 import org.esigate.Parameters;
+import org.esigate.test.PropertiesBuilder;
 import org.esigate.test.TestUtils;
 import org.esigate.test.conn.IResponseHandler;
 
@@ -42,8 +43,9 @@ public class XForwardedHeadersTest extends TestCase {
      *             on error.
      */
     public void testXForwardedHeaders() throws Exception {
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost/");
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://localhost/") //
+                .build();
 
         Driver driver = TestUtils.createMockDriver(properties, new IResponseHandler() {
             @Override
@@ -73,8 +75,9 @@ public class XForwardedHeadersTest extends TestCase {
      *             on error.
      */
     public void testXForwardedHeadersHttps() throws Exception {
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost/");
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://localhost/") //
+                .build();
 
         Driver driver = TestUtils.createMockDriver(properties, new IResponseHandler() {
             @Override
@@ -106,8 +109,9 @@ public class XForwardedHeadersTest extends TestCase {
      *             on error.
      */
     public void testAddXForwardedHeadersHttp() throws Exception {
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost/");
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://localhost/") //
+                .build();
 
         Driver driver = TestUtils.createMockDriver(properties, new IResponseHandler() {
             @Override
@@ -137,8 +141,9 @@ public class XForwardedHeadersTest extends TestCase {
      *             on error.
      */
     public void testAddXForwardedHeadersHttps() throws Exception {
-        Properties properties = new Properties();
-        properties.put(Parameters.REMOTE_URL_BASE.getName(), "http://localhost/");
+        Properties properties = new PropertiesBuilder() //
+                .set(Parameters.REMOTE_URL_BASE, "http://localhost/") //
+                .build();
 
         Driver driver = TestUtils.createMockDriver(properties, new IResponseHandler() {
             @Override
