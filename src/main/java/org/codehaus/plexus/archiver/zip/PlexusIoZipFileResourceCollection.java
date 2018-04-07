@@ -196,7 +196,14 @@ public class PlexusIoZipFileResourceCollection
         public void close()
             throws IOException
         {
-            zipFile.close();
+            try
+            {
+                urlClassLoader.close();
+            }
+            finally
+            {
+                zipFile.close();
+            }
         }
 
     }

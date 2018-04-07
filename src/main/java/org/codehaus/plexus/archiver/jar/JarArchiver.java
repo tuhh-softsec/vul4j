@@ -484,7 +484,10 @@ public class JarArchiver
         {
             if ( !doubleFilePass || skipWriting )
             {
-                filesetManifest( fromArchive, is.get() );
+                try ( InputStream manifestInputStream = is.get() )
+                {
+                    filesetManifest( fromArchive, manifestInputStream );
+                }
             }
         }
         else if ( INDEX_NAME.equalsIgnoreCase( vPath ) && index )
