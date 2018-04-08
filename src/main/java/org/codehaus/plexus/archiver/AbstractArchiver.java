@@ -1007,6 +1007,8 @@ public abstract class AbstractArchiver
         {
             cleanUp();
         }
+
+        postCreateArchive();
     }
 
     protected boolean hasVirtualFiles()
@@ -1032,6 +1034,21 @@ public abstract class AbstractArchiver
     }
 
     protected void validate()
+        throws ArchiverException, IOException
+    {
+    }
+
+    /**
+     * This method is called after the archive creation
+     * completes successfully (no exceptions are thrown).
+     *
+     * Subclasses may override this method in order to
+     * augment or validate the archive after it is
+     * created.
+     *
+     * @since 3.6
+     */
+    protected void postCreateArchive()
         throws ArchiverException, IOException
     {
     }
