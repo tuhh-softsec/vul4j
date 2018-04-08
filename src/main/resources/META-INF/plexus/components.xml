@@ -41,6 +41,12 @@
       <implementation>org.codehaus.plexus.archiver.jar.JarArchiver</implementation>
       <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
+    <component>
+      <role>org.codehaus.plexus.archiver.Archiver</role>
+      <role-hint>mjar</role-hint>
+      <implementation>org.codehaus.plexus.archiver.jar.JarToolModularJarArchiver</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
+    </component>
 
     <component>
       <role>org.codehaus.plexus.archiver.Archiver</role>
