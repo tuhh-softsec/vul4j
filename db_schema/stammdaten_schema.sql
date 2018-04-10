@@ -300,11 +300,19 @@ INSERT INTO query_type VALUES(7, 'universial');
 CREATE TABLE query (
     id serial PRIMARY KEY,
     name character varying(80) NOT NULL,
-    type integer NOT NULL REFERENCES query_type,
+    groups integer,
+    owner integer REFERENCES lada_user,
     sql text NOT NULL,
-    description text,
-    UNIQUE (name, type)
+    description text
 );
+
+CREATE TABLE query_netzbetreiber (
+    id serial PRIMARY KEY,
+    query integer REFERENCES query,
+    netzbetreiber character varying(2) REFERENCES netz_betreiber
+);
+
+ALTER TABLE query ADD CONSTRAINT fk_qn FOREIGN KEY (groups) REFERENCES query_netzbetreiber(id);
 
 
 CREATE TABLE favorite (
@@ -316,7 +324,8 @@ CREATE TABLE favorite (
 
 CREATE TABLE filter_type (
     id serial PRIMARY KEY,
-    type character varying(10) NOT NULL
+    type character varying(10) NOT NULL,
+    multiselect boolean
 );
 INSERT INTO filter_type VALUES(0, 'text');
 INSERT INTO filter_type VALUES(1, 'listmst');
@@ -331,11 +340,8 @@ INSERT INTO filter_type VALUES(9, 'datetime');
 
 CREATE TABLE filter (
     id serial PRIMARY KEY,
-    query_id integer NOT NULL REFERENCES query ON DELETE CASCADE,
-    data_index character varying(50) NOT NULL,
     type integer NOT NULL REFERENCES filter_type,
-    label character varying(50) NOT NULL,
-    multiselect boolean
+    sql text NOT NULL
 );
 
 
@@ -742,6 +748,23 @@ CREATE TABLE rei_progpunkt_grp_umw_zuord
     id serial PRIMARY KEY,
     rei_progpunkt_grp_id integer REFERENCES rei_progpunkt_gruppe,
     umw_id character varying(3) REFERENCES umwelt
+);
+
+-- Tables for queryui
+
+CREATE TABLE grid_column (
+    id serial PRIMARY KEY,
+    query integer REFERENCES query,
+    name character varying(80) NOT NULL,
+    data_index character varying(80) NOT NULL,
+    sort character varying(4),
+    filter integer REFERENCES filter,
+    filter_value integer REFERENCES filter_value,
+    filter_active boolean,
+    visible boolean,
+    column_type integer NOT NULL REFERENCES result_type,
+    column_index integer,
+    width integer
 );
 
 COMMIT;
