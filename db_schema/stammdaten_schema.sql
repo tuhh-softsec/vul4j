@@ -327,21 +327,29 @@ CREATE TABLE filter_type (
     type character varying(10) NOT NULL,
     multiselect boolean
 );
-INSERT INTO filter_type VALUES(0, 'text');
-INSERT INTO filter_type VALUES(1, 'listmst');
-INSERT INTO filter_type VALUES(2, 'listnetz');
-INSERT INTO filter_type VALUES(3, 'listumw');
-INSERT INTO filter_type VALUES(4, 'liststatus');
-INSERT INTO filter_type VALUES(5, 'number');
-INSERT INTO filter_type VALUES(6, 'listrei');
-INSERT INTO filter_type VALUES(7, 'listkta');
-INSERT INTO filter_type VALUES(8, 'bool');
-INSERT INTO filter_type VALUES(9, 'datetime');
+INSERT INTO filter_type VALUES(0, 'text', false);
+INSERT INTO filter_type VALUES(1, 'number', false);
+INSERT INTO filter_type VALUES(2, 'bool', false);
+INSERT INTO filter_type VALUES(3, 'datetime', false);
+INSERT INTO filter_type VALUES(4, 'listmst', false);
+INSERT INTO filter_type VALUES(5, 'listmst', true);
+INSERT INTO filter_type VALUES(6, 'listnetz', false);
+INSERT INTO filter_type VALUES(7, 'listnetz', true);
+INSERT INTO filter_type VALUES(8, 'listumw', false);
+INSERT INTO filter_type VALUES(9, 'listumw', true);
+INSERT INTO filter_type VALUES(10, 'liststatus', false);
+INSERT INTO filter_type VALUES(11, 'liststatus', true);
+INSERT INTO filter_type VALUES(12, 'listrei', false);
+INSERT INTO filter_type VALUES(13, 'listrei', true);
+INSERT INTO filter_type VALUES(14, 'listkta', false);
+INSERT INTO filter_type VALUES(15, 'listkta', true);
 
 CREATE TABLE filter (
     id serial PRIMARY KEY,
+    sql text NOT NULL,
+    parameter text NOT NULL,
     type integer NOT NULL REFERENCES filter_type,
-    sql text NOT NULL
+    name text
 );
 
 
@@ -762,7 +770,7 @@ CREATE TABLE grid_column (
     filter_value integer REFERENCES filter_value,
     filter_active boolean,
     visible boolean,
-    column_type integer NOT NULL REFERENCES result_type,
+    data_type integer NOT NULL REFERENCES result_type,
     column_index integer,
     width integer
 );
