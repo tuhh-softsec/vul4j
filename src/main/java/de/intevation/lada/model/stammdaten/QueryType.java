@@ -1,10 +1,7 @@
 package de.intevation.lada.model.stammdaten;
 
 import java.io.Serializable;
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 
 /**
@@ -13,31 +10,32 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="query_type")
+@NamedQuery(name="QueryType.findAll", query="SELECT q FROM QueryType q")
 public class QueryType implements Serializable {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @Id
-    private Integer id;
+	@Id
+	private Integer id;
 
-    private String type;
+	private String type;
 
-    public QueryType() {
-    }
+	public QueryType() {
+	}
 
-    public Integer getId() {
-        return this.id;
-    }
+	public Integer getId() {
+		return this.id;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public String getType() {
-        return this.type;
-    }
+	public String getType() {
+		return this.type;
+	}
 
-    public void setType(String type) {
-        this.type = type;
-    }
+	public void setType(String type) {
+		this.type = type;
+	}
 
 }

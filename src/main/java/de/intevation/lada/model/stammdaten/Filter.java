@@ -2,14 +2,10 @@ package de.intevation.lada.model.stammdaten;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 /**
@@ -23,26 +19,16 @@ public class Filter implements Serializable {
     @Id
     private Integer id;
 
-    @Column(name="data_index")
-    private String dataIndex;
+    private String name;
 
-    private String label;
+    private String parameter;
 
-    private Boolean multiselect;
+    private String sql;
 
-    //bi-directional many-to-one association to Query
+    //bi-directional many-to-one association to FilterType
     @ManyToOne
-    private Query query;
-
-    @ManyToOne
-    @JoinColumn(name="type", insertable=false, updatable=false)
-    private FilterType type;
-
-    @Column(name="type")
-    private Integer typeId;
-
-    @Transient
-    private String value;
+    @JoinColumn(name="type")
+    private FilterType filterType;
 
     public Filter() {
     }
@@ -55,65 +41,35 @@ public class Filter implements Serializable {
         this.id = id;
     }
 
-    public String getDataIndex() {
-        return this.dataIndex;
+    public String getName() {
+        return this.name;
     }
 
-    public void setDataIndex(String dataIndex) {
-        this.dataIndex = dataIndex;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getLabel() {
-        return this.label;
+    public String getParameter() {
+        return this.parameter;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
+    public void setParameter(String parameter) {
+        this.parameter = parameter;
     }
 
-    public Boolean getMultiselect() {
-        return this.multiselect;
+    public String getSql() {
+        return this.sql;
     }
 
-    public void setMultiselect(Boolean multiselect) {
-        this.multiselect = multiselect;
+    public void setSql(String sql) {
+        this.sql = sql;
     }
 
-    @JsonIgnore
-    public Query getQuery() {
-        return this.query;
+    public FilterType getFilterType() {
+        return this.filterType;
     }
 
-    @JsonIgnore
-    public void setQuery(Query query) {
-        this.query = query;
-    }
-
-    public String getType() {
-        return this.type.getType();
-    }
-
-    /**
-     * @return the typeId
-     */
-    @JsonIgnore
-    public Integer getTypeId() {
-        return typeId;
-    }
-
-    /**
-     * @param typeId the typeId to set
-     */
-    @JsonIgnore
-    public void setTypeId(Integer typeId) {
-        this.typeId = typeId;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
+    public void setFilterType(FilterType filterType) {
+        this.filterType = filterType;
     }
 }

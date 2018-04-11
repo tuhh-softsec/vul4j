@@ -3,17 +3,9 @@ package de.intevation.lada.model.stammdaten;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Transient;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 /**
@@ -31,26 +23,17 @@ public class Query implements Serializable {
 
     private String name;
 
+    private Integer owner;
+
     private String sql;
 
-    @ManyToOne
-    @JoinColumn(name="type", insertable=false, updatable=false)
-    private QueryType type;
+    //bi-directional many-to-one association to GridColumn
+    @OneToMany(mappedBy="query")
+    private List<GridColumn> gridColumns;
 
-    @Column(name="type")
-    private Integer typeId;
-
-    @Transient
-    private Boolean favorite;
-
-    //bi-directional many-to-one association to Filter
-    @OneToMany(fetch=FetchType.EAGER, mappedBy="query")
-    private List<Filter> filters;
-
-    //bi-directional many-to-one association to Result
-    @OneToMany(fetch=FetchType.EAGER, mappedBy="query")
-    @OrderBy("index")
-    private List<Result> results;
+    //bi-directional many-to-one association to QueryNetzbetreiber
+    @OneToMany(mappedBy="query")
+    private List<QueryNetzbetreiber> queryNetzbetreibers;
 
     public Query() {
     }
@@ -79,90 +62,49 @@ public class Query implements Serializable {
         this.name = name;
     }
 
+    public Integer getOwner() {
+        return this.owner;
+    }
+
+    public void setOwner(Integer owner) {
+        this.owner = owner;
+    }
+
     public String getSql() {
-        // remove \r and \n from sql text
-        return this.sql.replaceAll("(\r\n|\n)", " ");
+        return this.sql;
     }
 
     public void setSql(String sql) {
         this.sql = sql;
     }
 
-    public String getType() {
-        return this.type.getType();
+    public List<GridColumn> getGridColumns() {
+        return this.gridColumns;
     }
 
-    /**
-     * @return the typeId
-     */
-    @JsonIgnore
-    public Integer getTypeId() {
-        return typeId;
+    public void setGridColumns(List<GridColumn> gridColumns) {
+        this.gridColumns = gridColumns;
     }
 
-    /**
-     * @param typeId the typeId to set
-     */
-    @JsonIgnore
-    public void setTypeId(Integer typeId) {
-        this.typeId = typeId;
+    public GridColumn addGridColumn(GridColumn gridColumn) {
+        getGridColumns().add(gridColumn);
+        gridColumn.setQuery(this);
+
+        return gridColumn;
     }
 
-    /**
-     * @return the favorite
-     */
-    public Boolean getFavorite() {
-        return favorite;
+    public GridColumn removeGridColumn(GridColumn gridColumn) {
+        getGridColumns().remove(gridColumn);
+        gridColumn.setQuery(null);
+
+        return gridColumn;
     }
 
-    /**
-     * @param favorite the favorite to set
-     */
-    public void setFavorite(Boolean favorite) {
-        this.favorite = favorite;
+    public List<QueryNetzbetreiber> getQueryNetzbetreibers() {
+        return this.queryNetzbetreibers;
     }
 
-    public List<Filter> getFilters() {
-        return this.filters;
-    }
-
-    public void setFilters(List<Filter> filters) {
-        this.filters = filters;
-    }
-
-    public Filter addFilter(Filter filter) {
-        getFilters().add(filter);
-        filter.setQuery(this);
-
-        return filter;
-    }
-
-    public Filter removeFilter(Filter filter) {
-        getFilters().remove(filter);
-        filter.setQuery(null);
-
-        return filter;
-    }
-
-    public List<Result> getResults() {
-        return this.results;
-    }
-
-    public void setResults(List<Result> results) {
-        this.results = results;
-    }
-
-    public Result addResult(Result result) {
-        getResults().add(result);
-        result.setQuery(this);
-
-        return result;
-    }
-
-    public Result removeResult(Result result) {
-        getResults().remove(result);
-        result.setQuery(null);
-
-        return result;
+    public void setQueryNetzbetreibers(List<QueryNetzbetreiber> queryNetzbetreibers) {
+        this.queryNetzbetreibers = queryNetzbetreibers;
     }
 }
