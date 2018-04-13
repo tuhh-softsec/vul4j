@@ -24,8 +24,8 @@ SET search_path = stamm, pg_catalog;
 -- Data for Name: query; Type: TABLE DATA; Schema: stamm; Owner: postgres
 --
 
-COPY query (id, name, groups, owner, sql, description) FROM stdin;
-1	Proben	\N	\N	SELECT probe.id AS probeId, probe.hauptproben_nr AS hauptprobenNr, probe.id_alt AS idAlt, datenbasis.datenbasis AS dBasis, stamm.mess_stelle.netzbetreiber_id AS netzId, probe.mst_id AS mstId, probe.umw_id AS umwId, probenart.probenart AS pArt, probe.probeentnahme_beginn AS peBegin, probe.probeentnahme_ende AS peEnd, ort.ort_id AS ortId, ort.gem_id AS eGemId, verwaltungseinheit.bezeichnung AS eGem, probe.id_alt AS idAlt FROM land.probe LEFT JOIN stamm.mess_stelle ON (probe.mst_id = stamm.mess_stelle.id) LEFT JOIN stamm.datenbasis ON (probe.datenbasis_id = datenbasis.id) LEFT JOIN stamm.probenart ON (probe.probenart_id = probenart.id) LEFT JOIN land.ortszuordnung ON (probe.id = ortszuordnung.probe_id AND ortszuordnung.ortszuordnung_typ = 'E') LEFT JOIN stamm.ort ON (ortszuordnung.ort_id = ort.id) LEFT JOIN stamm.verwaltungseinheit ON (ort.gem_id = verwaltungseinheit.id)	Proben mit Ort
+COPY query (id, name, owner, sql, description) FROM stdin;
+1	Proben	\N	SELECT probe.id AS probeId, probe.hauptproben_nr AS hauptprobenNr, probe.id_alt AS idAlt, datenbasis.datenbasis AS dBasis, stamm.mess_stelle.netzbetreiber_id AS netzId, probe.mst_id AS mstId, probe.umw_id AS umwId, probenart.probenart AS pArt, probe.probeentnahme_beginn AS peBegin, probe.probeentnahme_ende AS peEnd, ort.ort_id AS ortId, ort.gem_id AS eGemId, verwaltungseinheit.bezeichnung AS eGem, probe.id_alt AS idAlt FROM land.probe LEFT JOIN stamm.mess_stelle ON (probe.mst_id = stamm.mess_stelle.id) LEFT JOIN stamm.datenbasis ON (probe.datenbasis_id = datenbasis.id) LEFT JOIN stamm.probenart ON (probe.probenart_id = probenart.id) LEFT JOIN land.ortszuordnung ON (probe.id = ortszuordnung.probe_id AND ortszuordnung.ortszuordnung_typ = 'E') LEFT JOIN stamm.ort ON (ortszuordnung.ort_id = ort.id) LEFT JOIN stamm.verwaltungseinheit ON (ort.gem_id = verwaltungseinheit.id)	Proben mit Ort
 \.
 
 
@@ -74,22 +74,24 @@ COPY result_type (id, name, format) FROM stdin;
 -- Data for Name: result; Type: TABLE DATA; Schema: stamm; Owner: postgres
 --
 
-COPY grid_column (id, query, name, data_index, sort, filter, filter_value, filter_active, visible, data_type, column_index, width) FROM stdin;
-1	1	Id	probeId	\N	\N	\N	f	f	3	\N	\N
-2	1	Hauptproben Nummer	hauptprobenNr	\N	2	\N	f	f	1	0	100
-3	1	Datenbasis	dBasis	\N	8	\N	f	f	1	1	100
-4	1	Land	netzId	\N	13	\N	f	f	1	2	100
-5	1	Messstelle	mstId	\N	3	\N	f	f	1	3	100
-6	1	Umweltbereich	umwId	\N	9	\N	f	f	1	4	100
-7	1	Probenart	pArt	\N	1	\N	f	f	1	5	100
-8	1	Entnahme von	peBegin	\N	3	\N	f	f	2	6	150
-9	1	Entnahme bis	peEnd	\N	3	\N	f	f	2	7	150
-10	1	Ort	ortId	\N	1	\N	f	f	1	8	100
-11	1	Gemeinde Id	eGemId	\N	1	\N	f	f	1	9	100
-12	1	Gemeinde	eGem	\N	1	\N	f	f	1	10	150
-13	1	Probennummer	idAlt	\N	1	\N	f	f	1	11	100
+COPY grid_column (id, query, name, data_index, filter, data_type) FROM stdin;
+1	1	Id	probeId	\N	4
+2	1	Hauptproben Nummer	hauptprobenNr	2	1
+3	1	Datenbasis	dBasis	8	1
+4	1	Land	netzId	13	1
+5	1	Messstelle	mstId	3	1
+6	1	Umweltbereich	umwId	9	1
+7	1	Probenart	pArt	1	1
+8	1	Entnahme von	peBegin	3	2
+9	1	Entnahme bis	peEnd	3	2
+10	1	Ort	ortId	1	1
+11	1	Gemeinde Id	eGemId	1	1
+12	1	Gemeinde	eGem	1	1
+13	1	Probennummer	idAlt	1	1
 \.
 
+COPY grid_column_values (id, user_id, grid_column, sort, filter_value, filter_active, visible, column_index, width) FROM stdin;
+\.
 
 --
 -- TOC entry 5419 (class 0 OID 0)

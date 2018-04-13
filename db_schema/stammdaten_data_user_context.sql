@@ -39,12 +39,3 @@ COPY lada_user (id, name) FROM stdin;
 COPY favorite (id, user_id, query_id) FROM stdin;
 \.
 
-
---
--- TOC entry 4685 (class 0 OID 535725)
--- Dependencies: 250
--- Data for Name: filter_value; Type: TABLE DATA; Schema: stammdaten; Owner: lada
---
-
-COPY filter_value (id, user_id, filter_id, value) FROM stdin;
-\.

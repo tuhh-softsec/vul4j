@@ -16,8 +16,6 @@ SELECT pg_catalog.setval('favorite_id_seq', 1, false);
 
 SELECT pg_catalog.setval('filter_id_seq', (SELECT max(id) FROM filter), true);
 
-SELECT pg_catalog.setval('filter_value_id_seq', 1, false);
-
 SELECT pg_catalog.setval('koordinaten_art_id_seq', (SELECT max(id) FROM koordinaten_art), true);
 
 SELECT pg_catalog.setval('kta_id_seq', (SELECT max(id) FROM kta), true);

@@ -305,13 +305,11 @@ CREATE TABLE query (
     description text
 );
 
-CREATE TABLE query_netzbetreiber (
+CREATE TABLE query_messstelle (
     id serial PRIMARY KEY,
     query integer REFERENCES query,
-    netzbetreiber character varying(2) REFERENCES netz_betreiber
+    mess_stelle character varying(5) REFERENCES mess_stelle
 );
-
-ALTER TABLE query ADD CONSTRAINT fk_qn FOREIGN KEY (groups) REFERENCES query_netzbetreiber(id);
 
 
 CREATE TABLE favorite (
@@ -351,12 +349,6 @@ CREATE TABLE filter (
     name text
 );
 
-
-CREATE TABLE filter_value (
-    id serial PRIMARY KEY,
-    user_id integer NOT NULL REFERENCES lada_user,
-    value text
-);
 
 
 CREATE TABLE mess_methode (
@@ -763,12 +755,18 @@ CREATE TABLE grid_column (
     query integer REFERENCES query,
     name character varying(80) NOT NULL,
     data_index character varying(80) NOT NULL,
-    sort character varying(4),
     filter integer REFERENCES filter,
-    filter_value integer REFERENCES filter_value,
+    data_type integer NOT NULL REFERENCES result_type
+);
+
+CREATE TABLE grid_column_values (
+    id serial PRIMARY KEY,
+    user_id integer NOT NULL REFERENCES lada_user,
+    grid_column integer NOT NULL REFERENCES grid_column,
+    sort character varying(4),
+    filter_value text,
     filter_active boolean,
     visible boolean,
-    data_type integer NOT NULL REFERENCES result_type,
     column_index integer,
     width integer
 );
