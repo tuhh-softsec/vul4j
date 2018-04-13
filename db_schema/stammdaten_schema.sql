@@ -300,7 +300,6 @@ INSERT INTO query_type VALUES(7, 'universial');
 CREATE TABLE query (
     id serial PRIMARY KEY,
     name character varying(80) NOT NULL,
-    groups integer,
     owner integer REFERENCES lada_user,
     sql text NOT NULL,
     description text
@@ -356,7 +355,6 @@ CREATE TABLE filter (
 CREATE TABLE filter_value (
     id serial PRIMARY KEY,
     user_id integer NOT NULL REFERENCES lada_user,
-    filter_id integer NOT NULL REFERENCES filter ON DELETE CASCADE,
     value text
 );
 
