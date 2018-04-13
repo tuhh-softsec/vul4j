@@ -189,7 +189,7 @@ public class ProbeService {
             return new Response(false, 603, "Not a valid filter id");
         }
         List<Map<String, Object>> result =
-            queryTools.getResultForQuery(params, id, "probe");
+            queryTools.getResultForQuery(params, id);
 
         List<Map<String, Object>> filtered;
         if (params.containsKey("filter")) {

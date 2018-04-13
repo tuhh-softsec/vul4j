@@ -96,6 +96,7 @@ public class ProbenehmerService {
         @Context HttpServletRequest request,
         @Context UriInfo info
     ) {
+        /*
         MultivaluedMap<String, String> params = info.getQueryParameters();
         List<Probenehmer> nehmer =
             repository.getAllPlain(Probenehmer.class, Strings.STAMM);
@@ -167,6 +168,9 @@ public class ProbenehmerService {
                     Probenehmer.class));
         }
         return new Response(true, 200, nehmer, size);
+        */
+
+        return new Response(true, 200, null, 0);
     }
 
     /**

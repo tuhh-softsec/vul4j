@@ -27,6 +27,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import org.apache.log4j.Logger;
 
 import de.intevation.lada.model.stammdaten.Filter;
+import de.intevation.lada.model.stammdaten.GridColumn;
 import de.intevation.lada.model.stammdaten.Query;
 import de.intevation.lada.model.stammdaten.Result;
 import de.intevation.lada.util.annotation.RepositoryConfig;
@@ -48,44 +49,29 @@ public class QueryTools
     @RepositoryConfig(type=RepositoryType.RO)
     private Repository repository;
 
-    private static String PROBE_CONFIG = "/probequery.json";
-    private static String MESSPROGRAMM_CONFIG = "/messprogrammquery.json";
-    private static String STAMMDATEN_CONFIG = "/stammdatenquery.json";
-
     @Inject
     private Logger logger;
 
     @SuppressWarnings("unchecked")
     public List<Map<String, Object>> getResultForQuery(
         MultivaluedMap<String, String> params,
-        Integer qId,
-        String type
+        Integer qId
     ) {
-        QueryBuilder<Query> builder = new QueryBuilder<Query>(
+ /*       QueryBuilder<Query> builder = new QueryBuilder<Query>(
             repository.entityManager(Strings.STAMM),
             Query.class
         );
         builder.and("id", qId);
         Query query = repository.filterPlain(builder.getQuery(), Strings.STAMM).get(0);
-        if (!query.getType().equals(type)) {
-            return new ArrayList<>();
-        }
 
         String sql = query.getSql();
 
-        List<Filter> filters = query.getFilters();
-        QueryBuilder<Result> rBuilder = new QueryBuilder<Result>(
-            repository.entityManager(Strings.STAMM),
-            Result.class
-        );
-        rBuilder.and("query", qId);
-        rBuilder.orderBy("index", true);
-        List<Result> results = repository.filterPlain(rBuilder.getQuery(), Strings.STAMM);
-        if (!type.equals("universal")) {
-            Result idResult = new Result();
-            idResult.setDataIndex("id");
-            results.add(0, idResult);
+        List<Filter> filters = new ArrayList();
+        List<GridColumn> columns = query.getGridColumns();
+        for (GridColumn column : columns) {
+            filters.add(column.getFilter());
         }
+
         if (params.containsKey("sort")) {
             String sort = params.getFirst("sort");
             try (JsonReader reader = Json.createReader(new StringReader(sort))) {
@@ -104,12 +90,15 @@ public class QueryTools
             return new ArrayList<>();
         }
         return prepareResult(q.getResultList(), results);
+        */
+        return null;
     }
 
     public List<Map<String, Object>> filterResult(
         String filter,
         List<Map<String, Object>> items
     ) {
+        /*
         JsonReader jsonReader = Json.createReader(new StringReader(filter));
         JsonArray filters = jsonReader.readArray();
         jsonReader.close();
@@ -167,6 +156,8 @@ public class QueryTools
             }
         }
         return filtered;
+*/
+        return null;
     }
 
     public javax.persistence.Query prepareQuery(
@@ -175,6 +166,7 @@ public class QueryTools
         MultivaluedMap<String, String> params,
         EntityManager manager
     ) {
+        /*
         javax.persistence.Query query = manager.createNativeQuery(sql);
         for (Filter filter: filters) {
             List<String> param = params.get(filter.getDataIndex());
@@ -191,12 +183,15 @@ public class QueryTools
             query.setParameter(filter.getDataIndex(), clean);
         }
         return query;
+        */
+        return null;
     }
 
     public List<Map<String, Object>> prepareResult(
         List<Object[]> result,
         List<Result> names
     ) {
+        /*
         List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
         for (Object[] row: result) {
             Map<String, Object> set = new HashMap<String, Object>();
@@ -206,5 +201,7 @@ public class QueryTools
             ret.add(set);
         }
         return ret;
+        */
+        return null;
     }
 }

@@ -52,6 +52,7 @@ public class FilterService {
         @Context HttpServletRequest request,
         Filter filter
     ) {
+        /*
         UserInfo userInfo = authorization.getInfo(request);
         String value = filter.getValue();
         Filter f = repository.getByIdPlain(Filter.class, filter.getId(), Strings.STAMM);
@@ -78,6 +79,8 @@ public class FilterService {
             f.setValue(value);
             return new Response(true, 200, f);
         }
+        */
+        return new Response(true, 200, null);
     }
 
     @DELETE
@@ -87,6 +90,7 @@ public class FilterService {
         @Context HttpServletRequest request,
         @PathParam("id") String id
     ) {
+        /*
         UserInfo userInfo = authorization.getInfo(request);
         Integer fId = Integer.valueOf(id);
         Filter f = repository.getByIdPlain(Filter.class, fId, Strings.STAMM);
@@ -111,5 +115,7 @@ public class FilterService {
         }
         f.setValue(basicValues.get(0).getValue());
         return new Response(true, 200, f);
+        */
+        return new Response(true, 200, null);
     }
 }

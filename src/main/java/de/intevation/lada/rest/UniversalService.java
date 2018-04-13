@@ -99,7 +99,7 @@ public class UniversalService {
             return new Response(false, 603, "Not a valid filter id");
         }
         List<Map<String, Object>> result =
-            queryTools.getResultForQuery(params, id, "universal");
+            queryTools.getResultForQuery(params, id);
 
         List<Map<String, Object>> filtered;
         if (params.containsKey("filter")) {

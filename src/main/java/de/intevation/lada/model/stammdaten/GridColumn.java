@@ -7,7 +7,10 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 /**
@@ -28,6 +31,9 @@ public class GridColumn implements Serializable {
     @Column(name="data_index")
     private String dataIndex;
 
+    @Column(name="data_type")
+    private Integer dataType;
+
     @Column(name="filter_active")
     private Boolean filterActive;
 
@@ -39,12 +45,12 @@ public class GridColumn implements Serializable {
 
     private Integer width;
 
-    //bi-directional many-to-one association to Filter
+    //uni-directional many-to-one association to Filter
     @ManyToOne
     @JoinColumn(name="filter")
     private Filter filter;
 
-    //bi-directional many-to-one association to FilterValue
+    //uni-directional many-to-one association to FilterValue
     @ManyToOne
     @JoinColumn(name="filter_value")
     private FilterValue filterValue;
@@ -53,11 +59,6 @@ public class GridColumn implements Serializable {
     @ManyToOne
     @JoinColumn(name="query")
     private Query query;
-
-    //bi-directional many-to-one association to ResultType
-    @ManyToOne
-    @JoinColumn(name="data_type")
-    private ResultType resultType;
 
     public GridColumn() {
     }
@@ -84,6 +85,14 @@ public class GridColumn implements Serializable {
 
     public void setDataIndex(String dataIndex) {
         this.dataIndex = dataIndex;
+    }
+
+    public Integer getDataType() {
+        return this.dataType;
+    }
+
+    public void setDataType(Integer dataType) {
+        this.dataType = dataType;
     }
 
     public Boolean getFilterActive() {
@@ -142,20 +151,13 @@ public class GridColumn implements Serializable {
         this.filterValue = filterValue;
     }
 
+    @JsonIgnore
     public Query getQuery() {
         return this.query;
     }
 
     public void setQuery(Query query) {
         this.query = query;
-    }
-
-    public ResultType getResultType() {
-        return this.resultType;
-    }
-
-    public void setResultType(ResultType resultType) {
-        this.resultType = resultType;
     }
 
 }

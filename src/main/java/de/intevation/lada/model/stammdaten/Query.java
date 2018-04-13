@@ -4,7 +4,12 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 
@@ -28,12 +33,21 @@ public class Query implements Serializable {
     private String sql;
 
     //bi-directional many-to-one association to GridColumn
-    @OneToMany(mappedBy="query")
+    @OneToMany(mappedBy="query", fetch=FetchType.EAGER)
     private List<GridColumn> gridColumns;
 
-    //bi-directional many-to-one association to QueryNetzbetreiber
-    @OneToMany(mappedBy="query")
-    private List<QueryNetzbetreiber> queryNetzbetreibers;
+    //uni-directional many-to-many association to NetzBetreiber
+    @ManyToMany(fetch=FetchType.EAGER)
+    @JoinTable(
+        name="query_netzbetreiber"
+        , joinColumns={
+            @JoinColumn(name="query")
+            }
+        , inverseJoinColumns={
+            @JoinColumn(name="netzbetreiber", referencedColumnName="id")
+            }
+        )
+    private List<NetzBetreiber> netzBetreibers;
 
     public Query() {
     }
@@ -88,23 +102,22 @@ public class Query implements Serializable {
 
     public GridColumn addGridColumn(GridColumn gridColumn) {
         getGridColumns().add(gridColumn);
-        gridColumn.setQuery(this);
 
         return gridColumn;
     }
 
     public GridColumn removeGridColumn(GridColumn gridColumn) {
         getGridColumns().remove(gridColumn);
-        gridColumn.setQuery(null);
 
         return gridColumn;
     }
 
-    public List<QueryNetzbetreiber> getQueryNetzbetreibers() {
-        return this.queryNetzbetreibers;
+    public List<NetzBetreiber> getNetzBetreibers() {
+        return this.netzBetreibers;
     }
 
-    public void setQueryNetzbetreibers(List<QueryNetzbetreiber> queryNetzbetreibers) {
-        this.queryNetzbetreibers = queryNetzbetreibers;
+    public void setNetzBetreibers(List<NetzBetreiber> netzBetreibers) {
+        this.netzBetreibers = netzBetreibers;
     }
+
 }

@@ -99,6 +99,7 @@ public class MessprogrammKategorieService {
         @Context HttpServletRequest request,
         @Context UriInfo info
     ) {
+        /*
         MultivaluedMap<String, String> params = info.getQueryParameters();
         List<MessprogrammKategorie> kategorie;
         if (params.containsKey("qid")) {
@@ -173,6 +174,8 @@ public class MessprogrammKategorieService {
                     MessprogrammKategorie.class));
         }
         return new Response(true, 200, kategorie, size);
+        */
+        return new Response(true, 200, null, 0);
     }
 
     /**

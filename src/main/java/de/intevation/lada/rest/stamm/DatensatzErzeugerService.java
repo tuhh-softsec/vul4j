@@ -99,6 +99,7 @@ public class DatensatzErzeugerService {
         @Context HttpServletRequest request,
         @Context UriInfo info
     ) {
+        /*
         MultivaluedMap<String, String> params = info.getQueryParameters();
         List<DatensatzErzeuger> erzeuger;
         if (params.containsKey("qid")) {
@@ -171,6 +172,8 @@ public class DatensatzErzeugerService {
                     DatensatzErzeuger.class));
         }
         return new Response (true, 200, erzeuger, size);
+        */
+        return new Response (true, 200, null, 0);
     }
 
     /**

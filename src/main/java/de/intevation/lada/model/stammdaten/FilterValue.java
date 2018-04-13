@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 
@@ -14,11 +15,15 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="filter_value")
+@NamedQuery(name="FilterValue.findAll", query="SELECT f FROM FilterValue f")
 public class FilterValue implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     private Integer id;
+
+    @Column(name="filter_id")
+    private Integer filterId;
 
     @Column(name="user_id")
     private Integer userId;
@@ -36,6 +41,14 @@ public class FilterValue implements Serializable {
         this.id = id;
     }
 
+    public Integer getFilterId() {
+        return this.filterId;
+    }
+
+    public void setFilterId(Integer filterId) {
+        this.filterId = filterId;
+    }
+
     public Integer getUserId() {
         return this.userId;
     }
@@ -51,4 +64,5 @@ public class FilterValue implements Serializable {
     public void setValue(String value) {
         this.value = value;
     }
+
 }

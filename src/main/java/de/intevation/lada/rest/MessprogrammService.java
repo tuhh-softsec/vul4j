@@ -159,7 +159,7 @@ public class MessprogrammService {
         }
 
         List<Map<String, Object>> result =
-            queryTools.getResultForQuery(params, id, "messprogramm");
+            queryTools.getResultForQuery(params, id);
 
         List<Map<String, Object>> filtered;
         if (params.containsKey("filter")) {

@@ -165,7 +165,7 @@ public class OrtService {
             }
 
             List<Map<String, Object>> result =
-                queryTools.getResultForQuery(params, id, "ort");
+                queryTools.getResultForQuery(params, id);
 
             List<Map<String, Object>> filtered;
             if (params.containsKey("filter")) {

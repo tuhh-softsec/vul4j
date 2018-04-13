@@ -11,15 +11,26 @@ import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 
+import com.fasterxml.jackson.databind.deser.impl.ExternalTypeHandler.Builder;
+
+import org.hibernate.sql.JoinType;
+
 import de.intevation.lada.model.stammdaten.Favorite;
 import de.intevation.lada.model.stammdaten.Filter;
 import de.intevation.lada.model.stammdaten.FilterValue;
+import de.intevation.lada.model.stammdaten.NetzBetreiber;
 import de.intevation.lada.model.stammdaten.Query;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
@@ -79,147 +90,28 @@ public class QueryService {
      * Request all configured probe queries.
      */
     @GET
-    @Path("/probe")
+    @Path("/")
     @Produces("application/json")
-    public Response getProbe(
+    public Response getQueries(
         @Context HttpServletRequest request
     ) {
         UserInfo userInfo = authorization.getInfo(request);
-        QueryBuilder<Query> builder = new QueryBuilder<Query>(
-            repository.entityManager(Strings.STAMM),
-            Query.class
-        );
-        builder.and("typeId", 0);
-        List<Query> queries = repository.filterPlain(builder.getQuery(), Strings.STAMM);
-
-        markFavorites(queries, userInfo);
-
-        setFilterValues(queries, 0);
-        setFilterValues(queries, userInfo.getUserId());
-
-        return new Response(true, 200, queries);
-    }
-
-    /**
-     * Request all configured messung queries.
-     */
-    @GET
-    @Path("/messung")
-    @Produces("application/json")
-    public Response getMessung(
-        @Context HttpServletRequest request
-    ) {
-        UserInfo userInfo = authorization.getInfo(request);
-        QueryBuilder<Query> builder = new QueryBuilder<Query>(
-            repository.entityManager(Strings.STAMM),
-            Query.class
-        );
-        builder.and("typeId", 1);
-        List<Query> queries = repository.filterPlain(builder.getQuery(), Strings.STAMM);
-
-        markFavorites(queries, userInfo);
-
-        setFilterValues(queries, 0);
-        setFilterValues(queries, userInfo.getUserId());
+        EntityManager em = repository.entityManager(Strings.STAMM);
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<Query> criteriaQuery = builder.createQuery(Query.class);
+        Root<Query> root = criteriaQuery.from(Query.class);
+        Join<NetzBetreiber, Query> netz = root.join("netzBetreibers", javax.persistence.criteria.JoinType.LEFT);
+        Predicate filter = builder.equal(root.get("owner"), userInfo.getUserId());
+        filter = builder.or(filter, netz.get("id").in(userInfo.getNetzbetreiber()));
+        criteriaQuery.where(filter);
+        
+        List<Query> queries = repository.filterPlain(criteriaQuery, Strings.STAMM);
 
         return new Response(true, 200, queries);
-    }
-
-    /**
-     * Request all configured messprogramm queries.
-     */
-    @GET
-    @Path("/messprogramm")
-    @Produces("application/json")
-    public Response getMessprogramm(
-        @Context HttpServletRequest request
-    ) {
-        UserInfo userInfo = authorization.getInfo(request);
-        QueryBuilder<Query> builder = new QueryBuilder<Query>(
-            repository.entityManager(Strings.STAMM),
-            Query.class
-        );
-        builder.and("typeId", 2);
-        List<Query> queries = repository.filterPlain(builder.getQuery(), Strings.STAMM);
-
-        markFavorites(queries, userInfo);
-
-        setFilterValues(queries, 0);
-        setFilterValues(queries, userInfo.getUserId());
-
-        return new Response(true, 200, queries);
-    }
-
-    /**
-     * Request all configured stammdaten queries.
-     */
-    @GET
-    @Path("/stammdaten")
-    @Produces("application/json")
-    public Response getStammdaten(
-        @Context HttpServletRequest request
-    ) {
-        UserInfo userInfo = authorization.getInfo(request);
-        QueryBuilder<Query> builder = new QueryBuilder<Query>(
-            repository.entityManager(Strings.STAMM),
-            Query.class
-        );
-        builder.or("typeId", 3);
-        builder.or("typeId", 4);
-        builder.or("typeId", 5);
-        builder.or("typeId", 6);
-        List<Query> queries = repository.filterPlain(builder.getQuery(), Strings.STAMM);
-
-        markFavorites(queries, userInfo);
-
-        setFilterValues(queries, 0);
-        setFilterValues(queries, userInfo.getUserId());
-
-        return new Response(true, 200, queries);
-    }
-
-    /**
-     * Request all configured stammdaten queries.
-     */
-    @GET
-    @Path("/universal")
-    @Produces("application/json")
-    public Response getUniversal(
-        @Context HttpServletRequest request
-    ) {
-        UserInfo userInfo = authorization.getInfo(request);
-        QueryBuilder<Query> builder = new QueryBuilder<Query>(
-            repository.entityManager(Strings.STAMM),
-            Query.class
-        );
-        builder.or("typeId", 7);
-        List<Query> queries = repository.filterPlain(builder.getQuery(), Strings.STAMM);
-
-        markFavorites(queries, userInfo);
-
-        setFilterValues(queries, 0);
-        setFilterValues(queries, userInfo.getUserId());
-
-        return new Response(true, 200, queries);
-    }
-
-    private void markFavorites(List<Query> queries, UserInfo userInfo) {
-        QueryBuilder<Favorite> fBuilder = new QueryBuilder<Favorite>(
-            repository.entityManager(Strings.STAMM),
-            Favorite.class
-        );
-        fBuilder.and("userId", userInfo.getUserId());
-        List<Favorite> favorites = repository.filterPlain(fBuilder.getQuery(), Strings.STAMM);
-        for (Favorite f : favorites) {
-            for (Query q : queries) {
-                if (q.getId().equals(f.getQueryId())) {
-                    q.setFavorite(true);
-                }
-            }
-        }
     }
 
     private void setFilterValues(List<Query> queries, Integer userId) {
+        /*
         QueryBuilder<FilterValue> builder = new QueryBuilder<FilterValue>(
             repository.entityManager(Strings.STAMM),
             FilterValue.class
@@ -237,5 +129,6 @@ public class QueryService {
             builder = builder.getEmptyBuilder();
             builder.and("userId", userId);
         }
+        */
     }
 }

@@ -11,40 +11,67 @@ import java.util.List;
  */
 @Entity
 @Table(name="result_type")
+@NamedQuery(name="ResultType.findAll", query="SELECT r FROM ResultType r")
 public class ResultType implements Serializable {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @Id
-    private Integer id;
+	@Id
+	private Integer id;
 
-    private String format;
+	private String format;
 
-    private String name;
+	private String name;
 
-    public ResultType() {
-    }
+	//bi-directional many-to-one association to Result
+	@OneToMany(mappedBy="resultType")
+	private List<Result> results;
 
-    public Integer getId() {
-        return this.id;
-    }
+	public ResultType() {
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public Integer getId() {
+		return this.id;
+	}
 
-    public String getFormat() {
-        return this.format;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public void setFormat(String format) {
-        this.format = format;
-    }
+	public String getFormat() {
+		return this.format;
+	}
 
-    public String getName() {
-        return this.name;
-    }
+	public void setFormat(String format) {
+		this.format = format;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public List<Result> getResults() {
+		return this.results;
+	}
+
+	public void setResults(List<Result> results) {
+		this.results = results;
+	}
+
+	public Result addResult(Result result) {
+		getResults().add(result);
+		result.setResultType(this);
+
+		return result;
+	}
+
+	public Result removeResult(Result result) {
+		getResults().remove(result);
+		result.setResultType(null);
+
+		return result;
+	}
 }
