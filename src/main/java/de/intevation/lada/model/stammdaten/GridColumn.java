@@ -5,12 +5,8 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 /**
@@ -25,40 +21,21 @@ public class GridColumn implements Serializable {
     @Id
     private Integer id;
 
-    @Column(name="column_index")
-    private Integer columnIndex;
-
     @Column(name="data_index")
     private String dataIndex;
 
     @Column(name="data_type")
     private Integer dataType;
 
-    @Column(name="filter_active")
-    private Boolean filterActive;
+    private Integer filter;
 
     private String name;
 
-    private String sort;
+    private Integer query;
 
-    private Boolean visible;
-
-    private Integer width;
-
-    //uni-directional many-to-one association to Filter
-    @ManyToOne
-    @JoinColumn(name="filter")
-    private Filter filter;
-
-    //uni-directional many-to-one association to FilterValue
-    @ManyToOne
-    @JoinColumn(name="filter_value")
-    private FilterValue filterValue;
-
-    //bi-directional many-to-one association to Query
-    @ManyToOne
-    @JoinColumn(name="query")
-    private Query query;
+    //bi-directional one-to-one association to GridColumnValue
+    @OneToOne(mappedBy="gridColumn")
+    private GridColumnValue gridColumnValue;
 
     public GridColumn() {
     }
@@ -69,14 +46,6 @@ public class GridColumn implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Integer getColumnIndex() {
-        return this.columnIndex;
-    }
-
-    public void setColumnIndex(Integer columnIndex) {
-        this.columnIndex = columnIndex;
     }
 
     public String getDataIndex() {
@@ -95,12 +64,12 @@ public class GridColumn implements Serializable {
         this.dataType = dataType;
     }
 
-    public Boolean getFilterActive() {
-        return this.filterActive;
+    public Integer getFilter() {
+        return this.filter;
     }
 
-    public void setFilterActive(Boolean filterActive) {
-        this.filterActive = filterActive;
+    public void setFilter(Integer filter) {
+        this.filter = filter;
     }
 
     public String getName() {
@@ -111,53 +80,20 @@ public class GridColumn implements Serializable {
         this.name = name;
     }
 
-    public String getSort() {
-        return this.sort;
-    }
-
-    public void setSort(String sort) {
-        this.sort = sort;
-    }
-
-    public Boolean getVisible() {
-        return this.visible;
-    }
-
-    public void setVisible(Boolean visible) {
-        this.visible = visible;
-    }
-
-    public Integer getWidth() {
-        return this.width;
-    }
-
-    public void setWidth(Integer width) {
-        this.width = width;
-    }
-
-    public Filter getFilter() {
-        return this.filter;
-    }
-
-    public void setFilter(Filter filter) {
-        this.filter = filter;
-    }
-
-    public FilterValue getFilterValue() {
-        return this.filterValue;
-    }
-
-    public void setFilterValue(FilterValue filterValue) {
-        this.filterValue = filterValue;
-    }
-
-    @JsonIgnore
-    public Query getQuery() {
+    public Integer getQuery() {
         return this.query;
     }
 
-    public void setQuery(Query query) {
+    public void setQuery(Integer query) {
         this.query = query;
+    }
+
+    public GridColumnValue getGridColumnValue() {
+        return this.gridColumnValue;
+    }
+
+    public void setGridColumnValue(GridColumnValue gridColumnValue) {
+        this.gridColumnValue = gridColumnValue;
     }
 
 }

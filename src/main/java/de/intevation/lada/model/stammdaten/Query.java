@@ -9,7 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 
@@ -32,22 +31,18 @@ public class Query implements Serializable {
 
     private String sql;
 
-    //bi-directional many-to-one association to GridColumn
-    @OneToMany(mappedBy="query", fetch=FetchType.EAGER)
-    private List<GridColumn> gridColumns;
-
     //uni-directional many-to-many association to NetzBetreiber
     @ManyToMany(fetch=FetchType.EAGER)
     @JoinTable(
-        name="query_netzbetreiber"
+        name="query_messstelle"
         , joinColumns={
             @JoinColumn(name="query")
             }
         , inverseJoinColumns={
-            @JoinColumn(name="netzbetreiber", referencedColumnName="id")
+            @JoinColumn(name="mess_stelle", referencedColumnName="id")
             }
         )
-    private List<NetzBetreiber> netzBetreibers;
+    private List<MessStelle> messStelles;
 
     public Query() {
     }
@@ -92,32 +87,12 @@ public class Query implements Serializable {
         this.sql = sql;
     }
 
-    public List<GridColumn> getGridColumns() {
-        return this.gridColumns;
+    public List<MessStelle> getMessStelles() {
+        return this.messStelles;
     }
 
-    public void setGridColumns(List<GridColumn> gridColumns) {
-        this.gridColumns = gridColumns;
-    }
-
-    public GridColumn addGridColumn(GridColumn gridColumn) {
-        getGridColumns().add(gridColumn);
-
-        return gridColumn;
-    }
-
-    public GridColumn removeGridColumn(GridColumn gridColumn) {
-        getGridColumns().remove(gridColumn);
-
-        return gridColumn;
-    }
-
-    public List<NetzBetreiber> getNetzBetreibers() {
-        return this.netzBetreibers;
-    }
-
-    public void setNetzBetreibers(List<NetzBetreiber> netzBetreibers) {
-        this.netzBetreibers = netzBetreibers;
+    public void setMessStelles(List<MessStelle> messStelles) {
+        this.messStelles = messStelles;
     }
 
 }

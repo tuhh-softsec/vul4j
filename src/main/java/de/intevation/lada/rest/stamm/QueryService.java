@@ -30,7 +30,7 @@ import org.hibernate.sql.JoinType;
 import de.intevation.lada.model.stammdaten.Favorite;
 import de.intevation.lada.model.stammdaten.Filter;
 import de.intevation.lada.model.stammdaten.FilterValue;
-import de.intevation.lada.model.stammdaten.NetzBetreiber;
+import de.intevation.lada.model.stammdaten.MessStelle;
 import de.intevation.lada.model.stammdaten.Query;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
@@ -100,9 +100,10 @@ public class QueryService {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<Query> criteriaQuery = builder.createQuery(Query.class);
         Root<Query> root = criteriaQuery.from(Query.class);
-        Join<NetzBetreiber, Query> netz = root.join("netzBetreibers", javax.persistence.criteria.JoinType.LEFT);
+        Join<MessStelle, Query> netz = root.join("messStelles", javax.persistence.criteria.JoinType.LEFT);
         Predicate filter = builder.equal(root.get("owner"), userInfo.getUserId());
-        filter = builder.or(filter, netz.get("id").in(userInfo.getNetzbetreiber()));
+        filter = builder.or(filter, netz.get("id").in(userInfo.getMessstellen()));
+        filter = builder.or(filter, netz.get("id").in(userInfo.getLaborMessstellen()));
         criteriaQuery.where(filter);
         
         List<Query> queries = repository.filterPlain(criteriaQuery, Strings.STAMM);
