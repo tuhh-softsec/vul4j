@@ -24,10 +24,13 @@ SET search_path = stamm, pg_catalog;
 -- Data for Name: query; Type: TABLE DATA; Schema: stamm; Owner: postgres
 --
 
-COPY query (id, name, owner, sql, description) FROM stdin;
-1	Proben	\N	SELECT probe.id AS probeId, probe.hauptproben_nr AS hauptprobenNr, probe.id_alt AS idAlt, datenbasis.datenbasis AS dBasis, stamm.mess_stelle.netzbetreiber_id AS netzId, probe.mst_id AS mstId, probe.umw_id AS umwId, probenart.probenart AS pArt, probe.probeentnahme_beginn AS peBegin, probe.probeentnahme_ende AS peEnd, ort.ort_id AS ortId, ort.gem_id AS eGemId, verwaltungseinheit.bezeichnung AS eGem, probe.id_alt AS idAlt FROM land.probe LEFT JOIN stamm.mess_stelle ON (probe.mst_id = stamm.mess_stelle.id) LEFT JOIN stamm.datenbasis ON (probe.datenbasis_id = datenbasis.id) LEFT JOIN stamm.probenart ON (probe.probenart_id = probenart.id) LEFT JOIN land.ortszuordnung ON (probe.id = ortszuordnung.probe_id AND ortszuordnung.ortszuordnung_typ = 'E') LEFT JOIN stamm.ort ON (ortszuordnung.ort_id = ort.id) LEFT JOIN stamm.verwaltungseinheit ON (ort.gem_id = verwaltungseinheit.id)	Proben mit Ort
+COPY query (id, sql) FROM stdin;
+1	SELECT probe.id AS probeId, probe.hauptproben_nr AS hauptprobenNr, probe.id_alt AS idAlt, datenbasis.datenbasis AS dBasis, stamm.mess_stelle.netzbetreiber_id AS netzId, probe.mst_id AS mstId, probe.umw_id AS umwId, probenart.probenart AS pArt, probe.probeentnahme_beginn AS peBegin, probe.probeentnahme_ende AS peEnd, ort.ort_id AS ortId, ort.gem_id AS eGemId, verwaltungseinheit.bezeichnung AS eGem, probe.id_alt AS idAlt FROM land.probe LEFT JOIN stamm.mess_stelle ON (probe.mst_id = stamm.mess_stelle.id) LEFT JOIN stamm.datenbasis ON (probe.datenbasis_id = datenbasis.id) LEFT JOIN stamm.probenart ON (probe.probenart_id = probenart.id) LEFT JOIN land.ortszuordnung ON (probe.id = ortszuordnung.probe_id AND ortszuordnung.ortszuordnung_typ = 'E') LEFT JOIN stamm.ort ON (ortszuordnung.ort_id = ort.id) LEFT JOIN stamm.verwaltungseinheit ON (ort.gem_id = verwaltungseinheit.id)
 \.
 
+COPY query_user (id, name, user_id, query, description) FROM stdin;
+1	Proben	\N	1	Alle Proben
+\.
 
 COPY filter (id, sql, parameter, type, name) FROM stdin;
 1	probe.id_alt LIKE :idAlt	idAlt	0	probe_id_alt
@@ -91,6 +94,19 @@ COPY grid_column (id, query, name, data_index, filter, data_type) FROM stdin;
 \.
 
 COPY grid_column_values (id, user_id, grid_column, sort, filter_value, filter_active, visible, column_index, width) FROM stdin;
+1	\N	1	\N	\N	f	f	-1	0
+2	\N	2	\N	\N	f	f	0	100
+3	\N	3	\N	\N	f	f	1	100
+4	\N	4	\N	\N	f	f	2	100
+5	\N	5	\N	\N	f	f	3	100
+6	\N	6	\N	\N	f	f	4	100
+7	\N	7	\N	\N	f	f	5	100
+8	\N	8	\N	\N	f	f	6	100
+9	\N	9	\N	\N	f	f	7	100
+10	\N	10	\N	\N	f	f	8	100
+11	\N	11	\N	\N	f	f	9	100
+12	\N	12	\N	\N	f	f	10	100
+13	\N	13	\N	\N	f	f	11	100
 \.
 
 --

@@ -299,15 +299,20 @@ INSERT INTO query_type VALUES(7, 'universial');
 
 CREATE TABLE query (
     id serial PRIMARY KEY,
+    sql text NOT NULL
+);
+
+CREATE TABLE query_user (
+    id serial PRIMARY KEY,
     name character varying(80) NOT NULL,
-    owner integer REFERENCES lada_user,
-    sql text NOT NULL,
+    user_id integer REFERENCES lada_user,
+    query integer REFERENCES query,
     description text
 );
 
 CREATE TABLE query_messstelle (
     id serial PRIMARY KEY,
-    query integer REFERENCES query,
+    query integer REFERENCES query_user,
     mess_stelle character varying(5) REFERENCES mess_stelle
 );
 
@@ -761,7 +766,7 @@ CREATE TABLE grid_column (
 
 CREATE TABLE grid_column_values (
     id serial PRIMARY KEY,
-    user_id integer NOT NULL REFERENCES lada_user,
+    user_id integer REFERENCES lada_user,
     grid_column integer NOT NULL REFERENCES grid_column,
     sort character varying(4),
     filter_value text,
