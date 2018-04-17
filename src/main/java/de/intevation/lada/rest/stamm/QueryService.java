@@ -32,6 +32,7 @@ import de.intevation.lada.model.stammdaten.Filter;
 import de.intevation.lada.model.stammdaten.FilterValue;
 import de.intevation.lada.model.stammdaten.MessStelle;
 import de.intevation.lada.model.stammdaten.Query;
+import de.intevation.lada.model.stammdaten.QueryUser;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -98,15 +99,15 @@ public class QueryService {
         UserInfo userInfo = authorization.getInfo(request);
         EntityManager em = repository.entityManager(Strings.STAMM);
         CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<Query> criteriaQuery = builder.createQuery(Query.class);
-        Root<Query> root = criteriaQuery.from(Query.class);
-        Join<MessStelle, Query> netz = root.join("messStelles", javax.persistence.criteria.JoinType.LEFT);
-        Predicate filter = builder.equal(root.get("owner"), userInfo.getUserId());
-        filter = builder.or(filter, netz.get("id").in(userInfo.getMessstellen()));
-        filter = builder.or(filter, netz.get("id").in(userInfo.getLaborMessstellen()));
+        CriteriaQuery<QueryUser> criteriaQuery = builder.createQuery(QueryUser.class);
+        Root<QueryUser> root = criteriaQuery.from(QueryUser.class);
+        Join<MessStelle, QueryUser> mess = root.join("messStelles", javax.persistence.criteria.JoinType.LEFT);
+        Predicate filter = builder.equal(root.get("userId"), userInfo.getUserId());
+        filter = builder.or(filter, mess.get("messStelle").in(userInfo.getMessstellen()));
+        filter = builder.or(filter, mess.get("messStelle").in(userInfo.getLaborMessstellen()));
         criteriaQuery.where(filter);
         
-        List<Query> queries = repository.filterPlain(criteriaQuery, Strings.STAMM);
+        List<QueryUser> queries = repository.filterPlain(criteriaQuery, Strings.STAMM);
 
         return new Response(true, 200, queries);
     }

@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -34,7 +35,7 @@ public class GridColumn implements Serializable {
     private Integer query;
 
     //bi-directional one-to-one association to GridColumnValue
-    @OneToOne(mappedBy="gridColumn")
+    @OneToOne(mappedBy="gridColumn", fetch=FetchType.EAGER)
     private GridColumnValue gridColumnValue;
 
     public GridColumn() {
