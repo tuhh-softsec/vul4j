@@ -50,7 +50,6 @@ public class ObjectMerger {
         target.setMediaDesk(src.getMediaDesk());
         target.setMittelungsdauer(src.getMittelungsdauer());
         target.setMplId(src.getMplId());
-        target.setMprId(src.getMprId());
         target.setProbeentnahmeBeginn(src.getProbeentnahmeBeginn());
         target.setProbeentnahmeEnde(src.getProbeentnahmeEnde());
         target.setProbenartId(src.getProbenartId());
