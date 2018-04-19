@@ -91,7 +91,8 @@ public class MessungIdentifier implements Identifier {
             if (messungen.isEmpty()) {
                 return Identified.NEW;
             }
-            if (messungen.get(0).getNebenprobenNr().equals(
+            if (messungen.get(0).getNebenprobenNr() == null ||
+                messungen.get(0).getNebenprobenNr().equals(
                     messung.getNebenprobenNr()) ||
                 messung.getNebenprobenNr().isEmpty() ||
                 messungen.get(0).getNebenprobenNr().isEmpty()

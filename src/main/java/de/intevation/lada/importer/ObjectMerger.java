@@ -65,7 +65,8 @@ public class ObjectMerger {
     }
 
     public ObjectMerger mergeMessung(Messung target, Messung src) {
-        if (target.getNebenprobenNr().isEmpty()) {
+        if (target.getNebenprobenNr() == null ||
+            target.getNebenprobenNr().isEmpty()) {
             target.setNebenprobenNr(src.getNebenprobenNr());
         }
         target.setFertig(src.getFertig() == null ? false : src.getFertig());
