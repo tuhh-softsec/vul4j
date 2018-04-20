@@ -8,6 +8,7 @@
 package de.intevation.lada.rest.stamm;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -39,6 +40,7 @@ import de.intevation.lada.model.stammdaten.Filter;
 import de.intevation.lada.model.stammdaten.FilterValue;
 import de.intevation.lada.model.stammdaten.MessStelle;
 import de.intevation.lada.model.stammdaten.Query;
+import de.intevation.lada.model.stammdaten.QueryMessstelle;
 import de.intevation.lada.model.stammdaten.QueryUser;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
@@ -87,7 +89,7 @@ import de.intevation.lada.util.rest.Response;
 public class QueryService {
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type=RepositoryType.RW)
     private Repository repository;
 
     @Inject
@@ -137,12 +139,16 @@ public class QueryService {
         }
         else {
             query.setUserId(userInfo.getUserId());
+            for (QueryMessstelle m : query.getMessStelles()){
+                m.setQueryUser(query);
+            }
             return repository.create(query, Strings.STAMM);
         }
     }
 
     @PUT
     @Path("/")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response update(
         @Context HttpServletRequest request,
         QueryUser query

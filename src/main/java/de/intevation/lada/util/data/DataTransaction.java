@@ -16,6 +16,7 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TransactionRequiredException;
+import javax.transaction.Transactional;
 
 /**
  * Abstract class implementing low level data operations.
@@ -50,7 +51,7 @@ public class DataTransaction
     {
         EntityManager manager = emp.entityManager(dataSource);
         manager.persist(object);
-
+        manager.flush();
         /* Refreshing the object is necessary because some objects use
            dynamic-insert, meaning null-valued columns are not INSERTed
            to the DB to take advantage of DB DEFAULT values, or triggers

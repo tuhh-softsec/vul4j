@@ -3,6 +3,7 @@ package de.intevation.lada.model.stammdaten;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -35,7 +36,7 @@ public class QueryUser implements Serializable {
 	private Integer query;
 
 	//bi-directional many-to-one association to QueryMessstelle
-	@OneToMany(mappedBy="queryUser", fetch=FetchType.EAGER)
+	@OneToMany(mappedBy="queryUser", fetch=FetchType.EAGER, cascade = CascadeType.PERSIST)
 	private List<QueryMessstelle> messStelles;
 
 	public QueryUser() {
