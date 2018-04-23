@@ -10,6 +10,7 @@ package de.intevation.lada.exporter.laf;
 import java.sql.Timestamp;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -24,6 +25,7 @@ import de.intevation.lada.model.land.Messung;
 import de.intevation.lada.model.land.Messwert;
 import de.intevation.lada.model.land.Ortszuordnung;
 import de.intevation.lada.model.land.Probe;
+import de.intevation.lada.model.land.StatusProtokoll;
 import de.intevation.lada.model.land.ZusatzWert;
 import de.intevation.lada.model.stammdaten.MessEinheit;
 import de.intevation.lada.model.stammdaten.MessStelle;
@@ -32,6 +34,7 @@ import de.intevation.lada.model.stammdaten.Ort;
 import de.intevation.lada.model.stammdaten.ProbenZusatz;
 import de.intevation.lada.model.stammdaten.Probenart;
 import de.intevation.lada.model.stammdaten.ReiProgpunktGruppe;
+import de.intevation.lada.model.stammdaten.StatusKombi;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
@@ -343,6 +346,7 @@ implements Creator
             laf += m.getMmtId() == null ?
                 "" : lafLine("MESSMETHODE_S", m.getMmtId(), CN);
             laf += lafLine("ERFASSUNG_ABGESCHLOSSEN", (m.getFertig() ? "1" : "0"));
+            laf += lafLine("BEARBEITUNGSSTATUS", writeStatus(m));
             for (Messwert mw : werte) {
                 laf += writeMesswert(mw);
             }
@@ -351,6 +355,58 @@ implements Creator
             }
         }
         return laf;
+    }
+
+    /**
+     * Write out the status protocol as string with 4 character:
+     *  1. status level mst
+     *  2. status level land
+     *  3. status level lst
+     *  4. set to 0 (unused)
+     *
+     * @param messung the messung containing the status
+     * @return 4 character string
+     */
+    private String writeStatus(Messung messung) {
+        String status = "";
+        QueryBuilder<StatusProtokoll> builder =
+            new QueryBuilder<StatusProtokoll>(
+                repository.entityManager(Strings.LAND), StatusProtokoll.class);
+        builder.and("messungsId", messung.getId());
+        builder.andIn("statusKombi", Arrays.asList(1, 2, 3, 4, 5, 14));
+        builder.orderBy("datum", false);
+        StatusProtokoll mst = repository.filterPlain(builder.getQuery(), Strings.LAND).get(0);
+        Integer mstKombi = mst.getStatusKombi();
+        StatusKombi kombi = repository.getByIdPlain(StatusKombi.class, mstKombi, Strings.STAMM);
+        status += kombi.getStatusWert().getId();
+        builder = builder.getEmptyBuilder();
+        builder.and("messungsId", messung.getId());
+        builder.andIn("statusKombi", Arrays.asList(6, 7, 8, 9, 15));
+        builder.orderBy("datum", false);
+        List<StatusProtokoll> land = repository.filterPlain(builder.getQuery(), Strings.LAND);
+        if (!land.isEmpty()) {
+            Integer landKombi = land.get(0).getStatusKombi();
+            StatusKombi lKombi = repository.getByIdPlain(StatusKombi.class, landKombi, Strings.STAMM);
+            status += lKombi.getStatusWert().getId();
+        }
+        else {
+            status += "0";
+        }
+        builder = builder.getEmptyBuilder();
+        builder.and("messungsId", messung.getId());
+        builder.andIn("statusKombi", Arrays.asList(10, 11, 12, 13, 16));
+        builder.orderBy("datum", false);
+        List<StatusProtokoll> lst = repository.filterPlain(builder.getQuery(), Strings.LAND);
+        if (!lst.isEmpty()) {
+            Integer lstKombi = lst.get(0).getStatusKombi();
+            StatusKombi lKombi = repository.getByIdPlain(StatusKombi.class, lstKombi, Strings.STAMM);
+            status += lKombi.getStatusWert().getId();
+        }
+        else {
+            status += "0";
+        }
+        status += "0";
+        return status;
     }
 
     /**
