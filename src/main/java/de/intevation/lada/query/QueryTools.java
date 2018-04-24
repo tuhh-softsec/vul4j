@@ -51,13 +51,30 @@ public class QueryTools
 
     @Inject
     private Logger logger;
-
     @SuppressWarnings("unchecked")
     public List<Map<String, Object>> getResultForQuery(
         MultivaluedMap<String, String> params,
+        
         Integer qId
     ) {
- /*       QueryBuilder<Query> builder = new QueryBuilder<Query>(
+        return null;
+    }
+    /**
+     * Execute query and return results
+     * @param filters Map containing <columnName, filterValue>
+     * @param filtersActive Map containing <columnName, [true|false]>, true if filter is active
+     * @param sort Map containing <columnName, sortDirection>
+     * @param qId ID of the query to execute
+     * @return List of result maps
+     */
+    @SuppressWarnings("unchecked")
+    public List<Map<String, Object>> getResultForQuery(
+        Map<String, String> filters,
+        Map<String, Boolean> filtersActive,
+        Map<String, String> sort,
+        Integer qId
+    ) {
+/*        QueryBuilder<Query> builder = new QueryBuilder<Query>(
             repository.entityManager(Strings.STAMM),
             Query.class
         );
@@ -90,6 +107,7 @@ public class QueryTools
             return new ArrayList<>();
         }
         return prepareResult(q.getResultList(), results);
+        
         */
         return null;
     }

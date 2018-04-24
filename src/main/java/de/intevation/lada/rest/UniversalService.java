@@ -7,20 +7,31 @@
  */
 package de.intevation.lada.rest;
 
+import java.io.Serializable;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.persistence.Entity;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.UriInfo;
 
+import com.fasterxml.jackson.databind.deser.impl.NoClassDefFoundDeserializer;
+
+import de.intevation.lada.model.QueryColumns;
+import de.intevation.lada.model.stammdaten.GridColumnValue;
 import de.intevation.lada.query.QueryTools;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
@@ -61,6 +72,44 @@ public class UniversalService {
     @Inject
     private QueryTools queryTools;
 
+
+    /**
+     * Execute query, using the given result columns
+     */
+    @POST
+    @Path("/")
+    @Consumes("application/json")
+    @Produces("application/json")
+    public Response execute(
+        @Context HttpHeaders headers,
+        QueryColumns columns
+    ) {
+        Integer qid;
+        Map<String, String> filters = new HashMap<String,String>();
+        Map<String, Boolean> filtersActive = new HashMap<String, Boolean>();
+        Map<String, String> sort = new HashMap<String, String>();
+
+        for (GridColumnValue column : columns.getColumns()) {
+            String columnName = column.getGridColumn().getName();
+
+            if (column.getSort() != null && column.getSort() != ""){
+                sort.put(columnName, column.getSort());
+            }
+            if (column.getFilterValue() != null) {
+                filters.put(columnName, column.getFilterValue());
+            }
+
+            if (column.getFilterActive() != null) {
+                filtersActive.put(columnName, column.getFilterActive());
+            }
+        }
+        qid =  columns.getColumns().get(0).getGridColumn().getId();
+
+        List<Map<String, Object>> result =
+            queryTools.getResultForQuery(filters, filtersActive, sort, qid);
+        return new Response(true, 200, result);
+    }
+
     /**
      * Get all objects.
      * <p>
@@ -87,10 +136,13 @@ public class UniversalService {
         @Context UriInfo info,
         @Context HttpServletRequest request
     ) {
+        /*
+
         MultivaluedMap<String, String> params = info.getQueryParameters();
         if (params.isEmpty() || !params.containsKey("qid")) {
             return new Response(false, 603, "Not a valid filter id");
         }
+        
         Integer id = null;
         try {
             id = Integer.valueOf(params.getFirst("qid"));
@@ -125,5 +177,7 @@ public class UniversalService {
         }
 
         return new Response(true, 200, filtered, size);
+        */
+        return new Response(true, 200, null);
     }
 }
