@@ -1,12 +1,13 @@
 package de.intevation.lada.model.stammdaten;
 
+import java.util.List;
 import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 
@@ -35,8 +36,8 @@ public class GridColumn implements Serializable {
     private Integer query;
 
     //bi-directional one-to-one association to GridColumnValue
-    @OneToOne(mappedBy="gridColumn", fetch=FetchType.EAGER)
-    private GridColumnValue gridColumnValue;
+    @OneToMany(mappedBy="gridColumn", fetch=FetchType.EAGER)
+    private List<GridColumnValue> gridColumnValues;
 
     public GridColumn() {
     }
@@ -89,12 +90,16 @@ public class GridColumn implements Serializable {
         this.query = query;
     }
 
-    public GridColumnValue getGridColumnValue() {
-        return this.gridColumnValue;
+    public List<GridColumnValue> getGridColumnValues() {
+        return this.gridColumnValues;
     }
 
-    public void setGridColumnValue(GridColumnValue gridColumnValue) {
-        this.gridColumnValue = gridColumnValue;
+    public void addGridColumnValue(GridColumnValue gridColumnValue) {
+        this.gridColumnValues.add(gridColumnValue);
+    }
+
+    public void setGridColumnValue(List<GridColumnValue> gridColumnValues) {
+        this.gridColumnValues = gridColumnValues;
     }
 
 }

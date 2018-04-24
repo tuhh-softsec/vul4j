@@ -4,13 +4,14 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 
 /**
  * The persistent class for the grid_column_values database table.
@@ -43,9 +44,13 @@ public class GridColumnValue implements Serializable {
     private Integer width;
 
     //bi-directional one-to-one association to GridColumn
-    @OneToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="grid_column")
     private GridColumn gridColumn;
+
+    //Connected grid column's id, used for creating/updating grid_column_values
+    @Transient
+    private int gridColumnId;
 
     public GridColumnValue() {
     }
@@ -112,6 +117,14 @@ public class GridColumnValue implements Serializable {
 
     public void setWidth(Integer width) {
         this.width = width;
+    }
+
+    public int getGridColumnId() {
+        return gridColumnId;
+    }
+
+    public void setgridColumnId(int gridColumnId) {
+        this.gridColumnId = gridColumnId;
     }
 
     @JsonIgnore

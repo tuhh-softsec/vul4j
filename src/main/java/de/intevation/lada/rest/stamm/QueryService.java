@@ -8,8 +8,6 @@
 package de.intevation.lada.rest.stamm;
 
 import java.util.List;
-import java.util.ArrayList;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -30,16 +28,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import com.fasterxml.jackson.databind.deser.impl.ExternalTypeHandler.Builder;
-
 import org.apache.log4j.Logger;
-import org.hibernate.sql.JoinType;
 
-import de.intevation.lada.model.stammdaten.Favorite;
-import de.intevation.lada.model.stammdaten.Filter;
-import de.intevation.lada.model.stammdaten.FilterValue;
 import de.intevation.lada.model.stammdaten.MessStelle;
-import de.intevation.lada.model.stammdaten.Query;
 import de.intevation.lada.model.stammdaten.QueryMessstelle;
 import de.intevation.lada.model.stammdaten.QueryUser;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
@@ -47,7 +38,6 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.auth.UserInfo;
-import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.data.Strings;
@@ -139,8 +129,11 @@ public class QueryService {
         }
         else {
             query.setUserId(userInfo.getUserId());
-            for (QueryMessstelle m : query.getMessStelles()){
-                m.setQueryUser(query);
+            for (String m : query.getMessStellesIds()){
+                QueryMessstelle qms = new QueryMessstelle();
+                qms.setMessStelle(m);
+                qms.setQueryUser(query);
+                query.addMessStelle(qms);
             }
             return repository.create(query, Strings.STAMM);
         }
@@ -162,7 +155,8 @@ public class QueryService {
     }
 
     @DELETE
-    @Path("/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{id}")
     public Response delete(
         @Context HttpServletRequest request,
         @PathParam("id") String id

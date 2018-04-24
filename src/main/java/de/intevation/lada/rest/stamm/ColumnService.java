@@ -18,30 +18,27 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-import com.fasterxml.jackson.databind.deser.impl.ExternalTypeHandler.Builder;
 
-import org.hibernate.sql.JoinType;
-
-import de.intevation.lada.model.stammdaten.Favorite;
-import de.intevation.lada.model.stammdaten.Filter;
-import de.intevation.lada.model.stammdaten.FilterValue;
 import de.intevation.lada.model.stammdaten.GridColumn;
 import de.intevation.lada.model.stammdaten.GridColumnValue;
-import de.intevation.lada.model.stammdaten.NetzBetreiber;
-import de.intevation.lada.model.stammdaten.Query;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.auth.UserInfo;
-import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.data.Strings;
@@ -83,7 +80,7 @@ import de.intevation.lada.util.rest.Response;
 public class ColumnService {
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type=RepositoryType.RW)
     private Repository repository;
 
     @Inject
@@ -95,7 +92,7 @@ public class ColumnService {
      */
     @GET
     @Path("/")
-    @Produces("application/json")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getQueries(
         @Context HttpServletRequest request,
         @Context UriInfo info
@@ -116,7 +113,7 @@ public class ColumnService {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<GridColumn> criteriaQuery = builder.createQuery(GridColumn.class);
         Root<GridColumn> root = criteriaQuery.from(GridColumn.class);
-        Join<GridColumnValue, GridColumn> value = root.join("gridColumnValue", javax.persistence.criteria.JoinType.LEFT);
+        Join<GridColumnValue, GridColumn> value = root.join("gridColumnValues", javax.persistence.criteria.JoinType.LEFT);
         Predicate filter = builder.equal(root.get("query"), id);
         Predicate uId = builder.equal(value.get("userId"), userInfo.getUserId());
         Predicate nullId = builder.isNull(value.get("userId"));
@@ -128,4 +125,74 @@ public class ColumnService {
 
         return new Response(true, 200, queries);
     }
+
+    /**
+     * Creates a new grid_column_value in the database
+     */
+    @POST
+    @Path("/")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response create(
+        @Context HttpServletRequest request,
+        GridColumnValue gridColumnValue
+    ) {
+        UserInfo userInfo = authorization.getInfo(request);
+        if (gridColumnValue.getUserId() != null &&
+            !gridColumnValue.getUserId().equals(userInfo.getUserId())) {
+                return new Response(false, 699, null);
+        } else {
+            gridColumnValue.setUserId(userInfo.getUserId());
+            GridColumn gridColumn = new GridColumn();
+            gridColumn.setId(gridColumnValue.getGridColumnId());
+            gridColumnValue.setGridColumn(gridColumn);
+
+            return repository.create(gridColumnValue, Strings.STAMM);
+        }
+
+    }
+
+    /**
+     * Update an existing grid_column_value in the database
+     */
+    @PUT
+    @Path("/")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response update(
+        @Context HttpServletRequest request,
+        GridColumnValue gridColumnValue
+    ) {
+        UserInfo userInfo = authorization.getInfo(request);
+        if (gridColumnValue.getUserId() != null &&
+            !gridColumnValue.getUserId().equals(userInfo.getUserId())) {
+                return new Response(false, 699, null);
+        } else {
+            gridColumnValue.setUserId(userInfo.getUserId());
+            GridColumn gridColumn = new GridColumn();
+            gridColumn.setId(gridColumnValue.getGridColumnId());
+            gridColumnValue.setGridColumn(gridColumn);
+
+            return repository.update(gridColumnValue, Strings.STAMM);
+        }
+    }
+
+    @DELETE
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response delete(
+        @Context HttpServletRequest request,
+        @PathParam("id") String id
+    ){
+        UserInfo userInfo = authorization.getInfo(request);
+        GridColumnValue gridColumnValue = repository.getByIdPlain(
+            GridColumnValue.class,
+            Integer.valueOf(id),
+            Strings.STAMM);
+        if (gridColumnValue.getUserId().equals(userInfo.getUserId())) {
+            return repository.delete(gridColumnValue, Strings.STAMM);
+        }
+        return new Response(false, 699, null);
+    }
+
 }

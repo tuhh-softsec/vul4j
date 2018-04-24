@@ -1,6 +1,7 @@
 package de.intevation.lada.model.stammdaten;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -10,6 +11,9 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 /**
@@ -38,6 +42,9 @@ public class QueryUser implements Serializable {
 	//bi-directional many-to-one association to QueryMessstelle
 	@OneToMany(mappedBy="queryUser", fetch=FetchType.EAGER, cascade = CascadeType.PERSIST)
 	private List<QueryMessstelle> messStelles;
+
+	@Transient
+	private String[] messStellesIds;
 
 	public QueryUser() {
 	}
@@ -83,6 +90,9 @@ public class QueryUser implements Serializable {
 	}
 
 	public List<QueryMessstelle> getMessStelles() {
+		if (this.messStelles == null) {
+			this.messStelles = new ArrayList<QueryMessstelle>();
+		}
 		return this.messStelles;
 	}
 
@@ -102,5 +112,13 @@ public class QueryUser implements Serializable {
 		messStelle.setQueryUser(null);
 
 		return messStelle;
+	}
+
+	public String[] getMessStellesIds() {
+		return messStellesIds;
+	}
+
+	public void setMessStellesIds(String[] messStellesIds) {
+		this.messStellesIds = messStellesIds;
 	}
 }
