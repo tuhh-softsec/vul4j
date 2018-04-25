@@ -49,6 +49,7 @@ implements Exporter
         UserInfo userInfo
     ) {
         String laf = "";
+        creator.setUserInfo(userInfo);
         for (Integer probeId: proben) {
             laf += creator.create(probeId.toString());
         }

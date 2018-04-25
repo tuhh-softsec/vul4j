@@ -35,7 +35,11 @@ import de.intevation.lada.model.stammdaten.ProbenZusatz;
 import de.intevation.lada.model.stammdaten.Probenart;
 import de.intevation.lada.model.stammdaten.ReiProgpunktGruppe;
 import de.intevation.lada.model.stammdaten.StatusKombi;
+import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
+import de.intevation.lada.util.auth.Authorization;
+import de.intevation.lada.util.auth.AuthorizationType;
+import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
@@ -60,12 +64,19 @@ implements Creator
 
     @Inject
     private Logger logger;
+
+    @Inject
+    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    private Authorization authorization;
+
     /**
      * The repository used to read data.
      */
     @Inject
     @RepositoryConfig(type=RepositoryType.RO)
     private Repository repository;
+
+    private UserInfo userInfo;
 
     /**
      * Create the LAF conform String.
@@ -347,8 +358,12 @@ implements Creator
                 "" : lafLine("MESSMETHODE_S", m.getMmtId(), CN);
             laf += lafLine("ERFASSUNG_ABGESCHLOSSEN", (m.getFertig() ? "1" : "0"));
             laf += lafLine("BEARBEITUNGSSTATUS", writeStatus(m));
-            for (Messwert mw : werte) {
-                laf += writeMesswert(mw);
+            if (this.userInfo != null &&
+                authorization.isAuthorized(this.userInfo, m, Messung.class)
+            ) {
+                for (Messwert mw : werte) {
+                    laf += writeMesswert(mw);
+                }
             }
             for (KommentarM mk: kommentare) {
                 laf += writeKommentar(mk);
@@ -500,4 +515,9 @@ implements Creator
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HHmm");
         return formatter.format(timestamp.toInstant().atZone(ZoneOffset.UTC));
     }
+
+	@Override
+	public void setUserInfo(UserInfo userInfo) {
+		this.userInfo = userInfo;
+	}
 }

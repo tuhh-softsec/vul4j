@@ -7,6 +7,7 @@
  */
 package de.intevation.lada.exporter;
 
+import de.intevation.lada.util.auth.UserInfo;
 
 /**
  * Interface for export content creator.
@@ -16,4 +17,5 @@ package de.intevation.lada.exporter;
 public interface Creator
 {
     public String create(String probeId);
+    public void setUserInfo(UserInfo userInfo);
 }
