@@ -39,7 +39,7 @@ This version of xslthl provides extensions of the Apache Xalan and Saxon XSLT pr
 			<url>scpexe://shell.sourceforge.net/home/project-web/xslthl/htdocs/</url>
 		</site>
 	</distributionManagement>
-	
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.6</maven.compiler.source>
@@ -80,7 +80,7 @@ This version of xslthl provides extensions of the Apache Xalan and Saxon XSLT pr
 			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.3</version>
+				<version>3.1.0</version>
 				<configuration>
 					<descriptors>
 						<descriptor>src/main/assembly/dist.xml</descriptor>
