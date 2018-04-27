@@ -25,7 +25,7 @@ SET search_path = stamm, pg_catalog;
 --
 
 COPY query (id, sql) FROM stdin;
-1	SELECT probe.id AS probeId, probe.hauptproben_nr AS hauptprobenNr, probe.id_alt AS idAlt, datenbasis.datenbasis AS dBasis, stamm.mess_stelle.netzbetreiber_id AS netzId, probe.mst_id AS mstId, probe.umw_id AS umwId, probenart.probenart AS pArt, probe.probeentnahme_beginn AS peBegin, probe.probeentnahme_ende AS peEnd, ort.ort_id AS ortId, ort.gem_id AS eGemId, verwaltungseinheit.bezeichnung AS eGem, probe.id_alt AS idAlt FROM land.probe LEFT JOIN stamm.mess_stelle ON (probe.mst_id = stamm.mess_stelle.id) LEFT JOIN stamm.datenbasis ON (probe.datenbasis_id = datenbasis.id) LEFT JOIN stamm.probenart ON (probe.probenart_id = probenart.id) LEFT JOIN land.ortszuordnung ON (probe.id = ortszuordnung.probe_id AND ortszuordnung.ortszuordnung_typ = 'E') LEFT JOIN stamm.ort ON (ortszuordnung.ort_id = ort.id) LEFT JOIN stamm.verwaltungseinheit ON (ort.gem_id = verwaltungseinheit.id)
+1	SELECT probe.id AS probeId, probe.hauptproben_nr AS hauptprobenNr, datenbasis.datenbasis AS dBasis, stamm.mess_stelle.netzbetreiber_id AS netzId, probe.mst_id AS mstId, probe.umw_id AS umwId, probenart.probenart AS pArt, probe.probeentnahme_beginn AS peBegin, probe.probeentnahme_ende AS peEnd, ort.ort_id AS ortId, ort.gem_id AS eGemId, verwaltungseinheit.bezeichnung AS eGem, probe.id_alt AS idAlt FROM land.probe LEFT JOIN stamm.mess_stelle ON (probe.mst_id = stamm.mess_stelle.id) LEFT JOIN stamm.datenbasis ON (probe.datenbasis_id = datenbasis.id) LEFT JOIN stamm.probenart ON (probe.probenart_id = probenart.id) LEFT JOIN land.ortszuordnung ON (probe.id = ortszuordnung.probe_id AND ortszuordnung.ortszuordnung_typ = 'E') LEFT JOIN stamm.ort ON (ortszuordnung.ort_id = ort.id) LEFT JOIN stamm.verwaltungseinheit ON (ort.gem_id = verwaltungseinheit.id)
 \.
 
 COPY query_user (id, name, user_id, query, description) FROM stdin;
@@ -33,8 +33,8 @@ COPY query_user (id, name, user_id, query, description) FROM stdin;
 \.
 
 COPY filter (id, sql, parameter, type, name) FROM stdin;
-1	probe.id_alt LIKE :idAlt	idAlt	0	probe_id_alt
-2	probe.hauptproben_nr LIKE :hauptprobenNr	hauptprobenNr	0	probe_hauptproben_nr
+1	probe.id_alt IN :idAlt	idAlt	0	probe_id_alt
+2	probe.hauptproben_nr IN :hauptprobenNr	hauptprobenNr	0	probe_hauptproben_nr
 3	probe.mst_id = :mstId	mstId	5	probe_mst_id
 4	probe.umw_id = :umwId	umwId	9	probe_umw_id
 5	probe.test = cast(:test AS boolean)	test	2	probe_test
@@ -44,7 +44,7 @@ COPY filter (id, sql, parameter, type, name) FROM stdin;
 9	probenart.probenart = :probenart	probenart	0	probenart
 10	ort.gem_id = :gemId	gemId	0	ort_gem_id
 11	ort.ort_id = :ortId	ortId	0	ort_ort_id
-12	verwaltungseinheit.bezeichnung LIKE :bezeichnung	bezeichnung	0	verwaltungseinheit_bezeichnung
+12	verwaltungseinheit.bezeichnung IN :bezeichnung	bezeichnung	0	verwaltungseinheit_bezeichnung
 13	stamm.mess_stelle.netzbetreiber_id = :netzbetreiberId	netzbetreiberId	7	netzbetreiber_id
 \.
 
@@ -77,20 +77,20 @@ COPY result_type (id, name, format) FROM stdin;
 -- Data for Name: result; Type: TABLE DATA; Schema: stamm; Owner: postgres
 --
 
-COPY grid_column (id, query, name, data_index, filter, data_type) FROM stdin;
-1	1	Id	probeId	\N	4
-2	1	Hauptproben Nummer	hauptprobenNr	2	1
-3	1	Datenbasis	dBasis	8	1
-4	1	Land	netzId	13	1
-5	1	Messstelle	mstId	3	1
-6	1	Umweltbereich	umwId	9	1
-7	1	Probenart	pArt	1	1
-8	1	Entnahme von	peBegin	3	2
-9	1	Entnahme bis	peEnd	3	2
-10	1	Ort	ortId	1	1
-11	1	Gemeinde Id	eGemId	1	1
-12	1	Gemeinde	eGem	1	1
-13	1	Probennummer	idAlt	1	1
+COPY grid_column (id, query, name, data_index, position, filter, data_type) FROM stdin;
+1	1	Id	probeId	1   \N	4
+2	1	Hauptproben Nummer	hauptprobenNr	2   2	1
+3	1	Datenbasis	dBasis	3   8	1
+4	1	Land	netzId	4   13	1
+5	1	Messstelle	mstId	5   3	1
+6	1	Umweltbereich	umwId	6   9	1
+7	1	Probenart	pArt	7   1	1
+8	1	Entnahme von	peBegin	8   3	2
+9	1	Entnahme bis	peEnd	9   3	2
+10	1	Ort	ortId	10  1	1
+11	1	Gemeinde Id	eGemId	11  1	1
+12	1	Gemeinde	eGem	12  1	1
+13	1	Probennummer	idAlt	13  1	1
 \.
 
 COPY grid_column_values (id, user_id, grid_column, sort, filter_value, filter_active, visible, column_index, width) FROM stdin;

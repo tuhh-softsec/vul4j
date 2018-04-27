@@ -9,6 +9,7 @@ package de.intevation.lada.rest;
 
 import java.io.Serializable;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -31,6 +32,7 @@ import javax.ws.rs.core.UriInfo;
 import com.fasterxml.jackson.databind.deser.impl.NoClassDefFoundDeserializer;
 
 import de.intevation.lada.model.QueryColumns;
+import de.intevation.lada.model.stammdaten.GridColumn;
 import de.intevation.lada.model.stammdaten.GridColumnValue;
 import de.intevation.lada.query.QueryTools;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
@@ -40,6 +42,7 @@ import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.Response;
+import de.intevation.lada.util.data.Strings;
 
 /**
  * REST service for universal objects.
@@ -85,28 +88,32 @@ public class UniversalService {
         QueryColumns columns
     ) {
         Integer qid;
-        Map<String, String> filters = new HashMap<String,String>();
-        Map<String, Boolean> filtersActive = new HashMap<String, Boolean>();
-        Map<String, String> sort = new HashMap<String, String>();
 
-        for (GridColumnValue column : columns.getColumns()) {
-            String columnName = column.getGridColumn().getName();
+        List<GridColumnValue> gridColumnValues= columns.getColumns();
 
-            if (column.getSort() != null && column.getSort() != ""){
-                sort.put(columnName, column.getSort());
-            }
-            if (column.getFilterValue() != null) {
-                filters.put(columnName, column.getFilterValue());
-            }
 
-            if (column.getFilterActive() != null) {
-                filtersActive.put(columnName, column.getFilterActive());
-            }
+        if (gridColumnValues == null ||
+                gridColumnValues.isEmpty()) {
+            //TODO: Error code if no columns are given
+            return new Response(false, 999, null);
         }
-        qid =  columns.getColumns().get(0).getGridColumn().getId();
+        //TODO gridcolumns are not fetched
+        for (GridColumnValue columnValue : gridColumnValues) {
+            columnValue.setGridColumn(repository.getByIdPlain(
+                GridColumn.class,
+                Integer.valueOf(columnValue.getGridColumnId()),
+            Strings.STAMM));
+    
+        }
+        GridColumn gridColumn = repository.getByIdPlain(
+            GridColumn.class,
+            Integer.valueOf(gridColumnValues.get(0).getGridColumnId()),
+        Strings.STAMM);
+
+        qid = gridColumn.getQuery();
 
         List<Map<String, Object>> result =
-            queryTools.getResultForQuery(filters, filtersActive, sort, qid);
+            queryTools.getResultForQuery(columns.getColumns(), qid);
         return new Response(true, 200, result);
     }
 

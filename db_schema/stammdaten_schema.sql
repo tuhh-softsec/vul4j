@@ -760,6 +760,7 @@ CREATE TABLE grid_column (
     query integer REFERENCES query,
     name character varying(80) NOT NULL,
     data_index character varying(80) NOT NULL,
+    position integer NOT NULL,
     filter integer REFERENCES filter,
     data_type integer NOT NULL REFERENCES result_type
 );

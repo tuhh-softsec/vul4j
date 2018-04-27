@@ -7,6 +7,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -29,9 +31,13 @@ public class GridColumn implements Serializable {
     @Column(name="data_type")
     private Integer dataType;
 
-    private Integer filter;
+    @ManyToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name="filter")
+    private Filter filter;
 
     private String name;
+
+    private Integer position;
 
     private Integer query;
 
@@ -66,11 +72,11 @@ public class GridColumn implements Serializable {
         this.dataType = dataType;
     }
 
-    public Integer getFilter() {
+    public Filter getFilter() {
         return this.filter;
     }
 
-    public void setFilter(Integer filter) {
+    public void setFilter(Filter filter) {
         this.filter = filter;
     }
 
@@ -80,6 +86,14 @@ public class GridColumn implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getPosition() {
+        return this.position;
+    }
+    
+    public void setPosition(Integer position) {
+        this.position = position;
     }
 
     public Integer getQuery() {

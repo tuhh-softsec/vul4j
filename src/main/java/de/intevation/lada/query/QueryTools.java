@@ -28,6 +28,7 @@ import org.apache.log4j.Logger;
 
 import de.intevation.lada.model.stammdaten.Filter;
 import de.intevation.lada.model.stammdaten.GridColumn;
+import de.intevation.lada.model.stammdaten.GridColumnValue;
 import de.intevation.lada.model.stammdaten.Query;
 import de.intevation.lada.model.stammdaten.Result;
 import de.intevation.lada.util.annotation.RepositoryConfig;
@@ -61,20 +62,16 @@ public class QueryTools
     }
     /**
      * Execute query and return results
-     * @param filters Map containing <columnName, filterValue>
-     * @param filtersActive Map containing <columnName, [true|false]>, true if filter is active
-     * @param sort Map containing <columnName, sortDirection>
-     * @param qId ID of the query to execute
+     * @param customColumns Customized column configs, containing filter, sorting and references to the respective column.
+     * @param qId Query id
      * @return List of result maps
      */
     @SuppressWarnings("unchecked")
     public List<Map<String, Object>> getResultForQuery(
-        Map<String, String> filters,
-        Map<String, Boolean> filtersActive,
-        Map<String, String> sort,
+        List<GridColumnValue> customColumns,
         Integer qId
     ) {
-/*        QueryBuilder<Query> builder = new QueryBuilder<Query>(
+        QueryBuilder<Query> builder = new QueryBuilder<Query>(
             repository.entityManager(Strings.STAMM),
             Query.class
         );
@@ -83,33 +80,49 @@ public class QueryTools
 
         String sql = query.getSql();
 
-        List<Filter> filters = new ArrayList();
-        List<GridColumn> columns = query.getGridColumns();
-        for (GridColumn column : columns) {
-            filters.add(column.getFilter());
-        }
+        List<GridColumn> columns = new ArrayList<GridColumn>();
 
-        if (params.containsKey("sort")) {
-            String sort = params.getFirst("sort");
-            try (JsonReader reader = Json.createReader(new StringReader(sort))) {
-                JsonObject sortProperties = reader.readArray().getJsonObject(0);
-                sql += " ORDER BY ";
-                sql += sortProperties.getJsonString("property").getString() + " ";
-                sql += sortProperties.getJsonString("direction").getString();
+        String filterSql = "";
+        String sortSql = "";
+
+        for (GridColumnValue customColumn : customColumns) {
+
+            //Build ORDER BY clause
+            columns.add(customColumn.getGridColumn());
+            if (customColumn.getSort() != null
+                && !customColumn.getSort().isEmpty()
+                && sortSql.isEmpty()) {
+                sortSql += " ORDER BY "
+                        + customColumn.getGridColumn().getDataIndex() + " "
+                        + customColumn.getSort();
+            }
+
+            if (customColumn.getFilterActive() != null
+                    && customColumn.getFilterActive() == true) {
+                //Build WHERE clause
+                if (filterSql.isEmpty()) {
+                    filterSql += " WHERE ";
+                }
+                Filter filter = customColumn.getGridColumn().getFilter();
+                String filterValue = customColumn.getFilterValue();
+                filterSql += filter.getSql().replace(":" + filter.getParameter(), filterValue) + " ";
             }
         }
+
+        if (!filterSql.isEmpty()){
+            sql += filterSql + " ";
+        }
+        sql += sortSql + ";";
+
         javax.persistence.Query q = prepareQuery(
             sql,
-            filters,
-            params,
+            null,
+            null,
             repository.entityManager(Strings.LAND));
         if (q == null) {
             return new ArrayList<>();
         }
-        return prepareResult(q.getResultList(), results);
-        
-        */
-        return null;
+        return prepareResult(q.getResultList(), columns);
     }
 
     public List<Map<String, Object>> filterResult(
@@ -184,9 +197,9 @@ public class QueryTools
         MultivaluedMap<String, String> params,
         EntityManager manager
     ) {
-        /*
         javax.persistence.Query query = manager.createNativeQuery(sql);
-        for (Filter filter: filters) {
+        /*for (Filter filter: filters) {
+            
             List<String> param = params.get(filter.getDataIndex());
             if (param == null) {
                 return null;
@@ -199,27 +212,30 @@ public class QueryTools
                 clean.add(p.replace(",", "|"));
             }
             query.setParameter(filter.getDataIndex(), clean);
-        }
+            
+        }*/
         return query;
-        */
-        return null;
+        
     }
 
+    /**
+     * Prepares the query result for the client, 
+     * @param result A list of query results
+     * @param names The columns queried by the client
+     * @return List of result maps, containing only the configured columns
+     */
     public List<Map<String, Object>> prepareResult(
         List<Object[]> result,
-        List<Result> names
+        List<GridColumn> names
     ) {
-        /*
         List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
         for (Object[] row: result) {
             Map<String, Object> set = new HashMap<String, Object>();
-            for (int i = 0; i < row.length; i++) {
-                set.put(names.get(i).getDataIndex(), row[i]);
+            for (int i = 0; i < names.size(); i++) {
+                set.put(names.get(i).getDataIndex(), row[names.get(i).getPosition() - 1]);
             }
             ret.add(set);
         }
         return ret;
-        */
-        return null;
     }
 }
