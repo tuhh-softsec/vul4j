@@ -36,6 +36,9 @@ public class GridColumnValue implements Serializable {
 
     private String sort;
 
+    @Column(name="sort_index")
+    private Integer sortIndex;
+
     @Column(name="user_id")
     private Integer userId;
 
@@ -93,6 +96,14 @@ public class GridColumnValue implements Serializable {
 
     public void setSort(String sort) {
         this.sort = sort;
+    }
+
+    public Integer getSortIndex() {
+        return this.sortIndex;
+    }
+
+    public void setSortIndex(Integer sortIndex) {
+        this.sortIndex = sortIndex;
     }
 
     public Integer getUserId() {

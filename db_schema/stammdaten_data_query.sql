@@ -93,20 +93,20 @@ COPY grid_column (id, query, name, data_index, position, filter, data_type) FROM
 13	1	Probennummer	idAlt	13  1	1
 \.
 
-COPY grid_column_values (id, user_id, grid_column, sort, filter_value, filter_active, visible, column_index, width) FROM stdin;
-1	\N	1	\N	\N	f	f	-1	0
-2	\N	2	\N	\N	f	f	0	100
-3	\N	3	\N	\N	f	f	1	100
-4	\N	4	\N	\N	f	f	2	100
-5	\N	5	\N	\N	f	f	3	100
-6	\N	6	\N	\N	f	f	4	100
-7	\N	7	\N	\N	f	f	5	100
-8	\N	8	\N	\N	f	f	6	100
-9	\N	9	\N	\N	f	f	7	100
-10	\N	10	\N	\N	f	f	8	100
-11	\N	11	\N	\N	f	f	9	100
-12	\N	12	\N	\N	f	f	10	100
-13	\N	13	\N	\N	f	f	11	100
+COPY grid_column_values (id, user_id, grid_column, sort, sort_index, filter_value, filter_active, visible, column_index, width) FROM stdin;
+1	\N	1	\N  \N  \N	f	f	-1	0
+2	\N	2	\N  \N  \N	f	f	0	100
+3	\N	3	\N  \N  \N	f	f	1	100
+4	\N	4	\N  \N  \N	f	f	2	100
+5	\N	5	\N  \N  \N	f	f	3	100
+6	\N	6	\N  \N	\N	f	f	4	100
+7	\N	7	\N  \N	\N	f	f	5	100
+8	\N	8	\N  \N	\N	f	f	6	100
+9	\N	9	\N  \N	\N	f	f	7	100
+10	\N	10	\N  \N	\N	f	f	8	100
+11	\N	11	\N  \N	\N	f	f	9	100
+12	\N	12	\N  \N	\N	f	f	10	100
+13	\N	13	\N  \N	\N	f	f	11	100
 \.
 
 --

@@ -770,6 +770,7 @@ CREATE TABLE grid_column_values (
     user_id integer REFERENCES lada_user,
     grid_column integer NOT NULL REFERENCES grid_column,
     sort character varying(4),
+    sort_index integer,
     filter_value text,
     filter_active boolean,
     visible boolean,

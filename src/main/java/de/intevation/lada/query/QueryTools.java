@@ -9,9 +9,12 @@ package de.intevation.lada.query;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableMap;
+import java.util.TreeMap;
 
 import javax.inject.Inject;
 import javax.json.Json;
@@ -61,10 +64,10 @@ public class QueryTools
         return null;
     }
     /**
-     * Execute query and return results
+     * Execute query and return results.
      * @param customColumns Customized column configs, containing filter, sorting and references to the respective column.
-     * @param qId Query id
-     * @return List of result maps
+     * @param qId Query id.
+     * @return List of result maps.
      */
     @SuppressWarnings("unchecked")
     public List<Map<String, Object>> getResultForQuery(
@@ -81,6 +84,8 @@ public class QueryTools
         String sql = query.getSql();
 
         List<GridColumn> columns = new ArrayList<GridColumn>();
+        //Map containing all sort statements, sorted by sortIndex
+        TreeMap<Integer, String> sortIndMap = new TreeMap<Integer, String>();
 
         String filterSql = "";
         String sortSql = "";
@@ -90,11 +95,14 @@ public class QueryTools
             //Build ORDER BY clause
             columns.add(customColumn.getGridColumn());
             if (customColumn.getSort() != null
-                && !customColumn.getSort().isEmpty()
-                && sortSql.isEmpty()) {
-                sortSql += " ORDER BY "
-                        + customColumn.getGridColumn().getDataIndex() + " "
-                        + customColumn.getSort();
+                && !customColumn.getSort().isEmpty()) {
+
+                String sortValue = customColumn.getGridColumn().getDataIndex() + " "
+                        + customColumn.getSort() + " ";
+                Integer key = customColumn.getSortIndex() != null ? customColumn.getSortIndex() : -1;
+                String value = sortIndMap.get(key);
+                value = value != null ? value + ", "  + sortValue : sortValue;
+                sortIndMap.put(key, value);
             }
 
             if (customColumn.getFilterActive() != null
@@ -102,10 +110,30 @@ public class QueryTools
                 //Build WHERE clause
                 if (filterSql.isEmpty()) {
                     filterSql += " WHERE ";
+                } else {
+                    filterSql += " AND ";
                 }
                 Filter filter = customColumn.getGridColumn().getFilter();
                 String filterValue = customColumn.getFilterValue();
                 filterSql += filter.getSql().replace(":" + filter.getParameter(), filterValue) + " ";
+            }
+        }
+
+        if (sortIndMap.size() > 0) {
+            NavigableMap <Integer, String> orderedSorts = sortIndMap.tailMap(0, true);
+            String unorderedSorts = sortIndMap.get(-1);
+            sortSql += "";
+            for (String sortString : orderedSorts.values()) {
+                if (sortSql.isEmpty()){
+                    sortSql += " ORDER BY " + sortString;
+                } else {
+                    sortSql += ", " + sortString;
+                }
+            }
+            if (sortSql.isEmpty()){
+                sortSql += " ORDER BY " + unorderedSorts;
+            } else {
+                sortSql += ", " + unorderedSorts;
             }
         }
 
@@ -228,6 +256,9 @@ public class QueryTools
         List<Object[]> result,
         List<GridColumn> names
     ) {
+        if (result.size() == 0) {
+            return null;
+        }
         List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
         for (Object[] row: result) {
             Map<String, Object> set = new HashMap<String, Object>();
