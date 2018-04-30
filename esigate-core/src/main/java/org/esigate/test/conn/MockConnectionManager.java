@@ -17,7 +17,7 @@ package org.esigate.test.conn;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.http.HttpClientConnection;
 import org.apache.http.HttpConnectionMetrics;
@@ -31,9 +31,9 @@ import org.apache.http.protocol.HttpContext;
 import org.esigate.HttpErrorPage;
 
 public class MockConnectionManager implements HttpClientConnectionManager {
-    private final AtomicBoolean open = new AtomicBoolean(false);
+    private final AtomicInteger openConnections = new AtomicInteger(0);
     private IResponseHandler responseHandler;
-    private HttpRequest sentRequest;
+    private HttpRequest lastSentRequest;
     private long sleep = 0L;
 
     private void sleep() {
@@ -46,98 +46,102 @@ public class MockConnectionManager implements HttpClientConnectionManager {
         }
     }
 
-    private final ConnectionRequest connectionRequest = new ConnectionRequest() {
-
-        @Override
-        public boolean cancel() {
-            return false;
-        }
-
-        @Override
-        public HttpClientConnection get(long timeout, TimeUnit tunit) {
-            if (open.get()) {
-                throw new IllegalStateException("Connection is busy");
-            }
-            return httpClientConnection;
-        }
-    };
-    private final HttpClientConnection httpClientConnection = new HttpClientConnection() {
-
-        @Override
-        public void shutdown() {
-            open.set(false);
-        }
-
-        @Override
-        public void setSocketTimeout(int timeout) {
-            // Nothing to do
-        }
-
-        @Override
-        public boolean isStale() {
-            return !open.get();
-        }
-
-        @Override
-        public boolean isOpen() {
-            return open.get();
-        }
-
-        @Override
-        public int getSocketTimeout() {
-            return 0;
-        }
-
-        @Override
-        public HttpConnectionMetrics getMetrics() {
-            return null;
-        }
-
-        @Override
-        public void close() {
-            open.set(false);
-        }
-
-        @Override
-        public void sendRequestHeader(HttpRequest request) {
-            sentRequest = request;
-        }
-
-        @Override
-        public void sendRequestEntity(HttpEntityEnclosingRequest request) {
-            sentRequest = request;
-        }
-
-        @Override
-        public HttpResponse receiveResponseHeader() {
-            sleep();
-            return execute(sentRequest);
-        }
-
-        @Override
-        public void receiveResponseEntity(HttpResponse response) {
-            // Nothing to do
-        }
-
-        @Override
-        public boolean isResponseAvailable(int timeout) {
-            return true;
-        }
-
-        @Override
-        public void flush() {
-            // Nothing to do
-        }
-    };
-
     @Override
     public ConnectionRequest requestConnection(HttpRoute route, Object state) {
-        return this.connectionRequest;
+        return new ConnectionRequest() {
+
+            @Override
+            public boolean cancel() {
+                return false;
+            }
+
+            @Override
+            public HttpClientConnection get(long timeout, TimeUnit tunit) {
+                openConnections.incrementAndGet();
+                return new HttpClientConnection() {
+                    private boolean open = true;
+                    private HttpRequest request;
+
+                    @Override
+                    public void shutdown() {
+                        close();
+                    }
+
+                    @Override
+                    public void setSocketTimeout(int timeout) {
+                        // Nothing to do
+                    }
+
+                    @Override
+                    public boolean isStale() {
+                        return !open;
+                    }
+
+                    @Override
+                    public boolean isOpen() {
+                        return open;
+                    }
+
+                    @Override
+                    public int getSocketTimeout() {
+                        return 0;
+                    }
+
+                    @Override
+                    public HttpConnectionMetrics getMetrics() {
+                        return null;
+                    }
+
+                    @Override
+                    public void close() {
+                        openConnections.decrementAndGet();
+                        open = false;
+                    }
+
+                    @Override
+                    public void sendRequestHeader(HttpRequest request) {
+                        lastSentRequest = request;
+                        this.request = request;
+                    }
+
+                    @Override
+                    public void sendRequestEntity(HttpEntityEnclosingRequest request) {
+                        lastSentRequest = request;
+                        this.request = request;
+                    }
+
+                    @Override
+                    public HttpResponse receiveResponseHeader() {
+                        sleep();
+                        return execute(this.request);
+                    }
+
+                    @Override
+                    public void receiveResponseEntity(HttpResponse response) {
+                        // Nothing to do
+                    }
+
+                    @Override
+                    public boolean isResponseAvailable(int timeout) {
+                        return true;
+                    }
+
+                    @Override
+                    public void flush() {
+                        // Nothing to do
+                    }
+                };
+            }
+        };
     }
 
     @Override
     public void releaseConnection(HttpClientConnection conn, Object newState, long validDuration, TimeUnit timeUnit) {
-        this.open.set(false);
+        try {
+            conn.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -152,11 +156,12 @@ public class MockConnectionManager implements HttpClientConnectionManager {
 
     @Override
     public void shutdown() {
-        open.set(false);
+        if (openConnections.get() > 0)
+            throw new RuntimeException("Some connections were not released!");
     }
 
     public HttpRequest getSentRequest() {
-        return sentRequest;
+        return lastSentRequest;
     }
 
     /**
@@ -190,8 +195,8 @@ public class MockConnectionManager implements HttpClientConnectionManager {
         }
     }
 
-    public final boolean isOpen() {
-        return this.open.get();
+    public final boolean hasOpenConnections() {
+        return openConnections.get() > 0;
     }
 
     @Override
