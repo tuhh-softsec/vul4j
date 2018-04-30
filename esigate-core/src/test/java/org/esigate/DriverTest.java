@@ -377,7 +377,7 @@ public class DriverTest extends TestCase {
             assertEquals("<html><body>some content</body></html>", EntityUtils.toString(driverResponse.getEntity()));
         }
         assertEquals(requestCount, closeCount.get());
-        assertFalse("All the connections should have been closed", mockConnectionManager.isOpen());
+        assertFalse("All the connections should have been closed", mockConnectionManager.hasOpenConnections());
     }
 
     /**
@@ -428,7 +428,7 @@ public class DriverTest extends TestCase {
             assertEquals("<html><body>some content</body></html>", EntityUtils.toString(driverResponse.getEntity()));
         }
         assertEquals(requestCount, closeCount.get());
-        assertFalse("All the connections should have been closed", mockConnectionManager.isOpen());
+        assertFalse("All the connections should have been closed", mockConnectionManager.hasOpenConnections());
     }
 
     /**
@@ -807,7 +807,7 @@ public class DriverTest extends TestCase {
             // That is what we expect
             assertEquals(HttpStatus.SC_GATEWAY_TIMEOUT, e.getHttpResponse().getStatusLine().getStatusCode());
         }
-        assertFalse("All the connections should have been closed", mockConnectionManager.isOpen());
+        assertFalse("All the connections should have been closed", mockConnectionManager.hasOpenConnections());
     }
 
     public void testForwardCookiesWithPortsAndPreserveHost() throws Exception {
