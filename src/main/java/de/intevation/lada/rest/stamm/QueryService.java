@@ -109,8 +109,16 @@ public class QueryService {
         Join<MessStelle, QueryUser> mess = root.join("messStelles", javax.persistence.criteria.JoinType.LEFT);
         Predicate filter = builder.equal(root.get("userId"), userInfo.getUserId());
         filter = builder.or(filter, root.get("userId").in(DEFAULT_USER_ID));
-        filter = builder.or(filter, mess.get("messStelle").in(userInfo.getMessstellen()));
-        filter = builder.or(filter, mess.get("messStelle").in(userInfo.getLaborMessstellen()));
+        if (userInfo.getMessstellen() != null &&
+            !userInfo.getMessstellen().isEmpty()
+        ) {
+            filter = builder.or(filter, mess.get("messStelle").in(userInfo.getMessstellen()));
+        }
+        if (userInfo.getLaborMessstellen() != null &&
+            !userInfo.getLaborMessstellen().isEmpty()
+        ) {
+            filter = builder.or(filter, mess.get("messStelle").in(userInfo.getLaborMessstellen()));
+        }
         criteriaQuery.where(filter);
         
         List<QueryUser> queries = repository.filterPlain(criteriaQuery, Strings.STAMM);
