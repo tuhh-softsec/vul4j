@@ -99,8 +99,9 @@ public class ColumnService {
         @Context UriInfo info
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
+        //If no qid is given, return all grid_column objects
         if (params.isEmpty() || !params.containsKey("qid")) {
-            return new Response(false, 603, "Not a valid filter id");
+            return repository.getAll(GridColumn.class, Strings.STAMM);
         }
         Integer id = null;
         try {

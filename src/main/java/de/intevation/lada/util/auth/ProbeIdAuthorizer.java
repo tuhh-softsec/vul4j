@@ -7,6 +7,9 @@
  */
 package de.intevation.lada.util.auth;
 
+import javax.inject.Inject;
+
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -14,6 +17,7 @@ import java.util.List;
 
 import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.model.stammdaten.MessStelle;
+import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
@@ -27,24 +31,30 @@ public class ProbeIdAuthorizer extends BaseAuthorizer {
         UserInfo userInfo,
         Class<T> clazz
     ) {
-        Method m;
-        try {
-            m = clazz.getMethod("getProbeId");
-        } catch (NoSuchMethodException | SecurityException e1) {
-            return false;
-        }
         Integer id;
-        try {
-            id = (Integer) m.invoke(data);
-        } catch (IllegalAccessException |
-            IllegalArgumentException |
-            InvocationTargetException e
-        ) {
-            return false;
+        if (data.getClass() == Integer.class){
+            id = (Integer) data;
+        } else {
+            Method m;
+            try {
+                m = clazz.getMethod("getProbeId");
+            } catch (NoSuchMethodException | SecurityException e1) {
+                return false;
+            }
+            try {
+                id = (Integer) m.invoke(data);
+            } catch (IllegalAccessException |
+                IllegalArgumentException |
+                InvocationTargetException e
+            ) {
+                return false;
+            }
+    
         }
         Probe probe =
             repository.getByIdPlain(Probe.class, id, Strings.LAND);
         return !isProbeReadOnly(id) && getAuthorization(userInfo, probe);
+
     }
 
     @SuppressWarnings("unchecked")

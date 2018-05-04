@@ -30,20 +30,26 @@ public class MessungIdAuthorizer extends BaseAuthorizer {
         UserInfo userInfo,
         Class<T> clazz
     ) {
-        Method m;
-        try {
-            m = clazz.getMethod("getMessungsId");
-        } catch (NoSuchMethodException | SecurityException e1) {
-            return false;
-        }
         Integer id;
-        try {
-            id = (Integer) m.invoke(data);
-        } catch (IllegalAccessException |
-            IllegalArgumentException |
-            InvocationTargetException e
-        ) {
-            return false;
+
+        if(data.getClass() != Integer.class){
+            Method m;
+            try {
+                m = clazz.getMethod("getMessungsId");
+            } catch (NoSuchMethodException | SecurityException e1) {
+                return false;
+            }    
+            try {
+                id = (Integer) m.invoke(data);
+            } catch (IllegalAccessException |
+                IllegalArgumentException |
+                InvocationTargetException e
+            ) {
+                return false;
+            }
+    
+        } else {
+            id = (Integer) data;
         }
         Messung messung = repository.getByIdPlain(Messung.class, id, Strings.LAND);
         Probe probe = repository.getByIdPlain(

@@ -34,11 +34,17 @@ import com.fasterxml.jackson.databind.deser.impl.NoClassDefFoundDeserializer;
 import de.intevation.lada.model.QueryColumns;
 import de.intevation.lada.model.stammdaten.GridColumn;
 import de.intevation.lada.model.stammdaten.GridColumnValue;
+import de.intevation.lada.model.stammdaten.ResultType;
 import de.intevation.lada.query.QueryTools;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
+import de.intevation.lada.util.auth.BaseAuthorizer;
+import de.intevation.lada.util.auth.MessungIdAuthorizer;
+import de.intevation.lada.util.auth.NetzbetreiberAuthorizer;
+import de.intevation.lada.util.auth.ProbeIdAuthorizer;
+import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.Response;
@@ -100,36 +106,67 @@ public class UniversalService {
     @Consumes("application/json")
     @Produces("application/json")
     public Response execute(
-        @Context HttpHeaders headers,
+        @Context HttpServletRequest request,
         QueryColumns columns
     ) {
         Integer qid;
 
         List<GridColumnValue> gridColumnValues= columns.getColumns();
 
+        UserInfo userInfo = authorization.getInfo(request);
+
+        BaseAuthorizer authorizer = null;
+        String authorizationColumnIndex = null;
 
         if (gridColumnValues == null ||
                 gridColumnValues.isEmpty()) {
             //TODO: Error code if no columns are given
             return new Response(false, 999, null);
         }
-        //TODO gridcolumns are not fetched
         for (GridColumnValue columnValue : gridColumnValues) {
-            columnValue.setGridColumn(repository.getByIdPlain(
+            GridColumn gridColumn= repository.getByIdPlain(
                 GridColumn.class,
                 Integer.valueOf(columnValue.getGridColumnId()),
-            Strings.STAMM));
-    
+                Strings.STAMM);
+            //Check if column can be used for authorization 
+            if (authorizer == null) {
+                ResultType resultType = repository.getByIdPlain(ResultType.class, gridColumn.getDataType(), Strings.STAMM);
+                if (resultType != null) {
+                    switch(resultType.getName()) {
+                        case "probeId": 
+                            //TODO: Test
+                            authorizer = new ProbeIdAuthorizer();
+                            break;
+                        case "messungId":
+                            //TODO: Test
+                            authorizer = new MessungIdAuthorizer();
+                            break;
+                        //TODO: Add NetzbetreiberAuthorizer
+                    }
+                    authorizationColumnIndex = gridColumn.getDataIndex();    
+                }
+            }
+            columnValue.setGridColumn(gridColumn);
         }
+
         GridColumn gridColumn = repository.getByIdPlain(
             GridColumn.class,
             Integer.valueOf(gridColumnValues.get(0).getGridColumnId()),
         Strings.STAMM);
 
-        qid = gridColumn.getQuery();
+        qid = gridColumn.getBaseQuery();
 
         List<Map<String, Object>> result =
             queryTools.getResultForQuery(columns.getColumns(), qid);
+
+        for (Map<String, Object> row: result) {
+            //TODO: default value
+            boolean readonly = true;
+            if (authorizer != null) {
+                readonly = !authorizer.isAuthorized(row.get(authorizationColumnIndex), null, userInfo, null);
+            }
+            row.put("readonly", readonly);
+        }
         return new Response(true, 200, result);
     }
 

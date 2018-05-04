@@ -2,6 +2,7 @@ package de.intevation.lada.model.stammdaten;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -138,7 +139,6 @@ public class GridColumnValue implements Serializable {
         this.gridColumnId = gridColumnId;
     }
 
-    @JsonIgnore
     public GridColumn getGridColumn() {
         return this.gridColumn;
     }
