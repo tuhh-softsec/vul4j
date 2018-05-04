@@ -28,7 +28,7 @@ COPY base_query (id, sql) FROM stdin;
 1	SELECT probe.id AS probeId, probe.hauptproben_nr AS hauptprobenNr, datenbasis.datenbasis AS dBasis, stamm.mess_stelle.netzbetreiber_id AS netzId, probe.mst_id AS mstId, probe.umw_id AS umwId, probenart.probenart AS pArt, probe.probeentnahme_beginn AS peBegin, probe.probeentnahme_ende AS peEnd, ort.ort_id AS ortId, ort.gem_id AS eGemId, verwaltungseinheit.bezeichnung AS eGem, probe.id_alt AS idAlt FROM land.probe LEFT JOIN stamm.mess_stelle ON (probe.mst_id = stamm.mess_stelle.id) LEFT JOIN stamm.datenbasis ON (probe.datenbasis_id = datenbasis.id) LEFT JOIN stamm.probenart ON (probe.probenart_id = probenart.id) LEFT JOIN land.ortszuordnung ON (probe.id = ortszuordnung.probe_id AND ortszuordnung.ortszuordnung_typ = 'E') LEFT JOIN stamm.ort ON (ortszuordnung.ort_id = ort.id) LEFT JOIN stamm.verwaltungseinheit ON (ort.gem_id = verwaltungseinheit.id)
 \.
 
-COPY query_user (id, name, user_id, query, description) FROM stdin;
+COPY query_user (id, name, user_id, base_query, description) FROM stdin;
 1	Proben	\N	1	Alle Proben
 \.
 
@@ -77,7 +77,7 @@ COPY result_type (id, name, format) FROM stdin;
 -- Data for Name: result; Type: TABLE DATA; Schema: stamm; Owner: postgres
 --
 
-COPY grid_column (id, query, name, data_index, position, filter, data_type) FROM stdin;
+COPY grid_column (id, base_query, name, data_index, position, filter, data_type) FROM stdin;
 1	1	Id	probeId	1	\N	4
 2	1	Hauptproben Nummer	hauptprobenNr	2	2	1
 3	1	Datenbasis	dBasis	3	8	1

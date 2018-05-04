@@ -36,8 +36,8 @@ public class QueryUser implements Serializable {
 	private Integer userId;
 
 	//uni-directional many-to-one association to Query
-	@Column(name="query")
-	private Integer query;
+	@Column(name="base_query")
+	private Integer baseQuery;
 
 	//bi-directional many-to-one association to QueryMessstelle
 	@OneToMany(mappedBy="queryUser", fetch=FetchType.EAGER, cascade = CascadeType.PERSIST)
@@ -81,12 +81,12 @@ public class QueryUser implements Serializable {
 		this.userId = userId;
 	}
 
-	public Integer getQuery() {
-		return this.query;
+	public Integer getBaseQuery() {
+		return this.baseQuery;
 	}
 
-	public void setQuery(Integer query) {
-		this.query = query;
+	public void setBaseQuery(Integer query) {
+		this.baseQuery = query;
 	}
 
 	public List<QueryMessstelle> getMessStelles() {

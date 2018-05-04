@@ -115,7 +115,7 @@ public class ColumnValueService {
         CriteriaQuery<GridColumnValue> criteriaQuery = builder.createQuery(GridColumnValue.class);
         Root<GridColumnValue> root = criteriaQuery.from(GridColumnValue.class);
         Join<GridColumnValue, GridColumn> value = root.join("gridColumn", javax.persistence.criteria.JoinType.LEFT);
-        Predicate filter = builder.equal(value.get("query"), id);
+        Predicate filter = builder.equal(value.get("baseQuery"), id);
         Predicate uId = builder.equal(root.get("userId"), userInfo.getUserId());
         Predicate nullId = builder.isNull(root.get("userId"));
         Predicate userIdFilter = builder.or(uId, nullId);

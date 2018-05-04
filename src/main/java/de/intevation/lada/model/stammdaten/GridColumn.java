@@ -41,7 +41,8 @@ public class GridColumn implements Serializable {
 
     private Integer position;
 
-    private Integer query;
+    @Column(name="base_query")
+    private Integer baseQuery;
 
     //bi-directional one-to-one association to GridColumnValue
     @OneToMany(mappedBy="gridColumn", fetch=FetchType.EAGER)
@@ -99,12 +100,12 @@ public class GridColumn implements Serializable {
         this.position = position;
     }
 
-    public Integer getQuery() {
-        return this.query;
+    public Integer getBaseQuery() {
+        return this.baseQuery;
     }
 
-    public void setQuery(Integer query) {
-        this.query = query;
+    public void setBaseQuery(Integer query) {
+        this.baseQuery = query;
     }
 
     public List<GridColumnValue> getGridColumnValues() {

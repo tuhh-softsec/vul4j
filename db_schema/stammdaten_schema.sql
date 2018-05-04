@@ -306,7 +306,7 @@ CREATE TABLE query_user (
     id serial PRIMARY KEY,
     name character varying(80) NOT NULL,
     user_id integer REFERENCES lada_user,
-    query integer REFERENCES base_query,
+    base_query integer REFERENCES base_query,
     description text
 );
 
@@ -757,7 +757,7 @@ CREATE TABLE rei_progpunkt_grp_umw_zuord
 
 CREATE TABLE grid_column (
     id serial PRIMARY KEY,
-    query integer REFERENCES base_query,
+    base_query integer REFERENCES base_query,
     name character varying(80) NOT NULL,
     data_index character varying(80) NOT NULL,
     position integer NOT NULL,
