@@ -34,7 +34,7 @@ public class Result implements Serializable {
 
 	//bi-directional many-to-one association to Query
 	@ManyToOne
-	private Query query;
+	private BaseQuery query;
 
 	public Result() {
 	}
@@ -95,11 +95,11 @@ public class Result implements Serializable {
 		this.resultType = resultType;
 	}
 
-	public Query getQuery() {
+	public BaseQuery getQuery() {
 		return this.query;
 	}
 
-	public void setQuery(Query query) {
+	public void setQuery(BaseQuery query) {
 		this.query = query;
 	}
 

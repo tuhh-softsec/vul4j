@@ -21,10 +21,10 @@ SET search_path = stamm, pg_catalog;
 --
 -- TOC entry 5408 (class 0 OID 3061575)
 -- Dependencies: 246
--- Data for Name: query; Type: TABLE DATA; Schema: stamm; Owner: postgres
+-- Data for Name: base_query; Type: TABLE DATA; Schema: stamm; Owner: postgres
 --
 
-COPY query (id, sql) FROM stdin;
+COPY base_query (id, sql) FROM stdin;
 1	SELECT probe.id AS probeId, probe.hauptproben_nr AS hauptprobenNr, datenbasis.datenbasis AS dBasis, stamm.mess_stelle.netzbetreiber_id AS netzId, probe.mst_id AS mstId, probe.umw_id AS umwId, probenart.probenart AS pArt, probe.probeentnahme_beginn AS peBegin, probe.probeentnahme_ende AS peEnd, ort.ort_id AS ortId, ort.gem_id AS eGemId, verwaltungseinheit.bezeichnung AS eGem, probe.id_alt AS idAlt FROM land.probe LEFT JOIN stamm.mess_stelle ON (probe.mst_id = stamm.mess_stelle.id) LEFT JOIN stamm.datenbasis ON (probe.datenbasis_id = datenbasis.id) LEFT JOIN stamm.probenart ON (probe.probenart_id = probenart.id) LEFT JOIN land.ortszuordnung ON (probe.id = ortszuordnung.probe_id AND ortszuordnung.ortszuordnung_typ = 'E') LEFT JOIN stamm.ort ON (ortszuordnung.ort_id = ort.id) LEFT JOIN stamm.verwaltungseinheit ON (ort.gem_id = verwaltungseinheit.id)
 \.
 
@@ -124,7 +124,7 @@ SELECT pg_catalog.setval('filter_id_seq', 26, true);
 -- Name: query_id_seq; Type: SEQUENCE SET; Schema: stamm; Owner: postgres
 --
 
-SELECT pg_catalog.setval('query_id_seq', 18, true);
+SELECT pg_catalog.setval('base_query_id_seq', 18, true);
 
 
 --

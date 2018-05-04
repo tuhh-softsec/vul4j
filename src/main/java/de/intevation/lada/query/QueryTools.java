@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
 import de.intevation.lada.model.stammdaten.Filter;
 import de.intevation.lada.model.stammdaten.GridColumn;
 import de.intevation.lada.model.stammdaten.GridColumnValue;
-import de.intevation.lada.model.stammdaten.Query;
+import de.intevation.lada.model.stammdaten.BaseQuery;
 import de.intevation.lada.model.stammdaten.Result;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
@@ -74,12 +74,12 @@ public class QueryTools
         List<GridColumnValue> customColumns,
         Integer qId
     ) {
-        QueryBuilder<Query> builder = new QueryBuilder<Query>(
+        QueryBuilder<BaseQuery> builder = new QueryBuilder<BaseQuery>(
             repository.entityManager(Strings.STAMM),
-            Query.class
+            BaseQuery.class
         );
         builder.and("id", qId);
-        Query query = repository.filterPlain(builder.getQuery(), Strings.STAMM).get(0);
+        BaseQuery query = repository.filterPlain(builder.getQuery(), Strings.STAMM).get(0);
 
         String sql = query.getSql();
 

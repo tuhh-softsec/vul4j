@@ -38,7 +38,7 @@ SELECT pg_catalog.setval('probenart_id_seq', (SELECT max(id) FROM probenart), tr
 
 SELECT pg_catalog.setval('probenehmer_id_seq', (SELECT max(id) FROM probenehmer), true);
 
-SELECT pg_catalog.setval('query_id_seq', (SELECT max(id) FROM query), true);
+SELECT pg_catalog.setval('base_query_id_seq', (SELECT max(id) FROM base_query), true);
 
 SELECT pg_catalog.setval('result_id_seq', (SELECT max(id) FROM result), true);
 

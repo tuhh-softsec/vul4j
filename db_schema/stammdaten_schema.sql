@@ -297,7 +297,7 @@ INSERT INTO query_type VALUES(5, 'datensatzerzeuger');
 INSERT INTO query_type VALUES(6, 'messprogrammkategorie');
 INSERT INTO query_type VALUES(7, 'universial');
 
-CREATE TABLE query (
+CREATE TABLE base_query (
     id serial PRIMARY KEY,
     sql text NOT NULL
 );
@@ -306,7 +306,7 @@ CREATE TABLE query_user (
     id serial PRIMARY KEY,
     name character varying(80) NOT NULL,
     user_id integer REFERENCES lada_user,
-    query integer REFERENCES query,
+    query integer REFERENCES base_query,
     description text
 );
 
@@ -320,7 +320,7 @@ CREATE TABLE query_messstelle (
 CREATE TABLE favorite (
     id serial PRIMARY KEY,
     user_id integer NOT NULL REFERENCES lada_user,
-    query_id integer NOT NULL REFERENCES query ON DELETE CASCADE
+    query_id integer NOT NULL REFERENCES base_query ON DELETE CASCADE
 );
 
 
@@ -551,7 +551,7 @@ CREATE TABLE result_type (
 
 CREATE TABLE result (
     id serial PRIMARY KEY,
-    query_id integer NOT NULL REFERENCES query ON DELETE CASCADE,
+    query_id integer NOT NULL REFERENCES base_query ON DELETE CASCADE,
     data_index character varying(50) NOT NULL,
     data_type integer REFERENCES result_type,
     header character varying(50) NOT NULL,
@@ -757,7 +757,7 @@ CREATE TABLE rei_progpunkt_grp_umw_zuord
 
 CREATE TABLE grid_column (
     id serial PRIMARY KEY,
-    query integer REFERENCES query,
+    query integer REFERENCES base_query,
     name character varying(80) NOT NULL,
     data_index character varying(80) NOT NULL,
     position integer NOT NULL,

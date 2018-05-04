@@ -4,14 +4,16 @@ import java.io.Serializable;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 
 /**
- * The persistent class for the query database table.
+ * The persistent class for the base_query database table.
  * 
  */
 @Entity
-public class Query implements Serializable {
+@Table(name="base_query")
+public class BaseQuery implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -19,7 +21,7 @@ public class Query implements Serializable {
 
 	private String sql;
 
-	public Query() {
+	public BaseQuery() {
 	}
 
 	public Integer getId() {
