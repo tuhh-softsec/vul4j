@@ -89,8 +89,11 @@ public class QueryService {
     @Inject
     Logger logger;
 
+    final Integer DEFAULT_USER_ID = 0;
+
     /**
-     * Request all configured probe queries.
+     * Request all queries.
+     * @return All queries owned by the user, connected to the user's messstelle or owned by the default user.
      */
     @GET
     @Path("/")
@@ -105,6 +108,7 @@ public class QueryService {
         Root<QueryUser> root = criteriaQuery.from(QueryUser.class);
         Join<MessStelle, QueryUser> mess = root.join("messStelles", javax.persistence.criteria.JoinType.LEFT);
         Predicate filter = builder.equal(root.get("userId"), userInfo.getUserId());
+        filter = builder.or(filter, root.get("userId").in(DEFAULT_USER_ID));
         filter = builder.or(filter, mess.get("messStelle").in(userInfo.getMessstellen()));
         filter = builder.or(filter, mess.get("messStelle").in(userInfo.getLaborMessstellen()));
         criteriaQuery.where(filter);
@@ -114,6 +118,9 @@ public class QueryService {
         return new Response(true, 200, queries);
     }
 
+    /**
+     * Create a new query_user object in the database.
+     */
     @POST
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -139,6 +146,9 @@ public class QueryService {
         }
     }
 
+    /**
+     * Update an existing query_user object in the database
+     */
     @PUT
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)

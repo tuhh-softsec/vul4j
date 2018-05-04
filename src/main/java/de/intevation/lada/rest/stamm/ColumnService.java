@@ -88,7 +88,8 @@ public class ColumnService {
     private Authorization authorization;
 
     /**
-     * Request all configured probe queries.
+     * Request all predefined grid_column objects connected to the given query.
+     * @return All GridColumn objects referencing the given query.
      */
     @GET
     @Path("/")

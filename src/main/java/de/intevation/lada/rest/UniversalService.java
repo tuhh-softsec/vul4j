@@ -77,7 +77,23 @@ public class UniversalService {
 
 
     /**
-     * Execute query, using the given result columns
+     * Execute query, using the given result columns.
+     * The query can contain the following post data:
+     * <pre>
+     * <code>
+     * {
+     *   columns[{
+     *     gridColumnId: [number],
+     *     sort: [string],
+     *     sortIndex: [number],
+     *     filterValue: [],
+     *     filterActive: [boolean],
+     *     visible: [boolean] 
+     *   }]
+     * }
+     * </code>
+     * </pre>
+     * @return JSON encoded query results
      */
     @POST
     @Path("/")
