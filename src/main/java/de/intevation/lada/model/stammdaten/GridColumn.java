@@ -12,6 +12,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 /**
  * The persistent class for the grid_column database table.
@@ -43,6 +45,7 @@ public class GridColumn implements Serializable {
 
     //bi-directional one-to-one association to GridColumnValue
     @OneToMany(mappedBy="gridColumn", fetch=FetchType.EAGER)
+    @JsonIgnore
     private List<GridColumnValue> gridColumnValues;
 
     public GridColumn() {
