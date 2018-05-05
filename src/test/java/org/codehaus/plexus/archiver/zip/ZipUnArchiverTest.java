@@ -190,6 +190,30 @@ public class ZipUnArchiverTest
                        } );
     }
 
+    public void testExtractingZipWithEntryOutsideDestDirThrowsException()
+            throws Exception
+    {
+        Exception ex = null;
+        String s = "target/zip-unarchiver-slip-tests";
+        File testZip = new File( getBasedir(), "src/test/zips/zip-slip.zip" );
+        File outputDirectory = new File( getBasedir(), s );
+
+        FileUtils.deleteDirectory( outputDirectory );
+
+        try
+        {
+            ZipUnArchiver zu = getZipUnArchiver( testZip );
+            zu.extract( "", outputDirectory );
+        }
+        catch ( Exception e )
+        {
+            ex = e;
+        }
+
+        assertNotNull( ex );
+        assertTrue( ex.getMessage().startsWith( "Entry is outside of the target directory" ) );
+    }
+
     private ZipArchiver getZipArchiver()
     {
         try

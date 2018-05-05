@@ -308,6 +308,15 @@ public abstract class AbstractUnArchiver
         // Hmm. Symlinks re-evaluate back to the original file here. Unsure if this is a good thing...
         final File f = FileUtils.resolveFile( dir, entryName );
 
+        // Make sure that the resolved path of the extracted file doesn't escape the destination directory
+        String canonicalDirPath = dir.getCanonicalPath();
+        String canonicalDestPath = f.getCanonicalPath();
+
+        if ( !canonicalDestPath.startsWith( canonicalDirPath ) )
+        {
+            throw new ArchiverException( "Entry is outside of the target directory (" + entryName + ")" );
+        }
+
         try
         {
             if ( !isOverwrite() && f.exists() && ( f.lastModified() >= entryDate.getTime() ) )
