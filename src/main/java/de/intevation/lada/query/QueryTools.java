@@ -58,7 +58,7 @@ public class QueryTools
     @SuppressWarnings("unchecked")
     public List<Map<String, Object>> getResultForQuery(
         MultivaluedMap<String, String> params,
-        
+
         Integer qId
     ) {
         return null;
@@ -130,10 +130,12 @@ public class QueryTools
                     sortSql += ", " + sortString;
                 }
             }
-            if (sortSql.isEmpty()){
-                sortSql += " ORDER BY " + unorderedSorts;
-            } else {
-                sortSql += ", " + unorderedSorts;
+            if (unorderedSorts!= null && !unorderedSorts.isEmpty()) {
+                if (sortSql.isEmpty()){
+                    sortSql += " ORDER BY " + unorderedSorts;
+                } else {
+                    sortSql += ", " + unorderedSorts;
+                }
             }
         }
 
@@ -141,7 +143,6 @@ public class QueryTools
             sql += filterSql + " ";
         }
         sql += sortSql + ";";
-
         javax.persistence.Query q = prepareQuery(
             sql,
             null,
@@ -227,7 +228,7 @@ public class QueryTools
     ) {
         javax.persistence.Query query = manager.createNativeQuery(sql);
         /*for (Filter filter: filters) {
-            
+
             List<String> param = params.get(filter.getDataIndex());
             if (param == null) {
                 return null;
@@ -240,14 +241,14 @@ public class QueryTools
                 clean.add(p.replace(",", "|"));
             }
             query.setParameter(filter.getDataIndex(), clean);
-            
+
         }*/
         return query;
-        
+
     }
 
     /**
-     * Prepares the query result for the client, 
+     * Prepares the query result for the client,
      * @param result A list of query results
      * @param names The columns queried by the client
      * @return List of result maps, containing only the configured columns

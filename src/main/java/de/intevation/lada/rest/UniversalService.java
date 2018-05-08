@@ -38,6 +38,7 @@ import de.intevation.lada.model.land.Messung;
 import de.intevation.lada.model.land.Ortszuordnung;
 import de.intevation.lada.model.stammdaten.GridColumn;
 import de.intevation.lada.model.stammdaten.GridColumnValue;
+import de.intevation.lada.model.stammdaten.NetzBetreiber;
 import de.intevation.lada.model.stammdaten.Ort;
 import de.intevation.lada.model.stammdaten.ResultType;
 import de.intevation.lada.query.QueryTools;
@@ -122,7 +123,7 @@ public class UniversalService {
         UserInfo userInfo = authorization.getInfo(request);
 
         String authorizationColumnIndex = null;
-        Class authorizationColumnType = null;
+        Class<?> authorizationColumnType = null;
 
         if (gridColumnValues == null ||
                 gridColumnValues.isEmpty()) {
@@ -139,17 +140,19 @@ public class UniversalService {
             if (resultType != null && authorizationColumnIndex == null) {
                 switch(resultType.getName()) {
                     case "probeId":
-                        //Use Ortszuordnung class, as it uses probeId for auth
                         authorizationColumnType =  de.intevation.lada.model.land.Probe.class;
+                        authorizationColumnIndex = gridColumn.getDataIndex();
                         break;
                     case "messungId":
                         authorizationColumnType =  de.intevation.lada.model.land.Messung.class;
+                        authorizationColumnIndex = gridColumn.getDataIndex();
+
                         break;
                     case "ortId":
                         authorizationColumnType = Ort.class;
+                        authorizationColumnIndex = gridColumn.getDataIndex();
                         break;
                 }
-                authorizationColumnIndex = gridColumn.getDataIndex();
             }
             columnValue.setGridColumn(gridColumn);
         }
@@ -165,9 +168,21 @@ public class UniversalService {
             queryTools.getResultForQuery(columns.getColumns(), qid);
 
         for (Map<String, Object> row: result) {
-            //TODO: default value
-            boolean readonly = true;
-            readonly = !authorization.isAuthorized(request, row.get(authorizationColumnIndex), RequestMethod.GET, authorizationColumnType);
+            Object idToAuthorize = row.get(authorizationColumnIndex);
+            //If column is an ort, get Netzbetreiberid
+            if (authorizationColumnType == Ort.class) {
+                Ort ort = (Ort) repository.getByIdPlain(
+                    Ort.class,
+                    idToAuthorize,
+                    Strings.STAMM);
+                idToAuthorize = ort.getNetzbetreiberId();
+            }
+
+            boolean readonly = !authorization.isAuthorized(
+                request,
+                idToAuthorize,
+                RequestMethod.POST,
+                authorizationColumnType);
             row.put("readonly", readonly);
         }
         return new Response(true, 200, result);

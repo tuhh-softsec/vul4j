@@ -23,9 +23,10 @@ public class NetzbetreiberAuthorizer extends BaseAuthorizer {
         Class<T> clazz
     ) {
         Class<?> dataType = data.getClass();
+        System.out.println(dataType);
         String id;
         //If data is not an id
-        if (dataType != Integer.class && dataType != String.class){
+        if (dataType != String.class){
             Method m;
             try {
                 m = clazz.getMethod("getNetzbetreiberId");
@@ -42,7 +43,7 @@ public class NetzbetreiberAuthorizer extends BaseAuthorizer {
             }
         } else {
             //Use data directly as model id
-            id = dataType == String.class ? (String) data : data.toString();
+            id = (String) data;
         }
 
         return (method == RequestMethod.POST
