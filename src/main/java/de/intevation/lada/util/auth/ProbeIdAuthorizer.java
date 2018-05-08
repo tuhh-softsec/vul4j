@@ -32,8 +32,17 @@ public class ProbeIdAuthorizer extends BaseAuthorizer {
         Class<T> clazz
     ) {
         Integer id;
-        if (data.getClass() == Integer.class){
-            id = (Integer) data;
+        Class<?> dataType = data.getClass();
+        if (dataType == Integer.class || dataType  == String.class){
+            if (dataType == Integer.class) {
+                id = (Integer) data;
+            } else {
+                try{
+                    id = Integer.valueOf((String) data);
+                } catch (NumberFormatException nfe) {
+                    return false;
+                }
+            }
         } else {
             Method m;
             try {

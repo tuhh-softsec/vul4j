@@ -123,6 +123,10 @@ public class ColumnValueService {
         criteriaQuery.where(filter);
         List<GridColumnValue> queries = repository.filterPlain(criteriaQuery, Strings.STAMM);
 
+        for (GridColumnValue gcv : queries) {
+            gcv.setgridColumnId(gcv.getGridColumn().getId());
+        }
+
         return new Response(true, 200, queries);
     }
 

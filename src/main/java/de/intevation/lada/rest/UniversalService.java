@@ -31,9 +31,14 @@ import javax.ws.rs.core.UriInfo;
 
 import com.fasterxml.jackson.databind.deser.impl.NoClassDefFoundDeserializer;
 
+import de.intevation.lada.importer.laf.LafRawData.Probe;
 import de.intevation.lada.model.QueryColumns;
+import de.intevation.lada.model.land.KommentarM;
+import de.intevation.lada.model.land.Messung;
+import de.intevation.lada.model.land.Ortszuordnung;
 import de.intevation.lada.model.stammdaten.GridColumn;
 import de.intevation.lada.model.stammdaten.GridColumnValue;
+import de.intevation.lada.model.stammdaten.Ort;
 import de.intevation.lada.model.stammdaten.ResultType;
 import de.intevation.lada.query.QueryTools;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
@@ -47,6 +52,7 @@ import de.intevation.lada.util.auth.ProbeIdAuthorizer;
 import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 import de.intevation.lada.util.data.Strings;
 
@@ -72,7 +78,7 @@ public class UniversalService {
     private Repository repository;
 
     /**
-     * The authorization module.
+     * The header authorization module.
      */
     @Inject
     @AuthorizationConfig(type=AuthorizationType.HEADER)
@@ -115,8 +121,8 @@ public class UniversalService {
 
         UserInfo userInfo = authorization.getInfo(request);
 
-        BaseAuthorizer authorizer = null;
         String authorizationColumnIndex = null;
+        Class authorizationColumnType = null;
 
         if (gridColumnValues == null ||
                 gridColumnValues.isEmpty()) {
@@ -129,22 +135,21 @@ public class UniversalService {
                 Integer.valueOf(columnValue.getGridColumnId()),
                 Strings.STAMM);
             //Check if column can be used for authorization 
-            if (authorizer == null) {
-                ResultType resultType = repository.getByIdPlain(ResultType.class, gridColumn.getDataType(), Strings.STAMM);
-                if (resultType != null) {
-                    switch(resultType.getName()) {
-                        case "probeId": 
-                            //TODO: Test
-                            authorizer = new ProbeIdAuthorizer();
-                            break;
-                        case "messungId":
-                            //TODO: Test
-                            authorizer = new MessungIdAuthorizer();
-                            break;
-                        //TODO: Add NetzbetreiberAuthorizer
-                    }
-                    authorizationColumnIndex = gridColumn.getDataIndex();    
+            ResultType resultType = repository.getByIdPlain(ResultType.class, gridColumn.getDataType(), Strings.STAMM);
+            if (resultType != null && authorizationColumnIndex == null) {
+                switch(resultType.getName()) {
+                    case "probeId":
+                        //Use Ortszuordnung class, as it uses probeId for auth
+                        authorizationColumnType =  de.intevation.lada.model.land.Probe.class;
+                        break;
+                    case "messungId":
+                        authorizationColumnType =  de.intevation.lada.model.land.Messung.class;
+                        break;
+                    case "ortId":
+                        authorizationColumnType = Ort.class;
+                        break;
                 }
+                authorizationColumnIndex = gridColumn.getDataIndex();
             }
             columnValue.setGridColumn(gridColumn);
         }
@@ -162,9 +167,7 @@ public class UniversalService {
         for (Map<String, Object> row: result) {
             //TODO: default value
             boolean readonly = true;
-            if (authorizer != null) {
-                readonly = !authorizer.isAuthorized(row.get(authorizationColumnIndex), null, userInfo, null);
-            }
+            readonly = !authorization.isAuthorized(request, row.get(authorizationColumnIndex), RequestMethod.GET, authorizationColumnType);
             row.put("readonly", readonly);
         }
         return new Response(true, 200, result);

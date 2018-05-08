@@ -25,11 +25,29 @@ public class ProbeAuthorizer extends BaseAuthorizer {
         UserInfo userInfo,
         Class<T> clazz
     ) {
-        Probe probe = (Probe)data;
-        if (method == RequestMethod.PUT ||
-            method == RequestMethod.DELETE) {
-            return !isProbeReadOnly(probe.getId()) &&
-                getAuthorization(userInfo, probe);
+        Integer id;
+        Probe probe;
+        Class<?> dataType = data.getClass();
+
+        if (dataType == Integer.class || dataType  == String.class){
+            if (dataType == Integer.class) {
+                id = (Integer) data;
+            } else {
+                try {
+                    id = Integer.valueOf((String) data);
+                } catch (NumberFormatException nfe) {
+                    return false;
+                }
+            }
+            probe =
+                repository.getByIdPlain(Probe.class, id, Strings.LAND);
+        } else {
+            probe = (Probe)data;
+            if (method == RequestMethod.PUT ||
+                method == RequestMethod.DELETE) {
+                return !isProbeReadOnly(probe.getId()) &&
+                    getAuthorization(userInfo, probe);
+            }
         }
         return getAuthorization(userInfo, probe);
     }

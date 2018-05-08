@@ -30,7 +30,16 @@ public class MessungAuthorizer extends BaseAuthorizer {
         UserInfo userInfo,
         Class<T> clazz
     ) {
-        Messung messung = (Messung)data;
+        Messung messung;
+        //If data is an Integer or String, assume it is an id
+        Class<?> dataType = data.getClass();
+        if (dataType == Integer.class){
+            messung = (Messung) repository.getById(Messung.class, (Integer) data, Strings.LAND).getData();
+        } else if (dataType == String.class) {
+            messung = (Messung) repository.getById(Messung.class, Integer.valueOf((String) data), Strings.LAND).getData();
+        } else {
+            messung = (Messung) data;
+        }
         Response response =
             repository.getById(Probe.class, messung.getProbeId(), Strings.LAND);
         Probe probe = (Probe)response.getData();

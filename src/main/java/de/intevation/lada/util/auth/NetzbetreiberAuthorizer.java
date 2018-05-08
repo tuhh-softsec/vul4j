@@ -22,21 +22,29 @@ public class NetzbetreiberAuthorizer extends BaseAuthorizer {
         UserInfo userInfo,
         Class<T> clazz
     ) {
-        Method m;
-        try {
-            m = clazz.getMethod("getNetzbetreiberId");
-        } catch (NoSuchMethodException | SecurityException e1) {
-            return false;
-        }
+        Class<?> dataType = data.getClass();
         String id;
-        try {
-            id = (String) m.invoke(data);
-        } catch (IllegalAccessException |
-            IllegalArgumentException |
-            InvocationTargetException e
-        ) {
-            return false;
+        //If data is not an id
+        if (dataType != Integer.class && dataType != String.class){
+            Method m;
+            try {
+                m = clazz.getMethod("getNetzbetreiberId");
+            } catch (NoSuchMethodException | SecurityException e1) {
+                return false;
+            }
+            try {
+                id = (String) m.invoke(data);
+            } catch (IllegalAccessException |
+                IllegalArgumentException |
+                InvocationTargetException e
+            ) {
+                return false;
+            }
+        } else {
+            //Use data directly as model id
+            id = dataType == String.class ? (String) data : data.toString();
         }
+
         return (method == RequestMethod.POST
             || method == RequestMethod.PUT
             || method == RequestMethod.DELETE
