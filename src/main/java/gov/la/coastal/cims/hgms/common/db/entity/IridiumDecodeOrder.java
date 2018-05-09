@@ -16,7 +16,7 @@ public interface IridiumDecodeOrder extends Comparable<IridiumDecodeOrder>
 	@Override
 	public default int compareTo(final IridiumDecodeOrder p_Other)
 	{
-		checkArgument(getStation().equals(p_Other.getStation()),
+		checkArgument(getStationId().equals(p_Other.getStationId()),
 				"Cannot compare two stations.");
 		return ComparisonChain.start()
 				.compare(getByteOffset(), p_Other.getByteOffset()).result();
@@ -52,6 +52,6 @@ public interface IridiumDecodeOrder extends Comparable<IridiumDecodeOrder>
 	 * @author mckelvym
 	 * @since Feb 2, 2018
 	 */
-	Object getStation();
+	Long getStationId();
 
 }

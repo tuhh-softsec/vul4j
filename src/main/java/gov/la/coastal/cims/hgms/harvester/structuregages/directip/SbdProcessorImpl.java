@@ -25,7 +25,6 @@ import gov.la.coastal.cims.hgms.common.db.entity.IridiumDataType;
 import gov.la.coastal.cims.hgms.common.db.entity.IridiumDecodeOrder;
 import gov.la.coastal.cims.hgms.common.db.entity.IridiumStationId;
 import gov.la.coastal.cims.hgms.harvester.structuregages.parser.BinaryParser;
-import gov.usgs.warc.mail.SMTP;
 
 /**
  * Default implementation of {@link SbdProcessor}
@@ -60,12 +59,6 @@ public class SbdProcessorImpl implements SbdProcessor
 	private final IridiumStationIdRepository	m_IridiumStationRepo;
 
 	/**
-	 * @author mckelvym
-	 * @since Mar 1, 2018
-	 */
-	private final SMTP							m_SMTP;
-
-	/**
 	 * @param p_Context
 	 *            {@link ApplicationContext}
 	 * @param p_IridiumStationIdRepository
@@ -79,7 +72,6 @@ public class SbdProcessorImpl implements SbdProcessor
 			final IridiumStationIdRepository p_IridiumStationIdRepository,
 			final IridiumDecodeOrderRepository p_IridiumDecodeOrderRepository)
 	{
-		m_SMTP = requireNonNull(p_Context.getBean(SMTP.class));
 		m_IridiumStationRepo = requireNonNull(p_IridiumStationIdRepository,
 				"Station ID repository");
 		m_DecodeOrderRepo = requireNonNull(p_IridiumDecodeOrderRepository,
@@ -111,7 +103,7 @@ public class SbdProcessorImpl implements SbdProcessor
 					.stream().collect(Collectors.toList());
 			for (final IridiumStationId iridiumStationId : iridiumStationIds)
 			{
-				final long stationId = iridiumStationId.getStation().getId();
+				final long stationId = iridiumStationId.getStationId();
 				final SortedSet<IridiumDecodeOrder> decodeOrderSet = m_DecodeOrderRepo
 						.findByStationId(stationId);
 				parser.setDecodeOrder(decodeOrderSet);
@@ -134,7 +126,6 @@ public class SbdProcessorImpl implements SbdProcessor
 					"An error occurred parsing the message: %s. The error was: %s",
 					Arrays.toString(p_Bytes), e.getMessage());
 			log.error(message, e);
-			m_SMTP.bugReport("Parse Error", message, e);
 			if (p_ExceptionConsumer != null)
 			{
 				p_ExceptionConsumer.accept(e);
