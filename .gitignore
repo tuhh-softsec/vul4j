@@ -1,0 +1,32 @@
+target/
+!.mvn/wrapper/maven-wrapper.jar
+gradle/wrapper/gradle-wrapper.jar
+
+### STS ###
+.apt_generated
+.springBeans
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+### Maven ###
+.m2
+dependency-reduced-pom.xml
+
+### Misc ###
+*~
+lib
+*.zip
+*.pdf
+*.bak
