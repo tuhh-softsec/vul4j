@@ -27,7 +27,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,9 +44,8 @@ import gov.la.coastal.cims.hgms.common.db.entity.IridiumStationId;
 import gov.la.coastal.cims.hgms.harvester.structuregages.Application;
 import gov.la.coastal.cims.hgms.harvester.structuregages.ParsingTestsHelper;
 import gov.la.coastal.cims.hgms.harvester.structuregages.Properties;
-import gov.la.coastal.cims.hgms.harvester.structuregages.parser.BinaryParser;
-import gov.usgs.warc.mail.SMTP;
 import gov.la.coastal.cims.hgms.harvester.structuregages.Tests;
+import gov.la.coastal.cims.hgms.harvester.structuregages.parser.BinaryParser;
 
 /**
  * Test the {@link SbdProcessor}
@@ -75,27 +73,6 @@ public class SbdProcessorNonMockTest
 	@Configuration
 	static class ContextConfiguration
 	{
-		/**
-		 * @author mckelvym
-		 * @since Mar 30, 2018
-		 */
-		@MockBean
-		private SMTP smtp;
-
-		/**
-		 * @param p_Properties
-		 * @return {@link IridiumToHgmsData} bean
-		 * @author darceyj
-		 * @since Mar 30, 2018
-		 */
-		@Bean
-		@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-		public IridiumToHgmsData iridiumToHgmsData(
-				final Properties p_Properties)
-		{
-			return new IridiumToHgmsData(p_Properties);
-		}
-
 		/**
 		 * @param p_Context
 		 *            {@link ApplicationContext}

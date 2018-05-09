@@ -41,11 +41,10 @@ import gov.la.coastal.cims.hgms.common.db.entity.Station;
 import gov.la.coastal.cims.hgms.harvester.structuregages.Application;
 import gov.la.coastal.cims.hgms.harvester.structuregages.ParsingTestsHelper;
 import gov.la.coastal.cims.hgms.harvester.structuregages.Properties;
-import gov.la.coastal.cims.hgms.harvester.structuregages.parser.BinaryParser;
-import gov.la.coastal.cims.hgms.harvester.structuregages.parser.Message;
-import gov.usgs.warc.mail.SMTP;
 import gov.la.coastal.cims.hgms.harvester.structuregages.Tests;
 import gov.la.coastal.cims.hgms.harvester.structuregages.Tests.SkipMethod;
+import gov.la.coastal.cims.hgms.harvester.structuregages.parser.BinaryParser;
+import gov.la.coastal.cims.hgms.harvester.structuregages.parser.Message;
 
 /**
  * The {@link IridiumResponse} test
@@ -72,26 +71,6 @@ public class IridiumResponseTest
 	@Configuration
 	static class ContextConfiguration
 	{
-		/**
-		 * @author mckelvym
-		 * @since Mar 1, 2018
-		 */
-		@MockBean
-		private SMTP smtp;
-
-		/**
-		 *
-		 * @param p_Properties
-		 * @return {@link IridiumToHgmsData} instance
-		 * @since Feb 23, 2018
-		 */
-		@Bean
-		@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-		public IridiumToHgmsData iridiumToHgmsData(
-				final Properties p_Properties)
-		{
-			return new IridiumToHgmsData(p_Properties);
-		}
 
 		/**
 		 * @param p_Context
