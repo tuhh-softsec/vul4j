@@ -18,12 +18,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import gov.la.coastal.cims.hgms.common.Common;
-import gov.la.coastal.cims.hgms.common.db.IridiumDecodeOrderRepository;
-import gov.la.coastal.cims.hgms.common.db.IridiumStationIdRepository;
-import gov.la.coastal.cims.hgms.common.db.entity.IridiumStationId;
 import gov.la.coastal.cims.hgms.harvester.structuregages.ParsingTestsHelper;
 import gov.la.coastal.cims.hgms.harvester.structuregages.parser.elements.Header;
+import gov.usgs.warc.iridium.sbd.decoder.db.IridiumDecodeOrderProvider;
+import gov.usgs.warc.iridium.sbd.decoder.db.IridiumStationIdProvider;
+import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumDecodeOrder;
+import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumStationId;
 
 /**
  * Test the binary parser with testing data
@@ -34,7 +34,7 @@ import gov.la.coastal.cims.hgms.harvester.structuregages.parser.elements.Header;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ContextConfiguration(classes = { Common.class })
+@ContextConfiguration
 @DataJpaTest
 @ActiveProfiles("test")
 public class BinaryParserNonMockTest
@@ -44,7 +44,7 @@ public class BinaryParserNonMockTest
 	 * @since Mar 30, 2018
 	 */
 	@Autowired
-	private IridiumDecodeOrderRepository	m_IridiumDecodeOrderRepository;
+	private IridiumDecodeOrderProvider<IridiumDecodeOrder>	m_IridiumDecodeOrderRepository;
 
 	/**
 	 * The {@link IridiumStationIdRepository}
@@ -52,14 +52,14 @@ public class BinaryParserNonMockTest
 	 * @since Mar 30, 2018
 	 */
 	@Autowired
-	private IridiumStationIdRepository		m_IridiumStationIdRepository;
+	private IridiumStationIdProvider<IridiumStationId>		m_IridiumStationIdRepository;
 
 	/**
 	 * The list of bytes to parse
 	 *
 	 * @since Mar 30, 2018
 	 */
-	private List<List<Byte>>				m_TestingData;
+	private List<List<Byte>>								m_TestingData;
 
 	/**
 	 * @throws java.lang.Exception
@@ -106,7 +106,7 @@ public class BinaryParserNonMockTest
 				final String imeiString = String.valueOf(imei);
 				final Optional<IridiumStationId> opt = m_IridiumStationIdRepository
 						.findByImei(imeiString).stream().findFirst();
-				final Long stationId = opt.get().getStation().getId();
+				final Long stationId = opt.get().getStationId();
 				parser.setDecodeOrder(m_IridiumDecodeOrderRepository
 						.findByStationId(stationId));
 				parser.getValuesFromMessage();

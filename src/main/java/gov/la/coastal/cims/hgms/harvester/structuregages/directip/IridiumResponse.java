@@ -4,9 +4,9 @@ import com.google.common.collect.Table;
 
 import java.util.Collection;
 
-import gov.la.coastal.cims.hgms.common.db.entity.IridiumDataType;
-import gov.la.coastal.cims.hgms.common.db.entity.IridiumStationId;
 import gov.la.coastal.cims.hgms.harvester.structuregages.parser.Message;
+import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumDataType;
+import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumStationId;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -38,7 +38,7 @@ public class IridiumResponse
 	 *
 	 * @since Feb 12, 2018
 	 */
-	private Collection<IridiumStationId>						stations;
+	private Collection<? extends IridiumStationId>				stations;
 
 	/**
 	 * The map of datatypes to their corresponding values

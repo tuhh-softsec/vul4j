@@ -36,16 +36,14 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import gov.la.coastal.cims.hgms.common.Common;
-import gov.la.coastal.cims.hgms.common.db.IridiumDecodeOrderRepository;
-import gov.la.coastal.cims.hgms.common.db.IridiumStationIdRepository;
-import gov.la.coastal.cims.hgms.common.db.entity.IridiumDataType;
-import gov.la.coastal.cims.hgms.common.db.entity.IridiumStationId;
-import gov.la.coastal.cims.hgms.harvester.structuregages.Application;
 import gov.la.coastal.cims.hgms.harvester.structuregages.ParsingTestsHelper;
-import gov.la.coastal.cims.hgms.harvester.structuregages.Properties;
 import gov.la.coastal.cims.hgms.harvester.structuregages.Tests;
 import gov.la.coastal.cims.hgms.harvester.structuregages.parser.BinaryParser;
+import gov.usgs.warc.iridium.sbd.decoder.db.IridiumDecodeOrderProvider;
+import gov.usgs.warc.iridium.sbd.decoder.db.IridiumStationIdProvider;
+import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumDataType;
+import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumDecodeOrder;
+import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumStationId;
 
 /**
  * Test the {@link SbdProcessor}
@@ -57,8 +55,7 @@ import gov.la.coastal.cims.hgms.harvester.structuregages.parser.BinaryParser;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ContextConfiguration(
-		classes = { Application.class, Properties.class, Common.class })
+@ContextConfiguration
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -88,8 +85,8 @@ public class SbdProcessorNonMockTest
 		@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 		@Primary
 		public SbdProcessor sbdProcessor(final ApplicationContext p_Context,
-				final IridiumStationIdRepository p_IridiumStationIdRepository,
-				final IridiumDecodeOrderRepository p_IridiumDecodeOrderRepository)
+				final IridiumStationIdProvider<IridiumStationId> p_IridiumStationIdRepository,
+				final IridiumDecodeOrderProvider<IridiumDecodeOrder> p_IridiumDecodeOrderRepository)
 		{
 			return new SbdProcessorImpl(p_Context, p_IridiumStationIdRepository,
 					p_IridiumDecodeOrderRepository);
@@ -116,7 +113,7 @@ public class SbdProcessorNonMockTest
 	 * @since Mar 30, 2018
 	 */
 	@Autowired
-	private IridiumDecodeOrderRepository		m_IridiumDecodeOrderRepository;
+	private IridiumDecodeOrderProvider<IridiumDecodeOrder>	m_IridiumDecodeOrderRepository;
 
 	/**
 	 * The {@link IridiumStationIdRepository}
@@ -124,7 +121,7 @@ public class SbdProcessorNonMockTest
 	 * @since Mar 30, 2018
 	 */
 	@Autowired
-	private IridiumStationIdRepository			m_IridiumStationIdRepository;
+	private IridiumStationIdProvider<IridiumStationId>		m_IridiumStationIdRepository;
 
 	/**
 	 * The {@link SbdProcessor} to test with.
@@ -132,13 +129,13 @@ public class SbdProcessorNonMockTest
 	 * @since Mar 30, 2018
 	 */
 	@Autowired
-	private SbdProcessor						m_Testable;
+	private SbdProcessor									m_Testable;
 
 	/**
 	 * @author mckelvym
 	 * @since Mar 30, 2018
 	 */
-	private Map<List<Byte>, IridiumResponse>	m_TestingData;
+	private Map<List<Byte>, IridiumResponse>				m_TestingData;
 
 	/**
 	 * @throws Exception
@@ -163,7 +160,7 @@ public class SbdProcessorNonMockTest
 					.findFirst();
 			assertThat(opt).isNotEqualTo(Optional.empty());
 			final IridiumStationId iridiumStationId = opt.get();
-			final Long stationId = iridiumStationId.getStation().getId();
+			final Long stationId = iridiumStationId.getStationId();
 
 			parser.setDecodeOrder(
 					m_IridiumDecodeOrderRepository.findByStationId(stationId));

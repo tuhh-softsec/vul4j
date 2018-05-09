@@ -1,4 +1,4 @@
-package gov.la.coastal.cims.hgms.common.db.entity;
+package gov.usgs.warc.iridium.sbd.decoder.db.entity;
 
 import org.nfunk.jep.JEP;
 
@@ -51,12 +51,13 @@ public interface IridiumDataType
 	String getTransformation();
 
 	/**
-	 * The corresponding {@link Type}, if there is one.
-	 *
+	 * TODO
+	 * 
+	 * @return
 	 * @author mckelvym
-	 * @since Feb 16, 2018
+	 * @since May 9, 2018
 	 */
-	Object getType();
+	String getTypeName();
 
 	/**
 	 * The units for the data type

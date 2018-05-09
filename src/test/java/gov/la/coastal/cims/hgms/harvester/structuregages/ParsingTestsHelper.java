@@ -2,18 +2,13 @@ package gov.la.coastal.cims.hgms.harvester.structuregages;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import gov.la.coastal.cims.hgms.common.db.entity.IridiumDataType;
-import gov.la.coastal.cims.hgms.common.db.entity.IridiumDecodeOrder;
-import gov.la.coastal.cims.hgms.common.db.entity.Provider;
-import gov.la.coastal.cims.hgms.common.db.entity.Station;
-import gov.la.coastal.cims.hgms.common.db.entity.Type;
+import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumDataType;
+import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumDecodeOrder;
 
 /**
  * Convenience class for methods in the parsing tests.
@@ -33,7 +28,7 @@ public class ParsingTestsHelper
 	 *            - the array to scan
 	 * @since Jan 24, 2018
 	 */
-	public static void addBytestoListFromArray(final List<Byte> p_List,
+	private static void addBytestoListFromArray(final List<Byte> p_List,
 			final byte[] p_Array)
 	{
 		for (final byte b : p_Array)
@@ -45,75 +40,103 @@ public class ParsingTestsHelper
 	/**
 	 * Create an iridium data type to test with
 	 *
+	 * @param p_Id
+	 * @param p_Bytes
+	 * @param p_Name
+	 * @param p_Units
+	 * @param p_TypeName
+	 * @param p_Transformation
 	 * @return a new {@link IridiumDataType}
 	 * @since Feb 12, 2018
 	 */
-	public static IridiumDataType createDataType()
+	private static IridiumDataType createDataType(final long p_Id,
+			final int p_Bytes, final String p_Name, final String p_Units,
+			final String p_TypeName, final String p_Transformation)
 	{
-		final IridiumDataType dt = new IridiumDataType();
-		dt.setId(221L);
-		dt.setBytes(3);
-		dt.setType(null);
+		final IridiumDataType dt = new IridiumDataType()
+		{
+
+			@Override
+			public int getBytes()
+			{
+				return p_Bytes;
+			}
+
+			@Override
+			public Long getId()
+			{
+				return p_Id;
+			}
+
+			@Override
+			public String getName()
+			{
+				return p_Name;
+			}
+
+			@Override
+			public String getTransformation()
+			{
+				return p_Transformation;
+			}
+
+			@Override
+			public String getTypeName()
+			{
+				return p_TypeName;
+			}
+
+			@Override
+			public String getUnits()
+			{
+				return p_Units;
+			}
+		};
 		return dt;
 	}
 
 	/**
 	 * Create a new decode order
 	 *
-	 * @param p_TestStation
-	 *            - the test station to use.
-	 *
+	 * @param p_ID
+	 * @param p_ByteOffset
+	 * @param p_IridiumDataType
+	 * @param p_StationId
 	 * @return a default {@link IridiumDecodeOrder}
 	 * @since Feb 12, 2018
 	 */
-	public static IridiumDecodeOrder createDecodeOrder(
-			final Station p_TestStation)
+	private static IridiumDecodeOrder createDecodeOrder(final long p_ID,
+			final long p_ByteOffset, final IridiumDataType p_IridiumDataType,
+			final long p_StationId)
 	{
-		final IridiumDecodeOrder decodeOrd = new IridiumDecodeOrder();
-		decodeOrd.setId(221L);
-		decodeOrd.setStation(p_TestStation);
+		final IridiumDecodeOrder decodeOrd = new IridiumDecodeOrder()
+		{
+
+			@Override
+			public long getByteOffset()
+			{
+				return p_ByteOffset;
+			}
+
+			@Override
+			public IridiumDataType getDatatype()
+			{
+				return p_IridiumDataType;
+			}
+
+			@Override
+			public Long getId()
+			{
+				return p_ID;
+			}
+
+			@Override
+			public Long getStationId()
+			{
+				return p_StationId;
+			}
+		};
 		return decodeOrd;
-	}
-
-	/**
-	 * @return a new instance for testing
-	 * @author mckelvym
-	 * @since Feb 2, 2018
-	 */
-	public static Station createStation()
-	{
-		final Station item = new Station();
-		item.setId(1L);
-		item.setLocation(
-				new GeometryFactory().createPoint(new Coordinate(0, 1)));
-		item.setMetadata("metadata");
-		item.setName("name");
-		final Provider provider = newProvider();
-		provider.setId(1L);
-		item.setProvider(provider);
-		item.setStationId("station-id");
-		item.setTypeFlags(1);
-		item.setDataHealthLimitHealthy(30);
-		item.setDataHealthLimitStale(60);
-		return item;
-	}
-
-	/**
-	 * Create a new {@link Type} with the given name and id.
-	 *
-	 * @param p_Id
-	 *            - the id to use
-	 * @param p_Name
-	 *            - the name to use
-	 * @return the new {@link Type}
-	 * @since Feb 23, 2018
-	 */
-	public static Type createType(final Long p_Id, final String p_Name)
-	{
-		final Type item = new Type();
-		item.setId(p_Id);
-		item.setName(p_Name);
-		return item;
 	}
 
 	/**
@@ -123,94 +146,34 @@ public class ParsingTestsHelper
 	 */
 	public static List<IridiumDecodeOrder> getDecodeList()
 	{
-		final Station stationTest = createStation();
-
-		final IridiumDataType fsDataType = createDataType();
-		fsDataType.setName("Flood Side");
-		fsDataType.setUnits("ft");
-		fsDataType.setTransformation("x / 100");
-		final Type fsType = createType(1L, "Water Level");
-		fsDataType.setType(fsType);
-		final IridiumDataType psDataType = createDataType();
-		psDataType.setName("Protected Side");
-		psDataType.setUnits("ft");
-		psDataType.setTransformation("x / 100");
-		final Type wsType = createType(2L, "Wind Speed");
-		final IridiumDataType windSpeedDataType = createDataType();
-		windSpeedDataType.setName("Wind Speed");
-		windSpeedDataType.setUnits("mph");
-		windSpeedDataType.setTransformation("x/10");
-		windSpeedDataType.setType(wsType);
-		final IridiumDataType windDirectionDataType = createDataType();
-		final Type wdType = createType(3L, "Wind Direction");
-		windDirectionDataType.setName("Wind Direction");
-		windDirectionDataType.setUnits("mph");
-		windDirectionDataType.setTransformation("x");
-		windDirectionDataType.setType(wdType);
-		final IridiumDataType temperatureDataType = createDataType();
-		final Type tempType = createType(4L, "Temperature");
-		temperatureDataType.setName("Air Temperature");
-		temperatureDataType.setTransformation("x * .18 + 32");
-		temperatureDataType.setUnits("degC");
-		temperatureDataType.setType(tempType);
-
-		final IridiumDataType humidityDataType = createDataType();
-		humidityDataType.setName("Relative Humidity");
-		humidityDataType.setTransformation("x");
-		humidityDataType.setUnits("%");
-		final IridiumDataType bpDataType = createDataType();
-		final Type pressureType = createType(5L, "Pressure");
-		bpDataType.setName("Barometric Pressure");
-		bpDataType.setTransformation("x/10");
-		bpDataType.setUnits("in of Hg");
-		bpDataType.setType(pressureType);
-		final IridiumDataType precip = createDataType();
-		precip.setName("Precipitation");
-		precip.setTransformation("x/100");
-		precip.setUnits("in");
-		final IridiumDataType batteryDT = createDataType();
-		batteryDT.setName("Battery");
-		batteryDT.setTransformation("x * 0.234 + 10.6");
-		batteryDT.setUnits("V");
-		batteryDT.setBytes(1);
+		final IridiumDataType fsDataType = createDataType(221L, 3, "Flood Side",
+				"ft", "Water Level", "x / 100");
+		final IridiumDataType psDataType = createDataType(221L, 3,
+				"Protected Side", "ft", "Water Level", "x / 100");
+		final IridiumDataType windSpeedDataType = createDataType(221L, 3,
+				"Wind Speed", "mph", "Wind Speed", "x/10");
+		final IridiumDataType windDirectionDataType = createDataType(221L, 3,
+				"Wind Direction", "mph", "Wind Direction", "x");
+		final IridiumDataType temperatureDataType = createDataType(221L, 3,
+				"Air Temperature", "degC", "Temperature", "x * .18 + 32");
+		final IridiumDataType humidityDataType = createDataType(221L, 3,
+				"Relative Humidity", "%", null, "x");
+		final IridiumDataType bpDataType = createDataType(221L, 3,
+				"Barometric Pressure", "in of Hg", "Pressure", "x/10");
+		final IridiumDataType precip = createDataType(221L, 3, "Precipitation",
+				"in", null, "x/100");
+		final IridiumDataType batteryDT = createDataType(221L, 1, "Battery",
+				"V", null, "x * 0.234 + 10.6");
 		final List<IridiumDecodeOrder> decodeList = Lists.newArrayList();
-		IridiumDecodeOrder order = createDecodeOrder(stationTest);
-		order.setDatatype(fsDataType);
-		order.setByteOffset(0L);
-
-		decodeList.add(order);
-		order = createDecodeOrder(stationTest);
-		order.setDatatype(psDataType);
-		order.setByteOffset(3L);
-		decodeList.add(order);
-		order = createDecodeOrder(stationTest);
-		order.setDatatype(windSpeedDataType);
-		order.setByteOffset(6L);
-		decodeList.add(order);
-		order = createDecodeOrder(stationTest);
-		order.setDatatype(windDirectionDataType);
-		order.setByteOffset(9L);
-		decodeList.add(order);
-		order = createDecodeOrder(stationTest);
-		order.setDatatype(temperatureDataType);
-		order.setByteOffset(12L);
-		decodeList.add(order);
-		order = createDecodeOrder(stationTest);
-		order.setDatatype(humidityDataType);
-		order.setByteOffset(15L);
-		decodeList.add(order);
-		order = createDecodeOrder(stationTest);
-		order.setDatatype(bpDataType);
-		order.setByteOffset(18L);
-		decodeList.add(order);
-		order = createDecodeOrder(stationTest);
-		order.setDatatype(precip);
-		order.setByteOffset(21L);
-		decodeList.add(order);
-		order = createDecodeOrder(stationTest);
-		order.setDatatype(batteryDT);
-		order.setByteOffset(24L);
-		decodeList.add(order);
+		decodeList.add(createDecodeOrder(221L, 0L, fsDataType, 1L));
+		decodeList.add(createDecodeOrder(221L, 3L, psDataType, 1L));
+		decodeList.add(createDecodeOrder(221L, 6L, windSpeedDataType, 1L));
+		decodeList.add(createDecodeOrder(221L, 9L, windDirectionDataType, 1L));
+		decodeList.add(createDecodeOrder(221L, 12L, temperatureDataType, 1L));
+		decodeList.add(createDecodeOrder(221L, 15L, humidityDataType, 1L));
+		decodeList.add(createDecodeOrder(221L, 18L, bpDataType, 1L));
+		decodeList.add(createDecodeOrder(221L, 21L, precip, 1L));
+		decodeList.add(createDecodeOrder(221L, 24L, batteryDT, 1L));
 		return decodeList;
 
 	}
@@ -307,21 +270,6 @@ public class ParsingTestsHelper
 	}
 
 	/**
-	 * @return a new {@link Provider} instance for testing
-	 * @author mckelvym
-	 * @since Dec 1, 2017
-	 */
-	protected static Provider newProvider()
-	{
-		final Provider p = new Provider();
-		p.setFetchInterval(1);
-		p.setName("test");
-		p.setUrl("url");
-		p.setUrlTemplate("url-template");
-		return p;
-	}
-
-	/**
 	 * Setup message from bytes given the status code.
 	 *
 	 * @param p_Status
@@ -404,29 +352,6 @@ public class ParsingTestsHelper
 	}
 
 	/**
-	 * Setup message from bytes given the status code.
-	 *
-	 * @param p_Status
-	 *            - the status code to use.
-	 * @return a byte array of the message bytes
-	 * @since Feb 2, 2018
-	 */
-	public static byte[] setupMessageBytesAsArray(final String p_Status)
-	{
-		final List<Byte> testingByteList = setupMessageBytes(p_Status);
-
-		final byte[] returnedArray = new byte[testingByteList.size()];
-		int c = 0;
-		for (final Byte b : testingByteList)
-		{
-			returnedArray[c] = b.byteValue();
-			c++;
-		}
-		return returnedArray;
-
-	}
-
-	/**
 	 * Transform integers to a byte list
 	 *
 	 * @param p_Values
@@ -435,7 +360,7 @@ public class ParsingTestsHelper
 	 * @author mckelvym
 	 * @since Mar 30, 2018
 	 */
-	public static List<Byte> toByteList(final Integer... p_Values)
+	private static List<Byte> toByteList(final Integer... p_Values)
 	{
 		return Arrays.asList(p_Values).stream().map(v -> v.byteValue())
 				.collect(Collectors.toList());

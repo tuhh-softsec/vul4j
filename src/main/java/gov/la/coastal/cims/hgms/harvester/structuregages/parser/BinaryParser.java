@@ -22,8 +22,6 @@ import java.util.SortedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gov.la.coastal.cims.hgms.common.db.entity.IridiumDataType;
-import gov.la.coastal.cims.hgms.common.db.entity.IridiumDecodeOrder;
 import gov.la.coastal.cims.hgms.harvester.structuregages.parser.Message.MessageBuilder;
 import gov.la.coastal.cims.hgms.harvester.structuregages.parser.elements.Header;
 import gov.la.coastal.cims.hgms.harvester.structuregages.parser.elements.Header.HeaderBuilder;
@@ -32,6 +30,8 @@ import gov.la.coastal.cims.hgms.harvester.structuregages.parser.elements.Locatio
 import gov.la.coastal.cims.hgms.harvester.structuregages.parser.elements.Payload;
 import gov.la.coastal.cims.hgms.harvester.structuregages.parser.elements.Payload.PayloadBuilder;
 import gov.la.coastal.cims.hgms.harvester.structuregages.sixbitbinary.Decode;
+import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumDataType;
+import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumDecodeOrder;
 
 /**
  * Parse a list of {@link Byte} into usable digits from the iridium source.
@@ -563,9 +563,10 @@ public class BinaryParser
 	 *            - the order of iridium datatypes for this message
 	 * @since Feb 9, 2018
 	 */
-	public void setDecodeOrder(final SortedSet<IridiumDecodeOrder> p_Order)
+	public void setDecodeOrder(
+			final SortedSet<? extends IridiumDecodeOrder> p_Order)
 	{
-		final Set<IridiumDecodeOrder> orderSet = Objects
+		final Set<? extends IridiumDecodeOrder> orderSet = Objects
 				.requireNonNull(p_Order);
 		checkState(!orderSet.isEmpty(), "The order set is empty.");
 		m_DecodeOrder.clear();

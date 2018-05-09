@@ -19,12 +19,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import gov.la.coastal.cims.hgms.common.db.IridiumDecodeOrderRepository;
-import gov.la.coastal.cims.hgms.common.db.IridiumStationIdRepository;
-import gov.la.coastal.cims.hgms.common.db.entity.IridiumDataType;
-import gov.la.coastal.cims.hgms.common.db.entity.IridiumDecodeOrder;
-import gov.la.coastal.cims.hgms.common.db.entity.IridiumStationId;
 import gov.la.coastal.cims.hgms.harvester.structuregages.parser.BinaryParser;
+import gov.usgs.warc.iridium.sbd.decoder.db.IridiumDecodeOrderProvider;
+import gov.usgs.warc.iridium.sbd.decoder.db.IridiumStationIdProvider;
+import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumDataType;
+import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumDecodeOrder;
+import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumStationId;
 
 /**
  * Default implementation of {@link SbdProcessor}
@@ -41,7 +41,7 @@ public class SbdProcessorImpl implements SbdProcessor
 	 * @author mckelvym
 	 * @since Feb 27, 2018
 	 */
-	private static final Logger					log	= LoggerFactory
+	private static final Logger												log	= LoggerFactory
 			.getLogger(SbdProcessorImpl.class);
 
 	/**
@@ -49,14 +49,14 @@ public class SbdProcessorImpl implements SbdProcessor
 	 *
 	 * @since Feb 12, 2018
 	 */
-	private final IridiumDecodeOrderRepository	m_DecodeOrderRepo;
+	private final IridiumDecodeOrderProvider<? extends IridiumDecodeOrder>	m_DecodeOrderRepo;
 
 	/**
 	 * The iridium station id repository bean
 	 *
 	 * @since Feb 12, 2018
 	 */
-	private final IridiumStationIdRepository	m_IridiumStationRepo;
+	private final IridiumStationIdProvider<? extends IridiumStationId>		m_IridiumStationRepo;
 
 	/**
 	 * @param p_Context
@@ -69,8 +69,8 @@ public class SbdProcessorImpl implements SbdProcessor
 	 * @since Feb 28, 2018
 	 */
 	public SbdProcessorImpl(final ApplicationContext p_Context,
-			final IridiumStationIdRepository p_IridiumStationIdRepository,
-			final IridiumDecodeOrderRepository p_IridiumDecodeOrderRepository)
+			final IridiumStationIdProvider<? extends IridiumStationId> p_IridiumStationIdRepository,
+			final IridiumDecodeOrderProvider<? extends IridiumDecodeOrder> p_IridiumDecodeOrderRepository)
 	{
 		m_IridiumStationRepo = requireNonNull(p_IridiumStationIdRepository,
 				"Station ID repository");
@@ -104,7 +104,7 @@ public class SbdProcessorImpl implements SbdProcessor
 			for (final IridiumStationId iridiumStationId : iridiumStationIds)
 			{
 				final long stationId = iridiumStationId.getStationId();
-				final SortedSet<IridiumDecodeOrder> decodeOrderSet = m_DecodeOrderRepo
+				final SortedSet<? extends IridiumDecodeOrder> decodeOrderSet = m_DecodeOrderRepo
 						.findByStationId(stationId);
 				parser.setDecodeOrder(decodeOrderSet);
 				final Map<IridiumDataType, Double> valueMap = parser

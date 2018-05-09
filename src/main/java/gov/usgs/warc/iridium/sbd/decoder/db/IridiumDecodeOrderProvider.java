@@ -1,21 +1,21 @@
-package gov.la.coastal.cims.hgms.common.db;
+package gov.usgs.warc.iridium.sbd.decoder.db;
 
 import java.util.SortedSet;
 
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
-import gov.la.coastal.cims.hgms.common.db.entity.IridiumDecodeOrder;
+import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumDecodeOrder;
 
 /**
  * Repository for {@link IridiumDecodeOrder}
  *
  * @author mckelvym
+ * @param <T>
+ *            class that implements {@link IridiumDecodeOrder}
  * @since Feb 2, 2018
  *
  */
-public interface IridiumDecodeOrderRepository
-		extends PagingAndSortingRepository<IridiumDecodeOrder, Long>
+public interface IridiumDecodeOrderProvider<T extends IridiumDecodeOrder>
 {
 	/**
 	 * @param p_StationID
@@ -26,6 +26,5 @@ public interface IridiumDecodeOrderRepository
 	 * @author mckelvym
 	 * @since Feb 5, 2018
 	 */
-	SortedSet<IridiumDecodeOrder> findByStationId(
-			@Param(value = "id") Long p_StationID);
+	SortedSet<T> findByStationId(@Param(value = "id") Long p_StationID);
 }

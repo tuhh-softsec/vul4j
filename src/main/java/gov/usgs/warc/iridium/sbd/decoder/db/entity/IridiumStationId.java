@@ -1,8 +1,7 @@
-package gov.la.coastal.cims.hgms.common.db.entity;
+package gov.usgs.warc.iridium.sbd.decoder.db.entity;
 
 /**
- * Stores the IMEI for an Iridium transmitter, which is linked to a
- * {@link Station}
+ * Stores the IMEI for an Iridium transmitter, which is linked to a station
  *
  * @author mckelvym
  * @since Feb 8, 2018

@@ -1,6 +1,5 @@
 package gov.la.coastal.cims.hgms.harvester.structuregages.parser;
 
-import static gov.la.coastal.cims.hgms.harvester.structuregages.ParsingTestsHelper.createStation;
 import static gov.la.coastal.cims.hgms.harvester.structuregages.ParsingTestsHelper.hexStringToByteArray;
 import static gov.la.coastal.cims.hgms.harvester.structuregages.ParsingTestsHelper.setupMessageBytes;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,21 +36,17 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import gov.la.coastal.cims.hgms.common.Common;
-import gov.la.coastal.cims.hgms.common.db.IridiumDataTypeRepository;
-import gov.la.coastal.cims.hgms.common.db.IridiumDecodeOrderRepository;
-import gov.la.coastal.cims.hgms.common.db.IridiumStationIdRepository;
-import gov.la.coastal.cims.hgms.common.db.entity.IridiumDataType;
-import gov.la.coastal.cims.hgms.common.db.entity.IridiumStationId;
-import gov.la.coastal.cims.hgms.common.db.entity.Station;
-import gov.la.coastal.cims.hgms.harvester.structuregages.Application;
 import gov.la.coastal.cims.hgms.harvester.structuregages.ParsingTestsHelper;
-import gov.la.coastal.cims.hgms.harvester.structuregages.Properties;
 import gov.la.coastal.cims.hgms.harvester.structuregages.Tests;
 import gov.la.coastal.cims.hgms.harvester.structuregages.Tests.SkipMethod;
 import gov.la.coastal.cims.hgms.harvester.structuregages.directip.SbdProcessor;
 import gov.la.coastal.cims.hgms.harvester.structuregages.directip.SbdProcessorImpl;
 import gov.la.coastal.cims.hgms.harvester.structuregages.parser.elements.LocationInformation;
+import gov.usgs.warc.iridium.sbd.decoder.db.IridiumDecodeOrderProvider;
+import gov.usgs.warc.iridium.sbd.decoder.db.IridiumStationIdProvider;
+import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumDataType;
+import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumDecodeOrder;
+import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumStationId;
 
 /**
  * Test the binary parser
@@ -62,8 +57,7 @@ import gov.la.coastal.cims.hgms.harvester.structuregages.parser.elements.Locatio
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ContextConfiguration(
-		classes = { Application.class, Common.class, Properties.class })
+@ContextConfiguration
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -92,8 +86,8 @@ public class BinaryParserTest
 		@Bean
 		@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 		public SbdProcessor processor(final ApplicationContext p_Context,
-				final IridiumStationIdRepository p_IridiumStationIdRepository,
-				final IridiumDecodeOrderRepository p_IridiumDecodeOrderRepository)
+				final IridiumStationIdProvider<IridiumStationId> p_IridiumStationIdRepository,
+				final IridiumDecodeOrderProvider<IridiumDecodeOrder> p_IridiumDecodeOrderRepository)
 		{
 			return new SbdProcessorImpl(p_Context, p_IridiumStationIdRepository,
 					p_IridiumDecodeOrderRepository);
@@ -143,7 +137,7 @@ public class BinaryParserTest
 	 * @since Jan 10, 2018
 	 */
 	@MockBean
-	private IridiumDecodeOrderRepository	m_DecodeOrderRepo;
+	private IridiumDecodeOrderProvider<IridiumDecodeOrder>	m_DecodeOrderRepo;
 
 	/**
 	 * Rule for asserting that the proper exception is thrown
@@ -151,38 +145,30 @@ public class BinaryParserTest
 	 * @since Feb 2, 2018
 	 */
 	@Rule
-	public ExpectedException				m_ExpectedException	= ExpectedException
+	public ExpectedException								m_ExpectedException	= ExpectedException
 			.none();
 
 	/**
-	 * The {@link IridiumStationIdRepository}
+	 * The {@link IridiumStationIdProvider}
 	 *
 	 * @since Feb 12, 2018
 	 */
 	@MockBean
-	private IridiumStationIdRepository		m_IridiumStationRepo;
+	private IridiumStationIdProvider<IridiumStationId>		m_IridiumStationRepo;
 
 	/**
-	 * IridiumDataType repository bean
+	 * The station ID to test with
 	 *
-	 * @since Feb 12, 2018
+	 * @since May 9, 2018
 	 */
-	@MockBean
-	private IridiumDataTypeRepository		m_StationDataTypeRepo;
-
-	/**
-	 * The {@link Station} to test with
-	 *
-	 * @since Feb 12, 2018
-	 */
-	private Station							m_StationTest;
+	private Long											m_StationIdTest;
 
 	/**
 	 * The list of bytes to parse
 	 *
 	 * @since Jan 24, 2018
 	 */
-	private List<Byte>						m_TestingByteList;
+	private List<Byte>										m_TestingByteList;
 
 	/**
 	 * Setup a successful directip MO message to test
@@ -193,18 +179,34 @@ public class BinaryParserTest
 	@Before
 	public void setUp() throws Exception
 	{
-		m_StationTest = createStation();
+		m_StationIdTest = 1L;
 		final String imei = "300234010124740";
-		final IridiumStationId iridiumStationId = new IridiumStationId();
-		iridiumStationId.setId(221L);
-		iridiumStationId.setImei(imei);
-		iridiumStationId.setStation(m_StationTest);
+		final IridiumStationId iridiumStationId = new IridiumStationId()
+		{
+
+			@Override
+			public Long getId()
+			{
+				return 221L;
+			}
+
+			@Override
+			public String getImei()
+			{
+				return imei;
+			}
+
+			@Override
+			public Long getStationId()
+			{
+				return m_StationIdTest;
+			}
+		};
 
 		when(m_IridiumStationRepo.findByImei(imei))
 				.thenReturn(Lists.newArrayList(iridiumStationId));
-		when(m_DecodeOrderRepo.findByStationId(m_StationTest.getId()))
-				.thenReturn(
-						Sets.newTreeSet(ParsingTestsHelper.getDecodeList()));
+		when(m_DecodeOrderRepo.findByStationId(m_StationIdTest)).thenReturn(
+				Sets.newTreeSet(ParsingTestsHelper.getDecodeList()));
 
 	}
 
@@ -294,7 +296,7 @@ public class BinaryParserTest
 						.valueOf(parser.getMessage().getHeader().getImei()))
 				.stream().findFirst();
 		assertThat(opt).isNotEqualTo(Optional.empty());
-		final Long stationId = opt.get().getStation().getId();
+		final Long stationId = opt.get().getStationId();
 
 		parser.setDecodeOrder(m_DecodeOrderRepo.findByStationId(stationId));
 		assertThat(parser.getValuesFromMessage()).isNotEmpty();
@@ -317,7 +319,7 @@ public class BinaryParserTest
 						.valueOf(parser.getMessage().getHeader().getImei()))
 				.stream().findFirst();
 		assertThat(opt).isNotEqualTo(Optional.empty());
-		final Long stationId = opt.get().getStation().getId();
+		final Long stationId = opt.get().getStationId();
 
 		parser.setDecodeOrder(m_DecodeOrderRepo.findByStationId(stationId));
 		final Map<IridiumDataType, Double> dataMap = parser
@@ -369,7 +371,7 @@ public class BinaryParserTest
 						.valueOf(parser.getMessage().getHeader().getImei()))
 				.stream().findFirst();
 		assertThat(opt).isNotEqualTo(Optional.empty());
-		final Long stationId = opt.get().getStation().getId();
+		final Long stationId = opt.get().getStationId();
 
 		parser.setDecodeOrder(m_DecodeOrderRepo.findByStationId(stationId));
 		parser.getValuesFromMessage();
@@ -391,7 +393,7 @@ public class BinaryParserTest
 						.valueOf(parser.getMessage().getHeader().getImei()))
 				.stream().findFirst();
 		assertThat(opt).isNotEqualTo(Optional.empty());
-		final Long stationId = opt.get().getStation().getId();
+		final Long stationId = opt.get().getStationId();
 
 		parser.setDecodeOrder(m_DecodeOrderRepo.findByStationId(stationId));
 		final Map<IridiumDataType, Double> valuesFromMessage = parser
