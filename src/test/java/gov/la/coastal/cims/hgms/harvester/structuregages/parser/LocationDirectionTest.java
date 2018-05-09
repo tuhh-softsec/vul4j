@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import gov.usgs.warc.test.Tests;
-import gov.usgs.warc.test.Tests.SkipMethod;
+import gov.la.coastal.cims.hgms.harvester.structuregages.Tests;
+import gov.la.coastal.cims.hgms.harvester.structuregages.Tests.SkipMethod;
 
 /**
  * The location direction test

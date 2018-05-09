@@ -48,8 +48,8 @@ import gov.la.coastal.cims.hgms.harvester.structuregages.ParsingTestsHelper;
 import gov.la.coastal.cims.hgms.harvester.structuregages.Properties;
 import gov.la.coastal.cims.hgms.harvester.structuregages.parser.BinaryParser;
 import gov.usgs.warc.mail.SMTP;
-import gov.usgs.warc.test.Tests;
-import gov.usgs.warc.test.Tests.SkipMethod;
+import gov.la.coastal.cims.hgms.harvester.structuregages.Tests;
+import gov.la.coastal.cims.hgms.harvester.structuregages.Tests.SkipMethod;
 
 /**
  * Test the {@link IridiumToHgmsData} class

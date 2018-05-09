@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import gov.usgs.warc.test.Tests;
+import gov.la.coastal.cims.hgms.harvester.structuregages.Tests;
 
 /**
  * Test {@link BitString}

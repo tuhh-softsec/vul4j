@@ -52,8 +52,8 @@ import gov.la.coastal.cims.hgms.harvester.structuregages.directip.SbdProcessor;
 import gov.la.coastal.cims.hgms.harvester.structuregages.directip.SbdProcessorImpl;
 import gov.la.coastal.cims.hgms.harvester.structuregages.parser.elements.LocationInformation;
 import gov.usgs.warc.mail.SMTP;
-import gov.usgs.warc.test.Tests;
-import gov.usgs.warc.test.Tests.SkipMethod;
+import gov.la.coastal.cims.hgms.harvester.structuregages.Tests;
+import gov.la.coastal.cims.hgms.harvester.structuregages.Tests.SkipMethod;
 
 /**
  * Test the binary parser

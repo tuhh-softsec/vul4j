@@ -9,8 +9,8 @@ import org.junit.Test;
 import gov.la.coastal.cims.hgms.harvester.structuregages.parser.elements.Header;
 import gov.la.coastal.cims.hgms.harvester.structuregages.parser.elements.LocationInformation;
 import gov.la.coastal.cims.hgms.harvester.structuregages.parser.elements.Payload;
-import gov.usgs.warc.test.Tests;
-import gov.usgs.warc.test.Tests.SkipMethod;
+import gov.la.coastal.cims.hgms.harvester.structuregages.Tests;
+import gov.la.coastal.cims.hgms.harvester.structuregages.Tests.SkipMethod;
 
 /**
  * Test the {@link Message} class

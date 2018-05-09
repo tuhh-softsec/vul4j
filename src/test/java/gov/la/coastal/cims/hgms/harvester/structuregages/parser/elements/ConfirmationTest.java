@@ -7,8 +7,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import gov.la.coastal.cims.hgms.harvester.structuregages.parser.InformationElementIdentifiers;
-import gov.usgs.warc.test.Tests;
-import gov.usgs.warc.test.Tests.SkipMethod;
+import gov.la.coastal.cims.hgms.harvester.structuregages.Tests;
+import gov.la.coastal.cims.hgms.harvester.structuregages.Tests.SkipMethod;
 
 /**
  * Test the Confirmation element
