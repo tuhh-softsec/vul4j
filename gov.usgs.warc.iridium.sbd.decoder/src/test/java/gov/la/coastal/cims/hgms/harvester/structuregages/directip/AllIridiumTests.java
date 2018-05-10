@@ -12,8 +12,7 @@ import org.junit.runners.Suite.SuiteClasses;
  *
  */
 @RunWith(Suite.class)
-@SuiteClasses({ IridiumResponseTest.class, SbdProcessorTest.class,
-		SbdProcessorNonMockTest.class })
+@SuiteClasses({ IridiumResponseTest.class, SbdProcessorTest.class, })
 public class AllIridiumTests
 {
 	/**

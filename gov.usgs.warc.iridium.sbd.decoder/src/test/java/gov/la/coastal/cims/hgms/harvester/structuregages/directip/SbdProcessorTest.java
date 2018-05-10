@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -112,7 +113,7 @@ public class SbdProcessorTest
 	 */
 
 	@MockBean
-	private IridiumDecodeOrderProvider<IridiumDecodeOrder>	m_DecodeOrderRepo;
+	private IridiumDecodeOrderProvider<IridiumDecodeOrder>	m_DecodeOrderRepository;
 
 	/**
 	 * The {@link IridiumStationIdRepository}
@@ -120,7 +121,7 @@ public class SbdProcessorTest
 	 * @since Feb 12, 2018
 	 */
 	@MockBean
-	private IridiumStationIdProvider<IridiumStationId>		m_IridiumStationRepo;
+	private IridiumStationIdProvider<IridiumStationId>		m_IridiumStationRepository;
 
 	/**
 	 * The station ID to test with
@@ -177,10 +178,11 @@ public class SbdProcessorTest
 			}
 		};
 
-		when(m_IridiumStationRepo.findByImei(imei))
+		when(m_IridiumStationRepository.findByImei(imei))
 				.thenReturn(Lists.newArrayList(iridiumStationId));
-		when(m_DecodeOrderRepo.findByStationId(m_StationIdTest)).thenReturn(
-				Sets.newTreeSet(ParsingTestsHelper.getDecodeList()));
+		when(m_DecodeOrderRepository.findByStationId(m_StationIdTest))
+				.thenReturn(
+						Sets.newTreeSet(ParsingTestsHelper.getDecodeList()));
 
 		final List<List<Byte>> inputByteLists = Lists.newArrayList();
 		inputByteLists.add(ParsingTestsHelper.setupMessageBytes("00"));
@@ -188,7 +190,7 @@ public class SbdProcessorTest
 		{
 			final BinaryParser parser = new BinaryParser(inputBytes);
 
-			final Collection<IridiumStationId> stationsList = m_IridiumStationRepo
+			final Collection<IridiumStationId> stationsList = m_IridiumStationRepository
 					.findByImei(String.valueOf(
 							parser.getMessage().getHeader().getImei()));
 			final Optional<IridiumStationId> opt = stationsList.stream()
@@ -196,7 +198,8 @@ public class SbdProcessorTest
 			assertThat(opt).isNotEqualTo(Optional.empty());
 			final Long stationId = opt.get().getStationId();
 
-			parser.setDecodeOrder(m_DecodeOrderRepo.findByStationId(stationId));
+			parser.setDecodeOrder(
+					m_DecodeOrderRepository.findByStationId(stationId));
 			final Map<IridiumDataType, Double> dataMap = parser
 					.getValuesFromMessage();
 			final Table<IridiumStationId, IridiumDataType, Double> valueTable = HashBasedTable
@@ -235,6 +238,26 @@ public class SbdProcessorTest
 						"Unable to parse the values from the binary directip message.  %s",
 						Arrays.toString(e.getStackTrace())));
 			}
+		}
+	}
+
+	/**
+	 * Test method for
+	 * {@link gov.la.coastal.cims.hgms.harvester.structuregages.directip.SbdProcessorImpl#process(byte[], java.util.function.Consumer)}.
+	 */
+	@Test
+	public void testProcessBadOrShortPayload()
+	{
+		final List<List<Byte>> testingData = Lists.newArrayList();
+		// testingData.addAll(ParsingTestsHelper.getTestingDataBadPayload());
+		testingData.addAll(ParsingTestsHelper.getTestingDataShortPayload());
+
+		for (final List<Byte> bytes : testingData)
+		{
+			final AtomicReference<Throwable> t = new AtomicReference<>();
+			assertThat(m_Testable.process(Bytes.toArray(bytes), t::set))
+					.isEqualTo(Optional.empty());
+			assertThat(t.get()).isNotNull();
 		}
 	}
 

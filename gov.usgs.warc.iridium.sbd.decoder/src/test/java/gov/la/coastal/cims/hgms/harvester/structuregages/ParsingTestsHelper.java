@@ -237,14 +237,14 @@ public class ParsingTestsHelper
 	{
 		final List<List<Byte>> inputByteLists = Lists.newArrayList();
 		/**
-		 * java.lang.IndexOutOfBoundsException: Invalid start index. (12) must
-		 * be less than size (9)
+		 * java.lang.IndexOutOfBoundsException: Invalid start index. (x) must be
+		 * less than size (y)
 		 */
 		inputByteLists.add(toByteList(1, 0, 61, 1, 0, 28, -101, 24, -84, -16,
 				51, 48, 48, 50, 51, 52, 48, 49, 48, 49, 50, 53, 55, 52, 48, 0,
 				-100, 63, 0, 0, 90, -69, 72, -50, 3, 0, 11, 1, 29, -45, 102, 90,
 				29, 33, 0, 0, 0, 4, 2, 0, 13, 50, 66, 50, 67, 64, 66, 116, 64,
-				66, 118, 64, 64, 115));
+				66, 118));
 		return inputByteLists;
 	}
 

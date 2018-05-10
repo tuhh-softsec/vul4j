@@ -49,14 +49,14 @@ public class SbdProcessorImpl implements SbdProcessor
 	 *
 	 * @since Feb 12, 2018
 	 */
-	private final IridiumDecodeOrderProvider<? extends IridiumDecodeOrder>	m_DecodeOrderRepo;
+	private final IridiumDecodeOrderProvider<? extends IridiumDecodeOrder>	m_DecodeOrderRepository;
 
 	/**
 	 * The iridium station id repository bean
 	 *
 	 * @since Feb 12, 2018
 	 */
-	private final IridiumStationIdProvider<? extends IridiumStationId>		m_IridiumStationRepo;
+	private final IridiumStationIdProvider<? extends IridiumStationId>		m_IridiumStationRepository;
 
 	/**
 	 * @param p_Context
@@ -72,9 +72,9 @@ public class SbdProcessorImpl implements SbdProcessor
 			final IridiumStationIdProvider<? extends IridiumStationId> p_IridiumStationIdRepository,
 			final IridiumDecodeOrderProvider<? extends IridiumDecodeOrder> p_IridiumDecodeOrderRepository)
 	{
-		m_IridiumStationRepo = requireNonNull(p_IridiumStationIdRepository,
-				"Station ID repository");
-		m_DecodeOrderRepo = requireNonNull(p_IridiumDecodeOrderRepository,
+		m_IridiumStationRepository = requireNonNull(
+				p_IridiumStationIdRepository, "Station ID repository");
+		m_DecodeOrderRepository = requireNonNull(p_IridiumDecodeOrderRepository,
 				"Decode order repository");
 	}
 
@@ -97,14 +97,14 @@ public class SbdProcessorImpl implements SbdProcessor
 			/**
 			 * Parse the incoming bytes and return an IridumResponse
 			 */
-			final List<IridiumStationId> iridiumStationIds = m_IridiumStationRepo
+			final List<IridiumStationId> iridiumStationIds = m_IridiumStationRepository
 					.findByImei(Long.toString(
 							parser.getMessage().getHeader().getImei()))
 					.stream().collect(Collectors.toList());
 			for (final IridiumStationId iridiumStationId : iridiumStationIds)
 			{
 				final long stationId = iridiumStationId.getStationId();
-				final SortedSet<? extends IridiumDecodeOrder> decodeOrderSet = m_DecodeOrderRepo
+				final SortedSet<? extends IridiumDecodeOrder> decodeOrderSet = m_DecodeOrderRepository
 						.findByStationId(stationId);
 				parser.setDecodeOrder(decodeOrderSet);
 				final Map<IridiumDataType, Double> valueMap = parser
