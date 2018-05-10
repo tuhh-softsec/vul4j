@@ -38,9 +38,7 @@ import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumDecodeOrder;
  *
  * @author darceyj
  * @since Jan 5, 2018
- *
  */
-
 public class BinaryParser
 {
 	/**
@@ -56,13 +54,12 @@ public class BinaryParser
 	 * Take in a byte array and return the unsigned number as a long
 	 *
 	 * @param p_Bytes
-	 *            - the byte array to use.
-	 * @return - an unsigned number as long
+	 *            the byte array to use.
+	 * @return an unsigned number as long
 	 * @since Jan 10, 2018
 	 */
-	public static long getAsUnsignedNumber(final byte[] p_Bytes)
+	static long getAsUnsignedNumber(final byte[] p_Bytes)
 	{
-
 		long result = 0L;
 		final int remaining = p_Bytes.length - 1;
 		int bitShifter = remaining * 8;
@@ -74,18 +71,17 @@ public class BinaryParser
 		}
 		result = result | p_Bytes[remaining] & 0xFF;
 		return result & 0xFFFFFFFFL;
-
 	}
 
 	/**
 	 * Convert the byte array to string and cast to a long.
 	 *
 	 * @param p_ImeiByteArray
-	 *            - the imei byte array
-	 * @return - the decoded string as a long.
+	 *            the imei byte array
+	 * @return the decoded string as a long.
 	 * @since Jan 11, 2018
 	 */
-	public static long getIMEIFromBytes(final byte[] p_ImeiByteArray)
+	static long getIMEIFromBytes(final byte[] p_ImeiByteArray)
 	{
 		checkState(p_ImeiByteArray.length == 15,
 				String.format("Expected 15 bytes for imei but got %s",
@@ -99,9 +95,9 @@ public class BinaryParser
 	 * Parse the latitude and longitude bytes
 	 *
 	 * @param p_Bytes
-	 *            - the byte array
+	 *            the byte array
 	 * @param p_Builder
-	 *            - the location information builder to use put the latitude and
+	 *            the location information builder to use put the latitude and
 	 *            longitude fields.
 	 * @return the LocationInformationBuilder updated.
 	 * @since Jan 12, 2018
@@ -127,10 +123,9 @@ public class BinaryParser
 		final LocationDirection ew = LocationDirection.fromEWIBit(ewFlag);
 		final LocationDirection ns = LocationDirection.fromNSIBit(nsFlag);
 		/**
-		 * TODO is direction important to us?
+		 * Unused...direction string.
 		 */
-		final String directionString = String.format("%s%s", ns.name(),
-				ew.name());
+		String.format("%s%s", ns.name(), ew.name());
 		final ByteBuffer byteBuffer = ByteBuffer.wrap(p_Bytes, 1, 6);
 		/**
 		 * Byte 2 lat degs
@@ -165,16 +160,15 @@ public class BinaryParser
 		final double lonDegrees = Double.parseDouble(lonDegreesStr);
 
 		return p_Builder.longitude(lonDegrees).latitude(latDegrees);
-
 	}
 
 	/**
 	 * Process the Header Information element
 	 *
 	 * @param p_Buffer
-	 *            - the {@link ByteBuffer} to use.
+	 *            the {@link ByteBuffer} to use.
 	 * @param p_IeLength
-	 *            - the element length
+	 *            the element length
 	 * @return an {@link Header}
 	 * @since Jan 11, 2018
 	 */
@@ -242,7 +236,7 @@ public class BinaryParser
 	 * {@link LocationInformation}
 	 *
 	 * @param p_BytesBuffer
-	 *            - the buffer with the bytes in it
+	 *            the buffer with the bytes in it
 	 * @param p_IeLength
 	 * @return a {@link LocationInformation}
 	 * @since Jan 11, 2018
@@ -273,7 +267,7 @@ public class BinaryParser
 	 * Process the payload information element
 	 *
 	 * @param p_BytesBuffer
-	 *            - the bytesBuffer to use with the payload bytes starting at
+	 *            the bytesBuffer to use with the payload bytes starting at
 	 *            index 0
 	 * @return a {@link Payload}
 	 * @since Jan 11, 2018
@@ -338,10 +332,8 @@ public class BinaryParser
 	 * Default Constructor
 	 *
 	 * @param p_List
-	 *            - the list of bytes to parse.
-	 *
+	 *            the list of bytes to parse.
 	 * @throws Exception
-	 *
 	 * @since Jan 5, 2018
 	 */
 	public BinaryParser(final List<Byte> p_List) throws Exception
@@ -357,10 +349,8 @@ public class BinaryParser
 	 * Decoder
 	 *
 	 * @return a message object parsed from the bytes in the byte list.
-	 *
 	 * @throws Exception
 	 *             if an error occurred
-	 *
 	 * @since Jan 9, 2018
 	 */
 	private Message generateMessageFromBytes() throws Exception
@@ -458,7 +448,7 @@ public class BinaryParser
 	 *
 	 * @return a Map of {@link IridiumDataType} and its value
 	 * @throws Exception
-	 *             - If the status code is not ok, or an error occurred during
+	 *             If the status code is not ok, or an error occurred during
 	 *             parsing
 	 * @since Jan 16, 2018
 	 */
@@ -541,8 +531,7 @@ public class BinaryParser
 	 * Parse the given bytes into a {@link Message}
 	 *
 	 * @param p_List
-	 *            - the list of {@link Byte} to use
-	 *
+	 *            the list of {@link Byte} to use
 	 * @return the {@link Message}
 	 * @throws Exception
 	 * @since Jan 26, 2018
@@ -560,7 +549,7 @@ public class BinaryParser
 	 * Set the decode order
 	 *
 	 * @param p_Order
-	 *            - the order of iridium datatypes for this message
+	 *            the order of iridium datatypes for this message
 	 * @since Feb 9, 2018
 	 */
 	public void setDecodeOrder(
@@ -572,5 +561,4 @@ public class BinaryParser
 		m_DecodeOrder.clear();
 		m_DecodeOrder.addAll(p_Order);
 	}
-
 }

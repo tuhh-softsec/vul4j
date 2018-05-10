@@ -16,6 +16,7 @@ import java.util.Objects;
  * https://docs.oracle.com/javase/tutorial/networking/sockets/readingWriting.html
  *
  * @author mckelvym
+ * @author darceyj
  * @since Jan 26, 2018
  *
  */
@@ -25,9 +26,9 @@ public class Send
 	 * Convenience method to add bytes in array to the list
 	 *
 	 * @param p_List
-	 *            - the list to use
+	 *            the list to use
 	 * @param p_Array
-	 *            - the array to scan
+	 *            the array to scan
 	 * @since Jan 24, 2018
 	 */
 	public static void addBytestoListFromArray(final List<Byte> p_List,
@@ -44,7 +45,7 @@ public class Send
 	 * https://stackoverflow.com/questions/140131/convert-a-string-representation-of-a-hex-dump-to-a-byte-array-using-java
 	 *
 	 * @param p_InputStr
-	 *            - the input string
+	 *            the input string
 	 * @return the byte array converted from hex to binary
 	 * @since Jan 10, 2018
 	 */
@@ -68,8 +69,6 @@ public class Send
 	public static void main(final String[] p_Args)
 			throws IOException, InterruptedException
 	{
-		// System.out.println(Arrays.toString(p_Args));
-
 		try (
 			final Socket echoSocket = new Socket(p_Args[0],
 					Integer.parseInt(p_Args[1]));
@@ -88,7 +87,7 @@ public class Send
 	 * Setup test message from bytes given the status code.
 	 *
 	 * @param p_Status
-	 *            - the status code to use.
+	 *            the status code to use.
 	 * @return a byte array with the test bytes
 	 * @since Feb 2, 2018
 	 */

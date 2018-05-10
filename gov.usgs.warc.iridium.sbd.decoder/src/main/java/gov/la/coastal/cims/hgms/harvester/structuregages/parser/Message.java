@@ -74,5 +74,4 @@ public class Message
 	 * Protocol version
 	 */
 	private final byte					protocolVersion;
-
 }

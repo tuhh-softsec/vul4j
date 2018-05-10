@@ -74,13 +74,13 @@ public enum InformationElementIdentifiers
 	},;
 
 	/**
-	 * Return the corresponding the {@link InformationElementIdentifiersTest} as
-	 * an {@link Optional}
+	 * Return the corresponding the {@link InformationElementIdentifiers} as an
+	 * {@link Optional}
 	 *
 	 * @param p_Byte
-	 *            - the byte to use.
-	 * @return an {@link InformationElementIdentifiersTest} wrapped in an
-	 *         optional since the byte could not match an id.
+	 *            the byte to use.
+	 * @return an {@link InformationElementIdentifiers} wrapped in an optional
+	 *         since the byte could not match an id.
 	 * @since Jan 11, 2018
 	 */
 	public static Optional<InformationElementIdentifiers> getFromByte(
@@ -92,7 +92,6 @@ public enum InformationElementIdentifiers
 	}
 
 	/**
-	 *
 	 * @return the information element id as a single {@link Byte}
 	 * @since Jan 5, 2018
 	 */

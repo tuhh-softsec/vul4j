@@ -68,7 +68,6 @@ public enum SessionStatus
 		@Override
 		public String getErrorMessage()
 		{
-
 			return "Session transfer success.";
 		}
 	},
@@ -138,7 +137,7 @@ public enum SessionStatus
 	 * {@link SessionStatus}
 	 *
 	 * @param p_IncomingStatus
-	 *            - the status as an int from the header
+	 *            the status as an int from the header
 	 * @return the {@link SessionStatus}
 	 * @since Jan 8, 2018
 	 */
@@ -164,7 +163,6 @@ public enum SessionStatus
 				return SessionStatus.PROHIBITED;
 			default:
 				return SessionStatus.UNKNOWN;
-
 		}
 	}
 

@@ -249,7 +249,7 @@ public class SbdProcessorTest
 	public void testProcessBadOrShortPayload()
 	{
 		final List<List<Byte>> testingData = Lists.newArrayList();
-		// testingData.addAll(ParsingTestsHelper.getTestingDataBadPayload());
+		testingData.addAll(ParsingTestsHelper.getTestingDataBadPayload());
 		testingData.addAll(ParsingTestsHelper.getTestingDataShortPayload());
 
 		for (final List<Byte> bytes : testingData)

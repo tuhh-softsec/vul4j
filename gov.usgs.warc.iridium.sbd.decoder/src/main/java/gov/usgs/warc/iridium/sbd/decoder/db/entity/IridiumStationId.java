@@ -12,6 +12,7 @@ public interface IridiumStationId
 	/**
 	 * Unique ID
 	 *
+	 * @return the identifier for this data type
 	 * @author mckelvym
 	 * @since Feb 8, 2017
 	 */
@@ -20,6 +21,7 @@ public interface IridiumStationId
 	/**
 	 * The IMEI
 	 *
+	 * @return imei
 	 * @author mckelvym
 	 * @since Feb 8, 2018
 	 */
@@ -27,7 +29,8 @@ public interface IridiumStationId
 
 	/**
 	 * The station
-	 *
+	 **
+	 * @return station identifier
 	 * @author mckelvym
 	 * @since Feb 8, 2018
 	 */

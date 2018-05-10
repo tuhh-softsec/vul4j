@@ -79,7 +79,6 @@ public class SbdProcessorImpl implements SbdProcessor
 	}
 
 	@Override
-	// @Transactional
 	public Optional<IridiumResponse> process(final byte[] p_Bytes,
 			final Consumer<Throwable> p_ExceptionConsumer)
 	{

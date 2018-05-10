@@ -14,7 +14,6 @@ import lombok.Getter;
 @Getter
 public class Confirmation
 {
-
 	/**
 	 *
 	 * @return builder for new instances of Confirmation element
@@ -45,5 +44,4 @@ public class Confirmation
 	 * @since Jan 8, 2018
 	 */
 	private final byte	status;
-
 }

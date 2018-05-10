@@ -41,10 +41,9 @@ public class IridiumResponse
 	private Collection<? extends IridiumStationId>				stations;
 
 	/**
-	 * The map of datatypes to their corresponding values
+	 * The map of data types to their corresponding values
 	 *
 	 * @since Feb 12, 2018
 	 */
 	private Table<IridiumStationId, IridiumDataType, Double>	values;
-
 }

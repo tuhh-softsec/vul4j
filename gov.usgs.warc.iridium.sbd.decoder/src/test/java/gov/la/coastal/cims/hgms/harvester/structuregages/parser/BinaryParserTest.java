@@ -75,10 +75,10 @@ public class BinaryParserTest
 	 * name (e.x. wind speed)
 	 *
 	 * @param p_Stream
-	 *            - the stream of {@link IridiumDataType}
+	 *            the stream of {@link IridiumDataType}
 	 * @param p_AttributeToSearch
-	 *            - the attribute to search for
-	 * @return - the {@link IridiumDataType} with the given name.
+	 *            the attribute to search for
+	 * @return the {@link IridiumDataType} with the given name.
 	 * @since Feb 9, 2018
 	 */
 	private static IridiumDataType getDatatype(

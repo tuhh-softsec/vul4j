@@ -32,8 +32,8 @@ public enum LocationDirection
 
 	/**
 	 * @param p_FlagBit
-	 *            - the bit to use
-	 * @return - the East West Location from the bit
+	 *            the bit to use
+	 * @return the East West Location from the bit
 	 * @since Jan 12, 2018
 	 */
 	public static LocationDirection fromEWIBit(final boolean p_FlagBit)
@@ -44,7 +44,7 @@ public enum LocationDirection
 	/**
 	 *
 	 * @param p_FlagBit
-	 *            - the flag bit to use
+	 *            the flag bit to use
 	 * @return the {@link LocationDirection} from the bit
 	 * @since Jan 12, 2018
 	 */
@@ -52,5 +52,4 @@ public enum LocationDirection
 	{
 		return p_FlagBit ? SOUTH : NORTH;
 	}
-
 }

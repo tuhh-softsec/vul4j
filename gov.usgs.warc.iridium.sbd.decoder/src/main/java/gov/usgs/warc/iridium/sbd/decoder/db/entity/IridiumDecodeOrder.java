@@ -25,6 +25,7 @@ public interface IridiumDecodeOrder extends Comparable<IridiumDecodeOrder>
 	/**
 	 * The byteOffset into the SBD payload
 	 *
+	 * @return byteOffset into the SBD payload
 	 * @author mckelvym
 	 * @since Feb 16, 2018
 	 */
@@ -33,6 +34,7 @@ public interface IridiumDecodeOrder extends Comparable<IridiumDecodeOrder>
 	/**
 	 * The data type to decode
 	 *
+	 * @return {@link IridiumDataType} to decode
 	 * @author mckelvym
 	 * @since Feb 2, 2018
 	 */
@@ -41,6 +43,7 @@ public interface IridiumDecodeOrder extends Comparable<IridiumDecodeOrder>
 	/**
 	 * ID
 	 *
+	 * @return decode order identifier
 	 * @author mckelvym
 	 * @since Feb 2, 2018
 	 */
@@ -49,6 +52,7 @@ public interface IridiumDecodeOrder extends Comparable<IridiumDecodeOrder>
 	/**
 	 * The station
 	 *
+	 * @return station identifier
 	 * @author mckelvym
 	 * @since Feb 2, 2018
 	 */

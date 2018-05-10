@@ -23,9 +23,9 @@ public class ParsingTestsHelper
 	 * Convenience method to add bytes in array to the list
 	 *
 	 * @param p_List
-	 *            - the list to use
+	 *            the list to use
 	 * @param p_Array
-	 *            - the array to scan
+	 *            the array to scan
 	 * @since Jan 24, 2018
 	 */
 	private static void addBytestoListFromArray(final List<Byte> p_List,
@@ -253,7 +253,7 @@ public class ParsingTestsHelper
 	 * https://stackoverflow.com/questions/140131/convert-a-string-representation-of-a-hex-dump-to-a-byte-array-using-java
 	 *
 	 * @param p_InputStr
-	 *            - the input string
+	 *            the input string
 	 * @return the byte array converted from hex to binary
 	 * @since Jan 10, 2018
 	 */
@@ -273,7 +273,7 @@ public class ParsingTestsHelper
 	 * Setup message from bytes given the status code.
 	 *
 	 * @param p_Status
-	 *            - the status code to use.
+	 *            the status code to use.
 	 * @return a list of bytes representing a successful directip message
 	 * @since Feb 2, 2018
 	 */

@@ -25,7 +25,6 @@ public enum StationDataTypes
 		@Override
 		public String toString()
 		{
-
 			return "Temperature";
 		}
 	},
@@ -57,7 +56,6 @@ public enum StationDataTypes
 		{
 			return "Water Level";
 		}
-
 	},
 	/**
 	 * Wind direction
