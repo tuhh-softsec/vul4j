@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.SortedSet;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.repository.Repository;
 
 /**
  * Test utilities
@@ -314,8 +313,6 @@ public final class Tests
 		final SortedSet<String> methods = Sets.newTreeSet();
 		final SortedSet<String> overloadedMethods = Sets
 				.newTreeSet(getOverloadedMethods(p_ClassToTest));
-		final boolean isRepository = Repository.class
-				.isAssignableFrom(p_ClassToTest);
 		for (final Method method : p_ClassToTest.getDeclaredMethods())
 		{
 			/**
@@ -330,10 +327,7 @@ public final class Tests
 			final int modifiers = method.getModifiers();
 			if (Modifier.isPrivate(modifiers) || Modifier.isAbstract(modifiers))
 			{
-				if (!isRepository)
-				{
-					continue;
-				}
+				continue;
 			}
 
 			final String elementName = method.getName();

@@ -2,8 +2,6 @@ package gov.usgs.warc.iridium.sbd.decoder.db;
 
 import java.util.SortedSet;
 
-import org.springframework.data.repository.query.Param;
-
 import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumDecodeOrder;
 
 /**
@@ -26,5 +24,5 @@ public interface IridiumDecodeOrderProvider<T extends IridiumDecodeOrder>
 	 * @author mckelvym
 	 * @since Feb 5, 2018
 	 */
-	SortedSet<T> findByStationId(@Param(value = "id") Long p_StationID);
+	SortedSet<T> findByStationId(Long p_StationID);
 }

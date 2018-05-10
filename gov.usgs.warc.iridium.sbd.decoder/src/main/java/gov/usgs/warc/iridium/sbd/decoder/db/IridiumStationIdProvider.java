@@ -2,8 +2,6 @@ package gov.usgs.warc.iridium.sbd.decoder.db;
 
 import java.util.Collection;
 
-import org.springframework.data.repository.query.Param;
-
 import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumStationId;
 
 /**
@@ -24,5 +22,5 @@ public interface IridiumStationIdProvider<T extends IridiumStationId>
 	 * @author mckelvym
 	 * @since Feb 8, 2018
 	 */
-	Collection<T> findByImei(@Param(value = "imei") String p_Imei);
+	Collection<T> findByImei(String p_Imei);
 }

@@ -3,6 +3,8 @@ package gov.la.coastal.cims.hgms.harvester.structuregages.parser;
 import static gov.la.coastal.cims.hgms.harvester.structuregages.ParsingTestsHelper.hexStringToByteArray;
 import static gov.la.coastal.cims.hgms.harvester.structuregages.ParsingTestsHelper.setupMessageBytes;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
 import com.google.common.base.Strings;
@@ -10,10 +12,12 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.primitives.UnsignedInts;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.Before;
@@ -22,16 +26,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -39,8 +36,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import gov.la.coastal.cims.hgms.harvester.structuregages.ParsingTestsHelper;
 import gov.la.coastal.cims.hgms.harvester.structuregages.Tests;
 import gov.la.coastal.cims.hgms.harvester.structuregages.Tests.SkipMethod;
-import gov.la.coastal.cims.hgms.harvester.structuregages.directip.SbdProcessor;
-import gov.la.coastal.cims.hgms.harvester.structuregages.directip.SbdProcessorImpl;
 import gov.la.coastal.cims.hgms.harvester.structuregages.parser.elements.LocationInformation;
 import gov.usgs.warc.iridium.sbd.decoder.db.IridiumDecodeOrderProvider;
 import gov.usgs.warc.iridium.sbd.decoder.db.IridiumStationIdProvider;
@@ -59,8 +54,6 @@ import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumStationId;
 @SpringBootTest
 @ContextConfiguration
 @ActiveProfiles("test")
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = Replace.NONE)
 public class BinaryParserTest
 {
 
@@ -73,25 +66,8 @@ public class BinaryParserTest
 	static class ContextConfiguration
 	{
 		/**
-		 * @param p_Context
-		 *            {@link ApplicationContext}
-		 * @param p_IridiumStationIdRepository
-		 *            {@link IridiumStationIdRepository}
-		 * @param p_IridiumDecodeOrderRepository
-		 *            {@link IridiumDecodeOrderRepository}
-		 * @return {@link SbdProcessorImpl} instance
-		 * @author darceyj
-		 * @since Nov 8, 2017
+		 * Nothing for now.
 		 */
-		@Bean
-		@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-		public SbdProcessor processor(final ApplicationContext p_Context,
-				final IridiumStationIdProvider<IridiumStationId> p_IridiumStationIdRepository,
-				final IridiumDecodeOrderProvider<IridiumDecodeOrder> p_IridiumDecodeOrderRepository)
-		{
-			return new SbdProcessorImpl(p_Context, p_IridiumStationIdRepository,
-					p_IridiumDecodeOrderRepository);
-		}
 	}
 
 	/**
@@ -208,6 +184,23 @@ public class BinaryParserTest
 		when(m_DecodeOrderRepo.findByStationId(m_StationIdTest)).thenReturn(
 				Sets.newTreeSet(ParsingTestsHelper.getDecodeList()));
 
+	}
+
+	/**
+	 * Test method for
+	 * {@link gov.la.coastal.cims.hgms.harvester.structuregages.parser.BinaryParser#getValuesFromMessage()}.
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void testBadPayload() throws Exception
+	{
+		for (final List<Byte> bytes : ParsingTestsHelper
+				.getTestingDataBadPayload())
+		{
+			assertThatThrownBy(() -> new BinaryParser(bytes))
+					.hasSameClassAs(new IllegalArgumentException());
+		}
 	}
 
 	/**
@@ -351,7 +344,34 @@ public class BinaryParserTest
 				.isEqualTo(13.876);
 		assertThat(dataMap.get(getDatatype(keySet.stream(), "air temperature")))
 				.isEqualTo(39.38);
+	}
 
+	/**
+	 * Test method for
+	 * {@link gov.la.coastal.cims.hgms.harvester.structuregages.parser.BinaryParser#getValuesFromMessage()}.
+	 */
+	@Test
+	public void testGetValuesFromMessage2()
+	{
+		for (final List<Byte> bytes : ParsingTestsHelper.getTestingData())
+		{
+			try
+			{
+				final BinaryParser parser = new BinaryParser(bytes);
+				parser.setDecodeOrder(
+						Sets.newTreeSet(ParsingTestsHelper.getDecodeList()));
+				parser.getValuesFromMessage();
+			}
+			catch (final Exception e)
+			{
+				e.printStackTrace();
+				final String message = String.format("Failed on %s: %s",
+						bytes.stream().map(String::valueOf)
+								.collect(Collectors.joining(", ")),
+						Arrays.toString(e.getStackTrace()));
+				fail(message);
+			}
+		}
 	}
 
 	/**
