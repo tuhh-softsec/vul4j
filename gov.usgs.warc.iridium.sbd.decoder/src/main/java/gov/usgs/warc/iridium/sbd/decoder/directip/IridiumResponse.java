@@ -5,8 +5,8 @@ import com.google.common.collect.Table;
 import java.util.Collection;
 
 import gov.usgs.warc.iridium.sbd.decoder.parser.Message;
-import gov.usgs.warc.iridium.sbd.domain.IridiumDataType;
-import gov.usgs.warc.iridium.sbd.domain.IridiumStationId;
+import gov.usgs.warc.iridium.sbd.domain.SbdDataType;
+import gov.usgs.warc.iridium.sbd.domain.SbdStationId;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -38,12 +38,12 @@ public class IridiumResponse
 	 *
 	 * @since Feb 12, 2018
 	 */
-	private Collection<? extends IridiumStationId>				stations;
+	private Collection<? extends SbdStationId>				stations;
 
 	/**
 	 * The map of data types to their corresponding values
 	 *
 	 * @since Feb 12, 2018
 	 */
-	private Table<IridiumStationId, IridiumDataType, Double>	values;
+	private Table<SbdStationId, SbdDataType, Double>	values;
 }

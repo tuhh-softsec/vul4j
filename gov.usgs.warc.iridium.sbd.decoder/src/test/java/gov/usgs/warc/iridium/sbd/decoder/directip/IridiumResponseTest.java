@@ -30,11 +30,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import gov.usgs.warc.iridium.sbd.decoder.ParsingTestsHelper;
 import gov.usgs.warc.iridium.sbd.decoder.Tests;
 import gov.usgs.warc.iridium.sbd.decoder.Tests.SkipMethod;
-import gov.usgs.warc.iridium.sbd.domain.IridiumDecodeOrderProvider;
-import gov.usgs.warc.iridium.sbd.domain.IridiumStationIdProvider;
-import gov.usgs.warc.iridium.sbd.domain.IridiumDataType;
-import gov.usgs.warc.iridium.sbd.domain.IridiumDecodeOrder;
-import gov.usgs.warc.iridium.sbd.domain.IridiumStationId;
+import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrderProvider;
+import gov.usgs.warc.iridium.sbd.domain.SbdStationIdProvider;
+import gov.usgs.warc.iridium.sbd.domain.SbdDataType;
+import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrder;
+import gov.usgs.warc.iridium.sbd.domain.SbdStationId;
 import gov.usgs.warc.iridium.sbd.decoder.directip.IridiumResponse;
 import gov.usgs.warc.iridium.sbd.decoder.directip.SbdProcessor;
 import gov.usgs.warc.iridium.sbd.decoder.directip.SbdProcessorImpl;
@@ -68,9 +68,9 @@ public class IridiumResponseTest
 		 * @param p_Context
 		 *            {@link ApplicationContext}
 		 * @param p_IridiumStationIdRepository
-		 *            {@link IridiumStationIdProvider}
+		 *            {@link SbdStationIdProvider}
 		 * @param p_IridiumDecodeOrderRepository
-		 *            {@link IridiumDecodeOrderProvider}
+		 *            {@link SbdDecodeOrderProvider}
 		 * @return {@link SbdProcessorImpl} instance
 		 * @author darceyj
 		 * @since Nov 8, 2017
@@ -78,8 +78,8 @@ public class IridiumResponseTest
 		@Bean
 		@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 		public SbdProcessor processor(final ApplicationContext p_Context,
-				final IridiumStationIdProvider<IridiumStationId> p_IridiumStationIdRepository,
-				final IridiumDecodeOrderProvider<IridiumDecodeOrder> p_IridiumDecodeOrderRepository)
+				final SbdStationIdProvider<SbdStationId> p_IridiumStationIdRepository,
+				final SbdDecodeOrderProvider<SbdDecodeOrder> p_IridiumDecodeOrderRepository)
 		{
 			return new SbdProcessorImpl(p_Context, p_IridiumStationIdRepository,
 					p_IridiumDecodeOrderRepository);
@@ -110,15 +110,15 @@ public class IridiumResponseTest
 	 * @since Feb 12, 2018
 	 */
 	@MockBean
-	private IridiumDecodeOrderProvider<IridiumDecodeOrder>	m_DecodeOrderRepo;
+	private SbdDecodeOrderProvider<SbdDecodeOrder>	m_DecodeOrderRepo;
 
 	/**
-	 * The {@link IridiumStationIdProvider}
+	 * The {@link SbdStationIdProvider}
 	 *
 	 * @since Feb 12, 2018
 	 */
 	@MockBean
-	private IridiumStationIdProvider<IridiumStationId>		m_IridiumStationRepo;
+	private SbdStationIdProvider<SbdStationId>		m_IridiumStationRepo;
 
 	/**
 	 * The station ID to test with
@@ -145,7 +145,7 @@ public class IridiumResponseTest
 	{
 		m_StationIdTest = 1L;
 		final String imei = "300234010124740";
-		final IridiumStationId iridiumStationId = new IridiumStationId()
+		final SbdStationId iridiumStationId = new SbdStationId()
 		{
 
 			@Override
@@ -173,18 +173,18 @@ public class IridiumResponseTest
 				Sets.newTreeSet(ParsingTestsHelper.getDecodeList()));
 		final BinaryParser parser = new BinaryParser(
 				ParsingTestsHelper.setupMessageBytes("00"));
-		final Collection<IridiumStationId> stationsList = m_IridiumStationRepo
+		final Collection<SbdStationId> stationsList = m_IridiumStationRepo
 				.findByImei(String
 						.valueOf(parser.getMessage().getHeader().getImei()));
-		final Optional<IridiumStationId> opt = stationsList.stream()
+		final Optional<SbdStationId> opt = stationsList.stream()
 				.findFirst();
 		assertThat(opt).isNotEqualTo(Optional.empty());
 		final Long stationId = opt.get().getStationId();
 
 		parser.setDecodeOrder(m_DecodeOrderRepo.findByStationId(stationId));
-		final Map<IridiumDataType, Double> dataMap = parser
+		final Map<SbdDataType, Double> dataMap = parser
 				.getValuesFromMessage();
-		final Table<IridiumStationId, IridiumDataType, Double> valueTable = HashBasedTable
+		final Table<SbdStationId, SbdDataType, Double> valueTable = HashBasedTable
 				.create();
 		dataMap.forEach((datatype, value) -> valueTable.put(iridiumStationId,
 				datatype, value));

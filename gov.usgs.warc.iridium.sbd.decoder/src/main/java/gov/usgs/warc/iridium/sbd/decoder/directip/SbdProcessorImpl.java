@@ -19,11 +19,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import gov.usgs.warc.iridium.sbd.domain.IridiumDecodeOrderProvider;
-import gov.usgs.warc.iridium.sbd.domain.IridiumStationIdProvider;
-import gov.usgs.warc.iridium.sbd.domain.IridiumDataType;
-import gov.usgs.warc.iridium.sbd.domain.IridiumDecodeOrder;
-import gov.usgs.warc.iridium.sbd.domain.IridiumStationId;
+import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrderProvider;
+import gov.usgs.warc.iridium.sbd.domain.SbdStationIdProvider;
+import gov.usgs.warc.iridium.sbd.domain.SbdDataType;
+import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrder;
+import gov.usgs.warc.iridium.sbd.domain.SbdStationId;
 import gov.usgs.warc.iridium.sbd.decoder.parser.BinaryParser;
 
 /**
@@ -49,14 +49,14 @@ public class SbdProcessorImpl implements SbdProcessor
 	 *
 	 * @since Feb 12, 2018
 	 */
-	private final IridiumDecodeOrderProvider<? extends IridiumDecodeOrder>	m_DecodeOrderRepository;
+	private final SbdDecodeOrderProvider<? extends SbdDecodeOrder>	m_DecodeOrderRepository;
 
 	/**
 	 * The iridium station id repository bean
 	 *
 	 * @since Feb 12, 2018
 	 */
-	private final IridiumStationIdProvider<? extends IridiumStationId>		m_IridiumStationRepository;
+	private final SbdStationIdProvider<? extends SbdStationId>		m_IridiumStationRepository;
 
 	/**
 	 * @param p_Context
@@ -69,8 +69,8 @@ public class SbdProcessorImpl implements SbdProcessor
 	 * @since Feb 28, 2018
 	 */
 	public SbdProcessorImpl(final ApplicationContext p_Context,
-			final IridiumStationIdProvider<? extends IridiumStationId> p_IridiumStationIdRepository,
-			final IridiumDecodeOrderProvider<? extends IridiumDecodeOrder> p_IridiumDecodeOrderRepository)
+			final SbdStationIdProvider<? extends SbdStationId> p_IridiumStationIdRepository,
+			final SbdDecodeOrderProvider<? extends SbdDecodeOrder> p_IridiumDecodeOrderRepository)
 	{
 		m_IridiumStationRepository = requireNonNull(
 				p_IridiumStationIdRepository, "Station ID repository");
@@ -83,7 +83,7 @@ public class SbdProcessorImpl implements SbdProcessor
 			final Consumer<Throwable> p_ExceptionConsumer)
 	{
 		final List<Byte> byteList = Lists.newArrayList();
-		final Table<IridiumStationId, IridiumDataType, Double> stationDatatypeValueTable = HashBasedTable
+		final Table<SbdStationId, SbdDataType, Double> stationDatatypeValueTable = HashBasedTable
 				.create();
 		for (final byte b : p_Bytes)
 		{
@@ -96,17 +96,17 @@ public class SbdProcessorImpl implements SbdProcessor
 			/**
 			 * Parse the incoming bytes and return an IridumResponse
 			 */
-			final List<IridiumStationId> iridiumStationIds = m_IridiumStationRepository
+			final List<SbdStationId> iridiumStationIds = m_IridiumStationRepository
 					.findByImei(Long.toString(
 							parser.getMessage().getHeader().getImei()))
 					.stream().collect(Collectors.toList());
-			for (final IridiumStationId iridiumStationId : iridiumStationIds)
+			for (final SbdStationId iridiumStationId : iridiumStationIds)
 			{
 				final long stationId = iridiumStationId.getStationId();
-				final SortedSet<? extends IridiumDecodeOrder> decodeOrderSet = m_DecodeOrderRepository
+				final SortedSet<? extends SbdDecodeOrder> decodeOrderSet = m_DecodeOrderRepository
 						.findByStationId(stationId);
 				parser.setDecodeOrder(decodeOrderSet);
-				final Map<IridiumDataType, Double> valueMap = parser
+				final Map<SbdDataType, Double> valueMap = parser
 						.getValuesFromMessage();
 				log.info(String.format("Station id %s: %s", stationId,
 						valueMap.toString()));

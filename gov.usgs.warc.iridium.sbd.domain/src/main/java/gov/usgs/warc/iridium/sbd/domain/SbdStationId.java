@@ -7,7 +7,7 @@ package gov.usgs.warc.iridium.sbd.domain;
  * @since Feb 8, 2018
  *
  */
-public interface IridiumStationId
+public interface SbdStationId
 {
 	/**
 	 * Unique ID

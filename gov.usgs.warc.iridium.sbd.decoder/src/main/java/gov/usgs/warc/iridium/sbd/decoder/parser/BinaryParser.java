@@ -30,8 +30,8 @@ import gov.usgs.warc.iridium.sbd.decoder.parser.elements.LocationInformation.Loc
 import gov.usgs.warc.iridium.sbd.decoder.parser.elements.Payload;
 import gov.usgs.warc.iridium.sbd.decoder.parser.elements.Payload.PayloadBuilder;
 import gov.usgs.warc.iridium.sbd.decoder.sixbitbinary.Decode;
-import gov.usgs.warc.iridium.sbd.domain.IridiumDataType;
-import gov.usgs.warc.iridium.sbd.domain.IridiumDecodeOrder;
+import gov.usgs.warc.iridium.sbd.domain.SbdDataType;
+import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrder;
 
 /**
  * Parse a list of {@link Byte} into usable digits from the iridium source.
@@ -315,11 +315,11 @@ public class BinaryParser
 	private final List<Byte>					m_ByteList;
 
 	/**
-	 * Set of {@link IridiumDecodeOrder} to use when decoding the payload.
+	 * Set of {@link SbdDecodeOrder} to use when decoding the payload.
 	 *
 	 * @since Feb 12, 2018
 	 */
-	private final SortedSet<IridiumDecodeOrder>	m_DecodeOrder;
+	private final SortedSet<SbdDecodeOrder>	m_DecodeOrder;
 
 	/**
 	 * The {@link Message} object
@@ -446,13 +446,13 @@ public class BinaryParser
 	 * Parse the payload and return a map of data types and its resulting values
 	 * according to the given order and data types
 	 *
-	 * @return a Map of {@link IridiumDataType} and its value
+	 * @return a Map of {@link SbdDataType} and its value
 	 * @throws Exception
 	 *             If the status code is not ok, or an error occurred during
 	 *             parsing
 	 * @since Jan 16, 2018
 	 */
-	public Map<IridiumDataType, Double> getValuesFromMessage() throws Exception
+	public Map<SbdDataType, Double> getValuesFromMessage() throws Exception
 	{
 		/**
 		 * Map the payload bytes to the station data types. Assumes that the
@@ -487,14 +487,14 @@ public class BinaryParser
 		final Payload payLoad = m_Message.getPayLoad();
 		final List<Byte> payloadBytes = Lists
 				.newArrayList(payLoad.getPayload());
-		final Map<IridiumDataType, Double> dataMap = Maps.newLinkedHashMap();
+		final Map<SbdDataType, Double> dataMap = Maps.newLinkedHashMap();
 		/**
 		 * Build the map of data type and its corresponding value decoded from
 		 * the payload bytes.
 		 */
-		for (final IridiumDecodeOrder order : m_DecodeOrder)
+		for (final SbdDecodeOrder order : m_DecodeOrder)
 		{
-			final IridiumDataType datatype = order.getDatatype();
+			final SbdDataType datatype = order.getDatatype();
 			final int byteLength = datatype.getBytes();
 			final int startIndex = (int) order.getByteOffset();
 
@@ -553,9 +553,9 @@ public class BinaryParser
 	 * @since Feb 9, 2018
 	 */
 	public void setDecodeOrder(
-			final SortedSet<? extends IridiumDecodeOrder> p_Order)
+			final SortedSet<? extends SbdDecodeOrder> p_Order)
 	{
-		final Set<? extends IridiumDecodeOrder> orderSet = Objects
+		final Set<? extends SbdDecodeOrder> orderSet = Objects
 				.requireNonNull(p_Order);
 		checkState(!orderSet.isEmpty(), "The order set is empty.");
 		m_DecodeOrder.clear();

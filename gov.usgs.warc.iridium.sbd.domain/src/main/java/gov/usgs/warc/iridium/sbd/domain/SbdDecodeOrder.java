@@ -11,10 +11,10 @@ import com.google.common.collect.ComparisonChain;
  * @since Feb 2, 2018
  *
  */
-public interface IridiumDecodeOrder extends Comparable<IridiumDecodeOrder>
+public interface SbdDecodeOrder extends Comparable<SbdDecodeOrder>
 {
 	@Override
-	public default int compareTo(final IridiumDecodeOrder p_Other)
+	public default int compareTo(final SbdDecodeOrder p_Other)
 	{
 		checkArgument(getStationIdentifier().equals(p_Other.getStationIdentifier()),
 				"Cannot compare two stations.");
@@ -34,11 +34,11 @@ public interface IridiumDecodeOrder extends Comparable<IridiumDecodeOrder>
 	/**
 	 * The data type to decode
 	 *
-	 * @return {@link IridiumDataType} to decode
+	 * @return {@link SbdDataType} to decode
 	 * @author mckelvym
 	 * @since Feb 2, 2018
 	 */
-	IridiumDataType getDatatype();
+	SbdDataType getDatatype();
 
 	/**
 	 * ID

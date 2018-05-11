@@ -7,8 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import gov.usgs.warc.iridium.sbd.domain.IridiumDataType;
-import gov.usgs.warc.iridium.sbd.domain.IridiumDecodeOrder;
+import gov.usgs.warc.iridium.sbd.domain.SbdDataType;
+import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrder;
 
 /**
  * Convenience class for methods in the parsing tests.
@@ -46,14 +46,14 @@ public class ParsingTestsHelper
 	 * @param p_Units
 	 * @param p_TypeName
 	 * @param p_Transformation
-	 * @return a new {@link IridiumDataType}
+	 * @return a new {@link SbdDataType}
 	 * @since Feb 12, 2018
 	 */
-	private static IridiumDataType createDataType(final long p_Id,
+	private static SbdDataType createDataType(final long p_Id,
 			final int p_Bytes, final String p_Name, final String p_Units,
 			final String p_TypeName, final String p_Transformation)
 	{
-		final IridiumDataType dt = new IridiumDataType()
+		final SbdDataType dt = new SbdDataType()
 		{
 
 			@Override
@@ -102,14 +102,14 @@ public class ParsingTestsHelper
 	 * @param p_ByteOffset
 	 * @param p_IridiumDataType
 	 * @param p_StationId
-	 * @return a default {@link IridiumDecodeOrder}
+	 * @return a default {@link SbdDecodeOrder}
 	 * @since Feb 12, 2018
 	 */
-	private static IridiumDecodeOrder createDecodeOrder(final long p_ID,
-			final long p_ByteOffset, final IridiumDataType p_IridiumDataType,
+	private static SbdDecodeOrder createDecodeOrder(final long p_ID,
+			final long p_ByteOffset, final SbdDataType p_IridiumDataType,
 			final long p_StationId)
 	{
-		final IridiumDecodeOrder decodeOrd = new IridiumDecodeOrder()
+		final SbdDecodeOrder decodeOrd = new SbdDecodeOrder()
 		{
 
 			@Override
@@ -119,7 +119,7 @@ public class ParsingTestsHelper
 			}
 
 			@Override
-			public IridiumDataType getDatatype()
+			public SbdDataType getDatatype()
 			{
 				return p_IridiumDataType;
 			}
@@ -141,30 +141,30 @@ public class ParsingTestsHelper
 
 	/**
 	 *
-	 * @return a list of {@link IridiumDecodeOrder}
+	 * @return a list of {@link SbdDecodeOrder}
 	 * @since Feb 12, 2018
 	 */
-	public static List<IridiumDecodeOrder> getDecodeList()
+	public static List<SbdDecodeOrder> getDecodeList()
 	{
-		final IridiumDataType fsDataType = createDataType(221L, 3, "Flood Side",
+		final SbdDataType fsDataType = createDataType(221L, 3, "Flood Side",
 				"ft", "Water Level", "x / 100");
-		final IridiumDataType psDataType = createDataType(221L, 3,
+		final SbdDataType psDataType = createDataType(221L, 3,
 				"Protected Side", "ft", "Water Level", "x / 100");
-		final IridiumDataType windSpeedDataType = createDataType(221L, 3,
+		final SbdDataType windSpeedDataType = createDataType(221L, 3,
 				"Wind Speed", "mph", "Wind Speed", "x/10");
-		final IridiumDataType windDirectionDataType = createDataType(221L, 3,
+		final SbdDataType windDirectionDataType = createDataType(221L, 3,
 				"Wind Direction", "mph", "Wind Direction", "x");
-		final IridiumDataType temperatureDataType = createDataType(221L, 3,
+		final SbdDataType temperatureDataType = createDataType(221L, 3,
 				"Air Temperature", "degC", "Temperature", "x * .18 + 32");
-		final IridiumDataType humidityDataType = createDataType(221L, 3,
+		final SbdDataType humidityDataType = createDataType(221L, 3,
 				"Relative Humidity", "%", null, "x");
-		final IridiumDataType bpDataType = createDataType(221L, 3,
+		final SbdDataType bpDataType = createDataType(221L, 3,
 				"Barometric Pressure", "in of Hg", "Pressure", "x/10");
-		final IridiumDataType precip = createDataType(221L, 3, "Precipitation",
+		final SbdDataType precip = createDataType(221L, 3, "Precipitation",
 				"in", null, "x/100");
-		final IridiumDataType batteryDT = createDataType(221L, 1, "Battery",
+		final SbdDataType batteryDT = createDataType(221L, 1, "Battery",
 				"V", null, "x * 0.234 + 10.6");
-		final List<IridiumDecodeOrder> decodeList = Lists.newArrayList();
+		final List<SbdDecodeOrder> decodeList = Lists.newArrayList();
 		decodeList.add(createDecodeOrder(221L, 0L, fsDataType, 1L));
 		decodeList.add(createDecodeOrder(221L, 3L, psDataType, 1L));
 		decodeList.add(createDecodeOrder(221L, 6L, windSpeedDataType, 1L));

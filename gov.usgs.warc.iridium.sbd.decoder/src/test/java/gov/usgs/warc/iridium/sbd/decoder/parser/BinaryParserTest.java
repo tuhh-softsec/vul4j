@@ -36,11 +36,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import gov.usgs.warc.iridium.sbd.decoder.ParsingTestsHelper;
 import gov.usgs.warc.iridium.sbd.decoder.Tests;
 import gov.usgs.warc.iridium.sbd.decoder.Tests.SkipMethod;
-import gov.usgs.warc.iridium.sbd.domain.IridiumDecodeOrderProvider;
-import gov.usgs.warc.iridium.sbd.domain.IridiumStationIdProvider;
-import gov.usgs.warc.iridium.sbd.domain.IridiumDataType;
-import gov.usgs.warc.iridium.sbd.domain.IridiumDecodeOrder;
-import gov.usgs.warc.iridium.sbd.domain.IridiumStationId;
+import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrderProvider;
+import gov.usgs.warc.iridium.sbd.domain.SbdStationIdProvider;
+import gov.usgs.warc.iridium.sbd.domain.SbdDataType;
+import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrder;
+import gov.usgs.warc.iridium.sbd.domain.SbdStationId;
 import gov.usgs.warc.iridium.sbd.decoder.parser.BinaryParser;
 import gov.usgs.warc.iridium.sbd.decoder.parser.elements.LocationInformation;
 
@@ -72,21 +72,21 @@ public class BinaryParserTest
 	}
 
 	/**
-	 * Get the {@link IridiumDataType} from the parsed map by it's attribute
+	 * Get the {@link SbdDataType} from the parsed map by it's attribute
 	 * name (e.x. wind speed)
 	 *
 	 * @param p_Stream
-	 *            the stream of {@link IridiumDataType}
+	 *            the stream of {@link SbdDataType}
 	 * @param p_AttributeToSearch
 	 *            the attribute to search for
-	 * @return the {@link IridiumDataType} with the given name.
+	 * @return the {@link SbdDataType} with the given name.
 	 * @since Feb 9, 2018
 	 */
-	private static IridiumDataType getDatatype(
-			final Stream<IridiumDataType> p_Stream,
+	private static SbdDataType getDatatype(
+			final Stream<SbdDataType> p_Stream,
 			final String p_AttributeToSearch)
 	{
-		final Optional<IridiumDataType> opt = p_Stream.filter(
+		final Optional<SbdDataType> opt = p_Stream.filter(
 				dt -> dt.getName().equalsIgnoreCase(p_AttributeToSearch))
 				.findFirst();
 		assertThat(opt).isNotEqualTo(Optional.empty());
@@ -114,7 +114,7 @@ public class BinaryParserTest
 	 * @since Jan 10, 2018
 	 */
 	@MockBean
-	private IridiumDecodeOrderProvider<IridiumDecodeOrder>	m_DecodeOrderRepo;
+	private SbdDecodeOrderProvider<SbdDecodeOrder>	m_DecodeOrderRepo;
 
 	/**
 	 * Rule for asserting that the proper exception is thrown
@@ -126,12 +126,12 @@ public class BinaryParserTest
 			.none();
 
 	/**
-	 * The {@link IridiumStationIdProvider}
+	 * The {@link SbdStationIdProvider}
 	 *
 	 * @since Feb 12, 2018
 	 */
 	@MockBean
-	private IridiumStationIdProvider<IridiumStationId>		m_IridiumStationRepo;
+	private SbdStationIdProvider<SbdStationId>		m_IridiumStationRepo;
 
 	/**
 	 * The station ID to test with
@@ -158,7 +158,7 @@ public class BinaryParserTest
 	{
 		m_StationIdTest = 1L;
 		final String imei = "300234010124740";
-		final IridiumStationId iridiumStationId = new IridiumStationId()
+		final SbdStationId iridiumStationId = new SbdStationId()
 		{
 
 			@Override
@@ -285,7 +285,7 @@ public class BinaryParserTest
 		assertThat(parser.getMessage()).isNotNull();
 		assertThat(parser.getMessage().getPayLoad()).isNotNull();
 
-		final Optional<IridiumStationId> opt = m_IridiumStationRepo
+		final Optional<SbdStationId> opt = m_IridiumStationRepo
 				.findByImei(String
 						.valueOf(parser.getMessage().getHeader().getImei()))
 				.stream().findFirst();
@@ -308,7 +308,7 @@ public class BinaryParserTest
 	{
 		m_TestingByteList = setupMessageBytes("00");
 		final BinaryParser parser = new BinaryParser(m_TestingByteList);
-		final Optional<IridiumStationId> opt = m_IridiumStationRepo
+		final Optional<SbdStationId> opt = m_IridiumStationRepo
 				.findByImei(String
 						.valueOf(parser.getMessage().getHeader().getImei()))
 				.stream().findFirst();
@@ -316,7 +316,7 @@ public class BinaryParserTest
 		final Long stationId = opt.get().getStationId();
 
 		parser.setDecodeOrder(m_DecodeOrderRepo.findByStationId(stationId));
-		final Map<IridiumDataType, Double> dataMap = parser
+		final Map<SbdDataType, Double> dataMap = parser
 				.getValuesFromMessage();
 		final LocationInformation locationInformation = parser.getMessage()
 				.getLocationInformation();
@@ -324,7 +324,7 @@ public class BinaryParserTest
 				.cepRadius(2000L).id((byte) 0x03).length((short) 11)
 				.latitude(125.0).longitude(65.59999).build();
 		assertThat(locationInformation).isEqualTo(expected);
-		final Set<IridiumDataType> keySet = dataMap.keySet();
+		final Set<SbdDataType> keySet = dataMap.keySet();
 		assertThat(dataMap.get(getDatatype(keySet.stream(), "wind speed")))
 				.isEqualTo(6.6);
 		assertThat(dataMap.get(getDatatype(keySet.stream(), "wind direction")))
@@ -387,7 +387,7 @@ public class BinaryParserTest
 		m_TestingByteList = setupMessageBytes("0D");
 		m_ExpectedException.expect(Exception.class);
 		final BinaryParser parser = new BinaryParser(m_TestingByteList);
-		final Optional<IridiumStationId> opt = m_IridiumStationRepo
+		final Optional<SbdStationId> opt = m_IridiumStationRepo
 				.findByImei(String
 						.valueOf(parser.getMessage().getHeader().getImei()))
 				.stream().findFirst();
@@ -409,7 +409,7 @@ public class BinaryParserTest
 	{
 		m_TestingByteList = setupMessageBytes("00");
 		final BinaryParser parser = new BinaryParser(m_TestingByteList);
-		final Optional<IridiumStationId> opt = m_IridiumStationRepo
+		final Optional<SbdStationId> opt = m_IridiumStationRepo
 				.findByImei(String
 						.valueOf(parser.getMessage().getHeader().getImei()))
 				.stream().findFirst();
@@ -417,7 +417,7 @@ public class BinaryParserTest
 		final Long stationId = opt.get().getStationId();
 
 		parser.setDecodeOrder(m_DecodeOrderRepo.findByStationId(stationId));
-		final Map<IridiumDataType, Double> valuesFromMessage = parser
+		final Map<SbdDataType, Double> valuesFromMessage = parser
 				.getValuesFromMessage();
 		assertThat(valuesFromMessage).isNotNull();
 	}

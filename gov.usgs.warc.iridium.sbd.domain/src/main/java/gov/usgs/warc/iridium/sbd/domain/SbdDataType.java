@@ -9,7 +9,7 @@ import org.nfunk.jep.JEP;
  * @since Feb 2, 2018
  *
  */
-public interface IridiumDataType
+public interface SbdDataType
 {
 	/**
 	 * The number of bytes to read for this data type from the Short Burst Data
