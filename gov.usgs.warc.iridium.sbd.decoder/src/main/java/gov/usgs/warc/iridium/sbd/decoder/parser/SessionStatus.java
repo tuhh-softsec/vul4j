@@ -141,7 +141,8 @@ public enum SessionStatus
 	 * @return the {@link SessionStatus}
 	 * @since Jan 8, 2018
 	 */
-	public @NonNull static SessionStatus getStatus(final int p_IncomingStatus)
+	@NonNull
+	public static SessionStatus getStatus(final int p_IncomingStatus)
 	{
 		switch (p_IncomingStatus)
 		{
