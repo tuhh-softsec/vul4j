@@ -9,6 +9,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
+		<module>gov.usgs.warc.iridium.sbd.domain</module>
 		<module>gov.usgs.warc.iridium.sbd.decoder</module>
 	</modules>
 </project>

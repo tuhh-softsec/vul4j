@@ -19,11 +19,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import gov.usgs.warc.iridium.sbd.decoder.db.IridiumDecodeOrderProvider;
-import gov.usgs.warc.iridium.sbd.decoder.db.IridiumStationIdProvider;
-import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumDataType;
-import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumDecodeOrder;
-import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumStationId;
+import gov.usgs.warc.iridium.sbd.domain.IridiumDecodeOrderProvider;
+import gov.usgs.warc.iridium.sbd.domain.IridiumStationIdProvider;
+import gov.usgs.warc.iridium.sbd.domain.IridiumDataType;
+import gov.usgs.warc.iridium.sbd.domain.IridiumDecodeOrder;
+import gov.usgs.warc.iridium.sbd.domain.IridiumStationId;
 import gov.usgs.warc.iridium.sbd.decoder.parser.BinaryParser;
 
 /**

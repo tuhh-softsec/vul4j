@@ -4,9 +4,9 @@ import com.google.common.collect.Table;
 
 import java.util.Collection;
 
-import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumDataType;
-import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumStationId;
 import gov.usgs.warc.iridium.sbd.decoder.parser.Message;
+import gov.usgs.warc.iridium.sbd.domain.IridiumDataType;
+import gov.usgs.warc.iridium.sbd.domain.IridiumStationId;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

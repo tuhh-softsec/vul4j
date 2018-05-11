@@ -1,8 +1,6 @@
-package gov.usgs.warc.iridium.sbd.decoder.db;
+package gov.usgs.warc.iridium.sbd.domain;
 
 import java.util.SortedSet;
-
-import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumDecodeOrder;
 
 /**
  * Repository for {@link IridiumDecodeOrder}

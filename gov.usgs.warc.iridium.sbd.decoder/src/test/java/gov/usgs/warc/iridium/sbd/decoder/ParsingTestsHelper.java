@@ -7,8 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumDataType;
-import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumDecodeOrder;
+import gov.usgs.warc.iridium.sbd.domain.IridiumDataType;
+import gov.usgs.warc.iridium.sbd.domain.IridiumDecodeOrder;
 
 /**
  * Convenience class for methods in the parsing tests.

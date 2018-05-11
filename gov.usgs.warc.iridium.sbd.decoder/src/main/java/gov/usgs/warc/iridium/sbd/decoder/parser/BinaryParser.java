@@ -22,16 +22,16 @@ import java.util.SortedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumDataType;
-import gov.usgs.warc.iridium.sbd.decoder.db.entity.IridiumDecodeOrder;
 import gov.usgs.warc.iridium.sbd.decoder.parser.Message.MessageBuilder;
 import gov.usgs.warc.iridium.sbd.decoder.parser.elements.Header;
-import gov.usgs.warc.iridium.sbd.decoder.parser.elements.LocationInformation;
-import gov.usgs.warc.iridium.sbd.decoder.parser.elements.Payload;
 import gov.usgs.warc.iridium.sbd.decoder.parser.elements.Header.HeaderBuilder;
+import gov.usgs.warc.iridium.sbd.decoder.parser.elements.LocationInformation;
 import gov.usgs.warc.iridium.sbd.decoder.parser.elements.LocationInformation.LocationInformationBuilder;
+import gov.usgs.warc.iridium.sbd.decoder.parser.elements.Payload;
 import gov.usgs.warc.iridium.sbd.decoder.parser.elements.Payload.PayloadBuilder;
 import gov.usgs.warc.iridium.sbd.decoder.sixbitbinary.Decode;
+import gov.usgs.warc.iridium.sbd.domain.IridiumDataType;
+import gov.usgs.warc.iridium.sbd.domain.IridiumDecodeOrder;
 
 /**
  * Parse a list of {@link Byte} into usable digits from the iridium source.

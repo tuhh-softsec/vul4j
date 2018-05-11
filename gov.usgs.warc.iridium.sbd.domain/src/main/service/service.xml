@@ -1,0 +1,25 @@
+<service>
+	<id>@dist.project.id@</id>
+	<name>@dist.project.name@</name>
+	<description>@dist.project.description@</description>
+	<workingdirectory>%BASE%\</workingdirectory>
+	<logpath>%BASE%\logs</logpath>
+	<logmode>rotate</logmode>
+
+	<executable>java</executable>
+	<startargument>-Dspring.application.admin.enabled=true</startargument>
+	<startargument>-Dcom.sun.management.jmxremote.port=@dist.jmx.port@</startargument>
+	<startargument>-Dcom.sun.management.jmxremote.authenticate=false</startargument>
+	<startargument>-Dcom.sun.management.jmxremote.ssl=false</startargument>
+	<startargument>-cp</startargument>
+	<startargument>lib/*</startargument>
+	<startargument>net.nicoll.boot.daemon.StartSpringBootService</startargument>
+	<startargument>@dist.start.class@</startargument>
+	<startargument>@dist.start.args@</startargument>
+
+	<stopexecutable>java</stopexecutable>
+	<stopargument>-cp</stopargument>
+	<stopargument>lib/*</stopargument>
+	<stopargument>net.nicoll.boot.daemon.StopSpringBootService</stopargument>
+	<stopargument>@dist.jmx.port@</stopargument>
+</service>

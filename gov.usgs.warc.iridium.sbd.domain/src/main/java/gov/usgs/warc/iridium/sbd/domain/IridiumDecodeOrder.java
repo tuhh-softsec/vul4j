@@ -1,4 +1,4 @@
-package gov.usgs.warc.iridium.sbd.decoder.db.entity;
+package gov.usgs.warc.iridium.sbd.domain;
 
 import static com.google.common.base.Preconditions.checkArgument;
 

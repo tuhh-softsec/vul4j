@@ -1,4 +1,4 @@
-package gov.usgs.warc.iridium.sbd.decoder.db.entity;
+package gov.usgs.warc.iridium.sbd.domain;
 
 /**
  * Stores the IMEI for an Iridium transmitter, which is linked to a station
