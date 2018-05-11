@@ -31,8 +31,9 @@ public class GridColumn implements Serializable {
     @Column(name="data_index")
     private String dataIndex;
 
-    @Column(name="data_type")
-    private Integer dataType;
+    @ManyToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name="data_type")
+    private ResultType dataType;
 
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="filter")
@@ -69,11 +70,11 @@ public class GridColumn implements Serializable {
         this.dataIndex = dataIndex;
     }
 
-    public Integer getDataType() {
+    public ResultType getDataType() {
         return this.dataType;
     }
 
-    public void setDataType(Integer dataType) {
+    public void setDataType(ResultType dataType) {
         this.dataType = dataType;
     }
 

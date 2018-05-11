@@ -22,10 +22,6 @@ public class ResultType implements Serializable {
 
 	private String name;
 
-	//bi-directional many-to-one association to Result
-	@OneToMany(mappedBy="resultType")
-	private List<Result> results;
-
 	public ResultType() {
 	}
 
@@ -51,27 +47,5 @@ public class ResultType implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public List<Result> getResults() {
-		return this.results;
-	}
-
-	public void setResults(List<Result> results) {
-		this.results = results;
-	}
-
-	public Result addResult(Result result) {
-		getResults().add(result);
-		result.setResultType(this);
-
-		return result;
-	}
-
-	public Result removeResult(Result result) {
-		getResults().remove(result);
-		result.setResultType(null);
-
-		return result;
 	}
 }
