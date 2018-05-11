@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import gov.la.coastal.cims.hgms.harvester.structuregages.sixbitbinary.Decode;
+import gov.usgs.warc.iridium.sbd.decoder.sixbitbinary.Decode;
 
 /**
  * http://www.sutron.com/documents/xlite-9210b-user-manual-3.pdf
