@@ -1,8 +1,13 @@
 # USGS Iridium Short Burst Data (SBD) Decoder Library
 
+Java library for decoding Iridium Short Burst Data packets.
+
 ## About
 
-Java library for decoding Iridium Short Burst Data packets.
+This Java software library is used to decode Short Burst Data packets transmitted from the Iridium satellite 
+networking using the DirectIP configuration. When paired with a simple TCP socket listener, this library enables
+the header and payload data to be extracted from the message and parsed successfully. The user must define the 
+data types they are expecting in the payload as well as any scale transformation that should be applied. 
 
 ## Developer(s)
 
