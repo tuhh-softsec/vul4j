@@ -102,6 +102,7 @@ public class UserService{
         response.put("messstelleLabor", userInfo.getMessLaborId());
         response.put("netzbetreiber", userInfo.getNetzbetreiber());
         response.put("funktionen", userInfo.getFunktionen());
+        response.put("userId", userInfo.getUserId());
 
         logger.debug(
             request.getAttribute("lada.user.name") + " - " +
