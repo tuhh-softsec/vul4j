@@ -23,7 +23,6 @@ public class NetzbetreiberAuthorizer extends BaseAuthorizer {
         Class<T> clazz
     ) {
         Class<?> dataType = data.getClass();
-        System.out.println(dataType);
         String id;
         //If data is not an id
         if (dataType != String.class){
