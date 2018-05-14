@@ -2,7 +2,7 @@
 
 ## About
 
-Library for decoding Iridium Short Burst Data packets.
+Java library for decoding Iridium Short Burst Data packets.
 
 ## Developer(s)
 
