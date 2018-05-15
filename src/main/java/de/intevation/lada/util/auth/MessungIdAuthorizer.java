@@ -30,27 +30,32 @@ public class MessungIdAuthorizer extends BaseAuthorizer {
         UserInfo userInfo,
         Class<T> clazz
     ) {
-        Integer id;
+        Integer id = null;
 
-        if(data.getClass() != Integer.class){
-            Method m;
-            try {
-                m = clazz.getMethod("getMessungsId");
-            } catch (NoSuchMethodException | SecurityException e1) {
-                return false;
-            }    
-            try {
-                id = (Integer) m.invoke(data);
-            } catch (IllegalAccessException |
-                IllegalArgumentException |
-                InvocationTargetException e
-            ) {
-                return false;
-            }
-    
-        } else {
-            id = (Integer) data;
+        Method m;
+        try {
+            m = clazz.getMethod("getMessungsId");
+        } catch (NoSuchMethodException | SecurityException e1) {
+            return false;
+        }    
+        try {
+            id = (Integer) m.invoke(data);
+        } catch (IllegalAccessException |
+            IllegalArgumentException |
+            InvocationTargetException e
+        ) {
+            return false;
         }
+        return isAuthorizedById(id, method, userInfo, clazz);
+    }
+
+    @Override
+    public <T> boolean isAuthorizedById(
+        Object id,
+        RequestMethod method,
+        UserInfo userInfo,
+        Class<T> clazz
+    ) {
         Messung messung = repository.getByIdPlain(Messung.class, id, Strings.LAND);
         Probe probe = repository.getByIdPlain(
             Probe.class,
@@ -71,7 +76,7 @@ public class MessungIdAuthorizer extends BaseAuthorizer {
                 method == RequestMethod.PUT ||
                 method == RequestMethod.DELETE ||
                 kombi.getStatusWert().getId() != 0) &&
-            getAuthorization(userInfo, probe);
+                getAuthorization(userInfo, probe);
     }
 
     @SuppressWarnings("unchecked")

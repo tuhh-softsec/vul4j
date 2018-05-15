@@ -59,6 +59,11 @@ public class TestAuthorization implements Authorization {
     }
 
     @Override
+    public <T> boolean isAuthorizedById(Object source, Object id, RequestMethod method, Class<T> clazz) {
+        return true;
+    }
+
+    @Override
     public <T> boolean isAuthorized(UserInfo userInfo, Object data, Class<T> clazz) {
         return true;
     }

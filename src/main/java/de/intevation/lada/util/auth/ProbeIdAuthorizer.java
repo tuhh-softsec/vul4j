@@ -32,38 +32,32 @@ public class ProbeIdAuthorizer extends BaseAuthorizer {
         Class<T> clazz
     ) {
         Integer id;
-        Class<?> dataType = data.getClass();
-        if (dataType == Integer.class || dataType  == String.class){
-            if (dataType == Integer.class) {
-                id = (Integer) data;
-            } else {
-                try{
-                    id = Integer.valueOf((String) data);
-                } catch (NumberFormatException nfe) {
-                    return false;
-                }
-            }
-        } else {
-            Method m;
-            try {
-                m = clazz.getMethod("getProbeId");
-            } catch (NoSuchMethodException | SecurityException e1) {
-                return false;
-            }
-            try {
-                id = (Integer) m.invoke(data);
-            } catch (IllegalAccessException |
-                IllegalArgumentException |
-                InvocationTargetException e
-            ) {
-                return false;
-            }
-    
+        Method m;
+        try {
+            m = clazz.getMethod("getProbeId");
+        } catch (NoSuchMethodException | SecurityException e1) {
+            return false;
         }
+        try {
+            id = (Integer) m.invoke(data);
+        } catch (IllegalAccessException |
+            IllegalArgumentException |
+            InvocationTargetException e
+        ) {
+            return false;
+        }
+        return isAuthorizedById(id, method, userInfo, clazz);
+    }
+    @Override
+    public <T> boolean isAuthorizedById(
+        Object id,
+        RequestMethod method,
+        UserInfo userInfo,
+        Class<T> clazz
+    ) {
         Probe probe =
             repository.getByIdPlain(Probe.class, id, Strings.LAND);
-        return !isProbeReadOnly(id) && getAuthorization(userInfo, probe);
-
+        return !isProbeReadOnly((Integer) id) && getAuthorization(userInfo, probe);
     }
 
     @SuppressWarnings("unchecked")

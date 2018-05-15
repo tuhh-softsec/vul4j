@@ -48,6 +48,12 @@ public class MessprogrammIdAuthorizer extends BaseAuthorizer {
         return false;
     }
 
+    @Override
+    public <T> boolean isAuthorizedById(Object id, RequestMethod method, UserInfo userInfo, Class<T> clazz) {
+        //TODO: implement
+        return false;
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public <T> Response filter(

@@ -115,6 +115,9 @@ public class QueryTools
                 }
                 Filter filter = customColumn.getGridColumn().getFilter();
                 String filterValue = customColumn.getFilterValue();
+                if (customColumn.getGridColumn().getDataType().getName().equals("text")) {
+                    filterValue = "'" + filterValue + "'";
+                }
                 filterSql += filter.getSql().replace(":" + filter.getParameter(), filterValue) + " ";
             }
         }

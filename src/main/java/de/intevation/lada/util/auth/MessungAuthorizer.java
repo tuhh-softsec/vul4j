@@ -31,18 +31,9 @@ public class MessungAuthorizer extends BaseAuthorizer {
         Class<T> clazz
     ) {
         Messung messung;
-        //If data is an Integer or String, assume it is an id
-        Class<?> dataType = data.getClass();
-        if (dataType == Integer.class){
-            messung = (Messung) repository.getById(Messung.class, (Integer) data, Strings.LAND).getData();
-        } else if (dataType == String.class) {
-            messung = (Messung) repository.getById(Messung.class, Integer.valueOf((String) data), Strings.LAND).getData();
-        } else {
-            messung = (Messung) data;
-        }
-        Response response =
-            repository.getById(Probe.class, messung.getProbeId(), Strings.LAND);
-        Probe probe = (Probe)response.getData();
+        messung = (Messung) data;
+        Probe probe =
+            repository.getByIdPlain(Probe.class, messung.getProbeId(), Strings.LAND);
         if (method == RequestMethod.PUT ||
             method == RequestMethod.DELETE) {
             return !this.isMessungReadOnly(messung.getId()) &&
@@ -62,6 +53,19 @@ public class MessungAuthorizer extends BaseAuthorizer {
         return kombi.getStatusWert().getId() > 0 ||
             getAuthorization(userInfo, probe);
     }
+
+    @Override
+    public <T> boolean isAuthorizedById(
+        Object id,
+        RequestMethod method,
+        UserInfo userInfo,
+        Class<T> clazz
+    ) {
+        Messung messung;
+        messung = repository.getByIdPlain(Messung.class, id, Strings.LAND);
+        return isAuthorized(messung, method, userInfo, clazz);
+    }
+
 
     @SuppressWarnings("unchecked")
     @Override

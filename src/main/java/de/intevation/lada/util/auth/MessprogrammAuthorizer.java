@@ -62,6 +62,12 @@ public class MessprogrammAuthorizer implements Authorizer {
     }
 
     @Override
+    public <T> boolean isAuthorizedById(Object id, RequestMethod method, UserInfo userInfo, Class<T> clazz) {
+        //TODO: implement
+        return false;
+    }
+
+    @Override
     public <T> Response filter(
         Response data,
         UserInfo userInfo,

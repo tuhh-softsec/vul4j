@@ -10,6 +10,8 @@ package de.intevation.lada.util.auth;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import de.intevation.lada.model.stammdaten.NetzBetreiber;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 
@@ -22,38 +24,41 @@ public class NetzbetreiberAuthorizer extends BaseAuthorizer {
         UserInfo userInfo,
         Class<T> clazz
     ) {
-        Class<?> dataType = data.getClass();
         String id;
-        //If data is not an id
-        if (dataType != String.class){
-            Method m;
-            try {
-                m = clazz.getMethod("getNetzbetreiberId");
-            } catch (NoSuchMethodException | SecurityException e1) {
-                return false;
-            }
-            try {
-                id = (String) m.invoke(data);
-            } catch (IllegalAccessException |
-                IllegalArgumentException |
-                InvocationTargetException e
-            ) {
-                return false;
-            }
-        } else {
-            //Use data directly as model id
-            id = (String) data;
+        Method m;
+        try {
+            m = clazz.getMethod("getNetzbetreiberId");
+        } catch (NoSuchMethodException | SecurityException e1) {
+            return false;
         }
+        try {
+            id = (String) m.invoke(data);
+        } catch (IllegalAccessException |
+            IllegalArgumentException |
+            InvocationTargetException e
+        ) {
+            return false;
+        }
+        return isAuthorizedById(id, method, userInfo, clazz);
+    }
 
+    @Override
+    public <T> boolean isAuthorizedById(
+        Object id,
+        RequestMethod method,
+        UserInfo userInfo,
+        Class<T> clazz
+    ) {
+        String netId = (String) id;
         return (method == RequestMethod.POST
             || method == RequestMethod.PUT
             || method == RequestMethod.DELETE
         ) && (
-            userInfo.getFunktionenForNetzbetreiber(id).contains(4)
+            userInfo.getFunktionenForNetzbetreiber(netId).contains(4)
             // XXX: this currently allows any user, regardless of function,
             // to manipulate and delete any ort of his own netzbetreiber!
             || clazz.isAssignableFrom(de.intevation.lada.model.stammdaten.Ort.class)
-            && userInfo.getNetzbetreiber().contains(id)
+            && userInfo.getNetzbetreiber().contains(netId)
         );
     }
 

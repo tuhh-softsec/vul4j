@@ -90,6 +90,11 @@ public class DefaultAuthorization implements Authorization {
         return true;
     }
 
+    @Override
+    public <T> boolean isAuthorizedById(Object source, Object id, RequestMethod method, Class<T> clazz) {
+        return true;
+    }
+
     /**
      * Get the authorization status.
      *

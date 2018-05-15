@@ -173,6 +173,33 @@ public class HeaderAuthorization implements Authorization {
     }
 
     /**
+     * Check whether a user is authorized to operate on the given data by the given object id.
+     *
+     * @param source    The HttpServletRequest containing user information.
+     * @param id        The data's id to test.
+     * @param method    The Http request type.
+     * @param clazz     The data object class.
+     * @return True if the user is authorized else returns false.
+     */
+    public <T> boolean isAuthorizedById(
+        Object source,
+        Object id,
+        RequestMethod method,
+        Class<T> clazz
+    ) {
+        UserInfo userInfo = this.getInfo(source);
+        if (userInfo == null) {
+            return false;
+        }
+        Authorizer authorizer = authorizers.get(clazz);
+        // Do not authorize anything unknown
+        if (authorizer == null) {
+            return false;
+        }
+        return authorizer.isAuthorizedById(id, method, userInfo, clazz);
+    }
+
+    /**
      * Request the lada specific groups.
      *
      * @param roles     The roles defined in the OpenId server.

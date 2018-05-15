@@ -18,6 +18,12 @@ public interface Authorizer {
         UserInfo userInfo,
         Class<T> clazz);
 
+    public <T> boolean isAuthorizedById(
+        Object id,
+        RequestMethod method,
+        UserInfo userInfo,
+        Class<T> clazz);
+
     public <T> Response filter(
         Response data,
         UserInfo userInfo,

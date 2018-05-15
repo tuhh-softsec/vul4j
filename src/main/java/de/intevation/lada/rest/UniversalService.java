@@ -101,7 +101,6 @@ public class UniversalService {
      *     sortIndex: [number],
      *     filterValue: [],
      *     filterActive: [boolean],
-     *     visible: [boolean] 
      *   }]
      * }
      * </code>
@@ -136,8 +135,8 @@ public class UniversalService {
                 Integer.valueOf(columnValue.getGridColumnId()),
                 Strings.STAMM);
             //Check if column can be used for authorization 
-            ResultType resultType = repository.getByIdPlain(ResultType.class, gridColumn.getDataType(), Strings.STAMM);
-            if (resultType != null && authorizationColumnIndex == null) {
+            ResultType resultType = repository.getByIdPlain(ResultType.class, gridColumn.getDataType().getId(), Strings.STAMM);
+            if (resultType != null) {
                 switch(resultType.getName()) {
                     case "probeId":
                         authorizationColumnType =  de.intevation.lada.model.land.Probe.class;
@@ -145,12 +144,15 @@ public class UniversalService {
                         break;
                     case "messungId":
                         authorizationColumnType =  de.intevation.lada.model.land.Messung.class;
+                        if (authorizationColumnIndex == null) {
                         authorizationColumnIndex = gridColumn.getDataIndex();
-
+                        }
                         break;
                     case "ortId":
                         authorizationColumnType = Ort.class;
+                        if (authorizationColumnIndex == null) {
                         authorizationColumnIndex = gridColumn.getDataIndex();
+                        }
                         break;
                 }
             }
@@ -178,7 +180,7 @@ public class UniversalService {
                 idToAuthorize = ort.getNetzbetreiberId();
             }
 
-            boolean readonly = !authorization.isAuthorized(
+            boolean readonly = !authorization.isAuthorizedById(
                 request,
                 idToAuthorize,
                 RequestMethod.POST,
