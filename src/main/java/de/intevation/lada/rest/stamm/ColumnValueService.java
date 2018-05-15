@@ -34,6 +34,7 @@ import javax.ws.rs.core.UriInfo;
 
 import de.intevation.lada.model.stammdaten.GridColumn;
 import de.intevation.lada.model.stammdaten.GridColumnValue;
+import de.intevation.lada.model.stammdaten.QueryUser;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -114,17 +115,18 @@ public class ColumnValueService {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<GridColumnValue> criteriaQuery = builder.createQuery(GridColumnValue.class);
         Root<GridColumnValue> root = criteriaQuery.from(GridColumnValue.class);
-        Join<GridColumnValue, GridColumn> value = root.join("gridColumn", javax.persistence.criteria.JoinType.LEFT);
-        Predicate filter = builder.equal(value.get("baseQuery"), id);
+        Join<GridColumnValue, QueryUser> value = root.join("queryUser", javax.persistence.criteria.JoinType.LEFT);
+        Predicate filter = builder.equal(root.get("queryUser"), id);
         Predicate uId = builder.equal(root.get("userId"), userInfo.getUserId());
-        Predicate nullId = builder.isNull(root.get("userId"));
-        Predicate userIdFilter = builder.or(uId, nullId);
-        filter = builder.and(filter, userIdFilter);
+        Predicate zeroIdFilter = builder.equal(root.get("userId"), "0");
+        Predicate userFilter = builder.or(uId, zeroIdFilter);
+        filter = builder.and(filter, userFilter);
         criteriaQuery.where(filter);
         List<GridColumnValue> queries = repository.filterPlain(criteriaQuery, Strings.STAMM);
 
         for (GridColumnValue gcv : queries) {
             gcv.setgridColumnId(gcv.getGridColumn().getId());
+            gcv.setQueryUserId(gcv.getQueryUser().getId());
         }
 
         return new Response(true, 200, queries);

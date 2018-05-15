@@ -51,9 +51,16 @@ public class GridColumnValue implements Serializable {
     @JoinColumn(name="grid_column")
     private GridColumn gridColumn;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="query_user")
+    private QueryUser queryUser;
+
     //Connected grid column's id, used for creating/updating grid_column_values
     @Transient
     private int gridColumnId;
+
+    @Transient
+    private int queryUserId;
 
     public GridColumnValue() {
     }
@@ -147,4 +154,20 @@ public class GridColumnValue implements Serializable {
         this.gridColumn = gridColumn;
     }
 
+    @JsonIgnore
+    public QueryUser getQueryUser() {
+        return this.queryUser;
+    }
+
+    public void setQueryUser(QueryUser queryUser) {
+        this.queryUser = queryUser;
+    }
+
+    public int getQueryUserId() {
+        return this.queryUserId;
+    }
+
+    public void setQueryUserId(int queryUserId) {
+        this.queryUserId = queryUserId;
+    }
 }

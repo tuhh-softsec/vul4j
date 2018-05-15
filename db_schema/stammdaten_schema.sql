@@ -769,6 +769,7 @@ CREATE TABLE grid_column_values (
     id serial PRIMARY KEY,
     user_id integer REFERENCES lada_user,
     grid_column integer NOT NULL REFERENCES grid_column,
+    query_user integer NOT NULL REFERENCES query_user,
     sort character varying(4),
     sort_index integer,
     filter_value text,
