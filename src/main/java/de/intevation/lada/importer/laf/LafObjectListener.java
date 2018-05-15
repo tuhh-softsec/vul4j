@@ -22,6 +22,7 @@ public class LafObjectListener extends LafBaseListener {
     Map<String, List<ReportItem>> warnings;
     ArrayList<ReportItem> currentErrors;
     ArrayList<ReportItem> currentWarnings;
+    ArrayList<ReportItem> parserWarnings;
 
     private boolean hasDatenbasis = false;
     private boolean hasMessprogramm = false;
@@ -42,6 +43,7 @@ public class LafObjectListener extends LafBaseListener {
         warnings = new HashMap<String, List<ReportItem>>();
         currentErrors = new ArrayList<ReportItem>();
         currentWarnings = new ArrayList<ReportItem>();
+        parserWarnings = new ArrayList<ReportItem>();
         currentUOrt = new HashMap<String, String>();
         currentEOrt = new HashMap<String, String>();
     }
@@ -62,6 +64,10 @@ public class LafObjectListener extends LafBaseListener {
      */
     public Map<String, List<ReportItem>> getWarnings() {
         return warnings;
+    }
+
+    public List<ReportItem> getParserWarnings() {
+        return parserWarnings;
     }
 
     /**
@@ -100,6 +106,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterEnd(LafParser.EndContext ctx) {
+        if (!parserWarnings.isEmpty()) {
+            warnings.put("Parser", parserWarnings);
+        }
         if (currentProbe != null) {
             data.addProbe(currentProbe);
             if (!currentErrors.isEmpty()) {
@@ -412,6 +421,28 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterUebertragungsformat(LafParser.UebertragungsformatContext ctx) {
+        if (this.hasUebertragungsformat()) {
+            return;
+        }
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            parserWarnings.add(warn);
+        }
+        String value = ctx.getChild(1).toString();
+        // Trim double qoutes.
+        value = value.replaceAll("\"", "");
+        if (!value.matches(LafDataTypes.C1) ||
+            !value.equals("7")
+        ) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue(value);
+            warn.setCode(632);
+            parserWarnings.add(warn);;
+        }
         hasUebertragungsformat = true;
     }
 
@@ -421,6 +452,30 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterVersion(LafParser.VersionContext ctx) {
+        if (this.hasVersion()) {
+            return;
+        }
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            List<ReportItem> items = new ArrayList<>();
+            items.add(warn);
+            parserWarnings.add(warn);
+        }
+        String value = ctx.getChild(1).toString();
+        // Trim double qoutes.
+        value = value.replaceAll("\"", "");
+        if (!value.matches(LafDataTypes.C4) ||
+            !value.equals("0084")
+        ) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue(value);
+            warn.setCode(632);
+            parserWarnings.add(warn);
+        }
         hasVersion = true;
     }
 

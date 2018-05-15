@@ -54,22 +54,30 @@ public class LafImporter implements Importer{
             LafObjectListener listener = new LafObjectListener();
             ParseTreeWalker walker = new ParseTreeWalker();
             walker.walk(listener, tree);
-            List<ReportItem> items = new ArrayList<ReportItem>();
+            List<ReportItem> parserWarnings = listener.getParserWarnings();
             if (!listener.hasUebertragungsformat()) {
-                items.add(new ReportItem("missing header", "format", 673));
+                ReportItem warn = new ReportItem();
+                warn.setKey("UEBERTRAGUNGSFORMAT");
+                warn.setValue("");
+                warn.setCode(673);
+                parserWarnings.add(warn);
             }
             if (!listener.hasVersion()) {
-                items.add(new ReportItem("missing header", "version", 673));
-            }
-            if (!items.isEmpty()) {
-                warnings.put("parser", items);
+                ReportItem warn = new ReportItem();
+                warn.setKey("VERSION");
+                warn.setValue("");
+                warn.setCode(673);
+                parserWarnings.add(warn);
             }
             if (!errorListener.getErrors().isEmpty()) {
-                errors.put("parser", errorListener.getErrors());
+                errors.put("Parser", errorListener.getErrors());
                 return;
             }
             errors.putAll(listener.getErrors());
             warnings.putAll(listener.getWarnings());
+            if (!parserWarnings.isEmpty()) {
+                warnings.put("Parser", parserWarnings);
+            }
             mapper.setUserInfo(userInfo);
             mapper.setConfig(config);
             mapper.mapObjects(listener.getData());
