@@ -168,7 +168,9 @@ public class UniversalService {
 
         List<Map<String, Object>> result =
             queryTools.getResultForQuery(columns.getColumns(), qid);
-
+        if (result == null) {
+            return new Response(true, 200, null);
+        }
         for (Map<String, Object> row: result) {
             Object idToAuthorize = row.get(authorizationColumnIndex);
             //If column is an ort, get Netzbetreiberid

@@ -8,6 +8,7 @@
 package de.intevation.lada.rest.stamm;
 
 import java.util.List;
+import java.util.ArrayList;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -122,6 +123,15 @@ public class QueryService {
         criteriaQuery.where(filter);
         
         List<QueryUser> queries = repository.filterPlain(criteriaQuery, Strings.STAMM);
+        for (QueryUser query: queries) {
+            if (query.getMessStelles() != null && query.getMessStelles().size() > 0) {
+                List<String> mstIds = new ArrayList<String>();
+                for (QueryMessstelle mst: query.getMessStelles()) {
+                    mstIds.add(mst.getMessStelle());
+                }
+                query.setMessStellesIds(mstIds.toArray(new String[mstIds.size()]));
+            }
+        }
 
         return new Response(true, 200, queries);
     }

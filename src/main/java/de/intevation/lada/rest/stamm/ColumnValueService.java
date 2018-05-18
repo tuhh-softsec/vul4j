@@ -153,6 +153,11 @@ public class ColumnValueService {
             gridColumn.setId(gridColumnValue.getGridColumnId());
             gridColumnValue.setGridColumn(gridColumn);
 
+
+            QueryUser queryUser = new QueryUser();
+            queryUser.setId(gridColumnValue.getQueryUserId());
+            gridColumnValue.setQueryUser(queryUser);
+
             return repository.create(gridColumnValue, Strings.STAMM);
         }
 
@@ -175,6 +180,7 @@ public class ColumnValueService {
                 return new Response(false, 699, null);
         } else {
             gridColumnValue.setUserId(userInfo.getUserId());
+
             GridColumn gridColumn = new GridColumn();
             gridColumn.setId(gridColumnValue.getGridColumnId());
             gridColumnValue.setGridColumn(gridColumn);

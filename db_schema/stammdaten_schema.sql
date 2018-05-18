@@ -282,6 +282,7 @@ CREATE TABLE lada_user (
     name character varying(80) NOT NULL,
     UNIQUE (name)
 );
+INSERT INTO lada_user VALUES(0, 'Default');
 
 
 CREATE TABLE query_type (
@@ -333,18 +334,12 @@ INSERT INTO filter_type VALUES(0, 'text', false);
 INSERT INTO filter_type VALUES(1, 'number', false);
 INSERT INTO filter_type VALUES(2, 'bool', false);
 INSERT INTO filter_type VALUES(3, 'datetime', false);
-INSERT INTO filter_type VALUES(4, 'listmst', false);
-INSERT INTO filter_type VALUES(5, 'listmst', true);
-INSERT INTO filter_type VALUES(6, 'listnetz', false);
-INSERT INTO filter_type VALUES(7, 'listnetz', true);
-INSERT INTO filter_type VALUES(8, 'listumw', false);
-INSERT INTO filter_type VALUES(9, 'listumw', true);
-INSERT INTO filter_type VALUES(10, 'liststatus', false);
-INSERT INTO filter_type VALUES(11, 'liststatus', true);
-INSERT INTO filter_type VALUES(12, 'listrei', false);
-INSERT INTO filter_type VALUES(13, 'listrei', true);
-INSERT INTO filter_type VALUES(14, 'listkta', false);
-INSERT INTO filter_type VALUES(15, 'listkta', true);
+INSERT INTO filter_type VALUES(4, 'listmst', true);
+INSERT INTO filter_type VALUES(5, 'listnetz', true);
+INSERT INTO filter_type VALUES(6, 'listumw', true);
+INSERT INTO filter_type VALUES(7, 'liststatus', true);
+INSERT INTO filter_type VALUES(8, 'listrei', true);
+INSERT INTO filter_type VALUES(9, 'listkta', true);
 
 CREATE TABLE filter (
     id serial PRIMARY KEY,

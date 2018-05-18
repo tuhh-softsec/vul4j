@@ -110,7 +110,6 @@ public class ColumnService {
         catch (NumberFormatException e) {
             return new Response(false, 603, "Not a valid filter id");
         }
-        UserInfo userInfo = authorization.getInfo(request);
         EntityManager em = repository.entityManager(Strings.STAMM);
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<GridColumn> criteriaQuery = builder.createQuery(GridColumn.class);

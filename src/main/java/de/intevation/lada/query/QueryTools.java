@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.inject.Inject;
@@ -25,9 +26,11 @@ import javax.json.JsonString;
 import javax.json.JsonValue;
 import javax.json.JsonValue.ValueType;
 import javax.persistence.EntityManager;
+import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.apache.log4j.Logger;
+import org.hibernate.jpa.internal.QueryImpl;
 
 import de.intevation.lada.model.stammdaten.Filter;
 import de.intevation.lada.model.stammdaten.GridColumn;
@@ -86,7 +89,8 @@ public class QueryTools
         List<GridColumn> columns = new ArrayList<GridColumn>();
         //Map containing all sort statements, sorted by sortIndex
         TreeMap<Integer, String> sortIndMap = new TreeMap<Integer, String>();
-
+        //Map containing all filters and filter values
+        MultivaluedMap<String, String> filterValues = new MultivaluedHashMap<String, String>();
         String filterSql = "";
         String sortSql = "";
 
@@ -115,10 +119,15 @@ public class QueryTools
                 }
                 Filter filter = customColumn.getGridColumn().getFilter();
                 String filterValue = customColumn.getFilterValue();
-                if (customColumn.getGridColumn().getDataType().getName().equals("text")) {
-                    filterValue = "'" + filterValue + "'";
+                if (filter.getFilterType().getMultiselect() == false) {
+                    filterValues.add(filter.getParameter(), filterValue);
+                } else {
+                    String[] multiselect = filterValue.split(",");
+                    for (String value : multiselect) {
+                        filterValues.add(filter.getParameter(), value);
+                    }
                 }
-                filterSql += filter.getSql().replace(":" + filter.getParameter(), filterValue) + " ";
+                filterSql += filter.getSql();
             }
         }
 
@@ -140,6 +149,7 @@ public class QueryTools
                     sortSql += ", " + unorderedSorts;
                 }
             }
+
         }
 
         if (!filterSql.isEmpty()){
@@ -148,8 +158,7 @@ public class QueryTools
         sql += sortSql + ";";
         javax.persistence.Query q = prepareQuery(
             sql,
-            null,
-            null,
+            filterValues,
             repository.entityManager(Strings.LAND));
         if (q == null) {
             return new ArrayList<>();
@@ -179,7 +188,8 @@ public class QueryTools
                     String p = property.toString().replaceAll("\"", "");
                     if (value != null &&
                         entry.containsKey(p) &&
-                        entry.get(p) != null
+                        entry.get(            System.out.println(values);
+p) != null
                     ) {
                         for (JsonValue v : value) {
                             String filterValue = v.toString().replaceAll("\"", "");
@@ -225,27 +235,18 @@ public class QueryTools
 
     public javax.persistence.Query prepareQuery(
         String sql,
-        List<Filter> filters,
         MultivaluedMap<String, String> params,
         EntityManager manager
     ) {
         javax.persistence.Query query = manager.createNativeQuery(sql);
-        /*for (Filter filter: filters) {
-
-            List<String> param = params.get(filter.getDataIndex());
-            if (param == null) {
-                return null;
+        Set<String> keys = params.keySet();
+        for(String key : keys) {
+            List<String> values = new ArrayList<String>();
+            for (String value: params.get(key)) {
+                values.add(value);
             }
-            List<String> clean = new ArrayList<String>();
-            for(String p : param) {
-                p = p.trim();
-                // replace multiSelect-delimiter set by ExtJS with
-                // alternation metacharacter for PostgreSQL SIMILAR TO
-                clean.add(p.replace(",", "|"));
-            }
-            query.setParameter(filter.getDataIndex(), clean);
-
-        }*/
+            query.setParameter(key, values);
+        }
         return query;
 
     }

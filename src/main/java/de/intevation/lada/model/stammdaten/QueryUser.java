@@ -23,102 +23,103 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name="query_user")
 public class QueryUser implements Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Id
-	private Integer id;
+    @Id
+    private Integer id;
 
-	private String description;
+    private String description;
 
-	private String name;
+    private String name;
 
-	@Column(name="user_id")
-	private Integer userId;
+    @Column(name="user_id")
+    private Integer userId;
 
-	//uni-directional many-to-one association to Query
-	@Column(name="base_query")
-	private Integer baseQuery;
+    //uni-directional many-to-one association to Query
+    @Column(name="base_query")
+    private Integer baseQuery;
 
-	//bi-directional many-to-one association to QueryMessstelle
-	@OneToMany(mappedBy="queryUser", fetch=FetchType.EAGER, cascade = CascadeType.PERSIST)
-	private List<QueryMessstelle> messStelles;
+    //bi-directional many-to-one association to QueryMessstelle
+    @OneToMany(mappedBy="queryUser", fetch=FetchType.EAGER, cascade = CascadeType.PERSIST)
+    private List<QueryMessstelle> messStelles;
 
-	@Transient
-	private String[] messStellesIds;
+    @Transient
+    private String[] messStellesIds;
 
-	public QueryUser() {
-	}
+    public QueryUser() {
+    }
 
-	public Integer getId() {
-		return this.id;
-	}
+    public Integer getId() {
+        return this.id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public String getDescription() {
-		return this.description;
-	}
+    public String getDescription() {
+        return this.description;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public Integer getUserId() {
-		return this.userId;
-	}
+    public Integer getUserId() {
+        return this.userId;
+    }
 
-	public void setUserId(Integer userId) {
-		this.userId = userId;
-	}
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
-	public Integer getBaseQuery() {
-		return this.baseQuery;
-	}
+    public Integer getBaseQuery() {
+        return this.baseQuery;
+    }
 
-	public void setBaseQuery(Integer query) {
-		this.baseQuery = query;
-	}
+    public void setBaseQuery(Integer query) {
+        this.baseQuery = query;
+    }
 
-	public List<QueryMessstelle> getMessStelles() {
-		if (this.messStelles == null) {
-			this.messStelles = new ArrayList<QueryMessstelle>();
-		}
-		return this.messStelles;
-	}
+    @JsonIgnore
+    public List<QueryMessstelle> getMessStelles() {
+        if (this.messStelles == null) {
+            this.messStelles = new ArrayList<QueryMessstelle>();
+        }
+        return this.messStelles;
+    }
 
-	public void setMessStelles(List<QueryMessstelle> messStelles) {
-		this.messStelles = messStelles;
-	}
+    public void setMessStelles(List<QueryMessstelle> messStelles) {
+        this.messStelles = messStelles;
+    }
 
-	public QueryMessstelle addMessStelle(QueryMessstelle messStelle) {
-		getMessStelles().add(messStelle);
-		messStelle.setQueryUser(this);
+    public QueryMessstelle addMessStelle(QueryMessstelle messStelle) {
+        getMessStelles().add(messStelle);
+        messStelle.setQueryUser(this);
 
-		return messStelle;
-	}
+        return messStelle;
+    }
 
-	public QueryMessstelle removeMessStelle(QueryMessstelle messStelle) {
-		getMessStelles().remove(messStelle);
-		messStelle.setQueryUser(null);
+    public QueryMessstelle removeMessStelle(QueryMessstelle messStelle) {
+        getMessStelles().remove(messStelle);
+        messStelle.setQueryUser(null);
 
-		return messStelle;
-	}
+        return messStelle;
+    }
 
-	public String[] getMessStellesIds() {
-		return messStellesIds;
-	}
+    public String[] getMessStellesIds() {
+        return messStellesIds;
+    }
 
-	public void setMessStellesIds(String[] messStellesIds) {
-		this.messStellesIds = messStellesIds;
-	}
+    public void setMessStellesIds(String[] messStellesIds) {
+        this.messStellesIds = messStellesIds;
+    }
 }

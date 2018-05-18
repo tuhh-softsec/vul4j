@@ -26,7 +26,6 @@ SET search_path = stamm, pg_catalog;
 --
 
 COPY lada_user (id, name) FROM stdin;
-0	default
 \.
 
 

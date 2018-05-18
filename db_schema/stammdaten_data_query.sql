@@ -40,34 +40,34 @@ COPY base_query (id, sql) FROM stdin;
 \.
 
 COPY query_user (id, name, user_id, base_query, description) FROM stdin;
-1	Proben	\N	1	Alle Proben
-7	Proben pro Land und UMW (Multiselect)	\N	7	Abfrage aller Proben gefiltert pro Land und Umweltbereich (mit Mehrfachauswahl)
-9	Messprogramme	\N	9	Abfrage der Messprogramme ohne Filter
-10	Orte	\N	10	Abfrage der Orte
-11	Probenehmer	\N	11	Abfrage der Probenehmer
-12	Datensatzerzeuger	\N	12	Abfrage der Datensatzerzeuger
-13	alle nach Status	\N	13	Messungen nach Status
-14	Messprogrammkategorie	\N	14	Abfrage der Messprogrammkategorien
-15	LSt G - Messungen	\N	15	Gammaspektrometriemessungen zur LSt-Bearbeitung
-16	Land Messungen 	\N	16	Messungen zur Statusvergabe auf Land-Ebene
-17	LSt Sr - Messungen	\N	17	Strontium-Messungen zur LSt-Bearbeitung
-18	MST Messungen	\N	18	Messungen zur Statusvergabe auf MST-Ebene
+1	Proben	0	1	Alle Proben
+7	Proben pro Land und UMW (Multiselect)	0	7	Abfrage aller Proben gefiltert pro Land und Umweltbereich (mit Mehrfachauswahl)
+9	Messprogramme	0	9	Abfrage der Messprogramme ohne Filter
+10	Orte	0	10	Abfrage der Orte
+11	Probenehmer	0	11	Abfrage der Probenehmer
+12	Datensatzerzeuger	0	12	Abfrage der Datensatzerzeuger
+13	alle nach Status	0	13	Messungen nach Status
+14	Messprogrammkategorie	0	14	Abfrage der Messprogrammkategorien
+15	LSt G - Messungen	0	15	Gammaspektrometriemessungen zur LSt-Bearbeitung
+16	Land Messungen 	0	16	Messungen zur Statusvergabe auf Land-Ebene
+17	LSt Sr - Messungen	0	17	Strontium-Messungen zur LSt-Bearbeitung
+18	MST Messungen	0	18	Messungen zur Statusvergabe auf MST-Ebene
 \.
 
 COPY filter (id, sql, parameter, type, name) FROM stdin;
 1	probe.id_alt IN :idAlt	idAlt	0	probe_id_alt
 2	probe.hauptproben_nr IN :hauptprobenNr	hauptprobenNr	0	probe_hauptproben_nr
-3	probe.mst_id = :mstId	mstId	5	probe_mst_id
-4	probe.umw_id = :umwId	umwId	9	probe_umw_id
+3	probe.mst_id IN :mstId	mstId	4	probe_mst_id
+4	probe.umw_id IN :umwId	umwId	6	probe_umw_id
 5	probe.test = cast(:test AS boolean)	test	2	probe_test
 6	probe.probeentnahme_beginn >= to_timestamp(cast(:timeBegin AS double_precision))	timeBegin	3	probe_entnahme_beginn
 7	probe.probeentnahme_ende <= to_timestamp(cast(:timeEnd AS double_precision))	timeEnd	3	probe_entnahme_beginn
-8	datenbasis.datenbasis = :datenbasis	datenbasis	0	datenbasis
-9	probenart.probenart = :probenart	probenart	0	probenart
-10	ort.gem_id = :gemId	gemId	0	ort_gem_id
-11	ort.ort_id = :ortId	ortId	0	ort_ort_id
+8	datenbasis.datenbasis IN :datenbasis	datenbasis	0	datenbasis
+9	probenart.probenart IN :probenart	probenart	0	probenart
+10	ort.gem_id IN :gemId	gemId	0	ort_gem_id
+11	ort.ort_id IN :ortId	ortId	0	ort_ort_id
 12	verwaltungseinheit.bezeichnung IN :bezeichnung	bezeichnung	0	verwaltungseinheit_bezeichnung
-13	stamm.mess_stelle.netzbetreiber_id = :netzbetreiberId	netzbetreiberId	7	netzbetreiber_id
+13	stamm.mess_stelle.netzbetreiber_id IN :netzbetreiberId	netzbetreiberId	5	netzbetreiber_id
 \.
 
 --
