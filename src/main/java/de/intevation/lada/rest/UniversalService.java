@@ -113,13 +113,12 @@ public class UniversalService {
     @Produces("application/json")
     public Response execute(
         @Context HttpServletRequest request,
+        @Context UriInfo info,
         QueryColumns columns
     ) {
         Integer qid;
-
+        MultivaluedMap<String, String> params = info.getQueryParameters();
         List<GridColumnValue> gridColumnValues= columns.getColumns();
-
-        UserInfo userInfo = authorization.getInfo(request);
 
         String authorizationColumnIndex = null;
         Class<?> authorizationColumnType = null;
@@ -189,7 +188,20 @@ public class UniversalService {
                 authorizationColumnType);
             row.put("readonly", readonly);
         }
-        return new Response(true, 200, result);
+        int size = result.size();
+
+        if (params.containsKey("start") && params.containsKey("limit")) {
+            int start = Integer.valueOf(params.getFirst("start"));
+            int limit = Integer.valueOf(params.getFirst("limit"));
+            int end = limit + start;
+            if (start + limit > result.size()) {
+                end = result.size();
+            }
+            result = result.subList(start, end);
+        }
+
+
+        return new Response(true, 200, result, size);
     }
 
     /**

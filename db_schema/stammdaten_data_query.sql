@@ -90,6 +90,7 @@ COPY result_type (id, name, format) FROM stdin;
 5	messungId	\N
 6	ortId	\N
 7	geom	\N
+8	mpId	\N
 \.
 
 
@@ -126,7 +127,7 @@ COPY grid_column (id, base_query, name, data_index, position, filter, data_type)
 24	7	Gemeinde Id	eGemId	11	\N	1
 25	7	Probennummer	idAlt	12	1	1
 26	9	Id	id	1	\N	1
-27	9	Messprogramm 	mpNr	2	\N	1
+27	9	Messprogramm 	mpNr	2	\N	8
 28	9	netzbetreiber	netzId 	3	13	1
 29	9	Messstelle	mstLaborId	4	\N	1
 30	9	Datenbasis	dBasis	5	8	1
@@ -149,7 +150,7 @@ COPY grid_column (id, base_query, name, data_index, position, filter, data_type)
 47	10	NUTS Code	nutsCode	9	\N	1
 48	10	Ortszuordnung	ozId	10	\N	1
 49	10	KTA Gruppe	anlageId	11	\N	1
-50	10	Messprogramm	mpArt	12	\N	1
+50	10	Messprogrammart	mpArt	12	\N	1
 51	10	Koordinatenart	koordinatenArt	13	\N	1
 52	10	Koordinate X extern	koordXExtern	14	\N	1
 53	10 	Koordinate Y extern	koordYExtern	15	\N	1
