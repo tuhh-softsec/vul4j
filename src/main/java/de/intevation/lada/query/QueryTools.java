@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 import javax.json.Json;
@@ -67,7 +69,7 @@ public class QueryTools
         return null;
     }
     /**
-     * Execute query and return results.
+     * Execute query and return the filtered and sorted results.
      * @param customColumns Customized column configs, containing filter, sorting and references to the respective column.
      * @param qId Query id.
      * @return List of result maps.
@@ -77,6 +79,9 @@ public class QueryTools
         List<GridColumnValue> customColumns,
         Integer qId
     ) {
+        //A pattern for finding multiselect date filter values
+        Pattern multiselectDatePattern = Pattern.compile("[0-9]*,[0-9]*");
+
         QueryBuilder<BaseQuery> builder = new QueryBuilder<BaseQuery>(
             repository.entityManager(Strings.STAMM),
             BaseQuery.class
@@ -119,12 +124,30 @@ public class QueryTools
                 }
                 Filter filter = customColumn.getGridColumn().getFilter();
                 String filterValue = customColumn.getFilterValue();
+
                 if (filter.getFilterType().getMultiselect() == false) {
                     filterValues.add(filter.getParameter(), filterValue);
                 } else {
-                    String[] multiselect = filterValue.split(",");
-                    for (String value : multiselect) {
-                        filterValues.add(filter.getParameter(), value);
+                    //If filter is a multiselect date filter
+                    if (filter.getFilterType().getType().equals("listdatetime")) {
+                        //Get parameters as comma separated values, expected to be in milliseconds
+                        String[] params = filter.getParameter().split(",");
+                        Matcher matcher = multiselectDatePattern.matcher(filterValue);
+                        if (matcher.find()) {
+                            String[] values = matcher.group(0).split(",", -1);
+                            //Get filter values and convert to seconds
+                            long from = values[0].equals("") ? 0: Long.valueOf(values[0])/1000;
+                            long to = values[1].equals("") ? Integer.MAX_VALUE: Long.valueOf(values[1])/1000;
+                            //Add parameters and values to filter map
+                            filterValues.add(params[0], String.valueOf(from));
+                            filterValues.add(params[1], String.valueOf(to));
+                        }
+                    }else {
+                        //else add all filtervalues to the same parameter name
+                        String[] multiselect = filterValue.split(",");
+                        for (String value : multiselect) {
+                            filterValues.add(filter.getParameter(), value);
+                        }
                     }
                 }
                 filterSql += filter.getSql();
@@ -170,69 +193,15 @@ public class QueryTools
         String filter,
         List<Map<String, Object>> items
     ) {
-        /*
-        JsonReader jsonReader = Json.createReader(new StringReader(filter));
-        JsonArray filters = jsonReader.readArray();
-        jsonReader.close();
-        List<Map<String, Object>> filtered = new ArrayList<>();
-        for (Map<String, Object> entry : items) {
-            int ndx = 0;
-            boolean filtermatch = false;
-            for (JsonValue f : filters) {
-                JsonObject o = (JsonObject)f;
-                JsonString property = o.getJsonString("property");
-                ValueType type = o.get("value").getValueType();
-                if (type.equals(ValueType.ARRAY)) {
-                    // Compare with array
-                    JsonArray value = o.getJsonArray("value");
-                    String p = property.toString().replaceAll("\"", "");
-                    if (value != null &&
-                        entry.containsKey(p) &&
-                        entry.get(            System.out.println(values);
-p) != null
-                    ) {
-                        for (JsonValue v : value) {
-                            String filterValue = v.toString().replaceAll("\"", "");
-                            if (entry.get(p).toString().contains(filterValue) &&
-                                (ndx == 0 || (ndx > 0 && filtermatch == true))) {
-                                filtermatch = true;
-                            }
-                            else {
-                                filtermatch = false;
-                            }
-                        }
-                    }
-                }
-                else {
-                    JsonString value = o.getJsonString("value");
-                    if (property != null &&
-                        value != null
-                    ) {
-                        String p = property.toString().replaceAll("\"", "");
-                        String v = value.toString().replaceAll("\"", "");
-                        if (entry.containsKey(p) &&
-                            entry.get(p) != null &&
-                            entry.get(p).toString().contains(v) &&
-                            (ndx == 0 || (ndx > 0 && filtermatch == true))
-                        ) {
-                            filtermatch = true;
-                        }
-                        else {
-                            filtermatch = false;
-                        }
-                    }
-                }
-                ndx++;
-            }
-            if (filtermatch) {
-                filtered.add(entry);
-            }
-        }
-        return filtered;
-*/
         return null;
     }
 
+    /**
+     * Creates a query from a given sql and inserts the given parameters.
+     * @param sql The query sql string
+     * @param params A map containing parameter names and values
+     * @param manager Entity manager
+     */
     public javax.persistence.Query prepareQuery(
         String sql,
         MultivaluedMap<String, String> params,

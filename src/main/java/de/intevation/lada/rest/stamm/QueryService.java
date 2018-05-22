@@ -132,7 +132,6 @@ public class QueryService {
                 query.setMessStellesIds(mstIds.toArray(new String[mstIds.size()]));
             }
         }
-
         return new Response(true, 200, queries);
     }
 

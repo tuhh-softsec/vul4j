@@ -60,14 +60,17 @@ COPY filter (id, sql, parameter, type, name) FROM stdin;
 3	probe.mst_id IN :mstId	mstId	4	probe_mst_id
 4	probe.umw_id IN :umwId	umwId	6	probe_umw_id
 5	probe.test = cast(:test AS boolean)	test	2	probe_test
-6	probe.probeentnahme_beginn >= to_timestamp(cast(:timeBegin AS double_precision))	timeBegin	3	probe_entnahme_beginn
-7	probe.probeentnahme_ende <= to_timestamp(cast(:timeEnd AS double_precision))	timeEnd	3	probe_entnahme_beginn
+6	probe.probeentnahme_beginn >= to_timestamp(cast(:timeBegin AS DOUBLE PRECISION))	timeBegin	3	probe_entnahme_beginn
+7	probe.probeentnahme_ende <= to_timestamp(cast(:timeEnd AS DOUBLE PRECISION))	timeEnd	3	probe_entnahme_beginn
 8	datenbasis.datenbasis IN :datenbasis	datenbasis	0	datenbasis
 9	probenart.probenart IN :probenart	probenart	0	probenart
 10	ort.gem_id IN :gemId	gemId	0	ort_gem_id
 11	ort.ort_id IN :ortId	ortId	0	ort_ort_id
 12	verwaltungseinheit.bezeichnung IN :bezeichnung	bezeichnung	0	verwaltungseinheit_bezeichnung
 13	stamm.mess_stelle.netzbetreiber_id IN :netzbetreiberId	netzbetreiberId	5	netzbetreiber_id
+14	probe.probeentnahme_beginn BETWEEN to_timestamp(cast(:fromPeBegin AS DOUBLE PRECISION)) AND to_timestamp(cast(:toPeBegin AS DOUBLE PRECISION))	fromPeBegin,toPeBegin	10	Entnahmebeginn von-bis
+15	probe.probeentnahme_ende BETWEEN to_timestamp(cast(:fromPeEnd AS DOUBLE PRECISION)) AND to_timestamp(cast(:toPeEnd AS DOUBLE PRECISION))	fromPeEnd,toPeEnd	10	Entnahmeende von-bis
+16	probe.letzte_aenderung BETWEEN to_timestamp(cast(probeLetzteAenderungFrom AS DOBULE PRECISION)) AND to_timestamp(cast(probeLetzteAenderungTo AS DOUBLE PRECISION))	probeLetzteAenderungFrom,probeLetzteAenderungTo	10	Letzte Aenderung von-bis
 \.
 
 --
@@ -108,8 +111,8 @@ COPY grid_column (id, base_query, name, data_index, position, filter, data_type)
 5	1	Messstelle	mstId	5	3	1
 6	1	Umweltbereich	umwId	6	9	1
 7	1	Probenart	pArt	7	1	1
-8	1	Entnahme von	peBegin	8	3	2
-9	1	Entnahme bis	peEnd	9	3	2
+8	1	Entnahme von	peBegin	8	14	2
+9	1	Entnahme bis	peEnd	9	15	2
 10	1	Ort	ortId	10	1	1
 11	1	Gemeinde Id	eGemId	11	1	1
 12	1	Gemeinde	eGem	12	1	1
@@ -121,8 +124,8 @@ COPY grid_column (id, base_query, name, data_index, position, filter, data_type)
 18 	7	Messstelle	mstId	5	3	1
 19	7	Umweltbereich	umdId	6	4	1
 20	7	Probenart	pArt	7	9	1
-21	7	Entnahme von	peBegin	8	3	2
-22	7	Entnahme bis	peEnd	9	3	2
+21	7	Entnahme von	peBegin	8	14	2
+22	7	Entnahme bis	peEnd	9	15	2
 23	7	Ort	ortId	10	11	1
 24	7	Gemeinde Id	eGemId	11	\N	1
 25	7	Probennummer	idAlt	12	1	1
@@ -141,7 +144,7 @@ COPY grid_column (id, base_query, name, data_index, position, filter, data_type)
 38	9	Verwaltungseinheit	eGem	13	\N	1
 39	10	Id	id	1	11	6
 40	10	Netzbetreiber	netzbetreiberId	2	13	1
-41	10	Ort	ortId	3	11	6
+41	10	Ort	ortId	3	11	1
 42	10	Ort Typ	ortTyp	4	\N	1
 43	10	Kurtext	kurztext	5	\N	1
 44	10	Langtext	langtext	6	\N	1
@@ -194,7 +197,7 @@ COPY grid_column (id, base_query, name, data_index, position, filter, data_type)
 91	13	Probenart	pArt	12	9	1
 92	13	Probenentnahme beginn	peBegin	13	6	2
 93	13	Probenentnahme ende	peEnd	15	7	2
-94	13	Ort	ortId	16	11	6
+94	13	Ort	ortId	16	11	1
 95	13	Gemeinde	eGemId	17	\N	1
 96	13	Bezeichnung	eGem	18	\N	1
 97	14	Id	id	1	\N	1

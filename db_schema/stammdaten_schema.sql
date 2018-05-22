@@ -327,7 +327,7 @@ CREATE TABLE favorite (
 
 CREATE TABLE filter_type (
     id serial PRIMARY KEY,
-    type character varying(10) NOT NULL,
+    type character varying(12) NOT NULL,
     multiselect boolean
 );
 INSERT INTO filter_type VALUES(0, 'text', false);
@@ -340,6 +340,7 @@ INSERT INTO filter_type VALUES(6, 'listumw', true);
 INSERT INTO filter_type VALUES(7, 'liststatus', true);
 INSERT INTO filter_type VALUES(8, 'listrei', true);
 INSERT INTO filter_type VALUES(9, 'listkta', true);
+INSERT INTO filter_type VALUES(10, 'listdatetime', true);
 
 CREATE TABLE filter (
     id serial PRIMARY KEY,
