@@ -134,11 +134,11 @@ if [ "$NO_DATA" != "true" ]; then
     echo download and import german administrative borders
     TS="0101"
     cd /tmp
-    if [ ! -f /opt/lada_sql/vg250_${TS}.utm32s.shape.ebenen.zip ]; then
+    if [ ! -f vg250_${TS}.utm32s.shape.ebenen.zip ]; then
         curl -O \
             http://sg.geodatenzentrum.de/web_download/vg/vg250_${TS}/utm32s/shape/vg250_${TS}.utm32s.shape.ebenen.zip
     fi
-    unzip -u /opt/lada_sql/vg250_${TS}.utm32s.shape.ebenen.zip "*VG250_GEM*"
+    unzip -u vg250_${TS}.utm32s.shape.ebenen.zip "*VG250_GEM*"
 
     shp2pgsql -s 25832:4326 vg250_${TS}.utm32s.shape.ebenen/vg250_ebenen/VG250_GEM geo.vg250_gem | psql -q $DB_CONNECT_STRING -d $DB_NAME
 
