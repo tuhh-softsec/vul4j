@@ -2,6 +2,8 @@
 
 Java library for decoding Iridium Short Burst Data packets.
 
+[![Build Status](https://travis-ci.org/usgs/warc-iridium-sbd-decoder.svg?branch=master)](https://travis-ci.org/usgs/warc-iridium-sbd-decoder)
+
 ## About
 
 This Java software library is used to decode Short Burst Data packets transmitted from the Iridium satellite 
