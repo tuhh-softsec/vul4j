@@ -95,7 +95,7 @@ public class LafImporter implements Importer{
                     warnings.get(entry.getKey()).addAll(entry.getValue());
                 }
                 else {
-                    warnings.putAll(mapper.getWarnings());
+                    warnings.put(entry.getKey(), entry.getValue());
                 }
             }
         } catch (IOException e) {
