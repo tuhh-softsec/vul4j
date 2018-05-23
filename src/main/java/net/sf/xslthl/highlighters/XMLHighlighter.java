@@ -225,130 +225,132 @@ public class XMLHighlighter extends WholeHighlighter {
 			if (XMLHighlighter.LESS_THAN.equals(in.current())) {
 				out.add(in.markedToBlock());
 				in.moveNext(); // skip <
-				if (XMLHighlighter.SLASH.equals(in.current())) {
-					// closing tag -> tag
-					while (!in.finished()
-					        && !XMLHighlighter.GREATER_THAN
-					                .equals(in.current())) {
-						in.moveNext();
-					}
-					String style = getStyleForTagName(in.getMarked().trim()
-					        .substring(2));
-					// </dfsdf > trims to </dfsdf> and than to <dfsdf>
-					in.moveNext(); // get >
-					if (style != null) {
-						out.add(in.markedToStyledBlock(style));
-					} else {
-						out.add(in.markedToStyledBlock(styleElement));
-					}
-				} else if (XMLHighlighter.QUESTION_MARK.equals(in.current())) {
-					// processing instruction -> directive
-					while (!in.finished()
-					        && !(XMLHighlighter.GREATER_THAN.equals(in
-					                .current()) && XMLHighlighter.QUESTION_MARK
-					                .equals(in.prev()))) {
-						in.moveNext();
-					}
-					in.moveNext();
-					out.add(in.markedToStyledBlock(stylePi));
-				} else if (XMLHighlighter.EXCLAMATION_MARK.equals(in.current())
-				        && XMLHighlighter.HYPHEN.equals(in.next())
-				        && XMLHighlighter.HYPHEN.equals(in.next(2))) {
-					// comment
-					while (!in.finished()
-					        && !(XMLHighlighter.GREATER_THAN.equals(in
-					                .current())
-					                && XMLHighlighter.HYPHEN.equals(in.prev()) && XMLHighlighter.HYPHEN
-					                    .equals(in.prev(2)))) {
-						in.moveNext();
-					}
-					in.moveNext();
-					out.add(in.markedToStyledBlock(styleComment));
-				} else if (XMLHighlighter.EXCLAMATION_MARK.equals(in.current())
-				        && in.startsWith("[CDATA[", 1)) {
-					// CDATA section
-					in.moveNext(8);
-					out.add(in.markedToStyledBlock(styleElement));
-					int idx = in.indexOf("]]>");
-					if (idx == -1) {
-						in.moveToEnd();
-					} else {
-						in.moveNext(idx);
-					}
-					out.add(in.markedToBlock());
-					if (idx != -1) {
-						in.moveNext(3);
-						out.add(in.markedToStyledBlock(styleElement));
-					}
-				} else if (XMLHighlighter.EXCLAMATION_MARK.equals(in.current())
-				        && in.startsWith("DOCTYPE", 1)) {
-					// doctype... just ignore most of it
-					int cnt = 1;
-					while (!in.finished() && cnt > 0) {
-						if (in.current().equals(GREATER_THAN)) {
-							--cnt;
-						} else if (in.current().equals(LESS_THAN)) {
-							++cnt;
-						}
-						in.moveNext();
-					}
-					out.add(in.markedToStyledBlock(styleDoctype));
-				} else {
-					// normal tag
-					while (!in.finished()
-					        && !XMLHighlighter.GREATER_THAN
-					                .equals(in.current())
-					        && !XMLHighlighter.SLASH.equals(in.current())
-					        && !Character.isWhitespace(in.current())) {
-						in.moveNext();
-					}
-					String style = getStyleForTagName(in.getMarked().trim()
-					        .substring(1));
-
-					// find short tag
-					boolean shortTag = false;
-					int cnt = 0;
-					while (!in.finished()
-					        && !XMLHighlighter.GREATER_THAN
-					                .equals(in.current())
-					        && !XMLHighlighter.SLASH.equals(in.current())
-					        && Character.isWhitespace(in.current())) {
-						in.moveNext();
-
-						++cnt;
-					}
-
-					if (!in.finished()) {
-						if (XMLHighlighter.SLASH.equals(in.current())) {
+				if(in.hasNext()) {
+					if (XMLHighlighter.SLASH.equals(in.current())) {
+						// closing tag -> tag
+						while (!in.finished()
+								&& !XMLHighlighter.GREATER_THAN
+								.equals(in.current())) {
 							in.moveNext();
-							++cnt;
 						}
-						if (XMLHighlighter.GREATER_THAN.equals(in.current())) {
-							in.moveNext();
-							shortTag = true;
+						String style = getStyleForTagName(in.getMarked().trim()
+								.substring(2));
+						// </dfsdf > trims to </dfsdf> and than to <dfsdf>
+						in.moveNext(); // get >
+						if (style != null) {
+							out.add(in.markedToStyledBlock(style));
 						} else {
-							in.moveNext(-cnt);
+							out.add(in.markedToStyledBlock(styleElement));
 						}
-					}
-
-					if (style != null) {
-						out.add(in.markedToStyledBlock(style));
-					} else {
+					} else if (XMLHighlighter.QUESTION_MARK.equals(in.current())) {
+						// processing instruction -> directive
+						while (!in.finished()
+								&& !(XMLHighlighter.GREATER_THAN.equals(in
+										.current()) && XMLHighlighter.QUESTION_MARK
+										.equals(in.prev()))) {
+							in.moveNext();
+						}
+						in.moveNext();
+						out.add(in.markedToStyledBlock(stylePi));
+					} else if (XMLHighlighter.EXCLAMATION_MARK.equals(in.current())
+							&& XMLHighlighter.HYPHEN.equals(in.next())
+							&& XMLHighlighter.HYPHEN.equals(in.next(2))) {
+						// comment
+						while (!in.finished()
+								&& !(XMLHighlighter.GREATER_THAN.equals(in
+										.current())
+										&& XMLHighlighter.HYPHEN.equals(in.prev()) && XMLHighlighter.HYPHEN
+										.equals(in.prev(2)))) {
+							in.moveNext();
+						}
+						in.moveNext();
+						out.add(in.markedToStyledBlock(styleComment));
+					} else if (XMLHighlighter.EXCLAMATION_MARK.equals(in.current())
+							&& in.startsWith("[CDATA[", 1)) {
+						// CDATA section
+						in.moveNext(8);
 						out.add(in.markedToStyledBlock(styleElement));
-					}
-					if (!shortTag && !in.finished()
-					        && Character.isWhitespace(in.current())) {
-						readTagContent(in, out);
+						int idx = in.indexOf("]]>");
+						if (idx == -1) {
+							in.moveToEnd();
+						} else {
+							in.moveNext(idx);
+						}
+						out.add(in.markedToBlock());
+						if (idx != -1) {
+							in.moveNext(3);
+							out.add(in.markedToStyledBlock(styleElement));
+						}
+					} else if (XMLHighlighter.EXCLAMATION_MARK.equals(in.current())
+							&& in.startsWith("DOCTYPE", 1)) {
+						// doctype... just ignore most of it
+						int cnt = 1;
+						while (!in.finished() && cnt > 0) {
+							if (in.current().equals(GREATER_THAN)) {
+								--cnt;
+							} else if (in.current().equals(LESS_THAN)) {
+								++cnt;
+							}
+							in.moveNext();
+						}
+						out.add(in.markedToStyledBlock(styleDoctype));
+					} else {
+						// normal tag
+						while (!in.finished()
+								&& !XMLHighlighter.GREATER_THAN
+								.equals(in.current())
+								&& !XMLHighlighter.SLASH.equals(in.current())
+								&& !Character.isWhitespace(in.current())) {
+							in.moveNext();
+						}
+						String style = getStyleForTagName(in.getMarked().trim()
+								.substring(1));
+
+						// find short tag
+						boolean shortTag = false;
+						int cnt = 0;
+						while (!in.finished()
+								&& !XMLHighlighter.GREATER_THAN
+								.equals(in.current())
+								&& !XMLHighlighter.SLASH.equals(in.current())
+								&& Character.isWhitespace(in.current())) {
+							in.moveNext();
+
+							++cnt;
+						}
 
 						if (!in.finished()) {
 							if (XMLHighlighter.SLASH.equals(in.current())) {
 								in.moveNext();
+								++cnt;
 							}
-							in.moveNext();
-							if (style != null) {
-								out.add(in.markedToStyledBlock(style));
+							if (XMLHighlighter.GREATER_THAN.equals(in.current())) {
+								in.moveNext();
+								shortTag = true;
 							} else {
-								out.add(in.markedToStyledBlock(styleElement));
+								in.moveNext(-cnt);
+							}
+						}
+
+						if (style != null) {
+							out.add(in.markedToStyledBlock(style));
+						} else {
+							out.add(in.markedToStyledBlock(styleElement));
+						}
+						if (!shortTag && !in.finished()
+								&& Character.isWhitespace(in.current())) {
+							readTagContent(in, out);
+
+							if (!in.finished()) {
+								if (XMLHighlighter.SLASH.equals(in.current())) {
+									in.moveNext();
+								}
+								in.moveNext();
+								if (style != null) {
+									out.add(in.markedToStyledBlock(style));
+								} else {
+									out.add(in.markedToStyledBlock(styleElement));
+								}
 							}
 						}
 					}

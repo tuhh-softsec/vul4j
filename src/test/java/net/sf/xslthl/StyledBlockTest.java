@@ -145,6 +145,37 @@ public class StyledBlockTest {
 		                + "        ]></doctype>, \n" + "\n"
 		                + "        , <tag><x:root</tag>]", blocks.toString());
 	}
+	
+	/**
+	 * Guard against cases in which the &lt; of the start tag is at the end of
+	 * string.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testXMLHighlighterCaseSIOB() throws Exception {
+		XMLHighlighter hl = new XMLHighlighter();
+		ArrayList<Block> blocks = new ArrayList<Block>();
+		hl.highlight(new CharIter("<map class=\"- map/map \" >\n"
+		        + "    <oxy:front-page>\n" + "    ...\n"
+		        + "    </oxy:front-page>\n"
+		        + "    <opentopic:map xmlns:opentopic=\"http://www.idiominc.com/opentopic\">\n"
+		        + "    ...\n" + "    </opentopic:map>\n"
+		        + "    <topic class=\"- topic/topic \">\n"
+		        + "    <title class=\"- topic/title \">Request Support</title>\n"
+		        + "    ...\n" + "    </topic>\n" + "    <"), blocks);
+		assertEquals(
+		        "[, <tag><map</tag>,  , <attribute>class</attribute>, =, <value>\"- map/map \"</value>, <tag> ></tag>, \n"
+		                + "    , <tag><oxy:front-page></tag>, \n" + "    ...\n"
+		                + "    , <tag></oxy:front-page></tag>, \n"
+		                + "    , <tag><opentopic:map</tag>,  , <attribute>xmlns:opentopic</attribute>, =, <value>\"http://www.idiominc.com/opentopic\"</value>, <tag>></tag>, \n"
+		                + "    ...\n" + "    , <tag></opentopic:map></tag>, \n"
+		                + "    , <tag><topic</tag>,  , <attribute>class</attribute>, =, <value>\"- topic/topic \"</value>, <tag>></tag>, \n"
+		                + "    , <tag><title</tag>,  , <attribute>class</attribute>, =, <value>\"- topic/title \"</value>, <tag>></tag>, Request Support, <tag></title></tag>, \n"
+		                + "    ...\n" + "    , <tag></topic></tag>, \n"
+		                + "    , <]",
+		        blocks.toString());
+	}
 
 	/**
 	 * Guard against cases in which the CSS tokenizer is fed XML content.
