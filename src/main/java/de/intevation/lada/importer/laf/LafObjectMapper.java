@@ -1032,6 +1032,8 @@ public class LafObjectMapper {
                     ort.setOrtszusatztext(uo.get("U_ORTS_ZUSATZTEXT"));
                 }
                 repository.create(ort, "land");
+                probe.setKtaGruppeId(messpunkte.get(0).getKtaGruppeId());
+                repository.update(probe, "land");
             }
             else {
                 ReportItem warn = new ReportItem();
