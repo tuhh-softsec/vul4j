@@ -167,7 +167,7 @@ public class ColumnValueService {
      * Update an existing grid_column_value in the database
      */
     @PUT
-    @Path("/")
+    @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response update(

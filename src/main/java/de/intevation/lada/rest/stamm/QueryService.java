@@ -121,7 +121,7 @@ public class QueryService {
             filter = builder.or(filter, mess.get("messStelle").in(userInfo.getLaborMessstellen()));
         }
         criteriaQuery.where(filter);
-        
+
         List<QueryUser> queries = repository.filterPlain(criteriaQuery, Strings.STAMM);
         for (QueryUser query: queries) {
             if (query.getMessStelles() != null && query.getMessStelles().size() > 0) {
@@ -167,7 +167,7 @@ public class QueryService {
      * Update an existing query_user object in the database
      */
     @PUT
-    @Path("/")
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response update(
         @Context HttpServletRequest request,
