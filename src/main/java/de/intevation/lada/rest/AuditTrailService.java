@@ -234,8 +234,7 @@ public class AuditTrailService {
             node.put("identifier", value);
         }
         if ("messung".equals(audit.getTableName())) {
-            logger.debug("npr: " + audit.getRowData());
-            node.put("identifier", 
+            node.put("identifier",
                 audit.getRowData()
                     .get("nebenproben_nr").toString().replaceAll("\"", ""));
         }
@@ -358,6 +357,9 @@ public class AuditTrailService {
         EntityManager manager = repository.entityManager(source);
         String sql = "SELECT " + field + " FROM " + table + " WHERE " + idField +" = :id ;";
         javax.persistence.Query query = manager.createNativeQuery(sql);
+        if (id == null) {
+            return "";
+        }
         try {
             int value = Integer.parseInt(id);
             query.setParameter("id", value);
@@ -394,7 +396,7 @@ public class AuditTrailService {
                     String value = translateId(
                         m.getMappingTable(),
                         m.getValueField(),
-                        node.get(key).asText(),
+                        !node.get(key).isNull() ? node.get(key).asText() : null,
                         "id",
                         Strings.STAMM);
                     node.put(key, value);
