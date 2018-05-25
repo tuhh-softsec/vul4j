@@ -145,6 +145,10 @@ public class AuditTrailService {
             new TableMapper("date", "dd.MM.yy HH:mm"));
         mappings.put("probeentnahme_ende",
             new TableMapper("date", "dd.MM.yy HH:mm"));
+        mappings.put("kta_gruppe_id",
+            new TableMapper("kta_gruppe", "kta_gruppe"));
+        mappings.put("rei_progpunkt_grp_id",
+            new TableMapper("rei_progpunkt_gruppe", "rei_prog_punkt_gruppe"));
     }
 
     /**
