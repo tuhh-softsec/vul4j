@@ -115,7 +115,9 @@ public class QueryTools
             }
 
             if (customColumn.getFilterActive() != null
-                    && customColumn.getFilterActive() == true) {
+                    && customColumn.getFilterActive() == true
+                    && customColumn.getFilterValue() != null
+                    && !customColumn.getFilterValue().isEmpty()) {
                 //Build WHERE clause
                 if (filterSql.isEmpty()) {
                     filterSql += " WHERE ";
