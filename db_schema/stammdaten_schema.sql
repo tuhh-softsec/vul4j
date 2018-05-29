@@ -313,7 +313,7 @@ CREATE TABLE query_user (
 
 CREATE TABLE query_messstelle (
     id serial PRIMARY KEY,
-    query integer REFERENCES query_user,
+    query integer REFERENCES query_user ON DELETE CASCADE,
     mess_stelle character varying(5) REFERENCES mess_stelle
 );
 
@@ -765,7 +765,7 @@ CREATE TABLE grid_column_values (
     id serial PRIMARY KEY,
     user_id integer REFERENCES lada_user,
     grid_column integer NOT NULL REFERENCES grid_column,
-    query_user integer NOT NULL REFERENCES query_user,
+    query_user integer NOT NULL REFERENCES query_user ON DELETE CASCADE,
     sort character varying(4),
     sort_index integer,
     filter_value text,
