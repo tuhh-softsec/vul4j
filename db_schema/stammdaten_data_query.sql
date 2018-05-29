@@ -39,6 +39,8 @@ COPY base_query (id, sql) FROM stdin;
 18	SELECT messung.id,\n  probe.id AS probeId,\n  probe.hauptproben_nr AS hpNr,\n  messung.nebenproben_nr AS npNr,\n  status_stufe.stufe AS statusSt,\n  status_wert.wert AS statusW,\n  status_protokoll.datum AS statusD,\n  datenbasis.datenbasis AS dBasis,\n  mess_stelle.netzbetreiber_id AS netzId,\n  probe.mst_id AS mstId,\n  probe.umw_id AS umwId,\n  probenart.probenart AS pArt,\n  probe.probeentnahme_beginn AS peBegin,\n probe.probeentnahme_ende AS peEnd,\n  ort.gem_id AS eGemId,\n  verwaltungseinheit.bezeichnung AS eGem,\n  mw_pivot.h_3 AS h3,\n  mw_pivot.k_40 AS k40,\n  mw_pivot.co_60 AS co60,\n  mw_pivot.sr_89 AS sr89,\n  mw_pivot.sr_90 AS sr90,\n  mw_pivot.ru_103 AS ru103,\n  mw_pivot.i_131 AS i131,\n  mw_pivot.cs_134 AS cs134,\n  mw_pivot.cs_137 AS cs137,\n  mw_pivot.ce_144 AS ce144,\n  mw_pivot.u_234 AS u234,\n  mw_pivot.u_235 AS u235,\n  mw_pivot.u_238 AS u238,\n  mw_pivot.pu_238 AS pu238,\n  mw_pivot.pu_239 AS pu239,\n  mw_pivot.pu_23940 AS pu23940,\n  mw_pivot.te_132 AS te132,\n  mw_pivot.pb_212 AS pb212,\n  mw_pivot.pb_214 AS pb214,\n  mw_pivot.bi_212 AS bi212,\n  mw_pivot.bi_214 AS bi214\nFROM land.probe\nLEFT JOIN stamm.mess_stelle\n  ON (probe.mst_id = stamm.mess_stelle.id)\nINNER JOIN land.messung\n  ON probe.id = messung.probe_id\nINNER JOIN land.status_protokoll\n  ON messung.STATUS = status_protokoll.id\nLEFT JOIN stamm.status_kombi\n  ON status_protokoll.status_kombi = stamm.status_kombi.id\nLEFT JOIN stamm.status_wert\n  ON stamm.status_wert.id = stamm.status_kombi.wert_id\nLEFT JOIN stamm.status_stufe\n  ON stamm.status_stufe.id = stamm.status_kombi.stufe_id\nLEFT JOIN stamm.datenbasis\n  ON (probe.datenbasis_id = datenbasis.id)\nLEFT JOIN stamm.probenart\n  ON (probe.probenart_id = probenart.id)\nLEFT JOIN land.ortszuordnung\n  ON (\n      probe.id = ortszuordnung.probe_id\n      AND ortszuordnung.ortszuordnung_typ = 'E'\n      )\nLEFT JOIN stamm.ort\n  ON (ortszuordnung.ort_id = ort.id)\nLEFT JOIN stamm.verwaltungseinheit\n  ON (ort.gem_id = verwaltungseinheit.id)\nLEFT JOIN (\n  SELECT\n    messungs_id, meh_id, h_3, k_40, co_60, sr_89, sr_90, ru_103,\n    i_131, cs_134, cs_137, ce_144, u_234, u_235, u_238, pu_238,\n    pu_239, pu_23940, te_132, pb_212, pb_214, bi_212, bi_214\n  FROM crosstab(\n    'SELECT messwert.messungs_id, messwert.meh_id, messwert.messgroesse_id, COALESCE(messwert.messwert_nwg, '' '') || to_char(messwert.messwert, ''9.99eeee'') FROM land.messung INNER JOIN land.messwert ON messung.id = messung.id WHERE messgroesse_id IN (1, 28, 68, 164, 165, 220, 340, 369, 373, 404, 746, 747, 750, 768, 769, 850, 325, 672, 673, 684, 686) ORDER BY 1',\n    'SELECT mg_id FROM (VALUES (1), (28), (68), (164), (165), (220), (340), (369), (373), (404), (746), (747), (750), (768), (769), (850), (325), (672), (673), (684), (686)) AS t (mg_id)'\n  ) AS (\n    messungs_id integer, meh_id integer,\n    h_3 character varying(10), k_40 character varying(10),\n    co_60 character varying(10), sr_89 character varying(10),\n    sr_90 character varying(10), ru_103 character varying(10),\n    i_131 character varying(10), cs_134 character varying(10),\n    cs_137 character varying(10), ce_144 character varying(10),\n    u_234 character varying(10), u_235 character varying(10),\n    u_238 character varying(10), pu_238 character varying(10),\n    pu_239 character varying(10), pu_23940 character varying(10),\n    te_132 character varying(10), pb_212 character varying(10),\n    pb_214 character varying(10), bi_212 character varying(10),\n    bi_214 character varying(10)\n  )\n) AS mw_pivot\n  ON mw_pivot.messungs_id = messung.id\nLEFT JOIN stamm.mess_einheit\n  ON mess_einheit.id = mw_pivot.meh_id
 \.
 
+ALTER SEQUENCE base_query_id_seq RESTART WITH 19;
+
 COPY query_user (id, name, user_id, base_query, description) FROM stdin;
 1	Proben	0	1	Alle Proben
 7	Proben pro Land und UMW (Multiselect)	0	7	Abfrage aller Proben gefiltert pro Land und Umweltbereich (mit Mehrfachauswahl)
@@ -53,6 +55,8 @@ COPY query_user (id, name, user_id, base_query, description) FROM stdin;
 17	LSt Sr - Messungen	0	17	Strontium-Messungen zur LSt-Bearbeitung
 18	MST Messungen	0	18	Messungen zur Statusvergabe auf MST-Ebene
 \.
+
+ALTER SEQUENCE query_user_id_seq RESTART WITH 19;
 
 COPY filter (id, sql, parameter, type, name) FROM stdin;
 1	probe.id_alt IN :idAlt	idAlt	0	probe_id_alt
@@ -326,6 +330,8 @@ COPY grid_column (id, base_query, name, data_index, position, filter, data_type)
 220	18	bi4214	bi214	37	\N	15
 \.
 
+ALTER SEQUENCE grid_column_id_seq RESTART WITH 221;
+
 COPY grid_column_values (id, user_id, grid_column, query_user, sort, sort_index, filter_value, filter_active, visible, column_index, width) FROM stdin;
 1	\N	1	1	\N	\N	\N	f	f	-1	0
 2	\N	2	1	\N	\N	\N	f	f	0	100
@@ -341,6 +347,8 @@ COPY grid_column_values (id, user_id, grid_column, query_user, sort, sort_index,
 12	\N	12	1	\N	\N	\N	f	f	10	100
 13	\N	13	1	\N	\N	\N	f	f	11	100
 \.
+
+ALTER SEQUENCE grid_column_values_id_seq RESTART WITH 14;
 
 --
 -- TOC entry 5419 (class 0 OID 0)
