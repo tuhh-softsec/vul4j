@@ -139,18 +139,18 @@ public class UniversalService {
                 switch(resultType.getName()) {
                     case "probeId":
                         authorizationColumnType =  de.intevation.lada.model.land.Probe.class;
-                        authorizationColumnIndex = gridColumn.getDataIndex();
+                            authorizationColumnIndex = gridColumn.getDataIndex();
                         break;
                     case "messungId":
                         authorizationColumnType =  de.intevation.lada.model.land.Messung.class;
                         if (authorizationColumnIndex == null) {
-                        authorizationColumnIndex = gridColumn.getDataIndex();
+                            authorizationColumnIndex = gridColumn.getDataIndex();
                         }
                         break;
                     case "ortId":
                         authorizationColumnType = Ort.class;
                         if (authorizationColumnIndex == null) {
-                        authorizationColumnIndex = gridColumn.getDataIndex();
+                            authorizationColumnIndex = gridColumn.getDataIndex();
                         }
                         break;
                 }
@@ -172,21 +172,28 @@ public class UniversalService {
         }
         for (Map<String, Object> row: result) {
             Object idToAuthorize = row.get(authorizationColumnIndex);
-            //If column is an ort, get Netzbetreiberid
-            if (authorizationColumnType == Ort.class) {
-                Ort ort = (Ort) repository.getByIdPlain(
-                    Ort.class,
-                    idToAuthorize,
-                    Strings.STAMM);
-                idToAuthorize = ort.getNetzbetreiberId();
-            }
+            boolean readonly;
 
-            boolean readonly = !authorization.isAuthorizedById(
-                request,
-                idToAuthorize,
-                RequestMethod.POST,
-                authorizationColumnType);
+            if (idToAuthorize != null){
+                //If column is an ort, get Netzbetreiberid
+                if (authorizationColumnType == Ort.class) {
+                    Ort ort = (Ort) repository.getByIdPlain(
+                        Ort.class,
+                        idToAuthorize,
+                        Strings.STAMM);
+                    idToAuthorize = ort.getNetzbetreiberId();
+                }
+
+                readonly = !authorization.isAuthorizedById(
+                    request,
+                    idToAuthorize,
+                    RequestMethod.POST,
+                    authorizationColumnType);
+            } else {
+                readonly = true;
+            }
             row.put("readonly", readonly);
+
         }
         int size = result.size();
 
