@@ -98,6 +98,7 @@ public class QueryTools
         MultivaluedMap<String, String> filterValues = new MultivaluedHashMap<String, String>();
         String filterSql = "";
         String sortSql = "";
+        boolean subquery = false;
 
         for (GridColumnValue customColumn : customColumns) {
 
@@ -126,9 +127,31 @@ public class QueryTools
                 }
                 Filter filter = customColumn.getGridColumn().getFilter();
                 String filterValue = customColumn.getFilterValue();
+                String currentFilterString = filter.getSql();
+                String currentFilterParam = filter.getParameter();
+                String filterType = filter.getFilterType().getType();
+
+                //Check if filter is generic and replace param and value param
+                if (filterType.equals("generictext")) {
+                    String genTextParam = ":" + filter.getParameter() + "Param";
+                    String genTextValue = filter.getParameter() + "Value";
+                    currentFilterString = currentFilterString.replace(genTextParam, customColumn.getGridColumn().getDataIndex());
+                    currentFilterParam = genTextValue + customColumn.getGridColumnId();
+                    currentFilterString = currentFilterString.replace(":" + genTextValue, ":" + currentFilterParam);
+                    //TODO: Avoid using subqueries to use aliases in the where clause
+                    if (!subquery) {
+                        sql = "SELECT * FROM (" + sql + ") AS inner_query ";
+                        subquery = true;
+                    }
+                }
+
+                //Check if Filter is an in filter
+                if (filterType.equals("generictext") || filterType.equals("text")) {
+                    filterValue += "%";
+                }
 
                 if (filter.getFilterType().getMultiselect() == false) {
-                    filterValues.add(filter.getParameter(), filterValue);
+                    filterValues.add(currentFilterParam, filterValue);
                 } else {
                     //If filter is a multiselect date filter
                     if (filter.getFilterType().getType().equals("listdatetime")) {
@@ -152,7 +175,7 @@ public class QueryTools
                         }
                     }
                 }
-                filterSql += filter.getSql();
+                filterSql += currentFilterString;
             }
         }
 

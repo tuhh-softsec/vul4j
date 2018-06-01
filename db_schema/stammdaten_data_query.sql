@@ -59,22 +59,25 @@ COPY query_user (id, name, user_id, base_query, description) FROM stdin;
 ALTER SEQUENCE query_user_id_seq RESTART WITH 19;
 
 COPY filter (id, sql, parameter, type, name) FROM stdin;
-1	probe.id_alt IN :idAlt	idAlt	0	probe_id_alt
-2	probe.hauptproben_nr IN :hauptprobenNr	hauptprobenNr	0	probe_hauptproben_nr
+1	probe.id_alt LIKE :idAlt	idAlt	0	probe_id_alt
+2	probe.hauptproben_nr LIKE :hauptprobenNr	hauptprobenNr	0	probe_hauptproben_nr
 3	probe.mst_id IN :mstId	mstId	4	probe_mst_id
 4	probe.umw_id IN :umwId	umwId	6	probe_umw_id
 5	probe.test = cast(:test AS boolean)	test	2	probe_test
 6	probe.probeentnahme_beginn >= to_timestamp(cast(:timeBegin AS DOUBLE PRECISION))	timeBegin	3	probe_entnahme_beginn
 7	probe.probeentnahme_ende <= to_timestamp(cast(:timeEnd AS DOUBLE PRECISION))	timeEnd	3	probe_entnahme_beginn
-8	datenbasis.datenbasis IN :datenbasis	datenbasis	0	datenbasis
-9	probenart.probenart IN :probenart	probenart	0	probenart
-10	ort.gem_id IN :gemId	gemId	0	ort_gem_id
-11	ort.ort_id IN :ortId	ortId	0	ort_ort_id
-12	verwaltungseinheit.bezeichnung IN :bezeichnung	bezeichnung	0	verwaltungseinheit_bezeichnung
+8	datenbasis.datenbasis LIKE :datenbasis	datenbasis	0	datenbasis
+9	probenart.probenart LIKE :probenart	probenart	0	probenart
+10	ort.gem_id LIKE :gemId	gemId	0	ort_gem_id
+11	ort.ort_id LIKE :ortId	ortId	0	ort_ort_id
+12	verwaltungseinheit.bezeichnung LIKE :bezeichnung	bezeichnung	0	verwaltungseinheit_bezeichnung
 13	stamm.mess_stelle.netzbetreiber_id IN :netzbetreiberId	netzbetreiberId	5	netzbetreiber_id
 14	probe.probeentnahme_beginn BETWEEN to_timestamp(cast(:fromPeBegin AS DOUBLE PRECISION)) AND to_timestamp(cast(:toPeBegin AS DOUBLE PRECISION))	fromPeBegin,toPeBegin	10	Entnahmebeginn von-bis
 15	probe.probeentnahme_ende BETWEEN to_timestamp(cast(:fromPeEnd AS DOUBLE PRECISION)) AND to_timestamp(cast(:toPeEnd AS DOUBLE PRECISION))	fromPeEnd,toPeEnd	10	Entnahmeende von-bis
 16	probe.letzte_aenderung BETWEEN to_timestamp(cast(probeLetzteAenderungFrom AS DOBULE PRECISION)) AND to_timestamp(cast(probeLetzteAenderungTo AS DOUBLE PRECISION))	probeLetzteAenderungFrom,probeLetzteAenderungTo	10	Letzte Aenderung von-bis
+17	probe.id = :probeId	probeId	0	ProbeID
+18	:genTextParam LIKE :genTextValue	genText	11	generic_text_filter
+19	statusSt = :statusSt	statusSt	0	statusSt_filter
 \.
 
 --
@@ -120,20 +123,20 @@ COPY result_type (id, name, format) FROM stdin;
 --
 
 COPY grid_column (id, base_query, name, data_index, position, filter, data_type) FROM stdin;
-1	1	Id	probeId	1	\N	4
+1	1	Id	probeId	1	17	4
 2	1	Hauptproben Nummer	hauptprobenNr	2	2	1
 3	1	Datenbasis	dBasis	3	8	17
 4	1	Land	netzId	4	13	18
 5	1	Messstelle	mstId	5	3	10
-6	1	Umweltbereich	umwId	6	9	12
+6	1	Umweltbereich	umwId	6	4	12
 7	1	Probenart	pArt	7	1	19
 8	1	Entnahme von	peBegin	8	14	2
 9	1	Entnahme bis	peEnd	9	15	2
 10	1	Ort	ortId	10	1	6
-11	1	Gemeinde Id	eGemId	11	1	1
-12	1	Gemeinde	eGem	12	1	16
+11	1	Gemeinde Id	eGemId	11	10	1
+12	1	Gemeinde	eGem	12	18	16
 13	1	Probennummer	idAlt	13	1	1
-14	7	Id	probeId	1	\N	4
+14	7	Id	probeId	1	17	4
 15	7	Hauptproben Nummer 	hpNr	2	2	1
 16	7	Datenbasis	dBasis	3	8	17
 17	7	Netzbetreiber	netzId	4	13	18
@@ -143,32 +146,32 @@ COPY grid_column (id, base_query, name, data_index, position, filter, data_type)
 21	7	Entnahme von	peBegin	8	14	2
 22	7	Entnahme bis	peEnd	9	15	2
 23	7	Ort	ortId	10	11	6
-24	7	Gemeinde Id	eGemId	11	\N	1
+24	7	Gemeinde Id	eGemId	11	10	1
 25	7	Probennummer	idAlt	12	1	1
-27	9	Messprogramm 	mpNr	2	\N	8
-28	9	netzbetreiber	netzId 	3	13	18
-29	9	Messstelle	mstLaborId	4	\N	10
-30	9	Datenbasis	dBasis	5	8	17
-31	9	Messregime	messRegime	6	\N	1
-32	9	Probenart	pArt	7	\N	19
-33	9	Umweltbereich	umwId	8	\N	12
-34	9	Deskriptoren	deskriptoren	9	\N	1
-35	9	Probenintervall	intervall	10	\N	1
-36	9	Ort	ortId	11	\N	6
-37	9	Gemeinde ID	eGemId	12	\N	1
-38	9	Verwaltungseinheit	eGem	13	\N	1
+27	9	Messprogramm 	mpNr	1	\N	8
+28	9	netzbetreiber	netzId 	2	13	18
+29	9	Messstelle	mstLaborId	3	\N	10
+30	9	Datenbasis	dBasis	4	8	17
+31	9	Messregime	messRegime	5	\N	1
+32	9	Probenart	pArt	6	9	19
+33	9	Umweltbereich	umwId	7	4	12
+34	9	Deskriptoren	deskriptoren	8	\N	1
+35	9	Probenintervall	intervall	9	\N	1
+36	9	Ort	ortId	10	\N	6
+37	9	Gemeinde ID	eGemId	11	10	1
+38	9	Verwaltungseinheit	eGem	12	\N	1
 39	10	Id	id	1	11	6
 40	10	Netzbetreiber	netzbetreiberId	2	13	18
 41	10	Ort	ortId	3	11	6
 42	10	Ort Typ	ortTyp	4	\N	1
-43	10	Kurtext	kurztext	5	\N	1
-44	10	Langtext	langtext	6	\N	1
+43	10	Kurtext	kurztext	5	18	1
+44	10	Langtext	langtext	6	18	1
 45	10	Staat	staat	7	\N	20
 46	10	Verwaltungseinheit	verwaltungseinheit	8	12	1
-47	10	NUTS Code	nutsCode	9	\N	1
+47	10	NUTS Code	nutsCode	9	18	1
 48	10	Ortszuordnung	ozId	10	\N	1
 49	10	KTA Gruppe	anlageId	11	\N	1
-50	10	Messprogrammart	mpArt	12	\N	1
+50	10	Messprogrammart	mpArt	12	9	1
 51	10	Koordinatenart	koordinatenArt	13	\N	1
 52	10	Koordinate X extern	koordXExtern	14	\N	3
 53	10 	Koordinate Y extern	koordYExtern	15	\N	3
@@ -187,9 +190,9 @@ COPY grid_column (id, base_query, name, data_index, position, filter, data_type)
 66	11	Bezeichnung	bezeichnung	7	\N	1
 67	11	Kurzbezeichnung	kurzBezeichnung	8	\N	1
 68	11	Ort	ort	9	\N	1
-69	11	PLZ	plz	10	\N	3
-70	11	Strasse	strasse	11	\N	1
-71	11	Telefon	telefon	12	\N	1
+69	11	PLZ	plz	10	18	3
+70	11	Strasse	strasse	11	18	1
+71	11	Telefon	telefon	12	18	1
 72	11	tp	tp	13	\N	1
 73	11	Typ	typ	14	\N	1
 74	11	Letzte Aenderung	letzteAenderung	15	\N	2
@@ -199,12 +202,12 @@ COPY grid_column (id, base_query, name, data_index, position, filter, data_type)
 78	12	Bezeichnung	bezeichnung	4	\N	1
 79	12	Letzte Aenderung	letzteAenderung	5	\N	2
 80	13	Id	id	1	\N	5
-81	13	Probe	probeId	2	\N	4
+81	13	Probe	probeId	2	17	4
 82	13	Probennummer	hpNr	3	2	1
 83	13	Nebenprobennummer	npNr	4	\N	1
 84	13	Status Datum	statusD	5	\N	2
-85	13	Statusstufe	statusSt	6	\N	13
-86	13	Statuswert	statusW	7	\N	14
+85	13	Statusstufe	statusSt	6	19	13
+86	13	Statuswert	statusW	7	18	14
 87	13	Datenbasis	dBasis	8	8	17
 88	13	Netzbetreiber	netzId	9	13	18
 89	13	Messstelle	mstId	10	3	10
@@ -213,7 +216,7 @@ COPY grid_column (id, base_query, name, data_index, position, filter, data_type)
 92	13	Probenentnahme beginn	peBegin	13	6	2
 93	13	Probenentnahme ende	peEnd	15	7	2
 94	13	Ort	ortId	16	11	6
-95	13	Gemeinde	eGemId	17	\N	1
+95	13	Gemeinde	eGemId	17	10	1
 96	13	Bezeichnung	eGem	18	\N	1
 97	14	Id	id	1	\N	1
 98	14	Netzbetreiber	netzbetreiberId	2	13	18
@@ -221,16 +224,16 @@ COPY grid_column (id, base_query, name, data_index, position, filter, data_type)
 100	14	Bezeichnung	bezeichnung	4	\N	1
 101	14	Letzte Aenderung	letzteAenderung	5	\N	2
 102	15	Id	id	1	\N	5
-103	15	Probe	probeId	2	\N	4
+103	15	Probe	probeId	2	17	4
 104	15	Probennummer	hpNr	3	2	1
 105	15	Nebenprobennummer	npNr	4	\N	1
-106	15	Status Stufe	statusSt	5	\N	13
-107	15	Status Wert	statusW	6	\N	14
+106	15	Status Stufe	statusSt	5	19	13
+107	15	Status Wert	statusW	6	18	14
 108	15	Status Datum	statusD	7	\N	2
 109	15	Datenbasis	dBasis	8	8	17
 110	15	Netzbetreiber	netzId	9	13	18
 111	15	Messstelle	mstId	10	3	10
-112	15	Umweltbereich	umwId	11	\N	12
+112	15	Umweltbereich	umwId	11	4	12
 113	15	Probenart	pArt	12	9	19
 114	15	Probenentnahme beginn	peBegin	13	6	2
 115	15	Probenentnahme ende	peEnd	14	7	2
@@ -239,17 +242,17 @@ COPY grid_column (id, base_query, name, data_index, position, filter, data_type)
 118	15	co60	co60	17	\N	15
 119	15	cs137	cs137	18	\N	15
 120	16	id	id	1	\N	5
-121	16	Probe	probeId	2	\N	4
+121	16	Probe	probeId	2	17	4
 122	16	Hauptprobennummer	hpNr	3	2	1
 123	16	Nebenprobennummer	npNr	4	\N	1
-135	16	Statusstufe	statusSt	5	\N	13
-136	16	Statuswert	statusW	6	\N	14
+135	16	Statusstufe	statusSt	5	19	13
+136	16	Statuswert	statusW	6	18	14
 137	16	Status Datum	statusD	7	\N	2
 138	16	Datenbasis	dBasis	8	8	17
 139	16	Netzbetreiber	netzId	9	13	18
 140	16	Messstelle	mstId	10	3	10
 141	16	Umweltbereich	umwId	11	4	12
-142	16	Probenart	pArt	12	\N	19
+142	16	Probenart	pArt	12	9	19
 143	16	Probenentnahme beginn	peBegin	13	6	2
 144	16	Probenentnahme ende	peEnd	14	7	2
 145	16	Gemeinde	eGem	15	10	1
@@ -274,39 +277,39 @@ COPY grid_column (id, base_query, name, data_index, position, filter, data_type)
 164	16	bi212	bi212	34	\N	15
 165	16	bi214	bi214	35	\N	15
 166	17	id	id	1	\N	5
-167	17	Probe	probeId	2	\N	4
+167	17	Probe	probeId	2	17	4
 168	17	Hauptprobennummer	hpNr	3	2	1
-169	17	Nebenprobennummer	npNr	4	\N	1
-170	17	Statusstufe	statusSt	5	\N	13
-171	17	Statuswert	statusW	6	\N	14
+169	17	Nebenprobennummer	npNr	4	18	1
+170	17	Statusstufe	statusSt	5	19	13
+171	17	Statuswert	statusW	6	18	14
 172	17	Statusdatum	statusD	7	\N	2
 173	17	Datenbasis	dBasis	8	8	17
 174	17	Netzbetreiber	netzId	9	13	18
 175	17	Messstelle	mstId	10	3	10
 176	17	Umweltbereich	umwId	11	4	12
-177	17	Probenart	pArt	12	\N	19
+177	17	Probenart	pArt	12	9	19
 178	17	Probenentnahme beginn	peBegin	13	6	2
 179	17	Probenentnahme ende	peEnd	14	7	2
 180	17	Gemeinde	eGemId	15	10	1
-181	17	Verwaltungseinheit	eGem	16	\N	1
+181	17	Verwaltungseinheit	eGem	16	18	1
 182	17	sr89	sr89	17	\N	15
 183	17	sr90	sr90	18	\N	15
 184	18	id	id	1	\N	5
-185	18	Probe	probeId	2	\N	4
-186	18	Hauptprobennummer	hpNr	3	\N	2
-187	18	Nebenprobennummer	npNr	4	\N	1
-188	18	Statusstufe	statusSt	5	\N	13
-189	18	Statuswert	statusW	6	\N	14
+185	18	Probe	probeId	2	17	4
+186	18	Hauptprobennummer	hpNr	3	18	2
+187	18	Nebenprobennummer	npNr	4	18	1
+188	18	Statusstufe	statusSt	5	19	13
+189	18	Statuswert	statusW	6	18	14
 190	18	Statusdatum	statusD	7	\N	2
 191	18	Datenbasis	dBasis	8	8	17
 192	18	Netzbetreiber	netzId	9	13	18
-193	18	Messstelle	mstId	10	\N	10
+193	18	Messstelle	mstId	10	3	10
 194	18	Umweltbereich	umwId	11	4	12
 195	18	Probenart	pArt	12	9	19
 196	18	Probenentnahme beginn	peBegin	13	6	2
 197	18	Probenentnahme ende	peEnd	14	7	2
 198	18	Gemeinde	eGemId	15	10	1
-199	18	Verwaltungseinheit	eGem	16	\N	1
+199	18	Verwaltungseinheit	eGem	16	18	1
 200	18	h3	h3	17	\N	15
 201	18	k40	k40	18	\N	15
 202	18	co60	co60	19	\N	15

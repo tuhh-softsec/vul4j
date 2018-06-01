@@ -341,6 +341,7 @@ INSERT INTO filter_type VALUES(7, 'liststatus', true);
 INSERT INTO filter_type VALUES(8, 'listrei', true);
 INSERT INTO filter_type VALUES(9, 'listkta', true);
 INSERT INTO filter_type VALUES(10, 'listdatetime', true);
+INSERT INTO filter_type VALUES(11, 'generictext', false);
 
 CREATE TABLE filter (
     id serial PRIMARY KEY,
