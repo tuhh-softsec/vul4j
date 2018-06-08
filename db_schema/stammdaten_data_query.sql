@@ -61,8 +61,8 @@ ALTER SEQUENCE query_user_id_seq RESTART WITH 19;
 COPY filter (id, sql, parameter, type, name) FROM stdin;
 1	probe.id_alt LIKE :idAlt	idAlt	0	probe_id_alt
 2	probe.hauptproben_nr LIKE :hauptprobenNr	hauptprobenNr	0	probe_hauptproben_nr
-3	probe.mst_id IN :mstId	mstId	4	probe_mst_id
-4	probe.umw_id IN :umwId	umwId	6	probe_umw_id
+3	probe.mst_id IN ( :mstId )	mstId	4	probe_mst_id
+4	probe.umw_id IN ( :umwId )	umwId	6	probe_umw_id
 5	probe.test = cast(:test AS boolean)	test	2	probe_test
 6	probe.probeentnahme_beginn >= to_timestamp(cast(:timeBegin AS DOUBLE PRECISION))	timeBegin	3	probe_entnahme_beginn
 7	probe.probeentnahme_ende <= to_timestamp(cast(:timeEnd AS DOUBLE PRECISION))	timeEnd	3	probe_entnahme_beginn
@@ -71,7 +71,7 @@ COPY filter (id, sql, parameter, type, name) FROM stdin;
 10	ort.gem_id LIKE :gemId	gemId	0	ort_gem_id
 11	ort.ort_id LIKE :ortId	ortId	0	ort_ort_id
 12	verwaltungseinheit.bezeichnung LIKE :bezeichnung	bezeichnung	0	verwaltungseinheit_bezeichnung
-13	stamm.mess_stelle.netzbetreiber_id IN :netzbetreiberId	netzbetreiberId	5	netzbetreiber_id
+13	stamm.mess_stelle.netzbetreiber_id IN ( :netzbetreiberId )	netzbetreiberId	5	netzbetreiber_id
 14	probe.probeentnahme_beginn BETWEEN to_timestamp(cast(:fromPeBegin AS DOUBLE PRECISION)) AND to_timestamp(cast(:toPeBegin AS DOUBLE PRECISION))	fromPeBegin,toPeBegin	10	Entnahmebeginn von-bis
 15	probe.probeentnahme_ende BETWEEN to_timestamp(cast(:fromPeEnd AS DOUBLE PRECISION)) AND to_timestamp(cast(:toPeEnd AS DOUBLE PRECISION))	fromPeEnd,toPeEnd	10	Entnahmeende von-bis
 16	probe.letzte_aenderung BETWEEN to_timestamp(cast(probeLetzteAenderungFrom AS DOBULE PRECISION)) AND to_timestamp(cast(probeLetzteAenderungTo AS DOUBLE PRECISION))	probeLetzteAenderungFrom,probeLetzteAenderungTo	10	Letzte Aenderung von-bis
@@ -132,7 +132,7 @@ COPY grid_column (id, base_query, name, data_index, position, filter, data_type)
 7	1	Probenart	pArt	7	1	19
 8	1	Entnahme von	peBegin	8	14	2
 9	1	Entnahme bis	peEnd	9	15	2
-10	1	Ort	ortId	10	1	6
+10	1	Ort	ortId	10	1	1
 11	1	Gemeinde Id	eGemId	11	10	1
 12	1	Gemeinde	eGem	12	18	16
 13	1	Probennummer	idAlt	13	1	1

@@ -97,17 +97,17 @@ public class QueryTools
         //Map containing all filters and filter values
         MultivaluedMap<String, String> filterValues = new MultivaluedHashMap<String, String>();
         String filterSql = "";
+        String genericFilterSql = "";
         String sortSql = "";
         boolean subquery = false;
 
         for (GridColumnValue customColumn : customColumns) {
-
+            boolean generic = false;
             //Build ORDER BY clause
             columns.add(customColumn.getGridColumn());
             if (customColumn.getSort() != null
                 && !customColumn.getSort().isEmpty()) {
-
-                String sortValue = customColumn.getGridColumn().getDataIndex() + " "
+                    String sortValue = customColumn.getGridColumn().getDataIndex() + " "
                         + customColumn.getSort() + " ";
                 Integer key = customColumn.getSortIndex() != null ? customColumn.getSortIndex() : -1;
                 String value = sortIndMap.get(key);
@@ -119,12 +119,7 @@ public class QueryTools
                     && customColumn.getFilterActive() == true
                     && customColumn.getFilterValue() != null
                     && !customColumn.getFilterValue().isEmpty()) {
-                //Build WHERE clause
-                if (filterSql.isEmpty()) {
-                    filterSql += " WHERE ";
-                } else {
-                    filterSql += " AND ";
-                }
+
                 Filter filter = customColumn.getGridColumn().getFilter();
                 String filterValue = customColumn.getFilterValue();
                 String currentFilterString = filter.getSql();
@@ -138,11 +133,8 @@ public class QueryTools
                     currentFilterString = currentFilterString.replace(genTextParam, customColumn.getGridColumn().getDataIndex());
                     currentFilterParam = genTextValue + customColumn.getGridColumnId();
                     currentFilterString = currentFilterString.replace(":" + genTextValue, ":" + currentFilterParam);
-                    //TODO: Avoid using subqueries to use aliases in the where clause
-                    if (!subquery) {
-                        sql = "SELECT * FROM (" + sql + ") AS inner_query ";
-                        subquery = true;
-                    }
+                    subquery = true;
+                    generic = true;
                 }
 
                 //Check if Filter is an in filter
@@ -175,7 +167,21 @@ public class QueryTools
                         }
                     }
                 }
-                filterSql += currentFilterString;
+                if (generic) {
+                    if (genericFilterSql.isEmpty()) {
+                        genericFilterSql += " WHERE " + currentFilterString;
+                    } else {
+                        genericFilterSql += " AND " + currentFilterString;
+                    }
+                } else {
+                    //Build WHERE clause
+                    if (filterSql.isEmpty()) {
+                        filterSql += " WHERE ";
+                    } else {
+                        filterSql += " AND ";
+                    }
+                    filterSql += currentFilterString;
+                }
             }
         }
 
@@ -203,7 +209,13 @@ public class QueryTools
         if (!filterSql.isEmpty()){
             sql += filterSql + " ";
         }
-        sql += sortSql + ";";
+        sql += sortSql;
+        //TODO: Avoid using subqueries to use aliases in the where clause
+        //Append generic filter sql seperated from non-generic filters
+        if (subquery) {
+            sql = "SELECT * FROM ( " + sql + " ) AS inner_query " + genericFilterSql;
+        }
+        sql += " ;";
         javax.persistence.Query q = prepareQuery(
             sql,
             filterValues,
