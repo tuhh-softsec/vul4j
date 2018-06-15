@@ -99,81 +99,12 @@ public class DatensatzErzeugerService {
         @Context HttpServletRequest request,
         @Context UriInfo info
     ) {
-        /*
-        MultivaluedMap<String, String> params = info.getQueryParameters();
-        List<DatensatzErzeuger> erzeuger;
-        if (params.containsKey("qid")) {
-            Integer id = null;
-            try {
-                id = Integer.valueOf(params.getFirst("qid"));
-            }
-            catch (NumberFormatException e) {
-                return new Response(false, 603, "Not a valid filter id");
-            }
-            QueryBuilder<Filter> fBuilder = new QueryBuilder<Filter>(
-                repository.entityManager(Strings.STAMM),
-                Filter.class
-            );
-            fBuilder.and("query", id);
-            List<Filter> filters = repository.filterPlain(fBuilder.getQuery(), Strings.STAMM);
-            QueryBuilder<DatensatzErzeuger> builder =
-                new QueryBuilder<DatensatzErzeuger>(
-                    repository.entityManager(Strings.STAMM),
-                    DatensatzErzeuger.class
-                );
-            for (Filter filter: filters) {
-                String param = params.get(filter.getDataIndex()).get(0);
-                if (param == null || param.isEmpty()) {
-                    continue;
-                }
-                if (filter.getMultiselect()) {
-                    param = param.trim();
-                    String[] parts = param.split(",");
-                    for (String part: parts) {
-                        builder.or(filter.getDataIndex(), part);
-                    }
-                }
-                else {
-                    builder.or(filter.getDataIndex(), param);
-                }
-            }
-            if (params.containsKey("filter")) {
-                JsonReader jsonReader = Json.createReader(
-                    new StringReader(params.getFirst("filter")));
-                JsonArray f = jsonReader.readArray();
-                jsonReader.close();
-                erzeuger = repository.filterPlain(builder, f, Strings.STAMM);
-            }
-            else {
-                erzeuger = repository.filterPlain(builder.getQuery(), Strings.STAMM);
-            }
-        }
-        else {
-            erzeuger = repository.getAllPlain(DatensatzErzeuger.class, Strings.STAMM);
-        }
-
-        int size = erzeuger.size();
-        if (params.containsKey("start") && params.containsKey("limit")) {
-            int start = Integer.valueOf(params.getFirst("start"));
-            int limit = Integer.valueOf(params.getFirst("limit"));
-            int end = limit + start;
-            if (start + limit > erzeuger.size()) {
-                end = erzeuger.size();
-            }
-            erzeuger = erzeuger.subList(start, end);
-        }
+        List<DatensatzErzeuger> erzeuger = repository.getAllPlain(DatensatzErzeuger.class, Strings.STAMM);
 
         for (DatensatzErzeuger erz : erzeuger) {
-            erz.setReadonly(
-                !authorization.isAuthorized(
-                    request,
-                    erz,
-                    RequestMethod.POST,
-                    DatensatzErzeuger.class));
+            erz.setReadonly(true);
         }
-        return new Response (true, 200, erzeuger, size);
-        */
-        return new Response (true, 200, null, 0);
+        return new Response (true, 200, erzeuger, erzeuger.size());
     }
 
     /**

@@ -96,81 +96,11 @@ public class ProbenehmerService {
         @Context HttpServletRequest request,
         @Context UriInfo info
     ) {
-        /*
-        MultivaluedMap<String, String> params = info.getQueryParameters();
-        List<Probenehmer> nehmer =
-            repository.getAllPlain(Probenehmer.class, Strings.STAMM);
-        if (params.containsKey("qid")) {
-            Integer id = null;
-            try {
-                id = Integer.valueOf(params.getFirst("qid"));
-            }
-            catch (NumberFormatException e) {
-                return new Response(false, 603, "Not a valid filter id");
-            }
-            QueryBuilder<Filter> fBuilder = new QueryBuilder<Filter>(
-                repository.entityManager(Strings.STAMM),
-                Filter.class
-            );
-            fBuilder.and("query", id);
-            List<Filter> filters = repository.filterPlain(fBuilder.getQuery(), Strings.STAMM);
-            QueryBuilder<Probenehmer> builder =
-                new QueryBuilder<Probenehmer>(
-                    repository.entityManager(Strings.STAMM),
-                    Probenehmer.class
-                );
-            for (Filter filter: filters) {
-                String param = params.get(filter.getDataIndex()).get(0);
-                if (param == null || param.isEmpty()) {
-                    continue;
-                }
-                if (filter.getMultiselect()) {
-                    param = param.trim();
-                    String[] parts = param.split(",");
-                    for (String part: parts) {
-                        builder.or(filter.getDataIndex(), part);
-                    }
-                }
-                else {
-                    builder.or(filter.getDataIndex(), param);
-                }
-            }
-
-            if (params.containsKey("filter")) {
-                JsonReader jsonReader = Json.createReader(
-                    new StringReader(params.getFirst("filter")));
-                JsonArray f = jsonReader.readArray();
-                jsonReader.close();
-                nehmer = repository.filterPlain(builder, f, Strings.STAMM);
-            }
-            else {
-                nehmer = repository.filterPlain(builder.getQuery(), Strings.STAMM);
-            }
-        }
-
-        int size = nehmer.size();
-        if (params.containsKey("start") && params.containsKey("limit")) {
-            int start = Integer.valueOf(params.getFirst("start"));
-            int limit = Integer.valueOf(params.getFirst("limit"));
-            int end = limit + start;
-            if (start + limit > nehmer.size()) {
-                end = nehmer.size();
-            }
-            nehmer = nehmer.subList(start, end);
-        }
-
+        List<Probenehmer> nehmer = repository.getAllPlain(Probenehmer.class, Strings.STAMM);
         for (Probenehmer p : nehmer) {
-            p.setReadonly(
-                !authorization.isAuthorized(
-                    request,
-                    p,
-                    RequestMethod.POST,
-                    Probenehmer.class));
+            p.setReadonly(true);
         }
-        return new Response(true, 200, nehmer, size);
-        */
-
-        return new Response(true, 200, null, 0);
+        return new Response(true, 200, nehmer, nehmer.size());
     }
 
     /**

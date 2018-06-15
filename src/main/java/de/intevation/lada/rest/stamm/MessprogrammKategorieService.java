@@ -99,83 +99,11 @@ public class MessprogrammKategorieService {
         @Context HttpServletRequest request,
         @Context UriInfo info
     ) {
-        /*
-        MultivaluedMap<String, String> params = info.getQueryParameters();
-        List<MessprogrammKategorie> kategorie;
-        if (params.containsKey("qid")) {
-            Integer id = null;
-            try {
-                id = Integer.valueOf(params.getFirst("qid"));
-            }
-            catch (NumberFormatException e) {
-                return new Response(false, 603, "Not a valid filter id");
-            }
-            QueryBuilder<Filter> fBuilder = new QueryBuilder<Filter>(
-                repository.entityManager(Strings.STAMM),
-                Filter.class
-            );
-            fBuilder.and("query", id);
-            List<Filter> filters = repository.filterPlain(fBuilder.getQuery(), Strings.STAMM);
-            QueryBuilder<MessprogrammKategorie> mBuilder =
-                new QueryBuilder<MessprogrammKategorie>(
-                    repository.entityManager(Strings.STAMM),
-                    MessprogrammKategorie.class
-                );
-            for (Filter filter: filters) {
-                String param = params.get(filter.getDataIndex()).get(0);
-                if (param == null || param.isEmpty()) {
-                    continue;
-                }
-                if (filter.getMultiselect()) {
-                    param = param.trim();
-                    String[] parts = param.split(",");
-                    for (String part: parts) {
-                        mBuilder.or(filter.getDataIndex(), part);
-                    }
-                }
-                else {
-                    mBuilder.or(filter.getDataIndex(), param);
-                }
-            }
-
-            if (params.containsKey("filter")) {
-                JsonReader jsonReader = Json.createReader(
-                    new StringReader(params.getFirst("filter")));
-                JsonArray f = jsonReader.readArray();
-                jsonReader.close();
-                kategorie = repository.filterPlain(mBuilder, f, Strings.STAMM);
-            }
-            else {
-                kategorie = repository.filterPlain(mBuilder.getQuery(), Strings.STAMM);
-            }
+        List<MessprogrammKategorie> kategorie = repository.getAllPlain(MessprogrammKategorie.class, Strings.STAMM);
+        for (MessprogrammKategorie kat: kategorie) {
+            kat.setReadonly(true);
         }
-        else {
-            kategorie = repository.getAllPlain(MessprogrammKategorie.class, Strings.STAMM);
-        }
-        int size = kategorie.size();
-        if (params.containsKey("qid")) {
-            if (params.containsKey("start") && params.containsKey("limit")) {
-                int start = Integer.valueOf(params.getFirst("start"));
-                int limit = Integer.valueOf(params.getFirst("limit"));
-                int end = limit + start;
-                if (start + limit > kategorie.size()) {
-                    end = kategorie.size();
-                }
-                kategorie = kategorie.subList(start, end);
-            }
-        }
-
-        for (MessprogrammKategorie mk : kategorie) {
-            mk.setReadonly(
-                !authorization.isAuthorized(
-                    request,
-                    mk,
-                    RequestMethod.POST,
-                    MessprogrammKategorie.class));
-        }
-        return new Response(true, 200, kategorie, size);
-        */
-        return new Response(true, 200, null, 0);
+        return new Response(true, 200, kategorie, kategorie.size());
     }
 
     /**
