@@ -178,6 +178,34 @@ public class QueryService {
             !query.getUserId().equals(userInfo.getUserId())) {
             return new Response(false, 699, null);
         }
+
+        query.setUserId(userInfo.getUserId());
+
+        EntityManager em = repository.entityManager(Strings.STAMM);
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+
+        //Add/update queryMessstelle objects
+        for (String m : query.getMessStellesIds()){
+            //Check if an object already exists
+            CriteriaQuery<QueryMessstelle> criteriaQuery = builder.createQuery(QueryMessstelle.class);
+            Root<QueryMessstelle> root = criteriaQuery.from(QueryMessstelle.class);
+            Predicate filter = builder.equal(root.get("messStelle"), m);
+            Predicate queryFilter = builder.equal(root.get("queryUser"), query.getId());
+            filter = builder.and(filter, queryFilter);
+            criteriaQuery.where(filter);
+            List<QueryMessstelle> queries = repository.filterPlain(criteriaQuery, Strings.STAMM);
+
+            QueryMessstelle qms;
+            if (queries.size() == 1) {
+                qms = queries.get(0);
+            } else {
+                qms = new QueryMessstelle();
+            }
+            qms.setMessStelle(m);
+            qms.setQueryUser(query);
+            query.addMessStelle(qms);
+        }
+        
         return repository.update(query, Strings.STAMM);
     }
 
