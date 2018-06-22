@@ -39,6 +39,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.auth.UserInfo;
+import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.data.Strings;
@@ -177,6 +178,48 @@ public class QueryService {
         if (query.getUserId() != null &&
             !query.getUserId().equals(userInfo.getUserId())) {
             return new Response(false, 699, null);
+        }
+
+        query.setUserId(userInfo.getUserId());
+        QueryBuilder<QueryMessstelle> builder = new QueryBuilder<>(
+                repository.entityManager(Strings.STAMM),
+                QueryMessstelle.class);
+        builder.and("queryUser", query.getId());
+        List<QueryMessstelle> qms = repository.filterPlain(builder.getQuery(), Strings.STAMM);
+        List<QueryMessstelle> delete = new ArrayList<>();
+        List<String> create = new ArrayList<>();
+        for (String mst : query.getMessStellesIds()) {
+            boolean hit = false;
+            for (QueryMessstelle qm : qms) {
+                if (mst.equals(qm.getMessStelle())) {
+                    hit = true;
+                }
+            }
+            if (!hit) {
+                create.add(mst);
+            }
+        }
+        for (QueryMessstelle qm : qms) {
+            boolean hit = false;
+            for (String mst : query.getMessStellesIds()) {
+                if (mst.equals(qm.getMessStelle())) {
+                    hit = true;
+                }
+            }
+            if (!hit) {
+                delete.add(qm);
+            }
+        }
+        System.out.println(delete.size());
+        for (QueryMessstelle qm : delete) {
+            System.out.println(qm.getId());
+            repository.delete(qm, Strings.STAMM);
+        }
+        for (String mst : create) {
+            QueryMessstelle qm = new QueryMessstelle();
+            qm.setMessStelle(mst);
+            qm.setQueryUser(query);
+            query.addMessStelle(qm);
         }
         return repository.update(query, Strings.STAMM);
     }

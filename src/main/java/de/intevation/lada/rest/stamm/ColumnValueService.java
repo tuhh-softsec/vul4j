@@ -191,6 +191,7 @@ public class ColumnValueService {
                 QueryUser.class,
                 gridColumnValue.getQueryUserId(),
                 Strings.STAMM);
+
             gridColumnValue.setQueryUser(queryUser);
 
             return repository.update(gridColumnValue, Strings.STAMM);

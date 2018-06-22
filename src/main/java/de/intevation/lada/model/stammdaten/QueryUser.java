@@ -43,7 +43,7 @@ public class QueryUser implements Serializable {
     private Integer baseQuery;
 
     //bi-directional many-to-one association to QueryMessstelle
-    @OneToMany(mappedBy="queryUser", fetch=FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy="queryUser", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
     private List<QueryMessstelle> messStelles;
 
     @Transient
