@@ -33,7 +33,7 @@ public class QueryMessstelle implements Serializable {
 	private String messStelle;
 
 	//bi-directional many-to-one association to QueryUser
-	@ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="query")
 	private QueryUser queryUser;
 

@@ -9,6 +9,8 @@ package de.intevation.lada.rest.stamm;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Iterator;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -210,11 +212,17 @@ public class QueryService {
                 delete.add(qm);
             }
         }
-        System.out.println(delete.size());
+        List<QueryMessstelle> dbMesstelles = repository.getByIdPlain(QueryUser.class, query.getId(), Strings.STAMM).getMessStelles();
         for (QueryMessstelle qm : delete) {
-            System.out.println(qm.getId());
-            repository.delete(qm, Strings.STAMM);
+            Iterator<QueryMessstelle> qmIter = dbMesstelles.iterator();
+            while (qmIter.hasNext()) {
+                QueryMessstelle qmi = qmIter.next();
+                if (qmi.getId() == qm.getId()) {
+                    qmIter.remove();
+                }
+            }
         }
+        query.setMessStelles(dbMesstelles);
         for (String mst : create) {
             QueryMessstelle qm = new QueryMessstelle();
             qm.setMessStelle(mst);

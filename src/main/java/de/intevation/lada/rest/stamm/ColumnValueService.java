@@ -154,8 +154,10 @@ public class ColumnValueService {
             gridColumnValue.setGridColumn(gridColumn);
 
 
-            QueryUser queryUser = new QueryUser();
-            queryUser.setId(gridColumnValue.getQueryUserId());
+            QueryUser queryUser = repository.getByIdPlain(
+                QueryUser.class,
+                gridColumnValue.getQueryUserId(),
+                Strings.STAMM);
             gridColumnValue.setQueryUser(queryUser);
 
             return repository.create(gridColumnValue, Strings.STAMM);
