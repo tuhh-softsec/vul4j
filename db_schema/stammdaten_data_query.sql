@@ -2,63 +2,39 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 10.1
--- Dumped by pg_dump version 10.1
-
--- Started on 2018-01-22 13:18:10 CET
+-- Dumped from database version 10.4
+-- Dumped by pg_dump version 10.3
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 SET row_security = off;
 
-SET search_path = stamm, pg_catalog;
-
 --
--- TOC entry 5408 (class 0 OID 3061575)
--- Dependencies: 246
 -- Data for Name: base_query; Type: TABLE DATA; Schema: stamm; Owner: postgres
 --
 
-COPY base_query (id, sql) FROM stdin;
-1	SELECT probe.id AS probeId, probe.hauptproben_nr AS hauptprobenNr, datenbasis.datenbasis AS dBasis, stamm.mess_stelle.netzbetreiber_id AS netzId, probe.mst_id AS mstId, probe.umw_id AS umwId, probenart.probenart AS pArt, probe.probeentnahme_beginn AS peBegin, probe.probeentnahme_ende AS peEnd, ort.ort_id AS ortId, ort.gem_id AS eGemId, verwaltungseinheit.bezeichnung AS eGem, probe.id_alt AS idAlt FROM land.probe LEFT JOIN stamm.mess_stelle ON (probe.mst_id = stamm.mess_stelle.id) LEFT JOIN stamm.datenbasis ON (probe.datenbasis_id = datenbasis.id) LEFT JOIN stamm.probenart ON (probe.probenart_id = probenart.id) LEFT JOIN land.ortszuordnung ON (probe.id = ortszuordnung.probe_id AND ortszuordnung.ortszuordnung_typ = 'E') LEFT JOIN stamm.ort ON (ortszuordnung.ort_id = ort.id) LEFT JOIN stamm.verwaltungseinheit ON (ort.gem_id = verwaltungseinheit.id)
-7	SELECT probe.id AS id,\r\n  probe.hauptproben_nr AS hpNr,\r\n  datenbasis.datenbasis AS dBasis,\r\n  stamm.mess_stelle.netzbetreiber_id AS netzId,\r\n  probe.mst_id AS mstId,\r\n  probe.umw_id AS umwId,\r\n  probenart.probenart AS pArt,\r\n  probe.probeentnahme_beginn AS peBegin,\r\n  probe.probeentnahme_ende AS peEnd,\r\n  ort.ort_id AS ortId,\r\n  ort.gem_id AS eGemId,\r\n  verwaltungseinheit.bezeichnung AS eGem,\r\n  probe.id_alt AS idAlt\r\n FROM land.probe\r\nLEFT JOIN stamm.mess_stelle\r\n  ON (probe.mst_id = stamm.mess_stelle.id)\r\nLEFT JOIN stamm.datenbasis\r\n  ON (probe.datenbasis_id = datenbasis.id)\r\nLEFT JOIN stamm.probenart\r\n  ON (probe.probenart_id = probenart.id)\r\nLEFT JOIN land.ortszuordnung\r\n  ON (\r\n      probe.id = ortszuordnung.probe_id\r\n      AND ortszuordnung.ortszuordnung_typ = 'E'\r\n      )\r\nLEFT JOIN stamm.ort\r\n  ON (ortszuordnung.ort_id = ort.id)\r\nLEFT JOIN stamm.verwaltungseinheit\r\n  ON (ort.gem_id = verwaltungseinheit.id)\r\n
-9	SELECT messprogramm.id AS mpNr,\n  stamm.mess_stelle.netzbetreiber_id AS netzId,\n  CASE \n    WHEN messprogramm.mst_id = messprogramm.labor_mst_id\n      THEN messprogramm.mst_id\n    ELSE messprogramm.mst_id || '-' || messprogramm.labor_mst_id\n    END AS mstLaborId,\n  datenbasis.datenbasis AS dBasis,\n  CASE \n    WHEN messprogramm.ba_id = '1'\n      THEN 'RB'\n    ELSE 'IB'\n    END AS messRegime,\n  probenart.probenart AS pArt,\n  messprogramm.umw_id AS umwId,\n  messprogramm.media_desk AS deskriptoren,\n  messprogramm.probenintervall AS intervall,\n  ort.ort_id AS ortId,\n  ort.gem_id AS eGemId,\n  verwaltungseinheit.bezeichnung AS eGem\nFROM land.messprogramm\nLEFT JOIN stamm.mess_stelle\n  ON (messprogramm.mst_id = stamm.mess_stelle.id)\nLEFT JOIN stamm.datenbasis\n  ON (messprogramm.datenbasis_id = datenbasis.id)\nLEFT JOIN stamm.probenart\n  ON (messprogramm.probenart_id = probenart.id)\nLEFT JOIN land.ortszuordnung_mp\n  ON (\n      messprogramm.id = ortszuordnung_mp.messprogramm_id\n      AND ortszuordnung_mp.ortszuordnung_typ = 'E'\n      )\nLEFT JOIN stamm.ort\n  ON (ortszuordnung_mp.ort_id = ort.id)\nLEFT JOIN stamm.verwaltungseinheit\n  ON (ort.gem_id = verwaltungseinheit.id)\n
-10	SELECT ort.id,\n  ort.netzbetreiber_id AS netzbetreiberId,\n  ort.ort_id AS ortId,\n  ort_typ.code AS ortTyp,\n  ort.kurztext,\n  ort.langtext,\n  staat.staat_iso AS staat,\n  verwaltungseinheit.bezeichnung AS verwaltungseinheit,\n  nuts_code AS nutsCode,\n  oz_id AS ozId,\n  kta_gruppe AS anlageId,\n  mp_art AS mpArt,\n  zone,\n  sektor,\n  zustaendigkeit,\n  berichtstext,\n  unscharf,\n  koordinaten_art.koordinatenart AS koordinatenArt,\n  ort.koord_x_extern AS koordXExtern,\n  ort.koord_y_extern AS koordYExtern,\n  PUBLIC.ST_X(ort.geom) AS longitude,\n  PUBLIC.ST_Y(ort.geom) AS latitude,\n  hoehe_ueber_nn AS hoeheUeberNn,\n  hoehe_land AS hoeheLand,\n  aktiv,\n  letzte_aenderung AS letzteAenderung\nFROM stamm.ort\nLEFT JOIN stamm.verwaltungseinheit\n  ON ort.gem_id = verwaltungseinheit.id\nLEFT JOIN stamm.staat\n  ON stamm.staat.id = ort.staat_id\nINNER JOIN stamm.koordinaten_art\n  ON stamm.koordinaten_art.id = ort.kda_id\nLEFT JOIN stamm.ort_typ\n  ON ort.ort_typ = ort_typ.id\nLEFT JOIN stamm.kta_gruppe\n  ON kta_gruppe.id = ort.kta_gruppe_id\n
-11	SELECT id, netzbetreiber_id AS netzbetreiberId, prn_id AS prnId, bearbeiter, bemerkung, betrieb, bezeichnung, kurz_bezeichnung AS kurzBezeichnung, ort, plz, strasse, telefon, tp, typ, letzte_aenderung AS letzteAenderung FROM stamm.probenehmer
-12	SELECT id, netzbetreiber_id AS netzbetreiberId, datensatz_erzeuger_id AS datensatzErzeugerId, mst_id AS mstId, bezeichnung, letzte_aenderung AS letzteAenderung FROM stamm.datensatz_erzeuger
-13	SELECT messung.id,\n  probe.id AS probeId,\n  probe.hauptproben_nr AS hpNr,\n  messung.nebenproben_nr AS npNr,\n  status_protokoll.datum AS statusD,\n  stamm.status_stufe.stufe AS statusSt,\n  stamm.status_wert.wert AS statusW,\n  datenbasis.datenbasis AS dBasis,\n  stamm.mess_stelle.netzbetreiber_id AS netzId,\n  probe.mst_id AS mstId,\n  probe.umw_id AS umwId,\n  probenart.probenart AS pArt,\n  probe.probeentnahme_beginn AS peBegin,\n  probe.probeentnahme_ende AS peEnd,\n  ort.ort_id AS ortId,\n  ort.gem_id AS eGemId,\n  verwaltungseinheit.bezeichnung AS eGem\nFROM land.probe\nLEFT JOIN stamm.mess_stelle\n  ON (probe.mst_id = stamm.mess_stelle.id)\nINNER JOIN land.messung\n  ON probe.id = messung.probe_id\nINNER JOIN land.status_protokoll\n  ON messung.STATUS = status_protokoll.id\nLEFT JOIN stamm.status_kombi\n  ON status_protokoll.status_kombi = stamm.status_kombi.id\nLEFT JOIN stamm.status_wert\n  ON stamm.status_wert.id = stamm.status_kombi.wert_id\nLEFT JOIN stamm.status_stufe\n  ON stamm.status_stufe.id = stamm.status_kombi.stufe_id\nLEFT JOIN stamm.datenbasis\n  ON (probe.datenbasis_id = datenbasis.id)\nLEFT JOIN stamm.probenart\n  ON (probe.probenart_id = probenart.id)\nLEFT JOIN land.ortszuordnung\n  ON (\n      probe.id = ortszuordnung.probe_id\n      AND ortszuordnung.ortszuordnung_typ = 'E'\n      )\nLEFT JOIN stamm.ort\n  ON (ortszuordnung.ort_id = ort.id)\nLEFT JOIN stamm.verwaltungseinheit\n  ON (ort.gem_id = verwaltungseinheit.id)\n
-14	SELECT id, netzbetreiber_id AS netzbetreiberId, code, bezeichnung, letzte_aenderung AS letzteAenderung FROM stamm.messprogramm_kategorie
-15	SELECT messung.id,\n  probe.id AS probeId,\n  probe.hauptproben_nr AS hpNr,\n  messung.nebenproben_nr AS npNr,\n  stamm.status_stufe.stufe AS statusSt,\n  stamm.status_wert.wert AS statusW,\n  status_protokoll.datum AS statusD,\n  datenbasis.datenbasis AS dBasis,\n  stamm.mess_stelle.netzbetreiber_id AS netzId,\n  probe.mst_id AS mstId,\n  probe.umw_id AS umwId,\n  probenart.probenart AS pArt,\n  probe.probeentnahme_beginn AS peBegin,\n  probe.probeentnahme_ende AS peEnd,\n  ort.gem_id AS eGemId,\n  verwaltungseinheit.bezeichnung AS eGem,\n  coalesce(k40.messwert_nwg, ' ') || to_char(k40.messwert, '0.99eeee') AS k40,\n  coalesce(co60.messwert_nwg, ' ') || to_char(co60.messwert, '0.99eeee') AS co60,\n  coalesce(cs137.messwert_nwg, ' ') || to_char(cs137.messwert, '0.99eeee') AS cs137\nFROM land.probe\nLEFT JOIN stamm.mess_stelle\n  ON (probe.mst_id = stamm.mess_stelle.id)\nINNER JOIN land.messung\n  ON probe.id = messung.probe_id\nINNER JOIN land.status_protokoll\n  ON messung.STATUS = status_protokoll.id\nLEFT JOIN stamm.status_kombi\n  ON status_protokoll.status_kombi = stamm.status_kombi.id\nLEFT JOIN stamm.status_wert\n  ON stamm.status_wert.id = stamm.status_kombi.wert_id\nLEFT JOIN stamm.status_stufe\n  ON stamm.status_stufe.id = stamm.status_kombi.stufe_id\nLEFT JOIN stamm.datenbasis\n  ON (probe.datenbasis_id = datenbasis.id)\nLEFT JOIN stamm.probenart\n  ON (probe.probenart_id = probenart.id)\nLEFT JOIN land.ortszuordnung\n  ON (\n      probe.id = ortszuordnung.probe_id\n      AND ortszuordnung.ortszuordnung_typ = 'E'\n      )\nLEFT JOIN stamm.ort\n  ON (ortszuordnung.ort_id = ort.id)\nLEFT JOIN stamm.verwaltungseinheit\n  ON (ort.gem_id = verwaltungseinheit.id)\nLEFT JOIN land.messwert k40\n  ON (\n      k40.messungs_id = messung.id\n      AND k40.messgroesse_id = 28\n      )\nLEFT JOIN land.messwert co60\n  ON (\n      co60.messungs_id = messung.id\n      AND co60.messgroesse_id = 68\n      )\nLEFT JOIN land.messwert cs137\n  ON (\n      cs137.messungs_id = messung.id\n      AND cs137.messgroesse_id = 373\n      )\n
-16	SELECT messung.id,\n  probe.id AS probeId,\n  probe.hauptproben_nr AS hpNr,\n  messung.nebenproben_nr AS npNr,\n  status_stufe.stufe AS statusSt,\n  status_wert.wert AS statusW,\n  status_protokoll.datum AS statusD,\n  datenbasis.datenbasis AS dBasis,\n  mess_stelle.netzbetreiber_id AS netzId,\n  probe.mst_id AS mstId,\n  probe.umw_id AS umwId,\n  probenart.probenart AS pArt,\n  probe.probeentnahme_beginn AS peBegin,\n  probe.probeentnahme_ende AS peEnd,\n  ort.gem_id AS eGemId,\n  verwaltungseinheit.bezeichnung AS eGem,\n  coalesce(h3.messwert_nwg, ' ') || to_char(h3.messwert, '0.99eeee') AS h3,\n  coalesce(k40.messwert_nwg, ' ') || to_char(k40.messwert, '0.99eeee') AS k40,\n  coalesce(co60.messwert_nwg, ' ') || to_char(co60.messwert, '0.99eeee') AS co60,\n  coalesce(sr89.messwert_nwg, ' ') || to_char(sr89.messwert, '0.99eeee') AS sr89,\n  coalesce(sr90.messwert_nwg, ' ') || to_char(sr90.messwert, '0.99eeee') AS sr90,\n  coalesce(ru103.messwert_nwg, ' ') || to_char(ru103.messwert, '0.99eeee') AS ru103,\n  coalesce(i131.messwert_nwg, ' ') || to_char(i131.messwert, '0.99eeee') AS i131,\n  coalesce(cs134.messwert_nwg, ' ') || to_char(cs134.messwert, '0.99eeee') AS cs134,\n  coalesce(cs137.messwert_nwg, ' ') || to_char(cs137.messwert, '0.99eeee') AS cs137,\n  coalesce(ce144.messwert_nwg, ' ') || to_char(ce144.messwert, '0.99eeee') AS ce144,\n  coalesce(u234.messwert_nwg, ' ') || to_char(u234.messwert, '0.99eeee') AS u234,\n  coalesce(u235.messwert_nwg, ' ') || to_char(u235.messwert, '0.99eeee') AS u235,\n  coalesce(u238.messwert_nwg, ' ') || to_char(u238.messwert, '0.99eeee') AS u238,\n  coalesce(pu238.messwert_nwg, ' ') || to_char(pu238.messwert, '0.99eeee') AS pu238,\n  coalesce(pu239.messwert_nwg, ' ') || to_char(pu239.messwert, '0.99eeee') AS pu239,\n  coalesce(pu23940.messwert_nwg, ' ') || to_char(pu23940.messwert, '0.99eeee') AS pu23940,\n  coalesce(te132.messwert_nwg, ' ') || to_char(te132.messwert, '0.99eeee') AS te132,\n  coalesce(pb212.messwert_nwg, ' ') || to_char(pb212.messwert, '0.99eeee') AS pb212,\n  coalesce(pb214.messwert_nwg, ' ') || to_char(pb214.messwert, '0.99eeee') AS pb214,\n  coalesce(bi212.messwert_nwg, ' ') || to_char(bi212.messwert, '0.99eeee') AS bi212,\n  coalesce(bi214.messwert_nwg, ' ') || to_char(bi214.messwert, '0.99eeee') AS bi214\nFROM land.probe\nLEFT JOIN stamm.mess_stelle\n  ON (probe.mst_id = stamm.mess_stelle.id)\nINNER JOIN land.messung\n  ON probe.id = messung.probe_id\nINNER JOIN land.status_protokoll\n  ON messung.STATUS = status_protokoll.id\nLEFT JOIN stamm.status_kombi\n  ON status_protokoll.status_kombi = stamm.status_kombi.id\nLEFT JOIN stamm.status_wert\n  ON stamm.status_wert.id = stamm.status_kombi.wert_id\nLEFT JOIN stamm.status_stufe\n  ON stamm.status_stufe.id = stamm.status_kombi.stufe_id\nLEFT JOIN stamm.datenbasis\n  ON (probe.datenbasis_id = datenbasis.id)\nLEFT JOIN stamm.probenart\n  ON (probe.probenart_id = probenart.id)\nLEFT JOIN land.ortszuordnung\n  ON (\n      probe.id = ortszuordnung.probe_id\n      AND ortszuordnung.ortszuordnung_typ = 'E'\n      )\nLEFT JOIN stamm.ort\n  ON (ortszuordnung.ort_id = ort.id)\nLEFT JOIN stamm.verwaltungseinheit\n  ON (ort.gem_id = verwaltungseinheit.id)\nLEFT JOIN land.messwert h3\n  ON (h3.messungs_id = messung.id AND h3.messgroesse_id = 1)\nLEFT JOIN land.messwert k40\n  ON (k40.messungs_id = messung.id AND k40.messgroesse_id = 28)\nLEFT JOIN land.messwert co60\n  ON (co60.messungs_id = messung.id AND co60.messgroesse_id = 68)\nLEFT JOIN land.messwert sr89\n  ON (sr89.messungs_id = messung.id AND sr89.messgroesse_id = 164)\nLEFT JOIN land.messwert sr90\n  ON (sr90.messungs_id = messung.id AND sr90.messgroesse_id = 165)\nLEFT JOIN land.messwert ru103\n  ON (ru103.messungs_id = messung.id AND ru103.messgroesse_id = 220)\nLEFT JOIN land.messwert i131\n  ON (i131.messungs_id = messung.id AND i131.messgroesse_id = 340)\nLEFT JOIN land.messwert cs134\n  ON (cs134.messungs_id = messung.id AND cs134.messgroesse_id = 369)\nLEFT JOIN land.messwert cs137\n  ON (cs137.messungs_id = messung.id AND cs137.messgroesse_id = 373)\nLEFT JOIN land.messwert ce144\n  ON (ce144.messungs_id = messung.id AND ce144.messgroesse_id = 404)\nLEFT JOIN land.messwert u234\n  ON (u234.messungs_id = messung.id AND u234.messgroesse_id = 746)\nLEFT JOIN land.messwert u235\n  ON (u235.messungs_id = messung.id AND u235.messgroesse_id = 747)\nLEFT JOIN land.messwert u238\n  ON (u238.messungs_id = messung.id AND u238.messgroesse_id = 750)\nLEFT JOIN land.messwert pu238\n  ON (pu238.messungs_id = messung.id AND pu238.messgroesse_id = 768)\nLEFT JOIN land.messwert pu239\n  ON (pu239.messungs_id = messung.id AND pu239.messgroesse_id = 769)\nLEFT JOIN land.messwert pu23940\n  ON (pu23940.messungs_id = messung.id AND pu23940.messgroesse_id = 850)\nLEFT JOIN land.messwert te132\n  ON (te132.messungs_id = messung.id AND te132.messgroesse_id = 325)\nLEFT JOIN land.messwert pb212\n  ON (pb212.messungs_id = messung.id AND pb212.messgroesse_id = 672)\nLEFT JOIN land.messwert pb214\n  ON (pb214.messungs_id = messung.id AND pb214.messgroesse_id = 673)\nLEFT JOIN land.messwert bi212\n  ON (bi212.messungs_id = messung.id AND bi212.messgroesse_id = 684)\nLEFT JOIN land.messwert bi214\n  ON (bi214.messungs_id = messung.id AND bi214.messgroesse_id = 686)
-17	SELECT messung.id,\r\n  probe.id AS probeId,\r\n  probe.hauptproben_nr AS hpNr,\r\n  messung.nebenproben_nr AS npNr,\r\n  stamm.status_stufe.stufe AS statusSt,\r\n  stamm.status_wert.wert AS statusW,\r\n  status_protokoll.datum AS statusD,\r\n  datenbasis.datenbasis AS dBasis,\r\n  stamm.mess_stelle.netzbetreiber_id AS netzId,\r\n  probe.mst_id AS mstId,\r\n  probe.umw_id AS umwId,\r\n  probenart.probenart AS pArt,\r\n  probe.probeentnahme_beginn AS peBegin,\r\n  probe.probeentnahme_ende AS peEnd,\r\n  ort.gem_id AS eGemId,\r\n  verwaltungseinheit.bezeichnung AS eGem,\r\n  coalesce(sr89.messwert_nwg, ' ') || to_char(sr89.messwert, '0.99eeee') AS sr89,\r\n  coalesce(sr90.messwert_nwg, ' ') || to_char(sr90.messwert, '0.99eeee') AS sr90\r\nFROM land.probe\r\nLEFT JOIN stamm.mess_stelle\r\n  ON (probe.mst_id = stamm.mess_stelle.id)\r\nINNER JOIN land.messung\r\n  ON probe.id = messung.probe_id\r\nINNER JOIN land.status_protokoll\r\n  ON messung.STATUS = status_protokoll.id\r\nLEFT JOIN stamm.status_kombi\r\n  ON status_protokoll.status_kombi = stamm.status_kombi.id\r\nLEFT JOIN stamm.status_wert\r\n  ON stamm.status_wert.id = stamm.status_kombi.wert_id\r\nLEFT JOIN stamm.status_stufe\r\n  ON stamm.status_stufe.id = stamm.status_kombi.stufe_id\r\nLEFT JOIN stamm.datenbasis\r\n  ON (probe.datenbasis_id = datenbasis.id)\r\nLEFT JOIN stamm.probenart\r\n  ON (probe.probenart_id = probenart.id)\r\nLEFT JOIN land.ortszuordnung\r\n  ON (\r\n      probe.id = ortszuordnung.probe_id\r\n      AND ortszuordnung.ortszuordnung_typ = 'E'\r\n      )\r\nLEFT JOIN stamm.ort\r\n  ON (ortszuordnung.ort_id = ort.id)\r\nLEFT JOIN stamm.verwaltungseinheit\r\n  ON (ort.gem_id = verwaltungseinheit.id)\r\nLEFT JOIN land.messwert sr89\r\n  ON (sr89.messungs_id = messung.id AND sr89.messgroesse_id = 164)\r\nLEFT JOIN land.messwert sr90\r\n  ON (sr90.messungs_id = messung.id AND sr90.messgroesse_id = 165)\r\n
-18	SELECT messung.id,\n  probe.id AS probeId,\n  probe.hauptproben_nr AS hpNr,\n  messung.nebenproben_nr AS npNr,\n  status_stufe.stufe AS statusSt,\n  status_wert.wert AS statusW,\n  status_protokoll.datum AS statusD,\n  datenbasis.datenbasis AS dBasis,\n  mess_stelle.netzbetreiber_id AS netzId,\n  probe.mst_id AS mstId,\n  probe.umw_id AS umwId,\n  probenart.probenart AS pArt,\n  probe.probeentnahme_beginn AS peBegin,\n probe.probeentnahme_ende AS peEnd,\n  ort.gem_id AS eGemId,\n  verwaltungseinheit.bezeichnung AS eGem,\n  mw_pivot.h_3 AS h3,\n  mw_pivot.k_40 AS k40,\n  mw_pivot.co_60 AS co60,\n  mw_pivot.sr_89 AS sr89,\n  mw_pivot.sr_90 AS sr90,\n  mw_pivot.ru_103 AS ru103,\n  mw_pivot.i_131 AS i131,\n  mw_pivot.cs_134 AS cs134,\n  mw_pivot.cs_137 AS cs137,\n  mw_pivot.ce_144 AS ce144,\n  mw_pivot.u_234 AS u234,\n  mw_pivot.u_235 AS u235,\n  mw_pivot.u_238 AS u238,\n  mw_pivot.pu_238 AS pu238,\n  mw_pivot.pu_239 AS pu239,\n  mw_pivot.pu_23940 AS pu23940,\n  mw_pivot.te_132 AS te132,\n  mw_pivot.pb_212 AS pb212,\n  mw_pivot.pb_214 AS pb214,\n  mw_pivot.bi_212 AS bi212,\n  mw_pivot.bi_214 AS bi214\nFROM land.probe\nLEFT JOIN stamm.mess_stelle\n  ON (probe.mst_id = stamm.mess_stelle.id)\nINNER JOIN land.messung\n  ON probe.id = messung.probe_id\nINNER JOIN land.status_protokoll\n  ON messung.STATUS = status_protokoll.id\nLEFT JOIN stamm.status_kombi\n  ON status_protokoll.status_kombi = stamm.status_kombi.id\nLEFT JOIN stamm.status_wert\n  ON stamm.status_wert.id = stamm.status_kombi.wert_id\nLEFT JOIN stamm.status_stufe\n  ON stamm.status_stufe.id = stamm.status_kombi.stufe_id\nLEFT JOIN stamm.datenbasis\n  ON (probe.datenbasis_id = datenbasis.id)\nLEFT JOIN stamm.probenart\n  ON (probe.probenart_id = probenart.id)\nLEFT JOIN land.ortszuordnung\n  ON (\n      probe.id = ortszuordnung.probe_id\n      AND ortszuordnung.ortszuordnung_typ = 'E'\n      )\nLEFT JOIN stamm.ort\n  ON (ortszuordnung.ort_id = ort.id)\nLEFT JOIN stamm.verwaltungseinheit\n  ON (ort.gem_id = verwaltungseinheit.id)\nLEFT JOIN (\n  SELECT\n    messungs_id, meh_id, h_3, k_40, co_60, sr_89, sr_90, ru_103,\n    i_131, cs_134, cs_137, ce_144, u_234, u_235, u_238, pu_238,\n    pu_239, pu_23940, te_132, pb_212, pb_214, bi_212, bi_214\n  FROM crosstab(\n    'SELECT messwert.messungs_id, messwert.meh_id, messwert.messgroesse_id, COALESCE(messwert.messwert_nwg, '' '') || to_char(messwert.messwert, ''9.99eeee'') FROM land.messung INNER JOIN land.messwert ON messung.id = messung.id WHERE messgroesse_id IN (1, 28, 68, 164, 165, 220, 340, 369, 373, 404, 746, 747, 750, 768, 769, 850, 325, 672, 673, 684, 686) ORDER BY 1',\n    'SELECT mg_id FROM (VALUES (1), (28), (68), (164), (165), (220), (340), (369), (373), (404), (746), (747), (750), (768), (769), (850), (325), (672), (673), (684), (686)) AS t (mg_id)'\n  ) AS (\n    messungs_id integer, meh_id integer,\n    h_3 character varying(10), k_40 character varying(10),\n    co_60 character varying(10), sr_89 character varying(10),\n    sr_90 character varying(10), ru_103 character varying(10),\n    i_131 character varying(10), cs_134 character varying(10),\n    cs_137 character varying(10), ce_144 character varying(10),\n    u_234 character varying(10), u_235 character varying(10),\n    u_238 character varying(10), pu_238 character varying(10),\n    pu_239 character varying(10), pu_23940 character varying(10),\n    te_132 character varying(10), pb_212 character varying(10),\n    pb_214 character varying(10), bi_212 character varying(10),\n    bi_214 character varying(10)\n  )\n) AS mw_pivot\n  ON mw_pivot.messungs_id = messung.id\nLEFT JOIN stamm.mess_einheit\n  ON mess_einheit.id = mw_pivot.meh_id
+COPY stamm.base_query (id, sql) FROM stdin;
+1	SELECT probe.id AS probeId,\n  probe.hauptproben_nr AS hpNr,\n  datenbasis.datenbasis AS dBasis,\n  stamm.mess_stelle.netzbetreiber_id AS netzId,\n  probe.mst_id AS mstId,\n  probe.umw_id AS umwId,\n  probenart.probenart AS pArt,\n  probe.solldatum_beginn AS sollBegin,\n  probe.solldatum_ende AS sollEnd,\n  probe.probeentnahme_beginn AS peBegin,\n  probe.probeentnahme_ende AS peEnd,\n  ort.ort_id AS ortId,\n  ort.gem_id AS eGemId,\n  verwaltungseinheit.bezeichnung AS eGem,\n  probe.id_alt AS idAlt,\n  land.messprogramm.id AS mprId\nFROM land.probe\nLEFT JOIN stamm.mess_stelle ON (probe.mst_id = stamm.mess_stelle.id)\nLEFT JOIN stamm.datenbasis ON (probe.datenbasis_id = datenbasis.id)\nLEFT JOIN stamm.probenart ON (probe.probenart_id = probenart.id)\nLEFT JOIN land.ortszuordnung ON (\n    probe.id = ortszuordnung.probe_id\n    AND ortszuordnung.ortszuordnung_typ IN ('E', 'R')\n    )\nLEFT JOIN stamm.ort ON (ortszuordnung.ort_id = ort.id)\nLEFT JOIN stamm.verwaltungseinheit ON (ort.gem_id = verwaltungseinheit.id)\nLEFT JOIN land.messprogramm\n  ON (probe.mpr_id = land.messprogramm.id)
+31	SELECT ort.id,\n  ort.netzbetreiber_id AS netzbetreiberId,\n  ort.ort_id AS ortId,\n  ort_typ.code AS ortTyp,\n  ort.kurztext,\n  ort.langtext,\n  staat.staat_iso AS staat,\n  verwaltungseinheit.bezeichnung AS verwaltungseinheit,\n  nuts_code AS nutsCode,\n  oz_id AS ozId,\n  kta_gruppe AS anlageId,\n  mp_art AS mpArt,\n  zone,\n  sektor,\n  zustaendigkeit,\n  berichtstext,\n  unscharf,\n  koordinaten_art.koordinatenart AS koordinatenArt,\n  ort.koord_x_extern AS koordXExtern,\n  ort.koord_y_extern AS koordYExtern,\n  PUBLIC.ST_X(ort.geom) AS longitude,\n  PUBLIC.ST_Y(ort.geom) AS latitude,\n  hoehe_ueber_nn AS hoeheUeberNn,\n  hoehe_land AS hoeheLand,\n  aktiv,\n  letzte_aenderung AS letzteAenderung\nFROM stamm.ort\nLEFT JOIN stamm.verwaltungseinheit\n  ON ort.gem_id = verwaltungseinheit.id\nLEFT JOIN stamm.staat\n  ON stamm.staat.id = ort.staat_id\nINNER JOIN stamm.koordinaten_art\n  ON stamm.koordinaten_art.id = ort.kda_id\nLEFT JOIN stamm.ort_typ\n  ON ort.ort_typ = ort_typ.id\nLEFT JOIN stamm.kta_gruppe\n  ON kta_gruppe.id = ort.kta_gruppe_id\n
+21	SELECT messprogramm.id AS mpNr,\n  stamm.mess_stelle.netzbetreiber_id AS netzId,\n  CASE \n    WHEN messprogramm.mst_id = messprogramm.labor_mst_id\n      THEN messprogramm.mst_id\n    ELSE messprogramm.mst_id || '-' || messprogramm.labor_mst_id\n    END AS mstLaborId,\n  datenbasis.datenbasis AS dBasis,\n  CASE \n    WHEN messprogramm.ba_id = '1'\n      THEN 'RB'\n    ELSE 'IB'\n    END AS messRegime,\n  probenart.probenart AS pArt,\n  messprogramm.umw_id AS umwId,\n  messprogramm.media_desk AS deskriptoren,\n  messprogramm.probenintervall AS intervall,\n  ort.ort_id AS ortId,\n  ort.gem_id AS eGemId,\n  verwaltungseinheit.bezeichnung AS eGem\nFROM land.messprogramm\nLEFT JOIN stamm.mess_stelle\n  ON (messprogramm.mst_id = stamm.mess_stelle.id)\nLEFT JOIN stamm.datenbasis\n  ON (messprogramm.datenbasis_id = datenbasis.id)\nLEFT JOIN stamm.probenart\n  ON (messprogramm.probenart_id = probenart.id)\nLEFT JOIN land.ortszuordnung_mp\n  ON (\n      messprogramm.id = ortszuordnung_mp.messprogramm_id\n      AND ortszuordnung_mp.ortszuordnung_typ IN ('E', 'R')\n      )\nLEFT JOIN stamm.ort\n  ON (ortszuordnung_mp.ort_id = ort.id)\nLEFT JOIN stamm.verwaltungseinheit\n  ON (ort.gem_id = verwaltungseinheit.id)\n
+33	SELECT id, netzbetreiber_id AS netzbetreiberId, datensatz_erzeuger_id AS datensatzErzeugerId, mst_id AS mstId, bezeichnung, letzte_aenderung AS letzteAenderung FROM stamm.datensatz_erzeuger
+32	SELECT id, netzbetreiber_id AS netzbetreiberId, prn_id AS prnId, bearbeiter, bemerkung, betrieb, bezeichnung, kurz_bezeichnung AS kurzBezeichnung, ort, plz, strasse, telefon, tp, typ, letzte_aenderung AS letzteAenderung FROM stamm.probenehmer
+34	SELECT id, netzbetreiber_id AS netzbetreiberId, code, bezeichnung, letzte_aenderung AS letzteAenderung FROM stamm.messprogramm_kategorie
+11	SELECT messung.id,\n  probe.id AS probeId,\n  probe.hauptproben_nr AS hpNr,\n  messung.nebenproben_nr AS npNr,\n  status_stufe.stufe AS statusSt,\n  status_wert.wert AS statusW,\n  status_protokoll.datum AS statusD,\n  datenbasis.datenbasis AS dBasis,\n  mess_stelle.netzbetreiber_id AS netzId,\n  probe.mst_id AS mstId,\n  probe.umw_id AS umwId,\n  probenart.probenart AS pArt,\n  probe.probeentnahme_beginn AS peBegin,\n  probe.probeentnahme_ende AS peEnd,\n  ort.gem_id AS eGemId,\n  verwaltungseinheit.bezeichnung AS eGem,\n  coalesce(h3.messwert_nwg, ' ') || to_char(h3.messwert, '0.99eeee') AS h3,\n  coalesce(k40.messwert_nwg, ' ') || to_char(k40.messwert, '0.99eeee') AS k40,\n  coalesce(co60.messwert_nwg, ' ') || to_char(co60.messwert, '0.99eeee') AS co60,\n  coalesce(sr89.messwert_nwg, ' ') || to_char(sr89.messwert, '0.99eeee') AS sr89,\n  coalesce(sr90.messwert_nwg, ' ') || to_char(sr90.messwert, '0.99eeee') AS sr90,\n  coalesce(ru103.messwert_nwg, ' ') || to_char(ru103.messwert, '0.99eeee') AS ru103,\n  coalesce(i131.messwert_nwg, ' ') || to_char(i131.messwert, '0.99eeee') AS i131,\n  coalesce(cs134.messwert_nwg, ' ') || to_char(cs134.messwert, '0.99eeee') AS cs134,\n  coalesce(cs137.messwert_nwg, ' ') || to_char(cs137.messwert, '0.99eeee') AS cs137,\n  coalesce(ce144.messwert_nwg, ' ') || to_char(ce144.messwert, '0.99eeee') AS ce144,\n  coalesce(u234.messwert_nwg, ' ') || to_char(u234.messwert, '0.99eeee') AS u234,\n  coalesce(u235.messwert_nwg, ' ') || to_char(u235.messwert, '0.99eeee') AS u235,\n  coalesce(u238.messwert_nwg, ' ') || to_char(u238.messwert, '0.99eeee') AS u238,\n  coalesce(pu238.messwert_nwg, ' ') || to_char(pu238.messwert, '0.99eeee') AS pu238,\n  coalesce(pu239.messwert_nwg, ' ') || to_char(pu239.messwert, '0.99eeee') AS pu239,\n  coalesce(pu23940.messwert_nwg, ' ') || to_char(pu23940.messwert, '0.99eeee') AS pu23940,\n  coalesce(te132.messwert_nwg, ' ') || to_char(te132.messwert, '0.99eeee') AS te132,\n  coalesce(pb212.messwert_nwg, ' ') || to_char(pb212.messwert, '0.99eeee') AS pb212,\n  coalesce(pb214.messwert_nwg, ' ') || to_char(pb214.messwert, '0.99eeee') AS pb214,\n  coalesce(bi212.messwert_nwg, ' ') || to_char(bi212.messwert, '0.99eeee') AS bi212,\n  coalesce(bi214.messwert_nwg, ' ') || to_char(bi214.messwert, '0.99eeee') AS bi214\nFROM land.probe\nLEFT JOIN stamm.mess_stelle\n  ON (probe.mst_id = stamm.mess_stelle.id)\nINNER JOIN land.messung\n  ON probe.id = messung.probe_id\nINNER JOIN land.status_protokoll\n  ON messung.STATUS = status_protokoll.id\nLEFT JOIN stamm.status_kombi\n  ON status_protokoll.status_kombi = stamm.status_kombi.id\nLEFT JOIN stamm.status_wert\n  ON stamm.status_wert.id = stamm.status_kombi.wert_id\nLEFT JOIN stamm.status_stufe\n  ON stamm.status_stufe.id = stamm.status_kombi.stufe_id\nLEFT JOIN stamm.datenbasis\n  ON (probe.datenbasis_id = datenbasis.id)\nLEFT JOIN stamm.probenart\n  ON (probe.probenart_id = probenart.id)\nLEFT JOIN land.ortszuordnung\n  ON (\n      probe.id = ortszuordnung.probe_id\n      AND ortszuordnung.ortszuordnung_typ IN ('E', 'R')\n      )\nLEFT JOIN stamm.ort\n  ON (ortszuordnung.ort_id = ort.id)\nLEFT JOIN stamm.verwaltungseinheit\n  ON (ort.gem_id = verwaltungseinheit.id)\nLEFT JOIN land.messwert h3\n  ON (h3.messungs_id = messung.id AND h3.messgroesse_id = 1)\nLEFT JOIN land.messwert k40\n  ON (k40.messungs_id = messung.id AND k40.messgroesse_id = 28)\nLEFT JOIN land.messwert co60\n  ON (co60.messungs_id = messung.id AND co60.messgroesse_id = 68)\nLEFT JOIN land.messwert sr89\n  ON (sr89.messungs_id = messung.id AND sr89.messgroesse_id = 164)\nLEFT JOIN land.messwert sr90\n  ON (sr90.messungs_id = messung.id AND sr90.messgroesse_id = 165)\nLEFT JOIN land.messwert ru103\n  ON (ru103.messungs_id = messung.id AND ru103.messgroesse_id = 220)\nLEFT JOIN land.messwert i131\n  ON (i131.messungs_id = messung.id AND i131.messgroesse_id = 340)\nLEFT JOIN land.messwert cs134\n  ON (cs134.messungs_id = messung.id AND cs134.messgroesse_id = 369)\nLEFT JOIN land.messwert cs137\n  ON (cs137.messungs_id = messung.id AND cs137.messgroesse_id = 373)\nLEFT JOIN land.messwert ce144\n  ON (ce144.messungs_id = messung.id AND ce144.messgroesse_id = 404)\nLEFT JOIN land.messwert u234\n  ON (u234.messungs_id = messung.id AND u234.messgroesse_id = 746)\nLEFT JOIN land.messwert u235\n  ON (u235.messungs_id = messung.id AND u235.messgroesse_id = 747)\nLEFT JOIN land.messwert u238\n  ON (u238.messungs_id = messung.id AND u238.messgroesse_id = 750)\nLEFT JOIN land.messwert pu238\n  ON (pu238.messungs_id = messung.id AND pu238.messgroesse_id = 768)\nLEFT JOIN land.messwert pu239\n  ON (pu239.messungs_id = messung.id AND pu239.messgroesse_id = 769)\nLEFT JOIN land.messwert pu23940\n  ON (pu23940.messungs_id = messung.id AND pu23940.messgroesse_id = 850)\nLEFT JOIN land.messwert te132\n  ON (te132.messungs_id = messung.id AND te132.messgroesse_id = 325)\nLEFT JOIN land.messwert pb212\n  ON (pb212.messungs_id = messung.id AND pb212.messgroesse_id = 672)\nLEFT JOIN land.messwert pb214\n  ON (pb214.messungs_id = messung.id AND pb214.messgroesse_id = 673)\nLEFT JOIN land.messwert bi212\n  ON (bi212.messungs_id = messung.id AND bi212.messgroesse_id = 684)\nLEFT JOIN land.messwert bi214\n  ON (bi214.messungs_id = messung.id AND bi214.messgroesse_id = 686)
 \.
 
-ALTER SEQUENCE base_query_id_seq RESTART WITH 19;
 
-COPY query_user (id, name, user_id, base_query, description) FROM stdin;
-1	Proben	0	1	Alle Proben
-7	Proben pro Land und UMW (Multiselect)	0	7	Abfrage aller Proben gefiltert pro Land und Umweltbereich (mit Mehrfachauswahl)
-9	Messprogramme	0	9	Abfrage der Messprogramme ohne Filter
-10	Orte	0	10	Abfrage der Orte
-11	Probenehmer	0	11	Abfrage der Probenehmer
-12	Datensatzerzeuger	0	12	Abfrage der Datensatzerzeuger
-13	alle nach Status	0	13	Messungen nach Status
-14	Messprogrammkategorie	0	14	Abfrage der Messprogrammkategorien
-15	LSt G - Messungen	0	15	Gammaspektrometriemessungen zur LSt-Bearbeitung
-16	Land Messungen 	0	16	Messungen zur Statusvergabe auf Land-Ebene
-17	LSt Sr - Messungen	0	17	Strontium-Messungen zur LSt-Bearbeitung
-18	MST Messungen	0	18	Messungen zur Statusvergabe auf MST-Ebene
-\.
+--
+-- Data for Name: filter; Type: TABLE DATA; Schema: stamm; Owner: postgres
+--
 
-ALTER SEQUENCE query_user_id_seq RESTART WITH 19;
-
-COPY filter (id, sql, parameter, type, name) FROM stdin;
+COPY stamm.filter (id, sql, parameter, type, name) FROM stdin;
 1	probe.id_alt LIKE :idAlt	idAlt	0	probe_id_alt
 2	probe.hauptproben_nr LIKE :hauptprobenNr	hauptprobenNr	0	probe_hauptproben_nr
 3	probe.mst_id IN ( :mstId )	mstId	4	probe_mst_id
@@ -71,28 +47,28 @@ COPY filter (id, sql, parameter, type, name) FROM stdin;
 10	ort.gem_id LIKE :gemId	gemId	0	ort_gem_id
 11	ort.ort_id LIKE :ortId	ortId	0	ort_ort_id
 12	verwaltungseinheit.bezeichnung LIKE :bezeichnung	bezeichnung	0	verwaltungseinheit_bezeichnung
-13	stamm.mess_stelle.netzbetreiber_id IN ( :netzbetreiberId )	netzbetreiberId	5	netzbetreiber_id
-14	probe.probeentnahme_beginn BETWEEN to_timestamp(cast(:fromPeBegin AS DOUBLE PRECISION)) AND to_timestamp(cast(:toPeBegin AS DOUBLE PRECISION))	fromPeBegin,toPeBegin	10	Entnahmebeginn von-bis
 15	probe.probeentnahme_ende BETWEEN to_timestamp(cast(:fromPeEnd AS DOUBLE PRECISION)) AND to_timestamp(cast(:toPeEnd AS DOUBLE PRECISION))	fromPeEnd,toPeEnd	10	Entnahmeende von-bis
 16	probe.letzte_aenderung BETWEEN to_timestamp(cast(probeLetzteAenderungFrom AS DOBULE PRECISION)) AND to_timestamp(cast(probeLetzteAenderungTo AS DOUBLE PRECISION))	probeLetzteAenderungFrom,probeLetzteAenderungTo	10	Letzte Aenderung von-bis
 17	probe.id = :probeId	probeId	0	ProbeID
 18	:genTextParam LIKE :genTextValue	genText	11	generic_text_filter
 19	statusSt = :statusSt	statusSt	0	statusSt_filter
+14	probe.probeentnahme_beginn BETWEEN to_timestamp(cast(:fromPeBegin AS DOUBLE PRECISION)) AND to_timestamp(cast(:toPeBegin AS DOUBLE PRECISION))	fromPeBegin,toPeBegin	10	Entnahmebeginn von-bis
+21	probe.solldatum_ende BETWEEN to_timestamp(cast(:fromSollEnde AS DOUBLE PRECISION)) AND to_timestamp(cast(:toSollEnde AS DOUBLE PRECISION))	fromSollEnde,toSollEnde	10	Sollend von-bis
+20	probe.solldatum_beginn BETWEEN to_timestamp(cast(:fromSollBegin AS DOUBLE PRECISION)) AND to_timestamp(cast(:toSollBegin AS DOUBLE PRECISION))	fromSollBegin,toSollBegin	10	Sollbeginn von-bis
+22	messung.nebenproben_nr LIKE :nebenproben_nr	nebenproben_nr	0	messung_nebenproben_nr
+13	mess_stelle.netzbetreiber_id IN ( :netzbetreiberId )	netzbetreiberId	5	netzbetreiber_id
+23	ort.netzbetreiber_id IN ( :netzbetreiberId )	netzbetreiberId	5	netzbetreiber_id
+24	probenehmer.netzbetreiber_id IN ( :netzbetreiberId )	netzbetreiberId	5	netzbetreiber_id
+25	datensatz_erzeuger.netzbetreiber_id IN ( :netzbetreiberId )	netzbetreiberId	5	netzbetreiber_id
+26	messprogramm_kategorie..netzbetreiber_id IN ( :netzbetreiberId )	netzbetreiberId	5	netzbetreiber_id
 \.
 
---
--- TOC entry 5410 (class 0 OID 3061619)
--- Dependencies: 252
--- Data for Name: filter; Type: TABLE DATA; Schema: stamm; Owner: postgres
---
 
 --
--- TOC entry 5412 (class 0 OID 3061892)
--- Dependencies: 284
 -- Data for Name: result_type; Type: TABLE DATA; Schema: stamm; Owner: postgres
 --
 
-COPY result_type (id, name, format) FROM stdin;
+COPY stamm.result_type (id, name, format) FROM stdin;
 1	text	\N
 2	date	d.m.Y H:i
 3	number	\N
@@ -120,279 +96,241 @@ COPY result_type (id, name, format) FROM stdin;
 
 
 --
--- TOC entry 5414 (class 0 OID 3061900)
--- Dependencies: 286
--- Data for Name: result; Type: TABLE DATA; Schema: stamm; Owner: postgres
+-- Data for Name: grid_column; Type: TABLE DATA; Schema: stamm; Owner: postgres
 --
 
-COPY grid_column (id, base_query, name, data_index, position, filter, data_type) FROM stdin;
-1	1	Id	probeId	1	17	4
-2	1	Hauptproben Nummer	hauptprobenNr	2	2	1
-3	1	Datenbasis	dBasis	3	8	17
-4	1	Land	netzId	4	13	18
-5	1	Messstelle	mstId	5	3	10
-6	1	Umweltbereich	umwId	6	4	12
-7	1	Probenart	pArt	7	1	19
-8	1	Entnahme von	peBegin	8	14	2
-9	1	Entnahme bis	peEnd	9	15	2
-10	1	Ort	ortId	10	1	6
-11	1	Gemeinde Id	eGemId	11	10	16
-12	1	Gemeinde	eGem	12	18	1
-13	1	Probennummer	idAlt	13	1	1
-14	7	Id	probeId	1	17	4
-15	7	Hauptproben Nummer 	hpNr	2	2	1
-16	7	Datenbasis	dBasis	3	8	17
-17	7	Netzbetreiber	netzId	4	13	18
-18 	7	Messstelle	mstId	5	3	10
-19	7	Umweltbereich	umdId	6	4	12
-20	7	Probenart	pArt	7	9	19
-21	7	Entnahme von	peBegin	8	14	2
-22	7	Entnahme bis	peEnd	9	15	2
-23	7	Ort	ortId	10	11	6
-24	7	Gemeinde Id	eGemId	11	10	1
-25	7	Probennummer	idAlt	12	1	1
-27	9	Messprogramm 	mpNr	1	\N	8
-28	9	netzbetreiber	netzId 	2	13	18
-29	9	Messstelle	mstLaborId	3	\N	10
-30	9	Datenbasis	dBasis	4	8	17
-31	9	Messregime	messRegime	5	\N	1
-32	9	Probenart	pArt	6	9	19
-33	9	Umweltbereich	umwId	7	4	12
-34	9	Deskriptoren	deskriptoren	8	\N	1
-35	9	Probenintervall	intervall	9	\N	1
-36	9	Ort	ortId	10	\N	6
-37	9	Gemeinde ID	eGemId	11	10	1
-38	9	Verwaltungseinheit	eGem	12	\N	1
-39	10	Id	id	1	11	6
-40	10	Netzbetreiber	netzbetreiberId	2	13	18
-41	10	Ort	ortId	3	11	6
-42	10	Ort Typ	ortTyp	4	\N	1
-43	10	Kurtext	kurztext	5	18	1
-44	10	Langtext	langtext	6	18	1
-45	10	Staat	staat	7	\N	20
-46	10	Verwaltungseinheit	verwaltungseinheit	8	12	1
-47	10	NUTS Code	nutsCode	9	18	1
-48	10	Ortszuordnung	ozId	10	\N	1
-49	10	KTA Gruppe	anlageId	11	\N	1
-50	10	Messprogrammart	mpArt	12	9	1
-51	10	Koordinatenart	koordinatenArt	13	\N	1
-52	10	Koordinate X extern	koordXExtern	14	\N	3
-53	10 	Koordinate Y extern	koordYExtern	15	\N	3
-54	10	Longitude	longitude	16	\N	3
-55	10	Latitude	latitude	17	\N	3
-56	10	Hoehe ueber NN	hoeheUeberNn	18	\N	3
-57	10	Hoehe Land	hoeheLand	19	\N	3
-58	10	Aktiv	aktiv	20	\N	11
-59	10	Letzte Anderung	letzteAenderung	21	\N	2
-60	11	Id	id	1	\N	21
-61	11	Netzbetreiber	netzbetreiberId	2	13	18
-62	11	prn	prnId	3	\N	1
-63	11	Bearbeiter	bearbeiter	4	\N	1
-64	11	Bemerkung	bemerkung	5	\N	1
-65	11	Betrieb	betrieb	6	\N	1
-66	11	Bezeichnung	bezeichnung	7	\N	1
-67	11	Kurzbezeichnung	kurzBezeichnung	8	\N	1
-68	11	Ort	ort	9	\N	1
-69	11	PLZ	plz	10	18	3
-70	11	Strasse	strasse	11	18	1
-71	11	Telefon	telefon	12	18	1
-72	11	tp	tp	13	\N	1
-73	11	Typ	typ	14	\N	1
-74	11	Letzte Aenderung	letzteAenderung	15	\N	2
-75	12	Id	id	1	\N	22
-76	12	Datensatzerzeuger	datensatzErzeugerId	2	\N	1
-77	12	Messstelle	mstId	3	3	10
-78	12	Bezeichnung	bezeichnung	4	\N	1
-79	12	Letzte Aenderung	letzteAenderung	5	\N	2
-80	13	Id	id	1	\N	5
-81	13	Probe	probeId	2	17	4
-82	13	Probennummer	hpNr	3	2	1
-83	13	Nebenprobennummer	npNr	4	\N	1
-84	13	Status Datum	statusD	5	\N	2
-85	13	Statusstufe	statusSt	6	19	13
-86	13	Statuswert	statusW	7	18	14
-87	13	Datenbasis	dBasis	8	8	17
-88	13	Netzbetreiber	netzId	9	13	18
-89	13	Messstelle	mstId	10	3	10
-90	13	Umweltbereich	umwId	11	4	12
-91	13	Probenart	pArt	12	9	19
-92	13	Probenentnahme beginn	peBegin	13	6	2
-93	13	Probenentnahme ende	peEnd	15	7	2
-94	13	Ort	ortId	16	11	6
-95	13	Gemeinde	eGemId	17	10	1
-96	13	Bezeichnung	eGem	18	\N	1
-97	14	Id	id	1	\N	23
-98	14	Netzbetreiber	netzbetreiberId	2	13	18
-99	14	Code	code	3	\N	1
-100	14	Bezeichnung	bezeichnung	4	\N	1
-101	14	Letzte Aenderung	letzteAenderung	5	\N	2
-102	15	Id	id	1	\N	5
-103	15	Probe	probeId	2	17	4
-104	15	Probennummer	hpNr	3	2	1
-105	15	Nebenprobennummer	npNr	4	\N	1
-106	15	Status Stufe	statusSt	5	\N	13
-107	15	Status Wert	statusW	6	\N	14
-108	15	Status Datum	statusD	7	\N	2
-109	15	Datenbasis	dBasis	8	8	1
-110	15	Netzbetreiber	netzId	9	13	1
-111	15	Messstelle	mstId	10	3	10
-112	15	Umweltbereich	umwId	11	\N	12
-113	15	Probenart	pArt	12	9	1
-114	15	Probenentnahme beginn	peBegin	13	6	2
-115	15	Probenentnahme ende	peEnd	14	7	2
-116	15	Gemeinde	eGem	15	\N	1
-117	15	k40	k40	16	\N	15
-118	15	co60	co60	17	\N	15
-119	15	cs137	cs137	18	\N	15
-120	16	id	id	1	\N	5
-121	16	Probe	probeId	2	17	4
-122	16	Hauptprobennummer	hpNr	3	2	1
-123	16	Nebenprobennummer	npNr	4	\N	1
-135	16	Statusstufe	statusSt	5	\N	13
-136	16	Statuswert	statusW	6	\N	14
-137	16	Status Datum	statusD	7	\N	2
-138	16	Datenbasis	dBasis	8	8	1
-139	16	Netzbetreiber	netzId	9	13	1
-140	16	Messstelle	mstId	10	3	10
-141	16	Umweltbereich	umwId	11	4	12
-142	16	Probenart	pArt	12	\N	1
-143	16	Probenentnahme beginn	peBegin	13	6	2
-144	16	Probenentnahme ende	peEnd	14	7	2
-145	16	Gemeinde	eGem	15	10	1
-146	16	h3	h3	16	\N	15
-147	16	k40	k40	17	\N	15
-148	16	co60	co60	18	\N	15
-149	16	str90	str90	19	\N	15
-150	16	ru103	ru103	20	\N	15
-151	16	i131	i131	21	\N	15
-152	16	cs134	cs134	22	\N	15
-153	16	cs137	cs137	23	\N	15
-154	16	ce144	ce144	24	\N	15
-155	16	u234	u234	25	\N	15
-156	16	u235	u235	26	\N	15
-157	16	u238	u238	27	\N	15
-158	16	pu238	pu238	28	\N	15
-159	16	pu239	pu239	29	\N	15
-160	16	pu23940	pu23940	30	\N	15
-161	16	te132	te132	31	\N	15
-162	16	pb212	pb212	32	\N	15
-163	16	pb214	pb214	33	\N	15
-164	16	bi212	bi212	34	\N	15
-165	16	bi214	bi214	35	\N	15
-166	17	id	id	1	\N	5
-167	17	Probe	probeId	2	17	4
-168	17	Hauptprobennummer	hpNr	3	2	1
-169	17	Nebenprobennummer	npNr	4	\N	1
-170	17	Statusstufe	statusSt	5	\N	13
-171	17	Statuswert	statusW	6	\N	14
-172	17	Statusdatum	statusD	7	\N	2
-173	17	Datenbasis	dBasis	8	8	1
-174	17	Netzbetreiber	netzId	9	13	1
-175	17	Messstelle	mstId	10	3	10
-176	17	Umweltbereich	umwId	11	4	12
-177	17	Probenart	pArt	12	\N	1
-178	17	Probenentnahme beginn	peBegin	13	6	2
-179	17	Probenentnahme ende	peEnd	14	7	2
-180	17	Gemeinde	eGemId	15	10	1
-181	17	Verwaltungseinheit	eGem	16	\N	1
-182	17	sr89	sr89	17	\N	15
-183	17	sr90	sr90	18	\N	15
-184	18	id	id	1	\N	5
-185	18	Probe	probeId	2	\N	4
-186	18	Hauptprobennummer	hpNr	3	\N	2
-187	18	Nebenprobennummer	npNr	4	\N	1
-188	18	Statusstufe	statusSt	5	\N	13
-189	18	Statuswert	statusW	6	\N	14
-190	18	Statusdatum	statusD	7	\N	2
-191	18	Datenbasis	dBasis	8	8	1
-192	18	Netzbetreiber	netzId	9	13	1
-193	18	Messstelle	mstId	10	\N	10
-194	18	Umweltbereich	umwId	11	4	12
-195	18	Probenart	pArt	12	9	1
-196	18	Probenentnahme beginn	peBegin	13	6	2
-197	18	Probenentnahme ende	peEnd	14	7	2
-198	18	Gemeinde	eGemId	15	10	16
-199	18	Verwaltungseinheit	eGem	16	18	1
-200	18	h3	h3	17	\N	15
-201	18	k40	k40	18	\N	15
-202	18	co60	co60	19	\N	15
-203	18	str89	str89	20	\N	15
-204	18	str90	str90	21	\N	15
-205	18	ru103	ru103	22	\N	15
-206	18	i131	i131	23	\N	15
-207	18	cs134	cs134	24	\N	15
-208	18	cs137	cs137	25	\N	15
-209	18	ce144	ce144	26	\N	15
-210	18	u234	u234	27	\N	15
-211	18	u235	u235	28	\N	15
-212	18	u238	u238	29	\N	15
-213	18	pu238	pu238	30	\N	15
-214	18	pu239	pu239	31	\N	15
-215	18	pu23940	pu23940	32	\N	15
-216	18	te132	te132	33	\N	15
-217	18	pb212	pb212	34	\N	15
-218	18	pb214	pb214	35	\N	15
-219	18	bi212	bi212	36	\N	15
-220	18	bi4214	bi214	37	\N	15
+COPY stamm.grid_column (id, base_query, name, data_index, "position", filter, data_type) FROM stdin;
+101	1	interne PID	probeId	1	17	4
+102	1	HP-Nr.	hpNr	2	2	1
+103	1	Datenbasis	dBasis	3	8	17
+104	1	Netzbetreiber	netzId	4	13	18
+105	1	MST	mstId	5	3	10
+106	1	Umw-ID	umwId	6	4	12
+107	1	Probenart	pArt	7	1	19
+110	1	Probenahme von	peBegin	10	14	2
+111	1	Probenahme bis	peEnd	11	15	2
+113	1	E-Gem-ID	eGemId	13	10	16
+114	1	E-Gemeinde	eGem	14	18	1
+115	1	externe PID	idAlt	15	1	1
+116	1	MPR-ID	mprId	16	\N	8
+1101	11	id	id	1	\N	5
+1102	11	interne PID	probeId	2	17	4
+1103	11	HP-Nr	hpNr	3	2	1
+1106	11	Statuswert	statusW	6	\N	14
+1107	11	Status Datum	statusD	7	\N	2
+1108	11	Datenbasis	dBasis	8	8	1
+1109	11	Netzbetreiber	netzId	9	13	1
+1110	11	MST	mstId	10	3	10
+1111	11	Umw-ID	umwId	11	4	12
+1112	11	Probenart	pArt	12	\N	1
+1113	11	Probenahme von	peBegin	13	6	2
+1114	11	Probenahme bis	peEnd	14	7	2
+1115	11	E-Gem-ID	eGemId	15	16	1
+1116	11	E-Gemeinde	eGem	16	10	1
+1117	11	H-3	h3	17	\N	15
+1118	11	K-40	k40	18	\N	15
+1119	11	Co-60	co60	19	\N	15
+1120	11	Sr-89	sr89	20	\N	15
+1121	11	Sr-90	sr90	21	\N	15
+1122	11	Ru-103	ru103	22	\N	15
+1123	11	I-131	i131	23	\N	15
+1124	11	Cs-134	cs134	24	\N	15
+1125	11	Cs-137	cs137	25	\N	15
+1126	11	Ce-144	ce144	26	\N	15
+1127	11	U-234	u234	27	\N	15
+1128	11	U-235	u235	28	\N	15
+1129	11	U-238	u238	29	\N	15
+1130	11	Pu-238	pu238	30	\N	15
+1131	11	Pu-239	pu239	31	\N	15
+1132	11	Pu-239/240	pu23940	32	\N	15
+1133	11	Te-132	te132	33	\N	15
+1134	11	Pb-212	pb212	34	\N	15
+1135	11	Pb-214	pb214	35	\N	15
+1136	11	Bi-212	bi212	36	\N	15
+1137	11	Bi-214	bi214	37	\N	15
+2101	21	MPR-ID	mpNr	1	\N	8
+2102	21	netzbetreiber	netzId 	2	13	18
+2103	21	MST/Labor	mstLaborId	3	\N	10
+2104	21	Datenbasis	dBasis	4	8	17
+2105	21	Messregime	messRegime	5	\N	1
+2106	21	Probenart	pArt	6	9	19
+2107	21	Umw-ID	umwId	7	4	12
+2108	21	Deskriptoren	deskriptoren	8	\N	1
+2109	21	Probenintervall	intervall	9	\N	1
+2111	21	E-Gem-ID	eGemId	11	10	1
+2112	21	E-Gemeinde	eGem	12	\N	1
+3101	31	Id	id	1	11	6
+3104	31	Ortstyp	ortTyp	4	\N	1
+3105	31	Kurtext	kurztext	5	18	1
+3106	31	Langtext	langtext	6	18	1
+3107	31	Staat	staat	7	\N	20
+3108	31	Verwaltungseinheit	verwaltungseinheit	8	12	1
+3109	31	NUTS-Code	nutsCode	9	18	1
+3110	31	OZ-ID	ozId	10	\N	1
+3111	31	KTA Gruppe	anlageId	11	\N	1
+3112	31	mpArt	mpArt	12	9	1
+3113	31	Koordinatenart	koordinatenArt	13	\N	1
+3114	31	X-Koordinate	koordXExtern	14	\N	3
+3116	31	Y-Koordinate	koordYExtern	16	\N	3
+3117	31	Longitude	longitude	17	\N	3
+3118	31	Latitude	latitude	18	\N	3
+3119	31	Höhe über NN	hoeheUeberNn	19	\N	3
+3121	31	Höhe	hoeheLand	21	\N	3
+3122	31	Aktiv	aktiv	22	\N	11
+3123	31	letzte Änderung	letzteAenderung	23	\N	2
+3201	32	Id	id	1	\N	21
+3203	32	prn	prnId	3	\N	1
+3204	32	Bearbeiter	bearbeiter	4	\N	1
+3205	32	Bemerkung	bemerkung	5	\N	1
+3206	32	Betrieb	betrieb	6	\N	1
+3207	32	Bezeichnung	bezeichnung	7	\N	1
+3208	32	Kurzbezeichnung	kurzBezeichnung	8	\N	1
+3209	32	Ort	ort	9	\N	1
+3210	32	PLZ	plz	10	18	3
+3211	32	Strasse	strasse	11	18	1
+3212	32	Telefon	telefon	12	18	1
+3213	32	tp	tp	13	\N	1
+3214	32	Typ	typ	14	\N	1
+3216	32	letzte Änderung	letzteAenderung	16	\N	2
+3301	33	Id	id	1	\N	22
+3401	34	Id	id	1	\N	23
+3403	34	Code	code	3	\N	1
+3404	34	Bezeichnung	bezeichnung	4	\N	1
+3405	34	letzte Änderung	letzteAenderung	5	\N	2
+2110	21	Ort-ID	ortId	10	\N	1
+112	1	Ort-ID	ortId	12	1	1
+109	1	Solldatum bis	solEnd	9	21	2
+108	1	Solldatum von	sollBegin	8	20	2
+1104	11	NP-Nr	npNr	4	22	1
+1105	11	Statusstufe	statusSt	5	19	13
+3103	31	Ort-ID	ortId	3	2	1
+3305	33	Bezeichnung	bezeichnung	5	\N	1
+3306	33	letzte Änderung	letzteAenderung	6	\N	2
+3202	32	Netzbetreiber	netzbetreiberId	2	24	18
+3102	31	Netzbetreiber	netzbetreiberId	2	23	18
+3402	34	Netzbetreiber	netzbetreiberId	2	26	18
+3302	33	Netzbetreiber	netzId	2	25	18
+3304	33	Datensatzerzeuger	datensatzErzeugerId	4	\N	1
+3303	33	MST	mstId	3	3	10
 \.
 
-ALTER SEQUENCE grid_column_id_seq RESTART WITH 221;
-
-COPY grid_column_values (id, user_id, grid_column, query_user, sort, sort_index, filter_value, filter_active, visible, column_index, width) FROM stdin;
-1	\N	1	1	\N	\N	\N	f	f	-1	0
-2	\N	2	1	\N	\N	\N	f	f	0	100
-3	\N	3	1	\N	\N	\N	f	f	1	100
-4	\N	4	1	\N	\N	\N	f	f	2	100
-5	\N	5	1	\N	\N	\N	f	f	3	100
-6	\N	6	1	\N	\N	\N	f	f	4	100
-7	\N	7	1	\N	\N	\N	f	f	5	100
-8	\N	8	1	\N	\N	\N	f	f	6	100
-9	\N	9	1	\N	\N	\N	f	f	7	100
-10	\N	10	1	\N	\N	\N	f	f	8	100
-11	\N	11	1	\N	\N	\N	f	f	9	100
-12	\N	12	1	\N	\N	\N	f	f	10	100
-13	\N	13	1	\N	\N	\N	f	f	11	100
-\.
-
-ALTER SEQUENCE grid_column_values_id_seq RESTART WITH 14;
 
 --
--- TOC entry 5419 (class 0 OID 0)
--- Dependencies: 251
+-- Data for Name: query_user; Type: TABLE DATA; Schema: stamm; Owner: postgres
+--
+
+COPY stamm.query_user (id, name, user_id, base_query, description) FROM stdin;
+4	Orte	0	31	Abfrage der Orte
+5	Probenehmer	0	32	Abfrage der Probenehmer
+6	Datensatzerzeuger	0	33	Abfrage der Datensatzerzeuger
+7	Messprogrammkategorie	0	34	Abfrage der Messprogrammkategorien
+2	Messungen	0	11	Vorlage für Messungsselektion
+1	Proben	0	1	Vorlage für Probenselektion
+3	Messprogramme	0	21	Vorlage für Messprogrammselektion
+\.
+
+
+--
+-- Data for Name: grid_column_values; Type: TABLE DATA; Schema: stamm; Owner: postgres
+--
+
+COPY stamm.grid_column_values (id, user_id, grid_column, query_user, sort, sort_index, filter_value, filter_active, visible, column_index, width) FROM stdin;
+1	0	102	1	\N	\N	\N	f	t	1	\N
+2	0	103	1	\N	\N	\N	f	t	2	\N
+6	0	107	1	\N	\N	\N	f	t	6	\N
+9	0	1103	2	\N	\N	\N	f	t	1	\N
+10	0	1104	2	\N	\N	\N	f	t	2	\N
+13	0	1107	2	\N	\N	\N	f	t	5	\N
+14	0	1108	2	\N	\N	\N	f	t	6	\N
+15	0	1109	2	\N	\N	\N	f	t	7	\N
+17	0	1112	2	\N	\N	\N	f	t	9	\N
+20	0	1115	2	\N	\N	\N	f	t	12	\N
+21	0	1116	2	\N	\N	\N	f	t	13	\N
+22	0	1117	2	\N	\N	\N	f	t	14	\N
+23	0	1118	2	\N	\N	\N	f	t	15	\N
+24	0	2101	3	\N	\N	\N	f	t	1	\N
+25	0	2102	3	\N	\N	\N	f	t	2	\N
+26	0	2103	3	\N	\N	\N	f	t	3	\N
+27	0	2104	3	\N	\N	\N	f	t	4	\N
+28	0	2105	3	\N	\N	\N	f	t	5	\N
+29	0	2106	3	\N	\N	\N	f	t	6	\N
+30	0	2107	3	\N	\N	\N	f	t	7	\N
+31	0	2108	3	\N	\N	\N	f	t	8	\N
+32	0	2109	3	\N	\N	\N	f	t	9	\N
+33	0	2110	3	\N	\N	\N	f	t	10	\N
+34	0	2111	3	\N	\N	\N	f	t	11	\N
+35	0	2112	3	\N	\N	\N	f	t	12	\N
+8	0	111	1	\N	\N	\N	f	t	8	\N
+7	0	110	1	\N	\N	\N	f	t	7	\N
+4	0	105	1	\N	\N	\N	t	t	4	\N
+3	0	104	1	\N	\N	\N	t	t	3	\N
+5	0	106	1	\N	\N	\N	t	t	5	\N
+11	0	1105	2	\N	\N	\N	t	t	3	\N
+16	0	1111	2	\N	\N	\N	t	t	8	\N
+18	0	1113	2	\N	\N	\N	t	t	10	\N
+19	0	1114	2	\N	\N	\N	f	t	11	\N
+12	0	1106	2	\N	\N	\N	t	t	4	\N
+58	0	3103	4	\N	\N	\N	f	t	2	\N
+57	0	3102	4	\N	\N	\N	t	t	1	\N
+60	0	3105	4	\N	\N	\N	f	t	4	\N
+59	0	3104	4	\N	\N	\N	f	t	3	\N
+62	0	3107	4	\N	\N	\N	f	t	6	\N
+61	0	3106	4	\N	\N	\N	f	t	5	\N
+63	0	3108	4	\N	\N	\N	f	t	7	\N
+65	0	3203	5	\N	\N	\N	f	t	2	\N
+66	0	3207	5	\N	\N	\N	f	t	3	\N
+68	0	3303	6	\N	\N	\N	f	t	2	\N
+71	0	3304	6	\N	\N	\N	f	t	3	\N
+72	0	3305	6	\N	\N	\N	f	t	4	\N
+73	0	3402	7	\N	\N	\N	t	t	1	\N
+74	0	3403	7	\N	\N	\N	f	t	2	\N
+64	0	3202	5	\N	\N	\N	t	t	1	\N
+67	0	3302	6	\N	\N	\N	t	t	1	\N
+75	0	3404	7	\N	\N	\N	f	t	3	\N
+\.
+
+
+--
+-- Name: base_query_id_seq; Type: SEQUENCE SET; Schema: stamm; Owner: postgres
+--
+
+SELECT pg_catalog.setval('stamm.base_query_id_seq', 34, true);
+
+
+--
 -- Name: filter_id_seq; Type: SEQUENCE SET; Schema: stamm; Owner: postgres
 --
 
-SELECT pg_catalog.setval('filter_id_seq', 26, true);
+SELECT pg_catalog.setval('stamm.filter_id_seq', 26, true);
 
 
 --
--- TOC entry 5420 (class 0 OID 0)
--- Dependencies: 245
--- Name: query_id_seq; Type: SEQUENCE SET; Schema: stamm; Owner: postgres
+-- Name: grid_column_id_seq; Type: SEQUENCE SET; Schema: stamm; Owner: postgres
 --
 
-SELECT pg_catalog.setval('base_query_id_seq', 18, true);
+SELECT pg_catalog.setval('stamm.grid_column_id_seq', 3405, true);
 
 
 --
--- TOC entry 5421 (class 0 OID 0)
--- Dependencies: 285
--- Name: result_id_seq; Type: SEQUENCE SET; Schema: stamm; Owner: postgres
+-- Name: grid_column_values_id_seq; Type: SEQUENCE SET; Schema: stamm; Owner: postgres
 --
 
-SELECT pg_catalog.setval('result_id_seq', 291, true);
+SELECT pg_catalog.setval('stamm.grid_column_values_id_seq', 75, true);
 
 
 --
--- TOC entry 5422 (class 0 OID 0)
--- Dependencies: 283
+-- Name: query_user_id_seq; Type: SEQUENCE SET; Schema: stamm; Owner: postgres
+--
+
+SELECT pg_catalog.setval('stamm.query_user_id_seq', 7, true);
+
+
+--
 -- Name: result_type_id_seq; Type: SEQUENCE SET; Schema: stamm; Owner: postgres
 --
 
-SELECT pg_catalog.setval('result_type_id_seq', 1, false);
+SELECT pg_catalog.setval('stamm.result_type_id_seq', 1, false);
 
-
--- Completed on 2018-01-22 13:18:15 CET
 
 --
 -- PostgreSQL database dump complete
