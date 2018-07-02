@@ -36,6 +36,7 @@ public class LafObjectListener extends LafBaseListener {
     private boolean hasUHerkunfstland = false;
     private boolean hasUGemeinde = false;
     private boolean hasUKoordinaten = false;
+    private boolean probenNrContext = false;
 
     public LafObjectListener() {
         data = new LafRawData();
@@ -136,6 +137,7 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterProbe(LafParser.ProbeContext ctx) {
+        probenNrContext = false;
         if (currentMessung != null) {
             currentProbe.addMessung(currentMessung);
             currentMessung = null;
@@ -338,6 +340,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterMessung(LafParser.MessungContext ctx) {
+        if (probenNrContext) {
+            return;
+        }
         if (currentMessung != null) {
             currentProbe.addMessung(currentMessung);
         }
@@ -358,6 +363,9 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void exitMessung(LafParser.MessungContext ctx) {
+        if (probenNrContext) {
+            return;
+        }
         currentProbe.addMessung(currentMessung);
         currentMessung = null;
     }
@@ -368,7 +376,7 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterUrsprungsort(LafParser.UrsprungsortContext ctx) {
-        if (currentMessung != null) {
+        if (currentMessung != null && !probenNrContext) {
             currentProbe.addMessung(currentMessung);
             currentMessung = data.new Messung();
         }
@@ -804,7 +812,7 @@ public class LafObjectListener extends LafBaseListener {
         }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "");
-        if (!value.matches(LafDataTypes.I2)) {
+        if (!value.matches(LafDataTypes.C_STAR)) {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
@@ -812,7 +820,14 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
+        String hnr = value.substring(0, 9);
+        String nnr = value.substring(9, value.length());
+        currentProbe.addAttribute("HAUPTPROBENNUMMER", hnr);
+        if (currentMessung == null) {
+            currentMessung = data.new Messung();
+        }
+        currentMessung.addAttribute("NEBENPROBENNUMMER", nnr);
+        probenNrContext = true;
     }
 
     /**
@@ -2147,9 +2162,6 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterP_koordinaten_s(LafParser.P_koordinaten_sContext ctx) {
-        System.out.println("koordinaten:");
-        System.out.println(ctx.getText());
-        System.out.println(ctx.getChildCount());
         if (hasEKoordinaten) {
             return;
         }
