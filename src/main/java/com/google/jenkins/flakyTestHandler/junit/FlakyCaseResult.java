@@ -160,8 +160,8 @@ public class FlakyCaseResult extends TestResult implements Comparable<FlakyCaseR
     String head = tx.head(HALF_MAX_SIZE);
     String tail = tx.fastTail(HALF_MAX_SIZE);
 
-    int headBytes = head.getBytes().length;
-    int tailBytes = tail.getBytes().length;
+    int headBytes = head.getBytes("UTF-8").length;
+    int tailBytes = tail.getBytes("UTF-8").length;
 
     middle = len - (headBytes+tailBytes);
     if (middle<=0) {
@@ -587,7 +587,7 @@ public class FlakyCaseResult extends TestResult implements Comparable<FlakyCaseR
     return new JUnitFlakyTestDataAction(getFlakyRuns(), isFailed());
   }
 
-  /*package*/ void setClass(FlakyClassResult classResult) {
+  /*package*/ synchronized void setClass(FlakyClassResult classResult) {
     this.classResult = classResult;
   }
 
