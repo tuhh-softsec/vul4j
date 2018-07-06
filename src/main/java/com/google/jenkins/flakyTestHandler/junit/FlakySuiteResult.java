@@ -274,7 +274,7 @@ public final class FlakySuiteResult implements Serializable {
     if (pr == null) {
       return null;
     }
-    if (pr instanceof hudson.tasks.junit.TestResult) {
+    if (pr instanceof com.google.jenkins.flakyTestHandler.junit.FlakyTestResult) {
       return ((FlakyTestResult) pr).getSuite(name);
     }
     return null;
