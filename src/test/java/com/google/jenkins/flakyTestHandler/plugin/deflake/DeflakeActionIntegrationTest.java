@@ -21,6 +21,11 @@ import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.Sets;
 
+import hudson.model.Action;
+import hudson.model.CauseAction;
+import hudson.model.queue.QueueTaskFuture;
+import org.jenkinsci.plugins.workflow.job.WorkflowJob;
+import org.jenkinsci.plugins.workflow.job.WorkflowRun;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
@@ -73,9 +78,43 @@ public class DeflakeActionIntegrationTest {
     assertNull(build.getAction(DeflakeAction.class));
   }
 
+  @Test
+  public void testDeflakeActionForPipeline() throws Exception {
+    WorkflowJob fooProj = jenkins.createProject(WorkflowJob.class, "foo");
+    WorkflowRun run = (WorkflowRun) fooProj.scheduleBuild2(0, new FailingTestResultAction()).get();
+
+    // Assert deflake action is not null when there are failing tests
+    DeflakeAction action = run.getAction(DeflakeAction.class);
+    assertNotNull("Deflake action is not available when there are failing tests", action);
+
+    Set<String> possibleResults = Sets.newHashSet("classOne#methodOne+methodTwo,classTwo#methodOne",
+            "classOne#methodTwo+methodOne,classTwo#methodOne",
+            "classTwo#methodOne,classOne#methodTwo+methodOne",
+            "classTwo#methodOne,classOne#methodOne+methodTwo");
+    assertTrue("Incorrect test parameter for maven",
+            possibleResults.contains(action.generateMavenTestParams()));
+    assertDisplayName(run, "#1");
+
+    // Verify display name
+    run = fooProj.scheduleBuild2(0, new CauseAction(new DeflakeCause(run))).get();
+    assertDisplayName(run, "#2: Deflake Build #1");
+
+    // deflake action is null when there is no failing test or not test result action
+    run = fooProj.scheduleBuild2(0).get();
+    assertNull(run.getAction(DeflakeAction.class));
+
+    run = (WorkflowRun) fooProj.scheduleBuild2(0, new NoFailingTestResultAction()).get();
+    assertNull(run.getAction(DeflakeAction.class));
+  }
+
   private void assertDisplayName(FreeStyleBuild build, String expectedName) {
     assertEquals(Result.SUCCESS, build.getResult());
     assertEquals(expectedName, build.getDisplayName());
+  }
+
+  private void assertDisplayName(WorkflowRun run, String expectedName) {
+    assertEquals(Result.FAILURE, run.getResult());
+    assertEquals(expectedName, run.getDisplayName());
   }
 
   public static class FailingTestResultAction extends TestResultAction {
