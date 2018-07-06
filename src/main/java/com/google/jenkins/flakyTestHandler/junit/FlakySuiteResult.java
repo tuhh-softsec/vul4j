@@ -224,6 +224,7 @@ public final class FlakySuiteResult implements Serializable {
    *
    * @since 1.281
    * @see CaseResult#getStdout()
+   * @return String with stdout
    */
   @Exported
   public String getStdout() {
@@ -235,13 +236,14 @@ public final class FlakySuiteResult implements Serializable {
    *
    * @since 1.281
    * @see CaseResult#getStderr()
+   * @return String with stderr
    */
   @Exported
   public String getStderr() {
     return stderr;
   }
 
-  /**
+  /*
    * The absolute path to the original test report. OS-dependent.
    */
   public String getFile() {
@@ -284,6 +286,9 @@ public final class FlakySuiteResult implements Serializable {
    *
    * <p>
    * Note that test name needs not be unique.
+   *
+   * @param name name of case
+   * @return flaky case result
    */
   public FlakyCaseResult getCase(String name) {
     return casesByName().get(name);
