@@ -43,6 +43,8 @@ import hudson.tasks.test.TestResult;
 public final class FlakyClassResult extends TabulatedResult implements
     Comparable<FlakyClassResult> , ActionableFlakyTestObject {
 
+  private static final long serialVersionUID = 1;
+
   private final String className; // simple name
   private transient String safeName;
 

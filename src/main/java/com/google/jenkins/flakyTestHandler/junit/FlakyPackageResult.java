@@ -41,6 +41,8 @@ import hudson.tasks.test.TestResult;
  */
 public final class FlakyPackageResult extends MetaTabulatedResult implements Comparable<FlakyPackageResult> {
 
+  private static final long serialVersionUID = 1;
+
   private final String packageName;
   private transient String safeName;
   /**
