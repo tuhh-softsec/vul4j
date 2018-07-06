@@ -26,8 +26,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import hudson.Extension;
-import hudson.model.AbstractBuild;
+import hudson.model.Action;
 import hudson.model.Cause;
+import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.model.listeners.RunListener;
 import hudson.tasks.junit.CaseResult;
@@ -39,38 +40,38 @@ import hudson.tasks.junit.TestResultAction;
  * @author Qingzhou Luo
  */
 @Extension
-public class DeflakeListener extends RunListener<AbstractBuild> {
+public class DeflakeListener extends RunListener<Run> {
 
   private static final Logger LOGGER = Logger.getLogger(DeflakeListener.class.getName());
 
   public DeflakeListener() {
-    super(AbstractBuild.class);
+    super(Run.class);
   }
 
   // Add deflake action to the build and aggregate test running stats from this build
   @Override
-  public void onCompleted(AbstractBuild build, TaskListener listener) {
+  public void onCompleted(Run run, TaskListener listener) {
     // TODO consider the possibility that there is >1 such action
-    TestResultAction testResultAction = build.getAction(TestResultAction.class);
+    TestResultAction testResultAction = run.getAction(TestResultAction.class);
 
-    HistoryAggregatedFlakyTestResultAction historyAction = build.getProject()
+    HistoryAggregatedFlakyTestResultAction historyAction = run.getParent()
         .getAction(HistoryAggregatedFlakyTestResultAction.class);
 
     // Aggregate test running results
     if (historyAction != null) {
-      historyAction.aggregateOneBuild(build);
+      historyAction.aggregateOneBuild(run);
     }
 
     if (testResultAction != null && testResultAction.getFailCount() > 0) {
       // Only add deflake action if there are test failures
-      build.addAction(
+      run.addAction(
           new DeflakeAction(getFailingTestClassMethodMap(testResultAction.getFailedTests())));
     }
   }
 
   // Set the name of a deflake build
   @Override
-  public void onStarted(AbstractBuild build, TaskListener listener) {
+  public void onStarted(Run build, TaskListener listener) {
     List<Cause> causesList = build.getCauses();
     try {
       for (Cause cause : causesList) {

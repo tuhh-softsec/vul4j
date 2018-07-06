@@ -14,8 +14,8 @@
  */
 package com.google.jenkins.flakyTestHandler.plugin.deflake;
 
-import hudson.model.AbstractBuild;
 import hudson.model.Cause;
+import hudson.model.Run;
 
 /**
  * Represents the cause of a deflake build. It is used to communicate with other build actions.
@@ -28,7 +28,7 @@ public class DeflakeCause extends Cause.UpstreamCause {
    * DeflakeCause constructor.
    * @param up upstream failing build which is being deflaked
    */
-  public DeflakeCause(AbstractBuild<?, ?> up) {
+  public DeflakeCause(Run<?, ?> up) {
     super(up);
   }
 

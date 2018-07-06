@@ -36,7 +36,7 @@ import java.util.TreeMap;
 
 import hudson.AbortException;
 import hudson.Util;
-import hudson.model.AbstractBuild;
+import hudson.model.Run;
 import hudson.tasks.junit.SuiteResult;
 import hudson.tasks.junit.TestResult;
 import hudson.tasks.test.AbstractTestResultAction;
@@ -73,7 +73,7 @@ public final class FlakyTestResult extends MetaTabulatedResult {
   private transient AbstractTestResultAction parentAction;
 
   // set during the freeze phase
-  private transient AbstractBuild owner;
+  private transient Run owner;
 
   private transient TestObject parent;
 
@@ -318,7 +318,7 @@ public final class FlakyTestResult extends MetaTabulatedResult {
   }
 
   @Override
-  public AbstractBuild<?,?> getOwner() {
+  public Run<?,?> getRun() {
     if (parentAction != null) {
       return parentAction.owner;
     } else {
@@ -555,7 +555,7 @@ public final class FlakyTestResult extends MetaTabulatedResult {
    * After the data is frozen, more files can be parsed
    * and then freeze can be called again.
    */
-  public void freeze(AbstractTestResultAction parent, AbstractBuild build) {
+  public void freeze(AbstractTestResultAction parent, Run build) {
     this.parentAction = parent;
     this.owner = build;
     if(suitesByName==null) {
