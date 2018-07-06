@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -81,7 +82,7 @@ public class FlakyTestResultAction implements RunAction2 {
     if (action != null) {
       Object latestResult = action.getResult();
       if (latestResult != null && latestResult instanceof TestResult) {
-        FlakyTestResult flakyTestResult = launcher.getChannel().call(new FlakyTestResultCollector((TestResult) latestResult));
+        FlakyTestResult flakyTestResult = Objects.requireNonNull(launcher.getChannel()).call(new FlakyTestResultCollector((TestResult) latestResult));
 
         flakyTestResult.freeze(action, build);
         FlakyRunStats stats = new FlakyRunStats(flakyTestResult.getTestFlakyStatsMap());

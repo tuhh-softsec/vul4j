@@ -19,6 +19,7 @@ import com.google.jenkins.flakyTestHandler.junit.FlakyTestResult;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import hudson.Extension;
 import hudson.FilePath;
@@ -48,7 +49,7 @@ public class JUnitFlakyTestDataPublisher
   @Override
   public TestResultAction.Data contributeTestData(Run<?, ?> run, FilePath workspace, Launcher launcher, TaskListener listener, TestResult testResult)
       throws IOException, InterruptedException {
-    FlakyTestResult flakyTestResult = launcher.getChannel().call(new FlakyTestResultCollector(testResult));
+    FlakyTestResult flakyTestResult = Objects.requireNonNull(launcher.getChannel()).call(new FlakyTestResultCollector(testResult));
     // TODO consider the possibility that there is >1 such action
     flakyTestResult.freeze(run.getAction(AbstractTestResultAction.class), run);
     return new JUnitFlakyTestData(flakyTestResult);
