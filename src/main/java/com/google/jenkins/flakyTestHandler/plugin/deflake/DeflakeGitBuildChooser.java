@@ -20,7 +20,6 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
-
 import hudson.Extension;
 import hudson.model.AbstractBuild;
 import hudson.model.TaskListener;
@@ -32,7 +31,6 @@ import hudson.plugins.git.util.BuildChooserDescriptor;
 import hudson.plugins.git.util.BuildData;
 import hudson.plugins.git.util.DefaultBuildChooser;
 import hudson.remoting.VirtualChannel;
-
 
 /**
  * For a failing build, restore the source code status to the one it failed on and then re-run
@@ -55,15 +53,12 @@ public class DeflakeGitBuildChooser extends BuildChooser {
    * Get failing build revision if this is a deflake build, otherwise use the default build chooser
    */
   @Override
-  public Collection<Revision> getCandidateRevisions(boolean isPollCall, String singleBranch,
-      GitClient git,
-      TaskListener listener, BuildData buildData,
-      BuildChooserContext context)
+  public Collection<Revision> getCandidateRevisions(boolean isPollCall, String singleBranch, GitClient git,
+      TaskListener listener, BuildData buildData, BuildChooserContext context)
       throws GitException, IOException, InterruptedException {
 
-    AbstractBuild build = context.actOnBuild(new GetBuild());
     // Not sure why it cannot be inferred and we have to put cast here
-    DeflakeCause cause = (DeflakeCause) build.getCause(DeflakeCause.class);
+    DeflakeCause cause = (DeflakeCause) context.getBuild().getCause(DeflakeCause.class);
 
     if (cause != null) {
       BuildData gitBuildData = gitSCM.getBuildData(cause.getUpstreamRun(), true);
@@ -75,8 +70,7 @@ public class DeflakeGitBuildChooser extends BuildChooser {
 
     // If it is not a deflake run, then use the default git checkout strategy
     defaultBuildChooser.gitSCM = this.gitSCM;
-    return defaultBuildChooser
-        .getCandidateRevisions(isPollCall, singleBranch, git, listener, buildData, context);
+    return defaultBuildChooser.getCandidateRevisions(isPollCall, singleBranch, git, listener, buildData, context);
   }
 
   @Extension
@@ -92,8 +86,7 @@ public class DeflakeGitBuildChooser extends BuildChooser {
   /**
    * Retrieve build
    */
-  private static class GetBuild
-      implements BuildChooserContext.ContextCallable<AbstractBuild<?, ?>, AbstractBuild> {
+  private static class GetBuild implements BuildChooserContext.ContextCallable<AbstractBuild<?, ?>, AbstractBuild> {
 
     @Override
     public AbstractBuild invoke(AbstractBuild<?, ?> build, VirtualChannel channel) {

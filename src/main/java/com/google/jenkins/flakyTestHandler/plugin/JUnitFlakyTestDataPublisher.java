@@ -21,10 +21,13 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import java.io.IOException;
 
 import hudson.Extension;
+import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.model.Descriptor;
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import hudson.tasks.junit.TestDataPublisher;
 import hudson.tasks.junit.TestResult;
 import hudson.tasks.junit.TestResultAction;
@@ -43,13 +46,23 @@ public class JUnitFlakyTestDataPublisher
   }
 
   @Override
-  public TestResultAction.Data getTestData(AbstractBuild<?, ?> abstractBuild, Launcher launcher,
-      BuildListener buildListener, TestResult testResult)
+  public TestResultAction.Data contributeTestData(Run<?, ?> run, FilePath workspace, Launcher launcher, TaskListener listener, TestResult testResult)
       throws IOException, InterruptedException {
     FlakyTestResult flakyTestResult = launcher.getChannel().call(new FlakyTestResultCollector(testResult));
     // TODO consider the possibility that there is >1 such action
-    flakyTestResult.freeze(abstractBuild.getAction(AbstractTestResultAction.class), abstractBuild);
+    flakyTestResult.freeze(run.getAction(AbstractTestResultAction.class), run);
     return new JUnitFlakyTestData(flakyTestResult);
+  }
+
+  @Override
+  public TestResultAction.Data getTestData(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener, TestResult testResult) {
+      try {
+          return contributeTestData(build, null, launcher, null, testResult);
+      } catch (IOException e) {
+          throw new IllegalStateException(e);
+      } catch (InterruptedException e) {
+          throw new IllegalStateException(e);
+      }
   }
 
   @Override

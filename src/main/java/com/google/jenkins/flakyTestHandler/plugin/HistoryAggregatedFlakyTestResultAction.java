@@ -25,6 +25,7 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -34,10 +35,12 @@ import java.util.Stack;
 import java.util.TreeMap;
 
 import javax.servlet.ServletException;
-
+import jenkins.triggers.SCMTriggerItem;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Action;
+import hudson.model.Job;
+import hudson.model.Run;
 import hudson.plugins.git.GitSCM;
 import hudson.plugins.git.Revision;
 import hudson.plugins.git.util.BuildData;
@@ -78,8 +81,7 @@ public class HistoryAggregatedFlakyTestResultAction implements Action {
 
   public HistoryAggregatedFlakyTestResultAction(AbstractProject<?, ?> project) {
     this.project = project;
-    this.aggregatedTestFlakyStatsWithRevision =
-        new TreeMap<String, Map<String, SingleTestFlakyStats>>();
+    this.aggregatedTestFlakyStatsWithRevision = new TreeMap<String, Map<String, SingleTestFlakyStats>>();
     this.aggregatedFlakyStats = new TreeMap<String, SingleTestFlakyStats>();
     this.allTests = new HashSet<String>();
     this.onlyShowFlakyTests = true;
@@ -107,7 +109,7 @@ public class HistoryAggregatedFlakyTestResultAction implements Action {
    *
    * @param build the build to be aggregated
    */
-  public void aggregateOneBuild(AbstractBuild<?, ?> build) {
+  public void aggregateOneBuild(Run<?, ?> build) {
     FlakyTestResultAction action = build.getAction(FlakyTestResultAction.class);
     if (action == null) {
       return;
@@ -119,8 +121,7 @@ public class HistoryAggregatedFlakyTestResultAction implements Action {
       return;
     }
 
-    Map<String, SingleTestFlakyStatsWithRevision> testFlakyStatsMap = runStats
-        .getTestFlakyStatsWithRevisionMap();
+    Map<String, SingleTestFlakyStatsWithRevision> testFlakyStatsMap = runStats.getTestFlakyStatsWithRevisionMap();
 
     if (testFlakyStatsMap == null) {
       // Skip old build which doesn't have the map
@@ -132,15 +133,13 @@ public class HistoryAggregatedFlakyTestResultAction implements Action {
       allTests = testFlakyStatsMap.keySet();
     }
 
-    for (Map.Entry<String, SingleTestFlakyStatsWithRevision> testFlakyStat : testFlakyStatsMap
-        .entrySet()) {
+    for (Map.Entry<String, SingleTestFlakyStatsWithRevision> testFlakyStat : testFlakyStatsMap.entrySet()) {
       String testName = testFlakyStat.getKey();
       String revision = testFlakyStat.getValue().getRevision();
       SingleTestFlakyStats stats = testFlakyStat.getValue().getStats();
 
       if (aggregatedTestFlakyStatsWithRevision.containsKey(testName)) {
-        Map<String, SingleTestFlakyStats> testFlakyStatMap = aggregatedTestFlakyStatsWithRevision
-            .get(testName);
+        Map<String, SingleTestFlakyStats> testFlakyStatMap = aggregatedTestFlakyStatsWithRevision.get(testName);
 
         if (testFlakyStatMap.containsKey(revision)) {
           // Merge flaky stats with the same test and the same revision
@@ -151,17 +150,16 @@ public class HistoryAggregatedFlakyTestResultAction implements Action {
         }
       } else {
         // The first test entry
-        Map<String, SingleTestFlakyStats> testFlakyStatMap =
-            new LinkedHashMap<String, SingleTestFlakyStats>();
+        Map<String, SingleTestFlakyStats> testFlakyStatMap = new LinkedHashMap<String, SingleTestFlakyStats>();
         testFlakyStatMap.put(revision, new SingleTestFlakyStats(stats));
         aggregatedTestFlakyStatsWithRevision.put(testName, testFlakyStatMap);
 
       }
     }
 
-    aggregatedFlakyStats = Maps
-        .filterKeys(Maps.transformValues(aggregatedTestFlakyStatsWithRevision,
-            REVISION_STATS_MAP_TO_AGGREGATED_STATS), Predicates.in(allTests));
+    aggregatedFlakyStats = Maps.filterKeys(
+        Maps.transformValues(aggregatedTestFlakyStatsWithRevision, REVISION_STATS_MAP_TO_AGGREGATED_STATS),
+        Predicates.in(allTests));
   }
 
   public Map<String, Map<String, SingleTestFlakyStats>> getAggregatedTestFlakyStatsWithRevision() {
@@ -175,12 +173,9 @@ public class HistoryAggregatedFlakyTestResultAction implements Action {
   /**
    * Function to aggregate flaky stats over revisions
    */
-  public static final Function<Map<String, SingleTestFlakyStats>, SingleTestFlakyStats>
-      REVISION_STATS_MAP_TO_AGGREGATED_STATS = new Function<Map<String, SingleTestFlakyStats>,
-      SingleTestFlakyStats>() {
+  public static final Function<Map<String, SingleTestFlakyStats>, SingleTestFlakyStats> REVISION_STATS_MAP_TO_AGGREGATED_STATS = new Function<Map<String, SingleTestFlakyStats>, SingleTestFlakyStats>() {
     @Override
-    public SingleTestFlakyStats apply(
-        Map<String, SingleTestFlakyStats> revisionStatsMap) {
+    public SingleTestFlakyStats apply(Map<String, SingleTestFlakyStats> revisionStatsMap) {
       SingleTestFlakyStats aggregatedStatsOverRevision = new SingleTestFlakyStats(0, 0, 0);
 
       for (SingleTestFlakyStats singleTestFlakyStats : revisionStatsMap.values()) {
@@ -197,7 +192,7 @@ public class HistoryAggregatedFlakyTestResultAction implements Action {
     }
   };
 
-  public void doShowAll( StaplerRequest req, StaplerResponse rsp ) throws IOException, ServletException {
+  public void doShowAll(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
     onlyShowFlakyTests = !onlyShowFlakyTests;
     rsp.sendRedirect("..");
   }
@@ -217,8 +212,7 @@ public class HistoryAggregatedFlakyTestResultAction implements Action {
     if (onlyShowFlakyTests) {
       flakyTestsFilter = new Predicate<Entry<String, SingleTestFlakyStats>>() {
         @Override
-        public boolean apply(
-            Entry<String, SingleTestFlakyStats> singleTestFlakyStatsEntry) {
+        public boolean apply(Entry<String, SingleTestFlakyStats> singleTestFlakyStatsEntry) {
           return singleTestFlakyStatsEntry.getValue().getFlake() > 0;
         }
       };
@@ -333,18 +327,24 @@ public class HistoryAggregatedFlakyTestResultAction implements Action {
      * @param stats Embedded {@link SingleTestFlakyStats} object
      * @param build The {@link hudson.model.AbstractBuild} object to get SCM information from.
      */
-    public SingleTestFlakyStatsWithRevision(SingleTestFlakyStats stats, AbstractBuild build) {
+    public SingleTestFlakyStatsWithRevision(SingleTestFlakyStats stats, Run build) {
       this.stats = stats;
       revision = Integer.toString(build.getNumber());
 
-      SCM scm = build.getProject().getScm();
-      if (scm != null && scm instanceof GitSCM) {
-        GitSCM gitSCM = (GitSCM) scm;
-        BuildData buildData = gitSCM.getBuildData(build);
-        if (buildData != null) {
-          Revision gitRevision = buildData.getLastBuiltRevision();
-          if (gitRevision != null) {
-            revision = gitRevision.getSha1String();
+      Job job = build.getParent();
+      SCMTriggerItem s = SCMTriggerItem.SCMTriggerItems.asSCMTriggerItem(job);
+      if (s != null) {
+        ArrayList<SCM> scms = new ArrayList<>(s.getSCMs());
+        SCM scm = scms.size() > 0 ? scms.get(0) : null;
+
+        if ("hudson.plugins.git.GitSCM".equalsIgnoreCase(scm.getType())) {
+          GitSCM gitSCM = (GitSCM) scm;
+          BuildData buildData = gitSCM.getBuildData(build);
+          if (buildData != null) {
+            Revision gitRevision = buildData.getLastBuiltRevision();
+            if (gitRevision != null) {
+              revision = gitRevision.getSha1String();
+            }
           }
         }
       }
