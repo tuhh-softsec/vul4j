@@ -150,122 +150,88 @@ Verzeichnis 'site/apidocs'.
 
 Erstellen von Queries
 ---------------------
-Queries können als SQL-Statement in der Tabelle stammdaten.queries definiert
-werden. Eine Filterung kann über Variablen erfolgen, die in stammdaten.filter
-definiert werden müssen und mittels SQL-Interpolation im SQL-Statement
-verwendet werden können.
+
+Basequeries enthalten die grundlegenden Definitionen für Abfragen. Diese werden
+fest in der Datenbank vorgegeben und sind in der Tabelle stamm.base_query definiert.
+Die SQL-Abfrage in der Tabelle muss zumindest das SELECT- und FROM-Statement enthalten.
+Den Ergebnisspalten der Abfrage sollte zudem mithilfe des AS-Ausdrucks ein Alias zugewiesen werden.
+
+Der Basequery zugeordnete Spalten werden zusätzlich in der Tabelle
+stamm.grid_column festgelegt, wobei der gegebene DataIndex einem Alias der
+zugeordneten Basequery entsprechen sollte. Der Datentyp data_type bestimmt
+das Verhalten des Clients und den dort angezeigten Filterwidgets mit (siehe
+unten). Die Position gibt die Stellung innerhalb der Basequery an, name ist die
+im Ergebnisgrid anzuzeigende Spaltenbeschriftung.
+
+Die Spalte filter innerhalb einer stamm.grid_column verweist auf einen Eintrag in der Tabelle stamm.filter.
+Diese enthält Filter-Typ, das entsprechende SQL-Statement und den Namen des Parameters.
+Neben einfachen Text-, Zahlen- oder boolschen- Filtern existieren auch Filter-Typen für von-bis-Datums-Filter, Multiselect-Filter und generische Text-Filter. Multiselect- und Datums-Filter akzeptieren dabei einen String mit Komma-separierten Werten.
+Für die Definition der Filter mit SQL-Statement und Paramter gilt:
+  * Datums-Filter: 2 Parameter. Beispielsweise:
+    * SQL: probe.probeentnahme_beginn BETWEEN :fromTime AND :toTime
+    * Spalte "Parameter": fromTime,toTime
+  * Generischer Filter: 1 Parameter. Beispielsweise:
+    * SQL: :genTextParam LIKE :genTextValue
+    * Spalte "Parameter": genText
+  * Sonst: 1 Parameter. Beispielsweise:
+    * SQL: probe.id_alt LIKE :idAlt
+    * Spalte "Parameter": idAlt
+
+Einzelne Nutzer können aus bereits bestehenden Queries Kopien erstellen.
+Hierfür gibt es zwei Speicherorte: In query_user werden die grundsätzlichen
+Parameter festgelegt, wie etwa eine eigene Beschreibung oder ein eigener Namen der kopierten Query.
+In grid_column_values werden die Definitionen der
+einzelnen Spalten (z.B. Sichtbarkeit, derzeitig gespeicherter Filter) persistiert.
+
+### Datentypen
+
+Den einzelnen Spalten können verschiedene Datentypen zugeordnet werden. Dies
+dient im Client zum einen der Darstellung von passenden Filtern und Spalten.
+Einige Datentypen bieten zusätzliche Funktionalität.
+
+Der Gesamttype eines Ergebnisgrids leitet sich ebenfalls aus Datentypen in der
+Basequery ab, welche Datenbankeinträge eindeutig identifizieren.
+Hierbei existiert eine Hierarchie: weiter oben stehende Elemente ersetzen
+das weiter unten stehende.
+
+Datentypen mit ID-Funktionalität, in absteigender Hierarchie:
+  1. 'messungId' - Zeile enthält eine Messung
+  2. 'probeId' - Zeile enthält eine Probe
+  3. 'mpId' - Zeile enthält ein Messprogramm
+  4. 'ortId' - Zeile enthält einen (Stammdaten-)Ort
+  5. 'pnehmer' - Zeile enthält einen Probenehmer
+  6. 'dsatzerz'- Zeile enthält einen Datensatzerzeuger
+  7. 'mprkat'- Zeile enthält eine Messprogrammkategorie
+
+Diese Datentypen sollten jeweils eine Datenbank-ID enthalten. Mehrere IDs von
+verschiedenen Typen sind zulässig, und sind dann im Grid direkt auswähl- und
+gegebenenfalls in eigenen Dialogen bearbeitbar.
+
+Das Verhalten der 'Hinzufügen/Löschen' - Buttons und des Doppelklicks auf eine
+Zeile richtet sich jeweils nach dem Datentyp mit der höchsten Hierarchiestufe.
+(Beispiel: In einer Abfrage mit messungId, pnehmer und probeId können -bei
+Berechtigung- alle drei Elemente bearbeitet werden. Die höchste Hierarchieebene
+ist hier Messung, weshalb ein "Löschen" für die entsprechende Messung einer
+Zeile gilt. Der 'Hinzufügen'- Button ist nicht verfügbar, da eine Messung nur
+aus dem Kontext einer Probe hinzugefügt werden kann, und Proben in diesem Grid
+nicht eindeutig sind)
+
 Um neue Queries für die Suche von Proben, Messungen und Messprogrammen zu
 erstellen sind die folgenden Schritte erforderlich:
 
-1. In der Tabelle 'stammdaten.query' einen neuen Eintrag erzeugen.
-   * id: Primary-Key (wird generiert)
-   * name: Der Name der Query
-   * type: Der Datentyp der gefiltert werden soll.
-     (mögliche Werte siehe Datenbank-Schema-Definition)
-   * sql: Das auszuführende SQL-Statement (siehe #Regeln für die Syntax)
-   * description: Ein beschreibender Text
-
-2. In der Tabelle 'stammdaten.result' für die anzuzeigenden Felder je einen
-   Eintrag erzeugen:
-   * id: Primary-Key (wird generiert)
-   * query_id: ID der zugehörigen und in Schritt 1. erzeugten Query
-   * data_index: Name des Feldes zur Übertragung an den Client (in CamelCase)
-   * header: Der Titel der Spalte für diesen Eintrag
-   * width: Die Spaltenbreite (in Pixel)
-   * flex: Dynamische Spaltenbreite (true/false)
-   * index: Der Datenindex
-
-3. In der Tabelle 'stammdaten.filter' für jeden Parameter in der 'WHERE'-Clause
-   der Query einen Eintrag erzeugen:
-   * id: Primary-Key (wird generiert)
-   * query_id: ID der zugehörigen und in Schritt 1. erzeugten Query
-   * data_index: Der Name der Variablen, die in dem 'WHERE'-Statement ersetzt
-     werden soll
-   * type: Datenbasis, die im Client als Eingabe genutzt werden soll
-     (mögliche Werte siehe Datenbank-Schema-Definition)
-   * label: Der angezeigte Name des Filters
-   * multiselect: Mehrfachangabe von Werten für diesen Filter (true/false)
-
-### Regeln
-
-* Bei Queries vom Typ `probe` muss das erste selektierte Feld `probe.id` sein.
-  Dieses wird in der Oberfläche nicht angezeigt.
-* Bei Queries vom Typ `messung` muss das erste selektierte Feld `messung.id`
-  und das zweite `probe.id` sein. Diese werden in der Oberfläche nicht
-  angezeigt. Für `probe.id` muss in stammdaten.result ein Eintrag mit
-  `data_index = 'probeId'` angelegt werden (obwohl diese Spalte nicht angezeigt
-  wird). Um im Client die Funktionalität zu erhalten, sollten Messungsfilter
-  die beiden Felder `probe.hauptproben_nr` und `messung.nebenproben_nr`
-  enthalten.
-* Bei Queries vom Typ `messprogramm` muss das erste selektierte Feld
-  `messprogramm.id` sein. Dieses wird in der Oberfläche nicht angezeigt.
-* Werden bei einem JOIN Spalten gleichen Namens aus verschiedenen Tabellen
-  in der SELECT-Clause verwendet, so müssen diese mit einem expliziten Alias
-  versehen werden, um eine
-  org.hibernate.loader.custom.NonUniqueDiscoveredSqlAliasException zu
-  vermeiden.
-* Im `WHERE`-Statement genutzte Variablen müssen in der Form `:variablenName`
-  angegeben werden und dem Feld `data_index` im zugehörigen Filter entsprechen.
-* Wenn ein Filter mit `multiselect = true` angegeben wird, so wird in der
-  `WHERE`-Clause ein `SIMILAR TO` erwartet.
-* Das Feld `index` in der Tabelle `stammdaten.result` dient zur Zuordnung des
-  selektierten Datenfeldes zu dem Entsprechenden Eintrag in der Tabelle
-  `stammdaten.result`. Beispiel:
-```
-    'SELECT probe.id, probe.mst_id AS mstId, probe.hauptproben_nr AS hpNr, ...'
-                      |----- index 1 -----|  |--------- index 2 --------|
-    Wird in der Tabelle 'stammdaten.result' zu:
-    Result 1:
-    ...
-        data_index: mstId
-        header: Messstelle
-        width: 100
-        flex: false
-        index: 1
-    ...
-    Result 2:
-    ...
-        data_index: hpNr
-        header: Hauptproben Nr
-        width: 150
-        flex: false
-        index: 2
-    ....
-```
-* Queries für Stammdaten werden gesondert behandelt und beinhalten keine
-  SQL-Statements. Dementsprechend können auch keine Einträge für Ergebnisse in
-  der Tabelle `stammdaten.result` gemacht werden. Filter können allerdings,
-  unter der Bedingung, dass `data_index` auf einen in dem Datentyp vorhandenes
-  und in CamelCase geschriebenes Datenfeld zeigt, angelegt werden.
-  Momentan sind Queries für die folgenden Stammdaten möglich:
-   * Orte
-   * Probennehmer
-   * Datensatzerzeuger
-   * Messprogrammkategorien
-
-* Queries, die nach Zeitstempeln gefiltert werden können, müssen in der Query
-  umgeformt (gecastet) werden, da sie zunächst als String vorliegen. Ein Vergleich zwischen Probenahme-Beginn und einem filternden Enddatum kann beispielsweise folgende Syntax haben:
-```
-  'SELECT ...
-   WHERE
-    probeentahnme_ende < TO_TIMESTAMP(
-                          CAST(
-                            :timeFilterEnd AS double precision
-                          )
-                        )'
-```
-
 ### Sonderfälle in Datentypen
 
-Für einige in stamm.result_type definerten möglichen Resulttypen erwartet der
+Für einige in stamm.column definerten möglichen Datentypen erwartet der
 Client spezielle Angaben:
 
-* Resultate mit Geometrien (Typ 'geom') werden als GeoJSON erwartet. Hierfür kann die postgis- Funktion 'st_asgeojson' genutzt werden:
+* Resultate mit Geometrien (Typ 'geom') werden als GeoJSON erwartet. Hierfür
+  kann die postgis- Funktion 'st_asgeojson' genutzt werden:
 ```
   'SELECT ST_ASGEOJSON(geom) AS geometrie FROM stamm.ort;'
 ```
 
-* Resultate für Zahlen können in E-Notation erzwungen werden, wenn im Tabelle stamm.result_type das Format auf 'e' gesetzt wird.
+* Resultate für Zahlen können in E-Notation erzwungen werden, wenn im Tabelle
+  stamm.result_type das Format auf 'e' gesetzt wird.
 
 
 Erstellen von Importerkonfigurationen

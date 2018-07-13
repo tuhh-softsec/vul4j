@@ -122,6 +122,7 @@ public class OrtService {
      * <p>
      * The requested objects can be filtered using a URL parameter named
      * ortId.
+     * To return all objects, the URL paramter query=all can be used.
      * <p>
      * Example: http://example.com/location?ortId=[ID]
      *

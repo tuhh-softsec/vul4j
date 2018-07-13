@@ -99,7 +99,7 @@ public class UniversalService {
      *     gridColumnId: [number],
      *     sort: [string],
      *     sortIndex: [number],
-     *     filterValue: [],
+     *     filterValue: [string],
      *     filterActive: [boolean],
      *   }]
      * }

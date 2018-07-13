@@ -44,13 +44,10 @@ import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 
-
 /**
- * REST-Service for preconfigured queries.
+ * REST-Service for preconfigured columns.
  * <p>
  * The services produce data in the application/json media type.
- * All HTTP methods use the authorization module to determine if the user is
- * allowed to perform the requested action.
  * A typical response holds information about the action performed and the data.
  * <pre>
  * <code>
@@ -60,10 +57,11 @@ import de.intevation.lada.util.rest.Response;
  *  "data":[{
  *      "id": [string],
  *      "name": [string],
- *      "description": [string],
- *      "sql": [string],
- *      "filters": [array],
- *      "results": [array]
+ *      "base_query": [number],
+ *      "data_index": [string],
+ *      "position": [number],
+ *      "filter": [object],
+ *      "data_type": [object]
  *  }],
  *  "errors": [object],
  *  "warnings": [object],

@@ -47,33 +47,9 @@ import de.intevation.lada.util.rest.Response;
 
 
 /**
- * REST-Service for preconfigured queries.
+ * REST-Service for user defined columns.
  * <p>
  * The services produce data in the application/json media type.
- * All HTTP methods use the authorization module to determine if the user is
- * allowed to perform the requested action.
- * A typical response holds information about the action performed and the data.
- * <pre>
- * <code>
- * {
- *  "success": [boolean];
- *  "message": [string],
- *  "data":[{
- *      "id": [string],
- *      "name": [string],
- *      "description": [string],
- *      "sql": [string],
- *      "filters": [array],
- *      "results": [array]
- *  }],
- *  "errors": [object],
- *  "warnings": [object],
- *  "readonly": [boolean],
- *  "totalCount": [number]
- * }
- * </code>
- * </pre>
- *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
 @Path("rest/columnvalue")
@@ -134,6 +110,7 @@ public class ColumnValueService {
 
     /**
      * Creates a new grid_column_value in the database
+     * @return Response containing the created record.
      */
     @POST
     @Path("/")
@@ -167,6 +144,7 @@ public class ColumnValueService {
 
     /**
      * Update an existing grid_column_value in the database
+     * @return Response containing the updated record.
      */
     @PUT
     @Path("/{id}")
@@ -200,6 +178,10 @@ public class ColumnValueService {
         }
     }
 
+    /**
+     * Delete the given column.
+     * @return Response containing the deleted record.
+     */
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)

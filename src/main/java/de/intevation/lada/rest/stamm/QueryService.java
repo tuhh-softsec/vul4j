@@ -96,7 +96,7 @@ public class QueryService {
     final Integer DEFAULT_USER_ID = 0;
 
     /**
-     * Request all queries.
+     * Request all queries (query_user table).
      * @return All queries owned by the user, connected to the user's messstelle or owned by the default user.
      */
     @GET
