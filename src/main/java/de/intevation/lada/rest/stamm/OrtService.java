@@ -135,6 +135,11 @@ public class OrtService {
         @Context UriInfo info
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
+        if (params.containsKey("query")) {
+            String query = params.getFirst("query");
+            if (query.equals("all"));
+            return repository.getAll(Ort.class, Strings.STAMM);
+        }
         if (params.containsKey("ortId")) {
             Integer id;
             try {
