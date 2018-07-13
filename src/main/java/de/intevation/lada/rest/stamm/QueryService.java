@@ -213,22 +213,26 @@ public class QueryService {
             }
         }
         List<QueryMessstelle> dbMesstelles = repository.getByIdPlain(QueryUser.class, query.getId(), Strings.STAMM).getMessStelles();
+        query.setMessStelles(dbMesstelles);
+
         for (QueryMessstelle qm : delete) {
-            Iterator<QueryMessstelle> qmIter = dbMesstelles.iterator();
+            Iterator<QueryMessstelle> qmIter = query.getMessStelles().iterator();
             while (qmIter.hasNext()) {
                 QueryMessstelle qmi = qmIter.next();
-                if (qmi.getId() == qm.getId()) {
+                if (qmi.getId().equals(qm.getId())) {
+                    repository.delete(qmi, Strings.STAMM);
                     qmIter.remove();
+                    break;
                 }
             }
         }
-        query.setMessStelles(dbMesstelles);
         for (String mst : create) {
             QueryMessstelle qm = new QueryMessstelle();
             qm.setMessStelle(mst);
             qm.setQueryUser(query);
             query.addMessStelle(qm);
         }
+
         return repository.update(query, Strings.STAMM);
     }
 
