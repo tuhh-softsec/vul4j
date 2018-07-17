@@ -199,7 +199,7 @@ COPY stamm.grid_column (id, base_query, name, data_index, "position", filter, da
 3405	34	letzte Änderung	letzteAenderung	5	\N	2
 2110	21	Ort-ID	ortId	10	\N	1
 112	1	Ort-ID	ortId	12	1	1
-109	1	Solldatum bis	solEnd	9	21	2
+109	1	Solldatum bis	sollEnd	9	21	2
 108	1	Solldatum von	sollBegin	8	20	2
 1104	11	NP-Nr	npNr	4	22	1
 1105	11	Statusstufe	statusSt	5	19	13
