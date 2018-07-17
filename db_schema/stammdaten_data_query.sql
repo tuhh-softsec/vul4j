@@ -35,7 +35,7 @@ COPY stamm.base_query (id, sql) FROM stdin;
 --
 
 COPY stamm.filter (id, sql, parameter, type, name) FROM stdin;
-1	probe.id_alt LIKE :idAlt	idAlt	0	probe_id_alt
+1	probe.id_alt LIKE :idAlt	idAlt	1	probe_id_alt
 2	probe.hauptproben_nr LIKE :hauptprobenNr	hauptprobenNr	0	probe_hauptproben_nr
 3	probe.mst_id IN ( :mstId )	mstId	4	probe_mst_id
 4	probe.umw_id IN ( :umwId )	umwId	6	probe_umw_id
