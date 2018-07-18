@@ -3,28 +3,41 @@
 --
 
 -- Dumped from database version 9.6.2
--- Dumped by pg_dump version 10.1
-
--- Started on 2018-01-19 13:39:44 CET
+-- Dumped by pg_dump version 10.4
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 SET row_security = off;
 
-SET search_path = stamm, pg_catalog;
-
 --
--- TOC entry 5309 (class 0 OID 672016)
--- Dependencies: 248
 -- Data for Name: messgroesse; Type: TABLE DATA; Schema: stamm; Owner: postgres
 --
 
-COPY messgroesse (id, beschreibung, messgroesse, default_farbe, idf_nuklid_key, ist_leitnuklid, eudf_nuklid_id, kennung_bvl) FROM stdin;
+COPY stamm.messgroesse (id, beschreibung, messgroesse, default_farbe, idf_nuklid_key, ist_leitnuklid, eudf_nuklid_id, kennung_bvl) FROM stdin;
+555	Tantal	Ta-178	\N	\N	f	\N	\N
+554	Tantal	Ta-178m	\N	Ta178	f	\N	\N
+578	Rhenium	Re-182m	\N	Re182	f	\N	\N
+577	Rhenium	Re-182	\N	Re182	f	\N	\N
+601	Iridium	Ir-186m	\N	\N	f	\N	\N
+600	Iridium	Ir-186	\N	Ir186	f	\N	\N
+758	Neptunium	Np-236m	\N	Np236	f	\N	\N
+757	Neptunium	Np-236	\N	Np236	f	\N	\N
+188	Niob	Nb-89	\N	Nb89	f	\N	\N
+187	Niob	Nb-89m	\N	Nb89	f	\N	\N
+266	Indium	In-110m	\N	In110	f	\N	\N
+265	Indium	In-110	\N	In110	f	\N	\N
+299	Antimon	Sb-120	\N	Sb120	f	\N	\N
+298	Antimon	Sb-120m	\N	Sb120	f	\N	\N
+309	Antimon	Sb-128m	\N	Sb128	f	\N	\N
+308	Antimon	Sb-128	\N	Sb128	f	\N	\N
+454	Europium	Eu-150m	\N	\N	f	\N	\N
+453	Europium	Eu-150	\N	Eu150	f	\N	\N
 56	Mangan	Mn-54	175175075	Mn54	f	50	1925054
 57	Mangan	Mn-56	\N	Mn56	f	\N	\N
 58	Eisen	Fe-52	\N	Fe52	f	\N	\N
@@ -144,7 +157,6 @@ COPY messgroesse (id, beschreibung, messgroesse, default_farbe, idf_nuklid_key, 
 183	Zirconium	Zr-93	\N	Zr93	f	\N	\N
 185	Zirconium	Zr-97	225207199	Zr97	f	113	1940097
 186	Niob	Nb-88	\N	Nb88	f	\N	\N
-187	Niob	Nb-89 1	\N	Nb89	f	\N	\N
 189	Niob	Nb-90	\N	Nb90	f	\N	\N
 190	Niob	Nb-93m	\N	Nb93m	f	\N	\N
 192	Niob	Nb-95m	\N	Nb95m	f	\N	\N
@@ -193,8 +205,6 @@ COPY messgroesse (id, beschreibung, messgroesse, default_farbe, idf_nuklid_key, 
 261	Cadmium	Cd-115	\N	Cd115	f	\N	\N
 262	Cadmium	Cd-117m	\N	Cd117m	f	\N	\N
 264	Indium	In-109	\N	In109	f	\N	\N
-265	Indium	In-110 2	\N	In110	f	\N	\N
-266	Indium	In-110 1	\N	In110	f	\N	\N
 269	Indium	In-113m	\N	In113m	f	\N	\N
 871	Iod, elementar	I-133E	\N	I133E	f	\N	\N
 872	Iod, elementar	I-135E	\N	I135E	f	\N	\N
@@ -299,8 +309,6 @@ COPY messgroesse (id, beschreibung, messgroesse, default_farbe, idf_nuklid_key, 
 449	Europium	Eu-146	\N	Eu146	f	\N	\N
 450	Europium	Eu-147	\N	Eu147	f	\N	\N
 452	Europium	Eu-149	\N	Eu149	f	\N	\N
-453	Europium	Eu-150 2	\N	Eu150	f	\N	\N
-454	Europium	Eu-150 1	\N	\N	f	\N	\N
 455	Europium	Eu-152m	\N	Eu152m	f	\N	\N
 456	Europium	Eu-152	\N	Eu152	f	35	\N
 457	Europium	Eu-154	\N	Eu154	f	36	\N
@@ -362,8 +370,6 @@ COPY messgroesse (id, beschreibung, messgroesse, default_farbe, idf_nuklid_key, 
 753	Neptunium	Np-232	\N	Np232	f	\N	\N
 754	Neptunium	Np-233	\N	Np233	f	\N	\N
 755	Neptunium	Np-234	\N	Np234	f	\N	\N
-757	Neptunium	Np-236 2	\N	Np236	f	\N	\N
-758	Neptunium	Np-236 1	\N	Np236	f	\N	\N
 759	Neptunium	Np-237	179193179	Np237	f	57	1993237
 760	Neptunium	Np-238	\N	Np238	f	\N	\N
 761	Neptunium	Np-239	199225199	Np239	f	58	1993239
@@ -557,8 +563,6 @@ COPY messgroesse (id, beschreibung, messgroesse, default_farbe, idf_nuklid_key, 
 549	Tantal	Ta-173	\N	Ta173	f	\N	\N
 551	Tantal	Ta-175	\N	Ta175	f	\N	\N
 552	Tantal	Ta-176	\N	Ta176	f	\N	\N
-554	Tantal	Ta-178 2	\N	Ta178	f	\N	\N
-555	Tantal	Ta-178 1	\N	\N	f	\N	\N
 558	Tantal	Ta-180	\N	Ta180	f	\N	\N
 559	Tantal	Ta-182m	\N	Ta182m	f	\N	\N
 561	Tantal	Ta-183	\N	Ta183	f	\N	\N
@@ -584,8 +588,6 @@ COPY messgroesse (id, beschreibung, messgroesse, default_farbe, idf_nuklid_key, 
 594	Osmium	Os-191	\N	Os191	f	\N	\N
 595	Osmium	Os-193	\N	Os193	f	\N	\N
 597	Iridium	Ir-182	\N	Ir182	f	\N	\N
-600	Iridium	Ir-186 1	\N	Ir186	f	\N	\N
-601	Iridium	Ir-186 2	\N	\N	f	\N	\N
 602	Iridium	Ir-187	\N	Ir187	f	\N	\N
 604	Iridium	Ir-189	\N	Ir189	f	\N	\N
 607	Iridium	Ir-190	\N	Ir190	f	\N	\N
@@ -648,7 +650,6 @@ COPY messgroesse (id, beschreibung, messgroesse, default_farbe, idf_nuklid_key, 
 271	Indium	In-114	\N	In114	f	\N	\N
 278	Indium	In-119	\N	In119	f	\N	\N
 291	Zinn	Sn-128	\N	Sn128	f	\N	\N
-299	Antimon	Sb-120 1	\N	Sb120	f	\N	\N
 310	Antimon	Sb-129	221193152	Sb129	f	\N	1951129
 320	Tellur	Te-127	\N	Te127	f	\N	\N
 326	Tellur	Te-133m	\N	Te133m	f	\N	\N
@@ -681,7 +682,6 @@ COPY messgroesse (id, beschreibung, messgroesse, default_farbe, idf_nuklid_key, 
 547	Hafnium	Hf-184	\N	Hf184	f	\N	\N
 556	Tantal	Ta-179	\N	Ta179	f	\N	\N
 568	Wolfram	W-179	\N	W179	f	\N	\N
-578	Rhenium	Re-182 1	\N	Re182	f	\N	\N
 588	Osmium	Os-181	\N	Os181	f	\N	\N
 598	Iridium	Ir-184	\N	Ir184	f	\N	\N
 617	Platin	Pt-189	\N	Pt189	f	\N	\N
@@ -716,7 +716,6 @@ COPY messgroesse (id, beschreibung, messgroesse, default_farbe, idf_nuklid_key, 
 900	Gamma-Ortsdosisleistung	Gamma-ODL	\N	\N	f	\N	\N
 915	Gesamt-Alpha 2,5h verzögert	G-Alpha-2,5h_verz	\N	\N	f	\N	\N
 956	Summe über künstliche IMIS-Nuklide(PARK)	SumPARK	\N	\N	f	\N	\N
-188	Niob	Nb-89 2	\N	Nb89	f	\N	\N
 191	Niob	Nb-94	\N	Nb94	f	\N	\N
 194	Niob	Nb-96	\N	Nb96	f	\N	1941095
 196	Niob	Nb-97	227135099	Nb97	f	55	1941097
@@ -772,7 +771,6 @@ COPY messgroesse (id, beschreibung, messgroesse, default_farbe, idf_nuklid_key, 
 567	Wolfram	W-178	\N	W178	f	\N	\N
 570	Wolfram	W-185	\N	W185	f	\N	\N
 574	Rhenium	Re-178	\N	Re178	f	\N	\N
-577	Rhenium	Re-182 2	\N	Re182	f	\N	\N
 581	Rhenium	Re-186m	\N	Re186m	f	\N	\N
 585	Rhenium	Re-188	\N	Re188	f	\N	\N
 589	Osmium	Os-182	\N	Os182	f	\N	\N
@@ -843,14 +841,11 @@ COPY messgroesse (id, beschreibung, messgroesse, default_farbe, idf_nuklid_key, 
 294	Antimon	Sb-116	\N	Sb116	f	\N	\N
 295	Antimon	Sb-117	\N	Sb117	f	\N	\N
 297	Antimon	Sb-119	\N	Sb119	f	\N	\N
-298	Antimon	Sb-120 2	\N	Sb120	f	\N	\N
 301	Antimon	Sb-124m1	\N	Sb124m	f	\N	\N
 302	Antimon	Sb-124m2	\N	Sb124m	f	\N	\N
 303	Antimon	Sb-124	031020031	Sb124	f	76	1951124
 305	Antimon	Sb-126m	\N	Sb126m	f	\N	\N
 306	Antimon	Sb-126	\N	Sb126	f	\N	\N
-308	Antimon	Sb-128 2	\N	Sb128	f	\N	\N
-309	Antimon	Sb-128 1	\N	Sb128	f	\N	\N
 312	Antimon	Sb-131	\N	Sb131	f	\N	\N
 313	Tellur	Te-116	\N	Te116	f	\N	\N
 315	Tellur	Te-121	\N	Te121	f	\N	\N
@@ -915,15 +910,11 @@ COPY messgroesse (id, beschreibung, messgroesse, default_farbe, idf_nuklid_key, 
 
 
 --
--- TOC entry 5314 (class 0 OID 0)
--- Dependencies: 247
 -- Name: messgroesse_id_seq; Type: SEQUENCE SET; Schema: stamm; Owner: postgres
 --
 
-SELECT pg_catalog.setval('messgroesse_id_seq', 1041, true);
+SELECT pg_catalog.setval('stamm.messgroesse_id_seq', 1041, true);
 
-
--- Completed on 2018-01-19 13:39:46 CET
 
 --
 -- PostgreSQL database dump complete

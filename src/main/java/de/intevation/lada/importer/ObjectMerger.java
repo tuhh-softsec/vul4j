@@ -38,41 +38,53 @@ public class ObjectMerger {
     private Repository repository;
 
     public boolean merge(Probe target, Probe src) {
-        target.setBaId(src.getBaId());
-        target.setDatenbasisId(src.getDatenbasisId());
-        target.setErzeugerId(src.getErzeugerId());
+        if (src.getBaId() != null) target.setBaId(src.getBaId());
+        if (src.getDatenbasisId() != null) target.setDatenbasisId(src.getDatenbasisId());
+        if (src.getErzeugerId() != null) target.setErzeugerId(src.getErzeugerId());
         if (src.getHauptprobenNr() != null &&
             !src.getHauptprobenNr().isEmpty()) {
             target.setHauptprobenNr(src.getHauptprobenNr());
         }
-        target.setLaborMstId(src.getLaborMstId());
-        target.setMedia(src.getMedia());
-        target.setMediaDesk(src.getMediaDesk());
-        target.setMittelungsdauer(src.getMittelungsdauer());
-        target.setMplId(src.getMplId());
-        target.setMprId(src.getMprId());
-        target.setProbeentnahmeBeginn(src.getProbeentnahmeBeginn());
-        target.setProbeentnahmeEnde(src.getProbeentnahmeEnde());
-        target.setProbenartId(src.getProbenartId());
-        target.setProbeNehmerId(src.getProbeNehmerId());
-        target.setSolldatumBeginn(src.getSolldatumBeginn());
-        target.setSolldatumEnde(src.getSolldatumEnde());
-        // Set explicit to false, if is null in src to not violate constraints
-        target.setTest(src.getTest() == null ? false : src.getTest());
-        target.setUmwId(src.getUmwId());
+        if (src.getLaborMstId() != null) target.setLaborMstId(src.getLaborMstId());
+        if (src.getMedia() != null) target.setMedia(src.getMedia());
+        if (src.getMediaDesk() != null) target.setMediaDesk(src.getMediaDesk());
+        if (src.getMittelungsdauer() != null) target.setMittelungsdauer(src.getMittelungsdauer());
+        if (src.getMplId() != null) target.setMplId(src.getMplId());
+        if (src.getProbeentnahmeBeginn() != null) target.setProbeentnahmeBeginn(src.getProbeentnahmeBeginn());
+        if (src.getProbeentnahmeEnde() != null) target.setProbeentnahmeEnde(src.getProbeentnahmeEnde());
+        if (src.getProbenartId() != null) target.setProbenartId(src.getProbenartId());
+        if (src.getProbeNehmerId() != null) target.setProbeNehmerId(src.getProbeNehmerId());
+        if (src.getSolldatumBeginn() != null) target.setSolldatumBeginn(src.getSolldatumBeginn());
+        if (src.getSolldatumEnde() != null) target.setSolldatumEnde(src.getSolldatumEnde());
+        if (src.getTest() != null) {
+            if (target.getTest() == null) target.setTest(src.getTest());
+        } else {
+            // Set explicit to false, if is null in src to not violate constraints
+            target.setTest(false);
+        }
+        if (src.getUmwId() != null) target.setUmwId(src.getUmwId());
         Response r = repository.update(target, Strings.LAND);
         return r.getSuccess();
     }
 
     public ObjectMerger mergeMessung(Messung target, Messung src) {
-        if (target.getNebenprobenNr().isEmpty()) {
+        if (target.getNebenprobenNr() == null ||
+            target.getNebenprobenNr().isEmpty()) {
             target.setNebenprobenNr(src.getNebenprobenNr());
         }
-        target.setFertig(src.getFertig() == null ? false : src.getFertig());
-        target.setGeplant(src.getGeplant() == null ? false : src.getGeplant());
-        target.setMessdauer(src.getMessdauer());
-        target.setMesszeitpunkt(src.getMesszeitpunkt());
-        target.setMmtId(src.getMmtId());
+        if (src.getFertig() != null) {
+            if (target.getFertig() == null) target.setFertig(src.getFertig());
+        } else {
+            target.setFertig(false);
+        }
+        if (src.getGeplant() != null) {
+            if (target.getGeplant() == null) target.setGeplant(src.getGeplant());
+        } else {
+            target.setGeplant(false);
+        }
+        if (src.getMessdauer() != null) target.setMessdauer(src.getMessdauer());
+        if (src.getMesszeitpunkt() != null) target.setMesszeitpunkt(src.getMesszeitpunkt());
+        if (src.getMmtId() != null) target.setMmtId(src.getMmtId());
         Response r = repository.update(target, Strings.LAND);
         target = (Messung)r.getData();
         return this;

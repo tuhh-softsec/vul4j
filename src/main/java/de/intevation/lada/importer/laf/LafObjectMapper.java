@@ -1032,6 +1032,8 @@ public class LafObjectMapper {
                     ort.setOrtszusatztext(uo.get("U_ORTS_ZUSATZTEXT"));
                 }
                 repository.create(ort, "land");
+                probe.setKtaGruppeId(messpunkte.get(0).getKtaGruppeId());
+                repository.update(probe, "land");
             }
             else {
                 ReportItem warn = new ReportItem();
@@ -1548,6 +1550,9 @@ public class LafObjectMapper {
                 return;
             }
             probe.setBaId(transfer.get(0).getBaId());
+            if (probe.getDatenbasisId() == null) {
+                probe.setDatenbasisId(transfer.get(0).getDatenbasisId());
+            }
         }
         if ("MESSPROGRAMM_C".equals(key)){
             QueryBuilder<MessprogrammTransfer> builder =
@@ -1568,7 +1573,9 @@ public class LafObjectMapper {
                 return;
             }
             probe.setBaId(transfer.get(0).getBaId());
-            probe.setDatenbasisId(transfer.get(0).getDatenbasisId());
+            if (probe.getDatenbasisId() == null) {
+                probe.setDatenbasisId(transfer.get(0).getDatenbasisId());
+            }
         }
 
         if ("MESSPROGRAMM_LAND".equals(key)) {

@@ -353,6 +353,7 @@ public class ProbeFactory {
         probe.setTest(messprogramm.getTest());
         probe.setUmwId(messprogramm.getUmwId());
         probe.setMprId(messprogramm.getId());
+        probe.setMplId(messprogramm.getMplId());
         repository.create(probe, Strings.LAND);
 
         if (messprogramm.getProbeKommentar() != null &&
