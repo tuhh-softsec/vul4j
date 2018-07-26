@@ -123,8 +123,8 @@ COPY stamm.grid_column (id, base_query, name, data_index, "position", filter, da
 1110	11	MST	mstId	10	3	10
 1111	11	Umw-ID	umwId	11	4	12
 1112	11	Probenart	pArt	12	\N	1
-1113	11	Probenahme von	peBegin	13	6	2
-1114	11	Probenahme bis	peEnd	14	7	2
+1113	11	Probenahme von	peBegin	13	14	2
+1114	11	Probenahme bis	peEnd	14	15	2
 1115	11	E-Gem-ID	eGemId	15	16	1
 1116	11	E-Gemeinde	eGem	16	10	1
 1117	11	H-3	h3	17	\N	15
