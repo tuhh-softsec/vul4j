@@ -61,6 +61,7 @@ COPY stamm.filter (id, sql, parameter, type, name) FROM stdin;
 24	probenehmer.netzbetreiber_id IN ( :netzbetreiberId )	netzbetreiberId	5	netzbetreiber_id
 25	datensatz_erzeuger.netzbetreiber_id IN ( :netzbetreiberId )	netzbetreiberId	5	netzbetreiber_id
 26	messprogramm_kategorie..netzbetreiber_id IN ( :netzbetreiberId )	netzbetreiberId	5	netzbetreiber_id
+27	(messprogramm.mst_id IN ( :mstId ) OR messprogramm.labor_mst_id IN ( :mstId ))	mstId	4	messprogramm_mst_id
 \.
 
 
@@ -149,8 +150,8 @@ COPY stamm.grid_column (id, base_query, name, data_index, "position", filter, da
 1136	11	Bi-212	bi212	36	\N	15
 1137	11	Bi-214	bi214	37	\N	15
 2101	21	MPR-ID	mpNr	1	\N	8
-2102	21	netzbetreiber	netzId 	2	13	18
-2103	21	MST/Labor	mstLaborId	3	\N	10
+2102	21	Netzbetreiber	netzId 	2	13	18
+2103	21	MST/Labor	mstLaborId	3	27	10
 2104	21	Datenbasis	dBasis	4	8	17
 2105	21	Messregime	messRegime	5	\N	1
 2106	21	Probenart	pArt	6	9	19
@@ -249,8 +250,8 @@ COPY stamm.grid_column_values (id, user_id, grid_column, query_user, sort, sort_
 22	0	1117	2	\N	\N	\N	f	t	14	\N
 23	0	1118	2	\N	\N	\N	f	t	15	\N
 24	0	2101	3	\N	\N	\N	f	t	1	\N
-25	0	2102	3	\N	\N	\N	f	t	2	\N
-26	0	2103	3	\N	\N	\N	f	t	3	\N
+25	0	2102	3	\N	\N	\N	t	t	2	\N
+26	0	2103	3	\N	\N	\N	t	t	3	\N
 27	0	2104	3	\N	\N	\N	f	t	4	\N
 28	0	2105	3	\N	\N	\N	f	t	5	\N
 29	0	2106	3	\N	\N	\N	f	t	6	\N
@@ -301,7 +302,7 @@ SELECT pg_catalog.setval('stamm.base_query_id_seq', 34, true);
 -- Name: filter_id_seq; Type: SEQUENCE SET; Schema: stamm; Owner: postgres
 --
 
-SELECT pg_catalog.setval('stamm.filter_id_seq', 26, true);
+SELECT pg_catalog.setval('stamm.filter_id_seq', 27, true);
 
 
 --
