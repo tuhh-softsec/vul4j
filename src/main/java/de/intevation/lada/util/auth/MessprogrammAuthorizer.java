@@ -63,8 +63,8 @@ public class MessprogrammAuthorizer implements Authorizer {
 
     @Override
     public <T> boolean isAuthorizedById(Object id, RequestMethod method, UserInfo userInfo, Class<T> clazz) {
-        //TODO: implement
-        return false;
+        Messprogramm mp = repository.getByIdPlain(Messprogramm.class, id, Strings.LAND);
+        return isAuthorized(mp, method, userInfo, Messprogramm.class);
     }
 
     @Override

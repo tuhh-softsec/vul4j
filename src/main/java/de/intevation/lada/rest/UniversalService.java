@@ -7,16 +7,11 @@
  */
 package de.intevation.lada.rest;
 
-import java.io.Serializable;
-import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.persistence.Entity;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -26,19 +21,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.UriInfo;
 
-import com.fasterxml.jackson.databind.deser.impl.NoClassDefFoundDeserializer;
-
-import de.intevation.lada.importer.laf.LafRawData.Probe;
 import de.intevation.lada.model.QueryColumns;
-import de.intevation.lada.model.land.KommentarM;
-import de.intevation.lada.model.land.Messung;
-import de.intevation.lada.model.land.Ortszuordnung;
+import de.intevation.lada.model.land.Messprogramm;
 import de.intevation.lada.model.stammdaten.GridColumn;
 import de.intevation.lada.model.stammdaten.GridColumnValue;
-import de.intevation.lada.model.stammdaten.NetzBetreiber;
 import de.intevation.lada.model.stammdaten.Ort;
 import de.intevation.lada.model.stammdaten.ResultType;
 import de.intevation.lada.query.QueryTools;
@@ -46,11 +34,6 @@ import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
-import de.intevation.lada.util.auth.BaseAuthorizer;
-import de.intevation.lada.util.auth.MessungIdAuthorizer;
-import de.intevation.lada.util.auth.NetzbetreiberAuthorizer;
-import de.intevation.lada.util.auth.ProbeIdAuthorizer;
-import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.rest.RequestMethod;
@@ -122,7 +105,6 @@ public class UniversalService {
 
         String authorizationColumnIndex = null;
         Class<?> authorizationColumnType = null;
-
         if (gridColumnValues == null ||
                 gridColumnValues.isEmpty()) {
             //TODO: Error code if no columns are given
@@ -142,14 +124,18 @@ public class UniversalService {
                             authorizationColumnIndex = gridColumn.getDataIndex();
                         break;
                     case "messungId":
-                        authorizationColumnType =  de.intevation.lada.model.land.Messung.class;
                         if (authorizationColumnIndex == null) {
+                            authorizationColumnType =  de.intevation.lada.model.land.Messung.class;
                             authorizationColumnIndex = gridColumn.getDataIndex();
                         }
                         break;
+                    case "mpId":
+                        authorizationColumnType = Messprogramm.class;
+                        authorizationColumnIndex = gridColumn.getDataIndex();
+                        break;
                     case "ortId":
-                        authorizationColumnType = Ort.class;
                         if (authorizationColumnIndex == null) {
+                            authorizationColumnType = Ort.class;
                             authorizationColumnIndex = gridColumn.getDataIndex();
                         }
                         break;
@@ -164,7 +150,6 @@ public class UniversalService {
         Strings.STAMM);
 
         qid = gridColumn.getBaseQuery();
-
         List<Map<String, Object>> result =
             queryTools.getResultForQuery(columns.getColumns(), qid);
         if (result == null) {
