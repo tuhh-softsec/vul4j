@@ -9,6 +9,7 @@ package de.intevation.lada.rest.stamm;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -17,8 +18,12 @@ import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonException;
+import javax.json.JsonNumber;
+import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.json.JsonValue;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -300,6 +305,48 @@ public class OrtService {
             Ort.class,
             Integer.valueOf(id),
             Strings.STAMM);
+    }
+
+    /**
+     * Get multiple Ort object by ids.
+     * <p>
+     * The ids are send as array in the POST request.
+     * <p>
+     * Example: http://example.com/rest/ort/getbyids
+     *     payload: "[1,2,3]"
+     *
+     * @return Response object containing multiple Ort objects.
+     */
+    @POST
+    @Path("/getbyids")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getByIds(
+        @Context HttpServletRequest request,
+        JsonArray ids
+    ) {
+        UserInfo user = authorization.getInfo(request);
+        QueryBuilder<Ort> builder =
+            new QueryBuilder<Ort>(
+                repository.entityManager(Strings.STAMM),
+                Ort.class
+            );
+        List<JsonNumber> idList = ids.getValuesAs(JsonNumber.class);
+        List<Integer> intList = new ArrayList<>();
+        for (JsonNumber id : idList) {
+            intList.add(id.intValue());
+        }
+        builder.andIn("id", intList);
+        List<Ort> orte = repository.filterPlain(builder.getQuery(), Strings.STAMM);
+        for (Ort o : orte) {
+            o.setReadonly(
+                !authorization.isAuthorized(
+                    request,
+                    o,
+                    RequestMethod.POST,
+                    Ort.class));
+        }
+        return new Response(true, 200, orte, orte.size());
     }
 
     /**
