@@ -151,7 +151,7 @@ public class MesswertService {
                 RequestMethod.GET,
                 Messung.class)
         ) {
-            return new Response(false, 697, null);
+            return new Response(false, 699, null);
         }
         QueryBuilder<Messwert> builder =
             new QueryBuilder<Messwert>(
