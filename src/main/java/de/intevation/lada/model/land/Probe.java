@@ -38,7 +38,7 @@ public class Probe implements Serializable {
     @Column(name="hauptproben_nr")
     private String hauptprobenNr;
 
-    @Column(name="id_alt")
+    @Column(name="ext_id")
     private String idAlt;
 
     @Column(name="labor_mst_id")

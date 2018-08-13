@@ -1,7 +1,7 @@
 {
     "land.probe": [{
         "id": 1000,
-        "id_alt": "T001",
+        "ext_id": "T001",
         "ba_id": "1",
         "datenbasis_id": 9,
         "letzte_aenderung": "2012-05-05 11:12:00",

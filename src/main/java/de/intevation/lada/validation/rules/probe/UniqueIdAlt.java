@@ -23,7 +23,7 @@ import de.intevation.lada.validation.rules.Rule;
 
 /**
  * Validation rule for probe.
- * Validates if the probe has a unique "id_alt".
+ * Validates if the probe has a unique "ext_id".
  *
  */
 @ValidationRule("Probe")

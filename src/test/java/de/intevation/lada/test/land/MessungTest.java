@@ -51,7 +51,7 @@ public class MessungTest extends ServiceTest {
         JsonObjectBuilder builder = convertObject(messung);
         JsonObject trans =
             content.getJsonArray("land.messung_translation").getJsonObject(0);
-        builder.add("messungsIdAlt", trans.get("messungs_id_alt"));
+        builder.add("messungsIdAlt", trans.get("messungs_ext_id"));
         builder.add("parentModified", 1450371851654L);
         builder.add("readonly", JsonValue.FALSE);
         builder.add("owner", JsonValue.TRUE);

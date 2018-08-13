@@ -28,7 +28,7 @@ SET SESSION AUTHORIZATION DEFAULT;
 
 ALTER TABLE probe DISABLE TRIGGER ALL;
 
-COPY probe (id, id_alt, test, mst_id, labor_mst_id, hauptproben_nr, datenbasis_id, ba_id, probenart_id, media_desk, media, umw_id, probeentnahme_beginn, probeentnahme_ende, mittelungsdauer, letzte_aenderung, erzeuger_id, probe_nehmer_id, mpl_id, mpr_id, solldatum_beginn, solldatum_ende, tree_modified) FROM stdin;
+COPY probe (id, ext_id, test, mst_id, labor_mst_id, hauptproben_nr, datenbasis_id, ba_id, probenart_id, media_desk, media, umw_id, probeentnahme_beginn, probeentnahme_ende, mittelungsdauer, letzte_aenderung, erzeuger_id, probe_nehmer_id, mpl_id, mpr_id, solldatum_beginn, solldatum_ende, tree_modified) FROM stdin;
 660	000007590041X	t	12020	12020	N0013KE12	2	1	1	D: 01 03 52 02 00 00 00 00 00 00 00 00	Schafkäse	N92	2012-01-26 11:30:00+01	\N	\N	2017-03-22 20:10:18.048436	\N	784	\N	\N	2012-01-01 00:00:00	2012-01-31 21:59:59	2017-03-22 20:10:18.048436
 409	000007589343X	t	12010	12010	A0239MP12	2	1	1	D: 01 02 07 03 00 00 00 00 00 00 00 00	Magermilchpulver	N94	2012-03-15 11:00:00+01	\N	\N	2017-03-22 20:10:18.048436	\N	1199	\N	\N	2012-03-01 00:00:00	2012-03-31 21:59:59	2017-03-22 20:10:18.048436
 42	000007578227X	t	06010	06010	120109003	2	1	1	D: 01 03 26 03 04 02 00 00 00 00 00 00	Frischkäse Fettstufe auch mit Gewürzen/Kräutern	N91	2012-01-04 08:00:00+01	\N	\N	2017-03-22 20:10:18.048436	\N	734	\N	\N	2012-01-01 00:00:00	2012-01-31 21:59:59	2017-03-22 20:10:18.048436
@@ -102,7 +102,7 @@ SELECT setval(pg_get_serial_sequence('probe', 'id'),
 
 ALTER TABLE messung DISABLE TRIGGER ALL;
 
-COPY messung (id, id_alt, probe_id, nebenproben_nr, mmt_id, messdauer, messzeitpunkt, fertig, status, letzte_aenderung, geplant, tree_modified) FROM stdin;
+COPY messung (id, ext_id, probe_id, nebenproben_nr, mmt_id, messdauer, messzeitpunkt, fertig, status, letzte_aenderung, geplant, tree_modified) FROM stdin;
 179	1	660	01G1	G1	82693	2012-01-30 09:32:00+01	t	571	2012-03-06 17:42:26	t	2016-03-17 09:19:04.94469
 198	1	409	01G1	G1	161733	2012-03-19 23:00:00+01	t	572	2012-04-17 19:42:25	t	2016-03-17 09:19:04.94469
 646	1	42	00G1	G1	60000	2012-01-09 14:48:00+01	f	573	2016-03-08 10:23:04.791	t	2016-03-17 09:19:04.94469

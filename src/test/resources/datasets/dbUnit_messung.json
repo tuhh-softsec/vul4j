@@ -3,7 +3,7 @@
         "id": 1200,
         "probe_id": 1000,
         "nebenproben_nr": "T100",
-        "id_alt": 453,
+        "ext_id": 453,
         "mmt_id": "G1",
         "messdauer": 3600,
         "messzeitpunkt": "2012-05-06 14:00:00",

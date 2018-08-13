@@ -35,7 +35,7 @@ public class Messung implements Serializable {
 
     private Boolean geplant;
 
-    @Column(name="id_alt")
+    @Column(name="ext_id")
     private Integer idAlt;
 
     @Column(name="letzte_aenderung", insertable=false)

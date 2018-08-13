@@ -18,7 +18,7 @@
     }],
     "land.probe": [{
         "id": 1000,
-        "id_alt": "T001",
+        "ext_id": "T001",
         "ba_id": "1",
         "datenbasis_id": 9,
         "letzte_aenderung": "2012-05-05 11:12:00",
@@ -41,7 +41,7 @@
         "id": 1200,
         "probe_id": 1000,
         "nebenproben_nr": "06A0",
-        "id_alt": 1,
+        "ext_id": 1,
         "mmt_id": "A3",
         "messdauer": 3600,
         "messzeitpunkt": "2012-05-06 14:00:00",

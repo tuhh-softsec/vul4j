@@ -18,12 +18,12 @@ CREATE SCHEMA land;
 
 SET search_path = land, pg_catalog;
 
-CREATE FUNCTION set_messung_id_alt() RETURNS trigger
+CREATE FUNCTION set_messung_ext_id() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
     BEGIN
-        IF NEW.id_alt IS NULL THEN
-            NEW.id_alt = (
+        IF NEW.ext_id IS NULL THEN
+            NEW.ext_id = (
                 SELECT count(*)
                    FROM land.messung
                    WHERE probe_id = NEW.probe_id) + 1;
@@ -115,10 +115,10 @@ SET default_with_oids = false;
 
 
 --
--- Name: messung_messung_id_alt_seq; Type: SEQUENCE; Schema: land; Owner: -
+-- Name: messung_messung_ext_id; Type: SEQUENCE; Schema: land; Owner: -
 --
 
-CREATE SEQUENCE messung_messung_id_alt_seq
+CREATE SEQUENCE messung_messung_ext_id
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -224,7 +224,7 @@ CREATE TRIGGER letzte_aenderung_messprogramm_mmt BEFORE UPDATE ON messprogramm_m
 
 CREATE TABLE probe (
     id serial PRIMARY KEY,
-    id_alt character varying(16) UNIQUE NOT NULL
+    ext_id character varying(16) UNIQUE NOT NULL
         DEFAULT 'sss'
             || lpad(nextval('land.probe_probe_id_seq')::varchar, 12, '0')
             || 'Y',
@@ -329,7 +329,7 @@ CREATE TRIGGER tree_modified_zusatzwert BEFORE UPDATE ON zusatz_wert FOR EACH RO
 
 CREATE TABLE messung (
     id serial PRIMARY KEY,
-    id_alt integer NOT NULL,
+    ext_id integer NOT NULL,
     probe_id integer NOT NULL REFERENCES probe ON DELETE CASCADE,
     nebenproben_nr character varying(4),
     mmt_id character varying(2) NOT NULL REFERENCES stamm.mess_methode ON DELETE CASCADE,
@@ -343,7 +343,7 @@ CREATE TABLE messung (
 );
 CREATE TRIGGER letzte_aenderung_messung BEFORE UPDATE ON messung FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 CREATE TRIGGER tree_modified_messung BEFORE UPDATE ON messung FOR EACH ROW EXECUTE PROCEDURE update_tree_modified_messung();
-CREATE TRIGGER id_alt_messung BEFORE INSERT ON land.messung FOR EACH ROW EXECUTE PROCEDURE set_messung_id_alt();
+CREATE TRIGGER ext_id BEFORE INSERT ON land.messung FOR EACH ROW EXECUTE PROCEDURE set_messung_ext_id();
 CREATE TRIGGER status_messung AFTER INSERT ON land.messung FOR EACH ROW EXECUTE PROCEDURE set_messung_status();
 
 --
