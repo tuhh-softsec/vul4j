@@ -127,7 +127,11 @@ public class LafExportService {
         response.header(
             "Content-Disposition",
             "attachment; filename=\"export.laf\"");
-        response.header("Content-Type", "text/plain; charset=iso-8859-15");
+        String encoding = request.getHeader("X-FILE-ENCODING");
+        if (encoding == null || encoding.equals("")) {
+            encoding = "iso-8859-15";
+        }
+        response.header("Content-Type", "text/plain; charset=" + encoding);
         return response.build();
     }
 }
