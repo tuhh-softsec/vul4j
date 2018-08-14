@@ -8,6 +8,7 @@
 package de.intevation.lada.exporter;
 
 import de.intevation.lada.util.auth.UserInfo;
+import java.util.List;
 
 /**
  * Interface for export content creator.
@@ -16,6 +17,7 @@ import de.intevation.lada.util.auth.UserInfo;
  */
 public interface Creator
 {
-    public String create(String probeId);
     public void setUserInfo(UserInfo userInfo);
+    public String createProbe(String probeId);
+    public String createMessung(String probeId, List<Integer> messungen);
 }

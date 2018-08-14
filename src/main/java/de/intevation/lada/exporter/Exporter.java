@@ -19,5 +19,8 @@ import de.intevation.lada.util.auth.UserInfo;
  */
 public interface Exporter
 {
-    public InputStream export(List<Integer> proben, UserInfo userInfo);
+    public InputStream export(
+        List<Integer> proben,
+        List<Integer> messungen,
+        UserInfo userInfo);
 }
