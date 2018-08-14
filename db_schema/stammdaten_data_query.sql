@@ -60,7 +60,7 @@ COPY stamm.filter (id, sql, parameter, type, name) FROM stdin;
 23	ort.netzbetreiber_id IN ( :netzbetreiberId )	netzbetreiberId	5	netzbetreiber_id
 24	probenehmer.netzbetreiber_id IN ( :netzbetreiberId )	netzbetreiberId	5	netzbetreiber_id
 25	datensatz_erzeuger.netzbetreiber_id IN ( :netzbetreiberId )	netzbetreiberId	5	netzbetreiber_id
-26	messprogramm_kategorie..netzbetreiber_id IN ( :netzbetreiberId )	netzbetreiberId	5	netzbetreiber_id
+26	messprogramm_kategorie.netzbetreiber_id IN ( :netzbetreiberId )	netzbetreiberId	5	netzbetreiber_id
 27	(messprogramm.mst_id IN ( :mstId ) OR messprogramm.labor_mst_id IN ( :mstId ))	mstId	4	messprogramm_mst_id
 \.
 
@@ -320,7 +320,7 @@ SELECT pg_catalog.setval('stamm.grid_column_id_seq', 3405, true);
 -- Name: grid_column_values_id_seq; Type: SEQUENCE SET; Schema: stamm; Owner: postgres
 --
 
-SELECT pg_catalog.setval('stamm.grid_column_values_id_seq', 75, true);
+SELECT pg_catalog.setval('stamm.grid_column_values_id_seq', 76, true);
 
 
 --
