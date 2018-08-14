@@ -11,12 +11,11 @@ import java.sql.Timestamp;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import org.apache.log4j.Logger;
 
 import de.intevation.lada.exporter.Creator;
 import de.intevation.lada.model.land.KommentarM;
@@ -63,9 +62,6 @@ implements Creator
     private static final String CN = "\"%s\""; // cn, mcn, scn
 
     @Inject
-    private Logger logger;
-
-    @Inject
     @AuthorizationConfig(type=AuthorizationType.HEADER)
     private Authorization authorization;
 
@@ -84,11 +80,25 @@ implements Creator
      * @param probeId   The {@link LProbe} id.
      */
     @Override
-    public String create(String probeId) {
+    public String createProbe(String probeId) {
         String lafProbe = "%PROBE%\n";
         lafProbe += lafLine("UEBERTRAGUNGSFORMAT", "7", CN);
         lafProbe += lafLine("VERSION", "0084", CN);
-        lafProbe += probeToLAF(probeId);
+        lafProbe += probeToLAF(probeId, new ArrayList<Integer>());
+        return lafProbe;
+    }
+
+    /**
+     * Create the LAF conform String.
+     *
+     * @param probeId   The {@link LProbe} id.
+     */
+    @Override
+    public String createMessung(String probeId, List<Integer> messungen) {
+        String lafProbe = "%PROBE%\n";
+        lafProbe += lafLine("UEBERTRAGUNGSFORMAT", "7", CN);
+        lafProbe += lafLine("VERSION", "0084", CN);
+        lafProbe += probeToLAF(probeId, messungen);
         return lafProbe;
     }
 
@@ -97,13 +107,13 @@ implements Creator
      * @param probeId The {@link LProbe} id.
      * @return LAF conform string.
      */
-    private String probeToLAF(String probeId) {
+    private String probeToLAF(String probeId, List<Integer> messungen) {
         Response found = repository.getById(Probe.class, Integer.valueOf(probeId), Strings.LAND);
         if (found.getData() == null) {
             return null;
         }
         Probe aProbe = (Probe)found.getData();
-        String lafProbe = writeAttributes(aProbe);
+        String lafProbe = writeAttributes(aProbe, messungen);
         return lafProbe;
     }
 
@@ -114,7 +124,7 @@ implements Creator
      * @return LAF conform string.
      */
     @SuppressWarnings("unchecked")
-    private String writeAttributes(Probe probe) {
+    private String writeAttributes(Probe probe, List<Integer> messungen) {
         QueryBuilder<KommentarP> kommBuilder =
             new QueryBuilder<KommentarP>(
                 repository.entityManager(Strings.LAND), KommentarP.class);
@@ -192,7 +202,7 @@ implements Creator
         for (KommentarP kp : kommentare) {
             laf += writeKommentar(kp);
         }
-        laf += writeMessung(probe);
+        laf += writeMessung(probe, messungen);
         return laf;
     }
 
@@ -321,15 +331,20 @@ implements Creator
      * @return LAF conform string.
      */
     @SuppressWarnings("unchecked")
-    private String writeMessung(Probe probe) {
-        // Get all messungen
+    private String writeMessung(Probe probe, List<Integer> messungen) {
+        List<Messung> mess = new ArrayList<>();
         QueryBuilder<Messung> builder =
             new QueryBuilder<Messung>(
                 repository.entityManager(Strings.LAND),
                 Messung.class);
-        builder.and("probeId", probe.getId());
-        Response objects = repository.filter(builder.getQuery(), Strings.LAND);
-        List<Messung> mess = (List<Messung>)objects.getData();
+        if (messungen.isEmpty()) {
+            // Get all messungen
+            builder.and("probeId", probe.getId());
+        }
+        else {
+            builder.andIn("id", messungen);
+        }
+        mess = repository.filterPlain(builder.getQuery(), Strings.LAND);
 
         String laf = "";
         for(Messung m : mess) {

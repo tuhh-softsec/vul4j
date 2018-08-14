@@ -1275,7 +1275,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
