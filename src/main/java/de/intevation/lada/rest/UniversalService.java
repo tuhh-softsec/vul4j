@@ -7,6 +7,7 @@
  */
 package de.intevation.lada.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,9 +26,12 @@ import javax.ws.rs.core.UriInfo;
 
 import de.intevation.lada.model.QueryColumns;
 import de.intevation.lada.model.land.Messprogramm;
+import de.intevation.lada.model.stammdaten.DatensatzErzeuger;
 import de.intevation.lada.model.stammdaten.GridColumn;
 import de.intevation.lada.model.stammdaten.GridColumnValue;
+import de.intevation.lada.model.stammdaten.MessprogrammKategorie;
 import de.intevation.lada.model.stammdaten.Ort;
+import de.intevation.lada.model.stammdaten.Probenehmer;
 import de.intevation.lada.model.stammdaten.ResultType;
 import de.intevation.lada.query.QueryTools;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
@@ -36,9 +40,9 @@ import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
-import de.intevation.lada.util.data.Strings;
 
 /**
  * REST service for universal objects.
@@ -110,38 +114,56 @@ public class UniversalService {
             //TODO: Error code if no columns are given
             return new Response(false, 999, null);
         }
+        ArrayList<String> hierarchy = new ArrayList<String>(){{
+            add("messungId");
+            add("probeId");
+            add("mpId");
+            add("ortId");
+            add("pnehmer");
+            add("dsatzerz");
+            add("mprkat");}};
+        int resultNdx = hierarchy.size();
+        String authType = "";
         for (GridColumnValue columnValue : gridColumnValues) {
             GridColumn gridColumn= repository.getByIdPlain(
                 GridColumn.class,
                 Integer.valueOf(columnValue.getGridColumnId()),
                 Strings.STAMM);
-            //Check if column can be used for authorization 
+            //Check if column can be used for authorization
             ResultType resultType = repository.getByIdPlain(ResultType.class, gridColumn.getDataType().getId(), Strings.STAMM);
             if (resultType != null) {
-                switch(resultType.getName()) {
-                    case "probeId":
-                        authorizationColumnType =  de.intevation.lada.model.land.Probe.class;
-                            authorizationColumnIndex = gridColumn.getDataIndex();
-                        break;
-                    case "messungId":
-                        if (authorizationColumnIndex == null) {
-                            authorizationColumnType =  de.intevation.lada.model.land.Messung.class;
-                            authorizationColumnIndex = gridColumn.getDataIndex();
-                        }
-                        break;
-                    case "mpId":
-                        authorizationColumnType = Messprogramm.class;
-                        authorizationColumnIndex = gridColumn.getDataIndex();
-                        break;
-                    case "ortId":
-                        if (authorizationColumnIndex == null) {
-                            authorizationColumnType = Ort.class;
-                            authorizationColumnIndex = gridColumn.getDataIndex();
-                        }
-                        break;
+                int ndx = hierarchy.indexOf(resultType.getName());
+                if (ndx > -1 && ndx < resultNdx) {
+                    resultNdx = ndx;
+                    authorizationColumnIndex = gridColumn.getDataIndex();
+                    authType = resultType.getName();
                 }
             }
             columnValue.setGridColumn(gridColumn);
+        }
+
+        switch(authType) {
+            case "probeId":
+                authorizationColumnType =  de.intevation.lada.model.land.Probe.class;
+                break;
+            case "messungId":
+                authorizationColumnType =  de.intevation.lada.model.land.Messung.class;
+                break;
+            case "mpId":
+                authorizationColumnType = Messprogramm.class;
+                break;
+            case "ortId":
+                authorizationColumnType = Ort.class;
+                break;
+            case "pnehmer":
+                authorizationColumnType = Probenehmer.class;
+                break;
+            case "dsatzerz":
+                authorizationColumnType = DatensatzErzeuger.class;
+                break;
+            case "mprkat":
+                authorizationColumnType = MessprogrammKategorie.class;
+                break;
         }
 
         GridColumn gridColumn = repository.getByIdPlain(
@@ -168,6 +190,27 @@ public class UniversalService {
                         Strings.STAMM);
                     idToAuthorize = ort.getNetzbetreiberId();
                 }
+                if (authorizationColumnType == DatensatzErzeuger.class) {
+                    DatensatzErzeuger de = (DatensatzErzeuger) repository.getByIdPlain(
+                        DatensatzErzeuger.class,
+                        idToAuthorize,
+                        Strings.STAMM);
+                    idToAuthorize = de.getNetzbetreiberId();
+                }
+                if (authorizationColumnType == Probenehmer.class) {
+                    Probenehmer pn = (Probenehmer) repository.getByIdPlain(
+                        Probenehmer.class,
+                        idToAuthorize,
+                        Strings.STAMM);
+                    idToAuthorize = pn.getNetzbetreiberId();
+                }
+                if (authorizationColumnType == MessprogrammKategorie.class) {
+                    MessprogrammKategorie mk = (MessprogrammKategorie) repository.getByIdPlain(
+                        MessprogrammKategorie.class,
+                        idToAuthorize,
+                        Strings.STAMM);
+                    idToAuthorize = mk.getNetzbetreiberId();
+                }
 
                 readonly = !authorization.isAuthorizedById(
                     request,
@@ -191,7 +234,6 @@ public class UniversalService {
             }
             result = result.subList(start, end);
         }
-
 
         return new Response(true, 200, result, size);
     }
