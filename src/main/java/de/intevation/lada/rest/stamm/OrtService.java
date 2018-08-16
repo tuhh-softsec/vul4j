@@ -9,7 +9,6 @@ package de.intevation.lada.rest.stamm;
 
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -19,9 +18,7 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonException;
 import javax.json.JsonNumber;
-import javax.json.JsonObject;
 import javax.json.JsonReader;
-import javax.json.JsonValue;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -32,11 +29,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
+
 import org.apache.log4j.Logger;
+
 import de.intevation.lada.factory.OrtFactory;
 import de.intevation.lada.importer.ReportItem;
 import de.intevation.lada.model.stammdaten.Ort;
@@ -298,13 +296,23 @@ public class OrtService {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getById(
-        @Context HttpHeaders headers,
+        @Context HttpServletRequest request,
         @PathParam("id") String id
     ) {
-        return repository.getById(
+        Ort ort = repository.getByIdPlain(
             Ort.class,
             Integer.valueOf(id),
-            Strings.STAMM);
+            Strings.STAMM
+        );
+        ort.setReadonly(
+            !authorization.isAuthorized(
+                request,
+                ort,
+                RequestMethod.POST,
+                Ort.class
+            )
+        );
+        return new Response(true, 200, ort);
     }
 
     /**

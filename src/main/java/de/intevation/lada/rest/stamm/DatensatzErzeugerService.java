@@ -7,14 +7,10 @@
  */
 package de.intevation.lada.rest.stamm;
 
-import java.io.StringReader;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonReader;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -24,13 +20,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
 import de.intevation.lada.model.stammdaten.DatensatzErzeuger;
-import de.intevation.lada.model.stammdaten.Filter;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -102,7 +95,12 @@ public class DatensatzErzeugerService {
         List<DatensatzErzeuger> erzeuger = repository.getAllPlain(DatensatzErzeuger.class, Strings.STAMM);
 
         for (DatensatzErzeuger erz : erzeuger) {
-            erz.setReadonly(true);
+            erz.setReadonly(
+                !authorization.isAuthorized(
+                    request,
+                    erz,
+                    RequestMethod.POST,
+                    DatensatzErzeuger.class));
         }
         return new Response (true, 200, erzeuger, erzeuger.size());
     }
@@ -120,13 +118,23 @@ public class DatensatzErzeugerService {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getById(
-        @Context HttpHeaders headers,
+        @Context HttpServletRequest request,
         @PathParam("id") String id
     ) {
-        return repository.getById(
+        DatensatzErzeuger erzeuger = repository.getByIdPlain(
             DatensatzErzeuger.class,
             Integer.valueOf(id),
-            Strings.STAMM);
+            Strings.STAMM
+        );
+        erzeuger.setReadonly(
+            !authorization.isAuthorized(
+                request,
+                erzeuger,
+                RequestMethod.POST,
+                DatensatzErzeuger.class
+            )
+        );
+        return new Response(true, 200, erzeuger);
     }
 
     @POST
