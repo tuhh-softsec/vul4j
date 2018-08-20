@@ -38,12 +38,6 @@ RUN $JBOSS_HOME/bin/add-user.sh admin secret --silent
 EXPOSE 8080 9990 80
 
 #
-# Add LADA-server repo
-#
-ADD . /usr/src/lada-server
-WORKDIR /usr/src/lada-server
-
-#
 # Wildfly setup specific for LADA
 #
 RUN mkdir -p $JBOSS_HOME/modules/org/postgres/main
@@ -59,6 +53,12 @@ RUN ln -s /usr/share/java/jts-1.11.jar \
 RUN curl \
     http://www.hibernatespatial.org/repository/org/hibernate/hibernate-spatial/4.3/hibernate-spatial-4.3.jar > \
     $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/hibernate-spatial-4.3.jar
+
+#
+# Add LADA-server repo
+#
+ADD . /usr/src/lada-server
+WORKDIR /usr/src/lada-server
 
 RUN ln -s $PWD/wildfly/postgres-module.xml \
        $JBOSS_HOME/modules/org/postgres/main/module.xml

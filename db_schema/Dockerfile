@@ -37,12 +37,6 @@ RUN apt-get update && \
             postgresql-10-postgis-2.4 postgresql-10-postgis-scripts postgis
 
 #
-# Add context as working directory
-#
-ADD . /opt/lada_sql/
-WORKDIR /opt/lada_sql/
-
-#
 # Set environment variables
 #
 ENV PGCONF /etc/postgresql/10/main/postgresql.conf
@@ -79,6 +73,12 @@ RUN echo "log_filename = 'postgresql-10-main.log'" >> $PGCONF
 # Expose the PostgreSQL port
 #
 EXPOSE 5432
+
+#
+# Add context as working directory
+#
+ADD . /opt/lada_sql/
+WORKDIR /opt/lada_sql/
 
 #
 # Create database

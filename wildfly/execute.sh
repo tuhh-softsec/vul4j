@@ -14,12 +14,6 @@ function wait_for_server() {
     done
 }
 
-function wait_for_shutdown() {
-    until `$JBOSS_CLI -c "ls /deployment" &> /dev/stdout`; do
-        sleep 1
-    done
-}
-
 echo "=> Starting WildFly server"
 $JBOSS_HOME/bin/$JBOSS_MODE.sh -c $JBOSS_CONFIG  &
 
