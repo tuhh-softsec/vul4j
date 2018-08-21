@@ -136,7 +136,9 @@ public class JsonExporter implements Exporter {
                 Betriebsart.class,
                 probe.get("baId").asInt(),
                 Strings.STAMM);
-            probe.put("messregime", ba.getName());
+            if (ba != null) {
+                probe.put("messregime", ba.getName());
+            }
             addMessungen(proben.get(i));
             addKommentare(proben.get(i));
             addZusatzwerte(proben.get(i));
