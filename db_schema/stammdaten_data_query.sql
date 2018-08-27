@@ -51,7 +51,8 @@ COPY stamm.filter (id, sql, parameter, type, name) FROM stdin;
 16	probe.letzte_aenderung BETWEEN to_timestamp(cast(probeLetzteAenderungFrom AS DOBULE PRECISION)) AND to_timestamp(cast(probeLetzteAenderungTo AS DOUBLE PRECISION))	probeLetzteAenderungFrom,probeLetzteAenderungTo	6	Letzte Aenderung von-bis
 17	probe.id = :probeId	probeId	0	ProbeID
 18	:genTextParam LIKE :genTextValue	genText	7	generic_text_filter
-19	statusSt = :statusSt	statusSt	0	statusSt_filter
+19	status_stufe.id IN :statusStufe	statusStufe	5	statusStufe_filter
+28	status_wert.id IN :statusWert	statusWert	5	statusWert_filter
 14	probe.probeentnahme_beginn BETWEEN to_timestamp(cast(:fromPeBegin AS DOUBLE PRECISION)) AND to_timestamp(cast(:toPeBegin AS DOUBLE PRECISION))	fromPeBegin,toPeBegin	6	Entnahmebeginn von-bis
 21	probe.solldatum_ende BETWEEN to_timestamp(cast(:fromSollEnde AS DOUBLE PRECISION)) AND to_timestamp(cast(:toSollEnde AS DOUBLE PRECISION))	fromSollEnde,toSollEnde	6	Sollend von-bis
 20	probe.solldatum_beginn BETWEEN to_timestamp(cast(:fromSollBegin AS DOUBLE PRECISION)) AND to_timestamp(cast(:toSollBegin AS DOUBLE PRECISION))	fromSollBegin,toSollBegin	6	Sollbeginn von-bis
@@ -117,7 +118,7 @@ COPY stamm.grid_column (id, base_query, name, data_index, "position", filter, da
 1101	11	id	id	1	\N	5
 1102	11	interne PID	probeId	2	17	4
 1103	11	HP-Nr	hpNr	3	2	1
-1106	11	Statuswert	statusW	6	\N	14
+1106	11	Statuswert	statusW	6	28	14
 1107	11	Status Datum	statusD	7	\N	2
 1108	11	Datenbasis	dBasis	8	8	1
 1109	11	Netzbetreiber	netzId	9	13	1
