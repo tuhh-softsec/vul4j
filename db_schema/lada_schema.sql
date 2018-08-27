@@ -146,6 +146,7 @@ CREATE TABLE messprogramm (
     id serial PRIMARY KEY,
     kommentar character varying(1000),
     test boolean DEFAULT false NOT NULL,
+    aktiv boolean DEFAULT true NOT NULL,
     mst_id character varying(5) NOT NULL REFERENCES stamm.mess_stelle,
     labor_mst_id character varying(5) NOT NULL REFERENCES stamm.mess_stelle,
     datenbasis_id integer NOT NULL REFERENCES stamm.datenbasis,

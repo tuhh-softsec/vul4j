@@ -105,6 +105,9 @@ public class Messprogramm implements Serializable {
     @Column(name="kta_gruppe_id")
     private Integer ktaGruppeId;
 
+    @Column(name="aktiv")
+    private Boolean aktiv;
+
     @Transient
     private boolean readonly;
 
@@ -293,6 +296,14 @@ public class Messprogramm implements Serializable {
 
     public void setKtaGruppeId(Integer ktaGruppeId) {
         this.ktaGruppeId = ktaGruppeId;
+    }
+
+    public Boolean getAktiv() {
+        return aktiv;
+    }
+
+    public void setAktiv(Boolean aktiv) {
+        this.aktiv = aktiv;
     }
 
     public boolean isReadonly() {

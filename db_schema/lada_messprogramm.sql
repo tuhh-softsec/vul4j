@@ -26,7 +26,7 @@ SET search_path = land, pg_catalog;
 
 ALTER TABLE messprogramm DISABLE TRIGGER ALL;
 
-COPY messprogramm (id, test, mst_id, labor_mst_id, datenbasis_id, ba_id, gem_id, media_desk, mpl_Id, umw_id, probenart_id, probenintervall, teilintervall_von, teilintervall_bis, intervall_offset, gueltig_von, gueltig_bis, probe_nehmer_id, probe_kommentar, letzte_aenderung) FROM stdin;
+COPY messprogramm (id, test, aktiv, mst_id, labor_mst_id, datenbasis_id, ba_id, gem_id, media_desk, mpl_Id, umw_id, probenart_id, probenintervall, teilintervall_von, teilintervall_bis, intervall_offset, gueltig_von, gueltig_bis, probe_nehmer_id, probe_kommentar, letzte_aenderung) FROM stdin;
 \.
 
 
