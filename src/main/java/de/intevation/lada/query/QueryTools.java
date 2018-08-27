@@ -95,7 +95,7 @@ public class QueryTools
         //Map containing all sort statements, sorted by sortIndex
         TreeMap<Integer, String> sortIndMap = new TreeMap<Integer, String>();
         //Map containing all filters and filter values
-        MultivaluedMap<String, String> filterValues = new MultivaluedHashMap<String, String>();
+        MultivaluedMap<String, Object> filterValues = new MultivaluedHashMap<String, Object>();
         String filterSql = "";
         String genericFilterSql = "";
         String sortSql = "";
@@ -162,8 +162,16 @@ public class QueryTools
                     }else {
                         //else add all filtervalues to the same parameter name
                         String[] multiselect = filterValue.split(",");
-                        for (String value : multiselect) {
-                            filterValues.add(filter.getParameter(), value);
+                        if (filter.getFilterType().getType().equals("listnumber")) {
+                            for (Object value : multiselect) {
+                                Integer vNumber = Integer.valueOf(value.toString());
+                                filterValues.add(filter.getParameter(), vNumber);
+                            }
+                        }
+                        else {
+                            for (String value : multiselect) {
+                                filterValues.add(filter.getParameter(), value);
+                            }
                         }
                     }
                 }
@@ -241,14 +249,14 @@ public class QueryTools
      */
     public javax.persistence.Query prepareQuery(
         String sql,
-        MultivaluedMap<String, String> params,
+        MultivaluedMap<String, Object> params,
         EntityManager manager
     ) {
         javax.persistence.Query query = manager.createNativeQuery(sql);
         Set<String> keys = params.keySet();
         for(String key : keys) {
-            List<String> values = new ArrayList<String>();
-            for (String value: params.get(key)) {
+            List<Object> values = new ArrayList<>();
+            for (Object value: params.get(key)) {
                 values.add(value);
             }
             query.setParameter(key, values);

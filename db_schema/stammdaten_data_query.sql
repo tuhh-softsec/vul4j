@@ -38,29 +38,29 @@ COPY stamm.filter (id, sql, parameter, type, name) FROM stdin;
 1	probe.ext_id LIKE :extPId	extPId	1	probe_ext_id
 2	probe.hauptproben_nr LIKE :hauptprobenNr	hauptprobenNr	0	probe_hauptproben_nr
 3	probe.mst_id IN ( :mstId )	mstId	4	probe_mst_id
-4	probe.umw_id IN ( :umwId )	umwId	6	probe_umw_id
+4	probe.umw_id IN ( :umwId )	umwId	4	probe_umw_id
 5	probe.test = cast(:test AS boolean)	test	2	probe_test
 6	probe.probeentnahme_beginn >= to_timestamp(cast(:timeBegin AS DOUBLE PRECISION))	timeBegin	3	probe_entnahme_beginn
 7	probe.probeentnahme_ende <= to_timestamp(cast(:timeEnd AS DOUBLE PRECISION))	timeEnd	3	probe_entnahme_beginn
-8	datenbasis.datenbasis LIKE :datenbasis	datenbasis	0	datenbasis
-9	probenart.probenart LIKE :probenart	probenart	0	probenart
+8	datenbasis.id IN (:datenbasis)	datenbasis	5	datenbasis
+9	probenart.id IN (:probenart)	probenart	5	probenart
 10	ort.gem_id LIKE :gemId	gemId	0	ort_gem_id
 11	ort.ort_id LIKE :ortId	ortId	0	ort_ort_id
 12	verwaltungseinheit.bezeichnung LIKE :bezeichnung	bezeichnung	0	verwaltungseinheit_bezeichnung
-15	probe.probeentnahme_ende BETWEEN to_timestamp(cast(:fromPeEnd AS DOUBLE PRECISION)) AND to_timestamp(cast(:toPeEnd AS DOUBLE PRECISION))	fromPeEnd,toPeEnd	10	Entnahmeende von-bis
-16	probe.letzte_aenderung BETWEEN to_timestamp(cast(probeLetzteAenderungFrom AS DOBULE PRECISION)) AND to_timestamp(cast(probeLetzteAenderungTo AS DOUBLE PRECISION))	probeLetzteAenderungFrom,probeLetzteAenderungTo	10	Letzte Aenderung von-bis
+15	probe.probeentnahme_ende BETWEEN to_timestamp(cast(:fromPeEnd AS DOUBLE PRECISION)) AND to_timestamp(cast(:toPeEnd AS DOUBLE PRECISION))	fromPeEnd,toPeEnd	6	Entnahmeende von-bis
+16	probe.letzte_aenderung BETWEEN to_timestamp(cast(probeLetzteAenderungFrom AS DOBULE PRECISION)) AND to_timestamp(cast(probeLetzteAenderungTo AS DOUBLE PRECISION))	probeLetzteAenderungFrom,probeLetzteAenderungTo	6	Letzte Aenderung von-bis
 17	probe.id = :probeId	probeId	0	ProbeID
-18	:genTextParam LIKE :genTextValue	genText	11	generic_text_filter
+18	:genTextParam LIKE :genTextValue	genText	7	generic_text_filter
 19	statusSt = :statusSt	statusSt	0	statusSt_filter
-14	probe.probeentnahme_beginn BETWEEN to_timestamp(cast(:fromPeBegin AS DOUBLE PRECISION)) AND to_timestamp(cast(:toPeBegin AS DOUBLE PRECISION))	fromPeBegin,toPeBegin	10	Entnahmebeginn von-bis
-21	probe.solldatum_ende BETWEEN to_timestamp(cast(:fromSollEnde AS DOUBLE PRECISION)) AND to_timestamp(cast(:toSollEnde AS DOUBLE PRECISION))	fromSollEnde,toSollEnde	10	Sollend von-bis
-20	probe.solldatum_beginn BETWEEN to_timestamp(cast(:fromSollBegin AS DOUBLE PRECISION)) AND to_timestamp(cast(:toSollBegin AS DOUBLE PRECISION))	fromSollBegin,toSollBegin	10	Sollbeginn von-bis
+14	probe.probeentnahme_beginn BETWEEN to_timestamp(cast(:fromPeBegin AS DOUBLE PRECISION)) AND to_timestamp(cast(:toPeBegin AS DOUBLE PRECISION))	fromPeBegin,toPeBegin	6	Entnahmebeginn von-bis
+21	probe.solldatum_ende BETWEEN to_timestamp(cast(:fromSollEnde AS DOUBLE PRECISION)) AND to_timestamp(cast(:toSollEnde AS DOUBLE PRECISION))	fromSollEnde,toSollEnde	6	Sollend von-bis
+20	probe.solldatum_beginn BETWEEN to_timestamp(cast(:fromSollBegin AS DOUBLE PRECISION)) AND to_timestamp(cast(:toSollBegin AS DOUBLE PRECISION))	fromSollBegin,toSollBegin	6	Sollbeginn von-bis
 22	messung.nebenproben_nr LIKE :nebenproben_nr	nebenproben_nr	0	messung_nebenproben_nr
-13	mess_stelle.netzbetreiber_id IN ( :netzbetreiberId )	netzbetreiberId	5	netzbetreiber_id
-23	ort.netzbetreiber_id IN ( :netzbetreiberId )	netzbetreiberId	5	netzbetreiber_id
-24	probenehmer.netzbetreiber_id IN ( :netzbetreiberId )	netzbetreiberId	5	netzbetreiber_id
-25	datensatz_erzeuger.netzbetreiber_id IN ( :netzbetreiberId )	netzbetreiberId	5	netzbetreiber_id
-26	messprogramm_kategorie.netzbetreiber_id IN ( :netzbetreiberId )	netzbetreiberId	5	netzbetreiber_id
+13	mess_stelle.netzbetreiber_id IN ( :netzbetreiberId )	netzbetreiberId	4	netzbetreiber_id
+23	ort.netzbetreiber_id IN ( :netzbetreiberId )	netzbetreiberId	4	netzbetreiber_id
+24	probenehmer.netzbetreiber_id IN ( :netzbetreiberId )	netzbetreiberId	4	netzbetreiber_id
+25	datensatz_erzeuger.netzbetreiber_id IN ( :netzbetreiberId )	netzbetreiberId	4	netzbetreiber_id
+26	messprogramm_kategorie.netzbetreiber_id IN ( :netzbetreiberId )	netzbetreiberId	4	netzbetreiber_id
 27	(messprogramm.mst_id IN ( :mstId ) OR messprogramm.labor_mst_id IN ( :mstId ))	mstId	4	messprogramm_mst_id
 \.
 
@@ -107,7 +107,7 @@ COPY stamm.grid_column (id, base_query, name, data_index, "position", filter, da
 104	1	Netzbetreiber	netzId	4	13	18
 105	1	MST	mstId	5	3	10
 106	1	Umw-ID	umwId	6	4	12
-107	1	Probenart	pArt	7	1	19
+107	1	Probenart	pArt	7	9	19
 110	1	Probenahme von	peBegin	10	14	2
 111	1	Probenahme bis	peEnd	11	15	2
 113	1	E-Gem-ID	eGemId	13	10	16

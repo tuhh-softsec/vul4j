@@ -334,14 +334,10 @@ INSERT INTO filter_type VALUES(0, 'text', false);
 INSERT INTO filter_type VALUES(1, 'number', false);
 INSERT INTO filter_type VALUES(2, 'bool', false);
 INSERT INTO filter_type VALUES(3, 'datetime', false);
-INSERT INTO filter_type VALUES(4, 'listmst', true);
-INSERT INTO filter_type VALUES(5, 'listnetz', true);
-INSERT INTO filter_type VALUES(6, 'listumw', true);
-INSERT INTO filter_type VALUES(7, 'liststatus', true);
-INSERT INTO filter_type VALUES(8, 'listrei', true);
-INSERT INTO filter_type VALUES(9, 'listkta', true);
-INSERT INTO filter_type VALUES(10, 'listdatetime', true);
-INSERT INTO filter_type VALUES(11, 'generictext', false);
+INSERT INTO filter_type VALUES(4, 'listtext', true);
+INSERT INTO filter_type VALUES(5, 'listnumber', true);
+INSERT INTO filter_type VALUES(6, 'listdatetime', true);
+INSERT INTO filter_type VALUES(7, 'generictext', false);
 
 CREATE TABLE filter (
     id serial PRIMARY KEY,
