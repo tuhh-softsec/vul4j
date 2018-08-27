@@ -354,6 +354,8 @@ public class ProbeFactory {
         probe.setUmwId(messprogramm.getUmwId());
         probe.setMprId(messprogramm.getId());
         probe.setMplId(messprogramm.getMplId());
+        probe.setReiProgpunktGrpId(messprogramm.getReiProgpunktGrpId());
+        probe.setKtaGruppeId(messprogramm.getKtaGruppeId());
         repository.create(probe, Strings.LAND);
 
         if (messprogramm.getProbeKommentar() != null &&
