@@ -156,15 +156,15 @@ COPY stamm.grid_column (id, base_query, name, data_index, "position", filter, da
 2101	21	MPR-ID	mpNr	1	\N	8
 2102	21	Netzbetreiber	netzId 	2	13	18
 2103	21	MST/Labor	mstLaborId	3	27	10
-2104	21	Datenbasis	dBasis	4	8	17
-2105	21	Messregime	messRegime	5	\N	1
-2106	21	Probenart	pArt	6	9	19
-2107	21	Umw-ID	umwId	7	4	12
-2108	21	Deskriptoren	deskriptoren	8	\N	1
-2109	21	Probenintervall	intervall	9	\N	1
+2113	21	Aktiv	aktiv	4	\N	11
+2104	21	Datenbasis	dBasis	5	8	17
+2105	21	Messregime	messRegime	6	\N	1
+2106	21	Probenart	pArt	7	9	19
+2107	21	Umw-ID	umwId	8	4	12
+2108	21	Deskriptoren	deskriptoren	9	\N	1
+2109	21	Probenintervall	intervall	10	\N	1
 2111	21	E-Gem-ID	eGemId	11	10	1
 2112	21	E-Gemeinde	eGem	12	\N	1
-2113	21	Aktiv	aktiv	13	\N	11
 3101	31	Id	id	1	11	6
 3104	31	Ortstyp	ortTyp	4	\N	1
 3105	31	Kurtext	kurztext	5	18	1
@@ -272,6 +272,7 @@ COPY stamm.grid_column_values (id, user_id, grid_column, query_user, sort, sort_
 33	0	2110	3	\N	\N	\N	f	t	10	\N
 34	0	2111	3	\N	\N	\N	f	t	11	\N
 35	0	2112	3	\N	\N	\N	f	t	12	\N
+36	0	2113	3	\N	\N	\N	f	t	13	\N
 8	0	111	1	\N	\N	\N	f	t	8	\N
 7	0	110	1	\N	\N	\N	f	t	7	\N
 4	0	105	1	\N	\N	\N	t	t	4	\N
