@@ -59,6 +59,7 @@ implements Exporter
     public InputStream export(
         List<Integer> proben,
         List<Integer> messungen,
+        String encoding,
         UserInfo userInfo
     ) {
         String laf = "";
@@ -77,7 +78,7 @@ implements Exporter
         laf += "%ENDE%";
         InputStream in;
         try {
-            in = new ByteArrayInputStream(laf.getBytes("ISO-8859-15"));
+            in = new ByteArrayInputStream(laf.getBytes(encoding));
             in.close();
             return in;
         } catch (IOException e) {

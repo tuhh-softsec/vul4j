@@ -95,7 +95,7 @@ public class LafExportService {
     @POST
     @Path("/laf")
     @Consumes("application/json")
-    @Produces("text/plain")
+    @Produces("application/octet-stream")
     public Response download(
         JsonObject objects,
         @Context HttpServletRequest request
@@ -145,18 +145,20 @@ public class LafExportService {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
+        String encoding = request.getHeader("X-FILE-ENCODING");
+        if (encoding == null || encoding.equals("")) {
+            encoding = "iso-8859-15";
+        }
+
         UserInfo userInfo = authorization.getInfo(request);
-        InputStream exported = exporter.export(pIds, mIds, userInfo);
+        InputStream exported = exporter.export(pIds, mIds, encoding, userInfo);
 
         ResponseBuilder response = Response.ok((Object)exported);
         response.header(
             "Content-Disposition",
             "attachment; filename=\"export.laf\"");
-        String encoding = request.getHeader("X-FILE-ENCODING");
-        if (encoding == null || encoding.equals("")) {
-            encoding = "iso-8859-15";
-        }
-        response.header("Content-Type", "text/plain; charset=" + encoding);
+        response.encoding(encoding);
+        response.header("Content-Type", "application/octet-stream; charset=" + encoding);
         return response.build();
     }
 }

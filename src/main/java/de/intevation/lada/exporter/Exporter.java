@@ -22,5 +22,6 @@ public interface Exporter
     public InputStream export(
         List<Integer> proben,
         List<Integer> messungen,
+        String encoding,
         UserInfo userInfo);
 }
