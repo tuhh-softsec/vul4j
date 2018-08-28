@@ -43,14 +43,21 @@ public class Date implements Rule {
         Integer probeId = messung.getProbeId();
         Response response = repository.getById(Probe.class, probeId, Strings.LAND);
         Probe probe = (Probe) response.getData();
+
         if (probe == null) {
             Map<String, Integer> errors = new HashMap<String, Integer>();
             errors.put("lprobe", 604);
             return null;
         }
-        if (messung.getMesszeitpunkt() != null &&
-            (probe.getProbeentnahmeEnde() == null ||
-            probe.getProbeentnahmeEnde().after(messung.getMesszeitpunkt()))
+
+        if (messung.getMesszeitpunkt() == null) return null;
+        
+        if (probe.getProbeentnahmeBeginn() == null && probe.getProbeentnahmeEnde() == null) return null;
+        
+        if (probe.getProbeentnahmeBeginn() != null && probe.getProbeentnahmeBeginn().after(messung.getMesszeitpunkt()) ||
+            probe.getProbeentnahmeEnde() != null
+              && probe.getProbeentnahmeEnde().after(messung.getMesszeitpunkt()) 
+              && ( probe.getProbenartId() == 3 || probe.getProbenartId() == 9)
         ) {
             Violation violation = new Violation();
             violation.addWarning(
