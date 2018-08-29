@@ -13,6 +13,11 @@ import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -380,6 +385,65 @@ public class MessprogrammService {
             request,
             updated,
             Messprogramm.class);
+    }
+
+    /**
+     * Update the active attribute of existing Messprogramm objects as bulk
+     * operation.
+     * <p>
+     * The object to update should come as JSON formatted string.
+     * <pre>
+     * <code>
+     * {
+     *  "active: [boolean],
+     *  "ids": [Array[Number]]
+     * }
+     * </code>
+     * </pre>
+     *
+     * @return Response object containing the success status of the operation
+     * per messprogramm.
+     */
+    @PUT
+    @Path("/aktiv")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response update(
+        @Context HttpServletRequest request,
+        JsonObject data
+    ) {
+        Boolean active = data.getBoolean("aktiv");
+        JsonArray ids = data.getJsonArray("ids");
+        JsonArrayBuilder jaBuilder = Json.createArrayBuilder();
+
+        List<Integer> idList = new ArrayList<>();
+        for (int i = 0; i < ids.size(); i++) {
+            idList.add(ids.getInt(i));
+        }
+
+        QueryBuilder<Messprogramm> builder = new QueryBuilder<>(
+            repository.entityManager(Strings.LAND),
+            Messprogramm.class
+        );
+        builder.orIn("id", idList);
+        List<Messprogramm> messprogramme = repository.filterPlain(builder.getQuery(), Strings.LAND);
+
+        for (Messprogramm m : messprogramme) {
+            JsonObjectBuilder joBuilder = Json.createObjectBuilder();
+            int id = m.getId().intValue();
+            joBuilder.add("id", id);
+            if (authorization.isAuthorized(request, m, RequestMethod.PUT, Messprogramm.class)) {
+                m.setAktiv(active);
+                Response r = repository.update(m, Strings.LAND);
+                int code = Integer.valueOf(r.getMessage()).intValue();
+                joBuilder.add("success", code);
+            }
+            else {
+                joBuilder.add("success", 699);
+            }
+            jaBuilder.add(joBuilder);
+        }
+
+        return new Response(true, 200, jaBuilder.build().toString());
     }
 
     /**
