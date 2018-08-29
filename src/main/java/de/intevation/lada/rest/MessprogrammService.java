@@ -395,7 +395,7 @@ public class MessprogrammService {
      * <pre>
      * <code>
      * {
-     *  "active: [boolean],
+     *  "aktiv: [boolean],
      *  "ids": [Array[Number]]
      * }
      * </code>
