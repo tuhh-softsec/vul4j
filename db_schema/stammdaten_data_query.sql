@@ -63,6 +63,7 @@ COPY stamm.filter (id, sql, parameter, type, name) FROM stdin;
 25	datensatz_erzeuger.netzbetreiber_id IN ( :netzbetreiberId )	netzbetreiberId	4	netzbetreiber_id
 26	messprogramm_kategorie.netzbetreiber_id IN ( :netzbetreiberId )	netzbetreiberId	4	netzbetreiber_id
 27	(messprogramm.mst_id IN ( :mstId ) OR messprogramm.labor_mst_id IN ( :mstId ))	mstId	4	messprogramm_mst_id
+29	h3.messwert BETWEEN :messwertFrom AND :messwertTo	messwertFrom,messwertTo	1	h3_messwert
 \.
 
 
@@ -129,7 +130,7 @@ COPY stamm.grid_column (id, base_query, name, data_index, "position", filter, da
 1114	11	Probenahme bis	peEnd	14	15	2
 1115	11	E-Gem-ID	eGemId	15	16	1
 1116	11	E-Gemeinde	eGem	16	10	1
-1117	11	H-3	h3	17	\N	15
+1117	11	H-3	h3	17	29	15
 1118	11	K-40	k40	18	\N	15
 1119	11	Co-60	co60	19	\N	15
 1120	11	Sr-89	sr89	20	\N	15

@@ -80,7 +80,7 @@ public class QueryTools
         Integer qId
     ) {
         //A pattern for finding multiselect date filter values
-        Pattern multiselectDatePattern = Pattern.compile("[0-9]*,[0-9]*");
+        Pattern multiselectPattern = Pattern.compile("[0-9]*,[0-9]*");
 
         QueryBuilder<BaseQuery> builder = new QueryBuilder<BaseQuery>(
             repository.entityManager(Strings.STAMM),
@@ -143,13 +143,29 @@ public class QueryTools
                 }
 
                 if (filter.getFilterType().getMultiselect() == false) {
-                    filterValues.add(currentFilterParam, filterValue);
-                } else {
+                    if (filter.getFilterType().getType().equals("number")) {
+                        String[] params = filter.getParameter().split(",");
+                        Matcher matcher = multiselectPattern.matcher(filterValue);
+                        if (matcher.find()) {
+                            String[] values = matcher.group(0).split(",", -1);
+                            //Get filter values and convert to seconds
+                            double from = values[0].equals("") ? 0: Double.valueOf(values[0]);
+                            double to = values[1].equals("") ? Double.MAX_VALUE: Double.valueOf(values[1]);
+                            //Add parameters and values to filter map
+                            filterValues.add(params[0], from);
+                            filterValues.add(params[1], to);
+                        }
+                    }
+                    else {
+                        filterValues.add(currentFilterParam, filterValue);
+                    }
+                }
+                else {
                     //If filter is a multiselect date filter
                     if (filter.getFilterType().getType().equals("listdatetime")) {
                         //Get parameters as comma separated values, expected to be in milliseconds
                         String[] params = filter.getParameter().split(",");
-                        Matcher matcher = multiselectDatePattern.matcher(filterValue);
+                        Matcher matcher = multiselectPattern.matcher(filterValue);
                         if (matcher.find()) {
                             String[] values = matcher.group(0).split(",", -1);
                             //Get filter values and convert to seconds
@@ -159,7 +175,8 @@ public class QueryTools
                             filterValues.add(params[0], String.valueOf(from));
                             filterValues.add(params[1], String.valueOf(to));
                         }
-                    }else {
+                    }
+                    else {
                         //else add all filtervalues to the same parameter name
                         String[] multiselect = filterValue.split(",");
                         if (filter.getFilterType().getType().equals("listnumber")) {
