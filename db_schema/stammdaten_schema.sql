@@ -537,7 +537,7 @@ CREATE TRIGGER letzte_aenderung_probenehmer BEFORE UPDATE ON probenehmer FOR EAC
 
 CREATE TABLE result_type (
     id  serial PRIMARY KEY,
-    name character varying(10),
+    name character varying(12),
     format character varying(30)
 );
 

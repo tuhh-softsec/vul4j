@@ -64,6 +64,7 @@ COPY stamm.filter (id, sql, parameter, type, name) FROM stdin;
 26	messprogramm_kategorie.netzbetreiber_id IN ( :netzbetreiberId )	netzbetreiberId	4	netzbetreiber_id
 27	(messprogramm.mst_id IN ( :mstId ) OR messprogramm.labor_mst_id IN ( :mstId ))	mstId	4	messprogramm_mst_id
 29	h3.messwert BETWEEN :messwertFrom AND :messwertTo	messwertFrom,messwertTo	1	h3_messwert
+30	status_kombi.id IN :statusKombi	statusKombi	5	statusKombi_filter
 \.
 
 
@@ -84,17 +85,18 @@ COPY stamm.result_type (id, name, format) FROM stdin;
 10	messstelle	\N
 11	boolean	\N
 12	umwbereich	\N
-13	statusstfe	\N
-14	status	\N
+13	statusstufe	\N
+14	statuswert	\N
 15	number	e
 16	egem	\N
 17	datenbasis	\N
 18	netzbetr	\N
 19	probenart	\N
 20	staat	\N
-21	pnehmer	\N
+21	probenehmer	\N
 22	dsatzerz	\N
 23	mprkat	\N
+24	statuskombi	\N
 \.
 
 
