@@ -8,6 +8,7 @@
 package de.intevation.lada.rest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -407,17 +408,30 @@ public class MessprogrammService {
     @PUT
     @Path("/aktiv")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response update(
+    public Response setAktiv(
         @Context HttpServletRequest request,
         JsonObject data
     ) {
-        Boolean active = data.getBoolean("aktiv");
-        JsonArray ids = data.getJsonArray("ids");
-        JsonArrayBuilder jaBuilder = Json.createArrayBuilder();
+        Boolean active;
+        try {
+            active = data.getBoolean("aktiv");
+        }
+        catch(NullPointerException npe) {
+            return new Response(false, 600, null);
+        }
 
         List<Integer> idList = new ArrayList<>();
-        for (int i = 0; i < ids.size(); i++) {
-            idList.add(ids.getInt(i));
+        try {
+            JsonArray ids = data.getJsonArray("ids");
+            if (ids.size() == 0) {
+                return new Response(false, 600, null);
+            }
+            for (int i = 0; i < ids.size(); i++) {
+                idList.add(ids.getInt(i));
+            }
+        }
+        catch(NullPointerException npe) {
+            return new Response(false, 600, null);
         }
 
         QueryBuilder<Messprogramm> builder = new QueryBuilder<>(
@@ -427,23 +441,24 @@ public class MessprogrammService {
         builder.orIn("id", idList);
         List<Messprogramm> messprogramme = repository.filterPlain(builder.getQuery(), Strings.LAND);
 
+        List<Map<String, Integer>> result = new ArrayList<>();
         for (Messprogramm m : messprogramme) {
-            JsonObjectBuilder joBuilder = Json.createObjectBuilder();
+            Map<String, Integer> mpResult = new HashMap<>();
             int id = m.getId().intValue();
-            joBuilder.add("id", id);
+            mpResult.put("id", id);
             if (authorization.isAuthorized(request, m, RequestMethod.PUT, Messprogramm.class)) {
                 m.setAktiv(active);
                 Response r = repository.update(m, Strings.LAND);
                 int code = Integer.valueOf(r.getMessage()).intValue();
-                joBuilder.add("success", code);
+                mpResult.put("success", code);
             }
             else {
-                joBuilder.add("success", 699);
+                mpResult.put("success", 699);
             }
-            jaBuilder.add(joBuilder);
+            result.add(mpResult);
         }
 
-        return new Response(true, 200, jaBuilder.build().toString());
+        return new Response(true, 200, result);
     }
 
     /**
