@@ -69,8 +69,11 @@ echo create stammdaten schema
 psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_schema.sql
 
 echo create lada schema
-psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/lada_schema.sql
-
+[ -f $DIR/system_id ] &&   SYSTEM_ID=$(cat system_id)
+SYSTEM_ID=${SYSTEM_ID}sss
+SYSTEM_ID=${SYSTEM_ID::3}
+sed -e "/'sss'/s/sss/${SYSTEM_ID}/" $DIR/lada_schema.sql | psql -q $DB_CONNECT_STRING -d $DB_NAME 
+  
 echo create audit-trail table/trigger/views
 psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/audit.sql
 
