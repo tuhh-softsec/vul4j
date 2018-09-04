@@ -340,21 +340,26 @@ public class OrtService {
                 Ort.class
             );
         List<JsonNumber> idList = ids.getValuesAs(JsonNumber.class);
-        List<Integer> intList = new ArrayList<>();
-        for (JsonNumber id : idList) {
-            intList.add(id.intValue());
+        if (idList.size() > 0) {
+            List<Integer> intList = new ArrayList<>();
+            for (JsonNumber id : idList) {
+                intList.add(id.intValue());
+            }
+
+            builder.andIn("id", intList);
+
+            List<Ort> orte = repository.filterPlain(builder.getQuery(), Strings.STAMM);
+            for (Ort o : orte) {
+                o.setReadonly(
+                    !authorization.isAuthorized(
+                        request,
+                        o,
+                        RequestMethod.POST,
+                        Ort.class));
+            }
+            return new Response(true, 200, orte, orte.size());
         }
-        builder.andIn("id", intList);
-        List<Ort> orte = repository.filterPlain(builder.getQuery(), Strings.STAMM);
-        for (Ort o : orte) {
-            o.setReadonly(
-                !authorization.isAuthorized(
-                    request,
-                    o,
-                    RequestMethod.POST,
-                    Ort.class));
-        }
-        return new Response(true, 200, orte, orte.size());
+        return new Response(true, 200, null, 0);
     }
 
     /**
