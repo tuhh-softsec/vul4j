@@ -119,7 +119,7 @@ public class UniversalService {
             add("probeId");
             add("mpId");
             add("ortId");
-            add("pnehmer");
+            add("probenehmer");
             add("dsatzerz");
             add("mprkat");}};
         int resultNdx = hierarchy.size();
@@ -155,7 +155,7 @@ public class UniversalService {
             case "ortId":
                 authorizationColumnType = Ort.class;
                 break;
-            case "pnehmer":
+            case "probenehmer":
                 authorizationColumnType = Probenehmer.class;
                 break;
             case "dsatzerz":
