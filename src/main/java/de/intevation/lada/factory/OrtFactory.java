@@ -350,7 +350,7 @@ public class OrtFactory {
         Query q = repository.entityManager(Strings.STAMM)
             .createQuery("SELECT vg.gemId " +
                          "FROM Verwaltungsgrenze vg " +
-                         "WHERE contains(vg.shape, :geom) = TRUE");
+                         "WHERE is_gemeinde = TRUE AND contains(vg.shape, :geom) = TRUE");
         q.setParameter("geom", ort.getGeom());
         List<Object> ret = q.getResultList();
         if (!ret.isEmpty()) {

@@ -27,6 +27,9 @@ public class Verwaltungsgrenze implements Serializable {
 	@Column(name="gem_id")
 	private String gemId;
 
+        @Column(name="is_gemeinde")
+        private Boolean isGemeinde;
+
 	@Column(columnDefinition="geometry(MultiPolygon, 4326)")
 	@Type(type = "org.hibernate.spatial.GeometryType")
 	private MultiPolygon shape;

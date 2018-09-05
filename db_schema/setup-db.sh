@@ -138,10 +138,13 @@ if [ "$NO_DATA" != "true" ]; then
         curl -O \
             http://sg.geodatenzentrum.de/web_download/vg/vg250_${TS}/utm32s/shape/vg250_${TS}.utm32s.shape.ebenen.zip
     fi
-    unzip -u vg250_${TS}.utm32s.shape.ebenen.zip "*VG250_GEM*"
+    unzip -u vg250_${TS}.utm32s.shape.ebenen.zip "*VG250_*"
 
     shp2pgsql -s 25832:4326 vg250_${TS}.utm32s.shape.ebenen/vg250_ebenen/VG250_GEM geo.vg250_gem | psql -q $DB_CONNECT_STRING -d $DB_NAME
+    shp2pgsql -s 25832:4326 vg250_${TS}.utm32s.shape.ebenen/vg250_ebenen/VG250_KRS geo.vg250_kr | psql -q $DB_CONNECT_STRING -d $DB_NAME
+    shp2pgsql -s 25832:4326 vg250_${TS}.utm32s.shape.ebenen/vg250_ebenen/VG250_RBZ geo.vg250_rb | psql -q $DB_CONNECT_STRING -d $DB_NAME
+    shp2pgsql -s 25832:4326 vg250_${TS}.utm32s.shape.ebenen/vg250_ebenen/VG250_LAN geo.vg250_bl | psql -q $DB_CONNECT_STRING -d $DB_NAME
 
-    echo fill stamm.verwaltungsgrenze
-    psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_fill_verwaltungsgrenze.sql
+    echo create verwaltungsgrenze view
+    psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_verwaltungsgrenze_view.sql
 fi
