@@ -40,4 +40,6 @@ UNION
 CREATE INDEX verwaltungsgrenze_sp_idx ON verwaltungsgrenze USING gist (shape);
 CREATE INDEX verwaltungsgrenze_gem_id_idx ON verwaltungsgrenze (gem_id);
 
+GRANT SELECT, REFERENCES ON TABLE stamm.verwaltungsgrenze TO lada;
+
 COMMIT;
