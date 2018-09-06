@@ -30,7 +30,7 @@ public class DatensatzErzeuger implements Serializable {
     @Column(name="datensatz_erzeuger_id")
     private String datensatzErzeugerId;
 
-    @Column(name="letzte_aenderung")
+    @Column(name="letzte_aenderung", insertable=false)
     private Timestamp letzteAenderung;
 
     @Column(name="mst_id")

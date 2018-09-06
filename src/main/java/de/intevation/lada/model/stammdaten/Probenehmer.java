@@ -34,7 +34,7 @@ public class Probenehmer implements Serializable {
     @Column(name="kurz_bezeichnung")
     private String kurzBezeichnung;
 
-    @Column(name="letzte_aenderung")
+    @Column(name="letzte_aenderung", insertable=false)
     private Timestamp letzteAenderung;
 
     @Column(name="netzbetreiber_id")

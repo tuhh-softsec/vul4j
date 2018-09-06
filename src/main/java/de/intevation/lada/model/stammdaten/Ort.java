@@ -57,7 +57,7 @@ public class Ort implements Serializable {
 
     private String langtext;
 
-    @Column(name="letzte_aenderung")
+    @Column(name="letzte_aenderung", insertable=false)
     private Timestamp letzteAenderung;
 
     @Column(name="mp_art")

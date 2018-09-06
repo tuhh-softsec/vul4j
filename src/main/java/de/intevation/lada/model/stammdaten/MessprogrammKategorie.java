@@ -29,7 +29,7 @@ public class MessprogrammKategorie implements Serializable {
 
     private String code;
 
-    @Column(name="letzte_aenderung")
+    @Column(name="letzte_aenderung", insertable=false)
     private Timestamp letzteAenderung;
 
     @Column(name="netzbetreiber_id")
