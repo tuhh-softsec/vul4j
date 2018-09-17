@@ -23,10 +23,10 @@ CREATE FUNCTION set_ort_id() RETURNS trigger
         IF NEW.ort_id IS NULL THEN
             NEW.ort_id = value;
         END IF;
-        IF NEW.langtext IS NULL THEN
+        IF NEW.langtext IS NULL OR NEW.langtext = '' THEN
             NEW.langtext = value;
         END IF;
-        IF NEW.kurztext IS NULL THEN
+        IF NEW.kurztext IS NULL OR NEW.kurztext = '' THEN
             NEW.kurztext = value;
         END IF;
         RETURN NEW;
