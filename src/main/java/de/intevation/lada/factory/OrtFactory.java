@@ -295,9 +295,6 @@ public class OrtFactory {
                 ort.setKoordYExtern(String.valueOf(v.getMittelpunkt().getY()));
                 ort.setKoordXExtern(String.valueOf(v.getMittelpunkt().getX()));
             }
-            if (ort.getKurztext() == null || ort.getKurztext().equals("")) {
-                ort.setKurztext(v.getBezeichnung());
-            }
             if (ort.getLangtext() == null || ort.getLangtext().equals("")) {
                 ort.setLangtext(v.getBezeichnung());
             }
