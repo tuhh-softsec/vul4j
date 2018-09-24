@@ -1441,7 +1441,7 @@ public class LafObjectMapper {
         logger.debug("betriebsart: " + probe.getBaId());
         logger.debug("erzeuger: " + probe.getErzeugerId());
         logger.debug("hauptprobennummer: " + probe.getHauptprobenNr());
-        logger.debug("idalt: " + probe.getIdAlt());
+        logger.debug("externeprobeid: " + probe.getExterneProbeId());
         logger.debug("labor: " + probe.getLaborMstId());
         logger.debug("deskriptoren: " + probe.getMediaDesk());
         logger.debug("media: " + probe.getMedia());
@@ -1511,7 +1511,7 @@ public class LafObjectMapper {
         }
 
         if ("PROBE_ID".equals(key)) {
-            probe.setIdAlt(value);
+            probe.setExterneProbeId(value);
         }
 
         if ("HAUPTPROBENNUMMER".equals(key)) {
@@ -1737,7 +1737,7 @@ public class LafObjectMapper {
         String key = attribute.getKey();
         String value = attribute.getValue();
         if ("MESSUNGS_ID".equals(key)) {
-            messung.setIdAlt(Integer.valueOf(value));
+            messung.setExterneMessungsId(Integer.valueOf(value));
         }
         if ("NEBENPROBENNUMMER".equals(key)) {
             messung.setNebenprobenNr(value.toString());

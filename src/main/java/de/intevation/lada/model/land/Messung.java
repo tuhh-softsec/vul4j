@@ -36,7 +36,7 @@ public class Messung implements Serializable {
     private Boolean geplant;
 
     @Column(name="ext_id")
-    private Integer idAlt;
+    private Integer externeMessungsId;
 
     @Column(name="letzte_aenderung", insertable=false)
     private Timestamp letzteAenderung;
@@ -102,12 +102,12 @@ public class Messung implements Serializable {
         this.geplant = geplant;
     }
 
-    public Integer getIdAlt() {
-        return this.idAlt;
+    public Integer getExterneMessungsId() {
+        return this.externeMessungsId;
     }
 
-    public void setIdAlt(Integer idAlt) {
-        this.idAlt = idAlt;
+    public void setExterneMessungsId(Integer externeMessungsId) {
+        this.externeMessungsId = externeMessungsId;
     }
 
     public Timestamp getLetzteAenderung() {

@@ -72,7 +72,7 @@ import de.intevation.lada.validation.annotation.ValidationConfig;
  *      "geplant": [boolean],
  *      "treeModified": [timestamp],
  *      "parentModified": [timestamp],
- *      "messungsIdAlt": [number]
+ *      "externeMessunsgsId": [number]
  *  }],
  *  "errors": [object],
  *  "warnings": [object],
@@ -267,7 +267,7 @@ public class MessungService {
      *  "messdauer": [number],
      *  "fertig": [boolean],
      *  "geplant": [boolean],
-     *  "messungsIdAlt": [string],
+     *  "externeMessungsId": [string],
      *  "treeModified": null,
      *  "parentModified": null,
      *  "messzeitpunkt": [date],
@@ -330,7 +330,7 @@ public class MessungService {
      *  "messdauer": [number],
      *  "fertig": [boolean],
      *  "geplant": [boolean],
-     *  "messungsIdAlt": [number],
+     *  "externeMessungsId": [number],
      *  "treeModified": [timestamp],
      *  "parentModified": [timestamp],
      *  "messzeitpunkt": [date],

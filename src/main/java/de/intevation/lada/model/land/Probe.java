@@ -39,7 +39,7 @@ public class Probe implements Serializable {
     private String hauptprobenNr;
 
     @Column(name="ext_id")
-    private String idAlt;
+    private String externeProbeId;
 
     @Column(name="labor_mst_id")
     private String laborMstId;
@@ -144,12 +144,12 @@ public class Probe implements Serializable {
         this.hauptprobenNr = hauptprobenNr;
     }
 
-    public String getIdAlt() {
-        return this.idAlt;
+    public String getExterneProbeId() {
+        return this.externeProbeId;
     }
 
-    public void setIdAlt(String idAlt) {
-        this.idAlt = idAlt;
+    public void setExterneProbeId(String externeProbeId) {
+        this.externeProbeId = externeProbeId;
     }
 
     public String getLaborMstId() {

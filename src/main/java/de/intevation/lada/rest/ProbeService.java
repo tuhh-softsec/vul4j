@@ -101,7 +101,7 @@ import de.intevation.lada.validation.annotation.ValidationConfig;
  *      "treeModified": [timestamp],
  *      "readonly": [boolean],
  *      "owner": [boolean],
- *      "probeIdAlt": [string]
+ *      "externeProbeId": [string]
  *  }],
  *  "errors": [object],
  *  "warnings": [object],
@@ -285,7 +285,7 @@ public class ProbeService {
      * <pre>
      * <code>
      * {
-     *  "probeIdAlt": [string],
+     *  "externeProbeId": [string],
      *  "hauptprobenNr": [string],
      *  "test": [boolean],
      *  "netzbetreiberId": [string],
@@ -438,7 +438,7 @@ public class ProbeService {
         for (Probe probe : proben) {
             Map<String, Object> value = new HashMap<>();
             value.put("id", probe.getId());
-            value.put("idAlt", probe.getIdAlt());
+            value.put("externeProbeId", probe.getExterneProbeId());
             value.put("mstId", probe.getMstId());
             value.put("datenbasisId", probe.getDatenbasisId());
             value.put("baId", probe.getBaId());
@@ -472,7 +472,7 @@ public class ProbeService {
      * <code>
      * {
      *  "id": [number],
-     *  "probeIdAlt": [string],
+     *  "externeProbeId": [string],
      *  "hauptprobenNr": [string],
      *  "test": [boolean],
      *  "netzbetreiberId": [string],

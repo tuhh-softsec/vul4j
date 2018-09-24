@@ -163,7 +163,7 @@ implements Creator
             "" : lafLine("MESSSTELLE", probe.getMstId(), CN);
         laf += probe.getLaborMstId() == null ?
             "" : lafLine("MESSLABOR", probe.getLaborMstId(), CN);
-        laf += lafLine("PROBE_ID", probe.getIdAlt(), CN);
+        laf += lafLine("PROBE_ID", probe.getExterneProbeId(), CN);
         laf += probe.getHauptprobenNr() == null ?
             "" : lafLine("HAUPTPROBENNUMMER", probe.getHauptprobenNr(), CN);
         laf += probe.getBaId() == null ?
@@ -361,7 +361,7 @@ implements Creator
             kommBuilder.and("messungsId", m.getId());
             Response kommentar = repository.filter(kommBuilder.getQuery(), Strings.LAND);
             List<KommentarM> kommentare = (List<KommentarM>)kommentar.getData();
-            laf += lafLine("MESSUNGS_ID", m.getIdAlt().toString());
+            laf += lafLine("MESSUNGS_ID", m.getExterneMessungsId().toString());
             laf += lafLine("NEBENPROBENNUMMER", m.getNebenprobenNr(), CN);
             laf += m.getMesszeitpunkt() == null ?
                 "" : lafLine(

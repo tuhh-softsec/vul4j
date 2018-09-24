@@ -53,7 +53,7 @@ public class ProbeTest extends ServiceTest {
         JsonObjectBuilder builder = convertObject(probe);
         JsonObject trans =
             content.getJsonArray("land.probe_translation").getJsonObject(0);
-        builder.add("probeIdAlt", trans.get("probe_ext_id"));
+        builder.add("externeProbeId", trans.get("probe_ext_id"));
         builder.add("mittelungsdauer", JsonValue.NULL);
         builder.add("probeentnahmeEnde", JsonValue.NULL);
         builder.add("erzeugerId", JsonValue.NULL);

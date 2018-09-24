@@ -43,8 +43,8 @@ public class MessungIdentifier implements Identifier {
             Messung.class
         );
 
-        // idAlt null and hauptprobenNr not null and mstId not null.
-        if (messung.getIdAlt() == null &&
+        // extermeMessungsId null and hauptprobenNr not null and mstId not null.
+        if (messung.getExterneMessungsId() == null &&
             messung.getNebenprobenNr() != null
         ) {
             builder.and("probeId", messung.getProbeId());
@@ -62,15 +62,15 @@ public class MessungIdentifier implements Identifier {
             found = messungen.get(0);
             return Identified.UPDATE;
         }
-        else if (messung.getIdAlt() != null &&
+        else if (messung.getExterneMessungsId() != null &&
             messung.getNebenprobenNr() == null
         ) {
             builder.and("probeId", messung.getProbeId());
-            builder.and("idAlt", messung.getIdAlt());
+            builder.and("externeMessungsId", messung.getExterneMessungsId());
             List<Messung> messungen =
                 repository.filterPlain(builder.getQuery(), Strings.LAND);
             if (messungen.size() > 1) {
-                // Should never happen. DB has unique constraint for "idAlt"
+                // Should never happen. DB has unique constraint for "externeMessungsId"
                 return Identified.REJECT;
             }
             if (messungen.isEmpty()) {
@@ -81,11 +81,11 @@ public class MessungIdentifier implements Identifier {
         }
         else {
             builder.and("probeId", messung.getProbeId());
-            builder.and("idAlt", messung.getIdAlt());
+            builder.and("externeMessungsId", messung.getExterneMessungsId());
             List<Messung> messungen =
                 repository.filterPlain(builder.getQuery(), Strings.LAND);
             if (messungen.size() > 1) {
-                // Should never happen. DB has unique constraint for "idAlt"
+                // Should never happen. DB has unique constraint for "externeMessungsId"
                 return Identified.REJECT;
             }
             if (messungen.isEmpty()) {

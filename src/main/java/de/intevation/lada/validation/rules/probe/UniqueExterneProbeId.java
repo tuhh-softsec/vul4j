@@ -27,7 +27,7 @@ import de.intevation.lada.validation.rules.Rule;
  *
  */
 @ValidationRule("Probe")
-public class UniqueIdAlt implements Rule {
+public class UniqueExterneProbeId implements Rule {
 
     @Inject
     @RepositoryConfig(type=RepositoryType.RO)
@@ -39,7 +39,7 @@ public class UniqueIdAlt implements Rule {
         QueryBuilder<Probe> builder = new QueryBuilder<Probe>(
             repo.entityManager(Strings.LAND),
             Probe.class);
-        builder.and("idAlt", probe.getIdAlt());
+        builder.and("externeProbeId", probe.getExterneProbeId());
         List<Probe> existing = repo.filterPlain(builder.getQuery(), Strings.LAND);
         if (!existing.isEmpty()) {
             Probe found = existing.get(0);
@@ -48,7 +48,7 @@ public class UniqueIdAlt implements Rule {
                 return null;
             }
             Violation violation = new Violation();
-            violation.addError("idAlt", 611);
+            violation.addError("externeProbeId", 611);
             return violation;
         }
         return null;

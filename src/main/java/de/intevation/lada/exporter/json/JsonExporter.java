@@ -169,7 +169,7 @@ public class JsonExporter implements Exporter {
             ((ObjectNode)node).set("labormessstelle", nodes2);
         } catch (IOException e) {
             logger.debug("Could not export Messstelle for Probe "
-                + node.get("idAlt").asText());
+                + node.get("externeProbeId").asText());
         }
     }
 
@@ -198,7 +198,7 @@ public class JsonExporter implements Exporter {
             ((ObjectNode)probe).set("messungen", nodes);
         } catch (IOException e) {
             logger.debug("Could not export Messungen for Probe "
-                + probe.get("idAlt").asText());
+                + probe.get("externeProbeId").asText());
         }
     }
 
@@ -226,7 +226,7 @@ public class JsonExporter implements Exporter {
             ((ObjectNode)probe).set("kommentare", nodes);
         } catch (IOException e) {
             logger.debug("Could not export Kommentare for Probe "
-                + probe.get("idAlt").asText());
+                + probe.get("externeProbeId").asText());
         }
     }
 
@@ -260,7 +260,7 @@ public class JsonExporter implements Exporter {
             ((ObjectNode)probe).set("zusatzwerte", nodes);
         } catch (IOException e) {
             logger.debug("Could not export Zusatzwerte for Probe "
-                + probe.get("idAlt").asText());
+                + probe.get("externeProbeId").asText());
         }
     }
 
@@ -433,7 +433,7 @@ public class JsonExporter implements Exporter {
             ((ObjectNode)node).set("ortszuordnung", nodes);
         } catch (IOException e) {
             logger.debug("Could not export Ortszuordnugen for Probe "
-                + node.get("idAlt").asText());
+                + node.get("externeProbeId").asText());
         }
     }
 

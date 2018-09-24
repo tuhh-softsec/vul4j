@@ -43,8 +43,8 @@ public class ProbeIdentifier implements Identifier {
             Probe.class
         );
 
-        // idAlt null and hauptprobenNr not null and mstId not null.
-        if (probe.getIdAlt() == null &&
+        // externeProbeId null and hauptprobenNr not null and mstId not null.
+        if (probe.getExterneProbeId() == null &&
             probe.getHauptprobenNr() != null &&
             probe.getMstId() != null
         ) {
@@ -62,15 +62,15 @@ public class ProbeIdentifier implements Identifier {
             found = proben.get(0);
             return Identified.UPDATE;
         }
-        else if (probe.getIdAlt() != null &&
+        else if (probe.getExterneProbeId() != null &&
             (probe.getHauptprobenNr() == null ||
             probe.getMstId() == null)
         ) {
-            builder.and("idAlt", probe.getIdAlt());
+            builder.and("externeProbeId", probe.getExterneProbeId());
             List<Probe> proben =
                 repository.filterPlain(builder.getQuery(), Strings.LAND);
             if (proben.size() > 1) {
-                // Should never happen. DB has unique constraint for "idAlt"
+                // Should never happen. DB has unique constraint for "externeProbeId"
                 return Identified.REJECT;
             }
             if (proben.isEmpty()) {
@@ -80,11 +80,11 @@ public class ProbeIdentifier implements Identifier {
             return Identified.UPDATE;
         }
         else {
-            builder.and("idAlt", probe.getIdAlt());
+            builder.and("externeProbeId", probe.getExterneProbeId());
             List<Probe> proben =
                 repository.filterPlain(builder.getQuery(), Strings.LAND);
             if (proben.size() > 1) {
-                // Should never happen. DB has unique constraint for "idAlt"
+                // Should never happen. DB has unique constraint for "externeProbeId"
                 return Identified.REJECT;
             }
             if (proben.isEmpty()) {

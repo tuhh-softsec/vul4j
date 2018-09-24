@@ -129,14 +129,14 @@ public class ImporterTest extends BaseTest{
     @DataSource("java:jboss/lada-land")
     @Cleanup(phase=TestExecutionPhase.AFTER,
         strategy=CleanupStrategy.USED_TABLES_ONLY)
-    public final void identifyProbeByIdAlt() throws Exception {
+    public final void identifyProbeByExterneProbeId() throws Exception {
         Protocol protocol = new Protocol();
         protocol.setName("import");
         protocol.setType("identify probe");
-        protocol.addInfo("import", "Compare and find Probe by idAlt, Update");
+        protocol.addInfo("import", "Compare and find Probe by externeProbeId, Update");
 
         Probe probe = new Probe();
-        probe.setIdAlt("T001");
+        probe.setExterneProbeId("T001");
 
         Identified found = probeIdentifier.find(probe);
         Assert.assertEquals(Identified.UPDATE, found);
@@ -150,14 +150,14 @@ public class ImporterTest extends BaseTest{
     @DataSource("java:jboss/lada-land")
     @Cleanup(phase=TestExecutionPhase.AFTER,
         strategy=CleanupStrategy.USED_TABLES_ONLY)
-    public final void identifyProbeByIdAltNew() throws Exception {
+    public final void identifyProbeByExterneProbeIdNew() throws Exception {
         Protocol protocol = new Protocol();
         protocol.setName("import");
         protocol.setType("identify probe");
-        protocol.addInfo("import", "Compare and find Probe by idAlt, New");
+        protocol.addInfo("import", "Compare and find Probe by externeProbeId, New");
 
         Probe probe = new Probe();
-        probe.setIdAlt("T002");
+        probe.setExterneProbeId("T002");
 
         Identified found = probeIdentifier.find(probe);
         Assert.assertEquals(Identified.NEW, found);
@@ -171,14 +171,14 @@ public class ImporterTest extends BaseTest{
     @DataSource("java:jboss/lada-land")
     @Cleanup(phase=TestExecutionPhase.AFTER,
         strategy=CleanupStrategy.USED_TABLES_ONLY)
-    public final void identifyProbeByIdAltReject() throws Exception {
+    public final void identifyProbeByExterneProbeIdReject() throws Exception {
         Protocol protocol = new Protocol();
         protocol.setName("import");
         protocol.setType("identify probe");
-        protocol.addInfo("import", "Compare and find Probe by idAlt, Reject");
+        protocol.addInfo("import", "Compare and find Probe by externeProbeId, Reject");
 
         Probe probe = new Probe();
-        probe.setIdAlt("T001");
+        probe.setExterneProbeId("T001");
         probe.setHauptprobenNr("120510003");
         probe.setMstId("06010");
 
@@ -194,14 +194,14 @@ public class ImporterTest extends BaseTest{
     @DataSource("java:jboss/lada-land")
     @Cleanup(phase=TestExecutionPhase.AFTER,
         strategy=CleanupStrategy.USED_TABLES_ONLY)
-    public final void identifyProbeByIdAltUpdate() throws Exception {
+    public final void identifyProbeByExterneProbeIdUpdate() throws Exception {
         Protocol protocol = new Protocol();
         protocol.setName("import");
         protocol.setType("identify probe");
-        protocol.addInfo("import", "Compare and find Probe by idAlt, Update");
+        protocol.addInfo("import", "Compare and find Probe by externeProbeId, Update");
 
         Probe probe = new Probe();
-        probe.setIdAlt("T001");
+        probe.setExterneProbeId("T001");
         probe.setHauptprobenNr("");
         probe.setMstId("06010");
 
@@ -264,15 +264,15 @@ public class ImporterTest extends BaseTest{
     @DataSource("java:jboss/lada-land")
     @Cleanup(phase=TestExecutionPhase.AFTER,
         strategy=CleanupStrategy.USED_TABLES_ONLY)
-    public final void identifyMessungByIdAlt() throws Exception {
+    public final void identifyMessungByExterneMessungsId() throws Exception {
         Protocol protocol = new Protocol();
         protocol.setName("import");
         protocol.setType("identify messung");
-        protocol.addInfo("import", "Compare and find Messung by idAlt, Update");
+        protocol.addInfo("import", "Compare and find Messung by externeMessungsId, Update");
 
         Messung messung = new Messung();
         messung.setProbeId(1000);
-        messung.setIdAlt(1);
+        messung.setExterneMessungsId(1);
 
         Identified found = messungIdentifier.find(messung);
         Assert.assertEquals(Identified.UPDATE, found);
@@ -286,15 +286,15 @@ public class ImporterTest extends BaseTest{
     @DataSource("java:jboss/lada-land")
     @Cleanup(phase=TestExecutionPhase.AFTER,
         strategy=CleanupStrategy.USED_TABLES_ONLY)
-    public final void identifyMessungByIdAltNew() throws Exception {
+    public final void identifyMessungByExterneMessungsIdNew() throws Exception {
         Protocol protocol = new Protocol();
         protocol.setName("import");
         protocol.setType("identify messung");
-        protocol.addInfo("import", "Compare and find Messung by idAlt, New");
+        protocol.addInfo("import", "Compare and find Messung by externeMessungsId, New");
 
         Messung messung = new Messung();
         messung.setProbeId(1000);
-        messung.setIdAlt(2);
+        messung.setExterneMessungsId(2);
 
         Identified found = messungIdentifier.find(messung);
         Assert.assertEquals(Identified.NEW, found);
@@ -308,15 +308,15 @@ public class ImporterTest extends BaseTest{
     @DataSource("java:jboss/lada-land")
     @Cleanup(phase=TestExecutionPhase.AFTER,
         strategy=CleanupStrategy.USED_TABLES_ONLY)
-    public final void identifyMessungByIdAltReject() throws Exception {
+    public final void identifyMessungByExterneMessungsIdReject() throws Exception {
         Protocol protocol = new Protocol();
         protocol.setName("import");
         protocol.setType("identify messung");
-        protocol.addInfo("import", "Compare and find Messung by idAlt, Reject");
+        protocol.addInfo("import", "Compare and find Messung by externeMessungsId, Reject");
 
         Messung messung = new Messung();
         messung.setProbeId(1000);
-        messung.setIdAlt(1);
+        messung.setExterneMessungsId(1);
         messung.setNebenprobenNr("06A2");
 
         Identified found = messungIdentifier.find(messung);
@@ -331,15 +331,15 @@ public class ImporterTest extends BaseTest{
     @DataSource("java:jboss/lada-land")
     @Cleanup(phase=TestExecutionPhase.AFTER,
         strategy=CleanupStrategy.USED_TABLES_ONLY)
-    public final void identifyMessungByIdAltUpdate() throws Exception {
+    public final void identifyMessungByExterneMessungsIdUpdate() throws Exception {
         Protocol protocol = new Protocol();
         protocol.setName("import");
         protocol.setType("identify messung");
-        protocol.addInfo("import", "Compare and find Messung by idAlt, Update");
+        protocol.addInfo("import", "Compare and find Messung by externeMessungsId, Update");
 
         Messung messung = new Messung();
         messung.setProbeId(1000);
-        messung.setIdAlt(1);
+        messung.setExterneMessungsId(1);
         messung.setNebenprobenNr("");
 
         Identified found = messungIdentifier.find(messung);
@@ -366,7 +366,7 @@ public class ImporterTest extends BaseTest{
         protocol.addInfo("import", "Merge objects");
 
         Probe probe = new Probe();
-        probe.setIdAlt("T001");
+        probe.setExterneProbeId("T001");
         probe.setHauptprobenNr("120510002");
         probe.setMstId("06010");
         probe.setBaId(1);
