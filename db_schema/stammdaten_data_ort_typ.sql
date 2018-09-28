@@ -31,16 +31,6 @@ COPY ort_typ (id, ort_typ, code) FROM stdin;
 3	REI-Messpunkt	REI
 4	Verwaltungseinheit	VE
 5	Staat	ST
-6	Fluss	FL
-7	See	SEE
-8	Wasserwerk	WW
-9	Kläranlage	KA
-10	Deponie	DEP
-11	Müllverbrennungsanlage	MVA
-12	Messstation	MST
-13	KTA	KTA
-14	Fanggebiet	FG
-15	Sonstiger Ortszusatz	So
 \.
 --
 -- PostgreSQL database dump complete
