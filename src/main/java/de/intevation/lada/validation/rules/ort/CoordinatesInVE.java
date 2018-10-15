@@ -72,11 +72,11 @@ public class CoordinatesInVE implements Rule {
                     + "Probably OrtFactory.transformCoordinates() has not "
                     + "been called on this ort.");
             }
-            boolean unscharf = ort.getUnscharf();
+            Boolean unscharf = ort.getUnscharf();
             Violation violation = new Violation();
             for (Verwaltungsgrenze singlevg : vgs) {
                 if (singlevg.getShape().contains(p)) {
-                    if (!unscharf) {
+                    if (unscharf != null && !unscharf) {
                         return null;
                     } else {
                         ort.setUnscharf(false);

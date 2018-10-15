@@ -282,11 +282,11 @@ public class Ort implements Serializable {
         this.staatId = staatId;
     }
 
-    public boolean getUnscharf() {
+    public Boolean getUnscharf() {
         return this.unscharf;
     }
 
-    public void setUnscharf(boolean unscharf) {
+    public void setUnscharf(Boolean unscharf) {
         this.unscharf = unscharf;
     }
 
