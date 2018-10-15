@@ -1667,6 +1667,9 @@ public class LafObjectMapper {
                 tmp.add(value.substring(i, i+2));
             }
             probe.setMediaDesk(StringUtils.join(tmp.toArray(), " "));
+            if (probe.getUmwId() == null) {
+                factory.findUmweltId(probe);
+            }
         }
 
         if ("TESTDATEN".equals(key)) {
