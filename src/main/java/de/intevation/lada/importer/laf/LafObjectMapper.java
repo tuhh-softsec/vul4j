@@ -662,6 +662,16 @@ public class LafObjectMapper {
                 return;
             }
             else if (i == Identified.NEW) {
+                // Check if Messung has all fields that have db constraints (validation rule?)
+                if (messung.getMmtId() == null) {
+                    ReportItem err = new ReportItem();
+                    err.setCode(631);
+                    err.setKey("not valid (missing Messmethode)");
+                    err.setValue("Messung: " + messung.getNebenprobenNr());
+                    currentErrors.add(err);
+                    return;
+                }
+
                 // Create a new messung and the first status
                 Response created = repository.create(messung, Strings.LAND);
                 newMessung = ((Messung)created.getData());
