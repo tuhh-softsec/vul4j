@@ -172,6 +172,10 @@ public class StatusKombiService {
                     errFilter.getQuery(), Strings.STAMM));
         }
 
+        if (erreichbare.size() == 0) {
+            return new ArrayList<StatusKombi>();
+        }
+
         QueryBuilder<StatusKombi> kombiFilter =
             new QueryBuilder<StatusKombi>(
                 repository.entityManager(Strings.STAMM),
