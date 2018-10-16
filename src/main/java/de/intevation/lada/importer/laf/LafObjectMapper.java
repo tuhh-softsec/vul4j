@@ -200,6 +200,9 @@ public class LafObjectMapper {
         }
         // Use the deskriptor string to find the medium
         probe = factory.findMediaDesk(probe);
+        if (probe.getUmwId() == null) {
+            factory.findUmweltId(probe);
+        }
         //logProbe(probe);
 
         // Check if the user is authorized to create the probe
@@ -1667,9 +1670,6 @@ public class LafObjectMapper {
                 tmp.add(value.substring(i, i+2));
             }
             probe.setMediaDesk(StringUtils.join(tmp.toArray(), " "));
-            if (probe.getUmwId() == null) {
-                factory.findUmweltId(probe);
-            }
         }
 
         if ("TESTDATEN".equals(key)) {
