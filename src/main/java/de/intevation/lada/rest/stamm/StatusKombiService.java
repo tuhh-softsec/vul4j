@@ -177,8 +177,10 @@ public class StatusKombiService {
                 repository.entityManager(Strings.STAMM),
                 StatusKombi.class);
         for (StatusErreichbar erreichbar : erreichbare) {
-                kombiFilter.or("statusWert", erreichbar.getWertId())
+                QueryBuilder<StatusKombi> tmp = kombiFilter.getEmptyBuilder();
+                tmp.and("statusWert", erreichbar.getWertId())
                     .and("statusStufe", erreichbar.getStufeId());
+                kombiFilter.or(tmp);
         }
 
         list = repository.filterPlain(kombiFilter.getQuery(), Strings.STAMM);
