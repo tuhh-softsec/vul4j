@@ -3374,7 +3374,7 @@ public class LafObjectListener extends LafBaseListener {
      */
     @Override public void enterKommentar(LafParser.KommentarContext ctx) {
         // c5 d8 t4 mc300
-        if (ctx.getChildCount() < 8) {
+        if (ctx.getChildCount() < 6) {
             return;
         }
         String mst = ctx.getChild(1).toString();
@@ -3387,7 +3387,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String date = ctx.getChild(3).toString();
+        String date = ctx.getChild(2).toString();
         date = date.replaceAll("\"", "");
         if (!date.matches(LafDataTypes.D8)) {
             ReportItem err = new ReportItem();
@@ -3397,7 +3397,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String time = ctx.getChild(5).toString();
+        String time = ctx.getChild(3).toString();
         time = time.replaceAll("\"", "");
         if (!time.matches(LafDataTypes.T4)) {
             ReportItem err = new ReportItem();
@@ -3407,7 +3407,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String text = ctx.getChild(7).toString();
+        String text = ctx.getChild(4).toString();
         text = text.replaceAll("\"", "");
         if (!text.matches(LafDataTypes.MC300)) {
             ReportItem err = new ReportItem();
@@ -3467,9 +3467,10 @@ public class LafObjectListener extends LafBaseListener {
      */
     @Override public void enterProbenkommentar(LafParser.ProbenkommentarContext ctx) {
         // c5 d8 t4 mc300
-        if (ctx.getChildCount() < 8) {
+        if (ctx.getChildCount() < 6) {
             return;
         }
+
         String mst = ctx.getChild(1).toString();
         mst = mst.replaceAll("\"", "");
         if (!mst.matches(LafDataTypes.C5)) {
@@ -3480,7 +3481,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String date = ctx.getChild(3).toString();
+        String date = ctx.getChild(2).toString();
         date = date.replaceAll("\"", "");
         if (!date.matches(LafDataTypes.D8)) {
             ReportItem err = new ReportItem();
@@ -3490,7 +3491,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String time = ctx.getChild(5).toString();
+        String time = ctx.getChild(3).toString();
         time = time.replaceAll("\"", "");
         if (!time.matches(LafDataTypes.T4)) {
             ReportItem err = new ReportItem();
@@ -3500,7 +3501,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String text = ctx.getChild(7).toString();
+        String text = ctx.getChild(4).toString();
         text = text.replaceAll("\"", "");
         if (!text.matches(LafDataTypes.MC300)) {
             ReportItem err = new ReportItem();
