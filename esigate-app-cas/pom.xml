@@ -50,6 +50,18 @@
 					<groupId>org.opensaml</groupId>
 					<artifactId>opensaml</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>javax.xml</groupId>
+					<artifactId>xmldsig</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.transaction</groupId>
+					<artifactId>jta</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.inspektr</groupId>
+					<artifactId>inspektr-core</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
