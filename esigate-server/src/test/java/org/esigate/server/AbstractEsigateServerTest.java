@@ -14,15 +14,23 @@
  */
 package org.esigate.server;
 
+import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jetty.server.Handler;
 import org.junit.After;
 import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
+
+import com.meterware.httpunit.GetMethodWebRequest;
+import com.meterware.httpunit.WebConversation;
+import com.meterware.httpunit.WebRequest;
+import com.meterware.httpunit.WebResponse;
 
 /**
  * Starts Esigate Server in background for unit testing.
@@ -83,7 +91,7 @@ public class AbstractEsigateServerTest {
      */
     @Before
     public void setUp() {
-
+	    // Esigate server
         Properties p = new Properties();
         p.setProperty("controlPort", "" + this.esigateControlPort);
         p.setProperty("port", "" + this.esigatePort);
@@ -91,37 +99,66 @@ public class AbstractEsigateServerTest {
         this.esigateExecutor = Executors.newSingleThreadExecutor();
         this.esigateExecutor.execute(new EsigateServerRunnable(p));
         for (int i = 0; i < WAIT_RETRIES; i++) {
-            if (EsigateServer.isStarted()) {
-                break;
-            }
-            try {
-                Thread.sleep(WAIT_SLEEP);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        if (!EsigateServer.isStarted()) {
-            LOG.error("Esigate server failed to start");
-        }
 
-        if (this.backendHandler != null) {
-            this.backendServerRunnable = new BackendServerRunnable(this.backendPort, this.backendHandler);
-            this.backendExecutor = Executors.newSingleThreadExecutor();
-            this.backendExecutor.execute(this.backendServerRunnable);
-            for (int i = 0; i < WAIT_RETRIES; i++) {
-                if (this.backendServerRunnable.isStarted()) {
-                    break;
-                }
-                try {
-                    Thread.sleep(WAIT_SLEEP);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (!backendServerRunnable.isStarted()) {
-                LOG.error("Backend server failed to start");
-            }
-        }
+			if (EsigateServer.isStarted()) {
+				LOG.error("Esigate server is started, testing connection...");
+				try {
+					WebConversation webConversation = new WebConversation();
+					WebRequest req = new GetMethodWebRequest(
+							"http://localhost:" + this.esigateControlPort + "/server-status");
+					WebResponse resp = webConversation.getResponse(req);
+
+					if (resp.getResponseCode() == 200 /* OK */) {
+						LOG.info("Esigate server started & connection success");
+						break;
+					}
+				} catch (IOException | SAXException e2) {
+					// Errors are expected here, will retry
+				}
+			}
+
+			try {
+				Thread.sleep(WAIT_SLEEP);
+			} catch (InterruptedException e) {
+				// Ignore
+			}
+		}
+		if (!EsigateServer.isStarted()) {
+			LOG.error("Esigate server failed to start");
+		}
+
+		// Backend server
+		if (this.backendHandler != null) {
+			this.backendServerRunnable = new BackendServerRunnable(this.backendPort, this.backendHandler);
+			this.backendExecutor = Executors.newSingleThreadExecutor();
+			this.backendExecutor.execute(this.backendServerRunnable);
+			for (int i = 0; i < WAIT_RETRIES; i++) {
+				if (this.backendServerRunnable.isStarted()) {
+					LOG.error("Backend server is started, testing connection...");
+					try {
+						WebConversation webConversation = new WebConversation();
+						WebRequest req = new GetMethodWebRequest(
+								"http://localhost:" + this.backendPort + "/");
+						WebResponse resp = webConversation.getResponse(req);
+
+						if (resp.getResponseCode() == 200 /* OK */) {
+							LOG.info("Backend server started & connection success");
+							break;
+						}
+					} catch (IOException | SAXException e2) {
+						// Errors are expected here, will retry
+					}
+				}
+				try {
+					Thread.sleep(WAIT_SLEEP);
+				} catch (InterruptedException e) {
+					// Ignore
+				}
+			}
+			if (!backendServerRunnable.isStarted()) {
+				LOG.error("Backend server failed to start");
+			}
+		}
     }
 
     /**
@@ -130,8 +167,11 @@ public class AbstractEsigateServerTest {
     @After
     public void tearDown() {
         EsigateServer.stop();
-        this.esigateExecutor.shutdown();
-
+        try {
+			this.esigateExecutor.awaitTermination(10, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			LOG.warn("Esigate server failed to stop");
+		}
     }
 
     /**
