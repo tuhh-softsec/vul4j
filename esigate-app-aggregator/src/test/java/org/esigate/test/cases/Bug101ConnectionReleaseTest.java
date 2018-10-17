@@ -51,6 +51,9 @@ public class Bug101ConnectionReleaseTest {
 
         Driver driver = Driver.builder().setName("test").setProperties(properties).build();
 
+        // First call / do not measure first request which can be slow
+        render(driver, "utf8.jsp");
+
         long start = System.currentTimeMillis();
         // Should take less than 500ms each
         render(driver, "error500.jsp");
