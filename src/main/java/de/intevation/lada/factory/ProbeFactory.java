@@ -605,9 +605,9 @@ public class ProbeFactory {
                         found = i;
                     }
                 }
-                if (found >= 0) {
-                    return data.get(found).getUmwId();
-                }
+            }
+            if (found >= 0) {
+                return data.get(found).getUmwId();
             }
             return null;
         }
