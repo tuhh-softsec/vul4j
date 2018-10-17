@@ -524,15 +524,15 @@ public class ProbeService {
         if (probe.getMediaDesk() == null || probe.getMediaDesk() == "") {
             probe = factory.findMediaDesk(probe);
         }
+        if (probe.getUmwId() == null || probe.getUmwId() == "") {
+            factory.findUmweltId(probe);
+        }
         Violation violation = validator.validate(probe);
         if (violation.hasErrors()) {
             Response response = new Response(false, 604, null);
             response.setErrors(violation.getErrors());
             response.setWarnings(violation.getWarnings());
             return response;
-        }
-        if (probe.getUmwId() == null || probe.getUmwId() == "") {
-            factory.findUmweltId(probe);
         }
         Response response = repository.update(probe, Strings.LAND);
         if (!response.getSuccess()) {
