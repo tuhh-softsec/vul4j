@@ -544,12 +544,14 @@ public class ProbeFactory {
         }
 
         int size = 1;
-        for (int i = size; i >= 0; i--) {
-            if (media.get(i) == -1) {
-                continue;
-            }
+        for (int i = 0; i < media.size(); i++) {
             String field = "s" + (i > 9 ? i : "0" + i);
-            builder.and(field, media.get(i));
+            if (media.get(i) != -1) {
+                builder.and(field, media.get(i));
+            }
+            else {
+                builder.and(field, null);
+            }
         }
         Response response = repository.filter(builder.getQuery(), Strings.STAMM);
         @SuppressWarnings("unchecked")
@@ -564,40 +566,87 @@ public class ProbeFactory {
         }
         else {
             int found = -1;
+            int lastMatch = -12;
             for (int i = 0; i < data.size(); i++) {
-                int matches = 0;
-                int lastMatch = 0;
-                for (int j = size + 1; j < 12; j++) {
+                int matches = -12;
+                for (int j = size; j < 12; j++) {
                     switch(j) {
-                        case 2: if (media.get(2).equals(data.get(i).getS02()))
+                        case 1: if (media.get(1).equals(data.get(i).getS01()) ||
+                                    media.get(1).equals(-1) && data.get(i).getS01() == null
+                                )
                                     matches += 1;
+                                else
+                                    matches -= 1;
                                 break;
-                        case 3: if (media.get(3).equals(data.get(i).getS03()))
+                        case 2: if (media.get(2).equals(data.get(i).getS02()) ||
+                                    media.get(2).equals(-1) && data.get(i).getS02() == null
+                                )
                                     matches += 1;
+                                else
+                                    matches -= 1;
                                 break;
-                        case 4: if (media.get(4).equals(data.get(i).getS04()))
+                        case 3: if (media.get(3).equals(data.get(i).getS03()) ||
+                                    media.get(3).equals(-1) && data.get(i).getS03() == null
+                                )
                                     matches += 1;
+                                else
+                                    matches -= 1;
                                 break;
-                        case 5: if (media.get(5).equals(data.get(i).getS05()))
+                        case 4: if (media.get(4).equals(data.get(i).getS04()) ||
+                                    media.get(4).equals(-1) && data.get(i).getS04() == null
+                                )
+                                    matches += 1;
+                                else
+                                    matches -= 1;
+                                break;
+                        case 5: if (media.get(5).equals(data.get(i).getS05()) ||
+                                    media.get(5).equals(-1) && data.get(i).getS05() == null
+                                )
                                     matches +=1;
+                                else
+                                    matches -= 1;
                                 break;
-                        case 6: if (media.get(6).equals(data.get(i).getS06()))
+                        case 6: if (media.get(6).equals(data.get(i).getS06()) ||
+                                    media.get(6).equals(-1) && data.get(i).getS06() == null
+                                )
                                     matches += 1;
+                                else
+                                    matches -= 1;
                                 break;
-                        case 7: if (media.get(7).equals(data.get(i).getS07()))
+                        case 7: if (media.get(7).equals(data.get(i).getS07()) ||
+                                    media.get(7).equals(-1) && data.get(i).getS07() == null
+                                )
                                     matches += 1;
+                                else
+                                    matches -= 1;
                                 break;
-                        case 8: if (media.get(8).equals(data.get(i).getS08()))
+                        case 8: if (media.get(8).equals(data.get(i).getS08()) ||
+                                    media.get(8).equals(-1) && data.get(i).getS08() == null
+                                )
                                     matches += 1;
+                                else
+                                    matches -= 1;
                                 break;
-                        case 9: if (media.get(9).equals(data.get(i).getS09()))
+                        case 9: if (media.get(9).equals(data.get(i).getS09()) ||
+                                    media.get(9).equals(-1) && data.get(i).getS09() == null
+                                )
                                     matches += 1;
+                                else
+                                    matches -= 1;
                                 break;
-                        case 10: if (media.get(10).equals(data.get(i).getS10()))
+                        case 10: if (media.get(10).equals(data.get(i).getS10()) ||
+                                    media.get(10).equals(-1) && data.get(i).getS10() == null
+                                )
                                     matches += 1;
+                                else
+                                    matches -= 1;
                                 break;
-                        case 11: if (media.get(11).equals(data.get(i).getS11()))
+                        case 11: if (media.get(11).equals(data.get(i).getS11()) ||
+                                    media.get(11).equals(-1) && data.get(i).getS11() == null
+                                )
                                     matches += 1;
+                                else
+                                    matches -= 1;
                                 break;
                     }
                     if (matches > lastMatch) {
