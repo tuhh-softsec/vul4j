@@ -167,6 +167,10 @@ public class QueryBuilder<T> {
      * @return The builder itself.
      */
     public QueryBuilder<T> and(String id, List<String> values) {
+        if (values == null) {
+            this.builder.isNull(this.root.get(id));
+            return this;
+        }
         for(String v: values) {
             this.and(id, v);
         }
