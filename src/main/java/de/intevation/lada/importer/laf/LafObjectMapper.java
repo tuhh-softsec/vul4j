@@ -891,6 +891,10 @@ public class LafObjectMapper {
         doDefaults(messwert);
         doConverts(messwert);
         doTransforms(messwert);
+        if (messwert.getMesswertNwg() != null && messwert.getNwgZuMesswert() == null) {
+            messwert.setNwgZuMesswert(messwert.getMesswert());
+            messwert.setMesswert(null);
+        }
         return messwert;
     }
 
