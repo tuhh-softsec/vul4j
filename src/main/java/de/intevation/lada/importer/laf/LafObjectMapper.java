@@ -1658,6 +1658,7 @@ public class LafObjectMapper {
         }
 
         if ("DESKRIPTOREN".equals(key)) {
+            if (value.length() > 24) value = value.substring(0,24); // ignore deskriptor S12 at the laf import
             if (value.length() < 26) {
                 for (int i = value.length(); i <= 26 ; i++) {
                     value += " ";
