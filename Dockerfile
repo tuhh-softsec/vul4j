@@ -12,15 +12,16 @@
 # http://yourdockerhost:8181/lada-server
 #
 
-FROM java:8-jdk
+FROM debian:stretch
 MAINTAINER raimund.renkert@intevation.de
 
 #
 # install packages
 #
 RUN apt-get update -y && \
-    apt-get install -y libpostgis-java libjts-java \
-            maven lighttpd
+    apt-get install -y --no-install-recommends \
+            curl openjdk-8-jdk libpostgis-java libjts-java \
+            git maven lighttpd
 
 #
 # Set up Wildfly
@@ -45,9 +46,9 @@ RUN mkdir -p $JBOSS_HOME/modules/org/postgres/main
 RUN curl https://jdbc.postgresql.org/download/postgresql-9.4-1200.jdbc4.jar >\
          $JBOSS_HOME/modules/org/postgres/main/postgresql.jar
 
-RUN ln -s /usr/share/java/postgis-jdbc-2.1.4.jar \
+RUN ln -s /usr/share/java/postgis-jdbc-2.2.1.jar \
        $JBOSS_HOME/modules/org/postgres/main/
-RUN ln -s /usr/share/java/jts-1.11.jar \
+RUN ln -s /usr/share/java/jts-1.14.jar \
        $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/
 
 RUN curl \

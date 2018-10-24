@@ -8,7 +8,7 @@
 # `-v $PWD:/opt/lada_sql/' and run setup-db.sh within the container.
 #
 
-FROM debian:jessie
+FROM debian:stretch
 MAINTAINER tom.gottfried@intevation.de
 
 #
@@ -28,13 +28,13 @@ ENV LC_ALL en_US.UTF-8
 # Install packages
 #
 RUN apt-get update && \
-    apt-get install -y curl unzip
-RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main" \
+    apt-get install -y curl unzip gnupg
+RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main" \
     >> /etc/apt/sources.list
 RUN curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-            postgresql-10-postgis-2.4 postgresql-10-postgis-scripts postgis
+            postgresql-10-postgis-2.5 postgresql-10-postgis-scripts postgis
 
 #
 # Set environment variables
@@ -46,11 +46,6 @@ ENV PGDATA /var/lib/postgresql/10/main
 # Use user postgres to run the next commands
 #
 USER postgres
-
-# XXX: Seems to fail on initdb issued by package installation
-# (due to /usr/sbin/policy-rc.d ?).
-# See also https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=739276
-RUN mkdir /var/run/postgresql/10-main.pg_stat_tmp
 
 #
 # Adjust PostgreSQL configuration so that remote connections to the
