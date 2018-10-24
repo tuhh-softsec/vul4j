@@ -135,7 +135,7 @@ if [ "$NO_DATA" != "true" ]; then
     TS="0101"
     cd /tmp
     if [ ! -f vg250_${TS}.utm32s.shape.ebenen.zip ]; then
-        curl -O \
+        curl -fO \
             http://sg.geodatenzentrum.de/web_download/vg/vg250_${TS}/utm32s/shape/vg250_${TS}.utm32s.shape.ebenen.zip
     fi
     unzip -u vg250_${TS}.utm32s.shape.ebenen.zip "*VG250_*"
