@@ -56,13 +56,9 @@ RUN echo "host all  all    0.0.0.0/0  md5" >> \
 RUN echo "listen_addresses='*'" >> $PGCONF
 
 #
-# Configure logging collector
-# (because we use postgres directly in CMD,
-# the usual collection from stderr does not work)
+# Keep log on stderr to be able to use docker logs
 #
-RUN echo "logging_collector = on" >> $PGCONF
-RUN echo "log_directory = '/var/log/postgresql'" >> $PGCONF
-RUN echo "log_filename = 'postgresql-10-main.log'" >> $PGCONF
+RUN sed -i '/logging_collector/s/on/off/' $PGCONF
 
 #
 # Expose the PostgreSQL port
