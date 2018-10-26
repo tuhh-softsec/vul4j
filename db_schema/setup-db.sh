@@ -55,7 +55,7 @@ fi
 
 echo create db $DB_NAME
 psql $DB_CONNECT_STRING --command \
-     "CREATE DATABASE $DB_NAME WITH OWNER = $ROLE_NAME ENCODING = 'UTF8'"
+     "CREATE DATABASE $DB_NAME ENCODING = 'UTF8'"
 
 echo create postgis extension
 psql $DB_CONNECT_STRING -d $DB_NAME  --command  \
