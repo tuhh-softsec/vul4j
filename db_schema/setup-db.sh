@@ -55,7 +55,7 @@ fi
 
 echo create db $DB_NAME
 psql $DB_CONNECT_STRING --command \
-     "CREATE DATABASE $DB_NAME WITH OWNER = $ROLE_NAME ENCODING = 'UTF8'"
+     "CREATE DATABASE $DB_NAME ENCODING = 'UTF8'"
 
 echo create postgis extension
 psql $DB_CONNECT_STRING -d $DB_NAME  --command  \
@@ -135,7 +135,7 @@ if [ "$NO_DATA" != "true" ]; then
     TS="0101"
     cd /tmp
     if [ ! -f vg250_${TS}.utm32s.shape.ebenen.zip ]; then
-        curl -O \
+        curl -fO \
             http://sg.geodatenzentrum.de/web_download/vg/vg250_${TS}/utm32s/shape/vg250_${TS}.utm32s.shape.ebenen.zip
     fi
     unzip -u vg250_${TS}.utm32s.shape.ebenen.zip "*VG250_*"

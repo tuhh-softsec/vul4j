@@ -369,7 +369,7 @@ CREATE TABLE messwert (
     messungs_id integer NOT NULL REFERENCES messung ON DELETE CASCADE,
     messgroesse_id integer NOT NULL REFERENCES stamm.messgroesse,
     messwert_nwg character varying(1),
-    messwert double precision NOT NULL,
+    messwert double precision,
     messfehler real,
     nwg_zu_messwert double precision,
     meh_id smallint NOT NULL REFERENCES stamm.mess_einheit,

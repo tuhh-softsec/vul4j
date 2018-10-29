@@ -90,14 +90,13 @@ public class MessgroesseService {
             return defaultRepo.getAll(Messgroesse.class, Strings.STAMM);
         }
         String mmtId = params.getFirst("mmtId");
-        if (mmtId.length() > 3) {
-            return new Response(false, 400, "bad request");
-        }
 
         Query query =
             defaultRepo.queryFromString(
-                "select messgroesse_id from mmt_messgroesse where mmt_id = '"
-                + mmtId + "'", Strings.STAMM);
+                "SELECT messgroesse_id FROM mmt_messgroesse "
+                + "WHERE mmt_id = :mmt",
+                Strings.STAMM)
+            .setParameter("mmt", mmtId);
         @SuppressWarnings("unchecked")
         List<Integer> ids = query.getResultList();
         QueryBuilder<Messgroesse> builder2 =

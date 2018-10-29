@@ -60,10 +60,10 @@ public class DataTransaction
     }
 
     /**
-     * Create object in the database.
+     * Update object in the database.
      * This operation can not be undone.
      *
-     * @param object    The object to create
+     * @param object    The object to be updated
      *
      * @throws EntityExistsException
      * @throws IllegalArgumentException

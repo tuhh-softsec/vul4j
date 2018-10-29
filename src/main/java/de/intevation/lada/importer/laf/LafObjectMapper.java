@@ -891,6 +891,10 @@ public class LafObjectMapper {
         doDefaults(messwert);
         doConverts(messwert);
         doTransforms(messwert);
+        if (messwert.getMesswertNwg() != null && messwert.getNwgZuMesswert() == null) {
+            messwert.setNwgZuMesswert(messwert.getMesswert());
+            messwert.setMesswert(null);
+        }
         return messwert;
     }
 
@@ -1658,6 +1662,7 @@ public class LafObjectMapper {
         }
 
         if ("DESKRIPTOREN".equals(key)) {
+            if (value.length() > 24) value = value.substring(0,24); // ignore deskriptor S12 at the laf import
             if (value.length() < 26) {
                 for (int i = value.length(); i <= 26 ; i++) {
                     value += " ";
