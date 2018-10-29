@@ -168,7 +168,10 @@ public class QueryBuilder<T> {
      */
     public QueryBuilder<T> and(String id, List<String> values) {
         if (values == null) {
-            this.builder.isNull(this.root.get(id));
+            Predicate p = this.builder.isNull(this.root.get(id));
+            if (this.filter != null) {
+                this.filter = this.builder.and(this.filter, p);
+            }
             return this;
         }
         for(String v: values) {
@@ -186,6 +189,13 @@ public class QueryBuilder<T> {
      * @return The builder itself.
      */
     public QueryBuilder<T> or(String id, List<String> values) {
+        if (values == null) {
+            Predicate p = this.builder.isNull(this.root.get(id));
+            if (this.filter != null) {
+                this.filter = this.builder.or(this.filter, p);
+            }
+            return this;
+        }
         for (String v: values) {
             this.or(id, v);
         }
