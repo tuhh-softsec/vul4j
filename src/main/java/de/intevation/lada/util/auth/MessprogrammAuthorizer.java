@@ -52,11 +52,14 @@ public class MessprogrammAuthorizer implements Authorizer {
         else {
             return false;
         }
-        MessStelle mst = repository.getByIdPlain(
-            MessStelle.class, messprogramm.getMstId(), Strings.STAMM);
-        if (userInfo.getFunktionenForNetzbetreiber(
-                mst.getNetzbetreiberId()).contains(4)) {
-            return true;
+        String mstId = messprogramm.getMstId();
+        if (mstId != null) {
+            MessStelle mst = repository.getByIdPlain(
+                MessStelle.class, mstId, Strings.STAMM);
+            if (userInfo.getFunktionenForNetzbetreiber(
+                    mst.getNetzbetreiberId()).contains(4)) {
+                return true;
+            }
         }
         return false;
     }
