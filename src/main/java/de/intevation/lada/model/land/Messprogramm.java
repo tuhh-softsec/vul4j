@@ -108,6 +108,9 @@ public class Messprogramm implements Serializable {
     @Column(name="aktiv")
     private Boolean aktiv;
 
+    @Column(name="meh_id")
+    private Integer mehId;
+
     @Transient
     private boolean readonly;
 
@@ -304,6 +307,14 @@ public class Messprogramm implements Serializable {
 
     public void setAktiv(Boolean aktiv) {
         this.aktiv = aktiv;
+    }
+
+    public Integer getMehId() {
+        return this.mehId;
+    }
+
+    public void setMehId(Integer mehId) {
+        this.mehId = mehId;
     }
 
     public boolean isReadonly() {
