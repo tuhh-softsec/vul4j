@@ -29,8 +29,8 @@ RUN apt-get update -y && \
 RUN mkdir /opt/jboss
 
 RUN curl \
-    https://download.jboss.org/wildfly/8.2.1.Final/wildfly-8.2.1.Final.tar.gz \
-    | tar zx && mv wildfly-8.2.1.Final /opt/jboss/wildfly
+    https://download.jboss.org/wildfly/14.0.1.Final/wildfly-14.0.1.Final.tar.gz\
+    | tar zx && mv wildfly-14.0.1.Final /opt/jboss/wildfly
 
 ENV JBOSS_HOME /opt/jboss/wildfly
 
@@ -46,14 +46,17 @@ RUN mkdir -p $JBOSS_HOME/modules/org/postgres/main
 RUN curl https://jdbc.postgresql.org/download/postgresql-9.4-1200.jdbc4.jar >\
          $JBOSS_HOME/modules/org/postgres/main/postgresql.jar
 
+RUN curl http://central.maven.org/maven2/org/hibernate/hibernate-spatial/5.3.6.Final/hibernate-spatial-5.3.6.Final.jar >\
+        $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/hibernate-spatial-5.3.6.Final.jar
+
+RUN curl http://central.maven.org/maven2/org/geolatte/geolatte-geom/1.4.0/geolatte-geom-1.4.0.jar >\
+        $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/geolatte-geom-1.4.0.jar
+
 RUN ln -s /usr/share/java/postgis-jdbc-2.2.1.jar \
        $JBOSS_HOME/modules/org/postgres/main/
 RUN ln -s /usr/share/java/jts-1.14.jar \
        $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/
 
-RUN curl \
-    http://www.hibernatespatial.org/repository/org/hibernate/hibernate-spatial/4.3/hibernate-spatial-4.3.jar > \
-    $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/hibernate-spatial-4.3.jar
 
 #
 # Add LADA-server repo

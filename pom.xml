@@ -88,10 +88,6 @@
         <!-- Hibernate -->
         <dependency>
             <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
             <scope>provided</scope>
             <exclusions>
@@ -114,12 +110,14 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
+            <version>5.3.6.Final</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-spatial</artifactId>
-            <version>4.3</version>
+            <version>5.3.6.Final</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

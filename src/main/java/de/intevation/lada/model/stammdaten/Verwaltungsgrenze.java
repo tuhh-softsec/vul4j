@@ -31,7 +31,6 @@ public class Verwaltungsgrenze implements Serializable {
         private Boolean isGemeinde;
 
 	@Column(columnDefinition="geometry(MultiPolygon, 4326)")
-	@Type(type = "org.hibernate.spatial.GeometryType")
 	private MultiPolygon shape;
 
 	public Verwaltungsgrenze() {

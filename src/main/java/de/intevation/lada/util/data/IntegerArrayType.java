@@ -16,6 +16,7 @@ import java.sql.SQLException;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
 
 /**
@@ -49,31 +50,6 @@ public class IntegerArrayType implements UserType {
     }
 
     @Override
-    public Object nullSafeGet(
-        ResultSet rs,
-        String[] names,
-        SessionImplementor session,
-        Object owner)
-    throws HibernateException, SQLException {
-        Array array = rs.getArray(names[0]);
-        Integer[] javaArray = (Integer[]) array.getArray();
-        return javaArray;
-    }
-
-    @Override
-    public void nullSafeSet(
-        PreparedStatement st,
-        Object value,
-        int index,
-        SessionImplementor session)
-    throws HibernateException, SQLException {
-        Connection connection = st.getConnection();
-        Integer[] castObject = (Integer[]) value;
-        Array array = connection.createArrayOf("integer", castObject);
-        st.setArray(index, array);
-    }
-
-    @Override
     public Object deepCopy(Object value)
     throws HibernateException {
         return value == null ? null : ((Integer[]) value).clone();
@@ -101,5 +77,22 @@ public class IntegerArrayType implements UserType {
     throws HibernateException {
         return original;
     }
+
+    @Override
+    public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner)
+            throws HibernateException, SQLException {
+        Array array = rs.getArray(names[0]);
+        Integer[] javaArray = (Integer[]) array.getArray();
+        return javaArray;
+    }
+
+    @Override
+    public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session)
+            throws HibernateException, SQLException {
+        Connection connection = st.getConnection();
+        Integer[] castObject = (Integer[]) value;
+        Array array = connection.createArrayOf("integer", castObject);
+        st.setArray(index, array);
+	}
 
 }

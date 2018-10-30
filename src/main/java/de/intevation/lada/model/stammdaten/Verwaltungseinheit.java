@@ -48,7 +48,6 @@ public class Verwaltungseinheit implements Serializable {
     private String regbezirk;
 
     @Column(columnDefinition="geometry(Point, 4326)")
-    @Type(type = "org.hibernate.spatial.GeometryType")
     private Point mittelpunkt;
 
     public Verwaltungseinheit() {

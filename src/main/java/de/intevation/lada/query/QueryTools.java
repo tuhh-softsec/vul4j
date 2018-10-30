@@ -32,7 +32,6 @@ import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.apache.log4j.Logger;
-import org.hibernate.jpa.internal.QueryImpl;
 
 import de.intevation.lada.model.stammdaten.Filter;
 import de.intevation.lada.model.stammdaten.GridColumn;
