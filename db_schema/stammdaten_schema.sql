@@ -133,9 +133,6 @@ CREATE TABLE betriebsart (
     id smallint PRIMARY KEY,
     name character varying(30) NOT NULL
 );
-INSERT INTO betriebsart VALUES(1, 'Normal-/Routinebetrieb');
-INSERT INTO betriebsart VALUES(2, 'Störfall-/Intensivbetrieb');
-INSERT INTO betriebsart VALUES(3, 'Übung zum Störfall');
 
 
 CREATE TABLE staat (

@@ -89,6 +89,7 @@ if [ "$NO_DATA" != "true" ]; then
         stammdaten_data_netzbetreiber.sql \
         stammdaten_data_mess_stelle.sql \
         stammdaten_data_auth.sql \
+        stammdaten_data_betriebsart.sql \
         stammdaten_data_mess_einheit.sql \
         stammdaten_data_umwelt.sql \
         stammdaten_data_auth_lst_umw.sql \
