@@ -215,7 +215,7 @@ CREATE TABLE auth_lst_umw (
 CREATE TABLE datenbasis (
     id serial PRIMARY KEY,
     beschreibung character varying(30),
-    datenbasis character varying(10)
+    datenbasis character varying(12)
 );
 
 
