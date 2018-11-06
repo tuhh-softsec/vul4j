@@ -391,7 +391,11 @@ public class ProbeFactory {
                 wert.setMessgroesseId(mw);
                 wert.setMessungsId(messung.getId());
                 wert.setMesswert(0d);
-                wert.setMehId(1);
+                if (messprogramm.getMehId() != null) {
+                    wert.setMehId(messprogramm.getMehId());
+                } else {
+                    wert.setMehId(0);
+                }
                 repository.create(wert, Strings.LAND);
             }
         }
