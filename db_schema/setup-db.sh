@@ -111,12 +111,13 @@ if [ "$NO_DATA" != "true" ]; then
         stammdaten_data_messprogramm_transfer.sql \
         stammdaten_data_ortszusatz.sql \
         stammdaten_data_messprogramm_kategorie.sql \
+        stammdaten_data_gemeindeuntergliederung.sql \
+        stammdaten_data_rei.sql \
         stammdaten_data_ort.sql \
         stammdaten_data_probenehmer.sql \
         stammdaten_data_zeitbasis.sql \
         stammdaten_data_query.sql \
         stammdaten_data_user_context.sql \
-        stammdaten_data_rei.sql \
         stammdaten_data_importer_config.sql \
         lada_data.sql \
         lada_messprogramm.sql
