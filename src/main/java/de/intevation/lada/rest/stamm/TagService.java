@@ -13,11 +13,14 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
@@ -50,12 +53,12 @@ import de.intevation.lada.util.rest.Response;
     @AuthorizationConfig(type=AuthorizationType.HEADER)
     private Authorization authorization;
 
-    @GET
-    @Path("/")
-    @Produces(MediaType.APPLICATION_JSON)
     /**
      * Get all tags for a Probe instance, filtered by the users messstelle id.
      */
+    @GET
+    @Path("/")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getTags(
         @Context HttpServletRequest request,
         @Context UriInfo info
@@ -89,10 +92,6 @@ import de.intevation.lada.util.rest.Response;
         return new Response(true, 200, tags);
     }
 
-    @POST
-    @Path("/")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     /**
      * Creates a new reference between a tag and a probe.
      * The tag can be an existing one or a new one, embedded in the request.
@@ -121,7 +120,11 @@ import de.intevation.lada.util.rest.Response;
      * Requests containing both, tag and tagId will be rejected.
      * Setting a mstId is mandatory, as only global tags have no mstId.
      */
-    public Response createOrUpdateTag(
+    @POST
+    @Path("/")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createTagReference(
         @Context HttpServletRequest request,
         TagZuordnung zuordnung
     ) {
@@ -146,6 +149,27 @@ import de.intevation.lada.util.rest.Response;
                 return new Response(false, 603, "Invalid mstId");
             }
             return repository.create(zuordnung, Strings.LAND);
+        }
+    }
+
+    /**
+     * Delete a reference between a tag and a probe
+     */
+    @DELETE
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteTagReference(
+        @Context HttpHeaders headers,
+        @Context HttpServletRequest request,
+        @PathParam("id") Integer id
+    ) {
+        TagZuordnung tagZuordnung = repository.getByIdPlain(TagZuordnung.class, id, Strings.LAND);
+        UserInfo userInfo = authorization.getInfo(request);
+
+        if (userInfo.getMessstellen().contains(tagZuordnung.getTag().getMstId())) {
+            return repository.delete(tagZuordnung, Strings.LAND);
+        } else {
+            return new Response(false, 699, null);
         }
     }
 }
