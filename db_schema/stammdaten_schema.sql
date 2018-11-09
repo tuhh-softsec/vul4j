@@ -751,4 +751,10 @@ CREATE TABLE grid_column_values (
     width integer
 );
 
+CREATE TABLE tag (
+    id serial PRIMARY KEY,
+    tag text COLLATE pg_catalog."default",
+    mst_id character varying REFERENCES mess_stelle(id)
+);
+
 COMMIT;
