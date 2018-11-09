@@ -141,6 +141,10 @@ import de.intevation.lada.util.rest.Response;
         if (tag == null) {
             repository.create(zuordnung, Strings.LAND);
             tag = repository.getByIdPlain(Tag.class, tagId, Strings.STAMM);
+            String mstId = tag.getMstId();
+            if ( mstId == null || !userInfo.getMessstellen().contains(mstId)) {
+                return new Response(false, 603, "Invalid mstId");
+            }
             zuordnung.setTag(tag);
             return repository.update(zuordnung, Strings.LAND);
         } else {
