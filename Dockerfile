@@ -78,7 +78,7 @@ RUN chmod +w $JBOSS_HOME/standalone/configuration/standalone_xml_history
 #
 # Build and deploy LADA-server
 #
-ENV LADA_VERSION 3.2.5
+ENV LADA_VERSION 3.2-SNAPSHOT
 RUN mvn clean compile package && \
     mv target/lada-server-$LADA_VERSION.war \
        $JBOSS_HOME/standalone/deployments/lada-server.war && \
