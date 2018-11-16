@@ -2,7 +2,7 @@
 
 Java library for decoding Iridium Short Burst Data packets.
 
-[![Build Status](https://travis-ci.org/usgs/warc-iridium-sbd-decoder.svg?branch=master)](https://travis-ci.org/usgs/warc-iridium-sbd-decoder)
+[![Build Status](https://travis-ci.org/usgs/warc-iridium-sbd-decoder.svg?branch=WARC-934-upgrade-to-spring-boot-2.1.0)](https://travis-ci.org/usgs/warc-iridium-sbd-decoder)
 
 ## About
 
