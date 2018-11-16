@@ -8,7 +8,7 @@ jdk:
   - oraclejdk8
   - openjdk11
   
-dist: trusty
+dist: xenial
 
 script: 
  - mvn clean install   
