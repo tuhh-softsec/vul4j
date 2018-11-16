@@ -5,14 +5,14 @@
 
 	<groupId>gov.usgs.warc</groupId>
 	<artifactId>iridium.sbd.decoder</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 	<name>USGS Iridium Short Burst Data (SBD) Decoder Library</name>
 	<packaging>jar</packaging>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.0.1.RELEASE</version>
+		<version>2.1.0.RELEASE</version>
 		<relativePath />
 	</parent>
 
