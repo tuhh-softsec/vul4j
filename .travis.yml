@@ -11,8 +11,3 @@ dist: trusty
 
 script: 
  - mvn clean install   
-
-branches:
-  only:
-  - master
-  
