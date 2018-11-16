@@ -55,6 +55,7 @@ import de.intevation.lada.util.rest.Response;
 
     /**
      * Get all tags for a Probe instance, filtered by the users messstelle id.
+     * If a pid is set in the url, the tags are filter by the given probe id.
      */
     @GET
     @Path("/")
@@ -64,16 +65,15 @@ import de.intevation.lada.util.rest.Response;
         @Context UriInfo info
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
-        if (params.isEmpty() || !params.containsKey("pid")) {
-            return new Response(false, 603, "Not a valid probe id");
-        }
-
         Integer id = null;
-        try {
-            id = Integer.valueOf(params.getFirst("pid"));
-        }
-        catch (NumberFormatException e) {
-            return new Response(false, 603, "Not a valid probe id");
+
+        if (!params.isEmpty() && params.containsKey("pid")) {
+            try {
+                id = Integer.valueOf(params.getFirst("pid"));
+            }
+            catch (NumberFormatException e) {
+                return new Response(false, 603, "Not a valid probe id");
+            }
         }
 
         UserInfo userInfo = authorization.getInfo(request);
@@ -85,8 +85,10 @@ import de.intevation.lada.util.rest.Response;
         Predicate zeroMstfilter = builder.isNull(root.get("mstId"));
         Predicate userMstFilter = builder.in(root.get("mstId")).value(userInfo.getMessstellen());
         Predicate probeFilter = builder.equal(joinTagZuordnung.get("probeId"),id);
-        Predicate filter = builder.and(zeroMstfilter, userMstFilter);
-        filter = builder.or(filter, probeFilter);
+        Predicate filter = builder.or(zeroMstfilter, userMstFilter);
+        if (id != null) {
+            filter = builder.and(filter, probeFilter);
+        }
         criteriaQuery.where(filter);
         List<Tag> tags = repository.filterPlain(criteriaQuery, Strings.STAMM);
         return new Response(true, 200, tags);
@@ -160,20 +162,37 @@ import de.intevation.lada.util.rest.Response;
      * Delete a reference between a tag and a probe
      */
     @DELETE
-    @Path("/{id}")
+    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteTagReference(
         @Context HttpHeaders headers,
         @Context HttpServletRequest request,
-        @PathParam("id") Integer id
+        TagZuordnung tagZuordnung
     ) {
-        TagZuordnung tagZuordnung = repository.getByIdPlain(TagZuordnung.class, id, Strings.LAND);
-        UserInfo userInfo = authorization.getInfo(request);
+        if (tagZuordnung.getProbeId() == null || tagZuordnung.getTagId() == null) {
+            return new Response(false, 699, "Invalid TagZuordnung");
+        }
 
-        if (userInfo.getMessstellen().contains(tagZuordnung.getTag().getMstId())) {
-            return repository.delete(tagZuordnung, Strings.LAND);
+        UserInfo userInfo = authorization.getInfo(request);
+        EntityManager em = repository.entityManager(Strings.STAMM);
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<TagZuordnung> criteriaQuery = builder.createQuery(TagZuordnung.class);
+        Root<TagZuordnung> root = criteriaQuery.from(TagZuordnung.class);
+        Join<TagZuordnung, Tag> joinTagZuordnung = root.join("tag", javax.persistence.criteria.JoinType.LEFT);
+        Predicate tagFilter = builder.equal(root.get("tag").get("id"), tagZuordnung.getTagId());
+        Predicate userMstFilter = builder.in(joinTagZuordnung.get("mstId")).value(userInfo.getMessstellen());
+        Predicate probeFilter = builder.equal(root.get("probeId"),tagZuordnung.getProbeId());
+
+        Predicate filter = builder.and(tagFilter, userMstFilter);
+        filter = builder.and(filter, probeFilter);
+        criteriaQuery.where(filter);
+        List<TagZuordnung> zuordnungs = repository.filterPlain(criteriaQuery, Strings.STAMM);
+
+        //TODO: Error code if no zuordnung is found?
+        if (zuordnungs.size() == 0) {
+            return new Response(false, 699, "No valid Tags found");
         } else {
-            return new Response(false, 699, null);
+            return repository.delete(zuordnungs.get(0), Strings.LAND);
         }
     }
 }
