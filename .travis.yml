@@ -6,13 +6,9 @@ sudo: false
 jdk:
   - openjdk8
   - oraclejdk8
+  - openjdk11
   
 dist: trusty
 
 script: 
  - mvn clean install   
-
-branches:
-  only:
-  - master
-  

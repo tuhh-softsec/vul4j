@@ -10,7 +10,14 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import com.google.common.primitives.Bytes;
-
+import gov.usgs.warc.iridium.sbd.decoder.ParsingTestsHelper;
+import gov.usgs.warc.iridium.sbd.decoder.Tests;
+import gov.usgs.warc.iridium.sbd.decoder.parser.BinaryParser;
+import gov.usgs.warc.iridium.sbd.domain.SbdDataType;
+import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrder;
+import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrderProvider;
+import gov.usgs.warc.iridium.sbd.domain.SbdStationId;
+import gov.usgs.warc.iridium.sbd.domain.SbdStationIdProvider;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -18,7 +25,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -35,18 +41,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import gov.usgs.warc.iridium.sbd.decoder.ParsingTestsHelper;
-import gov.usgs.warc.iridium.sbd.decoder.Tests;
-import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrderProvider;
-import gov.usgs.warc.iridium.sbd.domain.SbdStationIdProvider;
-import gov.usgs.warc.iridium.sbd.domain.SbdDataType;
-import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrder;
-import gov.usgs.warc.iridium.sbd.domain.SbdStationId;
-import gov.usgs.warc.iridium.sbd.decoder.directip.IridiumResponse;
-import gov.usgs.warc.iridium.sbd.decoder.directip.SbdProcessor;
-import gov.usgs.warc.iridium.sbd.decoder.directip.SbdProcessorImpl;
-import gov.usgs.warc.iridium.sbd.decoder.parser.BinaryParser;
 
 /**
  * Test the {@link SbdProcessor}
@@ -74,9 +68,9 @@ public class SbdProcessorTest
 		 * @param p_Context
 		 *            {@link ApplicationContext}
 		 * @param p_IridiumStationIdRepository
-		 *            {@link IridiumStationIdRepository}
+		 *            {@link SbdStationIdProvider}
 		 * @param p_IridiumDecodeOrderRepository
-		 *            {@link IridiumDecodeOrderRepository}
+		 *            {@link SbdDecodeOrderProvider}
 		 * @return {@link SbdProcessorImpl} instance
 		 * @author darceyj
 		 * @since Feb 12, 2018
@@ -119,7 +113,7 @@ public class SbdProcessorTest
 	private SbdDecodeOrderProvider<SbdDecodeOrder>	m_DecodeOrderRepository;
 
 	/**
-	 * The {@link IridiumStationIdRepository}
+	 * The {@link SbdStationIdProvider}
 	 *
 	 * @since Feb 12, 2018
 	 */
@@ -131,7 +125,7 @@ public class SbdProcessorTest
 	 *
 	 * @since May 9, 2018
 	 */
-	private Long											m_StationIdTest;
+	private Long									m_StationIdTest;
 
 	/**
 	 * The {@link SbdProcessor} to test with.
@@ -139,13 +133,13 @@ public class SbdProcessorTest
 	 * @since Feb 12, 2018
 	 */
 	@Autowired
-	private SbdProcessor									m_Testable;
+	private SbdProcessor							m_Testable;
 
 	/**
 	 * @author mckelvym
 	 * @since Mar 30, 2018
 	 */
-	private Map<List<Byte>, IridiumResponse>				m_TestingData;
+	private Map<List<Byte>, IridiumResponse>		m_TestingData;
 
 	/**
 	 * @throws Exception

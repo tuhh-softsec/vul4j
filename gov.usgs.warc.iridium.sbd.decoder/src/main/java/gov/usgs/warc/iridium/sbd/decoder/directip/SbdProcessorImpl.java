@@ -5,7 +5,12 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Table;
-
+import gov.usgs.warc.iridium.sbd.decoder.parser.BinaryParser;
+import gov.usgs.warc.iridium.sbd.domain.SbdDataType;
+import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrder;
+import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrderProvider;
+import gov.usgs.warc.iridium.sbd.domain.SbdStationId;
+import gov.usgs.warc.iridium.sbd.domain.SbdStationIdProvider;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -13,18 +18,10 @@ import java.util.Optional;
 import java.util.SortedSet;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
-
-import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrderProvider;
-import gov.usgs.warc.iridium.sbd.domain.SbdStationIdProvider;
-import gov.usgs.warc.iridium.sbd.domain.SbdDataType;
-import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrder;
-import gov.usgs.warc.iridium.sbd.domain.SbdStationId;
-import gov.usgs.warc.iridium.sbd.decoder.parser.BinaryParser;
 
 /**
  * Default implementation of {@link SbdProcessor}
@@ -41,7 +38,7 @@ public class SbdProcessorImpl implements SbdProcessor
 	 * @author mckelvym
 	 * @since Feb 27, 2018
 	 */
-	private static final Logger												log	= LoggerFactory
+	private static final Logger										log	= LoggerFactory
 			.getLogger(SbdProcessorImpl.class);
 
 	/**
@@ -62,9 +59,9 @@ public class SbdProcessorImpl implements SbdProcessor
 	 * @param p_Context
 	 *            {@link ApplicationContext}
 	 * @param p_IridiumStationIdRepository
-	 *            {@link IridiumStationIdRepository}
+	 *            {@link SbdStationIdProvider}
 	 * @param p_IridiumDecodeOrderRepository
-	 *            {@link IridiumDecodeOrderRepository}
+	 *            {@link SbdDecodeOrderProvider}
 	 * @author mckelvym
 	 * @since Feb 28, 2018
 	 */
