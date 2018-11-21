@@ -141,6 +141,23 @@ import de.intevation.lada.util.rest.Response;
         UserInfo userInfo = authorization.getInfo(request);
 
         if (tag == null) {
+            //Check if tag is already assigned to the probe
+            EntityManager em = repository.entityManager(Strings.STAMM);
+            CriteriaBuilder builder = em.getCriteriaBuilder();
+            CriteriaQuery<TagZuordnung> criteriaQuery = builder.createQuery(TagZuordnung.class);
+            Root<TagZuordnung> root = criteriaQuery.from(TagZuordnung.class);
+            Join<TagZuordnung, Tag> joinTagZuordnung = root.join("tag", javax.persistence.criteria.JoinType.LEFT);
+            Predicate tagFilter = builder.equal(root.get("tag").get("id"), zuordnung.getTagId());
+            Predicate userMstFilter = builder.in(joinTagZuordnung.get("mstId")).value(userInfo.getMessstellen());
+            Predicate probeFilter = builder.equal(root.get("probeId"),zuordnung.getProbeId());
+            Predicate filter = builder.and(tagFilter, userMstFilter);
+            filter = builder.and(filter, probeFilter);
+            criteriaQuery.where(filter);
+            List<TagZuordnung> zuordnungs = repository.filterPlain(criteriaQuery, Strings.STAMM);
+            if (zuordnungs.size() > 0) {
+                return new Response(false, 604, "Tag is already assigned to probe");
+            }
+
             repository.create(zuordnung, Strings.LAND);
             tag = repository.getByIdPlain(Tag.class, tagId, Strings.STAMM);
             String mstId = tag.getMstId();
