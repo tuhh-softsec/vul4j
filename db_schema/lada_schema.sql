@@ -411,12 +411,11 @@ CREATE TABLE tagzuordnung
     tag_id integer,
     CONSTRAINT tagzuordnung_tag_fkey FOREIGN KEY (tag_id)
         REFERENCES stamm.tag (id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION,
+        ON DELETE CASCADE,
     CONSTRAINT tagzuordnung_probe_fkey FOREIGN KEY (probe_id)
         REFERENCES land.probe (id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+        ON DELETE CASCADE,
+    UNIQUE (probe_id, tag_id)
 );
 --
 -- Name: messung_probe_id_idx; Type: INDEX; Schema: land; Owner: -; Tablespace:
