@@ -33,8 +33,10 @@ import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.data.Strings;
+import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.model.land.TagZuordnung;
 import de.intevation.lada.model.stammdaten.Tag;
+import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 
 /**
@@ -139,7 +141,7 @@ import de.intevation.lada.util.rest.Response;
         }
 
         UserInfo userInfo = authorization.getInfo(request);
-
+        //Use existing tag
         if (tag == null) {
             //Check if tag is already assigned to the probe
             EntityManager em = repository.entityManager(Strings.STAMM);
@@ -158,18 +160,33 @@ import de.intevation.lada.util.rest.Response;
                 return new Response(false, 604, "Tag is already assigned to probe");
             }
 
-            repository.create(zuordnung, Strings.LAND);
             tag = repository.getByIdPlain(Tag.class, tagId, Strings.STAMM);
             String mstId = tag.getMstId();
-            if ( mstId == null || !userInfo.getMessstellen().contains(mstId)) {
+            //If user tries to assign a global tag: authorize
+            if ( mstId == null) {
+                Probe probe = repository.getByIdPlain(Probe.class, zuordnung.getProbeId(), Strings.LAND);
+                if (!authorization.isAuthorized(
+                    request,
+                    probe,
+                    RequestMethod.PUT,
+                    Probe.class
+                )) {
+                    return new Response(false, 699, "Not authorized to set global tag");
+                }
+            //Else check if it is the users private tag
+            } else if (!userInfo.getMessstellen().contains(mstId)) {
                 return new Response(false, 603, "Invalid mstId");
             }
+            
+            repository.create(zuordnung, Strings.LAND);
             zuordnung.setTag(tag);
             return repository.update(zuordnung, Strings.LAND);
+        //Create new
         } else {
             String mstId = zuordnung.getTag().getMstId();
+            //mstId may not be null, global tags cannot be created
             if ( mstId == null || !userInfo.getMessstellen().contains(mstId)) {
-                return new Response(false, 603, "Invalid mstId");
+                return new Response(false, 603, "Invalid/empty mstId");
             }
             return repository.create(zuordnung, Strings.LAND);
         }
