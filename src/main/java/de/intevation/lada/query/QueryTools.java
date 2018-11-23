@@ -90,6 +90,7 @@ public class QueryTools
         String genericFilterSql = "";
         String sortSql = "";
         boolean subquery = false;
+        String tagFilterSql = "";
 
         for (GridColumnValue customColumn : customColumns) {
             boolean generic = false;
@@ -132,6 +133,18 @@ public class QueryTools
                     currentFilterString = currentFilterString.replace(":" + genTextValue, ":" + currentFilterParam);
                     subquery = true;
                     generic = true;
+                }
+
+                if (filterType.equals("tag")) {
+                    String[] values = filterValue.split(",");
+
+                    for (int i = 0; i < values.length; i++) {
+                        String s = values[i];
+                        filterValues.add(filter.getParameter(), s);
+                    }
+                    subquery = true;
+                    tagFilterSql = filter.getSql();
+                    continue;
                 }
 
                 //Check if Filter is an in filter
@@ -260,11 +273,23 @@ public class QueryTools
         }
         sql += sortSql;
         //TODO: Avoid using subqueries to use aliases in the where clause
-        //Append generic filter sql seperated from non-generic filters
+        //Append generic and/or tag filter sql seperated from other filters
         if (subquery) {
-            sql = "SELECT * FROM ( " + sql + " ) AS inner_query " + genericFilterSql;
+            sql = "SELECT * FROM ( " + sql + " ) AS inner_query " ;
+            boolean tagFilter = tagFilterSql.length() > 0;
+            boolean genericFilter = genericFilterSql.length() > 0;
+
+            if (tagFilter) {
+                sql += " WHERE " + tagFilterSql + " ";
+            }
+
+            if (genericFilter) {
+                sql = tagFilter == true ? sql + " AND " : sql + " WHERE ";
+                sql += genericFilterSql;
+            }
         }
         sql += " ;";
+        System.out.println(sql);
         javax.persistence.Query q = prepareQuery(
             sql,
             filterValues,

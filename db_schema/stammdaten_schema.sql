@@ -311,6 +311,7 @@ INSERT INTO filter_type VALUES(4, 'listtext', true);
 INSERT INTO filter_type VALUES(5, 'listnumber', true);
 INSERT INTO filter_type VALUES(6, 'listdatetime', true);
 INSERT INTO filter_type VALUES(7, 'generictext', false);
+INSERT INTO filter_type VALUES(8, 'tag', true);
 
 CREATE TABLE filter (
     id serial PRIMARY KEY,
