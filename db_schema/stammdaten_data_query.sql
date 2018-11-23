@@ -76,7 +76,6 @@ COPY stamm.filter (id, sql, parameter, type, name) FROM stdin;
 33	k40.messwert BETWEEN :messwertFrom AND :messwertTo	messwertFrom,messwertTo	1	k40_messwert
 34	status_kombi.id IN ( :statusK )	statusK	5	statusK
 35	messprogramm.datenbasis_id IN ( :datenbasis )	datenbasis	5	datenbasis
-<<<<<<< HEAD
 36	messprogramm.probenart_id IN ( :probenart )	probenart	5	probenart
 37	messprogramm.umw_id IN ( :umwId )	umwId	4	mpr_umw_id
 38	kta_gruppe.id IN ( :anlage )	anlage	5	kta_gruppe
@@ -93,9 +92,7 @@ COPY stamm.filter (id, sql, parameter, type, name) FROM stdin;
 49	lada_messwert.messwert BETWEEN :messwertFrom AND :messwertTo	messwertFrom,messwertTo	1	messwert
 50	lada_messwert.nwg_zu_messwert BETWEEN :nwgzumesswertFrom AND :nwgzumesswertTo	nwgzumesswertFrom,nwgzumesswertTo	1	nwg_zu_messwert
 51	(coalesce((probe.probeentnahme_beginn + make_interval(secs => probe.mittelungsdauer/2)),probe.probeentnahme_beginn)) BETWEEN to_timestamp(cast(:fromMitteSZeitraum AS DOUBLE PRECISION)) AND to_timestamp(cast(:toMitteSZeitraum AS DOUBLE PRECISION))	fromMitteSZeitraum,toMitteSZeitraum	6	mitte_sammelzeitraum
-=======
-36	string_to_array(tags, ', ', '') @> CAST(ARRAY[ :tags ] AS text[])	tags	8	tags
->>>>>>> Add tag filter to database and query tools
+52	string_to_array(tags, ', ', '') @> CAST(ARRAY[ :tags ] AS text[])	tags	8	tags
 \.
 
 
@@ -137,6 +134,7 @@ COPY stamm.result_type (id, name, format) FROM stdin;
 31	prnId	\N
 32	mmtId	\N
 33	number	###########
+34	tag	\N
 \.
 
 
@@ -172,7 +170,7 @@ COPY stamm.grid_column (id, base_query, name, data_index, "position", filter, da
 125	1	Anlage-Beschr	anlagebeschr	25	\N	1
 126	1	REI-Prog-PG	reiprogpg	26	\N	1
 127	1	REI-Prog-PG-Beschr	reiprogpgbeschr	27	\N	1
-128	1	Tags 	tags	28	\N	1
+128	1	Tags 	tags	28	\N	25
 1101	11	ID	id	1	\N	5
 1102	11	interne PID	probeId	2	\N	4
 1103	11	HP-Nr	hpNr	3	2	1
