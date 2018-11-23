@@ -108,6 +108,7 @@ COPY stamm.result_type (id, name, format) FROM stdin;
 22	dsatzerz	\N
 23	mprkat	\N
 24	statuskombi	\N
+25	tag	\N
 \.
 
 
@@ -143,7 +144,7 @@ COPY stamm.grid_column (id, base_query, name, data_index, "position", filter, da
 125	1	Anlage-Beschr	anlagebeschr	25	\N	1
 126	1	REI-Prog-PG	reiprogpg	26	\N	1
 127	1	REI-Prog-PG-Beschr	reiprogpgbeschr	27	\N	1
-128	1	Tags 	tags	28	\N	1
+128	1	Tags 	tags	28	\N	25
 1101	11	ID	id	1	\N	5
 1102	11	interne PID	probeId	2	\N	4
 1103	11	HP-Nr	hpNr	3	2	1
