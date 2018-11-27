@@ -29,6 +29,8 @@ import de.intevation.lada.model.stammdaten.Filter;
 import de.intevation.lada.model.stammdaten.GridColumn;
 import de.intevation.lada.model.stammdaten.GridColumnValue;
 import de.intevation.lada.model.stammdaten.BaseQuery;
+import de.intevation.lada.model.stammdaten.Result;
+import de.intevation.lada.model.stammdaten.Tag;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
@@ -136,18 +138,19 @@ public class QueryTools
 
                 // If a tag filter is applied, split param into n numbered params for n tags to filter
                 if (filterType.equals("tag")) {
-                    String[] tags = filterValue.split(",");
-                    int tagNumber = tags.length;
+                    String[] tagIds = filterValue.split(",");
+                    int tagNumber = tagIds.length;
                     String paramlist = "";
                     String param = filter.getParameter();
                     String tagFilterSql = filter.getSql();
                     for (int i = 0; i < tagNumber; i++) {
+                        String tag = repository.getByIdPlain(Tag.class, Integer.parseInt(tagIds[i]), Strings.STAMM).getTag();
                         if (i != tagNumber - 1) {
                             paramlist += " :" + param + i + " , ";
                         } else {
                             paramlist += " :" + param + i;
                         }
-                        filterValues.add(param + i, tags[i]);
+                        filterValues.add(param + i, tag);
                     }
                     tagFilterSql = tagFilterSql.replace(":" + filter.getParameter(), paramlist);
                     if (filterSql.isEmpty()) {
