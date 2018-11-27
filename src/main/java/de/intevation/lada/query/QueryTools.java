@@ -90,7 +90,6 @@ public class QueryTools
         String genericFilterSql = "";
         String sortSql = "";
         boolean subquery = false;
-        String tagFilterSql = "";
 
         for (GridColumnValue customColumn : customColumns) {
             boolean generic = false;
@@ -135,15 +134,28 @@ public class QueryTools
                     generic = true;
                 }
 
+                // If a tag filter is applied, split param into n numbered params for n tags to filter
                 if (filterType.equals("tag")) {
-                    String[] values = filterValue.split(",");
-
-                    for (int i = 0; i < values.length; i++) {
-                        String s = values[i];
-                        filterValues.add(filter.getParameter(), s);
+                    String[] tags = filterValue.split(",");
+                    int tagNumber = tags.length;
+                    String paramlist = "";
+                    String param = filter.getParameter();
+                    String tagFilterSql = filter.getSql();
+                    for (int i = 0; i < tagNumber; i++) {
+                        if (i != tagNumber - 1) {
+                            paramlist += " :" + param + i + " , ";
+                        } else {
+                            paramlist += " :" + param + i;
+                        }
+                        filterValues.add(param + i, tags[i]);
                     }
-                    subquery = true;
-                    tagFilterSql = filter.getSql();
+                    tagFilterSql = tagFilterSql.replace(":" + filter.getParameter(), paramlist);
+                    if (filterSql.isEmpty()) {
+                        filterSql += " WHERE ";
+                    } else {
+                        filterSql += " AND ";
+                    }
+                    filterSql += tagFilterSql;
                     continue;
                 }
 
@@ -276,20 +288,10 @@ public class QueryTools
         //Append generic and/or tag filter sql seperated from other filters
         if (subquery) {
             sql = "SELECT * FROM ( " + sql + " ) AS inner_query " ;
-            boolean tagFilter = tagFilterSql.length() > 0;
-            boolean genericFilter = genericFilterSql.length() > 0;
-
-            if (tagFilter) {
-                sql += " WHERE " + tagFilterSql + " ";
-            }
-
-            if (genericFilter) {
-                sql = tagFilter == true ? sql + " AND " : sql + " WHERE ";
-                sql += genericFilterSql;
-            }
+            sql += " WHERE ";
+            sql += genericFilterSql;
         }
         sql += " ;";
-        System.out.println(sql);
         javax.persistence.Query q = prepareQuery(
             sql,
             filterValues,
