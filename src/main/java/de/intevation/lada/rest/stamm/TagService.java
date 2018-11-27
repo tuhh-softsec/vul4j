@@ -206,6 +206,22 @@ import de.intevation.lada.util.rest.Response;
         if (tagZuordnung.getProbeId() == null || tagZuordnung.getTagId() == null) {
             return new Response(false, 699, "Invalid TagZuordnung");
         }
+        boolean global = false;
+        //Check if its a global tag
+        Tag tag = repository.getByIdPlain(Tag.class, tagZuordnung.getTagId(), Strings.STAMM);
+        if (tag.getMstId() == null) {
+            Probe probe = repository.getByIdPlain(Probe.class, tagZuordnung.getProbeId(), Strings.LAND);
+            if (!authorization.isAuthorized(
+                request,
+                probe,
+                RequestMethod.PUT,
+                Probe.class
+            )) {
+                return new Response(false, 699, "Not authorized to delete global tag");
+            } else {
+                global = true;
+            }
+        }
 
         UserInfo userInfo = authorization.getInfo(request);
         EntityManager em = repository.entityManager(Strings.STAMM);
@@ -214,10 +230,15 @@ import de.intevation.lada.util.rest.Response;
         Root<TagZuordnung> root = criteriaQuery.from(TagZuordnung.class);
         Join<TagZuordnung, Tag> joinTagZuordnung = root.join("tag", javax.persistence.criteria.JoinType.LEFT);
         Predicate tagFilter = builder.equal(root.get("tag").get("id"), tagZuordnung.getTagId());
-        Predicate userMstFilter = builder.in(joinTagZuordnung.get("mstId")).value(userInfo.getMessstellen());
+        Predicate mstFilter;
+        if (global == true) {
+            mstFilter = builder.isNull(joinTagZuordnung.get("mstId"));
+        } else {
+            mstFilter = builder.in(joinTagZuordnung.get("mstId")).value(userInfo.getMessstellen());
+        }
         Predicate probeFilter = builder.equal(root.get("probeId"),tagZuordnung.getProbeId());
 
-        Predicate filter = builder.and(tagFilter, userMstFilter);
+        Predicate filter = builder.and(tagFilter, mstFilter);
         filter = builder.and(filter, probeFilter);
         criteriaQuery.where(filter);
         List<TagZuordnung> zuordnungs = repository.filterPlain(criteriaQuery, Strings.STAMM);
