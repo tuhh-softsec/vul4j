@@ -109,7 +109,7 @@ public class ColumnValueService {
             userFilter = builder.or(userFilter, mess.get("messStelle").in(userInfo.getLaborMessstellen()));
         }
         filter = builder.and(filter, userFilter);
-        criteriaQuery.where(filter);
+        criteriaQuery.where(filter).distinct(true);
         List<GridColumnValue> queries = repository.filterPlain(criteriaQuery, Strings.STAMM);
 
         for (GridColumnValue gcv : queries) {
