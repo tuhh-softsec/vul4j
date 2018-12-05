@@ -640,6 +640,7 @@ CREATE TABLE status_reihenfolge (
     UNIQUE(von_id, zu_id)
 );
 
+/*
 CREATE FUNCTION populate_status_reihenfolge() RETURNS void AS $$
 DECLARE kombi_from RECORD;
 DECLARE s_from integer;
@@ -698,7 +699,7 @@ SELECT populate_status_reihenfolge();
 DROP FUNCTION populate_status_reihenfolge();
 ALTER TABLE status_reihenfolge ALTER COLUMN id DROP DEFAULT;
 DROP SEQUENCE status_reihenfolge_id_seq;
-
+*/
 
 CREATE VIEW status_erreichbar AS (
     SELECT r.id,
