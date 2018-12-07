@@ -65,8 +65,7 @@ import org.apache.log4j.Logger;
 @RequestScoped
 public class MessstellenkombiService {
 
-    @Inject
-    Logger logger;
+    @Inject Logger logger;
 
     /**
      * The data repository granting read access.
@@ -100,9 +99,7 @@ public class MessstellenkombiService {
             Auth.class);
         mstMlQuery.orIntList("funktionId", Arrays.asList(0, 1));
 
-        logger.debug("check params");
         if (params.containsKey("netzbetreiberId")) {
-            logger.debug("netzbetreiberId; " + params.getFirst("netzbetreiberId"));
             mstMlQuery.andIn("netzbetreiberId", Arrays.asList(params.getFirst("netzbetreiberId").split(",")));
         }
 
