@@ -43,6 +43,8 @@ import de.intevation.lada.util.rest.Response;
  */
 public class ProbeFactory {
 
+    @Inject Logger logger;
+
     // Day of year representing February 28
     private static final int FEBRUARY_28 = 58;
 
@@ -315,8 +317,6 @@ public class ProbeFactory {
         return proben;
     }
 
-    @Inject Logger logger;
-
     /**
      * Create a single probe object.
      *
@@ -349,9 +349,7 @@ public class ProbeFactory {
         probe.setBaId(messprogramm.getBaId());
         probe.setDatenbasisId(messprogramm.getDatenbasisId());
         probe.setMediaDesk(messprogramm.getMediaDesk());
-        logger.debug("messprogramm.getMediaDesk(): " + messprogramm.getMediaDesk());
         probe = findMediaDesk(probe);
-        logger.debug("probe.getMedia: " + probe.getMedia());
         probe.setMstId(messprogramm.getMstId());
         probe.setLaborMstId(messprogramm.getLaborMstId());
         probe.setProbenartId(messprogramm.getProbenartId());
