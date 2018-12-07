@@ -2,9 +2,9 @@ grammar Laf;
 
 probendatei : probe* end? EOF;
 
-end : '%ENDE%' (NEWLINE)?;
+end : '%ENDE%' (WS)* (NEWLINE)? (CHAR)*;
 
-probe : '%PROBE%' NEWLINE probedaten+ ;
+probe : '%PROBE%' (WS)* NEWLINE probedaten+ ;
 
 probedaten: db
   | version
@@ -48,7 +48,7 @@ messung:
   messungdaten+
 ;
 
-mess_header : '%MESSUNG%' NEWLINE ;
+mess_header : '%MESSUNG%' (WS)* NEWLINE ;
 
 messungdaten: messungs_id
   | pn
@@ -157,7 +157,7 @@ ursprungsort:
   ursprungsortdaten+)
 ;
 
-ursprungsort_header : '%URSPRUNGSORT%' NEWLINE ;
+ursprungsort_header : '%URSPRUNGSORT%' (WS)* NEWLINE ;
 
 ursprungsortdaten : uh
   | ug
@@ -362,7 +362,7 @@ PROBENKOMMENTAR : ('P'|'p')('R'|'r')('O'|'o')('B'|'b')('E'|'e')('N'|'n')('K'|'k'
 PROBENKOMMENTAR_T : ('P'|'p')('R'|'r')('O'|'o')('B'|'b')('E'|'e')('N'|'n')('K'|'k')('O'|'o')('M'|'m')('M'|'m')('E'|'e')('N'|'n')('T'|'t')('A'|'a')('R'|'r')('_')('T'|'t') ;
 
 
-WS : (' ') -> skip;
+WS : (' ' | '\t') -> skip;
 NEWLINE : ('\r\n' | '\r' | '\n') ;
 STRING_ESC : ('"'(~('"'))*'"') ;
 STRING : C+ ;
