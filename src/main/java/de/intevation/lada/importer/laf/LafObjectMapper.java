@@ -821,7 +821,16 @@ public class LafObjectMapper {
                 new QueryBuilder<Messgroesse>(
                     repository.entityManager(Strings.STAMM),
                     Messgroesse.class);
-            builder.and("messgroesse", attribute);
+            // accept various nuclide notations (e.g. "Cs-134", "CS 134", "Cs134", "SC134", ...) 
+            String messgroesseString = attribute;
+            if (attribute.matches("^[A-Za-z]+( |-)?[0-9].*")) {
+                messgroesseString = attribute.substring(0,1).toUpperCase() +
+                                    attribute.replaceAll("(-| )?[0-9].*","").substring(1).toLowerCase() +
+                                    '-' +
+                                    attribute.replaceFirst("^[A-Za-z]*(-| )?","").toLowerCase();
+            }
+
+            builder.and("messgroesse", messgroesseString);
             List<Messgroesse> groesse =
                 (List<Messgroesse>)repository.filter(
                     builder.getQuery(),
