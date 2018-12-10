@@ -102,7 +102,7 @@ public class Config {
 	/**
 	 * Registered highlighter classes
 	 */
-	public static final Map<String, Class<? extends Highlighter>> highlighterClasses = new HashMap<String, Class<? extends Highlighter>>();
+	/*package*/ static final Map<String, Class<? extends Highlighter>> highlighterClasses = new HashMap<String, Class<? extends Highlighter>>();
 
 	/**
 	 * Prefix used for plug-able highlighters
