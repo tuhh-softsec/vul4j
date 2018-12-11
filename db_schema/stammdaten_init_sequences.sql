@@ -12,8 +12,6 @@ SELECT pg_catalog.setval('deskriptor_umwelt_id_seq', (SELECT max(id) FROM deskri
 
 SELECT pg_catalog.setval('deskriptoren_id_seq', (SELECT max(id) FROM deskriptoren), true);
 
-SELECT pg_catalog.setval('favorite_id_seq', (SELECT max(id) FROM favorite), false);
-
 SELECT pg_catalog.setval('filter_id_seq', (SELECT max(id) FROM filter), true);
 
 SELECT pg_catalog.setval('koordinaten_art_id_seq', (SELECT max(id) FROM koordinaten_art), true);
@@ -39,7 +37,5 @@ SELECT pg_catalog.setval('probenart_id_seq', (SELECT max(id) FROM probenart), tr
 SELECT pg_catalog.setval('probenehmer_id_seq', (SELECT max(id) FROM probenehmer), true);
 
 SELECT pg_catalog.setval('base_query_id_seq', (SELECT max(id) FROM base_query), true);
-
-SELECT pg_catalog.setval('result_id_seq', (SELECT max(id) FROM result), true);
 
 SELECT pg_catalog.setval('staat_id_seq', (SELECT max(id) FROM staat), true);

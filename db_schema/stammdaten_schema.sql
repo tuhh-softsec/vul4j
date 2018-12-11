@@ -269,19 +269,6 @@ CREATE TABLE lada_user (
 INSERT INTO lada_user VALUES(0, 'Default');
 
 
-CREATE TABLE query_type (
-    id serial PRIMARY KEY,
-    type character varying(30) NOT NULL
-);
-INSERT INTO query_type VALUES(0, 'probe');
-INSERT INTO query_type VALUES(1, 'messung');
-INSERT INTO query_type VALUES(2, 'messprogramm');
-INSERT INTO query_type VALUES(3, 'ort');
-INSERT INTO query_type VALUES(4, 'probenehmer');
-INSERT INTO query_type VALUES(5, 'datensatzerzeuger');
-INSERT INTO query_type VALUES(6, 'messprogrammkategorie');
-INSERT INTO query_type VALUES(7, 'universial');
-
 CREATE TABLE base_query (
     id serial PRIMARY KEY,
     sql text NOT NULL
@@ -299,13 +286,6 @@ CREATE TABLE query_messstelle (
     id serial PRIMARY KEY,
     query integer REFERENCES query_user ON DELETE CASCADE,
     mess_stelle character varying(5) REFERENCES mess_stelle
-);
-
-
-CREATE TABLE favorite (
-    id serial PRIMARY KEY,
-    user_id integer NOT NULL REFERENCES lada_user,
-    query_id integer NOT NULL REFERENCES base_query ON DELETE CASCADE
 );
 
 
@@ -569,20 +549,6 @@ CREATE TABLE result_type (
     id  serial PRIMARY KEY,
     name character varying(12),
     format character varying(30)
-);
-
-
-CREATE TABLE result (
-    id serial PRIMARY KEY,
-    query_id integer NOT NULL REFERENCES base_query ON DELETE CASCADE,
-    data_index character varying(50) NOT NULL,
-    data_type integer REFERENCES result_type,
-    header character varying(50) NOT NULL,
-    width integer,
-    flex boolean,
-    index integer NOT NULL,
-    UNIQUE (query_id, index),
-    UNIQUE (query_id, data_index)
 );
 
 

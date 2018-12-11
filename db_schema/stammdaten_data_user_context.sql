@@ -29,12 +29,3 @@ COPY lada_user (id, name) FROM stdin;
 \.
 
 
---
--- TOC entry 4681 (class 0 OID 535715)
--- Dependencies: 246
--- Data for Name: favorite; Type: TABLE DATA; Schema: stammdaten; Owner: lada
---
-
-COPY favorite (id, user_id, query_id) FROM stdin;
-\.
-
