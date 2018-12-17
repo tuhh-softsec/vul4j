@@ -131,6 +131,9 @@ if [ "$NO_DATA" != "true" ]; then
     echo init sequences
     psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_init_sequences.sql
 
+    echo create private lada views
+    [ -f private_lada_views.sql ] && psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/private_lada_views.sql
+
     echo create schema geo
     psql $DB_CONNECT_STRING -d $DB_NAME --command "CREATE SCHEMA geo AUTHORIZATION $ROLE_NAME"
 
