@@ -39,22 +39,24 @@ public class UniqueNebenprobenNr implements Rule {
     @Override
     public Violation execute(Object object) {
         Messung messung= (Messung)object;
-        QueryBuilder<Messung> builder = new QueryBuilder<Messung>(
-            repo.entityManager(Strings.LAND),
-            Messung.class);
-        builder.and("nebenprobenNr", messung.getNebenprobenNr());
-        builder.and("probeId", messung.getProbeId());
-        Response response = repo.filter(builder.getQuery(), Strings.LAND);
-        if (!((List<Messung>)response.getData()).isEmpty()) {
-            Messung found = ((List<Messung>)response.getData()).get(0);
-            // The messung found in the db equals the new messung. (Update)
-            if (messung.getId() != null &&
-                messung.getId().equals(found.getId())) {
-                return null;
+        if (messung.getNebenprobenNr() != null) {
+            QueryBuilder<Messung> builder = new QueryBuilder<Messung>(
+                repo.entityManager(Strings.LAND),
+                Messung.class);
+            builder.and("nebenprobenNr", messung.getNebenprobenNr());
+            builder.and("probeId", messung.getProbeId());
+            Response response = repo.filter(builder.getQuery(), Strings.LAND);
+            if (!((List<Messung>)response.getData()).isEmpty()) {
+                Messung found = ((List<Messung>)response.getData()).get(0);
+                // The messung found in the db equals the new messung. (Update)
+                if (messung.getId() != null &&
+                    messung.getId().equals(found.getId())) {
+                    return null;
+                }
+                Violation violation = new Violation();
+                violation.addError("nebenprobenNr", 611);
+                return violation;
             }
-            Violation violation = new Violation();
-            violation.addError("nebenprobenNr", 611);
-            return violation;
         }
         return null;
     }
