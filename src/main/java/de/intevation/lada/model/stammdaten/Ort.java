@@ -41,6 +41,9 @@ public class Ort implements Serializable {
     @Column(name="gem_id")
     private String gemId;
 
+    @Column(name="gem_unt_id")
+    private Integer gemUntId;
+
     @Column(name="hoehe_ueber_nn")
     private Float hoeheUeberNn;
 
@@ -146,6 +149,14 @@ public class Ort implements Serializable {
 
     public void setGemId(String gemId) {
         this.gemId = gemId;
+    }
+
+    public Integer getGemUntId() {
+        return this.gemUntId;
+    }
+
+    public void setGemUntId(Integer gemId) {
+        this.gemUntId = gemUntId;
     }
 
     public Float getHoeheUeberNn() {
