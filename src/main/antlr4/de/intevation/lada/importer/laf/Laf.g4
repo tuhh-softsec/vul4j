@@ -2,7 +2,7 @@ grammar Laf;
 
 probendatei : probe* end? EOF;
 
-end : '%ENDE%' (WS)* (NEWLINE)? (CHAR)*;
+end : ENDOFLAF;
 
 probe : '%PROBE%' (WS)* NEWLINE probedaten+ ;
 
@@ -368,3 +368,4 @@ STRING_ESC : ('"'(~('"'))*'"') ;
 STRING : C+ ;
 C : CHAR ;
 fragment CHAR : ~[ "\r\n] ;
+ENDOFLAF : '%ENDE' .* ;
