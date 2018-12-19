@@ -297,7 +297,7 @@ implements Creator
             String type = "";
             if ("E".equals(o.getOrtszuordnungTyp()) ||
                 "R".equals(o.getOrtszuordnungTyp())) {
-                laf += writeOrtData(o,"E_");
+                laf += writeOrtData(o,"P_");
             }
         }
         for(Ortszuordnung o : orte) {
@@ -365,7 +365,7 @@ implements Creator
         koord += sOrte.get(0).getKoordYExtern() + "\"";
         laf += lafLine(typePrefix + "KOORDINATEN_S", koord);
 
-        if ("E_".equals(typePrefix) && sOrte.get(0).getOzId() != null) {
+        if ("P_".equals(typePrefix) && sOrte.get(0).getOzId() != null) {
             lafLine(typePrefix + "ORTS_ZUSATZCODE", sOrte.get(0).getOzId(), CN);
         }
         else if ("U_".equals(typePrefix) && "R".equals(o.getOrtszuordnungTyp())) {
