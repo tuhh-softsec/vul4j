@@ -368,4 +368,4 @@ STRING_ESC : ('"'(~('"'))*'"') ;
 STRING : C+ ;
 C : CHAR ;
 fragment CHAR : ~[ "\r\n] ;
-ENDOFLAF : '%ENDE' .* ;
+ENDOFLAF : '%ENDE%' .* ;
