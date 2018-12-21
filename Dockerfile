@@ -76,12 +76,11 @@ RUN ln -fs $PWD/wildfly/standalone.conf $JBOSS_HOME/bin/
 RUN wildfly/execute.sh
 
 RUN rm $JBOSS_HOME/standalone/configuration/standalone_xml_history/current/*
-RUN chmod +w $JBOSS_HOME/standalone/configuration/standalone_xml_history
 
 #
 # Build and deploy LADA-server
 #
-ENV LADA_VERSION 3.2-SNAPSHOT
+ENV LADA_VERSION 3.3-SNAPSHOT
 RUN mvn clean compile package && \
     mv target/lada-server-$LADA_VERSION.war \
        $JBOSS_HOME/standalone/deployments/lada-server.war && \

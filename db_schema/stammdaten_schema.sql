@@ -133,9 +133,6 @@ CREATE TABLE betriebsart (
     id smallint PRIMARY KEY,
     name character varying(30) NOT NULL
 );
-INSERT INTO betriebsart VALUES(1, 'Normal-/Routinebetrieb');
-INSERT INTO betriebsart VALUES(2, 'Störfall-/Intensivbetrieb');
-INSERT INTO betriebsart VALUES(3, 'Übung zum Störfall');
 
 
 CREATE TABLE staat (
@@ -218,7 +215,7 @@ CREATE TABLE auth_lst_umw (
 CREATE TABLE datenbasis (
     id serial PRIMARY KEY,
     beschreibung character varying(30),
-    datenbasis character varying(6)
+    datenbasis character varying(12)
 );
 
 
@@ -272,19 +269,6 @@ CREATE TABLE lada_user (
 INSERT INTO lada_user VALUES(0, 'Default');
 
 
-CREATE TABLE query_type (
-    id serial PRIMARY KEY,
-    type character varying(30) NOT NULL
-);
-INSERT INTO query_type VALUES(0, 'probe');
-INSERT INTO query_type VALUES(1, 'messung');
-INSERT INTO query_type VALUES(2, 'messprogramm');
-INSERT INTO query_type VALUES(3, 'ort');
-INSERT INTO query_type VALUES(4, 'probenehmer');
-INSERT INTO query_type VALUES(5, 'datensatzerzeuger');
-INSERT INTO query_type VALUES(6, 'messprogrammkategorie');
-INSERT INTO query_type VALUES(7, 'universial');
-
 CREATE TABLE base_query (
     id serial PRIMARY KEY,
     sql text NOT NULL
@@ -302,13 +286,6 @@ CREATE TABLE query_messstelle (
     id serial PRIMARY KEY,
     query integer REFERENCES query_user ON DELETE CASCADE,
     mess_stelle character varying(5) REFERENCES mess_stelle
-);
-
-
-CREATE TABLE favorite (
-    id serial PRIMARY KEY,
-    user_id integer NOT NULL REFERENCES lada_user,
-    query_id integer NOT NULL REFERENCES base_query ON DELETE CASCADE
 );
 
 
@@ -388,9 +365,6 @@ CREATE TABLE mmt_messgroesse_grp (
 ALTER TABLE ONLY mmt_messgroesse_grp
     ADD CONSTRAINT mmt_messgroesse_grp_pkey PRIMARY KEY (messgroessengruppe_id, mmt_id);
 
-
-
-
 CREATE VIEW mmt_messgroesse AS
  SELECT mmt_messgroesse_grp.mmt_id,
     mg_grp.messgroesse_id
@@ -399,10 +373,34 @@ CREATE VIEW mmt_messgroesse AS
   WHERE (mg_grp.messgroessengruppe_id = mmt_messgroesse_grp.messgroessengruppe_id);
 
 
-CREATE TABLE ort_typ (
-    id smallint PRIMARY KEY,
-    ort_typ character varying(60),
-    code character varying(3)
+-- Mappings for REI extension
+
+CREATE TABLE rei_progpunkt
+(
+    id serial PRIMARY KEY,
+    reiid character varying(10) NOT NULL,
+    rei_prog_punkt character varying(120)
+);
+
+CREATE TABLE rei_progpunkt_gruppe
+(
+    id serial PRIMARY KEY,
+    rei_prog_punkt_gruppe character varying(30),
+    beschreibung character varying(120)
+);
+
+CREATE TABLE rei_progpunkt_grp_zuord
+(
+    id serial PRIMARY KEY,
+    rei_progpunkt_grp_id integer REFERENCES rei_progpunkt_gruppe,
+    rei_progpunkt_id integer REFERENCES rei_progpunkt
+);
+
+CREATE TABLE rei_progpunkt_grp_umw_zuord
+(
+    id serial PRIMARY KEY,
+    rei_progpunkt_grp_id integer REFERENCES rei_progpunkt_gruppe,
+    umw_id character varying(3) REFERENCES umwelt
 );
 
 CREATE TABLE kta (
@@ -428,10 +426,33 @@ CREATE TABLE kta_grp_zuord
     kta_id integer REFERENCES kta
 );
 
+-- Mappings for ort
+
+CREATE TABLE ort_typ (
+    id smallint PRIMARY KEY,
+    ort_typ character varying(60),
+    code character varying(3)
+);
+
 CREATE TABLE ortszusatz (
     ozs_id character varying(7) PRIMARY KEY,
     ortszusatz character varying(80) NOT NULL
 );
+
+CREATE TABLE gemeindeuntergliederung (
+    id serial PRIMARY KEY,
+    netzbetreiber_id character varying(2) NOT NULL REFERENCES netz_betreiber,
+    gem_id character varying(8) NOT NULL REFERENCES verwaltungseinheit,
+    ozk_id integer NOT NULL,
+    gemeindeuntergliederung character varying(180),
+    kda_id integer REFERENCES koordinaten_art,
+    koord_x_extern character varying(22),
+    koord_y_extern character varying(22),
+    geom public.geometry(Point,4326),
+    shape public.geometry(MultiPolygon,4326),
+    letzte_aenderung timestamp without time zone DEFAULT now()
+);
+CREATE TRIGGER letzte_aenderung_gemeindeuntergliederung BEFORE UPDATE ON gemeindeuntergliederung FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
 
 CREATE TABLE ort (
     id serial PRIMARY KEY,
@@ -460,6 +481,8 @@ CREATE TABLE ort (
     kta_gruppe_id integer REFERENCES kta_gruppe,
     oz_id character varying(7) REFERENCES ortszusatz(ozs_id),
     hoehe_ueber_nn real,
+    rei_progpunkt_grp_id integer REFERENCES rei_progpunkt_gruppe,
+    gem_unt_id integer REFERENCES gemeindeuntergliederung,
     UNIQUE(ort_id, netzbetreiber_id)
 );
 
@@ -529,20 +552,6 @@ CREATE TABLE result_type (
 );
 
 
-CREATE TABLE result (
-    id serial PRIMARY KEY,
-    query_id integer NOT NULL REFERENCES base_query ON DELETE CASCADE,
-    data_index character varying(50) NOT NULL,
-    data_type integer REFERENCES result_type,
-    header character varying(50) NOT NULL,
-    width integer,
-    flex boolean,
-    index integer NOT NULL,
-    UNIQUE (query_id, index),
-    UNIQUE (query_id, data_index)
-);
-
-
 -- Status workflow
 CREATE TABLE status_stufe (
     id integer PRIMARY KEY,
@@ -597,6 +606,7 @@ CREATE TABLE status_reihenfolge (
     UNIQUE(von_id, zu_id)
 );
 
+/*
 CREATE FUNCTION populate_status_reihenfolge() RETURNS void AS $$
 DECLARE kombi_from RECORD;
 DECLARE s_from integer;
@@ -655,7 +665,7 @@ SELECT populate_status_reihenfolge();
 DROP FUNCTION populate_status_reihenfolge();
 ALTER TABLE status_reihenfolge ALTER COLUMN id DROP DEFAULT;
 DROP SEQUENCE status_reihenfolge_id_seq;
-
+*/
 
 CREATE VIEW status_erreichbar AS (
     SELECT r.id,
@@ -701,36 +711,6 @@ CREATE TABLE importer_config (
     CHECK (action = 'default' OR
         action = 'convert' OR
         action = 'transform')
-);
-
--- Mappings for REI extension
-
-CREATE TABLE rei_progpunkt
-(
-    id serial PRIMARY KEY,
-    reiid character varying(10) NOT NULL,
-    rei_prog_punkt character varying(120)
-);
-
-CREATE TABLE rei_progpunkt_gruppe
-(
-    id serial PRIMARY KEY,
-    rei_prog_punkt_gruppe character varying(30),
-    beschreibung character varying(120)
-);
-
-CREATE TABLE rei_progpunkt_grp_zuord
-(
-    id serial PRIMARY KEY,
-    rei_progpunkt_grp_id integer REFERENCES rei_progpunkt_gruppe,
-    rei_progpunkt_id integer REFERENCES rei_progpunkt
-);
-
-CREATE TABLE rei_progpunkt_grp_umw_zuord
-(
-    id serial PRIMARY KEY,
-    rei_progpunkt_grp_id integer REFERENCES rei_progpunkt_gruppe,
-    umw_id character varying(3) REFERENCES umwelt
 );
 
 -- Tables for queryui

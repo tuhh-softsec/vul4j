@@ -37,7 +37,7 @@ public class MessungIdAuthorizer extends BaseAuthorizer {
             m = clazz.getMethod("getMessungsId");
         } catch (NoSuchMethodException | SecurityException e1) {
             return false;
-        }    
+        }
         try {
             id = (Integer) m.invoke(data);
         } catch (IllegalAccessException |
@@ -72,11 +72,16 @@ public class MessungIdAuthorizer extends BaseAuthorizer {
             StatusKombi.class,
             status.getStatusKombi(),
             Strings.STAMM);
-        return (method == RequestMethod.POST ||
-                method == RequestMethod.PUT ||
-                method == RequestMethod.DELETE ||
-                kombi.getStatusWert().getId() != 0) &&
-                getAuthorization(userInfo, probe);
+        if (method == RequestMethod.DELETE &&
+           (kombi.getId() == 1 ||
+           kombi.getId() == 9 ||
+           kombi.getId() == 13)
+        ) {
+            return true;
+        }
+        return ((method == RequestMethod.POST ||
+                method == RequestMethod.PUT) &&
+                getAuthorization(userInfo, probe));
     }
 
     @SuppressWarnings("unchecked")

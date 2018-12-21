@@ -166,6 +166,8 @@ CREATE TABLE messprogramm (
     probe_kommentar character varying(80),
     rei_progpunkt_grp_id integer REFERENCES stamm.rei_progpunkt_gruppe,
     kta_gruppe_id integer REFERENCES stamm.kta_gruppe,
+    meh_id smallint REFERENCES stamm.mess_einheit,
+    probenahmemenge character varying(90),
     letzte_aenderung timestamp without time zone DEFAULT now() NOT NULL,
     CHECK (probenintervall = 'J'
                AND teilintervall_von BETWEEN gueltig_von AND gueltig_bis

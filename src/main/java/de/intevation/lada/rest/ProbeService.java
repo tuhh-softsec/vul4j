@@ -427,7 +427,11 @@ public class ProbeService {
             OrtszuordnungMp.class
         );
         ortBuilder.and("messprogrammId", messprogramm.getId());
-        ortBuilder.and("ortszuordnungTyp", "E");
+        if (messprogramm.getDatenbasisId() == 4) {
+            ortBuilder.and("ortszuordnungTyp", "R");
+        } else {
+            ortBuilder.and("ortszuordnungTyp", "E");
+        }
         List<OrtszuordnungMp> ortszuordnung = repository.filterPlain(ortBuilder.getQuery(), "land");
         String gemId = null;
         if (!ortszuordnung.isEmpty()) {

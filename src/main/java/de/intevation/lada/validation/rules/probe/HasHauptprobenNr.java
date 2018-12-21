@@ -27,7 +27,7 @@ public class HasHauptprobenNr implements Rule {
         if (probe.getHauptprobenNr() == null ||
             probe.getHauptprobenNr().equals("")) {
             Violation violation = new Violation();
-            violation.addError("hauptprobenNr", 631);
+            violation.addWarning("hauptprobenNr", 631);
             return violation;
         }
         return null;

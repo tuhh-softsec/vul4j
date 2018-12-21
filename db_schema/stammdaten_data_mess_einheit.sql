@@ -39,6 +39,7 @@ COPY mess_einheit (id, beschreibung, einheit, eudf_messeinheit_id, umrechnungs_f
 74	Mikro-Gray	µGy	\N	\N
 75	Milli-Gray	mGy	\N	\N
 76	Mikro-Sievert pro Stunde	µSv/h	USV/H	\N
+0	undefined	undefined	\N	\N
 1	Millimeter	mm	MM	\N
 2	Zentimeter	cm	CM	\N
 3	Meter	m	M	\N

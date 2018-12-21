@@ -34,6 +34,7 @@ import javax.ws.rs.core.UriInfo;
 
 import de.intevation.lada.model.stammdaten.GridColumn;
 import de.intevation.lada.model.stammdaten.GridColumnValue;
+import de.intevation.lada.model.stammdaten.MessStelle;
 import de.intevation.lada.model.stammdaten.QueryUser;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
@@ -92,12 +93,23 @@ public class ColumnValueService {
         CriteriaQuery<GridColumnValue> criteriaQuery = builder.createQuery(GridColumnValue.class);
         Root<GridColumnValue> root = criteriaQuery.from(GridColumnValue.class);
         Join<GridColumnValue, QueryUser> value = root.join("queryUser", javax.persistence.criteria.JoinType.LEFT);
+        Join<MessStelle, QueryUser> mess = value.join("messStelles", javax.persistence.criteria.JoinType.LEFT);
         Predicate filter = builder.equal(root.get("queryUser"), id);
         Predicate uId = builder.equal(root.get("userId"), userInfo.getUserId());
         Predicate zeroIdFilter = builder.equal(root.get("userId"), "0");
         Predicate userFilter = builder.or(uId, zeroIdFilter);
+        if (userInfo.getMessstellen() != null &&
+            !userInfo.getMessstellen().isEmpty()
+        ) {
+            userFilter = builder.or(userFilter, mess.get("messStelle").in(userInfo.getMessstellen()));
+        }
+        if (userInfo.getLaborMessstellen() != null &&
+            !userInfo.getLaborMessstellen().isEmpty()
+        ) {
+            userFilter = builder.or(userFilter, mess.get("messStelle").in(userInfo.getLaborMessstellen()));
+        }
         filter = builder.and(filter, userFilter);
-        criteriaQuery.where(filter);
+        criteriaQuery.where(filter).distinct(true);
         List<GridColumnValue> queries = repository.filterPlain(criteriaQuery, Strings.STAMM);
 
         for (GridColumnValue gcv : queries) {

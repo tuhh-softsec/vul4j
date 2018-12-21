@@ -33,6 +33,7 @@ COPY datenbasis (id, beschreibung, datenbasis) FROM stdin;
 7	Landesdaten	Land
 2	§162-Daten	§162
 1	§161-Daten	§161
+10	§161-Daten/SPARS	§162/SPARSE
 \.
 
 

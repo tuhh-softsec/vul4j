@@ -108,6 +108,12 @@ public class Messprogramm implements Serializable {
     @Column(name="aktiv")
     private Boolean aktiv;
 
+    @Column(name="meh_id")
+    private Integer mehId;
+
+    @Column(name="probenahmemenge")
+    private String probenahmeMenge;
+
     @Transient
     private boolean readonly;
 
@@ -304,6 +310,22 @@ public class Messprogramm implements Serializable {
 
     public void setAktiv(Boolean aktiv) {
         this.aktiv = aktiv;
+    }
+
+    public Integer getMehId() {
+        return this.mehId;
+    }
+
+    public void setMehId(Integer mehId) {
+        this.mehId = mehId;
+    }
+
+    public String getProbenahmeMenge() {
+        return this.probenahmeMenge;
+    }
+
+    public void setProbenahmeMenge(String probenahmeMenge) {
+        this.probenahmeMenge = probenahmeMenge;
     }
 
     public boolean isReadonly() {

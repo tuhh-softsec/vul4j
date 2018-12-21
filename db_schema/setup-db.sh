@@ -85,10 +85,12 @@ psql $DB_CONNECT_STRING -d $DB_NAME --command \
 if [ "$NO_DATA" != "true" ]; then
     echo "load data:"
     for file in \
+        stammdaten_data_status_reihenfolge.sql \
         stammdaten_data_verwaltungseinheit.sql \
         stammdaten_data_netzbetreiber.sql \
         stammdaten_data_mess_stelle.sql \
         stammdaten_data_auth.sql \
+        stammdaten_data_betriebsart.sql \
         stammdaten_data_mess_einheit.sql \
         stammdaten_data_umwelt.sql \
         stammdaten_data_auth_lst_umw.sql \
@@ -110,12 +112,13 @@ if [ "$NO_DATA" != "true" ]; then
         stammdaten_data_messprogramm_transfer.sql \
         stammdaten_data_ortszusatz.sql \
         stammdaten_data_messprogramm_kategorie.sql \
+        stammdaten_data_gemeindeuntergliederung.sql \
+        stammdaten_data_rei.sql \
         stammdaten_data_ort.sql \
         stammdaten_data_probenehmer.sql \
         stammdaten_data_zeitbasis.sql \
         stammdaten_data_query.sql \
         stammdaten_data_user_context.sql \
-        stammdaten_data_rei.sql \
         stammdaten_data_importer_config.sql \
         lada_data.sql \
         lada_messprogramm.sql
@@ -127,6 +130,9 @@ if [ "$NO_DATA" != "true" ]; then
 
     echo init sequences
     psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_init_sequences.sql
+
+    echo create private lada views
+    [ -f private_lada_views.sql ] && psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/private_lada_views.sql
 
     echo create schema geo
     psql $DB_CONNECT_STRING -d $DB_NAME --command "CREATE SCHEMA geo AUTHORIZATION $ROLE_NAME"

@@ -43,6 +43,8 @@ import de.intevation.lada.util.rest.Response;
  */
 public class ProbeFactory {
 
+    @Inject Logger logger;
+
     // Day of year representing February 28
     private static final int FEBRUARY_28 = 58;
 
@@ -75,7 +77,6 @@ public class ProbeFactory {
     private class Intervall {
         private final int teilVon;
         private final int teilBis;
-        private final int offset;
 
         private final int intervallField;
         private final int subIntField;
@@ -89,7 +90,6 @@ public class ProbeFactory {
         ) {
             this.teilVon = messprogramm.getTeilintervallVon();
             this.teilBis = messprogramm.getTeilintervallBis();
-            this.offset = messprogramm.getIntervallOffset();
 
             this.intervallField = fieldsTable
                 .get(messprogramm.getProbenintervall())[0];
@@ -125,16 +125,16 @@ public class ProbeFactory {
 
        /**
         * Return given calendar adjusted to start of intervall (e.g. first
-        * day in quarter) plus offset and given amount of days.
+        * day in quarter) and given amount of days.
         *
         * @param cal Calendar to be adjusted
-        * @param int amount of days to be added (plus offset)
+        * @param int amount of days to be added
         *
         * @return the adjusted Calendar object.
         */
         private Calendar adjustSubIntField(Calendar cal, int teil) {
             int intValue = cal.get(intervallField);
-            int adjust = offset;
+            int adjust = 0;
 
             if (intervallField != subIntField) {
                 if (!(intervallField == 2 && intValue == 11)) {
@@ -230,8 +230,6 @@ public class ProbeFactory {
     // end Intervall class
 
 
-    @Inject Logger logger;
-
     /**
      * The data repository
      */
@@ -262,6 +260,7 @@ public class ProbeFactory {
 
         int gueltigVon = messprogramm.getGueltigVon();
         int gueltigBis = messprogramm.getGueltigBis();
+        int offset = messprogramm.getIntervallOffset();
 
         List<Probe> proben = new ArrayList<Probe>();
 
@@ -284,7 +283,13 @@ public class ProbeFactory {
                 ? gueltigBis + leapDay
                 : gueltigBis;
 
-            int solldatumBeginnDOY = intervall.getStartDOY();
+            int solldatumBeginnDOY = intervall.getStartDOY() + offset;
+            Calendar sollFrom = Calendar.getInstance();
+            sollFrom.setTime(intervall.getFrom());
+            sollFrom.add(Calendar.DATE, offset);
+            Calendar sollTo = Calendar.getInstance();
+            sollTo.setTime(intervall.getTo());
+            sollTo.add(Calendar.DATE, offset);
 
             if ((
                     // Validity within one year
@@ -300,8 +305,8 @@ public class ProbeFactory {
             ) {
                 Probe probe = createObjects(
                     messprogramm,
-                    intervall.getFrom(),
-                    intervall.getTo()
+                    sollFrom.getTime(),
+                    sollTo.getTime()
                 );
                 if (probe != null) {
                     proben.add(probe);
@@ -344,6 +349,7 @@ public class ProbeFactory {
         probe.setBaId(messprogramm.getBaId());
         probe.setDatenbasisId(messprogramm.getDatenbasisId());
         probe.setMediaDesk(messprogramm.getMediaDesk());
+        probe = findMediaDesk(probe);
         probe.setMstId(messprogramm.getMstId());
         probe.setLaborMstId(messprogramm.getLaborMstId());
         probe.setProbenartId(messprogramm.getProbenartId());
@@ -391,7 +397,11 @@ public class ProbeFactory {
                 wert.setMessgroesseId(mw);
                 wert.setMessungsId(messung.getId());
                 wert.setMesswert(0d);
-                wert.setMehId(1);
+                if (messprogramm.getMehId() != null) {
+                    wert.setMehId(messprogramm.getMehId());
+                } else {
+                    wert.setMehId(0);
+                }
                 repository.create(wert, Strings.LAND);
             }
         }
@@ -547,7 +557,6 @@ public class ProbeFactory {
         for (int i = 0; i < media.size(); i++) {
             String field = "s" + (i > 9 ? i : "0" + i);
             QueryBuilder<DeskriptorUmwelt> tmp = builder.getEmptyBuilder();
-            logger.debug("adding " + field + " select " + media.get(i));
             if (media.get(i) != -1) {
                 tmp.and(field, media.get(i));
                 tmp.or(field, null);
