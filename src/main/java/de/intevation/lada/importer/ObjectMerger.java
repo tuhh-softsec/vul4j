@@ -119,7 +119,6 @@ public class ObjectMerger {
             // Remove all db objects to be able to create new ones.
             found.get(0).setMessfehler(zusatzwerte.get(i).getMessfehler());
             found.get(0).setMesswertPzs(zusatzwerte.get(i).getMesswertPzs());
-            found.get(0).setNwgZuMesswert(zusatzwerte.get(i).getNwgZuMesswert());
             repository.update(found.get(0), Strings.LAND);
             builder = builder.getEmptyBuilder();
         }

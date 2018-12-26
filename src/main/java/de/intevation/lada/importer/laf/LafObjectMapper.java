@@ -758,7 +758,12 @@ public class LafObjectMapper {
         ZusatzWert zusatzwert = new ZusatzWert();
         zusatzwert.setProbeId(probeId);
         zusatzwert.setMessfehler(Float.valueOf(attributes.get("MESSFEHLER")));
-        zusatzwert.setMesswertPzs(Double.valueOf(attributes.get("MESSWERT_PZS")));
+        String wert = attributes.get("MESSWERT_PZS");
+        if (wert.startsWith("<")) {
+            wert = wert.substring(1);
+            zusatzwert.setKleinerAls("<");
+        }
+        zusatzwert.setMesswertPzs(Double.valueOf(wert.replaceAll(",", ".")));
         ImporterConfig cfg = getImporterConfigByAttributeUpper("ZUSATZWERT");
         String attribute = attributes.get("PZS");
         if (cfg != null &&
