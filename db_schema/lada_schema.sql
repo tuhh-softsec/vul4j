@@ -254,7 +254,7 @@ CREATE TABLE probe (
     tree_modified timestamp without time zone DEFAULT now(),
     rei_progpunkt_grp_id integer REFERENCES stamm.rei_progpunkt_gruppe,
     kta_gruppe_id integer REFERENCES stamm.kta_gruppe,
-    UNIQUE (mst_id, hauptproben_nr),
+    UNIQUE (test, mst_id, hauptproben_nr),
     CHECK(solldatum_beginn <= solldatum_ende)
 );
 CREATE TRIGGER letzte_aenderung_probe BEFORE UPDATE ON probe FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
