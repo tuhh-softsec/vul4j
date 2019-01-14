@@ -757,7 +757,9 @@ public class LafObjectMapper {
     private ZusatzWert createZusatzwert(Map<String, String> attributes, int probeId) {
         ZusatzWert zusatzwert = new ZusatzWert();
         zusatzwert.setProbeId(probeId);
-        zusatzwert.setMessfehler(Float.valueOf(attributes.get("MESSFEHLER")));
+        if (attributes.containsKey("MESSFEHLER")) {
+            zusatzwert.setMessfehler(Float.valueOf(attributes.get("MESSFEHLER")));
+        }
         String wert = attributes.get("MESSWERT_PZS");
         if (wert.startsWith("<")) {
             wert = wert.substring(1);
@@ -895,7 +897,9 @@ public class LafObjectMapper {
             messwert.setMesswertNwg("<");
         }
         messwert.setMesswert(Double.valueOf(wert.replaceAll(",", ".")));
-        messwert.setMessfehler(Double.valueOf(attributes.get("MESSFEHLER").replaceAll(",", ".")).floatValue());
+        if (attributes.containsKey("MESSFEHLER")) {
+            messwert.setMessfehler(Double.valueOf(attributes.get("MESSFEHLER").replaceAll(",", ".")).floatValue());
+        }
         if (attributes.containsKey("NWG")) {
             messwert.setNwgZuMesswert(Double.valueOf(attributes.get("NWG").replaceAll(",", ".")));
         }
