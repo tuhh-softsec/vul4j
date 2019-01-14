@@ -38,6 +38,10 @@ public class LafImporter implements Importer{
     private Map<String, List<ReportItem>> warnings = new HashMap<String, List<ReportItem>>();
 
     public void doImport(String lafString, UserInfo userInfo, List<ImporterConfig> config) {
+        // Append newline to avoid parser errors.
+        // Every line can be the last line, so it is easier to append a newline here
+        // than to extend the grammar with EOF for every line.
+        lafString += "\r\n";
         errors = new HashMap<String, List<ReportItem>>();
         warnings = new HashMap<String, List<ReportItem>>();
 
