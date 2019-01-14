@@ -1648,13 +1648,19 @@ public class LafObjectMapper {
             probe.setProbeentnahmeEnde(getDate(value.toString()));
         }
 
-        if ("UMWELTBEREICH_S".equals(key) && probe.getUmwId() == null) {
+        if ("UMWELTBEREICH_S".equals(key) &&
+            probe.getUmwId() == null &&
+            value != null
+        ) {
             probe.setUmwId(value.toString());
         }
         else if ("UMWELTBEREICH_S".equals(key) && probe.getUmwId() != null){
             currentWarnings.add(new ReportItem(key, value.toString(), 672));
         }
-        if ("UMWELTBEREICH_C".equals(key) && probe.getUmwId() == null) {
+        if ("UMWELTBEREICH_C".equals(key) &&
+            probe.getUmwId() == null &&
+            value != null
+        ) {
             QueryBuilder<Umwelt> builder =
                 new QueryBuilder<Umwelt>(
                     repository.entityManager(Strings.STAMM),

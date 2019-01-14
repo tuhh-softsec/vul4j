@@ -1288,6 +1288,9 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
+        if (value.equals("")) {
+            value = null;
+        }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
         this.hasUmwelt = true;
     }
@@ -1318,6 +1321,9 @@ public class LafObjectListener extends LafBaseListener {
             err.setCode(670);
             currentErrors.add(err);;
             return;
+        }
+        if (value.equals("")) {
+            value = null;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
         this.hasUmwelt = true;
