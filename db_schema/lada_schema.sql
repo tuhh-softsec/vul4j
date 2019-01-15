@@ -154,7 +154,7 @@ CREATE TABLE messprogramm (
     gem_id character varying(8) REFERENCES stamm.verwaltungseinheit,
     media_desk character varying(100) CHECK(media_desk LIKE '% %'),
     umw_id character varying(3) REFERENCES stamm.umwelt,
-    probenart_id integer NOT NULL REFERENCES stamm.probenart,
+    probenart_id integer REFERENCES stamm.probenart,
     probenintervall character varying(2) NOT NULL,
     teilintervall_von integer NOT NULL,
     teilintervall_bis integer NOT NULL,

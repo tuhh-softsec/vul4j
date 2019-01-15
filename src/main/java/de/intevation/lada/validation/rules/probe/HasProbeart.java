@@ -26,7 +26,7 @@ public class HasProbeart implements Rule {
         Probe probe = (Probe)object;
         if (probe.getProbenartId() == null) {
             Violation violation = new Violation();
-            violation.addError("probenartId", 631);
+            violation.addWarning("probenartId", 631);
             return violation;
         }
         return null;
