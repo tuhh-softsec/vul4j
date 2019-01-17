@@ -39,10 +39,12 @@ import de.intevation.lada.model.land.AuditTrailMessung;
 import de.intevation.lada.model.land.AuditTrailProbe;
 import de.intevation.lada.model.land.Messung;
 import de.intevation.lada.model.land.Probe;
+import de.intevation.lada.model.land.StatusProtokoll;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
+import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
@@ -181,6 +183,8 @@ public class AuditTrailService {
         if (probe == null) {
             return ret;
         }
+        UserInfo userInfo = authorization.getInfo(request);
+
 
         // Get all entries for the probe and its sub objects.
         QueryBuilder<AuditTrailProbe> builder =
@@ -204,6 +208,18 @@ public class AuditTrailService {
         auditJson.put("id", probe.getId());
         auditJson.put("identifier", probe.getHauptprobenNr());
         for (AuditTrailProbe a : audit) {
+            //If audit entry shows a messwert, do not show if:
+            // - StatusKombi is 1 (MST - nicht vergeben)
+            // - User is not owner of the messung
+            if (a.getTableName().equals("messwert")) {
+                Messung messung = repository.getByIdPlain(Messung.class, a.getMessungsId(), Strings.LAND);
+                StatusProtokoll status = repository.getByIdPlain(StatusProtokoll.class, messung.getStatus(), Strings.LAND);
+                if(status.getStatusKombi() == 1
+                        && !userInfo.getMessstellen().contains(probe.getMstId())) {
+                    continue;
+                }       
+        
+            }
             entries.add(createEntry(a, mapper));
         }
         return responseNode.toString();
@@ -293,7 +309,9 @@ public class AuditTrailService {
         if (messung == null) {
             return ret;
         }
-
+        StatusProtokoll status = repository.getByIdPlain(StatusProtokoll.class, messung.getStatus(), Strings.LAND);
+        Probe probe = repository.getByIdPlain(Probe.class, messung.getProbeId(), Strings.LAND);
+        UserInfo userInfo = authorization.getInfo(request);
         QueryBuilder<AuditTrailMessung> builder =
             new QueryBuilder<AuditTrailMessung>(
                 repository.entityManager(Strings.LAND),
@@ -315,7 +333,16 @@ public class AuditTrailService {
         auditJson.put("id", messung.getId());
         auditJson.put("identifier", messung.getNebenprobenNr());
         for (AuditTrailMessung a : audit) {
+            //If audit entry shows a messwert, do not show if:
+            // - StatusKombi is 1 (MST - nicht vergeben)
+            // - User is not owner of the messung
+            if (a.getTableName().equals("messwert")
+                    && status.getStatusKombi() == 1
+                    && !userInfo.getMessstellen().contains(probe.getMstId())) {
+                continue;
+            }
             entries.add(createEntry(a, mapper));
+
         }
         return responseNode.toString();
     }
