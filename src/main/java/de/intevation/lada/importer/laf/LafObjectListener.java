@@ -3070,7 +3070,7 @@ public class LafObjectListener extends LafBaseListener {
                 children.add(ctx.getChild(i).toString());
             }
         }
-        if (children.size() < 6) {
+        if (children.size() < 5) {
             return;
         }
         String groesse = children.get(1);
