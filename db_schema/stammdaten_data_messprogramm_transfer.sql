@@ -20,7 +20,7 @@ SET search_path = stamm, pg_catalog;
 
 
 COPY messprogramm_transfer (messprogramm_s, messprogramm_c, ba_id, datenbasis_id) FROM stdin;
-1	Routinemessprogramm,	1	2
+1	Routinemessprogramm	1	2
 2	Intensiv- bzw. sektororientiertes Intensivmessprogramm	2	2
 4	REI, bestimmungsgemäßer Betrieb	1	4
 5	REI, Störfall/Unfall	2	4
