@@ -56,7 +56,6 @@ public class GemeindeUntergliederung implements Serializable {
     private Timestamp letzteAenderung;
 
     @Column(columnDefinition="geometry(Point, 4326)")
-    @Type(type = "org.hibernate.spatial.GeometryType")
     private Point geom;
 
     @Transient
