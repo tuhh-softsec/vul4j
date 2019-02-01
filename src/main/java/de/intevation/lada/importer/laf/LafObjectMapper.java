@@ -1512,7 +1512,7 @@ public class LafObjectMapper {
             String attr = value.toString();
             if (cfg != null &&
                 cfg.getAction().equals("convert") &&
-                cfg.getFromValue().equals(attribute)
+                cfg.getFromValue().equals(attr)
             ) {
                 attr = cfg.getToValue();
             }
