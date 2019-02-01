@@ -29,8 +29,8 @@ RUN apt-get update -y && \
 RUN mkdir /opt/jboss
 
 RUN curl \
-    https://download.jboss.org/wildfly/14.0.1.Final/wildfly-14.0.1.Final.tar.gz\
-    | tar zx && mv wildfly-14.0.1.Final /opt/jboss/wildfly
+    https://download.jboss.org/wildfly/15.0.1.Final/wildfly-15.0.1.Final.tar.gz\
+    | tar zx && mv wildfly-15.0.1.Final /opt/jboss/wildfly
 
 ENV JBOSS_HOME /opt/jboss/wildfly
 
@@ -46,11 +46,11 @@ RUN mkdir -p $JBOSS_HOME/modules/org/postgres/main
 RUN curl https://jdbc.postgresql.org/download/postgresql-9.4-1200.jdbc4.jar >\
          $JBOSS_HOME/modules/org/postgres/main/postgresql.jar
 
-RUN curl http://central.maven.org/maven2/org/hibernate/hibernate-spatial/5.3.6.Final/hibernate-spatial-5.3.6.Final.jar >\
-        $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/hibernate-spatial-5.3.6.Final.jar
+RUN curl http://central.maven.org/maven2/org/hibernate/hibernate-spatial/5.4.1.Final/hibernate-spatial-5.4.1.Final.jar >\
+        $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/hibernate-spatial-5.4.1.Final.jar
 
-RUN curl http://central.maven.org/maven2/org/geolatte/geolatte-geom/1.3.0/geolatte-geom-1.3.0.jar >\
-        $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/geolatte-geom-1.3.0.jar
+RUN curl http://central.maven.org/maven2/org/geolatte/geolatte-geom/1.4.0/geolatte-geom-1.4.0.jar >\
+        $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/geolatte-geom-1.4.0.jar
 
 RUN ln -s /usr/share/java/postgis-jdbc-2.2.1.jar \
        $JBOSS_HOME/modules/org/postgres/main/
