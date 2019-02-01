@@ -269,7 +269,8 @@ implements Creator
                 Strings.STAMM).getData();
 
         String value = "\"" + zusatz.get(0).getId() + "\"";
-        value += " " + zw.getMesswertPzs();
+        value += ((zw.getKleinerAls() == null) ? " " : " " + zw.getKleinerAls());
+        value += zw.getMesswertPzs();
         value += " " + zusatz.get(0).getMessEinheitId();
         value += " " + zw.getMessfehler();
         return lafLine("PZB_S", value);

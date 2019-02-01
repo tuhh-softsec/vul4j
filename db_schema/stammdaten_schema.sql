@@ -457,7 +457,7 @@ CREATE TRIGGER letzte_aenderung_gemeindeuntergliederung BEFORE UPDATE ON gemeind
 CREATE TABLE ort (
     id serial PRIMARY KEY,
     netzbetreiber_id character varying(2) NOT NULL REFERENCES netz_betreiber,
-    ort_id character varying(12) NOT NULL,
+    ort_id character varying(13) NOT NULL,
     langtext character varying(100) NOT NULL,
     staat_id smallint REFERENCES staat,
     gem_id character varying(8) REFERENCES verwaltungseinheit,

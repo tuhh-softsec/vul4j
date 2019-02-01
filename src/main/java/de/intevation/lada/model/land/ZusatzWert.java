@@ -35,8 +35,8 @@ public class ZusatzWert implements Serializable {
     @Column(name="messwert_pzs")
     private Double messwertPzs;
 
-    @Column(name="nwg_zu_messwert")
-    private Double nwgZuMesswert;
+    @Column(name="kleiner_als")
+    private String kleinerAls;
 
     @Column(name="probe_id")
     private Integer probeId;
@@ -95,14 +95,6 @@ public class ZusatzWert implements Serializable {
         this.messwertPzs = messwertPzs;
     }
 
-    public Double getNwgZuMesswert() {
-        return this.nwgZuMesswert;
-    }
-
-    public void setNwgZuMesswert(Double nwgZuMesswert) {
-        this.nwgZuMesswert = nwgZuMesswert;
-    }
-
     public Integer getProbeId() {
         return this.probeId;
     }
@@ -117,6 +109,14 @@ public class ZusatzWert implements Serializable {
 
     public void setPzsId(String pzsId) {
         this.pzsId = pzsId;
+    }
+
+    public String getKleinerAls() {
+        return this.kleinerAls;
+    }
+
+    public void setKleinerAls(String kleinerAls) {
+        this.kleinerAls = (kleinerAls == "") ? null : kleinerAls;
     }
 
     public Timestamp getTreeModified() {

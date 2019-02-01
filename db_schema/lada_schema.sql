@@ -237,7 +237,7 @@ CREATE TABLE probe (
     hauptproben_nr character varying(20),
     datenbasis_id smallint REFERENCES stamm.datenbasis,
     ba_id integer REFERENCES stamm.betriebsart,
-    probenart_id smallint NOT NULL REFERENCES stamm.probenart,
+    probenart_id smallint REFERENCES stamm.probenart,
     media_desk character varying(100) CHECK(media_desk LIKE '% %'),
     media character varying(100),
     umw_id character varying(3) REFERENCES stamm.umwelt,
@@ -254,7 +254,7 @@ CREATE TABLE probe (
     tree_modified timestamp without time zone DEFAULT now(),
     rei_progpunkt_grp_id integer REFERENCES stamm.rei_progpunkt_gruppe,
     kta_gruppe_id integer REFERENCES stamm.kta_gruppe,
-    UNIQUE (mst_id, hauptproben_nr),
+    UNIQUE (test, mst_id, hauptproben_nr),
     CHECK(solldatum_beginn <= solldatum_ende)
 );
 CREATE TRIGGER letzte_aenderung_probe BEFORE UPDATE ON probe FOR EACH ROW EXECUTE PROCEDURE update_letzte_aenderung();
@@ -319,6 +319,7 @@ CREATE TABLE zusatz_wert (
     messfehler real,
     letzte_aenderung timestamp without time zone DEFAULT now(),
     nwg_zu_messwert double precision,
+    kleiner_als character varying(1),
     tree_modified timestamp without time zone DEFAULT now(),
     UNIQUE (probe_id, pzs_id)
 );

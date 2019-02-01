@@ -436,22 +436,21 @@ public class ImporterTest extends BaseTest{
         ZusatzWert wert1 = new ZusatzWert();
         wert1.setProbeId(1000);
         wert1.setMessfehler(1.2f);
-        wert1.setMesswertPzs(5.8d);
-        wert1.setNwgZuMesswert(1.3d);
+        wert1.setKleinerAls("<");
         wert1.setPzsId("A74");
 
         ZusatzWert wert2 = new ZusatzWert();
         wert2.setProbeId(1000);
         wert2.setMessfehler(0.2f);
         wert2.setMesswertPzs(1.8d);
-        wert2.setNwgZuMesswert(0.3d);
+        wert1.setKleinerAls(null);
         wert2.setPzsId("A75");
 
         ZusatzWert wert3 = new ZusatzWert();
         wert3.setProbeId(1000);
         wert3.setMessfehler(0.2f);
         wert3.setMesswertPzs(1.8d);
-        wert3.setNwgZuMesswert(0.3d);
+        wert1.setKleinerAls(null);
         wert3.setPzsId("A76");
 
         zusatzwerte.add(wert1);

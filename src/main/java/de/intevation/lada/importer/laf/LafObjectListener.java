@@ -1288,6 +1288,9 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
+        if (value.equals("")) {
+            value = null;
+        }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
         this.hasUmwelt = true;
     }
@@ -1318,6 +1321,9 @@ public class LafObjectListener extends LafBaseListener {
             err.setCode(670);
             currentErrors.add(err);;
             return;
+        }
+        if (value.equals("")) {
+            value = null;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
         this.hasUmwelt = true;
@@ -2658,7 +2664,7 @@ public class LafObjectListener extends LafBaseListener {
      */
     @Override public void enterProbenzusatzbeschreibung(LafParser.ProbenzusatzbeschreibungContext ctx) {
         // c7* f12 c9 f9
-        if (ctx.getChildCount() < 8) {
+        if (ctx.getChildCount() < 5) {
             return;
         }
         String groesse = ctx.getChild(1).toString();
@@ -2671,7 +2677,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String wert = ctx.getChild(3).toString();
+        String wert = ctx.getChild(2).toString();
         wert = wert.replaceAll("\"", "");
         if (!wert.matches(LafDataTypes.F9_10_12)) {
             ReportItem err = new ReportItem();
@@ -2681,7 +2687,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String einheit = ctx.getChild(5).toString();
+        String einheit = ctx.getChild(3).toString();
         einheit = einheit.replaceAll("\"", "").trim();
         if (!einheit.matches(LafDataTypes.C9)) {
             ReportItem err = new ReportItem();
@@ -2691,21 +2697,23 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String fehler = ctx.getChild(7).toString();
-        fehler = fehler.replaceAll("\"", "");
-        if (!fehler.matches(LafDataTypes.F9_10_12)) {
-            ReportItem err = new ReportItem();
-            err.setKey(ctx.getChild(0).toString());
-            err.setValue(fehler);
-            err.setCode(670);
-            currentErrors.add(err);;
-            return;
-        }
         Map<String, String> zusatzwert = new HashMap<String, String>();
+        if (ctx.getChildCount() >= 6) {
+            String fehler = ctx.getChild(4).toString();
+            fehler = fehler.replaceAll("\"", "");
+            if (!fehler.matches(LafDataTypes.F9_10_12)) {
+                ReportItem err = new ReportItem();
+                err.setKey(ctx.getChild(0).toString());
+                err.setValue(fehler);
+                err.setCode(670);
+                currentErrors.add(err);;
+                return;
+            }
+            zusatzwert.put("MESSFEHLER", fehler);
+        }
         zusatzwert.put("PZS", groesse);
         zusatzwert.put("MESSWERT_PZS", wert);
         zusatzwert.put("EINHEIT", einheit);
-        zusatzwert.put("MESSFEHLER", fehler);
         currentProbe.addZusatzwert(zusatzwert);
     }
 
@@ -2716,7 +2724,7 @@ public class LafObjectListener extends LafBaseListener {
      */
     @Override public void enterPzb_s(LafParser.Pzb_sContext ctx) {
         // sc8* f12 si3 f9
-        if (ctx.getChildCount() < 8) {
+        if (ctx.getChildCount() < 5) {
             return;
         }
         String groesse = ctx.getChild(1).toString();
@@ -2729,7 +2737,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String wert = ctx.getChild(3).toString();
+        String wert = ctx.getChild(2).toString();
         wert = wert.replaceAll("\"", "");
         if (!wert.matches(LafDataTypes.F9_10_12)) {
             ReportItem err = new ReportItem();
@@ -2739,7 +2747,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String einheit = ctx.getChild(5).toString();
+        String einheit = ctx.getChild(3).toString();
         einheit = einheit.replaceAll("\"", "");
         if (!einheit.matches(LafDataTypes.I3)) {
             ReportItem err = new ReportItem();
@@ -2749,21 +2757,23 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String fehler = ctx.getChild(7).toString();
-        fehler = fehler.replaceAll("\"", "");
-        if (!fehler.matches(LafDataTypes.F9_10_12)) {
-            ReportItem err = new ReportItem();
-            err.setKey(ctx.getChild(0).toString());
-            err.setValue(fehler);
-            err.setCode(670);
-            currentErrors.add(err);;
-            return;
-        }
         Map<String, String> zusatzwert = new HashMap<String, String>();
+        if (ctx.getChildCount() >= 6) {
+            String fehler = ctx.getChild(4).toString();
+            fehler = fehler.replaceAll("\"", "");
+            if (!fehler.matches(LafDataTypes.F9_10_12)) {
+                ReportItem err = new ReportItem();
+                err.setKey(ctx.getChild(0).toString());
+                err.setValue(fehler);
+                err.setCode(670);
+                currentErrors.add(err);;
+                return;
+            }
+            zusatzwert.put("MESSFEHLER", fehler);
+        }
         zusatzwert.put("PZS_ID", groesse);
         zusatzwert.put("MESSWERT_PZS", wert);
         zusatzwert.put("EINHEIT_ID", einheit);
-        zusatzwert.put("MESSFEHLER", fehler);
         currentProbe.addZusatzwert(zusatzwert);
     }
 
@@ -2813,8 +2823,9 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
+        Map<String, String> messwert = new HashMap<String, String>();
         String fehler = null;
-        if (ctx.getChildCount() >= 5) {
+        if (ctx.getChildCount() >= 6) {
             fehler = children.get(4);
             fehler = fehler.replaceAll("\"", "");
             if (!fehler.matches(LafDataTypes.F9_10_12)) {
@@ -2825,12 +2836,11 @@ public class LafObjectListener extends LafBaseListener {
                 currentErrors.add(err);;
                 return;
             }
+            messwert.put("MESSFEHLER", fehler);
         }
-        Map<String, String> messwert = new HashMap<String, String>();
         messwert.put("MESSGROESSE", groesse);
         messwert.put("MESSWERT", wert);
         messwert.put("MESSEINHEIT", einheit);
-        messwert.put("MESSFEHLER", fehler);
         if (currentMessung == null) {
             currentMessung = data.new Messung();
         }
@@ -2883,21 +2893,23 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String fehler = children.get(4);
-        fehler = fehler.replaceAll("\"", "");
-        if (!fehler.matches(LafDataTypes.F9_10_12)) {
-            ReportItem err = new ReportItem();
-            err.setKey(ctx.getChild(0).toString());
-            err.setValue(fehler);
-            err.setCode(670);
-            currentErrors.add(err);;
-            return;
-        }
         Map<String, String> messwert = new HashMap<String, String>();
+        if (ctx.getChildCount() >= 6) {
+            String fehler = children.get(4);
+            fehler = fehler.replaceAll("\"", "");
+            if (!fehler.matches(LafDataTypes.F9_10_12)) {
+                ReportItem err = new ReportItem();
+                err.setKey(ctx.getChild(0).toString());
+                err.setValue(fehler);
+                err.setCode(670);
+                currentErrors.add(err);;
+                return;
+            }
+            messwert.put("MESSFEHLER", fehler);
+        }
         messwert.put("MESSGROESSE_ID", groesse);
         messwert.put("MESSWERT", wert);
         messwert.put("MESSEINHEIT_ID", einheit);
-        messwert.put("MESSFEHLER", fehler);
         if (currentMessung == null) {
             currentMessung = data.new Messung();
         }
@@ -2950,22 +2962,24 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String fehler = children.get(4);
-        fehler = fehler.replaceAll("\"", "");
-        if (!fehler.matches(LafDataTypes.F9_10_12)) {
-            ReportItem err = new ReportItem();
-            err.setKey(ctx.getChild(0).toString());
-            err.setValue(fehler);
-            err.setCode(670);
-            currentErrors.add(err);;
-            return;
+        Map<String, String> messwert = new HashMap<String, String>();
+        if (ctx.getChildCount() >= 6) {
+            String fehler = children.get(4);
+            fehler = fehler.replaceAll("\"", "");
+            if (!fehler.matches(LafDataTypes.F9_10_12)) {
+                ReportItem err = new ReportItem();
+                err.setKey(ctx.getChild(0).toString());
+                err.setValue(fehler);
+                err.setCode(670);
+                currentErrors.add(err);;
+                return;
+            }
+            messwert.put("MESSFEHLER", fehler);
         }
         // TODO: handle all values
-        Map<String, String> messwert = new HashMap<String, String>();
         messwert.put("MESSGROESSE", groesse);
         messwert.put("MESSWERT", wert);
         messwert.put("MESSEINHEIT", einheit);
-        messwert.put("MESSFEHLER", fehler);
         if (currentMessung == null) {
             currentMessung = data.new Messung();
         }
@@ -3018,6 +3032,7 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
+        Map<String, String> messwert = new HashMap<String, String>();
         String fehler = null;
         if (ctx.getChildCount() >= 8) {
             fehler = children.get(4);
@@ -3030,13 +3045,12 @@ public class LafObjectListener extends LafBaseListener {
                 currentErrors.add(err);;
                 return;
             }
+            messwert.put("MESSFEHLER", fehler);
         }
         // TODO: handle all values
-        Map<String, String> messwert = new HashMap<String, String>();
         messwert.put("MESSGROESSE", groesse);
         messwert.put("MESSWERT", wert);
         messwert.put("MESSEINHEIT", einheit);
-        messwert.put("MESSFEHLER", fehler);
         if (currentMessung == null) {
             currentMessung = data.new Messung();
         }
@@ -3056,7 +3070,7 @@ public class LafObjectListener extends LafBaseListener {
                 children.add(ctx.getChild(i).toString());
             }
         }
-        if (children.size() < 6) {
+        if (children.size() < 5) {
             return;
         }
         String groesse = children.get(1);
@@ -3089,32 +3103,36 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String fehler = children.get(4);
-        fehler = fehler.replaceAll("\"", "");
-        if (!fehler.matches(LafDataTypes.F9_10_12)) {
-            ReportItem err = new ReportItem();
-            err.setKey(ctx.getChild(0).toString());
-            err.setValue(fehler);
-            err.setCode(670);
-            currentErrors.add(err);;
-            return;
-        }
-        String nwg = children.get(5);
-        nwg = nwg.replaceAll("\"", "");
-        if (!nwg.matches(LafDataTypes.F9_10_12)) {
-            ReportItem err = new ReportItem();
-            err.setKey(ctx.getChild(0).toString());
-            err.setValue(nwg);
-            err.setCode(670);
-            currentErrors.add(err);;
-            return;
-        }
         Map<String, String> messwert = new HashMap<String, String>();
+        if (ctx.getChildCount() >= 6) {
+            String fehler = children.get(4);
+            fehler = fehler.replaceAll("\"", "");
+            if (!fehler.matches(LafDataTypes.F9_10_12)) {
+                ReportItem err = new ReportItem();
+                err.setKey(ctx.getChild(0).toString());
+                err.setValue(fehler);
+                err.setCode(670);
+                currentErrors.add(err);;
+                return;
+            }
+            messwert.put("MESSFEHLER", fehler);
+        }
+        if (ctx.getChildCount() >= 7) {
+            String nwg = children.get(5);
+            nwg = nwg.replaceAll("\"", "");
+            if (!nwg.matches(LafDataTypes.F9_10_12)) {
+                ReportItem err = new ReportItem();
+                err.setKey(ctx.getChild(0).toString());
+                err.setValue(nwg);
+                err.setCode(670);
+                currentErrors.add(err);;
+                return;
+            }
+            messwert.put("NWG", nwg);
+        }
         messwert.put("MESSGROESSE", groesse);
         messwert.put("MESSWERT", wert);
         messwert.put("MESSEINHEIT", einheit);
-        messwert.put("MESSFEHLER", fehler);
-        messwert.put("NWG", nwg);
         if (currentMessung == null) {
             currentMessung = data.new Messung();
         }
@@ -3166,33 +3184,37 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String fehler = children.get(4);
-        fehler = fehler.replaceAll("\"", "");
-        if (!fehler.matches(LafDataTypes.F9_10_12)) {
-            ReportItem err = new ReportItem();
-            err.setKey(ctx.getChild(0).toString());
-            err.setValue(fehler);
-            err.setCode(670);
-            currentErrors.add(err);;
-            return;
+        Map<String, String> messwert = new HashMap<String, String>();
+        if (ctx.getChildCount() >= 6) {
+            String fehler = children.get(4);
+            fehler = fehler.replaceAll("\"", "");
+            if (!fehler.matches(LafDataTypes.F9_10_12)) {
+                ReportItem err = new ReportItem();
+                err.setKey(ctx.getChild(0).toString());
+                err.setValue(fehler);
+                err.setCode(670);
+                currentErrors.add(err);;
+                return;
+            }
+            messwert.put("MESSFEHLER", fehler);
         }
-        String nwg = children.get(5);
-        nwg = nwg.replaceAll("\"", "");
-        if (!nwg.matches(LafDataTypes.F9_10_12)) {
-            ReportItem err = new ReportItem();
-            err.setKey(ctx.getChild(0).toString());
-            err.setValue(nwg);
-            err.setCode(670);
-            currentErrors.add(err);;
-            return;
+        if (ctx.getChildCount() >= 7) {
+            String nwg = children.get(5);
+            nwg = nwg.replaceAll("\"", "");
+            if (!nwg.matches(LafDataTypes.F9_10_12)) {
+                ReportItem err = new ReportItem();
+                err.setKey(ctx.getChild(0).toString());
+                err.setValue(nwg);
+                err.setCode(670);
+                currentErrors.add(err);;
+                return;
+            }
+            messwert.put("NWG", nwg);
         }
         // TODO: handle all values
-        Map<String, String> messwert = new HashMap<String, String>();
         messwert.put("MESSGROESSE_ID", groesse);
         messwert.put("MESSWERT", wert);
         messwert.put("MESSEINHEIT_ID", einheit);
-        messwert.put("MESSFEHLER", fehler);
-        messwert.put("NWG", nwg);
         if (currentMessung == null) {
             currentMessung = data.new Messung();
         }
@@ -3244,33 +3266,37 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String fehler = children.get(4);
-        fehler = fehler.replaceAll("\"", "");
-        if (!fehler.matches(LafDataTypes.F9_10_12)) {
-            ReportItem err = new ReportItem();
-            err.setKey(ctx.getChild(0).toString());
-            err.setValue(fehler);
-            err.setCode(670);
-            currentErrors.add(err);;
-            return;
+        Map<String, String> messwert = new HashMap<String, String>();
+        if (ctx.getChildCount() >= 6) {
+            String fehler = children.get(4);
+            fehler = fehler.replaceAll("\"", "");
+            if (!fehler.matches(LafDataTypes.F9_10_12)) {
+                ReportItem err = new ReportItem();
+                err.setKey(ctx.getChild(0).toString());
+                err.setValue(fehler);
+                err.setCode(670);
+                currentErrors.add(err);;
+                return;
+            }
+            messwert.put("MESSFEHLER", fehler);
         }
-        String nwg = children.get(5);
-        nwg = nwg.replaceAll("\"", "");
-        if (!nwg.matches(LafDataTypes.F9_10_12)) {
-            ReportItem err = new ReportItem();
-            err.setKey(ctx.getChild(0).toString());
-            err.setValue(nwg);
-            err.setCode(670);
-            currentErrors.add(err);;
-            return;
+        if (ctx.getChildCount() >= 7) {
+            String nwg = children.get(5);
+            nwg = nwg.replaceAll("\"", "");
+            if (!nwg.matches(LafDataTypes.F9_10_12)) {
+                ReportItem err = new ReportItem();
+                err.setKey(ctx.getChild(0).toString());
+                err.setValue(nwg);
+                err.setCode(670);
+                currentErrors.add(err);;
+                return;
+            }
+            messwert.put("NWG", nwg);
         }
         // TODO: handle all values
-        Map<String, String> messwert = new HashMap<String, String>();
         messwert.put("MESSGROESSE", groesse);
         messwert.put("MESSWERT", wert);
         messwert.put("MESSEINHEIT", einheit);
-        messwert.put("MESSFEHLER", fehler);
-        messwert.put("NWG", nwg);
         if (currentMessung == null) {
             currentMessung = data.new Messung();
         }
@@ -3323,44 +3349,50 @@ public class LafObjectListener extends LafBaseListener {
             currentErrors.add(err);;
             return;
         }
-        String fehler = children.get(4);
-        fehler = fehler.replaceAll("\"", "");
-        if (!fehler.matches(LafDataTypes.F9_10_12)) {
-            ReportItem err = new ReportItem();
-            err.setKey(ctx.getChild(0).toString());
-            err.setValue(fehler);
-            err.setCode(670);
-            currentErrors.add(err);;
-            return;
+        Map<String, String> messwert = new HashMap<String, String>();
+        if (ctx.getChildCount() >= 6) {
+            String fehler = children.get(4);
+            fehler = fehler.replaceAll("\"", "");
+            if (!fehler.matches(LafDataTypes.F9_10_12)) {
+                ReportItem err = new ReportItem();
+                err.setKey(ctx.getChild(0).toString());
+                err.setValue(fehler);
+                err.setCode(670);
+                currentErrors.add(err);;
+                return;
+            }
+            messwert.put("MESSFEHLER", fehler);
         }
-        String nwg = children.get(5);
-        nwg = nwg.replaceAll("\"", "");
-        if (!nwg.matches(LafDataTypes.F9_10_12)) {
-            ReportItem err = new ReportItem();
-            err.setKey(ctx.getChild(0).toString());
-            err.setValue(nwg);
-            err.setCode(670);
-            currentErrors.add(err);;
-            return;
+        if (ctx.getChildCount() >= 6) {
+            String nwg = children.get(5);
+            nwg = nwg.replaceAll("\"", "");
+            if (!nwg.matches(LafDataTypes.F9_10_12)) {
+                ReportItem err = new ReportItem();
+                err.setKey(ctx.getChild(0).toString());
+                err.setValue(nwg);
+                err.setCode(670);
+                currentErrors.add(err);;
+                return;
+            }
+            messwert.put("NWG", nwg);
         }
-        String gw = children.get(8);
-        gw = gw.replaceAll("\"", "");
-        if (!gw.matches(LafDataTypes.F9_10_12)) {
-            ReportItem err = new ReportItem();
-            err.setKey(ctx.getChild(0).toString());
-            err.setValue(gw);
-            err.setCode(670);
-            currentErrors.add(err);;
-            return;
+        if (ctx.getChildCount() >= 6) {
+            String gw = children.get(8);
+            gw = gw.replaceAll("\"", "");
+            if (!gw.matches(LafDataTypes.F9_10_12)) {
+                ReportItem err = new ReportItem();
+                err.setKey(ctx.getChild(0).toString());
+                err.setValue(gw);
+                err.setCode(670);
+                currentErrors.add(err);;
+                return;
+            }
+            messwert.put("GRENZWERT", gw);
         }
         // TODO: handle all values
-        Map<String, String> messwert = new HashMap<String, String>();
         messwert.put("MESSGROESSE", groesse);
         messwert.put("MESSWERT", wert);
         messwert.put("MESSEINHEIT", einheit);
-        messwert.put("MESSFEHLER", fehler);
-        messwert.put("NWG", nwg);
-        messwert.put("GRENZWERT", gw);
         if (currentMessung == null) {
             currentMessung = data.new Messung();
         }
