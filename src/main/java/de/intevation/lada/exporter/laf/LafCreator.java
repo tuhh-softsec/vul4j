@@ -175,26 +175,24 @@ implements Creator
         laf += probe.getHauptprobenNr() == null ?
             "" : lafLine("HAUPTPROBENNUMMER", probe.getHauptprobenNr(), CN);
         if (probe.getBaId() != null && probe.getDatenbasisId() != null) {
-            switch (probe.getDatenbasisId()) {
-            case 4: 
+            if (probe.getDatenbasisId() == 4) {
                 if (probe.getBaId() == 1 ) {
                     laf += lafLine("MESSPROGRAMM_S", 4, CN);
                 } else if (probe.getBaId() == 2 ) {
                     laf += lafLine("MESSPROGRAMM_S", 5, CN);
-                } else {
+                } else if (probe.getBaId() == 3 ) {
                     laf += lafLine("MESSPROGRAMM_S", 6, CN);
+                } else {
+                    laf += lafLine("MESSPROGRAMM_S", "\""+(char)probe.getBaId().intValue()+"\"");
                 }
-                break;
-            case 7:
+            } else {
                 if (probe.getBaId() > 3 ) {
                     laf += lafLine("MESSPROGRAMM_S", "\""+(char)probe.getBaId().intValue()+"\"");
+                } else if (probe.getBaId() == 3 ) {
+                    laf += lafLine("MESSPROGRAMM_S", 2, CN);
                 } else {
                     laf += lafLine("MESSPROGRAMM_S", probe.getBaId(), CN);
                 }
-                break;
-            default:
-                laf += lafLine("MESSPROGRAMM_S", probe.getBaId(), CN);
-                break;
             }
         }
         laf += probe.getProbenartId() == null ?
