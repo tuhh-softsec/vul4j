@@ -149,7 +149,7 @@ public class Probe implements Serializable {
     }
 
     public void setExterneProbeId(String externeProbeId) {
-        this.externeProbeId = externeProbeId;
+        this.externeProbeId = (externeProbeId == "") ? null : externeProbeId;
     }
 
     public String getLaborMstId() {
