@@ -24,7 +24,7 @@ CREATE FUNCTION set_messung_ext_id() RETURNS trigger
     BEGIN
         IF NEW.ext_id IS NULL THEN
             NEW.ext_id = (
-                SELECT count(*)
+                SELECT coalesce(max(ext_id),0)
                    FROM land.messung
                    WHERE probe_id = NEW.probe_id) + 1;
         END IF;
