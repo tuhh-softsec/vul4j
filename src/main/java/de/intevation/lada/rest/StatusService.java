@@ -31,6 +31,7 @@ import de.intevation.lada.lock.LockConfig;
 import de.intevation.lada.lock.LockType;
 import de.intevation.lada.lock.ObjectLocker;
 import de.intevation.lada.model.land.Messung;
+import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.model.land.StatusProtokoll;
 import de.intevation.lada.model.stammdaten.StatusKombi;
 import de.intevation.lada.model.stammdaten.StatusReihenfolge;
@@ -48,6 +49,8 @@ import de.intevation.lada.util.rest.Response;
 import de.intevation.lada.validation.Validator;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationConfig;
+
+import org.apache.log4j.Logger;
 
 /**
  * REST service for Status objects.
@@ -86,6 +89,9 @@ import de.intevation.lada.validation.annotation.ValidationConfig;
 @Path("rest/status")
 @RequestScoped
 public class StatusService {
+
+    @Inject
+    private Logger logger;
 
     /**
      * The data repository granting read/write access.
@@ -258,9 +264,28 @@ public class StatusService {
 
             StatusProtokoll oldStatus = defaultRepo.getByIdPlain(
                 StatusProtokoll.class, messung.getStatus(), Strings.LAND);
-
             StatusKombi oldKombi = defaultRepo.getByIdPlain(StatusKombi.class, oldStatus.getStatusKombi(), Strings.STAMM);
             StatusKombi newKombi = defaultRepo.getByIdPlain(StatusKombi.class, status.getStatusKombi(), Strings.STAMM);
+            Probe probe =
+                defaultRepo.getByIdPlain(Probe.class, messung.getProbeId(), Strings.LAND);
+            logger.debug("rest/status: probe: " + 
+                probe.getId() + ", " + 
+                probe.getExterneProbeId() + ", " +
+                probe.getMstId());
+            logger.debug("rest/status: messung: " + 
+                messung.getId() + ", " + 
+                messung.getExterneMessungsId() + ", " +
+                messung.getMmtId());
+            logger.debug("rest/status: oldKombi(id, stufe, wert, MST): " +
+                oldKombi.getId() + ", " +
+                oldKombi.getStatusStufe().getStufe() + ", " +
+                oldKombi.getStatusWert().getId() + ", " +
+                oldStatus.getMstId());
+            logger.debug("rest/status: newKombi(id, stufe, wert, MST): " +
+                newKombi.getId() + ", " +
+                newKombi.getStatusStufe().getStufe() + ", " +
+                newKombi.getStatusWert().getId() + ", " +
+                status.getMstId());
 
             // Check if the user is allowed to change to the requested
             // status_kombi
@@ -280,8 +305,8 @@ public class StatusService {
             //    Users mstId equals the mstId of the old status.
             else if (oldKombi.getStatusStufe().getStufe().equals(
                         newKombi.getStatusStufe().getStufe()) &&
-                userInfo.getMessstellen().contains(oldStatus.getMstId()) &&
-                status.getMstId().equals(oldStatus.getMstId())
+                     userInfo.getFunktionenForMst(status.getMstId()).contains(
+                        newKombi.getStatusStufe().getId())
             ) {
                 // a) user wants to reset the current status
                 //    'status wert' == 8
