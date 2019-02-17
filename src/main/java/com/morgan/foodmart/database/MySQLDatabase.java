@@ -8,11 +8,15 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PreDestroy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MySQLDatabase implements DatabaseService {
+public class MySQLDatabase implements EmployeeDatabaseService {
+
+  private final Logger log = LoggerFactory.getLogger(this.getClass().getName());
 
   private final Connection connection;
 
@@ -78,10 +82,20 @@ public class MySQLDatabase implements DatabaseService {
         }
         return employeeDetails;
       } catch (SQLException e) {
-        throw new RuntimeException(e);
+        final String message =
+            String.format(
+                "problem getting employee details with fields department: %s, paytype: %s, education: %s",
+                department, payType, education);
+        log.error(message);
+        throw new EmployeeDatabaseException(message, e);
       }
     } catch (SQLException e) {
-      throw new RuntimeException(e);
+      final String message =
+          String.format(
+              "problem getting employee details with fields department: %s, paytype: %s, education: %s",
+              department, payType, education);
+      log.error(message);
+      throw new EmployeeDatabaseException(message, e);
     }
   }
 
@@ -101,7 +115,9 @@ public class MySQLDatabase implements DatabaseService {
 
       return stringColumn;
     } catch (SQLException e) {
-      throw new RuntimeException(e);
+      final String message = String.format("cannot perform query: %s", query);
+      log.error(message);
+      throw new EmployeeDatabaseException(message, e);
     }
   }
 }

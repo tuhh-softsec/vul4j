@@ -1,6 +1,6 @@
 package com.morgan.foodmart.input;
 
-import com.morgan.foodmart.database.DatabaseService;
+import com.morgan.foodmart.database.EmployeeDatabaseService;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserInputServiceImpl implements UserInputService {
 
-  private final DatabaseService databaseService;
+  private final EmployeeDatabaseService databaseService;
 
   @Autowired
-  public UserInputServiceImpl(final DatabaseService databaseService) {
+  public UserInputServiceImpl(final EmployeeDatabaseService databaseService) {
     this.databaseService = databaseService;
   }
 

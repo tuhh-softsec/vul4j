@@ -2,7 +2,7 @@ package com.morgan.foodmart;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.morgan.foodmart.database.DatabaseService;
+import com.morgan.foodmart.database.EmployeeDatabaseService;
 import com.morgan.foodmart.database.EmployeeDetails;
 import com.morgan.foodmart.input.InputChoices;
 import com.morgan.foodmart.input.UserInputService;
@@ -25,7 +25,7 @@ public class FoodmartApplication implements CommandLineRunner {
 
   @Autowired private UserInputService userInputService;
 
-  @Autowired private DatabaseService databaseService;
+  @Autowired private EmployeeDatabaseService databaseService;
 
   @Autowired private EmployeeTransformer employeeTransformer;
 

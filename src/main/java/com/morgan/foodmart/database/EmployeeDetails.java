@@ -28,11 +28,17 @@ public class EmployeeDetails {
   }
 
   public Date getHireDate() {
-    return (Date) hireDate.clone();
+    if (hireDate != null) {
+      return (Date) hireDate.clone();
+    }
+    return null;
   }
 
   public Date getEndDate() {
-    return (Date) endDate.clone();
+    if (endDate != null) {
+      return (Date) endDate.clone();
+    }
+    return null;
   }
 
   public String getManagementRole() {
