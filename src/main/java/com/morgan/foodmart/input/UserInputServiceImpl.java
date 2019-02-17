@@ -47,10 +47,18 @@ public class UserInputServiceImpl implements UserInputService {
     int choice = 0;
 
     while (choice < 1 || choice > maxNumberChoices) {
-      System.out.print(String.format("Your choice [1-%d]: ", maxNumberChoices));
+      System.out.print(String.format("Your choice [1-%d]", maxNumberChoices));
 
-      Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
-      choice = scanner.nextInt();
+      Scanner scanner = new Scanner(System.in, "UTF-8");
+      final String choiceString = scanner.next();
+
+      try {
+        choice = Integer.parseInt(choiceString);
+      } catch (NumberFormatException e) {
+        System.out.println("Invalid choice");
+        continue;
+      }
+
 
       if (choice > maxNumberChoices) {
         System.out.println("Invalid choice");
