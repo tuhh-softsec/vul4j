@@ -1,6 +1,7 @@
 package com.morgan.foodmart.database;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -38,17 +39,72 @@ public class MySQLDatabase implements DatabaseService {
         "SELECT education_level FROM foodmart.employee GROUP BY education_level");
   }
 
+  @Override
+  public List<EmployeeDetails> getEmployeeDetails(
+      String department, String payType, String education) {
+
+    final String query =
+        "SELECT e.employee_id,"
+            + "e.full_name,"
+            + "e.first_name,"
+            + "e.last_name,"
+            + "e.position_title,"
+            + "e.birth_date,"
+            + "e.hire_date,"
+            + "e.end_date,"
+            + "e.salary,"
+            + "e.marital_status,"
+            + "e.gender,"
+            + "e.management_role "
+            + "FROM foodmart.employee e "
+            + "INNER JOIN foodmart.`position` p ON p.position_id = e.position_id "
+            + "INNER JOIN foodmart.department d ON d.department_id = e.department_id "
+            + "WHERE p.pay_type = ? "
+            + "AND department_description = ? "
+            + "AND education_level = ?";
+
+    List<EmployeeDetails> employeeDetails = new ArrayList<>();
+
+    try (PreparedStatement stmt = this.connection.prepareStatement(query)) {
+
+      stmt.setString(1, payType);
+      stmt.setString(2, department);
+      stmt.setString(3, education);
+
+      try (ResultSet rs = stmt.executeQuery()) {
+        while (rs.next()) {
+          EmployeeDetails employee = new EmployeeDetails();
+          employee.setFullName(rs.getString("full_name"));
+          employee.setFirstName(rs.getString("first_name"));
+          employee.setLastName(rs.getString("last_name"));
+          employee.setPositionTitle(rs.getString("position_title"));
+          employee.setBirthDate(rs.getDate("birth_date"));
+          employee.setHireDate(rs.getDate("hire_date"));
+          employee.setEndDate(rs.getDate("end_date"));
+          employee.setSalary(rs.getBigDecimal("salary"));
+          employee.setMartialStatus(rs.getString("marital_status"));
+          employee.setGender(rs.getString("gender"));
+          employee.setManagementRole(rs.getString("management_role"));
+
+          employeeDetails.add(employee);
+        }
+        return employeeDetails;
+      } catch (SQLException e) {
+        throw new RuntimeException(e);
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   @PreDestroy
   public void close() throws SQLException {
     this.connection.close();
   }
 
   private List<String> executeQuerySingleStringColumn(final String query) {
-    ResultSet rs = null;
-    Statement stmt = null;
-    try {
-      stmt = this.connection.createStatement();
-      rs = stmt.executeQuery(query);
+    try (Statement stmt = this.connection.createStatement();
+        ResultSet rs = stmt.executeQuery(query)) {
 
       List<String> stringColumn = new ArrayList<>();
       while (rs.next()) {
@@ -58,19 +114,6 @@ public class MySQLDatabase implements DatabaseService {
       return stringColumn;
     } catch (SQLException e) {
       throw new RuntimeException(e);
-    } finally {
-      if (rs != null) {
-        try {
-          rs.close();
-        } catch (SQLException e) {
-        }
-      }
-      if (stmt != null) {
-        try {
-          stmt.close();
-        } catch (SQLException e) {
-        }
-      }
     }
   }
 }

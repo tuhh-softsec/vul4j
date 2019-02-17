@@ -1,10 +1,13 @@
 package com.morgan.foodmart;
 
+import com.morgan.foodmart.database.DatabaseService;
+import com.morgan.foodmart.database.EmployeeDetails;
 import com.morgan.foodmart.input.InputChoices;
 import com.morgan.foodmart.input.UserInputService;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.Banner;
@@ -17,6 +20,8 @@ import org.springframework.context.annotation.Bean;
 public class FoodmartApplication implements CommandLineRunner {
 
   @Autowired private UserInputService userInputService;
+
+  @Autowired private DatabaseService databaseService;
 
   @Bean
   public Connection getConnection(
@@ -39,8 +44,11 @@ public class FoodmartApplication implements CommandLineRunner {
   @Override
   public void run(String... args) {
     InputChoices choices = userInputService.getUserInputChoices();
-    System.out.println(choices.getDepartment());
-    System.out.println(choices.getEducation());
-    System.out.println(choices.getPayType());
+
+    List<EmployeeDetails> employeeDetailsList =
+        databaseService.getEmployeeDetails(
+            choices.getDepartment(), choices.getPayType(), choices.getEducation());
+
+    System.out.println("hello world!");
   }
 }

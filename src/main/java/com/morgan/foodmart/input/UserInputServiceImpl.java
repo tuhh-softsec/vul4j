@@ -1,7 +1,6 @@
 package com.morgan.foodmart.input;
 
 import com.morgan.foodmart.database.DatabaseService;
-import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
@@ -58,7 +57,6 @@ public class UserInputServiceImpl implements UserInputService {
         System.out.println("Invalid choice");
         continue;
       }
-
 
       if (choice > maxNumberChoices) {
         System.out.println("Invalid choice");

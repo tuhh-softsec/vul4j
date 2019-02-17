@@ -9,4 +9,6 @@ public interface DatabaseService {
   List<String> getPayTypes() throws SQLException;
 
   List<String> getEducation() throws SQLException;
+
+  List<EmployeeDetails> getEmployeeDetails(String department, String payType, String education);
 }
