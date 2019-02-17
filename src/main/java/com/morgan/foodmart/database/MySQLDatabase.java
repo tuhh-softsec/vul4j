@@ -44,17 +44,10 @@ public class MySQLDatabase implements DatabaseService {
       String department, String payType, String education) {
 
     final String query =
-        "SELECT e.employee_id,"
-            + "e.full_name,"
-            + "e.first_name,"
-            + "e.last_name,"
+        "SELECT e.full_name,"
             + "e.position_title,"
-            + "e.birth_date,"
             + "e.hire_date,"
             + "e.end_date,"
-            + "e.salary,"
-            + "e.marital_status,"
-            + "e.gender,"
             + "e.management_role "
             + "FROM foodmart.employee e "
             + "INNER JOIN foodmart.`position` p ON p.position_id = e.position_id "
@@ -73,18 +66,13 @@ public class MySQLDatabase implements DatabaseService {
 
       try (ResultSet rs = stmt.executeQuery()) {
         while (rs.next()) {
-          EmployeeDetails employee = new EmployeeDetails();
-          employee.setFullName(rs.getString("full_name"));
-          employee.setFirstName(rs.getString("first_name"));
-          employee.setLastName(rs.getString("last_name"));
-          employee.setPositionTitle(rs.getString("position_title"));
-          employee.setBirthDate(rs.getDate("birth_date"));
-          employee.setHireDate(rs.getDate("hire_date"));
-          employee.setEndDate(rs.getDate("end_date"));
-          employee.setSalary(rs.getBigDecimal("salary"));
-          employee.setMartialStatus(rs.getString("marital_status"));
-          employee.setGender(rs.getString("gender"));
-          employee.setManagementRole(rs.getString("management_role"));
+          final EmployeeDetails employee =
+              new EmployeeDetails(
+                  rs.getString("full_name"),
+                  rs.getString("position_title"),
+                  rs.getDate("hire_date"),
+                  rs.getDate("end_date"),
+                  rs.getString("management_role"));
 
           employeeDetails.add(employee);
         }
