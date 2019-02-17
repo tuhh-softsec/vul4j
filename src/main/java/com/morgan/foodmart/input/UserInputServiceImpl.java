@@ -1,7 +1,6 @@
 package com.morgan.foodmart.input;
 
 import com.morgan.foodmart.database.EmployeeDatabaseService;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,19 +18,15 @@ public class UserInputServiceImpl implements UserInputService {
 
   @Override
   public InputChoices getUserInputChoices() {
-    try {
-      final List<String> departments = databaseService.getDepartments();
-      final List<String> payTypes = databaseService.getPayTypes();
-      final List<String> eduacationLevels = databaseService.getEducation();
+    final List<String> departments = databaseService.getDepartments();
+    final List<String> payTypes = databaseService.getPayTypes();
+    final List<String> eduacationLevels = databaseService.getEducation();
 
-      final String department = getChoice(departments, "Choose a department:");
-      final String payType = getChoice(payTypes, "Choose a pay type:");
-      final String educationLevel = getChoice(eduacationLevels, "Choose an education level:");
+    final String department = getChoice(departments, "Choose a department:");
+    final String payType = getChoice(payTypes, "Choose a pay type:");
+    final String educationLevel = getChoice(eduacationLevels, "Choose an education level:");
 
-      return new InputChoices(department, payType, educationLevel);
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    }
+    return new InputChoices(department, payType, educationLevel);
   }
 
   private String getChoice(final List<String> choices, final String helpMessage) {

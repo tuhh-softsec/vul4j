@@ -1,14 +1,13 @@
 package com.morgan.foodmart.database;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public interface EmployeeDatabaseService {
-  List<String> getDepartments() throws SQLException;
+  List<String> getDepartments();
 
-  List<String> getPayTypes() throws SQLException;
+  List<String> getPayTypes();
 
-  List<String> getEducation() throws SQLException;
+  List<String> getEducation();
 
   List<EmployeeDetails> getEmployeeDetails(String department, String payType, String education);
 }

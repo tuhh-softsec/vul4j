@@ -84,6 +84,7 @@
 				<version>1.6.0</version>
 				<configuration>
 					<mainClass>${mainClass}</mainClass>
+					<cleanupDaemonThreads>false</cleanupDaemonThreads>
 				</configuration>
 			</plugin>
 		</plugins>
