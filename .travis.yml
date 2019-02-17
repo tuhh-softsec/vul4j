@@ -1,0 +1,16 @@
+language: java
+
+jdk:
+  - oraclejdk8
+  - oraclejdk11
+  - openjdk8
+  - openjdk11
+
+cache:
+  directories:
+    - $HOME/.m2
+
+script:
+  - ./mvnw test
+  - ./mvnw spotbugs:check
+  - ./mvnw fmt:check
