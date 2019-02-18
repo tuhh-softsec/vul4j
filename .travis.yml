@@ -11,5 +11,6 @@ cache:
     - $HOME/.m2
 
 script:
+  - ./mvnw test
   - ./mvnw spotbugs:check
   - ./mvnw fmt:check

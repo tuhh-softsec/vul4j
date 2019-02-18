@@ -31,6 +31,6 @@ public class EmployeeTransformerImpl implements EmployeeTransformer {
     if (date != null) {
       return format.format(date);
     }
-    return "N/A";
+    return Constants.missingDate;
   }
 }

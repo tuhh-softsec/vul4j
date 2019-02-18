@@ -10,7 +10,7 @@ public class EmployeeDetails {
   private final Date endDate;
   private final String managementRole;
 
-  EmployeeDetails(
+  public EmployeeDetails(
       String fullName, String positionTitle, Date hireDate, Date endDate, String managementRole) {
     this.fullName = fullName;
     this.positionTitle = positionTitle;
