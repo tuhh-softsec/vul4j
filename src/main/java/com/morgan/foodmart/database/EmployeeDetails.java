@@ -14,8 +14,8 @@ public class EmployeeDetails {
       String fullName, String positionTitle, Date hireDate, Date endDate, String managementRole) {
     this.fullName = fullName;
     this.positionTitle = positionTitle;
-    this.hireDate = hireDate;
-    this.endDate = endDate;
+    this.hireDate = (Date) hireDate.clone();
+    this.endDate = (Date) endDate.clone();
     this.managementRole = managementRole;
   }
 
@@ -28,17 +28,11 @@ public class EmployeeDetails {
   }
 
   public Date getHireDate() {
-    if (hireDate != null) {
-      return (Date) hireDate.clone();
-    }
-    return null;
+    return hireDate;
   }
 
   public Date getEndDate() {
-    if (endDate != null) {
-      return (Date) endDate.clone();
-    }
-    return null;
+    return endDate;
   }
 
   public String getManagementRole() {
