@@ -147,6 +147,12 @@ public class AuditTrailService {
             new TableMapper("date", "dd.MM.yy HH:mm"));
         mappings.put("probeentnahme_ende",
             new TableMapper("date", "dd.MM.yy HH:mm"));
+        mappings.put("solldatum_beginn",
+                new TableMapper("date", "dd.MM.yy HH:mm"));
+        mappings.put("solldatum_ende",
+                new TableMapper("date", "dd.MM.yy HH:mm"));
+        mappings.put("messzeitpunkt",
+                new TableMapper("date", "dd.MM.yy HH:mm"));
         mappings.put("kta_gruppe_id",
             new TableMapper("kta_gruppe", "kta_gruppe"));
         mappings.put("rei_progpunkt_grp_id",
@@ -403,7 +409,7 @@ public class AuditTrailService {
     }
 
     private Long formatDate(String format, String date) {
-        DateFormat inFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssXXX");
+        DateFormat inFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
         try {
             return inFormat.parse(date).getTime();
         } catch (ParseException e) {
