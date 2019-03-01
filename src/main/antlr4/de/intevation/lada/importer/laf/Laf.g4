@@ -367,5 +367,5 @@ NEWLINE : ('\r\n' | '\r' | '\n') ;
 STRING_ESC : ('"'(~('"'))*'"') ;
 STRING : C+ ;
 C : CHAR ;
-fragment CHAR : ~[ "\r\n] ;
+fragment CHAR : ~[ \t"\r\n] ;
 ENDOFLAF : '%ENDE%' .* ;

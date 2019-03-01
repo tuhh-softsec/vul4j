@@ -49,6 +49,8 @@ import de.intevation.lada.validation.Validator;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationConfig;
 
+//import org.apache.log4j.Logger;
+
 /**
  * REST service for Status objects.
  * <p>
@@ -86,6 +88,9 @@ import de.intevation.lada.validation.annotation.ValidationConfig;
 @Path("rest/status")
 @RequestScoped
 public class StatusService {
+
+//    @Inject
+//    private Logger logger;
 
     /**
      * The data repository granting read/write access.
@@ -258,7 +263,6 @@ public class StatusService {
 
             StatusProtokoll oldStatus = defaultRepo.getByIdPlain(
                 StatusProtokoll.class, messung.getStatus(), Strings.LAND);
-
             StatusKombi oldKombi = defaultRepo.getByIdPlain(StatusKombi.class, oldStatus.getStatusKombi(), Strings.STAMM);
             StatusKombi newKombi = defaultRepo.getByIdPlain(StatusKombi.class, status.getStatusKombi(), Strings.STAMM);
 
@@ -280,8 +284,8 @@ public class StatusService {
             //    Users mstId equals the mstId of the old status.
             else if (oldKombi.getStatusStufe().getStufe().equals(
                         newKombi.getStatusStufe().getStufe()) &&
-                userInfo.getMessstellen().contains(oldStatus.getMstId()) &&
-                status.getMstId().equals(oldStatus.getMstId())
+                     userInfo.getFunktionenForMst(status.getMstId()).contains(
+                        newKombi.getStatusStufe().getId())
             ) {
                 // a) user wants to reset the current status
                 //    'status wert' == 8
