@@ -212,7 +212,10 @@ public class AuditTrailService {
         ObjectNode auditJson = responseNode.putObject("data");
         ArrayNode entries = auditJson.putArray("audit");
         auditJson.put("id", probe.getId());
-        auditJson.put("identifier", probe.getHauptprobenNr());
+        auditJson.put(
+            "identifier",
+            (probe.getHauptprobenNr() == null) ? probe.getExterneProbeId() : probe.getHauptprobenNr()
+            );
         for (AuditTrailProbe a : audit) {
             //If audit entry shows a messwert, do not show if:
             // - StatusKombi is 1 (MST - nicht vergeben)
@@ -260,15 +263,17 @@ public class AuditTrailService {
             node.put("identifier", value);
         }
         if ("messung".equals(audit.getTableName())) {
+            Messung m = repository.getByIdPlain(
+                Messung.class, audit.getObjectId(), Strings.LAND);
             node.put("identifier",
-                audit.getRowData()
-                    .get("nebenproben_nr").toString().replaceAll("\"", ""));
+                 (m.getNebenprobenNr() == null) ? m.getExterneMessungsId().toString() : m.getNebenprobenNr());
         }
         if (audit.getMessungsId() != null) {
             Messung m = repository.getByIdPlain(
                 Messung.class, audit.getMessungsId(), Strings.LAND);
             ObjectNode identifier = node.putObject("identifier");
-            identifier.put("messung", m.getNebenprobenNr());
+            identifier.put("messung",
+                (m.getNebenprobenNr() == null) ? m.getExterneMessungsId().toString() : m.getNebenprobenNr());
             if ("kommentar_m".equals(audit.getTableName())) {
                 identifier.put("identifier",
                     audit.getRowData().get("datum").toString());
@@ -337,7 +342,10 @@ public class AuditTrailService {
         ObjectNode auditJson = responseNode.putObject("data");
         ArrayNode entries = auditJson.putArray("audit");
         auditJson.put("id", messung.getId());
-        auditJson.put("identifier", messung.getNebenprobenNr());
+        auditJson.put(
+            "identifier",
+            (messung.getNebenprobenNr() == null) ? messung.getExterneMessungsId().toString() : messung.getNebenprobenNr()
+            );
         for (AuditTrailMessung a : audit) {
             //If audit entry shows a messwert, do not show if:
             // - StatusKombi is 1 (MST - nicht vergeben)
