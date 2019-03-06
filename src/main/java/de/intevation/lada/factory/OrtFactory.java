@@ -292,8 +292,8 @@ public class OrtFactory {
                 Strings.STAMM);
             if (v == null) {
                 ReportItem err = new ReportItem();
-                err.setCode(673);
-                err.setKey("ort");
+                err.setCode(675);
+                err.setKey("gem_id");
                 err.setValue(ort.getGemId());
                 errors.add(err);
                 return null;
