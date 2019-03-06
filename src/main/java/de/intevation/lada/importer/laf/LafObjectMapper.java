@@ -57,6 +57,7 @@ import de.intevation.lada.model.stammdaten.Ort;
 import de.intevation.lada.model.stammdaten.Ortszusatz;
 import de.intevation.lada.model.stammdaten.ProbenZusatz;
 import de.intevation.lada.model.stammdaten.Probenart;
+import de.intevation.lada.model.stammdaten.Probenehmer;
 import de.intevation.lada.model.stammdaten.ReiProgpunktGruppe;
 import de.intevation.lada.model.stammdaten.Staat;
 import de.intevation.lada.model.stammdaten.StatusKombi;
@@ -1646,6 +1647,28 @@ public class LafObjectMapper {
                 return;
             }
             probe.setMplId(kategorie.get(0).getId());
+        }
+
+        if ("PROBENAHMEINSTITUTION".equals(key)) {
+            QueryBuilder<Probenehmer> builder =
+                new QueryBuilder<Probenehmer>(
+                    repository.entityManager(Strings.STAMM),
+                    Probenehmer.class);
+            builder.or("netzbetreiberId", userInfo.getNetzbetreiber());
+            builder.and("prnId", value);
+            List<Probenehmer> prn =
+                (List<Probenehmer>)repository.filter(
+                    builder.getQuery(),
+                    Strings.STAMM).getData();
+            if (prn == null || prn.isEmpty()) {
+                ReportItem warn = new ReportItem();
+                warn.setCode(673);
+                warn.setKey("probenahmeinstitution");
+                warn.setValue(key);
+                currentWarnings.add(warn);
+                return;
+            }
+            probe.setProbeNehmerId(prn.get(0).getId());
         }
 
         if ("SOLL_DATUM_UHRZEIT_A".equals(key)) {
