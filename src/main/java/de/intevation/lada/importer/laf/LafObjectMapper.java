@@ -727,6 +727,14 @@ public class LafObjectMapper {
     }
 
     private KommentarP createProbeKommentar(Map<String, String> attributes, Probe probe) {
+        if (attributes.get("TEXT").equals("")) {
+            ReportItem warn = new ReportItem();
+            warn.setCode(631);
+            warn.setKey("Proben Kommentar: ");
+            warn.setValue("Text");
+            currentWarnings.add(warn);
+            return null;
+        };
         KommentarP kommentar = new KommentarP();
         kommentar.setProbeId(probe.getId());
         kommentar.setText(attributes.get("TEXT"));
@@ -924,10 +932,22 @@ public class LafObjectMapper {
             messwert.setNwgZuMesswert(messwert.getMesswert());
             messwert.setMesswert(null);
         }
+        else if (messwert.getMesswertNwg() != null && messwert.getNwgZuMesswert() == messwert.getMesswert() ||
+                 messwert.getMesswertNwg() != null && messwert.getMesswert() == 0.0) {
+            messwert.setMesswert(null);
+        }
         return messwert;
     }
 
     private KommentarM createMessungKommentar(Map<String, String> attributes, int messungsId, Probe probe) {
+        if (attributes.get("TEXT").equals("")) {
+            ReportItem warn = new ReportItem();
+            warn.setCode(631);
+            warn.setKey("Messungs Kommentar: ");
+            warn.setValue("Text");
+            currentWarnings.add(warn);
+            return null;
+        };
         KommentarM kommentar = new KommentarM();
         kommentar.setMessungsId(messungsId);
         if (attributes.containsKey("MST_ID")) {
