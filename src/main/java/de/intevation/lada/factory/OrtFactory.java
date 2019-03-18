@@ -224,6 +224,9 @@ public class OrtFactory {
         if (errors == null) {
             errors = new ArrayList<ReportItem>();
         }
+        else {
+            errors.clear();
+        }
         QueryBuilder<Ort> builder =
             new QueryBuilder<Ort>(
                 repository.entityManager(Strings.STAMM),
