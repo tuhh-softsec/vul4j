@@ -49,7 +49,7 @@ import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 
-//import org.apache.log4j.Logger;
+// import org.apache.log4j.Logger;
 
 /**
  * This creator produces a LAF conform String containing all information about
@@ -62,7 +62,7 @@ import de.intevation.lada.util.rest.Response;
 public class LafCreator
 implements Creator
 {
-//    @Inject private Logger logger;
+    // @Inject private Logger logger;
 
     // Some format strings corresponding to LAF notation
     private static final String KEY_FORMAT = "%-30s";
@@ -365,7 +365,7 @@ implements Creator
         laf += lafLine(typePrefix + "KOORDINATEN_S", koord);
 
         if ("P_".equals(typePrefix) && sOrte.get(0).getOzId() != null) {
-            lafLine(typePrefix + "ORTS_ZUSATZCODE", sOrte.get(0).getOzId(), CN);
+            laf += lafLine(typePrefix + "ORTS_ZUSATZCODE", sOrte.get(0).getOzId(), CN);
         }
         else if ("U_".equals(typePrefix) && "R".equals(o.getOrtszuordnungTyp())) {
             laf += lafLine(typePrefix + "ORTS_ZUSATZCODE", sOrte.get(0).getOrtId(), CN);
@@ -466,7 +466,7 @@ implements Creator
      * @return 4 character string
      */
     private String writeStatus(Messung messung) {
-        String status = "";
+        Integer status[] = {0, 0, 0};
         StatusProtokoll currentStatus = repository.getByIdPlain(
             StatusProtokoll.class,
             messung.getStatus(),
@@ -477,7 +477,7 @@ implements Creator
             Strings.STAMM);
         Integer currenStufe = currentKombi.getStatusStufe().getId();
         if (currenStufe == 1) {
-            status += currentKombi.getStatusWert().getId() + "00";
+            status[0] = currentKombi.getStatusWert().getId();
         }
         else {
             QueryBuilder<StatusProtokoll> builder =
@@ -489,11 +489,10 @@ implements Creator
             StatusProtokoll mst = repository.filterPlain(builder.getQuery(), Strings.LAND).get(0);
             Integer mstKombi = mst.getStatusKombi();
             StatusKombi kombi = repository.getByIdPlain(StatusKombi.class, mstKombi, Strings.STAMM);
-            status += kombi.getStatusWert().getId();
             if (currenStufe == 2) {
-                status += currentKombi.getStatusWert().getId() + "0";
+                status[1] = currentKombi.getStatusWert().getId();
             }
-                else {
+            else {
                 builder = builder.getEmptyBuilder();
                 builder.and("messungsId", messung.getId());
                 builder.andIn("statusKombi", Arrays.asList(6, 7, 8, 9, 15));
@@ -502,16 +501,15 @@ implements Creator
                 if (!land.isEmpty()) {
                     Integer landKombi = land.get(0).getStatusKombi();
                     StatusKombi lKombi = repository.getByIdPlain(StatusKombi.class, landKombi, Strings.STAMM);
-                    status += lKombi.getStatusWert().getId();
+                    status[1] = lKombi.getStatusWert().getId();
                 }
-                else {
-                    status += "0";
-                }
-                status += currentKombi.getStatusWert().getId();
+                status[2] = currentKombi.getStatusWert().getId();
             }
         }
-        status += "0";
-        return status;
+        if (status[0] == 0 && status[1] != 0) {
+            status[0] = 1;
+        }
+        return "" + status[0] + status[1] + status[2] + "0";
     }
 
     /**
