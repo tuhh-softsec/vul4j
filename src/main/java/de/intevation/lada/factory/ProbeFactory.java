@@ -525,7 +525,7 @@ public class ProbeFactory {
             @SuppressWarnings("unchecked")
             List<Deskriptoren> data = (List<Deskriptoren>)response.getData();
             if (data.isEmpty()) {
-                return "";
+                return null;
             }
             hdParent = data.get(0).getId();
             mediaIds.add(data.get(0).getId());
@@ -550,7 +550,7 @@ public class ProbeFactory {
                 repository.entityManager(Strings.STAMM), DeskriptorUmwelt.class);
 
         if (media.size() == 0) {
-            return "";
+            return null;
         }
 
         int size = 1;

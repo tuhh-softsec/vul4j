@@ -49,7 +49,7 @@ import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.Response;
 
-//import org.apache.log4j.Logger;
+// import org.apache.log4j.Logger;
 
 /**
  * This creator produces a LAF conform String containing all information about
@@ -62,7 +62,7 @@ import de.intevation.lada.util.rest.Response;
 public class LafCreator
 implements Creator
 {
-//    @Inject private Logger logger;
+    // @Inject private Logger logger;
 
     // Some format strings corresponding to LAF notation
     private static final String KEY_FORMAT = "%-30s";
@@ -365,7 +365,7 @@ implements Creator
         laf += lafLine(typePrefix + "KOORDINATEN_S", koord);
 
         if ("P_".equals(typePrefix) && sOrte.get(0).getOzId() != null) {
-            lafLine(typePrefix + "ORTS_ZUSATZCODE", sOrte.get(0).getOzId(), CN);
+            laf += lafLine(typePrefix + "ORTS_ZUSATZCODE", sOrte.get(0).getOzId(), CN);
         }
         else if ("U_".equals(typePrefix) && "R".equals(o.getOrtszuordnungTyp())) {
             laf += lafLine(typePrefix + "ORTS_ZUSATZCODE", sOrte.get(0).getOrtId(), CN);
@@ -466,45 +466,50 @@ implements Creator
      * @return 4 character string
      */
     private String writeStatus(Messung messung) {
-        String status = "";
-        QueryBuilder<StatusProtokoll> builder =
-            new QueryBuilder<StatusProtokoll>(
-                repository.entityManager(Strings.LAND), StatusProtokoll.class);
-        builder.and("messungsId", messung.getId());
-        builder.andIn("statusKombi", Arrays.asList(1, 2, 3, 4, 5, 14));
-        builder.orderBy("datum", false);
-        StatusProtokoll mst = repository.filterPlain(builder.getQuery(), Strings.LAND).get(0);
-        Integer mstKombi = mst.getStatusKombi();
-        StatusKombi kombi = repository.getByIdPlain(StatusKombi.class, mstKombi, Strings.STAMM);
-        status += kombi.getStatusWert().getId();
-        builder = builder.getEmptyBuilder();
-        builder.and("messungsId", messung.getId());
-        builder.andIn("statusKombi", Arrays.asList(6, 7, 8, 9, 15));
-        builder.orderBy("datum", false);
-        List<StatusProtokoll> land = repository.filterPlain(builder.getQuery(), Strings.LAND);
-        if (!land.isEmpty()) {
-            Integer landKombi = land.get(0).getStatusKombi();
-            StatusKombi lKombi = repository.getByIdPlain(StatusKombi.class, landKombi, Strings.STAMM);
-            status += lKombi.getStatusWert().getId();
+        Integer status[] = {0, 0, 0};
+        StatusProtokoll currentStatus = repository.getByIdPlain(
+            StatusProtokoll.class,
+            messung.getStatus(),
+            Strings.LAND);
+        StatusKombi currentKombi = repository.getByIdPlain(
+            StatusKombi.class, 
+            currentStatus.getStatusKombi(), 
+            Strings.STAMM);
+        Integer currenStufe = currentKombi.getStatusStufe().getId();
+        if (currenStufe == 1) {
+            status[0] = currentKombi.getStatusWert().getId();
         }
         else {
-            status += "0";
+            QueryBuilder<StatusProtokoll> builder =
+                new QueryBuilder<StatusProtokoll>(
+                    repository.entityManager(Strings.LAND), StatusProtokoll.class);
+            builder.and("messungsId", messung.getId());
+            builder.andIn("statusKombi", Arrays.asList(1, 2, 3, 4, 5, 14));
+            builder.orderBy("datum", false);
+            StatusProtokoll mst = repository.filterPlain(builder.getQuery(), Strings.LAND).get(0);
+            Integer mstKombi = mst.getStatusKombi();
+            StatusKombi kombi = repository.getByIdPlain(StatusKombi.class, mstKombi, Strings.STAMM);
+            if (currenStufe == 2) {
+                status[1] = currentKombi.getStatusWert().getId();
+            }
+            else {
+                builder = builder.getEmptyBuilder();
+                builder.and("messungsId", messung.getId());
+                builder.andIn("statusKombi", Arrays.asList(6, 7, 8, 9, 15));
+                builder.orderBy("datum", false);
+                List<StatusProtokoll> land = repository.filterPlain(builder.getQuery(), Strings.LAND);
+                if (!land.isEmpty()) {
+                    Integer landKombi = land.get(0).getStatusKombi();
+                    StatusKombi lKombi = repository.getByIdPlain(StatusKombi.class, landKombi, Strings.STAMM);
+                    status[1] = lKombi.getStatusWert().getId();
+                }
+                status[2] = currentKombi.getStatusWert().getId();
+            }
         }
-        builder = builder.getEmptyBuilder();
-        builder.and("messungsId", messung.getId());
-        builder.andIn("statusKombi", Arrays.asList(10, 11, 12, 13, 16));
-        builder.orderBy("datum", false);
-        List<StatusProtokoll> lst = repository.filterPlain(builder.getQuery(), Strings.LAND);
-        if (!lst.isEmpty()) {
-            Integer lstKombi = lst.get(0).getStatusKombi();
-            StatusKombi lKombi = repository.getByIdPlain(StatusKombi.class, lstKombi, Strings.STAMM);
-            status += lKombi.getStatusWert().getId();
+        if (status[0] == 0 && status[1] != 0) {
+            status[0] = 1;
         }
-        else {
-            status += "0";
-        }
-        status += "0";
-        return status;
+        return "" + status[0] + status[1] + status[2] + "0";
     }
 
     /**

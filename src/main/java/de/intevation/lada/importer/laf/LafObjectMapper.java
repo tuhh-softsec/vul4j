@@ -57,6 +57,7 @@ import de.intevation.lada.model.stammdaten.Ort;
 import de.intevation.lada.model.stammdaten.Ortszusatz;
 import de.intevation.lada.model.stammdaten.ProbenZusatz;
 import de.intevation.lada.model.stammdaten.Probenart;
+import de.intevation.lada.model.stammdaten.Probenehmer;
 import de.intevation.lada.model.stammdaten.ReiProgpunktGruppe;
 import de.intevation.lada.model.stammdaten.Staat;
 import de.intevation.lada.model.stammdaten.StatusKombi;
@@ -726,6 +727,14 @@ public class LafObjectMapper {
     }
 
     private KommentarP createProbeKommentar(Map<String, String> attributes, Probe probe) {
+        if (attributes.get("TEXT").equals("")) {
+            ReportItem warn = new ReportItem();
+            warn.setCode(631);
+            warn.setKey("Proben Kommentar: ");
+            warn.setValue("Text");
+            currentWarnings.add(warn);
+            return null;
+        };
         KommentarP kommentar = new KommentarP();
         kommentar.setProbeId(probe.getId());
         kommentar.setText(attributes.get("TEXT"));
@@ -923,10 +932,22 @@ public class LafObjectMapper {
             messwert.setNwgZuMesswert(messwert.getMesswert());
             messwert.setMesswert(null);
         }
+        else if (messwert.getMesswertNwg() != null && messwert.getNwgZuMesswert() == messwert.getMesswert() ||
+                 messwert.getMesswertNwg() != null && messwert.getMesswert() == 0.0) {
+            messwert.setMesswert(null);
+        }
         return messwert;
     }
 
     private KommentarM createMessungKommentar(Map<String, String> attributes, int messungsId, Probe probe) {
+        if (attributes.get("TEXT").equals("")) {
+            ReportItem warn = new ReportItem();
+            warn.setCode(631);
+            warn.setKey("Messungs Kommentar: ");
+            warn.setValue("Text");
+            currentWarnings.add(warn);
+            return null;
+        };
         KommentarM kommentar = new KommentarM();
         kommentar.setMessungsId(messungsId);
         if (attributes.containsKey("MST_ID")) {
@@ -1646,6 +1667,28 @@ public class LafObjectMapper {
                 return;
             }
             probe.setMplId(kategorie.get(0).getId());
+        }
+
+        if ("PROBENAHMEINSTITUTION".equals(key)) {
+            QueryBuilder<Probenehmer> builder =
+                new QueryBuilder<Probenehmer>(
+                    repository.entityManager(Strings.STAMM),
+                    Probenehmer.class);
+            builder.or("netzbetreiberId", userInfo.getNetzbetreiber());
+            builder.and("prnId", value);
+            List<Probenehmer> prn =
+                (List<Probenehmer>)repository.filter(
+                    builder.getQuery(),
+                    Strings.STAMM).getData();
+            if (prn == null || prn.isEmpty()) {
+                ReportItem warn = new ReportItem();
+                warn.setCode(673);
+                warn.setKey("probenahmeinstitution");
+                warn.setValue(key);
+                currentWarnings.add(warn);
+                return;
+            }
+            probe.setProbeNehmerId(prn.get(0).getId());
         }
 
         if ("SOLL_DATUM_UHRZEIT_A".equals(key)) {
