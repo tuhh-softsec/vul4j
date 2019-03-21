@@ -6,6 +6,7 @@
  * Update to JDT Annotation 2.2.200
  * Update to Commons-CSV 1.6
  * Rename BinaryParser to SbdParser
+ * Remove StationDataTypes & test
  
 ## 1.1.0 - 11/16/2018
  * Update .travis.yml to build OpenJDK11 and all branches

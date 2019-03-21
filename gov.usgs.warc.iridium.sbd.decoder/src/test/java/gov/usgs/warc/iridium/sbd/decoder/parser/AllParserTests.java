@@ -19,8 +19,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({ ConfirmationTest.class, HeaderTest.class,
 		InformationElementIdentifiersTest.class, LocationDirectionTest.class,
 		LocationInformationTest.class, MessageTest.class, PayloadTest.class,
-		SbdParserTest.class, SessionStatusTest.class,
-		StationDataTypesTest.class })
+		SbdParserTest.class, SessionStatusTest.class })
 public class AllParserTests
 {
 	/**
