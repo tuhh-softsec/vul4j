@@ -39,7 +39,7 @@ import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrder;
  * @author darceyj
  * @since Jan 5, 2018
  */
-public class BinaryParser
+public class SbdParser
 {
 	/**
 	 * Class logger.
@@ -48,7 +48,7 @@ public class BinaryParser
 	 * @since Mar 3, 2018
 	 */
 	private static final Logger log = LoggerFactory
-			.getLogger(BinaryParser.class);
+			.getLogger(SbdParser.class);
 
 	/**
 	 * Take in a byte array and return the unsigned number as a long
@@ -336,7 +336,7 @@ public class BinaryParser
 	 * @throws Exception
 	 * @since Jan 5, 2018
 	 */
-	public BinaryParser(final List<Byte> p_List) throws Exception
+	public SbdParser(final List<Byte> p_List) throws Exception
 	{
 		m_ByteList = Lists.newArrayList();
 		checkState(!p_List.isEmpty(), "The byte list is empty");
@@ -521,7 +521,7 @@ public class BinaryParser
 		 * TODO for now return the data map and print the message with the data
 		 * map
 		 */
-		log.info(MoreObjects.toStringHelper(BinaryParser.class)
+		log.info(MoreObjects.toStringHelper(SbdParser.class)
 				.add("Message", m_Message).add("Values", dataMap.toString())
 				.toString());
 		return dataMap;

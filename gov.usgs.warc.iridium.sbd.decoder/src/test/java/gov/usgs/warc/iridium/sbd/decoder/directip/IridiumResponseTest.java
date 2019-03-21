@@ -38,7 +38,7 @@ import gov.usgs.warc.iridium.sbd.domain.SbdStationId;
 import gov.usgs.warc.iridium.sbd.decoder.directip.IridiumResponse;
 import gov.usgs.warc.iridium.sbd.decoder.directip.SbdProcessor;
 import gov.usgs.warc.iridium.sbd.decoder.directip.SbdProcessorImpl;
-import gov.usgs.warc.iridium.sbd.decoder.parser.BinaryParser;
+import gov.usgs.warc.iridium.sbd.decoder.parser.SbdParser;
 import gov.usgs.warc.iridium.sbd.decoder.parser.Message;
 
 /**
@@ -171,7 +171,7 @@ public class IridiumResponseTest
 				.thenReturn(Lists.newArrayList(iridiumStationId));
 		when(m_DecodeOrderRepo.findByStationId(m_StationIdTest)).thenReturn(
 				Sets.newTreeSet(ParsingTestsHelper.getDecodeList()));
-		final BinaryParser parser = new BinaryParser(
+		final SbdParser parser = new SbdParser(
 				ParsingTestsHelper.setupMessageBytes("00"));
 		final Collection<SbdStationId> stationsList = m_IridiumStationRepo
 				.findByImei(String

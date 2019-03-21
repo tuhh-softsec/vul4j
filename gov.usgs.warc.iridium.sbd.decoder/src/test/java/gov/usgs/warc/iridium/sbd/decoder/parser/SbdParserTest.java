@@ -41,7 +41,7 @@ import gov.usgs.warc.iridium.sbd.domain.SbdStationIdProvider;
 import gov.usgs.warc.iridium.sbd.domain.SbdDataType;
 import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrder;
 import gov.usgs.warc.iridium.sbd.domain.SbdStationId;
-import gov.usgs.warc.iridium.sbd.decoder.parser.BinaryParser;
+import gov.usgs.warc.iridium.sbd.decoder.parser.SbdParser;
 import gov.usgs.warc.iridium.sbd.decoder.parser.elements.LocationInformation;
 
 /**
@@ -55,7 +55,7 @@ import gov.usgs.warc.iridium.sbd.decoder.parser.elements.LocationInformation;
 @SpringBootTest
 @ContextConfiguration
 @ActiveProfiles("test")
-public class BinaryParserTest
+public class SbdParserTest
 {
 
 	/**
@@ -103,8 +103,8 @@ public class BinaryParserTest
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception
 	{
-		final Class<?> classToTest = BinaryParser.class;
-		final Class<?> testingClass = BinaryParserTest.class;
+		final Class<?> classToTest = SbdParser.class;
+		final Class<?> testingClass = SbdParserTest.class;
 		Tests.assertHasRequiredMethods(classToTest, testingClass,
 				SkipMethod.TO_STRING, SkipMethod.CAN_EQUAL);
 	}
@@ -189,7 +189,7 @@ public class BinaryParserTest
 
 	/**
 	 * Test method for
-	 * {@link gov.usgs.warc.iridium.sbd.decoder.parser.BinaryParser#getValuesFromMessage()}.
+	 * {@link gov.usgs.warc.iridium.sbd.decoder.parser.SbdParser#getValuesFromMessage()}.
 	 *
 	 * @throws Exception
 	 */
@@ -199,21 +199,21 @@ public class BinaryParserTest
 		for (final List<Byte> bytes : ParsingTestsHelper
 				.getTestingDataBadPayload())
 		{
-			assertThatThrownBy(() -> new BinaryParser(bytes))
+			assertThatThrownBy(() -> new SbdParser(bytes))
 					.hasSameClassAs(new IllegalArgumentException());
 		}
 	}
 
 	/**
 	 * Test method for
-	 * {@link gov.usgs.warc.iridium.sbd.decoder.parser.BinaryParser#getAsUnsignedNumber(byte[])}.
+	 * {@link gov.usgs.warc.iridium.sbd.decoder.parser.SbdParser#getAsUnsignedNumber(byte[])}.
 	 */
 	@Test
 	public void testGetAsUnsignedNumber()
 	{
 		final String hexString = "ea5f";
 		final byte[] byteArray = hexStringToByteArray(hexString);
-		final int test = (int) BinaryParser.getAsUnsignedNumber(byteArray);
+		final int test = (int) SbdParser.getAsUnsignedNumber(byteArray);
 		final int expected = 59999;
 		assertThat(UnsignedInts.parseUnsignedInt(hexString, 16))
 				.isEqualTo(expected);
@@ -222,14 +222,14 @@ public class BinaryParserTest
 
 	/**
 	 * Test method for
-	 * {@link gov.usgs.warc.iridium.sbd.decoder.parser.BinaryParser#getAsUnsignedNumber(byte[])}.
+	 * {@link gov.usgs.warc.iridium.sbd.decoder.parser.SbdParser#getAsUnsignedNumber(byte[])}.
 	 */
 	@Test
 	public void testGetAsUnsignedNumber2()
 	{
 		final String hexString = "43B539E1";
 		final byte[] byteArray = hexStringToByteArray(hexString);
-		final int test = (int) BinaryParser.getAsUnsignedNumber(byteArray);
+		final int test = (int) SbdParser.getAsUnsignedNumber(byteArray);
 		final int expected = 1135950305;
 		assertThat(UnsignedInts.parseUnsignedInt(hexString, 16))
 				.isEqualTo(expected);
@@ -238,7 +238,7 @@ public class BinaryParserTest
 
 	/**
 	 * Test method for
-	 * {@link gov.usgs.warc.iridium.sbd.decoder.parser.BinaryParser#getIMEIFromBytes(byte[])}.
+	 * {@link gov.usgs.warc.iridium.sbd.decoder.parser.SbdParser#getIMEIFromBytes(byte[])}.
 	 */
 	@Test
 	public void testGetIMEIFromBytes()
@@ -248,13 +248,13 @@ public class BinaryParserTest
 		final String str = Long.toString(expected);
 		final String finalStr = Strings.padStart(str, 15, '0');
 		final byte[] byteArray = finalStr.getBytes();
-		assertThat(BinaryParser.getIMEIFromBytes(byteArray))
+		assertThat(SbdParser.getIMEIFromBytes(byteArray))
 				.isEqualTo(expected);
 	}
 
 	/**
 	 * Test method for
-	 * {@link gov.usgs.warc.iridium.sbd.decoder.parser.BinaryParser#getMessage()}.
+	 * {@link gov.usgs.warc.iridium.sbd.decoder.parser.SbdParser#getMessage()}.
 	 *
 	 * @throws Exception
 	 *             if an error occurred during parsing.
@@ -263,14 +263,14 @@ public class BinaryParserTest
 	public void testGetMessage() throws Exception
 	{
 		m_TestingByteList = setupMessageBytes("00");
-		final BinaryParser parser = new BinaryParser(m_TestingByteList);
+		final SbdParser parser = new SbdParser(m_TestingByteList);
 		assertThat(parser.getMessage()).isNotNull();
 
 	}
 
 	/**
 	 * Test method for
-	 * {@link gov.usgs.warc.iridium.sbd.decoder.parser.BinaryParser#getMessage()}.
+	 * {@link gov.usgs.warc.iridium.sbd.decoder.parser.SbdParser#getMessage()}.
 	 *
 	 * Test with a 'bad quality' status
 	 *
@@ -281,7 +281,7 @@ public class BinaryParserTest
 	public void testGetMessage2() throws Exception
 	{
 		m_TestingByteList = setupMessageBytes("02");
-		final BinaryParser parser = new BinaryParser(m_TestingByteList);
+		final SbdParser parser = new SbdParser(m_TestingByteList);
 		assertThat(parser.getMessage()).isNotNull();
 		assertThat(parser.getMessage().getPayLoad()).isNotNull();
 
@@ -299,7 +299,7 @@ public class BinaryParserTest
 
 	/**
 	 * Test method for
-	 * {@link gov.usgs.warc.iridium.sbd.decoder.parser.BinaryParser#getValuesFromMessage()}.
+	 * {@link gov.usgs.warc.iridium.sbd.decoder.parser.SbdParser#getValuesFromMessage()}.
 	 *
 	 * @throws Exception
 	 */
@@ -307,7 +307,7 @@ public class BinaryParserTest
 	public void testGetValuesFromMessage() throws Exception
 	{
 		m_TestingByteList = setupMessageBytes("00");
-		final BinaryParser parser = new BinaryParser(m_TestingByteList);
+		final SbdParser parser = new SbdParser(m_TestingByteList);
 		final Optional<SbdStationId> opt = m_IridiumStationRepo
 				.findByImei(String
 						.valueOf(parser.getMessage().getHeader().getImei()))
@@ -349,7 +349,7 @@ public class BinaryParserTest
 
 	/**
 	 * Test method for
-	 * {@link gov.usgs.warc.iridium.sbd.decoder.parser.BinaryParser#getValuesFromMessage()}.
+	 * {@link gov.usgs.warc.iridium.sbd.decoder.parser.SbdParser#getValuesFromMessage()}.
 	 */
 	@Test
 	public void testGetValuesFromMessage2()
@@ -358,7 +358,7 @@ public class BinaryParserTest
 		{
 			try
 			{
-				final BinaryParser parser = new BinaryParser(bytes);
+				final SbdParser parser = new SbdParser(bytes);
 				parser.setDecodeOrder(
 						Sets.newTreeSet(ParsingTestsHelper.getDecodeList()));
 				parser.getValuesFromMessage();
@@ -377,7 +377,7 @@ public class BinaryParserTest
 
 	/**
 	 * Test method for
-	 * {@link gov.usgs.warc.iridium.sbd.decoder.parser.BinaryParser#BinaryParser(List)}.
+	 * {@link gov.usgs.warc.iridium.sbd.decoder.parser.SbdParser#BinaryParser(List)}.
 	 *
 	 * @throws Exception
 	 */
@@ -386,7 +386,7 @@ public class BinaryParserTest
 	{
 		m_TestingByteList = setupMessageBytes("0D");
 		m_ExpectedException.expect(Exception.class);
-		final BinaryParser parser = new BinaryParser(m_TestingByteList);
+		final SbdParser parser = new SbdParser(m_TestingByteList);
 		final Optional<SbdStationId> opt = m_IridiumStationRepo
 				.findByImei(String
 						.valueOf(parser.getMessage().getHeader().getImei()))
@@ -399,7 +399,7 @@ public class BinaryParserTest
 	}
 
 	/**
-	 * Test method for {@link BinaryParser#setDecodeOrder(java.util.SortedSet)}
+	 * Test method for {@link SbdParser#setDecodeOrder(java.util.SortedSet)}
 	 *
 	 * @throws Exception
 	 * @since Feb 12, 2018
@@ -408,7 +408,7 @@ public class BinaryParserTest
 	public void testSetDecodeOrder() throws Exception
 	{
 		m_TestingByteList = setupMessageBytes("00");
-		final BinaryParser parser = new BinaryParser(m_TestingByteList);
+		final SbdParser parser = new SbdParser(m_TestingByteList);
 		final Optional<SbdStationId> opt = m_IridiumStationRepo
 				.findByImei(String
 						.valueOf(parser.getMessage().getHeader().getImei()))
@@ -424,7 +424,7 @@ public class BinaryParserTest
 
 	/**
 	 * Test method for
-	 * {@link gov.usgs.warc.iridium.sbd.decoder.parser.BinaryParser#getAsUnsignedNumber(byte[])}.
+	 * {@link gov.usgs.warc.iridium.sbd.decoder.parser.SbdParser#getAsUnsignedNumber(byte[])}.
 	 */
 	@Test
 	public void testUnsignedShort()
@@ -432,7 +432,7 @@ public class BinaryParserTest
 		final String hexString = "0068";
 		final byte[] byteArray = hexStringToByteArray(hexString);
 		final short expected = 104;
-		assertThat((short) BinaryParser.getAsUnsignedNumber(byteArray))
+		assertThat((short) SbdParser.getAsUnsignedNumber(byteArray))
 				.isEqualTo(expected);
 	}
 

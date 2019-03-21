@@ -12,7 +12,7 @@ import com.google.common.collect.Table;
 import com.google.common.primitives.Bytes;
 import gov.usgs.warc.iridium.sbd.decoder.ParsingTestsHelper;
 import gov.usgs.warc.iridium.sbd.decoder.Tests;
-import gov.usgs.warc.iridium.sbd.decoder.parser.BinaryParser;
+import gov.usgs.warc.iridium.sbd.decoder.parser.SbdParser;
 import gov.usgs.warc.iridium.sbd.domain.SbdDataType;
 import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrder;
 import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrderProvider;
@@ -185,7 +185,7 @@ public class SbdProcessorTest
 		inputByteLists.add(ParsingTestsHelper.setupMessageBytes("00"));
 		for (final List<Byte> inputBytes : inputByteLists)
 		{
-			final BinaryParser parser = new BinaryParser(inputBytes);
+			final SbdParser parser = new SbdParser(inputBytes);
 
 			final Collection<SbdStationId> stationsList = m_IridiumStationRepository
 					.findByImei(String.valueOf(

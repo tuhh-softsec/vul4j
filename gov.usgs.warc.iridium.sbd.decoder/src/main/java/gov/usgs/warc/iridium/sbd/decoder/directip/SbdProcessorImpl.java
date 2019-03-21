@@ -5,7 +5,7 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Table;
-import gov.usgs.warc.iridium.sbd.decoder.parser.BinaryParser;
+import gov.usgs.warc.iridium.sbd.decoder.parser.SbdParser;
 import gov.usgs.warc.iridium.sbd.domain.SbdDataType;
 import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrder;
 import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrderProvider;
@@ -89,7 +89,7 @@ public class SbdProcessorImpl implements SbdProcessor
 
 		try
 		{
-			final BinaryParser parser = new BinaryParser(byteList);
+			final SbdParser parser = new SbdParser(byteList);
 			/**
 			 * Parse the incoming bytes and return an IridumResponse
 			 */
