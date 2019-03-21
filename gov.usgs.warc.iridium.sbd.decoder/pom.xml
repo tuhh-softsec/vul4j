@@ -5,7 +5,7 @@
 
 	<groupId>gov.usgs.warc</groupId>
 	<artifactId>iridium.sbd.decoder</artifactId>
-	<version>1.1.0</version>
+	<version>1.2.0</version>
 	<name>USGS Iridium Short Burst Data (SBD) Decoder Library</name>
 	<packaging>jar</packaging>
 

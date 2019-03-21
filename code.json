@@ -3,7 +3,7 @@
     "name": "warc-iridium-sbd-decoder",
     "organization": "U.S. Geological Survey",
     "description": "USGS Iridium Short Burst Data (SBD) Decoder Library",
-    "version": "1.0.0",
+    "version": "1.2.0",
     "status": "Beta",
 
     "permissions": {
@@ -43,7 +43,7 @@
     },
 
     "date": {
-      "metadataLastUpdated": "2018-05-14"
+      "metadataLastUpdated": "2019-03-21"
     }
   }
 ]
