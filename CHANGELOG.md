@@ -1,6 +1,6 @@
 # USGS Iridium Short Burst Data (SBD) Decoder Library
 
-## 1.2.0 - TBD
+## 1.2.0 - 03/22/2019
  * Add support for decoding Sutron Standard CSV messages
  * Update to Spring Boot 2.1.3
  * Update to Guava 27.1
