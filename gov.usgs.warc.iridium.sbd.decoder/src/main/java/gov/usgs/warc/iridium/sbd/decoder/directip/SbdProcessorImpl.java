@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Table;
 import gov.usgs.warc.iridium.sbd.decoder.parser.SbdParser;
 import gov.usgs.warc.iridium.sbd.domain.SbdDataType;
+import gov.usgs.warc.iridium.sbd.domain.SbdDataTypeProvider;
 import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrder;
 import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrderProvider;
 import gov.usgs.warc.iridium.sbd.domain.SbdStationId;
@@ -42,6 +43,14 @@ public class SbdProcessorImpl implements SbdProcessor
 			.getLogger(SbdProcessorImpl.class);
 
 	/**
+	 * The data type repository
+	 *
+	 * @author mckelvym
+	 * @since Mar 22, 2019
+	 */
+	private final SbdDataTypeProvider<? extends SbdDataType>		m_DataTypeRepository;
+
+	/**
 	 * The decode order repository bean
 	 *
 	 * @since Feb 12, 2018
@@ -60,6 +69,8 @@ public class SbdProcessorImpl implements SbdProcessor
 	 *            {@link ApplicationContext}
 	 * @param p_IridiumStationIdRepository
 	 *            {@link SbdStationIdProvider}
+	 * @param p_IridiumDataTypeRepository
+	 *            {@link SbdDataTypeProvider}
 	 * @param p_IridiumDecodeOrderRepository
 	 *            {@link SbdDecodeOrderProvider}
 	 * @author mckelvym
@@ -67,12 +78,16 @@ public class SbdProcessorImpl implements SbdProcessor
 	 */
 	public SbdProcessorImpl(final ApplicationContext p_Context,
 			final SbdStationIdProvider<? extends SbdStationId> p_IridiumStationIdRepository,
+			final SbdDataTypeProvider<? extends SbdDataType> p_IridiumDataTypeRepository,
 			final SbdDecodeOrderProvider<? extends SbdDecodeOrder> p_IridiumDecodeOrderRepository)
 	{
 		m_IridiumStationRepository = requireNonNull(
-				p_IridiumStationIdRepository, "Station ID repository");
+				p_IridiumStationIdRepository,
+				"Station ID repository required.");
+		m_DataTypeRepository = requireNonNull(p_IridiumDataTypeRepository,
+				"Data type repository required.");
 		m_DecodeOrderRepository = requireNonNull(p_IridiumDecodeOrderRepository,
-				"Decode order repository");
+				"Decode order repository required.");
 	}
 
 	@Override
@@ -100,9 +115,11 @@ public class SbdProcessorImpl implements SbdProcessor
 			for (final SbdStationId iridiumStationId : iridiumStationIds)
 			{
 				final long stationId = iridiumStationId.getStationId();
+				final SortedSet<? extends SbdDataType> dataTypeSet = m_DataTypeRepository
+						.findByStationId(stationId);
 				final SortedSet<? extends SbdDecodeOrder> decodeOrderSet = m_DecodeOrderRepository
 						.findByStationId(stationId);
-				parser.setDecodeOrder(decodeOrderSet);
+				parser.setDecodeConfiguration(dataTypeSet, decodeOrderSet);
 				final Map<SbdDataType, Double> valueMap = parser
 						.getValuesFromMessage();
 				log.info(String.format("Station id %s: %s", stationId,

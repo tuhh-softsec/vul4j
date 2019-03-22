@@ -1,9 +1,6 @@
 package gov.usgs.warc.iridium.sbd.decoder.parser;
 
-import gov.usgs.warc.iridium.sbd.decoder.parser.elements.ConfirmationTest;
-import gov.usgs.warc.iridium.sbd.decoder.parser.elements.HeaderTest;
 import gov.usgs.warc.iridium.sbd.decoder.parser.elements.LocationInformationTest;
-import gov.usgs.warc.iridium.sbd.decoder.parser.elements.PayloadTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -16,9 +13,9 @@ import org.junit.runners.Suite.SuiteClasses;
  *
  */
 @RunWith(Suite.class)
-@SuiteClasses({ ConfirmationTest.class, HeaderTest.class,
-		InformationElementIdentifiersTest.class, LocationDirectionTest.class,
-		LocationInformationTest.class, MessageTest.class, PayloadTest.class,
+@SuiteClasses({ InformationElementIdentifiersTest.class,
+		LocationDirectionTest.class, LocationInformationTest.class,
+		MessageTest.class, PseudobinaryBPayloadDecoderTest.class,
 		SbdParserTest.class, SessionStatusTest.class })
 public class AllParserTests
 {

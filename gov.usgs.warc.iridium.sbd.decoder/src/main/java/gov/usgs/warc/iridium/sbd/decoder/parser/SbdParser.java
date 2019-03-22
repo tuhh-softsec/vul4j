@@ -1,14 +1,21 @@
 package gov.usgs.warc.iridium.sbd.decoder.parser;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkElementIndex;
 import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-
+import gov.usgs.warc.iridium.sbd.decoder.parser.Message.MessageBuilder;
+import gov.usgs.warc.iridium.sbd.decoder.parser.elements.Header;
+import gov.usgs.warc.iridium.sbd.decoder.parser.elements.Header.HeaderBuilder;
+import gov.usgs.warc.iridium.sbd.decoder.parser.elements.LocationInformation;
+import gov.usgs.warc.iridium.sbd.decoder.parser.elements.LocationInformation.LocationInformationBuilder;
+import gov.usgs.warc.iridium.sbd.decoder.parser.elements.Payload;
+import gov.usgs.warc.iridium.sbd.decoder.parser.elements.PayloadType;
+import gov.usgs.warc.iridium.sbd.domain.SbdDataType;
+import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrder;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
@@ -18,20 +25,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
-
+import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import gov.usgs.warc.iridium.sbd.decoder.parser.Message.MessageBuilder;
-import gov.usgs.warc.iridium.sbd.decoder.parser.elements.Header;
-import gov.usgs.warc.iridium.sbd.decoder.parser.elements.Header.HeaderBuilder;
-import gov.usgs.warc.iridium.sbd.decoder.parser.elements.LocationInformation;
-import gov.usgs.warc.iridium.sbd.decoder.parser.elements.LocationInformation.LocationInformationBuilder;
-import gov.usgs.warc.iridium.sbd.decoder.parser.elements.Payload;
-import gov.usgs.warc.iridium.sbd.decoder.parser.elements.Payload.PayloadBuilder;
-import gov.usgs.warc.iridium.sbd.decoder.sixbitbinary.Decode;
-import gov.usgs.warc.iridium.sbd.domain.SbdDataType;
-import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrder;
 
 /**
  * Parse a list of {@link Byte} into usable digits from the iridium source.
@@ -47,8 +43,7 @@ public class SbdParser
 	 * @author mckelvym
 	 * @since Mar 3, 2018
 	 */
-	private static final Logger log = LoggerFactory
-			.getLogger(SbdParser.class);
+	private static final Logger log = LoggerFactory.getLogger(SbdParser.class);
 
 	/**
 	 * Take in a byte array and return the unsigned number as a long
@@ -272,39 +267,61 @@ public class SbdParser
 	 * @return a {@link Payload}
 	 * @since Jan 11, 2018
 	 */
-	private static Payload processPayload(final ByteBuffer p_BytesBuffer)
+	static Payload processPayload(final ByteBuffer p_BytesBuffer)
 	{
-		final PayloadBuilder payloadBuilder = Payload.builder();
+		final byte[] array = p_BytesBuffer.array();
+
+		PayloadType payloadType;
+		byte[] payloadArray = new byte[0];
+		final Function<Integer, byte[]> arrayCopyFn = offset ->
+		{
+			final int payloadByteLength = array.length;
+			final int validPayloadLength = payloadByteLength - offset;
+			final byte[] arrayCopy = new byte[validPayloadLength];
+			for (int byteIndex = offset; byteIndex < payloadByteLength; byteIndex++)
+			{
+				final byte b = array[byteIndex];
+				arrayCopy[byteIndex - offset] = b;
+			}
+			return arrayCopy;
+		};
+
+		switch (array[1])
+		{
+			case 'B':
+				payloadType = PayloadType.PSEUDOBINARY_B_DATA_FORMAT;
+				/**
+				 * Skip the first 4 bytes of the payload.
+				 */
+				payloadArray = arrayCopyFn.apply(4);
+				for (final Byte b : payloadArray)
+				{
+					checkArgument(b >= 63,
+							"Minimum byte value for payload type %s must be 63. Payload is: %s",
+							payloadType, Arrays.toString(array));
+				}
+				break;
+			case 'C':
+				payloadType = PayloadType.PSEUDOBINARY_C_DATA_FORMAT;
+				payloadArray = arrayCopyFn.apply(0);
+				break;
+			case 'D':
+				payloadType = PayloadType.PSEUDOBINARY_D_DATA_FORMAT;
+				payloadArray = arrayCopyFn.apply(0);
+				break;
+			default:
+				payloadType = PayloadType.SUTRON_STANDARD_CSV;
+				/**
+				 * Skip first 1 byte of the payload.
+				 */
+				payloadArray = arrayCopyFn.apply(1);
+				break;
+		}
 
 		final byte id = 2;
-		payloadBuilder.id(id);
-
-		final int payloadByteLength = p_BytesBuffer.array().length;
-
-		/**
-		 * Skip the first 4 bytes of the payload The rest of the bytes til the
-		 * end is payload bytes
-		 */
-		final int validPayloadLength = payloadByteLength - 4;
-		payloadBuilder.length((short) validPayloadLength);
-		final byte[] payLoadBytes = new byte[validPayloadLength];
-		p_BytesBuffer.position(4);
-		p_BytesBuffer.get(payLoadBytes, 0, validPayloadLength);
-		final Byte[] dst = new Byte[validPayloadLength];
-		for (int i = 0; i < validPayloadLength; i++)
-		{
-			dst[i] = Byte.valueOf(payLoadBytes[i]);
-		}
-
-		for (final Byte b : dst)
-		{
-			checkArgument(b >= 63,
-					"Minimum byte value for payload must be 63. Payload is: %s",
-					Arrays.toString(dst));
-		}
-
-		payloadBuilder.payload(dst);
-		return payloadBuilder.build();
+		final Payload payload = Payload.builder(payloadType).id(id)
+				.payload(payloadArray).build();
+		return payload;
 	}
 
 	/**
@@ -312,7 +329,15 @@ public class SbdParser
 	 *
 	 * @since Jan 9, 2018
 	 */
-	private final List<Byte>					m_ByteList;
+	private final List<Byte>				m_ByteList;
+
+	/**
+	 * Set of {@link SbdDataType} to use when decoding the payload.
+	 *
+	 * @author mckelvym
+	 * @since Mar 22, 2019
+	 */
+	private final SortedSet<SbdDataType>	m_DataTypes;
 
 	/**
 	 * Set of {@link SbdDecodeOrder} to use when decoding the payload.
@@ -326,7 +351,7 @@ public class SbdParser
 	 *
 	 * @since Jan 11, 2018
 	 */
-	private final Message						m_Message;
+	private final Message					m_Message;
 
 	/**
 	 * Default Constructor
@@ -341,6 +366,7 @@ public class SbdParser
 		m_ByteList = Lists.newArrayList();
 		checkState(!p_List.isEmpty(), "The byte list is empty");
 		m_Message = parseMessage(p_List);
+		m_DataTypes = Sets.newTreeSet();
 		m_DecodeOrder = Sets.newTreeSet();
 	}
 
@@ -484,42 +510,19 @@ public class SbdParser
 			throw new Exception(
 					"Unable to parse the payload. The decode order is unknown.");
 		}
+
 		final Payload payLoad = m_Message.getPayLoad();
-		final List<Byte> payloadBytes = Lists
-				.newArrayList(payLoad.getPayload());
-		final Map<SbdDataType, Double> dataMap = Maps.newLinkedHashMap();
-		/**
-		 * Build the map of data type and its corresponding value decoded from
-		 * the payload bytes.
-		 */
-		for (final SbdDecodeOrder order : m_DecodeOrder)
-		{
-			final SbdDataType datatype = order.getDatatype();
-			final int byteLength = datatype.getBytes();
-			final int startIndex = (int) order.getByteOffset();
-
-			checkElementIndex(startIndex, payloadBytes.size(), String.format(
-					"The payload (%s; size: %s) does not have enough bytes to decode '%s' starting at byte %s.",
-					Arrays.toString(payloadBytes.toArray()),
-					payloadBytes.size(), datatype, startIndex));
-
-			final float value = Decode.valueAtIndex(payloadBytes, startIndex,
-					byteLength, 1);
-			final double transformedVal = datatype.transformValue(value);
-
-			dataMap.put(datatype, transformedVal);
-		}
+		final Map<SbdDataType, Double> dataMap = Maps
+				.newLinkedHashMap(payLoad.decode(m_DataTypes, m_DecodeOrder));
 
 		/**
 		 * Clear the byte list since it has been parsed.
 		 */
 		m_ByteList.clear();
-
 		m_DecodeOrder.clear();
 
 		/**
-		 * TODO for now return the data map and print the message with the data
-		 * map
+		 * for now return the data map and print the message with the data map
 		 */
 		log.info(MoreObjects.toStringHelper(SbdParser.class)
 				.add("Message", m_Message).add("Values", dataMap.toString())
@@ -546,18 +549,27 @@ public class SbdParser
 	}
 
 	/**
-	 * Set the decode order
+	 * Set the decode data types to use and the decode order
 	 *
+	 * @param p_Types
+	 *            the datatypes to use for this message
 	 * @param p_Order
 	 *            the order of iridium datatypes for this message
 	 * @since Feb 9, 2018
 	 */
-	public void setDecodeOrder(
+	public void setDecodeConfiguration(
+			final SortedSet<? extends SbdDataType> p_Types,
 			final SortedSet<? extends SbdDecodeOrder> p_Order)
 	{
+		final Set<? extends SbdDataType> typeSet = Objects
+				.requireNonNull(p_Types);
 		final Set<? extends SbdDecodeOrder> orderSet = Objects
 				.requireNonNull(p_Order);
+		checkState(!typeSet.isEmpty(), "The type set is empty.");
 		checkState(!orderSet.isEmpty(), "The order set is empty.");
+
+		m_DataTypes.clear();
+		m_DataTypes.addAll(p_Types);
 		m_DecodeOrder.clear();
 		m_DecodeOrder.addAll(p_Order);
 	}

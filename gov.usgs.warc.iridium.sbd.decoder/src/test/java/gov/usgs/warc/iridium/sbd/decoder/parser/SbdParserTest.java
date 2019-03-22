@@ -9,17 +9,28 @@ import static org.mockito.Mockito.when;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import com.google.common.collect.Maps;
 import com.google.common.primitives.UnsignedInts;
-
+import gov.usgs.warc.iridium.sbd.decoder.ParsingTestsHelper;
+import gov.usgs.warc.iridium.sbd.decoder.Tests;
+import gov.usgs.warc.iridium.sbd.decoder.Tests.SkipMethod;
+import gov.usgs.warc.iridium.sbd.decoder.parser.elements.LocationInformation;
+import gov.usgs.warc.iridium.sbd.decoder.parser.elements.Payload;
+import gov.usgs.warc.iridium.sbd.decoder.parser.elements.PayloadType;
+import gov.usgs.warc.iridium.sbd.domain.SbdDataType;
+import gov.usgs.warc.iridium.sbd.domain.SbdDataTypeProvider;
+import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrder;
+import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrderProvider;
+import gov.usgs.warc.iridium.sbd.domain.SbdStationId;
+import gov.usgs.warc.iridium.sbd.domain.SbdStationIdProvider;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -33,19 +44,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import gov.usgs.warc.iridium.sbd.decoder.ParsingTestsHelper;
-import gov.usgs.warc.iridium.sbd.decoder.Tests;
-import gov.usgs.warc.iridium.sbd.decoder.Tests.SkipMethod;
-import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrderProvider;
-import gov.usgs.warc.iridium.sbd.domain.SbdStationIdProvider;
-import gov.usgs.warc.iridium.sbd.domain.SbdDataType;
-import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrder;
-import gov.usgs.warc.iridium.sbd.domain.SbdStationId;
-import gov.usgs.warc.iridium.sbd.decoder.parser.SbdParser;
-import gov.usgs.warc.iridium.sbd.decoder.parser.elements.LocationInformation;
-
 /**
- * Test the binary parser
+ * Test {@link SbdParser}
  *
  * @author darceyj
  * @since Jan 10, 2018
@@ -72,8 +72,8 @@ public class SbdParserTest
 	}
 
 	/**
-	 * Get the {@link SbdDataType} from the parsed map by it's attribute
-	 * name (e.x. wind speed)
+	 * Get the {@link SbdDataType} from the parsed map by it's attribute name
+	 * (e.x. wind speed)
 	 *
 	 * @param p_Stream
 	 *            the stream of {@link SbdDataType}
@@ -82,8 +82,7 @@ public class SbdParserTest
 	 * @return the {@link SbdDataType} with the given name.
 	 * @since Feb 9, 2018
 	 */
-	private static SbdDataType getDatatype(
-			final Stream<SbdDataType> p_Stream,
+	public static SbdDataType getDatatype(final Stream<SbdDataType> p_Stream,
 			final String p_AttributeToSearch)
 	{
 		final Optional<SbdDataType> opt = p_Stream.filter(
@@ -110,11 +109,18 @@ public class SbdParserTest
 	}
 
 	/**
+	 * @author mckelvym
+	 * @since Mar 22, 2019
+	 */
+	@MockBean
+	private SbdDataTypeProvider<SbdDataType>		m_DataTypeRepository;
+
+	/**
 	 * @author darceyj
 	 * @since Jan 10, 2018
 	 */
 	@MockBean
-	private SbdDecodeOrderProvider<SbdDecodeOrder>	m_DecodeOrderRepo;
+	private SbdDecodeOrderProvider<SbdDecodeOrder>	m_DecodeOrderRepository;
 
 	/**
 	 * Rule for asserting that the proper exception is thrown
@@ -122,7 +128,7 @@ public class SbdParserTest
 	 * @since Feb 2, 2018
 	 */
 	@Rule
-	public ExpectedException								m_ExpectedException	= ExpectedException
+	public ExpectedException						m_ExpectedException	= ExpectedException
 			.none();
 
 	/**
@@ -131,21 +137,21 @@ public class SbdParserTest
 	 * @since Feb 12, 2018
 	 */
 	@MockBean
-	private SbdStationIdProvider<SbdStationId>		m_IridiumStationRepo;
+	private SbdStationIdProvider<SbdStationId>		m_IridiumStationRepository;
 
 	/**
 	 * The station ID to test with
 	 *
 	 * @since May 9, 2018
 	 */
-	private Long											m_StationIdTest;
+	private Long									m_StationIdTest;
 
 	/**
 	 * The list of bytes to parse
 	 *
 	 * @since Jan 24, 2018
 	 */
-	private List<Byte>										m_TestingByteList;
+	private List<Byte>								m_TestingByteList;
 
 	/**
 	 * Setup a successful directip MO message to test
@@ -180,10 +186,12 @@ public class SbdParserTest
 			}
 		};
 
-		when(m_IridiumStationRepo.findByImei(imei))
+		when(m_IridiumStationRepository.findByImei(imei))
 				.thenReturn(Lists.newArrayList(iridiumStationId));
-		when(m_DecodeOrderRepo.findByStationId(m_StationIdTest)).thenReturn(
-				Sets.newTreeSet(ParsingTestsHelper.getDecodeList()));
+		when(m_DataTypeRepository.findByStationId(m_StationIdTest))
+				.thenReturn(ParsingTestsHelper.getDataTypeSet());
+		when(m_DecodeOrderRepository.findByStationId(m_StationIdTest))
+				.thenReturn(ParsingTestsHelper.getDecodeOrderSet());
 
 	}
 
@@ -248,8 +256,7 @@ public class SbdParserTest
 		final String str = Long.toString(expected);
 		final String finalStr = Strings.padStart(str, 15, '0');
 		final byte[] byteArray = finalStr.getBytes();
-		assertThat(SbdParser.getIMEIFromBytes(byteArray))
-				.isEqualTo(expected);
+		assertThat(SbdParser.getIMEIFromBytes(byteArray)).isEqualTo(expected);
 	}
 
 	/**
@@ -285,14 +292,16 @@ public class SbdParserTest
 		assertThat(parser.getMessage()).isNotNull();
 		assertThat(parser.getMessage().getPayLoad()).isNotNull();
 
-		final Optional<SbdStationId> opt = m_IridiumStationRepo
+		final Optional<SbdStationId> opt = m_IridiumStationRepository
 				.findByImei(String
 						.valueOf(parser.getMessage().getHeader().getImei()))
 				.stream().findFirst();
 		assertThat(opt).isNotEqualTo(Optional.empty());
 		final Long stationId = opt.get().getStationId();
 
-		parser.setDecodeOrder(m_DecodeOrderRepo.findByStationId(stationId));
+		parser.setDecodeConfiguration(
+				m_DataTypeRepository.findByStationId(stationId),
+				m_DecodeOrderRepository.findByStationId(stationId));
 		assertThat(parser.getValuesFromMessage()).isNotEmpty();
 
 	}
@@ -308,43 +317,41 @@ public class SbdParserTest
 	{
 		m_TestingByteList = setupMessageBytes("00");
 		final SbdParser parser = new SbdParser(m_TestingByteList);
-		final Optional<SbdStationId> opt = m_IridiumStationRepo
+		final Optional<SbdStationId> opt = m_IridiumStationRepository
 				.findByImei(String
 						.valueOf(parser.getMessage().getHeader().getImei()))
 				.stream().findFirst();
 		assertThat(opt).isNotEqualTo(Optional.empty());
 		final Long stationId = opt.get().getStationId();
 
-		parser.setDecodeOrder(m_DecodeOrderRepo.findByStationId(stationId));
-		final Map<SbdDataType, Double> dataMap = parser
-				.getValuesFromMessage();
+		parser.setDecodeConfiguration(
+				m_DataTypeRepository.findByStationId(stationId),
+				m_DecodeOrderRepository.findByStationId(stationId));
+		final Map<SbdDataType, Double> dataMap = parser.getValuesFromMessage();
 		final LocationInformation locationInformation = parser.getMessage()
 				.getLocationInformation();
-		final LocationInformation expected = LocationInformation.builder()
-				.cepRadius(2000L).id((byte) 0x03).length((short) 11)
+		final LocationInformation expectedLocationInformation = LocationInformation
+				.builder().cepRadius(2000L).id((byte) 0x03).length((short) 11)
 				.latitude(125.0).longitude(65.59999).build();
-		assertThat(locationInformation).isEqualTo(expected);
-		final Set<SbdDataType> keySet = dataMap.keySet();
-		assertThat(dataMap.get(getDatatype(keySet.stream(), "wind speed")))
-				.isEqualTo(6.6);
-		assertThat(dataMap.get(getDatatype(keySet.stream(), "wind direction")))
-				.isEqualTo(0);
-		assertThat(dataMap.get(getDatatype(keySet.stream(), "flood side")))
-				.isEqualTo(-0.44);
-		assertThat(dataMap.get(getDatatype(keySet.stream(), "protected side")))
-				.isEqualTo(-0.36);
-		assertThat(
-				dataMap.get(getDatatype(keySet.stream(), "relative humidity")))
-						.isEqualTo(0);
-		assertThat(dataMap
-				.get(getDatatype(keySet.stream(), "barometric pressure")))
-						.isEqualTo(1027.7);
-		assertThat(dataMap.get(getDatatype(keySet.stream(), "precipitation")))
-				.isEqualTo(0.28);
-		assertThat(dataMap.get(getDatatype(keySet.stream(), "battery")))
-				.isEqualTo(13.876);
-		assertThat(dataMap.get(getDatatype(keySet.stream(), "air temperature")))
-				.isEqualTo(39.38);
+		assertThat(locationInformation).isEqualTo(expectedLocationInformation);
+
+		final Map<SbdDataType, Double> expectedValues = Maps.newHashMap();
+		expectedValues.put(ParsingTestsHelper.BATTERY_DATATYPE, 13.876);
+		expectedValues.put(ParsingTestsHelper.FLOOD_STAGE_DATATYPE, -0.44);
+		expectedValues.put(ParsingTestsHelper.HUMIDITY_DATATYPE, 0.);
+		expectedValues.put(ParsingTestsHelper.PRECIPITATION_DATATYPE, 0.28);
+		expectedValues.put(ParsingTestsHelper.PRESSURE_DATATYPE, 1027.7);
+		expectedValues.put(ParsingTestsHelper.PROTECTED_STAGE_DATATYPE, -0.36);
+		expectedValues.put(ParsingTestsHelper.TEMPERATURE_DATATYPE, 39.38);
+		expectedValues.put(ParsingTestsHelper.WIND_DIRECTION_DATATYPE, 0.);
+		expectedValues.put(ParsingTestsHelper.WIND_SPEED_DATATYPE, 6.6);
+
+		for (final Entry<SbdDataType, Double> entry : expectedValues.entrySet())
+		{
+			final SbdDataType dataType = entry.getKey();
+			final Double expected = entry.getValue();
+			assertThat(dataMap.get(dataType)).isEqualTo(expected);
+		}
 	}
 
 	/**
@@ -359,8 +366,9 @@ public class SbdParserTest
 			try
 			{
 				final SbdParser parser = new SbdParser(bytes);
-				parser.setDecodeOrder(
-						Sets.newTreeSet(ParsingTestsHelper.getDecodeList()));
+				parser.setDecodeConfiguration(
+						ParsingTestsHelper.getDataTypeSet(),
+						ParsingTestsHelper.getDecodeOrderSet());
 				parser.getValuesFromMessage();
 			}
 			catch (final Exception e)
@@ -377,7 +385,7 @@ public class SbdParserTest
 
 	/**
 	 * Test method for
-	 * {@link gov.usgs.warc.iridium.sbd.decoder.parser.SbdParser#BinaryParser(List)}.
+	 * {@link gov.usgs.warc.iridium.sbd.decoder.parser.SbdParser#SbdParser(List)}.
 	 *
 	 * @throws Exception
 	 */
@@ -387,36 +395,164 @@ public class SbdParserTest
 		m_TestingByteList = setupMessageBytes("0D");
 		m_ExpectedException.expect(Exception.class);
 		final SbdParser parser = new SbdParser(m_TestingByteList);
-		final Optional<SbdStationId> opt = m_IridiumStationRepo
+		final Optional<SbdStationId> opt = m_IridiumStationRepository
 				.findByImei(String
 						.valueOf(parser.getMessage().getHeader().getImei()))
 				.stream().findFirst();
 		assertThat(opt).isNotEqualTo(Optional.empty());
 		final Long stationId = opt.get().getStationId();
 
-		parser.setDecodeOrder(m_DecodeOrderRepo.findByStationId(stationId));
+		parser.setDecodeConfiguration(
+				m_DataTypeRepository.findByStationId(stationId),
+				m_DecodeOrderRepository.findByStationId(stationId));
 		parser.getValuesFromMessage();
 	}
 
 	/**
-	 * Test method for {@link SbdParser#setDecodeOrder(java.util.SortedSet)}
+	 * Test method for
+	 * {@link gov.usgs.warc.iridium.sbd.decoder.parser.SbdParser#processPayload(java.nio.ByteBuffer)}.
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void testProcessPayload() throws Exception
+	{
+		testProcessPayloadPsuedobinaryB();
+		testProcessPayloadPsuedobinaryBBad();
+		testProcessPayloadPsuedobinaryC();
+		testProcessPayloadPsuedobinaryD();
+		testProcessPayloadSutronStandardCsv();
+	}
+
+	/**
+	 * Test method for
+	 * {@link gov.usgs.warc.iridium.sbd.decoder.parser.SbdParser#processPayload(java.nio.ByteBuffer)}.
+	 *
+	 * Original implementation for pseudobinary b format
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void testProcessPayloadPsuedobinaryB() throws Exception
+	{
+		/**
+		 * Log using 'nc' to a text file and then use 'hexdump -c' to get
+		 * characters for this string.
+		 */
+		final String payLoadBytes = "0B1B@AC@AC@@F@D^@AW@@AB_n@@@J";
+		final ByteBuffer byteBuffer = ByteBuffer.wrap(payLoadBytes.getBytes());
+
+		final Payload payload = SbdParser.processPayload(byteBuffer);
+		assertThat(payload.getPayloadType())
+				.isEqualTo(PayloadType.PSEUDOBINARY_B_DATA_FORMAT);
+		assertThat(payload.getPayload().length)
+				.isEqualTo(payLoadBytes.getBytes().length - 4);
+	}
+
+	/**
+	 * Test method for
+	 * {@link gov.usgs.warc.iridium.sbd.decoder.parser.SbdParser#processPayload(java.nio.ByteBuffer)}.
+	 *
+	 * Original implementation for pseudobinary b format
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void testProcessPayloadPsuedobinaryBBad() throws Exception
+	{
+		/**
+		 * Log using 'nc' to a text file and then use 'hexdump -c' to get
+		 * characters for this string.
+		 */
+		final String payLoadBytes = "0B1B?xd?zG@JM///O";
+		final ByteBuffer byteBuffer = ByteBuffer.wrap(payLoadBytes.getBytes());
+
+		assertThatThrownBy(() -> SbdParser.processPayload(byteBuffer))
+				.isInstanceOf(IllegalArgumentException.class);
+	}
+
+	/**
+	 * Test method for
+	 * {@link gov.usgs.warc.iridium.sbd.decoder.parser.SbdParser#processPayload(java.nio.ByteBuffer)}.
+	 *
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void testProcessPayloadPsuedobinaryC() throws Exception
+	{
+		final String payLoadBytes = "0C1B@AC@AC@@F@D^@AW@@AB_n@@@J";
+		final ByteBuffer byteBuffer = ByteBuffer.wrap(payLoadBytes.getBytes());
+
+		final Payload payload = SbdParser.processPayload(byteBuffer);
+		assertThat(payload.getPayloadType())
+				.isEqualTo(PayloadType.PSEUDOBINARY_C_DATA_FORMAT);
+		assertThat(payload.getPayload().length)
+				.isEqualTo(payLoadBytes.getBytes().length);
+	}
+
+	/**
+	 * Test method for
+	 * {@link gov.usgs.warc.iridium.sbd.decoder.parser.SbdParser#processPayload(java.nio.ByteBuffer)}.
+	 *
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void testProcessPayloadPsuedobinaryD() throws Exception
+	{
+		final String payLoadBytes = "0D1B@AC@AC@@F@D^@AW@@AB_n@@@J";
+		final ByteBuffer byteBuffer = ByteBuffer.wrap(payLoadBytes.getBytes());
+
+		final Payload payload = SbdParser.processPayload(byteBuffer);
+		assertThat(payload.getPayloadType())
+				.isEqualTo(PayloadType.PSEUDOBINARY_D_DATA_FORMAT);
+		assertThat(payload.getPayload().length)
+				.isEqualTo(payLoadBytes.getBytes().length);
+	}
+
+	/**
+	 * Test method for
+	 * {@link gov.usgs.warc.iridium.sbd.decoder.parser.SbdParser#processPayload(java.nio.ByteBuffer)}.
+	 *
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void testProcessPayloadSutronStandardCsv() throws Exception
+	{
+		final String payLoadBytes = "003/21/2019,15:00:00,Prtctd,0.48,ft,G";
+		final ByteBuffer byteBuffer = ByteBuffer.wrap(payLoadBytes.getBytes());
+
+		final Payload payload = SbdParser.processPayload(byteBuffer);
+		assertThat(payload.getPayloadType())
+				.isEqualTo(PayloadType.SUTRON_STANDARD_CSV);
+		assertThat(payload.getPayload().length)
+				.isEqualTo(payLoadBytes.getBytes().length - 1);
+	}
+
+	/**
+	 * Test method for
+	 * {@link SbdParser#setDecodeConfiguration(java.util.SortedSet, java.util.SortedSet)}
 	 *
 	 * @throws Exception
 	 * @since Feb 12, 2018
 	 */
 	@Test
-	public void testSetDecodeOrder() throws Exception
+	public void testSetDecodeConfiguration() throws Exception
 	{
 		m_TestingByteList = setupMessageBytes("00");
 		final SbdParser parser = new SbdParser(m_TestingByteList);
-		final Optional<SbdStationId> opt = m_IridiumStationRepo
+		final Optional<SbdStationId> opt = m_IridiumStationRepository
 				.findByImei(String
 						.valueOf(parser.getMessage().getHeader().getImei()))
 				.stream().findFirst();
 		assertThat(opt).isNotEqualTo(Optional.empty());
 		final Long stationId = opt.get().getStationId();
 
-		parser.setDecodeOrder(m_DecodeOrderRepo.findByStationId(stationId));
+		parser.setDecodeConfiguration(
+				m_DataTypeRepository.findByStationId(stationId),
+				m_DecodeOrderRepository.findByStationId(stationId));
 		final Map<SbdDataType, Double> valuesFromMessage = parser
 				.getValuesFromMessage();
 		assertThat(valuesFromMessage).isNotNull();
