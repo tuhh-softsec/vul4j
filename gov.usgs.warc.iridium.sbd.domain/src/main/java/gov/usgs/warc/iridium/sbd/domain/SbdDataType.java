@@ -1,5 +1,6 @@
 package gov.usgs.warc.iridium.sbd.domain;
 
+import com.google.common.collect.ComparisonChain;
 import org.nfunk.jep.JEP;
 
 /**
@@ -9,8 +10,16 @@ import org.nfunk.jep.JEP;
  * @since Feb 2, 2018
  *
  */
-public interface SbdDataType
+public interface SbdDataType extends Comparable<SbdDataType>
 {
+
+	@Override
+	public default int compareTo(final SbdDataType p_Other)
+	{
+		return ComparisonChain.start().compare(getId(), p_Other.getId())
+				.result();
+	}
+
 	/**
 	 * The number of bytes to read for this data type from the Short Burst Data
 	 * payload
