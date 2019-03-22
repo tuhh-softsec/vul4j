@@ -66,7 +66,7 @@ public enum PayloadType
 	/**
 	 * Standard logging format that conforms to:
 	 *
-	 * mm/dd/yyyy,hh:mm:ss,label,data[,units,qual][,label,da ta[,units,qual]]
+	 * mm/dd/yyyy,hh:mm:ss,label,data[,units,quality][,label,data[,units,quality]]
 	 *
 	 * @author mckelvym
 	 * @since Mar 21, 2019
