@@ -5,6 +5,8 @@
  * Update to Guava 27.1
  * Update to JDT Annotation 2.2.200
  * Update to Commons-CSV 1.6
+ * SbdDataType is now Comparable
+ * Add SbdDataTypeProvider
  * Rename BinaryParser to SbdParser
  * Remove StationDataTypes & test
  
