@@ -121,7 +121,8 @@ if [ "$NO_DATA" != "true" ]; then
         stammdaten_data_user_context.sql \
         stammdaten_data_importer_config.sql \
         lada_data.sql \
-        lada_messprogramm.sql
+        lada_messprogramm.sql \
+        lada_views.sql
     do
         [ -f private_${file} ] && file=private_${file}
         echo "  ${file%.sql}"
@@ -130,9 +131,6 @@ if [ "$NO_DATA" != "true" ]; then
 
     echo init sequences
     psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_init_sequences.sql
-
-    echo create private lada views
-    [ -f private_lada_views.sql ] && psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/private_lada_views.sql
 
     echo create schema geo
     psql $DB_CONNECT_STRING -d $DB_NAME --command "CREATE SCHEMA geo AUTHORIZATION $ROLE_NAME"
