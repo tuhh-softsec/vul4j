@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import gov.usgs.warc.iridium.sbd.decoder.parser.elements.Payload;
 import gov.usgs.warc.iridium.sbd.decoder.parser.elements.PayloadType;
 import gov.usgs.warc.iridium.sbd.domain.SbdDataType;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
@@ -189,6 +191,22 @@ public class SutronStandardCsvPayloadDecoder implements PayloadDecoder
 				log.info(String.format("%s: %s", status, nextLine));
 			}
 		}
+
+		/**
+		 * Filter the decoded set to only include those types specified in the
+		 * decode order
+		 */
+		final Set<SbdDataType> allowedTypes = p_DecodeOrder.stream()
+				.map(SbdDecodeOrder::getDatatype).collect(Collectors.toSet());
+		final Set<SbdDataType> disallowedTypes = Sets
+				.newTreeSet(dataMap.keySet());
+		disallowedTypes.removeAll(allowedTypes);
+		final int decodedSize = dataMap.keySet().size();
+		disallowedTypes.forEach(dataMap::remove);
+		final int filteredSize = dataMap.size();
+		log.info(String.format("%s types decoded, %s allowed", decodedSize,
+				filteredSize));
+
 		return dataMap;
 	}
 

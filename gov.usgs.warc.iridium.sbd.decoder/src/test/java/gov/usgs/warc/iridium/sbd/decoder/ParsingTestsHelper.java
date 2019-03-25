@@ -201,7 +201,7 @@ public class ParsingTestsHelper
 	 * @return a default {@link SbdDecodeOrder}
 	 * @since Feb 12, 2018
 	 */
-	private static SbdDecodeOrder createDecodeOrder(final long p_StationId,
+	public static SbdDecodeOrder createDecodeOrder(final long p_StationId,
 			final long p_ByteOffset, final SbdDataType p_IridiumDataType,
 			final long p_ID)
 	{

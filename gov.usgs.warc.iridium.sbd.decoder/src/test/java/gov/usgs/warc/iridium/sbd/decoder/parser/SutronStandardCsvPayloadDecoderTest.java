@@ -1,6 +1,7 @@
 package gov.usgs.warc.iridium.sbd.decoder.parser;
 
 import static gov.usgs.warc.iridium.sbd.decoder.ParsingTestsHelper.createDataType;
+import static gov.usgs.warc.iridium.sbd.decoder.ParsingTestsHelper.createDecodeOrder;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
@@ -156,7 +157,13 @@ public class SutronStandardCsvPayloadDecoderTest
 				HUMIDITY_DATATYPE, PRESSURE_DATATYPE, PROTECTED_STAGE_DATATYPE,
 				TEMPERATURE_DATATYPE, WIND_DIRECTION_DATATYPE,
 				WIND_SPEED_DATATYPE));
-		m_DecodeOrder = Sets.newTreeSet();
+		m_DecodeOrder = Sets.newTreeSet(Arrays.asList(
+				createDecodeOrder(1L, 0, FLOOD_STAGE_DATATYPE, 1L),
+				createDecodeOrder(1L, 1, HUMIDITY_DATATYPE, 2L),
+				createDecodeOrder(1L, 2, PRESSURE_DATATYPE, 3L),
+				createDecodeOrder(1L, 3, TEMPERATURE_DATATYPE, 4L),
+				createDecodeOrder(1L, 4, WIND_DIRECTION_DATATYPE, 5L),
+				createDecodeOrder(1L, 5, WIND_SPEED_DATATYPE, 6L)));
 		m_Testable = new SutronStandardCsvPayloadDecoder();
 		final String payLoadBytes = "003/21/2019,15:00:00,Prtctd,0.48,ft,G\r\n"
 				+ "03/21/2019,15:00:00,Flood,0.53,ft,G\r\n"
@@ -187,7 +194,9 @@ public class SutronStandardCsvPayloadDecoderTest
 		expectedValues.put(FLOOD_STAGE_DATATYPE, 0.53);
 		expectedValues.put(HUMIDITY_DATATYPE, 59.);
 		expectedValues.put(PRESSURE_DATATYPE, 1020.4);
-		expectedValues.put(PROTECTED_STAGE_DATATYPE, 0.24);
+		/**
+		 * Skip PROTECTED_STAGE_DATATYPE
+		 */
 		expectedValues.put(TEMPERATURE_DATATYPE, 13.9);
 		expectedValues.put(WIND_DIRECTION_DATATYPE, 18.);
 		expectedValues.put(WIND_SPEED_DATATYPE, 4.8);
@@ -201,6 +210,8 @@ public class SutronStandardCsvPayloadDecoderTest
 
 			assertThat(dataMap.get(dataType)).isEqualTo(expected);
 		}
+
+		assertThat(expectedValues.size()).isEqualTo(dataMap.size());
 	}
 
 	/**
