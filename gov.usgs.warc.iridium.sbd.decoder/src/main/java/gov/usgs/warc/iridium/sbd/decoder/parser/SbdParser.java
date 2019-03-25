@@ -435,11 +435,12 @@ public class SbdParser
 					break;
 				case HEADER:
 					header = processHeader(ByteBuffer.wrap(dst), ieLength);
-
+					log.info(String.format("Header: %s", header));
 					break;
 				case LOCATION_INFORMATION:
 					locInfo = processLocationInformation(ByteBuffer.wrap(dst),
 							ieLength);
+					log.info(String.format("Location: %s", locInfo));
 					break;
 				case PAYLOAD:
 					payload = processPayload(ByteBuffer.wrap(dst));
