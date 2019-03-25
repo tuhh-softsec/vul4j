@@ -176,6 +176,7 @@ public class SutronStandardCsvPayloadDecoder implements PayloadDecoder
 
 		final Map<SbdDataType, Double> dataMap = Maps.newLinkedHashMap();
 		final String payload = new String(p_Payload.getPayload());
+		log.info(String.format("Payload:\n%s", payload));
 		final Splitter splitter = Splitter.on(',');
 		try (Scanner scanner = new Scanner(payload))
 		{
@@ -253,13 +254,13 @@ public class SutronStandardCsvPayloadDecoder implements PayloadDecoder
 
 		final Predicate<SbdDataType> csvTypeFilter = type -> type
 				.getBytes() == 0 && type.getName().equalsIgnoreCase(name)
-				&& type.getUnits().equals(units);
+				&& type.getUnits().equalsIgnoreCase(units);
 		final Optional<SbdDataType> findFirst = p_DataTypes.stream()
 				.filter(csvTypeFilter).findFirst();
 		if (!findFirst.isPresent())
 		{
 			log.warn(String.format(
-					"No matching data type for (name: %s, units: %s) among:\n%s",
+					"No matching data type for (name: %s, units: %s) among:\n - %s",
 					name, units,
 					p_DataTypes.stream()
 							.map(type -> String.format(
