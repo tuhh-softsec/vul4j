@@ -7,13 +7,13 @@ import static org.mockito.Mockito.when;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
 import com.google.common.primitives.Bytes;
 import gov.usgs.warc.iridium.sbd.decoder.ParsingTestsHelper;
 import gov.usgs.warc.iridium.sbd.decoder.Tests;
-import gov.usgs.warc.iridium.sbd.decoder.parser.BinaryParser;
+import gov.usgs.warc.iridium.sbd.decoder.parser.SbdParser;
 import gov.usgs.warc.iridium.sbd.domain.SbdDataType;
+import gov.usgs.warc.iridium.sbd.domain.SbdDataTypeProvider;
 import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrder;
 import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrderProvider;
 import gov.usgs.warc.iridium.sbd.domain.SbdStationId;
@@ -69,6 +69,8 @@ public class SbdProcessorTest
 		 *            {@link ApplicationContext}
 		 * @param p_IridiumStationIdRepository
 		 *            {@link SbdStationIdProvider}
+		 * @param p_IridiumDataTypeRepository
+		 *            {@link SbdDataTypeProvider}
 		 * @param p_IridiumDecodeOrderRepository
 		 *            {@link SbdDecodeOrderProvider}
 		 * @return {@link SbdProcessorImpl} instance
@@ -80,9 +82,11 @@ public class SbdProcessorTest
 		@Primary
 		public SbdProcessor sbdProcessor(final ApplicationContext p_Context,
 				final SbdStationIdProvider<SbdStationId> p_IridiumStationIdRepository,
+				final SbdDataTypeProvider<SbdDataType> p_IridiumDataTypeRepository,
 				final SbdDecodeOrderProvider<SbdDecodeOrder> p_IridiumDecodeOrderRepository)
 		{
 			return new SbdProcessorImpl(p_Context, p_IridiumStationIdRepository,
+					p_IridiumDataTypeRepository,
 					p_IridiumDecodeOrderRepository);
 		}
 
@@ -104,11 +108,17 @@ public class SbdProcessorTest
 	}
 
 	/**
+	 * @author mckelvym
+	 * @since Mar 22, 2019
+	 */
+	@MockBean
+	private SbdDataTypeProvider<SbdDataType>		m_DataTypeRepository;
+
+	/**
 	 * The decode order repository bean
 	 *
 	 * @since Feb 12, 2018
 	 */
-
 	@MockBean
 	private SbdDecodeOrderProvider<SbdDecodeOrder>	m_DecodeOrderRepository;
 
@@ -177,15 +187,16 @@ public class SbdProcessorTest
 
 		when(m_IridiumStationRepository.findByImei(imei))
 				.thenReturn(Lists.newArrayList(iridiumStationId));
+		when(m_DataTypeRepository.findByStationId(m_StationIdTest))
+				.thenReturn(ParsingTestsHelper.getDataTypeSet());
 		when(m_DecodeOrderRepository.findByStationId(m_StationIdTest))
-				.thenReturn(
-						Sets.newTreeSet(ParsingTestsHelper.getDecodeList()));
+				.thenReturn(ParsingTestsHelper.getDecodeOrderSet());
 
 		final List<List<Byte>> inputByteLists = Lists.newArrayList();
 		inputByteLists.add(ParsingTestsHelper.setupMessageBytes("00"));
 		for (final List<Byte> inputBytes : inputByteLists)
 		{
-			final BinaryParser parser = new BinaryParser(inputBytes);
+			final SbdParser parser = new SbdParser(inputBytes);
 
 			final Collection<SbdStationId> stationsList = m_IridiumStationRepository
 					.findByImei(String.valueOf(
@@ -195,7 +206,8 @@ public class SbdProcessorTest
 			assertThat(opt).isNotEqualTo(Optional.empty());
 			final Long stationId = opt.get().getStationId();
 
-			parser.setDecodeOrder(
+			parser.setDecodeConfiguration(
+					m_DataTypeRepository.findByStationId(stationId),
 					m_DecodeOrderRepository.findByStationId(stationId));
 			final Map<SbdDataType, Double> dataMap = parser
 					.getValuesFromMessage();

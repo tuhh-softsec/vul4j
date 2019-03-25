@@ -1,14 +1,19 @@
 package gov.usgs.warc.iridium.sbd.decoder;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import com.google.common.collect.Sets;
 import gov.usgs.warc.iridium.sbd.domain.SbdDataType;
 import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrder;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.LongUnaryOperator;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Convenience class for methods in the parsing tests.
@@ -19,6 +24,87 @@ import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrder;
  */
 public class ParsingTestsHelper
 {
+	/**
+	 * Testing {@link SbdDataType}
+	 *
+	 * @author mckelvym
+	 * @since Mar 22, 2019
+	 */
+	public static final SbdDataType	BATTERY_DATATYPE			= createDataType(
+			9L, 1, "Battery", "V", null, "x * 0.234 + 10.6");
+
+	/**
+	 * Testing {@link SbdDataType}
+	 *
+	 * @author mckelvym
+	 * @since Mar 22, 2019
+	 */
+	public static final SbdDataType	FLOOD_STAGE_DATATYPE		= createDataType(
+			1L, 3, "Flood Side", "ft", "Water Level", "x / 100");
+
+	/**
+	 * Testing {@link SbdDataType}
+	 *
+	 * @author mckelvym
+	 * @since Mar 22, 2019
+	 */
+	public static final SbdDataType	HUMIDITY_DATATYPE			= createDataType(
+			2L, 3, "Relative Humidity", "%", null, "x");
+
+	/**
+	 * Testing {@link SbdDataType}
+	 *
+	 * @author mckelvym
+	 * @since Mar 22, 2019
+	 */
+	public static final SbdDataType	PRECIPITATION_DATATYPE		= createDataType(
+			3L, 3, "Precipitation", "in", null, "x/100");
+
+	/**
+	 * Testing {@link SbdDataType}
+	 *
+	 * @author mckelvym
+	 * @since Mar 22, 2019
+	 */
+	public static final SbdDataType	PRESSURE_DATATYPE			= createDataType(
+			4L, 3, "Barometric Pressure", "in of Hg", "Pressure", "x/10");
+
+	/**
+	 * Testing {@link SbdDataType}
+	 *
+	 * @author mckelvym
+	 * @since Mar 22, 2019
+	 */
+	public static final SbdDataType	PROTECTED_STAGE_DATATYPE	= createDataType(
+			5L, 3, "Protected Side", "ft", "Water Level", "x / 100");
+
+	/**
+	 * Testing {@link SbdDataType}
+	 *
+	 * @author mckelvym
+	 * @since Mar 22, 2019
+	 */
+	public static final SbdDataType	TEMPERATURE_DATATYPE		= createDataType(
+			6L, 3, "Air Temperature", "degC", "Temperature", "x * .18 + 32");
+
+	/**
+	 * Testing {@link SbdDataType}
+	 *
+	 * @author mckelvym
+	 * @since Mar 22, 2019
+	 */
+	public static final SbdDataType	WIND_DIRECTION_DATATYPE		= createDataType(
+			7L, 3, "Wind Direction", "deg", "Wind Direction", "x");
+
+	/**
+	 * Testing {@link SbdDataType}
+	 *
+	 * @author mckelvym
+	 * @since Mar 22, 2019
+	 */
+	public static final SbdDataType	WIND_SPEED_DATATYPE			= createDataType(
+			8L, 3, "Wind Speed", "mph", "Wind Speed", "x/10");
+
 	/**
 	 * Convenience method to add bytes in array to the list
 	 *
@@ -49,9 +135,9 @@ public class ParsingTestsHelper
 	 * @return a new {@link SbdDataType}
 	 * @since Feb 12, 2018
 	 */
-	private static SbdDataType createDataType(final long p_Id,
-			final int p_Bytes, final String p_Name, final String p_Units,
-			final String p_TypeName, final String p_Transformation)
+	public static SbdDataType createDataType(final long p_Id, final int p_Bytes,
+			final String p_Name, final String p_Units, final String p_TypeName,
+			final String p_Transformation)
 	{
 		final SbdDataType dt = new SbdDataType()
 		{
@@ -91,6 +177,16 @@ public class ParsingTestsHelper
 			{
 				return p_Units;
 			}
+
+			@Override
+			public String toString()
+			{
+				return MoreObjects.toStringHelper(this.getClass())
+						.add("id", getId()).add("name", getName())
+						.add("typeName", getTypeName()).add("units", getUnits())
+						.add("transform", getTransformation())
+						.add("bytes", getBytes()).toString();
+			}
 		};
 		return dt;
 	}
@@ -98,16 +194,16 @@ public class ParsingTestsHelper
 	/**
 	 * Create a new decode order
 	 *
-	 * @param p_ID
+	 * @param p_StationId
 	 * @param p_ByteOffset
 	 * @param p_IridiumDataType
-	 * @param p_StationId
+	 * @param p_ID
 	 * @return a default {@link SbdDecodeOrder}
 	 * @since Feb 12, 2018
 	 */
-	private static SbdDecodeOrder createDecodeOrder(final long p_ID,
+	public static SbdDecodeOrder createDecodeOrder(final long p_StationId,
 			final long p_ByteOffset, final SbdDataType p_IridiumDataType,
-			final long p_StationId)
+			final long p_ID)
 	{
 		final SbdDecodeOrder decodeOrd = new SbdDecodeOrder()
 		{
@@ -140,42 +236,52 @@ public class ParsingTestsHelper
 	}
 
 	/**
+	 * @return a sorted {@link Set} of {@link SbdDataType}
+	 * @author mckelvym
+	 * @since Mar 22, 2019
+	 */
+	public static SortedSet<SbdDataType> getDataTypeSet()
+	{
+		return Sets.newTreeSet(Arrays.asList(FLOOD_STAGE_DATATYPE,
+				PROTECTED_STAGE_DATATYPE, WIND_SPEED_DATATYPE,
+				WIND_DIRECTION_DATATYPE, TEMPERATURE_DATATYPE,
+				HUMIDITY_DATATYPE, PRESSURE_DATATYPE, PRECIPITATION_DATATYPE,
+				BATTERY_DATATYPE));
+	}
+
+	/**
 	 *
-	 * @return a list of {@link SbdDecodeOrder}
+	 * @return a sorted {@link Set} of {@link SbdDecodeOrder}
 	 * @since Feb 12, 2018
 	 */
-	public static List<SbdDecodeOrder> getDecodeList()
+	public static SortedSet<SbdDecodeOrder> getDecodeOrderSet()
 	{
-		final SbdDataType fsDataType = createDataType(221L, 3, "Flood Side",
-				"ft", "Water Level", "x / 100");
-		final SbdDataType psDataType = createDataType(221L, 3,
-				"Protected Side", "ft", "Water Level", "x / 100");
-		final SbdDataType windSpeedDataType = createDataType(221L, 3,
-				"Wind Speed", "mph", "Wind Speed", "x/10");
-		final SbdDataType windDirectionDataType = createDataType(221L, 3,
-				"Wind Direction", "mph", "Wind Direction", "x");
-		final SbdDataType temperatureDataType = createDataType(221L, 3,
-				"Air Temperature", "degC", "Temperature", "x * .18 + 32");
-		final SbdDataType humidityDataType = createDataType(221L, 3,
-				"Relative Humidity", "%", null, "x");
-		final SbdDataType bpDataType = createDataType(221L, 3,
-				"Barometric Pressure", "in of Hg", "Pressure", "x/10");
-		final SbdDataType precip = createDataType(221L, 3, "Precipitation",
-				"in", null, "x/100");
-		final SbdDataType batteryDT = createDataType(221L, 1, "Battery",
-				"V", null, "x * 0.234 + 10.6");
+		long id = 1;
+		final long stationId = 221L;
+		final AtomicLong byteOffset = new AtomicLong(0);
+		final LongUnaryOperator update = value -> value + 3;
 		final List<SbdDecodeOrder> decodeList = Lists.newArrayList();
-		decodeList.add(createDecodeOrder(221L, 0L, fsDataType, 1L));
-		decodeList.add(createDecodeOrder(221L, 3L, psDataType, 1L));
-		decodeList.add(createDecodeOrder(221L, 6L, windSpeedDataType, 1L));
-		decodeList.add(createDecodeOrder(221L, 9L, windDirectionDataType, 1L));
-		decodeList.add(createDecodeOrder(221L, 12L, temperatureDataType, 1L));
-		decodeList.add(createDecodeOrder(221L, 15L, humidityDataType, 1L));
-		decodeList.add(createDecodeOrder(221L, 18L, bpDataType, 1L));
-		decodeList.add(createDecodeOrder(221L, 21L, precip, 1L));
-		decodeList.add(createDecodeOrder(221L, 24L, batteryDT, 1L));
-		return decodeList;
-
+		decodeList.add(createDecodeOrder(stationId,
+				byteOffset.getAndUpdate(update), FLOOD_STAGE_DATATYPE, id++));
+		decodeList.add(
+				createDecodeOrder(stationId, byteOffset.getAndUpdate(update),
+						PROTECTED_STAGE_DATATYPE, id++));
+		decodeList.add(createDecodeOrder(stationId,
+				byteOffset.getAndUpdate(update), WIND_SPEED_DATATYPE, id++));
+		decodeList.add(
+				createDecodeOrder(stationId, byteOffset.getAndUpdate(update),
+						WIND_DIRECTION_DATATYPE, id++));
+		decodeList.add(createDecodeOrder(stationId,
+				byteOffset.getAndUpdate(update), TEMPERATURE_DATATYPE, id++));
+		decodeList.add(createDecodeOrder(stationId,
+				byteOffset.getAndUpdate(update), HUMIDITY_DATATYPE, id++));
+		decodeList.add(createDecodeOrder(stationId,
+				byteOffset.getAndUpdate(update), PRESSURE_DATATYPE, id++));
+		decodeList.add(createDecodeOrder(stationId,
+				byteOffset.getAndUpdate(update), PRECIPITATION_DATATYPE, id++));
+		decodeList.add(createDecodeOrder(stationId,
+				byteOffset.getAndUpdate(update), BATTERY_DATATYPE, id++));
+		return Sets.newTreeSet(decodeList);
 	}
 
 	/**
@@ -349,6 +455,23 @@ public class ParsingTestsHelper
 		addBytestoListFromArray(testingByteList, CEPRad);
 		return testingByteList;
 
+	}
+
+	/**
+	 * Convert a {@link Byte} {@link List} to a {@code byte} array
+	 *
+	 * @param p_Bytes
+	 *            {@link Byte} {@link List}
+	 * @return {@code byte} array
+	 * @author mckelvym
+	 * @since Mar 22, 2019
+	 */
+	public static byte[] toByteArray(final List<Byte> p_Bytes)
+	{
+		final byte[] array = new byte[p_Bytes.size()];
+		IntStream.range(0, array.length)
+				.forEach(i -> array[i] = p_Bytes.get(i));
+		return array;
 	}
 
 	/**
