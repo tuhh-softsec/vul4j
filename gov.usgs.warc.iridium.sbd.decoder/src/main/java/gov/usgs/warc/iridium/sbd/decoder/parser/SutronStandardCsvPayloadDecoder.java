@@ -15,6 +15,7 @@ import java.util.Scanner;
 import java.util.SortedSet;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -184,7 +185,7 @@ public class SutronStandardCsvPayloadDecoder implements PayloadDecoder
 				final List<String> split = splitter.splitToList(nextLine);
 				final Status status = processLine(split, p_DataTypes,
 						dataMap::put);
-				log.debug(String.format("%s: %s", status, nextLine));
+				log.info(String.format("%s: %s", status, nextLine));
 			}
 		}
 		return dataMap;
@@ -211,17 +212,23 @@ public class SutronStandardCsvPayloadDecoder implements PayloadDecoder
 		/**
 		 * Too few fields
 		 */
-		if (p_Line.size() != getFieldCount())
+		final int numFields = p_Line.size();
+		if (numFields != getFieldCount())
 		{
+			log.warn(String.format("Expected %s fields, but found %s.",
+					getFieldCount(), numFields));
 			return Status.WRONG_FIELD_COUNT;
 		}
 
 		/**
 		 * Not good quality
 		 */
-		if (!p_Line.get(getQualityIndex())
-				.equalsIgnoreCase(getQualityGoodValue()))
+		final String quality = p_Line.get(getQualityIndex());
+		if (!quality.equalsIgnoreCase(getQualityGoodValue()))
 		{
+			log.warn(String.format(
+					"Expected quality indicator '%s', but found '%s'.",
+					getQualityGoodValue(), quality));
 			return Status.BAD_QUALITY;
 		}
 
@@ -251,6 +258,15 @@ public class SutronStandardCsvPayloadDecoder implements PayloadDecoder
 				.filter(csvTypeFilter).findFirst();
 		if (!findFirst.isPresent())
 		{
+			log.warn(String.format(
+					"No matching data type for (name: %s, units: %s) among:\n%s",
+					name, units,
+					p_DataTypes.stream()
+							.map(type -> String.format(
+									"(name: %s, units: %s, bytes: %s)",
+									type.getName(), type.getUnits(),
+									type.getBytes()))
+							.collect(Collectors.joining("\n - "))));
 			return Status.NO_MATCHING_DATATYPE;
 		}
 
