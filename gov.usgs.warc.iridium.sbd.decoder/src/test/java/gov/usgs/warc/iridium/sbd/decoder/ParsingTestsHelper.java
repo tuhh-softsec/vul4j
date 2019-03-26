@@ -309,52 +309,6 @@ public class ParsingTestsHelper
 	}
 
 	/**
-	 * @return list of List of Byte to use for testing
-	 * @author mckelvym
-	 * @since Mar 30, 2018
-	 */
-	public static List<List<Byte>> getTestingDataBadPayload()
-	{
-		final List<List<Byte>> inputByteLists = Lists.newArrayList();
-		/**
-		 * java.lang.NumberFormatException: For input string:
-		 * "-10001-10001-10001"
-		 */
-		inputByteLists.add(ParsingTestsHelper.toByteList(1, 0, 61, 1, 0, 28,
-				-101, 26, 31, 27, 51, 48, 48, 50, 51, 52, 48, 49, 48, 49, 50,
-				53, 55, 52, 48, 0, -100, 64, 0, 0, 90, -69, 75, -24, 3, 0, 11,
-				1, 29, -52, 16, 90, 29, 33, 0, 0, 0, 3, 2, 0, 13, 50, 66, 50,
-				65, 64, 66, 117, 47, 47, 47, 64, 64, 104));
-		inputByteLists.add(ParsingTestsHelper.toByteList(1, 0, 77, 1, 0, 28,
-				-99, -89, -41, 76, 51, 48, 48, 50, 51, 52, 48, 49, 48, 49, 50,
-				52, 55, 52, 48, 0, -19, -39, 0, 0, 90, -63, 90, -89, 3, 0, 11,
-				1, 29, -71, 46, 90, 19, 103, 0, 0, 0, 3, 2, 0, 29, 48, 66, 49,
-				66, 47, 47, 47, 47, 47, 47, 64, 64, 70, 64, 65, 109, 47, 47, 47,
-				47, 47, 47, 66, 94, 119, 64, 65, 80, 77));
-		return inputByteLists;
-	}
-
-	/**
-	 * @return list of List of Byte to use for testing
-	 * @author mckelvym
-	 * @since Apr 2, 2018
-	 */
-	public static List<List<Byte>> getTestingDataShortPayload()
-	{
-		final List<List<Byte>> inputByteLists = Lists.newArrayList();
-		/**
-		 * java.lang.IndexOutOfBoundsException: Invalid start index. (x) must be
-		 * less than size (y)
-		 */
-		inputByteLists.add(toByteList(1, 0, 61, 1, 0, 28, -101, 24, -84, -16,
-				51, 48, 48, 50, 51, 52, 48, 49, 48, 49, 50, 53, 55, 52, 48, 0,
-				-100, 63, 0, 0, 90, -69, 72, -50, 3, 0, 11, 1, 29, -45, 102, 90,
-				29, 33, 0, 0, 0, 4, 2, 0, 13, 50, 66, 50, 67, 64, 66, 116, 64,
-				66, 118));
-		return inputByteLists;
-	}
-
-	/**
 	 * Taken from
 	 * https://stackoverflow.com/questions/140131/convert-a-string-representation-of-a-hex-dump-to-a-byte-array-using-java
 	 *

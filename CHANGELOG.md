@@ -1,7 +1,7 @@
 # USGS Iridium Short Burst Data (SBD) Decoder Library
 
 ## 1.2.1 - 03/26/2019
- * 
+ * Remove premature byte check for pseudobinary b format in SbdParser
 
 ## 1.2.0 - 03/25/2019
  * Add support for decoding Sutron Standard CSV messages
