@@ -18,7 +18,6 @@ import gov.usgs.warc.iridium.sbd.domain.SbdDataType;
 import gov.usgs.warc.iridium.sbd.domain.SbdDecodeOrder;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -294,12 +293,6 @@ public class SbdParser
 				 * Skip the first 4 bytes of the payload.
 				 */
 				payloadArray = arrayCopyFn.apply(4);
-				for (final Byte b : payloadArray)
-				{
-					checkArgument(b >= 63,
-							"Minimum byte value for payload type %s must be 63. Payload is: %s",
-							payloadType, Arrays.toString(array));
-				}
 				break;
 			case 'C':
 				payloadType = PayloadType.PSEUDOBINARY_C_DATA_FORMAT;

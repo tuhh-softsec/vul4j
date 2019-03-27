@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -249,25 +248,4 @@ public class SbdProcessorTest
 			}
 		}
 	}
-
-	/**
-	 * Test method for
-	 * {@link gov.usgs.warc.iridium.sbd.decoder.directip.SbdProcessorImpl#process(byte[], java.util.function.Consumer)}.
-	 */
-	@Test
-	public void testProcessBadOrShortPayload()
-	{
-		final List<List<Byte>> testingData = Lists.newArrayList();
-		testingData.addAll(ParsingTestsHelper.getTestingDataBadPayload());
-		testingData.addAll(ParsingTestsHelper.getTestingDataShortPayload());
-
-		for (final List<Byte> bytes : testingData)
-		{
-			final AtomicReference<Throwable> t = new AtomicReference<>();
-			assertThat(m_Testable.process(Bytes.toArray(bytes), t::set))
-					.isEqualTo(Optional.empty());
-			assertThat(t.get()).isNotNull();
-		}
-	}
-
 }

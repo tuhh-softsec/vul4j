@@ -3,7 +3,6 @@ package gov.usgs.warc.iridium.sbd.decoder.parser;
 import static gov.usgs.warc.iridium.sbd.decoder.ParsingTestsHelper.hexStringToByteArray;
 import static gov.usgs.warc.iridium.sbd.decoder.ParsingTestsHelper.setupMessageBytes;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
@@ -193,23 +192,6 @@ public class SbdParserTest
 		when(m_DecodeOrderRepository.findByStationId(m_StationIdTest))
 				.thenReturn(ParsingTestsHelper.getDecodeOrderSet());
 
-	}
-
-	/**
-	 * Test method for
-	 * {@link gov.usgs.warc.iridium.sbd.decoder.parser.SbdParser#getValuesFromMessage()}.
-	 *
-	 * @throws Exception
-	 */
-	@Test
-	public void testBadPayload() throws Exception
-	{
-		for (final List<Byte> bytes : ParsingTestsHelper
-				.getTestingDataBadPayload())
-		{
-			assertThatThrownBy(() -> new SbdParser(bytes))
-					.hasSameClassAs(new IllegalArgumentException());
-		}
 	}
 
 	/**
@@ -418,7 +400,6 @@ public class SbdParserTest
 	public void testProcessPayload() throws Exception
 	{
 		testProcessPayloadPsuedobinaryB();
-		testProcessPayloadPsuedobinaryBBad();
 		testProcessPayloadPsuedobinaryC();
 		testProcessPayloadPsuedobinaryD();
 		testProcessPayloadSutronStandardCsv();
@@ -447,28 +428,6 @@ public class SbdParserTest
 				.isEqualTo(PayloadType.PSEUDOBINARY_B_DATA_FORMAT);
 		assertThat(payload.getPayload().length)
 				.isEqualTo(payLoadBytes.getBytes().length - 4);
-	}
-
-	/**
-	 * Test method for
-	 * {@link gov.usgs.warc.iridium.sbd.decoder.parser.SbdParser#processPayload(java.nio.ByteBuffer)}.
-	 *
-	 * Original implementation for pseudobinary b format
-	 *
-	 * @throws Exception
-	 */
-	@Test
-	public void testProcessPayloadPsuedobinaryBBad() throws Exception
-	{
-		/**
-		 * Log using 'nc' to a text file and then use 'hexdump -c' to get
-		 * characters for this string.
-		 */
-		final String payLoadBytes = "0B1B?xd?zG@JM///O";
-		final ByteBuffer byteBuffer = ByteBuffer.wrap(payLoadBytes.getBytes());
-
-		assertThatThrownBy(() -> SbdParser.processPayload(byteBuffer))
-				.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	/**
