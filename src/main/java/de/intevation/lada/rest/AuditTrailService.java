@@ -243,8 +243,11 @@ public class AuditTrailService {
     private ObjectNode createEntry(AuditTrailProbe audit, ObjectMapper mapper) {
         ObjectNode node = mapper.createObjectNode();
         node.put("timestamp", audit.getTstamp().getTime());
+        logger.debug("timestamp: " + audit.getTstamp().getTime());
         node.put("type", audit.getTableName());
+        logger.debug("type: " + audit.getTableName());
         node.put("action", audit.getAction());
+        logger.debug("action: " + audit.getAction());
         ObjectNode data = translateValues((ObjectNode)audit.getChangedFields());
         node.putPOJO("changedFields", data);
         if ("kommentar_p".equals(audit.getTableName())) {
@@ -266,7 +269,12 @@ public class AuditTrailService {
             Messung m = repository.getByIdPlain(
                 Messung.class, audit.getObjectId(), Strings.LAND);
             node.put("identifier",
-                 (m.getNebenprobenNr() == null) ? m.getExterneMessungsId().toString() : m.getNebenprobenNr());
+                (m == null) ? 
+                    "(deleted)" : 
+                    (m.getNebenprobenNr() == null) ? 
+                        m.getExterneMessungsId().toString() : 
+                        m.getNebenprobenNr()
+                );
         }
         if (audit.getMessungsId() != null) {
             Messung m = repository.getByIdPlain(
