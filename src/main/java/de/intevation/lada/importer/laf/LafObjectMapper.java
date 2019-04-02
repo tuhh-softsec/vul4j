@@ -769,7 +769,7 @@ public class LafObjectMapper {
         ZusatzWert zusatzwert = new ZusatzWert();
         zusatzwert.setProbeId(probeId);
         if (attributes.containsKey("MESSFEHLER")) {
-            zusatzwert.setMessfehler(Float.valueOf(attributes.get("MESSFEHLER")));
+            zusatzwert.setMessfehler(Float.valueOf(attributes.get("MESSFEHLER").replaceAll(",", ".")));
         }
         String wert = attributes.get("MESSWERT_PZS");
         if (wert.startsWith("<")) {
@@ -779,6 +779,11 @@ public class LafObjectMapper {
         zusatzwert.setMesswertPzs(Double.valueOf(wert.replaceAll(",", ".")));
         List<ImporterConfig> cfgs = getImporterConfigByAttributeUpper("ZUSATZWERT");
         String attribute = attributes.get("PZS");
+        boolean isId = false;
+        if (attribute == null) {
+            attribute = attributes.get("PZS_ID");
+            isId = true;
+        }
         for (int i = 0; i < cfgs.size(); i++) {
             ImporterConfig cfg = cfgs.get(i);
             if (cfg.getAction().equals("convert") &&
@@ -796,7 +801,12 @@ public class LafObjectMapper {
             new QueryBuilder<ProbenZusatz>(
                 repository.entityManager(Strings.STAMM),
                 ProbenZusatz.class);
-        builder.and("zusatzwert", attribute);
+        if (isId) {
+            builder.and("id", attribute);
+        }
+        else {
+            builder.and("zusatzwert", attribute);
+        }
         List<ProbenZusatz> zusatz =
             (List<ProbenZusatz>)repository.filter(
                 builder.getQuery(),
