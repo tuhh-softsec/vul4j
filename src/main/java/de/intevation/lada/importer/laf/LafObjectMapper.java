@@ -660,11 +660,11 @@ public class LafObjectMapper {
                 // inconsistent status protocol.
             }
             else if (i == Identified.REJECT) {
-                ReportItem warn = new ReportItem();
-                warn.setCode(631);
-                warn.setKey("duplicate");
-                warn.setValue("Messung: " + messung.getNebenprobenNr());
-                currentWarnings.add(warn);
+                ReportItem err = new ReportItem();
+                err.setCode(631);
+                err.setKey("identification");
+                err.setValue("Messung");
+                currentErrors.add(err);
                 return;
             }
             else if (i == Identified.NEW) {

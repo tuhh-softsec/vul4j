@@ -19,8 +19,13 @@ import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.data.Strings;
 
+import org.apache.log4j.Logger;
+
 @IdentifierConfig(type="Messung")
 public class MessungIdentifier implements Identifier {
+
+    @Inject
+    private Logger logger; 
 
     @Inject
     @RepositoryConfig(type=RepositoryType.RO)
@@ -62,9 +67,7 @@ public class MessungIdentifier implements Identifier {
             found = messungen.get(0);
             return Identified.UPDATE;
         }
-        else if (messung.getExterneMessungsId() != null &&
-            messung.getNebenprobenNr() == null
-        ) {
+        else if (messung.getExterneMessungsId() != null) {
             builder.and("probeId", messung.getProbeId());
             builder.and("externeMessungsId", messung.getExterneMessungsId());
             List<Messung> messungen =
@@ -79,30 +82,22 @@ public class MessungIdentifier implements Identifier {
             found = messungen.get(0);
             return Identified.UPDATE;
         }
-        else {
+        else if (messung.getMmtId() != null) {
             builder.and("probeId", messung.getProbeId());
-            builder.and("externeMessungsId", messung.getExterneMessungsId());
+            builder.and("mmtId", messung.getMmtId());
             List<Messung> messungen =
                 repository.filterPlain(builder.getQuery(), Strings.LAND);
-            if (messungen.size() > 1) {
-                // Should never happen. DB has unique constraint for "externeMessungsId"
-                return Identified.REJECT;
-            }
             if (messungen.isEmpty()) {
                 return Identified.NEW;
             }
-            if (messungen.get(0).getNebenprobenNr() == null ||
-                messungen.get(0).getNebenprobenNr().equals(
-                    messung.getNebenprobenNr()) ||
-                messung.getNebenprobenNr().isEmpty() ||
-                messungen.get(0).getNebenprobenNr().isEmpty()
-            ) {
-                found = messungen.get(0);
-                return Identified.UPDATE;
+            if (messungen.size() > 1) {
+                return Identified.NEW;
             }
-            else {
-                return Identified.REJECT;
-            }
+            found = messungen.get(0);
+            return Identified.UPDATE;
+        }
+        else {
+            return Identified.REJECT;
         }
     }
 
