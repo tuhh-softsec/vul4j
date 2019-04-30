@@ -166,27 +166,20 @@ public class LafObjectMapper {
                     builder.getQuery(),
                     Strings.STAMM).getData();
             if (zb == null || zb.isEmpty()) {
-                ReportItem warn = new ReportItem();
-                warn.setCode(673);
-                warn.setKey("zeitbasis");
-                warn.setValue(object.getAttributes().get("ZEITBASIS"));
-                currentWarnings.add(warn);
+                currentWarnings.add(new ReportItem("ZEITBASIS", object.getAttributes().get("ZEITBASIS"), 675));
             }
             else {
                 currentZeitbasis = zb.get(0).getId();
             }
         }
         else if (object.getAttributes().containsKey("ZEITBASIS_S")) {
-            try {
-                currentZeitbasis = Integer.valueOf(object.getAttributes().get("ZEITBASIS_S"));
-            }
-            catch (NumberFormatException e) {
-                currentZeitbasis = 2;
-                ReportItem warn = new ReportItem();
-                warn.setCode(604);
-                warn.setKey("not valid");
-                warn.setValue("No valid Zeitbasis");
-                currentWarnings.add(warn);
+            currentZeitbasis = Integer.valueOf(object.getAttributes().get("ZEITBASIS_S"));
+            Zeitbasis zeitbasis = repository.getByIdPlain(
+                Zeitbasis.class,
+                currentZeitbasis,
+                Strings.STAMM);
+            if ( zeitbasis == null) {
+                currentWarnings.add(new ReportItem("ZEITBASIS_S", object.getAttributes().get("ZEITBASIS_S"), 675));
             }
         }
 
@@ -656,7 +649,7 @@ public class LafObjectMapper {
             if (i == Identified.UPDATE) {
                 merger.mergeMessung(old, messung);
                 newMessung = old;
-                // We do not import the status. Doing this can cause an
+                // We do not import th. Doing this can cause an
                 // inconsistent status protocol.
             }
             else if (i == Identified.REJECT) {
@@ -705,10 +698,24 @@ public class LafObjectMapper {
         }
         merger.mergeMessungKommentare(newMessung, kommentare);
         List<Messwert> messwerte = new ArrayList<Messwert>();
+        List<Integer> messgroessenListe = new ArrayList<Integer>();
         for (int i = 0; i < object.getMesswerte().size(); i++) {
             Messwert tmp = createMesswert(object.getMesswerte().get(i), newMessung.getId());
             if (tmp != null) {
-                messwerte.add(tmp);
+                if (messgroessenListe.contains(tmp.getMessgroesseId())) {
+                    currentWarnings.add(new ReportItem(
+                        (object.getMesswerte().get(i).get("MESSGROESSE_ID") == null) ?
+                            "MESSWERT - MESSGROESSE" :
+                            "MESSWERT - MESSGROESSE_ID", 
+                        (object.getMesswerte().get(i).get("MESSGROESSE_ID") == null) ?
+                            object.getMesswerte().get(i).get("MESSGROESSE").toString():
+                            object.getMesswerte().get(i).get("MESSGROESSE_ID").toString(), 
+                        672));
+                }
+                else {
+                    messwerte.add(tmp);
+                    messgroessenListe.add(tmp.getMessgroesseId());
+                }
             }
         }
         merger.mergeMesswerte(newMessung, messwerte);
@@ -728,11 +735,7 @@ public class LafObjectMapper {
 
     private KommentarP createProbeKommentar(Map<String, String> attributes, Probe probe) {
         if (attributes.get("TEXT").equals("")) {
-            ReportItem warn = new ReportItem();
-            warn.setCode(631);
-            warn.setKey("Proben Kommentar: ");
-            warn.setValue("Text");
-            currentWarnings.add(warn);
+            currentWarnings.add(new ReportItem("PROBENKOMMENTAR", "Text", 631));
             return null;
         };
         KommentarP kommentar = new KommentarP();
@@ -755,11 +758,7 @@ public class LafObjectMapper {
         doConverts(kommentar);
         doTransforms(kommentar);
         if (!userInfo.getMessstellen().contains(kommentar.getMstId())) {
-            ReportItem warn = new ReportItem();
-            warn.setCode(699);
-            warn.setKey(userInfo.getName());
-            warn.setValue("Kommentar: " + kommentar.getMstId());
-            currentWarnings.add(warn);
+            currentWarnings.add(new ReportItem(userInfo.getName(), "Kommentar: " + kommentar.getMstId(), 699));
             return null;
         }
         return kommentar;
@@ -816,11 +815,10 @@ public class LafObjectMapper {
         doConverts(zusatzwert);
         doTransforms(zusatzwert);
         if (zusatz == null || zusatz.isEmpty()) {
-            ReportItem warn = new ReportItem();
-            warn.setCode(673);
-            warn.setKey("zusatzwert");
-            warn.setValue(attributes.get("PZS"));
-            currentWarnings.add(warn);
+            currentWarnings.add(new ReportItem(
+                (isId) ? "PROBENZUSATZBESCHREIBUNG" : "PZB_S", 
+                attribute, 
+                675));
             return null;
         }
         zusatzwert.setPzsId(zusatz.get(0).getId());
@@ -831,6 +829,14 @@ public class LafObjectMapper {
         Messwert messwert = new Messwert();
         messwert.setMessungsId(messungsId);
         if (attributes.containsKey("MESSGROESSE_ID")) {
+                Messgroesse messgreosse = repository.getByIdPlain(
+                    Messgroesse.class,
+                    Integer.valueOf(attributes.get("MESSGROESSE_ID")),
+                    Strings.STAMM);
+            if ( messgreosse == null) {
+                currentWarnings.add(new ReportItem("MESSWERT - MESSGROESSE_ID", attributes.get("MESSGROESSE_ID"), 675));
+                return null;
+            }
             messwert.setMessgroesseId(Integer.valueOf(attributes.get("MESSGROESSE_ID")));
         }
         else if (attributes.containsKey("MESSGROESSE")) {
@@ -870,16 +876,20 @@ public class LafObjectMapper {
                     Strings.STAMM).getData();
 
             if (groesse == null || groesse.isEmpty()) {
-                ReportItem warn = new ReportItem();
-                warn.setCode(673);
-                warn.setKey("messwert");
-                warn.setValue(attributes.get("MESSGROESSE"));
-                currentWarnings.add(warn);
+                currentWarnings.add(new ReportItem("MESSWERT - MESSGROESSE", attributes.get("MESSGROESSE"), 675));
                 return null;
             }
             messwert.setMessgroesseId(groesse.get(0).getId());
         }
         if (attributes.containsKey("MESSEINHEIT_ID")) {
+                MessEinheit messEinheit = repository.getByIdPlain(
+                    MessEinheit.class,
+                    Integer.valueOf(attributes.get("MESSEINHEIT_ID")),
+                    Strings.STAMM);
+            if ( messEinheit == null) {
+                currentWarnings.add(new ReportItem("MESSWERT - MESSEINHEIT_ID", attributes.get("MESSEINHEIT_ID"), 675));
+                return null;
+            }
             messwert.setMehId(Integer.valueOf(attributes.get("MESSEINHEIT_ID")));
         }
         else if (attributes.containsKey("MESSEINHEIT")) {
@@ -910,11 +920,7 @@ public class LafObjectMapper {
                     Strings.STAMM).getData();
 
             if (einheit == null || einheit.isEmpty()) {
-                ReportItem warn = new ReportItem();
-                warn.setCode(673);
-                warn.setKey("messwert");
-                warn.setValue(attributes.get("MESSEINHEIT"));
-                currentWarnings.add(warn);
+                currentWarnings.add(new ReportItem("MESSWERT - MESSEINHEIT", attribute, 675));
                 return null;
             }
             messwert.setMehId(einheit.get(0).getId());
@@ -951,11 +957,7 @@ public class LafObjectMapper {
 
     private KommentarM createMessungKommentar(Map<String, String> attributes, int messungsId, Probe probe) {
         if (attributes.get("TEXT").equals("")) {
-            ReportItem warn = new ReportItem();
-            warn.setCode(631);
-            warn.setKey("Messungs Kommentar: ");
-            warn.setValue("Text");
-            currentWarnings.add(warn);
+            currentWarnings.add(new ReportItem("KOMMENTAR", "Text", 631));
             return null;
         };
         KommentarM kommentar = new KommentarM();
@@ -978,11 +980,7 @@ public class LafObjectMapper {
         doConverts(kommentar);
         doTransforms(kommentar);
         if (!userInfo.getMessstellen().contains(kommentar.getMstId())) {
-            ReportItem warn = new ReportItem();
-            warn.setCode(699);
-            warn.setKey(userInfo.getName());
-            warn.setValue("Messungs Kommentar: " + kommentar.getMstId());
-            currentWarnings.add(warn);
+            currentWarnings.add(new ReportItem(userInfo.getName(), "Messungs Kommentar: " + kommentar.getMstId(), 699));
             return null;
         }
         return kommentar;
@@ -1201,6 +1199,7 @@ public class LafObjectMapper {
     }
 
     private Ort findOrCreateOrt(Map<String, String> attributes, String type, Probe probe) {
+        logger.debug("findOrCreateOrt");
         Integer kda = null;
         Integer x = null;
         Integer y = null;
@@ -1215,6 +1214,14 @@ public class LafObjectMapper {
         ) {
             if (attributes.get(type + "KOORDINATEN_ART_S") != null) {
                 o.setKdaId(Integer.valueOf(attributes.get(type + "KOORDINATEN_ART_S")));
+                KoordinatenArt koordinatenArt = repository.getByIdPlain(
+                    KoordinatenArt.class,
+                    o.getKdaId(),
+                    Strings.STAMM);
+                if ( koordinatenArt == null) {
+                    currentWarnings.add(new ReportItem(type + "KOORDINATEN_ART_S", attributes.get(type + "KOORDINATEN_ART_S"), 675));
+                    return null;
+                }
             }
             else {
                 QueryBuilder<KoordinatenArt> kdaBuilder =
@@ -1224,11 +1231,7 @@ public class LafObjectMapper {
                 kdaBuilder.and("koordinatenart", attributes.get(type + "KOORDINATEN_ART"));
                 List<KoordinatenArt> arten = repository.filterPlain(kdaBuilder.getQuery(), Strings.STAMM);
                 if (arten == null || arten.isEmpty()) {
-                    ReportItem err = new ReportItem();
-                    err.setCode(632);
-                    err.setKey("KoordinatenArt");
-                    err.setValue("Not found");
-                    currentErrors.add(err);
+                    currentWarnings.add(new ReportItem(type + "KOORDINATEN_ART", attributes.get(type + "KOORDINATEN_ART"), 675));
                     return null;
                 }
                 o.setKdaId(arten.get(0).getId());
@@ -1246,25 +1249,38 @@ public class LafObjectMapper {
             builder.and("bezeichnung", attributes.get(type + "GEMEINDENAME"));
             List<Verwaltungseinheit> ves =
                 repository.filterPlain(builder.getQuery(), Strings.STAMM);
-            if (ves != null && ves.size() > 0) {
+            if (ves == null || ves.size() == 0) {
+                currentWarnings.add(new ReportItem("GEMEINDENAME", attributes.get(type + "GEMEINDENAME"), 675));
+                return null;
+            }
+            else {
                 o.setGemId(ves.get(0).getId());
             }
         }
         else if (attributes.get(type + "GEMEINDESCHLUESSEL") != null) {
             o.setGemId(attributes.get(type + "GEMEINDESCHLUESSEL"));
+            Verwaltungseinheit v = repository.getByIdPlain(Verwaltungseinheit.class, o.getGemId(), Strings.STAMM);
+            if (v == null) {
+                currentWarnings.add(new ReportItem(type + "GEMEINDESCHLUESSEL", o.getGemId(), 675));
+                return null;
+            }
         }
+        String key = "";
         String hLand = "";
         String staatFilter = "";
         if (attributes.get(type + "HERKUNFTSLAND_S") != null) {
             staatFilter = "id";
+            key = "HERKUNFTSLAND_S";
             hLand = attributes.get(type + "HERKUNFTSLAND_S");
         }
         else if (attributes.get(type + "HERKUNFTSLAND_KURZ") != null) {
             staatFilter = "staatKurz";
+            key = "HERKUNFTSLAND_KURZ";
             hLand = attributes.get(type + "HERKUNFTSLAND_KURZ");
         }
         else if (attributes.get(type + "HERKUNFTSLAND_LANG") != null) {
             staatFilter = "staat";
+            key = "HERKUNFTSLAND_LANG";
             hLand = attributes.get(type + "HERKUNFTSLAND_LANG");
         }
 
@@ -1276,7 +1292,11 @@ public class LafObjectMapper {
             builderStaat.and(staatFilter, hLand);
             List<Staat> staat =
                 repository.filterPlain(builderStaat.getQuery(), Strings.STAMM);
-            if (staat != null && staat.size() > 0) {
+            if (staat == null || staat.size() == 0) {
+                currentWarnings.add(new ReportItem(key, hLand, 675));
+                return null;
+            }
+            else if (staat != null && staat.size() > 0) {
                 o.setStaatId(staat.get(0).getId());
             }
         }
@@ -1288,7 +1308,11 @@ public class LafObjectMapper {
                 Ortszusatz.class,
                 attributes.get(type + "ORTS_ZUSATZCODE"),
                 Strings.STAMM);
-            if (zusatz != null) {
+            if ( zusatz == null) {
+                currentWarnings.add(new ReportItem(type + "ORTS_ZUSATZCODE", attributes.get(type + "ORTS_ZUSATZCODE"), 675));
+                return null;
+            }
+            else {
                 o.setOzId(zusatz.getOzsId());
             }
         }
@@ -1325,6 +1349,7 @@ public class LafObjectMapper {
         return o;
     }
 
+
     private Ort createNewOrt(Map<String, String> attributes, String type, Probe probe) {
         Ort ort = new Ort();
         ort.setOrtTyp(1);
@@ -1341,6 +1366,14 @@ public class LafObjectMapper {
             attributes.get(type + "KOORDINATEN_Y") != null
         ) {
             if (attributes.get(type + "KOORDINATEN_ART_S") != null) {
+                KoordinatenArt koordinatenArt = repository.getByIdPlain(
+                    KoordinatenArt.class,
+                    Integer.valueOf(attributes.get(type + "KOORDINATEN_ART_S")),
+                    Strings.STAMM);
+                if ( koordinatenArt == null) {
+                    currentWarnings.add(new ReportItem(type + "KOORDINATEN_ART_S", attributes.get(type + "KOORDINATEN_ART_S"), 675));
+                    return null;
+                }
                 ort.setKdaId(Integer.valueOf(attributes.get(type + "KOORDINATEN_ART_S")));
             }
             else {
@@ -1351,7 +1384,8 @@ public class LafObjectMapper {
                 builder.and("koordinatenart", attributes.get(type + "KOORDINATEN_ART"));
                 List<KoordinatenArt> art = repository.filterPlain(builder.getQuery(), Strings.STAMM);
                 if (art == null || art.isEmpty()) {
-
+                    currentWarnings.add(new ReportItem("KOORDINATEN_ART_S", attributes.get(type + "KOORDINATEN_ART"), 675));
+                    return null;
                 }
                 else {
                     ort.setKdaId(art.get(0).getId());
@@ -1371,12 +1405,21 @@ public class LafObjectMapper {
             builder.and("bezeichnung", attributes.get(type + "GEMEINDENAME"));
             List<Verwaltungseinheit> ves =
                 repository.filterPlain(builder.getQuery(), Strings.STAMM);
-            if (ves != null && ves.size() > 0) {
+            if (ves == null || ves.size() == 0) {
+                currentWarnings.add(new ReportItem("GEMEINDENAME", attributes.get(type + "GEMEINDENAME"), 675));
+                return null;
+            }
+            else if (ves != null && ves.size() > 0) {
                 gemId = ves.get(0).getId();
             }
         }
         else if (attributes.get(type + "GEMEINDESCHLUESSEL") != null) {
             gemId = attributes.get(type + "GEMEINDESCHLUESSEL");
+            Verwaltungseinheit v = repository.getByIdPlain(Verwaltungseinheit.class, gemId, Strings.STAMM);
+            if (v == null) {
+                currentWarnings.add(new ReportItem(type + "GEMEINDESCHLUESSEL", gemId, 675));
+                return null;
+            }
         }
 
         if (gemId != null) {
@@ -1384,11 +1427,7 @@ public class LafObjectMapper {
             hasGem = true;
             Verwaltungseinheit v = repository.getByIdPlain(Verwaltungseinheit.class, gemId, Strings.STAMM);
             if (v == null) {
-                ReportItem err = new ReportItem();
-                err.setCode(673);
-                err.setKey("ort");
-                err.setValue(gemId);
-                currentErrors.add(err);
+                currentWarnings.add(new ReportItem("GEMEINDESCHLUESSEL", gemId, 675));
                 return null;
             }
             if (!hasKoord) {
@@ -1403,18 +1442,22 @@ public class LafObjectMapper {
             ort.setBerichtstext(v.getBezeichnung());
         }
 
+        String key = "";
         String hLand = "";
         String staatFilter = "";
         if (attributes.get(type + "HERKUNFTSLAND_S") != null) {
             staatFilter = "id";
+            key = "HERKUNFTSLAND_S";
             hLand = attributes.get(type + "HERKUNFTSLAND_S");
         }
         else if (attributes.get(type + "HERKUNFTSLAND_KURZ") != null) {
             staatFilter = "staatKurz";
+            key = "HERKUNFTSLAND_KURZ";
             hLand = attributes.get(type + "HERKUNFTSLAND_KURZ");
         }
         else if (attributes.get(type + "HERKUNFTSLAND_LANG") != null) {
             staatFilter = "staat";
+            key = "HERKUNFTSLAND_LANG";
             hLand = attributes.get(type + "HERKUNFTSLAND_LANG");
         }
 
@@ -1426,7 +1469,11 @@ public class LafObjectMapper {
             builderStaat.and(staatFilter, hLand);
             List<Staat> staat =
                 repository.filterPlain(builderStaat.getQuery(), Strings.STAMM);
-            if (staat != null && staat.size() > 0) {
+            if (staat == null || staat.size() == 0) {
+                currentWarnings.add(new ReportItem(key, hLand, 675));
+                return null;
+            }
+            else if (staat != null && staat.size() > 0) {
                 ort.setStaatId(staat.get(0).getId());
                 hasStaat = true;
                 Staat s = staat.get(0);
@@ -1540,6 +1587,14 @@ public class LafObjectMapper {
         String value = attribute.getValue();
 
         if ("DATENBASIS_S".equals(key) && probe.getDatenbasisId() == null) {
+            Datenbasis datenbasis = repository.getByIdPlain(
+                Datenbasis.class,
+                Integer.valueOf(value.toString()),
+                Strings.STAMM);
+            if ( datenbasis == null) {
+                currentWarnings.add(new ReportItem(key, value.toString(), 675));
+                return;
+            }
             Integer v = Integer.valueOf(value.toString());
             probe.setDatenbasisId(v);
         }
@@ -1575,11 +1630,7 @@ public class LafObjectMapper {
                     builder.getQuery(),
                     Strings.STAMM).getData();
             if (datenbasis == null || datenbasis.isEmpty()) {
-                ReportItem err = new ReportItem();
-                err.setCode(673);
-                err.setKey("datenbasis");
-                err.setValue(key);
-                currentErrors.add(err);
+                currentErrors.add(new ReportItem(key, attr, 675));
                 return;
             }
             Integer v = datenbasis.get(0).getId();
@@ -1603,10 +1654,26 @@ public class LafObjectMapper {
         }
 
         if ("MESSSTELLE".equals(key)) {
+            MessStelle mst = repository.getByIdPlain(
+                MessStelle.class,
+                value.toString(),
+                Strings.STAMM);
+            if ( mst == null) {
+                currentWarnings.add(new ReportItem(key, value.toString(), 675));
+                return;
+            }
             probe.setMstId(value.toString());
         }
 
         if ("MESSLABOR".equals(key)) {
+            MessStelle mst = repository.getByIdPlain(
+                MessStelle.class,
+                value.toString(),
+                Strings.STAMM);
+            if ( mst == null) {
+                currentWarnings.add(new ReportItem(key, value.toString(), 675));
+                return;
+            }
             probe.setLaborMstId(value.toString());
         }
 
@@ -1621,11 +1688,7 @@ public class LafObjectMapper {
                     builder.getQuery(),
                     Strings.STAMM).getData();
             if (transfer == null || transfer.isEmpty()) {
-                ReportItem warn = new ReportItem();
-                warn.setCode(673);
-                warn.setKey("messprogramm");
-                warn.setValue(key);
-                currentWarnings.add(warn);
+                currentWarnings.add(new ReportItem(key, value.toString(), 675));
                 return;
             }
             probe.setBaId(transfer.get(0).getBaId());
@@ -1644,11 +1707,7 @@ public class LafObjectMapper {
                     builder.getQuery(),
                     Strings.STAMM).getData();
             if (transfer == null || transfer.isEmpty()) {
-                ReportItem warn = new ReportItem();
-                warn.setCode(673);
-                warn.setKey("messprogramm");
-                warn.setValue(key);
-                currentWarnings.add(warn);
+                currentWarnings.add(new ReportItem(key, value.toString(), 675));
                 return;
             }
             probe.setBaId(transfer.get(0).getBaId());
@@ -1669,11 +1728,7 @@ public class LafObjectMapper {
                     builder.getQuery(),
                     Strings.STAMM).getData();
             if (kategorie == null || kategorie.isEmpty()) {
-                ReportItem warn = new ReportItem();
-                warn.setCode(673);
-                warn.setKey("messprogramm_land");
-                warn.setValue(key);
-                currentWarnings.add(warn);
+                currentWarnings.add(new ReportItem(key, value.toString(), 675));
                 return;
             }
             probe.setMplId(kategorie.get(0).getId());
@@ -1691,11 +1746,7 @@ public class LafObjectMapper {
                     builder.getQuery(),
                     Strings.STAMM).getData();
             if (prn == null || prn.isEmpty()) {
-                ReportItem warn = new ReportItem();
-                warn.setCode(673);
-                warn.setKey("probenahmeinstitution");
-                warn.setValue(key);
-                currentWarnings.add(warn);
+                currentWarnings.add(new ReportItem(key, value.toString(), 675));
                 return;
             }
             probe.setProbeNehmerId(prn.get(0).getId());
@@ -1718,6 +1769,14 @@ public class LafObjectMapper {
             probe.getUmwId() == null &&
             value != null
         ) {
+            Umwelt umw = repository.getByIdPlain(
+                Umwelt.class,
+                value.toString(),
+                Strings.STAMM);
+            if ( umw == null) {
+                currentWarnings.add(new ReportItem(key, value.toString(), 675));
+                return;
+            }
             probe.setUmwId(value.toString());
         }
         else if ("UMWELTBEREICH_S".equals(key) && probe.getUmwId() != null){
@@ -1738,11 +1797,7 @@ public class LafObjectMapper {
                     builder.getQuery(),
                     Strings.STAMM).getData();
             if (umwelt == null || umwelt.isEmpty()) {
-                ReportItem warn = new ReportItem();
-                warn.setCode(673);
-                warn.setKey("umwelt");
-                warn.setValue(key);
-                currentWarnings.add(warn);
+                currentWarnings.add(new ReportItem(key, value.toString(), 675));
                 return;
             }
             probe.setUmwId(umwelt.get(0).getId());
@@ -1771,8 +1826,11 @@ public class LafObjectMapper {
             if (!value.toString().equals("0")) {
                 probe.setTest(true);
             }
-            else {
+            else if (!value.toString().equals("1")) {
                 probe.setTest(false);
+            }
+            else {
+                currentWarnings.add(new ReportItem(key, value.toString(), 675));
             }
         }
 
@@ -1861,7 +1919,16 @@ public class LafObjectMapper {
             messung.setMessdauer(i);
         }
         else if ("MESSMETHODE_S".equals(key)) {
-            messung.setMmtId(value.toString());
+            MessMethode mmt = repository.getByIdPlain(
+                MessMethode.class,
+                value.toString(),
+                Strings.STAMM);
+            if ( mmt == null) {
+                currentWarnings.add(new ReportItem(key, value.toString(), 675));
+            }
+            else {
+                messung.setMmtId(value.toString());
+            }
         }
         else if ("MESSMETHODE_C".equals(key)) {
             QueryBuilder<MessMethode> builder =
@@ -1888,8 +1955,11 @@ public class LafObjectMapper {
             if(!value.toString().equals("0")) {
                 messung.setFertig(true);
             }
-            else {
+            else if (!value.toString().equals("1")) {
                 messung.setFertig(false);
+            }
+            else {
+                currentWarnings.add(new ReportItem(key, value.toString(), 675));
             }
         }
         return messung;
@@ -1937,6 +2007,3 @@ public class LafObjectMapper {
         this.config = config;
     }
 }
-
-
-
