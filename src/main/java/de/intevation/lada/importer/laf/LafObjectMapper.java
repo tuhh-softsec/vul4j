@@ -1199,7 +1199,6 @@ public class LafObjectMapper {
     }
 
     private Ort findOrCreateOrt(Map<String, String> attributes, String type, Probe probe) {
-        logger.debug("findOrCreateOrt");
         Integer kda = null;
         Integer x = null;
         Integer y = null;
