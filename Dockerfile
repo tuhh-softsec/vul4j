@@ -29,8 +29,8 @@ RUN apt-get update -y && \
 RUN mkdir /opt/jboss
 
 RUN curl \
-    https://download.jboss.org/wildfly/15.0.1.Final/wildfly-15.0.1.Final.tar.gz\
-    | tar zx && mv wildfly-15.0.1.Final /opt/jboss/wildfly
+    https://download.jboss.org/wildfly/16.0.0.Final/wildfly-16.0.0.Final.tar.gz\
+    | tar zx && mv wildfly-16.0.0.Final /opt/jboss/wildfly
 
 ENV JBOSS_HOME /opt/jboss/wildfly
 
