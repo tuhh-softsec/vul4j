@@ -253,14 +253,6 @@ public class StatusService {
             status.setStatusKombi(1);
         }
         else {
-            Violation violation = validator.validate(status);
-            if (violation.hasErrors()) {
-                Response response = new Response(false, 604, status);
-                response.setErrors(violation.getErrors());
-                response.setWarnings(violation.getWarnings());
-                return response;
-            }
-
             StatusProtokoll oldStatus = defaultRepo.getByIdPlain(
                 StatusProtokoll.class, messung.getStatus(), Strings.LAND);
             StatusKombi oldKombi = defaultRepo.getByIdPlain(StatusKombi.class, oldStatus.getStatusKombi(), Strings.STAMM);
@@ -302,8 +294,7 @@ public class StatusService {
             //    Users 'funktion' equals old 'stufe' + 1
             else if (userInfo.getFunktionenForMst(status.getMstId()).contains(
                 oldKombi.getStatusStufe().getId() + 1) &&
-                newKombi.getStatusStufe().getId() ==
-                    oldKombi.getStatusStufe().getId() + 1) {
+                newKombi.getStatusStufe().getId() == oldKombi.getStatusStufe().getId() + 1) {
                 // Set the next status
                 return setNewStatus(status, newKombi, messung, request);
             }
@@ -317,12 +308,15 @@ public class StatusService {
         Messung messung,
         HttpServletRequest request
     ) {
-        Violation violation = validator.validate(status);
-        if (violation.hasErrors()) {
-            Response response = new Response(false, 604, status);
-            response.setErrors(violation.getErrors());
-            response.setWarnings(violation.getWarnings());
-            return response;
+        if (newKombi.getStatusWert().getId() == 1 ||
+            newKombi.getStatusWert().getId() == 2 ) {
+            Violation violation = validator.validate(status);
+            if (violation.hasErrors()) {
+                Response response = new Response(false, 604, status);
+                response.setErrors(violation.getErrors());
+                response.setWarnings(violation.getWarnings());
+                return response;
+            }
         }
         if (newKombi.getStatusStufe().getId() == 1) {
             messung.setFertig(true);

@@ -29,7 +29,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -101,7 +101,7 @@ public class AuditTrailService {
         }
     }
 
-    @Inject Logger logger;
+//    @Inject Logger logger;
     /**
      * The data repository granting read/write access.
      */
@@ -266,7 +266,12 @@ public class AuditTrailService {
             Messung m = repository.getByIdPlain(
                 Messung.class, audit.getObjectId(), Strings.LAND);
             node.put("identifier",
-                 (m.getNebenprobenNr() == null) ? m.getExterneMessungsId().toString() : m.getNebenprobenNr());
+                (m == null) ? 
+                    "(deleted)" : 
+                    (m.getNebenprobenNr() == null) ? 
+                        m.getExterneMessungsId().toString() : 
+                        m.getNebenprobenNr()
+                );
         }
         if (audit.getMessungsId() != null) {
             Messung m = repository.getByIdPlain(
