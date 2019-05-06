@@ -162,9 +162,9 @@ public class LafObjectMapper {
                     Zeitbasis.class);
             builder.and("bezeichnung", attribute);
             List<Zeitbasis> zb=
-                (List<Zeitbasis>)repository.filter(
+                (List<Zeitbasis>)repository.filterPlain(
                     builder.getQuery(),
-                    Strings.STAMM).getData();
+                    Strings.STAMM);
             if (zb == null || zb.isEmpty()) {
                 currentWarnings.add(new ReportItem("ZEITBASIS", object.getAttributes().get("ZEITBASIS"), 675));
             }
@@ -807,9 +807,9 @@ public class LafObjectMapper {
             builder.and("zusatzwert", attribute);
         }
         List<ProbenZusatz> zusatz =
-            (List<ProbenZusatz>)repository.filter(
+            (List<ProbenZusatz>)repository.filterPlain(
                 builder.getQuery(),
-                Strings.STAMM).getData();
+                Strings.STAMM);
 
         doDefaults(zusatzwert);
         doConverts(zusatzwert);
@@ -871,10 +871,9 @@ public class LafObjectMapper {
 
             builder.and("messgroesse", messgroesseString);
             List<Messgroesse> groesse =
-                (List<Messgroesse>)repository.filter(
+                (List<Messgroesse>)repository.filterPlain(
                     builder.getQuery(),
-                    Strings.STAMM).getData();
-
+                    Strings.STAMM);
             if (groesse == null || groesse.isEmpty()) {
                 currentWarnings.add(new ReportItem("MESSWERT - MESSGROESSE", attributes.get("MESSGROESSE"), 675));
                 return null;
@@ -915,10 +914,9 @@ public class LafObjectMapper {
                     MessEinheit.class);
             builder.and("einheit", attribute);
             List<MessEinheit> einheit =
-                (List<MessEinheit>)repository.filter(
+                (List<MessEinheit>)repository.filterPlain(
                     builder.getQuery(),
-                    Strings.STAMM).getData();
-
+                    Strings.STAMM);
             if (einheit == null || einheit.isEmpty()) {
                 currentWarnings.add(new ReportItem("MESSWERT - MESSEINHEIT", attribute, 675));
                 return null;
@@ -1003,9 +1001,9 @@ public class LafObjectMapper {
             builder.and("statusWert", mst);
             builder.and("statusStufe", 1);
             List<StatusKombi> kombi =
-                (List<StatusKombi>)repository.filter(
+                (List<StatusKombi>)repository.filterPlain(
                     builder.getQuery(),
-                    Strings.STAMM).getData();
+                    Strings.STAMM);
             if (kombi != null && !kombi.isEmpty()) {
                 StatusProtokoll statusMst = new StatusProtokoll();
                 statusMst.setDatum(new Timestamp(new Date().getTime()));
@@ -1029,9 +1027,9 @@ public class LafObjectMapper {
             builder.and("statusWert", land);
             builder.and("statusStufe", 2);
             List<StatusKombi> kombi =
-                (List<StatusKombi>)repository.filter(
+                (List<StatusKombi>)repository.filterPlain(
                     builder.getQuery(),
-                    Strings.STAMM).getData();
+                    Strings.STAMM);
             if (kombi != null && !kombi.isEmpty()) {
                 StatusProtokoll statusLand = new StatusProtokoll();
                 statusLand.setDatum(new Timestamp(new Date().getTime()));
@@ -1052,9 +1050,9 @@ public class LafObjectMapper {
             builder.and("statusWert", lst);
             builder.and("statusStufe", 3);
             List<StatusKombi> kombi =
-                (List<StatusKombi>)repository.filter(
+                (List<StatusKombi>)repository.filterPlain(
                     builder.getQuery(),
-                    Strings.STAMM).getData();
+                    Strings.STAMM);
             if (kombi != null && !kombi.isEmpty()) {
                 StatusProtokoll statusLst = new StatusProtokoll();
                 statusLst.setDatum(new Timestamp(new Date().getTime()));
@@ -1625,9 +1623,9 @@ public class LafObjectMapper {
                     Datenbasis.class);
             builder.and("datenbasis", attr);
             List<Datenbasis> datenbasis =
-                (List<Datenbasis>)repository.filter(
+                (List<Datenbasis>)repository.filterPlain(
                     builder.getQuery(),
-                    Strings.STAMM).getData();
+                    Strings.STAMM);
             if (datenbasis == null || datenbasis.isEmpty()) {
                 currentErrors.add(new ReportItem(key, attr, 675));
                 return;
@@ -1683,9 +1681,9 @@ public class LafObjectMapper {
                     MessprogrammTransfer.class);
             builder.and("messprogrammS", value);
             List<MessprogrammTransfer> transfer=
-                (List<MessprogrammTransfer>)repository.filter(
+                (List<MessprogrammTransfer>)repository.filterPlain(
                     builder.getQuery(),
-                    Strings.STAMM).getData();
+                    Strings.STAMM);
             if (transfer == null || transfer.isEmpty()) {
                 currentWarnings.add(new ReportItem(key, value.toString(), 675));
                 return;
@@ -1702,9 +1700,9 @@ public class LafObjectMapper {
                     MessprogrammTransfer.class);
             builder.and("messprogrammC", value);
             List<MessprogrammTransfer> transfer=
-                (List<MessprogrammTransfer>)repository.filter(
+                (List<MessprogrammTransfer>)repository.filterPlain(
                     builder.getQuery(),
-                    Strings.STAMM).getData();
+                    Strings.STAMM);
             if (transfer == null || transfer.isEmpty()) {
                 currentWarnings.add(new ReportItem(key, value.toString(), 675));
                 return;
@@ -1723,9 +1721,9 @@ public class LafObjectMapper {
             builder.or("netzbetreiberId", userInfo.getNetzbetreiber());
             builder.and("code", value);
             List<MessprogrammKategorie> kategorie =
-                (List<MessprogrammKategorie>)repository.filter(
+                (List<MessprogrammKategorie>)repository.filterPlain(
                     builder.getQuery(),
-                    Strings.STAMM).getData();
+                    Strings.STAMM);
             if (kategorie == null || kategorie.isEmpty()) {
                 currentWarnings.add(new ReportItem(key, value.toString(), 675));
                 return;
@@ -1741,9 +1739,9 @@ public class LafObjectMapper {
             builder.or("netzbetreiberId", userInfo.getNetzbetreiber());
             builder.and("prnId", value);
             List<Probenehmer> prn =
-                (List<Probenehmer>)repository.filter(
+                (List<Probenehmer>)repository.filterPlain(
                     builder.getQuery(),
-                    Strings.STAMM).getData();
+                    Strings.STAMM);
             if (prn == null || prn.isEmpty()) {
                 currentWarnings.add(new ReportItem(key, value.toString(), 675));
                 return;
@@ -1792,9 +1790,9 @@ public class LafObjectMapper {
             int length = value.toString().length() > 80 ? 80 : value.toString().length();
             builder.and("umweltBereich", value.toString().substring(0, length));
             List<Umwelt> umwelt =
-                (List<Umwelt>)repository.filter(
+                (List<Umwelt>)repository.filterPlain(
                     builder.getQuery(),
-                    Strings.STAMM).getData();
+                    Strings.STAMM);
             if (umwelt == null || umwelt.isEmpty()) {
                 currentWarnings.add(new ReportItem(key, value.toString(), 675));
                 return;
@@ -1876,15 +1874,11 @@ public class LafObjectMapper {
                     Probenart.class);
             builder.and("probenart", attr);
             List<Probenart> probenart =
-                (List<Probenart>)repository.filter(
+                (List<Probenart>)repository.filterPlain(
                     builder.getQuery(),
-                    Strings.STAMM).getData();
+                    Strings.STAMM);
             if (probenart == null || probenart.isEmpty()) {
-                ReportItem warn = new ReportItem();
-                warn.setCode(673);
-                warn.setKey("probenart");
-                warn.setValue(key);
-                currentWarnings.add(warn);
+                currentWarnings.add(new ReportItem(key, value.toString(), 675));
                 return;
             }
             probe.setProbenartId(probenart.get(0).getId());
