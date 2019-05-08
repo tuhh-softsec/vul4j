@@ -43,7 +43,7 @@ EXPOSE 8080 9990 80
 #
 RUN mkdir -p $JBOSS_HOME/modules/org/postgres/main
 
-RUN curl https://jdbc.postgresql.org/download/postgresql-9.4-1200.jdbc4.jar >\
+RUN curl https://jdbc.postgresql.org/download/postgresql-9.4-1201.jdbc4.jar >\
          $JBOSS_HOME/modules/org/postgres/main/postgresql.jar
 
 RUN curl http://central.maven.org/maven2/org/hibernate/hibernate-spatial/5.3.7.Final/hibernate-spatial-5.3.7.Final.jar >\
