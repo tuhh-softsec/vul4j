@@ -120,6 +120,15 @@ CREATE TABLE mess_einheit (
 );
 
 
+CREATE TABLE mass_einheit_umrechnung
+(
+    id serial PRIMARY KEY,
+    meh_id_von integer,
+    meh_id_zu integer,
+    faktor float
+);
+
+
 CREATE TABLE umwelt (
     id character varying(3) PRIMARY KEY,
     beschreibung character varying(300),

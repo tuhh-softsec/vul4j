@@ -92,6 +92,7 @@ if [ "$NO_DATA" != "true" ]; then
         stammdaten_data_auth.sql \
         stammdaten_data_betriebsart.sql \
         stammdaten_data_mess_einheit.sql \
+        stammdaten_data_mass_einheit_umrechnung.sql \
         stammdaten_data_umwelt.sql \
         stammdaten_data_auth_lst_umw.sql \
         stammdaten_data_datenbasis.sql \
