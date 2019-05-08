@@ -148,6 +148,7 @@ public class MessprogrammService {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
+    @SuppressWarnings("unchecked")
     public Response get(
         @Context UriInfo info,
         @Context HttpServletRequest request

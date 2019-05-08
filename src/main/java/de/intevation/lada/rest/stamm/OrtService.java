@@ -134,6 +134,7 @@ public class OrtService {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
+    @SuppressWarnings("unchecked")
     public Response get(
         @Context HttpServletRequest request,
         @Context UriInfo info
@@ -333,7 +334,6 @@ public class OrtService {
         @Context HttpServletRequest request,
         JsonArray ids
     ) {
-        UserInfo user = authorization.getInfo(request);
         QueryBuilder<Ort> builder =
             new QueryBuilder<Ort>(
                 repository.entityManager(Strings.STAMM),

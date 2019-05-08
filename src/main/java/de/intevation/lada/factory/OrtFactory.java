@@ -46,7 +46,7 @@ public class OrtFactory {
 
     public void transformCoordinates(Ort ort) {
         if (errors == null) {
-            errors = new ArrayList<ReportItem>();
+            errors = new ArrayList<>();
         }
         Integer kda = ort.getKdaId();
         String epsg = null;
@@ -98,7 +98,7 @@ public class OrtFactory {
 
     private void jtsTransform(String epsg, String xCoord, String yCoord, Ort ort) {
         if (errors == null) {
-            errors = new ArrayList<ReportItem>();
+            errors = new ArrayList<>();
         }
         try {
             CoordinateReferenceSystem src = CRS.decode(epsg);
@@ -124,7 +124,7 @@ public class OrtFactory {
 
     private void degreeTransform(Ort ort) {
         if (errors == null) {
-            errors = new ArrayList<ReportItem>();
+            errors = new ArrayList<>();
         }
         String xCoord = ort.getKoordXExtern();
         String yCoord = ort.getKoordYExtern();
@@ -228,7 +228,7 @@ public class OrtFactory {
             errors.clear();
         }
         QueryBuilder<Ort> builder =
-            new QueryBuilder<Ort>(
+            new QueryBuilder<>(
                 repository.entityManager(Strings.STAMM),
                 Ort.class);
         if (ort.getKdaId() != null &&
@@ -241,7 +241,7 @@ public class OrtFactory {
             builder.and("ozId", ort.getOzId());
             builder.and("netzbetreiberId", ort.getNetzbetreiberId());
             List<Ort> orte = repository.filterPlain(builder.getQuery(), Strings.STAMM);
-            if (orte != null && orte.size() > 0) {
+            if (orte != null && !orte.isEmpty()) {
                 return orte.get(0);
             }
         }
@@ -250,7 +250,7 @@ public class OrtFactory {
             builder.and("ozId", ort.getOzId());
             builder.and("netzbetreiberId", ort.getNetzbetreiberId());
             List<Ort> orte = repository.filterPlain(builder.getQuery(), Strings.STAMM);
-            if (orte != null && orte.size() > 0) {
+            if (orte != null && !orte.isEmpty()) {
                 return orte.get(0);
             }
         }
@@ -260,7 +260,7 @@ public class OrtFactory {
             builder.and("ozId", ort.getOzId());
             builder.and("netzbetreiberId", ort.getNetzbetreiberId());
             List<Ort> orte = repository.filterPlain(builder.getQuery(), Strings.STAMM);
-            if (orte != null && orte.size() > 0) {
+            if (orte != null && !orte.isEmpty()) {
                 return orte.get(0);
             }
         }
@@ -270,7 +270,7 @@ public class OrtFactory {
 
     private Ort createOrt(Ort ort) {
         if (errors == null) {
-            errors = new ArrayList<ReportItem>();
+            errors = new ArrayList<>();
         }
         boolean hasKoord = false;
         boolean hasGem = false;
@@ -362,7 +362,7 @@ public class OrtFactory {
                          "FROM Verwaltungsgrenze vg " +
                          "WHERE is_gemeinde = TRUE AND contains(vg.shape, :geom) = TRUE");
         q.setParameter("geom", ort.getGeom());
-        List<Object> ret = q.getResultList();
+        List<?> ret = q.getResultList();
         if (!ret.isEmpty()) {
             ort.setGemId(ret.get(0).toString());
             ort.setStaatId(0);

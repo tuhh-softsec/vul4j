@@ -154,7 +154,7 @@ public class Ort implements Serializable {
         return this.gemUntId;
     }
 
-    public void setGemUntId(Integer gemId) {
+    public void setGemUntId(Integer gemUntId) {
         this.gemUntId = gemUntId;
     }
 

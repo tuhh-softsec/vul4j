@@ -71,6 +71,7 @@ public class MessprogrammAuthorizer implements Authorizer {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> Response filter(
         Response data,
         UserInfo userInfo,

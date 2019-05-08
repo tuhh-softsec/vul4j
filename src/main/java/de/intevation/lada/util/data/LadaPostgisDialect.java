@@ -9,7 +9,7 @@ package de.intevation.lada.util.data;
 
 import java.sql.Types;
 
-import org.hibernate.spatial.dialect.postgis.PostgisDialect;
+import org.hibernate.spatial.dialect.postgis.PostgisPG82Dialect;
 
 /**
  * This dialect extends the default postgis dialect and registers a new data
@@ -17,7 +17,7 @@ import org.hibernate.spatial.dialect.postgis.PostgisDialect;
  *
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
-public class LadaPostgisDialect extends PostgisDialect {
+public class LadaPostgisDialect extends PostgisPG82Dialect {
     private static final long serialVersionUID = 1L;
 
     public LadaPostgisDialect() {

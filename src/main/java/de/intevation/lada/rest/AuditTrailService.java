@@ -417,8 +417,8 @@ public class AuditTrailService {
         catch (NumberFormatException nfe) {
             query.setParameter("id", id);
         }
-        List<String> result = query.getResultList();
-        return result.get(0);
+        List<?> result = query.getResultList();
+        return result.get(0).toString();
     }
 
     private Long formatDate(String format, String date) {

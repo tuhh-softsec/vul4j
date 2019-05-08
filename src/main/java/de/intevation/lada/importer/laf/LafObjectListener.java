@@ -33,20 +33,17 @@ public class LafObjectListener extends LafBaseListener {
     private boolean hasEHerkunfstland = false;
     private boolean hasEGemeinde = false;
     private boolean hasEKoordinaten = false;
-    private boolean hasUHerkunfstland = false;
-    private boolean hasUGemeinde = false;
-    private boolean hasUKoordinaten = false;
     private boolean probenNrContext = false;
 
     public LafObjectListener() {
         data = new LafRawData();
-        errors = new HashMap<String, List<ReportItem>>();
-        warnings = new HashMap<String, List<ReportItem>>();
-        currentErrors = new ArrayList<ReportItem>();
-        currentWarnings = new ArrayList<ReportItem>();
-        parserWarnings = new ArrayList<ReportItem>();
-        currentUOrt = new HashMap<String, String>();
-        currentEOrt = new HashMap<String, String>();
+        errors = new HashMap<>();
+        warnings = new HashMap<>();
+        currentErrors = new ArrayList<>();
+        currentWarnings = new ArrayList<>();
+        parserWarnings = new ArrayList<>();
+        currentUOrt = new HashMap<>();
+        currentEOrt = new HashMap<>();
     }
 
     public LafRawData getData() {
@@ -113,12 +110,10 @@ public class LafObjectListener extends LafBaseListener {
         if (currentProbe != null) {
             data.addProbe(currentProbe);
             if (!currentErrors.isEmpty()) {
-                errors.put(currentProbe.getIdentifier(),
-                    (ArrayList)currentErrors.clone());
+                errors.put(currentProbe.getIdentifier(), currentErrors);
             }
             if (!currentWarnings.isEmpty()) {
-                warnings.put(currentProbe.getIdentifier(),
-                    (ArrayList)currentWarnings.clone());
+                warnings.put(currentProbe.getIdentifier(),currentWarnings);
             }
 
             currentErrors.clear();
@@ -177,20 +172,18 @@ public class LafObjectListener extends LafBaseListener {
         }
         if (!currentErrors.isEmpty()) {
             if (errors.containsKey(currentProbe.getIdentifier())) {
-                errors.get(currentProbe.getIdentifier()).addAll((ArrayList)currentErrors.clone());
+                errors.get(currentProbe.getIdentifier()).addAll(currentErrors);
             }
             else {
-                errors.put(currentProbe.getIdentifier(),
-                    (ArrayList)currentErrors.clone());
+                errors.put(currentProbe.getIdentifier(), currentErrors);
             }
         }
         if (!currentWarnings.isEmpty()) {
             if (warnings.containsKey(currentProbe.getIdentifier())) {
-                warnings.get(currentProbe.getIdentifier()).addAll((ArrayList)currentWarnings.clone());
+                warnings.get(currentProbe.getIdentifier()).addAll(currentWarnings);
             }
             else {
-                warnings.put(currentProbe.getIdentifier(),
-                    (ArrayList)currentWarnings.clone());
+                warnings.put(currentProbe.getIdentifier(), currentWarnings);
             }
         }
         currentProbe = data.new Probe();
@@ -449,7 +442,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue(value);
             warn.setCode(632);
-            parserWarnings.add(warn);;
+            parserWarnings.add(warn);
         }
         hasUebertragungsformat = true;
     }
@@ -1583,7 +1576,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
-        hasUHerkunfstland = true;
         // TODO: Add to "ursprungsort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1613,7 +1605,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
-        hasUHerkunfstland = true;
         // TODO: Add to "ursprungsort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1643,7 +1634,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
-        hasUHerkunfstland = true;
         // TODO: Add to "ursprungsort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1673,7 +1663,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
-        hasUGemeinde= true;
         // TODO: Add to "ursprungsort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1703,7 +1692,6 @@ public class LafObjectListener extends LafBaseListener {
             return;
         }
         currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
-        hasUGemeinde= true;
         // TODO: Add to "ursprungsort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1779,7 +1767,6 @@ public class LafObjectListener extends LafBaseListener {
         currentUOrt.put("U_KOORDINATEN_X", koord1);
         currentUOrt.put("U_KOORDINATEN_Y", koord2);
         currentUOrt.put("U_KOORDINATEN_ART", art);
-        hasUKoordinaten = true;
         // TODO: Add to "ursprungsort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }
@@ -1826,7 +1813,6 @@ public class LafObjectListener extends LafBaseListener {
         currentUOrt.put("U_KOORDINATEN_X", koord1);
         currentUOrt.put("U_KOORDINATEN_Y", koord2);
         currentUOrt.put("U_KOORDINATEN_ART_S", art);
-        hasUKoordinaten = true;
         // TODO: Add to "ursprungsort"
         //currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
     }

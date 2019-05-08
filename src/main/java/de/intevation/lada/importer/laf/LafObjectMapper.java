@@ -132,16 +132,16 @@ public class LafObjectMapper {
     private List<ImporterConfig> config;
 
     public void mapObjects(LafRawData data) {
-        errors = new HashMap<String, List<ReportItem>>();
-        warnings = new HashMap<String, List<ReportItem>>();
+        errors = new HashMap<>();
+        warnings = new HashMap<>();
         for (int i = 0; i < data.getProben().size(); i++) {
             create(data.getProben().get(i));
         }
     }
 
     private void create(LafRawData.Probe object) {
-        currentWarnings = new ArrayList<ReportItem>();
-        currentErrors = new ArrayList<ReportItem>();
+        currentWarnings = new ArrayList<>();
+        currentErrors = new ArrayList<>();
         Probe probe = new Probe();
         Iterator<ImporterConfig> importerConfig = config.iterator();
         while (importerConfig.hasNext()) {
@@ -153,16 +153,15 @@ public class LafObjectMapper {
         if (object.getAttributes().containsKey("ZEITBASIS")) {
             List<ImporterConfig> cfg = getImporterConfigByAttributeUpper("ZEITBASIS");
             String attribute = object.getAttributes().get("ZEITBASIS");
-            if (cfg.size()>0 && attribute.equals(cfg.get(0).getFromValue())) {
+            if (!cfg.isEmpty() && attribute.equals(cfg.get(0).getFromValue())) {
                 attribute = cfg.get(0).getToValue();
             }
             QueryBuilder<Zeitbasis> builder =
-                new QueryBuilder<Zeitbasis>(
+                new QueryBuilder<>(
                     repository.entityManager(Strings.STAMM),
                     Zeitbasis.class);
             builder.and("bezeichnung", attribute);
-            List<Zeitbasis> zb=
-                (List<Zeitbasis>)repository.filterPlain(
+            List<Zeitbasis> zb = repository.filterPlain(
                     builder.getQuery(),
                     Strings.STAMM);
             if (zb == null || zb.isEmpty()) {
@@ -231,11 +230,11 @@ public class LafObjectMapper {
                     err.setKey("Database error");
                     err.setValue("");
                     currentErrors.add(err);
-                    if (currentErrors.size() > 0) {
+                    if (!currentErrors.isEmpty()) {
                         errors.put(object.getIdentifier(),
                             new ArrayList<ReportItem>(currentErrors));
                     }
-                    if (currentWarnings.size() > 0) {
+                    if (!currentWarnings.isEmpty()) {
                         warnings.put(object.getIdentifier(),
                             new ArrayList<ReportItem>(currentWarnings));
                     }
@@ -249,11 +248,11 @@ public class LafObjectMapper {
                 err.setKey("duplicate");
                 err.setValue("");
                 currentErrors.add(err);
-                if (currentErrors.size() > 0) {
+                if (!currentErrors.isEmpty()) {
                     errors.put(object.getIdentifier(),
                         new ArrayList<ReportItem>(currentErrors));
                 }
-                if (currentWarnings.size() > 0) {
+                if (!currentWarnings.isEmpty()) {
                     warnings.put(object.getIdentifier(),
                         new ArrayList<ReportItem>(currentWarnings));
                 }
@@ -285,11 +284,11 @@ public class LafObjectMapper {
             err.setKey("not known");
             err.setValue("No valid Probe Object");
             currentErrors.add(err);
-            if (currentErrors.size() > 0) {
+            if (!currentErrors.isEmpty()) {
                 errors.put(object.getIdentifier(),
                     new ArrayList<ReportItem>(currentErrors));
             }
-            if (currentWarnings.size() > 0) {
+            if (!currentWarnings.isEmpty()) {
                 warnings.put(object.getIdentifier(),
                     new ArrayList<ReportItem>(currentWarnings));
             }
@@ -298,7 +297,7 @@ public class LafObjectMapper {
 
         if (newProbe != null) {
             // Create kommentar objects
-            List<KommentarP> kommentare = new ArrayList<KommentarP>();
+            List<KommentarP> kommentare = new ArrayList<>();
             for (int i = 0; i < object.getKommentare().size(); i++) {
                 KommentarP tmp = createProbeKommentar(object.getKommentare().get(i), newProbe);
                 if (tmp != null) {
@@ -309,7 +308,7 @@ public class LafObjectMapper {
             merger.mergeKommentare(newProbe, kommentare);
 
             // Create zusatzwert objects
-            List<ZusatzWert> zusatzwerte = new ArrayList<ZusatzWert>();
+            List<ZusatzWert> zusatzwerte = new ArrayList<>();
             for (int i = 0; i < object.getZusatzwerte().size(); i++) {
                 ZusatzWert tmp = createZusatzwert(object.getZusatzwerte().get(i), newProbe.getId());
                 if (tmp != null) {
@@ -330,7 +329,7 @@ public class LafObjectMapper {
                 createEntnahmeOrt(object.getEntnahmeOrt(), newProbe);
 
                 // Create ursprungsOrte
-                List<Ortszuordnung> uOrte = new ArrayList<Ortszuordnung>();
+                List<Ortszuordnung> uOrte = new ArrayList<>();
                 for (int i = 0; i < object.getUrsprungsOrte().size(); i++) {
                     Ortszuordnung tmp = createUrsprungsOrt(object.getUrsprungsOrte().get(i), newProbe);
                     if (tmp != null) {
@@ -357,7 +356,7 @@ public class LafObjectMapper {
                 }
             }
         }
-        if (currentErrors.size() > 0) {
+        if (!currentErrors.isEmpty()) {
             if (errors.containsKey(object.getIdentifier())) {
                 errors.get(object.getIdentifier()).addAll(currentErrors);
             }
@@ -366,7 +365,7 @@ public class LafObjectMapper {
                     new ArrayList<ReportItem>(currentErrors));
             }
         }
-        if (currentWarnings.size() > 0) {
+        if (!currentWarnings.isEmpty()) {
             if (warnings.containsKey(object.getIdentifier())) {
                 warnings.get(object.getIdentifier()).addAll(currentWarnings);
             }
@@ -1197,10 +1196,6 @@ public class LafObjectMapper {
     }
 
     private Ort findOrCreateOrt(Map<String, String> attributes, String type, Probe probe) {
-        Integer kda = null;
-        Integer x = null;
-        Integer y = null;
-        String gemId = null;
         Ort o = new Ort();
         // If laf contains coordinates, find a ort with matching coordinates or
         // create one.
@@ -1346,7 +1341,7 @@ public class LafObjectMapper {
         return o;
     }
 
-
+/*
     private Ort createNewOrt(Map<String, String> attributes, String type, Probe probe) {
         Ort ort = new Ort();
         ort.setOrtTyp(1);
@@ -1537,7 +1532,7 @@ public class LafObjectMapper {
         repository.create(ort, Strings.STAMM);
         return ort;
     }
-
+*/
     private Timestamp getDate(String date) {
         ZoneId fromLaf = ZoneId.of("UTC");
         switch (currentZeitbasis) {
@@ -1555,6 +1550,7 @@ public class LafObjectMapper {
         return Timestamp.from(utc.toInstant());
     }
 
+    /*
     private void logProbe(Probe probe) {
         logger.debug("%PROBE%");
         logger.debug("datenbasis: " + probe.getDatenbasisId());
@@ -1578,6 +1574,7 @@ public class LafObjectMapper {
         logger.debug("test: " + probe.getTest());
         logger.debug("umw: " + probe.getUmwId());
     }
+*/
 
     private void addProbeAttribute(Entry<String, String> attribute, Probe probe) {
         String key = attribute.getKey();
@@ -1858,7 +1855,7 @@ public class LafObjectMapper {
                 ImporterConfig cfg = cfgs.get(i);
                 if (cfg != null &&
                     cfg.getAction().equals("convert") &&
-                    cfg.getFromValue().equals(attribute)
+                    cfg.getFromValue().equals(attr)
                 ) {
                     attr = cfg.getToValue();
                 }

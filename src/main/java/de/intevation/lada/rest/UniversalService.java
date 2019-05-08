@@ -114,14 +114,14 @@ public class UniversalService {
             //TODO: Error code if no columns are given
             return new Response(false, 999, null);
         }
-        ArrayList<String> hierarchy = new ArrayList<String>(){{
-            add("messungId");
-            add("probeId");
-            add("mpId");
-            add("ortId");
-            add("probenehmer");
-            add("dsatzerz");
-            add("mprkat");}};
+        ArrayList<String> hierarchy = new ArrayList<String>();
+        hierarchy.add("messungId");
+        hierarchy.add("probeId");
+        hierarchy.add("mpId");
+        hierarchy.add("ortId");
+        hierarchy.add("probenehmer");
+        hierarchy.add("dsatzerz");
+        hierarchy.add("mprkat");
         int resultNdx = hierarchy.size();
         String authType = "";
         for (GridColumnValue columnValue : gridColumnValues) {
