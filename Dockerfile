@@ -23,14 +23,24 @@ RUN apt-get update -y && \
             curl openjdk-8-jdk libpostgis-java libjts-java \
             git maven lighttpd
 
+
+#
+# Set ENV for pacakge versions
+ENV WILDFLY_VERSION 16.0.0.Final
+ENV HIBERNATE_SPATIAL_VERSION 5.3.9.Final
+ENV GEOLATTE_GEOM_VERSION 1.3.0
+ENV LADA_VERSION 3.3.9-SNAPSHOT
+
+RUN echo "Building Image using WILDFLY_VERSION=${WILDFLY_VERSION}, HIBERNATE_SPATIAL_VERSION=${HIBERNATE_SPATIAL_VERSION}, GEOLATTE_GEOM_VERSION=${GEOLATTE_GEOM_VERSION}, LADA_VERSION=${LADA_VERSION}."
+
 #
 # Set up Wildfly
 #
 RUN mkdir /opt/jboss
 
 RUN curl \
-    https://download.jboss.org/wildfly/16.0.0.Final/wildfly-16.0.0.Final.tar.gz\
-    | tar zx && mv wildfly-16.0.0.Final /opt/jboss/wildfly
+    https://download.jboss.org/wildfly/${WILDFLY_VERSION}/wildfly-${WILDFLY_VERSION}.tar.gz\
+    | tar zx && mv wildfly-${WILDFLY_VERSION} /opt/jboss/wildfly
 
 ENV JBOSS_HOME /opt/jboss/wildfly
 
@@ -43,14 +53,11 @@ EXPOSE 8080 9990 80
 #
 RUN mkdir -p $JBOSS_HOME/modules/org/postgres/main
 
-#RUN curl https://jdbc.postgresql.org/download/postgresql-9.4-1201.jdbc4.jar >\
-#         $JBOSS_HOME/modules/org/postgres/main/postgresql.jar
+RUN curl http://central.maven.org/maven2/org/hibernate/hibernate-spatial/${HIBERNATE_SPATIAL_VERSION}/hibernate-spatial-${HIBERNATE_SPATIAL_VERSION}.jar >\
+        $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/hibernate-spatial-${HIBERNATE_SPATIAL_VERSION}.jar
 
-RUN curl http://central.maven.org/maven2/org/hibernate/hibernate-spatial/5.3.9.Final/hibernate-spatial-5.3.9.Final.jar >\
-        $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/hibernate-spatial-5.3.9.Final.jar
-
-RUN curl http://central.maven.org/maven2/org/geolatte/geolatte-geom/1.3.0/geolatte-geom-1.3.0.jar >\
-        $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/geolatte-geom-1.3.0.jar
+RUN curl http://central.maven.org/maven2/org/geolatte/geolatte-geom/${GEOLATTE_GEOM_VERSION}/geolatte-geom-${GEOLATTE_GEOM_VERSION}.jar >\
+        $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/geolatte-geom-${GEOLATTE_GEOM_VERSION}.jar
 
 RUN ln -s /usr/share/java/postgresql.jar \
        $JBOSS_HOME/modules/org/postgres/main/
@@ -82,7 +89,6 @@ RUN rm $JBOSS_HOME/standalone/configuration/standalone_xml_history/current/*
 #
 # Build and deploy LADA-server
 #
-ENV LADA_VERSION 3.3.9-SNAPSHOT
 RUN mvn clean compile package && \
     mv target/lada-server-$LADA_VERSION.war \
        $JBOSS_HOME/standalone/deployments/lada-server.war && \
