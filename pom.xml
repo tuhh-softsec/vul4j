@@ -110,19 +110,19 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>5.3.7.Final</version>
+            <version>5.3.9.Final</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-spatial</artifactId>
-            <version>5.3.7.Final</version>
+            <version>5.3.9.Final</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.geolatte</groupId>
             <artifactId>geolatte-geom</artifactId>
-            <version>1.3.0</version>
+            <version>1.4.0</version>
             <scope>provided</scope>
         </dependency>
 

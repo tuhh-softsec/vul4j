@@ -27,8 +27,9 @@ RUN apt-get update -y && \
 #
 # Set ENV for pacakge versions
 ENV WILDFLY_VERSION 16.0.0.Final
+# see wildfly pom.xml for hibernate_spatial_version
 ENV HIBERNATE_SPATIAL_VERSION 5.3.9.Final
-ENV GEOLATTE_GEOM_VERSION 1.3.0
+ENV GEOLATTE_GEOM_VERSION 1.4.0
 ENV LADA_VERSION 3.3.9-SNAPSHOT
 
 RUN echo "Building Image using WILDFLY_VERSION=${WILDFLY_VERSION}, HIBERNATE_SPATIAL_VERSION=${HIBERNATE_SPATIAL_VERSION}, GEOLATTE_GEOM_VERSION=${GEOLATTE_GEOM_VERSION}, LADA_VERSION=${LADA_VERSION}."
@@ -54,10 +55,10 @@ EXPOSE 8080 9990 80
 RUN mkdir -p $JBOSS_HOME/modules/org/postgres/main
 
 RUN curl http://central.maven.org/maven2/org/hibernate/hibernate-spatial/${HIBERNATE_SPATIAL_VERSION}/hibernate-spatial-${HIBERNATE_SPATIAL_VERSION}.jar >\
-        $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/hibernate-spatial-${HIBERNATE_SPATIAL_VERSION}.jar
+        $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/hibernate-spatial.jar
 
 RUN curl http://central.maven.org/maven2/org/geolatte/geolatte-geom/${GEOLATTE_GEOM_VERSION}/geolatte-geom-${GEOLATTE_GEOM_VERSION}.jar >\
-        $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/geolatte-geom-${GEOLATTE_GEOM_VERSION}.jar
+        $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/geolatte-geom.jar
 
 RUN ln -s /usr/share/java/postgresql.jar \
        $JBOSS_HOME/modules/org/postgres/main/
@@ -65,6 +66,10 @@ RUN ln -s /usr/share/java/postgis-jdbc.jar \
        $JBOSS_HOME/modules/org/postgres/main/
 RUN ln -s /usr/share/java/jts.jar \
        $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/
+RUN ln -s $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/hibernate-core-*.jar $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/hibernate-core.jar
+RUN ln -s $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/hibernate-envers-*.jar $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/hibernate-envers.jar
+
+RUN ls -hal $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/
 
 
 #

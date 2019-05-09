@@ -25,11 +25,11 @@
 <!-- Represents the Hibernate 4.3.x module-->
 <module xmlns="urn:jboss:module:1.3" name="org.hibernate">
     <resources>
-        <resource-root path="hibernate-core-5.3.9.Final.jar"/>
-        <resource-root path="hibernate-envers-5.3.9.Final.jar"/>
-        <resource-root path="hibernate-spatial-5.3.9.Final.jar"/>
+        <resource-root path="hibernate-core.jar"/>
+        <resource-root path="hibernate-envers.jar"/>
+        <resource-root path="hibernate-spatial.jar"/>
         <resource-root path="jts.jar"/>
-        <resource-root path="geolatte-geom-1.3.0.jar"/>
+        <resource-root path="geolatte-geom.jar"/>
     </resources>
 
     <dependencies>
