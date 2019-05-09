@@ -270,7 +270,7 @@ implements Creator
         value += ((zw.getKleinerAls() == null) ? " " : " " + zw.getKleinerAls());
         value += zw.getMesswertPzs();
         value += " " + zusatz.get(0).getMessEinheitId();
-        value += " " + zw.getMessfehler();
+        value += " " + ((zw.getMessfehler() == null) ? "" : zw.getMessfehler());
         return lafLine("PZB_S", value);
     }
 
