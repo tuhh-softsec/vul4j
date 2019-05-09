@@ -43,18 +43,20 @@ EXPOSE 8080 9990 80
 #
 RUN mkdir -p $JBOSS_HOME/modules/org/postgres/main
 
-RUN curl https://jdbc.postgresql.org/download/postgresql-9.4-1201.jdbc4.jar >\
-         $JBOSS_HOME/modules/org/postgres/main/postgresql.jar
+#RUN curl https://jdbc.postgresql.org/download/postgresql-9.4-1201.jdbc4.jar >\
+#         $JBOSS_HOME/modules/org/postgres/main/postgresql.jar
 
-RUN curl http://central.maven.org/maven2/org/hibernate/hibernate-spatial/5.3.7.Final/hibernate-spatial-5.3.7.Final.jar >\
-        $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/hibernate-spatial-5.3.7.Final.jar
+RUN curl http://central.maven.org/maven2/org/hibernate/hibernate-spatial/5.3.9.Final/hibernate-spatial-5.3.9.Final.jar >\
+        $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/hibernate-spatial-5.3.9.Final.jar
 
 RUN curl http://central.maven.org/maven2/org/geolatte/geolatte-geom/1.3.0/geolatte-geom-1.3.0.jar >\
         $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/geolatte-geom-1.3.0.jar
 
-RUN ln -s /usr/share/java/postgis-jdbc-2.2.1.jar \
+RUN ln -s /usr/share/java/postgresql.jar \
        $JBOSS_HOME/modules/org/postgres/main/
-RUN ln -s /usr/share/java/jts-1.14.jar \
+RUN ln -s /usr/share/java/postgis-jdbc.jar \
+       $JBOSS_HOME/modules/org/postgres/main/
+RUN ln -s /usr/share/java/jts.jar \
        $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/
 
 
@@ -80,7 +82,7 @@ RUN rm $JBOSS_HOME/standalone/configuration/standalone_xml_history/current/*
 #
 # Build and deploy LADA-server
 #
-ENV LADA_VERSION 3.3.8
+ENV LADA_VERSION 3.3.9-SNAPSHOT
 RUN mvn clean compile package && \
     mv target/lada-server-$LADA_VERSION.war \
        $JBOSS_HOME/standalone/deployments/lada-server.war && \

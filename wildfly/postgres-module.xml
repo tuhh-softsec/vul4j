@@ -3,7 +3,7 @@
 <module xmlns="urn:jboss:module:1.1" name="org.postgres">
 
     <resources>
-        <resource-root path="postgis-jdbc-2.2.1.jar"/>
+        <resource-root path="postgis-jdbc.jar"/>
         <resource-root path="postgresql.jar"/>
     </resources>
 

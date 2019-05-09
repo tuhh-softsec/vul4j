@@ -9,7 +9,7 @@ JBOSS_MODE=${1:-"standalone"}
 JBOSS_CONFIG=${2:-"$JBOSS_MODE.xml"}
 
 function wait_for_server() {
-    until [ `$JBOSS_CLI -c "ls /deployment" &> /dev/stdout` ] ; do
+    until `$JBOSS_CLI -c "ls /deployment" &> /dev/stdout`; do
         sleep 1
     done
 }
