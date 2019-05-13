@@ -451,5 +451,5 @@
             <url>http://www.hibernatespatial.org/repository</url>
         </repository>
     </repositories>
-    <version>3.3.9-SNAPSHOT</version>
+    <version>3.3.9</version>
 </project>
