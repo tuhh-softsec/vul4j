@@ -9,7 +9,9 @@ package de.intevation.lada.rest.stamm;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.json.JsonObject;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -20,6 +22,7 @@ import javax.ws.rs.core.UriInfo;
 
 import de.intevation.lada.model.stammdaten.KoordinatenArt;
 import de.intevation.lada.util.annotation.RepositoryConfig;
+import de.intevation.lada.util.data.KdaUtil;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.data.Strings;
@@ -98,5 +101,22 @@ public class KoordinatenartService {
             KoordinatenArt.class,
             Integer.valueOf(id),
             Strings.STAMM);
+    }
+
+    @POST
+    @Path("/")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response recalculate(
+        @Context HttpHeaders headers,
+        JsonObject object
+    ) {
+        int kdaFrom = object.getInt("from");
+        int kdaTo = object.getInt("to");
+        String x = object.getString("x");
+        String y = object.getString("y");
+        KdaUtil transformer = new KdaUtil();
+        String result = transformer.transform(kdaFrom, kdaTo, x, y);
+
+        return new Response(true, 200, result);
     }
 }
