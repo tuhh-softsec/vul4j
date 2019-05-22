@@ -86,6 +86,13 @@ public class OrtFactory {
             yCoord = ort.getKoordYExtern();
             jtsTransform(epsg, xCoord, yCoord, ort);
             break;
+        case 8:
+            epsg = getEpsgForEd50Utm(ort.getKoordXExtern());
+            xCoord = ort.getKoordXExtern().length() == 7 ? ort.getKoordXExtern().substring(1, 7)
+                    : ort.getKoordXExtern().substring(2, 8);
+            yCoord = ort.getKoordYExtern();
+            jtsTransform(epsg, xCoord, yCoord, ort);
+            break;
         default:
             ReportItem err = new ReportItem();
             err.setCode(612);
@@ -380,6 +387,14 @@ public class OrtFactory {
 
     private String getEpsgForWgsUtm(String x) {
         String epsg = "EPSG:326";
+        String part = x.split(",")[0];
+        String zone = part.length() == 7 ? ("0" + part.substring(0, 1)) :
+            part.substring(0, 2);
+        return epsg + zone;
+    }
+
+    private String getEpsgForEd50Utm(String x) {
+        String epsg = "EPSG:230";
         String part = x.split(",")[0];
         String zone = part.length() == 7 ? ("0" + part.substring(0, 1)) :
             part.substring(0, 2);
