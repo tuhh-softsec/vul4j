@@ -1212,7 +1212,7 @@ public class LafObjectMapper {
                     Strings.STAMM);
                 if ( koordinatenArt == null) {
                     currentWarnings.add(new ReportItem(type + "KOORDINATEN_ART_S", attributes.get(type + "KOORDINATEN_ART_S"), 675));
-                    return null;
+                    o.setKdaId(null);
                 }
             }
             else {
@@ -1224,9 +1224,11 @@ public class LafObjectMapper {
                 List<KoordinatenArt> arten = repository.filterPlain(kdaBuilder.getQuery(), Strings.STAMM);
                 if (arten == null || arten.isEmpty()) {
                     currentWarnings.add(new ReportItem(type + "KOORDINATEN_ART", attributes.get(type + "KOORDINATEN_ART"), 675));
-                    return null;
+                    o.setKdaId(null);
                 }
-                o.setKdaId(arten.get(0).getId());
+                else {
+                    o.setKdaId(arten.get(0).getId());
+                }
             }
             o.setKoordXExtern(attributes.get(type + "KOORDINATEN_X"));
             o.setKoordYExtern(attributes.get(type + "KOORDINATEN_Y"));
@@ -1243,7 +1245,6 @@ public class LafObjectMapper {
                 repository.filterPlain(builder.getQuery(), Strings.STAMM);
             if (ves == null || ves.size() == 0) {
                 currentWarnings.add(new ReportItem("GEMEINDENAME", attributes.get(type + "GEMEINDENAME"), 675));
-                return null;
             }
             else {
                 o.setGemId(ves.get(0).getId());
@@ -1254,7 +1255,7 @@ public class LafObjectMapper {
             Verwaltungseinheit v = repository.getByIdPlain(Verwaltungseinheit.class, o.getGemId(), Strings.STAMM);
             if (v == null) {
                 currentWarnings.add(new ReportItem(type + "GEMEINDESCHLUESSEL", o.getGemId(), 675));
-                return null;
+                o.setGemId(null);
             }
         }
         String key = "";
@@ -1306,6 +1307,12 @@ public class LafObjectMapper {
                 o.setOzId(zusatz.getOzsId());
             }
         }
+
+        // checkk if all attributes are empty
+        if (o.getKdaId() == null && o.getGemId() == null && o.getStaatId() == null && o.getOzId() == null) {
+            return null;
+        }
+
         MessStelle mst = repository.getByIdPlain(MessStelle.class, probe.getMstId(), Strings.STAMM);
         o.setNetzbetreiberId(mst.getNetzbetreiberId());
         o = ortFactory.completeOrt(o);
