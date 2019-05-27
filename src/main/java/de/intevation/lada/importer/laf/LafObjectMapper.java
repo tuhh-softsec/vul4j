@@ -648,8 +648,9 @@ public class LafObjectMapper {
             if (i == Identified.UPDATE) {
                 merger.mergeMessung(old, messung);
                 newMessung = old;
-                // We do not import th. Doing this can cause an
-                // inconsistent status protocol.
+                if (object.getAttributes().containsKey("BEARBEITUNGSSTATUS")) {
+                    createStatusProtokoll(object.getAttributes().get("BEARBEITUNGSSTATUS"), newMessung, mstId);
+                }
             }
             else if (i == Identified.REJECT) {
                 ReportItem err = new ReportItem();
