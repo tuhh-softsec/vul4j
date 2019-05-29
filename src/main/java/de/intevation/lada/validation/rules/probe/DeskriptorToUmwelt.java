@@ -173,7 +173,7 @@ public class DeskriptorToUmwelt implements Rule {
                                 ) {
                                     matches += 1;
                                 }
-                                else if (!isZebs && !media.get(2).equals(-1) && data.get(i).getS02() != null) {
+                                else {
                                     j = 12; matches = -12;
                                 }
                                 break;
@@ -182,7 +182,7 @@ public class DeskriptorToUmwelt implements Rule {
                                 ) {
                                     matches += 1;
                                 }
-                                else if (!isZebs && !media.get(3).equals(-1) && data.get(i).getS03() != null) {
+                                else {
                                     j = 12; matches = -12;
                                 }
                                 break;
@@ -191,7 +191,7 @@ public class DeskriptorToUmwelt implements Rule {
                                 ) {
                                     matches += 1;
                                 }
-                                else if (!media.get(4).equals(-1) && data.get(i).getS04() != null) {
+                                else {
                                     j = 12; matches = -12;
                                 }
                                 break;
@@ -200,7 +200,7 @@ public class DeskriptorToUmwelt implements Rule {
                                 ) {
                                     matches +=1;
                                 }
-                                else if (!media.get(5).equals(-1) && data.get(i).getS05() != null) {
+                                else {
                                     j = 12; matches = -12;
                                 }
                                 break;
@@ -209,7 +209,7 @@ public class DeskriptorToUmwelt implements Rule {
                                 ) {
                                     matches += 1;
                                 }
-                                else if (!media.get(6).equals(-1) && data.get(i).getS06() != null) {
+                                else {
                                     j = 12; matches = -12;
                                 }
                                 break;
@@ -218,7 +218,7 @@ public class DeskriptorToUmwelt implements Rule {
                                 ) {
                                     matches += 1;
                                 }
-                                else if (!media.get(7).equals(-1) && data.get(i).getS07() != null) {
+                                else {
                                     j = 12; matches = -12;
                                 }
                                 break;
@@ -227,7 +227,7 @@ public class DeskriptorToUmwelt implements Rule {
                                 ) {
                                     matches += 1;
                                 }
-                                else if (!media.get(8).equals(-1) && data.get(i).getS08() != null) {
+                                else {
                                     j = 12; matches = -12;
                                 }
                                 break;
@@ -236,7 +236,7 @@ public class DeskriptorToUmwelt implements Rule {
                                 ) {
                                     matches += 1;
                                 }
-                                else if (!media.get(9).equals(-1) && data.get(i).getS09() != null) {
+                                else  {
                                     j = 12; matches = -12;
                                 }
                                 break;
@@ -245,7 +245,7 @@ public class DeskriptorToUmwelt implements Rule {
                                 ) {
                                     matches += 1;
                                 }
-                                else if (!media.get(10).equals(-1) && data.get(i).getS10() != null) {
+                                else {
                                     j = 12; matches = -12;
                                 }
                                 break;
@@ -254,7 +254,7 @@ public class DeskriptorToUmwelt implements Rule {
                                 ) {
                                     matches += 1;
                                 }
-                                else if (!media.get(11).equals(-1) && data.get(i).getS11() != null) {
+                                else {
                                     j = 12; matches = -12;
                                 }
                                 break;
