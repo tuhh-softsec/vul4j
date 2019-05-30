@@ -237,7 +237,7 @@ public class Route {
 							if(ds3!=null){
 								final DatagramPacket dp2=dp;
 								ds3.receiver.onReceivePacket(dp2);
-								if(sType==MessageType.sType_DataMessage){
+								if(sType==MessageType.S_TYPE_DATA_MESSAGE){
 									TrafficEvent event=new TrafficEvent("",ran.nextLong(),dp.getLength(),TrafficEvent.type_downloadTraffic);
 									fireEvent(event);
 								}

@@ -4,16 +4,16 @@ package net.fs.rudp;
 public class Constant {
 
 	
-	public static int code_success=1;
+	public static final int CODE_SUCCESS =1;
 	
-	public static int code_failed=0;
+	public static final int CODE_FAILED =0;
 	
-	public static int code_no_port=41;
+	public static final int CODE_NO_PORT =41;
 	
-	public static int code_password_error=42;
+	public static final int CODE_PASSWORD_ERROR =42;
 	
-	static int protocal_portmap=5755682;
+	static final int PROTOCAL_PORTMAP =5755682;
 	
-	public static int protocal_socks5proxy=544643;
+	public static final int PROTOCAL_SOCKS_5_PROXY =544643;
 
 }

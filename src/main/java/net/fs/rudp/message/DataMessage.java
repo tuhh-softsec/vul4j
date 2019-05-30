@@ -9,7 +9,7 @@ import net.fs.utils.ByteIntConvert;
 import net.fs.utils.ByteShortConvert;
 
 public class DataMessage extends Message{
-	short sType=net.fs.rudp.message.MessageType.sType_DataMessage;
+	short sType=net.fs.rudp.message.MessageType.S_TYPE_DATA_MESSAGE;
 	int sequence=0;
 	int length=0;
 	byte [] data;

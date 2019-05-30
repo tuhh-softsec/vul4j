@@ -27,7 +27,7 @@ public class AckListMessage extends Message{
 		this.lastRead=lastRead;
 		int len1=4+4+10+4*ackList.size();
 		dpData=new byte[len1+24+9];
-		sType=MessageType.sType_AckListMessage;
+		sType=MessageType.S_TYPE_ACK_LIST_MESSAGE;
 		ByteShortConvert.toByteArray(ver, dpData, 0);  //add: ver
 		ByteShortConvert.toByteArray(sType, dpData, 2);  //add: service type
 		ByteIntConvert.toByteArray(connectId, dpData, 4); //add: sequence

@@ -109,7 +109,7 @@ public class Receiver {
 				int sType=MessageCheck.checkSType(dp);
 				if(ver==RUDPConfig.protocal_ver){
 					conn.live();
-					if(sType==net.fs.rudp.message.MessageType.sType_DataMessage){
+					if(sType==net.fs.rudp.message.MessageType.S_TYPE_DATA_MESSAGE){
 						me=new DataMessage(dp);
 						int timeId=me.getTimeId();
 						SendRecord record=conn.clientControl.sendRecordTable_remote.get(timeId);
@@ -135,7 +135,7 @@ public class Receiver {
 								}
 							}
 						}
-					}else if(sType==net.fs.rudp.message.MessageType.sType_AckListMessage){
+					}else if(sType==net.fs.rudp.message.MessageType.S_TYPE_ACK_LIST_MESSAGE){
 						AckListMessage alm=new AckListMessage(dp);
 						int lastRead3=alm.getLastRead();
 						if(lastRead3>lastRead2){
@@ -171,12 +171,12 @@ public class Receiver {
 						if(checkWin()){
 							conn.sender.play();
 						}
-					}else if(sType==net.fs.rudp.message.MessageType.sType_CloseMessage_Stream){
+					}else if(sType==net.fs.rudp.message.MessageType.S_TYPE_CLOSE_MESSAGE_STREAM){
 						CloseMessage_Stream cm=new CloseMessage_Stream(dp);
 						reveivedClose=true;
 						int n=cm.getCloseOffset();
 						closeStream_Remote(n);
-					}else if(sType==net.fs.rudp.message.MessageType.sType_CloseMessage_Conn){
+					}else if(sType==net.fs.rudp.message.MessageType.S_TYPE_CLOSE_MESSAGE_CONN){
 						CloseMessage_Conn cm2=new CloseMessage_Conn(dp);
 						conn.close_remote();
 					}else{

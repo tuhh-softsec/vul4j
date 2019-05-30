@@ -9,7 +9,7 @@ import java.net.DatagramPacket;
 
 public class CloseMessage_Conn extends Message{
 	
-	public short sType=net.fs.rudp.message.MessageType.sType_CloseMessage_Conn;
+	public short sType=net.fs.rudp.message.MessageType.S_TYPE_CLOSE_MESSAGE_CONN;
 	
 	byte [] data;
 	byte [] dpData;

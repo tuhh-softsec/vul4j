@@ -10,7 +10,7 @@ import net.fs.utils.ByteShortConvert;
 
 public class CloseMessage_Stream extends Message{
 	
-	public short sType=net.fs.rudp.message.MessageType.sType_CloseMessage_Stream;
+	public short sType=net.fs.rudp.message.MessageType.S_TYPE_CLOSE_MESSAGE_STREAM;
 	
 	byte [] data;
 	byte [] dpData;
