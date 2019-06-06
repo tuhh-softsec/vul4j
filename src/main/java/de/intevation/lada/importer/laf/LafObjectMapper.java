@@ -1202,7 +1202,9 @@ public class LafObjectMapper {
         // create one.
         if ((attributes.get(type + "KOORDINATEN_ART") != null ||
              attributes.get(type + "KOORDINATEN_ART_S") != null) &&
+            !attributes.get(type + "KOORDINATEN_X").equals("") &&
             attributes.get(type + "KOORDINATEN_X") != null &&
+            !attributes.get(type + "KOORDINATEN_X").equals("") &&
             attributes.get(type + "KOORDINATEN_Y") != null
         ) {
             if (attributes.get(type + "KOORDINATEN_ART_S") != null) {

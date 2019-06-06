@@ -48,6 +48,16 @@ public class OrtFactory {
         if (errors == null) {
             errors = new ArrayList<>();
         }
+        if (ort.getKdaId() == null || ort.getKdaId().equals("") ||
+            ort.getKoordXExtern() == null || ort.getKoordXExtern().equals("") ||
+            ort.getKoordYExtern() == null || ort.getKoordYExtern().equals("")) {
+            ReportItem err = new ReportItem();
+            err.setCode(675);
+            err.setKey("coordinates");
+            err.setValue(ort.getKdaId() + " " + ort.getKoordXExtern() + " " + ort.getKoordYExtern());
+            errors.add(err);
+            return;         
+        }
         Integer kda = ort.getKdaId();
         String epsg = null;
         String xCoord = null;
