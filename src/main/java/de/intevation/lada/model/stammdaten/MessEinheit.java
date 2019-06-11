@@ -1,11 +1,16 @@
 package de.intevation.lada.model.stammdaten;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 /**
@@ -23,6 +28,14 @@ public class MessEinheit implements Serializable {
     private String beschreibung;
 
     private String einheit;
+
+    /**
+     * Get all MasseinheitUmrechnungs for units that can be converted into
+     * this one.
+     */
+    @OneToMany(mappedBy="mehIdZu", fetch=FetchType.EAGER)
+    @JsonIgnore
+    private List<MassEinheitUmrechnung> massEinheitUmrechnungZus;
 
     @Column(name="eudf_messeinheit_id")
     private String eudfMesseinheitId;
@@ -71,5 +84,9 @@ public class MessEinheit implements Serializable {
 
     public void setUmrechnungsFaktorEudf(Long umrechnungsFaktorEudf) {
         this.umrechnungsFaktorEudf = umrechnungsFaktorEudf;
+    }
+
+    public List<MassEinheitUmrechnung> getMassEinheitUmrechnungZus() {
+        return this.massEinheitUmrechnungZus;
     }
 }

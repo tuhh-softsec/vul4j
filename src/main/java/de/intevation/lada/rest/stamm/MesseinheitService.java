@@ -7,8 +7,18 @@
  */
 package de.intevation.lada.rest.stamm;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -16,8 +26,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
+import de.intevation.lada.model.stammdaten.MassEinheitUmrechnung;
 import de.intevation.lada.model.stammdaten.MessEinheit;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.Repository;
@@ -66,6 +78,9 @@ public class MesseinheitService {
     /**
      * Get all MessEinheit objects.
      * <p>
+     * The requested Objects can be filtered using an URL parameter named
+     * mehId. If used, the filter only returns units that can be converted
+     * into the given one.
      * Example: http://example.com/messeinheit
      *
      * @return Response object containing all MessEinheit objects.
@@ -77,7 +92,17 @@ public class MesseinheitService {
         @Context HttpHeaders headers,
         @Context UriInfo info
     ) {
-        return defaultRepo.getAll(MessEinheit.class, Strings.STAMM);
+        MultivaluedMap<String, String> params = info.getQueryParameters();
+        if (params.isEmpty() || !params.containsKey("mehId")) {
+            return defaultRepo.getAll(MessEinheit.class, Strings.STAMM);
+        }
+        String mehId = params.getFirst("mehId");
+        MessEinheit meh = defaultRepo.getByIdPlain(MessEinheit.class, Integer.parseInt(mehId), Strings.STAMM);
+        List<MessEinheit> einheits = new ArrayList<MessEinheit>(meh.getMassEinheitUmrechnungZus().size());
+        for (MassEinheitUmrechnung umrechnung : meh.getMassEinheitUmrechnungZus()) {
+            einheits.add(umrechnung.getMehVon());
+        }
+        return new Response(true, 200, einheits);
     }
 
     /**
