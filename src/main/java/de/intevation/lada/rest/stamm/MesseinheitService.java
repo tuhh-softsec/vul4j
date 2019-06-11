@@ -93,12 +93,13 @@ public class MesseinheitService {
         @Context UriInfo info
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
-        if (params.isEmpty() || !params.containsKey("mehId")) {
+        if (params.isEmpty() || !params.containsKey("mehId") || params.getFirst("mehId").equals("")) {
             return defaultRepo.getAll(MessEinheit.class, Strings.STAMM);
         }
         String mehId = params.getFirst("mehId");
         MessEinheit meh = defaultRepo.getByIdPlain(MessEinheit.class, Integer.parseInt(mehId), Strings.STAMM);
         List<MessEinheit> einheits = new ArrayList<MessEinheit>(meh.getMassEinheitUmrechnungZus().size());
+        einheits.add(meh);
         for (MassEinheitUmrechnung umrechnung : meh.getMassEinheitUmrechnungZus()) {
             einheits.add(umrechnung.getMehVon());
         }
