@@ -51,7 +51,7 @@ public class CoordinatesInVE implements Rule {
             ? null
             : ort.getGemId();
 
-        if (gemId != null) {
+        if (gemId != null && ort.getGeom() != null) {
 
             QueryBuilder<Verwaltungsgrenze> vg =
                 new QueryBuilder<Verwaltungsgrenze>(
