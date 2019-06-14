@@ -60,11 +60,9 @@ public class MessgroesseToMessmethode implements Rule {
             new QueryBuilder<MmtMessgroesse>(
                     repository.entityManager(Strings.STAMM), MmtMessgroesse.class);
 
-        Response results =
-            repository.filter(mmtBuilder.getQuery(), Strings.STAMM);
+        Response results = repository.filter(mmtBuilder.getQuery(), Strings.STAMM);
         @SuppressWarnings("unchecked")
-        List<MmtMessgroesse> messgroessen =
-            (List<MmtMessgroesse>)results.getData();
+        List<MmtMessgroesse> messgroessen = (List<MmtMessgroesse>)results.getData();
         List<MmtMessgroesse> found = new ArrayList<MmtMessgroesse>();
         for (MmtMessgroesse mg: messgroessen) {
             if (mg.getMmtId().equals(mmt)) {
@@ -85,11 +83,10 @@ public class MessgroesseToMessmethode implements Rule {
                     Messgroesse.class,
                     messwert.getMessgroesseId(),
                     Strings.STAMM);
-                violation.addWarning("messgroesse#" + mg.getMessgroesse(), 632);
+                violation.addError("messgroesse#" + mmt + " " + mg.getMessgroesse(), 632);
             }
         }
         if (violation.hasWarnings()) {
-            violation.addWarning("mmtId", 632);
             return violation;
         }
         return null;

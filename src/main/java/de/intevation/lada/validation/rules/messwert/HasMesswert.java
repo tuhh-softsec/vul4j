@@ -19,24 +19,21 @@ import de.intevation.lada.validation.rules.Rule;
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
 @ValidationRule("Messwert")
-public class HasMessunsicherheit implements Rule {
+public class HasMesswert implements Rule {
 
     @Override
     public Violation execute(Object object) {
         Messwert messwert = (Messwert)object;
-        Float unsicherheit = messwert.getMessfehler();
-        Double nachweisgrenze = messwert.getNwgZuMesswert();
+        String messwertNwg = messwert.getMesswertNwg();
         Double wert = messwert.getMesswert();
-        if (messwert.getMesswertNwg() == null && ( unsicherheit == null || unsicherheit == 0f)) {
-            Violation violation = new Violation();
-            violation.addWarning("messfehler", 631);
+        Violation violation = new Violation();
+        if (messwertNwg == null && wert == null) {
+            violation.addError("messwert", 631);
             return violation;
         }
-        else if (messwert.getMesswertNwg() != null && unsicherheit != null) {
-            Violation violation = new Violation();
-            violation.addError("messfehler", 635);
+        else if (messwertNwg != null && wert != null) {
+            violation.addError("messwert", 634);
             return violation;
         }
-        return null;
-    }
+        return null;    }
 }
