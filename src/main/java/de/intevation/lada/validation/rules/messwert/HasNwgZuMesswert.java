@@ -14,9 +14,9 @@ import de.intevation.lada.validation.rules.Rule;
 
 /**
  * Validation rule for messwert.
- * Validates if the "messfehler" was set correctly.
+ * Validates if the "mwgZuMesswert" was set correctly.
  *
- * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ * @author <a href="mailto:mstanko@bfs.de">Michael Stanko</a>
  */
 @ValidationRule("Messwert")
 public class HasNwgZuMesswert implements Rule {

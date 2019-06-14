@@ -108,6 +108,10 @@ public class LafObjectMapper {
     private Identifier messungIdentifier;
 
     @Inject
+    @ValidationConfig(type="Messwert")
+    private Validator messwertValidator;
+
+    @Inject
     private ObjectMerger merger;
 
     @Inject
@@ -715,6 +719,34 @@ public class LafObjectMapper {
                 else {
                     messwerte.add(tmp);
                     messgroessenListe.add(tmp.getMessgroesseId());
+                    logger.debug("validate MessgroesseId: " + tmp.getMessgroesseId());
+                    Violation violation = messwertValidator.validate(tmp);
+                    for (Entry<String, List<Integer>> err : violation.getErrors().entrySet()) {
+                        logger.debug("error - key: " + err.getKey() + " " + err.getValue());
+                        for (Integer code : err.getValue()) {
+                            logger.debug("error - key: " + err.getKey() +" code: " + code);
+                            currentErrors.add(new ReportItem(
+                                "validation",
+                                err.getKey() + "#" +
+                                ((object.getMesswerte().get(i).get("MESSGROESSE_ID") == null) ?
+                                    object.getMesswerte().get(i).get("MESSGROESSE").toString() :
+                                    object.getMesswerte().get(i).get("MESSGROESSE_ID").toString()),
+                                code));
+                        }
+                    }
+                    for (Entry<String, List<Integer>> warn : violation.getWarnings().entrySet()) {
+                        logger.debug("warning - key: " + warn.getKey() + " " + warn.getValue());
+                        for (Integer code : warn.getValue()) {
+                            logger.debug("warning - key: " + warn.getKey() +" code: " + code);
+                            currentWarnings.add(new ReportItem(
+                                "validation",
+                                warn.getKey() + "#" +
+                                ((object.getMesswerte().get(i).get("MESSGROESSE_ID") == null) ?
+                                    object.getMesswerte().get(i).get("MESSGROESSE").toString() :
+                                    object.getMesswerte().get(i).get("MESSGROESSE_ID").toString()),
+                                code));
+                        }
+                    }
                 }
             }
         }
@@ -946,7 +978,7 @@ public class LafObjectMapper {
             messwert.setNwgZuMesswert(messwert.getMesswert());
             messwert.setMesswert(null);
         }
-        else if (messwert.getMesswertNwg() != null && messwert.getNwgZuMesswert() == messwert.getMesswert() ||
+        else if (messwert.getMesswertNwg() != null && messwert.getMesswert().equals(messwert.getNwgZuMesswert()) ||
                  messwert.getMesswertNwg() != null && messwert.getMesswert() == 0.0) {
             messwert.setMesswert(null);
         }
@@ -1019,7 +1051,7 @@ public class LafObjectMapper {
         if (userInfo.getNetzbetreiber().contains(messStelle.getNetzbetreiberId()) &&
             userInfo.getFunktionenForNetzbetreiber(messStelle.getNetzbetreiberId()).contains(2) &&
             hasMst) {
-                // Set status for stufe land.
+            // Set status for stufe land.
             QueryBuilder<StatusKombi> builder =
                 new QueryBuilder<StatusKombi>(
                     repository.entityManager(Strings.STAMM),
