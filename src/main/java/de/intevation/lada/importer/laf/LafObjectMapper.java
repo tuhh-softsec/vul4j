@@ -68,6 +68,7 @@ import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
+import de.intevation.lada.util.auth.Authorizer;
 import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
@@ -201,7 +202,6 @@ public class LafObjectMapper {
         if (probe.getUmwId() == null) {
             factory.findUmweltId(probe);
         }
-        //logProbe(probe);
 
         // Check if the user is authorized to create the probe
         boolean isAuthorized = authorizer.isAuthorized(userInfo, probe, Probe.class);
@@ -215,18 +215,26 @@ public class LafObjectMapper {
             errors.put(object.getIdentifier(), new ArrayList<ReportItem>(currentErrors));
             return;
         }
+        // logProbe(probe);
 
         // Check for errors and warnings
 
         // Compare the probe with objects in the db
         Probe newProbe = null;
+        boolean oldProbeIsReadonly = false;
         try {
             Identified i = probeIdentifier.find(probe);
             Probe old = (Probe)probeIdentifier.getExisting();
             // Matching probe was found in the db. Update it!
             if(i == Identified.UPDATE) {
-                if(merger.merge(old, probe)) {
-                    newProbe = old;
+                oldProbeIsReadonly = authorizer.isProbeReadOnly(old.getId());
+                if(!oldProbeIsReadonly) {
+                    if(merger.merge(old, probe)) {
+                        newProbe = old;
+                    }
+                    else {
+                        logger.debug("probe is readonly");
+                    }
                 }
                 else {
                     ReportItem err = new ReportItem();
@@ -300,48 +308,50 @@ public class LafObjectMapper {
         }
 
         if (newProbe != null) {
-            // Create kommentar objects
-            List<KommentarP> kommentare = new ArrayList<>();
-            for (int i = 0; i < object.getKommentare().size(); i++) {
-                KommentarP tmp = createProbeKommentar(object.getKommentare().get(i), newProbe);
-                if (tmp != null) {
-                    kommentare.add(tmp);
-                }
-            }
-            // Persist kommentar objects
-            merger.mergeKommentare(newProbe, kommentare);
-
-            // Create zusatzwert objects
-            List<ZusatzWert> zusatzwerte = new ArrayList<>();
-            for (int i = 0; i < object.getZusatzwerte().size(); i++) {
-                ZusatzWert tmp = createZusatzwert(object.getZusatzwerte().get(i), newProbe.getId());
-                if (tmp != null) {
-                    zusatzwerte.add(tmp);
-                }
-            }
-            // Persist zusatzwert objects
-            merger.mergeZusatzwerte(newProbe, zusatzwerte);
-
-            // Special things for REI-Messpunkt
-            if (probe.getReiProgpunktGrpId() != null ||
-                Integer.valueOf(3).equals(probe.getDatenbasisId()) ||
-                Integer.valueOf(4).equals(probe.getDatenbasisId())) {
-                createReiMesspunkt(object, newProbe);
-            }
-            else {
-                // Merge entnahmeOrt
-                createEntnahmeOrt(object.getEntnahmeOrt(), newProbe);
-
-                // Create ursprungsOrte
-                List<Ortszuordnung> uOrte = new ArrayList<>();
-                for (int i = 0; i < object.getUrsprungsOrte().size(); i++) {
-                    Ortszuordnung tmp = createUrsprungsOrt(object.getUrsprungsOrte().get(i), newProbe);
+            if(!oldProbeIsReadonly) {
+                // Create kommentar objects
+                List<KommentarP> kommentare = new ArrayList<>();
+                for (int i = 0; i < object.getKommentare().size(); i++) {
+                    KommentarP tmp = createProbeKommentar(object.getKommentare().get(i), newProbe);
                     if (tmp != null) {
-                        uOrte.add(tmp);
+                        kommentare.add(tmp);
                     }
                 }
-                // Persist ursprungsOrte
-                merger.mergeUrsprungsOrte(newProbe.getId(), uOrte);
+                // Persist kommentar objects
+                merger.mergeKommentare(newProbe, kommentare);
+
+                // Create zusatzwert objects
+                List<ZusatzWert> zusatzwerte = new ArrayList<>();
+                for (int i = 0; i < object.getZusatzwerte().size(); i++) {
+                    ZusatzWert tmp = createZusatzwert(object.getZusatzwerte().get(i), newProbe.getId());
+                    if (tmp != null) {
+                        zusatzwerte.add(tmp);
+                    }
+                }
+                // Persist zusatzwert objects
+                merger.mergeZusatzwerte(newProbe, zusatzwerte);
+
+                // Special things for REI-Messpunkt
+                if (probe.getReiProgpunktGrpId() != null ||
+                    Integer.valueOf(3).equals(probe.getDatenbasisId()) ||
+                    Integer.valueOf(4).equals(probe.getDatenbasisId())) {
+                    createReiMesspunkt(object, newProbe);
+                }
+                else {
+                    // Merge entnahmeOrt
+                    createEntnahmeOrt(object.getEntnahmeOrt(), newProbe);
+
+                    // Create ursprungsOrte
+                    List<Ortszuordnung> uOrte = new ArrayList<>();
+                    for (int i = 0; i < object.getUrsprungsOrte().size(); i++) {
+                        Ortszuordnung tmp = createUrsprungsOrt(object.getUrsprungsOrte().get(i), newProbe);
+                        if (tmp != null) {
+                            uOrte.add(tmp);
+                        }
+                    }
+                    // Persist ursprungsOrte
+                    merger.mergeUrsprungsOrte(newProbe.getId(), uOrte);
+                }
             }
 
             // Create messung objects
@@ -646,14 +656,22 @@ public class LafObjectMapper {
 
         // Compare with messung objects in the db
         Messung newMessung = null;
+        boolean oldMessungIsReadonly = false;
         try {
             Identified i = messungIdentifier.find(messung);
             Messung old = (Messung)messungIdentifier.getExisting();
             if (i == Identified.UPDATE) {
-                merger.mergeMessung(old, messung);
-                newMessung = old;
-                if (object.getAttributes().containsKey("BEARBEITUNGSSTATUS")) {
-                    createStatusProtokoll(object.getAttributes().get("BEARBEITUNGSSTATUS"), newMessung, mstId);
+                oldMessungIsReadonly = authorizer.isMessungReadOnly(old.getId());
+                if(!oldMessungIsReadonly) {
+                    merger.mergeMessung(old, messung);
+                    newMessung = old;
+                    if (object.getAttributes().containsKey("BEARBEITUNGSSTATUS")) {
+                        createStatusProtokoll(object.getAttributes().get("BEARBEITUNGSSTATUS"), newMessung, mstId);
+                    }
+                }
+                else {
+                    logger.debug("messung is readonly");
+                    return;
                 }
             }
             else if (i == Identified.REJECT) {
@@ -1398,7 +1416,6 @@ public class LafObjectMapper {
         return Timestamp.from(utc.toInstant());
     }
 
-    /*
     private void logProbe(Probe probe) {
         logger.debug("%PROBE%");
         logger.debug("datenbasis: " + probe.getDatenbasisId());
@@ -1421,8 +1438,9 @@ public class LafObjectMapper {
         logger.debug("sende: " + probe.getSolldatumEnde());
         logger.debug("test: " + probe.getTest());
         logger.debug("umw: " + probe.getUmwId());
+        logger.debug("isOwner: " + probe.isOwner());
+        logger.debug("isReadonly: " + probe.isReadonly());
     }
-*/
 
     private void addProbeAttribute(Entry<String, String> attribute, Probe probe) {
         String key = attribute.getKey();

@@ -22,7 +22,7 @@ import de.intevation.lada.util.data.Strings;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 
-public class MessprogrammAuthorizer implements Authorizer {
+public class MessprogrammAuthorizer extends BaseAuthorizer {
 
     @Inject
     @RepositoryConfig(type=RepositoryType.RO)

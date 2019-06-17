@@ -28,4 +28,9 @@ public interface Authorizer {
         Response data,
         UserInfo userInfo,
         Class<T> clazz);
+
+    public boolean isProbeReadOnly(Integer probeId);
+
+    public boolean isMessungReadOnly(Integer messungsId);
+
 }
