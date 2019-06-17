@@ -227,7 +227,7 @@ public class LafObjectMapper {
             Probe old = (Probe)probeIdentifier.getExisting();
             // Matching probe was found in the db. Update it!
             if(i == Identified.UPDATE) {
-                oldProbeIsReadonly = authorizer.isProbeReadOnly(old.getId());
+                oldProbeIsReadonly = authorizer.isReadOnly(old.getId());
                 if(!oldProbeIsReadonly) {
                     if(merger.merge(old, probe)) {
                         newProbe = old;

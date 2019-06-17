@@ -255,6 +255,11 @@ public class HeaderAuthorization implements Authorization {
         return false;
     }
 
+    public boolean isMessungReadOnly(Integer messungId) {
+        Authorizer a = authorizers.get(Messung.class);
+        return a.isMessungReadOnly(messungId);
+    }
+
     /**
      * Check whether a user is authorized to operate on the given probe.
      *

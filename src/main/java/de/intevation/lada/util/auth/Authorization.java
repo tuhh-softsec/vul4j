@@ -25,4 +25,5 @@ public interface Authorization {
     public <T> boolean isAuthorized(UserInfo userInfo, Object data, Class<T> clazz);
     public <T> boolean isAuthorizedOnNew(UserInfo userInfo, Object data, Class<T> clazz);
     boolean isReadOnly(Integer probeId);
+    boolean isMessungReadOnly(Integer messungId);
 }
