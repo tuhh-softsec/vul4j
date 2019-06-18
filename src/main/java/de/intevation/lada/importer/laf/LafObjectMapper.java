@@ -68,8 +68,8 @@ import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
-import de.intevation.lada.util.auth.Authorizer;
 import de.intevation.lada.util.auth.UserInfo;
+import de.intevation.lada.util.data.MesswertNormalizer;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
@@ -768,6 +768,7 @@ public class LafObjectMapper {
                 }
             }
         }
+        messwerte = MesswertNormalizer.normalizeMesswerte(messwerte, probe.getUmwId(), repository);
         merger.mergeMesswerte(newMessung, messwerte);
         // Check for warnings and errors
         Violation violation = messungValidator.validate(newMessung);
