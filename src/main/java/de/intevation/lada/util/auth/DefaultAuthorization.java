@@ -110,4 +110,9 @@ public class DefaultAuthorization implements Authorization {
         Class<T> clazz) {
         return true;
     }
+
+    @Override
+    public boolean isMessungReadOnly(Integer messungId) {
+        return true;
+    }
 }

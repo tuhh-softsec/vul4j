@@ -77,4 +77,9 @@ public class TestAuthorization implements Authorization {
     public boolean isReadOnly(Integer probeId) {
         return false;
     }
+
+    @Override
+    public boolean isMessungReadOnly(Integer messungId) {
+        return false;
+    }
 }
