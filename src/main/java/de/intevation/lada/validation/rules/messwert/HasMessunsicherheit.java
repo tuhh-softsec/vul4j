@@ -12,9 +12,6 @@ import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
 
-import javax.inject.Inject;
-import org.apache.log4j.Logger;
-
 /**
  * Validation rule for messwert.
  * Validates if the "messfehler" was set correctly.
@@ -24,13 +21,9 @@ import org.apache.log4j.Logger;
 @ValidationRule("Messwert")
 public class HasMessunsicherheit implements Rule {
 
-    @Inject
-    private Logger logger;
-
     @Override
     public Violation execute(Object object) {
         Messwert messwert = (Messwert)object;
-        logger.debug("MesswertId: " + messwert.getId());
         Float unsicherheit = messwert.getMessfehler();
         Double nachweisgrenze = messwert.getNwgZuMesswert();
         Double wert = messwert.getMesswert();
