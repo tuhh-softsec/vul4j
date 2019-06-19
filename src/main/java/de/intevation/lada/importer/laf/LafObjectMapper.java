@@ -228,29 +228,30 @@ public class LafObjectMapper {
             // Matching probe was found in the db. Update it!
             if(i == Identified.UPDATE) {
                 oldProbeIsReadonly = authorizer.isReadOnly(old.getId());
-                if(!oldProbeIsReadonly) {
-                    if(merger.merge(old, probe)) {
-                        newProbe = old;
-                    }
-                    else {
-                        logger.debug("probe is readonly");
-                    }
-                }
+                if(oldProbeIsReadonly) {
+                    newProbe = old;
+                    currentWarnings.add(new ReportItem("probe", old.getExterneProbeId(), 676));
+                } 
                 else {
-                    ReportItem err = new ReportItem();
-                    err.setCode(604);
-                    err.setKey("Database error");
-                    err.setValue("");
-                    currentErrors.add(err);
-                    if (!currentErrors.isEmpty()) {
-                        errors.put(object.getIdentifier(),
-                            new ArrayList<ReportItem>(currentErrors));
+                    if(merger.merge(old, probe)) {
+                        logger.debug("merge probe o.k.");
+                        newProbe = old;
+                    } else {
+                        ReportItem err = new ReportItem();
+                        err.setCode(604);
+                        err.setKey("Database error");
+                        err.setValue("");
+                        currentErrors.add(err);
+                        if (!currentErrors.isEmpty()) {
+                            errors.put(object.getIdentifier(),
+                                new ArrayList<ReportItem>(currentErrors));
+                        }
+                        if (!currentWarnings.isEmpty()) {
+                            warnings.put(object.getIdentifier(),
+                                new ArrayList<ReportItem>(currentWarnings));
+                        }
+                        return;
                     }
-                    if (!currentWarnings.isEmpty()) {
-                        warnings.put(object.getIdentifier(),
-                            new ArrayList<ReportItem>(currentWarnings));
-                    }
-                    return;
                 }
             }
             // Probe was found but some data does not match
@@ -306,6 +307,7 @@ public class LafObjectMapper {
             }
             return;
         }
+        logger.debug("x3");
 
         if (newProbe != null) {
             if(!oldProbeIsReadonly) {
@@ -662,16 +664,15 @@ public class LafObjectMapper {
             Messung old = (Messung)messungIdentifier.getExisting();
             if (i == Identified.UPDATE) {
                 oldMessungIsReadonly = authorizer.isMessungReadOnly(old.getId());
-                if(!oldMessungIsReadonly) {
+                if (oldMessungIsReadonly) {
+                    currentErrors.add(new ReportItem("messung", old.getExterneMessungsId(), 676));
+                    return;
+                } else {
                     merger.mergeMessung(old, messung);
                     newMessung = old;
                     if (object.getAttributes().containsKey("BEARBEITUNGSSTATUS")) {
                         createStatusProtokoll(object.getAttributes().get("BEARBEITUNGSSTATUS"), newMessung, mstId);
                     }
-                }
-                else {
-                    logger.debug("messung is readonly");
-                    return;
                 }
             }
             else if (i == Identified.REJECT) {
@@ -737,12 +738,9 @@ public class LafObjectMapper {
                 else {
                     messwerte.add(tmp);
                     messgroessenListe.add(tmp.getMessgroesseId());
-                    logger.debug("validate MessgroesseId: " + tmp.getMessgroesseId());
                     Violation violation = messwertValidator.validate(tmp);
                     for (Entry<String, List<Integer>> err : violation.getErrors().entrySet()) {
-                        logger.debug("error - key: " + err.getKey() + " " + err.getValue());
                         for (Integer code : err.getValue()) {
-                            logger.debug("error - key: " + err.getKey() +" code: " + code);
                             currentErrors.add(new ReportItem(
                                 "validation",
                                 err.getKey() + "#" +
@@ -753,9 +751,7 @@ public class LafObjectMapper {
                         }
                     }
                     for (Entry<String, List<Integer>> warn : violation.getWarnings().entrySet()) {
-                        logger.debug("warning - key: " + warn.getKey() + " " + warn.getValue());
                         for (Integer code : warn.getValue()) {
-                            logger.debug("warning - key: " + warn.getKey() +" code: " + code);
                             currentWarnings.add(new ReportItem(
                                 "validation",
                                 warn.getKey() + "#" +
