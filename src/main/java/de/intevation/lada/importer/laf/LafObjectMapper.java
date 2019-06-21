@@ -228,9 +228,7 @@ public class LafObjectMapper {
             Probe old = (Probe)probeIdentifier.getExisting();
             // Matching probe was found in the db. Update it!
             if(i == Identified.UPDATE) {
-                logger.debug("update probe");
                 oldProbeIsReadonly = authorizer.isReadOnly(old.getId());
-                logger.debug("oldProbeIsReadonly " + oldProbeIsReadonly);
                 if(oldProbeIsReadonly) {
                     newProbe = old;
                     currentWarnings.add(new ReportItem("probe", old.getExterneProbeId(), 676));
@@ -664,9 +662,7 @@ public class LafObjectMapper {
             Identified i = messungIdentifier.find(messung);
             Messung old = (Messung)messungIdentifier.getExisting();
             if (i == Identified.UPDATE) {
-                logger.debug("update messung");
                 oldMessungIsReadonly = authorizer.isMessungReadOnly(old.getId());
-                logger.debug("oldMessungIsReadonly " + oldMessungIsReadonly);
                 if (oldMessungIsReadonly) {
                     currentErrors.add(new ReportItem("messung", old.getExterneMessungsId(), 676));
                     return;
@@ -1037,7 +1033,6 @@ public class LafObjectMapper {
     private void createStatusProtokoll(String status, Messung messung, String mstId) {
         for (int i = 1; i <= 3; i++) {
             if (status.substring(i-1, i).equals("0")) {
-                logger.debug("no further status setting");
                 // no further status settings
                 return;
             }            
@@ -1063,7 +1058,6 @@ public class LafObjectMapper {
         if (kombi != null && !kombi.isEmpty()) {
             newKombi = kombi.get(0).getId();
         } else {
-            logger.debug("STATUS_" + statusStufe + " ungültig");
             currentWarnings.add(new ReportItem("status#" + statusStufe, statusWert, 675));
             return false;
         }
@@ -1083,7 +1077,6 @@ public class LafObjectMapper {
         errFilter.and("curWert", currentKombi.getStatusWert().getId());
         List<StatusErreichbar> erreichbar = repository.filterPlain(errFilter.getQuery(), Strings.STAMM);
         if (erreichbar.isEmpty()) {
-        logger.debug("STATUS_" + statusStufe + " nicht erreichbar");
             currentWarnings.add(new ReportItem("status#" + statusStufe, statusWert, 675));
             return false;
         }
@@ -1095,13 +1088,11 @@ public class LafObjectMapper {
                 userInfo.getFunktionenForNetzbetreiber(messStelle.getNetzbetreiberId()).contains(2)) ||
             (statusStufe == 3 && 
                 userInfo.getFunktionen().contains(3))) {
-            logger.debug("set STATUS_" + statusStufe + " " + statusWert);
             StatusProtokoll newStatus = new StatusProtokoll();
             newStatus.setDatum(new Timestamp(new Date().getTime()));
             newStatus.setMessungsId(messung.getId());
             newStatus.setMstId(mstId);
             newStatus.setStatusKombi(newKombi);
-            logger.debug("set STATUS_" + statusStufe + " kombi " + newKombi);
             Response r = repository.create(newStatus, Strings.LAND);
             messung.setStatus(newStatus.getId());
             repository.update(messung, Strings.LAND);
@@ -1431,8 +1422,6 @@ public class LafObjectMapper {
         logger.debug("sende: " + probe.getSolldatumEnde());
         logger.debug("test: " + probe.getTest());
         logger.debug("umw: " + probe.getUmwId());
-        logger.debug("isOwner: " + probe.isOwner());
-        logger.debug("isReadonly: " + probe.isReadonly());
     }
 
     private void addProbeAttribute(Entry<String, String> attribute, Probe probe) {
