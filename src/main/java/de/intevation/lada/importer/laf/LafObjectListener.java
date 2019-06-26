@@ -172,18 +172,18 @@ public class LafObjectListener extends LafBaseListener {
         }
         if (!currentErrors.isEmpty()) {
             if (errors.containsKey(currentProbe.getIdentifier())) {
-                errors.get(currentProbe.getIdentifier()).addAll(currentErrors);
+                errors.get(currentProbe.getIdentifier()).addAll(new ArrayList<>(currentErrors));
             }
             else {
-                errors.put(currentProbe.getIdentifier(), currentErrors);
+                errors.put(currentProbe.getIdentifier(), new ArrayList<>(currentErrors));
             }
         }
         if (!currentWarnings.isEmpty()) {
             if (warnings.containsKey(currentProbe.getIdentifier())) {
-                warnings.get(currentProbe.getIdentifier()).addAll(currentWarnings);
+                warnings.get(currentProbe.getIdentifier()).addAll(new ArrayList<>(currentWarnings));
             }
             else {
-                warnings.put(currentProbe.getIdentifier(), currentWarnings);
+                warnings.put(currentProbe.getIdentifier(), new ArrayList<>(currentWarnings));
             }
         }
         currentProbe = data.new Probe();
