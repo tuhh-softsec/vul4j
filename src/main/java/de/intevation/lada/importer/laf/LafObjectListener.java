@@ -494,7 +494,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -505,7 +505,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
@@ -526,7 +526,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -536,7 +536,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
@@ -554,7 +554,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -564,7 +564,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
@@ -581,7 +581,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -591,7 +591,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
@@ -608,7 +608,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -618,7 +618,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
@@ -635,7 +635,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -645,7 +645,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
@@ -662,7 +662,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -672,7 +672,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
@@ -689,7 +689,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -699,7 +699,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
@@ -716,7 +716,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -726,7 +726,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
@@ -743,7 +743,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -753,7 +753,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
@@ -770,7 +770,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -780,7 +780,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         if (currentMessung == null) {
@@ -800,7 +800,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -810,7 +810,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String hnr = value.substring(0, 9);
@@ -834,7 +834,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -844,7 +844,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
@@ -861,7 +861,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -871,7 +871,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         if (currentMessung == null) {
@@ -894,7 +894,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -904,7 +904,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
@@ -925,7 +925,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -935,7 +935,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
@@ -953,7 +953,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -963,7 +963,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
@@ -980,7 +980,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -990,7 +990,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
@@ -1007,7 +1007,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1017,7 +1017,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
@@ -1037,7 +1037,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1047,7 +1047,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
@@ -1068,7 +1068,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1078,7 +1078,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
@@ -1096,7 +1096,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         if (ctx.getChildCount() < 4) {
@@ -1109,7 +1109,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(date);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String time = ctx.getChild(2).toString();
@@ -1119,7 +1119,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(time);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), date + ' ' + time);
@@ -1136,7 +1136,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         if (ctx.getChildCount() < 4) {
@@ -1149,7 +1149,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(date);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String time = ctx.getChild(2).toString();
@@ -1159,7 +1159,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(time);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), date + ' ' + time);
@@ -1185,7 +1185,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         if (ctx.getChildCount() < 4) {
@@ -1198,7 +1198,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(date);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String time = ctx.getChild(2).toString();
@@ -1208,7 +1208,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(time);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), date + ' ' + time);
@@ -1225,7 +1225,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         if (ctx.getChildCount() < 4) {
@@ -1238,7 +1238,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(date);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String time = ctx.getChild(2).toString();
@@ -1248,7 +1248,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(time);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), date + ' ' + time);
@@ -1278,7 +1278,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         if (value.equals("")) {
@@ -1302,7 +1302,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1312,7 +1312,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         if (value.equals("")) {
@@ -1333,7 +1333,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1343,7 +1343,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
@@ -1360,7 +1360,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1387,7 +1387,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1397,7 +1397,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
@@ -1414,7 +1414,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         if (ctx.getChildCount() < 4) {
@@ -1427,7 +1427,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(date);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String time = ctx.getChild(2).toString();
@@ -1437,7 +1437,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(time);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), date + ' ' + time);
@@ -1454,7 +1454,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1464,7 +1464,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
@@ -1481,7 +1481,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1491,7 +1491,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
@@ -1508,7 +1508,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1518,7 +1518,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
@@ -1535,7 +1535,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1545,7 +1545,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
@@ -1562,7 +1562,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1572,7 +1572,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
@@ -1591,7 +1591,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1601,7 +1601,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
@@ -1620,7 +1620,7 @@ public class LafObjectListener extends LafBaseListener {
             warn.setKey(ctx.getChild(0).toString());
             warn.setValue("");
             warn.setCode(673);
-            currentWarnings.add(warn);;
+            currentWarnings.add(warn);
             return;
         }
         String value = ctx.getChild(1).toString();
@@ -1630,7 +1630,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
@@ -1659,7 +1659,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
@@ -1688,7 +1688,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
@@ -1717,7 +1717,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
@@ -1741,7 +1741,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(art);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String koord1 = ctx.getChild(2).toString();
@@ -1751,7 +1751,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(koord1);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String koord2 = ctx.getChild(3).toString();
@@ -1761,7 +1761,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(koord2);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentUOrt.put("U_KOORDINATEN_X", koord1);
@@ -1787,7 +1787,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(art);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String koord1 = ctx.getChild(2).toString();
@@ -1797,7 +1797,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(koord1);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String koord2 = ctx.getChild(3).toString();
@@ -1807,7 +1807,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(koord2);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentUOrt.put("U_KOORDINATEN_X", koord1);
@@ -1867,7 +1867,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
@@ -1896,7 +1896,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentUOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
@@ -1928,7 +1928,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
@@ -1961,7 +1961,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
@@ -1994,7 +1994,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
@@ -2027,7 +2027,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
@@ -2060,7 +2060,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
@@ -2090,7 +2090,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
@@ -2117,7 +2117,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(art);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String koord1 = ctx.getChild(2).toString();
@@ -2127,7 +2127,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(koord1);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String koord2 = ctx.getChild(3).toString();
@@ -2137,7 +2137,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(koord2);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentEOrt.put("P_KOORDINATEN_X", koord1);
@@ -2167,7 +2167,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(art);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String koord1 = ctx.getChild(2).toString();
@@ -2177,7 +2177,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(koord1);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String koord2 = ctx.getChild(3).toString();
@@ -2187,7 +2187,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(koord2);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentEOrt.put("P_KOORDINATEN_X", koord1);
@@ -2219,7 +2219,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
@@ -2248,7 +2248,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
@@ -2277,7 +2277,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
@@ -2306,7 +2306,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
@@ -2335,7 +2335,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
@@ -2364,7 +2364,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
@@ -2393,7 +2393,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentEOrt.put(ctx.getChild(0).toString().toUpperCase(), value);
@@ -2422,7 +2422,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), value);
@@ -2444,7 +2444,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(date);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String time = ctx.getChild(2).toString();
@@ -2454,7 +2454,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(time);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         if (currentMessung == null) {
@@ -2484,7 +2484,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         if (currentMessung == null) {
@@ -2514,7 +2514,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         if (currentMessung == null) {
@@ -2544,7 +2544,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         if (currentMessung == null) {
@@ -2574,7 +2574,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         if (currentMessung == null) {
@@ -2604,7 +2604,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         if (currentMessung == null) {
@@ -2634,7 +2634,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         if (currentMessung == null) {
@@ -2660,7 +2660,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String wert = ctx.getChild(2).toString();
@@ -2670,7 +2670,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String einheit = ctx.getChild(3).toString();
@@ -2680,7 +2680,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         Map<String, String> zusatzwert = new HashMap<String, String>();
@@ -2692,7 +2692,7 @@ public class LafObjectListener extends LafBaseListener {
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
                 err.setCode(670);
-                currentErrors.add(err);;
+                currentErrors.add(err);
                 return;
             }
             zusatzwert.put("MESSFEHLER", fehler);
@@ -2720,7 +2720,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String wert = ctx.getChild(2).toString();
@@ -2730,7 +2730,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String einheit = ctx.getChild(3).toString();
@@ -2740,7 +2740,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         Map<String, String> zusatzwert = new HashMap<String, String>();
@@ -2752,7 +2752,7 @@ public class LafObjectListener extends LafBaseListener {
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
                 err.setCode(670);
-                currentErrors.add(err);;
+                currentErrors.add(err);
                 return;
             }
             zusatzwert.put("MESSFEHLER", fehler);
@@ -2786,7 +2786,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String wert = children.get(2);
@@ -2796,7 +2796,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String einheit = children.get(3);
@@ -2806,7 +2806,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         Map<String, String> messwert = new HashMap<String, String>();
@@ -2819,7 +2819,7 @@ public class LafObjectListener extends LafBaseListener {
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
                 err.setCode(670);
-                currentErrors.add(err);;
+                currentErrors.add(err);
                 return;
             }
             messwert.put("MESSFEHLER", fehler);
@@ -2856,7 +2856,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String wert = children.get(2);
@@ -2866,7 +2866,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String einheit = children.get(3);
@@ -2876,7 +2876,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         Map<String, String> messwert = new HashMap<String, String>();
@@ -2888,7 +2888,7 @@ public class LafObjectListener extends LafBaseListener {
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
                 err.setCode(670);
-                currentErrors.add(err);;
+                currentErrors.add(err);
                 return;
             }
             messwert.put("MESSFEHLER", fehler);
@@ -2925,7 +2925,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String wert = children.get(2);
@@ -2935,7 +2935,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String einheit = children.get(3);
@@ -2945,7 +2945,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         Map<String, String> messwert = new HashMap<String, String>();
@@ -2957,7 +2957,7 @@ public class LafObjectListener extends LafBaseListener {
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
                 err.setCode(670);
-                currentErrors.add(err);;
+                currentErrors.add(err);
                 return;
             }
             messwert.put("MESSFEHLER", fehler);
@@ -2995,7 +2995,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String wert = children.get(2);
@@ -3005,7 +3005,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String einheit = children.get(3);
@@ -3015,7 +3015,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         Map<String, String> messwert = new HashMap<String, String>();
@@ -3028,7 +3028,7 @@ public class LafObjectListener extends LafBaseListener {
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
                 err.setCode(670);
-                currentErrors.add(err);;
+                currentErrors.add(err);
                 return;
             }
             messwert.put("MESSFEHLER", fehler);
@@ -3066,7 +3066,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String wert = children.get(2);
@@ -3076,7 +3076,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String einheit = children.get(3);
@@ -3086,7 +3086,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         Map<String, String> messwert = new HashMap<String, String>();
@@ -3098,7 +3098,7 @@ public class LafObjectListener extends LafBaseListener {
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
                 err.setCode(670);
-                currentErrors.add(err);;
+                currentErrors.add(err);
                 return;
             }
             messwert.put("MESSFEHLER", fehler);
@@ -3111,7 +3111,7 @@ public class LafObjectListener extends LafBaseListener {
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(nwg);
                 err.setCode(670);
-                currentErrors.add(err);;
+                currentErrors.add(err);
                 return;
             }
             messwert.put("NWG", nwg);
@@ -3147,7 +3147,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String wert = children.get(2);
@@ -3157,7 +3157,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String einheit = children.get(3);
@@ -3167,7 +3167,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         Map<String, String> messwert = new HashMap<String, String>();
@@ -3179,7 +3179,7 @@ public class LafObjectListener extends LafBaseListener {
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
                 err.setCode(670);
-                currentErrors.add(err);;
+                currentErrors.add(err);
                 return;
             }
             messwert.put("MESSFEHLER", fehler);
@@ -3192,7 +3192,7 @@ public class LafObjectListener extends LafBaseListener {
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(nwg);
                 err.setCode(670);
-                currentErrors.add(err);;
+                currentErrors.add(err);
                 return;
             }
             messwert.put("NWG", nwg);
@@ -3229,7 +3229,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String wert = children.get(2);
@@ -3239,7 +3239,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String einheit = children.get(3);
@@ -3249,7 +3249,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         Map<String, String> messwert = new HashMap<String, String>();
@@ -3261,7 +3261,7 @@ public class LafObjectListener extends LafBaseListener {
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
                 err.setCode(670);
-                currentErrors.add(err);;
+                currentErrors.add(err);
                 return;
             }
             messwert.put("MESSFEHLER", fehler);
@@ -3274,7 +3274,7 @@ public class LafObjectListener extends LafBaseListener {
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(nwg);
                 err.setCode(670);
-                currentErrors.add(err);;
+                currentErrors.add(err);
                 return;
             }
             messwert.put("NWG", nwg);
@@ -3312,7 +3312,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(groesse);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String wert = children.get(2);
@@ -3322,7 +3322,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(wert);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String einheit = children.get(3);
@@ -3332,7 +3332,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(einheit);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         Map<String, String> messwert = new HashMap<String, String>();
@@ -3344,7 +3344,7 @@ public class LafObjectListener extends LafBaseListener {
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(fehler);
                 err.setCode(670);
-                currentErrors.add(err);;
+                currentErrors.add(err);
                 return;
             }
             messwert.put("MESSFEHLER", fehler);
@@ -3357,7 +3357,7 @@ public class LafObjectListener extends LafBaseListener {
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(nwg);
                 err.setCode(670);
-                currentErrors.add(err);;
+                currentErrors.add(err);
                 return;
             }
             messwert.put("NWG", nwg);
@@ -3370,7 +3370,7 @@ public class LafObjectListener extends LafBaseListener {
                 err.setKey(ctx.getChild(0).toString());
                 err.setValue(gw);
                 err.setCode(670);
-                currentErrors.add(err);;
+                currentErrors.add(err);
                 return;
             }
             messwert.put("GRENZWERT", gw);
@@ -3402,7 +3402,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(mst);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String date = ctx.getChild(2).toString();
@@ -3412,7 +3412,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(date);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String time = ctx.getChild(3).toString();
@@ -3422,7 +3422,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(time);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String text = ctx.getChild(4).toString();
@@ -3432,7 +3432,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(text);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         Map<String, String> kommentar = new HashMap<String, String>();
@@ -3467,7 +3467,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(text);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         Map<String, String> kommentar = new HashMap<String, String>();
@@ -3496,7 +3496,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(mst);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String date = ctx.getChild(2).toString();
@@ -3506,7 +3506,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(date);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String time = ctx.getChild(3).toString();
@@ -3516,7 +3516,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(time);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         String text = ctx.getChild(4).toString();
@@ -3526,7 +3526,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(text);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         Map<String, String> kommentar = new HashMap<String, String>();
@@ -3558,7 +3558,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setKey(ctx.getChild(0).toString());
             err.setValue(text);
             err.setCode(670);
-            currentErrors.add(err);;
+            currentErrors.add(err);
             return;
         }
         Map<String, String> kommentar = new HashMap<String, String>();
