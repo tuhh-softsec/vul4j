@@ -102,7 +102,6 @@ public class LafImportService {
         importer.doImport(content, userInfo, config);
         Map<String, Object> respData = new HashMap<String,Object>();
         if (!importer.getErrors().isEmpty()) {
-            logger.debug("errors");
             respData.put("errors", importer.getErrors());
         }
         if (!importer.getWarnings().isEmpty()) {

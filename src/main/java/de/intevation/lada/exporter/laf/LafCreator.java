@@ -373,10 +373,10 @@ implements Creator
         else if ("U_".equals(typePrefix) && sOrte.get(0).getOzId() != null) {
             laf += lafLine(typePrefix + "ORTS_ZUSATZCODE", sOrte.get(0).getOzId(), CN);
         } 
-        if (sOrte.get(0).getHoeheUeberNn() != null) {
-            laf += lafLine(typePrefix + "HOEHE_NN",
-                String.format("%f", sOrte.get(0).getHoeheUeberNn()));
-        }
+//        if (sOrte.get(0).getHoeheUeberNn() != null) {
+//            laf += lafLine(typePrefix + "HOEHE_NN",
+//                String.format("%f", sOrte.get(0).getHoeheUeberNn()));
+//        }
         return laf;
     }
 
@@ -440,6 +440,7 @@ implements Creator
             laf += m.getMmtId() == null ?
                 "" : lafLine("MESSMETHODE_S", m.getMmtId(), CN);
             laf += lafLine("ERFASSUNG_ABGESCHLOSSEN", (m.getFertig() ? "1" : "0"));
+//            laf += lafLine("PEP_FLAG", (m.getGeplant() ? "1" : "0"));
             laf += lafLine("BEARBEITUNGSSTATUS", writeStatus(m));
             if (this.userInfo != null &&
                 authorization.isAuthorized(this.userInfo, m, Messung.class)

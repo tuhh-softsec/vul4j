@@ -60,6 +60,7 @@ import de.intevation.lada.model.stammdaten.Probenart;
 import de.intevation.lada.model.stammdaten.Probenehmer;
 import de.intevation.lada.model.stammdaten.ReiProgpunktGruppe;
 import de.intevation.lada.model.stammdaten.Staat;
+import de.intevation.lada.model.stammdaten.StatusErreichbar;
 import de.intevation.lada.model.stammdaten.StatusKombi;
 import de.intevation.lada.model.stammdaten.Umwelt;
 import de.intevation.lada.model.stammdaten.Verwaltungseinheit;
@@ -68,8 +69,8 @@ import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
-import de.intevation.lada.util.auth.Authorizer;
 import de.intevation.lada.util.auth.UserInfo;
+import de.intevation.lada.util.data.MesswertNormalizer;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
@@ -228,29 +229,29 @@ public class LafObjectMapper {
             // Matching probe was found in the db. Update it!
             if(i == Identified.UPDATE) {
                 oldProbeIsReadonly = authorizer.isReadOnly(old.getId());
-                if(!oldProbeIsReadonly) {
+                if(oldProbeIsReadonly) {
+                    newProbe = old;
+                    currentWarnings.add(new ReportItem("probe", old.getExterneProbeId(), 676));
+                } 
+                else {
                     if(merger.merge(old, probe)) {
                         newProbe = old;
+                    } else {
+                        ReportItem err = new ReportItem();
+                        err.setCode(604);
+                        err.setKey("Database error");
+                        err.setValue("");
+                        currentErrors.add(err);
+                        if (!currentErrors.isEmpty()) {
+                            errors.put(object.getIdentifier(),
+                                new ArrayList<ReportItem>(currentErrors));
+                        }
+                        if (!currentWarnings.isEmpty()) {
+                            warnings.put(object.getIdentifier(),
+                                new ArrayList<ReportItem>(currentWarnings));
+                        }
+                        return;
                     }
-                    else {
-                        logger.debug("probe is readonly");
-                    }
-                }
-                else {
-                    ReportItem err = new ReportItem();
-                    err.setCode(604);
-                    err.setKey("Database error");
-                    err.setValue("");
-                    currentErrors.add(err);
-                    if (!currentErrors.isEmpty()) {
-                        errors.put(object.getIdentifier(),
-                            new ArrayList<ReportItem>(currentErrors));
-                    }
-                    if (!currentWarnings.isEmpty()) {
-                        warnings.put(object.getIdentifier(),
-                            new ArrayList<ReportItem>(currentWarnings));
-                    }
-                    return;
                 }
             }
             // Probe was found but some data does not match
@@ -662,16 +663,15 @@ public class LafObjectMapper {
             Messung old = (Messung)messungIdentifier.getExisting();
             if (i == Identified.UPDATE) {
                 oldMessungIsReadonly = authorizer.isMessungReadOnly(old.getId());
-                if(!oldMessungIsReadonly) {
+                if (oldMessungIsReadonly) {
+                    currentErrors.add(new ReportItem("messung", old.getExterneMessungsId(), 676));
+                    return;
+                } else {
                     merger.mergeMessung(old, messung);
                     newMessung = old;
                     if (object.getAttributes().containsKey("BEARBEITUNGSSTATUS")) {
                         createStatusProtokoll(object.getAttributes().get("BEARBEITUNGSSTATUS"), newMessung, mstId);
                     }
-                }
-                else {
-                    logger.debug("messung is readonly");
-                    return;
                 }
             }
             else if (i == Identified.REJECT) {
@@ -737,12 +737,9 @@ public class LafObjectMapper {
                 else {
                     messwerte.add(tmp);
                     messgroessenListe.add(tmp.getMessgroesseId());
-                    logger.debug("validate MessgroesseId: " + tmp.getMessgroesseId());
                     Violation violation = messwertValidator.validate(tmp);
                     for (Entry<String, List<Integer>> err : violation.getErrors().entrySet()) {
-                        logger.debug("error - key: " + err.getKey() + " " + err.getValue());
                         for (Integer code : err.getValue()) {
-                            logger.debug("error - key: " + err.getKey() +" code: " + code);
                             currentErrors.add(new ReportItem(
                                 "validation",
                                 err.getKey() + "#" +
@@ -753,9 +750,7 @@ public class LafObjectMapper {
                         }
                     }
                     for (Entry<String, List<Integer>> warn : violation.getWarnings().entrySet()) {
-                        logger.debug("warning - key: " + warn.getKey() + " " + warn.getValue());
                         for (Integer code : warn.getValue()) {
-                            logger.debug("warning - key: " + warn.getKey() +" code: " + code);
                             currentWarnings.add(new ReportItem(
                                 "validation",
                                 warn.getKey() + "#" +
@@ -768,6 +763,7 @@ public class LafObjectMapper {
                 }
             }
         }
+        messwerte = MesswertNormalizer.normalizeMesswerte(messwerte, probe.getUmwId(), repository);
         merger.mergeMesswerte(newMessung, messwerte);
         // Check for warnings and errors
         Violation violation = messungValidator.validate(newMessung);
@@ -1035,87 +1031,75 @@ public class LafObjectMapper {
     }
 
     private void createStatusProtokoll(String status, Messung messung, String mstId) {
-        int mst = Integer.valueOf(status.substring(0, 1));
-        int land = Integer.valueOf(status.substring(1, 2));
-        int lst = Integer.valueOf(status.substring(2, 3));
-
-        boolean hasMst = false;
-        boolean hasLand = false;
-
-        StatusProtokoll last = null;
-        if (userInfo.getFunktionenForMst(mstId).contains(1)) {
-            QueryBuilder<StatusKombi> builder =
-                new QueryBuilder<StatusKombi>(
-                    repository.entityManager(Strings.STAMM),
-                    StatusKombi.class);
-            builder.and("statusWert", mst);
-            builder.and("statusStufe", 1);
-            List<StatusKombi> kombi =
-                (List<StatusKombi>)repository.filterPlain(
-                    builder.getQuery(),
-                    Strings.STAMM);
-            if (kombi != null && !kombi.isEmpty()) {
-                StatusProtokoll statusMst = new StatusProtokoll();
-                statusMst.setDatum(new Timestamp(new Date().getTime()));
-                statusMst.setMessungsId(messung.getId());
-                statusMst.setMstId(mstId);
-                statusMst.setStatusKombi(kombi.get(0).getId());
-                Response r = repository.create(statusMst, Strings.LAND);
-                last = (StatusProtokoll)r.getData();
+        for (int i = 1; i <= 3; i++) {
+            if (status.substring(i-1, i).equals("0")) {
+                // no further status settings
+                return;
+            }            
+            else if (!addStatusProtokollEntry(i, Integer.valueOf(status.substring(i-1, i)), messung, mstId)) {
+                return;
             }
-            hasMst = true;
         }
+    }
+
+    private boolean addStatusProtokollEntry(int statusStufe, int statusWert, Messung messung, String mstId) {
+        // validation check of new status entries
+        int newKombi = 0;
+        QueryBuilder<StatusKombi> builder =
+            new QueryBuilder<StatusKombi>(
+                repository.entityManager(Strings.STAMM),
+                StatusKombi.class);
+        builder.and("statusWert", statusWert);
+        builder.and("statusStufe", statusStufe);
+        List<StatusKombi> kombi =
+            (List<StatusKombi>)repository.filterPlain(
+                builder.getQuery(),
+                Strings.STAMM);
+        if (kombi != null && !kombi.isEmpty()) {
+            newKombi = kombi.get(0).getId();
+        } else {
+            currentWarnings.add(new ReportItem("status#" + statusStufe, statusWert, 675));
+            return false;
+        }
+        // get current status kombi
+        StatusProtokoll currentStatus = repository.getByIdPlain(
+            StatusProtokoll.class, messung.getStatus(), Strings.LAND);
+        StatusKombi currentKombi = repository.getByIdPlain(
+            StatusKombi.class, currentStatus.getStatusKombi(), Strings.STAMM);
+        // check if erreichbar
+        QueryBuilder<StatusErreichbar> errFilter =
+            new QueryBuilder<StatusErreichbar>(
+                repository.entityManager(Strings.STAMM),
+                StatusErreichbar.class);
+        errFilter.and("stufeId", statusStufe);
+        errFilter.and("wertId", statusWert);
+        errFilter.and("curStufe", currentKombi.getStatusStufe().getId());
+        errFilter.and("curWert", currentKombi.getStatusWert().getId());
+        List<StatusErreichbar> erreichbar = repository.filterPlain(errFilter.getQuery(), Strings.STAMM);
+        if (erreichbar.isEmpty()) {
+            currentWarnings.add(new ReportItem("status#" + statusStufe, statusWert, 675));
+            return false;
+        }
+        // check auth
         MessStelle messStelle = repository.getByIdPlain(MessStelle.class, mstId, Strings.STAMM);
-        if (userInfo.getNetzbetreiber().contains(messStelle.getNetzbetreiberId()) &&
-            userInfo.getFunktionenForNetzbetreiber(messStelle.getNetzbetreiberId()).contains(2) &&
-            hasMst) {
-            // Set status for stufe land.
-            QueryBuilder<StatusKombi> builder =
-                new QueryBuilder<StatusKombi>(
-                    repository.entityManager(Strings.STAMM),
-                    StatusKombi.class);
-            builder.and("statusWert", land);
-            builder.and("statusStufe", 2);
-            List<StatusKombi> kombi =
-                (List<StatusKombi>)repository.filterPlain(
-                    builder.getQuery(),
-                    Strings.STAMM);
-            if (kombi != null && !kombi.isEmpty()) {
-                StatusProtokoll statusLand = new StatusProtokoll();
-                statusLand.setDatum(new Timestamp(new Date().getTime()));
-                statusLand.setMessungsId(messung.getId());
-                statusLand.setMstId(mstId);
-                statusLand.setStatusKombi(kombi.get(0).getId());
-                Response r = repository.create(statusLand, Strings.LAND);
-                last = (StatusProtokoll)r.getData();
-            }
-        }
-        if (userInfo.getFunktionen().contains(3) &&
-            hasLand) {
-            // Set status for stufe lst.
-            QueryBuilder<StatusKombi> builder =
-                new QueryBuilder<StatusKombi>(
-                    repository.entityManager(Strings.STAMM),
-                    StatusKombi.class);
-            builder.and("statusWert", lst);
-            builder.and("statusStufe", 3);
-            List<StatusKombi> kombi =
-                (List<StatusKombi>)repository.filterPlain(
-                    builder.getQuery(),
-                    Strings.STAMM);
-            if (kombi != null && !kombi.isEmpty()) {
-                StatusProtokoll statusLst = new StatusProtokoll();
-                statusLst.setDatum(new Timestamp(new Date().getTime()));
-                statusLst.setMessungsId(messung.getId());
-                statusLst.setMstId(mstId);
-                statusLst.setStatusKombi(kombi.get(0).getId());
-                Response r = repository.create(statusLst, Strings.LAND);
-                last = (StatusProtokoll)r.getData();
-            }
-        }
-        if (last != null) {
-            messung.setStatus(last.getId());
+        if ((statusStufe == 1 && userInfo.getFunktionenForMst(mstId).contains(1)) ||
+            (statusStufe == 2 && 
+                userInfo.getNetzbetreiber().contains(messStelle.getNetzbetreiberId()) &&
+                userInfo.getFunktionenForNetzbetreiber(messStelle.getNetzbetreiberId()).contains(2)) ||
+            (statusStufe == 3 && 
+                userInfo.getFunktionen().contains(3))) {
+            StatusProtokoll newStatus = new StatusProtokoll();
+            newStatus.setDatum(new Timestamp(new Date().getTime()));
+            newStatus.setMessungsId(messung.getId());
+            newStatus.setMstId(mstId);
+            newStatus.setStatusKombi(newKombi);
+            Response r = repository.create(newStatus, Strings.LAND);
+            messung.setStatus(newStatus.getId());
             repository.update(messung, Strings.LAND);
+            return true;
+        } else {
+            currentWarnings.add(new ReportItem("status#" + statusStufe, statusWert, 699));
+            return false;
         }
     }
 
@@ -1438,8 +1422,6 @@ public class LafObjectMapper {
         logger.debug("sende: " + probe.getSolldatumEnde());
         logger.debug("test: " + probe.getTest());
         logger.debug("umw: " + probe.getUmwId());
-        logger.debug("isOwner: " + probe.isOwner());
-        logger.debug("isReadonly: " + probe.isReadonly());
     }
 
     private void addProbeAttribute(Entry<String, String> attribute, Probe probe) {

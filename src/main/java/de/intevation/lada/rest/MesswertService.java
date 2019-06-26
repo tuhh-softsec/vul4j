@@ -38,6 +38,7 @@ import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
+import de.intevation.lada.util.data.MesswertNormalizer;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
@@ -377,18 +378,15 @@ public class MesswertService {
             Strings.LAND);
         Probe probe = defaultRepo.getByIdPlain(Probe.class, messung.getProbeId(), Strings.LAND);
         Umwelt umwelt = defaultRepo.getByIdPlain(Umwelt.class, probe.getUmwId(), Strings.STAMM);
-        Integer mehIdToConvert = umwelt.getMehId();
-        if (mehIdToConvert == null) {
-            return new Response(false, 699, "No unit found for normalization");
-        }
-
         //Get all Messwert objects to convert
         QueryBuilder<Messwert> messwertBuilder =
                 new QueryBuilder<Messwert>(
                     defaultRepo.entityManager(Strings.LAND),
                     Messwert.class);
         messwertBuilder.and("messungsId", messungIdInt);
-        List<Messwert> messwerte = defaultRepo.filterPlain(messwertBuilder.getQuery(), Strings.LAND);
+        List<Messwert> messwerte = MesswertNormalizer.normalizeMesswerte(
+                defaultRepo.filterPlain(messwertBuilder.getQuery(), Strings.LAND),
+                umwelt.getId(), defaultRepo);
 
         for (Messwert messwert: messwerte) {
             if (!authorization.isAuthorized(
@@ -409,25 +407,6 @@ public class MesswertService {
                 response.setWarnings(violation.getWarnings());
                 return response;
             }
-            MessEinheit einheit = defaultRepo.getByIdPlain(MessEinheit.class, messwert.getMehId(), Strings.STAMM);
-
-            //Get the conversion factor
-            QueryBuilder<MassEinheitUmrechnung> builder = new QueryBuilder<>(
-                defaultRepo.entityManager(Strings.STAMM),
-                MassEinheitUmrechnung.class
-            );
-            builder.and("mehIdZu", mehIdToConvert);
-            builder.and("mehVon", einheit);
-            List<MassEinheitUmrechnung> meu = defaultRepo.filterPlain(builder.getQuery(), Strings.STAMM);
-            if (meu.size() == 0) {
-                //No suitable conversion found: continue
-                continue;
-            }
-            Float factor = meu.get(0).getFaktor();
-
-            //Update messwert
-            messwert.setMehId(mehIdToConvert);
-            messwert.setMesswert(messwert.getMesswert() * factor);
             Response response = defaultRepo.update(messwert, Strings.LAND);
             if (!response.getSuccess()) {
                 return response;
