@@ -115,7 +115,7 @@ public class KoordinatenartService {
         String x = object.getString("x");
         String y = object.getString("y");
         KdaUtil transformer = new KdaUtil();
-        String result = transformer.transform(kdaFrom, kdaTo, x, y);
+        String result = transformer.transform(kdaFrom, kdaTo, x, y).toString();
 
         return new Response(true, 200, result);
     }
