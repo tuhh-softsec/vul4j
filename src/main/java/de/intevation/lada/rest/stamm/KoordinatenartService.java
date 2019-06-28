@@ -20,6 +20,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import de.intevation.lada.model.stammdaten.KoordinatenArt;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.KdaUtil;
@@ -115,8 +117,10 @@ public class KoordinatenartService {
         String x = object.getString("x");
         String y = object.getString("y");
         KdaUtil transformer = new KdaUtil();
-        String result = transformer.transform(kdaFrom, kdaTo, x, y).toString();
-
-        return new Response(true, 200, result);
+        ObjectNode result = transformer.transform(kdaFrom, kdaTo, x, y);
+        if (result == null) {
+            return new Response(false, 652, null);
+        }
+        return new Response(true, 200, result.toString());
     }
 }

@@ -66,6 +66,14 @@ public class OrtFactory {
 
         KdaUtil util = new KdaUtil();
         ObjectNode coords = util.transform(kda, 4, xCoord, yCoord);
+        if (coords == null) {
+            ReportItem err = new ReportItem();
+            err.setCode(652);
+            err.setKey("coordinates");
+            err.setValue(ort.getKdaId() + " " + ort.getKoordXExtern() + " " + ort.getKoordYExtern());
+            errors.add(err);
+            return;
+        }
         ort.setGeom(generateGeom(coords.get("x").asDouble(), coords.get("y").asDouble()));
         return;
     }
