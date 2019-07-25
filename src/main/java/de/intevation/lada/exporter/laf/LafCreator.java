@@ -140,16 +140,19 @@ implements Creator
         Response kommentar = repository.filter(kommBuilder.getQuery(), Strings.LAND);
         List<KommentarP> kommentare = (List<KommentarP>)kommentar.getData();
 
-        QueryBuilder<Probenart> builder =
-            new QueryBuilder<Probenart>(
-                repository.entityManager(Strings.STAMM),
-                Probenart.class);
-        builder.and("id", probe.getProbenartId());
-        List<Probenart> probenarten =
-            (List<Probenart>)repository.filter(
-                builder.getQuery(),
-                Strings.STAMM).getData();
-        String probenart = probenarten.get(0).getProbenart();
+        String probenart = null;
+        if (probe.getProbenartId() != null) {
+            QueryBuilder<Probenart> builder =
+                new QueryBuilder<Probenart>(
+                    repository.entityManager(Strings.STAMM),
+                    Probenart.class);
+            builder.and("id", probe.getProbenartId());
+            List<Probenart> probenarten =
+                (List<Probenart>)repository.filter(
+                    builder.getQuery(),
+                    Strings.STAMM).getData();
+            probenart = probenarten.get(0).getProbenart();
+        } 
 
         MessStelle messstelle =
             repository.getByIdPlain(MessStelle.class, probe.getMstId(), Strings.STAMM);
@@ -162,6 +165,7 @@ implements Creator
         List<ZusatzWert> zusatzwerte = (List<ZusatzWert>)zusatz.getData();
 
         String laf = "";
+        laf += lafLine("PROBE_ID", probe.getExterneProbeId(), CN);
         laf += probe.getDatenbasisId() == null ?
             "": lafLine("DATENBASIS_S",
                 String.format("%02d", probe.getDatenbasisId()));
@@ -171,7 +175,6 @@ implements Creator
             "" : lafLine("MESSSTELLE", probe.getMstId(), CN);
         laf += probe.getLaborMstId() == null ?
             "" : lafLine("MESSLABOR", probe.getLaborMstId(), CN);
-        laf += lafLine("PROBE_ID", probe.getExterneProbeId(), CN);
         laf += probe.getHauptprobenNr() == null ?
             "" : lafLine("HAUPTPROBENNUMMER", probe.getHauptprobenNr(), CN);
         if (probe.getBaId() != null && probe.getDatenbasisId() != null) {
