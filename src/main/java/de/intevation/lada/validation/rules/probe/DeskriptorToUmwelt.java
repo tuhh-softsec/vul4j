@@ -25,6 +25,8 @@ import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
 
+import org.apache.log4j.Logger;
+
 /**
  * Validation rule for probe.
  * Validates if the umwelt id fits the deskriptor string.
@@ -33,6 +35,9 @@ import de.intevation.lada.validation.rules.Rule;
  */
 @ValidationRule("Probe")
 public class DeskriptorToUmwelt implements Rule {
+
+    @Inject
+    private Logger logger;
 
     @Inject
     @RepositoryConfig(type=RepositoryType.RO)
@@ -94,37 +99,40 @@ public class DeskriptorToUmwelt implements Rule {
                 ndParent = data.get(0).getId();
             }
         }
-        Violation violation = validateUmwelt(mediaIds, probe.getUmwId(), zebs, 0);
+        Violation violation = validateUmwelt(mediaIds, probe.getUmwId());
         return violation;
     }
 
-    private Violation validateUmwelt(List<Integer> media, String umwId, boolean isZebs, int ndx) {
-        QueryBuilder<DeskriptorUmwelt> builder =
-            new QueryBuilder<DeskriptorUmwelt>(
-                repository.entityManager(Strings.STAMM), DeskriptorUmwelt.class);
-
+    private Violation validateUmwelt(List<Integer> media, String umwId) {
         if (media.size() == 0) {
             Violation violation = new Violation();
             violation.addWarning("umwId#" + umwId, 632);
             return violation;
         }
 
-        int size = 1;
-        for (int i = size; i >= 0; i--) {
+        QueryBuilder<DeskriptorUmwelt> builder =
+            new QueryBuilder<DeskriptorUmwelt>(
+                repository.entityManager(Strings.STAMM), DeskriptorUmwelt.class);
+
+//        logger.debug("SELECT FROM UmeltDesk");
+        for (int i = 0; i < media.size(); i++) {
             String field = "s" + (i > 9 ? i : "0" + i);
             QueryBuilder<DeskriptorUmwelt> tmp = builder.getEmptyBuilder();
             if (media.get(i) != -1) {
                 tmp.and(field, media.get(i));
                 tmp.or(field, null);
                 builder.and(tmp);
+//                logger.debug(field + " = "+ media.get(i) +  " OR " + field + " IS NULL");
             }
             else {
                 builder.and(field, null);
+//                logger.debug(field + " IS NULL");
             }
         }
         Response response = repository.filter(builder.getQuery(), Strings.STAMM);
         @SuppressWarnings("unchecked")
         List<DeskriptorUmwelt> data = (List<DeskriptorUmwelt>)response.getData();
+//        logger.debug("data.size(); " + data.size());
         if (data.isEmpty()) {
             Violation violation = new Violation();
             violation.addWarning("umwId#" + umwId, 632);
@@ -133,22 +141,90 @@ public class DeskriptorToUmwelt implements Rule {
 
         boolean unique = isUnique(data);
         if (unique && umwId.equals(data.get(0).getUmwId())) {
+//            logger.debug("umwelt_desk matches unique and umw_id matches");
             return null;
         }
         else if (unique && !umwId.equals(data.get(0).getUmwId())) {
+//            logger.debug("umwelt_desk matches unique and umw_id is wrong");
             Violation violation = new Violation();
             violation.addWarning("umwId#" + umwId, 632);
             return violation;
         }
         else {
-            Violation violation = new Violation();
-            violation.addWarning("umwId#" + umwId, 632);
-
+            logger.debug("umwelt_desk matches not unique");
+/*
             int found = -1;
             int lastMatch = -12;
             for (int i = 0; i < data.size(); i++) {
+                String deskriptoren = " ";
+                Deskriptoren desk;
+                if (data.get(i).getS00() == null) {
+                    deskriptoren = deskriptoren + "00 ";
+                } else {
+                desk = repository.getByIdPlain(
+                        Deskriptoren.class,
+                        Integer.valueOf(Integer.valueOf(data.get(i).getS00())),
+                        Strings.STAMM);
+                    deskriptoren = deskriptoren + String.format("%02d " , desk.getSn());
+                }
+                if (data.get(i).getS01() == null) {
+                    deskriptoren = deskriptoren + "00 ";
+                } else {
+                    desk = repository.getByIdPlain(
+                        Deskriptoren.class,
+                        Integer.valueOf(Integer.valueOf(data.get(i).getS01())),
+                        Strings.STAMM);
+                    deskriptoren = deskriptoren + String.format("%02d " , desk.getSn());
+                }
+                if (data.get(i).getS02() == null) {
+                    deskriptoren = deskriptoren + "00 ";
+                } else {
+                    desk = repository.getByIdPlain(
+                        Deskriptoren.class,
+                        Integer.valueOf(Integer.valueOf(data.get(i).getS02())),
+                        Strings.STAMM);
+                    deskriptoren = deskriptoren + String.format("%02d " , desk.getSn());
+                }
+                if (data.get(i).getS03() == null) {
+                    deskriptoren = deskriptoren + "00 ";
+                } else {
+                    desk = repository.getByIdPlain(
+                        Deskriptoren.class,
+                        Integer.valueOf(Integer.valueOf(data.get(i).getS03())),
+                        Strings.STAMM);
+                    deskriptoren = deskriptoren + String.format("%02d " , desk.getSn());
+                }
+                if (data.get(i).getS04() == null) {
+                    deskriptoren = deskriptoren + "00 ";
+                } else {
+                    desk = repository.getByIdPlain(
+                        Deskriptoren.class,
+                        Integer.valueOf(Integer.valueOf(data.get(i).getS04())),
+                        Strings.STAMM);
+                    deskriptoren = deskriptoren + String.format("%02d " , desk.getSn());
+                }
+                if (data.get(i).getS05() == null) {
+                    deskriptoren = deskriptoren + "00 ";
+                } else {
+                    desk = repository.getByIdPlain(
+                        Deskriptoren.class,
+                        Integer.valueOf(Integer.valueOf(data.get(i).getS05())),
+                        Strings.STAMM);
+                    deskriptoren = deskriptoren + String.format("%02d " , desk.getSn());
+                }
+                if (data.get(i).getS06() == null) {
+                    deskriptoren = deskriptoren + "00 ";
+                } else {
+                    desk = repository.getByIdPlain(
+                        Deskriptoren.class,
+                        Integer.valueOf(Integer.valueOf(data.get(i).getS06())),
+                        Strings.STAMM);
+                    deskriptoren = deskriptoren + String.format("%02d " , desk.getSn());
+                }
+                logger.debug("umw_desk: " + String.format("%02d ",i) + data.get(i).getUmwId() + deskriptoren);
+
                 int matches = -12;
-                for (int j = size; j < 12; j++) {
+                for (int j = 0; j < 12; j++) {
                     switch(j) {
                         case 0: if (media.get(0).equals(data.get(i).getS00()) ||
                                     media.get(0).equals(-1) && data.get(i).getS00() == null
@@ -268,6 +344,9 @@ public class DeskriptorToUmwelt implements Rule {
             if (found >= 0 && data.get(found).getUmwId().equals(umwId)) {
                 return null;
             }
+  */
+            Violation violation = new Violation();
+            violation.addWarning("umwId#" + umwId, 632);
             return violation;
         }
     }
