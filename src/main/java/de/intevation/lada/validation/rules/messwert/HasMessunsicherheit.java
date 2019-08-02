@@ -34,7 +34,7 @@ public class HasMessunsicherheit implements Rule {
         }
         else if (messwert.getMesswertNwg() != null && unsicherheit != null) {
             Violation violation = new Violation();
-            violation.addError("messfehler", 635);
+            violation.addWarning("messfehler", 635);
             return violation;
         }
         return null;

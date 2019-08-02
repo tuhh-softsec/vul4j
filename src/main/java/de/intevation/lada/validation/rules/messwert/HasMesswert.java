@@ -28,7 +28,7 @@ public class HasMesswert implements Rule {
         Double wert = messwert.getMesswert();
         Violation violation = new Violation();
         if (messwertNwg == null && wert == null) {
-            violation.addError("messwert", 631);
+            violation.addWarning("messwert", 631);
             return violation;
         }
         else if (messwertNwg != null && wert != null) {

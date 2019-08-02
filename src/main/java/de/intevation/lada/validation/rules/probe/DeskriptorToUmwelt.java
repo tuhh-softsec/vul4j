@@ -53,7 +53,7 @@ public class DeskriptorToUmwelt implements Rule {
             return null;
         }
         String[] mediaDesk = probe.getMediaDesk().split(" ");
-        if (mediaDesk.length <= 1) {
+        if (mediaDesk.length <= 1 || "00".equals(mediaDesk[1])) {
             return null;
         }
         List<Integer> mediaIds = new ArrayList<Integer>();
@@ -114,7 +114,7 @@ public class DeskriptorToUmwelt implements Rule {
             new QueryBuilder<DeskriptorUmwelt>(
                 repository.entityManager(Strings.STAMM), DeskriptorUmwelt.class);
 
-//        logger.debug("SELECT FROM UmeltDesk");
+        logger.debug("SELECT FROM UmeltDesk");
         for (int i = 0; i < media.size(); i++) {
             String field = "s" + (i > 9 ? i : "0" + i);
             QueryBuilder<DeskriptorUmwelt> tmp = builder.getEmptyBuilder();
@@ -122,17 +122,14 @@ public class DeskriptorToUmwelt implements Rule {
                 tmp.and(field, media.get(i));
                 tmp.or(field, null);
                 builder.and(tmp);
-//                logger.debug(field + " = "+ media.get(i) +  " OR " + field + " IS NULL");
             }
             else {
                 builder.and(field, null);
-//                logger.debug(field + " IS NULL");
             }
         }
         Response response = repository.filter(builder.getQuery(), Strings.STAMM);
         @SuppressWarnings("unchecked")
         List<DeskriptorUmwelt> data = (List<DeskriptorUmwelt>)response.getData();
-//        logger.debug("data.size(); " + data.size());
         if (data.isEmpty()) {
             Violation violation = new Violation();
             violation.addWarning("umwId#" + umwId, 632);
@@ -141,210 +138,14 @@ public class DeskriptorToUmwelt implements Rule {
 
         boolean unique = isUnique(data);
         if (unique && umwId.equals(data.get(0).getUmwId())) {
-//            logger.debug("umwelt_desk matches unique and umw_id matches");
             return null;
         }
         else if (unique && !umwId.equals(data.get(0).getUmwId())) {
-//            logger.debug("umwelt_desk matches unique and umw_id is wrong");
             Violation violation = new Violation();
             violation.addWarning("umwId#" + umwId, 632);
             return violation;
         }
         else {
-            logger.debug("umwelt_desk matches not unique");
-/*
-            int found = -1;
-            int lastMatch = -12;
-            for (int i = 0; i < data.size(); i++) {
-                String deskriptoren = " ";
-                Deskriptoren desk;
-                if (data.get(i).getS00() == null) {
-                    deskriptoren = deskriptoren + "00 ";
-                } else {
-                desk = repository.getByIdPlain(
-                        Deskriptoren.class,
-                        Integer.valueOf(Integer.valueOf(data.get(i).getS00())),
-                        Strings.STAMM);
-                    deskriptoren = deskriptoren + String.format("%02d " , desk.getSn());
-                }
-                if (data.get(i).getS01() == null) {
-                    deskriptoren = deskriptoren + "00 ";
-                } else {
-                    desk = repository.getByIdPlain(
-                        Deskriptoren.class,
-                        Integer.valueOf(Integer.valueOf(data.get(i).getS01())),
-                        Strings.STAMM);
-                    deskriptoren = deskriptoren + String.format("%02d " , desk.getSn());
-                }
-                if (data.get(i).getS02() == null) {
-                    deskriptoren = deskriptoren + "00 ";
-                } else {
-                    desk = repository.getByIdPlain(
-                        Deskriptoren.class,
-                        Integer.valueOf(Integer.valueOf(data.get(i).getS02())),
-                        Strings.STAMM);
-                    deskriptoren = deskriptoren + String.format("%02d " , desk.getSn());
-                }
-                if (data.get(i).getS03() == null) {
-                    deskriptoren = deskriptoren + "00 ";
-                } else {
-                    desk = repository.getByIdPlain(
-                        Deskriptoren.class,
-                        Integer.valueOf(Integer.valueOf(data.get(i).getS03())),
-                        Strings.STAMM);
-                    deskriptoren = deskriptoren + String.format("%02d " , desk.getSn());
-                }
-                if (data.get(i).getS04() == null) {
-                    deskriptoren = deskriptoren + "00 ";
-                } else {
-                    desk = repository.getByIdPlain(
-                        Deskriptoren.class,
-                        Integer.valueOf(Integer.valueOf(data.get(i).getS04())),
-                        Strings.STAMM);
-                    deskriptoren = deskriptoren + String.format("%02d " , desk.getSn());
-                }
-                if (data.get(i).getS05() == null) {
-                    deskriptoren = deskriptoren + "00 ";
-                } else {
-                    desk = repository.getByIdPlain(
-                        Deskriptoren.class,
-                        Integer.valueOf(Integer.valueOf(data.get(i).getS05())),
-                        Strings.STAMM);
-                    deskriptoren = deskriptoren + String.format("%02d " , desk.getSn());
-                }
-                if (data.get(i).getS06() == null) {
-                    deskriptoren = deskriptoren + "00 ";
-                } else {
-                    desk = repository.getByIdPlain(
-                        Deskriptoren.class,
-                        Integer.valueOf(Integer.valueOf(data.get(i).getS06())),
-                        Strings.STAMM);
-                    deskriptoren = deskriptoren + String.format("%02d " , desk.getSn());
-                }
-                logger.debug("umw_desk: " + String.format("%02d ",i) + data.get(i).getUmwId() + deskriptoren);
-
-                int matches = -12;
-                for (int j = 0; j < 12; j++) {
-                    switch(j) {
-                        case 0: if (media.get(0).equals(data.get(i).getS00()) ||
-                                    media.get(0).equals(-1) && data.get(i).getS00() == null
-                                ) {
-                                    matches += 1;
-                                }
-                                else {
-                                    j = 12; matches = -12;
-                                }
-                                break;
-                        case 1: if (media.get(1).equals(data.get(i).getS01()) ||
-                                    media.get(1).equals(-1) && data.get(i).getS01() == null
-                                ) {
-                                    matches += 1;
-                                }
-                                else {
-                                    j = 12; matches = -12;
-                                }
-                                break;
-                        case 2: if (media.get(2).equals(data.get(i).getS02()) ||
-                                    media.get(2).equals(-1) && data.get(i).getS02() == null
-                                ) {
-                                    matches += 1;
-                                }
-                                else {
-                                    j = 12; matches = -12;
-                                }
-                                break;
-                        case 3: if (media.get(3).equals(data.get(i).getS03()) ||
-                                    media.get(3).equals(-1) && data.get(i).getS03() == null
-                                ) {
-                                    matches += 1;
-                                }
-                                else {
-                                    j = 12; matches = -12;
-                                }
-                                break;
-                        case 4: if (media.get(4).equals(data.get(i).getS04()) ||
-                                    media.get(4).equals(-1) && data.get(i).getS04() == null
-                                ) {
-                                    matches += 1;
-                                }
-                                else {
-                                    j = 12; matches = -12;
-                                }
-                                break;
-                        case 5: if (media.get(5).equals(data.get(i).getS05()) ||
-                                    media.get(5).equals(-1) && data.get(i).getS05() == null
-                                ) {
-                                    matches +=1;
-                                }
-                                else {
-                                    j = 12; matches = -12;
-                                }
-                                break;
-                        case 6: if (media.get(6).equals(data.get(i).getS06()) ||
-                                    media.get(6).equals(-1) && data.get(i).getS06() == null
-                                ) {
-                                    matches += 1;
-                                }
-                                else {
-                                    j = 12; matches = -12;
-                                }
-                                break;
-                        case 7: if (media.get(7).equals(data.get(i).getS07()) ||
-                                    media.get(7).equals(-1) && data.get(i).getS07() == null
-                                ) {
-                                    matches += 1;
-                                }
-                                else {
-                                    j = 12; matches = -12;
-                                }
-                                break;
-                        case 8: if (media.get(8).equals(data.get(i).getS08()) ||
-                                    media.get(8).equals(-1) && data.get(i).getS08() == null
-                                ) {
-                                    matches += 1;
-                                }
-                                else {
-                                    j = 12; matches = -12;
-                                }
-                                break;
-                        case 9: if (media.get(9).equals(data.get(i).getS09()) ||
-                                    media.get(9).equals(-1) && data.get(i).getS09() == null
-                                ) {
-                                    matches += 1;
-                                }
-                                else  {
-                                    j = 12; matches = -12;
-                                }
-                                break;
-                        case 10: if (media.get(10).equals(data.get(i).getS10()) ||
-                                    media.get(10).equals(-1) && data.get(i).getS10() == null
-                                ) {
-                                    matches += 1;
-                                }
-                                else {
-                                    j = 12; matches = -12;
-                                }
-                                break;
-                        case 11: if (media.get(11).equals(data.get(i).getS11()) ||
-                                    media.get(11).equals(-1) && data.get(i).getS11() == null
-                                ) {
-                                    matches += 1;
-                                }
-                                else {
-                                    j = 12; matches = -12;
-                                }
-                                break;
-                    }
-                }
-                    if (matches > lastMatch) {
-                        lastMatch = matches;
-                        found = i;
-                    }
-            }
-            if (found >= 0 && data.get(found).getUmwId().equals(umwId)) {
-                return null;
-            }
-  */
             Violation violation = new Violation();
             violation.addWarning("umwId#" + umwId, 632);
             return violation;
