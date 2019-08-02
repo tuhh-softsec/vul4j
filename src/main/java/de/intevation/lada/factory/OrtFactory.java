@@ -61,8 +61,8 @@ public class OrtFactory {
             return;
         }
         Integer kda = ort.getKdaId();
-        String xCoord = ort.getKoordYExtern();
-        String yCoord = ort.getKoordXExtern();
+        String xCoord = ort.getKoordXExtern();
+        String yCoord = ort.getKoordYExtern();
 
         KdaUtil util = new KdaUtil();
         ObjectNode coords = util.transform(kda, 4, xCoord, yCoord);
