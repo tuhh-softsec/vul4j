@@ -43,6 +43,7 @@ import de.intevation.lada.model.stammdaten.MessprogrammKategorie;
 import de.intevation.lada.model.stammdaten.Ort;
 import de.intevation.lada.model.stammdaten.ProbenZusatz;
 import de.intevation.lada.model.stammdaten.Probenart;
+import de.intevation.lada.model.stammdaten.Probenehmer;
 import de.intevation.lada.model.stammdaten.Staat;
 import de.intevation.lada.model.stammdaten.StatusKombi;
 import de.intevation.lada.model.stammdaten.Umwelt;
@@ -119,10 +120,6 @@ public class JsonExporter implements Exporter {
                 Datenbasis.class,
                 probe.get("datenbasisId").asInt(),
                 Strings.STAMM);
-            MessprogrammKategorie mpl = repository.getByIdPlain(
-                MessprogrammKategorie.class,
-                probe.get("mplId").asInt(),
-                Strings.STAMM);
             Umwelt umw = repository.getByIdPlain(
                 Umwelt.class,
                 probe.get("umwId").asText(),
@@ -131,15 +128,32 @@ public class JsonExporter implements Exporter {
                 art == null ? "" : art.getProbenart());
             probe.put("datenbasis",
                 datenbasis == null ? "" : datenbasis.getDatenbasis());
-            probe.put("mpl", mpl == null ? "" : mpl.getCode());
             probe.put("umw", umw == null ? "" : umw.getUmweltBereich());
-            Betriebsart ba = repository.getByIdPlain(
-                Betriebsart.class,
-                probe.get("baId").asInt(),
-                Strings.STAMM);
-            if (ba != null) {
-                probe.put("messregime", ba.getName());
+            if (probe.get("baId").asInt() != 0) {
+                Betriebsart ba = repository.getByIdPlain(
+                    Betriebsart.class,
+                    probe.get("baId").asInt(),
+                    Strings.STAMM);
+                probe.put("messRegime", ba.getName());
             }
+            if (probe.get("mplId").asInt() != 0) {
+                MessprogrammKategorie mpl = repository.getByIdPlain(
+                    MessprogrammKategorie.class,
+                    probe.get("mplId").asInt(),
+                    Strings.STAMM);
+                probe.put("mplCode", mpl.getCode());
+                probe.put("mpl", mpl.getBezeichnung());
+            }
+            if (probe.get("probeNehmerId").asInt() != 0) {
+                Probenehmer probenehmer = repository.getByIdPlain(
+                    Probenehmer.class,
+                    probe.get("probeNehmerId").asInt(),
+                    Strings.STAMM);
+                probe.put("prnId", probenehmer.getPrnId());
+                probe.put("prnBezeichnung", probenehmer.getBezeichnung());
+                probe.put("prnKurzBezeichnung", probenehmer.getKurzBezeichnung());
+            }
+         
             addMessungen(proben.get(i));
             addKommentare(proben.get(i));
             addZusatzwerte(proben.get(i));
