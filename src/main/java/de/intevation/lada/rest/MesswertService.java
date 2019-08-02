@@ -377,6 +377,9 @@ public class MesswertService {
             messungIdInt,
             Strings.LAND);
         Probe probe = defaultRepo.getByIdPlain(Probe.class, messung.getProbeId(), Strings.LAND);
+        if (probe.getUmwId() == null || probe.getUmwId().equals("")) {
+            return new Response(true, 696, null);
+        }
         Umwelt umwelt = defaultRepo.getByIdPlain(Umwelt.class, probe.getUmwId(), Strings.STAMM);
         //Get all Messwert objects to convert
         QueryBuilder<Messwert> messwertBuilder =
