@@ -25,7 +25,7 @@ import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationRule;
 import de.intevation.lada.validation.rules.Rule;
 
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 
 /**
  * Validation rule for probe.
@@ -36,8 +36,8 @@ import org.apache.log4j.Logger;
 @ValidationRule("Probe")
 public class DeskriptorToUmwelt implements Rule {
 
-    @Inject
-    private Logger logger;
+//    @Inject
+//    private Logger logger;
 
     @Inject
     @RepositoryConfig(type=RepositoryType.RO)
@@ -114,7 +114,6 @@ public class DeskriptorToUmwelt implements Rule {
             new QueryBuilder<DeskriptorUmwelt>(
                 repository.entityManager(Strings.STAMM), DeskriptorUmwelt.class);
 
-        logger.debug("SELECT FROM UmeltDesk");
         for (int i = 0; i < media.size(); i++) {
             String field = "s" + (i > 9 ? i : "0" + i);
             QueryBuilder<DeskriptorUmwelt> tmp = builder.getEmptyBuilder();
