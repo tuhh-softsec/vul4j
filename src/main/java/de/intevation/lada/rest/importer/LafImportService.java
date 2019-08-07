@@ -7,7 +7,14 @@
  */
 package de.intevation.lada.rest.importer;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +29,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.log4j.Appender;
+import org.apache.log4j.FileAppender;
 import org.apache.log4j.Logger;
 
 import de.intevation.lada.importer.ImportConfig;
@@ -90,6 +99,7 @@ public class LafImportService {
         if (mstId == null) {
             return new Response(false, 699, "Missing header for messtelle.");
         }
+        logLAFFile(mstId, content);
         List<ImporterConfig> config = new ArrayList<ImporterConfig>();
         if (!"".equals(mstId)) {
             QueryBuilder<ImporterConfig> builder =
@@ -109,5 +119,40 @@ public class LafImportService {
         }
 
         return new Response(true, 200, respData);
+    }
+
+    /**
+     * Log the imported file for debugging purposes.
+     *
+     * @param mstId Id from Header
+     * @param content The laf file content
+     */
+    private void logLAFFile(String mstId, String content) {
+        DateFormat df = new SimpleDateFormat("yyyyMMddHHmmssS");
+        Date now = new Date();
+        // Create filename for imported laf
+        String fileName = df.format(now) + "-" + mstId + ".laf";
+        // Set default log path as fallback
+        String filePath = "/var/log/wildfly/";
+        // Get logger and appender for import logger
+        Logger lafLogger = Logger.getLogger("import");
+        Appender lafAppender = Logger.getRootLogger().getAppender("laf");
+        // Retrive path set for import logger
+        if (lafAppender instanceof FileAppender) {
+            File appenderFile = new File(((FileAppender)lafAppender).getFile());
+            filePath = appenderFile.getParent();
+        }
+        // Write laf file if debug enabled
+        if (lafLogger.isDebugEnabled()) {
+            lafLogger.debug("X-LADA-MST: " + mstId);
+            lafLogger.debug("Imported file logged to: " + filePath + "/" + fileName);
+            try {
+                FileWriter f = new FileWriter(filePath + "/" + fileName);
+                f.write(content);
+                f.close();
+            } catch (IOException e) {
+                lafLogger.debug("Could not write import file to " + filePath);
+            }
+        }
     }
 }
