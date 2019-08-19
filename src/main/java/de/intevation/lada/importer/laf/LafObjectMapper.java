@@ -1681,7 +1681,8 @@ public class LafObjectMapper {
             }
         }
 
-        if ("REI_PROGRAMMPUNKTGRUPPE".equals(key) && !value.equals("")) {
+        if ("REI_PROGRAMMPUNKTGRUPPE".equals(key) && !value.equals("") ||
+            "REI_PROGRAMMPUNKT".equals(key) && !value.equals("")) {
             QueryBuilder<ReiProgpunktGruppe> builder =
                 new QueryBuilder<ReiProgpunktGruppe>(
                     repository.entityManager("stamm"),
