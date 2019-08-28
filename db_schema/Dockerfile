@@ -34,13 +34,13 @@ RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main" \
 RUN curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-            postgresql-10-postgis-2.5 postgresql-10-postgis-scripts postgis
+            postgresql-11-postgis-2.5 postgresql-11-postgis-scripts postgis
 
 #
 # Set environment variables
 #
-ENV PGCONF /etc/postgresql/10/main/postgresql.conf
-ENV PGDATA /var/lib/postgresql/10/main
+ENV PGCONF /etc/postgresql/11/main/postgresql.conf
+ENV PGDATA /var/lib/postgresql/11/main
 
 #
 # Use user postgres to run the next commands
@@ -52,7 +52,7 @@ USER postgres
 # database are possible.
 #
 RUN echo "host all  all    0.0.0.0/0  md5" >> \
-    /etc/postgresql/10/main/pg_hba.conf
+    /etc/postgresql/11/main/pg_hba.conf
 RUN echo "listen_addresses='*'" >> $PGCONF
 
 #
@@ -78,12 +78,12 @@ WORKDIR /opt/lada_sql/
 # 'FATAL: the database system is starting up'.
 # It's because of the -w
 #
-RUN /usr/lib/postgresql/10/bin/pg_ctl start -wo "--config_file=$PGCONF" && \
+RUN /usr/lib/postgresql/11/bin/pg_ctl start -wo "--config_file=$PGCONF" && \
     /opt/lada_sql/setup-db.sh && \
-    /usr/lib/postgresql/10/bin/pg_ctl stop
+    /usr/lib/postgresql/11/bin/pg_ctl stop
 
 #
 # Set the default command to run when starting the container
 #
-CMD ["/usr/lib/postgresql/10/bin/postgres", \
-     "--config_file=/etc/postgresql/10/main/postgresql.conf"]
+CMD ["/usr/lib/postgresql/11/bin/postgres", \
+     "--config_file=/etc/postgresql/11/main/postgresql.conf"]
