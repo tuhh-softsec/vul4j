@@ -376,6 +376,18 @@ public class MesswertService {
             Messung.class,
             messungIdInt,
             Strings.LAND);
+        if (!authorization.isAuthorized(
+            request,
+            messung,
+            RequestMethod.PUT,
+            Messung.class)
+        ) {
+            return new Response(false, 699, null);
+        }
+        if (authorization.isMessungReadOnly(messungIdInt)) {
+            return new Response(true, 696, null);
+        }
+            
         Probe probe = defaultRepo.getByIdPlain(Probe.class, messung.getProbeId(), Strings.LAND);
         if (probe.getUmwId() == null || probe.getUmwId().equals("")) {
             return new Response(true, 696, null);
