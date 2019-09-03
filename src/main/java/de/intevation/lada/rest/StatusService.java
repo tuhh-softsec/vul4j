@@ -1,4 +1,4 @@
-/* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
+/* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
  * Software engineering by Intevation GmbH
  *
  * This file is Free Software under the GNU GPL (v>=3)
@@ -318,7 +318,10 @@ public class StatusService {
                 return response;
             }
         }
-        if (newKombi.getStatusStufe().getId() == 1) {
+        if (newKombi.getStatusWert().getId() == 1 ||
+            newKombi.getStatusWert().getId() == 2 ||
+            newKombi.getStatusWert().getId() == 3 ||
+            newKombi.getStatusWert().getId() == 7) {
             messung.setFertig(true);
         }
         else if (newKombi.getStatusWert().getId() == 4) {
