@@ -37,6 +37,7 @@ import de.intevation.lada.model.stammdaten.DatensatzErzeuger;
 import de.intevation.lada.model.stammdaten.MessprogrammKategorie;
 import de.intevation.lada.model.stammdaten.Probenehmer;
 import de.intevation.lada.model.stammdaten.ReiProgpunktGruppe;
+import de.intevation.lada.model.stammdaten.Staat;
 import de.intevation.lada.model.stammdaten.StatusKombi;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
@@ -338,8 +339,12 @@ implements Creator
                 Strings.STAMM).getData();
 
         if (sOrte.get(0).getStaatId() != null) {
+            Staat staat = repository.getByIdPlain(
+                Staat.class,
+                sOrte.get(0).getStaatId(),
+                Strings.STAMM);
             laf += lafLine(typePrefix + "HERKUNFTSLAND_S",
-                String.format("%08d", sOrte.get(0).getStaatId()));
+                String.format("%08d", staat.getHklId()));
         }
 
         if (sOrte.get(0).getGemId() != null && 
