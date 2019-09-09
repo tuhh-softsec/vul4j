@@ -70,6 +70,7 @@ public class QueryTools
     ) {
         //A pattern for finding multiselect date filter values
         Pattern multiselectPattern = Pattern.compile("[0-9]*,[0-9]*");
+        Pattern multiselectNumberPattern = Pattern.compile("[0-9.]*,[0-9.]*");
 
         QueryBuilder<BaseQuery> builder = new QueryBuilder<BaseQuery>(
             repository.entityManager(Strings.STAMM),
@@ -134,10 +135,9 @@ public class QueryTools
                 if (filter.getFilterType().getMultiselect() == false) {
                     if (filter.getFilterType().getType().equals("number")) {
                         String[] params = filter.getParameter().split(",");
-                        Matcher matcher = multiselectPattern.matcher(filterValue);
+                        Matcher matcher = multiselectNumberPattern.matcher(filterValue);
                         if (matcher.find()) {
                             String[] values = matcher.group(0).split(",", -1);
-                            //Get filter values and convert to seconds
                             double from = values[0].equals("") ? 0: Double.valueOf(values[0]);
                             double to = values[1].equals("") ? Double.MAX_VALUE: Double.valueOf(values[1]);
                             //Add parameters and values to filter map
