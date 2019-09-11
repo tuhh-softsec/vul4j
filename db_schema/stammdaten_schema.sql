@@ -743,6 +743,9 @@ CREATE TABLE grid_column_values (
     sort_index integer,
     filter_value text,
     filter_active boolean,
+    filter_negate boolean,
+    filter_regex boolean,
+    filter_is_null boolean,
     visible boolean,
     column_index integer,
     width integer

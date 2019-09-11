@@ -37,6 +37,15 @@ public class GridColumnValue implements Serializable {
     @Column(name="filter_value")
     private String filterValue;
 
+    @Column(name="filter_negate")
+    private Boolean filterNegate;
+
+    @Column(name="filter_regex")
+    private Boolean filterRegex;
+
+    @Column(name="filter_is_null")
+    private Boolean filterIsNull;
+
     private String sort;
 
     @Column(name="sort_index")
@@ -172,5 +181,29 @@ public class GridColumnValue implements Serializable {
 
     public void setQueryUserId(int queryUserId) {
         this.queryUserId = queryUserId;
+    }
+
+    public Boolean getFilterNegate() {
+        return filterNegate;
+    }
+
+    public void setFilterNegate(Boolean filterNegate) {
+        this.filterNegate = filterNegate;
+    }
+
+    public Boolean getFilterRegex() {
+        return filterRegex;
+    }
+
+    public void setFilterRegex(Boolean filterRegex) {
+        this.filterRegex = filterRegex;
+    }
+
+    public Boolean getFilterIsNull() {
+        return filterIsNull;
+    }
+
+    public void setFilterIsNull(Boolean filterIsNull) {
+        this.filterIsNull = filterIsNull;
     }
 }

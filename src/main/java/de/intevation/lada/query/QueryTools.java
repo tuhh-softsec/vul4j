@@ -108,7 +108,8 @@ public class QueryTools
             if (customColumn.getFilterActive() != null
                     && customColumn.getFilterActive() == true
                     && customColumn.getFilterValue() != null
-                    && !customColumn.getFilterValue().isEmpty()) {
+                    && !customColumn.getFilterValue().isEmpty()
+                    && !customColumn.getFilterIsNull()) {
 
                 Filter filter = customColumn.getGridColumn().getFilter();
                 String filterValue = customColumn.getFilterValue();
@@ -116,6 +117,9 @@ public class QueryTools
                 String currentFilterParam = filter.getParameter();
                 String filterType = filter.getFilterType().getType();
 
+                if (customColumn.getFilterNegate()) {
+                    currentFilterString = "NOT(" + currentFilterString + ")";
+                }
                 //Check if filter is generic and replace param and value param
                 if (filterType.equals("generictext")) {
                     String genTextParam = ":" + filter.getParameter() + "Param";
@@ -196,6 +200,22 @@ public class QueryTools
                     }
                     filterSql += currentFilterString;
                 }
+            }
+            else if(customColumn.getFilterActive() != null
+                && customColumn.getFilterActive() == true
+                && customColumn.getFilterIsNull()
+            ) {
+                String currentFilterString = customColumn.getGridColumn().getFilter().getSql();
+                currentFilterString = currentFilterString.replaceAll("( IN | LIKE | >= | <= | = | BETWEEN ).*", " IS NULL ");
+                if (customColumn.getFilterNegate()) {
+                    currentFilterString = "NOT(" + currentFilterString + ")";
+                }
+                if (filterSql.isEmpty()) {
+                    filterSql += " WHERE ";
+                } else {
+                    filterSql += " AND ";
+                }
+                filterSql += currentFilterString;
             }
         }
 
