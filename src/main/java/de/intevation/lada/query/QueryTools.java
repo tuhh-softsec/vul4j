@@ -109,7 +109,8 @@ public class QueryTools
                     && customColumn.getFilterActive() == true
                     && customColumn.getFilterValue() != null
                     && !customColumn.getFilterValue().isEmpty()
-                    && !customColumn.getFilterIsNull()) {
+                    && customColumn.getFilterIsNull() != null
+                    && customColumn.getFilterIsNull() == false) {
 
                 Filter filter = customColumn.getGridColumn().getFilter();
                 String filterValue = customColumn.getFilterValue();
@@ -117,7 +118,9 @@ public class QueryTools
                 String currentFilterParam = filter.getParameter();
                 String filterType = filter.getFilterType().getType();
 
-                if (customColumn.getFilterNegate()) {
+                if (customColumn.getFilterNegate() != null
+                    &&customColumn.getFilterNegate() == true
+                ) {
                     currentFilterString = "NOT(" + currentFilterString + ")";
                 }
                 //Check if filter is generic and replace param and value param
@@ -203,10 +206,11 @@ public class QueryTools
             }
             else if(customColumn.getFilterActive() != null
                 && customColumn.getFilterActive() == true
-                && customColumn.getFilterIsNull()
+                && customColumn.getFilterIsNull() != null
+                && customColumn.getFilterIsNull() == true
             ) {
                 String currentFilterString = customColumn.getGridColumn().getFilter().getSql();
-                currentFilterString = currentFilterString.replaceAll("( IN | LIKE | >= | <= | = | BETWEEN ).*", " IS NULL ");
+                currentFilterString = currentFilterString.replaceAll("( IN | LIKE | >= | <= | = | BETWEEN | ~ ).*", " IS NULL ");
                 if (customColumn.getFilterNegate()) {
                     currentFilterString = "NOT(" + currentFilterString + ")";
                 }
