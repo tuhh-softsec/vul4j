@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -52,7 +53,6 @@ public class QueryTools
     @SuppressWarnings("unchecked")
     public List<Map<String, Object>> getResultForQuery(
         MultivaluedMap<String, String> params,
-
         Integer qId
     ) {
         return null;
@@ -136,7 +136,18 @@ public class QueryTools
 
                 //Check if Filter is an in filter
                 if (filterType.equals("generictext") || filterType.equals("text")) {
-                    filterValue += "%";
+                    if (customColumn.getFilterRegex() != null &&
+                        !customColumn.getFilterRegex()
+                    ) {
+                        filterValue += "%";
+                        filterValue = translateToRegex(filterValue);
+                    }
+                    try {
+                        Pattern.compile(filterValue);
+                    }
+                    catch(IllegalArgumentException e) {
+                        return null;
+                    }
                 }
 
                 if (filter.getFilterType().getMultiselect() == false) {
@@ -317,5 +328,13 @@ public class QueryTools
             ret.add(set);
         }
         return ret;
+    }
+
+    private String translateToRegex(String value) {
+        value = value.replaceAll("/\\*", ".*");
+        value = value.replaceAll("/\\?", ".");
+        value = value.replaceAll("%", ".*");
+        value = "^" + value + "$";
+        return value;
     }
 }
