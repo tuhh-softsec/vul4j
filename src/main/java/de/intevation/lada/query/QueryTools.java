@@ -334,6 +334,7 @@ public class QueryTools
         value = value.replaceAll("/\\*", ".*");
         value = value.replaceAll("/\\?", ".");
         value = value.replaceAll("%", ".*");
+        value = value.replaceAll("_", ".");
         value = "^" + value + "$";
         return value;
     }
