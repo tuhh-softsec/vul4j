@@ -114,6 +114,10 @@ public class LafObjectMapper {
     private Validator messwertValidator;
 
     @Inject
+    @ValidationConfig(type="Status")
+    private Validator statusValidator;
+
+    @Inject
     private ObjectMerger merger;
 
     @Inject
@@ -698,9 +702,9 @@ public class LafObjectMapper {
                 newMessung = ((Messung)created.getData());
                 created = repository.getById(Messung.class, newMessung.getId(), Strings.LAND);
                 newMessung = ((Messung)created.getData());
-                if (object.getAttributes().containsKey("BEARBEITUNGSSTATUS")) {
+                /*if (object.getAttributes().containsKey("BEARBEITUNGSSTATUS")) {
                     createStatusProtokoll(object.getAttributes().get("BEARBEITUNGSSTATUS"), newMessung, mstId);
-                }
+                }*/
             }
         }
         catch(InvalidTargetObjectTypeException e) {
@@ -777,6 +781,12 @@ public class LafObjectMapper {
                 currentWarnings.add(new ReportItem("validation", warn.getKey(), code));
             }
         }
+
+	//Validate / Create Status
+	if (object.getAttributes().containsKey("BEARBEITUNGSSTATUS")) {
+          createStatusProtokoll(object.getAttributes().get("BEARBEITUNGSSTATUS"), newMessung, mstId);
+	}
+
     }
 
     private KommentarP createProbeKommentar(Map<String, String> attributes, Probe probe) {
@@ -1040,7 +1050,7 @@ public class LafObjectMapper {
             if (status.substring(i-1, i).equals("0")) {
                 // no further status settings
                 return;
-            }            
+            }
             else if (!addStatusProtokollEntry(i, Integer.valueOf(status.substring(i-1, i)), messung, mstId)) {
                 return;
             }
@@ -1066,7 +1076,7 @@ public class LafObjectMapper {
             currentWarnings.add(new ReportItem("status#" + statusStufe, statusWert, 675));
             return false;
         }
-        // get current status kombi
+       // get current status kombi
         StatusProtokoll currentStatus = repository.getByIdPlain(
             StatusProtokoll.class, messung.getStatus(), Strings.LAND);
         StatusKombi currentKombi = repository.getByIdPlain(
@@ -1084,7 +1094,18 @@ public class LafObjectMapper {
         if (erreichbar.isEmpty()) {
             currentWarnings.add(new ReportItem("status#" + statusStufe, statusWert, 675));
             return false;
-        }
+        } else {
+                Violation status_violation = statusValidator.validate(currentStatus);
+
+               if (status_violation.hasErrors()) {
+                  status_violation.getErrors().forEach((k,v)->{
+                  currentErrors.add(new ReportItem("Status ",k+v, 631));
+                  });
+
+               return false;
+	   }
+	}
+
         // check auth
         MessStelle messStelle = repository.getByIdPlain(MessStelle.class, mstId, Strings.STAMM);
         if ((statusStufe == 1 && userInfo.getFunktionenForMst(mstId).contains(1)) ||
