@@ -108,6 +108,7 @@ public class MessungAuthorizer extends BaseAuthorizer {
             messung.setOwner(false);
             messung.setReadonly(true);
             messung.setStatusEdit(false);
+            messung.setEditStatusStufe(0);
             return messung;
         }
 
@@ -121,6 +122,7 @@ public class MessungAuthorizer extends BaseAuthorizer {
         if (messung.getStatus() == null) {
             messung.setReadonly(false);
             messung.setStatusEdit(false);
+            messung.setEditStatusStufe(0);
         }
         else {
             StatusProtokoll status = repository.getByIdPlain(
@@ -138,7 +140,7 @@ public class MessungAuthorizer extends BaseAuthorizer {
 
             /* Does the user belong to an appropriate 'Leitstelle' to
                edit status? */
-            if (userInfo.getFunktionen().contains(3)) {
+            if (userInfo.getFunktionen().contains(3) && (stufe == 2 || stufe == 3)) {
                 QueryBuilder<AuthLstUmw> lstFilter = new QueryBuilder<AuthLstUmw>(
                     repository.entityManager(Strings.STAMM),
                     AuthLstUmw.class);
@@ -146,11 +148,12 @@ public class MessungAuthorizer extends BaseAuthorizer {
                 List<AuthLstUmw> lsts =
                     repository.filterPlain(lstFilter.getQuery(), Strings.STAMM);
                 for (int i = 0; i < lsts.size(); i++) {
-                    if (lsts.get(i).getUmwId().equals(probe.getUmwId())
-                        && (stufe == 2 || stufe == 3)
-                    ) {
+                    if (lsts.get(i).getUmwId().equals(probe.getUmwId())) {
                         statusEdit = true;
                     }
+                }
+                if (statusEdit) {
+                    messung.setEditStatusStufe(3);
                 }
             }
 
@@ -161,6 +164,7 @@ public class MessungAuthorizer extends BaseAuthorizer {
                 && wert >= 1
             ) {
                 statusEdit = true;
+                messung.setEditStatusStufe(2);
             }
 
             // Has the user the right to edit status for the 'Messstelle'?
@@ -168,6 +172,7 @@ public class MessungAuthorizer extends BaseAuthorizer {
                 && (stufe <= 1 || wert == 4)
             ) {
                 statusEdit = true;
+                messung.setEditStatusStufe(1);
             }
 
             messung.setStatusEdit(statusEdit);

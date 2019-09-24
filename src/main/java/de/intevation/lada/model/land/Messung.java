@@ -67,6 +67,9 @@ public class Messung implements Serializable {
     private Boolean statusEdit;
 
     @Transient
+    private Integer editStatusStufe;
+
+    @Transient
     private Timestamp parentModified;
 
     @Transient
@@ -186,6 +189,20 @@ public class Messung implements Serializable {
      */
     public void setStatusEdit(Boolean statusEdit) {
         this.statusEdit = statusEdit;
+    }
+
+    /**
+     * @return the statusEdit
+     */
+    public Integer getEditStatusStufe() {
+        return editStatusStufe;
+    }
+
+    /**
+     * @param editStatusStufe the editStatusStufe to set
+     */
+    public void setEditStatusStufe(Integer editStatusStufe) {
+        this.editStatusStufe = editStatusStufe;
     }
 
     /**

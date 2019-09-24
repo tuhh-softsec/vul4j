@@ -49,8 +49,6 @@ import de.intevation.lada.validation.Validator;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationConfig;
 
-//import org.apache.log4j.Logger;
-
 /**
  * REST service for Status objects.
  * <p>
@@ -88,9 +86,6 @@ import de.intevation.lada.validation.annotation.ValidationConfig;
 @Path("rest/status")
 @RequestScoped
 public class StatusService {
-
-//    @Inject
-//    private Logger logger;
 
     /**
      * The data repository granting read/write access.
@@ -251,6 +246,7 @@ public class StatusService {
         if (messung.getStatus() == null) {
             // set the first status as default
             status.setStatusKombi(1);
+            return new Response(false, 696, null);
         }
         else {
             StatusProtokoll oldStatus = defaultRepo.getByIdPlain(
@@ -258,28 +254,16 @@ public class StatusService {
             StatusKombi oldKombi = defaultRepo.getByIdPlain(StatusKombi.class, oldStatus.getStatusKombi(), Strings.STAMM);
             StatusKombi newKombi = defaultRepo.getByIdPlain(StatusKombi.class, status.getStatusKombi(), Strings.STAMM);
 
-            // Check if the user is allowed to change to the requested
-            // status_kombi
-            // 1. The old 'status_wert' is 'rückfrage'
-            //    User has 'funktion' 1 for the given mstId
-            if (oldKombi.getStatusWert().getId() == 4) {
-                if (userInfo.getFunktionenForMst(status.getMstId()).contains(1)) {
-                    // Set the new status.
+            // Check if the user is allowed to change to the requested status_kombi
+            if (userInfo.getFunktionenForMst(status.getMstId()).contains(newKombi.getStatusStufe().getId()) &&
+                (oldKombi.getStatusStufe().getId().equals(messung.getEditStatusStufe()) ||
+                 oldKombi.getStatusWert().getId() == 4 && messung.getEditStatusStufe() == 1)) {
+                // 1. The old 'status_wert' is 'rückfrage'
+                //    User has 'funktion' 1 for the given mstId
+                if (oldKombi.getStatusWert().getId() == 4) {
                     return setNewStatus(status, newKombi, messung, request);
                 }
-                else {
-                    // Not allowed.
-                    return new Response(false, 699, null);
-                }
-            }
-            // 2. user wants to edit the status (stufe stays the same.)
-            //    Users mstId equals the mstId of the old status.
-            else if (oldKombi.getStatusStufe().getStufe().equals(
-                        newKombi.getStatusStufe().getStufe()) &&
-                     userInfo.getFunktionenForMst(status.getMstId()).contains(
-                        newKombi.getStatusStufe().getId())
-            ) {
-                // a) user wants to reset the current status
+                // 1. user user wants to reset the current status
                 //    'status wert' == 8
                 if (newKombi.getStatusWert().getId() == 8) {
                     return authorization.filter(
@@ -287,19 +271,16 @@ public class StatusService {
                         resetStatus(status, oldStatus, messung),
                         StatusProtokoll.class);
                 }
-                // b) update the status by the setting the new one.
-                return setNewStatus(status, newKombi, messung, request);
+                // 2. user wants to set new status
+                else {
+                    return setNewStatus(status, newKombi, messung, request);
+                }
             }
-            // 3. user wants to advance to the next 'status_stufe'
-            //    Users 'funktion' equals old 'stufe' + 1
-            else if (userInfo.getFunktionenForMst(status.getMstId()).contains(
-                oldKombi.getStatusStufe().getId() + 1) &&
-                newKombi.getStatusStufe().getId() == oldKombi.getStatusStufe().getId() + 1) {
-                // Set the next status
-                return setNewStatus(status, newKombi, messung, request);
+            else {
+                // Not allowed.
+                return new Response(false, 699, null);
             }
         }
-        return new Response(false, 699, null);
     }
 
     private Response setNewStatus(
