@@ -1508,11 +1508,11 @@ public class LafObjectMapper {
             currentWarnings.add(new ReportItem(key, value.toString(), 672));
         }
 
-        if ("PROBE_ID".equals(key)) {
+        if ("PROBE_ID".equals(key) && !value.toString().equals("")) {
             probe.setExterneProbeId(value);
         }
 
-        if ("HAUPTPROBENNUMMER".equals(key)) {
+        if ("HAUPTPROBENNUMMER".equals(key) && !value.toString().equals("")) {
             probe.setHauptprobenNr(value.toString());
         }
 
