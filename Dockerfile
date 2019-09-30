@@ -30,9 +30,8 @@ ENV WILDFLY_VERSION 16.0.0.Final
 # see wildfly pom.xml for hibernate_spatial_version
 ENV HIBERNATE_SPATIAL_VERSION 5.3.9.Final
 ENV GEOLATTE_GEOM_VERSION 1.3.0
-ENV LADA_VERSION 3.3.14-SNAPSHOT
 
-RUN echo "Building Image using WILDFLY_VERSION=${WILDFLY_VERSION}, HIBERNATE_SPATIAL_VERSION=${HIBERNATE_SPATIAL_VERSION}, GEOLATTE_GEOM_VERSION=${GEOLATTE_GEOM_VERSION}, LADA_VERSION=${LADA_VERSION}."
+RUN echo "Building Image using WILDFLY_VERSION=${WILDFLY_VERSION}, HIBERNATE_SPATIAL_VERSION=${HIBERNATE_SPATIAL_VERSION}, GEOLATTE_GEOM_VERSION=${GEOLATTE_GEOM_VERSION}."
 
 #
 # Set up Wildfly
@@ -95,7 +94,7 @@ RUN rm $JBOSS_HOME/standalone/configuration/standalone_xml_history/current/*
 # Build and deploy LADA-server
 #
 RUN mvn clean compile package && \
-    mv target/lada-server-$LADA_VERSION.war \
+    mv target/lada-server-*.war \
        $JBOSS_HOME/standalone/deployments/lada-server.war && \
     touch $JBOSS_HOME/standalone/deployments/lada-server.war.dodeploy
 
