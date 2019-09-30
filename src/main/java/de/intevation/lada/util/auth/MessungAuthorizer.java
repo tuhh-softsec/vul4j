@@ -89,7 +89,7 @@ public class MessungAuthorizer extends BaseAuthorizer {
     }
 
     /**
-     * Authorize a sinle messung object.
+     * Authorize a single messung object.
      *
      * @param userInfo  The user information.
      * @param messung     The messung object.
@@ -103,81 +103,80 @@ public class MessungAuthorizer extends BaseAuthorizer {
             (Probe)repository.getById(
                 Probe.class, messung.getProbeId(), Strings.LAND).getData();
         MessStelle mst = repository.getByIdPlain(MessStelle.class, probe.getMstId(), Strings.STAMM);
-        if (!userInfo.getNetzbetreiber().contains(mst.getNetzbetreiberId()) &&
-            !userInfo.getFunktionen().contains(3)) {
-            messung.setOwner(false);
-            messung.setReadonly(true);
-            messung.setStatusEdit(false);
-            messung.setEditStatusStufe(0);
-            return messung;
-        }
 
         if (userInfo.belongsTo(probe.getMstId(), probe.getLaborMstId())) {
             messung.setOwner(true);
+            messung.setReadonly(false); 
         }
         else {
             messung.setOwner(false);
+            messung.setReadonly(true); 
         }
 
-        if (messung.getStatus() == null) {
-            messung.setReadonly(false);
-            messung.setStatusEdit(false);
-            messung.setEditStatusStufe(0);
+        messung.setStatusEdit(false);
+        messung.setStatusEditMst(false);
+        messung.setStatusEditLand(false);
+        messung.setStatusEditLst(false);
+
+        if (!userInfo.getFunktionen().contains(1) &&
+            !userInfo.getFunktionen().contains(2) &&
+            !userInfo.getFunktionen().contains(3)) {
+            return messung;
+        }    
+            
+        StatusProtokoll status = repository.getByIdPlain(
+            StatusProtokoll.class,
+            messung.getStatus(),
+            Strings.LAND);
+        StatusKombi kombi = repository.getByIdPlain(
+            StatusKombi.class, status.getStatusKombi(), Strings.STAMM);
+        int stufe = kombi.getStatusStufe().getId();
+        int wert  = kombi.getStatusWert().getId();
+
+        messung.setReadonly(wert != 0 && wert != 4);
+
+        // Has the user the right to edit status for the 'Messstelle'?
+        if (userInfo.getFunktionenForMst(probe.getMstId()).contains(1)
+            && (stufe <= 1 || wert == 4)
+        ) {
+            messung.setStatusEditMst(true);
+            messung.setStatusEdit(true);
         }
-        else {
-            StatusProtokoll status = repository.getByIdPlain(
-                StatusProtokoll.class,
-                messung.getStatus(),
-                Strings.LAND);
-            StatusKombi kombi = repository.getByIdPlain(
-                StatusKombi.class, status.getStatusKombi(), Strings.STAMM);
-            int stufe = kombi.getStatusStufe().getId();
-            int wert  = kombi.getStatusWert().getId();
 
-            messung.setReadonly(wert != 0 && wert != 4);
+        // Has the user the right to edit status for the 'Netzbetreiber'?
+        if (userInfo.getFunktionenForNetzbetreiber(mst.getNetzbetreiberId()).contains(2) &&
+            ((stufe == 1 || wert != 4) && messung.getStatusEditMst() ||
+             stufe == 1 && !messung.getStatusEditMst() ||
+             stufe == 2)) {
+            messung.setStatusEditLand(true);
+            messung.setStatusEdit(true);
+        }
 
-            boolean statusEdit = false;
-
-            /* Does the user belong to an appropriate 'Leitstelle' to
-               edit status? */
-            if (userInfo.getFunktionen().contains(3) && (stufe == 2 || stufe == 3)) {
-                QueryBuilder<AuthLstUmw> lstFilter = new QueryBuilder<AuthLstUmw>(
-                    repository.entityManager(Strings.STAMM),
-                    AuthLstUmw.class);
-                lstFilter.or("mstId", userInfo.getMessstellen());
-                List<AuthLstUmw> lsts =
-                    repository.filterPlain(lstFilter.getQuery(), Strings.STAMM);
-                for (int i = 0; i < lsts.size(); i++) {
-                    if (lsts.get(i).getUmwId().equals(probe.getUmwId())) {
-                        statusEdit = true;
-                    }
+        /* Does the user belong to an appropriate 'Leitstelle' to
+           edit status? */
+        if (userInfo.getFunktionen().contains(3)) {
+            QueryBuilder<AuthLstUmw> lstFilter = new QueryBuilder<AuthLstUmw>(
+                repository.entityManager(Strings.STAMM),
+                AuthLstUmw.class);
+            lstFilter.or("mstId", userInfo.getMessstellen());
+            List<AuthLstUmw> lsts =
+                repository.filterPlain(lstFilter.getQuery(), Strings.STAMM);
+            for (int i = 0; i < lsts.size(); i++) {
+                if (lsts.get(i).getUmwId().equals(probe.getUmwId())) {
+                    messung.setStatusEditLst(true);
                 }
-                if (statusEdit) {
-                    messung.setEditStatusStufe(3);
-                }
             }
-
-            // Has the user the right to edit status for the 'Netzbetreiber'?
-            if (userInfo.getFunktionenForNetzbetreiber(
-                    mst.getNetzbetreiberId()).contains(2)
-                && (stufe == 1 || stufe == 2)
-                && wert >= 1
-            ) {
-                statusEdit = true;
-                messung.setEditStatusStufe(2);
+            if (messung.getStatusEditLst() &&
+                ((stufe == 1 || wert != 4) && messung.getStatusEditMst() && messung.getStatusEditLand() ||
+                 stufe == 2 && !messung.getStatusEditLand() ||
+                 stufe == 3)) {
+                messung.setStatusEdit(true);
             }
-
-            // Has the user the right to edit status for the 'Messstelle'?
-            if (userInfo.getFunktionenForMst(probe.getMstId()).contains(1)
-                && (stufe <= 1 || wert == 4)
-            ) {
-                statusEdit = true;
-                messung.setEditStatusStufe(1);
+            else {
+                messung.setStatusEditLst(false);
             }
-
-            messung.setStatusEdit(statusEdit);
-
         }
+
         return messung;
     }
 

@@ -67,7 +67,13 @@ public class Messung implements Serializable {
     private Boolean statusEdit;
 
     @Transient
-    private Integer editStatusStufe;
+    private Boolean statusEditMst;
+
+    @Transient
+    private Boolean statusEditLand;
+
+    @Transient
+    private Boolean statusEditLst;
 
     @Transient
     private Timestamp parentModified;
@@ -183,6 +189,15 @@ public class Messung implements Serializable {
     public Boolean getStatusEdit() {
         return statusEdit;
     }
+    public Boolean getStatusEditMst() {
+        return statusEditMst;
+    }
+    public Boolean getStatusEditLand() {
+        return statusEditLand;
+    }
+    public Boolean getStatusEditLst() {
+        return statusEditLst;
+    }
 
     /**
      * @param statusEdit the statusEdit to set
@@ -190,19 +205,14 @@ public class Messung implements Serializable {
     public void setStatusEdit(Boolean statusEdit) {
         this.statusEdit = statusEdit;
     }
-
-    /**
-     * @return the statusEdit
-     */
-    public Integer getEditStatusStufe() {
-        return editStatusStufe;
+    public void setStatusEditMst(Boolean statusEditMst) {
+        this.statusEditMst = statusEditMst;
     }
-
-    /**
-     * @param editStatusStufe the editStatusStufe to set
-     */
-    public void setEditStatusStufe(Integer editStatusStufe) {
-        this.editStatusStufe = editStatusStufe;
+    public void setStatusEditLand(Boolean statusEditLand) {
+        this.statusEditLand = statusEditLand;
+    }
+    public void setStatusEditLst(Boolean statusEditLst) {
+        this.statusEditLst = statusEditLst;
     }
 
     /**

@@ -256,13 +256,10 @@ public class StatusService {
 
             // Check if the user is allowed to change to the requested status_kombi
             if (userInfo.getFunktionenForMst(status.getMstId()).contains(newKombi.getStatusStufe().getId()) &&
-                (oldKombi.getStatusStufe().getId().equals(messung.getEditStatusStufe()) ||
-                 oldKombi.getStatusWert().getId() == 4 && messung.getEditStatusStufe() == 1)) {
-                // 1. The old 'status_wert' is 'rückfrage'
-                //    User has 'funktion' 1 for the given mstId
-                if (oldKombi.getStatusWert().getId() == 4) {
-                    return setNewStatus(status, newKombi, messung, request);
-                }
+                   (newKombi.getStatusStufe().getId().equals(1) && messung.getStatusEditMst() ||
+                    newKombi.getStatusStufe().getId().equals(2) && messung.getStatusEditLand() ||
+                    newKombi.getStatusStufe().getId().equals(3) && messung.getStatusEditLst())
+                ) {
                 // 1. user user wants to reset the current status
                 //    'status wert' == 8
                 if (newKombi.getStatusWert().getId() == 8) {
@@ -278,8 +275,7 @@ public class StatusService {
             }
             else {
                 // Not allowed.
-                return new Response(false, 699, null);
-            }
+                return new Response(false, 699, null);            }
         }
     }
 
