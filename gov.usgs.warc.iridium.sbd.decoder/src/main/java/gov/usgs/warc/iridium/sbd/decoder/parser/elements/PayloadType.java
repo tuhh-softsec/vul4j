@@ -87,9 +87,11 @@ public enum PayloadType
 	 */
 	public PayloadDecoder getPayloadDecoder()
 	{
+		final String typeName = toString();
 		return (payload, dataTypes, decodeOrder) ->
 		{
-			throw new UnsupportedOperationException("Not implemented.");
+			throw new UnsupportedOperationException(
+					"Not implemented: " + typeName);
 		};
 	}
 }
