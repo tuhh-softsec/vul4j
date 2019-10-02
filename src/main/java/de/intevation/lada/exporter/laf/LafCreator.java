@@ -339,12 +339,8 @@ implements Creator
                 Strings.STAMM).getData();
 
         if (sOrte.get(0).getStaatId() != null) {
-            Staat staat = repository.getByIdPlain(
-                Staat.class,
-                sOrte.get(0).getStaatId(),
-                Strings.STAMM);
             laf += lafLine(typePrefix + "HERKUNFTSLAND_S",
-                String.format("%08d", staat.getHklId()));
+                String.format("%08d", sOrte.get(0).getStaatId()));
         }
 
         if (sOrte.get(0).getGemId() != null && 

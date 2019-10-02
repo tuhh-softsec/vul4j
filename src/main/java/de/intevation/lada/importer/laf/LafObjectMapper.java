@@ -1325,7 +1325,7 @@ public class LafObjectMapper {
         String hLand = "";
         String staatFilter = "";
         if (attributes.get(type + "HERKUNFTSLAND_S") != null && !attributes.get(type + "HERKUNFTSLAND_S").equals("")) {
-            staatFilter = "hklId";
+            staatFilter = "id";
             key = "HERKUNFTSLAND_S";
             hLand = attributes.get(type + "HERKUNFTSLAND_S");
         }
