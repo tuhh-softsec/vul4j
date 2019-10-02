@@ -41,8 +41,8 @@ COPY stamm.base_query (id, sql) FROM stdin;
 --
 
 COPY stamm.filter (id, sql, parameter, type, name) FROM stdin;
-1	probe.ext_id LIKE :externeProbeId	externeProbeId	0	probe_ext_id
-2	probe.hauptproben_nr LIKE :hauptprobenNr	hauptprobenNr	0	probe_hauptproben_nr
+1	probe.ext_id ~ :externeProbeId	externeProbeId	0	probe_ext_id
+2	probe.hauptproben_nr ~ :hauptprobenNr	hauptprobenNr	0	probe_hauptproben_nr
 3	probe.mst_id IN ( :mstId )	mstId	4	probe_mst_id
 4	probe.umw_id IN ( :umwId )	umwId	4	probe_umw_id
 5	probe.test = cast(:test AS boolean)	test	2	probe_test
@@ -50,25 +50,25 @@ COPY stamm.filter (id, sql, parameter, type, name) FROM stdin;
 7	probe.probeentnahme_ende <= to_timestamp(cast(:timeEnd AS DOUBLE PRECISION))	timeEnd	3	probe_entnahme_beginn
 8	probe.datenbasis_id IN ( :datenbasis )	datenbasis	5	datenbasis
 9	probe.probenart_id IN ( :probenart )	probenart	5	probenart
-10	ort.gem_id LIKE :gemId	gemId	0	ort_gem_id
-11	ort.ort_id LIKE :ortId	ortId	0	ort_ort_id
-12	verwaltungseinheit.bezeichnung LIKE :bezeichnung	bezeichnung	0	verwaltungseinheit_bezeichnung
+10	ort.gem_id ~ :gemId	gemId	0	ort_gem_id
+11	ort.ort_id ~ :ortId	ortId	0	ort_ort_id
+12	verwaltungseinheit.bezeichnung ~ :bezeichnung	bezeichnung	0	verwaltungseinheit_bezeichnung
 13	mess_stelle.netzbetreiber_id IN ( :netzId )	netzId	4	netzbetreiber_id
 14	probe.probeentnahme_beginn BETWEEN to_timestamp(cast(:fromPeBegin AS DOUBLE PRECISION)) AND to_timestamp(cast(:toPeBegin AS DOUBLE PRECISION))	fromPeBegin,toPeBegin	6	Entnahmebeginn von-bis
 15	probe.probeentnahme_ende BETWEEN to_timestamp(cast(:fromPeEnd AS DOUBLE PRECISION)) AND to_timestamp(cast(:toPeEnd AS DOUBLE PRECISION))	fromPeEnd,toPeEnd	6	Entnahmeende von-bis
 16	probe.letzte_aenderung BETWEEN to_timestamp(cast(probeLetzteAenderungFrom AS DOBULE PRECISION)) AND to_timestamp(cast(probeLetzteAenderungTo AS DOUBLE PRECISION))	probeLetzteAenderungFrom,probeLetzteAenderungTo	3	Letzte Aenderung von-bis
 17	probe.id = cast(:probeId AS INTEGER)	probeId	0	ProbeID
-18	:genTextParam LIKE :genTextValue	genText	7	generic_text_filter
+18	:genTextParam ~ :genTextValue	genText	7	generic_text_filter
 19	status_stufe.id IN :statusStufe	statusStufe	5	statusStufe_filter
 20	probe.solldatum_beginn BETWEEN to_timestamp(cast(:fromSollBegin AS DOUBLE PRECISION)) AND to_timestamp(cast(:toSollBegin AS DOUBLE PRECISION))	fromSollBegin,toSollBegin	6	Sollbeginn von-bis
 21	probe.solldatum_ende BETWEEN to_timestamp(cast(:fromSollEnde AS DOUBLE PRECISION)) AND to_timestamp(cast(:toSollEnde AS DOUBLE PRECISION))	fromSollEnde,toSollEnde	6	Sollend von-bis
-22	messung.nebenproben_nr LIKE :nebenproben_nr	nebenproben_nr	0	messung_nebenproben_nr
+22	messung.nebenproben_nr ~ :nebenproben_nr	nebenproben_nr	0	messung_nebenproben_nr
 23	ort.netzbetreiber_id IN ( :netzId )	netzId	4	netzbetreiber_id
 24	probenehmer.netzbetreiber_id IN ( :netzId )	netzId	4	netzbetreiber_id
 25	datensatz_erzeuger.netzbetreiber_id IN ( :netzId )	netzId	4	netzbetreiber_id
 26	messprogramm_kategorie.netzbetreiber_id IN ( :netzId )	netzId	4	netzbetreiber_id
 27	(messprogramm.mst_id IN ( :mstId ) OR messprogramm.labor_mst_id IN ( :mstId ))	mstId	4	messprogramm_mst_id
-28	umwelt.umwelt_bereich LIKE ( :umwelt_filter )	umwelt_filter	0	Umweltbereich
+28	umwelt.umwelt_bereich ~ ( :umwelt_filter )	umwelt_filter	0	Umweltbereich
 29	probe.labor_mst_id IN ( :mlaborId )	mlaborId	4	probe_mlabor_id
 30	kta_gruppe.kta_gruppe LIKE ( :anlage )	anlage	4	anlage
 31	rei_progpunkt_gruppe.rei_prog_punkt_gruppe LIKE ( :reiprogpg )	reiprogpg	4	reiprogpg
@@ -81,7 +81,7 @@ COPY stamm.filter (id, sql, parameter, type, name) FROM stdin;
 38	kta_gruppe.id IN ( :anlage )	anlage	5	kta_gruppe
 39	rei_progpunkt_gruppe.id IN ( :reiproggrp )	reiproggrp	5	rei_prog_grp
 40	messprogramm.test = cast(:test AS boolean)	test	2	mpr_test
-41	probenehmer.prn_id LIKE :prnId	prnId	0	probenehmer_prnId
+41	probenehmer.prn_id ~ :prnId	prnId	0	probenehmer_prnId
 42	messprogramm_kategorie.id IN ( :mplcode )	mplcode	5	mplcode
 43	messung.geplant= cast(:geplant AS boolean)	geplant	2	geplant
 44	lada_messwert.messgroesse_id IN ( :messgroesseId )	messgroesseId	5	messgroesse
