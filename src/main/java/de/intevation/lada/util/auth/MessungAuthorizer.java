@@ -134,10 +134,13 @@ public class MessungAuthorizer extends BaseAuthorizer {
         int wert  = kombi.getStatusWert().getId();
 
         messung.setReadonly(wert != 0 && wert != 4);
+        if ((stufe == 1 && wert == 00) || wert == 4) {
+            stufe = 0;
+        }
 
         // Has the user the right to edit status for the 'Messstelle'?
         if (userInfo.getFunktionenForMst(probe.getMstId()).contains(1)
-            && (stufe <= 1 || wert == 4)
+            && (stufe == 0 || stufe == 1)
         ) {
             messung.setStatusEditMst(true);
             messung.setStatusEdit(true);
@@ -145,16 +148,22 @@ public class MessungAuthorizer extends BaseAuthorizer {
 
         // Has the user the right to edit status for the 'Netzbetreiber'?
         if (userInfo.getFunktionenForNetzbetreiber(mst.getNetzbetreiberId()).contains(2) &&
-            ((stufe == 1 || wert != 4) && messung.getStatusEditMst() ||
-             stufe == 1 && !messung.getStatusEditMst() ||
-             stufe == 2)) {
+            (stufe == 0 && messung.getStatusEditMst() ||
+             stufe == 1 ||
+             stufe == 2)
+            ) {
             messung.setStatusEditLand(true);
             messung.setStatusEdit(true);
         }
 
         /* Does the user belong to an appropriate 'Leitstelle' to
            edit status? */
-        if (userInfo.getFunktionen().contains(3)) {
+        if (userInfo.getFunktionen().contains(3) &&
+            (stufe == 0 && messung.getStatusEditMst() && messung.getStatusEditLand() ||
+             stufe == 1 && messung.getStatusEditLand() ||
+             stufe == 2 ||
+             stufe == 3)
+           ) {
             QueryBuilder<AuthLstUmw> lstFilter = new QueryBuilder<AuthLstUmw>(
                 repository.entityManager(Strings.STAMM),
                 AuthLstUmw.class);
@@ -165,15 +174,9 @@ public class MessungAuthorizer extends BaseAuthorizer {
                 if (lsts.get(i).getUmwId().equals(probe.getUmwId())) {
                     messung.setStatusEditLst(true);
                 }
-            }
-            if (messung.getStatusEditLst() &&
-                ((stufe == 1 || wert != 4) && messung.getStatusEditMst() && messung.getStatusEditLand() ||
-                 stufe == 2 && !messung.getStatusEditLand() ||
-                 stufe == 3)) {
-                messung.setStatusEdit(true);
-            }
-            else {
-                messung.setStatusEditLst(false);
+                if (messung.getStatusEditLst()) {
+                    messung.setStatusEdit(true);
+                }
             }
         }
 
