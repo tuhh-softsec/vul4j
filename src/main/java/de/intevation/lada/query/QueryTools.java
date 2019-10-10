@@ -29,7 +29,6 @@ import de.intevation.lada.model.stammdaten.Filter;
 import de.intevation.lada.model.stammdaten.GridColumn;
 import de.intevation.lada.model.stammdaten.GridColumnValue;
 import de.intevation.lada.model.stammdaten.BaseQuery;
-import de.intevation.lada.model.stammdaten.Result;
 import de.intevation.lada.model.stammdaten.Tag;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;

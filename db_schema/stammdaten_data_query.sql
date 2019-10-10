@@ -170,7 +170,7 @@ COPY stamm.grid_column (id, base_query, name, data_index, "position", filter, da
 125	1	Anlage-Beschr	anlagebeschr	25	\N	1
 126	1	REI-Prog-PG	reiprogpg	26	\N	1
 127	1	REI-Prog-PG-Beschr	reiprogpgbeschr	27	\N	1
-128	1	Tags 	tags	28	36	25
+128	1	Tags 	tags	28	52	34
 1101	11	ID	id	1	\N	5
 1102	11	interne PID	probeId	2	\N	4
 1103	11	HP-Nr	hpNr	3	2	1
