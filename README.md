@@ -33,6 +33,8 @@ https://dev.mysql.com/downloads/mysql/
 After downloading the mysql 8 isntaller and installing it, you wioll be asked to configure the password for the default `root` account.
 This code uses the default root account to connect and the pasword can be set as `rootroot`. If you add another user/credentials make sure to change the same in the code base.
 
+### Running App
+
 Post installation of MySQL, Java and Maven, you will have to set up the tables and data in the data base.
 For this, please run the sql commands present in the Data.sql file under the resources folder in the code base.
 
