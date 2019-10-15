@@ -37,6 +37,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.3.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
             <version>2.23.4</version>
@@ -84,35 +90,32 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M1</version>
+                <version>2.21.0</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.junit.platform</groupId>
+                        <artifactId>junit-platform-surefire-provider</artifactId>
+                        <version>1.2.0</version>
+                    </dependency>
+                </dependencies>
                 <configuration>
-                    <skipTests>false</skipTests>
+                    <excludes>
+                        <exclude>**/*IT.java</exclude>
+                    </excludes>
                 </configuration>
                 <executions>
                     <execution>
-                        <id>unit-tests</id>
-                        <phase>test</phase>
+                        <id>integration-test</id>
                         <goals>
                             <goal>test</goal>
                         </goals>
-                        <configuration>
-                            <skipTests>false</skipTests>
-                            <includes>
-                                <include>**/*Test.java</include>
-                            </includes>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>integration-tests</id>
                         <phase>integration-test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
                         <configuration>
-                            <skipTests>false</skipTests>
+                            <excludes>
+                                <exclude>none</exclude>
+                            </excludes>
                             <includes>
-                                <include>**/*IT.*</include>
-                                <include>**/*Tests.*</include>
+                                <include>**/*IT.java</include>
                             </includes>
                         </configuration>
                     </execution>
@@ -135,27 +138,6 @@
                             <goal>report</goal>
                         </goals>
                     </execution>
-                    <!-- Add this checking -->
-                    <!--<execution>
-                        <id>jacoco-check</id>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <rule>
-                                    <element>PACKAGE</element>
-                                    <limits>
-                                        <limit>
-                                            <counter>LINE</counter>
-                                            <value>COVEREDRATIO</value>
-                                            <minimum>0.9</minimum>
-                                        </limit>
-                                    </limits>
-                                </rule>
-                            </rules>
-                        </configuration>
-                    </execution>-->
                 </executions>
             </plugin>
         </plugins>
