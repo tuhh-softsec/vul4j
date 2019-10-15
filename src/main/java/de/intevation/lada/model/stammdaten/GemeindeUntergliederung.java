@@ -55,6 +55,7 @@ public class GemeindeUntergliederung implements Serializable {
     @Column(name="letzte_aenderung", insertable=false)
     private Timestamp letzteAenderung;
 
+    @Type(type = "jts_geometry")
     @Column(columnDefinition="geometry(Point, 4326)")
     private Point geom;
 

@@ -27,9 +27,10 @@ public class Verwaltungsgrenze implements Serializable {
 	@Column(name="gem_id")
 	private String gemId;
 
-        @Column(name="is_gemeinde")
-        private Boolean isGemeinde;
+	@Column(name="is_gemeinde")
+	private Boolean isGemeinde;
 
+	@Type(type = "jts_geometry")
 	@Column(columnDefinition="geometry(MultiPolygon, 4326)")
 	private MultiPolygon shape;
 

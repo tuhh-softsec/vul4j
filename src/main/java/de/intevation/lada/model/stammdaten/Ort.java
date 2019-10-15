@@ -95,6 +95,7 @@ public class Ort implements Serializable {
     @Column(name="kda_id")
     private Integer kdaId;
 
+    @Type(type = "jts_geometry")
     @Column(columnDefinition="geometry(Point, 4326)")
     private Point geom;
 
