@@ -304,6 +304,8 @@ public class StatusService {
         else if (newKombi.getStatusWert().getId() == 4) {
             messung.setFertig(false);
         }
+        //Set datum to null to use database timestamp
+        status.setDatum(null);
         Response response = defaultRepo.create(status, Strings.LAND);
         StatusProtokoll created = (StatusProtokoll)response.getData();
         messung.setStatus(created.getId());

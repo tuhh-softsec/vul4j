@@ -25,6 +25,7 @@ public class StatusProtokoll implements Serializable {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name="datum", insertable=false, updatable=false)
     private Timestamp datum;
 
     @Column(name="messungs_id")
