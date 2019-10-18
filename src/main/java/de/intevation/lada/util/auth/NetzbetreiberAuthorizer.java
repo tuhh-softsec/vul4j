@@ -61,7 +61,8 @@ public class NetzbetreiberAuthorizer extends BaseAuthorizer {
               || method == RequestMethod.DELETE
             ) && userInfo.getFunktionenForNetzbetreiber(netId).contains(4)
               && userInfo.getNetzbetreiber().contains(netId))
-            || method == RequestMethod.POST;
+            || method == RequestMethod.POST
+            && userInfo.getNetzbetreiber().contains(netId);
         } else {
             return
             ((method == RequestMethod.PUT
