@@ -217,7 +217,7 @@ public class OrtService {
                             !authorization.isAuthorized(
                                 request,
                                 o,
-                                RequestMethod.POST,
+                                RequestMethod.PUT,
                                 Ort.class));
                     }
                 }
@@ -278,7 +278,7 @@ public class OrtService {
                 !authorization.isAuthorized(
                     request,
                     o,
-                    RequestMethod.POST,
+                    RequestMethod.PUT,
                     Ort.class));
         }
         return new Response(true, 200, orte, size);
@@ -309,7 +309,7 @@ public class OrtService {
             !authorization.isAuthorized(
                 request,
                 ort,
-                RequestMethod.POST,
+                RequestMethod.PUT,
                 Ort.class
             )
         );
@@ -354,7 +354,7 @@ public class OrtService {
                     !authorization.isAuthorized(
                         request,
                         o,
-                        RequestMethod.POST,
+                        RequestMethod.PUT,
                         Ort.class));
             }
             return new Response(true, 200, orte, orte.size());
