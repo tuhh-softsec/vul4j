@@ -409,6 +409,7 @@ CREATE TABLE tagzuordnung
     id serial PRIMARY KEY,
     probe_id integer,
     tag_id integer,
+    datum timestamp without time zone DEFAULT now(),
     CONSTRAINT tagzuordnung_tag_fkey FOREIGN KEY (tag_id)
         REFERENCES stamm.tag (id) MATCH SIMPLE
         ON DELETE CASCADE,
