@@ -108,6 +108,9 @@ public class Ort implements Serializable {
     @Transient
     private Double latitude;
 
+    @Transient
+    private Integer referenceCount;
+
     public Ort() {
     }
 
@@ -341,6 +344,14 @@ public class Ort implements Serializable {
 
     public void setReadonly(boolean readonly) {
         this.readonly = readonly;
+    }
+
+    public Integer getReferenceCount() {
+        return this.referenceCount;
+    }
+
+    public void setReferenceCount(Integer referenceCount) {
+        this.referenceCount = referenceCount;
     }
 
 }

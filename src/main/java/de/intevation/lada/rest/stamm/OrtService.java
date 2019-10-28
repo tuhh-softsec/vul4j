@@ -37,6 +37,7 @@ import org.apache.log4j.Logger;
 
 import de.intevation.lada.factory.OrtFactory;
 import de.intevation.lada.importer.ReportItem;
+import de.intevation.lada.model.land.Ortszuordnung;
 import de.intevation.lada.model.stammdaten.Ort;
 import de.intevation.lada.query.QueryTools;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
@@ -155,6 +156,12 @@ public class OrtService {
             }
 
             Ort o = repository.getByIdPlain(Ort.class, id, Strings.STAMM);
+            QueryBuilder<Ortszuordnung> builder =
+                    new QueryBuilder<Ortszuordnung>(repository.entityManager(Strings.LAND), Ortszuordnung.class);
+            builder.and("ortId", o.getId());
+            List<Ortszuordnung> zuordnungs =
+                    repository.filterPlain(builder.getQuery(), Strings.LAND);
+            o.setReferenceCount(zuordnungs.size());
             o.setReadonly(
                 !authorization.isAuthorized(
                     request,
@@ -201,7 +208,7 @@ public class OrtService {
             }
 
             QueryBuilder<Ort> pBuilder = new QueryBuilder<>(
-            repository.entityManager(Strings.STAMM), Ort.class);
+                 repository.entityManager(Strings.STAMM), Ort.class);
             List<Integer> list = new ArrayList<>();
             for (Map<String, Object> entry: filtered) {
                 list.add((Integer)entry.get("id"));
@@ -213,6 +220,12 @@ public class OrtService {
                 Integer oid = Integer.valueOf(entry.get("id").toString());
                 for (Ort o : os) {
                     if (o.getId().equals(oid)) {
+                        QueryBuilder<Ortszuordnung> builder =
+                                new QueryBuilder<Ortszuordnung>(repository.entityManager(Strings.LAND), Ortszuordnung.class);
+                        builder.and("ortId", o.getId());
+                        List<Ortszuordnung> zuordnungs =
+                                repository.filterPlain(builder.getQuery(), Strings.LAND);
+                        o.setReferenceCount(zuordnungs.size());
                         entry.put("readonly",
                             !authorization.isAuthorized(
                                 request,
@@ -274,6 +287,11 @@ public class OrtService {
             orte = orte.subList(start, end);
         }
         for (Ort o : orte) {
+            QueryBuilder<Ortszuordnung> builder =
+                    new QueryBuilder<Ortszuordnung>(repository.entityManager(Strings.LAND), Ortszuordnung.class);
+            builder.and("ortId", o.getId());
+            List<Ortszuordnung> zuordnungs = repository.filterPlain(builder.getQuery(), Strings.LAND);
+            o.setReferenceCount(zuordnungs.size());
             o.setReadonly(
                 !authorization.isAuthorized(
                     request,
@@ -305,6 +323,12 @@ public class OrtService {
             Integer.valueOf(id),
             Strings.STAMM
         );
+
+        QueryBuilder<Ortszuordnung> builder =
+                new QueryBuilder<Ortszuordnung>(repository.entityManager(Strings.LAND), Ortszuordnung.class);
+        builder.and("ortId", ort.getId());
+        List<Ortszuordnung> zuordnungs = repository.filterPlain(builder.getQuery(), Strings.LAND);
+        ort.setReferenceCount(zuordnungs.size());
         ort.setReadonly(
             !authorization.isAuthorized(
                 request,
