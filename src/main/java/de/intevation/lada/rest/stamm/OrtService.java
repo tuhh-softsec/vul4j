@@ -9,6 +9,8 @@ package de.intevation.lada.rest.stamm;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +21,13 @@ import javax.json.JsonArray;
 import javax.json.JsonException;
 import javax.json.JsonNumber;
 import javax.json.JsonReader;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -37,8 +46,11 @@ import org.apache.log4j.Logger;
 
 import de.intevation.lada.factory.OrtFactory;
 import de.intevation.lada.importer.ReportItem;
+import de.intevation.lada.model.land.Messung;
 import de.intevation.lada.model.land.Ortszuordnung;
+import de.intevation.lada.model.land.StatusProtokoll;
 import de.intevation.lada.model.stammdaten.Ort;
+import de.intevation.lada.model.stammdaten.StatusKombi;
 import de.intevation.lada.query.QueryTools;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
@@ -162,6 +174,9 @@ public class OrtService {
             List<Ortszuordnung> zuordnungs =
                     repository.filterPlain(builder.getQuery(), Strings.LAND);
             o.setReferenceCount(zuordnungs.size());
+
+
+            o.setPlausibleReferenceCount(getPlausibleRefCount(zuordnungs));
             o.setReadonly(
                 !authorization.isAuthorized(
                     request,
@@ -329,6 +344,7 @@ public class OrtService {
         builder.and("ortId", ort.getId());
         List<Ortszuordnung> zuordnungs = repository.filterPlain(builder.getQuery(), Strings.LAND);
         ort.setReferenceCount(zuordnungs.size());
+        ort.setPlausibleReferenceCount(getPlausibleRefCount(zuordnungs));
         ort.setReadonly(
             !authorization.isAuthorized(
                 request,
@@ -374,6 +390,13 @@ public class OrtService {
 
             List<Ort> orte = repository.filterPlain(builder.getQuery(), Strings.STAMM);
             for (Ort o : orte) {
+                QueryBuilder<Ortszuordnung> refBuilder =
+                        new QueryBuilder<Ortszuordnung>(repository.entityManager(Strings.LAND), Ortszuordnung.class);
+                        refBuilder.and("ortId", o.getId());
+                List<Ortszuordnung> zuordnungs = repository.filterPlain(refBuilder.getQuery(), Strings.LAND);
+                o.setReferenceCount(zuordnungs.size());
+                o.setPlausibleReferenceCount(getPlausibleRefCount(zuordnungs));
+
                 o.setReadonly(
                     !authorization.isAuthorized(
                         request,
@@ -561,5 +584,30 @@ public class OrtService {
         }
 
         return repository.delete(ort, Strings.STAMM);
+    }
+
+    /**
+     * Get the number of plausible Messung objects referencing an ort.
+     * @param zuordnungs List of Ortszuordnung objects referencing the ort to check
+     * @return Number of references as int
+     */
+    public int getPlausibleRefCount (List<Ortszuordnung> zuordnungs) {
+        Map<Integer, Integer> plausibleMap = new HashMap<Integer, Integer>();
+        for (Ortszuordnung zuordnung: zuordnungs) {
+            EntityManager em = repository.entityManager(Strings.LAND);
+
+            CriteriaBuilder mesBuilder = em.getCriteriaBuilder();
+            CriteriaQuery<Messung> criteriaQuery = mesBuilder.createQuery(Messung.class);
+            Root<Messung> root = criteriaQuery.from(Messung.class);
+            Join<Messung, StatusProtokoll> join = root.join("statusProtokoll", JoinType.LEFT);
+            Predicate filter = mesBuilder.equal(root.get("probeId"), zuordnung.getProbeId());
+            filter = mesBuilder.and(filter, join.get("statusKombi").in(Arrays.asList("2", "6", "10")));
+            criteriaQuery.where(filter);
+            List<Messung> messungs = repository.filterPlain(criteriaQuery, Strings.LAND);
+            if (messungs.size() > 0) {
+                plausibleMap.put(zuordnung.getProbeId(), 1);
+            }
+        }
+        return plausibleMap.size();
     }
 }

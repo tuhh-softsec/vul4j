@@ -60,6 +60,10 @@ public class Messung implements Serializable {
 
     private Integer status;
 
+    @OneToOne
+    @JoinColumn(name="status", insertable=false, updatable=false)
+    private StatusProtokoll statusProtokoll;
+
     @Column(name="tree_modified", insertable=false, updatable=false)
     private Timestamp treeModified;
 
@@ -258,6 +262,14 @@ public class Messung implements Serializable {
      */
     public void setReadonly(boolean readonly) {
         this.readonly = readonly;
+    }
+
+    public StatusProtokoll getStatusProtokoll() {
+        return this.statusProtokoll;
+    }
+
+    public void setStatusProtokoll (StatusProtokoll statusProtokoll) {
+        this.statusProtokoll = statusProtokoll;
     }
 
 }

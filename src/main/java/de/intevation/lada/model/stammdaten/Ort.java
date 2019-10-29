@@ -111,6 +111,9 @@ public class Ort implements Serializable {
     @Transient
     private Integer referenceCount;
 
+    @Transient
+    private Integer plausibleReferenceCount;
+
     public Ort() {
     }
 
@@ -354,4 +357,11 @@ public class Ort implements Serializable {
         this.referenceCount = referenceCount;
     }
 
+    public Integer getPlausibleReferenceCount() {
+        return this.plausibleReferenceCount;
+    }
+
+    public void setPlausibleReferenceCount(Integer plausibleReferenceCount) {
+        this.plausibleReferenceCount = plausibleReferenceCount;
+    }
 }
