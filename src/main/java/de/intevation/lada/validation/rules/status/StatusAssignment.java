@@ -39,7 +39,8 @@ import de.intevation.lada.validation.rules.Rule;
 @ValidationRule("Status")
 public class StatusAssignment implements Rule {
 
-    @Inject Logger logger;
+    @Inject
+    private Logger logger;
 
     @Inject
     @RepositoryConfig(type=RepositoryType.RO)
@@ -83,131 +84,114 @@ public class StatusAssignment implements Rule {
 	@SuppressWarnings("unchecked")
 	List<Ortszuordnung> orte = (List<Ortszuordnung>)response_ort.getData();
 
-
-	/*Messzeitpunk 1) vorhanden 2) nicht in der Zukunft bezgogen auf sysTime 3) nicht vor Probenentnahme */
-	if ( messung.getMesszeitpunkt() == null && (probe.getDatenbasisId() == 1 || probe.getDatenbasisId() == 2 || probe.getDatenbasisId() == 4 ) && probe.getProbenartId() == 9 ) {
-		violation.addError("Messzeitpunk#fehlt", 631);
+	/*Messzeitpunk 1) vorhanden  2) nicht in der Zukunft bezgogen auf sysTime 3) nicht vor Probenentnahme  -- datenbasis aus*/
+	if ( messung.getMesszeitpunkt() == null && probe.getProbenartId() != 9 ) {
+		violation.addError("messzeitpunk#fehlt", 631);
 	}
 
-        else if ( ts.before(messung.getMesszeitpunkt()) ) {
-            violation.addError("Messzeitpunkt#Zukunft", 631);
+        else if ( messung.getMesszeitpunkt() != null && ts.before(messung.getMesszeitpunkt()) ) {
+            violation.addError("messzeitpunkt#Zukunft", 675);
         }
 
-	else if ( messung.getMesszeitpunkt().before(probe.getProbeentnahmeBeginn()) ){
-		violation.addError("Messzeitpunkt#vorProbenentnahme", 631);
+	else if ( messung.getMesszeitpunkt() != null && probe.getProbeentnahmeBeginn() != null && messung.getMesszeitpunkt().before(probe.getProbeentnahmeBeginn()) ){
+		violation.addError("messzeitpunkt#vorProbenentnahme", 675);
 	}
 
-	/*Messwerte vorhanden*/
+	/* 4) Messwerte vorhanden*/
 	if ( messwerte.isEmpty() ){
 	 	violation.addError("Messwert#fehlt", 631);
 	}
 
-	/*Messmethode angegeben wenn §162 Probe bzw. REI-Probe*/
-	if ( messung.getMmtId() == null && ( probe.getDatenbasisId()==1 || probe.getDatenbasisId()==4 ) ) {
-		violation.addError("Messmethode#fehlt", 631);
+	/* 5) Messmethode angegeben*/
+	if ( messung.getMmtId() == null ) {
+		violation.addError("messmethode#fehlt", 631);
 	}
 
-	/*Messdauer angegeben*/
-	if ( messung.getMessdauer() == null && ( probe.getDatenbasisId() == 1 || probe.getDatenbasisId() == 2 || probe.getDatenbasisId() == 3) && probe.getProbenartId() == 1  ) {
-		violation.addError("Messdauer#fehlt", 631);
+	/* 6) Messdauer angegeben - auszer kontinuierlich*/
+	if ( messung.getMessdauer() == null && probe.getProbenartId() != 9  ) {
+		violation.addError("messdauer#fehlt", 631);
 	}
 
-	/*ProbenentnahmeBeginn vor ProbenentnahmeEnde*/
-	if ( probe.getProbeentnahmeEnde() != null && probe.getProbeentnahmeBeginn().after(probe.getProbeentnahmeEnde()) ) {
-		violation.addError("Probeentnahmeende#vorProbeentnahmeBeginn",631);
+	/* 7) ProbenentnahmeBeginn vor ProbenentnahmeEnde*/
+	if ( (probe.getProbeentnahmeBeginn()!=null && probe.getProbeentnahmeEnde() != null) && probe.getProbeentnahmeBeginn().after(probe.getProbeentnahmeEnde()) ) {
+		logger.debug("Probeentnahme Ende: " + probe.getProbeentnahmeEnde() );
+		logger.debug("Probeentnahme Beginn: " + probe.getProbeentnahmeBeginn() );
+		violation.addError("probeentnahmeende#vorprobeentnahmeBeginn",675);
 	}
 
-	/*ProbeentnahmeEnde bei kontinuierlichen Proben oder Sammelproben*/
-	if ( probe.getDatenbasisId() != null && ( probe.getProbenartId() == 9 || probe.getProbenartId() == 3 ) && probe.getProbeentnahmeBeginn() == probe.getProbeentnahmeEnde() ){
-		violation.addError("ProbenentnahmeBeginn == ProbenentnahmeEnde", 631);
+        /* 8) ProbenentnahmeBeginn  gesetzt kontinuierlichen Proben*/
+        if ( probe.getProbeentnahmeBeginn()==null && probe.getProbenartId() == 9 ) {
+                violation.addError("probeentnahmeBeginn#fehlt",631);
+        }
+
+        /* 9) ProbenentnahmeEnde gesetzt kontinuierlichen Proben*/
+        if ( probe.getProbeentnahmeEnde() == null && probe.getProbenartId() == 9 ) {
+                violation.addError("probeentnahmeEnde#fehlt",631);
+        }
+
+	/* 10) ProbeentnahmeEnde bei kontinuierlichen und Sammel-Proben ob Entnahme Beginn ungleich Entnahme Ende ist*/
+	if ( probe.getDatenbasisId() != null &&  probe.getProbeentnahmeEnde() != null && probe.getProbeentnahmeBeginn() != null && ( probe.getProbenartId()== 9 || probe.getProbenartId()== 3 ) && probe.getProbeentnahmeBeginn() != probe.getProbeentnahmeEnde() ){
+		violation.addError("probenentnahmeBeginn = ProbenentnahmeEnde", 675);
 	}
 
-	/*ProbenentnahmeEnde bei kontinuierlichen Proben oder Sammelproben*/
-	if ( (probe.getProbenartId() == 3 || probe.getProbenartId() == 9) && probe.getProbeentnahmeEnde() == null ) {
-		violation.addError("ProbenentnahmeEnde#nicht gesetzt", 631);
+	/* 9) Umweltbereichs-ID vorh. §161, §162, 162SPARSE, REI*/
+	if ( probe.getUmwId() == null && (probe.getDatenbasisId() == null || probe.getDatenbasisId() == 1 || probe.getDatenbasisId() == 2 || probe.getDatenbasisId() == 4 || probe.getDatenbasisId() == 10) ) {
+		violation.addError("umwId#fehlt", 631);
 	}
 
-	/*ProbeentnahmeBeginn und ProbeentnahmeEnde bei Kontinuierlichen REI-Proben*/
-	if ( probe.getDatenbasisId() == 4 && probe.getProbenartId()== 9 && (probe.getProbeentnahmeBeginn() == null || probe.getProbeentnahmeEnde() == null) ) {
-		violation.addError("ProbeentnahmeBeginn oder -Ende nicht gesetzt", 631);
-	}
-
-	/*ProbenentnahmeDatum nicht in der Zukunft oder ProbeentnahmeBeginn fehlt*/
-	if ( probe.getProbeentnahmeBeginn() == null || ts.before(probe.getProbeentnahmeBeginn()) ){
-		violation.addError("ProbeentnahmeBeginn#fehlt oder Zukunft", 631);
-	}
-
-
-	/*Umweltbereichs-ID vorh. §161, §162
-        /*init Umweltbereich*/
-
-	if ( probe.getUmwId() == null && ( probe.getDatenbasisId() == 1 || probe.getDatenbasisId() == 2) ) {
-		violation.addError("UmweltbereichsId#fehlt", 631);
-	}
-
-	/*Datenbasis gesetzt*/
+	/* 10) Datenbasis gesetzt*/
 	if ( probe.getDatenbasisId() == null ){
-		violation.addError("Datenbasis#fehlt", 631);
+		violation.addError("datenbasisId#fehlt", 631);
 	}
 
-	/*Hauptprobennummer bei nicht kontinuierlichen §161 und §162 Proben*/
-	if ( probe.getHauptprobenNr() == null && probe.getProbenartId() == 1  && (probe.getDatenbasisId() == 1 || probe.getDatenbasisId() == 2) ){
-		violation.addError("Hauptproben-Nr#fehlt", 631);
+	/* 12) Hauptprobennummer bei nicht kontinuierlichen §162 Proben + 162SPARSE*/
+	if ( probe.getHauptprobenNr() == null && ( probe.getProbenartId() == 1  || probe.getDatenbasisId() == 2 || probe.getDatenbasisId() == 10) ){
+		violation.addError("hauptprobenNr#fehlt", 631);
 	}
 
-	/*Messeinheit gem. Umweltbereich*/
+	/* Messeinheit gem. Umweltbereich*/
 	if ( !messwerte.isEmpty() && probe.getUmwId() != null) {
 	Umwelt umwelt = repository.getByIdPlain(Umwelt.class, probe.getUmwId(), "stamm");
 	messwerte.forEach(item ->{
 		if (item.getMehId() != umwelt.getMehId() || umwelt.getMehId() == null) {
-			violation.addError("Messeinheit#nicht gem. Umweltbereichs-Id", 631);
+			violation.addError("mehId#nicht gem. umwId", 675);
 		}
 		});
 	}
 
+	/* 15) ProbeentnahmeBeginn gesetzt*/
+        if ( probe.getProbeentnahmeBeginn() == null ) {
+                violation.addError("probeentnahmeBeginn#fehlt", 631);
+        }
 
-
-	/*Messstelle gesetzt*/
-	if ( probe.getMstId() == null) {
-		violation.addError("Messstelle#fehlt", 631);
+	/* 16) ProbenentnahmeBeginn nicht in Zukunft */
+	if ( probe.getProbeentnahmeBeginn() != null && ts.before(probe.getProbeentnahmeBeginn()) ){
+                violation.addError("messzeitpunkt#vorProbenentnahme", 675);
 	}
 
-	/*Messlabor gesetzt*/
-	if (probe.getLaborMstId() == null) {
-		violation.addError("Messlabor#fehlt", 631);
-	}
-
-	/*Ort angegeben WIP*/
+	/* 13) Entnahme-Ort gesetzt*/
 	if (orte.isEmpty()) {
-	violation.addError("Ortszuordnung#fehlt", 631);
+	violation.addError("ort#fehlt", 631);
 	}
 
-	/*
 	if (!orte.isEmpty()){
 
 		orte.forEach(item ->{
-			if (item.getOrtszuordnungTyp() == "U"){
+			count = 0;
+			/*logger.debug("OrtsId: "+ item.getOrtId());*/
+			/*logger.debug("Ortszuordnung: "+ item.getOrtszuordnungTyp());*/
+			if (item.getOrtszuordnungTyp().equals("E")){
 			count++;
 				}
 		});
 
 		if (count == 0){
-			violation.addError("Messpunkt#mehrals1", 631);
-		}else if (count == 1 ){
-			count = 0;
-			orte.forEach(item ->{
-	                        if (item.getOrtszuordnungTyp() == "U"){
-        	                count++;
-                	                }
-                	});
-			if (count > 1) {
-				violation.addError("ursprungsort#mehrals1", 631);
-			}
+			violation.addError("entnahmeort#fehlt", 631);
+		}else if (count > 1) {
+			violation.addError("entnahmeort#mehrfach", 675);
 		}
-
 	}
 
-	*/
 
 	if (violation.hasErrors()) {
             return violation;

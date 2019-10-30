@@ -1094,17 +1094,21 @@ public class LafObjectMapper {
         if (erreichbar.isEmpty()) {
             currentWarnings.add(new ReportItem("status#" + statusStufe, statusWert, 675));
             return false;
-        } else {
-                Violation status_violation = statusValidator.validate(currentStatus);
+        }
 
-               if (status_violation.hasErrors()) {
+	// Validator: StatusAssignment
+        StatusProtokoll tmpStatus = new StatusProtokoll();
+        tmpStatus = currentStatus;
+        tmpStatus.setStatusKombi(newKombi);
+        Violation status_violation = statusValidator.validate(tmpStatus);
+
+        if (status_violation.hasErrors()) {
                   status_violation.getErrors().forEach((k,v)->{
                   currentErrors.add(new ReportItem("Status ",k+v, 631));
                   });
 
                return false;
-	   }
-	}
+        }
 
         // check auth
         MessStelle messStelle = repository.getByIdPlain(MessStelle.class, mstId, Strings.STAMM);
@@ -1325,7 +1329,7 @@ public class LafObjectMapper {
         String hLand = "";
         String staatFilter = "";
         if (attributes.get(type + "HERKUNFTSLAND_S") != null && !attributes.get(type + "HERKUNFTSLAND_S").equals("")) {
-            staatFilter = "id";
+            staatFilter = "hklId";
             key = "HERKUNFTSLAND_S";
             hLand = attributes.get(type + "HERKUNFTSLAND_S");
         }
@@ -1508,11 +1512,11 @@ public class LafObjectMapper {
             currentWarnings.add(new ReportItem(key, value.toString(), 672));
         }
 
-        if ("PROBE_ID".equals(key) && !value.toString().equals("")) {
+        if ("PROBE_ID".equals(key)) {
             probe.setExterneProbeId(value);
         }
 
-        if ("HAUPTPROBENNUMMER".equals(key) && !value.toString().equals("")) {
+        if ("HAUPTPROBENNUMMER".equals(key)) {
             probe.setHauptprobenNr(value.toString());
         }
 
