@@ -178,11 +178,6 @@ public class StatusService {
             Integer.valueOf(id),
             Strings.LAND);
         StatusProtokoll status = (StatusProtokoll)response.getData();
-        Violation violation = validator.validate(status);
-        if (violation.hasErrors() || violation.hasWarnings()) {
-            response.setErrors(violation.getErrors());
-            response.setWarnings(violation.getWarnings());
-        }
 
         return authorization.filter(
             request,
