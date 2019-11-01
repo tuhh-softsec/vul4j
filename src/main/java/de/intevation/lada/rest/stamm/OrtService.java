@@ -579,13 +579,15 @@ public class OrtService {
             return response;
         }
         Ort ort = (Ort)response.getData();
+        if (getOrtsZuordnungs(ort).size() > 0) {
+            return new Response(false, 699, ort);
+        }
         if (!authorization.isAuthorized(
             request,
             ort,
             RequestMethod.DELETE,
             Ort.class)
         ) {
-            return new Response(false, 699, ort);
         }
 
         return repository.delete(ort, Strings.STAMM);
