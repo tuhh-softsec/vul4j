@@ -86,57 +86,57 @@ public class StatusAssignment implements Rule {
 
 	/*Messzeitpunk 1) vorhanden  2) nicht in der Zukunft bezgogen auf sysTime 3) nicht vor Probenentnahme  -- datenbasis aus*/
 	if ( messung.getMesszeitpunkt() == null && probe.getProbenartId() != 9 ) {
-		violation.addError("messzeitpunk#fehlt", 631);
+		violation.addError("messzeitpunkt", 631);
 	}
 
         else if ( messung.getMesszeitpunkt() != null && ts.before(messung.getMesszeitpunkt()) ) {
-            violation.addError("messzeitpunkt#Zukunft", 675);
+            violation.addError("messzeitpunkt", 641);
         }
 
 	else if ( messung.getMesszeitpunkt() != null && probe.getProbeentnahmeBeginn() != null && messung.getMesszeitpunkt().before(probe.getProbeentnahmeBeginn()) ){
-		violation.addError("messzeitpunkt#vorProbenentnahme", 675);
+		violation.addError("messzeitpunkt", 642);
 	}
 
 	/* 4) Messwerte vorhanden*/
 	if ( messwerte.isEmpty() ){
-	 	violation.addError("Messwert#fehlt", 631);
+	 	violation.addError("Messwert", 631);
 	}
 
 	/* 5) Messmethode angegeben*/
 	if ( messung.getMmtId() == null ) {
-		violation.addError("messmethode#fehlt", 631);
+		violation.addError("messmethode", 631);
 	}
 
 	/* 6) Messdauer angegeben - auszer kontinuierlich*/
 	if ( messung.getMessdauer() == null && probe.getProbenartId() != 9  ) {
-		violation.addError("messdauer#fehlt", 631);
+		violation.addError("messdauer", 631);
 	}
 
 	/* 7) ProbenentnahmeBeginn vor ProbenentnahmeEnde*/
 	if ( (probe.getProbeentnahmeBeginn()!=null && probe.getProbeentnahmeEnde() != null) && probe.getProbeentnahmeBeginn().after(probe.getProbeentnahmeEnde()) ) {
 		logger.debug("Probeentnahme Ende: " + probe.getProbeentnahmeEnde() );
 		logger.debug("Probeentnahme Beginn: " + probe.getProbeentnahmeBeginn() );
-		violation.addError("probeentnahmeende#vorprobeentnahmeBeginn",675);
+		violation.addError("probeentnahmeende",643);
 	}
 
         /* 8) ProbenentnahmeBeginn  gesetzt kontinuierlichen Proben*/
         if ( probe.getProbeentnahmeBeginn()==null && probe.getProbenartId() == 9 ) {
-                violation.addError("probeentnahmeBeginn#fehlt",631);
+                violation.addError("probeentnahmeBeginn",631);
         }
 
         /* 9) ProbenentnahmeEnde gesetzt kontinuierlichen Proben*/
         if ( probe.getProbeentnahmeEnde() == null && probe.getProbenartId() == 9 ) {
-                violation.addError("probeentnahmeEnde#fehlt",631);
+                violation.addError("probeentnahmeEnde",631);
         }
 
 	/* 10) ProbeentnahmeEnde bei kontinuierlichen und Sammel-Proben ob Entnahme Beginn ungleich Entnahme Ende ist*/
 	if ( probe.getDatenbasisId() != null &&  probe.getProbeentnahmeEnde() != null && probe.getProbeentnahmeBeginn() != null && ( probe.getProbenartId()== 9 || probe.getProbenartId()== 3 ) && probe.getProbeentnahmeBeginn() != probe.getProbeentnahmeEnde() ){
-		violation.addError("probenentnahmeBeginn = ProbenentnahmeEnde", 675);
+		violation.addError("ProbenentnahmeEnde", 643);
 	}
 
 	/* 9) Umweltbereichs-ID vorh. §161, §162, 162SPARSE, REI*/
 	if ( probe.getUmwId() == null && (probe.getDatenbasisId() == null || probe.getDatenbasisId() == 1 || probe.getDatenbasisId() == 2 || probe.getDatenbasisId() == 4 || probe.getDatenbasisId() == 10) ) {
-		violation.addError("umwId#fehlt", 631);
+		violation.addError("umwId", 631);
 	}
 
 	/* 10) Datenbasis gesetzt*/
@@ -146,7 +146,7 @@ public class StatusAssignment implements Rule {
 
 	/* 12) Hauptprobennummer bei nicht kontinuierlichen §162 Proben + 162SPARSE*/
 	if ( probe.getHauptprobenNr() == null && ( probe.getProbenartId() == 1  || probe.getDatenbasisId() == 2 || probe.getDatenbasisId() == 10) ){
-		violation.addError("hauptprobenNr#fehlt", 631);
+		violation.addError("hauptprobenNr", 631);
 	}
 
 	/* Messeinheit gem. Umweltbereich*/
@@ -154,30 +154,30 @@ public class StatusAssignment implements Rule {
 	Umwelt umwelt = repository.getByIdPlain(Umwelt.class, probe.getUmwId(), "stamm");
 	messwerte.forEach(item ->{
 		if (item.getMehId() != umwelt.getMehId() || umwelt.getMehId() == null) {
-			violation.addError("mehId#nicht gem. umwId", 675);
+			violation.addError("mehId", 644);
 		}
 		});
 	}
 
 	/* 15) ProbeentnahmeBeginn gesetzt*/
         if ( probe.getProbeentnahmeBeginn() == null ) {
-                violation.addError("probeentnahmeBeginn#fehlt", 631);
+                violation.addError("probeentnahmeBeginn", 631);
         }
 
 	/* 16) ProbenentnahmeBeginn nicht in Zukunft */
 	if ( probe.getProbeentnahmeBeginn() != null && ts.before(probe.getProbeentnahmeBeginn()) ){
-                violation.addError("messzeitpunkt#vorProbenentnahme", 675);
+                violation.addError("messzeitpunkt", 642);
 	}
 
 	/* 13) Entnahme-Ort gesetzt*/
 	if (orte.isEmpty()) {
-	violation.addError("ort#fehlt", 631);
+	violation.addError("ort", 631);
 	}
 
 	if (!orte.isEmpty()){
 
+		count = 0;
 		orte.forEach(item ->{
-			count = 0;
 			/*logger.debug("OrtsId: "+ item.getOrtId());*/
 			/*logger.debug("Ortszuordnung: "+ item.getOrtszuordnungTyp());*/
 			if (item.getOrtszuordnungTyp().equals("E")){
@@ -186,9 +186,9 @@ public class StatusAssignment implements Rule {
 		});
 
 		if (count == 0){
-			violation.addError("entnahmeort#fehlt", 631);
+			violation.addError("entnahmeort", 631);
 		}else if (count > 1) {
-			violation.addError("entnahmeort#mehrfach", 675);
+			violation.addError("entnahmeort", 672);
 		}
 	}
 
