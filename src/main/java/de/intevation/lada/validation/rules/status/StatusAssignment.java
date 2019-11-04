@@ -99,7 +99,7 @@ public class StatusAssignment implements Rule {
 
 	/* 4) Messwerte vorhanden*/
 	if ( messwerte.isEmpty() ){
-	 	violation.addError("Messwert", 631);
+	 	violation.addError("messwert", 631);
 	}
 
 	/* 5) Messmethode angegeben*/
@@ -116,7 +116,7 @@ public class StatusAssignment implements Rule {
 	if ( (probe.getProbeentnahmeBeginn()!=null && probe.getProbeentnahmeEnde() != null) && probe.getProbeentnahmeBeginn().after(probe.getProbeentnahmeEnde()) ) {
 		logger.debug("Probeentnahme Ende: " + probe.getProbeentnahmeEnde() );
 		logger.debug("Probeentnahme Beginn: " + probe.getProbeentnahmeBeginn() );
-		violation.addError("probeentnahmeende",643);
+		violation.addError("probeentnahmeEnde",643);
 	}
 
         /* 8) ProbenentnahmeBeginn  gesetzt kontinuierlichen Proben*/
@@ -186,9 +186,9 @@ public class StatusAssignment implements Rule {
 		});
 
 		if (count == 0){
-			violation.addError("entnahmeort", 631);
+			violation.addError("entnahmeOrt", 631);
 		}else if (count > 1) {
-			violation.addError("entnahmeort", 672);
+			violation.addError("entnahmeOrt", 672);
 		}
 	}
 

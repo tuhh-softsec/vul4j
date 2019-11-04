@@ -284,7 +284,7 @@ public class StatusService {
             newKombi.getStatusWert().getId() == 2 ) {
             Violation violation = validator.validate(status);
             if (violation.hasErrors()) {
-                Response response = new Response(false, 604, status);
+                Response response = new Response(false, 605, status);
                 response.setErrors(violation.getErrors());
                 response.setWarnings(violation.getWarnings());
                 return response;
