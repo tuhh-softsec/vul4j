@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +39,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import de.intevation.lada.model.land.AuditTrailMessung;
 import de.intevation.lada.model.land.AuditTrailProbe;
 import de.intevation.lada.model.land.Messung;
+import de.intevation.lada.model.land.Ortszuordnung;
 import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.model.land.StatusProtokoll;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
@@ -191,6 +193,14 @@ public class AuditTrailService {
         }
         UserInfo userInfo = authorization.getInfo(request);
 
+        //Get ort ids connected to this probe
+        QueryBuilder<Ortszuordnung> refBuilder =
+        new QueryBuilder<Ortszuordnung>(repository.entityManager(Strings.LAND), Ortszuordnung.class);
+        refBuilder.and("probeId", id);
+        List<Integer> ortIds = new LinkedList<Integer>();
+        for (Ortszuordnung zuordnung: repository.filterPlain(refBuilder.getQuery(), Strings.LAND)) {
+            ortIds.add(zuordnung.getOrtId());
+        }
 
         // Get all entries for the probe and its sub objects.
         QueryBuilder<AuditTrailProbe> builder =
@@ -200,6 +210,7 @@ public class AuditTrailService {
         builder.and("objectId", id);
         builder.and("tableName", "probe");
         builder.or("probeId", id);
+        builder.orIn("ortId", ortIds);
         builder.orderBy("tstamp", true);
         List<AuditTrailProbe> audit =
             repository.filterPlain(builder.getQuery(), Strings.LAND);
@@ -247,6 +258,9 @@ public class AuditTrailService {
         node.put("action", audit.getAction());
         ObjectNode data = translateValues((ObjectNode)audit.getChangedFields());
         node.putPOJO("changedFields", data);
+        if ("ort".equals(audit.getTableName())) {
+            node.put("identifier", audit.getRowData().get("ort_id").toString());
+        }
         if ("kommentar_p".equals(audit.getTableName())) {
             node.put("identifier", audit.getRowData().get("datum").toString());
         }

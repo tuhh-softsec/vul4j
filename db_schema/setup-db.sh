@@ -72,7 +72,8 @@ echo create lada schema
 psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/lada_schema.sql
 
 echo create audit-trail table/trigger/views
-psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/audit.sql
+psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/audit_stamm.sql
+psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/audit_land.sql
 
 echo set grants
 psql $DB_CONNECT_STRING -d $DB_NAME --command \

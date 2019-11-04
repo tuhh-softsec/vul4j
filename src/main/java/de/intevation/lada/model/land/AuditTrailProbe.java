@@ -50,6 +50,9 @@ public class AuditTrailProbe implements Serializable {
     @Column(name="object_id")
     private Integer objectId;
 
+    @Column(name="ort_id")
+    private Integer ortId;
+
     @Column(name="probe_id")
     private Integer probeId;
 
@@ -105,6 +108,14 @@ public class AuditTrailProbe implements Serializable {
 
     public void setObjectId(Integer objectId) {
         this.objectId = objectId;
+    }
+
+    public Integer getOrtId() {
+        return this.ortId;
+    }
+
+    public void setOrtId(Integer ortId) {
+        this.ortId = ortId;
     }
 
     public Integer getProbeId() {
