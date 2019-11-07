@@ -34,7 +34,7 @@ RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main" \
 RUN curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-            postgresql-11-postgis-2.5 postgresql-11-postgis-scripts postgis
+            postgresql-11-postgis-2.5 postgresql-11-postgis-2.5-scripts postgis
 
 #
 # Set environment variables
