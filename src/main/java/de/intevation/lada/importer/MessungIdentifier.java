@@ -19,13 +19,8 @@ import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.data.Strings;
 
-import org.apache.log4j.Logger;
-
 @IdentifierConfig(type="Messung")
 public class MessungIdentifier implements Identifier {
-
-    @Inject
-    private Logger logger; 
 
     @Inject
     @RepositoryConfig(type=RepositoryType.RO)
@@ -62,7 +57,19 @@ public class MessungIdentifier implements Identifier {
                 return Identified.REJECT;
             }
             if (messungen.isEmpty()) {
-                return Identified.NEW;
+                builder = builder.getEmptyBuilder();
+                builder.and("probeId", messung.getProbeId());
+                builder.and("mmtId", messung.getMmtId());
+                messungen =
+                        repository.filterPlain(builder.getQuery(), Strings.LAND);
+                if (messungen.isEmpty()) {
+                    return Identified.NEW;
+                }
+                if (messungen.size() > 1) {
+                    return Identified.NEW;
+                }
+                found = messungen.get(0);
+                return Identified.UPDATE;
             }
             found = messungen.get(0);
             return Identified.UPDATE;
