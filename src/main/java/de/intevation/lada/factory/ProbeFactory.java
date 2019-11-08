@@ -136,26 +136,26 @@ public class ProbeFactory {
 
             this.from = (Calendar)start.clone();
 
-            /* Align with beginning of next interval
-             * like first day of next quarter or Monday of next week.*/
+            // Align with beginning of next interval
             if (intervallField == Calendar.DAY_OF_YEAR
-                && intervallFactor % 7 == 0
+                && intervallFactor % N_WEEK_DAYS == 0
+                && from.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY
             ) {
-                if (from.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
-                    from.add(Calendar.WEEK_OF_YEAR, 1);
-                    from.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-                }
+                /* Intervalls representing multiples of weeks should start
+                 * at Monday following the given start */
+                from.add(Calendar.WEEK_OF_YEAR, 1);
+                from.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
             } else {
+                /* Other intervalls should start at the beginning of the
+                 * natural intervall at or following the given start (e.g.
+                 * first day of next quarter) */
                 int startIntField = start.get(intervallField);
-                from.set(
-                    intervallField,
-                    startIntField + startIntField % intervallFactor
-                );
-            }
-            from = adjustSubIntField(from, teilVon);
-            if (start.after(from)) {
-                // to next intervall if start not at first day of intervall
-                this.roll();
+                if (startIntField % intervallFactor != 0) {
+                    from.add(
+                        intervallField,
+                        intervallFactor - startIntField % intervallFactor
+                    );
+                }
             }
         }
 
@@ -175,15 +175,8 @@ public class ProbeFactory {
         * @return the adjusted Calendar object.
         */
         private Calendar adjustSubIntField(Calendar cal, int teil) {
-            int intValue = cal.get(intervallField);
             int adjust = 0;
-
             if (intervallField != subIntField) {
-                if (!(intervallField == 2 && intValue == 11)) {
-                    intValue = intValue - intValue % intervallFactor;
-                }
-                cal.set(intervallField, intValue);
-
                 if (subIntField == Calendar.DAY_OF_YEAR) {
                     // Adjust in leap year
                     teil += startInLeapYear() && teil > FEBRUARY_28
@@ -191,7 +184,9 @@ public class ProbeFactory {
                         : 0;
                 }
             } else {
-                adjust += intValue - 1;
+                /* If intervallField == subIntField, we need to actually
+                 * add to the value of intervallField */
+                adjust += cal.get(intervallField) - 1;
             }
 
             /* If the given amount of days is bigger than the number of days
@@ -235,19 +230,22 @@ public class ProbeFactory {
             return duration;
         }
 
-        public Date getFrom() {
-            return from.getTime();
+        /**
+         * @return Calendar Returns a Date object representing the time value
+         * (millisecond offset from the Epoch) of this intervall's
+         * sub-intervall start
+         */
+        public Calendar getFrom() {
+            return adjustSubIntField((Calendar)from.clone(), teilVon);
         }
 
-        public Date getTo() {
-            Calendar to;
-            if (intervallField == Calendar.DAY_OF_YEAR) {
-                to = adjustSubIntField((Calendar)from.clone(), teilBis - teilVon + 1);
-            }
-            else {
-                to = adjustSubIntField((Calendar)from.clone(), teilBis);
-            }
-            return to.getTime();
+        /**
+         * @return Calendar Returns a Date object representing the time value
+         * (millisecond offset from the Epoch) of this intervall's
+         * sub-intervall end
+         */
+        public Calendar getTo() {
+            return adjustSubIntField((Calendar)from.clone(), teilBis);
         }
 
         /**
@@ -262,7 +260,7 @@ public class ProbeFactory {
          * this intervall's start
          */
         public int getStartDOY() {
-            return from.get(Calendar.DAY_OF_YEAR);
+            return getFrom().get(Calendar.DAY_OF_YEAR);
         }
 
         /**
@@ -270,18 +268,6 @@ public class ProbeFactory {
          */
         public void roll() {
             from.add(intervallField, intervallFactor);
-            if (intervallField == Calendar.MONTH &&
-                (intervallFactor == 3 || intervallFactor == 6) &&
-                from.get(Calendar.MONTH)%intervallFactor == 1
-            ) {
-                from.add(Calendar.MONTH, 1);
-            }
-            int teilAdd = teilVon - 1;
-            if (startInLeapYear()) {
-                teilAdd--;
-            }
-            from.add(Calendar.DAY_OF_YEAR, -(teilAdd));
-            from = adjustSubIntField(from, teilVon);
         }
 
     }
@@ -323,7 +309,7 @@ public class ProbeFactory {
         List<Probe> proben = new ArrayList<Probe>();
 
         for (Intervall intervall = new Intervall(messprogramm, start);
-             intervall.getFrom().before(end.getTime());
+             intervall.getFrom().before(end);
              intervall.roll()
         ) {
             /* Leap year adaption of validity period.
@@ -342,11 +328,9 @@ public class ProbeFactory {
                 : gueltigBis;
 
             int solldatumBeginnDOY = intervall.getStartDOY() + offset;
-            Calendar sollFrom = Calendar.getInstance();
-            sollFrom.setTime(intervall.getFrom());
+            Calendar sollFrom = intervall.getFrom();
             sollFrom.add(Calendar.DATE, offset);
-            Calendar sollTo = Calendar.getInstance();
-            sollTo.setTime(intervall.getTo());
+            Calendar sollTo = intervall.getTo();
             sollTo.add(Calendar.DATE, offset);
 
             if ((
