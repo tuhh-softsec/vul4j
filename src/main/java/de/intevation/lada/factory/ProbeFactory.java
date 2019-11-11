@@ -139,12 +139,13 @@ public class ProbeFactory {
             // Align with beginning of next interval
             if (intervallField == Calendar.DAY_OF_YEAR
                 && intervallFactor % N_WEEK_DAYS == 0
-                && from.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY
             ) {
                 /* Intervalls representing multiples of weeks should start
-                 * at Monday following the given start */
-                from.add(Calendar.WEEK_OF_YEAR, 1);
-                from.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+                 * at Monday at or following the given start */
+                if (from.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
+                    from.add(Calendar.WEEK_OF_YEAR, 1);
+                    from.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+                }
             } else {
                 /* Other intervalls should start at the beginning of the
                  * natural intervall at or following the given start (e.g.
