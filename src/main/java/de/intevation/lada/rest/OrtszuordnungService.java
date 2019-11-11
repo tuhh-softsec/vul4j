@@ -7,6 +7,8 @@
  */
 package de.intevation.lada.rest;
 
+import java.util.List;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -142,10 +144,24 @@ public class OrtszuordnungService {
                 defaultRepo.entityManager(Strings.LAND),
                 Ortszuordnung.class);
         builder.and("probeId", probeId);
-        return authorization.filter(
+        Response r = authorization.filter(
             request,
             defaultRepo.filter(builder.getQuery(), Strings.LAND),
             Ortszuordnung.class);
+        if (r.getSuccess() == true) {
+            @SuppressWarnings("unchecked")
+            List<Ortszuordnung> ortszuordnungs = (List<Ortszuordnung>) r.getData();
+            for (Ortszuordnung otz: ortszuordnungs) {
+                Violation violation = validator.validate(otz);
+                if (violation.hasErrors() || violation.hasWarnings()) {
+                    otz.setErrors(violation.getErrors());
+                    otz.setWarnings(violation.getWarnings());
+                }
+            }
+            return new Response(true, 200, ortszuordnungs);
+        } else {
+            return r;
+        }
     }
 
     /**

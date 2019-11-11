@@ -194,6 +194,7 @@ public class ProbeService {
         catch (NumberFormatException e) {
             return new Response(false, 603, "Not a valid filter id");
         }
+        //TODO: Returns null
         List<Map<String, Object>> result =
             queryTools.getResultForQuery(params, id);
 
@@ -205,7 +206,7 @@ public class ProbeService {
             filtered = result;
         }
 
-        if (filtered.isEmpty()) {
+        if (filtered == null || filtered.isEmpty()) {
             return new Response(true, 200, filtered, 0);
         }
 

@@ -146,10 +146,24 @@ public class MessungService {
                     repository.entityManager(Strings.LAND),
                     Messung.class);
             builder.and("probeId", probeId);
-            return authorization.filter(
+            Response r = authorization.filter(
                 request,
                 repository.filter(builder.getQuery(), Strings.LAND),
                 Messung.class);
+            if (r.getSuccess() == true) {
+                @SuppressWarnings("unchecked")
+                List<Messung> messungs = (List<Messung>) r.getData();
+                for (Messung messung: messungs) {
+                    Violation violation = validator.validate(messung);
+                    if (violation.hasErrors() || violation.hasWarnings()) {
+                        messung.setErrors(violation.getErrors());
+                        messung.setWarnings(violation.getWarnings());
+                    }
+                }
+                return new Response(true, 200, messungs);
+            } else {
+                return r;
+            }
         }
         else if (params.containsKey("qid")) {
             Integer id = null;

@@ -205,7 +205,13 @@ public class MessprogrammService {
             Integer mId = Integer.valueOf(entry.get("id").toString());
             setAuthData(messprogramme, entry, mId);
         }
-
+        for (Messprogramm mp: messprogramme) {
+            Violation violation = validator.validate(mp);
+            if (violation.hasErrors() || violation.hasWarnings()) {
+                mp.setErrors(violation.getErrors());
+                mp.setWarnings(violation.getWarnings());
+            }
+        }
         return new Response(true, 200, filtered, size);
     }
 

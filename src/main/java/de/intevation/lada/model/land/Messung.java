@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+import javax.ws.rs.core.MultivaluedMap;
 
 import org.hibernate.annotations.DynamicInsert;
 
@@ -81,6 +82,12 @@ public class Messung implements Serializable {
 
     @Transient
     private Timestamp parentModified;
+
+    @Transient
+    private MultivaluedMap<String, Integer> errors;
+
+    @Transient
+    private MultivaluedMap<String, Integer> warnings;
 
     @Transient
     private boolean owner;
@@ -248,6 +255,22 @@ public class Messung implements Serializable {
      */
     public void setOwner(boolean owner) {
         this.owner = owner;
+    }
+
+    public MultivaluedMap<String, Integer> getErrors() {
+        return this.errors;
+    }
+
+    public void setErrors(MultivaluedMap<String, Integer> errors) {
+        this.errors = errors;
+    }
+
+    public MultivaluedMap<String, Integer> getWarnings() {
+        return this.warnings;
+    }
+
+    public void setWarnings(MultivaluedMap<String, Integer> warnings) {
+        this.warnings = warnings;
     }
 
     /**
