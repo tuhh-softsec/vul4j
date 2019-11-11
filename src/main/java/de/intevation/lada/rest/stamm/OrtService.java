@@ -512,6 +512,9 @@ public class OrtService {
         }
 
         Ort dbOrt = repository.getByIdPlain(Ort.class, ort.getId(), Strings.STAMM);
+        if (dbOrt == null) {
+            return new Response(false, 600, ort);
+        }
         String dbCoordX = dbOrt.getKoordXExtern();
         String dbCoordY = dbOrt.getKoordYExtern();
 
