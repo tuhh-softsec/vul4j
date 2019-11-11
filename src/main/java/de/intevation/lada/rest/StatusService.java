@@ -48,6 +48,7 @@ import de.intevation.lada.util.rest.Response;
 import de.intevation.lada.validation.Validator;
 import de.intevation.lada.validation.Violation;
 import de.intevation.lada.validation.annotation.ValidationConfig;
+import net.bytebuddy.implementation.bind.annotation.Super;
 
 /**
  * REST service for Status objects.
@@ -150,10 +151,24 @@ public class StatusService {
                 defaultRepo.entityManager(Strings.LAND),
                 StatusProtokoll.class);
         builder.and("messungsId", id);
-        return authorization.filter(
+        Response r = authorization.filter(
             request,
             defaultRepo.filter(builder.getQuery(), Strings.LAND),
             StatusProtokoll.class);
+        if (r.getSuccess()) {
+            @SuppressWarnings("unchecked")
+            List<StatusProtokoll> status = (List<StatusProtokoll>) r.getData();
+            for (StatusProtokoll s: status) {
+                Violation violation = validator.validate(s);
+                if (violation.hasErrors() || violation.hasWarnings()) {
+                    s.setErrors(violation.getErrors());
+                    s.setWarnings(violation.getWarnings());
+                }
+            }
+            return new Response(true, 200, status);
+        } else {
+            return r;
+        }
     }
 
     /**
@@ -270,7 +285,12 @@ public class StatusService {
             }
             else {
                 // Not allowed.
+<<<<<<< HEAD
                 return new Response(false, 699, status);            }
+=======
+                return new Response(false, 699, null);
+            }
+>>>>>>> Update GET request handlers to insert validation results into the models
         }
     }
 

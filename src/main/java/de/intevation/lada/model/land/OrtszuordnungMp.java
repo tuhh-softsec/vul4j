@@ -17,6 +17,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.ws.rs.core.MultivaluedMap;
 
 
 /**
@@ -48,6 +49,12 @@ public class OrtszuordnungMp implements Serializable {
 
     @Column(name="tree_modified", insertable=false, updatable=false)
     private Timestamp treeModified;
+
+    @Transient
+    private MultivaluedMap<String, Integer> errors;
+
+    @Transient
+    private MultivaluedMap<String, Integer> warnings;
 
     @Transient
     private boolean owner;
@@ -112,6 +119,22 @@ public class OrtszuordnungMp implements Serializable {
 
     public void setTreeModified(Timestamp treeModified) {
         this.treeModified = treeModified;
+    }
+
+    public MultivaluedMap<String, Integer> getErrors() { 
+        return this.errors;
+    }
+
+    public void setErrors(MultivaluedMap<String, Integer> errors) {
+        this.errors = errors;
+    }
+
+    public MultivaluedMap<String, Integer> getWarnings() {
+        return this.warnings;
+    }
+
+    public void setWarnings(MultivaluedMap<String, Integer> warnings) {
+        this.warnings = warnings;
     }
 
     /**

@@ -17,6 +17,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.Transient;
+import javax.ws.rs.core.MultivaluedMap;
 
 
 /**
@@ -113,6 +114,12 @@ public class Messprogramm implements Serializable {
 
     @Column(name="probenahmemenge")
     private String probenahmeMenge;
+
+    @Transient
+    private MultivaluedMap<String, Integer> errors;
+
+    @Transient
+    private MultivaluedMap<String, Integer> warnings;
 
     @Transient
     private boolean readonly;
@@ -326,6 +333,22 @@ public class Messprogramm implements Serializable {
 
     public void setProbenahmeMenge(String probenahmeMenge) {
         this.probenahmeMenge = probenahmeMenge;
+    }
+
+    public MultivaluedMap<String, Integer> getErrors() {
+        return this.errors;
+    }
+
+    public void setErrors(MultivaluedMap<String, Integer> errors) {
+        this.errors = errors;
+    }
+
+    public MultivaluedMap<String, Integer> getWarnings() {
+        return this.warnings;
+    }
+
+    public void setWarnings(MultivaluedMap<String, Integer> warnings) {
+        this.warnings = warnings;
     }
 
     public boolean isReadonly() {

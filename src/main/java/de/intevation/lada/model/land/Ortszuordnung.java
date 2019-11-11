@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+import javax.ws.rs.core.MultivaluedMap;
 
 
 /**
@@ -45,6 +46,12 @@ public class Ortszuordnung implements Serializable {
     @OneToOne
     @JoinColumn(name="probe_id", insertable=false, updatable=false)
     private Probe probe;
+
+    @Transient
+    private MultivaluedMap<String, Integer> errors;
+
+    @Transient
+    private MultivaluedMap<String, Integer> warnings;
 
     @Transient
     private boolean owner;
@@ -112,6 +119,22 @@ public class Ortszuordnung implements Serializable {
 
     public void setTreeModified(Timestamp treeModified) {
         this.treeModified = treeModified;
+    }
+
+    public MultivaluedMap<String, Integer> getErrors() {
+        return this.errors;
+    }
+
+    public void setErrors(MultivaluedMap<String, Integer> errors) {
+        this.errors = errors;
+    }
+
+    public MultivaluedMap<String, Integer> getWarnings() {
+        return this.warnings;
+    }
+
+    public void setWarnings(MultivaluedMap<String, Integer> warnings) {
+        this.warnings = warnings;
     }
 
     /**

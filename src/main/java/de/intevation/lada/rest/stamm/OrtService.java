@@ -239,6 +239,11 @@ public class OrtService {
                                 RequestMethod.PUT,
                                 Ort.class));
                     }
+                    Violation violation = validator.validate(o);
+                    if (violation.hasErrors() || violation.hasWarnings()) {
+                        o.setErrors(violation.getErrors());
+                        o.setWarnings(violation.getWarnings());
+                    }
                 }
             }
             return new Response(true, 200, filtered, size);

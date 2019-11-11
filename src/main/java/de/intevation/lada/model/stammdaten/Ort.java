@@ -10,10 +10,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.ws.rs.core.MultivaluedMap;
 
 import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vividsolutions.jts.algorithm.BoundaryNodeRule.MultiValentEndPointBoundaryNodeRule;
 import com.vividsolutions.jts.geom.Point;
 
 
@@ -113,6 +115,12 @@ public class Ort implements Serializable {
 
     @Transient
     private Integer plausibleReferenceCount;
+
+    @Transient
+    private MultivaluedMap<String, Integer> errors;
+
+    @Transient
+    private MultivaluedMap<String, Integer> warnings;
 
     public Ort() {
     }
@@ -363,5 +371,21 @@ public class Ort implements Serializable {
 
     public void setPlausibleReferenceCount(Integer plausibleReferenceCount) {
         this.plausibleReferenceCount = plausibleReferenceCount;
+    }
+
+    public MultivaluedMap<String, Integer> getErrors() {
+        return this.errors;
+    }
+
+    public void setErrors(MultivaluedMap<String, Integer> errors) {
+        this.errors = errors;
+    }
+
+    public MultivaluedMap<String, Integer> getWarnings() {
+        return this.warnings;
+    }
+
+    public void setWarnings(MultivaluedMap<String, Integer> warnings) {
+        this.warnings = warnings;
     }
 }
