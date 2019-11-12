@@ -16,7 +16,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -50,13 +49,7 @@ public class QueryTools
 
     @Inject
     private Logger logger;
-    @SuppressWarnings("unchecked")
-    public List<Map<String, Object>> getResultForQuery(
-        MultivaluedMap<String, String> params,
-        Integer qId
-    ) {
-        return null;
-    }
+
     /**
      * Execute query and return the filtered and sorted results.
      * @param customColumns Customized column configs, containing filter, sorting and references to the respective column.
@@ -273,13 +266,6 @@ public class QueryTools
             return new ArrayList<>();
         }
         return prepareResult(q.getResultList(), columns);
-    }
-
-    public List<Map<String, Object>> filterResult(
-        String filter,
-        List<Map<String, Object>> items
-    ) {
-        return null;
     }
 
     /**
