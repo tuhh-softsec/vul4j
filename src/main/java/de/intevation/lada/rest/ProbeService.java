@@ -37,18 +37,15 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-import de.intevation.lada.factory.OrtFactory;
 import de.intevation.lada.factory.ProbeFactory;
 import de.intevation.lada.lock.LockConfig;
 import de.intevation.lada.lock.LockType;
 import de.intevation.lada.lock.ObjectLocker;
 import de.intevation.lada.model.land.Messprogramm;
 import de.intevation.lada.model.land.MessprogrammMmt;
-import de.intevation.lada.model.land.Ortszuordnung;
 import de.intevation.lada.model.land.OrtszuordnungMp;
 import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.model.stammdaten.Ort;
-import de.intevation.lada.query.QueryTools;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -152,9 +149,6 @@ public class ProbeService {
     @Inject
     private ProbeFactory factory;
 
-    @Inject
-    private QueryTools queryTools;
-
     /**
      * Get all Probe objects.
      * <p>
@@ -184,72 +178,28 @@ public class ProbeService {
         @Context HttpServletRequest request
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
-        if (params.isEmpty() || !params.containsKey("qid")) {
-            return repository.getAll(Probe.class, Strings.LAND);
-        }
-        Integer id = null;
-        try {
-            id = Integer.valueOf(params.getFirst("qid"));
-        }
-        catch (NumberFormatException e) {
-            return new Response(false, 603, "Not a valid filter id");
-        }
-        //TODO: Returns null
-        List<Map<String, Object>> result =
-            queryTools.getResultForQuery(params, id);
-
-        List<Map<String, Object>> filtered;
-        if (params.containsKey("filter")) {
-            filtered = queryTools.filterResult(params.getFirst("filter"), result);
-        }
-        else {
-            filtered = result;
-        }
-
-        if (filtered == null || filtered.isEmpty()) {
-            return new Response(true, 200, filtered, 0);
-        }
-
-        int size = filtered.size();
+        List<Probe> probes = repository.getAllPlain(Probe.class, Strings.LAND);
+        
+        int size = probes.size();
         if (params.containsKey("start") && params.containsKey("limit")) {
             int start = Integer.valueOf(params.getFirst("start"));
             int limit = Integer.valueOf(params.getFirst("limit"));
             int end = limit + start;
-            if (start + limit > filtered.size()) {
-                end = filtered.size();
+            if (start + limit > size) {
+                end = size;
             }
-            filtered = filtered.subList(start, end);
+            probes = probes.subList(start, end);
         }
 
-        QueryBuilder<Probe> pBuilder = new QueryBuilder<>(
-            repository.entityManager(Strings.LAND), Probe.class);
-        List<Integer> list = new ArrayList<>();
-        for (Map<String, Object> entry: filtered) {
-            list.add((Integer)entry.get("id"));
-        }
-        pBuilder.orIn("id", list);
-        Response r = repository.filter(pBuilder.getQuery(), Strings.LAND);
-        r = authorization.filter(request, r, Probe.class);
-        List<Probe> proben = (List<Probe>)r.getData();
-        for (Map<String, Object> entry: filtered) {
-            Integer pId = Integer.valueOf(entry.get("id").toString());
-            setAuthData(proben, entry, pId);
-        }
-        return new Response(true, 200, filtered, size);
-    }
-
-    private void setAuthData(
-        List<Probe> proben,
-        Map<String, Object> entry,
-        Integer id
-    ) {
-        for (int i = 0; i < proben.size(); i++) {
-            if (id.equals(proben.get(i).getId())) {
-                entry.put("readonly", proben.get(i).isReadonly());
-                entry.put("owner", proben.get(i).isOwner());
-                return;
+        for (Probe probe: probes) {
+            Violation violation = validator.validate(probe);
+            if (violation.hasWarnings() || violation.hasErrors()) {
+                probe.setWarnings(violation.getWarnings());
+                probe.setErrors(violation.getErrors());
             }
+            probe.setReadonly(authorization.isReadOnly(probe.getId()));
         }
+        return new Response(true, 200, probes);
     }
 
     /**

@@ -51,7 +51,6 @@ import de.intevation.lada.model.land.Messung;
 import de.intevation.lada.model.land.Ortszuordnung;
 import de.intevation.lada.model.land.StatusProtokoll;
 import de.intevation.lada.model.stammdaten.Ort;
-import de.intevation.lada.query.QueryTools;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -130,9 +129,6 @@ public class OrtService {
     @ValidationConfig(type="Ort")
     private Validator validator;
 
-    @Inject
-    private QueryTools queryTools;
-
     /**
      * Get all SOrt objects.
      * <p>
@@ -153,11 +149,8 @@ public class OrtService {
         @Context UriInfo info
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
-        if (params.containsKey("query")) {
-            String query = params.getFirst("query");
-            if (query.equals("all"));
-            return repository.getAll(Ort.class, Strings.STAMM);
-        }
+
+        //If a single ort is requested
         if (params.containsKey("ortId")) {
             Integer id;
             try {
@@ -177,116 +170,53 @@ public class OrtService {
                     o,
                     RequestMethod.POST,
                     Ort.class));
+            Violation violation = validator.validate(o);
+            if (violation.hasErrors() || violation.hasWarnings()) {
+                o.setErrors(violation.getErrors());
+                o.setWarnings(violation.getWarnings());
+            }
             return new Response(true, 200, o);
         }
 
         List<Ort> orte = new ArrayList<>();
-        if (params.containsKey("qid")) {
-            Integer id = null;
-            try {
-                id = Integer.valueOf(params.getFirst("qid"));
-            }
-            catch (NumberFormatException e) {
-                return new Response(false, 603, "Not a valid filter id");
-            }
-
-            List<Map<String, Object>> result =
-                queryTools.getResultForQuery(params, id);
-
-            List<Map<String, Object>> filtered;
-            if (params.containsKey("filter")) {
-                filtered = queryTools.filterResult(params.getFirst("filter"), result);
-            }
-            else {
-                filtered = result;
-            }
-
-            if (filtered.isEmpty()) {
-                return new Response(true, 200, filtered, 0);
-            }
-
-            int size = filtered.size();
-            if (params.containsKey("start") && params.containsKey("limit")) {
-                int start = Integer.valueOf(params.getFirst("start"));
-                int limit = Integer.valueOf(params.getFirst("limit"));
-                int end = limit + start;
-                if (start + limit > filtered.size()) {
-                    end = filtered.size();
-                }
-                filtered = filtered.subList(start, end);
-            }
-
-            QueryBuilder<Ort> pBuilder = new QueryBuilder<>(
-                 repository.entityManager(Strings.STAMM), Ort.class);
-            List<Integer> list = new ArrayList<>();
-            for (Map<String, Object> entry: filtered) {
-                list.add((Integer)entry.get("id"));
-            }
-            pBuilder.orIn("id", list);
-            Response r = repository.filter(pBuilder.getQuery(), Strings.STAMM);
-            List<Ort> os = (List<Ort>)r.getData();
-            for (Map<String, Object> entry: filtered) {
-                Integer oid = Integer.valueOf(entry.get("id").toString());
-                for (Ort o : os) {
-                    if (o.getId().equals(oid)) {
-                        List<Ortszuordnung> zuordnungs = getOrtsZuordnungs(o);
-                        o.setReferenceCount(zuordnungs.size());
-                        o.setPlausibleReferenceCount(getPlausibleRefCount(zuordnungs));
-                        entry.put("readonly",
-                            !authorization.isAuthorized(
-                                request,
-                                o,
-                                RequestMethod.PUT,
-                                Ort.class));
-                    }
-                    Violation violation = validator.validate(o);
-                    if (violation.hasErrors() || violation.hasWarnings()) {
-                        o.setErrors(violation.getErrors());
-                        o.setWarnings(violation.getWarnings());
-                    }
-                }
-            }
-            return new Response(true, 200, filtered, size);
+        UserInfo user = authorization.getInfo(request);
+        QueryBuilder<Ort> builder =
+            new QueryBuilder<Ort>(
+                repository.entityManager(Strings.STAMM),
+                Ort.class
+            );
+        if (params.containsKey("netzbetreiberId")) {
+            builder.and("netzbetreiberId", params.getFirst("netzbetreiberId"));
         }
         else {
-            UserInfo user = authorization.getInfo(request);
-            QueryBuilder<Ort> builder =
-                new QueryBuilder<Ort>(
-                    repository.entityManager(Strings.STAMM),
-                    Ort.class
-                );
-            if (params.containsKey("netzbetreiberId")) {
-                builder.and("netzbetreiberId", params.getFirst("netzbetreiberId"));
-            }
-            else {
-                for (String nb : user.getNetzbetreiber()) {
-                    builder.or("netzbetreiberId", nb);
-                }
-            }
-            if (params.containsKey("search")) {
-                QueryBuilder<Ort> filter = builder.getEmptyBuilder();
-                filter.orLike("ortId", "%"+params.getFirst("search")+"%")
-                    .orLike("kurztext", "%"+params.getFirst("search")+"%")
-                    .orLike("langtext", "%"+params.getFirst("search")+"%");
-                builder.and(filter);
-            }
-            if (params.containsKey("filter")) {
-                String json = params.getFirst("filter");
-                JsonReader jsonReader = Json.createReader(new StringReader(json));
-                try {
-                    JsonArray filter = jsonReader.readArray();
-                    jsonReader.close();
-                    orte = repository.filterPlain(builder, filter, Strings.STAMM);
-                }
-                catch (JsonException |
-                    IllegalStateException e) {
-                    logger.warn("Use JSON filter at this place.", e);
-                }
-            }
-            else {
-                orte = repository.filterPlain(builder.getQuery(), Strings.STAMM);
+            for (String nb : user.getNetzbetreiber()) {
+                builder.or("netzbetreiberId", nb);
             }
         }
+        if (params.containsKey("search")) {
+            QueryBuilder<Ort> filter = builder.getEmptyBuilder();
+            filter.orLike("ortId", "%"+params.getFirst("search")+"%")
+                .orLike("kurztext", "%"+params.getFirst("search")+"%")
+                .orLike("langtext", "%"+params.getFirst("search")+"%");
+            builder.and(filter);
+        }
+        if (params.containsKey("filter")) {
+            String json = params.getFirst("filter");
+            JsonReader jsonReader = Json.createReader(new StringReader(json));
+            try {
+                JsonArray filter = jsonReader.readArray();
+                jsonReader.close();
+                orte = repository.filterPlain(builder, filter, Strings.STAMM);
+            }
+            catch (JsonException |
+                IllegalStateException e) {
+                logger.warn("Use JSON filter at this place.", e);
+            }
+        }
+        else {
+            orte = repository.filterPlain(builder.getQuery(), Strings.STAMM);
+        }
+        
         int size = orte.size();
         if (params.containsKey("start") && params.containsKey("limit")) {
             int start = Integer.valueOf(params.getFirst("start"));
@@ -307,6 +237,11 @@ public class OrtService {
                     o,
                     RequestMethod.PUT,
                     Ort.class));
+            Violation violation = validator.validate(o);
+            if (violation.hasErrors() || violation.hasWarnings()) {
+                o.setErrors(violation.getErrors());
+                o.setWarnings(violation.getWarnings());
+            }
         }
         return new Response(true, 200, orte, size);
     }
