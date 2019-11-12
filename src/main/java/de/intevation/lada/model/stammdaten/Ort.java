@@ -15,6 +15,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vividsolutions.jts.algorithm.BoundaryNodeRule.MultiValentEndPointBoundaryNodeRule;
 import com.vividsolutions.jts.geom.Point;
 
@@ -117,9 +118,11 @@ public class Ort implements Serializable {
     private Integer plausibleReferenceCount;
 
     @Transient
+    @JsonIgnore
     private MultivaluedMap<String, Integer> errors;
 
     @Transient
+    @JsonIgnore
     private MultivaluedMap<String, Integer> warnings;
 
     public Ort() {
@@ -373,18 +376,22 @@ public class Ort implements Serializable {
         this.plausibleReferenceCount = plausibleReferenceCount;
     }
 
+    @JsonProperty
     public MultivaluedMap<String, Integer> getErrors() {
         return this.errors;
     }
 
+    @JsonIgnore
     public void setErrors(MultivaluedMap<String, Integer> errors) {
         this.errors = errors;
     }
 
+    @JsonProperty
     public MultivaluedMap<String, Integer> getWarnings() {
         return this.warnings;
     }
 
+    @JsonIgnore
     public void setWarnings(MultivaluedMap<String, Integer> warnings) {
         this.warnings = warnings;
     }
