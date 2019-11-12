@@ -13,6 +13,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.ws.rs.core.MultivaluedMap;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 /**
  * The persistent class for the ortszuordnung database table.
@@ -48,9 +51,11 @@ public class Ortszuordnung implements Serializable {
     private Probe probe;
 
     @Transient
+    @JsonIgnore
     private MultivaluedMap<String, Integer> errors;
 
     @Transient
+    @JsonIgnore
     private MultivaluedMap<String, Integer> warnings;
 
     @Transient
@@ -121,18 +126,22 @@ public class Ortszuordnung implements Serializable {
         this.treeModified = treeModified;
     }
 
+    @JsonProperty
     public MultivaluedMap<String, Integer> getErrors() {
         return this.errors;
     }
 
+    @JsonIgnore
     public void setErrors(MultivaluedMap<String, Integer> errors) {
         this.errors = errors;
     }
 
+    @JsonProperty
     public MultivaluedMap<String, Integer> getWarnings() {
         return this.warnings;
     }
 
+    @JsonIgnore
     public void setWarnings(MultivaluedMap<String, Integer> warnings) {
         this.warnings = warnings;
     }

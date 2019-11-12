@@ -9,6 +9,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
+import javax.ws.rs.core.MultivaluedMap;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hibernate.annotations.DynamicInsert;
 
@@ -100,6 +104,14 @@ public class Probe implements Serializable {
 
     @Transient
     private boolean owner;
+
+    @Transient
+    @JsonIgnore
+    private MultivaluedMap<String, Integer> errors;
+
+    @Transient
+    @JsonIgnore
+    private MultivaluedMap<String, Integer> warnings;
 
     public Probe() {
     }
@@ -318,5 +330,25 @@ public class Probe implements Serializable {
 
     public void setOwner(boolean owner) {
         this.owner = owner;
+    }
+
+    @JsonProperty
+    public MultivaluedMap<String, Integer> getErrors() {
+        return this.errors;
+    }
+
+    @JsonIgnore
+    public void setErrors(MultivaluedMap<String, Integer> errors) {
+        this.errors = errors;
+    }
+
+    @JsonProperty
+    public MultivaluedMap<String, Integer> getWarnings() {
+        return this.warnings;
+    }
+
+    @JsonIgnore
+    public void setWarnings(MultivaluedMap<String, Integer> warnings) {
+        this.warnings = warnings;
     }
 }
