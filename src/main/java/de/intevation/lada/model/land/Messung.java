@@ -13,6 +13,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.ws.rs.core.MultivaluedMap;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.hibernate.annotations.DynamicInsert;
 
 
@@ -84,9 +87,11 @@ public class Messung implements Serializable {
     private Timestamp parentModified;
 
     @Transient
+    @JsonIgnore
     private MultivaluedMap<String, Integer> errors;
 
     @Transient
+    @JsonIgnore
     private MultivaluedMap<String, Integer> warnings;
 
     @Transient
@@ -257,18 +262,22 @@ public class Messung implements Serializable {
         this.owner = owner;
     }
 
+    @JsonProperty
     public MultivaluedMap<String, Integer> getErrors() {
         return this.errors;
     }
 
+    @JsonIgnore
     public void setErrors(MultivaluedMap<String, Integer> errors) {
         this.errors = errors;
     }
 
+    @JsonProperty
     public MultivaluedMap<String, Integer> getWarnings() {
         return this.warnings;
     }
 
+    @JsonIgnore
     public void setWarnings(MultivaluedMap<String, Integer> warnings) {
         this.warnings = warnings;
     }

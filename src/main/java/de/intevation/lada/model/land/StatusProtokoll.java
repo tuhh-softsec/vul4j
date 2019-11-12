@@ -12,6 +12,9 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.ws.rs.core.MultivaluedMap;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 /**
  * The persistent class for the status_protokoll database table.
@@ -59,9 +62,11 @@ public class StatusProtokoll implements Serializable {
     private Integer statusWert;
 
     @Transient
+    @JsonIgnore
     private MultivaluedMap<String, Integer> errors;
 
     @Transient
+    @JsonIgnore
     private MultivaluedMap<String, Integer> warnings;
 
     public StatusProtokoll() {
@@ -193,18 +198,22 @@ public class StatusProtokoll implements Serializable {
         this.statusWert = statusWert;
     }
 
+    @JsonProperty
     public MultivaluedMap<String, Integer> getErrors() {
         return this.errors;
     }
 
+    @JsonIgnore
     public void setErrors(MultivaluedMap<String, Integer> errors) {
         this.errors = errors;
     }
 
+    @JsonProperty
     public MultivaluedMap<String, Integer> getWarnings() {
         return this.warnings;
     }
 
+    @JsonIgnore
     public void setWarnings(MultivaluedMap<String, Integer> warnings) {
         this.warnings = warnings;
     }

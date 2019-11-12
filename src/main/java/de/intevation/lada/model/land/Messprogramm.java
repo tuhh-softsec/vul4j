@@ -19,6 +19,9 @@ import javax.persistence.PrePersist;
 import javax.persistence.Transient;
 import javax.ws.rs.core.MultivaluedMap;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 /**
  * The persistent class for the messprogramm database table.
@@ -116,9 +119,11 @@ public class Messprogramm implements Serializable {
     private String probenahmeMenge;
 
     @Transient
+    @JsonIgnore
     private MultivaluedMap<String, Integer> errors;
 
     @Transient
+    @JsonIgnore
     private MultivaluedMap<String, Integer> warnings;
 
     @Transient
@@ -335,18 +340,22 @@ public class Messprogramm implements Serializable {
         this.probenahmeMenge = probenahmeMenge;
     }
 
+    @JsonProperty
     public MultivaluedMap<String, Integer> getErrors() {
         return this.errors;
     }
 
+    @JsonIgnore
     public void setErrors(MultivaluedMap<String, Integer> errors) {
         this.errors = errors;
     }
 
+    @JsonProperty
     public MultivaluedMap<String, Integer> getWarnings() {
         return this.warnings;
     }
 
+    @JsonIgnore
     public void setWarnings(MultivaluedMap<String, Integer> warnings) {
         this.warnings = warnings;
     }
