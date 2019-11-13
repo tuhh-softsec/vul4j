@@ -270,7 +270,7 @@ public class StatusService {
             }
             else {
                 // Not allowed.
-                return new Response(false, 699, null);            }
+                return new Response(false, 699, status);            }
         }
     }
 
