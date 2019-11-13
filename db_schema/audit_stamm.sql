@@ -33,7 +33,7 @@ COMMENT ON OPERATOR - (jsonb, jsonb) IS 'delete matching pairs from left operand
 
 CREATE OR REPLACE FUNCTION if_modified_func() RETURNS TRIGGER AS $body$
 DECLARE
-    audit_row stamm.audit_trail;
+    audit_row audit_trail;
     include_values boolean;
     log_diffs boolean;
     h_old jsonb;
@@ -41,7 +41,7 @@ DECLARE
     excluded_cols text[] = ARRAY[]::text[];
 BEGIN
     IF TG_WHEN <> 'AFTER' THEN
-        RAISE EXCEPTION 'stamm.if_modified_func() may only run as an AFTER trigger';
+        RAISE EXCEPTION 'if_modified_func() may only run as an AFTER trigger';
     END IF;
 
     -- Do nothing on delete.
@@ -50,7 +50,7 @@ BEGIN
     END IF;
 
     audit_row = ROW(
-        nextval('stamm.audit_trail_id_seq'), -- id
+        nextval('audit_trail_id_seq'), -- id
         TG_TABLE_NAME::varchar,             -- table_name
         current_timestamp,                  -- tstamp
         substring(TG_OP,1,1),               -- action
@@ -73,10 +73,10 @@ BEGIN
         audit_row.row_data = row_to_json(NEW)::JSONB;
         audit_row.changed_fields = jsonb_strip_nulls(row_to_json(NEW)::JSONB - excluded_cols);
     ELSE
-        RAISE EXCEPTION '[stamm.if_modified_func] - Trigger func added as trigger for unhandled case: %, %',TG_OP, TG_LEVEL;
+        RAISE EXCEPTION '[if_modified_func] - Trigger func added as trigger for unhandled case: %, %',TG_OP, TG_LEVEL;
         RETURN NULL;
     END IF;
-    INSERT INTO stamm.audit_trail VALUES (audit_row.*);
+    INSERT INTO audit_trail VALUES (audit_row.*);
     RETURN NULL;
 END;
 $body$
@@ -105,7 +105,7 @@ BEGIN
         END IF;
         _q_txt = 'CREATE TRIGGER audit_trigger_row AFTER INSERT OR UPDATE OR DELETE ON ' ||
                  quote_ident(target_table::TEXT) ||
-                 ' FOR EACH ROW EXECUTE PROCEDURE stamm.if_modified_func(' ||
+                 ' FOR EACH ROW EXECUTE PROCEDURE if_modified_func(' ||
                  quote_literal(audit_query_text) || _ignored_cols_snip || ');';
         RAISE NOTICE '%',_q_txt;
         EXECUTE _q_txt;
@@ -115,7 +115,7 @@ BEGIN
 
     _q_txt = 'CREATE TRIGGER audit_trigger_stm AFTER ' || stm_targets || ' ON ' ||
              target_table ||
-             ' FOR EACH STATEMENT EXECUTE PROCEDURE stamm.if_modified_func('||
+             ' FOR EACH STATEMENT EXECUTE PROCEDURE if_modified_func('||
              quote_literal(audit_query_text) || ');';
     RAISE NOTICE '%',_q_txt;
     EXECUTE _q_txt;

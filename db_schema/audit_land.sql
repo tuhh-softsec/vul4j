@@ -84,72 +84,6 @@ LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = land, public;
 
-CREATE OR REPLACE FUNCTION audit_table(
-    target_table regclass,
-    audit_rows boolean,
-    audit_query_text boolean,
-    ignored_cols text[]
-) RETURNS void AS
-$body$
-DECLARE
-  stm_targets text = 'INSERT OR UPDATE OR DELETE OR TRUNCATE';
-  _q_txt text;
-  _ignored_cols_snip text = '';
-BEGIN
-    EXECUTE 'DROP TRIGGER IF EXISTS audit_trigger_row ON ' || quote_ident(target_table::TEXT);
-    EXECUTE 'DROP TRIGGER IF EXISTS audit_trigger_stm ON ' || quote_ident(target_table::TEXT);
-
-    IF audit_rows THEN
-        IF array_length(ignored_cols,1) > 0 THEN
-            _ignored_cols_snip = ', ' || quote_literal(ignored_cols);
-        END IF;
-        _q_txt = 'CREATE TRIGGER audit_trigger_row AFTER INSERT OR UPDATE OR DELETE ON ' ||
-                 quote_ident(target_table::TEXT) ||
-                 ' FOR EACH ROW EXECUTE PROCEDURE land.if_modified_func(' ||
-                 quote_literal(audit_query_text) || _ignored_cols_snip || ');';
-        RAISE NOTICE '%',_q_txt;
-        EXECUTE _q_txt;
-        stm_targets = 'TRUNCATE';
-    ELSE
-    END IF;
-
-    _q_txt = 'CREATE TRIGGER audit_trigger_stm AFTER ' || stm_targets || ' ON ' ||
-             target_table ||
-             ' FOR EACH STATEMENT EXECUTE PROCEDURE land.if_modified_func('||
-             quote_literal(audit_query_text) || ');';
-    RAISE NOTICE '%',_q_txt;
-    EXECUTE _q_txt;
-
-END;
-$body$
-language 'plpgsql';
-
-COMMENT ON FUNCTION audit_table(regclass, boolean, boolean, text[]) IS $body$
-Add auditing support to a table.
-
-Arguments:
-   target_table:     Table name, schema qualified if not on search_path
-   audit_rows:       Record each row change, or only audit at a statement level
-   audit_query_text: Record the text of the client query that triggered the audit event?
-   ignored_cols:     Columns to exclude from update diffs, ignore updates that change only ignored cols.
-$body$;
-
--- Pg doesn't allow variadic calls with 0 params, so provide a wrapper
-CREATE OR REPLACE FUNCTION audit_table(target_table regclass, audit_rows boolean, audit_query_text boolean) RETURNS void AS $body$
-SELECT audit_table($1, $2, $3, ARRAY[]::text[]);
-$body$ LANGUAGE SQL;
-
--- And provide a convenience call wrapper for the simplest case
--- of row-level logging with no excluded cols and query logging enabled.
---
-CREATE OR REPLACE FUNCTION audit_table(target_table regclass) RETURNS void AS $body$
-SELECT audit_table($1, BOOLEAN 't', BOOLEAN 't');
-$body$ LANGUAGE 'sql';
-
-COMMENT ON FUNCTION audit_table(regclass) IS $body$
-Add auditing support to the given table. Row-level changes will be logged with full client query text. No cols are ignored.
-$body$;
-
 CREATE INDEX probe_id_ndx ON audit_trail(cast("row_data"->>'probe_id' AS int));
 CREATE INDEX messung_id_ndx ON audit_trail(cast("row_data"->>'messung_id' AS int));
 
@@ -196,12 +130,12 @@ SELECT audit_trail.id,
 FROM audit_trail;
 
 
-SELECT audit_table('probe', true, false, '{id, tree_modified, letzte_aenderung}'::text[]);
-SELECT audit_table('messung', true, false, '{id, probe_id, tree_modified, letzte_aenderung, status}'::text[]);
-SELECT audit_table('messwert', true, false, '{id, messungs_id, tree_modified, letzte_aenderung}'::text[]);
-SELECT audit_table('kommentar_p', true, false, '{id, probe_id, tree_modified, letzte_aenderung}'::text[]);
-SELECT audit_table('kommentar_m', true, false, '{id, messungs_id, tree_modified, letzte_aenderung}'::text[]);
-SELECT audit_table('zusatz_wert', true, false, '{id, probe_id, tree_modified, letzte_aenderung}'::text[]);
-SELECT audit_table('ortszuordnung', true, false, '{id, probe_id, tree_modified, letzte_aenderung}'::text[]);
+SELECT stamm.audit_table('probe', true, false, '{id, tree_modified, letzte_aenderung}'::text[]);
+SELECT stamm.audit_table('messung', true, false, '{id, probe_id, tree_modified, letzte_aenderung, status}'::text[]);
+SELECT stamm.audit_table('messwert', true, false, '{id, messungs_id, tree_modified, letzte_aenderung}'::text[]);
+SELECT stamm.audit_table('kommentar_p', true, false, '{id, probe_id, tree_modified, letzte_aenderung}'::text[]);
+SELECT stamm.audit_table('kommentar_m', true, false, '{id, messungs_id, tree_modified, letzte_aenderung}'::text[]);
+SELECT stamm.audit_table('zusatz_wert', true, false, '{id, probe_id, tree_modified, letzte_aenderung}'::text[]);
+SELECT stamm.audit_table('ortszuordnung', true, false, '{id, probe_id, tree_modified, letzte_aenderung}'::text[]);
 
 SET search_path TO public;
