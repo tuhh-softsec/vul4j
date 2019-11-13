@@ -218,14 +218,14 @@ public class StatusService {
         if (status.getMessungsId() == null
             || status.getMstId() == null
         ) {
-            return new Response(false, 631, null);
+            return new Response(false, 631, status);
         }
 
         UserInfo userInfo = authorization.getInfo(request);
         Messung messung = defaultRepo.getByIdPlain(
             Messung.class, status.getMessungsId(), Strings.LAND);
         if (lock.isLocked(messung)) {
-            return new Response(false, 697, null);
+            return new Response(false, 697, status);
         }
 
         // Is user authorized to edit status at all?
@@ -235,13 +235,13 @@ public class StatusService {
             Messung.class);
         Messung filteredMessung = (Messung)r.getData();
         if (filteredMessung.getStatusEdit() == false) {
-            return new Response(false, 699, null);
+            return new Response(false, 699, status);
         }
 
         if (messung.getStatus() == null) {
             // set the first status as default
             status.setStatusKombi(1);
-            return new Response(false, 696, null);
+            return new Response(false, 696, status);
         }
         else {
             StatusProtokoll oldStatus = defaultRepo.getByIdPlain(
@@ -342,7 +342,7 @@ public class StatusService {
         @PathParam("id") String id,
         StatusProtokoll status
     ) {
-        return new Response(false, 699, null);
+        return new Response(false, 699, status);
     }
 
     /**
