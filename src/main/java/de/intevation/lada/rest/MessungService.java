@@ -120,10 +120,14 @@ public class MessungService {
     /**
      * Get all Messung objects.
      * <p>
-     * The requested objects can be filtered using a URL parameter named
-     * probeId.
+     * The requested objects can be filtered using the following URL parameters:
+     * parameters:<br>
+     * probeId: probeId to use as filter
+     * page: The page to display in a paginated result grid.<br>
+     * start: The first Probe item.<br>
+     * limit: The count of Probe items.<br>
      * <p>
-     * Example: http://example.com/messung?probeId=[ID]
+     * Example: http://example.com/messung?probeId=[ID]&page=[PAGE]&start=[START]&limit=[LIMIT]
      *
      * @return Response object containing all Messung objects.
      */

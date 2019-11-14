@@ -125,7 +125,6 @@ public class MessprogrammService {
      * <p>
      * The requested objects can be filtered using the following URL
      * parameters:<br>
-     *  * qid: The id of the query.<br>
      *  * page: The page to display in a paginated result grid.<br>
      *  * start: The first Probe item.<br>
      *  * limit: The count of Probe items.<br>
@@ -135,7 +134,7 @@ public class MessprogrammService {
      *  are defined in the query used in the request.
      * <p>
      * Example:
-     * http://example.com/messprogramm?qid=[ID]&page=[PAGE]&start=[START]&limit=[LIMIT]&sort=[{"property":"messprogrammId","direction":"ASC"}]
+     * http://example.com/messprogramm?page=[PAGE]&start=[START]&limit=[LIMIT]]
      *
      * @return Response object containing all Messprogramm objects.
      */

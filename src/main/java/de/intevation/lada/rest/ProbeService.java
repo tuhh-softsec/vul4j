@@ -154,17 +154,15 @@ public class ProbeService {
      * <p>
      * The requested objects can be filtered using the following URL
      * parameters:<br>
-     *  * qid: The id of the query.<br>
      *  * page: The page to display in a paginated result grid.<br>
      *  * start: The first Probe item.<br>
      *  * limit: The count of Probe items.<br>
-     *  * sort: Sort the result ascending(ASC) or descenting (DESC).<br>
      *  <br>
      *  The response data contains a stripped set of Probe objects. The returned fields
      *  are defined in the query used in the request.
      * <p>
      * Example:
-     * http://example.com/probe?qid=[ID]&page=[PAGE]&start=[START]&limit=[LIMIT]&sort=[{"property":"probeId","direction":"ASC"}]
+     * http://example.com/probe?page=[PAGE]&start=[START]&limit=[LIMIT]
      *
      * @return Response object containing all Probe objects.
      */

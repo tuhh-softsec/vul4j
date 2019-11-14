@@ -285,12 +285,8 @@ public class StatusService {
             }
             else {
                 // Not allowed.
-<<<<<<< HEAD
-                return new Response(false, 699, status);            }
-=======
-                return new Response(false, 699, null);
+                return new Response(false, 699, status);
             }
->>>>>>> Update GET request handlers to insert validation results into the models
         }
     }
 
