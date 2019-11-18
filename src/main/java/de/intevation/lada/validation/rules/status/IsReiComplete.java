@@ -47,10 +47,10 @@ public class IsReiComplete implements Rule {
         }
         Violation violation = new Violation();
         if (probe.getReiProgpunktGrpId() == null) {
-            violation.addError("probe#rei", 631);
+            violation.addError("rei_progpunkt_grp_id", 631);
         }
         if (probe.getKtaGruppeId() == null) {
-            violation.addError("probe#rei", 631);
+            violation.addError("kta_gruppe_id", 631);
         }
         if (violation.hasErrors()) {
             return violation;
