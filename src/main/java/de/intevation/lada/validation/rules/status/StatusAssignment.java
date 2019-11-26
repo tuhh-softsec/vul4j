@@ -146,7 +146,7 @@ public class StatusAssignment implements Rule {
         }
 
         /* 12) Hauptprobennummer bei nicht kontinuierlichen §162 Proben + 162SPARSE*/
-        if (probe.getHauptprobenNr() == null && (probe.getProbenartId() == 1 || probe.getDatenbasisId() == 2 || probe.getDatenbasisId() == 10)) {
+        if (probe.getHauptprobenNr() == null && probe.getProbenartId() == 1 && (probe.getDatenbasisId() == 2 || probe.getDatenbasisId() == 10)) {
             violation.addError("hauptprobenNr", 631);
         }
 
