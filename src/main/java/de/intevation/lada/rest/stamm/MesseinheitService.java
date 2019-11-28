@@ -97,9 +97,19 @@ public class MesseinheitService {
             return defaultRepo.getAll(MessEinheit.class, Strings.STAMM);
         }
         String mehId = params.getFirst("mehId");
+
+
         MessEinheit meh = defaultRepo.getByIdPlain(MessEinheit.class, Integer.parseInt(mehId), Strings.STAMM);
+        MessEinheit secMeh = null;
+        if (params.containsKey("secMehId")) {
+            String secMehId = params.getFirst("secMehId");
+            secMeh = defaultRepo.getByIdPlain(MessEinheit.class, Integer.parseInt(secMehId), Strings.STAMM);
+        }
         List<MessEinheit> einheits = new ArrayList<MessEinheit>(meh.getMassEinheitUmrechnungZus().size());
         einheits.add(meh);
+        if (secMeh != null) {
+            einheits.add(secMeh);
+        }
         for (MassEinheitUmrechnung umrechnung : meh.getMassEinheitUmrechnungZus()) {
             einheits.add(umrechnung.getMehVon());
         }

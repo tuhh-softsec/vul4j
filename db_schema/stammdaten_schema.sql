@@ -134,6 +134,7 @@ CREATE TABLE umwelt (
     beschreibung character varying(300),
     umwelt_bereich character varying(80) NOT NULL,
     meh_id integer REFERENCES mess_einheit,
+    meh_id_2 integer REFERENCES mess_einheit,
     UNIQUE (umwelt_bereich)
 );
 

@@ -175,6 +175,11 @@ public class Messung implements Serializable {
         this.nebenprobenNr = (nebenprobenNr == "") ? null : nebenprobenNr;
     }
 
+    @JsonIgnore
+    public Probe getProbe() {
+        return this.probe;
+    }
+
     public Integer getProbeId() {
         return this.probeId;
     }

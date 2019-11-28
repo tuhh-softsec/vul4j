@@ -128,6 +128,11 @@ public class Messwert implements Serializable {
         this.messgroesseId = messgroesseId;
     }
 
+    @JsonIgnore
+    public Messung getMessung() {
+        return this.messung;
+    }
+
     public Integer getMessungsId() {
         return this.messungsId;
     }
