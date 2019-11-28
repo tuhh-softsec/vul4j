@@ -31,6 +31,7 @@ import javax.ws.rs.core.UriInfo;
 
 import de.intevation.lada.factory.ProbeFactory;
 import de.intevation.lada.model.land.Messprogramm;
+import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -188,10 +189,19 @@ public class MessprogrammService {
         @Context HttpServletRequest request,
         @PathParam("id") String id
     ) {
-        return authorization.filter(
-            request,
-            repository.getById(Messprogramm.class, Integer.valueOf(id), Strings.LAND),
-            Messprogramm.class);
+        Response response =
+            authorization.filter(
+                request,
+                repository.getById(Messprogramm.class, Integer.valueOf(id), Strings.LAND),
+                Messprogramm.class);
+        Messprogramm mp = (Messprogramm)response.getData();
+        QueryBuilder<Probe> builder =
+             new QueryBuilder<Probe>(repository.entityManager(Strings.LAND), Probe.class);
+        builder.and("mprId", mp.getId());
+        List<Probe> probes = repository.filterPlain(builder.getQuery(), Strings.LAND);
+        mp.setReferenceCount(probes.size());
+        response.setData(mp);
+        return response;
     }
 
     /**
@@ -432,6 +442,15 @@ public class MessprogrammService {
         Response messprogramm =
             repository.getById(Messprogramm.class, Integer.valueOf(id), Strings.LAND);
         Messprogramm messprogrammObj = (Messprogramm)messprogramm.getData();
+        /* check if probe references to the messprogramm exists */
+        QueryBuilder<Probe> builder =
+                new QueryBuilder<Probe>(repository.entityManager(Strings.LAND), Probe.class);
+        builder.and("mprId",  ((Messprogramm) messprogramm.getData()).getId());
+        List<Probe> probes = repository.filterPlain(builder.getQuery(), Strings.LAND);
+        if (probes.size() > 0) {
+            return new Response(false, 699, null);
+        };
+
         if (!authorization.isAuthorized(
                 request,
                 messprogrammObj,
