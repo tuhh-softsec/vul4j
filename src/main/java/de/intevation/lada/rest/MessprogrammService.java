@@ -119,7 +119,7 @@ public class MessprogrammService {
     private Validator validator;
 
     @Inject
-    private ProbeFactory factory;
+    private ProbeFactory factory;repository
 
     /**
      * Get all Messprogramm objects.
@@ -448,7 +448,7 @@ public class MessprogrammService {
         builder.and("mprId",  ((Messprogramm) messprogramm.getData()).getId());
         List<Probe> probes = repository.filterPlain(builder.getQuery(), Strings.LAND);
         if (probes.size() > 0) {
-            return new Response(false, 699, null);
+            return new Response(false, 606, null);
         };
 
         if (!authorization.isAuthorized(
