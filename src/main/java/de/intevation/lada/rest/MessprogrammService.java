@@ -119,7 +119,7 @@ public class MessprogrammService {
     private Validator validator;
 
     @Inject
-    private ProbeFactory factory;repository
+    private ProbeFactory factory;
 
     /**
      * Get all Messprogramm objects.
