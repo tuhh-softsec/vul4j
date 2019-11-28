@@ -55,7 +55,6 @@ RUN echo "host all  all    0.0.0.0/0  md5" >> \
     /etc/postgresql/11/main/pg_hba.conf
 RUN echo "listen_addresses='*'" >> $PGCONF &&\
     echo "shared_buffers = 1024MB" >> $PGCONF && \
-    echo "maintenance_work_mem = 1024MB" >> $PGCONF && \
     echo "maintenance_work_mem = 512MB" >> $PGCONF
 #
 # Keep log on stderr to be able to use docker logs
