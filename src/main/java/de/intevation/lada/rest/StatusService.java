@@ -296,9 +296,10 @@ public class StatusService {
         Messung messung,
         HttpServletRequest request
     ) {
+        Violation violation = null;
         if (newKombi.getStatusWert().getId() == 1 ||
             newKombi.getStatusWert().getId() == 2 ) {
-            Violation violation = validator.validate(status);
+            violation = validator.validate(status);
             if (violation.hasErrors()) {
                 Response response = new Response(false, 605, status);
                 response.setErrors(violation.getErrors());
@@ -321,6 +322,9 @@ public class StatusService {
         StatusProtokoll created = (StatusProtokoll)response.getData();
         messung.setStatus(created.getId());
         defaultRepo.update(messung, Strings.LAND);
+        if (violation != null) {
+            response.setWarnings(violation.getWarnings());
+        }
         return authorization.filter(
             request,
             response,

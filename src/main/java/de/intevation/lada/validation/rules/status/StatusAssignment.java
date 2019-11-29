@@ -155,7 +155,12 @@ public class StatusAssignment implements Rule {
             Umwelt umwelt = repository.getByIdPlain(Umwelt.class, probe.getUmwId(), "stamm");
             messwerte.forEach(item -> {
                 if (item.getMehId() != umwelt.getMehId() || umwelt.getMehId() == null) {
-                    violation.addError("mehId", 644);
+                    if (umwelt.getSecMehId() != null
+                            && umwelt.getSecMehId().equals(item.getMehId())) {
+                        violation.addWarning("mehId", 636);
+                    } else {
+                        violation.addError("mehId", 644);
+                    }
                 }
             });
         }
@@ -187,10 +192,6 @@ public class StatusAssignment implements Rule {
             }
         }
 
-        if (violation.hasErrors()) {
-            return violation;
-        }
-
-        return null;
+        return violation;
     }
 }
