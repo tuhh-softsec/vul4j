@@ -210,7 +210,9 @@ public class AuditTrailService {
         builder.and("objectId", id);
         builder.and("tableName", "probe");
         builder.or("probeId", id);
-        builder.orIn("ortId", ortIds);
+        if (ortIds.size() > 0) {
+            builder.orIn("ortId", ortIds);
+        }
         builder.orderBy("tstamp", true);
         List<AuditTrailProbe> audit =
             repository.filterPlain(builder.getQuery(), Strings.LAND);
@@ -237,8 +239,8 @@ public class AuditTrailService {
                 if(status.getStatusKombi() == 1
                         && !userInfo.getMessstellen().contains(probe.getMstId())) {
                     continue;
-                }       
-        
+                }
+
             }
             entries.add(createEntry(a, mapper));
         }
@@ -280,10 +282,10 @@ public class AuditTrailService {
             Messung m = repository.getByIdPlain(
                 Messung.class, audit.getObjectId(), Strings.LAND);
             node.put("identifier",
-                (m == null) ? 
-                    "(deleted)" : 
-                    (m.getNebenprobenNr() == null) ? 
-                        m.getExterneMessungsId().toString() : 
+                (m == null) ?
+                    "(deleted)" :
+                    (m.getNebenprobenNr() == null) ?
+                        m.getExterneMessungsId().toString() :
                         m.getNebenprobenNr()
                 );
         }

@@ -119,6 +119,9 @@ public class Messprogramm implements Serializable {
     private String probenahmeMenge;
 
     @Transient
+    private Integer referenceCount;
+
+    @Transient
     @JsonIgnore
     private MultivaluedMap<String, Integer> errors;
 
@@ -338,6 +341,14 @@ public class Messprogramm implements Serializable {
 
     public void setProbenahmeMenge(String probenahmeMenge) {
         this.probenahmeMenge = probenahmeMenge;
+    }
+
+    public Integer getReferenceCount() {
+        return this.referenceCount;
+    }
+
+    public void setReferenceCount(Integer referenceCount) {
+        this.referenceCount = referenceCount;
     }
 
     @JsonProperty

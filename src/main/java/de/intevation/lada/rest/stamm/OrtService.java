@@ -523,7 +523,7 @@ public class OrtService {
         }
         Ort ort = (Ort)response.getData();
         if (getOrtsZuordnungs(ort).size() > 0) {
-            return new Response(false, 699, ort);
+            return new Response(false, 606, ort);
         }
         if (!authorization.isAuthorized(
             request,

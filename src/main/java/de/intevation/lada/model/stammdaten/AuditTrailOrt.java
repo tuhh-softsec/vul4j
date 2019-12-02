@@ -19,7 +19,7 @@ import de.intevation.lada.util.data.JsonObjectType;
 
 /**
  * The persistent class for the audit_trail_ort database table.
- * 
+ *
  */
 @Entity
 @Table(name="audit_trail_ort")
@@ -40,7 +40,7 @@ public class AuditTrailOrt implements Serializable {
     private JsonNode changedFields;
 
     @Column(name="ort_id")
-    private String messungsId;
+    private String ortId;
 
     @Column(name="object_id")
     private Integer objectId;
@@ -87,12 +87,12 @@ public class AuditTrailOrt implements Serializable {
         this.id = id;
     }
 
-    public String getMessungsId() {
-        return this.messungsId;
+    public String getOrtId() {
+        return this.ortId;
     }
 
-    public void setMessungsId(String messungsId) {
-        this.messungsId = messungsId;
+    public void setOrtId(String ortId) {
+        this.ortId = ortId;
     }
 
     public Integer getObjectId() {
