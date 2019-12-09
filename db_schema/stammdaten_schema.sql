@@ -125,7 +125,7 @@ CREATE TABLE mass_einheit_umrechnung
     id serial PRIMARY KEY,
     meh_id_von integer NOT NULL REFERENCES mess_einheit,
     meh_id_zu integer NOT NULL REFERENCES mess_einheit,
-    faktor float,
+    faktor float NOT NULL,
     UNIQUE( meh_id_von, meh_id_zu)
 );
 
