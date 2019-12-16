@@ -68,8 +68,12 @@ public class MessungIdentifier implements Identifier {
                 if (messungen.size() > 1) {
                     return Identified.NEW;
                 }
-                found = messungen.get(0);
-                return Identified.UPDATE;
+                if (messungen.get(0).getNebenprobenNr() == null) {
+                    found = messungen.get(0);
+                    return Identified.UPDATE;
+                } else {
+                    return Identified.NEW;
+                }
             }
             found = messungen.get(0);
             return Identified.UPDATE;
