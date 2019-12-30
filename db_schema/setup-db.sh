@@ -65,6 +65,15 @@ echo create tablefunc extension
 psql $DB_CONNECT_STRING -d $DB_NAME  --command  \
      "CREATE EXTENSION IF NOT EXISTS tablefunc WITH SCHEMA public"
 
+echo create version table
+psql $DB_CONNECT_STRING -d $DB_NAME \
+     -f $DIR/updates/0000/01.add_schema_version.sql
+for d in "$DIR"/updates/* ; do
+  new_ver=$( basename $d )
+done
+psql $DB_CONNECT_STRING -d $DB_NAME --command \
+     "INSERT INTO lada_schema_version(version) VALUES ($new_ver)"
+
 echo create stammdaten schema
 psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/stammdaten_schema.sql
 
@@ -72,7 +81,8 @@ echo create lada schema
 psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/lada_schema.sql
 
 echo create audit-trail table/trigger/views
-psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/audit.sql
+psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/audit_stamm.sql
+psql -q $DB_CONNECT_STRING -d $DB_NAME -f $DIR/audit_land.sql
 
 echo set grants
 psql $DB_CONNECT_STRING -d $DB_NAME --command \

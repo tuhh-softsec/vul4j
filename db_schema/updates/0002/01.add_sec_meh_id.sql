@@ -1,0 +1,1 @@
+ALTER TABLE stamm.umwelt ADD COLUMN meh_id_2 INTEGER REFERENCES stamm.mess_einheit;

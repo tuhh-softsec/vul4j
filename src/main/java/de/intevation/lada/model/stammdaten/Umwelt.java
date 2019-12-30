@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 
 /**
@@ -12,6 +13,7 @@ import javax.persistence.Id;
  * 
  */
 @Entity
+@Table(name="umwelt", schema="stamm")
 public class Umwelt implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -22,6 +24,9 @@ public class Umwelt implements Serializable {
 
     @Column(name="meh_id")
     private Integer mehId;
+
+    @Column(name="meh_id_2")
+    private Integer secMehId;
 
     @Column(name="umwelt_bereich")
     private String umweltBereich;
@@ -51,6 +56,14 @@ public class Umwelt implements Serializable {
 
     public void setMehId(Integer mehId) {
         this.mehId = mehId;
+    }
+
+    public Integer getSecMehId() {
+        return this.secMehId;
+    }
+
+    public void setSecMehId(Integer secMehId) {
+        this.secMehId = secMehId;
     }
 
     public String getUmweltBereich() {

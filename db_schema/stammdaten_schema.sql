@@ -123,9 +123,10 @@ CREATE TABLE mess_einheit (
 CREATE TABLE mass_einheit_umrechnung
 (
     id serial PRIMARY KEY,
-    meh_id_von integer,
-    meh_id_zu integer,
-    faktor float
+    meh_id_von integer NOT NULL REFERENCES mess_einheit,
+    meh_id_zu integer NOT NULL REFERENCES mess_einheit,
+    faktor float NOT NULL,
+    UNIQUE( meh_id_von, meh_id_zu)
 );
 
 
@@ -134,6 +135,7 @@ CREATE TABLE umwelt (
     beschreibung character varying(300),
     umwelt_bereich character varying(80) NOT NULL,
     meh_id integer REFERENCES mess_einheit,
+    meh_id_2 integer REFERENCES mess_einheit,
     UNIQUE (umwelt_bereich)
 );
 

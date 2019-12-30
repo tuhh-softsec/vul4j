@@ -34,7 +34,7 @@ RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main" \
 RUN curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-            postgresql-11-postgis-2.5 postgresql-11-postgis-scripts postgis
+            postgresql-11-postgis-2.5 postgresql-11-postgis-2.5-scripts postgis
 
 #
 # Set environment variables
@@ -55,7 +55,6 @@ RUN echo "host all  all    0.0.0.0/0  md5" >> \
     /etc/postgresql/11/main/pg_hba.conf
 RUN echo "listen_addresses='*'" >> $PGCONF &&\
     echo "shared_buffers = 1024MB" >> $PGCONF && \
-    echo "maintenance_work_mem = 1024MB" >> $PGCONF && \
     echo "maintenance_work_mem = 512MB" >> $PGCONF
 #
 # Keep log on stderr to be able to use docker logs

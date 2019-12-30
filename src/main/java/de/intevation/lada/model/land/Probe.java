@@ -8,9 +8,17 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+import javax.ws.rs.core.MultivaluedMap;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hibernate.annotations.DynamicInsert;
+
+import de.intevation.lada.model.stammdaten.Umwelt;
 
 
 /**
@@ -86,6 +94,10 @@ public class Probe implements Serializable {
     @Column(name="tree_modified", insertable=false, updatable=false)
     private Timestamp treeModified;
 
+    @OneToOne
+    @JoinColumn(name="umw_id", insertable=false, updatable=false)
+    private Umwelt umwelt;
+
     @Column(name="umw_id")
     private String umwId;
 
@@ -100,6 +112,14 @@ public class Probe implements Serializable {
 
     @Transient
     private boolean owner;
+
+    @Transient
+    @JsonIgnore
+    private MultivaluedMap<String, Integer> errors;
+
+    @Transient
+    @JsonIgnore
+    private MultivaluedMap<String, Integer> warnings;
 
     public Probe() {
     }
@@ -280,6 +300,11 @@ public class Probe implements Serializable {
         this.treeModified = treeModified;
     }
 
+    @JsonIgnore
+    public Umwelt getUmwelt() {
+        return this.umwelt;
+    }
+
     public String getUmwId() {
         return this.umwId;
     }
@@ -318,5 +343,25 @@ public class Probe implements Serializable {
 
     public void setOwner(boolean owner) {
         this.owner = owner;
+    }
+
+    @JsonProperty
+    public MultivaluedMap<String, Integer> getErrors() {
+        return this.errors;
+    }
+
+    @JsonIgnore
+    public void setErrors(MultivaluedMap<String, Integer> errors) {
+        this.errors = errors;
+    }
+
+    @JsonProperty
+    public MultivaluedMap<String, Integer> getWarnings() {
+        return this.warnings;
+    }
+
+    @JsonIgnore
+    public void setWarnings(MultivaluedMap<String, Integer> warnings) {
+        this.warnings = warnings;
     }
 }

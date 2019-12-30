@@ -31,8 +31,6 @@ import de.intevation.lada.lock.ObjectLocker;
 import de.intevation.lada.model.land.Messung;
 import de.intevation.lada.model.land.Messwert;
 import de.intevation.lada.model.land.Probe;
-import de.intevation.lada.model.stammdaten.MassEinheitUmrechnung;
-import de.intevation.lada.model.stammdaten.MessEinheit;
 import de.intevation.lada.model.stammdaten.Umwelt;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
@@ -165,10 +163,25 @@ public class MesswertService {
                 defaultRepo.entityManager(Strings.LAND),
                 Messwert.class);
         builder.and("messungsId", messungId);
-        return authorization.filter(
+
+        Response r = authorization.filter(
             request,
             defaultRepo.filter(builder.getQuery(), Strings.LAND),
             Messwert.class);
+        if (r.getSuccess() == true) {
+            @SuppressWarnings("unchecked")
+            List<Messwert> messwerts = (List<Messwert>) r.getData();
+            for (Messwert messwert: messwerts) {
+                Violation violation = validator.validate(messwert);
+                if (violation.hasErrors() || violation.hasWarnings()) {
+                    messwert.setErrors(violation.getErrors());
+                    messwert.setWarnings(violation.getWarnings());
+                }
+            }
+            return new Response(true, 200, messwerts);
+        } else {
+            return r;
+        }
     }
 
     /**
@@ -384,7 +397,7 @@ public class MesswertService {
         ) {
             return new Response(false, 699, null);
         }
-            
+
         Probe probe = defaultRepo.getByIdPlain(Probe.class, messung.getProbeId(), Strings.LAND);
         if (probe.getUmwId() == null || probe.getUmwId().equals("")) {
             return new Response(true, 696, null);

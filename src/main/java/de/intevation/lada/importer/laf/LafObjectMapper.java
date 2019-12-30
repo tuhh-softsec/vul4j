@@ -26,6 +26,7 @@ import java.util.Map.Entry;
 import javax.inject.Inject;
 import javax.management.modelmbean.InvalidTargetObjectTypeException;
 
+import de.intevation.lada.model.stammdaten.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -44,27 +45,6 @@ import de.intevation.lada.model.land.Ortszuordnung;
 import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.model.land.StatusProtokoll;
 import de.intevation.lada.model.land.ZusatzWert;
-import de.intevation.lada.model.stammdaten.Datenbasis;
-import de.intevation.lada.model.stammdaten.ImporterConfig;
-import de.intevation.lada.model.stammdaten.KoordinatenArt;
-import de.intevation.lada.model.stammdaten.MessEinheit;
-import de.intevation.lada.model.stammdaten.MessMethode;
-import de.intevation.lada.model.stammdaten.MessStelle;
-import de.intevation.lada.model.stammdaten.Messgroesse;
-import de.intevation.lada.model.stammdaten.MessprogrammKategorie;
-import de.intevation.lada.model.stammdaten.MessprogrammTransfer;
-import de.intevation.lada.model.stammdaten.Ort;
-import de.intevation.lada.model.stammdaten.Ortszusatz;
-import de.intevation.lada.model.stammdaten.ProbenZusatz;
-import de.intevation.lada.model.stammdaten.Probenart;
-import de.intevation.lada.model.stammdaten.Probenehmer;
-import de.intevation.lada.model.stammdaten.ReiProgpunktGruppe;
-import de.intevation.lada.model.stammdaten.Staat;
-import de.intevation.lada.model.stammdaten.StatusErreichbar;
-import de.intevation.lada.model.stammdaten.StatusKombi;
-import de.intevation.lada.model.stammdaten.Umwelt;
-import de.intevation.lada.model.stammdaten.Verwaltungseinheit;
-import de.intevation.lada.model.stammdaten.Zeitbasis;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -153,13 +133,40 @@ public class LafObjectMapper {
         currentWarnings = new ArrayList<>();
         currentErrors = new ArrayList<>();
         Probe probe = new Probe();
+        String netzbetreiberId = null;
+
         Iterator<ImporterConfig> importerConfig = config.iterator();
         while (importerConfig.hasNext()) {
             ImporterConfig current = importerConfig.next();
-            if ("zeitbasis".equals(current.getName())) {
+            if ("ZEITBASIS".equals(current.getName().toUpperCase())) {
                 currentZeitbasis = Integer.valueOf(current.getToValue());
             }
+            if ("PROBE".equals(current.getName().toUpperCase()) &&
+                    "MSTID".equals(current.getAttribute().toUpperCase()) &&
+                    "DEFAULT".equals(current.getAction().toUpperCase())) {
+                probe.setMstId(current.getToValue());
+            }
         }
+        if (object.getAttributes().containsKey("MESSSTELLE")) {
+            probe.setMstId(object.getAttributes().get("MESSSTELLE"));
+        }
+        if (probe.getMstId() == null){
+            currentErrors.add(new ReportItem( "MESSSTELLE", "", 673));
+            errors.put(object.getIdentifier(), new ArrayList<ReportItem>(currentErrors));
+            return;
+        } else {
+            MessStelle mst = repository.getByIdPlain(
+                    MessStelle.class,
+                    probe.getMstId(),
+                    Strings.STAMM);
+            if ( mst == null) {
+                currentErrors.add(new ReportItem("MESSSTELLE", probe.getMstId(), 675));
+                errors.put(object.getIdentifier(), new ArrayList<ReportItem>(currentErrors));
+                return;
+            }
+            netzbetreiberId = mst.getNetzbetreiberId();
+        }
+
         if (object.getAttributes().containsKey("ZEITBASIS")) {
             List<ImporterConfig> cfg = getImporterConfigByAttributeUpper("ZEITBASIS");
             String attribute = object.getAttributes().get("ZEITBASIS");
@@ -194,7 +201,7 @@ public class LafObjectMapper {
 
         // Fill the object with data
         for (Entry<String, String> attribute : object.getAttributes().entrySet()) {
-            addProbeAttribute(attribute, probe);
+            addProbeAttribute(attribute, probe, netzbetreiberId);
         }
         doDefaults(probe);
         doConverts(probe);
@@ -673,9 +680,6 @@ public class LafObjectMapper {
                 } else {
                     merger.mergeMessung(old, messung);
                     newMessung = old;
-                    if (object.getAttributes().containsKey("BEARBEITUNGSSTATUS")) {
-                        createStatusProtokoll(object.getAttributes().get("BEARBEITUNGSSTATUS"), newMessung, mstId);
-                    }
                 }
             }
             else if (i == Identified.REJECT) {
@@ -702,9 +706,6 @@ public class LafObjectMapper {
                 newMessung = ((Messung)created.getData());
                 created = repository.getById(Messung.class, newMessung.getId(), Strings.LAND);
                 newMessung = ((Messung)created.getData());
-                /*if (object.getAttributes().containsKey("BEARBEITUNGSSTATUS")) {
-                    createStatusProtokoll(object.getAttributes().get("BEARBEITUNGSSTATUS"), newMessung, mstId);
-                }*/
             }
         }
         catch(InvalidTargetObjectTypeException e) {
@@ -782,10 +783,10 @@ public class LafObjectMapper {
             }
         }
 
-	//Validate / Create Status
-	if (object.getAttributes().containsKey("BEARBEITUNGSSTATUS")) {
-          createStatusProtokoll(object.getAttributes().get("BEARBEITUNGSSTATUS"), newMessung, mstId);
-	}
+        //Validate / Create Status
+        if (object.getAttributes().containsKey("BEARBEITUNGSSTATUS")) {
+              createStatusProtokoll(object.getAttributes().get("BEARBEITUNGSSTATUS"), newMessung, mstId);
+        }
 
     }
 
@@ -1076,7 +1077,7 @@ public class LafObjectMapper {
             currentWarnings.add(new ReportItem("status#" + statusStufe, statusWert, 675));
             return false;
         }
-       // get current status kombi
+        // get current status kombi
         StatusProtokoll currentStatus = repository.getByIdPlain(
             StatusProtokoll.class, messung.getStatus(), Strings.LAND);
         StatusKombi currentKombi = repository.getByIdPlain(
@@ -1094,17 +1095,20 @@ public class LafObjectMapper {
         if (erreichbar.isEmpty()) {
             currentWarnings.add(new ReportItem("status#" + statusStufe, statusWert, 675));
             return false;
-        } else {
-                Violation status_violation = statusValidator.validate(currentStatus);
+        }
 
-               if (status_violation.hasErrors()) {
-                  status_violation.getErrors().forEach((k,v)->{
+	    // Validator: StatusAssignment
+        StatusProtokoll tmpStatus = new StatusProtokoll();
+        tmpStatus = currentStatus;
+        tmpStatus.setStatusKombi(newKombi);
+        Violation status_violation = statusValidator.validate(tmpStatus);
+
+        if (status_violation.hasErrors()) {
+            status_violation.getErrors().forEach((k,v)->{
                   currentErrors.add(new ReportItem("Status ",k+v, 631));
-                  });
-
-               return false;
-	   }
-	}
+            });
+            return false;
+        }
 
         // check auth
         MessStelle messStelle = repository.getByIdPlain(MessStelle.class, mstId, Strings.STAMM);
@@ -1120,6 +1124,11 @@ public class LafObjectMapper {
             newStatus.setMstId(mstId);
             newStatus.setStatusKombi(newKombi);
             Response r = repository.create(newStatus, Strings.LAND);
+            if (newKombi == 0 || newKombi == 9 || newKombi == 13) {
+                messung.setFertig(false);
+            } else {
+                messung.setFertig(true);
+            }
             messung.setStatus(newStatus.getId());
             repository.update(messung, Strings.LAND);
             return true;
@@ -1325,7 +1334,7 @@ public class LafObjectMapper {
         String hLand = "";
         String staatFilter = "";
         if (attributes.get(type + "HERKUNFTSLAND_S") != null && !attributes.get(type + "HERKUNFTSLAND_S").equals("")) {
-            staatFilter = "id";
+            staatFilter = "hklId";
             key = "HERKUNFTSLAND_S";
             hLand = attributes.get(type + "HERKUNFTSLAND_S");
         }
@@ -1450,7 +1459,7 @@ public class LafObjectMapper {
         logger.debug("umw: " + probe.getUmwId());
     }
 
-    private void addProbeAttribute(Entry<String, String> attribute, Probe probe) {
+    private void addProbeAttribute(Entry<String, String> attribute, Probe probe, String netzbetreiberId) {
         String key = attribute.getKey();
         String value = attribute.getValue();
 
@@ -1508,29 +1517,17 @@ public class LafObjectMapper {
             currentWarnings.add(new ReportItem(key, value.toString(), 672));
         }
 
-        if ("PROBE_ID".equals(key) && !value.toString().equals("")) {
+        if ("PROBE_ID".equals(key)) {
             probe.setExterneProbeId(value);
         }
 
-        if ("HAUPTPROBENNUMMER".equals(key) && !value.toString().equals("")) {
+        if ("HAUPTPROBENNUMMER".equals(key)) {
             probe.setHauptprobenNr(value.toString());
         }
 
         if ("MPR_ID".equals(key)) {
             Integer v = Integer.valueOf(value.toString());
             probe.setMprId(v);
-        }
-
-        if ("MESSSTELLE".equals(key) && !value.equals("")) {
-            MessStelle mst = repository.getByIdPlain(
-                MessStelle.class,
-                value.toString(),
-                Strings.STAMM);
-            if ( mst == null) {
-                currentWarnings.add(new ReportItem(key, value.toString(), 675));
-                return;
-            }
-            probe.setMstId(value.toString());
         }
 
         if ("MESSLABOR".equals(key) && !value.equals("")) {
@@ -1584,17 +1581,35 @@ public class LafObjectMapper {
             }
         }
 
+        if ("ERZEUGER".equals(key) && !value.equals("")) {
+            QueryBuilder<DatensatzErzeuger> builder =
+                    new QueryBuilder<DatensatzErzeuger>(
+                            repository.entityManager(Strings.STAMM),
+                            DatensatzErzeuger.class);
+            builder.and("netzbetreiberId", netzbetreiberId);
+            builder.and("datensatzErzeugerId", value);
+            List<DatensatzErzeuger> datensatzErzeuger =
+                    (List<DatensatzErzeuger>)repository.filterPlain(
+                            builder.getQuery(),
+                            Strings.STAMM);
+            if (datensatzErzeuger == null || datensatzErzeuger.isEmpty()) {
+                currentWarnings.add(new ReportItem(key, value.toString(), 675));
+                return;
+            }
+            probe.setErzeugerId(datensatzErzeuger.get(0).getId());
+        }
+
         if ("MESSPROGRAMM_LAND".equals(key) && !value.equals("")) {
             QueryBuilder<MessprogrammKategorie> builder =
-                new QueryBuilder<MessprogrammKategorie>(
-                    repository.entityManager(Strings.STAMM),
-                    MessprogrammKategorie.class);
-            builder.or("netzbetreiberId", userInfo.getNetzbetreiber());
+                    new QueryBuilder<MessprogrammKategorie>(
+                            repository.entityManager(Strings.STAMM),
+                            MessprogrammKategorie.class);
+            builder.and("netzbetreiberId", netzbetreiberId);
             builder.and("code", value);
             List<MessprogrammKategorie> kategorie =
-                (List<MessprogrammKategorie>)repository.filterPlain(
-                    builder.getQuery(),
-                    Strings.STAMM);
+                    (List<MessprogrammKategorie>)repository.filterPlain(
+                            builder.getQuery(),
+                            Strings.STAMM);
             if (kategorie == null || kategorie.isEmpty()) {
                 currentWarnings.add(new ReportItem(key, value.toString(), 675));
                 return;
@@ -1604,15 +1619,15 @@ public class LafObjectMapper {
 
         if ("PROBENAHMEINSTITUTION".equals(key) && !value.equals("")) {
             QueryBuilder<Probenehmer> builder =
-                new QueryBuilder<Probenehmer>(
-                    repository.entityManager(Strings.STAMM),
-                    Probenehmer.class);
-            builder.or("netzbetreiberId", userInfo.getNetzbetreiber());
+                    new QueryBuilder<Probenehmer>(
+                            repository.entityManager(Strings.STAMM),
+                            Probenehmer.class);
+            builder.and("netzbetreiberId", netzbetreiberId);
             builder.and("prnId", value);
             List<Probenehmer> prn =
-                (List<Probenehmer>)repository.filterPlain(
-                    builder.getQuery(),
-                    Strings.STAMM);
+                    (List<Probenehmer>)repository.filterPlain(
+                            builder.getQuery(),
+                            Strings.STAMM);
             if (prn == null || prn.isEmpty()) {
                 currentWarnings.add(new ReportItem(key, value.toString(), 675));
                 return;

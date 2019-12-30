@@ -11,6 +11,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+import javax.ws.rs.core.MultivaluedMap;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 /**
@@ -65,6 +69,14 @@ public class Messwert implements Serializable {
     @Transient
     private Timestamp parentModified;
 
+    @Transient
+    @JsonIgnore
+    private MultivaluedMap<String, Integer> errors;
+
+    @Transient
+    @JsonIgnore
+    private MultivaluedMap<String, Integer> warnings;
+
     public Messwert() {
     }
 
@@ -114,6 +126,11 @@ public class Messwert implements Serializable {
 
     public void setMessgroesseId(Integer messgroesseId) {
         this.messgroesseId = messgroesseId;
+    }
+
+    @JsonIgnore
+    public Messung getMessung() {
+        return this.messung;
     }
 
     public Integer getMessungsId() {
@@ -193,5 +210,25 @@ public class Messwert implements Serializable {
 
     public void setParentModified(Timestamp parentModified) {
         this.parentModified = parentModified;
+    }
+
+    @JsonProperty
+    public MultivaluedMap<String, Integer> getErrors() {
+        return this.errors;
+    }
+
+    @JsonIgnore
+    public void setErrors(MultivaluedMap<String, Integer> errors) {
+        this.errors = errors;
+    }
+
+    @JsonProperty
+    public MultivaluedMap<String, Integer> getWarnings() {
+        return this.warnings;
+    }
+
+    @JsonIgnore
+    public void setWarnings(MultivaluedMap<String, Integer> warnings) {
+        this.warnings = warnings;
     }
 }

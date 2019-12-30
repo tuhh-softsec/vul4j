@@ -3,7 +3,7 @@
 -- which is licensed by "The PostgreSQL License", effectively equivalent to the BSD
 -- license.
 
-SET search_path TO land;
+SET search_path TO stamm;
 CREATE TABLE audit_trail(
       id bigserial primary key,
       table_name varchar(50) not null,
@@ -33,7 +33,7 @@ COMMENT ON OPERATOR - (jsonb, jsonb) IS 'delete matching pairs from left operand
 
 CREATE OR REPLACE FUNCTION if_modified_func() RETURNS TRIGGER AS $body$
 DECLARE
-    audit_row land.audit_trail;
+    audit_row audit_trail;
     include_values boolean;
     log_diffs boolean;
     h_old jsonb;
@@ -41,7 +41,7 @@ DECLARE
     excluded_cols text[] = ARRAY[]::text[];
 BEGIN
     IF TG_WHEN <> 'AFTER' THEN
-        RAISE EXCEPTION 'land.if_modified_func() may only run as an AFTER trigger';
+        RAISE EXCEPTION 'if_modified_func() may only run as an AFTER trigger';
     END IF;
 
     -- Do nothing on delete.
@@ -50,7 +50,7 @@ BEGIN
     END IF;
 
     audit_row = ROW(
-        nextval('land.audit_trail_id_seq'), -- id
+        nextval('audit_trail_id_seq'), -- id
         TG_TABLE_NAME::varchar,             -- table_name
         current_timestamp,                  -- tstamp
         substring(TG_OP,1,1),               -- action
@@ -73,16 +73,16 @@ BEGIN
         audit_row.row_data = row_to_json(NEW)::JSONB;
         audit_row.changed_fields = jsonb_strip_nulls(row_to_json(NEW)::JSONB - excluded_cols);
     ELSE
-        RAISE EXCEPTION '[land.if_modified_func] - Trigger func added as trigger for unhandled case: %, %',TG_OP, TG_LEVEL;
+        RAISE EXCEPTION '[if_modified_func] - Trigger func added as trigger for unhandled case: %, %',TG_OP, TG_LEVEL;
         RETURN NULL;
     END IF;
-    INSERT INTO land.audit_trail VALUES (audit_row.*);
+    INSERT INTO audit_trail VALUES (audit_row.*);
     RETURN NULL;
 END;
 $body$
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = land, public;
+SET search_path = stamm, public;
 
 CREATE OR REPLACE FUNCTION audit_table(
     target_table regclass,
@@ -105,7 +105,7 @@ BEGIN
         END IF;
         _q_txt = 'CREATE TRIGGER audit_trigger_row AFTER INSERT OR UPDATE OR DELETE ON ' ||
                  quote_ident(target_table::TEXT) ||
-                 ' FOR EACH ROW EXECUTE PROCEDURE land.if_modified_func(' ||
+                 ' FOR EACH ROW EXECUTE PROCEDURE if_modified_func(' ||
                  quote_literal(audit_query_text) || _ignored_cols_snip || ');';
         RAISE NOTICE '%',_q_txt;
         EXECUTE _q_txt;
@@ -115,7 +115,7 @@ BEGIN
 
     _q_txt = 'CREATE TRIGGER audit_trigger_stm AFTER ' || stm_targets || ' ON ' ||
              target_table ||
-             ' FOR EACH STATEMENT EXECUTE PROCEDURE land.if_modified_func('||
+             ' FOR EACH STATEMENT EXECUTE PROCEDURE if_modified_func('||
              quote_literal(audit_query_text) || ');';
     RAISE NOTICE '%',_q_txt;
     EXECUTE _q_txt;
@@ -150,28 +150,10 @@ COMMENT ON FUNCTION audit_table(regclass) IS $body$
 Add auditing support to the given table. Row-level changes will be logged with full client query text. No cols are ignored.
 $body$;
 
-CREATE INDEX probe_id_ndx ON audit_trail(cast("row_data"->>'probe_id' AS int));
-CREATE INDEX messung_id_ndx ON audit_trail(cast("row_data"->>'messung_id' AS int));
+CREATE INDEX ort_id_ndx ON audit_trail(cast("row_data"->>'ort_id' AS varchar));
 
--- View for probe audit trail
-CREATE OR REPLACE VIEW audit_trail_probe AS
-SELECT
-    id,
-    table_name,
-    action,
-    object_id,
-    tstamp,
-    cast(row_data ->> 'messungs_id' AS integer) AS messungs_id,
-    coalesce(cast(row_data ->> 'probe_id' AS integer),
-        (SELECT probe_id FROM messung WHERE id = cast(
-            row_data ->> 'messungs_id' AS integer))) AS probe_id,
-    row_data,
-    changed_fields
-FROM audit_trail;
-
-
--- View for messung audit trail
-CREATE OR REPLACE VIEW audit_trail_messung AS
+-- View for ort audit trail
+CREATE OR REPLACE VIEW audit_trail_ort AS
 SELECT audit_trail.id,
     audit_trail.table_name,
     audit_trail.tstamp,
@@ -179,16 +161,9 @@ SELECT audit_trail.id,
     audit_trail.object_id,
     audit_trail.row_data,
     audit_trail.changed_fields,
-    cast(row_data ->> 'messungs_id' AS int) AS messungs_id
+    cast(row_data ->> 'id' AS varchar) AS ort_id
 FROM audit_trail;
 
-
-SELECT audit_table('probe', true, false, '{id, tree_modified, letzte_aenderung}'::text[]);
-SELECT audit_table('messung', true, false, '{id, probe_id, tree_modified, letzte_aenderung, status}'::text[]);
-SELECT audit_table('messwert', true, false, '{id, messungs_id, tree_modified, letzte_aenderung}'::text[]);
-SELECT audit_table('kommentar_p', true, false, '{id, probe_id, tree_modified, letzte_aenderung}'::text[]);
-SELECT audit_table('kommentar_m', true, false, '{id, messungs_id, tree_modified, letzte_aenderung}'::text[]);
-SELECT audit_table('zusatz_wert', true, false, '{id, probe_id, tree_modified, letzte_aenderung}'::text[]);
-SELECT audit_table('ortszuordnung', true, false, '{id, probe_id, tree_modified, letzte_aenderung}'::text[]);
+SELECT audit_table('ort', true, false, '{id, ort_id, tree_modified, letzte_aenderung}'::text[]);
 
 SET search_path TO public;

@@ -466,12 +466,15 @@ public class JsonExporter implements Exporter {
                 Strings.STAMM);
             ((ObjectNode)oNode).put("gem",
                 ve == null ? "" : ve.getBezeichnung());
-            Staat staat = repository.getByIdPlain(
-                Staat.class,
-                oNode.get("staatId").asInt(),
-                Strings.STAMM);
-            ((ObjectNode)oNode).put("staat",
-                staat == null ? "" : staat.getStaat());
+            if (oNode.get("staatId").isNull()) {
+                ((ObjectNode) oNode).put("staat", "");
+            } else {
+                Staat staat = repository.getByIdPlain(
+                        Staat.class,
+                        oNode.get("staatId").asInt(),
+                        Strings.STAMM);
+                ((ObjectNode) oNode).put("staat", staat.getStaat());
+            }
             ((ObjectNode)node).set("ort", oNode);
         } catch (IOException e) {
             logger.debug("Could not export Ort for Ortszuordnung "

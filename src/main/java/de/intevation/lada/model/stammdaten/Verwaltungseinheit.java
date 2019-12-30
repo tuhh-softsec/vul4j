@@ -47,6 +47,8 @@ public class Verwaltungseinheit implements Serializable {
 
     private String regbezirk;
 
+
+    @Type(type = "jts_geometry")
     @Column(columnDefinition="geometry(Point, 4326)")
     private Point mittelpunkt;
 

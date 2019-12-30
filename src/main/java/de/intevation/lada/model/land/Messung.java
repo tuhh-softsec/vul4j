@@ -11,6 +11,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+import javax.ws.rs.core.MultivaluedMap;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hibernate.annotations.DynamicInsert;
 
@@ -60,6 +64,10 @@ public class Messung implements Serializable {
 
     private Integer status;
 
+    @OneToOne
+    @JoinColumn(name="status", insertable=false, updatable=false)
+    private StatusProtokoll statusProtokoll;
+
     @Column(name="tree_modified", insertable=false, updatable=false)
     private Timestamp treeModified;
 
@@ -77,6 +85,14 @@ public class Messung implements Serializable {
 
     @Transient
     private Timestamp parentModified;
+
+    @Transient
+    @JsonIgnore
+    private MultivaluedMap<String, Integer> errors;
+
+    @Transient
+    @JsonIgnore
+    private MultivaluedMap<String, Integer> warnings;
 
     @Transient
     private boolean owner;
@@ -157,6 +173,11 @@ public class Messung implements Serializable {
 
     public void setNebenprobenNr(String nebenprobenNr) {
         this.nebenprobenNr = (nebenprobenNr == "") ? null : nebenprobenNr;
+    }
+
+    @JsonIgnore
+    public Probe getProbe() {
+        return this.probe;
     }
 
     public Integer getProbeId() {
@@ -246,6 +267,26 @@ public class Messung implements Serializable {
         this.owner = owner;
     }
 
+    @JsonProperty
+    public MultivaluedMap<String, Integer> getErrors() {
+        return this.errors;
+    }
+
+    @JsonIgnore
+    public void setErrors(MultivaluedMap<String, Integer> errors) {
+        this.errors = errors;
+    }
+
+    @JsonProperty
+    public MultivaluedMap<String, Integer> getWarnings() {
+        return this.warnings;
+    }
+
+    @JsonIgnore
+    public void setWarnings(MultivaluedMap<String, Integer> warnings) {
+        this.warnings = warnings;
+    }
+
     /**
      * @return the readonly
      */
@@ -258,6 +299,14 @@ public class Messung implements Serializable {
      */
     public void setReadonly(boolean readonly) {
         this.readonly = readonly;
+    }
+
+    public StatusProtokoll getStatusProtokoll() {
+        return this.statusProtokoll;
+    }
+
+    public void setStatusProtokoll (StatusProtokoll statusProtokoll) {
+        this.statusProtokoll = statusProtokoll;
     }
 
 }

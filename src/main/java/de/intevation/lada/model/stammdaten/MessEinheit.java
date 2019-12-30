@@ -9,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -42,6 +43,13 @@ public class MessEinheit implements Serializable {
 
     @Column(name="umrechnungs_faktor_eudf")
     private Long umrechnungsFaktorEudf;
+
+    /**
+     * Attribute used to distinguish between primary and secondary messeinheit
+     * records.
+     */
+    @Transient
+    private Boolean primary;
 
     public MessEinheit() {
     }
@@ -88,5 +96,13 @@ public class MessEinheit implements Serializable {
 
     public List<MassEinheitUmrechnung> getMassEinheitUmrechnungZus() {
         return this.massEinheitUmrechnungZus;
+    }
+
+    public Boolean getPrimary() {
+        return this.primary;
+    }
+
+    public void setPrimary(Boolean primary) {
+        this.primary = primary;
     }
 }
