@@ -18,3 +18,8 @@ CREATE TABLE land.tagzuordnung
         ON DELETE CASCADE,
     UNIQUE (probe_id, tag_id)
 );
+
+GRANT USAGE
+    ON ALL SEQUENCES IN SCHEMA stamm, land TO lada;
+GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES
+    ON ALL TABLES IN SCHEMA stamm, land TO lada;
