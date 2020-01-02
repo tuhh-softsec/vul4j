@@ -31,6 +31,9 @@ public class TagZuordnung {
     @Column(name="probe_id")
     private Integer probeId;
 
+    @Column(name="messung_id")
+    private Integer messungId;
+
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name="tag_id")
     private Tag tag;
@@ -44,6 +47,14 @@ public class TagZuordnung {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getMessungId() {
+        return this.messungId;
+    }
+
+    public void setMessungId(Integer messungId) {
+        this.messungId = messungId;
     }
 
     public Integer getProbeId() {

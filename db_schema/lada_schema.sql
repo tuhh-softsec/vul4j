@@ -408,6 +408,7 @@ CREATE TABLE tagzuordnung
 (
     id serial PRIMARY KEY,
     probe_id integer,
+    messung_id integer,
     tag_id integer,
     datum timestamp without time zone DEFAULT now(),
     CONSTRAINT tagzuordnung_tag_fkey FOREIGN KEY (tag_id)
@@ -416,7 +417,11 @@ CREATE TABLE tagzuordnung
     CONSTRAINT tagzuordnung_probe_fkey FOREIGN KEY (probe_id)
         REFERENCES land.probe (id) MATCH SIMPLE
         ON DELETE CASCADE,
-    UNIQUE (probe_id, tag_id)
+    CONSTRAINT tagzuordnung_messung_fkey FOREIGN KEY (messung_id)
+        REFERENCES land.messung (id) MATCH SIMPLE
+        ON DELETE CASCADE,
+    UNIQUE (probe_id, tag_id),
+    UNIQUE (messung_id, tag_id)
 );
 --
 -- Name: messung_probe_id_idx; Type: INDEX; Schema: land; Owner: -; Tablespace:
