@@ -28,6 +28,8 @@ import org.opengis.referencing.operation.TransformException;
 public class KdaUtil {
     ObjectMapper builder;
     public ObjectNode transform(int kdaFrom, int kdaTo, String x, String y) {
+        x = x.replace(',','.');
+        y = y.replace(',','.');
         builder = new ObjectMapper();
         Transform t;
         switch (kdaFrom) {
