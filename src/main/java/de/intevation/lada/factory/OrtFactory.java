@@ -199,12 +199,15 @@ public class OrtFactory {
             ort.setKdaId(staat.getKdaId());
             ort.setKoordXExtern(staat.getKoordXExtern());
             ort.setKoordYExtern(staat.getKoordYExtern());
-            ort.setKurztext(staat.getStaat());
             ort.setLangtext(staat.getStaat());
             ort.setOrtTyp(5);
             if (staat.getStaatIso() != null) {
                 ort.setOrtId("Staat_" + staat.getStaatIso());
+            } else {
+                ort.setOrtId("Staat_" + staat.getId());
             }
+            ort.setOrtTyp(5);
+            ort.setKurztext(ort.getOrtId());
             ort.setBerichtstext(staat.getStaat());
             transformCoordinates(ort);
             hasStaat = true;
