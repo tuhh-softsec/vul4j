@@ -232,18 +232,14 @@ public class ProbeFactory {
         }
 
         /**
-         * @return Calendar Returns a Date object representing the time value
-         * (millisecond offset from the Epoch) of this intervall's
-         * sub-intervall start
+         * @return Calendar Get this intervall's sub-intervall start
          */
         public Calendar getFrom() {
             return adjustSubIntField((Calendar)from.clone(), teilVon);
         }
 
         /**
-         * @return Calendar Returns a Date object representing the time value
-         * (millisecond offset from the Epoch) of this intervall's
-         * sub-intervall end
+         * @return Calendar Get this intervall's sub-intervall end
          */
         public Calendar getTo() {
             return adjustSubIntField((Calendar)from.clone(), teilBis);
