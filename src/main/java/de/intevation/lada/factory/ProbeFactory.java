@@ -157,6 +157,13 @@ public class ProbeFactory {
                         intervallFactor - startIntField % intervallFactor
                     );
                 }
+
+                /* Ensure we do not generate Probe objects with
+                 * begin before start, which might otherwise happen if
+                 * start is after what teilVon represents for this intervall */
+                if (this.getFrom().before(start)) {
+                    this.roll();
+                }
             }
         }
 
