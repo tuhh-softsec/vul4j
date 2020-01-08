@@ -161,17 +161,15 @@ public class ProbeFactory {
         }
 
        /**
-        * Return given calendar adjusted to start of intervall (e.g. first
-        * day in quarter) plus given amount of days. If the given amount of
-        * days is bigger than the number of days in the intervall, the number
-        * of days in the intervall is added instead (i.e. the result is
-        * adjusted to the end of the intervall).
+        * Return given calendar adjusted to given day within intervall.
+        * If the given amount of days is bigger than the number of days
+        * in the intervall, the result is adjusted to the end of the intervall.
         *
         * This is used to compute the actual start and end date
         * of the actual sub-intervall.
         *
         * @param cal Calendar to be adjusted
-        * @param teil amount of days to be added
+        * @param teil day in intervall to adjust to
         *
         * @return the adjusted Calendar object.
         */
