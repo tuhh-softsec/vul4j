@@ -456,8 +456,8 @@ public class StatusService {
                 int curKom = proto.get(i).getStatusKombi();
                 StatusKombi sk =
                     defaultRepo.getByIdPlain(StatusKombi.class, curKom, Strings.STAMM);
-                if (sk.getStatusStufe().getId() ==
-                        kombi.getStatusStufe().getId() -1
+                if (sk.getStatusStufe().getId() <
+                        kombi.getStatusStufe().getId()
                 ) {
                     ndx = i;
                     break;
