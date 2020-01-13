@@ -1103,9 +1103,20 @@ public class LafObjectMapper {
         tmpStatus.setStatusKombi(newKombi);
         Violation status_violation = statusValidator.validate(tmpStatus);
 
+        if (status_violation.hasWarnings()) {
+            status_violation.getWarnings().forEach((k,v)->{
+                v.forEach((value)-> {
+                    currentErrors.add(new ReportItem("Status ", k , value));
+                });
+            });
+        }
+
+
         if (status_violation.hasErrors()) {
             status_violation.getErrors().forEach((k,v)->{
-                  currentErrors.add(new ReportItem("Status ",k+v, 631));
+                v.forEach((value)-> {
+                    currentErrors.add(new ReportItem("Status ", k , value));
+                });
             });
             return false;
         }
