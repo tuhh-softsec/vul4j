@@ -64,7 +64,7 @@ public class MesswertNormalizer {
                 }
                 MassEinheitUmrechnung meu = primaryMeu.size() > 0 ?
                         primaryMeu.get(0): secondaryMeu.get(0);
-                Float factor = meu.getFaktor();
+                Double factor = meu.getFaktor();
 
                 //Update einheit
                 messwert.setMehId(primaryMeu.size() > 0 ? mehIdToConvertTo: secMehIdToConvertTo);
