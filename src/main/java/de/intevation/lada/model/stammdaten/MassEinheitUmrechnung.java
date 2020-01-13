@@ -28,7 +28,7 @@ public class MassEinheitUmrechnung implements Serializable {
     @Column(name="meh_id_zu")
     private Integer mehIdZu;
 
-    private Float faktor;
+    private Double faktor;
 
     public MassEinheitUmrechnung() {
 
@@ -46,7 +46,7 @@ public class MassEinheitUmrechnung implements Serializable {
         return this.mehIdZu;
     }
 
-    public Float getFaktor() {
+    public Double getFaktor() {
         return this.faktor;
     }
 }
