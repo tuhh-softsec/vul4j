@@ -36,6 +36,7 @@ import org.apache.log4j.Logger;
 import de.intevation.lada.importer.ImportConfig;
 import de.intevation.lada.importer.ImportFormat;
 import de.intevation.lada.importer.Importer;
+import de.intevation.lada.importer.laf.LafImporter;
 import de.intevation.lada.model.stammdaten.ImporterConfig;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
@@ -117,6 +118,7 @@ public class LafImportService {
         if (!importer.getWarnings().isEmpty()) {
             respData.put("warnings", importer.getWarnings());
         }
+        respData.put("probeIds", ((LafImporter) importer).getImportedIds());
 
         return new Response(true, 200, respData);
     }

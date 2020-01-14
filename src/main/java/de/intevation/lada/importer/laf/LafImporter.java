@@ -36,6 +36,7 @@ public class LafImporter implements Importer{
 
     private Map<String, List<ReportItem>> errors = new HashMap<String, List<ReportItem>>();
     private Map<String, List<ReportItem>> warnings = new HashMap<String, List<ReportItem>>();
+    private List<Integer> importProbeIds;
 
     public void doImport(String lafString, UserInfo userInfo, List<ImporterConfig> config) {
         // Append newline to avoid parser errors.
@@ -44,6 +45,7 @@ public class LafImporter implements Importer{
         lafString += "\r\n";
         errors = new HashMap<String, List<ReportItem>>();
         warnings = new HashMap<String, List<ReportItem>>();
+        importProbeIds = new ArrayList<Integer>();
 
         InputStream is = new ByteArrayInputStream(lafString.getBytes(StandardCharsets.UTF_8));
         try {
@@ -85,6 +87,7 @@ public class LafImporter implements Importer{
             mapper.setUserInfo(userInfo);
             mapper.setConfig(config);
             mapper.mapObjects(listener.getData());
+            importProbeIds = mapper.getImportedProbeIds();
             for (Entry<String, List<ReportItem>> entry : mapper.getErrors().entrySet()) {
                 if (errors.containsKey(entry.getKey())) {
                     errors.get(entry.getKey()).addAll(entry.getValue());
@@ -120,5 +123,9 @@ public class LafImporter implements Importer{
     @Override
     public Map<String, List<ReportItem>> getWarnings() {
         return this.warnings;
+    }
+
+    public List<Integer> getImportedIds() {
+        return this.importProbeIds;
     }
 }

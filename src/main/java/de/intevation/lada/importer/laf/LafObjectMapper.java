@@ -113,6 +113,7 @@ public class LafObjectMapper {
     private Map<String, List<ReportItem>> warnings;
     private List<ReportItem> currentErrors;
     private List<ReportItem> currentWarnings;
+    private List<Integer> importProbeIds;
 
     private int currentZeitbasis;
 
@@ -124,6 +125,7 @@ public class LafObjectMapper {
     public void mapObjects(LafRawData data) {
         errors = new HashMap<>();
         warnings = new HashMap<>();
+        importProbeIds = new ArrayList<Integer>();
         for (int i = 0; i < data.getProben().size(); i++) {
             create(data.getProben().get(i));
         }
@@ -253,7 +255,7 @@ public class LafObjectMapper {
                         err.setKey("Database error");
                         err.setValue("");
                         currentErrors.add(err);
-                        if (!currentErrors.isEmpty()) {
+                        if (!currentErrors.isEmpty() ) {
                             errors.put(object.getIdentifier(),
                                 new ArrayList<ReportItem>(currentErrors));
                         }
@@ -302,6 +304,7 @@ public class LafObjectMapper {
                     }
                 }
             }
+            importProbeIds.add(newProbe.getId());
         } catch (InvalidTargetObjectTypeException e) {
             ReportItem err = new ReportItem();
             err.setCode(604);
@@ -1868,6 +1871,13 @@ public class LafObjectMapper {
      */
     public Map<String, List<ReportItem>> getWarnings() {
         return warnings;
+    }
+
+    /**
+     * @return Imported probe ids
+     */
+    public List<Integer> getImportedProbeIds() {
+        return importProbeIds;
     }
 
     /**
