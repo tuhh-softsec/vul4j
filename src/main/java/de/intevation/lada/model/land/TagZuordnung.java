@@ -34,7 +34,7 @@ public class TagZuordnung {
     @Column(name="messung_id")
     private Integer messungId;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="tag_id")
     private Tag tag;
 

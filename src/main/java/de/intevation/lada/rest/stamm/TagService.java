@@ -319,7 +319,6 @@ import de.intevation.lada.util.rest.Response;
                     );
                 }
                 if (!authorized) {
-    
                     return new Response(false, 699, "Not authorized to set global tag");
                 }
             //Else check if it is the users private tag
@@ -337,7 +336,12 @@ import de.intevation.lada.util.rest.Response;
             if ( mstId == null || !userInfo.getMessstellen().contains(mstId)) {
                 return new Response(false, 603, "Invalid/empty mstId");
             }
-            return repository.create(zuordnung, Strings.LAND);
+            if (repository.create(tag, Strings.STAMM).getSuccess() == true) {
+                return repository.create(zuordnung, Strings.LAND);
+            } else {
+                //TODO: Proper response code?
+                return new Response(false, 603, "Failed to create Tag");
+            }
         }
     }
 
@@ -440,8 +444,10 @@ import de.intevation.lada.util.rest.Response;
         CriteriaQuery<Tag> criteriaQuery = builder.createQuery(Tag.class);
         Root<Tag> tagRoot = criteriaQuery.from(Tag.class);
         Predicate nameFilter = builder.like(tagRoot.get("tag"), prefix + "\\_" + today + "\\__");
+        Predicate mstFilter = builder.equal(tagRoot.get("mstId"), mstId);
+        Predicate filter = builder.and(nameFilter, mstFilter);
         Order nameOrder = builder.asc(tagRoot.get("tag"));
-        criteriaQuery.where(nameFilter);
+        criteriaQuery.where(filter);
         criteriaQuery.orderBy(nameOrder);
         List<Tag> tags = repository.filterPlain(criteriaQuery, Strings.STAMM);
 
@@ -487,7 +493,6 @@ import de.intevation.lada.util.rest.Response;
         List<Messung> messungs = repository.filterPlain(messungQuery, Strings.LAND);
 
         //Set tags
-        //TODO: Tag instance is detached here!
         List<TagZuordnung> zuordnungs = new ArrayList<TagZuordnung>();
         probes.forEach(probe -> {
             TagZuordnung zuordnung = new TagZuordnung();
