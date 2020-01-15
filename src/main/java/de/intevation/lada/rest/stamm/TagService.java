@@ -444,10 +444,8 @@ import de.intevation.lada.util.rest.Response;
         CriteriaQuery<Tag> criteriaQuery = builder.createQuery(Tag.class);
         Root<Tag> tagRoot = criteriaQuery.from(Tag.class);
         Predicate nameFilter = builder.like(tagRoot.get("tag"), prefix + "\\_" + today + "\\__");
-        Predicate mstFilter = builder.equal(tagRoot.get("mstId"), mstId);
-        Predicate filter = builder.and(nameFilter, mstFilter);
         Order nameOrder = builder.asc(tagRoot.get("tag"));
-        criteriaQuery.where(filter);
+        criteriaQuery.where(nameFilter);
         criteriaQuery.orderBy(nameOrder);
         List<Tag> tags = repository.filterPlain(criteriaQuery, Strings.STAMM);
 
