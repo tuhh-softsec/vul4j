@@ -14,13 +14,13 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.json.JsonObject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -38,6 +38,7 @@ import de.intevation.lada.importer.ImportFormat;
 import de.intevation.lada.importer.Importer;
 import de.intevation.lada.importer.laf.LafImporter;
 import de.intevation.lada.model.stammdaten.ImporterConfig;
+import de.intevation.lada.model.stammdaten.Tag;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -47,6 +48,7 @@ import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.data.Strings;
+import de.intevation.lada.util.data.TagUtil;
 import de.intevation.lada.util.rest.Response;
 
 /**
@@ -78,6 +80,96 @@ public class LafImportService {
     @Inject
     @AuthorizationConfig(type=AuthorizationType.HEADER)
     private Authorization authorization;
+
+    /**
+     * Import a given list of files, generate a tag and set it to all imported records.
+     * Expected input format:
+     * <pre>
+     * <code>
+     * {
+     *   "files": {
+     *     "firstFileName.laf": "firstFileContent",
+     *     "secondFilename.laf": "secondFileContent",
+     *     //...
+     *   }
+     * }
+     * </code>
+     * </pre>
+     */
+    @POST
+    @Path("/laf/list")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response multiUpload(
+        JsonObject jsonInput,
+        @Context HttpServletRequest request
+    ) {
+        UserInfo userInfo = authorization.getInfo(request);
+        //Get file content strings from input object
+        JsonObject filesObject = jsonInput.getJsonObject("files");
+
+        String encoding = jsonInput.getString("encoding");
+
+        //Contains: fileName: fileContent as String
+        Map<String, String> files = new HashMap<String, String>();
+        //Ids of alle imported probe records
+        List<Integer> importedProbeids = new ArrayList<Integer>();
+        //Contains a response data object for every import
+        Map<String, Map<String, Object>> importResponseData = new HashMap<String, Map<String, Object>>();
+
+        String mstId = request.getHeader("X-LADA-MST");
+        if (mstId == null) {
+            return new Response(false, 699, "Missing header for messtelle.");
+        }
+
+        filesObject.forEach((fileName, fileContent) -> {
+            files.put(fileName, fileContent.toString());
+        });
+
+        //Import each file
+        files.forEach((fileName, content) -> {
+            logLAFFile(mstId, content);
+            List<ImporterConfig> config = new ArrayList<ImporterConfig>();
+            if (!"".equals(mstId)) {
+                QueryBuilder<ImporterConfig> builder =
+                    new QueryBuilder<ImporterConfig>(
+                        repository.entityManager(Strings.STAMM),
+                        ImporterConfig.class);
+                builder.and("mstId", mstId);
+                config = (List<ImporterConfig>) repository.filterPlain(builder.getQuery(), Strings.STAMM);
+            }
+            importer.doImport(content.getBytes().toString(), userInfo, config);
+            Map<String, Object> fileResponseData = new HashMap<String,Object>();
+            if (!importer.getErrors().isEmpty()) {
+                fileResponseData.put("errors", importer.getErrors());
+            }
+            if (!importer.getWarnings().isEmpty()) {
+                fileResponseData.put("warnings", importer.getWarnings());
+            }
+            fileResponseData.put("probeIds", ((LafImporter) importer).getImportedIds());
+            importResponseData.put(fileName, fileResponseData);
+            importedProbeids.addAll(((LafImporter) importer).getImportedIds());
+        });
+
+        boolean success = false;
+        // If import created at least a new record
+        if (importedProbeids.size() > 0) {
+            success = true;
+            //Generate a tag for the imported probe records
+            Response tagCreation = TagUtil.generateTag("IMP", mstId, repository);
+            if (!tagCreation.getSuccess()) {
+                //TODO: Tag creation failed -> import success?
+            }
+            Tag newTag = (Tag) tagCreation.getData();
+            TagUtil.setTagForProbeRecords(importedProbeids, newTag.getId(), repository);
+
+            //Put new tag in import response
+            importResponseData.forEach((file, responseData) -> {
+                responseData.put("tag", newTag.getTag());
+            });
+        }
+        return new Response(success, 200, importResponseData);
+    }
 
     /**
      * Import a LAF formatted file.

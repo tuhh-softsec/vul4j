@@ -37,6 +37,7 @@ import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.data.Strings;
+import de.intevation.lada.util.data.TagUtil;
 import de.intevation.lada.model.land.Messung;
 import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.model.land.TagZuordnung;
@@ -167,10 +168,10 @@ import de.intevation.lada.util.rest.Response;
         } catch (NumberFormatException nfe) {
             return new Response(false, 699, "Invalid probe id(s)");
         }
-        Response resp = generateTag("PEP", userInfo.getMessstellen().get(0));
+        Response resp = TagUtil.generateTag("PEP", userInfo.getMessstellen().get(0), repository);
         Tag currentTag = (Tag) resp.getData();
 
-        return new Response(true, 200, setTagForProbeRecords(probeIds, currentTag.getId()));
+        return new Response(true, 200, TagUtil.setTagForProbeRecords(probeIds, currentTag.getId(), repository));
     }
 
     /**
@@ -218,10 +219,10 @@ import de.intevation.lada.util.rest.Response;
         } catch (NumberFormatException nfe) {
             return new Response(false, 699, "Invalid probe id(s)");
         }
-        Response resp = generateTag("IMP", userInfo.getMessstellen().get(0));
+        Response resp = TagUtil.generateTag("IMP", userInfo.getMessstellen().get(0), repository);
         Tag currentTag = (Tag) resp.getData();
 
-        return new Response(true, 200, setTagForProbeRecords(probeIds, currentTag.getId()));
+        return new Response(true, 200, TagUtil.setTagForProbeRecords(probeIds, currentTag.getId(), repository));
     }
 
 
@@ -423,90 +424,5 @@ import de.intevation.lada.util.rest.Response;
         } else {
             return repository.delete(zuordnungs.get(0), Strings.LAND);
         }
-    }
-
-    /**
-     * Creates an auto generated tag using the current date and a given prefix.
-     * Format is: {prefix}_yyyyMMdd_{serialNumber}
-     * @param prefix Prefix to set
-     * @param mstId mstId to set in the tag
-     * @return Response of tag creation
-     */
-    public Response generateTag(String prefix, String mstId) {
-        //Get current date
-        LocalDate date = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        String today = date.format(formatter);
-
-        //Get latest generated tag
-        EntityManager stammEm = repository.entityManager(Strings.STAMM);
-        CriteriaBuilder builder = stammEm.getCriteriaBuilder();
-        CriteriaQuery<Tag> criteriaQuery = builder.createQuery(Tag.class);
-        Root<Tag> tagRoot = criteriaQuery.from(Tag.class);
-        Predicate nameFilter = builder.like(tagRoot.get("tag"), prefix + "\\_" + today + "\\__");
-        Order nameOrder = builder.asc(tagRoot.get("tag"));
-        criteriaQuery.where(nameFilter);
-        criteriaQuery.orderBy(nameOrder);
-        List<Tag> tags = repository.filterPlain(criteriaQuery, Strings.STAMM);
-
-        Integer serNumber = 1;
-        //If tags were found, find next serial number
-        if (tags.size() > 0) {
-            String lastTag = tags.get(tags.size() - 1 ).getTag();
-            Integer lastSerNumber = Integer.parseInt(lastTag.split("_")[2]);
-            serNumber = lastSerNumber + 1;
-        }
-
-        //Create next tag
-        Tag currentTag = new Tag();
-        currentTag.setMstId(mstId);
-        currentTag.setTag(prefix + "_" + today + "_" + serNumber);
-
-        return repository.create(currentTag, Strings.STAMM);
-    }
-
-    /**
-     * Sets tags for the given probe records an connected messung records.
-     * @param probeIds Probe ids to set tags for
-     * @param tagId Tag id to set
-     * @return List of created tag references
-     */
-    public List<TagZuordnung> setTagForProbeRecords(List<Integer> probeIds, Integer tagId) {
-        Tag tag = repository.getByIdPlain(Tag.class, tagId, Strings.STAMM);
-
-        //Get given probe and messung records
-        EntityManager landEm = repository.entityManager(Strings.LAND);
-        CriteriaBuilder probeBuilder = landEm.getCriteriaBuilder();
-        CriteriaQuery<Probe> probeQuery = probeBuilder.createQuery(Probe.class);
-        Root<Probe> probeRoot = probeQuery.from(Probe.class);
-        Predicate pidFilter = probeBuilder.in(probeRoot.get("id")).value(probeIds);
-        probeQuery.where(pidFilter);
-        List<Probe> probes = repository.filterPlain(probeQuery, Strings.LAND);
-
-        CriteriaBuilder messungBuilder = landEm.getCriteriaBuilder();
-        CriteriaQuery<Messung> messungQuery = messungBuilder.createQuery(Messung.class);
-        Root<Messung> messungRoot = messungQuery.from(Messung.class);
-        Predicate messungPidFilter = messungBuilder.in(messungRoot.get("probeId")).value(probeIds);
-        messungQuery.where(messungPidFilter);
-        List<Messung> messungs = repository.filterPlain(messungQuery, Strings.LAND);
-
-        //Set tags
-        List<TagZuordnung> zuordnungs = new ArrayList<TagZuordnung>();
-        probes.forEach(probe -> {
-            TagZuordnung zuordnung = new TagZuordnung();
-            zuordnung.setTag(tag);
-            zuordnung.setProbeId(probe.getId());
-            repository.create(zuordnung, Strings.LAND);
-            zuordnungs.add(zuordnung);
-        });
-
-        messungs.forEach(messung -> {
-            TagZuordnung zuordnung = new TagZuordnung();
-            zuordnung.setTag(tag);
-            zuordnung.setMessungId(messung.getId());
-            repository.create(zuordnung, Strings.LAND);
-            zuordnungs.add(zuordnung);
-        });
-        return zuordnungs;
     }
 }
