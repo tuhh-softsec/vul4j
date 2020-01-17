@@ -757,7 +757,11 @@ CREATE TABLE grid_column_values (
 CREATE TABLE tag (
     id serial PRIMARY KEY,
     tag text COLLATE pg_catalog."default",
-    mst_id character varying REFERENCES mess_stelle(id)
+    mst_id character varying REFERENCES mess_stelle(id),
+    generated boolean,
+    UNIQUE(tag, mst_id)
 );
+
+CREATE UNIQUE INDEX gen_tag_unique_idx ON stamm.tag (tag) WHERE generated = true;
 
 COMMIT;

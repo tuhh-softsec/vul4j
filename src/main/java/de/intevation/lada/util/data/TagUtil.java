@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -50,7 +51,7 @@ public class TagUtil {
         CriteriaBuilder builder = stammEm.getCriteriaBuilder();
         CriteriaQuery<Tag> criteriaQuery = builder.createQuery(Tag.class);
         Root<Tag> tagRoot = criteriaQuery.from(Tag.class);
-        Predicate nameFilter = builder.like(tagRoot.get("tag"), prefix + "\\_" + today + "\\__");
+        Predicate nameFilter = builder.like(tagRoot.get("tag"), prefix + "\\_" + today + "\\_%");
         Order nameOrder = builder.asc(tagRoot.get("tag"));
         criteriaQuery.where(nameFilter);
         criteriaQuery.orderBy(nameOrder);
@@ -59,13 +60,23 @@ public class TagUtil {
         Integer serNumber = 1;
         //If tags were found, find next serial number
         if (tags.size() > 0) {
-            String lastTag = tags.get(tags.size() - 1 ).getTag();
-            Integer lastSerNumber = Integer.parseInt(lastTag.split("_")[2]);
-            serNumber = lastSerNumber + 1;
+            AtomicInteger lastSerNumber = new AtomicInteger(0);
+            tags.forEach(item -> {
+                try {
+                    Integer currentserial = Integer.parseInt(item.getTag().split("_")[2]);
+                    if (lastSerNumber.get() < currentserial) {
+                        lastSerNumber.set(currentserial);
+                    }
+                } catch (NumberFormatException nfe) {
+                    //There might be a user generated tag also matching the generated tag pattern: Skip
+                }
+            });
+            serNumber = lastSerNumber.get() + 1;
         }
 
         //Create next tag
         Tag currentTag = new Tag();
+        currentTag.setGenerated(true);
         currentTag.setMstId(mstId);
         currentTag.setTag(prefix + "_" + today + "_" + serNumber);
 
@@ -79,7 +90,8 @@ public class TagUtil {
      * @param repository Repository to use
      * @return List of created tag references
      */
-    public static List<TagZuordnung> setTagForProbeRecords(List<Integer> probeIds, Integer tagId, Repository repository) {
+    public static List<TagZuordnung> setTagForProbeRecords(
+            List<Integer> probeIds, Integer tagId, Repository repository) {
         Tag tag = repository.getByIdPlain(Tag.class, tagId, Strings.STAMM);
 
         //Get given probe and messung records

@@ -10,6 +10,7 @@ package de.intevation.lada.rest.importer;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Appender;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Logger;
@@ -71,7 +73,7 @@ public class LafImportService {
     private Importer importer;
 
     @Inject
-    @RepositoryConfig(type=RepositoryType.RO)
+    @RepositoryConfig(type=RepositoryType.RW)
     private Repository repository;
 
     /**
@@ -87,9 +89,10 @@ public class LafImportService {
      * <pre>
      * <code>
      * {
+     *   "encoding": "UTF-8",
      *   "files": {
-     *     "firstFileName.laf": "firstFileContent",
-     *     "secondFilename.laf": "secondFileContent",
+     *     "firstFileName.laf": "base64 encoded content",
+     *     "secondFilename.laf": "base64 encoded content",
      *     //...
      *   }
      * }
@@ -123,7 +126,10 @@ public class LafImportService {
         }
 
         filesObject.forEach((fileName, fileContent) -> {
-            files.put(fileName, fileContent.toString());
+            String encodedString = fileContent.toString();
+            byte[] decodedBytes = Base64.decodeBase64(encodedString);
+            String decodedContent = new String(decodedBytes, Charset.forName(encoding));
+            files.put(fileName, decodedContent);
         });
 
         //Import each file
@@ -138,7 +144,7 @@ public class LafImportService {
                 builder.and("mstId", mstId);
                 config = (List<ImporterConfig>) repository.filterPlain(builder.getQuery(), Strings.STAMM);
             }
-            importer.doImport(content.getBytes().toString(), userInfo, config);
+            importer.doImport(content, userInfo, config);
             Map<String, Object> fileResponseData = new HashMap<String,Object>();
             if (!importer.getErrors().isEmpty()) {
                 fileResponseData.put("errors", importer.getErrors());
@@ -146,6 +152,7 @@ public class LafImportService {
             if (!importer.getWarnings().isEmpty()) {
                 fileResponseData.put("warnings", importer.getWarnings());
             }
+            fileResponseData.put("success", true);
             fileResponseData.put("probeIds", ((LafImporter) importer).getImportedIds());
             importResponseData.put(fileName, fileResponseData);
             importedProbeids.addAll(((LafImporter) importer).getImportedIds());
@@ -210,7 +217,20 @@ public class LafImportService {
         if (!importer.getWarnings().isEmpty()) {
             respData.put("warnings", importer.getWarnings());
         }
-        respData.put("probeIds", ((LafImporter) importer).getImportedIds());
+
+        List<Integer> importedProbeids = ((LafImporter) importer).getImportedIds();
+        respData.put("probeIds", importedProbeids);
+
+        // If import created at least a new record
+        if (importedProbeids.size() > 0) {
+            //Generate a tag for the imported probe records
+            Response tagCreation = TagUtil.generateTag("IMP", mstId, repository);
+            if (!tagCreation.getSuccess()) {
+                //TODO: Tag creation failed -> import success?
+            }
+            Tag newTag = (Tag) tagCreation.getData();
+            TagUtil.setTagForProbeRecords(importedProbeids, newTag.getId(), repository);
+        }
 
         return new Response(true, 200, respData);
     }
