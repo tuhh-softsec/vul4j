@@ -230,6 +230,8 @@ public class LafImportService {
             }
             Tag newTag = (Tag) tagCreation.getData();
             TagUtil.setTagForProbeRecords(importedProbeids, newTag.getId(), repository);
+
+            respData.put("tag", newTag.getTag());
         }
 
         return new Response(true, 200, respData);
