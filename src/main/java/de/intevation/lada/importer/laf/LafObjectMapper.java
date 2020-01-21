@@ -304,7 +304,9 @@ public class LafObjectMapper {
                     }
                 }
             }
-            importProbeIds.add(newProbe.getId());
+            if (newProbe != null) {
+                importProbeIds.add(newProbe.getId());
+            }
         } catch (InvalidTargetObjectTypeException e) {
             ReportItem err = new ReportItem();
             err.setCode(604);
@@ -632,6 +634,10 @@ public class LafObjectMapper {
                 }
                 try {
                     Object value = getter.invoke(object);
+                    if (value == null) {
+                        logger.warn("Attribute " + attribute + " is not set");
+                        return;
+                    }
                     char from = (char) Integer.parseInt(current.getFromValue(), 16);
                     char to = (char) Integer.parseInt(current.getToValue(), 16);
                     value = value.toString().replaceAll("[" + String.valueOf(from) + "]", String.valueOf(to));
