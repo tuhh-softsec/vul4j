@@ -40,7 +40,7 @@ public class TagUtil {
      * @param repository Repository to use
      * @return Response of tag creation
      */
-    public static Response generateTag(String prefix, String mstId, Repository repository) {
+    public static synchronized Response generateTag(String prefix, String mstId, Repository repository) {
         //Get current date
         LocalDate date = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
