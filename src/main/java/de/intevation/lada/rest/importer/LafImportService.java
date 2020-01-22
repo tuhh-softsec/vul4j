@@ -166,6 +166,7 @@ public class LafImportService {
             Response tagCreation = TagUtil.generateTag("IMP", mstId, repository);
             if (!tagCreation.getSuccess()) {
                 //TODO: Tag creation failed -> import success?
+                return new Response(success, 200, importResponseData);
             }
             Tag newTag = (Tag) tagCreation.getData();
             TagUtil.setTagForProbeRecords(importedProbeids, newTag.getId(), repository);
@@ -227,6 +228,7 @@ public class LafImportService {
             Response tagCreation = TagUtil.generateTag("IMP", mstId, repository);
             if (!tagCreation.getSuccess()) {
                 //TODO: Tag creation failed -> import success?
+                return new Response(true, 200, respData);
             }
             Tag newTag = (Tag) tagCreation.getData();
             TagUtil.setTagForProbeRecords(importedProbeids, newTag.getId(), repository);
