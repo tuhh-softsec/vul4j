@@ -169,7 +169,7 @@ public class LafImportService {
                 return new Response(success, 200, importResponseData);
             }
             Tag newTag = (Tag) tagCreation.getData();
-            TagUtil.setTagForProbeRecords(importedProbeids, newTag.getId(), repository);
+            TagUtil.setTagsByProbeIds(importedProbeids, newTag.getId(), repository);
 
             //Put new tag in import response
             importResponseData.forEach((file, responseData) -> {
@@ -231,7 +231,7 @@ public class LafImportService {
                 return new Response(true, 200, respData);
             }
             Tag newTag = (Tag) tagCreation.getData();
-            TagUtil.setTagForProbeRecords(importedProbeids, newTag.getId(), repository);
+            TagUtil.setTagsByProbeIds(importedProbeids, newTag.getId(), repository);
 
             respData.put("tag", newTag.getTag());
         }

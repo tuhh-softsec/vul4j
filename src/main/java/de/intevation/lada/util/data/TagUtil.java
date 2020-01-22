@@ -85,12 +85,29 @@ public class TagUtil {
 
     /**
      * Sets tags for the given probe records an connected messung records.
+     * @param proben Probe records to set tags for
+     * @param tagId Tag id to set
+     * @param repository Repository to use
+     * @return List of created tag references
+     */
+    public static List<TagZuordnung> setTagByProbeRecords(
+            List<Probe> proben, Integer tagId, Repository repository) {
+
+        List<Integer> probeIds = new ArrayList<Integer>();
+        proben.forEach(item -> {
+            probeIds.add(item.getId());
+        });
+        return setTagsByProbeIds(probeIds, tagId, repository);
+    }
+
+    /**
+     * Sets tags for the given probe records an connected messung records.
      * @param probeIds Probe ids to set tags for
      * @param tagId Tag id to set
      * @param repository Repository to use
      * @return List of created tag references
      */
-    public static List<TagZuordnung> setTagForProbeRecords(
+    public static List<TagZuordnung> setTagsByProbeIds(
             List<Integer> probeIds, Integer tagId, Repository repository) {
         Tag tag = repository.getByIdPlain(Tag.class, tagId, Strings.STAMM);
 

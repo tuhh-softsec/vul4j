@@ -171,7 +171,7 @@ import de.intevation.lada.util.rest.Response;
         Response resp = TagUtil.generateTag("PEP", userInfo.getMessstellen().get(0), repository);
         Tag currentTag = (Tag) resp.getData();
 
-        return new Response(true, 200, TagUtil.setTagForProbeRecords(probeIds, currentTag.getId(), repository));
+        return new Response(true, 200, TagUtil.setTagsByProbeIds(probeIds, currentTag.getId(), repository));
     }
 
     /**
@@ -222,7 +222,7 @@ import de.intevation.lada.util.rest.Response;
         Response resp = TagUtil.generateTag("IMP", userInfo.getMessstellen().get(0), repository);
         Tag currentTag = (Tag) resp.getData();
 
-        return new Response(true, 200, TagUtil.setTagForProbeRecords(probeIds, currentTag.getId(), repository));
+        return new Response(true, 200, TagUtil.setTagsByProbeIds(probeIds, currentTag.getId(), repository));
     }
 
 

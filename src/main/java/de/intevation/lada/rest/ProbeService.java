@@ -46,14 +46,17 @@ import de.intevation.lada.model.land.MessprogrammMmt;
 import de.intevation.lada.model.land.OrtszuordnungMp;
 import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.model.stammdaten.Ort;
+import de.intevation.lada.model.stammdaten.Tag;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
+import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.data.Strings;
+import de.intevation.lada.util.data.TagUtil;
 import de.intevation.lada.util.rest.RequestMethod;
 import de.intevation.lada.util.rest.Response;
 import de.intevation.lada.validation.Validator;
@@ -310,14 +313,14 @@ public class ProbeService {
      * <pre>
      * <code>
      * {
-     *  "id": [number],
+     *  "ids": [[number]],
      *  "start": [timestamp],
      *  "end": [timestamp]
      * }
      * </code>
      * </pre>
      *
-     * @return Response object containing the new probe object.
+     * @return Response object containing the new probe objects.
      */
     @POST
     @Path("/messprogramm")
@@ -327,94 +330,144 @@ public class ProbeService {
         @Context HttpServletRequest request,
         JsonObject object
     ) {
-        int id = object.getInt("id");
-        Messprogramm messprogramm = repository.getByIdPlain(
-            Messprogramm.class, id, Strings.LAND);
-        if (messprogramm == null) {
+
+        JsonArray ids = object.getJsonArray("ids");
+        if (ids == null) {
             return new Response(false, 600, null);
         }
-        // Use a dummy probe with same mstId as the messprogramm to authorize
-        // the user to create probe objects.
-        Probe testProbe = new Probe();
-        testProbe.setMstId(messprogramm.getMstId());
-        if (!authorization.isAuthorized(
-                request,
-                testProbe,
-                RequestMethod.POST,
-                Probe.class)
-        ) {
-            return new Response(false, 699, null);
-        }
 
-        long start = 0;
-        long end = 0;
-        try {
-            start = object.getJsonNumber("start").longValue();
-            end = object.getJsonNumber("end").longValue();
-        } catch (ClassCastException e) {
-            // Catch invalid (i.e. too high) time values
-            return new Response(false, 612, null);
-        }
-        if (start > end) {
-            return new Response(false, 662, null);
-        }
-        List<Probe> proben = factory.create(
-            messprogramm,
-            start,
-            end);
+        UserInfo userInfo = authorization.getInfo(request);
+        String mstId = userInfo.getMessstellen().get(0);
 
-        List<Map<String, Object>> returnValue = new ArrayList<>();
-        QueryBuilder<MessprogrammMmt> builder = new QueryBuilder<>(
-            repository.entityManager("land"),
-            MessprogrammMmt.class
-        );
-        builder.and("messprogrammId", messprogramm.getId());
-        List<MessprogrammMmt> messmethoden =
-            repository.filterPlain(builder.getQuery(), "land");
-        QueryBuilder<OrtszuordnungMp> ortBuilder = new QueryBuilder<>(
-            repository.entityManager("land"),
-            OrtszuordnungMp.class
-        );
-        ortBuilder.and("messprogrammId", messprogramm.getId());
-        if (messprogramm.getDatenbasisId() == 4) {
-            ortBuilder.and("ortszuordnungTyp", "R");
-        } else {
-            ortBuilder.and("ortszuordnungTyp", "E");
-        }
-        List<OrtszuordnungMp> ortszuordnung = repository.filterPlain(ortBuilder.getQuery(), "land");
-        String gemId = null;
-        if (!ortszuordnung.isEmpty()) {
-            Ort ort = repository.getByIdPlain(Ort.class, ortszuordnung.get(0).getOrtId(), "stamm");
-            gemId = ort.getGemId();
-        }
+        Map<String, Object> responseData = new HashMap<String, Object>();
+        Map<String, Object> probenData = new HashMap<String, Object>();
+        List<Integer> generatedProbeIds = new ArrayList<Integer>();
 
-        for (Probe probe : proben) {
-            Map<String, Object> value = new HashMap<>();
-            value.put("id", probe.getId());
-            value.put("externeProbeId", probe.getExterneProbeId());
-            value.put("mstId", probe.getMstId());
-            value.put("datenbasisId", probe.getDatenbasisId());
-            value.put("baId", probe.getBaId());
-            value.put("probenartId", probe.getProbenartId());
-            value.put("solldatumBeginn", probe.getSolldatumBeginn());
-            value.put("solldatumEnde", probe.getSolldatumEnde());
-            value.put("mprId", probe.getMprId());
-            value.put("mediaDesk", probe.getMediaDesk());
-            value.put("umwId", probe.getUmwId());
-            value.put("probeNehmerId", probe.getProbeNehmerId());
-            value.put("MessungCount", messmethoden.size());
-            String mmts = "";
-            for (int i = 0; i < messmethoden.size(); i++) {
-                mmts += messmethoden.get(i).getMmtId();
-                if (i < messmethoden.size() - 1) {
-                    mmts += ", ";
-                }
+        ids.forEach(mpId -> {
+            int id = Integer.parseInt(mpId.toString());
+            HashMap<String, Object> data = new HashMap<String, Object>();
+            Messprogramm messprogramm = repository.getByIdPlain(
+                Messprogramm.class, id, Strings.LAND);
+            if (messprogramm == null) {
+                data.put("success", false);
+                data.put("message", 600);
+                data.put("data", "Invalid mst id");
+                probenData.put("" + id, data);
+                return;
             }
-            value.put("mmt", mmts);
-            value.put("gemId", gemId);
-            returnValue.add(value);
+
+            // Use a dummy probe with same mstId as the messprogramm to authorize
+            // the user to create probe objects.
+            Probe testProbe = new Probe();
+            testProbe.setMstId(messprogramm.getMstId());
+            if (!authorization.isAuthorized(
+                    request,
+                    testProbe,
+                    RequestMethod.POST,
+                    Probe.class)
+            ) {
+                data.put("success", false);
+                data.put("message", 699);
+                data.put("data", null);
+                probenData.put(messprogramm.getId().toString(), data);
+                return;
+            }
+
+            long start = 0;
+            long end = 0;
+            try {
+                start = object.getJsonNumber("start").longValue();
+                end = object.getJsonNumber("end").longValue();
+            } catch (ClassCastException e) {
+                // Catch invalid (i.e. too high) time values
+                data.put("success", false);
+                data.put("message", 612);
+                data.put("data", null);
+                probenData.put(messprogramm.getId().toString(), data);
+                return;
+            }
+            if (start > end) {
+                data.put("success", false);
+                data.put("message", 662);
+                data.put("data", null);
+                probenData.put(messprogramm.getId().toString(), data);
+                return;
+            }
+            List<Probe> proben = factory.create(
+                messprogramm,
+                start,
+                end);
+    
+            List<Map<String, Object>> returnValue = new ArrayList<>();
+            QueryBuilder<MessprogrammMmt> builder = new QueryBuilder<>(
+                repository.entityManager("land"),
+                MessprogrammMmt.class
+            );
+            builder.and("messprogrammId", messprogramm.getId());
+            List<MessprogrammMmt> messmethoden =
+                repository.filterPlain(builder.getQuery(), "land");
+            QueryBuilder<OrtszuordnungMp> ortBuilder = new QueryBuilder<>(
+                repository.entityManager("land"),
+                OrtszuordnungMp.class
+            );
+            ortBuilder.and("messprogrammId", messprogramm.getId());
+            if (messprogramm.getDatenbasisId() == 4) {
+                ortBuilder.and("ortszuordnungTyp", "R");
+            } else {
+                ortBuilder.and("ortszuordnungTyp", "E");
+            }
+            List<OrtszuordnungMp> ortszuordnung = repository.filterPlain(ortBuilder.getQuery(), "land");
+            String gemId = null;
+            if (!ortszuordnung.isEmpty()) {
+                Ort ort = repository.getByIdPlain(Ort.class, ortszuordnung.get(0).getOrtId(), "stamm");
+                gemId = ort.getGemId();
+            }
+
+            for (Probe probe : proben) {
+                generatedProbeIds.add(probe.getId());
+                Map<String, Object> value = new HashMap<>();
+                value.put("id", probe.getId());
+                value.put("externeProbeId", probe.getExterneProbeId());
+                value.put("mstId", probe.getMstId());
+                value.put("datenbasisId", probe.getDatenbasisId());
+                value.put("baId", probe.getBaId());
+                value.put("probenartId", probe.getProbenartId());
+                value.put("solldatumBeginn", probe.getSolldatumBeginn());
+                value.put("solldatumEnde", probe.getSolldatumEnde());
+                value.put("mprId", probe.getMprId());
+                value.put("mediaDesk", probe.getMediaDesk());
+                value.put("umwId", probe.getUmwId());
+                value.put("probeNehmerId", probe.getProbeNehmerId());
+                value.put("MessungCount", messmethoden.size());
+                String mmts = "";
+                for (int i = 0; i < messmethoden.size(); i++) {
+                    mmts += messmethoden.get(i).getMmtId();
+                    if (i < messmethoden.size() - 1) {
+                        mmts += ", ";
+                    }
+                }
+                value.put("mmt", mmts);
+                value.put("gemId", gemId);
+                returnValue.add(value);
+            }
+            data.put("success", true);
+            data.put("message", 200);
+            data.put("data", returnValue);
+            probenData.put(messprogramm.getId().toString(), data);
+        });
+        responseData.put("proben", probenData);
+
+        Tag newTag = null;
+        //Generate Tags
+        if (generatedProbeIds.size() > 0) {
+            Response tagCreation = TagUtil.generateTag("PEP", mstId, repository);
+            if (tagCreation.getSuccess()) {
+                newTag = (Tag) tagCreation.getData();
+                TagUtil.setTagsByProbeIds(generatedProbeIds, newTag.getId(), repository);
+            }
+            responseData.put("tag", newTag.getTag());
         }
-        return new Response(true, 200, returnValue);
+        return new Response(true, 200, responseData);
     }
 
     /**
