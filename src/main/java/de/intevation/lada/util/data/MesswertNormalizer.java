@@ -51,31 +51,33 @@ public class MesswertNormalizer {
         Integer secMehIdToConvertTo = umwelt.getSecMehId();
 
         for (Messwert messwert: messwerte) {
-            if (mehIdToConvertTo != messwert.getMehId()
-                && !secMehIdToConvertTo.equals(messwert.getMehId())) {
-                //Get the conversion factors
-                List<MassEinheitUmrechnung> primaryMeu= getConversions(
-                        mehIdToConvertTo, messwert.getMehId(), defaultRepo);
-                List<MassEinheitUmrechnung> secondaryMeu = getConversions(
-                        secMehIdToConvertTo, messwert.getMehId(), defaultRepo);
-                if (primaryMeu.size() == 0 && secondaryMeu.size() == 0) {
-                    //No suitable conversion found: continue
-                    continue;
-                }
-                MassEinheitUmrechnung meu = primaryMeu.size() > 0 ?
-                        primaryMeu.get(0): secondaryMeu.get(0);
-                Double factor = meu.getFaktor();
+            if (mehIdToConvertTo != null && mehIdToConvertTo.equals(messwert.getMehId()) ||
+                secMehIdToConvertTo != null && secMehIdToConvertTo.equals(messwert.getMehId())) {
+                // no conversion needed
+                continue;
+            }
+            //Get the conversion factors
+            List<MassEinheitUmrechnung> primaryMeu= getConversions(
+                    mehIdToConvertTo, messwert.getMehId(), defaultRepo);
+            List<MassEinheitUmrechnung> secondaryMeu = getConversions(
+                    secMehIdToConvertTo, messwert.getMehId(), defaultRepo);
+            if (primaryMeu.size() == 0 && secondaryMeu.size() == 0) {
+                //No suitable conversion found: continue
+                continue;
+            }
+            MassEinheitUmrechnung meu = primaryMeu.size() > 0 ?
+                    primaryMeu.get(0): secondaryMeu.get(0);
+            Double factor = meu.getFaktor();
 
-                //Update einheit
-                messwert.setMehId(primaryMeu.size() > 0 ? mehIdToConvertTo: secMehIdToConvertTo);
-                //Update messwert
-                if (messwert.getMesswert() != null) {
-                    messwert.setMesswert(messwert.getMesswert() * factor);
-                }
-                //update nwgZuMesswert
-                if (messwert.getNwgZuMesswert() != null) {
-                    messwert.setNwgZuMesswert(messwert.getNwgZuMesswert() * factor);
-                }
+            //Update einheit
+            messwert.setMehId(primaryMeu.size() > 0 ? mehIdToConvertTo: secMehIdToConvertTo);
+            //Update messwert
+            if (messwert.getMesswert() != null) {
+                messwert.setMesswert(messwert.getMesswert() * factor);
+            }
+            //update nwgZuMesswert
+            if (messwert.getNwgZuMesswert() != null) {
+                messwert.setNwgZuMesswert(messwert.getNwgZuMesswert() * factor);
             }
         }
         return messwerte;
