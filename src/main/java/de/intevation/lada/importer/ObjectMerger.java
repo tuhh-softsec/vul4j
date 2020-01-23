@@ -56,6 +56,7 @@ public class ObjectMerger {
         if (src.getProbeNehmerId() != null) target.setProbeNehmerId(src.getProbeNehmerId());
         if (src.getSolldatumBeginn() != null) target.setSolldatumBeginn(src.getSolldatumBeginn());
         if (src.getSolldatumEnde() != null) target.setSolldatumEnde(src.getSolldatumEnde());
+        if (src.getUrsprungszeit() != null) target.setUrsprungszeit(src.getUrsprungszeit());
         if (src.getTest() != null) {
             if (target.getTest() == null) target.setTest(src.getTest());
         } else {

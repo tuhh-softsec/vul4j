@@ -251,6 +251,7 @@ CREATE TABLE probe (
     mpr_id integer REFERENCES messprogramm,
     solldatum_beginn timestamp without time zone,
     solldatum_ende timestamp without time zone,
+    ursprungszeit timestamp without time zone,
     tree_modified timestamp without time zone DEFAULT now(),
     rei_progpunkt_grp_id integer REFERENCES stamm.rei_progpunkt_gruppe,
     kta_gruppe_id integer REFERENCES stamm.kta_gruppe,

@@ -1171,7 +1171,39 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterUrsprungs_datum_uhrzeit(LafParser.Ursprungs_datum_uhrzeitContext ctx) {
-        return;
+
+        if (ctx.getChildCount() == 2) {
+            ReportItem warn = new ReportItem();
+            warn.setKey(ctx.getChild(0).toString());
+            warn.setValue("");
+            warn.setCode(673);
+            currentWarnings.add(warn);
+            return;
+        }
+        if (ctx.getChildCount() < 4) {
+            return;
+        }
+        String date = ctx.getChild(1).toString();
+        date = date.replaceAll("\"", "");
+        if (!date.matches(LafDataTypes.D8)) {
+            ReportItem err = new ReportItem();
+            err.setKey(ctx.getChild(0).toString());
+            err.setValue(date);
+            err.setCode(670);
+            currentErrors.add(err);
+            return;
+        }
+        String time = ctx.getChild(2).toString();
+        time = time.replaceAll("\"", "");
+        if (!time.matches(LafDataTypes.T4)) {
+            ReportItem err = new ReportItem();
+            err.setKey(ctx.getChild(0).toString());
+            err.setValue(time);
+            err.setCode(670);
+            currentErrors.add(err);
+            return;
+        }
+        currentProbe.addAttribute(ctx.getChild(0).toString().toUpperCase(), date + ' ' + time);
     }
 
     /**

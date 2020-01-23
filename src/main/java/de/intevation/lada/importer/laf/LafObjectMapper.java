@@ -1475,6 +1475,7 @@ public class LafObjectMapper {
         logger.debug("probenehmer: " + probe.getProbeNehmerId());
         logger.debug("sbeginn: " + probe.getSolldatumBeginn());
         logger.debug("sende: " + probe.getSolldatumEnde());
+        logger.debug("ursprungszeit: " + probe.getUrsprungszeit());
         logger.debug("test: " + probe.getTest());
         logger.debug("umw: " + probe.getUmwId());
     }
@@ -1666,6 +1667,9 @@ public class LafObjectMapper {
         }
         if ("PROBENAHME_DATUM_UHRZEIT_E".equals(key) && !value.equals("")) {
             probe.setProbeentnahmeEnde(getDate(value.toString()));
+        }
+        if ("URSPRUNGS_DATUM_UHRZEIT".equals(key) && !value.equals("")) {
+            probe.setUrsprungszeit(getDate(value.toString()));
         }
 
         if ("UMWELTBEREICH_S".equals(key) &&

@@ -89,6 +89,9 @@ public class Probe implements Serializable {
     @Column(name="solldatum_ende")
     private Timestamp solldatumEnde;
 
+    @Column(name="ursprungszeit")
+    private Timestamp ursprungszeit;
+
     private Boolean test;
 
     @Column(name="tree_modified", insertable=false, updatable=false)
@@ -282,6 +285,14 @@ public class Probe implements Serializable {
 
     public void setSolldatumEnde(Timestamp solldatumEnde) {
         this.solldatumEnde = solldatumEnde;
+    }
+
+    public Timestamp getUrsprungszeit() {
+        return this.ursprungszeit;
+    }
+
+    public void setUrsprungszeit(Timestamp ursprungszeit) {
+        this.ursprungszeit = ursprungszeit;
     }
 
     public Boolean getTest() {

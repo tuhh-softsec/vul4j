@@ -1,0 +1,1 @@
+ALTER TABLE land.probe ADD COLUMN ursprungszeit timestamp without time zone;
