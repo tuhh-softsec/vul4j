@@ -1,5 +1,5 @@
 {
-    "stammdaten.messprogramm_kategorie": [{
+    "stamm.messprogramm_kategorie": [{
         "id": 1000,
         "netzbetreiber_id": "06",
         "code": "mp2",

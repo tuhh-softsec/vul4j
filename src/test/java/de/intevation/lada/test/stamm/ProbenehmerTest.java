@@ -43,7 +43,7 @@ public class ProbenehmerTest extends ServiceTest {
 
         // Prepare expected object
         JsonObject content = readJsonResource("/datasets/dbUnit_probenehmer.json");
-        JsonObject probenehmer = content.getJsonArray("stammdaten.probenehmer").getJsonObject(0);
+        JsonObject probenehmer = content.getJsonArray("stamm.probenehmer").getJsonObject(0);
         JsonObjectBuilder builder = convertObject(probenehmer);
         expectedById = builder.build();
         Assert.assertNotNull(expectedById);

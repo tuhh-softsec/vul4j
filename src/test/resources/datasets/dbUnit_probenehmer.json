@@ -1,5 +1,5 @@
 {
-    "stammdaten.probenehmer": [{
+    "stamm.probenehmer": [{
         "id": 1000,
         "netzbetreiber_id": "06",
         "prn_id": "AV6",

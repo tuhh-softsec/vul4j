@@ -1,4 +1,4 @@
-SET search_path TO stammdaten;
+SET search_path TO stamm;
 
 -- cleanup
 DELETE FROM auth;

@@ -48,7 +48,8 @@ public class Stammdaten {
                 "beschreibung",
                 "einheit",
                 "eudfMesseinheitId",
-                "umrechnungsFaktorEudf"
+                "umrechnungsFaktorEudf",
+                "primary"
             )
         );
 
@@ -137,7 +138,8 @@ public class Stammdaten {
                 "staatId",
                 "verwaltungseinheitId",
                 "otyp",
-                "koordinatenartId"
+                "koordinatenartId",
+                "geom"
             )
         );
 
@@ -160,7 +162,7 @@ public class Stammdaten {
         );
 
         matchers.put("umwelt",
-            Matchers.containsInAnyOrder("id","beschreibung","umweltBereich","mehId")
+            Matchers.containsInAnyOrder("id","beschreibung","umweltBereich","mehId", "secMehId")
         );
 
         matchers.put("verwaltungseinheit",

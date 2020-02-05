@@ -1,5 +1,5 @@
 {
-    "stammdaten.datensatz_erzeuger": [{
+    "stamm.datensatz_erzeuger": [{
         "id": 1000,
         "bezeichnung": "Testbezeichnung",
         "netzbetreiber_id": "06",
