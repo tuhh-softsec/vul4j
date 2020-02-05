@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * 
  */
 @Entity
-@Table(name="status_protokoll")
+@Table(name="status_protokoll", schema="land")
 public class StatusProtokoll implements Serializable {
     private static final long serialVersionUID = 1L;
 

@@ -4,6 +4,9 @@ SET search_path TO stamm;
 DELETE FROM auth;
 DELETE FROM ort;
 DELETE FROM ort_typ;
+DELETE FROM land.probe;
+DELETE FROM land.messprogramm;
+DELETE FROM land.messung;
 DELETE FROM pflicht_messgroesse;
 DELETE FROM datenbasis;
 DELETE FROM mess_einheit;
@@ -21,9 +24,11 @@ DELETE FROM staat;
 DELETE FROM umwelt;
 DELETE FROM verwaltungseinheit;
 DELETE FROM deskriptoren;
+DELETE FROM betriebsart;
 
 -- seed
 -- minimal master data to make interface tests runnable
+INSERT INTO betriebsart (id, name) VALUES (1, 'Normal-/Routinebetrieb');
 INSERT INTO ort_typ (id) VALUES (1);
 INSERT INTO datenbasis (id) VALUES (9);
 INSERT INTO mess_einheit (id) VALUES (207);

@@ -17,7 +17,7 @@ import javax.persistence.Transient;
  * 
  */
 @Entity
-@Table(name="kommentar_p")
+@Table(name="kommentar_p", schema="land")
 public class KommentarP implements Serializable {
     private static final long serialVersionUID = 1L;
 

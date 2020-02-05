@@ -19,7 +19,7 @@ import javax.persistence.Transient;
  * 
  */
 @Entity
-@Table(name="zusatz_wert")
+@Table(name="zusatz_wert", schema="land")
 public class ZusatzWert implements Serializable {
     private static final long serialVersionUID = 1L;
 
