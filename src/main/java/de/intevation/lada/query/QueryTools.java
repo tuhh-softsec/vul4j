@@ -283,7 +283,6 @@ public class QueryTools
         //Append generic and/or tag filter sql seperated from other filters
         if (subquery) {
             sql = "SELECT * FROM ( " + sql + " ) AS inner_query " ;
-            sql += " WHERE ";
             sql += genericFilterSql;
         }
         sql += " ;";
