@@ -34,6 +34,10 @@
         <!--<configuration> -->
         <!--<property name="jbossHome">/path/to/jboss/as</property> -->
         <!--</configuration> -->
+        <configuration>
+          <property name="managementAddress">localhost</property>
+          <property name="managementPort">9990</property>
+        </configuration>
 
     </container>
     <extension qualifier="persistence">
