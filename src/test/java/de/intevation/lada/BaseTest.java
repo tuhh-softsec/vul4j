@@ -31,7 +31,7 @@ public class BaseTest {
 
     public static String TEST_USER = "testeins";
 
-    public static String TEST_ROLES = "cn=mst_06_status, cn=land_06_stamm";
+    public static String TEST_ROLES = "cn=mst_06010 cn=mst_06_status, cn=land_06_stamm";
 
     private static Logger logger = Logger.getLogger(BaseTest.class);
 

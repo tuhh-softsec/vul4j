@@ -1,0 +1,557 @@
+/* Copyright (C) 2013 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
+package de.intevation.lada.test.land;
+
+import java.io.StringReader;
+import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonException;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.JsonValue;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
+
+import org.junit.Assert;
+
+import de.intevation.lada.BaseTest;
+import de.intevation.lada.Protocol;
+import de.intevation.lada.test.ServiceTest;
+
+/**
+ * Class containing methods used for testing the generation of probe records
+ * from a messprogramm.
+ */
+public class PepGenerationTest extends ServiceTest {
+
+    /**
+     * Messprogramm records from datasource
+     */
+    JsonArray messprogramms;
+
+    /**
+     * Current expected tag serial number
+     */
+    int expectedTagSerNo = 0;
+
+    @Override
+    public void init(
+        URL baseUrl,
+        List<Protocol> protocol
+    ) {
+        super.init(baseUrl, protocol);
+        messprogramms = readJsonResource("/datasets/dbUnit_pep_gen.json")
+            .getJsonArray("stamm.messprogramm");
+    }
+
+    /**
+     * Execute all available tests
+     */
+    public void execute() {
+        //Test generation in specific intervals
+        testDailyGeneration();
+        testWeeklyGeneration();
+        test2WeeklyGeneration();
+        test4WeeklyGeneration();
+        testMonthlyGeneration();
+        testQuarterlyGeneration();
+        testHalfYearlyGeneration();
+        testYearlyGeneration();
+
+        //Test generation during leap years
+        testYearlyGenerationInLeapYear();
+        testMonthlyGenerationInLeapYear();
+
+        //Various tests
+        testPartialIntevals();
+        testGenerationRejectUnauthorized();
+        testGenerationRejectInvalidParams();
+        testGenerationRejectNegativeParams();
+    }
+
+    /**
+     * Test the generation of daily probe records
+     */
+    private void testDailyGeneration() {
+        Protocol prot = new Protocol();
+        prot.setName("PEP-Gen");
+        prot.setType("Daily");
+        prot.setPassed(false);
+        protocol.add(prot);
+
+        int mpId = 1007;
+        List<Integer> idParam = new ArrayList<Integer>();
+        idParam.add(mpId);
+
+        // 02/01/2020 @ 12:00am (UTC)
+        Long start = 1580515200000L;
+        // 02/12/2020 @ 12:00am (UTC)
+        Long end = 1581465600000L;
+
+        String entity = generateFromMpIds(idParam, start, end);
+        checkGeneratedProbeCount(12, entity, prot, mpId);
+        checkGeneratedTag(entity, prot);
+        prot.setPassed(true);
+    }
+
+    /**
+     * Test the generation of weekly probe records
+     */
+    private void testWeeklyGeneration() {
+        Protocol prot = new Protocol();
+        prot.setName("PEP-Gen");
+        prot.setType("Weekly");
+        prot.setPassed(false);
+        protocol.add(prot);
+
+        int mpId = 1006;
+        List<Integer> idParam = new ArrayList<Integer>();
+        idParam.add(mpId);
+
+        // 02/01/2020 @ 12:00am (UTC)
+        Long start = 1580515200000L;
+        // 06/01/2020 @ 12:00am (UTC)
+        Long end = 1590969600000L;
+
+        String entity = generateFromMpIds(idParam, start, end);
+        checkGeneratedProbeCount(18, entity, prot, mpId);
+        checkGeneratedTag(entity, prot);
+        prot.setPassed(true);
+    }
+
+    /**
+     * Test the generation of two-weekly probe records
+     */
+    private void test2WeeklyGeneration() {
+        Protocol prot = new Protocol();
+        prot.setName("PEP-Gen");
+        prot.setType("2Weekly");
+        prot.setPassed(false);
+        protocol.add(prot);
+
+        int mpId = 1005;
+        List<Integer> idParam = new ArrayList<Integer>();
+        idParam.add(mpId);
+
+        // 02/01/2020 @ 12:00am (UTC)
+        Long start = 1580515200000L;
+        // 06/01/2020 @ 12:00am (UTC)
+        Long end = 1590969600000L;
+
+        String entity = generateFromMpIds(idParam, start, end);
+        checkGeneratedProbeCount(9, entity, prot, mpId);
+        checkGeneratedTag(entity, prot);
+
+        prot.setPassed(true);
+    }
+
+    /**
+     * Test the generation of four-weekly probe records
+     */
+    private void test4WeeklyGeneration() {
+        Protocol prot = new Protocol();
+        prot.setName("PEP-Gen");
+        prot.setType("4Weekly");
+        prot.setPassed(false);
+        protocol.add(prot);
+
+        int mpId = 1004;
+        List<Integer> idParam = new ArrayList<Integer>();
+        idParam.add(mpId);
+
+        // 02/01/2020 @ 12:00am (UTC)
+        Long start = 1580515200000L;
+        // 06/01/2020 @ 12:00am (UTC)
+        Long end = 1590969600000L;
+
+        String entity = generateFromMpIds(idParam, start, end);
+        checkGeneratedProbeCount(5, entity, prot, mpId);
+        checkGeneratedTag(entity, prot);
+
+        prot.setPassed(true);
+    }
+
+    /**
+     * Test the generation of monthly probe records
+     */
+    private void testMonthlyGeneration() {
+        Protocol prot = new Protocol();
+        prot.setName("PEP-Gen");
+        prot.setType("monthly");
+        prot.setPassed(false);
+        protocol.add(prot);
+
+        int mpId = 1003;
+        List<Integer> id = new ArrayList<Integer>();
+        id.add(mpId);
+
+        //Generate 61 records for five years
+        //01/01/2025 @ 12:00am (UTC)
+        Long start = 1735689600000L;
+        //01/01/2030 @ 12:00am (UTC)
+        Long end =   1893456000000L;
+        String entity = generateFromMpIds(id, start, end);
+        checkGeneratedProbeCount(61, entity, prot, mpId);
+        checkGeneratedTag(entity, prot);
+
+        prot.setPassed(true);
+    }
+
+    /**
+     * Check the generation of quarterly probe records
+     */
+    private void testQuarterlyGeneration() {
+        Protocol prot = new Protocol();
+        prot.setName("PEP-Gen");
+        prot.setType("quarterly");
+        prot.setPassed(false);
+        protocol.add(prot);
+
+        int mpId = 1002;
+        List<Integer> id = new ArrayList<Integer>();
+        id.add(mpId);
+        //01/01/2020 @ 12:00am (UTC)
+        Long start = 1577836800000L;
+        //02/02/2021 @ 12:00am (UTC)
+        Long end = 1612224000000L;
+        String entity = generateFromMpIds(id, start, end);
+        checkGeneratedProbeCount(4, entity, prot, mpId);
+        checkGeneratedTag(entity, prot);
+
+        prot.setPassed(true);
+    }
+
+    /**
+     * Test the generation of half-yearly probe records
+     */
+    private void testHalfYearlyGeneration() {
+        Protocol prot = new Protocol();
+        prot.setName("PEP-Gen");
+        prot.setType("half yearly");
+        prot.setPassed(false);
+        protocol.add(prot);
+
+        int mpId = 1001;
+        List<Integer> id = new ArrayList<Integer>();
+        id.add(mpId);
+
+        //01/01/2020 @ 12:00am (UTC)
+        Long start = 1577836800000L;
+        //02/02/2021 @ 12:00am (UTC)
+        Long end = 1612224000000L;
+        String entity = generateFromMpIds(id, start, end);
+        checkGeneratedProbeCount(2, entity, prot, mpId);
+        checkGeneratedTag(entity, prot);
+
+        prot.setPassed(true); 
+    }
+
+    /**
+     * Test a simple yearly generation of probe records
+     */
+    private void testYearlyGeneration() {
+        Protocol prot = new Protocol();
+        prot.setName("PEP-Gen");
+        prot.setType("yearly");
+        prot.setPassed(false);
+        protocol.add(prot);
+
+        int mpId = 1000;
+        List<Integer> id = new ArrayList<Integer>();
+        id.add(mpId);
+
+        //01/01/2020 @ 12:00am (UTC)
+        Long start = 1577836800000L;
+        //01/01/2030 @ 12:00am (UTC)
+        Long end = 1893456000000L;
+
+        String entity = generateFromMpIds(id, start, end);
+        checkGeneratedProbeCount(11, entity, prot, mpId);
+        checkGeneratedTag(entity, prot);
+
+        prot.setPassed(true);
+    }
+
+    /**
+     * Test the generation of probe records starting on the 29th of February
+     * in a leap year
+     */
+    private void testYearlyGenerationInLeapYear() {
+        Protocol prot = new Protocol();
+        prot.setName("PEP-Gen");
+        prot.setType("yearly in leap year");
+        prot.setPassed(false);
+        protocol.add(prot);
+
+        Integer mpId = 1100;
+        List<Integer> idParam = new ArrayList<Integer>();
+        idParam.add(mpId);
+
+        //02/29/2020 @ 12:00am (UTC)
+        Long start = 1582934400000L;
+        //03/01/2030 @ 12:00am (UTC)
+        Long end = 1898553600000L;
+
+        String entity = generateFromMpIds(idParam, start, end);
+        checkGeneratedProbeCount(10, entity, prot, mpId);
+        checkGeneratedTag(entity, prot);
+
+        prot.setPassed(true);
+    }
+
+    /**
+     * Test the generation of monthly probe records
+     */
+    private void testMonthlyGenerationInLeapYear() {
+        Protocol prot = new Protocol();
+        prot.setName("PEP-Gen");
+        prot.setType("monthly in leap year");
+        prot.setPassed(false);
+        protocol.add(prot);
+
+        int mpId = 1103;
+        List<Integer> idParam = new ArrayList<Integer>();
+
+        idParam.add(mpId);
+        //01/29/2020 @ 12:00am (UTC)
+        Long start = 1580256000000L;
+        //04/01/2021 @ 12:00am (UTC)
+        Long end =   1617235200000L;
+        String entity = generateFromMpIds(idParam, start, end);
+        checkGeneratedProbeCount(15, entity, prot, mpId);
+        checkGeneratedTag(entity, prot);
+
+        prot.setPassed(true);
+    }
+
+    /**
+     * Test the generation of probe records with a partial interval set.
+     */
+    private void testPartialIntevals() {
+        Protocol prot = new Protocol();
+        prot.setName("PEP-Gen");
+        prot.setType("monthly with partial interval");
+        prot.setPassed(false);
+        protocol.add(prot);
+
+        int mpId = 1008;
+        List<Integer> idParam = new ArrayList<Integer>();
+
+        idParam.add(mpId);
+        //01/29/2020 @ 12:00am (UTC)
+        Long start = 1580256000000L;
+        //04/01/2021 @ 12:00am (UTC)
+        Long end =   1617235200000L;
+        String entity = generateFromMpIds(idParam, start, end);
+        checkGeneratedProbeCount(14, entity, prot, mpId);
+        checkGeneratedTag(entity, prot);
+
+        prot.setPassed(true);
+    }
+
+    /**
+     * Test if a generation request will be rejected if unathorized.
+     */
+    private void testGenerationRejectUnauthorized() {
+        Protocol prot = new Protocol();
+        prot.setName("PEP-Gen");
+        prot.setType("reject unauthorized");
+        prot.setPassed(false);
+        protocol.add(prot);
+
+        int mpId = 1009;
+        List<Integer> idParam = new ArrayList<Integer>();
+
+        idParam.add(mpId);
+        //01/29/2020 @ 12:00am (UTC)
+        Long start = 1580256000000L;
+        //04/01/2021 @ 12:00am (UTC)
+        Long end =   1617235200000L;
+        String entity = generateFromMpIds(idParam, start, end);
+
+        //Request should have failed with message 699
+        JsonReader reader = Json.createReader(new StringReader(entity));
+        JsonObject content = reader.readObject();
+        JsonObject data = content.getJsonObject("data");
+        JsonObject mpData = data.getJsonObject("proben").getJsonObject(Integer.toString(mpId));
+
+        Assert.assertTrue(mpData.get("data") == JsonValue.NULL);
+        Assert.assertFalse(mpData.getBoolean("success"));
+        Assert.assertEquals(699, mpData.getInt("message"));
+
+        prot.setPassed(true);
+    }
+
+    private void testGenerationRejectInvalidParams() {
+        Protocol prot = new Protocol();
+        prot.setName("PEP-Gen");
+        prot.setType("reject invalid params");
+        prot.setPassed(false);
+        protocol.add(prot);
+
+        int mpId = 1010;
+        List<Integer> idParam = new ArrayList<Integer>();
+
+        idParam.add(mpId);
+        //01/29/2020 @ 12:00am (UTC)
+        Long end = 1580256000000L;
+        //04/01/2021 @ 12:00am (UTC)
+        Long start =   1617235200000L;
+        String entity = generateFromMpIds(idParam, start, end);
+
+        //Request should have failed with message 699
+        JsonReader reader = Json.createReader(new StringReader(entity));
+        JsonObject content = reader.readObject();
+        JsonObject data = content.getJsonObject("data");
+        JsonObject mpData = data.getJsonObject("proben").getJsonObject(Integer.toString(mpId));
+
+        Assert.assertTrue(mpData.get("data") == JsonValue.NULL);
+        Assert.assertFalse(mpData.getBoolean("success"));
+        Assert.assertEquals(699, mpData.getInt("message"));
+
+        prot.setPassed(true);
+    }
+
+    private void testGenerationRejectNegativeParams() {
+        Protocol prot = new Protocol();
+        prot.setName("PEP-Gen");
+        prot.setType("reject negative params");
+        prot.setPassed(false);
+        protocol.add(prot);
+
+        int mpId = 1010;
+        List<Integer> idParam = new ArrayList<Integer>();
+
+        idParam.add(mpId);
+        //01/29/2020 @ 12:00am (UTC)
+        Long end = -1L;
+        //04/01/2021 @ 12:00am (UTC)
+        Long start =   -5L;
+        String entity = generateFromMpIds(idParam, start, end);
+
+        //Request should have failed with message 699
+        JsonReader reader = Json.createReader(new StringReader(entity));
+        JsonObject content = reader.readObject();
+        JsonObject data = content.getJsonObject("data");
+        JsonObject mpData = data.getJsonObject("proben").getJsonObject(Integer.toString(mpId));
+
+        Assert.assertTrue(mpData.get("data") == JsonValue.NULL);
+        Assert.assertFalse(mpData.getBoolean("success"));
+        Assert.assertEquals(699, mpData.getInt("message"));
+
+        prot.setPassed(true);
+    }
+
+    /**
+     * Checks if the tag stored in the given entity matches the expected one
+     * @param entity Entity to check
+     * @param prot Protocol to use
+     */
+    private void checkGeneratedTag(String entity, Protocol prot) {
+        JsonReader reader = Json.createReader(new StringReader(entity));
+        JsonObject content = reader.readObject();
+        JsonObject data = content.getJsonObject("data");
+        String tag = data.getString("tag");
+
+        String date = LocalDateTime.now().format(
+                DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String expectedTag = "PEP_" + date + "_" + expectedTagSerNo;
+
+        Assert.assertFalse(tag == null || tag.equals(""));
+        Assert.assertTrue(tag.equals(expectedTag));
+    }
+
+    /**
+     * Checks if a generation process resulted in the expected number of probe records
+     * @param count Expected count of records
+     * @param entity Result entity to check
+     * @param prot Protocol to use
+     */
+    private void checkGeneratedProbeCount(int count, String entity, Protocol prot, int mpId) {
+        try{
+            /* Try to parse the response*/
+            JsonReader reader = Json.createReader(new StringReader(entity));
+            JsonObject content = reader.readObject();
+            JsonObject data = content.getJsonObject("data");
+            JsonArray proben = null;
+            try {
+                /* Verify the response*/
+                Assert.assertTrue(content.getBoolean("success"));
+                prot.addInfo("success", content.getBoolean("success"));
+                Assert.assertEquals("200", content.getString("message"));
+                prot.addInfo("message", content.getString("message"));
+                Assert.assertNotNull(content.getJsonObject("data"));
+
+                //Get data for given messprogramm
+                JsonObject mpData = data.getJsonObject("proben").getJsonObject("" + mpId);
+                Assert.assertNotNull(mpData);
+
+                //Check if data is an array of records
+                proben = mpData.getJsonArray("data");
+            } catch (ClassCastException cce) {
+                Assert.fail(cce.getMessage());
+            }
+
+            prot.addInfo("objects", proben.size());
+            Assert.assertEquals(count, proben.size());
+        }
+        catch(JsonException je) {
+            prot.addInfo("exception", je.getMessage());
+            Assert.fail(je.getMessage());
+        }
+    }
+
+    /**
+     * Generate probe records from a list of messprogramm ids, a start timestamp
+     * and an end timestamp
+     * @param ids List of messprogramm ids to generate from
+     * @param start Timestamp in ms to start with
+     * @param end Timestamp in ms to end with
+     * @return Response enitity String containing the generated objects
+     */
+    private String generateFromMpIds(List<Integer> ids, Long start, Long end) {
+        System.out.print(".");
+
+        Client client = ClientBuilder.newClient();
+        WebTarget target = client.target(baseUrl + "rest/probe/messprogramm");
+        JsonArrayBuilder idArrayBuilder = Json.createArrayBuilder();
+        ids.forEach(item -> {
+            idArrayBuilder.add(item);
+        });
+        JsonObject payload = Json.createObjectBuilder()
+            .add("start", start)
+            .add("end", end)
+            .add("ids", idArrayBuilder.build()).build();
+
+        Response response = target.request()
+            .header("X-SHIB-user", BaseTest.TEST_USER)
+            .header("X-SHIB-roles", BaseTest.TEST_ROLES)
+            .post(Entity.json(payload.toString()));
+
+        String entity = response.readEntity(String.class);
+        JsonReader reader = Json.createReader(new StringReader(entity));
+        JsonObject content = reader.readObject();
+        JsonObject data = content.getJsonObject("data");
+
+        //If a tag was applied, increase serial number
+        if (data.containsKey("tag") && data.getString("tag") != null) {
+            expectedTagSerNo++;
+        }
+        return entity;
+    }
+}

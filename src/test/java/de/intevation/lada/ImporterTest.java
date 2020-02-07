@@ -105,6 +105,7 @@ public class ImporterTest extends BaseTest{
     }
 
     @Test
+    @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @InSequence(1)
     @UsingDataSet("datasets/dbUnit_probe_import.json")
     @DataSource("java:jboss/lada-land")
@@ -127,6 +128,7 @@ public class ImporterTest extends BaseTest{
     }
 
     @Test
+    @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @InSequence(2)
     @UsingDataSet("datasets/dbUnit_probe_import.json")
     @DataSource("java:jboss/lada-land")
@@ -148,6 +150,7 @@ public class ImporterTest extends BaseTest{
     }
 
     @Test
+    @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @InSequence(3)
     @UsingDataSet("datasets/dbUnit_probe_import.json")
     @DataSource("java:jboss/lada-land")
@@ -169,6 +172,7 @@ public class ImporterTest extends BaseTest{
     }
 
     @Test
+    @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @InSequence(4)
     @UsingDataSet("datasets/dbUnit_probe_import.json")
     @DataSource("java:jboss/lada-land")
@@ -192,6 +196,7 @@ public class ImporterTest extends BaseTest{
     }
 
     @Test
+    @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @InSequence(5)
     @UsingDataSet("datasets/dbUnit_probe_import.json")
     @DataSource("java:jboss/lada-land")
@@ -218,6 +223,7 @@ public class ImporterTest extends BaseTest{
      * MESSUNG IDENTIFIER
      */
     @Test
+    @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @InSequence(6)
     @UsingDataSet("datasets/dbUnit_messung_import.json")
     @DataSource("java:jboss/lada-land")
@@ -240,6 +246,7 @@ public class ImporterTest extends BaseTest{
     }
 
     @Test
+    @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @InSequence(7)
     @UsingDataSet("datasets/dbUnit_messung_import.json")
     @DataSource("java:jboss/lada-land")
@@ -262,6 +269,7 @@ public class ImporterTest extends BaseTest{
     }
 
     @Test
+    @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @InSequence(8)
     @UsingDataSet("datasets/dbUnit_messung_import.json")
     @DataSource("java:jboss/lada-land")
@@ -284,6 +292,7 @@ public class ImporterTest extends BaseTest{
     }
 
     @Test
+    @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @InSequence(9)
     @UsingDataSet("datasets/dbUnit_messung_import.json")
     @DataSource("java:jboss/lada-land")
@@ -307,6 +316,7 @@ public class ImporterTest extends BaseTest{
 
     //TODO: Reject with this data should not be possible
     @Test
+    @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @Ignore
     @InSequence(10)
     @DataSource("java:jboss/lada-land")
@@ -330,6 +340,7 @@ public class ImporterTest extends BaseTest{
     }
 
     @Test
+    @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @InSequence(11)
     @UsingDataSet("datasets/dbUnit_messung_import.json")
     @DataSource("java:jboss/lada-land")
@@ -356,6 +367,7 @@ public class ImporterTest extends BaseTest{
      * MERGE OBJECTS
      */
     @Test
+    @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @InSequence(12)
     @UsingDataSet("datasets/dbUnit_import_merge.json")
     @ShouldMatchDataSet(value="datasets/dbUnit_import_merge_match.json",
@@ -394,6 +406,7 @@ public class ImporterTest extends BaseTest{
     }
 
     @Test
+    @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @InSequence(13)
     @UsingDataSet("datasets/dbUnit_import_merge.json")
     @ShouldMatchDataSet(value="datasets/dbUnit_import_merge_match_messung.json",
@@ -424,6 +437,7 @@ public class ImporterTest extends BaseTest{
     /*TODO: Record order can get mixed up here which cause the test to fail as
             different records get compared to each other (e.g. A74 <-> A76) */
     @Test
+    @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @Ignore
     @InSequence(14)
     @UsingDataSet("datasets/dbUnit_import_merge.json")
@@ -470,6 +484,7 @@ public class ImporterTest extends BaseTest{
     }
 
     @Test
+    @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @InSequence(15)
     @UsingDataSet("datasets/dbUnit_import_merge.json")
     @ShouldMatchDataSet(value="datasets/dbUnit_import_merge_match_kommentar.json",
@@ -508,6 +523,7 @@ public class ImporterTest extends BaseTest{
     }
 
     @Test
+    @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @InSequence(16)
     @UsingDataSet("datasets/dbUnit_import_merge.json")
     @ShouldMatchDataSet(value="datasets/dbUnit_import_merge_match_kommentarm.json",
@@ -546,6 +562,7 @@ public class ImporterTest extends BaseTest{
     }
 
     @Test
+    @ApplyScriptBefore("datasets/clean_and_seed.sql")
     @InSequence(17)
     @UsingDataSet("datasets/dbUnit_import_merge.json")
     @ShouldMatchDataSet(value="datasets/dbUnit_import_merge_match_messwert.json",

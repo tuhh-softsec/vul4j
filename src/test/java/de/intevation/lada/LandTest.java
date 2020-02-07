@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
+import org.jboss.arquillian.persistence.ApplyScriptBefore;
 import org.jboss.arquillian.persistence.Cleanup;
 import org.jboss.arquillian.persistence.CleanupUsingScript;
 import org.jboss.arquillian.persistence.DataSource;
@@ -44,6 +45,7 @@ import de.intevation.lada.test.land.MessprogrammTest;
 import de.intevation.lada.test.land.MessungTest;
 import de.intevation.lada.test.land.MesswertTest;
 import de.intevation.lada.test.land.OrtszuordnungTest;
+import de.intevation.lada.test.land.PepGenerationTest;
 import de.intevation.lada.test.land.ProbeTest;
 import de.intevation.lada.test.land.QueryTest;
 import de.intevation.lada.test.land.StatusTest;
@@ -56,12 +58,10 @@ import de.intevation.lada.test.land.ZusatzwertTest;
  * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
  */
 @RunWith(Arquillian.class)
-@Ignore
 // TODO: make tests independent of test data which do not exist anymore
 public class LandTest extends BaseTest {
 
-    @Inject
-    Logger internalLogger;
+    private static Logger logger = Logger.getLogger(StammdatenTest.class);
 
     @PersistenceContext(unitName="land")
     EntityManager em;
@@ -76,6 +76,7 @@ public class LandTest extends BaseTest {
     private StatusTest statusTest;
     private MessprogrammTest messprogrammTest;
     private QueryTest queryTest;
+    private PepGenerationTest pepGenerationTest;
 
     public LandTest() {
         probeTest = new ProbeTest();
@@ -88,12 +89,14 @@ public class LandTest extends BaseTest {
         statusTest = new StatusTest();
         messprogrammTest = new MessprogrammTest();
         queryTest = new QueryTest();
+        pepGenerationTest = new PepGenerationTest();
         testProtocol = new ArrayList<Protocol>();
         verboseLogging = false;
     }
 
     @BeforeClass
     public static void beforeTests() {
+        logger.info("---------- Testing Lada Land Services ----------");
     }
 
     /*------ REST service tests ------*/
@@ -102,6 +105,7 @@ public class LandTest extends BaseTest {
      * Tests for probe operations
      */
     @Test
+    @Ignore
     @InSequence(2)
     @RunAsClient
     public final void testProbe(@ArquillianResource URL baseUrl)
@@ -114,6 +118,7 @@ public class LandTest extends BaseTest {
      * Tests for pkommentar operations
      */
     @Test
+    @Ignore
     @InSequence(4)
     @RunAsClient
     public final void testPkommentar(@ArquillianResource URL baseUrl)
@@ -126,6 +131,7 @@ public class LandTest extends BaseTest {
      * Tests for ortszurodnung operations
      */
     @Test
+    @Ignore
     @InSequence(6)
     @RunAsClient
     public final void testOrtszuordnung(@ArquillianResource URL baseUrl)
@@ -138,6 +144,7 @@ public class LandTest extends BaseTest {
      * Tests for zustzwert operations
      */
     @Test
+    @Ignore
     @InSequence(8)
     @RunAsClient
     public final void testZusatzwert(@ArquillianResource URL baseUrl)
@@ -149,6 +156,7 @@ public class LandTest extends BaseTest {
      * Tests for messung operations
      */
     @Test
+    @Ignore
     @InSequence(10)
     @RunAsClient
     public final void testMessung(@ArquillianResource URL baseUrl)
@@ -161,6 +169,7 @@ public class LandTest extends BaseTest {
      * Tests for mkommentar operations
      */
     @Test
+    @Ignore
     @InSequence(12)
     @RunAsClient
     public final void testMkommentar(@ArquillianResource URL baseUrl)
@@ -173,6 +182,7 @@ public class LandTest extends BaseTest {
      * Tests for mkommentar operations
      */
     @Test
+    @Ignore
     @InSequence(14)
     @RunAsClient
     public final void testMesswert(@ArquillianResource URL baseUrl)
@@ -182,6 +192,7 @@ public class LandTest extends BaseTest {
     }
 
     @Test
+    @Ignore
     @InSequence(16)
     @RunAsClient
     public final void testStatus(@ArquillianResource URL baseUrl)
@@ -191,6 +202,7 @@ public class LandTest extends BaseTest {
     }
 
     @Test
+    @Ignore
     @InSequence(18)
     @RunAsClient
     public final void testMessprogramm(@ArquillianResource URL baseUrl)
@@ -200,6 +212,7 @@ public class LandTest extends BaseTest {
     }
 
     @Test
+    @Ignore
     @InSequence(20)
     @RunAsClient
     public final void testQuery(@ArquillianResource URL baseUrl)
@@ -214,6 +227,7 @@ public class LandTest extends BaseTest {
      * Insert a probe object into the database.
      */
     @Test
+    @Ignore
     @InSequence(1)
     @UsingDataSet("datasets/dbUnit_probe.json")
     @DataSource("java:jboss/lada-land")
@@ -233,6 +247,7 @@ public class LandTest extends BaseTest {
      * Insert a probe kommentar into the database.
      */
     @Test
+    @Ignore
     @InSequence(3)
     @UsingDataSet("datasets/dbUnit_pkommentar.json")
     @DataSource("java:jboss/lada-land")
@@ -252,6 +267,7 @@ public class LandTest extends BaseTest {
      * Insert a ortszuordnung into the database.
      */
     @Test
+    @Ignore
     @InSequence(5)
     @UsingDataSet("datasets/dbUnit_ortszuordnung.json")
     @DataSource("java:jboss/lada-land")
@@ -271,6 +287,7 @@ public class LandTest extends BaseTest {
      * Insert a zusatzwert into the database.
      */
     @Test
+    @Ignore
     @InSequence(7)
     @UsingDataSet("datasets/dbUnit_zusatzwert.json")
     @DataSource("java:jboss/lada-land")
@@ -290,6 +307,7 @@ public class LandTest extends BaseTest {
      * Insert a messung object into the database.
      */
     @Test
+    @Ignore
     @InSequence(9)
     @UsingDataSet("datasets/dbUnit_messung.json")
     @DataSource("java:jboss/lada-land")
@@ -311,6 +329,7 @@ public class LandTest extends BaseTest {
      * Insert a messungs kommentar into the database.
      */
     @Test
+    @Ignore
     @InSequence(11)
     @UsingDataSet("datasets/dbUnit_mkommentar.json")
     @DataSource("java:jboss/lada-land")
@@ -330,6 +349,7 @@ public class LandTest extends BaseTest {
      * Insert a messwert into the database.
      */
     @Test
+    @Ignore
     @InSequence(13)
     @UsingDataSet("datasets/dbUnit_messwert.json")
     @DataSource("java:jboss/lada-land")
@@ -349,6 +369,7 @@ public class LandTest extends BaseTest {
      * Insert a messprogramm into the database.
      */
     @Test
+    @Ignore
     @InSequence(17)
     @UsingDataSet("datasets/dbUnit_messprogramm.json")
     @DataSource("java:jboss/lada-land")
@@ -366,16 +387,47 @@ public class LandTest extends BaseTest {
     /**
      * Cleanup the database.
      */
+    // @Test
+    // @Ignore
+    // @InSequence(19)
+    // @DataSource("java:jboss/lada-land")
+    // @CleanupUsingScript("datasets/cleanup.sql")
+    // public final void cleanUp() {
+    //     Protocol protocol = new Protocol();
+    //     protocol.addInfo("database", "Cleaning the database.");
+    //     protocol.setName("database");
+    //     protocol.setType("cleanup");
+    //     protocol.setPassed(true);
+    //     testProtocol.add(protocol);
+    // }
+
+    /**
+     * Test probe generation from a messprogramm record
+     */
     @Test
-    @InSequence(19)
+    @ApplyScriptBefore("datasets/clean_and_seed.sql")
+    @UsingDataSet("datasets/dbUnit_pep_gen.json")
     @DataSource("java:jboss/lada-land")
-    @CleanupUsingScript("datasets/cleanup.sql")
-    public final void cleanUp() {
+    @InSequence(21)
+    @Cleanup(phase=TestExecutionPhase.NONE)
+    public final void prepareTestPepGeneration() {
         Protocol protocol = new Protocol();
-        protocol.addInfo("database", "Cleaning the database.");
         protocol.setName("database");
-        protocol.setType("cleanup");
-        protocol.setPassed(true);
+        protocol.setType("insert messprogramm");
+        protocol.addInfo("database", "Insert Messprogramm into database");
         testProtocol.add(protocol);
+        Messprogramm messprogramm = em.find(Messprogramm.class, 1000);
+        Assert.assertNotNull(messprogramm);
+        protocol.setPassed(true);
+    }
+
+    @Test
+    @DataSource("java:jboss/lada-land")
+    @InSequence(22)
+    @RunAsClient
+    public final void testPepGeneration(@ArquillianResource URL baseUrl)
+            throws Exception {
+        pepGenerationTest.init(baseUrl, testProtocol);
+        pepGenerationTest.execute();
     }
 }

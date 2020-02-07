@@ -416,11 +416,14 @@ public class StammdatenTest extends BaseTest {
      */
     @Test
     @InSequence(36)
+    @UsingDataSet("datasets/dbUnit_pep_gen.json")
+    @DataSource("java:jboss/lada-land")
     @RunAsClient
     public final void testDeskriptoren(@ArquillianResource URL baseUrl)
     throws Exception {
         deskriptorenTest.init(baseUrl, testProtocol);
         deskriptorenTest.execute();
     }
+
 
 }

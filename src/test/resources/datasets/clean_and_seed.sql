@@ -2,6 +2,8 @@ SET search_path TO stamm;
 
 -- cleanup
 DELETE FROM auth;
+DELETE FROM land.tagzuordnung;
+DELETE FROM tag;
 DELETE FROM ort;
 DELETE FROM ort_typ;
 DELETE FROM land.probe;
@@ -31,13 +33,16 @@ DELETE FROM betriebsart;
 INSERT INTO betriebsart (id, name) VALUES (1, 'Normal-/Routinebetrieb');
 INSERT INTO ort_typ (id) VALUES (1);
 INSERT INTO datenbasis (id) VALUES (9);
+INSERT INTO datenbasis (id) VALUES (2);
 INSERT INTO mess_einheit (id) VALUES (207);
 INSERT INTO mess_einheit (id) VALUES (208);
 INSERT INTO messgroesse (id, messgroesse) VALUES (56, 'Mangan');
 INSERT INTO messgroesse (id, messgroesse) VALUES (57, 'Mangan');
 INSERT INTO mess_methode (id) VALUES ('A3');
 INSERT INTO netz_betreiber (id) VALUES ('06');
+INSERT INTO netz_betreiber (id) VALUES ('01');
 INSERT INTO mess_stelle (id, netzbetreiber_id) VALUES ('06010', '06');
+INSERT INTO mess_stelle (id, netzbetreiber_id) VALUES ('01010', '01');
 INSERT INTO pflicht_messgroesse (id, mmt_id, datenbasis_id) VALUES (33, 'A3', 9);
 INSERT INTO probenart (id, probenart, probenart_eudf_id) VALUES (1, 'E', 'A');
 INSERT INTO probenart (id, probenart, probenart_eudf_id) VALUES (2, 'S', 'B');
@@ -63,5 +68,5 @@ INSERT INTO probenehmer (
 -- authorization data needed for tests
 INSERT INTO auth (ldap_group, netzbetreiber_id, mst_id, funktion_id)
        VALUES ('mst_06_status', '06', '06010', 1);
-INSERT INTO auth (ldap_group, netzbetreiber_id, funktion_id)
-       VALUES ('land_06_stamm', '06', 4);
+INSERT INTO auth (ldap_group, netzbetreiber_id, mst_id, funktion_id)
+       VALUES ('land_06_stamm', '06', '06010', 4);

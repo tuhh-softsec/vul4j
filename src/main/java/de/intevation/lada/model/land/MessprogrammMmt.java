@@ -20,7 +20,7 @@ import de.intevation.lada.util.data.IntegerArrayType;
  * 
  */
 @Entity
-@Table(name="messprogramm_mmt")
+@Table(name="messprogramm_mmt", schema="land")
 @TypeDefs({@TypeDef(name="IntegerArray", typeClass=IntegerArrayType.class)})
 public class MessprogrammMmt implements Serializable {
     private static final long serialVersionUID = 1L;
