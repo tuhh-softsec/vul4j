@@ -28,8 +28,8 @@
         "probenart_id": 1,
         "probenintervall": "J",
         "teilintervall_von": 1,
-        "teilintervall_bis": 210,
-        "intervall_offset": 0,
+        "teilintervall_bis": 365,
+        "intervall_offset": 59,
         "letzte_aenderung": "2015-03-01 12:00:00",
         "gueltig_von": 1,
         "gueltig_bis": 365
@@ -97,7 +97,7 @@
         "probenintervall": "M",
         "teilintervall_von": 1,
         "teilintervall_bis": 31,
-        "intervall_offset": 0,
+        "intervall_offset": 28,
         "letzte_aenderung": "2015-03-01 12:00:00",
         "gueltig_von": 1,
         "gueltig_bis": 365
@@ -301,7 +301,7 @@
         "probenintervall": "H",
         "teilintervall_von": 1,
         "teilintervall_bis": 184,
-        "intervall_offset": 0,
+        "intervall_offset": 59,
         "letzte_aenderung": "2015-03-01 12:00:00",
         "gueltig_von": 1,
         "gueltig_bis": 365
@@ -318,7 +318,7 @@
         "probenintervall": "Q",
         "teilintervall_von": 1,
         "teilintervall_bis": 92,
-        "intervall_offset": 0,
+        "intervall_offset": 59,
         "letzte_aenderung": "2015-03-01 12:00:00",
         "gueltig_von": 1,
         "gueltig_bis": 365

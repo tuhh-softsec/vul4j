@@ -76,7 +76,7 @@ public class PepGenerationTest extends ServiceTest {
         testHalfYearlyGeneration();
         testYearlyGeneration();
 
-        //Test generation during leap years
+        //Test generation during leap years with interval offset
         testYearlyGenerationInLeapYear();
         testHalfYearlyGenerationInLeapYear();
         testQuarterlyGenerationInLeapYear();
@@ -313,13 +313,25 @@ public class PepGenerationTest extends ServiceTest {
         idParam.add(mpId);
 
         //02/29/2020 @ 12:00am (UTC)
-        Long start = 1582934400000L;
+        Long start = 1577836800000L;
         //03/01/2030 @ 12:00am (UTC)
         Long end = 1898553600000L;
 
         String entity = generateFromMpIds(idParam, start, end);
-        checkGeneratedProbeCount(10, entity, prot, mpId);
+        int expectedCount = 11;
+        checkGeneratedProbeCount(expectedCount, entity, prot, mpId);
         checkGeneratedTag(entity, prot);
+
+        //Check return data
+        String startAttribute = "solldatumBeginn";
+        Map<Integer, Long> expectedValues = new HashMap<Integer, Long>();
+        //Expected first record: 02/29/2020 @ 12:00am (UTC)
+        expectedValues.put(0, 1582934400000L);
+        //Expected second record: 03/01/2021 @ 12:00am (UTC)
+        expectedValues.put(1, 1614556800000L);
+        //Expected last record: 02/29/2030 @ 12:00am (UTC)
+        expectedValues.put(expectedCount - 1, 1898553600000L);
+        checkEntityAttributeValues(entity, mpId, startAttribute, expectedValues);
 
         prot.setPassed(true);
     }
@@ -347,6 +359,15 @@ public class PepGenerationTest extends ServiceTest {
         checkGeneratedProbeCount(8, entity, prot, mpId);
         checkGeneratedTag(entity, prot);
 
+        //Check return data
+        String startAttribute = "solldatumBeginn";
+        Map<Integer, Long> expectedValues = new HashMap<Integer, Long>();
+        //Expected first record: 08/28/2016 @ 12:00am (UTC)
+        expectedValues.put(0, 1472428800000L);
+        //Expected last record: 02/29/2020 @ 12:00am (UTC)
+        expectedValues.put(7, 1582934400000L);
+        checkEntityAttributeValues(entity, mpId, startAttribute, expectedValues);
+
         prot.setPassed(true);
     }
 
@@ -372,6 +393,16 @@ public class PepGenerationTest extends ServiceTest {
         String entity = generateFromMpIds(idParam, start, end);
         checkGeneratedProbeCount(16, entity, prot, mpId);
         checkGeneratedTag(entity, prot);
+
+        //Check return data
+        String startAttribute = "solldatumBeginn";
+        Map<Integer, Long> expectedValues = new HashMap<Integer, Long>();
+        //Expected first record: 05/30/2016 @ 12:00am (UTC)
+        expectedValues.put(0, 1464566400000L);
+        //Expected last record: 02/29/2020 @ 12:00am (UTC)
+        expectedValues.put(15, 1582934400000L);
+        checkEntityAttributeValues(entity, mpId, startAttribute, expectedValues);
+        
 
         prot.setPassed(true);
     }
@@ -401,10 +432,10 @@ public class PepGenerationTest extends ServiceTest {
         //Check return data
         String startAttribute = "solldatumBeginn";
         Map<Integer, Long> expectedValues = new HashMap<Integer, Long>();
-        //Expected first record: 02/01/2020 1580515200000
-        expectedValues.put(0, 1580515200000L);
-        //Expected second record: 03/01/2020 1583020800000
-        expectedValues.put(1, 1583020800000L);
+        //Expected first record: 02/29/2020 @ 12:00am (UTC)
+        expectedValues.put(0, 1582934400000L);
+        //Expected second record: 03/29/2020 @ 12:00am (UTC)
+        expectedValues.put(1, 1585440000000L);
         checkEntityAttributeValues(entity, mpId, startAttribute, expectedValues);
 
         prot.setPassed(true);
@@ -507,8 +538,21 @@ public class PepGenerationTest extends ServiceTest {
         //03/01/2021 @ 12:00am (UTC)
         Long end = 1614556800000L;
         String entity = generateFromMpIds(idParam, start, end);
-        checkGeneratedProbeCount(368, entity, prot, mpId);
+        int expectedCount = 368;
+        checkGeneratedProbeCount(expectedCount, entity, prot, mpId);
         checkGeneratedTag(entity, prot);
+
+        //Check return data
+        String startAttribute = "solldatumBeginn";
+        Map<Integer, Long> expectedValues = new HashMap<Integer, Long>();
+        //Expected first record: 02/28/2020 @ 12:00am (UTC)
+        expectedValues.put(0, 1582848000000L);
+        //Expected second record: 02/29/2020 @ 12:00am (UTC)
+        expectedValues.put(1, 1582934400000L);
+        //Expected last record: 03/01/2021 @ 12:00am (UTC)
+        expectedValues.put(expectedCount - 1, 1614556800000L);
+        checkEntityAttributeValues(entity, mpId, startAttribute, expectedValues);
+        
 
         prot.setPassed(true);
     }
@@ -774,7 +818,7 @@ public class PepGenerationTest extends ServiceTest {
             JsonObject record = getRecordAtIndex(entity, mpId, index);
             Assert.assertNotNull(record);
             long startDate = record.getJsonNumber(attribute).longValue();
-            Assert.assertEquals(startDate, value.longValue());
+            Assert.assertEquals(value.longValue(), startDate);
         });
     }
 
