@@ -424,6 +424,4 @@ public class StammdatenTest extends BaseTest {
         deskriptorenTest.init(baseUrl, testProtocol);
         deskriptorenTest.execute();
     }
-
-
 }

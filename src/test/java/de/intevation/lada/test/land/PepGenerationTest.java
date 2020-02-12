@@ -12,7 +12,10 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -75,10 +78,17 @@ public class PepGenerationTest extends ServiceTest {
 
         //Test generation during leap years
         testYearlyGenerationInLeapYear();
+        testHalfYearlyGenerationInLeapYear();
+        testQuarterlyGenerationInLeapYear();
         testMonthlyGenerationInLeapYear();
+        test4WeeklyGenerationInLeapYear();
+        test2WeeklyGenerationInLeapYear();
+        testWeeklyGenerationInLeapYear();
+        testDailyGenerationInLeapYear();
 
         //Various tests
         testPartialIntevals();
+        testGenerationFromIdList();
         testGenerationRejectUnauthorized();
         testGenerationRejectInvalidParams();
         testGenerationRejectNegativeParams();
@@ -315,7 +325,59 @@ public class PepGenerationTest extends ServiceTest {
     }
 
     /**
-     * Test the generation of monthly probe records
+     * Test the half yearly generation of probe records in leap years
+     */
+    private void testHalfYearlyGenerationInLeapYear() {
+        Protocol prot = new Protocol();
+        prot.setName("PEP-Gen");
+        prot.setType("half yearly in leap year");
+        prot.setPassed(false);
+        protocol.add(prot);
+
+        Integer mpId = 1015;
+        List<Integer> idParam = new ArrayList<Integer>();
+        idParam.add(mpId);
+
+        //02/29/2016 @ 12:00am (UTC)
+        Long start = 1456704000000L;
+        //02/29/2020 @ 12:00am (UTC)
+        Long end = 1582934400000L;
+
+        String entity = generateFromMpIds(idParam, start, end);
+        checkGeneratedProbeCount(8, entity, prot, mpId);
+        checkGeneratedTag(entity, prot);
+
+        prot.setPassed(true);
+    }
+
+    /**
+     * Test the quarterly generation of probe records in leap years
+     */
+    private void testQuarterlyGenerationInLeapYear() {
+        Protocol prot = new Protocol();
+        prot.setName("PEP-Gen");
+        prot.setType("quarterly in leap year");
+        prot.setPassed(false);
+        protocol.add(prot);
+
+        Integer mpId = 1016;
+        List<Integer> idParam = new ArrayList<Integer>();
+        idParam.add(mpId);
+
+        //02/29/2016 @ 12:00am (UTC)
+        Long start = 1456704000000L;
+        //02/29/2020 @ 12:00am (UTC)
+        Long end = 1582934400000L;
+
+        String entity = generateFromMpIds(idParam, start, end);
+        checkGeneratedProbeCount(16, entity, prot, mpId);
+        checkGeneratedTag(entity, prot);
+
+        prot.setPassed(true);
+    }
+
+   /**
+     * Test the generation of monthly probe records in leap years
      */
     private void testMonthlyGenerationInLeapYear() {
         Protocol prot = new Protocol();
@@ -324,7 +386,7 @@ public class PepGenerationTest extends ServiceTest {
         prot.setPassed(false);
         protocol.add(prot);
 
-        int mpId = 1103;
+        Integer mpId = 1103;
         List<Integer> idParam = new ArrayList<Integer>();
 
         idParam.add(mpId);
@@ -336,9 +398,120 @@ public class PepGenerationTest extends ServiceTest {
         checkGeneratedProbeCount(15, entity, prot, mpId);
         checkGeneratedTag(entity, prot);
 
+        //Check return data
+        String startAttribute = "solldatumBeginn";
+        Map<Integer, Long> expectedValues = new HashMap<Integer, Long>();
+        //Expected first record: 02/01/2020 1580515200000
+        expectedValues.put(0, 1580515200000L);
+        //Expected second record: 03/01/2020 1583020800000
+        expectedValues.put(1, 1583020800000L);
+        checkEntityAttributeValues(entity, mpId, startAttribute, expectedValues);
+
         prot.setPassed(true);
     }
 
+    /**
+    * Test the generation of four-weekly probe records in leap years
+    */
+    private void test4WeeklyGenerationInLeapYear() {
+        Protocol prot = new Protocol();
+        prot.setName("PEP-Gen");
+        prot.setType("4Weekly in leap year");
+        prot.setPassed(false);
+        protocol.add(prot);
+
+        int mpId = 1017;
+        List<Integer> idParam = new ArrayList<Integer>();
+        idParam.add(mpId);
+
+        // 02/29/2020 @ 12:00am (UTC)
+        Long start = 1582934400000L;
+        // 03/01/2021 @ 12:00am (UTC)
+        Long end = 1614556800000L;
+
+        String entity = generateFromMpIds(idParam, start, end);
+        checkGeneratedProbeCount(14, entity, prot, mpId);
+        checkGeneratedTag(entity, prot);
+
+        prot.setPassed(true);
+    }
+
+    /**
+     * Test the generation of two-weekly probe records in leap years
+    */
+    private void test2WeeklyGenerationInLeapYear() {
+        Protocol prot = new Protocol();
+        prot.setName("PEP-Gen");
+        prot.setType("2Weekly in leap year");
+        prot.setPassed(false);
+        protocol.add(prot);
+
+        int mpId = 1018;
+        List<Integer> idParam = new ArrayList<Integer>();
+        idParam.add(mpId);
+
+        // 02/29/2020 @ 12:00am (UTC)
+        Long start = 1582934400000L;
+        // 03/01/2021 @ 12:00am (UTC)
+        Long end = 1614556800000L;
+
+        String entity = generateFromMpIds(idParam, start, end);
+        checkGeneratedProbeCount(27, entity, prot, mpId);
+        checkGeneratedTag(entity, prot);
+
+        prot.setPassed(true);
+    }
+
+    /**
+     * Test the generation of weekly probe records in leap years
+    */
+    private void testWeeklyGenerationInLeapYear() {
+        Protocol prot = new Protocol();
+        prot.setName("PEP-Gen");
+        prot.setType("Weekly in leap year");
+        prot.setPassed(false);
+        protocol.add(prot);
+
+        int mpId = 1019;
+        List<Integer> idParam = new ArrayList<Integer>();
+        idParam.add(mpId);
+
+        // 02/29/2020 @ 12:00am (UTC)
+        Long start = 1582934400000L;
+        // 03/01/2021 @ 12:00am (UTC)
+        Long end = 1614556800000L;
+
+        String entity = generateFromMpIds(idParam, start, end);
+        checkGeneratedProbeCount(53, entity, prot, mpId);
+        checkGeneratedTag(entity, prot);
+        prot.setPassed(true);
+    }
+
+    /**
+     * Test the generation of daily probe records in a leap year.
+     * Should generate 368 records from 02/28/2020 to 03/01/2021.
+     */
+    private void testDailyGenerationInLeapYear() {
+        Protocol prot = new Protocol();
+        prot.setName("PEP-Gen");
+        prot.setType("daily in leap year");
+        prot.setPassed(false);
+        protocol.add(prot);
+
+        int mpId =1012;
+        List<Integer> idParam = new ArrayList<Integer>();
+        idParam.add(mpId);
+
+        //02/28/2020 @ 12:00am (UTC)
+        Long start = 1582848000000L;
+        //03/01/2021 @ 12:00am (UTC)
+        Long end = 1614556800000L;
+        String entity = generateFromMpIds(idParam, start, end);
+        checkGeneratedProbeCount(368, entity, prot, mpId);
+        checkGeneratedTag(entity, prot);
+
+        prot.setPassed(true);
+    }
     /**
      * Test the generation of probe records with a partial interval set.
      */
@@ -361,6 +534,32 @@ public class PepGenerationTest extends ServiceTest {
         checkGeneratedProbeCount(14, entity, prot, mpId);
         checkGeneratedTag(entity, prot);
 
+        prot.setPassed(true);
+    }
+
+    /**
+     * Tests the genereation from a list of mpIds.
+     */
+    private void testGenerationFromIdList() {
+        Protocol prot = new Protocol();
+        prot.setName("Pep Gen");
+        prot.setType("Generation from list");
+        prot.setPassed(false);
+        protocol.add(prot);
+
+        //01/01/2020 @ 12:00am (UTC)
+        Long start = 1577836800000L;
+        //02/14/2020 @ 12:00am (UTC)
+        Long end = 1581638400000L;
+        int monthlyMpId = 1013;
+        int dailyMpId = 1014;
+
+        List<Integer> idParam = Arrays.asList(monthlyMpId, dailyMpId);
+        String entity = generateFromMpIds(idParam, start, end);
+        //Monthy mp should generate two records
+        checkGeneratedProbeCount(2, entity, prot, monthlyMpId);
+        //Daily mp should generate 45 records
+        checkGeneratedProbeCount(45, entity, prot, dailyMpId);
         prot.setPassed(true);
     }
 
@@ -397,6 +596,9 @@ public class PepGenerationTest extends ServiceTest {
         prot.setPassed(true);
     }
 
+    /**
+     * Test if server rejects a request containing invalid params
+     */
     private void testGenerationRejectInvalidParams() {
         Protocol prot = new Protocol();
         prot.setName("PEP-Gen");
@@ -427,6 +629,9 @@ public class PepGenerationTest extends ServiceTest {
         prot.setPassed(true);
     }
 
+    /**
+     * Test if generation request is rejected if time parameters are invalid
+     */
     private void testGenerationRejectNegativeParams() {
         Protocol prot = new Protocol();
         prot.setName("PEP-Gen");
@@ -441,7 +646,7 @@ public class PepGenerationTest extends ServiceTest {
         //01/29/2020 @ 12:00am (UTC)
         Long end = -1L;
         //04/01/2021 @ 12:00am (UTC)
-        Long start =   -5L;
+        Long start = -5L;
         String entity = generateFromMpIds(idParam, start, end);
 
         //Request should have failed with message 699
@@ -456,6 +661,8 @@ public class PepGenerationTest extends ServiceTest {
 
         prot.setPassed(true);
     }
+
+
 
     /**
      * Checks if the tag stored in the given entity matches the expected one
@@ -553,5 +760,44 @@ public class PepGenerationTest extends ServiceTest {
             expectedTagSerNo++;
         }
         return entity;
+    }
+
+    /**
+     * Check if the given entity's long attribute equals the expected values given in a map
+     * @param entity Entity to check
+     * @param mpId mpId to check
+     * @param attribute Attribute name to check
+     * @param expectedValues Map containing record index as key and expected value as value
+     */
+    private void checkEntityAttributeValues(String entity, Integer mpId, String attribute, Map<Integer, Long> expectedValues) {
+        expectedValues.forEach((index, value) -> {
+            JsonObject record = getRecordAtIndex(entity, mpId, index);
+            Assert.assertNotNull(record);
+            long startDate = record.getJsonNumber(attribute).longValue();
+            Assert.assertEquals(startDate, value.longValue());
+        });
+    }
+
+    /**
+     * Parses an entity and returns the record at the given index for messprogramm with given id.
+     * @param entity Entity to use
+     * @param mpId MpId to uses
+     * @param index Record index
+     * @return Record as JsonObject
+     */
+    private JsonObject getRecordAtIndex(String entity, Integer mpId, int index) {
+        JsonObject result = null;
+        try {
+            /* Try to parse the response*/
+            JsonReader reader = Json.createReader(new StringReader(entity));
+            JsonObject content = reader.readObject();
+            JsonObject data = content.getJsonObject("data");
+            JsonArray proben = data.getJsonObject("proben")
+                    .getJsonObject(mpId.toString()).getJsonArray("data");
+            result = proben.getJsonObject(index);
+        } catch (JsonException je) {
+            return null;
+        }
+        return result;
     }
 }
