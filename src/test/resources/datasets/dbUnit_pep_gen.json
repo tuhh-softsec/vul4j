@@ -335,7 +335,7 @@
         "probenintervall": "W4",
         "teilintervall_von": 1,
         "teilintervall_bis": 28,
-        "intervall_offset": 0,
+        "intervall_offset": 5,
         "letzte_aenderung": "2015-03-01 12:00:00",
         "gueltig_von": 1,
         "gueltig_bis": 365
@@ -352,7 +352,7 @@
         "probenintervall": "W2",
         "teilintervall_von": 1,
         "teilintervall_bis": 14,
-        "intervall_offset": 0,
+        "intervall_offset": 5,
         "letzte_aenderung": "2015-03-01 12:00:00",
         "gueltig_von": 1,
         "gueltig_bis": 365
@@ -369,7 +369,7 @@
         "probenintervall": "W",
         "teilintervall_von": 1,
         "teilintervall_bis": 7,
-        "intervall_offset": 0,
+        "intervall_offset": 5,
         "letzte_aenderung": "2015-03-01 12:00:00",
         "gueltig_von": 1,
         "gueltig_bis": 365
