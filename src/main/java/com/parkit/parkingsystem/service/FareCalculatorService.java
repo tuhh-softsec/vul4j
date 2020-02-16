@@ -10,10 +10,7 @@ public class FareCalculatorService {
             throw new IllegalArgumentException("Out time provided is incorrect:"+ticket.getOutTime().toString());
         }
 
-        int inHour = ticket.getInTime().getHours();
-        int outHour = ticket.getOutTime().getHours();
-
-        //TODO: Some tests are failing here. Need to check if this logic is correct
+        //difference between before and after to get duration, and convert to hours (float, to get percentage)
         long timeMs = ticket.getOutTime().getTime() - ticket.getInTime().getTime();
         float timeSeconds = timeMs/1000;
         float duration = timeSeconds / 3600;
