@@ -4,8 +4,11 @@ import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
 import com.parkit.parkingsystem.integration.service.DataBasePrepareService;
+import com.parkit.parkingsystem.model.ParkingSpot;
+import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +16,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ParkingDataBaseIT {
@@ -52,6 +57,25 @@ public class ParkingDataBaseIT {
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processIncomingVehicle();
         //TODO: check that a ticket is actualy saved in DB and Parking table is updated with availability
+        try{
+        	String carNumber = inputReaderUtil.readVehicleRegistrationNumber();
+        	Ticket ticket = ticketDAO.getTicket(carNumber);
+        	assertNotNull(ticket);
+        	assertNull(ticket.getOutTime());
+        	ParkingSpot parkingSpot = parkingSpotDAO.getParkingSpot(ticket.getParkingSpot().getId());
+        	assertFalse(parkingSpot.isAvailable());
+        }catch(Exception e){
+        	fail("cannot get car number");
+        }
+        
+        try {
+        	//parking a car, takes time
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
     }
 
     @Test
@@ -60,6 +84,31 @@ public class ParkingDataBaseIT {
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processExitingVehicle();
         //TODO: check that the fare generated and out time are populated correctly in the database
+        try {
+        	String carNumber = inputReaderUtil.readVehicleRegistrationNumber();
+        	Ticket ticket = ticketDAO.getTicket(carNumber);
+        	System.out.println(ticket);
+        	assertNotNull(ticket.getOutTime());
+        	ParkingSpot parkingSpot = parkingSpotDAO.getParkingSpot(ticket.getParkingSpot().getId());
+        	assertTrue(parkingSpot.isAvailable());
+		} catch (Exception e) {
+			fail("testParkingLotExit");
+		}
+    }
+    
+    @Test
+    public void testSameCarParking(){
+    	testParkingACar();
+    	testParkingLotExit();
+    	//the same car come back for parking
+    	testParkingACar();
+    	try{
+        	String carNumber = inputReaderUtil.readVehicleRegistrationNumber();
+        	Ticket ticket = ticketDAO.getTicket(carNumber);
+        	assertNull(ticket.getOutTime());
+        }catch(Exception e){
+        	fail("cannot get car number",e);
+        }
     }
 
 }
