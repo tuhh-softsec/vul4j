@@ -2,6 +2,7 @@
 -- changeset taind:1.1
 
 --Bac sy
+DROP TABLE IF EXISTS "pm_doctor";
 CREATE TABLE "pm_doctor"
 (
     "id"          SERIAL PRIMARY KEY,
@@ -16,6 +17,7 @@ CREATE TABLE "pm_doctor"
 );
 
 --Phong kham
+DROP TABLE IF EXISTS "pm_clinic";
 CREATE TABLE "pm_clinic"
 (
     "id"          SERIAL PRIMARY KEY,
@@ -31,6 +33,7 @@ CREATE TABLE "pm_clinic"
 );
 
 --Loai benh
+DROP TABLE IF EXISTS "pm_disease";
 CREATE TABLE "pm_disease"
 (
     "id"          SERIAL PRIMARY KEY,
@@ -43,7 +46,8 @@ CREATE TABLE "pm_disease"
 );
 
 --Vi thuoc
-CREATE TABLE "pm_medicine_taste"
+DROP TABLE IF EXISTS "pm_medicine";
+CREATE TABLE "pm_medicine"
 (
     "id"          SERIAL PRIMARY KEY,
     "disease_id"  int8         not null,
@@ -56,6 +60,7 @@ CREATE TABLE "pm_medicine_taste"
 );
 
 --Vi thuoc cua loai benh
+DROP TABLE IF EXISTS "pm_clinic_disease";
 CREATE TABLE "pm_clinic_disease"
 (
     "id"         SERIAL PRIMARY KEY,
@@ -65,7 +70,8 @@ CREATE TABLE "pm_clinic_disease"
 
 --Tinh trang tu van, du lieu addUser bang tay vao DB, khong co tinh nang quan ly
 --Co 5 loai tinh trang tu van: Cân đối, Tiềm năng, Không có nhu cầu, Gọi lại sau, Đã khám
-CREATE TABLE "pm_advisory_status"
+DROP TABLE IF EXISTS "pm_consulting_status";
+CREATE TABLE "pm_consulting_status"
 (
     "id"   SERIAL PRIMARY KEY,
     "name" varchar(255) not null,
@@ -74,6 +80,7 @@ CREATE TABLE "pm_advisory_status"
 );
 
 --Nguon quang cao
+DROP TABLE IF EXISTS "pm_advertising_source";
 CREATE TABLE "pm_advertising_source"
 (
     "id"          SERIAL PRIMARY KEY,
@@ -86,6 +93,7 @@ CREATE TABLE "pm_advertising_source"
 );
 
 --Benh nhan, bat buoc phai co it nhat 1 so dien thoai
+DROP TABLE IF EXISTS "pm_patient";
 CREATE TABLE "pm_patient"
 (
     "id"          SERIAL PRIMARY KEY,
@@ -102,6 +110,7 @@ CREATE TABLE "pm_patient"
 );
 
 --Benh an theo tung lan kham cua benh nhan
+DROP TABLE IF EXISTS "pm_medical_record";
 CREATE TABLE "pm_medical_record"
 (
     "id"                    SERIAL PRIMARY KEY,
@@ -127,6 +136,7 @@ CREATE TABLE "pm_medical_record"
 
 --Nhan vien phong kham
 --Mot nhan vien chi co the lam viec duy nhat o mot phong kham
+DROP TABLE IF EXISTS "pm_clinic_user";
 CREATE TABLE "pm_clinic_user"
 (
     "id"        SERIAL PRIMARY KEY,
@@ -152,7 +162,8 @@ COMMENT ON COLUMN pm_medical_record.transfer_amount IS 'Tiền chuyển khoản,
 COMMENT ON COLUMN pm_medical_record.cod_amount IS 'Tiền gửi COD, bắt buộc nhân viên phòng khám phải nhập, mặc định là 0';
 COMMENT ON COLUMN pm_medical_record.extra_note IS 'Ghi chú của nhân viên phòng khám';
 
-CREATE TABLE "pm_medical_record_medical_taste"
+DROP TABLE IF EXISTS "pm_clinic_user";
+CREATE TABLE "pm_medical_record_medicine"
 (
     "id"                SERIAL PRIMARY KEY,
     "medical_record_id" int not null,
@@ -169,13 +180,13 @@ ALTER TABLE "pm_clinic_disease"
 ALTER TABLE "pm_clinic_disease"
     ADD FOREIGN KEY ("disease_id") REFERENCES "pm_disease" ("id");
 
-ALTER TABLE "pm_medicine_taste"
+ALTER TABLE "pm_medicine"
     ADD FOREIGN KEY ("disease_id") REFERENCES "pm_disease" ("id");
 
-ALTER TABLE "pm_medical_record_medical_taste"
-    ADD FOREIGN KEY ("medicine_taste_id") REFERENCES "pm_medicine_taste" ("id");
+ALTER TABLE "pm_medical_record_medicine"
+    ADD FOREIGN KEY ("medicine_taste_id") REFERENCES "pm_medicine" ("id");
 
-ALTER TABLE "pm_medical_record_medical_taste"
+ALTER TABLE "pm_medical_record_medicine"
     ADD FOREIGN KEY ("medical_record_id") REFERENCES "pm_medical_record" ("id");
 
 ALTER TABLE "pm_medical_record"
@@ -191,4 +202,4 @@ ALTER TABLE "pm_medical_record"
     ADD FOREIGN KEY ("disease_id") REFERENCES "pm_disease" ("id");
 
 ALTER TABLE "pm_medical_record"
-    ADD FOREIGN KEY ("advisory_status_code") REFERENCES "pm_advisory_status" ("code");
+    ADD FOREIGN KEY ("advisory_status_code") REFERENCES "pm_consulting_status" ("code");
