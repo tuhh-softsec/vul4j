@@ -1,3 +1,4 @@
+
 package com.parkit.parkingsystem.service;
 
 import com.parkit.parkingsystem.constants.Fare;
@@ -7,13 +8,12 @@ public class FareCalculatorService {
 
     public void calculateFare(Ticket ticket){
         if( (ticket.getOutTime() == null) || (ticket.getOutTime().before(ticket.getInTime())) ){
-            throw new IllegalArgumentException("Out time provided is incorrect:"+ticket.getOutTime().toString());
+        	System.out.println(ticket);
+        	System.out.println(ticket.getOutTime().before(ticket.getInTime()));
+            throw new IllegalArgumentException("Out time provided is incorrect:"+ticket.getOutTime().toString()+"  because : inTime="+ticket.getInTime().toString());
         }
 
-        int inHour = ticket.getInTime().getHours();
-        int outHour = ticket.getOutTime().getHours();
-
-        //TODO: Some tests are failing here. Need to check if this logic is correct
+        //difference between before and after to get duration, and convert to hours (float, to get percentage)
         long timeMs = ticket.getOutTime().getTime() - ticket.getInTime().getTime();
         float timeSeconds = timeMs/1000;
         float duration = timeSeconds / 3600;

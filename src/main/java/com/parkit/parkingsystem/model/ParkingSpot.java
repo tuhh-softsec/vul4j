@@ -7,6 +7,10 @@ public class ParkingSpot {
     private ParkingType parkingType;
     private boolean isAvailable;
 
+    public ParkingSpot(){
+    	
+    }
+    
     public ParkingSpot(int number, ParkingType parkingType, boolean isAvailable) {
         this.number = number;
         this.parkingType = parkingType;
