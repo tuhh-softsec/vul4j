@@ -75,7 +75,6 @@ public class ParkingDataBaseIT {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        
     }
 
     @Test
