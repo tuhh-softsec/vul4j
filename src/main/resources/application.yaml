@@ -1,0 +1,44 @@
+server:
+  port: 8083
+spring:
+  application:
+    name: pm-patient-service
+  jpa:
+    show-sql: false
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/pm_patient_service?useSSL=false&useUnicode=true&characterEncoding=UTF-8
+    username: postgres
+    password: 123456
+
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${server.port}@${random.int}
+    preferIpAddress: true
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    shutdown:
+      enabled: true
+
+graceful:
+  waiting-time: 30

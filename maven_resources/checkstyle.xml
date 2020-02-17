@@ -1,0 +1,449 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+  "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+  "https://checkstyle.org/dtds/configuration_1_3.dtd">
+
+<!--
+    Checkstyle configuration that checks the Google coding conventions from Google Java Style
+    that can be found at https://google.github.io/styleguide/javaguide.html
+
+    Checkstyle is very configurable. Be sure to read the documentation at
+    http://checkstyle.sf.net (or in your downloaded distribution).
+
+    To completely disable a check, just comment it out or delete it from the file.
+
+    Authors: Max Vetrenko, Ruslan Diachenko, Roman Ivanov.
+ -->
+
+<module name="Checker">
+  <property name="charset" value="UTF-8"/>
+
+  <property name="severity" value="error"/>
+
+  <property name="fileExtensions" value="java, properties, xml"/>
+
+  <!-- Excludes all 'module-info.java' files              -->
+  <!-- See https://checkstyle.org/config_filefilters.html -->
+  <module name="BeforeExecutionExclusionFileFilter">
+    <property name="fileNamePattern" value="module\-info\.java$"/>
+  </module>
+  <!-- Checks for whitespace                               -->
+  <!-- See http://checkstyle.sf.net/config_whitespace.html -->
+  <!--  https://checkstyle.sourceforge.io/config_whitespace.html#FileTabCharacter-->
+  <module name="FileTabCharacter">
+    <property name="eachLine" value="true"/>
+  </module>
+
+  <module name="SuppressWithPlainTextCommentFilter"/>
+
+  <module name="TreeWalker">
+
+    <!--    Example, the class Foo must be in a file named Foo.java.-->
+    <module name="OuterTypeFilename"/>
+
+    <!--    https://checkstyle.sourceforge.io/config_coding.html#IllegalTokenText-->
+    <module name="IllegalTokenText">
+      <property name="tokens" value="STRING_LITERAL, CHAR_LITERAL"/>
+      <property name="format"
+        value="\\u00(09|0(a|A)|0(c|C)|0(d|D)|22|27|5(C|c))|\\(0(10|11|12|14|15|42|47)|134)"/>
+      <property name="message"
+        value="Consider using special escape sequence instead of octal value or Unicode escaped value."/>
+    </module>
+
+    <!--    Restrict using Unicode escapes-->
+    <!--    Examples of using Unicode:-->
+    <!--    String unitAbbrev = "μs";      // Best: perfectly clear even without a comment.-->
+    <!--    String unitAbbrev = "\u03bcs"; // Poor: the reader has no idea what this is.-->
+    <!--    https://checkstyle.sourceforge.io/config_misc.html#AvoidEscapedUnicodeCharacters-->
+    <module name="AvoidEscapedUnicodeCharacters">
+      <property name="allowEscapesForControlCharacters" value="true"/>
+      <property name="allowByTailComment" value="true"/>
+      <property name="allowNonPrintableEscapes" value="true"/>
+    </module>
+
+    <!--    Max length of each line of code is 100 character-->
+    <module name="LineLength">
+      <property name="max" value="100"/>
+      <property name="ignorePattern"
+        value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
+    </module>
+
+    <!--    Example:-->
+    <!--    import java.util.*; // Bad-->
+    <!--    import java.util.List; // Good-->
+    <module name="AvoidStarImport"/>
+
+    <!--    Make sure a class is only containing only one top level class-->
+    <!--    https://checkstyle.sourceforge.io/config_design.html#OneTopLevelClass-->
+    <module name="OneTopLevelClass"/>
+
+    <!--
+    //Bad
+    public class Foo { public void execute() {System.out.print("foo");}}
+
+    //Best
+    public class Foo {
+      public void execute(){}
+    }
+    -->
+    <module name="NoLineWrap"/>
+
+    <!--
+    //Bad
+    try{
+    }catch(Exception e){
+    }
+
+    //Best
+    try{
+      //do something
+    } catch() {
+      //do something
+    }
+    -->
+    <module name="EmptyBlock">
+      <property name="option" value="TEXT"/>
+      <property name="tokens"
+        value="LITERAL_TRY, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE, LITERAL_SWITCH"/>
+    </module>
+
+    <!--    Allow single line statements (if, while, do-while, for, case and default)-->
+    <!--    https://checkstyle.sourceforge.io/config_blocks.html#NeedBraces-->
+    <module name="NeedBraces">
+      <!--      <property name="tokens" value="LITERAL_CASE, LITERAL_DEFAULT"/>-->
+      <property name="allowSingleLineStatement" value="true"/>
+    </module>
+
+    <!--    https://checkstyle.sourceforge.io/config_blocks.html#LeftCurly-->
+    <module name="LeftCurly"/>
+
+    <!--    https://checkstyle.sourceforge.io/config_blocks.html#RightCurly-->
+    <module name="RightCurly">
+      <property name="id" value="RightCurlySame"/>
+      <property name="tokens"
+        value="LITERAL_TRY, LITERAL_CATCH, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE,
+                    LITERAL_DO"/>
+    </module>
+    <module name="RightCurly">
+      <property name="id" value="RightCurlyAlone"/>
+      <property name="option" value="alone"/>
+      <property name="tokens"
+        value="CLASS_DEF, METHOD_DEF, CTOR_DEF, LITERAL_FOR, LITERAL_WHILE, STATIC_INIT,
+                    INSTANCE_INIT"/>
+    </module>
+
+    <!--    https://checkstyle.sourceforge.io/config_whitespace.html#WhitespaceAround-->
+    <module name="WhitespaceAround">
+      <property name="allowEmptyConstructors" value="true"/>
+      <property name="allowEmptyLambdas" value="true"/>
+      <property name="allowEmptyMethods" value="true"/>
+      <property name="allowEmptyTypes" value="true"/>
+      <property name="allowEmptyLoops" value="true"/>
+      <message key="ws.notFollowed"
+        value="WhitespaceAround: ''{0}'' is not followed by whitespace. Empty blocks may only be represented as '{}' when not part of a multi-block statement (4.1.3)"/>
+      <message key="ws.notPreceded"
+        value="WhitespaceAround: ''{0}'' is not preceded with whitespace."/>
+    </module>
+
+    <!--    https://checkstyle.sourceforge.io/config_coding.html#OneStatementPerLine-->
+    <module name="OneStatementPerLine"/>
+
+    <!--    https://checkstyle.sourceforge.io/config_coding.html#MultipleVariableDeclarations-->
+    <module name="MultipleVariableDeclarations"/>
+
+    <!--
+    //Bad
+    int nums[];
+    ///Best
+    int[] nums;
+    -->
+    <module name="ArrayTypeStyle"/>
+    <module name="MissingSwitchDefault"/>
+
+    <!--    Verify each case in switch has break statement-->
+    <!--    https://checkstyle.sourceforge.io/config_coding.html#FallThrough-->
+    <module name="FallThrough"/>
+
+    <!--
+    //Bad
+    long num = 1000l;
+    //Best
+    long num = 1000L;
+    -->
+    <module name="UpperEll"/>
+
+    <!--    Don't need this rule-->
+    <!--    <module name="ModifierOrder"/>-->
+
+    <!--    Between each method need an empty line -->
+    <module name="EmptyLineSeparator">
+      <property name="allowNoEmptyLineBetweenFields" value="true"/>
+      <property name="tokens" value="METHOD_DEF"/>
+    </module>
+
+    <!--
+    //Bad
+    foo.
+      execute();
+    //Best
+    foo
+      .execute();
+    -->
+    <module name="SeparatorWrap">
+      <property name="id" value="SeparatorWrapDot"/>
+      <property name="tokens" value="DOT"/>
+      <property name="option" value="nl"/>
+    </module>
+
+    <!--
+        //Bad
+        execute(param1
+          , param2);
+        //Best
+        execute(param1,
+          param2);
+        -->
+    <module name="SeparatorWrap">
+      <property name="id" value="SeparatorWrapComma"/>
+      <property name="tokens" value="COMMA"/>
+      <property name="option" value="EOL"/>
+    </module>
+
+    <!--    https://checkstyle.sourceforge.io/config_whitespace.html#SeparatorWrap-->
+    <module name="SeparatorWrap">
+      <!-- ELLIPSIS is EOL until https://github.com/google/styleguide/issues/258 -->
+      <property name="id" value="SeparatorWrapEllipsis"/>
+      <property name="tokens" value="ELLIPSIS"/>
+      <property name="option" value="EOL"/>
+    </module>
+    <module name="SeparatorWrap">
+      <!-- ARRAY_DECLARATOR is EOL until https://github.com/google/styleguide/issues/259 -->
+      <property name="id" value="SeparatorWrapArrayDeclarator"/>
+      <property name="tokens" value="ARRAY_DECLARATOR"/>
+      <property name="option" value="EOL"/>
+    </module>
+    <module name="SeparatorWrap">
+      <property name="id" value="SeparatorWrapMethodRef"/>
+      <property name="tokens" value="METHOD_REF"/>
+      <property name="option" value="nl"/>
+    </module>
+
+    <!--    https://checkstyle.sourceforge.io/config_naming.html#PackageName-->
+    <module name="PackageName">
+      <property name="format" value="^[a-z]+(\.[a-z][a-z0-9]*)*$"/>
+      <message key="name.invalidPattern"
+        value="Package name ''{0}'' must match pattern ''{1}''."/>
+    </module>
+
+    <!--    https://checkstyle.sourceforge.io/config_naming.html#TypeName-->
+    <module name="TypeName">
+      <message key="name.invalidPattern"
+        value="Type name ''{0}'' must match pattern ''{1}''."/>
+    </module>
+
+    <!--    https://checkstyle.sourceforge.io/config_naming.html#MemberName-->
+    <module name="MemberName">
+      <property name="format" value="^[a-z][a-z0-9][a-zA-Z0-9]*$"/>
+      <message key="name.invalidPattern"
+        value="Member name ''{0}'' must match pattern ''{1}''."/>
+    </module>
+
+    <!--    https://checkstyle.sourceforge.io/config_naming.html#ParameterName-->
+    <module name="ParameterName">
+      <property name="format" value="^[a-z]([a-z0-9][a-zA-Z0-9]*)?$"/>
+      <message key="name.invalidPattern"
+        value="Parameter name ''{0}'' must match pattern ''{1}''."/>
+    </module>
+
+    <!--    https://checkstyle.org/config_naming.html#LambdaParameterName-->
+    <module name="LambdaParameterName">
+      <property name="format" value="^[a-z]([a-z0-9][a-zA-Z0-9]*)?$"/>
+      <message key="name.invalidPattern"
+        value="Lambda parameter name ''{0}'' must match pattern ''{1}''."/>
+    </module>
+
+    <!--    https://checkstyle.sourceforge.io/config_naming.html#CatchParameterName-->
+    <module name="CatchParameterName">
+      <property name="format" value="^[a-z]([a-z0-9][a-zA-Z0-9]*)?$"/>
+      <message key="name.invalidPattern"
+        value="Catch parameter name ''{0}'' must match pattern ''{1}''."/>
+    </module>
+
+    <!--    https://checkstyle.sourceforge.io/config_naming.html#LocalVariableName-->
+    <module name="LocalVariableName">
+      <property name="tokens" value="VARIABLE_DEF"/>
+      <property name="format" value="^[a-z]([a-z0-9][a-zA-Z0-9]*)?$"/>
+      <message key="name.invalidPattern"
+        value="Local variable name ''{0}'' must match pattern ''{1}''."/>
+    </module>
+
+    <!--    https://checkstyle.sourceforge.io/config_naming.html#ClassTypeParameterName-->
+    <!--    <module name="ClassTypeParameterName">-->
+    <!--      <property name="format" value="(^[A-Z][0-9]?)$|([A-Z][a-zA-Z0-9]*[T]$)"/>-->
+    <!--      <message key="name.invalidPattern"-->
+    <!--        value="Class type name ''{0}'' must match pattern ''{1}''."/>-->
+    <!--    </module>-->
+
+    <!--    https://checkstyle.sourceforge.io/config_naming.html#MethodTypeParameterName-->
+    <module name="MethodTypeParameterName">
+      <property name="format" value="(^[A-Z][0-9]?)$|([A-Z][a-zA-Z0-9]*[T]$)"/>
+      <message key="name.invalidPattern"
+        value="Method type name ''{0}'' must match pattern ''{1}''."/>
+    </module>
+    <!--    <module name="InterfaceTypeParameterName">-->
+    <!--      <property name="format" value="(^[A-Z][0-9]?)$|([A-Z][a-zA-Z0-9]*[T]$)"/>-->
+    <!--      <message key="name.invalidPattern"-->
+    <!--        value="Interface type name ''{0}'' must match pattern ''{1}''."/>-->
+    <!--    </module>-->
+
+    <!--    https://checkstyle.sourceforge.io/config_coding.html#NoFinalizer-->
+    <module name="NoFinalizer"/>
+
+
+    <!--    https://checkstyle.sourceforge.io/config_whitespace.html#GenericWhitespace-->
+    <module name="GenericWhitespace">
+      <message key="ws.followed"
+        value="GenericWhitespace ''{0}'' is followed by whitespace."/>
+      <message key="ws.preceded"
+        value="GenericWhitespace ''{0}'' is preceded with whitespace."/>
+      <message key="ws.illegalFollow"
+        value="GenericWhitespace ''{0}'' should followed by whitespace."/>
+      <message key="ws.notPreceded"
+        value="GenericWhitespace ''{0}'' is not preceded with whitespace."/>
+    </module>
+
+    <!--    https://checkstyle.sourceforge.io/config_misc.html#Indentation-->
+    <module name="Indentation">
+      <property name="basicOffset" value="2"/>
+      <property name="braceAdjustment" value="0"/>
+      <property name="caseIndent" value="2"/>
+      <property name="throwsIndent" value="4"/>
+      <property name="lineWrappingIndentation" value="4"/>
+      <property name="arrayInitIndent" value="2"/>
+    </module>
+
+    <!--    https://checkstyle.sourceforge.io/config_naming.html#AbbreviationAsWordInName-->
+    <module name="AbbreviationAsWordInName">
+      <property name="ignoreFinal" value="false"/>
+      <property name="allowedAbbreviationLength" value="1"/>
+    </module>
+
+    <!--    All method must be after overload method-->
+    <!--
+    //Bad
+    public void foo(int i) {}
+    public void foo(String s) {}
+    public void notFoo() {} // Have to be after foo(int i, String s)
+    public void foo(int i, String s) {}
+
+    //Good
+    public void foo(int i) {}
+    public void foo(String s) {}
+    public void foo(int i, String s) {}
+    public void notFoo() {} // Have to be after foo(int i, String s)
+    -->
+    <module name="OverloadMethodsDeclarationOrder"/>
+
+    <!--    https://checkstyle.sourceforge.io/config_coding.html#VariableDeclarationUsageDistance-->
+    <module name="VariableDeclarationUsageDistance"/>
+
+    <!--    https://checkstyle.sourceforge.io/config_imports.html#CustomImportOrder-->
+    <module name="CustomImportOrder">
+      <property name="sortImportsInGroupAlphabetically" value="true"/>
+      <property name="separateLineBetweenGroups" value="true"/>
+      <property name="customImportOrderRules" value="STATIC###THIRD_PARTY_PACKAGE"/>
+    </module>
+
+    <!--    https://checkstyle.sourceforge.io/config_whitespace.html#MethodParamPad-->
+    <module name="MethodParamPad"/>
+
+    <!--    https://checkstyle.sourceforge.io/config_whitespace.html#NoWhitespaceBefore-->
+    <module name="NoWhitespaceBefore">
+      <property name="tokens"
+        value="COMMA, SEMI, POST_INC, POST_DEC, DOT, ELLIPSIS, METHOD_REF"/>
+      <property name="allowLineBreaks" value="true"/>
+    </module>
+
+    <!--    https://checkstyle.sourceforge.io/config_whitespace.html#ParenPad-->
+    <module name="ParenPad"/>
+
+    <!--    https://checkstyle.sourceforge.io/config_whitespace.html#OperatorWrap-->
+    <module name="OperatorWrap">
+      <property name="option" value="NL"/>
+      <property name="tokens"
+        value="BAND, BOR, BSR, BXOR, DIV, EQUAL, GE, GT, LAND, LE, LITERAL_INSTANCEOF, LOR,
+                    LT, MINUS, MOD, NOT_EQUAL, PLUS, QUESTION, SL, SR, STAR, METHOD_REF "/>
+    </module>
+
+    <!--    https://checkstyle.sourceforge.io/config_annotation.html#AnnotationLocation-->
+    <module name="AnnotationLocation">
+      <property name="id" value="AnnotationLocationMostCases"/>
+      <property name="tokens"
+        value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF"/>
+    </module>
+    <module name="AnnotationLocation">
+      <property name="id" value="AnnotationLocationVariables"/>
+      <property name="tokens" value="VARIABLE_DEF"/>
+      <property name="allowSamelineMultipleAnnotations" value="true"/>
+    </module>
+
+    <!--    https://checkstyle.sourceforge.io/config_javadoc.html#NonEmptyAtclauseDescription-->
+    <module name="NonEmptyAtclauseDescription"/>
+    <!--    <module name="InvalidJavadocPosition"/>-->
+
+    <!--    https://checkstyle.sourceforge.io/config_javadoc.html#JavadocTagContinuationIndentation-->
+    <module name="JavadocTagContinuationIndentation"/>
+
+    <!--    https://checkstyle.sourceforge.io/config_javadoc.html#SummaryJavadoc-->
+    <module name="SummaryJavadoc">
+      <property name="forbiddenSummaryFragments"
+        value="^@return the *|^This method returns |^A [{]@code [a-zA-Z0-9]+[}]( is a )"/>
+    </module>
+
+    <!--    https://checkstyle.sourceforge.io/config_javadoc.html#JavadocParagraph-->
+    <module name="JavadocParagraph"/>
+
+    <!--    https://checkstyle.sourceforge.io/config_javadoc.html#AtclauseOrder-->
+    <module name="AtclauseOrder">
+      <property name="tagOrder" value="@param, @return, @throws, @deprecated"/>
+      <property name="target"
+        value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF, VARIABLE_DEF"/>
+    </module>
+
+    <!--    https://checkstyle.sourceforge.io/config_javadoc.html#JavadocMethod-->
+    <module name="JavadocMethod">
+      <property name="scope" value="public"/>
+      <property name="allowMissingParamTags" value="true"/>
+      <property name="allowMissingThrowsTags" value="true"/>
+      <property name="allowMissingReturnTag" value="true"/>
+      <property name="allowedAnnotations" value="Override, Test"/>
+      <property name="allowThrowsTagsForSubclasses" value="true"/>
+      <property name="severity" value="warning"/>
+    </module>
+
+    <!-- This module is not available in this version of checkstyle plugin -->
+    <!--    <module name="MissingJavadocMethod">-->
+    <!--      <property name="scope" value="public"/>-->
+    <!--      <property name="minLineCount" value="2"/>-->
+    <!--      <property name="allowedAnnotations" value="Override, Test"/>-->
+    <!--    </module>-->
+
+    <!--    https://checkstyle.sourceforge.io/config_naming.html#MethodName-->
+    <module name="MethodName">
+      <property name="format" value="^[a-z][a-z0-9][a-zA-Z0-9_]*$"/>
+      <message key="name.invalidPattern"
+        value="Method name ''{0}'' must match pattern ''{1}''."/>
+    </module>
+
+    <!--    https://checkstyle.sourceforge.io/config_javadoc.html#SingleLineJavadoc-->
+    <module name="SingleLineJavadoc">
+      <property name="ignoreInlineTags" value="false"/>
+    </module>
+
+    <!--    https://checkstyle.sourceforge.io/config_blocks.html#EmptyCatchBlock-->
+    <module name="EmptyCatchBlock"/>
+
+    <!--    https://checkstyle.sourceforge.io/config_misc.html#CommentsIndentation-->
+    <module name="CommentsIndentation"/>
+  </module>
+</module>
