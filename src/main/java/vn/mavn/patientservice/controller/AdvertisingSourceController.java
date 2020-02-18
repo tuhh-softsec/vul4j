@@ -5,10 +5,12 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.mavn.patientservice.dto.AdvertisingSourceAddDto;
+import vn.mavn.patientservice.dto.AdvertisingSourceEditDto;
 import vn.mavn.patientservice.entity.AdvertisingSource;
 import vn.mavn.patientservice.response.HttpResponse;
 import vn.mavn.patientservice.service.AdvertisingSourceService;
@@ -33,5 +35,15 @@ public class AdvertisingSourceController {
 
     return responseService.buildUpdatedResponse(advertisingSource.getId(),
         Collections.singletonList("info-advertising-add-successfully"));
+  }
+
+  @PutMapping
+  public HttpResponse edit(@Valid @RequestBody AdvertisingSourceEditDto advertisingSourceEditDto,
+      BindingResult bindingResult) {
+    EntityValidationUtils.processBindingResults(bindingResult);
+    AdvertisingSource advertisingSource = advertisingSourceService.editAdvertSource(advertisingSourceEditDto);
+
+    return responseService.buildUpdatedResponse(advertisingSource.getId(),
+        Collections.singletonList("info-advertising-edit-successfully"));
   }
 }
