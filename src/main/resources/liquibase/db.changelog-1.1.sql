@@ -114,15 +114,16 @@ DROP TABLE IF EXISTS "pm_medical_record";
 CREATE TABLE "pm_medical_record"
 (
     "id"                    SERIAL PRIMARY KEY,
-    "patient_id"            int8      not null,
-    "user_code"             int8      not null,
-    "advisory_date"         timestamp not null,
-    "disease_id"            int8      not null,
-    "advertising_source_id" int8      not null,
-    "disease_status"        text      not null,
-    "advisory_status_code"  text      not null,
+    "patient_id"            int8         not null,
+    "user_id"               int8         not null,
+    "user_code"             varchar(255) not null,
+    "advisory_date"         timestamp    not null,
+    "disease_id"            int8         not null,
+    "advertising_source_id" int8         not null,
+    "disease_status"        text         not null,
+    "advisory_status_code"  text         not null,
     "note"                  text,
-    "clinic_id"             int8      not null,
+    "clinic_id"             int8         not null,
     "examination_date"      timestamp,
     "examination_times"     int8,
     "remedy_amount"         int8,
@@ -144,7 +145,8 @@ CREATE TABLE "pm_clinic_user"
     "clinic_id" int8 not null
 );
 
-COMMENT ON COLUMN pm_medical_record.user_code IS 'Nhân viên tư vấn, bắt buộc nhân viên tư vấn phải nhập';
+COMMENT ON COLUMN pm_medical_record.user_id IS 'ID nhân viên tư vấn, lấy từ trong access token ra';
+COMMENT ON COLUMN pm_medical_record.user_code IS 'Mã nhân viên tư vấn, lấy từ trong access token ra';
 COMMENT ON COLUMN pm_medical_record.advisory_date IS 'Ngày tư vấn, bắt buộc nhân viên tư vấn phải nhập';
 COMMENT ON COLUMN pm_medical_record.disease_id IS 'Loại bệnh, bắt buộc nhân viên tư vấn phải nhập';
 COMMENT ON COLUMN pm_medical_record.advertising_source_id IS 'Nguồn quảng cáo, bắt buộc nhân viên tư vấn phải nhập';
