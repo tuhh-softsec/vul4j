@@ -186,7 +186,7 @@ ALTER TABLE "pm_medicine"
     ADD FOREIGN KEY ("disease_id") REFERENCES "pm_disease" ("id");
 
 ALTER TABLE "pm_medical_record_medicine"
-    ADD FOREIGN KEY ("medicine_taste_id") REFERENCES "pm_medicine" ("id");
+    ADD FOREIGN KEY ("medicine_id") REFERENCES "pm_medicine" ("id");
 
 ALTER TABLE "pm_medical_record_medicine"
     ADD FOREIGN KEY ("medical_record_id") REFERENCES "pm_medical_record" ("id");
