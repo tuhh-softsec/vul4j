@@ -32,7 +32,7 @@ public class I18nConfig implements WebMvcConfigurer {
   @Bean
   public LocaleResolver localeResolver() {
     SessionLocaleResolver sessionLocaleResolver = new SessionLocaleResolver();
-    sessionLocaleResolver.setDefaultLocale(new Locale("en", "US"));
+    sessionLocaleResolver.setDefaultLocale(new Locale("vi", "VN"));
     return sessionLocaleResolver;
   }
 
