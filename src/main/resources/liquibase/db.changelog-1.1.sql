@@ -162,12 +162,12 @@ COMMENT ON COLUMN pm_medical_record.transfer_amount IS 'Tiền chuyển khoản,
 COMMENT ON COLUMN pm_medical_record.cod_amount IS 'Tiền gửi COD, bắt buộc nhân viên phòng khám phải nhập, mặc định là 0';
 COMMENT ON COLUMN pm_medical_record.extra_note IS 'Ghi chú của nhân viên phòng khám';
 
-DROP TABLE IF EXISTS "pm_clinic_user";
+DROP TABLE IF EXISTS "pm_medical_record_medicine";
 CREATE TABLE "pm_medical_record_medicine"
 (
     "id"                SERIAL PRIMARY KEY,
     "medical_record_id" int not null,
-    "medicine_taste_id" int not null,
+    "medicine_id"       int not null,
     "qty"               int not null
 );
 
