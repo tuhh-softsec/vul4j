@@ -4,6 +4,7 @@ import java.util.Collections;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import vn.mavn.patientservice.dto.AdvertisingSourceAddDto;
 import vn.mavn.patientservice.dto.AdvertisingSourceEditDto;
 import vn.mavn.patientservice.entity.AdvertisingSource;
@@ -13,6 +14,7 @@ import vn.mavn.patientservice.repository.AdvertisingSourceRepository;
 import vn.mavn.patientservice.service.AdvertisingSourceService;
 
 @Service
+@Transactional
 public class AdvertisingSourceServiceImpl implements AdvertisingSourceService {
 
   @Autowired
@@ -48,5 +50,22 @@ public class AdvertisingSourceServiceImpl implements AdvertisingSourceService {
         });
     BeanUtils.copyProperties(advertisingSourceEditDto, advertisingSource);
     return advertisingSourceRepository.save(advertisingSource);
+  }
+
+  @Override
+  public AdvertisingSource getById(Long id) {
+    //TODO: check exist advertising_source
+    return advertisingSourceRepository
+        .findById(id).orElseThrow(() -> new NotFoundException(
+            Collections.singletonList("err-advertising-not-found")));
+  }
+
+  @Override
+  public void delete(Long id) {
+    //TODO: check exist advertising_source
+    AdvertisingSource advertisingSource = advertisingSourceRepository
+        .findById(id).orElseThrow(() -> new NotFoundException(
+            Collections.singletonList("err-advertising-not-found")));
+    advertisingSourceRepository.deleteAdvert(advertisingSource.getId());
   }
 }

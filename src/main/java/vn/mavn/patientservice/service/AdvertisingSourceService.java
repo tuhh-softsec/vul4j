@@ -10,4 +10,7 @@ public interface AdvertisingSourceService {
 
   AdvertisingSource editAdvertSource(AdvertisingSourceEditDto advertisingSourceEditDto);
 
+  AdvertisingSource getById(Long id);
+
+  void delete(Long id);
 }
