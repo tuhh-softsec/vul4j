@@ -10,4 +10,6 @@ public interface AdvertisingSourceRepository extends JpaRepository<AdvertisingSo
   @Query("select a from AdvertisingSource a where upper(a.name) =:name ")
   Optional<AdvertisingSource> findByName(String name);
 
+  @Query("select a from AdvertisingSource a where upper(a.name) =:name and a.id <> :id ")
+  Optional<AdvertisingSource> findByNameNotEqualId(String name, Long id);
 }
