@@ -3,6 +3,8 @@ package vn.mavn.patientservice.service.impl;
 import java.util.Collections;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vn.mavn.patientservice.dto.AdvertisingSourceAddDto;
@@ -11,6 +13,7 @@ import vn.mavn.patientservice.entity.AdvertisingSource;
 import vn.mavn.patientservice.exception.ConflictException;
 import vn.mavn.patientservice.exception.NotFoundException;
 import vn.mavn.patientservice.repository.AdvertisingSourceRepository;
+import vn.mavn.patientservice.repository.spec.AdvertisingSourceSpec;
 import vn.mavn.patientservice.service.AdvertisingSourceService;
 
 @Service
@@ -67,5 +70,11 @@ public class AdvertisingSourceServiceImpl implements AdvertisingSourceService {
         .findById(id).orElseThrow(() -> new NotFoundException(
             Collections.singletonList("err-advertising-not-found")));
     advertisingSourceRepository.deleteAdvert(advertisingSource.getId());
+  }
+
+  @Override
+  public Page<AdvertisingSource> findAll(String name, Pageable pageable) {
+    return (Page<AdvertisingSource>) advertisingSourceRepository.findAll(
+        AdvertisingSourceSpec.findAllProfiles(name), pageable);
   }
 }
