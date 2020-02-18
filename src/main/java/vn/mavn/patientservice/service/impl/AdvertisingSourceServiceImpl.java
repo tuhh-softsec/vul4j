@@ -26,8 +26,8 @@ public class AdvertisingSourceServiceImpl implements AdvertisingSourceService {
   @Override
   public AdvertisingSource addNew(AdvertisingSourceAddDto advertisingSourceAddDto) {
     //TODO: valid name duplicate
-    advertisingSourceRepository.findByName(advertisingSourceAddDto.getName().trim().toUpperCase())
-        .ifPresent(adver -> {
+    advertisingSourceRepository.findByName(advertisingSourceAddDto.getName().trim())
+        .ifPresent(advert -> {
           throw new ConflictException(Collections.singletonList("err-advertising-duplicate-name"));
         });
     AdvertisingSource advertisingSource = AdvertisingSource.builder()
