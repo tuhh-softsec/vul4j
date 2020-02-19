@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import vn.mavn.patientservice.dto.DoctorAddDto;
@@ -12,7 +14,9 @@ import vn.mavn.patientservice.dto.DoctorEditDto;
 import vn.mavn.patientservice.entity.Doctor;
 import vn.mavn.patientservice.exception.ConflictException;
 import vn.mavn.patientservice.exception.NotFoundException;
+import vn.mavn.patientservice.repository.ClinicRepository;
 import vn.mavn.patientservice.repository.DoctorRepository;
+import vn.mavn.patientservice.repository.spec.AdvertisingSourceSpec;
 import vn.mavn.patientservice.service.DoctorService;
 
 @Service
@@ -20,6 +24,9 @@ public class DoctorServiceImpl implements DoctorService {
 
   @Autowired
   private DoctorRepository doctorRepository;
+
+  @Autowired
+  private ClinicRepository clinicRepository;
 
   @Override
   public Doctor save(DoctorAddDto data) {
@@ -29,6 +36,46 @@ public class DoctorServiceImpl implements DoctorService {
     validationNameOrPhoneWhenAddDoctor(data);
     BeanUtils.copyProperties(data, doctor);
     return doctorRepository.save(doctor);
+  }
+
+  @Override
+  public Doctor update(DoctorEditDto data) {
+    Doctor doctor = doctorRepository.findById(data.getId()).orElseThrow(
+        () -> new NotFoundException(Collections.singletonList("err.doctor.doctor-does-not-exist")));
+
+    validationNameOrPhoneWhenEditDoctor(data);
+    BeanUtils.copyProperties(data, doctor);
+    return doctorRepository.save(doctor);
+  }
+
+  @Override
+  public Doctor findById(Long id) {
+
+    return doctorRepository.findById(id).orElseThrow(
+        () -> new NotFoundException(Collections.singletonList("err.doctor.doctor-does-not-exist")));
+  }
+
+  @Override
+  public Page<Doctor> findAllDoctors(String name, Pageable pageable) {
+
+    return (Page<Doctor>) doctorRepository.findAll(
+        AdvertisingSourceSpec.findAllProfiles(name), pageable);
+  }
+
+  //TODO:
+  @Override
+  public void delete(Long id) {
+    Doctor doctor = doctorRepository
+        .findById(id).orElseThrow(() -> new NotFoundException(
+            Collections.singletonList("err-advertising-not-found")));
+
+    // check doctor using in clinic
+    clinicRepository.findById(doctor.getId())
+        .ifPresent(clinic -> {
+          throw new ConflictException(
+              Collections.singletonList("err.doctor.doctor-using-in-clinic"));
+        });
+    doctorRepository.deleteDoctor(doctor.getId());
   }
 
   private void validationNameOrPhoneWhenAddDoctor(DoctorAddDto data) {
@@ -43,16 +90,6 @@ public class DoctorServiceImpl implements DoctorService {
     if (!CollectionUtils.isEmpty(failReasons)) {
       throw new ConflictException(failReasons);
     }
-  }
-
-  @Override
-  public Doctor update(DoctorEditDto data) {
-    Doctor doctor = doctorRepository.findById(data.getId()).orElseThrow(
-        () -> new NotFoundException(Collections.singletonList("err.doctor.doctor-does-not-exist")));
-
-    validationNameOrPhoneWhenEditDoctor(data);
-    BeanUtils.copyProperties(data, doctor);
-    return doctorRepository.save(doctor);
   }
 
   private void validationNameOrPhoneWhenEditDoctor(DoctorEditDto data) {
