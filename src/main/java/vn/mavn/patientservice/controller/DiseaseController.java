@@ -21,23 +21,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
-import vn.mavn.patientservice.dto.MedicineAddDto;
-import vn.mavn.patientservice.dto.MedicineEditDto;
-import vn.mavn.patientservice.dto.qobject.QueryMedicineDto;
-import vn.mavn.patientservice.entity.Medicine;
+import vn.mavn.patientservice.dto.DiseaseAddDto;
+import vn.mavn.patientservice.dto.DiseaseEditDto;
+import vn.mavn.patientservice.dto.qobject.QueryDiseaseDto;
+import vn.mavn.patientservice.entity.Disease;
 import vn.mavn.patientservice.response.HttpResponse;
 import vn.mavn.patientservice.response.ResponseWithPage;
-import vn.mavn.patientservice.service.MedicineService;
+import vn.mavn.patientservice.service.DiseaseService;
 import vn.mavn.patientservice.service.ResponseService;
 import vn.mavn.patientservice.util.EntityValidationUtils;
 
 @RestController
-@RequestMapping("api/v1/admin/medicines")
-@Api(tags = "Admin Medicine Controller")
-public class MedicineController {
+@RequestMapping("/api/v1/admin/disease")
+@Api(tags = "Admin Disease Controller")
+public class DiseaseController {
 
   @Autowired
-  private MedicineService medicineService;
+  private DiseaseService diseaseService;
 
   @Autowired
   private ResponseService responseService;
@@ -52,44 +52,45 @@ public class MedicineController {
           paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
           + "Default sort order is ascending. Multiple sort criteria are supported.",
           defaultValue = "createdAt,desc")})
-  public ResponseEntity<ResponseWithPage<Medicine>> getAllMedicines(
-      @ModelAttribute QueryMedicineDto data, @ApiIgnore Pageable pageable) {
-    Page<Medicine> result = medicineService.getAllMedicines(data, pageable);
-    return ResponseEntity.ok(ResponseWithPage.<Medicine>builder()
+  public ResponseEntity<ResponseWithPage<Disease>> getAllDiseases(
+      @ModelAttribute QueryDiseaseDto data,
+      @ApiIgnore Pageable pageable) {
+    Page<Disease> result = diseaseService.getAllDisease(data, pageable);
+    return ResponseEntity.ok(ResponseWithPage.<Disease>builder()
         .data(result.getContent())
-        .totalPage(result.getTotalPages())
         .totalElement(result.getTotalElements())
         .pageIndex(result.getNumber())
+        .totalPage(result.getTotalPages())
         .build());
   }
 
   @PostMapping
-  public HttpResponse addNewMedicine(@Valid @RequestBody MedicineAddDto data,
+  public HttpResponse addNewDisease(@Valid @RequestBody DiseaseAddDto data,
       BindingResult bindingResult) {
     EntityValidationUtils.processBindingResults(bindingResult);
-    Long medicineId = medicineService.add(data).getId();
-    return responseService.buildUpdatedResponse(medicineId,
-        Collections.singletonList("info.medicines.add-medicine-successfully"));
+    Long diseaseId = diseaseService.add(data).getId();
+    return responseService.buildUpdatedResponse(diseaseId,
+        Collections.singletonList("info.diseases.add-disease-successfully"));
   }
 
   @PutMapping
-  public HttpResponse update(@Valid @RequestBody MedicineEditDto data,
+  public HttpResponse updateDisease(@Valid @RequestBody DiseaseEditDto data,
       BindingResult bindingResult) {
     EntityValidationUtils.processBindingResults(bindingResult);
-    Long medicineId = medicineService.update(data).getId();
-    return responseService.buildUpdatedResponse(medicineId,
-        Collections.singletonList("info.medicines.update-medicine-successfully"));
+    Long diseaseId = diseaseService.update(data).getId();
+    return responseService.buildUpdatedResponse(diseaseId,
+        Collections.singletonList("info.diseases.update-disease-successfully"));
   }
 
   @GetMapping("{id}")
-  public ResponseEntity<Medicine> getDetail(@PathVariable("id") Long id) {
-    return ResponseEntity.ok(medicineService.detail(id));
+  public ResponseEntity<Disease> getDetail(@PathVariable("id") Long id) {
+    return ResponseEntity.ok(diseaseService.detail(id));
   }
 
   @DeleteMapping
-  public HttpResponse removeMedicine(@RequestParam Long id) {
-    medicineService.remove(id);
+  public HttpResponse removeDisease(@RequestParam Long id) {
+    diseaseService.removeDisease(id);
     return responseService.buildUpdatedResponse(id,
-        Collections.singletonList("info.medicines.remove-medicine-successfully"));
+        Collections.singletonList("info.diseases.remove-disease-successfully"));
   }
 }
