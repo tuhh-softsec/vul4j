@@ -5,5 +5,6 @@
 
 
   <include file="db.changelog-1.1.sql" relativeToChangelogFile="true"/>
+  <include file="db.changelog-1.2.sql" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
