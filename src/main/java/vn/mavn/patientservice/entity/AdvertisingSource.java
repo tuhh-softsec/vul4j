@@ -22,5 +22,6 @@ public class AdvertisingSource extends BaseIdEntity {
 
   private String name;
   private String description;
+  private Boolean isActive;
 
 }

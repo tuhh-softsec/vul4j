@@ -32,7 +32,8 @@ public class AdvertisingSourceServiceImpl implements AdvertisingSourceService {
         });
     AdvertisingSource advertisingSource = AdvertisingSource.builder()
         .description(advertisingSourceAddDto.getDescription())
-        .name(advertisingSourceAddDto.getName().trim()).build();
+        .name(advertisingSourceAddDto.getName().trim())
+        .isActive(advertisingSourceAddDto.getIsActive()).build();
     advertisingSource.setCreatedBy(advertisingSourceAddDto.getCreatedBy());
     advertisingSource.setUpdatedBy(advertisingSourceAddDto.getCreatedBy());
     return advertisingSourceRepository.save(advertisingSource);
@@ -69,6 +70,8 @@ public class AdvertisingSourceServiceImpl implements AdvertisingSourceService {
     AdvertisingSource advertisingSource = advertisingSourceRepository
         .findById(id).orElseThrow(() -> new NotFoundException(
             Collections.singletonList("err-advertising-not-found")));
+    //TODO: valid advertising used or not
+
     advertisingSourceRepository.deleteAdvert(advertisingSource.getId());
   }
 
