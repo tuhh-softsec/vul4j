@@ -11,5 +11,6 @@ public class DiseaseAddDto {
   @NotBlank(message = "err.diseases.disease-name-is-mandatory")
   private String name;
   private String description;
+  private Boolean isActive;
 
 }

@@ -4,11 +4,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import vn.mavn.patientservice.dto.DiseaseAddDto;
 import vn.mavn.patientservice.dto.DiseaseEditDto;
+import vn.mavn.patientservice.dto.qobject.QueryDiseaseDto;
 import vn.mavn.patientservice.entity.Disease;
 
 public interface DiseaseService {
 
-  Page<Disease> getAllDisease(String name, Pageable pageable);
+  Page<Disease> getAllDisease(QueryDiseaseDto data, Pageable pageable);
 
   Disease add(DiseaseAddDto data);
 

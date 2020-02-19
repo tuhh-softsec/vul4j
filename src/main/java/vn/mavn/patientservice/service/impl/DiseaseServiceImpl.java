@@ -1,19 +1,24 @@
 package vn.mavn.patientservice.service.impl;
 
 import java.util.Collections;
+import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import vn.mavn.patientservice.dto.DiseaseAddDto;
+import vn.mavn.patientservice.dto.DiseaseEditDto;
+import vn.mavn.patientservice.dto.qobject.QueryDiseaseDto;
+import vn.mavn.patientservice.entity.ClinicDisease;
 import vn.mavn.patientservice.entity.Disease;
 import vn.mavn.patientservice.exception.ConflictException;
 import vn.mavn.patientservice.exception.NotFoundException;
+import vn.mavn.patientservice.repository.ClinicDiseaseRepository;
 import vn.mavn.patientservice.repository.DiseaseRepository;
 import vn.mavn.patientservice.repository.spec.DiseaseSpec;
-import vn.mavn.patientservice.dto.DiseaseEditDto;
 import vn.mavn.patientservice.service.DiseaseService;
 
 @Service
@@ -22,12 +27,15 @@ public class DiseaseServiceImpl implements DiseaseService {
   @Autowired
   private DiseaseRepository diseaseRepository;
 
+  @Autowired
+  private ClinicDiseaseRepository clinicDiseaseRepository;
+
   @Override
-  public Page<Disease> getAllDisease(String name, Pageable pageable) {
-    if (StringUtils.isBlank(name)) {
+  public Page<Disease> getAllDisease(QueryDiseaseDto data, Pageable pageable) {
+    if (StringUtils.isBlank(data.getName())) {
       return diseaseRepository.findAll(pageable);
     } else {
-      return diseaseRepository.findAll(DiseaseSpec.findAllDiseases(name), pageable);
+      return diseaseRepository.findAll(DiseaseSpec.findAllDiseases(data), pageable);
     }
   }
 
@@ -37,8 +45,8 @@ public class DiseaseServiceImpl implements DiseaseService {
       throw new ConflictException(
           Collections.singletonList("err.diseases.disease-already-exists"));
     });
-    Disease disease = Disease.builder().name(data.getName()).description(data.getDescription())
-        .build();
+    Disease disease = new Disease();
+    BeanUtils.copyProperties(data, disease);
     diseaseRepository.save(disease);
     return disease;
   }
@@ -62,13 +70,18 @@ public class DiseaseServiceImpl implements DiseaseService {
   @Override
   public Disease detail(Long id) {
     return diseaseRepository.findById(id).orElseThrow(() -> new NotFoundException(
-        Collections.singletonList("err.diseases.disease-does-not-exist")));
+        Collections.singletonList("err.diseases.disease-not-found")));
   }
 
   @Override
   public void removeDisease(Long id) {
-    diseaseRepository.findById(id).orElseThrow(() -> new NotFoundException(
-        Collections.singletonList("err.diseases.disease-does-not-exist")));
+    Disease disease = diseaseRepository.findById(id).orElseThrow(() -> new NotFoundException(
+        Collections.singletonList("err.diseases.disease-not-found")));
+    List<ClinicDisease> clinicDiseases = clinicDiseaseRepository.findByDiseaseId(id);
+    if (!CollectionUtils.isEmpty(clinicDiseases)) {
+      throw new ConflictException(Collections.singletonList("err.diseases.cannot-remove-disease"));
+    }
+    disease.setIsActive(false);
     diseaseRepository.deleteById(id);
   }
 }

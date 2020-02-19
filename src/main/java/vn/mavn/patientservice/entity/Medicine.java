@@ -12,12 +12,13 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "pm_disease")
-@Entity
+@Table(name = "pm_medicine")
 @Builder
-public class Disease extends BaseIdEntity {
+@Entity
+public class Medicine extends BaseIdEntity {
 
   private String name;
+  private Long diseaseId;
   private String description;
   private Boolean isActive;
 }
