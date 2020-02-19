@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 import vn.mavn.patientservice.dto.AdvertisingSourceAddDto;
 import vn.mavn.patientservice.dto.AdvertisingSourceEditDto;
+import vn.mavn.patientservice.dto.qobject.QueryAdvertisingSourceDto;
 import vn.mavn.patientservice.entity.AdvertisingSource;
 import vn.mavn.patientservice.response.HttpResponse;
 import vn.mavn.patientservice.response.ResponseWithPage;
@@ -82,9 +84,11 @@ public class AdvertisingSourceController {
           defaultValue = "createdAt,desc")})
   @GetMapping
   public ResponseEntity<ResponseWithPage<AdvertisingSource>> all(
-      @RequestParam(required = false) String name,
+      @Valid @ModelAttribute QueryAdvertisingSourceDto queryAdvertisingSourceDto,
+      BindingResult bindingResult,
       @ApiIgnore Pageable pageable) {
-    Page<AdvertisingSource> page = advertisingSourceService.findAll(name, pageable);
+    EntityValidationUtils.processBindingResults(bindingResult);
+    Page<AdvertisingSource> page = advertisingSourceService.findAll(queryAdvertisingSourceDto, pageable);
     return ResponseEntity
         .ok(ResponseWithPage.<AdvertisingSource>builder().data(page.getContent())
             .pageIndex(page.getNumber())

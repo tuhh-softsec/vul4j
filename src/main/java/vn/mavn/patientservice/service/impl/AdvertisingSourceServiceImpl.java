@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import vn.mavn.patientservice.dto.AdvertisingSourceAddDto;
 import vn.mavn.patientservice.dto.AdvertisingSourceEditDto;
+import vn.mavn.patientservice.dto.qobject.QueryAdvertisingSourceDto;
 import vn.mavn.patientservice.entity.AdvertisingSource;
 import vn.mavn.patientservice.entity.MedicalRecord;
 import vn.mavn.patientservice.exception.ConflictException;
@@ -88,8 +89,8 @@ public class AdvertisingSourceServiceImpl implements AdvertisingSourceService {
   }
 
   @Override
-  public Page<AdvertisingSource> findAll(String name, Pageable pageable) {
+  public Page<AdvertisingSource> findAll(QueryAdvertisingSourceDto queryAdvertisingSourceDto, Pageable pageable) {
     return (Page<AdvertisingSource>) advertisingSourceRepository.findAll(
-        AdvertisingSourceSpec.findAllProfiles(name), pageable);
+        AdvertisingSourceSpec.findAllProfiles(queryAdvertisingSourceDto), pageable);
   }
 }
