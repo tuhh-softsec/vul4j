@@ -5,10 +5,12 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.mavn.patientservice.dto.PatientAddDto;
+import vn.mavn.patientservice.dto.PatientEditDto;
 import vn.mavn.patientservice.entity.Patient;
 import vn.mavn.patientservice.response.HttpResponse;
 import vn.mavn.patientservice.service.PatientService;
@@ -34,16 +36,16 @@ public class PatientController {
         Collections.singletonList("info-patient-add-successfully"));
   }
 
-//  @PutMapping
-//  public HttpResponse edit(@Valid @RequestBody PatientEditDto patientEditDto,
-//      BindingResult bindingResult) {
-//    EntityValidationUtils.processBindingResults(bindingResult);
-//    AdvertisingSource advertisingSource = patientService
-//        .editPatient(patientEditDto);
-//
-//    return responseService.buildUpdatedResponse(advertisingSource.getId(),
-//        Collections.singletonList("info-patient-edit-successfully"));
-//  }
+  @PutMapping
+  public HttpResponse edit(@Valid @RequestBody PatientEditDto patientEditDto,
+      BindingResult bindingResult) {
+    EntityValidationUtils.processBindingResults(bindingResult);
+    Patient patient = patientService
+        .editPatient(patientEditDto);
+
+    return responseService.buildUpdatedResponse(patient.getId(),
+        Collections.singletonList("info-patient-edit-successfully"));
+  }
 //
 //  @GetMapping("{id}")
 //  public ResponseEntity<AdvertisingSource> getDetailById(@PathVariable("id") Long id) {

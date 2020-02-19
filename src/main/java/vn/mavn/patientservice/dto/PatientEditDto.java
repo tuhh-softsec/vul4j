@@ -14,8 +14,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PatientAddDto {
+public class PatientEditDto {
 
+  @NotNull(message = "err-patient-id-is-mandatory")
+  private Long id;
   @NotBlank(message = "err-patient-name-is-mandatory")
   private String name;
   @NotNull(message = "err-patient-age-is-mandatory")
@@ -31,6 +33,6 @@ public class PatientAddDto {
   @Pattern(regexp = "^(\\+84|0)((2[0-9]{9})|((3|5|7|8|9){1}([0-9]{8})))$",
       message = "err-patient-other-phone-invalid")
   private String otherPhone;
-  private Long createdBy;
+  private Long updatedBy;
 
 }
