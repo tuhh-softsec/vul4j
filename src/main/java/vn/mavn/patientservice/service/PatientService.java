@@ -1,7 +1,10 @@
 package vn.mavn.patientservice.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import vn.mavn.patientservice.dto.PatientAddDto;
 import vn.mavn.patientservice.dto.PatientEditDto;
+import vn.mavn.patientservice.dto.qobject.QueryPatientDto;
 import vn.mavn.patientservice.entity.Patient;
 
 public interface PatientService {
@@ -11,4 +14,6 @@ public interface PatientService {
   Patient editPatient(PatientEditDto patientEditDto);
 
   Patient getById(Long id);
+
+  Page findAll(QueryPatientDto queryPatientDto, Pageable pageable);
 }

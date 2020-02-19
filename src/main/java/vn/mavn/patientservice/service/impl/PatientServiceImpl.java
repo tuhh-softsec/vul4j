@@ -4,14 +4,18 @@ import java.util.Collections;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import vn.mavn.patientservice.dto.PatientAddDto;
 import vn.mavn.patientservice.dto.PatientEditDto;
+import vn.mavn.patientservice.dto.qobject.QueryPatientDto;
 import vn.mavn.patientservice.entity.Patient;
 import vn.mavn.patientservice.exception.BadRequestException;
 import vn.mavn.patientservice.exception.ConflictException;
 import vn.mavn.patientservice.exception.NotFoundException;
 import vn.mavn.patientservice.repository.PatientRepository;
+import vn.mavn.patientservice.repository.spec.PatientSpec;
 import vn.mavn.patientservice.service.PatientService;
 
 @Service
@@ -71,6 +75,11 @@ public class PatientServiceImpl implements PatientService {
     return patientRepository.findActiveById(id)
         .orElseThrow(() -> new NotFoundException(
             Collections.singletonList("err-patient-not-found")));
+  }
+
+  @Override
+  public Page<Patient> findAll(QueryPatientDto queryPatientDto, Pageable pageable) {
+    return patientRepository.findAll(PatientSpec.findAllPatient(queryPatientDto), pageable);
   }
 }
 
