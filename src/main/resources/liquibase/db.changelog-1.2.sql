@@ -1,6 +1,9 @@
 -- liquibase formatted sql
 -- changeset minhln:1.2
 
+-- supporting unaccent before searching
+create extension unaccent;
+
 alter table pm_advertising_source
     add column if not exists is_active bool;
 alter table pm_clinic
