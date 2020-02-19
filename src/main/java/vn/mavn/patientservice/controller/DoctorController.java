@@ -19,7 +19,7 @@ import vn.mavn.patientservice.service.ResponseService;
 import vn.mavn.patientservice.util.EntityValidationUtils;
 
 @RestController
-@RequestMapping("/api/v1/doctor")
+@RequestMapping("/api/v1/cms/doctors")
 @Api(tags = "Doctor")
 public class DoctorController {
 
@@ -30,11 +30,10 @@ public class DoctorController {
   private ResponseService responseService;
 
   @PostMapping
-  public HttpResponse addNewCustomer(@Valid @RequestBody DoctorAddDto data,
+  public HttpResponse addDoctor(@Valid @RequestBody DoctorAddDto data,
       BindingResult bindingResult) {
 
     EntityValidationUtils.processBindingResults(bindingResult);
-
     Doctor doctor = doctorService.save(data);
     return responseService.buildUpdatedResponse(doctor.getId(),
         Collections.singletonList("info.doctor.add-doctor-successfully"));
@@ -45,7 +44,6 @@ public class DoctorController {
       BindingResult bindingResult) {
 
     EntityValidationUtils.processBindingResults(bindingResult);
-
     Doctor doctor = doctorService.update(data);
     return responseService.buildUpdatedResponse(doctor.getId(),
         Collections.singletonList("info.doctor.edit-doctor-successfully"));
