@@ -13,7 +13,8 @@ public interface AdvertisingSourceRepository extends JpaRepository<AdvertisingSo
   @Query("select a from AdvertisingSource a where unaccent(a.name) =unaccent(:name) ")
   Optional<AdvertisingSource> findByName(String name);
 
-  @Query("select a from AdvertisingSource a where upper(a.name) =:name and a.id <> :id ")
+  @Query("select a from AdvertisingSource a where unaccent(a.name) =unaccent(:name) "
+      + "and a.id <> :id ")
   Optional<AdvertisingSource> findByNameNotEqualId(String name, Long id);
 
   @Modifying

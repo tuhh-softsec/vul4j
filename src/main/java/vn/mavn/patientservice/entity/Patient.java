@@ -14,14 +14,19 @@ import vn.mavn.patientservice.entity.listener.EntityListener;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "pm_advertising_source")
 @Builder
+@Entity
+@Table(name = "pm_patient")
 @EntityListeners(EntityListener.class)
-public class AdvertisingSource extends BaseIdEntity {
+public class Patient extends BaseIdEntity {
 
   private String name;
-  private String description;
+  private Integer age;
+  private String address;
+  private String phone;
+  private String zaLoPhone;
+  private String otherPhone;
   private Boolean isActive;
+
 
 }

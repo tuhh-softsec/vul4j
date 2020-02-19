@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import vn.mavn.patientservice.dto.AdvertisingSourceAddDto;
 import vn.mavn.patientservice.dto.AdvertisingSourceEditDto;
+import vn.mavn.patientservice.dto.qobject.QueryAdvertisingSourceDto;
 import vn.mavn.patientservice.entity.AdvertisingSource;
 
 public interface AdvertisingSourceService {
@@ -16,6 +17,7 @@ public interface AdvertisingSourceService {
 
   void delete(Long id);
 
-  Page<AdvertisingSource> findAll(String name, Pageable pageable);
+  Page<AdvertisingSource> findAll(QueryAdvertisingSourceDto queryAdvertisingSourceDto,
+      Pageable pageable);
 
 }
