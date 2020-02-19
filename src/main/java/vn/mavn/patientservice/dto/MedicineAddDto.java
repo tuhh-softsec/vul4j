@@ -14,4 +14,5 @@ public class MedicineAddDto {
   @NotNull(message = "err.medicines.disease-id-is-mandatory")
   private Long diseaseId;
   private String description;
+  private Boolean isActive;
 }

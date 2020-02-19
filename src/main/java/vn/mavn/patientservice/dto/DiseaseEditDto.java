@@ -7,14 +7,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MedicineEditDto {
+public class DiseaseEditDto {
 
-  @NotNull(message = "err.medicines.medicine-id-is-mandatory")
+  @NotNull(message = "err.diseases.disease-id-is-mandatory")
   private Long id;
-  @NotBlank(message = "err.medicines.medicine-name-is-mandatory")
+  @NotBlank(message = "err.diseases.disease-name-is-mandatory")
   private String name;
-  @NotNull(message = "err.medicines.disease-id-is-mandatory")
-  private Long diseaseId;
   private String description;
   private Boolean isActive;
 }
