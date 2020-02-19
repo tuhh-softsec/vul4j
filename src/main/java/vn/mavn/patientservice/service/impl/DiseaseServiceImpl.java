@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import vn.mavn.patientservice.dto.DiseaseAddDto;
 import vn.mavn.patientservice.entity.Disease;
 import vn.mavn.patientservice.exception.ConflictException;
+import vn.mavn.patientservice.exception.NotFoundException;
 import vn.mavn.patientservice.repository.DiseaseRepository;
 import vn.mavn.patientservice.repository.spec.DiseaseSpec;
 import vn.mavn.patientservice.dto.DiseaseEditDto;
@@ -45,7 +46,7 @@ public class DiseaseServiceImpl implements DiseaseService {
   @Override
   public Disease update(DiseaseEditDto data) {
     Disease disease = diseaseRepository.findById(data.getId())
-        .orElseThrow(() -> new ConflictException(
+        .orElseThrow(() -> new NotFoundException(
             Collections.singletonList("err.diseases.disease-not-found")));
     diseaseRepository.findByName(data.getName()).ifPresent(d -> {
       if (!d.getId().equals(disease.getId())) {
@@ -60,13 +61,13 @@ public class DiseaseServiceImpl implements DiseaseService {
 
   @Override
   public Disease detail(Long id) {
-    return diseaseRepository.findById(id).orElseThrow(() -> new ConflictException(
+    return diseaseRepository.findById(id).orElseThrow(() -> new NotFoundException(
         Collections.singletonList("err.diseases.disease-does-not-exist")));
   }
 
   @Override
   public void removeDisease(Long id) {
-    diseaseRepository.findById(id).orElseThrow(() -> new ConflictException(
+    diseaseRepository.findById(id).orElseThrow(() -> new NotFoundException(
         Collections.singletonList("err.diseases.disease-does-not-exist")));
     diseaseRepository.deleteById(id);
   }
