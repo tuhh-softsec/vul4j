@@ -51,7 +51,7 @@ public class ClinicServiceImpl implements ClinicService {
     validationNameOrPhoneWhenAddClinic(data);
 
     //valid doctor
-    validDoctor(data.getDoctor_id());
+    validDoctor(data.getDoctorId());
 
     BeanUtils.copyProperties(data, clinic);
     clinic.setName(data.getName().trim());
@@ -73,7 +73,7 @@ public class ClinicServiceImpl implements ClinicService {
     //valid name and phone
     validationNameOrPhoneWhenEditClinic(data);
     //valid doctor
-    validDoctor(data.getDoctor_id());
+    validDoctor(data.getDoctorId());
 
     BeanUtils.copyProperties(data, clinic);
     clinic.setName(data.getName().trim());
@@ -93,15 +93,15 @@ public class ClinicServiceImpl implements ClinicService {
         () -> new NotFoundException(Collections.singletonList("err.clinic.clinic-does-not-exist")));
 
     //get doctor
-    Doctor doctor = doctorRepository.findDoctorById(clinic.getDoctor_id());
+    Doctor doctor = doctorRepository.findDoctorById(clinic.getDoctorId());
     DoctorDto doctorDto = DoctorDto.builder().id(doctor.getId()).name(doctor.getName()).build();
     //get disease
-    List<DiseaseDto> diseaseDtos = new ArrayList<>();
+    List<DiseaseDto> diseases = new ArrayList<>();
     List<Long> diseasesIds = clinicDiseaseRepository.findAllDiseaseById(clinic.getId());
     diseasesIds.forEach(diseasesId -> {
       Disease disease = diseaseRepository.findDiseaseById(diseasesId);
       if (disease != null) {
-        diseaseDtos.add(DiseaseDto.builder().id(diseasesId).name(disease.getName()).build());
+        diseases.add(DiseaseDto.builder().id(diseasesId).name(disease.getName()).build());
       }
 
     });
@@ -111,12 +111,12 @@ public class ClinicServiceImpl implements ClinicService {
         .address(clinic.getAddress())
         .description(clinic.getDescription())
         .doctor(doctorDto)
-        .diseases(diseaseDtos)
+        .diseases(diseases)
         .build();
   }
 
-  private void validDoctor(Long doctor_id) {
-    doctorRepository.findById(doctor_id).orElseThrow(() ->
+  private void validDoctor(Long doctorId) {
+    doctorRepository.findById(doctorId).orElseThrow(() ->
         new NotFoundException(
             Collections.singletonList("err.doctor.doctor-does-not-exist")));
   }

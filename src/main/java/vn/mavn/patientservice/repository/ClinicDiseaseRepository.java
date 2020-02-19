@@ -14,6 +14,6 @@ public interface ClinicDiseaseRepository extends JpaRepository<ClinicDisease, Lo
   @Query("delete from ClinicDisease cd where cd.clinicId = :clinicId")
   void deleteAllByClinicId(Long clinicId);
 
-  @Query("select cd.id from ClinicDisease cd where cd.clinicId = :clinicId")
+  @Query("select cd.diseaseId from ClinicDisease cd where cd.clinicId = :clinicId")
   List<Long> findAllDiseaseById(Long clinicId);
 }

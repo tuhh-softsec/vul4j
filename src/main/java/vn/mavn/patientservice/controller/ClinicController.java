@@ -1,6 +1,5 @@
 package vn.mavn.patientservice.controller;
 
-
 import io.swagger.annotations.Api;
 import java.util.Collections;
 import javax.validation.Valid;

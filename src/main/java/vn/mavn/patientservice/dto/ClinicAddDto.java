@@ -25,7 +25,7 @@ public class ClinicAddDto {
   private String phone;
   private String address;
   private String description;
-  private Long doctor_id;
+  private Long doctorId;
   private Boolean isActive;
   @NotNull(message = "err.add.clinic.diseaseIds-is-mandatory")
   private List<Long> diseaseIds;

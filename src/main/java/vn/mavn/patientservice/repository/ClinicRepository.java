@@ -25,6 +25,6 @@ public interface ClinicRepository extends JpaRepository<Clinic, Long>,
   @Query("select c from Clinic c where c.phone = :phone and c.id <> :id ")
   Optional<Clinic> findByPhoneAndIdNot(String phone, Long id);
 
-  @Query("select c from Clinic c where c.doctor_id = :doctorId")
+  @Query("select c from Clinic c where c.doctorId = :doctorId")
   List<Clinic> findAllClinicById(Long doctorId);
 }
