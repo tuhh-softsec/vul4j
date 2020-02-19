@@ -3,7 +3,10 @@ package vn.mavn.patientservice.controller;
 import java.util.Collections;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,11 +49,11 @@ public class PatientController {
     return responseService.buildUpdatedResponse(patient.getId(),
         Collections.singletonList("info-patient-edit-successfully"));
   }
-//
-//  @GetMapping("{id}")
-//  public ResponseEntity<AdvertisingSource> getDetailById(@PathVariable("id") Long id) {
-//    return ResponseEntity.ok(patientService.getById(id));
-//  }
+
+  @GetMapping("{id}")
+  public ResponseEntity<Patient> getDetailById(@PathVariable("id") Long id) {
+    return ResponseEntity.ok(patientService.getById(id));
+  }
 //
 //  @DeleteMapping
 //  public HttpResponse remove(@RequestParam Long id) {
@@ -58,7 +61,7 @@ public class PatientController {
 //    return responseService.buildUpdatedResponse(id,
 //        Collections.singletonList("info-patient-delete-successfully"));
 //  }
-//
+
 //  @ApiImplicitParams({
 //      @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
 //          value = "Results page you want to retrieve (0..N)", defaultValue = "0"),

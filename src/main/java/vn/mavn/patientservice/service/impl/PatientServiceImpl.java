@@ -64,5 +64,13 @@ public class PatientServiceImpl implements PatientService {
     BeanUtils.copyProperties(patientEditDto, patient);
     return patientRepository.save(patient);
   }
+
+  @Override
+  public Patient getById(Long id) {
+    //TODO: check patient exist?
+    return patientRepository.findActiveById(id)
+        .orElseThrow(() -> new NotFoundException(
+            Collections.singletonList("err-patient-not-found")));
+  }
 }
 
