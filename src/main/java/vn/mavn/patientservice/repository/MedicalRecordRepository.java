@@ -9,4 +9,7 @@ public interface MedicalRecordRepository extends JpaRepository<MedicalRecord, Lo
 
   @Query("select mr from MedicalRecord mr where mr.advertisingSourceId =:avertId")
   List<MedicalRecord> findByAvertId(Long avertId);
+
+  @Query("select mr from MedicalRecord mr where mr.patientId =:patientId")
+  List<MedicalRecord> findByPatientId(Long patientId);
 }
