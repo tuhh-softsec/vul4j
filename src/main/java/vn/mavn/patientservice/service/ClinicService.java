@@ -1,5 +1,12 @@
 package vn.mavn.patientservice.service;
 
+import vn.mavn.patientservice.dto.ClinicAddDto;
+import vn.mavn.patientservice.dto.ClinicEditDto;
+import vn.mavn.patientservice.entity.Clinic;
+
 public interface ClinicService {
 
+  Clinic save(ClinicAddDto data);
+
+  Clinic update(ClinicEditDto data);
 }

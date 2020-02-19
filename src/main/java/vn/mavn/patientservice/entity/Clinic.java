@@ -16,7 +16,7 @@ import vn.mavn.patientservice.entity.listener.EntityListener;
 @Builder
 @Getter
 @Setter
-@Table(name = "pm_doctor")
+@Table(name = "pm_clinic")
 @EntityListeners(EntityListener.class)
 public class Clinic extends BaseIdEntity {
 
