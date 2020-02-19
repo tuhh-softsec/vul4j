@@ -64,7 +64,7 @@ public class DoctorController {
   public ResponseEntity<Doctor> getDoctorById(@PathVariable("id") Long id) {
     return ResponseEntity.ok(doctorService.findById(id));
   }
-git
+
   @ApiImplicitParams({
       @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
           value = "Results page you want to retrieve (0..N)", defaultValue = "0"),
