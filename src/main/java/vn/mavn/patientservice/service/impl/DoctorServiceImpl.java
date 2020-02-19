@@ -10,7 +10,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import vn.mavn.patientservice.dto.DoctorAddDto;
+import vn.mavn.patientservice.dto.DoctorDto;
+import vn.mavn.patientservice.dto.DoctorDto.ClinicDto;
 import vn.mavn.patientservice.dto.DoctorEditDto;
+import vn.mavn.patientservice.entity.Clinic;
 import vn.mavn.patientservice.entity.Doctor;
 import vn.mavn.patientservice.exception.ConflictException;
 import vn.mavn.patientservice.exception.NotFoundException;
@@ -34,6 +37,7 @@ public class DoctorServiceImpl implements DoctorService {
     Doctor doctor = new Doctor();
     validationNameOrPhoneWhenAddDoctor(data);
     BeanUtils.copyProperties(data, doctor);
+    doctor.setName(data.getName());
     return doctorRepository.save(doctor);
   }
 
@@ -44,14 +48,24 @@ public class DoctorServiceImpl implements DoctorService {
 
     validationNameOrPhoneWhenEditDoctor(data);
     BeanUtils.copyProperties(data, doctor);
+    doctor.setName(data.getName().trim());
     return doctorRepository.save(doctor);
   }
 
   @Override
-  public Doctor findById(Long id) {
+  public DoctorDto findById(Long id) {
 
-    return doctorRepository.findById(id).orElseThrow(
+    Doctor doctor = doctorRepository.findById(id).orElseThrow(
         () -> new NotFoundException(Collections.singletonList("err.doctor.doctor-does-not-exist")));
+    List<ClinicDto> clinicDto = new ArrayList<>();
+    List<Clinic> clinics = clinicRepository.findAllClinicById(doctor.getId());
+    clinics.forEach(clinic -> {
+      clinicDto.add(ClinicDto.builder().id(clinic.getId()).name(clinic.getName()).build());
+
+    });
+    return DoctorDto.builder().name(doctor.getName()).phone(doctor.getPhone())
+        .address(doctor.getAddress()).description(doctor.getDescription()).clinics(clinicDto)
+        .build();
   }
 
   @Override
@@ -66,7 +80,7 @@ public class DoctorServiceImpl implements DoctorService {
   public void delete(Long id) {
     Doctor doctor = doctorRepository
         .findById(id).orElseThrow(() -> new NotFoundException(
-            Collections.singletonList("err-advertising-not-found")));
+            Collections.singletonList("err.doctor.doctor-does-not-exist")));
 
     // check doctor using in clinic
     clinicRepository.findById(doctor.getId())
