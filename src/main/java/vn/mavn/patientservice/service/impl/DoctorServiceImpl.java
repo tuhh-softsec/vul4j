@@ -16,7 +16,7 @@ import vn.mavn.patientservice.exception.ConflictException;
 import vn.mavn.patientservice.exception.NotFoundException;
 import vn.mavn.patientservice.repository.ClinicRepository;
 import vn.mavn.patientservice.repository.DoctorRepository;
-import vn.mavn.patientservice.repository.spec.AdvertisingSourceSpec;
+import vn.mavn.patientservice.repository.spec.DoctorSpec;
 import vn.mavn.patientservice.service.DoctorService;
 
 @Service
@@ -56,10 +56,10 @@ public class DoctorServiceImpl implements DoctorService {
   }
 
   @Override
-  public Page<Doctor> findAllDoctors(String name, Pageable pageable) {
+  public Page<Doctor> findAllDoctors(String name, String phone, Pageable pageable) {
 
     return (Page<Doctor>) doctorRepository.findAll(
-        AdvertisingSourceSpec.findAllProfiles(name), pageable);
+        DoctorSpec.findAllProfiles(name, phone), pageable);
   }
 
   //TODO:

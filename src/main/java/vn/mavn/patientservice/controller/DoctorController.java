@@ -64,7 +64,7 @@ public class DoctorController {
   public ResponseEntity<Doctor> getDoctorById(@PathVariable("id") Long id) {
     return ResponseEntity.ok(doctorService.findById(id));
   }
-
+git
   @ApiImplicitParams({
       @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
           value = "Results page you want to retrieve (0..N)", defaultValue = "0"),
@@ -76,8 +76,10 @@ public class DoctorController {
           defaultValue = "createdAt,desc")})
   @GetMapping
   public ResponseEntity<ResponseWithPage<Doctor>> getAll(
-      @RequestParam(required = false) String name, @ApiIgnore Pageable pageable) {
-    Page<Doctor> page = doctorService.findAllDoctors(name, pageable);
+      @RequestParam(required = false) String name,
+      @RequestParam(required = false) String phone,
+      @ApiIgnore Pageable pageable) {
+    Page<Doctor> page = doctorService.findAllDoctors(name, phone, pageable);
     return ResponseEntity
         .ok(ResponseWithPage.<Doctor>builder().data(page.getContent())
             .pageIndex(page.getNumber())
