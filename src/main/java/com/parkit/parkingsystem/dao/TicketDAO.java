@@ -19,6 +19,27 @@ public class TicketDAO {
 
     public DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
+    public int countTicket(String carNumber) {
+    	Connection con = null;
+    	int nb = -1;
+        try {
+            con = dataBaseConfig.getConnection();
+            PreparedStatement ps = con.prepareStatement(DBConstants.COUNT_CAR_TICKET);
+            ps.setString(1, carNumber);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+            	nb = rs.getInt(1);
+            }
+            dataBaseConfig.closeResultSet(rs);
+            dataBaseConfig.closePreparedStatement(ps);
+        }catch (Exception ex){
+            logger.error("Error counting car num",ex);
+        }finally {
+            dataBaseConfig.closeConnection(con);
+        }
+        return nb;
+    }
+    
     public boolean saveTicket(Ticket ticket){
         Connection con = null;
         try {
