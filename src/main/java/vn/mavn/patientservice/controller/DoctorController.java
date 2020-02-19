@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 import vn.mavn.patientservice.dto.DoctorAddDto;
+import vn.mavn.patientservice.dto.DoctorDto;
 import vn.mavn.patientservice.dto.DoctorEditDto;
 import vn.mavn.patientservice.entity.Doctor;
 import vn.mavn.patientservice.response.HttpResponse;
@@ -61,7 +62,7 @@ public class DoctorController {
   }
 
   @GetMapping("{id}")
-  public ResponseEntity<Doctor> getDoctorById(@PathVariable("id") Long id) {
+  public ResponseEntity<DoctorDto> getDoctorById(@PathVariable("id") Long id) {
     return ResponseEntity.ok(doctorService.findById(id));
   }
 

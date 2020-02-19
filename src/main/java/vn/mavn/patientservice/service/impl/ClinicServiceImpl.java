@@ -13,6 +13,7 @@ import vn.mavn.patientservice.entity.Clinic;
 import vn.mavn.patientservice.exception.ConflictException;
 import vn.mavn.patientservice.exception.NotFoundException;
 import vn.mavn.patientservice.repository.ClinicRepository;
+import vn.mavn.patientservice.repository.DoctorRepository;
 import vn.mavn.patientservice.service.ClinicService;
 
 @Service
@@ -21,11 +22,18 @@ public class ClinicServiceImpl implements ClinicService {
   @Autowired
   private ClinicRepository clinicRepository;
 
+  @Autowired
+  private DoctorRepository doctorRepository;
+
   @Override
   public Clinic save(ClinicAddDto data) {
 
     Clinic clinic = new Clinic();
+    //valid name and phone
     validationNameOrPhoneWhenAddClinic(data);
+    //valid doctor
+    doctorRepository.findById(data.getDoctor_id()).orElseThrow(
+        () -> new NotFoundException(Collections.singletonList("err.doctor.doctor-does-not-exist")));
     BeanUtils.copyProperties(data, clinic);
     clinic.setName(data.getName().trim());
     return clinicRepository.save(clinic);
@@ -38,9 +46,13 @@ public class ClinicServiceImpl implements ClinicService {
         .orElseThrow(
             () -> new NotFoundException(
                 Collections.singletonList("err.clinic.clinic-does-not-exist")));
-    validationNameOrPhoneWhenEditclinic(data);
+    //valid name and phone
+    validationNameOrPhoneWhenEditClinic(data);
+    //valid doctor
+    doctorRepository.findById(data.getDoctor_id()).orElseThrow(
+        () -> new NotFoundException(Collections.singletonList("err.doctor.doctor-does-not-exist")));
     BeanUtils.copyProperties(data, clinic);
-    clinic.setName(data.getName());
+    clinic.setName(data.getName().trim());
     return clinicRepository.save(clinic);
   }
 
@@ -58,7 +70,7 @@ public class ClinicServiceImpl implements ClinicService {
     }
   }
 
-  private void validationNameOrPhoneWhenEditclinic(ClinicEditDto data) {
+  private void validationNameOrPhoneWhenEditClinic(ClinicEditDto data) {
     List<String> failReasons = new ArrayList<>();
     clinicRepository.findByNameAndIdNot(data.getName().trim(), data.getId()).ifPresent(doctor -> {
       failReasons.add("err.clinic.name-is-duplicate");
