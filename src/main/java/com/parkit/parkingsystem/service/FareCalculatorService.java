@@ -1,11 +1,20 @@
 
 package com.parkit.parkingsystem.service;
 
+import java.util.Date;
+
 import com.parkit.parkingsystem.constants.Fare;
+import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.model.Ticket;
 
 public class FareCalculatorService {
 
+	private TicketDAO ticketDAO;
+	
+	public FareCalculatorService(TicketDAO ticketDAO) {
+		this.ticketDAO = ticketDAO;
+	}
+	
     public void calculateFare(Ticket ticket){
         if( (ticket.getOutTime() == null) || (ticket.getOutTime().before(ticket.getInTime())) ){
         	System.out.println(ticket);
@@ -15,12 +24,22 @@ public class FareCalculatorService {
 
         //difference between before and after to get duration, and convert to hours (float, to get percentage)
         long timeMs = ticket.getOutTime().getTime() - ticket.getInTime().getTime();
-        float timeSeconds = timeMs/1000;
-        float duration = timeSeconds / 3600;
+        double timeSeconds = timeMs/1000;
+        
+        System.out.println("SECONDES = "+timeSeconds);
+        double duration = timeSeconds / 3600;
         
         //free if less than 30 minutes
         if(duration<0.5) {
         	duration = 0;
+        }else {
+        	//discount 5% if same car
+        	int nb = ticketDAO.countTicket(ticket.getVehicleRegNumber());
+        	System.out.println("COUNT_CAR="+nb);
+        	if(nb>=2) {
+        		duration = (duration * Fare.DISCOUNT);
+        		System.out.println("DURATION="+duration);
+        	}
         }
         
         switch (ticket.getParkingSpot().getParkingType()){
@@ -34,5 +53,6 @@ public class FareCalculatorService {
             }
             default: throw new IllegalArgumentException("Unkown Parking Type");
         }
+        
     }
 }
