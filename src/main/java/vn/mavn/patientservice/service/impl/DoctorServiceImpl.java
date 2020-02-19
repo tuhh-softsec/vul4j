@@ -32,7 +32,6 @@ public class DoctorServiceImpl implements DoctorService {
   public Doctor save(DoctorAddDto data) {
 
     Doctor doctor = new Doctor();
-
     validationNameOrPhoneWhenAddDoctor(data);
     BeanUtils.copyProperties(data, doctor);
     doctor.setName(data.getName());
@@ -82,11 +81,11 @@ public class DoctorServiceImpl implements DoctorService {
 
   private void validationNameOrPhoneWhenAddDoctor(DoctorAddDto data) {
     List<String> failReasons = new ArrayList<>();
-    doctorRepository.findByName(data.getName()).ifPresent(doctor1 -> {
+    doctorRepository.findByName(data.getName().trim()).ifPresent(doctor -> {
       failReasons.add("err.doctor.name-is-duplicate");
     });
 
-    doctorRepository.findByPhone(data.getPhone()).ifPresent(doctor1 -> {
+    doctorRepository.findByPhone(data.getPhone()).ifPresent(doctor -> {
       failReasons.add("err.doctor.phone-is-duplicate");
     });
     if (!CollectionUtils.isEmpty(failReasons)) {
@@ -96,7 +95,7 @@ public class DoctorServiceImpl implements DoctorService {
 
   private void validationNameOrPhoneWhenEditDoctor(DoctorEditDto data) {
     List<String> failReasons = new ArrayList<>();
-    doctorRepository.findByNameAndIdNot(data.getName(), data.getId()).ifPresent(doctor -> {
+    doctorRepository.findByNameAndIdNot(data.getName().trim(), data.getId()).ifPresent(doctor -> {
       failReasons.add("err.doctor.name-is-duplicate");
     });
 
