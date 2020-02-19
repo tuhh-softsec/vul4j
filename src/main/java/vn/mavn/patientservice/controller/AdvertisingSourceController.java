@@ -88,7 +88,8 @@ public class AdvertisingSourceController {
       BindingResult bindingResult,
       @ApiIgnore Pageable pageable) {
     EntityValidationUtils.processBindingResults(bindingResult);
-    Page<AdvertisingSource> page = advertisingSourceService.findAll(queryAdvertisingSourceDto, pageable);
+    Page<AdvertisingSource> page = advertisingSourceService
+        .findAll(queryAdvertisingSourceDto, pageable);
     return ResponseEntity
         .ok(ResponseWithPage.<AdvertisingSource>builder().data(page.getContent())
             .pageIndex(page.getNumber())

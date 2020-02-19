@@ -20,7 +20,7 @@ import vn.mavn.patientservice.entity.listener.EntityListener;
 @EntityListeners(EntityListener.class)
 public class Clinic extends BaseIdEntity {
 
-  private Long doctor_id;
+  private Long doctorId;
   private String name;
   private String phone;
   private String address;
