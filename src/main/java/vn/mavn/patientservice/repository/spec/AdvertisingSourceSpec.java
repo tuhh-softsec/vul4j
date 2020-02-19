@@ -11,7 +11,7 @@ import vn.mavn.patientservice.util.SpecUtils;
 
 public class AdvertisingSourceSpec {
 
-  public static Specification findAllProfiles(QueryAdvertisingSourceDto queryAdvertisingSourceDto) {
+  public static Specification findAllAdvert(QueryAdvertisingSourceDto queryAdvertisingSourceDto) {
     return (Specification<AdvertisingSource>) (root, criteriaQuery, criteriaBuilder) -> {
       Collection<Predicate> predicates = new ArrayList<>();
       if (StringUtils.isNotBlank(queryAdvertisingSourceDto.getName())) {

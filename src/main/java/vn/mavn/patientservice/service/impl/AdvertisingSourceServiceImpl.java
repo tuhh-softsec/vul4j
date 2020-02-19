@@ -89,8 +89,9 @@ public class AdvertisingSourceServiceImpl implements AdvertisingSourceService {
   }
 
   @Override
-  public Page<AdvertisingSource> findAll(QueryAdvertisingSourceDto queryAdvertisingSourceDto, Pageable pageable) {
+  public Page<AdvertisingSource> findAll(QueryAdvertisingSourceDto queryAdvertisingSourceDto,
+      Pageable pageable) {
     return (Page<AdvertisingSource>) advertisingSourceRepository.findAll(
-        AdvertisingSourceSpec.findAllProfiles(queryAdvertisingSourceDto), pageable);
+        AdvertisingSourceSpec.findAllAdvert(queryAdvertisingSourceDto), pageable);
   }
 }
