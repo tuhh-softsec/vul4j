@@ -1,6 +1,8 @@
 package vn.mavn.patientservice.dto;
 
+import java.util.List;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,5 +26,8 @@ public class ClinicAddDto {
   private String address;
   private String description;
   private Long doctor_id;
+  private Boolean isActive;
+  @NotNull(message = "err.add.clinic.diseaseIds-is-mandatory")
+  private List<Long> diseaseIds;
 
 }

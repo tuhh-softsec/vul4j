@@ -1,5 +1,6 @@
 package vn.mavn.patientservice.dto;
 
+import java.util.List;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -27,4 +28,7 @@ public class ClinicEditDto {
   private String address;
   private String description;
   private Long doctor_id;
+  private Boolean isActive;
+  @NotNull(message = "err.add.clinic.diseaseIds-is-mandatory")
+  private List<Long> diseaseIds;
 }

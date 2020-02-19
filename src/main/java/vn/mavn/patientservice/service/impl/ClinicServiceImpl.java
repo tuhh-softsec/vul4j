@@ -2,21 +2,33 @@ package vn.mavn.patientservice.service.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import vn.mavn.patientservice.dto.ClinicAddDto;
+import vn.mavn.patientservice.dto.ClinicDto;
+import vn.mavn.patientservice.dto.ClinicDto.DoctorDto;
 import vn.mavn.patientservice.dto.ClinicEditDto;
+import vn.mavn.patientservice.dto.DiseaseDto;
 import vn.mavn.patientservice.entity.Clinic;
+import vn.mavn.patientservice.entity.ClinicDisease;
+import vn.mavn.patientservice.entity.Disease;
+import vn.mavn.patientservice.entity.Doctor;
 import vn.mavn.patientservice.exception.ConflictException;
 import vn.mavn.patientservice.exception.NotFoundException;
+import vn.mavn.patientservice.repository.ClinicDiseaseRepository;
 import vn.mavn.patientservice.repository.ClinicRepository;
+import vn.mavn.patientservice.repository.DiseaseRepository;
 import vn.mavn.patientservice.repository.DoctorRepository;
 import vn.mavn.patientservice.service.ClinicService;
 
 @Service
+@Transactional
 public class ClinicServiceImpl implements ClinicService {
 
   @Autowired
@@ -25,18 +37,30 @@ public class ClinicServiceImpl implements ClinicService {
   @Autowired
   private DoctorRepository doctorRepository;
 
+  @Autowired
+  private DiseaseRepository diseaseRepository;
+
+  @Autowired
+  private ClinicDiseaseRepository clinicDiseaseRepository;
+
   @Override
   public Clinic save(ClinicAddDto data) {
 
     Clinic clinic = new Clinic();
     //valid name and phone
     validationNameOrPhoneWhenAddClinic(data);
+
     //valid doctor
-    doctorRepository.findById(data.getDoctor_id()).orElseThrow(
-        () -> new NotFoundException(Collections.singletonList("err.doctor.doctor-does-not-exist")));
+    validDoctor(data.getDoctor_id());
+
     BeanUtils.copyProperties(data, clinic);
     clinic.setName(data.getName().trim());
-    return clinicRepository.save(clinic);
+    clinicRepository.save(clinic);
+
+    //valid disease
+    validDisease(clinic, data.getDiseaseIds());
+
+    return clinic;
   }
 
   @Override
@@ -49,20 +73,77 @@ public class ClinicServiceImpl implements ClinicService {
     //valid name and phone
     validationNameOrPhoneWhenEditClinic(data);
     //valid doctor
-    doctorRepository.findById(data.getDoctor_id()).orElseThrow(
-        () -> new NotFoundException(Collections.singletonList("err.doctor.doctor-does-not-exist")));
+    validDoctor(data.getDoctor_id());
+
     BeanUtils.copyProperties(data, clinic);
     clinic.setName(data.getName().trim());
-    return clinicRepository.save(clinic);
+    clinicRepository.save(clinic);
+
+    //delete mapping clinic disease
+    clinicDiseaseRepository.deleteAllByClinicId(clinic.getId());
+    //valid disease
+    validDisease(clinic, data.getDiseaseIds());
+    return clinic;
+  }
+
+  @Override
+  public ClinicDto findById(Long id) {
+
+    Clinic clinic = clinicRepository.findById(id).orElseThrow(
+        () -> new NotFoundException(Collections.singletonList("err.clinic.clinic-does-not-exist")));
+
+    //get doctor
+    Doctor doctor = doctorRepository.findDoctorById(clinic.getDoctor_id());
+    DoctorDto doctorDto = DoctorDto.builder().id(doctor.getId()).name(doctor.getName()).build();
+    //get disease
+    List<DiseaseDto> diseaseDtos = new ArrayList<>();
+    List<Long> diseasesIds = clinicDiseaseRepository.findAllDiseaseById(clinic.getId());
+    diseasesIds.forEach(diseasesId -> {
+      Disease disease = diseaseRepository.findDiseaseById(diseasesId);
+      if (disease != null) {
+        diseaseDtos.add(DiseaseDto.builder().id(diseasesId).name(disease.getName()).build());
+      }
+
+    });
+    return ClinicDto.builder()
+        .name(clinic.getName())
+        .phone(clinic.getPhone())
+        .address(clinic.getAddress())
+        .description(clinic.getDescription())
+        .doctor(doctorDto)
+        .diseases(diseaseDtos)
+        .build();
+  }
+
+  private void validDoctor(Long doctor_id) {
+    doctorRepository.findById(doctor_id).orElseThrow(() ->
+        new NotFoundException(
+            Collections.singletonList("err.doctor.doctor-does-not-exist")));
+  }
+
+  private void validDisease(Clinic clinic, List<Long> diseases) {
+    Set<Long> setDisease = new HashSet<>(diseases);
+    setDisease.forEach(disease -> {
+      diseaseRepository.findById(disease).orElseThrow(() -> new NotFoundException(
+          Collections.singletonList("err.diseases.disease-not-found")));
+    });
+    //mapping clinic disease
+    List<ClinicDisease> clinicDiseases = new ArrayList<>();
+    setDisease.forEach(disease -> {
+          clinicDiseases
+              .add(ClinicDisease.builder().clinicId(clinic.getId()).diseaseId(disease).build());
+        }
+    );
+    clinicDiseaseRepository.saveAll(clinicDiseases);
   }
 
   private void validationNameOrPhoneWhenAddClinic(ClinicAddDto data) {
     List<String> failReasons = new ArrayList<>();
-    clinicRepository.findByName(data.getName().trim()).ifPresent(doctor1 -> {
+    clinicRepository.findByName(data.getName().trim()).ifPresent(doctor -> {
       failReasons.add("err.clinic.name-is-duplicate");
     });
 
-    clinicRepository.findByPhone(data.getPhone()).ifPresent(doctor1 -> {
+    clinicRepository.findByPhone(data.getPhone()).ifPresent(doctor -> {
       failReasons.add("err.clinic.phone-is-duplicate");
     });
     if (!CollectionUtils.isEmpty(failReasons)) {

@@ -5,13 +5,17 @@ import io.swagger.annotations.Api;
 import java.util.Collections;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.mavn.patientservice.dto.ClinicAddDto;
+import vn.mavn.patientservice.dto.ClinicDto;
 import vn.mavn.patientservice.dto.ClinicEditDto;
 import vn.mavn.patientservice.entity.Clinic;
 import vn.mavn.patientservice.response.HttpResponse;
@@ -48,6 +52,11 @@ public class ClinicController {
     Clinic clinic = clinicService.update(data);
     return responseService.buildUpdatedResponse(clinic.getId(),
         Collections.singletonList("info.clinic.edit-clinic-successfully"));
+  }
+
+  @GetMapping("{id}")
+  public ResponseEntity<ClinicDto> getDoctorById(@PathVariable("id") Long id) {
+    return ResponseEntity.ok(clinicService.findById(id));
   }
 
 }
