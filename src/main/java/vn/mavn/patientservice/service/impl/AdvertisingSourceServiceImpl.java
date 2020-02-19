@@ -1,18 +1,22 @@
 package vn.mavn.patientservice.service.impl;
 
 import java.util.Collections;
+import java.util.List;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import vn.mavn.patientservice.dto.AdvertisingSourceAddDto;
 import vn.mavn.patientservice.dto.AdvertisingSourceEditDto;
 import vn.mavn.patientservice.entity.AdvertisingSource;
+import vn.mavn.patientservice.entity.MedicalRecord;
 import vn.mavn.patientservice.exception.ConflictException;
 import vn.mavn.patientservice.exception.NotFoundException;
 import vn.mavn.patientservice.repository.AdvertisingSourceRepository;
+import vn.mavn.patientservice.repository.MedicalRecordRepository;
 import vn.mavn.patientservice.repository.spec.AdvertisingSourceSpec;
 import vn.mavn.patientservice.service.AdvertisingSourceService;
 
@@ -22,6 +26,9 @@ public class AdvertisingSourceServiceImpl implements AdvertisingSourceService {
 
   @Autowired
   private AdvertisingSourceRepository advertisingSourceRepository;
+
+  @Autowired
+  private MedicalRecordRepository medicalRecordRepository;
 
   @Override
   public AdvertisingSource addNew(AdvertisingSourceAddDto advertisingSourceAddDto) {
@@ -47,7 +54,7 @@ public class AdvertisingSourceServiceImpl implements AdvertisingSourceService {
             Collections.singletonList("err-advertising-not-found")));
     //TODO: valid name duplicate
     advertisingSourceRepository
-        .findByNameNotEqualId(advertisingSourceEditDto.getName().trim().toUpperCase(),
+        .findByNameNotEqualId(advertisingSourceEditDto.getName().trim(),
             advertisingSourceEditDto.getId())
         .ifPresent(advert -> {
           throw new ConflictException(Collections.singletonList("err-advertising-duplicate-name"));
@@ -71,7 +78,12 @@ public class AdvertisingSourceServiceImpl implements AdvertisingSourceService {
         .findById(id).orElseThrow(() -> new NotFoundException(
             Collections.singletonList("err-advertising-not-found")));
     //TODO: valid advertising used or not
-
+    List<MedicalRecord> medicalRecords = medicalRecordRepository
+        .findByAvertId(advertisingSource.getId());
+    if (!CollectionUtils.isEmpty(medicalRecords)) {
+      throw new ConflictException(
+          Collections.singletonList("err-advertising-delete-not-successfully"));
+    }
     advertisingSourceRepository.deleteAdvert(advertisingSource.getId());
   }
 
