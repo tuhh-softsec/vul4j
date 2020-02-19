@@ -24,4 +24,5 @@ public class Doctor extends BaseIdEntity {
   private String phone;
   private String address;
   private String description;
+  private Boolean isActive;
 }

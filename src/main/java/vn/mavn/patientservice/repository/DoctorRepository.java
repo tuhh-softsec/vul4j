@@ -27,4 +27,6 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long>,
   @Modifying
   @Query("delete from Doctor ad where ad.id = :id")
   void deleteDoctor(Long id);
+
+  Doctor findDoctorById(Long id);
 }
