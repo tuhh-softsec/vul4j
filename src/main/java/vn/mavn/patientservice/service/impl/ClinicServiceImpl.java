@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Set;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -25,6 +27,7 @@ import vn.mavn.patientservice.repository.ClinicDiseaseRepository;
 import vn.mavn.patientservice.repository.ClinicRepository;
 import vn.mavn.patientservice.repository.DiseaseRepository;
 import vn.mavn.patientservice.repository.DoctorRepository;
+import vn.mavn.patientservice.repository.spec.ClinicSpec;
 import vn.mavn.patientservice.service.ClinicService;
 
 @Service
@@ -113,6 +116,13 @@ public class ClinicServiceImpl implements ClinicService {
         .doctor(doctorDto)
         .diseases(diseases)
         .build();
+  }
+
+  @Override
+  public Page<Clinic> findAllClinics(String name, String phone, Boolean isActive,
+      Pageable pageable) {
+    return (Page<Clinic>) clinicRepository.findAll(
+        ClinicSpec.findAllClinic(name, phone, isActive), pageable);
   }
 
   private void validDoctor(Long doctorId) {

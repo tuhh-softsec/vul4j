@@ -79,8 +79,9 @@ public class DoctorController {
   public ResponseEntity<ResponseWithPage<Doctor>> getAll(
       @RequestParam(required = false) String name,
       @RequestParam(required = false) String phone,
+      @RequestParam(required = false) Boolean isActive,
       @ApiIgnore Pageable pageable) {
-    Page<Doctor> page = doctorService.findAllDoctors(name, phone, pageable);
+    Page<Doctor> page = doctorService.findAllDoctors(name, phone, isActive, pageable);
     return ResponseEntity
         .ok(ResponseWithPage.<Doctor>builder().data(page.getContent())
             .pageIndex(page.getNumber())

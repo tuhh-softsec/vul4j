@@ -69,10 +69,11 @@ public class DoctorServiceImpl implements DoctorService {
   }
 
   @Override
-  public Page<Doctor> findAllDoctors(String name, String phone, Pageable pageable) {
+  public Page<Doctor> findAllDoctors(String name, String phone, Boolean isActive,
+      Pageable pageable) {
 
     return (Page<Doctor>) doctorRepository.findAll(
-        DoctorSpec.findAllProfiles(name, phone), pageable);
+        DoctorSpec.findAllProfiles(name, phone, isActive), pageable);
   }
 
   //TODO:
