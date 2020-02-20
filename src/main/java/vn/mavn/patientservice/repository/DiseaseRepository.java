@@ -11,4 +11,7 @@ public interface DiseaseRepository extends BaseRepository<Disease, Long> {
 
   @Query("select d from Disease d where d.id = :id")
   Disease findDiseaseById(Long id);
+
+  @Query("select d from Disease d where d.id =:id and d.isActive =true")
+  Optional<Disease> findActiveById(Long id);
 }

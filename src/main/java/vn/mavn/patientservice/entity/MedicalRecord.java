@@ -1,7 +1,9 @@
 package vn.mavn.patientservice.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -11,6 +13,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import vn.mavn.patientservice.entity.listener.EntityListener;
 
 @Setter
 @Getter
@@ -25,6 +28,7 @@ public class MedicalRecord {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   private Long patientId;
+  private Long userId;
   private String userCode;
   private LocalDateTime advisoryDate;
   private Long diseaseId;
@@ -38,8 +42,9 @@ public class MedicalRecord {
   private Long remedyAmount;
   private String remedyType;
   private String remedies;
-  private Long totalAmount;
-  private Long transferAmount;
-  private Long codAmount;
+  private BigDecimal totalAmount;
+  private BigDecimal transferAmount;
+  private BigDecimal codAmount;
   private String extraNote;
+  private Boolean isActive;
 }
