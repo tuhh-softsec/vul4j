@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,9 +13,10 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class MedicalRecordAddDto {
+public class MedicalRecordEditDto {
 
+  @NotNull(message = "err-medical-record-id-is-mandatory")
+  private Long id;
   @NotNull(message = "err-medical-record-patient-id-is-mandatory")
   private Long patientId;
   @NotNull(message = "err-medical-record-user-id-is-mandatory")
@@ -47,7 +47,7 @@ public class MedicalRecordAddDto {
   private String extraNote;
   private Boolean isActive;
   @NotNull(message = "err-medical-record-patient-created-by-is-mandatory")
-  private Long createdBy;
+  private Long updateBy;
   private List<MedicineMappingDto> medicineDtos;
 
 

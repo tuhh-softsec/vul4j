@@ -1,32 +1,18 @@
 package vn.mavn.patientservice.controller;
 
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import java.util.Collections;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import springfox.documentation.annotations.ApiIgnore;
 import vn.mavn.patientservice.dto.MedicalRecordAddDto;
-import vn.mavn.patientservice.dto.PatientEditDto;
-import vn.mavn.patientservice.dto.qobject.QueryPatientDto;
+import vn.mavn.patientservice.dto.MedicalRecordEditDto;
 import vn.mavn.patientservice.entity.MedicalRecord;
-import vn.mavn.patientservice.entity.Patient;
 import vn.mavn.patientservice.response.HttpResponse;
-import vn.mavn.patientservice.response.ResponseWithPage;
 import vn.mavn.patientservice.service.MedicalRecordService;
 import vn.mavn.patientservice.service.ResponseService;
 import vn.mavn.patientservice.util.EntityValidationUtils;
@@ -50,16 +36,16 @@ public class MedicalRecordController {
         Collections.singletonList("info-medical-record-add-successfully"));
   }
 
-//  @PutMapping
-//  public HttpResponse edit(@Valid @RequestBody PatientEditDto patientEditDto,
-//      BindingResult bindingResult) {
-//    EntityValidationUtils.processBindingResults(bindingResult);
-//    Patient patient = responseService
-//        .editPatient(patientEditDto);
-//
-//    return medicalRecordService.buildUpdatedResponse(patient.getId(),
-//        Collections.singletonList("info-patient-edit-successfully"));
-//  }
+  @PutMapping
+  public HttpResponse edit(@Valid @RequestBody MedicalRecordEditDto medicalRecordEditDto,
+      BindingResult bindingResult) {
+    EntityValidationUtils.processBindingResults(bindingResult);
+    MedicalRecord medicalRecord = medicalRecordService
+        .editMedicalRecord(medicalRecordEditDto);
+
+    return responseService.buildUpdatedResponse(medicalRecord.getId(),
+        Collections.singletonList("info-medical-record-edit-successfully"));
+  }
 //
 //  @GetMapping("{id}")
 //  public ResponseEntity<Patient> getDetailById(@PathVariable("id") Long id) {
