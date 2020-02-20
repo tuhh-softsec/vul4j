@@ -16,4 +16,6 @@ public interface ClinicService {
   ClinicDto findById(Long id);
 
   Page<Clinic> findAllClinics(String name, String phone, Boolean isActive, Pageable pageable);
+
+  void delete(Long id);
 }

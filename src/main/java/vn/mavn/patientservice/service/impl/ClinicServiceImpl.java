@@ -125,6 +125,13 @@ public class ClinicServiceImpl implements ClinicService {
         ClinicSpec.findAllClinic(name, phone, isActive), pageable);
   }
 
+  @Override
+  public void delete(Long id) {
+    Clinic clinic = clinicRepository.findById(id).orElseThrow(
+        () -> new NotFoundException(Collections.singletonList("err.clinic.clinic-does-not-exist")));
+    clinicRepository.delete(clinic);
+  }
+
   private void validDoctor(Long doctorId) {
     doctorRepository.findById(doctorId).orElseThrow(() ->
         new NotFoundException(
