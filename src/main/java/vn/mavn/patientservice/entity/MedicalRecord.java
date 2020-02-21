@@ -1,5 +1,6 @@
 package vn.mavn.patientservice.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -30,7 +31,7 @@ public class MedicalRecord {
   private Long diseaseId;
   private Long advertisingSourceId;
   private String diseaseStatus;
-  private String advisoryStatusCode;
+  private String consultingStatusCode;
   private String note;
   private Long clinicId;
   private LocalDateTime examinationDate;
@@ -38,8 +39,8 @@ public class MedicalRecord {
   private Long remedyAmount;
   private String remedyType;
   private String remedies;
-  private Long totalAmount;
-  private Long transferAmount;
-  private Long codAmount;
+  private BigDecimal totalAmount;
+  private BigDecimal transferAmount;
+  private BigDecimal codAmount;
   private String extraNote;
 }
