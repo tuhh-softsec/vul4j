@@ -2,7 +2,6 @@ package vn.mavn.patientservice.service.impl;
 
 import java.util.Collections;
 import java.util.List;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -76,14 +75,13 @@ public class DiseaseServiceImpl implements DiseaseService {
 
   @Override
   public void removeDisease(Long id) {
-    Disease disease = diseaseRepository.findById(id).orElseThrow(() -> new NotFoundException(
+    diseaseRepository.findById(id).orElseThrow(() -> new NotFoundException(
         Collections.singletonList("err.diseases.disease-not-found")));
     List<ClinicDisease> clinicDiseases = clinicDiseaseRepository.findByDiseaseId(id);
     List<MedicalRecord> medicalRecords = medicalRecordRepository.findByDiseaseId(id);
     if (!CollectionUtils.isEmpty(clinicDiseases) || !CollectionUtils.isEmpty(medicalRecords)) {
       throw new ConflictException(Collections.singletonList("err.diseases.cannot-remove-disease"));
     }
-    disease.setIsActive(false);
-    diseaseRepository.save(disease);
+    diseaseRepository.deleteById(id);
   }
 }

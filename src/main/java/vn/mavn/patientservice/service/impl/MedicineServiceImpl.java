@@ -8,9 +8,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import vn.mavn.patientservice.dto.DiseaseDto;
 import vn.mavn.patientservice.dto.MedicineAddDto;
+import vn.mavn.patientservice.dto.MedicineDto;
 import vn.mavn.patientservice.dto.MedicineEditDto;
 import vn.mavn.patientservice.dto.qobject.QueryMedicineDto;
+import vn.mavn.patientservice.entity.Disease;
 import vn.mavn.patientservice.entity.MedicalRecordMedicine;
 import vn.mavn.patientservice.entity.Medicine;
 import vn.mavn.patientservice.exception.ConflictException;
@@ -73,14 +76,19 @@ public class MedicineServiceImpl implements MedicineService {
   }
 
   @Override
-  public Medicine detail(Long id) {
-    return medicineRepository.findById(id).orElseThrow(()
+  public MedicineDto detail(Long id) {
+    Medicine medicine = medicineRepository.findById(id).orElseThrow(()
         -> new NotFoundException(Collections.singletonList("err.medicines.medicine-not-found")));
+    Disease disease = diseaseRepository.findDiseaseById(medicine.getDiseaseId());
+    MedicineDto result = new MedicineDto();
+    BeanUtils.copyProperties(medicine, result);
+    result.setDisease(DiseaseDto.builder().id(disease.getId()).name(disease.getName()).build());
+    return result;
   }
 
   @Override
   public void remove(Long id) {
-    Medicine medicine = medicineRepository.findById(id).orElseThrow(()
+    medicineRepository.findById(id).orElseThrow(()
         -> new NotFoundException(Collections.singletonList("err.medicines.medicine-not-found")));
     List<MedicalRecordMedicine> medicineMedicalRecords = medicalRecordMedicineRepository
         .findAllByMedicineId(id);
@@ -88,7 +96,6 @@ public class MedicineServiceImpl implements MedicineService {
       throw new ConflictException(
           Collections.singletonList("err.medicines.cannot-remove-medicine"));
     }
-    medicine.setIsActive(false);
-    medicineRepository.save(medicine);
+    medicineRepository.deleteById(id);
   }
 }
