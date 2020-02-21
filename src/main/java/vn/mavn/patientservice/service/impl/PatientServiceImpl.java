@@ -53,14 +53,6 @@ public class PatientServiceImpl implements PatientService {
     Patient patient = patientRepository.findActiveById(patientEditDto.getId())
         .orElseThrow(() -> new NotFoundException(
             Collections.singletonList("err-patient-not-found")));
-    //TODO: valid name and address
-    patientRepository
-        .findByNameAndAdressNotEqualId(patientEditDto.getName().trim(),
-            patientEditDto.getAddress().trim(), patientEditDto.getId())
-        .ifPresent(pa -> {
-          throw new ConflictException(
-              Collections.singletonList("err-patient-duplicate-name-address"));
-        });
     //TODO: check at least have 1 phone number.
     if (StringUtils.isBlank(patientEditDto.getOtherPhone()) && StringUtils
         .isBlank(patientEditDto.getPhone()) && StringUtils.isBlank(patientEditDto.getZaLoPhone())) {
