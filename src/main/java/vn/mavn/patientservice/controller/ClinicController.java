@@ -62,7 +62,7 @@ public class ClinicController {
   }
 
   @GetMapping("{id}")
-  public ResponseEntity<ClinicDto> getDoctorById(@PathVariable("id") Long id) {
+  public ResponseEntity<ClinicDto> getClinicById(@PathVariable("id") Long id) {
     return ResponseEntity.ok(clinicService.findById(id));
   }
 
