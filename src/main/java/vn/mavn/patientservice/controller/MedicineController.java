@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 import vn.mavn.patientservice.dto.MedicineAddDto;
+import vn.mavn.patientservice.dto.MedicineDto;
 import vn.mavn.patientservice.dto.MedicineEditDto;
 import vn.mavn.patientservice.dto.qobject.QueryMedicineDto;
 import vn.mavn.patientservice.entity.Medicine;
@@ -82,7 +83,7 @@ public class MedicineController {
   }
 
   @GetMapping("{id}")
-  public ResponseEntity<Medicine> getDetail(@PathVariable("id") Long id) {
+  public ResponseEntity<MedicineDto> getDetail(@PathVariable("id") Long id) {
     return ResponseEntity.ok(medicineService.detail(id));
   }
 
