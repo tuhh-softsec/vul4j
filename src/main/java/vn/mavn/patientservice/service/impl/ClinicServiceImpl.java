@@ -144,8 +144,7 @@ public class ClinicServiceImpl implements ClinicService {
     List<Long> clinicIds = clinicDiseaseRepository.findAllClinicById(clinic.getId());
     List<Long> clinicIdForUser = clinicUserRepository.findAllClinicById(clinic.getId());
     if (!CollectionUtils.isEmpty(clinicIds) || !CollectionUtils.isEmpty(clinicIdForUser)) {
-      clinic.setIsActive(false);
-      clinicRepository.save(clinic);
+      throw new ConflictException(Collections.singletonList("err.clinic.clinic-already-exists"));
     } else {
       clinicRepository.delete(clinic);
     }

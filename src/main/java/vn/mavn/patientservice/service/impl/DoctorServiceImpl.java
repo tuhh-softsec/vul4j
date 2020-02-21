@@ -86,12 +86,11 @@ public class DoctorServiceImpl implements DoctorService {
             Collections.singletonList("err.doctor.doctor-does-not-exist")));
 
     // check doctor using in clinic
-    if (clinicRepository.findDoctorById(doctor.getId()) != null) {
-      doctor.setIsActive(false);
-      doctorRepository.save(doctor);
-    } else {
-      doctorRepository.deleteDoctor(doctor.getId());
-    }
+    clinicRepository.findDoctorById(doctor.getId()).ifPresent(doctor1 -> {
+      throw new ConflictException(Collections.singletonList("err.doctor.doctor-already-exist"));
+    });
+    doctorRepository.deleteDoctor(doctor.getId());
+
   }
 
   private void validationNameOrPhoneWhenAddDoctor(DoctorAddDto data) {

@@ -31,7 +31,7 @@ import vn.mavn.patientservice.service.ResponseService;
 import vn.mavn.patientservice.util.EntityValidationUtils;
 
 @RestController
-@RequestMapping("/api/v1/cms/clinics")
+@RequestMapping("/api/v1/admin/clinics")
 @Api(tags = "Clinic")
 public class ClinicController {
 
