@@ -21,4 +21,9 @@ public interface AdvertisingSourceRepository extends JpaRepository<AdvertisingSo
   @Query("delete from AdvertisingSource ad where ad.id = :id")
   void deleteAdvert(Long id);
 
+  @Query("select a from AdvertisingSource a where a.id =:id and a.isActive = true ")
+  Optional<AdvertisingSource> findActiveById(Long id);
+
+  @Query("select a from AdvertisingSource a where a.id =:id and a.isActive = true ")
+  AdvertisingSource findByIdForGetData(Long id);
 }

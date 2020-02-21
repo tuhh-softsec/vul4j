@@ -8,4 +8,7 @@ public interface MedicineRepository extends BaseRepository<Medicine, Long> {
 
   @Query("select m from Medicine m where unaccent(m.name) = unaccent(:name)")
   Optional<Medicine> findByName(String name);
+
+  @Query("select m from Medicine m where m.id =:id and m.isActive = true")
+  Optional<Medicine> findActiveById(Long id);
 }
