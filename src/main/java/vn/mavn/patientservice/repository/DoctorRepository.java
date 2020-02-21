@@ -30,4 +30,8 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long>,
 
   @Query("select d from Doctor d where d.id = :id and d.isActive = true ")
   Doctor findDoctorById(Long id);
+
+  @Query("select d from Doctor d where d.id =:id and d.isActive = true")
+  Doctor findByIdForGetData(Long id);
+
 }

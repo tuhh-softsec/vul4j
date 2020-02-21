@@ -1,42 +1,30 @@
-package vn.mavn.patientservice.entity;
+package vn.mavn.patientservice.dto;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import vn.mavn.patientservice.entity.listener.EntityListener;
 
 @Setter
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Entity
-@Table(name = "pm_medical_record")
-@EntityListeners(EntityListener.class)
-public class MedicalRecord extends BaseIdEntity {
+public class MedicalRecordDto implements Serializable {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  private Long patientId;
   private String userCode;
+  private PatientDto patientDto;
+  private DiseaseDto diseaseDto;
+  private AdvertisingSourceDto advertisingSourceDto;
+  private ClinicDto clinicDto;
   private LocalDateTime advisoryDate;
-  private Long diseaseId;
-  private Long advertisingSourceId;
   private String diseaseStatus;
-  private String consultingStatusCode;
   private String note;
-  private Long clinicId;
   private LocalDateTime examinationDate;
   private Long examinationTimes;
   private Long remedyAmount;
@@ -47,4 +35,24 @@ public class MedicalRecord extends BaseIdEntity {
   private BigDecimal codAmount;
   private String extraNote;
   private Boolean isActive;
+
+
+  @Setter
+  @Getter
+  @Builder
+  public static class PatientDto {
+
+    private Long id;
+    private String name;
+    private String address;
+  }
+
+  @Setter
+  @Getter
+  @Builder
+  public static class AdvertisingSourceDto {
+
+    private Long id;
+    private String name;
+  }
 }

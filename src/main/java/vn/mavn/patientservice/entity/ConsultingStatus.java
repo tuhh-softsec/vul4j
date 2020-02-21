@@ -1,7 +1,5 @@
 package vn.mavn.patientservice.entity;
 
-import java.io.Serializable;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,22 +11,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
 @Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "pm_medical_record_medicine")
-@Entity
 @Builder
-public class MedicalRecordMedicine implements Serializable {
+@Entity
+@Table(name = "pm_consulting_status")
+public class ConsultingStatus {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  @Column(name = "medical_record_id")
-  private Long medicalRecordId;
-  @Column(name = "medicine_id")
-  private Long medicineId;
-  @Column(name = "qty")
-  private Long qty;
+  private String name;
+  private String code;
+  private Long sort;
 }
