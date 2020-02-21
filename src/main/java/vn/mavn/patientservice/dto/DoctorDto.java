@@ -15,11 +15,13 @@ import lombok.Setter;
 @Builder
 public class DoctorDto {
 
+  private Long id;
   private String name;
   private String phone;
   private String address;
   private String description;
   private List<ClinicDto> clinics;
+  private Boolean isActive;
 
   @Setter
   @Getter

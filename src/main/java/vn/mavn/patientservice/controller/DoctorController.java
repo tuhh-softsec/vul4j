@@ -31,7 +31,7 @@ import vn.mavn.patientservice.service.ResponseService;
 import vn.mavn.patientservice.util.EntityValidationUtils;
 
 @RestController
-@RequestMapping("/api/v1/cms/doctors")
+@RequestMapping("/api/v1/admin/doctors")
 @Api(tags = "Doctor")
 public class DoctorController {
 
@@ -79,8 +79,9 @@ public class DoctorController {
   public ResponseEntity<ResponseWithPage<Doctor>> getAll(
       @RequestParam(required = false) String name,
       @RequestParam(required = false) String phone,
+      @RequestParam(required = false) Boolean isActive,
       @ApiIgnore Pageable pageable) {
-    Page<Doctor> page = doctorService.findAllDoctors(name, phone, pageable);
+    Page<Doctor> page = doctorService.findAllDoctors(name, phone, isActive, pageable);
     return ResponseEntity
         .ok(ResponseWithPage.<Doctor>builder().data(page.getContent())
             .pageIndex(page.getNumber())
@@ -91,7 +92,7 @@ public class DoctorController {
   public HttpResponse remove(@RequestParam Long id) {
     doctorService.delete(id);
     return responseService.buildUpdatedResponse(id,
-        Collections.singletonList("info-advertising-delete-successfully"));
+        Collections.singletonList("info.doctor.delete-doctor-successfully"));
   }
 
 }

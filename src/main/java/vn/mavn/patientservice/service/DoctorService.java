@@ -15,7 +15,7 @@ public interface DoctorService {
 
   DoctorDto findById(Long id);
 
-  Page<Doctor> findAllDoctors(String name, String phone, Pageable pageable);
+  Page<Doctor> findAllDoctors(String name, String phone, Boolean isActive, Pageable pageable);
 
   void delete(Long id);
 }
