@@ -22,7 +22,7 @@ import vn.mavn.patientservice.util.EntityValidationUtils;
 
 @RestController
 @RequestMapping("api/v1/emp/medical-records")
-@Api("Medical Record Controller")
+@Api(tags = "Medical Record Controller")
 public class MedicalRecordController {
 
   @Autowired

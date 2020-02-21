@@ -8,7 +8,6 @@ import javax.transaction.Transactional;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import vn.mavn.patientservice.dto.ClinicDto;
@@ -18,7 +17,6 @@ import vn.mavn.patientservice.dto.MedicalRecordAddDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto.AdvertisingSourceDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto.PatientDto;
-import vn.mavn.patientservice.dto.MedicalRecordEditDto;
 import vn.mavn.patientservice.dto.MedicineMappingDto;
 import vn.mavn.patientservice.dto.PatientAddDto;
 import vn.mavn.patientservice.entity.AdvertisingSource;
@@ -70,10 +68,9 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
   @Override
   public MedicalRecord addNew(MedicalRecordAddDto medicalRecordAddDto) {
     //TODO: validation data
-    MedicalRecord medicalRecord = new MedicalRecord();
-    //TODO: get user_id, user_code from access_token.
-    Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
-    String userCode = TokenUtils.getUserCodeFromToken(httpServletRequest);
+    validationData(medicalRecordAddDto.getAdvertisingSourceId(),
+        medicalRecordAddDto.getClinicId(), medicalRecordAddDto.getConsultingStatusCode(),
+        medicalRecordAddDto.getDiseaseId());
     //TODO: add new patient from info medical_record
     //TODO: check at least have 1 phone number.
     PatientAddDto patientAddDto = medicalRecordAddDto.getPatientAddDto();
@@ -85,17 +82,16 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     }
     Patient patient = new Patient();
     BeanUtils.copyProperties(patientAddDto, patient);
-    patient.setCreatedBy(userId);
     patient.setIsActive(true);
     patientRepository.save(patient);
-
-    validationData(medicalRecordAddDto.getAdvertisingSourceId(),
-        medicalRecordAddDto.getClinicId(), medicalRecordAddDto.getConsultingStatusCode(),
-        medicalRecordAddDto.getDiseaseId());
-    medicalRecord.setPatientId(patient.getId());
+    //TODO: get user_id, user_code from access_token.
+    Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
+    String userCode = TokenUtils.getUserCodeFromToken(httpServletRequest);
+    MedicalRecord medicalRecord = new MedicalRecord();
     medicalRecord.setUserCode(userCode);
     medicalRecord.setCreatedBy(userId);
     medicalRecord.setUpdatedBy(userId);
+    medicalRecord.setPatientId(patient.getId());
     BeanUtils.copyProperties(medicalRecordAddDto, medicalRecord);
     medicalRecord.setExaminationTimes(1L);
     medicalRecordRepository.save(medicalRecord);

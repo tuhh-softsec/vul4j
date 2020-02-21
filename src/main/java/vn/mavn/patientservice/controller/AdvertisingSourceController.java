@@ -33,7 +33,7 @@ import vn.mavn.patientservice.util.EntityValidationUtils;
 
 @RestController
 @RequestMapping("api/v1/admin/advertising-sources")
-@Api("Admin Advertising Controller")
+@Api(tags = "Admin Advertising Controller")
 public class AdvertisingSourceController {
 
   @Autowired

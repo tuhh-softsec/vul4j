@@ -39,7 +39,7 @@ public class MedicalRecordDto {
   @Setter
   @Getter
   @Builder
-  public static class PatientDto{
+  public static class PatientDto {
 
     private Long id;
     private String name;
@@ -49,7 +49,7 @@ public class MedicalRecordDto {
   @Setter
   @Getter
   @Builder
-  public static class AdvertisingSourceDto{
+  public static class AdvertisingSourceDto {
 
     private Long id;
     private String name;
