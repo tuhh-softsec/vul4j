@@ -1,5 +1,6 @@
 package vn.mavn.patientservice.dto;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -13,7 +14,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MedicalRecordDto {
+public class MedicalRecordDto implements Serializable {
 
   private Long id;
   private String userCode;

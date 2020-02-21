@@ -8,6 +8,8 @@ import javax.transaction.Transactional;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import vn.mavn.patientservice.dto.ClinicDto;
@@ -19,6 +21,7 @@ import vn.mavn.patientservice.dto.MedicalRecordDto.AdvertisingSourceDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto.PatientDto;
 import vn.mavn.patientservice.dto.MedicineMappingDto;
 import vn.mavn.patientservice.dto.PatientAddDto;
+import vn.mavn.patientservice.dto.qobject.QueryMedicalRecordDto;
 import vn.mavn.patientservice.entity.AdvertisingSource;
 import vn.mavn.patientservice.entity.Clinic;
 import vn.mavn.patientservice.entity.Disease;
@@ -37,6 +40,7 @@ import vn.mavn.patientservice.repository.DoctorRepository;
 import vn.mavn.patientservice.repository.MedicalRecordRepository;
 import vn.mavn.patientservice.repository.MedicineRepository;
 import vn.mavn.patientservice.repository.PatientRepository;
+import vn.mavn.patientservice.repository.spec.MedicalRecordSpec;
 import vn.mavn.patientservice.service.MedicalRecordService;
 import vn.mavn.patientservice.util.TokenUtils;
 
@@ -136,7 +140,8 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     //TODO: build ClinicDto
     Clinic clinic = clinicRepository.findByIdForGetData(medicalRecord.getClinicId());
     if (clinic != null) {
-      ClinicDto clinicDto = ClinicDto.builder().address(clinic.getAddress()).name(clinic.getName())
+      ClinicDto clinicDto = ClinicDto.builder().id(clinic.getId()).address(clinic.getAddress())
+          .name(clinic.getName())
           .description(clinic.getDescription()).phone(clinic.getPhone()).build();
       Doctor doctor = doctorRepository.findByIdForGetData(clinic.getDoctorId());
       if (doctor != null) {
@@ -145,6 +150,22 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       medicalRecordDto.setClinicDto(clinicDto);
     }
     return medicalRecordDto;
+  }
+
+  @Override
+  public Page<MedicalRecordDto> findAll(QueryMedicalRecordDto queryMedicalRecordDto,
+      Pageable pageable) {
+    Page<MedicalRecord> medicalRecords = medicalRecordRepository
+        .findAll(MedicalRecordSpec.findAllMedicines(queryMedicalRecordDto), pageable);
+    Page<MedicalRecordDto> medicalRecordDtos = null;
+    if (CollectionUtils.isEmpty(medicalRecords.getContent())) {
+      return Page.empty(pageable);
+    } else {
+      medicalRecordDtos = medicalRecords.map(medicalRecord -> {
+        return this.getById(medicalRecord.getId());
+      });
+    }
+    return medicalRecordDtos;
   }
 
 
