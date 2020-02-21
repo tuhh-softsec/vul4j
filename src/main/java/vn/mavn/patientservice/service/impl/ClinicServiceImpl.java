@@ -25,6 +25,7 @@ import vn.mavn.patientservice.exception.ConflictException;
 import vn.mavn.patientservice.exception.NotFoundException;
 import vn.mavn.patientservice.repository.ClinicDiseaseRepository;
 import vn.mavn.patientservice.repository.ClinicRepository;
+import vn.mavn.patientservice.repository.ClinicUserRepository;
 import vn.mavn.patientservice.repository.DiseaseRepository;
 import vn.mavn.patientservice.repository.DoctorRepository;
 import vn.mavn.patientservice.repository.spec.ClinicSpec;
@@ -45,6 +46,9 @@ public class ClinicServiceImpl implements ClinicService {
 
   @Autowired
   private ClinicDiseaseRepository clinicDiseaseRepository;
+
+  @Autowired
+  private ClinicUserRepository clinicUserRepository;
 
   @Override
   public Clinic save(ClinicAddDto data) {
@@ -138,7 +142,8 @@ public class ClinicServiceImpl implements ClinicService {
         () -> new NotFoundException(Collections.singletonList("err.clinic.clinic-does-not-exist")));
 
     List<Long> clinicIds = clinicDiseaseRepository.findAllClinicById(clinic.getId());
-    if (!CollectionUtils.isEmpty(clinicIds)) {
+    List<Long> clinicIdForUser = clinicUserRepository.findAllClinicById(clinic.getId());
+    if (!CollectionUtils.isEmpty(clinicIds) || !CollectionUtils.isEmpty(clinicIdForUser)) {
       clinic.setIsActive(false);
       clinicRepository.save(clinic);
     } else {
