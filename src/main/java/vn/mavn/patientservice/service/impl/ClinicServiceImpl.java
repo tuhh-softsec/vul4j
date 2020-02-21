@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Set;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -23,8 +25,10 @@ import vn.mavn.patientservice.exception.ConflictException;
 import vn.mavn.patientservice.exception.NotFoundException;
 import vn.mavn.patientservice.repository.ClinicDiseaseRepository;
 import vn.mavn.patientservice.repository.ClinicRepository;
+import vn.mavn.patientservice.repository.ClinicUserRepository;
 import vn.mavn.patientservice.repository.DiseaseRepository;
 import vn.mavn.patientservice.repository.DoctorRepository;
+import vn.mavn.patientservice.repository.spec.ClinicSpec;
 import vn.mavn.patientservice.service.ClinicService;
 
 @Service
@@ -42,6 +46,9 @@ public class ClinicServiceImpl implements ClinicService {
 
   @Autowired
   private ClinicDiseaseRepository clinicDiseaseRepository;
+
+  @Autowired
+  private ClinicUserRepository clinicUserRepository;
 
   @Override
   public Clinic save(ClinicAddDto data) {
@@ -94,7 +101,12 @@ public class ClinicServiceImpl implements ClinicService {
 
     //get doctor
     Doctor doctor = doctorRepository.findDoctorById(clinic.getDoctorId());
-    DoctorDto doctorDto = DoctorDto.builder().id(doctor.getId()).name(doctor.getName()).build();
+    DoctorDto doctorDto;
+    if (doctor == null) {
+      doctorDto = null;
+    } else {
+      doctorDto = DoctorDto.builder().id(doctor.getId()).name(doctor.getName()).build();
+    }
     //get disease
     List<DiseaseDto> diseases = new ArrayList<>();
     List<Long> diseasesIds = clinicDiseaseRepository.findAllDiseaseById(clinic.getId());
@@ -106,13 +118,36 @@ public class ClinicServiceImpl implements ClinicService {
 
     });
     return ClinicDto.builder()
+        .id(clinic.getId())
         .name(clinic.getName())
         .phone(clinic.getPhone())
         .address(clinic.getAddress())
         .description(clinic.getDescription())
         .doctor(doctorDto)
         .diseases(diseases)
+        .isActive(clinic.getIsActive())
         .build();
+  }
+
+  @Override
+  public Page<Clinic> findAllClinics(String name, String phone, Boolean isActive,
+      Pageable pageable) {
+    return (Page<Clinic>) clinicRepository.findAll(
+        ClinicSpec.findAllClinic(name, phone, isActive), pageable);
+  }
+
+  @Override
+  public void delete(Long id) {
+    Clinic clinic = clinicRepository.findById(id).orElseThrow(
+        () -> new NotFoundException(Collections.singletonList("err.clinic.clinic-does-not-exist")));
+
+    List<Long> clinicIds = clinicDiseaseRepository.findAllClinicById(clinic.getId());
+    List<Long> clinicIdForUser = clinicUserRepository.findAllClinicById(clinic.getId());
+    if (!CollectionUtils.isEmpty(clinicIds) || !CollectionUtils.isEmpty(clinicIdForUser)) {
+      throw new ConflictException(Collections.singletonList("err.clinic.clinic-already-exists"));
+    } else {
+      clinicRepository.delete(clinic);
+    }
   }
 
   private void validDoctor(Long doctorId) {
