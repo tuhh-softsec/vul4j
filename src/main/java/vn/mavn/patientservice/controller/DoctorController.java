@@ -92,7 +92,7 @@ public class DoctorController {
   public HttpResponse remove(@RequestParam Long id) {
     doctorService.delete(id);
     return responseService.buildUpdatedResponse(id,
-        Collections.singletonList("info-advertising-delete-successfully"));
+        Collections.singletonList("info.doctor.delete-doctor-successfully"));
   }
 
 }

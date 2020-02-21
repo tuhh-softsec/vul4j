@@ -97,7 +97,12 @@ public class ClinicServiceImpl implements ClinicService {
 
     //get doctor
     Doctor doctor = doctorRepository.findDoctorById(clinic.getDoctorId());
-    DoctorDto doctorDto = DoctorDto.builder().id(doctor.getId()).name(doctor.getName()).build();
+    DoctorDto doctorDto;
+    if (doctor == null) {
+      doctorDto = null;
+    } else {
+      doctorDto = DoctorDto.builder().id(doctor.getId()).name(doctor.getName()).build();
+    }
     //get disease
     List<DiseaseDto> diseases = new ArrayList<>();
     List<Long> diseasesIds = clinicDiseaseRepository.findAllDiseaseById(clinic.getId());
@@ -109,12 +114,14 @@ public class ClinicServiceImpl implements ClinicService {
 
     });
     return ClinicDto.builder()
+        .id(clinic.getId())
         .name(clinic.getName())
         .phone(clinic.getPhone())
         .address(clinic.getAddress())
         .description(clinic.getDescription())
         .doctor(doctorDto)
         .diseases(diseases)
+        .isActive(clinic.getIsActive())
         .build();
   }
 
@@ -129,7 +136,14 @@ public class ClinicServiceImpl implements ClinicService {
   public void delete(Long id) {
     Clinic clinic = clinicRepository.findById(id).orElseThrow(
         () -> new NotFoundException(Collections.singletonList("err.clinic.clinic-does-not-exist")));
-    clinicRepository.delete(clinic);
+
+    List<Long> clinicIds = clinicDiseaseRepository.findAllClinicById(clinic.getId());
+    if (!CollectionUtils.isEmpty(clinicIds)) {
+      clinic.setIsActive(false);
+      clinicRepository.save(clinic);
+    } else {
+      clinicRepository.delete(clinic);
+    }
   }
 
   private void validDoctor(Long doctorId) {

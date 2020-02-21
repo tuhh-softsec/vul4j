@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import vn.mavn.patientservice.dto.DoctorAddDto;
 import vn.mavn.patientservice.dto.DoctorDto;
@@ -23,6 +24,7 @@ import vn.mavn.patientservice.repository.spec.DoctorSpec;
 import vn.mavn.patientservice.service.DoctorService;
 
 @Service
+@Transactional
 public class DoctorServiceImpl implements DoctorService {
 
   @Autowired
@@ -63,9 +65,9 @@ public class DoctorServiceImpl implements DoctorService {
       clinicDto.add(ClinicDto.builder().id(clinic.getId()).name(clinic.getName()).build());
 
     });
-    return DoctorDto.builder().name(doctor.getName()).phone(doctor.getPhone())
+    return DoctorDto.builder().id(doctor.getId()).name(doctor.getName()).phone(doctor.getPhone())
         .address(doctor.getAddress()).description(doctor.getDescription()).clinics(clinicDto)
-        .build();
+        .isActive(doctor.getIsActive()).build();
   }
 
   @Override
@@ -84,12 +86,12 @@ public class DoctorServiceImpl implements DoctorService {
             Collections.singletonList("err.doctor.doctor-does-not-exist")));
 
     // check doctor using in clinic
-    clinicRepository.findById(doctor.getId())
-        .ifPresent(clinic -> {
-          throw new ConflictException(
-              Collections.singletonList("err.doctor.doctor-using-in-clinic"));
-        });
-    doctorRepository.deleteDoctor(doctor.getId());
+    if (clinicRepository.findDoctorById(doctor.getId()) != null) {
+      doctor.setIsActive(false);
+      doctorRepository.save(doctor);
+    } else {
+      doctorRepository.deleteDoctor(doctor.getId());
+    }
   }
 
   private void validationNameOrPhoneWhenAddDoctor(DoctorAddDto data) {
