@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import vn.mavn.patientservice.entity.Clinic;
+import vn.mavn.patientservice.entity.Doctor;
 
 @Repository
 public interface ClinicRepository extends JpaRepository<Clinic, Long>,
@@ -26,6 +27,9 @@ public interface ClinicRepository extends JpaRepository<Clinic, Long>,
 
   @Query("select c from Clinic c where c.doctorId = :doctorId")
   List<Clinic> findAllClinicById(Long doctorId);
+
+  @Query("select c from Clinic c where c.doctorId = :id")
+  Optional<Doctor> findDoctorById(Long id);
 
   @Query("select c from Clinic c where c.id =:id and c.isActive = true")
   Optional<Clinic> findActiveById(Long id);

@@ -28,6 +28,7 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long>,
   @Query("delete from Doctor ad where ad.id = :id")
   void deleteDoctor(Long id);
 
+  @Query("select d from Doctor d where d.id = :id and d.isActive = true ")
   Doctor findDoctorById(Long id);
 
   @Query("select d from Doctor d where d.id =:id and d.isActive = true")

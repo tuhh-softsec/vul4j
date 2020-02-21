@@ -16,4 +16,7 @@ public interface ClinicDiseaseRepository extends JpaRepository<ClinicDisease, Lo
 
   @Query("select cd.diseaseId from ClinicDisease cd where cd.clinicId = :clinicId")
   List<Long> findAllDiseaseById(Long clinicId);
+
+  @Query("select cd.id from ClinicDisease cd where cd.clinicId = :id")
+  List<Long> findAllClinicById(Long id);
 }
