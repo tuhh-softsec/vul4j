@@ -16,7 +16,7 @@ public interface ClinicService {
 
   ClinicDto findById(Long id);
 
-  Page<Clinic> findAllClinics(QueryClinicDto data, Pageable pageable);
+  Page<ClinicDto> findAllClinics(QueryClinicDto data, Pageable pageable);
 
   void delete(Long id);
 }

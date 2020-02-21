@@ -127,14 +127,17 @@ public class ClinicServiceImpl implements ClinicService {
         () -> new NotFoundException(Collections.singletonList("err.clinic.clinic-does-not-exist")));
 
     //get doctor
-    Doctor doctor = doctorRepository.findDoctorById(clinic.getDoctorId());
-    DoctorDto doctorDto;
-    if (doctor == null) {
-      doctorDto = null;
-    } else {
-      doctorDto = DoctorDto.builder().id(doctor.getId()).name(doctor.getName()).build();
-    }
+    DoctorDto doctorDto = getDoctorDto(clinic);
     //get disease
+    List<DiseaseDto> diseases = getDiseaseDtos(clinic);
+
+    //get list userIds
+    List<Long> userIds = clinicUserRepository.findAllUserIdByClinicId(clinic.getId());
+
+    return getClinicDto(clinic, doctorDto, diseases, userIds);
+  }
+
+  private List<DiseaseDto> getDiseaseDtos(Clinic clinic) {
     List<DiseaseDto> diseases = new ArrayList<>();
     List<Long> diseasesIds = clinicDiseaseRepository.findAllDiseaseById(clinic.getId());
     diseasesIds.forEach(diseasesId -> {
@@ -144,10 +147,50 @@ public class ClinicServiceImpl implements ClinicService {
       }
 
     });
+    return diseases;
+  }
 
-    //get list userIds
-    List<Long> userIds = clinicUserRepository.findAllUserIdByClinicId(clinic.getId());
+  @Override
+  public Page<ClinicDto> findAllClinics(QueryClinicDto data, Pageable pageable) {
 
+    Page<Clinic> clinics;
+    List<Long> clinicIds = new ArrayList<>();
+    if (data == null) {
+      return Page.empty(pageable);
+    } else {
+      if (data.getUserId() != null) {
+        List<Long> clinicIdForClinicUser = clinicUserRepository
+            .findAllClinicByUserId(data.getUserId())
+            .stream().map(ClinicUser::getClinicId).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(clinicIdForClinicUser)) {
+          return Page.empty(pageable);
+        } else {
+          clinicIds.addAll(clinicIdForClinicUser);
+        }
+      }
+    }
+    clinics = clinicRepository.findAll(
+        ClinicSpec.findAllClinic(data, clinicIds), pageable);
+    if (CollectionUtils.isEmpty(clinics.getContent())) {
+      return Page.empty(pageable);
+    }
+    return clinics.map(clinic -> {
+
+      //get doctor
+      DoctorDto doctorDto = getDoctorDto(clinic);
+      //get disease
+      List<DiseaseDto> diseases = getDiseaseDtos(clinic);
+
+      //get list userIds
+      List<Long> userIds = clinicUserRepository.findAllUserIdByClinicId(clinic.getId());
+
+      return getClinicDto(clinic, doctorDto, diseases, userIds);
+    });
+
+  }
+
+  private ClinicDto getClinicDto(Clinic clinic, DoctorDto doctorDto, List<DiseaseDto> diseases,
+      List<Long> userIds) {
     return ClinicDto.builder()
         .id(clinic.getId())
         .name(clinic.getName())
@@ -161,26 +204,15 @@ public class ClinicServiceImpl implements ClinicService {
         .build();
   }
 
-  @Override
-  public Page<Clinic> findAllClinics(QueryClinicDto data, Pageable pageable) {
-
-    List<Long> clinicIds = new ArrayList<>();
-    if (data == null) {
-      return Page.empty(pageable);
+  private DoctorDto getDoctorDto(Clinic clinic) {
+    Doctor doctor = doctorRepository.findDoctorById(clinic.getDoctorId());
+    DoctorDto doctorDto;
+    if (doctor == null) {
+      doctorDto = null;
     } else {
-      if (data.getUserId() != null) {
-        List<Long> clinicIdForClinicUser = clinicUserRepository.findAllClinicByUserId(data.getUserId())
-            .stream().map(ClinicUser::getClinicId).collect(Collectors.toList());
-        if (CollectionUtils.isEmpty(clinicIdForClinicUser)) {
-          return Page.empty(pageable);
-        } else {
-          clinicIds.addAll(clinicIdForClinicUser);
-        }
-      }
+      doctorDto = DoctorDto.builder().id(doctor.getId()).name(doctor.getName()).build();
     }
-    return (Page<Clinic>) clinicRepository.findAll(
-        ClinicSpec.findAllClinic(data, clinicIds), pageable);
-
+    return doctorDto;
   }
 
   @Override

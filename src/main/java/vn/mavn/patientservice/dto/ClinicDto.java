@@ -13,7 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ClinicDto {
+public class ClinicDto implements Serializable {
 
   private Long id;
   private String name;

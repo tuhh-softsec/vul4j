@@ -78,11 +78,11 @@ public class ClinicController {
           + "Default sort order is ascending. Multiple sort criteria are supported.",
           defaultValue = "createdAt,desc")})
   @GetMapping
-  public ResponseEntity<ResponseWithPage<Clinic>> getAll(
+  public ResponseEntity<ResponseWithPage<ClinicDto>> getAll(
       @ModelAttribute QueryClinicDto data, @ApiIgnore Pageable pageable) {
-    Page<Clinic> page = clinicService.findAllClinics(data, pageable);
+    Page<ClinicDto> page = clinicService.findAllClinics(data, pageable);
     return ResponseEntity
-        .ok(ResponseWithPage.<Clinic>builder().data(page.getContent())
+        .ok(ResponseWithPage.<ClinicDto>builder().data(page.getContent())
             .pageIndex(page.getNumber())
             .totalPage(page.getTotalPages()).totalElement(page.getTotalElements()).build());
   }
