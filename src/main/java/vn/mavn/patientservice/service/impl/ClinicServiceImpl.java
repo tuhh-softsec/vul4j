@@ -1,6 +1,7 @@
 package vn.mavn.patientservice.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -153,7 +154,7 @@ public class ClinicServiceImpl implements ClinicService {
   @Override
   public Page<ClinicDto> findAllClinics(QueryClinicDto data, Pageable pageable) {
 
-    Page<Clinic> clinics;
+    Page<Clinic> clinics = null;
     List<Long> clinicIds = new ArrayList<>();
     if (data == null) {
       return Page.empty(pageable);
@@ -168,24 +169,23 @@ public class ClinicServiceImpl implements ClinicService {
           clinicIds.addAll(clinicIdForClinicUser);
         }
       }
+      clinics = clinicRepository.findAll(
+          ClinicSpec.findAllClinic(data, clinicIds), pageable);
+      if (CollectionUtils.isEmpty(clinics.getContent())) {
+        return Page.empty(pageable);
+      }
+
+      return clinics.map(clinic -> {
+
+        //get doctor
+        DoctorDto doctorDto = getDoctorDto(clinic);
+        //get disease
+        List<DiseaseDto> diseases = getDiseaseDtos(clinic);
+
+        return getClinicDto(clinic, doctorDto, diseases, Arrays.asList(data.getUserId()));
+      });
+
     }
-    clinics = clinicRepository.findAll(
-        ClinicSpec.findAllClinic(data, clinicIds), pageable);
-    if (CollectionUtils.isEmpty(clinics.getContent())) {
-      return Page.empty(pageable);
-    }
-    return clinics.map(clinic -> {
-
-      //get doctor
-      DoctorDto doctorDto = getDoctorDto(clinic);
-      //get disease
-      List<DiseaseDto> diseases = getDiseaseDtos(clinic);
-
-      //get list userIds
-      List<Long> userIds = clinicUserRepository.findAllUserIdByClinicId(clinic.getId());
-
-      return getClinicDto(clinic, doctorDto, diseases, userIds);
-    });
 
   }
 
