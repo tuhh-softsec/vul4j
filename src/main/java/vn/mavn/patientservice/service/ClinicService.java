@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import vn.mavn.patientservice.dto.ClinicAddDto;
 import vn.mavn.patientservice.dto.ClinicDto;
 import vn.mavn.patientservice.dto.ClinicEditDto;
+import vn.mavn.patientservice.dto.qobject.QueryClinicDto;
 import vn.mavn.patientservice.entity.Clinic;
 
 public interface ClinicService {
@@ -15,7 +16,7 @@ public interface ClinicService {
 
   ClinicDto findById(Long id);
 
-  Page<Clinic> findAllClinics(String name, String phone, Boolean isActive, Pageable pageable);
+  Page<Clinic> findAllClinics(QueryClinicDto data, Pageable pageable);
 
   void delete(Long id);
 }

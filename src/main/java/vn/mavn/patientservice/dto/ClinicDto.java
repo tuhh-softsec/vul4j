@@ -23,6 +23,7 @@ public class ClinicDto {
   private DoctorDto doctor;
   private List<DiseaseDto> diseases;
   private Boolean isActive;
+  private List<Long> userIds;
 
   @Setter
   @Getter

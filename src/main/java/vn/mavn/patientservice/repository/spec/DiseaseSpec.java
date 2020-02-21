@@ -19,7 +19,9 @@ public class DiseaseSpec {
             .handleAccentExp(criteriaBuilder, root, "name", data.getName());
         predicates.add(unaccent);
       }
-      predicates.add(criteriaBuilder.equal(root.get("isActive"), data.getIsActive()));
+      if (data.getIsActive() != null) {
+        predicates.add(criteriaBuilder.equal(root.get("isActive"), data.getIsActive()));
+      }
       return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
     };
   }
