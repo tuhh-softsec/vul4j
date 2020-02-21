@@ -29,5 +29,6 @@ public class ClinicAddDto {
   private Boolean isActive;
   @NotNull(message = "err.add.clinic.diseaseIds-is-mandatory")
   private List<Long> diseaseIds;
+  private List<Long> userIds;
 
 }
