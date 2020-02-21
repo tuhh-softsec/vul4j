@@ -14,10 +14,12 @@ import vn.mavn.patientservice.dto.DiseaseEditDto;
 import vn.mavn.patientservice.dto.qobject.QueryDiseaseDto;
 import vn.mavn.patientservice.entity.ClinicDisease;
 import vn.mavn.patientservice.entity.Disease;
+import vn.mavn.patientservice.entity.MedicalRecord;
 import vn.mavn.patientservice.exception.ConflictException;
 import vn.mavn.patientservice.exception.NotFoundException;
 import vn.mavn.patientservice.repository.ClinicDiseaseRepository;
 import vn.mavn.patientservice.repository.DiseaseRepository;
+import vn.mavn.patientservice.repository.MedicalRecordRepository;
 import vn.mavn.patientservice.repository.spec.DiseaseSpec;
 import vn.mavn.patientservice.service.DiseaseService;
 
@@ -30,13 +32,12 @@ public class DiseaseServiceImpl implements DiseaseService {
   @Autowired
   private ClinicDiseaseRepository clinicDiseaseRepository;
 
+  @Autowired
+  private MedicalRecordRepository medicalRecordRepository;
+
   @Override
   public Page<Disease> getAllDisease(QueryDiseaseDto data, Pageable pageable) {
-    if (StringUtils.isBlank(data.getName())) {
-      return diseaseRepository.findAll(pageable);
-    } else {
-      return diseaseRepository.findAll(DiseaseSpec.findAllDiseases(data), pageable);
-    }
+    return diseaseRepository.findAll(DiseaseSpec.findAllDiseases(data), pageable);
   }
 
   @Override
@@ -78,10 +79,11 @@ public class DiseaseServiceImpl implements DiseaseService {
     Disease disease = diseaseRepository.findById(id).orElseThrow(() -> new NotFoundException(
         Collections.singletonList("err.diseases.disease-not-found")));
     List<ClinicDisease> clinicDiseases = clinicDiseaseRepository.findByDiseaseId(id);
-    if (!CollectionUtils.isEmpty(clinicDiseases)) {
+    List<MedicalRecord> medicalRecords = medicalRecordRepository.findByDiseaseId(id);
+    if (!CollectionUtils.isEmpty(clinicDiseases) || !CollectionUtils.isEmpty(medicalRecords)) {
       throw new ConflictException(Collections.singletonList("err.diseases.cannot-remove-disease"));
     }
     disease.setIsActive(false);
-    diseaseRepository.deleteById(id);
+    diseaseRepository.save(disease);
   }
 }

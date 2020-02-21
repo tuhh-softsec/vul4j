@@ -80,7 +80,7 @@ public class MedicineServiceImpl implements MedicineService {
 
   @Override
   public void remove(Long id) {
-    medicineRepository.findById(id).orElseThrow(()
+    Medicine medicine = medicineRepository.findById(id).orElseThrow(()
         -> new NotFoundException(Collections.singletonList("err.medicines.medicine-not-found")));
     List<MedicalRecordMedicine> medicineMedicalRecords = medicalRecordMedicineRepository
         .findAllByMedicineId(id);
@@ -88,6 +88,7 @@ public class MedicineServiceImpl implements MedicineService {
       throw new ConflictException(
           Collections.singletonList("err.medicines.cannot-remove-medicine"));
     }
-    medicineRepository.deleteById(id);
+    medicine.setIsActive(false);
+    medicineRepository.save(medicine);
   }
 }
