@@ -15,9 +15,9 @@ import vn.mavn.patientservice.exception.NotFoundException;
 @Log4j2
 public class TokenUtils {
 
-  private static final String ADDITIONAL_TOKEN = "additional_token";
+  private static final String ACCESS_TOKEN = "additional_token";
   private static final String USER_ID_FIELD = "user_id";
-  private static final String USER_CODE_FIELD = "user_code";
+  private static final String USER_CODE_FIELD = "code";
 
   /**
    * Decode token json object.
@@ -39,7 +39,7 @@ public class TokenUtils {
   }
 
   public static String getUserIdFromToken(HttpServletRequest httpServletRequest) {
-    String token = httpServletRequest.getHeader(ADDITIONAL_TOKEN);
+    String token = httpServletRequest.getHeader("authorization").replace("Bearer ","");
     if (StringUtils.isBlank(token)) {
       throw new NotFoundException(
           Collections.singletonList("err.users.missing-additional-token-in-request"));
@@ -48,7 +48,7 @@ public class TokenUtils {
   }
 
   public static String getUserCodeFromToken(HttpServletRequest httpServletRequest) {
-    String token = httpServletRequest.getHeader(ADDITIONAL_TOKEN);
+    String token = httpServletRequest.getHeader("authorization").replace("Bearer ","");
     if (StringUtils.isBlank(token)) {
       throw new NotFoundException(
           Collections.singletonList("err.users.missing-additional-token-in-request"));

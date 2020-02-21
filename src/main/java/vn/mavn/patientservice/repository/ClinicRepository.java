@@ -1,7 +1,6 @@
 package vn.mavn.patientservice.repository;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -30,4 +29,7 @@ public interface ClinicRepository extends JpaRepository<Clinic, Long>,
 
   @Query("select c from Clinic c where c.id =:id and c.isActive = true")
   Optional<Clinic> findActiveById(Long id);
+
+  @Query("select c from Clinic c where c.id =:id and c.isActive = true")
+  Clinic findByIdForGetData(Long id);
 }

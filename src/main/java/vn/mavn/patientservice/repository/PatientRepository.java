@@ -11,15 +11,14 @@ public interface PatientRepository extends JpaRepository<Patient, Long>,
     JpaSpecificationExecutor<Patient> {
 
   @Query("select p from Patient p where unaccent(p.name) =unaccent(:name) "
-      + "and unaccent(p.address) =unaccent(:address) ")
-  Optional<Patient> findByNameAndAdress(String name, String address);
-
-  @Query("select p from Patient p where unaccent(p.name) =unaccent(:name) "
       + "and unaccent(p.address) =unaccent(:address) and p.id <> :id")
   Optional<Patient> findByNameAndAdressNotEqualId(String name, String address, Long id);
 
   @Query("select p from Patient p where p.id =:id and p.isActive = true")
   Optional<Patient> findActiveById(Long id);
+
+  @Query("select p from Patient p where p.id =:id and p.isActive = true")
+  Patient findByIdForGetData(Long id);
 
   @Modifying
   @Query("delete from Patient p where p.id =:id")

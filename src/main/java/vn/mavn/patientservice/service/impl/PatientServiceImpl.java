@@ -35,13 +35,6 @@ public class PatientServiceImpl implements PatientService {
 
   @Override
   public Patient addNew(PatientAddDto patientAddDto) {
-    //TODO: valid name and address
-    patientRepository
-        .findByNameAndAdress(patientAddDto.getName().trim(), patientAddDto.getAddress().trim())
-        .ifPresent(patient -> {
-          throw new ConflictException(
-              Collections.singletonList("err-patient-duplicate-name-address"));
-        });
     //TODO: check at least have 1 phone number.
     if (StringUtils.isBlank(patientAddDto.getOtherPhone()) && StringUtils
         .isBlank(patientAddDto.getPhone()) && StringUtils.isBlank(patientAddDto.getZaLoPhone())) {
