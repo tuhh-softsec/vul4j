@@ -34,7 +34,7 @@ import vn.mavn.patientservice.util.EntityValidationUtils;
 
 @RestController
 @RequestMapping("/api/v1/admin/clinics")
-@Api(tags = "Clinic")
+@Api(tags = "Admin Clinic")
 public class ClinicController {
 
   @Autowired
