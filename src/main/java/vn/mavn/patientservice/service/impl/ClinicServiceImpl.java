@@ -1,5 +1,6 @@
 package vn.mavn.patientservice.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -214,6 +215,7 @@ public class ClinicServiceImpl implements ClinicService {
             .diseases(diseases)
             .isActive(clinic.getIsActive())
             .userIds(userId)
+            .updatedAt(clinic.getUpdatedAt())
             .build();
       });
 
