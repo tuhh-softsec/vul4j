@@ -1,6 +1,7 @@
 package vn.mavn.patientservice.dto;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +25,7 @@ public class ClinicDto implements Serializable {
   private List<DiseaseDto> diseases;
   private Boolean isActive;
   private List<Long> userIds;
+  private LocalDateTime updatedAt;
 
   @Setter
   @Getter
