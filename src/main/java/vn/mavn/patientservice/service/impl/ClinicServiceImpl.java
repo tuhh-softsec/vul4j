@@ -215,7 +215,7 @@ public class ClinicServiceImpl implements ClinicService {
             .diseases(diseases)
             .isActive(clinic.getIsActive())
             .userIds(userId)
-            .updatedAt(LocalDateTime.now())
+            .updatedAt(clinic.getUpdatedAt())
             .build();
       });
 
