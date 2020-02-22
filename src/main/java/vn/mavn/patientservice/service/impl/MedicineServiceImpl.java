@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,6 +28,7 @@ import vn.mavn.patientservice.repository.MedicineDiseaseRepository;
 import vn.mavn.patientservice.repository.MedicineRepository;
 import vn.mavn.patientservice.repository.spec.MedicineSpec;
 import vn.mavn.patientservice.service.MedicineService;
+import vn.mavn.patientservice.util.TokenUtils;
 
 @Service
 public class MedicineServiceImpl implements MedicineService {
@@ -43,12 +45,18 @@ public class MedicineServiceImpl implements MedicineService {
   @Autowired
   private MedicineDiseaseRepository medicineDiseaseRepository;
 
+  @Autowired
+  private HttpServletRequest httpServletRequest;
+
   @Override
   public Page<Medicine> getAllMedicines(QueryMedicineDto data, Pageable pageable) {
     List<Long> medicineIds = new ArrayList<>();
-    if (!data.getDiseaseIds().isEmpty()) {
+    if (!CollectionUtils.isEmpty(data.getDiseaseIds())) {
       medicineIds = medicineDiseaseRepository
           .findAllMedicineByDiseaseId(data.getDiseaseIds());
+      if (CollectionUtils.isEmpty(medicineIds)) {
+        return Page.empty(pageable);
+      }
     }
     return medicineRepository.findAll(MedicineSpec.findAllMedicines(data, medicineIds), pageable);
   }
@@ -62,6 +70,10 @@ public class MedicineServiceImpl implements MedicineService {
     validateDiseaseData(data.getDiseaseIds());
     Medicine medicine = new Medicine();
     BeanUtils.copyProperties(data, medicine);
+    //Get user logged in ID
+    Long loggedInUserId = Long.valueOf(TokenUtils.getUserIdFromToken(httpServletRequest));
+    medicine.setCreatedBy(loggedInUserId);
+    medicine.setUpdatedBy(loggedInUserId);
     medicineRepository.save(medicine);
     mappingMedicineDisease(medicine, data.getDiseaseIds());
     return medicine;
@@ -80,6 +92,9 @@ public class MedicineServiceImpl implements MedicineService {
     });
     validateDiseaseData(data.getDiseaseIds());
     BeanUtils.copyProperties(data, medicine);
+    //Get user logged in ID
+    Long loggedInUserId = Long.valueOf(TokenUtils.getUserIdFromToken(httpServletRequest));
+    medicine.setUpdatedBy(loggedInUserId);
     medicineRepository.save(medicine);
     mappingMedicineDisease(medicine, data.getDiseaseIds());
     return medicine;
@@ -105,12 +120,16 @@ public class MedicineServiceImpl implements MedicineService {
   public void remove(Long id) {
     medicineRepository.findById(id).orElseThrow(()
         -> new NotFoundException(Collections.singletonList("err.medicines.medicine-not-found")));
+
     List<MedicalRecordMedicine> medicineMedicalRecords = medicalRecordMedicineRepository
         .findAllByMedicineId(id);
-    if (!CollectionUtils.isEmpty(medicineMedicalRecords)) {
+    List<MedicineDisease> medicineDiseases = medicineDiseaseRepository.findAllByMedicineId(id);
+    if (!CollectionUtils.isEmpty(medicineMedicalRecords)
+        || !CollectionUtils.isEmpty(medicineDiseases)) {
       throw new ConflictException(
           Collections.singletonList("err.medicines.cannot-remove-medicine"));
     }
+
     medicineRepository.deleteById(id);
   }
 

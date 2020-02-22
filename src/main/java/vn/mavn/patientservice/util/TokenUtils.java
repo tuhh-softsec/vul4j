@@ -39,19 +39,19 @@ public class TokenUtils {
   }
 
   public static String getUserIdFromToken(HttpServletRequest httpServletRequest) {
-    String token = httpServletRequest.getHeader("authorization").replace("Bearer ","");
+    String token = httpServletRequest.getHeader("authorization").replace("Bearer ", "");
     if (StringUtils.isBlank(token)) {
       throw new NotFoundException(
-          Collections.singletonList("err.users.missing-additional-token-in-request"));
+          Collections.singletonList("err.users.missing-token-in-request"));
     }
     return Oauth2TokenUtils.getValueByKeyInTheToken(token, USER_ID_FIELD, String.class);
   }
 
   public static String getUserCodeFromToken(HttpServletRequest httpServletRequest) {
-    String token = httpServletRequest.getHeader("authorization").replace("Bearer ","");
+    String token = httpServletRequest.getHeader("authorization").replace("Bearer ", "");
     if (StringUtils.isBlank(token)) {
       throw new NotFoundException(
-          Collections.singletonList("err.users.missing-additional-token-in-request"));
+          Collections.singletonList("err.users.missing-token-in-request"));
     }
     return Oauth2TokenUtils.getValueByKeyInTheToken(token, USER_CODE_FIELD, String.class);
   }

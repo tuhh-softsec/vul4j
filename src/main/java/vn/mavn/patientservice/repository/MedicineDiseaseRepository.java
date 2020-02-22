@@ -9,4 +9,8 @@ public interface MedicineDiseaseRepository extends CrudRepository<MedicineDiseas
 
   @Query("select md.medicineId from MedicineDisease md where md.diseaseId in :diseaseIds")
   List<Long> findAllMedicineByDiseaseId(List<Long> diseaseIds);
+
+  List<MedicineDisease> findAllByMedicineId(Long id);
+
+  List<MedicineDisease> findAllByDiseaseId(Long id);
 }
