@@ -3,6 +3,7 @@ package vn.mavn.patientservice.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -13,6 +14,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import vn.mavn.patientservice.entity.listener.EntityListener;
 
 @Getter
 @Setter
@@ -21,6 +23,7 @@ import lombok.Setter;
 @Table(name = "pm_medicine")
 @Builder
 @Entity
+@EntityListeners(EntityListener.class)
 public class Medicine extends BaseIdEntity {
 
   private String name;
