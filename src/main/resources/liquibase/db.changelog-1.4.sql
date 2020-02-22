@@ -1,11 +1,13 @@
 -- liquibase formatted sql
--- changeset nghiemnc:1.4
+-- changeset minhln:1.4
 
--- Change data type to decimal for storing currency
-alter table pm_patient
-    drop column za_lo_phone;
+alter table pm_medicine
+    drop column if exists disease_id;
 
-
-
-
-
+drop table if exists pm_medicine_disease;
+create table pm_medicine_disease
+(
+    id          serial primary key,
+    medicine_id bigint not null,
+    disease_id  bigint not null
+);
