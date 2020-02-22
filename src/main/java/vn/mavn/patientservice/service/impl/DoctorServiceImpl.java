@@ -14,6 +14,7 @@ import vn.mavn.patientservice.dto.DoctorAddDto;
 import vn.mavn.patientservice.dto.DoctorDto;
 import vn.mavn.patientservice.dto.DoctorDto.ClinicDto;
 import vn.mavn.patientservice.dto.DoctorEditDto;
+import vn.mavn.patientservice.dto.qobject.QueryDoctorDto;
 import vn.mavn.patientservice.entity.Clinic;
 import vn.mavn.patientservice.entity.Doctor;
 import vn.mavn.patientservice.exception.ConflictException;
@@ -71,11 +72,10 @@ public class DoctorServiceImpl implements DoctorService {
   }
 
   @Override
-  public Page<Doctor> findAllDoctors(String name, String phone, Boolean isActive,
-      Pageable pageable) {
+  public Page<Doctor> findAllDoctors(QueryDoctorDto data, Pageable pageable) {
 
     return (Page<Doctor>) doctorRepository.findAll(
-        DoctorSpec.findAllProfiles(name, phone, isActive), pageable);
+        DoctorSpec.findAllProfiles(data), pageable);
   }
 
   //TODO:

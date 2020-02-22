@@ -40,7 +40,7 @@ public class MedicalRecordDto implements Serializable {
   @Setter
   @Getter
   @Builder
-  public static class PatientDto {
+  public static class PatientDto implements Serializable {
 
     private Long id;
     private String name;
@@ -50,7 +50,7 @@ public class MedicalRecordDto implements Serializable {
   @Setter
   @Getter
   @Builder
-  public static class AdvertisingSourceDto {
+  public static class AdvertisingSourceDto implements Serializable {
 
     private Long id;
     private String name;
