@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -23,6 +24,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import vn.mavn.patientservice.dto.ClinicAddDto;
 import vn.mavn.patientservice.dto.ClinicDto;
 import vn.mavn.patientservice.dto.ClinicEditDto;
+import vn.mavn.patientservice.dto.qobject.QueryClinicDto;
 import vn.mavn.patientservice.entity.Clinic;
 import vn.mavn.patientservice.response.HttpResponse;
 import vn.mavn.patientservice.response.ResponseWithPage;
@@ -32,7 +34,7 @@ import vn.mavn.patientservice.util.EntityValidationUtils;
 
 @RestController
 @RequestMapping("/api/v1/admin/clinics")
-@Api(tags = "Clinic")
+@Api(tags = "Admin Clinic")
 public class ClinicController {
 
   @Autowired
@@ -76,14 +78,11 @@ public class ClinicController {
           + "Default sort order is ascending. Multiple sort criteria are supported.",
           defaultValue = "createdAt,desc")})
   @GetMapping
-  public ResponseEntity<ResponseWithPage<Clinic>> getAll(
-      @RequestParam(required = false) String name,
-      @RequestParam(required = false) String phone,
-      @RequestParam(required = false) Boolean isActive,
-      @ApiIgnore Pageable pageable) {
-    Page<Clinic> page = clinicService.findAllClinics(name, phone, isActive, pageable);
+  public ResponseEntity<ResponseWithPage<ClinicDto>> getAll(
+      @ModelAttribute QueryClinicDto data, @ApiIgnore Pageable pageable) {
+    Page<ClinicDto> page = clinicService.findAllClinics(data, pageable);
     return ResponseEntity
-        .ok(ResponseWithPage.<Clinic>builder().data(page.getContent())
+        .ok(ResponseWithPage.<ClinicDto>builder().data(page.getContent())
             .pageIndex(page.getNumber())
             .totalPage(page.getTotalPages()).totalElement(page.getTotalElements()).build());
   }

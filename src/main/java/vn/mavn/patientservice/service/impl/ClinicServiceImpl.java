@@ -1,10 +1,12 @@
 package vn.mavn.patientservice.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,8 +19,10 @@ import vn.mavn.patientservice.dto.ClinicDto;
 import vn.mavn.patientservice.dto.ClinicDto.DoctorDto;
 import vn.mavn.patientservice.dto.ClinicEditDto;
 import vn.mavn.patientservice.dto.DiseaseDto;
+import vn.mavn.patientservice.dto.qobject.QueryClinicDto;
 import vn.mavn.patientservice.entity.Clinic;
 import vn.mavn.patientservice.entity.ClinicDisease;
+import vn.mavn.patientservice.entity.ClinicUser;
 import vn.mavn.patientservice.entity.Disease;
 import vn.mavn.patientservice.entity.Doctor;
 import vn.mavn.patientservice.exception.ConflictException;
@@ -67,6 +71,9 @@ public class ClinicServiceImpl implements ClinicService {
     //valid disease
     validDisease(clinic, data.getDiseaseIds());
 
+    //mapping clinic user
+    mappingClinicUser(clinic, data.getUserIds());
+
     return clinic;
   }
 
@@ -90,7 +97,28 @@ public class ClinicServiceImpl implements ClinicService {
     clinicDiseaseRepository.deleteAllByClinicId(clinic.getId());
     //valid disease
     validDisease(clinic, data.getDiseaseIds());
+
+    //delete mapping clinic user
+    clinicUserRepository.deleteAllByClinicId(clinic.getId());
+
+    //mapping clinic user
+    mappingClinicUser(clinic, data.getUserIds());
+
     return clinic;
+  }
+
+  private void mappingClinicUser(Clinic clinic, List<Long> userIds) {
+
+    //valid user
+    userIds.forEach(user -> {
+      clinicUserRepository.findById(user).ifPresent(clinicUser -> {
+        throw new ConflictException(Collections.singletonList("err.clinic.user-already-exits"));
+      });
+    });
+    userIds.forEach(user -> {
+      ClinicUser clinicUser = ClinicUser.builder().clinicId(clinic.getId()).userId(user).build();
+      clinicUserRepository.save(clinicUser);
+    });
   }
 
   @Override
@@ -100,14 +128,17 @@ public class ClinicServiceImpl implements ClinicService {
         () -> new NotFoundException(Collections.singletonList("err.clinic.clinic-does-not-exist")));
 
     //get doctor
-    Doctor doctor = doctorRepository.findDoctorById(clinic.getDoctorId());
-    DoctorDto doctorDto;
-    if (doctor == null) {
-      doctorDto = null;
-    } else {
-      doctorDto = DoctorDto.builder().id(doctor.getId()).name(doctor.getName()).build();
-    }
+    DoctorDto doctorDto = getDoctorDto(clinic);
     //get disease
+    List<DiseaseDto> diseases = getDiseaseDtos(clinic);
+
+    //get list userIds
+    List<Long> userIds = clinicUserRepository.findAllUserIdByClinicId(clinic.getId());
+
+    return getClinicDto(clinic, doctorDto, diseases, userIds);
+  }
+
+  private List<DiseaseDto> getDiseaseDtos(Clinic clinic) {
     List<DiseaseDto> diseases = new ArrayList<>();
     List<Long> diseasesIds = clinicDiseaseRepository.findAllDiseaseById(clinic.getId());
     diseasesIds.forEach(diseasesId -> {
@@ -117,6 +148,49 @@ public class ClinicServiceImpl implements ClinicService {
       }
 
     });
+    return diseases;
+  }
+
+  @Override
+  public Page<ClinicDto> findAllClinics(QueryClinicDto data, Pageable pageable) {
+
+    Page<Clinic> clinics = null;
+    List<Long> clinicIds = new ArrayList<>();
+    if (data == null) {
+      return Page.empty(pageable);
+    } else {
+      if (data.getUserId() != null) {
+        List<Long> clinicIdForClinicUser = clinicUserRepository
+            .findAllClinicByUserId(data.getUserId())
+            .stream().map(ClinicUser::getClinicId).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(clinicIdForClinicUser)) {
+          return Page.empty(pageable);
+        } else {
+          clinicIds.addAll(clinicIdForClinicUser);
+        }
+      }
+      clinics = clinicRepository.findAll(
+          ClinicSpec.findAllClinic(data, clinicIds), pageable);
+      if (CollectionUtils.isEmpty(clinics.getContent())) {
+        return Page.empty(pageable);
+      }
+
+      return clinics.map(clinic -> {
+
+        //get doctor
+        DoctorDto doctorDto = getDoctorDto(clinic);
+        //get disease
+        List<DiseaseDto> diseases = getDiseaseDtos(clinic);
+
+        return getClinicDto(clinic, doctorDto, diseases, Arrays.asList(data.getUserId()));
+      });
+
+    }
+
+  }
+
+  private ClinicDto getClinicDto(Clinic clinic, DoctorDto doctorDto, List<DiseaseDto> diseases,
+      List<Long> userIds) {
     return ClinicDto.builder()
         .id(clinic.getId())
         .name(clinic.getName())
@@ -126,14 +200,19 @@ public class ClinicServiceImpl implements ClinicService {
         .doctor(doctorDto)
         .diseases(diseases)
         .isActive(clinic.getIsActive())
+        .userIds(userIds)
         .build();
   }
 
-  @Override
-  public Page<Clinic> findAllClinics(String name, String phone, Boolean isActive,
-      Pageable pageable) {
-    return (Page<Clinic>) clinicRepository.findAll(
-        ClinicSpec.findAllClinic(name, phone, isActive), pageable);
+  private DoctorDto getDoctorDto(Clinic clinic) {
+    Doctor doctor = doctorRepository.findDoctorById(clinic.getDoctorId());
+    DoctorDto doctorDto;
+    if (doctor == null) {
+      doctorDto = null;
+    } else {
+      doctorDto = DoctorDto.builder().id(doctor.getId()).name(doctor.getName()).build();
+    }
+    return doctorDto;
   }
 
   @Override
@@ -142,7 +221,7 @@ public class ClinicServiceImpl implements ClinicService {
         () -> new NotFoundException(Collections.singletonList("err.clinic.clinic-does-not-exist")));
 
     List<Long> clinicIds = clinicDiseaseRepository.findAllClinicById(clinic.getId());
-    List<Long> clinicIdForUser = clinicUserRepository.findAllClinicById(clinic.getId());
+    List<ClinicUser> clinicIdForUser = clinicUserRepository.findAllClinicById(clinic.getId());
     if (!CollectionUtils.isEmpty(clinicIds) || !CollectionUtils.isEmpty(clinicIdForUser)) {
       throw new ConflictException(Collections.singletonList("err.clinic.clinic-already-exists"));
     } else {

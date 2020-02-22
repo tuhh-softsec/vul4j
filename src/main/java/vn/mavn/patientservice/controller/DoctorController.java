@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -23,6 +24,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import vn.mavn.patientservice.dto.DoctorAddDto;
 import vn.mavn.patientservice.dto.DoctorDto;
 import vn.mavn.patientservice.dto.DoctorEditDto;
+import vn.mavn.patientservice.dto.qobject.QueryDoctorDto;
 import vn.mavn.patientservice.entity.Doctor;
 import vn.mavn.patientservice.response.HttpResponse;
 import vn.mavn.patientservice.response.ResponseWithPage;
@@ -32,7 +34,7 @@ import vn.mavn.patientservice.util.EntityValidationUtils;
 
 @RestController
 @RequestMapping("/api/v1/admin/doctors")
-@Api(tags = "Doctor")
+@Api(tags = "Admin Doctor")
 public class DoctorController {
 
   @Autowired
@@ -77,11 +79,8 @@ public class DoctorController {
           defaultValue = "createdAt,desc")})
   @GetMapping
   public ResponseEntity<ResponseWithPage<Doctor>> getAll(
-      @RequestParam(required = false) String name,
-      @RequestParam(required = false) String phone,
-      @RequestParam(required = false) Boolean isActive,
-      @ApiIgnore Pageable pageable) {
-    Page<Doctor> page = doctorService.findAllDoctors(name, phone, isActive, pageable);
+      @ModelAttribute QueryDoctorDto data, @ApiIgnore Pageable pageable) {
+    Page<Doctor> page = doctorService.findAllDoctors(data, pageable);
     return ResponseEntity
         .ok(ResponseWithPage.<Doctor>builder().data(page.getContent())
             .pageIndex(page.getNumber())
