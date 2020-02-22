@@ -27,7 +27,7 @@ public class PatientSpec {
         Predicate predicateOtherPhone = SpecUtils
             .handleAccentExp(criteriaBuilder, root, "otherPhone", queryPatientDto.getPhoneNumber());
         Predicate predicateZaLoPhone = SpecUtils
-            .handleAccentExp(criteriaBuilder, root, "zaLoPhone", queryPatientDto.getPhoneNumber());
+            .handleAccentExp(criteriaBuilder, root, "zaloPhone", queryPatientDto.getPhoneNumber());
         Predicate predicatePhone = SpecUtils
             .handleAccentExp(criteriaBuilder, root, "phone", queryPatientDto.getPhoneNumber());
         predicates.add(criteriaBuilder.or(predicateOtherPhone, predicateZaLoPhone, predicatePhone));

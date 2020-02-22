@@ -1,6 +1,5 @@
 package vn.mavn.patientservice.entity;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.Table;
@@ -25,8 +24,7 @@ public class Patient extends BaseIdEntity {
   private Integer age;
   private String address;
   private String phone;
-  @Column(name = "zalo_phone")
-  private String zaLoPhone;
+  private String zaloPhone;
   private String otherPhone;
   private Boolean isActive;
 
