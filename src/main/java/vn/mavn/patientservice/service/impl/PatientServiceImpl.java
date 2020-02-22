@@ -2,6 +2,7 @@ package vn.mavn.patientservice.service.impl;
 
 import java.util.Collections;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -22,6 +23,7 @@ import vn.mavn.patientservice.repository.MedicalRecordRepository;
 import vn.mavn.patientservice.repository.PatientRepository;
 import vn.mavn.patientservice.repository.spec.PatientSpec;
 import vn.mavn.patientservice.service.PatientService;
+import vn.mavn.patientservice.util.TokenUtils;
 
 @Service
 @Transactional
@@ -33,6 +35,9 @@ public class PatientServiceImpl implements PatientService {
   @Autowired
   private MedicalRecordRepository medicalRecordRepository;
 
+  @Autowired
+  private HttpServletRequest httpServletRequest;
+
   @Override
   public Patient addNew(PatientAddDto patientAddDto) {
     //TODO: check at least have 1 phone number.
@@ -43,6 +48,9 @@ public class PatientServiceImpl implements PatientService {
     }
     Patient patient = new Patient();
     BeanUtils.copyProperties(patientAddDto, patient);
+    Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
+    patient.setCreatedBy(userId);
+    patient.setUpdatedBy(userId);
 
     return patientRepository.save(patient);
   }
@@ -60,6 +68,8 @@ public class PatientServiceImpl implements PatientService {
           Collections.singletonList("err-patient-phone-number-is-mandatory"));
     }
     BeanUtils.copyProperties(patientEditDto, patient);
+    Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
+    patient.setUpdatedBy(userId);
     return patientRepository.save(patient);
   }
 

@@ -33,7 +33,6 @@ public class PatientEditDto {
   @Pattern(regexp = "^(\\+84|0)((2[0-9]{9})|((3|5|7|8|9){1}([0-9]{8})))$",
       message = "err-patient-other-phone-invalid")
   private String otherPhone;
-  private Long updatedBy;
   @NotNull(message = "err-patient-is-active-is-mandatory")
   private Boolean isActive;
 

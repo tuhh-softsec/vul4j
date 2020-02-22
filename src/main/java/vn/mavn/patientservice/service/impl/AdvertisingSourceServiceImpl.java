@@ -2,6 +2,7 @@ package vn.mavn.patientservice.service.impl;
 
 import java.util.Collections;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,7 @@ import vn.mavn.patientservice.repository.AdvertisingSourceRepository;
 import vn.mavn.patientservice.repository.MedicalRecordRepository;
 import vn.mavn.patientservice.repository.spec.AdvertisingSourceSpec;
 import vn.mavn.patientservice.service.AdvertisingSourceService;
+import vn.mavn.patientservice.util.TokenUtils;
 
 @Service
 @Transactional
@@ -30,6 +32,10 @@ public class AdvertisingSourceServiceImpl implements AdvertisingSourceService {
 
   @Autowired
   private MedicalRecordRepository medicalRecordRepository;
+
+  @Autowired
+  private HttpServletRequest httpServletRequest;
+
 
   @Override
   public AdvertisingSource addNew(AdvertisingSourceAddDto advertisingSourceAddDto) {
@@ -42,8 +48,9 @@ public class AdvertisingSourceServiceImpl implements AdvertisingSourceService {
         .description(advertisingSourceAddDto.getDescription())
         .name(advertisingSourceAddDto.getName().trim())
         .isActive(advertisingSourceAddDto.getIsActive()).build();
-    advertisingSource.setCreatedBy(advertisingSourceAddDto.getCreatedBy());
-    advertisingSource.setUpdatedBy(advertisingSourceAddDto.getCreatedBy());
+    Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
+    advertisingSource.setCreatedBy(userId);
+    advertisingSource.setUpdatedBy(userId);
     return advertisingSourceRepository.save(advertisingSource);
   }
 
@@ -60,7 +67,9 @@ public class AdvertisingSourceServiceImpl implements AdvertisingSourceService {
         .ifPresent(advert -> {
           throw new ConflictException(Collections.singletonList("err-advertising-duplicate-name"));
         });
+    Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
     BeanUtils.copyProperties(advertisingSourceEditDto, advertisingSource);
+    advertisingSource.setUpdatedBy(userId);
     return advertisingSourceRepository.save(advertisingSource);
   }
 

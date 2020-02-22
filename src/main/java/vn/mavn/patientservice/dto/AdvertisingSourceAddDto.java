@@ -19,8 +19,6 @@ public class AdvertisingSourceAddDto implements Serializable {
   @NotBlank(message = "err-advertising-name-is-mandatory")
   private String name;
   private String description;
-  @NotNull(message = "err-advertising-created-by-is-mandatory")
-  private Long createdBy;
   @NotNull(message = "err-advertising-is-active-is-mandatory")
   private Boolean isActive;
 
