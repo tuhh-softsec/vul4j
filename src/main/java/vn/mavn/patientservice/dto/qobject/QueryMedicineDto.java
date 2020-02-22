@@ -1,5 +1,6 @@
 package vn.mavn.patientservice.dto.qobject;
 
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,7 +8,7 @@ import lombok.Setter;
 @Setter
 public class QueryMedicineDto {
 
-  private Long diseaseId;
+  private List<Long> diseaseIds;
   private String name;
   private Boolean isActive;
 }

@@ -1,6 +1,12 @@
 package vn.mavn.patientservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +24,12 @@ import lombok.Setter;
 public class Medicine extends BaseIdEntity {
 
   private String name;
-  private Long diseaseId;
   private String description;
   private Boolean isActive;
+  @JsonIgnore
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(name = "pm_medicine_disease",
+      joinColumns = {@JoinColumn(name = "medicine_id", referencedColumnName = "id")},
+      inverseJoinColumns = {@JoinColumn(name = "disease_id", referencedColumnName = "id")})
+  private List<Disease> diseases;
 }
