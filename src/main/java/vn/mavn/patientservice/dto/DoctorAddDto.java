@@ -23,6 +23,5 @@ public class DoctorAddDto {
   private String phone;
   private String address;
   private String description;
-  private Long createdBy;
   private Boolean isActive;
 }

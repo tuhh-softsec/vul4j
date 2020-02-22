@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,6 +34,7 @@ import vn.mavn.patientservice.repository.DiseaseRepository;
 import vn.mavn.patientservice.repository.DoctorRepository;
 import vn.mavn.patientservice.repository.spec.ClinicSpec;
 import vn.mavn.patientservice.service.ClinicService;
+import vn.mavn.patientservice.util.TokenUtils;
 
 @Service
 @Transactional
@@ -53,6 +55,9 @@ public class ClinicServiceImpl implements ClinicService {
   @Autowired
   private ClinicUserRepository clinicUserRepository;
 
+  @Autowired
+  private HttpServletRequest httpServletRequest;
+
   @Override
   public Clinic save(ClinicAddDto data) {
 
@@ -65,8 +70,10 @@ public class ClinicServiceImpl implements ClinicService {
 
     BeanUtils.copyProperties(data, clinic);
     clinic.setName(data.getName().trim());
-    clinic.setCreatedBy(data.getCreatedBy());
-    clinic.setUpdatedBy(data.getCreatedBy());
+    //Get user logged in ID
+    Long loggedInUserId = Long.valueOf(TokenUtils.getUserIdFromToken(httpServletRequest));
+    clinic.setCreatedBy(loggedInUserId);
+    clinic.setUpdatedBy(loggedInUserId);
     clinicRepository.save(clinic);
 
     //valid disease
@@ -92,7 +99,10 @@ public class ClinicServiceImpl implements ClinicService {
 
     BeanUtils.copyProperties(data, clinic);
     clinic.setName(data.getName().trim());
-    clinic.setUpdatedBy(data.getUpdatedBy());
+    
+    //Get user logged in ID
+    Long loggedInUserId = Long.valueOf(TokenUtils.getUserIdFromToken(httpServletRequest));
+    clinic.setUpdatedBy(loggedInUserId);
     clinicRepository.save(clinic);
 
     //delete mapping clinic disease

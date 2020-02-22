@@ -30,6 +30,5 @@ public class ClinicAddDto {
   @NotNull(message = "err.add.clinic.diseaseIds-is-mandatory")
   private List<Long> diseaseIds;
   private List<Long> userIds;
-  private Long createdBy;
 
 }
