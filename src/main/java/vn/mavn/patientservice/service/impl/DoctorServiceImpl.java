@@ -41,6 +41,8 @@ public class DoctorServiceImpl implements DoctorService {
     validationNameOrPhoneWhenAddDoctor(data);
     BeanUtils.copyProperties(data, doctor);
     doctor.setName(data.getName());
+    doctor.setCreatedBy(data.getCreatedBy());
+    doctor.setUpdatedBy(data.getCreatedBy());
     return doctorRepository.save(doctor);
   }
 
@@ -52,6 +54,7 @@ public class DoctorServiceImpl implements DoctorService {
     validationNameOrPhoneWhenEditDoctor(data);
     BeanUtils.copyProperties(data, doctor);
     doctor.setName(data.getName().trim());
+    doctor.setUpdatedBy(data.getUpdatedBy());
     return doctorRepository.save(doctor);
   }
 

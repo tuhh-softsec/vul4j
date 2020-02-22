@@ -32,4 +32,5 @@ public class ClinicEditDto {
   @NotNull(message = "err.add.clinic.diseaseIds-is-mandatory")
   private List<Long> diseaseIds;
   private List<Long> userIds;
+  private Long updatedBy;
 }

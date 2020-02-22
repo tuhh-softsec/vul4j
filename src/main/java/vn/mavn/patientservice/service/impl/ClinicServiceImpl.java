@@ -66,6 +66,8 @@ public class ClinicServiceImpl implements ClinicService {
 
     BeanUtils.copyProperties(data, clinic);
     clinic.setName(data.getName().trim());
+    clinic.setCreatedBy(data.getCreatedBy());
+    clinic.setUpdatedBy(data.getCreatedBy());
     clinicRepository.save(clinic);
 
     //valid disease
@@ -91,6 +93,7 @@ public class ClinicServiceImpl implements ClinicService {
 
     BeanUtils.copyProperties(data, clinic);
     clinic.setName(data.getName().trim());
+    clinic.setUpdatedBy(data.getUpdatedBy());
     clinicRepository.save(clinic);
 
     //delete mapping clinic disease
@@ -182,7 +185,24 @@ public class ClinicServiceImpl implements ClinicService {
         //get disease
         List<DiseaseDto> diseases = getDiseaseDtos(clinic);
 
-        return getClinicDto(clinic, doctorDto, diseases, Arrays.asList(data.getUserId()));
+        List<Long> userIdForClinicUser = clinicUserRepository.findAllUserIdByClinicId(clinic.getId());
+        List<Long> userId = new ArrayList<>();
+        if (data.getUserId() != null) {
+          userId.add(data.getUserId());
+        } else {
+          userId.addAll(userIdForClinicUser);
+        }
+        return ClinicDto.builder()
+            .id(clinic.getId())
+            .name(clinic.getName())
+            .phone(clinic.getPhone())
+            .address(clinic.getAddress())
+            .description(clinic.getDescription())
+            .doctor(doctorDto)
+            .diseases(diseases)
+            .isActive(clinic.getIsActive())
+            .userIds(userId)
+            .build();
       });
 
     }
@@ -191,6 +211,14 @@ public class ClinicServiceImpl implements ClinicService {
 
   private ClinicDto getClinicDto(Clinic clinic, DoctorDto doctorDto, List<DiseaseDto> diseases,
       List<Long> userIds) {
+
+    List<Long> userIdForClinicUser = clinicUserRepository.findAllUserIdByClinicId(clinic.getId());
+    List<Long> userId = new ArrayList<>();
+    if (!CollectionUtils.isEmpty(userIds)) {
+      userId.addAll(userIds);
+    } else {
+      userId.addAll(userIdForClinicUser);
+    }
     return ClinicDto.builder()
         .id(clinic.getId())
         .name(clinic.getName())

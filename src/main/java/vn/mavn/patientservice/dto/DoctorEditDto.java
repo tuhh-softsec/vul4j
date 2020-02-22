@@ -26,6 +26,6 @@ public class DoctorEditDto {
   private String phone;
   private String address;
   private String description;
-  private String updatedBy;
+  private Long updatedBy;
   private Boolean isActive;
 }
