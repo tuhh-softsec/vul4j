@@ -9,4 +9,5 @@ public class QueryPatientDto {
 
   private String name;
   private Boolean isActive;
+  private String phoneNumber;
 }

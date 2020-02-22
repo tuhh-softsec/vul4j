@@ -34,5 +34,7 @@ public class PatientEditDto {
       message = "err-patient-other-phone-invalid")
   private String otherPhone;
   private Long updatedBy;
+  @NotNull(message = "err-patient-is-active-is-mandatory")
+  private Boolean isActive;
 
 }
