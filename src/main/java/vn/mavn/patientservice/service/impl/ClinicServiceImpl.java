@@ -1,7 +1,6 @@
 package vn.mavn.patientservice.service.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -185,7 +184,8 @@ public class ClinicServiceImpl implements ClinicService {
         //get disease
         List<DiseaseDto> diseases = getDiseaseDtos(clinic);
 
-        List<Long> userIdForClinicUser = clinicUserRepository.findAllUserIdByClinicId(clinic.getId());
+        List<Long> userIdForClinicUser = clinicUserRepository
+            .findAllUserIdByClinicId(clinic.getId());
         List<Long> userId = new ArrayList<>();
         if (data.getUserId() != null) {
           userId.add(data.getUserId());
