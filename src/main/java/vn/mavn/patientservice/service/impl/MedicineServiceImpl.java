@@ -1,7 +1,9 @@
 package vn.mavn.patientservice.service.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,10 +18,12 @@ import vn.mavn.patientservice.dto.qobject.QueryMedicineDto;
 import vn.mavn.patientservice.entity.Disease;
 import vn.mavn.patientservice.entity.MedicalRecordMedicine;
 import vn.mavn.patientservice.entity.Medicine;
+import vn.mavn.patientservice.entity.MedicineDisease;
 import vn.mavn.patientservice.exception.ConflictException;
 import vn.mavn.patientservice.exception.NotFoundException;
 import vn.mavn.patientservice.gracefulshd.MedicalRecordMedicineRepository;
 import vn.mavn.patientservice.repository.DiseaseRepository;
+import vn.mavn.patientservice.repository.MedicineDiseaseRepository;
 import vn.mavn.patientservice.repository.MedicineRepository;
 import vn.mavn.patientservice.repository.spec.MedicineSpec;
 import vn.mavn.patientservice.service.MedicineService;
@@ -36,9 +40,17 @@ public class MedicineServiceImpl implements MedicineService {
   @Autowired
   private MedicalRecordMedicineRepository medicalRecordMedicineRepository;
 
+  @Autowired
+  private MedicineDiseaseRepository medicineDiseaseRepository;
+
   @Override
   public Page<Medicine> getAllMedicines(QueryMedicineDto data, Pageable pageable) {
-    return medicineRepository.findAll(MedicineSpec.findAllMedicines(data), pageable);
+    List<Long> medicineIds = new ArrayList<>();
+    if (!data.getDiseaseIds().isEmpty()) {
+      medicineIds = medicineDiseaseRepository
+          .findAllMedicineByDiseaseId(data.getDiseaseIds());
+    }
+    return medicineRepository.findAll(MedicineSpec.findAllMedicines(data, medicineIds), pageable);
   }
 
   @Override
@@ -47,12 +59,11 @@ public class MedicineServiceImpl implements MedicineService {
       throw new ConflictException(
           Collections.singletonList("err.medicines.medicine-already-exists"));
     });
-    diseaseRepository.findById(data.getDiseaseId())
-        .orElseThrow(() -> new NotFoundException(
-            Collections.singletonList("err.diseases.disease-not-found")));
+    validateDiseaseData(data.getDiseaseIds());
     Medicine medicine = new Medicine();
     BeanUtils.copyProperties(data, medicine);
     medicineRepository.save(medicine);
+    mappingMedicineDisease(medicine, data.getDiseaseIds());
     return medicine;
   }
 
@@ -67,11 +78,10 @@ public class MedicineServiceImpl implements MedicineService {
             Collections.singletonList("err.medicines.medicine-already-exists"));
       }
     });
-    diseaseRepository.findById(data.getDiseaseId())
-        .orElseThrow(() -> new NotFoundException(
-            Collections.singletonList("err.diseases.disease-not-found")));
+    validateDiseaseData(data.getDiseaseIds());
     BeanUtils.copyProperties(data, medicine);
     medicineRepository.save(medicine);
+    mappingMedicineDisease(medicine, data.getDiseaseIds());
     return medicine;
   }
 
@@ -79,10 +89,15 @@ public class MedicineServiceImpl implements MedicineService {
   public MedicineDto detail(Long id) {
     Medicine medicine = medicineRepository.findById(id).orElseThrow(()
         -> new NotFoundException(Collections.singletonList("err.medicines.medicine-not-found")));
-    Disease disease = diseaseRepository.findDiseaseById(medicine.getDiseaseId());
+    List<Disease> diseases = diseaseRepository
+        .findAllByIdIn(medicine.getDiseases().stream().map(Disease::getId).collect(
+            Collectors.toList()));
+    List<DiseaseDto> diseaseList = diseases.stream()
+        .map(disease -> DiseaseDto.builder().id(disease.getId()).name(disease.getName()).build())
+        .collect(Collectors.toList());
     MedicineDto result = new MedicineDto();
     BeanUtils.copyProperties(medicine, result);
-    result.setDisease(DiseaseDto.builder().id(disease.getId()).name(disease.getName()).build());
+    result.setDiseases(diseaseList);
     return result;
   }
 
@@ -97,5 +112,20 @@ public class MedicineServiceImpl implements MedicineService {
           Collections.singletonList("err.medicines.cannot-remove-medicine"));
     }
     medicineRepository.deleteById(id);
+  }
+
+  private void validateDiseaseData(List<Long> diseaseIds) {
+    List<Long> existDiseases = diseaseRepository.findAllByIdIn(diseaseIds).stream()
+        .map(Disease::getId).collect(Collectors.toList());
+    if (!existDiseases.containsAll(diseaseIds)) {
+      throw new NotFoundException(Collections.singletonList("err.diseases.disease-not-found"));
+    }
+  }
+
+  private void mappingMedicineDisease(Medicine medicine, List<Long> diseaseIds) {
+    List<MedicineDisease> mappingData = new ArrayList<>();
+    diseaseIds.forEach(diseaseId -> mappingData
+        .add(MedicineDisease.builder().medicineId(medicine.getId()).diseaseId(diseaseId).build()));
+    medicineDiseaseRepository.saveAll(mappingData);
   }
 }
