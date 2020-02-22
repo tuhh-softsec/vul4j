@@ -1,12 +1,12 @@
 package vn.mavn.patientservice.service.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,6 +34,7 @@ import vn.mavn.patientservice.repository.DiseaseRepository;
 import vn.mavn.patientservice.repository.DoctorRepository;
 import vn.mavn.patientservice.repository.spec.ClinicSpec;
 import vn.mavn.patientservice.service.ClinicService;
+import vn.mavn.patientservice.util.TokenUtils;
 
 @Service
 @Transactional
@@ -54,6 +55,9 @@ public class ClinicServiceImpl implements ClinicService {
   @Autowired
   private ClinicUserRepository clinicUserRepository;
 
+  @Autowired
+  private HttpServletRequest httpServletRequest;
+
   @Override
   public Clinic save(ClinicAddDto data) {
 
@@ -66,6 +70,10 @@ public class ClinicServiceImpl implements ClinicService {
 
     BeanUtils.copyProperties(data, clinic);
     clinic.setName(data.getName().trim());
+    //Get user logged in ID
+    Long loggedInUserId = Long.valueOf(TokenUtils.getUserIdFromToken(httpServletRequest));
+    clinic.setCreatedBy(loggedInUserId);
+    clinic.setUpdatedBy(loggedInUserId);
     clinicRepository.save(clinic);
 
     //valid disease
@@ -91,6 +99,10 @@ public class ClinicServiceImpl implements ClinicService {
 
     BeanUtils.copyProperties(data, clinic);
     clinic.setName(data.getName().trim());
+    
+    //Get user logged in ID
+    Long loggedInUserId = Long.valueOf(TokenUtils.getUserIdFromToken(httpServletRequest));
+    clinic.setUpdatedBy(loggedInUserId);
     clinicRepository.save(clinic);
 
     //delete mapping clinic disease
@@ -182,7 +194,25 @@ public class ClinicServiceImpl implements ClinicService {
         //get disease
         List<DiseaseDto> diseases = getDiseaseDtos(clinic);
 
-        return getClinicDto(clinic, doctorDto, diseases, Arrays.asList(data.getUserId()));
+        List<Long> userIdForClinicUser = clinicUserRepository
+            .findAllUserIdByClinicId(clinic.getId());
+        List<Long> userId = new ArrayList<>();
+        if (data.getUserId() != null) {
+          userId.add(data.getUserId());
+        } else {
+          userId.addAll(userIdForClinicUser);
+        }
+        return ClinicDto.builder()
+            .id(clinic.getId())
+            .name(clinic.getName())
+            .phone(clinic.getPhone())
+            .address(clinic.getAddress())
+            .description(clinic.getDescription())
+            .doctor(doctorDto)
+            .diseases(diseases)
+            .isActive(clinic.getIsActive())
+            .userIds(userId)
+            .build();
       });
 
     }
@@ -191,6 +221,14 @@ public class ClinicServiceImpl implements ClinicService {
 
   private ClinicDto getClinicDto(Clinic clinic, DoctorDto doctorDto, List<DiseaseDto> diseases,
       List<Long> userIds) {
+
+    List<Long> userIdForClinicUser = clinicUserRepository.findAllUserIdByClinicId(clinic.getId());
+    List<Long> userId = new ArrayList<>();
+    if (!CollectionUtils.isEmpty(userIds)) {
+      userId.addAll(userIds);
+    } else {
+      userId.addAll(userIdForClinicUser);
+    }
     return ClinicDto.builder()
         .id(clinic.getId())
         .name(clinic.getName())

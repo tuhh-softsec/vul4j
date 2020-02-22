@@ -3,6 +3,7 @@ package vn.mavn.patientservice.service.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,6 +24,7 @@ import vn.mavn.patientservice.repository.ClinicRepository;
 import vn.mavn.patientservice.repository.DoctorRepository;
 import vn.mavn.patientservice.repository.spec.DoctorSpec;
 import vn.mavn.patientservice.service.DoctorService;
+import vn.mavn.patientservice.util.TokenUtils;
 
 @Service
 @Transactional
@@ -34,6 +36,9 @@ public class DoctorServiceImpl implements DoctorService {
   @Autowired
   private ClinicRepository clinicRepository;
 
+  @Autowired
+  private HttpServletRequest httpServletRequest;
+
   @Override
   public Doctor save(DoctorAddDto data) {
 
@@ -41,6 +46,10 @@ public class DoctorServiceImpl implements DoctorService {
     validationNameOrPhoneWhenAddDoctor(data);
     BeanUtils.copyProperties(data, doctor);
     doctor.setName(data.getName());
+    //Get user logged in ID
+    Long loggedInUserId = Long.valueOf(TokenUtils.getUserIdFromToken(httpServletRequest));
+    doctor.setCreatedBy(loggedInUserId);
+    doctor.setUpdatedBy(loggedInUserId);
     return doctorRepository.save(doctor);
   }
 
@@ -52,6 +61,9 @@ public class DoctorServiceImpl implements DoctorService {
     validationNameOrPhoneWhenEditDoctor(data);
     BeanUtils.copyProperties(data, doctor);
     doctor.setName(data.getName().trim());
+    //Get user logged in ID
+    Long loggedInUserId = Long.valueOf(TokenUtils.getUserIdFromToken(httpServletRequest));
+    doctor.setUpdatedBy(loggedInUserId);
     return doctorRepository.save(doctor);
   }
 
