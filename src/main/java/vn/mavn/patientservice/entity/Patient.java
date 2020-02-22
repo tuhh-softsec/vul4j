@@ -24,7 +24,7 @@ public class Patient extends BaseIdEntity {
   private Integer age;
   private String address;
   private String phone;
-  private String zaLoPhone;
+  private String zaloPhone;
   private String otherPhone;
   private Boolean isActive;
 

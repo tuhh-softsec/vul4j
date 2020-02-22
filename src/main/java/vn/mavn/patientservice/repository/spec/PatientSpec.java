@@ -23,6 +23,15 @@ public class PatientSpec {
             .handleAccentExp(criteriaBuilder, root, "name", queryPatientDto.getName());
         predicates.add(unaccent);
       }
+      if (StringUtils.isNotBlank(queryPatientDto.getPhoneNumber())) {
+        Predicate predicateOtherPhone = SpecUtils
+            .handleAccentExp(criteriaBuilder, root, "otherPhone", queryPatientDto.getPhoneNumber());
+        Predicate predicateZaLoPhone = SpecUtils
+            .handleAccentExp(criteriaBuilder, root, "zaloPhone", queryPatientDto.getPhoneNumber());
+        Predicate predicatePhone = SpecUtils
+            .handleAccentExp(criteriaBuilder, root, "phone", queryPatientDto.getPhoneNumber());
+        predicates.add(criteriaBuilder.or(predicateOtherPhone, predicateZaLoPhone, predicatePhone));
+      }
       return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
     };
   }
