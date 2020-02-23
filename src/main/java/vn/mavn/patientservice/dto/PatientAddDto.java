@@ -24,6 +24,7 @@ public class PatientAddDto {
   private String address;
   @Pattern(regexp = "^(\\+84|0)((2[0-9]{9})|((3|5|7|8|9){1}([0-9]{8})))$",
       message = "err-patient-phone-invalid")
+  @NotBlank(message = "err-patient-phone-is-mandatory")
   private String phone;
   @Pattern(regexp = "^(\\+84|0)((2[0-9]{9})|((3|5|7|8|9){1}([0-9]{8})))$",
       message = "err-patient-za-lo-phone-invalid")

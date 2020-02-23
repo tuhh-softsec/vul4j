@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -76,13 +75,6 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
   @Override
   public MedicalRecord addForEmp(MedicalRecordAddDto medicalRecordAddDto) {
-    //TODO: check at least have 1 phone number.
-    if (StringUtils.isBlank(medicalRecordAddDto.getPatientAddDto().getOtherPhone()) && StringUtils
-        .isBlank(medicalRecordAddDto.getPatientAddDto().getPhone()) && StringUtils
-        .isBlank(medicalRecordAddDto.getPatientAddDto().getZaLoPhone())) {
-      throw new BadRequestException(
-          Collections.singletonList("err-patient-phone-number-is-mandatory"));
-    }
     //TODO: validation data
     validationData(medicalRecordAddDto.getAdvertisingSourceId(),
         medicalRecordAddDto.getClinicId(), medicalRecordAddDto.getConsultingStatusCode());
@@ -149,13 +141,6 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
           Collections.singletonList("err.medicines.total-amount-not-equal-cod-and-tranfer-amount"));
     }
 
-    //TODO: check at least have 1 phone number.
-    if (StringUtils.isBlank(medicalRecordAddDto.getPatientAddDto().getOtherPhone()) && StringUtils
-        .isBlank(medicalRecordAddDto.getPatientAddDto().getPhone()) && StringUtils
-        .isBlank(medicalRecordAddDto.getPatientAddDto().getZaLoPhone())) {
-      throw new BadRequestException(
-          Collections.singletonList("err-patient-phone-number-is-mandatory"));
-    }
     //TODO: add new patient from info medical_record
     Patient patient = new Patient();
     BeanUtils.copyProperties(medicalRecordAddDto.getPatientAddDto(), patient);
