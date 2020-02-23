@@ -179,8 +179,8 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     // TODO build PatientDto
     Patient patient = patientRepository.findByIdForGetData(medicalRecord.getPatientId());
     if (patient != null) {
-      PatientDto patientDto = PatientDto.builder().id(patient.getId()).name(patient.getName())
-          .address(patient.getAddress()).build();
+      PatientDto patientDto = new PatientDto();
+      BeanUtils.copyProperties(patient, patientDto);
       medicalRecordDto.setPatientDto(patientDto);
     }
     //TODO build diseaseDto

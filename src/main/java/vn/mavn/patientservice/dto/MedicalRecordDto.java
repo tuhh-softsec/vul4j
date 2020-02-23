@@ -40,11 +40,18 @@ public class MedicalRecordDto implements Serializable {
   @Setter
   @Getter
   @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
   public static class PatientDto implements Serializable {
 
     private Long id;
     private String name;
     private String address;
+    private Integer age;
+    private String phone;
+    private String zaloPhone;
+    private String otherPhone;
+    private Boolean isActive;
   }
 
   @Setter
