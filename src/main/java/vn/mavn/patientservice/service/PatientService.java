@@ -16,7 +16,7 @@ public interface PatientService {
 
   Patient getById(Long id);
 
-  Page findAll(QueryPatientDto queryPatientDto, Pageable pageable);
+  Page<Patient> findAll(QueryPatientDto queryPatientDto, Pageable pageable);
 
   void delete(Long id);
 

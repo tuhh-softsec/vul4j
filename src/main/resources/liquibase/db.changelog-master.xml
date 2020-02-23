@@ -10,5 +10,6 @@
   <include file="db.changelog-1.4.sql" relativeToChangelogFile="true"/>
   <include file="db.changelog-1.5.sql" relativeToChangelogFile="true"/>
   <include file="data/db.data-0001.sql" relativeToChangelogFile="true"/>
+  <include file="db.changelog-1.6.sql" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
