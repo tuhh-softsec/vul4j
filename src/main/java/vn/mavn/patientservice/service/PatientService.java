@@ -2,9 +2,9 @@ package vn.mavn.patientservice.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import vn.mavn.patientservice.dto.MedicalRecordEditForEmpClinicDto;
 import vn.mavn.patientservice.dto.PatientAddDto;
 import vn.mavn.patientservice.dto.PatientEditDto;
-import vn.mavn.patientservice.dto.UpdatePatientDto;
 import vn.mavn.patientservice.dto.qobject.QueryPatientDto;
 import vn.mavn.patientservice.entity.Patient;
 
@@ -20,5 +20,5 @@ public interface PatientService {
 
   void delete(Long id);
 
-  Patient updatePatientAndMedicalRecordForCounselor(UpdatePatientDto data);
+  Patient updatePatientAndMedicalRecordForCounselor(MedicalRecordEditForEmpClinicDto data);
 }

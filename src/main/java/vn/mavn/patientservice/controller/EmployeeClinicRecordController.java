@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import vn.mavn.patientservice.dto.UpdatePatientDto;
+import vn.mavn.patientservice.dto.MedicalRecordEditForEmpClinicDto;
 import vn.mavn.patientservice.entity.Patient;
 import vn.mavn.patientservice.response.HttpResponse;
 import vn.mavn.patientservice.service.MedicalRecordService;
@@ -33,7 +33,8 @@ public class EmployeeClinicRecordController {
 
 
   @PutMapping
-  public HttpResponse updatePatientAndMedicalRecordForCounselor(@Valid @RequestBody UpdatePatientDto data,
+  public HttpResponse updatePatientAndMedicalRecordForCounselor(
+      @Valid @RequestBody MedicalRecordEditForEmpClinicDto data,
       BindingResult bindingResult) {
     EntityValidationUtils.processBindingResults(bindingResult);
     Patient patient = patientService.updatePatientAndMedicalRecordForCounselor(data);

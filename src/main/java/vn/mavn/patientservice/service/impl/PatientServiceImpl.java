@@ -12,10 +12,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import vn.mavn.patientservice.dto.MedicalRecordEditForEmpClinicDto;
 import vn.mavn.patientservice.dto.MedicineMappingDto;
 import vn.mavn.patientservice.dto.PatientAddDto;
 import vn.mavn.patientservice.dto.PatientEditDto;
-import vn.mavn.patientservice.dto.UpdatePatientDto;
 import vn.mavn.patientservice.dto.qobject.QueryPatientDto;
 import vn.mavn.patientservice.entity.Disease;
 import vn.mavn.patientservice.entity.MedicalRecord;
@@ -140,11 +140,21 @@ public class PatientServiceImpl implements PatientService {
   }
 
   @Override
-  public Patient updatePatientAndMedicalRecordForCounselor(UpdatePatientDto data) {
+  public Patient updatePatientAndMedicalRecordForCounselor(MedicalRecordEditForEmpClinicDto data) {
 
+    Patient patientExist = patientRepository.findActiveById(data.getPatientEditDto().getId())
+        .orElseThrow(() -> new NotFoundException(
+            Collections.singletonList("err-patient-not-found")));
     //validationData (nguon quang cao, phong kham, tinh trang tu van, danh sach benh)
     validationData(data.getAdvertisingSourceId(), data.getConsultingStatusCode(),
         data.getDiseaseIds());
+
+    //TODO: check totalAmount = cod + tranfer
+    if (!data.getTotalAmount().equals(data.getTransferAmount()
+        .add(data.getCodAmount()))) {
+      throw new BadRequestException(
+          Collections.singletonList("err.medicines.total-amount-not-equal-cod-and-tranfer-amount"));
+    }
     //lay used tu token
     Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
     String userCode = TokenUtils.getUserCodeFromToken(httpServletRequest);
@@ -157,23 +167,25 @@ public class PatientServiceImpl implements PatientService {
           Collections.singletonList("err-disease-not-found"));
     }
     //patient
-    Patient patient = new Patient();
-    BeanUtils.copyProperties(data, patient);
-    patientRepository.save(patient);
+    BeanUtils.copyProperties(data.getPatientEditDto(), patientExist);
+    patientExist.setIsActive(data.getIsActive());
+    patientRepository.save(patientExist);
 
-    //MedicalRecord
-    MedicalRecord medicalRecord = new MedicalRecord();
-    BeanUtils.copyProperties(data, medicalRecord);
-    medicalRecord.setUserCode(userCode);
+    //valid medical record
+    MedicalRecord medicalRecordExist = medicalRecordRepository.findActiveById(patientExist.getId())
+        .orElseThrow(() -> new NotFoundException(
+            Collections.singletonList("err-medical-record-not-found")));
+    BeanUtils.copyProperties(data, medicalRecordExist);
+    medicalRecordExist.setUserCode(userCode);
 
-    medicalRecordRepository.save(medicalRecord);
+    medicalRecordRepository.save(medicalRecordExist);
 
     //vi thuoc cua loai benh + so luong
     if (!CollectionUtils.isEmpty(data.getMedicineDtos())) {
-      mappingMedicalRecordMedicine(data.getMedicineDtos(), medicalRecord.getId());
+      mappingMedicalRecordMedicine(data.getMedicineDtos(), medicalRecordExist.getId());
     }
-    
-    return patient;
+
+    return patientExist;
   }
 
   private void mappingMedicalRecordMedicine(List<MedicineMappingDto> data, Long medicalRecordId) {
