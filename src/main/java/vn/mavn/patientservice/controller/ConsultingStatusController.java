@@ -1,5 +1,6 @@
 package vn.mavn.patientservice.controller;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import vn.mavn.patientservice.service.ConsultingStatusService;
 
 @RestController
 @RequestMapping("api/v1/admin/consulting-statuses")
+@Api(tags = "Admin Consulting Controller")
 public class ConsultingStatusController {
 
   @Autowired
