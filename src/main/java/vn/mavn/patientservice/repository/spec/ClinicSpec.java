@@ -13,7 +13,7 @@ import vn.mavn.patientservice.util.SpecUtils;
 
 public class ClinicSpec {
 
-  public static Specification findAllClinic(QueryClinicDto data, List<Long> ids) {
+  public static Specification<Clinic> findAllClinic(QueryClinicDto data, List<Long> ids) {
     return (Specification<Clinic>) (root, criteriaQuery, criteriaBuilder) -> {
       Collection<Predicate> predicates = new ArrayList<>();
 

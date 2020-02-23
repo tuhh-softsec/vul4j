@@ -1,6 +1,5 @@
 package vn.mavn.patientservice.service.impl;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -168,8 +167,7 @@ public class ClinicServiceImpl implements ClinicService {
 
   @Override
   public Page<ClinicDto> findAllClinics(QueryClinicDto data, Pageable pageable) {
-
-    Page<Clinic> clinics = null;
+    Page<Clinic> clinics;
     List<Long> clinicIds = new ArrayList<>();
     if (data == null) {
       return Page.empty(pageable);
@@ -184,8 +182,7 @@ public class ClinicServiceImpl implements ClinicService {
           clinicIds.addAll(clinicIdForClinicUser);
         }
       }
-      clinics = clinicRepository.findAll(
-          ClinicSpec.findAllClinic(data, clinicIds), pageable);
+      clinics = clinicRepository.findAll(ClinicSpec.findAllClinic(data, clinicIds), pageable);
       if (CollectionUtils.isEmpty(clinics.getContent())) {
         return Page.empty(pageable);
       }
@@ -225,13 +222,12 @@ public class ClinicServiceImpl implements ClinicService {
 
   private ClinicDto getClinicDto(Clinic clinic, DoctorDto doctorDto, List<DiseaseDto> diseases,
       List<Long> userIds) {
-
     List<Long> userIdForClinicUser = clinicUserRepository.findAllUserIdByClinicId(clinic.getId());
-    List<Long> userId = new ArrayList<>();
+    List<Long> staffUserIds = new ArrayList<>();
     if (!CollectionUtils.isEmpty(userIds)) {
-      userId.addAll(userIds);
+      staffUserIds.addAll(userIds);
     } else {
-      userId.addAll(userIdForClinicUser);
+      staffUserIds.addAll(userIdForClinicUser);
     }
     return ClinicDto.builder()
         .id(clinic.getId())
@@ -242,7 +238,7 @@ public class ClinicServiceImpl implements ClinicService {
         .doctor(doctorDto)
         .diseases(diseases)
         .isActive(clinic.getIsActive())
-        .userIds(userIds)
+        .userIds(staffUserIds)
         .build();
   }
 
