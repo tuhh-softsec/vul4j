@@ -2,7 +2,9 @@ package vn.mavn.patientservice.repository.spec;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 import vn.mavn.patientservice.dto.qobject.QueryMedicalRecordDto;
@@ -21,8 +23,27 @@ public class MedicalRecordSpec {
       if (data.getIsActive() != null) {
         predicates.add(criteriaBuilder.equal(root.get("isActive"), data.getIsActive()));
       }
+      predicates = equalLongValueFilter(data.getClinicId(), "clinicId", criteriaBuilder, root,
+          predicates);
+      predicates = equalLongValueFilter(data.getAdvertisingSourceId(), "advertisingSourceId",
+          criteriaBuilder, root, predicates);
+      predicates = equalLongValueFilter(data.getDiseaseId(), "diseaseId", criteriaBuilder, root,
+          predicates);
+      predicates = equalLongValueFilter(data.getPatientId(), "patientId", criteriaBuilder, root,
+          predicates);
+      if (StringUtils.isNotBlank(data.getUserCode())) {
+        predicates.add(criteriaBuilder.equal(root.get("userCode"), data.getUserCode()));
+      }
       return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
     };
+  }
+
+  private static Collection<Predicate> equalLongValueFilter(Long parameter, String fieldName,
+      CriteriaBuilder criteriaBuilder, Root root, Collection<Predicate> predicates) {
+    if (parameter != null) {
+      predicates.add(criteriaBuilder.equal(root.get(fieldName), parameter));
+    }
+    return predicates;
   }
 
 }
