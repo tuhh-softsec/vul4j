@@ -3,6 +3,7 @@ package vn.mavn.patientservice.service.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import org.apache.commons.lang.StringUtils;
@@ -19,6 +20,7 @@ import vn.mavn.patientservice.dto.MedicalRecordAddDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto.AdvertisingSourceDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto.PatientDto;
+import vn.mavn.patientservice.dto.MedicalRecordEditDto;
 import vn.mavn.patientservice.dto.MedicineMappingDto;
 import vn.mavn.patientservice.dto.PatientAddDto;
 import vn.mavn.patientservice.dto.qobject.QueryMedicalRecordDto;
@@ -28,8 +30,10 @@ import vn.mavn.patientservice.entity.Disease;
 import vn.mavn.patientservice.entity.Doctor;
 import vn.mavn.patientservice.entity.MedicalRecord;
 import vn.mavn.patientservice.entity.MedicalRecordMedicine;
+import vn.mavn.patientservice.entity.Medicine;
 import vn.mavn.patientservice.entity.Patient;
 import vn.mavn.patientservice.exception.BadRequestException;
+import vn.mavn.patientservice.exception.ConflictException;
 import vn.mavn.patientservice.exception.NotFoundException;
 import vn.mavn.patientservice.repository.AdvertisingSourceRepository;
 import vn.mavn.patientservice.repository.ClinicRepository;
@@ -61,7 +65,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
   @Autowired
   private MedicalRecordRepository medicalRecordRepository;
   @Autowired
-  private MedicineRepository medecineRepo;
+  private MedicineRepository medicineRepository;
   @Autowired
   private MedicalRecordMedicineRepository recordMedicineRepository;
   @Autowired
@@ -122,7 +126,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       Pageable pageable) {
     Page<MedicalRecord> medicalRecords = medicalRecordRepository
         .findAll(MedicalRecordSpec.findAllMedicines(queryMedicalRecordDto), pageable);
-    Page<MedicalRecordDto> medicalRecordDtos = null;
+    Page<MedicalRecordDto> medicalRecordDtos;
     if (CollectionUtils.isEmpty(medicalRecords.getContent())) {
       return Page.empty(pageable);
     } else {
@@ -136,6 +140,50 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     return medicalRecordDtos;
   }
 
+  @Override
+  public MedicalRecord update(MedicalRecordEditDto data) {
+    MedicalRecord medicalRecord = medicalRecordRepository.findById(data.getId())
+        .orElseThrow(() -> new NotFoundException(
+            Collections.singletonList("err.medical-records.medical-record-not-found")));
+    if (!medicalRecord.getPatientId().equals(data.getPatientId())) {
+      throw new ConflictException(
+          Collections.singletonList("err.medical-records.patient-info-not-match"));
+    }
+    validationData(data.getAdvertisingSourceId(), data.getClinicId(),
+        data.getConsultingStatusCode(),
+        data.getDiseaseId());
+    List<MedicineMappingDto> medicineList = data.getMedicineDtos();
+    if (!CollectionUtils.isEmpty(medicineList)) {
+      List<Long> medicines = medicineRepository
+          .findAllByIdIn(data.getMedicineDtos().stream()
+              .map(MedicineMappingDto::getMedicineId)
+              .collect(Collectors.toList()))
+          .stream().map(Medicine::getId).collect(Collectors.toList());
+      if (!medicines.containsAll(medicineList)) {
+        throw new NotFoundException(Collections.singletonList("err.medicines.medicine-not-found"));
+      }
+      medicineList.forEach(medicine -> {
+        if (medicine.getQty() < 0) {
+          throw new BadRequestException(
+              Collections.singletonList("err.medicines.quantity-must-be-positive"));
+        }
+      });
+      mappingMedicalRecordMedicine(medicineList, medicalRecord.getId());
+    }
+    // TODO: we can optimise this function:
+    //  1. Get token from request header.
+    //  2. Using method getValueByKeyInTheToken from Oauth2TokenUtils then pass desire parameter
+    // So then we will not have to retrieve token 2 times
+    Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
+    String userCode = TokenUtils.getUserCodeFromToken(httpServletRequest);
+    BeanUtils.copyProperties(data, medicalRecord);
+    medicalRecord.setUserCode(userCode);
+    medicalRecord.setUpdatedBy(userId);
+    medicalRecord.setExaminationTimes(medicalRecord.getExaminationTimes() + 1);
+    medicalRecordRepository.save(medicalRecord);
+    return medicalRecord;
+  }
+
 
   private void mappingMedicalRecordMedicine(List<MedicineMappingDto> medicineDtos,
       Long medicalRecordId) {
@@ -143,7 +191,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     List<MedicalRecordMedicine> medicalRecordMedicines = new ArrayList<>();
     if (!CollectionUtils.isEmpty(medicineDtos)) {
       medicineDtos.forEach(medicineDto -> {
-        medecineRepo.findActiveById(medicineDto.getMedicineId())
+        medicineRepository.findActiveById(medicineDto.getMedicineId())
             .orElseThrow(() ->
                 new NotFoundException(
                     Collections.singletonList("err.medicines.medicine-not-found")));
