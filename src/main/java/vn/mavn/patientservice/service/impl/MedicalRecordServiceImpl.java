@@ -22,6 +22,7 @@ import vn.mavn.patientservice.dto.MedicalRecordDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto.AdvertisingSourceDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto.PatientDto;
 import vn.mavn.patientservice.dto.MedicalRecordEditDto;
+import vn.mavn.patientservice.dto.MedicalRecordEditForEmpClinicDto;
 import vn.mavn.patientservice.dto.MedicineMappingDto;
 import vn.mavn.patientservice.dto.qobject.QueryMedicalRecordDto;
 import vn.mavn.patientservice.entity.AdvertisingSource;
@@ -36,7 +37,9 @@ import vn.mavn.patientservice.exception.BadRequestException;
 import vn.mavn.patientservice.exception.ConflictException;
 import vn.mavn.patientservice.exception.NotFoundException;
 import vn.mavn.patientservice.repository.AdvertisingSourceRepository;
+import vn.mavn.patientservice.repository.ClinicDiseaseRepository;
 import vn.mavn.patientservice.repository.ClinicRepository;
+import vn.mavn.patientservice.repository.ClinicUserRepository;
 import vn.mavn.patientservice.repository.ConsultingStatusRepository;
 import vn.mavn.patientservice.repository.DiseaseRepository;
 import vn.mavn.patientservice.repository.DoctorRepository;
@@ -72,6 +75,10 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
   private HttpServletRequest httpServletRequest;
   @Autowired
   private DoctorRepository doctorRepository;
+  @Autowired
+  private ClinicUserRepository clinicUserRepository;
+  @Autowired
+  private ClinicDiseaseRepository clinicDiseaseRepository;
 
   @Override
   public MedicalRecord addForEmp(MedicalRecordAddDto medicalRecordAddDto) {
@@ -161,6 +168,65 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     medicalRecordRepository.save(medicalRecord);
     if (!CollectionUtils.isEmpty(medicalRecordAddDto.getMedicineDtos())) {
       mappingMedicalRecordMedicine(medicalRecordAddDto.getMedicineDtos(), medicalRecord.getId());
+    }
+    return medicalRecord;
+  }
+
+  @Override
+  public MedicalRecord editForEmpClinic(MedicalRecordEditForEmpClinicDto data) {
+
+    //lay used tu token
+    Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
+
+    Patient patientExist = patientRepository.findActiveById(data.getPatientEditDto().getId())
+        .orElseThrow(
+            () -> new NotFoundException(Collections.singletonList("err-patient-not-found")));
+    //valid danh sach loai benh cua phong kham cua nhan vien phong kham
+    Long clinicId = clinicUserRepository.findClinicIdByUserId(userId);
+    List<Long> diseaseIds = clinicDiseaseRepository.findAllByClinicId(clinicId);
+    if (!data.getDiseaseIds().containsAll(diseaseIds)) {
+      throw new NotFoundException(
+          Collections.singletonList("err-disease-not-found"));
+    }
+    //validationData(nguon quang cao, phong kham, tinh trang tu van)
+    validationData(data.getAdvertisingSourceId(), clinicId, data.getConsultingStatusCode());
+
+    //patient
+    BeanUtils.copyProperties(data.getPatientEditDto(), patientExist);
+    patientExist.setIsActive(data.getIsActive());
+
+    //TODO: check totalAmount = cod + tranfer
+    if (!data.getTotalAmount().equals(data.getTransferAmount()
+        .add(data.getCodAmount()))) {
+      throw new BadRequestException(
+          Collections.singletonList("err.medicines.total-amount-not-equal-cod-and-tranfer-amount"));
+    }
+
+    patientRepository.save(patientExist);
+
+    MedicalRecord medicalRecord = new MedicalRecord();
+    //medical record
+    MedicalRecord medicalRecordExist = medicalRecordRepository
+        .findMedicalRecordByPatientId(patientExist.getId());
+
+    BeanUtils.copyProperties(data, medicalRecord);
+    medicalRecord.setAdvisoryDate(medicalRecordExist.getAdvisoryDate());
+    medicalRecord.setUserCode(medicalRecordExist.getUserCode());
+    medicalRecord.setExaminationTimes(medicalRecordExist.getExaminationTimes());
+    medicalRecord.setPatientId(patientExist.getId());
+    if (medicalRecord.getConsultingStatusCode().equals("TTTV001")) {
+      medicalRecord.setExaminationDate(LocalDateTime.now());
+    } else {
+      medicalRecord.setExaminationDate(null);
+    }
+    medicalRecord.setClinicId(medicalRecordExist.getClinicId());
+    medicalRecord.setCreatedBy(userId);
+    medicalRecord.setUpdatedBy(userId);
+    medicalRecordRepository.save(medicalRecord);
+
+    //vi thuoc cua loai benh + so luong
+    if (!CollectionUtils.isEmpty(data.getMedicineDtos())) {
+      mappingMedicalRecordMedicine(data.getMedicineDtos(), medicalRecord.getId());
     }
     return medicalRecord;
   }

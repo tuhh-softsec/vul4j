@@ -51,30 +51,6 @@ public class PatientServiceImpl implements PatientService {
   @Autowired
   private HttpServletRequest httpServletRequest;
 
-  @Autowired
-  private AdvertisingSourceRepository advertisingSourceRepository;
-
-  @Autowired
-  private ClinicRepository clinicRepository;
-
-  @Autowired
-  private ConsultingStatusRepository consultingStatusRepository;
-
-  @Autowired
-  private DiseaseRepository diseaseRepository;
-
-  @Autowired
-  private MedicineRepository medicineRepository;
-
-  @Autowired
-  private MedicalRecordMedicineRepository recordMedicineRepository;
-
-  @Autowired
-  private ClinicUserRepository clinicUserRepository;
-
-  @Autowired
-  private ClinicDiseaseRepository clinicDiseaseRepository;
-
   @Override
   public Patient addNew(PatientAddDto patientAddDto) {
     //TODO: check at least have 1 phone number.
@@ -139,88 +115,5 @@ public class PatientServiceImpl implements PatientService {
     patientRepository.deletePatient(patient.getId());
   }
 
-  @Override
-  public Patient updatePatientAndMedicalRecordForCounselor(MedicalRecordEditForEmpClinicDto data) {
-
-    Patient patientExist = patientRepository.findActiveById(data.getPatientEditDto().getId())
-        .orElseThrow(() -> new NotFoundException(
-            Collections.singletonList("err-patient-not-found")));
-    //validationData (nguon quang cao, phong kham, tinh trang tu van, danh sach benh)
-    validationData(data.getAdvertisingSourceId(), data.getConsultingStatusCode(),
-        data.getDiseaseIds());
-
-    //TODO: check totalAmount = cod + tranfer
-    if (!data.getTotalAmount().equals(data.getTransferAmount()
-        .add(data.getCodAmount()))) {
-      throw new BadRequestException(
-          Collections.singletonList("err.medicines.total-amount-not-equal-cod-and-tranfer-amount"));
-    }
-    //lay used tu token
-    Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
-    String userCode = TokenUtils.getUserCodeFromToken(httpServletRequest);
-
-    //valid danh sach loai benh cua phong kham cua nhan vien dang dang nhap
-    Long clinicId = clinicUserRepository.findClinicIdByUserId(userId);
-    List<Long> diseaseIds = clinicDiseaseRepository.findAllByClinicId(clinicId);
-    if (!data.getDiseaseIds().containsAll(diseaseIds)) {
-      throw new NotFoundException(
-          Collections.singletonList("err-disease-not-found"));
-    }
-    //patient
-    BeanUtils.copyProperties(data.getPatientEditDto(), patientExist);
-    patientExist.setIsActive(data.getIsActive());
-    patientRepository.save(patientExist);
-
-    //valid medical record
-    MedicalRecord medicalRecordExist = medicalRecordRepository.findActiveById(patientExist.getId())
-        .orElseThrow(() -> new NotFoundException(
-            Collections.singletonList("err-medical-record-not-found")));
-    BeanUtils.copyProperties(data, medicalRecordExist);
-    medicalRecordExist.setUserCode(userCode);
-
-    medicalRecordRepository.save(medicalRecordExist);
-
-    //vi thuoc cua loai benh + so luong
-    if (!CollectionUtils.isEmpty(data.getMedicineDtos())) {
-      mappingMedicalRecordMedicine(data.getMedicineDtos(), medicalRecordExist.getId());
-    }
-
-    return patientExist;
-  }
-
-  private void mappingMedicalRecordMedicine(List<MedicineMappingDto> data, Long medicalRecordId) {
-    // mapping medical_record and medicine
-    List<MedicalRecordMedicine> medicalRecordMedicines = new ArrayList<>();
-    if (!CollectionUtils.isEmpty(data)) {
-      data.forEach(medicineDto -> {
-        medicineRepository.findActiveById(medicineDto.getMedicineId())
-            .orElseThrow(() ->
-                new NotFoundException(
-                    Collections.singletonList("err.medicines.medicine-not-found")));
-        medicalRecordMedicines.add(
-            MedicalRecordMedicine.builder().medicalRecordId(medicalRecordId)
-                .medicineId(medicineDto.getMedicineId()).qty(medicineDto.getQty()).build());
-      });
-    }
-    recordMedicineRepository.saveAll(medicalRecordMedicines);
-  }
-
-  private void validationData(Long advertId, String consultingCode, List<Long> diseaseIds) {
-    // valid advertising source
-    advertisingSourceRepository.findActiveById(advertId)
-        .orElseThrow(() -> new NotFoundException(
-            Collections.singletonList("err-advertising-not-found")));
-    // valid advisory_status - by code
-    consultingStatusRepository.findByCode(consultingCode)
-        .orElseThrow(() -> new NotFoundException(
-            Collections.singletonList("err-advisory-not-found")));
-
-    // valid disease cua phong kham cua nhan vien dang nhap
-    List<Disease> diseases = diseaseRepository.findAllByIdIn(diseaseIds);
-    if (CollectionUtils.isEmpty(diseases)) {
-      throw new NotFoundException(
-          Collections.singletonList("err-disease-not-found"));
-    }
-  }
 }
 

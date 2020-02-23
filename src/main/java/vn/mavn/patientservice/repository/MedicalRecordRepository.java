@@ -21,4 +21,7 @@ public interface MedicalRecordRepository extends JpaRepository<MedicalRecord, Lo
 
   @Query("select mr from MedicalRecord mr where mr.id =:id and mr.isActive = true")
   Optional<MedicalRecord> findActiveById(Long id);
+
+  @Query("select mr from MedicalRecord mr where mr.patientId =:id and mr.isActive = true")
+  MedicalRecord findMedicalRecordByPatientId(Long id);
 }

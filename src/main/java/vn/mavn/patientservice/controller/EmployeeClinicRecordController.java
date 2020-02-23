@@ -6,11 +6,14 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.mavn.patientservice.dto.MedicalRecordAddForEmpClinicDto;
+import vn.mavn.patientservice.dto.MedicalRecordEditForEmpClinicDto;
 import vn.mavn.patientservice.entity.MedicalRecord;
+import vn.mavn.patientservice.entity.Patient;
 import vn.mavn.patientservice.response.HttpResponse;
 import vn.mavn.patientservice.service.MedicalRecordService;
 import vn.mavn.patientservice.service.ResponseService;
@@ -27,6 +30,8 @@ public class EmployeeClinicRecordController {
   @Autowired
   private ResponseService responseService;
 
+
+
   @PostMapping
   public HttpResponse add(@Valid @RequestBody MedicalRecordAddForEmpClinicDto medicalRecordAddDto,
       BindingResult bindingResult) {
@@ -41,8 +46,8 @@ public class EmployeeClinicRecordController {
       @Valid @RequestBody MedicalRecordEditForEmpClinicDto data,
       BindingResult bindingResult) {
     EntityValidationUtils.processBindingResults(bindingResult);
-    Patient patient = patientService.updatePatientAndMedicalRecordForCounselor(data);
-    return responseService.buildUpdatedResponse(patient.getId(),
+    MedicalRecord medicalRecord = medicalRecordService.editForEmpClinic(data);
+    return responseService.buildUpdatedResponse(medicalRecord.getId(),
         Collections.singletonList("info.diseases.update-disease-successfully"));
   }
 

@@ -20,5 +20,4 @@ public interface PatientService {
 
   void delete(Long id);
 
-  Patient updatePatientAndMedicalRecordForCounselor(MedicalRecordEditForEmpClinicDto data);
 }
