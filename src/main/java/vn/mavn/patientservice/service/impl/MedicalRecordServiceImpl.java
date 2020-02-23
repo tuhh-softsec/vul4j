@@ -86,14 +86,16 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     validationData(medicalRecordAddDto.getAdvertisingSourceId(),
         medicalRecordAddDto.getClinicId(), medicalRecordAddDto.getConsultingStatusCode());
 
+    Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
     Patient patient = new Patient();
     BeanUtils.copyProperties(medicalRecordAddDto.getPatientAddDto(), patient);
     patient.setIsActive(true);
+    patient.setCreatedBy(userId);
+    patient.setUpdatedBy(userId);
     patientRepository.save(patient);
     //TODO: get user_id, user_code from access_token.
-    MedicalRecord medicalRecord = new MedicalRecord();
-    Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
     String userCode = TokenUtils.getUserCodeFromToken(httpServletRequest);
+    MedicalRecord medicalRecord = new MedicalRecord();
     medicalRecord.setCreatedBy(userId);
     medicalRecord.setUserCode(userCode);
     medicalRecord.setPatientId(patient.getId());
@@ -148,13 +150,15 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
           Collections.singletonList("err.medicines.total-amount-not-equal-cod-and-tranfer-amount"));
     }
 
+    //TODO: get user_id, user_code from access_token.
+    Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
     //TODO: add new patient from info medical_record
     Patient patient = new Patient();
+    patient.setCreatedBy(userId);
+    patient.setUpdatedBy(userId);
     BeanUtils.copyProperties(medicalRecordAddDto.getPatientAddDto(), patient);
     patient.setIsActive(true);
     patientRepository.save(patient);
-    //TODO: get user_id, user_code from access_token.
-    Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
     String userCode = TokenUtils.getUserCodeFromToken(httpServletRequest);
     MedicalRecord medicalRecord = new MedicalRecord();
     medicalRecord.setUserCode(userCode);
