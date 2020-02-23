@@ -55,7 +55,7 @@ public class PatientServiceImpl implements PatientService {
   public Patient addNew(PatientAddDto patientAddDto) {
     //TODO: check at least have 1 phone number.
     if (StringUtils.isBlank(patientAddDto.getOtherPhone()) && StringUtils
-        .isBlank(patientAddDto.getPhone()) && StringUtils.isBlank(patientAddDto.getZaLoPhone())) {
+        .isBlank(patientAddDto.getPhone()) && StringUtils.isBlank(patientAddDto.getZaloPhone())) {
       throw new BadRequestException(
           Collections.singletonList("err-patient-phone-number-is-mandatory"));
     }
