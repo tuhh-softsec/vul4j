@@ -107,9 +107,12 @@ public class MedicineServiceImpl implements MedicineService {
     List<Disease> diseases = diseaseRepository
         .findAllByIdIn(medicine.getDiseases().stream().map(Disease::getId).collect(
             Collectors.toList()));
-    List<DiseaseDto> diseaseList = diseases.stream()
-        .map(disease -> DiseaseDto.builder().id(disease.getId()).name(disease.getName()).build())
-        .collect(Collectors.toList());
+    List<DiseaseDto> diseaseList = new ArrayList<>();
+    if (!CollectionUtils.isEmpty(diseases)) {
+      diseaseList = diseases.stream()
+          .map(disease -> DiseaseDto.builder().id(disease.getId()).name(disease.getName()).build())
+          .collect(Collectors.toList());
+    }
     MedicineDto result = new MedicineDto();
     BeanUtils.copyProperties(medicine, result);
     result.setDiseases(diseaseList);
