@@ -1,5 +1,6 @@
 package vn.mavn.patientservice.service.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -11,15 +12,27 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import vn.mavn.patientservice.dto.MedicalRecordEditForEmpClinicDto;
+import vn.mavn.patientservice.dto.MedicineMappingDto;
 import vn.mavn.patientservice.dto.PatientAddDto;
 import vn.mavn.patientservice.dto.PatientEditDto;
 import vn.mavn.patientservice.dto.qobject.QueryPatientDto;
+import vn.mavn.patientservice.entity.Disease;
 import vn.mavn.patientservice.entity.MedicalRecord;
+import vn.mavn.patientservice.entity.MedicalRecordMedicine;
 import vn.mavn.patientservice.entity.Patient;
 import vn.mavn.patientservice.exception.BadRequestException;
 import vn.mavn.patientservice.exception.ConflictException;
 import vn.mavn.patientservice.exception.NotFoundException;
+import vn.mavn.patientservice.repository.AdvertisingSourceRepository;
+import vn.mavn.patientservice.repository.ClinicDiseaseRepository;
+import vn.mavn.patientservice.repository.ClinicRepository;
+import vn.mavn.patientservice.repository.ClinicUserRepository;
+import vn.mavn.patientservice.repository.ConsultingStatusRepository;
+import vn.mavn.patientservice.repository.DiseaseRepository;
+import vn.mavn.patientservice.repository.MedicalRecordMedicineRepository;
 import vn.mavn.patientservice.repository.MedicalRecordRepository;
+import vn.mavn.patientservice.repository.MedicineRepository;
 import vn.mavn.patientservice.repository.PatientRepository;
 import vn.mavn.patientservice.repository.spec.PatientSpec;
 import vn.mavn.patientservice.service.PatientService;
@@ -101,5 +114,6 @@ public class PatientServiceImpl implements PatientService {
     }
     patientRepository.deletePatient(patient.getId());
   }
+
 }
 
