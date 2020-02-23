@@ -1,5 +1,6 @@
 package vn.mavn.patientservice.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,6 +17,7 @@ import vn.mavn.patientservice.dto.ClinicDto;
 import vn.mavn.patientservice.dto.ClinicDto.DoctorDto;
 import vn.mavn.patientservice.dto.DiseaseDto;
 import vn.mavn.patientservice.dto.MedicalRecordAddDto;
+import vn.mavn.patientservice.dto.MedicalRecordAddForEmpClinicDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto.AdvertisingSourceDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto.PatientDto;
@@ -70,38 +72,27 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
   private DoctorRepository doctorRepository;
 
   @Override
-  public MedicalRecord addNew(MedicalRecordAddDto medicalRecordAddDto) {
+  public MedicalRecord addForEmp(MedicalRecordAddDto medicalRecordAddDto) {
     //TODO: validation data
     validationData(medicalRecordAddDto.getAdvertisingSourceId(),
         medicalRecordAddDto.getClinicId(), medicalRecordAddDto.getConsultingStatusCode(),
-        medicalRecordAddDto.getDiseaseId());
-    //TODO: add new patient from info medical_record
-    //TODO: check at least have 1 phone number.
-    PatientAddDto patientAddDto = medicalRecordAddDto.getPatientAddDto();
-    if (StringUtils.isBlank(patientAddDto.getOtherPhone()) && StringUtils
-        .isBlank(patientAddDto.getPhone()) && StringUtils
-        .isBlank(patientAddDto.getZaLoPhone())) {
-      throw new BadRequestException(
-          Collections.singletonList("err-patient-phone-number-is-mandatory"));
-    }
+        medicalRecordAddDto.getPatientAddDto());
+
     Patient patient = new Patient();
-    BeanUtils.copyProperties(patientAddDto, patient);
+    BeanUtils.copyProperties(medicalRecordAddDto.getPatientAddDto(), patient);
     patient.setIsActive(true);
     patientRepository.save(patient);
     //TODO: get user_id, user_code from access_token.
+    MedicalRecord medicalRecord = new MedicalRecord();
     Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
     String userCode = TokenUtils.getUserCodeFromToken(httpServletRequest);
-    MedicalRecord medicalRecord = new MedicalRecord();
-    medicalRecord.setUserCode(userCode);
     medicalRecord.setCreatedBy(userId);
-    medicalRecord.setUpdatedBy(userId);
+    medicalRecord.setUserCode(userCode);
     medicalRecord.setPatientId(patient.getId());
+    medicalRecord.setUpdatedBy(userId);
     BeanUtils.copyProperties(medicalRecordAddDto, medicalRecord);
-    medicalRecord.setExaminationTimes(1L);
+    medicalRecord.setAdvisoryDate(LocalDateTime.now());
     medicalRecordRepository.save(medicalRecord);
-    if (!CollectionUtils.isEmpty(medicalRecordAddDto.getMedicineDtos())) {
-      mappingMedicalRecordMedicine(medicalRecordAddDto.getMedicineDtos(), medicalRecord.getId());
-    }
     return medicalRecord;
   }
 
@@ -136,6 +127,43 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     return medicalRecordDtos;
   }
 
+  @Override
+  public MedicalRecord addForEmpClinic(
+      MedicalRecordAddForEmpClinicDto medicalRecordAddDto) {
+    //TODO: validation data
+    validationData(medicalRecordAddDto.getAdvertisingSourceId(),
+        medicalRecordAddDto.getClinicId(), medicalRecordAddDto.getConsultingStatusCode(),
+        medicalRecordAddDto.getPatientAddDto());
+    //TODO: check totalAmount = cod + tranfer
+    if (!medicalRecordAddDto.getTotalAmount().equals(medicalRecordAddDto.getTransferAmount()
+        .add(medicalRecordAddDto.getCodAmount()))) {
+      throw new BadRequestException(
+          Collections.singletonList("err.medicines.total-amount-not-equal-cod-and-tranfer-amount"));
+    }
+    //TODO: add new patient from info medical_record
+    Patient patient = new Patient();
+    BeanUtils.copyProperties(medicalRecordAddDto.getPatientAddDto(), patient);
+    patient.setIsActive(true);
+    patientRepository.save(patient);
+    //TODO: get user_id, user_code from access_token.
+    Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
+    String userCode = TokenUtils.getUserCodeFromToken(httpServletRequest);
+    MedicalRecord medicalRecord = new MedicalRecord();
+    medicalRecord.setUserCode(userCode);
+    medicalRecord.setCreatedBy(userId);
+    medicalRecord.setUpdatedBy(userId);
+    medicalRecord.setPatientId(patient.getId());
+    BeanUtils.copyProperties(medicalRecordAddDto, medicalRecord);
+    medicalRecord.setAdvisoryDate(LocalDateTime.now());
+    medicalRecord.setExaminationTimes(1L);
+    medicalRecord.setExaminationDate(LocalDateTime.now());
+    medicalRecordRepository.save(medicalRecord);
+    if (!CollectionUtils.isEmpty(medicalRecordAddDto.getMedicineDtos())) {
+      mappingMedicalRecordMedicine(medicalRecordAddDto.getMedicineDtos(), medicalRecord.getId());
+    }
+    return medicalRecord;
+  }
+
 
   private void mappingMedicalRecordMedicine(List<MedicineMappingDto> medicineDtos,
       Long medicalRecordId) {
@@ -156,7 +184,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
   }
 
   private void validationData(Long advertId, Long clinicId, String consultingCode,
-      Long diseaseId) {
+      PatientAddDto patientAddDto) {
     // valid advertising source
     advertisingSourceRepository.findActiveById(advertId)
         .orElseThrow(() -> new NotFoundException(
@@ -169,10 +197,13 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     consultingStatusRepository.findByCode(consultingCode)
         .orElseThrow(() -> new NotFoundException(
             Collections.singletonList("err-advisory-not-found")));
-    // valid disease
-    diseaseRepository.findActiveById(diseaseId)
-        .orElseThrow(() -> new NotFoundException(
-            Collections.singletonList("err-disease-not-found")));
+    //TODO: check at least have 1 phone number.
+    if (StringUtils.isBlank(patientAddDto.getOtherPhone()) && StringUtils
+        .isBlank(patientAddDto.getPhone()) && StringUtils
+        .isBlank(patientAddDto.getZaLoPhone())) {
+      throw new BadRequestException(
+          Collections.singletonList("err-patient-phone-number-is-mandatory"));
+    }
   }
 
   private void setValueForDto(MedicalRecord medicalRecord, MedicalRecordDto medicalRecordDto) {
@@ -213,5 +244,6 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       medicalRecordDto.setClinicDto(clinicDto);
     }
   }
+
 
 }
