@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,11 +34,8 @@ public class MedicalRecordAddDto {
   @NotNull(message = "err-medical-record-examination-date-is-mandatory")
   private LocalDateTime examinationDate;
   private Long examinationTimes;
-  @NotBlank(message = "err-medical-record-remedy-type-is-mandatory")
   private String remedyType;
-  @NotBlank(message = "err-medical-record-remedy-amount-is-mandatory")
   private String remedyAmount;
-  @NotBlank(message = "err-medical-record-remedies-is-mandatory")
   private String remedies;
   @NotNull(message = "err-medical-record-total-amount-is-mandatory")
   private BigDecimal totalAmount;

@@ -13,5 +13,10 @@ public class QueryMedicalRecordDto {
 
   private String name;
   private Boolean isActive;
+  private Long clinicId;
+  private String userCode;
+  private Long patientId;
+  private Long diseaseId;
+  private Long advertisingSourceId;
 
 }

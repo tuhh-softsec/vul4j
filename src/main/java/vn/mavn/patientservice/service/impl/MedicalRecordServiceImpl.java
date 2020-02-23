@@ -113,6 +113,69 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
             Collections.singletonList("err-medical-record-not-found")));
     MedicalRecordDto medicalRecordDto = new MedicalRecordDto();
     BeanUtils.copyProperties(medicalRecord, medicalRecordDto);
+    setValueForDto(medicalRecord, medicalRecordDto);
+    return medicalRecordDto;
+  }
+
+  @Override
+  public Page<MedicalRecordDto> findAll(QueryMedicalRecordDto queryMedicalRecordDto,
+      Pageable pageable) {
+    Page<MedicalRecord> medicalRecords = medicalRecordRepository
+        .findAll(MedicalRecordSpec.findAllMedicines(queryMedicalRecordDto), pageable);
+    Page<MedicalRecordDto> medicalRecordDtos = null;
+    if (CollectionUtils.isEmpty(medicalRecords.getContent())) {
+      return Page.empty(pageable);
+    } else {
+      medicalRecordDtos = medicalRecords.map(medicalRecord -> {
+        MedicalRecordDto medicalRecordDto = new MedicalRecordDto();
+        BeanUtils.copyProperties(medicalRecord, medicalRecordDto);
+        setValueForDto(medicalRecord, medicalRecordDto);
+        return medicalRecordDto;
+      });
+    }
+    return medicalRecordDtos;
+  }
+
+
+  private void mappingMedicalRecordMedicine(List<MedicineMappingDto> medicineDtos,
+      Long medicalRecordId) {
+    //TODO: mapping medical_record and medicine
+    List<MedicalRecordMedicine> medicalRecordMedicines = new ArrayList<>();
+    if (!CollectionUtils.isEmpty(medicineDtos)) {
+      medicineDtos.forEach(medicineDto -> {
+        medecineRepo.findActiveById(medicineDto.getMedicineId())
+            .orElseThrow(() ->
+                new NotFoundException(
+                    Collections.singletonList("err.medicines.medicine-not-found")));
+        medicalRecordMedicines.add(
+            MedicalRecordMedicine.builder().medicalRecordId(medicalRecordId)
+                .medicineId(medicineDto.getMedicineId()).qty(medicineDto.getQty()).build());
+      });
+    }
+    recordMedicineRepository.saveAll(medicalRecordMedicines);
+  }
+
+  private void validationData(Long advertId, Long clinicId, String consultingCode,
+      Long diseaseId) {
+    // valid advertising source
+    advertisingSourceRepository.findActiveById(advertId)
+        .orElseThrow(() -> new NotFoundException(
+            Collections.singletonList("err-advertising-not-found")));
+    // valid clinic
+    clinicRepository.findActiveById(clinicId)
+        .orElseThrow(() -> new NotFoundException(
+            Collections.singletonList("err-clinic-not-found")));
+    // valid advisory_status - by code
+    consultingStatusRepository.findByCode(consultingCode)
+        .orElseThrow(() -> new NotFoundException(
+            Collections.singletonList("err-advisory-not-found")));
+    // valid disease
+    diseaseRepository.findActiveById(diseaseId)
+        .orElseThrow(() -> new NotFoundException(
+            Collections.singletonList("err-disease-not-found")));
+  }
+
+  private void setValueForDto(MedicalRecord medicalRecord, MedicalRecordDto medicalRecordDto) {
     // TODO build PatientDto
     Patient patient = patientRepository.findByIdForGetData(medicalRecord.getPatientId());
     if (patient != null) {
@@ -149,58 +212,6 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       }
       medicalRecordDto.setClinicDto(clinicDto);
     }
-    return medicalRecordDto;
   }
 
-  @Override
-  public Page<MedicalRecordDto> findAll(QueryMedicalRecordDto queryMedicalRecordDto,
-      Pageable pageable) {
-    Page<MedicalRecord> medicalRecords = medicalRecordRepository
-        .findAll(MedicalRecordSpec.findAllMedicines(queryMedicalRecordDto), pageable);
-    Page<MedicalRecordDto> medicalRecordDtos = null;
-    if (CollectionUtils.isEmpty(medicalRecords.getContent())) {
-      return Page.empty(pageable);
-    } else {
-      medicalRecordDtos = medicalRecords.map(medicalRecord -> {
-        return this.getById(medicalRecord.getId());
-      });
-    }
-    return medicalRecordDtos;
-  }
-
-
-  private void mappingMedicalRecordMedicine(List<MedicineMappingDto> medicineDtos,
-      Long medicalRecordId) {
-    //TODO: mapping medical_record and medicine
-    List<MedicalRecordMedicine> medicalRecordMedicines = new ArrayList<>();
-    medicineDtos.forEach(medicineDto -> {
-      medecineRepo.findActiveById(medicineDto.getMedicineId())
-          .orElseThrow(() ->
-              new NotFoundException(Collections.singletonList("err.medicines.medicine-not-found")));
-      medicalRecordMedicines.add(
-          MedicalRecordMedicine.builder().medicalRecordId(medicalRecordId)
-              .medicineId(medicineDto.getMedicineId()).qty(medicineDto.getQty()).build());
-    });
-    recordMedicineRepository.saveAll(medicalRecordMedicines);
-  }
-
-  private void validationData(Long advertId, Long clinicId, String consultingCode,
-      Long diseaseId) {
-    // valid advertising source
-    advertisingSourceRepository.findActiveById(advertId)
-        .orElseThrow(() -> new NotFoundException(
-            Collections.singletonList("err-advertising-not-found")));
-    // valid clinic
-    clinicRepository.findActiveById(clinicId)
-        .orElseThrow(() -> new NotFoundException(
-            Collections.singletonList("err-clinic-not-found")));
-    // valid advisory_status - by code
-    consultingStatusRepository.findByCode(consultingCode)
-        .orElseThrow(() -> new NotFoundException(
-            Collections.singletonList("err-advisory-not-found")));
-    // valid disease
-    diseaseRepository.findActiveById(diseaseId)
-        .orElseThrow(() -> new NotFoundException(
-            Collections.singletonList("err-disease-not-found")));
-  }
 }
