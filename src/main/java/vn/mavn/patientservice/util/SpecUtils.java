@@ -10,9 +10,9 @@ public class SpecUtils {
   public static Predicate handleAccentExp(CriteriaBuilder criteriaBuilder, Root root,
       String fieldName, String parameter) {
     parameter = "%" + parameter.toLowerCase().trim() + "%";
-    Expression unaccentField = criteriaBuilder
+    Expression<String> unaccentField = criteriaBuilder
         .function("unaccent", String.class, criteriaBuilder.lower(root.get(fieldName)));
-    Expression unaccentParameter = criteriaBuilder
+    Expression<String> unaccentParameter = criteriaBuilder
         .function("unaccent", String.class, criteriaBuilder.literal(parameter));
     return criteriaBuilder.like(unaccentField, unaccentParameter);
   }

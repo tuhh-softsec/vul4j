@@ -11,7 +11,7 @@ import vn.mavn.patientservice.util.SpecUtils;
 
 public class PatientSpec {
 
-  public static Specification findAllPatient(QueryPatientDto queryPatientDto) {
+  public static Specification<Patient> findAllPatient(QueryPatientDto queryPatientDto) {
     return (Specification<Patient>) (root, criteriaQuery, criteriaBuilder) -> {
       Collection<Predicate> predicates = new ArrayList<>();
       if (queryPatientDto.getIsActive() != null) {
