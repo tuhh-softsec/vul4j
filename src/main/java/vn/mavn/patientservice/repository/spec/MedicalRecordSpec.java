@@ -34,6 +34,16 @@ public class MedicalRecordSpec {
       if (StringUtils.isNotBlank(data.getUserCode())) {
         predicates.add(criteriaBuilder.equal(root.get("userCode"), data.getUserCode()));
       }
+      if (data.getStartDate() != null) {
+        Predicate predicate = criteriaBuilder
+            .greaterThan(root.get("advisoryDate"), data.getStartDate());
+        predicates.add(predicate);
+      }
+
+      if (data.getEndDate() != null) {
+        Predicate predicate = criteriaBuilder.lessThan(root.get("advisoryDate"), data.getEndDate());
+        predicates.add(predicate);
+      }
       return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
     };
   }
