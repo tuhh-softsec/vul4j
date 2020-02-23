@@ -1,4 +1,4 @@
-package vn.mavn.patientservice.gracefulshd;
+package vn.mavn.patientservice.repository;
 
 import java.util.List;
 import org.springframework.data.jpa.repository.Query;
