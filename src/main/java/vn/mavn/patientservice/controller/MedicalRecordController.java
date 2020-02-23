@@ -45,7 +45,7 @@ public class MedicalRecordController {
   public HttpResponse add(@Valid @RequestBody MedicalRecordAddDto medicalRecordAddDto,
       BindingResult bindingResult) {
     EntityValidationUtils.processBindingResults(bindingResult);
-    MedicalRecord medicalRecord = medicalRecordService.addNew(medicalRecordAddDto);
+    MedicalRecord medicalRecord = medicalRecordService.addForEmp(medicalRecordAddDto);
     return responseService.buildUpdatedResponse(medicalRecord.getId(),
         Collections.singletonList("info-medical-record-add-successfully"));
   }
