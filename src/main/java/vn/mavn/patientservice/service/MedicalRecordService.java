@@ -18,6 +18,7 @@ public interface MedicalRecordService {
   Page<MedicalRecordDto> findAll(QueryMedicalRecordDto queryMedicalRecordDto, Pageable pageable);
 
   MedicalRecord update(MedicalRecordEditDto data);
+
   MedicalRecord addForEmpClinic(MedicalRecordAddForEmpClinicDto medicalRecordAddDto);
 
 }
