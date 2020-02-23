@@ -13,5 +13,7 @@ public class QueryMedicalRecordDto {
 
   private String name;
   private Boolean isActive;
+  private Long clinicId;
+  private String userCode;
 
 }

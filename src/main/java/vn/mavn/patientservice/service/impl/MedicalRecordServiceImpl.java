@@ -157,7 +157,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       Pageable pageable) {
     Page<MedicalRecord> medicalRecords = medicalRecordRepository
         .findAll(MedicalRecordSpec.findAllMedicines(queryMedicalRecordDto), pageable);
-    Page<MedicalRecordDto> medicalRecordDtos = null;
+    Page<MedicalRecordDto> medicalRecordDtos;
     if (CollectionUtils.isEmpty(medicalRecords.getContent())) {
       return Page.empty(pageable);
     } else {
