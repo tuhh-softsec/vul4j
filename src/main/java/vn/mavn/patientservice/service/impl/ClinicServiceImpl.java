@@ -121,18 +121,21 @@ public class ClinicServiceImpl implements ClinicService {
 
   private void mappingClinicUser(Clinic clinic, List<Long> userIds) {
 
-    //valid user
+    Set<Long> setUserIds = new HashSet<>();
     if (!CollectionUtils.isEmpty(userIds)) {
-      userIds.forEach(user -> {
-        clinicUserRepository.findById(user).ifPresent(clinicUser -> {
-          throw new ConflictException(Collections.singletonList("err.clinic.user-already-exits"));
-        });
-      });
-      userIds.forEach(user -> {
-        ClinicUser clinicUser = ClinicUser.builder().clinicId(clinic.getId()).userId(user).build();
-        clinicUserRepository.save(clinicUser);
-      });
+      setUserIds.addAll(userIds);
     }
+
+    //valid user
+    setUserIds.forEach(user -> {
+      clinicUserRepository.findById(user).ifPresent(clinicUser -> {
+        throw new ConflictException(Collections.singletonList("err.clinic.user-already-exits"));
+      });
+    });
+    setUserIds.forEach(user -> {
+      ClinicUser clinicUser = ClinicUser.builder().clinicId(clinic.getId()).userId(user).build();
+      clinicUserRepository.save(clinicUser);
+    });
   }
 
   @Override
