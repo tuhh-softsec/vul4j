@@ -97,6 +97,9 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
           .findActiveById(medicalRecordAddDto.getPatientAddDto().getId())
           .orElseThrow(() -> new NotFoundException(
               Collections.singletonList("err-patient-not-found")));
+      BeanUtils.copyProperties(medicalRecordAddDto.getPatientAddDto(), patient);
+      patient.setIsActive(true);
+      patientRepository.save(patient);
       //TODO: find list medical_record by patient_id
       List<MedicalRecord> medicalRecords = medicalRecordRepository
           .findByPatientId(patient.getId());
@@ -166,10 +169,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     String userCode = TokenUtils.getUserCodeFromToken(httpServletRequest);
     //TODO: check if have patient_id -> action re-examination only add new medical_record
     if (medicalRecordAddDto.getPatientAddDto().getId() != null) {
-      Patient patient = patientRepository
-          .findActiveById(medicalRecordAddDto.getPatientAddDto().getId())
-          .orElseThrow(() -> new NotFoundException(
-              Collections.singletonList("err-patient-not-found")));
+      Patient patient = setUpdatePatientForEmpClinic(medicalRecordAddDto);
       //TODO: find list medical_record by patient_id
       List<MedicalRecord> medicalRecords = medicalRecordRepository
           .findByPatientId(patient.getId());
@@ -411,6 +411,18 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     medicalRecord.setAdvisoryDate(LocalDateTime.now());
     medicalRecord.setExaminationDate(LocalDateTime.now());
     return medicalRecord;
+  }
+
+  private Patient setUpdatePatientForEmpClinic(
+      MedicalRecordAddForEmpClinicDto medicalRecordAddDto) {
+    Patient patient = patientRepository
+        .findActiveById(medicalRecordAddDto.getPatientAddDto().getId())
+        .orElseThrow(() -> new NotFoundException(
+            Collections.singletonList("err-patient-not-found")));
+    BeanUtils.copyProperties(medicalRecordAddDto.getPatientAddDto(), patient);
+    patient.setIsActive(true);
+    patientRepository.save(patient);
+    return patient;
   }
 
 }
