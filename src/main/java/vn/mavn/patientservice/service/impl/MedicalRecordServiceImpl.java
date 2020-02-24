@@ -89,21 +89,34 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
         medicalRecordAddDto.getClinicId(), medicalRecordAddDto.getConsultingStatusCode());
 
     Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
-    Patient patient = new Patient();
-    BeanUtils.copyProperties(medicalRecordAddDto.getPatientAddDto(), patient);
-    patient.setIsActive(true);
-    patient.setCreatedBy(userId);
-    patient.setUpdatedBy(userId);
-    patientRepository.save(patient);
-    //TODO: get user_id, user_code from access_token.
-    String userCode = TokenUtils.getUserCodeFromToken(httpServletRequest);
     MedicalRecord medicalRecord = new MedicalRecord();
-    medicalRecord.setCreatedBy(userId);
-    medicalRecord.setUserCode(userCode);
-    medicalRecord.setPatientId(patient.getId());
-    medicalRecord.setUpdatedBy(userId);
-    BeanUtils.copyProperties(medicalRecordAddDto, medicalRecord);
-    medicalRecord.setAdvisoryDate(LocalDateTime.now());
+    String userCode = TokenUtils.getUserCodeFromToken(httpServletRequest);
+    //TODO: check if have patient_id -> action re-examination only add new medical_record
+    if (medicalRecordAddDto.getPatientAddDto().getId() != null) {
+      Patient patient = patientRepository
+          .findActiveById(medicalRecordAddDto.getPatientAddDto().getId())
+          .orElseThrow(() -> new NotFoundException(
+              Collections.singletonList("err-patient-not-found")));
+      //TODO: find list medical_record by patient_id
+      List<MedicalRecord> medicalRecords = medicalRecordRepository
+          .findByPatientId(patient.getId());
+      if (!CollectionUtils.isEmpty(medicalRecords)) {
+        medicalRecord = mapMedicalRecordForEmp(medicalRecordAddDto, userId, userCode,
+            patient.getId());
+        medicalRecord.setExaminationTimes(medicalRecords.size() + 1L);
+
+      }
+
+    } else {
+      Patient patient = new Patient();
+      BeanUtils.copyProperties(medicalRecordAddDto.getPatientAddDto(), patient);
+      patient.setIsActive(true);
+      patient.setCreatedBy(userId);
+      patient.setUpdatedBy(userId);
+      patientRepository.save(patient);
+      medicalRecord = mapMedicalRecordForEmp(medicalRecordAddDto, userId, userCode,
+          patient.getId());
+    }
     medicalRecordRepository.save(medicalRecord);
     return medicalRecord;
   }
@@ -145,36 +158,43 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     //TODO: validation data
     validationData(medicalRecordAddDto.getAdvertisingSourceId(),
         medicalRecordAddDto.getClinicId(), medicalRecordAddDto.getConsultingStatusCode());
-    //TODO: check totalAmount = cod + tranfer
-    if (!medicalRecordAddDto.getTotalAmount().equals(medicalRecordAddDto.getTransferAmount()
-        .add(medicalRecordAddDto.getCodAmount()))) {
-      throw new BadRequestException(
-          Collections.singletonList("err.medicines.total-amount-not-equal-cod-and-tranfer-amount"));
-    }
 
+    MedicalRecord medicalRecord = new MedicalRecord();
     //TODO: get user_id, user_code from access_token.
     Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
-    //TODO: add new patient from info medical_record
-    Patient patient = new Patient();
-    patient.setCreatedBy(userId);
-    patient.setUpdatedBy(userId);
-    BeanUtils.copyProperties(medicalRecordAddDto.getPatientAddDto(), patient);
-    patient.setIsActive(true);
-    patientRepository.save(patient);
     String userCode = TokenUtils.getUserCodeFromToken(httpServletRequest);
-    MedicalRecord medicalRecord = new MedicalRecord();
-    medicalRecord.setUserCode(userCode);
-    medicalRecord.setCreatedBy(userId);
-    medicalRecord.setUpdatedBy(userId);
-    medicalRecord.setPatientId(patient.getId());
-    BeanUtils.copyProperties(medicalRecordAddDto, medicalRecord);
-    medicalRecord.setAdvisoryDate(LocalDateTime.now());
-    medicalRecord.setExaminationTimes(1L);
-    medicalRecord.setExaminationDate(LocalDateTime.now());
+    //TODO: check if have patient_id -> action re-examination only add new medical_record
+    if (medicalRecordAddDto.getPatientAddDto().getId() != null) {
+      Patient patient = patientRepository
+          .findActiveById(medicalRecordAddDto.getPatientAddDto().getId())
+          .orElseThrow(() -> new NotFoundException(
+              Collections.singletonList("err-patient-not-found")));
+      //TODO: find list medical_record by patient_id
+      List<MedicalRecord> medicalRecords = medicalRecordRepository
+          .findByPatientId(patient.getId());
+      if (!CollectionUtils.isEmpty(medicalRecords)) {
+        medicalRecord = mappingMedicalRecordForEmpClinic(userCode, userId, patient.getId(),
+            medicalRecordAddDto);
+        medicalRecord.setExaminationTimes(medicalRecords.size() + 1L);
+      }
+    } else {
+      //TODO: add new patient from info medical_record
+      Patient patient = new Patient();
+      patient.setCreatedBy(userId);
+      patient.setUpdatedBy(userId);
+      BeanUtils.copyProperties(medicalRecordAddDto.getPatientAddDto(), patient);
+      patient.setIsActive(true);
+      patientRepository.save(patient);
+      medicalRecord = mappingMedicalRecordForEmpClinic(userCode, userId, patient.getId(),
+          medicalRecordAddDto);
+      medicalRecord.setExaminationTimes(1L);
+    }
     medicalRecordRepository.save(medicalRecord);
     if (!CollectionUtils.isEmpty(medicalRecordAddDto.getMedicineDtos())) {
-      mappingMedicalRecordMedicine(medicalRecordAddDto.getMedicineDtos(), medicalRecord.getId());
+      mappingMedicalRecordMedicine(medicalRecordAddDto.getMedicineDtos(),
+          medicalRecord.getId());
     }
+
     return medicalRecord;
   }
 
@@ -362,5 +382,31 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       medicalRecordDto.setConsultingStatusDto(consultingStatusDto);
     }
   }
-  
+
+  private MedicalRecord mapMedicalRecordForEmp(MedicalRecordAddDto medicalRecordAddDto,
+      Long userId,
+      String userCode, Long patientId) {
+    MedicalRecord medicalRecord = new MedicalRecord();
+    BeanUtils.copyProperties(medicalRecordAddDto, medicalRecord);
+    medicalRecord.setCreatedBy(userId);
+    medicalRecord.setUserCode(userCode);
+    medicalRecord.setPatientId(patientId);
+    medicalRecord.setUpdatedBy(userId);
+    medicalRecord.setAdvisoryDate(LocalDateTime.now());
+    return medicalRecord;
+  }
+
+  private MedicalRecord mappingMedicalRecordForEmpClinic(String userCode, Long userId,
+      Long patientId, MedicalRecordAddForEmpClinicDto medicalRecordAddDto) {
+    MedicalRecord medicalRecord = new MedicalRecord();
+    medicalRecord.setUserCode(userCode);
+    medicalRecord.setCreatedBy(userId);
+    medicalRecord.setUpdatedBy(userId);
+    medicalRecord.setPatientId(patientId);
+    BeanUtils.copyProperties(medicalRecordAddDto, medicalRecord);
+    medicalRecord.setAdvisoryDate(LocalDateTime.now());
+    medicalRecord.setExaminationDate(LocalDateTime.now());
+    return medicalRecord;
+  }
+
 }
