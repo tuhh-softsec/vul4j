@@ -1,4 +1,4 @@
-package vn.mavn.patientservice.controller;
+package vn.mavn.patientservice.controller.employee;
 
 import io.swagger.annotations.Api;
 import java.util.Collections;
