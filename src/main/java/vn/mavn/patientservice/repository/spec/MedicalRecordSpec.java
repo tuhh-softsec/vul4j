@@ -1,5 +1,6 @@
 package vn.mavn.patientservice.repository.spec;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -58,7 +59,7 @@ public class MedicalRecordSpec {
       if (data.getTotalAmount() != null) {
         predicates
             .add(criteriaBuilder.lessThanOrEqualTo(root.get("totalAmount"), data.getTotalAmount()));
-        predicates.add(criteriaBuilder.greaterThan(root.get("totalAmount"), data.getTotalAmount()));
+        predicates.add(criteriaBuilder.greaterThan(root.get("totalAmount"), BigDecimal.ONE));
       }
 
       if (StringUtils.isNotBlank(data.getConsultingStatusCode())) {
