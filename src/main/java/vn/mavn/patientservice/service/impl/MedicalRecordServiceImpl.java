@@ -240,13 +240,6 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
   @Override
   public MedicalRecord update(MedicalRecordEditDto data) {
 
-    // TODO: we can optimise this function:
-    //  1. Get token from request header.
-    //  2. Using method getValueByKeyInTheToken from Oauth2TokenUtils then pass desire parameter
-    // So then we will not have to retrieve token 2 times
-    Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
-    String userCode = TokenUtils.getUserCodeFromToken(httpServletRequest);
-
     MedicalRecord medicalRecord = medicalRecordRepository.findById(data.getId())
         .orElseThrow(() -> new NotFoundException(
             Collections.singletonList("err.medical-records.medical-record-not-found")));
@@ -255,14 +248,19 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
           Collections.singletonList("err.medical-records.patient-info-not-match"));
     }
 
+    validationData(data.getAdvertisingSourceId(), data.getClinicId(),
+        data.getConsultingStatusCode());
+
+    // TODO: we can optimise this function:
+    //  1. Get token from request header.
+    //  2. Using method getValueByKeyInTheToken from Oauth2TokenUtils then pass desire parameter
+    // So then we will not have to retrieve token 2 times
+    Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
     //valid nhan vien tu van chi sua du lieu cua minh
     if (!userId.equals(medicalRecord.getCreatedBy())) {
       throw new NotFoundException(
           Collections.singletonList("err.medical-record.permission-denied"));
     }
-
-    validationData(data.getAdvertisingSourceId(), data.getClinicId(),
-        data.getConsultingStatusCode());
     List<MedicineMappingDto> medicineList = data.getMedicineDtos();
     if (!CollectionUtils.isEmpty(medicineList)) {
       List<Long> medicines = medicineRepository
@@ -281,7 +279,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       });
       mappingMedicalRecordMedicine(medicineList, medicalRecord.getId());
     }
-
+    String userCode = TokenUtils.getUserCodeFromToken(httpServletRequest);
     BeanUtils.copyProperties(data, medicalRecord);
     medicalRecord.setUserCode(userCode);
     medicalRecord.setUpdatedBy(userId);
