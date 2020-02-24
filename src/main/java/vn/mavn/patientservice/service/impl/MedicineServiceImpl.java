@@ -49,7 +49,7 @@ public class MedicineServiceImpl implements MedicineService {
   private HttpServletRequest httpServletRequest;
 
   @Override
-  public Page<Medicine> getAllMedicines(QueryMedicineDto data, Pageable pageable) {
+  public Page<MedicineDto> getAllMedicines(QueryMedicineDto data, Pageable pageable) {
     List<Long> medicineIds = new ArrayList<>();
     if (!CollectionUtils.isEmpty(data.getDiseaseIds())) {
       medicineIds = medicineDiseaseRepository
@@ -58,7 +58,21 @@ public class MedicineServiceImpl implements MedicineService {
         return Page.empty(pageable);
       }
     }
-    return medicineRepository.findAll(MedicineSpec.findAllMedicines(data, medicineIds), pageable);
+    Page<Medicine> medicines = medicineRepository
+        .findAll(MedicineSpec.findAllMedicines(data, medicineIds), pageable);
+    return medicines.map(medicine -> {
+      List<DiseaseDto> diseases = new ArrayList<>();
+      if (!CollectionUtils.isEmpty(medicine.getDiseases())) {
+        diseases = medicine.getDiseases().stream()
+            .map(disease ->
+                DiseaseDto.builder().id(disease.getId()).name(disease.getName()).build())
+            .collect(Collectors.toList());
+      }
+      MedicineDto result = new MedicineDto();
+      BeanUtils.copyProperties(medicine, result);
+      result.setDiseases(diseases);
+      return result;
+    });
   }
 
   @Override
