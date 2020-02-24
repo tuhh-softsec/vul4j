@@ -104,9 +104,7 @@ public class MedicineServiceImpl implements MedicineService {
   public MedicineDto detail(Long id) {
     Medicine medicine = medicineRepository.findById(id).orElseThrow(()
         -> new NotFoundException(Collections.singletonList("err.medicines.medicine-not-found")));
-    List<Disease> diseases = diseaseRepository
-        .findAllByIdIn(medicine.getDiseases().stream().map(Disease::getId).collect(
-            Collectors.toList()));
+    List<Disease> diseases = medicine.getDiseases();
     List<DiseaseDto> diseaseList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(diseases)) {
       diseaseList = diseases.stream()
