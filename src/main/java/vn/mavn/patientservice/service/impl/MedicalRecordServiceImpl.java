@@ -184,6 +184,12 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     //lay used tu token
     Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
 
+    //valid phong kham cua nhan vien phong kham
+    clinicUserRepository.findClinicByUserId(userId).ifPresent(id -> {
+      throw new ConflictException(
+          Collections.singletonList("err.medical-record.permission-denied"));
+    });
+
     Patient patientExist = patientRepository.findActiveById(data.getPatientEditDto().getId())
         .orElseThrow(
             () -> new NotFoundException(Collections.singletonList("err-patient-not-found")));
@@ -200,13 +206,6 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     //patient
     BeanUtils.copyProperties(data.getPatientEditDto(), patientExist);
     patientExist.setIsActive(data.getIsActive());
-
-    //TODO: check totalAmount = cod + tranfer
-    if (!data.getTotalAmount().equals(data.getTransferAmount()
-        .add(data.getCodAmount()))) {
-      throw new BadRequestException(
-          Collections.singletonList("err.medicines.total-amount-not-equal-cod-and-tranfer-amount"));
-    }
 
     patientRepository.save(patientExist);
 
@@ -239,6 +238,14 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
   @Override
   public MedicalRecord update(MedicalRecordEditDto data) {
+
+    // TODO: we can optimise this function:
+    //  1. Get token from request header.
+    //  2. Using method getValueByKeyInTheToken from Oauth2TokenUtils then pass desire parameter
+    // So then we will not have to retrieve token 2 times
+    Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
+    String userCode = TokenUtils.getUserCodeFromToken(httpServletRequest);
+
     MedicalRecord medicalRecord = medicalRecordRepository.findById(data.getId())
         .orElseThrow(() -> new NotFoundException(
             Collections.singletonList("err.medical-records.medical-record-not-found")));
@@ -246,6 +253,13 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       throw new ConflictException(
           Collections.singletonList("err.medical-records.patient-info-not-match"));
     }
+
+    //valid nhan vien tu van chi sua du lieu cua minh
+    if (!userCode.equals(medicalRecord.getUserCode())) {
+      throw new ConflictException(
+          Collections.singletonList("err.medical-record.permission-denied"));
+    }
+
     validationData(data.getAdvertisingSourceId(), data.getClinicId(),
         data.getConsultingStatusCode());
     List<MedicineMappingDto> medicineList = data.getMedicineDtos();
@@ -266,12 +280,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       });
       mappingMedicalRecordMedicine(medicineList, medicalRecord.getId());
     }
-    // TODO: we can optimise this function:
-    //  1. Get token from request header.
-    //  2. Using method getValueByKeyInTheToken from Oauth2TokenUtils then pass desire parameter
-    // So then we will not have to retrieve token 2 times
-    Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
-    String userCode = TokenUtils.getUserCodeFromToken(httpServletRequest);
+
     BeanUtils.copyProperties(data, medicalRecord);
     medicalRecord.setUserCode(userCode);
     medicalRecord.setUpdatedBy(userId);
@@ -362,5 +371,5 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       medicalRecordDto.setConsultingStatusDto(consultingStatusDto);
     }
   }
-  
+
 }
