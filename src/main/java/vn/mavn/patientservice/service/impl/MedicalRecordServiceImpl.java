@@ -98,6 +98,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
           .orElseThrow(() -> new NotFoundException(
               Collections.singletonList("err-patient-not-found")));
       BeanUtils.copyProperties(medicalRecordAddDto.getPatientAddDto(), patient);
+      patient.setIsActive(true);
       patientRepository.save(patient);
       //TODO: find list medical_record by patient_id
       List<MedicalRecord> medicalRecords = medicalRecordRepository
@@ -172,6 +173,8 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
           .findActiveById(medicalRecordAddDto.getPatientAddDto().getId())
           .orElseThrow(() -> new NotFoundException(
               Collections.singletonList("err-patient-not-found")));
+      BeanUtils.copyProperties(medicalRecordAddDto.getPatientAddDto(), patient);
+      patientRepository.save(patient);
       BeanUtils.copyProperties(medicalRecordAddDto.getPatientAddDto(), patient);
       patientRepository.save(patient);
       //TODO: find list medical_record by patient_id
