@@ -37,6 +37,7 @@ public class EmployeeAdvertisingSourceController {
   @GetMapping
   public ResponseEntity<ResponseWithPage<AdvertisingSource>> getAllAdvertisingSources(
       @ModelAttribute QueryAdvertisingSourceDto data, @ApiIgnore Pageable pageable) {
+    data.setIsActive(true);
     Page<AdvertisingSource> result = advertisingSourceService.findAll(data, pageable);
     return ResponseEntity.ok(ResponseWithPage.<AdvertisingSource>builder()
         .data(result.getContent())
