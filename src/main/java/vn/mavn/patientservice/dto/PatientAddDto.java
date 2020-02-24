@@ -16,6 +16,7 @@ import lombok.Setter;
 @Builder
 public class PatientAddDto {
 
+  private Long id;
   @NotBlank(message = "err-patient-name-is-mandatory")
   private String name;
   @NotNull(message = "err-patient-age-is-mandatory")
