@@ -117,6 +117,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       medicalRecord = mapMedicalRecordForEmp(medicalRecordAddDto, userId, userCode,
           patient.getId());
     }
+    medicalRecord.setIsActive(true);
     medicalRecordRepository.save(medicalRecord);
     return medicalRecord;
   }
@@ -189,6 +190,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
           medicalRecordAddDto);
       medicalRecord.setExaminationTimes(1L);
     }
+    medicalRecord.setIsActive(true);
     medicalRecordRepository.save(medicalRecord);
     if (!CollectionUtils.isEmpty(medicalRecordAddDto.getMedicineDtos())) {
       mappingMedicalRecordMedicine(medicalRecordAddDto.getMedicineDtos(),
@@ -219,7 +221,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
     //patient
     BeanUtils.copyProperties(data.getPatientEditDto(), patientExist);
-    patientExist.setIsActive(data.getIsActive());
+    patientExist.setIsActive(true);
 
     //TODO: check totalAmount = cod + tranfer
     if (!data.getTotalAmount().equals(data.getTransferAmount()
@@ -248,6 +250,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     medicalRecord.setClinicId(medicalRecordExist.getClinicId());
     medicalRecord.setCreatedBy(userId);
     medicalRecord.setUpdatedBy(userId);
+    medicalRecord.setIsActive(true);
     medicalRecordRepository.save(medicalRecord);
 
     //vi thuoc cua loai benh + so luong
@@ -296,7 +299,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     BeanUtils.copyProperties(data, medicalRecord);
     medicalRecord.setUserCode(userCode);
     medicalRecord.setUpdatedBy(userId);
-    medicalRecord.setExaminationTimes(medicalRecord.getExaminationTimes() + 1);
+    medicalRecord.setIsActive(true);
     medicalRecordRepository.save(medicalRecord);
     return medicalRecord;
   }

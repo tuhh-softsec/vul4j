@@ -64,6 +64,7 @@ public class PatientServiceImpl implements PatientService {
     Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
     patient.setCreatedBy(userId);
     patient.setUpdatedBy(userId);
+    patient.setIsActive(true);
 
     return patientRepository.save(patient);
   }
@@ -83,6 +84,7 @@ public class PatientServiceImpl implements PatientService {
     BeanUtils.copyProperties(patientEditDto, patient);
     Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
     patient.setUpdatedBy(userId);
+    patient.setIsActive(true);
     return patientRepository.save(patient);
   }
 

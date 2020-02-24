@@ -92,6 +92,7 @@ public class MedicineServiceImpl implements MedicineService {
     Long loggedInUserId = Long.valueOf(TokenUtils.getUserIdFromToken(httpServletRequest));
     medicine.setCreatedBy(loggedInUserId);
     medicine.setUpdatedBy(loggedInUserId);
+    medicine.setIsActive(true);
     medicineRepository.save(medicine);
     mappingMedicineDisease(medicine, data.getDiseaseIds());
     return medicine;
@@ -113,6 +114,7 @@ public class MedicineServiceImpl implements MedicineService {
     //Get user logged in ID
     Long loggedInUserId = Long.valueOf(TokenUtils.getUserIdFromToken(httpServletRequest));
     medicine.setUpdatedBy(loggedInUserId);
+    medicine.setIsActive(true);
     medicineRepository.save(medicine);
     //delete mapping medicine disease
     medicineDiseaseRepository.deleteMappingMediciDiseaseById(medicine.getId());
