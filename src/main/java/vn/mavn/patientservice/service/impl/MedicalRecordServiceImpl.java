@@ -200,18 +200,6 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     return medicalRecord;
   }
 
-  private Patient setUpdatePatientForEmpClinic(MedicalRecordAddForEmpClinicDto medicalRecordAddDto) {
-    Patient patient = patientRepository
-        .findActiveById(medicalRecordAddDto.getPatientAddDto().getId())
-        .orElseThrow(() -> new NotFoundException(
-            Collections.singletonList("err-patient-not-found")));
-    BeanUtils.copyProperties(medicalRecordAddDto.getPatientAddDto(), patient);
-    patient.setIsActive(true);
-    BeanUtils.copyProperties(medicalRecordAddDto.getPatientAddDto(), patient);
-    patientRepository.save(patient);
-    return patient;
-  }
-
   @Override
   public MedicalRecord editForEmpClinic(MedicalRecordEditForEmpClinicDto data) {
 
@@ -423,6 +411,18 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     medicalRecord.setAdvisoryDate(LocalDateTime.now());
     medicalRecord.setExaminationDate(LocalDateTime.now());
     return medicalRecord;
+  }
+
+  private Patient setUpdatePatientForEmpClinic(
+      MedicalRecordAddForEmpClinicDto medicalRecordAddDto) {
+    Patient patient = patientRepository
+        .findActiveById(medicalRecordAddDto.getPatientAddDto().getId())
+        .orElseThrow(() -> new NotFoundException(
+            Collections.singletonList("err-patient-not-found")));
+    patient.setIsActive(true);
+    BeanUtils.copyProperties(medicalRecordAddDto.getPatientAddDto(), patient);
+    patientRepository.save(patient);
+    return patient;
   }
 
 }
