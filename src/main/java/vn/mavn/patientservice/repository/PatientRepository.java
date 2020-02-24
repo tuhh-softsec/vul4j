@@ -9,7 +9,7 @@ import vn.mavn.patientservice.entity.Patient;
 
 public interface PatientRepository extends JpaRepository<Patient, Long>,
     JpaSpecificationExecutor<Patient> {
-  
+
   @Query("select p from Patient p where p.id =:id and p.isActive = true")
   Optional<Patient> findActiveById(Long id);
 

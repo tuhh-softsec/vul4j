@@ -14,10 +14,6 @@ public class PatientSpec {
   public static Specification<Patient> findAllPatient(QueryPatientDto queryPatientDto) {
     return (Specification<Patient>) (root, criteriaQuery, criteriaBuilder) -> {
       Collection<Predicate> predicates = new ArrayList<>();
-      if (queryPatientDto.getIsActive() != null) {
-        predicates.add(
-            criteriaBuilder.equal(root.get("isActive"), queryPatientDto.getIsActive()));
-      }
       if (StringUtils.isNotBlank(queryPatientDto.getName())) {
         Predicate unaccent = SpecUtils
             .handleAccentExp(criteriaBuilder, root, "name", queryPatientDto.getName());
@@ -31,6 +27,9 @@ public class PatientSpec {
         Predicate predicatePhone = SpecUtils
             .handleAccentExp(criteriaBuilder, root, "phone", queryPatientDto.getPhoneNumber());
         predicates.add(criteriaBuilder.or(predicateOtherPhone, predicateZaLoPhone, predicatePhone));
+      }
+      if (queryPatientDto.getAge() != null) {
+        predicates.add(criteriaBuilder.equal(root.get("age"), queryPatientDto.getAge()));
       }
       return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
     };

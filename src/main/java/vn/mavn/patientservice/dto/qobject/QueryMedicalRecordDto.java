@@ -1,5 +1,6 @@
 package vn.mavn.patientservice.dto.qobject;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,12 +18,19 @@ public class QueryMedicalRecordDto {
   private Boolean isActive;
   private Long clinicId;
   private String userCode;
-  private Long patientId;
   private Long diseaseId;
   private Long advertisingSourceId;
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   private LocalDateTime startDate;
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   private LocalDateTime endDate;
-
+  private Integer patientAge;
+  private String phoneNumber;
+  private String consultingStatusCode;
+  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+  private LocalDateTime examinationStartDate;
+  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+  private LocalDateTime examinationEndDate;
+  private Long examinationTimes;
+  private BigDecimal totalAmount;
 }
