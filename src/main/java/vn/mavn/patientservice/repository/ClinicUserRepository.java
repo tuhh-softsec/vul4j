@@ -27,7 +27,7 @@ public interface ClinicUserRepository extends JpaRepository<ClinicUser, Long> {
   @Query("select cu.clinicId from ClinicUser cu where cu.userId = :userId")
   Long findClinicIdByUserId(Long userId);
 
-  @Query("select cu.clinicId from ClinicUser cu where cu.userId = :userId")
-  Optional<Long> findClinicByUserId(Long id);
+  @Query("select cu.clinicId from ClinicUser cu where cu.userId = :id")
+  Long findClinicByUserId(Long id);
 
 }

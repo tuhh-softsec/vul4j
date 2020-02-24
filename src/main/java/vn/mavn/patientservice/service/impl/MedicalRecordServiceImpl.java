@@ -185,16 +185,17 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
 
     //valid phong kham cua nhan vien phong kham
-    clinicUserRepository.findClinicByUserId(userId).ifPresent(id -> {
-      throw new ConflictException(
+    Long clinicId = clinicUserRepository.findClinicIdByUserId(userId);
+    if (!clinicId.equals(data.getClinicId())) {
+      throw new NotFoundException(
           Collections.singletonList("err.medical-record.permission-denied"));
-    });
+    }
 
     Patient patientExist = patientRepository.findActiveById(data.getPatientEditDto().getId())
         .orElseThrow(
             () -> new NotFoundException(Collections.singletonList("err-patient-not-found")));
     //valid danh sach loai benh cua phong kham cua nhan vien phong kham
-    Long clinicId = clinicUserRepository.findClinicIdByUserId(userId);
+
     List<Long> diseaseIds = clinicDiseaseRepository.findAllByClinicId(clinicId);
     if (!data.getDiseaseIds().containsAll(diseaseIds)) {
       throw new NotFoundException(
@@ -255,8 +256,8 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     }
 
     //valid nhan vien tu van chi sua du lieu cua minh
-    if (!userCode.equals(medicalRecord.getUserCode())) {
-      throw new ConflictException(
+    if (!userId.equals(medicalRecord.getCreatedBy())) {
+      throw new NotFoundException(
           Collections.singletonList("err.medical-record.permission-denied"));
     }
 
