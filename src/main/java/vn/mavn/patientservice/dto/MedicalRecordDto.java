@@ -22,6 +22,7 @@ public class MedicalRecordDto implements Serializable {
   private DiseaseDto diseaseDto;
   private AdvertisingSourceDto advertisingSourceDto;
   private ClinicDto clinicDto;
+  private ConsultingStatusDto consultingStatusDto;
   private LocalDateTime advisoryDate;
   private String diseaseStatus;
   private String note;
@@ -61,5 +62,15 @@ public class MedicalRecordDto implements Serializable {
 
     private Long id;
     private String name;
+  }
+
+  @Setter
+  @Getter
+  @Builder
+  public static class ConsultingStatusDto implements Serializable {
+
+    private Long id;
+    private String name;
+    private String code;
   }
 }
