@@ -211,11 +211,18 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     //lay used tu token
     Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
 
+    //valid phong kham cua nhan vien phong kham
+    Long clinicId = clinicUserRepository.findClinicIdByUserId(userId);
+    if (!clinicId.equals(data.getClinicId())) {
+      throw new NotFoundException(
+          Collections.singletonList("err.medical-record.permission-denied"));
+    }
+
     Patient patientExist = patientRepository.findActiveById(data.getPatientEditDto().getId())
         .orElseThrow(
             () -> new NotFoundException(Collections.singletonList("err-patient-not-found")));
     //valid danh sach loai benh cua phong kham cua nhan vien phong kham
-    Long clinicId = clinicUserRepository.findClinicIdByUserId(userId);
+
     List<Long> diseaseIds = clinicDiseaseRepository.findAllByClinicId(clinicId);
     if (!data.getDiseaseIds().containsAll(diseaseIds)) {
       throw new NotFoundException(
@@ -227,13 +234,6 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     //patient
     BeanUtils.copyProperties(data.getPatientEditDto(), patientExist);
     patientExist.setIsActive(true);
-
-    //TODO: check totalAmount = cod + tranfer
-    if (!data.getTotalAmount().equals(data.getTransferAmount()
-        .add(data.getCodAmount()))) {
-      throw new BadRequestException(
-          Collections.singletonList("err.medicines.total-amount-not-equal-cod-and-tranfer-amount"));
-    }
 
     patientRepository.save(patientExist);
 
@@ -267,6 +267,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
   @Override
   public MedicalRecord update(MedicalRecordEditDto data) {
+
     MedicalRecord medicalRecord = medicalRecordRepository.findById(data.getId())
         .orElseThrow(() -> new NotFoundException(
             Collections.singletonList("err.medical-records.medical-record-not-found")));
@@ -274,8 +275,20 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       throw new ConflictException(
           Collections.singletonList("err.medical-records.patient-info-not-match"));
     }
+
     validationData(data.getAdvertisingSourceId(), data.getClinicId(),
         data.getConsultingStatusCode());
+
+    // TODO: we can optimise this function:
+    //  1. Get token from request header.
+    //  2. Using method getValueByKeyInTheToken from Oauth2TokenUtils then pass desire parameter
+    // So then we will not have to retrieve token 2 times
+    Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
+    //valid nhan vien tu van chi sua du lieu cua minh
+    if (!userId.equals(medicalRecord.getCreatedBy())) {
+      throw new NotFoundException(
+          Collections.singletonList("err.medical-record.permission-denied"));
+    }
     List<MedicineMappingDto> medicineList = data.getMedicineDtos();
     if (!CollectionUtils.isEmpty(medicineList)) {
       List<Long> medicineIds = medicineList.stream().map(MedicineMappingDto::getMedicineId)
@@ -295,11 +308,6 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       recordMedicineRepository.deleteAllByMedicalRecordId(medicalRecord.getId());
       mappingMedicalRecordMedicine(medicineList, medicalRecord.getId());
     }
-    // TODO: we can optimise this function:
-    //  1. Get token from request header.
-    //  2. Using method getValueByKeyInTheToken from Oauth2TokenUtils then pass desire parameter
-    // So then we will not have to retrieve token 2 times
-    Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
     String userCode = TokenUtils.getUserCodeFromToken(httpServletRequest);
     BeanUtils.copyProperties(data, medicalRecord);
     medicalRecord.setUserCode(userCode);

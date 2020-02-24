@@ -1,6 +1,7 @@
 package vn.mavn.patientservice.repository;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -25,4 +26,8 @@ public interface ClinicUserRepository extends JpaRepository<ClinicUser, Long> {
 
   @Query("select cu.clinicId from ClinicUser cu where cu.userId = :userId")
   Long findClinicIdByUserId(Long userId);
+
+  @Query("select cu.clinicId from ClinicUser cu where cu.userId = :id")
+  Long findClinicByUserId(Long id);
+
 }
