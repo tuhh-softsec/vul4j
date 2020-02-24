@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
@@ -26,6 +27,7 @@ import vn.mavn.patientservice.dto.MedicalRecordEditDto;
 import vn.mavn.patientservice.dto.MedicalRecordEditForEmpClinicDto;
 import vn.mavn.patientservice.dto.MedicineMappingDto;
 import vn.mavn.patientservice.dto.qobject.QueryMedicalRecordDto;
+import vn.mavn.patientservice.dto.qobject.QueryPatientDto;
 import vn.mavn.patientservice.entity.AdvertisingSource;
 import vn.mavn.patientservice.entity.Clinic;
 import vn.mavn.patientservice.entity.ConsultingStatus;
@@ -50,6 +52,8 @@ import vn.mavn.patientservice.repository.MedicalRecordRepository;
 import vn.mavn.patientservice.repository.MedicineRepository;
 import vn.mavn.patientservice.repository.PatientRepository;
 import vn.mavn.patientservice.repository.spec.MedicalRecordSpec;
+import vn.mavn.patientservice.repository.spec.PatientSpec;
+import vn.mavn.patientservice.repository.spec.PatientSpec;
 import vn.mavn.patientservice.service.MedicalRecordService;
 import vn.mavn.patientservice.util.TokenUtils;
 
@@ -140,8 +144,9 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
   @Override
   public Page<MedicalRecordDto> findAll(QueryMedicalRecordDto queryMedicalRecordDto,
       Pageable pageable) {
+    List<Long> patientIds = handlePatientFilters(queryMedicalRecordDto);
     Page<MedicalRecord> medicalRecords = medicalRecordRepository
-        .findAll(MedicalRecordSpec.findAllMedicines(queryMedicalRecordDto), pageable);
+        .findAll(MedicalRecordSpec.findAllMedicines(queryMedicalRecordDto, patientIds), pageable);
     Page<MedicalRecordDto> medicalRecordDtos;
     if (CollectionUtils.isEmpty(medicalRecords.getContent())) {
       return Page.empty(pageable);
@@ -423,6 +428,17 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     patient.setIsActive(true);
     patientRepository.save(patient);
     return patient;
+  }
+
+  private List<Long> handlePatientFilters(QueryMedicalRecordDto data) {
+    Set<Long> patientIds;
+    QueryPatientDto queryDto = QueryPatientDto.builder()
+        .age(data.getPatientAge())
+        .name(data.getName())
+        .phoneNumber(data.getPhoneNumber()).build();
+    List<Patient> patients = patientRepository.findAll(PatientSpec.findAllPatient(queryDto));
+    patientIds = patients.stream().map(Patient::getId).collect(Collectors.toSet());
+    return new ArrayList<>(patientIds);
   }
 
 }
