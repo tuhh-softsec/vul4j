@@ -51,6 +51,7 @@ public class AdvertisingSourceServiceImpl implements AdvertisingSourceService {
     Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
     advertisingSource.setCreatedBy(userId);
     advertisingSource.setUpdatedBy(userId);
+    advertisingSource.setIsActive(true);
     return advertisingSourceRepository.save(advertisingSource);
   }
 
@@ -70,6 +71,7 @@ public class AdvertisingSourceServiceImpl implements AdvertisingSourceService {
     Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
     BeanUtils.copyProperties(advertisingSourceEditDto, advertisingSource);
     advertisingSource.setUpdatedBy(userId);
+    advertisingSource.setIsActive(true);
     return advertisingSourceRepository.save(advertisingSource);
   }
 

@@ -61,6 +61,7 @@ public class DiseaseServiceImpl implements DiseaseService {
     Long loggedInUserId = Long.valueOf(TokenUtils.getUserIdFromToken(httpServletRequest));
     disease.setCreatedBy(loggedInUserId);
     disease.setUpdatedBy(loggedInUserId);
+    disease.setIsActive(true);
     diseaseRepository.save(disease);
     return disease;
   }
@@ -80,6 +81,7 @@ public class DiseaseServiceImpl implements DiseaseService {
     //Get user logged in ID
     Long loggedInUserId = Long.valueOf(TokenUtils.getUserIdFromToken(httpServletRequest));
     disease.setUpdatedBy(loggedInUserId);
+    disease.setIsActive(true);
     diseaseRepository.save(disease);
     return disease;
   }
