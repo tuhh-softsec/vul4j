@@ -74,6 +74,7 @@ public class ClinicServiceImpl implements ClinicService {
     Long loggedInUserId = Long.valueOf(TokenUtils.getUserIdFromToken(httpServletRequest));
     clinic.setCreatedBy(loggedInUserId);
     clinic.setUpdatedBy(loggedInUserId);
+    clinic.setIsActive(true);
     clinicRepository.save(clinic);
 
     //valid disease
@@ -101,6 +102,7 @@ public class ClinicServiceImpl implements ClinicService {
     clinic.setName(data.getName().trim());
 
     //Get user logged in ID
+    clinic.setIsActive(true);
     Long loggedInUserId = Long.valueOf(TokenUtils.getUserIdFromToken(httpServletRequest));
     clinic.setUpdatedBy(loggedInUserId);
     clinicRepository.save(clinic);
