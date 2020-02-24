@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
+import vn.mavn.patientservice.dto.MedicineDto;
 import vn.mavn.patientservice.dto.qobject.QueryMedicineDto;
 import vn.mavn.patientservice.entity.Medicine;
 import vn.mavn.patientservice.response.ResponseWithPage;
@@ -33,10 +34,10 @@ public class EmployeeMedicineController {
           paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
           + "Default sort order is ascending. Multiple sort criteria are supported.",
           defaultValue = "createdAt,desc")})
-  public ResponseEntity<ResponseWithPage<Medicine>> getAllMedicines(
+  public ResponseEntity<ResponseWithPage<MedicineDto>> getAllMedicines(
       @ModelAttribute QueryMedicineDto data, @ApiIgnore Pageable pageable) {
-    Page<Medicine> result = medicineService.getAllMedicines(data, pageable);
-    return ResponseEntity.ok(ResponseWithPage.<Medicine>builder()
+    Page<MedicineDto> result = medicineService.getAllMedicines(data, pageable);
+    return ResponseEntity.ok(ResponseWithPage.<MedicineDto>builder()
         .data(result.getContent())
         .totalElement(result.getTotalElements())
         .totalPage(result.getTotalPages())

@@ -2,7 +2,9 @@ package vn.mavn.patientservice.service.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.BeanUtils;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import vn.mavn.patientservice.dto.DiseaseDto;
 import vn.mavn.patientservice.dto.MedicineAddDto;
@@ -31,6 +34,7 @@ import vn.mavn.patientservice.service.MedicineService;
 import vn.mavn.patientservice.util.TokenUtils;
 
 @Service
+@Transactional
 public class MedicineServiceImpl implements MedicineService {
 
   @Autowired
@@ -49,7 +53,7 @@ public class MedicineServiceImpl implements MedicineService {
   private HttpServletRequest httpServletRequest;
 
   @Override
-  public Page<Medicine> getAllMedicines(QueryMedicineDto data, Pageable pageable) {
+  public Page<MedicineDto> getAllMedicines(QueryMedicineDto data, Pageable pageable) {
     List<Long> medicineIds = new ArrayList<>();
     if (!CollectionUtils.isEmpty(data.getDiseaseIds())) {
       medicineIds = medicineDiseaseRepository
@@ -58,7 +62,21 @@ public class MedicineServiceImpl implements MedicineService {
         return Page.empty(pageable);
       }
     }
-    return medicineRepository.findAll(MedicineSpec.findAllMedicines(data, medicineIds), pageable);
+    Page<Medicine> medicines = medicineRepository
+        .findAll(MedicineSpec.findAllMedicines(data, medicineIds), pageable);
+    return medicines.map(medicine -> {
+      List<DiseaseDto> diseases = new ArrayList<>();
+      if (!CollectionUtils.isEmpty(medicine.getDiseases())) {
+        diseases = medicine.getDiseases().stream()
+            .map(disease ->
+                DiseaseDto.builder().id(disease.getId()).name(disease.getName()).build())
+            .collect(Collectors.toList());
+      }
+      MedicineDto result = new MedicineDto();
+      BeanUtils.copyProperties(medicine, result);
+      result.setDiseases(diseases);
+      return result;
+    });
   }
 
   @Override
@@ -74,6 +92,7 @@ public class MedicineServiceImpl implements MedicineService {
     Long loggedInUserId = Long.valueOf(TokenUtils.getUserIdFromToken(httpServletRequest));
     medicine.setCreatedBy(loggedInUserId);
     medicine.setUpdatedBy(loggedInUserId);
+    medicine.setIsActive(true);
     medicineRepository.save(medicine);
     mappingMedicineDisease(medicine, data.getDiseaseIds());
     return medicine;
@@ -95,7 +114,10 @@ public class MedicineServiceImpl implements MedicineService {
     //Get user logged in ID
     Long loggedInUserId = Long.valueOf(TokenUtils.getUserIdFromToken(httpServletRequest));
     medicine.setUpdatedBy(loggedInUserId);
+    medicine.setIsActive(true);
     medicineRepository.save(medicine);
+    //delete mapping medicine disease
+    medicineDiseaseRepository.deleteMappingMediciDiseaseById(medicine.getId());
     mappingMedicineDisease(medicine, data.getDiseaseIds());
     return medicine;
   }
@@ -144,7 +166,8 @@ public class MedicineServiceImpl implements MedicineService {
 
   private void mappingMedicineDisease(Medicine medicine, List<Long> diseaseIds) {
     List<MedicineDisease> mappingData = new ArrayList<>();
-    diseaseIds.forEach(diseaseId -> mappingData
+    Set<Long> setDiseases = new HashSet<>(diseaseIds);
+    setDiseases.forEach(diseaseId -> mappingData
         .add(MedicineDisease.builder().medicineId(medicine.getId()).diseaseId(diseaseId).build()));
     medicineDiseaseRepository.saveAll(mappingData);
   }

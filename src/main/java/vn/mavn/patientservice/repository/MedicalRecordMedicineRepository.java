@@ -1,6 +1,7 @@
 package vn.mavn.patientservice.repository;
 
 import java.util.List;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import vn.mavn.patientservice.entity.MedicalRecordMedicine;
@@ -12,4 +13,8 @@ public interface MedicalRecordMedicineRepository extends
 
   @Query("select mm from MedicalRecordMedicine mm where mm.medicalRecordId =:medicalRecordId")
   List<MedicalRecordMedicine> findAllByMedicalRecordId(Long medicalRecordId);
+
+  @Modifying
+  @Query("delete from MedicalRecordMedicine mrm where mrm.medicalRecordId = :medicalRecordId")
+  void deleteAllByMedicalRecordId(Long medicalRecordId);
 }

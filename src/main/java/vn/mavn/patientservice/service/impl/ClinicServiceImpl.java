@@ -74,6 +74,7 @@ public class ClinicServiceImpl implements ClinicService {
     Long loggedInUserId = Long.valueOf(TokenUtils.getUserIdFromToken(httpServletRequest));
     clinic.setCreatedBy(loggedInUserId);
     clinic.setUpdatedBy(loggedInUserId);
+    clinic.setIsActive(true);
     clinicRepository.save(clinic);
 
     //valid disease
@@ -101,6 +102,7 @@ public class ClinicServiceImpl implements ClinicService {
     clinic.setName(data.getName().trim());
 
     //Get user logged in ID
+    clinic.setIsActive(true);
     Long loggedInUserId = Long.valueOf(TokenUtils.getUserIdFromToken(httpServletRequest));
     clinic.setUpdatedBy(loggedInUserId);
     clinicRepository.save(clinic);
@@ -121,18 +123,21 @@ public class ClinicServiceImpl implements ClinicService {
 
   private void mappingClinicUser(Clinic clinic, List<Long> userIds) {
 
-    //valid user
+    Set<Long> setUserIds = new HashSet<>();
     if (!CollectionUtils.isEmpty(userIds)) {
-      userIds.forEach(user -> {
-        clinicUserRepository.findById(user).ifPresent(clinicUser -> {
-          throw new ConflictException(Collections.singletonList("err.clinic.user-already-exits"));
-        });
-      });
-      userIds.forEach(user -> {
-        ClinicUser clinicUser = ClinicUser.builder().clinicId(clinic.getId()).userId(user).build();
-        clinicUserRepository.save(clinicUser);
-      });
+      setUserIds.addAll(userIds);
     }
+
+    //valid user
+    setUserIds.forEach(user -> {
+      clinicUserRepository.findById(user).ifPresent(clinicUser -> {
+        throw new ConflictException(Collections.singletonList("err.clinic.user-already-exits"));
+      });
+    });
+    setUserIds.forEach(user -> {
+      ClinicUser clinicUser = ClinicUser.builder().clinicId(clinic.getId()).userId(user).build();
+      clinicUserRepository.save(clinicUser);
+    });
   }
 
   @Override

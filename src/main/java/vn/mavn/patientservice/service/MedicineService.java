@@ -10,7 +10,7 @@ import vn.mavn.patientservice.entity.Medicine;
 
 public interface MedicineService {
 
-  Page<Medicine> getAllMedicines(QueryMedicineDto data, Pageable pageable);
+  Page<MedicineDto> getAllMedicines(QueryMedicineDto data, Pageable pageable);
 
   Medicine add(MedicineAddDto data);
 
