@@ -9,4 +9,7 @@ public interface ConsultingStatusRepository extends JpaRepository<ConsultingStat
 
   @Query("select ads from ConsultingStatus ads where ads.code =:code")
   Optional<ConsultingStatus> findByCode(String code);
+
+  @Query("select ads from ConsultingStatus ads where ads.code =:code")
+  ConsultingStatus findActiveByCode(String code);
 }

@@ -20,6 +20,7 @@ import vn.mavn.patientservice.dto.MedicalRecordAddDto;
 import vn.mavn.patientservice.dto.MedicalRecordAddForEmpClinicDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto.AdvertisingSourceDto;
+import vn.mavn.patientservice.dto.MedicalRecordDto.ConsultingStatusDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto.PatientDto;
 import vn.mavn.patientservice.dto.MedicalRecordEditDto;
 import vn.mavn.patientservice.dto.MedicalRecordEditForEmpClinicDto;
@@ -27,6 +28,7 @@ import vn.mavn.patientservice.dto.MedicineMappingDto;
 import vn.mavn.patientservice.dto.qobject.QueryMedicalRecordDto;
 import vn.mavn.patientservice.entity.AdvertisingSource;
 import vn.mavn.patientservice.entity.Clinic;
+import vn.mavn.patientservice.entity.ConsultingStatus;
 import vn.mavn.patientservice.entity.Disease;
 import vn.mavn.patientservice.entity.Doctor;
 import vn.mavn.patientservice.entity.MedicalRecord;
@@ -349,7 +351,16 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       }
       medicalRecordDto.setClinicDto(clinicDto);
     }
+
+    //TODO: build ConsultingStatusDto
+    ConsultingStatus consultingStatus = consultingStatusRepository
+        .findActiveByCode(medicalRecord.getConsultingStatusCode());
+    if (consultingStatus != null) {
+      ConsultingStatusDto consultingStatusDto = ConsultingStatusDto.builder()
+          .id(consultingStatus.getId()).code(consultingStatus.getCode())
+          .name(consultingStatus.getName()).build();
+      medicalRecordDto.setConsultingStatusDto(consultingStatusDto);
+    }
   }
-
-
+  
 }
