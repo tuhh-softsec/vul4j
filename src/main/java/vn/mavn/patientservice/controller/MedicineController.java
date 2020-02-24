@@ -53,10 +53,10 @@ public class MedicineController {
           paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
           + "Default sort order is ascending. Multiple sort criteria are supported.",
           defaultValue = "createdAt,desc")})
-  public ResponseEntity<ResponseWithPage<Medicine>> getAllMedicines(
+  public ResponseEntity<ResponseWithPage<MedicineDto>> getAllMedicines(
       @ModelAttribute QueryMedicineDto data, @ApiIgnore Pageable pageable) {
-    Page<Medicine> result = medicineService.getAllMedicines(data, pageable);
-    return ResponseEntity.ok(ResponseWithPage.<Medicine>builder()
+    Page<MedicineDto> result = medicineService.getAllMedicines(data, pageable);
+    return ResponseEntity.ok(ResponseWithPage.<MedicineDto>builder()
         .data(result.getContent())
         .totalPage(result.getTotalPages())
         .totalElement(result.getTotalElements())

@@ -270,12 +270,12 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
         data.getConsultingStatusCode());
     List<MedicineMappingDto> medicineList = data.getMedicineDtos();
     if (!CollectionUtils.isEmpty(medicineList)) {
+      List<Long> medicineIds = medicineList.stream().map(MedicineMappingDto::getMedicineId)
+          .collect(Collectors.toList());
       List<Long> medicines = medicineRepository
-          .findAllByIdIn(data.getMedicineDtos().stream()
-              .map(MedicineMappingDto::getMedicineId)
-              .collect(Collectors.toList()))
+          .findAllByIdIn(medicineIds)
           .stream().map(Medicine::getId).collect(Collectors.toList());
-      if (!medicines.containsAll(medicineList)) {
+      if (!medicines.containsAll(medicineIds)) {
         throw new NotFoundException(Collections.singletonList("err.medicines.medicine-not-found"));
       }
       medicineList.forEach(medicine -> {
@@ -284,6 +284,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
               Collections.singletonList("err.medicines.quantity-must-be-positive"));
         }
       });
+      recordMedicineRepository.deleteAllByMedicalRecordId(medicalRecord.getId());
       mappingMedicalRecordMedicine(medicineList, medicalRecord.getId());
     }
     // TODO: we can optimise this function:
