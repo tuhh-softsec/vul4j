@@ -419,8 +419,8 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
         .findActiveById(medicalRecordAddDto.getPatientAddDto().getId())
         .orElseThrow(() -> new NotFoundException(
             Collections.singletonList("err-patient-not-found")));
-    patient.setIsActive(true);
     BeanUtils.copyProperties(medicalRecordAddDto.getPatientAddDto(), patient);
+    patient.setIsActive(true);
     patientRepository.save(patient);
     return patient;
   }
