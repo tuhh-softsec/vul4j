@@ -407,7 +407,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     Clinic clinic = clinicRepository.findByIdForGetData(medicalRecord.getClinicId());
     if (clinic != null) {
       ClinicDto clinicDto = ClinicDto.builder().id(clinic.getId()).address(clinic.getAddress())
-          .name(clinic.getName())
+          .name(clinic.getName()).isActive(clinic.getIsActive())
           .description(clinic.getDescription()).phone(clinic.getPhone()).build();
       Doctor doctor = doctorRepository.findByIdForGetData(clinic.getDoctorId());
       if (doctor != null) {
