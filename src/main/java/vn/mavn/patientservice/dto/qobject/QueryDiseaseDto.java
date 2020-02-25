@@ -9,4 +9,5 @@ public class QueryDiseaseDto {
 
   private String name;
   private Boolean isActive;
+  private Long clinicId;
 }

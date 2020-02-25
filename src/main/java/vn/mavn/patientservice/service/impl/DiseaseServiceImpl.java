@@ -1,5 +1,6 @@
 package vn.mavn.patientservice.service.impl;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -46,7 +47,27 @@ public class DiseaseServiceImpl implements DiseaseService {
 
   @Override
   public Page<Disease> getAllDisease(QueryDiseaseDto data, Pageable pageable) {
-    return diseaseRepository.findAll(DiseaseSpec.findAllDiseases(data), pageable);
+    Page<Disease> diseases = null;
+    List<Long> diseaseIds = new ArrayList<>();
+    if (data == null) {
+      Page.empty(pageable);
+    } else {
+      if (data.getClinicId() != null) {
+        List<Long> diseaseIdForClinicId = clinicDiseaseRepository
+            .findAllByClinicId(data.getClinicId());
+        if (CollectionUtils.isEmpty(diseaseIdForClinicId)) {
+          Page.empty(pageable);
+        } else {
+          diseaseIds.addAll(diseaseIdForClinicId);
+        }
+      }
+
+      diseases = diseaseRepository.findAll(DiseaseSpec.findAllDiseases(data, diseaseIds), pageable);
+      if (CollectionUtils.isEmpty(diseases.getContent())) {
+        return Page.empty(pageable);
+      }
+    }
+    return diseases;
   }
 
   @Override
