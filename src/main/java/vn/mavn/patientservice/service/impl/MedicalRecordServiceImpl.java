@@ -214,6 +214,10 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
   @Override
   public MedicalRecord editForEmpClinic(MedicalRecordEditForEmpClinicDto data) {
 
+    medicalRecordRepository.findActiveById(data.getId())
+        .orElseThrow(() -> new NotFoundException(
+            Collections.singletonList("err-medical-record-not-found")));
+
     //lay used tu token
     Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
 
@@ -227,13 +231,13 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     Patient patientExist = patientRepository.findActiveById(data.getPatientEditDto().getId())
         .orElseThrow(
             () -> new NotFoundException(Collections.singletonList("err-patient-not-found")));
-    //valid danh sach loai benh cua phong kham cua nhan vien phong kham
 
+    //valid danh sach loai benh cua phong kham cua nhan vien phong kham
     List<Long> diseaseIds = clinicDiseaseRepository.findAllByClinicId(clinicId);
-    if (!data.getDiseaseIds().containsAll(diseaseIds)) {
-      throw new NotFoundException(
-          Collections.singletonList("err-disease-not-found"));
+    if (!diseaseIds.contains(data.getDiseaseId())) {
+      throw new NotFoundException(Collections.singletonList("err-disease-not-found"));
     }
+
     //validationData(nguon quang cao, phong kham, tinh trang tu van)
     validationData(data.getAdvertisingSourceId(), clinicId, data.getConsultingStatusCode());
 
@@ -243,32 +247,26 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
     patientRepository.save(patientExist);
 
-    MedicalRecord medicalRecord = new MedicalRecord();
     //medical record
     MedicalRecord medicalRecordExist = medicalRecordRepository
-        .findMedicalRecordByPatientId(patientExist.getId());
+        .findActiveById(data.getId()).get();
 
-    BeanUtils.copyProperties(data, medicalRecord);
-    medicalRecord.setAdvisoryDate(medicalRecordExist.getAdvisoryDate());
-    medicalRecord.setUserCode(medicalRecordExist.getUserCode());
-    medicalRecord.setExaminationTimes(medicalRecordExist.getExaminationTimes());
-    medicalRecord.setPatientId(patientExist.getId());
-    if (medicalRecord.getConsultingStatusCode().equals("TTTV001")) {
-      medicalRecord.setExaminationDate(LocalDateTime.now());
+    BeanUtils.copyProperties(data, medicalRecordExist);
+    if (medicalRecordExist.getConsultingStatusCode().equals("TTTV001")) {
+      medicalRecordExist.setExaminationDate(LocalDateTime.now());
     } else {
-      medicalRecord.setExaminationDate(null);
+      medicalRecordExist.setExaminationDate(null);
     }
-    medicalRecord.setClinicId(medicalRecordExist.getClinicId());
-    medicalRecord.setCreatedBy(userId);
-    medicalRecord.setUpdatedBy(userId);
-    medicalRecord.setIsActive(true);
-    medicalRecordRepository.save(medicalRecord);
+    medicalRecordExist.setClinicId(medicalRecordExist.getClinicId());
+    medicalRecordExist.setUpdatedBy(userId);
+    medicalRecordExist.setIsActive(true);
+    medicalRecordRepository.save(medicalRecordExist);
 
     //vi thuoc cua loai benh + so luong
     if (!CollectionUtils.isEmpty(data.getMedicineDtos())) {
-      mappingMedicalRecordMedicine(data.getMedicineDtos(), medicalRecord.getId());
+      mappingMedicalRecordMedicine(data.getMedicineDtos(), medicalRecordExist.getId());
     }
-    return medicalRecord;
+    return medicalRecordExist;
   }
 
   @Override

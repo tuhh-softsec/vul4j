@@ -48,7 +48,7 @@ public class EmployeeClinicRecordController {
     EntityValidationUtils.processBindingResults(bindingResult);
     MedicalRecord medicalRecord = medicalRecordService.editForEmpClinic(data);
     return responseService.buildUpdatedResponse(medicalRecord.getId(),
-        Collections.singletonList("info.diseases.update-disease-successfully"));
+        Collections.singletonList("info.diseases.info-medical-record-edit-successfully"));
   }
 
 }
