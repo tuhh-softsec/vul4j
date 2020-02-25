@@ -21,8 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
-import vn.mavn.patientservice.dto.PatientAddDto;
-import vn.mavn.patientservice.dto.PatientEditDto;
+import vn.mavn.patientservice.dto.PatientDto;
 import vn.mavn.patientservice.dto.qobject.QueryPatientDto;
 import vn.mavn.patientservice.entity.Patient;
 import vn.mavn.patientservice.response.HttpResponse;
@@ -43,21 +42,20 @@ public class PatientController {
   private ResponseService responseService;
 
   @PostMapping
-  public HttpResponse add(@Valid @RequestBody PatientAddDto patientAddDto,
+  public HttpResponse add(@Valid @RequestBody PatientDto patientDto,
       BindingResult bindingResult) {
     EntityValidationUtils.processBindingResults(bindingResult);
-    Patient patient = patientService.addNew(patientAddDto);
+    Patient patient = patientService.addNew(patientDto);
     return responseService.buildUpdatedResponse(patient.getId(),
         Collections.singletonList("info-patient-add-successfully"));
   }
 
   @PutMapping
-  public HttpResponse edit(@Valid @RequestBody PatientEditDto patientEditDto,
+  public HttpResponse edit(@Valid @RequestBody PatientDto patientEditDto,
       BindingResult bindingResult) {
     EntityValidationUtils.processBindingResults(bindingResult);
     Patient patient = patientService
         .editPatient(patientEditDto);
-
     return responseService.buildUpdatedResponse(patient.getId(),
         Collections.singletonList("info-patient-edit-successfully"));
   }

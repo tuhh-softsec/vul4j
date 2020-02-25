@@ -24,7 +24,6 @@ import vn.mavn.patientservice.dto.MedicalRecordDto.AdvertisingSourceDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto.ConsultingStatusDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto.PatientDto;
 import vn.mavn.patientservice.dto.MedicalRecordEditDto;
-import vn.mavn.patientservice.dto.MedicalRecordEditForEmpClinicDto;
 import vn.mavn.patientservice.dto.MedicineMappingDto;
 import vn.mavn.patientservice.dto.qobject.QueryMedicalRecordDto;
 import vn.mavn.patientservice.dto.qobject.QueryPatientDto;
@@ -52,7 +51,6 @@ import vn.mavn.patientservice.repository.MedicalRecordRepository;
 import vn.mavn.patientservice.repository.MedicineRepository;
 import vn.mavn.patientservice.repository.PatientRepository;
 import vn.mavn.patientservice.repository.spec.MedicalRecordSpec;
-import vn.mavn.patientservice.repository.spec.PatientSpec;
 import vn.mavn.patientservice.repository.spec.PatientSpec;
 import vn.mavn.patientservice.service.MedicalRecordService;
 import vn.mavn.patientservice.util.TokenUtils;
@@ -96,12 +94,12 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     MedicalRecord medicalRecord = new MedicalRecord();
     String userCode = TokenUtils.getUserCodeFromToken(httpServletRequest);
     //TODO: check if have patient_id -> action re-examination only add new medical_record
-    if (medicalRecordAddDto.getPatientAddDto().getId() != null) {
+    if (medicalRecordAddDto.getPatientDto().getId() != null) {
       Patient patient = patientRepository
-          .findActiveById(medicalRecordAddDto.getPatientAddDto().getId())
+          .findActiveById(medicalRecordAddDto.getPatientDto().getId())
           .orElseThrow(() -> new NotFoundException(
               Collections.singletonList("err-patient-not-found")));
-      BeanUtils.copyProperties(medicalRecordAddDto.getPatientAddDto(), patient);
+      BeanUtils.copyProperties(medicalRecordAddDto.getPatientDto(), patient);
       patient.setIsActive(true);
       patientRepository.save(patient);
       //TODO: find list medical_record by patient_id
@@ -116,7 +114,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
     } else {
       Patient patient = new Patient();
-      BeanUtils.copyProperties(medicalRecordAddDto.getPatientAddDto(), patient);
+      BeanUtils.copyProperties(medicalRecordAddDto.getPatientDto(), patient);
       patient.setIsActive(true);
       patient.setCreatedBy(userId);
       patient.setUpdatedBy(userId);
@@ -173,7 +171,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
     String userCode = TokenUtils.getUserCodeFromToken(httpServletRequest);
     //TODO: check if have patient_id -> action re-examination only add new medical_record
-    if (medicalRecordAddDto.getPatientAddDto().getId() != null) {
+    if (medicalRecordAddDto.getPatientDto().getId() != null) {
       Patient patient = setUpdatePatientForEmpClinic(medicalRecordAddDto);
       //TODO: find list medical_record by patient_id
       List<MedicalRecord> medicalRecords = medicalRecordRepository
@@ -188,7 +186,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       Patient patient = new Patient();
       patient.setCreatedBy(userId);
       patient.setUpdatedBy(userId);
-      BeanUtils.copyProperties(medicalRecordAddDto.getPatientAddDto(), patient);
+      BeanUtils.copyProperties(medicalRecordAddDto.getPatientDto(), patient);
       patient.setIsActive(true);
       patientRepository.save(patient);
       medicalRecord = mappingMedicalRecordForEmpClinic(userCode, userId, patient.getId(),
@@ -206,7 +204,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
   }
 
   @Override
-  public MedicalRecord editForEmpClinic(MedicalRecordEditForEmpClinicDto data) {
+  public MedicalRecord editForEmpClinic(MedicalRecordEditDto data) {
 
     //lay used tu token
     Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
@@ -218,7 +216,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
           Collections.singletonList("err.medical-record.permission-denied"));
     }
 
-    Patient patientExist = patientRepository.findActiveById(data.getPatientEditDto().getId())
+    Patient patientExist = patientRepository.findActiveById(data.getPatientDto().getId())
         .orElseThrow(
             () -> new NotFoundException(Collections.singletonList("err-patient-not-found")));
     //valid danh sach loai benh cua phong kham cua nhan vien phong kham
@@ -232,7 +230,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     validationData(data.getAdvertisingSourceId(), clinicId, data.getConsultingStatusCode());
 
     //patient
-    BeanUtils.copyProperties(data.getPatientEditDto(), patientExist);
+    BeanUtils.copyProperties(data.getPatientDto(), patientExist);
     patientExist.setIsActive(true);
 
     patientRepository.save(patientExist);
@@ -267,24 +265,26 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
   @Override
   public MedicalRecord update(MedicalRecordEditDto data) {
-
     MedicalRecord medicalRecord = medicalRecordRepository.findById(data.getId())
         .orElseThrow(() -> new NotFoundException(
             Collections.singletonList("err.medical-records.medical-record-not-found")));
-    if (!medicalRecord.getPatientId().equals(data.getPatientId())) {
+    if (!medicalRecord.getPatientId().equals(data.getPatientDto().getId())) {
       throw new ConflictException(
           Collections.singletonList("err.medical-records.patient-info-not-match"));
     }
 
     validationData(data.getAdvertisingSourceId(), data.getClinicId(),
         data.getConsultingStatusCode());
-
+    Patient patient = patientRepository.findActiveById(data.getPatientDto().getId())
+        .orElseThrow(
+            () -> new NotFoundException(Collections.singletonList("err-patient-not-found")));
+    BeanUtils.copyProperties(data.getPatientDto(), patient);
+    patientRepository.save(patient);
     // TODO: we can optimise this function:
     //  1. Get token from request header.
     //  2. Using method getValueByKeyInTheToken from Oauth2TokenUtils then pass desire parameter
     // So then we will not have to retrieve token 2 times
     Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
-    //valid nhan vien tu van chi sua du lieu cua minh
     if (!userId.equals(medicalRecord.getCreatedBy())) {
       throw new NotFoundException(
           Collections.singletonList("err.medical-record.permission-denied"));
@@ -429,10 +429,10 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
   private Patient setUpdatePatientForEmpClinic(
       MedicalRecordAddForEmpClinicDto medicalRecordAddDto) {
     Patient patient = patientRepository
-        .findActiveById(medicalRecordAddDto.getPatientAddDto().getId())
+        .findActiveById(medicalRecordAddDto.getPatientDto().getId())
         .orElseThrow(() -> new NotFoundException(
             Collections.singletonList("err-patient-not-found")));
-    BeanUtils.copyProperties(medicalRecordAddDto.getPatientAddDto(), patient);
+    BeanUtils.copyProperties(medicalRecordAddDto.getPatientDto(), patient);
     patient.setIsActive(true);
     patientRepository.save(patient);
     return patient;
