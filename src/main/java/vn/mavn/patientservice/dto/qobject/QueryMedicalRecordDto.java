@@ -2,6 +2,7 @@ package vn.mavn.patientservice.dto.qobject;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import javax.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,5 +33,8 @@ public class QueryMedicalRecordDto {
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   private LocalDateTime examinationEndDate;
   private Long examinationTimes;
-  private BigDecimal totalAmount;
+  @Positive(message = "err.common.invalid-value-of-money")
+  private BigDecimal totalAmountLowerBound;
+  @Positive(message = "err.common.invalid-value-of-money")
+  private BigDecimal totalAmountUpperBound;
 }

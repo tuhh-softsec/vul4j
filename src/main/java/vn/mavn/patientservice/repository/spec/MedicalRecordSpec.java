@@ -1,5 +1,6 @@
 package vn.mavn.patientservice.repository.spec;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -55,10 +56,20 @@ public class MedicalRecordSpec {
       }
 
       // Filter by total amount range
-      if (data.getTotalAmount() != null) {
-        predicates
-            .add(criteriaBuilder.lessThanOrEqualTo(root.get("totalAmount"), data.getTotalAmount()));
-        predicates.add(criteriaBuilder.greaterThan(root.get("totalAmount"), data.getTotalAmount()));
+      if (data.getTotalAmountLowerBound() != null && data.getTotalAmountUpperBound() != null) {
+        predicates.add(criteriaBuilder
+            .between(root.get("totalAmount"), data.getTotalAmountLowerBound(),
+                data.getTotalAmountUpperBound()));
+      }
+
+      if (data.getTotalAmountUpperBound() != null && data.getTotalAmountLowerBound() == null) {
+        predicates.add(criteriaBuilder
+            .greaterThanOrEqualTo(root.get("totalAmount"), data.getTotalAmountUpperBound()));
+      }
+
+      if (data.getTotalAmountLowerBound() != null && data.getTotalAmountUpperBound() == null) {
+        predicates.add(criteriaBuilder
+            .lessThanOrEqualTo(root.get("totalAmount"), data.getTotalAmountUpperBound()));
       }
 
       if (StringUtils.isNotBlank(data.getConsultingStatusCode())) {
