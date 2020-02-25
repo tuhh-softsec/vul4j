@@ -44,7 +44,7 @@ public class MedicalRecordAddForEmpClinicDto {
   private List<MedicineMappingDto> medicineDtos;
   @NotNull(message = "err-medical-record-patient-is-mandatory")
   @Valid
-  private PatientAddDto patientAddDto;
+  private PatientDto patientDto;
 
 
 }

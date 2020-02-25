@@ -14,7 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PatientAddDto {
+public class PatientDto {
 
   private Long id;
   @NotBlank(message = "err-patient-name-is-mandatory")

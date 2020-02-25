@@ -28,7 +28,7 @@ public class MedicalRecordAddDto {
   private Boolean isActive;
   @NotNull(message = "err-medical-record-patient-is-mandatory")
   @Valid
-  private PatientAddDto patientAddDto;
+  private PatientDto patientDto;
 
 
 }

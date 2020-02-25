@@ -11,9 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.mavn.patientservice.dto.MedicalRecordAddForEmpClinicDto;
-import vn.mavn.patientservice.dto.MedicalRecordEditForEmpClinicDto;
+import vn.mavn.patientservice.dto.MedicalRecordEditDto;
 import vn.mavn.patientservice.entity.MedicalRecord;
-import vn.mavn.patientservice.entity.Patient;
 import vn.mavn.patientservice.response.HttpResponse;
 import vn.mavn.patientservice.service.MedicalRecordService;
 import vn.mavn.patientservice.service.ResponseService;
@@ -43,7 +42,7 @@ public class EmployeeClinicRecordController {
 
   @PutMapping
   public HttpResponse updatePatientAndMedicalRecordForCounselor(
-      @Valid @RequestBody MedicalRecordEditForEmpClinicDto data,
+      @Valid @RequestBody MedicalRecordEditDto data,
       BindingResult bindingResult) {
     EntityValidationUtils.processBindingResults(bindingResult);
     MedicalRecord medicalRecord = medicalRecordService.editForEmpClinic(data);

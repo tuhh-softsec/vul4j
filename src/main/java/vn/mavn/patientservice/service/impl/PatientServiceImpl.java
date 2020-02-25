@@ -1,6 +1,5 @@
 package vn.mavn.patientservice.service.impl;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -12,27 +11,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import vn.mavn.patientservice.dto.MedicalRecordEditForEmpClinicDto;
-import vn.mavn.patientservice.dto.MedicineMappingDto;
-import vn.mavn.patientservice.dto.PatientAddDto;
-import vn.mavn.patientservice.dto.PatientEditDto;
+import vn.mavn.patientservice.dto.PatientDto;
 import vn.mavn.patientservice.dto.qobject.QueryPatientDto;
-import vn.mavn.patientservice.entity.Disease;
 import vn.mavn.patientservice.entity.MedicalRecord;
-import vn.mavn.patientservice.entity.MedicalRecordMedicine;
 import vn.mavn.patientservice.entity.Patient;
 import vn.mavn.patientservice.exception.BadRequestException;
 import vn.mavn.patientservice.exception.ConflictException;
 import vn.mavn.patientservice.exception.NotFoundException;
-import vn.mavn.patientservice.repository.AdvertisingSourceRepository;
-import vn.mavn.patientservice.repository.ClinicDiseaseRepository;
-import vn.mavn.patientservice.repository.ClinicRepository;
-import vn.mavn.patientservice.repository.ClinicUserRepository;
-import vn.mavn.patientservice.repository.ConsultingStatusRepository;
-import vn.mavn.patientservice.repository.DiseaseRepository;
-import vn.mavn.patientservice.repository.MedicalRecordMedicineRepository;
 import vn.mavn.patientservice.repository.MedicalRecordRepository;
-import vn.mavn.patientservice.repository.MedicineRepository;
 import vn.mavn.patientservice.repository.PatientRepository;
 import vn.mavn.patientservice.repository.spec.PatientSpec;
 import vn.mavn.patientservice.service.PatientService;
@@ -52,15 +38,16 @@ public class PatientServiceImpl implements PatientService {
   private HttpServletRequest httpServletRequest;
 
   @Override
-  public Patient addNew(PatientAddDto patientAddDto) {
+  public Patient addNew(PatientDto patientDto) {
     //TODO: check at least have 1 phone number.
-    if (StringUtils.isBlank(patientAddDto.getOtherPhone()) && StringUtils
-        .isBlank(patientAddDto.getPhone()) && StringUtils.isBlank(patientAddDto.getZaloPhone())) {
+    if (StringUtils.isBlank(patientDto.getOtherPhone()) && StringUtils
+        .isBlank(patientDto.getPhone()) && StringUtils
+        .isBlank(patientDto.getZaloPhone())) {
       throw new BadRequestException(
           Collections.singletonList("err-patient-phone-number-is-mandatory"));
     }
     Patient patient = new Patient();
-    BeanUtils.copyProperties(patientAddDto, patient);
+    BeanUtils.copyProperties(patientDto, patient);
     Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
     patient.setCreatedBy(userId);
     patient.setUpdatedBy(userId);
@@ -70,19 +57,19 @@ public class PatientServiceImpl implements PatientService {
   }
 
   @Override
-  public Patient editPatient(PatientEditDto patientEditDto) {
+  public Patient editPatient(PatientDto data) {
     //TODO: check patient exist?
-    Patient patient = patientRepository.findActiveById(patientEditDto.getId())
+    Patient patient = patientRepository.findActiveById(data.getId())
         .orElseThrow(() -> new NotFoundException(
             Collections.singletonList("err-patient-not-found")));
     //TODO: check at least have 1 phone number.
-    if (StringUtils.isBlank(patientEditDto.getOtherPhone()) && StringUtils
-        .isBlank(patientEditDto.getPhone()) && StringUtils.isBlank(patientEditDto.getZaLoPhone())) {
+    if (StringUtils.isBlank(data.getOtherPhone()) && StringUtils
+        .isBlank(data.getPhone()) && StringUtils.isBlank(data.getZaloPhone())) {
       throw new BadRequestException(
           Collections.singletonList("err-patient-phone-number-is-mandatory"));
     }
-    BeanUtils.copyProperties(patientEditDto, patient);
     Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
+    BeanUtils.copyProperties(data, patient);
     patient.setUpdatedBy(userId);
     patient.setIsActive(true);
     return patientRepository.save(patient);
