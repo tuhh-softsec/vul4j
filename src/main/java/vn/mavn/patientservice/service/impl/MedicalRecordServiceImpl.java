@@ -233,7 +233,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
     //valid danh sach loai benh cua phong kham cua nhan vien phong kham
     List<Long> diseaseIds = clinicDiseaseRepository.findAllByClinicId(clinicId);
-    if (!diseaseIds.containsAll(data.getDiseaseIds())) {
+    if (!diseaseIds.contains(data.getDiseaseId())) {
       throw new NotFoundException(Collections.singletonList("err-disease-not-found"));
     }
 
