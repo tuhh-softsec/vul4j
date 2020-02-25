@@ -68,7 +68,6 @@ public class MedicalRecordSpec {
       }
 
       if (data.getTotalAmountLowerBound() != null && data.getTotalAmountUpperBound() == null) {
-        predicates.add(criteriaBuilder.greaterThan(root.get("totalAmount"), BigDecimal.ZERO));
         predicates.add(criteriaBuilder
             .lessThanOrEqualTo(root.get("totalAmount"), data.getTotalAmountUpperBound()));
       }
