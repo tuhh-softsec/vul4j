@@ -16,12 +16,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import vn.mavn.patientservice.dto.ClinicDto;
 import vn.mavn.patientservice.dto.ClinicDto.DoctorDto;
-import vn.mavn.patientservice.dto.DiseaseDto;
 import vn.mavn.patientservice.dto.MedicalRecordAddDto;
 import vn.mavn.patientservice.dto.MedicalRecordAddForEmpClinicDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto.AdvertisingSourceDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto.ConsultingStatusDto;
+import vn.mavn.patientservice.dto.MedicalRecordDto.DiseaseForMedicalRecordDto;
+import vn.mavn.patientservice.dto.MedicalRecordDto.MedicineDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto.PatientDto;
 import vn.mavn.patientservice.dto.MedicalRecordEditDto;
 import vn.mavn.patientservice.dto.MedicalRecordEditForEmpClinicDto;
@@ -36,6 +37,7 @@ import vn.mavn.patientservice.entity.Doctor;
 import vn.mavn.patientservice.entity.MedicalRecord;
 import vn.mavn.patientservice.entity.MedicalRecordMedicine;
 import vn.mavn.patientservice.entity.Medicine;
+import vn.mavn.patientservice.entity.MedicineDisease;
 import vn.mavn.patientservice.entity.Patient;
 import vn.mavn.patientservice.exception.BadRequestException;
 import vn.mavn.patientservice.exception.ConflictException;
@@ -49,10 +51,10 @@ import vn.mavn.patientservice.repository.DiseaseRepository;
 import vn.mavn.patientservice.repository.DoctorRepository;
 import vn.mavn.patientservice.repository.MedicalRecordMedicineRepository;
 import vn.mavn.patientservice.repository.MedicalRecordRepository;
+import vn.mavn.patientservice.repository.MedicineDiseaseRepository;
 import vn.mavn.patientservice.repository.MedicineRepository;
 import vn.mavn.patientservice.repository.PatientRepository;
 import vn.mavn.patientservice.repository.spec.MedicalRecordSpec;
-import vn.mavn.patientservice.repository.spec.PatientSpec;
 import vn.mavn.patientservice.repository.spec.PatientSpec;
 import vn.mavn.patientservice.service.MedicalRecordService;
 import vn.mavn.patientservice.util.TokenUtils;
@@ -85,6 +87,10 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
   private ClinicUserRepository clinicUserRepository;
   @Autowired
   private ClinicDiseaseRepository clinicDiseaseRepository;
+  @Autowired
+  private MedicineDiseaseRepository medicineDiseaseRepository;
+  @Autowired
+  private MedicalRecordMedicineRepository medicalRecordMedicineRepository;
 
   @Override
   public MedicalRecord addForEmp(MedicalRecordAddDto medicalRecordAddDto) {
@@ -362,8 +368,29 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     //TODO build diseaseDto
     Disease disease = diseaseRepository.findDiseaseById(medicalRecord.getDiseaseId());
     if (disease != null) {
-      DiseaseDto diseaseDto = DiseaseDto.builder().id(disease.getId()).name(disease.getName())
+      DiseaseForMedicalRecordDto diseaseDto = DiseaseForMedicalRecordDto.builder()
+          .id(disease.getId()).name(disease.getName())
           .build();
+      List<Long> medicineIds = medicineDiseaseRepository.findAllByDiseaseId(disease.getId())
+          .stream().map(
+              MedicineDisease::getMedicineId).collect(Collectors.toList());
+      List<MedicineDto> medicineDtos = new ArrayList<>();
+      if (!CollectionUtils.isEmpty(medicineIds)) {
+        List<Medicine> medicines = medicineRepository.findAllByIdIn(medicineIds);
+        medicines.forEach(medicine -> {
+          MedicineDto medicineDto = MedicineDto.builder().id(medicine.getId())
+              .name(medicine.getName()).build();
+          List<MedicalRecordMedicine> medicalRecordMedicines = medicalRecordMedicineRepository
+              .findAllByMedicineId(medicine.getId());
+          medicalRecordMedicines.forEach(medicalRecordMedicine -> {
+            if (medicalRecord.getId().equals(medicalRecordMedicine.getMedicalRecordId())) {
+              medicineDto.setQty(Math.toIntExact(medicalRecordMedicine.getQty()));
+            }
+          });
+          medicineDtos.add(medicineDto);
+        });
+        diseaseDto.setMedicineDtoList(medicineDtos);
+      }
       medicalRecordDto.setDiseaseDto(diseaseDto);
     }
 
@@ -380,7 +407,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     Clinic clinic = clinicRepository.findByIdForGetData(medicalRecord.getClinicId());
     if (clinic != null) {
       ClinicDto clinicDto = ClinicDto.builder().id(clinic.getId()).address(clinic.getAddress())
-          .name(clinic.getName())
+          .name(clinic.getName()).isActive(clinic.getIsActive())
           .description(clinic.getDescription()).phone(clinic.getPhone()).build();
       Doctor doctor = doctorRepository.findByIdForGetData(clinic.getDoctorId());
       if (doctor != null) {
