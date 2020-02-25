@@ -23,7 +23,7 @@ public class MedicalRecordEditDto {
   @NotNull(message = "err-medical-record-advertising-source-id-is-mandatory")
   private Long advertisingSourceId;
   @NotNull(message = "err-medical-record-disease-id-is-mandatory")
-  private List<Long> diseaseIds;
+  private Long diseaseId;
   @NotNull(message = "err-medical-record-disease-status-is-mandatory")
   private String diseaseStatus;
   @NotNull(message = "err-medical-record-consulting-status-code-is-mandatory")
