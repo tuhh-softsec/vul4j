@@ -3,6 +3,7 @@ package vn.mavn.patientservice.dto;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +20,7 @@ public class MedicalRecordDto implements Serializable {
   private Long id;
   private String userCode;
   private PatientDto patientDto;
-  private DiseaseDto diseaseDto;
+  private DiseaseForMedicalRecordDto diseaseDto;
   private AdvertisingSourceDto advertisingSourceDto;
   private ClinicDto clinicDto;
   private ConsultingStatusDto consultingStatusDto;
@@ -73,4 +74,26 @@ public class MedicalRecordDto implements Serializable {
     private String name;
     private String code;
   }
+
+  @Setter
+  @Getter
+  @Builder
+  public static class DiseaseForMedicalRecordDto implements Serializable {
+
+    private Long id;
+    private String name;
+    private List<MedicineDto> medicineDtoList;
+  }
+
+  @Setter
+  @Getter
+  @Builder
+  public static class MedicineDto implements Serializable {
+
+    private Long id;
+    private String name;
+    private Integer qty;
+  }
+
+
 }
