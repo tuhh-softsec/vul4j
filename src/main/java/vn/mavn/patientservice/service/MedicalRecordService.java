@@ -24,6 +24,6 @@ public interface MedicalRecordService {
 
   MedicalRecord editForEmpClinic(MedicalRecordEditDto data);
 
-  List<MedicalRecordDto> findAll(QueryMedicalRecordDto queryMedicalRecordDto);
+  List<MedicalRecordDto> findAllForReport(QueryMedicalRecordDto queryMedicalRecordDto);
 }
 

@@ -53,7 +53,8 @@ public class ReportServiceImpl implements ReportService {
       HttpServletResponse httpServletResponse) throws IOException {
 
     // region prepare data
-    List<MedicalRecordDto> medicalRecords = medicalRecordService.findAll(queryMedicalRecordDto);
+    List<MedicalRecordDto> medicalRecords = medicalRecordService
+        .findAllForReport(queryMedicalRecordDto);
 
     Set<DiseaseForMedicalRecordDto> diseaseMedicines = medicalRecords.stream()
         .map(MedicalRecordDto::getDiseaseDto).collect(Collectors.toSet());
@@ -154,7 +155,8 @@ public class ReportServiceImpl implements ReportService {
       // Tuoi benh nhan
       row.createCell(cellNum, CellType.NUMERIC)
           .setCellValue(
-              medicalRecord.getPatientDto() != null ? medicalRecord.getPatientDto().getAge() : 0);
+              medicalRecord.getPatientDto() != null ? medicalRecord.getPatientDto().getAge()
+                  : Integer.valueOf(0));
       ++cellNum;
 
       // Dia chi
@@ -222,12 +224,14 @@ public class ReportServiceImpl implements ReportService {
 
       // Lan kham
       row.createCell(cellNum).setCellValue(
-          medicalRecord.getExaminationTimes() != null ? medicalRecord.getExaminationTimes() : 0);
+          medicalRecord.getExaminationTimes() != null ? medicalRecord.getExaminationTimes()
+              : Long.valueOf(0));
       ++cellNum;
 
       // So thang
       row.createCell(cellNum, CellType.NUMERIC).setCellValue(
-          medicalRecord.getRemedyAmount() != null ? medicalRecord.getRemedyAmount() : 0);
+          medicalRecord.getRemedyAmount() != null ? medicalRecord.getRemedyAmount()
+              : Long.valueOf(0));
       ++cellNum;
 
       // Loai thuoc

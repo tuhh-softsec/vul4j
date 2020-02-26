@@ -272,7 +272,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
    * Find all medical record for exporting report.
    */
   @Override
-  public List<MedicalRecordDto> findAll(QueryMedicalRecordDto queryMedicalRecordDto) {
+  public List<MedicalRecordDto> findAllForReport(QueryMedicalRecordDto queryMedicalRecordDto) {
     List<Long> patientIds = handlePatientFilters(queryMedicalRecordDto);
     List<MedicalRecord> medicalRecords = medicalRecordRepository
         .findAll(MedicalRecordSpec.findAllMedicines(queryMedicalRecordDto, patientIds));
