@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.mavn.patientservice.dto.qobject.QueryMedicalRecordDto;
@@ -26,7 +25,7 @@ public class ExportController {
   @Autowired
   private ReportService reportService;
 
-  @PostMapping("/medical-records")
+  @GetMapping("/medical-records")
   public void exportMedicalRecords(HttpServletResponse httpServletResponse,
       @Valid @ModelAttribute QueryMedicalRecordDto queryMedicalRecordDto,
       BindingResult bindingResult) throws IOException {
