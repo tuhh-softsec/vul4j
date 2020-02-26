@@ -32,11 +32,8 @@ public class MedicalRecordAddForEmpClinicDto {
   private String remedyType;
   private Long remedyAmount;
   private String remedies;
-  @NotNull(message = "err-medical-record-total-amount-is-mandatory")
   private BigDecimal totalAmount;
-  @NotNull(message = "err-medical-record-transfer-amount-is-mandatory")
   private BigDecimal transferAmount;
-  @NotNull(message = "err-medical-record-cod-amount-is-mandatory")
   private BigDecimal codAmount;
   private String extraNote;
   private Boolean isActive;
