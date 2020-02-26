@@ -268,10 +268,10 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     return medicalRecordExist;
   }
 
-  @Override
   /**
    * Find all medical record for exporting report.
    */
+  @Override
   public List<MedicalRecordDto> findAll(QueryMedicalRecordDto queryMedicalRecordDto) {
     List<Long> patientIds = handlePatientFilters(queryMedicalRecordDto);
     List<MedicalRecord> medicalRecords = medicalRecordRepository
@@ -344,7 +344,6 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     return medicalRecord;
   }
 
-
   private void mappingMedicalRecordMedicine(List<MedicineMappingDto> medicineDtos,
       Long medicalRecordId) {
     //TODO: mapping medical_record and medicine
@@ -410,7 +409,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
           });
           medicineDtos.add(medicineDto);
         });
-        diseaseDto.setMedicineDtoList(medicineDtos);
+        diseaseDto.setMedicines(medicineDtos);
       }
       medicalRecordDto.setDiseaseDto(diseaseDto);
     }
