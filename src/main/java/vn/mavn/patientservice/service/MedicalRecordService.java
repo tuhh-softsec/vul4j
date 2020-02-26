@@ -1,5 +1,6 @@
 package vn.mavn.patientservice.service;
 
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import vn.mavn.patientservice.dto.MedicalRecordAddDto;
@@ -22,5 +23,7 @@ public interface MedicalRecordService {
   MedicalRecord addForEmpClinic(MedicalRecordAddForEmpClinicDto medicalRecordAddDto);
 
   MedicalRecord editForEmpClinic(MedicalRecordEditDto data);
+
+  List<MedicalRecordDto> findAll(QueryMedicalRecordDto queryMedicalRecordDto);
 }
 
