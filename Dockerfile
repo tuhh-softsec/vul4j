@@ -5,7 +5,7 @@
 #RUN  mvn -T 4C -B -Dmaven.test.skip=true -Djava.net.preferIPv4Stack=true -Ddebug=false clean package
 
 FROM openjdk:8u212-jre-alpine
-RUN apk update && apk add curl
+RUN apk update && apk add curl && apk add --update ttf-dejavu
 
 ARG build_version="0.0.1-SNAPSHOT"
 ARG release_date=""
