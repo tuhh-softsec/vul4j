@@ -268,6 +268,28 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     return medicalRecordExist;
   }
 
+  /**
+   * Find all medical record for exporting report.
+   */
+  @Override
+  public List<MedicalRecordDto> findAll(QueryMedicalRecordDto queryMedicalRecordDto) {
+    List<Long> patientIds = handlePatientFilters(queryMedicalRecordDto);
+    List<MedicalRecord> medicalRecords = medicalRecordRepository
+        .findAll(MedicalRecordSpec.findAllMedicines(queryMedicalRecordDto, patientIds));
+    if (CollectionUtils.isEmpty(medicalRecords)) {
+      return Collections.emptyList();
+    } else {
+      List<MedicalRecordDto> medicalRecordDtos = new ArrayList<>();
+      medicalRecords.forEach(medicalRecord -> {
+        MedicalRecordDto medicalRecordDto = new MedicalRecordDto();
+        BeanUtils.copyProperties(medicalRecord, medicalRecordDto);
+        setValueForDto(medicalRecord, medicalRecordDto);
+        medicalRecordDtos.add(medicalRecordDto);
+      });
+      return medicalRecordDtos;
+    }
+  }
+
   @Override
   public MedicalRecord update(MedicalRecordEditDto data) {
     MedicalRecord medicalRecord = medicalRecordRepository.findById(data.getId())
@@ -321,7 +343,6 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     medicalRecordRepository.save(medicalRecord);
     return medicalRecord;
   }
-
 
   private void mappingMedicalRecordMedicine(List<MedicineMappingDto> medicineDtos,
       Long medicalRecordId) {
@@ -388,7 +409,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
           });
           medicineDtos.add(medicineDto);
         });
-        diseaseDto.setMedicineDtoList(medicineDtos);
+        diseaseDto.setMedicines(medicineDtos);
       }
       medicalRecordDto.setDiseaseDto(diseaseDto);
     }

@@ -82,7 +82,7 @@ public class MedicalRecordDto implements Serializable {
 
     private Long id;
     private String name;
-    private List<MedicineDto> medicineDtoList;
+    private List<MedicineDto> medicines;
   }
 
   @Setter
