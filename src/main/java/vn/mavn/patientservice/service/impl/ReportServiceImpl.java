@@ -1,8 +1,10 @@
 package vn.mavn.patientservice.service.impl;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -107,7 +109,7 @@ public class ReportServiceImpl implements ReportService {
     //endregion
 
     // Create a Sheet
-    Sheet sheet = workbook.createSheet("DANH SÁCH BỆNH ÁN");
+    Sheet sheet = workbook.createSheet("Data");
 
     // Create a Row
     Row headerRow = sheet.createRow(0);
@@ -292,12 +294,14 @@ public class ReportServiceImpl implements ReportService {
     // endregion
 
     // Try to determine file's content type
-    String contentType = "application/octet-stream";
+    String pattern = "MM-dd-yyyy-HH-mm-ss";
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+    String fileName = "Du_lieu_" + simpleDateFormat.format(new Date()) + ".xlsx";
 
     httpServletResponse
         .setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
     httpServletResponse
-        .setHeader("Content-Disposition", "attachment; filename=\"Danh-sach-benh-an.xlsx\"");
+        .setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
 
     workbook.write(httpServletResponse.getOutputStream());
     // Closing the workbook
