@@ -1,5 +1,6 @@
 package vn.mavn.patientservice.service.impl;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -168,24 +169,24 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
   @Override
   public MedicalRecord addForEmpClinic(
-      MedicalRecordAddForEmpClinicDto medicalRecordAddDto) {
+      MedicalRecordAddForEmpClinicDto data) {
     //TODO: validation data
-    validationData(medicalRecordAddDto.getAdvertisingSourceId(),
-        medicalRecordAddDto.getClinicId(), medicalRecordAddDto.getConsultingStatusCode());
+    validationData(data.getAdvertisingSourceId(),
+        data.getClinicId(), data.getConsultingStatusCode());
 
     MedicalRecord medicalRecord = new MedicalRecord();
     //TODO: get user_id, user_code from access_token.
     Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
     String userCode = TokenUtils.getUserCodeFromToken(httpServletRequest);
     //TODO: check if have patient_id -> action re-examination only add new medical_record
-    if (medicalRecordAddDto.getPatientDto().getId() != null) {
-      Patient patient = setUpdatePatientForEmpClinic(medicalRecordAddDto);
+    if (data.getPatientDto().getId() != null) {
+      Patient patient = setUpdatePatientForEmpClinic(data);
       //TODO: find list medical_record by patient_id
       List<MedicalRecord> medicalRecords = medicalRecordRepository
           .findByPatientId(patient.getId());
       if (!CollectionUtils.isEmpty(medicalRecords)) {
         medicalRecord = mappingMedicalRecordForEmpClinic(userCode, userId, patient.getId(),
-            medicalRecordAddDto);
+            data);
         medicalRecord.setExaminationTimes(medicalRecords.size() + 1L);
       }
     } else {
@@ -193,17 +194,19 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       Patient patient = new Patient();
       patient.setCreatedBy(userId);
       patient.setUpdatedBy(userId);
-      BeanUtils.copyProperties(medicalRecordAddDto.getPatientDto(), patient);
+      BeanUtils.copyProperties(data.getPatientDto(), patient);
       patient.setIsActive(true);
       patientRepository.save(patient);
       medicalRecord = mappingMedicalRecordForEmpClinic(userCode, userId, patient.getId(),
-          medicalRecordAddDto);
+          data);
       medicalRecord.setExaminationTimes(1L);
     }
     medicalRecord.setIsActive(true);
+    setPaymentInfo(medicalRecord, data.getTotalAmount(), data.getCodAmount(),
+        data.getTransferAmount());
     medicalRecordRepository.save(medicalRecord);
-    if (!CollectionUtils.isEmpty(medicalRecordAddDto.getMedicineDtos())) {
-      mappingMedicalRecordMedicine(medicalRecordAddDto.getMedicineDtos(),
+    if (!CollectionUtils.isEmpty(data.getMedicineDtos())) {
+      mappingMedicalRecordMedicine(data.getMedicineDtos(),
           medicalRecord.getId());
     }
 
@@ -212,7 +215,6 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
   @Override
   public MedicalRecord editForEmpClinic(MedicalRecordEditDto data) {
-
     medicalRecordRepository.findActiveById(data.getId())
         .orElseThrow(() -> new NotFoundException(
             Collections.singletonList("err-medical-record-not-found")));
@@ -247,25 +249,37 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     patientRepository.save(patientExist);
 
     //medical record
-    MedicalRecord medicalRecordExist = medicalRecordRepository
+    MedicalRecord medicalRecord = medicalRecordRepository
         .findActiveById(data.getId()).get();
 
-    BeanUtils.copyProperties(data, medicalRecordExist);
-    if (medicalRecordExist.getConsultingStatusCode().equals("TTTV001")) {
-      medicalRecordExist.setExaminationDate(LocalDateTime.now());
+    BeanUtils.copyProperties(data, medicalRecord);
+    if (medicalRecord.getConsultingStatusCode().equals("TTTV001")) {
+      medicalRecord.setExaminationDate(LocalDateTime.now());
     } else {
-      medicalRecordExist.setExaminationDate(null);
+      medicalRecord.setExaminationDate(null);
     }
-    medicalRecordExist.setClinicId(medicalRecordExist.getClinicId());
-    medicalRecordExist.setUpdatedBy(userId);
-    medicalRecordExist.setIsActive(true);
-    medicalRecordRepository.save(medicalRecordExist);
+    medicalRecord.setClinicId(medicalRecord.getClinicId());
+    medicalRecord.setIsActive(true);
+    medicalRecord.setUpdatedBy(userId);
+    setPaymentInfo(medicalRecord, data.getTotalAmount(), data.getCodAmount(),
+        data.getTransferAmount());
+    medicalRecordRepository.save(medicalRecord);
 
     //vi thuoc cua loai benh + so luong
     if (!CollectionUtils.isEmpty(data.getMedicineDtos())) {
-      mappingMedicalRecordMedicine(data.getMedicineDtos(), medicalRecordExist.getId());
+      mappingMedicalRecordMedicine(data.getMedicineDtos(), medicalRecord.getId());
     }
-    return medicalRecordExist;
+    return medicalRecord;
+  }
+
+  private void setPaymentInfo(MedicalRecord medicalRecord, BigDecimal totalAmount,
+      BigDecimal transferAmount, BigDecimal codAmount) {
+    medicalRecord.setTotalAmount(
+        totalAmount != null ? totalAmount : BigDecimal.ZERO);
+    medicalRecord.setTransferAmount(
+        transferAmount != null ? transferAmount : BigDecimal.ZERO);
+    medicalRecord.setCodAmount(
+        codAmount != null ? codAmount : BigDecimal.ZERO);
   }
 
   /**
