@@ -282,7 +282,7 @@ public class ReportServiceImpl implements ReportService {
             int finalCellIndex = cellIndex;
             medicineList.forEach(medicine -> {
               if (cellTitleIndexMap.get(finalCellIndex).equals(medicine.getName())) {
-                medicineCell.setCellValue(medicine.getQty());
+                medicineCell.setCellValue(medicine.getQty() != null ? medicine.getQty() : 0);
               }
             });
           }
