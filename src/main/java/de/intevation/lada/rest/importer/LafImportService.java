@@ -195,11 +195,14 @@ public class LafImportService {
         @Context HttpServletRequest request
     ) {
         UserInfo userInfo = authorization.getInfo(request);
+	String mstId = request.getHeader("X-LADA-MST");
 
-        String mstId = request.getHeader("X-LADA-MST");
-        if (mstId == null) {
-            return new Response(false, 699, "Missing header for messtelle.");
-        }
+	/** Preparation for Client-Update: "Vorbelegung Messstelle" will become mandatory! 
+        *if (mstId.equals("null")) {
+        *    return new Response(false, 699, "Missing header for messtelle.");
+        *}
+	*/
+
         logLAFFile(mstId, content);
         List<ImporterConfig> config = new ArrayList<ImporterConfig>();
         if (!"".equals(mstId)) {
@@ -223,7 +226,7 @@ public class LafImportService {
         respData.put("probeIds", importedProbeids);
 
         // If import created at least a new record
-        if (importedProbeids.size() > 0) {
+        if (importedProbeids.size() > 0 && !mstId.equals("null")) {
             //Generate a tag for the imported probe records
             Response tagCreation = TagUtil.generateTag("IMP", mstId, repository);
             if (!tagCreation.getSuccess()) {
