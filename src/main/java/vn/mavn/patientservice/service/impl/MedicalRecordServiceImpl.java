@@ -100,7 +100,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
         medicalRecordAddDto.getClinicId(), medicalRecordAddDto.getConsultingStatusCode());
 
     Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
-    MedicalRecord medicalRecord = new MedicalRecord();
+    MedicalRecord medicalRecord;
     String userCode = TokenUtils.getUserCodeFromToken(httpServletRequest);
     //TODO: check if have patient_id -> action re-examination only add new medical_record
     if (medicalRecordAddDto.getPatientDto().getId() != null) {
@@ -173,7 +173,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     validationData(data.getAdvertisingSourceId(),
         data.getClinicId(), data.getConsultingStatusCode());
 
-    MedicalRecord medicalRecord = new MedicalRecord();
+    MedicalRecord medicalRecord;
     //TODO: get user_id, user_code from access_token.
     Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
     String userCode = TokenUtils.getUserCodeFromToken(httpServletRequest);

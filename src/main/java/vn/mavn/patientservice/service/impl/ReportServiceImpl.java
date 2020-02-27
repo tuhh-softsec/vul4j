@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import vn.mavn.patientservice.dto.MedicalRecordDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto.DiseaseForMedicalRecordDto;
+import vn.mavn.patientservice.dto.MedicalRecordDto.MedicineDto;
 import vn.mavn.patientservice.dto.qobject.QueryMedicalRecordDto;
 import vn.mavn.patientservice.service.MedicalRecordService;
 import vn.mavn.patientservice.service.ReportService;
@@ -64,14 +65,16 @@ public class ReportServiceImpl implements ReportService {
 
     // Ten vi thuoc
     Set<String> medicineHeaders = new HashSet<>();
-    diseaseForMedicalRecords.forEach(diseaseForMedicalRecordDto -> {
-      if ((diseaseForMedicalRecordDto != null) && !CollectionUtils
-          .isEmpty(diseaseForMedicalRecordDto.getMedicines())) {
-        diseaseForMedicalRecordDto.getMedicines().forEach(medicineDto -> {
+    for (DiseaseForMedicalRecordDto diseaseForMedicalRecord : diseaseForMedicalRecords) {
+      if ((diseaseForMedicalRecord != null) && !CollectionUtils
+          .isEmpty(diseaseForMedicalRecord.getMedicines())) {
+        for (MedicineDto medicineDto : diseaseForMedicalRecord.getMedicines()) {
           medicineHeaders.add(medicineDto.getName());
-        });
+        }
       }
-    });
+    }
+    // Remove duplicate data
+    medicineHeaders = medicineHeaders.stream().distinct().collect(Collectors.toSet());
 
     long t3 = System.currentTimeMillis();
     System.out.println("Building header text: " + (t3 - t2));
