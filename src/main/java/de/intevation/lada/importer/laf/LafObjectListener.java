@@ -1865,7 +1865,7 @@ public class LafObjectListener extends LafBaseListener {
         }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "").trim();
-        if (!value.matches(LafDataTypes.C8)) {
+        if (!value.matches(LafDataTypes.C12)) {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
@@ -2246,7 +2246,7 @@ public class LafObjectListener extends LafBaseListener {
         }
         String value = ctx.getChild(1).toString();
         value = value.replaceAll("\"", "").trim();
-        if (!value.matches(LafDataTypes.C8)) {
+        if (!value.matches(LafDataTypes.C12)) {
             ReportItem err = new ReportItem();
             err.setKey(ctx.getChild(0).toString());
             err.setValue(value);
