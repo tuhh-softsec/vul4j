@@ -112,14 +112,10 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       patient.setIsActive(true);
       patientRepository.save(patient);
       //TODO: find list medical_record by patient_id
-      List<MedicalRecord> medicalRecords = medicalRecordRepository
-          .findByPatientId(patient.getId());
-      if (!CollectionUtils.isEmpty(medicalRecords)) {
-        medicalRecord = mapMedicalRecordForEmp(medicalRecordAddDto, userId, userCode,
-            patient.getId());
-        medicalRecord.setExaminationTimes(medicalRecords.size() + 1L);
-
-      }
+      medicalRecord = mapMedicalRecordForEmp(medicalRecordAddDto, userId, userCode,
+          patient.getId());
+      Long maxExaminationTimes = getCurrentExaminationTimesOfPatient(patient.getId());
+      medicalRecord.setExaminationTimes(maxExaminationTimes + 1L);
 
     } else {
       Patient patient = new Patient();
@@ -130,6 +126,8 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       patientRepository.save(patient);
       medicalRecord = mapMedicalRecordForEmp(medicalRecordAddDto, userId, userCode,
           patient.getId());
+      Long maxExaminationTimes = getCurrentExaminationTimesOfPatient(patient.getId());
+      medicalRecord.setExaminationTimes(maxExaminationTimes + 1L);
     }
     medicalRecord.setIsActive(true);
     medicalRecordRepository.save(medicalRecord);
@@ -183,13 +181,10 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     if (data.getPatientDto().getId() != null) {
       Patient patient = setUpdatePatientForEmpClinic(data);
       //TODO: find list medical_record by patient_id
-      List<MedicalRecord> medicalRecords = medicalRecordRepository
-          .findByPatientId(patient.getId());
-      if (!CollectionUtils.isEmpty(medicalRecords)) {
-        medicalRecord = mappingMedicalRecordForEmpClinic(userCode, userId, patient.getId(),
-            data);
-        medicalRecord.setExaminationTimes(medicalRecords.size() + 1L);
-      }
+      medicalRecord = mappingMedicalRecordForEmpClinic(userCode, userId, patient.getId(),
+          data);
+      Long maxExaminationTimes = getCurrentExaminationTimesOfPatient(patient.getId());
+      medicalRecord.setExaminationTimes(maxExaminationTimes + 1L);
     } else {
       //TODO: add new patient from info medical_record
       Patient patient = new Patient();
@@ -531,5 +526,11 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
         transferAmount != null ? transferAmount : BigDecimal.ZERO);
     medicalRecord.setCodAmount(
         codAmount != null ? codAmount : BigDecimal.ZERO);
+  }
+
+  private Long getCurrentExaminationTimesOfPatient(Long patientId) {
+    Long currentExaminationTimes = medicalRecordRepository
+        .getMaxExaminationTimeOfPatient(patientId);
+    return currentExaminationTimes != null ? currentExaminationTimes : Long.valueOf(0);
   }
 }

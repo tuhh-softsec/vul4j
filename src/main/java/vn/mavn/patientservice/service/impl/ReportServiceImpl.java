@@ -2,8 +2,6 @@ package vn.mavn.patientservice.service.impl;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,7 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import vn.mavn.patientservice.dto.MedicalRecordDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto.DiseaseForMedicalRecordDto;
-import vn.mavn.patientservice.dto.MedicalRecordDto.MedicineDto;
 import vn.mavn.patientservice.dto.qobject.QueryMedicalRecordDto;
 import vn.mavn.patientservice.service.MedicalRecordService;
 import vn.mavn.patientservice.service.ReportService;
@@ -53,26 +50,32 @@ public class ReportServiceImpl implements ReportService {
   @Override
   public void exportReport(QueryMedicalRecordDto queryMedicalRecordDto,
       HttpServletResponse httpServletResponse) throws IOException {
+    long t1 = System.currentTimeMillis();
 
     // region prepare data
     List<MedicalRecordDto> medicalRecords = medicalRecordService
         .findAllForReport(queryMedicalRecordDto);
 
-    Set<DiseaseForMedicalRecordDto> diseaseMedicines = medicalRecords.stream()
+    long t2 = System.currentTimeMillis();
+    System.out.println("Fetching data: " + (t2 - t1));
+
+    Set<DiseaseForMedicalRecordDto> diseaseForMedicalRecords = medicalRecords.stream()
         .map(MedicalRecordDto::getDiseaseDto).collect(Collectors.toSet());
-    List<String> cellTitles = new ArrayList<>(Arrays.asList(columns));
-    Set<MedicineDto> allMedicines = new HashSet<>();
-    if (!CollectionUtils.isEmpty(diseaseMedicines)) {
-      diseaseMedicines
-          .forEach(diseaseMedicine -> {
-            if (diseaseMedicine != null) {
-              if (!CollectionUtils.isEmpty(diseaseMedicine.getMedicines())) {
-                allMedicines.addAll(diseaseMedicine.getMedicines());
-              }
-            }
-          });
-      allMedicines.forEach(medicine -> cellTitles.add(medicine.getName()));
-    }
+
+    // Ten vi thuoc
+    Set<String> medicineHeaders = new HashSet<>();
+    diseaseForMedicalRecords.forEach(diseaseForMedicalRecordDto -> {
+      if ((diseaseForMedicalRecordDto != null) && !CollectionUtils
+          .isEmpty(diseaseForMedicalRecordDto.getMedicines())) {
+        diseaseForMedicalRecordDto.getMedicines().forEach(medicineDto -> {
+          medicineHeaders.add(medicineDto.getName());
+        });
+      }
+    });
+
+    long t3 = System.currentTimeMillis();
+    System.out.println("Building header text: " + (t3 - t2));
+
     // endregion
 
     // region build template for sheet
@@ -111,20 +114,33 @@ public class ReportServiceImpl implements ReportService {
     // Create a Sheet
     Sheet sheet = workbook.createSheet("Data");
 
-    // Create a Row
+    // Create a header Row
     Row headerRow = sheet.createRow(0);
 
-    // Create cells
-    Map<Integer, String> cellTitleIndexMap = new HashMap<>();
-    for (int i = 0; i < cellTitles.size(); i++) {
-      String title = cellTitles.get(i);
+    // Create column headers
+    for (int i = 0; i < columns.length; i++) {
+      String title = columns[i];
       Cell cell = headerRow.createCell(i);
       cell.setCellValue(title);
       cell.setCellStyle(headerCellStyle);
       sheet.autoSizeColumn(i);
-      cellTitleIndexMap.put(i, title);
+    }
+
+    int nextExtraColumn = columns.length;
+    // Add ten vi thuoc vao header
+    Map<String, Integer> mapHeaderColumnIndex = new HashMap<>();
+    for (String medicineHeader : medicineHeaders) {
+      Cell cell = headerRow.createCell(nextExtraColumn);
+      cell.setCellValue(medicineHeader);
+      cell.setCellStyle(headerCellStyle);
+      sheet.autoSizeColumn(nextExtraColumn);
+      mapHeaderColumnIndex.put(medicineHeader, nextExtraColumn);
+      nextExtraColumn++;
     }
     // endregion
+
+    long t4 = System.currentTimeMillis();
+    System.out.println("Built cell header: " + (t4 - t3));
 
     // region fill data to spreadsheet
     // Create Other rows and cells with employees data
@@ -272,26 +288,19 @@ public class ReportServiceImpl implements ReportService {
       row.createCell(cellNum).setCellValue(medicalRecord.getExtraNote());
       ++cellNum;
 
-      int finalCellNum = cellNum;
-      allMedicines.forEach(element -> {
-        int cellIndex = finalCellNum;
-        Cell medicineCell = row.createCell(cellIndex);
-        if (medicalRecord.getDiseaseDto() != null) {
-          List<MedicineDto> medicineList = medicalRecord.getDiseaseDto().getMedicines();
-          if (!CollectionUtils.isEmpty(medicineList)) {
-            int finalCellIndex = cellIndex;
-            medicineList.forEach(medicine -> {
-              if (cellTitleIndexMap.get(finalCellIndex).equals(medicine.getName())) {
-                medicineCell.setCellValue(medicine.getQty() != null ? medicine.getQty() : 0);
-              }
-            });
-          }
-        }
-        ++cellIndex;
-      });
-
+      // Nhao so luong vi thuoc
+      if (medicalRecord.getDiseaseDto() != null) {
+        medicalRecord.getDiseaseDto().getMedicines().forEach(medicineDto -> {
+          int cellIndex = mapHeaderColumnIndex.get(medicineDto.getName());
+          row.createCell(cellIndex, CellType.NUMERIC).setCellValue(
+              medicineDto.getQty() != null ? medicineDto.getQty() : Integer.valueOf(0));
+        });
+      }
     }
     // endregion
+
+    long t5 = System.currentTimeMillis();
+    System.out.println("Built cell value: " + (t5 - t4));
 
     // Try to determine file's content type
     String pattern = "MM-dd-yyyy-HH-mm-ss";
