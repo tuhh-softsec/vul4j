@@ -75,6 +75,7 @@ public class ReportServiceImpl implements ReportService {
     }
     // Remove duplicate data
     medicineHeaders = medicineHeaders.stream().distinct().collect(Collectors.toSet());
+    System.out.println(medicineHeaders);
 
     long t3 = System.currentTimeMillis();
     System.out.println("Building header text: " + (t3 - t2));
