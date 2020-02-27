@@ -22,7 +22,6 @@ public class MedicalRecordEditDto {
   private Long id;
   @NotNull(message = "err-medical-record-advertising-source-id-is-mandatory")
   private Long advertisingSourceId;
-  @NotNull(message = "err-medical-record-disease-id-is-mandatory")
   private Long diseaseId;
   @NotNull(message = "err-medical-record-disease-status-is-mandatory")
   private String diseaseStatus;
@@ -39,7 +38,6 @@ public class MedicalRecordEditDto {
   private BigDecimal codAmount;
   private String extraNote;
   private Boolean isActive;
-  @NotEmpty(message = "err-medical-record-medicineDtos-is-mandatory")
   private List<MedicineMappingDto> medicineDtos;
   @NotNull(message = "err-medical-record-patient-is-mandatory")
   @Valid

@@ -216,6 +216,14 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
   @Override
   public MedicalRecord editForEmpClinic(MedicalRecordEditDto data) {
+    if (data.getDiseaseId() == null) {
+      throw new BadRequestException(
+          Collections.singletonList("err-medical-record-disease-id-is-mandatory"));
+    }
+    if (CollectionUtils.isEmpty(data.getMedicineDtos())) {
+      throw new BadRequestException(
+          Collections.singletonList("err-medical-record-medicineDtos-is-mandatory"));
+    }
     medicalRecordRepository.findActiveById(data.getId())
         .orElseThrow(() -> new NotFoundException(
             Collections.singletonList("err-medical-record-not-found")));
@@ -273,16 +281,6 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     return medicalRecord;
   }
 
-  private void setPaymentInfo(MedicalRecord medicalRecord, BigDecimal totalAmount,
-      BigDecimal transferAmount, BigDecimal codAmount) {
-    medicalRecord.setTotalAmount(
-        totalAmount != null ? totalAmount : BigDecimal.ZERO);
-    medicalRecord.setTransferAmount(
-        transferAmount != null ? transferAmount : BigDecimal.ZERO);
-    medicalRecord.setCodAmount(
-        codAmount != null ? codAmount : BigDecimal.ZERO);
-  }
-
   /**
    * Find all medical record for exporting report.
    */
@@ -319,11 +317,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
     validationData(data.getAdvertisingSourceId(), data.getClinicId(),
         data.getConsultingStatusCode());
-    Patient patient = patientRepository.findActiveById(data.getPatientDto().getId())
-        .orElseThrow(
-            () -> new NotFoundException(Collections.singletonList("err-patient-not-found")));
-    BeanUtils.copyProperties(data.getPatientDto(), patient);
-    patientRepository.save(patient);
+
     // TODO: we can optimise this function:
     //  1. Get token from request header.
     //  2. Using method getValueByKeyInTheToken from Oauth2TokenUtils then pass desire parameter
@@ -333,25 +327,41 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       throw new NotFoundException(
           Collections.singletonList("err.medical-record.permission-denied"));
     }
-    List<MedicineMappingDto> medicineList = data.getMedicineDtos();
-    if (!CollectionUtils.isEmpty(medicineList)) {
-      List<Long> medicineIds = medicineList.stream().map(MedicineMappingDto::getMedicineId)
-          .collect(Collectors.toList());
-      List<Long> medicines = medicineRepository
-          .findAllByIdIn(medicineIds)
-          .stream().map(Medicine::getId).collect(Collectors.toList());
-      if (!medicines.containsAll(medicineIds)) {
-        throw new NotFoundException(Collections.singletonList("err.medicines.medicine-not-found"));
-      }
-      medicineList.forEach(medicine -> {
-        if (medicine.getQty() < 0) {
-          throw new BadRequestException(
-              Collections.singletonList("err.medicines.quantity-must-be-positive"));
-        }
-      });
-      recordMedicineRepository.deleteAllByMedicalRecordId(medicalRecord.getId());
-      mappingMedicalRecordMedicine(medicineList, medicalRecord.getId());
+
+    if (data.getDiseaseId() != null) {
+      diseaseRepository.findActiveById(data.getDiseaseId())
+          .orElseThrow(() -> new NotFoundException(
+              Collections.singletonList("err.diseases.disease-not-found")));
     }
+
+    if (!CollectionUtils.isEmpty(data.getMedicineDtos())) {
+      List<MedicineMappingDto> medicineList = data.getMedicineDtos();
+      if (!CollectionUtils.isEmpty(medicineList)) {
+        List<Long> medicineIds = medicineList.stream().map(MedicineMappingDto::getMedicineId)
+            .collect(Collectors.toList());
+        List<Long> medicines = medicineRepository
+            .findAllByIdIn(medicineIds)
+            .stream().map(Medicine::getId).collect(Collectors.toList());
+        if (!medicines.containsAll(medicineIds)) {
+          throw new NotFoundException(
+              Collections.singletonList("err.medicines.medicine-not-found"));
+        }
+        medicineList.forEach(medicine -> {
+          if (medicine.getQty() < 0) {
+            throw new BadRequestException(
+                Collections.singletonList("err.medicines.quantity-must-be-positive"));
+          }
+        });
+        recordMedicineRepository.deleteAllByMedicalRecordId(medicalRecord.getId());
+        mappingMedicalRecordMedicine(medicineList, medicalRecord.getId());
+      }
+    }
+
+    Patient patient = patientRepository.findActiveById(data.getPatientDto().getId())
+        .orElseThrow(
+            () -> new NotFoundException(Collections.singletonList("err-patient-not-found")));
+    BeanUtils.copyProperties(data.getPatientDto(), patient);
+    patientRepository.save(patient);
     String userCode = TokenUtils.getUserCodeFromToken(httpServletRequest);
     BeanUtils.copyProperties(data, medicalRecord);
     medicalRecord.setUserCode(userCode);
@@ -513,4 +523,13 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     return new ArrayList<>(patientIds);
   }
 
+  private void setPaymentInfo(MedicalRecord medicalRecord, BigDecimal totalAmount,
+      BigDecimal transferAmount, BigDecimal codAmount) {
+    medicalRecord.setTotalAmount(
+        totalAmount != null ? totalAmount : BigDecimal.ZERO);
+    medicalRecord.setTransferAmount(
+        transferAmount != null ? transferAmount : BigDecimal.ZERO);
+    medicalRecord.setCodAmount(
+        codAmount != null ? codAmount : BigDecimal.ZERO);
+  }
 }
