@@ -524,7 +524,16 @@ public class LafObjectMapper {
                 try {
                     Object value = getter.invoke(object);
                     if (value == null && setter != null) {
-                        setter.invoke(object, current.getToValue());
+                        Class<?>[] types = setter.getParameterTypes();
+                        if (types.length == 1) { // we have exactly one parameter, thats fine.
+                            if (types[0].isAssignableFrom(Integer.class)) { // the parameter is of type Integer!
+                                // Cast to integer
+                                setter.invoke(object, Integer.valueOf(current.getToValue()));
+                            }
+                            else { // we handle the default as string. Other parameter types are not implemented!
+                                setter.invoke(object, current.getToValue());
+                            }
+                        }
                     }
                 }
                 catch(IllegalAccessException |
