@@ -1,7 +1,9 @@
 package vn.mavn.patientservice.service.impl;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,6 +32,7 @@ import vn.mavn.patientservice.dto.MedicalRecordDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto.DiseaseForMedicalRecordDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto.MedicineDto;
 import vn.mavn.patientservice.dto.qobject.QueryMedicalRecordDto;
+import vn.mavn.patientservice.exception.NotFoundException;
 import vn.mavn.patientservice.service.MedicalRecordService;
 import vn.mavn.patientservice.service.ReportService;
 
@@ -56,6 +59,10 @@ public class ReportServiceImpl implements ReportService {
     // region prepare data
     List<MedicalRecordDto> medicalRecords = medicalRecordService
         .findAllForReport(queryMedicalRecordDto);
+
+    if(CollectionUtils.isEmpty(medicalRecords)) {
+      throw new NotFoundException(Arrays.asList("err.report.dont-have-data-to-export-report"));
+    }
 
     long t2 = System.currentTimeMillis();
     System.out.println("Fetching data: " + (t2 - t1));

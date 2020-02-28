@@ -284,6 +284,9 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
   @Override
   public List<MedicalRecordDto> findAllForReport(QueryMedicalRecordDto queryMedicalRecordDto) {
     List<Long> patientIds = handlePatientFilters(queryMedicalRecordDto);
+    if (CollectionUtils.isEmpty(patientIds)) {
+      return new ArrayList<>();
+    }
     List<MedicalRecord> medicalRecords = medicalRecordRepository
         .findAll(MedicalRecordSpec.findAllMedicines(queryMedicalRecordDto, patientIds));
     if (CollectionUtils.isEmpty(medicalRecords)) {
