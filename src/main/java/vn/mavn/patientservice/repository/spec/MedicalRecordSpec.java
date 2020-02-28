@@ -56,16 +56,16 @@ public class MedicalRecordSpec {
       }
 
       // Filter by total amount range
-      if (data.getTotalAmountUpperBound() != null) {
-        predicates.add(criteriaBuilder
-            .lessThanOrEqualTo(root.get("totalAmount"),
-                BigDecimal.valueOf(data.getTotalAmountUpperBound().doubleValue())));
-      }
-
-      if (data.getTotalAmountLowerBound() != null) {
+      if (data.getTotalAmountFrom() != null) {
         predicates.add(criteriaBuilder
             .greaterThanOrEqualTo(root.get("totalAmount"),
-                BigDecimal.valueOf(data.getTotalAmountLowerBound().doubleValue())));
+                BigDecimal.valueOf(data.getTotalAmountFrom().doubleValue())));
+      }
+
+      if (data.getTotalAmountTo() != null) {
+        predicates.add(criteriaBuilder
+            .lessThanOrEqualTo(root.get("totalAmount"),
+                BigDecimal.valueOf(data.getTotalAmountTo().doubleValue())));
       }
 
       if (StringUtils.isNotBlank(data.getConsultingStatusCode())) {
