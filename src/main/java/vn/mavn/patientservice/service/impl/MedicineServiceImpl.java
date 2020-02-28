@@ -95,9 +95,7 @@ public class MedicineServiceImpl implements MedicineService {
     medicine.setIsActive(true);
     medicineRepository.save(medicine);
 
-    if (!CollectionUtils.isEmpty(data.getDiseaseIds())) {
-      mappingMedicineDisease(medicine, data.getDiseaseIds());
-    }
+    mappingMedicineDisease(medicine, data.getDiseaseIds());
     return medicine;
   }
 
@@ -122,9 +120,7 @@ public class MedicineServiceImpl implements MedicineService {
     //delete mapping medicine disease
     medicineDiseaseRepository.deleteMappingMediciDiseaseById(medicine.getId());
 
-    if (!CollectionUtils.isEmpty(data.getDiseaseIds())) {
-      mappingMedicineDisease(medicine, data.getDiseaseIds());
-    }
+    mappingMedicineDisease(medicine, data.getDiseaseIds());
     return medicine;
   }
 
@@ -163,6 +159,9 @@ public class MedicineServiceImpl implements MedicineService {
   }
 
   private void validateDiseaseData(List<Long> diseaseIds) {
+    if (CollectionUtils.isEmpty(diseaseIds)) {
+      return;
+    }
     List<Long> existDiseases = diseaseRepository.findAllByIdIn(diseaseIds).stream()
         .map(Disease::getId).collect(Collectors.toList());
     if (!existDiseases.containsAll(diseaseIds)) {
@@ -171,6 +170,9 @@ public class MedicineServiceImpl implements MedicineService {
   }
 
   private void mappingMedicineDisease(Medicine medicine, List<Long> diseaseIds) {
+    if (CollectionUtils.isEmpty(diseaseIds)) {
+      return;
+    }
     List<MedicineDisease> mappingData = new ArrayList<>();
     Set<Long> setDiseases = new HashSet<>(diseaseIds);
     setDiseases.forEach(diseaseId -> mappingData
