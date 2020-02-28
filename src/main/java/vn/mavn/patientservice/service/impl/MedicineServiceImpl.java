@@ -94,7 +94,10 @@ public class MedicineServiceImpl implements MedicineService {
     medicine.setUpdatedBy(loggedInUserId);
     medicine.setIsActive(true);
     medicineRepository.save(medicine);
-    mappingMedicineDisease(medicine, data.getDiseaseIds());
+
+    if (!CollectionUtils.isEmpty(data.getDiseaseIds())) {
+      mappingMedicineDisease(medicine, data.getDiseaseIds());
+    }
     return medicine;
   }
 
@@ -118,7 +121,10 @@ public class MedicineServiceImpl implements MedicineService {
     medicineRepository.save(medicine);
     //delete mapping medicine disease
     medicineDiseaseRepository.deleteMappingMediciDiseaseById(medicine.getId());
-    mappingMedicineDisease(medicine, data.getDiseaseIds());
+
+    if (!CollectionUtils.isEmpty(data.getDiseaseIds())) {
+      mappingMedicineDisease(medicine, data.getDiseaseIds());
+    }
     return medicine;
   }
 

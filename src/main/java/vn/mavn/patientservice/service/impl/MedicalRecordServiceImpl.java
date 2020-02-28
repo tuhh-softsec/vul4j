@@ -38,7 +38,6 @@ import vn.mavn.patientservice.entity.Doctor;
 import vn.mavn.patientservice.entity.MedicalRecord;
 import vn.mavn.patientservice.entity.MedicalRecordMedicine;
 import vn.mavn.patientservice.entity.Medicine;
-import vn.mavn.patientservice.entity.MedicineDisease;
 import vn.mavn.patientservice.entity.Patient;
 import vn.mavn.patientservice.exception.BadRequestException;
 import vn.mavn.patientservice.exception.ConflictException;
@@ -413,9 +412,9 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       DiseaseForMedicalRecordDto diseaseDto = DiseaseForMedicalRecordDto.builder()
           .id(disease.getId()).name(disease.getName())
           .build();
-      List<Long> medicineIds = medicineDiseaseRepository.findAllByDiseaseId(disease.getId())
-          .stream().map(
-              MedicineDisease::getMedicineId).collect(Collectors.toList());
+      List<Long> medicineIds = medicalRecordMedicineRepository
+          .findAllByMedicalRecordId(medicalRecord.getId()).stream().map(
+              MedicalRecordMedicine::getMedicineId).collect(Collectors.toList());
       List<MedicineDto> medicineDtos = new ArrayList<>();
       if (!CollectionUtils.isEmpty(medicineIds)) {
         List<Medicine> medicines = medicineRepository.findAllByIdIn(medicineIds);

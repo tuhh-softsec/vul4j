@@ -7,7 +7,7 @@ import vn.mavn.patientservice.entity.Medicine;
 
 public interface MedicineRepository extends BaseRepository<Medicine, Long> {
 
-  @Query("select m from Medicine m where unaccent(m.name) = unaccent(:name)")
+  @Query("select m from Medicine m where m.name = :name")
   Optional<Medicine> findByName(String name);
 
   @Query("select m from Medicine m where m.id =:id and m.isActive = true")
