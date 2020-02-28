@@ -227,7 +227,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
     //valid phong kham cua nhan vien phong kham
     Long clinicId = clinicUserRepository.findClinicIdByUserId(userId);
-    if (!clinicId.equals(data.getClinicId())) {
+    if (clinicId == null || !clinicId.equals(data.getClinicId())) {
       throw new NotFoundException(
           Collections.singletonList("err.medical-record.permission-denied"));
     }
