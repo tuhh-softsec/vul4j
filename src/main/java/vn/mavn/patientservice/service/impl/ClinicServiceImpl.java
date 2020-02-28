@@ -1,6 +1,7 @@
 package vn.mavn.patientservice.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -68,6 +69,12 @@ public class ClinicServiceImpl implements ClinicService {
     //valid doctor
     validDoctor(data.getDoctorId());
 
+    // Validate clinic disease
+    validClinicDisease(data.getDiseaseIds());
+
+    // Validate user with clinic
+    validateUserWhenAddingClinic(data.getUserIds());
+
     BeanUtils.copyProperties(data, clinic);
     clinic.setName(data.getName().trim());
     //Get user logged in ID
@@ -78,7 +85,7 @@ public class ClinicServiceImpl implements ClinicService {
     clinicRepository.save(clinic);
 
     //valid disease
-    validDisease(clinic, data.getDiseaseIds());
+    mappingClinicDisease(clinic, data.getDiseaseIds());
 
     //mapping clinic user
     mappingClinicUser(clinic, data.getUserIds());
@@ -98,6 +105,12 @@ public class ClinicServiceImpl implements ClinicService {
     //valid doctor
     validDoctor(data.getDoctorId());
 
+    // Validate clinic disease
+    validClinicDisease(data.getDiseaseIds());
+
+    // Validate user for clinic
+    validateUserWhenEditingClinic(data.getId(), data.getUserIds());
+
     BeanUtils.copyProperties(data, clinic);
     clinic.setName(data.getName().trim());
 
@@ -110,7 +123,7 @@ public class ClinicServiceImpl implements ClinicService {
     //delete mapping clinic disease
     clinicDiseaseRepository.deleteAllByClinicId(clinic.getId());
     //valid disease
-    validDisease(clinic, data.getDiseaseIds());
+    mappingClinicDisease(clinic, data.getDiseaseIds());
 
     //delete mapping clinic user
     clinicUserRepository.deleteAllByClinicId(clinic.getId());
@@ -122,18 +135,15 @@ public class ClinicServiceImpl implements ClinicService {
   }
 
   private void mappingClinicUser(Clinic clinic, List<Long> userIds) {
+    if (CollectionUtils.isEmpty(userIds)) {
+      return;
+    }
 
     Set<Long> setUserIds = new HashSet<>();
     if (!CollectionUtils.isEmpty(userIds)) {
       setUserIds.addAll(userIds);
     }
 
-    //valid user
-    setUserIds.forEach(user -> {
-      clinicUserRepository.findById(user).ifPresent(clinicUser -> {
-        throw new ConflictException(Collections.singletonList("err.clinic.user-already-exits"));
-      });
-    });
     setUserIds.forEach(user -> {
       ClinicUser clinicUser = ClinicUser.builder().clinicId(clinic.getId()).userId(user).build();
       clinicUserRepository.save(clinicUser);
@@ -278,12 +288,16 @@ public class ClinicServiceImpl implements ClinicService {
             Collections.singletonList("err.doctor.doctor-does-not-exist")));
   }
 
-  private void validDisease(Clinic clinic, List<Long> diseases) {
+  private void validClinicDisease(List<Long> diseases) {
     Set<Long> setDisease = new HashSet<>(diseases);
     setDisease.forEach(disease -> {
       diseaseRepository.findById(disease).orElseThrow(() -> new NotFoundException(
           Collections.singletonList("err.diseases.disease-not-found")));
     });
+  }
+
+  private void mappingClinicDisease(Clinic clinic, List<Long> diseases) {
+    Set<Long> setDisease = new HashSet<>(diseases);
     //mapping clinic disease
     List<ClinicDisease> clinicDiseases = new ArrayList<>();
     setDisease.forEach(disease -> {
@@ -320,5 +334,27 @@ public class ClinicServiceImpl implements ClinicService {
     if (!CollectionUtils.isEmpty(failReasons)) {
       throw new ConflictException(failReasons);
     }
+  }
+
+  private void validateUserWhenAddingClinic(List<Long> userIds) {
+    if (CollectionUtils.isEmpty(userIds)) {
+      return;
+    }
+    userIds.forEach(userId -> {
+      clinicUserRepository.findByUserId(userId).ifPresent(clinicUser -> {
+        throw new ConflictException(Arrays.asList("err.clinic.user-already-exits"));
+      });
+    });
+  }
+
+  private void validateUserWhenEditingClinic(Long clinicId, List<Long> userIds) {
+    if (CollectionUtils.isEmpty(userIds)) {
+      return;
+    }
+    userIds.forEach(userId -> {
+      clinicUserRepository.findByUserIdExceptClinicId(clinicId, userId).ifPresent(clinicUser -> {
+        throw new ConflictException(Arrays.asList("err.clinic.user-already-exits"));
+      });
+    });
   }
 }
