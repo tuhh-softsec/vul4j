@@ -15,7 +15,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @AllArgsConstructor
 public class QueryMedicalRecordDto {
 
-  private String name;
+  private String patientName;
   private Boolean isActive;
   private Long clinicId;
   private String userCode;

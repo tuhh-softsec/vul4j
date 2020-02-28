@@ -511,7 +511,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     Set<Long> patientIds;
     QueryPatientDto queryDto = QueryPatientDto.builder()
         .age(data.getPatientAge())
-        .name(data.getName())
+        .name(data.getPatientName())
         .phoneNumber(data.getPhoneNumber()).build();
     List<Patient> patients = patientRepository.findAll(PatientSpec.findAllPatient(queryDto));
     patientIds = patients.stream().map(Patient::getId).collect(Collectors.toSet());
