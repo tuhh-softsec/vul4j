@@ -15,7 +15,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @AllArgsConstructor
 public class QueryMedicalRecordDto {
 
-  private String name;
+  private String patientName;
   private Boolean isActive;
   private Long clinicId;
   private String userCode;
@@ -34,7 +34,7 @@ public class QueryMedicalRecordDto {
   private LocalDateTime examinationEndDate;
   private Long examinationTimes;
   @Positive(message = "err.common.invalid-value-of-money")
-  private BigDecimal totalAmountLowerBound;
+  private BigDecimal totalAmountFrom;
   @Positive(message = "err.common.invalid-value-of-money")
-  private BigDecimal totalAmountUpperBound;
+  private BigDecimal totalAmountTo;
 }
