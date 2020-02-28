@@ -149,6 +149,9 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
   public Page<MedicalRecordDto> findAll(QueryMedicalRecordDto queryMedicalRecordDto,
       Pageable pageable) {
     List<Long> patientIds = handlePatientFilters(queryMedicalRecordDto);
+    if (CollectionUtils.isEmpty(patientIds)) {
+      return Page.empty(pageable);
+    }
     Page<MedicalRecord> medicalRecords = medicalRecordRepository
         .findAll(MedicalRecordSpec.findAllMedicines(queryMedicalRecordDto, patientIds), pageable);
     Page<MedicalRecordDto> medicalRecordDtos;
