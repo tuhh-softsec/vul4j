@@ -61,8 +61,6 @@ public class ClinicServiceImpl implements ClinicService {
 
   @Override
   public Clinic save(ClinicAddDto data) {
-
-    Clinic clinic = new Clinic();
     //valid name and phone
     validationNameOrPhoneWhenAddClinic(data);
 
@@ -75,6 +73,7 @@ public class ClinicServiceImpl implements ClinicService {
     // Validate user with clinic
     validateUserWhenAddingClinic(data.getUserIds());
 
+    Clinic clinic = new Clinic();
     BeanUtils.copyProperties(data, clinic);
     clinic.setName(data.getName().trim());
     //Get user logged in ID
@@ -95,11 +94,6 @@ public class ClinicServiceImpl implements ClinicService {
 
   @Override
   public Clinic update(ClinicEditDto data) {
-
-    Clinic clinic = clinicRepository.findById(data.getId())
-        .orElseThrow(
-            () -> new NotFoundException(
-                Collections.singletonList("err.clinic.clinic-does-not-exist")));
     //valid name and phone
     validationNameOrPhoneWhenEditClinic(data);
     //valid doctor
@@ -110,6 +104,11 @@ public class ClinicServiceImpl implements ClinicService {
 
     // Validate user for clinic
     validateUserWhenEditingClinic(data.getId(), data.getUserIds());
+
+    Clinic clinic = clinicRepository.findById(data.getId())
+        .orElseThrow(
+            () -> new NotFoundException(
+                Collections.singletonList("err.clinic.clinic-does-not-exist")));
 
     BeanUtils.copyProperties(data, clinic);
     clinic.setName(data.getName().trim());
