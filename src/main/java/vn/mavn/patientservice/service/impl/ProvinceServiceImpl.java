@@ -10,7 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import vn.mavn.patientservice.dto.ProvinceDto;
-import vn.mavn.patientservice.dto.ProvinceDto.DistrictDto;
+import vn.mavn.patientservice.dto.ProvinceDto.DistrictInfoDto;
 import vn.mavn.patientservice.dto.qobject.QueryProvinceDto;
 import vn.mavn.patientservice.entity.Province;
 import vn.mavn.patientservice.exception.NotFoundException;
@@ -49,14 +49,14 @@ public class ProvinceServiceImpl implements ProvinceService {
 
   private ProvinceDto mappingValueProvinceDto(Province province) {
     ProvinceDto provinceDto = new ProvinceDto();
-    List<DistrictDto> districtDtos = districtRepository.findAllByProvinceId(province.getId())
+    List<DistrictInfoDto> districtInfoDtos = districtRepository.findAllByProvinceId(province.getId())
         .stream().map(
-            district -> DistrictDto.builder().id(district.getId()).name(district.getName())
+            district -> DistrictInfoDto.builder().id(district.getId()).name(district.getName())
                 .type(district.getType()).build()).collect(
             Collectors.toList());
 
     BeanUtils.copyProperties(province, provinceDto);
-    provinceDto.setDistrictDtos(districtDtos);
+    provinceDto.setDistrictInfoDtos(districtInfoDtos);
     return provinceDto;
   }
 }

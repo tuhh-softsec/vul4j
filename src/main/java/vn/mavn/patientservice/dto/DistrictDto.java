@@ -1,7 +1,6 @@
 package vn.mavn.patientservice.dto;
 
 import java.io.Serializable;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,22 +12,23 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProvinceDto implements Serializable {
+public class DistrictDto implements Serializable {
 
   private Long id;
   private String name;
   private String type;
-  private List<DistrictInfoDto> districtInfoDtos;
-
+  private ProvinceInfoDto provinceInfoDto;
 
   @Setter
   @Getter
   @Builder
-  public static class DistrictInfoDto {
+  public static class ProvinceInfoDto {
 
     private Long id;
     private String name;
     private String type;
+
   }
+
 
 }

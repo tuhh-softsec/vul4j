@@ -1,5 +1,6 @@
 package vn.mavn.patientservice.controller;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 import vn.mavn.patientservice.dto.ProvinceDto;
 import vn.mavn.patientservice.dto.qobject.QueryProvinceDto;
-import vn.mavn.patientservice.entity.Patient;
 import vn.mavn.patientservice.response.ResponseWithPage;
 import vn.mavn.patientservice.service.ProvinceService;
 
 @RestController
 @RequestMapping("api/v1/admin/provinces")
+@Api(tags = "Admin Province Controller")
+
 public class ProvinceController {
 
   @Autowired
@@ -35,7 +37,7 @@ public class ProvinceController {
           paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
           + "Default sort order is ascending. Multiple sort criteria are supported.",
           defaultValue = "name,desc")})
-  public ResponseEntity<ResponseWithPage<ProvinceDto>> getAllMedicines(
+  public ResponseEntity<ResponseWithPage<ProvinceDto>> getAllProvinces(
       @ModelAttribute QueryProvinceDto queryProvinceDto, @ApiIgnore Pageable pageable) {
     Page<ProvinceDto> result = provinceService.getAllProvinces(queryProvinceDto, pageable);
     return ResponseEntity.ok(ResponseWithPage.<ProvinceDto>builder()
