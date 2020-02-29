@@ -1,5 +1,6 @@
 package vn.mavn.patientservice.service.impl;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
@@ -12,6 +13,7 @@ import vn.mavn.patientservice.dto.ProvinceDto;
 import vn.mavn.patientservice.dto.ProvinceDto.DistrictDto;
 import vn.mavn.patientservice.dto.qobject.QueryProvinceDto;
 import vn.mavn.patientservice.entity.Province;
+import vn.mavn.patientservice.exception.NotFoundException;
 import vn.mavn.patientservice.repository.DistrictRepository;
 import vn.mavn.patientservice.repository.ProvinceRepository;
 import vn.mavn.patientservice.repository.spec.ProvinceSpec;
@@ -31,17 +33,30 @@ public class ProvinceServiceImpl implements ProvinceService {
 
     Page<Province> provincePage = provinceRepository
         .findAll(ProvinceSpec.findAllProvinces(queryProvinceDto), pageable);
-    return provincePage.map(province -> {
-      ProvinceDto provinceDto = new ProvinceDto();
-      List<DistrictDto> districtDtos = districtRepository.findAllByProvinceId(province.getId())
-          .stream().map(
-              district -> DistrictDto.builder().id(district.getId()).name(district.getName())
-                  .type(district.getType()).build()).collect(
-              Collectors.toList());
+    return provincePage.map(this::mappingValueProvinceDto);
+  }
 
-      BeanUtils.copyProperties(province, provinceDto);
-      provinceDto.setDistrictDtos(districtDtos);
-      return provinceDto;
-    });
+  @Override
+  public ProvinceDto getById(Long id) {
+    // valid parameter id province
+    Province province = provinceRepository.findById(id).orElseThrow(
+        () -> new NotFoundException(
+            Collections.singletonList("err-province-service-province-not-found"))
+    );
+
+    return mappingValueProvinceDto(province);
+  }
+
+  private ProvinceDto mappingValueProvinceDto(Province province) {
+    ProvinceDto provinceDto = new ProvinceDto();
+    List<DistrictDto> districtDtos = districtRepository.findAllByProvinceId(province.getId())
+        .stream().map(
+            district -> DistrictDto.builder().id(district.getId()).name(district.getName())
+                .type(district.getType()).build()).collect(
+            Collectors.toList());
+
+    BeanUtils.copyProperties(province, provinceDto);
+    provinceDto.setDistrictDtos(districtDtos);
+    return provinceDto;
   }
 }
