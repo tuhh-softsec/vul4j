@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
+import vn.mavn.patientservice.dto.PatientInfoDto;
 import vn.mavn.patientservice.dto.qobject.QueryPatientDto;
 import vn.mavn.patientservice.entity.Patient;
 import vn.mavn.patientservice.response.ResponseWithPage;
@@ -38,13 +39,13 @@ public class EmployeePatientController {
           + "Default sort order is ascending. Multiple sort criteria are supported.",
           defaultValue = "createdAt,desc")})
   @GetMapping
-  public ResponseEntity<ResponseWithPage<Patient>> all(
+  public ResponseEntity<ResponseWithPage<PatientInfoDto>> all(
       @Valid @ModelAttribute QueryPatientDto queryPatientDto, BindingResult bindingResult,
       @ApiIgnore Pageable pageable) {
     EntityValidationUtils.processBindingResults(bindingResult);
-    Page<Patient> page = patientService.findAll(queryPatientDto, pageable);
+    Page<PatientInfoDto> page = patientService.findAll(queryPatientDto, pageable);
     return ResponseEntity
-        .ok(ResponseWithPage.<Patient>builder()
+        .ok(ResponseWithPage.<PatientInfoDto>builder()
             .data(page.getContent())
             .pageIndex(page.getNumber())
             .totalPage(page.getTotalPages())
