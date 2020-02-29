@@ -1,6 +1,7 @@
 package vn.mavn.patientservice.dto;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,5 +25,7 @@ public class PatientInfoDto implements Serializable {
   private String otherPhone;
   private Boolean isActive;
   private Province province;
+  private LocalDateTime updatedAt;
+  private LocalDateTime createdAt;
 
 }
