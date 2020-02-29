@@ -1,4 +1,4 @@
-package vn.mavn.patientservice.controller;
+package vn.mavn.patientservice.controller.employee;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -19,9 +19,8 @@ import vn.mavn.patientservice.response.ResponseWithPage;
 import vn.mavn.patientservice.service.ProvinceService;
 
 @RestController
-@RequestMapping("api/v1/admin/provinces")
-@Api(tags = "Admin Province Controller")
-
+@RequestMapping("api/v1/emp/provinces")
+@Api(tags = "Employee Province Controller")
 public class ProvinceController {
 
   @Autowired

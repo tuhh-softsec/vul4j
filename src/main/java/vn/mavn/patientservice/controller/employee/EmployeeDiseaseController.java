@@ -1,5 +1,6 @@
 package vn.mavn.patientservice.controller.employee;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import vn.mavn.patientservice.service.DiseaseService;
 
 @RestController
 @RequestMapping("api/v1/emp/diseases")
+@Api(tags = "Employee Disease Controller")
 public class EmployeeDiseaseController {
 
   @Autowired
