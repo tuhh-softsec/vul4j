@@ -222,7 +222,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       throw new BadRequestException(
           Collections.singletonList("err-medical-record-medicineDtos-is-mandatory"));
     }
-    medicalRecordRepository.findActiveById(data.getId())
+    MedicalRecord existedMedicalRecord = medicalRecordRepository.findActiveById(data.getId())
         .orElseThrow(() -> new NotFoundException(
             Collections.singletonList("err-medical-record-not-found")));
 
@@ -231,7 +231,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
     //valid phong kham cua nhan vien phong kham
     Long clinicId = clinicUserRepository.findClinicIdByUserId(userId);
-    if (clinicId == null || !clinicId.equals(data.getClinicId())) {
+    if (clinicId == null || !clinicId.equals(existedMedicalRecord.getClinicId())) {
       throw new NotFoundException(
           Collections.singletonList("err.medical-record.permission-denied"));
     }
