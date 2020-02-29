@@ -1,5 +1,6 @@
 package vn.mavn.patientservice.entity;
 
+import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,12 +19,12 @@ import lombok.Setter;
 @Builder
 @Entity
 @Table(name = "pm_province")
-public class Province {
+public class Province implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   private String name;
-  private String type;
+  private Long code;
 
 }

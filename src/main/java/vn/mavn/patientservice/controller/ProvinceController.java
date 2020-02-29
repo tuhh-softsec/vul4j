@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
-import vn.mavn.patientservice.dto.ProvinceDto;
 import vn.mavn.patientservice.dto.qobject.QueryProvinceDto;
+import vn.mavn.patientservice.entity.Province;
 import vn.mavn.patientservice.response.ResponseWithPage;
 import vn.mavn.patientservice.service.ProvinceService;
 
@@ -37,10 +37,10 @@ public class ProvinceController {
           paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
           + "Default sort order is ascending. Multiple sort criteria are supported.",
           defaultValue = "name,desc")})
-  public ResponseEntity<ResponseWithPage<ProvinceDto>> getAllProvinces(
+  public ResponseEntity<ResponseWithPage<Province>> getAllProvinces(
       @ModelAttribute QueryProvinceDto queryProvinceDto, @ApiIgnore Pageable pageable) {
-    Page<ProvinceDto> result = provinceService.getAllProvinces(queryProvinceDto, pageable);
-    return ResponseEntity.ok(ResponseWithPage.<ProvinceDto>builder()
+    Page<Province> result = provinceService.getAllProvinces(queryProvinceDto, pageable);
+    return ResponseEntity.ok(ResponseWithPage.<Province>builder()
         .data(result.getContent())
         .totalPage(result.getTotalPages())
         .totalElement(result.getTotalElements())
@@ -49,7 +49,7 @@ public class ProvinceController {
   }
 
   @GetMapping("{id}")
-  public ResponseEntity<ProvinceDto> getDetailById(@PathVariable("id") Long id) {
+  public ResponseEntity<Province> getDetailById(@PathVariable("id") Long id) {
     return ResponseEntity.ok(provinceService.getById(id));
   }
 

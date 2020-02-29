@@ -14,6 +14,6 @@ import lombok.Setter;
 public class QueryProvinceDto {
 
     private String name;
-    private String type;
+    private Long code;
 
 }

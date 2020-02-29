@@ -21,10 +21,8 @@ public class ProvinceSpec {
         predicates.add(unaccentName);
       }
 
-      if (StringUtils.isNotBlank(data.getType())) {
-        Predicate unaccentType = SpecUtils
-            .handleAccentExp(criteriaBuilder, root, "type", data.getType());
-        predicates.add(unaccentType);
+      if (data.getCode() != null) {
+        predicates.add(criteriaBuilder.equal(root.get("code"), data.getCode()));
 
       }
       return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
