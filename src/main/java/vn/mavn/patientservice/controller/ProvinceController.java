@@ -8,11 +8,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 import vn.mavn.patientservice.dto.ProvinceDto;
 import vn.mavn.patientservice.dto.qobject.QueryProvinceDto;
+import vn.mavn.patientservice.entity.Patient;
 import vn.mavn.patientservice.response.ResponseWithPage;
 import vn.mavn.patientservice.service.ProvinceService;
 
@@ -42,6 +44,11 @@ public class ProvinceController {
         .totalElement(result.getTotalElements())
         .pageIndex(result.getNumber())
         .build());
+  }
+
+  @GetMapping("{id}")
+  public ResponseEntity<ProvinceDto> getDetailById(@PathVariable("id") Long id) {
+    return ResponseEntity.ok(provinceService.getById(id));
   }
 
 }

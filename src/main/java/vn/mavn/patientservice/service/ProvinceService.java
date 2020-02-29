@@ -8,4 +8,6 @@ import vn.mavn.patientservice.dto.qobject.QueryProvinceDto;
 public interface ProvinceService {
 
   Page<ProvinceDto> getAllProvinces(QueryProvinceDto queryProvinceDto, Pageable pageable);
+
+  ProvinceDto getById(Long id);
 }
