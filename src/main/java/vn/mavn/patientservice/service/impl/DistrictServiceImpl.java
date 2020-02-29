@@ -31,22 +31,27 @@ public class DistrictServiceImpl implements DistrictService {
   public Page<DistrictDto> getAllDistricts(QueryDistrictDto queryDistrictDto, Pageable pageable) {
     Page<District> districts = districtRepository
         .findAll(DistrictSpec.findAllDistricts(queryDistrictDto), pageable);
-    return districts.map(district -> {
-      DistrictDto districtDto = new DistrictDto();
-      BeanUtils.copyProperties(district, districtDto);
-      Province province = provinceRepository.findById(district.getProvinceId())
-          .orElseThrow(() -> new NotFoundException(
-              Collections.singletonList("err-province-service-province-not-found")));
-      ProvinceInfoDto provinceInfoDto = ProvinceInfoDto.builder().id(province.getId())
-          .name(province.getName()).type(province.getType()).build();
-      districtDto.setProvinceInfoDto(provinceInfoDto);
-      return districtDto;
-    });
-    
+    return districts.map(this::mappingValueDistrictDto);
+
   }
 
   @Override
   public DistrictDto getById(Long id) {
-    return null;
+    //valid district id
+    District district = districtRepository.findById(id).orElseThrow(() -> new NotFoundException(
+        Collections.singletonList("err-district-service-district-not-found")));
+    return mappingValueDistrictDto(district);
+  }
+
+  private DistrictDto mappingValueDistrictDto(District district) {
+    DistrictDto districtDto = new DistrictDto();
+    BeanUtils.copyProperties(district, districtDto);
+    Province province = provinceRepository.findById(district.getProvinceId())
+        .orElseThrow(() -> new NotFoundException(
+            Collections.singletonList("err-province-service-province-not-found")));
+    ProvinceInfoDto provinceInfoDto = ProvinceInfoDto.builder().id(province.getId())
+        .name(province.getName()).type(province.getType()).build();
+    districtDto.setProvinceInfoDto(provinceInfoDto);
+    return districtDto;
   }
 }
