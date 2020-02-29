@@ -3,16 +3,12 @@
 
 -- Create table pm_province and table pm_district
 drop table if exists pm_province;
-create table if not exists pm_province(
-    id serial primary key ,
+create table if not exists pm_province
+(
+    id   serial primary key,
     name varchar(255) not null,
-    type varchar(255) not null
+    code bigint not null
 );
 
-drop table if exists pm_district;
-create table if not exists pm_district(
-  id serial primary key ,
-  name varchar(255) not null ,
-  type varchar(255) not null,
-  province_id bigint not null
-);
+alter table pm_patient
+    add column if not exists province_code bigint default null;
