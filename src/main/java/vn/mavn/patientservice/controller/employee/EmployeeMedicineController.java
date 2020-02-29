@@ -1,5 +1,6 @@
 package vn.mavn.patientservice.controller.employee;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 import vn.mavn.patientservice.dto.MedicineDto;
 import vn.mavn.patientservice.dto.qobject.QueryMedicineDto;
-import vn.mavn.patientservice.entity.Medicine;
 import vn.mavn.patientservice.response.ResponseWithPage;
 import vn.mavn.patientservice.service.MedicineService;
 
 @RestController
 @RequestMapping("api/v1/emp/medicines")
+@Api(tags = "Employee Medicine Controller")
 public class EmployeeMedicineController {
 
   @Autowired
