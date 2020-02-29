@@ -39,6 +39,7 @@ import vn.mavn.patientservice.entity.MedicalRecord;
 import vn.mavn.patientservice.entity.MedicalRecordMedicine;
 import vn.mavn.patientservice.entity.Medicine;
 import vn.mavn.patientservice.entity.Patient;
+import vn.mavn.patientservice.entity.Province;
 import vn.mavn.patientservice.exception.BadRequestException;
 import vn.mavn.patientservice.exception.ConflictException;
 import vn.mavn.patientservice.exception.NotFoundException;
@@ -51,9 +52,9 @@ import vn.mavn.patientservice.repository.DiseaseRepository;
 import vn.mavn.patientservice.repository.DoctorRepository;
 import vn.mavn.patientservice.repository.MedicalRecordMedicineRepository;
 import vn.mavn.patientservice.repository.MedicalRecordRepository;
-import vn.mavn.patientservice.repository.MedicineDiseaseRepository;
 import vn.mavn.patientservice.repository.MedicineRepository;
 import vn.mavn.patientservice.repository.PatientRepository;
+import vn.mavn.patientservice.repository.ProvinceRepository;
 import vn.mavn.patientservice.repository.spec.MedicalRecordSpec;
 import vn.mavn.patientservice.repository.spec.PatientSpec;
 import vn.mavn.patientservice.service.MedicalRecordService;
@@ -88,9 +89,9 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
   @Autowired
   private ClinicDiseaseRepository clinicDiseaseRepository;
   @Autowired
-  private MedicineDiseaseRepository medicineDiseaseRepository;
-  @Autowired
   private MedicalRecordMedicineRepository medicalRecordMedicineRepository;
+  @Autowired
+  private ProvinceRepository provinceRepository;
 
   @Override
   public MedicalRecord addForEmp(MedicalRecordAddDto medicalRecordAddDto) {
@@ -410,6 +411,10 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     if (patient != null) {
       PatientDto patientDto = new PatientDto();
       BeanUtils.copyProperties(patient, patientDto);
+      Province province = provinceRepository.findByCode(patient.getProvinceCode());
+      if (province != null) {
+        patientDto.setProvince(province);
+      }
       medicalRecordDto.setPatientDto(patientDto);
     }
     //TODO build diseaseDto
@@ -517,7 +522,8 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     QueryPatientDto queryDto = QueryPatientDto.builder()
         .age(data.getPatientAge())
         .name(data.getPatientName())
-        .phoneNumber(data.getPhoneNumber()).build();
+        .phoneNumber(data.getPhoneNumber())
+        .provinceCode(data.getProvinceCode()).build();
     List<Patient> patients = patientRepository.findAll(PatientSpec.findAllPatient(queryDto));
     patientIds = patients.stream().map(Patient::getId).collect(Collectors.toSet());
     return new ArrayList<>(patientIds);

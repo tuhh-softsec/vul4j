@@ -1,33 +1,33 @@
-package vn.mavn.patientservice.controller.employee;
+package vn.mavn.patientservice.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
-import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
-import vn.mavn.patientservice.dto.PatientInfoDto;
-import vn.mavn.patientservice.dto.qobject.QueryPatientDto;
+import vn.mavn.patientservice.dto.qobject.QueryProvinceDto;
+import vn.mavn.patientservice.entity.Province;
 import vn.mavn.patientservice.response.ResponseWithPage;
-import vn.mavn.patientservice.service.PatientService;
-import vn.mavn.patientservice.util.EntityValidationUtils;
+import vn.mavn.patientservice.service.ProvinceService;
 
 @RestController
-@RequestMapping("/api/v1/emp/patients")
-@Api(tags = "Employee Patient Controller")
-public class EmployeePatientController {
+@RequestMapping("api/v1/admin/provinces")
+@Api(tags = "Admin Province Controller")
+
+public class ProvinceController {
 
   @Autowired
-  private PatientService patientService;
+  private ProvinceService provinceService;
 
+  @GetMapping
   @ApiImplicitParams({
       @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
           value = "Results page you want to retrieve (0..N)", defaultValue = "0"),
@@ -36,18 +36,21 @@ public class EmployeePatientController {
       @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string",
           paramType = "query", value = "Sorting criteria in the format: property(,asc|desc). "
           + "Default sort order is ascending. Multiple sort criteria are supported.",
-          defaultValue = "createdAt,desc")})
-  @GetMapping
-  public ResponseEntity<ResponseWithPage<PatientInfoDto>> all(
-      @Valid @ModelAttribute QueryPatientDto queryPatientDto, BindingResult bindingResult,
-      @ApiIgnore Pageable pageable) {
-    EntityValidationUtils.processBindingResults(bindingResult);
-    Page<PatientInfoDto> page = patientService.findAll(queryPatientDto, pageable);
-    return ResponseEntity
-        .ok(ResponseWithPage.<PatientInfoDto>builder()
-            .data(page.getContent())
-            .pageIndex(page.getNumber())
-            .totalPage(page.getTotalPages())
-            .totalElement(page.getTotalElements()).build());
+          defaultValue = "name,desc")})
+  public ResponseEntity<ResponseWithPage<Province>> getAllProvinces(
+      @ModelAttribute QueryProvinceDto queryProvinceDto, @ApiIgnore Pageable pageable) {
+    Page<Province> result = provinceService.getAllProvinces(queryProvinceDto, pageable);
+    return ResponseEntity.ok(ResponseWithPage.<Province>builder()
+        .data(result.getContent())
+        .totalPage(result.getTotalPages())
+        .totalElement(result.getTotalElements())
+        .pageIndex(result.getNumber())
+        .build());
   }
+
+  @GetMapping("{id}")
+  public ResponseEntity<Province> getDetailById(@PathVariable("id") Long id) {
+    return ResponseEntity.ok(provinceService.getById(id));
+  }
+
 }

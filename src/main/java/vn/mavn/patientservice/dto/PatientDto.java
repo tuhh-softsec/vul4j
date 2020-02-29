@@ -35,5 +35,6 @@ public class PatientDto {
   private String otherPhone;
   @NotNull(message = "err-patient-is-active-is-mandatory")
   private Boolean isActive;
+  private Long provinceCode;
 
 }

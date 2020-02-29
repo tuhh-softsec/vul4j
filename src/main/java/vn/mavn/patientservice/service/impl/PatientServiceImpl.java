@@ -12,14 +12,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import vn.mavn.patientservice.dto.PatientDto;
+import vn.mavn.patientservice.dto.PatientInfoDto;
 import vn.mavn.patientservice.dto.qobject.QueryPatientDto;
 import vn.mavn.patientservice.entity.MedicalRecord;
 import vn.mavn.patientservice.entity.Patient;
+import vn.mavn.patientservice.entity.Province;
 import vn.mavn.patientservice.exception.BadRequestException;
 import vn.mavn.patientservice.exception.ConflictException;
 import vn.mavn.patientservice.exception.NotFoundException;
 import vn.mavn.patientservice.repository.MedicalRecordRepository;
 import vn.mavn.patientservice.repository.PatientRepository;
+import vn.mavn.patientservice.repository.ProvinceRepository;
 import vn.mavn.patientservice.repository.spec.PatientSpec;
 import vn.mavn.patientservice.service.PatientService;
 import vn.mavn.patientservice.util.TokenUtils;
@@ -37,6 +40,9 @@ public class PatientServiceImpl implements PatientService {
   @Autowired
   private HttpServletRequest httpServletRequest;
 
+  @Autowired
+  private ProvinceRepository provinceRepository;
+
   @Override
   public Patient addNew(PatientDto patientDto) {
     //TODO: check at least have 1 phone number.
@@ -48,9 +54,9 @@ public class PatientServiceImpl implements PatientService {
     }
     Patient patient = new Patient();
     BeanUtils.copyProperties(patientDto, patient);
-    Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
-    patient.setCreatedBy(userId);
-    patient.setUpdatedBy(userId);
+//    Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
+    patient.setCreatedBy(-1l);
+    patient.setUpdatedBy(-1L);
     patient.setIsActive(true);
 
     return patientRepository.save(patient);
@@ -76,16 +82,21 @@ public class PatientServiceImpl implements PatientService {
   }
 
   @Override
-  public Patient getById(Long id) {
+  public PatientInfoDto getById(Long id) {
     //TODO: check patient exist?
-    return patientRepository.findActiveById(id)
+    Patient patient = patientRepository.findActiveById(id)
         .orElseThrow(() -> new NotFoundException(
             Collections.singletonList("err-patient-not-found")));
+    //get info district and province
+    return mappingValuePatientInfoDto(patient);
   }
 
   @Override
-  public Page<Patient> findAll(QueryPatientDto queryPatientDto, Pageable pageable) {
-    return patientRepository.findAll(PatientSpec.findAllPatient(queryPatientDto), pageable);
+  public Page<PatientInfoDto> findAll(QueryPatientDto queryPatientDto, Pageable pageable) {
+
+    Page<Patient> patients = patientRepository
+        .findAll(PatientSpec.findAllPatient(queryPatientDto), pageable);
+    return patients.map(this::mappingValuePatientInfoDto);
   }
 
   @Override
@@ -102,6 +113,18 @@ public class PatientServiceImpl implements PatientService {
           Collections.singletonList("err-patient-delete-not-successfully"));
     }
     patientRepository.deletePatient(patient.getId());
+  }
+
+  private PatientInfoDto mappingValuePatientInfoDto(Patient patient) {
+    PatientInfoDto patientInfoDto = new PatientInfoDto();
+    BeanUtils.copyProperties(patient, patientInfoDto);
+    if (patient.getProvinceCode() != null) {
+      Province province = provinceRepository.findByCode(patient.getProvinceCode());
+      if (province != null) {
+        patientInfoDto.setProvince(province);
+      }
+    }
+    return patientInfoDto;
   }
 
 }

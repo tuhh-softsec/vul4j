@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 import vn.mavn.patientservice.dto.PatientDto;
+import vn.mavn.patientservice.dto.PatientInfoDto;
 import vn.mavn.patientservice.dto.qobject.QueryPatientDto;
 import vn.mavn.patientservice.entity.Patient;
 import vn.mavn.patientservice.response.HttpResponse;
@@ -61,7 +62,7 @@ public class PatientController {
   }
 
   @GetMapping("{id}")
-  public ResponseEntity<Patient> getDetailById(@PathVariable("id") Long id) {
+  public ResponseEntity<PatientInfoDto> getDetailById(@PathVariable("id") Long id) {
     return ResponseEntity.ok(patientService.getById(id));
   }
 
@@ -82,13 +83,13 @@ public class PatientController {
           + "Default sort order is ascending. Multiple sort criteria are supported.",
           defaultValue = "createdAt,desc")})
   @GetMapping
-  public ResponseEntity<ResponseWithPage<Patient>> all(
+  public ResponseEntity<ResponseWithPage<PatientInfoDto>> all(
       @Valid @ModelAttribute QueryPatientDto queryPatientDto, BindingResult bindingResult,
       @ApiIgnore Pageable pageable) {
     EntityValidationUtils.processBindingResults(bindingResult);
-    Page<Patient> page = patientService.findAll(queryPatientDto, pageable);
+    Page<PatientInfoDto> page = patientService.findAll(queryPatientDto, pageable);
     return ResponseEntity
-        .ok(ResponseWithPage.<Patient>builder().data(page.getContent())
+        .ok(ResponseWithPage.<PatientInfoDto>builder().data(page.getContent())
             .pageIndex(page.getNumber())
             .totalPage(page.getTotalPages()).totalElement(page.getTotalElements()).build());
   }

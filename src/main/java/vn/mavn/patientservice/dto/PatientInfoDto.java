@@ -1,25 +1,21 @@
-package vn.mavn.patientservice.entity;
+package vn.mavn.patientservice.dto;
 
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.Table;
+import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import vn.mavn.patientservice.entity.listener.EntityListener;
+import vn.mavn.patientservice.entity.Province;
 
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
-@Table(name = "pm_patient")
-@EntityListeners(EntityListener.class)
-public class Patient extends BaseIdEntity {
+public class PatientInfoDto implements Serializable {
 
+  private Long id;
   private String name;
   private Integer age;
   private String address;
@@ -27,7 +23,6 @@ public class Patient extends BaseIdEntity {
   private String zaloPhone;
   private String otherPhone;
   private Boolean isActive;
-  private Long provinceCode;
-
+  private Province province;
 
 }

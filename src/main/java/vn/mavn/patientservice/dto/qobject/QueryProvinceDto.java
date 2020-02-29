@@ -11,10 +11,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class QueryPatientDto {
+public class QueryProvinceDto {
 
-  private String name;
-  private String phoneNumber;
-  private Integer age;
-  private Long provinceCode;
+    private String name;
+    private Long code;
+
 }
