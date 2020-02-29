@@ -54,9 +54,9 @@ public class PatientServiceImpl implements PatientService {
     }
     Patient patient = new Patient();
     BeanUtils.copyProperties(patientDto, patient);
-//    Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
-    patient.setCreatedBy(-1l);
-    patient.setUpdatedBy(-1L);
+    Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
+    patient.setCreatedBy(userId);
+    patient.setUpdatedBy(userId);
     patient.setIsActive(true);
 
     return patientRepository.save(patient);

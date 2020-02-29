@@ -13,7 +13,6 @@ import lombok.Setter;
 @Builder
 public class QueryProvinceDto {
 
-    private String name;
-    private Long code;
-
+  private String name;
+  private Long code;
 }
