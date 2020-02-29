@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import vn.mavn.patientservice.entity.Province;
 
 @Setter
 @Getter
@@ -54,6 +55,7 @@ public class MedicalRecordDto implements Serializable {
     private String zaloPhone;
     private String otherPhone;
     private Boolean isActive;
+    private Province province;
   }
 
   @Setter

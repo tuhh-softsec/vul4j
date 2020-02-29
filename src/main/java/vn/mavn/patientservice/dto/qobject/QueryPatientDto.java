@@ -16,4 +16,5 @@ public class QueryPatientDto {
   private String name;
   private String phoneNumber;
   private Integer age;
+  private Long provinceCode;
 }

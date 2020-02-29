@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 import vn.mavn.patientservice.dto.PatientInfoDto;
 import vn.mavn.patientservice.dto.qobject.QueryPatientDto;
-import vn.mavn.patientservice.entity.Patient;
 import vn.mavn.patientservice.response.ResponseWithPage;
 import vn.mavn.patientservice.service.PatientService;
 import vn.mavn.patientservice.util.EntityValidationUtils;

@@ -31,6 +31,10 @@ public class PatientSpec {
       if (queryPatientDto.getAge() != null) {
         predicates.add(criteriaBuilder.equal(root.get("age"), queryPatientDto.getAge()));
       }
+      if (queryPatientDto.getProvinceCode() != null) {
+        predicates.add(
+            criteriaBuilder.equal(root.get("provinceCode"), queryPatientDto.getProvinceCode()));
+      }
       return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
     };
   }
