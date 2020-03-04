@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import vn.mavn.patientservice.entity.base.BaseIdEntity;
 import vn.mavn.patientservice.entity.listener.EntityListener;
 
 @Entity

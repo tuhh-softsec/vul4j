@@ -1,5 +1,6 @@
 package vn.mavn.patientservice.dto;
 
+import java.util.List;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -36,5 +37,5 @@ public class PatientDto {
   @NotNull(message = "err-patient-is-active-is-mandatory")
   private Boolean isActive;
   private Long provinceCode;
-
+  private List<Long> pathologyIds;
 }

@@ -1,4 +1,4 @@
-package vn.mavn.patientservice.entity;
+package vn.mavn.patientservice.entity.base;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

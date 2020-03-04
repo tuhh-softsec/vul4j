@@ -1,4 +1,4 @@
-package vn.mavn.patientservice.entity;
+package vn.mavn.patientservice.entity.base;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
