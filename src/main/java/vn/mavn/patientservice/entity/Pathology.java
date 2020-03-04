@@ -11,18 +11,17 @@ import lombok.Setter;
 import vn.mavn.patientservice.entity.base.BaseIdEntity;
 import vn.mavn.patientservice.entity.listener.EntityListener;
 
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "pm_advertising_source")
 @Builder
+@Entity
+@Table(name = "pm_pathology")
 @EntityListeners(EntityListener.class)
-public class AdvertisingSource extends BaseIdEntity {
+public class Pathology extends BaseIdEntity {
 
   private String name;
   private String description;
   private Boolean isActive;
-
 }
