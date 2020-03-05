@@ -102,7 +102,8 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
   public MedicalRecord addForEmp(MedicalRecordAddDto medicalRecordAddDto) {
     //TODO: validation data
     validationData(medicalRecordAddDto.getAdvertisingSourceId(),
-        medicalRecordAddDto.getClinicId(), medicalRecordAddDto.getConsultingStatusCode(),medicalRecordAddDto.getClinicBranchId());
+        medicalRecordAddDto.getClinicId(), medicalRecordAddDto.getConsultingStatusCode(),
+        medicalRecordAddDto.getClinicBranchId());
 
     Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
     MedicalRecord medicalRecord;
@@ -179,7 +180,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       MedicalRecordAddForEmpClinicDto data) {
     //TODO: validation data
     validationData(data.getAdvertisingSourceId(),
-        data.getClinicId(), data.getConsultingStatusCode(),data.getClinicBranchId());
+        data.getClinicId(), data.getConsultingStatusCode(), data.getClinicBranchId());
 
     MedicalRecord medicalRecord;
     //TODO: get user_id, user_code from access_token.
@@ -252,7 +253,8 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     }
 
     //validationData(nguon quang cao, phong kham, tinh trang tu van)
-    validationData(data.getAdvertisingSourceId(), clinicId, data.getConsultingStatusCode(),data.getClinicBranchId());
+    validationData(data.getAdvertisingSourceId(), clinicId, data.getConsultingStatusCode(),
+        data.getClinicBranchId());
 
     //patient
     BeanUtils.copyProperties(data.getPatientDto(), patientExist);
