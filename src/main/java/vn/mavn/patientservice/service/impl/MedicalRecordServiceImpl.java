@@ -266,10 +266,6 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
           Collections.singletonList("err.medical-record.permission-denied"));
     }
 
-    Patient patientExist = patientRepository.findActiveById(data.getPatientDto().getId())
-        .orElseThrow(
-            () -> new NotFoundException(Collections.singletonList("err-patient-not-found")));
-
     //valid danh sach loai benh cua phong kham cua nhan vien phong kham
     List<Long> diseaseIds = clinicDiseaseRepository.findAllByClinicId(clinicId);
     if (!diseaseIds.contains(data.getDiseaseId())) {
@@ -282,6 +278,10 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
     // Validate pathologies
     validatePathology(data.getPatientDto().getPathologyIds());
+
+    Patient patientExist = patientRepository.findActiveById(data.getPatientDto().getId())
+        .orElseThrow(
+            () -> new NotFoundException(Collections.singletonList("err-patient-not-found")));
 
     //patient
     BeanUtils.copyProperties(data.getPatientDto(), patientExist);
