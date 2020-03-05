@@ -42,6 +42,7 @@ public class MedicalRecordAddForEmpClinicDto {
   @NotNull(message = "err-medical-record-patient-is-mandatory")
   @Valid
   private PatientDto patientDto;
+  private Long clinicBranchId;
 
 
 }
