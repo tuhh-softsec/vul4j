@@ -3,6 +3,7 @@ package vn.mavn.patientservice.service.impl;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -41,6 +42,7 @@ import vn.mavn.patientservice.entity.MedicalRecord;
 import vn.mavn.patientservice.entity.MedicalRecordMedicine;
 import vn.mavn.patientservice.entity.Medicine;
 import vn.mavn.patientservice.entity.Patient;
+import vn.mavn.patientservice.entity.PatientPathology;
 import vn.mavn.patientservice.entity.Province;
 import vn.mavn.patientservice.exception.BadRequestException;
 import vn.mavn.patientservice.exception.ConflictException;
@@ -56,6 +58,8 @@ import vn.mavn.patientservice.repository.DoctorRepository;
 import vn.mavn.patientservice.repository.MedicalRecordMedicineRepository;
 import vn.mavn.patientservice.repository.MedicalRecordRepository;
 import vn.mavn.patientservice.repository.MedicineRepository;
+import vn.mavn.patientservice.repository.PathologyRepository;
+import vn.mavn.patientservice.repository.PatientPathologyRepository;
 import vn.mavn.patientservice.repository.PatientRepository;
 import vn.mavn.patientservice.repository.ProvinceRepository;
 import vn.mavn.patientservice.repository.spec.MedicalRecordSpec;
@@ -97,6 +101,10 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
   private ProvinceRepository provinceRepository;
   @Autowired
   private ClinicBranchRepository clinicBranchRepository;
+  @Autowired
+  private PathologyRepository pathologyRepository;
+  @Autowired
+  private PatientPathologyRepository patientPathologyRepository;
 
   @Override
   public MedicalRecord addForEmp(MedicalRecordAddDto medicalRecordAddDto) {
@@ -104,6 +112,9 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     validationData(medicalRecordAddDto.getAdvertisingSourceId(),
         medicalRecordAddDto.getClinicId(), medicalRecordAddDto.getConsultingStatusCode(),
         medicalRecordAddDto.getClinicBranchId());
+
+    // Validate pathology
+    validatePathology(medicalRecordAddDto.getPatientDto().getPathologyIds());
 
     Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
     MedicalRecord medicalRecord;
@@ -117,6 +128,10 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       BeanUtils.copyProperties(medicalRecordAddDto.getPatientDto(), patient);
       patient.setIsActive(true);
       patientRepository.save(patient);
+
+      // Save patient pathology
+      savePatientPathology(patient.getId(), medicalRecordAddDto.getPatientDto().getPathologyIds());
+
       //TODO: find list medical_record by patient_id
       medicalRecord = mapMedicalRecordForEmp(medicalRecordAddDto, userId, userCode,
           patient.getId());
@@ -128,6 +143,10 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       patient.setCreatedBy(userId);
       patient.setUpdatedBy(userId);
       patientRepository.save(patient);
+
+      // Save patient pathology
+      savePatientPathology(patient.getId(), medicalRecordAddDto.getPatientDto().getPathologyIds());
+
       medicalRecord = mapMedicalRecordForEmp(medicalRecordAddDto, userId, userCode,
           patient.getId());
     }
@@ -178,6 +197,9 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     validationData(data.getAdvertisingSourceId(),
         data.getClinicId(), data.getConsultingStatusCode(), data.getClinicBranchId());
 
+    // Validate pathologies
+    validatePathology(data.getPatientDto().getPathologyIds());
+
     MedicalRecord medicalRecord;
     //TODO: get user_id, user_code from access_token.
     Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
@@ -185,6 +207,10 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     //TODO: check if have patient_id -> action re-examination only add new medical_record
     if (data.getPatientDto().getId() != null) {
       Patient patient = setUpdatePatientForEmpClinic(data);
+
+      // Save pathologies of patient
+      savePatientPathology(patient.getId(), data.getPatientDto().getPathologyIds());
+
       //TODO: find list medical_record by patient_id
       medicalRecord = mappingMedicalRecordForEmpClinic(userCode, userId, patient.getId(),
           data);
@@ -196,9 +222,14 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       BeanUtils.copyProperties(data.getPatientDto(), patient);
       patient.setIsActive(true);
       patientRepository.save(patient);
+
+      // Save pathologies of patient
+      savePatientPathology(patient.getId(), data.getPatientDto().getPathologyIds());
+
       medicalRecord = mappingMedicalRecordForEmpClinic(userCode, userId, patient.getId(),
           data);
     }
+
     medicalRecord.setIsActive(true);
     setPaymentInfo(medicalRecord, data.getTotalAmount(), data.getCodAmount(),
         data.getTransferAmount());
@@ -249,11 +280,17 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     validationData(data.getAdvertisingSourceId(), clinicId, data.getConsultingStatusCode(),
         data.getClinicBranchId());
 
+    // Validate pathologies
+    validatePathology(data.getPatientDto().getPathologyIds());
+
     //patient
     BeanUtils.copyProperties(data.getPatientDto(), patientExist);
     patientExist.setIsActive(true);
 
     patientRepository.save(patientExist);
+
+    // Save pathologies of patient
+    savePatientPathology(patientExist.getId(), data.getPatientDto().getPathologyIds());
 
     //medical record
     MedicalRecord medicalRecord = medicalRecordRepository
@@ -277,6 +314,30 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       mappingMedicalRecordMedicine(data.getMedicineDtos(), medicalRecord.getId());
     }
     return medicalRecord;
+  }
+
+  private void savePatientPathology(Long patientId, List<Long> pathologyIds) {
+    List<PatientPathology> existedPatientPathologies = patientPathologyRepository
+        .findAllByPatientId(patientId);
+    patientPathologyRepository.deleteAll(existedPatientPathologies);
+    if (!CollectionUtils.isEmpty(pathologyIds)) {
+      List<PatientPathology> patientPathologies = new ArrayList<>();
+      pathologyIds.forEach(pathologyId -> {
+        patientPathologies.add(
+            PatientPathology.builder().patientId(patientId).pathologyId(pathologyId)
+                .build());
+      });
+      patientPathologyRepository.saveAll(patientPathologies);
+    }
+  }
+
+  private void validatePathology(List<Long> pathologyIds) {
+    if (!CollectionUtils.isEmpty(pathologyIds)) {
+      pathologyIds.forEach(pathologyId -> {
+        pathologyRepository.findById(pathologyId).orElseThrow(() -> new NotFoundException(
+            Arrays.asList("err.medical-records.pathology-not-found")));
+      });
+    }
   }
 
   /**
@@ -318,6 +379,9 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
     validationData(data.getAdvertisingSourceId(), data.getClinicId(),
         data.getConsultingStatusCode(), data.getClinicBranchId());
+
+    // Validate pathologies
+    validatePathology(data.getPatientDto().getPathologyIds());
 
     // TODO: we can optimise this function:
     //  1. Get token from request header.
@@ -363,6 +427,10 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
             () -> new NotFoundException(Collections.singletonList("err-patient-not-found")));
     BeanUtils.copyProperties(data.getPatientDto(), patient);
     patientRepository.save(patient);
+
+    // Save pathologies of patient
+    savePatientPathology(patient.getId(), data.getPatientDto().getPathologyIds());
+
     String userCode = TokenUtils.getUserCodeFromToken(httpServletRequest);
     BeanUtils.copyProperties(data, medicalRecord);
     medicalRecord.setUserCode(userCode);
