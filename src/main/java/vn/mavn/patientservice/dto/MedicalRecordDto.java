@@ -39,6 +39,7 @@ public class MedicalRecordDto implements Serializable {
   private String extraNote;
   private Boolean isActive;
   private ClinicBranchDto clinicBranchDto;
+  private List<PathologyDto> pathologies;
 
 
   @Setter
@@ -107,5 +108,13 @@ public class MedicalRecordDto implements Serializable {
     private String name;
   }
 
+  @Setter
+  @Getter
+  @Builder
+  public static class PathologyDto implements Serializable {
+
+    private Long id;
+    private String name;
+  }
 
 }
