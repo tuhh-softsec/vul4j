@@ -120,8 +120,6 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       //TODO: find list medical_record by patient_id
       medicalRecord = mapMedicalRecordForEmp(medicalRecordAddDto, userId, userCode,
           patient.getId());
-      Long maxExaminationTimes = getCurrentExaminationTimesOfPatient(patient.getId());
-      medicalRecord.setExaminationTimes(maxExaminationTimes + 1L);
 
     } else {
       Patient patient = new Patient();
@@ -132,8 +130,6 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       patientRepository.save(patient);
       medicalRecord = mapMedicalRecordForEmp(medicalRecordAddDto, userId, userCode,
           patient.getId());
-      Long maxExaminationTimes = getCurrentExaminationTimesOfPatient(patient.getId());
-      medicalRecord.setExaminationTimes(maxExaminationTimes + 1L);
     }
     medicalRecord.setIsActive(true);
     medicalRecordRepository.save(medicalRecord);
@@ -192,8 +188,6 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       //TODO: find list medical_record by patient_id
       medicalRecord = mappingMedicalRecordForEmpClinic(userCode, userId, patient.getId(),
           data);
-      Long maxExaminationTimes = getCurrentExaminationTimesOfPatient(patient.getId());
-      medicalRecord.setExaminationTimes(maxExaminationTimes + 1L);
     } else {
       //TODO: add new patient from info medical_record
       Patient patient = new Patient();
@@ -204,7 +198,6 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       patientRepository.save(patient);
       medicalRecord = mappingMedicalRecordForEmpClinic(userCode, userId, patient.getId(),
           data);
-      medicalRecord.setExaminationTimes(1L);
     }
     medicalRecord.setIsActive(true);
     setPaymentInfo(medicalRecord, data.getTotalAmount(), data.getCodAmount(),
@@ -515,6 +508,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     medicalRecord.setPatientId(patientId);
     medicalRecord.setUpdatedBy(userId);
     medicalRecord.setAdvisoryDate(LocalDateTime.now());
+    medicalRecord.setExaminationTimes(medicalRecordAddDto.getExaminationTime());
     return medicalRecord;
   }
 
@@ -528,6 +522,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     BeanUtils.copyProperties(medicalRecordAddDto, medicalRecord);
     medicalRecord.setAdvisoryDate(LocalDateTime.now());
     medicalRecord.setExaminationDate(LocalDateTime.now());
+    medicalRecord.setExaminationTimes(medicalRecordAddDto.getExaminationTime());
     return medicalRecord;
   }
 
@@ -563,11 +558,5 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
         transferAmount != null ? transferAmount : BigDecimal.ZERO);
     medicalRecord.setCodAmount(
         codAmount != null ? codAmount : BigDecimal.ZERO);
-  }
-
-  private Long getCurrentExaminationTimesOfPatient(Long patientId) {
-    Long currentExaminationTimes = medicalRecordRepository
-        .getMaxExaminationTimeOfPatient(patientId);
-    return currentExaminationTimes != null ? currentExaminationTimes : Long.valueOf(0);
   }
 }
