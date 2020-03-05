@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import vn.mavn.patientservice.dto.PatientDto;
 import vn.mavn.patientservice.dto.PatientInfoDto;
+import vn.mavn.patientservice.dto.PatientInfoDto.PatientPathologyDto;
 import vn.mavn.patientservice.dto.qobject.QueryPatientDto;
 import vn.mavn.patientservice.entity.MedicalRecord;
 import vn.mavn.patientservice.entity.Pathology;
@@ -143,6 +144,15 @@ public class PatientServiceImpl implements PatientService {
       if (province != null) {
         patientInfoDto.setProvince(province);
       }
+    }
+    List<Long> pathologyIds = patientPathologyRepository.findAllByPatientId(patient.getId())
+        .stream().map(PatientPathology::getPathologyId).collect(Collectors.toList());
+    if (!CollectionUtils.isEmpty(pathologyIds)) {
+      List<PatientPathologyDto> pathologies = pathologyRepository.findAllById(pathologyIds).stream()
+          .map(pathology ->
+              PatientPathologyDto.builder().id(pathology.getId()).name(pathology.getName()).build())
+          .collect(Collectors.toList());
+      patientInfoDto.setPathologies(pathologies);
     }
     return patientInfoDto;
   }

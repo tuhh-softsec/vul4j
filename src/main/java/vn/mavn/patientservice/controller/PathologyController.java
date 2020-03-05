@@ -1,5 +1,6 @@
 package vn.mavn.patientservice.controller;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import java.util.Collections;
@@ -28,6 +29,7 @@ import vn.mavn.patientservice.util.EntityValidationUtils;
 
 @RestController
 @RequestMapping("api/v1/admin/pathologies")
+@Api(tags = "Admin Pathology Controller")
 public class PathologyController {
 
   @Autowired
