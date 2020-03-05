@@ -43,6 +43,7 @@ public class MedicalRecordAddForEmpClinicDto {
   @Valid
   private PatientDto patientDto;
   private Long clinicBranchId;
+  private Long examinationTime;
 
 
 }
