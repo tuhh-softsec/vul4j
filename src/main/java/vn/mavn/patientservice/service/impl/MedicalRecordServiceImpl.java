@@ -26,6 +26,7 @@ import vn.mavn.patientservice.dto.MedicalRecordDto.ClinicBranchDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto.ConsultingStatusDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto.DiseaseForMedicalRecordDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto.MedicineDto;
+import vn.mavn.patientservice.dto.MedicalRecordDto.PathologyDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto.PatientDto;
 import vn.mavn.patientservice.dto.MedicalRecordEditDto;
 import vn.mavn.patientservice.dto.MedicineMappingDto;
@@ -41,6 +42,7 @@ import vn.mavn.patientservice.entity.MedicalRecord;
 import vn.mavn.patientservice.entity.MedicalRecordMedicine;
 import vn.mavn.patientservice.entity.Medicine;
 import vn.mavn.patientservice.entity.Patient;
+import vn.mavn.patientservice.entity.PatientPathology;
 import vn.mavn.patientservice.entity.Province;
 import vn.mavn.patientservice.exception.BadRequestException;
 import vn.mavn.patientservice.exception.ConflictException;
@@ -56,6 +58,8 @@ import vn.mavn.patientservice.repository.DoctorRepository;
 import vn.mavn.patientservice.repository.MedicalRecordMedicineRepository;
 import vn.mavn.patientservice.repository.MedicalRecordRepository;
 import vn.mavn.patientservice.repository.MedicineRepository;
+import vn.mavn.patientservice.repository.PathologyRepository;
+import vn.mavn.patientservice.repository.PatientPathologyRepository;
 import vn.mavn.patientservice.repository.PatientRepository;
 import vn.mavn.patientservice.repository.ProvinceRepository;
 import vn.mavn.patientservice.repository.spec.MedicalRecordSpec;
@@ -69,34 +73,54 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
   @Autowired
   private PatientRepository patientRepository;
+
   @Autowired
   private AdvertisingSourceRepository advertisingSourceRepository;
+
   @Autowired
   private ClinicRepository clinicRepository;
+
   @Autowired
   private ConsultingStatusRepository consultingStatusRepository;
+
   @Autowired
   private DiseaseRepository diseaseRepository;
+
   @Autowired
   private MedicalRecordRepository medicalRecordRepository;
+
   @Autowired
   private MedicineRepository medicineRepository;
+
   @Autowired
   private MedicalRecordMedicineRepository recordMedicineRepository;
+
   @Autowired
   private HttpServletRequest httpServletRequest;
+
   @Autowired
   private DoctorRepository doctorRepository;
+
   @Autowired
   private ClinicUserRepository clinicUserRepository;
+
   @Autowired
   private ClinicDiseaseRepository clinicDiseaseRepository;
+
   @Autowired
   private MedicalRecordMedicineRepository medicalRecordMedicineRepository;
+
   @Autowired
   private ProvinceRepository provinceRepository;
+
   @Autowired
   private ClinicBranchRepository clinicBranchRepository;
+
+  @Autowired
+  private PatientPathologyRepository patientPathologyRepository;
+
+  @Autowired
+  private PathologyRepository pathologyRepository;
 
   @Override
   public MedicalRecord addForEmp(MedicalRecordAddDto medicalRecordAddDto) {
@@ -494,8 +518,21 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       ClinicBranchDto clinicBranchDto = ClinicBranchDto.builder().id(clinicBranch.getId())
           .name(clinicBranch.getName()).build();
       medicalRecordDto.setClinicBranchDto(clinicBranchDto);
-
     }
+
+    List<Long> pathologyIds = patientPathologyRepository
+        .findAllByPatientId(medicalRecord.getPatientId()).stream()
+        .map(PatientPathology::getPathologyId)
+        .collect(Collectors.toList());
+    if (!CollectionUtils.isEmpty(pathologyIds)) {
+      List<PathologyDto> pathologies = pathologyRepository.findAllById(pathologyIds).stream()
+          .map(pathology -> PathologyDto.builder()
+              .id(pathology.getId())
+              .name(pathology.getName())
+              .build()).collect(Collectors.toList());
+      medicalRecordDto.setPathologies(pathologies);
+    }
+
   }
 
   private MedicalRecord mapMedicalRecordForEmp(MedicalRecordAddDto medicalRecordAddDto,
