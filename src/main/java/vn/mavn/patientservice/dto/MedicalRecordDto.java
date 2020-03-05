@@ -38,6 +38,7 @@ public class MedicalRecordDto implements Serializable {
   private BigDecimal codAmount;
   private String extraNote;
   private Boolean isActive;
+  private ClinicBranchDto clinicBranchDto;
 
 
   @Setter
@@ -95,6 +96,15 @@ public class MedicalRecordDto implements Serializable {
     private Long id;
     private String name;
     private Integer qty;
+  }
+
+  @Setter
+  @Getter
+  @Builder
+  public static class ClinicBranchDto implements Serializable {
+
+    private Long id;
+    private String name;
   }
 
 

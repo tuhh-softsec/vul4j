@@ -48,4 +48,5 @@ public class MedicalRecord extends BaseIdEntity {
   private BigDecimal codAmount;
   private String extraNote;
   private Boolean isActive;
+  private Long clinicBranchId;
 }

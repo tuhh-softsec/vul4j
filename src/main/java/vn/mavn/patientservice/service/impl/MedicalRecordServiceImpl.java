@@ -22,6 +22,7 @@ import vn.mavn.patientservice.dto.MedicalRecordAddDto;
 import vn.mavn.patientservice.dto.MedicalRecordAddForEmpClinicDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto.AdvertisingSourceDto;
+import vn.mavn.patientservice.dto.MedicalRecordDto.ClinicBranchDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto.ConsultingStatusDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto.DiseaseForMedicalRecordDto;
 import vn.mavn.patientservice.dto.MedicalRecordDto.MedicineDto;
@@ -32,6 +33,7 @@ import vn.mavn.patientservice.dto.qobject.QueryMedicalRecordDto;
 import vn.mavn.patientservice.dto.qobject.QueryPatientDto;
 import vn.mavn.patientservice.entity.AdvertisingSource;
 import vn.mavn.patientservice.entity.Clinic;
+import vn.mavn.patientservice.entity.ClinicBranch;
 import vn.mavn.patientservice.entity.ConsultingStatus;
 import vn.mavn.patientservice.entity.Disease;
 import vn.mavn.patientservice.entity.Doctor;
@@ -44,6 +46,7 @@ import vn.mavn.patientservice.exception.BadRequestException;
 import vn.mavn.patientservice.exception.ConflictException;
 import vn.mavn.patientservice.exception.NotFoundException;
 import vn.mavn.patientservice.repository.AdvertisingSourceRepository;
+import vn.mavn.patientservice.repository.ClinicBranchRepository;
 import vn.mavn.patientservice.repository.ClinicDiseaseRepository;
 import vn.mavn.patientservice.repository.ClinicRepository;
 import vn.mavn.patientservice.repository.ClinicUserRepository;
@@ -92,12 +95,14 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
   private MedicalRecordMedicineRepository medicalRecordMedicineRepository;
   @Autowired
   private ProvinceRepository provinceRepository;
+  @Autowired
+  private ClinicBranchRepository clinicBranchRepository;
 
   @Override
   public MedicalRecord addForEmp(MedicalRecordAddDto medicalRecordAddDto) {
     //TODO: validation data
     validationData(medicalRecordAddDto.getAdvertisingSourceId(),
-        medicalRecordAddDto.getClinicId(), medicalRecordAddDto.getConsultingStatusCode());
+        medicalRecordAddDto.getClinicId(), medicalRecordAddDto.getConsultingStatusCode(),medicalRecordAddDto.getClinicBranchId());
 
     Long userId = Long.parseLong(TokenUtils.getUserIdFromToken(httpServletRequest));
     MedicalRecord medicalRecord;
@@ -174,7 +179,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       MedicalRecordAddForEmpClinicDto data) {
     //TODO: validation data
     validationData(data.getAdvertisingSourceId(),
-        data.getClinicId(), data.getConsultingStatusCode());
+        data.getClinicId(), data.getConsultingStatusCode(),data.getClinicBranchId());
 
     MedicalRecord medicalRecord;
     //TODO: get user_id, user_code from access_token.
@@ -247,7 +252,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     }
 
     //validationData(nguon quang cao, phong kham, tinh trang tu van)
-    validationData(data.getAdvertisingSourceId(), clinicId, data.getConsultingStatusCode());
+    validationData(data.getAdvertisingSourceId(), clinicId, data.getConsultingStatusCode(),data.getClinicBranchId());
 
     //patient
     BeanUtils.copyProperties(data.getPatientDto(), patientExist);
@@ -317,7 +322,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     }
 
     validationData(data.getAdvertisingSourceId(), data.getClinicId(),
-        data.getConsultingStatusCode());
+        data.getConsultingStatusCode(), data.getClinicBranchId());
 
     // TODO: we can optimise this function:
     //  1. Get token from request header.
@@ -390,7 +395,8 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     recordMedicineRepository.saveAll(medicalRecordMedicines);
   }
 
-  private void validationData(Long advertId, Long clinicId, String consultingCode) {
+  private void validationData(Long advertId, Long clinicId, String consultingCode,
+      Long clinicBranchId) {
     // valid advertising source
     advertisingSourceRepository.findActiveById(advertId)
         .orElseThrow(() -> new NotFoundException(
@@ -403,6 +409,14 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     consultingStatusRepository.findByCode(consultingCode)
         .orElseThrow(() -> new NotFoundException(
             Collections.singletonList("err-advisory-not-found")));
+    // valid clinic branch
+    if (clinicBranchId != null) {
+      clinicBranchRepository.findById(clinicBranchId).orElseThrow(() ->
+          new NotFoundException(
+              Collections.singletonList("err.clinic-branch.clinic-branch-does-not-exist"))
+      );
+    }
+
   }
 
   private void setValueForDto(MedicalRecord medicalRecord, MedicalRecordDto medicalRecordDto) {
@@ -476,6 +490,16 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
           .id(consultingStatus.getId()).code(consultingStatus.getCode())
           .name(consultingStatus.getName()).build();
       medicalRecordDto.setConsultingStatusDto(consultingStatusDto);
+    }
+
+    //TODO: build ClinicBranchDto
+    ClinicBranch clinicBranch = clinicBranchRepository
+        .findClinicBranchById(medicalRecord.getClinicBranchId());
+    if (clinicBranch != null) {
+      ClinicBranchDto clinicBranchDto = ClinicBranchDto.builder().id(clinicBranch.getId())
+          .name(clinicBranch.getName()).build();
+      medicalRecordDto.setClinicBranchDto(clinicBranchDto);
+
     }
   }
 
