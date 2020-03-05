@@ -2,6 +2,7 @@ package vn.mavn.patientservice.dto;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,5 +28,17 @@ public class PatientInfoDto implements Serializable {
   private Province province;
   private LocalDateTime updatedAt;
   private LocalDateTime createdAt;
+  private List<PatientPathologyDto> pathologies;
+
+  @Getter
+  @Setter
+  @NoArgsConstructor
+  @AllArgsConstructor
+  @Builder
+  public static class PatientPathologyDto implements Serializable {
+
+    private Long id;
+    private String name;
+  }
 
 }
