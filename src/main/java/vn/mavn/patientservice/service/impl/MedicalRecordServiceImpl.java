@@ -320,6 +320,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     medicalRecord.setClinicId(medicalRecord.getClinicId());
     medicalRecord.setIsActive(true);
     medicalRecord.setUpdatedBy(userId);
+    medicalRecord.setExaminationTimes(data.getExaminationTimes());
     setPaymentInfo(medicalRecord, data.getTotalAmount(), data.getCodAmount(),
         data.getTransferAmount());
     medicalRecordRepository.save(medicalRecord);
@@ -451,6 +452,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     medicalRecord.setUserCode(userCode);
     medicalRecord.setUpdatedBy(userId);
     medicalRecord.setIsActive(true);
+    medicalRecord.setExaminationTimes(data.getExaminationTimes());
     medicalRecordRepository.save(medicalRecord);
     return medicalRecord;
   }
@@ -604,7 +606,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     medicalRecord.setPatientId(patientId);
     medicalRecord.setUpdatedBy(userId);
     medicalRecord.setAdvisoryDate(LocalDateTime.now());
-    medicalRecord.setExaminationTimes(medicalRecordAddDto.getExaminationTime());
+    medicalRecord.setExaminationTimes(medicalRecordAddDto.getExaminationTimes());
     return medicalRecord;
   }
 
@@ -618,7 +620,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
     BeanUtils.copyProperties(medicalRecordAddDto, medicalRecord);
     medicalRecord.setAdvisoryDate(LocalDateTime.now());
     medicalRecord.setExaminationDate(LocalDateTime.now());
-    medicalRecord.setExaminationTimes(medicalRecordAddDto.getExaminationTime());
+    medicalRecord.setExaminationTimes(medicalRecordAddDto.getExaminationTimes());
     return medicalRecord;
   }
 
