@@ -121,12 +121,6 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
   @Autowired
   private PatientPathologyRepository patientPathologyRepository;
 
-  @Autowired
-  private PatientPathologyRepository patientPathologyRepository;
-
-  @Autowired
-  private PathologyRepository pathologyRepository;
-
   @Override
   public MedicalRecord addForEmp(MedicalRecordAddDto medicalRecordAddDto) {
     //TODO: validation data
@@ -513,6 +507,19 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       if (province != null) {
         patientDto.setProvince(province);
       }
+      //TODO: build Pathologies
+      List<Long> pathologyIds = patientPathologyRepository
+          .findAllByPatientId(medicalRecord.getPatientId()).stream()
+          .map(PatientPathology::getPathologyId)
+          .collect(Collectors.toList());
+      if (!CollectionUtils.isEmpty(pathologyIds)) {
+        List<PathologyDto> pathologies = pathologyRepository.findAllById(pathologyIds).stream()
+            .map(pathology -> PathologyDto.builder()
+                .id(pathology.getId())
+                .name(pathology.getName())
+                .build()).collect(Collectors.toList());
+        patientDto.setPathologies(pathologies);
+      }
       medicalRecordDto.setPatientDto(patientDto);
     }
     //TODO build diseaseDto
@@ -583,19 +590,6 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
       ClinicBranchDto clinicBranchDto = ClinicBranchDto.builder().id(clinicBranch.getId())
           .name(clinicBranch.getName()).build();
       medicalRecordDto.setClinicBranchDto(clinicBranchDto);
-    }
-
-    List<Long> pathologyIds = patientPathologyRepository
-        .findAllByPatientId(medicalRecord.getPatientId()).stream()
-        .map(PatientPathology::getPathologyId)
-        .collect(Collectors.toList());
-    if (!CollectionUtils.isEmpty(pathologyIds)) {
-      List<PathologyDto> pathologies = pathologyRepository.findAllById(pathologyIds).stream()
-          .map(pathology -> PathologyDto.builder()
-              .id(pathology.getId())
-              .name(pathology.getName())
-              .build()).collect(Collectors.toList());
-      medicalRecordDto.setPathologies(pathologies);
     }
 
   }
