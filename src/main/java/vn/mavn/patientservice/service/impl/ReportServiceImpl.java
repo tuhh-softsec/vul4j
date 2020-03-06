@@ -22,6 +22,7 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -337,8 +338,9 @@ public class ReportServiceImpl implements ReportService {
     // endregion
 
     CellStyle sumCellStyle = workbook.createCellStyle();
-    sumCellStyle.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
+    sumCellStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
     sumCellStyle.setFillPattern(FillPatternType.FINE_DOTS);
+    sumCellStyle.setDataFormat(currencyFormatter.getFormat("#,##0.0"));
 
     int lastRow = sheet.getLastRowNum();
     Row sumRow = sheet.createRow(lastRow + 1);
@@ -348,7 +350,6 @@ public class ReportServiceImpl implements ReportService {
     cashSum.setCellFormula("sum(U2:U" + lastRow + ")");
     System.out.println(cashSum.getCellFormula());
     cashSum.setCellStyle(sumCellStyle);
-    cashSum.setCellStyle(currency);
     // endregion
 
     // region Sum of transferred amount
@@ -357,7 +358,6 @@ public class ReportServiceImpl implements ReportService {
     transferredSum.setCellFormula("sum(V2:V" + lastRow + ")");
     System.out.println(transferredSum.getCellFormula());
     transferredSum.setCellStyle(sumCellStyle);
-    transferredSum.setCellStyle(currency);
     // endregion
 
     // region Sum of CODd
@@ -366,9 +366,22 @@ public class ReportServiceImpl implements ReportService {
     codSum.setCellFormula("sum(W2:W" + lastRow + ")");
     System.out.println(codSum.getCellFormula());
     codSum.setCellStyle(sumCellStyle);
-    codSum.setCellStyle(currency);
     // endregion
 
+    // region merge total range
+    CellStyle mergeCellStyle = workbook.createCellStyle();
+    mergeCellStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
+    mergeCellStyle.setFillPattern(FillPatternType.FINE_DOTS);
+    Font font = workbook.createFont();
+    font.setBold(true);
+    mergeCellStyle.setFont(font);
+
+    Cell totalCell = sumRow.createCell(0);
+    totalCell.setCellValue("   Tổng Cộng:");
+    totalCell.setCellStyle(mergeCellStyle);
+    //Merging cells by providing cell index
+    sheet.addMergedRegion(new CellRangeAddress(lastRow + 1, lastRow + 1, 0, cashColumnIndex - 1));
+    // endregion
     long t5 = System.currentTimeMillis();
     System.out.println("Built cell value: " + (t5 - t4));
 
