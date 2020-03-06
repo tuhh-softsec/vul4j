@@ -337,10 +337,14 @@ public class ReportServiceImpl implements ReportService {
     }
     // endregion
 
+    Font boldFont = workbook.createFont();
+    boldFont.setBold(true);
+
     CellStyle sumCellStyle = workbook.createCellStyle();
     sumCellStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
     sumCellStyle.setFillPattern(FillPatternType.FINE_DOTS);
     sumCellStyle.setDataFormat(currencyFormatter.getFormat("#,##0.0"));
+    sumCellStyle.setFont(boldFont);
 
     int lastRow = sheet.getLastRowNum();
     Row sumRow = sheet.createRow(lastRow + 1);
@@ -372,9 +376,7 @@ public class ReportServiceImpl implements ReportService {
     CellStyle mergeCellStyle = workbook.createCellStyle();
     mergeCellStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
     mergeCellStyle.setFillPattern(FillPatternType.FINE_DOTS);
-    Font font = workbook.createFont();
-    font.setBold(true);
-    mergeCellStyle.setFont(font);
+    mergeCellStyle.setFont(boldFont);
 
     Cell totalCell = sumRow.createCell(0);
     totalCell.setCellValue("   Tổng Cộng:");
