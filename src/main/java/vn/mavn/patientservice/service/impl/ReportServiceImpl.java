@@ -42,8 +42,8 @@ public class ReportServiceImpl implements ReportService {
 
   private static String[] columns = {"Ngày tư vấn", "Mã nhân viên tư vấn", "Loại bệnh", "Bệnh nhân",
       "Tuổi", "Địa chỉ", "Số điện thoại", "Nguồn quảng cáo", "Tình trạng bệnh", "Tình trạng tư vấn",
-      "Ghi chú", "Số Zalo", "Liên hệ khác", "Ngày khám", "Phòng khám", "Lần khám", "Số thang",
-      "Loại thuốc", "Bài thuốc", "Tổng tiền mặt", "Chuyển khoản", "CoD", "Ghi chú"};
+      "Ghi chú", "Số Zalo", "Liên hệ khác", "Ngày khám", "Phòng khám", "Cơ sở khám", "Lần khám",
+      "Số thang", "Loại thuốc", "Bài thuốc", "Tổng tiền mặt", "Chuyển khoản", "CoD", "Ghi chú"};
 
   @Autowired
   private MedicalRecordService medicalRecordService;
@@ -122,12 +122,14 @@ public class ReportServiceImpl implements ReportService {
     Row headerRow = sheet.createRow(0);
 
     // Create column headers
+    Map<String, Integer> titleIndexMap = new HashMap<>();
     for (int i = 0; i < columns.length; i++) {
       String title = columns[i];
       Cell cell = headerRow.createCell(i);
       cell.setCellValue(title);
       cell.setCellStyle(headerCellStyle);
       sheet.autoSizeColumn(i);
+      titleIndexMap.put(title, i);
     }
 
     int nextExtraColumn = columns.length;
@@ -153,146 +155,176 @@ public class ReportServiceImpl implements ReportService {
       Row row = sheet.createRow(rowNum++);
 
       int cellNum = 0;
-      // Ngay tu van
+      // region Column 1: Ngày tư vấn
       Cell advisoryDateCell = row.createCell(cellNum);
       advisoryDateCell.setCellValue(medicalRecord.getAdvisoryDate());
       advisoryDateCell.setCellStyle(dateCellStyle);
       ++cellNum;
+      // endregion
 
-      // Ma nhan vien tu van
+      // region Column 2: Mã nhân viên tư vấn
       row.createCell(cellNum)
           .setCellValue(medicalRecord.getUserCode());
       ++cellNum;
+      //endregion
 
-      // Loai benh
+      // region Column 3: Loại bệnh
       row.createCell(cellNum).setCellValue(
           medicalRecord.getDiseaseDto() != null ? medicalRecord.getDiseaseDto().getName() : "");
       ++cellNum;
+      // endregion
 
-      // Ten benh nhan
+      // region Column 4: Tên bệnh nhân
       row.createCell(cellNum).setCellValue(
           medicalRecord.getPatientDto() != null ? medicalRecord.getPatientDto().getName() : "");
       ++cellNum;
+      // endregion
 
-      // Tuoi benh nhan
+      // region Column 5: Tuổi bệnh nhân
       row.createCell(cellNum, CellType.NUMERIC)
           .setCellValue(
               medicalRecord.getPatientDto() != null ? medicalRecord.getPatientDto().getAge()
                   : Integer.valueOf(0));
       ++cellNum;
+      // endregion
 
-      // Dia chi
+      // region Column 6: Địa chỉ bệnh nhân
       row.createCell(cellNum)
           .setCellValue(
               medicalRecord.getPatientDto() != null ? medicalRecord.getPatientDto().getAddress()
                   : "");
       ++cellNum;
+      // endregion
 
-      // SDT
+      // region Column 7: Số điện thoại
       Cell phoneNumber = row.createCell(cellNum);
       phoneNumber.setCellValue(
           medicalRecord.getPatientDto() != null ? medicalRecord.getPatientDto().getPhone()
               : "");
       phoneNumber.setCellStyle(phoneNumberStyle);
       ++cellNum;
+      // endregion
 
-      // Nguon QC
+      // region Column 8: Nguồn Quảng cáo
       row.createCell(cellNum).setCellValue(
           medicalRecord.getAdvertisingSourceDto() != null ? medicalRecord.getAdvertisingSourceDto()
               .getName() : "");
       ++cellNum;
+      // endregion
 
-      // Tinh trang benh
+      // region Column 9: Tình trạng bệnh
       row.createCell(cellNum).setCellValue(medicalRecord.getDiseaseStatus());
       ++cellNum;
+      // endregion
 
-      // Tinh trang tu van
+      // region Column 10 Tình trạng tư vấn
       row.createCell(cellNum).setCellValue(
           medicalRecord.getConsultingStatusDto() != null ? medicalRecord.getConsultingStatusDto()
               .getName() : "");
       ++cellNum;
+      // endregion
 
-      // Ghi chu
+      // region Column 11: Ghi chú
       row.createCell(cellNum).setCellValue(medicalRecord.getNote());
       ++cellNum;
+      // endregion
 
-      // SDT Zalo
+      // region Column 12: SDT Zalo
       Cell zaloPhone = row.createCell(cellNum);
       zaloPhone.setCellValue(
           medicalRecord.getPatientDto() != null ? medicalRecord.getPatientDto().getZaloPhone()
               : "");
       zaloPhone.setCellStyle(phoneNumberStyle);
       ++cellNum;
+      // endregion
 
-      // SDT khac
+      // region Column 13: SDT khác
       Cell otherContact = row.createCell(cellNum);
       otherContact.setCellValue(
           medicalRecord.getPatientDto() != null ? medicalRecord.getPatientDto().getOtherPhone()
               : "");
       otherContact.setCellStyle(phoneNumberStyle);
       ++cellNum;
+      // endregion
 
-      // Ngay kham
+      // region Column 14: Ngày khám
       Cell examDateCell = row.createCell(cellNum);
       examDateCell.setCellValue(medicalRecord.getExaminationDate());
       examDateCell.setCellStyle(dateCellStyle);
       ++cellNum;
+      // endregion
 
-      // Co so kham
+      // region Column 15: phòng khám
       row.createCell(cellNum)
           .setCellValue(
               medicalRecord.getClinicDto() != null ? medicalRecord.getClinicDto().getName() : "");
       ++cellNum;
+      // endregion
 
-      // Lan kham
+      // region Column 16: Cơ sở khám
+      row.createCell(cellNum).setCellValue(
+          medicalRecord.getClinicBranchDto() != null
+              ? medicalRecord.getClinicBranchDto().getName() : "");
+      ++cellNum;
+      // endregion
+
+      // region Column 17: Lần khám
       row.createCell(cellNum).setCellValue(
           medicalRecord.getExaminationTimes() != null ? medicalRecord.getExaminationTimes()
               : Long.valueOf(0));
       ++cellNum;
+      // endregion
 
-      // So thang
+      // region Column 18: Số thang
       row.createCell(cellNum, CellType.NUMERIC).setCellValue(
           medicalRecord.getRemedyAmount() != null ? medicalRecord.getRemedyAmount()
               : Long.valueOf(0));
       ++cellNum;
+      // endregion
 
-      // Loai thuoc
+      // region Column 19: Loại thuốc
       row.createCell(cellNum).setCellValue(medicalRecord.getRemedyType());
       ++cellNum;
+      // endregion
 
-      // Bai thuoc
+      // region Column 20: Bài thuốc
       row.createCell(cellNum).setCellValue(medicalRecord.getRemedies());
       ++cellNum;
+      // endregion
 
-      // Tong tien mat
+      // region Column 21: Tổng tiền mặt
       Cell totalAmount = row.createCell(cellNum, CellType.NUMERIC);
       totalAmount.setCellValue(
           medicalRecord.getTotalAmount() != null ? medicalRecord.getTotalAmount().doubleValue()
               : 0);
       totalAmount.setCellStyle(currency);
       ++cellNum;
+      // endregion
 
-      // Chuyen khoan
+      // region Column 22: Chuyển khoản
       Cell transfer = row.createCell(cellNum, CellType.NUMERIC);
       transfer.setCellValue(
           medicalRecord.getTransferAmount() != null ? medicalRecord.getTransferAmount()
               .doubleValue() : 0);
       transfer.setCellStyle(currency);
       ++cellNum;
+      // endregion
 
-      // CoD
+      // region Column 23: CoD
       Cell cod = row.createCell(cellNum, CellType.NUMERIC);
       cod.setCellValue(
           medicalRecord.getCodAmount() != null ? medicalRecord.getCodAmount().doubleValue()
               : 0);
       cod.setCellStyle(currency);
       ++cellNum;
+      // endregion
 
-      // Ghi chu mo rong
+      // region Column 24: Ghi chú mở rộng
       row.createCell(cellNum).setCellValue(medicalRecord.getExtraNote());
       ++cellNum;
+      // endregion
 
-      // Nhao so luong vi thuoc
+      // region Loại thuốc và số lượng
       if (medicalRecord.getDiseaseDto() != null) {
         medicalRecord.getDiseaseDto().getMedicines().forEach(medicineDto -> {
           int cellIndex = mapHeaderColumnIndex.get(medicineDto.getName());
@@ -300,7 +332,41 @@ public class ReportServiceImpl implements ReportService {
               medicineDto.getQty() != null ? medicineDto.getQty() : Integer.valueOf(0));
         });
       }
+      // endregion
     }
+    // endregion
+
+    CellStyle sumCellStyle = workbook.createCellStyle();
+    sumCellStyle.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
+    sumCellStyle.setFillPattern(FillPatternType.FINE_DOTS);
+
+    int lastRow = sheet.getLastRowNum();
+    Row sumRow = sheet.createRow(lastRow + 1);
+    // region Sum of amount on cash
+    int cashColumnIndex = titleIndexMap.get("Tổng tiền mặt");
+    Cell cashSum = sumRow.createCell(cashColumnIndex);
+    cashSum.setCellFormula("sum(U2:U" + lastRow + ")");
+    System.out.println(cashSum.getCellFormula());
+    cashSum.setCellStyle(sumCellStyle);
+    cashSum.setCellStyle(currency);
+    // endregion
+
+    // region Sum of transferred amount
+    int transferredIndex = titleIndexMap.get("Chuyển khoản");
+    Cell transferredSum = sumRow.createCell(transferredIndex);
+    transferredSum.setCellFormula("sum(V2:V" + lastRow + ")");
+    System.out.println(transferredSum.getCellFormula());
+    transferredSum.setCellStyle(sumCellStyle);
+    transferredSum.setCellStyle(currency);
+    // endregion
+
+    // region Sum of CODd
+    int codIndex = titleIndexMap.get("CoD");
+    Cell codSum = sumRow.createCell(codIndex);
+    codSum.setCellFormula("sum(W2:W" + lastRow + ")");
+    System.out.println(codSum.getCellFormula());
+    codSum.setCellStyle(sumCellStyle);
+    codSum.setCellStyle(currency);
     // endregion
 
     long t5 = System.currentTimeMillis();
