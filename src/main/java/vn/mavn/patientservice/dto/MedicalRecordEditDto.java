@@ -43,5 +43,6 @@ public class MedicalRecordEditDto {
   @Valid
   private PatientDto patientDto;
   private Long clinicBranchId;
+  private Long examinationTimes;
 
 }
