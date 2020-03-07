@@ -1,9 +1,10 @@
 package vn.mavn.patientservice.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,5 +45,7 @@ public class MedicalRecordEditDto {
   private PatientDto patientDto;
   private Long clinicBranchId;
   private Long examinationTimes;
-
+  @JsonFormat(pattern = "dd-MM-yyyy HH:mm")
+  @NotNull(message = "err.medical-records.consulting-date-is-mandatory")
+  private Date examinationDate;
 }
