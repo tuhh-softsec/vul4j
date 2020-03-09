@@ -131,4 +131,11 @@ public class ParkingService {
             logger.error("Unable to process exiting vehicle",e);
         }
     }
+
+	public void setInputReaderUtil(InputReaderUtil inputReaderUtil) {
+		this.inputReaderUtil = inputReaderUtil;
+	}
+    
+    
+    
 }
