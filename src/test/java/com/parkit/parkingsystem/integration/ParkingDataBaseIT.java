@@ -71,6 +71,7 @@ public class ParkingDataBaseIT {
         	Ticket ticket = ticketDAO.getTicket(carNumber);
         	assertNotNull(ticket);
         	assertNull(ticket.getOutTime());
+        	System.out.println("outtime = "+ticket);
         	ParkingSpot parkingSpot = parkingSpotDAO.getParkingSpot(ticket.getParkingSpot().getId());
         	assertFalse(parkingSpot.isAvailable());
         }catch(Exception e){

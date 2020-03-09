@@ -33,13 +33,7 @@ public class FareCalculatorService {
         if(duration<0.5) {
         	duration = 0;
         }else {
-        	//discount 5% if same car
-        	int nb = ticketDAO.countTicket(ticket.getVehicleRegNumber());
-        	System.out.println("COUNT_CAR="+nb);
-        	if(nb>=2) {
-        		duration = (duration * Fare.DISCOUNT);
-        		System.out.println("DURATION="+duration);
-        	}
+        	duration -= 0.5;
         }
         
         switch (ticket.getParkingSpot().getParkingType()){
@@ -53,6 +47,12 @@ public class FareCalculatorService {
             }
             default: throw new IllegalArgumentException("Unkown Parking Type");
         }
+        
+        //discount 5% (after price) if same car
+    	int nb = ticketDAO.countTicket(ticket.getVehicleRegNumber());
+    	if(nb>=2) {
+    		ticket.setPrice(ticket.getPrice()*Fare.DISCOUNT);
+    	}
         
     }
 }
