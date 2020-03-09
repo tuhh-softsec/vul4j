@@ -58,7 +58,7 @@ public class Ticket {
     public void setOutTime(Date outTime) {
         this.outTime = outTime;
     }
-
+    
 	@Override
 	public String toString() {
 		return "Ticket [id=" + id + ", parkingSpot=" + parkingSpot + ", vehicleRegNumber=" + vehicleRegNumber

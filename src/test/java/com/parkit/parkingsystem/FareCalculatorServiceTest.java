@@ -6,6 +6,9 @@ import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.FareCalculatorService;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,11 +26,13 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.util.Date;
+import java.util.HashMap;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class FareCalculatorServiceTest {
 
+	private static final Logger logger = LogManager.getLogger("FareCalculatorServiceTest");
     private static FareCalculatorService fareCalculatorService;
     
     private Ticket ticket;
@@ -43,6 +48,7 @@ public class FareCalculatorServiceTest {
     @BeforeEach
     private void setUpPerTest() {
         ticket = new Ticket();
+        ticket.setVehicleRegNumber("ABCDEF");
         when(ticketDAO.countTicket(Mockito.any())).thenReturn(0);
         fareCalculatorService = new FareCalculatorService(ticketDAO);
     }
@@ -111,6 +117,7 @@ public class FareCalculatorServiceTest {
         ticket.setInTime(inTime);
         ticket.setOutTime(outTime);
         ticket.setParkingSpot(parkingSpot);
+        System.out.println("FARE NULL?"+(fareCalculatorService==null));
         fareCalculatorService.calculateFare(ticket);
         assertEquals((0.25 * Fare.BIKE_RATE_PER_HOUR), ticket.getPrice() );
     }
@@ -131,7 +138,6 @@ public class FareCalculatorServiceTest {
     
     @Test
     public void calculateFareSameCarOneHourParkingTime(){
-    	when(ticketDAO.countTicket(Mockito.any())).thenReturn(2);
         Date inTime = new Date();
         inTime.setTime( System.currentTimeMillis() - (  60 * 60 * 1000) );//60 minutes parking time should give 3/4th parking fare
         Date outTime = new Date();
@@ -140,6 +146,10 @@ public class FareCalculatorServiceTest {
         ticket.setInTime(inTime);
         ticket.setOutTime(outTime);
         ticket.setParkingSpot(parkingSpot);
+        
+        HashMap<String,Integer> parking = new HashMap<String,Integer>();
+        parking.put(ticket.getVehicleRegNumber(), 1);
+        fareCalculatorService.setParking(parking);
         fareCalculatorService.calculateFare(ticket);
         assertEquals( (0.95 * Fare.CAR_RATE_PER_HOUR/2) , ticket.getPrice());
     }

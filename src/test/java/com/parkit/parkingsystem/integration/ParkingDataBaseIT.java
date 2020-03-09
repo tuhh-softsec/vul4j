@@ -55,6 +55,7 @@ public class ParkingDataBaseIT {
         when(inputReaderUtil.readSelection()).thenReturn(1);
         when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
         dataBasePrepareService.clearDataBaseEntries();
+        parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
     }
 
     @AfterAll
@@ -64,7 +65,7 @@ public class ParkingDataBaseIT {
     
     
     private void parkCar(String carNumber, Date inTime) {
-    	ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+//    	ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
     	parkingService.processIncomingVehicle(inTime);
     	//TODO: check that a ticket is actualy saved in DB and Parking table is updated with availability
         try{
@@ -80,7 +81,7 @@ public class ParkingDataBaseIT {
     }
     
     private void exitCar(String carNumber, Date outTime) {
-    	ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+//    	ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processExitingVehicle(outTime);
         //TODO: check that the fare generated and out time are populated correctly in the database
         try {
@@ -157,14 +158,14 @@ public class ParkingDataBaseIT {
 			parkCar(carNumber, oneHourAfter);
 			exitCar(carNumber, twoHoursAfter);
 			Ticket ticket = ticketDAO.getTicket(carNumber);
-			assertEquals(Fare.CAR_RATE_PER_HOUR,ticket.getPrice());
+			assertEquals(Fare.CAR_RATE_PER_HOUR/2,ticket.getPrice());
 			
 			//the same car come back for parking after some time
 			parkCar(carNumber, threeHoursAfter);
 			exitCar(carNumber, fourHoursAfter);
 			ticket = ticketDAO.getTicket(carNumber);
 			//5% discount if parking same car
-			assertEquals(0.95*Fare.CAR_RATE_PER_HOUR,ticket.getPrice());
+			assertEquals(0.95*Fare.CAR_RATE_PER_HOUR/2,ticket.getPrice());
 		} catch (Exception e) {
 			logger.error("cannot read user input car number",e);
 		}

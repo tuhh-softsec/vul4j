@@ -1,6 +1,7 @@
 package com.parkit.parkingsystem.service;
 
 import java.util.Date;
+import java.util.HashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,14 +22,17 @@ public class ParkingService {
     private InputReaderUtil inputReaderUtil;
     private ParkingSpotDAO parkingSpotDAO;
     private TicketDAO ticketDAO;
+    private HashMap<String,Integer> parking;//key=carNum,value=nb_times
+    
 
     public ParkingService(InputReaderUtil inputReaderUtil, ParkingSpotDAO parkingSpotDAO, TicketDAO ticketDAO){
         this.inputReaderUtil = inputReaderUtil;
         this.parkingSpotDAO = parkingSpotDAO;
         this.ticketDAO = ticketDAO;
+        parking = new HashMap<String,Integer>();
         this.fareCalculatorService = new FareCalculatorService(ticketDAO);
+        this.fareCalculatorService.setParking(parking);
     }
-    
 
     public void processIncomingVehicle(Date inTime) {
         try{
@@ -37,6 +41,7 @@ public class ParkingService {
                 String vehicleRegNumber = getVehichleRegNumber();
                 
                 int nb = ticketDAO.countTicket(vehicleRegNumber);
+                parking.put(vehicleRegNumber, nb);
                 if(nb>=1) {
                 	System.out.println("Welcome back! As a recurring user of our parking lot, you'll benefit from a 5% discount.");
                 }
@@ -111,6 +116,7 @@ public class ParkingService {
             Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
             ticket.setOutTime(outTime);
             System.out.println("process Exit vehicle : "+ticket);
+            logger.debug(fareCalculatorService.getParking());
             fareCalculatorService.calculateFare(ticket);
             if(ticketDAO.updateTicket(ticket)) {
                 ParkingSpot parkingSpot = ticket.getParkingSpot();
