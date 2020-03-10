@@ -14,8 +14,16 @@ import java.sql.ResultSet;
 public class ParkingSpotDAO {
     private static final Logger logger = LogManager.getLogger("ParkingSpotDAO");
 
-    public DataBaseConfig dataBaseConfig = new DataBaseConfig();
+    public DataBaseConfig dataBaseConfig;
 
+    public ParkingSpotDAO() {
+    	dataBaseConfig = new DataBaseConfig();
+	}
+
+    public void setDataBaseConfig(DataBaseConfig config) {
+    	this.dataBaseConfig = config;
+    }
+    
     public ParkingSpot getParkingSpot(int parkingNumber){
     	Connection con = null;
     	ParkingSpot parkingSpot = null;
@@ -37,8 +45,8 @@ public class ParkingSpotDAO {
             logger.error("Error getting parkingspot",ex);
         }finally {
             dataBaseConfig.closeConnection(con);
-            return parkingSpot;
         }
+    	return parkingSpot;
     }
     
     public int getNextAvailableSlot(ParkingType parkingType){

@@ -67,18 +67,26 @@ public class ParkingServiceTest {
         }
     }
 
-//    @Test
+    @Test
     public void processExitingVehicleTest(){
         parkingService.processExitingVehicle(new Date());
         verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
     }
     
     @Test
-    public void processIncomingExceptionTest() {
-    	when(inputReaderUtil.readSelection()).thenReturn(2);
-    	when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(0);
+    public void processIncomingExceptionTest() throws Exception {
+        when(inputReaderUtil.readSelection()).thenReturn(2);
+        when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
+    	when(inputReaderUtil.readVehicleRegistrationNumber()).thenThrow(Exception.class);
     	parkingService.processIncomingVehicle(new Date());
     	verify(parkingSpotDAO, Mockito.times(1)).getNextAvailableSlot(any(ParkingType.class));
+    	verify(ticketDAO, Mockito.times(0)).countTicket(anyString());
+    }
+    
+    @Test
+    public void testErrorInputVehicle() {
+    	when(inputReaderUtil.readSelection()).thenReturn(3);
+    	parkingService.processIncomingVehicle(new Date());
     	verify(ticketDAO, Mockito.times(0)).countTicket(anyString());
     }
     
@@ -106,5 +114,7 @@ public class ParkingServiceTest {
     	parkingService.processExitingVehicle(new Date());
     	verify(parkingSpotDAO, Mockito.times(0)).updateParking(any(ParkingSpot.class));
     }
+    
+    
 
 }
