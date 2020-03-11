@@ -803,9 +803,12 @@ public class LafObjectMapper {
 
         //Validate / Create Status
         if (object.getAttributes().containsKey("BEARBEITUNGSSTATUS")) {
+	 if (currentErrors.isEmpty()){
               createStatusProtokoll(object.getAttributes().get("BEARBEITUNGSSTATUS"), newMessung, mstId);
-        }
-
+        } else {
+	  currentErrors.add(new ReportItem("Stausvergabe", "Status", 631)); 
+	}
+	}
     }
 
     private KommentarP createProbeKommentar(Map<String, String> attributes, Probe probe) {
