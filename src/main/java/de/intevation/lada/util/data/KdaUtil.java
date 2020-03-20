@@ -589,6 +589,9 @@ public class KdaUtil {
     }
 
     private ObjectNode arcToDegree(String x, String y) {
+        //Replace decimal separator
+        x = x.replaceAll("\\.", ",");
+        y = y.replaceAll("\\.", ",");
         int xDegree = 0;
         int xMin = 0;
         int yDegree = 0;
