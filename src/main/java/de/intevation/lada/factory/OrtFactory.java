@@ -201,13 +201,12 @@ public class OrtFactory {
             ort.setKoordYExtern(staat.getKoordYExtern());
             ort.setLangtext(staat.getStaat());
             ort.setOrtTyp(5);
+            ort.setOrtId("STAAT_" + staat.getId());
             if (staat.getStaatIso() != null) {
-                ort.setOrtId("Staat_" + staat.getStaatIso());
+                ort.setKurztext("STAAT_" + staat.getStaatIso());
             } else {
-                ort.setOrtId("Staat_" + staat.getId());
+                ort.setKurztext("STAAT_" + staat.getId());
             }
-            ort.setOrtTyp(5);
-            ort.setKurztext(ort.getOrtId());
             ort.setBerichtstext(staat.getStaat());
             transformCoordinates(ort);
             hasStaat = true;
