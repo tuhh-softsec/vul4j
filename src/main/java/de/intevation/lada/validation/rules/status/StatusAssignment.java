@@ -84,15 +84,17 @@ public class StatusAssignment implements Rule {
         @SuppressWarnings("unchecked")
         List<Ortszuordnung> orte = (List<Ortszuordnung>) response_ort.getData();
 
+	if (probe.getDatenbasisId() != 1){
         /*Messzeitpunk 1) vorhanden  2) nicht in der Zukunft bezgogen auf sysTime 3) nicht vor Probenentnahme  -- datenbasis aus*/
-        if (messung.getMesszeitpunkt() == null && probe.getProbenartId() != 9) {
+           if (messung.getMesszeitpunkt() == null && probe.getProbenartId() != 9) {
             violation.addError("messzeitpunkt", 631);
-        } else if (messung.getMesszeitpunkt() != null && ts.before(messung.getMesszeitpunkt())) {
-            violation.addError("messzeitpunkt", 641);
-        } else if (messung.getMesszeitpunkt() != null && probe.getProbeentnahmeBeginn() != null &&
-                messung.getMesszeitpunkt().before(probe.getProbeentnahmeBeginn())) {
-            violation.addError("messzeitpunkt", 642);
-        }
+           } else if (messung.getMesszeitpunkt() != null && ts.before(messung.getMesszeitpunkt())) {
+            	violation.addError("messzeitpunkt", 641);
+           } else if (messung.getMesszeitpunkt() != null && probe.getProbeentnahmeBeginn() != null &&
+            	    messung.getMesszeitpunkt().before(probe.getProbeentnahmeBeginn())) {
+            		violation.addError("messzeitpunkt", 642);
+           }
+	}
 
         /* 4) Messwerte vorhanden*/
         if (messwerte.isEmpty()) {
@@ -105,9 +107,11 @@ public class StatusAssignment implements Rule {
         }
 
         /* 6) Messdauer angegeben - auszer kontinuierlich*/
-        if (messung.getMessdauer() == null && probe.getProbenartId() != 9) {
-            violation.addError("messdauer", 631);
-        }
+        if (probe.getDatenbasisId() != 1){
+	        if (messung.getMessdauer() == null && probe.getProbenartId() != 9) {
+        	    violation.addError("messdauer", 631);
+       	 	}
+	}
 
         /* 7) ProbenentnahmeBeginn vor ProbenentnahmeEnde*/
         if ((probe.getProbeentnahmeBeginn() != null && probe.getProbeentnahmeEnde() != null) &&
