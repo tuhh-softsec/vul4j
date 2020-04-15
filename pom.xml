@@ -458,8 +458,8 @@
 
     <repositories>
         <repository>
-            <id>OSGEO Repo</id>
-            <url>https://repo.osgeo.org/repository</url>
+            <id>OSGEO Release Repo</id>
+            <url>https://repo.osgeo.org/repository/release</url>
         </repository>
         <repository>
             <id>Hibernate Spatial repo</id>
