@@ -458,8 +458,8 @@
 
     <repositories>
         <repository>
-            <id>OSGEO GeoTools repo</id>
-            <url>http://download.osgeo.org/webdav/geotools</url>
+            <id>OSGEO Repo</id>
+            <url>https://repo.osgeo.org/repository</url>
         </repository>
         <repository>
             <id>Hibernate Spatial repo</id>
