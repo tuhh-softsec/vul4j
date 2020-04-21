@@ -15,6 +15,7 @@ public class LafDataTypes {
     public static final String C9 = "[\\S ]{0,9}";
     public static final String C10 = "[\\S ]{0,10}";
     public static final String C12 = "[\\S ]{0,12}";
+    public static final String C13 = "[\\S ]{0,13}";
     public static final String C16 = "[\\S ]{0,16}";
     public static final String C20 = "[\\S ]{0,20}";
     public static final String C21 = "[\\S ]{0,21}";
