@@ -80,7 +80,7 @@ public class ObjectMerger {
         }
         if (src.getGeplant() != null) {
             if (target.getGeplant() == null) target.setGeplant(src.getGeplant());
-        } else {
+	} else if (target.getGeplant() == null){
             target.setGeplant(false);
         }
         if (src.getMessdauer() != null) target.setMessdauer(src.getMessdauer());
