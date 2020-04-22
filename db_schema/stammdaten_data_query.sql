@@ -92,7 +92,7 @@ COPY stamm.filter (id, sql, parameter, type, name) FROM stdin;
 49	land.messwert.messwert BETWEEN :messwertFrom AND :messwertTo	messwertFrom,messwertTo	1	messwert
 50	land.messwert.nwg_zu_messwert BETWEEN :nwgzumesswertFrom AND :nwgzumesswertTo	nwgzumesswertFrom,nwgzumesswertTo	1	nwg_zu_messwert
 51	(coalesce((probe.probeentnahme_beginn + make_interval(secs => probe.mittelungsdauer/2)),probe.probeentnahme_beginn)) BETWEEN to_timestamp(cast(:fromMitteSZeitraum AS DOUBLE PRECISION)) AND to_timestamp(cast(:toMitteSZeitraum AS DOUBLE PRECISION))	fromMitteSZeitraum,toMitteSZeitraum	6	mitte_sammelzeitraum
-52	string_to_array(tags, ', ', '') @> CAST(ARRAY[ :tags ] AS text[])	tags	8	tags
+52	string_to_array(tags, ', ', '') && CAST(ARRAY[ :tags ] AS text[])	tags	8	tags
 \.
 
 
