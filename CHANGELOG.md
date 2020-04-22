@@ -1,5 +1,10 @@
 # USGS Iridium Short Burst Data (SBD) Decoder Library
 
+## 1.4.0 - 04/22/2020
+ * Update to Spring Boot 2.2.6
+ * Update to Guava 29.0
+ * Update to JDT Annotation 2.2.400
+
 ## 1.3.0 - 09/24/2019
  * Update the getPayloadDecoder method so that the type name is included
  
