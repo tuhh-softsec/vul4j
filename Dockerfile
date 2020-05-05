@@ -53,10 +53,10 @@ EXPOSE 8080 9990 80
 #
 RUN mkdir -p $JBOSS_HOME/modules/org/postgres/main
 
-RUN curl http://central.maven.org/maven2/org/hibernate/hibernate-spatial/${HIBERNATE_SPATIAL_VERSION}/hibernate-spatial-${HIBERNATE_SPATIAL_VERSION}.jar >\
+RUN curl https://repo1.maven.org/maven2/org/hibernate/hibernate-spatial/${HIBERNATE_SPATIAL_VERSION}/hibernate-spatial-${HIBERNATE_SPATIAL_VERSION}.jar >\
         $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/hibernate-spatial.jar
 
-RUN curl http://central.maven.org/maven2/org/geolatte/geolatte-geom/${GEOLATTE_GEOM_VERSION}/geolatte-geom-${GEOLATTE_GEOM_VERSION}.jar >\
+RUN curl https://repo1.maven.org/maven2/org/geolatte/geolatte-geom/${GEOLATTE_GEOM_VERSION}/geolatte-geom-${GEOLATTE_GEOM_VERSION}.jar >\
         $JBOSS_HOME/modules/system/layers/base/org/hibernate/main/geolatte-geom.jar
 
 RUN ln -s /usr/share/java/postgresql.jar \
