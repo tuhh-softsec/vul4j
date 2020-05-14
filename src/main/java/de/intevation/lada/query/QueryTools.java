@@ -34,6 +34,7 @@ import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.data.Strings;
+import org.postgresql.util.PSQLException;
 
 
 /**
@@ -286,14 +287,21 @@ public class QueryTools
             sql += genericFilterSql;
         }
         sql += " ;";
-        javax.persistence.Query q = prepareQuery(
-            sql,
-            filterValues,
-            repository.entityManager(Strings.LAND));
-        if (q == null) {
-            return new ArrayList<>();
+        try {
+            javax.persistence.Query q = prepareQuery(
+                    sql,
+                    filterValues,
+                    repository.entityManager(Strings.LAND));
+            if (q == null) {
+                return new ArrayList<>();
+            }
+            return prepareResult(q.getResultList(), columns);
+        } catch (Exception e) {
+            logger.debug("Exceptiont", e);
+            logger.debug("SQL: \n" + sql);
+            logger.debug("filterValues:  " + filterValues);
+            throw e;
         }
-        return prepareResult(q.getResultList(), columns);
     }
 
     /**
