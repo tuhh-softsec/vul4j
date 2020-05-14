@@ -440,7 +440,6 @@ public class ProbeFactory {
                 Messwert wert = new Messwert();
                 wert.setMessgroesseId(mw);
                 wert.setMessungsId(messung.getId());
-                wert.setMesswert(0d);
                 if (messprogramm.getMehId() != null) {
                     wert.setMehId(messprogramm.getMehId());
                 } else {
