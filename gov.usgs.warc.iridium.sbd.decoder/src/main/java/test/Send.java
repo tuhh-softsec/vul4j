@@ -1,5 +1,6 @@
 package test;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import java.io.IOException;
@@ -117,7 +118,7 @@ public class Send
 		final Long expected = 300234010124740L;
 		final String str = Long.toString(expected);
 		final String finalStr = Strings.padStart(str, 15, '0');
-		final byte[] byteArray = finalStr.getBytes();
+		final byte[] byteArray = finalStr.getBytes(Charsets.UTF_8);
 		addBytestoListFromArray(byteList, hexStringToByteArray(revNum));
 		addBytestoListFromArray(byteList, hexStringToByteArray(msgLen));
 		addBytestoListFromArray(byteList, hexStringToByteArray(headerIEI));
@@ -147,11 +148,13 @@ public class Send
 					hexStringToByteArray(payLoadIE));
 			addBytestoListFromArray(payLoadByteList,
 					hexStringToByteArray(payLoadLen));
-			addBytestoListFromArray(payLoadByteList, payLoadBytes.getBytes());
+			addBytestoListFromArray(payLoadByteList,
+					payLoadBytes.getBytes(Charsets.UTF_8));
 
 			addBytestoListFromArray(byteList, hexStringToByteArray(payLoadIE));
 			addBytestoListFromArray(byteList, hexStringToByteArray(payLoadLen));
-			addBytestoListFromArray(byteList, payLoadBytes.getBytes());
+			addBytestoListFromArray(byteList,
+					payLoadBytes.getBytes(Charsets.UTF_8));
 		}
 
 		/**

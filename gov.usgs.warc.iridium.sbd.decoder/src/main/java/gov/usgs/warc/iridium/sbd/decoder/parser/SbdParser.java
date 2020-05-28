@@ -3,6 +3,7 @@ package gov.usgs.warc.iridium.sbd.decoder.parser;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -81,8 +82,7 @@ public class SbdParser
 				String.format("Expected 15 bytes for imei but got %s",
 						p_ImeiByteArray.length));
 
-		return Long.parseLong(new String(p_ImeiByteArray));
-
+		return Long.parseLong(new String(p_ImeiByteArray, Charsets.UTF_8));
 	}
 
 	/**

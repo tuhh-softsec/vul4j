@@ -1,13 +1,16 @@
 package test;
 
+import com.google.common.base.Charsets;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,14 +60,22 @@ public final class Echo
 				{
 					log.info(String.format("Client connected: %s",
 							client.getInetAddress()));
-					final PrintWriter w = new PrintWriter(
-							client.getOutputStream(), true);
-					final String readLine = new BufferedReader(
-							new InputStreamReader(client.getInputStream()))
-									.readLine();
-					log.info(String.format("Message: %s", readLine));
-					w.println("ACK");
-					w.println(readLine);
+					try (OutputStream outputStream = client.getOutputStream();
+						OutputStreamWriter outputStreamWriter = new OutputStreamWriter(
+								outputStream, Charsets.UTF_8);
+						final PrintWriter w = new PrintWriter(
+								outputStreamWriter, true);
+						InputStream inputStream = client.getInputStream();
+						InputStreamReader inputStreamReader = new InputStreamReader(
+								inputStream, Charsets.UTF_8);
+						BufferedReader bufferedReader = new BufferedReader(
+								inputStreamReader);)
+					{
+						final String readLine = bufferedReader.readLine();
+						log.info(String.format("Message: %s", readLine));
+						w.println("ACK");
+						w.println(readLine);
+					}
 				}
 			}
 		}

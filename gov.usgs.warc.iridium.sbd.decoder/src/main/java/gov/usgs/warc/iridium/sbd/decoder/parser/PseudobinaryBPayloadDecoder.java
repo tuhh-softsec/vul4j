@@ -2,6 +2,7 @@ package gov.usgs.warc.iridium.sbd.decoder.parser;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import com.google.common.base.Charsets;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Queues;
 import gov.usgs.warc.iridium.sbd.decoder.parser.elements.Payload;
@@ -58,7 +59,8 @@ public class PseudobinaryBPayloadDecoder implements PayloadDecoder
 				"Invalid payload type for this decoder.");
 
 		final byte[] payload = p_Payload.getPayload();
-		log.info(String.format("Payload:%n%s", new String(payload)));
+		log.info(String.format("Payload:%n%s",
+				new String(payload, Charsets.UTF_8)));
 
 		final Queue<Byte> payloadQueue = Queues
 				.newArrayBlockingQueue(payload.length);

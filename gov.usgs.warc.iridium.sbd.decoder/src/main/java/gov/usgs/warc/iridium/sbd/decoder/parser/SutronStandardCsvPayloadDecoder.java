@@ -2,6 +2,7 @@ package gov.usgs.warc.iridium.sbd.decoder.parser;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -177,7 +178,8 @@ public class SutronStandardCsvPayloadDecoder implements PayloadDecoder
 				"Invalid payload type for this decoder.");
 
 		final Map<SbdDataType, Double> dataMap = Maps.newLinkedHashMap();
-		final String payload = new String(p_Payload.getPayload());
+		final String payload = new String(p_Payload.getPayload(),
+				Charsets.UTF_8);
 		log.info(String.format("Payload:%n%s", payload));
 		final Splitter splitter = Splitter.on(',');
 		try (Scanner scanner = new Scanner(payload))
