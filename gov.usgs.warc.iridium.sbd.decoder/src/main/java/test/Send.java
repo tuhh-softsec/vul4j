@@ -2,9 +2,8 @@ package test;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Arrays;
 import java.util.List;
@@ -72,13 +71,12 @@ public class Send
 		try (
 			final Socket echoSocket = new Socket(p_Args[0],
 					Integer.parseInt(p_Args[1]));
-			final PrintWriter out = new PrintWriter(
-					echoSocket.getOutputStream(), true);)
+			OutputStream outputStream = echoSocket.getOutputStream();)
 		{
 			final byte[] bytes = Objects
 					.requireNonNull(setupMessageBytes(p_Args[2]));
-			echoSocket.getOutputStream().write(bytes);
-			out.print(bytes);
+			outputStream.write(bytes);
+			outputStream.flush();
 		}
 		System.out.println("Done");
 	}
