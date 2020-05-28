@@ -58,7 +58,7 @@ public class PseudobinaryBPayloadDecoder implements PayloadDecoder
 				"Invalid payload type for this decoder.");
 
 		final byte[] payload = p_Payload.getPayload();
-		log.info(String.format("Payload:\n%s", new String(payload)));
+		log.info(String.format("Payload:%n%s", new String(payload)));
 
 		final Queue<Byte> payloadQueue = Queues
 				.newArrayBlockingQueue(payload.length);
