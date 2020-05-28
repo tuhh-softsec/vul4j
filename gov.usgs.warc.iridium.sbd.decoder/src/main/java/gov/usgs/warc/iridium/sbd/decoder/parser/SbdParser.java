@@ -119,7 +119,7 @@ public class SbdParser
 		/**
 		 * Unused...direction string.
 		 */
-		String.format("%s%s", ns.name(), ew.name());
+		log.debug(String.format("%s%s", ns.name(), ew.name()));
 		final ByteBuffer byteBuffer = ByteBuffer.wrap(p_Bytes, 1, 6);
 		/**
 		 * Byte 2 lat degs
