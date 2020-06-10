@@ -74,8 +74,8 @@ public class ObjectMerger {
             target.setNebenprobenNr(src.getNebenprobenNr());
         }
         if (src.getFertig() != null) {
-            if (target.getFertig() == null) target.setFertig(src.getFertig());
-        } else {
+            target.setFertig(src.getFertig());
+        } else if (target.getFertig() == null){
             target.setFertig(false);
         }
         if (src.getGeplant() != null) {
