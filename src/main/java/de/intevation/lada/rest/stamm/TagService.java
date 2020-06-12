@@ -103,21 +103,19 @@ import de.intevation.lada.util.rest.Response;
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<Tag> criteriaQuery = builder.createQuery(Tag.class);
         Root<Tag> root = criteriaQuery.from(Tag.class);
-        Join<Tag, TagZuordnung> joinTagZuordnung = root.join("tagZuordnungs", javax.persistence.criteria.JoinType.LEFT);
         Predicate zeroMstfilter = builder.isNull(root.get("mstId"));
         Predicate userMstFilter = builder.in(root.get("mstId")).value(userInfo.getMessstellen());
-        Predicate probeFilter = builder.equal(joinTagZuordnung.get("probeId"), probeId);
-        Predicate messungFilter = builder.equal(joinTagZuordnung.get("messungId"), messungId);
         Predicate filter = builder.or(zeroMstfilter, userMstFilter);
-
         if (probeId != null) {
+            Join<Tag, TagZuordnung> joinTagZuordnung = root.join("tagZuordnungs", javax.persistence.criteria.JoinType.LEFT);
+            Predicate probeFilter = builder.equal(joinTagZuordnung.get("probeId"), probeId);
             filter = builder.and(filter, probeFilter);
         }
-
-        if (messungId != null) {
+        else if (messungId != null) {
+            Join<Tag, TagZuordnung> joinTagZuordnung = root.join("tagZuordnungs", javax.persistence.criteria.JoinType.LEFT);
+            Predicate messungFilter = builder.equal(joinTagZuordnung.get("messungId"), messungId);
             filter = builder.and(filter, messungFilter);
         }
-
         criteriaQuery.where(filter);
         List<Tag> tags = repository.filterPlain(criteriaQuery, Strings.STAMM);
         return new Response(true, 200, tags);
