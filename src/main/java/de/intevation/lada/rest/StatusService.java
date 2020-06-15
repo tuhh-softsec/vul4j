@@ -307,21 +307,12 @@ public class StatusService {
                 return response;
             }
         }
-        if (newKombi.getStatusWert().getId() == 1 ||
-            newKombi.getStatusWert().getId() == 2 ||
-            newKombi.getStatusWert().getId() == 3 ||
-            newKombi.getStatusWert().getId() == 7) {
-            messung.setFertig(true);
-        }
-        else if (newKombi.getStatusWert().getId() == 4) {
-            messung.setFertig(false);
-        }
+
         //Set datum to null to use database timestamp
         status.setDatum(null);
         Response response = defaultRepo.create(status, Strings.LAND);
         StatusProtokoll created = (StatusProtokoll)response.getData();
-        messung.setStatus(created.getId());
-        defaultRepo.update(messung, Strings.LAND);
+        //NOTE: The referenced messung status field is updated by a DB trigger
         if (violation != null) {
             response.setWarnings(violation.getWarnings());
         }
