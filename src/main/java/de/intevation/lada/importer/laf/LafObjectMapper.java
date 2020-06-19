@@ -340,7 +340,7 @@ public class LafObjectMapper {
         }
 
         if (newProbe != null) {
-            if(!oldProbeIsReadonly & isAuthorizedOld) {
+            if(!oldProbeIsReadonly) {
                 // Create kommentar objects
                 List<KommentarP> kommentare = new ArrayList<>();
                 for (int i = 0; i < object.getKommentare().size(); i++) {
