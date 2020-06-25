@@ -115,9 +115,7 @@ eingebunden wurde:
 
  $ ./install-sencha2opt.sh
  $ ./install-dependencies.sh
- $ ln -s $PWD/ext-6.2.0 ext
- $ sencha app install --framework=ext
- $ sencha app build development
+ $ ./docker-build-app.sh
 
 Die LADA-Anwendung kann dann unter den angegebenen Ports mit verschiedenen
 Rollen im Browser ausgeführt werden.
