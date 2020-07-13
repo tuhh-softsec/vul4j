@@ -8,7 +8,10 @@
 package de.intevation.lada.rest.stamm;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -154,7 +157,7 @@ public class StatusKombiService {
         List<Messung> messungen = repository.filterPlain(
             messungQuery.getQuery(), Strings.LAND);
 
-        List<StatusErreichbar> erreichbare = new ArrayList<StatusErreichbar>();
+        Map<Integer, StatusErreichbar> erreichbare = new HashMap<Integer,StatusErreichbar>();
         for (Messung messung : messungen) {
             StatusProtokoll status = repository.getByIdPlain(
                 StatusProtokoll.class, messung.getStatus(), Strings.LAND);
@@ -168,8 +171,11 @@ public class StatusKombiService {
             errFilter.andIn("stufeId", user.getFunktionen());
             errFilter.and("curStufe", kombi.getStatusStufe().getId());
             errFilter.and("curWert", kombi.getStatusWert().getId());
-            erreichbare.addAll(repository.filterPlain(
-                    errFilter.getQuery(), Strings.STAMM));
+            List<StatusErreichbar> err= repository.filterPlain(
+                    errFilter.getQuery(), Strings.STAMM);
+            for (StatusErreichbar e : err) {
+                erreichbare.put(e.getId(), e);
+            }
         }
 
         if (erreichbare.size() == 0) {
@@ -180,10 +186,10 @@ public class StatusKombiService {
             new QueryBuilder<StatusKombi>(
                 repository.entityManager(Strings.STAMM),
                 StatusKombi.class);
-        for (StatusErreichbar erreichbar : erreichbare) {
+        for (Entry<Integer, StatusErreichbar> erreichbar : erreichbare.entrySet()) {
                 QueryBuilder<StatusKombi> tmp = kombiFilter.getEmptyBuilder();
-                tmp.and("statusWert", erreichbar.getWertId())
-                    .and("statusStufe", erreichbar.getStufeId());
+                tmp.and("statusWert", erreichbar.getValue().getWertId())
+                    .and("statusStufe", erreichbar.getValue().getStufeId());
                 kombiFilter.or(tmp);
         }
 
