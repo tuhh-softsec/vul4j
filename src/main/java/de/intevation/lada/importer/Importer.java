@@ -22,5 +22,6 @@ public interface Importer {
     void reset();
     Map<String, List<ReportItem>> getWarnings();
     Map<String, List<ReportItem>> getErrors();
+    Map<String, List<ReportItem>> getNotifications();
     void doImport(String content, UserInfo userInfo, List<ImporterConfig> config);
 }

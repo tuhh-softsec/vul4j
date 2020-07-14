@@ -126,6 +126,10 @@ public class Probe implements Serializable {
     @JsonIgnore
     private MultivaluedMap<String, Integer> warnings;
 
+    @Transient
+    @JsonIgnore
+    private MultivaluedMap<String, Integer> notifications;
+
     public Probe() {
     }
 
@@ -371,6 +375,16 @@ public class Probe implements Serializable {
     @JsonProperty
     public MultivaluedMap<String, Integer> getWarnings() {
         return this.warnings;
+    }
+
+    @JsonIgnore
+    public void setNotifications(MultivaluedMap<String, Integer> notifications) {
+      this.notifications = notifications;
+    }
+
+    @JsonProperty
+    public MultivaluedMap<String, Integer> getNotifications() {
+       return this.notifications;
     }
 
     @JsonIgnore

@@ -111,8 +111,10 @@ public class LafObjectMapper {
 
     private Map<String, List<ReportItem>> errors;
     private Map<String, List<ReportItem>> warnings;
+    private Map<String, List<ReportItem>> notifications;
     private List<ReportItem> currentErrors;
     private List<ReportItem> currentWarnings;
+    private List<ReportItem> currentNotifications;
     private List<Integer> importProbeIds;
 
     private int currentZeitbasis;
@@ -125,6 +127,7 @@ public class LafObjectMapper {
     public void mapObjects(LafRawData data) {
         errors = new HashMap<>();
         warnings = new HashMap<>();
+	notifications = new HashMap<>();
         importProbeIds = new ArrayList<Integer>();
         for (int i = 0; i < data.getProben().size(); i++) {
             create(data.getProben().get(i));
@@ -134,6 +137,7 @@ public class LafObjectMapper {
     private void create(LafRawData.Probe object) {
         currentWarnings = new ArrayList<>();
         currentErrors = new ArrayList<>();
+        currentNotifications = new ArrayList<>();
         Probe probe = new Probe();
         String netzbetreiberId = null;
 
@@ -267,6 +271,10 @@ public class LafObjectMapper {
                             			warnings.put(object.getIdentifier(),
                                 		new ArrayList<ReportItem>(currentWarnings));
                         		}
+					if (!currentNotifications.isEmpty()) {
+                                          notifications.put(object.getIdentifier(),
+                                          new ArrayList<ReportItem>(currentNotifications));
+                                        }
                         	  return;
                     		}	
                 	}
@@ -297,6 +305,10 @@ public class LafObjectMapper {
                     warnings.put(object.getIdentifier(),
                         new ArrayList<ReportItem>(currentWarnings));
                 }
+                if (!currentNotifications.isEmpty()) {
+                   notifications.put(object.getIdentifier(),
+                   new ArrayList<ReportItem>(currentNotifications));
+                }
                 return;
             }
             // It is a brand new probe!
@@ -317,6 +329,11 @@ public class LafObjectMapper {
                             currentWarnings.add(new ReportItem("validation", warn.getKey(), code));
                         }
                     }
+                    for (Entry<String, List<Integer>> notes : violation.getNotifications().entrySet()) {
+                      for (Integer code :notes.getValue()) {
+                        currentNotifications.add(new ReportItem("validation", notes.getKey(), code));
+                      }
+                    }
                 }
             }
             if (newProbe != null) {
@@ -335,6 +352,10 @@ public class LafObjectMapper {
             if (!currentWarnings.isEmpty()) {
                 warnings.put(object.getIdentifier(),
                     new ArrayList<ReportItem>(currentWarnings));
+            }
+            if (!currentNotifications.isEmpty()) {
+              notifications.put(object.getIdentifier(),
+              new ArrayList<ReportItem>(currentWarnings));
             }
             return;
         }
@@ -401,6 +422,11 @@ public class LafObjectMapper {
                     currentWarnings.add(new ReportItem("validation", warn.getKey(), code));
                 }
             }
+            for (Entry<String, List<Integer>> notes : violation.getNotifications().entrySet()) {
+              for (Integer code: notes.getValue()) {
+                currentNotifications.add(new ReportItem("validation", notes.getKey(), code));
+              }
+            }
         }
         if (!currentErrors.isEmpty()) {
             if (errors.containsKey(object.getIdentifier())) {
@@ -419,6 +445,15 @@ public class LafObjectMapper {
                 warnings.put(object.getIdentifier(),
                     new ArrayList<ReportItem>(currentWarnings));
             }
+        }
+        if (!currentNotifications.isEmpty()) {
+          if (notifications.containsKey(object.getIdentifier())) {
+            notifications.get(object.getIdentifier()).addAll(currentNotifications);
+          }
+          else {
+            notifications.put(object.getIdentifier(),
+            new ArrayList<ReportItem>(currentWarnings));
+          }
         }
     }
 
@@ -815,15 +850,16 @@ public class LafObjectMapper {
                 currentWarnings.add(new ReportItem("validation", warn.getKey(), code));
             }
         }
+        for (Entry<String, List<Integer>> notes : violation.getNotifications().entrySet()) {
+          for (Integer code : notes.getValue()) {
+            currentNotifications.add(new ReportItem("validation", notes.getKey(), code));
+          }
+        }
 
         //Validate / Create Status
         if (object.getAttributes().containsKey("BEARBEITUNGSSTATUS")) {
-	 if (currentErrors.isEmpty()){
-              createStatusProtokoll(object.getAttributes().get("BEARBEITUNGSSTATUS"), newMessung, mstId);
-        } else {
-	  currentErrors.add(new ReportItem("Stausvergabe", "Status", 631)); 
-	}
-	}
+	   createStatusProtokoll(object.getAttributes().get("BEARBEITUNGSSTATUS"), newMessung, mstId);
+        }
     }
 
     private KommentarP createProbeKommentar(Map<String, String> attributes, Probe probe) {
@@ -1088,8 +1124,12 @@ public class LafObjectMapper {
                 // no further status settings
                 return;
             }
-            else if (!addStatusProtokollEntry(i, Integer.valueOf(status.substring(i-1, i)), messung, mstId)) {
+            else if (currentErrors.isEmpty() && currentWarnings.isEmpty()) { 
+              if (!addStatusProtokollEntry(i, Integer.valueOf(status.substring(i-1, i)), messung, mstId)) {
                 return;
+              }
+            } else {
+             currentErrors.add(new ReportItem("Statusvergabe", "Status", 631));
             }
         }
     }
@@ -1147,6 +1187,13 @@ public class LafObjectMapper {
             });
         }
 
+        if (status_violation.hasNotifications()){
+           status_violation.getNotifications().forEach((k,v)->{
+	     v.forEach((value)->{
+               currentNotifications.add(new ReportItem("Status ", k, value));
+             });
+           });
+        }
 
         if (status_violation.hasErrors()) {
             status_violation.getErrors().forEach((k,v)->{
@@ -1154,7 +1201,10 @@ public class LafObjectMapper {
                     currentErrors.add(new ReportItem("Status ", k , value));
                 });
             });
-            return false;
+        }
+
+        if (status_violation.hasErrors() || status_violation.hasWarnings()) {
+          return false;
         }
 
         // check auth
@@ -1908,6 +1958,13 @@ public class LafObjectMapper {
      */
     public Map<String, List<ReportItem>> getWarnings() {
         return warnings;
+    }
+
+    /**
+     * @return the notifications
+     */
+    public Map<String, List<ReportItem>> getNotifications() {
+       return notifications;
     }
 
     /**
