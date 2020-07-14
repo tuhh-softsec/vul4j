@@ -163,6 +163,7 @@ public class StatusService {
                 if (violation.hasErrors() || violation.hasWarnings()) {
                     s.setErrors(violation.getErrors());
                     s.setWarnings(violation.getWarnings());
+                    s.setNotifications(violation.getNotifications());
                 }
             }
             return new Response(true, 200, status);
@@ -300,10 +301,11 @@ public class StatusService {
         if (newKombi.getStatusWert().getId() == 1 ||
             newKombi.getStatusWert().getId() == 2 ) {
             violation = validator.validate(status);
-            if (violation.hasErrors()) {
+            if (violation.hasErrors() || violation.hasWarnings()) {
                 Response response = new Response(false, 605, status);
                 response.setErrors(violation.getErrors());
                 response.setWarnings(violation.getWarnings());
+                response.setNotifications(violation.getNotifications());
                 return response;
             }
         }
@@ -314,7 +316,7 @@ public class StatusService {
         StatusProtokoll created = (StatusProtokoll)response.getData();
         //NOTE: The referenced messung status field is updated by a DB trigger
         if (violation != null) {
-            response.setWarnings(violation.getWarnings());
+            response.setNotifications(violation.getNotifications());
         }
         return authorization.filter(
             request,

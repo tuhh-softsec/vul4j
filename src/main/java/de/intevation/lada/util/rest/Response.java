@@ -30,6 +30,7 @@ public class Response implements Serializable {
     private Object data;
     private MultivaluedMap<String, Integer> errors;
     private MultivaluedMap<String, Integer> warnings;
+    private MultivaluedMap<String, Integer> notifications;
     private Boolean readonly;
     private int totalCount;
 
@@ -46,6 +47,7 @@ public class Response implements Serializable {
         this.data = data;
         this.errors = new MultivaluedHashMap<String, Integer>();
         this.warnings = new MultivaluedHashMap<String, Integer>();
+        this.notifications = new MultivaluedHashMap<String, Integer>();
         this.readonly = Boolean.FALSE;
         this.totalCount = 0;
     }
@@ -63,6 +65,7 @@ public class Response implements Serializable {
         this.data = data;
         this.errors = new MultivaluedHashMap<String, Integer>();
         this.warnings = new MultivaluedHashMap<String, Integer>();
+        this.notifications = new MultivaluedHashMap<String, Integer>();
         this.readonly = Boolean.FALSE;
         this.totalCount = totalCount;
     }
@@ -107,6 +110,14 @@ public class Response implements Serializable {
     public void setWarnings(MultivaluedMap<String, Integer> warnings) {
         this.warnings.putAll(warnings);
         //this.warnings = this.convertCodes(warnings);
+    }
+
+    public MultivaluedMap<String, Integer> getNotifications() {
+      return notifications;
+    }
+
+    public void setNotifications(MultivaluedMap<String, Integer> notifications){
+      this.notifications.putAll(notifications);
     }
 
     public Boolean getReadonly() {
