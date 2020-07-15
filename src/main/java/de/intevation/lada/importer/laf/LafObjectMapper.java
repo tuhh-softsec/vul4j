@@ -797,6 +797,7 @@ public class LafObjectMapper {
         for (int i = 0; i < object.getMesswerte().size(); i++) {
             Messwert tmp = createMesswert(object.getMesswerte().get(i), newMessung.getId());
             if (tmp != null) {
+                //find duplicates
                 if (messgroessenListe.contains(tmp.getMessgroesseId())) {
                     currentWarnings.add(new ReportItem(
                         (object.getMesswerte().get(i).get("MESSGROESSE_ID") == null) ?
@@ -808,37 +809,16 @@ public class LafObjectMapper {
                         672));
                 }
                 else {
+                //temporary messwertobjects
                     messwerte.add(tmp);
                     messgroessenListe.add(tmp.getMessgroesseId());
-                    Violation violation = messwertValidator.validate(tmp);
-                    for (Entry<String, List<Integer>> err : violation.getErrors().entrySet()) {
-                        for (Integer code : err.getValue()) {
-                            currentErrors.add(new ReportItem(
-                                "validation",
-                                err.getKey() + "#" +
-                                ((object.getMesswerte().get(i).get("MESSGROESSE_ID") == null) ?
-                                    object.getMesswerte().get(i).get("MESSGROESSE").toString() :
-                                    object.getMesswerte().get(i).get("MESSGROESSE_ID").toString()),
-                                code));
-                        }
-                    }
-                    for (Entry<String, List<Integer>> warn : violation.getWarnings().entrySet()) {
-                        for (Integer code : warn.getValue()) {
-                            currentWarnings.add(new ReportItem(
-                                "validation",
-                                warn.getKey() + "#" +
-                                ((object.getMesswerte().get(i).get("MESSGROESSE_ID") == null) ?
-                                    object.getMesswerte().get(i).get("MESSGROESSE").toString() :
-                                    object.getMesswerte().get(i).get("MESSGROESSE_ID").toString()),
-                                code));
-                        }
-                    }
-                }
+                }                    
             }
         }
         messwerte = MesswertNormalizer.normalizeMesswerte(messwerte, probe.getUmwId(), repository);
+        //persist messwerte
         merger.mergeMesswerte(newMessung, messwerte);
-        // Check for warnings and errors
+        // Check for warnings and errors for messung ...
         Violation violation = messungValidator.validate(newMessung);
         for (Entry<String, List<Integer>> err : violation.getErrors().entrySet()) {
             for (Integer code : err.getValue()) {
@@ -853,6 +833,39 @@ public class LafObjectMapper {
         for (Entry<String, List<Integer>> notes : violation.getNotifications().entrySet()) {
           for (Integer code : notes.getValue()) {
             currentNotifications.add(new ReportItem("validation", notes.getKey(), code));
+          }
+        }
+        // ... and messwerte
+        QueryBuilder<Messwert> messw_builder = new QueryBuilder<Messwert>(
+          repository.entityManager(Strings.LAND), Messwert.class);
+        messw_builder.and("messungsId", newMessung.getId());
+        Response response = repository.filter(messw_builder.getQuery(), Strings.LAND);
+        @SuppressWarnings("unchecked")
+        List<Messwert> messwerteList = (List<Messwert>) response.getData();
+        for (Messwert messwert: messwerte) {
+          Violation messw_violation = messwertValidator.validate(messwert);
+          if (messw_violation.hasWarnings()) {
+            messw_violation.getWarnings().forEach((k,v)->{
+              v.forEach((value)->{
+                currentWarnings.add(new ReportItem("Status ", k, value));
+              });
+            });
+          } 
+
+          if (messw_violation.hasErrors()) {
+            messw_violation.getErrors().forEach((k,v)->{
+              v.forEach((value)->{
+                currentErrors.add(new ReportItem("Status ", k, value));
+              });
+            });
+          }
+
+          if (messw_violation.hasNotifications()) {
+            messw_violation.getNotifications().forEach((k,v)->{
+              v.forEach((value)->{
+                currentNotifications.add(new ReportItem("Status ", k, value));
+              });
+            });
           }
         }
 
