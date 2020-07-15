@@ -59,7 +59,7 @@ public class SecondaryMehSelected implements Rule {
             }
             //Check if the messwert is the secondary mehId
             if (secMehId != null && secMehId.equals(messwert.getMehId())) {
-                violation.addWarning("mehId", 636);
+                violation.addNotification("mehId", 636);
                 return violation;
             }
             /*Check if the messwert is convertable into the secondary unit but
@@ -77,7 +77,7 @@ public class SecondaryMehSelected implements Rule {
             }
             secMeh.getMassEinheitUmrechnungZus().forEach(secUmrechnung -> {
                 if (secUmrechnung.getMehVon().getId().equals(messwert.getMehId())) {
-                    violation.addWarning("mehId", 636);
+                    violation.addNotification("mehId", 636);
                 }
             });
         }
