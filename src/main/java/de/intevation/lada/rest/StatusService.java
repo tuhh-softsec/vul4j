@@ -30,7 +30,9 @@ import javax.ws.rs.core.UriInfo;
 import de.intevation.lada.lock.LockConfig;
 import de.intevation.lada.lock.LockType;
 import de.intevation.lada.lock.ObjectLocker;
+import de.intevation.lada.model.land.Messwert;
 import de.intevation.lada.model.land.Messung;
+import de.intevation.lada.model.land.Probe;
 import de.intevation.lada.model.land.StatusProtokoll;
 import de.intevation.lada.model.stammdaten.StatusKombi;
 import de.intevation.lada.model.stammdaten.StatusReihenfolge;
@@ -95,6 +97,10 @@ public class StatusService {
     @RepositoryConfig(type=RepositoryType.RW)
     private Repository defaultRepo;
 
+    @Inject
+    @RepositoryConfig(type = RepositoryType.RO)
+    private Repository repository;
+
     /**
      * The object lock mechanism.
      */
@@ -112,6 +118,18 @@ public class StatusService {
     @Inject
     @ValidationConfig(type="Status")
     private Validator validator;
+
+    @Inject
+    @ValidationConfig(type="Messwert")
+    private Validator messwertValidator;
+
+    @Inject
+    @ValidationConfig(type="Messung")
+    private Validator messungValidator;
+
+    @Inject
+    @ValidationConfig(type="Probe")
+    private Validator probeValidator;
 
     /**
      * Get all Status objects.
@@ -163,7 +181,7 @@ public class StatusService {
                 if (violation.hasErrors() || violation.hasWarnings()) {
                     s.setErrors(violation.getErrors());
                     s.setWarnings(violation.getWarnings());
-                    s.setNotifications(violation.getNotifications());
+		    s.setNotifications(violation.getNotifications());
                 }
             }
             return new Response(true, 200, status);
@@ -298,25 +316,66 @@ public class StatusService {
         HttpServletRequest request
     ) {
         Violation violation = null;
+	Violation violation_collection = null;
         if (newKombi.getStatusWert().getId() == 1 ||
             newKombi.getStatusWert().getId() == 2 ) {
-            violation = validator.validate(status);
-            if (violation.hasErrors() || violation.hasWarnings()) {
+		Probe probe = repository.getByIdPlain(Probe.class, messung.getProbeId(), "land");
+		//init violation_collection with probe validation
+		violation_collection = probeValidator.validate(probe);
+		
+		//validate messung object
+		violation  = messungValidator.validate(messung);
+                        violation_collection.addErrors(violation.getErrors());
+                        violation_collection.addWarnings(violation.getWarnings());
+                        violation_collection.addNotifications(violation.getNotifications());
+
+		//validate messwert objects
+		QueryBuilder<Messwert> builder =
+		new QueryBuilder<Messwert>(
+		repository.entityManager(Strings.LAND), Messwert.class);
+		builder.and("messungsId", messung.getId());
+		Response messwertQry = repository.filter(builder.getQuery(), Strings.LAND);
+		@SuppressWarnings("unchecked")
+		List<Messwert> messwerte = (List<Messwert>) messwertQry.getData();
+            for (Messwert messwert: messwerte) {
+               	violation = messwertValidator.validate(messwert);
+                	if (violation.hasErrors() || violation.hasWarnings()) {
+                        	violation_collection.addErrors(violation.getErrors());
+                        	violation_collection.addWarnings(violation.getWarnings());
+                	}
+		violation_collection.addNotifications(violation.getNotifications());
+            	}
+		//validate statusobject
+		violation = validator.validate(status);
+			violation_collection.addErrors(violation.getErrors());
+			violation_collection.addWarnings(violation.getWarnings());
+			violation_collection.addNotifications(violation.getNotifications());
+
+            if (violation_collection.hasErrors() || violation_collection.hasWarnings()) {
                 Response response = new Response(false, 605, status);
-                response.setErrors(violation.getErrors());
-                response.setWarnings(violation.getWarnings());
-                response.setNotifications(violation.getNotifications());
+                response.setErrors(violation_collection.getErrors());
+                response.setWarnings(violation_collection.getWarnings());
+		response.setNotifications(violation_collection.getNotifications());
                 return response;
             }
         }
-
+        if (newKombi.getStatusWert().getId() == 1 ||
+            newKombi.getStatusWert().getId() == 2 ||
+            newKombi.getStatusWert().getId() == 3 ||
+            newKombi.getStatusWert().getId() == 7) {
+            messung.setFertig(true);
+        }
+        else if (newKombi.getStatusWert().getId() == 4) {
+            messung.setFertig(false);
+        }
         //Set datum to null to use database timestamp
         status.setDatum(null);
         Response response = defaultRepo.create(status, Strings.LAND);
         StatusProtokoll created = (StatusProtokoll)response.getData();
-        //NOTE: The referenced messung status field is updated by a DB trigger
-        if (violation != null) {
-            response.setNotifications(violation.getNotifications());
+        messung.setStatus(created.getId());
+        defaultRepo.update(messung, Strings.LAND);
+        if (violation_collection != null) {
+	    response.setNotifications(violation_collection.getNotifications());
         }
         return authorization.filter(
             request,
