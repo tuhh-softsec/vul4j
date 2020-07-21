@@ -57,7 +57,7 @@ public class Date implements Rule {
         if (probe.getProbeentnahmeBeginn() != null && probe.getProbeentnahmeBeginn().after(messung.getMesszeitpunkt()) ||
             probe.getProbeentnahmeEnde() != null
               && probe.getProbeentnahmeEnde().after(messung.getMesszeitpunkt()) 
-              && ( probe.getProbenartId() == 3 || probe.getProbenartId() == 9)
+              && probe.getProbenartId()!=null && ( probe.getProbenartId() == 3 || probe.getProbenartId() == 9)
         ) {
             Violation violation = new Violation();
             violation.addWarning(
