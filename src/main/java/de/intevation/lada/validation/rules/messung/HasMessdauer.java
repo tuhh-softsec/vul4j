@@ -38,7 +38,7 @@ public class HasMessdauer implements Rule {
         if (messung.getMessdauer() == null ||
             messung.getMessdauer().equals("")) {
 		//Exception for continous samples or Datenbasis = §161
-		if (probe.getProbenartId() == 9 || probe.getDatenbasisId()==1){
+		if (probe.getProbenartId()!=null && probe.getProbenartId() == 9 || probe.getDatenbasisId()!=null && probe.getDatenbasisId()==1){
                         Violation violation = new Violation();
                         violation.addNotification("messdauer", 631);
                         return violation;
