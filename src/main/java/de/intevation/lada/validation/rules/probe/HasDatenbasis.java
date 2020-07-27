@@ -26,7 +26,7 @@ public class HasDatenbasis implements Rule {
         Probe probe = (Probe)object;
         if (probe.getDatenbasisId() == null) {
             Violation violation = new Violation();
-            violation.addError("datenbasis", 631);
+            violation.addWarning("datenbasis", 631);
             return violation;
         }
         return null;
