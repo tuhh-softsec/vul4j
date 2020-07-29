@@ -161,6 +161,7 @@ public class MessungService {
                 if (violation.hasErrors() || violation.hasWarnings()) {
                     m.setErrors(violation.getErrors());
                     m.setWarnings(violation.getWarnings());
+                    m.setNotifications(violation.getNotifications());
                 }
             }
             return new Response(true, 200, messungs);
@@ -197,6 +198,7 @@ public class MessungService {
                         if (violation.hasErrors() || violation.hasWarnings()) {
                             messung.setErrors(violation.getErrors());
                             messung.setWarnings(violation.getWarnings());
+                            messung.setNotifications(violation.getNotifications());
                         }
                     }
                 }
@@ -232,6 +234,7 @@ public class MessungService {
         if (violation.hasErrors() || violation.hasWarnings()) {
             response.setErrors(violation.getErrors());
             response.setWarnings(violation.getWarnings());
+            response.setNotifications(violation.getNotifications());
         }
         return authorization.filter(
             request,
@@ -287,6 +290,7 @@ public class MessungService {
             Response response = new Response(false, 604, messung);
             response.setErrors(violation.getErrors());
             response.setWarnings(violation.getWarnings());
+            response.setNotifications(violation.getNotifications());
             return response;
         }
 
@@ -295,7 +299,9 @@ public class MessungService {
         if(violation.hasWarnings()) {
             response.setWarnings(violation.getWarnings());
         }
-
+        if (violation.hasNotifications()){
+            response.setNotifications(violation.getNotifications());
+        }
         return authorization.filter(
             request,
             response,
@@ -353,6 +359,7 @@ public class MessungService {
             Response response = new Response(false, 604, messung);
             response.setErrors(violation.getErrors());
             response.setWarnings(violation.getWarnings());
+            response.setNotifications(violation.getNotifications());
             return response;
         }
         Response response = repository.update(messung, Strings.LAND);
@@ -364,6 +371,9 @@ public class MessungService {
             ((Messung)response.getData()).getId(), Strings.LAND);
         if(violation.hasWarnings()) {
             updated.setWarnings(violation.getWarnings());
+        }
+        if (violation.hasNotifications()){
+            updated.setNotifications(violation.getNotifications());
         }
         return authorization.filter(
             request,

@@ -194,9 +194,10 @@ public class ProbeService {
 
         for (Probe probe: probes) {
             Violation violation = validator.validate(probe);
-            if (violation.hasWarnings() || violation.hasErrors()) {
+            if (violation.hasWarnings() || violation.hasErrors() || violation.hasNotifications()) {
                 probe.setWarnings(violation.getWarnings());
                 probe.setErrors(violation.getErrors());
+                probe.setNotifications(violation.getNotifications());
             }
             probe.setReadonly(authorization.isReadOnly(probe.getId()));
         }
@@ -225,6 +226,9 @@ public class ProbeService {
         Violation violation = validator.validate(response.getData());
         if (violation.hasWarnings()) {
             response.setWarnings(violation.getWarnings());
+        }
+        if (violation.hasNotifications()) {
+            response.setNotifications(violation.getNotifications());
         }
         return this.authorization.filter(request, response, Probe.class);
     }
@@ -287,6 +291,7 @@ public class ProbeService {
             Response response = new Response(false, 604, probe);
             response.setErrors(violation.getErrors());
             response.setWarnings(violation.getWarnings());
+            response.setNotifications(violation.getNotifications());
             return response;
         }
         if (probe.getUmwId() == null || probe.getUmwId().equals("")) {
@@ -300,6 +305,10 @@ public class ProbeService {
         if(violation.hasWarnings()) {
             newProbe.setWarnings(violation.getWarnings());
         }
+        if(violation.hasNotifications()) {
+            newProbe.setNotifications(violation.getNotifications());
+        }
+        
         return authorization.filter(
             request,
             newProbe,
@@ -538,6 +547,7 @@ public class ProbeService {
             Response response = new Response(false, 604, null);
             response.setErrors(violation.getErrors());
             response.setWarnings(violation.getWarnings());
+            response.setNotifications(violation.getNotifications());
             return response;
         }
         Response response = repository.update(probe, Strings.LAND);
@@ -549,6 +559,9 @@ public class ProbeService {
             ((Probe)response.getData()).getId(), Strings.LAND);
         if (violation.hasWarnings()) {
             updated.setWarnings(violation.getWarnings());
+        }
+        if (violation.hasNotifications()) {
+           updated.setNotifications(violation.getNotifications());
         }
         return authorization.filter(
             request,

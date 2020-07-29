@@ -176,6 +176,7 @@ public class MesswertService {
                 if (violation.hasErrors() || violation.hasWarnings()) {
                     messwert.setErrors(violation.getErrors());
                     messwert.setWarnings(violation.getWarnings());
+                    messwert.setNotifications(violation.getNotifications());
                 }
             }
             return new Response(true, 200, messwerts);
@@ -220,6 +221,7 @@ public class MesswertService {
         if (violation.hasErrors() || violation.hasWarnings()) {
             response.setErrors(violation.getErrors());
             response.setWarnings(violation.getWarnings());
+            response.setNotifications(violation.getNotifications());
         }
         return authorization.filter(
             request,
@@ -274,6 +276,7 @@ public class MesswertService {
             Response response = new Response(false, 604, messwert);
             response.setErrors(violation.getErrors());
             response.setWarnings(violation.getWarnings());
+            response.setNotifications(violation.getNotifications());
             return response;
         }
 
@@ -281,6 +284,9 @@ public class MesswertService {
         Response response = defaultRepo.create(messwert, Strings.LAND);
         if(violation.hasWarnings()) {
             response.setWarnings(violation.getWarnings());
+        }
+        if(violation.hasNotifications()){
+           response.setNotifications(violation.getNotifications());
         }
         return authorization.filter(
             request,
@@ -339,6 +345,7 @@ public class MesswertService {
             Response response = new Response(false, 604, messwert);
             response.setErrors(violation.getErrors());
             response.setWarnings(violation.getWarnings());
+            response.setNotifications(violation.getNotifications());
             return response;
         }
 
@@ -352,7 +359,9 @@ public class MesswertService {
         if(violation.hasWarnings()) {
             updated.setWarnings(violation.getWarnings());
         }
-
+        if (violation.hasNotifications()){
+           updated.setNotifications(violation.getNotifications());
+        }
         return authorization.filter(
             request,
             updated,
@@ -430,6 +439,7 @@ public class MesswertService {
                 Response response = new Response(false, 604, messwert);
                 response.setErrors(violation.getErrors());
                 response.setWarnings(violation.getWarnings());
+                response.setNotifications(violation.getNotifications());
                 return response;
             }
             Response response = defaultRepo.update(messwert, Strings.LAND);
@@ -441,6 +451,9 @@ public class MesswertService {
                 ((Messwert)response.getData()).getId(), Strings.LAND);
             if(violation.hasWarnings()) {
                 updated.setWarnings(violation.getWarnings());
+            }
+            if (violation.hasNotifications()){
+                updated.setNotifications(violation.getNotifications());
             }
             authorization.filter(
                     request,
