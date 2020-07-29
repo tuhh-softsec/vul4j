@@ -236,48 +236,52 @@ public class LafObjectMapper {
         // Compare the probe with objects in the db
         Probe newProbe = null;
         boolean oldProbeIsReadonly = false;
-        boolean isAuthorizedOld = false;
+	boolean isAuthorizedOld = false;
 
         try {
             Identified i = probeIdentifier.find(probe);
             Probe old = (Probe)probeIdentifier.getExisting();
             // Matching probe was found in the db. Update it!
-            if (i == Identified.UPDATE) {
-                isAuthorizedOld = authorizer.isAuthorized(userInfo, old, Probe.class);
+            if(i == Identified.UPDATE) {
+		isAuthorizedOld = authorizer.isAuthorized(userInfo, old, Probe.class);
                 oldProbeIsReadonly = authorizer.isReadOnly(old.getId());
-                if (isAuthorizedOld){
-                    if (oldProbeIsReadonly) {
-                        newProbe = old;
-                        currentWarnings.add(new ReportItem("probe", old.getExterneProbeId(), 676));
-                    } else {
-                        if (merger.merge(old, probe)) {
-                            newProbe = old;
-                        } else {
-                            ReportItem err = new ReportItem();
-                            err.setCode(605);
-                            err.setKey("Database error");
-                            err.setValue("");
-                            currentErrors.add(err);
-                            if (!currentErrors.isEmpty()) {
-                                errors.put(object.getIdentifier(), new ArrayList<ReportItem>(currentErrors));
-                            }
-                            if (!currentWarnings.isEmpty()) {
-                                warnings.put(object.getIdentifier(), new ArrayList<ReportItem>(currentWarnings));
-                            }
-                            return;
-                        }
-                    }
-                } else {
-                    ReportItem err = new ReportItem();
-                    err.setCode(699);
-                    err.setKey(userInfo.getName());
-                    err.setValue("Messstelle " + old.getMstId());
-                    currentWarnings.clear();
-                    currentErrors.add(err);
-                    errors.put(object.getIdentifier(), new ArrayList<ReportItem>(currentErrors));
-                    return;
-                }
-            }
+		if (isAuthorizedOld){
+                	if(oldProbeIsReadonly) {
+                    		newProbe = old;
+                    		currentWarnings.add(new ReportItem("probe", old.getExterneProbeId(), 676));
+                	} 
+                	else {
+                    		if(merger.merge(old, probe)) {
+                        		newProbe = old;
+                    		} else {
+                        		ReportItem err = new ReportItem();
+                        		err.setCode(605);
+                        		err.setKey("Database error");
+                        		err.setValue("");
+                        		currentErrors.add(err);
+                        		if (!currentErrors.isEmpty() ) {
+                            			errors.put(object.getIdentifier(),
+                                		new ArrayList<ReportItem>(currentErrors));
+                        		}
+                        		if (!currentWarnings.isEmpty()) {
+                            			warnings.put(object.getIdentifier(),
+                                		new ArrayList<ReportItem>(currentWarnings));
+                        		}
+                        	  return;
+                    		}	
+                	}
+            	}else{
+		        ReportItem err = new ReportItem();
+            		err.setCode(699);
+            		err.setKey(userInfo.getName());
+            		err.setValue("Messstelle " + old.getMstId());
+            		currentWarnings.clear();
+            		currentErrors.add(err);
+            		errors.put(object.getIdentifier(), new ArrayList<ReportItem>(currentErrors));
+            		return;
+
+		}
+	    }
             // Probe was found but some data does not match
             else if(i == Identified.REJECT){
                 ReportItem err = new ReportItem();
