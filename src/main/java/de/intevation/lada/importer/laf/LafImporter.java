@@ -36,6 +36,7 @@ public class LafImporter implements Importer{
 
     private Map<String, List<ReportItem>> errors = new HashMap<String, List<ReportItem>>();
     private Map<String, List<ReportItem>> warnings = new HashMap<String, List<ReportItem>>();
+    private Map<String, List<ReportItem>> notifications = new HashMap<String, List<ReportItem>>();
     private List<Integer> importProbeIds;
 
     public void doImport(String lafString, UserInfo userInfo, List<ImporterConfig> config) {
@@ -45,6 +46,8 @@ public class LafImporter implements Importer{
         lafString += "\r\n";
         errors = new HashMap<String, List<ReportItem>>();
         warnings = new HashMap<String, List<ReportItem>>();
+        notifications = new HashMap<String, List<ReportItem>>();
+
         importProbeIds = new ArrayList<Integer>();
 
         InputStream is = new ByteArrayInputStream(lafString.getBytes(StandardCharsets.UTF_8));
@@ -105,6 +108,15 @@ public class LafImporter implements Importer{
                     warnings.put(entry.getKey(), entry.getValue());
                 }
             }
+
+            for (Entry<String, List<ReportItem>> entry : mapper.getNotifications().entrySet()){
+              if (notifications.containsKey(entry.getKey())) {
+                notifications.get(entry.getKey()).addAll(entry.getValue());
+              }
+              else {
+                notifications.put(entry.getKey(), entry.getValue());
+              }
+            }
         } catch (IOException e) {
             logger.debug("Exception while reading LAF input", e);
         }
@@ -123,6 +135,11 @@ public class LafImporter implements Importer{
     @Override
     public Map<String, List<ReportItem>> getWarnings() {
         return this.warnings;
+    }
+
+    @Override
+    public Map<String, List<ReportItem>> getNotifications() {
+        return this.notifications;
     }
 
     public List<Integer> getImportedIds() {

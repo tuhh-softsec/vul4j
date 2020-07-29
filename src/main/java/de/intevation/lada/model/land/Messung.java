@@ -97,6 +97,10 @@ public class Messung implements Serializable {
     private MultivaluedMap<String, Integer> warnings;
 
     @Transient
+    @JsonIgnore
+    private MultivaluedMap<String, Integer> notifications;
+
+    @Transient
     private boolean owner;
 
     @Transient
@@ -287,6 +291,16 @@ public class Messung implements Serializable {
     @JsonIgnore
     public void setWarnings(MultivaluedMap<String, Integer> warnings) {
         this.warnings = warnings;
+    }
+
+    @JsonProperty
+    public MultivaluedMap<String, Integer> getNotifications() {
+      return this.notifications;
+    }
+
+    @JsonIgnore
+    public void setNotifications(MultivaluedMap<String, Integer> notifications) {
+      this.notifications = notifications;
     }
 
     /**

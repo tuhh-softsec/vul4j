@@ -48,6 +48,9 @@ public class MesswertValidator implements Validator {
                 if (result.hasErrors()) {
                     violations.addErrors(result.getErrors());
                 }
+                if (result.hasNotifications()){
+                   violations.addNotifications(result.getNotifications());
+                }
             }
         }
         return violations;

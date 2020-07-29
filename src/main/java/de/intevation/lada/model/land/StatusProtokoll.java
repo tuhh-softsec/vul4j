@@ -69,6 +69,10 @@ public class StatusProtokoll implements Serializable {
     @JsonIgnore
     private MultivaluedMap<String, Integer> warnings;
 
+    @Transient
+    @JsonIgnore
+    private MultivaluedMap<String, Integer> notifications;
+
     public StatusProtokoll() {
     }
 
@@ -217,4 +221,14 @@ public class StatusProtokoll implements Serializable {
     public void setWarnings(MultivaluedMap<String, Integer> warnings) {
         this.warnings = warnings;
     }
+
+   @JsonProperty
+   public MultivaluedMap<String, Integer> getNotifications() {
+     return this.notifications;
+   }
+
+   @JsonIgnore
+   public void setNotifications(MultivaluedMap<String, Integer> notifications) {
+     this.notifications = notifications;
+   }
 }

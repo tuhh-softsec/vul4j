@@ -27,7 +27,7 @@ public class HasNebenprobenNr implements Rule {
         if (messung.getNebenprobenNr() == null ||
             messung.getNebenprobenNr().equals("")) {
             Violation violation = new Violation();
-            violation.addWarning("nebenprobenNr", 631);
+            violation.addNotification("nebenprobenNr", 631);
             return violation;
         }
         return null;

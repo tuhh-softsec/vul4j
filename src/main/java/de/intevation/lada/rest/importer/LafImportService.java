@@ -152,6 +152,9 @@ public class LafImportService {
             if (!importer.getWarnings().isEmpty()) {
                 fileResponseData.put("warnings", importer.getWarnings());
             }
+            if (!importer.getNotifications().isEmpty()) {
+              fileResponseData.put("notifications", importer.getNotifications());
+            }
             fileResponseData.put("success", true);
             fileResponseData.put("probeIds", ((LafImporter) importer).getImportedIds());
             importResponseData.put(fileName, fileResponseData);
@@ -221,7 +224,9 @@ public class LafImportService {
         if (!importer.getWarnings().isEmpty()) {
             respData.put("warnings", importer.getWarnings());
         }
-
+        if (!importer.getNotifications().isEmpty()) {
+          respData.put("notifications", importer.getNotifications());
+        }
         List<Integer> importedProbeids = ((LafImporter) importer).getImportedIds();
         respData.put("probeIds", importedProbeids);
 

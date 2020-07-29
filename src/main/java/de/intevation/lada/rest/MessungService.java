@@ -158,9 +158,10 @@ public class MessungService {
             for (Messung m: messungs) {
                 m.setReadonly(authorization.isMessungReadOnly(m.getId()));
                 Violation violation = validator.validate(m);
-                if (violation.hasErrors() || violation.hasWarnings()) {
+                if (violation.hasErrors() || violation.hasWarnings() || violation.hasNotifications()) {
                     m.setErrors(violation.getErrors());
                     m.setWarnings(violation.getWarnings());
+                    m.setNotifications(violation.getNotifications());
                 }
             }
             return new Response(true, 200, messungs);
@@ -194,9 +195,10 @@ public class MessungService {
                         messung.setReadonly(
                             !authorization.isAuthorized(request, messung, RequestMethod.PUT, Messung.class));
                         Violation violation = validator.validate(messung);
-                        if (violation.hasErrors() || violation.hasWarnings()) {
+                        if (violation.hasErrors() || violation.hasWarnings() || violation.hasNotifications()) {
                             messung.setErrors(violation.getErrors());
                             messung.setWarnings(violation.getWarnings());
+                            messung.setNotifications(violation.getNotifications());
                         }
                     }
                 }
@@ -229,9 +231,10 @@ public class MessungService {
             repository.getById(Messung.class, Integer.valueOf(id), Strings.LAND);
         Messung messung = (Messung)response.getData();
         Violation violation = validator.validate(messung);
-        if (violation.hasErrors() || violation.hasWarnings()) {
+        if (violation.hasErrors() || violation.hasWarnings() || violation.hasNotifications()) {
             response.setErrors(violation.getErrors());
             response.setWarnings(violation.getWarnings());
+            response.setNotifications(violation.getNotifications());
         }
         return authorization.filter(
             request,
@@ -287,6 +290,7 @@ public class MessungService {
             Response response = new Response(false, 604, messung);
             response.setErrors(violation.getErrors());
             response.setWarnings(violation.getWarnings());
+            response.setNotifications(violation.getNotifications());
             return response;
         }
 
@@ -295,7 +299,9 @@ public class MessungService {
         if(violation.hasWarnings()) {
             response.setWarnings(violation.getWarnings());
         }
-
+        if (violation.hasNotifications()){
+            response.setNotifications(violation.getNotifications());
+        }
         return authorization.filter(
             request,
             response,
@@ -353,6 +359,7 @@ public class MessungService {
             Response response = new Response(false, 604, messung);
             response.setErrors(violation.getErrors());
             response.setWarnings(violation.getWarnings());
+            response.setNotifications(violation.getNotifications());
             return response;
         }
         Response response = repository.update(messung, Strings.LAND);
@@ -364,6 +371,9 @@ public class MessungService {
             ((Messung)response.getData()).getId(), Strings.LAND);
         if(violation.hasWarnings()) {
             updated.setWarnings(violation.getWarnings());
+        }
+        if (violation.hasNotifications()){
+            updated.setNotifications(violation.getNotifications());
         }
         return authorization.filter(
             request,
