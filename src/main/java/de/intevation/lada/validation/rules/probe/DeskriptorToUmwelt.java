@@ -84,8 +84,11 @@ public class DeskriptorToUmwelt implements Rule {
             @SuppressWarnings("unchecked")
             List<Deskriptoren> data = (List<Deskriptoren>)response.getData();
             if (data.isEmpty()) {
+                String deskript = "";
+                deskript = "mediaDesk#S"+Integer.toString(i-1);
                 Violation violation = new Violation();
                 violation.addWarning("mediaDesk", 633);
+                violation.addWarning(deskript, 632);
                 return violation;
             }
             hdParent = data.get(0).getId();
