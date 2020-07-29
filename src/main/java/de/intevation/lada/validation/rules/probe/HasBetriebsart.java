@@ -26,7 +26,7 @@ public class HasBetriebsart implements Rule {
         Probe probe = (Probe)object;
         if (probe.getBaId() == null) {
             Violation violation = new Violation();
-            violation.addWarning("betriebsart", 631);
+            violation.addError("betriebsart", 631);
             return violation;
         }
         return null;

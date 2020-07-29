@@ -25,7 +25,7 @@ public class HasTestdatensatz implements Rule {
         Probe probe = (Probe)object;
         if (probe.getTest() == null) {
             Violation violation = new Violation();
-            violation.addWarning("test", 631);
+            violation.addError("test", 631);
             return violation;
         }
         return null;
