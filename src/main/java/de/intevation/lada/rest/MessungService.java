@@ -158,7 +158,7 @@ public class MessungService {
             for (Messung m: messungs) {
                 m.setReadonly(authorization.isMessungReadOnly(m.getId()));
                 Violation violation = validator.validate(m);
-                if (violation.hasErrors() || violation.hasWarnings()) {
+                if (violation.hasErrors() || violation.hasWarnings() || violation.hasNotifications()) {
                     m.setErrors(violation.getErrors());
                     m.setWarnings(violation.getWarnings());
                     m.setNotifications(violation.getNotifications());
@@ -195,7 +195,7 @@ public class MessungService {
                         messung.setReadonly(
                             !authorization.isAuthorized(request, messung, RequestMethod.PUT, Messung.class));
                         Violation violation = validator.validate(messung);
-                        if (violation.hasErrors() || violation.hasWarnings()) {
+                        if (violation.hasErrors() || violation.hasWarnings() || violation.hasNotifications()) {
                             messung.setErrors(violation.getErrors());
                             messung.setWarnings(violation.getWarnings());
                             messung.setNotifications(violation.getNotifications());
@@ -231,7 +231,7 @@ public class MessungService {
             repository.getById(Messung.class, Integer.valueOf(id), Strings.LAND);
         Messung messung = (Messung)response.getData();
         Violation violation = validator.validate(messung);
-        if (violation.hasErrors() || violation.hasWarnings()) {
+        if (violation.hasErrors() || violation.hasWarnings() || violation.hasNotifications()) {
             response.setErrors(violation.getErrors());
             response.setWarnings(violation.getWarnings());
             response.setNotifications(violation.getNotifications());
