@@ -51,7 +51,7 @@ public class OrtszuordnungValidator implements Validator {
                     violations.addErrors(result.getErrors());
                 }
                 if (result.hasNotifications()) {
-                    violations.addNotifications(reuslt.getNotifications());
+                    violations.addNotifications(result.getNotifications());
                 }
             }
         }
