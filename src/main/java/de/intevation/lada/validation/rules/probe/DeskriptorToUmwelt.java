@@ -85,7 +85,7 @@ public class DeskriptorToUmwelt implements Rule {
             List<Deskriptoren> data = (List<Deskriptoren>)response.getData();
             if (data.isEmpty()) {
                 String deskript = "";
-                deskript = "mediaDesk#S"+Integer.toString(i-1);
+                deskript = "s"+Integer.toString(i-1);
                 Violation violation = new Violation();
                 violation.addWarning("mediaDesk", 633);
                 violation.addWarning(deskript, 632);
