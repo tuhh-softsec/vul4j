@@ -355,7 +355,7 @@ public class LafObjectMapper {
             }
             if (!currentNotifications.isEmpty()) {
               notifications.put(object.getIdentifier(),
-              new ArrayList<ReportItem>(currentWarnings));
+              new ArrayList<ReportItem>(currentNotifications));
             }
             return;
         }
@@ -452,7 +452,7 @@ public class LafObjectMapper {
           }
           else {
             notifications.put(object.getIdentifier(),
-            new ArrayList<ReportItem>(currentWarnings));
+            new ArrayList<ReportItem>(currentNotifications));
           }
         }
     }
@@ -1143,6 +1143,7 @@ public class LafObjectMapper {
               }
             } else {
              currentErrors.add(new ReportItem("Statusvergabe", "Status", 631));
+	     return;
             }
         }
     }
@@ -1216,7 +1217,7 @@ public class LafObjectMapper {
             });
         }
 
-        if (status_violation.hasErrors() || status_violation.hasWarnings()) {
+        if (status_violation.hasErrors() || status_violation.hasWarnings() ) {
           return false;
         }
 
