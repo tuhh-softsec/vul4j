@@ -8,6 +8,12 @@
 
 package de.intevation.lada.exporter;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,8 +21,11 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.json.JsonObject;
 
+import com.vividsolutions.jts.io.ByteArrayInStream;
+
 import org.apache.log4j.Logger;
 
+import de.intevation.lada.exporter.ExportJob.JobNotFinishedException;
 import de.intevation.lada.exporter.laf.LafExportJob;
 
 /**
@@ -52,11 +61,12 @@ public class ExportJobManager {
     /**
      * Creates a new export job using the given format and parameters
      * @param format Export format
+     * @param encoding Result encoding
      * @param params Export parameters as JsonObject
      * @return The new ExportJob's id
      * @throws IllegalArgumentException if an invalid export format is specified
      */
-    public String createExportJob(String format, JsonObject params) throws IllegalArgumentException {
+    public String createExportJob(String format, String encoding, JsonObject params) throws IllegalArgumentException {
         String id = getNextIdentifier();
         ExportJob newJob;
 
@@ -73,6 +83,7 @@ public class ExportJobManager {
         if (downloadFileName != null && !downloadFileName.equals("")) {
             newJob.setDownloadFileName(params.getString("filename"));
         }
+        newJob.setEncoding(encoding);
         newJob.setExportParameter(params);
         newJob.run();
         activeJobs.put(id, newJob);
@@ -81,15 +92,48 @@ public class ExportJobManager {
     }
 
     /**
-     * Get the status of a job by identifier
+     * Get Exportjob by id
      * @param identifier Id to look for
-     * @return
+     * @throws JobNotFoundException Thrown if a job with the given can not be found
      */
-    public JobStatus getJobStatus(String identifier) throws JobNotFoundException {
+    private ExportJob getJobById (String identifier) throws JobNotFoundException {
         ExportJob job = activeJobs.get(identifier);
         if (job == null) {
             throw new JobNotFoundException();
         }
+        return job;
+    }
+
+    /**
+     * Get the encoding of an export job by id
+     * @param identifier Id to check
+     * @return Encoding as String
+     * @throws JobNotFoundException Thrown if a job with the given can not be found
+     */
+    public String getJobEncoding(String identifier) throws JobNotFoundException {
+        ExportJob job = getJobById(identifier);
+        return job.getEncoding();
+    }
+
+    /**
+     * Get the filename used for downloading by the given job id
+     * @param identifier Job id
+     * @return Filename as String
+     * @throws JobNotFoundException Thrown if a job with the given can not be found
+     */
+    public String getJobDownloadFilename(String identifier) throws JobNotFoundException {
+        ExportJob job = getJobById(identifier);
+        return job.getDownloadFileName();
+    }
+
+    /**
+     * Get the status of a job by identifier
+     * @param identifier Id to look for
+     * @return Job status
+     * @throws JobNotFoundException Thrown if a job with the given can not be found
+     */
+    public JobStatus getJobStatus(String identifier) throws JobNotFoundException {
+        ExportJob job = getJobById(identifier);
         String jobStatus = job.getStatusName();
         String message = job.getMessage();
         return new JobStatus(jobStatus, message);
@@ -104,6 +148,42 @@ public class ExportJobManager {
     private synchronized String getNextIdentifier() {
         identifier.increase();
         return identifier.toString();
+    }
+
+    /**
+     * Get the result file of the export job with the given id as stream
+     * @param id ExportJob id
+     * @return Result file as stream
+     * @throws JobNotFoundException Thrown if a job with the given can not be found
+     */
+    public ByteArrayInputStream getResultFileAsStream(String id) throws JobNotFoundException {
+        ExportJob job = activeJobs.get(id);
+        if (job == null) {
+            throw new JobNotFoundException();
+        }
+        Path filePath = job.getOutputFilePath();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try {
+            Files.copy(filePath, outputStream);
+            removeExportJob(job);
+            return new ByteArrayInputStream(outputStream.toByteArray());
+        } catch (IOException ioe) {
+            logger.error(String.format("Error on reading result file: %s", ioe.getMessage()));
+            return null;
+        }
+    }
+
+    /**
+     * Remove the given job from the active job list and trigger its cleanup function
+     * @param job Job to remove
+     */
+    private void removeExportJob(ExportJob job) {
+        try {
+            job.cleanup();
+        } catch (JobNotFinishedException jfe) {
+            logger.warn(String.format("Tried to remove unfinished job %s", job.getJobId()));
+        }
+        activeJobs.remove(job.getJobId());
     }
 
     /**

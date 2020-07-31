@@ -7,8 +7,14 @@
  */
 package de.intevation.lada.rest.exporter;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonValue;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -17,8 +23,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 
-import de.intevation.lada.util.rest.Response;
+import org.apache.log4j.Logger;
+
+import de.intevation.lada.exporter.ExportJobManager;
+import de.intevation.lada.exporter.ExportJobManager.JobNotFoundException;
+import de.intevation.lada.exporter.ExportJobManager.JobStatus;
 
 /**
  * REST service to export data into files using a polling mechanism.
@@ -32,6 +44,9 @@ import de.intevation.lada.util.rest.Response;
 @Path("data/asyncexport")
 @RequestScoped
 public class AsyncExportService {
+
+    @Inject
+    Logger logger;
 
     /**
      * Export Probe objects into laf files.
@@ -57,7 +72,7 @@ public class AsyncExportService {
      * }
      * </pre>
      *
-     * @param proben    JSON object with an array of probe ids.
+     * @param objects    JSON object with an array of probe or messung ids.
      * @param request    The HTTP header containing authorization information.
      * @return The job identifier.
      */
@@ -66,7 +81,7 @@ public class AsyncExportService {
     @Consumes("application/json")
     @Produces("application/json")
     public Response createLafExportJob(
-        JsonObject proben,
+        JsonObject objects,
         @Context HttpServletRequest request
     ) {
         return null;
@@ -86,24 +101,54 @@ public class AsyncExportService {
      * </pre>
      *
      * @param id Job id to check
-     * @return Json object containing the status information
+     * @return Json object containing the status information or status 404 if job was not found
      */
     @GET
     @Path("/status/{id}")
     @Produces("application/json")
     public Response getStatus(@PathParam("id") String id) {
-        return null;
+        JobStatus status;
+        try {
+            status = ExportJobManager.instance().getJobStatus(id);
+        } catch (JobNotFoundException jnfe) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        JsonObject responseJson = Json.createObjectBuilder()
+            .add("status", status.getStatus())
+            .add("message", status.getMessage())
+            .build();
+
+        return Response.ok(responseJson.toString()).build();
     }
 
     /**
      * Download a finished export file
      * @param id Job id to download file from
-     * @return Export file
+     * @return Export file or status 404 if file was not found
      */
     @GET
     @Path("download/{id}")
     @Produces("application/octet-stream")
     public Response download(@PathParam("id") String id) {
-        return null;
+        ExportJobManager manager = ExportJobManager.instance();
+        ByteArrayInputStream resultStream;
+        String encoding;
+        String filename;
+        try {
+            resultStream = manager.getResultFileAsStream(id);
+            encoding = manager.getJobEncoding(id);
+            filename = manager.getJobDownloadFilename(id);
+        } catch (JobNotFoundException jfe) {
+            logger.info(String.format("Could not find export file for job %s", id));
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        ResponseBuilder response = Response.ok(resultStream);
+            response.header(
+                "Content-Disposition",
+                "attachment; filename=\"" + filename + "\"");
+            response.encoding(encoding);
+            response.header("Content-Type", "application/octet-stream; charset=" + encoding);
+
+        return response.build();
     }
 }

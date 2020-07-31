@@ -26,6 +26,11 @@ import org.apache.log4j.Logger;
 public abstract class ExportJob extends Thread{
 
     /**
+     * Result encoding
+     */
+    protected String encoding;
+
+    /**
      * Parameters used for the export
      */
     protected JsonObject exportParameters;
@@ -94,6 +99,13 @@ public abstract class ExportJob extends Thread{
         this.message = "";
     }
 
+    public void cleanup() throws JobNotFinishedException {
+        if (currentStatus != status.finished && currentStatus != status.error) {
+            throw new JobNotFinishedException();
+        }
+        removeResultFile();
+    }
+
     /**
      * Set this job to failed state
      * @param message Optional message
@@ -101,6 +113,22 @@ public abstract class ExportJob extends Thread{
     protected void fail(String message) {
         this.currentStatus = status.error;
         this.message = message != null ? message: "";
+    }
+
+    /**
+     * Get the filename used for downloading
+     * @return Filename as String
+     */
+    public String getDownloadFileName() {
+        return downloadFileName;
+    }
+
+    /**
+     * Get the encoding
+     * @return Encoding as String
+     */
+    public String getEncoding() {
+        return this.encoding;
     }
 
     /**
@@ -136,6 +164,14 @@ public abstract class ExportJob extends Thread{
     }
 
     /**
+     * Get the export file's path
+     * @return File path
+     */
+    public Path getOutputFilePath() {
+        return outputFilePath;
+    }
+
+    /**
      * Return the current job status.
      * @return Job status
      */
@@ -167,11 +203,26 @@ public abstract class ExportJob extends Thread{
     }
 
     /**
+     * Set the export encoding
+     * @param encoding Encoding as String
+     */
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
+    }
+
+    /**
      * Set parameters used for the export
      * @param exportParameters Parameters as JsonObject
      */
     public void setExportParameter(JsonObject exportParameters) {
         this.exportParameters = exportParameters;
+    }
+
+    /**
+     * Remove the export's result file if present
+     */
+    protected void removeResultFile() {
+        //TODO: implement
     }
 
     /**
@@ -219,5 +270,12 @@ public abstract class ExportJob extends Thread{
         }
 
         return true;
+    }
+
+    /**
+     * Exception thrown if an unfished ExportJob is about to be removed while still runnning
+     */
+    public static class JobNotFinishedException extends Exception {
+        private static final long serialVersionUID = 1L;
     }
 }
