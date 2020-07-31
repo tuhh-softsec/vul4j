@@ -48,7 +48,7 @@ public class Deskriptor implements Rule {
             violation.addWarning("mediaDesk", 631);
             return violation;
         }
-        if (mediaDesk.length >=1 && probe.getDatenbasisId()!=null && probe.getDatenbasisId()==4  &&mediaDesk[1].equals("00") || mediaDesk[2].equals("00")) {
+        if (mediaDesk.length >=1 && probe.getDatenbasisId()!=null && probe.getDatenbasisId()==4  && (mediaDesk[1].equals("00") || mediaDesk[2].equals("00"))) {
           Violation violation = new Violation();
           violation.addWarning("mediaDesk", 637);
           return violation;
