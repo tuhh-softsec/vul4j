@@ -40,7 +40,7 @@ public class IsReiComplete implements Rule {
         if (probe.getDatenbasisId() != 3 &&
             probe.getDatenbasisId() != 4) {
             if (probe.getReiProgpunktGrpId() != null) {
-                violation.addError("reiProgpunktGruppeId", 632);
+                violation.addError("reiProgpunktGrpId", 632);
             }
             if (probe.getKtaGruppeId() != null) {
                 violation.addError("ktaGruppeId", 632);
@@ -51,7 +51,7 @@ public class IsReiComplete implements Rule {
             return null;
         }
         if (probe.getReiProgpunktGrpId() == null) {
-            violation.addWarning("reiProgpunktGruppeId", 631);
+            violation.addWarning("reiProgpunktGrpId", 631);
         }
         if (probe.getKtaGruppeId() == null) {
             violation.addWarning("ktaGruppeId", 631);

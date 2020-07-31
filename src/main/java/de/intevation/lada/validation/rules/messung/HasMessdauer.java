@@ -21,7 +21,7 @@ import de.intevation.lada.util.annotation.RepositoryConfig;
  * Validation rule for messungen.
  * Validates if the messung has a "nebenprobennummer"
  *
- * @author <a href="mailto:rrenkert@intevation.de">Raimund Renkert</a>
+ * @author <a href="mailto:jbuermeyer@bfs.de">Jonas Buermeyer</a>
  */
 @ValidationRule("Messung")
 public class HasMessdauer implements Rule {
