@@ -11,7 +11,6 @@ package de.intevation.lada.exporter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -21,12 +20,11 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.json.JsonObject;
 
-import com.vividsolutions.jts.io.ByteArrayInStream;
-
 import org.apache.log4j.Logger;
 
 import de.intevation.lada.exporter.ExportJob.JobNotFinishedException;
 import de.intevation.lada.exporter.laf.LafExportJob;
+import de.intevation.lada.util.auth.UserInfo;
 
 /**
  * Singleton class creating and managing ExportJobs
@@ -63,10 +61,11 @@ public class ExportJobManager {
      * @param format Export format
      * @param encoding Result encoding
      * @param params Export parameters as JsonObject
+     * @param userInfo UserInfo
      * @return The new ExportJob's id
      * @throws IllegalArgumentException if an invalid export format is specified
      */
-    public String createExportJob(String format, String encoding, JsonObject params) throws IllegalArgumentException {
+    public String createExportJob(String format, String encoding, JsonObject params, UserInfo userInfo) throws IllegalArgumentException {
         String id = getNextIdentifier();
         ExportJob newJob;
 
@@ -85,6 +84,7 @@ public class ExportJobManager {
         }
         newJob.setEncoding(encoding);
         newJob.setExportParameter(params);
+        newJob.setUserInfo(userInfo);
         newJob.run();
         activeJobs.put(id, newJob);
 

@@ -31,6 +31,10 @@ import org.apache.log4j.Logger;
 import de.intevation.lada.exporter.ExportJobManager;
 import de.intevation.lada.exporter.ExportJobManager.JobNotFoundException;
 import de.intevation.lada.exporter.ExportJobManager.JobStatus;
+import de.intevation.lada.util.annotation.AuthorizationConfig;
+import de.intevation.lada.util.auth.Authorization;
+import de.intevation.lada.util.auth.AuthorizationType;
+import de.intevation.lada.util.auth.UserInfo;
 
 /**
  * REST service to export data into files using a polling mechanism.
@@ -47,6 +51,13 @@ public class AsyncExportService {
 
     @Inject
     Logger logger;
+
+    /**
+     * The authorization module.
+     */
+    @Inject
+    @AuthorizationConfig(type=AuthorizationType.HEADER)
+    private Authorization authorization;
 
     /**
      * Export Probe objects into laf files.
@@ -84,7 +95,24 @@ public class AsyncExportService {
         JsonObject objects,
         @Context HttpServletRequest request
     ) {
-        return null;
+
+        //Check if requests contains either messung or probe ids
+        if (objects.getJsonArray("proben") == null
+            && objects.getJsonArray("messungen") == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        ExportJobManager manager = ExportJobManager.instance();
+        String encoding = request.getHeader("X-FILE-ENCODING");
+        if (encoding == null || encoding.equals("")) {
+            encoding = "iso-8859-15";
+        }
+        UserInfo userInfo = authorization.getInfo(request);
+        String newJobId = manager.createExportJob("laf", encoding, objects, userInfo);
+        JsonObject responseJson = Json.createObjectBuilder()
+            .add("refId", newJobId)
+            .build();
+        return Response.ok(responseJson.toString()).build();
     }
 
     /**

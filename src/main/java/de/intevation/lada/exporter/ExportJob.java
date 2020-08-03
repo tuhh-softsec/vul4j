@@ -11,6 +11,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -19,6 +20,8 @@ import javax.inject.Inject;
 import javax.json.JsonObject;
 
 import org.apache.log4j.Logger;
+
+import de.intevation.lada.util.auth.UserInfo;
 
 /**
  * Abstract class for an export job.
@@ -40,6 +43,9 @@ public abstract class ExportJob extends Thread{
      */
     protected String format;
 
+    /**
+     * Logger instance
+     */
     @Inject
     protected Logger logger;
 
@@ -67,10 +73,16 @@ public abstract class ExportJob extends Thread{
      * Complete path to the output file
      */
     protected Path outputFilePath;
+
     /**
      * Id of this export job
      */
     protected String jobId;
+
+    /**
+     * UserInfo
+     */
+    protected UserInfo userInfo;
 
     /**
      * Possible status values for export jobs
@@ -99,6 +111,12 @@ public abstract class ExportJob extends Thread{
         this.message = "";
     }
 
+    /**
+     * Clean up after the export has finished.
+     * 
+     * Removes the result file
+     * @throws JobNotFinishedException Thrown if job is still running
+     */
     public void cleanup() throws JobNotFinishedException {
         if (currentStatus != status.finished && currentStatus != status.error) {
             throw new JobNotFinishedException();
@@ -219,10 +237,24 @@ public abstract class ExportJob extends Thread{
     }
 
     /**
+     * Set user info
+     * @param userInfo New userInfo
+     */
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
+    }
+
+    /**
      * Remove the export's result file if present
      */
     protected void removeResultFile() {
-        //TODO: implement
+        try {
+            Files.delete(outputFilePath);
+        } catch (NoSuchFileException nsfe) {
+            logger.warn(String.format("Jobid %s: Can not remove result file: File not found", jobId));
+        } catch (IOException ioe) {
+            logger.error(String.format("Jobid %s: Cannot delete result file. IOException: %s", jobId, ioe.getStackTrace()));
+        }
     }
 
     /**
