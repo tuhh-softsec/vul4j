@@ -143,7 +143,8 @@ public class ExportJobManager {
         ExportJob job = getJobById(identifier);
         String jobStatus = job.getStatusName();
         String message = job.getMessage();
-        return new JobStatus(jobStatus, message);
+        boolean done = job.isDone();
+        return new JobStatus(jobStatus, message, done);
     }
 
     /**
@@ -200,10 +201,16 @@ public class ExportJobManager {
     public static class JobStatus {
         private String status;
         private String message;
+        private boolean done;
 
-        public JobStatus(String status, String message) {
+        public JobStatus(String status, String message, boolean done) {
             this.status = status;
             this.message = message;
+            this.done = done;
+        }
+
+        public boolean isDone() {
+            return done;
         }
 
         public String getStatus() {

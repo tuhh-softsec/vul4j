@@ -59,6 +59,10 @@ public class LafExportJob extends ExportJob {
                 }
             }
         }
+        if (probeIds.isEmpty() && messungIds.isEmpty()) {
+            fail("No data to export");
+            return;
+        }
 
         //Get probe and messung records
         List<Integer> pIds = new ArrayList<Integer>();
@@ -106,6 +110,6 @@ public class LafExportJob extends ExportJob {
             return;
         }
         logger.debug(String.format("Finished LAF export"));
-        setCurrentStatus(status.finished);
+        finish();
     }
 }

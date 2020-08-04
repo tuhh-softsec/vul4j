@@ -29,6 +29,10 @@ import de.intevation.lada.util.data.Repository;
 public abstract class ExportJob extends Thread{
 
     /**
+     * True if job has finished and will not change it's status anymore
+     */
+    protected boolean done;
+    /**
      * Result encoding
      */
     protected String encoding;
@@ -108,6 +112,7 @@ public abstract class ExportJob extends Thread{
      * @param jobId Job identifier
      */
     public ExportJob (String jobId) {
+        this.done = false;
         this.jobId = jobId;
         this.currentStatus = status.waiting;
         this.outputFileLocation = "/tmp/lada-server/";
@@ -139,7 +144,16 @@ public abstract class ExportJob extends Thread{
      */
     protected void fail(String message) {
         this.currentStatus = status.error;
+        this.setDone(true);
         this.message = message != null ? message: "";
+    }
+
+    /**
+     * Set this job to finished state
+     */
+    protected void finish() {
+        setCurrentStatus(status.finished);
+        setDone(true);
     }
 
     /**
@@ -214,6 +228,14 @@ public abstract class ExportJob extends Thread{
     }
 
     /**
+     * Check if job is done and will no longer change its status
+     * @return True if done, else false
+     */
+    public boolean isDone() {
+        return done;
+    }
+
+    /**
      * Run the ExportJob.
      * Should be overwritten in child classes.
      */
@@ -227,6 +249,18 @@ public abstract class ExportJob extends Thread{
      */
     protected void setCurrentStatus(status status) {
         this.currentStatus = status;
+    }
+
+    /**
+     * Set the done state
+     * @param done New done status
+     * @throws IllegalArgumentException Thrown if argument is false and job is already done
+     */
+    protected void setDone(boolean done) throws IllegalArgumentException {
+        if (!done && this.done) {
+            throw new IllegalArgumentException("Job is already done, can not reset done to false");
+        }
+        this.done = done;
     }
 
     /**

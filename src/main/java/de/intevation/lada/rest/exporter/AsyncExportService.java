@@ -145,6 +145,7 @@ public class AsyncExportService {
         JsonObject responseJson = Json.createObjectBuilder()
             .add("status", status.getStatus())
             .add("message", status.getMessage())
+            .add("done", status.isDone())
             .build();
 
         return Response.ok(responseJson.toString()).build();
