@@ -165,9 +165,9 @@ public class AsyncExportService {
         String encoding;
         String filename;
         try {
-            resultStream = exportJobManager.getResultFileAsStream(id);
             encoding = exportJobManager.getJobEncoding(id);
             filename = exportJobManager.getJobDownloadFilename(id);
+            resultStream = exportJobManager.getResultFileAsStream(id);
         } catch (JobNotFoundException jfe) {
             logger.info(String.format("Could not find export file for job %s", id));
             return Response.status(Response.Status.NOT_FOUND).build();

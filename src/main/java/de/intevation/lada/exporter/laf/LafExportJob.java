@@ -49,6 +49,7 @@ public class LafExportJob extends ExportJob {
      * Start the export
      */
     public void run() {
+        super.run();
         logger.debug(String.format("Starting LAF export", jobId));
         List<Integer> probeIds = new ArrayList<Integer>();
         List<Integer> messungIds = new ArrayList<Integer>();
@@ -97,14 +98,15 @@ public class LafExportJob extends ExportJob {
             String resultString = new String(buffer, encoding);
             if(!writeResultToFile(resultString)) {
                 fail("Error on writing export result.");
+                return;
             }
 
         } catch (IOException ioe) {
             logger.error(String.format("Error on writing export result. IOException: %s", ioe.getStackTrace().toString()));
             fail("Error on writing export result.");
+            return;
         }
         logger.debug(String.format("Finished LAF export"));
         setCurrentStatus(status.finished);
-        super.run();
     }
 }
