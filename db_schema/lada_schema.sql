@@ -115,23 +115,16 @@ $$;
 CREATE OR REPLACE FUNCTION update_status_messung() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
-    DECLARE
-        status_kombi_record stamm.status_kombi;
-        status_wert INTEGER;
     BEGIN
-        UPDATE land.messung SET status = NEW.id WHERE id = NEW.messungs_id;
-        SELECT * FROM stamm.status_kombi into status_kombi_record WHERE ID = NEW.status_kombi;
-        status_wert := status_kombi_record.wert_id;
-
         CASE
-            WHEN status_wert = 1 OR status_wert = 2 OR status_wert = 3 OR status_wert = 7
+            WHEN new.status_kombi in (2, 3, 4, 5, 6, 7, 8, 10, 11, 12)
             THEN
-                UPDATE land.messung SET fertig = true WHERE id = NEW.messungs_id;
-            WHEN status_wert = 4
+                UPDATE land.messung SET fertig = true, status = NEW.id WHERE id = NEW.messungs_id;
+            WHEN new.status_kombi in (9, 13)
             THEN
-                UPDATE land.messung SET fertig = false WHERE id = NEW.messungs_id;
+                UPDATE land.messung SET fertig = false, status = NEW.id WHERE id = NEW.messungs_id;
             ELSE
-                -- Skip
+                UPDATE land.messung SET status = NEW.id WHERE id = NEW.messungs_id;
         END CASE;
         RETURN NEW;
     END
