@@ -23,6 +23,7 @@ import javax.json.JsonObject;
 import org.apache.log4j.Logger;
 
 import de.intevation.lada.exporter.ExportJob.JobNotFinishedException;
+import de.intevation.lada.exporter.ExportJob.status;
 import de.intevation.lada.exporter.laf.LafExportJob;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.UserInfo;
@@ -135,6 +136,8 @@ public class ExportJobManager {
 
     /**
      * Get the status of a job by identifier
+     *
+     * If the job is done with an error, it will be removed after return the failure status.
      * @param identifier Id to look for
      * @return Job status
      * @throws JobNotFoundException Thrown if a job with the given can not be found
@@ -144,12 +147,16 @@ public class ExportJobManager {
         String jobStatus = job.getStatusName();
         String message = job.getMessage();
         boolean done = job.isDone();
-        return new JobStatus(jobStatus, message, done);
+        JobStatus statusObject = new JobStatus(jobStatus, message, done);
+        if (jobStatus.equals(status.error.name()) && done) {
+            removeExportJob(job);
+        }
+        return statusObject;
     }
 
     /**
      * Calculates and returns the next job identifier.
-     * 
+     *
      * The new identifier will be stored in lastIdentifier.
      * @return New identifier as String
      */

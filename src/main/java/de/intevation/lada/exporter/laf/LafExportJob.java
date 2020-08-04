@@ -43,6 +43,16 @@ public class LafExportJob extends ExportJob {
     public void run() {
         super.run();
         logger.debug(String.format("Starting LAF export", jobId));
+
+        //Check encoding
+        if (!isEncodingValid()) {
+            String error = String.format("Invalid encoding: %s", this.encoding);
+            fail(error);
+            logger.error(error);
+            return;
+        }
+
+        //Load records
         List<Integer> probeIds = new ArrayList<Integer>();
         List<Integer> messungIds = new ArrayList<Integer>();
         if (exportParameters.getJsonArray("proben") != null) {
@@ -61,6 +71,7 @@ public class LafExportJob extends ExportJob {
         }
         if (probeIds.isEmpty() && messungIds.isEmpty()) {
             fail("No data to export");
+            logger.error("No export data set");
             return;
         }
 
@@ -91,6 +102,7 @@ public class LafExportJob extends ExportJob {
 
         //Export and write to file
         InputStream exported = exporter.export(pIds, mIds, encoding, userInfo);
+        logger.debug("Finished export to memory, writing to file.");
         try {
             ByteArrayOutputStream result = new ByteArrayOutputStream();
             byte[] buffer = new byte[1024];

@@ -9,12 +9,14 @@ package de.intevation.lada.exporter;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.List;
 
 import javax.json.JsonObject;
 
@@ -31,7 +33,7 @@ public abstract class ExportJob extends Thread{
     /**
      * True if job has finished and will not change it's status anymore
      */
-    protected boolean done;
+    private boolean done;
     /**
      * Result encoding
      */
@@ -105,7 +107,7 @@ public abstract class ExportJob extends Thread{
     /**
      * The current job status
      */
-    protected status currentStatus;
+    private status currentStatus;
 
     /**
      * Create a new job with the given id
@@ -127,33 +129,64 @@ public abstract class ExportJob extends Thread{
 
     /**
      * Clean up after the export has finished.
-     * 
+     *
      * Removes the result file
      * @throws JobNotFinishedException Thrown if job is still running
      */
     public void cleanup() throws JobNotFinishedException {
-        if (currentStatus != status.finished && currentStatus != status.error) {
+        if (!isDone()) {
             throw new JobNotFinishedException();
         }
         removeResultFile();
     }
+
 
     /**
      * Set this job to failed state
      * @param message Optional message
      */
     protected void fail(String message) {
-        this.currentStatus = status.error;
-        this.setDone(true);
-        this.message = message != null ? message: "";
+        try {
+            this.setCurrentStatus(status.error);
+            this.setDone(true);
+            this.message = message != null ? message: "";
+        } catch (IllegalStatusTransitionException iste) {
+            this.currentStatus = status.error;
+            this.message = "Internal server errror";
+            this.done = true;
+        }
+        finally {
+            logger.error(String.format("Export failed with message: %s", message));
+        }
     }
+
 
     /**
      * Set this job to finished state
      */
     protected void finish() {
-        setCurrentStatus(status.finished);
-        setDone(true);
+        try {
+            this.setCurrentStatus(status.finished);
+            this.setDone(true);
+        } catch (IllegalStatusTransitionException iste) {
+            this.currentStatus = status.error;
+            this.message = "Internal server errror";
+            this.done = true;
+        }
+    }
+
+
+    /**
+     * Set this job to a running state
+     */
+    protected void runnning() {
+        try {
+            this.setCurrentStatus(status.running);
+        } catch (IllegalStatusTransitionException iste) {
+            this.currentStatus = status.error;
+            this.message = "Internal server errror";
+            this.done = true;
+        }
     }
 
     /**
@@ -236,6 +269,17 @@ public abstract class ExportJob extends Thread{
     }
 
     /**
+     * Checks if given charset is valid.
+     *
+     * Note that charset names are not case sensitive.
+     * See https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/nio/charset/Charset.html for further information.
+     * @return True if charset is valid, else false
+     */
+    protected boolean isEncodingValid() {
+        return Charset.isSupported(this.encoding);
+    }
+
+    /**
      * Run the ExportJob.
      * Should be overwritten in child classes.
      */
@@ -245,9 +289,14 @@ public abstract class ExportJob extends Thread{
 
     /**
      * Set the current status
+     *
      * @param status New status
+     * @throws IllegalStatusTransitionException Thrown if job is already done
      */
-    protected void setCurrentStatus(status status) {
+    private void setCurrentStatus(status status) throws IllegalStatusTransitionException {
+        if (isDone()) {
+            throw new IllegalStatusTransitionException("Invalid job status transition: Job is already done");
+        }
         this.currentStatus = status;
     }
 
@@ -318,7 +367,7 @@ public abstract class ExportJob extends Thread{
         try {
             Files.delete(outputFilePath);
         } catch (NoSuchFileException nsfe) {
-            logger.warn("Can not remove result file: File not found");
+            logger.debug("Can not remove result file: File not found");
         } catch (IOException ioe) {
             logger.error(String.format("Cannot delete result file. IOException: %s", ioe.getStackTrace().toString()));
         }
@@ -376,5 +425,12 @@ public abstract class ExportJob extends Thread{
      */
     public static class JobNotFinishedException extends Exception {
         private static final long serialVersionUID = 1L;
+    }
+
+    public static class IllegalStatusTransitionException extends Exception {
+        private static final long serialVersionUID = 2L;
+        public IllegalStatusTransitionException(String msg) {
+            super(msg);
+        }
     }
 }
