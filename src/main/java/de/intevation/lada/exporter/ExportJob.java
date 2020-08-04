@@ -16,12 +16,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
-import javax.inject.Inject;
+import javax.enterprise.context.ApplicationScoped;
 import javax.json.JsonObject;
 
 import org.apache.log4j.Logger;
 
 import de.intevation.lada.util.auth.UserInfo;
+import de.intevation.lada.util.data.Repository;
 
 /**
  * Abstract class for an export job.
@@ -32,6 +33,11 @@ public abstract class ExportJob extends Thread{
      * Result encoding
      */
     protected String encoding;
+
+    /**
+     * Exporter instance
+     */
+    protected Exporter exporter;
 
     /**
      * Parameters used for the export
@@ -46,7 +52,6 @@ public abstract class ExportJob extends Thread{
     /**
      * Logger instance
      */
-    @Inject
     protected Logger logger;
 
     /**
@@ -80,6 +85,11 @@ public abstract class ExportJob extends Thread{
     protected String jobId;
 
     /**
+     * Repository used for loading data
+     */
+    protected Repository repository;
+
+    /**
      * UserInfo
      */
     protected UserInfo userInfo;
@@ -87,7 +97,7 @@ public abstract class ExportJob extends Thread{
     /**
      * Possible status values for export jobs
      */
-    enum status {waiting, running, finished, error}
+    public enum status {waiting, running, finished, error}
 
     /**
      * The current job status
@@ -213,6 +223,14 @@ public abstract class ExportJob extends Thread{
     }
 
     /**
+     * Set the current status
+     * @param status New status
+     */
+    protected void setCurrentStatus(status status) {
+        this.currentStatus = status;
+    }
+
+    /**
      * Set the filename used for downloading the result file
      * @param downloadFileName File name
      */
@@ -229,11 +247,27 @@ public abstract class ExportJob extends Thread{
     }
 
     /**
+     * Set the exporter instance.
+     * @param exporter The exporter instance
+     */
+    public void setExporter(Exporter exporter) {
+        this.exporter = exporter;
+    }
+
+    /**
      * Set parameters used for the export
      * @param exportParameters Parameters as JsonObject
      */
     public void setExportParameter(JsonObject exportParameters) {
         this.exportParameters = exportParameters;
+    }
+
+    /**
+     * Set the repository.
+     * @param repository Repository instance
+     */
+    public void setRepository(Repository repository) {
+        this.repository = repository;
     }
 
     /**
@@ -251,9 +285,9 @@ public abstract class ExportJob extends Thread{
         try {
             Files.delete(outputFilePath);
         } catch (NoSuchFileException nsfe) {
-            logger.warn(String.format("Jobid %s: Can not remove result file: File not found", jobId));
+            logger.warn("Can not remove result file: File not found");
         } catch (IOException ioe) {
-            logger.error(String.format("Jobid %s: Cannot delete result file. IOException: %s", jobId, ioe.getStackTrace()));
+            logger.error(String.format("Cannot delete result file. IOException: %s", ioe.getStackTrace().toString()));
         }
     }
 
@@ -264,17 +298,17 @@ public abstract class ExportJob extends Thread{
      */
     protected boolean writeResultToFile(String result) {
         Path tmpPath = Paths.get(outputFileLocation);
-        logger.debug(String.format("Jobid %s: Writing result to file %s", jobId, outputFilePath));
+        logger.debug(String.format("Writing result to file %s", outputFilePath));
 
         //Create dir
         if (!Files.exists(tmpPath)) {
             try {
                 Files.createDirectories(tmpPath);
             } catch (IOException ioe) {
-                logger.error(String.format("Jobid %s: Cannot create export folder. IOException: %s", jobId, ioe.getStackTrace()));
+                logger.error(String.format("JCannot create export folder. IOException: %s", ioe.getStackTrace().toString()));
                 return false;
             } catch (SecurityException se) {
-                logger.error(String.format("Jobid %s: Security Exception during directory creation %s", jobId, se.getStackTrace()));
+                logger.error(String.format("Security Exception during directory creation %s", se.getStackTrace().toString()));
                 return false;
             }
         }
@@ -283,13 +317,13 @@ public abstract class ExportJob extends Thread{
         try {
             Files.createFile(outputFilePath);
         } catch (FileAlreadyExistsException faee) {
-            logger.error(String.format("Jobid %s: Cannot create export file. File already exists", jobId));
+            logger.error("Cannot create export file. File already exists");
             return false;
         } catch (IOException ioe) {
-            logger.error(String.format("Jobid %s: Cannot create export file. IOException: %s", jobId, ioe.getStackTrace()));
+            logger.error(String.format("Cannot create export file. IOException: %s", ioe.getStackTrace().toString()));
             return false;
         } catch (SecurityException se) {
-            logger.error(String.format("Jobid %s: Security Exception during file creation %s", jobId, se.getStackTrace()));
+            logger.error(String.format("Security Exception during file creation %s", se.getStackTrace().toString()));
             return false;
         }
 
@@ -297,7 +331,7 @@ public abstract class ExportJob extends Thread{
         try (BufferedWriter writer = Files.newBufferedWriter(outputFilePath, StandardOpenOption.WRITE)) {
             writer.write(result);
         } catch (IOException ioe) {
-            logger.error(String.format("Jobid %s: Cannot write to export file. IOException: %s", jobId, ioe.getStackTrace()));
+            logger.error(String.format("Cannot write to export file. IOException: %s", ioe.getStackTrace().toString()));
             return false;
         }
 

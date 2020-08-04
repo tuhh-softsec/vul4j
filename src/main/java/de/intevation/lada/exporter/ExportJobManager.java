@@ -24,37 +24,42 @@ import org.apache.log4j.Logger;
 
 import de.intevation.lada.exporter.ExportJob.JobNotFinishedException;
 import de.intevation.lada.exporter.laf.LafExportJob;
+import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.UserInfo;
+import de.intevation.lada.util.data.Repository;
+import de.intevation.lada.util.data.RepositoryType;
 
 /**
- * Singleton class creating and managing ExportJobs
+ * Class creating and managing ExportJobs
  * @author <a href="mailto:awoestmann@intevation.de">Alexander Woestmann</a>
  */
 @ApplicationScoped
 public class ExportJobManager {
 
-    private static ExportJobManager instance;
-
     private static JobIdentifier identifier = new ExportJobManager.JobIdentifier();
 
-    @Inject private Logger logger;
+    private Logger logger;
 
     private Map<String, ExportJob> activeJobs = new HashMap<String, ExportJob>();
 
-    private ExportJobManager() {
-        logger.debug("Creating ExportJobManager");
-    };
+    /**
+     * The laf exporter.
+     */
+    @Inject
+    @ExportConfig(format=ExportFormat.LAF)
+    private Exporter lafExporter;
 
     /**
-     * Get the singleton instance
-     * @return The ExportManager instance
+     * The data repository granting read-only access.
      */
-    public static ExportJobManager instance() {
-        if (instance == null) {
-            instance = new ExportJobManager();
-        }
-        return instance;
-    }
+    @Inject
+    @RepositoryConfig(type=RepositoryType.RO)
+    private Repository repository;
+
+    public ExportJobManager() {
+        logger = Logger.getLogger("ExportJobManager");
+        logger.debug("Creating ExportJobManager");
+    };
 
     /**
      * Creates a new export job using the given format and parameters
@@ -68,20 +73,22 @@ public class ExportJobManager {
     public String createExportJob(String format, String encoding, JsonObject params, UserInfo userInfo) throws IllegalArgumentException {
         String id = getNextIdentifier();
         ExportJob newJob;
+        logger.debug(String.format("Creating new job: %s", id));
 
         switch (format) {
             case "laf":
                 newJob = new LafExportJob(id);
+                newJob.setExporter(lafExporter);
+                newJob.setRepository(repository);
                 break;
             default:
                 logger.error(String.format("Unkown export format: %s", format));
                 throw new IllegalArgumentException(String.format("%s is not a valid export format", format));
         }
 
-        String downloadFileName = params.getString("Filename");
-        if (downloadFileName != null && !downloadFileName.equals("")) {
-            newJob.setDownloadFileName(params.getString("filename"));
-        }
+        String downloadFileName = params.containsKey("filename")? params.getString("filename"): String.format("export.%s", format);
+
+        newJob.setDownloadFileName(downloadFileName);
         newJob.setEncoding(encoding);
         newJob.setExportParameter(params);
         newJob.setUserInfo(userInfo);
@@ -220,7 +227,7 @@ public class ExportJobManager {
         /**
          * Initial value
          */
-        private static final long INITIAL_VALUE = 1l;
+        private static final long INITIAL_VALUE = 0l;
 
         /**
          * Format string for the hexadecimal representation

@@ -50,7 +50,10 @@ import de.intevation.lada.util.auth.UserInfo;
 public class AsyncExportService {
 
     @Inject
-    Logger logger;
+    private Logger logger;
+
+    @Inject
+    private ExportJobManager exportJobManager;
 
     /**
      * The authorization module.
@@ -65,11 +68,12 @@ public class AsyncExportService {
      * The service takes JSON formatted  POST data containing probe ids and
      * creates a asynchronous export job for the Probe objects filtered by these ids.
      * <p>
-     * To request the export post a JSON formatted string with an array of probe ids.
+     * To request the export post a JSON formatted string with an array of probe ids and an optional filename
      * <pre>
      * <code>
      * {
      *  "proben": [[number], [number], ...]
+     *  "filename": [string]
      * }
      * </code>
      * </pre>
@@ -102,13 +106,12 @@ public class AsyncExportService {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        ExportJobManager manager = ExportJobManager.instance();
         String encoding = request.getHeader("X-FILE-ENCODING");
         if (encoding == null || encoding.equals("")) {
             encoding = "iso-8859-15";
         }
         UserInfo userInfo = authorization.getInfo(request);
-        String newJobId = manager.createExportJob("laf", encoding, objects, userInfo);
+        String newJobId = exportJobManager.createExportJob("laf", encoding, objects, userInfo);
         JsonObject responseJson = Json.createObjectBuilder()
             .add("refId", newJobId)
             .build();
@@ -137,7 +140,7 @@ public class AsyncExportService {
     public Response getStatus(@PathParam("id") String id) {
         JobStatus status;
         try {
-            status = ExportJobManager.instance().getJobStatus(id);
+            status = exportJobManager.getJobStatus(id);
         } catch (JobNotFoundException jnfe) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -158,14 +161,13 @@ public class AsyncExportService {
     @Path("download/{id}")
     @Produces("application/octet-stream")
     public Response download(@PathParam("id") String id) {
-        ExportJobManager manager = ExportJobManager.instance();
         ByteArrayInputStream resultStream;
         String encoding;
         String filename;
         try {
-            resultStream = manager.getResultFileAsStream(id);
-            encoding = manager.getJobEncoding(id);
-            filename = manager.getJobDownloadFilename(id);
+            resultStream = exportJobManager.getResultFileAsStream(id);
+            encoding = exportJobManager.getJobEncoding(id);
+            filename = exportJobManager.getJobDownloadFilename(id);
         } catch (JobNotFoundException jfe) {
             logger.info(String.format("Could not find export file for job %s", id));
             return Response.status(Response.Status.NOT_FOUND).build();
