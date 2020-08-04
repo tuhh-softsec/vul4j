@@ -8,29 +8,21 @@
 
 package de.intevation.lada.exporter.laf;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.json.JsonNumber;
 import javax.json.JsonValue;
 
 import org.apache.log4j.Logger;
 
-import de.intevation.lada.exporter.ExportConfig;
-import de.intevation.lada.exporter.ExportFormat;
 import de.intevation.lada.exporter.ExportJob;
-import de.intevation.lada.exporter.Exporter;
-import de.intevation.lada.exporter.ExportJob.status;
 import de.intevation.lada.model.land.Messung;
 import de.intevation.lada.model.land.Probe;
-import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.data.QueryBuilder;
-import de.intevation.lada.util.data.Repository;
-import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.data.Strings;
 
 /**
@@ -68,6 +60,7 @@ public class LafExportJob extends ExportJob {
             }
         }
 
+        //Get probe and messung records
         List<Integer> pIds = new ArrayList<Integer>();
         if (!probeIds.isEmpty()) {
             QueryBuilder<Probe> pBuilder = new QueryBuilder<Probe>(
@@ -92,10 +85,16 @@ public class LafExportJob extends ExportJob {
             }
         }
 
+        //Export and write to file
         InputStream exported = exporter.export(pIds, mIds, encoding, userInfo);
         try {
-            byte[] buffer = new byte[exported.available()];
-            String resultString = new String(buffer, encoding);
+            ByteArrayOutputStream result = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = exported.read(buffer)) != -1) {
+                result.write(buffer, 0, length);
+            }
+            String resultString = result.toString(encoding);
             if(!writeResultToFile(resultString)) {
                 fail("Error on writing export result.");
                 return;

@@ -16,7 +16,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.json.JsonObject;
 
 import org.apache.log4j.Logger;
