@@ -359,23 +359,13 @@ public class StatusService {
                 return response;
             }
         }
-        if (newKombi.getStatusWert().getId() == 1 ||
-            newKombi.getStatusWert().getId() == 2 ||
-            newKombi.getStatusWert().getId() == 3 ||
-            newKombi.getStatusWert().getId() == 7) {
-            messung.setFertig(true);
-        }
-        else if (newKombi.getStatusWert().getId() == 4) {
-            messung.setFertig(false);
-        }
         //Set datum to null to use database timestamp
         status.setDatum(null);
         Response response = defaultRepo.create(status, Strings.LAND);
         StatusProtokoll created = (StatusProtokoll)response.getData();
-        messung.setStatus(created.getId());
-        defaultRepo.update(messung, Strings.LAND);
+        //NOTE: The referenced messung status field is updated by a DB trigger
         if (violation_collection != null) {
-	    response.setNotifications(violation_collection.getNotifications());
+            response.setNotifications(violation_collection.getNotifications());
         }
         return authorization.filter(
             request,
@@ -490,8 +480,6 @@ public class StatusService {
             nV.setStatusKombi(1);
             nV.setText("");
             retValue = defaultRepo.create(nV, Strings.LAND);
-            messung.setStatus(((StatusProtokoll)retValue.getData()).getId());
-            messung.setFertig(false);
         }
         else {
             QueryBuilder<StatusProtokoll> lastFilter =
@@ -524,9 +512,7 @@ public class StatusService {
             copy.setText("");
             retValue = defaultRepo.create(copy, Strings.LAND);
             StatusProtokoll createdCopy = (StatusProtokoll)retValue.getData();
-            messung.setStatus(createdCopy.getId());
         }
-        defaultRepo.update(messung, Strings.LAND);
         return retValue;
     }
 }

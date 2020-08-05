@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION land.update_status_messung() RETURNS trigger
             WHEN new.status_kombi in (2, 3, 4, 5, 6, 7, 8, 10, 11, 12)
             THEN
                 UPDATE land.messung SET fertig = true, status = NEW.id WHERE id = NEW.messungs_id;
-            WHEN new.status_kombi in (9, 13)
+            WHEN new.status_kombi in (1, 9, 13)
             THEN
                 UPDATE land.messung SET fertig = false, status = NEW.id WHERE id = NEW.messungs_id;
             ELSE
