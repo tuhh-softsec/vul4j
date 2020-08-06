@@ -260,6 +260,10 @@ public abstract class ExportJob extends Thread{
         return currentStatus.name();
     }
 
+    public UserInfo getUserInfo() {
+        return userInfo;
+    }
+
     /**
      * Check if job is done and will no longer change its status
      * @return True if done, else false

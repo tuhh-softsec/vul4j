@@ -130,16 +130,31 @@ public class AsyncExportService {
      * </pre>
      *
      * @param id Job id to check
-     * @return Json object containing the status information or status 404 if job was not found
+     * @return Json object containing the status information, status 403 if the requesting user has not created the request
+     *         or status 404 if job was not found
      */
     @GET
     @Path("/status/{id}")
     @Produces("application/json")
-    public Response getStatus(@PathParam("id") String id) {
+    public Response getStatus(
+        @PathParam("id") String id,
+        @Context HttpServletRequest request) {
+
         JobStatus status;
+        UserInfo originalCreator;
+        UserInfo requestingUser = authorization.getInfo(request);
+
         try {
+            originalCreator = exportJobManager.getJobUserInfo(id);
+            if (!originalCreator.getUserId().equals(requestingUser.getUserId())) {
+                logger.warn(String.format("Rejected status request by user #%s for job %s created by user #%s",
+                    requestingUser.getUserId(), id, originalCreator.getUserId()));
+                return Response.status(Response.Status.FORBIDDEN).build();
+            }
+
             status = exportJobManager.getJobStatus(id);
         } catch (JobNotFoundException jnfe) {
+            logger.info(String.format("Could not find status for job %s", id));
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         JsonObject responseJson = Json.createObjectBuilder()
@@ -154,16 +169,30 @@ public class AsyncExportService {
     /**
      * Download a finished export file
      * @param id Job id to download file from
-     * @return Export file or status 404 if file was not found
+     * @return Export file, status 403 if the requesting user has not created the request
+     *         or status 404 if job was not found
      */
     @GET
     @Path("download/{id}")
     @Produces("application/octet-stream")
-    public Response download(@PathParam("id") String id) {
+    public Response download(
+        @PathParam("id") String id,
+        @Context HttpServletRequest request) {
+
         ByteArrayInputStream resultStream;
         String encoding;
         String filename;
+        UserInfo originalCreator;
+        UserInfo requestingUser = authorization.getInfo(request);
+
         try {
+            originalCreator = exportJobManager.getJobUserInfo(id);
+            if (!originalCreator.getUserId().equals(requestingUser.getUserId())) {
+                logger.warn(String.format("Rejected download request by user %s for job %s created by user %s",
+                    requestingUser.getUserId(), id, originalCreator.getUserId()));
+                return Response.status(Response.Status.FORBIDDEN).build();
+            }
+
             encoding = exportJobManager.getJobEncoding(id);
             filename = exportJobManager.getJobDownloadFilename(id);
             resultStream = exportJobManager.getResultFileAsStream(id);
@@ -171,6 +200,7 @@ public class AsyncExportService {
             logger.info(String.format("Could not find export file for job %s", id));
             return Response.status(Response.Status.NOT_FOUND).build();
         }
+        
         ResponseBuilder response = Response.ok(resultStream);
             response.header(
                 "Content-Disposition",

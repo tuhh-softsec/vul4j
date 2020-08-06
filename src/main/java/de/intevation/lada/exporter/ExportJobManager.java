@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -93,7 +94,7 @@ public class ExportJobManager {
         newJob.setEncoding(encoding);
         newJob.setExportParameter(params);
         newJob.setUserInfo(userInfo);
-        newJob.run();
+        newJob.start();
         activeJobs.put(id, newJob);
 
         return id;
@@ -154,6 +155,11 @@ public class ExportJobManager {
         return statusObject;
     }
 
+    public UserInfo getJobUserInfo(String identifier) throws JobNotFoundException {
+        ExportJob job = getJobById(identifier);
+        return job.getUserInfo();
+    }
+
     /**
      * Calculates and returns the next job identifier.
      *
@@ -161,7 +167,7 @@ public class ExportJobManager {
      * @return New identifier as String
      */
     private synchronized String getNextIdentifier() {
-        identifier.increase();
+        identifier.next();
         return identifier.toString();
     }
 
@@ -180,6 +186,7 @@ public class ExportJobManager {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
             Files.copy(filePath, outputStream);
+            logger.debug(String.format("Returning result file for job %s", id));
             removeExportJob(job);
             return new ByteArrayInputStream(outputStream.toByteArray());
         } catch (IOException ioe) {
@@ -194,6 +201,7 @@ public class ExportJobManager {
      */
     private void removeExportJob(ExportJob job) {
         try {
+            logger.debug(String.format("Removing job %s", job.getJobId()));
             job.cleanup();
         } catch (JobNotFinishedException jfe) {
             logger.warn(String.format("Tried to remove unfinished job %s", job.getJobId()));
@@ -234,56 +242,71 @@ public class ExportJobManager {
     }
 
     /**
-     * Utility class that stores a long value and returns it as a hexadecimal String.
+     * Utility class providing unique identifier values for export jobs.
+     *
+     * The identifier can be set to the next value by using the next() method
+     * and obtained as hex String by using the toString() method.
+     *
+     * Identifier format:
+     * [timestamp]-[sequenceNumber]-[randomPart]
+     * timestamp: Timestamp in seconds the identifier was set to the next value (64 bits)
+     * sequenceNumber: Sequence number, will be reset for each timestamp (16 bits)
+     * randomPart: Random number (32 bits)
+     * 
+     * The hexadecimal representation will contain leading zeroes.
      */
     private static class JobIdentifier {
-
-        /**
-         * Initial value
-         */
-        private static final long INITIAL_VALUE = 0l;
 
         /**
          * Format string for the hexadecimal representation
          */
         private final String HEX_FORMAT;
 
-        /**
-         * Current value
-         */
-        private long value;
+        private static final short INITIAL_SEQ_NO = 1;
 
-        /**
-         * Create an identifier
-         */
-        public JobIdentifier () {
-            this(INITIAL_VALUE);
-        }
+        private short seqNo;
+
+        private long timestamp;
+
+        private int randomPart;
 
         /**
          * Create the identifier with an initial value
-         * @param initValue
          */
-        public JobIdentifier (long initValue) {
-            value = initValue;
-            String maxValueHex = Long.toHexString(Long.MAX_VALUE);
-            int hexWidth = maxValueHex.length();
-            StringBuilder formatBuilder = new StringBuilder("%1$0");
-            formatBuilder.append(hexWidth);
-            formatBuilder.append("x");
+        public JobIdentifier () {
+            seqNo = INITIAL_SEQ_NO;
+            timestamp = System.currentTimeMillis();
+            randomPart = 0;
+            String longMaxValueHex = Long.toHexString(Long.MAX_VALUE);
+            String intMaxValueHex = Integer.toHexString(Integer.MAX_VALUE);
+            String shortMaxValueHex = "7fff";
+            int longHexWidth = longMaxValueHex.length();
+            int intHexWidth = intMaxValueHex.length();
+            int shortHexWidth = shortMaxValueHex.length();
+            StringBuilder formatBuilder = new StringBuilder("%1$0")
+                .append(longHexWidth)
+                .append("x-")
+                .append("%2$0")
+                .append(shortHexWidth)
+                .append("x-")
+                .append("%3$0")
+                .append(intHexWidth)
+                .append("x");
             HEX_FORMAT = formatBuilder.toString();
         }
 
         /**
-         * Increase this identifier by one.
-         * If the long overflows, it is set to 1
+         * Set the identifier to the next value
          */
-        public void increase() {
-            if (value == Long.MAX_VALUE) {
-                value = 1l;
+        public void next() {
+            long currentTime = System.currentTimeMillis();
+            if (currentTime == timestamp) {
+                seqNo++;
             } else {
-                value++;
+                timestamp = currentTime;
+                seqNo = INITIAL_SEQ_NO;
             }
+            randomPart = ThreadLocalRandom.current().nextInt();
         }
 
         /**
@@ -291,7 +314,7 @@ public class ExportJobManager {
          * The string will include padding zeroes.
          */
         public String toString() {
-            return String.format(HEX_FORMAT, value);
+            return String.format(HEX_FORMAT, timestamp, seqNo, randomPart);
         }
     }
 }
