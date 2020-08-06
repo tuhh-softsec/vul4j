@@ -10,6 +10,7 @@ package de.intevation.lada.exporter;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -176,8 +177,9 @@ public class ExportJobManager {
      * @param id ExportJob id
      * @return Result file as stream
      * @throws JobNotFoundException Thrown if a job with the given can not be found
+     * @throws FileNotFoundException Thrown if the job exists but the result was deleted or can not be read
      */
-    public ByteArrayInputStream getResultFileAsStream(String id) throws JobNotFoundException {
+    public ByteArrayInputStream getResultFileAsStream(String id) throws JobNotFoundException, FileNotFoundException {
         ExportJob job = activeJobs.get(id);
         if (job == null) {
             throw new JobNotFoundException();
@@ -191,7 +193,7 @@ public class ExportJobManager {
             return new ByteArrayInputStream(outputStream.toByteArray());
         } catch (IOException ioe) {
             logger.error(String.format("Error on reading result file: %s", ioe.getMessage()));
-            return null;
+            throw new FileNotFoundException();
         }
     }
 

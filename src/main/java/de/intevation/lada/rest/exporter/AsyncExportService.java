@@ -8,6 +8,7 @@
 package de.intevation.lada.rest.exporter;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -196,9 +197,13 @@ public class AsyncExportService {
             encoding = exportJobManager.getJobEncoding(id);
             filename = exportJobManager.getJobDownloadFilename(id);
             resultStream = exportJobManager.getResultFileAsStream(id);
+
         } catch (JobNotFoundException jfe) {
             logger.info(String.format("Could not find export file for job %s", id));
             return Response.status(Response.Status.NOT_FOUND).build();
+        } catch (FileNotFoundException fnfe) {
+            logger.error(String.format("Error on reading result file for job %s", id));
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
         
         ResponseBuilder response = Response.ok(resultStream);
