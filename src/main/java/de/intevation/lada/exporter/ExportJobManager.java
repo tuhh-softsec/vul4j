@@ -26,6 +26,8 @@ import org.apache.log4j.Logger;
 
 import de.intevation.lada.exporter.ExportJob.JobNotFinishedException;
 import de.intevation.lada.exporter.ExportJob.status;
+import de.intevation.lada.exporter.csv.CsvExportJob;
+import de.intevation.lada.exporter.json.JsonExportJob;
 import de.intevation.lada.exporter.laf.LafExportJob;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.UserInfo;
@@ -79,10 +81,16 @@ public class ExportJobManager {
         logger.debug(String.format("Creating new job: %s", id));
 
         switch (format) {
+            case "csv":
+                newJob = new CsvExportJob(id);
+                break;
             case "laf":
                 newJob = new LafExportJob(id);
                 newJob.setExporter(lafExporter);
                 newJob.setRepository(repository);
+                break;
+            case "json":
+                newJob = new JsonExportJob(id);
                 break;
             default:
                 logger.error(String.format("Unkown export format: %s", format));
@@ -193,6 +201,7 @@ public class ExportJobManager {
             return new ByteArrayInputStream(outputStream.toByteArray());
         } catch (IOException ioe) {
             logger.error(String.format("Error on reading result file: %s", ioe.getMessage()));
+            removeExportJob(job);
             throw new FileNotFoundException();
         }
     }

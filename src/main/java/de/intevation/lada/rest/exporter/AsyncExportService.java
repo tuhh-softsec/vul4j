@@ -62,6 +62,76 @@ public class AsyncExportService {
     private Authorization authorization;
 
     /**
+     * Export data into a csv file.
+     * 
+     * This service takes json formatted POST data containing:
+     * - Query parameters used for obtaining the data to. The "export" set whether the field should be export or not.
+     *   Note: The column list must contain the record's id column even if it will not be exported.
+     * - A boolean that sets if related subdata should be exported too
+     * - An optional list of subdata column names. May only be set if "subData" is true
+     * - The gridColumnId that contains the record id
+     * - An optional id filter to limit the export data. If not set, the complete query result will be exported
+     * - CSV specific options
+     * - An optional filename used for download
+     * <p>
+     * Input format:
+     * <p>
+     * <
+     * {
+     *   "columns": [{
+     *     "gridColumnId": [number],
+     *     "sort": [string],
+     *     "sortIndex": [number],
+     *     "filterValue": [string],
+     *     "filterActive": [boolean],
+     *     "export": [boolean]
+     *   }],
+     *   "exportSubData": [boolean],
+     *   "subDataColumns": [ [string] ]
+     *   "idField": [number]
+     *   idFilter: [ [number] ],
+     *   csvOptions: {
+     *     decimalSeparator: "comma" | "period",
+     *     fieldSeparator: "comma" | "semicolon" | "period" | "space",
+     *     rowDelimiter: "windows" | "linux",
+     *     quoteType: "singlequote" | "doublequote"
+     *   },
+     *   filename: [string]
+     * }
+     * <p>
+     * Return format:
+     * <p>
+     * <pre>
+     * {
+     *   "refId": [String]
+     * }
+     * </pre>
+     * @param objects JSON Object containing the export parameters
+     * @param request Request object
+     * @return Response containing the new export ref id
+     */
+    @POST
+    @Path("/csv")
+    @Consumes("application/json")
+    @Produces("application/json")
+    public Response createCsvExportJob(
+        JsonObject objects,
+        @Context HttpServletRequest request
+    ) {
+
+        String encoding = request.getHeader("X-FILE-ENCODING");
+        if (encoding == null || encoding.equals("")) {
+            encoding = "iso-8859-15";
+        }
+        UserInfo userInfo = authorization.getInfo(request);
+        String newJobId = exportJobManager.createExportJob("csv", encoding, objects, userInfo);
+        JsonObject responseJson = Json.createObjectBuilder()
+            .add("refId", newJobId)
+            .build();
+        return Response.ok(responseJson.toString()).build();
+    }
+
+    /**
      * Export Probe objects into laf files.
      *
      * The service takes JSON formatted  POST data containing probe ids and
@@ -116,6 +186,68 @@ public class AsyncExportService {
             .build();
         return Response.ok(responseJson.toString()).build();
     }
+    /**
+     * Export data into a json file.
+     * 
+     * This service takes json formatted POST data containing:
+     * - Query parameters used for obtaining the data to. The "export" set whether the field should be export or not.
+     *   Note: The column list must contain the record's id column even if it will not be exported.
+     * - A boolean that sets if related subdata should be exported too
+     * - An optional list of subdata column names. May only be set if "subData" is true
+     * - The gridColumnId that contains the record id
+     * - An optional id filter to limit the export data. If not set, the complete query result will be exported
+     * - An optional filename used for download
+     * <p>
+     * Input format:
+     * <p>
+     * <
+     * {
+     *   "columns": [{
+     *     "gridColumnId": [number],
+     *     "sort": [string],
+     *     "sortIndex": [number],
+     *     "filterValue": [string],
+     *     "filterActive": [boolean],
+     *     "export": [boolean]
+     *   }],
+     *   "exportSubData": [boolean],
+     *   "subDataColumns": [ [string] ]
+     *   "idField": [number]
+     *   idFilter: [ [number] ],
+     *   filename: [string]
+     * }
+     * <p>
+     * Return format:
+     * <p>
+     * <pre>
+     * {
+     *   "refId": [String]
+     * }
+     * </pre>
+     * @param objects JSON Object containing the export parameters
+     * @param request Request object
+     * @return Response containing the new export ref id
+     */
+    @POST
+    @Path("/json")
+    @Consumes("application/json")
+    @Produces("application/json")
+    public Response createJsonExportJob(
+        JsonObject objects,
+        @Context HttpServletRequest request
+    ) {
+
+        String encoding = request.getHeader("X-FILE-ENCODING");
+        if (encoding == null || encoding.equals("")) {
+            encoding = "iso-8859-15";
+        }
+        UserInfo userInfo = authorization.getInfo(request);
+        String newJobId = exportJobManager.createExportJob("json", encoding, objects, userInfo);
+        JsonObject responseJson = Json.createObjectBuilder()
+            .add("refId", newJobId)
+            .build();
+        return Response.ok(responseJson.toString()).build();
+    }
 
     /**
      * Get the status of an export job.
@@ -126,7 +258,7 @@ public class AsyncExportService {
      * {
      *    done: boolean
      *    status: 'waiting' | 'running' | 'finished' | 'error'
-     *    error: string (optional)
+     *    message: string (optional)
      *  }
      * </pre>
      *
@@ -199,7 +331,7 @@ public class AsyncExportService {
             resultStream = exportJobManager.getResultFileAsStream(id);
 
         } catch (JobNotFoundException jfe) {
-            logger.info(String.format("Could not find export file for job %s", id));
+            logger.info(String.format("Returning 404 for download: Could not find job %s", id));
             return Response.status(Response.Status.NOT_FOUND).build();
         } catch (FileNotFoundException fnfe) {
             logger.error(String.format("Error on reading result file for job %s", id));
