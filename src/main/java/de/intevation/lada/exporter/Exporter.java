@@ -9,6 +9,9 @@ package de.intevation.lada.exporter;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
+
+import javax.json.JsonObject;
 
 import de.intevation.lada.util.auth.UserInfo;
 
@@ -19,9 +22,35 @@ import de.intevation.lada.util.auth.UserInfo;
  */
 public interface Exporter
 {
-    public InputStream export(
+    /**
+     * Export proben and referenced messung records.
+     *
+     * Note: This method may not be implemented by the implementing class. The default implementation returns null.
+     * @param proben Proben to export
+     * @param messungen Messungen to export
+     * @param encoding Encoding to use
+     * @param userInfo Requesting user info
+     * @return Exported data as InputStream or null if not implemented
+     */
+    default public InputStream exportProben(
         List<Integer> proben,
         List<Integer> messungen,
         String encoding,
-        UserInfo userInfo);
+        UserInfo userInfo) {
+            return null;
+    }
+
+    /**
+     * Export a query result.
+     *
+     * Note: This method may not be implemented by the implementing class. The default implementation returns null.
+     * @param result Result to export as list of maps. Every list item represents a row,
+     *               while every map key represents a column
+     * @param encoding Encoding to use
+     * @param options Optional export options
+     * @return Export result as input stream or null if not implemented
+     */
+    default public InputStream export(List<Map<String, Object>> result, String encoding, JsonObject options) {
+        return null;
+    }
 }

@@ -101,7 +101,7 @@ public class LafExportJob extends ExportJob {
         }
 
         //Export and write to file
-        InputStream exported = exporter.export(pIds, mIds, encoding, userInfo);
+        InputStream exported = exporter.exportProben(pIds, mIds, encoding, userInfo);
         logger.debug("Finished export to memory, writing to file.");
         try {
             ByteArrayOutputStream result = new ByteArrayOutputStream();
