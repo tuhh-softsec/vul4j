@@ -10,9 +10,14 @@ package de.intevation.lada.exporter.json;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -63,6 +68,48 @@ public class JsonExporter implements Exporter {
     @Inject
     @RepositoryConfig(type=RepositoryType.RO)
     private Repository repository;
+
+    /**
+     * Export a query result.
+     * @param queryResult Result to export as list of maps. Every list item represents a row,
+     *               while every map key represents a column
+     * @param encoding Encoding to use
+     * @param options Export options as JSON Object. Options are: <p>
+     *                <ul>
+     *                  <li> id: Name of the id column, mandatory </li>
+     *                </ul>
+     * 
+     * @param columnsToInclude List of column names to include in the export. If not set, all columns will be exported
+     * @return Export result as input stream or null if the export failed
+     */
+    @Override
+    public InputStream export(List<Map<String, Object>> queryResult, String encoding, JsonObject options, List<String> columnsToInclude) {
+        if (!options.containsKey("id")) {
+            logger.error("No id column given");
+            return null;
+        }
+
+        final JsonObjectBuilder builder = Json.createObjectBuilder();
+        String idColumn = options.getString("id");
+
+        //For each result
+        queryResult.forEach(item -> {
+            JsonObjectBuilder rowBuilder = Json.createObjectBuilder();
+            //Add value for each column
+            item.forEach((key, value) -> {
+                if (value  instanceof Integer) {
+                    rowBuilder.add(key, (Integer) value);
+                } else if (value instanceof Double) {
+                    rowBuilder.add(key, (Double) value);
+                } else {
+                    rowBuilder.add(key, value.toString());
+                }
+            });
+            //Append id
+            builder.add(item.get(idColumn).toString(), rowBuilder);
+        });
+        return new ByteArrayInputStream(builder.build().toString().toString().getBytes(StandardCharsets.UTF_8));
+    }
 
     @Override
     public InputStream exportProben(

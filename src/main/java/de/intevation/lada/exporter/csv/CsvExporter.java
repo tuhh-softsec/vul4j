@@ -29,6 +29,11 @@ import de.intevation.lada.exporter.ExportConfig;
 import de.intevation.lada.exporter.ExportFormat;
 import de.intevation.lada.exporter.Exporter;
 
+/**
+ * Exporter class for writing query results to CSV.
+ *
+ * @author <a href="mailto:awoestmann@intevation.de">Alexander Woestmann</a>
+ */
 @ExportConfig(format=ExportFormat.CSV)
 public class CsvExporter implements Exporter{
 
@@ -62,33 +67,49 @@ public class CsvExporter implements Exporter{
      * @param queryResult Result to export as list of maps. Every list item represents a row,
      *               while every map key represents a column
      * @param encoding Encoding to use
-     * @param options Optional export options as JSON.
-     *                Valid options are:
-     *                  - decimalSeparator: "comma" | "period",
-     *                  - fieldSeparator: "comma" | "semicolon" | "period" | "space",
-     *                  - rowDelimiter: "windows" | "linux",
-     *                  - quoteType: "singlequote" | "doublequote"
+     * @param options Optional export options as JSON Object.
+     *                Valid options are: <p>
+     *                <ul>
+     *                  <li> decimalSeparator: "comma" | "period", defaults to "period" </li>
+     *                  <li> fieldSeparator: "comma" | "semicolon" | "period" | "space", defaults to "comma" </li>
+     *                  <li> rowDelimiter: "windows" | "linux", defaults to "windows" </li>
+     *                  <li> quoteType: "singlequote" | "doublequote", defaults to "doublequote" </li>
+     *                </ul>
+     *                Invalid options will cause the export to fail.
+     * 
+     * @param columnsToInclude List of column names to include in the export. If not set, all columns will be exported
      * @return Export result as input stream or null if the export failed
      */
-    public InputStream export(List<Map<String, Object>> queryResult, String encoding, JsonObject options) {
+    public InputStream export(List<Map<String, Object>> queryResult, String encoding, JsonObject options, List<String> columnsToInclude) {
         if (queryResult == null || queryResult.size() == 0) {
             return null;
         }
 
+        char decimalSeparator = CsvOptions.valueOf("period").getChar();
+        char fieldSeparator = CsvOptions.valueOf("comma").getChar();
+        String rowDelimiter = CsvOptions.valueOf("windows").getValue();
+        char quoteType = CsvOptions.valueOf("doublequote").getChar();
         //Parse options
-        char decimalSeparator = CsvOptions.valueOf(
-            options.containsKey("decimalSeparator")?
-            options.getString("decimalSeparator"): "period").getChar();
-        char fieldSeparator = CsvOptions.valueOf(
-            options.containsKey("fieldSeparator")?
-            options.getString("fieldSeparator"): "comma").getChar();
-        String rowDelimiter = CsvOptions.valueOf(
-            options.containsKey("rowDelimiter")?
-            options.getString("rowDelimiter"): "windows").getValue();
-        char quoteType = CsvOptions.valueOf(
-            options.containsKey("quoteType")?
-            options.getString("quoteType"): "doublequote").getChar();
-
+        if (options != null) {
+            try {
+                decimalSeparator = CsvOptions.valueOf(
+                    options.containsKey("decimalSeparator")?
+                    options.getString("decimalSeparator"): "period").getChar();
+                fieldSeparator = CsvOptions.valueOf(
+                    options.containsKey("fieldSeparator")?
+                    options.getString("fieldSeparator"): "comma").getChar();
+                rowDelimiter = CsvOptions.valueOf(
+                    options.containsKey("rowDelimiter")?
+                    options.getString("rowDelimiter"): "windows").getValue();
+                quoteType = CsvOptions.valueOf(
+                    options.containsKey("quoteType")?
+                    options.getString("quoteType"): "doublequote").getChar();
+            } catch (IllegalArgumentException iae) {
+                logger.error(String.format("Invalid CSV options: %s", options.toString()));
+                return null;
+            }
+        }
+        
         DecimalFormat decimalFormat = new DecimalFormat();
         DecimalFormatSymbols symbols = decimalFormat.getDecimalFormatSymbols();
         symbols.setDecimalSeparator(decimalSeparator);

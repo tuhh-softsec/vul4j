@@ -47,10 +47,11 @@ public interface Exporter
      * @param result Result to export as list of maps. Every list item represents a row,
      *               while every map key represents a column
      * @param encoding Encoding to use
-     * @param options Optional export options
+     * @param options Export options. Depend on the actual output format
+     * @param columnsToInclude List of column names to include in the export. If not set, all columns will be exported
      * @return Export result as input stream or null if not implemented
      */
-    default public InputStream export(List<Map<String, Object>> result, String encoding, JsonObject options) {
+    default public InputStream export(List<Map<String, Object>> result, String encoding, JsonObject options, List<String> columnsToInclude) {
         return null;
     }
 }

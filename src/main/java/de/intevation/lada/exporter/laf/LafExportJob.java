@@ -27,6 +27,8 @@ import de.intevation.lada.util.data.Strings;
 
 /**
  * Job class for exporting records to a laf file
+ *
+ * @author <a href="mailto:awoestmann@intevation.de">Alexander Woestmann</a>
  */
 public class LafExportJob extends ExportJob {
 
@@ -40,6 +42,7 @@ public class LafExportJob extends ExportJob {
     /**
      * Start the export
      */
+    @Override
     public void run() {
         super.run();
         logger.debug(String.format("Starting LAF export", jobId));

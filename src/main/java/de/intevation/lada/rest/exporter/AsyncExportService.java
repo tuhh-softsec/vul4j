@@ -41,6 +41,8 @@ import de.intevation.lada.util.auth.UserInfo;
  * Available actions are
  *
  * - Export probe objects with their child objects into .laf files.
+ * - Export a query result into csv files
+ * - Export a query result into json files
  *
  * @author <a href="mailto:awoestmann@intevation.de">Alexander Woestmann</a>
  */

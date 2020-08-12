@@ -29,6 +29,7 @@ import de.intevation.lada.exporter.ExportJob.status;
 import de.intevation.lada.exporter.csv.CsvExportJob;
 import de.intevation.lada.exporter.json.JsonExportJob;
 import de.intevation.lada.exporter.laf.LafExportJob;
+import de.intevation.lada.query.QueryTools;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.UserInfo;
 import de.intevation.lada.util.data.Repository;
@@ -48,6 +49,13 @@ public class ExportJobManager {
     private Map<String, ExportJob> activeJobs = new HashMap<String, ExportJob>();
 
     /**
+     * The csv exporter
+     */
+    @Inject
+    @ExportConfig(format=ExportFormat.CSV)
+    private Exporter csvExporter;
+
+    /**
      * The laf exporter.
      */
     @Inject
@@ -55,11 +63,21 @@ public class ExportJobManager {
     private Exporter lafExporter;
 
     /**
+     * The Json exporter
+     */
+    @Inject
+    @ExportConfig(format=ExportFormat.JSON)
+    private Exporter jsonExporter;
+
+    /**
      * The data repository granting read-only access.
      */
     @Inject
     @RepositoryConfig(type=RepositoryType.RO)
     private Repository repository;
+
+    @Inject
+    private QueryTools queryTools;
 
     public ExportJobManager() {
         logger = Logger.getLogger("ExportJobManager");
@@ -82,7 +100,9 @@ public class ExportJobManager {
 
         switch (format) {
             case "csv":
-                newJob = new CsvExportJob(id);
+                newJob = new CsvExportJob(id, queryTools);
+                newJob.setExporter(csvExporter);
+                newJob.setRepository(repository);
                 break;
             case "laf":
                 newJob = new LafExportJob(id);
@@ -90,7 +110,8 @@ public class ExportJobManager {
                 newJob.setRepository(repository);
                 break;
             case "json":
-                newJob = new JsonExportJob(id);
+                newJob = new JsonExportJob(id, queryTools);
+                newJob.setExporter(jsonExporter);
                 break;
             default:
                 logger.error(String.format("Unkown export format: %s", format));
