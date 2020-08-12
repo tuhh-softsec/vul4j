@@ -25,7 +25,6 @@ import de.intevation.lada.model.stammdaten.Filter;
 import de.intevation.lada.model.stammdaten.FilterType;
 import de.intevation.lada.model.stammdaten.GridColumn;
 import de.intevation.lada.model.stammdaten.GridColumnValue;
-import de.intevation.lada.model.stammdaten.ResultType;
 import de.intevation.lada.model.stammdaten.StatusKombi;
 import de.intevation.lada.model.stammdaten.StatusStufe;
 import de.intevation.lada.model.stammdaten.StatusWert;
@@ -127,6 +126,7 @@ public abstract class QueryExportJob extends ExportJob {
         filter.setFilterType(filterType);
         filter.setParameter(parameter);
         filter.setSql(String.format("%s in ( :%s )", dataIndex, parameter));
+        logger.debug(String.format("Filtersql: %s", filter.getSql()));
         return filter;
     }
 
@@ -165,8 +165,9 @@ public abstract class QueryExportJob extends ExportJob {
         try {
             List<Map<String, Object>> result = queryTools.getResultForQuery(columns, qId);
             logger.debug(String.format("Fetched %d primary records", result.size()));
+            return result;
         } catch (Exception e) {
-            logger.error(String.format("Failed loading query result: %s", e.getStackTrace().toString()));
+            logger.error("Failed loading query result");
             e.printStackTrace();
             throw new QueryExportException("Failed loading query result");
         }
@@ -320,7 +321,7 @@ public abstract class QueryExportJob extends ExportJob {
                 //Get the column type
                 idType = gridColumn.getDataType().getName();
                 if (idsToExport != null && idsToExport.length > 0) {
-                    Filter filter = createIdListFilter(idType);
+                    Filter filter = createIdListFilter(idColumn);
                     gridColumn.setFilter(filter);
                     columnValue.setFilterActive(true);
                     StringBuilder filterValue = new StringBuilder();
@@ -330,7 +331,11 @@ public abstract class QueryExportJob extends ExportJob {
                             filterValue.append(",");
                         }
                     }
+                    logger.debug(String.format("Filter %s for ids %s", idColumn, filterValue.toString()));
                     columnValue.setFilterValue(filterValue.toString());
+                    columnValue.setFilterIsNull(false);
+                    columnValue.setFilterNegate(false);
+                    columnValue.setFilterRegex(false);
                 }
 
             }

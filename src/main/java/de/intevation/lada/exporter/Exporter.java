@@ -8,6 +8,7 @@
 package de.intevation.lada.exporter;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -51,7 +52,7 @@ public interface Exporter
      * @param columnsToInclude List of column names to include in the export. If not set, all columns will be exported
      * @return Export result as input stream or null if not implemented
      */
-    default public InputStream export(List<Map<String, Object>> result, String encoding, JsonObject options, List<String> columnsToInclude) {
+    default public InputStream export(List<Map<String, Object>> result, String encoding, JsonObject options, ArrayList<String> columnsToInclude) {
         return null;
     }
 }

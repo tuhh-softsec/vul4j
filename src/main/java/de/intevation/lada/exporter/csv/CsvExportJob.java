@@ -181,7 +181,7 @@ public class CsvExportJob extends QueryExportJob{
             return;
         }
         List<Map<String, Object>> exportData = primaryData;
-        List<String> exportColumns = new ArrayList<String>();
+        ArrayList<String> exportColumns = new ArrayList<String>();
         exportColumns.addAll(this.columnsToExport);
         if (exportSubdata) {
             try {

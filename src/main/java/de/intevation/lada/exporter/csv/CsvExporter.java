@@ -81,7 +81,7 @@ public class CsvExporter implements Exporter{
      * @param columnsToInclude List of column names to include in the export. If not set, all columns will be exported
      * @return Export result as input stream or null if the export failed
      */
-    public InputStream export(List<Map<String, Object>> queryResult, String encoding, JsonObject options, List<String> columnsToInclude) {
+    public InputStream export(List<Map<String, Object>> queryResult, String encoding, JsonObject options, ArrayList<String> columnsToInclude) {
         if (queryResult == null || queryResult.size() == 0) {
             return null;
         }
@@ -118,9 +118,16 @@ public class CsvExporter implements Exporter{
         decimalFormat.setGroupingUsed(false);
 
         //Get header fields
-        Set<String> keySet = queryResult.get(0).keySet();
-        String[] keys = new String[keySet.size()];
-        keySet.toArray(keys);
+        String[] keys;
+        if (columnsToInclude == null) {
+            Set<String> keySet = queryResult.get(0).keySet();
+            keys = new String[keySet.size()];
+            keySet.toArray(keys);
+        } else {
+            keys = new String[columnsToInclude.size()];
+            columnsToInclude.toArray(keys);
+        }
+
 
         //Create CSV format
         CSVFormat format = CSVFormat.DEFAULT

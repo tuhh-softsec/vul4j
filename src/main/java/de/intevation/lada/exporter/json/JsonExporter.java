@@ -11,6 +11,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -83,7 +84,7 @@ public class JsonExporter implements Exporter {
      * @return Export result as input stream or null if the export failed
      */
     @Override
-    public InputStream export(List<Map<String, Object>> queryResult, String encoding, JsonObject options, List<String> columnsToInclude) {
+    public InputStream export(List<Map<String, Object>> queryResult, String encoding, JsonObject options, ArrayList<String> columnsToInclude) {
         if (!options.containsKey("id")) {
             logger.error("No id column given");
             return null;
