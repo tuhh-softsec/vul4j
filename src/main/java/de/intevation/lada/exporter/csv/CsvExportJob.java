@@ -131,6 +131,14 @@ public class CsvExportJob extends QueryExportJob{
     public void run() {
         super.run();
         try {
+            parseExportParameters();
+        } catch (Exception e) {
+            logger.error(String.format("Error parsing export parameters"));
+            e.printStackTrace();
+            fail("Error parsing export parameters");
+            return;
+        }
+        try {
             primaryData = getQueryResult();
         } catch (QueryExportException qee) {
             fail("Fetching primary data failed");
@@ -149,8 +157,15 @@ public class CsvExportJob extends QueryExportJob{
             }
         }
         JsonObject exportOptions = exportParameters.getJsonObject("csvOtions");
-
-        InputStream exported = exporter.export(exportData, encoding, exportOptions, exportColumns);
+        InputStream exported;
+        try {
+            exported = exporter.export(exportData, encoding, exportOptions, exportColumns);
+        } catch (Exception e) {
+            logger.error("Error writing csv");
+            e.printStackTrace();
+            fail("Error creating csv");
+            return;
+        }
         try {
             ByteArrayOutputStream result = new ByteArrayOutputStream();
             byte[] buffer = new byte[1024];

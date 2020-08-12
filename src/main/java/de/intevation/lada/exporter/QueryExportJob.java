@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.json.JsonObject;
+import javax.json.JsonValue.ValueType;
 
 import de.intevation.lada.model.land.Messung;
 import de.intevation.lada.model.land.Messwert;
@@ -92,6 +93,7 @@ public abstract class QueryExportJob extends ExportJob {
      */
     public QueryExportJob (String jobId, QueryTools queryTools) {
         super(jobId);
+        this.queryTools = queryTools;
         columns = new ArrayList <GridColumnValue>();
         columnsToExport = new ArrayList<String>();
 
@@ -131,6 +133,7 @@ public abstract class QueryExportJob extends ExportJob {
             return queryTools.getResultForQuery(columns, qId);
         } catch (Exception e) {
             logger.error(String.format("Failed loading query result: %s", e.getStackTrace().toString()));
+            e.printStackTrace();
             throw new QueryExportException("Failed loading query result");
         }
     }
@@ -201,28 +204,56 @@ public abstract class QueryExportJob extends ExportJob {
     /**
      * Parse export parameters
      */
-    protected void parseExportParameters() {
+    protected void parseExportParameters(){
         if (exportParameters == null) {
             return;
         }
+        //Check if subdata shall be exported
         exportSubdata = exportParameters.getBoolean("exportSubData");
+        //Get identifier type
         idType = exportParameters.getString("idField");
-        subDataColumns = Arrays.asList((String[]) exportParameters.getJsonArray("subDataColumns").toArray());
-        idsToExport = (Integer[]) exportParameters.getJsonArray("idFilter").toArray();
+
+        //Check if sub data columns are present if subdata is exported
+        if (exportSubdata
+            && !exportParameters.containsKey("subDataColumns")
+            && exportParameters.get("subDataColumns") != null) {
+            throw new IllegalArgumentException("Subdata is export but not subdata columns are present");
+        }
+
+        //Get sub data columns
+        if (exportSubdata && exportParameters.containsKey("subDataColumns")) {
+            subDataColumns = new ArrayList<String>();
+            exportParameters.getJsonArray("subDataColumns").forEach(item -> {
+                subDataColumns.add(item.toString());
+            });
+        }
+        ArrayList<Integer> idFilterList = new ArrayList<Integer>();
+        exportParameters.getJsonArray("idFilter").forEach(item -> {
+            idFilterList.add(Integer.parseInt(item.toString()));
+        });
+
+        idsToExport = new Integer[idFilterList.size()];
+        idFilterList.toArray(idsToExport);
 
         exportParameters.getJsonArray("columns").forEach(jsonValue -> {
             JsonObject columnObj = (JsonObject) jsonValue;
             GridColumnValue columnValue = new GridColumnValue();
             GridColumn gridColumn;
             columnValue.setgridColumnId(columnObj.getInt("gridColumnId"));
-            columnValue.setSort(columnObj.getString("sort"));
-            columnValue.setSortIndex(columnObj.getInt("sortIndex"));
+            String sort = columnObj.get("sort").getValueType() == ValueType.STRING ?
+                columnObj.getString("sort"): null;
+            columnValue.setSort(sort);
+            Integer sortIndex = columnObj.get("sortIndex").getValueType() == ValueType.NUMBER ?
+                columnObj.getInt("sortIndex"): null;
+            columnValue.setSortIndex(sortIndex);
             columnValue.setFilterValue(columnObj.getString("filterValue"));
             columnValue.setFilterActive(columnObj.getBoolean("filterActive"));
             gridColumn = repository.getByIdPlain(
                 GridColumn.class,
                 columnValue.getGridColumnId(),
                 Strings.STAMM);
+
+            columnValue.setGridColumn(gridColumn);
             //Check if the column contains the id
             if (columnValue.getGridColumn().getDataIndex().equals(idType)) {
                 idColumn = columnValue;
@@ -241,8 +272,6 @@ public abstract class QueryExportJob extends ExportJob {
                 }
 
             }
-
-            columnValue.setGridColumn(gridColumn);
             columns.add(columnValue);
             if (columnObj.getBoolean("export")) {
                 columnsToExport.add(columnValue.getGridColumn().getDataIndex());
@@ -264,7 +293,6 @@ public abstract class QueryExportJob extends ExportJob {
     @Override
     public void run() {
         super.run();
-        parseExportParameters();
     }
 
     public static class QueryExportException extends Exception {

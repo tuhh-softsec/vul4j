@@ -17,6 +17,7 @@ import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.json.JsonObject;
@@ -117,7 +118,9 @@ public class CsvExporter implements Exporter{
         decimalFormat.setGroupingUsed(false);
 
         //Get header fields
-        String[] keys = (String[]) queryResult.get(0).keySet().toArray();
+        Set<String> keySet = queryResult.get(0).keySet();
+        String[] keys = new String[keySet.size()];
+        keySet.toArray(keys);
 
         //Create CSV format
         CSVFormat format = CSVFormat.DEFAULT
@@ -140,7 +143,7 @@ public class CsvExporter implements Exporter{
                     if (value instanceof Double) {
                         rowItems.add(decimalFormat.format((Double) value));
                     } else {
-                        rowItems.add(value.toString());
+                        rowItems.add(value != null? value.toString(): "null");
                     }
                 }
                 try {
