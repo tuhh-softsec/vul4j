@@ -163,7 +163,8 @@ public abstract class QueryExportJob extends ExportJob {
      */
     protected List<Map<String, Object>> getQueryResult() throws QueryExportException{
         try {
-            return queryTools.getResultForQuery(columns, qId);
+            List<Map<String, Object>> result = queryTools.getResultForQuery(columns, qId);
+            logger.debug(String.format("Fetched %d primary records", result.size()));
         } catch (Exception e) {
             logger.error(String.format("Failed loading query result: %s", e.getStackTrace().toString()));
             e.printStackTrace();
@@ -298,10 +299,12 @@ public abstract class QueryExportJob extends ExportJob {
             GridColumnValue columnValue = new GridColumnValue();
             GridColumn gridColumn;
             columnValue.setgridColumnId(columnObj.getInt("gridColumnId"));
-            String sort = columnObj.get("sort").getValueType() == ValueType.STRING ?
+            String sort = columnObj.get("sort") != null 
+                && columnObj.get("sort").getValueType() == ValueType.STRING ?
                 columnObj.getString("sort"): null;
             columnValue.setSort(sort);
-            Integer sortIndex = columnObj.get("sortIndex").getValueType() == ValueType.NUMBER ?
+            Integer sortIndex = columnObj.get("sortIndex") != null 
+                && columnObj.get("sortIndex").getValueType() == ValueType.NUMBER ?
                 columnObj.getInt("sortIndex"): null;
             columnValue.setSortIndex(sortIndex);
             columnValue.setFilterValue(columnObj.getString("filterValue"));

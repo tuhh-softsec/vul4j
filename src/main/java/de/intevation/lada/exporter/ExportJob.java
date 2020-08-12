@@ -33,6 +33,7 @@ public abstract class ExportJob extends Thread{
      * True if job has finished and will not change it's status anymore
      */
     private boolean done;
+
     /**
      * Result encoding
      */

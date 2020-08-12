@@ -102,12 +102,10 @@ public class ExportJobManager {
             case "csv":
                 newJob = new CsvExportJob(id, queryTools);
                 newJob.setExporter(csvExporter);
-                newJob.setRepository(repository);
                 break;
             case "laf":
                 newJob = new LafExportJob(id);
                 newJob.setExporter(lafExporter);
-                newJob.setRepository(repository);
                 break;
             case "json":
                 newJob = new JsonExportJob(id, queryTools);
@@ -120,6 +118,7 @@ public class ExportJobManager {
 
         String downloadFileName = params.containsKey("filename")? params.getString("filename"): String.format("export.%s", format);
 
+        newJob.setRepository(repository);
         newJob.setDownloadFileName(downloadFileName);
         newJob.setEncoding(encoding);
         newJob.setExportParameter(params);

@@ -23,7 +23,6 @@ import javax.json.JsonObject;
 import org.apache.log4j.Logger;
 
 import de.intevation.lada.exporter.QueryExportJob;
-import de.intevation.lada.exporter.QueryExportJob.QueryExportException;
 import de.intevation.lada.model.land.Messung;
 import de.intevation.lada.model.land.Messwert;
 import de.intevation.lada.query.QueryTools;
@@ -228,7 +227,8 @@ public class CsvExportJob extends QueryExportJob{
             }
 
         } catch (IOException ioe) {
-            logger.error(String.format("Error on writing export result. IOException: %s", ioe.getStackTrace().toString()));
+            logger.error("Error on writing export result. IOException");
+            ioe.printStackTrace();
             fail("Error on writing export result.");
             return;
         }
