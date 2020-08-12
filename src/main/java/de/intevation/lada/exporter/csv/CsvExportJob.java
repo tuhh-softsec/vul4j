@@ -25,6 +25,7 @@ import org.apache.log4j.Logger;
 import de.intevation.lada.exporter.QueryExportJob;
 import de.intevation.lada.exporter.QueryExportJob.QueryExportException;
 import de.intevation.lada.model.land.Messung;
+import de.intevation.lada.model.land.Messwert;
 import de.intevation.lada.query.QueryTools;
 
 /**
@@ -48,6 +49,8 @@ public class CsvExportJob extends QueryExportJob{
             case "messung":
                 mergedData = mergeMessungData((List<Messung>) subData);
                 break;
+            case "messwert":
+                mergedData = mergeMesswertData((List<Messwert>) subData);
             default: return null;
         }
         if (mergedData == null) {
@@ -72,16 +75,24 @@ public class CsvExportJob extends QueryExportJob{
         messungData.forEach(messung -> {
             Integer primaryId = (Integer) getFieldByName(idType, messung);
             if (primaryId == null) {
+                logger.error("No primary id set");
                 success.set(false);
                 return;
             }
             Map<String, Object> mergedRow = new HashMap<String, Object>();
             //Add sub data
             subDataColumns.forEach(subDataColumn -> {
-                Object fieldValue = getFieldByName(subDataColumn, messung);
-                if (fieldValue == null) {
-                    success.set(false);
-                    return;
+                Object fieldValue = null;
+                //Check if column needs seperate handling or is a valid messung field
+                switch (subDataColumn) {
+                    case "statusKombi":
+                        fieldValue = getStatusString(messung);
+                        break;
+                    case "messwerteCount":
+                        fieldValue = getMesswertCount(messung);
+                        break;
+                    default: 
+                        fieldValue = getFieldByName(subDataColumn, messung);
                 }
                 mergedRow.put(subDataColumn, fieldValue);
             });
@@ -95,33 +106,48 @@ public class CsvExportJob extends QueryExportJob{
         if (!success.get()) {
             return null;
         }
-        return null;
+        return merged;
     }
 
     /**
-     * Get the value of an object's field by calling its getter.
-     * @param fieldName field name
-     * @param object object
-     * @return Field value
+     * Merge primary result and messung data
+     * @param messwertData Data to merge
+     * @return Merged data as list
      */
-    private Object getFieldByName(String fieldName, Object object) {
+    private List<Map<String, Object>> mergeMesswertData(List<Messwert> messwertData) {
+        //Create a map of id->record
+        Map<Integer, Map<String, Object>> idMap = new HashMap<Integer, Map<String, Object>> ();
+        primaryData.forEach(record -> {
+            idMap.put((Integer) record.get(idType), record);
+        });
+        AtomicBoolean success = new AtomicBoolean(true);
+        List<Map<String, Object>> merged = new ArrayList<Map<String, Object>>();
+        messwertData.forEach(messwert -> {
+            Integer primaryId = (Integer) getFieldByName(idType, messwert);
+            if (primaryId == null) {
+                logger.error("No primary id set");
+                success.set(false);
+                return;
+            }
+            Map<String, Object> mergedRow = new HashMap<String, Object>();
+            //Add sub data
+            subDataColumns.forEach(subDataColumn -> {
+                Object fieldValue = null;
+                fieldValue = getFieldByName(subDataColumn, messwert);
 
-        String capitalizedName;
-        String methodName = "";
-        Method method;
-        try {
-            capitalizedName = fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
-            methodName = "get" + capitalizedName;
-            method = object.getClass().getMethod(methodName);
-            return method.invoke(object);
-        } catch (NoSuchMethodException nsme) {
-            logger.error(String.format("Can not get field %s(%s) for class %s", fieldName, methodName, object.getClass().toString()));
+                mergedRow.put(subDataColumn, fieldValue);
+            });
+            //Add primary record
+            Map<String, Object> primaryRecord = idMap.get(primaryId);
+            primaryRecord.forEach((key, value) -> {
+                mergedRow.put(key, value);
+            });
+            merged.add(mergedRow);
+        });
+        if (!success.get()) {
             return null;
         }
-        catch (IllegalAccessException | InvocationTargetException exc) {
-            logger.error(String.format("Can not call %s for class %s", methodName, object.getClass().toString()));
-            return null;
-        }
+        return merged;
     }
 
     /**
@@ -152,11 +178,12 @@ public class CsvExportJob extends QueryExportJob{
                 exportData = mergeSubData(getSubData());
                 exportColumns.addAll(subDataColumns);
             } catch (QueryExportException ee) {
-                fail("Fetching export data failed");
+                logger.error(ee.getMessage());
+                fail("Fetching export sub data failed");
                 return;
             }
         }
-        JsonObject exportOptions = exportParameters.getJsonObject("csvOtions");
+        JsonObject exportOptions = exportParameters.getJsonObject("csvOptions");
         InputStream exported;
         try {
             exported = exporter.export(exportData, encoding, exportOptions, exportColumns);

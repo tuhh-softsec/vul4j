@@ -7,8 +7,9 @@
  */
 package de.intevation.lada.exporter;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,10 +20,14 @@ import javax.json.JsonValue.ValueType;
 
 import de.intevation.lada.model.land.Messung;
 import de.intevation.lada.model.land.Messwert;
+import de.intevation.lada.model.land.StatusProtokoll;
 import de.intevation.lada.model.stammdaten.Filter;
 import de.intevation.lada.model.stammdaten.FilterType;
 import de.intevation.lada.model.stammdaten.GridColumn;
 import de.intevation.lada.model.stammdaten.GridColumnValue;
+import de.intevation.lada.model.stammdaten.StatusKombi;
+import de.intevation.lada.model.stammdaten.StatusStufe;
+import de.intevation.lada.model.stammdaten.StatusWert;
 import de.intevation.lada.query.QueryTools;
 import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Strings;
@@ -125,6 +130,32 @@ public abstract class QueryExportJob extends ExportJob {
     }
 
     /**
+     * Get the value of an object's field by calling its getter.
+     * @param fieldName field name
+     * @param object object
+     * @return Field value
+     */
+    protected Object getFieldByName(String fieldName, Object object) {
+
+        String capitalizedName;
+        String methodName = "";
+        Method method;
+        try {
+            capitalizedName = fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+            methodName = "get" + capitalizedName;
+            method = object.getClass().getMethod(methodName);
+            return method.invoke(object);
+        } catch (NoSuchMethodException nsme) {
+            logger.error(String.format("Can not get field %s(%s) for class %s", fieldName, methodName, object.getClass().toString()));
+            return null;
+        }
+        catch (IllegalAccessException | InvocationTargetException exc) {
+            logger.error(String.format("Can not call %s for class %s", methodName, object.getClass().toString()));
+            return null;
+        }
+    }
+
+    /**
      * Execute the query.
      * @throws QueryExportException Thrown if loading the query data fails
      * @return Query result as list
@@ -183,6 +214,22 @@ public abstract class QueryExportJob extends ExportJob {
             repository.entityManager(Strings.LAND), Messwert.class);
         messwertBuilder.andIn(idType, primaryDataIds);
         return repository.filterPlain(messwertBuilder.getQuery(), Strings.LAND);
+    }
+
+    protected String getStatusString(Messung messung) {
+        StatusProtokoll protokoll = repository.getByIdPlain(StatusProtokoll.class, messung.getStatus(), Strings.LAND);
+        StatusKombi kombi = repository.getByIdPlain(StatusKombi.class, protokoll.getStatusKombi(), Strings.STAMM);
+        StatusStufe stufe = kombi.getStatusStufe();
+        StatusWert wert = kombi.getStatusWert();
+        return String.format("%s - %s", stufe.getStufe(), wert.getWert());
+    }
+
+    protected int getMesswertCount(Messung messung) {
+        QueryBuilder<Messwert> builder = new QueryBuilder<Messwert>(
+            repository.entityManager(Strings.LAND), Messwert.class
+        );
+        builder.and("messungsId", messung.getId());
+        return repository.filterPlain(builder.getQuery(), Strings.LAND).size();
     }
 
     /**
