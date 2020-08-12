@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonValue.ValueType;
 
@@ -223,14 +224,18 @@ public abstract class QueryExportJob extends ExportJob {
         //Get sub data columns
         if (exportSubdata && exportParameters.containsKey("subDataColumns")) {
             subDataColumns = new ArrayList<String>();
-            exportParameters.getJsonArray("subDataColumns").forEach(item -> {
-                subDataColumns.add(item.toString());
-            });
+            JsonArray columnJson = exportParameters.getJsonArray("subDataColumns");
+            int columnCount = columnJson.size();
+            for (int i = 0; i < columnCount; i++) {
+                subDataColumns.add(columnJson.getString(i));
+            }
         }
         ArrayList<Integer> idFilterList = new ArrayList<Integer>();
-        exportParameters.getJsonArray("idFilter").forEach(item -> {
-            idFilterList.add(Integer.parseInt(item.toString()));
-        });
+        JsonArray idJsonArray = exportParameters.getJsonArray("idFilter");
+        int idJsonArrayCount = idJsonArray.size();
+        for (int i = 0; i< idJsonArrayCount; i++) {
+            idFilterList.add(idJsonArray.getInt(i));
+        }
 
         idsToExport = new Integer[idFilterList.size()];
         idFilterList.toArray(idsToExport);

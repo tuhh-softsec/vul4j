@@ -111,11 +111,11 @@ public class CsvExportJob extends QueryExportJob{
         Method method;
         try {
             capitalizedName = fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
-            methodName = String.format("get%s", capitalizedName);
+            methodName = "get" + capitalizedName;
             method = object.getClass().getMethod(methodName);
             return method.invoke(object);
         } catch (NoSuchMethodException nsme) {
-            logger.error(String.format("Can not get field %s for class %s", fieldName, object.getClass().toString()));
+            logger.error(String.format("Can not get field %s(%s) for class %s", fieldName, methodName, object.getClass().toString()));
             return null;
         }
         catch (IllegalAccessException | InvocationTargetException exc) {
