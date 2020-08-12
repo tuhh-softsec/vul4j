@@ -25,6 +25,7 @@ import de.intevation.lada.model.stammdaten.Filter;
 import de.intevation.lada.model.stammdaten.FilterType;
 import de.intevation.lada.model.stammdaten.GridColumn;
 import de.intevation.lada.model.stammdaten.GridColumnValue;
+import de.intevation.lada.model.stammdaten.ResultType;
 import de.intevation.lada.model.stammdaten.StatusKombi;
 import de.intevation.lada.model.stammdaten.StatusStufe;
 import de.intevation.lada.model.stammdaten.StatusWert;
@@ -50,7 +51,7 @@ public abstract class QueryExportJob extends ExportJob {
     /**
      * Column containing the id
      */
-    private GridColumnValue idColumn;
+    protected String idColumn;
 
     /**
      * Identifier type
@@ -172,20 +173,25 @@ public abstract class QueryExportJob extends ExportJob {
 
     /**
      * Get the sub data for the query
+     * @throw QueryExportException Thrown if fetching subdata fails
      * @return Query result as list
      */
-    protected List<?> getSubData() {
+    protected List<?> getSubData() throws QueryExportException{
         if (primaryData == null) {
             return null;
         }
         //Get ids of primary records
         List<Integer> primaryDataIds = new ArrayList<Integer>();
         primaryData.forEach(item -> {
-            primaryDataIds.add((Integer) item.get(idType));
+            primaryDataIds.add((Integer) item.get(idColumn));
         });
 
         //Get subdata
-        switch (mapPrimaryToSubDataTypes.get(idType)) {
+        String subDataType = mapPrimaryToSubDataTypes.get(idType);
+        if (subDataType == null) {
+            throw new QueryExportException(String.format("Unknown id type: %s", idType));
+        }
+        switch (subDataType) {
             case "messung": return getMessungSubData(primaryDataIds);
             case "messwert": return getMesswertSubData(primaryDataIds);
             default: return null;
@@ -200,7 +206,7 @@ public abstract class QueryExportJob extends ExportJob {
     private List<Messung> getMessungSubData(List<Integer> primaryDataIds) {
         QueryBuilder<Messung> messungBuilder = new QueryBuilder<Messung>(
             repository.entityManager(Strings.LAND), Messung.class);
-        messungBuilder.andIn(idType, primaryDataIds);
+        messungBuilder.andIn("probeId", primaryDataIds);
         return repository.filterPlain(messungBuilder.getQuery(), Strings.LAND);
     }
 
@@ -212,7 +218,7 @@ public abstract class QueryExportJob extends ExportJob {
     private List<Messwert> getMesswertSubData(List<Integer> primaryDataIds) {
         QueryBuilder<Messwert> messwertBuilder = new QueryBuilder<Messwert>(
             repository.entityManager(Strings.LAND), Messwert.class);
-        messwertBuilder.andIn(idType, primaryDataIds);
+        messwertBuilder.andIn("messungsId", primaryDataIds);
         return repository.filterPlain(messwertBuilder.getQuery(), Strings.LAND);
     }
 
@@ -259,7 +265,7 @@ public abstract class QueryExportJob extends ExportJob {
         //Check if subdata shall be exported
         exportSubdata = exportParameters.getBoolean("exportSubData");
         //Get identifier type
-        idType = exportParameters.getString("idField");
+        idColumn = exportParameters.getString("idField");
 
         //Check if sub data columns are present if subdata is exported
         if (exportSubdata
@@ -307,8 +313,9 @@ public abstract class QueryExportJob extends ExportJob {
 
             columnValue.setGridColumn(gridColumn);
             //Check if the column contains the id
-            if (columnValue.getGridColumn().getDataIndex().equals(idType)) {
-                idColumn = columnValue;
+            if (columnValue.getGridColumn().getDataIndex().equals(idColumn)) {
+                //Get the column type
+                idType = gridColumn.getDataType().getName();
                 if (idsToExport != null && idsToExport.length > 0) {
                     Filter filter = createIdListFilter(idType);
                     gridColumn.setFilter(filter);

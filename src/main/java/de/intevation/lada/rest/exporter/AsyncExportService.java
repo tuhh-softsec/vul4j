@@ -90,7 +90,8 @@ public class AsyncExportService {
      *   }],
      *   "exportSubData": [boolean],
      *   "subDataColumns": [ [string] ]
-     *   "idField": [string]
+     *   "idField": [string],
+     *   "idType": [string],
      *   idFilter: [ [number] ],
      *   csvOptions: {
      *     decimalSeparator: "comma" | "period",

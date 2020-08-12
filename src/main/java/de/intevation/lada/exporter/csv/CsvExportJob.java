@@ -68,7 +68,7 @@ public class CsvExportJob extends QueryExportJob{
         //Create a map of id->record
         Map<Integer, Map<String, Object>> idMap = new HashMap<Integer, Map<String, Object>> ();
         primaryData.forEach(record -> {
-            idMap.put((Integer) record.get(idType), record);
+            idMap.put((Integer) record.get(idColumn), record);
         });
         AtomicBoolean success = new AtomicBoolean(true);
         List<Map<String, Object>> merged = new ArrayList<Map<String, Object>>();
@@ -118,12 +118,12 @@ public class CsvExportJob extends QueryExportJob{
         //Create a map of id->record
         Map<Integer, Map<String, Object>> idMap = new HashMap<Integer, Map<String, Object>> ();
         primaryData.forEach(record -> {
-            idMap.put((Integer) record.get(idType), record);
+            idMap.put((Integer) record.get(idColumn), record);
         });
         AtomicBoolean success = new AtomicBoolean(true);
         List<Map<String, Object>> merged = new ArrayList<Map<String, Object>>();
         messwertData.forEach(messwert -> {
-            Integer primaryId = (Integer) getFieldByName(idType, messwert);
+            Integer primaryId = (Integer) getFieldByName("id", messwert);
             if (primaryId == null) {
                 logger.error("No primary id set");
                 success.set(false);
@@ -133,12 +133,23 @@ public class CsvExportJob extends QueryExportJob{
             //Add sub data
             subDataColumns.forEach(subDataColumn -> {
                 Object fieldValue = null;
-                fieldValue = getFieldByName(subDataColumn, messwert);
+                //Check if column needs seperate handling or is a valid messwert field
+                switch (subDataColumn) {
+                    case "messungId":
+                        fieldValue = getFieldByName("messungsId", messwert);
+                        break;
+                    default: 
+                        fieldValue = getFieldByName(subDataColumn, messwert);
+                }
 
                 mergedRow.put(subDataColumn, fieldValue);
             });
             //Add primary record
             Map<String, Object> primaryRecord = idMap.get(primaryId);
+            if (primaryRecord == null) {
+                success.set(false);
+                return;
+            }
             primaryRecord.forEach((key, value) -> {
                 mergedRow.put(key, value);
             });
@@ -181,9 +192,19 @@ public class CsvExportJob extends QueryExportJob{
                 logger.error(ee.getMessage());
                 fail("Fetching export sub data failed");
                 return;
+            } catch (Exception e) {
+                logger.error(e.getMessage());
+                e.printStackTrace();
+                fail("Error on fetching sub data");
+                return;
             }
         }
         JsonObject exportOptions = exportParameters.getJsonObject("csvOptions");
+        if (exportData == null || exportData.size() == 0) {
+            fail("Export data is empty");
+            logger.error("Export data is empty");
+            return;
+        }
         InputStream exported;
         try {
             exported = exporter.export(exportData, encoding, exportOptions, exportColumns);
