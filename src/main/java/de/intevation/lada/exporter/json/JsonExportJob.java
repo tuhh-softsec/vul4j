@@ -11,7 +11,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.json.Json;
 import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 
 import org.apache.log4j.Logger;
 
@@ -32,6 +31,7 @@ public class JsonExportJob extends QueryExportJob{
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected List<Map<String, Object>> mergeSubData(List<?> subData) throws QueryExportException {
         List<Map<String, Object>> mergedData;
         logger.debug(String.format("Merging %d sub data records into %d primary record(s)", subData.size(), primaryData.size()));
@@ -54,6 +54,7 @@ public class JsonExportJob extends QueryExportJob{
      * @param messungData Data to merge
      * @return Merged data as list
      */
+    @SuppressWarnings("unchecked")
     private List<Map<String, Object>> mergeMessungData(List<Messung> messungData) {
         //Create a map of id->record
         Map<Integer, Map<String, Object>> idMap = new HashMap<Integer, Map<String, Object>> ();
@@ -108,6 +109,7 @@ public class JsonExportJob extends QueryExportJob{
      * @param messwertData Data to merge
      * @return Merged data as list
      */
+    @SuppressWarnings("unchecked")
     private List<Map<String, Object>> mergeMesswertData(List<Messwert> messwertData) {
         //Create a map of id->record
         Map<Integer, Map<String, Object>> idMap = new HashMap<Integer, Map<String, Object>> ();

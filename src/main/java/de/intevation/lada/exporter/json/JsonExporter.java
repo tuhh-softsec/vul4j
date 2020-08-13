@@ -88,6 +88,7 @@ public class JsonExporter implements Exporter {
      * @return Export result as input stream or null if the export failed
      */
     @Override
+    @SuppressWarnings("unchecked")
     public InputStream export(List<Map<String, Object>> queryResult, String encoding, JsonObject options, ArrayList<String> columnsToInclude) {
         if (!options.containsKey("id")) {
             logger.error("No id column given");

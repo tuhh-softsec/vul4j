@@ -78,7 +78,7 @@ public abstract class QueryExportJob extends ExportJob {
     private Map<String, String> mapPrimaryToSubDataTypes;
 
     /**
-     * Map id result types to filter sql statementsm for the id columns
+     * Map id result types to filter sql statements for the id columns
      */
     private Map<String, String> dataTypeToIdFilterQuery = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;

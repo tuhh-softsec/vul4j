@@ -10,8 +10,6 @@ package de.intevation.lada.exporter.csv;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +40,7 @@ public class CsvExportJob extends QueryExportJob{
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected List<Map<String, Object>> mergeSubData(List<?> subData) throws QueryExportException {
         List<Map<String, Object>> mergedData;
         logger.debug(String.format("Merging %d sub data records into %d primary record(s)", subData.size(), primaryData.size()));
