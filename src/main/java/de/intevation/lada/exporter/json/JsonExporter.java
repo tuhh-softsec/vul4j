@@ -117,11 +117,11 @@ public class JsonExporter implements Exporter {
                 }
             });
             //Append id
-            builder.add(item.get(idColumn).toString(), rowBuilder);
             if (!subDataKey.isEmpty() && item.containsKey(subDataKey) && item.get(subDataKey) instanceof List<?>) {
                 List<Map<String, Object>> subData = (List<Map<String, Object>>) item.get(subDataKey);
-                builder.add(subDataKey, createSubdataArray(subData));
+                rowBuilder.add(subDataKey, createSubdataArray(subData));
             }
+            builder.add(item.get(idColumn).toString(), rowBuilder);
         });
         return new ByteArrayInputStream(builder.build().toString().getBytes(StandardCharsets.UTF_8));
     }
