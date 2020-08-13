@@ -78,6 +78,21 @@ public abstract class QueryExportJob extends ExportJob {
     private Map<String, String> mapPrimaryToSubDataTypes;
 
     /**
+     * Map id result types to filter sql statementsm for the id columns
+     */
+    private Map<String, String> dataTypeToIdFilterQuery = new HashMap<String, String>() {
+        private static final long serialVersionUID = 1L;
+        {
+            put("probeId", "probe.id");
+            put("messungId", "messung.id");
+            put("mpId", "messprogramm.id");
+            put("ortId", "ort.id");
+            put("dsatzerz", "datensatz_erzeuger.id");
+            put("mprkat", "messprogramm_kategorie.id");
+            put("probenehmer", "probenehmer.id");
+    }};;
+
+    /**
      * Query id
      */
     private Integer qId;
@@ -111,9 +126,10 @@ public abstract class QueryExportJob extends ExportJob {
 
     /**
      * Creates a id list filter for the given dataIndex
+     * @param dataType ID column data type, e.g. mpId
      * @return Filter object
      */
-    private Filter createIdListFilter(String dataIndex) {
+    private Filter createIdListFilter(String dataType) {
 
         //Get Filter type from db
         QueryBuilder<FilterType> builder = new QueryBuilder<FilterType>(repository.entityManager(Strings.STAMM), FilterType.class);
@@ -121,12 +137,11 @@ public abstract class QueryExportJob extends ExportJob {
         FilterType filterType = repository.filterPlain(builder.getQuery(), Strings.STAMM).get(0);
 
         //Create filter object
-        String parameter = dataIndex + "s";
+        String parameter = dataType + "s";
         Filter filter = new Filter();
         filter.setFilterType(filterType);
         filter.setParameter(parameter);
-        filter.setSql(String.format("%s in ( :%s )", dataIndex, parameter));
-        logger.debug(String.format("Filtersql: %s", filter.getSql()));
+        filter.setSql(String.format("%s in ( :%s )", dataTypeToIdFilterQuery.get(dataType), parameter));
         return filter;
     }
 
@@ -321,7 +336,9 @@ public abstract class QueryExportJob extends ExportJob {
                 //Get the column type
                 idType = gridColumn.getDataType().getName();
                 if (idsToExport != null && idsToExport.length > 0) {
-                    Filter filter = createIdListFilter(idColumn);
+                    //Get query result type
+                    String dataType = gridColumn.getDataType().getName();
+                    Filter filter = createIdListFilter(dataType);
                     gridColumn.setFilter(filter);
                     columnValue.setFilterActive(true);
                     StringBuilder filterValue = new StringBuilder();
@@ -331,7 +348,6 @@ public abstract class QueryExportJob extends ExportJob {
                             filterValue.append(",");
                         }
                     }
-                    logger.debug(String.format("Filter %s for ids %s", idColumn, filterValue.toString()));
                     columnValue.setFilterValue(filterValue.toString());
                     columnValue.setFilterIsNull(false);
                     columnValue.setFilterNegate(false);

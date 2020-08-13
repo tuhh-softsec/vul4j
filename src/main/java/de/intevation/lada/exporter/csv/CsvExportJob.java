@@ -166,6 +166,13 @@ public class CsvExportJob extends QueryExportJob{
     @Override
     public void run() {
         super.run();
+        //Check encoding
+        if (!isEncodingValid()) {
+            String error = String.format("Invalid encoding: %s", this.encoding);
+            fail(error);
+            logger.error(error);
+            return;
+        }
         try {
             parseExportParameters();
         } catch (Exception e) {

@@ -19,4 +19,16 @@ public class JsonExportJob extends QueryExportJob{
 
     @Override
     protected List<Map<String, Object>> mergeSubData(List<?> subData) throws QueryExportException {return null;}
+
+    @Override
+    public void run() {
+        super.run();
+        //Check encoding
+        if (!isEncodingValid()) {
+            String error = String.format("Invalid encoding: %s", this.encoding);
+            fail(error);
+            logger.error(error);
+            return;
+        }
+    }
 }
