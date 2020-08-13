@@ -61,6 +61,33 @@ public class CsvExportJob extends QueryExportJob{
     }
 
     /**
+     * Merge records without sub data
+     * @param objects Record list
+     * @param ids list of ids to merge
+     * @param subDataColumns Subdata columns
+     * @param primaryColumns primary data columns
+     * @return
+     */
+    private List<Map<String, Object>> mergeDataWithEmptySubdata(
+        Map<Integer, Map<String, Object>> objects, List<Integer> ids,
+        List<String> subDataColumns, List<String> primaryColumns) {
+
+        List<Map<String, Object>> merged = new ArrayList<Map<String, Object>>();
+        ids.forEach(id -> {
+            Map<String, Object> mergedRow = new HashMap<String, Object>();
+            subDataColumns.forEach(column -> {
+                mergedRow.put(column, null);
+            });
+            Map<String, Object> primaryRecord = objects.get(id);
+            primaryColumns.forEach(column -> {
+                mergedRow.put(column, primaryRecord.get(column));
+            });
+            merged.add(mergedRow);
+        });
+        return merged;
+    }
+
+    /**
      * Merge primary result and messung data
      * @param messungData Data to merge
      * @return Merged data as list
@@ -68,9 +95,13 @@ public class CsvExportJob extends QueryExportJob{
     private List<Map<String, Object>> mergeMessungData(List<Messung> messungData) {
         //Create a map of id->record
         Map<Integer, Map<String, Object>> idMap = new HashMap<Integer, Map<String, Object>> ();
+        //Ids left for merging
+        List<Integer> idsLeft = new ArrayList<Integer>();
         primaryData.forEach(record -> {
             idMap.put((Integer) record.get(idColumn), record);
+            idsLeft.add((Integer) record.get(idColumn));
         });
+
         AtomicBoolean success = new AtomicBoolean(true);
         List<Map<String, Object>> merged = new ArrayList<Map<String, Object>>();
         messungData.forEach(messung -> {
@@ -102,8 +133,13 @@ public class CsvExportJob extends QueryExportJob{
             primaryRecord.forEach((key, value) -> {
                 mergedRow.put(key, value);
             });
+            //Remove finished record from list
+            idsLeft.remove(primaryId);
             merged.add(mergedRow);
         });
+
+        //Merge any skipped records without sub data
+        merged.addAll(mergeDataWithEmptySubdata(idMap, idsLeft, subDataColumns, columnsToExport));
         if (!success.get()) {
             return null;
         }
@@ -118,8 +154,11 @@ public class CsvExportJob extends QueryExportJob{
     private List<Map<String, Object>> mergeMesswertData(List<Messwert> messwertData) {
         //Create a map of id->record
         Map<Integer, Map<String, Object>> idMap = new HashMap<Integer, Map<String, Object>> ();
+        //Ids left for merging
+        List<Integer> idsLeft = new ArrayList<Integer>();
         primaryData.forEach(record -> {
             idMap.put((Integer) record.get(idColumn), record);
+            idsLeft.add((Integer) record.get(idColumn));
         });
         AtomicBoolean success = new AtomicBoolean(true);
         List<Map<String, Object>> merged = new ArrayList<Map<String, Object>>();
@@ -154,8 +193,13 @@ public class CsvExportJob extends QueryExportJob{
             primaryRecord.forEach((key, value) -> {
                 mergedRow.put(key, value);
             });
+            //Remove finished record from list
+            idsLeft.remove(primaryId);
             merged.add(mergedRow);
         });
+        //Merge any skipped records without sub data
+        merged.addAll(mergeDataWithEmptySubdata(idMap, idsLeft, subDataColumns, columnsToExport));
+
         if (!success.get()) {
             return null;
         }

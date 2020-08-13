@@ -17,8 +17,11 @@ import java.util.Map;
 
 import javax.inject.Inject;
 import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -78,6 +81,7 @@ public class JsonExporter implements Exporter {
      * @param options Export options as JSON Object. Options are: <p>
      *                <ul>
      *                  <li> id: Name of the id column, mandatory </li>
+     *                  <li> subData: key of the subData json object, optional </li>
      *                </ul>
      * 
      * @param columnsToInclude List of column names to include in the export. If not set, all columns will be exported
@@ -89,6 +93,7 @@ public class JsonExporter implements Exporter {
             logger.error("No id column given");
             return null;
         }
+        String subDataKey = options.getString("subData", "");
 
         final JsonObjectBuilder builder = Json.createObjectBuilder();
         String idColumn = options.getString("id");
@@ -97,8 +102,13 @@ public class JsonExporter implements Exporter {
         queryResult.forEach(item -> {
             JsonObjectBuilder rowBuilder = Json.createObjectBuilder();
             //Add value for each column
-            item.forEach((key, value) -> {
-                if (value  instanceof Integer) {
+            columnsToInclude.forEach(key -> {
+                Object value = item.getOrDefault(key, null);
+                if(value == null) {
+                    rowBuilder.add(key, JsonValue.NULL);
+                    return;
+                }
+                if (value instanceof Integer) {
                     rowBuilder.add(key, (Integer) value);
                 } else if (value instanceof Double) {
                     rowBuilder.add(key, (Double) value);
@@ -108,8 +118,39 @@ public class JsonExporter implements Exporter {
             });
             //Append id
             builder.add(item.get(idColumn).toString(), rowBuilder);
+            if (!subDataKey.isEmpty() && item.containsKey(subDataKey) && item.get(subDataKey) instanceof List<?>) {
+                List<Map<String, Object>> subData = (List<Map<String, Object>>) item.get(subDataKey);
+                builder.add(subDataKey, createSubdataArray(subData));
+            }
         });
-        return new ByteArrayInputStream(builder.build().toString().toString().getBytes(StandardCharsets.UTF_8));
+        return new ByteArrayInputStream(builder.build().toString().getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
+     * Create a json array from a list of sub data maps
+     * @param subData Sub data as list of maps
+     * @return Json array
+     */
+    private JsonArray createSubdataArray(List<Map<String, Object>> subData) {
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+        subData.forEach(map -> {
+            JsonObjectBuilder itemBuilder = Json.createObjectBuilder();
+            map.forEach((key, value) -> {
+                if(value == null) {
+                    itemBuilder.add(key, JsonValue.NULL);
+                    return;
+                }
+                if (value instanceof Integer) {
+                    itemBuilder.add(key, (Integer) value);
+                } else if (value instanceof Double) {
+                    itemBuilder.add(key, (Double) value);
+                } else {
+                    itemBuilder.add(key, value.toString());
+                }
+            });
+            arrayBuilder.add(itemBuilder.build());
+        });
+        return arrayBuilder.build();
     }
 
     @Override
