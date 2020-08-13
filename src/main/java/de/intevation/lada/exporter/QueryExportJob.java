@@ -110,7 +110,7 @@ public abstract class QueryExportJob extends ExportJob {
     /**
      * Constructor
      * @param jobId Job id
-    * @param queryTools Query tools instance
+     * @param queryTools Query tools instance
      */
     public QueryExportJob (String jobId, QueryTools queryTools) {
         super(jobId);
@@ -239,6 +239,12 @@ public abstract class QueryExportJob extends ExportJob {
         return repository.filterPlain(messwertBuilder.getQuery(), Strings.LAND);
     }
 
+    /**
+     * Get the status of the given messung as String.
+     * Format: [statusStufe - statusWert]
+     * @param messung Messung to get status for
+     * @return Status as string
+     */
     protected String getStatusString(Messung messung) {
         StatusProtokoll protokoll = repository.getByIdPlain(StatusProtokoll.class, messung.getStatus(), Strings.LAND);
         StatusKombi kombi = repository.getByIdPlain(StatusKombi.class, protokoll.getStatusKombi(), Strings.STAMM);
@@ -247,6 +253,11 @@ public abstract class QueryExportJob extends ExportJob {
         return String.format("%s - %s", stufe.getStufe(), wert.getWert());
     }
 
+    /**
+     * Get the number of messwerte records referencing the given messung
+     * @param messung Messung to get messwert count for
+     * @return Number of messwert records
+     */
     protected int getMesswertCount(Messung messung) {
         QueryBuilder<Messwert> builder = new QueryBuilder<Messwert>(
             repository.entityManager(Strings.LAND), Messwert.class
@@ -268,7 +279,7 @@ public abstract class QueryExportJob extends ExportJob {
      * Merge sub data into the primary query result
      * @param subData Data to merge into result
      * @throws QueryExportException Thrown if merging fails
-     * @return Merge data as list
+     * @return Merged data as list
      */
     protected abstract List<Map<String, Object>> mergeSubData(List<?> subData) throws QueryExportException;
 

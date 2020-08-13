@@ -44,12 +44,14 @@ public class CsvExportJob extends QueryExportJob{
     @Override
     protected List<Map<String, Object>> mergeSubData(List<?> subData) throws QueryExportException {
         List<Map<String, Object>> mergedData;
+        logger.debug(String.format("Merging %d sub data records into %d primary record(s)", subData.size(), primaryData.size()));
         switch (getSubDataType(idType)) {
             case "messung":
                 mergedData = mergeMessungData((List<Messung>) subData);
                 break;
             case "messwert":
                 mergedData = mergeMesswertData((List<Messwert>) subData);
+                break;
             default: return null;
         }
         if (mergedData == null) {
@@ -72,7 +74,7 @@ public class CsvExportJob extends QueryExportJob{
         AtomicBoolean success = new AtomicBoolean(true);
         List<Map<String, Object>> merged = new ArrayList<Map<String, Object>>();
         messungData.forEach(messung -> {
-            Integer primaryId = (Integer) getFieldByName(idType, messung);
+            Integer primaryId = messung.getProbeId();
             if (primaryId == null) {
                 logger.error("No primary id set");
                 success.set(false);
@@ -90,7 +92,7 @@ public class CsvExportJob extends QueryExportJob{
                     case "messwerteCount":
                         fieldValue = getMesswertCount(messung);
                         break;
-                    default: 
+                    default:
                         fieldValue = getFieldByName(subDataColumn, messung);
                 }
                 mergedRow.put(subDataColumn, fieldValue);
@@ -122,7 +124,7 @@ public class CsvExportJob extends QueryExportJob{
         AtomicBoolean success = new AtomicBoolean(true);
         List<Map<String, Object>> merged = new ArrayList<Map<String, Object>>();
         messwertData.forEach(messwert -> {
-            Integer primaryId = (Integer) getFieldByName("id", messwert);
+            Integer primaryId = messwert.getMessungsId();
             if (primaryId == null) {
                 logger.error("No primary id set");
                 success.set(false);
@@ -137,15 +139,15 @@ public class CsvExportJob extends QueryExportJob{
                     case "messungId":
                         fieldValue = getFieldByName("messungsId", messwert);
                         break;
-                    default: 
+                    default:
                         fieldValue = getFieldByName(subDataColumn, messwert);
                 }
-
                 mergedRow.put(subDataColumn, fieldValue);
             });
             //Add primary record
             Map<String, Object> primaryRecord = idMap.get(primaryId);
             if (primaryRecord == null) {
+                logger.error("Can not get primary record for merging");
                 success.set(false);
                 return;
             }
@@ -170,7 +172,6 @@ public class CsvExportJob extends QueryExportJob{
         if (!isEncodingValid()) {
             String error = String.format("Invalid encoding: %s", this.encoding);
             fail(error);
-            logger.error(error);
             return;
         }
         try {
@@ -181,6 +182,8 @@ public class CsvExportJob extends QueryExportJob{
             fail("Error parsing export parameters");
             return;
         }
+
+        //Fetch primary records
         try {
             primaryData = getQueryResult();
         } catch (QueryExportException qee) {
@@ -190,6 +193,8 @@ public class CsvExportJob extends QueryExportJob{
         List<Map<String, Object>> exportData = primaryData;
         ArrayList<String> exportColumns = new ArrayList<String>();
         exportColumns.addAll(this.columnsToExport);
+
+        //If needed, fetch and merge sub data
         if (exportSubdata) {
             try {
                 exportData = mergeSubData(getSubData());
@@ -205,10 +210,11 @@ public class CsvExportJob extends QueryExportJob{
                 return;
             }
         }
+
+        //Export data to csv
         JsonObject exportOptions = exportParameters.getJsonObject("csvOptions");
         if (exportData == null || exportData.size() == 0) {
             fail("Export data is empty");
-            logger.error("Export data is empty");
             return;
         }
         InputStream exported;
