@@ -414,7 +414,7 @@ public abstract class ExportJob extends Thread{
         }
 
         //Write to file
-        try (BufferedWriter writer = Files.newBufferedWriter(outputFilePath, StandardOpenOption.WRITE)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(outputFilePath, Charset.forName(encoding))) {
             writer.write(result);
         } catch (IOException ioe) {
             logger.error(String.format("Cannot write to export file. IOException: %s", ioe.getStackTrace().toString()));

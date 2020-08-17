@@ -113,7 +113,7 @@ public class LafExportJob extends ExportJob {
             while ((length = exported.read(buffer)) != -1) {
                 result.write(buffer, 0, length);
             }
-            String resultString = result.toString(encoding);
+            String resultString = new String(result.toByteArray(), encoding);
             if(!writeResultToFile(resultString)) {
                 fail("Error on writing export result.");
                 return;

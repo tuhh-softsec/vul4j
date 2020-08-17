@@ -240,10 +240,7 @@ public class AsyncExportService {
         @Context HttpServletRequest request
     ) {
 
-        String encoding = request.getHeader("X-FILE-ENCODING");
-        if (encoding == null || encoding.equals("")) {
-            encoding = "iso-8859-15";
-        }
+        String encoding = "utf-8";
         UserInfo userInfo = authorization.getInfo(request);
         String newJobId = exportJobManager.createExportJob("json", encoding, objects, userInfo);
         JsonObject responseJson = Json.createObjectBuilder()

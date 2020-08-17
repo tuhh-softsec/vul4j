@@ -33,7 +33,7 @@ import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Strings;
 
 /**
- * Abstract class for an export of query result.
+ * Abstract class for an export of query results.
  */
 public abstract class QueryExportJob extends ExportJob {
 

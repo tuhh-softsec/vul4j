@@ -39,6 +39,14 @@ public class CsvExportJob extends QueryExportJob{
         this.logger = Logger.getLogger(String.format("CsvExportJob[%s]", jobId));
     }
 
+    /**
+     * Merge sub data into the primary query result.
+     *
+     * For CSV export, both records will be merged into a single row.
+     * @param subData Data to merge into result
+     * @throws QueryExportException Thrown if merging fails
+     * @return Merged data as list
+     */
     @Override
     @SuppressWarnings("unchecked")
     protected List<Map<String, Object>> mergeSubData(List<?> subData) throws QueryExportException {
@@ -211,6 +219,8 @@ public class CsvExportJob extends QueryExportJob{
     @Override
     public void run() {
         super.run();
+
+        logger.debug(String.format("Starting LAF export %s (%s)", jobId, encoding));
         //Check encoding
         if (!isEncodingValid()) {
             String error = String.format("Invalid encoding: %s", this.encoding);
@@ -276,7 +286,7 @@ public class CsvExportJob extends QueryExportJob{
             while ((length = exported.read(buffer)) != -1) {
                 result.write(buffer, 0, length);
             }
-            String resultString = result.toString(encoding);
+            String resultString = new String(result.toByteArray(), encoding);
             if(!writeResultToFile(resultString)) {
                 fail("Error on writing export result.");
                 return;

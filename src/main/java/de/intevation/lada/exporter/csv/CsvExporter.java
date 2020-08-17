@@ -11,6 +11,7 @@ package de.intevation.lada.exporter.csv;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -136,7 +137,6 @@ public class CsvExporter implements Exporter{
             .withRecordSeparator(rowDelimiter)
             .withHeader(keys);
 
-
         StringBuffer result = new StringBuffer();
 
         try {
@@ -161,10 +161,13 @@ public class CsvExporter implements Exporter{
             });
 
             printer.close();
+            return new ByteArrayInputStream(result.toString().getBytes(encoding));
+        } catch (UnsupportedEncodingException uee) {
+            logger.error(String.format("Unsupported encoding: %s", encoding));
+            return null;
         } catch (IOException ioe) {
             logger.error(ioe.toString());
             return null;
         }
-        return new ByteArrayInputStream(result.toString().getBytes(StandardCharsets.UTF_8));
     }
 }

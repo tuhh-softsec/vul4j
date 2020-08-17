@@ -30,6 +30,15 @@ public class JsonExportJob extends QueryExportJob{
         this.logger = Logger.getLogger(String.format("JsonExportJob[%s]", jobId));
     }
 
+    /**
+     * Merge sub data into the primary query result
+     *
+     * For JSON export, the sub data records will be inserted as an array into the
+     * corresponding primary record.
+     * @param subData Data to merge into result
+     * @throws QueryExportException Thrown if merging fails
+     * @return Merged data as list
+     */
     @Override
     @SuppressWarnings("unchecked")
     protected List<Map<String, Object>> mergeSubData(List<?> subData) throws QueryExportException {
