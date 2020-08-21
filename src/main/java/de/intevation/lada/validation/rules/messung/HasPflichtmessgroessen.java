@@ -77,7 +77,7 @@ public class HasPflichtmessgroessen implements Rule {
         if (!pflicht.isEmpty()) {
             for (PflichtMessgroesse p : pflicht) {
                 Messgroesse mg = repository.getByIdPlain(Messgroesse.class, p.getMessgroesseId(), Strings.STAMM);
-                violation.addWarning("pflichtmessgroesse#" + mg.getMessgroesse(), 631);
+                violation.addWarning("messgroesse#" + mg.getMessgroesse(), 638);
             }
         }
         return violation.hasWarnings() ? violation : null;
