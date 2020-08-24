@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
 
-import com.vividsolutions.jts.geom.MultiPolygon;
+import org.locationtech.jts.geom.MultiPolygon;
 
 
 /**

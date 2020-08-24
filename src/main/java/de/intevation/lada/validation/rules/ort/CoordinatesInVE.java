@@ -11,7 +11,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import com.vividsolutions.jts.geom.Point;
+import org.locationtech.jts.geom.Point;
 
 import org.apache.log4j.Logger;
 

@@ -16,9 +16,9 @@ import javax.inject.Inject;
 import javax.persistence.Query;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
 
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
