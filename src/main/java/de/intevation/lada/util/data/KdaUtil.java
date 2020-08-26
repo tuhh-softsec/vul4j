@@ -711,12 +711,12 @@ public class KdaUtil {
         }
         String zone;
         if (xCoord < -12 && xCoord > -18) zone = "28";
-        else if (xCoord < -6 && xCoord > -12) zone = "29";
-        else if (xCoord < 0 && xCoord > -6) zone = "30";
-        else if (xCoord < 6 && xCoord > 0) zone = "31";
-        else if (xCoord < 12 && xCoord > 6) zone = "32";
-        else if (xCoord < 18 && xCoord > 12) zone = "33";
-        else if (xCoord < 24 && xCoord > 18) zone = "34";
+        else if (xCoord <= -6 && xCoord > -12) zone = "29";
+        else if (xCoord <= 0 && xCoord > -6) zone = "30";
+        else if (xCoord <= 6 && xCoord > 0) zone = "31";
+        else if (xCoord <= 12 && xCoord > 6) zone = "32";
+        else if (xCoord <= 18 && xCoord > 12) zone = "33";
+        else if (xCoord <= 24 && xCoord > 18) zone = "34";
         else return "";
         return "EPSG:326" + zone;
     }
