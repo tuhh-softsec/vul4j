@@ -560,8 +560,14 @@ public class KdaUtil {
         String[] yParts = y.split("\\.");
         double factorX = 3600;
         double factorY = 3600;
-        double wsX = Double.parseDouble("0."+xParts[1])*factorX;
-        double wsY = Double.parseDouble("0."+yParts[1])*factorY;
+        double wsX = 0;
+        double wsY = 0;
+        if (xParts[1] != null) {
+            wsX = Double.parseDouble("0."+xParts[1])*factorX;
+        }
+        if (yParts[1] != null) {
+            wsY = Double.parseDouble("0."+yParts[1])*factorY;
+        }
         String xRes = xParts[0] +
             String.format("%02d", (int)Math.floor(wsX/60)) +
             String.format("%02.5f", wsX%60);
