@@ -562,12 +562,17 @@ public class KdaUtil {
         double factorY = 3600;
         double wsX = 0;
         double wsY = 0;
-        if (xParts[1] != null) {
-            wsX = Double.parseDouble("0."+xParts[1])*factorX;
+        try {
+            if (xParts.length == 2) {
+                wsX = Double.parseDouble("0."+xParts[1])*factorX;
+            }
+            if (yParts.length == 2) {
+                wsY = Double.parseDouble("0."+yParts[1])*factorY;
+            }
+        } catch (NumberFormatException nfe) {
+            return null;
         }
-        if (yParts[1] != null) {
-            wsY = Double.parseDouble("0."+yParts[1])*factorY;
-        }
+
         String xRes = xParts[0] +
             String.format("%02d", (int)Math.floor(wsX/60)) +
             String.format("%02.5f", wsX%60);
