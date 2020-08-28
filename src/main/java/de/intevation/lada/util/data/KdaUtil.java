@@ -626,16 +626,18 @@ public class KdaUtil {
                 xSuffix = m.group(6);
             }
             else {
+                //Without decimal separator, can include leading zeros
                 Pattern p = Pattern.compile("([+|-|W|E]?)(\\d{3})(\\d{0,2})(\\d{0,2})([W|E]?)");
                 Matcher m = p.matcher(x);
                 m.matches();
                 xPrefix = m.group(1);
                 xDegree = Integer.valueOf(m.group(2));
-                xMin = Integer.valueOf(m.group(3));
-                xSec = Double.valueOf(m.group(4));
+                xMin = Integer.valueOf(!m.group(3).isEmpty()? m.group(3): "0");
+                xSec = Double.valueOf(!m.group(4).isEmpty()? m.group(4): "0.0");
                 xSuffix = m.group(5);
             }
             if(y.contains(",")) {
+                // with decimal separator
                 Pattern p = Pattern.compile("([+|-|N|S]?)(\\d{1,2})(\\d{2})(\\d{2}),(\\d{1,5})([N|S]?)");
                 Matcher m = p.matcher(y);
                 m.matches();
@@ -646,13 +648,14 @@ public class KdaUtil {
                 ySuffix = m.group(6);
             }
             else {
+                //Without decimal separator, can include leading zeros
                 Pattern p = Pattern.compile("([+|-|N|S]?)(\\d{2})(\\d{0,2})(\\d{0,2})([N|S]?)");
                 Matcher m = p.matcher(y);
                 m.matches();
                 yPrefix = m.group(1);
                 yDegree = Integer.valueOf(m.group(2));
-                yMin = Integer.valueOf(m.group(3));
-                ySec = Double.valueOf(m.group(4));
+                yMin = Integer.valueOf(!m.group(3).isEmpty()? m.group(3): "0");
+                ySec = Double.valueOf(!m.group(4).isEmpty()? m.group(4): "0.0");
                 ySuffix = m.group(5);
             }
         }
