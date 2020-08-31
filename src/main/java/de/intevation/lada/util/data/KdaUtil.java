@@ -560,8 +560,19 @@ public class KdaUtil {
         String[] yParts = y.split("\\.");
         double factorX = 3600;
         double factorY = 3600;
-        double wsX = Double.parseDouble("0."+xParts[1])*factorX;
-        double wsY = Double.parseDouble("0."+yParts[1])*factorY;
+        double wsX = 0;
+        double wsY = 0;
+        try {
+            if (xParts.length == 2) {
+                wsX = Double.parseDouble("0."+xParts[1])*factorX;
+            }
+            if (yParts.length == 2) {
+                wsY = Double.parseDouble("0."+yParts[1])*factorY;
+            }
+        } catch (NumberFormatException nfe) {
+            return null;
+        }
+
         String xRes = xParts[0] +
             String.format("%02d", (int)Math.floor(wsX/60)) +
             String.format("%02.5f", wsX%60);
@@ -615,16 +626,18 @@ public class KdaUtil {
                 xSuffix = m.group(6);
             }
             else {
+                //Without decimal separator, can include leading zeros
                 Pattern p = Pattern.compile("([+|-|W|E]?)(\\d{3})(\\d{0,2})(\\d{0,2})([W|E]?)");
                 Matcher m = p.matcher(x);
                 m.matches();
                 xPrefix = m.group(1);
                 xDegree = Integer.valueOf(m.group(2));
-                xMin = Integer.valueOf(m.group(3));
-                xSec = Double.valueOf(m.group(4));
+                xMin = Integer.valueOf(!m.group(3).isEmpty()? m.group(3): "0");
+                xSec = Double.valueOf(!m.group(4).isEmpty()? m.group(4): "0.0");
                 xSuffix = m.group(5);
             }
             if(y.contains(",")) {
+                // with decimal separator
                 Pattern p = Pattern.compile("([+|-|N|S]?)(\\d{1,2})(\\d{2})(\\d{2}),(\\d{1,5})([N|S]?)");
                 Matcher m = p.matcher(y);
                 m.matches();
@@ -635,13 +648,14 @@ public class KdaUtil {
                 ySuffix = m.group(6);
             }
             else {
+                //Without decimal separator, can include leading zeros
                 Pattern p = Pattern.compile("([+|-|N|S]?)(\\d{2})(\\d{0,2})(\\d{0,2})([N|S]?)");
                 Matcher m = p.matcher(y);
                 m.matches();
                 yPrefix = m.group(1);
                 yDegree = Integer.valueOf(m.group(2));
-                yMin = Integer.valueOf(m.group(3));
-                ySec = Double.valueOf(m.group(4));
+                yMin = Integer.valueOf(!m.group(3).isEmpty()? m.group(3): "0");
+                ySec = Double.valueOf(!m.group(4).isEmpty()? m.group(4): "0.0");
                 ySuffix = m.group(5);
             }
         }
