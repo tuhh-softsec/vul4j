@@ -336,6 +336,9 @@ public abstract class QueryExportJob extends ExportJob {
             columnValue.setSortIndex(sortIndex);
             columnValue.setFilterValue(columnObj.getString("filterValue"));
             columnValue.setFilterActive(columnObj.getBoolean("filterActive"));
+            columnValue.setFilterIsNull(columnObj.getBoolean("filterIsNull"));
+            columnValue.setFilterNegate(columnObj.getBoolean("filterNegate"));
+            columnValue.setFilterRegex(columnObj.getBoolean("filterRegex"));
             gridColumn = repository.getByIdPlain(
                 GridColumn.class,
                 columnValue.getGridColumnId(),
