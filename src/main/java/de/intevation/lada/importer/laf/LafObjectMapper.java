@@ -252,7 +252,7 @@ public class LafObjectMapper {
 		if (isAuthorizedOld){
                 	if(oldProbeIsReadonly) {
                     		newProbe = old;
-                    		currentWarnings.add(new ReportItem("probe", old.getExterneProbeId(), 676));
+                    		currentNotifications.add(new ReportItem("probe", old.getExterneProbeId(), 676));
                 	} 
                 	else {
                     		if(merger.merge(old, probe)) {
