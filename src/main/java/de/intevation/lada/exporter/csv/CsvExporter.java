@@ -16,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,6 +31,15 @@ import org.apache.log4j.Logger;
 import de.intevation.lada.exporter.ExportConfig;
 import de.intevation.lada.exporter.ExportFormat;
 import de.intevation.lada.exporter.Exporter;
+import de.intevation.lada.model.stammdaten.GridColumn;
+import de.intevation.lada.model.stammdaten.StatusKombi;
+import de.intevation.lada.model.stammdaten.StatusStufe;
+import de.intevation.lada.model.stammdaten.StatusWert;
+import de.intevation.lada.util.annotation.RepositoryConfig;
+import de.intevation.lada.util.data.QueryBuilder;
+import de.intevation.lada.util.data.Repository;
+import de.intevation.lada.util.data.RepositoryType;
+import de.intevation.lada.util.data.Strings;
 
 /**
  * Exporter class for writing query results to CSV.
@@ -40,6 +50,10 @@ import de.intevation.lada.exporter.Exporter;
 public class CsvExporter implements Exporter{
 
     @Inject Logger logger;
+
+    @Inject
+    @RepositoryConfig(type=RepositoryType.RO)
+    private Repository repository;
 
     /**
      * Enum storing all possible csv options
@@ -62,6 +76,30 @@ public class CsvExporter implements Exporter{
         public String getValue() {
             return this.value;
         }
+    }
+
+    private String getStatusStringByid (Integer id) {
+        StatusKombi kombi = repository.getByIdPlain(StatusKombi.class, id, Strings.STAMM);
+        StatusStufe stufe = kombi.getStatusStufe();
+        StatusWert wert = kombi.getStatusWert();
+
+        return String.format("%s - %s", stufe.getStufe(), wert.getWert());
+    }
+
+    private String[] getReadableColumnNames (String[] keys) {
+        String[] names = new String[keys.length];
+        ArrayList<String> keysList = new ArrayList<String>(Arrays.asList(keys));
+        QueryBuilder<GridColumn> builder = new QueryBuilder<GridColumn>(
+            repository.entityManager(Strings.STAMM),
+            GridColumn.class);
+        builder.andIn("dataIndex", Arrays.asList(keys));
+        List<GridColumn> columns = repository.filterPlain(builder.getQuery(), Strings.STAMM);
+        columns.forEach(column -> {
+            String name = column.getName();
+            String dataIndex = column.getDataIndex();
+            names[keysList.indexOf(dataIndex)] = name;
+        });
+        return names;
     }
 
     /**
@@ -129,13 +167,13 @@ public class CsvExporter implements Exporter{
             columnsToInclude.toArray(keys);
         }
 
-
+        String[] header = getReadableColumnNames(keys);
         //Create CSV format
         CSVFormat format = CSVFormat.DEFAULT
             .withDelimiter(fieldSeparator)
             .withQuote(quoteType)
             .withRecordSeparator(rowDelimiter)
-            .withHeader(keys);
+            .withHeader(header);
 
         StringBuffer result = new StringBuffer();
 
@@ -147,6 +185,11 @@ public class CsvExporter implements Exporter{
                 ArrayList<String> rowItems = new ArrayList<String>();
                 for (int i = 0; i < keys.length; i++) {
                     Object value = row.get(keys[i]);
+                    //Value is a status kombi
+                    if (keys[i].equals("statusK")) {
+                        rowItems.add(getStatusStringByid((Integer) value));
+                        continue;
+                    }
                     if (value instanceof Double) {
                         rowItems.add(decimalFormat.format((Double) value));
                     } else {
