@@ -743,7 +743,7 @@ public class LafObjectMapper {
             if (i == Identified.UPDATE) {
                 oldMessungIsReadonly = authorizer.isMessungReadOnly(old.getId());
                 if (oldMessungIsReadonly) {
-                    currentErrors.add(new ReportItem("messung", old.getExterneMessungsId(), 676));
+                    currentNotifications.add(new ReportItem("messung", old.getExterneMessungsId(), 676));
                     return;
                 } else {
                     merger.mergeMessung(old, messung);
