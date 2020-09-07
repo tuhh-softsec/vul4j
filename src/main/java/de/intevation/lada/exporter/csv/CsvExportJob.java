@@ -16,7 +16,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
 
 import org.apache.log4j.Logger;
 
@@ -30,7 +33,7 @@ import de.intevation.lada.query.QueryTools;
  *
  * @author <a href="mailto:awoestmann@intevation.de">Alexander Woestmann</a>
  */
-public class CsvExportJob extends QueryExportJob{
+public class CsvExportJob extends QueryExportJob {
 
     public CsvExportJob(String jobId, QueryTools queryTools) {
         super(jobId, queryTools);
@@ -265,14 +268,23 @@ public class CsvExportJob extends QueryExportJob{
         }
 
         //Export data to csv
-        JsonObject exportOptions = exportParameters.getJsonObject("csvOptions");
+        JsonObjectBuilder exportOptions = Json.createObjectBuilder();
+        JsonObject csvOptions = exportParameters.getJsonObject("csvOptions");
+
+        exportOptions.add("timezone", exportParameters.get("timezone"));
+        csvOptions.forEach((key, value) -> {
+            exportOptions.add(key, value);
+        });
+        if (exportSubdata && exportParameters.containsKey("subDataColumnNames")) {
+            exportOptions.add("subDataColumnNames", exportParameters.getJsonObject("subDataColumnNames"));
+        }
         if (exportData == null || exportData.size() == 0) {
             fail("Export data is empty");
             return;
         }
         InputStream exported;
         try {
-            exported = exporter.export(exportData, encoding, exportOptions, exportColumns);
+            exported = exporter.export(exportData, encoding, exportOptions.build(), exportColumns);
         } catch (Exception e) {
             logger.error("Error writing csv");
             e.printStackTrace();

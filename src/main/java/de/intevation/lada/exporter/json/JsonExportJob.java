@@ -221,6 +221,7 @@ public class JsonExportJob extends QueryExportJob{
         JsonObject exportOptions = Json.createObjectBuilder()
             .add("id", idColumn)
             .add("subData", exportSubdata? subDataJsonKey: "")
+            .add("timezone", timezone)
             .build();
         try {
             exported = exporter.export(exportData, encoding, exportOptions, exportColumns);

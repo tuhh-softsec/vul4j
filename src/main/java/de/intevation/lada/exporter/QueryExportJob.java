@@ -78,6 +78,11 @@ public abstract class QueryExportJob extends ExportJob {
     private Map<String, String> mapPrimaryToSubDataTypes;
 
     /**
+     * Timezone to convert timestamps to
+     */
+    protected String timezone;
+
+    /**
      * Map id result types to filter sql statements for the id columns
      */
     private Map<String, String> dataTypeToIdFilterQuery = new HashMap<String, String>() {
@@ -122,6 +127,7 @@ public abstract class QueryExportJob extends ExportJob {
         mapPrimaryToSubDataTypes.put("probeId", "messung");
         mapPrimaryToSubDataTypes.put("messungId", "messwert");
 
+        this.timezone = "UTC";
     }
 
     /**
@@ -294,12 +300,14 @@ public abstract class QueryExportJob extends ExportJob {
         exportSubdata = exportParameters.getBoolean("exportSubData");
         //Get identifier type
         idColumn = exportParameters.getString("idField");
+        //Get target timezone
+        timezone = exportParameters.getString("timezone");
 
         //Check if sub data columns are present if subdata is exported
         if (exportSubdata
             && !exportParameters.containsKey("subDataColumns")
             && exportParameters.get("subDataColumns") != null) {
-            throw new IllegalArgumentException("Subdata is export but not subdata columns are present");
+            throw new IllegalArgumentException("Subdata is exported but no subdata columns are present");
         }
 
         //Get sub data columns

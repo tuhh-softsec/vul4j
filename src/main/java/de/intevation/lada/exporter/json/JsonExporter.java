@@ -11,9 +11,14 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.inject.Inject;
 import javax.json.Json;
@@ -63,7 +68,6 @@ import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.data.Strings;
-
 @ExportConfig(format=ExportFormat.JSON)
 public class JsonExporter implements Exporter {
 
@@ -82,6 +86,7 @@ public class JsonExporter implements Exporter {
      *                <ul>
      *                  <li> id: Name of the id column, mandatory </li>
      *                  <li> subData: key of the subData json object, optional </li>
+     *                  <li> timezone: Target timezone for timestamp conversion </li>
      *                </ul>
      * 
      * @param columnsToInclude List of column names to include in the export. If not set, all columns will be exported
@@ -97,6 +102,7 @@ public class JsonExporter implements Exporter {
         String subDataKey = options.getString("subData", "");
 
         final JsonObjectBuilder builder = Json.createObjectBuilder();
+        final String timezone = options.containsKey("timezone")? options.getString("timezone"): "UTC";
         String idColumn = options.getString("id");
 
         //For each result
@@ -113,6 +119,14 @@ public class JsonExporter implements Exporter {
                     rowBuilder.add(key, (Integer) value);
                 } else if (value instanceof Double) {
                     rowBuilder.add(key, (Double) value);
+                } else if (value instanceof Timestamp) {
+                    //Convert to target timezone
+                    Timestamp time = (Timestamp) value;
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(new Date(time.getTime()));
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                    sdf.setTimeZone(TimeZone.getTimeZone(timezone));
+                    rowBuilder.add(key, sdf.format(calendar.getTime()));
                 } else {
                     rowBuilder.add(key, value.toString());
                 }

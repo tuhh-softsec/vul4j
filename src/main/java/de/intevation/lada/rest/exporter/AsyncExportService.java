@@ -73,6 +73,8 @@ public class AsyncExportService {
      * - An optional list of subdata column names. May only be set if "subData" is true
      * - The gridColumnId that contains the record id
      * - An optional id filter to limit the export data. If not set, the complete query result will be exported
+     * - A timezone string to convert timestamps to
+     * - Key-value pairs matching sub data columns to readable names
      * - CSV specific options
      * - An optional filename used for download
      * <p>
@@ -93,6 +95,10 @@ public class AsyncExportService {
      *   "idField": [string],
      *   "idType": [string],
      *   idFilter: [ [number] ],
+     *   "timezone": [string],
+     *   "subDataColumnNames": {
+     *     [string]: [string]
+     *   }
      *   csvOptions: {
      *     decimalSeparator: "comma" | "period",
      *     fieldSeparator: "comma" | "semicolon" | "period" | "space",
@@ -199,6 +205,7 @@ public class AsyncExportService {
      * - An optional list of subdata column names. May only be set if "subData" is true
      * - The gridColumnId that contains the record id
      * - An optional id filter to limit the export data. If not set, the complete query result will be exported
+     * - A timezone string to convert timestamps to
      * - An optional filename used for download
      * <p>
      * Input format:
@@ -217,6 +224,7 @@ public class AsyncExportService {
      *   "subDataColumns": [ [string] ]
      *   "idField": [number]
      *   idFilter: [ [number] ],
+     *   "timezone": [string],
      *   filename: [string]
      * }
      * <p>

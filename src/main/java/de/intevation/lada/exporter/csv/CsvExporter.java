@@ -13,13 +13,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 
 import javax.inject.Inject;
 import javax.json.JsonObject;
@@ -86,18 +91,33 @@ public class CsvExporter implements Exporter{
         return String.format("%s - %s", stufe.getStufe(), wert.getWert());
     }
 
-    private String[] getReadableColumnNames (String[] keys) {
+    /**
+     * Return an array of readable column names.
+     *
+     * The names are either fetched from the database or used from the given sub data column name object
+     * @param keys Keys to get name for
+     * @param subDataColumnNames Object containing sub data column names
+     * @return Name array
+     */
+    private String[] getReadableColumnNames (String[] keys, JsonObject subDataColumnNames) {
         String[] names = new String[keys.length];
         ArrayList<String> keysList = new ArrayList<String>(Arrays.asList(keys));
-        QueryBuilder<GridColumn> builder = new QueryBuilder<GridColumn>(
-            repository.entityManager(Strings.STAMM),
-            GridColumn.class);
-        builder.andIn("dataIndex", Arrays.asList(keys));
-        List<GridColumn> columns = repository.filterPlain(builder.getQuery(), Strings.STAMM);
-        columns.forEach(column -> {
-            String name = column.getName();
-            String dataIndex = column.getDataIndex();
-            names[keysList.indexOf(dataIndex)] = name;
+        keysList.forEach(key -> {
+            QueryBuilder<GridColumn> builder = new QueryBuilder<GridColumn>(
+                repository.entityManager(Strings.STAMM),
+                GridColumn.class);
+            builder.and("dataIndex",key);
+            List<GridColumn> result = repository.filterPlain(builder.getQuery(), Strings.STAMM);
+            String name = key;
+            if (result.size() > 0) {
+                GridColumn column = result.get(0);
+                name = column.getName();
+            } else {
+                name = subDataColumnNames.containsKey(key)?
+                    subDataColumnNames.getString(key):
+                    key;
+            }
+            names[keysList.indexOf(key)] = name;
         });
         return names;
     }
@@ -114,6 +134,8 @@ public class CsvExporter implements Exporter{
      *                  <li> fieldSeparator: "comma" | "semicolon" | "period" | "space", defaults to "comma" </li>
      *                  <li> rowDelimiter: "windows" | "linux", defaults to "windows" </li>
      *                  <li> quoteType: "singlequote" | "doublequote", defaults to "doublequote" </li>
+     *                  <li> timezone: Target timezone for timestamp conversion </li>
+     *                  <li> subDataColumnNames: JsonObject containing dataIndex:ColumnName key-value-pairs used to get readable column names </li>
      *                </ul>
      *                Invalid options will cause the export to fail.
      * 
@@ -129,6 +151,8 @@ public class CsvExporter implements Exporter{
         char fieldSeparator = CsvOptions.valueOf("comma").getChar();
         String rowDelimiter = CsvOptions.valueOf("windows").getValue();
         char quoteType = CsvOptions.valueOf("doublequote").getChar();
+        String timezoneOption = "UTC";
+        JsonObject subDataColumnNames = null;
         //Parse options
         if (options != null) {
             try {
@@ -144,6 +168,8 @@ public class CsvExporter implements Exporter{
                 quoteType = CsvOptions.valueOf(
                     options.containsKey("quoteType")?
                     options.getString("quoteType"): "doublequote").getChar();
+                timezoneOption = options.containsKey("timezone")? options.getString("timezone"): "UTC";
+                subDataColumnNames = options.containsKey("subDataColumnNames")? options.getJsonObject("subDataColumnNames"): null;
             } catch (IllegalArgumentException iae) {
                 logger.error(String.format("Invalid CSV options: %s", options.toString()));
                 return null;
@@ -167,7 +193,7 @@ public class CsvExporter implements Exporter{
             columnsToInclude.toArray(keys);
         }
 
-        String[] header = getReadableColumnNames(keys);
+        String[] header = getReadableColumnNames(keys, subDataColumnNames);
         //Create CSV format
         CSVFormat format = CSVFormat.DEFAULT
             .withDelimiter(fieldSeparator)
@@ -179,12 +205,13 @@ public class CsvExporter implements Exporter{
 
         try {
             final CSVPrinter printer = new CSVPrinter(result, format);
-
+            final String timezone = timezoneOption;
             //For every queryResult row
             queryResult.forEach(row -> {
                 ArrayList<String> rowItems = new ArrayList<String>();
                 for (int i = 0; i < keys.length; i++) {
                     Object value = row.get(keys[i]);
+
                     //Value is a status kombi
                     if (keys[i].equals("statusK")) {
                         rowItems.add(getStatusStringByid((Integer) value));
@@ -192,6 +219,14 @@ public class CsvExporter implements Exporter{
                     }
                     if (value instanceof Double) {
                         rowItems.add(decimalFormat.format((Double) value));
+                    } if (value instanceof Timestamp) {
+                        //Convert to target timezone
+                        Timestamp time = (Timestamp) value;
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(new Date(time.getTime()));
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                        sdf.setTimeZone(TimeZone.getTimeZone(timezone));
+                        rowItems.add(sdf.format(calendar.getTime()));
                     } else {
                         rowItems.add(value != null? value.toString(): "null");
                     }
