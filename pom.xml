@@ -461,10 +461,6 @@
             <id>OSGEO Release Repo</id>
             <url>https://repo.osgeo.org/repository/release</url>
         </repository>
-        <repository>
-            <id>Hibernate Spatial repo</id>
-            <url>http://www.hibernatespatial.org/repository</url>
-        </repository>
     </repositories>
     <version>4.0.1-SNAPSHOT</version>
 </project>
