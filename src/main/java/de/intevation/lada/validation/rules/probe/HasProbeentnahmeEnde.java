@@ -27,7 +27,8 @@ public class HasProbeentnahmeEnde implements Rule {
     public Violation execute(Object object) {
         Probe probe = (Probe)object;
         Timestamp ende = probe.getProbeentnahmeEnde();
-        if (probe.getDatenbasisId() != null && (probe.getDatenbasisId() == 4 && probe.getProbenartId()==9 && ende == null) || ((probe.getProbenartId()==9 || probe.getProbenartId()==3) && probe.getDatenbasisId()!=4 && ende == null)){
+        if ( probe.getDatenbasisId() != null && probe.getProbenartId()!= null && ((probe.getDatenbasisId() == 4 && probe.getProbenartId()==9 && ende == null) 
+             || ((probe.getProbenartId()==9 || probe.getProbenartId()==3) && probe.getDatenbasisId()!=4 && ende == null)) ){
             Violation violation = new Violation();
             violation.addWarning("probeentnahmeEnde", 631);
             return violation;
