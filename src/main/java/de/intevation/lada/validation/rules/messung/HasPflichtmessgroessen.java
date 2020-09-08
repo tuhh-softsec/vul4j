@@ -78,7 +78,7 @@ public class HasPflichtmessgroessen implements Rule {
                 repository.entityManager(Strings.STAMM),
                 PflichtMessgroesse.class);
         builderGrpS2.and("messMethodeId", messung.getMmtId());
-        builderGrpS2.and("umwId", probe.getUmwId() == null ? null : probe.getUmwId().substring(0,2));
+        builderGrpS2.and("umwId", probe.getUmwId() == null ? null : probe.getUmwId().length() >= 1 ? null : probe.getUmwId().substring(0,2));
         builderGrpS2.and("datenbasisId", probe.getDatenbasisId());
         Response responseGrpS2 = repository.filter(builderGrpS2.getQuery(), Strings.STAMM);
         @SuppressWarnings("unchecked")
