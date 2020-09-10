@@ -218,11 +218,11 @@ public class ProbeService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getById(
         @Context HttpHeaders headers,
-        @PathParam("id") String id,
+        @PathParam("id") Integer id,
         @Context HttpServletRequest request
     ) {
         Response response =
-            repository.getById(Probe.class, Integer.valueOf(id), Strings.LAND);
+            repository.getById(Probe.class, id, Strings.LAND);
         Violation violation = validator.validate(response.getData());
         if (violation.hasWarnings()) {
             response.setWarnings(violation.getWarnings());
