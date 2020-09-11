@@ -99,7 +99,7 @@ public class StatusService {
 
     @Inject
     @RepositoryConfig(type = RepositoryType.RO)
-    private Repository repository;
+    private Repository readOnlyRepo;
 
     /**
      * The object lock mechanism.
@@ -322,7 +322,7 @@ public class StatusService {
             newStatusWert == 2 ||
             newStatusWert == 7
         ) {
-            Probe probe = repository.getByIdPlain(
+            Probe probe = readOnlyRepo.getByIdPlain(
                 Probe.class, messung.getProbeId(), "land");
             // init violation_collection with probe validation
             violation_collection = probeValidator.validate(probe);
@@ -335,17 +335,15 @@ public class StatusService {
 
             //validate messwert objects
             QueryBuilder<Messwert> builder = new QueryBuilder<Messwert>(
-                    repository.entityManager(Strings.LAND), Messwert.class);
+                    readOnlyRepo.entityManager(Strings.LAND), Messwert.class);
             builder.and("messungsId", messung.getId());
-            Response messwertQry = repository.filter(builder.getQuery(), Strings.LAND);
+            Response messwertQry = readOnlyRepo.filter(builder.getQuery(), Strings.LAND);
             @SuppressWarnings("unchecked")
             List<Messwert> messwerte = (List<Messwert>) messwertQry.getData();
             boolean hasValidMesswerte = false;
             for (Messwert messwert: messwerte) {
                 violation = messwertValidator.validate(messwert);
-                boolean hasNoMesswert = (
-                    violation.hasWarnings() &&
-                    violation.getWarnings().containsKey("messwert"));
+                boolean hasNoMesswert = messwert.getMesswert() == null;
                 if (newStatusWert == 7 && hasNoMesswert == false) {
                     hasValidMesswerte = true;
                     Violation error = new Violation();
@@ -357,13 +355,13 @@ public class StatusService {
                     violation_collection.addWarnings(violation.getWarnings());
                 }
                 violation_collection.addNotifications(violation.getNotifications());
-                if (hasValidMesswerte = true) {
+                if (hasValidMesswerte == true) {
                     break;
                 }
             }
             if (newStatusWert == 7 && hasValidMesswerte == false) {
                 for (int i = 0; i < messwerte.size(); i++) {
-                    repository.delete(messwerte.get(i), Strings.LAND);
+                    defaultRepo.delete(messwerte.get(i), Strings.LAND);
                 }
             }
             // validate statusobject
