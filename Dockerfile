@@ -85,7 +85,6 @@ RUN ln -fs $PWD/wildfly/hibernate-module.xml \
 RUN sed -i '/<\/dependencies>/i         <module name="org.postgres"/>' \
     $JBOSS_HOME/modules/system/layers/base/org/jboss/ironjacamar/jdbcadapters/main/module.xml
 RUN ln -fs $PWD/wildfly/standalone.conf $JBOSS_HOME/bin/
-RUN ln -fs $PWD/wildfly/standalone.xml $JBOSS_HOME/standalone/configuration/standalone.xml
 
 RUN wildfly/execute.sh
 
