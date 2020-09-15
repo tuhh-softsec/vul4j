@@ -1812,6 +1812,7 @@ public class LafObjectMapper {
                 }
             }
             value = value.replace(" ", "0");
+            value = value.replace("-", "0");
             List<String> tmp = new ArrayList<String>();
             tmp.add("D:");
             for (int i =  0; i < value.length() - 4; i += 2) {
