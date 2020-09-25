@@ -869,9 +869,11 @@ public class LafObjectMapper {
           }
         }
 
-        //Validate / Create Status
-        if (object.getAttributes().containsKey("BEARBEITUNGSSTATUS")) {
-	   createStatusProtokoll(object.getAttributes().get("BEARBEITUNGSSTATUS"), newMessung, mstId);
+        // Validate / Create Status
+        if (!object.hasErrors()) {
+            if (object.getAttributes().containsKey("BEARBEITUNGSSTATUS")) {
+                createStatusProtokoll(object.getAttributes().get("BEARBEITUNGSSTATUS"), newMessung, mstId);
+            }
         }
     }
 

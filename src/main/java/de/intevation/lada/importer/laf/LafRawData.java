@@ -99,6 +99,7 @@ public class LafRawData {
         private Map<String, String> attributes;
         private List<Map<String, String>> messwert;
         private List<Map<String, String>> kommentar;
+        private boolean hasErrors;
 
         public Messung() {
             this.attributes = new HashMap<String, String>();
@@ -128,6 +129,14 @@ public class LafRawData {
 
         public List<Map<String, String>> getKommentare() {
             return this.kommentar;
+        }
+
+        public boolean hasErrors() {
+            return hasErrors;
+        }
+
+        public void setHasErrors(boolean hasErrors) {
+            this.hasErrors = hasErrors;
         }
     }
 
