@@ -97,11 +97,11 @@ public class DeskriptorToUmwelt implements Rule {
                 ndParent = data.get(0).getId();
             }
         }
-        Violation violation = validateUmwelt(mediaIds, probe.getUmwId());
+        Violation violation = validateUmwelt(mediaIds, probe.getUmwId(), probe.getDatenbasisId());
         return violation;
     }
 
-    private Violation validateUmwelt(List<Integer> media, String umwId) {
+    private Violation validateUmwelt(List<Integer> media, String umwId, Integer datenbasisId) {
         if (media.size() == 0) {
             Violation violation = new Violation();
             violation.addWarning("umwId#" + umwId, 632);
@@ -121,7 +121,9 @@ public class DeskriptorToUmwelt implements Rule {
                 builder.and(tmp);
             }
             else {
+                if (datenbasisId != 4 && datenbasisId != 1){
                 builder.and(field, null);
+                }
             }
         }
         Response response = repository.filter(builder.getQuery(), Strings.STAMM);
@@ -137,10 +139,19 @@ public class DeskriptorToUmwelt implements Rule {
         if (unique && umwId.equals(data.get(0).getUmwId())) {
             return null;
         }
-        else if (unique && !umwId.equals(data.get(0).getUmwId())) {
+        else if (unique && !umwId.equals(data.get(0).getUmwId()) && datenbasisId != 4) {
             Violation violation = new Violation();
             violation.addWarning("umwId#" + umwId, 632);
             return violation;
+        }
+	else if (!unique && (datenbasisId == 4 || datenbasisId == 1)) {
+           if ( data.size() !=  data.stream().filter(element -> element.getUmwId().equals(umwId)).count() ){
+            Violation violation = new Violation();
+            violation.addNotification("umwId#"+umwId, 632);
+            return violation;
+            } else {
+            return null;
+            }
         }
         else {
             for (int i = 0; i < data.size(); i++) {
