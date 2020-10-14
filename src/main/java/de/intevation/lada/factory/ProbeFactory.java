@@ -396,7 +396,8 @@ public class ProbeFactory {
             repository.filterPlain(builderProbe.getQuery(), Strings.LAND);
 
         if (!proben.isEmpty()) {
-            toProtocol(proben.get(0), true);
+            proben.get(0).setFound(true);
+            toProtocol(proben.get(0));
             protocol.add(currentProtocol);
             return proben.get(0);
         }
@@ -417,8 +418,9 @@ public class ProbeFactory {
         probe.setMplId(messprogramm.getMplId());
         probe.setReiProgpunktGrpId(messprogramm.getReiProgpunktGrpId());
         probe.setKtaGruppeId(messprogramm.getKtaGruppeId());
+        probe.setFound(false);
         repository.create(probe, Strings.LAND);
-        toProtocol(probe, false);
+        toProtocol(probe);
 
         if (messprogramm.getProbeKommentar() != null &&
             !messprogramm.getProbeKommentar().equals("")) {
@@ -486,7 +488,7 @@ public class ProbeFactory {
         return probe;
     }
 
-    private void toProtocol(Probe probe, boolean found) {
+    private void toProtocol(Probe probe) {
         currentProtocol.put("id", probe.getId());
         currentProtocol.put("externeProbeId", probe.getExterneProbeId());
         currentProtocol.put("mstId", probe.getMstId());
@@ -499,7 +501,7 @@ public class ProbeFactory {
         currentProtocol.put("mediaDesk", probe.getMediaDesk());
         currentProtocol.put("umwId", probe.getUmwId());
         currentProtocol.put("probeNehmerId", probe.getProbeNehmerId());
-        currentProtocol.put("found", found);
+        currentProtocol.put("found", probe.isFound());
     }
 
     /**
