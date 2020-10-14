@@ -407,58 +407,11 @@ public class ProbeService {
                 start,
                 end);
     
-            List<Map<String, Object>> returnValue = new ArrayList<>();
-            QueryBuilder<MessprogrammMmt> builder = new QueryBuilder<>(
-                repository.entityManager("land"),
-                MessprogrammMmt.class
-            );
-            builder.and("messprogrammId", messprogramm.getId());
-            List<MessprogrammMmt> messmethoden =
-                repository.filterPlain(builder.getQuery(), "land");
-            QueryBuilder<OrtszuordnungMp> ortBuilder = new QueryBuilder<>(
-                repository.entityManager("land"),
-                OrtszuordnungMp.class
-            );
-            ortBuilder.and("messprogrammId", messprogramm.getId());
-            if (messprogramm.getDatenbasisId() == 4) {
-                ortBuilder.and("ortszuordnungTyp", "R");
-            } else {
-                ortBuilder.and("ortszuordnungTyp", "E");
-            }
-            List<OrtszuordnungMp> ortszuordnung = repository.filterPlain(ortBuilder.getQuery(), "land");
-            String gemId = null;
-            if (!ortszuordnung.isEmpty()) {
-                Ort ort = repository.getByIdPlain(Ort.class, ortszuordnung.get(0).getOrtId(), "stamm");
-                gemId = ort.getGemId();
-            }
-
             for (Probe probe : proben) {
-                generatedProbeIds.add(probe.getId());
-                Map<String, Object> value = new HashMap<>();
-                value.put("id", probe.getId());
-                value.put("externeProbeId", probe.getExterneProbeId());
-                value.put("mstId", probe.getMstId());
-                value.put("datenbasisId", probe.getDatenbasisId());
-                value.put("baId", probe.getBaId());
-                value.put("probenartId", probe.getProbenartId());
-                value.put("solldatumBeginn", probe.getSolldatumBeginn());
-                value.put("solldatumEnde", probe.getSolldatumEnde());
-                value.put("mprId", probe.getMprId());
-                value.put("mediaDesk", probe.getMediaDesk());
-                value.put("umwId", probe.getUmwId());
-                value.put("probeNehmerId", probe.getProbeNehmerId());
-                value.put("MessungCount", messmethoden.size());
-                String mmts = "";
-                for (int i = 0; i < messmethoden.size(); i++) {
-                    mmts += messmethoden.get(i).getMmtId();
-                    if (i < messmethoden.size() - 1) {
-                        mmts += ", ";
-                    }
-                }
-                value.put("mmt", mmts);
-                value.put("gemId", gemId);
-                returnValue.add(value);
+                if (!probe.isFound())
+                    generatedProbeIds.add(probe.getId());
             }
+            List<Map<String, Object>> returnValue = factory.getProtocol();
             data.put("success", true);
             data.put("message", 200);
             data.put("data", returnValue);
