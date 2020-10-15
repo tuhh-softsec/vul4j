@@ -7,7 +7,6 @@
  */
 package de.intevation.lada.rest;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,12 +15,8 @@ import java.util.Map;
 import javax.ejb.EJBTransactionRolledbackException;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.JsonString;
-import javax.json.JsonValue;
 import javax.persistence.TransactionRequiredException;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
@@ -42,17 +37,13 @@ import de.intevation.lada.lock.LockConfig;
 import de.intevation.lada.lock.LockType;
 import de.intevation.lada.lock.ObjectLocker;
 import de.intevation.lada.model.land.Messprogramm;
-import de.intevation.lada.model.land.MessprogrammMmt;
-import de.intevation.lada.model.land.OrtszuordnungMp;
 import de.intevation.lada.model.land.Probe;
-import de.intevation.lada.model.stammdaten.Ort;
 import de.intevation.lada.model.stammdaten.Tag;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
 import de.intevation.lada.util.auth.AuthorizationType;
 import de.intevation.lada.util.auth.UserInfo;
-import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.data.Strings;
@@ -169,7 +160,6 @@ public class ProbeService {
      *
      * @return Response object containing all Probe objects.
      */
-    @SuppressWarnings("unchecked")
     @GET
     @Path("/")
     @Produces("application/json")
@@ -345,6 +335,16 @@ public class ProbeService {
             return new Response(false, 600, null);
         }
 
+        // This is due to the requiremment that the dryrun variable has to be
+        // effectively final.
+        boolean dryrun;
+        if (object.containsKey("dryrun")) {
+            dryrun = object.getBoolean("dryrun");
+        }
+        else {
+            dryrun = false;
+        }
+
         UserInfo userInfo = authorization.getInfo(request);
         String mstId = userInfo.getMessstellen().get(0);
 
@@ -405,7 +405,8 @@ public class ProbeService {
             List<Probe> proben = factory.create(
                 messprogramm,
                 start,
-                end);
+                end,
+                dryrun);
     
             for (Probe probe : proben) {
                 if (!probe.isFound())

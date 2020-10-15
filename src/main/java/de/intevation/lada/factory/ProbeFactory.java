@@ -299,7 +299,7 @@ public class ProbeFactory {
      *
      * @return List of probe objects.
      */
-    public List<Probe> create(Messprogramm messprogramm, Long from, Long to) {
+    public List<Probe> create(Messprogramm messprogramm, Long from, Long to, boolean dryrun) {
         protocol = new ArrayList<>();
         Calendar start = Calendar.getInstance();
         start.setTimeInMillis(from);
@@ -358,7 +358,8 @@ public class ProbeFactory {
                 Probe probe = createObjects(
                     messprogramm,
                     sollFrom.getTime(),
-                    sollTo.getTime()
+                    sollTo.getTime(),
+                    dryrun
                 );
                 if (probe != null) {
                     proben.add(probe);
@@ -381,7 +382,8 @@ public class ProbeFactory {
     private Probe createObjects(
         Messprogramm messprogramm,
         Date startDate,
-        Date endDate
+        Date endDate,
+        boolean dryrun
     ) {
         currentProtocol = new HashMap<>();
         QueryBuilder<Probe> builderProbe =
@@ -397,7 +399,7 @@ public class ProbeFactory {
 
         if (!proben.isEmpty()) {
             proben.get(0).setFound(true);
-            toProtocol(proben.get(0));
+            toProtocol(proben.get(0), dryrun);
             protocol.add(currentProtocol);
             return proben.get(0);
         }
@@ -419,8 +421,8 @@ public class ProbeFactory {
         probe.setReiProgpunktGrpId(messprogramm.getReiProgpunktGrpId());
         probe.setKtaGruppeId(messprogramm.getKtaGruppeId());
         probe.setFound(false);
-        repository.create(probe, Strings.LAND);
-        toProtocol(probe);
+        createObject(probe, dryrun);
+        toProtocol(probe, dryrun);
 
         if (messprogramm.getProbeKommentar() != null &&
             !messprogramm.getProbeKommentar().equals("")) {
@@ -430,7 +432,7 @@ public class ProbeFactory {
             kommentar.setText(messprogramm.getProbeKommentar());
             kommentar.setMstId(messprogramm.getMstId());
 
-            repository.create(kommentar, Strings.LAND);
+            createObject(kommentar, dryrun);
         }
 
         QueryBuilder<MessprogrammMmt> builder =
@@ -449,7 +451,7 @@ public class ProbeFactory {
             messung.setGeplant(true);
             messung.setMmtId(mmt.getMmtId());
             messung.setProbeId(probe.getId());
-            repository.create(messung, Strings.LAND);
+            createObject(messung, dryrun);
             messungProtocol.add(mmt.getMmtId());
             for (int mw : mmt.getMessgroessen()) {
                 Messwert wert = new Messwert();
@@ -460,7 +462,7 @@ public class ProbeFactory {
                 } else {
                     wert.setMehId(0);
                 }
-                repository.create(wert, Strings.LAND);
+                createObject(wert, dryrun);
             }
         }
         currentProtocol.put("mmt", messungProtocol);
@@ -477,18 +479,20 @@ public class ProbeFactory {
             ortP.setProbeId(probe.getId());
             ortP.setOrtId(ort.getOrtId());
             ortP.setOrtszusatztext(ort.getOrtszusatztext());
-            repository.create(ortP, Strings.LAND);
+            createObject(ortP, dryrun);
             Ort o = repository.getByIdPlain(Ort.class, ortP.getOrtId(), "stamm");
             currentProtocol.put("gemId", o.getGemId());
         }
         // Reolad the probe to have the old id
-        probe = (Probe)repository.getById(
-            Probe.class, probe.getId(), Strings.LAND).getData();
+        if (!dryrun) {
+            probe = (Probe)repository.getById(
+                Probe.class, probe.getId(), Strings.LAND).getData();
+        }
         protocol.add(currentProtocol);
         return probe;
     }
 
-    private void toProtocol(Probe probe) {
+    private void toProtocol(Probe probe, boolean dryrun) {
         currentProtocol.put("id", probe.getId());
         currentProtocol.put("externeProbeId", probe.getExterneProbeId());
         currentProtocol.put("mstId", probe.getMstId());
@@ -502,6 +506,13 @@ public class ProbeFactory {
         currentProtocol.put("umwId", probe.getUmwId());
         currentProtocol.put("probeNehmerId", probe.getProbeNehmerId());
         currentProtocol.put("found", probe.isFound());
+        currentProtocol.put("dryrun", dryrun);
+    }
+
+    private void createObject(Object item, boolean dryrun) {
+        if (!dryrun) {
+            repository.create(item, Strings.LAND);
+        }
     }
 
     /**
