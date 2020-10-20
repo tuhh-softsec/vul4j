@@ -394,13 +394,39 @@ public class ProbeFactory {
         builderProbe.and("solldatumBeginn", startDate);
         builderProbe.and("solldatumEnde", endDate);
 
+        QueryBuilder<MessprogrammMmt> builder =
+            new QueryBuilder<MessprogrammMmt>(
+                    repository.entityManager(Strings.LAND),
+                    MessprogrammMmt.class);
+        builder.and("messprogrammId", messprogramm.getId());
+        Response response = repository.filter(builder.getQuery(), Strings.LAND);
+        @SuppressWarnings("unchecked")
+        List<MessprogrammMmt> mmts = (List<MessprogrammMmt>)response.getData();
+        List<String> messungProtocol = new ArrayList<>();
         List<Probe> proben =
             repository.filterPlain(builderProbe.getQuery(), Strings.LAND);
+
+        QueryBuilder<OrtszuordnungMp> builderOrt =
+            new QueryBuilder<OrtszuordnungMp>(
+                repository.entityManager(Strings.LAND),
+                OrtszuordnungMp.class);
+        builderOrt.and("messprogrammId", messprogramm.getId());
+        List<OrtszuordnungMp> orte =
+            repository.filterPlain(builderOrt.getQuery(), Strings.LAND);
 
         if (!proben.isEmpty()) {
             proben.get(0).setFound(true);
             toProtocol(proben.get(0), dryrun);
             protocol.add(currentProtocol);
+            for (int i = 0; i < mmts.size(); i++) {
+                MessprogrammMmt mmt = mmts.get(i);
+                messungProtocol.add(mmt.getMmtId());
+            }
+            currentProtocol.put("mmt", messungProtocol);
+            for (OrtszuordnungMp ort : orte) {
+                Ort o = repository.getByIdPlain(Ort.class, ort.getOrtId(), "stamm");
+                currentProtocol.put("gemId", o.getGemId());
+            }
             return proben.get(0);
         }
         Probe probe = new Probe();
@@ -435,15 +461,6 @@ public class ProbeFactory {
             createObject(kommentar, dryrun);
         }
 
-        QueryBuilder<MessprogrammMmt> builder =
-            new QueryBuilder<MessprogrammMmt>(
-                    repository.entityManager(Strings.LAND),
-                    MessprogrammMmt.class);
-        builder.and("messprogrammId", messprogramm.getId());
-        Response response = repository.filter(builder.getQuery(), Strings.LAND);
-        @SuppressWarnings("unchecked")
-        List<MessprogrammMmt> mmts = (List<MessprogrammMmt>)response.getData();
-        List<String> messungProtocol = new ArrayList<>();
         for (int i = 0; i < mmts.size(); i++) {
             MessprogrammMmt mmt = mmts.get(i);
             Messung messung = new Messung();
@@ -466,13 +483,6 @@ public class ProbeFactory {
             }
         }
         currentProtocol.put("mmt", messungProtocol);
-        QueryBuilder<OrtszuordnungMp> builderOrt =
-            new QueryBuilder<OrtszuordnungMp>(
-                repository.entityManager(Strings.LAND),
-                OrtszuordnungMp.class);
-        builderOrt.and("messprogrammId", messprogramm.getId());
-        List<OrtszuordnungMp> orte =
-            repository.filterPlain(builderOrt.getQuery(), Strings.LAND);
         for (OrtszuordnungMp ort : orte) {
             Ortszuordnung ortP = new Ortszuordnung();
             ortP.setOrtszuordnungTyp(ort.getOrtszuordnungTyp());
