@@ -358,7 +358,7 @@
                             <includeTestSourceDirectory>true</includeTestSourceDirectory>
                             <includeResources>false</includeResources>
                             <includeTestResources>false</includeTestResources>
-                            <excludes>**/LafBaseListener.java,**/LafListener.java,**/LafParser.java</excludes>
+                            <excludes>**/LafBaseListener.java,**/LafListener.java,**/LafParser.java,**/LafLexer.java</excludes>
                             <logViolationsToConsole>false</logViolationsToConsole>
                             <failOnViolation>false</failOnViolation>
                         </configuration>
