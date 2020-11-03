@@ -9,7 +9,7 @@ import javax.persistence.Id;
 
 /**
  * The persistent class for the messgroesse database table.
- * 
+ *
  */
 @Entity
 public class Messgroesse implements Serializable {

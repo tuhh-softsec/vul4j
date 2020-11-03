@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the netz_betreiber database table.
- * 
+ *
  */
 @Entity
 @Table(name="netz_betreiber")

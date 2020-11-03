@@ -88,7 +88,7 @@ public class JsonExporter implements Exporter {
      *                  <li> subData: key of the subData json object, optional </li>
      *                  <li> timezone: Target timezone for timestamp conversion </li>
      *                </ul>
-     * 
+     *
      * @param columnsToInclude List of column names to include in the export. If not set, all columns will be exported
      * @return Export result as input stream or null if the export failed
      */
@@ -257,7 +257,7 @@ public class JsonExporter implements Exporter {
                 probe.put("prnBezeichnung", probenehmer.getBezeichnung());
                 probe.put("prnKurzBezeichnung", probenehmer.getKurzBezeichnung());
             }
-         
+
             addMessungen(proben.get(i));
             addKommentare(proben.get(i));
             addZusatzwerte(proben.get(i));

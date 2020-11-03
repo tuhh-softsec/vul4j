@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 /**
  * The persistent class for the zeitbasis database table.
- * 
+ *
  */
 @Entity
 @NamedQuery(name="Zeitbasis.findAll", query="SELECT z FROM Zeitbasis z")

@@ -13,7 +13,7 @@ import javax.persistence.Transient;
 
 /**
  * The persistent class for the probenehmer database table.
- * 
+ *
  */
 @Entity
 public class Probenehmer implements Serializable {

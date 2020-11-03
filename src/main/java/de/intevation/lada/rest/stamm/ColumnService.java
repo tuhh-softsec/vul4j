@@ -114,7 +114,7 @@ public class ColumnService {
         Root<GridColumn> root = criteriaQuery.from(GridColumn.class);
         Predicate filter = builder.equal(root.get("baseQuery"), id);
         criteriaQuery.where(filter);
-        
+
         List<GridColumn> queries = repository.filterPlain(criteriaQuery, Strings.STAMM);
 
         return new Response(true, 200, queries);

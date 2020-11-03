@@ -90,7 +90,7 @@ public class LafExportJob extends ExportJob {
                 pIds.add(p.getId());
             }
         }
-        
+
         List<Integer> mIds = new ArrayList<Integer>();
         if (!messungIds.isEmpty()) {
             QueryBuilder<Messung> mBuilder = new QueryBuilder<Messung>(

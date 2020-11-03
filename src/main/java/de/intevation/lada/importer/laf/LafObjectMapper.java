@@ -253,7 +253,7 @@ public class LafObjectMapper {
                 	if(oldProbeIsReadonly) {
                     		newProbe = old;
                     		currentNotifications.add(new ReportItem("probe", old.getExterneProbeId(), 676));
-                	} 
+                	}
                 	else {
                     		if(merger.merge(old, probe)) {
                         		newProbe = old;
@@ -803,17 +803,17 @@ public class LafObjectMapper {
                     currentWarnings.add(new ReportItem(
                         (object.getMesswerte().get(i).get("MESSGROESSE_ID") == null) ?
                             "MESSWERT - MESSGROESSE" :
-                            "MESSWERT - MESSGROESSE_ID", 
+                            "MESSWERT - MESSGROESSE_ID",
                         (object.getMesswerte().get(i).get("MESSGROESSE_ID") == null) ?
                             object.getMesswerte().get(i).get("MESSGROESSE").toString():
-                            object.getMesswerte().get(i).get("MESSGROESSE_ID").toString(), 
+                            object.getMesswerte().get(i).get("MESSGROESSE_ID").toString(),
                         672));
                 }
                 else {
                 //temporary messwertobjects
                     messwerte.add(tmp);
                     messgroessenListe.add(tmp.getMessgroesseId());
-                }                    
+                }
             }
         }
         messwerte = MesswertNormalizer.normalizeMesswerte(messwerte, probe.getUmwId(), repository);
@@ -851,7 +851,7 @@ public class LafObjectMapper {
                 currentWarnings.add(new ReportItem("Status ", k, value));
               });
             });
-          } 
+          }
 
           if (messw_violation.hasErrors()) {
             messw_violation.getErrors().forEach((k,v)->{
@@ -961,8 +961,8 @@ public class LafObjectMapper {
         doTransforms(zusatzwert);
         if (zusatz == null || zusatz.isEmpty()) {
             currentWarnings.add(new ReportItem(
-                (isId) ? "PROBENZUSATZBESCHREIBUNG" : "PZB_S", 
-                attribute, 
+                (isId) ? "PROBENZUSATZBESCHREIBUNG" : "PZB_S",
+                attribute,
                 675));
             return null;
         }
@@ -1140,7 +1140,7 @@ public class LafObjectMapper {
                 // no further status settings
                 return;
             }
-            else if (currentErrors.isEmpty() && currentWarnings.isEmpty()) { 
+            else if (currentErrors.isEmpty() && currentWarnings.isEmpty()) {
               if (!addStatusProtokollEntry(i, Integer.valueOf(status.substring(i-1, i)), messung, mstId)) {
                 return;
               }
@@ -1227,10 +1227,10 @@ public class LafObjectMapper {
         // check auth
         MessStelle messStelle = repository.getByIdPlain(MessStelle.class, mstId, Strings.STAMM);
         if ((statusStufe == 1 && userInfo.getFunktionenForMst(mstId).contains(1)) ||
-            (statusStufe == 2 && 
+            (statusStufe == 2 &&
                 userInfo.getNetzbetreiber().contains(messStelle.getNetzbetreiberId()) &&
                 userInfo.getFunktionenForNetzbetreiber(messStelle.getNetzbetreiberId()).contains(2)) ||
-            (statusStufe == 3 && 
+            (statusStufe == 3 &&
                 userInfo.getFunktionen().contains(3))) {
             StatusProtokoll newStatus = new StatusProtokoll();
             newStatus.setDatum(new Timestamp(new Date().getTime()));

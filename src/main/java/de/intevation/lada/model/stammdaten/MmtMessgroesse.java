@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the mmt_messgroesse database table.
- * 
+ *
  */
 @Entity
 @Table(name="mmt_messgroesse")

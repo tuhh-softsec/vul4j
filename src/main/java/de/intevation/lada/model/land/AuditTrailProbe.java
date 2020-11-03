@@ -19,7 +19,7 @@ import de.intevation.lada.util.data.JsonObjectType;
 
 /**
  * The persistent class for the audit_trail_probe database table.
- * 
+ *
  */
 @Entity
 @Table(name="audit_trail_probe")

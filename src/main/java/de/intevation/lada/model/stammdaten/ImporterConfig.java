@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 /**
  * The persistent class for the importer_config database table.
- * 
+ *
  */
 @Entity
 @Table(name="importer_config")

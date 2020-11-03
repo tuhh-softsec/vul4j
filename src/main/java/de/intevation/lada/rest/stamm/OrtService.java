@@ -244,7 +244,7 @@ public class OrtService {
             query.where(filter);
         }
         orte = repository.filterPlain(query, Strings.STAMM);
-        
+
         int size = orte.size();
         if (params.containsKey("start") && params.containsKey("limit")) {
             int start = Integer.valueOf(params.getFirst("start"));

@@ -283,7 +283,7 @@ public class ExportJobManager {
      * timestamp: Timestamp in seconds the identifier was set to the next value (64 bits)
      * sequenceNumber: Sequence number, will be reset for each timestamp (16 bits)
      * randomPart: Random number (32 bits)
-     * 
+     *
      * The hexadecimal representation will contain leading zeroes.
      */
     private static class JobIdentifier {

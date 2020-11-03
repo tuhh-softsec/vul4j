@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the deskriptor_umwelt database table.
- * 
+ *
  */
 @Entity
 @Table(name="deskriptor_umwelt")

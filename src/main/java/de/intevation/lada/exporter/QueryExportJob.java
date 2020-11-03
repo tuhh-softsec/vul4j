@@ -334,11 +334,11 @@ public abstract class QueryExportJob extends ExportJob {
             GridColumnValue columnValue = new GridColumnValue();
             GridColumn gridColumn;
             columnValue.setgridColumnId(columnObj.getInt("gridColumnId"));
-            String sort = columnObj.get("sort") != null 
+            String sort = columnObj.get("sort") != null
                 && columnObj.get("sort").getValueType() == ValueType.STRING ?
                 columnObj.getString("sort"): null;
             columnValue.setSort(sort);
-            Integer sortIndex = columnObj.get("sortIndex") != null 
+            Integer sortIndex = columnObj.get("sortIndex") != null
                 && columnObj.get("sortIndex").getValueType() == ValueType.NUMBER ?
                 columnObj.getInt("sortIndex"): null;
             columnValue.setSortIndex(sortIndex);

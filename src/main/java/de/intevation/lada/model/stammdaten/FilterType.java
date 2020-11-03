@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the filter_type database table.
- * 
+ *
  */
 @Entity
 @Table(name="filter_type")

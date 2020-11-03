@@ -9,7 +9,7 @@ import javax.persistence.Id;
 
 /**
  * The persistent class for the deskriptoren database table.
- * 
+ *
  */
 @Entity
 public class Deskriptoren implements Serializable {

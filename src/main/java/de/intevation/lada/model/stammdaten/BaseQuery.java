@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the base_query database table.
- * 
+ *
  */
 @Entity
 @Table(name="base_query")

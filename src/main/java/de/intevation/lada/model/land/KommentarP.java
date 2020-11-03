@@ -14,7 +14,7 @@ import javax.persistence.Transient;
 
 /**
  * The persistent class for the kommentar_p database table.
- * 
+ *
  */
 @Entity
 @Table(name="kommentar_p", schema="land")

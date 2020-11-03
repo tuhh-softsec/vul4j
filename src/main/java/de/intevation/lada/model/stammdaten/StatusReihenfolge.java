@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the status_reihenfolge database table.
- * 
+ *
  */
 @Entity
 @Table(name="status_reihenfolge")

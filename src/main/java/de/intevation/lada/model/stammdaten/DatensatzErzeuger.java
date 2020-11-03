@@ -14,7 +14,7 @@ import javax.persistence.Transient;
 
 /**
  * The persistent class for the datensatz_erzeuger database table.
- * 
+ *
  */
 @Entity
 @Table(name="datensatz_erzeuger")

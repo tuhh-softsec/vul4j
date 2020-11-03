@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * The persistent class for the ortszuordnung database table.
- * 
+ *
  */
 @Entity
 public class Ortszuordnung implements Serializable {

@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the messgroessen_gruppe database table.
- * 
+ *
  */
 @Entity
 @Table(name="messgroessen_gruppe")

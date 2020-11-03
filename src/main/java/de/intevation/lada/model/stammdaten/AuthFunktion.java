@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the auth_funktion database table.
- * 
+ *
  */
 @Entity
 @Table(name="auth_funktion")

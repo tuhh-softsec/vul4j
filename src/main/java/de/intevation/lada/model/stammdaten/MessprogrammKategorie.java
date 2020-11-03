@@ -14,7 +14,7 @@ import javax.persistence.Transient;
 
 /**
  * The persistent class for the messprogramm_kategorie database table.
- * 
+ *
  */
 @Entity
 @Table(name="messprogramm_kategorie")

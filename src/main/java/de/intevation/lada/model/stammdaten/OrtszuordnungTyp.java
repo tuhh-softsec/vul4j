@@ -13,7 +13,7 @@ import javax.persistence.*;
 
 /**
  * The persistent class for the ortszuordnung_typ database table.
- * 
+ *
  */
 @Entity
 @Table(name="ortszuordnung_typ")

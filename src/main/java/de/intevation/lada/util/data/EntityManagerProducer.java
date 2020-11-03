@@ -54,7 +54,7 @@ public class EntityManagerProducer {
      */
     public EntityManager entityManager(String dataSourceName) {
 
-        EntityManager entityManager = 
+        EntityManager entityManager =
             (EntityManager) this.ctx.lookup(this.jndiPath + dataSourceName);
 
         if (entityManager == null) {

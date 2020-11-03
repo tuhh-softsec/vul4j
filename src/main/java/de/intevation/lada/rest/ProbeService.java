@@ -180,7 +180,7 @@ public class ProbeService {
     ) {
         MultivaluedMap<String, String> params = info.getQueryParameters();
         List<Probe> probes = repository.getAllPlain(Probe.class, Strings.LAND);
-        
+
         int size = probes.size();
         if (params.containsKey("start") && params.containsKey("limit")) {
             int start = Integer.valueOf(params.getFirst("start"));
@@ -308,7 +308,7 @@ public class ProbeService {
         if(violation.hasNotifications()) {
             newProbe.setNotifications(violation.getNotifications());
         }
-        
+
         return authorization.filter(
             request,
             newProbe,
@@ -406,7 +406,7 @@ public class ProbeService {
                 messprogramm,
                 start,
                 end);
-    
+
             List<Map<String, Object>> returnValue = new ArrayList<>();
             QueryBuilder<MessprogrammMmt> builder = new QueryBuilder<>(
                 repository.entityManager("land"),

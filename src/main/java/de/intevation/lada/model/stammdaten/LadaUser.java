@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the lada_user database table.
- * 
+ *
  */
 @Entity
 @Table(name="lada_user")

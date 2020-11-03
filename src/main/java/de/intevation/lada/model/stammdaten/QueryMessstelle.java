@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The persistent class for the query_messstelle database table.
- * 
+ *
  */
 @Entity
 @Table(name="query_messstelle")

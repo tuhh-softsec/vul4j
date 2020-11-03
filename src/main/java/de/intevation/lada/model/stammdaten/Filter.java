@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 /**
  * The persistent class for the filter database table.
- * 
+ *
  */
 @Entity
 @NamedQuery(name="Filter.findAll", query="SELECT f FROM Filter f")

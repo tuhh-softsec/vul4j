@@ -9,7 +9,7 @@ import javax.persistence.Id;
 
 /**
  * The persistent class for the probenart database table.
- * 
+ *
  */
 @Entity
 public class Probenart implements Serializable {

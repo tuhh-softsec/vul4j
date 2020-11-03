@@ -200,7 +200,7 @@ public class LafImportService {
         UserInfo userInfo = authorization.getInfo(request);
 	String mstId = request.getHeader("X-LADA-MST");
 
-	/** Preparation for Client-Update: "Vorbelegung Messstelle" will become mandatory! 
+	/** Preparation for Client-Update: "Vorbelegung Messstelle" will become mandatory!
         *if (mstId.equals("null")) {
         *    return new Response(false, 699, "Missing header for messtelle.");
         *}

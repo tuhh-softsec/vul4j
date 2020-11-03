@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 /**
  * The persistent class for the status_kombi database table.
- * 
+ *
  */
 @Entity
 @Table(name="status_kombi")

@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the status_stufe database table.
- * 
+ *
  */
 @Entity
 @Table(name="status_stufe")

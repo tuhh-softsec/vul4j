@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * The persistent class for the result_type database table.
- * 
+ *
  */
 @Entity
 @Table(name="result_type")

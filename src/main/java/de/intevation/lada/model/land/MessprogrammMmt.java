@@ -17,7 +17,7 @@ import org.hibernate.annotations.TypeDefs;
 import de.intevation.lada.util.data.IntegerArrayType;
 /**
  * The persistent class for the messprogramm_mmt database table.
- * 
+ *
  */
 @Entity
 @Table(name="messprogramm_mmt", schema="land")

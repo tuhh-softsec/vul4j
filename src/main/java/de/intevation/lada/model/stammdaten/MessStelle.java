@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the mess_stelle database table.
- * 
+ *
  */
 @Entity
 @Table(name="mess_stelle")

@@ -11,7 +11,7 @@ import javax.persistence.FetchType;
  * Persistent class containing user column definitions, used for executing Queries
  */
 public class QueryColumns{
-    
+
     @Basic(fetch=FetchType.EAGER)
     private List<GridColumnValue> columns;
 

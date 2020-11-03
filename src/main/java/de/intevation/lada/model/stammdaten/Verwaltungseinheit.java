@@ -14,7 +14,7 @@ import com.vividsolutions.jts.geom.Point;
 
 /**
  * The persistent class for the verwaltungseinheit database table.
- * 
+ *
  */
 @Entity
 public class Verwaltungseinheit implements Serializable {

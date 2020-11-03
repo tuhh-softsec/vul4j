@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the betriebsart database table.
- * 
+ *
  */
 @Entity
 @Table(name="betriebsart")

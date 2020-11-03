@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * The persistent class for the grid_column database table.
- * 
+ *
  */
 @Entity
 @Table(name="grid_column")
@@ -97,7 +97,7 @@ public class GridColumn implements Serializable {
     public Integer getPosition() {
         return this.position;
     }
-    
+
     public void setPosition(Integer position) {
         this.position = position;
     }

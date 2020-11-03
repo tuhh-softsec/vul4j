@@ -22,7 +22,7 @@ import org.hibernate.annotations.DynamicInsert;
 
 /**
  * The persistent class for the messung database table.
- * 
+ *
  */
 // The DynamicInsert Annotation has the effect, that the persisted object still
 // has all the "null"-values. There is no reloading after the persistence

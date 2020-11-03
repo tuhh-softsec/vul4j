@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the proben_zusatz database table.
- * 
+ *
  */
 @Entity
 @Table(name="proben_zusatz")

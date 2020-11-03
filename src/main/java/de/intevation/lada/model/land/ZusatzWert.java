@@ -16,7 +16,7 @@ import javax.persistence.Transient;
 
 /**
  * The persistent class for the zusatz_wert database table.
- * 
+ *
  */
 @Entity
 @Table(name="zusatz_wert", schema="land")

@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * The persistent class for the messwert database table.
- * 
+ *
  */
 @Entity
 @Table(name="messwert", schema="land")

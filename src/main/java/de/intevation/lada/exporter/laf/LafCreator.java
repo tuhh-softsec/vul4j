@@ -152,7 +152,7 @@ implements Creator
                     builder.getQuery(),
                     Strings.STAMM).getData();
             probenart = probenarten.get(0).getProbenart();
-        } 
+        }
 
         MessStelle messstelle =
             repository.getByIdPlain(MessStelle.class, probe.getMstId(), Strings.STAMM);
@@ -342,13 +342,13 @@ implements Creator
                 String.format("%08d", sOrte.get(0).getStaatId()));
         }
 
-        if (sOrte.get(0).getGemId() != null && 
+        if (sOrte.get(0).getGemId() != null &&
             sOrte.get(0).getGemId().length() > 0) {
             laf += lafLine(typePrefix + "GEMEINDESCHLUESSEL",
                 sOrte.get(0).getGemId());
         }
 
-        if (sOrte.get(0).getNutsCode() != null && 
+        if (sOrte.get(0).getNutsCode() != null &&
             sOrte.get(0).getNutsCode().length() > 0) {
             laf += lafLine(typePrefix + "NUTS_CODE",
                 sOrte.get(0).getNutsCode());
@@ -375,7 +375,7 @@ implements Creator
         }
         else if ("U_".equals(typePrefix) && sOrte.get(0).getOzId() != null) {
             laf += lafLine(typePrefix + "ORTS_ZUSATZCODE", sOrte.get(0).getOzId(), CN);
-        } 
+        }
 //        if (sOrte.get(0).getHoeheUeberNn() != null) {
 //            laf += lafLine(typePrefix + "HOEHE_NN",
 //                String.format("%f", sOrte.get(0).getHoeheUeberNn()));
@@ -476,8 +476,8 @@ implements Creator
             messung.getStatus(),
             Strings.LAND);
         StatusKombi currentKombi = repository.getByIdPlain(
-            StatusKombi.class, 
-            currentStatus.getStatusKombi(), 
+            StatusKombi.class,
+            currentStatus.getStatusKombi(),
             Strings.STAMM);
         Integer currenStufe = currentKombi.getStatusStufe().getId();
         if (currenStufe == 1) {

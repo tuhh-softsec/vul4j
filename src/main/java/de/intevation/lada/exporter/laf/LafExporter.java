@@ -39,7 +39,7 @@ implements Exporter
      */
     @Inject
     private LafCreator creator;
-    
+
     /**
      * The repository used to read data.
      */

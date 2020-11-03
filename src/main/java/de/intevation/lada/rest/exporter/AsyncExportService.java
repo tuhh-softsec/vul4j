@@ -65,7 +65,7 @@ public class AsyncExportService {
 
     /**
      * Export data into a csv file.
-     * 
+     *
      * This service takes json formatted POST data containing:
      * - Query parameters used for obtaining the data to. The "export" set whether the field should be export or not.
      *   Note: The column list must contain the record's id column even if it will not be exported.
@@ -197,7 +197,7 @@ public class AsyncExportService {
     }
     /**
      * Export data into a json file.
-     * 
+     *
      * This service takes json formatted POST data containing:
      * - Query parameters used for obtaining the data to. The "export" set whether the field should be export or not.
      *   Note: The column list must contain the record's id column even if it will not be exported.
@@ -345,7 +345,7 @@ public class AsyncExportService {
             logger.error(String.format("Error on reading result file for job %s", id));
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
-        
+
         ResponseBuilder response = Response.ok(resultStream);
             response.header(
                 "Content-Disposition",

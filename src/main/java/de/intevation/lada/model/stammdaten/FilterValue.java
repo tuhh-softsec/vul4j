@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the filter_value database table.
- * 
+ *
  */
 @Entity
 @Table(name="filter_value")

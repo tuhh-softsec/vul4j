@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * The persistent class for the status_protokoll database table.
- * 
+ *
  */
 @Entity
 @Table(name="status_protokoll", schema="land")

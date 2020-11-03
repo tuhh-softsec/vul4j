@@ -9,7 +9,7 @@ import javax.persistence.Id;
 
 /**
  * The persistent class for the staat database table.
- * 
+ *
  */
 @Entity
 public class Staat implements Serializable {

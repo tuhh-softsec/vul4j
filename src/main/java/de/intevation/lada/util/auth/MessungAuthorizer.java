@@ -106,11 +106,11 @@ public class MessungAuthorizer extends BaseAuthorizer {
 
         if (userInfo.belongsTo(probe.getMstId(), probe.getLaborMstId())) {
             messung.setOwner(true);
-            messung.setReadonly(false); 
+            messung.setReadonly(false);
         }
         else {
             messung.setOwner(false);
-            messung.setReadonly(true); 
+            messung.setReadonly(true);
         }
 
         messung.setStatusEdit(false);
@@ -122,8 +122,8 @@ public class MessungAuthorizer extends BaseAuthorizer {
             !userInfo.getFunktionen().contains(2) &&
             !userInfo.getFunktionen().contains(3)) {
             return messung;
-        }    
-            
+        }
+
         StatusProtokoll status = repository.getByIdPlain(
             StatusProtokoll.class,
             messung.getStatus(),

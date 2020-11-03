@@ -16,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The persistent class for the mess_einheit database table.
- * 
+ *
  */
 @Entity
 @Table(name="mess_einheit")
