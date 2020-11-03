@@ -407,10 +407,7 @@ public class LafObjectMapper {
                 }
             }
 
-            // Create messung objects
-            for (int i = 0; i < object.getMessungen().size(); i++) {
-                create(object.getMessungen().get(i), newProbe, newProbe.getMstId());
-            }
+            // Validate probe object
             Violation violation = probeValidator.validate(newProbe);
             for (Entry<String, List<Integer>> err : violation.getErrors().entrySet()) {
                 for (Integer code : err.getValue()) {
@@ -426,6 +423,10 @@ public class LafObjectMapper {
               for (Integer code: notes.getValue()) {
                 currentNotifications.add(new ReportItem("validation", notes.getKey(), code));
               }
+            }
+            // Create messung objects
+            for (int i = 0; i < object.getMessungen().size(); i++) {
+                       create(object.getMessungen().get(i), newProbe, newProbe.getMstId());
             }
         }
         if (!currentErrors.isEmpty()) {
