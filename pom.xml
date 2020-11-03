@@ -360,7 +360,6 @@
                             <includeTestResources>false</includeTestResources>
                             <excludes>**/LafBaseListener.java,**/LafListener.java,**/LafParser.java,**/LafLexer.java</excludes>
                             <logViolationsToConsole>false</logViolationsToConsole>
-                            <failOnViolation>false</failOnViolation>
                         </configuration>
                     </plugin>
                 </plugins>
