@@ -138,7 +138,7 @@ public class CsvExporter implements Exporter{
      *                  <li> subDataColumnNames: JsonObject containing dataIndex:ColumnName key-value-pairs used to get readable column names </li>
      *                </ul>
      *                Invalid options will cause the export to fail.
-     * 
+     *
      * @param columnsToInclude List of column names to include in the export. If not set, all columns will be exported
      * @return Export result as input stream or null if the export failed
      */
@@ -175,7 +175,7 @@ public class CsvExporter implements Exporter{
                 return null;
             }
         }
-        
+
         DecimalFormat decimalFormat = new DecimalFormat();
         DecimalFormatSymbols symbols = decimalFormat.getDecimalFormatSymbols();
         symbols.setDecimalSeparator(decimalSeparator);
@@ -228,7 +228,7 @@ public class CsvExporter implements Exporter{
                         sdf.setTimeZone(TimeZone.getTimeZone(timezone));
                         rowItems.add(sdf.format(calendar.getTime()));
                     } else {
-                        rowItems.add(value != null? value.toString(): "null");
+                        rowItems.add(value != null? value.toString(): null);
                     }
                 }
                 try {
