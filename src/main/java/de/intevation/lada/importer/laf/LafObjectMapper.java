@@ -276,7 +276,7 @@ public class LafObjectMapper {
                                           new ArrayList<ReportItem>(currentNotifications));
                                         }
                         	  return;
-                    		}	
+                            }
                 	}
             	}else{
 		        ReportItem err = new ReportItem();
