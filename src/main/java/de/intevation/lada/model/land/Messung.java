@@ -1,3 +1,10 @@
+/* Copyright (C) 2015 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.model.land;
 
 import java.io.Serializable;
@@ -22,7 +29,7 @@ import org.hibernate.annotations.DynamicInsert;
 
 /**
  * The persistent class for the messung database table.
- * 
+ *
  */
 // The DynamicInsert Annotation has the effect, that the persisted object still
 // has all the "null"-values. There is no reloading after the persistence

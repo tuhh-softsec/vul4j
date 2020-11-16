@@ -1,3 +1,10 @@
+/* Copyright (C) 2018 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.model.stammdaten;
 
 import java.util.List;
@@ -18,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * The persistent class for the grid_column database table.
- * 
+ *
  */
 @Entity
 @Table(name="grid_column")
@@ -97,7 +104,7 @@ public class GridColumn implements Serializable {
     public Integer getPosition() {
         return this.position;
     }
-    
+
     public void setPosition(Integer position) {
         this.position = position;
     }

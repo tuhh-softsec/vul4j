@@ -17,7 +17,7 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the rei_progpunkt_gruppe database table.
- * 
+ *
  */
 @Entity
 @Table(name="rei_progpunkt_gruppe")

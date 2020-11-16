@@ -51,10 +51,41 @@ public class HasPflichtmessgroessen implements Rule {
                 PflichtMessgroesse.class);
         builder.and("messMethodeId", messung.getMmtId());
         builder.and("umwId", probe.getUmwId());
+	builder.and("datenbasisId", probe.getDatenbasisId());
         Response response = repository.filter(builder.getQuery(), Strings.STAMM);
         @SuppressWarnings("unchecked")
         List<PflichtMessgroesse> pflicht =
             (List<PflichtMessgroesse>)response.getData();
+
+        if (pflicht.isEmpty()){
+        QueryBuilder<PflichtMessgroesse> builderGrp =
+            new QueryBuilder<PflichtMessgroesse>(
+                repository.entityManager(Strings.STAMM),
+                PflichtMessgroesse.class);
+        builderGrp.and("messMethodeId", messung.getMmtId());
+        builderGrp.and("umwId", probe.getUmwId() == null ? null : probe.getUmwId().substring(0,1));
+        builderGrp.and("datenbasisId", probe.getDatenbasisId());
+        Response responseGrp = repository.filter(builderGrp.getQuery(), Strings.STAMM);
+        @SuppressWarnings("unchecked")
+        List<PflichtMessgroesse> pflichtGrp =
+            (List<PflichtMessgroesse>)responseGrp.getData();
+	pflicht.addAll(pflichtGrp);
+        }
+
+        if (pflicht.isEmpty()) {
+        QueryBuilder<PflichtMessgroesse> builderGrpS2 =
+            new QueryBuilder<PflichtMessgroesse>(
+                repository.entityManager(Strings.STAMM),
+                PflichtMessgroesse.class);
+        builderGrpS2.and("messMethodeId", messung.getMmtId());
+        builderGrpS2.and("umwId", probe.getUmwId() == null ? null : probe.getUmwId().length() >= 1 ? null : probe.getUmwId().substring(0,2));
+        builderGrpS2.and("datenbasisId", probe.getDatenbasisId());
+        Response responseGrpS2 = repository.filter(builderGrpS2.getQuery(), Strings.STAMM);
+        @SuppressWarnings("unchecked")
+        List<PflichtMessgroesse> pflichtGrpS2 =
+            (List<PflichtMessgroesse>)responseGrpS2.getData();
+        pflicht.addAll(pflichtGrpS2);
+        }
 
         QueryBuilder<Messwert> wertBuilder =
             new QueryBuilder<Messwert>(
@@ -77,9 +108,9 @@ public class HasPflichtmessgroessen implements Rule {
         if (!pflicht.isEmpty()) {
             for (PflichtMessgroesse p : pflicht) {
                 Messgroesse mg = repository.getByIdPlain(Messgroesse.class, p.getMessgroesseId(), Strings.STAMM);
-                violation.addWarning("messgroesse#" + mg.getMessgroesse(), 638);
+                violation.addNotification("messgroesse#" + mg.getMessgroesse(), 638);
             }
         }
-        return violation.hasWarnings() ? violation : null;
+        return violation.hasNotifications() ? violation : null;
     }
 }

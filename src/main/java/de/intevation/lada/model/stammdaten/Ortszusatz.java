@@ -16,7 +16,7 @@ import javax.persistence.Id;
 
 /**
  * The persistent class for the ortszusatz database table.
- * 
+ *
  */
 @Entity
 public class Ortszusatz implements Serializable {

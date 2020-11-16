@@ -1,3 +1,10 @@
+/* Copyright (C) 2015 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.model.land;
 
 import java.io.Serializable;
@@ -17,7 +24,7 @@ import org.hibernate.annotations.TypeDefs;
 import de.intevation.lada.util.data.IntegerArrayType;
 /**
  * The persistent class for the messprogramm_mmt database table.
- * 
+ *
  */
 @Entity
 @Table(name="messprogramm_mmt", schema="land")

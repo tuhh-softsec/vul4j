@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * The persistent class for the messprogramm database table.
- * 
+ *
  */
 @Entity
 @Table(name="messprogramm", schema="land")

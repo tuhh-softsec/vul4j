@@ -20,7 +20,9 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonException;
 import javax.json.JsonNumber;
+import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.json.JsonString;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -51,6 +53,7 @@ import de.intevation.lada.model.land.Messung;
 import de.intevation.lada.model.land.Ortszuordnung;
 import de.intevation.lada.model.land.StatusProtokoll;
 import de.intevation.lada.model.stammdaten.Ort;
+import de.intevation.lada.model.stammdaten.Verwaltungseinheit;
 import de.intevation.lada.util.annotation.AuthorizationConfig;
 import de.intevation.lada.util.annotation.RepositoryConfig;
 import de.intevation.lada.util.auth.Authorization;
@@ -180,43 +183,68 @@ public class OrtService {
 
         List<Ort> orte = new ArrayList<>();
         UserInfo user = authorization.getInfo(request);
-        QueryBuilder<Ort> builder =
-            new QueryBuilder<Ort>(
-                repository.entityManager(Strings.STAMM),
-                Ort.class
-            );
+        EntityManager em = repository.entityManager(Strings.STAMM);
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<Ort> query = builder.createQuery(Ort.class);
+        Root<Ort> root = query.from(Ort.class);
+        Predicate filter = null;
         if (params.containsKey("netzbetreiberId")) {
-            builder.and("netzbetreiberId", params.getFirst("netzbetreiberId"));
+            Predicate netzbetreiberFilter =
+                    builder.equal(root.get("netzbetreiberId"), params.getFirst("netzbetreiberId"));
+            filter = builder.and(netzbetreiberFilter);
         }
         else {
             for (String nb : user.getNetzbetreiber()) {
-                builder.or("netzbetreiberId", nb);
+                builder.or(builder.equal(root.get("netzbetreiberId"), nb));
             }
         }
         if (params.containsKey("search")) {
-            QueryBuilder<Ort> filter = builder.getEmptyBuilder();
-            filter.orLike("ortId", "%"+params.getFirst("search")+"%")
-                .orLike("kurztext", "%"+params.getFirst("search")+"%")
-                .orLike("langtext", "%"+params.getFirst("search")+"%");
-            builder.and(filter);
+            Join<Ort, Verwaltungseinheit> join = root.join("gemeinde", JoinType.LEFT);
+            String pattern = "%"+params.getFirst("search")+"%";
+            Predicate idFilter = builder.like(root.get("ortId"), pattern);
+            Predicate kurzTextFilter = builder.like(root.get("kurztext"), pattern);
+            Predicate langtextFilter = builder.like(root.get("langtext"), pattern);
+            Predicate bezFilter = builder.like(join.get("bezeichnung"), pattern);
+            Predicate searchFilter = builder.or(idFilter, kurzTextFilter, langtextFilter, bezFilter);
+            filter = filter == null? searchFilter: builder.and(filter, searchFilter);
         }
         if (params.containsKey("filter")) {
             String json = params.getFirst("filter");
             JsonReader jsonReader = Json.createReader(new StringReader(json));
             try {
-                JsonArray filter = jsonReader.readArray();
+                //Parse json filters
+                JsonArray jsonFilters = jsonReader.readArray();
+                List<Predicate> jsonPredicates = new ArrayList<Predicate>();
                 jsonReader.close();
-                orte = repository.filterPlain(builder, filter, Strings.STAMM);
+                jsonFilters.forEach(jsonFilter -> {
+                    JsonObject filterObj = (JsonObject) jsonFilter;
+                    JsonString operator = filterObj.getJsonString("operator");
+                    JsonString value = filterObj.getJsonString("value");
+                    JsonString property = filterObj.getJsonString("property");
+                    if (property == null || value == null) {
+                        return;
+                    }
+                    if ("like".equals(operator.getString())) {
+                        Predicate f = builder.like(
+                            root.get(property.getString()), "%"+value.getString()+"%");
+                        jsonPredicates.add(f);
+                    }
+                });
+                if (jsonPredicates.size() > 0) {
+                    Predicate jsonFilterPredicate = builder.and((Predicate[])jsonPredicates.toArray());
+                    filter = filter == null? jsonFilterPredicate: builder.and(filter, jsonFilterPredicate);
+                }
             }
             catch (JsonException |
                 IllegalStateException e) {
                 logger.warn("Use JSON filter at this place.", e);
             }
         }
-        else {
-            orte = repository.filterPlain(builder.getQuery(), Strings.STAMM);
+        if (filter != null) {
+            query.where(filter);
         }
-        
+        orte = repository.filterPlain(query, Strings.STAMM);
+
         int size = orte.size();
         if (params.containsKey("start") && params.containsKey("limit")) {
             int start = Integer.valueOf(params.getFirst("start"));

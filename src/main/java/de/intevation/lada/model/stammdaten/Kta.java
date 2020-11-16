@@ -16,7 +16,7 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the kta database table.
- * 
+ *
  */
 @Entity
 @Table(name="kta")

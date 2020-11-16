@@ -47,7 +47,7 @@ public class MmtMessgroessePK implements Serializable{
             return false;
         }
         MmtMessgroessePK castOther = (MmtMessgroessePK)other;
-        return 
+        return
             this.messgroesseId.equals(castOther.messgroesseId)
             && this.mmtId.equals(castOther.mmtId);
     }

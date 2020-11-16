@@ -17,7 +17,7 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the ort_typ database table.
- * 
+ *
  */
 @Entity
 @Table(name="ort_typ")

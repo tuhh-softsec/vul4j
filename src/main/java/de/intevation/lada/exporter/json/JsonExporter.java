@@ -10,9 +10,23 @@ package de.intevation.lada.exporter.json;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
 
 import javax.inject.Inject;
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -54,7 +68,6 @@ import de.intevation.lada.util.data.QueryBuilder;
 import de.intevation.lada.util.data.Repository;
 import de.intevation.lada.util.data.RepositoryType;
 import de.intevation.lada.util.data.Strings;
-
 @ExportConfig(format=ExportFormat.JSON)
 public class JsonExporter implements Exporter {
 
@@ -64,8 +77,99 @@ public class JsonExporter implements Exporter {
     @RepositoryConfig(type=RepositoryType.RO)
     private Repository repository;
 
+    /**
+     * Export a query result.
+     * @param queryResult Result to export as list of maps. Every list item represents a row,
+     *               while every map key represents a column
+     * @param encoding Encoding to use
+     * @param options Export options as JSON Object. Options are: <p>
+     *                <ul>
+     *                  <li> id: Name of the id column, mandatory </li>
+     *                  <li> subData: key of the subData json object, optional </li>
+     *                  <li> timezone: Target timezone for timestamp conversion </li>
+     *                </ul>
+     *
+     * @param columnsToInclude List of column names to include in the export. If not set, all columns will be exported
+     * @return Export result as input stream or null if the export failed
+     */
     @Override
-    public InputStream export(
+    @SuppressWarnings("unchecked")
+    public InputStream export(List<Map<String, Object>> queryResult, String encoding, JsonObject options, ArrayList<String> columnsToInclude) {
+        if (!options.containsKey("id")) {
+            logger.error("No id column given");
+            return null;
+        }
+        String subDataKey = options.getString("subData", "");
+
+        final JsonObjectBuilder builder = Json.createObjectBuilder();
+        final String timezone = options.containsKey("timezone")? options.getString("timezone"): "UTC";
+        String idColumn = options.getString("id");
+
+        //For each result
+        queryResult.forEach(item -> {
+            JsonObjectBuilder rowBuilder = Json.createObjectBuilder();
+            //Add value for each column
+            columnsToInclude.forEach(key -> {
+                Object value = item.getOrDefault(key, null);
+                if(value == null) {
+                    rowBuilder.add(key, JsonValue.NULL);
+                    return;
+                }
+                if (value instanceof Integer) {
+                    rowBuilder.add(key, (Integer) value);
+                } else if (value instanceof Double) {
+                    rowBuilder.add(key, (Double) value);
+                } else if (value instanceof Timestamp) {
+                    //Convert to target timezone
+                    Timestamp time = (Timestamp) value;
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(new Date(time.getTime()));
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                    sdf.setTimeZone(TimeZone.getTimeZone(timezone));
+                    rowBuilder.add(key, sdf.format(calendar.getTime()));
+                } else {
+                    rowBuilder.add(key, value.toString());
+                }
+            });
+            //Append id
+            if (!subDataKey.isEmpty() && item.containsKey(subDataKey) && item.get(subDataKey) instanceof List<?>) {
+                List<Map<String, Object>> subData = (List<Map<String, Object>>) item.get(subDataKey);
+                rowBuilder.add(subDataKey, createSubdataArray(subData));
+            }
+            builder.add(item.get(idColumn).toString(), rowBuilder);
+        });
+        return new ByteArrayInputStream(builder.build().toString().getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
+     * Create a json array from a list of sub data maps
+     * @param subData Sub data as list of maps
+     * @return Json array
+     */
+    private JsonArray createSubdataArray(List<Map<String, Object>> subData) {
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+        subData.forEach(map -> {
+            JsonObjectBuilder itemBuilder = Json.createObjectBuilder();
+            map.forEach((key, value) -> {
+                if(value == null) {
+                    itemBuilder.add(key, JsonValue.NULL);
+                    return;
+                }
+                if (value instanceof Integer) {
+                    itemBuilder.add(key, (Integer) value);
+                } else if (value instanceof Double) {
+                    itemBuilder.add(key, (Double) value);
+                } else {
+                    itemBuilder.add(key, value.toString());
+                }
+            });
+            arrayBuilder.add(itemBuilder.build());
+        });
+        return arrayBuilder.build();
+    }
+
+    @Override
+    public InputStream exportProben(
         List<Integer> proben,
         List<Integer> messungen,
         String encoding,
@@ -153,7 +257,7 @@ public class JsonExporter implements Exporter {
                 probe.put("prnBezeichnung", probenehmer.getBezeichnung());
                 probe.put("prnKurzBezeichnung", probenehmer.getKurzBezeichnung());
             }
-         
+
             addMessungen(proben.get(i));
             addKommentare(proben.get(i));
             addZusatzwerte(proben.get(i));

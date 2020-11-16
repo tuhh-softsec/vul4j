@@ -1,3 +1,10 @@
+/* Copyright (C) 2015 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.model.stammdaten;
 
 import java.io.Serializable;
@@ -8,6 +15,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.ws.rs.core.MultivaluedMap;
@@ -40,6 +49,10 @@ public class Ort implements Serializable {
     private Integer ktaGruppeId;
 
     private String berichtstext;
+
+    @ManyToOne
+    @JoinColumn(name="gem_id", updatable = false, insertable = false)
+    private Verwaltungseinheit gemeinde;
 
     @Column(name="gem_id")
     private String gemId;
@@ -158,6 +171,15 @@ public class Ort implements Serializable {
 
     public void setBerichtstext(String berichtstext) {
         this.berichtstext = berichtstext;
+    }
+
+    @JsonIgnore
+    public Verwaltungseinheit getGemeinde() {
+        return this.gemeinde;
+    }
+
+    public void setGemeinde(Verwaltungseinheit gemeinde) {
+        this.gemeinde = gemeinde;
     }
 
     public String getGemId() {

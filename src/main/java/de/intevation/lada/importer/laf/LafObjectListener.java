@@ -1,3 +1,10 @@
+/* Copyright (C) 2015 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.importer.laf;
 
 import java.util.ArrayList;
@@ -348,6 +355,7 @@ public class LafObjectListener extends LafBaseListener {
             currentEOrt.clear();
         }
         currentMessung = data.new Messung();
+        currentMessung.setHasErrors(false);
     }
 
     /**
@@ -372,6 +380,7 @@ public class LafObjectListener extends LafBaseListener {
         if (currentMessung != null && !probenNrContext) {
             currentProbe.addMessung(currentMessung);
             currentMessung = data.new Messung();
+            currentMessung.setHasErrors(false);
         }
         if (currentUOrt != null && !currentUOrt.isEmpty()) {
             currentProbe.addUrsprungsOrt(currentUOrt);
@@ -2809,6 +2818,7 @@ public class LafObjectListener extends LafBaseListener {
             }
         }
         if (children.size() < 5) {
+            currentMessung.setHasErrors(true);
             return;
         }
         String groesse = children.get(1);
@@ -2819,6 +2829,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setValue(groesse);
             err.setCode(670);
             currentErrors.add(err);
+            currentMessung.setHasErrors(true);
             return;
         }
         String wert = children.get(2);
@@ -2829,6 +2840,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setValue(wert);
             err.setCode(670);
             currentErrors.add(err);
+            currentMessung.setHasErrors(true);
             return;
         }
         String einheit = children.get(3);
@@ -2839,6 +2851,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setValue(einheit);
             err.setCode(670);
             currentErrors.add(err);
+            currentMessung.setHasErrors(true);
             return;
         }
         Map<String, String> messwert = new HashMap<String, String>();
@@ -2852,6 +2865,7 @@ public class LafObjectListener extends LafBaseListener {
                 err.setValue(fehler);
                 err.setCode(670);
                 currentErrors.add(err);
+                currentMessung.setHasErrors(true);
                 return;
             }
             messwert.put("MESSFEHLER", fehler);
@@ -2861,6 +2875,7 @@ public class LafObjectListener extends LafBaseListener {
         messwert.put("MESSEINHEIT", einheit);
         if (currentMessung == null) {
             currentMessung = data.new Messung();
+            currentMessung.setHasErrors(false);
         }
         currentMessung.addMesswert(messwert);
     }
@@ -2879,6 +2894,7 @@ public class LafObjectListener extends LafBaseListener {
             }
         }
         if (children.size() < 5) {
+            currentMessung.setHasErrors(true);
             return;
         }
         String groesse = children.get(1);
@@ -2889,6 +2905,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setValue(groesse);
             err.setCode(670);
             currentErrors.add(err);
+            currentMessung.setHasErrors(true);
             return;
         }
         String wert = children.get(2);
@@ -2899,6 +2916,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setValue(wert);
             err.setCode(670);
             currentErrors.add(err);
+            currentMessung.setHasErrors(true);
             return;
         }
         String einheit = children.get(3);
@@ -2909,6 +2927,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setValue(einheit);
             err.setCode(670);
             currentErrors.add(err);
+            currentMessung.setHasErrors(true);
             return;
         }
         Map<String, String> messwert = new HashMap<String, String>();
@@ -2921,6 +2940,7 @@ public class LafObjectListener extends LafBaseListener {
                 err.setValue(fehler);
                 err.setCode(670);
                 currentErrors.add(err);
+                currentMessung.setHasErrors(true);
                 return;
             }
             messwert.put("MESSFEHLER", fehler);
@@ -2930,6 +2950,7 @@ public class LafObjectListener extends LafBaseListener {
         messwert.put("MESSEINHEIT_ID", einheit);
         if (currentMessung == null) {
             currentMessung = data.new Messung();
+            currentMessung.setHasErrors(false);
         }
         currentMessung.addMesswert(messwert);
     }
@@ -2948,6 +2969,7 @@ public class LafObjectListener extends LafBaseListener {
             }
         }
         if (children.size() < 8) {
+            currentMessung.setHasErrors(true);
             return;
         }
         String groesse = children.get(1);
@@ -2958,6 +2980,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setValue(groesse);
             err.setCode(670);
             currentErrors.add(err);
+            currentMessung.setHasErrors(true);
             return;
         }
         String wert = children.get(2);
@@ -2968,6 +2991,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setValue(wert);
             err.setCode(670);
             currentErrors.add(err);
+            currentMessung.setHasErrors(true);
             return;
         }
         String einheit = children.get(3);
@@ -2978,6 +3002,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setValue(einheit);
             err.setCode(670);
             currentErrors.add(err);
+            currentMessung.setHasErrors(true);
             return;
         }
         Map<String, String> messwert = new HashMap<String, String>();
@@ -2990,6 +3015,7 @@ public class LafObjectListener extends LafBaseListener {
                 err.setValue(fehler);
                 err.setCode(670);
                 currentErrors.add(err);
+                currentMessung.setHasErrors(true);
                 return;
             }
             messwert.put("MESSFEHLER", fehler);
@@ -3000,6 +3026,7 @@ public class LafObjectListener extends LafBaseListener {
         messwert.put("MESSEINHEIT", einheit);
         if (currentMessung == null) {
             currentMessung = data.new Messung();
+            currentMessung.setHasErrors(false);
         }
         currentMessung.addMesswert(messwert);
     }
@@ -3011,6 +3038,10 @@ public class LafObjectListener extends LafBaseListener {
      */
     @Override public void enterMesswert_g(LafParser.Messwert_gContext ctx) {
         // C50* f12 c9 f9** f9** f9** c1
+        if (currentMessung == null) {
+            currentMessung = data.new Messung();
+            currentMessung.setHasErrors(false);
+        }
         List<String> children = new ArrayList<String>();
         for (int i = 0; i < ctx.getChildCount(); i++) {
             if (!ctx.getChild(i).toString().startsWith(" ")) {
@@ -3018,6 +3049,7 @@ public class LafObjectListener extends LafBaseListener {
             }
         }
         if (children.size() < 8) {
+            currentMessung.setHasErrors(true);
             return;
         }
         String groesse = children.get(1);
@@ -3028,6 +3060,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setValue(groesse);
             err.setCode(670);
             currentErrors.add(err);
+            currentMessung.setHasErrors(true);
             return;
         }
         String wert = children.get(2);
@@ -3038,6 +3071,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setValue(wert);
             err.setCode(670);
             currentErrors.add(err);
+            currentMessung.setHasErrors(true);
             return;
         }
         String einheit = children.get(3);
@@ -3048,6 +3082,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setValue(einheit);
             err.setCode(670);
             currentErrors.add(err);
+            currentMessung.setHasErrors(true);
             return;
         }
         Map<String, String> messwert = new HashMap<String, String>();
@@ -3061,6 +3096,7 @@ public class LafObjectListener extends LafBaseListener {
                 err.setValue(fehler);
                 err.setCode(670);
                 currentErrors.add(err);
+                currentMessung.setHasErrors(true);
                 return;
             }
             messwert.put("MESSFEHLER", fehler);
@@ -3069,9 +3105,6 @@ public class LafObjectListener extends LafBaseListener {
         messwert.put("MESSGROESSE", groesse);
         messwert.put("MESSWERT", wert);
         messwert.put("MESSEINHEIT", einheit);
-        if (currentMessung == null) {
-            currentMessung = data.new Messung();
-        }
         currentMessung.addMesswert(messwert);
     }
 
@@ -3082,6 +3115,10 @@ public class LafObjectListener extends LafBaseListener {
      */
     @Override public void enterMesswert_nwg(LafParser.Messwert_nwgContext ctx) {
         // C50* f12 c9 f9** f12
+        if (currentMessung == null) {
+            currentMessung = data.new Messung();
+            currentMessung.setHasErrors(false);
+        }
         List<String> children = new ArrayList<String>();
         for (int i = 0; i < ctx.getChildCount(); i++) {
             if (!ctx.getChild(i).toString().startsWith(" ")) {
@@ -3089,6 +3126,7 @@ public class LafObjectListener extends LafBaseListener {
             }
         }
         if (children.size() < 5) {
+            currentMessung.setHasErrors(true);
             return;
         }
         String groesse = children.get(1);
@@ -3099,6 +3137,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setValue(groesse);
             err.setCode(670);
             currentErrors.add(err);
+            currentMessung.setHasErrors(true);
             return;
         }
         String wert = children.get(2);
@@ -3109,6 +3148,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setValue(wert);
             err.setCode(670);
             currentErrors.add(err);
+            currentMessung.setHasErrors(true);
             return;
         }
         String einheit = children.get(3);
@@ -3119,6 +3159,7 @@ public class LafObjectListener extends LafBaseListener {
             err.setValue(einheit);
             err.setCode(670);
             currentErrors.add(err);
+            currentMessung.setHasErrors(true);
             return;
         }
         Map<String, String> messwert = new HashMap<String, String>();
@@ -3131,6 +3172,7 @@ public class LafObjectListener extends LafBaseListener {
                 err.setValue(fehler);
                 err.setCode(670);
                 currentErrors.add(err);
+                currentMessung.setHasErrors(true);
                 return;
             }
             messwert.put("MESSFEHLER", fehler);
@@ -3144,6 +3186,7 @@ public class LafObjectListener extends LafBaseListener {
                 err.setValue(nwg);
                 err.setCode(670);
                 currentErrors.add(err);
+                currentMessung.setHasErrors(true);
                 return;
             }
             messwert.put("NWG", nwg);
@@ -3151,9 +3194,6 @@ public class LafObjectListener extends LafBaseListener {
         messwert.put("MESSGROESSE", groesse);
         messwert.put("MESSWERT", wert);
         messwert.put("MESSEINHEIT", einheit);
-        if (currentMessung == null) {
-            currentMessung = data.new Messung();
-        }
         currentMessung.addMesswert(messwert);
     }
 
@@ -3163,6 +3203,10 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterMesswert_nwg_s(LafParser.Messwert_nwg_sContext ctx) {
+        if (currentMessung == null) {
+            currentMessung = data.new Messung();
+            currentMessung.setHasErrors(false);
+        }
         List<String> children = new ArrayList<String>();
         for (int i = 0; i < ctx.getChildCount(); i++) {
             if (!ctx.getChild(i).toString().startsWith(" ")) {
@@ -3233,9 +3277,6 @@ public class LafObjectListener extends LafBaseListener {
         messwert.put("MESSGROESSE_ID", groesse);
         messwert.put("MESSWERT", wert);
         messwert.put("MESSEINHEIT_ID", einheit);
-        if (currentMessung == null) {
-            currentMessung = data.new Messung();
-        }
         currentMessung.addMesswert(messwert);
     }
 
@@ -3327,7 +3368,10 @@ public class LafObjectListener extends LafBaseListener {
      * <p>The default implementation does nothing.</p>
      */
     @Override public void enterMesswert_nwg_g(LafParser.Messwert_nwg_gContext ctx) {
-        // TODO
+        if (currentMessung == null) {
+            currentMessung = data.new Messung();
+            currentMessung.setHasErrors(false);
+        }
         List<String> children = new ArrayList<String>();
         for (int i = 0; i < ctx.getChildCount(); i++) {
             if (!ctx.getChild(i).toString().startsWith(" ")) {
@@ -3411,9 +3455,6 @@ public class LafObjectListener extends LafBaseListener {
         messwert.put("MESSGROESSE", groesse);
         messwert.put("MESSWERT", wert);
         messwert.put("MESSEINHEIT", einheit);
-        if (currentMessung == null) {
-            currentMessung = data.new Messung();
-        }
         currentMessung.addMesswert(messwert);
     }
 
@@ -3424,6 +3465,10 @@ public class LafObjectListener extends LafBaseListener {
      */
     @Override public void enterKommentar(LafParser.KommentarContext ctx) {
         // c5 d8 t4 mc300
+        if (currentMessung == null) {
+            currentMessung = data.new Messung();
+            currentMessung.setHasErrors(false);
+        }
         if (ctx.getChildCount() < 6) {
             return;
         }
@@ -3472,9 +3517,6 @@ public class LafObjectListener extends LafBaseListener {
         kommentar.put("DATE", date);
         kommentar.put("TIME", time);
         kommentar.put("TEXT", text);
-        if (currentMessung == null) {
-            currentMessung = data.new Messung();
-        }
         currentMessung.addKommentar(kommentar);
     }
 

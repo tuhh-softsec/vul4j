@@ -438,7 +438,7 @@ public class AuditTrailService {
     }
 
     private Long formatDate(String format, String date) {
-        DateFormat inFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
+        DateFormat inFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         try {
             return inFormat.parse(date).getTime();
         } catch (ParseException e) {

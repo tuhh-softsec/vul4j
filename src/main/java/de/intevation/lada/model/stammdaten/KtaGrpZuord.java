@@ -17,7 +17,7 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the kta_grp_zuord database table.
- * 
+ *
  */
 @Entity
 @Table(name="kta_grp_zuord")

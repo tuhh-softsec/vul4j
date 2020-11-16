@@ -268,7 +268,7 @@ public class PepGenerationTest extends ServiceTest {
         checkGeneratedProbeCount(2, entity, prot, mpId);
         checkGeneratedTag(entity, prot);
 
-        prot.setPassed(true); 
+        prot.setPassed(true);
     }
 
     /**
@@ -402,7 +402,7 @@ public class PepGenerationTest extends ServiceTest {
         //Expected last record: 02/29/2020 @ 12:00am (UTC)
         expectedValues.put(15, 1582934400000L);
         checkEntityAttributeValues(entity, mpId, startAttribute, expectedValues);
-        
+
 
         prot.setPassed(true);
     }
@@ -584,7 +584,7 @@ public class PepGenerationTest extends ServiceTest {
         //Expected last record: 03/01/2021 @ 12:00am (UTC)
         expectedValues.put(expectedCount - 1, 1614556800000L);
         checkEntityAttributeValues(entity, mpId, startAttribute, expectedValues);
-        
+
 
         prot.setPassed(true);
     }

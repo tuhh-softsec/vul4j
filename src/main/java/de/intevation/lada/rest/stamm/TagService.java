@@ -1,3 +1,10 @@
+/* Copyright (C) 2018 by Bundesamt fuer Strahlenschutz
+ * Software engineering by Intevation GmbH
+ *
+ * This file is Free Software under the GNU GPL (v>=3)
+ * and comes with ABSOLUTELY NO WARRANTY! Check out
+ * the documentation coming with IMIS-Labordaten-Application for details.
+ */
 package de.intevation.lada.rest.stamm;
 
 import java.time.LocalDate;
@@ -324,7 +331,7 @@ import de.intevation.lada.util.rest.Response;
             } else if (!userInfo.getMessstellen().contains(mstId)) {
                 return new Response(false, 603, "Invalid mstId");
             }
-            
+
             repository.create(zuordnung, Strings.LAND);
             zuordnung.setTag(tag);
             return repository.update(zuordnung, Strings.LAND);

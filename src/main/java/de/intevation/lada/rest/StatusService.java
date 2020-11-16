@@ -99,7 +99,7 @@ public class StatusService {
 
     @Inject
     @RepositoryConfig(type = RepositoryType.RO)
-    private Repository repository;
+    private Repository readOnlyRepo;
 
     /**
      * The object lock mechanism.
@@ -316,46 +316,65 @@ public class StatusService {
         HttpServletRequest request
     ) {
         Violation violation = null;
-	Violation violation_collection = null;
-        if (newKombi.getStatusWert().getId() == 1 ||
-            newKombi.getStatusWert().getId() == 2 ) {
-		Probe probe = repository.getByIdPlain(Probe.class, messung.getProbeId(), "land");
-		//init violation_collection with probe validation
-		violation_collection = probeValidator.validate(probe);
-		
-		//validate messung object
-		violation  = messungValidator.validate(messung);
-                        violation_collection.addErrors(violation.getErrors());
-                        violation_collection.addWarnings(violation.getWarnings());
-                        violation_collection.addNotifications(violation.getNotifications());
+        Violation violation_collection = null;
+        int newStatusWert = newKombi.getStatusWert().getId();
+        if (newStatusWert == 1 ||
+            newStatusWert == 2 ||
+            newStatusWert == 7
+        ) {
+            Probe probe = readOnlyRepo.getByIdPlain(
+                Probe.class, messung.getProbeId(), "land");
+            // init violation_collection with probe validation
+            violation_collection = probeValidator.validate(probe);
 
-		//validate messwert objects
-		QueryBuilder<Messwert> builder =
-		new QueryBuilder<Messwert>(
-		repository.entityManager(Strings.LAND), Messwert.class);
-		builder.and("messungsId", messung.getId());
-		Response messwertQry = repository.filter(builder.getQuery(), Strings.LAND);
-		@SuppressWarnings("unchecked")
-		List<Messwert> messwerte = (List<Messwert>) messwertQry.getData();
+            //validate messung object
+            violation  = messungValidator.validate(messung);
+            violation_collection.addErrors(violation.getErrors());
+            violation_collection.addWarnings(violation.getWarnings());
+            violation_collection.addNotifications(violation.getNotifications());
+
+            //validate messwert objects
+            QueryBuilder<Messwert> builder = new QueryBuilder<Messwert>(
+                    readOnlyRepo.entityManager(Strings.LAND), Messwert.class);
+            builder.and("messungsId", messung.getId());
+            Response messwertQry = readOnlyRepo.filter(builder.getQuery(), Strings.LAND);
+            @SuppressWarnings("unchecked")
+            List<Messwert> messwerte = (List<Messwert>) messwertQry.getData();
+            boolean hasValidMesswerte = false;
             for (Messwert messwert: messwerte) {
-               	violation = messwertValidator.validate(messwert);
-                	if (violation.hasErrors() || violation.hasWarnings()) {
-                        	violation_collection.addErrors(violation.getErrors());
-                        	violation_collection.addWarnings(violation.getWarnings());
-                	}
-		violation_collection.addNotifications(violation.getNotifications());
-            	}
-		//validate statusobject
-		violation = validator.validate(status);
-			violation_collection.addErrors(violation.getErrors());
-			violation_collection.addWarnings(violation.getWarnings());
-			violation_collection.addNotifications(violation.getNotifications());
+                violation = messwertValidator.validate(messwert);
+                boolean hasNoMesswert = messwert.getMesswert() == null;
+                if (newStatusWert == 7 && hasNoMesswert == false) {
+                    hasValidMesswerte = true;
+                    Violation error = new Violation();
+                    error.addError("status", 654);
+                    violation.addErrors(error.getErrors());
+                }
+                if (violation.hasErrors() || violation.hasWarnings()) {
+                    violation_collection.addErrors(violation.getErrors());
+                    violation_collection.addWarnings(violation.getWarnings());
+                }
+                violation_collection.addNotifications(violation.getNotifications());
+                if (hasValidMesswerte == true) {
+                    break;
+                }
+            }
+            if (newStatusWert == 7 && hasValidMesswerte == false) {
+                for (int i = 0; i < messwerte.size(); i++) {
+                    defaultRepo.delete(messwerte.get(i), Strings.LAND);
+                }
+            }
+            // validate statusobject
+            violation = validator.validate(status);
+            violation_collection.addErrors(violation.getErrors());
+            violation_collection.addWarnings(violation.getWarnings());
+            violation_collection.addNotifications(violation.getNotifications());
 
             if (violation_collection.hasErrors() || violation_collection.hasWarnings()) {
                 Response response = new Response(false, 605, status);
                 response.setErrors(violation_collection.getErrors());
                 response.setWarnings(violation_collection.getWarnings());
-		response.setNotifications(violation_collection.getNotifications());
+                response.setNotifications(violation_collection.getNotifications());
                 return response;
             }
         }

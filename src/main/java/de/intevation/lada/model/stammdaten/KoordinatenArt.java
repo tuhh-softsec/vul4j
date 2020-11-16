@@ -17,7 +17,7 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the koordinaten_art database table.
- * 
+ *
  */
 @Entity
 @Table(name="koordinaten_art")

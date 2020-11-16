@@ -168,6 +168,12 @@
             <version>${geotools.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.8</version>
+        </dependency>
+
         <!-- Logging -->
         <dependency>
             <groupId>log4j</groupId>
@@ -345,6 +351,28 @@
                             <shortRevisionLength>7</shortRevisionLength>
                         </configuration>
                     </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                        <version>3.1.1</version>
+                        <executions>
+                            <execution>
+                                <id>validate</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <configLocation>checkstyle.xml</configLocation>
+                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                            <includeResources>false</includeResources>
+                            <includeTestResources>false</includeTestResources>
+                            <excludes>**/LafBaseListener.java,**/LafListener.java,**/LafParser.java,**/LafLexer.java</excludes>
+                            <logViolationsToConsole>false</logViolationsToConsole>
+                        </configuration>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
@@ -472,10 +500,6 @@
             <id>OSGEO Release Repo</id>
             <url>https://repo.osgeo.org/repository/release</url>
         </repository>
-        <repository>
-            <id>Hibernate Spatial repo</id>
-            <url>http://www.hibernatespatial.org/repository</url>
-        </repository>
     </repositories>
-    <version>3.3.23-SNAPSHOT</version>
+    <version>4.0.1-SNAPSHOT</version>
 </project>

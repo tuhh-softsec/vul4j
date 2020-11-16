@@ -39,7 +39,7 @@ implements Exporter
      */
     @Inject
     private LafCreator creator;
-    
+
     /**
      * The repository used to read data.
      */
@@ -56,7 +56,7 @@ implements Exporter
      * @return InputStream with the LAF data.
      */
     @Override
-    public InputStream export(
+    public InputStream exportProben(
         List<Integer> proben,
         List<Integer> messungen,
         String encoding,

@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * The persistent class for the ortszuordnung_mp database table.
- * 
+ *
  */
 @Entity
 @Table(name="ortszuordnung_mp", schema="land")

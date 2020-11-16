@@ -128,7 +128,7 @@ public class LafExportService {
                 pIds.add(p.getId());
             }
         }
-        
+
         List<Integer> mIds = new ArrayList<Integer>();
         if (!messungIds.isEmpty()) {
             QueryBuilder<Messung> mBuilder = new QueryBuilder<Messung>(
@@ -151,7 +151,7 @@ public class LafExportService {
         }
 
         UserInfo userInfo = authorization.getInfo(request);
-        InputStream exported = exporter.export(pIds, mIds, encoding, userInfo);
+        InputStream exported = exporter.exportProben(pIds, mIds, encoding, userInfo);
 
         ResponseBuilder response = Response.ok((Object)exported);
         response.header(
